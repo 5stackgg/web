@@ -31,7 +31,9 @@ provide("commander", commander);
 
 <template>
   <Tabs default-value="overview" class="match-tabs">
-    <TabsList class="lg:inline-flex grid grid-cols-1 mb-4 bg-transparent p-0 h-auto gap-1">
+    <TabsList
+      class="lg:inline-flex grid grid-cols-1 mb-4 bg-transparent p-0 h-auto gap-1"
+    >
       <TabsTrigger value="overview">
         {{ $t("match.tabs.overview") }}
       </TabsTrigger>

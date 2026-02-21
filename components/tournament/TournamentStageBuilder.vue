@@ -154,7 +154,9 @@ import {
           </div>
         </TabsContent>
         <TabsContent value="add-stage" class="mt-6">
-          <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 p-4 max-w-2xl mx-auto">
+          <Card
+            class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 p-4 max-w-2xl mx-auto"
+          >
             <CardHeader>
               <CardTitle>
                 {{ $t("tournament.stage.add_another") }}
@@ -254,7 +256,10 @@ import {
         </p>
       </div>
 
-      <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 p-4 max-w-2xl mx-auto" v-if="tournament.stages.length === 0">
+      <Card
+        class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 p-4 max-w-2xl mx-auto"
+        v-if="tournament.stages.length === 0"
+      >
         <h2 class="text-xl font-semibold mb-4">
           {{ $t("tournament.stage.add_first") }}
         </h2>

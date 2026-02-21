@@ -36,7 +36,9 @@ const { isMobile } = useSidebar();
 
   <!-- Filters -->
   <PageTransition :delay="100" class="mt-6">
-    <div class="flex flex-col md:flex-row gap-4 mb-4 items-center justify-between">
+    <div
+      class="flex flex-col md:flex-row gap-4 mb-4 items-center justify-between"
+    >
       <form class="flex-1" @submit.prevent="viewTopTeam">
         <FormField v-slot="{ componentField }" name="teamQuery">
           <FormItem>
@@ -72,47 +74,57 @@ const { isMobile } = useSidebar();
   <!-- Results -->
   <PageTransition :delay="200" class="mt-2">
     <div>
-    <div class="p-4">
-      <!-- Loading -->
-      <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <div v-for="i in perPage" :key="i" class="bg-muted/30 p-4 rounded-lg space-y-3">
-          <Skeleton class="h-5 w-32" />
-          <div class="flex flex-col gap-2">
-            <Skeleton v-for="j in 5" :key="j" class="h-5 w-full" />
+      <div class="p-4">
+        <!-- Loading -->
+        <div
+          v-if="loading"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        >
+          <div
+            v-for="i in perPage"
+            :key="i"
+            class="bg-muted/30 p-4 rounded-lg space-y-3"
+          >
+            <Skeleton class="h-5 w-32" />
+            <div class="flex flex-col gap-2">
+              <Skeleton v-for="j in 5" :key="j" class="h-5 w-full" />
+            </div>
           </div>
         </div>
+
+        <!-- Empty State -->
+        <Empty
+          v-else-if="
+            !(showOnlyMyTeams ? myTeams : teams) ||
+            (showOnlyMyTeams ? myTeams : teams).length === 0
+          "
+          class="min-h-[200px]"
+        >
+          <EmptyTitle>{{ $t("pages.teams.no_teams_title") }}</EmptyTitle>
+          <EmptyDescription>{{ $t("pages.teams.no_teams") }}</EmptyDescription>
+        </Empty>
+
+        <!-- Teams Table -->
+        <teams-table
+          v-else
+          :teams="showOnlyMyTeams ? myTeams : teams"
+        ></teams-table>
       </div>
 
-      <!-- Empty State -->
-      <Empty v-else-if="
-        !(showOnlyMyTeams ? myTeams : teams) ||
-        (showOnlyMyTeams ? myTeams : teams).length === 0
-      " class="min-h-[200px]">
-        <EmptyTitle>{{ $t("pages.teams.no_teams_title") }}</EmptyTitle>
-        <EmptyDescription>{{ $t("pages.teams.no_teams") }}</EmptyDescription>
-      </Empty>
-
-      <!-- Teams Table -->
-      <teams-table
-        v-else
-        :teams="showOnlyMyTeams ? myTeams : teams"
-      ></teams-table>
-    </div>
-
-    <!-- Pagination -->
-    <Pagination
-      v-if="
-        !showOnlyMyTeams &&
-        teams_aggregate &&
-        teams_aggregate.aggregate.count > 0
-      "
-      :page="page"
-      :per-page="perPage"
-      :total="teams_aggregate.aggregate.count"
-      :show-per-page-selector="true"
-      @page="onPageChange"
-      @update:perPage="onPerPageChange"
-    />
+      <!-- Pagination -->
+      <Pagination
+        v-if="
+          !showOnlyMyTeams &&
+          teams_aggregate &&
+          teams_aggregate.aggregate.count > 0
+        "
+        :page="page"
+        :per-page="perPage"
+        :total="teams_aggregate.aggregate.count"
+        :show-per-page-selector="true"
+        @page="onPageChange"
+        @update:perPage="onPerPageChange"
+      />
     </div>
   </PageTransition>
 </template>

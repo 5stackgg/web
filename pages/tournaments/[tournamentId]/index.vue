@@ -282,7 +282,12 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
             </CollapsibleTrigger>
           </div>
           <CollapsibleContent>
-            <div :class="['mt-2 pt-3 space-y-6', showSeparators && 'border-t border-border']">
+            <div
+              :class="[
+                'mt-2 pt-3 space-y-6',
+                showSeparators && 'border-t border-border',
+              ]"
+            >
               <!-- Match Options -->
               <MatchOptionsDisplay
                 :show-details-by-default="false"
@@ -294,7 +299,10 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 
         <!-- Organized By - Bottom Right -->
         <div
-          :class="['flex items-center justify-end gap-1.5 mt-4 pt-3', showSeparators && 'border-t border-border']"
+          :class="[
+            'flex items-center justify-end gap-1.5 mt-4 pt-3',
+            showSeparators && 'border-t border-border',
+          ]"
         >
           <span class="text-xs text-muted-foreground">{{
             $t("tournament.organizer.organized_by")

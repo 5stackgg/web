@@ -27,7 +27,10 @@ import { Card } from "~/components/ui/card";
 
     <FormField v-slot="{ value, handleChange }" name="new_team">
       <FormItem>
-        <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer" @click="handleChange(!value)">
+        <Card
+          class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer"
+          @click="handleChange(!value)"
+        >
           <div class="flex flex-row items-center justify-between p-4">
             <div class="space-y-0.5">
               <FormLabel class="text-base">{{
@@ -53,7 +56,10 @@ import { Card } from "~/components/ui/card";
         name="add_self_to_lineup"
       >
         <FormItem>
-          <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer" @click="handleChange(!value)">
+          <Card
+            class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer"
+            @click="handleChange(!value)"
+          >
             <div class="flex flex-row items-center justify-between p-4">
               <div class="space-y-0.5">
                 <FormLabel class="text-base">{{

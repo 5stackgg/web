@@ -11,83 +11,85 @@ definePageMeta({
   <PageTransition :delay="0">
     <form @submit.prevent="updateSettings" class="grid gap-4">
       <div class="p-6 space-y-6">
-          <FormField
-            v-slot="{ componentField }"
-            name="public.minimum_role_to_spectate"
-          >
-            <FormItem>
-              <FormLabel class="text-lg font-semibold">{{
-                $t("pages.settings.application.streaming.minimum_role_to_spectate")
-              }}</FormLabel>
-              <FormDescription>
-                {{
-                  $t(
-                    "pages.settings.application.streaming.minimum_role_to_spectate_description",
-                  )
-                }}
-              </FormDescription>
-              <FormControl>
-                <Select v-bind="componentField">
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem
-                        :value="role.value"
-                        v-for="role in roles"
-                        :key="role.value"
-                      >
-                        <span class="capitalize">{{ role.display }}</span>
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+        <FormField
+          v-slot="{ componentField }"
+          name="public.minimum_role_to_spectate"
+        >
+          <FormItem>
+            <FormLabel class="text-lg font-semibold">{{
+              $t(
+                "pages.settings.application.streaming.minimum_role_to_spectate",
+              )
+            }}</FormLabel>
+            <FormDescription>
+              {{
+                $t(
+                  "pages.settings.application.streaming.minimum_role_to_spectate_description",
+                )
+              }}
+            </FormDescription>
+            <FormControl>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
+                      :value="role.value"
+                      v-for="role in roles"
+                      :key="role.value"
+                    >
+                      <span class="capitalize">{{ role.display }}</span>
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-          <FormField
-            v-slot="{ componentField }"
-            name="public.minimum_role_to_stream"
-          >
-            <FormItem>
-              <FormLabel class="text-lg font-semibold">{{
-                $t("pages.settings.application.streaming.minimum_role_to_stream")
-              }}</FormLabel>
-              <FormDescription>
-                {{
-                  $t(
-                    "pages.settings.application.streaming.minimum_role_to_stream_description",
-                  )
-                }}
-              </FormDescription>
-              <FormControl>
-                <Select v-bind="componentField">
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem
-                        :value="role.value"
-                        v-for="role in roles"
-                        :key="role.value"
-                      >
-                        <span class="capitalize">{{ role.display }}</span>
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+        <FormField
+          v-slot="{ componentField }"
+          name="public.minimum_role_to_stream"
+        >
+          <FormItem>
+            <FormLabel class="text-lg font-semibold">{{
+              $t("pages.settings.application.streaming.minimum_role_to_stream")
+            }}</FormLabel>
+            <FormDescription>
+              {{
+                $t(
+                  "pages.settings.application.streaming.minimum_role_to_stream_description",
+                )
+              }}
+            </FormDescription>
+            <FormControl>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
+                      :value="role.value"
+                      v-for="role in roles"
+                      :key="role.value"
+                    >
+                      <span class="capitalize">{{ role.display }}</span>
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
       </div>
 
       <div class="cursor-pointer" @click="togglePlaycast">
@@ -108,7 +110,9 @@ definePageMeta({
               class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors mt-1"
               @click.stop
             >
-              {{ $t("pages.settings.application.streaming.playcast_learn_more") }}
+              {{
+                $t("pages.settings.application.streaming.playcast_learn_more")
+              }}
               <ExternalLink class="w-3.5 h-3.5" />
             </a>
           </div>

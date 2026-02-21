@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import Default from "~/layouts/default.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
-const showSeparators = computed(() => useApplicationSettingsStore().showSeparators);
+const showSeparators = computed(
+  () => useApplicationSettingsStore().showSeparators,
+);
 
 const isDev = computed(() => {
   const domain = useRuntimeConfig().public.webDomain;

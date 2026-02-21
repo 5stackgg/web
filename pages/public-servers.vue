@@ -33,100 +33,96 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
   <PageTransition :delay="100">
     <div class="mt-6 p-4">
       <Transition name="fade" mode="out-in">
-          <Empty v-if="loading" key="loading" class="min-h-[200px]">
-            <div class="space-y-3 w-full max-w-md">
-              <Skeleton class="h-4 w-3/4 mx-auto" />
-              <Skeleton class="h-3 w-full" />
-              <Skeleton class="h-3 w-5/6 mx-auto" />
-            </div>
-          </Empty>
+        <Empty v-if="loading" key="loading" class="min-h-[200px]">
+          <div class="space-y-3 w-full max-w-md">
+            <Skeleton class="h-4 w-3/4 mx-auto" />
+            <Skeleton class="h-3 w-full" />
+            <Skeleton class="h-3 w-5/6 mx-auto" />
+          </div>
+        </Empty>
 
-          <Table
-            v-else-if="servers && (servers as any[]).length > 0"
-            key="servers"
-          >
-            <TableHeader>
-              <TableRow>
-                <TableHead>{{
-                  $t("pages.public_servers.table.label")
-                }}</TableHead>
-                <TableHead>{{
-                  $t("pages.public_servers.table.map")
-                }}</TableHead>
-                <TableHead>{{
-                  $t("pages.public_servers.table.players")
-                }}</TableHead>
-                <TableHead>{{
-                  $t("pages.public_servers.table.region")
-                }}</TableHead>
-                <TableHead>{{
-                  $t("pages.public_servers.table.type")
-                }}</TableHead>
-                <TableHead>{{
-                  $t("pages.public_servers.table.connect")
-                }}</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow
-                v-for="server of servers"
-                :key="server.id"
-                class="cursor-pointer hover:bg-muted/50"
-              >
-                <TableCell>
-                  <div class="flex gap-2 items-center">
-                    <div
-                      class="h-2 w-2 rounded-full relative"
+        <Table
+          v-else-if="servers && (servers as any[]).length > 0"
+          key="servers"
+        >
+          <TableHeader>
+            <TableRow>
+              <TableHead>{{
+                $t("pages.public_servers.table.label")
+              }}</TableHead>
+              <TableHead>{{ $t("pages.public_servers.table.map") }}</TableHead>
+              <TableHead>{{
+                $t("pages.public_servers.table.players")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.public_servers.table.region")
+              }}</TableHead>
+              <TableHead>{{ $t("pages.public_servers.table.type") }}</TableHead>
+              <TableHead>{{
+                $t("pages.public_servers.table.connect")
+              }}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow
+              v-for="server of servers"
+              :key="server.id"
+              class="cursor-pointer hover:bg-muted/50"
+            >
+              <TableCell>
+                <div class="flex gap-2 items-center">
+                  <div
+                    class="h-2 w-2 rounded-full relative"
+                    :class="{
+                      'bg-red-600': !server.connected,
+
+                      'bg-green-600': server.connected,
+                    }"
+                  >
+                    <span
+                      class="animate-ping absolute left-0 h-2 w-2 rounded-full opacity-75"
                       :class="{
                         'bg-red-600': !server.connected,
-
-                        'bg-green-600': server.connected,
                       }"
-                    >
-                      <span
-                        class="animate-ping absolute left-0 h-2 w-2 rounded-full opacity-75"
-                        :class="{
-                          'bg-red-600': !server.connected,
-                        }"
-                        v-if="!server.connected"
-                      ></span>
-                    </div>
-                    <span class="truncate font-mono text-sm">
-                      {{ server.label }}
-                    </span>
+                      v-if="!server.connected"
+                    ></span>
                   </div>
-                </TableCell>
-                <TableCell>
-                  {{ getDedicatedServerMap(server.id) }}
-                </TableCell>
-                <TableCell>
-                  {{ getDedicatedServerPlayers(server.id) }} /
-                  {{ server.max_players }}
-                </TableCell>
-                <TableCell>
-                  <Badge variant="outline">{{ server.region }}</Badge>
-                </TableCell>
-                <TableCell>
-                  <Badge variant="secondary">
-                    {{ server.type }}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <QuickServerConnect :server="server" />
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+                  <span class="truncate font-mono text-sm">
+                    {{ server.label }}
+                  </span>
+                </div>
+              </TableCell>
+              <TableCell>
+                {{ getDedicatedServerMap(server.id) }}
+              </TableCell>
+              <TableCell>
+                {{ getDedicatedServerPlayers(server.id) }} /
+                {{ server.max_players }}
+              </TableCell>
+              <TableCell>
+                <Badge variant="outline">{{ server.region }}</Badge>
+              </TableCell>
+              <TableCell>
+                <Badge variant="secondary">
+                  {{ server.type }}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <QuickServerConnect :server="server" />
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
 
-          <Empty v-else key="empty" class="min-h-[200px]">
-            <EmptyTitle>{{
-              $t("pages.public_servers.no_servers_title")
-            }}</EmptyTitle>
-            <EmptyDescription>{{
-              $t("pages.public_servers.no_public_servers")
-            }}</EmptyDescription>
-          </Empty>
-        </Transition>
+        <Empty v-else key="empty" class="min-h-[200px]">
+          <EmptyTitle>{{
+            $t("pages.public_servers.no_servers_title")
+          }}</EmptyTitle>
+          <EmptyDescription>{{
+            $t("pages.public_servers.no_public_servers")
+          }}</EmptyDescription>
+        </Empty>
+      </Transition>
     </div>
   </PageTransition>
 

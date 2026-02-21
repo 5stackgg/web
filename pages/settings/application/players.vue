@@ -55,7 +55,8 @@ async function doRefreshAllPlayers() {
       <div class="p-6 mb-6">
         <h3 class="text-lg font-semibold">Refresh All Players</h3>
         <p class="text-sm text-muted-foreground mt-1">
-          Re-sync all player data in the search index. Use this if player information (like ELO) appears outdated or missing.
+          Re-sync all player data in the search index. Use this if player
+          information (like ELO) appears outdated or missing.
         </p>
         <div class="mt-4">
           <Button :disabled="refreshing" @click="showRefreshDialog = true">
@@ -69,8 +70,9 @@ async function doRefreshAllPlayers() {
           <AlertDialogHeader>
             <AlertDialogTitle>Refresh All Players?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will queue a job to re-sync all player data in the Typesense search index.
-              This may take a few minutes depending on the number of players.
+              This will queue a job to re-sync all player data in the Typesense
+              search index. This may take a few minutes depending on the number
+              of players.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -82,39 +84,46 @@ async function doRefreshAllPlayers() {
         </AlertDialogContent>
       </AlertDialog>
 
-    <form class="grid gap-6" @submit.prevent="updateSettings">
-      <div class="cursor-pointer" @click="togglePlayerNameRegistration">
-        <div class="flex flex-row items-center justify-between p-4">
-          <div class="space-y-0.5">
-            <h4 class="text-base font-medium">
-              {{
-                $t("pages.settings.application.players.force_name_registration")
-              }}
-            </h4>
-            <p class="text-sm text-muted-foreground">
-              {{
-                $t(
-                  "pages.settings.application.players.force_name_registration_description",
-                )
-              }}
-            </p>
+      <form class="grid gap-6" @submit.prevent="updateSettings">
+        <div class="cursor-pointer" @click="togglePlayerNameRegistration">
+          <div class="flex flex-row items-center justify-between p-4">
+            <div class="space-y-0.5">
+              <h4 class="text-base font-medium">
+                {{
+                  $t(
+                    "pages.settings.application.players.force_name_registration",
+                  )
+                }}
+              </h4>
+              <p class="text-sm text-muted-foreground">
+                {{
+                  $t(
+                    "pages.settings.application.players.force_name_registration_description",
+                  )
+                }}
+              </p>
+            </div>
+            <Switch
+              :model-value="playerNameRegistration"
+              @update:model-value="togglePlayerNameRegistration"
+            />
           </div>
-          <Switch
-            :model-value="playerNameRegistration"
-            @update:model-value="togglePlayerNameRegistration"
-          />
         </div>
-      </div>
 
-      <div class="p-6 space-y-6">
-          <FormField v-slot="{ componentField }" name="public.create_matches_role">
+        <div class="p-6 space-y-6">
+          <FormField
+            v-slot="{ componentField }"
+            name="public.create_matches_role"
+          >
             <FormItem>
               <FormLabel class="text-lg font-semibold">{{
                 $t("pages.settings.application.create_matches_role")
               }}</FormLabel>
               <FormDescription>
                 {{
-                  $t("pages.settings.application.create_matches_role_description")
+                  $t(
+                    "pages.settings.application.create_matches_role_description",
+                  )
                 }}
               </FormDescription>
               <FormControl>
@@ -220,18 +229,18 @@ async function doRefreshAllPlayers() {
               <FormMessage />
             </FormItem>
           </FormField>
-      </div>
+        </div>
 
-      <div class="flex justify-start">
-        <Button
-          type="submit"
-          :disabled="Object.keys(form.errors).length > 0"
-          class="my-3"
-        >
-          {{ $t("pages.settings.application.update") }}
-        </Button>
-      </div>
-    </form>
+        <div class="flex justify-start">
+          <Button
+            type="submit"
+            :disabled="Object.keys(form.errors).length > 0"
+            class="my-3"
+          >
+            {{ $t("pages.settings.application.update") }}
+          </Button>
+        </div>
+      </form>
     </div>
   </PageTransition>
 </template>

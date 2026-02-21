@@ -47,14 +47,18 @@ definePageMeta({
               step="0.125"
               class="flex-1"
             />
-            <span class="text-sm font-mono w-16 text-right">{{ borderRadius }}rem</span>
+            <span class="text-sm font-mono w-16 text-right"
+              >{{ borderRadius }}rem</span
+            >
           </div>
         </div>
 
         <div class="cursor-pointer" @click="toggleSeparators()">
           <div class="flex flex-row items-center justify-between p-4">
             <div class="space-y-0.5">
-              <label class="text-sm font-medium cursor-pointer">Show Separators</label>
+              <label class="text-sm font-medium cursor-pointer"
+                >Show Separators</label
+              >
               <p class="text-sm text-muted-foreground">
                 Display horizontal divider lines between sections.
               </p>
@@ -152,122 +156,135 @@ definePageMeta({
             />
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Login Page -->
+    <div class="p-6 space-y-4">
+      <div>
+        <label class="text-sm font-medium">Login Page</label>
+        <p class="text-sm text-muted-foreground">
+          Customize the login page footer link.
+        </p>
+      </div>
+
+      <div class="cursor-pointer" @click="toggleLoginFooter()">
+        <div class="flex flex-row items-center justify-between p-4">
+          <div class="space-y-0.5">
+            <label class="text-sm font-medium cursor-pointer"
+              >Show Login Footer</label
+            >
+            <p class="text-sm text-muted-foreground">
+              Display a footer link on the login page.
+            </p>
+          </div>
+          <Switch
+            :model-value="loginShowFooter"
+            @update:model-value="toggleLoginFooter"
+          />
         </div>
       </div>
 
-      <!-- Login Page -->
-      <div class="p-6 space-y-4">
-          <div>
-            <label class="text-sm font-medium">Login Page</label>
-            <p class="text-sm text-muted-foreground">
-              Customize the login page footer link.
-            </p>
-          </div>
-
-          <div class="cursor-pointer" @click="toggleLoginFooter()">
-            <div class="flex flex-row items-center justify-between p-4">
-              <div class="space-y-0.5">
-                <label class="text-sm font-medium cursor-pointer">Show Login Footer</label>
-                <p class="text-sm text-muted-foreground">
-                  Display a footer link on the login page.
-                </p>
-              </div>
-              <Switch
-                :model-value="loginShowFooter"
-                @update:model-value="toggleLoginFooter"
-              />
-            </div>
-          </div>
-
-          <div class="space-y-2">
-            <label class="text-sm font-medium">Footer Text</label>
-            <Input v-model="loginFooterText" placeholder="5stack.gg" class="max-w-sm" />
-          </div>
-
-          <div class="space-y-2">
-            <label class="text-sm font-medium">Footer URL</label>
-            <Input v-model="loginFooterUrl" placeholder="https://github.com/5stackgg/5stack-panel" class="max-w-sm" />
-          </div>
-      </div>
-      <!-- Theme Colors -->
-      <div class="p-6 space-y-4">
-          <div>
-            <label class="text-sm font-medium">Theme Colors</label>
-            <p class="text-sm text-muted-foreground">
-              Customize the theme colors. Changes are previewed live.
-            </p>
-          </div>
-
-          <div class="flex gap-2 mb-4">
-            <Button
-              size="sm"
-              :variant="colorMode === 'light' ? 'default' : 'outline'"
-              @click="colorMode = 'light'"
-            >
-              Light Mode
-            </Button>
-            <Button
-              size="sm"
-              :variant="colorMode === 'dark' ? 'default' : 'outline'"
-              @click="colorMode = 'dark'"
-            >
-              Dark Mode
-            </Button>
-          </div>
-
-          <div
-            v-for="section in currentColorSections"
-            :key="section.title"
-            class="space-y-3"
-          >
-            <h4 class="text-sm font-medium text-muted-foreground">
-              {{ section.title }}
-            </h4>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div
-                v-for="color in section.fields"
-                :key="color.key"
-                class="flex items-center gap-3"
-              >
-                <input
-                  type="color"
-                  :value="hslToHex(colorValues[color.key] || color.default)"
-                  @input="onColorChange(color.key, $event)"
-                  class="w-10 h-10 rounded cursor-pointer bg-transparent"
-                />
-                <div>
-                  <p class="text-sm font-medium">{{ color.label }}</p>
-                  <p class="text-xs text-muted-foreground font-mono">
-                    {{ colorValues[color.key] || color.default }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-      </div>
-
-      <!-- Actions -->
-      <div class="flex gap-2 flex-wrap">
-        <Button @click="saveAll" :disabled="saving"> Save Branding </Button>
-        <Button variant="destructive" @click="resetAll"> Reset to Defaults </Button>
-        <Button variant="outline" @click="exportTheme" :disabled="exporting"> Export Theme </Button>
-        <Button variant="outline" @click="$refs.importInput.click()"> Import Theme </Button>
-        <input
-          ref="importInput"
-          type="file"
-          accept=".json"
-          class="hidden"
-          @change="importTheme"
+      <div class="space-y-2">
+        <label class="text-sm font-medium">Footer Text</label>
+        <Input
+          v-model="loginFooterText"
+          placeholder="5stack.gg"
+          class="max-w-sm"
         />
       </div>
+
+      <div class="space-y-2">
+        <label class="text-sm font-medium">Footer URL</label>
+        <Input
+          v-model="loginFooterUrl"
+          placeholder="https://github.com/5stackgg/5stack-panel"
+          class="max-w-sm"
+        />
+      </div>
+    </div>
+    <!-- Theme Colors -->
+    <div class="p-6 space-y-4">
+      <div>
+        <label class="text-sm font-medium">Theme Colors</label>
+        <p class="text-sm text-muted-foreground">
+          Customize the theme colors. Changes are previewed live.
+        </p>
+      </div>
+
+      <div class="flex gap-2 mb-4">
+        <Button
+          size="sm"
+          :variant="colorMode === 'light' ? 'default' : 'outline'"
+          @click="colorMode = 'light'"
+        >
+          Light Mode
+        </Button>
+        <Button
+          size="sm"
+          :variant="colorMode === 'dark' ? 'default' : 'outline'"
+          @click="colorMode = 'dark'"
+        >
+          Dark Mode
+        </Button>
+      </div>
+
+      <div
+        v-for="section in currentColorSections"
+        :key="section.title"
+        class="space-y-3"
+      >
+        <h4 class="text-sm font-medium text-muted-foreground">
+          {{ section.title }}
+        </h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div
+            v-for="color in section.fields"
+            :key="color.key"
+            class="flex items-center gap-3"
+          >
+            <input
+              type="color"
+              :value="hslToHex(colorValues[color.key] || color.default)"
+              @input="onColorChange(color.key, $event)"
+              class="w-10 h-10 rounded cursor-pointer bg-transparent"
+            />
+            <div>
+              <p class="text-sm font-medium">{{ color.label }}</p>
+              <p class="text-xs text-muted-foreground font-mono">
+                {{ colorValues[color.key] || color.default }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex gap-2 flex-wrap">
+      <Button @click="saveAll" :disabled="saving"> Save Branding </Button>
+      <Button variant="destructive" @click="resetAll">
+        Reset to Defaults
+      </Button>
+      <Button variant="outline" @click="exportTheme" :disabled="exporting">
+        Export Theme
+      </Button>
+      <Button variant="outline" @click="$refs.importInput.click()">
+        Import Theme
+      </Button>
+      <input
+        ref="importInput"
+        type="file"
+        accept=".json"
+        class="hidden"
+        @change="importTheme"
+      />
+    </div>
   </PageTransition>
 </template>
 
 <script lang="ts">
-import {
-  settings_constraint,
-  settings_update_column,
-} from "~/generated/zeus";
+import { settings_constraint, settings_update_column } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 
@@ -286,45 +303,153 @@ const lightColorSections: ColorSection[] = [
   {
     title: "Core",
     fields: [
-      { key: "public.color_background", label: "Background", default: "0 0% 100%" },
-      { key: "public.color_foreground", label: "Foreground (text)", default: "240 10% 3.9%" },
-      { key: "public.color_primary", label: "Primary (buttons)", default: "240 5.9% 10%" },
-      { key: "public.color_primary_foreground", label: "Primary Foreground (button text)", default: "0 0% 98%" },
-      { key: "public.color_secondary", label: "Secondary", default: "240 4.8% 95.9%" },
-      { key: "public.color_secondary_foreground", label: "Secondary Foreground", default: "240 5.9% 10%" },
-      { key: "public.color_accent", label: "Accent (selected items)", default: "240 4.8% 95.9%" },
-      { key: "public.color_accent_foreground", label: "Accent Foreground", default: "240 5.9% 10%" },
-      { key: "public.color_muted", label: "Muted (subtle backgrounds)", default: "240 4.8% 95.9%" },
-      { key: "public.color_muted_foreground", label: "Muted Foreground (secondary text)", default: "240 3.8% 46.1%" },
-      { key: "public.color_destructive", label: "Destructive (delete/error)", default: "0 84.2% 60.2%" },
-      { key: "public.color_destructive_foreground", label: "Destructive Foreground", default: "0 0% 98%" },
+      {
+        key: "public.color_background",
+        label: "Background",
+        default: "0 0% 100%",
+      },
+      {
+        key: "public.color_foreground",
+        label: "Foreground (text)",
+        default: "240 10% 3.9%",
+      },
+      {
+        key: "public.color_primary",
+        label: "Primary (buttons)",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_primary_foreground",
+        label: "Primary Foreground (button text)",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_secondary",
+        label: "Secondary",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_secondary_foreground",
+        label: "Secondary Foreground",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_accent",
+        label: "Accent (selected items)",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_accent_foreground",
+        label: "Accent Foreground",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_muted",
+        label: "Muted (subtle backgrounds)",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_muted_foreground",
+        label: "Muted Foreground (secondary text)",
+        default: "240 3.8% 46.1%",
+      },
+      {
+        key: "public.color_destructive",
+        label: "Destructive (delete/error)",
+        default: "0 84.2% 60.2%",
+      },
+      {
+        key: "public.color_destructive_foreground",
+        label: "Destructive Foreground",
+        default: "0 0% 98%",
+      },
       { key: "public.color_warning", label: "Warning", default: "36 100% 50%" },
-      { key: "public.color_warning_foreground", label: "Warning Foreground", default: "0 0% 100%" },
+      {
+        key: "public.color_warning_foreground",
+        label: "Warning Foreground",
+        default: "0 0% 100%",
+      },
     ],
   },
   {
     title: "Cards & Borders",
     fields: [
-      { key: "public.color_card", label: "Card Background", default: "0 0% 100%" },
-      { key: "public.color_card_foreground", label: "Card Text", default: "240 10% 3.9%" },
+      {
+        key: "public.color_card",
+        label: "Card Background",
+        default: "0 0% 100%",
+      },
+      {
+        key: "public.color_card_foreground",
+        label: "Card Text",
+        default: "240 10% 3.9%",
+      },
       { key: "public.color_border", label: "Borders", default: "240 5.9% 90%" },
-      { key: "public.color_popover", label: "Popover Background", default: "0 0% 100%" },
-      { key: "public.color_popover_foreground", label: "Popover Text", default: "240 10% 3.9%" },
-      { key: "public.color_input", label: "Input Borders", default: "240 5.9% 90%" },
-      { key: "public.color_ring", label: "Focus Ring", default: "240 10% 3.9%" },
+      {
+        key: "public.color_popover",
+        label: "Popover Background",
+        default: "0 0% 100%",
+      },
+      {
+        key: "public.color_popover_foreground",
+        label: "Popover Text",
+        default: "240 10% 3.9%",
+      },
+      {
+        key: "public.color_input",
+        label: "Input Borders",
+        default: "240 5.9% 90%",
+      },
+      {
+        key: "public.color_ring",
+        label: "Focus Ring",
+        default: "240 10% 3.9%",
+      },
     ],
   },
   {
     title: "Sidebar",
     fields: [
-      { key: "public.color_sidebar_background", label: "Sidebar Background", default: "0 0% 98%" },
-      { key: "public.color_sidebar_foreground", label: "Sidebar Text", default: "240 5.3% 26.1%" },
-      { key: "public.color_sidebar_accent", label: "Sidebar Active/Hover", default: "240 4.8% 95.9%" },
-      { key: "public.color_sidebar_accent_foreground", label: "Sidebar Active Text", default: "240 5.9% 10%" },
-      { key: "public.color_sidebar_border", label: "Sidebar Border", default: "220 13% 91%" },
-      { key: "public.color_sidebar_primary", label: "Sidebar Primary", default: "240 5.9% 10%" },
-      { key: "public.color_sidebar_primary_foreground", label: "Sidebar Primary Text", default: "0 0% 98%" },
-      { key: "public.color_sidebar_ring", label: "Sidebar Focus Ring", default: "217.2 91.2% 59.8%" },
+      {
+        key: "public.color_sidebar_background",
+        label: "Sidebar Background",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_sidebar_foreground",
+        label: "Sidebar Text",
+        default: "240 5.3% 26.1%",
+      },
+      {
+        key: "public.color_sidebar_accent",
+        label: "Sidebar Active/Hover",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_sidebar_accent_foreground",
+        label: "Sidebar Active Text",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_sidebar_border",
+        label: "Sidebar Border",
+        default: "220 13% 91%",
+      },
+      {
+        key: "public.color_sidebar_primary",
+        label: "Sidebar Primary",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_sidebar_primary_foreground",
+        label: "Sidebar Primary Text",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_sidebar_ring",
+        label: "Sidebar Focus Ring",
+        default: "217.2 91.2% 59.8%",
+      },
     ],
   },
 ];
@@ -333,45 +458,161 @@ const darkColorSections: ColorSection[] = [
   {
     title: "Core",
     fields: [
-      { key: "public.color_dark_background", label: "Background", default: "240 10% 3.9%" },
-      { key: "public.color_dark_foreground", label: "Foreground (text)", default: "0 0% 98%" },
-      { key: "public.color_dark_primary", label: "Primary (buttons)", default: "0 0% 98%" },
-      { key: "public.color_dark_primary_foreground", label: "Primary Foreground (button text)", default: "240 5.9% 10%" },
-      { key: "public.color_dark_secondary", label: "Secondary", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_secondary_foreground", label: "Secondary Foreground", default: "0 0% 98%" },
-      { key: "public.color_dark_accent", label: "Accent (selected items)", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_accent_foreground", label: "Accent Foreground", default: "0 0% 98%" },
-      { key: "public.color_dark_muted", label: "Muted (subtle backgrounds)", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_muted_foreground", label: "Muted Foreground (secondary text)", default: "240 5% 64.9%" },
-      { key: "public.color_dark_destructive", label: "Destructive (delete/error)", default: "0 62.8% 30.6%" },
-      { key: "public.color_dark_destructive_foreground", label: "Destructive Foreground", default: "0 0% 98%" },
-      { key: "public.color_dark_warning", label: "Warning", default: "36 100% 30%" },
-      { key: "public.color_dark_warning_foreground", label: "Warning Foreground", default: "0 0% 100%" },
+      {
+        key: "public.color_dark_background",
+        label: "Background",
+        default: "240 10% 3.9%",
+      },
+      {
+        key: "public.color_dark_foreground",
+        label: "Foreground (text)",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_primary",
+        label: "Primary (buttons)",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_primary_foreground",
+        label: "Primary Foreground (button text)",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_dark_secondary",
+        label: "Secondary",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_secondary_foreground",
+        label: "Secondary Foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_accent",
+        label: "Accent (selected items)",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_accent_foreground",
+        label: "Accent Foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_muted",
+        label: "Muted (subtle backgrounds)",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_muted_foreground",
+        label: "Muted Foreground (secondary text)",
+        default: "240 5% 64.9%",
+      },
+      {
+        key: "public.color_dark_destructive",
+        label: "Destructive (delete/error)",
+        default: "0 62.8% 30.6%",
+      },
+      {
+        key: "public.color_dark_destructive_foreground",
+        label: "Destructive Foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_warning",
+        label: "Warning",
+        default: "36 100% 30%",
+      },
+      {
+        key: "public.color_dark_warning_foreground",
+        label: "Warning Foreground",
+        default: "0 0% 100%",
+      },
     ],
   },
   {
     title: "Cards & Borders",
     fields: [
-      { key: "public.color_dark_card", label: "Card Background", default: "240 10% 3.9%" },
-      { key: "public.color_dark_card_foreground", label: "Card Text", default: "0 0% 98%" },
-      { key: "public.color_dark_border", label: "Borders", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_popover", label: "Popover Background", default: "240 10% 3.9%" },
-      { key: "public.color_dark_popover_foreground", label: "Popover Text", default: "0 0% 98%" },
-      { key: "public.color_dark_input", label: "Input Borders", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_ring", label: "Focus Ring", default: "240 4.9% 83.9%" },
+      {
+        key: "public.color_dark_card",
+        label: "Card Background",
+        default: "240 10% 3.9%",
+      },
+      {
+        key: "public.color_dark_card_foreground",
+        label: "Card Text",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_border",
+        label: "Borders",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_popover",
+        label: "Popover Background",
+        default: "240 10% 3.9%",
+      },
+      {
+        key: "public.color_dark_popover_foreground",
+        label: "Popover Text",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_input",
+        label: "Input Borders",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_ring",
+        label: "Focus Ring",
+        default: "240 4.9% 83.9%",
+      },
     ],
   },
   {
     title: "Sidebar",
     fields: [
-      { key: "public.color_dark_sidebar_background", label: "Sidebar Background", default: "240 5.9% 10%" },
-      { key: "public.color_dark_sidebar_foreground", label: "Sidebar Text", default: "240 4.8% 95.9%" },
-      { key: "public.color_dark_sidebar_accent", label: "Sidebar Active/Hover", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_sidebar_accent_foreground", label: "Sidebar Active Text", default: "240 4.8% 95.9%" },
-      { key: "public.color_dark_sidebar_border", label: "Sidebar Border", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_sidebar_primary", label: "Sidebar Primary", default: "224.3 76.3% 48%" },
-      { key: "public.color_dark_sidebar_primary_foreground", label: "Sidebar Primary Text", default: "0 0% 100%" },
-      { key: "public.color_dark_sidebar_ring", label: "Sidebar Focus Ring", default: "217.2 91.2% 59.8%" },
+      {
+        key: "public.color_dark_sidebar_background",
+        label: "Sidebar Background",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_dark_sidebar_foreground",
+        label: "Sidebar Text",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_dark_sidebar_accent",
+        label: "Sidebar Active/Hover",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_sidebar_accent_foreground",
+        label: "Sidebar Active Text",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_dark_sidebar_border",
+        label: "Sidebar Border",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_sidebar_primary",
+        label: "Sidebar Primary",
+        default: "224.3 76.3% 48%",
+      },
+      {
+        key: "public.color_dark_sidebar_primary_foreground",
+        label: "Sidebar Primary Text",
+        default: "0 0% 100%",
+      },
+      {
+        key: "public.color_dark_sidebar_ring",
+        label: "Sidebar Focus Ring",
+        default: "217.2 91.2% 59.8%",
+      },
     ],
   },
 ];
@@ -394,16 +635,20 @@ export default {
       return useApplicationSettingsStore().settings;
     },
     showSeparators() {
-      return this.settings.find(
-        (s: { name: string; value: string | null }) =>
-          s.name === "public.show_separators",
-      )?.value !== "false";
+      return (
+        this.settings.find(
+          (s: { name: string; value: string | null }) =>
+            s.name === "public.show_separators",
+        )?.value !== "false"
+      );
     },
     loginShowFooter() {
-      return this.settings.find(
-        (s: { name: string; value: string | null }) =>
-          s.name === "public.login_show_footer",
-      )?.value !== "false";
+      return (
+        this.settings.find(
+          (s: { name: string; value: string | null }) =>
+            s.name === "public.login_show_footer",
+        )?.value !== "false"
+      );
     },
     apiDomain() {
       return useRuntimeConfig().public.apiDomain;
@@ -412,9 +657,7 @@ export default {
       const setting = this.settings.find(
         (s: { name: string }) => s.name === "public.logo_url",
       );
-      return setting?.value
-        ? `https://${this.apiDomain}/branding/logo`
-        : null;
+      return setting?.value ? `https://${this.apiDomain}/branding/logo` : null;
     },
     faviconPreview() {
       const setting = this.settings.find(
@@ -432,9 +675,7 @@ export default {
     settings: {
       immediate: true,
       handler(newVal: Array<{ name: string; value: string }>) {
-        const brandSetting = newVal.find(
-          (s) => s.name === "public.brand_name",
-        );
+        const brandSetting = newVal.find((s) => s.name === "public.brand_name");
         if (brandSetting) {
           this.brandName = brandSetting.value;
         }
@@ -593,13 +834,22 @@ export default {
           objects.push({ name: "public.brand_name", value: this.brandName });
         }
 
-        objects.push({ name: "public.border_radius", value: this.borderRadius + "rem" });
+        objects.push({
+          name: "public.border_radius",
+          value: this.borderRadius + "rem",
+        });
 
         if (this.loginFooterText) {
-          objects.push({ name: "public.login_footer_text", value: this.loginFooterText });
+          objects.push({
+            name: "public.login_footer_text",
+            value: this.loginFooterText,
+          });
         }
         if (this.loginFooterUrl) {
-          objects.push({ name: "public.login_footer_url", value: this.loginFooterUrl });
+          objects.push({
+            name: "public.login_footer_url",
+            value: this.loginFooterUrl,
+          });
         }
         for (const [key, value] of Object.entries(this.colorValues)) {
           if (value) {
@@ -638,7 +888,14 @@ export default {
     async resetAll() {
       try {
         // Delete all branding settings
-        const brandingKeys: string[] = ["public.brand_name", "public.border_radius", "public.show_separators", "public.login_footer_text", "public.login_footer_url", "public.login_show_footer"];
+        const brandingKeys: string[] = [
+          "public.brand_name",
+          "public.border_radius",
+          "public.show_separators",
+          "public.login_footer_text",
+          "public.login_footer_url",
+          "public.login_show_footer",
+        ];
         for (const sections of [lightColorSections, darkColorSections]) {
           for (const section of sections) {
             for (const field of section.fields) {
@@ -689,7 +946,11 @@ export default {
         reader.readAsDataURL(blob);
       });
     },
-    base64ToFile(dataUri: string, name: string, fallbackMimeType: string): File {
+    base64ToFile(
+      dataUri: string,
+      name: string,
+      fallbackMimeType: string,
+    ): File {
       const [header, base64] = dataUri.split(",");
       const mimeMatch = header.match(/:(.*?);/);
       const mime = mimeMatch ? mimeMatch[1] : fallbackMimeType;
@@ -715,22 +976,36 @@ export default {
 
         // Fetch logo and favicon as base64
         try {
-          const logoRes = await fetch(`https://${this.apiDomain}/branding/logo`, { credentials: "include" });
+          const logoRes = await fetch(
+            `https://${this.apiDomain}/branding/logo`,
+            { credentials: "include" },
+          );
           if (logoRes.ok) {
             const blob = await logoRes.blob();
-            data.logo = { data: await this.blobToBase64(blob), mimeType: blob.type };
+            data.logo = {
+              data: await this.blobToBase64(blob),
+              mimeType: blob.type,
+            };
           }
         } catch {}
 
         try {
-          const faviconRes = await fetch(`https://${this.apiDomain}/branding/favicon`, { credentials: "include" });
+          const faviconRes = await fetch(
+            `https://${this.apiDomain}/branding/favicon`,
+            { credentials: "include" },
+          );
           if (faviconRes.ok) {
             const blob = await faviconRes.blob();
-            data.favicon = { data: await this.blobToBase64(blob), mimeType: blob.type };
+            data.favicon = {
+              data: await this.blobToBase64(blob),
+              mimeType: blob.type,
+            };
           }
         } catch {}
 
-        const jsonBlob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+        const jsonBlob = new Blob([JSON.stringify(data, null, 2)], {
+          type: "application/json",
+        });
         const url = URL.createObjectURL(jsonBlob);
         const a = document.createElement("a");
         a.href = url;
@@ -765,10 +1040,16 @@ export default {
         if (data.borderRadius) {
           this.borderRadius = data.borderRadius;
         }
-        if (typeof data.showSeparators === "boolean" && data.showSeparators !== this.showSeparators) {
+        if (
+          typeof data.showSeparators === "boolean" &&
+          data.showSeparators !== this.showSeparators
+        ) {
           this.toggleSeparators();
         }
-        if (typeof data.loginShowFooter === "boolean" && data.loginShowFooter !== this.loginShowFooter) {
+        if (
+          typeof data.loginShowFooter === "boolean" &&
+          data.loginShowFooter !== this.loginShowFooter
+        ) {
           this.toggleLoginFooter();
         }
         if (data.loginFooterText) {
@@ -779,7 +1060,11 @@ export default {
         }
         if (typeof data.colors === "object") {
           for (const [key, value] of Object.entries(data.colors)) {
-            if (typeof key === "string" && typeof value === "string" && key.startsWith("public.color_")) {
+            if (
+              typeof key === "string" &&
+              typeof value === "string" &&
+              key.startsWith("public.color_")
+            ) {
               this.colorValues[key] = value;
             }
           }
@@ -787,13 +1072,21 @@ export default {
 
         // Import logo
         if (data.logo?.data) {
-          const logoFile = this.base64ToFile(data.logo.data, "logo.png", data.logo.mimeType || "image/png");
+          const logoFile = this.base64ToFile(
+            data.logo.data,
+            "logo.png",
+            data.logo.mimeType || "image/png",
+          );
           await this.uploadBrandingFile("logo", logoFile);
         }
 
         // Import favicon
         if (data.favicon?.data) {
-          const faviconFile = this.base64ToFile(data.favicon.data, "favicon.png", data.favicon.mimeType || "image/png");
+          const faviconFile = this.base64ToFile(
+            data.favicon.data,
+            "favicon.png",
+            data.favicon.mimeType || "image/png",
+          );
           await this.uploadBrandingFile("favicon", faviconFile);
         }
 

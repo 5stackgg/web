@@ -3,7 +3,12 @@ import { TrashIcon, PlusIcon, TriangleAlert } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 import ClipBoard from "~/components/ClipBoard.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { CardHeader, CardContent, CardTitle, CardDescription } from "~/components/ui/card";
+import {
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardDescription,
+} from "~/components/ui/card";
 
 definePageMeta({
   layout: "profile-settings",

@@ -25,6 +25,9 @@ import {
   DropdownMenuContent,
 } from "~/components/ui/dropdown-menu";
 import { Separator } from "~/components/ui/separator";
+import Empty from "~/components/ui/empty/Empty.vue";
+import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
+import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 
 definePageMeta({
   alias: ["/me/:id?"],
@@ -237,7 +240,11 @@ const { isMobile } = useSidebar();
 
         <!-- Elo History Chart -->
         <PageTransition :delay="200">
-          <AnimatedCard variant="elevated" class="flex flex-col h-full p-4" v-if="player?.elo_history">
+          <AnimatedCard
+            variant="elevated"
+            class="flex flex-col h-full p-4"
+            v-if="player?.elo_history"
+          >
             <CardHeader>
               <CardTitle
                 class="text-lg md:text-base lg:text-xl font-bold text-center"
@@ -367,25 +374,37 @@ const { isMobile } = useSidebar();
 
     <PageTransition :delay="500">
       <Tabs default-value="matches">
-          <TabsList class="grid grid-cols-2 w-full max-w-md mx-auto">
-            <TabsTrigger
-              value="matches"
-              class="transition-all duration-300 data-[state=active]:shadow-lg"
-              >{{ $t("pages.players.detail.matches") }}</TabsTrigger
-            >
-            <TabsTrigger
-              value="tournaments"
-              class="transition-all duration-300 data-[state=active]:shadow-lg"
-              >{{ $t("pages.players.detail.tournaments") }}</TabsTrigger
-            >
-          </TabsList>
+        <TabsList class="grid grid-cols-2 w-full max-w-md mx-auto">
+          <TabsTrigger
+            value="matches"
+            class="transition-all duration-300 data-[state=active]:shadow-lg"
+            >{{ $t("pages.players.detail.matches") }}</TabsTrigger
+          >
+          <TabsTrigger
+            value="tournaments"
+            class="transition-all duration-300 data-[state=active]:shadow-lg"
+            >{{ $t("pages.players.detail.tournaments") }}</TabsTrigger
+          >
+        </TabsList>
 
-          <TabsContent value="matches">
+        <TabsContent value="matches">
+          <Empty
+            v-if="
+              playerWithMatchesAggregate &&
+              playerWithMatchesAggregate.total_matches === 0
+            "
+            class="min-h-[200px]"
+          >
+            <EmptyTitle>{{ $t("pages.players.detail.no_matches") }}</EmptyTitle>
+            <EmptyDescription>{{
+              $t("pages.players.detail.no_matches_description")
+            }}</EmptyDescription>
+          </Empty>
+          <template v-else-if="playerWithMatches?.matches?.length">
             <MatchesTable
-                :player="player"
-                :matches="playerWithMatches?.matches"
-                v-if="playerWithMatches?.matches"
-              ></MatchesTable>
+              :player="player"
+              :matches="playerWithMatches?.matches"
+            />
             <Pagination
               :page="page"
               :per-page="perPage"
@@ -396,27 +415,31 @@ const { isMobile } = useSidebar();
               "
               :total="playerWithMatchesAggregate.total_matches"
               v-if="playerWithMatchesAggregate"
-            ></Pagination>
-          </TabsContent>
+            />
+          </template>
+        </TabsContent>
 
-          <TabsContent value="tournaments">
-            <div
-                v-if="!playerTournaments || playerTournaments.length === 0"
-                class="text-center py-8"
-              >
-                <p class="text-muted-foreground">
-                  {{ $t("pages.players.detail.no_tournaments") }}
-                </p>
-              </div>
-              <div v-else class="space-y-4">
-                <TournamentTableRow
-                  v-for="tournament in playerTournaments"
-                  :key="tournament.id"
-                  :tournament="tournament"
-                ></TournamentTableRow>
-              </div>
-          </TabsContent>
-        </Tabs>
+        <TabsContent value="tournaments">
+          <Empty
+            v-if="!playerTournaments || playerTournaments.length === 0"
+            class="min-h-[200px]"
+          >
+            <EmptyTitle>{{
+              $t("pages.players.detail.no_tournaments")
+            }}</EmptyTitle>
+            <EmptyDescription>{{
+              $t("pages.players.detail.no_tournaments_description")
+            }}</EmptyDescription>
+          </Empty>
+          <div v-else class="space-y-4">
+            <TournamentTableRow
+              v-for="tournament in playerTournaments"
+              :key="tournament.id"
+              :tournament="tournament"
+            ></TournamentTableRow>
+          </div>
+        </TabsContent>
+      </Tabs>
     </PageTransition>
   </div>
 </template>

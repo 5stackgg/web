@@ -67,7 +67,8 @@ const darkColorMap: Record<string, string> = {
   "public.color_dark_sidebar_accent_foreground": "--sidebar-accent-foreground",
   "public.color_dark_sidebar_border": "--sidebar-border",
   "public.color_dark_sidebar_primary": "--sidebar-primary",
-  "public.color_dark_sidebar_primary_foreground": "--sidebar-primary-foreground",
+  "public.color_dark_sidebar_primary_foreground":
+    "--sidebar-primary-foreground",
   "public.color_dark_sidebar_ring": "--sidebar-ring",
 };
 
@@ -114,7 +115,10 @@ export function useBranding() {
         (s: { name: string }) => s.name === "public.border_radius",
       );
       if (radiusSetting?.value) {
-        document.documentElement.style.setProperty("--radius", radiusSetting.value);
+        document.documentElement.style.setProperty(
+          "--radius",
+          radiusSetting.value,
+        );
       } else {
         document.documentElement.style.removeProperty("--radius");
       }
@@ -168,11 +172,19 @@ export function useBranding() {
   });
 
   const loginShowFooter = computed(() => {
-    return store.settings.find(
-      (s: { name: string; value: string | null }) =>
-        s.name === "public.login_show_footer",
-    )?.value !== "false";
+    return (
+      store.settings.find(
+        (s: { name: string; value: string | null }) =>
+          s.name === "public.login_show_footer",
+      )?.value !== "false"
+    );
   });
 
-  return { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter };
+  return {
+    brandName,
+    logoUrl,
+    loginFooterText,
+    loginFooterUrl,
+    loginShowFooter,
+  };
 }

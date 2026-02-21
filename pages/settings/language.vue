@@ -19,7 +19,9 @@ definePageMeta({
   layout: "profile-settings",
 });
 
-const showSeparators = computed(() => useApplicationSettingsStore().showSeparators);
+const showSeparators = computed(
+  () => useApplicationSettingsStore().showSeparators,
+);
 </script>
 
 <template>

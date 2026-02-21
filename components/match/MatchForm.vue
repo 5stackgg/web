@@ -38,62 +38,68 @@ import { Info } from "lucide-vue-next";
           v-if="!form.values.pug"
         >
           <div class="flex flex-col gap-4 p-4">
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <FormField v-slot="{ handleChange, componentField }" name="team_1">
-              <FormItem>
-                <FormLabel>{{
-                  $t("pages.matches.create_page.team_1")
-                }}</FormLabel>
-                <TeamSearch
-                  :label="$t('pages.matches.create_page.search_team')"
-                  @selected="
-                    (team) => {
-                      if (team.id == form.values.team_1) {
-                        handleChange(undefined);
-                        return;
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <FormField
+                v-slot="{ handleChange, componentField }"
+                name="team_1"
+              >
+                <FormItem>
+                  <FormLabel>{{
+                    $t("pages.matches.create_page.team_1")
+                  }}</FormLabel>
+                  <TeamSearch
+                    :label="$t('pages.matches.create_page.search_team')"
+                    @selected="
+                      (team) => {
+                        if (team.id == form.values.team_1) {
+                          handleChange(undefined);
+                          return;
+                        }
+                        handleChange(team.id);
                       }
-                      handleChange(team.id);
-                    }
-                  "
-                  v-model="componentField.modelValue"
-                  class="w-full"
-                ></TeamSearch>
-                <FormMessage />
-              </FormItem>
-            </FormField>
+                    "
+                    v-model="componentField.modelValue"
+                    class="w-full"
+                  ></TeamSearch>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
 
-            <FormField v-slot="{ handleChange, componentField }" name="team_2">
-              <FormItem>
-                <FormLabel>{{
-                  $t("pages.matches.create_page.team_2")
-                }}</FormLabel>
-                <TeamSearch
-                  :label="$t('pages.matches.create_page.search_team')"
-                  @selected="
-                    (team) => {
-                      if (team.id == form.values.team_2) {
-                        handleChange(undefined);
-                        return;
+              <FormField
+                v-slot="{ handleChange, componentField }"
+                name="team_2"
+              >
+                <FormItem>
+                  <FormLabel>{{
+                    $t("pages.matches.create_page.team_2")
+                  }}</FormLabel>
+                  <TeamSearch
+                    :label="$t('pages.matches.create_page.search_team')"
+                    @selected="
+                      (team) => {
+                        if (team.id == form.values.team_2) {
+                          handleChange(undefined);
+                          return;
+                        }
+                        handleChange(team.id);
                       }
-                      handleChange(team.id);
-                    }
-                  "
-                  v-model="componentField.modelValue"
-                  class="w-full"
-                ></TeamSearch>
-                <FormMessage />
-              </FormItem>
-            </FormField>
-          </div>
+                    "
+                    v-model="componentField.modelValue"
+                    class="w-full"
+                  ></TeamSearch>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </div>
 
-          <div
-            class="flex items-center gap-2 text-sm text-muted-foreground italic"
-          >
-            <Info class="inline-block w-4 h-4" />
-            <span>
-              {{ $t("pages.matches.create_page.intra_team_scrimmage") }}
-            </span>
-          </div>
+            <div
+              class="flex items-center gap-2 text-sm text-muted-foreground italic"
+            >
+              <Info class="inline-block w-4 h-4" />
+              <span>
+                {{ $t("pages.matches.create_page.intra_team_scrimmage") }}
+              </span>
+            </div>
           </div>
         </Card>
       </template>

@@ -63,11 +63,7 @@ const { isMobile } = useSidebar();
 
   <PageTransition :delay="100">
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <div
-        v-for="pool in map_pools"
-        :key="pool.id"
-        class="relative p-4"
-      >
+      <div v-for="pool in map_pools" :key="pool.id" class="relative p-4">
         <div class="flex items-start justify-between">
           <div>
             <h2 class="text-lg font-semibold">{{ pool.type }} Pool</h2>

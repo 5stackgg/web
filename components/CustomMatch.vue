@@ -6,10 +6,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 <template>
   <AnimatedCard variant="elevated">
-    <NuxtLink
-      :to="{ name: 'matches-create' }"
-      class="block p-6 cursor-pointer"
-    >
+    <NuxtLink :to="{ name: 'matches-create' }" class="block p-6 cursor-pointer">
       <div class="flex items-start gap-4">
         <div class="p-2 rounded-full bg-muted">
           <Swords class="size-10 text-foreground" />

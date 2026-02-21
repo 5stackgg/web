@@ -11,7 +11,9 @@ import { setContext } from "@apollo/client/link/context";
 const client = new Client({
   nodes: [
     {
-      host: process.env.TYPESENSE_SERVICE_HOST || process.env.NUXT_PUBLIC_TYPESENSE_HOST as string,
+      host:
+        process.env.TYPESENSE_SERVICE_HOST ||
+        (process.env.NUXT_PUBLIC_TYPESENSE_HOST as string),
       port: process.env.TYPESENSE_SERVICE_HOST ? 8108 : 443,
       protocol: process.env.TYPESENSE_SERVICE_HOST ? "http" : "https",
     },

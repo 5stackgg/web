@@ -7,7 +7,8 @@ definePageMeta({
   layout: "public",
 });
 
-const { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter } = useBranding();
+const { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter } =
+  useBranding();
 </script>
 
 <template>
@@ -30,7 +31,9 @@ const { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter } =
     <PageTransition :delay="100">
       <div class="w-full max-w-md">
         <CardHeader>
-          <CardTitle class="text-3xl font-bold text-center">{{ brandName || '5Stack' }}</CardTitle>
+          <CardTitle class="text-3xl font-bold text-center">{{
+            brandName || "5Stack"
+          }}</CardTitle>
         </CardHeader>
         <CardContent class="flex flex-col items-center">
           <img
@@ -51,8 +54,15 @@ const { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter } =
           rel="noopener noreferrer"
           class="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
         >
-          {{ loginFooterText || '5stack.gg' }}
-          <GithubLogoIcon v-if="(loginFooterUrl || 'https://github.com/5stackgg/5stack-panel').includes('github.com')" class="w-4 h-4" />
+          {{ loginFooterText || "5stack.gg" }}
+          <GithubLogoIcon
+            v-if="
+              (
+                loginFooterUrl || 'https://github.com/5stackgg/5stack-panel'
+              ).includes('github.com')
+            "
+            class="w-4 h-4"
+          />
           <ExternalLink v-else class="w-4 h-4" />
         </a>
       </div>

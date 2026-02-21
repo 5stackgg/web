@@ -38,7 +38,10 @@ const { isMobile } = useSidebar();
       }}</template>
       <template #actions>
         <div class="flex items-center gap-2">
-          <div class="flex items-center gap-2 cursor-pointer" @click="toggleNodeMetrics()">
+          <div
+            class="flex items-center gap-2 cursor-pointer"
+            @click="toggleNodeMetrics()"
+          >
             <div class="flex items-center gap-1">
               {{ $t("pages.game_server_nodes.display_metrics") }}
             </div>
@@ -82,26 +85,26 @@ const { isMobile } = useSidebar();
 
   <PageTransition :delay="200" class="mt-6">
     <div class="p-4 flex items-center gap-4">
-        <div class="flex items-center gap-2">
-          <Info class="h-4 w-4 shrink-0" />
-          <span class="font-medium">{{
-            $t("pages.game_server_nodes.cs_version_info")
-          }}</span>
-        </div>
-        <div class="flex items-center gap-2 text-sm text-muted-foreground">
-          <span>{{
-            $t("pages.game_server_nodes.build_id", {
-              id: `${currentGameVersion?.version} (${currentGameVersion?.build_id})`,
-            })
-          }}</span>
-          <span>•</span>
-          <span>{{
-            $t("pages.game_server_nodes.last_updated", {
-              date: new Date(currentGameVersion?.updated_at).toLocaleString(),
-            })
-          }}</span>
-        </div>
+      <div class="flex items-center gap-2">
+        <Info class="h-4 w-4 shrink-0" />
+        <span class="font-medium">{{
+          $t("pages.game_server_nodes.cs_version_info")
+        }}</span>
       </div>
+      <div class="flex items-center gap-2 text-sm text-muted-foreground">
+        <span>{{
+          $t("pages.game_server_nodes.build_id", {
+            id: `${currentGameVersion?.version} (${currentGameVersion?.build_id})`,
+          })
+        }}</span>
+        <span>•</span>
+        <span>{{
+          $t("pages.game_server_nodes.last_updated", {
+            date: new Date(currentGameVersion?.updated_at).toLocaleString(),
+          })
+        }}</span>
+      </div>
+    </div>
   </PageTransition>
 
   <!-- Filters -->

@@ -119,7 +119,6 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
       <PageTransition :delay="100">
         <MatchMapVeto :match="match"></MatchMapVeto>
       </PageTransition>
-
     </div>
 
     <PageTransition :delay="200" class="lg:col-span-2">
@@ -319,7 +318,8 @@ export default {
             const displayText =
               match.label ||
               `${match.lineup_1?.name ?? "TBD"} vs ${match.lineup_2?.name ?? "TBD"}`;
-            const tournament = match.tournament_brackets?.[0]?.stage?.tournament;
+            const tournament =
+              match.tournament_brackets?.[0]?.stage?.tournament;
             mc.value = {
               id: match.id,
               displayText,

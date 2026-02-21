@@ -182,7 +182,10 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               </span>
             </FiveStackToolTip>
             <PlayerElo :elo="player.elo" v-if="showElo" />
-            <p class="text-muted-foreground text-xs flex items-center gap-1" v-if="showSteamId">
+            <p
+              class="text-muted-foreground text-xs flex items-center gap-1"
+              v-if="showSteamId"
+            >
               {{ player.steam_id }}
               <a
                 v-if="player.profile_url"

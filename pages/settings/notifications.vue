@@ -51,7 +51,9 @@ const isAdmin = computed(() => {
   return useAuthStore().isAdmin;
 });
 
-const showSeparators = computed(() => useApplicationSettingsStore().showSeparators);
+const showSeparators = computed(
+  () => useApplicationSettingsStore().showSeparators,
+);
 </script>
 
 <template>

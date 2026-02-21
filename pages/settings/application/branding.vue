@@ -260,7 +260,6 @@ definePageMeta({
           @change="importTheme"
         />
       </div>
-    </div>
   </PageTransition>
 </template>
 

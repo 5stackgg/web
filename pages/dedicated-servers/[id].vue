@@ -39,7 +39,6 @@ import ServerStatus from "~/components/servers/ServerStatus.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 const serverMenu = ref(false);
 </script>

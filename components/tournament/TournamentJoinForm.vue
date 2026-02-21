@@ -11,7 +11,7 @@ import { Switch } from "~/components/ui/switch";
 import { MessageCircleWarning } from "lucide-vue-next";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import TeamSearch from "~/components/teams/TeamSearch.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { Card } from "~/components/ui/card";
 </script>
 
 <template>
@@ -27,7 +27,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
     <FormField v-slot="{ value, handleChange }" name="new_team">
       <FormItem>
-        <AnimatedCard variant="gradient" class="cursor-pointer" @click="handleChange(!value)">
+        <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer" @click="handleChange(!value)">
           <div class="flex flex-row items-center justify-between p-4">
             <div class="space-y-0.5">
               <FormLabel class="text-base">{{
@@ -42,7 +42,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
               />
             </FormControl>
           </div>
-        </AnimatedCard>
+        </Card>
       </FormItem>
     </FormField>
 
@@ -53,7 +53,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
         name="add_self_to_lineup"
       >
         <FormItem>
-          <AnimatedCard variant="gradient" class="cursor-pointer" @click="handleChange(!value)">
+          <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer" @click="handleChange(!value)">
             <div class="flex flex-row items-center justify-between p-4">
               <div class="space-y-0.5">
                 <FormLabel class="text-base">{{
@@ -68,7 +68,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                 />
               </FormControl>
             </div>
-          </AnimatedCard>
+          </Card>
         </FormItem>
       </FormField>
 

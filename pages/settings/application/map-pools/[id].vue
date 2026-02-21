@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import MapPoolForm from "~/components/map-pools/MapPoolForm.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import { CardHeader, CardContent, CardTitle } from "~/components/ui/card";
 
 definePageMeta({
@@ -11,7 +10,7 @@ definePageMeta({
 
 <template>
   <PageTransition :delay="0">
-    <AnimatedCard v-if="map_pools_by_pk" variant="gradient">
+    <div v-if="map_pools_by_pk">
       <CardHeader>
         <CardTitle class="flex justify-between items-center">{{
           $t("pages.map_pools.pool.modify_maps")
@@ -24,7 +23,7 @@ definePageMeta({
           v-if="map_pools_by_pk && availableMaps"
         />
       </CardContent>
-    </AnimatedCard>
+    </div>
   </PageTransition>
 </template>
 

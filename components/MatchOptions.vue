@@ -17,7 +17,7 @@ import {
   CollapsibleContent,
 } from "~/components/ui/collapsible";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { Card } from "~/components/ui/card";
 </script>
 
 <template>
@@ -31,7 +31,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
       <div class="space-y-4">
         <slot name="left"></slot>
 
-        <AnimatedCard variant="gradient">
+        <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50">
           <div class="grid grid-cols-1 gap-8 p-4">
           <slot></slot>
 
@@ -105,7 +105,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
             </FormItem>
           </FormField>
           </div>
-        </AnimatedCard>
+        </Card>
 
         <FormField
           v-slot="{ value, handleChange }"
@@ -113,9 +113,8 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
           v-if="!forceVeto && !stageBracketOverride"
         >
           <FormItem>
-            <AnimatedCard
-              variant="gradient"
-              class="cursor-pointer"
+            <Card
+              class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer"
               :class="{ 'cursor-not-allowed opacity-60': isLocked }"
               @click="!isLocked && handleChange(!value)"
             >
@@ -137,7 +136,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                   {{ $t("match.options.map_veto_settings.description") }}
                 </FormDescription>
               </div>
-            </AnimatedCard>
+            </Card>
           </FormItem>
         </FormField>
       </div>
@@ -145,7 +144,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
       <!-- Map Pool Selection -->
       <FormField name="map_pool" v-if="!stageBracketOverride">
         <FormItem>
-          <AnimatedCard variant="gradient">
+          <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50">
             <div class="p-6 space-y-6">
               <div class="flex justify-between items-center">
                 <FormLabel class="text-lg font-semibold">
@@ -277,7 +276,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                 </template>
               </div>
             </div>
-          </AnimatedCard>
+          </Card>
           <FormMessage />
         </FormItem>
       </FormField>
@@ -345,7 +344,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
         <CollapsibleContent>
           <div class="flex flex-col gap-4">
-            <AnimatedCard variant="gradient">
+            <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50">
               <div class="p-4 space-y-6">
                 <slot name="before-overtime"></slot>
                 <FormField v-slot="{ value, handleChange }" name="overtime">
@@ -427,9 +426,9 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                   </FormItem>
                 </FormField>
               </div>
-            </AnimatedCard>
+            </Card>
 
-            <AnimatedCard variant="gradient" v-if="availableRegions.length > 1">
+            <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50" v-if="availableRegions.length > 1">
               <div class="p-6 space-y-6">
                 <div class="flex justify-between items-center">
                   <div class="text-lg font-semibold">
@@ -451,9 +450,8 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <FormField v-slot="{ value, handleChange }" name="region_veto">
                   <FormItem>
-                    <AnimatedCard
-                      variant="gradient"
-                      class="cursor-pointer"
+                    <Card
+                      class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer"
                       :class="{
                         'cursor-not-allowed': form.values.lan,
                         'opacity-60': isLocked,
@@ -482,7 +480,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                           {{ $t("match.options.advanced.region.veto.description") }}
                         </FormDescription>
                       </div>
-                    </AnimatedCard>
+                    </Card>
                   </FormItem>
                 </FormField>
 
@@ -640,9 +638,9 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                 </FormField>
                 </div>
               </div>
-            </AnimatedCard>
+            </Card>
 
-            <AnimatedCard variant="gradient">
+            <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50">
               <div class="flex flex-col space-y-3 p-4">
               <FormField v-slot="{ value }" name="number_of_substitutes">
                 <FormItem>
@@ -712,9 +710,9 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                 </FormItem>
               </FormField>
               </div>
-            </AnimatedCard>
+            </Card>
 
-            <AnimatedCard variant="gradient">
+            <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50">
               <div class="p-4 space-y-6">
                 <FormField v-if="canSetcheckInSettings" v-slot="{ componentField }" name="check_in_setting">
                   <FormItem>
@@ -780,9 +778,9 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                   </FormItem>
                 </FormField>
               </div>
-            </AnimatedCard>
+            </Card>
 
-            <AnimatedCard variant="gradient">
+            <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50">
               <div class="flex flex-col space-y-3 p-4">
               <FormField v-slot="{ componentField }" name="timeout_setting">
                 <FormItem>
@@ -851,11 +849,11 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                 </FormItem>
               </FormField>
               </div>
-            </AnimatedCard>
+            </Card>
 
             <FormField v-slot="{ value, handleChange }" name="default_models">
               <FormItem>
-                <AnimatedCard variant="gradient" class="cursor-pointer" @click="handleChange(!value)">
+                <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer" @click="handleChange(!value)">
                   <div class="flex flex-col space-y-3 p-4">
                     <div class="flex justify-between items-center">
                       <FormLabel class="text-lg font-semibold">{{
@@ -873,7 +871,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
                       {{ $t("match.options.advanced.default_models.description") }}
                     </FormDescription>
                   </div>
-                </AnimatedCard>
+                </Card>
               </FormItem>
             </FormField>
           </div>

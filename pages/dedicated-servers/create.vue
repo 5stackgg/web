@@ -2,7 +2,6 @@
 import PageHeading from "~/components/PageHeading.vue";
 import ServerForm from "~/components/servers/ServerForm.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
@@ -13,9 +12,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
       }}</template>
     </PageHeading>
   </PageTransition>
-  <PageTransition :delay="100" class="mt-6">
-    <AnimatedCard variant="gradient" class="w-1/2 p-4">
-      <server-form></server-form>
-    </AnimatedCard>
+  <PageTransition :delay="100" class="mt-6 w-1/2 p-4">
+    <server-form></server-form>
   </PageTransition>
 </template>

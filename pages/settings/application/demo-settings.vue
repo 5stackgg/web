@@ -2,8 +2,6 @@
 import { LucideDownload, LucideUpload, LucideHardDrive } from "lucide-vue-next";
 import formatBytes from "~/utilities/formatBytes";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
-
 definePageMeta({
   layout: "application-settings",
 });
@@ -11,9 +9,8 @@ definePageMeta({
 
 <template>
   <PageTransition :delay="0">
-    <AnimatedCard
+    <div
       v-if="match_map_demos_aggregate"
-      variant="gradient"
       class="mb-8 p-4 flex items-center gap-4"
     >
       <div
@@ -29,11 +26,11 @@ definePageMeta({
           {{ formatBytes(match_map_demos_aggregate.aggregate.sum.size) }}~
         </p>
       </div>
-    </AnimatedCard>
+    </div>
   </PageTransition>
 
   <PageTransition :delay="100">
-    <AnimatedCard variant="gradient" class="mb-8 p-4 flex flex-col gap-2">
+    <div class="mb-8 p-4 flex flex-col gap-2">
       <h3 class="text-lg font-semibold">
         {{ $t("pages.settings.application.demo_settings.test_s3_title") }}
       </h3>
@@ -60,13 +57,12 @@ definePageMeta({
           {{ $t("pages.settings.application.demo_settings.test_download") }}
         </Button>
       </div>
-    </AnimatedCard>
+    </div>
   </PageTransition>
 
   <PageTransition :delay="200">
     <form @submit.prevent="updateSettings" class="grid gap-6">
-      <AnimatedCard variant="gradient">
-        <div class="p-6 space-y-6">
+      <div class="p-6 space-y-6">
           <FormField v-slot="{ componentField }" name="demo_network_limiter">
             <FormItem>
               <FormLabel>{{
@@ -165,7 +161,7 @@ definePageMeta({
             </FormItem>
           </FormField>
         </div>
-      </AnimatedCard>
+      </div>
 
       <div class="flex justify-start">
         <Button

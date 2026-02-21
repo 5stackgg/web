@@ -1252,6 +1252,7 @@
             "update": "Update Team",
             "create": "Create Team"
         },
+        "roster_count_players": "players",
         "search": {
             "found_teams": "{count} teams found",
             "placeholder": "Search for a team...",

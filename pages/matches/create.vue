@@ -2,8 +2,6 @@
 import PageHeading from "~/components/PageHeading.vue";
 import MatchForm from "~/components/match/MatchForm.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
-
 definePageMeta({
   middleware: ["match-create"],
 });

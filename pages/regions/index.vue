@@ -6,7 +6,6 @@ import RegionForm from "~/components/regions/RegionForm.vue";
 import FivestackTooltip from "~/components/FiveStackToolTip.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 const { isMobile } = useSidebar();
 </script>
@@ -35,7 +34,7 @@ const { isMobile } = useSidebar();
   </PageTransition>
 
   <PageTransition :delay="100" class="mt-6">
-    <AnimatedCard variant="gradient" class="p-4">
+    <div class="p-4">
       <Table>
         <TableHeader>
           <TableRow>
@@ -113,7 +112,7 @@ const { isMobile } = useSidebar();
           </TableRow>
         </TableBody>
       </Table>
-    </AnimatedCard>
+    </div>
   </PageTransition>
 
   <Dialog v-model:open="regionDialogOpen">

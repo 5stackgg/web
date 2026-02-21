@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { generateMutation } from "~/graphql/graphqlGen";
@@ -53,7 +52,7 @@ async function doRefreshAllPlayers() {
 <template>
   <PageTransition :delay="0">
     <div>
-      <AnimatedCard variant="gradient" class="p-6 mb-6">
+      <div class="p-6 mb-6">
         <h3 class="text-lg font-semibold">Refresh All Players</h3>
         <p class="text-sm text-muted-foreground mt-1">
           Re-sync all player data in the search index. Use this if player information (like ELO) appears outdated or missing.
@@ -63,7 +62,7 @@ async function doRefreshAllPlayers() {
             {{ refreshing ? "Refreshing..." : "Refresh All Players" }}
           </Button>
         </div>
-      </AnimatedCard>
+      </div>
 
       <AlertDialog v-model:open="showRefreshDialog">
         <AlertDialogContent>
@@ -84,7 +83,7 @@ async function doRefreshAllPlayers() {
       </AlertDialog>
 
     <form class="grid gap-6" @submit.prevent="updateSettings">
-      <AnimatedCard variant="gradient" class="cursor-pointer" @click="togglePlayerNameRegistration">
+      <div class="cursor-pointer" @click="togglePlayerNameRegistration">
         <div class="flex flex-row items-center justify-between p-4">
           <div class="space-y-0.5">
             <h4 class="text-base font-medium">
@@ -105,10 +104,9 @@ async function doRefreshAllPlayers() {
             @update:model-value="togglePlayerNameRegistration"
           />
         </div>
-      </AnimatedCard>
+      </div>
 
-      <AnimatedCard variant="gradient">
-        <div class="p-6 space-y-6">
+      <div class="p-6 space-y-6">
           <FormField v-slot="{ componentField }" name="public.create_matches_role">
             <FormItem>
               <FormLabel class="text-lg font-semibold">{{
@@ -223,7 +221,7 @@ async function doRefreshAllPlayers() {
             </FormItem>
           </FormField>
         </div>
-      </AnimatedCard>
+      </div>
 
       <div class="flex justify-start">
         <Button

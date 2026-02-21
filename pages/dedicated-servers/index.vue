@@ -13,7 +13,6 @@ import { PlusCircle } from "lucide-vue-next";
 import ServerStatus from "~/components/servers/ServerStatus.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
@@ -48,7 +47,7 @@ const { isMobile } = useSidebar();
   </PageTransition>
 
   <PageTransition :delay="100" class="mt-6">
-    <AnimatedCard variant="gradient" class="p-4">
+    <div class="p-4">
       <Transition name="fade" mode="out-in">
         <Empty v-if="loading" key="loading" class="min-h-[200px]">
           <div class="space-y-3 w-full max-w-md">
@@ -142,7 +141,7 @@ const { isMobile } = useSidebar();
           }}</EmptyDescription>
         </Empty>
       </Transition>
-    </AnimatedCard>
+    </div>
   </PageTransition>
 
   <Pagination

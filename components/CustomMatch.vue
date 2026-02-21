@@ -5,7 +5,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 </script>
 
 <template>
-  <AnimatedCard variant="gradient">
+  <AnimatedCard variant="elevated">
     <NuxtLink
       :to="{ name: 'matches-create' }"
       class="block p-6 cursor-pointer"

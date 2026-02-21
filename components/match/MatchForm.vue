@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { Card } from "~/components/ui/card";
 import { Info } from "lucide-vue-next";
 </script>
 
@@ -11,7 +11,7 @@ import { Info } from "lucide-vue-next";
       <template #left>
         <FormField v-if="!match" v-slot="{ value, handleChange }" name="pug">
           <FormItem>
-            <AnimatedCard variant="gradient" class="cursor-pointer" @click="handleChange(!value)">
+            <Card class="cursor-pointer" @click="handleChange(!value)">
               <div class="flex flex-col space-y-3 p-4">
                 <div class="flex justify-between items-center">
                   <FormLabel class="text-lg font-semibold">{{
@@ -29,12 +29,12 @@ import { Info } from "lucide-vue-next";
                   {{ $t("pages.matches.create_page.pick_up_game_description") }}
                 </FormDescription>
               </div>
-            </AnimatedCard>
+            </Card>
           </FormItem>
         </FormField>
 
-        <AnimatedCard
-          variant="gradient"
+        <Card
+          class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50"
           v-if="!form.values.pug"
         >
           <div class="flex flex-col gap-4 p-4">
@@ -95,7 +95,7 @@ import { Info } from "lucide-vue-next";
             </span>
           </div>
           </div>
-        </AnimatedCard>
+        </Card>
       </template>
     </MatchOptions>
 

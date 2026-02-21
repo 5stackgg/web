@@ -140,7 +140,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
           <AnimatedCard
             v-for="type in allowedMatchTypes"
             :key="type.value"
-            variant="gradient"
+            variant="floating"
             class="flex-1 cursor-pointer transition-all duration-300"
             :class="{
               'ring-2 ring-primary shadow-lg scale-[1.02]':

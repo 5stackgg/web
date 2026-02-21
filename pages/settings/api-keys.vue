@@ -3,7 +3,7 @@ import { TrashIcon, PlusIcon, TriangleAlert } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 import ClipBoard from "~/components/ClipBoard.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { CardHeader, CardContent, CardTitle, CardDescription } from "~/components/ui/card";
 
 definePageMeta({
   layout: "profile-settings",
@@ -13,7 +13,7 @@ definePageMeta({
 <template>
   <!-- API Keys Table -->
   <PageTransition :delay="0">
-    <AnimatedCard variant="gradient">
+    <div>
       <CardHeader>
         <CardTitle class="flex items-center justify-between">
           {{ $t("pages.settings.account.api_keys_management.your_api_keys") }}
@@ -78,7 +78,7 @@ definePageMeta({
           </TableBody>
         </Table>
       </CardContent>
-    </AnimatedCard>
+    </div>
   </PageTransition>
 
   <!-- Add API Key Dialog -->

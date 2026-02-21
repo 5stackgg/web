@@ -78,11 +78,9 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
           </nuxt-link>
         </nav>
       </aside>
-      <AnimatedCard variant="gradient" class="flex-1 lg:max-w-2xl p-6">
-        <div class="space-y-6">
-          <slot />
-        </div>
-      </AnimatedCard>
+      <div class="space-y-6">
+        <slot />
+      </div>
     </div>
 
     <AlertDialog :open="showUnlinkDiscordDialog">

@@ -2,8 +2,6 @@
 import { e_player_roles_enum } from "~/generated/zeus";
 import { Switch } from "~/components/ui/switch";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
-
 definePageMeta({
   layout: "application-settings",
 });
@@ -12,8 +10,7 @@ definePageMeta({
 <template>
   <PageTransition :delay="0">
     <form @submit.prevent="updateSettings" class="grid gap-6">
-      <AnimatedCard variant="gradient">
-        <div class="p-6 space-y-6">
+      <div class="p-6 space-y-6">
           <div class="flex flex-row items-center justify-between cursor-pointer" @click="toggleMatchmaking()">
             <div class="space-y-0.5">
               <h4 class="text-base font-medium">
@@ -125,10 +122,9 @@ definePageMeta({
             </FormField>
           </template>
         </div>
-      </AnimatedCard>
+      </div>
 
-      <AnimatedCard variant="gradient">
-        <div class="p-6 space-y-6">
+      <div class="p-6 space-y-6">
           <FormField
             v-slot="{ componentField }"
             name="public.lineup_add_without_invite"
@@ -168,10 +164,9 @@ definePageMeta({
             </FormItem>
           </FormField>
         </div>
-      </AnimatedCard>
+      </div>
 
-      <AnimatedCard variant="gradient">
-        <div class="p-6 space-y-6">
+      <div class="p-6 space-y-6">
           <div class="flex flex-row items-center justify-between cursor-pointer" @click="toggleDefaultModels">
             <div class="space-y-0.5">
               <h4 class="text-base font-medium">
@@ -187,7 +182,7 @@ definePageMeta({
             />
           </div>
         </div>
-      </AnimatedCard>
+      </div>
 
       <div class="flex justify-start">
         <Button

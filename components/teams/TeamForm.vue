@@ -3,12 +3,12 @@ import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { Card } from "~/components/ui/card";
 </script>
 
 <template>
   <form @submit.prevent="updateCreateTeam" class="grid gap-6">
-    <AnimatedCard variant="gradient">
+    <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50">
       <div class="p-6 space-y-6">
         <FormField v-slot="{ componentField }" name="team_name">
           <FormItem>
@@ -66,7 +66,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
           </FormItem>
         </FormField>
       </div>
-    </AnimatedCard>
+    </Card>
 
     <Button
       type="submit"

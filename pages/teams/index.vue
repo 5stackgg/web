@@ -8,7 +8,6 @@ import { PlusCircle } from "lucide-vue-next";
 import Pagination from "@/components/Pagination.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
@@ -73,7 +72,7 @@ const { isMobile } = useSidebar();
   <!-- Results -->
   <PageTransition :delay="200" class="mt-2">
     <div>
-    <AnimatedCard variant="gradient" class="p-4">
+    <div class="p-4">
       <!-- Loading -->
       <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <div v-for="i in perPage" :key="i" class="bg-muted/30 p-4 rounded-lg space-y-3">
@@ -98,7 +97,7 @@ const { isMobile } = useSidebar();
         v-else
         :teams="showOnlyMyTeams ? myTeams : teams"
       ></teams-table>
-    </AnimatedCard>
+    </div>
 
     <!-- Pagination -->
     <Pagination

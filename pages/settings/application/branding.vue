@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
-
 definePageMeta({
   layout: "application-settings",
   middleware: "admin",
@@ -19,8 +17,7 @@ definePageMeta({
       </div>
 
       <!-- General -->
-      <AnimatedCard variant="gradient">
-        <div class="p-6 space-y-4">
+      <div class="p-6 space-y-4">
         <div>
           <label class="text-sm font-medium">General</label>
           <p class="text-sm text-muted-foreground">
@@ -54,7 +51,7 @@ definePageMeta({
           </div>
         </div>
 
-        <AnimatedCard variant="gradient" class="cursor-pointer" @click="toggleSeparators()">
+        <div class="cursor-pointer" @click="toggleSeparators()">
           <div class="flex flex-row items-center justify-between p-4">
             <div class="space-y-0.5">
               <label class="text-sm font-medium cursor-pointer">Show Separators</label>
@@ -67,7 +64,7 @@ definePageMeta({
               @update:model-value="toggleSeparators"
             />
           </div>
-        </AnimatedCard>
+        </div>
 
         <div class="space-y-2">
           <label class="text-sm font-medium">Logo</label>
@@ -156,11 +153,10 @@ definePageMeta({
           </div>
         </div>
         </div>
-      </AnimatedCard>
+      </div>
 
       <!-- Login Page -->
-      <AnimatedCard variant="gradient">
-        <div class="p-6 space-y-4">
+      <div class="p-6 space-y-4">
           <div>
             <label class="text-sm font-medium">Login Page</label>
             <p class="text-sm text-muted-foreground">
@@ -168,7 +164,7 @@ definePageMeta({
             </p>
           </div>
 
-          <AnimatedCard variant="gradient" class="cursor-pointer" @click="toggleLoginFooter()">
+          <div class="cursor-pointer" @click="toggleLoginFooter()">
             <div class="flex flex-row items-center justify-between p-4">
               <div class="space-y-0.5">
                 <label class="text-sm font-medium cursor-pointer">Show Login Footer</label>
@@ -181,7 +177,7 @@ definePageMeta({
                 @update:model-value="toggleLoginFooter"
               />
             </div>
-          </AnimatedCard>
+          </div>
 
           <div class="space-y-2">
             <label class="text-sm font-medium">Footer Text</label>
@@ -193,11 +189,10 @@ definePageMeta({
             <Input v-model="loginFooterUrl" placeholder="https://github.com/5stackgg/5stack-panel" class="max-w-sm" />
           </div>
         </div>
-      </AnimatedCard>
+      </div>
 
       <!-- Theme Colors -->
-      <AnimatedCard variant="gradient">
-        <div class="p-6 space-y-4">
+      <div class="p-6 space-y-4">
           <div>
             <label class="text-sm font-medium">Theme Colors</label>
             <p class="text-sm text-muted-foreground">
@@ -252,7 +247,7 @@ definePageMeta({
             </div>
           </div>
         </div>
-      </AnimatedCard>
+      </div>
 
       <!-- Actions -->
       <div class="flex gap-2 flex-wrap">

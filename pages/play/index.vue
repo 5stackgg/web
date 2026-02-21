@@ -4,10 +4,8 @@ import Matchmaking from "~/components/matchmaking/Matchmaking.vue";
 import OpenMatches from "~/components/match/OpenMatches.vue";
 import CustomMatch from "~/components/CustomMatch.vue";
 import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
-import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
-import Empty from "~/components/ui/empty/Empty.vue";
+import { CardHeader, CardTitle, CardDescription } from "~/components/ui/card";
 </script>
 
 <template>
@@ -28,11 +26,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
   </PageTransition>
 
   <PageTransition :delay="200" class="mt-6">
-    <AnimatedCard
-      variant="gradient"
-      class="p-4"
-      v-if="openRegistrationTournaments?.length > 0"
-    >
+    <div v-if="openRegistrationTournaments?.length > 0" class="p-4">
       <CardHeader>
         <CardTitle>{{
           $t("pages.play.open_registration_tournaments.title")
@@ -46,19 +40,23 @@ import Empty from "~/components/ui/empty/Empty.vue";
         :key="tournament.id"
         :tournament="tournament"
       ></TournamentTableRow>
-    </AnimatedCard>
+    </div>
   </PageTransition>
 
+  <Separator v-if="showSeparators" class="my-4" />
+
   <PageTransition :delay="300" class="mt-6">
-    <AnimatedCard variant="gradient" class="p-4">
-      <CardHeader>
-        <CardTitle>{{ $t("pages.play.open_matches.title") }}</CardTitle>
-        <CardDescription>
+    <div>
+      <div class="mb-2">
+        <div class="text-xl font-semibold">
+          {{ $t("pages.play.open_matches.title") }}
+        </div>
+        <div class="text-muted-foreground text-sm">
           {{ $t("pages.play.open_matches.description") }}
-        </CardDescription>
-      </CardHeader>
-      <OpenMatches> </OpenMatches>
-    </AnimatedCard>
+        </div>
+      </div>
+      <OpenMatches />
+    </div>
   </PageTransition>
 
   <div id="pagination"></div>

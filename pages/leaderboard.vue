@@ -17,7 +17,6 @@ import {
 } from "~/components/ui/tabs";
 import { Skeleton } from "~/components/ui/skeleton";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import { Switch } from "~/components/ui/switch";
 import { Label } from "~/components/ui/label";
@@ -28,7 +27,6 @@ import { Label } from "~/components/ui/label";
     <PageHeading>
       <template #title>
         <div class="flex items-center gap-2">
-          <Trophy class="w-6 h-6" />
           {{ $t("pages.leaderboard.title") }}
         </div>
       </template>
@@ -96,7 +94,7 @@ import { Label } from "~/components/ui/label";
   <!-- Results -->
   <PageTransition :delay="300" class="mt-6">
     <div>
-    <AnimatedCard variant="gradient" class="p-4 relative">
+    <div class="p-4 relative">
       <!-- Loading -->
       <div v-if="loading" class="space-y-4">
         <div v-for="i in perPage" :key="i" class="flex items-center gap-4">
@@ -223,7 +221,7 @@ import { Label } from "~/components/ui/label";
           </TableRow>
         </TableBody>
       </Table>
-    </AnimatedCard>
+    </div>
 
     <!-- Pagination -->
     <Pagination

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Switch } from "@/components/ui/switch";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 definePageMeta({
   layout: "application-settings",
 });
@@ -9,8 +8,7 @@ definePageMeta({
 <template>
   <PageTransition :delay="0">
     <form @submit.prevent="updateSettings" class="grid gap-4">
-      <AnimatedCard variant="gradient">
-        <div class="p-6 space-y-6">
+      <div class="p-6 space-y-6">
           <div
             class="flex flex-row items-center justify-between cursor-pointer"
             @click="toggleCpuPinning"
@@ -48,7 +46,7 @@ definePageMeta({
             </FormItem>
           </FormField>
         </div>
-      </AnimatedCard>
+      </div>
 
       <div class="flex justify-start">
         <Button

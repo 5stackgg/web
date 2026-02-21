@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { e_player_roles_enum } from "~/generated/zeus";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import LastTenWinsAndLosses from "~/components/charts/LastTenWinsAndLosses.vue";
 import PlayerEloChart from "~/components/charts/PlayerEloChart.vue";
 import formatStatValue from "~/utilities/formatStatValue";
@@ -156,7 +155,7 @@ const { isMobile } = useSidebar();
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <!-- Performance Stats -->
         <PageTransition :delay="100">
-          <AnimatedCard variant="gradient" class="flex flex-col h-full p-4">
+          <div class="flex flex-col h-full p-4">
             <CardContent class="flex-1 p-4">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 h-full">
                 <!-- Win Rate Column -->
@@ -234,12 +233,12 @@ const { isMobile } = useSidebar();
                 </div>
               </div>
             </CardContent>
-          </AnimatedCard>
+          </div>
         </PageTransition>
 
         <!-- Elo History Chart -->
         <PageTransition :delay="200">
-          <AnimatedCard variant="gradient" class="flex flex-col h-full p-4" v-if="player?.elo_history">
+          <div class="flex flex-col h-full p-4" v-if="player?.elo_history">
             <CardHeader>
               <CardTitle
                 class="text-lg md:text-base lg:text-xl font-bold text-center"
@@ -269,7 +268,7 @@ const { isMobile } = useSidebar();
                 </div>
               </template>
             </CardContent>
-          </AnimatedCard>
+          </div>
         </PageTransition>
       </div>
 
@@ -279,7 +278,7 @@ const { isMobile } = useSidebar();
       >
         <!-- Recent Wins/Losses -->
         <PageTransition :delay="300">
-          <AnimatedCard variant="gradient" class="flex flex-col h-full p-4">
+          <div class="flex flex-col h-full p-4">
             <CardHeader>
               <CardTitle
                 class="text-lg md:text-base lg:text-xl font-bold text-center"
@@ -293,12 +292,12 @@ const { isMobile } = useSidebar();
                 :steam_id="playerId"
               />
             </CardContent>
-          </AnimatedCard>
+          </div>
         </PageTransition>
 
         <!-- Weapon Kills -->
         <PageTransition :delay="500">
-          <AnimatedCard variant="gradient" class="flex flex-col h-full p-4">
+          <div class="flex flex-col h-full p-4">
             <CardHeader>
               <CardTitle
                 class="text-lg md:text-base lg:text-xl font-bold text-center"
@@ -360,14 +359,14 @@ const { isMobile } = useSidebar();
                 </table>
               </div>
             </CardContent>
-          </AnimatedCard>
+          </div>
         </PageTransition>
       </div>
     </div>
 
     <!-- Matches/Tournaments Section -->
     <PageTransition :delay="500">
-      <AnimatedCard variant="gradient" class="p-4">
+      <div class="p-4">
         <Tabs default-value="matches">
           <TabsList class="grid grid-cols-2 w-full max-w-md mx-auto">
             <TabsTrigger
@@ -433,7 +432,7 @@ const { isMobile } = useSidebar();
             </CardContent>
           </TabsContent>
         </Tabs>
-      </AnimatedCard>
+      </div>
     </PageTransition>
   </div>
 </template>

@@ -85,19 +85,9 @@ const isDev = computed(() => {
           </nuxt-link>
         </nav>
       </aside>
-      <AnimatedCard
-        variant="gradient"
-        :class="[
-          'flex-1 p-6',
-          $route.name !== 'settings-application-map-pools' && $route.name !== 'settings-application-branding'
-            ? 'lg:max-w-2xl'
-            : '',
-        ]"
-      >
-        <div class="space-y-6">
-          <slot />
-        </div>
-      </AnimatedCard>
+      <div class="space-y-6">
+        <slot />
+      </div>
     </div>
   </default>
 </template>

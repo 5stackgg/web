@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { generateMutation } from "~/graphql/graphqlGen";
@@ -98,7 +97,7 @@ async function doRemoveFixtures() {
     </div>
 
     <div v-else>
-      <AnimatedCard variant="gradient" class="p-6">
+      <div class="p-6">
         <template v-if="!fixturesLoaded">
           <h3 class="text-lg font-semibold">Load Demo Fixtures</h3>
           <p class="text-sm text-muted-foreground mt-1">
@@ -125,7 +124,7 @@ async function doRemoveFixtures() {
             </Button>
           </div>
         </template>
-      </AnimatedCard>
+      </div>
 
       <AlertDialog v-model:open="showLoadDialog">
         <AlertDialogContent>

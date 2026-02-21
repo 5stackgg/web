@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+import { CardHeader, CardContent, CardTitle } from "~/components/ui/card";
 import { useBranding } from "~/composables/useBranding";
 
 definePageMeta({
@@ -28,7 +28,7 @@ const { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter } =
     </PageTransition>
 
     <PageTransition :delay="100">
-      <AnimatedCard variant="gradient" class="w-full max-w-md border-0">
+      <div class="w-full max-w-md">
         <CardHeader>
           <CardTitle class="text-3xl font-bold text-center">{{ brandName || '5Stack' }}</CardTitle>
         </CardHeader>
@@ -40,7 +40,7 @@ const { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter } =
             @click="signIn"
           />
         </CardContent>
-      </AnimatedCard>
+      </div>
     </PageTransition>
 
     <PageTransition v-if="loginShowFooter" :delay="200">

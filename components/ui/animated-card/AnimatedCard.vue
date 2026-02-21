@@ -20,9 +20,12 @@ const cardClasses = computed(() => {
     gradient: 'bg-gradient-to-br from-muted/50 to-muted/30',
     elevated: 'shadow-lg'
   }
-  const hoverEffects = props.hover
-    ? 'hover:from-muted/70 hover:to-muted/50 hover:shadow-md hover:border-border'
-    : ''
+  const hoverByVariant = {
+    default: 'hover:bg-muted/20 hover:shadow-md hover:border-border',
+    gradient: 'hover:from-muted/70 hover:to-muted/50 hover:shadow-md hover:border-border',
+    elevated: 'hover:shadow-2xl hover:bg-muted/25 hover:border-border'
+  }
+  const hoverEffects = props.hover ? hoverByVariant[props.variant] : ''
 
   return cn(base, variants[props.variant], hoverEffects, 'border-border/50')
 })

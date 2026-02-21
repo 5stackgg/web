@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Switch } from "@/components/ui/switch";
+import Card from "~/components/ui/card/Card.vue";
 definePageMeta({
   layout: "application-settings",
 });
@@ -8,44 +9,43 @@ definePageMeta({
 <template>
   <PageTransition :delay="0">
     <form @submit.prevent="updateTelemetrySettings" class="grid gap-4">
-      <div class="p-6 space-y-6">
-        <div
-          class="flex flex-row items-center justify-between cursor-pointer"
-          @click="toggleTelemetry"
-        >
-          <div class="space-y-0.5">
-            <h4 class="text-base font-medium">
-              {{ $t("pages.settings.application.telemetry.telemetry") }}
-            </h4>
-            <p class="text-sm text-muted-foreground">
-              {{
-                $t("pages.settings.application.telemetry.telemetry_description")
-              }}
-            </p>
+      <Card variant="gradient">
+        <div class="p-6 space-y-6">
+          <div class="flex flex-row items-center justify-between cursor-pointer" @click="toggleTelemetry">
+            <div class="space-y-0.5">
+              <h4 class="text-base font-medium">
+                {{ $t("pages.settings.application.telemetry.telemetry") }}
+              </h4>
+              <p class="text-sm text-muted-foreground">
+                {{
+                  $t("pages.settings.application.telemetry.telemetry_description")
+                }}
+              </p>
+            </div>
+            <Switch
+              :model-value="telemetryEnabled"
+              @update:model-value="toggleTelemetry"
+            />
           </div>
-          <Switch
-            :model-value="telemetryEnabled"
-            @update:model-value="toggleTelemetry"
-          />
-        </div>
 
-        <FormField
-          v-slot="{ componentField }"
-          name="public.google_tagmanager_code"
-        >
-          <FormItem>
-            <FormLabel>{{
-              $t("pages.settings.application.telemetry.google_tag_manager_code")
-            }}</FormLabel>
-            <FormDescription>{{
-              $t(
-                "pages.settings.application.telemetry.google_tag_manager_code_description",
-              )
-            }}</FormDescription>
-            <Input v-bind="componentField" />
-          </FormItem>
-        </FormField>
-      </div>
+          <FormField
+            v-slot="{ componentField }"
+            name="public.google_tagmanager_code"
+          >
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.telemetry.google_tag_manager_code")
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.telemetry.google_tag_manager_code_description",
+                )
+              }}</FormDescription>
+              <Input v-bind="componentField" />
+            </FormItem>
+          </FormField>
+        </div>
+      </Card>
 
       <div class="flex justify-start">
         <Button

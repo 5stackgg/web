@@ -2,6 +2,8 @@
 import PageHeading from "~/components/PageHeading.vue";
 import GameTypeConfigTabs from "~/components/game-type-configs/GameTypeConfigTabs.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import { Card } from "~/components/ui/card";
+
 definePageMeta({
   layout: "application-settings",
 });
@@ -20,7 +22,7 @@ definePageMeta({
   </PageTransition>
 
   <PageTransition :delay="100" class="mt-6">
-    <div class="p-4">
+    <Card variant="gradient" class="p-4">
       <!-- Loading skeleton -->
       <div v-if="loading" class="space-y-4">
         <Skeleton class="h-12 w-full" />
@@ -38,7 +40,7 @@ definePageMeta({
         :game-type-configs="gameTypeConfigs"
         @updated="handleUpdated"
       />
-    </div>
+    </Card>
   </PageTransition>
 </template>
 

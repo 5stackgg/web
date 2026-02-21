@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import { Card } from "~/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { generateMutation } from "~/graphql/graphqlGen";
@@ -20,19 +21,13 @@ definePageMeta({
 
 const config = useRuntimeConfig();
 const isDev = computed(
-  () =>
-    config.public.webDomain.includes("localhost") ||
-    config.public.webDomain.includes(".local"),
+  () => config.public.webDomain.includes("localhost") || config.public.webDomain.includes(".local"),
 );
 
 const settings = computed(() => useApplicationSettingsStore().settings);
 
 const fixturesLoaded = computed(() => {
-  return (
-    settings.value?.find(
-      (s: { name: string; value: string }) => s.name === "dev.fixtures_loaded",
-    )?.value === "true"
-  );
+  return settings.value?.find((s: { name: string; value: string }) => s.name === "dev.fixtures_loaded")?.value === "true";
 });
 
 const showLoadDialog = ref(false);
@@ -99,25 +94,18 @@ async function doRemoveFixtures() {
 <template>
   <PageTransition :delay="0">
     <div v-if="!isDev" class="p-6">
-      <p class="text-muted-foreground">
-        Fixtures are only available in development mode.
-      </p>
+      <p class="text-muted-foreground">Fixtures are only available in development mode.</p>
     </div>
 
     <div v-else>
-      <div class="p-6">
+      <Card variant="gradient" class="p-6">
         <template v-if="!fixturesLoaded">
           <h3 class="text-lg font-semibold">Load Demo Fixtures</h3>
           <p class="text-sm text-muted-foreground mt-1">
-            Populate the database with sample players, teams, matches, and
-            tournaments for testing.
+            Populate the database with sample players, teams, matches, and tournaments for testing.
           </p>
           <div class="mt-4">
-            <Button
-              variant="destructive"
-              :disabled="loading"
-              @click="showLoadDialog = true"
-            >
+            <Button variant="destructive" :disabled="loading" @click="showLoadDialog = true">
               {{ loading ? "Loading..." : "Load Fixtures" }}
             </Button>
           </div>
@@ -129,32 +117,23 @@ async function doRemoveFixtures() {
             Fixture data is currently loaded in the database.
           </p>
           <div class="mt-4 flex gap-3">
-            <Button
-              variant="destructive"
-              :disabled="loading"
-              @click="showReloadDialog = true"
-            >
+            <Button variant="destructive" :disabled="loading" @click="showReloadDialog = true">
               {{ loading ? "Processing..." : "Reload Fixtures" }}
             </Button>
-            <Button
-              variant="outline"
-              :disabled="loading"
-              @click="showRemoveDialog = true"
-            >
+            <Button variant="outline" :disabled="loading" @click="showRemoveDialog = true">
               {{ loading ? "Processing..." : "Remove Fixtures" }}
             </Button>
           </div>
         </template>
-      </div>
+      </Card>
 
       <AlertDialog v-model:open="showLoadDialog">
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Load Fixture Data?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will insert 40 players, 8 teams, ~120 matches, and 4
-              tournaments into the database. This is sample data for development
-              purposes.
+              This will insert 40 players, 8 teams, ~120 matches, and 4 tournaments
+              into the database. This is sample data for development purposes.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -174,9 +153,8 @@ async function doRemoveFixtures() {
           <AlertDialogHeader>
             <AlertDialogTitle>Reload Fixture Data?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will delete all existing fixture data and reload fresh
-              copies. Any changes you've made to fixture players, matches, or
-              tournaments will be lost.
+              This will delete all existing fixture data and reload fresh copies.
+              Any changes you've made to fixture players, matches, or tournaments will be lost.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -196,8 +174,8 @@ async function doRemoveFixtures() {
           <AlertDialogHeader>
             <AlertDialogTitle>Remove Fixture Data?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will delete all fixture players, teams, matches, and
-              tournaments from the database. This action cannot be undone.
+              This will delete all fixture players, teams, matches, and tournaments from the database.
+              This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

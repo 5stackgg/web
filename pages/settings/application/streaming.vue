@@ -88,7 +88,6 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
       </div>
 
       <div class="cursor-pointer" @click="togglePlaycast">

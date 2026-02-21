@@ -31,7 +31,7 @@ import { Card } from "~/components/ui/card";
       <div class="space-y-4">
         <slot name="left"></slot>
 
-        <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50">
+        <Card>
           <div class="grid grid-cols-1 gap-8 p-4">
           <slot></slot>
 
@@ -114,7 +114,7 @@ import { Card } from "~/components/ui/card";
         >
           <FormItem>
             <Card
-              class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer"
+              class="cursor-pointer"
               :class="{ 'cursor-not-allowed opacity-60': isLocked }"
               @click="!isLocked && handleChange(!value)"
             >
@@ -144,7 +144,7 @@ import { Card } from "~/components/ui/card";
       <!-- Map Pool Selection -->
       <FormField name="map_pool" v-if="!stageBracketOverride">
         <FormItem>
-          <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50">
+          <Card>
             <div class="p-6 space-y-6">
               <div class="flex justify-between items-center">
                 <FormLabel class="text-lg font-semibold">
@@ -344,7 +344,7 @@ import { Card } from "~/components/ui/card";
 
         <CollapsibleContent>
           <div class="flex flex-col gap-4">
-            <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50">
+            <Card>
               <div class="p-4 space-y-6">
                 <slot name="before-overtime"></slot>
                 <FormField v-slot="{ value, handleChange }" name="overtime">
@@ -428,7 +428,7 @@ import { Card } from "~/components/ui/card";
               </div>
             </Card>
 
-            <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50" v-if="availableRegions.length > 1">
+            <Card v-if="availableRegions.length > 1">
               <div class="p-6 space-y-6">
                 <div class="flex justify-between items-center">
                   <div class="text-lg font-semibold">
@@ -451,7 +451,7 @@ import { Card } from "~/components/ui/card";
                 <FormField v-slot="{ value, handleChange }" name="region_veto">
                   <FormItem>
                     <Card
-                      class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer"
+                      class="cursor-pointer"
                       :class="{
                         'cursor-not-allowed': form.values.lan,
                         'opacity-60': isLocked,
@@ -640,7 +640,7 @@ import { Card } from "~/components/ui/card";
               </div>
             </Card>
 
-            <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50">
+            <Card>
               <div class="flex flex-col space-y-3 p-4">
               <FormField v-slot="{ value }" name="number_of_substitutes">
                 <FormItem>
@@ -712,7 +712,7 @@ import { Card } from "~/components/ui/card";
               </div>
             </Card>
 
-            <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50">
+            <Card>
               <div class="p-4 space-y-6">
                 <FormField v-if="canSetcheckInSettings" v-slot="{ componentField }" name="check_in_setting">
                   <FormItem>
@@ -780,7 +780,7 @@ import { Card } from "~/components/ui/card";
               </div>
             </Card>
 
-            <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50">
+            <Card>
               <div class="flex flex-col space-y-3 p-4">
               <FormField v-slot="{ componentField }" name="timeout_setting">
                 <FormItem>
@@ -853,7 +853,7 @@ import { Card } from "~/components/ui/card";
 
             <FormField v-slot="{ value, handleChange }" name="default_models">
               <FormItem>
-                <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 cursor-pointer" @click="handleChange(!value)">
+                <Card class="cursor-pointer" @click="handleChange(!value)">
                   <div class="flex flex-col space-y-3 p-4">
                     <div class="flex justify-between items-center">
                       <FormLabel class="text-lg font-semibold">{{

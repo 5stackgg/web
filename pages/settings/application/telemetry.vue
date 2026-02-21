@@ -43,7 +43,6 @@ definePageMeta({
             </FormItem>
           </FormField>
         </div>
-      </div>
 
       <div class="flex justify-start">
         <Button

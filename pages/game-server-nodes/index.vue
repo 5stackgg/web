@@ -102,7 +102,6 @@ const { isMobile } = useSidebar();
           }}</span>
         </div>
       </div>
-    </div>
   </PageTransition>
 
   <!-- Filters -->

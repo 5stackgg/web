@@ -220,7 +220,6 @@ async function doRefreshAllPlayers() {
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
       </div>
 
       <div class="flex justify-start">

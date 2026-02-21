@@ -45,7 +45,6 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
       </div>
 
       <div class="flex justify-start">

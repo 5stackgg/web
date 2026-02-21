@@ -121,7 +121,6 @@ definePageMeta({
               </FormItem>
             </FormField>
           </template>
-        </div>
       </div>
 
       <div class="p-6 space-y-6">
@@ -163,7 +162,6 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
       </div>
 
       <div class="p-6 space-y-6">
@@ -181,7 +179,6 @@ definePageMeta({
               @update:model-value="toggleDefaultModels"
             />
           </div>
-        </div>
       </div>
 
       <div class="flex justify-start">

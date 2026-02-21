@@ -188,9 +188,7 @@ definePageMeta({
             <label class="text-sm font-medium">Footer URL</label>
             <Input v-model="loginFooterUrl" placeholder="https://github.com/5stackgg/5stack-panel" class="max-w-sm" />
           </div>
-        </div>
       </div>
-
       <!-- Theme Colors -->
       <div class="p-6 space-y-4">
           <div>
@@ -246,7 +244,6 @@ definePageMeta({
               </div>
             </div>
           </div>
-        </div>
       </div>
 
       <!-- Actions -->

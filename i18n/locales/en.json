@@ -350,7 +350,10 @@
                 "teams": "Teams",
                 "matches": "Matches",
                 "tournaments": "Tournaments",
+                "no_matches": "No matches yet",
+                "no_matches_description": "Match history will appear here after playing games.",
                 "no_tournaments": "No tournaments found for this player.",
+                "no_tournaments_description": "Tournaments this player has joined will appear here.",
                 "weapon_kills": "Most Used Weapons",
                 "no_weapon_kills": "No weapons recorded",
                 "match_record": "Match Record",
@@ -1252,6 +1255,7 @@
             "update": "Update Team",
             "create": "Create Team"
         },
+        "roster_count_players": "players",
         "search": {
             "found_teams": "{count} teams found",
             "placeholder": "Search for a team...",

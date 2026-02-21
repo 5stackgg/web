@@ -14,6 +14,10 @@ function isPublicRoute(path: string): boolean {
     return true;
   }
 
+  if (path.startsWith("/leaderboard")) {
+    return true;
+  }
+
   if (path.startsWith("/teams")) {
     return true;
   }

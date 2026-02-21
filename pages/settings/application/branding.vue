@@ -11,13 +11,6 @@ definePageMeta({
 <template>
   <PageTransition :delay="0">
     <div class="space-y-6">
-      <div>
-        <h3 class="text-lg font-medium">Branding</h3>
-        <p class="text-sm text-muted-foreground">
-          Customize your panel's logo, favicon, name, and theme colors.
-        </p>
-      </div>
-
       <!-- General -->
       <Card variant="gradient">
         <div class="p-6 space-y-4">

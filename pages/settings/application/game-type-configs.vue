@@ -10,38 +10,10 @@ definePageMeta({
 </script>
 
 <template>
-  <PageTransition :delay="0">
-    <PageHeading>
-      <template #title>
-        {{ $t("pages.settings.application.game_type_configs.title") }}
-      </template>
-      <template #description>
-        {{ $t("pages.settings.application.game_type_configs.description") }}
-      </template>
-    </PageHeading>
-  </PageTransition>
-
-  <PageTransition :delay="100" class="mt-6">
-    <Card variant="gradient" class="p-4">
-      <!-- Loading skeleton -->
-      <div v-if="loading" class="space-y-4">
-        <Skeleton class="h-12 w-full" />
-        <div class="space-y-3">
-          <Skeleton class="h-16 w-full" />
-          <Skeleton class="h-16 w-full" />
-          <Skeleton class="h-16 w-full" />
-          <Skeleton class="h-16 w-full" />
-        </div>
-      </div>
-
-      <!-- Actual content -->
-      <GameTypeConfigTabs
-        v-else
+   <GameTypeConfigTabs
         :game-type-configs="gameTypeConfigs"
         @updated="handleUpdated"
       />
-    </Card>
-  </PageTransition>
 </template>
 
 <script lang="ts">

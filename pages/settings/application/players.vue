@@ -107,8 +107,7 @@ async function doRefreshAllPlayers() {
         </div>
       </Card>
 
-      <Card variant="gradient">
-        <div class="p-6 space-y-6">
+      <div class="p-6 space-y-6">
           <FormField v-slot="{ componentField }" name="public.create_matches_role">
             <FormItem>
               <FormLabel class="text-lg font-semibold">{{
@@ -223,7 +222,6 @@ async function doRefreshAllPlayers() {
             </FormItem>
           </FormField>
         </div>
-      </Card>
 
       <div class="flex justify-start">
         <Button

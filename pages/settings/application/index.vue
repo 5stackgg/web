@@ -30,6 +30,7 @@ definePageMeta({
           </div>
 
           <template v-if="matchMakingAllowed">
+            <Separator />
             <div class="space-y-2">
               <div class="grid grid-cols-3 gap-4">
                 <template v-for="match_type in ['competitive', 'wingman', 'duel']">
@@ -50,6 +51,8 @@ definePageMeta({
                 {{ $t(`pages.settings.application.matchmaking_type_description`) }}
               </p>
             </div>
+            
+            <Separator />
 
             <FormField v-slot="{ componentField }" name="public.matchmaking_min_role">
               <FormItem>
@@ -127,9 +130,8 @@ definePageMeta({
         </div>
       </Card>
 
-      <Card variant="gradient">
-        <div class="p-6 space-y-6">
-          <FormField
+      <div class="space-y-6">
+        <FormField
             v-slot="{ componentField }"
             name="public.lineup_add_without_invite"
           >
@@ -166,9 +168,8 @@ definePageMeta({
               </FormControl>
               <FormMessage />
             </FormItem>
-          </FormField>
-        </div>
-      </Card>
+        </FormField>
+      </div>
 
       <Card variant="gradient">
         <div class="p-6 space-y-6">

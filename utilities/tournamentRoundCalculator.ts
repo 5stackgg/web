@@ -1,8 +1,9 @@
 import { e_tournament_stage_types_enum } from "~/generated/zeus";
+import { getRoundLabel, type TranslatableLabel } from "~/utilities/tournamentRoundLabels";
 
 export interface RoundInfo {
   key: string;
-  label: string;
+  label: TranslatableLabel;
   path: string;
   round: number;
 }
@@ -46,22 +47,9 @@ function calculateSERounds(teamsPerGroup: number): RoundInfo[] {
         ? Math.pow(2, totalRounds) / 2
         : Math.pow(2, totalRounds - r);
 
-    let label: string;
-    if (matchesInRound === 1) {
-      label = "Final";
-    } else if (matchesInRound === 2) {
-      label = "Semi Finals";
-    } else if (matchesInRound === 4) {
-      label = "Quarter Finals";
-    } else if (r === 1) {
-      label = "Opening Round";
-    } else {
-      label = `Round ${r}`;
-    }
-
     rounds.push({
       key: `WB:${r}`,
-      label,
+      label: getRoundLabel(r, 1, true, matchesInRound, false, 'SingleElimination', r === totalRounds),
       path: "WB",
       round: r,
     });
@@ -79,22 +67,10 @@ function calculateDERounds(teamsPerGroup: number): RoundInfo[] {
   // WB rounds
   for (let r = 1; r <= wbRounds; r++) {
     const matchesInRound = Math.pow(2, wbRounds - r);
-    let label: string;
-    if (r === wbRounds) {
-      label = "WB Final";
-    } else if (matchesInRound === 2) {
-      label = "WB Semi Finals";
-    } else if (matchesInRound === 4) {
-      label = "WB Quarter Finals";
-    } else if (r === 1) {
-      label = "WB Opening Round";
-    } else {
-      label = `WB Round ${r}`;
-    }
 
     rounds.push({
       key: `WB:${r}`,
-      label,
+      label: getRoundLabel(r, 1, true, matchesInRound, false, 'DoubleElimination', false),
       path: "WB",
       round: r,
     });
@@ -102,16 +78,9 @@ function calculateDERounds(teamsPerGroup: number): RoundInfo[] {
 
   // LB rounds
   for (let r = 1; r <= lbRounds; r++) {
-    let label: string;
-    if (r === lbRounds) {
-      label = "LB Final";
-    } else {
-      label = `LB Round ${r}`;
-    }
-
     rounds.push({
       key: `LB:${r}`,
-      label,
+      label: getRoundLabel(r, 1, true, 0, true, 'DoubleElimination', r === lbRounds),
       path: "LB",
       round: r,
     });
@@ -121,7 +90,7 @@ function calculateDERounds(teamsPerGroup: number): RoundInfo[] {
   if (wbRounds > 0) {
     rounds.push({
       key: "GF",
-      label: "Grand Final",
+      label: getRoundLabel(wbRounds + 1, 1, true, 1, false, 'DoubleElimination', true),
       path: "WB",
       round: wbRounds + 1,
     });
@@ -135,19 +104,19 @@ function calculateSwissRounds(): RoundInfo[] {
   return [
     {
       key: "regular",
-      label: "Regular Rounds",
+      label: { key: "tournament.round_labels.regular_rounds" },
       path: "WB",
       round: 0,
     },
     {
       key: "advancement",
-      label: "Advancement Matches",
+      label: { key: "tournament.round_labels.advancement_matches" },
       path: "WB",
       round: 0,
     },
     {
       key: "elimination",
-      label: "Elimination Matches",
+      label: { key: "tournament.round_labels.elimination_matches" },
       path: "WB",
       round: 0,
     },

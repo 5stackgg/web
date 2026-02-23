@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, watch, onMounted, onUnmounted, nextTick, computed } from "vue";
+import { useI18n } from "vue-i18n";
 import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
 import { Maximize, Minimize, ZoomIn, ZoomOut } from "lucide-vue-next";
 import { getRoundLabel } from "~/utilities/tournamentRoundLabels";
@@ -40,6 +41,8 @@ const props = defineProps({
   },
 });
 
+const { t } = useI18n();
+
 const roundLabels = computed(() => {
   const labels = new Map<number, string>();
   const maxRound = Math.max(...props.rounds.keys());
@@ -54,7 +57,7 @@ const roundLabels = computed(() => {
       props.stageType,
       roundNumber === maxRound,
     );
-    labels.set(roundNumber, label);
+    labels.set(roundNumber, t(label.key, label.params));
   }
   return labels;
 });

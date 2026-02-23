@@ -1,64 +1,78 @@
 import { e_tournament_stage_types_enum } from "~/generated/zeus";
 
+export interface TranslatableLabel {
+  key: string;
+  params?: Record<string, string | number>;
+}
+
 export function getRoundLabel(
   roundNumber: number,
   stage: number,
   isFinalStage: boolean = false,
-  totalMathcdesInRound: number,
+  totalMatchesInRound: number,
   isLoserBracket: boolean = false,
   stageType?: string | null,
   isLastRound: boolean = false,
-): string {
+): TranslatableLabel {
   // For round robin, just show the round number
   if (stageType === e_tournament_stage_types_enum.RoundRobin) {
-    return `Round ${roundNumber}`;
+    return { key: "tournament.round_labels.round", params: { number: roundNumber } };
   }
 
   // For Swiss format, show record labels (handled in SwissBracketViewer)
   if (stageType === e_tournament_stage_types_enum.Swiss) {
-    return `Round ${roundNumber}`;
+    return { key: "tournament.round_labels.round", params: { number: roundNumber } };
   }
 
   const isDE = stageType === e_tournament_stage_types_enum.DoubleElimination;
-  const wbPrefix = isDE ? "WB " : "";
 
   if (isLoserBracket) {
     if (isLastRound) {
-      return "LB Final";
+      return { key: "tournament.round_labels.lb_final" };
     }
-    return `LB Round ${roundNumber}`;
+    return { key: "tournament.round_labels.lb_round", params: { number: roundNumber } };
   }
 
   if (stage === 1 && roundNumber === 1) {
-    return `${wbPrefix}Opening Round`;
+    return isDE
+      ? { key: "tournament.round_labels.wb_opening_round" }
+      : { key: "tournament.round_labels.opening_round" };
   }
 
   if (isFinalStage) {
-    if (totalMathcdesInRound === 4) {
-      return `${wbPrefix}Quarter Finals`;
+    if (totalMatchesInRound === 4) {
+      return isDE
+        ? { key: "tournament.round_labels.wb_quarter_finals" }
+        : { key: "tournament.round_labels.quarter_finals" };
     }
 
-    if (totalMathcdesInRound === 2) {
+    if (totalMatchesInRound === 2) {
       if (isLastRound && stageType === e_tournament_stage_types_enum.SingleElimination) {
-        return "Final";
+        return { key: "tournament.round_labels.final" };
       }
-      return `${wbPrefix}Semi Finals`;
+      return isDE
+        ? { key: "tournament.round_labels.wb_semi_finals" }
+        : { key: "tournament.round_labels.semi_finals" };
     }
 
-    if (totalMathcdesInRound === 1) {
+    if (totalMatchesInRound === 1) {
       if (isDE && !isLastRound) {
-        return "WB Final";
+        return { key: "tournament.round_labels.wb_final" };
       }
-      return isDE ? "Grand Final" : "Final";
+      return isDE
+        ? { key: "tournament.round_labels.grand_final" }
+        : { key: "tournament.round_labels.final" };
     }
   }
 
-  return `${wbPrefix}Round ${roundNumber}`;
+  return isDE
+    ? { key: "tournament.round_labels.wb_round", params: { number: roundNumber } }
+    : { key: "tournament.round_labels.round", params: { number: roundNumber } };
 }
 
-export function getWinnerLabel(isFinalStage: boolean = false): string {
+export function getWinnerLabel(isFinalStage: boolean = false): TranslatableLabel {
   if (isFinalStage) {
-    return "Winner";
+    return { key: "tournament.round_labels.winner" };
   }
-  return "Advances to Next Stage";
+  return { key: "tournament.round_labels.advances_to_next_stage" };
 }

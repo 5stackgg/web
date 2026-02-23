@@ -100,6 +100,14 @@ const getTeamsPerGroup = (stage: any): number => {
   return Math.ceil((stage.max_teams || 0) / Math.max(stage.groups || 1, 1));
 };
 
+const isThirdPlaceMatch = (bracket: Bracket): boolean => {
+  const stage = props.stage;
+  if (stage?.type !== e_tournament_stage_types_enum.SingleElimination) return false;
+  if (bracket.match_number !== 2) return false;
+  const totalRounds = Math.ceil(Math.log2(Math.max(getTeamsPerGroup(stage), 2)));
+  return props.round === totalRounds;
+};
+
 const getBestOf = (
   bracket: Bracket,
   stage: any,
@@ -469,6 +477,11 @@ const isLbFeedingToWb = (bracket: Bracket) => {
           </div>
         </div>
       </template>
+      <div v-if="isThirdPlaceMatch(bracket)" class="text-center">
+        <div class="text-xs text-green-400 font-medium">
+          3rd Place Decider
+        </div>
+      </div>
     </div>
   </template>
 </template>

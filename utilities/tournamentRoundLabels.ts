@@ -7,6 +7,7 @@ export function getRoundLabel(
   totalMathcdesInRound: number,
   isLoserBracket: boolean = false,
   stageType?: string | null,
+  isLastRound: boolean = false,
 ): string {
   // For round robin, just show the round number
   if (stageType === e_tournament_stage_types_enum.RoundRobin) {
@@ -24,16 +25,26 @@ export function getRoundLabel(
 
   if (isFinalStage && !isLoserBracket) {
     if (totalMathcdesInRound === 4) {
-      return `${isLoserBracket ? "Losers" : ""} Quarter Finals`;
+      return "Quarter Finals";
     }
 
     if (totalMathcdesInRound === 2) {
-      return `${isLoserBracket ? "Losers" : ""} Semi Finals`;
+      if (isLastRound && stageType === e_tournament_stage_types_enum.SingleElimination) {
+        return "Grand Final";
+      }
+      return "Semi Finals";
     }
 
     if (totalMathcdesInRound === 1) {
-      return `${isLoserBracket ? "Losers" : ""} Grand Final`;
+      if (stageType === e_tournament_stage_types_enum.DoubleElimination && !isLastRound) {
+        return "WB Final";
+      }
+      return "Grand Final";
     }
+  }
+
+  if (isLoserBracket && isLastRound) {
+    return "Losers Final";
   }
 
   return `${isLoserBracket ? "Losers" : ""} ${roundNumber}${getOrdinalSuffix(roundNumber)} Round`;

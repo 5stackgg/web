@@ -42,6 +42,7 @@ const props = defineProps({
 
 const roundLabels = computed(() => {
   const labels = new Map<number, string>();
+  const maxRound = Math.max(...props.rounds.keys());
 
   for (const [roundNumber, round] of props.rounds.entries()) {
     const label = getRoundLabel(
@@ -51,6 +52,7 @@ const roundLabels = computed(() => {
       round.length,
       props.isLoserBracket,
       props.stageType,
+      roundNumber === maxRound,
     );
     labels.set(roundNumber, label);
   }

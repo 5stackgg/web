@@ -76,7 +76,10 @@ const props = defineProps<{
   brackets: Bracket[];
   stage: {
     type?: string;
+    max_teams?: number;
+    groups?: number;
     default_best_of?: number;
+    decider_best_of?: number;
     settings?: {
       round_best_of?: Record<string, number>;
     };
@@ -93,6 +96,10 @@ const props = defineProps<{
   };
 }>();
 
+const getTeamsPerGroup = (stage: any): number => {
+  return Math.ceil((stage.max_teams || 0) / Math.max(stage.groups || 1, 1));
+};
+
 const getBestOf = (
   bracket: Bracket,
   stage: any,
@@ -106,12 +113,30 @@ const getBestOf = (
   if (bracket.match?.options?.best_of) {
     return bracket.match.options.best_of;
   }
+  // SE 3rd place match uses decider_best_of (separate field, not in round_best_of)
+  if (
+    stage?.type === e_tournament_stage_types_enum.SingleElimination &&
+    stage?.decider_best_of &&
+    bracket.match_number === 2
+  ) {
+    const totalRounds = Math.ceil(Math.log2(Math.max(getTeamsPerGroup(stage), 2)));
+    if (props.round === totalRounds) {
+      return stage.decider_best_of;
+    }
+  }
   // If no match yet, try to compute from per-round settings
   if (stage?.settings?.round_best_of) {
     const roundBestOf = stage.settings.round_best_of;
     let key: string;
     if (stage.type === e_tournament_stage_types_enum.Swiss) {
       key = getSwissMatchType(bracket);
+    } else if (
+      stage.type === e_tournament_stage_types_enum.DoubleElimination &&
+      bracket.path === 'WB'
+    ) {
+      // DE Grand Final uses "GF" key (round > wb_rounds)
+      const wbRounds = Math.ceil(Math.log2(Math.max(getTeamsPerGroup(stage), 2)));
+      key = props.round > wbRounds ? 'GF' : `WB:${props.round}`;
     } else {
       key = bracket.path ? `${bracket.path}:${props.round}` : '';
     }

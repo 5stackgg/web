@@ -1125,7 +1125,15 @@
             "decider_best_of_toggle": "Different decider BO series",
             "decider_best_of_toggle_description": "Use a different Best Of format for deciding matches (finals, advancement, elimination).",
             "decider_best_of_label": "Decider Match Format",
-            "decider_best_of_placeholder": "Select format..."
+            "decider_best_of_placeholder": "Select format...",
+            "default_best_of": "Default Best Of",
+            "default_best_of_description": "The default match format used for all rounds in this stage.",
+            "per_round_best_of": "Per-Round Best Of",
+            "third_place_match": "Enable 3rd Place Match",
+            "third_place_match_description": "Create a 3rd place match between the two semifinal losers.",
+            "decider_best_of": "3rd Place Best Of",
+            "stage_options": "Stage Options",
+            "advanced_settings": "Advanced Stage Settings"
         },
         "bracket": {
             "update": "Update Bracket",

@@ -1161,10 +1161,6 @@ export default {
         roundBestOf[key] = parseInt(value);
       }
 
-      if (Object.keys(roundBestOf).length === 0) {
-        return null;
-      }
-
       return { round_best_of: roundBestOf };
     },
     async updateCreateStage() {

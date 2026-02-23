@@ -8,6 +8,7 @@ interface Bracket {
   bye?: boolean;
   match_number?: number;
   path?: string;
+  group?: number;
   scheduled_eta?: string;
   options?: any;
   feeding_brackets?: Array<{
@@ -106,10 +107,15 @@ const getBestOf = (
     return bracket.match.options.best_of;
   }
   // If no match yet, try to compute from per-round settings
-  if (stage?.settings?.round_best_of && bracket.path) {
+  if (stage?.settings?.round_best_of) {
     const roundBestOf = stage.settings.round_best_of;
-    const key = `${bracket.path}:${props.round}`;
-    if (roundBestOf[key] !== undefined) {
+    let key: string;
+    if (stage.type === e_tournament_stage_types_enum.Swiss) {
+      key = getSwissMatchType(bracket);
+    } else {
+      key = bracket.path ? `${bracket.path}:${props.round}` : '';
+    }
+    if (key && roundBestOf[key] !== undefined) {
       return roundBestOf[key];
     }
   }
@@ -126,6 +132,16 @@ const getBestOf = (
     return tournament.options.best_of;
   }
   return null;
+};
+
+const getSwissMatchType = (bracket: Bracket): string => {
+  const group = bracket.group ?? 0;
+  const wins = Math.floor(group / 100);
+  const losses = group % 100;
+  const winsNeeded = 3;
+  if (wins === winsNeeded - 1) return 'advancement';
+  if (losses === winsNeeded - 1) return 'elimination';
+  return 'regular';
 };
 
 const getTeamName = (team: Bracket["team_1"]): string => {

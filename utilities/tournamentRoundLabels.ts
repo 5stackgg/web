@@ -19,35 +19,41 @@ export function getRoundLabel(
     return `Round ${roundNumber}`;
   }
 
-  if (stage === 1 && roundNumber === 1 && !isLoserBracket) {
-    return "Opening Round";
+  const isDE = stageType === e_tournament_stage_types_enum.DoubleElimination;
+  const wbPrefix = isDE ? "WB " : "";
+
+  if (isLoserBracket) {
+    if (isLastRound) {
+      return "LB Final";
+    }
+    return `LB Round ${roundNumber}`;
   }
 
-  if (isFinalStage && !isLoserBracket) {
+  if (stage === 1 && roundNumber === 1) {
+    return `${wbPrefix}Opening Round`;
+  }
+
+  if (isFinalStage) {
     if (totalMathcdesInRound === 4) {
-      return "Quarter Finals";
+      return `${wbPrefix}Quarter Finals`;
     }
 
     if (totalMathcdesInRound === 2) {
       if (isLastRound && stageType === e_tournament_stage_types_enum.SingleElimination) {
-        return "Grand Final";
+        return "Final";
       }
-      return "Semi Finals";
+      return `${wbPrefix}Semi Finals`;
     }
 
     if (totalMathcdesInRound === 1) {
-      if (stageType === e_tournament_stage_types_enum.DoubleElimination && !isLastRound) {
+      if (isDE && !isLastRound) {
         return "WB Final";
       }
       return "Grand Final";
     }
   }
 
-  if (isLoserBracket && isLastRound) {
-    return "Losers Final";
-  }
-
-  return `${isLoserBracket ? "Losers" : ""} ${roundNumber}${getOrdinalSuffix(roundNumber)} Round`;
+  return `${wbPrefix}Round ${roundNumber}`;
 }
 
 export function getWinnerLabel(isFinalStage: boolean = false): string {
@@ -55,21 +61,4 @@ export function getWinnerLabel(isFinalStage: boolean = false): string {
     return "Winner";
   }
   return "Advances to Next Stage";
-}
-
-function getOrdinalSuffix(num: number): string {
-  if (num >= 11 && num <= 13) {
-    return "th";
-  }
-
-  switch (num % 10) {
-    case 1:
-      return "st";
-    case 2:
-      return "nd";
-    case 3:
-      return "rd";
-    default:
-      return "th";
-  }
 }

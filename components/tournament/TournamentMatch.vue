@@ -1,20 +1,7 @@
 <script lang="ts" setup>
 import TournamentRoundLineup from "~/components/tournament/TournamentRoundLineup.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
-import {
-  e_tournament_stage_types_enum,
-  e_tournament_status_enum,
-} from "~/generated/zeus";
-import { Settings } from "lucide-vue-next";
-import { Button } from "~/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "~/components/ui/sheet";
-import TournamentBracketForm from "~/components/tournament/TournamentBracketForm.vue";
+import { e_tournament_stage_types_enum } from "~/generated/zeus";
 
 interface Bracket {
   id: string;
@@ -88,6 +75,10 @@ const props = defineProps<{
   brackets: Bracket[];
   stage: {
     type?: string;
+    default_best_of?: number;
+    settings?: {
+      round_best_of?: Record<string, number>;
+    };
     options?: {
       best_of?: number;
     };
@@ -101,22 +92,32 @@ const props = defineProps<{
   };
 }>();
 
-const editBracketDialogs = ref<Record<string, boolean>>({});
-
 const getBestOf = (
   bracket: Bracket,
   stage: any,
   tournament: any,
 ): number | null => {
-  // Try to get best_of from bracket options first
+  // Try to get best_of from bracket options first (organizer override)
   if (bracket.options?.best_of) {
     return bracket.options.best_of;
   }
-  // Try to get best_of from match options
+  // Try to get best_of from match options (already resolved at scheduling time)
   if (bracket.match?.options?.best_of) {
     return bracket.match.options.best_of;
   }
-  // If no match yet, try to get from stage options (if available)
+  // If no match yet, try to compute from per-round settings
+  if (stage?.settings?.round_best_of && bracket.path) {
+    const roundBestOf = stage.settings.round_best_of;
+    const key = `${bracket.path}:${props.round}`;
+    if (roundBestOf[key] !== undefined) {
+      return roundBestOf[key];
+    }
+  }
+  // Fall back to stage default_best_of
+  if (stage?.default_best_of) {
+    return stage.default_best_of;
+  }
+  // Fall back to stage options best_of
   if (stage?.options?.best_of) {
     return stage.options.best_of;
   }
@@ -145,23 +146,6 @@ const handleClick = (event: MouseEvent, bracket: Bracket) => {
     name: "matches-id",
     params: { id: bracket.match.id },
   });
-};
-
-const canEditBracket = (bracket: Bracket) => {
-  return (
-    props.tournament?.is_organizer &&
-    props.tournament?.status !== e_tournament_status_enum.Setup &&
-    props.tournament?.status !== e_tournament_status_enum.Finished
-  );
-};
-
-const openEditDialog = (bracket: Bracket, event: MouseEvent) => {
-  event.stopPropagation();
-  editBracketDialogs.value[bracket.id] = true;
-};
-
-const handleBracketUpdated = (bracketId: string) => {
-  editBracketDialogs.value[bracketId] = false;
 };
 
 const getFeedingBracketsByPath = (bracket: Bracket, path: "WB" | "LB") => {
@@ -247,14 +231,6 @@ const isLbFeedingToWb = (bracket: Bracket) => {
             BO{{ getBestOf(bracket, stage, tournament) }}
           </span>
         </Badge>
-
-        <Button
-          v-if="canEditBracket(bracket)"
-          class="h-5 w-5 p-1 flex-shrink-0"
-          @click="openEditDialog(bracket, $event)"
-        >
-          <Settings />
-        </Button>
       </div>
 
       <!-- Display scheduled ETA if available -->
@@ -453,38 +429,5 @@ const isLbFeedingToWb = (bracket: Bracket) => {
         </div>
       </template>
     </div>
-
-    <!-- Edit Bracket Sheets -->
-    <Sheet
-      v-for="bracket in props.brackets"
-      :key="`edit-bracket-${bracket.id}`"
-      :open="editBracketDialogs[bracket.id]"
-      @update:open="(open) => (editBracketDialogs[bracket.id] = open)"
-    >
-      <SheetContent
-        side="right"
-        class="w-full sm:max-w-2xl lg:max-w-4xl overflow-y-auto"
-      >
-        <SheetHeader>
-          <SheetTitle>
-            {{
-              $t("tournament.bracket.edit_title", {
-                round: props.round,
-                match: bracket.match_number,
-              })
-            }}
-          </SheetTitle>
-          <SheetDescription>
-            <TournamentBracketForm
-              v-if="bracket"
-              :bracket="bracket"
-              :tournament="tournament"
-              :stage="stage"
-              @updated="handleBracketUpdated(bracket.id)"
-            ></TournamentBracketForm>
-          </SheetDescription>
-        </SheetHeader>
-      </SheetContent>
-    </Sheet>
   </template>
 </template>

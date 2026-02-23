@@ -234,7 +234,7 @@ import { $ } from "~/generated/zeus";
           </FormItem>
         </FormField>
 
-        <!-- 3rd Place Best Of selector (visible when toggle is on) -->
+        <!-- 3rd Place Decider selector (visible when toggle is on) -->
         <FormField
           v-if="form.values.stage_type === 'SingleElimination' && form.values.third_place_match"
           v-slot="{ componentField }"

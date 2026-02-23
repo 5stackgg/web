@@ -1131,7 +1131,7 @@
             "per_round_best_of": "Per-Round Best Of",
             "third_place_match": "Enable 3rd Place Match",
             "third_place_match_description": "Create a 3rd place match between the two semifinal losers.",
-            "decider_best_of": "3rd Place Best Of",
+            "decider_best_of": "3rd Place Decider",
             "stage_options": "Stage Options",
             "advanced_settings": "Advanced Stage Settings"
         },

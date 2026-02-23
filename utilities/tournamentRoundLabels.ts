@@ -49,7 +49,7 @@ export function getRoundLabel(
       if (isDE && !isLastRound) {
         return "WB Final";
       }
-      return "Grand Final";
+      return isDE ? "Grand Final" : "Final";
     }
   }
 

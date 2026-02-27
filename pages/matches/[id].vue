@@ -22,23 +22,6 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
     class="grid items-start gap-4 md:gap-6 lg:gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,_400px)_1fr]"
     v-if="match"
   >
-    <PageTransition
-      class="lg:col-span-2"
-      v-if="
-        match.match_maps.length > 1 &&
-        match.status !== e_match_status_enum.Veto
-      "
-    >
-      <div :class="mapGridClass">
-        <MatchMaps
-          v-for="match_map of match.match_maps"
-          :key="match_map.id"
-          :match="match"
-          :match-map="match_map"
-        ></MatchMaps>
-      </div>
-    </PageTransition>
-
     <div class="grid grid-cols-1 gap-y-4 md:gap-y-6">
       <PageTransition>
         <div v-if="match.can_schedule">
@@ -125,13 +108,11 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
       <PageTransition :delay="100">
         <MatchMapVeto :match="match"></MatchMapVeto>
       </PageTransition>
-    </div>
 
-    <PageTransition :delay="200" class="lg:col-span-2">
-      <CardContent class="p-4">
+      <PageTransition :delay="200">
         <MatchTabs :match="match"></MatchTabs>
-      </CardContent>
-    </PageTransition>
+      </PageTransition>
+    </div>
   </div>
 </template>
 
@@ -339,11 +320,6 @@ export default {
     },
   },
   computed: {
-    mapGridClass() {
-      const count = this.match?.match_maps?.length || 0;
-      if (count === 2) return "grid grid-cols-1 sm:grid-cols-2 gap-4";
-      return "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
-    },
     showSeparators() {
       return useApplicationSettingsStore().showSeparators;
     },

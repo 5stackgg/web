@@ -8,6 +8,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import AssignCoachToLineup from "~/components/match/AssignCoachToLineup.vue";
 import { e_match_status_enum } from "~/generated/zeus";
+import cleanMapName from "~/utilities/cleanMapName";
 </script>
 
 <template>
@@ -54,6 +55,54 @@ import { e_match_status_enum } from "~/generated/zeus";
           <span class="text-lg text-muted-foreground">
             <MatchLineupScoreDisplay :match="match" :lineup="match.lineup_2" />
           </span>
+        </div>
+      </div>
+
+      <!-- Map-by-Map Score Breakdown for multi-map matches -->
+      <div
+        v-if="match.match_maps.length > 1"
+        class="flex flex-col gap-2 pt-4 border-t border-border"
+      >
+        <div
+          v-for="(matchMap, index) in match.match_maps"
+          :key="matchMap.id"
+          class="flex items-center justify-between text-sm px-2 py-1.5 rounded-md"
+          :class="{
+            'bg-green-500/10 ring-1 ring-green-500/20': matchMap.is_current_map,
+            'bg-muted/40': !matchMap.is_current_map,
+          }"
+        >
+          <div class="flex items-center gap-2 min-w-0">
+            <span class="text-muted-foreground text-xs w-4 text-center shrink-0">{{ index + 1 }}</span>
+            <img
+              v-if="matchMap.map.patch"
+              :src="matchMap.map.patch"
+              class="w-4 h-4 shrink-0"
+              :alt="matchMap.map.name"
+            />
+            <span class="truncate font-medium text-xs">{{ cleanMapName(matchMap.map.name) }}</span>
+            <Badge
+              v-if="matchMap.is_current_map"
+              class="bg-green-600 text-white text-[9px] px-1 py-0 leading-tight"
+            >Live</Badge>
+          </div>
+          <div class="flex items-center gap-1 shrink-0 text-xs font-mono">
+            <span
+              class="font-bold"
+              :class="{
+                'text-green-400': matchMap.winning_lineup_id === match.lineup_1_id,
+                'text-red-400': matchMap.winning_lineup_id && matchMap.winning_lineup_id !== match.lineup_1_id,
+              }"
+            >{{ matchMap.lineup_1_score }}</span>
+            <span class="text-muted-foreground">-</span>
+            <span
+              class="font-bold"
+              :class="{
+                'text-green-400': matchMap.winning_lineup_id === match.lineup_2_id,
+                'text-red-400': matchMap.winning_lineup_id && matchMap.winning_lineup_id !== match.lineup_2_id,
+              }"
+            >{{ matchMap.lineup_2_score }}</span>
+          </div>
         </div>
       </div>
 

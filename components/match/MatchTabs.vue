@@ -24,6 +24,8 @@ import { e_match_types_enum } from "~/generated/zeus";
 import MatchForm from "~/components/match/MatchForm.vue";
 import MatchLiveStreams from "~/components/match/MatchLiveStreams.vue";
 import PlayerInvites from "~/components/match/PlayerInvites.vue";
+import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
+import cleanMapName from "~/utilities/cleanMapName";
 
 const commander = new EventEmitter();
 provide("commander", commander);
@@ -68,6 +70,46 @@ provide("commander", commander);
       </TabsTrigger>
     </TabsList>
     <TabsContent value="overview">
+      <!-- Map Series Scoreboard for multi-map matches -->
+      <Card v-if="match.match_maps.length > 1" class="mb-4">
+        <CardContent class="py-3">
+          <div class="flex items-center justify-center gap-2 flex-wrap">
+            <div
+              v-for="(matchMap, index) in match.match_maps"
+              :key="matchMap.id"
+              class="flex flex-col items-center gap-1 px-3 py-2 rounded-lg min-w-[80px]"
+              :class="{
+                'bg-green-500/10 ring-1 ring-green-500/30': matchMap.is_current_map,
+                'bg-muted/50': !matchMap.is_current_map,
+              }"
+            >
+              <div class="flex items-center gap-1.5">
+                <img
+                  v-if="matchMap.map.patch"
+                  :src="matchMap.map.patch"
+                  class="w-5 h-5"
+                  :alt="matchMap.map.name"
+                />
+                <span class="text-xs font-medium">{{ cleanMapName(matchMap.map.name) }}</span>
+              </div>
+              <div class="flex items-center gap-1 text-sm font-mono">
+                <MatchLineupScoreDisplay
+                  :match="match"
+                  :lineup="match.lineup_1"
+                  :match-map="matchMap"
+                />
+                <span class="text-muted-foreground text-xs mx-0.5">-</span>
+                <MatchLineupScoreDisplay
+                  :match="match"
+                  :lineup="match.lineup_2"
+                  :match-map="matchMap"
+                />
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       <div class="grid gap-4">
         <Card class="overflow-x-auto">
           <CardContent class="py-2">

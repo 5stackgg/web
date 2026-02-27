@@ -24,22 +24,32 @@ import { e_match_types_enum } from "~/generated/zeus";
 import MatchForm from "~/components/match/MatchForm.vue";
 import MatchLiveStreams from "~/components/match/MatchLiveStreams.vue";
 import PlayerInvites from "~/components/match/PlayerInvites.vue";
-import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
-import cleanMapName from "~/utilities/cleanMapName";
-import { Badge } from "~/components/ui/badge";
-import { e_veto_pick_types_enum } from "~/generated/zeus";
+import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
+import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
+import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 
 const commander = new EventEmitter();
 provide("commander", commander);
 </script>
 
 <template>
-  <Tabs default-value="overview" class="match-tabs">
+  <Tabs :default-value="defaultTab" class="match-tabs">
     <TabsList
-      class="lg:inline-flex grid grid-cols-1 mb-4 bg-transparent p-0 h-auto gap-1"
+      class="flex flex-wrap mb-4 bg-transparent p-0 h-auto gap-1"
     >
       <TabsTrigger value="overview">
         {{ $t("match.tabs.overview") }}
+      </TabsTrigger>
+      <TabsTrigger
+        value="veto"
+        v-if="match.options.map_veto || match.options.region_veto"
+        :disabled="match.match_maps.length === 0 && !isVetoState"
+      >
+        {{ $t("match.tabs.map_veto_tab") }}
+        <span
+          v-if="isVetoState"
+          class="ml-1.5 inline-flex h-2 w-2 rounded-full bg-yellow-500 animate-pulse"
+        ></span>
       </TabsTrigger>
       <TabsTrigger :disabled="disableStats" value="utility">
         {{ $t("match.tabs.utility") }}
@@ -54,13 +64,6 @@ provide("commander", commander);
       >
         {{ $t("match.tabs.clutches") }}
       </TabsTrigger>
-      <TabsTrigger
-        value="veto"
-        :disabled="match.match_maps.length === 0"
-        v-if="match.options.map_veto || match.options.region_veto"
-      >
-        {{ $t("match.tabs.map_veto_tab") }}
-      </TabsTrigger>
       <TabsTrigger value="settings">
         {{ $t("match.tabs.settings") }}
       </TabsTrigger>
@@ -72,87 +75,6 @@ provide("commander", commander);
       </TabsTrigger>
     </TabsList>
     <TabsContent value="overview">
-      <!-- Map Series Detail for multi-map matches -->
-      <div v-if="match.match_maps.length > 1" class="flex flex-col gap-2 mb-4">
-        <div
-          v-for="(matchMap, index) in match.match_maps"
-          :key="matchMap.id"
-          class="rounded-lg border p-3"
-          :class="{
-            'border-green-500/30 bg-green-500/5': matchMap.is_current_map,
-            'border-border bg-card': !matchMap.is_current_map,
-          }"
-        >
-          <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center gap-2">
-              <span class="text-muted-foreground text-xs font-mono w-4 text-center shrink-0">{{ index + 1 }}</span>
-              <img
-                v-if="matchMap.map.patch"
-                :src="matchMap.map.patch"
-                class="w-5 h-5 shrink-0"
-              />
-              <span class="font-medium text-sm">{{ cleanMapName(matchMap.map.name) }}</span>
-              <Badge
-                v-if="getMapPickedBy(matchMap)"
-                variant="outline"
-                class="text-[10px] px-1.5 py-0"
-              >{{ getMapPickedBy(matchMap) }}</Badge>
-              <Badge
-                v-else-if="isMapDecider(matchMap)"
-                variant="secondary"
-                class="text-[10px] px-1.5 py-0"
-              >{{ $t("match.decider") }}</Badge>
-            </div>
-            <Badge
-              v-if="matchMap.is_current_map"
-              class="bg-green-600 text-white text-[10px] px-1.5 py-0"
-            >Live</Badge>
-            <span
-              v-else-if="matchMap.status !== 'Scheduled'"
-              class="text-[10px] text-muted-foreground"
-            >{{ matchMap.status }}</span>
-          </div>
-
-          <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-x-3">
-            <div class="flex items-center gap-2 min-w-0">
-              <img
-                v-if="getTeamSide(matchMap, match.lineup_1_id)"
-                :src="getTeamSide(matchMap, match.lineup_1_id) === 'TERRORIST' ? '/img/teams/t_logo.svg' : '/img/teams/ct_logo.svg'"
-                class="w-4 h-4 shrink-0"
-              />
-              <span class="text-xs text-muted-foreground shrink-0">{{ getTeamSide(matchMap, match.lineup_1_id) === 'TERRORIST' ? 'T' : 'CT' }}</span>
-              <span class="text-sm truncate">{{ match.lineup_1.name }}</span>
-            </div>
-
-            <div class="text-center font-mono font-bold text-sm shrink-0">
-              <span
-                :class="{
-                  'text-green-400': matchMap.winning_lineup_id === match.lineup_1_id,
-                  'text-red-400': matchMap.winning_lineup_id && matchMap.winning_lineup_id !== match.lineup_1_id,
-                }"
-              >{{ matchMap.lineup_1_score }}</span>
-              <span class="text-muted-foreground mx-1">-</span>
-              <span
-                :class="{
-                  'text-green-400': matchMap.winning_lineup_id === match.lineup_2_id,
-                  'text-red-400': matchMap.winning_lineup_id && matchMap.winning_lineup_id !== match.lineup_2_id,
-                }"
-              >{{ matchMap.lineup_2_score }}</span>
-            </div>
-
-            <div class="flex items-center gap-2 justify-end min-w-0">
-              <span class="text-sm truncate text-right">{{ match.lineup_2.name }}</span>
-              <span class="text-xs text-muted-foreground shrink-0">{{ getTeamSide(matchMap, match.lineup_2_id) === 'TERRORIST' ? 'T' : 'CT' }}</span>
-              <img
-                v-if="getTeamSide(matchMap, match.lineup_2_id)"
-                :src="getTeamSide(matchMap, match.lineup_2_id) === 'TERRORIST' ? '/img/teams/t_logo.svg' : '/img/teams/ct_logo.svg'"
-                class="w-4 h-4 shrink-0"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div class="grid gap-4">
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
@@ -284,8 +206,20 @@ provide("commander", commander);
       </div>
     </TabsContent>
     <TabsContent value="veto">
-      <div class="grid gap-4 max-w-[1500px] mx-auto">
-        <Card class="overflow-x-auto">
+      <div class="flex flex-col gap-4">
+        <Alert
+          v-if="noRegionsAvailable"
+          variant="destructive"
+          class="bg-red-600 text-white"
+        >
+          <AlertTitle>{{ $t("match.region_veto.no_regions_available") }}</AlertTitle>
+          <AlertDescription>{{ $t("match.region_veto.no_regions_available_description") }}</AlertDescription>
+        </Alert>
+
+        <MatchRegionVeto :match="match" />
+        <MatchMapVeto :match="match" />
+
+        <Card class="overflow-x-auto" v-if="match.match_maps.length > 0">
           <CardContent class="py-2">
             <MatchPicksDisplay :match="match" />
           </CardContent>
@@ -529,6 +463,23 @@ export default {
     },
   },
   computed: {
+    defaultTab() {
+      if (this.isVetoState) return "veto";
+      return "overview";
+    },
+    isVetoState() {
+      return this.match.status === e_match_status_enum.Veto;
+    },
+    noRegionsAvailable() {
+      const regions = useApplicationSettingsStore().availableRegions.filter(
+        (region) => region.is_lan === false,
+      );
+      return (
+        regions.length === 0 &&
+        this.match.options.region_veto &&
+        !this.match.region
+      );
+    },
     me() {
       return useAuthStore().me;
     },
@@ -653,26 +604,6 @@ export default {
     },
   },
   methods: {
-    getMapPickedBy(matchMap) {
-      const pick = matchMap.vetos?.find((v) => v.type === e_veto_pick_types_enum.Pick);
-      if (!pick) return null;
-      if (pick.match_lineup_id === this.match.lineup_1_id) {
-        return this.match.lineup_1.name;
-      }
-      if (pick.match_lineup_id === this.match.lineup_2_id) {
-        return this.match.lineup_2.name;
-      }
-      return null;
-    },
-    isMapDecider(matchMap) {
-      return matchMap.vetos?.some((v) => v.type === e_veto_pick_types_enum.Decider);
-    },
-    getTeamSide(matchMap, lineupId) {
-      if (lineupId === this.match.lineup_1_id) {
-        return matchMap.lineup_1_side;
-      }
-      return matchMap.lineup_2_side;
-    },
     async confirmCommand(
       command: {
         value: string;

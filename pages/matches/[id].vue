@@ -4,17 +4,14 @@ import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
 import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
-import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
 import { e_match_status_enum } from "~/generated/zeus";
-import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 import MatchLiveStreams from "~/components/match/MatchLiveStreams.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { CardHeader, CardContent, CardTitle } from "~/components/ui/card";
-import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 </script>
 
 <template>
@@ -84,32 +81,7 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
         ></MatchMaps>
       </PageTransition>
 
-      <PageTransition :delay="100">
-        <template
-          v-if="
-            regions.length === 0 && match.options.region_veto && !match.region
-          "
-        >
-          <Alert variant="destructive" class="bg-red-600 text-white max-w-md">
-            <AlertTitle>{{
-              $t("match.region_veto.no_regions_available")
-            }}</AlertTitle>
-            <AlertDescription>
-              {{ $t("match.region_veto.no_regions_available_description") }}
-            </AlertDescription>
-          </Alert>
-        </template>
-      </PageTransition>
-
-      <PageTransition :delay="100">
-        <MatchRegionVeto :match="match"></MatchRegionVeto>
-      </PageTransition>
-
-      <PageTransition :delay="100">
-        <MatchMapVeto :match="match"></MatchMapVeto>
-      </PageTransition>
-
-      <PageTransition :delay="200">
+      <PageTransition>
         <MatchTabs :match="match"></MatchTabs>
       </PageTransition>
     </div>

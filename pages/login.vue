@@ -79,7 +79,7 @@ import { loginLinks } from "~/utilities/loginLinks";
 export default {
   methods: {
     signIn() {
-      window.location.href = loginLinks.steam;
+      window.location.href = `${loginLinks.steam}?redirect=${encodeURIComponent(window.location.toString())}`;
     },
   },
   watch: {

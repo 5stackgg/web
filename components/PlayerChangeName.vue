@@ -17,13 +17,13 @@
             {{
               mustRequestNameChange
                 ? $t("player.change_name.request_title")
-                :$t("player.change_name.title")
+                : $t("player.change_name.title")
             }}
           </AlertDialogTitle>
           <AlertDialogDescription>
             {{
               mustRequestNameChange
-                ?  $t("player.change_name.request_description")
+                ? $t("player.change_name.request_description")
                 : $t("player.change_name.description")
             }}
 
@@ -151,7 +151,7 @@ export default {
       );
     },
     mustRequestNameChange() {
-      return !useAuthStore().isRoleAbove(e_player_roles_enum.administrator)
+      return !useAuthStore().isRoleAbove(e_player_roles_enum.administrator);
     },
   },
 };

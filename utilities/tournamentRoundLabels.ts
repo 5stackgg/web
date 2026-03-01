@@ -16,12 +16,18 @@ export function getRoundLabel(
 ): TranslatableLabel {
   // For round robin, just show the round number
   if (stageType === e_tournament_stage_types_enum.RoundRobin) {
-    return { key: "tournament.round_labels.round", params: { number: roundNumber } };
+    return {
+      key: "tournament.round_labels.round",
+      params: { number: roundNumber },
+    };
   }
 
   // For Swiss format, show record labels (handled in SwissBracketViewer)
   if (stageType === e_tournament_stage_types_enum.Swiss) {
-    return { key: "tournament.round_labels.round", params: { number: roundNumber } };
+    return {
+      key: "tournament.round_labels.round",
+      params: { number: roundNumber },
+    };
   }
 
   const isDE = stageType === e_tournament_stage_types_enum.DoubleElimination;
@@ -30,7 +36,10 @@ export function getRoundLabel(
     if (isLastRound) {
       return { key: "tournament.round_labels.lb_final" };
     }
-    return { key: "tournament.round_labels.lb_round", params: { number: roundNumber } };
+    return {
+      key: "tournament.round_labels.lb_round",
+      params: { number: roundNumber },
+    };
   }
 
   if (stage === 1 && roundNumber === 1) {
@@ -47,7 +56,10 @@ export function getRoundLabel(
     }
 
     if (totalMatchesInRound === 2) {
-      if (isLastRound && stageType === e_tournament_stage_types_enum.SingleElimination) {
+      if (
+        isLastRound &&
+        stageType === e_tournament_stage_types_enum.SingleElimination
+      ) {
         return { key: "tournament.round_labels.final" };
       }
       return isDE
@@ -66,11 +78,16 @@ export function getRoundLabel(
   }
 
   return isDE
-    ? { key: "tournament.round_labels.wb_round", params: { number: roundNumber } }
+    ? {
+        key: "tournament.round_labels.wb_round",
+        params: { number: roundNumber },
+      }
     : { key: "tournament.round_labels.round", params: { number: roundNumber } };
 }
 
-export function getWinnerLabel(isFinalStage: boolean = false): TranslatableLabel {
+export function getWinnerLabel(
+  isFinalStage: boolean = false,
+): TranslatableLabel {
   if (isFinalStage) {
     return { key: "tournament.round_labels.winner" };
   }

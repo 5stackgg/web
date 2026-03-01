@@ -372,14 +372,14 @@ const { brandName, logoUrl } = useBranding();
     </template>
     <template v-else>
       <div class="flex items-center gap-4 py-2">
-          <Button
+        <Button
           @click="signIn"
-            variant="outline"
-            class="fill-white uppercase font-bold px-4 py-2 transition-colors duration-150 hover:text-green-300 hover:border-green-300/50"
-          >
-            <SteamIcon class="w-4 h-4 mr-2" />
-            {{ $t("layouts.top_nav.login") }}
-          </Button>
+          variant="outline"
+          class="fill-white uppercase font-bold px-4 py-2 transition-colors duration-150 hover:text-green-300 hover:border-green-300/50"
+        >
+          <SteamIcon class="w-4 h-4 mr-2" />
+          {{ $t("layouts.top_nav.login") }}
+        </Button>
       </div>
     </template>
   </nav>
@@ -424,7 +424,7 @@ export default {
   },
   methods: {
     signIn() {
-      window.location.href = loginLinks.steam;
+      window.location.href = `${loginLinks.steam}?redirect=${encodeURIComponent(window.location.toString())}`;
     },
   },
 };

@@ -634,6 +634,9 @@ export default {
                   min_teams: true,
                   max_teams: true,
                   decider_best_of: true,
+                  default_best_of: true,
+                  settings: true,
+                  third_place_match: true,
                   options: matchOptionsFields,
                   results: [
                     {},
@@ -928,9 +931,11 @@ export default {
       const stage = this.tournament?.stages?.[0];
       if (!stage) return this.singleStageType;
 
-      // Get best_of from stage options, or fall back to tournament defaults
+      // Get best_of from stage default_best_of, or fall back to tournament defaults
       let bestOf: number | null = null;
-      if (stage.options?.best_of) {
+      if (stage.default_best_of) {
+        bestOf = stage.default_best_of;
+      } else if (stage.options?.best_of) {
         bestOf = stage.options.best_of;
       } else if (this.tournament?.options?.best_of) {
         bestOf = this.tournament.options.best_of;

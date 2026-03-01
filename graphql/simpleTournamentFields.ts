@@ -26,6 +26,9 @@ export const simpleTournamentFields = Selector("tournaments")({
       },
       order: true,
       options: matchOptionsFields,
+      default_best_of: true,
+      third_place_match: true,
+      groups: true,
     },
   ],
   teams_aggregate: [

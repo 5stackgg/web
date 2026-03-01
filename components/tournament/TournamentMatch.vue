@@ -109,7 +109,8 @@ const getTotalRounds = (stage: any): number => {
 
 const isThirdPlaceMatch = (bracket: Bracket): boolean => {
   const stage = props.stage;
-  if (stage?.type !== e_tournament_stage_types_enum.SingleElimination) return false;
+  if (stage?.type !== e_tournament_stage_types_enum.SingleElimination)
+    return false;
   if (bracket.match_number !== 2) return false;
   return props.round === getTotalRounds(stage);
 };
@@ -145,13 +146,13 @@ const getBestOf = (
       key = getSwissMatchType(bracket);
     } else if (
       stage.type === e_tournament_stage_types_enum.DoubleElimination &&
-      bracket.path === 'WB'
+      bracket.path === "WB"
     ) {
       // DE Grand Final uses "GF" key (round > wb_rounds)
       const wbRounds = getTotalRounds(stage);
-      key = props.round > wbRounds ? 'GF' : `WB:${props.round}`;
+      key = props.round > wbRounds ? "GF" : `WB:${props.round}`;
     } else {
-      key = bracket.path ? `${bracket.path}:${props.round}` : '';
+      key = bracket.path ? `${bracket.path}:${props.round}` : "";
     }
     if (key && roundBestOf[key] !== undefined) {
       return roundBestOf[key];
@@ -177,9 +178,9 @@ const getSwissMatchType = (bracket: Bracket): string => {
   const wins = Math.floor(group / 100);
   const losses = group % 100;
   const winsNeeded = 3;
-  if (wins === winsNeeded - 1) return 'advancement';
-  if (losses === winsNeeded - 1) return 'elimination';
-  return 'regular';
+  if (wins === winsNeeded - 1) return "advancement";
+  if (losses === winsNeeded - 1) return "elimination";
+  return "regular";
 };
 
 const getTeamName = (team: Bracket["team_1"]): string => {
@@ -226,14 +227,19 @@ const getBracketLabel = (path?: string) => {
 
 const getFeedPrefix = (currentPath?: string, feedingPath?: string) => {
   if (!currentPath || !feedingPath) return t("tournament.match.winner_of");
-  return currentPath === feedingPath ? t("tournament.match.winner_of") : t("tournament.match.loser_of");
+  return currentPath === feedingPath
+    ? t("tournament.match.winner_of")
+    : t("tournament.match.loser_of");
 };
 
 const formatFeedingText = (bracket: Bracket, feeding?: FeedingBracket) => {
   if (!feeding) return "";
   const prefix = getFeedPrefix(bracket.path, feeding.path);
   const roundMatch = feeding.match_number
-    ? t("tournament.match.round_match_ref", { round: feeding.round, match: feeding.match_number })
+    ? t("tournament.match.round_match_ref", {
+        round: feeding.round,
+        match: feeding.match_number,
+      })
     : t("tournament.match.round_ref", { round: feeding.round });
   return `${prefix} ${roundMatch}`.trim();
 };
@@ -243,7 +249,10 @@ const formatDestinationText = (
   dest?: { round: number; match_number?: number },
 ) => {
   if (!dest) return "";
-  const prefix = type === "winner" ? t("tournament.match.winner_arrow") : t("tournament.match.loser_arrow");
+  const prefix =
+    type === "winner"
+      ? t("tournament.match.winner_arrow")
+      : t("tournament.match.loser_arrow");
   if (dest.match_number) {
     return `${prefix} ${t("tournament.match.round_match_ref", { round: dest.round, match: dest.match_number })}`;
   }
@@ -458,9 +467,20 @@ const isLbFeedingToWb = (bracket: Bracket) => {
             <span class="inline-flex items-center gap-1">
               <span>{{ $t("tournament.match.winner_bracket_arrow") }}</span>
               <span v-if="bracket.parent_bracket?.match_number">
-                {{ $t("tournament.match.round_match_ref", { round: bracket.parent_bracket.round, match: bracket.parent_bracket.match_number }) }}
+                {{
+                  $t("tournament.match.round_match_ref", {
+                    round: bracket.parent_bracket.round,
+                    match: bracket.parent_bracket.match_number,
+                  })
+                }}
               </span>
-              <span v-else> {{ $t("tournament.match.round_ref", { round: bracket.parent_bracket?.round }) }} </span>
+              <span v-else>
+                {{
+                  $t("tournament.match.round_ref", {
+                    round: bracket.parent_bracket?.round,
+                  })
+                }}
+              </span>
             </span>
           </div>
         </div>
@@ -472,9 +492,20 @@ const isLbFeedingToWb = (bracket: Bracket) => {
             <span class="inline-flex items-center gap-1">
               <span>{{ $t("tournament.match.loser_arrow") }}</span>
               <span v-if="bracket.loser_bracket.match_number">
-                {{ $t("tournament.match.round_match_ref", { round: bracket.loser_bracket.round, match: bracket.loser_bracket.match_number }) }}
+                {{
+                  $t("tournament.match.round_match_ref", {
+                    round: bracket.loser_bracket.round,
+                    match: bracket.loser_bracket.match_number,
+                  })
+                }}
               </span>
-              <span v-else> {{ $t("tournament.match.round_ref", { round: bracket.loser_bracket.round }) }} </span>
+              <span v-else>
+                {{
+                  $t("tournament.match.round_ref", {
+                    round: bracket.loser_bracket.round,
+                  })
+                }}
+              </span>
             </span>
           </div>
         </div>

@@ -7,7 +7,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { calculateRounds, type RoundInfo } from "~/utilities/tournamentRoundCalculator";
+import {
+  calculateRounds,
+  type RoundInfo,
+} from "~/utilities/tournamentRoundCalculator";
 import { computed } from "vue";
 
 const props = defineProps<{
@@ -59,7 +62,9 @@ function updateRound(key: string, value: string) {
         :key="round.key"
         class="flex items-center justify-between gap-4"
       >
-        <span class="text-sm min-w-[140px]">{{ $t(round.label.key, round.label.params) }}</span>
+        <span class="text-sm min-w-[140px]">{{
+          $t(round.label.key, round.label.params)
+        }}</span>
         <Select
           :model-value="getRoundValue(round.key)"
           @update:model-value="(val) => updateRound(round.key, val)"

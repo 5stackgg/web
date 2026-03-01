@@ -75,7 +75,11 @@ import { Card } from "~/components/ui/card";
               </FormItem>
             </FormField>
 
-            <FormField v-if="!hideBestOf" v-slot="{ componentField }" name="best_of">
+            <FormField
+              v-if="!hideBestOf"
+              v-slot="{ componentField }"
+              name="best_of"
+            >
               <FormItem>
                 <FormLabel class="text-lg font-semibold">{{
                   $t("match.options.best_of.label")

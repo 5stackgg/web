@@ -1,5 +1,8 @@
 import { e_tournament_stage_types_enum } from "~/generated/zeus";
-import { getRoundLabel, type TranslatableLabel } from "~/utilities/tournamentRoundLabels";
+import {
+  getRoundLabel,
+  type TranslatableLabel,
+} from "~/utilities/tournamentRoundLabels";
 
 export interface RoundInfo {
   key: string;
@@ -43,13 +46,19 @@ function calculateSERounds(teamsPerGroup: number): RoundInfo[] {
 
   for (let r = 1; r <= totalRounds; r++) {
     const matchesInRound =
-      r === 1
-        ? Math.pow(2, totalRounds) / 2
-        : Math.pow(2, totalRounds - r);
+      r === 1 ? Math.pow(2, totalRounds) / 2 : Math.pow(2, totalRounds - r);
 
     rounds.push({
       key: `WB:${r}`,
-      label: getRoundLabel(r, 1, true, matchesInRound, false, 'SingleElimination', r === totalRounds),
+      label: getRoundLabel(
+        r,
+        1,
+        true,
+        matchesInRound,
+        false,
+        "SingleElimination",
+        r === totalRounds,
+      ),
       path: "WB",
       round: r,
     });
@@ -70,7 +79,15 @@ function calculateDERounds(teamsPerGroup: number): RoundInfo[] {
 
     rounds.push({
       key: `WB:${r}`,
-      label: getRoundLabel(r, 1, true, matchesInRound, false, 'DoubleElimination', false),
+      label: getRoundLabel(
+        r,
+        1,
+        true,
+        matchesInRound,
+        false,
+        "DoubleElimination",
+        false,
+      ),
       path: "WB",
       round: r,
     });
@@ -80,7 +97,15 @@ function calculateDERounds(teamsPerGroup: number): RoundInfo[] {
   for (let r = 1; r <= lbRounds; r++) {
     rounds.push({
       key: `LB:${r}`,
-      label: getRoundLabel(r, 1, true, 0, true, 'DoubleElimination', r === lbRounds),
+      label: getRoundLabel(
+        r,
+        1,
+        true,
+        0,
+        true,
+        "DoubleElimination",
+        r === lbRounds,
+      ),
       path: "LB",
       round: r,
     });
@@ -90,7 +115,15 @@ function calculateDERounds(teamsPerGroup: number): RoundInfo[] {
   if (wbRounds > 0) {
     rounds.push({
       key: "GF",
-      label: getRoundLabel(wbRounds + 1, 1, true, 1, false, 'DoubleElimination', true),
+      label: getRoundLabel(
+        wbRounds + 1,
+        1,
+        true,
+        1,
+        false,
+        "DoubleElimination",
+        true,
+      ),
       path: "WB",
       round: wbRounds + 1,
     });

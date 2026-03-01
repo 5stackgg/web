@@ -236,7 +236,10 @@ import { $ } from "~/generated/zeus";
 
         <!-- 3rd Place Decider selector (visible when toggle is on) -->
         <FormField
-          v-if="form.values.stage_type === 'SingleElimination' && form.values.third_place_match"
+          v-if="
+            form.values.stage_type === 'SingleElimination' &&
+            form.values.third_place_match
+          "
           v-slot="{ componentField }"
           name="decider_best_of"
         >
@@ -345,15 +348,9 @@ import { $ } from "~/generated/zeus";
               </div>
 
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <FormField
-                  v-slot="{ value, handleChange }"
-                  name="region_veto"
-                >
+                <FormField v-slot="{ value, handleChange }" name="region_veto">
                   <FormItem>
-                    <Card
-                      class="cursor-pointer"
-                      @click="handleChange(!value)"
-                    >
+                    <Card class="cursor-pointer" @click="handleChange(!value)">
                       <div class="flex flex-col space-y-3 p-4">
                         <div class="flex justify-between items-center">
                           <FormLabel class="text-lg font-semibold">{{
@@ -369,9 +366,7 @@ import { $ } from "~/generated/zeus";
                         </div>
                         <FormDescription>
                           {{
-                            $t(
-                              "match.options.advanced.region.veto.description",
-                            )
+                            $t("match.options.advanced.region.veto.description")
                           }}
                         </FormDescription>
                       </div>
@@ -394,9 +389,7 @@ import { $ } from "~/generated/zeus";
 
                     <FormControl>
                       <template v-if="!form.values.region_veto">
-                        <Select
-                          v-model="select_single_region"
-                        >
+                        <Select v-model="select_single_region">
                           <FormControl>
                             <SelectTrigger>
                               <SelectValue
@@ -594,9 +587,7 @@ import { $ } from "~/generated/zeus";
                     $t("match.options.advanced.timeouts.technical.label")
                   }}</FormLabel>
                   <FormDescription>{{
-                    $t(
-                      "match.options.advanced.timeouts.technical.description",
-                    )
+                    $t("match.options.advanced.timeouts.technical.description")
                   }}</FormDescription>
                   <FormControl>
                     <Select v-bind="componentField">
@@ -734,9 +725,7 @@ export default {
               check_in_setting: z
                 .string()
                 .default(e_check_in_settings_enum.Players),
-              ready_setting: z
-                .string()
-                .default(e_ready_settings_enum.Players),
+              ready_setting: z.string().default(e_ready_settings_enum.Players),
               tech_timeout_setting: z
                 .string()
                 .default(e_timeout_settings_enum.Admin),
@@ -764,7 +753,9 @@ export default {
             max_teams: stage.max_teams.toString(),
             default_best_of: (stage.default_best_of || 1).toString(),
             third_place_match: stage.third_place_match || false,
-            decider_best_of: stage.decider_best_of ? stage.decider_best_of.toString() : null,
+            decider_best_of: stage.decider_best_of
+              ? stage.decider_best_of.toString()
+              : null,
           });
 
           // Load per-round best_of from settings
@@ -782,12 +773,30 @@ export default {
           const options = stage.options || this.tournament?.options;
           if (options) {
             this.form.setValues({
-              tv_delay: stage.options?.tv_delay ?? this.tournament?.options?.tv_delay ?? 115,
-              region_veto: stage.options?.region_veto ?? this.tournament?.options?.region_veto ?? true,
-              regions: stage.options?.regions ?? this.tournament?.options?.regions ?? [],
-              check_in_setting: stage.options?.check_in_setting ?? this.tournament?.options?.check_in_setting ?? e_check_in_settings_enum.Players,
-              ready_setting: stage.options?.ready_setting ?? this.tournament?.options?.ready_setting ?? e_ready_settings_enum.Players,
-              tech_timeout_setting: stage.options?.tech_timeout_setting ?? this.tournament?.options?.tech_timeout_setting ?? e_timeout_settings_enum.Admin,
+              tv_delay:
+                stage.options?.tv_delay ??
+                this.tournament?.options?.tv_delay ??
+                115,
+              region_veto:
+                stage.options?.region_veto ??
+                this.tournament?.options?.region_veto ??
+                true,
+              regions:
+                stage.options?.regions ??
+                this.tournament?.options?.regions ??
+                [],
+              check_in_setting:
+                stage.options?.check_in_setting ??
+                this.tournament?.options?.check_in_setting ??
+                e_check_in_settings_enum.Players,
+              ready_setting:
+                stage.options?.ready_setting ??
+                this.tournament?.options?.ready_setting ??
+                e_ready_settings_enum.Players,
+              tech_timeout_setting:
+                stage.options?.tech_timeout_setting ??
+                this.tournament?.options?.tech_timeout_setting ??
+                e_timeout_settings_enum.Admin,
             });
           }
         } else {
@@ -816,7 +825,10 @@ export default {
     ["form.values.third_place_match"]: {
       handler(enabled: boolean) {
         if (enabled && !this.form.values.decider_best_of) {
-          this.form.setFieldValue("decider_best_of", this.form.values.default_best_of || "1");
+          this.form.setFieldValue(
+            "decider_best_of",
+            this.form.values.default_best_of || "1",
+          );
         }
         if (!enabled) {
           this.form.setFieldValue("decider_best_of", null);
@@ -977,8 +989,7 @@ export default {
         regions: options.regions ?? [],
         check_in_setting:
           options.check_in_setting ?? e_check_in_settings_enum.Players,
-        ready_setting:
-          options.ready_setting ?? e_ready_settings_enum.Players,
+        ready_setting: options.ready_setting ?? e_ready_settings_enum.Players,
         tech_timeout_setting:
           options.tech_timeout_setting ?? e_timeout_settings_enum.Admin,
       });
@@ -1015,9 +1026,7 @@ export default {
       const tournamentRegions = tournamentOptions.regions || [];
       if (
         formRegions.length !== tournamentRegions.length ||
-        formRegions.some(
-          (r: string, i: number) => r !== tournamentRegions[i],
-        )
+        formRegions.some((r: string, i: number) => r !== tournamentRegions[i])
       ) {
         return true;
       }
@@ -1062,9 +1071,15 @@ export default {
                 tv_delay: $("tv_delay", "Int!"),
                 region_veto: $("region_veto", "Boolean!"),
                 regions: $("regions", "[String!]!"),
-                check_in_setting: $("check_in_setting", "e_check_in_settings_enum!"),
+                check_in_setting: $(
+                  "check_in_setting",
+                  "e_check_in_settings_enum!",
+                ),
                 ready_setting: $("ready_setting", "e_ready_settings_enum!"),
-                tech_timeout_setting: $("tech_timeout_setting", "e_timeout_settings_enum!"),
+                tech_timeout_setting: $(
+                  "tech_timeout_setting",
+                  "e_timeout_settings_enum!",
+                ),
                 mr: $("mr", "Int!"),
                 type: $("type", "e_match_types_enum!"),
                 best_of: $("best_of", "Int!"),
@@ -1073,7 +1088,10 @@ export default {
                 overtime: $("overtime", "Boolean!"),
                 coaches: $("coaches", "Boolean!"),
                 number_of_substitutes: $("number_of_substitutes", "Int!"),
-                timeout_setting: $("timeout_setting", "e_timeout_settings_enum!"),
+                timeout_setting: $(
+                  "timeout_setting",
+                  "e_timeout_settings_enum!",
+                ),
                 map_pool_id: $("map_pool_id", "uuid!"),
               },
             },
@@ -1116,9 +1134,15 @@ export default {
                 tv_delay: $("tv_delay", "Int!"),
                 region_veto: $("region_veto", "Boolean!"),
                 regions: $("regions", "[String!]!"),
-                check_in_setting: $("check_in_setting", "e_check_in_settings_enum!"),
+                check_in_setting: $(
+                  "check_in_setting",
+                  "e_check_in_settings_enum!",
+                ),
                 ready_setting: $("ready_setting", "e_ready_settings_enum!"),
-                tech_timeout_setting: $("tech_timeout_setting", "e_timeout_settings_enum!"),
+                tech_timeout_setting: $(
+                  "tech_timeout_setting",
+                  "e_timeout_settings_enum!",
+                ),
                 mr: $("mr", "Int!"),
                 type: $("type", "e_match_types_enum!"),
                 best_of: $("best_of", "Int!"),
@@ -1127,7 +1151,10 @@ export default {
                 overtime: $("overtime", "Boolean!"),
                 coaches: $("coaches", "Boolean!"),
                 number_of_substitutes: $("number_of_substitutes", "Int!"),
-                timeout_setting: $("timeout_setting", "e_timeout_settings_enum!"),
+                timeout_setting: $(
+                  "timeout_setting",
+                  "e_timeout_settings_enum!",
+                ),
                 map_pool_id: $("map_pool_id", "uuid!"),
                 map_veto: true,
               },
@@ -1223,7 +1250,10 @@ export default {
           third_place_match: this.form.values.third_place_match || false,
           settings: $("settings", "jsonb"),
           decider_best_of: this.form.values.third_place_match
-            ? parseInt(this.form.values.decider_best_of || this.form.values.default_best_of)
+            ? parseInt(
+                this.form.values.decider_best_of ||
+                  this.form.values.default_best_of,
+              )
             : null,
         };
 
@@ -1275,7 +1305,10 @@ export default {
                 default_best_of: parseInt(this.form.values.default_best_of),
                 third_place_match: this.form.values.third_place_match || false,
                 decider_best_of: this.form.values.third_place_match
-                  ? parseInt(this.form.values.decider_best_of || this.form.values.default_best_of)
+                  ? parseInt(
+                      this.form.values.decider_best_of ||
+                        this.form.values.default_best_of,
+                    )
                   : null,
                 settings: $("settings", "jsonb"),
                 tournament_id:

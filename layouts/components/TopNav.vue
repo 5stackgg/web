@@ -33,6 +33,7 @@ import { Badge } from "@/components/ui/badge";
 import { Users } from "lucide-vue-next";
 import { useRightSidebar } from "@/composables/useRightSidebar";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
+import { loginLinks } from "~/utilities/loginLinks";
 
 const { isMobile } = useSidebar();
 const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
@@ -371,15 +372,14 @@ const { brandName, logoUrl } = useBranding();
     </template>
     <template v-else>
       <div class="flex items-center gap-4 py-2">
-        <NuxtLink to="/login">
           <Button
+          @click="signIn"
             variant="outline"
             class="fill-white uppercase font-bold px-4 py-2 transition-colors duration-150 hover:text-green-300 hover:border-green-300/50"
           >
             <SteamIcon class="w-4 h-4 mr-2" />
             {{ $t("layouts.top_nav.login") }}
           </Button>
-        </NuxtLink>
       </div>
     </template>
   </nav>
@@ -420,6 +420,11 @@ export default {
     },
     playTotalCount() {
       return this.openMatchesCount + this.activeTournamentsCount;
+    },
+  },
+  methods: {
+    signIn() {
+      window.location.href = loginLinks.steam;
     },
   },
 };

@@ -74,11 +74,12 @@ const { brandName, logoUrl, loginFooterText, loginFooterUrl, loginShowFooter } =
 import { useAuthStore } from "~/stores/AuthStore";
 import { GithubLogoIcon } from "@radix-icons/vue";
 import { ExternalLink } from "lucide-vue-next";
+import { loginLinks } from "~/utilities/loginLinks";
 
 export default {
   methods: {
     signIn() {
-      window.location = this.authLink;
+      window.location.href = loginLinks.steam;
     },
   },
   watch: {
@@ -94,11 +95,6 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
-    },
-    authLink() {
-      return `https://${useRuntimeConfig().public.webDomain}/auth/steam?redirect=${encodeURIComponent(
-        window.location.toString(),
-      )}`;
     },
   },
 };

@@ -15,16 +15,16 @@
         <AlertDialogHeader>
           <AlertDialogTitle>
             {{
-              canChangeName
-                ? $t("player.change_name.title")
-                : $t("player.change_name.request_title")
+              mustRequestNameChange
+                ? $t("player.change_name.request_title")
+                :$t("player.change_name.title")
             }}
           </AlertDialogTitle>
           <AlertDialogDescription>
             {{
-              canChangeName
-                ? $t("player.change_name.description")
-                : $t("player.change_name.request_description")
+              mustRequestNameChange
+                ?  $t("player.change_name.request_description")
+                : $t("player.change_name.description")
             }}
 
             <FormField v-slot="{ componentField }" name="player_name">
@@ -43,7 +43,7 @@
             {{ $t("common.cancel") }}
           </AlertDialogCancel>
           <AlertDialogAction
-            @click="canChangeName ? changeName() : requestNameChange()"
+            @click="mustRequestNameChange ? requestNameChange() : changeName()"
           >
             {{ $t("common.confirm") }}
           </AlertDialogAction>
@@ -149,6 +149,9 @@ export default {
         this.player.steam_id === this.me?.steam_id ||
         useAuthStore().isRoleAbove(e_player_roles_enum.administrator)
       );
+    },
+    mustRequestNameChange() {
+      return !useAuthStore().isRoleAbove(e_player_roles_enum.administrator)
     },
   },
 };

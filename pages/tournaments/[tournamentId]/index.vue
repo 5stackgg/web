@@ -5,6 +5,7 @@ import TournamentJoinForm from "~/components/tournament/TournamentJoinForm.vue";
 import TournamentTeam from "~/components/tournament/TournamentTeam.vue";
 import TournamentForm from "~/components/tournament/TournamentForm.vue";
 import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
+import TournamentNotifications from "~/components/tournament/TournamentNotifications.vue";
 import TournamentResults from "~/components/tournament/TournamentResults.vue";
 import Separator from "~/components/ui/separator/Separator.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
@@ -114,6 +115,9 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
           </TabsTrigger>
           <TabsTrigger v-if="tournament?.is_organizer" value="organizers">
             Organizers
+          </TabsTrigger>
+          <TabsTrigger v-if="tournament?.is_organizer" value="notifications">
+            {{ $t("tournament.notifications.title") }}
           </TabsTrigger>
         </TabsList>
 
@@ -450,6 +454,15 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
           <TournamentOrganizers :tournament="tournament"></TournamentOrganizers>
         </PageTransition>
       </TabsContent>
+      <TabsContent value="notifications" v-if="tournament?.is_organizer">
+        <PageTransition>
+          <div class="p-6">
+            <TournamentNotifications
+              :tournament="tournament"
+            ></TournamentNotifications>
+          </div>
+        </PageTransition>
+      </TabsContent>
     </Tabs>
 
     <!-- Join Tournament Sheet - Available for all tabs -->
@@ -576,6 +589,20 @@ export default {
               },
               description: true,
               discord_notifications_enabled: true,
+              discord_webhook: true,
+              discord_role_id: true,
+              discord_notify_PickingPlayers: true,
+              discord_notify_Scheduled: true,
+              discord_notify_WaitingForCheckIn: true,
+              discord_notify_WaitingForServer: true,
+              discord_notify_Veto: true,
+              discord_notify_Live: true,
+              discord_notify_Finished: true,
+              discord_notify_Tie: true,
+              discord_notify_Canceled: true,
+              discord_notify_Forfeit: true,
+              discord_notify_Surrendered: true,
+              discord_notify_MapPaused: true,
               is_organizer: true,
               can_join: true,
               can_start: true,
@@ -1048,7 +1075,7 @@ export default {
     activeTab: {
       handler(newTab) {
         // Collapse overview when on match-options or organizers tabs
-        if (newTab === "match-options" || newTab === "organizers") {
+        if (newTab === "match-options" || newTab === "organizers" || newTab === "notifications") {
           this.overviewExpanded = false;
         } else if (newTab === "overview") {
           // Expand overview when switching back to overview tab

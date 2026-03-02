@@ -176,7 +176,17 @@
                     "support_role": "Discord Support Role ID",
                     "support_role_description": "This role will be pinged when used for support actions. You can get the Role ID from the Discord application by turning on developer mode and right clicking and copy id.",
                     "update": "Update",
-                    "updated": "Updated Discord Settings"
+                    "updated": "Updated Discord Settings",
+                    "match_notifications": {
+                        "title": "Match Status Notifications",
+                        "description": "Configure Discord notifications for match status changes. These settings control both panel and Discord notifications.",
+                        "webhook": "Match Notifications Webhook URL",
+                        "webhook_description": "Dedicated webhook for match status notifications. Falls back to the support webhook if not set.",
+                        "role_id": "Match Notifications Role ID",
+                        "role_id_description": "This role will be mentioned in match status notifications.",
+                        "statuses_title": "Notify on Status Changes",
+                        "events_title": "Notify on Match Events"
+                    }
                 },
                 "game_type_configs": {
                     "title": "Game Type Configs",
@@ -1079,7 +1089,9 @@
             "description": "Description",
             "start": "Start Date",
             "pick_date": "Pick a date",
-            "update": "Update Tournament"
+            "update": "Update Tournament",
+            "discord_notifications": "Discord Notifications",
+            "discord_notifications_description": "Enable Discord notifications for match status changes in this tournament. When off, only panel notifications are sent."
         },
         "table": {
             "tournament": "Tournament",
@@ -1493,7 +1505,8 @@
             "cancelled": "Cancelled",
             "finished": "Finished",
             "waiting_server": "Waiting for server ...",
-            "scheduled_asap": "Scheduled ASAP"
+            "scheduled_asap": "Scheduled ASAP",
+            "paused": "Paused"
         },
         "winner": {
             "set": "Set Match Winner",
@@ -1534,7 +1547,11 @@
             "delete": "Delete Match",
             "canceled": "Match Canceled",
             "deleted": "Match Deleted",
-            "requested_organizer": "Requested Organizer"
+            "requested_organizer": "Requested Organizer",
+            "pause": "Pause Match",
+            "resume": "Resume Match",
+            "match_paused": "Match paused",
+            "match_resumed": "Match resumed"
         },
         "delete_confirm": {
             "title": "Delete Match",

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { SidebarTrigger } from "~/components/ui/sidebar";
 import { Separator } from "~/components/ui/separator";
-import AppNotifications from "./AppNotifications.vue";
 import SystemUpdate from "./SystemUpdate.vue";
 import BreadCrumbs from "~/components/BreadCrumbs.vue";
 import SystemStatus from "./SystemStatus.vue";
@@ -15,7 +14,7 @@ const { isMobile } = useSidebar();
 
 <template>
   <header
-    class="flex h-16 shrink-0 items-center gap-2 transition-[width] ease-linear bg-background sticky top-0 z-50"
+    class="flex h-[60px] shrink-0 items-center gap-2 transition-[width] ease-linear bg-background sticky top-0 z-50"
   >
     <div class="flex items-center justify-between w-full">
       <div class="flex items-center gap-2">
@@ -34,8 +33,6 @@ const { isMobile } = useSidebar();
         <SystemStatus></SystemStatus>
 
         <OnlinePlayers v-if="isMobile"></OnlinePlayers>
-
-        <AppNotifications v-if="me"></AppNotifications>
       </div>
     </div>
   </header>

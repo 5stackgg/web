@@ -17,71 +17,92 @@ import { Calendar as CalendarIcon, X } from "lucide-vue-next";
 </script>
 
 <template>
-  <form @submit.prevent="scheduleMatch">
-    <FormField v-slot="{ componentField }" name="scheduled_at">
-      <FormItem>
-        <FormControl>
-          <div class="space-y-3">
-            <!-- Date and Time Inputs Row -->
-            <div class="flex items-center gap-2">
-              <Popover>
-                <PopoverTrigger as-child>
+  <Card>
+    <CardHeader class="p-4">
+      <CardTitle class="flex justify-between">
+        {{ $t("match.schedule.schedule") }}
+      </CardTitle>
+      <CardDescription>
+        <template v-if="!form.values.scheduled_at">
+          Start the match now or schedule it for later.
+        </template>
+        <template v-else>
+          Your match will be scheduled at the selected time.
+        </template>
+      </CardDescription>
+    </CardHeader>
+    <CardContent>
+      <form @submit.prevent="scheduleMatch">
+        <FormField v-slot="{ componentField }" name="scheduled_at">
+          <FormItem>
+            <FormControl>
+              <div class="space-y-3">
+                <!-- Date and Time Inputs Row -->
+                <div class="flex items-center gap-2">
+                  <Popover>
+                    <PopoverTrigger as-child>
+                      <Button
+                        variant="outline"
+                        class="flex-1 justify-start text-left font-normal"
+                        :class="{
+                          'text-muted-foreground': !componentField.modelValue,
+                        }"
+                      >
+                        <CalendarIcon class="mr-2 h-4 w-4" />
+                        {{ startDate || $t("match.schedule.pick_date") }}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent class="w-auto p-0">
+                      <Calendar
+                        :is-date-disabled="checkDate"
+                        v-model="startDate"
+                        initial-focus
+                      />
+                    </PopoverContent>
+                  </Popover>
+
+                  <Input
+                    type="time"
+                    v-model="startTime"
+                    style="color-scheme: dark"
+                    class="w-[120px]"
+                  ></Input>
+
                   <Button
+                    type="button"
                     variant="outline"
-                    class="flex-1 justify-start text-left font-normal"
-                    :class="{
-                      'text-muted-foreground': !componentField.modelValue,
-                    }"
+                    size="icon"
+                    :disabled="!form.values.scheduled_at"
+                    @click.prevent="resetSchedule"
+                    :title="$t('match.schedule.reset')"
                   >
-                    <CalendarIcon class="mr-2 h-4 w-4" />
-                    {{ startDate || $t("match.schedule.pick_date") }}
+                    <X class="h-4 w-4" />
                   </Button>
-                </PopoverTrigger>
-                <PopoverContent class="w-auto p-0">
-                  <Calendar
-                    :is-date-disabled="checkDate"
-                    v-model="startDate"
-                    initial-focus
-                  />
-                </PopoverContent>
-              </Popover>
+                </div>
 
-              <Input
-                type="time"
-                v-model="startTime"
-                style="color-scheme: dark"
-                class="w-[120px]"
-              ></Input>
-
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                :disabled="!form.values.scheduled_at"
-                @click.prevent="resetSchedule"
-                :title="$t('match.schedule.reset')"
-              >
-                <X class="h-4 w-4" />
-              </Button>
-            </div>
-
-            <!-- Schedule Button Row -->
-            <div class="flex items-center gap-2">
-              <Button type="submit" class="w-full">
-                <span v-if="!form.values.scheduled_at">
-                  {{ $t("match.schedule.start_match") }}
-                </span>
-                <span v-else>
-                  {{ $t("match.schedule.schedule") }}
-                </span>
-              </Button>
-            </div>
-          </div>
-          <FormMessage />
-        </FormControl>
-      </FormItem>
-    </FormField>
-  </form>
+                <!-- Schedule Button Row -->
+                <div class="flex items-center gap-2">
+                  <Button
+                    type="submit"
+                    size="sm"
+                    class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white"
+                  >
+                    <span v-if="!form.values.scheduled_at">
+                      {{ $t("match.schedule.start_match") }}
+                    </span>
+                    <span v-else>
+                      {{ $t("match.schedule.schedule") }}
+                    </span>
+                  </Button>
+                </div>
+              </div>
+              <FormMessage />
+            </FormControl>
+          </FormItem>
+        </FormField>
+      </form>
+    </CardContent>
+  </Card>
 </template>
 
 <script lang="ts">

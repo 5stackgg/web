@@ -45,25 +45,19 @@ const containContentValue = computed(() => containContent?.value ?? true);
 </template>
 
 <style scoped>
-/* Override SidebarProvider's --sidebar-height and --sidebar-width variables */
+/* Tweak nested right-sidebar layout inside main content area */
 .main-content-wrapper :deep(.group\/sidebar-wrapper) {
-  --sidebar-height: 100% !important;
-  --sidebar-width: 22rem !important;
+  /* Match the content area (viewport minus header) */
+  --sidebar-height: calc(100svh - var(--header-height)) !important;
+  --sidebar-width: 30rem !important;
+  /* Inset variant adds (spacing.4 + 2px) to icon width for collapsed state.
+     Set so collapsed container = w-14 (3.5rem): 3.5rem - 1rem - 2px */
+  --sidebar-width-icon: calc(2.5rem - 2px) !important;
   min-height: 0 !important;
 }
 
-/* Define sidebar height variable for right sidebar group */
 .main-content-wrapper :deep(.main-content-sidebar.group[data-side="right"]) {
-  --sidebar-height: 100%;
-}
-
-/* Override the fixed sidebar div positioning */
-.main-content-wrapper
-  :deep(
-    .main-content-sidebar.group[data-side="right"]
-      > div[class*="fixed"][class*="inset-y-0"]
-  ) {
-  top: 0 !important;
-  bottom: auto !important;
+  /* Ensure the fixed sidebar uses the same reduced height */
+  --sidebar-height: calc(100svh - var(--header-height));
 }
 </style>

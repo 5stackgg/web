@@ -13,6 +13,7 @@ import { CornerDownLeft } from "lucide-vue-next";
         <FormControl>
           <div class="flex gap-2">
             <Input
+              ref="inputRef"
               :placeholder="$t('chat.message_placeholder')"
               v-bind="componentField"
               class="flex-1 transition-all duration-200 focus:scale-[1.02]"
@@ -39,6 +40,7 @@ import { CornerDownLeft } from "lucide-vue-next";
         <FormControl>
           <div class="p-3 flex justify-between">
             <Input
+              ref="inputRef"
               :placeholder="$t('chat.message_placeholder')"
               v-bind="componentField"
               class="resize-none border-0 p-3 shadow-none focus-visible:ring-0"
@@ -80,6 +82,12 @@ export default {
     };
   },
   methods: {
+    focus() {
+      this.$nextTick(() => {
+        const el = (this.$refs.inputRef as any)?.$el;
+        if (el) el.focus();
+      });
+    },
     sendMessage() {
       const { message } = this.form.values;
       if (!message || message?.length === 0) {

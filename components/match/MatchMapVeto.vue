@@ -7,7 +7,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 </script>
 
 <template>
-  <template
+  <div
     v-if="
       (!match.options.region_veto || match.region) &&
       match.status === 'Veto' &&
@@ -125,7 +125,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
       <MatchPicksDisplay :match="match" :picks="picks" />
       <Separator />
     </template>
-  </template>
+  </div>
 </template>
 
 <script lang="ts">

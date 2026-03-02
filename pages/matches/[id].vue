@@ -3,17 +3,14 @@ import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
 import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
-import ChatLobby from "~/components/chat/ChatLobby.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
 import { e_match_status_enum } from "~/generated/zeus";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
-import MatchLiveStreams from "~/components/match/MatchLiveStreams.vue";
-import { e_player_roles_enum } from "~/generated/zeus";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { CardHeader, CardContent, CardTitle } from "~/components/ui/card";
+import { CardContent } from "~/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 </script>
 
@@ -24,20 +21,7 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
   >
     <div class="grid grid-cols-1 gap-y-4 md:gap-y-6">
       <PageTransition>
-        <div v-if="match.can_schedule">
-          <CardHeader class="p-4">
-            <CardTitle class="flex justify-between">{{
-              $t("pages.matches.detail.schedule")
-            }}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div class="flex flex-col space-y-4">
-              <template v-if="match.can_schedule">
-                <ScheduleMatch :match="match" />
-              </template>
-            </div>
-          </CardContent>
-        </div>
+        <ScheduleMatch :match="match" v-if="match.can_schedule" />
       </PageTransition>
 
       <PageTransition :delay="100">
@@ -47,39 +31,31 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
           <MatchInfo :match="match"></MatchInfo>
         </div>
       </PageTransition>
-
-      <PageTransition :delay="200">
-        <div class="flex flex-col gap-4">
-          <StreamEmbed
-            :streams="match.streams"
-            v-if="match.streams.length > 0 && showLiveStreams"
-          ></StreamEmbed>
-
-          <ChatLobby
-            class="max-h-96"
-            instance="matches/id"
-            type="match"
-            :lobby-id="match.id"
-            :play-notification-sound="match.status !== e_match_status_enum.Live"
-            v-if="canJoinLobby"
-          />
-          <MatchLiveStreams
-            :match="match"
-            v-if="canViewStreams"
-          ></MatchLiveStreams>
-        </div>
-      </PageTransition>
     </div>
 
     <div class="grid grid-cols-1 gap-y-4 md:gap-y-6">
       <PageTransition>
         <div
+          class="flex gap-4 flex-col 2xl:flex-row 2xl:items-start"
           v-if="
-            match.match_maps.length > 0 &&
-            match.status !== e_match_status_enum.Veto
+            (match.match_maps.length > 0 &&
+              match.status !== e_match_status_enum.Veto) ||
+            (showLiveStreams && match.streams.length > 0)
           "
         >
-          <div class="flex gap-4 justify-around flex-col 2xl:flex-row">
+          <div
+            v-if="showLiveStreams && match.streams.length > 0"
+            class="flex w-full min-w-0 flex-col gap-4 2xl:min-w-[320px] 2xl:flex-1 2xl:max-w-[600px]"
+          >
+            <StreamEmbed :streams="match.streams" />
+          </div>
+          <div
+            v-if="
+              match.match_maps.length > 0 &&
+              match.status !== e_match_status_enum.Veto
+            "
+            class="flex min-w-0 flex-1 flex-col gap-4 justify-around 2xl:flex-row"
+          >
             <div v-for="match_map of match.match_maps">
               <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
             </div>
@@ -344,35 +320,7 @@ export default {
         return region.is_lan === false;
       });
     },
-    canJoinLobby() {
-      if (!this.match) {
-        return false;
-      }
-
-      if (
-        ![
-          e_match_status_enum.Live,
-          e_match_status_enum.PickingPlayers,
-          e_match_status_enum.Scheduled,
-          e_match_status_enum.Veto,
-          e_match_status_enum.WaitingForCheckIn,
-          e_match_status_enum.WaitingForServer,
-        ].includes(this.match.status)
-      ) {
-        return false;
-      }
-
-      return (
-        this.match.is_in_lineup ||
-        this.match.is_organizer ||
-        this.match.is_coach
-      );
-    },
     showLiveStreams() {
-      if (this.match.is_in_lineup) {
-        return false;
-      }
-
       if (
         [
           e_match_status_enum.Finished,
@@ -395,28 +343,6 @@ export default {
       }
 
       return true;
-    },
-    canViewStreams() {
-      if (!this.match || this.showLiveStreams) {
-        return false;
-      }
-
-      if (
-        this.match.is_organizer ||
-        useAuthStore().isRoleAbove(e_player_roles_enum.streamer)
-      ) {
-        return true;
-      }
-
-      if (!this.match.streams || this.match.streams.length === 0) {
-        return false;
-      }
-
-      return [
-        e_match_status_enum.Live,
-        e_match_status_enum.Scheduled,
-        e_match_status_enum.Veto,
-      ].includes(this.match.status);
     },
   },
 };

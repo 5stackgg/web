@@ -25,19 +25,25 @@ import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import Logout from "./Logout.vue";
 import MatchLobbies from "./MatchLobbies.vue";
 import SystemStatus from "./SystemStatus.vue";
-import AppNotifications from "./AppNotifications.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { NuxtImg } from "#components";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Users } from "lucide-vue-next";
 import { useRightSidebar } from "@/composables/useRightSidebar";
+import { useHubState } from "@/composables/useHubState";
+import { useChatTabs } from "~/composables/useChatTabs";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import { loginLinks } from "~/utilities/loginLinks";
 
 const { isMobile } = useSidebar();
 const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
+const { selectHub } = useHubState();
 const { brandName, logoUrl } = useBranding();
+const { unreadCounts } = useChatTabs();
+const totalUnread = computed(() =>
+  Object.values(unreadCounts.value).reduce((sum, n) => sum + (n || 0), 0),
+);
 </script>
 
 <template>
@@ -300,15 +306,19 @@ const { brandName, logoUrl } = useBranding();
       <div class="flex items-center gap-4">
         <InstallPWA v-if="!isMobile" :is-menu-item="false" />
         <MatchLobbies v-if="!isMobile" />
-        <AppNotifications />
-
         <Button
           variant="ghost"
           size="icon"
-          class="h-7 w-7 md:hidden"
-          @click="setRightSidebarOpen(!rightSidebarOpen)"
+          class="h-7 w-7 md:hidden relative"
+          @click="selectHub('social')"
         >
           <Users class="h-4 w-4" />
+          <span
+            v-if="totalUnread > 0"
+            class="absolute -top-1 -right-1 inline-flex items-center justify-center rounded-full bg-destructive text-destructive-foreground text-[9px] px-1 min-w-[1rem] h-4 leading-none"
+          >
+            {{ totalUnread }}
+          </span>
           <span class="sr-only">Toggle Right Sidebar</span>
         </Button>
 

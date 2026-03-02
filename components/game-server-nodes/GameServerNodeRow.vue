@@ -2110,11 +2110,15 @@ export default defineComponent({
       return `${start}-${end}`;
     },
     maxServers() {
-      const virtualCPUsAvailable =
-        this.gameServerNode.cpu_sockets *
-          this.gameServerNode.cpu_cores_per_socket *
-          this.gameServerNode.cpu_threads_per_core -
-        1;
+      const totalThreads =
+        (this.gameServerNode.cpu_sockets || 0) *
+        (this.gameServerNode.cpu_cores_per_socket || 0) *
+        (this.gameServerNode.cpu_threads_per_core || 0);
+
+      const virtualCPUsAvailable = Math.max(
+        1,
+        totalThreads ? totalThreads - 1 : 0
+      );
 
       if (
         !this.gameServerNode.supports_cpu_pinning ||
@@ -2123,7 +2127,10 @@ export default defineComponent({
         return virtualCPUsAvailable;
       }
 
-      return Math.floor(virtualCPUsAvailable / this.numberOfCpusPerServer);
+      const cpusPerServer = this.numberOfCpusPerServer || 1;
+      const servers = Math.floor(virtualCPUsAvailable / cpusPerServer);
+
+      return Math.max(1, servers);
     },
     cpuPinningEnabled() {
       return (

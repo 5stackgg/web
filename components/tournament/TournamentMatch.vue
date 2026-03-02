@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import TournamentRoundLineup from "~/components/tournament/TournamentRoundLineup.vue";
+import MatchStatus from "~/components/match/MatchStatus.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { e_tournament_stage_types_enum } from "~/generated/zeus";
 
@@ -22,11 +23,16 @@ interface Bracket {
   }>;
   match?: {
     id: string;
+    status?: string;
+    e_match_status?: {
+      description: string;
+    };
     options?: {
       best_of?: number;
     };
     lineup_1?: any;
     lineup_2?: any;
+    match_maps?: Array<{ status?: string }>;
   };
   parent_bracket?: {
     id?: string;
@@ -457,6 +463,10 @@ const isLbFeedingToWb = (bracket: Bracket) => {
             </div>
           </div>
         </template>
+      </div>
+
+      <div v-if="bracket.match?.status && bracket.match?.e_match_status" class="flex justify-center">
+        <MatchStatus :match="bracket.match" />
       </div>
 
       <template

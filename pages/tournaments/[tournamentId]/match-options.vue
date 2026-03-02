@@ -27,7 +27,7 @@ import TournamentForm from "~/components/tournament/TournamentForm.vue";
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { playerFields } from "~/graphql/playerFields";
-import { mapFields } from "~/graphql/mapGraphql";
+import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 
 export default {
   components: {
@@ -56,6 +56,7 @@ export default {
                 description: true,
               },
               description: true,
+              discord_notifications_enabled: true,
               is_organizer: true,
               can_join: true,
               can_cancel: true,
@@ -64,33 +65,7 @@ export default {
               min_players_per_lineup: true,
               max_players_per_lineup: true,
               admin: playerFields,
-              options: {
-                id: true,
-                type: true,
-                mr: true,
-                map_veto: true,
-                coaches: true,
-                knife_round: true,
-                overtime: true,
-                region_veto: true,
-                best_of: true,
-                tv_delay: true,
-                number_of_substitutes: true,
-                timeout_setting: true,
-                tech_timeout_setting: true,
-                ready_setting: true,
-                map_pool: [
-                  {},
-                  {
-                    id: true,
-                    type: true,
-                    e_type: {
-                      description: true,
-                    },
-                    maps: [{}, mapFields],
-                  },
-                ],
-              },
+              options: matchOptionsFields,
             },
           ],
         }),

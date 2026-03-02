@@ -42,7 +42,10 @@
  
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
- 
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 98%;
+
     --ring: 240 10% 3.9%;
  
     --radius: 0.5rem;
@@ -91,6 +94,9 @@
  
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
+
+    --success: 142 76% 26%;
+    --success-foreground: 0 0% 98%;
 
     --warning: 36 100% 30%;
     --warning-foreground: 0 0% 100%;

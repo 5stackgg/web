@@ -93,6 +93,7 @@ import { Card } from "~/components/ui/card";
             :label="$t('tournament.team.select')"
             :my-teams="tournament.is_organizer ? false : true"
             :is-admin="tournament.is_organizer ? false : true"
+            :exclude="existingTeamIds"
             @selected="
               async (team) => {
                 handleChange(String(team.id));
@@ -188,6 +189,11 @@ export default {
     },
     teams() {
       return this.me.teams;
+    },
+    existingTeamIds() {
+      return (this.tournament.teams || [])
+        .map((t) => t.team_id)
+        .filter(Boolean);
     },
   },
   watch: {

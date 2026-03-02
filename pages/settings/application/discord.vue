@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Card } from "~/components/ui/card";
+import { Switch } from "~/components/ui/switch";
+import { e_match_status_enum } from "~/generated/zeus";
 definePageMeta({
   layout: "application-settings",
 });
+
+const MATCH_STATUSES = Object.values(e_match_status_enum);
 </script>
 
 <template>
@@ -51,6 +55,127 @@ definePageMeta({
         </div>
       </Card>
 
+      <Card variant="gradient">
+        <div class="p-6 space-y-6">
+          <div>
+            <h3 class="text-lg font-medium">
+              {{
+                $t(
+                  "pages.settings.application.discord.match_notifications.title",
+                )
+              }}
+            </h3>
+            <p class="text-sm text-muted-foreground">
+              {{
+                $t(
+                  "pages.settings.application.discord.match_notifications.description",
+                )
+              }}
+            </p>
+          </div>
+
+          <FormField
+            v-slot="{ componentField }"
+            name="discord_match_notifications_webhook"
+          >
+            <FormItem>
+              <FormLabel>{{
+                $t(
+                  "pages.settings.application.discord.match_notifications.webhook",
+                )
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.discord.match_notifications.webhook_description",
+                )
+              }}</FormDescription>
+              <Input v-bind="componentField"></Input>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField
+            v-slot="{ componentField }"
+            name="discord_match_notifications_role_id"
+          >
+            <FormItem>
+              <FormLabel>{{
+                $t(
+                  "pages.settings.application.discord.match_notifications.role_id",
+                )
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.discord.match_notifications.role_id_description",
+                )
+              }}</FormDescription>
+              <Input v-bind="componentField"></Input>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <div>
+            <h4 class="text-base font-medium mb-3">
+              {{
+                $t(
+                  "pages.settings.application.discord.match_notifications.statuses_title",
+                )
+              }}
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div
+                v-for="status in MATCH_STATUSES"
+                :key="status"
+                class="flex items-center justify-between rounded-lg border p-3"
+              >
+                <span class="text-sm font-medium">{{
+                  statusLabels[status]
+                }}</span>
+                <Switch
+                  :model-value="
+                    form.values[`discord_match_notify_${status}`] === 'true'
+                  "
+                  @update:model-value="
+                    form.setFieldValue(
+                      `discord_match_notify_${status}`,
+                      $event ? 'true' : 'false',
+                    )
+                  "
+                />
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-base font-medium mb-3">
+              {{
+                $t(
+                  "pages.settings.application.discord.match_notifications.events_title",
+                )
+              }}
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div
+                class="flex items-center justify-between rounded-lg border p-3"
+              >
+                <span class="text-sm font-medium">Map Paused</span>
+                <Switch
+                  :model-value="
+                    form.values['discord_match_notify_MapPaused'] === 'true'
+                  "
+                  @update:model-value="
+                    form.setFieldValue(
+                      'discord_match_notify_MapPaused',
+                      $event ? 'true' : 'false',
+                    )
+                  "
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
       <div class="flex justify-start">
         <Button
           type="submit"
@@ -65,22 +190,50 @@ definePageMeta({
 </template>
 
 <script lang="ts">
-import { settings_constraint, settings_update_column } from "~/generated/zeus";
+import {
+  e_match_status_enum,
+  settings_constraint,
+  settings_update_column,
+} from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { z } from "zod";
 import { toast } from "@/components/ui/toast";
 
+const STATUS_LABEL_MAP: Record<e_match_status_enum, string> = {
+  [e_match_status_enum.PickingPlayers]: "Picking Players",
+  [e_match_status_enum.Scheduled]: "Scheduled",
+  [e_match_status_enum.WaitingForCheckIn]: "Waiting for Check-In",
+  [e_match_status_enum.WaitingForServer]: "Waiting for Server",
+  [e_match_status_enum.Veto]: "Veto",
+  [e_match_status_enum.Live]: "Live",
+  [e_match_status_enum.Finished]: "Finished",
+  [e_match_status_enum.Tie]: "Tie",
+  [e_match_status_enum.Canceled]: "Canceled",
+  [e_match_status_enum.Forfeit]: "Forfeit",
+  [e_match_status_enum.Surrendered]: "Surrendered",
+};
+
 export default {
   data() {
     return {
+      statusLabels: STATUS_LABEL_MAP,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
             discord_invite_link: z.string().optional(),
             discord_support_webhook: z.string().optional(),
             discord_support_role_id: z.string().optional(),
+            discord_match_notifications_webhook: z.string().optional(),
+            discord_match_notifications_role_id: z.string().optional(),
+            ...Object.fromEntries(
+              Object.values(e_match_status_enum).map((s) => [
+                `discord_match_notify_${s}`,
+                z.string().optional(),
+              ]),
+            ),
+            discord_match_notify_MapPaused: z.string().optional(),
           }),
         ),
       }),
@@ -98,24 +251,28 @@ export default {
   },
   methods: {
     async updateSettings() {
+      const fields = [
+        "discord_invite_link",
+        "discord_support_webhook",
+        "discord_support_role_id",
+        "discord_match_notifications_webhook",
+        "discord_match_notifications_role_id",
+        ...Object.values(e_match_status_enum).map(
+          (s) => `discord_match_notify_${s}`,
+        ),
+        "discord_match_notify_MapPaused",
+      ];
+
+      const objects = fields.map((name) => ({
+        name,
+        value: this.form.values[name] || "",
+      }));
+
       await this.$apollo.mutate({
         mutation: generateMutation({
           insert_settings: [
             {
-              objects: [
-                {
-                  name: "discord_invite_link",
-                  value: this.form.values.discord_invite_link,
-                },
-                {
-                  name: "discord_support_webhook",
-                  value: this.form.values.discord_support_webhook,
-                },
-                {
-                  name: "discord_support_role_id",
-                  value: this.form.values.discord_support_role_id,
-                },
-              ],
+              objects,
               on_conflict: {
                 constraint: settings_constraint.settings_pkey,
                 update_columns: [settings_update_column.value],
@@ -129,7 +286,7 @@ export default {
       });
 
       toast({
-        title: "Updated Discord Settings",
+        title: this.$t("pages.settings.application.discord.updated"),
       });
     },
   },

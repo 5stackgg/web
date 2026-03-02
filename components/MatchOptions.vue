@@ -908,6 +908,7 @@ import { Card } from "~/components/ui/card";
                 </Card>
               </FormItem>
             </FormField>
+            <slot name="after-advanced"></slot>
           </div>
         </CollapsibleContent>
       </Collapsible>

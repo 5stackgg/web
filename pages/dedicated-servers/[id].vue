@@ -254,6 +254,7 @@ export default {
               connection_string: true,
               offline_at: true,
               connect_password: true,
+              max_players: true,
             },
           ],
         }),

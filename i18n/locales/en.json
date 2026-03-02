@@ -184,7 +184,8 @@
                         "webhook_description": "Dedicated webhook for match status notifications. Falls back to the support webhook if not set.",
                         "role_id": "Match Notifications Role ID",
                         "role_id_description": "This role will be mentioned in match status notifications.",
-                        "statuses_title": "Notify on Status Changes"
+                        "statuses_title": "Notify on Status Changes",
+                        "events_title": "Notify on Match Events"
                     }
                 },
                 "game_type_configs": {

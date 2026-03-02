@@ -145,6 +145,34 @@ const MATCH_STATUSES = Object.values(e_match_status_enum);
               </div>
             </div>
           </div>
+
+          <div>
+            <h4 class="text-base font-medium mb-3">
+              {{
+                $t(
+                  "pages.settings.application.discord.match_notifications.events_title",
+                )
+              }}
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div
+                class="flex items-center justify-between rounded-lg border p-3"
+              >
+                <span class="text-sm font-medium">Map Paused</span>
+                <Switch
+                  :model-value="
+                    form.values['discord_match_notify_MapPaused'] === 'true'
+                  "
+                  @update:model-value="
+                    form.setFieldValue(
+                      'discord_match_notify_MapPaused',
+                      $event ? 'true' : 'false',
+                    )
+                  "
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </Card>
 
@@ -205,6 +233,7 @@ export default {
                 z.string().optional(),
               ]),
             ),
+            discord_match_notify_MapPaused: z.string().optional(),
           }),
         ),
       }),
@@ -231,6 +260,7 @@ export default {
         ...Object.values(e_match_status_enum).map(
           (s) => `discord_match_notify_${s}`,
         ),
+        "discord_match_notify_MapPaused",
       ];
 
       const objects = fields.map((name) => ({

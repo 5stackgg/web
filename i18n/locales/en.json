@@ -1104,7 +1104,8 @@
             "events_title": "Notify on Match Events",
             "using_global": "Using global default",
             "save": "Save",
-            "saved": "Notification settings updated"
+            "saved": "Notification settings updated",
+            "save_error": "Failed to save notification settings"
         },
         "table": {
             "tournament": "Tournament",

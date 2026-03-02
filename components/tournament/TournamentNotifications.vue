@@ -334,40 +334,49 @@ export default {
       const _set: Record<string, any> = {};
 
       for (const field of DISCORD_FIELDS) {
-        variables[field] = this.form[field];
-
+        let value = this.form[field];
         if (
-          field === "discord_webhook" ||
-          field === "discord_role_id"
+          (field === "discord_webhook" || field === "discord_role_id") &&
+          value === ""
         ) {
+          value = null;
+        }
+        variables[field] = value;
+
+        if (field === "discord_webhook" || field === "discord_role_id") {
           _set[field] = $(field, "String");
-        } else if (field === "discord_notifications_enabled") {
-          _set[field] = $(field, "Boolean");
         } else {
           _set[field] = $(field, "Boolean");
         }
       }
 
-      await this.$apollo.mutate({
-        variables,
-        mutation: generateMutation({
-          update_tournaments_by_pk: [
-            {
-              pk_columns: {
-                id: this.tournament.id,
+      try {
+        await this.$apollo.mutate({
+          variables,
+          mutation: generateMutation({
+            update_tournaments_by_pk: [
+              {
+                pk_columns: {
+                  id: this.tournament.id,
+                },
+                _set,
               },
-              _set,
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
+              {
+                __typename: true,
+              },
+            ],
+          }),
+        });
 
-      toast({
-        title: this.$t("tournament.notifications.saved"),
-      });
+        toast({
+          title: this.$t("tournament.notifications.saved"),
+        });
+      } catch {
+        toast({
+          title: this.$t("tournament.notifications.save_error"),
+          variant: "destructive",
+        });
+      }
     },
   },
 };

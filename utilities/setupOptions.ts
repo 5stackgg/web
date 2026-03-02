@@ -41,6 +41,7 @@ export function setupOptionsVariables(
     knife_round: boolean;
     default_models: boolean;
     overtime: boolean;
+    map_veto: boolean;
     coaches: boolean;
     region_veto: boolean;
     regions: string[];
@@ -96,6 +97,10 @@ export function setupOptionsVariables(
     throw new Error("coaches is required");
   }
 
+  if (values.map_veto === undefined || values.map_veto === null) {
+    throw new Error("map_veto is required");
+  }
+
   if (values.region_veto === undefined || values.region_veto === null) {
     throw new Error("region_veto is required");
   }
@@ -149,6 +154,7 @@ export function setupOptionsVariables(
     knife_round: values.knife_round,
     default_models: values.default_models,
     overtime: values.overtime,
+    map_veto: values.map_veto,
     coaches: values.coaches,
     region_veto: values.region_veto,
     regions: values.regions,
@@ -192,7 +198,7 @@ export function setupOptionsSetMutation(hasMapPoolId: boolean = true) {
     knife_round: $("knife_round", "Boolean!"),
     default_models: $("default_models", "Boolean!"),
     overtime: $("overtime", "Boolean!"),
-    map_veto: true,
+    map_veto: $("map_veto", "Boolean!"),
     region_veto: $("region_veto", "Boolean!"),
     regions: $("regions", "[String!]!"),
     coaches: $("coaches", "Boolean!"),

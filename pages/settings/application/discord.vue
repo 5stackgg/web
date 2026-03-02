@@ -126,12 +126,22 @@ const MATCH_STATUSES = Object.values(e_match_status_enum);
               <div
                 v-for="status in MATCH_STATUSES"
                 :key="status"
-                class="flex items-center justify-between rounded-lg border p-3"
+                class="flex items-center justify-between rounded-lg border p-3 cursor-pointer select-none"
+                role="button"
+                @click="
+                  form.setFieldValue(
+                    `discord_match_notify_${status}`,
+                    form.values[`discord_match_notify_${status}`] === 'true'
+                      ? 'false'
+                      : 'true',
+                  )
+                "
               >
                 <span class="text-sm font-medium">{{
                   statusLabels[status]
                 }}</span>
                 <Switch
+                  @click.stop
                   :model-value="
                     form.values[`discord_match_notify_${status}`] === 'true'
                   "
@@ -156,10 +166,20 @@ const MATCH_STATUSES = Object.values(e_match_status_enum);
             </h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div
-                class="flex items-center justify-between rounded-lg border p-3"
+                class="flex items-center justify-between rounded-lg border p-3 cursor-pointer select-none"
+                role="button"
+                @click="
+                  form.setFieldValue(
+                    'discord_match_notify_MapPaused',
+                    form.values['discord_match_notify_MapPaused'] === 'true'
+                      ? 'false'
+                      : 'true',
+                  )
+                "
               >
                 <span class="text-sm font-medium">Map Paused</span>
                 <Switch
+                  @click.stop
                   :model-value="
                     form.values['discord_match_notify_MapPaused'] === 'true'
                   "

@@ -76,12 +76,20 @@ import MatchOptions from "~/components/MatchOptions.vue";
         </FormItem>
       </FormField>
       <template #after-advanced>
-        <FormField v-slot="{ value, handleChange }" name="discord_notifications_enabled">
+        <FormField
+          v-slot="{ value, handleChange }"
+          name="discord_notifications_enabled"
+        >
           <FormItem>
-            <Card class="cursor-pointer" @click="handleChange(!value ? true : null)">
+            <Card
+              class="cursor-pointer"
+              @click="handleChange(!value ? true : null)"
+            >
               <div class="flex flex-col space-y-3 p-4">
                 <div class="flex justify-between items-center">
-                  <FormLabel class="text-lg font-semibold">{{ $t("tournament.form.discord_notifications") }}</FormLabel>
+                  <FormLabel class="text-lg font-semibold">{{
+                    $t("tournament.form.discord_notifications")
+                  }}</FormLabel>
                   <FormControl>
                     <Switch
                       class="pointer-events-none"
@@ -90,7 +98,9 @@ import MatchOptions from "~/components/MatchOptions.vue";
                     />
                   </FormControl>
                 </div>
-                <FormDescription>{{ $t("tournament.form.discord_notifications_description") }}</FormDescription>
+                <FormDescription>{{
+                  $t("tournament.form.discord_notifications_description")
+                }}</FormDescription>
               </div>
             </Card>
           </FormItem>

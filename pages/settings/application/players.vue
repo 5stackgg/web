@@ -115,7 +115,7 @@ async function doRefreshAllPlayers() {
           </div>
         </Card>
 
-        <div class="p-6 space-y-6">
+        <div class="space-y-6">
           <FormField
             v-slot="{ componentField }"
             name="public.create_matches_role"

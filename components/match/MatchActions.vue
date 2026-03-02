@@ -25,7 +25,7 @@ import {
       @click="togglePause"
       :disabled="!match.is_server_online"
     >
-      {{ isPaused ? $t('match.actions.resume') : $t('match.actions.pause') }}
+      {{ isPaused ? $t("match.actions.resume") : $t("match.actions.pause") }}
     </Button>
 
     <DropdownMenu>

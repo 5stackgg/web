@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import {
-  e_match_status_enum,
-  e_match_map_status_enum,
-} from "~/generated/zeus";
+import { e_match_status_enum, e_match_map_status_enum } from "~/generated/zeus";
 import TimeAgo from "~/components/TimeAgo.vue";
 
 const props = defineProps<{
@@ -41,10 +38,7 @@ const hasPausedMap = computed(() => {
 const badgeVariant = computed(() => {
   if (PROBLEM_STATUSES.includes(props.match.status as e_match_status_enum))
     return "destructive";
-  if (
-    props.match.status === e_match_status_enum.Live &&
-    hasPausedMap.value
-  )
+  if (props.match.status === e_match_status_enum.Live && hasPausedMap.value)
     return "destructive";
   if (OK_STATUSES.includes(props.match.status as e_match_status_enum))
     return "success";

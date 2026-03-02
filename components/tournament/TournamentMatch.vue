@@ -465,7 +465,10 @@ const isLbFeedingToWb = (bracket: Bracket) => {
         </template>
       </div>
 
-      <div v-if="bracket.match?.status && bracket.match?.e_match_status" class="flex justify-center">
+      <div
+        v-if="bracket.match?.status && bracket.match?.e_match_status"
+        class="flex justify-center"
+      >
         <MatchStatus :match="bracket.match" />
       </div>
 

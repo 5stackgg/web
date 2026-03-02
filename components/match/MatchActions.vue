@@ -4,7 +4,11 @@ import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import MatchLobbyAccess from "./MatchLobbyAccess.vue";
-import { e_match_status_enum, e_player_roles_enum } from "~/generated/zeus";
+import {
+  e_match_status_enum,
+  e_match_map_status_enum,
+  e_player_roles_enum,
+} from "~/generated/zeus";
 </script>
 
 <template>
@@ -13,6 +17,16 @@ import { e_match_status_enum, e_player_roles_enum } from "~/generated/zeus";
       :match="match"
       v-if="match.status === e_match_status_enum.PickingPlayers"
     />
+
+    <Button
+      v-if="canPauseResume"
+      size="sm"
+      :variant="isPaused ? 'default' : 'destructive'"
+      @click="togglePause"
+      :disabled="!match.is_server_online"
+    >
+      {{ isPaused ? $t('match.actions.resume') : $t('match.actions.pause') }}
+    </Button>
 
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
@@ -112,6 +126,8 @@ import { e_match_status_enum, e_player_roles_enum } from "~/generated/zeus";
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
+import socket from "~/web-sockets/Socket";
+import { v4 as uuidv4 } from "uuid";
 export default {
   props: {
     match: {
@@ -122,7 +138,15 @@ export default {
   data() {
     return {
       showDeleteDialog: false,
+      rconUuid: undefined as string | undefined,
     };
+  },
+  created() {
+    this.rconUuid = uuidv4();
+    socket.on("rcon", this.onRconResponse);
+  },
+  beforeUnmount() {
+    socket.removeListener("rcon", this.onRconResponse);
   },
   methods: {
     async cancelMatch() {
@@ -172,6 +196,32 @@ export default {
         }),
       });
     },
+    onRconResponse(data: any) {
+      if (data.uuid !== this.rconUuid) {
+        return;
+      }
+      if (data.result === "unable to connect to rcon") {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+        });
+      } else {
+        toast({
+          title: this.isPaused
+            ? this.$t("match.actions.match_resumed")
+            : this.$t("match.actions.match_paused"),
+        });
+      }
+    },
+    togglePause() {
+      const command = this.isPaused ? "css_resume" : "css_pause";
+      this.rconUuid = uuidv4();
+      socket.event("rcon", {
+        uuid: this.rconUuid,
+        serverId: this.match.server_id,
+        command,
+      });
+    },
     async callForOrganizer() {
       await this.$apollo.mutate({
         mutation: generateMutation({
@@ -187,6 +237,26 @@ export default {
   computed: {
     canAct() {
       return this.match.is_in_lineup || this.match.is_organizer;
+    },
+    currentMap() {
+      return this.match.match_maps?.find((m: any) => m.is_current_map);
+    },
+    isPaused() {
+      return this.currentMap?.status === e_match_map_status_enum.Paused;
+    },
+    canPauseResume() {
+      if (!this.match.is_organizer) {
+        return false;
+      }
+      if (this.match.status !== e_match_status_enum.Live) {
+        return false;
+      }
+      const status = this.currentMap?.status;
+      return (
+        status === e_match_map_status_enum.Live ||
+        status === e_match_map_status_enum.Overtime ||
+        status === e_match_map_status_enum.Paused
+      );
     },
     canDeleteMatch() {
       return (

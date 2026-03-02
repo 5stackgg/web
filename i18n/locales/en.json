@@ -1534,7 +1534,11 @@
             "delete": "Delete Match",
             "canceled": "Match Canceled",
             "deleted": "Match Deleted",
-            "requested_organizer": "Requested Organizer"
+            "requested_organizer": "Requested Organizer",
+            "pause": "Pause Match",
+            "resume": "Resume Match",
+            "match_paused": "Match paused",
+            "match_resumed": "Match resumed"
         },
         "delete_confirm": {
             "title": "Delete Match",

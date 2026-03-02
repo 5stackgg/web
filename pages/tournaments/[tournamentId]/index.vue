@@ -1007,12 +1007,12 @@ export default {
     async deleteTournament() {
       await this.$apollo.mutate({
         mutation: generateMutation({
-          delete_tournaments_by_pk: [
+          deleteTournament: [
             {
-              id: this.tournament.id,
+              tournament_id: this.tournament.id,
             },
             {
-              __typename: true,
+              success: true,
             },
           ],
         }),

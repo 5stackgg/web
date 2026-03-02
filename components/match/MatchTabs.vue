@@ -526,10 +526,7 @@ export default {
       ].includes(this.match.status);
     },
     canViewAdmin() {
-      const { isAdmin, isMatchOrganizer, isTournamentOrganizer } =
-        useAuthStore();
-
-      return isAdmin || isMatchOrganizer || isTournamentOrganizer;
+      return this.match.is_organizer;
     },
     canSendRCONCommands() {
       if (

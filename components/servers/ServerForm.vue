@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import {
@@ -19,6 +20,9 @@ import {
 } from "~/components/ui/select";
 import { Switch } from "~/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { Eye, EyeOff } from "lucide-vue-next";
+
+const showConnectPassword = ref(false);
 </script>
 
 <template>
@@ -268,7 +272,24 @@ import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
       <FormItem>
         <FormLabel>{{ $t("server.form.connect_password") }}</FormLabel>
         <FormControl>
-          <Input type="password" v-bind="componentField" />
+          <div class="relative">
+            <Input
+              :type="showConnectPassword ? 'text' : 'password'"
+              v-bind="componentField"
+              autocomplete="off"
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              class="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7"
+              @click="showConnectPassword = !showConnectPassword"
+              tabindex="-1"
+            >
+              <Eye v-if="!showConnectPassword" class="h-4 w-4" />
+              <EyeOff v-else class="h-4 w-4" />
+            </Button>
+          </div>
           <FormMessage />
           <FormDescription>{{
             $t("server.form.connect_password_description")
@@ -537,6 +558,7 @@ export default {
                   type: formValues.type,
                   label: formValues.label,
                   rcon_password: formValues.rcon_password,
+                  connect_password: formValues.connect_password,
                   max_players: formValues.max_players,
                   ...(!this.server.game_server_node_id
                     ? {
@@ -544,7 +566,6 @@ export default {
                         port: formValues.port,
                         tv_port: formValues.tv_port,
                         region: formValues.region,
-                        connect_password: formValues.connect_password,
                       }
                     : {}),
                 },

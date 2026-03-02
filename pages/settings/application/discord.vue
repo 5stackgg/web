@@ -2,23 +2,12 @@
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Card } from "~/components/ui/card";
 import { Switch } from "~/components/ui/switch";
+import { e_match_status_enum } from "~/generated/zeus";
 definePageMeta({
   layout: "application-settings",
 });
 
-const MATCH_STATUSES = [
-  "PickingPlayers",
-  "Scheduled",
-  "WaitingForCheckIn",
-  "WaitingForServer",
-  "Veto",
-  "Live",
-  "Finished",
-  "Tie",
-  "Canceled",
-  "Forfeit",
-  "Surrendered",
-] as const;
+const MATCH_STATUSES = Object.values(e_match_status_enum);
 </script>
 
 <template>
@@ -173,25 +162,29 @@ const MATCH_STATUSES = [
 </template>
 
 <script lang="ts">
-import { settings_constraint, settings_update_column } from "~/generated/zeus";
+import {
+  e_match_status_enum,
+  settings_constraint,
+  settings_update_column,
+} from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "@vee-validate/zod";
 import { z } from "zod";
 import { toast } from "@/components/ui/toast";
 
-const STATUS_LABEL_MAP: Record<string, string> = {
-  PickingPlayers: "Picking Players",
-  Scheduled: "Scheduled",
-  WaitingForCheckIn: "Waiting for Check-In",
-  WaitingForServer: "Waiting for Server",
-  Veto: "Veto",
-  Live: "Live",
-  Finished: "Finished",
-  Tie: "Tie",
-  Canceled: "Canceled",
-  Forfeit: "Forfeit",
-  Surrendered: "Surrendered",
+const STATUS_LABEL_MAP: Record<e_match_status_enum, string> = {
+  [e_match_status_enum.PickingPlayers]: "Picking Players",
+  [e_match_status_enum.Scheduled]: "Scheduled",
+  [e_match_status_enum.WaitingForCheckIn]: "Waiting for Check-In",
+  [e_match_status_enum.WaitingForServer]: "Waiting for Server",
+  [e_match_status_enum.Veto]: "Veto",
+  [e_match_status_enum.Live]: "Live",
+  [e_match_status_enum.Finished]: "Finished",
+  [e_match_status_enum.Tie]: "Tie",
+  [e_match_status_enum.Canceled]: "Canceled",
+  [e_match_status_enum.Forfeit]: "Forfeit",
+  [e_match_status_enum.Surrendered]: "Surrendered",
 };
 
 export default {
@@ -206,17 +199,12 @@ export default {
             discord_support_role_id: z.string().optional(),
             discord_match_notifications_webhook: z.string().optional(),
             discord_match_notifications_role_id: z.string().optional(),
-            discord_match_notify_PickingPlayers: z.string().optional(),
-            discord_match_notify_Scheduled: z.string().optional(),
-            discord_match_notify_WaitingForCheckIn: z.string().optional(),
-            discord_match_notify_WaitingForServer: z.string().optional(),
-            discord_match_notify_Veto: z.string().optional(),
-            discord_match_notify_Live: z.string().optional(),
-            discord_match_notify_Finished: z.string().optional(),
-            discord_match_notify_Tie: z.string().optional(),
-            discord_match_notify_Canceled: z.string().optional(),
-            discord_match_notify_Forfeit: z.string().optional(),
-            discord_match_notify_Surrendered: z.string().optional(),
+            ...Object.fromEntries(
+              Object.values(e_match_status_enum).map((s) => [
+                `discord_match_notify_${s}`,
+                z.string().optional(),
+              ]),
+            ),
           }),
         ),
       }),
@@ -240,19 +228,9 @@ export default {
         "discord_support_role_id",
         "discord_match_notifications_webhook",
         "discord_match_notifications_role_id",
-        ...([
-          "PickingPlayers",
-          "Scheduled",
-          "WaitingForCheckIn",
-          "WaitingForServer",
-          "Veto",
-          "Live",
-          "Finished",
-          "Tie",
-          "Canceled",
-          "Forfeit",
-          "Surrendered",
-        ] as const).map((s) => `discord_match_notify_${s}`),
+        ...Object.values(e_match_status_enum).map(
+          (s) => `discord_match_notify_${s}`,
+        ),
       ];
 
       const objects = fields.map((name) => ({

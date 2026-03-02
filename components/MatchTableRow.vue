@@ -12,6 +12,7 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import StreamEmbed from "~/components/StreamEmbed.vue";
+import MatchStatus from "~/components/match/MatchStatus.vue";
 </script>
 
 <template>
@@ -151,9 +152,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
         <div
           class="flex items-center space-x-2 text-[10px] text-muted-foreground"
         >
-          <Badge variant="outline" class="text-[10px]">
-            {{ match.e_match_status.description }}
-          </Badge>
+          <MatchStatus :match="match" />
           <TimeAgo
             :date="match.started_at || match.scheduled_at || match.created_at"
           ></TimeAgo>
@@ -314,9 +313,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
               v-if="match.streams?.length > 0"
             />
 
-            <Badge variant="outline" class="text-[10px] sm:text-xs">
-              {{ match.e_match_status.description }}
-            </Badge>
+            <MatchStatus :match="match" />
 
             <TimeAgo
               :date="match.started_at || match.scheduled_at || match.created_at"
@@ -337,7 +334,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
         <div class="flex items-center space-x-2">
           <div class="flex-shrink-0">
             <div
-              class="uppercase w-8 h-8 bg-gradient-to-br from-primary via-primary/90 to-primary/70 rounded-lg flex items-center justify-center text-primary-foreground font-bold text-xs shadow-lg border border-primary/20"
+              class="uppercase w-8 h-8 bg-gradient-to-br from-blue-600 via-blue-500 to-blue-400 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-lg border border-blue-500/30"
             >
               {{ getTeamInitials(match.lineup_1.name) }}
             </div>
@@ -379,7 +376,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
           </h3>
           <div class="flex-shrink-0">
             <div
-              class="uppercase w-8 h-8 bg-gradient-to-br from-destructive via-destructive/90 to-destructive/70 rounded-lg flex items-center justify-center text-destructive-foreground font-bold text-xs shadow-lg border border-destructive/20"
+              class="uppercase w-8 h-8 bg-gradient-to-br from-amber-600 via-amber-500 to-amber-400 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-lg border border-amber-500/30"
             >
               {{ getTeamInitials(match.lineup_2.name) }}
             </div>
@@ -395,7 +392,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
         <div class="flex items-center space-x-2 lg:space-x-3">
           <div class="flex-shrink-0">
             <div
-              class="uppercase w-10 h-10 bg-gradient-to-br from-primary via-primary/90 to-primary/70 rounded-xl flex items-center justify-center text-primary-foreground font-bold text-lg shadow-lg border-2 border-primary/20"
+              class="uppercase w-10 h-10 bg-gradient-to-br from-blue-600 via-blue-500 to-blue-400 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-blue-500/30"
             >
               {{ getTeamInitials(match.lineup_1.name) }}
             </div>
@@ -469,7 +466,7 @@ import StreamEmbed from "~/components/StreamEmbed.vue";
           </div>
           <div class="flex-shrink-0">
             <div
-              class="uppercase w-10 h-10 bg-gradient-to-br from-destructive via-destructive/90 to-destructive/70 rounded-xl flex items-center justify-center text-destructive-foreground font-bold text-lg shadow-lg border-2 border-destructive/20"
+              class="uppercase w-10 h-10 bg-gradient-to-br from-amber-600 via-amber-500 to-amber-400 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-amber-500/30"
             >
               {{ getTeamInitials(match.lineup_2.name) }}
             </div>

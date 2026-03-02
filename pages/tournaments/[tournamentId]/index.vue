@@ -575,6 +575,7 @@ export default {
                 description: true,
               },
               description: true,
+              discord_notifications_enabled: true,
               is_organizer: true,
               can_join: true,
               can_start: true,

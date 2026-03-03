@@ -11,22 +11,40 @@ import MapDisplay from "~/components/MapDisplay.vue";
       <div v-for="map in mapPool" :key="map.id" class="relative group">
         <MapDisplay
           :map="map"
-          class="cursor-pointer h-[180px] transition-all duration-300 ease-in-out transform hover:scale-105"
+          class="cursor-pointer h-[180px] transition-all duration-300 ease-in-out transform"
           :class="{
-            'ring-4 ring-primary ring-opacity-50': selectedMap?.id === map.id,
+            'scale-110 ring-2 ring-primary': selectedMap?.id === map.id,
+            'opacity-30 scale-95':
+              selectedMap &&
+              selectedMap.id !== map.id &&
+              availableMaps.includes(map),
+            'hover:scale-105': !selectedMap || selectedMap.id !== map.id,
             'opacity-30 pointer-events-none filter grayscale':
               !availableMaps.includes(map),
           }"
           @click="selectMap(map)"
         />
-        <div
-          v-if="selectedMap?.id === map.id && availableMaps.includes(map)"
-          class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-80 cursor-pointer rounded-lg"
+        <Transition
+          enter-active-class="transition-all duration-200 ease-out"
+          leave-active-class="transition-all duration-150 ease-in"
+          enter-from-class="opacity-0 scale-50"
+          enter-to-class="opacity-100 scale-100"
+          leave-from-class="opacity-100 scale-100"
+          leave-to-class="opacity-0 scale-50"
         >
-          <Button variant="destructive" @click="confirmMap">
-            <slot></slot>
-          </Button>
-        </div>
+          <div
+            v-if="selectedMap?.id === map.id && availableMaps.includes(map)"
+            class="absolute inset-0 flex items-center justify-center bg-black/40 cursor-pointer rounded-lg"
+            @click="confirmMap"
+          >
+            <div
+              class="absolute -inset-1 rounded-lg border border-primary/50 animate-pulse"
+            />
+            <span class="text-sm font-bold text-green-400 drop-shadow-md">
+              <slot>Confirm</slot>
+            </span>
+          </div>
+        </Transition>
       </div>
     </div>
   </div>

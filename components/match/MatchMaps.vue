@@ -38,8 +38,8 @@ import cleanMapName from "~/utilities/cleanMapName";
           class="w-2/5 max-w-[120px] h-auto max-h-[70%] object-contain drop-shadow-2xl"
         />
       </div>
-      <!-- Status badge bottom-left -->
-      <div class="absolute bottom-2 left-2 z-10">
+      <!-- Status badge + demo download top-right -->
+      <div class="absolute top-2 right-2 z-10 flex items-center gap-1.5">
         <Badge
           v-if="matchMap.status !== e_match_status_enum.Scheduled"
           :variant="matchMap.is_current_map ? 'destructive' : 'secondary'"
@@ -52,9 +52,6 @@ import cleanMapName from "~/utilities/cleanMapName";
           class="text-xs px-2 py-0.5 backdrop-blur-sm"
           >{{ $t("match.decider") }}</Badge
         >
-      </div>
-      <!-- Demo download -->
-      <div class="absolute top-2 right-2">
         <template v-if="matchMap.demos_download_url">
           <a target="_blank" :href="matchMap.demos_download_url">
             <Button
@@ -87,9 +84,10 @@ import cleanMapName from "~/utilities/cleanMapName";
     <div class="bg-muted/40 px-3 py-2.5">
       <div class="flex items-center justify-between gap-2">
         <!-- Team 1 -->
-        <div class="flex flex-col items-center gap-0.5 flex-1 min-w-0">
+        <div
+          class="flex flex-col items-center justify-center gap-0.5 flex-1 min-w-0 min-h-[2.5rem]"
+        >
           <img v-if="showTeamPatch" :src="team1Patch" class="w-5 h-5" />
-          <div v-else class="w-5 h-5" />
           <span class="text-[10px] text-muted-foreground truncate max-w-full">{{
             match.lineup_1.name
           }}</span>
@@ -115,9 +113,10 @@ import cleanMapName from "~/utilities/cleanMapName";
         </div>
 
         <!-- Team 2 -->
-        <div class="flex flex-col items-center gap-0.5 flex-1 min-w-0">
+        <div
+          class="flex flex-col items-center justify-center gap-0.5 flex-1 min-w-0 min-h-[2.5rem]"
+        >
           <img v-if="showTeamPatch" :src="team2Patch" class="w-5 h-5" />
-          <div v-else class="w-5 h-5" />
           <span class="text-[10px] text-muted-foreground truncate max-w-full">{{
             match.lineup_2.name
           }}</span>

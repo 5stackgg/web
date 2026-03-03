@@ -16,6 +16,25 @@ import { e_match_status_enum } from "~/generated/zeus";
 
 <template>
   <div class="flex flex-col gap-4">
+    <!-- Action Panel — Check In / Schedule -->
+    <div
+      v-if="match.can_schedule || showCheckInSection"
+      class="relative rounded-xl overflow-hidden"
+    >
+      <div
+        class="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-blue-500/20 animate-pulse"
+      />
+      <div
+        class="relative rounded-xl border border-white/10 bg-background/80 backdrop-blur-sm p-4 flex flex-col gap-3"
+      >
+        <ScheduleMatch :match="match" v-if="match.can_schedule" />
+        <CheckIntoMatch :match="match" v-if="showCheckInSection" />
+      </div>
+    </div>
+
+    <!-- Server Connect — standalone -->
+    <QuickMatchConnect :match="match" v-if="showQuickConnectSection" />
+
     <Card>
       <CardContent class="p-6 flex flex-col gap-6">
         <!-- Match Type and Best Of - Secondary Info -->
@@ -70,12 +89,6 @@ import { e_match_status_enum } from "~/generated/zeus";
               />
             </span>
           </div>
-        </div>
-
-        <div v-if="showAnyActionSection" class="flex flex-col gap-4">
-          <ScheduleMatch :match="match" v-if="match.can_schedule" />
-          <CheckIntoMatch :match="match" v-if="showCheckInSection" />
-          <QuickMatchConnect :match="match" v-if="showQuickConnectSection" />
         </div>
 
         <!-- Auto Canceling or Finished Information -->

@@ -71,7 +71,7 @@ provide("commander", commander);
     <TabsContent value="overview">
       <div
         v-if="me || canAdjustLineups"
-        class="flex flex-col gap-3 mb-4 md:flex-row md:items-center md:justify-between"
+        class="flex flex-col gap-3 mb-3 md:flex-row md:items-center md:justify-between"
       >
         <PlayerInvites v-if="me" />
 
@@ -88,7 +88,7 @@ provide("commander", commander);
         </div>
       </div>
 
-      <div class="grid gap-4">
+      <div class="grid gap-4 max-w-[1500px]">
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
             <LineupOverview
@@ -155,7 +155,7 @@ provide("commander", commander);
       </Drawer>
     </TabsContent>
     <TabsContent value="utility">
-      <div class="grid gap-4 max-w-[1500px] mx-auto">
+      <div class="grid gap-4 max-w-[1500px]">
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
             <lineup-utility
@@ -175,7 +175,7 @@ provide("commander", commander);
       </div>
     </TabsContent>
     <TabsContent value="opening-duels">
-      <div class="grid gap-4 max-w-[1500px] mx-auto">
+      <div class="grid gap-4 max-w-[1500px]">
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
             <lineup-opening-duels
@@ -195,7 +195,7 @@ provide("commander", commander);
       </div>
     </TabsContent>
     <TabsContent value="clutches">
-      <div class="grid gap-4 max-w-[1500px] mx-auto">
+      <div class="grid gap-4 max-w-[1500px]">
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
             <lineup-clutches
@@ -208,7 +208,7 @@ provide("commander", commander);
       </div>
     </TabsContent>
     <TabsContent value="veto">
-      <div class="grid gap-4 max-w-[1500px] mx-auto">
+      <div class="grid gap-4 max-w-[1500px]">
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
             <MatchPicksDisplay :match="match" />
@@ -216,7 +216,7 @@ provide("commander", commander);
         </Card>
       </div>
     </TabsContent>
-    <TabsContent value="server" class="flex flex-col gap-4">
+    <TabsContent value="server" class="flex flex-col gap-4 max-w-[1500px]">
       <ServiceLogs :service="`m-${match.id}`" :compact="true" />
 
       <AlertDialog :open="showConfirmDialog">
@@ -316,7 +316,7 @@ provide("commander", commander);
         </form>
       </RconCommander>
     </TabsContent>
-    <TabsContent value="settings" class="flex flex-col gap-4">
+    <TabsContent value="settings" class="flex flex-col gap-4 max-w-[1500px]">
       <Card>
         <CardContent class="py-4">
           <MatchOptionsDisplay
@@ -360,7 +360,7 @@ provide("commander", commander);
         </CardContent>
       </Card>
     </TabsContent>
-    <TabsContent value="streams">
+    <TabsContent value="streams" class="max-w-[1500px]">
       <MatchLiveStreams :match="match" />
     </TabsContent>
   </Tabs>

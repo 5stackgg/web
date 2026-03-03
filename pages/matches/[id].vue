@@ -52,17 +52,16 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
             match.status !== e_match_status_enum.Veto
           "
         >
-          <div
-            class="grid gap-3"
-            :class="{
-              'grid-cols-1 max-w-md mx-auto': mapSlots.length === 1,
-              'grid-cols-2': mapSlots.length === 2,
-              'grid-cols-3': mapSlots.length === 3,
-              'grid-cols-2 sm:grid-cols-4': mapSlots.length === 4,
-              'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5': mapSlots.length >= 5,
-            }"
-          >
-            <div v-for="(slot, index) in mapSlots" :key="index">
+          <div class="flex flex-wrap justify-center gap-3">
+            <div
+              v-for="(slot, index) in mapSlots"
+              :key="index"
+              :class="{
+                'w-full max-w-md': mapSlots.length === 1,
+                'w-[calc(50%-0.375rem)]': mapSlots.length === 2,
+                'w-[calc(33.333%-0.5rem)]': mapSlots.length >= 3,
+              }"
+            >
               <MatchMaps
                 v-if="slot"
                 :match="match"
@@ -72,7 +71,9 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
                 v-else
                 class="rounded-xl overflow-hidden border-2 border-dashed border-border/60"
               >
-                <div class="aspect-video bg-muted/40 flex items-center justify-center text-muted-foreground">
+                <div
+                  class="aspect-video bg-muted/40 flex items-center justify-center text-muted-foreground"
+                >
                   <div class="flex flex-col items-center gap-1">
                     <span class="text-sm uppercase tracking-wide font-semibold">
                       {{ $t("match.map_number", { count: index + 1 }) }}

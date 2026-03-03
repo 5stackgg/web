@@ -22,28 +22,34 @@ import cleanMapName from "~/utilities/cleanMapName";
       <div
         class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20"
       />
-      <div class="absolute inset-0 flex flex-col items-center justify-center gap-1">
-        <img
-          v-if="matchMap.map.patch"
-          :src="matchMap.map.patch"
-          class="w-1/3 max-w-[96px] h-auto max-h-[60%] object-contain drop-shadow-xl"
-        />
-        <span class="text-xs font-semibold text-white/80 drop-shadow-md uppercase tracking-wide">
+      <!-- Map name top -->
+      <div class="absolute top-0 left-0 right-0 px-2 pt-2 z-10">
+        <span
+          class="text-[11px] font-bold text-white/90 uppercase tracking-widest drop-shadow-lg"
+        >
           {{ cleanMapName(matchMap.map.name) }}
         </span>
       </div>
-      <!-- Status badge -->
-      <div class="absolute top-2 left-2">
+      <!-- Patch centered -->
+      <div class="absolute inset-0 flex items-center justify-center">
+        <img
+          v-if="matchMap.map.patch"
+          :src="matchMap.map.patch"
+          class="w-2/5 max-w-[120px] h-auto max-h-[70%] object-contain drop-shadow-2xl"
+        />
+      </div>
+      <!-- Status badge bottom-left -->
+      <div class="absolute bottom-2 left-2 z-10">
         <Badge
           v-if="matchMap.status !== e_match_status_enum.Scheduled"
           :variant="matchMap.is_current_map ? 'destructive' : 'secondary'"
-          class="text-xs"
+          class="text-xs px-2 py-0.5 backdrop-blur-sm"
           >{{ matchMap.status }}</Badge
         >
         <Badge
           v-else-if="isDecider && match.options.best_of > 1"
           variant="destructive"
-          class="text-xs"
+          class="text-xs px-2 py-0.5 backdrop-blur-sm"
           >{{ $t("match.decider") }}</Badge
         >
       </div>
@@ -83,6 +89,7 @@ import cleanMapName from "~/utilities/cleanMapName";
         <!-- Team 1 -->
         <div class="flex flex-col items-center gap-0.5 flex-1 min-w-0">
           <img v-if="showTeamPatch" :src="team1Patch" class="w-5 h-5" />
+          <div v-else class="w-5 h-5" />
           <span class="text-[10px] text-muted-foreground truncate max-w-full">{{
             match.lineup_1.name
           }}</span>
@@ -110,6 +117,7 @@ import cleanMapName from "~/utilities/cleanMapName";
         <!-- Team 2 -->
         <div class="flex flex-col items-center gap-0.5 flex-1 min-w-0">
           <img v-if="showTeamPatch" :src="team2Patch" class="w-5 h-5" />
+          <div v-else class="w-5 h-5" />
           <span class="text-[10px] text-muted-foreground truncate max-w-full">{{
             match.lineup_2.name
           }}</span>

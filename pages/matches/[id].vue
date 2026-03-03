@@ -55,11 +55,10 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
           <div
             class="grid gap-3"
             :class="{
-              'grid-cols-1 max-w-xs': mapSlots.length === 1,
+              'grid-cols-1 max-w-md mx-auto': mapSlots.length === 1,
               'grid-cols-2': mapSlots.length === 2,
               'grid-cols-3': mapSlots.length === 3,
-              'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4':
-                mapSlots.length === 4,
+              'grid-cols-2 sm:grid-cols-4': mapSlots.length === 4,
               'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5': mapSlots.length >= 5,
             }"
           >
@@ -71,15 +70,22 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
               ></MatchMaps>
               <div
                 v-else
-                class="relative w-full aspect-video rounded-xl border-2 border-dashed border-border/60 bg-muted/40 flex items-center justify-center text-muted-foreground"
+                class="rounded-xl overflow-hidden border-2 border-dashed border-border/60"
               >
-                <div class="flex flex-col items-center gap-1">
-                  <span class="text-sm uppercase tracking-wide font-semibold">
-                    {{ $t("match.map_number", { count: index + 1 }) }}
-                  </span>
-                  <span class="text-xs">
-                    {{ $t("match.map_tbd") }}
-                  </span>
+                <div class="aspect-video bg-muted/40 flex items-center justify-center text-muted-foreground">
+                  <div class="flex flex-col items-center gap-1">
+                    <span class="text-sm uppercase tracking-wide font-semibold">
+                      {{ $t("match.map_number", { count: index + 1 }) }}
+                    </span>
+                    <span class="text-xs">
+                      {{ $t("match.map_tbd") }}
+                    </span>
+                  </div>
+                </div>
+                <div class="bg-muted/40 border-t border-border/30 px-3 py-2.5">
+                  <div class="flex items-center justify-center">
+                    <span class="text-xs text-muted-foreground">—</span>
+                  </div>
                 </div>
               </div>
             </div>

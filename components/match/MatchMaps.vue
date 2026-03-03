@@ -2,6 +2,7 @@
 import { Badge } from "~/components/ui/badge";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import { Download } from "lucide-vue-next";
+import cleanMapName from "~/utilities/cleanMapName";
 </script>
 
 <template>
@@ -12,7 +13,7 @@ import { Download } from "lucide-vue-next";
     }"
   >
     <!-- Map image header -->
-    <div class="relative h-20">
+    <div class="relative aspect-video">
       <NuxtImg
         :src="matchMap.map.poster"
         class="w-full h-full object-cover brightness-50"
@@ -21,12 +22,15 @@ import { Download } from "lucide-vue-next";
       <div
         class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20"
       />
-      <div class="absolute inset-0 flex items-center justify-center">
+      <div class="absolute inset-0 flex flex-col items-center justify-center gap-1">
         <img
           v-if="matchMap.map.patch"
           :src="matchMap.map.patch"
-          class="max-w-[48px] h-auto max-h-[80%] object-contain drop-shadow-xl"
+          class="w-1/3 max-w-[96px] h-auto max-h-[60%] object-contain drop-shadow-xl"
         />
+        <span class="text-xs font-semibold text-white/80 drop-shadow-md uppercase tracking-wide">
+          {{ cleanMapName(matchMap.map.name) }}
+        </span>
       </div>
       <!-- Status badge -->
       <div class="absolute top-2 left-2">

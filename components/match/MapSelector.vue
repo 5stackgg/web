@@ -35,11 +35,11 @@ import MapDisplay from "~/components/MapDisplay.vue";
         >
           <div
             v-if="selectedMap?.id === map.id && availableMaps.includes(map)"
-            class="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[2px] cursor-pointer rounded-lg"
-            @click="confirmMap"
+            class="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-[3px] cursor-pointer rounded-lg"
+            @click.stop="confirmMap"
           >
             <div
-              class="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg shadow-black/20"
+              class="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 shadow-xl shadow-black/30 ring-1 ring-white/10"
             >
               <Check class="w-4 h-4 text-green-400" />
               <span class="text-sm font-semibold text-white drop-shadow-sm">

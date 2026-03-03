@@ -104,11 +104,11 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
               >
                 <div
                   v-if="form.values.side === sideOption.value"
-                  class="absolute inset-0 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-[1px]"
+                  class="absolute inset-0 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-[3px]"
                   @click.stop="vetoPick"
                 >
                   <div
-                    class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg shadow-black/20"
+                    class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 shadow-xl shadow-black/30 ring-1 ring-white/10"
                   >
                     <Check class="w-3 h-3 text-green-400" />
                     <span
@@ -143,6 +143,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
           (mapId) => {
             if (pickType !== e_veto_pick_types_enum.Side) {
               form.setFieldValue('map_id', mapId);
+              vetoPick();
             }
           }
         "

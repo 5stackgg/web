@@ -134,36 +134,21 @@
 
 
 @layer base {
-  /* Webkit (Chrome, Safari, newer versions of Opera) */
+  /* Hide scrollbars globally (macOS-style); scrolling still works */
+  /* WebKit (Chrome, Safari, Edge) */
   ::-webkit-scrollbar {
-    width: 9px;
-    height: 9px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: rgba(128, 128, 128, 0.5);
-    border-radius: 10px;
-    border: 2px solid transparent;
-    background-clip: content-box;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(128, 128, 128, 0.7);
+    width: 0;
+    height: 0;
   }
 
   /* Firefox */
   * {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(128, 128, 128, 0.5) transparent;
+    scrollbar-width: none;
   }
 
-  /* For Internet Explorer and Edge */
+  /* IE / legacy Edge */
   * {
-    -ms-overflow-style: -ms-autohiding-scrollbar;
+    -ms-overflow-style: none;
   }
 }
 

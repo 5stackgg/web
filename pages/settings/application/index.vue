@@ -15,7 +15,7 @@ definePageMeta({
       <Card variant="gradient">
         <div class="p-6 space-y-6">
           <div
-            class="flex flex-row items-center justify-between cursor-pointer"
+            class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 cursor-pointer"
             @click="toggleMatchmaking()"
           >
             <div class="space-y-0.5">
@@ -35,12 +35,12 @@ definePageMeta({
           <template v-if="matchMakingAllowed">
             <Separator />
             <div class="space-y-2">
-              <div class="grid grid-cols-3 gap-4">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <template
                   v-for="match_type in ['competitive', 'wingman', 'duel']"
                 >
                   <div
-                    class="flex flex-row items-center justify-between p-4 rounded-lg border cursor-pointer"
+                    class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-4 rounded-lg border cursor-pointer"
                     @click="toggleMatchmakingType(match_type)"
                   >
                     <div class="space-y-0.5">

@@ -10,10 +10,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
       isSameSender && isCloseTogether ? 'mt-0.5 mb-0.5' : 'my-1.5',
     ]"
   >
-    <div
-      v-if="showMeta"
-      class="absolute left-2 top-0"
-    >
+    <div v-if="showMeta" class="absolute left-2 top-0">
       <PlayerDisplay
         :player="message.from"
         size="sm"

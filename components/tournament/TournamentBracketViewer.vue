@@ -718,23 +718,7 @@ function startMomentum() {
 <style scoped>
 .tournament-bracket {
   position: relative;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
   transition: max-height 0.3s ease-in-out;
-}
-
-.tournament-bracket::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-.tournament-bracket::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.tournament-bracket::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
 }
 
 .tournament-bracket:active {

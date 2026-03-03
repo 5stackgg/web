@@ -59,7 +59,9 @@ function onLeftNavTouchEnd(e: TouchEvent) {
           <nuxt-link
             to="/"
             class="flex min-w-0 items-center overflow-hidden transition-[gap,padding] duration-200 ease-linear"
-            :class="{ 'gap-2 px-2 py-1.5': sideBarOpen }"
+            :class="{
+              'gap-2 px-2 py-1.5': !isPWA && (isMobile || sideBarOpen),
+            }"
           >
             <NuxtImg
               class="shrink-0 rounded max-w-8 max-h-8"

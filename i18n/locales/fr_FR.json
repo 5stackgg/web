@@ -666,7 +666,8 @@
             "using_global": "Using global default",
             "save": "Save",
             "saved": "Notification settings updated",
-            "save_error": "Failed to save notification settings"
+            "save_error": "Failed to save notification settings",
+            "map_paused": "Map Paused"
         },
         "table": {
             "tournament": "Tournoi",

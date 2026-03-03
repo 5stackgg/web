@@ -6,11 +6,19 @@ import { Button } from "@/components/ui/button";
 import { e_match_status_enum } from "~/generated/zeus";
 import { RotateCcw } from "lucide-vue-next";
 
-defineProps<{
-  tournament: Record<string, any>;
-}>();
-
-const MATCH_STATUSES = Object.values(e_match_status_enum);
+const MATCH_STATUSES: e_match_status_enum[] = [
+  e_match_status_enum.PickingPlayers,
+  e_match_status_enum.Scheduled,
+  e_match_status_enum.WaitingForCheckIn,
+  e_match_status_enum.WaitingForServer,
+  e_match_status_enum.Veto,
+  e_match_status_enum.Live,
+  e_match_status_enum.Finished,
+  e_match_status_enum.Tie,
+  e_match_status_enum.Canceled,
+  e_match_status_enum.Forfeit,
+  e_match_status_enum.Surrendered,
+];
 </script>
 
 <template>
@@ -183,7 +191,7 @@ const MATCH_STATUSES = Object.values(e_match_status_enum);
               role="button"
               @click="toggleMapPaused"
             >
-              <span class="text-sm font-medium">Map Paused</span>
+              <span class="text-sm font-medium">{{ $t("tournament.notifications.map_paused") }}</span>
               <div class="flex items-center gap-2">
                 <button
                   v-if="form.discord_notify_MapPaused !== null"
@@ -208,7 +216,7 @@ const MATCH_STATUSES = Object.values(e_match_status_enum);
     </Card>
 
     <div class="flex justify-start">
-      <Button @click="save" class="my-3">
+      <Button @click="save" :disabled="saving" class="my-3">
         {{ $t("tournament.notifications.save") }}
       </Button>
     </div>
@@ -238,7 +246,17 @@ const DISCORD_FIELDS = [
   "discord_notifications_enabled",
   "discord_webhook",
   "discord_role_id",
-  ...Object.values(e_match_status_enum).map((s) => `discord_notify_${s}`),
+  "discord_notify_PickingPlayers",
+  "discord_notify_Scheduled",
+  "discord_notify_WaitingForCheckIn",
+  "discord_notify_WaitingForServer",
+  "discord_notify_Veto",
+  "discord_notify_Live",
+  "discord_notify_Finished",
+  "discord_notify_Tie",
+  "discord_notify_Canceled",
+  "discord_notify_Forfeit",
+  "discord_notify_Surrendered",
   "discord_notify_MapPaused",
 ] as const;
 
@@ -253,6 +271,7 @@ export default {
     return {
       statusLabels: STATUS_LABEL_MAP,
       form: this.buildForm(this.tournament),
+      saving: false,
     };
   },
   watch: {
@@ -353,6 +372,7 @@ export default {
         }
       }
 
+      this.saving = true;
       try {
         await this.$apollo.mutate({
           variables,
@@ -379,6 +399,8 @@ export default {
           title: this.$t("tournament.notifications.save_error"),
           variant: "destructive",
         });
+      } finally {
+        this.saving = false;
       }
     },
   },

@@ -8,7 +8,6 @@ import {
   Server,
   Play,
   Globe,
-  Map,
   Settings,
   CalendarCog,
   ShieldHalf,

@@ -12,6 +12,7 @@ import {
   MessageSquare,
   Swords,
   Pin,
+  X,
 } from "lucide-vue-next";
 import { useRightSidebar } from "@/composables/useRightSidebar";
 import { useHubState } from "@/composables/useHubState";
@@ -176,12 +177,15 @@ function hubBtnClass(hub: string) {
           <div
             v-if="mountedHubs[hub.name]"
             v-show="activeHub === hub.name"
-            class="absolute inset-0"
+            :class="[
+              'absolute inset-0',
+              isMobile ? 'flex flex-col min-h-0' : '',
+            ]"
           >
             <component
               :is="hub.component"
               v-bind="hub.props?.()"
-              class="h-full"
+              :class="isMobile ? 'flex-1 min-h-0' : 'h-full'"
             />
           </div>
         </Transition>

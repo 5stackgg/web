@@ -14,8 +14,6 @@
             "follow_logs": "Follow Logs",
             "timestamps": "Timestamps"
         },
-        "login": {
-        },
         "coming_soon": "Coming Soon!",
         "tournaments": {
             "title": "Upcoming Tournaments",
@@ -140,22 +138,20 @@
                 "test_countdown_sound": "Test Countdown Sound"
             },
             "application": {
-            "update_success": "Updated",
-            "telemetry": {
+                "update_success": "Updated",
+                "db_backups": {
+                    "name": "Name",
+                    "size": "Size",
+                    "created_at": "Created"
+                },
+                "telemetry": {
                     "title": "Telemetry",
                     "telemetry": "Telemetry",
                     "telemetry_description": "Help improve 5stack by sharing anonymous usage data.",
                     "update": "Update Telemetry Settings",
                     "update_success": "Telemetry settings updated successfully",
                     "google_tag_manager_code": "Google Tag Manager Code",
-            "google_tag_manager_code_description": "Google Tag Manager is a tag management system that allows you to manage and deploy tags on your website."
-                },
-                "db_backups": {
-                    "title": "DB Backups",
-                    "description": "Manage database backups.",
-                    "name": "Name",
-                    "size": "Size",
-                    "created_at": "Created"
+                    "google_tag_manager_code_description": "Google Tag Manager is a tag management system that allows you to manage and deploy tags on your website."
                 },
                 "matchmaking": {
                     "title": "Matchmaking",
@@ -190,8 +186,7 @@
                     }
                 },
                 "game_type_configs": {
-                    "title": "Game Type Configs",
-                    "type": "Game Type"
+                    "title": "Game Type Configs"
                 },
                 "streaming": {
                     "title": "Streaming",
@@ -217,7 +212,6 @@
                 "lineup_add_without_invite": "Minimum Role to Add Players to Lineup Without Invite",
                 "lineup_add_without_invite_description": "This role will be able to add players to match lineups without sending an invite first.",
                 "default_models": "Default Player Models",
-                "default_models_description": "Enable default player models for all players in the match.",
                 "auto_cancel_duration": "Auto Cancel Duration",
                 "auto_cancel_duration_description": "This is the duration in minutes that a match will be auto canceled if not started within the duration.",
                 "matchmaking_type_description": "Toggle matchmaking for each type that will allow players to join matchmaking for this type of match.",
@@ -309,6 +303,7 @@
         },
         "players": {
             "title": "Players",
+            "search": "Search Players",
             "filter_by_privilege": "Filter by Privilege",
             "select_privileges": "Select Privileges",
             "filter_by_country": "Filter by Country",
@@ -338,18 +333,12 @@
                 "wins": "Wins",
                 "losses": "Losses",
                 "kdr": "KDR",
-                "kills": "Kills",
-                "deaths": "Deaths",
                 "no_players": "No players found"
             },
             "detail": {
                 "player_stats": "Player Stats",
                 "kills": "Kills",
-                "assists": "Assists",
-                "deaths": "Deaths",
                 "kd": "KD",
-                "headshots": "Headshots",
-                "headshot_percentage": "Headshot Percentage",
                 "recent_wins_and_losses": "Recent Wins and Losses",
                 "elo_history": "ELO History",
                 "no_elo_history": "Play A Match to genreate ELO",
@@ -363,7 +352,6 @@
                 "no_tournaments_description": "Tournaments this player has joined will appear here.",
                 "weapon_kills": "Most Used Weapons",
                 "no_weapon_kills": "No weapons recorded",
-                "match_record": "Match Record",
                 "wins": "Wins",
                 "losses": "Losses",
                 "win_rate": "Win Rate"
@@ -400,7 +388,7 @@
         "toasts": {
             "copied_to_clipboard": "Copied to Clipboard"
         },
-            "game_server_nodes": {
+        "game_server_nodes": {
             "title": "Game Server Nodes",
             "description": "Game server nodes expand your server offerings into different regions or provide redundancy for on-demand servers.",
             "not_supported": {
@@ -419,6 +407,8 @@
                 "title": "Game Server Node Setup",
                 "description": "Run this installation script on your server to connect it to 5Stack",
                 "installation_script": "Installation Script",
+                "game_server_id": "Game Server ID",
+                "node_status": "Node Status",
                 "waiting_title": "Waiting for node to connect...",
                 "waiting_description": "Run the installation script on your server. The status will update automatically when the node connects.",
                 "new_node": "Game server node successfully connected",
@@ -500,7 +490,7 @@
             "title": "Public Servers",
             "description": "Browse and join public servers",
             "table": {
-            
+
                 "label": "Label",
                 "region": "Region",
                 "map": "Map",
@@ -548,6 +538,8 @@
                 "refresh_workshop": "Refresh Details"
             },
             "pool": {
+                "title": "Default {type} Map Pool",
+                "description": "Manage maps in the {type} pool",
                 "modify_maps": "Modify maps in the pool"
             },
             "add_new_map": "Add New Map",
@@ -596,6 +588,12 @@
             "title": "Leaderboard",
             "description": "Top players ranked by performance across different categories.",
             "no_results": "No leaderboard data available for the selected filters.",
+            "categories": {
+                "elo": "ELO",
+                "best_kdr": "KDR",
+                "best_win_rate": "Win Rate",
+                "highest_hs_pct": "HS%"
+            },
             "time_periods": {
                 "last_7_days": "Last 7 Days",
                 "last_30_days": "Last 30 Days",
@@ -609,7 +607,21 @@
             },
             "columns": {
                 "rank": "#",
-                "player": "Player"
+                "player": "Player",
+                "matches": "Matches"
+            },
+            "col": {
+                "elo": "ELO",
+                "elo_change": "ELO Change",
+                "win_streak": "Win Streak",
+                "kdr": "K/D Ratio",
+                "kills": "Kills",
+                "deaths": "Deaths",
+                "win_rate": "Win Rate",
+                "wins": "Wins",
+                "losses": "Losses",
+                "hs_pct": "HS%",
+                "total_kills": "Total Kills"
             },
             "exclude_tournaments": "Exclude Tournaments"
         },
@@ -759,11 +771,11 @@
         },
         "notifications": {
             "title": "Notifications",
-            "no_notifications_title": "No notifications",
             "delete": "Delete",
             "dismiss": "Dismiss",
             "dismiss_all": "Dismiss All Notifications",
             "delete_all_read": "Delete All Read Notifications",
+            "no_notifications_title": "No notifications",
             "no_notifications": "No notifications at the moment."
         },
         "app_nav": {
@@ -893,7 +905,6 @@
             "create_lobby_description": "Create a lobby to invite friends and queue together.",
             "create_lobby_button": "Create Lobby",
             "voice_discord": "Voice & Discord",
-            "voice_settings": "Voice Settings",
             "discord_linked": "Discord Linked",
             "link_discord": "Link Discord"
         },
@@ -1523,7 +1534,7 @@
             "clutches": "Clutches",
             "map_veto_tab": "Map Veto",
             "settings": "Match Settings",
-            "streams": "Live Streams",
+            "streams": "Match Live Streams",
             "admin": "Admin",
             "randomize_teams": "Randomize Teams",
             "swap_lineups": "Swap Lineups",
@@ -1711,6 +1722,9 @@
         }
     },
     "player": {
+        "player": {
+            "steam_id": "Steam ID"
+        },
         "sanction": {
             "button": "Sanction Player",
             "reason_description": "Please provide a clear reason for this sanction"
@@ -1898,19 +1912,19 @@
         "gpu_description": "This node has a graphics card available for server workloads"
     },
     "chat": {
-    "lobby_chat": "Lobby Chat",
-    "message_placeholder": "Type a message...",
-    "new_since_last_visit": "New",
-    "new_messages": "New messages",
-    "jump_to_new": "Jump to new",
-    "no_messages_yet": "No messages yet",
-    "start_the_conversation": "Say something to start the conversation.",
-    "no_participants": "No one else is in this chat yet.",
-    "organizers": {
-      "title": "Organizer Chat",
-      "no_access": "You do not have access to this page.",
-      "sidebar_hint": "Chat is available in the right sidebar under the Chats tab."
-    }
+        "lobby_chat": "Lobby Chat",
+        "message_placeholder": "Type a message...",
+        "new_since_last_visit": "New",
+        "no_participants": "No one else is in this chat yet.",
+        "no_messages_yet": "No messages yet",
+        "start_the_conversation": "Say something to start the conversation.",
+        "jump_to_new": "Jump to new",
+        "new_messages": "New messages",
+        "organizers": {
+            "title": "Organizer Chat",
+            "no_access": "You do not have access to this page.",
+            "sidebar_hint": "Chat is available in the right sidebar under the Chats tab."
+        }
     },
     "charts": {
         "usage": "Usage",
@@ -1994,29 +2008,29 @@
         }
     },
     "streams": {
-        "add": "Add",
-        "add_new": "Add New",
-        "add_description": "Add a new link for this match.",
-        "added_successfully": "Added",
-        "stream_added_message": "Added successfully.",
-        "add_error": "Failed to add. Please try again.",
-        "update": "Update",
-        "edit_stream": "Edit",
-        "edit_description": "Update the information.",
-        "updated_successfully": "Updated",
-        "stream_updated_message": "Updated successfully.",
-        "update_error": "Failed to update. Please try again.",
-        "deleted_successfully": "Deleted",
-        "stream_deleted_message": "Deleted successfully.",
-        "delete_error": "Failed to delete. Please try again.",
-        "priority_update_error": "Failed to update priorities. Please try again.",
-        "streams_description": "Manage",
-        "link": "Link",
-        "title": "Title",
         "section_title": "Live Streams",
         "section_description": "Manage the live stream links for this match. These links are shown to viewers and casters.",
         "no_streams_title": "No Live Streams",
-        "no_streams": "No live streams are currently available for this match."
+        "no_streams": "No live streams are currently available for this match.",
+        "add": "Add Stream",
+        "add_new": "Add New Stream",
+        "add_description": "Add a new stream link for this match.",
+        "added_successfully": "Stream Added",
+        "stream_added_message": "The stream has been added successfully.",
+        "add_error": "Failed to add stream. Please try again.",
+        "update": "Update Stream",
+        "edit_stream": "Edit Stream",
+        "edit_description": "Update the stream information.",
+        "updated_successfully": "Stream Updated",
+        "stream_updated_message": "The stream has been updated successfully.",
+        "update_error": "Failed to update stream. Please try again.",
+        "deleted_successfully": "Stream Deleted",
+        "stream_deleted_message": "The stream has been deleted successfully.",
+        "delete_error": "Failed to delete stream. Please try again.",
+        "priority_update_error": "Failed to update stream priorities. Please try again.",
+        "streams_description": "Streams",
+        "link": "Link",
+        "title": "Title"
     },
     "demo_network_limiter": {
         "network_limit": "Network limit (Mbps)",

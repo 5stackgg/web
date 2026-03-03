@@ -10,7 +10,7 @@ import { CardHeader, CardTitle, CardDescription } from "~/components/ui/card";
 
 <template>
   <PageTransition>
-    <div>
+    <div class="hidden md:block">
       <template v-if="matchmakingAllowed">
         <Matchmaking></Matchmaking>
         <Separator v-if="showSeparators" class="my-4" />

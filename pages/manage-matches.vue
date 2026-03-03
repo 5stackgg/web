@@ -142,7 +142,9 @@ const { isMobile } = useSidebar();
 
   <!-- Sort Controls -->
   <PageTransition :delay="200" class="mt-6">
-    <div class="flex items-center justify-between mb-4">
+    <div
+      class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-4"
+    >
       <div class="flex items-center space-x-4">
         <div class="flex items-center space-x-2 text-sm text-muted-foreground">
           <span>{{ $t("pages.manage_matches.sort_by") }}:</span>
@@ -183,7 +185,7 @@ const { isMobile } = useSidebar();
         </Button>
       </div>
 
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center justify-between gap-3 md:justify-end">
         <div class="flex items-center space-x-2">
           <Switch
             :model-value="showOnlyMyMatches"

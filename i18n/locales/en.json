@@ -1678,6 +1678,8 @@
         "download_demos": "Download Demos",
         "coaches": "Coaches",
         "best_of": "Best of {count}",
+        "map_number": "Map {count}",
+        "map_tbd": "Map TBD",
         "server": {
             "offline": "Server is offline!",
             "booting": "Server Booting",
@@ -2010,7 +2012,11 @@
         "priority_update_error": "Failed to update priorities. Please try again.",
         "streams_description": "Manage",
         "link": "Link",
-        "title": "Title"
+        "title": "Title",
+        "section_title": "Live Streams",
+        "section_description": "Manage the live stream links for this match. These links are shown to viewers and casters.",
+        "no_streams_title": "No Live Streams",
+        "no_streams": "No live streams are currently available for this match."
     },
     "demo_network_limiter": {
         "network_limit": "Network limit (Mbps)",

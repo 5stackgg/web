@@ -27,67 +27,34 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PlusCircle } from "lucide-vue-next";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import Empty from "@/components/ui/empty/Empty.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 </script>
 
 <template>
   <Card class="p-4">
-    <CardHeader>
-      <div class="flex items-center justify-between">
-        <CardTitle>
-          {{ $t("streams.streams_description") }}
-        </CardTitle>
-        <!-- Add Stream Button moved inline -->
-        <Dialog v-model:open="isAddStreamModalOpen" v-if="canManageStreams">
-          <DialogTrigger as-child>
-            <Button size="sm">
-              <PlusCircle class="mr-2 h-4 w-4" />
-              {{ $t("streams.add_new") }}
-            </Button>
-          </DialogTrigger>
-          <DialogContent class="sm:max-w-[425px]">
-            {{ form.errors }}
-
-            <DialogHeader>
-              <DialogTitle>{{ $t("streams.add_new") }}</DialogTitle>
-              <DialogDescription>
-                {{ $t("streams.add_description") }}
-              </DialogDescription>
-            </DialogHeader>
-            <form class="space-y-4" @submit.prevent="addStream">
-              <FormField v-slot="{ componentField }" name="link">
-                <FormItem>
-                  <FormLabel>{{ $t("streams.link") }}</FormLabel>
-                  <Input
-                    v-bind="componentField"
-                    placeholder="https://twitch.tv/username"
-                  />
-                </FormItem>
-              </FormField>
-              <FormField v-slot="{ componentField }" name="title">
-                <FormItem>
-                  <FormLabel>{{ $t("streams.title") }}</FormLabel>
-                  <Input v-bind="componentField" placeholder="Stream Title" />
-                </FormItem>
-              </FormField>
-              <DialogFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  @click="isAddStreamModalOpen = false"
-                >
-                  {{ $t("common.cancel") }}
-                </Button>
-                <Button>
-                  {{ $t("streams.add") }}
-                </Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </div>
-    </CardHeader>
     <CardContent>
+      <!-- Header / Description -->
+      <div class="flex items-start justify-between mb-4 gap-4">
+        <div class="space-y-1">
+          <h3 class="text-base font-semibold leading-none">
+            {{ $t("streams.section_title") }}
+          </h3>
+          <p class="text-xs text-muted-foreground">
+            {{ $t("streams.section_description") }}
+          </p>
+        </div>
+        <Button
+          v-if="canManageStreams"
+          size="sm"
+          class="h-8 px-3 text-xs"
+          @click="isAddStreamModalOpen = true"
+        >
+          <PlusCircle class="mr-2 h-3 w-3" />
+          {{ $t("streams.add_new") }}
+        </Button>
+      </div>
+
       <!-- Streams Table -->
       <div v-if="match.streams.length > 0">
         <div class="border rounded-lg relative">
@@ -96,7 +63,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
               <TableRow>
                 <TableHead class="w-12"></TableHead>
                 <TableHead>{{ $t("streams.title") }}</TableHead>
-                <TableHead></TableHead>
+                <TableHead class="w-24"></TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -267,49 +234,63 @@ import { e_player_roles_enum } from "~/generated/zeus";
           </div>
         </div>
       </div>
+      <Empty v-else class="mt-4 space-y-2">
+        <h3 class="text-lg font-semibold">
+          {{ $t("streams.no_streams_title") }}
+        </h3>
+        <p class="text-muted-foreground">
+          {{ $t("streams.no_streams") }}
+        </p>
+        <Button
+          v-if="canManageStreams"
+          size="sm"
+          class="mt-1"
+          @click="isAddStreamModalOpen = true"
+        >
+          <PlusCircle class="mr-2 h-4 w-4" />
+          {{ $t("streams.add_new") }}
+        </Button>
+      </Empty>
 
-      <!-- Add Stream Button -->
-      <div class="flex justify-start">
-        <Dialog v-model:open="isAddStreamModalOpen">
-          <DialogContent class="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>{{ $t("streams.add_new") }}</DialogTitle>
-              <DialogDescription>
-                {{ $t("streams.add_description") }}
-              </DialogDescription>
-            </DialogHeader>
-            <form class="space-y-4" @submit.prevent="addStream">
-              <FormField v-slot="{ componentField }" name="link">
-                <FormItem>
-                  <FormLabel>{{ $t("streams.link") }}</FormLabel>
-                  <Input
-                    v-bind="componentField"
-                    placeholder="https://twitch.tv/username"
-                  />
-                </FormItem>
-              </FormField>
-              <FormField v-slot="{ componentField }" name="title">
-                <FormItem>
-                  <FormLabel>{{ $t("streams.title") }}</FormLabel>
-                  <Input v-bind="componentField" placeholder="Stream Title" />
-                </FormItem>
-              </FormField>
-              <DialogFooter>
-                <Button
-                  type="button"
-                  variant="outline"
-                  @click="isAddStreamModalOpen = false"
-                >
-                  {{ $t("common.cancel") }}
-                </Button>
-                <Button>
-                  {{ $t("streams.add") }}
-                </Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </div>
+      <Dialog v-if="canManageStreams" v-model:open="isAddStreamModalOpen">
+        <DialogContent class="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>{{ $t("streams.add_new") }}</DialogTitle>
+            <DialogDescription>
+              {{ $t("streams.add_description") }}
+            </DialogDescription>
+          </DialogHeader>
+          <form class="space-y-4" @submit.prevent="addStream">
+            <FormField v-slot="{ componentField }" name="link">
+              <FormItem>
+                <FormLabel>{{ $t("streams.link") }}</FormLabel>
+                <Input
+                  v-bind="componentField"
+                  placeholder="https://twitch.tv/username"
+                />
+              </FormItem>
+            </FormField>
+            <FormField v-slot="{ componentField }" name="title">
+              <FormItem>
+                <FormLabel>{{ $t("streams.title") }}</FormLabel>
+                <Input v-bind="componentField" placeholder="Stream Title" />
+              </FormItem>
+            </FormField>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                @click="isAddStreamModalOpen = false"
+              >
+                {{ $t("common.cancel") }}
+              </Button>
+              <Button type="submit">
+                {{ $t("streams.add") }}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </CardContent>
   </Card>
 </template>

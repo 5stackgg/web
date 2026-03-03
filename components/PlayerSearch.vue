@@ -190,9 +190,13 @@ export default {
         ? (this.exclude as string[]).concat(this.me.steam_id)
         : (this.exclude as string[]);
 
-      const onlinePlayers = useSearchStore().search(this.query, exclude);
-
       if (this.onlineOnly) {
+        if (!this.query.trim()) {
+          this.players = [];
+          return;
+        }
+
+        const onlinePlayers = useSearchStore().search(this.query, exclude);
         this.players = onlinePlayers;
         return;
       }
@@ -227,15 +231,7 @@ export default {
         },
       );
 
-      const mergedPlayers: any[] = [...onlinePlayers];
-
-      for (const player of fetchedPlayers) {
-        if (!mergedPlayers.some((p: any) => p.steam_id === player.steam_id)) {
-          mergedPlayers.push(player);
-        }
-      }
-
-      this.players = mergedPlayers;
+      this.players = fetchedPlayers;
     },
   },
   watch: {

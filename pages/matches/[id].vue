@@ -2,22 +2,14 @@
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
-import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
-import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
-import {
-  e_match_status_enum,
-  e_player_roles_enum,
-  e_lobby_access_enum,
-} from "~/generated/zeus";
+import { e_match_status_enum } from "~/generated/zeus";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
-import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { CardContent } from "~/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
-import { useAuthStore } from "~/stores/AuthStore";
 </script>
 
 <template>
@@ -26,16 +18,8 @@ import { useAuthStore } from "~/stores/AuthStore";
     v-if="match"
   >
     <div class="grid grid-cols-1 gap-y-4 md:gap-y-6">
-      <PageTransition>
-        <ScheduleMatch :match="match" v-if="match.can_schedule" />
-      </PageTransition>
-
       <PageTransition :delay="100">
-        <div class="flex flex-col gap-4">
-          <CheckIntoMatch :match="match"></CheckIntoMatch>
-          <QuickMatchConnect :match="match"></QuickMatchConnect>
-          <MatchInfo :match="match"></MatchInfo>
-        </div>
+        <MatchInfo :match="match"></MatchInfo>
       </PageTransition>
 
       <PageTransition :delay="200">
@@ -55,7 +39,8 @@ import { useAuthStore } from "~/stores/AuthStore";
         <div
           class="flex gap-4 flex-col 2xl:flex-row 2xl:items-start"
           v-if="
-            (match.match_maps.length > 0 &&
+            (match.options.best_of &&
+              match.options.best_of > 0 &&
               match.status !== e_match_status_enum.Veto) ||
             (showLiveStreams && match.streams.length > 0)
           "
@@ -67,14 +52,27 @@ import { useAuthStore } from "~/stores/AuthStore";
             <StreamEmbed :streams="match.streams" />
           </div>
           <div
-            v-if="
-              match.match_maps.length > 0 &&
-              match.status !== e_match_status_enum.Veto
-            "
             class="flex min-w-0 flex-1 flex-col gap-4 justify-around 2xl:flex-row"
           >
-            <div v-for="match_map of match.match_maps">
-              <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
+            <div v-for="(slot, index) in mapSlots" :key="index" class="flex-1">
+              <MatchMaps
+                v-if="slot"
+                :match="match"
+                :match-map="slot"
+              ></MatchMaps>
+              <div
+                v-else
+                class="relative w-full aspect-video rounded-xl border-2 border-dashed border-border/60 bg-muted/40 flex items-center justify-center text-muted-foreground"
+              >
+                <div class="flex flex-col items-center gap-1">
+                  <span class="text-sm uppercase tracking-wide font-semibold">
+                    {{ $t("match.map_number", { count: index + 1 }) }}
+                  </span>
+                  <span class="text-xs">
+                    {{ $t("match.map_tbd") }}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -110,15 +108,17 @@ import { useAuthStore } from "~/stores/AuthStore";
       </PageTransition>
 
       <PageTransition :delay="100">
-        <MatchMapVeto :match="match"></MatchMapVeto>
+        <div class="mt-8">
+          <MatchMapVeto :match="match"></MatchMapVeto>
+        </div>
+      </PageTransition>
+
+      <PageTransition :delay="200">
+        <CardContent class="p-4">
+          <MatchTabs :match="match"></MatchTabs>
+        </CardContent>
       </PageTransition>
     </div>
-
-    <PageTransition :delay="200" class="lg:col-span-2">
-      <CardContent class="p-4">
-        <MatchTabs :match="match"></MatchTabs>
-      </CardContent>
-    </PageTransition>
   </div>
 </template>
 
@@ -326,6 +326,21 @@ export default {
     },
   },
   computed: {
+    mapSlots() {
+      if (!this.match || !this.match.options?.best_of) {
+        return this.match?.match_maps ?? [];
+      }
+
+      const slots = [];
+      const bestOf = this.match.options.best_of;
+      const maps = this.match.match_maps || [];
+
+      for (let i = 0; i < bestOf; i++) {
+        slots.push(maps[i] || null);
+      }
+
+      return slots;
+    },
     showSeparators() {
       return useApplicationSettingsStore().showSeparators;
     },

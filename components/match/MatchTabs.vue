@@ -210,7 +210,10 @@ provide("commander", commander);
         </Card>
       </div>
     </TabsContent>
-    <TabsContent value="server" class="flex flex-col gap-4 max-w-[1500px]">
+    <TabsContent
+      value="server"
+      class="flex flex-col gap-4 max-w-[1500px] w-full overflow-x-auto"
+    >
       <ServiceLogs :service="`m-${match.id}`" :compact="true" />
 
       <AlertDialog :open="showConfirmDialog">

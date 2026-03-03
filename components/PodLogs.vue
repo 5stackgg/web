@@ -7,7 +7,7 @@
   </div>
   <div
     ref="scrollContainer"
-    class="overflow-auto whitespace-nowrap max-h-[50vh]"
+    class="overflow-auto whitespace-pre-wrap break-words max-h-[50vh]"
     @scroll="handleScroll"
   >
     <div

@@ -218,6 +218,19 @@ function hubBtnClass(hub: string) {
           }"
         />
 
+        <!-- Close/toggle at top (mobile only) -->
+        <SidebarMenu v-if="isMobile">
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              tooltip="Toggle sidebar"
+              @click="setRightSidebarOpen(!rightSidebarOpen)"
+              class="w-full h-auto group-data-[collapsible=icon]:!h-auto group-data-[collapsible=icon]:!w-full"
+            >
+              <MiniDisplay />
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+
         <!-- Notifications -->
         <button
           :ref="setHubButtonRef('notifications')"
@@ -296,8 +309,8 @@ function hubBtnClass(hub: string) {
 
         <div class="flex-1" />
 
-        <!-- MiniDisplay at bottom -->
-        <SidebarMenu>
+        <!-- Close/toggle at bottom (desktop only) -->
+        <SidebarMenu v-if="!isMobile">
           <SidebarMenuItem>
             <SidebarMenuButton
               tooltip="Toggle sidebar"

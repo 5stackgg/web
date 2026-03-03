@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useMediaQuery } from "@vueuse/core";
 import { AlertTriangle, Settings2 } from "lucide-vue-next";
 import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
 import MatchmakingSettings from "~/components/matchmaking/MatchmakingSettings.vue";
@@ -8,6 +9,8 @@ import TimeAgo from "../TimeAgo.vue";
 import CustomMatch from "~/components/CustomMatch.vue";
 import FiveStackToolTip from "../FiveStackToolTip.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
+
+const isMobile = useMediaQuery("(max-width: 768px)");
 </script>
 
 <template>
@@ -90,7 +93,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
       </div>
 
       <div class="flex flex-col gap-4 bg-card rounded-lg" v-else>
-        <div v-if="availableRegionsWithNodes.length > 0">
+        <div v-if="!isMobile && availableRegionsWithNodes.length > 0">
           <div
             class="flex mb-4"
             :class="{
@@ -136,7 +139,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
           </Collapsible>
         </div>
 
-        <div class="flex flex-row gap-4">
+        <div v-if="!isMobile" class="flex flex-row gap-4">
           <AnimatedCard
             v-for="type in allowedMatchTypes"
             :key="type.value"
@@ -183,8 +186,8 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
           </AnimatedCard>
         </div>
 
-        <Separator v-if="showSeparators" class="my-4" />
-        <CustomMatch :class="{ 'mt-4': !showSeparators }" />
+        <Separator v-if="showSeparators && !isMobile" class="my-4" />
+        <CustomMatch :class="{ 'mt-4': !showSeparators || isMobile }" />
       </div>
     </template>
     <template v-else-if="match">

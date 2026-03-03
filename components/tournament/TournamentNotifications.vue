@@ -1,26 +1,3 @@
-<script setup lang="ts">
-import { Card } from "~/components/ui/card";
-import { Switch } from "~/components/ui/switch";
-import { Input } from "~/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { e_match_status_enum } from "~/generated/zeus";
-import { RotateCcw } from "lucide-vue-next";
-
-const MATCH_STATUSES: e_match_status_enum[] = [
-  e_match_status_enum.PickingPlayers,
-  e_match_status_enum.Scheduled,
-  e_match_status_enum.WaitingForCheckIn,
-  e_match_status_enum.WaitingForServer,
-  e_match_status_enum.Veto,
-  e_match_status_enum.Live,
-  e_match_status_enum.Finished,
-  e_match_status_enum.Tie,
-  e_match_status_enum.Canceled,
-  e_match_status_enum.Forfeit,
-  e_match_status_enum.Surrendered,
-];
-</script>
-
 <template>
   <div class="grid gap-6">
     <div>
@@ -37,7 +14,10 @@ const MATCH_STATUSES: e_match_status_enum[] = [
         <div
           class="flex items-center justify-between rounded-lg border p-4 cursor-pointer select-none"
           role="button"
+          tabindex="0"
           @click="toggleMaster"
+          @keydown.enter.prevent="toggleMaster"
+          @keydown.space.prevent="toggleMaster"
         >
           <div class="space-y-0.5">
             <span class="text-sm font-medium">{{
@@ -52,7 +32,7 @@ const MATCH_STATUSES: e_match_status_enum[] = [
               v-if="form.discord_notifications_enabled !== null"
               class="text-xs text-muted-foreground hover:text-foreground transition-colors"
               :title="$t('tournament.notifications.using_global')"
-              @click.stop="form.discord_notifications_enabled = null"
+              @click.stop="form.discord_notifications_enabled = null; dirty = true"
             >
               <RotateCcw class="h-3.5 w-3.5" />
             </button>
@@ -60,7 +40,8 @@ const MATCH_STATUSES: e_match_status_enum[] = [
               @click.stop
               :model-value="form.discord_notifications_enabled === true"
               @update:model-value="
-                form.discord_notifications_enabled = $event ? true : false
+                form.discord_notifications_enabled = $event ? true : false;
+                dirty = true
               "
             />
           </div>
@@ -84,17 +65,17 @@ const MATCH_STATUSES: e_match_status_enum[] = [
         <div class="space-y-2">
           <div class="flex items-center gap-2">
             <Input
-              v-model="form.discord_webhook"
+              :model-value="form.discord_webhook ?? ''"
               :placeholder="
-                globalWebhook ||
                 $t('tournament.notifications.webhook_placeholder')
               "
+              @update:model-value="form.discord_webhook = $event || null; dirty = true"
             />
             <button
               v-if="form.discord_webhook !== null"
               class="text-muted-foreground hover:text-foreground transition-colors shrink-0"
               :title="$t('tournament.notifications.using_global')"
-              @click="form.discord_webhook = null"
+              @click="form.discord_webhook = null; dirty = true"
             >
               <RotateCcw class="h-4 w-4" />
             </button>
@@ -103,7 +84,7 @@ const MATCH_STATUSES: e_match_status_enum[] = [
             v-if="form.discord_webhook === null && globalWebhook"
             class="text-xs text-muted-foreground italic"
           >
-            {{ $t("tournament.notifications.using_global") }}: {{ globalWebhook }}
+            {{ $t("tournament.notifications.using_global") }}
           </p>
         </div>
 
@@ -118,17 +99,17 @@ const MATCH_STATUSES: e_match_status_enum[] = [
         <div class="space-y-2">
           <div class="flex items-center gap-2">
             <Input
-              v-model="form.discord_role_id"
+              :model-value="form.discord_role_id ?? ''"
               :placeholder="
-                globalRoleId ||
                 $t('tournament.notifications.role_id_placeholder')
               "
+              @update:model-value="form.discord_role_id = $event || null; dirty = true"
             />
             <button
               v-if="form.discord_role_id !== null"
               class="text-muted-foreground hover:text-foreground transition-colors shrink-0"
               :title="$t('tournament.notifications.using_global')"
-              @click="form.discord_role_id = null"
+              @click="form.discord_role_id = null; dirty = true"
             >
               <RotateCcw class="h-4 w-4" />
             </button>
@@ -137,7 +118,7 @@ const MATCH_STATUSES: e_match_status_enum[] = [
             v-if="form.discord_role_id === null && globalRoleId"
             class="text-xs text-muted-foreground italic"
           >
-            {{ $t("tournament.notifications.using_global") }}: {{ globalRoleId }}
+            {{ $t("tournament.notifications.using_global") }}
           </p>
         </div>
       </div>
@@ -155,7 +136,10 @@ const MATCH_STATUSES: e_match_status_enum[] = [
               :key="status"
               class="flex items-center justify-between rounded-lg border p-3 cursor-pointer select-none"
               role="button"
+              tabindex="0"
               @click="toggleStatus(status)"
+              @keydown.enter.prevent="toggleStatus(status)"
+              @keydown.space.prevent="toggleStatus(status)"
             >
               <span class="text-sm font-medium">{{
                 $t(`tournament.notifications.status.${status}`)
@@ -165,7 +149,7 @@ const MATCH_STATUSES: e_match_status_enum[] = [
                   v-if="form[`discord_notify_${status}`] !== null"
                   class="text-xs text-muted-foreground hover:text-foreground transition-colors"
                   :title="$t('tournament.notifications.using_global')"
-                  @click.stop="form[`discord_notify_${status}`] = null"
+                  @click.stop="form[`discord_notify_${status}`] = null; dirty = true"
                 >
                   <RotateCcw class="h-3.5 w-3.5" />
                 </button>
@@ -173,7 +157,8 @@ const MATCH_STATUSES: e_match_status_enum[] = [
                   @click.stop
                   :model-value="resolveStatusToggle(status)"
                   @update:model-value="
-                    form[`discord_notify_${status}`] = $event ? true : false
+                    form[`discord_notify_${status}`] = $event ? true : false;
+                    dirty = true
                   "
                 />
               </div>
@@ -189,7 +174,10 @@ const MATCH_STATUSES: e_match_status_enum[] = [
             <div
               class="flex items-center justify-between rounded-lg border p-3 cursor-pointer select-none"
               role="button"
-              @click="toggleMapPaused"
+              tabindex="0"
+              @click="toggleStatus('MapPaused')"
+              @keydown.enter.prevent="toggleStatus('MapPaused')"
+              @keydown.space.prevent="toggleStatus('MapPaused')"
             >
               <span class="text-sm font-medium">{{ $t("tournament.notifications.map_paused") }}</span>
               <div class="flex items-center gap-2">
@@ -197,7 +185,7 @@ const MATCH_STATUSES: e_match_status_enum[] = [
                   v-if="form.discord_notify_MapPaused !== null"
                   class="text-xs text-muted-foreground hover:text-foreground transition-colors"
                   :title="$t('tournament.notifications.using_global')"
-                  @click.stop="form.discord_notify_MapPaused = null"
+                  @click.stop="form.discord_notify_MapPaused = null; dirty = true"
                 >
                   <RotateCcw class="h-3.5 w-3.5" />
                 </button>
@@ -205,7 +193,8 @@ const MATCH_STATUSES: e_match_status_enum[] = [
                   @click.stop
                   :model-value="resolveStatusToggle('MapPaused')"
                   @update:model-value="
-                    form.discord_notify_MapPaused = $event ? true : false
+                    form.discord_notify_MapPaused = $event ? true : false;
+                    dirty = true
                   "
                 />
               </div>
@@ -224,9 +213,28 @@ const MATCH_STATUSES: e_match_status_enum[] = [
 </template>
 
 <script lang="ts">
-import { $ } from "~/generated/zeus";
+import { Card } from "~/components/ui/card";
+import { Switch } from "~/components/ui/switch";
+import { Input } from "~/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { $, e_match_status_enum } from "~/generated/zeus";
+import { RotateCcw } from "lucide-vue-next";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
+
+const MATCH_STATUSES: e_match_status_enum[] = [
+  e_match_status_enum.PickingPlayers,
+  e_match_status_enum.Scheduled,
+  e_match_status_enum.WaitingForCheckIn,
+  e_match_status_enum.WaitingForServer,
+  e_match_status_enum.Veto,
+  e_match_status_enum.Live,
+  e_match_status_enum.Finished,
+  e_match_status_enum.Tie,
+  e_match_status_enum.Canceled,
+  e_match_status_enum.Forfeit,
+  e_match_status_enum.Surrendered,
+];
 
 const DISCORD_FIELDS = [
   "discord_notifications_enabled",
@@ -257,12 +265,13 @@ export default {
     return {
       form: this.buildForm(this.tournament),
       saving: false,
+      dirty: false,
     };
   },
   watch: {
     tournament: {
       handler(newTournament) {
-        if (newTournament) {
+        if (newTournament && !this.dirty) {
           this.form = this.buildForm(newTournament);
         }
       },
@@ -307,26 +316,14 @@ export default {
       return this.getGlobalStatusValue(status);
     },
     toggleMaster() {
-      if (this.form.discord_notifications_enabled === true) {
-        this.form.discord_notifications_enabled = false;
-      } else {
-        this.form.discord_notifications_enabled = true;
-      }
+      this.form.discord_notifications_enabled =
+        this.form.discord_notifications_enabled !== true;
+      this.dirty = true;
     },
     toggleStatus(status: string) {
       const key = `discord_notify_${status}`;
-      if (this.form[key] === true) {
-        this.form[key] = false;
-      } else {
-        this.form[key] = true;
-      }
-    },
-    toggleMapPaused() {
-      if (this.form.discord_notify_MapPaused === true) {
-        this.form.discord_notify_MapPaused = false;
-      } else {
-        this.form.discord_notify_MapPaused = true;
-      }
+      this.form[key] = this.form[key] !== true;
+      this.dirty = true;
     },
     async save() {
       const variables: Record<string, any> = {};
@@ -368,6 +365,7 @@ export default {
           }),
         });
 
+        this.dirty = false;
         toast({
           title: this.$t("tournament.notifications.saved"),
         });

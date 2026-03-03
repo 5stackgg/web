@@ -142,7 +142,7 @@
                     "webhook": "Discords webhook",
                     "webhook_description": "Vi använder denna Discord Webhook för att skicka meddelanden som kräver åtgärd från en spelare. T.ex. matchproblem, buggar, etc.",
                     "support_role": "Discord Support-roll ID",
-                    "support_role_description": "These roles will be pinged when used for support actions. You can add multiple Role IDs separated by commas. Get a Role ID from Discord by enabling developer mode, then right-clicking the role and selecting Copy ID.",
+                    "support_role_description": "Denna roll kommer att nämnas när den används för supportåtgärder. Du kan få roll-ID från Discord-applikationen genom att aktivera utvecklarläge och högerklicka för att kopiera ID.",
                     "update": "Uppdatera",
                     "updated": "Uppdaterade Discord-inställningar"
                 },

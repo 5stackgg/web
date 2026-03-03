@@ -86,7 +86,7 @@
                   "webhook": "Discord Webhook",
                   "webhook_description": "Мы используем этот Discord Webhook для отправки уведомлений, требующих действий от игрока. Например: проблемы с матчем, баги и т.д.",
                   "support_role": "ID роли поддержки Discord",
-                  "support_role_description": "These roles will be pinged when used for support actions. You can add multiple Role IDs separated by commas. Get a Role ID from Discord by enabling developer mode, then right-clicking the role and selecting Copy ID.",
+                  "support_role_description": "Эта роль будет упомянута при использовании для действий поддержки. Вы можете получить ID роли из приложения Discord, включив режим разработчика и нажав правой кнопкой мыши для копирования ID.",
                   "update": "Обновить"
                 },
                 "game_type_configs": {

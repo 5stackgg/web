@@ -86,7 +86,7 @@
                   "webhook": "Discord Webhook",
                   "webhook_description": "我們會使用此 Webhook 傳送需要玩家回應的通知，例如比賽問題或錯誤回報。",
                   "support_role": "支援角色 ID",
-                  "support_role_description": "These roles will be pinged when used for support actions. You can add multiple Role IDs separated by commas. Get a Role ID from Discord by enabling developer mode, then right-clicking the role and selecting Copy ID.",
+                  "support_role_description": "進行支援操作時會 Tag 此角色。在 Discord 中開啟開發者模式後，右鍵角色名稱即可複製 ID。",
                   "update": "更新"
                 },
                 "game_type_configs": {

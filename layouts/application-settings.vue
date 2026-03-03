@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import Default from "~/layouts/default.vue";
-import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 
 const showSeparators = computed(
   () => useApplicationSettingsStore().showSeparators,
@@ -13,13 +19,78 @@ const isDev = computed(() => {
   return domain.includes("localhost") || domain.includes(".local");
 });
 
+const { t: $t } = useI18n();
+
+const navItems = computed(() => {
+  const items: { path: string; label: string }[] = [
+    { path: "/settings/application/players", label: $t("pages.players.title") },
+    {
+      path: "/settings/application",
+      label: $t("pages.settings.application.matchmaking.title"),
+    },
+    {
+      path: "/settings/application/chat",
+      label: $t("pages.settings.application.chat.title"),
+    },
+    {
+      path: "/settings/application/streaming",
+      label: $t("pages.settings.application.streaming.title"),
+    },
+    {
+      path: "/settings/application/game-type-configs",
+      label: $t("pages.settings.application.game_type_configs.title"),
+    },
+    {
+      path: "/settings/application/map-pools",
+      label: $t("pages.map_pools.title"),
+    },
+    {
+      path: "/settings/application/demo-settings",
+      label: $t("pages.settings.application.demo_settings.title"),
+    },
+    {
+      path: "/settings/application/servers",
+      label: $t("pages.settings.application.servers.title"),
+    },
+    {
+      path: "/settings/application/discord",
+      label: $t("pages.settings.application.discord.title"),
+    },
+    {
+      path: "/settings/application/telemetry",
+      label: $t("pages.settings.application.telemetry.title"),
+    },
+    { path: "/settings/application/branding", label: "Branding" },
+  ];
+  if (isDev.value) {
+    items.push({ path: "/settings/application/fixtures", label: "Fixtures" });
+  }
+  return items;
+});
+
+const route = useRoute();
+const router = useRouter();
+
+/** Resolve current path to a nav item path (for sub-routes like /players/123). */
+const resolvedPath = computed(() => {
+  const path = route.path;
+  const items = navItems.value;
+  if (items.some((item) => item.path === path)) return path;
+  const match = items.find((item) => path.startsWith(item.path + "/"));
+  return match ? match.path : (items[0]?.path ?? path);
+});
+
+const selectedPath = computed({
+  get: () => resolvedPath.value,
+  set: (path: string) => {
+    if (path !== route.path) router.push(path);
+  },
+});
+
 const navRef = ref<HTMLElement | null>(null);
 const indicatorY = ref(0);
-const indicatorX = ref(0);
 const indicatorHeight = ref(0);
-const indicatorWidth = ref(0);
 const hasAnimated = ref(false);
-const isVertical = ref(true);
 
 function updateIndicator() {
   const nav = navRef.value;
@@ -29,24 +100,19 @@ function updateIndicator() {
   ) as HTMLElement | null;
   if (!active) {
     indicatorHeight.value = 0;
-    indicatorWidth.value = 0;
     hasAnimated.value = false;
     return;
   }
   const navRect = nav.getBoundingClientRect();
   const activeRect = active.getBoundingClientRect();
   indicatorY.value = activeRect.top - navRect.top;
-  indicatorX.value = activeRect.left - navRect.left;
   indicatorHeight.value = activeRect.height;
-  indicatorWidth.value = activeRect.width;
-  isVertical.value = navRect.height > navRect.width;
   nextTick(() => {
     hasAnimated.value = true;
   });
 }
 
 let observer: MutationObserver | null = null;
-const route = useRoute();
 
 watch(
   () => route.path,
@@ -72,9 +138,7 @@ onUnmounted(() => {
   window.removeEventListener("resize", updateIndicator);
 });
 
-const showIndicator = computed(
-  () => indicatorHeight.value > 0 && indicatorWidth.value > 0,
-);
+const showIndicator = computed(() => indicatorHeight.value > 0);
 </script>
 
 <template>
@@ -89,12 +153,29 @@ const showIndicator = computed(
     </div>
     <Separator v-if="showSeparators" class="my-6" />
     <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-      <aside class="w-full lg:w-auto">
+      <aside class="w-full shrink-0 lg:w-auto">
+        <!-- Mobile: single dropdown so all sections are one tap away, no scroll -->
+        <div class="lg:hidden">
+          <Select v-model="selectedPath">
+            <SelectTrigger class="w-full" aria-label="Settings section">
+              <SelectValue placeholder="Select section" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem
+                v-for="item in navItems"
+                :key="item.path"
+                :value="item.path"
+              >
+                {{ item.label }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <!-- Desktop: vertical nav with sliding indicator -->
         <nav
           ref="navRef"
-          class="settings-nav relative flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1 overflow-y-auto max-h-[300px] lg:max-h-none"
+          class="settings-nav relative hidden flex-col space-y-1 lg:flex"
         >
-          <!-- Sliding right accent bar -->
           <div
             v-show="showIndicator"
             class="absolute top-0 right-0 w-0.5 bg-primary z-10 pointer-events-none"
@@ -104,101 +185,12 @@ const showIndicator = computed(
               height: `${indicatorHeight}px`,
             }"
           />
-
-          <nuxt-link to="/settings/application/players">
+          <nuxt-link v-for="item in navItems" :key="item.path" :to="item.path">
             <Button
               variant="ghost"
               class="w-full text-left justify-start relative z-[1]"
             >
-              {{ $t("pages.players.title") }}
-            </Button>
-          </nuxt-link>
-          <nuxt-link to="/settings/application">
-            <Button
-              variant="ghost"
-              class="w-full text-left justify-start relative z-[1]"
-            >
-              {{ $t("pages.settings.application.matchmaking.title") }}
-            </Button>
-          </nuxt-link>
-          <nuxt-link to="/settings/application/chat">
-            <Button
-              variant="ghost"
-              class="w-full text-left justify-start relative z-[1]"
-            >
-              {{ $t("pages.settings.application.chat.title") }}
-            </Button>
-          </nuxt-link>
-          <nuxt-link to="/settings/application/streaming">
-            <Button
-              variant="ghost"
-              class="w-full text-left justify-start relative z-[1]"
-            >
-              {{ $t("pages.settings.application.streaming.title") }}
-            </Button>
-          </nuxt-link>
-          <nuxt-link to="/settings/application/game-type-configs">
-            <Button
-              variant="ghost"
-              class="w-full text-left justify-start relative z-[1]"
-            >
-              {{ $t("pages.settings.application.game_type_configs.title") }}
-            </Button>
-          </nuxt-link>
-          <nuxt-link to="/settings/application/map-pools">
-            <Button
-              variant="ghost"
-              class="w-full text-left justify-start relative z-[1]"
-            >
-              {{ $t("pages.map_pools.title") }}
-            </Button>
-          </nuxt-link>
-          <nuxt-link to="/settings/application/demo-settings">
-            <Button
-              variant="ghost"
-              class="w-full text-left justify-start relative z-[1]"
-            >
-              {{ $t("pages.settings.application.demo_settings.title") }}
-            </Button>
-          </nuxt-link>
-          <nuxt-link to="/settings/application/servers">
-            <Button
-              variant="ghost"
-              class="w-full text-left justify-start relative z-[1]"
-            >
-              {{ $t("pages.settings.application.servers.title") }}
-            </Button>
-          </nuxt-link>
-          <nuxt-link to="/settings/application/discord">
-            <Button
-              variant="ghost"
-              class="w-full text-left justify-start relative z-[1]"
-            >
-              {{ $t("pages.settings.application.discord.title") }}
-            </Button>
-          </nuxt-link>
-          <nuxt-link to="/settings/application/telemetry">
-            <Button
-              variant="ghost"
-              class="w-full text-left justify-start relative z-[1]"
-            >
-              {{ $t("pages.settings.application.telemetry.title") }}
-            </Button>
-          </nuxt-link>
-          <nuxt-link to="/settings/application/branding">
-            <Button
-              variant="ghost"
-              class="w-full text-left justify-start relative z-[1]"
-            >
-              Branding
-            </Button>
-          </nuxt-link>
-          <nuxt-link v-if="isDev" to="/settings/application/fixtures">
-            <Button
-              variant="ghost"
-              class="w-full text-left justify-start relative z-[1]"
-            >
-              Fixtures
+              {{ item.label }}
             </Button>
           </nuxt-link>
         </nav>

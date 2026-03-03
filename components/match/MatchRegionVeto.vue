@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Button } from "~/components/ui/button";
+import { Badge } from "~/components/ui/badge";
 import { FormControl } from "~/components/ui/form";
 import { Separator } from "~/components/ui/separator";
 </script>
@@ -7,23 +8,48 @@ import { Separator } from "~/components/ui/separator";
 <template>
   <div v-if="isRegionVeto && (isBanning || canSelectRegion)">
     <template v-if="match.options.region_veto">
-      <div class="flex justify-between my-3">
-        <h1>
-          <template v-if="match.lineup_1.is_picking_region_veto">
-            {{ match.lineup_1.name }}
-          </template>
-          <template v-else-if="match.lineup_2.is_picking_region_veto">
-            {{ match.lineup_2.name }}
-          </template>
-          {{ $t("match.region_veto.banning") }}
-        </h1>
+      <div
+        class="relative rounded-lg border-l-4 border border-border/50 px-5 py-3 mb-4 mx-auto max-w-lg w-full flex flex-col items-center gap-2 transition-colors duration-300"
+        :class="
+          isPicking
+            ? 'border-l-blue-500 bg-blue-500/10 ring-1 ring-blue-500/30'
+            : 'border-l-primary bg-muted/40'
+        "
+      >
+        <Badge
+          v-if="isPicking"
+          variant="default"
+          class="absolute top-2 right-3 text-xs bg-blue-500 animate-pulse"
+        >
+          {{ $t("match.map_veto.your_turn") }}
+        </Badge>
+
+        <div class="flex items-center gap-2 text-center">
+          <span
+            class="text-lg font-bold"
+            :class="isPicking ? 'text-blue-400' : 'text-primary'"
+          >
+            <template v-if="match.lineup_1.is_picking_region_veto">
+              {{ match.lineup_1.name }}
+            </template>
+            <template v-else-if="match.lineup_2.is_picking_region_veto">
+              {{ match.lineup_2.name }}
+            </template>
+          </span>
+          <span class="text-muted-foreground">{{
+            $t("match.region_veto.banning")
+          }}</span>
+          <Badge variant="destructive" class="text-sm">Ban</Badge>
+        </div>
 
         <div
-          class="flex items-center space-x-2 cursor-pointer"
+          class="flex items-center gap-2 cursor-pointer text-xs text-muted-foreground"
           @click="override = !override"
           v-if="canOverride"
         >
-          <Label>{{ $t("match.region_veto.organizer_override") }}</Label>
+          <Label class="text-xs text-muted-foreground cursor-pointer">{{
+            $t("match.region_veto.organizer_override")
+          }}</Label>
           <Switch :model-value="override" />
         </div>
       </div>

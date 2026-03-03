@@ -32,29 +32,38 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
           v-if="canJoinLobby"
         />
       </PageTransition>
+
+      <PageTransition :delay="200">
+        <StreamEmbed
+          v-if="showLiveStreams && match.streams.length > 0"
+          :streams="match.streams"
+          class="mt-4"
+        />
+      </PageTransition>
     </div>
 
-    <div class="grid grid-cols-1 gap-y-4 md:gap-y-6">
+    <div>
       <PageTransition>
         <div
-          class="flex gap-4 flex-col 2xl:flex-row 2xl:items-start"
+          class="pb-6"
           v-if="
-            (match.options.best_of &&
-              match.options.best_of > 0 &&
-              match.status !== e_match_status_enum.Veto) ||
-            (showLiveStreams && match.streams.length > 0)
+            match.options.best_of &&
+            match.options.best_of > 0 &&
+            match.status !== e_match_status_enum.Veto
           "
         >
           <div
-            v-if="showLiveStreams && match.streams.length > 0"
-            class="flex w-full min-w-0 flex-col gap-4 2xl:min-w-[320px] 2xl:flex-1 2xl:max-w-[600px]"
+            class="grid gap-3"
+            :class="{
+              'grid-cols-1 max-w-xs': mapSlots.length === 1,
+              'grid-cols-2': mapSlots.length === 2,
+              'grid-cols-3': mapSlots.length === 3,
+              'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4':
+                mapSlots.length === 4,
+              'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5': mapSlots.length >= 5,
+            }"
           >
-            <StreamEmbed :streams="match.streams" />
-          </div>
-          <div
-            class="flex min-w-0 flex-1 flex-col gap-4 justify-around 2xl:flex-row"
-          >
-            <div v-for="(slot, index) in mapSlots" :key="index" class="flex-1">
+            <div v-for="(slot, index) in mapSlots" :key="index">
               <MatchMaps
                 v-if="slot"
                 :match="match"
@@ -78,13 +87,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
         </div>
       </PageTransition>
 
-      <Separator
-        v-if="
-          showSeparators &&
-          match.match_maps.length > 0 &&
-          match.status !== e_match_status_enum.Veto
-        "
-      />
+      <Separator class="my-2" />
 
       <PageTransition :delay="100">
         <template
@@ -92,7 +95,10 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
             regions.length === 0 && match.options.region_veto && !match.region
           "
         >
-          <Alert variant="destructive" class="bg-red-600 text-white max-w-md">
+          <Alert
+            variant="destructive"
+            class="bg-red-600 text-white max-w-md mb-6"
+          >
             <AlertTitle>{{
               $t("match.region_veto.no_regions_available")
             }}</AlertTitle>
@@ -104,13 +110,11 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
       </PageTransition>
 
       <PageTransition :delay="100">
-        <MatchRegionVeto :match="match"></MatchRegionVeto>
+        <MatchRegionVeto :match="match" class="pb-6" />
       </PageTransition>
 
       <PageTransition :delay="100">
-        <div class="mt-8">
-          <MatchMapVeto :match="match"></MatchMapVeto>
-        </div>
+        <MatchMapVeto :match="match" class="pb-6" />
       </PageTransition>
 
       <PageTransition :delay="200">

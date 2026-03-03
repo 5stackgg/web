@@ -158,7 +158,7 @@ const MATCH_STATUSES: e_match_status_enum[] = [
               @click="toggleStatus(status)"
             >
               <span class="text-sm font-medium">{{
-                statusLabels[status]
+                $t(`tournament.notifications.status.${status}`)
               }}</span>
               <div class="flex items-center gap-2">
                 <button
@@ -203,7 +203,7 @@ const MATCH_STATUSES: e_match_status_enum[] = [
                 </button>
                 <Switch
                   @click.stop
-                  :model-value="resolveMapPausedToggle()"
+                  :model-value="resolveStatusToggle('MapPaused')"
                   @update:model-value="
                     form.discord_notify_MapPaused = $event ? true : false
                   "
@@ -224,23 +224,9 @@ const MATCH_STATUSES: e_match_status_enum[] = [
 </template>
 
 <script lang="ts">
-import { e_match_status_enum, $ } from "~/generated/zeus";
+import { $ } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
-
-const STATUS_LABEL_MAP: Record<e_match_status_enum, string> = {
-  [e_match_status_enum.PickingPlayers]: "Picking Players",
-  [e_match_status_enum.Scheduled]: "Scheduled",
-  [e_match_status_enum.WaitingForCheckIn]: "Waiting for Check-In",
-  [e_match_status_enum.WaitingForServer]: "Waiting for Server",
-  [e_match_status_enum.Veto]: "Veto",
-  [e_match_status_enum.Live]: "Live",
-  [e_match_status_enum.Finished]: "Finished",
-  [e_match_status_enum.Tie]: "Tie",
-  [e_match_status_enum.Canceled]: "Canceled",
-  [e_match_status_enum.Forfeit]: "Forfeit",
-  [e_match_status_enum.Surrendered]: "Surrendered",
-};
 
 const DISCORD_FIELDS = [
   "discord_notifications_enabled",
@@ -269,7 +255,6 @@ export default {
   },
   data() {
     return {
-      statusLabels: STATUS_LABEL_MAP,
       form: this.buildForm(this.tournament),
       saving: false,
     };
@@ -320,14 +305,6 @@ export default {
       const val = this.form[`discord_notify_${status}`];
       if (val !== null) return val;
       return this.getGlobalStatusValue(status);
-    },
-    resolveMapPausedToggle(): boolean {
-      const val = this.form.discord_notify_MapPaused;
-      if (val !== null) return val;
-      const s = this.settings.find(
-        (s: { name: string }) => s.name === "discord_match_notify_MapPaused",
-      );
-      return s?.value === "true";
     },
     toggleMaster() {
       if (this.form.discord_notifications_enabled === true) {

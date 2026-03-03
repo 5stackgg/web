@@ -667,7 +667,20 @@
             "save": "Save",
             "saved": "Notification settings updated",
             "save_error": "Failed to save notification settings",
-            "map_paused": "Map Paused"
+            "map_paused": "Map Paused",
+            "status": {
+                "PickingPlayers": "Picking Players",
+                "Scheduled": "Scheduled",
+                "WaitingForCheckIn": "Waiting for Check-In",
+                "WaitingForServer": "Waiting for Server",
+                "Veto": "Veto",
+                "Live": "Live",
+                "Finished": "Finished",
+                "Tie": "Tie",
+                "Canceled": "Canceled",
+                "Forfeit": "Forfeit",
+                "Surrendered": "Surrendered"
+            }
         },
         "table": {
             "tournament": "Torneo",

@@ -389,6 +389,7 @@ export default {
                 {},
                 {
                   label: $("label_order", "order_by!"),
+                  id: order_by.asc,
                 },
               ],
               where: $("where_clause", "game_server_nodes_bool_exp!"),

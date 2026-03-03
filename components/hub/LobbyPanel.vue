@@ -64,7 +64,7 @@ const { hasLobbyInvites } = useInvites();
         </template>
 
         <!-- Create lobby — only when not in a lobby or match -->
-        <template v-if="!currentLobby && !currentMatch">
+        <template v-if="!currentLobby">
           <Empty class="px-4 pb-5 pt-4">
             <p class="text-sm text-zinc-400 text-center max-w-xs">
               {{ $t("layouts.lobby_panel.create_lobby_description") }}

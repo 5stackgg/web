@@ -214,8 +214,6 @@ provide("commander", commander);
       value="server"
       class="flex flex-col gap-4 max-w-[1500px] w-full overflow-x-auto"
     >
-      <ServiceLogs :service="`m-${match.id}`" :compact="true" />
-
       <AlertDialog :open="showConfirmDialog">
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -312,6 +310,8 @@ provide("commander", commander);
           <Button type="submit">{{ $t("match.tabs.restore_round") }}</Button>
         </form>
       </RconCommander>
+
+      <ServiceLogs :service="`m-${match.id}`" :compact="true" />
     </TabsContent>
     <TabsContent value="settings" class="flex flex-col gap-4 max-w-[1500px]">
       <Card>

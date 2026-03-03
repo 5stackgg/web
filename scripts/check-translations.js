@@ -19,17 +19,46 @@ function flattenTranslations(obj, prefix = "") {
 }
 
 // Function to extract translation keys from a file
-// - Direct usage via $t("...") or $t('...')
+// - Direct usage via $t("..."), $t('...') or $t(`...`)
 // - String literals that *look* like translation keys based on known prefixes
-function extractTranslationKeys(content, keyPrefixPattern) {
+// - Dynamic template keys like $t(`foo.bar.${baz}`) are tracked by prefix
+function extractTranslationKeys(content, keyPrefixPattern, dynamicPrefixes) {
   const keys = new Set();
 
-  // Regex to match $t("...") or $t('...') with various endings and spacing, anywhere in the code
-  const directPattern = /\$t\s*\(\s*['"]([^'"]+)['"](?:\s*[,)])/g;
+  // Regex to match $t("...") / t("...") / i18n.t("...") with various endings and spacing
+  const directPattern =
+    /\b(?:\$t|t)\s*\(\s*(['"`])([^'"`]+)\1(?:\s*[,)])/g;
   const directMatches = Array.from(content.matchAll(directPattern));
 
   directMatches.forEach((match) => {
-    keys.add(match[1]);
+    const key = match[2];
+    // If this is a dynamic template (contains ${...}), record its prefix so we
+    // can later treat all matching translation keys as \"used\".
+    if (key.includes("${")) {
+      const prefix = key.split("${")[0];
+      if (prefix && dynamicPrefixes) {
+        dynamicPrefixes.add(prefix);
+      }
+      return;
+    }
+    keys.add(key);
+  });
+
+  // Also catch namespaced calls like i18n.t("foo.bar.baz")
+  const namespacedTPattern =
+    /\b\w+\.t\s*\(\s*(['"`])([^'"`]+)\1(?:\s*[,)])/g;
+  const namespacedMatches = Array.from(content.matchAll(namespacedTPattern));
+
+  namespacedMatches.forEach((match) => {
+    const key = match[2];
+    if (key.includes("${")) {
+      const prefix = key.split("${")[0];
+      if (prefix && dynamicPrefixes) {
+        dynamicPrefixes.add(prefix);
+      }
+      return;
+    }
+    keys.add(key);
   });
 
   // Additionally, capture string literals that look like translation keys
@@ -57,6 +86,7 @@ function extractTranslationKeys(content, keyPrefixPattern) {
 async function findAllTranslationKeys(keyPrefixPattern) {
   const keys = new Set();
   const keyLocations = new Map();
+  const dynamicPrefixes = new Set();
 
   // Find all Vue, JS, and TS files
   const files = await glob("**/*.{vue,js,ts}", {
@@ -66,7 +96,11 @@ async function findAllTranslationKeys(keyPrefixPattern) {
   // Process each file
   const fileResults = files.map((file) => {
     const content = fs.readFileSync(file, "utf8");
-    const fileKeys = extractTranslationKeys(content, keyPrefixPattern);
+    const fileKeys = extractTranslationKeys(
+      content,
+      keyPrefixPattern,
+      dynamicPrefixes,
+    );
     return { file, fileKeys };
   });
 
@@ -81,7 +115,7 @@ async function findAllTranslationKeys(keyPrefixPattern) {
     });
   });
 
-  return { keys: Array.from(keys), keyLocations };
+  return { keys: Array.from(keys), keyLocations, dynamicPrefixes };
 }
 
 // Function to check for missing translations
@@ -146,8 +180,19 @@ async function main() {
       : null;
 
   // Find all translation keys used in the project
-  const { keys: usedKeys, keyLocations } =
+  const { keys: usedKeysRaw, keyLocations, dynamicPrefixes } =
     await findAllTranslationKeys(keyPrefixPattern);
+  // Expand dynamic prefixes (e.g. \"foo.bar.${baz}\") into concrete keys based
+  // on what exists in the translation files.
+  const usedKeysSet = new Set(usedKeysRaw);
+  dynamicPrefixes.forEach((prefix) => {
+    allAvailableKeys.forEach((key) => {
+      if (key.startsWith(prefix)) {
+        usedKeysSet.add(key);
+      }
+    });
+  });
+  const usedKeys = Array.from(usedKeysSet);
 
   console.log("\n=== Translation Check Results ===\n");
 

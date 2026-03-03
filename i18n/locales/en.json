@@ -4,7 +4,6 @@
     },
     "pages": {
         "system_metrics": {
-            "node": "Node",
             "cpu_usage": "CPU Usage",
             "memory_usage": "Memory Usage",
             "services": "Services",
@@ -15,18 +14,12 @@
             "follow_logs": "Follow Logs",
             "timestamps": "Timestamps"
         },
-        "login": {
-            "sign_in": "Sign in with Steam",
-            "powered_by": "Powered by"
-        },
         "coming_soon": "Coming Soon!",
         "tournaments": {
             "title": "Upcoming Tournaments",
             "create": "Create Tournament",
             "open_for_registration": "Open for Registration",
             "tabs": {
-                "tournaments": "Tournaments",
-                "my_recent": "My Recent Tournaments",
                 "finished": "Finished Tournaments",
                 "live": "Live",
                 "upcoming": "Upcoming",
@@ -34,7 +27,6 @@
                 "no_upcoming_title": "No Upcoming Tournaments",
                 "no_finished_title": "No Finished Tournaments"
             },
-            "no_recent": "You don't have any recent tournaments.",
             "no_finished": "No finished tournaments found."
         },
         "manage_tournaments": {
@@ -148,8 +140,6 @@
             "application": {
                 "update_success": "Updated",
                 "db_backups": {
-                    "title": "DB Backups",
-                    "description": "Manage database backups.",
                     "name": "Name",
                     "size": "Size",
                     "created_at": "Created"
@@ -196,9 +186,7 @@
                     }
                 },
                 "game_type_configs": {
-                    "title": "Game Type Configs",
-                    "description": "Manage game type configs.",
-                    "type": "Game Type"
+                    "title": "Game Type Configs"
                 },
                 "streaming": {
                     "title": "Streaming",
@@ -224,7 +212,6 @@
                 "lineup_add_without_invite": "Minimum Role to Add Players to Lineup Without Invite",
                 "lineup_add_without_invite_description": "This role will be able to add players to match lineups without sending an invite first.",
                 "default_models": "Default Player Models",
-                "default_models_description": "Enable default player models for all players in the match.",
                 "auto_cancel_duration": "Auto Cancel Duration",
                 "auto_cancel_duration_description": "This is the duration in minutes that a match will be auto canceled if not started within the duration.",
                 "matchmaking_type_description": "Toggle matchmaking for each type that will allow players to join matchmaking for this type of match.",
@@ -251,7 +238,6 @@
                     "max_storage_description": "The maximum storage size for the demo files in GB.",
                     "cloudflare_worker_url_description": "The URL of the Cloudflare worker that will be used to store and retrieve the demo files.",
                     "min_retention_description": "The minimum retention days for the demo files.",
-                    "current_storage": "Current Storage",
                     "used_storage": "Approximate Storage Used",
                     "test_s3_title": "Test S3",
                     "test_s3_description": "Test the S3 connection and upload a file to the demo bucket.",
@@ -325,7 +311,6 @@
             "search_country": "Search country...",
             "no_country_found": "No country found.",
             "countries_selected": "countries selected",
-            "items_per_page": "Items per page",
             "elo_min": "Minimum Elo",
             "elo_max": "Maximum Elo",
             "min_elo": "Min Elo",
@@ -348,18 +333,12 @@
                 "wins": "Wins",
                 "losses": "Losses",
                 "kdr": "KDR",
-                "kills": "Kills",
-                "deaths": "Deaths",
                 "no_players": "No players found"
             },
             "detail": {
                 "player_stats": "Player Stats",
                 "kills": "Kills",
-                "assists": "Assists",
-                "deaths": "Deaths",
                 "kd": "KD",
-                "headshots": "Headshots",
-                "headshot_percentage": "Headshot Percentage",
                 "recent_wins_and_losses": "Recent Wins and Losses",
                 "elo_history": "ELO History",
                 "no_elo_history": "Play A Match to genreate ELO",
@@ -373,7 +352,6 @@
                 "no_tournaments_description": "Tournaments this player has joined will appear here.",
                 "weapon_kills": "Most Used Weapons",
                 "no_weapon_kills": "No weapons recorded",
-                "match_record": "Match Record",
                 "wins": "Wins",
                 "losses": "Losses",
                 "win_rate": "Win Rate"
@@ -390,11 +368,7 @@
             }
         },
         "matches": {
-            "description": "Your most recent completed matches",
             "create": "Create Match",
-            "last_ten_wins": "Last 10 Wins",
-            "last_ten_losses": "Last 10 Losses",
-            
             "match_updated": "Match Updated",
             "create_page": {
                 "title": "Create Match",

@@ -4,12 +4,14 @@ import { Separator } from "~/components/ui/separator";
 import SystemUpdate from "./SystemUpdate.vue";
 import BreadCrumbs from "~/components/BreadCrumbs.vue";
 import SystemStatus from "./SystemStatus.vue";
-import OnlinePlayers from "./OnlinePlayers.vue";
 import MatchLobbies from "./MatchLobbies.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import SpotlightPlayerSearch from "~/components/SpotlightPlayerSearch.vue";
+import { Grid } from "lucide-vue-next";
+import { useHubState } from "@/composables/useHubState";
 
 const { isMobile } = useSidebar();
+const { selectHub } = useHubState();
 </script>
 
 <template>
@@ -32,7 +34,15 @@ const { isMobile } = useSidebar();
 
         <SystemStatus></SystemStatus>
 
-        <OnlinePlayers v-if="isMobile"></OnlinePlayers>
+        <Button
+          variant="ghost"
+          size="icon"
+          class="h-7 w-7 md:hidden relative"
+          @click="selectHub('social')"
+        >
+          <Grid class="h-4 w-4" />
+          <span class="sr-only">Toggle Right Sidebar</span>
+        </Button>
       </div>
     </div>
   </header>

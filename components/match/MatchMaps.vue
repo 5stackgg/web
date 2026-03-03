@@ -13,7 +13,7 @@ import cleanMapName from "~/utilities/cleanMapName";
     }"
   >
     <!-- Map image header -->
-    <div class="relative aspect-video">
+    <div class="relative aspect-[16/5]">
       <NuxtImg
         :src="matchMap.map.poster"
         class="w-full h-full object-cover brightness-50"
@@ -35,7 +35,7 @@ import cleanMapName from "~/utilities/cleanMapName";
         <img
           v-if="matchMap.map.patch"
           :src="matchMap.map.patch"
-          class="w-2/5 max-w-[120px] h-auto max-h-[70%] object-contain drop-shadow-2xl"
+          class="w-1/4 max-w-[72px] h-auto max-h-[60%] object-contain drop-shadow-2xl opacity-80"
         />
       </div>
       <!-- Status badge + demo download top-right -->

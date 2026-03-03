@@ -34,64 +34,50 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
       </PageTransition>
 
       <PageTransition :delay="200">
-        <StreamEmbed
-          v-if="showLiveStreams && match.streams.length > 0"
-          :streams="match.streams"
-          class="mt-4"
-        />
-      </PageTransition>
-    </div>
-
-    <div>
-      <PageTransition>
         <div
-          class="pb-6"
           v-if="
             match.options.best_of &&
             match.options.best_of > 0 &&
             match.status !== e_match_status_enum.Veto
           "
+          class="flex flex-col gap-3"
         >
-          <div class="flex flex-wrap justify-center gap-3">
+          <div v-for="(slot, index) in mapSlots" :key="index">
+            <MatchMaps v-if="slot" :match="match" :match-map="slot"></MatchMaps>
             <div
-              v-for="(slot, index) in mapSlots"
-              :key="index"
-              :class="{
-                'w-full max-w-md': mapSlots.length === 1,
-                'w-[calc(50%-0.375rem)]': mapSlots.length === 2,
-                'w-[calc(33.333%-0.5rem)]': mapSlots.length >= 3,
-              }"
+              v-else
+              class="rounded-xl overflow-hidden border-2 border-dashed border-border/60"
             >
-              <MatchMaps
-                v-if="slot"
-                :match="match"
-                :match-map="slot"
-              ></MatchMaps>
               <div
-                v-else
-                class="rounded-xl overflow-hidden border-2 border-dashed border-border/60"
+                class="aspect-[16/5] bg-muted/40 flex items-center justify-center text-muted-foreground"
               >
-                <div
-                  class="aspect-video bg-muted/40 flex items-center justify-center text-muted-foreground"
-                >
-                  <div class="flex flex-col items-center gap-1">
-                    <span class="text-sm uppercase tracking-wide font-semibold">
-                      {{ $t("match.map_number", { count: index + 1 }) }}
-                    </span>
-                    <span class="text-xs">
-                      {{ $t("match.map_tbd") }}
-                    </span>
-                  </div>
+                <div class="flex flex-col items-center gap-1">
+                  <span class="text-sm uppercase tracking-wide font-semibold">
+                    {{ $t("match.map_number", { count: index + 1 }) }}
+                  </span>
+                  <span class="text-xs">
+                    {{ $t("match.map_tbd") }}
+                  </span>
                 </div>
-                <div class="bg-muted/40 border-t border-border/30 px-3 py-2.5">
-                  <div class="flex items-center justify-center">
-                    <span class="text-xs text-muted-foreground">—</span>
-                  </div>
+              </div>
+              <div class="bg-muted/40 border-t border-border/30 px-3 py-2.5">
+                <div class="flex items-center justify-center">
+                  <span class="text-xs text-muted-foreground">—</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
+      </PageTransition>
+    </div>
+
+    <div>
+      <PageTransition>
+        <StreamEmbed
+          v-if="showLiveStreams && match.streams.length > 0"
+          :streams="match.streams"
+          class="pb-6"
+        />
       </PageTransition>
 
       <PageTransition :delay="100">

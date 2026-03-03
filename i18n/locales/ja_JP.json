@@ -142,7 +142,7 @@
                     "webhook": "Discord Webhook",
                     "webhook_description": "このDiscord Webhookは、プレイヤーのアクションが必要な通知を送信するために使用されます。例：マッチの問題、バグなど。",
                     "support_role": "DiscordサポートロールID",
-                    "support_role_description": "このロールは、サポートアクションで使用される際にメンションされます。Discordアプリケーションで開発者モードを有効にし、右クリックしてIDをコピーすることでロールIDを取得できます。",
+                    "support_role_description": "These roles will be pinged when used for support actions. You can add multiple Role IDs separated by commas. Get a Role ID from Discord by enabling developer mode, then right-clicking the role and selecting Copy ID.",
                     "update": "更新",
                     "updated": "Discordの設定を更新しました"
                 },
@@ -660,6 +660,7 @@
             "webhook_placeholder": "Leave empty to use global default",
             "role_id": "Role ID",
             "role_id_placeholder": "Leave empty to use global default",
+            "role_id_description": "You can add multiple Role IDs separated by commas.",
             "statuses_title": "Notify on Status Changes",
             "events_title": "Notify on Match Events",
             "using_global": "Using global default",

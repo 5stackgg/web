@@ -103,6 +103,9 @@ const MATCH_STATUSES = Object.values(e_match_status_enum);
           <h4 class="text-base font-medium">
             {{ $t("tournament.notifications.role_id") }}
           </h4>
+          <p class="text-sm text-muted-foreground">
+            {{ $t("tournament.notifications.role_id_description") }}
+          </p>
         </div>
         <div class="space-y-2">
           <div class="flex items-center gap-2">

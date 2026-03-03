@@ -123,7 +123,7 @@
                     "webhook": "Webhook Discord",
                     "webhook_description": "Używamy tego webhooka Discord do wysyłania powiadomień wymagających działania od gracza. Np. problemy z meczem, błędy itp.",
                     "support_role": "ID roli wsparcia Discord",
-                    "support_role_description": "Ta rola będzie wspomniana podczas używania do akcji wsparcia. Możesz uzyskać ID roli z aplikacji Discord, włączając tryb deweloperski i klikając prawym przyciskiem myszy, aby skopiować ID.",
+                    "support_role_description": "These roles will be pinged when used for support actions. You can add multiple Role IDs separated by commas. Get a Role ID from Discord by enabling developer mode, then right-clicking the role and selecting Copy ID.",
                     "update": "Aktualizuj"
                 },
                 "game_type_configs": {
@@ -628,6 +628,7 @@
             "webhook_placeholder": "Leave empty to use global default",
             "role_id": "Role ID",
             "role_id_placeholder": "Leave empty to use global default",
+            "role_id_description": "You can add multiple Role IDs separated by commas.",
             "statuses_title": "Notify on Status Changes",
             "events_title": "Notify on Match Events",
             "using_global": "Using global default",

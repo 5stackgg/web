@@ -86,7 +86,7 @@
                   "webhook": "Discord Webhook",
                   "webhook_description": "Ми використовуємо цей Discord Webhook для надсилання сповіщень, які вимагають дій від гравця. Наприклад: проблеми з матчем, баги тощо.",
                   "support_role": "ID ролі підтримки Discord",
-                  "support_role_description": "Ця роль буде згадана при використанні для дій підтримки. Ви можете отримати ID ролі з додатку Discord, увімкнувши режим розробника та натиснувши правою кнопкою миші для копіювання ID.",
+                  "support_role_description": "These roles will be pinged when used for support actions. You can add multiple Role IDs separated by commas. Get a Role ID from Discord by enabling developer mode, then right-clicking the role and selecting Copy ID.",
                   "update": "Оновити"
                 },
                 "game_type_configs": {
@@ -516,6 +516,7 @@
             "webhook_placeholder": "Leave empty to use global default",
             "role_id": "Role ID",
             "role_id_placeholder": "Leave empty to use global default",
+            "role_id_description": "You can add multiple Role IDs separated by commas.",
             "statuses_title": "Notify on Status Changes",
             "events_title": "Notify on Match Events",
             "using_global": "Using global default",

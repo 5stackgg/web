@@ -69,23 +69,17 @@ provide("commander", commander);
       </TabsTrigger>
     </TabsList>
     <TabsContent value="overview">
+      <PlayerInvites v-if="me" />
       <div
-        v-if="me || canAdjustLineups"
-        class="flex flex-col gap-3 mb-3 md:flex-row md:items-center md:justify-between"
+        v-if="canAdjustLineups"
+        class="flex flex-wrap gap-2 mb-3 md:gap-3 md:justify-end"
       >
-        <PlayerInvites v-if="me" />
-
-        <div
-          v-if="canAdjustLineups"
-          class="flex flex-wrap gap-2 md:gap-3 md:justify-end"
-        >
-          <Button variant="destructive" class="px-4" @click="randomizeTeams">
-            {{ $t("match.tabs.randomize_teams") }}
-          </Button>
-          <Button variant="destructive" class="px-4" @click="swapLineups">
-            {{ $t("match.tabs.swap_lineups") }}
-          </Button>
-        </div>
+        <Button variant="destructive" class="px-4" @click="randomizeTeams">
+          {{ $t("match.tabs.randomize_teams") }}
+        </Button>
+        <Button variant="destructive" class="px-4" @click="swapLineups">
+          {{ $t("match.tabs.swap_lineups") }}
+        </Button>
       </div>
 
       <div class="grid gap-4 max-w-[1500px]">

@@ -1,17 +1,17 @@
 /* eslint-disable */
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import gql from 'graphql-tag';
-import {
-  type ValueTypes,
-  type GenericOperation,
-  type OperationOptions,
-  type GraphQLTypes,
-  type InputType,
-  type ScalarDefinition,
-  type ThunderGraphQLOptions,
-  Zeus,
-  type ExtractVariables,
+import type {
+  ValueTypes,
+  GenericOperation,
+  OperationOptions,
+  GraphQLTypes,
+  InputType,
+  ScalarDefinition,
+  ThunderGraphQLOptions,
+  ExtractVariables,
 } from './';
+import { Zeus } from './';
 import { Ops } from './const';
 
 export const typedGql =

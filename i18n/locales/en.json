@@ -174,7 +174,7 @@
                     "webhook": "Discord Webhook",
                     "webhook_description": "We use this discord webhook to send notifications that require action from a player. Ex. match issues, bugs, etc.",
                     "support_role": "Discord Support Role ID",
-                    "support_role_description": "This role will be pinged when used for support actions. You can get the Role ID from the Discord application by turning on developer mode and right clicking and copy id.",
+                    "support_role_description": "These roles will be pinged when used for support actions. You can add multiple Role IDs separated by commas. Get a Role ID from Discord by enabling developer mode, then right-clicking the role and selecting Copy ID.",
                     "update": "Update",
                     "updated": "Updated Discord Settings",
                     "match_notifications": {
@@ -183,7 +183,7 @@
                         "webhook": "Match Notifications Webhook URL",
                         "webhook_description": "Dedicated webhook for match status notifications. Falls back to the support webhook if not set.",
                         "role_id": "Match Notifications Role ID",
-                        "role_id_description": "This role will be mentioned in match status notifications.",
+                        "role_id_description": "These roles will be mentioned in match status notifications. You can add multiple Role IDs separated by commas.",
                         "statuses_title": "Notify on Status Changes",
                         "events_title": "Notify on Match Events"
                     }
@@ -1092,6 +1092,38 @@
             "update": "Update Tournament",
             "discord_notifications": "Discord Notifications",
             "discord_notifications_description": "Enable Discord notifications for match status changes in this tournament. When off, only panel notifications are sent."
+        },
+        "notifications": {
+            "title": "Notifications",
+            "description": "Override global Discord notification settings for this tournament. Leave empty to use global defaults.",
+            "webhook": "Webhook URL",
+            "webhook_placeholder": "Leave empty to use global default",
+            "role_id": "Role ID",
+            "role_id_placeholder": "Leave empty to use global default",
+            "role_id_description": "You can add multiple Role IDs separated by commas.",
+            "statuses_title": "Notify on Status Changes",
+            "events_title": "Notify on Match Events",
+            "using_global": "Using global default",
+            "save": "Save",
+            "saved": "Notification settings updated",
+            "save_error": "Failed to save notification settings",
+            "enabled": "enabled",
+            "disabled": "disabled",
+            "default": "default",
+            "map_paused": "Map Paused",
+            "status": {
+                "PickingPlayers": "Picking Players",
+                "Scheduled": "Scheduled",
+                "WaitingForCheckIn": "Waiting for Check-In",
+                "WaitingForServer": "Waiting for Server",
+                "Veto": "Veto",
+                "Live": "Live",
+                "Finished": "Finished",
+                "Tie": "Tie",
+                "Canceled": "Canceled",
+                "Forfeit": "Forfeit",
+                "Surrendered": "Surrendered"
+            }
         },
         "table": {
             "tournament": "Tournament",

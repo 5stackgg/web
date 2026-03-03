@@ -4,13 +4,11 @@ import { Input } from "~/components/ui/input";
 import { Calendar as CalendarIcon } from "lucide-vue-next";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Switch } from "~/components/ui/switch";
 import MatchOptions from "~/components/MatchOptions.vue";
 </script>
 
@@ -75,37 +73,6 @@ import MatchOptions from "~/components/MatchOptions.vue";
           </FormControl>
         </FormItem>
       </FormField>
-      <template #after-advanced>
-        <FormField
-          v-slot="{ value, handleChange }"
-          name="discord_notifications_enabled"
-        >
-          <FormItem>
-            <Card
-              class="cursor-pointer"
-              @click="handleChange(!value ? true : null)"
-            >
-              <div class="flex flex-col space-y-3 p-4">
-                <div class="flex justify-between items-center">
-                  <FormLabel class="text-lg font-semibold">{{
-                    $t("tournament.form.discord_notifications")
-                  }}</FormLabel>
-                  <FormControl>
-                    <Switch
-                      class="pointer-events-none"
-                      :model-value="value === true"
-                      @update:model-value="handleChange($event ? true : null)"
-                    />
-                  </FormControl>
-                </div>
-                <FormDescription>{{
-                  $t("tournament.form.discord_notifications_description")
-                }}</FormDescription>
-              </div>
-            </Card>
-          </FormItem>
-        </FormField>
-      </template>
     </MatchOptions>
 
     <div class="grid grid-cols-1 md:grid-cols-2">
@@ -195,10 +162,6 @@ export default {
                 message: "Date must be in the future",
               }),
               description: z.string().nullable().default(null),
-              discord_notifications_enabled: z
-                .boolean()
-                .nullable()
-                .default(null),
             },
             useApplicationSettingsStore().settings,
           ),
@@ -231,8 +194,6 @@ export default {
             map_veto: true,
             name: tournament.name,
             description: tournament.description,
-            discord_notifications_enabled:
-              tournament.discord_notifications_enabled ?? null,
           });
 
           setupOptions(this.form, tournament.options);
@@ -296,8 +257,6 @@ export default {
             name: this.form.values.name,
             start: this.form.values.start,
             description: this.form.values.description,
-            discord_notifications_enabled:
-              this.form.values.discord_notifications_enabled,
           },
           mutation: generateMutation({
             update_tournaments_by_pk: [
@@ -309,10 +268,6 @@ export default {
                   name: $("name", "String!"),
                   start: $("start", "timestamptz!"),
                   description: $("description", "String"),
-                  discord_notifications_enabled: $(
-                    "discord_notifications_enabled",
-                    "Boolean",
-                  ),
                 },
               },
               {
@@ -387,8 +342,6 @@ export default {
                 name: this.form.values.name,
                 start: this.form.values.start,
                 description: this.form.values.description,
-                discord_notifications_enabled:
-                  this.form.values.discord_notifications_enabled,
                 options: {
                   data: setupOptionsSetMutation(!!form.map_pool_id),
                 },

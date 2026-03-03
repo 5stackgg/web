@@ -653,6 +653,38 @@
             "pick_date": "Sélectionner une date",
             "update": "Mettre à jour"
         },
+        "notifications": {
+            "title": "Notifications",
+            "description": "Override global Discord notification settings for this tournament. Leave empty to use global defaults.",
+            "webhook": "Webhook URL",
+            "webhook_placeholder": "Leave empty to use global default",
+            "role_id": "Role ID",
+            "role_id_placeholder": "Leave empty to use global default",
+            "role_id_description": "You can add multiple Role IDs separated by commas.",
+            "statuses_title": "Notify on Status Changes",
+            "events_title": "Notify on Match Events",
+            "using_global": "Using global default",
+            "save": "Save",
+            "saved": "Notification settings updated",
+            "save_error": "Failed to save notification settings",
+            "enabled": "enabled",
+            "disabled": "disabled",
+            "default": "default",
+            "map_paused": "Map Paused",
+            "status": {
+                "PickingPlayers": "Picking Players",
+                "Scheduled": "Scheduled",
+                "WaitingForCheckIn": "Waiting for Check-In",
+                "WaitingForServer": "Waiting for Server",
+                "Veto": "Veto",
+                "Live": "Live",
+                "Finished": "Finished",
+                "Tie": "Tie",
+                "Canceled": "Canceled",
+                "Forfeit": "Forfeit",
+                "Surrendered": "Surrendered"
+            }
+        },
         "table": {
             "tournament": "Tournoi",
             "status": "Statut",

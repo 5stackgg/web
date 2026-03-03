@@ -196,7 +196,7 @@ async function doRefreshAllPlayers() {
 
           <FormField
             v-slot="{ componentField }"
-            name="public.dedicated_servers_min_role_to_connect"
+            name="dedicated_servers_min_role_to_connect"
           >
             <FormItem>
               <FormLabel class="text-lg font-semibold">{{
@@ -282,13 +282,13 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
+            dedicated_servers_min_role_to_connect: z
+                .string()
+                .default(e_player_roles_enum.user),
             public: z.object({
               player_name_registration: z.string().default("false"),
               create_matches_role: z.string().default(e_player_roles_enum.user),
               create_tournaments_role: z
-                .string()
-                .default(e_player_roles_enum.user),
-              dedicated_servers_min_role_to_connect: z
                 .string()
                 .default(e_player_roles_enum.user),
             }),
@@ -345,9 +345,8 @@ export default {
                     .create_tournaments_role,
                 },
                 {
-                  name: "public.dedicated_servers_min_role_to_connect",
-                  value: (this.form.values as any).public
-                    .dedicated_servers_min_role_to_connect,
+                  name: "dedicated_servers_min_role_to_connect",
+                  value: (this.form.values as any).dedicated_servers_min_role_to_connect,
                 },
               ],
               on_conflict: {

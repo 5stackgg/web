@@ -4,8 +4,8 @@ import { ExternalLink } from "lucide-vue-next";
 </script>
 
 <template>
-  <div class="space-y-3">
-    <div class="aspect-video relative" v-if="selectedStream">
+  <div class="w-full space-y-3">
+    <div class="aspect-video relative w-full" v-if="selectedStream">
       <div ref="playerRef" class="w-full h-full"></div>
       <template v-if="global === false">
         <Button

@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import MatchLobbyLineup from "./MatchLobbyLineup.vue";
+import MatchLobbyLineup from "~/layouts/components/MatchLobbyLineup.vue";
 </script>
 
 <template>
-  <div class="flex gap-2 items-center justify-center pr-3">
+  <div class="flex gap-2 items-center justify-center pr-5">
     <MatchLobbyLineup :match="match" :lineup="myLineup" :flip="true" />
 
     <span class="text-xs font-bold text-red-400/90 dark:text-red-400/90 ml-5">{{
@@ -23,6 +23,10 @@ export default {
       required: true,
       type: Object,
     },
+    joinLobby: {
+      default: true,
+      type: Boolean,
+    },
   },
   data() {
     return {
@@ -30,7 +34,9 @@ export default {
     };
   },
   created() {
-    this.lobby = socket.joinLobby(`match-lobby`, "match", this.match.id);
+    if (this.joinLobby) {
+      this.lobby = socket.joinLobby(`match-lobby`, "match", this.match.id);
+    }
   },
   computed: {
     me() {

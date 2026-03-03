@@ -43,7 +43,10 @@ import { CardHeader, CardTitle, CardDescription } from "~/components/ui/card";
     </div>
   </PageTransition>
 
-  <Separator v-if="showSeparators" class="my-4" />
+  <Separator
+    v-if="openRegistrationTournaments?.length > 0 && showSeparators"
+    class="my-4"
+  />
 
   <PageTransition :delay="300" class="mt-6">
     <div>

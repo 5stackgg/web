@@ -14,6 +14,7 @@ const props = withDefaults(defineProps<SidebarProps>(), {
   side: 'left',
   variant: 'sidebar',
   collapsible: 'offcanvas',
+  overlay: false,
 })
 
 const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
@@ -57,6 +58,17 @@ const showSeparators = computed(() => {
   >
     <!-- This is what handles the sidebar gap on desktop  -->
     <div
+      v-if="props.overlay"
+      :class="cn(
+        'duration-200 relative bg-transparent transition-[width] ease-linear',
+        variant === 'floating' || variant === 'inset'
+          ? 'w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]'
+          : 'w-[--sidebar-width-icon]',
+      )"
+      :style="{ height: 'var(--sidebar-height, 100svh)' }"
+    />
+    <div
+      v-else
       :class="cn(
         'duration-200 relative w-[--sidebar-width] bg-transparent transition-[width] ease-linear',
         'group-data-[collapsible=offcanvas]:w-0',

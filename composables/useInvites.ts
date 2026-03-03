@@ -16,24 +16,38 @@ export function useInvites() {
       );
     }),
   );
+
+  const hasMatchInvites = computed(() => (matchInvites.value?.length ?? 0) > 0);
+  const hasLobbyInvites = computed(() => (lobbyInvites.value?.length ?? 0) > 0);
+  const hasPendingFriends = computed(
+    () => (pendingFriends.value?.length ?? 0) > 0,
+  );
+
   const hasInvites = computed(
     () =>
-      matchInvites.value.length > 0 ||
-      lobbyInvites.value.length > 0 ||
-      pendingFriends.value.length > 0,
+      hasMatchInvites.value || hasLobbyInvites.value || hasPendingFriends.value,
   );
+
+  const hasSocialInvites = computed(
+    () => hasMatchInvites.value || hasPendingFriends.value,
+  );
+
   const totalCount = computed(
     () =>
-      matchInvites.value.length +
-      lobbyInvites.value.length +
-      pendingFriends.value.length,
+      (matchInvites.value?.length ?? 0) +
+      (lobbyInvites.value?.length ?? 0) +
+      (pendingFriends.value?.length ?? 0),
   );
 
   return {
     matchInvites,
     lobbyInvites,
     pendingFriends,
+    hasMatchInvites,
+    hasLobbyInvites,
+    hasPendingFriends,
     hasInvites,
+    hasSocialInvites,
     totalCount,
   };
 }

@@ -29,7 +29,12 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
         (showName || showSteamId || showRole || showFlag),
     }"
   >
-    <div class="flex flex-col items-center justify-center relative">
+    <div
+      :class="[
+        'flex flex-col relative',
+        alignTop ? 'items-start justify-start' : 'items-center justify-center',
+      ]"
+    >
       <slot name="avatar">
         <Avatar shape="square" :class="{ 'h-8 w-8': size === 'xs' || compact }">
           <AvatarImage
@@ -260,6 +265,10 @@ export default {
       default: true,
     },
     compact: {
+      type: Boolean,
+      default: false,
+    },
+    alignTop: {
       type: Boolean,
       default: false,
     },

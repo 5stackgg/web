@@ -8,7 +8,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 
 <template>
   <div
-    class="flex items-center justify-between gap-2 bg-background rounded-full px-2 py-1 border border-gray-700"
+    class="flex items-center justify-between gap-2 bg-background rounded-full px-2 py-1 border border-gray-700 h-12"
   >
     <MatchmakingLobbyAccess :lobby="lobby" v-if="isCaptain" />
 
@@ -25,22 +25,19 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
           :style="{ zIndex: index }"
         >
           <div class="relative">
-            <div class="w-8 h-8 rounded-full p-0.5">
-              <FiveStackToolTip>
-                <template #trigger>
-                  <PlayerDisplay
-                    :player="player.player"
-                    :showOnline="false"
-                    :showFlag="false"
-                    :showName="false"
-                    :showRole="false"
-                    size="xs"
-                    class="rounded-full w-full h-full overflow-hidden bg-gray-800"
-                  />
-                </template>
-                {{ player.player.name }}
-              </FiveStackToolTip>
-            </div>
+            <FiveStackToolTip>
+              <template #trigger>
+                <PlayerDisplay
+                  :player="player.player"
+                  :showOnline="false"
+                  :showFlag="false"
+                  :showName="false"
+                  :showRole="false"
+                  size="xs"
+                />
+              </template>
+              {{ player.player.name }}
+            </FiveStackToolTip>
             <Button
               class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rounded-full h-5 w-5 opacity-0 group-hover:opacity-100 transition-all duration-200 bg-red-400 hover:bg-red-500 border-2 border-gray-900"
               variant="destructive"

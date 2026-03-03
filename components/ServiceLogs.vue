@@ -62,7 +62,7 @@ async function downloadFullLogs(service: string) {
 </script>
 
 <template>
-  <Card>
+  <Card class="overflow-hidden">
     <CardHeader class="flex flex-col gap-2">
       <div class="flex items-center justify-between gap-4">
         <div class="flex items-center gap-4">
@@ -146,7 +146,7 @@ async function downloadFullLogs(service: string) {
       </Tabs>
     </CardHeader>
 
-    <CardContent class="p-4">
+    <CardContent class="p-4 overflow-x-auto">
       <Tabs v-if="podCount > 1" v-model="activePod">
         <TabsContent v-for="pod in podList" :key="pod" :value="pod">
           <PodLogs

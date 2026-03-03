@@ -856,9 +856,19 @@ export default {
         },
         result: function ({ data }) {
           this.tournament = data.tournaments_by_pk;
-          useTournamentContext().value = this.tournament
-            ? { id: this.tournament.id, name: this.tournament.name }
-            : null;
+          const ctx = useTournamentContext();
+          if (this.tournament) {
+            const existing = ctx.value;
+            ctx.value = {
+              id: this.tournament.id,
+              name: this.tournament.name,
+              isOrganizer: !!this.tournament.is_organizer,
+              // Preserve any participant flag that may have been set from myTeam.
+              isParticipant: existing?.isParticipant ?? !!this.myTeam,
+            };
+          } else {
+            ctx.value = null;
+          }
         },
       },
       tournament_teams: {
@@ -907,6 +917,17 @@ export default {
         },
         result: function ({ data }) {
           this.myTeam = data.tournament_teams?.[0];
+          const ctx = useTournamentContext();
+          if (
+            ctx.value &&
+            this.tournament &&
+            ctx.value.id === this.tournament.id
+          ) {
+            ctx.value = {
+              ...ctx.value,
+              isParticipant: !!this.myTeam,
+            };
+          }
         },
       },
     },
@@ -1086,7 +1107,11 @@ export default {
     activeTab: {
       handler(newTab) {
         // Collapse overview when on match-options or organizers tabs
-        if (newTab === "match-options" || newTab === "organizers" || newTab === "notifications") {
+        if (
+          newTab === "match-options" ||
+          newTab === "organizers" ||
+          newTab === "notifications"
+        ) {
           this.overviewExpanded = false;
         } else if (newTab === "overview") {
           // Expand overview when switching back to overview tab

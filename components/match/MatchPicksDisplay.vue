@@ -1,81 +1,108 @@
 <script lang="ts" setup>
-import MapDisplay from "~/components/MapDisplay.vue";
+import { Badge } from "~/components/ui/badge";
 </script>
 
 <template>
-  <div class="flex gap-4 h-[200px] overflow-hidden">
+  <div class="flex w-full max-w-full flex-wrap justify-center gap-3 pb-1">
+    <!-- Region card -->
     <div
-      class="relative w-auto max-h-[100%] overflow-hidden rounded-[12px]"
       v-if="regions.length > 1"
+      class="shrink-0 w-[130px] rounded-xl overflow-hidden border border-border/50"
     >
-      <NuxtImg
-        src="/img/maps/screenshots/default.webp"
-        class="w-full h-full object-cover min-w-[150px]"
-        sizes="400px lg:600"
-      />
-      <div class="absolute inset-0 bg-black bg-opacity-45"></div>
-      <div class="absolute inset-0 flex flex-col items-center justify-center">
-        {{ match.e_region.description || match.e_region.value }}
+      <div class="relative h-16">
+        <NuxtImg
+          src="/img/maps/screenshots/default.webp"
+          class="w-full h-full object-cover brightness-50"
+          sizes="200px"
+        />
+        <div
+          class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20"
+        />
+      </div>
+      <div class="bg-muted/40 px-2 py-1.5 text-center">
+        <span class="text-xs font-semibold truncate block">
+          {{ match.e_region.description || match.e_region.value }}
+        </span>
+        <span class="text-[10px] text-muted-foreground">Region</span>
       </div>
     </div>
 
+    <!-- Pick cards -->
     <template v-for="pick of picks" v-if="picks?.length > 0">
+      <!-- Side pick -->
       <template v-if="pick.type === 'Side'">
         <div
-          class="relative w-auto max-h-[100%] overflow-hidden rounded-[12px]"
+          class="shrink-0 w-[130px] rounded-xl overflow-hidden border border-border/50"
         >
-          <NuxtImg
-            src="/img/maps/screenshots/random.webp"
-            class="w-full h-full object-cover min-w-[150px]"
-            sizes="400px lg:600"
-          />
-          <div class="absolute inset-0 bg-black bg-opacity-45"></div>
-          <div
-            class="absolute inset-0 flex flex-col items-center justify-center"
-          >
-            <img
-              :src="
-                pick.side === 'CT'
-                  ? '/img/teams/ct_logo.svg'
-                  : '/img/teams/t_logo.svg'
-              "
-              class="max-w-[96px] w-full"
+          <div class="relative h-16">
+            <NuxtImg
+              src="/img/maps/screenshots/random.webp"
+              class="w-full h-full object-cover brightness-50"
+              sizes="200px"
             />
-            <div class="absolute bottom-3 text-sm">
-              {{ pick.match_lineup.name }}
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20"
+            />
+            <div class="absolute inset-0 flex items-center justify-center">
+              <img
+                :src="
+                  pick.side === 'CT'
+                    ? '/img/teams/ct_logo.svg'
+                    : '/img/teams/t_logo.svg'
+                "
+                class="w-8 h-8 drop-shadow-xl"
+              />
             </div>
+          </div>
+          <div class="bg-muted/40 px-2 py-1.5 text-center">
+            <span class="text-xs font-semibold truncate block">{{
+              pick.match_lineup.name
+            }}</span>
+            <span class="text-[10px] text-muted-foreground">{{
+              pick.side
+            }}</span>
           </div>
         </div>
       </template>
+      <!-- Map pick/ban -->
       <template v-else>
-        <MapDisplay :map="pick.map">
-          <template v-slot:header>
-            <div class="absolute top-3">
-              <badge
-                :variant="
-                  pick.type === 'Pick'
-                    ? 'default'
-                    : pick.type === 'Decider'
-                      ? 'warning'
-                      : 'destructive'
-                "
-              >
-                <template v-if="pick.type === 'Decider'">
-                  {{ $t("match.picks.decider") }}
-                </template>
-                <template v-else>
-                  {{ pick.type }}
-                </template>
-              </badge>
+        <div
+          class="shrink-0 w-[130px] rounded-xl overflow-hidden border border-border/50"
+        >
+          <div class="relative h-16">
+            <NuxtImg
+              :src="pick.map.poster"
+              class="w-full h-full object-cover brightness-50"
+              sizes="200px"
+            />
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20"
+            />
+            <div class="absolute inset-0 flex items-center justify-center">
+              <img
+                v-if="pick.map.patch"
+                :src="pick.map.patch"
+                class="max-w-[36px] h-auto max-h-[80%] object-contain drop-shadow-xl"
+              />
             </div>
-          </template>
-
-          <template v-slot:default>
-            <div class="absolute bottom-3 text-sm">
-              {{ pick.match_lineup.name }}
-            </div>
-          </template>
-        </MapDisplay>
+          </div>
+          <div class="bg-muted/40 px-2 py-1.5 text-center">
+            <span class="text-xs font-semibold truncate block">{{
+              pick.match_lineup.name
+            }}</span>
+            <span
+              class="text-[10px]"
+              :class="{
+                'text-green-400': pick.type === 'Pick',
+                'text-red-400': pick.type === 'Ban',
+                'text-yellow-400': pick.type === 'Decider',
+              }"
+              >{{
+                pick.type === "Decider" ? $t("match.picks.decider") : pick.type
+              }}</span
+            >
+          </div>
+        </div>
       </template>
     </template>
   </div>

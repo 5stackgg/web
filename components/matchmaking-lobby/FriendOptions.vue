@@ -7,7 +7,7 @@ import FiveStackToolTip from "../FiveStackToolTip.vue";
   <div @contextmenu="handleRightClick" class="flex items-center cursor-pointer">
     <div class="grow">
       <slot></slot>
-      <DropdownMenu v-model:open="isOpen">
+      <DropdownMenu v-if="isFriend" v-model:open="isOpen">
         <DropdownMenuTrigger as-child>
           <div></div>
         </DropdownMenuTrigger>
@@ -114,6 +114,13 @@ export default {
     };
   },
   computed: {
+    isFriend() {
+      return useMatchmakingStore().friends?.some(
+        (friend: any) =>
+          friend.steam_id === this.player.steam_id &&
+          friend.status !== "Pending",
+      );
+    },
     me() {
       return useAuthStore().me;
     },

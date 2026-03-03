@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { SidebarProps } from "~/components/ui/sidebar";
 import LeftNav from "@/layouts/components/LeftNav.vue";
-import RightNav from "@/layouts/components/RightNav.vue";
+import RightHub from "@/layouts/components/RightHub.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { useAuthStore } from "~/stores/AuthStore";
 
@@ -19,5 +19,5 @@ const authStore = useAuthStore();
     :is-mobile="isMobile"
     :side-bar-open="open"
   />
-  <RightNav v-else-if="authStore.me" />
+  <RightHub v-else-if="authStore.me" />
 </template>

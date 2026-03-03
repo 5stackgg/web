@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
+import { Check } from "lucide-vue-next";
 import MapDisplay from "~/components/MapDisplay.vue";
 </script>
 
@@ -11,22 +12,35 @@ import MapDisplay from "~/components/MapDisplay.vue";
       <div v-for="map in mapPool" :key="map.id" class="relative group">
         <MapDisplay
           :map="map"
-          class="cursor-pointer h-[180px] transition-all duration-300 ease-in-out transform hover:scale-105"
+          class="cursor-pointer h-[180px] transition-all duration-300 ease-in-out transform"
           :class="{
-            'ring-4 ring-primary ring-opacity-50': selectedMap?.id === map.id,
+            'scale-105 ring-2 ring-primary': selectedMap?.id === map.id,
+            'hover:scale-105': !selectedMap || selectedMap.id !== map.id,
             'opacity-30 pointer-events-none filter grayscale':
               !availableMaps.includes(map),
           }"
           @click="selectMap(map)"
         />
-        <div
-          v-if="selectedMap?.id === map.id && availableMaps.includes(map)"
-          class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-80 cursor-pointer rounded-lg"
+        <Transition
+          enter-active-class="transition-all duration-200 ease-out"
+          leave-active-class="transition-all duration-150 ease-in"
+          enter-from-class="opacity-0 scale-50"
+          enter-to-class="opacity-100 scale-100"
+          leave-from-class="opacity-100 scale-100"
+          leave-to-class="opacity-0 scale-50"
         >
-          <Button variant="destructive" @click="confirmMap">
-            <slot></slot>
-          </Button>
-        </div>
+          <div
+            v-if="selectedMap?.id === map.id && availableMaps.includes(map)"
+            class="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-[3px] cursor-pointer rounded-lg"
+            @click.stop="confirmMap"
+          >
+            <div
+              class="p-2.5 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 shadow-xl shadow-black/30 ring-1 ring-white/10"
+            >
+              <Check class="w-5 h-5 text-green-400" />
+            </div>
+          </div>
+        </Transition>
       </div>
     </div>
   </div>

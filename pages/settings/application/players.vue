@@ -283,8 +283,8 @@ export default {
         validationSchema: toTypedSchema(
           z.object({
             dedicated_servers_min_role_to_connect: z
-                .string()
-                .default(e_player_roles_enum.user),
+              .string()
+              .default(e_player_roles_enum.user),
             public: z.object({
               player_name_registration: z.string().default("false"),
               create_matches_role: z.string().default(e_player_roles_enum.user),
@@ -346,7 +346,8 @@ export default {
                 },
                 {
                   name: "dedicated_servers_min_role_to_connect",
-                  value: (this.form.values as any).dedicated_servers_min_role_to_connect,
+                  value: (this.form.values as any)
+                    .dedicated_servers_min_role_to_connect,
                 },
               ],
               on_conflict: {

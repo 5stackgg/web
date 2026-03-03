@@ -32,18 +32,29 @@ import { useMatchContext } from "~/composables/useMatchContext";
 
 <template>
   <Sidebar collapsible="icon">
-    <SidebarHeader v-if="isMobile || !isPWA || !sideBarOpen">
-      <nuxt-link to="/" class="flex items-center gap-2 px-2 py-1.5">
-        <NuxtImg
-          class="rounded max-w-8"
-          :src="customLogoUrl || '/favicon/64.png'"
-          v-if="isMobile || !isPWA || !sideBarOpen"
-        />
-        <span v-if="!isPWA" class="font-semibold text-sm truncate">
-          {{ customBrandName || $t("layouts.app_nav.brand") }}
-        </span>
-      </nuxt-link>
-    </SidebarHeader>
+    <Transition name="sidebar-header">
+      <SidebarHeader v-if="isMobile || !isPWA || !sideBarOpen">
+        <nuxt-link
+          to="/"
+          class="flex min-w-0 items-center overflow-hidden transition-[gap,padding] duration-200 ease-linear"
+          :class="{ 'gap-2 px-2 py-1.5': sideBarOpen }"
+        >
+          <NuxtImg
+            class="shrink-0 rounded max-w-8 max-h-8"
+            :src="customLogoUrl || '/favicon/64.png'"
+          />
+          <Transition name="sidebar-brand" mode="out-in">
+            <span
+              v-if="!isPWA && (isMobile || sideBarOpen)"
+              key="brand"
+              class="font-semibold text-xlg truncate"
+            >
+              {{ customBrandName || $t("layouts.app_nav.brand") }}
+            </span>
+          </Transition>
+        </nuxt-link>
+      </SidebarHeader>
+    </Transition>
     <SidebarContent>
       <SidebarGroup>
         <SidebarMenu>
@@ -758,3 +769,39 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.sidebar-header-enter-active,
+.sidebar-header-leave-active {
+  transition:
+    opacity 0.2s ease,
+    max-height 0.2s ease,
+    padding 0.2s ease,
+    margin 0.2s ease;
+  overflow: hidden;
+}
+.sidebar-header-enter-from,
+.sidebar-header-leave-to {
+  opacity: 0;
+  max-height: 0;
+  padding-block: 0;
+  margin-block: 0;
+}
+
+.sidebar-brand-enter-active,
+.sidebar-brand-leave-active {
+  transition:
+    opacity 0.15s ease,
+    max-width 0.2s ease;
+  overflow: hidden;
+}
+.sidebar-brand-enter-from,
+.sidebar-brand-leave-to {
+  opacity: 0;
+  max-width: 0;
+}
+.sidebar-brand-enter-to,
+.sidebar-brand-leave-from {
+  max-width: 12rem;
+}
+</style>

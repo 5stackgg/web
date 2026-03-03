@@ -32,7 +32,8 @@ provide("commander", commander);
 <template>
   <Tabs default-value="overview" class="match-tabs">
     <TabsList
-      class="lg:inline-flex grid grid-cols-1 mb-4 bg-transparent p-0 h-auto gap-1"
+      variant="underline"
+      class="lg:inline-flex grid grid-cols-1 mb-4 h-auto"
     >
       <TabsTrigger value="overview">
         {{ $t("match.tabs.overview") }}
@@ -60,7 +61,7 @@ provide("commander", commander);
       <TabsTrigger value="settings">
         {{ $t("match.tabs.settings") }}
       </TabsTrigger>
-      <TabsTrigger value="streams" v-if="canConfigureStreams">
+      <TabsTrigger value="streams" :disabled="!canConfigureStreams">
         {{ $t("match.tabs.streams") }}
       </TabsTrigger>
       <TabsTrigger value="server" v-if="canViewAdmin">
@@ -68,7 +69,20 @@ provide("commander", commander);
       </TabsTrigger>
     </TabsList>
     <TabsContent value="overview">
-      <div class="grid gap-4">
+      <PlayerInvites v-if="me" />
+      <div
+        v-if="canAdjustLineups"
+        class="flex flex-wrap gap-2 mb-3 md:gap-3 md:justify-end"
+      >
+        <Button variant="destructive" class="px-4" @click="randomizeTeams">
+          {{ $t("match.tabs.randomize_teams") }}
+        </Button>
+        <Button variant="destructive" class="px-4" @click="swapLineups">
+          {{ $t("match.tabs.swap_lineups") }}
+        </Button>
+      </div>
+
+      <div class="grid gap-4 max-w-[1500px]">
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
             <LineupOverview
@@ -133,20 +147,9 @@ provide("commander", commander);
           </ScrollArea>
         </DrawerContent>
       </Drawer>
-
-      <PlayerInvites v-if="me" />
-
-      <div class="flex gap-4" v-if="canAdjustLineups">
-        <Button variant="destructive" @click="randomizeTeams">
-          {{ $t("match.tabs.randomize_teams") }}
-        </Button>
-        <Button variant="destructive" @click="swapLineups">
-          {{ $t("match.tabs.swap_lineups") }}
-        </Button>
-      </div>
     </TabsContent>
     <TabsContent value="utility">
-      <div class="grid gap-4 max-w-[1500px] mx-auto">
+      <div class="grid gap-4 max-w-[1500px]">
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
             <lineup-utility
@@ -166,7 +169,7 @@ provide("commander", commander);
       </div>
     </TabsContent>
     <TabsContent value="opening-duels">
-      <div class="grid gap-4 max-w-[1500px] mx-auto">
+      <div class="grid gap-4 max-w-[1500px]">
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
             <lineup-opening-duels
@@ -186,7 +189,7 @@ provide("commander", commander);
       </div>
     </TabsContent>
     <TabsContent value="clutches">
-      <div class="grid gap-4 max-w-[1500px] mx-auto">
+      <div class="grid gap-4 max-w-[1500px]">
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
             <lineup-clutches
@@ -199,7 +202,7 @@ provide("commander", commander);
       </div>
     </TabsContent>
     <TabsContent value="veto">
-      <div class="grid gap-4 max-w-[1500px] mx-auto">
+      <div class="grid gap-4 max-w-[1500px]">
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
             <MatchPicksDisplay :match="match" />
@@ -207,9 +210,10 @@ provide("commander", commander);
         </Card>
       </div>
     </TabsContent>
-    <TabsContent value="server" class="flex flex-col gap-4">
-      <ServiceLogs :service="`m-${match.id}`" :compact="true" />
-
+    <TabsContent
+      value="server"
+      class="flex flex-col gap-4 max-w-[1500px] w-full overflow-x-auto"
+    >
       <AlertDialog :open="showConfirmDialog">
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -306,8 +310,10 @@ provide("commander", commander);
           <Button type="submit">{{ $t("match.tabs.restore_round") }}</Button>
         </form>
       </RconCommander>
+
+      <ServiceLogs :service="`m-${match.id}`" :compact="true" />
     </TabsContent>
-    <TabsContent value="settings" class="flex flex-col gap-4">
+    <TabsContent value="settings" class="flex flex-col gap-4 max-w-[1500px]">
       <Card>
         <CardContent class="py-4">
           <MatchOptionsDisplay
@@ -351,7 +357,7 @@ provide("commander", commander);
         </CardContent>
       </Card>
     </TabsContent>
-    <TabsContent value="streams">
+    <TabsContent value="streams" class="max-w-[1500px]">
       <MatchLiveStreams :match="match" />
     </TabsContent>
   </Tabs>
@@ -460,14 +466,10 @@ export default {
         return false;
       }
 
-      if (
-        !this.match.is_organizer &&
-        !useAuthStore().isRoleAbove(e_player_roles_enum.streamer)
-      ) {
-        return false;
-      }
-
-      return true;
+      return (
+        this.match.is_organizer ||
+        useAuthStore().isRoleAbove(e_player_roles_enum.streamer)
+      );
     },
     disableStats() {
       return [
@@ -608,12 +610,3 @@ export default {
   },
 };
 </script>
-
-<style lang="postcss">
-.match-tabs [role="tab"] {
-  @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors;
-}
-.match-tabs [role="tab"][data-state="active"] {
-  @apply bg-accent/70 shadow-none hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
-}
-</style>

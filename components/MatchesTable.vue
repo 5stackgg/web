@@ -21,6 +21,7 @@ import MatchTableRow from "~/components/MatchTableRow.vue";
         :key="match.id"
         :match="match"
         :player="player"
+        :compact="compact"
         :style="{ animationDelay: `${index * 50}ms` }"
         class="animate-in fade-in slide-in-from-bottom-2"
       />
@@ -39,6 +40,10 @@ export default {
       type: Object,
       required: false,
       default: null,
+    },
+    compact: {
+      type: Boolean,
+      default: false,
     },
   },
 };

@@ -517,6 +517,7 @@ import tournamentTeamFields from "~/graphql/tournamentTeamFields";
 import { mapFields } from "~/graphql/mapGraphql";
 import { playerFields } from "~/graphql/playerFields";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
+import { toast } from "@/components/ui/toast";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 
 export default {
@@ -1005,21 +1006,30 @@ export default {
       });
     },
     async deleteTournament() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          delete_tournaments_by_pk: [
-            {
-              id: this.tournament.id,
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-      this.deleteDialogOpen = false;
-      // Redirect to tournaments list
-      this.$router.push({ name: "tournaments" });
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            deleteTournament: [
+              {
+                tournament_id: this.tournament.id,
+              },
+              {
+                success: true,
+              },
+            ],
+          }),
+        });
+        toast({
+          title: this.$t("tournament.actions.deleted"),
+        });
+        this.deleteDialogOpen = false;
+        this.$router.push({ name: "tournaments" });
+      } catch (error) {
+        toast({
+          title: this.$t("tournament.actions.delete_failed"),
+          variant: "destructive",
+        });
+      }
     },
   },
   watch: {

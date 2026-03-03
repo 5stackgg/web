@@ -29,20 +29,17 @@
           </div>
           <div class="flex items-center gap-2">
             <button
-              v-if="form.discord_notifications_enabled !== null"
-              class="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              v-if="form.discord_notifications_enabled !== null && form.discord_notifications_enabled !== globalNotificationsEnabled"
+              class="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               :title="$t('tournament.notifications.using_global')"
               @click.stop="form.discord_notifications_enabled = null; dirty = true"
             >
-              <RotateCcw class="h-3.5 w-3.5" />
+              <RotateCcw class="h-4 w-4" />
             </button>
             <Switch
               @click.stop
               :model-value="form.discord_notifications_enabled === true"
-              @update:model-value="
-                form.discord_notifications_enabled = $event ? true : false;
-                dirty = true
-              "
+              @update:model-value="updateMaster($event)"
             />
           </div>
         </div>
@@ -70,11 +67,11 @@
               :placeholder="
                 $t('tournament.notifications.webhook_placeholder')
               "
-              @update:model-value="form.discord_webhook = $event || null; dirty = true"
+              @update:model-value="updateWebhook($event)"
             />
             <button
-              v-if="form.discord_webhook !== null"
-              class="text-muted-foreground hover:text-foreground transition-colors shrink-0"
+              v-if="form.discord_webhook !== null && form.discord_webhook !== globalWebhook"
+              class="text-muted-foreground hover:text-foreground transition-colors shrink-0 cursor-pointer"
               :title="$t('tournament.notifications.using_global')"
               @click="form.discord_webhook = null; dirty = true"
             >
@@ -105,11 +102,11 @@
               :placeholder="
                 $t('tournament.notifications.role_id_placeholder')
               "
-              @update:model-value="form.discord_role_id = $event || null; dirty = true"
+              @update:model-value="updateRoleId($event)"
             />
             <button
-              v-if="form.discord_role_id !== null"
-              class="text-muted-foreground hover:text-foreground transition-colors shrink-0"
+              v-if="form.discord_role_id !== null && form.discord_role_id !== globalRoleId"
+              class="text-muted-foreground hover:text-foreground transition-colors shrink-0 cursor-pointer"
               :title="$t('tournament.notifications.using_global')"
               @click="form.discord_role_id = null; dirty = true"
             >
@@ -149,26 +146,23 @@
                   $t(`tournament.notifications.status.${status}`)
                 }}</span>
                 <span
-                  v-if="isAdmin && form[`discord_notify_${status}`] === null"
+                  v-if="form[`discord_notify_${status}`] === null"
                   class="text-[10px] text-muted-foreground ml-1.5"
                 >({{ $t("tournament.notifications.default") }})</span>
               </div>
               <div class="flex items-center gap-2">
                 <button
-                  v-if="form[`discord_notify_${status}`] !== null"
-                  class="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  v-if="form[`discord_notify_${status}`] !== null && form[`discord_notify_${status}`] !== getGlobalStatusValue(status)"
+                  class="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                   :title="$t('tournament.notifications.using_global')"
                   @click.stop="form[`discord_notify_${status}`] = null; dirty = true"
                 >
-                  <RotateCcw class="h-3.5 w-3.5" />
+                  <RotateCcw class="h-4 w-4" />
                 </button>
                 <Switch
                   @click.stop
                   :model-value="resolveStatusToggle(status)"
-                  @update:model-value="
-                    form[`discord_notify_${status}`] = $event ? true : false;
-                    dirty = true
-                  "
+                  @update:model-value="updateStatusValue(status, $event)"
                 />
               </div>
             </div>
@@ -191,26 +185,23 @@
               <div>
                 <span class="text-sm font-medium">{{ $t("tournament.notifications.map_paused") }}</span>
                 <span
-                  v-if="isAdmin && form.discord_notify_MapPaused === null"
+                  v-if="form.discord_notify_MapPaused === null"
                   class="text-[10px] text-muted-foreground ml-1.5"
                 >({{ $t("tournament.notifications.default") }})</span>
               </div>
               <div class="flex items-center gap-2">
                 <button
-                  v-if="form.discord_notify_MapPaused !== null"
-                  class="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  v-if="form.discord_notify_MapPaused !== null && form.discord_notify_MapPaused !== getGlobalStatusValue('MapPaused')"
+                  class="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                   :title="$t('tournament.notifications.using_global')"
                   @click.stop="form.discord_notify_MapPaused = null; dirty = true"
                 >
-                  <RotateCcw class="h-3.5 w-3.5" />
+                  <RotateCcw class="h-4 w-4" />
                 </button>
                 <Switch
                   @click.stop
                   :model-value="resolveStatusToggle('MapPaused')"
-                  @update:model-value="
-                    form.discord_notify_MapPaused = $event ? true : false;
-                    dirty = true
-                  "
+                  @update:model-value="updateStatusValue('MapPaused', $event)"
                 />
               </div>
             </div>
@@ -270,6 +261,9 @@ const DISCORD_FIELDS = [
 ] as const;
 
 export default {
+  components: {
+    RotateCcw,
+  },
   props: {
     tournament: {
       type: Object,
@@ -348,13 +342,36 @@ export default {
       return this.getGlobalStatusValue(status);
     },
     toggleMaster() {
-      this.form.discord_notifications_enabled =
-        this.form.discord_notifications_enabled !== true;
+      const current = this.form.discord_notifications_enabled;
+      const newVal = current === null ? !this.globalNotificationsEnabled : !current;
+      this.form.discord_notifications_enabled = newVal === this.globalNotificationsEnabled ? null : newVal;
+      this.dirty = true;
+    },
+    updateMaster(val: boolean) {
+      this.form.discord_notifications_enabled = val === this.globalNotificationsEnabled ? null : val;
       this.dirty = true;
     },
     toggleStatus(status: string) {
       const key = `discord_notify_${status}`;
-      this.form[key] = this.form[key] !== true;
+      const current = this.form[key];
+      const globalVal = this.getGlobalStatusValue(status);
+      const newVal = current === null ? !globalVal : !current;
+      this.form[key] = newVal === globalVal ? null : newVal;
+      this.dirty = true;
+    },
+    updateStatusValue(status: string, val: boolean) {
+      const key = `discord_notify_${status}`;
+      this.form[key] = val === this.getGlobalStatusValue(status) ? null : val;
+      this.dirty = true;
+    },
+    updateWebhook(value: string) {
+      const v = value || null;
+      this.form.discord_webhook = v && v !== this.globalWebhook ? v : null;
+      this.dirty = true;
+    },
+    updateRoleId(value: string) {
+      const v = value || null;
+      this.form.discord_role_id = v && v !== this.globalRoleId ? v : null;
       this.dirty = true;
     },
     async save() {

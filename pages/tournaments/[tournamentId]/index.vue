@@ -1051,9 +1051,10 @@ export default {
         });
         this.deleteDialogOpen = false;
         this.$router.push({ name: "tournaments" });
-      } catch (error) {
+      } catch (error: any) {
         toast({
           title: this.$t("tournament.actions.delete_failed"),
+          description: error.message,
           variant: "destructive",
         });
       }

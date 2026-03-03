@@ -3,7 +3,7 @@ import { Badge } from "~/components/ui/badge";
 </script>
 
 <template>
-  <div class="flex gap-3 overflow-x-auto pb-1">
+  <div class="flex w-full max-w-full flex-wrap justify-center gap-3 pb-1">
     <!-- Region card -->
     <div
       v-if="regions.length > 1"

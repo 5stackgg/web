@@ -76,7 +76,7 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
         <StreamEmbed
           v-if="showLiveStreams && match.streams.length > 0"
           :streams="match.streams"
-          class="pb-6"
+          class="pb-6 max-w-[1500px] w-full overflow-x-auto"
         />
       </PageTransition>
 

@@ -1086,7 +1086,11 @@ export default {
     activeTab: {
       handler(newTab) {
         // Collapse overview when on match-options or organizers tabs
-        if (newTab === "match-options" || newTab === "organizers" || newTab === "notifications") {
+        if (
+          newTab === "match-options" ||
+          newTab === "organizers" ||
+          newTab === "notifications"
+        ) {
           this.overviewExpanded = false;
         } else if (newTab === "overview") {
           // Expand overview when switching back to overview tab

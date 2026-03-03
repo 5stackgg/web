@@ -635,6 +635,9 @@
             "save": "Save",
             "saved": "Notification settings updated",
             "save_error": "Failed to save notification settings",
+            "enabled": "enabled",
+            "disabled": "disabled",
+            "default": "default",
             "map_paused": "Map Paused",
             "status": {
                 "PickingPlayers": "Picking Players",

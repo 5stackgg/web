@@ -51,6 +51,7 @@
           class="text-xs text-muted-foreground italic"
         >
           {{ $t("tournament.notifications.using_global") }}
+          <template v-if="isAdmin">({{ globalNotificationsEnabled ? $t("tournament.notifications.enabled") : $t("tournament.notifications.disabled") }})</template>
         </p>
       </div>
     </Card>
@@ -85,6 +86,7 @@
             class="text-xs text-muted-foreground italic"
           >
             {{ $t("tournament.notifications.using_global") }}
+            <span v-if="isAdmin" class="font-mono">({{ maskedGlobalWebhook }})</span>
           </p>
         </div>
 
@@ -119,6 +121,7 @@
             class="text-xs text-muted-foreground italic"
           >
             {{ $t("tournament.notifications.using_global") }}
+            <span v-if="isAdmin" class="font-mono">({{ globalRoleId }})</span>
           </p>
         </div>
       </div>
@@ -141,9 +144,15 @@
               @keydown.enter.prevent="toggleStatus(status)"
               @keydown.space.prevent="toggleStatus(status)"
             >
-              <span class="text-sm font-medium">{{
-                $t(`tournament.notifications.status.${status}`)
-              }}</span>
+              <div>
+                <span class="text-sm font-medium">{{
+                  $t(`tournament.notifications.status.${status}`)
+                }}</span>
+                <span
+                  v-if="isAdmin && form[`discord_notify_${status}`] === null"
+                  class="text-[10px] text-muted-foreground ml-1.5"
+                >({{ $t("tournament.notifications.default") }})</span>
+              </div>
               <div class="flex items-center gap-2">
                 <button
                   v-if="form[`discord_notify_${status}`] !== null"
@@ -179,7 +188,13 @@
               @keydown.enter.prevent="toggleStatus('MapPaused')"
               @keydown.space.prevent="toggleStatus('MapPaused')"
             >
-              <span class="text-sm font-medium">{{ $t("tournament.notifications.map_paused") }}</span>
+              <div>
+                <span class="text-sm font-medium">{{ $t("tournament.notifications.map_paused") }}</span>
+                <span
+                  v-if="isAdmin && form.discord_notify_MapPaused === null"
+                  class="text-[10px] text-muted-foreground ml-1.5"
+                >({{ $t("tournament.notifications.default") }})</span>
+              </div>
               <div class="flex items-center gap-2">
                 <button
                   v-if="form.discord_notify_MapPaused !== null"
@@ -263,6 +278,7 @@ export default {
   },
   data() {
     return {
+      MATCH_STATUSES,
       form: this.buildForm(this.tournament),
       saving: false,
       dirty: false,
@@ -278,6 +294,9 @@ export default {
     },
   },
   computed: {
+    isAdmin() {
+      return useAuthStore().isAdmin;
+    },
     settings() {
       return useApplicationSettingsStore().settings;
     },
@@ -294,6 +313,19 @@ export default {
           s.name === "discord_match_notifications_role_id",
       );
       return s?.value || "";
+    },
+    globalNotificationsEnabled(): boolean {
+      const s = this.settings.find(
+        (s: { name: string }) =>
+          s.name === "discord_match_notifications_enabled",
+      );
+      return s?.value === "true";
+    },
+    maskedGlobalWebhook(): string {
+      const url = this.globalWebhook;
+      if (!url) return "";
+      if (url.length <= 24) return url;
+      return url.slice(0, 20) + "..." + url.slice(-4);
     },
   },
   methods: {

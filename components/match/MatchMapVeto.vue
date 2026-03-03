@@ -64,7 +64,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 
     <form @submit.prevent="vetoPick" v-if="isPicking">
       <template v-if="pickType === e_veto_pick_types_enum.Side">
-        <div class="flex items-center justify-center gap-6">
+        <div class="flex items-center justify-center gap-10">
           <div
             v-for="(sideOption, idx) in sideOptions"
             :key="sideOption.value"

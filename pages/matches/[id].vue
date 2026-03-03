@@ -87,8 +87,6 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
         </div>
       </PageTransition>
 
-      <Separator class="my-2" />
-
       <PageTransition :delay="100">
         <template
           v-if="

@@ -15,6 +15,38 @@ export function useChatTabSetup() {
     authStore.isRoleAbove(e_player_roles_enum.match_organizer),
   );
 
+  function ensureTournamentChatTabs() {
+    const tournaments = matchLobbyStore.chatTournaments as any[];
+
+    // Ensure a pinned chat tab for every chat-eligible tournament.
+    for (const t of tournaments) {
+      const tabId = `tournament:${t.id}`;
+      const existing = tabs.value.find((tab) => tab.id === tabId);
+      if (!existing) {
+        openTab({
+          id: tabId,
+          label: t.name,
+          instance: "tournament",
+          type: "tournament",
+          lobbyId: t.id, // pass tournament ID as lobby id
+          pinned: true,
+        });
+      } else if (!existing.pinned) {
+        setPinned(tabId, true);
+      }
+    }
+
+    // Remove tournament chat tabs that are no longer eligible.
+    const activeIds = new Set(
+      tournaments.map((t: any) => `tournament:${t.id}`),
+    );
+    for (const tab of [...tabs.value]) {
+      if (tab.type === "tournament" && !activeIds.has(tab.id)) {
+        closeTab(tab.id);
+      }
+    }
+  }
+
   function ensureDefaultTabs() {
     const previousActiveId = activeTabId.value;
 
@@ -91,6 +123,14 @@ export function useChatTabSetup() {
       ensureDefaultTabs();
     },
     { immediate: true },
+  );
+
+  watch(
+    () => matchLobbyStore.chatTournaments,
+    () => {
+      ensureTournamentChatTabs();
+    },
+    { immediate: true, deep: true },
   );
 
   watch(

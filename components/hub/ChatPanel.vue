@@ -36,7 +36,7 @@ const overlayChatId = ref<string | null>(null);
 
 const orderedTabs = computed<ChatTab[]>(() => {
   const weight = (tab: ChatTab) => {
-    if (tab.type === "organizers") return 0;
+    if (tab.type === "organizers" || tab.type === "tournament") return 0;
     if (tab.id.startsWith("matchmaking:")) return 1;
     if (tab.type === "match") return 2;
     return 3;
@@ -203,7 +203,7 @@ function handleMessageReceived(payload: {
 }
 
 function getRoomIcon(tab: ChatTab) {
-  if (tab.type === "organizers") return Megaphone;
+  if (tab.type === "organizers" || tab.type === "tournament") return Megaphone;
   if (tab.id.startsWith("matchmaking:")) return Merge;
   if (tab.type === "match") return Sword;
   if (tab.type === "team") return Shield;
@@ -212,6 +212,7 @@ function getRoomIcon(tab: ChatTab) {
 
 function getRoomSubtitle(tab: ChatTab) {
   if (tab.type === "organizers") return "Global Lobby";
+  if (tab.type === "tournament") return "Tournament Chat";
   if (tab.id.startsWith("matchmaking:")) return "Queue Chat";
   if (tab.type === "match") return "Match Chat";
   if (tab.type === "team") return "Team Chat";

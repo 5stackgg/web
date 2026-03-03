@@ -5163,6 +5163,9 @@ export const AllTypesProps: Record<string,any> = {
 		deleteServerItem:{
 
 		},
+		deleteTournament:{
+			tournament_id:"uuid"
+		},
 		delete__map_pool:{
 			where:"_map_pool_bool_exp"
 		},
@@ -14980,6 +14983,7 @@ export const AllTypesProps: Record<string,any> = {
 		has_min_teams:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
 		is_organizer:"Boolean_comparison_exp",
+		joined_tournament:"Boolean_comparison_exp",
 		match_options_id:"uuid_comparison_exp",
 		max_players_per_lineup:"Int_comparison_exp",
 		min_players_per_lineup:"Int_comparison_exp",
@@ -15078,6 +15082,7 @@ export const AllTypesProps: Record<string,any> = {
 		has_min_teams:"order_by",
 		id:"order_by",
 		is_organizer:"order_by",
+		joined_tournament:"order_by",
 		match_options_id:"order_by",
 		max_players_per_lineup:"order_by",
 		min_players_per_lineup:"order_by",
@@ -19490,6 +19495,7 @@ export const ReturnTypes: Record<string,any> = {
 		createServerDirectory:"SuccessOutput",
 		deleteMatch:"SuccessOutput",
 		deleteServerItem:"SuccessOutput",
+		deleteTournament:"SuccessOutput",
 		delete__map_pool:"_map_pool_mutation_response",
 		delete__map_pool_by_pk:"_map_pool",
 		delete_abandoned_matches:"abandoned_matches_mutation_response",
@@ -23263,6 +23269,7 @@ export const ReturnTypes: Record<string,any> = {
 		has_min_teams:"Boolean",
 		id:"uuid",
 		is_organizer:"Boolean",
+		joined_tournament:"Boolean",
 		match_options_id:"uuid",
 		max_players_per_lineup:"Int",
 		min_players_per_lineup:"Int",

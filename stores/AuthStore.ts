@@ -62,6 +62,8 @@ export const useAuthStore = defineStore("auth", () => {
             useMatchLobbyStore().subscribeToLiveTournaments();
             useMatchLobbyStore().subscribeToOpenRegistrationTournaments();
             useMatchLobbyStore().subscribeToOpenMatches();
+            // Chat-scoped tournaments (live & joined, or organizer)
+            useMatchLobbyStore().subscribeToChatTournaments();
 
             if (
               useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)

@@ -190,8 +190,10 @@ export default {
         ? (this.exclude as string[]).concat(this.me.steam_id)
         : (this.exclude as string[]);
 
+      const onlinePlayers = useSearchStore().search(this.query, exclude);
+
       if (this.onlineOnly) {
-        this.players = useSearchStore().search(query || "", exclude);
+        this.players = onlinePlayers;
         return;
       }
 
@@ -205,23 +207,35 @@ export default {
         },
       });
 
-      this.players = (response as SearchResponse).hits.map(({ document }) => {
-        return {
-          role: document.role,
-          steam_id: document.steam_id,
-          name: document.name,
-          avatar_url: document.avatar_url,
-          country: document.country,
-          is_banned: document.is_banned,
-          is_muted: document.is_muted,
-          is_gagged: document.is_gagged,
-          elo: {
-            competitive: document.elo_competitive,
-            wingman: document.elo_wingman,
-            duel: document.elo_duel,
-          },
-        } as Player;
-      });
+      const fetchedPlayers = (response as SearchResponse).hits.map(
+        ({ document }) => {
+          return {
+            role: document.role,
+            steam_id: document.steam_id,
+            name: document.name,
+            avatar_url: document.avatar_url,
+            country: document.country,
+            is_banned: document.is_banned,
+            is_muted: document.is_muted,
+            is_gagged: document.is_gagged,
+            elo: {
+              competitive: document.elo_competitive,
+              wingman: document.elo_wingman,
+              duel: document.elo_duel,
+            },
+          } as Player;
+        },
+      );
+
+      const mergedPlayers: any[] = [...onlinePlayers];
+
+      for (const player of fetchedPlayers) {
+        if (!mergedPlayers.some((p: any) => p.steam_id === player.steam_id)) {
+          mergedPlayers.push(player);
+        }
+      }
+
+      this.players = mergedPlayers;
     },
   },
   watch: {

@@ -314,7 +314,9 @@ export default {
       type: String,
       required: true,
       validator: (value: string) =>
-        ["match", "team", "matchmaking", "organizers"].includes(value),
+        ["match", "team", "matchmaking", "organizers", "tournament"].includes(
+          value,
+        ),
     },
     global: {
       type: Boolean,
@@ -475,7 +477,12 @@ export default {
     },
     handleSendMessage(message: string) {
       socket.chat(
-        this.type as "match" | "team" | "matchmaking",
+        this.type as
+          | "match"
+          | "team"
+          | "matchmaking"
+          | "organizers"
+          | "tournament",
         this.lobbyId,
         message,
       );
@@ -517,7 +524,12 @@ export default {
         this.lobby?.leave();
         this.lobby = socket.joinLobby(
           this.instance,
-          this.type as "match" | "team" | "matchmaking",
+          this.type as
+            | "match"
+            | "team"
+            | "matchmaking"
+            | "organizers"
+            | "tournament",
           this.lobbyId,
         );
         this.updateLobbyMessages(this.lobby.messages);

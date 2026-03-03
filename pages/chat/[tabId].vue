@@ -33,7 +33,12 @@ const tabFromQuery = computed<ChatTab | null>(() => {
     id: tabId.value,
     label: label || "Chat",
     instance,
-    type: type as "match" | "team" | "matchmaking",
+    type: type as
+      | "match"
+      | "team"
+      | "matchmaking"
+      | "organizers"
+      | "tournament",
     lobbyId,
     pinned: false,
   };
@@ -79,7 +84,11 @@ function handleBackToHub() {
                 ? "Match chat"
                 : currentTab.type === "team"
                   ? "Team chat"
-                  : "Queue chat"
+                  : currentTab.type === "tournament"
+                    ? "Tournament chat"
+                    : currentTab.type === "organizers"
+                      ? "Organizers chat"
+                      : "Queue chat"
             }}
           </span>
           <span v-else>Chat not found</span>

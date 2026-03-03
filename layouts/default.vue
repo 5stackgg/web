@@ -22,7 +22,6 @@ const showLeftNav = computed(() => {
 });
 
 const containContent = computed(() => {
-  console.info("route.name", route.name);
   if (route.name?.toString().startsWith("settings-application")) {
     return false;
   }

@@ -12,7 +12,7 @@ const { isMobile } = useSidebar();
     :class="[
       'flex items-center justify-center text-sm transition-colors',
       isMobile
-        ? 'px-3 py-1.5 rounded-full bg-zinc-900/90 text-zinc-100 border border-zinc-700 shadow-md'
+        ? 'px-3 py-1.5 rounded-full bg-zinc-900/90 text-zinc-100 border border-zinc-700 shadow-md mb-3'
         : 'px-2 text-muted-foreground',
     ]"
   >

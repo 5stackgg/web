@@ -21,6 +21,7 @@ import {
   UserPlus,
   Trash,
   Play,
+  Pause,
 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -158,6 +159,23 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
             >
               <Play class="mr-2 h-4 w-4" />
               <span>{{ $t("tournament.actions.start") }}</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              v-if="tournament.can_pause"
+              @click="pauseTournament"
+              class="cursor-pointer"
+            >
+              <Pause class="mr-2 h-4 w-4" />
+              <span>{{ $t("tournament.actions.pause") }}</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              v-if="tournament.can_resume"
+              @click="resumeTournament"
+              class="cursor-pointer"
+            >
+              <Play class="mr-2 h-4 w-4" />
+              <span>{{ $t("tournament.actions.resume") }}</span>
             </DropdownMenuItem>
 
             <DropdownMenuSeparator
@@ -353,6 +371,13 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
             </Popover>
           </template>
         </div>
+      </div>
+
+      <div
+        v-if="tournament.status === e_tournament_status_enum.Paused"
+        class="mb-4 rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+      >
+        {{ $t("tournament.paused_banner") }}
       </div>
 
       <TabsContent value="overview">
@@ -610,6 +635,8 @@ export default {
               can_cancel: true,
               can_open_registration: true,
               can_close_registration: true,
+              can_pause: true,
+              can_resume: true,
               min_players_per_lineup: true,
               max_players_per_lineup: true,
               admin: playerFields,
@@ -1012,6 +1039,12 @@ export default {
       await this.updateTournamentStatus(
         e_tournament_status_enum.RegistrationClosed,
       );
+    },
+    async pauseTournament() {
+      await this.updateTournamentStatus(e_tournament_status_enum.Paused);
+    },
+    async resumeTournament() {
+      await this.updateTournamentStatus(e_tournament_status_enum.Live);
     },
     async updateTournamentStatus(status) {
       await this.$apollo.mutate({

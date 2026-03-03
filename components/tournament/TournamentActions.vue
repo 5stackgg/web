@@ -1,12 +1,14 @@
 <script lang="ts" setup>
-import { Lock, Unlock, Ban } from "lucide-vue-next";
+import { Lock, Unlock, Ban, Pause, Play } from "lucide-vue-next";
 </script>
 <template>
   <DropdownMenu
     v-if="
       tournament.can_open_registration ||
       tournament.can_close_registration ||
-      tournament.can_cancel
+      tournament.can_cancel ||
+      tournament.can_pause ||
+      tournament.can_resume
     "
   >
     <DropdownMenuTrigger as-child>
@@ -30,6 +32,23 @@ import { Lock, Unlock, Ban } from "lucide-vue-next";
       >
         <Lock class="mr-2 h-4 w-4" />
         <span>{{ $t("tournament.actions.close_registration") }}</span>
+      </DropdownMenuItem>
+
+      <DropdownMenuItem
+        v-if="tournament.can_pause"
+        @click="pause"
+        class="cursor-pointer"
+      >
+        <Pause class="mr-2 h-4 w-4" />
+        <span>{{ $t("tournament.actions.pause") }}</span>
+      </DropdownMenuItem>
+      <DropdownMenuItem
+        v-if="tournament.can_resume"
+        @click="resume"
+        class="cursor-pointer"
+      >
+        <Play class="mr-2 h-4 w-4" />
+        <span>{{ $t("tournament.actions.resume") }}</span>
       </DropdownMenuItem>
 
       <DropdownMenuSeparator
@@ -64,6 +83,12 @@ export default {
   methods: {
     async cancel() {
       await this.updateStatus(e_tournament_status_enum.Cancelled);
+    },
+    async pause() {
+      await this.updateStatus(e_tournament_status_enum.Paused);
+    },
+    async resume() {
+      await this.updateStatus(e_tournament_status_enum.Live);
     },
     async openRegistration() {
       await this.updateStatus(e_tournament_status_enum.RegistrationOpen);

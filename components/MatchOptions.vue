@@ -807,6 +807,42 @@ import { Card } from "~/components/ui/card";
                     <FormMessage />
                   </FormItem>
                 </FormField>
+
+                <FormField
+                  v-if="canSetcheckInSettings"
+                  v-slot="{ componentField }"
+                  name="auto_cancel_mode"
+                >
+                  <FormItem>
+                    <FormLabel class="text-lg font-semibold">{{
+                      $t("match.options.advanced.auto_cancel_mode.label")
+                    }}</FormLabel>
+                    <FormDescription>{{
+                      $t("match.options.advanced.auto_cancel_mode.description")
+                    }}</FormDescription>
+                    <FormControl>
+                      <Select v-bind="componentField">
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem
+                              :value="mode.value"
+                              v-for="mode in autoCancelModes"
+                              :key="mode.value"
+                            >
+                              {{ mode.display }}
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
               </div>
             </Card>
 
@@ -1226,6 +1262,28 @@ export default {
             "match.options.advanced.ready_settings.options.everyone",
           ),
           value: e_ready_settings_enum.Players,
+        },
+      ];
+    },
+    autoCancelModes(): EnumSetting[] {
+      return [
+        {
+          display: this.$t(
+            "match.options.advanced.auto_cancel_mode.options.AutoCancel",
+          ),
+          value: "AutoCancel",
+        },
+        {
+          display: this.$t(
+            "match.options.advanced.auto_cancel_mode.options.Admin",
+          ),
+          value: "Admin",
+        },
+        {
+          display: this.$t(
+            "match.options.advanced.auto_cancel_mode.options.AutoNoCancel",
+          ),
+          value: "AutoNoCancel",
         },
       ];
     },

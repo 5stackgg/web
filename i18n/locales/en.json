@@ -1473,6 +1473,15 @@
                         "everyone": "All Players Required to be Ready"
                     }
                 },
+                "auto_cancel_mode": {
+                    "label": "Auto Cancel Mode",
+                    "description": "Controls whether the match auto-cancels if not started within the configured duration.",
+                    "options": {
+                        "AutoCancel": "Auto Cancel",
+                        "Admin": "Admin Only",
+                        "AutoNoCancel": "Auto (No Cancel)"
+                    }
+                },
                 "default_player_models": {
                     "label": "Default Player Models",
                     "description": "Enable default player models for all players in the match."

@@ -353,6 +353,10 @@ export default {
       type: Object as PropType<unknown>,
       required: false,
     },
+    disableAutoFocusOnActivate: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -604,23 +608,25 @@ export default {
         }
 
         // When activating a tab, always jump to the bottom so the latest
-        // messages are immediately visible.
+        // messages are immediately visible, and optionally focus the input.
         if (active && !this.isMinimized) {
           this.safeScrollToBottom(true);
-          this.$nextTick(() => {
-            const chatInput = this.$refs.chatInputRef as any;
-            if (chatInput) {
-              if (typeof chatInput.focus === "function") {
-                chatInput.focus();
-              } else if (chatInput.$el) {
-                // Fallback: try to focus the first input inside the component root.
-                const el = chatInput.$el.querySelector(
-                  "input, textarea, [tabindex]",
-                ) as HTMLElement | null;
-                el?.focus();
+          if (!this.disableAutoFocusOnActivate) {
+            this.$nextTick(() => {
+              const chatInput = this.$refs.chatInputRef as any;
+              if (chatInput) {
+                if (typeof chatInput.focus === "function") {
+                  chatInput.focus();
+                } else if (chatInput.$el) {
+                  // Fallback: try to focus the first input inside the component root.
+                  const el = chatInput.$el.querySelector(
+                    "input, textarea, [tabindex]",
+                  ) as HTMLElement | null;
+                  el?.focus();
+                }
               }
-            }
-          });
+            });
+          }
         }
       },
     },

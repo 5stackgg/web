@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
+import { useMediaQuery } from "@vueuse/core";
 import {
   Megaphone,
   Merge,
@@ -29,6 +30,7 @@ const { tabs, unreadCounts, setActiveTab, resetUnread, incrementUnread } =
   useChatTabs();
 
 const matchLobbyStore = useMatchLobbyStore();
+const isMobile = useMediaQuery("(max-width: 768px)");
 
 const activeChatId = ref<string | null>(null);
 const isOverlayOpen = ref(false);
@@ -470,6 +472,7 @@ function handlePopOut() {
             :frameless="true"
             :is-global-context="true"
             :hide-participants-summary="true"
+            :disable-auto-focus-on-activate="isMobile"
             :is-active-tab="
               tab.id === activeChatId && isSidebarOpen && isTabActive
             "
@@ -567,6 +570,7 @@ function handlePopOut() {
                 :tab-id="tab.id"
                 :frameless="true"
                 :is-global-context="true"
+                :disable-auto-focus-on-activate="isMobile"
                 :is-active-tab="
                   tab.id === activeOverlayTab.id && isSidebarOpen && isTabActive
                 "

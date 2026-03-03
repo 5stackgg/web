@@ -4,7 +4,12 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 </script>
 
 <template>
-  <div class="my-1.5 text-[11px] leading-snug">
+  <div
+    :class="[
+      'text-[11px] leading-snug',
+      isSameSender && isCloseTogether ? 'mt-0.5 mb-0.5' : 'my-1.5',
+    ]"
+  >
     <div class="grid grid-cols-[40px_1fr] gap-x-1.5 items-start">
       <div class="mt-0.5 mx-2">
         <PlayerDisplay

@@ -3,7 +3,7 @@ import { e_match_status_enum } from "~/generated/zeus";
 </script>
 
 <template>
-  <div class="p-4" v-if="match.status === e_match_status_enum.Live && me">
+  <div v-if="match.status === e_match_status_enum.Live && me">
     <template v-if="canWatch && !match.tv_connection_string">
       <div
         class="flex items-center gap-2 p-4 rounded-lg border bg-foreground/10 mb-2"

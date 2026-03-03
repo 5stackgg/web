@@ -1,87 +1,118 @@
 <script setup lang="ts">
-import MapDisplay from "~/components/MapDisplay.vue";
 import { Badge } from "~/components/ui/badge";
-import MatchMapDisplayLineup from "~/components/match/MatchMapLineup.vue";
-import formatBytes from "~/utilities/formatBytes";
+import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import { Download } from "lucide-vue-next";
 </script>
 
 <template>
-  <MapDisplay
-    :map="matchMap.map"
-    :darken="true"
+  <div
+    class="rounded-xl overflow-hidden border border-border/50"
     :class="{
-      'ring-1 ring-red-500': matchMap.is_current_map,
+      'ring-2 ring-red-500': matchMap.is_current_map,
     }"
   >
-    <template v-slot:header>
-      <div class="absolute top-3">
-        <badge
-          class="mb-2"
+    <!-- Map image header -->
+    <div class="relative h-20">
+      <NuxtImg
+        :src="matchMap.map.poster"
+        class="w-full h-full object-cover brightness-50"
+        sizes="400px"
+      />
+      <div
+        class="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20"
+      />
+      <div class="absolute inset-0 flex items-center justify-center">
+        <img
+          v-if="matchMap.map.patch"
+          :src="matchMap.map.patch"
+          class="max-w-[48px] h-auto max-h-[80%] object-contain drop-shadow-xl"
+        />
+      </div>
+      <!-- Status badge -->
+      <div class="absolute top-2 left-2">
+        <Badge
           v-if="matchMap.status !== e_match_status_enum.Scheduled"
-          >{{ matchMap.status }}</badge
+          :variant="matchMap.is_current_map ? 'destructive' : 'secondary'"
+          class="text-xs"
+          >{{ matchMap.status }}</Badge
         >
-
-        <badge
-          variant="destructive"
+        <Badge
           v-else-if="isDecider && match.options.best_of > 1"
-          >{{ $t("match.decider") }}</badge
+          variant="destructive"
+          class="text-xs"
+          >{{ $t("match.decider") }}</Badge
         >
       </div>
-
-      <div class="absolute top-3 right-3">
+      <!-- Demo download -->
+      <div class="absolute top-2 right-2">
         <template v-if="matchMap.demos_download_url">
           <a target="_blank" :href="matchMap.demos_download_url">
             <Button
-              size="sm"
-              variant="outline"
+              size="xs"
+              variant="ghost"
+              class="h-6 w-6 p-0 text-white/70 hover:text-white"
               v-if="matchMap.demos_total_size"
             >
-              <Download class="w-4 h-4" />
-              {{
-                matchMap.demos.length > 1
-                  ? $t("match.download_demos")
-                  : $t("match.download_demo")
-              }}
-              <small>{{ formatBytes(matchMap.demos_total_size) }}~)</small>
+              <Download class="w-3.5 h-3.5" />
             </Button>
           </a>
         </template>
         <template v-else>
           <template v-for="demo in matchMap.demos" :key="demo.id">
             <a :href="demo.download_url">
-              <Button size="sm" variant="outline">
-                <Download class="w-4 h-4" />
-                {{ $t("match.download_demo") }}
-                <small>({{ formatBytes(demo.size) }}~)</small>
+              <Button
+                size="xs"
+                variant="ghost"
+                class="h-6 w-6 p-0 text-white/70 hover:text-white"
+              >
+                <Download class="w-3.5 h-3.5" />
               </Button>
             </a>
           </template>
         </template>
       </div>
-    </template>
-    <template v-slot:default>
-      <div class="absolute bottom-3 left-3 right-3 grid grid-cols-2 gap-4">
-        <div class="flex flex-col items-start justify-end gap-1">
-          <match-map-display-lineup
-            :match="match"
-            :match-map="matchMap"
-            :lineup="match.lineup_1"
-            :showTeamPatch="showTeamPatch"
-          ></match-map-display-lineup>
+    </div>
+
+    <!-- Score section -->
+    <div class="bg-muted/40 px-3 py-2.5">
+      <div class="flex items-center justify-between gap-2">
+        <!-- Team 1 -->
+        <div class="flex flex-col items-center gap-0.5 flex-1 min-w-0">
+          <img v-if="showTeamPatch" :src="team1Patch" class="w-5 h-5" />
+          <span class="text-[10px] text-muted-foreground truncate max-w-full">{{
+            match.lineup_1.name
+          }}</span>
         </div>
-        <div class="flex flex-col items-end justify-end gap-1">
-          <match-map-display-lineup
-            :reverse="true"
+
+        <!-- Score -->
+        <div
+          class="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-background/60"
+        >
+          <MatchLineupScoreDisplay
             :match="match"
+            :lineup="match.lineup_1"
             :match-map="matchMap"
+            class="text-lg font-bold tabular-nums"
+          />
+          <span class="text-muted-foreground text-xs">:</span>
+          <MatchLineupScoreDisplay
+            :match="match"
             :lineup="match.lineup_2"
-            :showTeamPatch="showTeamPatch"
-          ></match-map-display-lineup>
+            :match-map="matchMap"
+            class="text-lg font-bold tabular-nums"
+          />
+        </div>
+
+        <!-- Team 2 -->
+        <div class="flex flex-col items-center gap-0.5 flex-1 min-w-0">
+          <img v-if="showTeamPatch" :src="team2Patch" class="w-5 h-5" />
+          <span class="text-[10px] text-muted-foreground truncate max-w-full">{{
+            match.lineup_2.name
+          }}</span>
         </div>
       </div>
-    </template>
-  </MapDisplay>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -108,6 +139,16 @@ export default {
       return this.matchMap.vetos.find(({ type }) => {
         return type === e_veto_pick_types_enum.Decider;
       });
+    },
+    team1Patch() {
+      return this.matchMap.lineup_1_side === "TERRORIST"
+        ? "/img/teams/t_logo.svg"
+        : "/img/teams/ct_logo.svg";
+    },
+    team2Patch() {
+      return this.matchMap.lineup_2_side === "TERRORIST"
+        ? "/img/teams/t_logo.svg"
+        : "/img/teams/ct_logo.svg";
     },
   },
 };

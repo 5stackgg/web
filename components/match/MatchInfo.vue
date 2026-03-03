@@ -73,7 +73,6 @@ import { e_match_status_enum } from "~/generated/zeus";
         </div>
 
         <div v-if="showAnyActionSection" class="flex flex-col gap-4">
-          <Separator />
           <ScheduleMatch :match="match" v-if="match.can_schedule" />
           <CheckIntoMatch :match="match" v-if="showCheckInSection" />
           <QuickMatchConnect :match="match" v-if="showQuickConnectSection" />
@@ -86,7 +85,6 @@ import { e_match_status_enum } from "~/generated/zeus";
               match.status !== e_match_status_enum.Canceled) ||
             (match.status === e_match_status_enum.Finished && match.ended_at)
           "
-          class="flex flex-col gap-4 pt-4 border-t border-border"
         >
           <div class="flex justify-center sm:justify-start">
             <Badge

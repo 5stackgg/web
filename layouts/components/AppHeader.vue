@@ -11,7 +11,7 @@ import { Grid } from "lucide-vue-next";
 import { useHubState } from "@/composables/useHubState";
 
 const { isMobile } = useSidebar();
-const { selectHub } = useHubState();
+const { openLastOrDefaultHub } = useHubState();
 </script>
 
 <template>
@@ -38,7 +38,7 @@ const { selectHub } = useHubState();
           variant="ghost"
           size="icon"
           class="h-7 w-7 md:hidden relative"
-          @click="selectHub('social')"
+          @click="openLastOrDefaultHub()"
         >
           <Grid class="h-4 w-4" />
           <span class="sr-only">Toggle Right Sidebar</span>

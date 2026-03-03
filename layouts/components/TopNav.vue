@@ -35,7 +35,7 @@ import SteamIcon from "~/components/icons/SteamIcon.vue";
 import { loginLinks } from "~/utilities/loginLinks";
 
 const { isMobile } = useSidebar();
-const { selectHub } = useHubState();
+const { openLastOrDefaultHub } = useHubState();
 const { brandName, logoUrl } = useBranding();
 </script>
 
@@ -303,7 +303,7 @@ const { brandName, logoUrl } = useBranding();
           variant="ghost"
           size="icon"
           class="h-7 w-7 md:hidden relative"
-          @click="selectHub('social')"
+          @click="openLastOrDefaultHub()"
         >
           <Grid class="h-4 w-4" />
           <span class="sr-only">Toggle Right Sidebar</span>

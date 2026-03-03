@@ -9,12 +9,18 @@ type Hub = "recent-games" | "social" | "chat" | "notifications" | "lobby";
 
 const HUB_STORAGE_KEY = "right-hub-active-tab";
 
+function readSavedHub(): Hub | null {
+  if (typeof window === "undefined") return null;
+  const saved = window.localStorage.getItem(HUB_STORAGE_KEY) as Hub | null;
+  return saved ?? null;
+}
+
 const activeHub = ref<Hub | null>("social");
 
 // Initialize from localStorage (client-side only)
-if (typeof window !== "undefined") {
-  const saved = window.localStorage.getItem(HUB_STORAGE_KEY) as Hub | null;
-  if (saved) activeHub.value = saved;
+const initialSavedHub = readSavedHub();
+if (initialSavedHub) {
+  activeHub.value = initialSavedHub;
 }
 
 export function useHubState() {
@@ -46,6 +52,13 @@ export function useHubState() {
     }
   }
 
+  function openLastOrDefaultHub() {
+    const restored = readSavedHub();
+    const target = restored ?? defaultHub();
+    activeHub.value = target;
+    setRightSidebarOpen(true);
+  }
+
   // Persist active hub selection to localStorage (but keep last non-null when closed)
   watch(
     activeHub,
@@ -62,13 +75,7 @@ export function useHubState() {
     rightSidebarOpen,
     (open) => {
       if (open && !activeHub.value) {
-        let restored: Hub | null = null;
-        if (typeof window !== "undefined") {
-          const saved = window.localStorage.getItem(
-            HUB_STORAGE_KEY,
-          ) as Hub | null;
-          if (saved) restored = saved;
-        }
+        const restored = readSavedHub();
         activeHub.value = restored ?? defaultHub();
       }
       if (!open && !isMobile.value) activeHub.value = null;
@@ -76,5 +83,5 @@ export function useHubState() {
     { immediate: true },
   );
 
-  return { activeHub, selectHub };
+  return { activeHub, selectHub, openLastOrDefaultHub };
 }

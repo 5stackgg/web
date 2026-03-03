@@ -26,8 +26,7 @@ function extractTranslationKeys(content, keyPrefixPattern, dynamicPrefixes) {
   const keys = new Set();
 
   // Regex to match $t("...") / t("...") / i18n.t("...") with various endings and spacing
-  const directPattern =
-    /\b(?:\$t|t)\s*\(\s*(['"`])([^'"`]+)\1(?:\s*[,)])/g;
+  const directPattern = /\b(?:\$t|t)\s*\(\s*(['"`])([^'"`]+)\1(?:\s*[,)])/g;
   const directMatches = Array.from(content.matchAll(directPattern));
 
   directMatches.forEach((match) => {
@@ -45,8 +44,7 @@ function extractTranslationKeys(content, keyPrefixPattern, dynamicPrefixes) {
   });
 
   // Also catch namespaced calls like i18n.t("foo.bar.baz")
-  const namespacedTPattern =
-    /\b\w+\.t\s*\(\s*(['"`])([^'"`]+)\1(?:\s*[,)])/g;
+  const namespacedTPattern = /\b\w+\.t\s*\(\s*(['"`])([^'"`]+)\1(?:\s*[,)])/g;
   const namespacedMatches = Array.from(content.matchAll(namespacedTPattern));
 
   namespacedMatches.forEach((match) => {
@@ -73,7 +71,10 @@ function extractTranslationKeys(content, keyPrefixPattern, dynamicPrefixes) {
       // three segments (e.g. pages.leaderboard.col.elo)
       const translationKeyShape = /^[a-z0-9_]+(\.[a-z0-9_]+){2,}$/;
 
-      if (translationKeyShape.test(candidate) && keyPrefixPattern.test(candidate)) {
+      if (
+        translationKeyShape.test(candidate) &&
+        keyPrefixPattern.test(candidate)
+      ) {
         keys.add(candidate);
       }
     });
@@ -169,9 +170,7 @@ async function main() {
   });
 
   const keyPrefixes = Array.from(
-    new Set(
-      Array.from(allAvailableKeys).map((key) => key.split(".")[0]),
-    ),
+    new Set(Array.from(allAvailableKeys).map((key) => key.split(".")[0])),
   );
 
   const keyPrefixPattern =
@@ -180,8 +179,11 @@ async function main() {
       : null;
 
   // Find all translation keys used in the project
-  const { keys: usedKeysRaw, keyLocations, dynamicPrefixes } =
-    await findAllTranslationKeys(keyPrefixPattern);
+  const {
+    keys: usedKeysRaw,
+    keyLocations,
+    dynamicPrefixes,
+  } = await findAllTranslationKeys(keyPrefixPattern);
   // Expand dynamic prefixes (e.g. \"foo.bar.${baz}\") into concrete keys based
   // on what exists in the translation files.
   const usedKeysSet = new Set(usedKeysRaw);

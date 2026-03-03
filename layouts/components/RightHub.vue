@@ -5,7 +5,15 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar";
-import { Bell, Clock, Users, MessageSquare, Swords, Pin, X } from "lucide-vue-next";
+import {
+  Bell,
+  Clock,
+  Users,
+  MessageSquare,
+  Swords,
+  Pin,
+  X,
+} from "lucide-vue-next";
 import { useRightSidebar } from "@/composables/useRightSidebar";
 import { useHubState } from "@/composables/useHubState";
 import { useChatTabs } from "~/composables/useChatTabs";

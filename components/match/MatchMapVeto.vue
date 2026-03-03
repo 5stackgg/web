@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
+import { Check } from "lucide-vue-next";
 import MapDisplay from "~/components/MapDisplay.vue";
 import MapSelector from "~/components/match/MapSelector.vue";
 import { Separator } from "~/components/ui/separator";
@@ -103,12 +104,18 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
               >
                 <div
                   v-if="form.values.side === sideOption.value"
-                  class="absolute inset-0 flex items-center justify-center rounded-full bg-black/40"
+                  class="absolute inset-0 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-[1px]"
                   @click.stop="vetoPick"
                 >
-                  <span class="text-xs font-bold text-green-400">{{
-                    $t("match.map_veto.pick", { type: pickType })
-                  }}</span>
+                  <div
+                    class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg shadow-black/20"
+                  >
+                    <Check class="w-3 h-3 text-green-400" />
+                    <span
+                      class="text-xs font-semibold text-white drop-shadow-sm"
+                      >{{ $t("match.map_veto.pick", { type: pickType }) }}</span
+                    >
+                  </div>
                 </div>
               </Transition>
             </div>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
+import { Check } from "lucide-vue-next";
 import MapDisplay from "~/components/MapDisplay.vue";
 </script>
 
@@ -34,15 +35,17 @@ import MapDisplay from "~/components/MapDisplay.vue";
         >
           <div
             v-if="selectedMap?.id === map.id && availableMaps.includes(map)"
-            class="absolute inset-0 flex items-center justify-center bg-black/40 cursor-pointer rounded-lg"
+            class="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-[2px] cursor-pointer rounded-lg"
             @click="confirmMap"
           >
             <div
-              class="absolute -inset-1 rounded-lg border border-primary/50 animate-pulse"
-            />
-            <span class="text-sm font-bold text-green-400 drop-shadow-md">
-              <slot>Confirm</slot>
-            </span>
+              class="flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 shadow-lg shadow-black/20"
+            >
+              <Check class="w-4 h-4 text-green-400" />
+              <span class="text-sm font-semibold text-white drop-shadow-sm">
+                <slot>Confirm</slot>
+              </span>
+            </div>
           </div>
         </Transition>
       </div>

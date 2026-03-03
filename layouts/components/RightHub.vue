@@ -154,6 +154,23 @@ function hubBtnClass(hub: string) {
       : "text-sidebar-foreground/50 hover:bg-sidebar-accent/40 hover:text-sidebar-foreground",
   ];
 }
+
+// Mobile: swipe right to close
+const swipeStartX = ref(0);
+const swipeStartY = ref(0);
+function onHubTouchStart(e: TouchEvent) {
+  if (!e.touches[0]) return;
+  swipeStartX.value = e.touches[0].clientX;
+  swipeStartY.value = e.touches[0].clientY;
+}
+function onHubTouchEnd(e: TouchEvent) {
+  if (!e.changedTouches[0] || !isMobile.value) return;
+  const deltaX = e.changedTouches[0].clientX - swipeStartX.value;
+  const deltaY = e.changedTouches[0].clientY - swipeStartY.value;
+  if (deltaX < 50) return; // need swipe right (positive deltaX)
+  if (Math.abs(deltaY) > Math.abs(deltaX) * 1.2) return; // prefer horizontal
+  setRightSidebarOpen(false);
+}
 </script>
 
 <template>
@@ -172,6 +189,8 @@ function hubBtnClass(hub: string) {
       <!-- Content panel — hidden when sidebar collapses to icon strip -->
       <div
         class="relative flex-1 min-w-0 overflow-hidden group-data-[collapsible=icon]:hidden"
+        @touchstart.passive="onHubTouchStart"
+        @touchend="onHubTouchEnd"
       >
         <Transition v-for="hub in hubPanels" :key="hub.name" name="hub-swap">
           <div

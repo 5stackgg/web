@@ -159,9 +159,7 @@ export function useChatTabSetup() {
     () => matchLobbyStore.myMatches,
     () => {
       const matches = matchLobbyStore.myMatches as any[];
-      const activeMatchTabIds = new Set(
-        matches.map((m) => `match:${m.id}`),
-      );
+      const activeMatchTabIds = new Set(matches.map((m) => `match:${m.id}`));
 
       for (const tab of [...tabs.value]) {
         if (tab.type === "match" && !activeMatchTabIds.has(tab.id)) {

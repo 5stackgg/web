@@ -69,6 +69,25 @@ provide("commander", commander);
       </TabsTrigger>
     </TabsList>
     <TabsContent value="overview">
+      <div
+        v-if="me || canAdjustLineups"
+        class="flex flex-col gap-3 mb-4 md:flex-row md:items-center md:justify-between"
+      >
+        <PlayerInvites v-if="me" />
+
+        <div
+          v-if="canAdjustLineups"
+          class="flex flex-wrap gap-2 md:gap-3 md:justify-end"
+        >
+          <Button variant="destructive" class="px-4" @click="randomizeTeams">
+            {{ $t("match.tabs.randomize_teams") }}
+          </Button>
+          <Button variant="destructive" class="px-4" @click="swapLineups">
+            {{ $t("match.tabs.swap_lineups") }}
+          </Button>
+        </div>
+      </div>
+
       <div class="grid gap-4">
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
@@ -134,17 +153,6 @@ provide("commander", commander);
           </ScrollArea>
         </DrawerContent>
       </Drawer>
-
-      <PlayerInvites v-if="me" />
-
-      <div class="flex gap-4" v-if="canAdjustLineups">
-        <Button variant="destructive" @click="randomizeTeams">
-          {{ $t("match.tabs.randomize_teams") }}
-        </Button>
-        <Button variant="destructive" @click="swapLineups">
-          {{ $t("match.tabs.swap_lineups") }}
-        </Button>
-      </div>
     </TabsContent>
     <TabsContent value="utility">
       <div class="grid gap-4 max-w-[1500px] mx-auto">

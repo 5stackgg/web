@@ -284,6 +284,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
 </template>
 
 <script lang="ts">
+import type { PropType } from "vue";
 import socket from "~/web-sockets/Socket";
 import type { Lobby } from "~/web-sockets/Socket";
 
@@ -348,6 +349,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    match: {
+      type: Object as PropType<unknown>,
+      required: false,
+    },
   },
   data() {
     return {
@@ -392,6 +397,11 @@ export default {
       if (this.type !== "match") {
         return null;
       }
+
+      if (this.match) {
+        return this.match;
+      }
+
       const store = useMatchLobbyStore();
       const matches = (store.myMatches as unknown as any[]) || [];
       return matches.find((m) => m.id === this.lobbyId) || null;

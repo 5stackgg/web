@@ -5,13 +5,19 @@ import MatchInfo from "~/components/match/MatchInfo.vue";
 import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
-import { e_match_status_enum } from "~/generated/zeus";
+import {
+  e_match_status_enum,
+  e_player_roles_enum,
+  e_lobby_access_enum,
+} from "~/generated/zeus";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { CardContent } from "~/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
+import ChatLobby from "~/components/chat/ChatLobby.vue";
+import { useAuthStore } from "~/stores/AuthStore";
 </script>
 
 <template>
@@ -30,6 +36,17 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
           <QuickMatchConnect :match="match"></QuickMatchConnect>
           <MatchInfo :match="match"></MatchInfo>
         </div>
+      </PageTransition>
+
+      <PageTransition :delay="200">
+        <ChatLobby
+          class="max-h-96"
+          instance="matches/id"
+          type="match"
+          :lobby-id="match.id"
+          :play-notification-sound="match.status !== e_match_status_enum.Live"
+          v-if="canJoinLobby"
+        />
       </PageTransition>
     </div>
 
@@ -319,6 +336,30 @@ export default {
       return useApplicationSettingsStore().availableRegions.filter((region) => {
         return region.is_lan === false;
       });
+    },
+    canJoinLobby() {
+      if (!this.match) {
+        return false;
+      }
+
+      if (
+        ![
+          e_match_status_enum.Live,
+          e_match_status_enum.PickingPlayers,
+          e_match_status_enum.Scheduled,
+          e_match_status_enum.Veto,
+          e_match_status_enum.WaitingForCheckIn,
+          e_match_status_enum.WaitingForServer,
+        ].includes(this.match.status)
+      ) {
+        return false;
+      }
+
+      return (
+        this.match.is_in_lineup ||
+        this.match.is_organizer ||
+        this.match.is_coach
+      );
     },
     showLiveStreams() {
       if (

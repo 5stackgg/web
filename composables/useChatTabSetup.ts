@@ -154,4 +154,21 @@ export function useChatTabSetup() {
       }
     },
   );
+
+  watch(
+    () => matchLobbyStore.myMatches,
+    () => {
+      const matches = matchLobbyStore.myMatches as any[];
+      const activeMatchTabIds = new Set(
+        matches.map((m) => `match:${m.id}`),
+      );
+
+      for (const tab of [...tabs.value]) {
+        if (tab.type === "match" && !activeMatchTabIds.has(tab.id)) {
+          closeTab(tab.id);
+        }
+      }
+    },
+    { deep: true },
+  );
 }

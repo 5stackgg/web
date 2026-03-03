@@ -19,19 +19,42 @@ function flattenTranslations(obj, prefix = "") {
 }
 
 // Function to extract translation keys from a file
-function extractTranslationKeys(content) {
+// - Direct usage via $t("...") or $t('...')
+// - String literals that *look* like translation keys based on known prefixes
+function extractTranslationKeys(content, keyPrefixPattern) {
+  const keys = new Set();
+
   // Regex to match $t("...") or $t('...') with various endings and spacing, anywhere in the code
-  const pattern = /\$t\s*\(\s*['"]([^'"]+)['"](?:\s*[,)])/g;
-  const matches = Array.from(content.matchAll(pattern));
+  const directPattern = /\$t\s*\(\s*['"]([^'"]+)['"](?:\s*[,)])/g;
+  const directMatches = Array.from(content.matchAll(directPattern));
 
-  // Extract keys from matches using map
-  const keys = matches.map((match) => match[1]);
+  directMatches.forEach((match) => {
+    keys.add(match[1]);
+  });
 
-  return [...new Set(keys)];
+  // Additionally, capture string literals that look like translation keys
+  // based on known prefixes from the translation files (e.g. pages.*, layouts.*, common.*, etc.)
+  if (keyPrefixPattern) {
+    const literalPattern = /['"]([^'"]+)['"]/g;
+    const literalMatches = Array.from(content.matchAll(literalPattern));
+
+    literalMatches.forEach((match) => {
+      const candidate = match[1];
+      // Heuristic: translation keys are typically lowercase with dots and at least
+      // three segments (e.g. pages.leaderboard.col.elo)
+      const translationKeyShape = /^[a-z0-9_]+(\.[a-z0-9_]+){2,}$/;
+
+      if (translationKeyShape.test(candidate) && keyPrefixPattern.test(candidate)) {
+        keys.add(candidate);
+      }
+    });
+  }
+
+  return [...keys];
 }
 
 // Function to find all translation keys in the project
-async function findAllTranslationKeys() {
+async function findAllTranslationKeys(keyPrefixPattern) {
   const keys = new Set();
   const keyLocations = new Map();
 
@@ -43,7 +66,7 @@ async function findAllTranslationKeys() {
   // Process each file
   const fileResults = files.map((file) => {
     const content = fs.readFileSync(file, "utf8");
-    const fileKeys = extractTranslationKeys(content);
+    const fileKeys = extractTranslationKeys(content, keyPrefixPattern);
     return { file, fileKeys };
   });
 
@@ -90,17 +113,47 @@ async function main() {
   // Find all translation files
   const translationFiles = await findAllTranslationFiles();
 
+  // Read and flatten translations once so we can:
+  // - Build a list of all available keys
+  // - Infer valid translation key prefixes (e.g. pages.*, layouts.*, common.*)
+  const translationData = translationFiles.map(({ path: filePath, locale }) => {
+    const translations = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    const flattenedTranslations = flattenTranslations(translations);
+    return {
+      locale,
+      filePath,
+      translations,
+      flattenedTranslations,
+    };
+  });
+
+  const allAvailableKeys = new Set();
+  translationData.forEach(({ flattenedTranslations }) => {
+    Object.keys(flattenedTranslations).forEach((key) => {
+      allAvailableKeys.add(key);
+    });
+  });
+
+  const keyPrefixes = Array.from(
+    new Set(
+      Array.from(allAvailableKeys).map((key) => key.split(".")[0]),
+    ),
+  );
+
+  const keyPrefixPattern =
+    keyPrefixes.length > 0
+      ? new RegExp(`^(${keyPrefixes.join("|")})\\.`)
+      : null;
+
   // Find all translation keys used in the project
-  const { keys: usedKeys, keyLocations } = await findAllTranslationKeys();
+  const { keys: usedKeys, keyLocations } =
+    await findAllTranslationKeys(keyPrefixPattern);
 
   console.log("\n=== Translation Check Results ===\n");
 
   // Check each translation file
-  const translationResults = translationFiles.map(
-    ({ path: filePath, locale }) => {
-      // Read and flatten translations
-      const translations = JSON.parse(fs.readFileSync(filePath, "utf8"));
-      const flattenedTranslations = flattenTranslations(translations);
+  const translationResults = translationData.map(
+    ({ locale, filePath, flattenedTranslations }) => {
       const availableKeys = Object.keys(flattenedTranslations);
 
       // Find missing and unused translations

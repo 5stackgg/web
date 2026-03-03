@@ -34,6 +34,7 @@ export default function matchOptionsValidator(
       .string()
       .default(e_timeout_settings_enum.CoachAndPlayers),
     tech_timeout_setting: z.string().default(e_timeout_settings_enum.Admin),
+    auto_cancel_mode: z.string().default("AutoCancel"),
     map_pool_id: z.string().nullable(),
     map_pool: z
       .string()

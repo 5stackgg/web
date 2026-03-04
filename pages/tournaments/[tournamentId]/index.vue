@@ -59,7 +59,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
+
 } from "@/components/ui/alert-dialog";
 import { NuxtLink } from "#components";
 import MatchTableRow from "~/components/MatchTableRow.vue";
@@ -523,7 +523,6 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
       :open="deleteDialogOpen"
       @update:open="(open) => (deleteDialogOpen = open)"
     >
-      <AlertDialogTrigger class="w-full"> </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{{
@@ -550,7 +549,6 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
       :open="pauseDialogOpen"
       @update:open="(open) => (pauseDialogOpen = open)"
     >
-      <AlertDialogTrigger class="w-full"> </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{{
@@ -1113,28 +1111,38 @@ export default {
     },
     async pauseTournament() {
       await this.updateTournamentStatus(e_tournament_status_enum.Paused);
+      this.pauseDialogOpen = false;
     },
     async resumeTournament() {
       await this.updateTournamentStatus(e_tournament_status_enum.Live);
+      this.resumeDialogOpen = false;
     },
-    async updateTournamentStatus(status) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_tournaments_by_pk: [
-            {
-              pk_columns: {
-                id: this.tournament.id,
+    async updateTournamentStatus(status: e_tournament_status_enum) {
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            update_tournaments_by_pk: [
+              {
+                pk_columns: {
+                  id: this.tournament.id,
+                },
+                _set: {
+                  status,
+                },
               },
-              _set: {
-                status,
+              {
+                __typename: true,
               },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
+            ],
+          }),
+        });
+      } catch (error: any) {
+        toast({
+          title: this.$t("tournament.actions.update_status_failed"),
+          description: error.message,
+          variant: "destructive",
+        });
+      }
     },
     async deleteTournament() {
       try {

@@ -93,7 +93,9 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
 import { generateMutation } from "~/graphql/graphqlGen";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { fromDate, toCalendarDate } from "@internationalized/date";
+import type { CalendarDate } from "@internationalized/date";
 import { toast } from "@/components/ui/toast";
+import type { Bracket } from "~/types/tournament";
 
 export default {
   props: {
@@ -102,21 +104,14 @@ export default {
       required: true,
     },
     bracket: {
-      type: Object as () => {
-        id: string;
-        round?: number;
-        match_number?: number;
-        scheduled_at?: string;
-        team_1?: { name?: string; team?: { name?: string } };
-        team_2?: { name?: string; team?: { name?: string } };
-      } | null,
+      type: Object as () => Bracket | null,
       default: null,
     },
   },
   emits: ["update:open"],
   data() {
     return {
-      startDate: undefined as any,
+      startDate: undefined as CalendarDate | undefined,
       startTime: undefined as string | undefined,
       saving: false,
     };
@@ -159,6 +154,7 @@ export default {
       month: number;
       year: number;
     }) {
+      // day+1 ensures today is always selectable (comparison ignores time-of-day)
       return new Date(year, month - 1, day + 1) < new Date();
     },
     async saveSchedule() {

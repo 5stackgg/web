@@ -4,6 +4,7 @@ import {
   e_ready_settings_enum,
   e_timeout_settings_enum,
   e_check_in_settings_enum,
+  e_auto_cancel_mode_enum,
 } from "~/generated/zeus";
 
 export default function matchOptionsValidator(
@@ -35,8 +36,8 @@ export default function matchOptionsValidator(
       .default(e_timeout_settings_enum.CoachAndPlayers),
     tech_timeout_setting: z.string().default(e_timeout_settings_enum.Admin),
     auto_cancel_mode: z
-      .enum(["AutoCancel", "Admin", "AutoNoCancel"])
-      .default("AutoCancel"),
+      .nativeEnum(e_auto_cancel_mode_enum)
+      .default(e_auto_cancel_mode_enum.AutoCancel),
     map_pool_id: z.string().nullable(),
     map_pool: z
       .string()

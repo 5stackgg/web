@@ -5,6 +5,7 @@ import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
 import BracketScheduleDialog from "~/components/tournament/BracketScheduleDialog.vue";
 import { Maximize, Minimize, ZoomIn, ZoomOut } from "lucide-vue-next";
 import { getRoundLabel } from "~/utilities/tournamentRoundLabels";
+import type { Bracket } from "~/types/tournament";
 
 interface TournamentRound {
   length: number;
@@ -87,9 +88,9 @@ const MAX_ZOOM = 3.0;
 const ZOOM_STEP = 0.1;
 
 const scheduleDialogOpen = ref(false);
-const selectedBracket = ref<any>(null);
+const selectedBracket = ref<Bracket | null>(null);
 
-const handleScheduleBracket = (bracket: any) => {
+const handleScheduleBracket = (bracket: Bracket) => {
   selectedBracket.value = bracket;
   scheduleDialogOpen.value = true;
 };

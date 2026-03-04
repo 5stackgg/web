@@ -951,6 +951,7 @@ import {
   e_ready_settings_enum,
   e_timeout_settings_enum,
   e_check_in_settings_enum,
+  e_auto_cancel_mode_enum,
 } from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
@@ -1261,19 +1262,19 @@ export default {
           display: this.$t(
             "match.options.advanced.auto_cancel_mode.options.AutoCancel",
           ),
-          value: "AutoCancel",
+          value: e_auto_cancel_mode_enum.AutoCancel,
         },
         {
           display: this.$t(
             "match.options.advanced.auto_cancel_mode.options.Admin",
           ),
-          value: "Admin",
+          value: e_auto_cancel_mode_enum.Admin,
         },
         {
           display: this.$t(
             "match.options.advanced.auto_cancel_mode.options.AutoNoCancel",
           ),
-          value: "AutoNoCancel",
+          value: e_auto_cancel_mode_enum.AutoNoCancel,
         },
       ];
     },

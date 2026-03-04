@@ -1303,7 +1303,8 @@
             "resume": "Resume Tournament",
             "confirm_pause": "Pause Tournament",
             "pause_description": "Are you sure you want to pause this tournament? No new matches will be auto-scheduled until it's resumed.",
-            "resume_description": "Are you sure you want to resume this tournament? All pending matches will be scheduled immediately."
+            "resume_description": "Are you sure you want to resume this tournament? All pending matches will be scheduled immediately.",
+            "update_status_failed": "Failed to update tournament status"
         },
         "upcoming": {
             "empty": "You don't have any upcoming tournaments."

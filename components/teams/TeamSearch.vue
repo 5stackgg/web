@@ -32,30 +32,6 @@ const isMobile = useMediaQuery("(max-width: 768px)");
     <DrawerContent>
       <DrawerTitle class="sr-only">{{ label }}</DrawerTitle>
       <div class="flex flex-col h-[80dvh] p-4">
-        <div class="flex items-center justify-between pb-3 border-b">
-          <input
-            ref="mobileSearchInput"
-            v-model="query"
-            :placeholder="$t('team.search.placeholder')"
-            type="search"
-            inputmode="search"
-            enterkeyhint="search"
-            class="flex-1 bg-transparent outline-none text-base"
-            @input="
-              (e: Event) =>
-                debouncedSearch((e.target as HTMLInputElement).value)
-            "
-          />
-          <div class="flex items-center gap-2 ml-4" v-if="!myTeams">
-            <Switch
-              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
-              :model-value="myTeamsOnly"
-              @click="toggleMyTeamsOnly"
-            />
-            {{ $t("team.search.my_teams_only") }}
-          </div>
-        </div>
-
         <div class="flex-1 overflow-y-auto min-h-0">
           <div
             v-if="!teams?.length"
@@ -84,6 +60,30 @@ const isMobile = useMediaQuery("(max-width: 768px)");
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-3 border-t">
+          <input
+            ref="mobileSearchInput"
+            v-model="query"
+            :placeholder="$t('team.search.placeholder')"
+            type="search"
+            inputmode="search"
+            enterkeyhint="search"
+            class="flex-1 bg-transparent outline-none text-base"
+            @input="
+              (e: Event) =>
+                debouncedSearch((e.target as HTMLInputElement).value)
+            "
+          />
+          <div class="flex items-center gap-2 ml-4" v-if="!myTeams">
+            <Switch
+              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
+              :model-value="myTeamsOnly"
+              @click="toggleMyTeamsOnly"
+            />
+            {{ $t("team.search.my_teams_only") }}
           </div>
         </div>
       </div>

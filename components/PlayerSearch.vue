@@ -42,30 +42,6 @@ const isMobile = useMediaQuery("(max-width: 768px)");
     <DrawerContent>
       <DrawerTitle class="sr-only">{{ label }}</DrawerTitle>
       <div class="flex flex-col h-[80dvh] p-4">
-        <div class="flex items-center justify-between pb-3 border-b">
-          <input
-            ref="mobileSearchInput"
-            v-model="query"
-            :placeholder="$t('player.search.placeholder')"
-            type="search"
-            inputmode="search"
-            enterkeyhint="search"
-            class="flex-1 bg-transparent outline-none text-base"
-            @input="
-              (e: Event) =>
-                debouncedSearch((e.target as HTMLInputElement).value)
-            "
-          />
-          <div class="flex items-center gap-2 ml-4">
-            <Switch
-              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
-              :model-value="onlineOnly"
-              @click="toggleOnlineOnly"
-            />
-            {{ $t("player.search.online_only") }}
-          </div>
-        </div>
-
         <div class="flex-1 overflow-y-auto min-h-0">
           <div
             v-if="!players?.length"
@@ -89,6 +65,30 @@ const isMobile = useMediaQuery("(max-width: 768px)");
                 <PlayerDisplay :player="player" />
               </div>
             </div>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-3 border-t">
+          <input
+            ref="mobileSearchInput"
+            v-model="query"
+            :placeholder="$t('player.search.placeholder')"
+            type="search"
+            inputmode="search"
+            enterkeyhint="search"
+            class="flex-1 bg-transparent outline-none text-base"
+            @input="
+              (e: Event) =>
+                debouncedSearch((e.target as HTMLInputElement).value)
+            "
+          />
+          <div class="flex items-center gap-2 ml-4">
+            <Switch
+              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
+              :model-value="onlineOnly"
+              @click="toggleOnlineOnly"
+            />
+            {{ $t("player.search.online_only") }}
           </div>
         </div>
       </div>

@@ -7,6 +7,7 @@ import { useMediaQuery } from "@vueuse/core";
 import debounce from "~/utilities/debounce";
 
 const isMobile = useMediaQuery("(max-width: 768px)");
+const { height: viewportHeight } = useVisualViewport();
 </script>
 
 <template>
@@ -41,8 +42,12 @@ const isMobile = useMediaQuery("(max-width: 768px)");
     </div>
     <DrawerContent>
       <DrawerTitle class="sr-only">{{ label }}</DrawerTitle>
-      <div class="flex flex-col h-[80dvh] p-4">
-        <div class="flex-1 overflow-y-auto min-h-0">
+      <div
+        class="flex flex-col"
+        :style="{ height: `${viewportHeight * 0.8}px` }"
+      >
+        <div class="flex-1 overflow-y-auto min-h-0 p-4 flex flex-col">
+          <div class="flex-1" />
           <div
             v-if="!players?.length"
             class="p-4 text-center text-muted-foreground"
@@ -68,7 +73,7 @@ const isMobile = useMediaQuery("(max-width: 768px)");
           </div>
         </div>
 
-        <div class="flex items-center justify-between pt-3 border-t">
+        <div class="flex items-center justify-between p-4 border-t">
           <input
             ref="mobileSearchInput"
             v-model="query"

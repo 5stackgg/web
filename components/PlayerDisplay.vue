@@ -254,7 +254,7 @@ export default {
     },
     showAddFriend: {
       type: Boolean,
-      default: true,
+      default: false,
     },
     showElo: {
       type: Boolean,

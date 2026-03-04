@@ -19,7 +19,6 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
         :show-online="false"
         :show-elo="false"
         :show-steam-id="false"
-        :show-add-friend="false"
         :tooltip="false"
         :linkable="false"
         :show-name="false"

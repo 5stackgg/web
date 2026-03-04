@@ -106,7 +106,10 @@ const showSeparators = computed(
         <Card
           v-for="node in filteredNodes"
           :key="node.id"
-          class="p-4 space-y-3"
+          :class="[
+            'p-4 space-y-3',
+            isNodeExpanded(node) ? 'md:col-span-2 xl:col-span-3' : '',
+          ]"
         >
           <div class="flex items-start justify-between gap-3">
             <div class="space-y-1">
@@ -114,10 +117,12 @@ const showSeparators = computed(
                 {{ node.label || node.id }}
               </div>
               <div
-                class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground"
+                class="flex w-full items-center justify-between gap-2 text-xs text-muted-foreground"
               >
-                <span>ID: {{ node.id }}</span>
-                <span v-if="node.region">• {{ node.region }}</span>
+                <span class="truncate" v-if="node.region">{{
+                  node.region
+                }}</span>
+                <span class="truncate text-right">{{ node.id }}</span>
               </div>
             </div>
             <div class="flex flex-col items-end gap-2">
@@ -228,7 +233,10 @@ const showSeparators = computed(
         <Card
           v-for="service in filteredServices"
           :key="`${service.node}-${service.name}`"
-          class="p-4 space-y-3"
+          :class="[
+            'p-4 space-y-3',
+            isServiceExpanded(service) ? 'md:col-span-2 xl:col-span-3' : '',
+          ]"
         >
           <div class="flex items-start justify-between gap-3">
             <div class="space-y-1 flex-1 min-w-0">
@@ -336,7 +344,7 @@ const showSeparators = computed(
 
           <!-- Expanded detailed charts -->
           <div v-if="isServiceExpanded(service)" class="pt-2 border-t mt-2">
-            <div class="grid grid-cols-1 gap-4 mt-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
               <div>
                 <h4 class="text-xs font-medium mb-2">
                   {{ $t("pages.system_metrics.cpu_usage") }}

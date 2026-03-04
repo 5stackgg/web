@@ -100,7 +100,7 @@ import cleanMapName from "~/utilities/cleanMapName";
 
         <Tooltip v-if="pickedByLineup === 1">
           <TooltipTrigger as-child>
-            <ChevronLeft class="w-3 h-3 text-emerald-500 shrink-0" />
+            <ChevronLeft class="w-4 h-4 text-emerald-500 shrink-0" />
           </TooltipTrigger>
           <TooltipContent>
             {{ match.lineup_1.name }} {{ $t("match.map_veto.pick") }}
@@ -142,7 +142,7 @@ import cleanMapName from "~/utilities/cleanMapName";
 
         <Tooltip v-if="pickedByLineup === 2">
           <TooltipTrigger as-child>
-            <ChevronRight class="w-3 h-3 text-emerald-500 shrink-0" />
+            <ChevronRight class="w-4 h-4 text-emerald-500 shrink-0" />
           </TooltipTrigger>
           <TooltipContent>
             {{ match.lineup_2.name }} {{ $t("match.map_veto.pick") }}

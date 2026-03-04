@@ -5,8 +5,8 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 </script>
 
 <template>
-  <PageTransition>
-    <Tabs default-value="api" orientation="vertical">
+  <PageTransition :delay="100">
+    <Tabs v-model="activeService" default-value="api" orientation="vertical">
       <div class="flex items-center justify-between flex-col lg:flex-row">
         <TabsList class="lg:inline-flex grid grid-cols-1 w-full lg:w-fit">
           <TabsTrigger
@@ -42,14 +42,16 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
         </div>
       </div>
 
-      <TabsContent v-for="service in services" :key="service" :value="service">
-        <ServiceLogs
-          :service="service"
-          :timestamps="timestamps"
-          :follow-logs="followLogs"
-          @follow-logs-changed="(value: boolean) => (followLogs = value)"
-        />
-      </TabsContent>
+      <Transition name="system-logs-tab-fade" mode="out-in">
+        <TabsContent :key="activeService" :value="activeService">
+          <ServiceLogs
+            :service="activeService"
+            :timestamps="timestamps"
+            :follow-logs="followLogs"
+            @follow-logs-changed="(value: boolean) => (followLogs = value)"
+          />
+        </TabsContent>
+      </Transition>
     </Tabs>
   </PageTransition>
 </template>
@@ -58,6 +60,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 export default {
   data() {
     return {
+      activeService: "api",
       _timestamps: true,
       _followLogs: true,
       services: [
@@ -92,3 +95,18 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.system-logs-tab-fade-enter-active,
+.system-logs-tab-fade-leave-active {
+  transition:
+    opacity 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+.system-logs-tab-fade-enter-from,
+.system-logs-tab-fade-leave-to {
+  opacity: 0;
+  transform: translateY(2px);
+}
+</style>

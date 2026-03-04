@@ -2,6 +2,7 @@
 import { generateQuery } from "~/graphql/graphqlGen";
 import CpuChart from "~/components/charts/CpuChart.vue";
 import MemoryChart from "~/components/charts/MemoryChart.vue";
+import NodeMetrics from "~/components/system-metrics/NodeMetrics.vue";
 import Separator from "@/components/ui/separator/Separator.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 
@@ -11,6 +12,7 @@ const showSeparators = computed(
 </script>
 
 <template>
+  <!-- Services section -->
   <PageTransition :delay="100">
     <Separator
       v-if="showSeparators"
@@ -56,6 +58,46 @@ const showSeparators = computed(
       </template>
     </div>
   </PageTransition>
+
+  <!-- Game server nodes section -->
+  <PageTransition :delay="300">
+    <Separator
+      v-if="
+        showSeparators &&
+        game_server_nodes &&
+        game_server_nodes.length
+      "
+      :label="$t('pages.game_server_nodes.title')"
+      class="my-8"
+    />
+  </PageTransition>
+
+  <PageTransition
+    :delay="400"
+    class="mt-6 space-y-6"
+    v-if="game_server_nodes && game_server_nodes.length"
+  >
+    <div class="grid grid-cols-1 gap-6">
+      <div
+        v-for="node in game_server_nodes"
+        :key="node.id"
+        class="p-4 rounded-lg border border-gray-200"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <div class="text-lg font-semibold">
+              {{ node.label || node.id }}
+            </div>
+            <div class="text-xs text-gray-500">
+              ID: {{ node.id }}
+            </div>
+          </div>
+        </div>
+
+        <NodeMetrics :game-server-node="node" />
+      </div>
+    </div>
+  </PageTransition>
 </template>
 
 <script lang="ts">
@@ -90,6 +132,18 @@ export default {
                 used: true,
               },
             ],
+          },
+        ],
+      }),
+      pollInterval: 30 * 1000,
+    },
+    game_server_nodes: {
+      query: generateQuery({
+        game_server_nodes: [
+          {},
+          {
+            id: true,
+            label: true,
           },
         ],
       }),

@@ -454,11 +454,11 @@ const isSectionExpanded = (section: string) => {
           <button
             v-else-if="hasPorts"
             type="button"
-            class="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1 group"
+            class="text-xs text-muted-foreground hover:text-foreground inline-flex items-center justify-center gap-1 group w-full"
             @click="showPortsDialog = true"
           >
             <span
-              class="underline decoration-muted-foreground/40 group-hover:decoration-foreground"
+              class="underline decoration-muted-foreground/40 group-hover:decoration-foreground text-center"
               >{{ portRangeLabel }}</span
             >
             <Pencil

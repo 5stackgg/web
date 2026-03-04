@@ -107,7 +107,10 @@ function onLeftNavTouchEnd(e: TouchEvent) {
 
             <SidebarMenuItem tooltip="Search Players">
               <SidebarMenuButton
-                @click="triggerSpotlightSearch"
+                @click="
+                  setOpenMobile(false);
+                  triggerSpotlightSearch();
+                "
                 tooltip="Search Players"
               >
                 <Search />
@@ -731,7 +734,6 @@ export default {
       return name === route || name?.startsWith(`${route}-`);
     },
     triggerSpotlightSearch() {
-      // Trigger the keyboard shortcut to open spotlight
       const event = new KeyboardEvent("keydown", {
         key: "k",
         metaKey: this.isMac,

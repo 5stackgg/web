@@ -7,12 +7,88 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Drawer, DrawerContent, DrawerTitle } from "~/components/ui/drawer";
+import { useMediaQuery } from "@vueuse/core";
 import debounce from "~/utilities/debounce";
 import { e_team_roles_enum } from "~/generated/zeus";
+
+const isMobile = useMediaQuery("(max-width: 768px)");
 </script>
 
 <template>
-  <Popover v-model:open="open">
+  <!-- Mobile: Drawer -->
+  <Drawer v-if="isMobile" v-model:open="open">
+    <div
+      @click="
+        open = true;
+        searchTeams();
+      "
+    >
+      <Button variant="outline" class="justify-between w-full">
+        {{ teams?.find((team) => team.id === modelValue)?.name || label }}
+        <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+      </Button>
+    </div>
+    <DrawerContent>
+      <DrawerTitle class="sr-only">{{ label }}</DrawerTitle>
+      <div class="flex flex-col p-4">
+        <div class="flex items-center justify-between pb-3 border-b">
+          <input
+            ref="mobileSearchInput"
+            v-model="query"
+            :placeholder="$t('team.search.placeholder')"
+            class="flex-1 bg-transparent outline-none text-base"
+            @input="
+              (e: Event) =>
+                debouncedSearch((e.target as HTMLInputElement).value)
+            "
+          />
+          <div class="flex items-center gap-2 ml-4" v-if="!myTeams">
+            <Switch
+              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
+              :model-value="myTeamsOnly"
+              @click="toggleMyTeamsOnly"
+            />
+            {{ $t("team.search.my_teams_only") }}
+          </div>
+        </div>
+
+        <div class="max-h-[50vh] overflow-y-auto">
+          <div
+            v-if="!teams?.length"
+            class="p-4 text-center text-muted-foreground"
+          >
+            {{ $t("team.search.no_teams_found") }}
+          </div>
+
+          <div v-else>
+            <div class="px-3 py-2 text-sm text-muted-foreground">
+              {{ teams.length }} {{ $t("team.search.found_teams") }}
+            </div>
+
+            <div class="divide-y">
+              <div
+                v-for="team in teams"
+                :key="team.id"
+                class="px-3 py-2 hover:bg-accent cursor-pointer"
+                @click="select(team)"
+              >
+                <div class="flex items-center">
+                  <span class="text-xs text-muted-foreground mr-2">
+                    [{{ team.short_name }}]
+                  </span>
+                  <span>{{ team.name }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </DrawerContent>
+  </Drawer>
+
+  <!-- Desktop: Popover -->
+  <Popover v-else v-model:open="open">
     <PopoverTrigger as-child>
       <Button
         @click="searchTeams()"
@@ -133,6 +209,16 @@ export default {
     query(newQuery: string) {
       this.debouncedSearch(newQuery);
     },
+    open: {
+      handler(newOpen: boolean) {
+        if (newOpen) {
+          this.searchTeams();
+          this.$nextTick(() => {
+            (this.$refs.mobileSearchInput as HTMLInputElement)?.focus();
+          });
+        }
+      },
+    },
     modelValue: {
       once: true,
       immediate: true,
@@ -183,7 +269,9 @@ export default {
       this.$emit("update:modelValue", team);
     },
     async searchTeams(query?: string) {
-      this.query = query || "";
+      if (query !== undefined) {
+        this.query = query;
+      }
 
       if (this.myTeamsOnly || this.myTeams) {
         this.teams = this.me.teams.filter((team: Team) => {
@@ -208,10 +296,10 @@ export default {
                     },
                   },
                   ...[
-                    query
+                    this.query
                       ? {
                           name: {
-                            _ilike: `%${query}%`,
+                            _ilike: `%${this.query}%`,
                           },
                         }
                       : {},

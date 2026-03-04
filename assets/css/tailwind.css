@@ -131,27 +131,6 @@
   }
 }
 
-
-
-@layer base {
-  /* Hide scrollbars globally (macOS-style); scrolling still works */
-  /* WebKit (Chrome, Safari, Edge) */
-  ::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-  }
-
-  /* Firefox */
-  * {
-    scrollbar-width: none;
-  }
-
-  /* IE / legacy Edge */
-  * {
-    -ms-overflow-style: none;
-  }
-}
-
 @layer base {
   html {
     touch-action: manipulation;

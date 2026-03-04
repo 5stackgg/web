@@ -657,6 +657,7 @@ export default {
               name: true,
               start: true,
               status: true,
+              auto_start: true,
               e_tournament_status: {
                 description: true,
               },

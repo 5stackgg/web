@@ -1106,7 +1106,11 @@
             "pick_date": "Pick a date",
             "update": "Update Tournament",
             "discord_notifications": "Discord Notifications",
-            "discord_notifications_description": "Enable Discord notifications for match status changes in this tournament. When off, only panel notifications are sent."
+            "discord_notifications_description": "Enable Discord notifications for match status changes in this tournament. When off, only panel notifications are sent.",
+            "auto_start": {
+                "label": "Auto Start",
+                "description": "When enabled, tournament matches are automatically scheduled. When disabled, an organizer must schedule each match manually."
+            }
         },
         "notifications": {
             "title": "Notifications",
@@ -1500,14 +1504,9 @@
                         "everyone": "All Players Required to be Ready"
                     }
                 },
-                "auto_cancel_mode": {
-                    "label": "Auto Cancel Mode",
-                    "description": "Controls whether the match auto-cancels if not started within the configured duration.",
-                    "options": {
-                        "AutoCancel": "Auto Cancel",
-                        "Admin": "Admin Only",
-                        "AutoNoCancel": "Auto (No Cancel)"
-                    }
+                "auto_cancel": {
+                    "label": "Auto Cancel",
+                    "description": "When enabled, the match will auto-cancel if not started within the configured duration."
                 },
                 "default_player_models": {
                     "label": "Default Player Models",

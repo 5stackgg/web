@@ -806,35 +806,24 @@ import { Card } from "~/components/ui/card";
 
                 <FormField
                   v-if="canSetcheckInSettings"
-                  v-slot="{ componentField }"
-                  name="auto_cancel_mode"
+                  v-slot="{ value, handleChange }"
+                  name="auto_cancel"
                 >
-                  <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
-                      $t("match.options.advanced.auto_cancel_mode.label")
-                    }}</FormLabel>
-                    <FormDescription>{{
-                      $t("match.options.advanced.auto_cancel_mode.description")
-                    }}</FormDescription>
-                    <Select v-bind="componentField">
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectItem
-                            :value="mode.value"
-                            v-for="mode in autoCancelModes"
-                            :key="mode.value"
-                          >
-                            {{ mode.display }}
-                          </SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
+                  <FormItem class="flex items-center justify-between gap-4">
+                    <div>
+                      <FormLabel class="text-lg font-semibold">{{
+                        $t("match.options.advanced.auto_cancel.label")
+                      }}</FormLabel>
+                      <FormDescription>{{
+                        $t("match.options.advanced.auto_cancel.description")
+                      }}</FormDescription>
+                    </div>
+                    <FormControl>
+                      <Switch
+                        :checked="value"
+                        @update:checked="handleChange"
+                      />
+                    </FormControl>
                   </FormItem>
                 </FormField>
               </div>
@@ -951,7 +940,6 @@ import {
   e_ready_settings_enum,
   e_timeout_settings_enum,
   e_check_in_settings_enum,
-  e_auto_cancel_mode_enum,
 } from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
@@ -1253,28 +1241,6 @@ export default {
             "match.options.advanced.ready_settings.options.everyone",
           ),
           value: e_ready_settings_enum.Players,
-        },
-      ];
-    },
-    autoCancelModes(): EnumSetting[] {
-      return [
-        {
-          display: this.$t(
-            "match.options.advanced.auto_cancel_mode.options.AutoCancel",
-          ),
-          value: e_auto_cancel_mode_enum.AutoCancel,
-        },
-        {
-          display: this.$t(
-            "match.options.advanced.auto_cancel_mode.options.Admin",
-          ),
-          value: e_auto_cancel_mode_enum.Admin,
-        },
-        {
-          display: this.$t(
-            "match.options.advanced.auto_cancel_mode.options.AutoNoCancel",
-          ),
-          value: e_auto_cancel_mode_enum.AutoNoCancel,
         },
       ];
     },

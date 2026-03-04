@@ -73,6 +73,26 @@ import MatchOptions from "~/components/MatchOptions.vue";
           </FormControl>
         </FormItem>
       </FormField>
+
+      <FormField
+        v-slot="{ value, handleChange }"
+        name="auto_start"
+      >
+        <FormItem class="flex items-center justify-between gap-4">
+          <div>
+            <FormLabel>{{ $t("tournament.form.auto_start.label") }}</FormLabel>
+            <FormDescription>{{
+              $t("tournament.form.auto_start.description")
+            }}</FormDescription>
+          </div>
+          <FormControl>
+            <Switch
+              :checked="value"
+              @update:checked="handleChange"
+            />
+          </FormControl>
+        </FormItem>
+      </FormField>
       <template #after-advanced>
         <FormField
           v-slot="{ value, handleChange }"
@@ -193,6 +213,7 @@ export default {
                 message: "Date must be in the future",
               }),
               description: z.string().nullable().default(null),
+              auto_start: z.boolean().default(true),
             },
             useApplicationSettingsStore().settings,
           ),
@@ -225,6 +246,7 @@ export default {
             map_veto: true,
             name: tournament.name,
             description: tournament.description,
+            auto_start: tournament.auto_start,
           });
 
           setupOptions(this.form, tournament.options);
@@ -288,6 +310,7 @@ export default {
             name: this.form.values.name,
             start: this.form.values.start,
             description: this.form.values.description,
+            auto_start: this.form.values.auto_start,
           },
           mutation: generateMutation({
             update_tournaments_by_pk: [
@@ -299,6 +322,7 @@ export default {
                   name: $("name", "String!"),
                   start: $("start", "timestamptz!"),
                   description: $("description", "String"),
+                  auto_start: $("auto_start", "Boolean!"),
                 },
               },
               {
@@ -373,6 +397,7 @@ export default {
                 name: this.form.values.name,
                 start: this.form.values.start,
                 description: this.form.values.description,
+                auto_start: this.form.values.auto_start,
                 options: {
                   data: setupOptionsSetMutation(!!form.map_pool_id),
                 },

@@ -4,10 +4,8 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useRightSidebar } from "@/composables/useRightSidebar";
 import SidebarMobileSync from "./SidebarMobileSync.vue";
 import { inject, computed } from "vue";
-import { useOverlayScrollbarsOptions } from "~/composables/useOverlayScrollbarsOptions";
 
 const { rightSidebarOpen, setRightSidebarOpen } = useRightSidebar();
-const { options: scrollbarOptions } = useOverlayScrollbarsOptions();
 
 // Inject values from default.vue
 const showLeftNav = inject<ReturnType<typeof computed<boolean>>>("showLeftNav");
@@ -28,23 +26,17 @@ const containContentValue = computed(() => containContent?.value ?? true);
       class="min-h-0 h-full"
     >
       <SidebarMobileSync />
-      <SidebarInset class="overflow-hidden min-h-0 h-full">
-        <OverlayScrollbars
-          element="div"
-          :options="scrollbarOptions"
-          defer
-          class="h-full"
+      <SidebarInset class="overflow-scroll min-h-0 h-full">
+        <!-- todo fix bg color bg-muted/10 -->
+        <div
+          class="p-4 w-full self-center"
+          :class="{
+            'mx-auto': !showLeftNavValue,
+            'lg:max-w-7xl': containContentValue,
+          }"
         >
-          <div
-            class="p-4 w-full self-center"
-            :class="{
-              'mx-auto': !showLeftNavValue,
-              'lg:max-w-7xl': containContentValue,
-            }"
-          >
-            <slot></slot>
-          </div>
-        </OverlayScrollbars>
+          <slot></slot>
+        </div>
       </SidebarInset>
 
       <AppSidebar side="right" class="main-content-sidebar" />

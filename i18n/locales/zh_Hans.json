@@ -793,6 +793,14 @@
                       "captains": "隊長",
                       "everyone": "所有玩家皆需準備好"
                   }
+                },
+                "track_cancellation": {
+                  "label": "Track Cancellation",
+                  "description": "Track Cancellation"
+                },
+                "match_mode": {
+                  "label": "Match Mode",
+                  "description": "Match Mode"
                 }
             },
             "max_rounds": "最大回合數",

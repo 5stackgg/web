@@ -1096,6 +1096,14 @@
                 "default_player_models": {
                     "label": "Modelos Padrão (default models)",
                     "description": "Habilita modelos padrão para todos os jogadores na partida não permitindo skins adicionais."
+                },
+                "track_cancellation": {
+                    "label": "Track Cancellation",
+                    "description": "Track Cancellation"
+                },
+                "match_mode": {
+                    "label": "Match Mode",
+                    "description": "Match Mode"
                 }
             },
             "max_rounds": "Máximo de rounds",

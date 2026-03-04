@@ -1081,6 +1081,14 @@
                 "default_player_models": {
                     "label": "預設玩家模型",
                     "description": "為比賽中的所有玩家啟用預設玩家角色模型。"
+                },
+                "track_cancellation": {
+                    "label": "Track Cancellation",
+                    "description": "Track Cancellation"
+                },
+                "match_mode": {
+                    "label": "Match Mode",
+                    "description": "Match Mode"
                 }
             },
             "max_rounds": "最大回合數",

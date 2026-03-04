@@ -950,6 +950,14 @@
                         "captains": "キャプテン",
                         "everyone": "すべてのプレーヤーは準備ができている必要があります"
                     }
+                },
+                "track_cancellation": {
+                    "label": "Track Cancellation",
+                    "description": "Track Cancellation"
+                },
+                "match_mode": {
+                    "label": "Match Mode",
+                    "description": "Match Mode"
                 }
             },
             "max_rounds": "最大ラウンド数",

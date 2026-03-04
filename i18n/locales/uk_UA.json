@@ -793,6 +793,14 @@
                       "captains": "Капітани",
                       "everyone": "Всі гравці повинні бути готовими"
                   }
+                },
+                "track_cancellation": {
+                  "label": "Track Cancellation",
+                  "description": "Track Cancellation"
+                },
+                "match_mode": {
+                  "label": "Match Mode",
+                  "description": "Match Mode"
                 }
             },
             "max_rounds": "Максимальна кількість раундів",

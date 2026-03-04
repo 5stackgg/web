@@ -950,6 +950,14 @@
                         "captains": "Capitaines",
                         "everyone": "Tous les joueurs doivent être prêts"
                     }
+                },
+                "track_cancellation": {
+                    "label": "Track Cancellation",
+                    "description": "Track Cancellation"
+                },
+                "match_mode": {
+                    "label": "Match Mode",
+                    "description": "Match Mode"
                 }
             },
             "max_rounds": "Rounds maximum",

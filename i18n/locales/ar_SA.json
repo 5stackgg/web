@@ -793,6 +793,14 @@
                       "captains": "Captains",
                       "everyone": "All Players Required to be Ready"
                   }
+                },
+                "track_cancellation": {
+                  "label": "Track Cancellation",
+                  "description": "Track Cancellation"
+                },
+                "match_mode": {
+                  "label": "Match Mode",
+                  "description": "Match Mode"
                 }
             },
             "max_rounds": "Max Rounds",

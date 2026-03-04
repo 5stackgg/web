@@ -907,6 +907,14 @@
                         "captains": "Kapitany",
                         "everyone": "Wszyscy gracze wymagający być gotowi"
                     }
+                },
+                "track_cancellation": {
+                    "label": "Track Cancellation",
+                    "description": "Track Cancellation"
+                },
+                "match_mode": {
+                    "label": "Match Mode",
+                    "description": "Match Mode"
                 }
             },
             "max_rounds": "Maksymalna liczba rund",

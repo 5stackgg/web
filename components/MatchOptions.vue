@@ -805,17 +805,17 @@ import { Card } from "~/components/ui/card";
                 </FormField>
 
                 <FormField
-                  v-if="canSetAutoCancel"
+                  v-if="canSetTrackCancellation"
                   v-slot="{ value, handleChange }"
-                  name="auto_cancel"
+                  name="track_cancellation"
                 >
                   <FormItem class="flex items-center justify-between gap-4">
                     <div>
                       <FormLabel class="text-lg font-semibold">{{
-                        $t("match.options.advanced.auto_cancel.label")
+                        $t("match.options.advanced.track_cancellation.label")
                       }}</FormLabel>
                       <FormDescription>{{
-                        $t("match.options.advanced.auto_cancel.description")
+                        $t("match.options.advanced.track_cancellation.description")
                       }}</FormDescription>
                     </div>
                     <FormControl>
@@ -824,6 +824,39 @@ import { Card } from "~/components/ui/card";
                         @update:checked="handleChange"
                       />
                     </FormControl>
+                  </FormItem>
+                </FormField>
+
+                <FormField
+                  v-if="canSetTrackCancellation"
+                  v-slot="{ componentField }"
+                  name="match_mode"
+                >
+                  <FormItem>
+                    <FormLabel class="text-lg font-semibold">{{
+                      $t("match.options.advanced.match_mode.label")
+                    }}</FormLabel>
+                    <FormDescription>{{
+                      $t("match.options.advanced.match_mode.description")
+                    }}</FormDescription>
+                    <Select v-bind="componentField">
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem value="auto">
+                            Auto
+                          </SelectItem>
+                          <SelectItem value="admin">
+                            Admin
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
                   </FormItem>
                 </FormField>
               </div>
@@ -1314,7 +1347,7 @@ export default {
     canSetcheckInSettings() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
     },
-    canSetAutoCancel() {
+    canSetTrackCancellation() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer);
     },
   },

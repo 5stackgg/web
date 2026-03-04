@@ -782,6 +782,14 @@
                       "captains": "팟캐스트",
                       "everyone": "모든 플레이어는 준비해야합니다"
                   }
+                },
+                "track_cancellation": {
+                  "label": "Track Cancellation",
+                  "description": "Track Cancellation"
+                },
+                "match_mode": {
+                  "label": "Match Mode",
+                  "description": "Match Mode"
                 }
             },
             "max_rounds": "최대 라운드",

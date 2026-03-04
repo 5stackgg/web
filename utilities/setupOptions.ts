@@ -28,7 +28,8 @@ export const setupOptions = (
     regions: options.regions || [],
     tv_delay: options.tv_delay,
     check_in_setting: options.check_in_setting,
-    auto_cancel: options.auto_cancel,
+    track_cancellation: options.track_cancellation,
+    match_mode: options.match_mode,
     ...overrides,
   });
 };
@@ -51,7 +52,8 @@ export function setupOptionsVariables(
     ready_setting: string;
     tech_timeout_setting: string;
     check_in_setting: string;
-    auto_cancel: boolean;
+    track_cancellation: boolean;
+    match_mode: string;
     map_pool_id?: string;
     tv_delay: number;
     map_pool?: {
@@ -168,7 +170,8 @@ export function setupOptionsVariables(
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       ? {
           check_in_setting: values.check_in_setting,
-          auto_cancel: values.auto_cancel,
+          track_cancellation: values.track_cancellation,
+          match_mode: values.match_mode,
         }
       : {}),
     ...(mapPoolId
@@ -213,7 +216,8 @@ export function setupOptionsSetMutation(hasMapPoolId: boolean = true) {
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       ? {
           check_in_setting: $("check_in_setting", "e_check_in_settings_enum!"),
-          auto_cancel: $("auto_cancel", "Boolean!"),
+          track_cancellation: $("track_cancellation", "Boolean!"),
+          match_mode: $("match_mode", "e_match_mode_enum!"),
         }
       : {}),
     ...(hasMapPoolId

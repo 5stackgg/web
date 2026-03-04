@@ -1504,9 +1504,13 @@
                         "everyone": "All Players Required to be Ready"
                     }
                 },
-                "auto_cancel": {
-                    "label": "Auto Cancel",
+                "track_cancellation": {
+                    "label": "Track Cancellation",
                     "description": "When enabled, the match will auto-cancel if not started within the configured duration."
+                },
+                "match_mode": {
+                    "label": "Match Mode",
+                    "description": "Controls how the match is scheduled. Auto mode lets the system schedule automatically, Admin mode requires manual scheduling."
                 },
                 "default_player_models": {
                     "label": "Default Player Models",

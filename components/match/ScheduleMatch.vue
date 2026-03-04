@@ -155,7 +155,7 @@ export default {
       handler(match) {
         if (match?.scheduled_at) {
           const startDate = new Date(match.scheduled_at);
-          this.startDate = toCalendarDate(fromDate(startDate));
+          this.startDate = toCalendarDate(fromDate(startDate, Intl.DateTimeFormat().resolvedOptions().timeZone));
           this.startTime = `${startDate.getHours().toString().padStart(2, "0")}:${startDate.getMinutes().toString().padStart(2, "0")}`;
           this.form.setValues({
             scheduled_at: startDate,

@@ -805,7 +805,7 @@ import { Card } from "~/components/ui/card";
                 </FormField>
 
                 <FormField
-                  v-if="canSetcheckInSettings"
+                  v-if="canSetAutoCancel"
                   v-slot="{ value, handleChange }"
                   name="auto_cancel"
                 >
@@ -1313,6 +1313,9 @@ export default {
     },
     canSetcheckInSettings() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
+    },
+    canSetAutoCancel() {
+      return useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer);
     },
   },
   methods: {

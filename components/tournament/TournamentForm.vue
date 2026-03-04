@@ -239,7 +239,7 @@ export default {
       handler(tournament) {
         if (tournament) {
           const startDate = new Date(tournament.start);
-          this.startDate = toCalendarDate(fromDate(startDate));
+          this.startDate = toCalendarDate(fromDate(startDate, Intl.DateTimeFormat().resolvedOptions().timeZone));
           this.startTime = `${startDate.getHours().toString().padStart(2, "0")}:${startDate.getMinutes().toString().padStart(2, "0")}`;
 
           this.form.setValues({

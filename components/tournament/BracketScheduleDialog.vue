@@ -135,7 +135,7 @@ export default {
       handler(bracket) {
         if (bracket?.scheduled_at) {
           const date = new Date(bracket.scheduled_at);
-          this.startDate = toCalendarDate(fromDate(date));
+          this.startDate = toCalendarDate(fromDate(date, Intl.DateTimeFormat().resolvedOptions().timeZone));
           this.startTime = `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
         } else {
           this.startDate = undefined;

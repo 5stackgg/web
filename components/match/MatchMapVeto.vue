@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { Button } from "~/components/ui/button";
+import { Badge } from "~/components/ui/badge";
+import { Check } from "lucide-vue-next";
 import MapDisplay from "~/components/MapDisplay.vue";
 import MapSelector from "~/components/match/MapSelector.vue";
 import { Separator } from "~/components/ui/separator";
@@ -7,90 +9,124 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 </script>
 
 <template>
-  <template
+  <div
     v-if="
       (!match.options.region_veto || match.region) &&
       match.status === 'Veto' &&
       match.match_maps.length < bestOf
     "
   >
-    <div class="flex justify-between">
-      <h1>
-        <template v-if="match.lineup_1.is_picking_map_veto">
-          {{ match.lineup_1.name }}
-        </template>
-        <template v-else-if="match.lineup_2.is_picking_map_veto">
-          {{ match.lineup_2.name }}
-        </template>
-        {{ $t("match.map_veto.is_picking") }}
-        <span class="underline">{{ pickType }}</span>
-      </h1>
+    <div
+      class="relative rounded-lg border-l-4 border border-border/50 px-5 py-3 mb-4 mx-auto max-w-lg w-full flex flex-col items-center gap-2 transition-colors duration-300"
+      :class="
+        isPicking
+          ? 'border-l-blue-500 bg-blue-500/10 ring-1 ring-blue-500/30'
+          : 'border-l-primary bg-muted/40'
+      "
+    >
+      <Badge
+        v-if="isPicking"
+        variant="default"
+        class="absolute top-2 right-3 text-xs bg-blue-500 animate-pulse"
+      >
+        {{ $t("match.map_veto.your_turn") }}
+      </Badge>
 
-      <template v-if="isPicking">
-        <Button
-          v-if="isPicking"
-          size="sm"
-          class="bg-gradient-to-r from-blue-500 to-purple-600 text-white animate-pulse"
+      <div class="flex items-center gap-2 text-center">
+        <span
+          class="text-lg font-bold"
+          :class="isPicking ? 'text-blue-400' : 'text-primary'"
         >
-          {{ $t("match.map_veto.your_turn", { action: pickType }) }}
-        </Button>
-      </template>
+          <template v-if="match.lineup_1.is_picking_map_veto">
+            {{ match.lineup_1.name }}
+          </template>
+          <template v-else-if="match.lineup_2.is_picking_map_veto">
+            {{ match.lineup_2.name }}
+          </template>
+        </span>
+        <span class="text-muted-foreground">{{
+          $t("match.map_veto.is_picking")
+        }}</span>
+        <Badge variant="secondary" class="text-sm">{{ pickType }}</Badge>
+      </div>
 
       <div
-        class="flex items-center space-x-2 cursor-pointer"
+        class="flex items-center gap-2 cursor-pointer text-xs text-muted-foreground"
         @click="override = !override"
         v-if="canOverride"
       >
-        <Label>{{ $t("match.map_veto.organizer_override") }}</Label>
+        <Label class="text-xs text-muted-foreground cursor-pointer">{{
+          $t("match.map_veto.organizer_override")
+        }}</Label>
         <Switch :model-value="override" />
       </div>
     </div>
 
     <form @submit.prevent="vetoPick" v-if="isPicking">
       <template v-if="pickType === e_veto_pick_types_enum.Side">
-        <div class="relative max-w-[800px] mx-auto py-4">
-          <MapDisplay class="w-full opacity-75" :map="previousMap" />
+        <div class="flex items-center justify-center gap-10">
           <div
-            class="absolute inset-0 flex flex-col items-center justify-center space-y-4 z-50"
+            v-for="(sideOption, idx) in sideOptions"
+            :key="sideOption.value"
+            class="flex flex-col items-center gap-3"
+            :class="{ 'order-first': idx === 0, 'order-last': idx === 1 }"
           >
-            <p class="text-lg font-bold text-center shadow-lg">
-              {{ $t("match.map_veto.select_side") }}
-            </p>
-            <div class="grid grid-cols-2 gap-8 w-full">
-              <template
-                v-for="sideOption in sideOptions"
-                :key="sideOption.value"
+            <div
+              class="relative cursor-pointer transition-all duration-300"
+              :class="{
+                'scale-110': form.values.side === sideOption.value,
+                'opacity-30 scale-90':
+                  form.values.side && form.values.side !== sideOption.value,
+                'hover:scale-110':
+                  !form.values.side || form.values.side !== sideOption.value,
+              }"
+              @click="form.setFieldValue('side', sideOption.value)"
+            >
+              <NuxtImg
+                :src="sideOption.img"
+                class="w-16 h-16 drop-shadow-xl rounded-full"
+              />
+              <div
+                v-if="form.values.side === sideOption.value"
+                class="absolute -inset-1 rounded-full border-2 border-primary animate-ping opacity-40"
+              />
+              <div
+                v-if="form.values.side === sideOption.value"
+                class="absolute -inset-1 rounded-full border-2 border-primary"
+              />
+              <Transition
+                enter-active-class="transition-all duration-200 ease-out"
+                leave-active-class="transition-all duration-150 ease-in"
+                enter-from-class="opacity-0 scale-50"
+                enter-to-class="opacity-100 scale-100"
+                leave-from-class="opacity-100 scale-100"
+                leave-to-class="opacity-0 scale-50"
               >
                 <div
-                  class="cursor-pointer flex flex-col items-center"
-                  @click="form.setFieldValue('side', sideOption.value)"
+                  v-if="form.values.side === sideOption.value"
+                  class="absolute inset-0 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-[3px]"
+                  @click.stop="vetoPick"
                 >
-                  <NuxtImg
-                    :src="sideOption.img"
-                    class="w-full max-w-[120px] drop-shadow-xl"
-                    :class="{
-                      grayscale:
-                        !form.values.side ||
-                        sideOption.value !== form.values.side,
-                      ['ring rounded-full']:
-                        form.values.side &&
-                        sideOption.value === form.values.side,
-                    }"
-                  />
-                  <div class="mt-2 text-center">
-                    {{ sideOption.display }}
+                  <div
+                    class="p-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 shadow-xl shadow-black/30 ring-1 ring-white/10"
+                  >
+                    <Check class="w-4 h-4 text-green-400" />
                   </div>
                 </div>
-              </template>
+              </Transition>
             </div>
-            <Button
-              class="w-full max-w-[200px]"
-              variant="destructive"
-              :disabled="Object.keys(form.errors).length > 0"
+            <span
+              class="text-xs font-semibold"
+              :class="{
+                'text-primary': form.values.side === sideOption.value,
+                'text-muted-foreground':
+                  form.values.side && form.values.side !== sideOption.value,
+              }"
+              >{{ sideOption.display }}</span
             >
-              {{ $t("match.map_veto.pick", { type: pickType }) }}
-            </Button>
           </div>
+
+          <MapDisplay class="h-[180px] rounded-lg order-1" :map="previousMap" />
         </div>
       </template>
 
@@ -103,6 +139,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
           (mapId) => {
             if (pickType !== e_veto_pick_types_enum.Side) {
               form.setFieldValue('map_id', mapId);
+              vetoPick();
             }
           }
         "
@@ -119,13 +156,13 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
       ></MapSelector>
     </template>
 
-    <Separator />
+    <Separator class="my-6" />
 
     <template v-if="picks?.length > 0 || hasAssignedRegion">
       <MatchPicksDisplay :match="match" :picks="picks" />
-      <Separator />
+      <Separator class="mt-6" />
     </template>
-  </template>
+  </div>
 </template>
 
 <script lang="ts">

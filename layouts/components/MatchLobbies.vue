@@ -1,28 +1,47 @@
 <script lang="ts" setup>
 import { ChevronDown, Merge } from "lucide-vue-next";
-import MatchLobbySelector from "./MathcLobbySelector.vue";
-import ChatLobby from "~/components/chat/ChatLobby.vue";
+import MatchLobbySelector from "./MatchLobbySelector.vue";
 import MatchLobby from "~/components/matchmaking-lobby/MatchLobby.vue";
+import { e_player_roles_enum } from "~/generated/zeus";
+
+const isElevatedUser = computed(() =>
+  useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer),
+);
 </script>
 
 <template>
-  <div v-if="currentMatch" class="flex gap-2">
-    <MatchLobbySelector :match="currentMatch" :pulse="true" />
+  <div v-if="currentMatch" class="flex items-center">
+    <MatchLobbySelector
+      :match="currentMatch"
+      :pulse="true"
+      :class="{ 'rounded-r-none border-r-0': myMatches.length > 1 }"
+    />
 
     <template v-if="myMatches.length > 1">
       <Popover v-model:open="choosingLobby">
         <PopoverTrigger>
-          <Button variant="outline" size="default" class="h-9 px-3">
+          <Button
+            variant="outline"
+            size="default"
+            class="h-12 px-3 rounded-l-none border-l"
+            :class="{
+              'bg-[#18181b]/95 border-zinc-700/70 hover:bg-[#020617]/95 hover:border-emerald-400/70':
+                isElevatedUser,
+              'bg-[#09090b]/95 border-zinc-900/90 hover:bg-black/95 hover:border-emerald-400/60':
+                !isElevatedUser,
+            }"
+          >
             <ChevronDown class="h-4 w-4" />
           </Button>
         </PopoverTrigger>
         <PopoverContent class="p-2 flex flex-col gap-2 border-none">
-          <template v-for="match in myMatches" :key="match.id">
+          <template v-for="match in myMatches as any[]" :key="match.id">
             <MatchLobbySelector
               @click="selectLobby(match.id)"
               :match="match"
               :show-switch="true"
-              v-if="match.id !== currentMatch.id"
+              :join-lobby="false"
+              v-if="match.id !== (currentMatch as any)?.id"
             />
           </template>
         </PopoverContent>
@@ -31,14 +50,6 @@ import MatchLobby from "~/components/matchmaking-lobby/MatchLobby.vue";
   </div>
 
   <template v-if="currentLobby">
-    <ChatLobby
-      class="max-h-[25vh]"
-      :global="true"
-      instance="matchmaking"
-      :lobby-id="me.current_lobby_id"
-      type="matchmaking"
-    />
-
     <MatchLobby :lobby="currentLobby" />
   </template>
 
@@ -46,7 +57,7 @@ import MatchLobby from "~/components/matchmaking-lobby/MatchLobby.vue";
     <Button
       @click="createLobby"
       size="default"
-      class="relative group h-9 overflow-hidden rounded bg-transparent px-5 text-white shadow-lg hover:shadow transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
+      class="relative group h-12 overflow-hidden rounded bg-transparent px-5 text-white shadow-lg hover:shadow transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
     >
       <span
         class="absolute inset-0 rounded p-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
@@ -68,6 +79,7 @@ import MatchLobby from "~/components/matchmaking-lobby/MatchLobby.vue";
 
 <script lang="ts">
 import { e_match_status_enum } from "~/generated/zeus";
+import { useChatTabs } from "~/composables/useChatTabs";
 export default {
   data() {
     return {
@@ -112,17 +124,19 @@ export default {
           return;
         }
 
-        this.selectLobby(match.id);
+        this.selectLobby((match as any).id);
       },
     },
     currentMatch: {
       immediate: true,
-      handler(currentMatch, oldMatch) {
-        if (!currentMatch || currentMatch.id === oldMatch?.id) {
+      handler(currentMatch: any, oldMatch: any) {
+        if (!currentMatch || currentMatch?.id === oldMatch?.id) {
           return;
         }
 
-        switch (this.currentMatch.status) {
+        const current = this.currentMatch as any;
+
+        switch (current?.status) {
           case e_match_status_enum.Veto:
           case e_match_status_enum.Live:
             if (oldMatch && currentMatch.status !== oldMatch.status) {
@@ -130,10 +144,9 @@ export default {
             }
             break;
           case e_match_status_enum.WaitingForCheckIn:
-            const matchLineups =
-              this.currentMatch.lineup_1.lineup_players.concat(
-                this.currentMatch.lineup_2.lineup_players,
-              );
+            const matchLineups = current.lineup_1.lineup_players.concat(
+              current.lineup_2.lineup_players,
+            );
             const meInMatch = matchLineups.find((lobby: any) => {
               return lobby.player.steam_id === this.me.steam_id;
             });
@@ -143,6 +156,9 @@ export default {
             }
             break;
         }
+
+        // Automatically open the global match lobby chat when the user is in a match.
+        this.joinGlobalMatchChat(currentMatch);
       },
     },
   },
@@ -159,7 +175,7 @@ export default {
     currentMatch() {
       if (!this.matchId) {
       }
-      return this.myMatches.find((match: { id: string }) => {
+      return (this.myMatches as any[]).find((match) => {
         return match.id === this.matchId;
       });
     },
@@ -188,6 +204,27 @@ export default {
     selectLobby(matchId: string) {
       this.choosingLobby = false;
       useMatchmakingStore().viewingMatchId = matchId;
+    },
+    joinGlobalMatchChat(match: any) {
+      if (!match) {
+        return;
+      }
+
+      const { openTab, setActiveTab } = useChatTabs();
+      const id = `match:${match.id}`;
+
+      openTab({
+        id,
+        label:
+          match.label ||
+          `${match.lineup_1?.name ?? "TBD"} vs ${match.lineup_2?.name ?? "TBD"}`,
+        instance: "match",
+        type: "match",
+        lobbyId: match.id,
+        pinned: true,
+      });
+
+      setActiveTab(id);
     },
     createLobby() {
       useMatchmakingStore().createLobby();

@@ -17,10 +17,19 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
 
 <template>
   <div
-    class="bg-muted/30 border border-border rounded-lg hover:shadow-lg hover:shadow-primary/10 hover:bg-muted/20 hover:border-primary/30 transition-all duration-300 cursor-pointer group"
+    v-if="
+      alwaysShow || !compact || match.status === e_match_status_enum.Finished
+    "
+    class="bg-muted/30 border border-border rounded-lg hover:shadow-lg hover:shadow-primary/10 hover:bg-muted/20 hover:border-primary/30 transition-all duration-300 cursor-pointer group overflow-hidden"
     @click="navigateToMatch(match.id, $event)"
   >
-    <div class="p-3 sm:p-4 md:p-6 flex flex-col gap-3">
+    <div
+      :class="[
+        'flex flex-col gap-3',
+        // Tighter padding to keep content from overflowing; in compact mode keep padding small on all breakpoints
+        compact ? 'p-2' : 'p-2 sm:p-3 md:p-4',
+      ]"
+    >
       <!-- Mobile Header: Tags at opposite ends -->
       <div class="flex sm:hidden items-center justify-between">
         <!-- Left: Type + ELO -->
@@ -152,7 +161,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
         <div
           class="flex items-center space-x-2 text-[10px] text-muted-foreground"
         >
-          <MatchStatus :match="match" />
+          <MatchStatus v-if="!compact" :match="match" />
           <TimeAgo
             :date="match.started_at || match.scheduled_at || match.created_at"
           ></TimeAgo>
@@ -313,12 +322,12 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
               v-if="match.streams?.length > 0"
             />
 
-            <MatchStatus :match="match" />
+            <MatchStatus v-if="!compact" :match="match" />
 
             <TimeAgo
               :date="match.started_at || match.scheduled_at || match.created_at"
             ></TimeAgo>
-            <template v-if="match.ended_at">
+            <template v-if="!compact && match.ended_at">
               <span class="hidden sm:inline">•</span>
               <span class="hidden sm:inline"
                 >Duration: {{ getMatchDuration(match) }}</span
@@ -328,17 +337,11 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
         </div>
       </div>
 
-      <!-- Mobile: Teams vertical column - Team 1 / Score / Team 2 -->
-      <div class="flex sm:hidden flex-col items-center gap-2">
+      <!-- Teams + score: vertical layout in compact mode, responsive split layout otherwise -->
+      <!-- Compact: Teams stacked vertically (all breakpoints) -->
+      <div v-if="compact" class="flex flex-col items-center gap-2">
         <!-- Team 1 -->
         <div class="flex items-center space-x-2">
-          <div class="flex-shrink-0">
-            <div
-              class="uppercase w-8 h-8 bg-gradient-to-br from-blue-600 via-blue-500 to-blue-400 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-lg border border-blue-500/30"
-            >
-              {{ getTeamInitials(match.lineup_1.name) }}
-            </div>
-          </div>
           <h3 class="font-semibold text-foreground text-sm">
             <span
               :class="{
@@ -374,29 +377,16 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
               {{ match.lineup_2.name }}
             </span>
           </h3>
-          <div class="flex-shrink-0">
-            <div
-              class="uppercase w-8 h-8 bg-gradient-to-br from-amber-600 via-amber-500 to-amber-400 rounded-lg flex items-center justify-center text-white font-bold text-xs shadow-lg border border-amber-500/30"
-            >
-              {{ getTeamInitials(match.lineup_2.name) }}
-            </div>
-          </div>
         </div>
       </div>
 
-      <!-- Desktop: Teams 3-column grid -->
+      <!-- Full (non-compact): Desktop 3-column grid, mobile version above -->
       <div
+        v-else
         class="hidden sm:grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-6 items-center"
       >
         <!-- Team 1 -->
         <div class="flex items-center space-x-2 lg:space-x-3">
-          <div class="flex-shrink-0">
-            <div
-              class="uppercase w-10 h-10 bg-gradient-to-br from-blue-600 via-blue-500 to-blue-400 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-blue-500/30"
-            >
-              {{ getTeamInitials(match.lineup_1.name) }}
-            </div>
-          </div>
           <div class="flex-1 min-w-0">
             <h3 class="font-semibold text-foreground truncate">
               <span
@@ -464,13 +454,6 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
               </span>
             </div>
           </div>
-          <div class="flex-shrink-0">
-            <div
-              class="uppercase w-10 h-10 bg-gradient-to-br from-amber-600 via-amber-500 to-amber-400 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg border-2 border-amber-500/30"
-            >
-              {{ getTeamInitials(match.lineup_2.name) }}
-            </div>
-          </div>
         </div>
       </div>
 
@@ -479,30 +462,40 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
         class="border-t border-border py-2"
         v-if="match.match_maps.length > 0"
       >
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+        <div
+          :class="[
+            'grid grid-cols-1 gap-4 items-start',
+            // In non-compact mode, restore 3-column desktop layout
+            !compact && 'lg:grid-cols-3',
+          ]"
+        >
           <!-- Lineup 1 Picks -->
-          <div class="flex flex-col items-start justify-start gap-2">
+          <div
+            v-if="!compact || getLineupPicks(match.lineup_1.id).length"
+            class="flex flex-col items-start justify-start gap-2"
+          >
             <div
-              class="hidden lg:block text-xs uppercase tracking-wide text-muted-foreground"
+              class="text-xs uppercase tracking-wide text-muted-foreground"
+              :class="compact ? '' : 'hidden lg:block'"
             >
               Picks
             </div>
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-1.5">
               <div
                 v-for="(match_map, index) in getLineupPicks(match.lineup_1.id)"
                 :key="`l1-${index}`"
-                class="flex items-center space-x-2 bg-muted/50 rounded-lg px-3 py-2 border border-border"
+                class="flex items-center space-x-1.5 bg-muted/50 rounded-lg px-2.5 py-1.5 border border-border"
                 :class="{ 'opacity-50 grayscale': hasMapStarted(match_map) }"
               >
                 <img
                   :src="match_map.map.patch"
                   :alt="match_map.map.name"
-                  class="w-6 h-6"
+                  class="w-5 h-5"
                   @error="
                     ($event.target as HTMLImageElement).style.display = 'none'
                   "
                 />
-                <span class="text-sm font-medium first-letter:uppercase">{{
+                <span class="text-xs font-medium first-letter:uppercase">{{
                   cleanMapName(match_map.map.name)
                 }}</span>
                 <div class="flex items-center space-x-1 text-xs">
@@ -528,6 +521,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
 
           <!-- Deciders (middle) -->
           <div
+            v-if="!compact || getDeciderMaps().length"
             class="flex items-center justify-center lg:border-x lg:border-border/60 lg:px-4"
           >
             <div class="flex flex-col items-center gap-2 w-full">
@@ -536,22 +530,22 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
               >
                 Decider
               </div>
-              <div class="flex flex-wrap gap-2 justify-center">
+              <div class="flex flex-wrap gap-1.5 justify-center">
                 <div
                   v-for="(match_map, index) in getDeciderMaps()"
                   :key="`dec-${index}`"
-                  class="flex items-center space-x-2 bg-muted/50 rounded-lg px-3 py-2 border border-border"
+                  class="flex items-center space-x-1.5 bg-muted/50 rounded-lg px-2.5 py-1.5 border border-border"
                   :class="{ 'opacity-50 grayscale': hasMapStarted(match_map) }"
                 >
                   <img
                     :src="match_map.map.patch"
                     :alt="match_map.map.name"
-                    class="w-6 h-6"
+                    class="w-5 h-5"
                     @error="
                       ($event.target as HTMLImageElement).style.display = 'none'
                     "
                   />
-                  <span class="text-sm font-medium first-letter:uppercase">{{
+                  <span class="text-xs font-medium first-letter:uppercase">{{
                     cleanMapName(match_map.map.name)
                   }}</span>
                   <div class="flex items-center space-x-1 text-xs">
@@ -577,28 +571,32 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
           </div>
 
           <!-- Lineup 2 Picks -->
-          <div class="flex flex-col items-end justify-start gap-2">
+          <div
+            v-if="!compact || getLineupPicks(match.lineup_2.id).length"
+            class="flex flex-col items-end justify-start gap-2"
+          >
             <div
-              class="hidden lg:block text-xs uppercase tracking-wide text-muted-foreground"
+              class="text-xs uppercase tracking-wide text-muted-foreground"
+              :class="compact ? '' : 'hidden lg:block'"
             >
               Picks
             </div>
-            <div class="flex flex-wrap gap-2 justify-end">
+            <div class="flex flex-wrap gap-1.5 justify-end">
               <div
                 v-for="(match_map, index) in getLineupPicks(match.lineup_2.id)"
                 :key="`l2-${index}`"
-                class="flex items-center space-x-2 bg-muted/50 rounded-lg px-3 py-2 border border-border"
+                class="flex items-center space-x-1.5 bg-muted/50 rounded-lg px-2.5 py-1.5 border border-border"
                 :class="{ 'opacity-50 grayscale': hasMapStarted(match_map) }"
               >
                 <img
                   :src="match_map.map.patch"
                   :alt="match_map.map.name"
-                  class="w-6 h-6"
+                  class="w-5 h-5"
                   @error="
                     ($event.target as HTMLImageElement).style.display = 'none'
                   "
                 />
-                <span class="text-sm font-medium first-letter:uppercase">{{
+                <span class="text-xs font-medium first-letter:uppercase">{{
                   cleanMapName(match_map.map.name)
                 }}</span>
                 <div class="flex items-center space-x-1 text-xs">
@@ -626,18 +624,24 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
 
       <!-- Players Section (tables only) now below maps -->
       <div
-        class="grid grid-cols-1 lg:grid-cols-2 items-stretch overflow-hidden transition-all duration-300 ease-out"
-        :class="
+        :class="[
+          'grid grid-cols-1 items-stretch overflow-hidden transition-all duration-300 ease-out',
+          // In compact mode, always stack teams vertically; otherwise use 2 columns on large screens
+          !compact && 'lg:grid-cols-2',
           showPlayers
             ? 'gap-6 border-t border-border pt-4 opacity-100 translate-y-0 max-h-[2000px]'
-            : 'gap-0 border-0 pt-0 opacity-0 -translate-y-1 max-h-0'
-        "
+            : 'gap-0 border-0 pt-0 opacity-0 -translate-y-1 max-h-0',
+        ]"
       >
         <!-- Team 1 players -->
         <div class="space-y-2">
           <div
             v-if="matchStats.lineup_1"
-            class="bg-muted/50 rounded-lg p-4 border border-border min-h-[200px] h-full flex flex-col"
+            :class="[
+              'bg-muted/50 rounded-lg border border-border min-h-[200px] h-full flex flex-col',
+              // Reduce padding overall; in compact mode keep it tight on all sizes
+              compact ? 'p-2' : 'p-3 sm:p-4',
+            ]"
           >
             <h5 class="text-sm font-semibold text-foreground mb-3">
               {{ matchStats.lineup_1.name }} Stats
@@ -669,6 +673,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                       A
                     </th>
                     <th
+                      v-if="!compact"
                       class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-12 sm:w-14"
                     >
                       DMG
@@ -696,7 +701,9 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                       <td class="py-2 px-2 sm:py-3 sm:px-3">
                         <PlayerDisplay
                           :player="lineupPlayer.player"
-                        ></PlayerDisplay>
+                          :size="compact ? 'xs' : 'sm'"
+                          :compact="compact"
+                        />
                       </td>
                       <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
@@ -716,7 +723,10 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                             ?.count || 0
                         }}
                       </td>
-                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
+                      <td
+                        v-if="!compact"
+                        class="text-center py-2 px-1 sm:py-3 sm:px-2"
+                      >
                         {{
                           Math.round(
                             lineupPlayer.player.damage_dealt_aggregate
@@ -736,8 +746,9 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                       </td>
                     </tr>
                   </template>
-                  <!-- Empty rows to maintain consistent height -->
+                  <!-- Empty rows to maintain consistent height (only while picking players) -->
                   <template
+                    v-if="match.status === e_match_status_enum.PickingPlayers"
                     v-for="i in Math.max(
                       0,
                       maxPlayersPerLineup -
@@ -754,12 +765,15 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                           :show-role="false"
                           :show-elo="false"
                           :linkable="false"
+                          :size="compact ? 'xs' : 'sm'"
+                          :compact="compact"
                           :player="{
                             name: `Slot ${(matchStats.lineup_1?.lineup_players?.length || match.lineup_1?.lineup_players?.length || 0) + i}`,
                           }"
                         />
                       </td>
                       <td
+                        v-if="!compact"
                         class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground"
                       >
                         -
@@ -796,7 +810,10 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
         <div class="space-y-2">
           <div
             v-if="matchStats.lineup_2"
-            class="bg-muted/50 rounded-lg p-2 sm:p-4 border border-border min-h-[150px] sm:min-h-[200px] h-full flex flex-col"
+            :class="[
+              'bg-muted/50 rounded-lg border border-border min-h-[150px] sm:min-h-[200px] h-full flex flex-col',
+              compact ? 'p-2' : 'p-3 sm:p-4',
+            ]"
           >
             <h5
               class="text-xs sm:text-sm font-semibold text-foreground mb-2 sm:mb-3"
@@ -830,6 +847,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                       A
                     </th>
                     <th
+                      v-if="!compact"
                       class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-12 sm:w-14"
                     >
                       DMG
@@ -857,7 +875,9 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                       <td class="py-2 px-2 sm:py-3 sm:px-3">
                         <PlayerDisplay
                           :player="lineupPlayer.player"
-                        ></PlayerDisplay>
+                          :size="compact ? 'xs' : 'sm'"
+                          :compact="compact"
+                        />
                       </td>
                       <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
@@ -877,7 +897,10 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                             ?.count || 0
                         }}
                       </td>
-                      <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
+                      <td
+                        v-if="!compact"
+                        class="text-center py-2 px-1 sm:py-3 sm:px-2"
+                      >
                         {{
                           Math.round(
                             lineupPlayer.player.damage_dealt_aggregate
@@ -897,8 +920,9 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                       </td>
                     </tr>
                   </template>
-                  <!-- Empty rows to maintain consistent height -->
+                  <!-- Empty rows to maintain consistent height (only while picking players) -->
                   <template
+                    v-if="match.status === e_match_status_enum.PickingPlayers"
                     v-for="i in Math.max(
                       0,
                       maxPlayersPerLineup -
@@ -915,12 +939,15 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                           :show-role="false"
                           :show-elo="false"
                           :linkable="false"
+                          :size="compact ? 'xs' : 'sm'"
+                          :compact="compact"
                           :player="{
                             name: `Slot ${(matchStats.lineup_2?.lineup_players?.length || match.lineup_2?.lineup_players?.length || 0) + i}`,
                           }"
                         />
                       </td>
                       <td
+                        v-if="!compact"
                         class="text-center py-2 px-1 sm:py-3 sm:px-2 text-muted-foreground"
                       >
                         -
@@ -997,6 +1024,14 @@ export default {
       type: Object,
       required: false,
       default: null,
+    },
+    compact: {
+      type: Boolean,
+      default: false,
+    },
+    alwaysShow: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

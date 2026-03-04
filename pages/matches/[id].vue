@@ -2,19 +2,14 @@
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
-import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
-import ChatLobby from "~/components/chat/ChatLobby.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
-import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
 import { e_match_status_enum } from "~/generated/zeus";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
-import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
-import MatchLiveStreams from "~/components/match/MatchLiveStreams.vue";
-import { e_player_roles_enum } from "~/generated/zeus";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { CardHeader, CardContent, CardTitle } from "~/components/ui/card";
+import { CardContent } from "~/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
+import ChatLobby from "~/components/chat/ChatLobby.vue";
 </script>
 
 <template>
@@ -23,77 +18,67 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
     v-if="match"
   >
     <div class="grid grid-cols-1 gap-y-4 md:gap-y-6">
-      <PageTransition>
-        <div v-if="match.can_schedule">
-          <CardHeader class="p-4">
-            <CardTitle class="flex justify-between">{{
-              $t("pages.matches.detail.schedule")
-            }}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div class="flex flex-col space-y-4">
-              <template v-if="match.can_schedule">
-                <ScheduleMatch :match="match" />
-              </template>
-            </div>
-          </CardContent>
-        </div>
-      </PageTransition>
-
       <PageTransition :delay="100">
-        <div class="flex flex-col gap-4">
-          <CheckIntoMatch :match="match"></CheckIntoMatch>
-          <QuickMatchConnect :match="match"></QuickMatchConnect>
-          <MatchInfo :match="match"></MatchInfo>
-        </div>
+        <MatchInfo :match="match"></MatchInfo>
       </PageTransition>
 
       <PageTransition :delay="200">
-        <div class="flex flex-col gap-4">
-          <StreamEmbed
-            :streams="match.streams"
-            v-if="match.streams.length > 0 && showLiveStreams"
-          ></StreamEmbed>
-
-          <ChatLobby
-            class="max-h-96"
-            instance="matches/id"
-            type="match"
-            :lobby-id="match.id"
-            :play-notification-sound="match.status !== e_match_status_enum.Live"
-            v-if="canJoinLobby"
-          />
-          <MatchLiveStreams
-            :match="match"
-            v-if="canViewStreams"
-          ></MatchLiveStreams>
-        </div>
+        <ChatLobby
+          class="max-h-96"
+          instance="matches/id"
+          type="match"
+          :lobby-id="match.id"
+          :play-notification-sound="match.status !== e_match_status_enum.Live"
+          v-if="canJoinLobby"
+        />
       </PageTransition>
-    </div>
 
-    <div class="grid grid-cols-1 gap-y-4 md:gap-y-6">
-      <PageTransition>
+      <PageTransition :delay="200">
         <div
           v-if="
-            match.match_maps.length > 0 &&
+            match.options.best_of &&
+            match.options.best_of > 0 &&
             match.status !== e_match_status_enum.Veto
           "
+          class="flex flex-col gap-3"
         >
-          <div class="flex gap-4 justify-around flex-col 2xl:flex-row">
-            <div v-for="match_map of match.match_maps">
-              <MatchMaps :match="match" :match-map="match_map"></MatchMaps>
+          <div v-for="(slot, index) in mapSlots" :key="index">
+            <MatchMaps v-if="slot" :match="match" :match-map="slot"></MatchMaps>
+            <div
+              v-else
+              class="rounded-xl overflow-hidden border-2 border-dashed border-border/60"
+            >
+              <div
+                class="aspect-[16/5] bg-muted/40 flex items-center justify-center text-muted-foreground"
+              >
+                <div class="flex flex-col items-center gap-1">
+                  <span class="text-sm uppercase tracking-wide font-semibold">
+                    {{ $t("match.map_number", { count: index + 1 }) }}
+                  </span>
+                  <span class="text-xs">
+                    {{ $t("match.map_tbd") }}
+                  </span>
+                </div>
+              </div>
+              <div class="bg-muted/40 border-t border-border/30 px-3 py-2.5">
+                <div class="flex items-center justify-center">
+                  <span class="text-xs text-muted-foreground">—</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </PageTransition>
+    </div>
 
-      <Separator
-        v-if="
-          showSeparators &&
-          match.match_maps.length > 0 &&
-          match.status !== e_match_status_enum.Veto
-        "
-      />
+    <div>
+      <PageTransition>
+        <StreamEmbed
+          v-if="showLiveStreams && match.streams.length > 0"
+          :streams="match.streams"
+          class="pb-6 max-w-[1500px] w-full overflow-x-auto"
+        />
+      </PageTransition>
 
       <PageTransition :delay="100">
         <template
@@ -101,7 +86,10 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
             regions.length === 0 && match.options.region_veto && !match.region
           "
         >
-          <Alert variant="destructive" class="bg-red-600 text-white max-w-md">
+          <Alert
+            variant="destructive"
+            class="bg-red-600 text-white max-w-md mb-6"
+          >
             <AlertTitle>{{
               $t("match.region_veto.no_regions_available")
             }}</AlertTitle>
@@ -113,19 +101,19 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
       </PageTransition>
 
       <PageTransition :delay="100">
-        <MatchRegionVeto :match="match"></MatchRegionVeto>
+        <MatchRegionVeto :match="match" class="pb-6" />
       </PageTransition>
 
       <PageTransition :delay="100">
-        <MatchMapVeto :match="match"></MatchMapVeto>
+        <MatchMapVeto :match="match" class="pb-6" />
+      </PageTransition>
+
+      <PageTransition :delay="200">
+        <CardContent class="p-4">
+          <MatchTabs :match="match"></MatchTabs>
+        </CardContent>
       </PageTransition>
     </div>
-
-    <PageTransition :delay="200" class="lg:col-span-2">
-      <CardContent class="p-4">
-        <MatchTabs :match="match"></MatchTabs>
-      </CardContent>
-    </PageTransition>
   </div>
 </template>
 
@@ -333,6 +321,21 @@ export default {
     },
   },
   computed: {
+    mapSlots() {
+      if (!this.match || !this.match.options?.best_of) {
+        return this.match?.match_maps ?? [];
+      }
+
+      const slots = [];
+      const bestOf = this.match.options.best_of;
+      const maps = this.match.match_maps || [];
+
+      for (let i = 0; i < bestOf; i++) {
+        slots.push(maps[i] || null);
+      }
+
+      return slots;
+    },
     showSeparators() {
       return useApplicationSettingsStore().showSeparators;
     },
@@ -369,10 +372,6 @@ export default {
       );
     },
     showLiveStreams() {
-      if (this.match.is_in_lineup) {
-        return false;
-      }
-
       if (
         [
           e_match_status_enum.Finished,
@@ -395,28 +394,6 @@ export default {
       }
 
       return true;
-    },
-    canViewStreams() {
-      if (!this.match || this.showLiveStreams) {
-        return false;
-      }
-
-      if (
-        this.match.is_organizer ||
-        useAuthStore().isRoleAbove(e_player_roles_enum.streamer)
-      ) {
-        return true;
-      }
-
-      if (!this.match.streams || this.match.streams.length === 0) {
-        return false;
-      }
-
-      return [
-        e_match_status_enum.Live,
-        e_match_status_enum.Scheduled,
-        e_match_status_enum.Veto,
-      ].includes(this.match.status);
     },
   },
 };

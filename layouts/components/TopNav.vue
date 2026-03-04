@@ -25,29 +25,28 @@ import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import Logout from "./Logout.vue";
 import MatchLobbies from "./MatchLobbies.vue";
 import SystemStatus from "./SystemStatus.vue";
-import AppNotifications from "./AppNotifications.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { NuxtImg } from "#components";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users } from "lucide-vue-next";
-import { useRightSidebar } from "@/composables/useRightSidebar";
+import { Grid } from "lucide-vue-next";
+import { useHubState } from "@/composables/useHubState";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import { loginLinks } from "~/utilities/loginLinks";
 
 const { isMobile } = useSidebar();
-const { setRightSidebarOpen, rightSidebarOpen } = useRightSidebar();
+const { openLastOrDefaultHub } = useHubState();
 const { brandName, logoUrl } = useBranding();
 </script>
 
 <template>
   <nav
-    class="text-sm w-full bg-[#28282b] border-t border-[#3a3a3d] border-b-2 border-[#18181b] shadow-lg flex items-center justify-between px-4 z-50 sticky top-0"
+    class="text-xs sm:text-sm w-full bg-[#28282b] border-t border-[#3a3a3d] border-b-2 border-[#18181b] shadow-lg flex items-center justify-between px-2 sm:px-3 md:px-4 z-50 sticky top-0"
   >
     <div class="flex items-center gap-2 relative">
       <NuxtLink
         to="/"
-        class="flex items-center gap-2 select-none"
+        class="flex items-center gap-1.5 sm:gap-2 select-none"
         v-if="!isMobile"
       >
         <NuxtImg class="rounded h-6 w-6" :src="logoUrl || '/favicon/64.png'" />
@@ -63,7 +62,7 @@ const { brandName, logoUrl } = useBranding();
             <NavigationMenuLink as-child>
               <NuxtLink
                 to="/me"
-                class="uppercase font-bold px-4 py-2 transition-colors duration-150 border-none outline-none focus:ring-0 hover:text-green-300 rounded bg-transparent"
+                class="uppercase font-bold px-2 py-1.5 md:px-4 md:py-2 transition-colors duration-150 border-none outline-none focus:ring-0 hover:text-green-300 rounded bg-transparent"
               >
                 {{ $t("layouts.top_nav.home") }}
               </NuxtLink>
@@ -73,7 +72,7 @@ const { brandName, logoUrl } = useBranding();
           <!-- Play menu with hero card -->
           <NavigationMenuItem>
             <NavigationMenuTrigger
-              class="uppercase font-bold px-4 py-2 transition-colors duration-150 border-none outline-none focus:ring-0 hover:text-green-300 rounded bg-transparent flex items-center gap-2"
+              class="uppercase font-bold px-2 py-1.5 md:px-4 md:py-2 transition-colors duration-150 border-none outline-none focus:ring-0 hover:text-green-300 rounded bg-transparent flex items-center gap-1.5 sm:gap-2"
             >
               {{ $t("layouts.top_nav.play_menu") }}
               <Badge size="sm" v-if="playTotalCount > 0" class="ml-1">
@@ -147,7 +146,7 @@ const { brandName, logoUrl } = useBranding();
             <NavigationMenuLink as-child>
               <NuxtLink
                 to="/watch"
-                class="uppercase font-bold px-4 py-2 transition-colors duration-150 border-none outline-none focus:ring-0 hover:text-green-300 rounded bg-transparent flex items-center gap-2"
+                class="uppercase font-bold px-2 py-1.5 md:px-4 md:py-2 transition-colors duration-150 border-none outline-none focus:ring-0 hover:text-green-300 rounded bg-transparent flex items-center gap-1.5 sm:gap-2"
               >
                 {{ $t("layouts.top_nav.watch_menu") }}
                 <Badge size="sm" v-if="liveMatchesCount > 0" class="ml-1">
@@ -159,7 +158,7 @@ const { brandName, logoUrl } = useBranding();
           <!-- Community menu: multi-column grouped style, no icons in links -->
           <NavigationMenuItem>
             <NavigationMenuTrigger
-              class="uppercase font-bold px-4 py-2 transition-colors duration-150 border-none outline-none focus:ring-0 hover:text-green-300 rounded bg-transparent"
+              class="uppercase font-bold px-2 py-1.5 md:px-4 md:py-2 transition-colors duration-150 border-none outline-none focus:ring-0 hover:text-green-300 rounded bg-transparent"
             >
               {{ $t("layouts.top_nav.community_menu") }}
             </NavigationMenuTrigger>
@@ -297,18 +296,16 @@ const { brandName, logoUrl } = useBranding();
       </NavigationMenu>
     </div>
     <template v-if="me">
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-1 sm:gap-2">
         <InstallPWA v-if="!isMobile" :is-menu-item="false" />
         <MatchLobbies v-if="!isMobile" />
-        <AppNotifications />
-
         <Button
           variant="ghost"
           size="icon"
-          class="h-7 w-7 md:hidden"
-          @click="setRightSidebarOpen(!rightSidebarOpen)"
+          class="h-7 w-7 md:hidden relative"
+          @click="openLastOrDefaultHub()"
         >
-          <Users class="h-4 w-4" />
+          <Grid class="h-4 w-4" />
           <span class="sr-only">Toggle Right Sidebar</span>
         </Button>
 
@@ -316,7 +313,7 @@ const { brandName, logoUrl } = useBranding();
         <DropdownMenu v-model:open="profileMenuOpen">
           <DropdownMenuTrigger as-child>
             <button
-              class="flex items-center gap-2 px-3 py-2 hover:text-green-300 transition-colors duration-150 rounded"
+              class="flex items-center gap-1.5 sm:gap-2 px-2 py-1.5 md:px-3 md:py-2 hover:text-green-300 transition-colors duration-150 rounded"
               type="button"
             >
               <PlayerDisplay
@@ -371,11 +368,11 @@ const { brandName, logoUrl } = useBranding();
       <Logout v-if="showLogoutModal" @update:open="showLogoutModal = $event" />
     </template>
     <template v-else>
-      <div class="flex items-center gap-4 py-2">
+      <div class="flex items-center gap-2 sm:gap-3 md:gap-4 py-1.5 md:py-2">
         <Button
           @click="signIn"
           variant="outline"
-          class="fill-white uppercase font-bold px-4 py-2 transition-colors duration-150 hover:text-green-300 hover:border-green-300/50"
+          class="fill-white uppercase font-bold px-3 py-1.5 md:px-4 md:py-2 transition-colors duration-150 hover:text-green-300 hover:border-green-300/50"
         >
           <SteamIcon class="w-4 h-4 mr-2" />
           {{ $t("layouts.top_nav.login") }}

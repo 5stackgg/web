@@ -10,7 +10,7 @@ import { CardHeader, CardTitle, CardDescription } from "~/components/ui/card";
 
 <template>
   <PageTransition>
-    <div>
+    <div class="hidden md:block">
       <template v-if="matchmakingAllowed">
         <Matchmaking></Matchmaking>
         <Separator v-if="showSeparators" class="my-4" />
@@ -43,7 +43,10 @@ import { CardHeader, CardTitle, CardDescription } from "~/components/ui/card";
     </div>
   </PageTransition>
 
-  <Separator v-if="showSeparators" class="my-4" />
+  <Separator
+    v-if="openRegistrationTournaments?.length > 0 && showSeparators"
+    class="my-4"
+  />
 
   <PageTransition :delay="300" class="mt-6">
     <div>

@@ -21,14 +21,6 @@ const PROBLEM_STATUSES = [
   e_match_status_enum.WaitingForServer,
 ];
 
-const OK_STATUSES = [
-  e_match_status_enum.Finished,
-  e_match_status_enum.Tie,
-  e_match_status_enum.Live,
-  e_match_status_enum.Veto,
-  e_match_status_enum.WaitingForCheckIn,
-];
-
 const hasPausedMap = computed(() => {
   return props.match.match_maps?.some(
     (m) => m.status === e_match_map_status_enum.Paused,
@@ -36,12 +28,10 @@ const hasPausedMap = computed(() => {
 });
 
 const badgeVariant = computed(() => {
-  if (PROBLEM_STATUSES.includes(props.match.status as e_match_status_enum))
+  if (PROBLEM_STATUSES.includes(props.match.status as e_match_status_enum)) {
     return "destructive";
-  if (props.match.status === e_match_status_enum.Live && hasPausedMap.value)
-    return "destructive";
-  if (OK_STATUSES.includes(props.match.status as e_match_status_enum))
-    return "success";
+  }
+
   return "secondary";
 });
 </script>

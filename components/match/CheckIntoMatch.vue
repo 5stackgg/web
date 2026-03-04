@@ -1,15 +1,15 @@
 <template>
-  <Card v-if="isInMatch && match.can_check_in">
-    <CardHeader class="p-4">
-      <CardTitle class="flex justify-between">
-        {{ $t("match.check_in.title") }}
+  <div v-if="isInMatch && match.can_check_in" class="space-y-3">
+    <div class="flex flex-col gap-1">
+      <div class="flex justify-between items-center text-sm font-medium">
+        <span>{{ $t("match.check_in.title") }}</span>
         <template v-if="isCheckedIn">
-          <Badge variant="secondary">{{
-            $t("match.check_in.checked_in")
-          }}</Badge>
+          <Badge variant="secondary">
+            {{ $t("match.check_in.checked_in") }}
+          </Badge>
         </template>
-      </CardTitle>
-      <CardDescription>
+      </div>
+      <p class="text-xs text-muted-foreground">
         <template v-if="isCheckedIn">
           {{
             $t("match.check_in.checked_in_description", {
@@ -21,9 +21,10 @@
         <template v-else>
           {{ $t("match.check_in.description") }}
         </template>
-      </CardDescription>
-    </CardHeader>
-    <CardContent v-if="!isCheckedIn">
+      </p>
+    </div>
+
+    <div v-if="!isCheckedIn">
       <Button
         size="sm"
         class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white animate-pulse"
@@ -31,8 +32,8 @@
       >
         {{ $t("match.check_in.check_in") }}
       </Button>
-    </CardContent>
-  </Card>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">

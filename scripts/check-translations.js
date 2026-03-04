@@ -19,21 +19,75 @@ function flattenTranslations(obj, prefix = "") {
 }
 
 // Function to extract translation keys from a file
-function extractTranslationKeys(content) {
-  // Regex to match $t("...") or $t('...') with various endings and spacing, anywhere in the code
-  const pattern = /\$t\s*\(\s*['"]([^'"]+)['"](?:\s*[,)])/g;
-  const matches = Array.from(content.matchAll(pattern));
+// - Direct usage via $t("..."), $t('...') or $t(`...`)
+// - String literals that *look* like translation keys based on known prefixes
+// - Dynamic template keys like $t(`foo.bar.${baz}`) are tracked by prefix
+function extractTranslationKeys(content, keyPrefixPattern, dynamicPrefixes) {
+  const keys = new Set();
 
-  // Extract keys from matches using map
-  const keys = matches.map((match) => match[1]);
+  // Regex to match $t("...") / t("...") / i18n.t("...") with various endings and spacing
+  const directPattern = /\b(?:\$t|t)\s*\(\s*(['"`])([^'"`]+)\1(?:\s*[,)])/g;
+  const directMatches = Array.from(content.matchAll(directPattern));
 
-  return [...new Set(keys)];
+  directMatches.forEach((match) => {
+    const key = match[2];
+    // If this is a dynamic template (contains ${...}), record its prefix so we
+    // can later treat all matching translation keys as \"used\".
+    if (key.includes("${")) {
+      const prefix = key.split("${")[0];
+      if (prefix && dynamicPrefixes) {
+        dynamicPrefixes.add(prefix);
+      }
+      return;
+    }
+    keys.add(key);
+  });
+
+  // Also catch namespaced calls like i18n.t("foo.bar.baz")
+  const namespacedTPattern = /\b\w+\.t\s*\(\s*(['"`])([^'"`]+)\1(?:\s*[,)])/g;
+  const namespacedMatches = Array.from(content.matchAll(namespacedTPattern));
+
+  namespacedMatches.forEach((match) => {
+    const key = match[2];
+    if (key.includes("${")) {
+      const prefix = key.split("${")[0];
+      if (prefix && dynamicPrefixes) {
+        dynamicPrefixes.add(prefix);
+      }
+      return;
+    }
+    keys.add(key);
+  });
+
+  // Additionally, capture string literals that look like translation keys
+  // based on known prefixes from the translation files (e.g. pages.*, layouts.*, common.*, etc.)
+  if (keyPrefixPattern) {
+    const literalPattern = /['"]([^'"]+)['"]/g;
+    const literalMatches = Array.from(content.matchAll(literalPattern));
+
+    literalMatches.forEach((match) => {
+      const candidate = match[1];
+      // Heuristic: translation keys are typically lowercase with dots and at least
+      // three segments (e.g. pages.leaderboard.col.elo)
+      const translationKeyShape = /^[a-z0-9_]+(\.[a-z0-9_]+){2,}$/;
+
+      if (
+        translationKeyShape.test(candidate) &&
+        keyPrefixPattern.test(candidate)
+      ) {
+        keys.add(candidate);
+      }
+    });
+  }
+
+  return [...keys];
 }
 
 // Function to find all translation keys in the project
-async function findAllTranslationKeys() {
+async function findAllTranslationKeys(keyPrefixPattern) {
   const keys = new Set();
   const keyLocations = new Map();
+  const dynamicPrefixes = new Set();
 
   // Find all Vue, JS, and TS files
   const files = await glob("**/*.{vue,js,ts}", {
@@ -43,7 +97,11 @@ async function findAllTranslationKeys() {
   // Process each file
   const fileResults = files.map((file) => {
     const content = fs.readFileSync(file, "utf8");
-    const fileKeys = extractTranslationKeys(content);
+    const fileKeys = extractTranslationKeys(
+      content,
+      keyPrefixPattern,
+      dynamicPrefixes,
+    );
     return { file, fileKeys };
   });
 
@@ -58,7 +116,7 @@ async function findAllTranslationKeys() {
     });
   });
 
-  return { keys: Array.from(keys), keyLocations };
+  return { keys: Array.from(keys), keyLocations, dynamicPrefixes };
 }
 
 // Function to check for missing translations
@@ -90,17 +148,59 @@ async function main() {
   // Find all translation files
   const translationFiles = await findAllTranslationFiles();
 
+  // Read and flatten translations once so we can:
+  // - Build a list of all available keys
+  // - Infer valid translation key prefixes (e.g. pages.*, layouts.*, common.*)
+  const translationData = translationFiles.map(({ path: filePath, locale }) => {
+    const translations = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    const flattenedTranslations = flattenTranslations(translations);
+    return {
+      locale,
+      filePath,
+      translations,
+      flattenedTranslations,
+    };
+  });
+
+  const allAvailableKeys = new Set();
+  translationData.forEach(({ flattenedTranslations }) => {
+    Object.keys(flattenedTranslations).forEach((key) => {
+      allAvailableKeys.add(key);
+    });
+  });
+
+  const keyPrefixes = Array.from(
+    new Set(Array.from(allAvailableKeys).map((key) => key.split(".")[0])),
+  );
+
+  const keyPrefixPattern =
+    keyPrefixes.length > 0
+      ? new RegExp(`^(${keyPrefixes.join("|")})\\.`)
+      : null;
+
   // Find all translation keys used in the project
-  const { keys: usedKeys, keyLocations } = await findAllTranslationKeys();
+  const {
+    keys: usedKeysRaw,
+    keyLocations,
+    dynamicPrefixes,
+  } = await findAllTranslationKeys(keyPrefixPattern);
+  // Expand dynamic prefixes (e.g. \"foo.bar.${baz}\") into concrete keys based
+  // on what exists in the translation files.
+  const usedKeysSet = new Set(usedKeysRaw);
+  dynamicPrefixes.forEach((prefix) => {
+    allAvailableKeys.forEach((key) => {
+      if (key.startsWith(prefix)) {
+        usedKeysSet.add(key);
+      }
+    });
+  });
+  const usedKeys = Array.from(usedKeysSet);
 
   console.log("\n=== Translation Check Results ===\n");
 
   // Check each translation file
-  const translationResults = translationFiles.map(
-    ({ path: filePath, locale }) => {
-      // Read and flatten translations
-      const translations = JSON.parse(fs.readFileSync(filePath, "utf8"));
-      const flattenedTranslations = flattenTranslations(translations);
+  const translationResults = translationData.map(
+    ({ locale, filePath, flattenedTranslations }) => {
       const availableKeys = Object.keys(flattenedTranslations);
 
       // Find missing and unused translations

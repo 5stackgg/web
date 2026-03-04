@@ -9,8 +9,10 @@ import { useRoute } from "vue-router";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { useGtm } from "@/layouts/composables/useGtm";
+import { useChatTabSetup } from "~/composables/useChatTabSetup";
 
 useGtm();
+useChatTabSetup();
 
 const route = useRoute();
 const authStore = useAuthStore();
@@ -20,7 +22,6 @@ const showLeftNav = computed(() => {
 });
 
 const containContent = computed(() => {
-  console.info("route.name", route.name);
   if (route.name?.toString().startsWith("settings-application")) {
     return false;
   }

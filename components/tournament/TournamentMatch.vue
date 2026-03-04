@@ -1,9 +1,11 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import TournamentRoundLineup from "~/components/tournament/TournamentRoundLineup.vue";
-import MatchStatus from "~/components/match/MatchStatus.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
-import { e_tournament_stage_types_enum } from "~/generated/zeus";
+import {
+  e_match_status_enum,
+  e_tournament_stage_types_enum,
+} from "~/generated/zeus";
 
 interface Bracket {
   id: string;
@@ -124,6 +126,23 @@ const isThirdPlaceMatch = (bracket: Bracket): boolean => {
     return false;
   if (bracket.match_number !== 2) return false;
   return props.round === getTotalRounds(stage);
+};
+
+const hasProblemStatus = (bracket: Bracket): boolean => {
+  const status = bracket.match?.status as e_match_status_enum | undefined;
+  if (!status) return false;
+  return [
+    e_match_status_enum.Canceled,
+    e_match_status_enum.Forfeit,
+    e_match_status_enum.Surrendered,
+    e_match_status_enum.WaitingForServer,
+  ].includes(status);
+};
+
+const isActiveMatch = (bracket: Bracket): boolean => {
+  const status = bracket.match?.status as e_match_status_enum | undefined;
+  if (!status) return false;
+  return [e_match_status_enum.Veto, e_match_status_enum.Live].includes(status);
 };
 
 const getBestOf = (
@@ -284,7 +303,13 @@ const isLbFeedingToWb = (bracket: Bracket) => {
     <div
       v-if="!(bracket.bye && !bracket.team_1 && !bracket.team_2)"
       :id="`bracket-${bracket.id}`"
-      class="tournament-match cursor-pointer border-2 border-gray-700 rounded-lg p-1 transition-all duration-200 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 bg-gray-800/50 backdrop-blur-sm relative flex flex-col gap-2"
+      class="tournament-match cursor-pointer border-2 rounded-lg p-1 transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/20 bg-gray-800/50 backdrop-blur-sm relative flex flex-col gap-2"
+      :class="{
+        'border-green-500 hover:border-green-400': isActiveMatch(bracket),
+        'border-red-500 hover:border-red-400': hasProblemStatus(bracket),
+        'border-gray-700 hover:border-blue-500':
+          !isActiveMatch(bracket) && !hasProblemStatus(bracket),
+      }"
       :data-bracket-id="bracket.id"
       :data-round="props.round"
       @click="handleClick($event, bracket)"
@@ -482,13 +507,6 @@ const isLbFeedingToWb = (bracket: Bracket) => {
             </div>
           </div>
         </template>
-      </div>
-
-      <div
-        v-if="bracket.match?.status && bracket.match?.e_match_status"
-        class="flex justify-center"
-      >
-        <MatchStatus :match="bracket.match" />
       </div>
 
       <template

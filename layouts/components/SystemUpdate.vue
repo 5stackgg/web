@@ -6,7 +6,7 @@ import { AlertCircle } from "lucide-vue-next";
   <div v-if="updates.length > 0" class="relative flex items-center">
     <AlertDialog>
       <AlertDialogTrigger>
-        <Button variant="ghost" size="icon" class="h-6 flex items-center">
+        <Button variant="ghost" size="icon" class="flex items-center">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>

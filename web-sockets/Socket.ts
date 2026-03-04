@@ -12,7 +12,12 @@ export interface Lobby {
   setMessages: (data: any[]) => void;
 }
 
-export type ChatType = "match" | "team" | "matchmaking";
+export type ChatType =
+  | "match"
+  | "team"
+  | "matchmaking"
+  | "organizers"
+  | "tournament";
 
 class Socket extends EventEmitter {
   private listening = new Set();

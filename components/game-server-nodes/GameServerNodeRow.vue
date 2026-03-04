@@ -2117,7 +2117,7 @@ export default defineComponent({
 
       const virtualCPUsAvailable = Math.max(
         1,
-        totalThreads ? totalThreads - 1 : 0
+        totalThreads ? totalThreads - 1 : 0,
       );
 
       if (

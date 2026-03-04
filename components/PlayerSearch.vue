@@ -184,7 +184,9 @@ export default {
       this.$emit("selected", player);
     },
     async searchPlayers(query?: string) {
-      this.query = query || "";
+      if (query !== undefined) {
+        this.query = query;
+      }
 
       const exclude = !this.canSelectSelf
         ? (this.exclude as string[]).concat(this.me.steam_id)
@@ -204,7 +206,7 @@ export default {
       const response = await $fetch("/api/players-search", {
         method: "post",
         body: {
-          query,
+          query: this.query,
           teamId: this.teamId,
           exclude: exclude,
           registeredOnly: this.registeredOnly,

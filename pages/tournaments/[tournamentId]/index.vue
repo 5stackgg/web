@@ -163,7 +163,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 
             <DropdownMenuItem
               v-if="tournament.can_pause"
-              @click="pauseTournament"
+              @click="pauseDialogOpen = true"
               class="cursor-pointer"
             >
               <Pause class="mr-2 h-4 w-4" />
@@ -544,6 +544,30 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+
+    <!-- Pause Tournament Dialog -->
+    <AlertDialog
+      :open="pauseDialogOpen"
+      @update:open="(open) => (pauseDialogOpen = open)"
+    >
+      <AlertDialogTrigger class="w-full"> </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{{
+            $t("tournament.actions.confirm_pause")
+          }}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {{ $t("tournament.actions.pause_description") }}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+          <AlertDialogAction @click="pauseTournament">
+            {{ $t("tournament.actions.pause") }}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </div>
 </template>
 
@@ -570,6 +594,7 @@ export default {
       joinSheetOpen: false,
       overviewExpanded: true,
       deleteDialogOpen: false,
+      pauseDialogOpen: false,
       organizerPopoversOpen: {},
       activeTab: "overview",
       e_match_types: [],

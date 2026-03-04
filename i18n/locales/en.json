@@ -1281,7 +1281,9 @@
             "deleted": "Tournament Deleted",
             "delete_failed": "Failed to delete tournament",
             "pause": "Pause Tournament",
-            "resume": "Resume Tournament"
+            "resume": "Resume Tournament",
+            "confirm_pause": "Pause Tournament",
+            "pause_description": "Are you sure you want to pause this tournament? No new matches will be auto-scheduled until it's resumed."
         },
         "upcoming": {
             "empty": "You don't have any upcoming tournaments."

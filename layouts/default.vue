@@ -10,12 +10,8 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { useGtm } from "@/layouts/composables/useGtm";
 import { useChatTabSetup } from "~/composables/useChatTabSetup";
-import { useOverlayScrollbarsOptions } from "~/composables/useOverlayScrollbarsOptions";
-
 useGtm();
 useChatTabSetup();
-
-const { options: scrollbarOptions } = useOverlayScrollbarsOptions();
 
 const route = useRoute();
 const authStore = useAuthStore();
@@ -56,17 +52,9 @@ provide("containContent", containContent);
     <SidebarInset class="flex flex-col overflow-hidden" style="height: 100svh">
       <TopNav v-if="!showLeftNav" />
       <AppHeader class="px-6" v-if="showLeftNav" />
-
-      <OverlayScrollbars
-        element="div"
-        :options="scrollbarOptions"
-        defer
-        class="flex-1 overflow-auto"
-      >
-        <MainContent>
-          <slot></slot>
-        </MainContent>
-      </OverlayScrollbars>
+      <MainContent class="flex-1 min-h-0">
+        <slot></slot>
+      </MainContent>
     </SidebarInset>
   </SidebarProvider>
 

@@ -29,16 +29,10 @@ const containContentValue = computed(() => containContent?.value ?? true);
     >
       <SidebarMobileSync />
       <SidebarInset class="overflow-hidden min-h-0 h-full">
-        <OverlayScrollbars
-          element="div"
-          :options="scrollbarOptions"
-          defer
-          class="h-full"
-        >
+        <OverlayScrollbars :options="scrollbarOptions" defer>
           <div
-            class="p-4 w-full self-center"
+            class="p-4 w-full self-center mx-auto"
             :class="{
-              'mx-auto': !showLeftNavValue,
               'lg:max-w-7xl': containContentValue,
             }"
           >
@@ -46,7 +40,6 @@ const containContentValue = computed(() => containContent?.value ?? true);
           </div>
         </OverlayScrollbars>
       </SidebarInset>
-
       <AppSidebar side="right" class="main-content-sidebar" />
     </SidebarProvider>
   </div>

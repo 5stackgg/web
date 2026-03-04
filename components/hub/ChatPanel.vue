@@ -7,7 +7,6 @@ import {
   Sword,
   Shield,
   MessageSquare,
-  Maximize2,
   ExternalLink,
 } from "lucide-vue-next";
 import { useRouter } from "#app";
@@ -33,8 +32,6 @@ const matchLobbyStore = useMatchLobbyStore();
 const isMobile = useMediaQuery("(max-width: 768px)");
 
 const activeChatId = ref<string | null>(null);
-const isOverlayOpen = ref(false);
-const overlayChatId = ref<string | null>(null);
 
 const orderedTabs = computed<ChatTab[]>(() => {
   const weight = (tab: ChatTab) => {
@@ -125,21 +122,8 @@ const showChatIndicator = computed(
   () => activeChatId.value && chatIndicatorHeight.value > 0,
 );
 
-const activeOverlayTab = computed<ChatTab | null>(() => {
-  const id = overlayChatId.value || activeChatId.value;
-  if (!id) return null;
-  return orderedTabs.value.find((t) => t.id === id) || null;
-});
-
 const activeMatch = computed<any | null>(() => {
   const tab = activeTab.value;
-  if (!tab || tab.type !== "match") return null;
-  const matches = (matchLobbyStore.myMatches as any[]) || [];
-  return matches.find((m: any) => m.id === tab.lobbyId) || null;
-});
-
-const activeOverlayMatch = computed<any | null>(() => {
-  const tab = activeOverlayTab.value;
   if (!tab || tab.type !== "match") return null;
   const matches = (matchLobbyStore.myMatches as any[]) || [];
   return matches.find((m: any) => m.id === tab.lobbyId) || null;
@@ -166,20 +150,12 @@ watch(
     if (!activeChatId.value && tabs.length > 0) {
       handleSelectRoom(tabs[0]);
     }
-    if (
-      overlayChatId.value &&
-      !tabs.find((t) => t.id === overlayChatId.value)
-    ) {
-      overlayChatId.value = null;
-      isOverlayOpen.value = false;
-    }
   },
   { immediate: true },
 );
 
 function handleSelectRoom(tab: ChatTab) {
   activeChatId.value = tab.id;
-  overlayChatId.value = tab.id;
   setActiveTab(tab.id);
   resetUnread(tab.id);
 }
@@ -193,10 +169,8 @@ function handleMessageReceived(payload: {
   const tabId = payload.tabId ?? activeChatId.value;
   if (!tabId) return;
   const isCurrentRoom = tabId === activeChatId.value;
-  const isOverlayForTab = isOverlayOpen.value && overlayChatId.value === tabId;
   const isVisible =
-    (props.isSidebarOpen && props.isTabActive && isCurrentRoom) ||
-    isOverlayForTab;
+    props.isSidebarOpen && props.isTabActive && isCurrentRoom;
   if (!isVisible) {
     incrementUnread(tabId);
   } else {
@@ -219,16 +193,6 @@ function getRoomSubtitle(tab: ChatTab) {
   if (tab.type === "match") return "Match Chat";
   if (tab.type === "team") return "Team Chat";
   return "";
-}
-
-function openOverlayForActive() {
-  if (!activeChatId.value) return;
-  overlayChatId.value = activeChatId.value;
-  isOverlayOpen.value = true;
-}
-
-function closeOverlay() {
-  isOverlayOpen.value = false;
 }
 
 function handlePopOut() {
@@ -392,23 +356,7 @@ function handlePopOut() {
               <Tooltip>
                 <TooltipTrigger as-child>
                   <button
-                    type="button"
-                    class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900/60 text-zinc-200 hover:bg-zinc-800/80"
-                    @click="openOverlayForActive"
-                  >
-                    <Maximize2 class="w-3.5 h-3.5" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent
-                  side="bottom"
-                  class="bg-zinc-900 text-zinc-50 border border-zinc-800 shadow-lg rounded-md px-3 py-1.5 text-[11px]"
-                >
-                  {{ $t("layouts.chat_panel.expand_chat") }}
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <button
+                    v-if="!isMobile"
                     type="button"
                     class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900/60 text-zinc-200 hover:bg-zinc-800/80"
                     @click="handlePopOut"
@@ -464,7 +412,7 @@ function handlePopOut() {
           <ChatLobby
             v-for="tab in tabs"
             :key="tab.id"
-            v-show="tab.id === activeChatId && !isOverlayOpen"
+            v-show="tab.id === activeChatId"
             :instance="tab.instance"
             :type="tab.type"
             :lobby-id="tab.lobbyId"
@@ -493,94 +441,6 @@ function handlePopOut() {
         </Empty>
       </div>
     </div>
-
-    <!-- Overlay chat view -->
-    <Teleport to="body">
-      <transition name="fade-scale">
-        <div
-          v-if="isOverlayOpen && activeOverlayTab"
-          class="fixed inset-0 z-[60] flex items-center justify-center bg-black/70"
-        >
-          <div
-            class="relative w-full max-w-4xl max-h-[90vh] flex flex-col rounded-xl bg-background border border-border shadow-2xl overflow-hidden"
-          >
-            <div
-              class="flex items-center justify-between px-4 py-2 border-b border-border/60 bg-background/95"
-            >
-              <div class="min-w-0">
-                <div class="text-sm font-semibold truncate">
-                  {{ activeOverlayTab.label }}
-                </div>
-                <div class="text-[11px] text-muted-foreground truncate">
-                  {{ getRoomSubtitle(activeOverlayTab) }}
-                </div>
-              </div>
-              <div class="flex items-center gap-2">
-                <TooltipProvider :delay-duration="150">
-                  <Tooltip>
-                    <TooltipTrigger as-child>
-                      <button
-                        type="button"
-                        class="inline-flex h-8 px-2 items-center justify-center gap-1.5 rounded-md border border-border bg-background text-xs hover:bg-accent"
-                        @click="handlePopOut"
-                      >
-                        <ExternalLink class="w-3.5 h-3.5" />
-                        <span>
-                          {{ $t("layouts.chat_panel.pop_out_button") }}
-                        </span>
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent
-                      side="bottom"
-                      class="bg-zinc-900 text-zinc-50 border border-zinc-800 shadow-lg rounded-md px-3 py-1.5 text-[11px]"
-                    >
-                      {{ $t("layouts.chat_panel.pop_out_tooltip") }}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <button
-                  type="button"
-                  class="inline-flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background text-xs hover:bg-accent"
-                  @click="closeOverlay"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-            <div class="flex-1 min-h-0 flex flex-col">
-              <div
-                v-if="activeOverlayTab?.type === 'match' && activeOverlayMatch"
-                class="px-4 pt-4 pb-2 border-b border-border/80 bg-background/95"
-              >
-                <MatchTableRow
-                  :match="activeOverlayMatch"
-                  :player="null"
-                  :compact="true"
-                  :always-show="true"
-                />
-              </div>
-
-              <ChatLobby
-                v-for="tab in tabs"
-                :key="tab.id"
-                v-show="tab.id === activeOverlayTab.id"
-                :instance="tab.instance"
-                :type="tab.type"
-                :lobby-id="tab.lobbyId"
-                :tab-id="tab.id"
-                :frameless="true"
-                :is-global-context="true"
-                :disable-auto-focus-on-activate="isMobile"
-                :is-active-tab="
-                  tab.id === activeOverlayTab.id && isSidebarOpen && isTabActive
-                "
-                @message-received="handleMessageReceived"
-              />
-            </div>
-          </div>
-        </div>
-      </transition>
-    </Teleport>
   </div>
 </template>
 

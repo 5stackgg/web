@@ -18,10 +18,7 @@ const { isMobile } = useSidebar();
   >
     <component
       :is="rightSidebarOpen ? ChevronsRight : ChevronsLeft"
-      :class="[
-        'h-4 w-4 transition-transform duration-200',
-        '',
-      ]"
+      :class="['h-4 w-4 transition-transform duration-200', '']"
     />
   </div>
 </template>

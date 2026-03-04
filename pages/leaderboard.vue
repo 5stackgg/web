@@ -111,173 +111,175 @@ import { Label } from "~/components/ui/label";
   <PageTransition :delay="300" class="mt-6">
     <div>
       <div class="p-4 relative">
-        <!-- Loading -->
-        <div v-if="loading" class="space-y-4">
-          <div v-for="i in perPage" :key="i" class="flex items-center gap-4">
-            <Skeleton class="h-6 w-8" />
-            <Skeleton class="h-10 w-10 rounded" />
-            <Skeleton class="h-6 flex-1" />
-            <Skeleton class="h-6 w-20" />
+        <Transition name="leaderboard-fade" mode="out-in">
+          <!-- Loading -->
+          <div v-if="loading" key="loading" class="space-y-4">
+            <div v-for="i in perPage" :key="i" class="flex items-center gap-4">
+              <Skeleton class="h-6 w-8" />
+              <Skeleton class="h-10 w-10 rounded" />
+              <Skeleton class="h-6 flex-1" />
+              <Skeleton class="h-6 w-20" />
+            </div>
           </div>
-        </div>
 
-        <!-- Empty State -->
-        <Empty v-else-if="!entries || entries.length === 0">
-          <p class="text-muted-foreground">
-            {{ $t("pages.leaderboard.no_results") }}
-          </p>
-        </Empty>
+          <!-- Empty State -->
+          <Empty v-else-if="!entries || entries.length === 0" key="empty">
+            <p class="text-muted-foreground">
+              {{ $t("pages.leaderboard.no_results") }}
+            </p>
+          </Empty>
 
-        <!-- Results Table -->
-        <Table v-else>
-          <TableHeader>
-            <TableRow>
-              <TableHead class="w-16">{{
-                $t("pages.leaderboard.columns.rank")
-              }}</TableHead>
-              <TableHead>{{
-                $t("pages.leaderboard.columns.player")
-              }}</TableHead>
-              <TableHead
-                class="text-right"
-                :class="{
-                  'cursor-pointer select-none hover:text-foreground':
-                    isSortable('value'),
-                }"
-                @click="toggleSort('value')"
-              >
-                <div class="flex items-center justify-end gap-1">
-                  {{ columnLabels.value }}
-                  <component
-                    v-if="isSortable('value')"
-                    :is="sortIcon('value')"
-                    class="h-3.5 w-3.5"
-                  />
-                </div>
-              </TableHead>
-              <TableHead
-                v-if="columnLabels.secondary_value"
-                class="text-right"
-                :class="{
-                  'cursor-pointer select-none hover:text-foreground':
-                    isSortable('secondary_value'),
-                }"
-                @click="toggleSort('secondary_value')"
-              >
-                <div class="flex items-center justify-end gap-1">
-                  {{ columnLabels.secondary_value }}
-                  <component
-                    v-if="isSortable('secondary_value')"
-                    :is="sortIcon('secondary_value')"
-                    class="h-3.5 w-3.5"
-                  />
-                </div>
-              </TableHead>
-              <TableHead
-                v-if="columnLabels.tertiary_value"
-                class="text-right"
-                :class="{
-                  'cursor-pointer select-none hover:text-foreground':
-                    isSortable('tertiary_value'),
-                }"
-                @click="toggleSort('tertiary_value')"
-              >
-                <div class="flex items-center justify-end gap-1">
-                  {{ columnLabels.tertiary_value }}
-                  <component
-                    v-if="isSortable('tertiary_value')"
-                    :is="sortIcon('tertiary_value')"
-                    class="h-3.5 w-3.5"
-                  />
-                </div>
-              </TableHead>
-              <TableHead
-                v-if="columnLabels.matches_played"
-                class="text-right"
-                :class="{
-                  'cursor-pointer select-none hover:text-foreground':
-                    isSortable('matches_played'),
-                }"
-                @click="toggleSort('matches_played')"
-              >
-                <div class="flex items-center justify-end gap-1">
-                  {{ columnLabels.matches_played }}
-                  <component
-                    v-if="isSortable('matches_played')"
-                    :is="sortIcon('matches_played')"
-                    class="h-3.5 w-3.5"
-                  />
-                </div>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow
-              v-for="entry in entries"
-              :key="entry.player_steam_id"
-              class="cursor-pointer"
-            >
-              <NuxtLink
-                :to="{
-                  name: 'players-id',
-                  params: { id: entry.player_steam_id },
-                }"
-                class="contents"
-              >
-                <TableCell>
-                  <div class="flex items-center justify-center">
-                    <span
-                      :class="{
-                        'text-yellow-400 font-bold': entry.rank === 1,
-                        'text-gray-300 font-bold': entry.rank === 2,
-                        'text-amber-600 font-bold': entry.rank === 3,
-                        'text-muted-foreground': entry.rank > 3,
-                      }"
-                    >
-                      {{ entry.rank }}
-                    </span>
+          <!-- Results Table -->
+          <Table v-else key="table">
+            <TableHeader>
+              <TableRow>
+                <TableHead class="w-16">{{
+                  $t("pages.leaderboard.columns.rank")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.leaderboard.columns.player")
+                }}</TableHead>
+                <TableHead
+                  class="text-right"
+                  :class="{
+                    'cursor-pointer select-none hover:text-foreground':
+                      isSortable('value'),
+                  }"
+                  @click="toggleSort('value')"
+                >
+                  <div class="flex items-center justify-end gap-1">
+                    {{ columnLabels.value }}
+                    <component
+                      v-if="isSortable('value')"
+                      :is="sortIcon('value')"
+                      class="h-3.5 w-3.5"
+                    />
                   </div>
-                </TableCell>
-                <TableCell>
-                  <PlayerDisplay
-                    :player="{
-                      steam_id: entry.player_steam_id,
-                      name: entry.player_name,
-                      avatar_url: entry.player_avatar_url,
-                      country: entry.player_country,
-                    }"
-                    :show-elo="false"
-                    :show-online="false"
-                    :show-role="false"
-                    :linkable="false"
-                    size="xs"
-                  />
-                </TableCell>
-                <TableCell class="text-right font-mono font-semibold">
-                  {{ formatValue(entry.value) }}
-                </TableCell>
-                <TableCell
+                </TableHead>
+                <TableHead
                   v-if="columnLabels.secondary_value"
-                  class="text-right font-mono text-muted-foreground"
+                  class="text-right"
+                  :class="{
+                    'cursor-pointer select-none hover:text-foreground':
+                      isSortable('secondary_value'),
+                  }"
+                  @click="toggleSort('secondary_value')"
                 >
-                  {{ formatSecondary(entry.secondary_value) }}
-                </TableCell>
-                <TableCell
+                  <div class="flex items-center justify-end gap-1">
+                    {{ columnLabels.secondary_value }}
+                    <component
+                      v-if="isSortable('secondary_value')"
+                      :is="sortIcon('secondary_value')"
+                      class="h-3.5 w-3.5"
+                    />
+                  </div>
+                </TableHead>
+                <TableHead
                   v-if="columnLabels.tertiary_value"
-                  class="text-right font-mono text-muted-foreground"
+                  class="text-right"
+                  :class="{
+                    'cursor-pointer select-none hover:text-foreground':
+                      isSortable('tertiary_value'),
+                  }"
+                  @click="toggleSort('tertiary_value')"
                 >
-                  {{ formatTertiary(entry.tertiary_value) }}
-                </TableCell>
-                <TableCell
+                  <div class="flex items-center justify-end gap-1">
+                    {{ columnLabels.tertiary_value }}
+                    <component
+                      v-if="isSortable('tertiary_value')"
+                      :is="sortIcon('tertiary_value')"
+                      class="h-3.5 w-3.5"
+                    />
+                  </div>
+                </TableHead>
+                <TableHead
                   v-if="columnLabels.matches_played"
-                  class="text-right font-mono text-muted-foreground"
+                  class="text-right"
+                  :class="{
+                    'cursor-pointer select-none hover:text-foreground':
+                      isSortable('matches_played'),
+                  }"
+                  @click="toggleSort('matches_played')"
                 >
-                  {{ entry.matches_played ?? "\u2014" }}
-                </TableCell>
-              </NuxtLink>
-            </TableRow>
-          </TableBody>
-        </Table>
+                  <div class="flex items-center justify-end gap-1">
+                    {{ columnLabels.matches_played }}
+                    <component
+                      v-if="isSortable('matches_played')"
+                      :is="sortIcon('matches_played')"
+                      class="h-3.5 w-3.5"
+                    />
+                  </div>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              <TableRow
+                v-for="entry in entries"
+                :key="entry.player_steam_id"
+                class="cursor-pointer"
+              >
+                <NuxtLink
+                  :to="{
+                    name: 'players-id',
+                    params: { id: entry.player_steam_id },
+                  }"
+                  class="contents"
+                >
+                  <TableCell>
+                    <div class="flex items-center justify-center">
+                      <span
+                        :class="{
+                          'text-yellow-400 font-bold': entry.rank === 1,
+                          'text-gray-300 font-bold': entry.rank === 2,
+                          'text-amber-600 font-bold': entry.rank === 3,
+                          'text-muted-foreground': entry.rank > 3,
+                        }"
+                      >
+                        {{ entry.rank }}
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <PlayerDisplay
+                      :player="{
+                        steam_id: entry.player_steam_id,
+                        name: entry.player_name,
+                        avatar_url: entry.player_avatar_url,
+                        country: entry.player_country,
+                      }"
+                      :show-elo="false"
+                      :show-online="false"
+                      :show-role="false"
+                      :linkable="false"
+                      size="xs"
+                    />
+                  </TableCell>
+                  <TableCell class="text-right font-mono font-semibold">
+                    {{ formatValue(entry.value) }}
+                  </TableCell>
+                  <TableCell
+                    v-if="columnLabels.secondary_value"
+                    class="text-right font-mono text-muted-foreground"
+                  >
+                    {{ formatSecondary(entry.secondary_value) }}
+                  </TableCell>
+                  <TableCell
+                    v-if="columnLabels.tertiary_value"
+                    class="text-right font-mono text-muted-foreground"
+                  >
+                    {{ formatTertiary(entry.tertiary_value) }}
+                  </TableCell>
+                  <TableCell
+                    v-if="columnLabels.matches_played"
+                    class="text-right font-mono text-muted-foreground"
+                  >
+                    {{ entry.matches_played ?? "\u2014" }}
+                  </TableCell>
+                </NuxtLink>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Transition>
       </div>
 
       <!-- Pagination -->
@@ -595,3 +597,17 @@ export default {
   },
 };
 </script>
+<style scoped>
+.leaderboard-fade-enter-active,
+.leaderboard-fade-leave-active {
+  transition:
+    opacity 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+.leaderboard-fade-enter-from,
+.leaderboard-fade-leave-to {
+  opacity: 0;
+  transform: translateY(2px);
+}
+</style>

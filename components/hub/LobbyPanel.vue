@@ -15,7 +15,7 @@ const { hasLobbyInvites } = useInvites();
 
 <template>
   <div class="flex flex-col h-full">
-    <div class="flex-1 p-4 flex flex-col gap-4 overflow-hidden">
+    <div class="flex-1 px-4 pt-4 flex flex-col gap-4 overflow-hidden">
       <!-- Scrollable main content (invites + squad) -->
       <div class="flex-[3] min-h-0 flex flex-col gap-6 overflow-y-auto">
         <!-- Lobby invites -->

@@ -290,6 +290,7 @@ export default {
 
     const defaultStatuses = [
       e_tournament_status_enum.Live,
+      e_tournament_status_enum.Paused,
       e_tournament_status_enum.RegistrationOpen,
       e_tournament_status_enum.RegistrationClosed,
       e_tournament_status_enum.Setup,
@@ -616,6 +617,7 @@ export default {
     defaultStatuses() {
       return [
         e_tournament_status_enum.Live,
+        e_tournament_status_enum.Paused,
         e_tournament_status_enum.RegistrationOpen,
         e_tournament_status_enum.RegistrationClosed,
         e_tournament_status_enum.Setup,

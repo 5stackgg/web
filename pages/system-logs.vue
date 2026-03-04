@@ -75,6 +75,14 @@ export default {
       ],
     };
   },
+  created() {
+    this.syncServiceFromRoute();
+  },
+  watch: {
+    "$route.query.service"() {
+      this.syncServiceFromRoute();
+    },
+  },
   computed: {
     timestamps: {
       get() {
@@ -91,6 +99,14 @@ export default {
       set(value: boolean) {
         this._followLogs = value;
       },
+    },
+  },
+  methods: {
+    syncServiceFromRoute() {
+      const service = this.$route?.query?.service as string | undefined;
+      if (service && this.services.includes(service)) {
+        this.activeService = service;
+      }
     },
   },
 };

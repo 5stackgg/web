@@ -13,49 +13,50 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
   <div class="my-2">
     <!-- Metrics Charts -->
     <PageTransition v-if="metricsData && showCharts">
+      <!-- Detailed charts -->
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        <PageTransition :delay="0">
-          <Card class="p-4 rounded-lg border border-gray-200">
-            <h4 class="text-sm font-medium mb-2">
-              {{ $t("pages.system_metrics.cpu_usage") }}
-            </h4>
-            <div class="h-[350px]">
-              <CpuChart :metrics="metricsData.cpu" />
-            </div>
-          </Card>
-        </PageTransition>
+          <PageTransition :delay="0">
+            <Card class="p-4 rounded-lg border border-gray-200">
+              <h4 class="text-sm font-medium mb-2">
+                {{ $t("pages.system_metrics.cpu_usage") }}
+              </h4>
+              <div class="h-[350px]">
+                <CpuChart :metrics="metricsData.cpu" />
+              </div>
+            </Card>
+          </PageTransition>
 
-        <PageTransition :delay="100">
-          <Card class="p-4 rounded-lg border border-gray-200">
-            <h4 class="text-sm font-medium mb-2">
-              {{ $t("pages.system_metrics.memory_usage") }}
-            </h4>
-            <div class="h-[350px]">
-              <MemoryChart :metrics="metricsData.memory" />
-            </div>
-          </Card>
-        </PageTransition>
+          <PageTransition :delay="100">
+            <Card class="p-4 rounded-lg border border-gray-200">
+              <h4 class="text-sm font-medium mb-2">
+                {{ $t("pages.system_metrics.memory_usage") }}
+              </h4>
+              <div class="h-[350px]">
+                <MemoryChart :metrics="metricsData.memory" />
+              </div>
+            </Card>
+          </PageTransition>
 
-        <PageTransition :delay="200">
-          <Card class="p-4 rounded-lg border border-gray-200">
-            <h4 class="text-sm font-medium mb-2">
-              {{ $t("pages.system_metrics.network") }}
-            </h4>
-            <div class="h-[350px]">
-              <NetworkChart :metrics="metricsData.network" />
-            </div>
-          </Card>
-        </PageTransition>
+          <PageTransition :delay="200">
+            <Card class="p-4 rounded-lg border border-gray-200">
+              <h4 class="text-sm font-medium mb-2">
+                {{ $t("pages.system_metrics.network") }}
+              </h4>
+              <div class="h-[350px]">
+                <NetworkChart :metrics="metricsData.network" />
+              </div>
+            </Card>
+          </PageTransition>
 
-        <PageTransition :delay="300">
-          <Card class="p-4 rounded-lg border border-gray-200">
-            <h4 class="text-sm font-medium mb-2">Disks</h4>
-            <div class="h-[350px]">
-              <DiskChart :metrics="metricsData.disks" />
-            </div>
-          </Card>
-        </PageTransition>
-      </div>
+          <PageTransition :delay="300">
+            <Card class="p-4 rounded-lg border border-gray-200">
+              <h4 class="text-sm font-medium mb-2">Disks</h4>
+              <div class="h-[350px]">
+                <DiskChart :metrics="metricsData.disks" />
+              </div>
+            </Card>
+          </PageTransition>
+        </div>
     </PageTransition>
 
     <!-- Empty State -->
@@ -113,6 +114,46 @@ export default {
         network.length > 0 ||
         disks.length > 0
       );
+    },
+    latestCpuUsage(): number {
+      if (!this.metricsData || !this.metricsData.cpu?.length) {
+        return 0;
+      }
+      const last = this.metricsData.cpu[this.metricsData.cpu.length - 1];
+      if (!last || !last.total || !last.used) {
+        return 0;
+      }
+      const coresUsed = last.used / 1_000_000_000;
+      const usedPercent = (coresUsed * 100) / last.total;
+      return Math.round(Math.min(100, Math.max(0, usedPercent)));
+    },
+    latestDiskUsage(): number {
+      if (!this.metricsData || !this.metricsData.disks?.length) {
+        return 0;
+      }
+      const last = this.metricsData.disks[this.metricsData.disks.length - 1];
+      if (!last?.disks || !last.disks.length) {
+        return 0;
+      }
+      const maxUsed = last.disks.reduce((max: number, disk: any) => {
+        return Math.max(max, disk.usedPercent || 0);
+      }, 0);
+      return Math.round(Math.min(100, Math.max(0, maxUsed)));
+    },
+    latestNetworkUsage(): number {
+      if (!this.metricsData || !this.metricsData.network?.length) {
+        return 0;
+      }
+      const last = this.metricsData.network[this.metricsData.network.length - 1];
+      if (!last?.nics || !last.nics.length) {
+        return 0;
+      }
+      const totalBytesPerSec = last.nics.reduce(
+        (sum: number, nic: any) => sum + (nic.rx || 0) + (nic.tx || 0),
+        0,
+      );
+      const mbPerSec = totalBytesPerSec / 1_000_000;
+      return Math.round(Math.max(0, mbPerSec));
     },
   },
   apollo: {

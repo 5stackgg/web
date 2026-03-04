@@ -94,7 +94,7 @@ import { e_match_status_enum } from "~/generated/zeus";
             class="flex items-center gap-2"
           >
             <span>{{ $t("match.status.finished") }}</span>
-            <TimeAgo :date="match.ended_at" />
+            <span>{{ new Date(match.ended_at).toLocaleString() }}</span>
           </Badge>
         </div>
       </div>

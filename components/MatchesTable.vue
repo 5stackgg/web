@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import MatchTableRow from "~/components/MatchTableRow.vue";
+import { useMediaQuery } from "@vueuse/core";
+
+const isMobile = useMediaQuery("(max-width: 639px)");
 </script>
 
 <template>
@@ -21,7 +24,7 @@ import MatchTableRow from "~/components/MatchTableRow.vue";
         :key="match.id"
         :match="match"
         :player="player"
-        :compact="compact"
+        :compact="compact || isMobile"
         :style="{ animationDelay: `${index * 50}ms` }"
         class="animate-in fade-in slide-in-from-bottom-2"
       />

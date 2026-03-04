@@ -909,12 +909,16 @@
                     }
                 },
                 "track_cancellation": {
-                    "label": "Track Cancellation",
-                    "description": "Track Cancellation"
+                    "label": "Śledzenie anulowania",
+                    "description": "Po włączeniu mecz zostanie automatycznie anulowany, jeśli nie zostanie rozpoczęty w skonfigurowanym czasie."
                 },
                 "match_mode": {
-                    "label": "Match Mode",
-                    "description": "Match Mode"
+                    "label": "Tryb meczu",
+                    "description": "Kontroluje sposób planowania meczu. Tryb automatyczny pozwala systemowi planować automatycznie, tryb admina wymaga ręcznego planowania.",
+                    "options": {
+                        "auto": "Automatyczny",
+                        "admin": "Admin"
+                    }
                 }
             },
             "max_rounds": "Maksymalna liczba rund",

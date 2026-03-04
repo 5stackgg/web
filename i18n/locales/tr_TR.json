@@ -795,12 +795,16 @@
                   }
                 },
                 "track_cancellation": {
-                  "label": "Track Cancellation",
-                  "description": "Track Cancellation"
+                  "label": "İptal takibi",
+                  "description": "Etkinleştirildiğinde, maç yapılandırılmış süre içinde başlatılmazsa otomatik olarak iptal edilir."
                 },
                 "match_mode": {
-                  "label": "Match Mode",
-                  "description": "Match Mode"
+                  "label": "Maç modu",
+                  "description": "Maçın nasıl planlandığını kontrol eder. Otomatik mod sistemin otomatik planlamasına izin verir, Yönetici modu manuel planlama gerektirir.",
+                  "options": {
+                    "auto": "Otomatik",
+                    "admin": "Yönetici"
+                  }
                 }
             },
             "max_rounds": "Max Rounds",

@@ -1098,12 +1098,16 @@
                     "description": "Habilita modelos padrão para todos os jogadores na partida não permitindo skins adicionais."
                 },
                 "track_cancellation": {
-                    "label": "Track Cancellation",
-                    "description": "Track Cancellation"
+                    "label": "Rastreamento de cancelamento",
+                    "description": "Quando ativado, a partida será automaticamente cancelada se não for iniciada dentro da duração configurada."
                 },
                 "match_mode": {
-                    "label": "Match Mode",
-                    "description": "Match Mode"
+                    "label": "Modo de partida",
+                    "description": "Controla como a partida é agendada. O modo automático permite que o sistema agende automaticamente, o modo admin requer agendamento manual.",
+                    "options": {
+                        "auto": "Automático",
+                        "admin": "Admin"
+                    }
                 }
             },
             "max_rounds": "Máximo de rounds",

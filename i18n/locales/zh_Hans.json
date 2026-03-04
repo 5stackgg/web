@@ -795,12 +795,16 @@
                   }
                 },
                 "track_cancellation": {
-                  "label": "Track Cancellation",
-                  "description": "Track Cancellation"
+                  "label": "取消追踪",
+                  "description": "启用后，如果比赛未在配置的时间内开始，将自动取消。"
                 },
                 "match_mode": {
-                  "label": "Match Mode",
-                  "description": "Match Mode"
+                  "label": "比赛模式",
+                  "description": "控制比赛的调度方式。自动模式让系统自动调度，管理员模式需要手动调度。",
+                  "options": {
+                    "auto": "自动",
+                    "admin": "管理员"
+                  }
                 }
             },
             "max_rounds": "最大回合數",

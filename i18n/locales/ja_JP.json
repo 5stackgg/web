@@ -952,12 +952,16 @@
                     }
                 },
                 "track_cancellation": {
-                    "label": "Track Cancellation",
-                    "description": "Track Cancellation"
+                    "label": "キャンセル追跡",
+                    "description": "有効にすると、設定された時間内に開始されない場合、試合は自動的にキャンセルされます。"
                 },
                 "match_mode": {
-                    "label": "Match Mode",
-                    "description": "Match Mode"
+                    "label": "マッチモード",
+                    "description": "試合のスケジュール方法を制御します。自動モードではシステムが自動的にスケジュールし、管理者モードでは手動スケジュールが必要です。",
+                    "options": {
+                        "auto": "自動",
+                        "admin": "管理者"
+                    }
                 }
             },
             "max_rounds": "最大ラウンド数",

@@ -952,12 +952,16 @@
                     }
                 },
                 "track_cancellation": {
-                    "label": "Track Cancellation",
-                    "description": "Track Cancellation"
+                    "label": "Spor annullering",
+                    "description": "Når aktiveret, vil kampen automatisk blive annulleret, hvis den ikke startes inden for den konfigurerede varighed."
                 },
                 "match_mode": {
-                    "label": "Match Mode",
-                    "description": "Match Mode"
+                    "label": "Kamptilstand",
+                    "description": "Styrer hvordan kampen planlægges. Automatisk tilstand lader systemet planlægge automatisk, Admin-tilstand kræver manuel planlægning.",
+                    "options": {
+                        "auto": "Automatisk",
+                        "admin": "Admin"
+                    }
                 }
             },
             "max_rounds": "Maksimale runder",

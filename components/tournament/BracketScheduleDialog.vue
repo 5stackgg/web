@@ -92,8 +92,7 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
 import TimeAgo from "~/components/TimeAgo.vue";
-import { fromDate, toCalendarDate } from "@internationalized/date";
-import type { CalendarDate } from "@internationalized/date";
+import { fromDate, toCalendarDate, CalendarDate, today, getLocalTimeZone } from "@internationalized/date";
 import { toast } from "@/components/ui/toast";
 import type { Bracket } from "~/types/tournament";
 
@@ -154,8 +153,7 @@ export default {
       month: number;
       year: number;
     }) {
-      // day+1 ensures today is always selectable (comparison ignores time-of-day)
-      return new Date(year, month - 1, day + 1) < new Date();
+      return new CalendarDate(year, month, day).compare(today(getLocalTimeZone())) < 0;
     },
     async saveSchedule() {
       if (!this.bracket || !this.startDate || !this.startTime) return;

@@ -847,11 +847,12 @@ import { Card } from "~/components/ui/card";
                       </FormControl>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectItem value="auto">
-                            Auto
-                          </SelectItem>
-                          <SelectItem value="admin">
-                            Admin
+                          <SelectItem
+                            :value="mode.value"
+                            v-for="mode in matchModeSettings"
+                            :key="mode.value"
+                          >
+                            {{ mode.display }}
                           </SelectItem>
                         </SelectGroup>
                       </SelectContent>
@@ -973,6 +974,7 @@ import {
   e_ready_settings_enum,
   e_timeout_settings_enum,
   e_check_in_settings_enum,
+  e_match_mode_enum,
 } from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
@@ -1274,6 +1276,22 @@ export default {
             "match.options.advanced.ready_settings.options.everyone",
           ),
           value: e_ready_settings_enum.Players,
+        },
+      ];
+    },
+    matchModeSettings(): EnumSetting[] {
+      return [
+        {
+          display: this.$t(
+            "match.options.advanced.match_mode.options.auto",
+          ),
+          value: e_match_mode_enum.auto,
+        },
+        {
+          display: this.$t(
+            "match.options.advanced.match_mode.options.admin",
+          ),
+          value: e_match_mode_enum.admin,
         },
       ];
     },

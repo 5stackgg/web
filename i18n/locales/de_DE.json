@@ -952,12 +952,16 @@
                     }
                 },
                 "track_cancellation": {
-                    "label": "Track Cancellation",
-                    "description": "Track Cancellation"
+                    "label": "Abbruchverfolgung",
+                    "description": "Wenn aktiviert, wird das Match automatisch abgebrochen, wenn es nicht innerhalb der konfigurierten Dauer gestartet wird."
                 },
                 "match_mode": {
-                    "label": "Match Mode",
-                    "description": "Match Mode"
+                    "label": "Match-Modus",
+                    "description": "Steuert, wie das Match geplant wird. Der automatische Modus lässt das System automatisch planen, der Admin-Modus erfordert manuelle Planung.",
+                    "options": {
+                        "auto": "Automatisch",
+                        "admin": "Admin"
+                    }
                 }
             },
             "max_rounds": "Maximale Runden",

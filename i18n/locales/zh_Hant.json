@@ -1083,12 +1083,16 @@
                     "description": "為比賽中的所有玩家啟用預設玩家角色模型。"
                 },
                 "track_cancellation": {
-                    "label": "Track Cancellation",
-                    "description": "Track Cancellation"
+                    "label": "取消追蹤",
+                    "description": "啟用後，如果比賽未在配置的時間內開始，將自動取消。"
                 },
                 "match_mode": {
-                    "label": "Match Mode",
-                    "description": "Match Mode"
+                    "label": "比賽模式",
+                    "description": "控制比賽的排程方式。自動模式讓系統自動排程，管理員模式需要手動排程。",
+                    "options": {
+                        "auto": "自動",
+                        "admin": "管理員"
+                    }
                 }
             },
             "max_rounds": "最大回合數",

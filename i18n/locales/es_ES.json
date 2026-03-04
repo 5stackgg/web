@@ -952,12 +952,16 @@
                     }
                 },
                 "track_cancellation": {
-                    "label": "Track Cancellation",
-                    "description": "Track Cancellation"
+                    "label": "Seguimiento de cancelación",
+                    "description": "Cuando está habilitado, la partida se cancelará automáticamente si no se inicia dentro de la duración configurada."
                 },
                 "match_mode": {
-                    "label": "Match Mode",
-                    "description": "Match Mode"
+                    "label": "Modo de partida",
+                    "description": "Controla cómo se programa la partida. El modo automático permite al sistema programar automáticamente, el modo admin requiere programación manual.",
+                    "options": {
+                        "auto": "Automático",
+                        "admin": "Admin"
+                    }
                 }
             },
             "max_rounds": "Rondas máximas",

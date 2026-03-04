@@ -795,12 +795,16 @@
                   }
                 },
                 "track_cancellation": {
-                  "label": "Track Cancellation",
-                  "description": "Track Cancellation"
+                  "label": "تتبع الإلغاء",
+                  "description": "عند التفعيل، سيتم إلغاء المباراة تلقائياً إذا لم تبدأ خلال المدة المحددة."
                 },
                 "match_mode": {
-                  "label": "Match Mode",
-                  "description": "Match Mode"
+                  "label": "وضع المباراة",
+                  "description": "يتحكم في كيفية جدولة المباراة. الوضع التلقائي يسمح للنظام بالجدولة تلقائياً، وضع المسؤول يتطلب جدولة يدوية.",
+                  "options": {
+                    "auto": "تلقائي",
+                    "admin": "مسؤول"
+                  }
                 }
             },
             "max_rounds": "Max Rounds",

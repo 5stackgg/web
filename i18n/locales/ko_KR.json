@@ -784,12 +784,16 @@
                   }
                 },
                 "track_cancellation": {
-                  "label": "Track Cancellation",
-                  "description": "Track Cancellation"
+                  "label": "취소 추적",
+                  "description": "활성화하면 설정된 시간 내에 시작되지 않으면 경기가 자동으로 취소됩니다."
                 },
                 "match_mode": {
-                  "label": "Match Mode",
-                  "description": "Match Mode"
+                  "label": "매치 모드",
+                  "description": "경기 일정 방식을 제어합니다. 자동 모드는 시스템이 자동으로 일정을 잡고, 관리자 모드는 수동 일정이 필요합니다.",
+                  "options": {
+                    "auto": "자동",
+                    "admin": "관리자"
+                  }
                 }
             },
             "max_rounds": "최대 라운드",

@@ -1510,7 +1510,11 @@
                 },
                 "match_mode": {
                     "label": "Match Mode",
-                    "description": "Controls how the match is scheduled. Auto mode lets the system schedule automatically, Admin mode requires manual scheduling."
+                    "description": "Controls how the match is scheduled. Auto mode lets the system schedule automatically, Admin mode requires manual scheduling.",
+                    "options": {
+                        "auto": "Auto",
+                        "admin": "Admin"
+                    }
                 },
                 "default_player_models": {
                     "label": "Default Player Models",

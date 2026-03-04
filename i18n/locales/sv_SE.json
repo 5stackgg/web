@@ -952,12 +952,16 @@
                     }
                 },
                 "track_cancellation": {
-                    "label": "Track Cancellation",
-                    "description": "Track Cancellation"
+                    "label": "Spåra avbokning",
+                    "description": "När aktiverat kommer matchen automatiskt att avbokas om den inte startas inom den konfigurerade tiden."
                 },
                 "match_mode": {
-                    "label": "Match Mode",
-                    "description": "Match Mode"
+                    "label": "Matchläge",
+                    "description": "Styr hur matchen schemaläggs. Automatiskt läge låter systemet schemalägga automatiskt, adminläge kräver manuell schemaläggning.",
+                    "options": {
+                        "auto": "Automatiskt",
+                        "admin": "Admin"
+                    }
                 }
             },
             "max_rounds": "Max rundor",

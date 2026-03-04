@@ -752,26 +752,24 @@ import { Card } from "~/components/ui/card";
                     <FormDescription>{{
                       $t("match.options.advanced.check_in_settings.description")
                     }}</FormDescription>
-                    <FormControl>
-                      <Select v-bind="componentField">
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem
-                              :value="vetoSetting.value"
-                              v-for="vetoSetting in checkInSettings"
-                              :key="vetoSetting.value"
-                            >
-                              {{ vetoSetting.display }}
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
+                    <Select v-bind="componentField">
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            :value="vetoSetting.value"
+                            v-for="vetoSetting in checkInSettings"
+                            :key="vetoSetting.value"
+                          >
+                            {{ vetoSetting.display }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 </FormField>
@@ -784,26 +782,24 @@ import { Card } from "~/components/ui/card";
                     <FormDescription>{{
                       $t("match.options.advanced.ready_settings.description")
                     }}</FormDescription>
-                    <FormControl>
-                      <Select v-bind="componentField">
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem
-                              :value="readySetting.value"
-                              v-for="readySetting in readySettings"
-                              :key="readySetting.value"
-                            >
-                              {{ readySetting.display }}
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
+                    <Select v-bind="componentField">
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            :value="readySetting.value"
+                            v-for="readySetting in readySettings"
+                            :key="readySetting.value"
+                          >
+                            {{ readySetting.display }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 </FormField>
@@ -820,26 +816,24 @@ import { Card } from "~/components/ui/card";
                     <FormDescription>{{
                       $t("match.options.advanced.auto_cancel_mode.description")
                     }}</FormDescription>
-                    <FormControl>
-                      <Select v-bind="componentField">
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem
-                              :value="mode.value"
-                              v-for="mode in autoCancelModes"
-                              :key="mode.value"
-                            >
-                              {{ mode.display }}
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
+                    <Select v-bind="componentField">
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            :value="mode.value"
+                            v-for="mode in autoCancelModes"
+                            :key="mode.value"
+                          >
+                            {{ mode.display }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 </FormField>
@@ -856,26 +850,24 @@ import { Card } from "~/components/ui/card";
                     <FormDescription>{{
                       $t("match.options.advanced.timeouts.tactical.description")
                     }}</FormDescription>
-                    <FormControl>
-                      <Select v-bind="componentField">
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem
-                              :value="timeoutSetting.value"
-                              v-for="timeoutSetting in timeoutSettings"
-                              :key="timeoutSetting.value"
-                            >
-                              {{ timeoutSetting.display }}
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
+                    <Select v-bind="componentField">
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            :value="timeoutSetting.value"
+                            v-for="timeoutSetting in timeoutSettings"
+                            :key="timeoutSetting.value"
+                          >
+                            {{ timeoutSetting.display }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 </FormField>
@@ -893,26 +885,24 @@ import { Card } from "~/components/ui/card";
                         "match.options.advanced.timeouts.technical.description",
                       )
                     }}</FormDescription>
-                    <FormControl>
-                      <Select v-bind="componentField">
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem
-                              :value="timeoutSetting.value"
-                              v-for="timeoutSetting in timeoutSettings"
-                              :key="timeoutSetting.value"
-                            >
-                              {{ timeoutSetting.display }}
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
+                    <Select v-bind="componentField">
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            :value="timeoutSetting.value"
+                            v-for="timeoutSetting in timeoutSettings"
+                            :key="timeoutSetting.value"
+                          >
+                            {{ timeoutSetting.display }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 </FormField>

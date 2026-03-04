@@ -107,6 +107,17 @@ export const useAuthStore = defineStore("auth", () => {
 
         hasDiscordLinked.value = !!response.data.me.discord_id;
 
+        const wsClient = useNuxtApp().$wsClient as import("graphql-ws").Client;
+        await new Promise<void>((resolveWs) => {
+          const timeout = setTimeout(resolveWs, 10000);
+          const dispose = wsClient.on("connected", () => {
+            clearTimeout(timeout);
+            dispose();
+            resolveWs();
+          });
+          wsClient.terminate();
+        });
+
         subscribeToMe(response.data.me.steam_id, () => {
           resolve(true);
         });

@@ -153,7 +153,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
             </DropdownMenuItem>
 
             <DropdownMenuItem
-              v-if="tournament.can_start"
+              v-if="tournament.can_start && !tournament.can_resume"
               @click="startTournament"
               class="cursor-pointer"
             >

@@ -238,17 +238,13 @@ function onHubTouchEnd(e: TouchEvent) {
         />
 
         <!-- Close/toggle at top (mobile only) -->
-        <SidebarMenu v-if="isMobile">
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              tooltip="Toggle sidebar"
-              @click="setRightSidebarOpen(!rightSidebarOpen)"
-              class="w-full h-auto group-data-[collapsible=icon]:!h-auto group-data-[collapsible=icon]:!w-full"
-            >
-              <MiniDisplay />
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <button
+          v-if="isMobile"
+          class="flex items-center justify-center"
+          @click="setRightSidebarOpen(!rightSidebarOpen)"
+        >
+          <MiniDisplay />
+        </button>
 
         <!-- Notifications -->
         <button

@@ -107,10 +107,11 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
                   class="absolute inset-0 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-[3px]"
                   @click.stop="vetoPick"
                 >
-                  <div
-                    class="p-2 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 shadow-xl shadow-black/30 ring-1 ring-white/10"
-                  >
-                    <Check class="w-4 h-4 text-green-400" />
+                  <div class="flex flex-col items-center gap-0.5">
+                    <Check class="w-5 h-5 text-green-400" />
+                    <span class="text-[10px] font-semibold text-white">{{
+                      $t("common.confirm")
+                    }}</span>
                   </div>
                 </div>
               </Transition>
@@ -135,6 +136,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
         :model-value="form.values.map_id"
         :map-pool="mapPool"
         :picks="picks"
+        :confirm-label="$t('match.map_veto.confirm', { type: pickType })"
         @update:modelValue="
           (mapId) => {
             if (pickType !== e_veto_pick_types_enum.Side) {
@@ -143,8 +145,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
             }
           }
         "
-        >{{ $t("match.map_veto.confirm", { type: pickType }) }}</MapSelector
-      >
+      />
     </form>
     <template v-else>
       <MapSelector

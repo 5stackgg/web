@@ -1,12 +1,99 @@
 <script setup lang="ts">
 import { CaretSortIcon } from "@radix-icons/vue";
 import { Switch } from "~/components/ui/switch";
+import { Drawer, DrawerContent, DrawerTitle } from "~/components/ui/drawer";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import { useMediaQuery } from "@vueuse/core";
 import debounce from "~/utilities/debounce";
+
+const isMobile = useMediaQuery("(max-width: 768px)");
 </script>
 
 <template>
-  <Popover v-model:open="open">
+  <!-- Mobile: Drawer -->
+  <Drawer v-if="isMobile" v-model:open="open">
+    <div
+      @click="
+        open = true;
+        searchPlayers();
+      "
+    >
+      <slot>
+        <Button
+          variant="outline"
+          :class="[
+            {
+              'justify-between w-full py-8': selected,
+              'justify-between': !selected,
+            },
+            $props.class,
+          ]"
+        >
+          <template v-if="selected">
+            <PlayerDisplay :player="selected" />
+          </template>
+          <template v-else>
+            {{ label }}
+          </template>
+          <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </slot>
+    </div>
+    <DrawerContent>
+      <DrawerTitle class="sr-only">{{ label }}</DrawerTitle>
+      <div class="flex flex-col p-4">
+        <div class="flex items-center justify-between pb-3 border-b">
+          <input
+            ref="mobileSearchInput"
+            v-model="query"
+            :placeholder="$t('player.search.placeholder')"
+            class="flex-1 bg-transparent outline-none text-base"
+            @input="
+              (e: Event) =>
+                debouncedSearch((e.target as HTMLInputElement).value)
+            "
+          />
+          <div class="flex items-center gap-2 ml-4">
+            <Switch
+              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
+              :model-value="onlineOnly"
+              @click="toggleOnlineOnly"
+            />
+            {{ $t("player.search.online_only") }}
+          </div>
+        </div>
+
+        <div class="max-h-[50vh] overflow-y-auto">
+          <div
+            v-if="!players?.length"
+            class="p-4 text-center text-muted-foreground"
+          >
+            {{ $t("player.search.no_players_found") }}
+          </div>
+
+          <div v-else>
+            <div class="px-3 py-2 text-sm text-muted-foreground">
+              {{ players.length }} {{ $t("player.search.found_players") }}
+            </div>
+
+            <div class="divide-y">
+              <div
+                v-for="player in players"
+                :key="`player-${player.steam_id}}`"
+                class="px-3 py-2 hover:bg-accent cursor-pointer"
+                @click="select(player)"
+              >
+                <PlayerDisplay :player="player" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </DrawerContent>
+  </Drawer>
+
+  <!-- Desktop: Popover -->
+  <Popover v-else v-model:open="open">
     <PopoverTrigger as-child>
       <div class="relative">
         <slot>
@@ -184,7 +271,9 @@ export default {
       this.$emit("selected", player);
     },
     async searchPlayers(query?: string) {
-      this.query = query || "";
+      if (query !== undefined) {
+        this.query = query;
+      }
 
       const exclude = !this.canSelectSelf
         ? (this.exclude as string[]).concat(this.me.steam_id)
@@ -204,7 +293,7 @@ export default {
       const response = await $fetch("/api/players-search", {
         method: "post",
         body: {
-          query,
+          query: this.query,
           teamId: this.teamId,
           exclude: exclude,
           registeredOnly: this.registeredOnly,
@@ -242,6 +331,9 @@ export default {
       handler(newOpen: boolean) {
         if (newOpen) {
           this.searchPlayers();
+          this.$nextTick(() => {
+            (this.$refs.mobileSearchInput as HTMLInputElement)?.focus();
+          });
         }
       },
     },

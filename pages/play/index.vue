@@ -48,6 +48,16 @@ import { CardHeader, CardTitle, CardDescription } from "~/components/ui/card";
     class="my-4"
   />
 
+  <Separator
+    v-if="
+      showSeparators &&
+      (matchmakingAllowed ||
+        canCreateMatch ||
+        openRegistrationTournaments?.length > 0)
+    "
+    class="my-4"
+  />
+
   <PageTransition :delay="300" class="mt-6">
     <div>
       <div class="mb-2">

@@ -115,7 +115,7 @@ const showSeparators = computed(
           />
         </div>
 
-        <div class="flex gap-2">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <Button variant="outline" @click="testChatSound" class="w-full">
             {{ $t("pages.settings.notifications.test_chat_sound") }}
           </Button>

@@ -15,7 +15,7 @@ const { hasLobbyInvites } = useInvites();
 
 <template>
   <div class="flex flex-col h-full">
-    <div class="flex-1 p-4 flex flex-col gap-4 overflow-hidden">
+    <div class="flex-1 px-4 pt-4 flex flex-col gap-4 overflow-hidden">
       <!-- Scrollable main content (invites + squad) -->
       <div class="flex-[3] min-h-0 flex flex-col gap-6 overflow-y-auto">
         <!-- Lobby invites -->
@@ -47,14 +47,13 @@ const { hasLobbyInvites } = useInvites();
               <div class="flex items-center gap-2">
                 <MatchmakingLobbyAccess :lobby="currentLobby" />
                 <Button
-                  size="sm"
+                  size="icon"
                   variant="destructive"
-                  class="gap-1.5"
+                  class="rounded-full transition-colors duration-200"
                   @click="leaveCurrentLobby"
                   :title="$t('matchmaking.lobby.leave')"
                 >
                   <LogOut class="h-3 w-3" />
-                  <span>{{ $t("matchmaking.lobby.leave") }}</span>
                 </Button>
               </div>
             </div>
@@ -127,7 +126,7 @@ const { hasLobbyInvites } = useInvites();
       <!-- Dedicated bottom lobby chat area (~25% height) -->
       <template v-if="currentLobby">
         <div
-          class="flex-[1] min-h-[160px] max-h-[40%] border-t border-zinc-800 pt-3 flex flex-col gap-2"
+          class="h-[250px] lg:flex-[1] lg:h-auto lg:min-h-[160px] lg:max-h-[40%] shrink-0 border-t border-zinc-800 pt-3 flex flex-col gap-2"
         >
           <div
             class="text-[11px] font-semibold text-zinc-400 uppercase tracking-wide"

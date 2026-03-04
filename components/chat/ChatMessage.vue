@@ -7,7 +7,7 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
   <div
     :class="[
       'relative pl-12 text-[11px] leading-snug',
-      isSameSender && isCloseTogether ? 'mt-0.5 mb-0.5' : 'my-1.5',
+      isSameSender && isCloseTogether ? 'mt-1' : 'mt-3',
     ]"
   >
     <div v-if="showMeta" class="absolute left-2 top-0">

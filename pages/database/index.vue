@@ -3,33 +3,34 @@
     <div class="space-y-4">
       <h1 class="text-2xl font-semibold">{{ $t("pages.database.title") }}</h1>
 
-      <Tabs default-value="queries" class="w-full">
+      <Tabs v-model="activeTab" default-value="queries" class="w-full">
         <div class="flex items-center justify-between gap-4 mb-4">
-          <TabsList>
-            <TabsTrigger value="queries">{{
-              $t("pages.database.tabs.queries")
-            }}</TabsTrigger>
-            <TabsTrigger value="connections">{{
-              $t("pages.database.tabs.connections")
-            }}</TabsTrigger>
-            <TabsTrigger value="locks">{{
-              $t("pages.database.tabs.locks")
-            }}</TabsTrigger>
-            <TabsTrigger value="io">{{
-              $t("pages.database.tabs.io")
-            }}</TabsTrigger>
-            <TabsTrigger value="index-usage">{{
-              $t("pages.database.tabs.index_usage")
-            }}</TabsTrigger>
-            <TabsTrigger value="storage">{{
-              $t("pages.database.tabs.storage")
-            }}</TabsTrigger>
-            <TabsTrigger value="timescale">{{
-              $t("pages.database.tabs.timescale")
-            }}</TabsTrigger>
-            <TabsTrigger value="backups">{{
-              $t("pages.database.tabs.backups")
-            }}</TabsTrigger>
+          <!-- Mobile: dropdown select -->
+          <div class="lg:hidden w-full">
+            <Select v-model="activeTab">
+              <SelectTrigger class="w-full" aria-label="Database section">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="tab in tabItems"
+                  :key="tab.value"
+                  :value="tab.value"
+                >
+                  {{ tab.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <!-- Desktop: horizontal tabs -->
+          <TabsList class="hidden lg:flex">
+            <TabsTrigger
+              v-for="tab in tabItems"
+              :key="tab.value"
+              :value="tab.value"
+            >
+              {{ tab.label }}
+            </TabsTrigger>
           </TabsList>
 
           <div class="flex items-center gap-2">
@@ -81,30 +82,9 @@
           </div>
         </div>
 
-        <TabsContent value="queries">
-          <QueryPerformanceTab />
-        </TabsContent>
-        <TabsContent value="connections">
-          <ConnectionsTab />
-        </TabsContent>
-        <TabsContent value="locks">
-          <LocksTransactionsTab />
-        </TabsContent>
-        <TabsContent value="io">
-          <IOBufferStatsTab />
-        </TabsContent>
-        <TabsContent value="index-usage">
-          <IndexUsageTab />
-        </TabsContent>
-        <TabsContent value="storage">
-          <StorageTab />
-        </TabsContent>
-        <TabsContent value="timescale">
-          <TimescaleTab />
-        </TabsContent>
-        <TabsContent value="backups">
-          <BackupsTab />
-        </TabsContent>
+        <Transition name="database-tab-fade" mode="out-in">
+          <component :is="activeTabComponent" :key="activeTab" />
+        </Transition>
       </Tabs>
     </div>
   </PageTransition>
@@ -129,7 +109,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import QueryPerformanceTab from "@/components/database/QueryPerformanceTab.vue";
 import ConnectionsTab from "@/components/database/ConnectionsTab.vue";
 import LocksTransactionsTab from "@/components/database/LocksTransactionsTab.vue";
@@ -153,7 +133,6 @@ export default {
     SelectTrigger,
     SelectValue,
     Tabs,
-    TabsContent,
     TabsList,
     TabsTrigger,
     QueryPerformanceTab,
@@ -170,6 +149,7 @@ export default {
   },
   data() {
     return {
+      activeTab: "queries",
       refreshInterval: "5",
       isPaused: false,
       refreshTrigger: 0,
@@ -180,6 +160,37 @@ export default {
     };
   },
   computed: {
+    tabItems() {
+      return [
+        { value: "queries", label: this.$t("pages.database.tabs.queries") },
+        {
+          value: "connections",
+          label: this.$t("pages.database.tabs.connections"),
+        },
+        { value: "locks", label: this.$t("pages.database.tabs.locks") },
+        { value: "io", label: this.$t("pages.database.tabs.io") },
+        {
+          value: "index-usage",
+          label: this.$t("pages.database.tabs.index_usage"),
+        },
+        { value: "storage", label: this.$t("pages.database.tabs.storage") },
+        { value: "timescale", label: this.$t("pages.database.tabs.timescale") },
+        { value: "backups", label: this.$t("pages.database.tabs.backups") },
+      ];
+    },
+    activeTabComponent() {
+      const map: Record<string, any> = {
+        queries: QueryPerformanceTab,
+        connections: ConnectionsTab,
+        locks: LocksTransactionsTab,
+        io: IOBufferStatsTab,
+        "index-usage": IndexUsageTab,
+        storage: StorageTab,
+        timescale: TimescaleTab,
+        backups: BackupsTab,
+      };
+      return map[this.activeTab] || QueryPerformanceTab;
+    },
     pollInterval() {
       if (this.isPaused) {
         return 0; // 0 disables polling in Apollo
@@ -213,3 +224,17 @@ export default {
   },
 };
 </script>
+<style scoped>
+.database-tab-fade-enter-active,
+.database-tab-fade-leave-active {
+  transition:
+    opacity 150ms ease-out,
+    transform 150ms ease-out;
+}
+
+.database-tab-fade-enter-from,
+.database-tab-fade-leave-to {
+  opacity: 0;
+  transform: translateY(2px);
+}
+</style>

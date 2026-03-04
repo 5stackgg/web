@@ -1580,7 +1580,7 @@
             "select_side": "Select the Side your team wants to start on",
             "your_turn": "Your Turn",
             "pick": "Pick",
-            "confirm": "Confirm"
+            "confirm": "Confirm {type}"
         },
         "map_lineup": {
             "picked": "Picked"

@@ -104,9 +104,8 @@ const { isMobile } = useSidebar();
             <!-- Mobile: Show dropdown menu with actions -->
             <DropdownMenu>
               <DropdownMenuTrigger as-child>
-                <Button variant="outline" size="sm">
-                  <MoreHorizontal class="w-4 h-4 mr-1" />
-                  <span class="text-xs">Actions</span>
+                <Button variant="outline" size="icon">
+                  <MoreHorizontal class="w-4 h-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">

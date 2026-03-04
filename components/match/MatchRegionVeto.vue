@@ -1,15 +1,19 @@
 <script lang="ts" setup>
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
+import { Check } from "lucide-vue-next";
 import { FormControl } from "~/components/ui/form";
 import { Separator } from "~/components/ui/separator";
 </script>
 
 <template>
-  <div v-if="isRegionVeto && (isBanning || canSelectRegion)">
+  <div
+    v-if="isRegionVeto && (isBanning || canSelectRegion)"
+    class="flex flex-col gap-4"
+  >
     <template v-if="match.options.region_veto">
       <div
-        class="relative rounded-lg border-l-4 border border-border/50 px-5 py-3 mb-4 mx-auto max-w-lg w-full flex flex-col items-center gap-2 transition-colors duration-300"
+        class="relative rounded-lg border-l-4 border border-border/50 px-5 py-3 mx-auto max-w-lg w-full flex flex-col items-center gap-2 transition-colors duration-300"
         :class="
           isPicking
             ? 'border-l-blue-500 bg-blue-500/10 ring-1 ring-blue-500/30'
@@ -55,22 +59,22 @@ import { Separator } from "~/components/ui/separator";
       </div>
 
       <div class="container mx-auto px-4">
-        <div
-          class="grid grid-cols-2 lg:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-7 gap-6"
-        >
+        <div class="flex flex-wrap justify-center gap-6">
           <div
             v-for="region in regions"
             :key="region.value"
-            class="relative group"
+            class="relative group w-[180px]"
           >
             <div
               @click="isPicking && form.setFieldValue('region', region.value)"
-              class="relative w-auto max-h-[100%] overflow-hidden rounded-[12px] h-[180px] transform"
+              class="relative w-auto max-h-[100%] overflow-hidden rounded-[12px] h-[180px] transition-all duration-300 ease-in-out transform"
               :class="{
-                'cursor-pointer transition-all duration-300 ease-in-out hover:scale-105':
-                  isPicking,
-                'ring-4 ring-primary ring-opacity-50':
+                'cursor-pointer': isPicking,
+                'scale-105 ring-2 ring-primary':
                   form.values.region === region.value,
+                'hover:scale-105':
+                  isPicking &&
+                  (!form.values.region || form.values.region !== region.value),
                 'opacity-30 pointer-events-none filter grayscale':
                   !availableRegions.includes(region.value),
               }"
@@ -82,25 +86,38 @@ import { Separator } from "~/components/ui/separator";
               />
               <div class="absolute inset-0 bg-black bg-opacity-45"></div>
 
-              <div
-                class="absolute inset-0 flex flex-col items-center justify-center"
-              >
+              <div class="absolute inset-x-0 bottom-0 px-2 py-2 text-center">
                 <span
-                  class="text-white text-xl font-bold uppercase text-center font-sans"
+                  class="text-white text-sm font-bold uppercase font-sans drop-shadow-lg"
                 >
                   {{ region.description || region.value }}
                 </span>
               </div>
             </div>
 
-            <div
-              v-if="form.values.region === region.value"
-              class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-80 cursor-pointer rounded-lg"
+            <Transition
+              enter-active-class="transition-all duration-200 ease-out"
+              leave-active-class="transition-all duration-150 ease-in"
+              enter-from-class="opacity-0 scale-50"
+              enter-to-class="opacity-100 scale-100"
+              leave-from-class="opacity-100 scale-100"
+              leave-to-class="opacity-0 scale-50"
             >
-              <Button variant="destructive" @click="vetoPick">
-                {{ $t("match.region_veto.confirm_ban") }}
-              </Button>
-            </div>
+              <div
+                v-if="form.values.region === region.value"
+                class="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-[3px] cursor-pointer rounded-lg"
+                @click.stop="vetoPick"
+              >
+                <div
+                  class="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/15 backdrop-blur-xl border border-white/30 shadow-xl shadow-black/30 ring-1 ring-white/10"
+                >
+                  <Check class="w-4 h-4 text-green-400" />
+                  <span class="text-sm font-semibold text-white">{{
+                    $t("match.region_veto.confirm_ban")
+                  }}</span>
+                </div>
+              </div>
+            </Transition>
           </div>
         </div>
       </div>

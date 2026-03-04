@@ -444,12 +444,28 @@ const isSectionExpanded = (section: string) => {
             {{ gameServerNode.total_server_count }}
           </Badge>
           <button
+            v-if="gameServerNode.enabled && !hasPorts"
             type="button"
-            class="text-xs text-muted-foreground hover:text-foreground hover:underline"
+            class="text-xs text-amber-500 hover:text-amber-400 font-medium"
             @click="showPortsDialog = true"
           >
-            {{ portRangeLabel }}
+            Set Ports
           </button>
+          <button
+            v-else-if="hasPorts"
+            type="button"
+            class="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1 group"
+            @click="showPortsDialog = true"
+          >
+            <span
+              class="underline decoration-muted-foreground/40 group-hover:decoration-foreground"
+              >{{ portRangeLabel }}</span
+            >
+            <Pencil
+              class="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity"
+            />
+          </button>
+          <span v-else class="text-xs text-muted-foreground">-</span>
         </div>
       </div>
     </TableCell>
@@ -869,12 +885,23 @@ const isSectionExpanded = (section: string) => {
                 Ports:
               </div>
               <button
+                v-if="gameServerNode.enabled && !hasPorts"
                 type="button"
-                class="text-left font-medium text-foreground hover:underline"
+                class="text-left font-medium text-amber-500 hover:text-amber-400"
+                @click="showPortsDialog = true"
+              >
+                Set Ports
+              </button>
+              <button
+                v-else-if="hasPorts"
+                type="button"
+                class="text-left font-medium text-foreground hover:underline inline-flex items-center gap-1"
                 @click="showPortsDialog = true"
               >
                 {{ portRangeLabel }}
+                <Pencil class="h-3 w-3 text-muted-foreground" />
               </button>
+              <span v-else class="font-medium text-muted-foreground">-</span>
             </div>
 
             <!-- Server Badge -->
@@ -2100,6 +2127,12 @@ export default defineComponent({
     isCpuGovernorNotOptimal() {
       const governor = this.gameServerNode.cpu_governor_info?.governor;
       return governor && governor !== "performance";
+    },
+    hasPorts() {
+      return (
+        !!this.gameServerNode.start_port_range &&
+        !!this.gameServerNode.end_port_range
+      );
     },
     portRangeLabel() {
       const start = this.gameServerNode.start_port_range;

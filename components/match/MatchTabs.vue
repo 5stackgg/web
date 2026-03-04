@@ -70,17 +70,6 @@ provide("commander", commander);
     </TabsList>
     <TabsContent value="overview">
       <PlayerInvites v-if="me" />
-      <div
-        v-if="canAdjustLineups"
-        class="flex flex-wrap gap-2 mb-3 md:gap-3 md:justify-end"
-      >
-        <Button variant="destructive" class="px-4" @click="randomizeTeams">
-          {{ $t("match.tabs.randomize_teams") }}
-        </Button>
-        <Button variant="destructive" class="px-4" @click="swapLineups">
-          {{ $t("match.tabs.swap_lineups") }}
-        </Button>
-      </div>
 
       <div class="grid gap-4 max-w-[1500px]">
         <Card class="overflow-x-auto">
@@ -100,6 +89,18 @@ provide("commander", commander);
             ></LineupOverview>
           </CardContent>
         </Card>
+      </div>
+
+      <div
+        v-if="canAdjustLineups"
+        class="flex flex-wrap gap-2 mt-3 md:gap-3 md:justify-end container mx-auto px-4"
+      >
+        <Button variant="outline" class="px-4" @click="randomizeTeams">
+          {{ $t("match.tabs.randomize_teams") }}
+        </Button>
+        <Button variant="outline" class="px-4" @click="swapLineups">
+          {{ $t("match.tabs.swap_lineups") }}
+        </Button>
       </div>
 
       <Drawer :open="inviteDialog">

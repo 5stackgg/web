@@ -136,6 +136,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
         :model-value="form.values.map_id"
         :map-pool="mapPool"
         :picks="picks"
+        :confirm-label="$t('match.map_veto.confirm', { type: pickType })"
         @update:modelValue="
           (mapId) => {
             if (pickType !== e_veto_pick_types_enum.Side) {
@@ -144,8 +145,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
             }
           }
         "
-        >{{ $t("match.map_veto.confirm", { type: pickType }) }}</MapSelector
-      >
+      />
     </form>
     <template v-else>
       <MapSelector

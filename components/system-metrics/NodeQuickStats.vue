@@ -59,6 +59,7 @@ export default {
       required: true,
     },
   },
+  emits: ["update-latest-metrics"],
   data() {
     return {
       metricsData: null as any | null,
@@ -71,6 +72,13 @@ export default {
       if (!last || !last.total || !last.used) return 0;
       const coresUsed = last.used / 1_000_000_000;
       const usedPercent = (coresUsed * 100) / last.total;
+      return Math.round(Math.min(100, Math.max(0, usedPercent)));
+    },
+    latestMemoryUsage(): number {
+      if (!this.metricsData?.memory?.length) return 0;
+      const last = this.metricsData.memory[this.metricsData.memory.length - 1];
+      if (!last || !last.total) return 0;
+      const usedPercent = (last.used / last.total) * 100;
       return Math.round(Math.min(100, Math.max(0, usedPercent)));
     },
     latestDiskUsage(): number {
@@ -121,6 +129,14 @@ export default {
                 window: true,
               },
             ],
+            memory: [
+              {},
+              {
+                time: true,
+                total: true,
+                used: true,
+              },
+            ],
             disks: [
               {},
               {
@@ -157,6 +173,13 @@ export default {
       },
       result(this: any, { data }: any) {
         this.metricsData = data.getNodeStats;
+        if (this.metricsData) {
+          this.$emit("update-latest-metrics", {
+            nodeId: this.nodeId,
+            cpu: this.latestCpuUsage,
+            memory: this.latestMemoryUsage,
+          });
+        }
       },
     },
   },

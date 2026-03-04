@@ -85,6 +85,30 @@ const showSeparators = computed(
               <Switch v-model="onlyOnlineNodes" />
             </div>
           </div>
+          <div
+            class="flex items-center gap-2 flex-wrap text-xs text-muted-foreground"
+          >
+            <span>Sort nodes by</span>
+            <Select v-model="nodeSortBy">
+              <SelectTrigger class="h-7 w-32">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="cpu">CPU</SelectItem>
+                <SelectItem value="memory">Memory</SelectItem>
+                <SelectItem value="name">Name</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select v-model="nodeSortDirection">
+              <SelectTrigger class="h-7 w-24">
+                <SelectValue placeholder="Order" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="desc">Desc</SelectItem>
+                <SelectItem value="asc">Asc</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           <div class="flex items-center gap-2 text-xs text-muted-foreground">
             <Badge variant="outline">
               {{ $t("pages.system_metrics.nodes_total") }}:
@@ -112,17 +136,19 @@ const showSeparators = computed(
           ]"
         >
           <div class="flex items-start justify-between gap-3">
-            <div class="space-y-1">
+            <div class="space-y-1 min-w-0">
               <div class="text-sm font-semibold truncate">
                 {{ node.label || node.id }}
               </div>
-              <div
-                class="flex w-full items-center justify-between gap-2 text-xs text-muted-foreground"
-              >
-                <span class="truncate" v-if="node.region">{{
-                  node.region
-                }}</span>
-                <span class="truncate text-right">{{ node.id }}</span>
+              <div class="w-full text-xs text-muted-foreground min-w-0">
+                <span class="truncate block">
+                  <template v-if="node.region">
+                    {{ node.region }} · {{ node.id }}
+                  </template>
+                  <template v-else>
+                    {{ node.id }}
+                  </template>
+                </span>
               </div>
             </div>
             <div class="flex flex-col items-end gap-2">
@@ -160,7 +186,10 @@ const showSeparators = computed(
           </div>
 
           <!-- Quick latest metrics summary -->
-          <NodeQuickStats :node-id="node.id" />
+          <NodeQuickStats
+            :node-id="node.id"
+            @update-latest-metrics="updateNodeMetrics"
+          />
 
           <div class="pt-2 border-t mt-2" v-if="isNodeExpanded(node)">
             <NodeMetrics :game-server-node="node" />
@@ -191,7 +220,7 @@ const showSeparators = computed(
         </div>
 
         <!-- Services filters -->
-        <div class="flex flex-wrap gap-3">
+        <div class="flex flex-wrap gap-3 items-center">
           <div class="w-full sm:w-60">
             <Input
               v-model="serviceSearchTerm"
@@ -218,6 +247,28 @@ const showSeparators = computed(
                 >
                   {{ node }}
                 </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-muted-foreground">
+            <span>Sort services by</span>
+            <Select v-model="serviceSortBy">
+              <SelectTrigger class="h-7 w-32">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="cpu">CPU</SelectItem>
+                <SelectItem value="memory">Memory</SelectItem>
+                <SelectItem value="name">Name</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select v-model="serviceSortDirection">
+              <SelectTrigger class="h-7 w-24">
+                <SelectValue placeholder="Order" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="desc">Desc</SelectItem>
+                <SelectItem value="asc">Asc</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -384,11 +435,22 @@ export default {
       serviceSearchTerm: "",
       selectedServiceNode: "__all" as string,
       expandedServices: {} as Record<string, boolean>,
+      serviceSortBy: "cpu" as "cpu" | "memory" | "name",
+      serviceSortDirection: "desc" as "asc" | "desc",
       // Nodes
       nodeSearchTerm: "",
       onlyEnabledNodes: false,
       onlyOnlineNodes: true,
       expandedNodes: {} as Record<string, boolean>,
+      nodeSortBy: "cpu" as "cpu" | "memory" | "name",
+      nodeSortDirection: "desc" as "asc" | "desc",
+      nodeMetricsCache: {} as Record<
+        string,
+        {
+          cpu: number;
+          memory: number;
+        }
+      >,
     };
   },
   methods: {
@@ -446,6 +508,24 @@ export default {
     toggleNodeExpanded(node: any) {
       this.expandedNodes[node.id] = !this.expandedNodes[node.id];
     },
+    updateNodeMetrics(payload: {
+      nodeId: string;
+      cpu: number;
+      memory: number;
+    }) {
+      this.nodeMetricsCache[payload.nodeId] = {
+        cpu: payload.cpu,
+        memory: payload.memory,
+      };
+    },
+  },
+  watch: {
+    serviceSortBy(newVal: "cpu" | "memory" | "name") {
+      this.serviceSortDirection = newVal === "name" ? "asc" : "desc";
+    },
+    nodeSortBy(newVal: "cpu" | "memory" | "name") {
+      this.nodeSortDirection = newVal === "name" ? "asc" : "desc";
+    },
   },
   computed: {
     totalServices(): number {
@@ -471,7 +551,7 @@ export default {
         return [];
       }
       const term = this.serviceSearchTerm.trim().toLowerCase();
-      return this.getServiceStats.filter((service: any) => {
+      const filtered = this.getServiceStats.filter((service: any) => {
         if (!this.hasServiceMetrics(service)) {
           return false;
         }
@@ -489,13 +569,43 @@ export default {
         }
         return true;
       });
+
+      const services = [...filtered];
+      const directionFactor = this.serviceSortDirection === "asc" ? 1 : -1;
+
+      services.sort((a: any, b: any) => {
+        let valA: number | string = 0;
+        let valB: number | string = 0;
+
+        if (this.serviceSortBy === "cpu") {
+          valA = this.latestCpuUsage(a);
+          valB = this.latestCpuUsage(b);
+        } else if (this.serviceSortBy === "memory") {
+          valA = this.latestMemoryUsage(a);
+          valB = this.latestMemoryUsage(b);
+        } else if (this.serviceSortBy === "name") {
+          valA = (a.name || "") as string;
+          valB = (b.name || "") as string;
+        }
+
+        if (typeof valA === "string" && typeof valB === "string") {
+          return directionFactor * valA.localeCompare(valB);
+        }
+
+        const numA = typeof valA === "number" ? valA : 0;
+        const numB = typeof valB === "number" ? valB : 0;
+        if (numA === numB) return 0;
+        return directionFactor * (numA < numB ? -1 : 1);
+      });
+
+      return services;
     },
     filteredNodes(): any[] {
       if (!this.game_server_nodes) {
         return [];
       }
       const term = this.nodeSearchTerm.trim().toLowerCase();
-      return this.game_server_nodes.filter((node: any) => {
+      const filtered = this.game_server_nodes.filter((node: any) => {
         if (
           term &&
           !`${node.label || ""} ${node.id} ${node.region || ""}`
@@ -512,6 +622,42 @@ export default {
         }
         return true;
       });
+
+      const nodes = [...filtered];
+      const directionFactor = this.nodeSortDirection === "asc" ? 1 : -1;
+
+      nodes.sort((a: any, b: any) => {
+        let valA: number | string = 0;
+        let valB: number | string = 0;
+
+        if (this.nodeSortBy === "cpu" || this.nodeSortBy === "memory") {
+          const metricsA = this.nodeMetricsCache[a.id];
+          const metricsB = this.nodeMetricsCache[b.id];
+          const key = this.nodeSortBy;
+
+          const defaultVal =
+            this.nodeSortDirection === "asc" ? Number.POSITIVE_INFINITY : -1;
+
+          valA = metricsA ? (metricsA[key] ?? defaultVal) : defaultVal;
+          valB = metricsB ? (metricsB[key] ?? defaultVal) : defaultVal;
+        } else if (this.nodeSortBy === "name") {
+          const nameA = (a.label || a.id || "") as string;
+          const nameB = (b.label || b.id || "") as string;
+          valA = nameA;
+          valB = nameB;
+        }
+
+        if (typeof valA === "string" && typeof valB === "string") {
+          return directionFactor * valA.localeCompare(valB);
+        }
+
+        const numA = typeof valA === "number" ? valA : 0;
+        const numB = typeof valB === "number" ? valB : 0;
+        if (numA === numB) return 0;
+        return directionFactor * (numA < numB ? -1 : 1);
+      });
+
+      return nodes;
     },
   },
   apollo: {

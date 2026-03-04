@@ -41,12 +41,15 @@ const isMobile = useMediaQuery("(max-width: 768px)");
     </div>
     <DrawerContent>
       <DrawerTitle class="sr-only">{{ label }}</DrawerTitle>
-      <div class="flex flex-col p-4">
+      <div class="flex flex-col h-[80dvh] p-4">
         <div class="flex items-center justify-between pb-3 border-b">
           <input
             ref="mobileSearchInput"
             v-model="query"
             :placeholder="$t('player.search.placeholder')"
+            type="search"
+            inputmode="search"
+            enterkeyhint="search"
             class="flex-1 bg-transparent outline-none text-base"
             @input="
               (e: Event) =>
@@ -63,7 +66,7 @@ const isMobile = useMediaQuery("(max-width: 768px)");
           </div>
         </div>
 
-        <div class="max-h-[50vh] overflow-y-auto">
+        <div class="flex-1 overflow-y-auto min-h-0">
           <div
             v-if="!players?.length"
             class="p-4 text-center text-muted-foreground"
@@ -126,6 +129,9 @@ const isMobile = useMediaQuery("(max-width: 768px)");
           <input
             v-model="query"
             :placeholder="$t('player.search.placeholder')"
+            type="search"
+            inputmode="search"
+            enterkeyhint="search"
             class="flex-1 bg-transparent outline-none"
             @input="
               (e: Event) =>

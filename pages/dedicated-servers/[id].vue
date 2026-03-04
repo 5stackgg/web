@@ -125,43 +125,45 @@ const serverMenu = ref(false);
       </template>
 
       <template #actions>
-        <Button
-          v-if="server?.game_server_node_id"
-          variant="outline"
-          @click="$router.push(`/dedicated-servers/${server.id}/files`)"
-        >
-          <FolderOpen class="mr-2 h-4 w-4" />
-          {{ $t("pages.dedicated_servers.detail.files") }}
-        </Button>
-        <DropdownMenu v-model:open="serverMenu">
-          <DropdownMenuTrigger as-child>
-            <Button variant="outline" size="icon">
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" class="w-[200px]">
-            <DropdownMenuGroup>
-              <DropdownMenuItem @click="editServerSheet = true">
-                {{ $t("pages.dedicated_servers.detail.edit") }}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                v-if="server?.game_server_node_id"
-                @click="$router.push(`/dedicated-servers/${server.id}/files`)"
-              >
-                <FolderOpen class="mr-2 h-4 w-4 inline" />
-                {{ $t("pages.dedicated_servers.detail.files") }}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                class="text-red-600"
-                @click="deleteServerAlertDialog = true"
-              >
-                <Trash class="mr-2 h-4 w-4 inline" />
-                {{ $t("pages.dedicated_servers.detail.delete") }}
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div class="flex items-center gap-2">
+          <Button
+            v-if="server?.game_server_node_id"
+            variant="outline"
+            @click="$router.push(`/dedicated-servers/${server.id}/files`)"
+          >
+            <FolderOpen class="mr-2 h-4 w-4" />
+            {{ $t("pages.dedicated_servers.detail.files") }}
+          </Button>
+          <DropdownMenu v-model:open="serverMenu">
+            <DropdownMenuTrigger as-child>
+              <Button variant="outline" size="icon">
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" class="w-[200px]">
+              <DropdownMenuGroup>
+                <DropdownMenuItem @click="editServerSheet = true">
+                  {{ $t("pages.dedicated_servers.detail.edit") }}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  v-if="server?.game_server_node_id"
+                  @click="$router.push(`/dedicated-servers/${server.id}/files`)"
+                >
+                  <FolderOpen class="mr-2 h-4 w-4 inline" />
+                  {{ $t("pages.dedicated_servers.detail.files") }}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  class="text-red-600"
+                  @click="deleteServerAlertDialog = true"
+                >
+                  <Trash class="mr-2 h-4 w-4 inline" />
+                  {{ $t("pages.dedicated_servers.detail.delete") }}
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </template>
     </PageHeading>
   </PageTransition>
@@ -173,15 +175,15 @@ const serverMenu = ref(false);
   </PageTransition>
 
   <PageTransition :delay="200" class="mt-6">
+    <RconCommander :server-id="$route.params.id as string" :online="true" />
+  </PageTransition>
+
+  <PageTransition :delay="300" class="mt-6">
     <ServiceLogs
       :service="`dedicated-server-${$route.params.id}`"
       :compact="true"
       v-if="server?.game_server_node_id"
     />
-  </PageTransition>
-
-  <PageTransition :delay="300" class="mt-6">
-    <RconCommander :server-id="$route.params.id as string" :online="true" />
   </PageTransition>
 
   <Sheet

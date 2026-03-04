@@ -6,7 +6,7 @@ import LineupUtility from "~/components/match/LineupUtility.vue";
 import LineupOpeningDuels from "~/components/match/LineupOpeningDuels.vue";
 import LineupClutches from "~/components/match/LineupClutches.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
-import { provide } from "vue";
+import { provide, ref } from "vue";
 import EventEmitter from "eventemitter3";
 import { Button } from "~/components/ui/button";
 import {
@@ -15,6 +15,13 @@ import {
   FormItem,
   FormLabel,
 } from "~/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 import MatchOptionsDisplay from "~/components/match//MatchOptionsDisplay.vue";
 import { Cross2Icon } from "@radix-icons/vue";
@@ -27,14 +34,55 @@ import PlayerInvites from "~/components/match/PlayerInvites.vue";
 
 const commander = new EventEmitter();
 provide("commander", commander);
+
+const activeTab = ref("overview");
 </script>
 
 <template>
-  <Tabs default-value="overview" class="match-tabs">
-    <TabsList
-      variant="underline"
-      class="lg:inline-flex grid grid-cols-1 mb-4 h-auto"
-    >
+  <Tabs v-model="activeTab" class="match-tabs">
+    <!-- Mobile: single dropdown -->
+    <div class="mb-4 lg:hidden">
+      <Select v-model="activeTab">
+        <SelectTrigger class="w-full" aria-label="Match section">
+          <SelectValue :placeholder="$t('match.tabs.overview')" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="overview">
+            {{ $t("match.tabs.overview") }}
+          </SelectItem>
+          <SelectItem value="utility" :disabled="disableStats">
+            {{ $t("match.tabs.utility") }}
+          </SelectItem>
+          <SelectItem value="opening-duels" :disabled="disableStats">
+            {{ $t("match.tabs.opening_duels") }}
+          </SelectItem>
+          <SelectItem
+            v-if="match.options.type !== e_match_types_enum.Duel"
+            value="clutches"
+            :disabled="disableStats"
+          >
+            {{ $t("match.tabs.clutches") }}
+          </SelectItem>
+          <SelectItem
+            v-if="match.options.map_veto || match.options.region_veto"
+            value="veto"
+            :disabled="match.match_maps.length === 0"
+          >
+            {{ $t("match.tabs.map_veto_tab") }}
+          </SelectItem>
+          <SelectItem value="settings">
+            {{ $t("match.tabs.settings") }}
+          </SelectItem>
+          <SelectItem value="streams" :disabled="!canConfigureStreams">
+            {{ $t("match.tabs.streams") }}
+          </SelectItem>
+          <SelectItem v-if="canViewAdmin" value="server">
+            {{ $t("match.tabs.admin") }}
+          </SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+    <TabsList variant="underline" class="hidden lg:inline-flex mb-4 h-auto">
       <TabsTrigger value="overview">
         {{ $t("match.tabs.overview") }}
       </TabsTrigger>

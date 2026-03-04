@@ -47,14 +47,13 @@ const { hasLobbyInvites } = useInvites();
               <div class="flex items-center gap-2">
                 <MatchmakingLobbyAccess :lobby="currentLobby" />
                 <Button
-                  size="sm"
+                  size="icon"
                   variant="destructive"
-                  class="gap-1.5"
+                  class="rounded-full transition-colors duration-200"
                   @click="leaveCurrentLobby"
                   :title="$t('matchmaking.lobby.leave')"
                 >
                   <LogOut class="h-3 w-3" />
-                  <span>{{ $t("matchmaking.lobby.leave") }}</span>
                 </Button>
               </div>
             </div>

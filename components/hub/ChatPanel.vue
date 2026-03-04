@@ -169,8 +169,7 @@ function handleMessageReceived(payload: {
   const tabId = payload.tabId ?? activeChatId.value;
   if (!tabId) return;
   const isCurrentRoom = tabId === activeChatId.value;
-  const isVisible =
-    props.isSidebarOpen && props.isTabActive && isCurrentRoom;
+  const isVisible = props.isSidebarOpen && props.isTabActive && isCurrentRoom;
   if (!isVisible) {
     incrementUnread(tabId);
   } else {

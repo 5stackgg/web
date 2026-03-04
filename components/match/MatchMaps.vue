@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { Badge } from "~/components/ui/badge";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
-import { Download } from "lucide-vue-next";
+import { Download, ChevronRight, ChevronLeft } from "lucide-vue-next";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import cleanMapName from "~/utilities/cleanMapName";
 </script>
 
@@ -82,7 +87,7 @@ import cleanMapName from "~/utilities/cleanMapName";
 
     <!-- Score section -->
     <div class="bg-muted/40 px-3 py-2.5">
-      <div class="flex items-center justify-between gap-2">
+      <div class="flex items-center justify-between gap-1">
         <!-- Team 1 -->
         <div
           class="flex flex-col items-center justify-center gap-0.5 flex-1 min-w-0 min-h-[2.5rem]"
@@ -93,6 +98,15 @@ import cleanMapName from "~/utilities/cleanMapName";
           }}</span>
         </div>
 
+        <Tooltip v-if="pickedByLineup === 1">
+          <TooltipTrigger as-child>
+            <ChevronLeft class="w-3 h-3 text-emerald-500 shrink-0" />
+          </TooltipTrigger>
+          <TooltipContent>
+            {{ match.lineup_1.name }} {{ $t("match.map_veto.pick") }}
+          </TooltipContent>
+        </Tooltip>
+
         <!-- Score -->
         <div
           class="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-background/60"
@@ -102,15 +116,38 @@ import cleanMapName from "~/utilities/cleanMapName";
             :lineup="match.lineup_1"
             :match-map="matchMap"
             class="text-lg font-bold tabular-nums"
+            :halves="false"
+          />
+          <MatchLineupScoreDisplay
+            :match="match"
+            :lineup="match.lineup_1"
+            :match-map="matchMap"
+            :score="false"
           />
           <span class="text-muted-foreground text-xs">:</span>
           <MatchLineupScoreDisplay
             :match="match"
             :lineup="match.lineup_2"
             :match-map="matchMap"
+            :score="false"
+          />
+          <MatchLineupScoreDisplay
+            :match="match"
+            :lineup="match.lineup_2"
+            :match-map="matchMap"
             class="text-lg font-bold tabular-nums"
+            :halves="false"
           />
         </div>
+
+        <Tooltip v-if="pickedByLineup === 2">
+          <TooltipTrigger as-child>
+            <ChevronRight class="w-3 h-3 text-emerald-500 shrink-0" />
+          </TooltipTrigger>
+          <TooltipContent>
+            {{ match.lineup_2.name }} {{ $t("match.map_veto.pick") }}
+          </TooltipContent>
+        </Tooltip>
 
         <!-- Team 2 -->
         <div
@@ -150,6 +187,15 @@ export default {
       return this.matchMap.vetos.find(({ type }) => {
         return type === e_veto_pick_types_enum.Decider;
       });
+    },
+    pickedByLineup() {
+      const pick = this.matchMap.vetos.find(
+        ({ type }) => type === e_veto_pick_types_enum.Pick,
+      );
+      if (!pick) return null;
+      if (pick.match_lineup_id === this.match.lineup_1.id) return 1;
+      if (pick.match_lineup_id === this.match.lineup_2.id) return 2;
+      return null;
     },
     team1Patch() {
       return this.matchMap.lineup_1_side === "TERRORIST"

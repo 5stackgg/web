@@ -49,6 +49,8 @@ __metadata:
     monaco-editor: "npm:^0.55.1"
     node-fetch: "npm:^3.3.2"
     nuxt: "npm:^3.17.2"
+    overlayscrollbars: "npm:^2.14.0"
+    overlayscrollbars-vue: "npm:^0.5.9"
     pev2: "npm:^1.20.1"
     pinia: "npm:^3.0.2"
     postcss: "npm:^8.5.3"
@@ -11784,6 +11786,23 @@ __metadata:
   version: 1.0.2
   resolution: "os-tmpdir@npm:1.0.2"
   checksum: 10c0/f438450224f8e2687605a8dd318f0db694b6293c5d835ae509a69e97c8de38b6994645337e5577f5001115470414638978cc49da1cdcc25106dad8738dc69990
+  languageName: node
+  linkType: hard
+
+"overlayscrollbars-vue@npm:^0.5.9":
+  version: 0.5.9
+  resolution: "overlayscrollbars-vue@npm:0.5.9"
+  peerDependencies:
+    overlayscrollbars: ^2.0.0
+    vue: ^3.2.25
+  checksum: 10c0/bd40df4e29b90e26570d5a321fe6c8ea6d7983250ddfcc8b06767434c5c2f08b393db1434c83e0e4a369aeb17cfb65360e5ce1e0430cd72ce85cb59ed16424b4
+  languageName: node
+  linkType: hard
+
+"overlayscrollbars@npm:^2.14.0":
+  version: 2.14.0
+  resolution: "overlayscrollbars@npm:2.14.0"
+  checksum: 10c0/e08d188733032aadb258b6ddf56249c6747b7e5ac745dd34ae402320a5f8d4cd832a3a73baff29f8a64a6faf334be719617725972fab8c29fb708a9fd96bc3e8
   languageName: node
   linkType: hard
 

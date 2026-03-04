@@ -17,7 +17,23 @@ interface Region {
 export const useApplicationSettingsStore = defineStore(
   "applicationSettings",
   () => {
-    const settings = ref<Array<{ name: string; value: string }>>([]);
+    const SETTINGS_CACHE_KEY = "5stack:application-settings";
+
+    const loadCachedSettings = (): Array<{
+      name: string;
+      value: string;
+    }> => {
+      try {
+        const cached = localStorage.getItem(SETTINGS_CACHE_KEY);
+        if (cached) {
+          return JSON.parse(cached);
+        }
+      } catch {}
+      return [];
+    };
+
+    const settings =
+      ref<Array<{ name: string; value: string }>>(loadCachedSettings());
 
     const subscribeToSettings = async () => {
       const subscription = getGraphqlClient().subscribe({
@@ -35,6 +51,12 @@ export const useApplicationSettingsStore = defineStore(
       subscription.subscribe({
         next: ({ data }) => {
           settings.value = data.settings;
+          try {
+            localStorage.setItem(
+              SETTINGS_CACHE_KEY,
+              JSON.stringify(data.settings),
+            );
+          } catch {}
         },
       });
     };

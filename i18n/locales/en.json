@@ -184,7 +184,7 @@
                     "updated": "Chat settings updated successfully"
                 },
                 "discord": {
-                    "title": "Discord",
+                    "title": "Discord / Notifications",
                     "invite_link": "Discord Invite Link",
                     "webhook": "Discord Webhook",
                     "webhook_description": "We use this discord webhook to send notifications that require action from a player. Ex. match issues, bugs, etc.",

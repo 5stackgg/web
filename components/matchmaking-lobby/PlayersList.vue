@@ -58,7 +58,6 @@ import FriendOptions from "~/components/matchmaking-lobby/FriendOptions.vue";
                     class="w-full cursor-pointer opacity-50 hover:opacity-80 hover:bg-muted/50 transition-all duration-200 p-2 rounded-md"
                     :player="player"
                     :showOnline="false"
-                    :showAddFriend="false"
                     :linkable="true"
                   />
                   <div class="flex flex-col gap-2">
@@ -77,7 +76,6 @@ import FriendOptions from "~/components/matchmaking-lobby/FriendOptions.vue";
               <PlayerDisplay
                 :player="player"
                 :showOnline="false"
-                :showAddFriend="false"
                 :linkable="true"
               />
 

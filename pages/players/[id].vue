@@ -63,6 +63,7 @@ const { isMobile } = useSidebar();
                   :player="player"
                   size="xl"
                   :show-steam-id="true"
+                  :show-add-friend="true"
                   v-if="player"
                 />
               </div>

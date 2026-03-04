@@ -1182,7 +1182,12 @@
         },
         "bracket": {
             "update": "Update Bracket",
-            "edit_title": "Edit Bracket - Round {round} Match {match}"
+            "edit_title": "Edit Bracket - Round {round} Match {match}",
+            "schedule_title": "Schedule Match",
+            "scheduled_at": "Scheduled",
+            "currently_scheduled": "Currently scheduled",
+            "save_schedule": "Save Schedule",
+            "clear_schedule": "Clear"
         },
         "match": {
             "team_1": "Team 1",

@@ -756,6 +756,7 @@ export default {
                       group: true,
                       bye: true,
                       match_number: true,
+                      scheduled_at: true,
                       scheduled_eta: true,
                       team_1_seed: true,
                       team_2_seed: true,

@@ -2,6 +2,7 @@
 import { ref, watch, onMounted, onUnmounted, nextTick, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
+import BracketScheduleDialog from "~/components/tournament/BracketScheduleDialog.vue";
 import { Maximize, Minimize, ZoomIn, ZoomOut } from "lucide-vue-next";
 import { getRoundLabel } from "~/utilities/tournamentRoundLabels";
 
@@ -84,6 +85,14 @@ const zoomLevel = ref(0.75);
 const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 3.0;
 const ZOOM_STEP = 0.1;
+
+const scheduleDialogOpen = ref(false);
+const selectedBracket = ref<any>(null);
+
+const handleScheduleBracket = (bracket: any) => {
+  selectedBracket.value = bracket;
+  scheduleDialogOpen.value = true;
+};
 
 // Calculate dynamic max height based on number of groups
 const maxHeight = computed(() => {
@@ -624,6 +633,7 @@ function startMomentum() {
                 :tournament="tournament"
                 :round="Number(round)"
                 :brackets="props.rounds.get(round) as any[]"
+                @schedule-bracket="handleScheduleBracket"
               ></TournamentMatch>
             </div>
           </div>
@@ -712,6 +722,12 @@ function startMomentum() {
         ></div>
       </div>
     </div>
+
+    <BracketScheduleDialog
+      :open="scheduleDialogOpen"
+      :bracket="selectedBracket"
+      @update:open="scheduleDialogOpen = $event"
+    />
   </div>
 </template>
 

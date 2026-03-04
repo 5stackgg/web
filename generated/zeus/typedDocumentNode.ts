@@ -1,7 +1,7 @@
 /* eslint-disable */
-import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
+import { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import gql from 'graphql-tag';
-import type {
+import {
   ValueTypes,
   GenericOperation,
   OperationOptions,
@@ -9,9 +9,9 @@ import type {
   InputType,
   ScalarDefinition,
   ThunderGraphQLOptions,
+  Zeus,
   ExtractVariables,
 } from './';
-import { Zeus } from './';
 import { Ops } from './const';
 
 export const typedGql =

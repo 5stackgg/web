@@ -93,6 +93,7 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
 import { generateMutation } from "~/graphql/graphqlGen";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { fromDate, toCalendarDate } from "@internationalized/date";
+import { toast } from "@/components/ui/toast";
 
 export default {
   props: {
@@ -165,7 +166,7 @@ export default {
       this.saving = true;
       try {
         const scheduled_at = new Date(
-          `${this.startDate} ${this.startTime}`,
+          `${this.startDate}T${this.startTime}`,
         ).toISOString();
         await this.$apollo.mutate({
           mutation: generateMutation({
@@ -179,6 +180,11 @@ export default {
           }),
         });
         this.$emit("update:open", false);
+      } catch {
+        toast({
+          title: this.$t("error.generic"),
+          variant: "destructive",
+        });
       } finally {
         this.saving = false;
       }
@@ -199,6 +205,11 @@ export default {
           }),
         });
         this.$emit("update:open", false);
+      } catch {
+        toast({
+          title: this.$t("error.generic"),
+          variant: "destructive",
+        });
       } finally {
         this.saving = false;
       }

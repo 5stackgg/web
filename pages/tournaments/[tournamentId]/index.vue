@@ -171,7 +171,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
             </DropdownMenuItem>
             <DropdownMenuItem
               v-if="tournament.can_resume"
-              @click="resumeTournament"
+              @click="resumeDialogOpen = true"
               class="cursor-pointer"
             >
               <Play class="mr-2 h-4 w-4" />
@@ -568,6 +568,29 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+
+    <!-- Resume Tournament Dialog -->
+    <AlertDialog
+      :open="resumeDialogOpen"
+      @update:open="(open) => (resumeDialogOpen = open)"
+    >
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{{
+            $t("tournament.actions.resume")
+          }}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {{ $t("tournament.actions.resume_description") }}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+          <AlertDialogAction @click="resumeTournament">
+            {{ $t("tournament.actions.resume") }}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   </div>
 </template>
 
@@ -595,6 +618,7 @@ export default {
       overviewExpanded: true,
       deleteDialogOpen: false,
       pauseDialogOpen: false,
+      resumeDialogOpen: false,
       organizerPopoversOpen: {},
       activeTab: "overview",
       e_match_types: [],

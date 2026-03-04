@@ -84,7 +84,7 @@ import { e_match_status_enum } from "~/generated/zeus";
             class="flex items-center gap-2"
           >
             <span>{{ $t("match.auto_canceling") }}</span>
-            <span>{{ new Date(match.cancels_at).toLocaleString() }}</span>
+            <TimeAgo :date="match.cancels_at" />
           </Badge>
           <Badge
             v-else-if="

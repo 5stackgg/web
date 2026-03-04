@@ -149,7 +149,7 @@ export default {
         return;
       }
       this.form.setValues({
-        scheduled_at: new Date(`${this.startDate} ${this.startTime}`),
+        scheduled_at: new Date(`${this.startDate}T${this.startTime}`),
       });
     },
     async scheduleMatch() {

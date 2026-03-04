@@ -82,10 +82,7 @@ const activeTab = ref("overview");
         </SelectContent>
       </Select>
     </div>
-    <TabsList
-      variant="underline"
-      class="hidden lg:inline-flex mb-4 h-auto"
-    >
+    <TabsList variant="underline" class="hidden lg:inline-flex mb-4 h-auto">
       <TabsTrigger value="overview">
         {{ $t("match.tabs.overview") }}
       </TabsTrigger>

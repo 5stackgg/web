@@ -15,48 +15,48 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
     <PageTransition v-if="metricsData && showCharts">
       <!-- Detailed charts -->
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          <PageTransition :delay="0">
-            <Card class="p-4 rounded-lg border border-gray-200">
-              <h4 class="text-sm font-medium mb-2">
-                {{ $t("pages.system_metrics.cpu_usage") }}
-              </h4>
-              <div class="h-[350px]">
-                <CpuChart :metrics="metricsData.cpu" />
-              </div>
-            </Card>
-          </PageTransition>
+        <PageTransition :delay="0">
+          <Card class="p-4 rounded-lg border border-gray-200">
+            <h4 class="text-sm font-medium mb-2">
+              {{ $t("pages.system_metrics.cpu_usage") }}
+            </h4>
+            <div class="h-[350px]">
+              <CpuChart :metrics="metricsData.cpu" />
+            </div>
+          </Card>
+        </PageTransition>
 
-          <PageTransition :delay="100">
-            <Card class="p-4 rounded-lg border border-gray-200">
-              <h4 class="text-sm font-medium mb-2">
-                {{ $t("pages.system_metrics.memory_usage") }}
-              </h4>
-              <div class="h-[350px]">
-                <MemoryChart :metrics="metricsData.memory" />
-              </div>
-            </Card>
-          </PageTransition>
+        <PageTransition :delay="100">
+          <Card class="p-4 rounded-lg border border-gray-200">
+            <h4 class="text-sm font-medium mb-2">
+              {{ $t("pages.system_metrics.memory_usage") }}
+            </h4>
+            <div class="h-[350px]">
+              <MemoryChart :metrics="metricsData.memory" />
+            </div>
+          </Card>
+        </PageTransition>
 
-          <PageTransition :delay="200">
-            <Card class="p-4 rounded-lg border border-gray-200">
-              <h4 class="text-sm font-medium mb-2">
-                {{ $t("pages.system_metrics.network") }}
-              </h4>
-              <div class="h-[350px]">
-                <NetworkChart :metrics="metricsData.network" />
-              </div>
-            </Card>
-          </PageTransition>
+        <PageTransition :delay="200">
+          <Card class="p-4 rounded-lg border border-gray-200">
+            <h4 class="text-sm font-medium mb-2">
+              {{ $t("pages.system_metrics.network") }}
+            </h4>
+            <div class="h-[350px]">
+              <NetworkChart :metrics="metricsData.network" />
+            </div>
+          </Card>
+        </PageTransition>
 
-          <PageTransition :delay="300">
-            <Card class="p-4 rounded-lg border border-gray-200">
-              <h4 class="text-sm font-medium mb-2">Disks</h4>
-              <div class="h-[350px]">
-                <DiskChart :metrics="metricsData.disks" />
-              </div>
-            </Card>
-          </PageTransition>
-        </div>
+        <PageTransition :delay="300">
+          <Card class="p-4 rounded-lg border border-gray-200">
+            <h4 class="text-sm font-medium mb-2">Disks</h4>
+            <div class="h-[350px]">
+              <DiskChart :metrics="metricsData.disks" />
+            </div>
+          </Card>
+        </PageTransition>
+      </div>
     </PageTransition>
 
     <!-- Empty State -->
@@ -144,7 +144,8 @@ export default {
       if (!this.metricsData || !this.metricsData.network?.length) {
         return 0;
       }
-      const last = this.metricsData.network[this.metricsData.network.length - 1];
+      const last =
+        this.metricsData.network[this.metricsData.network.length - 1];
       if (!last?.nics || !last.nics.length) {
         return 0;
       }

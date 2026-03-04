@@ -23,9 +23,7 @@ import { generateQuery } from "~/graphql/graphqlGen";
 
     <div class="space-y-1">
       <div class="flex items-center justify-between">
-        <span class="text-muted-foreground">
-          Disks
-        </span>
+        <span class="text-muted-foreground"> Disks </span>
         <span>{{ latestDiskUsage }}%</span>
       </div>
       <div class="h-1.5 rounded-full bg-muted overflow-hidden">
@@ -41,7 +39,7 @@ import { generateQuery } from "~/graphql/graphqlGen";
         <span class="text-muted-foreground">
           {{ $t("pages.system_metrics.network") }}
         </span>
-        <span>{{ latestNetworkUsage }} MB/s</span>
+        <span>{{ latestNetworkUsage }} Mbps</span>
       </div>
       <div class="h-1.5 rounded-full bg-muted overflow-hidden">
         <div
@@ -97,12 +95,12 @@ export default {
       const last =
         this.metricsData.network[this.metricsData.network.length - 1];
       if (!last?.nics?.length) return 0;
-      const totalBytesPerSec = last.nics.reduce(
-        (sum: number, nic: any) => sum + (nic.rx || 0) + (nic.tx || 0),
+      const totalBitsPerSec = last.nics.reduce(
+        (sum: number, nic: any) => sum + ((nic.rx || 0) + (nic.tx || 0)) * 8,
         0,
       );
-      const mbPerSec = totalBytesPerSec / 1_000_000;
-      return Math.round(Math.max(0, mbPerSec));
+      const mbps = totalBitsPerSec / 1_000_000;
+      return Number(Math.max(0, mbps).toFixed(1));
     },
   },
   apollo: {
@@ -164,4 +162,3 @@ export default {
   },
 };
 </script>
-

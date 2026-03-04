@@ -53,7 +53,9 @@ const showSeparators = computed(
   <!-- Game server nodes section (now on top) -->
   <PageTransition :delay="100" class="mt-6">
     <Card class="p-4 space-y-4">
-      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div
+        class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
+      >
         <div class="flex items-center gap-2">
           <Activity class="h-5 w-5 text-muted-foreground" />
           <h2 class="text-base font-semibold">
@@ -111,25 +113,19 @@ const showSeparators = computed(
               <div class="text-sm font-semibold truncate">
                 {{ node.label || node.id }}
               </div>
-              <div class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+              <div
+                class="flex flex-wrap items-center gap-2 text-xs text-muted-foreground"
+              >
                 <span>ID: {{ node.id }}</span>
                 <span v-if="node.region">• {{ node.region }}</span>
               </div>
             </div>
             <div class="flex flex-col items-end gap-2">
               <div class="flex items-center gap-2">
-                <Badge
-                  v-if="node.enabled"
-                  variant="outline"
-                  class="text-xs"
-                >
+                <Badge v-if="node.enabled" variant="outline" class="text-xs">
                   {{ $t("common.enabled") }}
                 </Badge>
-                <Badge
-                  v-else
-                  variant="outline"
-                  class="text-xs"
-                >
+                <Badge v-else variant="outline" class="text-xs">
                   {{ $t("common.disabled") }}
                 </Badge>
                 <FiveStackToolTip :delay-duration="300">
@@ -179,7 +175,9 @@ const showSeparators = computed(
   <!-- Services section (now below game nodes) -->
   <PageTransition :delay="300" class="mt-8">
     <Card class="p-4 space-y-4">
-      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div
+        class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
+      >
         <div class="flex items-center gap-2">
           <Cpu class="h-5 w-5 text-muted-foreground" />
           <h2 class="text-base font-semibold">
@@ -192,7 +190,9 @@ const showSeparators = computed(
           <div class="w-full sm:w-60">
             <Input
               v-model="serviceSearchTerm"
-              :placeholder="$t('pages.system_metrics.search_services_placeholder')"
+              :placeholder="
+                $t('pages.system_metrics.search_services_placeholder')
+              "
             />
           </div>
           <div class="w-full sm:w-48">
@@ -266,7 +266,9 @@ const showSeparators = computed(
                     >
                       <Activity
                         class="h-4 w-4"
-                        :class="isServiceExpanded(service) ? 'text-primary' : ''"
+                        :class="
+                          isServiceExpanded(service) ? 'text-primary' : ''
+                        "
                       />
                     </Button>
                   </template>

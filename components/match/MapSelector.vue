@@ -35,9 +35,12 @@ import MapDisplay from "~/components/MapDisplay.vue";
             @click.stop="confirmMap"
           >
             <div
-              class="p-2.5 rounded-full bg-white/15 backdrop-blur-xl border border-white/30 shadow-xl shadow-black/30 ring-1 ring-white/10"
+              class="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/15 backdrop-blur-xl border border-white/30 shadow-xl shadow-black/30 ring-1 ring-white/10"
             >
-              <Check class="w-5 h-5 text-green-400" />
+              <Check class="w-4 h-4 text-green-400" />
+              <span class="text-sm font-semibold text-white">{{
+                $t("common.confirm")
+              }}</span>
             </div>
           </div>
         </Transition>

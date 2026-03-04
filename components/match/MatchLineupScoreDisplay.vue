@@ -2,6 +2,7 @@
 
 <template>
   <span
+    v-if="score"
     class="font-bold"
     :class="{
       [`text-green-400`]: winning,
@@ -17,7 +18,7 @@
     </template>
   </span>
 
-  <small v-if="matchMap">
+  <small v-if="matchMap && halves">
     [<span class="text-yellow-500">{{ tWins }}</span
     >:<span class="text-blue-400">{{ ctWins }}</span
     >]
@@ -40,6 +41,14 @@ export default {
     matchMap: {
       required: false,
       type: Object,
+    },
+    score: {
+      type: Boolean,
+      default: true,
+    },
+    halves: {
+      type: Boolean,
+      default: true,
     },
   },
   computed: {

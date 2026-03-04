@@ -44,7 +44,7 @@ const { height: viewportHeight } = useVisualViewport();
       <DrawerTitle class="sr-only">{{ label }}</DrawerTitle>
       <div
         class="flex flex-col"
-        :style="{ height: `${viewportHeight * 0.8}px` }"
+        :style="{ height: `${viewportHeight * 0.9}px` }"
       >
         <div class="flex-1 overflow-y-auto min-h-0 p-4 flex flex-col">
           <div class="flex-1" />
@@ -55,22 +55,23 @@ const { height: viewportHeight } = useVisualViewport();
             {{ $t("player.search.no_players_found") }}
           </div>
 
-          <div v-else>
-            <div class="px-3 py-2 text-sm text-muted-foreground">
-              {{ players.length }} {{ $t("player.search.found_players") }}
-            </div>
-
-            <div class="divide-y">
-              <div
-                v-for="player in players"
-                :key="`player-${player.steam_id}}`"
-                class="px-3 py-2 hover:bg-accent cursor-pointer"
-                @click="select(player)"
-              >
-                <PlayerDisplay :player="player" />
-              </div>
+          <div v-else class="divide-y">
+            <div
+              v-for="player in players"
+              :key="`player-${player.steam_id}}`"
+              class="px-3 py-2 hover:bg-accent cursor-pointer"
+              @click="select(player)"
+            >
+              <PlayerDisplay :player="player" />
             </div>
           </div>
+        </div>
+
+        <div
+          v-if="players?.length"
+          class="px-4 py-2 text-xs text-muted-foreground border-t"
+        >
+          {{ players.length }} {{ $t("player.search.found_players") }}
         </div>
 
         <div class="flex items-center justify-between p-4 border-t">
@@ -81,6 +82,10 @@ const { height: viewportHeight } = useVisualViewport();
             type="search"
             inputmode="search"
             enterkeyhint="search"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
             class="flex-1 bg-transparent outline-none text-base"
             @input="
               (e: Event) =>
@@ -257,7 +262,7 @@ export default {
       return useAuthStore().me;
     },
     canSelectSelf() {
-      return this.self && !this.exclude.includes(this.me.steam_id);
+      return this.self && this.me && !this.exclude.includes(this.me.steam_id);
     },
     onlineOnly: {
       get() {
@@ -273,6 +278,9 @@ export default {
     toggleOnlineOnly() {
       this.onlineOnly = !this.onlineOnly;
       this.searchPlayers();
+      this.$nextTick(() => {
+        (this.$refs.mobileSearchInput as HTMLInputElement)?.focus();
+      });
     },
     select(player: Player) {
       if (!player) {
@@ -286,9 +294,10 @@ export default {
         this.query = query;
       }
 
-      const exclude = !this.canSelectSelf
-        ? (this.exclude as string[]).concat(this.me.steam_id)
-        : (this.exclude as string[]);
+      const exclude =
+        !this.canSelectSelf && this.me?.steam_id
+          ? (this.exclude as string[]).concat(this.me.steam_id)
+          : (this.exclude as string[]);
 
       if (this.onlineOnly) {
         if (!this.query.trim()) {

@@ -34,7 +34,7 @@ const { height: viewportHeight } = useVisualViewport();
       <DrawerTitle class="sr-only">{{ label }}</DrawerTitle>
       <div
         class="flex flex-col"
-        :style="{ height: `${viewportHeight * 0.8}px` }"
+        :style="{ height: `${viewportHeight * 0.9}px` }"
       >
         <div class="flex-1 overflow-y-auto min-h-0 p-4 flex flex-col">
           <div class="flex-1" />
@@ -45,27 +45,28 @@ const { height: viewportHeight } = useVisualViewport();
             {{ $t("team.search.no_teams_found") }}
           </div>
 
-          <div v-else>
-            <div class="px-3 py-2 text-sm text-muted-foreground">
-              {{ teams.length }} {{ $t("team.search.found_teams") }}
-            </div>
-
-            <div class="divide-y">
-              <div
-                v-for="team in teams"
-                :key="team.id"
-                class="px-3 py-2 hover:bg-accent cursor-pointer"
-                @click="select(team)"
-              >
-                <div class="flex items-center">
-                  <span class="text-xs text-muted-foreground mr-2">
-                    [{{ team.short_name }}]
-                  </span>
-                  <span>{{ team.name }}</span>
-                </div>
+          <div v-else class="divide-y">
+            <div
+              v-for="team in teams"
+              :key="team.id"
+              class="px-3 py-2 hover:bg-accent cursor-pointer"
+              @click="select(team)"
+            >
+              <div class="flex items-center">
+                <span class="text-xs text-muted-foreground mr-2">
+                  [{{ team.short_name }}]
+                </span>
+                <span>{{ team.name }}</span>
               </div>
             </div>
           </div>
+        </div>
+
+        <div
+          v-if="teams?.length"
+          class="px-4 py-2 text-xs text-muted-foreground border-t"
+        >
+          {{ teams.length }} {{ $t("team.search.found_teams") }}
         </div>
 
         <div class="flex items-center justify-between p-4 border-t">
@@ -76,6 +77,10 @@ const { height: viewportHeight } = useVisualViewport();
             type="search"
             inputmode="search"
             enterkeyhint="search"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
             class="flex-1 bg-transparent outline-none text-base"
             @input="
               (e: Event) =>
@@ -270,6 +275,9 @@ export default {
     toggleMyTeamsOnly() {
       this.myTeamsOnly = !this.myTeamsOnly;
       this.searchTeams();
+      this.$nextTick(() => {
+        (this.$refs.mobileSearchInput as HTMLInputElement)?.focus();
+      });
     },
     select(team: Team) {
       if (!team) {

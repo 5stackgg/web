@@ -1371,6 +1371,7 @@
         }
     },
     "match": {
+        "scheduled": "Scheduled",
         "no_matches": "No Matches Found",
         "no_matches_description": "There are currently no matches available.",
         "simple": {

@@ -65,8 +65,17 @@
     --sidebar-border: 220 13% 91%;
  
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --topnav-background: 0 0% 98%;
+    --topnav-foreground: 240 5.3% 26.1%;
+    --topnav-primary: 240 5.9% 10%;
+    --topnav-primary-foreground: 0 0% 98%;
+    --topnav-accent: 142 77% 73%;
+    --topnav-accent-foreground: 0 0% 98%;
+    --topnav-border: 220 13% 91%;
+    --topnav-ring: 217.2 91.2% 59.8%;
   }
- 
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -118,9 +127,18 @@
     --sidebar-border: 240 3.7% 15.9%;
  
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --topnav-background: 240 4% 16%;
+    --topnav-foreground: 0 0% 98%;
+    --topnav-primary: 240 6% 10%;
+    --topnav-primary-foreground: 0 0% 98%;
+    --topnav-accent: 142 77% 73%;
+    --topnav-accent-foreground: 0 0% 98%;
+    --topnav-border: 240 3% 23%;
+    --topnav-ring: 217.2 91.2% 59.8%;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
@@ -163,6 +181,15 @@ div[role="menuitem"] {
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --topnav-background: 0 0% 98%;
+    --topnav-foreground: 240 5.3% 26.1%;
+    --topnav-primary: 240 5.9% 10%;
+    --topnav-primary-foreground: 0 0% 98%;
+    --topnav-accent: 142 77% 73%;
+    --topnav-accent-foreground: 0 0% 98%;
+    --topnav-border: 220 13% 91%;
+    --topnav-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
@@ -174,6 +201,15 @@ div[role="menuitem"] {
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --topnav-background: 240 4% 16%;
+    --topnav-foreground: 0 0% 98%;
+    --topnav-primary: 240 6% 10%;
+    --topnav-primary-foreground: 0 0% 98%;
+    --topnav-accent: 142 77% 73%;
+    --topnav-accent-foreground: 0 0% 98%;
+    --topnav-border: 240 3% 23%;
+    --topnav-ring: 217.2 91.2% 59.8%;
   }
 }
 

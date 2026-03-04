@@ -77,6 +77,16 @@ module.exports = {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        topnav: {
+          DEFAULT: "hsl(var(--topnav-background))",
+          foreground: "hsl(var(--topnav-foreground))",
+          primary: "hsl(var(--topnav-primary))",
+          "primary-foreground": "hsl(var(--topnav-primary-foreground))",
+          accent: "hsl(var(--topnav-accent))",
+          "accent-foreground": "hsl(var(--topnav-accent-foreground))",
+          border: "hsl(var(--topnav-border))",
+          ring: "hsl(var(--topnav-ring))",
+        },
       },
       borderRadius: {
         xl: "calc(var(--radius) + 4px)",

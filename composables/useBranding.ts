@@ -34,6 +34,15 @@ const lightColorMap: Record<string, string> = {
   "public.color_sidebar_primary": "--sidebar-primary",
   "public.color_sidebar_primary_foreground": "--sidebar-primary-foreground",
   "public.color_sidebar_ring": "--sidebar-ring",
+  // Top Nav
+  "public.color_topnav_background": "--topnav-background",
+  "public.color_topnav_foreground": "--topnav-foreground",
+  "public.color_topnav_accent": "--topnav-accent",
+  "public.color_topnav_accent_foreground": "--topnav-accent-foreground",
+  "public.color_topnav_border": "--topnav-border",
+  "public.color_topnav_primary": "--topnav-primary",
+  "public.color_topnav_primary_foreground": "--topnav-primary-foreground",
+  "public.color_topnav_ring": "--topnav-ring",
 };
 
 const darkColorMap: Record<string, string> = {
@@ -70,6 +79,15 @@ const darkColorMap: Record<string, string> = {
   "public.color_dark_sidebar_primary_foreground":
     "--sidebar-primary-foreground",
   "public.color_dark_sidebar_ring": "--sidebar-ring",
+  // Top Nav
+  "public.color_dark_topnav_background": "--topnav-background",
+  "public.color_dark_topnav_foreground": "--topnav-foreground",
+  "public.color_dark_topnav_accent": "--topnav-accent",
+  "public.color_dark_topnav_accent_foreground": "--topnav-accent-foreground",
+  "public.color_dark_topnav_border": "--topnav-border",
+  "public.color_dark_topnav_primary": "--topnav-primary",
+  "public.color_dark_topnav_primary_foreground": "--topnav-primary-foreground",
+  "public.color_dark_topnav_ring": "--topnav-ring",
 };
 
 export function useBranding() {

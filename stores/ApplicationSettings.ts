@@ -32,9 +32,8 @@ export const useApplicationSettingsStore = defineStore(
       return [];
     };
 
-    const settings = ref<Array<{ name: string; value: string }>>(
-      loadCachedSettings(),
-    );
+    const settings =
+      ref<Array<{ name: string; value: string }>>(loadCachedSettings());
 
     const subscribeToSettings = async () => {
       const subscription = getGraphqlClient().subscribe({

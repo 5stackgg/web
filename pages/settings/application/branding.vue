@@ -462,6 +462,51 @@ const lightColorSections: ColorSection[] = [
       },
     ],
   },
+  {
+    title: "Top Nav",
+    fields: [
+      {
+        key: "public.color_topnav_background",
+        label: "Top Nav Background",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_topnav_foreground",
+        label: "Top Nav Text",
+        default: "240 5.3% 26.1%",
+      },
+      {
+        key: "public.color_topnav_accent",
+        label: "Top Nav Hover",
+        default: "142 77% 73%",
+      },
+      {
+        key: "public.color_topnav_accent_foreground",
+        label: "Top Nav Hover Text",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_topnav_border",
+        label: "Top Nav Border",
+        default: "220 13% 91%",
+      },
+      {
+        key: "public.color_topnav_primary",
+        label: "Top Nav Primary",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_topnav_primary_foreground",
+        label: "Top Nav Primary Text",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_topnav_ring",
+        label: "Top Nav Focus Ring",
+        default: "217.2 91.2% 59.8%",
+      },
+    ],
+  },
 ];
 
 const darkColorSections: ColorSection[] = [
@@ -621,6 +666,51 @@ const darkColorSections: ColorSection[] = [
       {
         key: "public.color_dark_sidebar_ring",
         label: "Sidebar Focus Ring",
+        default: "217.2 91.2% 59.8%",
+      },
+    ],
+  },
+  {
+    title: "Top Nav",
+    fields: [
+      {
+        key: "public.color_dark_topnav_background",
+        label: "Top Nav Background",
+        default: "240 4% 16%",
+      },
+      {
+        key: "public.color_dark_topnav_foreground",
+        label: "Top Nav Text",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_topnav_accent",
+        label: "Top Nav Hover",
+        default: "142 77% 73%",
+      },
+      {
+        key: "public.color_dark_topnav_accent_foreground",
+        label: "Top Nav Hover Text",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_topnav_border",
+        label: "Top Nav Border",
+        default: "240 3% 23%",
+      },
+      {
+        key: "public.color_dark_topnav_primary",
+        label: "Top Nav Primary",
+        default: "240 6% 10%",
+      },
+      {
+        key: "public.color_dark_topnav_primary_foreground",
+        label: "Top Nav Primary Text",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_topnav_ring",
+        label: "Top Nav Focus Ring",
         default: "217.2 91.2% 59.8%",
       },
     ],
@@ -808,7 +898,7 @@ export default {
     async removeFavicon() {
       await this.deleteBrandingFile("favicon");
     },
-    async deleteBrandingFile(type: "logo" | "favicon") {
+    async deleteBrandingFile(type: "logo" | "favicon", silent = false) {
       try {
         const response = await fetch(
           `https://${this.apiDomain}/branding/${type}`,
@@ -822,13 +912,17 @@ export default {
           throw new Error(`Delete failed: ${response.statusText}`);
         }
 
-        toast({ title: `${type === "logo" ? "Logo" : "Favicon"} removed` });
+        if (!silent) {
+          toast({ title: `${type === "logo" ? "Logo" : "Favicon"} removed` });
+        }
       } catch (error: any) {
-        toast({
-          title: "Delete failed",
-          description: error.message,
-          variant: "destructive",
-        });
+        if (!silent) {
+          toast({
+            title: "Delete failed",
+            description: error.message,
+            variant: "destructive",
+          });
+        }
       }
     },
     onColorChange(key: string, event: Event) {
@@ -929,8 +1023,8 @@ export default {
 
         // Delete uploaded files
         await Promise.allSettled([
-          this.deleteBrandingFile("logo"),
-          this.deleteBrandingFile("favicon"),
+          this.deleteBrandingFile("logo", true),
+          this.deleteBrandingFile("favicon", true),
         ]);
 
         this.brandName = "";
@@ -939,7 +1033,7 @@ export default {
         this.loginFooterUrl = "";
         this.colorValues = {};
 
-        await this.saveAll();
+        toast({ title: "Branding reset to defaults" });
       } catch (error: any) {
         toast({
           title: "Reset failed",

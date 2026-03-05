@@ -1137,10 +1137,10 @@ export default {
             ],
           }),
         });
-      } catch (error: any) {
+      } catch (error: unknown) {
         toast({
           title: this.$t("tournament.actions.update_status_failed"),
-          description: error.message,
+          description: error instanceof Error ? error.message : String(error),
           variant: "destructive",
         });
       }

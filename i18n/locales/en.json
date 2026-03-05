@@ -1512,13 +1512,11 @@
                     "description": "Automatically cancel matches that are not started within the configured duration.",
                     "auto_cancel_duration": {
                         "label": "Auto Cancel Duration (minutes)",
-                        "description": "Override the app-level auto cancel duration for this match/tournament.",
-                        "placeholder": "Use app setting"
+                        "description": "Override the app-level auto cancel duration for this match/tournament."
                     },
                     "live_match_timeout": {
                         "label": "Live Match Timeout (minutes)",
-                        "description": "Override the app-level live match timeout for this match/tournament.",
-                        "placeholder": "Use app setting"
+                        "description": "Override the app-level live match timeout for this match/tournament."
                     }
                 },
                 "match_mode": {

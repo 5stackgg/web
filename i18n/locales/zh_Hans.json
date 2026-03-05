@@ -477,8 +477,16 @@
         "refresh": "重新整理"
     },
     "tournament": {
+        "paused_banner": "此锦标赛已暂停。新比赛将不会自动排程。",
         "overview": "總覽",
-        "bracket": "賽程圖",
+        "bracket": {
+            "schedule_title": "排程比赛",
+            "scheduled_at": "已排程",
+            "currently_scheduled": "当前排程",
+            "save_schedule": "保存排程",
+            "clear_schedule": "清除",
+            "past_time_error": "排程时间必须在未来"
+        },
         "teams": "{count} 支戰隊",
         "settings": "設定",
         "admin": "管理員",
@@ -507,7 +515,11 @@
             "start": "開始日期",
             "pick_date": "選擇日期",
             "update": "更新錦標賽",
-            "match_options": "比賽選項"
+            "match_options": "比賽選項",
+            "auto_start": {
+                "label": "自动开始",
+                "description": "启用后，锦标赛比赛将自动排程。禁用后，主办方需手动排程每场比赛。"
+            }
         },
         "notifications": {
             "title": "Notifications",
@@ -621,7 +633,11 @@
         "actions": {
             "open_registration": "開放報名",
             "close_registration": "關閉報名",
-            "cancel": "取消錦標賽"
+            "cancel": "取消錦標賽",
+            "confirm_pause": "暂停锦标赛",
+            "pause_description": "确定要暂停此锦标赛吗？在恢复之前，新比赛将不会自动排程。",
+            "resume_description": "确定要恢复此锦标赛吗？所有待定比赛将立即排程。",
+            "update_status_failed": "更新锦标赛状态失败"
         },
         "upcoming": {
             "empty": "你目前沒有即將到來的錦標賽。"
@@ -694,6 +710,7 @@
         }
     },
     "match": {
+        "scheduled": "已排程",
         "simple": {
             "vs": "對戰"
         },
@@ -798,14 +815,12 @@
                   "label": "取消追踪",
                   "description": "启用后，如果比赛未在配置的时间内开始，将自动取消。",
                   "auto_cancel_duration": {
-                      "label": "Auto Cancel Duration (minutes)",
-                      "description": "Override the app-level auto cancel duration for this match/tournament.",
-                      "placeholder": "Use app setting"
+                      "label": "自动取消时长（分钟）",
+                      "description": "覆盖此比赛/锦标赛的应用级自动取消时长。"
                   },
                   "live_match_timeout": {
-                      "label": "Live Match Timeout (minutes)",
-                      "description": "Override the app-level live match timeout for this match/tournament.",
-                      "placeholder": "Use app setting"
+                      "label": "实时比赛超时（分钟）",
+                      "description": "覆盖此比赛/锦标赛的应用级实时比赛超时。"
                   }
                 },
                 "match_mode": {

@@ -624,6 +624,7 @@
         "generic": "エラーが発生しました。もう一度やり直してください。"
     },
     "tournament": {
+        "paused_banner": "このトーナメントは一時停止中です。新しい試合は自動スケジュールされません。",
         "overview": "概要",
         "joined": "トーナメントに参加",
         "updated": "更新されたトーナメント",
@@ -651,7 +652,11 @@
             "description": "説明",
             "start": "開始",
             "pick_date": "日付を選択",
-            "update": "更新"
+            "update": "更新",
+            "auto_start": {
+                "label": "自動開始",
+                "description": "有効にすると、トーナメントの試合が自動的にスケジュールされます。無効にすると、主催者が各試合を手動でスケジュールする必要があります。"
+            }
         },
         "notifications": {
             "title": "Notifications",
@@ -718,6 +723,14 @@
             "groups": "グループ",
             "groups_placeholder": "このステージのグループ数を入力してください..."
         },
+        "bracket": {
+            "schedule_title": "試合をスケジュール",
+            "scheduled_at": "スケジュール済み",
+            "currently_scheduled": "現在のスケジュール",
+            "save_schedule": "スケジュールを保存",
+            "clear_schedule": "クリア",
+            "past_time_error": "スケジュール時間は未来の時刻を指定してください"
+        },
         "match": {
             "team_1": "チーム1",
             "team_2": "チーム2",
@@ -767,7 +780,11 @@
         "actions": {
             "open_registration": "登録を開始",
             "close_registration": "登録を終了",
-            "cancel": "キャンセル"
+            "cancel": "キャンセル",
+            "confirm_pause": "トーナメントを一時停止",
+            "pause_description": "このトーナメントを一時停止しますか？再開するまで新しい試合は自動スケジュールされません。",
+            "resume_description": "このトーナメントを再開しますか？保留中のすべての試合が直ちにスケジュールされます。",
+            "update_status_failed": "トーナメントのステータス更新に失敗しました"
         },
         "upcoming": {
             "empty": "予定されているトーナメントはありません"
@@ -846,6 +863,7 @@
         }
     },
     "match": {
+        "scheduled": "スケジュール済み",
         "simple": {
             "vs": "対"
         },
@@ -955,14 +973,12 @@
                     "label": "キャンセル追跡",
                     "description": "有効にすると、設定された時間内に開始されない場合、試合は自動的にキャンセルされます。",
                     "auto_cancel_duration": {
-                        "label": "Auto Cancel Duration (minutes)",
-                        "description": "Override the app-level auto cancel duration for this match/tournament.",
-                        "placeholder": "Use app setting"
+                        "label": "自動キャンセル時間（分）",
+                        "description": "この試合/トーナメントのアプリレベルの自動キャンセル時間を上書きします。"
                     },
                     "live_match_timeout": {
-                        "label": "Live Match Timeout (minutes)",
-                        "description": "Override the app-level live match timeout for this match/tournament.",
-                        "placeholder": "Use app setting"
+                        "label": "ライブマッチタイムアウト（分）",
+                        "description": "この試合/トーナメントのアプリレベルのライブマッチタイムアウトを上書きします。"
                     }
                 },
                 "match_mode": {

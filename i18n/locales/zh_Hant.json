@@ -727,6 +727,7 @@
         "generic": "發生錯誤，請再試一次。"
     },
     "tournament": {
+        "paused_banner": "此錦標賽已暫停。新比賽將不會自動排程。",
         "overview": "總覽",
         "joined": "已加入錦標賽",
         "updated": "錦標賽已更新",
@@ -754,7 +755,11 @@
             "description": "描述",
             "start": "開始日期",
             "pick_date": "選擇日期",
-            "update": "更新錦標賽"
+            "update": "更新錦標賽",
+            "auto_start": {
+                "label": "自動開始",
+                "description": "啟用後，錦標賽比賽將自動排程。停用後，主辦方需手動排程每場比賽。"
+            }
         },
         "notifications": {
             "title": "Notifications",
@@ -822,6 +827,7 @@
             "add_first": "新增第一階段",
             "add_another": "新增階段",
             "not_setup": "錦標賽階段尚未設定",
+            "advanced_settings": "進階階段設定",
             "groups": "小組",
             "groups_placeholder": "輸入此階段的小組數量…",
             "match_options": "比賽選項",
@@ -836,6 +842,14 @@
             "round_match": "第 {round} 回合，第 {match} 場",
             "bye_round": "輪空回合",
             "scheduled_for": "預定時間"
+        },
+        "bracket": {
+            "schedule_title": "排程比賽",
+            "scheduled_at": "已排程",
+            "currently_scheduled": "目前排程",
+            "save_schedule": "儲存排程",
+            "clear_schedule": "清除",
+            "past_time_error": "排程時間必須在未來"
         },
         "results": {
             "title": "結果",
@@ -890,7 +904,11 @@
             "cancel": "取消錦標賽",
             "delete": "刪除錦標賽",
             "confirm_delete": "確認刪除錦標賽",
-            "delete_description": "你確定要刪除此錦標賽嗎？此操作無法復原。"
+            "delete_description": "你確定要刪除此錦標賽嗎？此操作無法復原。",
+            "confirm_pause": "暫停錦標賽",
+            "pause_description": "確定要暫停此錦標賽嗎？在恢復之前，新比賽將不會自動排程。",
+            "resume_description": "確定要恢復此錦標賽嗎？所有待定比賽將立即排程。",
+            "update_status_failed": "更新錦標賽狀態失敗"
         },
         "upcoming": {
             "empty": "你目前沒有即將到來的錦標賽。"
@@ -969,6 +987,7 @@
         }
     },
     "match": {
+        "scheduled": "已排程",
         "simple": {
             "vs": "對戰"
         },
@@ -1086,14 +1105,12 @@
                     "label": "取消追蹤",
                     "description": "啟用後，如果比賽未在配置的時間內開始，將自動取消。",
                     "auto_cancel_duration": {
-                        "label": "Auto Cancel Duration (minutes)",
-                        "description": "Override the app-level auto cancel duration for this match/tournament.",
-                        "placeholder": "Use app setting"
+                        "label": "自動取消時長（分鐘）",
+                        "description": "覆蓋此比賽/錦標賽的應用程式級自動取消時長。"
                     },
                     "live_match_timeout": {
-                        "label": "Live Match Timeout (minutes)",
-                        "description": "Override the app-level live match timeout for this match/tournament.",
-                        "placeholder": "Use app setting"
+                        "label": "實時比賽逾時（分鐘）",
+                        "description": "覆蓋此比賽/錦標賽的應用程式級實時比賽逾時。"
                     }
                 },
                 "match_mode": {

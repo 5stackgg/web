@@ -466,6 +466,7 @@
         "refresh": "지원하다"
     },
     "tournament": {
+        "paused_banner": "이 토너먼트는 일시 중지되었습니다. 새로운 경기가 자동으로 예약되지 않습니다.",
         "overview": "개요",
         "bracket": "브라켓",
         "teams": "팀",
@@ -496,7 +497,11 @@
             "start": "시작",
             "pick_date": "날짜 선택",
             "update": "업데이트",
-            "match_options": "매치 옵션"
+            "match_options": "매치 옵션",
+            "auto_start": {
+                "label": "자동 시작",
+                "description": "활성화하면 토너먼트 경기가 자동으로 예약됩니다. 비활성화하면 주최자가 각 경기를 수동으로 예약해야 합니다."
+            }
         },
         "notifications": {
             "title": "Notifications",
@@ -560,6 +565,14 @@
             "add_another": "다른 스테이지 추가",
             "not_setup": "스테이지가 설정되지 않았습니다"
         },
+        "bracket": {
+            "schedule_title": "경기 일정 설정",
+            "scheduled_at": "예약됨",
+            "currently_scheduled": "현재 예약됨",
+            "save_schedule": "일정 저장",
+            "clear_schedule": "지우기",
+            "past_time_error": "예약 시간은 미래여야 합니다"
+        },
         "match": {
             "team_1": "팀 1",
             "team_2": "팀 2",
@@ -610,7 +623,11 @@
         "actions": {
             "open_registration": "등록 시작",
             "close_registration": "등록 종료",
-            "cancel": "취소"
+            "cancel": "취소",
+            "confirm_pause": "토너먼트 일시 중지",
+            "pause_description": "이 토너먼트를 일시 중지하시겠습니까? 재개할 때까지 새로운 경기가 자동으로 예약되지 않습니다.",
+            "resume_description": "이 토너먼트를 재개하시겠습니까? 대기 중인 모든 경기가 즉시 예약됩니다.",
+            "update_status_failed": "토너먼트 상태 업데이트에 실패했습니다"
         },
         "upcoming": {
             "empty": "예정된 토너먼트가 없습니다"
@@ -683,6 +700,7 @@
         }
     },
     "match": {
+        "scheduled": "예약됨",
         "simple": {
             "vs": "대"
         },
@@ -787,14 +805,12 @@
                   "label": "취소 추적",
                   "description": "활성화하면 설정된 시간 내에 시작되지 않으면 경기가 자동으로 취소됩니다.",
                   "auto_cancel_duration": {
-                      "label": "Auto Cancel Duration (minutes)",
-                      "description": "Override the app-level auto cancel duration for this match/tournament.",
-                      "placeholder": "Use app setting"
+                      "label": "자동 취소 시간 (분)",
+                      "description": "이 경기/토너먼트의 앱 수준 자동 취소 시간을 재정의합니다."
                   },
                   "live_match_timeout": {
-                      "label": "Live Match Timeout (minutes)",
-                      "description": "Override the app-level live match timeout for this match/tournament.",
-                      "placeholder": "Use app setting"
+                      "label": "라이브 경기 타임아웃 (분)",
+                      "description": "이 경기/토너먼트의 앱 수준 라이브 경기 타임아웃을 재정의합니다."
                   }
                 },
                 "match_mode": {

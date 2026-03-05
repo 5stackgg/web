@@ -477,8 +477,16 @@
         "refresh": "Refresh"
     },
     "tournament": {
+        "paused_banner": "Bu turnuva duraklatıldı. Yeni maçlar otomatik olarak planlanmayacak.",
         "overview": "Overview",
-        "bracket": "Bracket",
+        "bracket": {
+            "schedule_title": "Maç planla",
+            "scheduled_at": "Planlandı",
+            "currently_scheduled": "Mevcut planlama",
+            "save_schedule": "Planlamayı kaydet",
+            "clear_schedule": "Temizle",
+            "past_time_error": "Planlanan zaman gelecekte olmalıdır"
+        },
         "teams": "{count} Teams",
         "settings": "Settings",
         "admin": "Admin",
@@ -507,7 +515,11 @@
             "start": "Start Date",
             "pick_date": "Pick a date",
             "update": "Update Tournament",
-            "match_options": "Match Options"
+            "match_options": "Match Options",
+            "auto_start": {
+                "label": "Otomatik Başlatma",
+                "description": "Etkinleştirildiğinde turnuva maçları otomatik olarak planlanır. Devre dışı bırakıldığında, bir organizatör her maçı manuel olarak planlamalıdır."
+            }
         },
         "notifications": {
             "title": "Notifications",
@@ -621,7 +633,11 @@
         "actions": {
             "open_registration": "Open Registration",
             "close_registration": "Close Registration",
-            "cancel": "Cancel Tournament"
+            "cancel": "Cancel Tournament",
+            "confirm_pause": "Turnuvayı duraklat",
+            "pause_description": "Bu turnuvayı duraklatmak istediğinizden emin misiniz? Devam ettirilene kadar yeni maçlar otomatik olarak planlanmayacak.",
+            "resume_description": "Bu turnuvayı devam ettirmek istediğinizden emin misiniz? Bekleyen tüm maçlar hemen planlanacak.",
+            "update_status_failed": "Turnuva durumu güncellenemedi"
         },
         "upcoming": {
             "empty": "You don't have any upcoming tournaments."
@@ -694,6 +710,7 @@
         }
     },
     "match": {
+        "scheduled": "Planlandı",
         "simple": {
             "vs": "vs"
         },
@@ -798,14 +815,12 @@
                   "label": "İptal takibi",
                   "description": "Etkinleştirildiğinde, maç yapılandırılmış süre içinde başlatılmazsa otomatik olarak iptal edilir.",
                   "auto_cancel_duration": {
-                      "label": "Auto Cancel Duration (minutes)",
-                      "description": "Override the app-level auto cancel duration for this match/tournament.",
-                      "placeholder": "Use app setting"
+                      "label": "Otomatik iptal süresi (dakika)",
+                      "description": "Bu maç/turnuva için uygulama düzeyindeki otomatik iptal süresini geçersiz kıl."
                   },
                   "live_match_timeout": {
-                      "label": "Live Match Timeout (minutes)",
-                      "description": "Override the app-level live match timeout for this match/tournament.",
-                      "placeholder": "Use app setting"
+                      "label": "Canlı maç zaman aşımı (dakika)",
+                      "description": "Bu maç/turnuva için uygulama düzeyindeki canlı maç zaman aşımını geçersiz kıl."
                   }
                 },
                 "match_mode": {

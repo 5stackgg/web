@@ -477,8 +477,16 @@
         "refresh": "Реверс"
     },
     "tournament": {
+        "paused_banner": "Цей турнір призупинено. Нові матчі не будуть автоматично заплановані.",
         "overview": "Огляд",
-        "bracket": "Сітка",
+        "bracket": {
+            "schedule_title": "Запланувати матч",
+            "scheduled_at": "Заплановано",
+            "currently_scheduled": "Поточний розклад",
+            "save_schedule": "Зберегти розклад",
+            "clear_schedule": "Очистити",
+            "past_time_error": "Запланований час має бути у майбутньому"
+        },
         "teams": "Команди",
         "settings": "Налаштування",
         "admin": "Адміністрування",
@@ -507,7 +515,11 @@
             "start": "Початок",
             "pick_date": "Вибрати дату",
             "update": "Оновити",
-            "match_options": "Налаштування матчу"
+            "match_options": "Налаштування матчу",
+            "auto_start": {
+                "label": "Автозапуск",
+                "description": "При увімкненні матчі турніру плануються автоматично. При вимкненні організатор повинен вручну запланувати кожен матч."
+            }
         },
         "notifications": {
             "title": "Notifications",
@@ -621,7 +633,11 @@
         "actions": {
             "open_registration": "Відкрити реєстрацію",
             "close_registration": "Закрити реєстрацію",
-            "cancel": "Скасувати"
+            "cancel": "Скасувати",
+            "confirm_pause": "Призупинити турнір",
+            "pause_description": "Ви впевнені, що хочете призупинити цей турнір? Нові матчі не будуть автоматично заплановані до відновлення.",
+            "resume_description": "Ви впевнені, що хочете відновити цей турнір? Усі очікуючі матчі будуть заплановані негайно.",
+            "update_status_failed": "Не вдалося оновити статус турніру"
         },
         "upcoming": {
             "empty": "Немає майбутніх турнірів"
@@ -694,6 +710,7 @@
         }
     },
     "match": {
+        "scheduled": "Заплановано",
         "simple": {
             "vs": "проти"
         },
@@ -798,14 +815,12 @@
                   "label": "Відстеження скасування",
                   "description": "Коли увімкнено, матч буде автоматично скасовано, якщо його не розпочато протягом налаштованого часу.",
                   "auto_cancel_duration": {
-                      "label": "Auto Cancel Duration (minutes)",
-                      "description": "Override the app-level auto cancel duration for this match/tournament.",
-                      "placeholder": "Use app setting"
+                      "label": "Час автоскасування (хвилини)",
+                      "description": "Замінити час автоскасування на рівні додатку для цього матчу/турніру."
                   },
                   "live_match_timeout": {
-                      "label": "Live Match Timeout (minutes)",
-                      "description": "Override the app-level live match timeout for this match/tournament.",
-                      "placeholder": "Use app setting"
+                      "label": "Тайм-аут активного матчу (хвилини)",
+                      "description": "Замінити тайм-аут активного матчу на рівні додатку для цього матчу/турніру."
                   }
                 },
                 "match_mode": {

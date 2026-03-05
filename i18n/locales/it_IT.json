@@ -624,6 +624,7 @@
         "generic": "Si è verificato un errore. Riprova."
     },
     "tournament": {
+        "paused_banner": "Questo torneo è in pausa. Nessuna nuova partita verrà programmata automaticamente.",
         "overview": "Panoramica",
         "joined": "Torneo Iscritto",
         "updated": "Torneo Aggiornato",
@@ -651,7 +652,11 @@
             "description": "Descrizione",
             "start": "Inizio",
             "pick_date": "Seleziona data",
-            "update": "Aggiorna"
+            "update": "Aggiorna",
+            "auto_start": {
+                "label": "Avvio automatico",
+                "description": "Quando attivato, le partite del torneo vengono programmate automaticamente. Quando disattivato, un organizzatore deve programmare ogni partita manualmente."
+            }
         },
         "notifications": {
             "title": "Notifications",
@@ -718,6 +723,14 @@
             "groups": "Gruppi",
             "groups_placeholder": "Inserisci il numero di gruppi per questa fase..."
         },
+        "bracket": {
+            "schedule_title": "Programma partita",
+            "scheduled_at": "Programmata",
+            "currently_scheduled": "Attualmente programmata",
+            "save_schedule": "Salva programmazione",
+            "clear_schedule": "Cancella",
+            "past_time_error": "L'orario programmato deve essere nel futuro"
+        },
         "match": {
             "team_1": "Squadra 1",
             "team_2": "Squadra 2",
@@ -767,7 +780,11 @@
         "actions": {
             "open_registration": "Apri registrazione",
             "close_registration": "Chiudi registrazione",
-            "cancel": "Annulla"
+            "cancel": "Annulla",
+            "confirm_pause": "Metti in pausa il torneo",
+            "pause_description": "Sei sicuro di voler mettere in pausa questo torneo? Nessuna nuova partita verrà programmata automaticamente fino alla ripresa.",
+            "resume_description": "Sei sicuro di voler riprendere questo torneo? Tutte le partite in sospeso verranno programmate immediatamente.",
+            "update_status_failed": "Impossibile aggiornare lo stato del torneo"
         },
         "upcoming": {
             "empty": "Nessun torneo in arrivo"
@@ -846,6 +863,7 @@
         }
     },
     "match": {
+        "scheduled": "Programmata",
         "simple": {
             "vs": "contro"
         },
@@ -955,14 +973,12 @@
                     "label": "Tracciamento cancellazione",
                     "description": "Quando abilitato, la partita verrà automaticamente cancellata se non viene avviata entro la durata configurata.",
                     "auto_cancel_duration": {
-                        "label": "Auto Cancel Duration (minutes)",
-                        "description": "Override the app-level auto cancel duration for this match/tournament.",
-                        "placeholder": "Use app setting"
+                        "label": "Durata annullamento automatico (minuti)",
+                        "description": "Sovrascrive la durata di annullamento automatico a livello di applicazione per questa partita/torneo."
                     },
                     "live_match_timeout": {
-                        "label": "Live Match Timeout (minutes)",
-                        "description": "Override the app-level live match timeout for this match/tournament.",
-                        "placeholder": "Use app setting"
+                        "label": "Timeout partita in corso (minuti)",
+                        "description": "Sovrascrive il timeout della partita in corso a livello di applicazione per questa partita/torneo."
                     }
                 },
                 "match_mode": {

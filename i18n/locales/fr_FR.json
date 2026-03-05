@@ -624,6 +624,7 @@
         "generic": "Une erreur est survenue. Veuillez réessayer."
     },
     "tournament": {
+        "paused_banner": "Ce tournoi est en pause. Aucun nouveau match ne sera programmé automatiquement.",
         "overview": "Vue d'ensemble",
         "joined": "Arène Rejointe",
         "updated": "Arène mise à jour",
@@ -651,7 +652,11 @@
             "description": "Description",
             "start": "Début",
             "pick_date": "Sélectionner une date",
-            "update": "Mettre à jour"
+            "update": "Mettre à jour",
+            "auto_start": {
+                "label": "Démarrage automatique",
+                "description": "Lorsqu'activé, les matchs du tournoi sont programmés automatiquement. Lorsque désactivé, un organisateur doit programmer chaque match manuellement."
+            }
         },
         "notifications": {
             "title": "Notifications",
@@ -718,6 +723,14 @@
             "groups": "Groupes",
             "groups_placeholder": "Entrez le nombre de groupes pour cette étape..."
         },
+        "bracket": {
+            "schedule_title": "Programmer un match",
+            "scheduled_at": "Programmé",
+            "currently_scheduled": "Actuellement programmé",
+            "save_schedule": "Enregistrer la programmation",
+            "clear_schedule": "Effacer",
+            "past_time_error": "L'heure programmée doit être dans le futur"
+        },
         "match": {
             "team_1": "Équipe 1",
             "team_2": "Équipe 2",
@@ -767,7 +780,11 @@
         "actions": {
             "open_registration": "Ouvrir les inscriptions",
             "close_registration": "Fermer les inscriptions",
-            "cancel": "Annuler"
+            "cancel": "Annuler",
+            "confirm_pause": "Mettre le tournoi en pause",
+            "pause_description": "Êtes-vous sûr de vouloir mettre ce tournoi en pause ? Aucun nouveau match ne sera programmé automatiquement jusqu'à sa reprise.",
+            "resume_description": "Êtes-vous sûr de vouloir reprendre ce tournoi ? Tous les matchs en attente seront programmés immédiatement.",
+            "update_status_failed": "Échec de la mise à jour du statut du tournoi"
         },
         "upcoming": {
             "empty": "Aucun tournoi à venir"
@@ -846,6 +863,7 @@
         }
     },
     "match": {
+        "scheduled": "Programmé",
         "simple": {
             "vs": "contre"
         },
@@ -955,14 +973,12 @@
                     "label": "Suivi d'annulation",
                     "description": "Lorsqu'activé, le match sera automatiquement annulé s'il n'est pas lancé dans la durée configurée.",
                     "auto_cancel_duration": {
-                        "label": "Auto Cancel Duration (minutes)",
-                        "description": "Override the app-level auto cancel duration for this match/tournament.",
-                        "placeholder": "Use app setting"
+                        "label": "Durée d'annulation automatique (minutes)",
+                        "description": "Remplace la durée d'annulation automatique au niveau de l'application pour ce match/tournoi."
                     },
                     "live_match_timeout": {
-                        "label": "Live Match Timeout (minutes)",
-                        "description": "Override the app-level live match timeout for this match/tournament.",
-                        "placeholder": "Use app setting"
+                        "label": "Délai d'expiration du match en direct (minutes)",
+                        "description": "Remplace le délai d'expiration du match en direct au niveau de l'application pour ce match/tournoi."
                     }
                 },
                 "match_mode": {

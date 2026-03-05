@@ -624,6 +624,7 @@
         "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
     },
     "tournament": {
+        "paused_banner": "Dieses Turnier ist pausiert. Es werden keine neuen Matches automatisch geplant.",
         "overview": "Übersicht",
         "joined": "Turnier beigetreten",
         "updated": "Turnier aktualisiert",
@@ -651,7 +652,11 @@
             "description": "Beschreibung",
             "start": "Startdatum",
             "pick_date": "Datum auswählen",
-            "update": "Turnier aktualisieren"
+            "update": "Turnier aktualisieren",
+            "auto_start": {
+                "label": "Automatischer Start",
+                "description": "Wenn aktiviert, werden Turnier-Matches automatisch geplant. Wenn deaktiviert, muss ein Organisator jedes Match manuell planen."
+            }
         },
         "notifications": {
             "title": "Notifications",
@@ -718,6 +723,14 @@
             "groups": "Gruppen",
             "groups_placeholder": "Geben Sie die Anzahl der Gruppen für diese Stufe ein..."
         },
+        "bracket": {
+            "schedule_title": "Match planen",
+            "scheduled_at": "Geplant",
+            "currently_scheduled": "Aktuell geplant",
+            "save_schedule": "Zeitplan speichern",
+            "clear_schedule": "Löschen",
+            "past_time_error": "Der geplante Zeitpunkt muss in der Zukunft liegen"
+        },
         "match": {
             "team_1": "Team 1",
             "team_2": "Team 2",
@@ -767,7 +780,11 @@
         "actions": {
             "open_registration": "Registrierung öffnen",
             "close_registration": "Registrierung schließen",
-            "cancel": "Turnier abbrechen"
+            "cancel": "Turnier abbrechen",
+            "confirm_pause": "Turnier pausieren",
+            "pause_description": "Möchten Sie dieses Turnier wirklich pausieren? Es werden keine neuen Matches automatisch geplant, bis es fortgesetzt wird.",
+            "resume_description": "Möchten Sie dieses Turnier wirklich fortsetzen? Alle ausstehenden Matches werden sofort geplant.",
+            "update_status_failed": "Turnierstatus konnte nicht aktualisiert werden"
         },
         "upcoming": {
             "empty": "Keine anstehenden Turniere"
@@ -846,6 +863,7 @@
         }
     },
     "match": {
+        "scheduled": "Geplant",
         "simple": {
             "vs": "gegen"
         },
@@ -955,14 +973,12 @@
                     "label": "Abbruchverfolgung",
                     "description": "Wenn aktiviert, wird das Match automatisch abgebrochen, wenn es nicht innerhalb der konfigurierten Dauer gestartet wird.",
                     "auto_cancel_duration": {
-                        "label": "Auto Cancel Duration (minutes)",
-                        "description": "Override the app-level auto cancel duration for this match/tournament.",
-                        "placeholder": "Use app setting"
+                        "label": "Automatische Abbruchdauer (Minuten)",
+                        "description": "Überschreibt die app-weite automatische Abbruchdauer für dieses Match/Turnier."
                     },
                     "live_match_timeout": {
-                        "label": "Live Match Timeout (minutes)",
-                        "description": "Override the app-level live match timeout for this match/tournament.",
-                        "placeholder": "Use app setting"
+                        "label": "Live-Match-Zeitlimit (Minuten)",
+                        "description": "Überschreibt das app-weite Live-Match-Zeitlimit für dieses Match/Turnier."
                     }
                 },
                 "match_mode": {

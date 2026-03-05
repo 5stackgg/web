@@ -134,8 +134,8 @@ export default {
       handler(bracket) {
         if (bracket?.scheduled_at) {
           const date = new Date(bracket.scheduled_at);
-          this.startDate = toCalendarDate(fromDate(date, Intl.DateTimeFormat().resolvedOptions().timeZone));
-          this.startTime = `${date.getHours().toString().padStart(2, "0")}:${date.getMinutes().toString().padStart(2, "0")}`;
+          this.startDate = toCalendarDate(fromDate(date, "UTC"));
+          this.startTime = `${date.getUTCHours().toString().padStart(2, "0")}:${date.getUTCMinutes().toString().padStart(2, "0")}`;
         } else {
           this.startDate = undefined;
           this.startTime = undefined;
@@ -157,8 +157,8 @@ export default {
     },
     async saveSchedule() {
       if (!this.bracket || !this.startDate || !this.startTime) return;
-      const scheduled_at = new Date(`${this.startDate}T${this.startTime}`);
-      if (scheduled_at <= new Date()) {
+      const scheduled_at = `${this.startDate}T${this.startTime}:00.000Z`;
+      if (new Date(scheduled_at) <= new Date()) {
         toast({
           title: this.$t("tournament.bracket.past_time_error"),
           variant: "destructive",
@@ -171,7 +171,7 @@ export default {
           mutation: generateMutation({
             update_tournament_brackets_by_pk: [
               {
-                _set: { scheduled_at: scheduled_at.toISOString() },
+                _set: { scheduled_at: scheduled_at },
                 pk_columns: { id: this.bracket.id },
               },
               { id: true, scheduled_at: true },

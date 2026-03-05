@@ -214,6 +214,8 @@
                 "default_models": "Default Player Models",
                 "auto_cancel_duration": "Auto Cancel Duration",
                 "auto_cancel_duration_description": "This is the duration in minutes that a match will be auto canceled if not started within the duration.",
+                "live_match_timeout": "Live Match Timeout",
+                "live_match_timeout_description": "Duration in minutes before a live match is auto-cancelled (safety timeout). Default: 180 minutes (3 hours).",
                 "matchmaking_type_description": "Toggle matchmaking for each type that will allow players to join matchmaking for this type of match.",
                 "update": "Update",
                 "players": {
@@ -1504,9 +1506,19 @@
                         "everyone": "All Players Required to be Ready"
                     }
                 },
-                "track_cancellation": {
-                    "label": "Track Cancellation",
-                    "description": "When enabled, the match will auto-cancel if not started within the configured duration."
+                "match_cancellation": {
+                    "label": "Match Cancellation",
+                    "description": "Automatically cancel matches that are not started within the configured duration.",
+                    "auto_cancel_duration": {
+                        "label": "Auto Cancel Duration (minutes)",
+                        "description": "Override the app-level auto cancel duration for this match/tournament.",
+                        "placeholder": "Use app setting"
+                    },
+                    "live_match_timeout": {
+                        "label": "Live Match Timeout (minutes)",
+                        "description": "Override the app-level live match timeout for this match/tournament.",
+                        "placeholder": "Use app setting"
+                    }
                 },
                 "match_mode": {
                     "label": "Match Mode",

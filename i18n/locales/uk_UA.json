@@ -794,9 +794,19 @@
                       "everyone": "Всі гравці повинні бути готовими"
                   }
                 },
-                "track_cancellation": {
+                "match_cancellation": {
                   "label": "Відстеження скасування",
-                  "description": "Коли увімкнено, матч буде автоматично скасовано, якщо його не розпочато протягом налаштованого часу."
+                  "description": "Коли увімкнено, матч буде автоматично скасовано, якщо його не розпочато протягом налаштованого часу.",
+                  "auto_cancel_duration": {
+                      "label": "Auto Cancel Duration (minutes)",
+                      "description": "Override the app-level auto cancel duration for this match/tournament.",
+                      "placeholder": "Use app setting"
+                  },
+                  "live_match_timeout": {
+                      "label": "Live Match Timeout (minutes)",
+                      "description": "Override the app-level live match timeout for this match/tournament.",
+                      "placeholder": "Use app setting"
+                  }
                 },
                 "match_mode": {
                   "label": "Режим матчу",

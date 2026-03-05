@@ -908,9 +908,19 @@
                         "everyone": "Wszyscy gracze wymagający być gotowi"
                     }
                 },
-                "track_cancellation": {
+                "match_cancellation": {
                     "label": "Śledzenie anulowania",
-                    "description": "Po włączeniu mecz zostanie automatycznie anulowany, jeśli nie zostanie rozpoczęty w skonfigurowanym czasie."
+                    "description": "Po włączeniu mecz zostanie automatycznie anulowany, jeśli nie zostanie rozpoczęty w skonfigurowanym czasie.",
+                    "auto_cancel_duration": {
+                        "label": "Auto Cancel Duration (minutes)",
+                        "description": "Override the app-level auto cancel duration for this match/tournament.",
+                        "placeholder": "Use app setting"
+                    },
+                    "live_match_timeout": {
+                        "label": "Live Match Timeout (minutes)",
+                        "description": "Override the app-level live match timeout for this match/tournament.",
+                        "placeholder": "Use app setting"
+                    }
                 },
                 "match_mode": {
                     "label": "Tryb meczu",

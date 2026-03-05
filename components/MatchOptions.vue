@@ -805,30 +805,82 @@ import { Card } from "~/components/ui/card";
                 </FormField>
 
                 <FormField
-                  v-if="canSetTrackCancellation"
+                  v-if="canSetMatchCancellation"
                   v-slot="{ value, handleChange }"
-                  name="track_cancellation"
+                  name="match_cancellation"
                 >
-                  <FormItem class="flex items-center justify-between gap-4">
-                    <div>
-                      <FormLabel class="text-lg font-semibold">{{
-                        $t("match.options.advanced.track_cancellation.label")
-                      }}</FormLabel>
-                      <FormDescription>{{
-                        $t("match.options.advanced.track_cancellation.description")
-                      }}</FormDescription>
+                  <FormItem>
+                    <div
+                      class="flex flex-row items-center justify-between cursor-pointer"
+                      @click="handleChange(!value)"
+                    >
+                      <div class="space-y-0.5">
+                        <FormLabel class="text-lg font-semibold">{{
+                          $t("match.options.advanced.match_cancellation.label")
+                        }}</FormLabel>
+                        <FormDescription>{{
+                          $t("match.options.advanced.match_cancellation.description")
+                        }}</FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          class="pointer-events-none"
+                          :model-value="value"
+                          @update:model-value="handleChange"
+                        />
+                      </FormControl>
                     </div>
-                    <FormControl>
-                      <Switch
-                        :checked="value"
-                        @update:checked="handleChange"
-                      />
-                    </FormControl>
+
+                    <div v-if="value" class="mt-4 space-y-4 pl-4 border-l-2">
+                      <FormField
+                        v-slot="{ componentField }"
+                        name="auto_cancel_duration"
+                      >
+                        <FormItem>
+                          <FormLabel>{{
+                            $t("match.options.advanced.match_cancellation.auto_cancel_duration.label")
+                          }}</FormLabel>
+                          <FormDescription>{{
+                            $t("match.options.advanced.match_cancellation.auto_cancel_duration.description")
+                          }}</FormDescription>
+                          <FormControl>
+                            <Input
+                              v-bind="componentField"
+                              type="number"
+                              :placeholder="$t('match.options.advanced.match_cancellation.auto_cancel_duration.placeholder')"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      </FormField>
+
+                      <FormField
+                        v-slot="{ componentField }"
+                        name="live_match_timeout"
+                      >
+                        <FormItem>
+                          <FormLabel>{{
+                            $t("match.options.advanced.match_cancellation.live_match_timeout.label")
+                          }}</FormLabel>
+                          <FormDescription>{{
+                            $t("match.options.advanced.match_cancellation.live_match_timeout.description")
+                          }}</FormDescription>
+                          <FormControl>
+                            <Input
+                              v-bind="componentField"
+                              type="number"
+                              :placeholder="$t('match.options.advanced.match_cancellation.live_match_timeout.placeholder')"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      </FormField>
+                    </div>
                   </FormItem>
                 </FormField>
 
                 <FormField
-                  v-if="canSetTrackCancellation"
+                  v-if="canSetMatchCancellation"
                   v-slot="{ componentField }"
                   name="match_mode"
                 >
@@ -1365,7 +1417,7 @@ export default {
     canSetcheckInSettings() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
     },
-    canSetTrackCancellation() {
+    canSetMatchCancellation() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer);
     },
   },

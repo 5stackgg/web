@@ -1082,9 +1082,19 @@
                     "label": "預設玩家模型",
                     "description": "為比賽中的所有玩家啟用預設玩家角色模型。"
                 },
-                "track_cancellation": {
+                "match_cancellation": {
                     "label": "取消追蹤",
-                    "description": "啟用後，如果比賽未在配置的時間內開始，將自動取消。"
+                    "description": "啟用後，如果比賽未在配置的時間內開始，將自動取消。",
+                    "auto_cancel_duration": {
+                        "label": "Auto Cancel Duration (minutes)",
+                        "description": "Override the app-level auto cancel duration for this match/tournament.",
+                        "placeholder": "Use app setting"
+                    },
+                    "live_match_timeout": {
+                        "label": "Live Match Timeout (minutes)",
+                        "description": "Override the app-level live match timeout for this match/tournament.",
+                        "placeholder": "Use app setting"
+                    }
                 },
                 "match_mode": {
                     "label": "比賽模式",

@@ -143,6 +143,25 @@ definePageMeta({
                 <FormMessage />
               </FormItem>
             </FormField>
+
+            <FormField v-slot="{ componentField }" name="live_match_timeout">
+              <FormItem>
+                <FormLabel class="text-lg font-semibold">{{
+                  $t("pages.settings.application.live_match_timeout")
+                }}</FormLabel>
+                <FormDescription>
+                  {{
+                    $t(
+                      "pages.settings.application.live_match_timeout_description",
+                    )
+                  }}
+                </FormDescription>
+                <FormControl>
+                  <Input v-bind="componentField" type="number" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
           </template>
         </div>
       </Card>
@@ -263,6 +282,7 @@ export default {
         validationSchema: toTypedSchema(
           z.object({
             auto_cancel_duration: z.number().default(15),
+            live_match_timeout: z.number().default(180),
             public: z.object({
               matchmaking_min_role: z
                 .string()
@@ -284,7 +304,8 @@ export default {
         for (const setting of newVal) {
           if (
             setting.name === "public.max_acceptable_latency" ||
-            setting.name === "auto_cancel_duration"
+            setting.name === "auto_cancel_duration" ||
+            setting.name === "live_match_timeout"
           ) {
             (this.form.setFieldValue as any)(
               setting.name,
@@ -394,6 +415,10 @@ export default {
                 {
                   name: "auto_cancel_duration",
                   value: String((this.form.values as any).auto_cancel_duration),
+                },
+                {
+                  name: "live_match_timeout",
+                  value: String((this.form.values as any).live_match_timeout),
                 },
               ],
               on_conflict: {

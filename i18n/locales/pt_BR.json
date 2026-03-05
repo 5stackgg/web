@@ -1097,9 +1097,19 @@
                     "label": "Modelos Padrão (default models)",
                     "description": "Habilita modelos padrão para todos os jogadores na partida não permitindo skins adicionais."
                 },
-                "track_cancellation": {
+                "match_cancellation": {
                     "label": "Rastreamento de cancelamento",
-                    "description": "Quando ativado, a partida será automaticamente cancelada se não for iniciada dentro da duração configurada."
+                    "description": "Quando ativado, a partida será automaticamente cancelada se não for iniciada dentro da duração configurada.",
+                    "auto_cancel_duration": {
+                        "label": "Auto Cancel Duration (minutes)",
+                        "description": "Override the app-level auto cancel duration for this match/tournament.",
+                        "placeholder": "Use app setting"
+                    },
+                    "live_match_timeout": {
+                        "label": "Live Match Timeout (minutes)",
+                        "description": "Override the app-level live match timeout for this match/tournament.",
+                        "placeholder": "Use app setting"
+                    }
                 },
                 "match_mode": {
                     "label": "Modo de partida",

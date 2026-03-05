@@ -28,7 +28,9 @@ export const setupOptions = (
     regions: options.regions || [],
     tv_delay: options.tv_delay,
     check_in_setting: options.check_in_setting,
-    track_cancellation: options.track_cancellation,
+    match_cancellation: options.match_cancellation,
+    auto_cancel_duration: options.auto_cancel_duration ?? null,
+    live_match_timeout: options.live_match_timeout ?? null,
     match_mode: options.match_mode,
     ...overrides,
   });
@@ -52,7 +54,9 @@ export function setupOptionsVariables(
     ready_setting: string;
     tech_timeout_setting: string;
     check_in_setting: string;
-    track_cancellation: boolean;
+    match_cancellation: boolean;
+    auto_cancel_duration: number | null;
+    live_match_timeout: number | null;
     match_mode: string;
     map_pool_id?: string;
     tv_delay: number;
@@ -170,8 +174,10 @@ export function setupOptionsVariables(
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       ? {
           check_in_setting: values.check_in_setting,
-          track_cancellation: values.track_cancellation,
+          match_cancellation: values.match_cancellation,
           match_mode: values.match_mode,
+          auto_cancel_duration: values.match_cancellation ? (values.auto_cancel_duration || null) : null,
+          live_match_timeout: values.match_cancellation ? (values.live_match_timeout || null) : null,
         }
       : {}),
     ...(mapPoolId
@@ -216,8 +222,10 @@ export function setupOptionsSetMutation(hasMapPoolId: boolean = true) {
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       ? {
           check_in_setting: $("check_in_setting", "e_check_in_settings_enum!"),
-          track_cancellation: $("track_cancellation", "Boolean!"),
+          match_cancellation: $("match_cancellation", "Boolean!"),
           match_mode: $("match_mode", "e_match_mode_enum!"),
+          auto_cancel_duration: $("auto_cancel_duration", "Int"),
+          live_match_timeout: $("live_match_timeout", "Int"),
         }
       : {}),
     ...(hasMapPoolId

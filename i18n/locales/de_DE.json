@@ -951,9 +951,19 @@
                         "everyone": "Alle Spieler müssen bereit sein"
                     }
                 },
-                "track_cancellation": {
+                "match_cancellation": {
                     "label": "Abbruchverfolgung",
-                    "description": "Wenn aktiviert, wird das Match automatisch abgebrochen, wenn es nicht innerhalb der konfigurierten Dauer gestartet wird."
+                    "description": "Wenn aktiviert, wird das Match automatisch abgebrochen, wenn es nicht innerhalb der konfigurierten Dauer gestartet wird.",
+                    "auto_cancel_duration": {
+                        "label": "Auto Cancel Duration (minutes)",
+                        "description": "Override the app-level auto cancel duration for this match/tournament.",
+                        "placeholder": "Use app setting"
+                    },
+                    "live_match_timeout": {
+                        "label": "Live Match Timeout (minutes)",
+                        "description": "Override the app-level live match timeout for this match/tournament.",
+                        "placeholder": "Use app setting"
+                    }
                 },
                 "match_mode": {
                     "label": "Match-Modus",

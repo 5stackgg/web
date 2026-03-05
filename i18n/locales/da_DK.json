@@ -951,9 +951,19 @@
                         "everyone": "Alle spillere skal være klar"
                     }
                 },
-                "track_cancellation": {
+                "match_cancellation": {
                     "label": "Spor annullering",
-                    "description": "Når aktiveret, vil kampen automatisk blive annulleret, hvis den ikke startes inden for den konfigurerede varighed."
+                    "description": "Når aktiveret, vil kampen automatisk blive annulleret, hvis den ikke startes inden for den konfigurerede varighed.",
+                    "auto_cancel_duration": {
+                        "label": "Auto Cancel Duration (minutes)",
+                        "description": "Override the app-level auto cancel duration for this match/tournament.",
+                        "placeholder": "Use app setting"
+                    },
+                    "live_match_timeout": {
+                        "label": "Live Match Timeout (minutes)",
+                        "description": "Override the app-level live match timeout for this match/tournament.",
+                        "placeholder": "Use app setting"
+                    }
                 },
                 "match_mode": {
                     "label": "Kamptilstand",

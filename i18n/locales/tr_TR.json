@@ -794,9 +794,19 @@
                       "everyone": "All Players Required to be Ready"
                   }
                 },
-                "track_cancellation": {
+                "match_cancellation": {
                   "label": "İptal takibi",
-                  "description": "Etkinleştirildiğinde, maç yapılandırılmış süre içinde başlatılmazsa otomatik olarak iptal edilir."
+                  "description": "Etkinleştirildiğinde, maç yapılandırılmış süre içinde başlatılmazsa otomatik olarak iptal edilir.",
+                  "auto_cancel_duration": {
+                      "label": "Auto Cancel Duration (minutes)",
+                      "description": "Override the app-level auto cancel duration for this match/tournament.",
+                      "placeholder": "Use app setting"
+                  },
+                  "live_match_timeout": {
+                      "label": "Live Match Timeout (minutes)",
+                      "description": "Override the app-level live match timeout for this match/tournament.",
+                      "placeholder": "Use app setting"
+                  }
                 },
                 "match_mode": {
                   "label": "Maç modu",

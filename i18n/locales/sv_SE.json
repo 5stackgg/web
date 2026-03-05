@@ -951,9 +951,19 @@
                         "everyone": "Alla spelare måste vara redo"
                     }
                 },
-                "track_cancellation": {
+                "match_cancellation": {
                     "label": "Spåra avbokning",
-                    "description": "När aktiverat kommer matchen automatiskt att avbokas om den inte startas inom den konfigurerade tiden."
+                    "description": "När aktiverat kommer matchen automatiskt att avbokas om den inte startas inom den konfigurerade tiden.",
+                    "auto_cancel_duration": {
+                        "label": "Auto Cancel Duration (minutes)",
+                        "description": "Override the app-level auto cancel duration for this match/tournament.",
+                        "placeholder": "Use app setting"
+                    },
+                    "live_match_timeout": {
+                        "label": "Live Match Timeout (minutes)",
+                        "description": "Override the app-level live match timeout for this match/tournament.",
+                        "placeholder": "Use app setting"
+                    }
                 },
                 "match_mode": {
                     "label": "Matchläge",

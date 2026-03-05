@@ -4,7 +4,13 @@
 
 FILE="./generated/zeus/typedDocumentNode.ts"
 
-sed -i "" \
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  SED_INPLACE=(sed -i "")
+else
+  SED_INPLACE=(sed -i)
+fi
+
+"${SED_INPLACE[@]}" \
   -e "s/import { TypedDocumentNode }/import type { TypedDocumentNode }/" \
   -e "s/  ValueTypes,/  type ValueTypes,/" \
   -e "s/  GenericOperation,/  type GenericOperation,/" \

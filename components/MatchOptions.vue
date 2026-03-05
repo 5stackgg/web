@@ -847,7 +847,7 @@ import { Card } from "~/components/ui/card";
                             <Input
                               v-bind="componentField"
                               type="number"
-                              :placeholder="$t('match.options.advanced.match_cancellation.auto_cancel_duration.placeholder')"
+                              :placeholder="autoCancelDurationDefault"
                             />
                           </FormControl>
                           <FormMessage />
@@ -869,7 +869,7 @@ import { Card } from "~/components/ui/card";
                             <Input
                               v-bind="componentField"
                               type="number"
-                              :placeholder="$t('match.options.advanced.match_cancellation.live_match_timeout.placeholder')"
+                              :placeholder="liveMatchTimeoutDefault"
                             />
                           </FormControl>
                           <FormMessage />
@@ -1419,6 +1419,18 @@ export default {
     },
     canSetMatchCancellation() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer);
+    },
+    autoCancelDurationDefault(): string {
+      const val = useApplicationSettingsStore().settings.find(
+        (s) => s.name === "auto_cancel_duration",
+      )?.value;
+      return val || "15";
+    },
+    liveMatchTimeoutDefault(): string {
+      const val = useApplicationSettingsStore().settings.find(
+        (s) => s.name === "live_match_timeout",
+      )?.value;
+      return val || "180";
     },
   },
   methods: {

@@ -157,16 +157,21 @@ export default {
     },
     async saveSchedule() {
       if (!this.bracket || !this.startDate || !this.startTime) return;
+      const scheduled_at = new Date(`${this.startDate}T${this.startTime}`);
+      if (scheduled_at <= new Date()) {
+        toast({
+          title: this.$t("tournament.bracket.past_time_error"),
+          variant: "destructive",
+        });
+        return;
+      }
       this.saving = true;
       try {
-        const scheduled_at = new Date(
-          `${this.startDate}T${this.startTime}`,
-        ).toISOString();
         await this.$apollo.mutate({
           mutation: generateMutation({
             update_tournament_brackets_by_pk: [
               {
-                _set: { scheduled_at },
+                _set: { scheduled_at: scheduled_at.toISOString() },
                 pk_columns: { id: this.bracket.id },
               },
               { id: true, scheduled_at: true },

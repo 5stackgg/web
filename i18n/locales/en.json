@@ -1207,7 +1207,8 @@
             "scheduled_at": "Scheduled",
             "currently_scheduled": "Currently scheduled",
             "save_schedule": "Save Schedule",
-            "clear_schedule": "Clear"
+            "clear_schedule": "Clear",
+            "past_time_error": "Scheduled time must be in the future"
         },
         "match": {
             "team_1": "Team 1",

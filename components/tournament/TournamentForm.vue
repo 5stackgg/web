@@ -78,19 +78,25 @@ import MatchOptions from "~/components/MatchOptions.vue";
         v-slot="{ value, handleChange }"
         name="auto_start"
       >
-        <FormItem class="flex items-center justify-between gap-4">
-          <div>
-            <FormLabel>{{ $t("tournament.form.auto_start.label") }}</FormLabel>
-            <FormDescription>{{
-              $t("tournament.form.auto_start.description")
-            }}</FormDescription>
+        <FormItem>
+          <div
+            class="flex flex-row items-center justify-between cursor-pointer"
+            @click="handleChange(!value)"
+          >
+            <div class="space-y-0.5">
+              <FormLabel class="text-lg font-semibold">{{ $t("tournament.form.auto_start.label") }}</FormLabel>
+              <FormDescription>{{
+                $t("tournament.form.auto_start.description")
+              }}</FormDescription>
+            </div>
+            <FormControl>
+              <Switch
+                class="pointer-events-none"
+                :model-value="value"
+                @update:model-value="handleChange"
+              />
+            </FormControl>
           </div>
-          <FormControl>
-            <Switch
-              :checked="value"
-              @update:checked="handleChange"
-            />
-          </FormControl>
         </FormItem>
       </FormField>
       <template #after-advanced>

@@ -2,15 +2,15 @@
 import type { TypedDocumentNode } from '@graphql-typed-document-node/core';
 import gql from 'graphql-tag';
 import {
-  ValueTypes,
-  GenericOperation,
-  OperationOptions,
-  GraphQLTypes,
-  InputType,
-  ScalarDefinition,
-  ThunderGraphQLOptions,
+  type ValueTypes,
+  type GenericOperation,
+  type OperationOptions,
+  type GraphQLTypes,
+  type InputType,
+  type ScalarDefinition,
+  type ThunderGraphQLOptions,
   Zeus,
-  ExtractVariables,
+  type ExtractVariables,
 } from './';
 import { Ops } from './const';
 

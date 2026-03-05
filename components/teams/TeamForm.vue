@@ -30,7 +30,7 @@ import { Card } from "~/components/ui/card";
               <Input
                 v-bind="componentField"
                 :placeholder="$t('team.form.short_name_placeholder')"
-                maxlength="3"
+                maxlength="5"
               />
             </FormControl>
             <FormMessage />

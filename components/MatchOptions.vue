@@ -847,6 +847,7 @@ import { Card } from "~/components/ui/card";
                             <Input
                               v-bind="componentField"
                               type="number"
+                              min="1"
                               :placeholder="autoCancelDurationDefault"
                             />
                           </FormControl>
@@ -869,6 +870,7 @@ import { Card } from "~/components/ui/card";
                             <Input
                               v-bind="componentField"
                               type="number"
+                              min="1"
                               :placeholder="liveMatchTimeoutDefault"
                             />
                           </FormControl>

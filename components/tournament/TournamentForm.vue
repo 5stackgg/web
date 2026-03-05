@@ -73,6 +73,32 @@ import MatchOptions from "~/components/MatchOptions.vue";
           </FormControl>
         </FormItem>
       </FormField>
+
+      <FormField
+        v-slot="{ value, handleChange }"
+        name="auto_start"
+      >
+        <FormItem>
+          <div
+            class="flex flex-row items-center justify-between cursor-pointer"
+            @click="handleChange(!value)"
+          >
+            <div class="space-y-0.5">
+              <FormLabel class="text-lg font-semibold">{{ $t("tournament.form.auto_start.label") }}</FormLabel>
+              <FormDescription>{{
+                $t("tournament.form.auto_start.description")
+              }}</FormDescription>
+            </div>
+            <FormControl>
+              <Switch
+                class="pointer-events-none"
+                :model-value="value"
+                @update:model-value="handleChange"
+              />
+            </FormControl>
+          </div>
+        </FormItem>
+      </FormField>
       <template #after-advanced>
         <FormField
           v-slot="{ value, handleChange }"
@@ -193,6 +219,7 @@ export default {
                 message: "Date must be in the future",
               }),
               description: z.string().nullable().default(null),
+              auto_start: z.boolean().default(true),
             },
             useApplicationSettingsStore().settings,
           ),
@@ -218,13 +245,14 @@ export default {
       handler(tournament) {
         if (tournament) {
           const startDate = new Date(tournament.start);
-          this.startDate = toCalendarDate(fromDate(startDate));
+          this.startDate = toCalendarDate(fromDate(startDate, Intl.DateTimeFormat().resolvedOptions().timeZone));
           this.startTime = `${startDate.getHours().toString().padStart(2, "0")}:${startDate.getMinutes().toString().padStart(2, "0")}`;
 
           this.form.setValues({
             map_veto: true,
             name: tournament.name,
             description: tournament.description,
+            auto_start: tournament.auto_start,
           });
 
           setupOptions(this.form, tournament.options);
@@ -288,6 +316,7 @@ export default {
             name: this.form.values.name,
             start: this.form.values.start,
             description: this.form.values.description,
+            auto_start: this.form.values.auto_start,
           },
           mutation: generateMutation({
             update_tournaments_by_pk: [
@@ -299,6 +328,7 @@ export default {
                   name: $("name", "String!"),
                   start: $("start", "timestamptz!"),
                   description: $("description", "String"),
+                  auto_start: $("auto_start", "Boolean!"),
                 },
               },
               {
@@ -373,6 +403,7 @@ export default {
                 name: this.form.values.name,
                 start: this.form.values.start,
                 description: this.form.values.description,
+                auto_start: this.form.values.auto_start,
                 options: {
                   data: setupOptionsSetMutation(!!form.map_pool_id),
                 },

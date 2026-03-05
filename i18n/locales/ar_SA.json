@@ -477,6 +477,7 @@
         "refresh": "Refresh"
     },
     "tournament": {
+        "paused_banner": "هذه البطولة متوقفة مؤقتاً. لن يتم جدولة مباريات جديدة تلقائياً.",
         "overview": "Overview",
         "bracket": "Bracket",
         "teams": "{count} Teams",
@@ -507,7 +508,11 @@
             "start": "Start Date",
             "pick_date": "Pick a date",
             "update": "Update Tournament",
-            "match_options": "Match Options"
+            "match_options": "Match Options",
+            "auto_start": {
+                "label": "بدء تلقائي",
+                "description": "عند التفعيل، يتم جدولة مباريات البطولة تلقائياً. عند التعطيل، يجب على المنظم جدولة كل مباراة يدوياً."
+            }
         },
         "notifications": {
             "title": "Notifications",
@@ -571,6 +576,14 @@
             "add_another": "Add Another Stage",
             "not_setup": "Tournament stages not set up"
         },
+        "bracket": {
+            "schedule_title": "جدولة المباراة",
+            "scheduled_at": "مجدولة",
+            "currently_scheduled": "مجدولة حالياً",
+            "save_schedule": "حفظ الجدول",
+            "clear_schedule": "مسح",
+            "past_time_error": "يجب أن يكون وقت الجدولة في المستقبل"
+        },
         "match": {
             "team_1": "Team 1",
             "team_2": "Team 2",
@@ -621,7 +634,11 @@
         "actions": {
             "open_registration": "Open Registration",
             "close_registration": "Close Registration",
-            "cancel": "Cancel Tournament"
+            "cancel": "Cancel Tournament",
+            "confirm_pause": "إيقاف البطولة مؤقتاً",
+            "pause_description": "هل أنت متأكد من إيقاف هذه البطولة مؤقتاً؟ لن يتم جدولة مباريات جديدة تلقائياً حتى يتم استئنافها.",
+            "resume_description": "هل أنت متأكد من استئناف هذه البطولة؟ سيتم جدولة جميع المباريات المعلقة فوراً.",
+            "update_status_failed": "فشل في تحديث حالة البطولة"
         },
         "upcoming": {
             "empty": "You don't have any upcoming tournaments."
@@ -694,6 +711,7 @@
         }
     },
     "match": {
+        "scheduled": "مجدولة",
         "simple": {
             "vs": "vs"
         },
@@ -792,6 +810,26 @@
                       "coaches": "Coaches",
                       "captains": "Captains",
                       "everyone": "All Players Required to be Ready"
+                  }
+                },
+                "auto_cancellation": {
+                  "label": "تتبع الإلغاء",
+                  "description": "عند التفعيل، سيتم إلغاء المباراة تلقائياً إذا لم تبدأ خلال المدة المحددة.",
+                  "auto_cancel_duration": {
+                      "label": "مدة الإلغاء التلقائي (دقائق)",
+                      "description": "تجاوز مدة الإلغاء التلقائي على مستوى التطبيق لهذه المباراة/البطولة."
+                  },
+                  "live_match_timeout": {
+                      "label": "مهلة المباراة المباشرة (دقائق)",
+                      "description": "تجاوز مهلة المباراة المباشرة على مستوى التطبيق لهذه المباراة/البطولة."
+                  }
+                },
+                "match_mode": {
+                  "label": "وضع المباراة",
+                  "description": "يتحكم في كيفية جدولة المباراة. الوضع التلقائي يسمح للنظام بالجدولة تلقائياً، وضع المسؤول يتطلب جدولة يدوية.",
+                  "options": {
+                    "auto": "تلقائي",
+                    "admin": "مسؤول"
                   }
                 }
             },

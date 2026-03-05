@@ -94,11 +94,22 @@ import { e_match_status_enum } from "~/generated/zeus";
         <!-- Auto Canceling or Finished Information -->
         <div
           v-if="
+            (match.scheduled_at && isPreLiveStatus) ||
             (match.cancels_at &&
               match.status !== e_match_status_enum.Canceled) ||
             (match.status === e_match_status_enum.Finished && match.ended_at)
           "
+          class="flex flex-col gap-4 pt-4 border-t border-border"
         >
+          <div
+            v-if="match.scheduled_at && isPreLiveStatus"
+            class="flex justify-center sm:justify-start"
+          >
+            <Badge variant="secondary" class="flex items-center gap-2">
+              <span>{{ $t("match.scheduled") }}</span>
+              <span>{{ new Date(match.scheduled_at).toLocaleString() }}</span>
+            </Badge>
+          </div>
           <div class="flex justify-center sm:justify-start">
             <Badge
               v-if="
@@ -156,6 +167,16 @@ export default {
     },
   },
   computed: {
+    isPreLiveStatus() {
+      const preLive = [
+        e_match_status_enum.Scheduled,
+        e_match_status_enum.PickingPlayers,
+        e_match_status_enum.WaitingForCheckIn,
+        e_match_status_enum.WaitingForServer,
+        e_match_status_enum.Veto,
+      ];
+      return preLive.includes(this.match.status);
+    },
     me() {
       return useAuthStore().me;
     },

@@ -624,6 +624,7 @@
         "generic": "Der opstod en fejl. Prøv venligst igen."
     },
     "tournament": {
+        "paused_banner": "Denne turnering er sat på pause. Ingen nye kampe vil blive automatisk planlagt.",
         "overview": "Oversigt",
         "joined": "Tilmeldt Turneringen",
         "updated": "Opdateret Turnering",
@@ -651,7 +652,11 @@
             "description": "Beskrivelse",
             "start": "Start",
             "pick_date": "Vælg dato",
-            "update": "Opdater"
+            "update": "Opdater",
+            "auto_start": {
+                "label": "Automatisk start",
+                "description": "Når aktiveret, planlægges turneringskampe automatisk. Når deaktiveret, skal en organisator planlægge hver kamp manuelt."
+            }
         },
         "notifications": {
             "title": "Notifications",
@@ -718,6 +723,14 @@
             "groups": "Grupper",
             "groups_placeholder": "Indtast antal grupper for dette trin..."
         },
+        "bracket": {
+            "schedule_title": "Planlæg kamp",
+            "scheduled_at": "Planlagt",
+            "currently_scheduled": "Aktuelt planlagt",
+            "save_schedule": "Gem tidsplan",
+            "clear_schedule": "Ryd",
+            "past_time_error": "Planlagt tidspunkt skal være i fremtiden"
+        },
         "match": {
             "team_1": "Hold 1",
             "team_2": "Hold 2",
@@ -767,7 +780,11 @@
         "actions": {
             "open_registration": "Åbn registrering",
             "close_registration": "Luk registrering",
-            "cancel": "Annuller"
+            "cancel": "Annuller",
+            "confirm_pause": "Sæt turnering på pause",
+            "pause_description": "Er du sikker på, at du vil sætte denne turnering på pause? Ingen nye kampe vil blive automatisk planlagt, indtil den genoptages.",
+            "resume_description": "Er du sikker på, at du vil genoptage denne turnering? Alle ventende kampe vil blive planlagt med det samme.",
+            "update_status_failed": "Kunne ikke opdatere turneringsstatus"
         },
         "upcoming": {
             "empty": "Ingen kommende turneringer"
@@ -846,6 +863,7 @@
         }
     },
     "match": {
+        "scheduled": "Planlagt",
         "simple": {
             "vs": "vs"
         },
@@ -949,6 +967,26 @@
                         "coaches": "Trænere",
                         "captains": "Kaptajner",
                         "everyone": "Alle spillere skal være klar"
+                    }
+                },
+                "auto_cancellation": {
+                    "label": "Spor annullering",
+                    "description": "Når aktiveret, vil kampen automatisk blive annulleret, hvis den ikke startes inden for den konfigurerede varighed.",
+                    "auto_cancel_duration": {
+                        "label": "Automatisk annulleringsvarighed (minutter)",
+                        "description": "Tilsidesæt den app-dækkende automatiske annulleringsvarighed for denne kamp/turnering."
+                    },
+                    "live_match_timeout": {
+                        "label": "Timeout for igangværende kamp (minutter)",
+                        "description": "Tilsidesæt den app-dækkende timeout for igangværende kamp for denne kamp/turnering."
+                    }
+                },
+                "match_mode": {
+                    "label": "Kamptilstand",
+                    "description": "Styrer hvordan kampen planlægges. Automatisk tilstand lader systemet planlægge automatisk, Admin-tilstand kræver manuel planlægning.",
+                    "options": {
+                        "auto": "Automatisk",
+                        "admin": "Admin"
                     }
                 }
             },

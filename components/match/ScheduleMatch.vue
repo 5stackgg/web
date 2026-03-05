@@ -127,8 +127,8 @@ export default {
         validationSchema: toTypedSchema(
           z.object({
             scheduled_at: z
-              .date()
-              .refine((date) => date > new Date(), {
+              .string()
+              .refine((date) => new Date(date) > new Date(), {
                 message: "Date must be in the future",
               })
               .optional(),
@@ -155,10 +155,10 @@ export default {
       handler(match) {
         if (match?.scheduled_at) {
           const startDate = new Date(match.scheduled_at);
-          this.startDate = toCalendarDate(fromDate(startDate));
-          this.startTime = `${startDate.getHours().toString().padStart(2, "0")}:${startDate.getMinutes().toString().padStart(2, "0")}`;
+          this.startDate = toCalendarDate(fromDate(startDate, "UTC"));
+          this.startTime = `${startDate.getUTCHours().toString().padStart(2, "0")}:${startDate.getUTCMinutes().toString().padStart(2, "0")}`;
           this.form.setValues({
-            scheduled_at: startDate,
+            scheduled_at: `${this.startDate}T${this.startTime}:00.000Z`,
           });
         }
       },
@@ -173,7 +173,7 @@ export default {
         return;
       }
       this.form.setValues({
-        scheduled_at: new Date(`${this.startDate} ${this.startTime}`),
+        scheduled_at: `${this.startDate}T${this.startTime}:00.000Z`,
       });
     },
     async scheduleMatch() {
@@ -207,11 +207,11 @@ export default {
   },
   computed: {
     scheduledLabel() {
-      const date = this.form.values.scheduled_at as Date | undefined;
-      if (!date) {
+      const dateStr = this.form.values.scheduled_at as string | undefined;
+      if (!dateStr) {
         return "";
       }
-      return date.toLocaleString(undefined, {
+      return new Date(dateStr).toLocaleString(undefined, {
         year: "numeric",
         month: "short",
         day: "numeric",

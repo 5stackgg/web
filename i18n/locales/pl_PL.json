@@ -594,6 +594,7 @@
         "generic": "Wystąpił błąd. Spróbuj ponownie."
     },
     "tournament": {
+        "paused_banner": "Ten turniej jest wstrzymany. Żadne nowe mecze nie będą automatycznie planowane.",
         "overview": "Przegląd",
         "settings": "Ustawienia",
         "admin": "Administracja",
@@ -619,7 +620,12 @@
             "description": "Opis",
             "start": "Start",
             "pick_date": "Wybierz datę",
-            "update": "Aktualizuj"
+            "update": "Aktualizuj",
+            "match_options": "Opcje meczu",
+            "auto_start": {
+                "label": "Automatyczny start",
+                "description": "Po włączeniu mecze turniejowe są automatycznie planowane. Po wyłączeniu organizator musi ręcznie zaplanować każdy mecz."
+            }
         },
         "notifications": {
             "title": "Notifications",
@@ -686,6 +692,14 @@
             "groups": "Grupy",
             "groups_placeholder": "Wprowadź liczbę grup dla tego etapu..."
         },
+        "bracket": {
+            "schedule_title": "Zaplanuj mecz",
+            "scheduled_at": "Zaplanowany",
+            "currently_scheduled": "Aktualnie zaplanowany",
+            "save_schedule": "Zapisz harmonogram",
+            "clear_schedule": "Wyczyść",
+            "past_time_error": "Zaplanowany czas musi być w przyszłości"
+        },
         "match": {
             "team_1": "Drużyna 1",
             "team_2": "Drużyna 2",
@@ -735,7 +749,11 @@
         "actions": {
             "open_registration": "Otwórz rejestrację",
             "close_registration": "Zamknij rejestrację",
-            "cancel": "Anuluj"
+            "cancel": "Anuluj",
+            "confirm_pause": "Wstrzymaj turniej",
+            "pause_description": "Czy na pewno chcesz wstrzymać ten turniej? Żadne nowe mecze nie będą automatycznie planowane do momentu wznowienia.",
+            "resume_description": "Czy na pewno chcesz wznowić ten turniej? Wszystkie oczekujące mecze zostaną natychmiast zaplanowane.",
+            "update_status_failed": "Nie udało się zaktualizować statusu turnieju"
         },
         "upcoming": {
             "empty": "Brak nadchodzących turniejów"
@@ -808,6 +826,7 @@
         }
     },
     "match": {
+        "scheduled": "Zaplanowany",
         "simple": {
             "vs": "vs"
         },
@@ -906,6 +925,26 @@
                         "coaches": "Trenerzy",
                         "captains": "Kapitany",
                         "everyone": "Wszyscy gracze wymagający być gotowi"
+                    }
+                },
+                "auto_cancellation": {
+                    "label": "Śledzenie anulowania",
+                    "description": "Po włączeniu mecz zostanie automatycznie anulowany, jeśli nie zostanie rozpoczęty w skonfigurowanym czasie.",
+                    "auto_cancel_duration": {
+                        "label": "Czas automatycznego anulowania (minuty)",
+                        "description": "Nadpisz ustawienie automatycznego anulowania na poziomie aplikacji dla tego meczu/turnieju."
+                    },
+                    "live_match_timeout": {
+                        "label": "Limit czasu meczu na żywo (minuty)",
+                        "description": "Nadpisz ustawienie limitu czasu meczu na żywo na poziomie aplikacji dla tego meczu/turnieju."
+                    }
+                },
+                "match_mode": {
+                    "label": "Tryb meczu",
+                    "description": "Kontroluje sposób planowania meczu. Tryb automatyczny pozwala systemowi planować automatycznie, tryb admina wymaga ręcznego planowania.",
+                    "options": {
+                        "auto": "Automatyczny",
+                        "admin": "Admin"
                     }
                 }
             },

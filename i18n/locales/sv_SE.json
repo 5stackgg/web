@@ -624,6 +624,7 @@
         "generic": "Ett fel uppstod. Försök igen."
     },
     "tournament": {
+        "paused_banner": "Denna turnering är pausad. Inga nya matcher kommer att schemaläggs automatiskt.",
         "overview": "Översikt",
         "joined": "Gick med i turneringen",
         "updated": "Uppdaterad turnering",
@@ -651,7 +652,12 @@
             "description": "Beskrivning",
             "start": "Startdatum",
             "pick_date": "Välj ett datum",
-            "update": "Uppdatera turnering"
+            "update": "Uppdatera turnering",
+            "match_options": "Matchalternativ",
+            "auto_start": {
+                "label": "Autostart",
+                "description": "När aktiverat schemaläggs turneringsmatcher automatiskt. När inaktiverat måste en organisatör schemalägga varje match manuellt."
+            }
         },
         "notifications": {
             "title": "Notifications",
@@ -718,6 +724,14 @@
             "groups": "Grupper",
             "groups_placeholder": "Ange antal grupper för det här stadiet..."
         },
+        "bracket": {
+            "schedule_title": "Schemalägg match",
+            "scheduled_at": "Schemalagd",
+            "currently_scheduled": "Nuvarande schema",
+            "save_schedule": "Spara schema",
+            "clear_schedule": "Rensa",
+            "past_time_error": "Schemalagd tid måste vara i framtiden"
+        },
         "match": {
             "team_1": "Lag 1",
             "team_2": "Lag 2",
@@ -767,7 +781,11 @@
         "actions": {
             "open_registration": "Öppna registrering",
             "close_registration": "Stäng registrering",
-            "cancel": "Avbryt turnering"
+            "cancel": "Avbryt turnering",
+            "confirm_pause": "Pausa turnering",
+            "pause_description": "Är du säker på att du vill pausa denna turnering? Inga nya matcher kommer att schemaläggs automatiskt förrän den återupptas.",
+            "resume_description": "Är du säker på att du vill återuppta denna turnering? Alla väntande matcher kommer att schemaläggas omedelbart.",
+            "update_status_failed": "Kunde inte uppdatera turneringsstatus"
         },
         "upcoming": {
             "empty": "Du har inga kommande turneringar."
@@ -846,6 +864,7 @@
         }
     },
     "match": {
+        "scheduled": "Schemalagd",
         "simple": {
             "vs": "mot"
         },
@@ -949,6 +968,26 @@
                         "coaches": "Tränare",
                         "captains": "Kaptener",
                         "everyone": "Alla spelare måste vara redo"
+                    }
+                },
+                "auto_cancellation": {
+                    "label": "Spåra avbokning",
+                    "description": "När aktiverat kommer matchen automatiskt att avbokas om den inte startas inom den konfigurerade tiden.",
+                    "auto_cancel_duration": {
+                        "label": "Automatisk avbokningstid (minuter)",
+                        "description": "Åsidosätt den appnivåbaserade automatiska avbokningstiden för denna match/turnering."
+                    },
+                    "live_match_timeout": {
+                        "label": "Timeout för pågående match (minuter)",
+                        "description": "Åsidosätt den appnivåbaserade timeouten för pågående match för denna match/turnering."
+                    }
+                },
+                "match_mode": {
+                    "label": "Matchläge",
+                    "description": "Styr hur matchen schemaläggs. Automatiskt läge låter systemet schemalägga automatiskt, adminläge kräver manuell schemaläggning.",
+                    "options": {
+                        "auto": "Automatiskt",
+                        "admin": "Admin"
                     }
                 }
             },

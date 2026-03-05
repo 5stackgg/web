@@ -292,12 +292,14 @@ export default {
 
     const defaultStatuses = [
       e_tournament_status_enum.Live,
+      e_tournament_status_enum.Paused,
       e_tournament_status_enum.RegistrationOpen,
       e_tournament_status_enum.RegistrationClosed,
       e_tournament_status_enum.Setup,
     ];
 
     return {
+      defaultStatuses,
       page: 1,
       perPage: 10,
       tournaments: [] as any[],
@@ -614,14 +616,6 @@ export default {
         value: status,
         label: status.replace(/([A-Z])/g, " $1").trim(),
       }));
-    },
-    defaultStatuses() {
-      return [
-        e_tournament_status_enum.Live,
-        e_tournament_status_enum.RegistrationOpen,
-        e_tournament_status_enum.RegistrationClosed,
-        e_tournament_status_enum.Setup,
-      ];
     },
   },
 };

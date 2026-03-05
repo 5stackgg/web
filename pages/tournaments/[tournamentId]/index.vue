@@ -21,6 +21,7 @@ import {
   UserPlus,
   Trash,
   Play,
+  Pause,
 } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -58,7 +59,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
+
 } from "@/components/ui/alert-dialog";
 import { NuxtLink } from "#components";
 import MatchTableRow from "~/components/MatchTableRow.vue";
@@ -152,12 +153,29 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
             </DropdownMenuItem>
 
             <DropdownMenuItem
-              v-if="tournament.can_start"
+              v-if="tournament.can_start && !tournament.can_resume"
               @click="startTournament"
               class="cursor-pointer"
             >
               <Play class="mr-2 h-4 w-4" />
               <span>{{ $t("tournament.actions.start") }}</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              v-if="tournament.can_pause"
+              @click="pauseDialogOpen = true"
+              class="cursor-pointer"
+            >
+              <Pause class="mr-2 h-4 w-4" />
+              <span>{{ $t("tournament.actions.pause") }}</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              v-if="tournament.can_resume"
+              @click="resumeDialogOpen = true"
+              class="cursor-pointer"
+            >
+              <Play class="mr-2 h-4 w-4" />
+              <span>{{ $t("tournament.actions.resume") }}</span>
             </DropdownMenuItem>
 
             <DropdownMenuSeparator
@@ -355,6 +373,13 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
         </div>
       </div>
 
+      <div
+        v-if="tournament.status === e_tournament_status_enum.Paused"
+        class="mb-4 rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3 text-sm text-destructive"
+      >
+        {{ $t("tournament.paused_banner") }}
+      </div>
+
       <TabsContent value="overview">
         <PageTransition>
           <TournamentStageBuilder
@@ -498,7 +523,6 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
       :open="deleteDialogOpen"
       @update:open="(open) => (deleteDialogOpen = open)"
     >
-      <AlertDialogTrigger class="w-full"> </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{{
@@ -515,6 +539,52 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
             class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
             {{ $t("tournament.actions.delete") }}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    <!-- Pause Tournament Dialog -->
+    <AlertDialog
+      :open="pauseDialogOpen"
+      @update:open="(open) => (pauseDialogOpen = open)"
+    >
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{{
+            $t("tournament.actions.confirm_pause")
+          }}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {{ $t("tournament.actions.pause_description") }}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+          <AlertDialogAction @click="pauseTournament">
+            {{ $t("tournament.actions.pause") }}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+
+    <!-- Resume Tournament Dialog -->
+    <AlertDialog
+      :open="resumeDialogOpen"
+      @update:open="(open) => (resumeDialogOpen = open)"
+    >
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>{{
+            $t("tournament.actions.resume")
+          }}</AlertDialogTitle>
+          <AlertDialogDescription>
+            {{ $t("tournament.actions.resume_description") }}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+          <AlertDialogAction @click="resumeTournament">
+            {{ $t("tournament.actions.resume") }}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -545,6 +615,8 @@ export default {
       joinSheetOpen: false,
       overviewExpanded: true,
       deleteDialogOpen: false,
+      pauseDialogOpen: false,
+      resumeDialogOpen: false,
       organizerPopoversOpen: {},
       activeTab: "overview",
       e_match_types: [],
@@ -585,6 +657,7 @@ export default {
               name: true,
               start: true,
               status: true,
+              auto_start: true,
               e_tournament_status: {
                 description: true,
               },
@@ -610,6 +683,8 @@ export default {
               can_cancel: true,
               can_open_registration: true,
               can_close_registration: true,
+              can_pause: true,
+              can_resume: true,
               min_players_per_lineup: true,
               max_players_per_lineup: true,
               admin: playerFields,
@@ -704,6 +779,7 @@ export default {
                       group: true,
                       bye: true,
                       match_number: true,
+                      scheduled_at: true,
                       scheduled_eta: true,
                       team_1_seed: true,
                       team_2_seed: true,
@@ -1034,24 +1110,40 @@ export default {
         e_tournament_status_enum.RegistrationClosed,
       );
     },
-    async updateTournamentStatus(status) {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_tournaments_by_pk: [
-            {
-              pk_columns: {
-                id: this.tournament.id,
+    async pauseTournament() {
+      await this.updateTournamentStatus(e_tournament_status_enum.Paused);
+      this.pauseDialogOpen = false;
+    },
+    async resumeTournament() {
+      await this.updateTournamentStatus(e_tournament_status_enum.Live);
+      this.resumeDialogOpen = false;
+    },
+    async updateTournamentStatus(status: e_tournament_status_enum) {
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            update_tournaments_by_pk: [
+              {
+                pk_columns: {
+                  id: this.tournament.id,
+                },
+                _set: {
+                  status,
+                },
               },
-              _set: {
-                status,
+              {
+                __typename: true,
               },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
+            ],
+          }),
+        });
+      } catch (error: unknown) {
+        toast({
+          title: this.$t("tournament.actions.update_status_failed"),
+          description: error instanceof Error ? error.message : String(error),
+          variant: "destructive",
+        });
+      }
     },
     async deleteTournament() {
       try {

@@ -33,14 +33,16 @@ export default defineNuxtPlugin((nuxtApp) => {
     uri: `https://${config.public.apiDomain}/v1/graphql`,
   });
 
-  const wsLink = new GraphQLWsLink(
-    createClient({
-      url: `wss://${config.public.apiDomain}/v1/graphql`,
-      connectionParams: {
-        credentials: "include",
-      },
-    }),
-  );
+  const wsClient = createClient({
+    url: `wss://${config.public.apiDomain}/v1/graphql`,
+    connectionParams: {
+      credentials: "include",
+    },
+  });
+
+  nuxtApp.provide("wsClient", wsClient);
+
+  const wsLink = new GraphQLWsLink(wsClient);
 
   const splitLink = split(
     ({ query }) => {

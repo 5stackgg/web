@@ -752,26 +752,24 @@ import { Card } from "~/components/ui/card";
                     <FormDescription>{{
                       $t("match.options.advanced.check_in_settings.description")
                     }}</FormDescription>
-                    <FormControl>
-                      <Select v-bind="componentField">
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem
-                              :value="vetoSetting.value"
-                              v-for="vetoSetting in checkInSettings"
-                              :key="vetoSetting.value"
-                            >
-                              {{ vetoSetting.display }}
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
+                    <Select v-bind="componentField">
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            :value="vetoSetting.value"
+                            v-for="vetoSetting in checkInSettings"
+                            :key="vetoSetting.value"
+                          >
+                            {{ vetoSetting.display }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 </FormField>
@@ -784,26 +782,135 @@ import { Card } from "~/components/ui/card";
                     <FormDescription>{{
                       $t("match.options.advanced.ready_settings.description")
                     }}</FormDescription>
-                    <FormControl>
-                      <Select v-bind="componentField">
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem
-                              :value="readySetting.value"
-                              v-for="readySetting in readySettings"
-                              :key="readySetting.value"
-                            >
-                              {{ readySetting.display }}
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
+                    <Select v-bind="componentField">
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            :value="readySetting.value"
+                            v-for="readySetting in readySettings"
+                            :key="readySetting.value"
+                          >
+                            {{ readySetting.display }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+
+                <FormField
+                  v-if="canSetMatchCancellation"
+                  v-slot="{ value, handleChange }"
+                  name="auto_cancellation"
+                >
+                  <FormItem>
+                    <div
+                      class="flex flex-row items-center justify-between cursor-pointer"
+                      @click="handleChange(!value)"
+                    >
+                      <div class="space-y-0.5">
+                        <FormLabel class="text-lg font-semibold">{{
+                          $t("match.options.advanced.auto_cancellation.label")
+                        }}</FormLabel>
+                        <FormDescription>{{
+                          $t("match.options.advanced.auto_cancellation.description")
+                        }}</FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          class="pointer-events-none"
+                          :model-value="value"
+                          @update:model-value="handleChange"
+                        />
+                      </FormControl>
+                    </div>
+
+                    <div v-if="value" class="mt-4 space-y-4 pl-4 border-l-2">
+                      <FormField
+                        v-slot="{ componentField }"
+                        name="auto_cancel_duration"
+                      >
+                        <FormItem>
+                          <FormLabel>{{
+                            $t("match.options.advanced.auto_cancellation.auto_cancel_duration.label")
+                          }}</FormLabel>
+                          <FormDescription>{{
+                            $t("match.options.advanced.auto_cancellation.auto_cancel_duration.description")
+                          }}</FormDescription>
+                          <FormControl>
+                            <Input
+                              v-bind="componentField"
+                              type="number"
+                              min="1"
+                              :placeholder="autoCancelDurationDefault"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      </FormField>
+
+                      <FormField
+                        v-slot="{ componentField }"
+                        name="live_match_timeout"
+                      >
+                        <FormItem>
+                          <FormLabel>{{
+                            $t("match.options.advanced.auto_cancellation.live_match_timeout.label")
+                          }}</FormLabel>
+                          <FormDescription>{{
+                            $t("match.options.advanced.auto_cancellation.live_match_timeout.description")
+                          }}</FormDescription>
+                          <FormControl>
+                            <Input
+                              v-bind="componentField"
+                              type="number"
+                              min="1"
+                              :placeholder="liveMatchTimeoutDefault"
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      </FormField>
+                    </div>
+                  </FormItem>
+                </FormField>
+
+                <FormField
+                  v-if="canSetMatchCancellation"
+                  v-slot="{ componentField }"
+                  name="match_mode"
+                >
+                  <FormItem>
+                    <FormLabel class="text-lg font-semibold">{{
+                      $t("match.options.advanced.match_mode.label")
+                    }}</FormLabel>
+                    <FormDescription>{{
+                      $t("match.options.advanced.match_mode.description")
+                    }}</FormDescription>
+                    <Select v-bind="componentField">
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            :value="mode.value"
+                            v-for="mode in matchModeSettings"
+                            :key="mode.value"
+                          >
+                            {{ mode.display }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 </FormField>
@@ -820,26 +927,24 @@ import { Card } from "~/components/ui/card";
                     <FormDescription>{{
                       $t("match.options.advanced.timeouts.tactical.description")
                     }}</FormDescription>
-                    <FormControl>
-                      <Select v-bind="componentField">
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem
-                              :value="timeoutSetting.value"
-                              v-for="timeoutSetting in timeoutSettings"
-                              :key="timeoutSetting.value"
-                            >
-                              {{ timeoutSetting.display }}
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
+                    <Select v-bind="componentField">
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            :value="timeoutSetting.value"
+                            v-for="timeoutSetting in timeoutSettings"
+                            :key="timeoutSetting.value"
+                          >
+                            {{ timeoutSetting.display }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 </FormField>
@@ -857,26 +962,24 @@ import { Card } from "~/components/ui/card";
                         "match.options.advanced.timeouts.technical.description",
                       )
                     }}</FormDescription>
-                    <FormControl>
-                      <Select v-bind="componentField">
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectItem
-                              :value="timeoutSetting.value"
-                              v-for="timeoutSetting in timeoutSettings"
-                              :key="timeoutSetting.value"
-                            >
-                              {{ timeoutSetting.display }}
-                            </SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
+                    <Select v-bind="componentField">
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            :value="timeoutSetting.value"
+                            v-for="timeoutSetting in timeoutSettings"
+                            :key="timeoutSetting.value"
+                          >
+                            {{ timeoutSetting.display }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 </FormField>
@@ -925,6 +1028,7 @@ import {
   e_ready_settings_enum,
   e_timeout_settings_enum,
   e_check_in_settings_enum,
+  e_match_mode_enum,
 } from "~/generated/zeus";
 import { mapFields } from "~/graphql/mapGraphql";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
@@ -1229,6 +1333,22 @@ export default {
         },
       ];
     },
+    matchModeSettings(): EnumSetting[] {
+      return [
+        {
+          display: this.$t(
+            "match.options.advanced.match_mode.options.auto",
+          ),
+          value: e_match_mode_enum.auto,
+        },
+        {
+          display: this.$t(
+            "match.options.advanced.match_mode.options.admin",
+          ),
+          value: e_match_mode_enum.admin,
+        },
+      ];
+    },
     defaultMapPool(): MapPool | undefined {
       return this.map_pools?.find((pool: MapPool) => {
         return pool.type === this.form.values.type;
@@ -1298,6 +1418,21 @@ export default {
     },
     canSetcheckInSettings() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
+    },
+    canSetMatchCancellation() {
+      return useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer);
+    },
+    autoCancelDurationDefault(): string {
+      const val = useApplicationSettingsStore().settings.find(
+        (s) => s.name === "auto_cancel_duration",
+      )?.value;
+      return val || "15";
+    },
+    liveMatchTimeoutDefault(): string {
+      const val = useApplicationSettingsStore().settings.find(
+        (s) => s.name === "live_match_timeout",
+      )?.value;
+      return val || "180";
     },
   },
   methods: {

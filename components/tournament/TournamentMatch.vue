@@ -6,77 +6,7 @@ import {
   e_match_status_enum,
   e_tournament_stage_types_enum,
 } from "~/generated/zeus";
-
-interface Bracket {
-  id: string;
-  bye?: boolean;
-  match_number?: number;
-  path?: string;
-  group?: number;
-  scheduled_eta?: string;
-  options?: any;
-  feeding_brackets?: Array<{
-    id: string;
-    round: number;
-    match_number?: number;
-    path?: string;
-    team_1_seed?: number;
-    team_2_seed?: number;
-  }>;
-  match?: {
-    id: string;
-    status?: string;
-    e_match_status?: {
-      description: string;
-    };
-    options?: {
-      best_of?: number;
-    };
-    lineup_1?: any;
-    lineup_2?: any;
-    match_maps?: Array<{ status?: string }>;
-  };
-  parent_bracket?: {
-    id?: string;
-    round: number;
-    group?: number;
-    match_number?: number;
-    path?: string;
-  };
-  loser_bracket?: {
-    id?: string;
-    round: number;
-    group?: number;
-    match_number?: number;
-    path?: string;
-  };
-  team_1?: {
-    name?: string;
-    team?: {
-      name?: string;
-    };
-  };
-  team_2?: {
-    name?: string;
-    team?: {
-      name?: string;
-    };
-  };
-  team_1_seed?: number;
-  team_2_seed?: number;
-  stage?: {
-    options?: {
-      best_of?: number;
-    };
-  };
-  tournament?: {
-    is_organizer?: boolean;
-    status?: string;
-    options?: {
-      best_of?: number;
-    };
-  };
-}
+import type { Bracket } from "~/types/tournament";
 
 type FeedingBracket = NonNullable<Bracket["feeding_brackets"]>[number];
 
@@ -103,6 +33,10 @@ const props = defineProps<{
       best_of?: number;
     };
   };
+}>();
+
+const emit = defineEmits<{
+  (e: 'schedule-bracket', bracket: Bracket): void;
 }>();
 
 const { t } = useI18n();
@@ -215,17 +149,21 @@ const getTeamName = (team: Bracket["team_1"]): string => {
 const router = useRouter();
 
 const handleClick = (event: MouseEvent, bracket: Bracket) => {
-  if (!bracket.match) return;
-
-  if (event.metaKey || event.ctrlKey || event.shiftKey) {
-    window.open(`/matches/${bracket.match.id}`, "_blank");
+  if (bracket.match) {
+    if (event.metaKey || event.ctrlKey || event.shiftKey) {
+      window.open(`/matches/${bracket.match.id}`, "_blank");
+      return;
+    }
+    router.push({
+      name: "matches-id",
+      params: { id: bracket.match.id },
+    });
     return;
   }
-
-  router.push({
-    name: "matches-id",
-    params: { id: bracket.match.id },
-  });
+  // No match yet — open schedule dialog if organizer
+  if (props.tournament?.is_organizer) {
+    emit('schedule-bracket', bracket);
+  }
 };
 
 const getFeedingBracketsByPath = (bracket: Bracket, path: "WB" | "LB") => {
@@ -326,9 +264,19 @@ const isLbFeedingToWb = (bracket: Bracket) => {
         </Badge>
       </div>
 
-      <!-- Display scheduled ETA if available -->
+      <!-- Display organizer-set schedule if available -->
       <div
-        v-if="bracket.scheduled_eta && !bracket.match"
+        v-if="bracket.scheduled_at && !bracket.match"
+        class="text-xs text-muted-foreground flex flex-col items-center gap-1"
+      >
+        <span>{{ $t("tournament.bracket.scheduled_at") }}</span>
+        <span class="text-green-400 font-medium">
+          <TimeAgo :date="bracket.scheduled_at"></TimeAgo>
+        </span>
+      </div>
+      <!-- Display auto-calculated ETA if no organizer schedule -->
+      <div
+        v-else-if="bracket.scheduled_eta && !bracket.match"
         class="text-xs text-muted-foreground flex flex-col items-center gap-1"
       >
         <span>{{ $t("tournament.match.scheduled_for") }}</span>

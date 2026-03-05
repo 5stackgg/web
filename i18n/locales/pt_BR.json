@@ -738,6 +738,7 @@
         "generic": "Ocorreu um erro. Por favor, tente novamente."
     },
     "tournament": {
+        "paused_banner": "Este campeonato está pausado. Nenhuma nova partida será agendada automaticamente.",
         "overview": "Visão geral",
         "joined": "Entrou no Campeonato",
         "updated": "Campeonato Atualizado",
@@ -765,7 +766,12 @@
             "description": "Descrição",
             "start": "Início",
             "pick_date": "Selecione uma data",
-            "update": "Atualizar"
+            "update": "Atualizar",
+            "match_options": "Opções de partida",
+            "auto_start": {
+                "label": "Início automático",
+                "description": "Quando ativado, as partidas do campeonato são agendadas automaticamente. Quando desativado, um organizador deve agendar cada partida manualmente."
+            }
         },
         "notifications": {
             "title": "Notifications",
@@ -843,7 +849,13 @@
         },
         "bracket": {
             "update": "Atualizar Tabela",
-            "edit_title": "Editar Tabela - Round {round} Partida {match}"
+            "edit_title": "Editar Tabela - Round {round} Partida {match}",
+            "schedule_title": "Agendar partida",
+            "scheduled_at": "Agendado",
+            "currently_scheduled": "Agendamento atual",
+            "save_schedule": "Salvar agendamento",
+            "clear_schedule": "Limpar",
+            "past_time_error": "O horário agendado deve ser no futuro"
         },
         "match": {
             "team_1": "Equipe 1",
@@ -905,7 +917,11 @@
             "cancel": "Cancelar",
             "delete": "Deletar Campeonato",
             "confirm_delete": "Confirmar exclusão do campeonato",
-            "delete_description": "Tem certeza que deseja deletar este campeonato? Esta ação não pode ser desfeita."
+            "delete_description": "Tem certeza que deseja deletar este campeonato? Esta ação não pode ser desfeita.",
+            "confirm_pause": "Pausar campeonato",
+            "pause_description": "Tem certeza que deseja pausar este campeonato? Nenhuma nova partida será agendada automaticamente até que ele seja retomado.",
+            "resume_description": "Tem certeza que deseja retomar este campeonato? Todas as partidas pendentes serão agendadas imediatamente.",
+            "update_status_failed": "Falha ao atualizar o status do campeonato"
         },
         "upcoming": {
             "empty": "Nenhum campeonato próximo"
@@ -984,6 +1000,7 @@
         }
     },
     "match": {
+        "scheduled": "Agendado",
         "simple": {
             "vs": "vs"
         },
@@ -1096,6 +1113,26 @@
                 "default_player_models": {
                     "label": "Modelos Padrão (default models)",
                     "description": "Habilita modelos padrão para todos os jogadores na partida não permitindo skins adicionais."
+                },
+                "auto_cancellation": {
+                    "label": "Rastreamento de cancelamento",
+                    "description": "Quando ativado, a partida será automaticamente cancelada se não for iniciada dentro da duração configurada.",
+                    "auto_cancel_duration": {
+                        "label": "Duração do cancelamento automático (minutos)",
+                        "description": "Substituir a duração de cancelamento automático no nível do aplicativo para esta partida/campeonato."
+                    },
+                    "live_match_timeout": {
+                        "label": "Tempo limite da partida ao vivo (minutos)",
+                        "description": "Substituir o tempo limite de partida ao vivo no nível do aplicativo para esta partida/campeonato."
+                    }
+                },
+                "match_mode": {
+                    "label": "Modo de partida",
+                    "description": "Controla como a partida é agendada. O modo automático permite que o sistema agende automaticamente, o modo admin requer agendamento manual.",
+                    "options": {
+                        "auto": "Automático",
+                        "admin": "Admin"
+                    }
                 }
             },
             "max_rounds": "Máximo de rounds",

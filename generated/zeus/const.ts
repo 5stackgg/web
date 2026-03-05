@@ -4257,6 +4257,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"match_options_bool_exp",
 		_not:"match_options_bool_exp",
 		_or:"match_options_bool_exp",
+		auto_cancel_duration:"Int_comparison_exp",
 		best_of:"Int_comparison_exp",
 		check_in_setting:"e_check_in_settings_enum_comparison_exp",
 		coaches:"Boolean_comparison_exp",
@@ -4265,10 +4266,12 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid_comparison_exp",
 		invite_code:"String_comparison_exp",
 		knife_round:"Boolean_comparison_exp",
+		live_match_timeout:"Int_comparison_exp",
 		lobby_access:"e_lobby_access_enum_comparison_exp",
 		map_pool:"map_pools_bool_exp",
 		map_pool_id:"uuid_comparison_exp",
 		map_veto:"Boolean_comparison_exp",
+		match_cancellation:"Boolean_comparison_exp",
 		match_mode:"e_match_mode_enum_comparison_exp",
 		matches:"matches_bool_exp",
 		matches_aggregate:"matches_aggregate_bool_exp",
@@ -4284,7 +4287,6 @@ export const AllTypesProps: Record<string,any> = {
 		tournament:"tournaments_bool_exp",
 		tournament_bracket:"tournament_brackets_bool_exp",
 		tournament_stage:"tournament_stages_bool_exp",
-		track_cancellation:"Boolean_comparison_exp",
 		tv_delay:"Int_comparison_exp",
 		type:"e_match_types_enum_comparison_exp"
 	},
@@ -4318,6 +4320,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"match_options_bool_exp"
 	},
 	match_options_order_by:{
+		auto_cancel_duration:"order_by",
 		best_of:"order_by",
 		check_in_setting:"order_by",
 		coaches:"order_by",
@@ -4326,10 +4329,12 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		invite_code:"order_by",
 		knife_round:"order_by",
+		live_match_timeout:"order_by",
 		lobby_access:"order_by",
 		map_pool:"map_pools_order_by",
 		map_pool_id:"order_by",
 		map_veto:"order_by",
+		match_cancellation:"order_by",
 		match_mode:"order_by",
 		matches_aggregate:"matches_aggregate_order_by",
 		mr:"order_by",
@@ -4344,7 +4349,6 @@ export const AllTypesProps: Record<string,any> = {
 		tournament:"tournaments_order_by",
 		tournament_bracket:"tournament_brackets_order_by",
 		tournament_stage:"tournament_stages_order_by",
-		track_cancellation:"order_by",
 		tv_delay:"order_by",
 		type:"order_by"
 	},
@@ -19164,6 +19168,7 @@ export const ReturnTypes: Record<string,any> = {
 		order:"Float"
 	},
 	match_options:{
+		auto_cancel_duration:"Int",
 		best_of:"Int",
 		check_in_setting:"e_check_in_settings_enum",
 		coaches:"Boolean",
@@ -19172,10 +19177,12 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		invite_code:"String",
 		knife_round:"Boolean",
+		live_match_timeout:"Int",
 		lobby_access:"e_lobby_access_enum",
 		map_pool:"map_pools",
 		map_pool_id:"uuid",
 		map_veto:"Boolean",
+		match_cancellation:"Boolean",
 		match_mode:"e_match_mode_enum",
 		matches:"matches",
 		matches_aggregate:"matches_aggregate",
@@ -19191,7 +19198,6 @@ export const ReturnTypes: Record<string,any> = {
 		tournament:"tournaments",
 		tournament_bracket:"tournament_brackets",
 		tournament_stage:"tournament_stages",
-		track_cancellation:"Boolean",
 		tv_delay:"Int",
 		type:"e_match_types_enum"
 	},
@@ -19213,15 +19219,19 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"match_options_variance_fields"
 	},
 	match_options_avg_fields:{
+		auto_cancel_duration:"Float",
 		best_of:"Float",
+		live_match_timeout:"Float",
 		mr:"Float",
 		number_of_substitutes:"Float",
 		tv_delay:"Float"
 	},
 	match_options_max_fields:{
+		auto_cancel_duration:"Int",
 		best_of:"Int",
 		id:"uuid",
 		invite_code:"String",
+		live_match_timeout:"Int",
 		map_pool_id:"uuid",
 		mr:"Int",
 		number_of_substitutes:"Int",
@@ -19229,9 +19239,11 @@ export const ReturnTypes: Record<string,any> = {
 		tv_delay:"Int"
 	},
 	match_options_min_fields:{
+		auto_cancel_duration:"Int",
 		best_of:"Int",
 		id:"uuid",
 		invite_code:"String",
+		live_match_timeout:"Int",
 		map_pool_id:"uuid",
 		mr:"Int",
 		number_of_substitutes:"Int",
@@ -19243,43 +19255,57 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"match_options"
 	},
 	match_options_stddev_fields:{
+		auto_cancel_duration:"Float",
 		best_of:"Float",
+		live_match_timeout:"Float",
 		mr:"Float",
 		number_of_substitutes:"Float",
 		tv_delay:"Float"
 	},
 	match_options_stddev_pop_fields:{
+		auto_cancel_duration:"Float",
 		best_of:"Float",
+		live_match_timeout:"Float",
 		mr:"Float",
 		number_of_substitutes:"Float",
 		tv_delay:"Float"
 	},
 	match_options_stddev_samp_fields:{
+		auto_cancel_duration:"Float",
 		best_of:"Float",
+		live_match_timeout:"Float",
 		mr:"Float",
 		number_of_substitutes:"Float",
 		tv_delay:"Float"
 	},
 	match_options_sum_fields:{
+		auto_cancel_duration:"Int",
 		best_of:"Int",
+		live_match_timeout:"Int",
 		mr:"Int",
 		number_of_substitutes:"Int",
 		tv_delay:"Int"
 	},
 	match_options_var_pop_fields:{
+		auto_cancel_duration:"Float",
 		best_of:"Float",
+		live_match_timeout:"Float",
 		mr:"Float",
 		number_of_substitutes:"Float",
 		tv_delay:"Float"
 	},
 	match_options_var_samp_fields:{
+		auto_cancel_duration:"Float",
 		best_of:"Float",
+		live_match_timeout:"Float",
 		mr:"Float",
 		number_of_substitutes:"Float",
 		tv_delay:"Float"
 	},
 	match_options_variance_fields:{
+		auto_cancel_duration:"Float",
 		best_of:"Float",
+		live_match_timeout:"Float",
 		mr:"Float",
 		number_of_substitutes:"Float",
 		tv_delay:"Float"

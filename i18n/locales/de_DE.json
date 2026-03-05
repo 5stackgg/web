@@ -969,7 +969,7 @@
                         "everyone": "Alle Spieler müssen bereit sein"
                     }
                 },
-                "match_cancellation": {
+                "auto_cancellation": {
                     "label": "Abbruchverfolgung",
                     "description": "Wenn aktiviert, wird das Match automatisch abgebrochen, wenn es nicht innerhalb der konfigurierten Dauer gestartet wird.",
                     "auto_cancel_duration": {

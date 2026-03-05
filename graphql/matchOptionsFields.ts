@@ -10,7 +10,7 @@ export const matchOptionsFields = Selector("match_options")({
   knife_round: true,
   default_models: true,
   check_in_setting: true,
-  match_cancellation: true,
+  auto_cancellation: true,
   auto_cancel_duration: true,
   live_match_timeout: true,
   match_mode: true,

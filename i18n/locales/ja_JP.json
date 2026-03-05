@@ -969,7 +969,7 @@
                         "everyone": "すべてのプレーヤーは準備ができている必要があります"
                     }
                 },
-                "match_cancellation": {
+                "auto_cancellation": {
                     "label": "キャンセル追跡",
                     "description": "有効にすると、設定された時間内に開始されない場合、試合は自動的にキャンセルされます。",
                     "auto_cancel_duration": {

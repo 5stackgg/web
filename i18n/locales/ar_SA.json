@@ -812,7 +812,7 @@
                       "everyone": "All Players Required to be Ready"
                   }
                 },
-                "match_cancellation": {
+                "auto_cancellation": {
                   "label": "تتبع الإلغاء",
                   "description": "عند التفعيل، سيتم إلغاء المباراة تلقائياً إذا لم تبدأ خلال المدة المحددة.",
                   "auto_cancel_duration": {

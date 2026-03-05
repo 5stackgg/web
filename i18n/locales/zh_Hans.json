@@ -811,7 +811,7 @@
                       "everyone": "所有玩家皆需準備好"
                   }
                 },
-                "match_cancellation": {
+                "auto_cancellation": {
                   "label": "取消追踪",
                   "description": "启用后，如果比赛未在配置的时间内开始，将自动取消。",
                   "auto_cancel_duration": {

@@ -969,7 +969,7 @@
                         "everyone": "Tutti i giocatori devono essere pronti"
                     }
                 },
-                "match_cancellation": {
+                "auto_cancellation": {
                     "label": "Tracciamento cancellazione",
                     "description": "Quando abilitato, la partita verrà automaticamente cancellata se non viene avviata entro la durata configurata.",
                     "auto_cancel_duration": {

@@ -969,7 +969,7 @@
                         "everyone": "Todos los jugadores requeridos para estar listos"
                     }
                 },
-                "match_cancellation": {
+                "auto_cancellation": {
                     "label": "Seguimiento de cancelación",
                     "description": "Cuando está habilitado, la partida se cancelará automáticamente si no se inicia dentro de la duración configurada.",
                     "auto_cancel_duration": {

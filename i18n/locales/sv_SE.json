@@ -970,7 +970,7 @@
                         "everyone": "Alla spelare måste vara redo"
                     }
                 },
-                "match_cancellation": {
+                "auto_cancellation": {
                     "label": "Spåra avbokning",
                     "description": "När aktiverat kommer matchen automatiskt att avbokas om den inte startas inom den konfigurerade tiden.",
                     "auto_cancel_duration": {

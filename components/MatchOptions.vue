@@ -807,7 +807,7 @@ import { Card } from "~/components/ui/card";
                 <FormField
                   v-if="canSetMatchCancellation"
                   v-slot="{ value, handleChange }"
-                  name="match_cancellation"
+                  name="auto_cancellation"
                 >
                   <FormItem>
                     <div
@@ -816,10 +816,10 @@ import { Card } from "~/components/ui/card";
                     >
                       <div class="space-y-0.5">
                         <FormLabel class="text-lg font-semibold">{{
-                          $t("match.options.advanced.match_cancellation.label")
+                          $t("match.options.advanced.auto_cancellation.label")
                         }}</FormLabel>
                         <FormDescription>{{
-                          $t("match.options.advanced.match_cancellation.description")
+                          $t("match.options.advanced.auto_cancellation.description")
                         }}</FormDescription>
                       </div>
                       <FormControl>
@@ -838,10 +838,10 @@ import { Card } from "~/components/ui/card";
                       >
                         <FormItem>
                           <FormLabel>{{
-                            $t("match.options.advanced.match_cancellation.auto_cancel_duration.label")
+                            $t("match.options.advanced.auto_cancellation.auto_cancel_duration.label")
                           }}</FormLabel>
                           <FormDescription>{{
-                            $t("match.options.advanced.match_cancellation.auto_cancel_duration.description")
+                            $t("match.options.advanced.auto_cancellation.auto_cancel_duration.description")
                           }}</FormDescription>
                           <FormControl>
                             <Input
@@ -861,10 +861,10 @@ import { Card } from "~/components/ui/card";
                       >
                         <FormItem>
                           <FormLabel>{{
-                            $t("match.options.advanced.match_cancellation.live_match_timeout.label")
+                            $t("match.options.advanced.auto_cancellation.live_match_timeout.label")
                           }}</FormLabel>
                           <FormDescription>{{
-                            $t("match.options.advanced.match_cancellation.live_match_timeout.description")
+                            $t("match.options.advanced.auto_cancellation.live_match_timeout.description")
                           }}</FormDescription>
                           <FormControl>
                             <Input

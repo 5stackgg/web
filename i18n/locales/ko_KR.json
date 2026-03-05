@@ -801,7 +801,7 @@
                       "everyone": "모든 플레이어는 준비해야합니다"
                   }
                 },
-                "match_cancellation": {
+                "auto_cancellation": {
                   "label": "취소 추적",
                   "description": "활성화하면 설정된 시간 내에 시작되지 않으면 경기가 자동으로 취소됩니다.",
                   "auto_cancel_duration": {

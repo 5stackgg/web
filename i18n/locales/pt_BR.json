@@ -1114,7 +1114,7 @@
                     "label": "Modelos Padrão (default models)",
                     "description": "Habilita modelos padrão para todos os jogadores na partida não permitindo skins adicionais."
                 },
-                "match_cancellation": {
+                "auto_cancellation": {
                     "label": "Rastreamento de cancelamento",
                     "description": "Quando ativado, a partida será automaticamente cancelada se não for iniciada dentro da duração configurada.",
                     "auto_cancel_duration": {

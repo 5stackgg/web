@@ -969,7 +969,7 @@
                         "everyone": "Alle spillere skal være klar"
                     }
                 },
-                "match_cancellation": {
+                "auto_cancellation": {
                     "label": "Spor annullering",
                     "description": "Når aktiveret, vil kampen automatisk blive annulleret, hvis den ikke startes inden for den konfigurerede varighed.",
                     "auto_cancel_duration": {

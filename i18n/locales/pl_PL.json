@@ -927,7 +927,7 @@
                         "everyone": "Wszyscy gracze wymagający być gotowi"
                     }
                 },
-                "match_cancellation": {
+                "auto_cancellation": {
                     "label": "Śledzenie anulowania",
                     "description": "Po włączeniu mecz zostanie automatycznie anulowany, jeśli nie zostanie rozpoczęty w skonfigurowanym czasie.",
                     "auto_cancel_duration": {

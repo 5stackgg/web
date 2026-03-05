@@ -35,7 +35,7 @@ export default function matchOptionsValidator(
       .string()
       .default(e_timeout_settings_enum.CoachAndPlayers),
     tech_timeout_setting: z.string().default(e_timeout_settings_enum.Admin),
-    match_cancellation: z.boolean().default(true),
+    auto_cancellation: z.boolean().default(true),
     auto_cancel_duration: z.number().min(1).nullable().optional(),
     live_match_timeout: z.number().min(1).nullable().optional(),
     match_mode: z.nativeEnum(e_match_mode_enum).default(e_match_mode_enum.auto),

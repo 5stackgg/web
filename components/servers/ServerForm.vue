@@ -28,6 +28,43 @@ const showConnectPassword = ref(false);
 
 <template>
   <form @submit.prevent="updateCreateServer" class="grid gap-4">
+    <FormField v-slot="{ componentField }" name="game">
+      <FormItem>
+        <FormLabel class="text-base">{{ $t("server.form.game") }}</FormLabel>
+        <FormControl>
+          <RadioGroup v-bind="componentField" class="grid gap-3">
+            <div
+              class="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
+              @click="componentField['onUpdate:modelValue']('cs2')"
+            >
+              <RadioGroupItem id="game-cs2" value="cs2" />
+              <div class="grid gap-1.5 leading-none">
+                <label
+                  class="text-sm font-medium leading-none cursor-pointer"
+                  for="game-cs2"
+                  >CS2</label
+                >
+              </div>
+            </div>
+            <div
+              class="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
+              @click="componentField['onUpdate:modelValue']('csgo')"
+            >
+              <RadioGroupItem id="game-csgo" value="csgo" />
+              <div class="grid gap-1.5 leading-none">
+                <label
+                  class="text-sm font-medium leading-none cursor-pointer"
+                  for="game-csgo"
+                  >CS:GO</label
+                >
+              </div>
+            </div>
+          </RadioGroup>
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+
     <FormField v-slot="{ componentField }" name="use_valve_modes">
       <FormItem>
         <FormLabel class="text-base">
@@ -93,43 +130,6 @@ const showConnectPassword = ref(false);
                 <p class="text-sm text-muted-foreground">
                   {{ $t("server.form.valve_presets_description") }}
                 </p>
-              </div>
-            </div>
-          </RadioGroup>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-
-    <FormField v-slot="{ componentField }" name="game">
-      <FormItem>
-        <FormLabel class="text-base">{{ $t("server.form.game") }}</FormLabel>
-        <FormControl>
-          <RadioGroup v-bind="componentField" class="grid gap-3">
-            <div
-              class="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
-              @click="componentField['onUpdate:modelValue']('cs2')"
-            >
-              <RadioGroupItem id="game-cs2" value="cs2" />
-              <div class="grid gap-1.5 leading-none">
-                <label
-                  class="text-sm font-medium leading-none cursor-pointer"
-                  for="game-cs2"
-                  >CS2</label
-                >
-              </div>
-            </div>
-            <div
-              class="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
-              @click="componentField['onUpdate:modelValue']('csgo')"
-            >
-              <RadioGroupItem id="game-csgo" value="csgo" />
-              <div class="grid gap-1.5 leading-none">
-                <label
-                  class="text-sm font-medium leading-none cursor-pointer"
-                  for="game-csgo"
-                  >CS:GO</label
-                >
               </div>
             </div>
           </RadioGroup>

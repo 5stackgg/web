@@ -460,14 +460,9 @@
         "public_servers": {
             "title": "公開伺服器",
             "description": "瀏覽並加入公開伺服器",
-            "table": {
-                "label": "標籤",
-                "region": "區域",
-                "map": "地圖",
-                "type": "類型",
-                "players": "玩家",
-                "connect": "連線"
-            },
+            "online": "Online",
+            "offline": "Offline",
+            "players": "玩家",
             "no_public_servers": "目前沒有可用的公開伺服器。",
             "lan_servers_title": "區網伺服器"
         },

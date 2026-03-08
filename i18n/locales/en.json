@@ -509,15 +509,9 @@
         "public_servers": {
             "title": "Public Servers",
             "description": "Browse and join public servers",
-            "table": {
-
-                "label": "Label",
-                "region": "Region",
-                "map": "Map",
-                "type": "Type",
-                "players": "Players",
-                "connect": "Connect"
-            },
+            "online": "Online",
+            "offline": "Offline",
+            "players": "Players",
             "no_servers_title": "No Servers Available",
             "no_public_servers": "No public servers available at the moment.",
             "lan_servers_title": "LAN Servers"

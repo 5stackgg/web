@@ -385,14 +385,9 @@
         "public_servers": {
             "title": "Öffentliche Server",
             "description": "Öffentliche Server durchsuchen und beitreten",
-            "table": {
-                "label": "Label",
-                "region": "Region",
-                "map": "Map",
-                "type": "Typ",
-                "players": "Spieler",
-                "connect": "Verbinden"
-            },
+            "online": "Online",
+            "offline": "Offline",
+            "players": "Spieler",
             "no_public_servers": "Derzeit sind keine öffentlichen Server verfügbar.",
             "lan_servers_title": "LAN-Server"
         },

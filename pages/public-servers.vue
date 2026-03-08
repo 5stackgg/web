@@ -2,9 +2,11 @@
 import { Badge } from "@/components/ui/badge";
 import { AnimatedCard } from "@/components/ui/animated-card";
 import { Separator } from "@/components/ui/separator";
+import cleanMapName from "~/utilities/cleanMapName";
 import PageHeading from "~/components/PageHeading.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
+import { mapFields } from "~/graphql/mapGraphql";
 import { $ } from "~/generated/zeus";
 import { e_server_types_enum } from "~/generated/zeus";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -66,7 +68,7 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
           <div v-for="(gameServers, game) in serversByGame" :key="game">
             <div class="flex items-center gap-3 mb-4">
               <h2 class="text-xl font-semibold whitespace-nowrap">
-                {{ game }}
+                {{ gameLabel(game) }}
               </h2>
               <Separator class="flex-1" />
             </div>
@@ -88,39 +90,29 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
                   <div
                     class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
                   />
-                  <!-- Top-left: status -->
-                  <div class="absolute top-2 left-2 flex items-center gap-1.5">
-                    <div class="relative h-2 w-2">
-                      <div
-                        class="h-2 w-2 rounded-full"
-                        :class="
-                          server.connected ? 'bg-green-400' : 'bg-red-400'
-                        "
-                      />
-                      <span
-                        v-if="server.connected"
-                        class="animate-ping absolute inset-0 h-2 w-2 rounded-full bg-green-400 opacity-75"
-                      />
-                    </div>
-                    <span class="text-xs text-white/80 font-medium">
-                      {{
-                        server.connected
-                          ? $t("pages.public_servers.online")
-                          : $t("pages.public_servers.offline")
-                      }}
+                  <!-- Top-left: map name -->
+                  <div class="absolute top-0 left-0 right-0 px-2 pt-2">
+                    <span
+                      class="text-[11px] font-bold text-white/90 uppercase tracking-widest drop-shadow-lg"
+                    >
+                      {{ cleanMapName(mapName(server.id)) }}
                     </span>
+                  </div>
+                  <!-- Patch centered -->
+                  <div
+                    class="absolute inset-0 flex items-center justify-center"
+                  >
+                    <img
+                      v-if="mapPatch(server.id)"
+                      :src="mapPatch(server.id)"
+                      class="w-1/4 max-w-[72px] h-auto max-h-[60%] object-contain drop-shadow-2xl opacity-80"
+                    />
                   </div>
                   <!-- Top-right: server type -->
                   <div class="absolute top-2 right-2">
                     <Badge variant="secondary" class="text-xs">{{
                       server.type
                     }}</Badge>
-                  </div>
-                  <!-- Bottom-left: map name -->
-                  <div class="absolute bottom-2 left-2">
-                    <span class="font-mono text-xs text-white/70">{{
-                      mapName(server.id) || "—"
-                    }}</span>
                   </div>
                   <!-- Bottom-right: region -->
                   <div class="absolute bottom-2 right-2">
@@ -201,35 +193,21 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
             <div
               class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"
             />
-            <div class="absolute top-2 left-2 flex items-center gap-1.5">
-              <div class="relative h-2 w-2">
-                <div
-                  class="h-2 w-2 rounded-full"
-                  :class="server.connected ? 'bg-green-400' : 'bg-red-400'"
-                />
-                <span
-                  v-if="server.connected"
-                  class="animate-ping absolute inset-0 h-2 w-2 rounded-full bg-green-400 opacity-75"
-                />
-              </div>
-              <span class="text-xs text-white/80 font-medium">
-                {{
-                  server.connected
-                    ? $t("pages.public_servers.online")
-                    : $t("pages.public_servers.offline")
-                }}
+            <!-- Top-left: map name -->
+            <div class="absolute top-0 left-0 right-0 px-2 pt-2">
+              <span
+                class="text-[11px] font-bold text-white/90 uppercase tracking-widest drop-shadow-lg"
+              >
+                {{ cleanMapName(mapName(server.id)) }}
               </span>
             </div>
+            <!-- Top-right: server type -->
             <div class="absolute top-2 right-2">
               <Badge variant="secondary" class="text-xs">{{
                 server.type
               }}</Badge>
             </div>
-            <div class="absolute bottom-2 left-2">
-              <span class="font-mono text-xs text-white/70">{{
-                mapName(server.id) || "—"
-              }}</span>
-            </div>
+            <!-- Bottom-right: region -->
             <div class="absolute bottom-2 right-2">
               <Badge
                 variant="outline"
@@ -285,6 +263,7 @@ export default {
       serversByGame: {} as Record<string, Record<string, any[]>>,
       lanServers: undefined as any[] | undefined,
       getDedicatedServerInfo: undefined as any[] | undefined,
+      maps: undefined as any[] | undefined,
       loading: true,
     };
   },
@@ -302,6 +281,11 @@ export default {
         ],
       }),
       pollInterval: 60 * 1000,
+    },
+    maps: {
+      query: generateQuery({
+        maps: [{}, { name: true, patch: true }],
+      }),
     },
     $subscribe: {
       servers: {
@@ -385,6 +369,13 @@ export default {
     },
   },
   methods: {
+    gameLabel(game: string): string {
+      const labels: Record<string, string> = {
+        cs2: "Counter-Strike 2",
+        csgo: "Counter-Strike: Global Offensive",
+      };
+      return labels[game] ?? game;
+    },
     flattenGame(typeMap: Record<string, any[]>): any[] {
       return Object.values(typeMap).flat();
     },
@@ -397,6 +388,10 @@ export default {
         this.getDedicatedServerInfo?.find((server) => server.id === id)
           ?.players || 0
       );
+    },
+    mapPatch(id: string): string | undefined {
+      const name = this.getDedicatedServerMap(id);
+      return this.maps?.find((m) => m.name === name)?.patch;
     },
     mapName(id: string): string {
       return this.getDedicatedServerMap(id) || "default";

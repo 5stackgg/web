@@ -289,6 +289,16 @@
                 }
             }
         },
+        "public_servers": {
+            "title": "공개 서버",
+            "description": "공개 서버 찾아보기 및 참여",
+            "online": "Online",
+            "offline": "Offline",
+            "players": "플레이어",
+            "no_servers_title": "사용 가능한 서버 없음",
+            "no_public_servers": "현재 사용 가능한 공개 서버가 없습니다.",
+            "lan_servers_title": "LAN 서버"
+        },
         "map_pools": {
             "title": "기본 맵 풀",
             "description": "매치메이킹 맵 풀과 매치메이킹 맵 관리.",

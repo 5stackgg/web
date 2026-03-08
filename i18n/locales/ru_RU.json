@@ -298,6 +298,16 @@
                 }
             }
         },
+        "public_servers": {
+            "title": "Публичные серверы",
+            "description": "Просмотр и подключение к публичным серверам",
+            "online": "Online",
+            "offline": "Offline",
+            "players": "Игроки",
+            "no_servers_title": "Нет доступных серверов",
+            "no_public_servers": "В данный момент нет доступных публичных серверов.",
+            "lan_servers_title": "LAN-серверы"
+        },
         "map_pools": {
             "title": "По умолчанию Map Pools",
             "description": "Управляйте пулами карт и доступными картами для сватовства.",

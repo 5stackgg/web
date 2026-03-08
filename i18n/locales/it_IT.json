@@ -385,14 +385,9 @@
         "public_servers": {
             "title": "Server Pubblici",
             "description": "Sfoglia e unisciti ai server pubblici",
-            "table": {
-                "label": "Etichetta",
-                "region": "Regione",
-                "map": "Mappa",
-                "type": "Tipo",
-                "players": "Giocatori",
-                "connect": "Connetti"
-            },
+            "online": "Online",
+            "offline": "Offline",
+            "players": "Giocatori",
             "no_public_servers": "Nessun server pubblico disponibile al momento.",
             "lan_servers_title": "Server LAN"
         },

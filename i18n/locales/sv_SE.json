@@ -385,14 +385,9 @@
         "public_servers": {
             "title": "Publika servrar",
             "description": "Bläddra och gå med i offentliga servrar",
-            "table": {
-                "label": "Etikett",
-                "region": "Region",
-                "map": "Karta",
-                "type": "Typ",
-                "players": "Spelare",
-                "connect": "Anslut"
-            },
+            "online": "Online",
+            "offline": "Offline",
+            "players": "Spelare",
             "no_public_servers": "Inga offentliga servrar tillgängliga för tillfället.",
             "lan_servers_title": "LAN-servrar"
         },

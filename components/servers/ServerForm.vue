@@ -21,12 +21,50 @@ import {
 import { Switch } from "~/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { Eye, EyeOff } from "lucide-vue-next";
+import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 
 const showConnectPassword = ref(false);
 </script>
 
 <template>
   <form @submit.prevent="updateCreateServer" class="grid gap-4">
+    <FormField v-slot="{ componentField }" name="game">
+      <FormItem>
+        <FormLabel class="text-base">{{ $t("server.form.game") }}</FormLabel>
+        <FormControl>
+          <RadioGroup v-bind="componentField" class="grid gap-3">
+            <div
+              class="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
+              @click="componentField['onUpdate:modelValue']('cs2')"
+            >
+              <RadioGroupItem id="game-cs2" value="cs2" />
+              <div class="grid gap-1.5 leading-none">
+                <label
+                  class="text-sm font-medium leading-none cursor-pointer"
+                  for="game-cs2"
+                  >CS2</label
+                >
+              </div>
+            </div>
+            <div
+              class="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
+              @click="componentField['onUpdate:modelValue']('csgo')"
+            >
+              <RadioGroupItem id="game-csgo" value="csgo" />
+              <div class="grid gap-1.5 leading-none">
+                <label
+                  class="text-sm font-medium leading-none cursor-pointer"
+                  for="game-csgo"
+                  >CS:GO</label
+                >
+              </div>
+            </div>
+          </RadioGroup>
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+
     <FormField v-slot="{ componentField }" name="use_valve_modes">
       <FormItem>
         <FormLabel class="text-base">
@@ -38,17 +76,32 @@ const showConnectPassword = ref(false);
             class="grid gap-3"
           >
             <div
-              class="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
+              class="flex items-center space-x-3 rounded-lg border p-3 transition-colors"
+              :class="
+                form.values.game === 'csgo'
+                  ? 'opacity-50 cursor-not-allowed'
+                  : 'hover:bg-muted/50 cursor-pointer'
+              "
               @click="
+                form.values.game !== 'csgo' &&
                 componentField &&
                 componentField['onUpdate:modelValue'] &&
                 componentField['onUpdate:modelValue'](false)
               "
             >
-              <RadioGroupItem id="mode-ranked" value="ranked" />
+              <RadioGroupItem
+                id="mode-ranked"
+                value="ranked"
+                :disabled="form.values.game === 'csgo'"
+              />
               <div class="grid gap-1.5 leading-none">
                 <label
                   class="text-sm font-medium leading-none"
+                  :class="
+                    form.values.game === 'csgo'
+                      ? 'cursor-not-allowed'
+                      : 'cursor-pointer'
+                  "
                   for="mode-ranked"
                 >
                   {{ $t("server.form.ranked_server") }}
@@ -84,6 +137,18 @@ const showConnectPassword = ref(false);
         <FormMessage />
       </FormItem>
     </FormField>
+
+    <Alert
+      v-if="form.values.game === 'csgo' && !form.values.use_valve_modes"
+      variant="warning"
+    >
+      <AlertTitle>{{
+        $t("server.form.csgo_ranked_unavailable_title")
+      }}</AlertTitle>
+      <AlertDescription>{{
+        $t("server.form.csgo_ranked_unavailable_description")
+      }}</AlertDescription>
+    </Alert>
 
     <FormField
       v-if="form.values.use_valve_modes"
@@ -396,6 +461,7 @@ export default {
         validationSchema: toTypedSchema(
           z
             .object({
+              game: z.string().default("cs2"),
               use_valve_modes: z.boolean().default(false),
               host: z
                 .string()
@@ -463,6 +529,7 @@ export default {
             port,
             region,
             tv_port,
+            game: server.game || "cs2",
             use_valve_modes: type !== e_server_types_enum.Ranked,
             use_game_server_node: !!game_server_node_id,
             game_server_node_id: game_server_node_id
@@ -473,6 +540,13 @@ export default {
             max_players: max_players || 32,
           });
           return;
+        }
+      },
+    },
+    "form.values.game": {
+      handler(newGame) {
+        if (newGame === "csgo" && !this.form.values.use_valve_modes) {
+          this.form.setFieldValue("use_valve_modes", true);
         }
       },
     },
@@ -557,6 +631,7 @@ export default {
                 _set: {
                   type: formValues.type,
                   label: formValues.label,
+                  game: formValues.game || "cs2",
                   rcon_password: formValues.rcon_password,
                   connect_password: formValues.connect_password,
                   max_players: formValues.max_players,
@@ -590,6 +665,7 @@ export default {
                 enabled: true,
                 type: formValues.type,
                 label: formValues.label,
+                game: formValues.game || "cs2",
                 region: formValues.use_game_server_node
                   ? ""
                   : formValues.region,

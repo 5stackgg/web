@@ -354,19 +354,9 @@
         "public_servers": {
             "title": "Publiczne serwery",
             "description": "Przeglądaj i dołącz do publicznych serwerów",
-            "table": {
-                "connection_details": "Szczegóły połączenia",
-                "label": "Etykieta",
-                "region": "Region",
-                "type": "Typ",
-                "tv_port": "Port TV",
-                "plugin_version": "Wersja wtyczki",
-                "enabled": "Włączone",
-                "players": "Gracze",
-                "connect": "Połącz",
-                "yes": "Tak",
-                "no": "Nie"
-            },
+            "online": "Online",
+            "offline": "Offline",
+            "players": "Gracze",
             "no_servers": "Brak dostępnych serwerów publicznych w tej chwili.",
             "connect_button": "Połącz z serwerem"
         },

@@ -385,14 +385,9 @@
         "public_servers": {
             "title": "Offentlige Servere",
             "description": "Gennemse og deltag i offentlige servere",
-            "table": {
-                "label": "Etiket",
-                "region": "Region",
-                "map": "Kort",
-                "type": "Type",
-                "players": "Spillere",
-                "connect": "Forbind"
-            },
+            "online": "Online",
+            "offline": "Offline",
+            "players": "Spillere",
             "no_public_servers": "Ingen offentlige servere tilgængelige i øjeblikket.",
             "lan_servers_title": "LIN- Servere"
         },

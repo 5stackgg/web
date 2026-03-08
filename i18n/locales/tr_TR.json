@@ -298,6 +298,16 @@
                 }
             }
         },
+        "public_servers": {
+            "title": "Public Servers",
+            "description": "Browse and join public servers",
+            "online": "Online",
+            "offline": "Offline",
+            "players": "Players",
+            "no_servers_title": "No Servers Available",
+            "no_public_servers": "No public servers available at the moment.",
+            "lan_servers_title": "LAN Servers"
+        },
         "map_pools": {
             "title": "Map Pools",
             "description": "Manage map pools and available maps for matchmaking.",

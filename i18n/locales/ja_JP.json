@@ -385,14 +385,9 @@
         "public_servers": {
             "title": "公開サーバー",
             "description": "パブリックサーバーを参照して参加する",
-            "table": {
-                "label": "ラベル",
-                "region": "地域",
-                "map": "地図",
-                "type": "タイプ",
-                "players": "プレイヤー",
-                "connect": "接続する"
-            },
+            "online": "Online",
+            "offline": "Offline",
+            "players": "プレイヤー",
             "no_public_servers": "現在利用可能な公開サーバーはありません。",
             "lan_servers_title": "LAN サーバー"
         },

@@ -298,6 +298,16 @@
                 }
             }
         },
+        "public_servers": {
+            "title": "公开服务器",
+            "description": "浏览并加入公开服务器",
+            "online": "Online",
+            "offline": "Offline",
+            "players": "玩家",
+            "no_servers_title": "暂无可用服务器",
+            "no_public_servers": "目前没有可用的公开服务器。",
+            "lan_servers_title": "局域网服务器"
+        },
         "map_pools": {
             "title": "預設地圖池",
             "description": "管理配對所使用的地圖池與可用地圖。",

@@ -240,6 +240,7 @@ export default {
             },
             {
               type: true,
+              game: true,
               id: true,
               host: true,
               region: true,

@@ -447,7 +447,7 @@
             },
             "table": {
                 "node": "Node",
-                "cs_build_id": "CS Build",
+                "cs_build_id": "CS2 Build",
                 "pin_plugin_version": "Plugin Version",
                 "region": "Region",
                 "capacity": "Capacity",
@@ -1907,7 +1907,7 @@
         "no_preferred_regions": "Please select at least one preferred region in matchmaking settings"
     },
     "game_server": {
-        "update_cs": "Update CS",
+        "update_cs": "Update CS2",
         "pin_build_id": "Pin Server Version",
         "unpin_build_id": "Use Latest Version",
         "use_latest_version": "Use the latest CS2 version automatically",
@@ -1922,7 +1922,9 @@
         "pinned_plugin_version": "Plugin version pinned",
         "plugin_version_supports": "Supports",
         "plugin_version_published": "Published",
-        "install_cs": "Install CS",
+        "install_cs": "Install CS2",
+        "install_csgo": "Install CS:GO",
+        "update_csgo": "Update CS:GO",
         "overprovisioned_warning": "Overprovisioned",
         "overprovisioned_warning_description": "You have assigned {total_server_count} possible servers, but your server can only support {max_servers} servers.",
         "cpu_model": "CPU Model",
@@ -1950,6 +1952,7 @@
         },
         "toast": {
             "cs_updating": "CS2 is being updated on the node",
+            "csgo_installing": "CS:GO is being installed on the node",
             "ports_updated": "Node Ports Updated",
             "label_updated": "Node Label Updated",
             "scheduling_updated": "Node Scheduling Updated"
@@ -2007,6 +2010,9 @@
             "game_server_node_description": "Select a game server node with CS installed",
             "type": "Server Type",
             "select_type": "Select Server Type",
+            "game": "Game",
+            "csgo_ranked_unavailable_title": "Ranked Not Available",
+            "csgo_ranked_unavailable_description": "Ranked mode is not yet available for CS:GO servers.",
             "ranked_server": "Ranked Server",
             "ranked_server_description": "Fully managed ranked experience by 5stack.",
             "valve_presets": "Valve Presets",

@@ -401,6 +401,7 @@ export default {
               region: true,
               enabled: true,
               build_id: true,
+              csgo_build_id: true,
               pin_build_id: true,
               pin_plugin_version: true,
               plugin_supported: true,

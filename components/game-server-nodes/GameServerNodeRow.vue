@@ -699,25 +699,41 @@ const isSectionExpanded = (section: string) => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent class="w-56">
-            <template
-              v-if="
-                gameServerNode.status ===
+            <DropdownMenuItem
+              :disabled="
+                gameServerNode.status !==
                 e_game_server_node_statuses_enum.Online
               "
+              @click="updateCs"
             >
-              <DropdownMenuItem @click="updateCs">
-                <template v-if="gameServerNode.build_id">
-                  <RefreshCw class="mr-2 h-4 w-4" />
-                  <span>{{ $t("game_server.update_cs") }}</span>
-                </template>
-                <template v-else>
-                  <Plus class="mr-2 h-4 w-4" />
-                  {{ $t("game_server.install_cs") }}
-                </template>
-              </DropdownMenuItem>
+              <template v-if="gameServerNode.build_id">
+                <RefreshCw class="mr-2 h-4 w-4" />
+                <span>{{ $t("game_server.update_cs") }}</span>
+              </template>
+              <template v-else>
+                <Plus class="mr-2 h-4 w-4" />
+                {{ $t("game_server.install_cs") }}
+              </template>
+            </DropdownMenuItem>
 
-              <DropdownMenuSeparator />
-            </template>
+            <DropdownMenuItem
+              :disabled="
+                gameServerNode.status !==
+                e_game_server_node_statuses_enum.Online
+              "
+              @click="updateCsgo"
+            >
+              <template v-if="gameServerNode.csgo_build_id">
+                <RefreshCw class="mr-2 h-4 w-4" />
+                <span>{{ $t("game_server.update_csgo") }}</span>
+              </template>
+              <template v-else>
+                <Plus class="mr-2 h-4 w-4" />
+                {{ $t("game_server.install_csgo") }}
+              </template>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
 
             <DropdownMenuItem @click="editLabelSheet = true">
               <Pencil class="mr-2 h-4 w-4" />
@@ -928,25 +944,41 @@ const isSectionExpanded = (section: string) => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent class="w-56">
-              <template
-                v-if="
-                  gameServerNode.status ===
+              <DropdownMenuItem
+                :disabled="
+                  gameServerNode.status !==
                   e_game_server_node_statuses_enum.Online
                 "
+                @click="updateCs"
               >
-                <DropdownMenuItem @click="updateCs">
-                  <template v-if="gameServerNode.build_id">
-                    <RefreshCw class="mr-2 h-4 w-4" />
-                    <span>{{ $t("game_server.update_cs") }}</span>
-                  </template>
-                  <template v-else>
-                    <Plus class="mr-2 h-4 w-4" />
-                    {{ $t("game_server.install_cs") }}
-                  </template>
-                </DropdownMenuItem>
+                <template v-if="gameServerNode.build_id">
+                  <RefreshCw class="mr-2 h-4 w-4" />
+                  <span>{{ $t("game_server.update_cs") }}</span>
+                </template>
+                <template v-else>
+                  <Plus class="mr-2 h-4 w-4" />
+                  {{ $t("game_server.install_cs") }}
+                </template>
+              </DropdownMenuItem>
 
-                <DropdownMenuSeparator />
-              </template>
+              <DropdownMenuItem
+                :disabled="
+                  gameServerNode.status !==
+                  e_game_server_node_statuses_enum.Online
+                "
+                @click="updateCsgo"
+              >
+                <template v-if="gameServerNode.csgo_build_id">
+                  <RefreshCw class="mr-2 h-4 w-4" />
+                  <span>{{ $t("game_server.update_csgo") }}</span>
+                </template>
+                <template v-else>
+                  <Plus class="mr-2 h-4 w-4" />
+                  {{ $t("game_server.install_csgo") }}
+                </template>
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator />
 
               <DropdownMenuItem @click="editLabelSheet = true">
                 <Pencil class="mr-2 h-4 w-4" />
@@ -1619,6 +1651,7 @@ interface GameServerNode {
   enabled: boolean;
   demo_network_limiter?: number | null;
   build_id?: string;
+  csgo_build_id?: number | null;
   pin_build_id?: string;
   pin_plugin_version?: string;
   lan_ip?: string;
@@ -1860,6 +1893,22 @@ export default defineComponent({
       toast({
         title: this.$t("game_server.toast.cs_updating"),
       });
+    },
+    async updateCsgo() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          updateCs: [
+            {
+              game: "csgo",
+              game_server_node_id: this.gameServerNode.id,
+            },
+            { success: true },
+          ],
+        }),
+      });
+      this.showUpdateLogs = true;
+      this.showLogs = true;
+      toast({ title: this.$t("game_server.toast.csgo_installing") });
     },
     async pinBuildId(buildId: string | null) {
       await this.$apollo.mutate({

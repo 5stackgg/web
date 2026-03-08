@@ -36,7 +36,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'schedule-bracket', bracket: Bracket): void;
+  (e: "schedule-bracket", bracket: Bracket): void;
 }>();
 
 const { t } = useI18n();
@@ -162,7 +162,7 @@ const handleClick = (event: MouseEvent, bracket: Bracket) => {
   }
   // No match yet — open schedule dialog if organizer
   if (props.tournament?.is_organizer) {
-    emit('schedule-bracket', bracket);
+    emit("schedule-bracket", bracket);
   }
 };
 

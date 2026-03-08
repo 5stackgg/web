@@ -59,7 +59,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-
 } from "@/components/ui/alert-dialog";
 import { NuxtLink } from "#components";
 import MatchTableRow from "~/components/MatchTableRow.vue";

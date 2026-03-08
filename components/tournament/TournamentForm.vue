@@ -74,17 +74,16 @@ import MatchOptions from "~/components/MatchOptions.vue";
         </FormItem>
       </FormField>
 
-      <FormField
-        v-slot="{ value, handleChange }"
-        name="auto_start"
-      >
+      <FormField v-slot="{ value, handleChange }" name="auto_start">
         <FormItem>
           <div
             class="flex flex-row items-center justify-between cursor-pointer"
             @click="handleChange(!value)"
           >
             <div class="space-y-0.5">
-              <FormLabel class="text-lg font-semibold">{{ $t("tournament.form.auto_start.label") }}</FormLabel>
+              <FormLabel class="text-lg font-semibold">{{
+                $t("tournament.form.auto_start.label")
+              }}</FormLabel>
               <FormDescription>{{
                 $t("tournament.form.auto_start.description")
               }}</FormDescription>
@@ -245,7 +244,12 @@ export default {
       handler(tournament) {
         if (tournament) {
           const startDate = new Date(tournament.start);
-          this.startDate = toCalendarDate(fromDate(startDate, Intl.DateTimeFormat().resolvedOptions().timeZone));
+          this.startDate = toCalendarDate(
+            fromDate(
+              startDate,
+              Intl.DateTimeFormat().resolvedOptions().timeZone,
+            ),
+          );
           this.startTime = `${startDate.getHours().toString().padStart(2, "0")}:${startDate.getMinutes().toString().padStart(2, "0")}`;
 
           this.form.setValues({

@@ -23,8 +23,17 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
       <DialogHeader>
         <DialogTitle>
           {{ $t("tournament.bracket.schedule_title") }}
-          <span v-if="bracket" class="text-muted-foreground text-sm font-normal">
-            — {{ $t("tournament.match.round_match_ref", { round: bracket.round, match: bracket.match_number }) }}
+          <span
+            v-if="bracket"
+            class="text-muted-foreground text-sm font-normal"
+          >
+            —
+            {{
+              $t("tournament.match.round_match_ref", {
+                round: bracket.round,
+                match: bracket.match_number,
+              })
+            }}
           </span>
         </DialogTitle>
       </DialogHeader>
@@ -92,7 +101,13 @@ import { Calendar as CalendarIcon } from "lucide-vue-next";
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
 import TimeAgo from "~/components/TimeAgo.vue";
-import { fromDate, toCalendarDate, CalendarDate, today, getLocalTimeZone } from "@internationalized/date";
+import {
+  fromDate,
+  toCalendarDate,
+  CalendarDate,
+  today,
+  getLocalTimeZone,
+} from "@internationalized/date";
 import { toast } from "@/components/ui/toast";
 import type { Bracket } from "~/types/tournament";
 
@@ -153,7 +168,10 @@ export default {
       month: number;
       year: number;
     }) {
-      return new CalendarDate(year, month, day).compare(today(getLocalTimeZone())) < 0;
+      return (
+        new CalendarDate(year, month, day).compare(today(getLocalTimeZone())) <
+        0
+      );
     },
     async saveSchedule() {
       if (!this.bracket || !this.startDate || !this.startTime) return;

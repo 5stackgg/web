@@ -819,7 +819,9 @@ import { Card } from "~/components/ui/card";
                           $t("match.options.advanced.auto_cancellation.label")
                         }}</FormLabel>
                         <FormDescription>{{
-                          $t("match.options.advanced.auto_cancellation.description")
+                          $t(
+                            "match.options.advanced.auto_cancellation.description",
+                          )
                         }}</FormDescription>
                       </div>
                       <FormControl>
@@ -838,10 +840,14 @@ import { Card } from "~/components/ui/card";
                       >
                         <FormItem>
                           <FormLabel>{{
-                            $t("match.options.advanced.auto_cancellation.auto_cancel_duration.label")
+                            $t(
+                              "match.options.advanced.auto_cancellation.auto_cancel_duration.label",
+                            )
                           }}</FormLabel>
                           <FormDescription>{{
-                            $t("match.options.advanced.auto_cancellation.auto_cancel_duration.description")
+                            $t(
+                              "match.options.advanced.auto_cancellation.auto_cancel_duration.description",
+                            )
                           }}</FormDescription>
                           <FormControl>
                             <Input
@@ -861,10 +867,14 @@ import { Card } from "~/components/ui/card";
                       >
                         <FormItem>
                           <FormLabel>{{
-                            $t("match.options.advanced.auto_cancellation.live_match_timeout.label")
+                            $t(
+                              "match.options.advanced.auto_cancellation.live_match_timeout.label",
+                            )
                           }}</FormLabel>
                           <FormDescription>{{
-                            $t("match.options.advanced.auto_cancellation.live_match_timeout.description")
+                            $t(
+                              "match.options.advanced.auto_cancellation.live_match_timeout.description",
+                            )
                           }}</FormDescription>
                           <FormControl>
                             <Input
@@ -1336,15 +1346,11 @@ export default {
     matchModeSettings(): EnumSetting[] {
       return [
         {
-          display: this.$t(
-            "match.options.advanced.match_mode.options.auto",
-          ),
+          display: this.$t("match.options.advanced.match_mode.options.auto"),
           value: e_match_mode_enum.auto,
         },
         {
-          display: this.$t(
-            "match.options.advanced.match_mode.options.admin",
-          ),
+          display: this.$t("match.options.advanced.match_mode.options.admin"),
           value: e_match_mode_enum.admin,
         },
       ];
@@ -1420,7 +1426,9 @@ export default {
       return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
     },
     canSetMatchCancellation() {
-      return useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer);
+      return useAuthStore().isRoleAbove(
+        e_player_roles_enum.tournament_organizer,
+      );
     },
     autoCancelDurationDefault(): string {
       const val = useApplicationSettingsStore().settings.find(

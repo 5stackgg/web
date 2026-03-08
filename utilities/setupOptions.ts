@@ -176,8 +176,12 @@ export function setupOptionsVariables(
           check_in_setting: values.check_in_setting,
           auto_cancellation: values.auto_cancellation,
           match_mode: values.match_mode,
-          auto_cancel_duration: values.auto_cancellation ? (values.auto_cancel_duration ?? null) : null,
-          live_match_timeout: values.auto_cancellation ? (values.live_match_timeout ?? null) : null,
+          auto_cancel_duration: values.auto_cancellation
+            ? (values.auto_cancel_duration ?? null)
+            : null,
+          live_match_timeout: values.auto_cancellation
+            ? (values.live_match_timeout ?? null)
+            : null,
         }
       : {}),
     ...(mapPoolId

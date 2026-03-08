@@ -5,7 +5,10 @@ import { generateQuery } from "~/graphql/graphqlGen";
 </script>
 
 <template>
-  <div v-if="metricsData" class="grid grid-cols-3 gap-3 text-xs mt-2">
+  <div
+    v-if="metricsData"
+    class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs mt-2"
+  >
     <div class="space-y-1">
       <div class="flex items-center justify-between">
         <span class="text-muted-foreground">
@@ -17,6 +20,21 @@ import { generateQuery } from "~/graphql/graphqlGen";
         <div
           class="h-full rounded-full bg-primary"
           :style="{ width: `${latestCpuUsage}%` }"
+        />
+      </div>
+    </div>
+
+    <div class="space-y-1">
+      <div class="flex items-center justify-between">
+        <span class="text-muted-foreground">
+          {{ $t("pages.system_metrics.memory_usage") }}
+        </span>
+        <span>{{ latestMemoryUsage }}%</span>
+      </div>
+      <div class="h-1.5 rounded-full bg-muted overflow-hidden">
+        <div
+          class="h-full rounded-full bg-primary/80"
+          :style="{ width: `${latestMemoryUsage}%` }"
         />
       </div>
     </div>

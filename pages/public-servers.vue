@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Badge } from "@/components/ui/badge";
 import { AnimatedCard } from "@/components/ui/animated-card";
-import { Separator } from "@/components/ui/separator";
 import cleanMapName from "~/utilities/cleanMapName";
 import PageHeading from "~/components/PageHeading.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
@@ -66,11 +65,14 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
         <!-- Server cards -->
         <div v-else key="servers" class="space-y-8">
           <div v-for="(gameServers, game) in serversByGame" :key="game">
-            <div class="flex items-center gap-3 mb-4">
-              <h2 class="text-xl font-semibold whitespace-nowrap">
+            <div class="flex items-center gap-3 mb-5">
+              <div class="w-0.5 h-4 rounded-full bg-primary shrink-0" />
+              <span
+                class="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground whitespace-nowrap"
+              >
                 {{ gameLabel(game) }}
-              </h2>
-              <Separator class="flex-1" />
+              </span>
+              <div class="flex-1 h-px bg-border" />
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <AnimatedCard
@@ -167,13 +169,14 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
   <!-- LAN Servers -->
   <PageTransition :delay="200">
     <div v-if="!loading && lanServers && lanServers.length > 0" class="mt-8">
-      <div class="flex items-center gap-3 mb-4">
-        <h2
-          class="text-xl font-semibold whitespace-nowrap text-muted-foreground"
+      <div class="flex items-center gap-3 mb-5">
+        <div class="w-0.5 h-4 rounded-full bg-muted-foreground/40 shrink-0" />
+        <span
+          class="text-xs font-bold uppercase tracking-[0.15em] text-muted-foreground/60 whitespace-nowrap"
         >
           {{ $t("pages.public_servers.lan_servers_title") }}
-        </h2>
-        <Separator class="flex-1" />
+        </span>
+        <div class="flex-1 h-px bg-border" />
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <AnimatedCard

@@ -151,20 +151,43 @@ export default defineNuxtConfig({
     },
     workbox: {
       maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
-      globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,woff}"],
+      globPatterns: ["**/*.{js,css,html}"],
       navigateFallbackDenylist: [
         /^\/auth/,
         /^\/discord-invite/,
         /^\/discord-bot/,
       ],
+      runtimeCaching: [
+        {
+          urlPattern: /\.(?:png|svg|webp|ico)$/i,
+          handler: "CacheFirst",
+          options: {
+            cacheName: "images",
+            expiration: {
+              maxEntries: 200,
+              maxAgeSeconds: 60 * 60 * 24 * 30,
+            },
+            cacheableResponse: { statuses: [0, 200] },
+          },
+        },
+        {
+          urlPattern: /\.(?:ttf|woff|woff2)$/i,
+          handler: "CacheFirst",
+          options: {
+            cacheName: "fonts",
+            expiration: {
+              maxEntries: 10,
+              maxAgeSeconds: 60 * 60 * 24 * 365,
+            },
+            cacheableResponse: { statuses: [0, 200] },
+          },
+        },
+        {
+          urlPattern: /\/v1\/graphql/,
+          handler: "NetworkOnly",
+        },
+      ],
     },
-    includeAssets: [
-      "img/**/*.png",
-      "img/**/*.svg",
-      "img/**/*.webp",
-      "fonts/*.woff",
-      "favicon/*.png",
-    ],
     devOptions: {
       enabled: true,
     },

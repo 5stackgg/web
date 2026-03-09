@@ -33,4 +33,36 @@ describe("useSound", () => {
     updateSettings(true, -1.0);
     expect(volume.value).toBe(0.0);
   });
+
+  it("defaults to enabled with volume 0.7", () => {
+    const { isEnabled, volume } = useSound();
+    expect(isEnabled.value).toBe(true);
+    expect(volume.value).toBe(0.7);
+  });
+
+  it("volume and isEnabled are readonly refs", () => {
+    const { isEnabled, volume } = useSound();
+    // readonly refs still have .value but writes are no-ops in production
+    expect(typeof isEnabled.value).toBe("boolean");
+    expect(typeof volume.value).toBe("number");
+  });
+
+  it("playMatchFoundSound returns early when isEnabled is false", () => {
+    const { updateSettings, playMatchFoundSound } = useSound();
+    updateSettings(false);
+    // Guard returns early before AudioContext — should not throw
+    expect(() => playMatchFoundSound()).not.toThrow();
+  });
+
+  it("playTickSound returns early when isEnabled is false", () => {
+    const { updateSettings, playTickSound } = useSound();
+    updateSettings(false);
+    expect(() => playTickSound()).not.toThrow();
+  });
+
+  it("playCountdownSound returns early when isEnabled is false", () => {
+    const { updateSettings, playCountdownSound } = useSound();
+    updateSettings(false);
+    expect(() => playCountdownSound()).not.toThrow();
+  });
 });

@@ -55,13 +55,32 @@ Tests the chat tabs composable for managing multiple chat channels.
 - Persists tab state
 - Handles maximum tab limit
 
-#### `composables/useSound.spec.ts` — Sound Effects (5 tests)
-Tests the sound playback composable with volume and mute controls.
-- Plays sound effect by name
-- Respects mute setting
-- Adjusts volume level
-- Handles missing sound files gracefully
-- Caches audio instances for reuse
+#### `composables/useRightSidebar.spec.ts` — Right Sidebar State (8 tests)
+Tests the right sidebar composable with module-level refs for open/close, hover peek, and pin state.
+- Opens and closes sidebar via `setRightSidebarOpen`
+- Toggles sidebar open/closed via `toggleRightSidebar`
+- `startHoverPeek` opens sidebar when closed, no-ops when already open
+- `endHoverPeek` closes sidebar when not pinned, keeps open when pinned
+- `togglePin` persists pin state to localStorage ("right-hub-pinned")
+- `togglePin` removes localStorage key when unpinning
+
+#### `composables/useInvites.spec.ts` — Invite Aggregation (7 tests)
+Tests computed aggregation over matchmaking store data for invites and pending friends.
+Mocks `useMatchmakingStore` and `useAuthStore` as Nuxt auto-import globals.
+- Filters `pendingFriends` by "Pending" status excluding self-invited
+- Returns pending friends sorted by name
+- `hasInvites` true when any of matchInvites/lobbyInvites/pendingFriends non-empty
+- `hasInvites` false when all empty
+- `totalCount` sums all three invite arrays
+
+#### `composables/useSound.spec.ts` — Sound Effects (10 tests)
+Tests the sound playback composable with volume clamping, enable/disable, and guard conditions.
+- Clamps volume to 0.0–1.0 range
+- Accepts valid volume values
+- Toggles enabled state
+- Keeps volume within bounds after multiple updates
+- Defaults to enabled with volume 0.7
+- `playMatchFoundSound` / `playTickSound` / `playCountdownSound` return early when disabled (guard check)
 
 ---
 
@@ -138,6 +157,46 @@ Tests validation of match creation options.
 - Validates server region selection
 - Validates match type (competitive, scrim, tournament)
 
+#### `utilities/cleanMapName.spec.ts` — Map Name Formatting (4 tests)
+Tests the `cleanMapName` utility for CS2 map display names.
+- Strips `de_` prefix and title-cases (`"de_dust2"` → `"Dust2"`)
+- Replaces underscores with spaces and title-cases each word
+- Handles empty string
+
+#### `utilities/separateByCapitalLetters.spec.ts` — CamelCase Spacing (5 tests)
+Tests inserting spaces before capital letters in camelCase strings.
+- Inserts space before capitals (`"HelloWorld"` → `"Hello World"`)
+- Handles multiple camelCase transitions
+- Preserves already-spaced strings
+- Handles all-lowercase and all-uppercase
+
+#### `utilities/uuid.spec.ts` — UUID Generation (2 tests)
+Tests the `guid()` utility for generating UUID-like identifiers.
+- Returns string matching 8-4-4-4-12 hex format
+- Generates unique values on successive calls
+
+#### `utilities/loginLinks.spec.ts` — Auth Login URLs (2 tests)
+Tests login link generation using runtime config.
+Uses `vi.hoisted()` to stub `useRuntimeConfig` before module evaluation.
+- Steam link uses `webDomain` from runtime config
+- Discord link uses `webDomain` from runtime config
+
+#### `utilities/setupOptions.spec.ts` — Match Setup Options (16 tests)
+Tests match creation option setup, validation, and mutation generation.
+Mocks `useAuthStore` (role checks) and Zeus `$` / enum imports.
+
+- **`setupOptions` (1 test):** Calls `form.setValues` with all option fields and applies overrides
+- **`setupOptionsVariables` (9 tests):**
+  - Throws for each missing required field (mr, type, best_of, knife_round, map_pool)
+  - Uses `additional.mapPoolId` over `values.map_pool_id` when both present
+  - Includes check_in/auto_cancel/match_mode fields for tournament_organizer+ roles
+  - Omits admin fields for roles below tournament_organizer
+  - Creates inline `map_pool` data object when no mapPoolId
+  - Includes `matchOptionsId` when provided
+- **`setupOptionsSetMutation` (4 tests):**
+  - Includes `map_pool_id` when `hasMapPoolId=true`, `map_pool` when false
+  - Includes/omits admin fields based on role
+
 #### `utilities/debounce.spec.ts` — Debounce Utility (4 tests)
 Tests the debounce helper function.
 - Delays function execution
@@ -156,6 +215,36 @@ Tests kill/death ratio color mapping for UI display.
 - Handles exactly 1.0 KDR
 - Handles zero KDR
 - Handles very high KDR values
+
+---
+
+## Pinia Stores
+
+#### `stores/AuthStore.spec.ts` — Auth Store & Role Hierarchy (8 tests)
+Tests the auth Pinia store's role-based access control logic.
+Mocks dependent stores (`SearchStore`, `MatchmakingStore`, `NotificationStore`, `ApplicationSettingsStore`), GraphQL client, and WebSocket. Uses `createPinia()` + `setActivePinia()`.
+
+- **`isRoleAbove` (5 tests):**
+  - Returns false when `me` is null
+  - Returns true when user role >= target role
+  - Returns false when user role < target role
+  - Returns true for same role
+  - Validates full hierarchy: user < verified_user < streamer < match_organizer < tournament_organizer < administrator
+- **Computed role checks (3 tests):**
+  - `isAdmin` true only for administrator
+  - `isUser` true only for user role
+  - `isMatchOrganizer` true only for match_organizer
+
+#### `stores/SearchStore.spec.ts` — Player Search Store (6 tests)
+Tests the search Pinia store with MiniSearch integration for player search and filtering.
+Mocks `useMatchmakingStore` (`playersOnline`). Uses `createPinia()` + `setActivePinia()`.
+
+- Empty query returns first 10 players from `playersOnline`
+- Empty query excludes players in exclude list
+- Search query returns fuzzy-matched results
+- Search excludes players in exclude list
+- `onlineOnly` defaults to true
+- `onlineOnly` reads from localStorage ("playerSearchOnlineOnly")
 
 ---
 

@@ -7,6 +7,14 @@ export default defineConfig({
     globals: true,
     root: ".",
     setupFiles: ["./vitest.setup.ts"],
+    coverage: {
+      thresholds: {
+        branches: 40,
+        functions: 40,
+        lines: 40,
+        statements: 40,
+      },
+    },
   },
   resolve: {
     alias: {

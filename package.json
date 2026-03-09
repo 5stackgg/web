@@ -24,6 +24,7 @@
     "@nuxtjs/tailwindcss": "^6.14.0",
     "@types/simple-peer": "^9.11.8",
     "@vite-pwa/nuxt": "^1.0.0",
+    "@vitest/coverage-v8": "^4.0.18",
     "@vue/test-utils": "^2.4.6",
     "autoprefixer": "^10.4.21",
     "glob": "^11.0.2",

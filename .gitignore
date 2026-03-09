@@ -26,6 +26,9 @@ logs
 .dev.vars
 .wrangler
 
+# Test coverage
+coverage
+
 .yarn/*
 !.yarn/patches
 !.yarn/plugins

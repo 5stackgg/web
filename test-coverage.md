@@ -235,6 +235,73 @@ Mocks dependent stores (`SearchStore`, `MatchmakingStore`, `NotificationStore`, 
   - `isUser` true only for user role
   - `isMatchOrganizer` true only for match_organizer
 
+#### `stores/ApplicationSettings.spec.ts` — Application Settings Store (25 tests)
+Tests the application settings Pinia store's computed properties and setting-lookup logic.
+Mocks `useAuthStore` (controllable `me` + `isRoleAbove`), `useMatchmakingStore`, GraphQL client. Uses `createPinia()` + `setActivePinia()`.
+
+- **`matchCreateRole` / `tournamentCreateRole` (6 tests):**
+  - Returns false when settings is null
+  - Returns setting value when present
+  - Falls back to `e_player_roles_enum.user` when setting not found
+- **`matchmakingAllowed` (4 tests):**
+  - Returns false when settings is null
+  - Returns false when matchmaking setting is "false"
+  - Returns true when no matchmaking setting and no min role (defaults enabled)
+  - Calls `isRoleAbove` with min role when setting exists
+- **`canCreateMatch` (2 tests):**
+  - Returns false when `me` is null
+  - Delegates to `isRoleAbove` with `matchCreateRole` value
+- **`canAddWithoutInvite` (2 tests):**
+  - Returns true when no setting
+  - Calls `isRoleAbove` when setting exists
+- **`isMatchmakingTypeEnabled` (3 tests):**
+  - Returns true when setting not found
+  - Returns false when setting is "false"
+  - Returns true when setting is "true"
+- **`showSeparators` / `showReportIssue` (4 tests):**
+  - Default to true when no setting
+  - Return false only when setting is explicitly "false"
+- **`githubUrl` (2 tests):**
+  - Returns default URL when no setting
+  - Returns setting value when present
+- **`brandName` / `logoUrl` / `faviconUrl` (2 tests):**
+  - Return undefined when no setting
+  - Return setting values when present
+
+#### `stores/MatchmakingStore.spec.ts` — Matchmaking Store (13 tests)
+Tests the matchmaking Pinia store's computed properties, friend filtering, and region preferences.
+Mocks `useAuthStore`, `useApplicationSettingsStore` (via globalThis for Nuxt auto-imports), GraphQL client, WebRTC. Uses `createPinia()` + `setActivePinia()`.
+
+- **`onlineFriends` (2 tests):**
+  - Filters out Pending friends
+  - Includes only friends in `onlinePlayerSteamIds`
+- **`offlineFriends` (2 tests):**
+  - Filters out Pending friends
+  - Includes only friends NOT in `onlinePlayerSteamIds`
+- **`lobbyInvites` (2 tests):**
+  - Filters out lobby matching `me.current_lobby_id`
+  - Returns empty when lobbies is empty
+- **`currentLobby` (2 tests):**
+  - Finds lobby matching `me.current_lobby_id`
+  - Returns undefined when no match
+- **`getRegionlatencyResult` (2 tests):**
+  - Returns undefined when no latency data
+  - Returns formatted latency and isLan flag
+- **`togglePreferredRegion` (2 tests):**
+  - Adds region and persists to localStorage
+  - Removes existing region on second toggle
+- **`updateMaxAcceptableLatency` (1 test):**
+  - Updates ref and persists to localStorage
+
+#### `stores/NotificationStore.spec.ts` — Notification Store (4 tests)
+Tests the notification Pinia store's `hasNotifications` computed property.
+Mocks `useAuthStore` (via globalThis), GraphQL client. Uses `createPinia()` + `setActivePinia()`.
+
+- `hasNotifications` true when `team_invites` non-empty
+- `hasNotifications` true when `tournament_team_invites` non-empty
+- `hasNotifications` true when any notification has `is_read: false`
+- `hasNotifications` false when all empty / all read
+
 #### `stores/SearchStore.spec.ts` — Player Search Store (6 tests)
 Tests the search Pinia store with MiniSearch integration for player search and filtering.
 Mocks `useMatchmakingStore` (`playersOnline`). Uses `createPinia()` + `setActivePinia()`.

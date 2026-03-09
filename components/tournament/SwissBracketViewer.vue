@@ -3,6 +3,11 @@ import { ref, computed, onMounted, nextTick } from "vue";
 import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
 import { Maximize, Minimize, ZoomIn, ZoomOut } from "lucide-vue-next";
 import { Badge } from "~/components/ui/badge";
+import {
+  parseGroupToRecord,
+  getBorderColor,
+  getBackgroundColor,
+} from "~/utilities/swissBracketUtils";
 
 interface TeamRecord {
   wins: number;
@@ -120,50 +125,6 @@ const teamRecords = computed(() => {
   return records;
 });
 
-// Parse group value to extract wins and losses
-// Groups are stored as numeric values with encoding:
-// 0 = 0-0, 1 = 0-1, 100 = 1-0, 2 = 0-2, 101 = 1-1, 200 = 2-0, 102 = 1-2, 201 = 2-1, 202 = 2-2
-// Pattern:
-// - If < 100: losses = group, wins = 0 (e.g., 1 = 0-1, 2 = 0-2)
-// - If >= 100: wins = floor(group/100), losses = group % 100 (e.g., 100 = 1-0, 101 = 1-1, 200 = 2-0, 102 = 1-2, 201 = 2-1, 202 = 2-2)
-const parseGroupToRecord = (
-  group: any,
-): { wins: number; losses: number; recordKey: string } => {
-  if (group === null || group === undefined) {
-    return { wins: 0, losses: 0, recordKey: "0-0" };
-  }
-
-  // Convert to number if it's a string
-  const groupNum = typeof group === "string" ? parseFloat(group) : group;
-
-  if (typeof groupNum === "number") {
-    if (groupNum === 0) {
-      return { wins: 0, losses: 0, recordKey: "0-0" };
-    } else if (groupNum < 100) {
-      // Numbers < 100 represent 0-losses (e.g., 1 = 0-1, 2 = 0-2)
-      return { wins: 0, losses: groupNum, recordKey: `0-${groupNum}` };
-    } else {
-      // Numbers >= 100: wins * 100 + losses
-      // e.g., 100 = 1-0, 101 = 1-1, 200 = 2-0, 102 = 1-2, 201 = 2-1, 202 = 2-2
-      const wins = Math.floor(groupNum / 100);
-      const losses = groupNum % 100;
-      return { wins, losses, recordKey: `${wins}-${losses}` };
-    }
-  }
-
-  // If it's a string in "wins-losses" format, parse it
-  if (typeof group === "string") {
-    const parts = group.split("-");
-    if (parts.length === 2) {
-      const wins = parseInt(parts[0], 10) || 0;
-      const losses = parseInt(parts[1], 10) || 0;
-      return { wins, losses, recordKey: group };
-    }
-  }
-
-  // Default fallback
-  return { wins: 0, losses: 0, recordKey: "0-0" };
-};
 
 // Group brackets by rounds, then by record pools within each round
 const roundsData = computed(() => {
@@ -448,23 +409,6 @@ const maxRound = computed(() => {
   return Math.max(...roundsData.value.map((r) => r.round));
 });
 
-// Get border color class based on record
-const getBorderColor = (wins: number, losses: number) => {
-  if (wins >= 3) return "border-green-500";
-  if (losses >= 3) return "border-red-500";
-  if (wins > losses) return "border-green-400";
-  if (losses > wins) return "border-red-400";
-  return "border-yellow-400";
-};
-
-// Get background color class based on record
-const getBackgroundColor = (wins: number, losses: number) => {
-  if (wins >= 3) return "bg-green-900/20";
-  if (losses >= 3) return "bg-red-900/20";
-  if (wins > losses) return "bg-green-800/10";
-  if (losses > wins) return "bg-red-800/10";
-  return "bg-yellow-800/10";
-};
 
 const zoomIn = () => {
   if (zoomLevel.value < MAX_ZOOM) {

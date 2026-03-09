@@ -110,7 +110,7 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import { useForm } from "vee-validate";
 import * as z from "zod";
 import { toTypedSchema } from "@vee-validate/zod";
-import { fromDate, toCalendarDate } from "@internationalized/date";
+import { fromDate, toCalendarDate, getLocalTimeZone } from "@internationalized/date";
 
 export default {
   props: {
@@ -155,10 +155,10 @@ export default {
       handler(match) {
         if (match?.scheduled_at) {
           const startDate = new Date(match.scheduled_at);
-          this.startDate = toCalendarDate(fromDate(startDate, "UTC"));
-          this.startTime = `${startDate.getUTCHours().toString().padStart(2, "0")}:${startDate.getUTCMinutes().toString().padStart(2, "0")}`;
+          this.startDate = toCalendarDate(fromDate(startDate, getLocalTimeZone()));
+          this.startTime = `${startDate.getHours().toString().padStart(2, "0")}:${startDate.getMinutes().toString().padStart(2, "0")}`;
           this.form.setValues({
-            scheduled_at: `${this.startDate}T${this.startTime}:00.000Z`,
+            scheduled_at: startDate.toISOString(),
           });
         }
       },
@@ -173,7 +173,7 @@ export default {
         return;
       }
       this.form.setValues({
-        scheduled_at: `${this.startDate}T${this.startTime}:00.000Z`,
+        scheduled_at: new Date(`${this.startDate} ${this.startTime}`).toISOString(),
       });
     },
     async scheduleMatch() {

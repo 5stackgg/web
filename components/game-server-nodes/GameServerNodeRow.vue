@@ -2261,8 +2261,10 @@ export default defineComponent({
     diskColorClass() {
       const percent = this.gameServerNode.disk_used_percent;
       if (percent == null) return "text-muted-foreground";
-      if (percent >= 85) return "text-red-500";
-      if (percent >= 70) return "text-orange-500";
+      const critical = parseInt(this.settings.find((s) => s.name === "disk_critical_percent")?.value) || 90;
+      const warning = parseInt(this.settings.find((s) => s.name === "disk_warning_percent")?.value) || 75;
+      if (percent >= critical) return "text-red-500";
+      if (percent >= warning) return "text-orange-500";
       return "text-green-500";
     },
   },

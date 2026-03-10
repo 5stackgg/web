@@ -1336,7 +1336,10 @@
             "cs_updating": "CS2 uppdateras på noden",
             "ports_updated": "Nodportar uppdaterade",
             "label_updated": "Node Label uppdaterad"
-        }
+        },
+        "disk_usage": "Disk Usage",
+        "disk_used": "Used",
+        "disk_available": "Available"
     },
     "chat": {
         "lobby_chat": "Lobby-chatt",

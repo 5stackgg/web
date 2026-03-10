@@ -1126,7 +1126,10 @@
             "cs_updating": "CS 업데이트 중",
             "ports_updated": "포트 업데이트됨",
             "label_updated": "Node Label 업데이트"
-        }
+        },
+        "disk_usage": "Disk Usage",
+        "disk_used": "Used",
+        "disk_available": "Available"
     },
     "chat": {
         "lobby_chat": "로비 채팅",

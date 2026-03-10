@@ -1143,7 +1143,10 @@
             "cs_updating": "Обновление CS",
             "ports_updated": "Порты обновлены",
             "label_updated": "Обновление Node Label"
-        }
+        },
+        "disk_usage": "Disk Usage",
+        "disk_used": "Used",
+        "disk_available": "Available"
     },
     "chat": {
         "lobby_chat": "Чат лобби",

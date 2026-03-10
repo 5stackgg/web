@@ -1335,7 +1335,10 @@
             "cs_updating": "CS2 wird auf dem Node aktualisiert",
             "ports_updated": "Nodeports aktualisiert",
             "label_updated": "Nodebeschreibung aktualisiert"
-        }
+        },
+        "disk_usage": "Disk Usage",
+        "disk_used": "Used",
+        "disk_available": "Available"
     },
     "chat": {
         "lobby_chat": "Lobby-Chat",

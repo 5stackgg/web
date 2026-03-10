@@ -57,6 +57,7 @@ import {
   FolderOpen,
   Pin,
   Cpu,
+  HardDrive,
   ChevronDown,
   ChevronUp,
 } from "lucide-vue-next";
@@ -329,6 +330,28 @@ const isSectionExpanded = (section: string) => {
                 class="text-xs text-muted-foreground"
               >
                 {{ $t("game_server.gpu_description") }}
+              </div>
+            </div>
+          </FiveStackToolTip>
+
+          <FiveStackToolTip>
+            <template #trigger>
+              <div class="cursor-pointer">
+                <HardDrive
+                  class="h-4 w-4"
+                  :class="diskColorClass"
+                />
+              </div>
+            </template>
+            <div class="space-y-2">
+              <div class="font-medium">{{ $t("game_server.disk_usage") }}</div>
+              <div class="flex items-center justify-between gap-4 text-xs">
+                <span class="text-muted-foreground">{{ $t("game_server.disk_used") }}:</span>
+                <span>{{ gameServerNode.disk_used_percent ?? '-' }}%</span>
+              </div>
+              <div class="flex items-center justify-between gap-4 text-xs">
+                <span class="text-muted-foreground">{{ $t("game_server.disk_available") }}:</span>
+                <span>{{ gameServerNode.disk_available_gb ?? '-' }} GB</span>
               </div>
             </div>
           </FiveStackToolTip>
@@ -1227,6 +1250,13 @@ const isSectionExpanded = (section: string) => {
                     </svg>
                     <span class="text-muted-foreground">GPU</span>
                   </div>
+                  <div class="flex items-center gap-1">
+                    <HardDrive
+                      class="h-3 w-3"
+                      :class="diskColorClass"
+                    />
+                    <span class="text-muted-foreground">Disk: {{ gameServerNode.disk_used_percent ?? '-' }}%</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1672,6 +1702,8 @@ interface GameServerNode {
   };
   total_server_count: number;
   available_server_count: number;
+  disk_available_gb?: number | null;
+  disk_used_percent?: number | null;
 }
 
 interface ComponentData {
@@ -2225,6 +2257,13 @@ export default defineComponent({
       return this.settings.find((setting) => {
         return setting.name === "number_of_cpus_per_server";
       })?.value;
+    },
+    diskColorClass() {
+      const percent = this.gameServerNode.disk_used_percent;
+      if (percent == null) return "text-muted-foreground";
+      if (percent >= 85) return "text-red-500";
+      if (percent >= 70) return "text-orange-500";
+      return "text-green-500";
     },
   },
 });

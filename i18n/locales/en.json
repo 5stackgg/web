@@ -1969,7 +1969,10 @@
         "cpu_speed": "Speed",
         "gpu_present": "GPU Available",
         "gpu_not_present": "GPU not available",
-        "gpu_description": "This node has a graphics card available for server workloads"
+        "gpu_description": "This node has a graphics card available for server workloads",
+        "disk_usage": "Disk Usage",
+        "disk_used": "Used",
+        "disk_available": "Available"
     },
     "chat": {
         "lobby_chat": "Lobby Chat",

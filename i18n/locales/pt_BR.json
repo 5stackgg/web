@@ -1515,7 +1515,10 @@
             "scheduling_updated": "Agendamento do Nó Atualizado"
         },
         "enable_scheduling": "Habilitar Agendamento",
-        "disable_scheduling": "Desabilitar Agendamento"
+        "disable_scheduling": "Desabilitar Agendamento",
+        "disk_usage": "Disk Usage",
+        "disk_used": "Used",
+        "disk_available": "Available"
     },
     "chat": {
         "lobby_chat": "Chat da lobby",

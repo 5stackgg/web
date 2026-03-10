@@ -428,6 +428,8 @@ export default {
               total_server_count: true,
               available_server_count: true,
               demo_network_limiter: true,
+              disk_available_gb: true,
+              disk_used_percent: true,
             },
           ],
         }),

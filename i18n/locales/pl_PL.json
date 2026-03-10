@@ -1255,7 +1255,10 @@
             "cs_updating": "Aktualizacja CS",
             "ports_updated": "Porty zaktualizowane",
             "label_updated": "Node Etykieta Aktualizacja"
-        }
+        },
+        "disk_usage": "Disk Usage",
+        "disk_used": "Used",
+        "disk_available": "Available"
     },
     "chat": {
         "lobby_chat": "Czat lobby",

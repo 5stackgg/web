@@ -1335,7 +1335,10 @@
             "cs_updating": "CS actualizando",
             "ports_updated": "Puertos actualizados",
             "label_updated": "Node Label Actualizado"
-        }
+        },
+        "disk_usage": "Disk Usage",
+        "disk_used": "Used",
+        "disk_available": "Available"
     },
     "chat": {
         "lobby_chat": "Chat del lobby",

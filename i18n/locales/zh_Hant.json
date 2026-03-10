@@ -1501,7 +1501,10 @@
             "scheduling_updated": "節點排程已更新"
         },
         "enable_scheduling": "啟用排程",
-        "disable_scheduling": "停用排程"
+        "disable_scheduling": "停用排程",
+        "disk_usage": "Disk Usage",
+        "disk_used": "Used",
+        "disk_available": "Available"
     },
     "chat": {
         "lobby_chat": "大廳聊天",

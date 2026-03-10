@@ -1335,7 +1335,10 @@
             "cs_updating": "CS en cours de mise à jour",
             "ports_updated": "Ports mis à jour",
             "label_updated": "Mise à jour de l'étiquette du nœud"
-        }
+        },
+        "disk_usage": "Disk Usage",
+        "disk_used": "Used",
+        "disk_available": "Available"
     },
     "chat": {
         "lobby_chat": "Chat du lobby",

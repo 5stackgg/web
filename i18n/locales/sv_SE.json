@@ -184,6 +184,10 @@
                     "enable_cpu_pinning_description": "Aktivera CPU-pinning på spelservernoder för bättre prestanda",
                     "number_of_cpus_per_server": "Antal CPU per server",
                     "number_of_cpus_per_server_description": "Antal CPU:er att fördela per server",
+                    "reserved_disk_space_fresh_gb": "Required Disk Space - Fresh Install (GB)",
+                    "reserved_disk_space_fresh_gb_description": "Minimum disk space in GB required for a fresh node provisioning (CS2 not yet installed). Set to 0 to disable.",
+                    "reserved_disk_space_existing_gb": "Required Disk Space - Existing Install (GB)",
+                    "reserved_disk_space_existing_gb_description": "Minimum disk space in GB required when CS2 is already installed on the node. Set to 0 to disable.",
                     "update": "Uppdatera",
                     "update_cpu_pinning": "CPU Pinning uppdaterad"
                 },

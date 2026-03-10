@@ -246,6 +246,10 @@
                     "enable_cpu_pinning_description": "Enable CPU pinning on game server nodes for better performance",
                     "number_of_cpus_per_server": "Number of CPUs per Server",
                     "number_of_cpus_per_server_description": "Number of CPUs to allocate per server",
+                    "reserved_disk_space_fresh_gb": "Required Disk Space - Fresh Install (GB)",
+                    "reserved_disk_space_fresh_gb_description": "Minimum disk space in GB required for a fresh node provisioning (CS2 not yet installed). Set to 0 to disable.",
+                    "reserved_disk_space_existing_gb": "Required Disk Space - Existing Install (GB)",
+                    "reserved_disk_space_existing_gb_description": "Minimum disk space in GB required when CS2 is already installed on the node. Set to 0 to disable.",
                     "update": "Update",
                     "update_cpu_pinning": "CPU Pinning updated"
                 },

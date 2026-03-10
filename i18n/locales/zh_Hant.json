@@ -210,6 +210,10 @@
                     "enable_cpu_pinning_description": "在遊戲伺服器節點上啟用 CPU 綁定以提升效能。",
                     "number_of_cpus_per_server": "每台伺服器分配的 CPU 數量",
                     "number_of_cpus_per_server_description": "設定每台伺服器分配的核心數。",
+                    "reserved_disk_space_fresh_gb": "Required Disk Space - Fresh Install (GB)",
+                    "reserved_disk_space_fresh_gb_description": "Minimum disk space in GB required for a fresh node provisioning (CS2 not yet installed). Set to 0 to disable.",
+                    "reserved_disk_space_existing_gb": "Required Disk Space - Existing Install (GB)",
+                    "reserved_disk_space_existing_gb_description": "Minimum disk space in GB required when CS2 is already installed on the node. Set to 0 to disable.",
                     "update": "更新",
                     "update_cpu_pinning": "CPU 綁定設定已更新"
                 },

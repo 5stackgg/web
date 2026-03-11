@@ -2197,7 +2197,8 @@ export default defineComponent({
       return this.maxServers < this.gameServerNode.total_server_count;
     },
     maxFrequency() {
-      return this.gameServerNode.cpu_frequency_info?.frequency;
+      const freq = this.gameServerNode.cpu_frequency_info?.frequency;
+      return freq != null ? Math.round(freq * 100) / 100 : freq;
     },
     showMaxCPUFrequencyWarning() {
       return this.maxFrequency && this.maxFrequency < 3;

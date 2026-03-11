@@ -13,6 +13,7 @@ type Notification = {
   type: string;
   entity_id: string;
   is_read: boolean;
+  deletable: boolean;
   created_at: string;
   actions?: Array<{
     graphql: {
@@ -158,6 +159,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
               type: true,
               entity_id: true,
               is_read: true,
+              deletable: true,
               created_at: true,
               actions: true,
             },

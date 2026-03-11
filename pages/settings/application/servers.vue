@@ -54,6 +54,86 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
+
+          <FormField
+            v-slot="{ componentField }"
+            name="reserved_disk_space_fresh_gb"
+          >
+            <FormItem>
+              <FormLabel>{{
+                $t(
+                  "pages.settings.application.servers.reserved_disk_space_fresh_gb",
+                )
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.servers.reserved_disk_space_fresh_gb_description",
+                )
+              }}</FormDescription>
+              <Input type="number" v-bind="componentField" min="0" />
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField
+            v-slot="{ componentField }"
+            name="reserved_disk_space_existing_gb"
+          >
+            <FormItem>
+              <FormLabel>{{
+                $t(
+                  "pages.settings.application.servers.reserved_disk_space_existing_gb",
+                )
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.servers.reserved_disk_space_existing_gb_description",
+                )
+              }}</FormDescription>
+              <Input type="number" v-bind="componentField" min="0" />
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField
+            v-slot="{ componentField }"
+            name="disk_warning_percent"
+          >
+            <FormItem>
+              <FormLabel>{{
+                $t(
+                  "pages.settings.application.servers.disk_warning_percent",
+                )
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.servers.disk_warning_percent_description",
+                )
+              }}</FormDescription>
+              <Input type="number" v-bind="componentField" min="0" max="100" />
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField
+            v-slot="{ componentField }"
+            name="disk_critical_percent"
+          >
+            <FormItem>
+              <FormLabel>{{
+                $t(
+                  "pages.settings.application.servers.disk_critical_percent",
+                )
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.servers.disk_critical_percent_description",
+                )
+              }}</FormDescription>
+              <Input type="number" v-bind="componentField" min="0" max="100" />
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
       </Card>
 
@@ -85,6 +165,10 @@ export default {
         validationSchema: toTypedSchema(
           z.object({
             number_of_cpus_per_server: z.number().min(1).default(1),
+            reserved_disk_space_fresh_gb: z.number().min(0).default(120),
+            reserved_disk_space_existing_gb: z.number().min(0).default(60),
+            disk_warning_percent: z.number().min(0).max(100).default(75),
+            disk_critical_percent: z.number().min(0).max(100).default(90),
           }),
         ),
       }),
@@ -95,7 +179,13 @@ export default {
       immediate: true,
       handler() {
         for (const setting of this.settings) {
-          if (setting.name === "number_of_cpus_per_server") {
+          if (
+            setting.name === "number_of_cpus_per_server" ||
+            setting.name === "reserved_disk_space_fresh_gb" ||
+            setting.name === "reserved_disk_space_existing_gb" ||
+            setting.name === "disk_warning_percent" ||
+            setting.name === "disk_critical_percent"
+          ) {
             this.form.setFieldValue(setting.name, parseInt(setting.value));
           }
         }
@@ -112,6 +202,22 @@ export default {
                 {
                   name: "number_of_cpus_per_server",
                   value: this.form.values.number_of_cpus_per_server?.toString(),
+                },
+                {
+                  name: "reserved_disk_space_fresh_gb",
+                  value: this.form.values.reserved_disk_space_fresh_gb?.toString(),
+                },
+                {
+                  name: "reserved_disk_space_existing_gb",
+                  value: this.form.values.reserved_disk_space_existing_gb?.toString(),
+                },
+                {
+                  name: "disk_warning_percent",
+                  value: this.form.values.disk_warning_percent?.toString(),
+                },
+                {
+                  name: "disk_critical_percent",
+                  value: this.form.values.disk_critical_percent?.toString(),
                 },
               ],
               on_conflict: {

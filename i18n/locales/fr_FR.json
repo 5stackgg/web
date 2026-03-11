@@ -184,6 +184,14 @@
                     "enable_cpu_pinning_description": "Activer le pinning CPU sur les nœuds du serveur de jeu pour une meilleure performance",
                     "number_of_cpus_per_server": "Nombre de processeurs par serveur",
                     "number_of_cpus_per_server_description": "Nombre de processeurs à attribuer par serveur",
+                    "reserved_disk_space_fresh_gb": "Required Disk Space - Fresh Install (GB)",
+                    "reserved_disk_space_fresh_gb_description": "Minimum disk space in GB required for a fresh node provisioning (CS2 not yet installed). Set to 0 to disable.",
+                    "reserved_disk_space_existing_gb": "Required Disk Space - Existing Install (GB)",
+                    "reserved_disk_space_existing_gb_description": "Minimum disk space in GB required when CS2 is already installed on the node. Set to 0 to disable.",
+                    "disk_warning_percent": "Disk Warning Threshold (%)",
+                    "disk_warning_percent_description": "Send a deletable notification when disk usage exceeds this percentage. Set to 0 to disable.",
+                    "disk_critical_percent": "Disk Critical Threshold (%)",
+                    "disk_critical_percent_description": "Send a non-deletable notification when disk usage exceeds this percentage. Set to 0 to disable.",
                     "update": "Mettre à jour",
                     "update_cpu_pinning": "CPU Pinning mis à jour"
                 },
@@ -1331,7 +1339,10 @@
             "cs_updating": "CS en cours de mise à jour",
             "ports_updated": "Ports mis à jour",
             "label_updated": "Mise à jour de l'étiquette du nœud"
-        }
+        },
+        "disk_usage": "Disk Usage",
+        "disk_used": "Used",
+        "disk_available": "Available"
     },
     "chat": {
         "lobby_chat": "Chat du lobby",

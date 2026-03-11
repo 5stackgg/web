@@ -216,6 +216,14 @@
                     "enable_cpu_pinning_description": "Ativar a fixação da CPU nos nós de servidores de jogos para um melhor desempenho",
                     "number_of_cpus_per_server": "Número de CPUs por servidor",
                     "number_of_cpus_per_server_description": "Número de CPUs para alocar por servidor",
+                    "reserved_disk_space_fresh_gb": "Required Disk Space - Fresh Install (GB)",
+                    "reserved_disk_space_fresh_gb_description": "Minimum disk space in GB required for a fresh node provisioning (CS2 not yet installed). Set to 0 to disable.",
+                    "reserved_disk_space_existing_gb": "Required Disk Space - Existing Install (GB)",
+                    "reserved_disk_space_existing_gb_description": "Minimum disk space in GB required when CS2 is already installed on the node. Set to 0 to disable.",
+                    "disk_warning_percent": "Disk Warning Threshold (%)",
+                    "disk_warning_percent_description": "Send a deletable notification when disk usage exceeds this percentage. Set to 0 to disable.",
+                    "disk_critical_percent": "Disk Critical Threshold (%)",
+                    "disk_critical_percent_description": "Send a non-deletable notification when disk usage exceeds this percentage. Set to 0 to disable.",
                     "update": "Atualizar",
                     "update_cpu_pinning": "Atualizar Configuração de Fixação de CPU"
                 },
@@ -1511,7 +1519,10 @@
             "scheduling_updated": "Agendamento do Nó Atualizado"
         },
         "enable_scheduling": "Habilitar Agendamento",
-        "disable_scheduling": "Desabilitar Agendamento"
+        "disable_scheduling": "Desabilitar Agendamento",
+        "disk_usage": "Disk Usage",
+        "disk_used": "Used",
+        "disk_available": "Available"
     },
     "chat": {
         "lobby_chat": "Chat da lobby",

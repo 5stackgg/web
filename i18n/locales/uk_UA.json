@@ -118,6 +118,14 @@
                   "enable_cpu_pinning_description": "Увімкнути налаштування процесора на ігрових серверах для кращої продуктивності",
                   "number_of_cpus_per_server": "Кількість процесорів на сервер",
                   "number_of_cpus_per_server_description": "Кількість ЦП для виділення на сервер",
+                  "reserved_disk_space_fresh_gb": "Required Disk Space - Fresh Install (GB)",
+                  "reserved_disk_space_fresh_gb_description": "Minimum disk space in GB required for a fresh node provisioning (CS2 not yet installed). Set to 0 to disable.",
+                  "reserved_disk_space_existing_gb": "Required Disk Space - Existing Install (GB)",
+                  "reserved_disk_space_existing_gb_description": "Minimum disk space in GB required when CS2 is already installed on the node. Set to 0 to disable.",
+                  "disk_warning_percent": "Disk Warning Threshold (%)",
+                  "disk_warning_percent_description": "Send a deletable notification when disk usage exceeds this percentage. Set to 0 to disable.",
+                  "disk_critical_percent": "Disk Critical Threshold (%)",
+                  "disk_critical_percent_description": "Send a non-deletable notification when disk usage exceeds this percentage. Set to 0 to disable.",
                   "update": "Оновити",
                   "update_cpu_pinning": "Процесор Pinning оновлений"
                 },
@@ -1139,7 +1147,10 @@
             "cs_updating": "Оновлення CS",
             "ports_updated": "Порти оновлено",
             "label_updated": "Node Label Оновлено"
-        }
+        },
+        "disk_usage": "Disk Usage",
+        "disk_used": "Used",
+        "disk_available": "Available"
     },
     "chat": {
         "lobby_chat": "Чат лобі",

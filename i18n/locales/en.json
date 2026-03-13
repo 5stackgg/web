@@ -1136,7 +1136,7 @@
             }
         },
         "notifications": {
-            "title": "Notifications",
+            "title": "Discord",
             "description": "Override global Discord notification settings for this tournament. Leave empty to use global defaults.",
             "webhook": "Webhook URL",
             "webhook_placeholder": "Leave empty to use global default",

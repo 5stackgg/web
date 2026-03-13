@@ -1167,6 +1167,12 @@
                 "Surrendered": "Surrendered"
             }
         },
+        "voice": {
+            "title": "Voice Channels",
+            "description": "Automatically create Discord voice channels for tournament matches. Players are moved to team channels when matches begin.",
+            "guild_id_placeholder": "Discord Server ID",
+            "enable_voice": "Enable Voice Channels"
+        },
         "table": {
             "tournament": "Tournament",
             "status": "Status",

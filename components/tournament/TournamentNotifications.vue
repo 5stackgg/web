@@ -82,8 +82,10 @@
             <Input
               :model-value="form.discord_guild_id ?? ''"
               :placeholder="$t('tournament.voice.guild_id_placeholder')"
+              inputmode="numeric"
+              pattern="[0-9]*"
               @update:model-value="
-                form.discord_guild_id = $event || null;
+                form.discord_guild_id = $event.replace(/[^0-9]/g, '') || null;
                 dirty = true;
               "
             />

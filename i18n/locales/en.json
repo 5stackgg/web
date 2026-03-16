@@ -1,6 +1,6 @@
 {
     "pagination": {
-        "items_per_page": "per page"
+        "items_per_page": "Items per page"
     },
     "pages": {
         "system_metrics": {
@@ -38,7 +38,7 @@
             "create": "Create Tournament",
             "open_for_registration": "Open for Registration",
             "tabs": {
-                "finished": "Finished",
+                "finished": "Finished Tournaments",
                 "live": "Live",
                 "upcoming": "Upcoming",
                 "no_live_title": "No Live Tournaments",
@@ -302,9 +302,9 @@
         "watch": {
             "title": "Watch",
             "description": "Watch matches and tournaments.",
-            "live_matches": "Live",
-            "upcoming_matches": "Upcoming",
-            "finished_matches": "Finished"
+            "live_matches": "Live Matches",
+            "upcoming_matches": "Upcoming Matches",
+            "finished_matches": "Finished Matches"
         },
         "regions": {
             "title": "Regions",

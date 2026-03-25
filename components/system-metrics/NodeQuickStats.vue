@@ -2,19 +2,25 @@
 // imports only; state is managed in the options API script below
 import { $ } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
+import { Cpu, MemoryStick, HardDrive, Network } from "lucide-vue-next";
 </script>
 
 <template>
   <div
     v-if="metricsData"
-    class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs mt-2"
+    class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 text-xs mt-2"
   >
-    <div class="space-y-1">
-      <div class="flex items-center justify-between">
-        <span class="text-muted-foreground">
-          {{ $t("pages.system_metrics.cpu_usage") }}
-        </span>
-        <span>{{ latestCpuUsage }}%</span>
+    <div
+      class="rounded-lg border border-border/60 bg-muted/20 p-3 space-y-2 min-w-0"
+    >
+      <div
+        class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
+      >
+        <Cpu class="h-3.5 w-3.5 shrink-0" />
+        {{ $t("pages.system_metrics.cpu_short") }}
+      </div>
+      <div class="text-sm font-semibold tabular-nums">
+        {{ latestCpuUsage }}%
       </div>
       <div class="h-1.5 rounded-full bg-muted overflow-hidden">
         <div
@@ -24,12 +30,19 @@ import { generateQuery } from "~/graphql/graphqlGen";
       </div>
     </div>
 
-    <div class="space-y-1">
-      <div class="flex items-center justify-between">
-        <span class="text-muted-foreground">
-          {{ $t("pages.system_metrics.memory_usage") }}
-        </span>
-        <span>{{ latestMemoryUsage }}%</span>
+    <div
+      class="rounded-lg border border-border/60 bg-muted/20 p-3 space-y-2 min-w-0"
+    >
+      <div
+        class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
+      >
+        <MemoryStick class="h-3.5 w-3.5 shrink-0" />
+        {{ $t("pages.system_metrics.memory_short") }}
+      </div>
+      <div
+        class="text-[11px] sm:text-xs font-medium tabular-nums leading-snug break-words"
+      >
+        {{ memoryUsageDisplay }}
       </div>
       <div class="h-1.5 rounded-full bg-muted overflow-hidden">
         <div
@@ -39,10 +52,19 @@ import { generateQuery } from "~/graphql/graphqlGen";
       </div>
     </div>
 
-    <div class="space-y-1">
-      <div class="flex items-center justify-between">
-        <span class="text-muted-foreground"> Disks </span>
-        <span>{{ latestDiskUsage }}%</span>
+    <div
+      class="rounded-lg border border-border/60 bg-muted/20 p-3 space-y-2 min-w-0"
+    >
+      <div
+        class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
+      >
+        <HardDrive class="h-3.5 w-3.5 shrink-0" />
+        {{ $t("pages.system_metrics.disk_short") }}
+      </div>
+      <div
+        class="text-[11px] sm:text-xs font-medium tabular-nums leading-snug break-words"
+      >
+        {{ diskUsageDisplay }}
       </div>
       <div class="h-1.5 rounded-full bg-muted overflow-hidden">
         <div
@@ -52,12 +74,17 @@ import { generateQuery } from "~/graphql/graphqlGen";
       </div>
     </div>
 
-    <div class="space-y-1">
-      <div class="flex items-center justify-between">
-        <span class="text-muted-foreground">
-          {{ $t("pages.system_metrics.network") }}
-        </span>
-        <span>{{ latestNetworkUsage }} Mbps</span>
+    <div
+      class="rounded-lg border border-border/60 bg-muted/20 p-3 space-y-2 min-w-0"
+    >
+      <div
+        class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
+      >
+        <Network class="h-3.5 w-3.5 shrink-0" />
+        {{ $t("pages.system_metrics.network_short") }}
+      </div>
+      <div class="text-sm font-semibold tabular-nums">
+        {{ latestNetworkUsage }} Mbps
       </div>
       <div class="h-1.5 rounded-full bg-muted overflow-hidden">
         <div
@@ -70,6 +97,8 @@ import { generateQuery } from "~/graphql/graphqlGen";
 </template>
 
 <script lang="ts">
+import { formatUsedOverTotalBytes } from "~/utilities/formatResourceUsage";
+
 export default {
   props: {
     nodeId: {
@@ -84,6 +113,42 @@ export default {
     };
   },
   computed: {
+    diskWithMaxPercent(): any | null {
+      if (!this.metricsData?.disks?.length) return null;
+      const last = this.metricsData.disks[this.metricsData.disks.length - 1];
+      if (!last?.disks?.length) return null;
+      let best: any = null;
+      let bestPct = -1;
+      for (const disk of last.disks) {
+        let value = Number(disk.usedPercent);
+        if (!Number.isFinite(value)) {
+          if (disk.size && disk.used) {
+            value = (Number(disk.used) / Number(disk.size)) * 100;
+          } else {
+            value = 0;
+          }
+        }
+        if (value > bestPct) {
+          bestPct = value;
+          best = disk;
+        }
+      }
+      return best;
+    },
+    memoryUsageDisplay(): string {
+      if (!this.metricsData?.memory?.length) return "—";
+      const last = this.metricsData.memory[this.metricsData.memory.length - 1];
+      if (!last || !last.total) return "—";
+      return formatUsedOverTotalBytes(
+        Number(last.used || 0),
+        Number(last.total),
+      );
+    },
+    diskUsageDisplay(): string {
+      const d = this.diskWithMaxPercent;
+      if (!d || !Number(d.size)) return "—";
+      return formatUsedOverTotalBytes(Number(d.used || 0), Number(d.size));
+    },
     latestCpuUsage(): number {
       if (!this.metricsData?.cpu?.length) return 0;
       const last = this.metricsData.cpu[this.metricsData.cpu.length - 1];
@@ -100,21 +165,17 @@ export default {
       return Math.round(Math.min(100, Math.max(0, usedPercent)));
     },
     latestDiskUsage(): number {
-      if (!this.metricsData?.disks?.length) return 0;
-      const last = this.metricsData.disks[this.metricsData.disks.length - 1];
-      if (!last?.disks?.length) return 0;
-      const maxUsed = last.disks.reduce((max: number, disk: any) => {
-        let value = Number(disk.usedPercent);
-        if (!Number.isFinite(value)) {
-          if (disk.size && disk.used) {
-            value = (Number(disk.used) / Number(disk.size)) * 100;
-          } else {
-            value = 0;
-          }
+      const d = this.diskWithMaxPercent;
+      if (!d) return 0;
+      let value = Number(d.usedPercent);
+      if (!Number.isFinite(value)) {
+        if (d.size && d.used) {
+          value = (Number(d.used) / Number(d.size)) * 100;
+        } else {
+          value = 0;
         }
-        return Math.max(max, value);
-      }, 0);
-      return Math.round(Math.min(100, Math.max(0, maxUsed)));
+      }
+      return Math.round(Math.min(100, Math.max(0, value)));
     },
     latestNetworkUsage(): number {
       if (!this.metricsData?.network?.length) return 0;

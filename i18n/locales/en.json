@@ -22,6 +22,7 @@
             "search_nodes_placeholder": "Search game server nodes...",
             "nodes_total": "Total Nodes",
             "cpu_short": "CPU",
+            "memory_short": "Memory",
             "disk_short": "Disks",
             "network_short": "Network",
             "manage_node": "Manage Node",

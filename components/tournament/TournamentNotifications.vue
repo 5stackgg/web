@@ -70,6 +70,64 @@
       <div class="p-6 space-y-6">
         <div>
           <h4 class="text-base font-medium">
+            {{ $t("tournament.voice.title") }}
+          </h4>
+          <p class="text-sm text-muted-foreground">
+            {{ $t("tournament.voice.description") }}
+          </p>
+        </div>
+
+        <div class="space-y-2">
+          <div class="flex items-center gap-2">
+            <Input
+              :model-value="form.discord_guild_id ?? ''"
+              :placeholder="$t('tournament.voice.guild_id_placeholder')"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              @update:model-value="
+                form.discord_guild_id = $event.replace(/[^0-9]/g, '') || null;
+                dirty = true;
+              "
+            />
+          </div>
+        </div>
+
+        <div
+          class="flex items-center justify-between rounded-lg border p-3 cursor-pointer select-none"
+          role="button"
+          tabindex="0"
+          @click="
+            form.discord_voice_enabled = !form.discord_voice_enabled;
+            dirty = true;
+          "
+          @keydown.enter.prevent="
+            form.discord_voice_enabled = !form.discord_voice_enabled;
+            dirty = true;
+          "
+          @keydown.space.prevent="
+            form.discord_voice_enabled = !form.discord_voice_enabled;
+            dirty = true;
+          "
+        >
+          <span class="text-sm font-medium">{{
+            $t("tournament.voice.enable_voice")
+          }}</span>
+          <Switch
+            @click.stop
+            :model-value="form.discord_voice_enabled"
+            @update:model-value="
+              form.discord_voice_enabled = $event;
+              dirty = true;
+            "
+          />
+        </div>
+      </div>
+    </Card>
+
+    <Card variant="gradient">
+      <div class="p-6 space-y-6">
+        <div>
+          <h4 class="text-base font-medium">
             {{ $t("tournament.notifications.webhook") }}
           </h4>
         </div>
@@ -287,6 +345,8 @@ const DISCORD_FIELDS = [
   "discord_notifications_enabled",
   "discord_webhook",
   "discord_role_id",
+  "discord_guild_id",
+  "discord_voice_enabled",
   "discord_notify_PickingPlayers",
   "discord_notify_Scheduled",
   "discord_notify_WaitingForCheckIn",
@@ -367,7 +427,11 @@ export default {
     buildForm(tournament: Record<string, any>) {
       const form: Record<string, any> = {};
       for (const field of DISCORD_FIELDS) {
-        form[field] = tournament[field] ?? null;
+        if (field === "discord_voice_enabled") {
+          form[field] = tournament[field] ?? false;
+        } else {
+          form[field] = tournament[field] ?? null;
+        }
       }
       return form;
     },
@@ -425,14 +489,20 @@ export default {
       for (const field of DISCORD_FIELDS) {
         let value = this.form[field];
         if (
-          (field === "discord_webhook" || field === "discord_role_id") &&
+          (field === "discord_webhook" ||
+            field === "discord_role_id" ||
+            field === "discord_guild_id") &&
           value === ""
         ) {
           value = null;
         }
         variables[field] = value;
 
-        if (field === "discord_webhook" || field === "discord_role_id") {
+        if (
+          field === "discord_webhook" ||
+          field === "discord_role_id" ||
+          field === "discord_guild_id"
+        ) {
           _set[field] = $(field, "String");
         } else {
           _set[field] = $(field, "Boolean");

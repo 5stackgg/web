@@ -125,14 +125,14 @@ const showSeparators = computed(
 
       <div
         v-if="filteredNodes && filteredNodes.length"
-        class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
+        class="grid grid-cols-1 md:grid-cols-2 gap-4"
       >
         <Card
           v-for="node in filteredNodes"
           :key="node.id"
           :class="[
             'p-4 space-y-3',
-            isNodeExpanded(node) ? 'md:col-span-2 xl:col-span-3' : '',
+            isNodeExpanded(node) ? 'md:col-span-2' : '',
           ]"
         >
           <div class="flex items-start justify-between gap-3">
@@ -362,13 +362,19 @@ const showSeparators = computed(
           </div>
 
           <!-- Compact quick view row -->
-          <div class="grid grid-cols-2 gap-3 text-xs">
-            <div class="space-y-1">
-              <div class="flex items-center justify-between">
-                <span class="text-muted-foreground">
-                  {{ $t("pages.system_metrics.cpu_usage") }}
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div
+              class="space-y-1.5 min-w-0 rounded-md border border-border/60 bg-muted/15 px-2.5 py-2"
+            >
+              <div class="flex items-center justify-between gap-2 min-w-0">
+                <span
+                  class="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
+                >
+                  {{ $t("pages.system_metrics.cpu_short") }}
                 </span>
-                <span>{{ latestCpuUsage(service) }}%</span>
+                <span class="text-sm font-semibold tabular-nums shrink-0">
+                  {{ latestCpuUsage(service) }}%
+                </span>
               </div>
               <div class="h-1.5 rounded-full bg-muted overflow-hidden">
                 <div
@@ -377,12 +383,20 @@ const showSeparators = computed(
                 />
               </div>
             </div>
-            <div class="space-y-1">
-              <div class="flex items-center justify-between">
-                <span class="text-muted-foreground">
-                  {{ $t("pages.system_metrics.memory_usage") }}
+            <div
+              class="space-y-1.5 min-w-0 rounded-md border border-border/60 bg-muted/15 px-2.5 py-2"
+            >
+              <div class="flex items-center justify-between gap-2 min-w-0">
+                <span
+                  class="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
+                >
+                  {{ $t("pages.system_metrics.memory_short") }}
                 </span>
-                <span>{{ latestMemoryUsage(service) }}%</span>
+                <span
+                  class="text-right text-[11px] sm:text-xs font-medium tabular-nums leading-snug break-words min-w-0"
+                >
+                  {{ serviceMemoryUsageLabel(service) }}
+                </span>
               </div>
               <div class="h-1.5 rounded-full bg-muted overflow-hidden">
                 <div
@@ -428,6 +442,8 @@ const showSeparators = computed(
 </template>
 
 <script lang="ts">
+import { formatUsedOverTotalBytes } from "~/utilities/formatResourceUsage";
+
 export default {
   data() {
     return {
@@ -491,6 +507,19 @@ export default {
       }
       const usedPercent = (last.used / last.total) * 100;
       return Math.round(Math.min(100, Math.max(0, usedPercent)));
+    },
+    serviceMemoryUsageLabel(service: any): string {
+      if (!service.memory || !service.memory.length) {
+        return "—";
+      }
+      const last = service.memory[service.memory.length - 1];
+      if (!last || !last.total) {
+        return "—";
+      }
+      return formatUsedOverTotalBytes(
+        Number(last.used || 0),
+        Number(last.total),
+      );
     },
     serviceCpuStatus(service: any): "normal" | "warning" | "critical" {
       const cpu = this.latestCpuUsage(service);

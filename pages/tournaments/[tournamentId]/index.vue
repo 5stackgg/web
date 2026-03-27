@@ -808,6 +808,10 @@ export default {
                         group: true,
                         match_number: true,
                         path: true,
+                        parent_bracket_id: true,
+                        loser_parent_bracket_id: true,
+                        team_1_seed: true,
+                        team_2_seed: true,
                       },
                       match: {
                         id: true,

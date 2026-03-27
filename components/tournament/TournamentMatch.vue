@@ -166,45 +166,11 @@ const handleClick = (event: MouseEvent, bracket: Bracket) => {
   }
 };
 
-const getFeedingBracketsByPath = (bracket: Bracket, path: "WB" | "LB") => {
-  return (bracket.feeding_brackets || []).filter((b) => b.path === path);
-};
-
-const getFeedingBracketAt = (
-  bracket: Bracket,
-  path: "WB" | "LB",
-  index: number,
-) => {
-  return getFeedingBracketsByPath(bracket, path)[index];
-};
-
 /**
- * Get the WB feeding bracket for a given team slot (1 or 2).
- * In LB R1, there are two WB feeds mapped 1:1 to slots.
- * In later LB rounds (R2, R4, etc.), there's only one WB feed.
- * That single feed should appear in whichever slot doesn't already
- * have a resolved team (the other slot is filled by an LB feed).
- */
-const getWbFeedForSlot = (
-  bracket: Bracket,
-  slot: 1 | 2,
-): FeedingBracket | undefined => {
-  const wbFeeds = getFeedingBracketsByPath(bracket, "WB");
-  if (wbFeeds.length === 0) return undefined;
-
-  // Two or more WB feeds (e.g. LB R1): direct index mapping
-  if (wbFeeds.length >= 2) return wbFeeds[slot - 1];
-
-  // Single WB feed: show in slot 1 if team_1 is empty, slot 2 if team_1 is filled
-  if (slot === 1 && !bracket.team_1) return wbFeeds[0];
-  if (slot === 2 && bracket.team_1) return wbFeeds[0];
-
-  return undefined;
-};
-
-/**
- * Get the feeding bracket for a given team slot (1 or 2), regardless of path.
- * Used for text placeholders like "Winner R1M1" or "Loser WB R2M2".
+ * Get the feeding bracket for a given team slot (1 or 2).
+ * Uses DB relationships: feeds whose parent_bracket_id points here
+ * are winner feeds, feeds whose loser_parent_bracket_id points here
+ * are loser drops. Slot 1 gets the first feed, slot 2 gets the second.
  */
 const getFeedForSlot = (
   bracket: Bracket,
@@ -212,31 +178,20 @@ const getFeedForSlot = (
 ): FeedingBracket | undefined => {
   const feeds = bracket.feeding_brackets || [];
   if (feeds.length === 0) return undefined;
+  return feeds[slot - 1];
+};
 
-  if (feeds.length >= 2) return feeds[slot - 1];
-
-  // Single feed: assign to whichever slot is empty
-  if (slot === 1 && !bracket.team_1) return feeds[0];
-  if (slot === 2 && bracket.team_1) return feeds[0];
-
+/**
+ * Get the WB feeding bracket for a given team slot.
+ * Filters feeds to only those coming from WB (loser drops into LB).
+ */
+const getWbFeedForSlot = (
+  bracket: Bracket,
+  slot: 1 | 2,
+): FeedingBracket | undefined => {
+  const feed = getFeedForSlot(bracket, slot);
+  if (feed && feed.path === "WB") return feed;
   return undefined;
-};
-
-const isShowingDestinations = (bracket: Bracket) => {
-  return bracket.path === "WB" && !bracket.match;
-};
-
-const getBracketLabel = (path?: string) => {
-  if (path === "WB") return t("tournament.match.upper_bracket");
-  if (path === "LB") return t("tournament.match.lower_bracket");
-  return "";
-};
-
-const getFeedPrefix = (currentPath?: string, feedingPath?: string) => {
-  if (!currentPath || !feedingPath) return t("tournament.match.winner_of");
-  return currentPath === feedingPath
-    ? t("tournament.match.winner_of")
-    : t("tournament.match.loser_of");
 };
 
 const formatRoundRef = (
@@ -266,14 +221,14 @@ const formatRoundRefCompact = (
 
 const formatFeedingText = (bracket: Bracket, feeding?: FeedingBracket) => {
   if (!feeding) return "";
-  const prefix =
-    bracket.path === feeding.path
-      ? t("tournament.match.winner")
-      : t("tournament.match.loser");
+  const isLoserDrop = feeding.loser_parent_bracket_id === bracket.id;
+  const prefix = isLoserDrop
+    ? t("tournament.match.loser")
+    : t("tournament.match.winner");
   const roundRef = formatRoundRefCompact(
     feeding.round,
     feeding.match_number,
-    feeding.path !== bracket.path ? feeding.path : undefined,
+    isLoserDrop ? feeding.path : undefined,
   );
   return `${prefix} ${roundRef}`.trim();
 };

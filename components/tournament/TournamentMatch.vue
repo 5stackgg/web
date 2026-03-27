@@ -172,33 +172,24 @@ const handleClick = (event: MouseEvent, bracket: Bracket) => {
  * assign_team_to_bracket_slot: loser drops first, then winner
  * feeds, then by round and match_number within each group.
  */
-const getFeedForSlot = (
-  bracket: Bracket,
-  slot: 1 | 2,
-): FeedingBracket | undefined => {
+const getSortedFeeds = (bracket: Bracket): FeedingBracket[] => {
   const feeds = bracket.feeding_brackets || [];
-  if (feeds.length === 0) return undefined;
-  const sorted = [...feeds].sort((a, b) => {
+  if (feeds.length === 0) return [];
+  return [...feeds].sort((a, b) => {
     const aLoser = a.loser_parent_bracket_id === bracket.id ? 0 : 1;
     const bLoser = b.loser_parent_bracket_id === bracket.id ? 0 : 1;
     if (aLoser !== bLoser) return aLoser - bLoser;
     if ((a.round ?? 0) !== (b.round ?? 0)) return (a.round ?? 0) - (b.round ?? 0);
     return (a.match_number ?? 0) - (b.match_number ?? 0);
   });
-  return sorted[slot - 1];
 };
 
-/**
- * Get the WB feeding bracket for a given team slot.
- * Filters feeds to only those coming from WB (loser drops into LB).
- */
-const getWbFeedForSlot = (
+const getFeedForSlot = (
   bracket: Bracket,
   slot: 1 | 2,
 ): FeedingBracket | undefined => {
-  const feed = getFeedForSlot(bracket, slot);
-  if (feed && feed.path === "WB") return feed;
-  return undefined;
+  const sorted = getSortedFeeds(bracket);
+  return sorted[slot - 1];
 };
 
 const formatRoundRef = (
@@ -212,27 +203,14 @@ const formatRoundRef = (
     : t(`tournament.match.${pathPrefix}round_ref`, { round });
 };
 
-const formatRoundRefCompact = (
-  round: number,
-  match_number?: number,
-  path?: string,
-) => {
-  const pathPrefix = path === "WB" ? "wb_" : path === "LB" ? "lb_" : "";
-  return match_number
-    ? t(`tournament.match.${pathPrefix}round_match_compact`, {
-        round,
-        match: match_number,
-      })
-    : t(`tournament.match.${pathPrefix}round_compact`, { round });
-};
-
+/** Same pattern as formatDestinationText: "Winner → …" / "Loser → …" + full round ref. */
 const formatFeedingText = (bracket: Bracket, feeding?: FeedingBracket) => {
   if (!feeding) return "";
   const isLoserDrop = feeding.loser_parent_bracket_id === bracket.id;
   const prefix = isLoserDrop
-    ? t("tournament.match.loser")
-    : t("tournament.match.winner");
-  const roundRef = formatRoundRefCompact(
+    ? t("tournament.match.loser_arrow")
+    : t("tournament.match.winner_arrow");
+  const roundRef = formatRoundRef(
     feeding.round,
     feeding.match_number,
     feeding.path,
@@ -286,6 +264,46 @@ const shouldShowFeedInHint = (
     feeding.loser_parent_bracket_id === bracket.id;
   if (!hasGraphEdge) return true;
   return !isSameViewerGroup(feeding.group, bracket.group);
+};
+
+/**
+ * Map sorted feeds to top/bottom rows. Top = same-view / incoming line; bottom
+ * = cross-view amber hint when only one feed needs that hint. If two feeds and
+ * exactly one needs a cross-view label, put the same-view feed on top and the
+ * hint on the bottom.
+ */
+const getFeedForDisplayRow = (
+  bracket: Bracket,
+  row: 1 | 2,
+): FeedingBracket | undefined => {
+  const sorted = getSortedFeeds(bracket);
+  if (sorted.length === 0) return undefined;
+
+  const needsHint = (f: FeedingBracket) => shouldShowFeedInHint(bracket, f);
+  const hintFeeds = sorted.filter(needsHint);
+  const noHintFeeds = sorted.filter((f) => !needsHint(f));
+
+  if (sorted.length === 2 && hintFeeds.length === 1 && noHintFeeds.length === 1) {
+    return row === 1 ? noHintFeeds[0] : hintFeeds[0];
+  }
+
+  if (sorted.length === 1) {
+    if (needsHint(sorted[0])) {
+      return row === 2 ? sorted[0] : undefined;
+    }
+    return row === 1 ? sorted[0] : undefined;
+  }
+
+  return sorted[row - 1];
+};
+
+const getWbFeedForDisplayRow = (
+  bracket: Bracket,
+  row: 1 | 2,
+): FeedingBracket | undefined => {
+  const feed = getFeedForDisplayRow(bracket, row);
+  if (feed && feed.path === "WB") return feed;
+  return undefined;
 };
 
 const shouldShowCrossBracketDestination = (
@@ -416,17 +434,17 @@ const shouldShowCrossBracketDestination = (
                     <span
                       v-if="
                         bracket.path !== 'WB' &&
-                        (getWbFeedForSlot(bracket, 1)?.team_1_seed ||
-                          getWbFeedForSlot(bracket, 1)?.team_2_seed)
+                        (getWbFeedForDisplayRow(bracket, 1)?.team_1_seed ||
+                          getWbFeedForDisplayRow(bracket, 1)?.team_2_seed)
                       "
                       class="text-xs text-gray-200/70 bg-gray-700/60 border border-gray-800 rounded px-1.5 py-0.5"
                     >
                       #{{
-                        getWbFeedForSlot(bracket, 1)?.team_1_seed || "?"
+                        getWbFeedForDisplayRow(bracket, 1)?.team_1_seed || "?"
                       }}<span
-                        v-if="getWbFeedForSlot(bracket, 1)?.team_2_seed"
+                        v-if="getWbFeedForDisplayRow(bracket, 1)?.team_2_seed"
                         >/{{
-                          getWbFeedForSlot(bracket, 1)?.team_2_seed
+                          getWbFeedForDisplayRow(bracket, 1)?.team_2_seed
                         }}</span
                       >
                     </span>
@@ -435,16 +453,16 @@ const shouldShowCrossBracketDestination = (
                       v-if="
                         shouldShowFeedInHint(
                           bracket,
-                          getFeedForSlot(bracket, 1),
+                          getFeedForDisplayRow(bracket, 1),
                         )
                       "
                       variant="outline"
-                      class="shrink-0 border-amber-500/35 bg-amber-950/25 text-amber-200/90 font-normal"
+                      class="min-w-0 shrink border-amber-500/50 bg-amber-950/35 text-amber-200 font-normal px-2.5 py-1"
                     >
                       {{
                         formatFeedingText(
                           bracket,
-                          getFeedForSlot(bracket, 1),
+                          getFeedForDisplayRow(bracket, 1),
                         )
                       }}
                     </Badge>
@@ -483,17 +501,17 @@ const shouldShowCrossBracketDestination = (
                     <span
                       v-if="
                         bracket.path === 'LB' &&
-                        (getWbFeedForSlot(bracket, 2)?.team_1_seed ||
-                          getWbFeedForSlot(bracket, 2)?.team_2_seed)
+                        (getWbFeedForDisplayRow(bracket, 2)?.team_1_seed ||
+                          getWbFeedForDisplayRow(bracket, 2)?.team_2_seed)
                       "
                       class="text-xs text-gray-200/70 bg-gray-700/60 border border-gray-800 rounded px-1.5 py-0.5"
                     >
                       #{{
-                        getWbFeedForSlot(bracket, 2)?.team_1_seed || "?"
+                        getWbFeedForDisplayRow(bracket, 2)?.team_1_seed || "?"
                       }}<span
-                        v-if="getWbFeedForSlot(bracket, 2)?.team_2_seed"
+                        v-if="getWbFeedForDisplayRow(bracket, 2)?.team_2_seed"
                         >/{{
-                          getWbFeedForSlot(bracket, 2)?.team_2_seed
+                          getWbFeedForDisplayRow(bracket, 2)?.team_2_seed
                         }}</span
                       >
                     </span>
@@ -501,16 +519,16 @@ const shouldShowCrossBracketDestination = (
                       v-if="
                         shouldShowFeedInHint(
                           bracket,
-                          getFeedForSlot(bracket, 2),
+                          getFeedForDisplayRow(bracket, 2),
                         )
                       "
                       variant="outline"
-                      class="shrink-0 border-amber-500/35 bg-amber-950/25 text-amber-200/90 font-normal"
+                      class="min-w-0 shrink border-amber-500/50 bg-amber-950/35 text-amber-200 font-normal px-2.5 py-1"
                     >
                       {{
                         formatFeedingText(
                           bracket,
-                          getFeedForSlot(bracket, 2),
+                          getFeedForDisplayRow(bracket, 2),
                         )
                       }}
                     </Badge>

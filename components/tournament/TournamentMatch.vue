@@ -206,15 +206,32 @@ const formatRoundRef = (
     : t(`tournament.match.${pathPrefix}round_ref`, { round });
 };
 
+const formatRoundRefCompact = (
+  round: number,
+  match_number?: number,
+  path?: string,
+) => {
+  const pathPrefix = path === "WB" ? "wb_" : path === "LB" ? "lb_" : "";
+  return match_number
+    ? t(`tournament.match.${pathPrefix}round_match_compact`, {
+        round,
+        match: match_number,
+      })
+    : t(`tournament.match.${pathPrefix}round_compact`, { round });
+};
+
 const formatFeedingText = (bracket: Bracket, feeding?: FeedingBracket) => {
   if (!feeding) return "";
-  const prefix = getFeedPrefix(bracket.path, feeding.path);
-  const roundMatch = formatRoundRef(
+  const prefix =
+    bracket.path === feeding.path
+      ? t("tournament.match.winner")
+      : t("tournament.match.loser");
+  const roundRef = formatRoundRefCompact(
     feeding.round,
     feeding.match_number,
     feeding.path !== bracket.path ? feeding.path : undefined,
   );
-  return `${prefix} ${roundMatch}`.trim();
+  return `${prefix} ${roundRef}`.trim();
 };
 
 const formatDestinationText = (

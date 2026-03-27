@@ -262,7 +262,7 @@ const isLbFeedingToWb = (bracket: Bracket) => {
 <template>
   <template v-for="bracket in props.brackets" :key="bracket.id">
     <div
-      v-if="!(bracket.bye && !bracket.team_1 && !bracket.team_2)"
+      v-if="!bracket.bye || bracket.team_1 || bracket.team_2 || bracket.feeding_brackets?.length"
       :id="`bracket-${bracket.id}`"
       class="tournament-match cursor-pointer border-2 rounded-lg p-1 transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/20 bg-gray-800/50 backdrop-blur-sm relative flex flex-col gap-2"
       :class="{

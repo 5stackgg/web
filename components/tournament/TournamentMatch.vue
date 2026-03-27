@@ -257,6 +257,44 @@ const formatDestinationText = (
 const isLbFeedingToWb = (bracket: Bracket) => {
   return bracket.path === "LB" && bracket.parent_bracket?.path === "WB";
 };
+
+/**
+ * Bracket viewers render one group at a time; SVG lines only connect matches in
+ * the same DOM. When source and target differ by group (e.g. WB → LB), show a
+ * hint instead of duplicating what a line already conveys.
+ */
+const isSameViewerGroup = (
+  a: number | undefined,
+  b: number | undefined,
+): boolean => a === b;
+
+/**
+ * Show feed-in text only when the feeder is not in the same viewer as this
+ * match (no drawn connector), or the graph edge is missing from feed metadata.
+ * Swiss layout does not draw connector lines, so always show when a feed exists.
+ */
+const shouldShowFeedInHint = (
+  bracket: Bracket,
+  feeding: FeedingBracket | undefined,
+): boolean => {
+  if (!feeding) return false;
+  if (props.stage.type === e_tournament_stage_types_enum.Swiss) {
+    return true;
+  }
+  const hasGraphEdge =
+    feeding.parent_bracket_id === bracket.id ||
+    feeding.loser_parent_bracket_id === bracket.id;
+  if (!hasGraphEdge) return true;
+  return !isSameViewerGroup(feeding.group, bracket.group);
+};
+
+const shouldShowCrossBracketDestination = (
+  bracket: Bracket,
+  dest?: { id?: string; group?: number },
+): boolean => {
+  if (!dest?.id) return false;
+  return !isSameViewerGroup(dest.group, bracket.group);
+};
 </script>
 
 <template>
@@ -392,15 +430,24 @@ const isLbFeedingToWb = (bracket: Bracket) => {
                         }}</span
                       >
                     </span>
-                    <!-- Show where this team will come from -->
-                    <template v-if="getFeedForSlot(bracket, 1)">
+                    <!-- Cross-view feed only (no connector line in this bracket column) -->
+                    <Badge
+                      v-if="
+                        shouldShowFeedInHint(
+                          bracket,
+                          getFeedForSlot(bracket, 1),
+                        )
+                      "
+                      variant="outline"
+                      class="shrink-0 border-amber-500/35 bg-amber-950/25 text-amber-200/90 font-normal"
+                    >
                       {{
                         formatFeedingText(
                           bracket,
                           getFeedForSlot(bracket, 1),
                         )
                       }}
-                    </template>
+                    </Badge>
                   </template>
                   {{ getTeamName(bracket.team_1) }}
                 </span>
@@ -450,15 +497,23 @@ const isLbFeedingToWb = (bracket: Bracket) => {
                         }}</span
                       >
                     </span>
-                    <!-- Show where this team will come from -->
-                    <template v-if="getFeedForSlot(bracket, 2)">
+                    <Badge
+                      v-if="
+                        shouldShowFeedInHint(
+                          bracket,
+                          getFeedForSlot(bracket, 2),
+                        )
+                      "
+                      variant="outline"
+                      class="shrink-0 border-amber-500/35 bg-amber-950/25 text-amber-200/90 font-normal"
+                    >
                       {{
                         formatFeedingText(
                           bracket,
                           getFeedForSlot(bracket, 2),
                         )
                       }}
-                    </template>
+                    </Badge>
                   </template>
                 </span>
                 {{ getTeamName(bracket.team_2) }}
@@ -471,8 +526,17 @@ const isLbFeedingToWb = (bracket: Bracket) => {
       <template
         v-if="stage.type === e_tournament_stage_types_enum.DoubleElimination"
       >
-        <div v-if="isLbFeedingToWb(bracket)" class="text-center">
-          <div class="text-xs text-green-400 font-medium">
+        <div
+          v-if="
+            isLbFeedingToWb(bracket) &&
+            shouldShowCrossBracketDestination(bracket, bracket.parent_bracket)
+          "
+          class="flex justify-center"
+        >
+          <Badge
+            variant="outline"
+            class="border-emerald-500/40 bg-emerald-950/25 text-emerald-300 font-normal"
+          >
             {{
               formatDestinationText(
                 "winner",
@@ -480,10 +544,20 @@ const isLbFeedingToWb = (bracket: Bracket) => {
                 bracket.parent_bracket?.path,
               )
             }}
-          </div>
+          </Badge>
         </div>
-        <div v-if="bracket.loser_bracket && !bracket.bye" class="text-center">
-          <div class="text-xs text-red-400 font-medium">
+        <div
+          v-if="
+            bracket.loser_bracket &&
+            !bracket.bye &&
+            shouldShowCrossBracketDestination(bracket, bracket.loser_bracket)
+          "
+          class="flex justify-center"
+        >
+          <Badge
+            variant="outline"
+            class="border-red-500/45 bg-red-950/30 text-red-300 font-normal"
+          >
             {{
               formatDestinationText(
                 "loser",
@@ -491,7 +565,7 @@ const isLbFeedingToWb = (bracket: Bracket) => {
                 bracket.loser_bracket.path,
               )
             }}
-          </div>
+          </Badge>
         </div>
       </template>
       <div v-if="isThirdPlaceMatch(bracket)" class="text-center">

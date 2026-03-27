@@ -202,6 +202,26 @@ const getWbFeedForSlot = (
   return undefined;
 };
 
+/**
+ * Get the feeding bracket for a given team slot (1 or 2), regardless of path.
+ * Used for text placeholders like "Winner R1M1" or "Loser WB R2M2".
+ */
+const getFeedForSlot = (
+  bracket: Bracket,
+  slot: 1 | 2,
+): FeedingBracket | undefined => {
+  const feeds = bracket.feeding_brackets || [];
+  if (feeds.length === 0) return undefined;
+
+  if (feeds.length >= 2) return feeds[slot - 1];
+
+  // Single feed: assign to whichever slot is empty
+  if (slot === 1 && !bracket.team_1) return feeds[0];
+  if (slot === 2 && bracket.team_1) return feeds[0];
+
+  return undefined;
+};
+
 const isShowingDestinations = (bracket: Bracket) => {
   return bracket.path === "WB" && !bracket.match;
 };
@@ -396,17 +416,12 @@ const isLbFeedingToWb = (bracket: Bracket) => {
                         }}</span
                       >
                     </span>
-                    <!-- LB: show only WB feeds in Team 1/2 -->
-                    <template
-                      v-if="
-                        bracket.path === 'LB' &&
-                        getWbFeedForSlot(bracket, 1)
-                      "
-                    >
+                    <!-- Show where this team will come from -->
+                    <template v-if="getFeedForSlot(bracket, 1)">
                       {{
                         formatFeedingText(
                           bracket,
-                          getWbFeedForSlot(bracket, 1),
+                          getFeedForSlot(bracket, 1),
                         )
                       }}
                     </template>
@@ -459,17 +474,12 @@ const isLbFeedingToWb = (bracket: Bracket) => {
                         }}</span
                       >
                     </span>
-                    <!-- LB: show only WB feeds in Team 1/2 -->
-                    <template
-                      v-if="
-                        bracket.path === 'LB' &&
-                        getWbFeedForSlot(bracket, 2)
-                      "
-                    >
+                    <!-- Show where this team will come from -->
+                    <template v-if="getFeedForSlot(bracket, 2)">
                       {{
                         formatFeedingText(
                           bracket,
-                          getWbFeedForSlot(bracket, 2),
+                          getFeedForSlot(bracket, 2),
                         )
                       }}
                     </template>

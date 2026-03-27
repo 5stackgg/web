@@ -179,7 +179,8 @@ const getSortedFeeds = (bracket: Bracket): FeedingBracket[] => {
     const aLoser = a.loser_parent_bracket_id === bracket.id ? 0 : 1;
     const bLoser = b.loser_parent_bracket_id === bracket.id ? 0 : 1;
     if (aLoser !== bLoser) return aLoser - bLoser;
-    if ((a.round ?? 0) !== (b.round ?? 0)) return (a.round ?? 0) - (b.round ?? 0);
+    if ((a.round ?? 0) !== (b.round ?? 0))
+      return (a.round ?? 0) - (b.round ?? 0);
     return (a.match_number ?? 0) - (b.match_number ?? 0);
   });
 };
@@ -199,7 +200,10 @@ const formatRoundRef = (
 ) => {
   const pathPrefix = path === "WB" ? "wb_" : path === "LB" ? "lb_" : "";
   return match_number
-    ? t(`tournament.match.${pathPrefix}round_match_ref`, { round, match: match_number })
+    ? t(`tournament.match.${pathPrefix}round_match_ref`, {
+        round,
+        match: match_number,
+      })
     : t(`tournament.match.${pathPrefix}round_ref`, { round });
 };
 
@@ -283,7 +287,11 @@ const getFeedForDisplayRow = (
   const hintFeeds = sorted.filter(needsHint);
   const noHintFeeds = sorted.filter((f) => !needsHint(f));
 
-  if (sorted.length === 2 && hintFeeds.length === 1 && noHintFeeds.length === 1) {
+  if (
+    sorted.length === 2 &&
+    hintFeeds.length === 1 &&
+    noHintFeeds.length === 1
+  ) {
     return row === 1 ? noHintFeeds[0] : hintFeeds[0];
   }
 
@@ -318,7 +326,12 @@ const shouldShowCrossBracketDestination = (
 <template>
   <template v-for="bracket in props.brackets" :key="bracket.id">
     <div
-      v-if="!bracket.bye || bracket.team_1 || bracket.team_2 || bracket.feeding_brackets?.length"
+      v-if="
+        !bracket.bye ||
+        bracket.team_1 ||
+        bracket.team_2 ||
+        bracket.feeding_brackets?.length
+      "
       :id="`bracket-${bracket.id}`"
       class="tournament-match cursor-pointer border-2 rounded-lg p-1 transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/20 bg-gray-800/50 backdrop-blur-sm relative flex flex-col gap-2"
       :class="{
@@ -340,7 +353,14 @@ const shouldShowCrossBracketDestination = (
             $t("tournament.match.round_match", {
               round: props.round,
               match: bracket.match_number,
-              prefix: bracket.path === "LB" ? "LB" : (bracket.path === "WB" && stage.type === e_tournament_stage_types_enum.DoubleElimination ? "WB" : ""),
+              prefix:
+                bracket.path === "LB"
+                  ? "LB"
+                  : bracket.path === "WB" &&
+                      stage.type ===
+                        e_tournament_stage_types_enum.DoubleElimination
+                    ? "WB"
+                    : "",
             })
           }}
           <span

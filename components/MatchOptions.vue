@@ -892,7 +892,7 @@ import { Card } from "~/components/ui/card";
                 </FormField>
 
                 <FormField
-                  v-if="canSetMatchCancellation"
+                  v-if="canSetMatchCancellation && !hideMatchMode"
                   v-slot="{ componentField }"
                   name="match_mode"
                 >
@@ -1091,6 +1091,11 @@ export default {
       default: false,
     },
     hideBestOf: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
+    hideMatchMode: {
       required: false,
       type: Boolean,
       default: false,

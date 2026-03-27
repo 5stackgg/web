@@ -612,6 +612,40 @@ import { $ } from "~/generated/zeus";
                   <FormMessage />
                 </FormItem>
               </FormField>
+
+              <FormField
+                v-if="canSetMatchMode"
+                v-slot="{ componentField }"
+                name="match_mode"
+              >
+                <FormItem>
+                  <FormLabel class="text-lg font-semibold">{{
+                    $t("match.options.advanced.match_mode.label")
+                  }}</FormLabel>
+                  <FormDescription>{{
+                    $t("match.options.advanced.match_mode.description")
+                  }}</FormDescription>
+                  <Select v-bind="componentField">
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem
+                          :value="mode.value"
+                          v-for="mode in matchModeSettings"
+                          :key="mode.value"
+                        >
+                          {{ mode.display }}
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
             </div>
           </Card>
         </div>
@@ -635,6 +669,7 @@ import {
   e_timeout_settings_enum,
   e_check_in_settings_enum,
   e_player_roles_enum,
+  e_match_mode_enum,
 } from "~/generated/zeus";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
@@ -729,6 +764,9 @@ export default {
               tech_timeout_setting: z
                 .string()
                 .default(e_timeout_settings_enum.Admin),
+              match_mode: z
+                .string()
+                .default(e_match_mode_enum.auto),
             })
             .refine(
               (data) => parseInt(data.min_teams) <= parseInt(data.max_teams),
@@ -797,6 +835,10 @@ export default {
                 stage.options?.tech_timeout_setting ??
                 this.tournament?.options?.tech_timeout_setting ??
                 e_timeout_settings_enum.Admin,
+              match_mode:
+                stage.options?.match_mode ??
+                this.tournament?.options?.match_mode ??
+                e_match_mode_enum.auto,
             });
           }
         } else {
@@ -978,6 +1020,23 @@ export default {
         },
       ];
     },
+    canSetMatchMode() {
+      return useAuthStore().isRoleAbove(
+        e_player_roles_enum.tournament_organizer,
+      );
+    },
+    matchModeSettings(): EnumSetting[] {
+      return [
+        {
+          display: this.$t("match.options.advanced.match_mode.options.auto"),
+          value: e_match_mode_enum.auto,
+        },
+        {
+          display: this.$t("match.options.advanced.match_mode.options.admin"),
+          value: e_match_mode_enum.admin,
+        },
+      ];
+    },
   },
   methods: {
     setDefaultAdvancedSettings() {
@@ -992,6 +1051,8 @@ export default {
         ready_setting: options.ready_setting ?? e_ready_settings_enum.Players,
         tech_timeout_setting:
           options.tech_timeout_setting ?? e_timeout_settings_enum.Admin,
+        match_mode:
+          options.match_mode ?? e_match_mode_enum.auto,
       });
     },
     setDefaultRegion() {
@@ -1016,7 +1077,8 @@ export default {
         form.region_veto !== tournamentOptions.region_veto ||
         form.check_in_setting !== tournamentOptions.check_in_setting ||
         form.ready_setting !== tournamentOptions.ready_setting ||
-        form.tech_timeout_setting !== tournamentOptions.tech_timeout_setting
+        form.tech_timeout_setting !== tournamentOptions.tech_timeout_setting ||
+        form.match_mode !== (tournamentOptions.match_mode ?? e_match_mode_enum.auto)
       ) {
         return true;
       }
@@ -1049,6 +1111,7 @@ export default {
           check_in_setting: form.check_in_setting,
           ready_setting: form.ready_setting,
           tech_timeout_setting: form.tech_timeout_setting,
+          match_mode: form.match_mode,
           // Keep tournament defaults for all other fields
           mr: tournamentOptions.mr,
           type: tournamentOptions.type,
@@ -1080,6 +1143,7 @@ export default {
                   "tech_timeout_setting",
                   "e_timeout_settings_enum!",
                 ),
+                match_mode: $("match_mode", "e_match_mode_enum!"),
                 mr: $("mr", "Int!"),
                 type: $("type", "e_match_types_enum!"),
                 best_of: $("best_of", "Int!"),
@@ -1115,6 +1179,7 @@ export default {
           check_in_setting: form.check_in_setting,
           ready_setting: form.ready_setting,
           tech_timeout_setting: form.tech_timeout_setting,
+          match_mode: form.match_mode,
           // Keep tournament defaults for all other fields
           mr: tournamentOptions.mr,
           type: tournamentOptions.type,
@@ -1143,6 +1208,7 @@ export default {
                   "tech_timeout_setting",
                   "e_timeout_settings_enum!",
                 ),
+                match_mode: $("match_mode", "e_match_mode_enum!"),
                 mr: $("mr", "Int!"),
                 type: $("type", "e_match_types_enum!"),
                 best_of: $("best_of", "Int!"),

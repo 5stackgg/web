@@ -175,7 +175,9 @@ export default {
     },
     async saveSchedule() {
       if (!this.bracket || !this.startDate || !this.startTime) return;
-      const scheduled_at = new Date(`${this.startDate} ${this.startTime}`).toISOString();
+      const scheduled_at = new Date(
+        `${this.startDate} ${this.startTime}`,
+      ).toISOString();
       if (new Date(scheduled_at) <= new Date()) {
         toast({
           title: this.$t("tournament.bracket.past_time_error"),

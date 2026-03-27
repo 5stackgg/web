@@ -337,21 +337,22 @@ const isSectionExpanded = (section: string) => {
           <FiveStackToolTip>
             <template #trigger>
               <div class="cursor-pointer">
-                <HardDrive
-                  class="h-4 w-4"
-                  :class="diskColorClass"
-                />
+                <HardDrive class="h-4 w-4" :class="diskColorClass" />
               </div>
             </template>
             <div class="space-y-2">
               <div class="font-medium">{{ $t("game_server.disk_usage") }}</div>
               <div class="flex items-center justify-between gap-4 text-xs">
-                <span class="text-muted-foreground">{{ $t("game_server.disk_used") }}:</span>
-                <span>{{ gameServerNode.disk_used_percent ?? '-' }}%</span>
+                <span class="text-muted-foreground"
+                  >{{ $t("game_server.disk_used") }}:</span
+                >
+                <span>{{ gameServerNode.disk_used_percent ?? "-" }}%</span>
               </div>
               <div class="flex items-center justify-between gap-4 text-xs">
-                <span class="text-muted-foreground">{{ $t("game_server.disk_available") }}:</span>
-                <span>{{ gameServerNode.disk_available_gb ?? '-' }} GB</span>
+                <span class="text-muted-foreground"
+                  >{{ $t("game_server.disk_available") }}:</span
+                >
+                <span>{{ gameServerNode.disk_available_gb ?? "-" }} GB</span>
               </div>
             </div>
           </FiveStackToolTip>
@@ -1251,11 +1252,11 @@ const isSectionExpanded = (section: string) => {
                     <span class="text-muted-foreground">GPU</span>
                   </div>
                   <div class="flex items-center gap-1">
-                    <HardDrive
-                      class="h-3 w-3"
-                      :class="diskColorClass"
-                    />
-                    <span class="text-muted-foreground">Disk: {{ gameServerNode.disk_used_percent ?? '-' }}%</span>
+                    <HardDrive class="h-3 w-3" :class="diskColorClass" />
+                    <span class="text-muted-foreground"
+                      >Disk:
+                      {{ gameServerNode.disk_used_percent ?? "-" }}%</span
+                    >
                   </div>
                 </div>
               </div>
@@ -2262,8 +2263,12 @@ export default defineComponent({
     diskColorClass() {
       const percent = this.gameServerNode.disk_used_percent;
       if (percent == null) return "text-muted-foreground";
-      const criticalRaw = parseInt(this.settings.find((s) => s.name === "disk_critical_percent")?.value);
-      const warningRaw = parseInt(this.settings.find((s) => s.name === "disk_warning_percent")?.value);
+      const criticalRaw = parseInt(
+        this.settings.find((s) => s.name === "disk_critical_percent")?.value,
+      );
+      const warningRaw = parseInt(
+        this.settings.find((s) => s.name === "disk_warning_percent")?.value,
+      );
       const critical = Number.isNaN(criticalRaw) ? 90 : criticalRaw;
       const warning = Number.isNaN(warningRaw) ? 75 : warningRaw;
       if (critical > 0 && percent >= critical) return "text-red-500";

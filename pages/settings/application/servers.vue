@@ -95,15 +95,10 @@ definePageMeta({
             </FormItem>
           </FormField>
 
-          <FormField
-            v-slot="{ componentField }"
-            name="disk_warning_percent"
-          >
+          <FormField v-slot="{ componentField }" name="disk_warning_percent">
             <FormItem>
               <FormLabel>{{
-                $t(
-                  "pages.settings.application.servers.disk_warning_percent",
-                )
+                $t("pages.settings.application.servers.disk_warning_percent")
               }}</FormLabel>
               <FormDescription>{{
                 $t(
@@ -115,15 +110,10 @@ definePageMeta({
             </FormItem>
           </FormField>
 
-          <FormField
-            v-slot="{ componentField }"
-            name="disk_critical_percent"
-          >
+          <FormField v-slot="{ componentField }" name="disk_critical_percent">
             <FormItem>
               <FormLabel>{{
-                $t(
-                  "pages.settings.application.servers.disk_critical_percent",
-                )
+                $t("pages.settings.application.servers.disk_critical_percent")
               }}</FormLabel>
               <FormDescription>{{
                 $t(
@@ -205,11 +195,13 @@ export default {
                 },
                 {
                   name: "reserved_disk_space_fresh_gb",
-                  value: this.form.values.reserved_disk_space_fresh_gb?.toString(),
+                  value:
+                    this.form.values.reserved_disk_space_fresh_gb?.toString(),
                 },
                 {
                   name: "reserved_disk_space_existing_gb",
-                  value: this.form.values.reserved_disk_space_existing_gb?.toString(),
+                  value:
+                    this.form.values.reserved_disk_space_existing_gb?.toString(),
                 },
                 {
                   name: "disk_warning_percent",

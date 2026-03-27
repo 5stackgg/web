@@ -166,71 +166,172 @@ const handleClick = (event: MouseEvent, bracket: Bracket) => {
   }
 };
 
-const getFeedingBracketsByPath = (bracket: Bracket, path: "WB" | "LB") => {
-  return (bracket.feeding_brackets || []).filter((b) => b.path === path);
+/**
+ * Get the feeding bracket for a given team slot (1 or 2).
+ * Sorts feeds to match the DB slot assignment order from
+ * assign_team_to_bracket_slot: loser drops first, then winner
+ * feeds, then by round and match_number within each group.
+ */
+const getSortedFeeds = (bracket: Bracket): FeedingBracket[] => {
+  const feeds = bracket.feeding_brackets || [];
+  if (feeds.length === 0) return [];
+  return [...feeds].sort((a, b) => {
+    const aLoser = a.loser_parent_bracket_id === bracket.id ? 0 : 1;
+    const bLoser = b.loser_parent_bracket_id === bracket.id ? 0 : 1;
+    if (aLoser !== bLoser) return aLoser - bLoser;
+    if ((a.round ?? 0) !== (b.round ?? 0))
+      return (a.round ?? 0) - (b.round ?? 0);
+    return (a.match_number ?? 0) - (b.match_number ?? 0);
+  });
 };
 
-const getFeedingBracketAt = (
+const getFeedForSlot = (
   bracket: Bracket,
-  path: "WB" | "LB",
-  index: number,
+  slot: 1 | 2,
+): FeedingBracket | undefined => {
+  const sorted = getSortedFeeds(bracket);
+  return sorted[slot - 1];
+};
+
+const formatRoundRef = (
+  round: number,
+  match_number?: number,
+  path?: string,
 ) => {
-  return getFeedingBracketsByPath(bracket, path)[index];
+  const pathPrefix = path === "WB" ? "wb_" : path === "LB" ? "lb_" : "";
+  return match_number
+    ? t(`tournament.match.${pathPrefix}round_match_ref`, {
+        round,
+        match: match_number,
+      })
+    : t(`tournament.match.${pathPrefix}round_ref`, { round });
 };
 
-const isShowingDestinations = (bracket: Bracket) => {
-  return bracket.path === "WB" && !bracket.match;
-};
-
-const getBracketLabel = (path?: string) => {
-  if (path === "WB") return t("tournament.match.upper_bracket");
-  if (path === "LB") return t("tournament.match.lower_bracket");
-  return "";
-};
-
-const getFeedPrefix = (currentPath?: string, feedingPath?: string) => {
-  if (!currentPath || !feedingPath) return t("tournament.match.winner_of");
-  return currentPath === feedingPath
-    ? t("tournament.match.winner_of")
-    : t("tournament.match.loser_of");
-};
-
+/** Same pattern as formatDestinationText: "Winner → …" / "Loser → …" + full round ref. */
 const formatFeedingText = (bracket: Bracket, feeding?: FeedingBracket) => {
   if (!feeding) return "";
-  const prefix = getFeedPrefix(bracket.path, feeding.path);
-  const roundMatch = feeding.match_number
-    ? t("tournament.match.round_match_ref", {
-        round: feeding.round,
-        match: feeding.match_number,
-      })
-    : t("tournament.match.round_ref", { round: feeding.round });
-  return `${prefix} ${roundMatch}`.trim();
+  const isLoserDrop = feeding.loser_parent_bracket_id === bracket.id;
+  const prefix = isLoserDrop
+    ? t("tournament.match.loser_arrow")
+    : t("tournament.match.winner_arrow");
+  const roundRef = formatRoundRef(
+    feeding.round,
+    feeding.match_number,
+    feeding.path,
+  );
+  return `${prefix} ${roundRef}`.trim();
 };
 
 const formatDestinationText = (
   type: "winner" | "loser",
-  dest?: { round: number; match_number?: number },
+  dest?: { round: number; match_number?: number; path?: string },
+  path?: string,
 ) => {
   if (!dest) return "";
   const prefix =
     type === "winner"
       ? t("tournament.match.winner_arrow")
       : t("tournament.match.loser_arrow");
-  if (dest.match_number) {
-    return `${prefix} ${t("tournament.match.round_match_ref", { round: dest.round, match: dest.match_number })}`;
-  }
-  return `${prefix} ${t("tournament.match.round_ref", { round: dest.round })}`;
+  const roundMatch = formatRoundRef(dest.round, dest.match_number, path);
+  return `${prefix} ${roundMatch}`;
 };
 
 const isLbFeedingToWb = (bracket: Bracket) => {
   return bracket.path === "LB" && bracket.parent_bracket?.path === "WB";
+};
+
+/**
+ * Bracket viewers render one group at a time; SVG lines only connect matches in
+ * the same DOM. When source and target differ by group (e.g. WB → LB), show a
+ * hint instead of duplicating what a line already conveys.
+ */
+const isSameViewerGroup = (
+  a: number | undefined,
+  b: number | undefined,
+): boolean => a === b;
+
+/**
+ * Show feed-in text only when the feeder is not in the same viewer as this
+ * match (no drawn connector), or the graph edge is missing from feed metadata.
+ * Swiss layout does not draw connector lines, so always show when a feed exists.
+ */
+const shouldShowFeedInHint = (
+  bracket: Bracket,
+  feeding: FeedingBracket | undefined,
+): boolean => {
+  if (!feeding) return false;
+  if (props.stage.type === e_tournament_stage_types_enum.Swiss) {
+    return true;
+  }
+  const hasGraphEdge =
+    feeding.parent_bracket_id === bracket.id ||
+    feeding.loser_parent_bracket_id === bracket.id;
+  if (!hasGraphEdge) return true;
+  return !isSameViewerGroup(feeding.group, bracket.group);
+};
+
+/**
+ * Map sorted feeds to top/bottom rows. Top = same-view / incoming line; bottom
+ * = cross-view amber hint when only one feed needs that hint. If two feeds and
+ * exactly one needs a cross-view label, put the same-view feed on top and the
+ * hint on the bottom.
+ */
+const getFeedForDisplayRow = (
+  bracket: Bracket,
+  row: 1 | 2,
+): FeedingBracket | undefined => {
+  const sorted = getSortedFeeds(bracket);
+  if (sorted.length === 0) return undefined;
+
+  const needsHint = (f: FeedingBracket) => shouldShowFeedInHint(bracket, f);
+  const hintFeeds = sorted.filter(needsHint);
+  const noHintFeeds = sorted.filter((f) => !needsHint(f));
+
+  if (
+    sorted.length === 2 &&
+    hintFeeds.length === 1 &&
+    noHintFeeds.length === 1
+  ) {
+    return row === 1 ? noHintFeeds[0] : hintFeeds[0];
+  }
+
+  if (sorted.length === 1) {
+    if (needsHint(sorted[0])) {
+      return row === 2 ? sorted[0] : undefined;
+    }
+    return row === 1 ? sorted[0] : undefined;
+  }
+
+  return sorted[row - 1];
+};
+
+const getWbFeedForDisplayRow = (
+  bracket: Bracket,
+  row: 1 | 2,
+): FeedingBracket | undefined => {
+  const feed = getFeedForDisplayRow(bracket, row);
+  if (feed && feed.path === "WB") return feed;
+  return undefined;
+};
+
+const shouldShowCrossBracketDestination = (
+  bracket: Bracket,
+  dest?: { id?: string; group?: number },
+): boolean => {
+  if (!dest?.id) return false;
+  return !isSameViewerGroup(dest.group, bracket.group);
 };
 </script>
 
 <template>
   <template v-for="bracket in props.brackets" :key="bracket.id">
     <div
-      v-if="!(bracket.bye && !bracket.team_1 && !bracket.team_2)"
+      v-if="
+        !bracket.bye ||
+        bracket.team_1 ||
+        bracket.team_2 ||
+        bracket.feeding_brackets?.length
+      "
       :id="`bracket-${bracket.id}`"
       class="tournament-match cursor-pointer border-2 rounded-lg p-1 transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/20 bg-gray-800/50 backdrop-blur-sm relative flex flex-col gap-2"
       :class="{
@@ -252,7 +353,14 @@ const isLbFeedingToWb = (bracket: Bracket) => {
             $t("tournament.match.round_match", {
               round: props.round,
               match: bracket.match_number,
-              prefix: bracket.path === "LB" ? "Losers" : "",
+              prefix:
+                bracket.path === "LB"
+                  ? "LB"
+                  : bracket.path === "WB" &&
+                      stage.type ===
+                        e_tournament_stage_types_enum.DoubleElimination
+                    ? "WB"
+                    : "",
             })
           }}
           <span
@@ -288,16 +396,30 @@ const isLbFeedingToWb = (bracket: Bracket) => {
       <!-- Team Display -->
       <div class="flex flex-col gap-2">
         <template v-if="bracket.bye">
-          <!-- Bye round: show only the team that exists -->
-          <div v-if="bracket.team_1 || bracket.team_2" class="items-center">
-            <div class="bg-gray-600 text-gray-300 rounded py-1 px-4">
+          <!-- Bye round: show both slots for consistent height -->
+          <div class="items-center">
+            <div class="bg-gray-600 text-gray-300 rounded py-1 px-4 min-h-8">
               <span class="flex items-center gap-2">
                 <span
-                  v-if="bracket.team_1_seed || bracket.team_2_seed"
+                  v-if="bracket.team_1_seed"
                   class="text-xs text-gray-200/80 bg-gray-700/70 border border-gray-800 rounded px-1.5 py-0.5"
                 >
-                  #{{ bracket.team_1_seed || bracket.team_2_seed }}
+                  #{{ bracket.team_1_seed }}
                 </span>
+                {{ getTeamName(bracket.team_1) }}
+              </span>
+            </div>
+          </div>
+          <div class="items-center">
+            <div class="bg-gray-600 text-gray-300 rounded py-1 px-4 min-h-8">
+              <span class="flex items-center gap-2">
+                <span
+                  v-if="bracket.team_2_seed"
+                  class="text-xs text-gray-200/80 bg-gray-700/70 border border-gray-800 rounded px-1.5 py-0.5"
+                >
+                  #{{ bracket.team_2_seed }}
+                </span>
+                {{ getTeamName(bracket.team_2) }}
               </span>
             </div>
           </div>
@@ -328,36 +450,42 @@ const isLbFeedingToWb = (bracket: Bracket) => {
                   >
                     #{{ bracket.team_1_seed }}
                   </span>
-                  <span
-                    v-else-if="
-                      bracket.path !== 'WB' &&
-                      (getFeedingBracketAt(bracket, 'WB', 0)?.team_1_seed ||
-                        getFeedingBracketAt(bracket, 'WB', 0)?.team_2_seed)
-                    "
-                    class="text-xs text-gray-200/70 bg-gray-700/60 border border-gray-800 rounded px-1.5 py-0.5"
-                  >
-                    #{{
-                      getFeedingBracketAt(bracket, "WB", 0)?.team_1_seed || "?"
-                    }}<span
-                      v-if="getFeedingBracketAt(bracket, 'WB', 0)?.team_2_seed"
-                      >/{{
-                        getFeedingBracketAt(bracket, "WB", 0)?.team_2_seed
-                      }}</span
+                  <template v-if="!bracket.team_1">
+                    <span
+                      v-if="
+                        bracket.path !== 'WB' &&
+                        (getWbFeedForDisplayRow(bracket, 1)?.team_1_seed ||
+                          getWbFeedForDisplayRow(bracket, 1)?.team_2_seed)
+                      "
+                      class="text-xs text-gray-200/70 bg-gray-700/60 border border-gray-800 rounded px-1.5 py-0.5"
                     >
-                  </span>
-                  <!-- LB: show only WB feeds in Team 1/2 -->
-                  <template
-                    v-if="
-                      bracket.path === 'LB' &&
-                      getFeedingBracketAt(bracket, 'WB', 0)
-                    "
-                  >
-                    {{
-                      formatFeedingText(
-                        bracket,
-                        getFeedingBracketAt(bracket, "WB", 0),
-                      )
-                    }}
+                      #{{
+                        getWbFeedForDisplayRow(bracket, 1)?.team_1_seed || "?"
+                      }}<span
+                        v-if="getWbFeedForDisplayRow(bracket, 1)?.team_2_seed"
+                        >/{{
+                          getWbFeedForDisplayRow(bracket, 1)?.team_2_seed
+                        }}</span
+                      >
+                    </span>
+                    <!-- Cross-view feed only (no connector line in this bracket column) -->
+                    <Badge
+                      v-if="
+                        shouldShowFeedInHint(
+                          bracket,
+                          getFeedForDisplayRow(bracket, 1),
+                        )
+                      "
+                      variant="outline"
+                      class="min-w-0 shrink border-amber-500/50 bg-amber-950/35 text-amber-200 font-normal px-2.5 py-1"
+                    >
+                      {{
+                        formatFeedingText(
+                          bracket,
+                          getFeedForDisplayRow(bracket, 1),
+                        )
+                      }}
+                    </Badge>
                   </template>
                   {{ getTeamName(bracket.team_1) }}
                 </span>
@@ -389,46 +517,41 @@ const isLbFeedingToWb = (bracket: Bracket) => {
                   >
                     #{{ bracket.team_2_seed }}
                   </span>
-                  <span
-                    v-else-if="
-                      bracket.path === 'LB' &&
-                      (getFeedingBracketAt(bracket, 'WB', 1)?.team_1_seed ||
-                        getFeedingBracketAt(bracket, 'WB', 1)?.team_2_seed)
-                    "
-                    class="text-xs text-gray-200/70 bg-gray-700/60 border border-gray-800 rounded px-1.5 py-0.5"
-                  >
-                    #{{
-                      getFeedingBracketAt(bracket, "WB", 1)?.team_1_seed || "?"
-                    }}<span
-                      v-if="getFeedingBracketAt(bracket, 'WB', 1)?.team_2_seed"
-                      >/{{
-                        getFeedingBracketAt(bracket, "WB", 1)?.team_2_seed
-                      }}</span
+                  <template v-if="!bracket.team_2">
+                    <span
+                      v-if="
+                        bracket.path === 'LB' &&
+                        (getWbFeedForDisplayRow(bracket, 2)?.team_1_seed ||
+                          getWbFeedForDisplayRow(bracket, 2)?.team_2_seed)
+                      "
+                      class="text-xs text-gray-200/70 bg-gray-700/60 border border-gray-800 rounded px-1.5 py-0.5"
                     >
-                  </span>
-                  <!-- WB: show where loser goes -->
-                  <template
-                    v-if="bracket.path === 'WB' && bracket.loser_bracket"
-                  >
-                    <span class="text-red-400">
-                      {{
-                        formatDestinationText("loser", bracket.loser_bracket)
-                      }}
+                      #{{
+                        getWbFeedForDisplayRow(bracket, 2)?.team_1_seed || "?"
+                      }}<span
+                        v-if="getWbFeedForDisplayRow(bracket, 2)?.team_2_seed"
+                        >/{{
+                          getWbFeedForDisplayRow(bracket, 2)?.team_2_seed
+                        }}</span
+                      >
                     </span>
-                  </template>
-                  <!-- LB: show only WB feeds in Team 1/2 -->
-                  <template
-                    v-else-if="
-                      bracket.path === 'LB' &&
-                      getFeedingBracketAt(bracket, 'WB', 1)
-                    "
-                  >
-                    {{
-                      formatFeedingText(
-                        bracket,
-                        getFeedingBracketAt(bracket, "WB", 1),
-                      )
-                    }}
+                    <Badge
+                      v-if="
+                        shouldShowFeedInHint(
+                          bracket,
+                          getFeedForDisplayRow(bracket, 2),
+                        )
+                      "
+                      variant="outline"
+                      class="min-w-0 shrink border-amber-500/50 bg-amber-950/35 text-amber-200 font-normal px-2.5 py-1"
+                    >
+                      {{
+                        formatFeedingText(
+                          bracket,
+                          getFeedForDisplayRow(bracket, 2),
+                        )
+                      }}
+                    </Badge>
                   </template>
                 </span>
                 {{ getTeamName(bracket.team_2) }}
@@ -441,52 +564,46 @@ const isLbFeedingToWb = (bracket: Bracket) => {
       <template
         v-if="stage.type === e_tournament_stage_types_enum.DoubleElimination"
       >
-        <div v-if="isLbFeedingToWb(bracket)" class="text-center">
-          <div class="text-xs text-green-400 font-medium">
-            <span class="inline-flex items-center gap-1">
-              <span>{{ $t("tournament.match.winner_bracket_arrow") }}</span>
-              <span v-if="bracket.parent_bracket?.match_number">
-                {{
-                  $t("tournament.match.round_match_ref", {
-                    round: bracket.parent_bracket.round,
-                    match: bracket.parent_bracket.match_number,
-                  })
-                }}
-              </span>
-              <span v-else>
-                {{
-                  $t("tournament.match.round_ref", {
-                    round: bracket.parent_bracket?.round,
-                  })
-                }}
-              </span>
-            </span>
-          </div>
+        <div
+          v-if="
+            isLbFeedingToWb(bracket) &&
+            shouldShowCrossBracketDestination(bracket, bracket.parent_bracket)
+          "
+          class="flex justify-center"
+        >
+          <Badge
+            variant="outline"
+            class="border-emerald-500/40 bg-emerald-950/25 text-emerald-300 font-normal"
+          >
+            {{
+              formatDestinationText(
+                "winner",
+                bracket.parent_bracket,
+                bracket.parent_bracket?.path,
+              )
+            }}
+          </Badge>
         </div>
         <div
-          v-if="bracket.loser_bracket && !isShowingDestinations(bracket)"
-          class="text-center"
+          v-if="
+            bracket.loser_bracket &&
+            !bracket.bye &&
+            shouldShowCrossBracketDestination(bracket, bracket.loser_bracket)
+          "
+          class="flex justify-center"
         >
-          <div class="text-xs text-red-400 font-medium">
-            <span class="inline-flex items-center gap-1">
-              <span>{{ $t("tournament.match.loser_arrow") }}</span>
-              <span v-if="bracket.loser_bracket.match_number">
-                {{
-                  $t("tournament.match.round_match_ref", {
-                    round: bracket.loser_bracket.round,
-                    match: bracket.loser_bracket.match_number,
-                  })
-                }}
-              </span>
-              <span v-else>
-                {{
-                  $t("tournament.match.round_ref", {
-                    round: bracket.loser_bracket.round,
-                  })
-                }}
-              </span>
-            </span>
-          </div>
+          <Badge
+            variant="outline"
+            class="border-red-500/45 bg-red-950/30 text-red-300 font-normal"
+          >
+            {{
+              formatDestinationText(
+                "loser",
+                bracket.loser_bracket,
+                bracket.loser_bracket.path,
+              )
+            }}
+          </Badge>
         </div>
       </template>
       <div v-if="isThirdPlaceMatch(bracket)" class="text-center">

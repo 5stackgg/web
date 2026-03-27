@@ -13,6 +13,9 @@ export interface Bracket {
     round: number;
     match_number?: number;
     path?: string;
+    group?: number;
+    parent_bracket_id?: string;
+    loser_parent_bracket_id?: string;
     team_1_seed?: number;
     team_2_seed?: number;
   }>;

@@ -120,7 +120,9 @@ import Empty from "~/components/ui/empty/Empty.vue";
                   size="sm"
                   variant="outline"
                   @click="dismissNotification(notification.id)"
-                  v-if="!notification.is_read && notification.deletable !== false"
+                  v-if="
+                    !notification.is_read && notification.deletable !== false
+                  "
                 >
                   {{ $t("layouts.notifications.dismiss") }}
                 </Button>
@@ -244,7 +246,10 @@ export default {
       await this.$apollo.mutate({
         mutation: generateMutation({
           update_notifications: [
-            { where: { is_read: { _eq: false }, deletable: { _neq: false } }, _set: { is_read: true } },
+            {
+              where: { is_read: { _eq: false }, deletable: { _neq: false } },
+              _set: { is_read: true },
+            },
             { __typename: true },
           ],
         }),

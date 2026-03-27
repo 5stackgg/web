@@ -313,16 +313,30 @@ const isLbFeedingToWb = (bracket: Bracket) => {
       <!-- Team Display -->
       <div class="flex flex-col gap-2">
         <template v-if="bracket.bye">
-          <!-- Bye round: show only the team that exists -->
-          <div v-if="bracket.team_1 || bracket.team_2" class="items-center">
-            <div class="bg-gray-600 text-gray-300 rounded py-1 px-4">
+          <!-- Bye round: show both slots for consistent height -->
+          <div class="items-center">
+            <div class="bg-gray-600 text-gray-300 rounded py-1 px-4 min-h-8">
               <span class="flex items-center gap-2">
                 <span
-                  v-if="bracket.team_1_seed || bracket.team_2_seed"
+                  v-if="bracket.team_1_seed"
                   class="text-xs text-gray-200/80 bg-gray-700/70 border border-gray-800 rounded px-1.5 py-0.5"
                 >
-                  #{{ bracket.team_1_seed || bracket.team_2_seed }}
+                  #{{ bracket.team_1_seed }}
                 </span>
+                {{ getTeamName(bracket.team_1) }}
+              </span>
+            </div>
+          </div>
+          <div class="items-center">
+            <div class="bg-gray-600 text-gray-300 rounded py-1 px-4 min-h-8">
+              <span class="flex items-center gap-2">
+                <span
+                  v-if="bracket.team_2_seed"
+                  class="text-xs text-gray-200/80 bg-gray-700/70 border border-gray-800 rounded px-1.5 py-0.5"
+                >
+                  #{{ bracket.team_2_seed }}
+                </span>
+                {{ getTeamName(bracket.team_2) }}
               </span>
             </div>
           </div>
@@ -461,7 +475,7 @@ const isLbFeedingToWb = (bracket: Bracket) => {
             }}
           </div>
         </div>
-        <div v-if="bracket.loser_bracket" class="text-center">
+        <div v-if="bracket.loser_bracket && !bracket.bye" class="text-center">
           <div class="text-xs text-red-400 font-medium">
             {{
               formatDestinationText(

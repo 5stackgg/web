@@ -168,9 +168,9 @@ const handleClick = (event: MouseEvent, bracket: Bracket) => {
 
 /**
  * Get the feeding bracket for a given team slot (1 or 2).
- * Uses DB relationships: feeds whose parent_bracket_id points here
- * are winner feeds, feeds whose loser_parent_bracket_id points here
- * are loser drops. Slot 1 gets the first feed, slot 2 gets the second.
+ * Sorts feeds to match the DB slot assignment order from
+ * assign_team_to_bracket_slot: loser drops first, then winner
+ * feeds, then by round and match_number within each group.
  */
 const getFeedForSlot = (
   bracket: Bracket,
@@ -178,7 +178,14 @@ const getFeedForSlot = (
 ): FeedingBracket | undefined => {
   const feeds = bracket.feeding_brackets || [];
   if (feeds.length === 0) return undefined;
-  return feeds[slot - 1];
+  const sorted = [...feeds].sort((a, b) => {
+    const aLoser = a.loser_parent_bracket_id === bracket.id ? 0 : 1;
+    const bLoser = b.loser_parent_bracket_id === bracket.id ? 0 : 1;
+    if (aLoser !== bLoser) return aLoser - bLoser;
+    if ((a.round ?? 0) !== (b.round ?? 0)) return (a.round ?? 0) - (b.round ?? 0);
+    return (a.match_number ?? 0) - (b.match_number ?? 0);
+  });
+  return sorted[slot - 1];
 };
 
 /**
@@ -228,7 +235,7 @@ const formatFeedingText = (bracket: Bracket, feeding?: FeedingBracket) => {
   const roundRef = formatRoundRefCompact(
     feeding.round,
     feeding.match_number,
-    isLoserDrop ? feeding.path : undefined,
+    feeding.path,
   );
   return `${prefix} ${roundRef}`.trim();
 };

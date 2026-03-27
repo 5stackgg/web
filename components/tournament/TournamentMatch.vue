@@ -195,31 +195,40 @@ const getFeedPrefix = (currentPath?: string, feedingPath?: string) => {
     : t("tournament.match.loser_of");
 };
 
+const formatRoundRef = (
+  round: number,
+  match_number?: number,
+  path?: string,
+) => {
+  const pathPrefix = path === "WB" ? "wb_" : path === "LB" ? "lb_" : "";
+  return match_number
+    ? t(`tournament.match.${pathPrefix}round_match_ref`, { round, match: match_number })
+    : t(`tournament.match.${pathPrefix}round_ref`, { round });
+};
+
 const formatFeedingText = (bracket: Bracket, feeding?: FeedingBracket) => {
   if (!feeding) return "";
   const prefix = getFeedPrefix(bracket.path, feeding.path);
-  const roundMatch = feeding.match_number
-    ? t("tournament.match.round_match_ref", {
-        round: feeding.round,
-        match: feeding.match_number,
-      })
-    : t("tournament.match.round_ref", { round: feeding.round });
+  const roundMatch = formatRoundRef(
+    feeding.round,
+    feeding.match_number,
+    feeding.path !== bracket.path ? feeding.path : undefined,
+  );
   return `${prefix} ${roundMatch}`.trim();
 };
 
 const formatDestinationText = (
   type: "winner" | "loser",
-  dest?: { round: number; match_number?: number },
+  dest?: { round: number; match_number?: number; path?: string },
+  path?: string,
 ) => {
   if (!dest) return "";
   const prefix =
     type === "winner"
       ? t("tournament.match.winner_arrow")
       : t("tournament.match.loser_arrow");
-  if (dest.match_number) {
-    return `${prefix} ${t("tournament.match.round_match_ref", { round: dest.round, match: dest.match_number })}`;
-  }
-  return `${prefix} ${t("tournament.match.round_ref", { round: dest.round })}`;
+  const roundMatch = formatRoundRef(dest.round, dest.match_number, path);
+  return `${prefix} ${roundMatch}`;
 };
 
 const isLbFeedingToWb = (bracket: Bracket) => {
@@ -406,16 +415,6 @@ const isLbFeedingToWb = (bracket: Bracket) => {
                       }}</span
                     >
                   </span>
-                  <!-- WB: show where loser goes -->
-                  <template
-                    v-if="bracket.path === 'WB' && bracket.loser_bracket"
-                  >
-                    <span class="text-red-400">
-                      {{
-                        formatDestinationText("loser", bracket.loser_bracket)
-                      }}
-                    </span>
-                  </template>
                   <!-- LB: show only WB feeds in Team 1/2 -->
                   <template
                     v-else-if="
@@ -443,49 +442,24 @@ const isLbFeedingToWb = (bracket: Bracket) => {
       >
         <div v-if="isLbFeedingToWb(bracket)" class="text-center">
           <div class="text-xs text-green-400 font-medium">
-            <span class="inline-flex items-center gap-1">
-              <span>{{ $t("tournament.match.winner_bracket_arrow") }}</span>
-              <span v-if="bracket.parent_bracket?.match_number">
-                {{
-                  $t("tournament.match.round_match_ref", {
-                    round: bracket.parent_bracket.round,
-                    match: bracket.parent_bracket.match_number,
-                  })
-                }}
-              </span>
-              <span v-else>
-                {{
-                  $t("tournament.match.round_ref", {
-                    round: bracket.parent_bracket?.round,
-                  })
-                }}
-              </span>
-            </span>
+            {{
+              formatDestinationText(
+                "winner",
+                bracket.parent_bracket,
+                bracket.parent_bracket?.path,
+              )
+            }}
           </div>
         </div>
-        <div
-          v-if="bracket.loser_bracket && !isShowingDestinations(bracket)"
-          class="text-center"
-        >
+        <div v-if="bracket.loser_bracket" class="text-center">
           <div class="text-xs text-red-400 font-medium">
-            <span class="inline-flex items-center gap-1">
-              <span>{{ $t("tournament.match.loser_arrow") }}</span>
-              <span v-if="bracket.loser_bracket.match_number">
-                {{
-                  $t("tournament.match.round_match_ref", {
-                    round: bracket.loser_bracket.round,
-                    match: bracket.loser_bracket.match_number,
-                  })
-                }}
-              </span>
-              <span v-else>
-                {{
-                  $t("tournament.match.round_ref", {
-                    round: bracket.loser_bracket.round,
-                  })
-                }}
-              </span>
-            </span>
+            {{
+              formatDestinationText(
+                "loser",
+                bracket.loser_bracket,
+                bracket.loser_bracket.path,
+              )
+            }}
           </div>
         </div>
       </template>

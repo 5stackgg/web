@@ -1253,6 +1253,10 @@
             "winner_bracket_arrow": "Winner Bracket \u2192",
             "round_match_ref": "Round {round}, Match {match}",
             "round_ref": "Round {round}",
+            "wb_round_match_ref": "WB Round {round}, Match {match}",
+            "wb_round_ref": "WB Round {round}",
+            "lb_round_match_ref": "LB Round {round}, Match {match}",
+            "lb_round_ref": "LB Round {round}",
             "third_place_decider": "3rd Place Decider"
         },
         "round_labels": {

@@ -261,7 +261,7 @@ const isLbFeedingToWb = (bracket: Bracket) => {
             $t("tournament.match.round_match", {
               round: props.round,
               match: bracket.match_number,
-              prefix: bracket.path === "LB" ? "Losers" : "",
+              prefix: bracket.path === "LB" ? "LB" : (bracket.path === "WB" && stage.type === e_tournament_stage_types_enum.DoubleElimination ? "WB" : ""),
             })
           }}
           <span
@@ -337,36 +337,38 @@ const isLbFeedingToWb = (bracket: Bracket) => {
                   >
                     #{{ bracket.team_1_seed }}
                   </span>
-                  <span
-                    v-else-if="
-                      bracket.path !== 'WB' &&
-                      (getFeedingBracketAt(bracket, 'WB', 0)?.team_1_seed ||
-                        getFeedingBracketAt(bracket, 'WB', 0)?.team_2_seed)
-                    "
-                    class="text-xs text-gray-200/70 bg-gray-700/60 border border-gray-800 rounded px-1.5 py-0.5"
-                  >
-                    #{{
-                      getFeedingBracketAt(bracket, "WB", 0)?.team_1_seed || "?"
-                    }}<span
-                      v-if="getFeedingBracketAt(bracket, 'WB', 0)?.team_2_seed"
-                      >/{{
-                        getFeedingBracketAt(bracket, "WB", 0)?.team_2_seed
-                      }}</span
+                  <template v-if="!bracket.team_1">
+                    <span
+                      v-if="
+                        bracket.path !== 'WB' &&
+                        (getFeedingBracketAt(bracket, 'WB', 0)?.team_1_seed ||
+                          getFeedingBracketAt(bracket, 'WB', 0)?.team_2_seed)
+                      "
+                      class="text-xs text-gray-200/70 bg-gray-700/60 border border-gray-800 rounded px-1.5 py-0.5"
                     >
-                  </span>
-                  <!-- LB: show only WB feeds in Team 1/2 -->
-                  <template
-                    v-if="
-                      bracket.path === 'LB' &&
-                      getFeedingBracketAt(bracket, 'WB', 0)
-                    "
-                  >
-                    {{
-                      formatFeedingText(
-                        bracket,
-                        getFeedingBracketAt(bracket, "WB", 0),
-                      )
-                    }}
+                      #{{
+                        getFeedingBracketAt(bracket, "WB", 0)?.team_1_seed || "?"
+                      }}<span
+                        v-if="getFeedingBracketAt(bracket, 'WB', 0)?.team_2_seed"
+                        >/{{
+                          getFeedingBracketAt(bracket, "WB", 0)?.team_2_seed
+                        }}</span
+                      >
+                    </span>
+                    <!-- LB: show only WB feeds in Team 1/2 -->
+                    <template
+                      v-if="
+                        bracket.path === 'LB' &&
+                        getFeedingBracketAt(bracket, 'WB', 0)
+                      "
+                    >
+                      {{
+                        formatFeedingText(
+                          bracket,
+                          getFeedingBracketAt(bracket, "WB", 0),
+                        )
+                      }}
+                    </template>
                   </template>
                   {{ getTeamName(bracket.team_1) }}
                 </span>
@@ -398,36 +400,38 @@ const isLbFeedingToWb = (bracket: Bracket) => {
                   >
                     #{{ bracket.team_2_seed }}
                   </span>
-                  <span
-                    v-else-if="
-                      bracket.path === 'LB' &&
-                      (getFeedingBracketAt(bracket, 'WB', 1)?.team_1_seed ||
-                        getFeedingBracketAt(bracket, 'WB', 1)?.team_2_seed)
-                    "
-                    class="text-xs text-gray-200/70 bg-gray-700/60 border border-gray-800 rounded px-1.5 py-0.5"
-                  >
-                    #{{
-                      getFeedingBracketAt(bracket, "WB", 1)?.team_1_seed || "?"
-                    }}<span
-                      v-if="getFeedingBracketAt(bracket, 'WB', 1)?.team_2_seed"
-                      >/{{
-                        getFeedingBracketAt(bracket, "WB", 1)?.team_2_seed
-                      }}</span
+                  <template v-if="!bracket.team_2">
+                    <span
+                      v-if="
+                        bracket.path === 'LB' &&
+                        (getFeedingBracketAt(bracket, 'WB', 1)?.team_1_seed ||
+                          getFeedingBracketAt(bracket, 'WB', 1)?.team_2_seed)
+                      "
+                      class="text-xs text-gray-200/70 bg-gray-700/60 border border-gray-800 rounded px-1.5 py-0.5"
                     >
-                  </span>
-                  <!-- LB: show only WB feeds in Team 1/2 -->
-                  <template
-                    v-else-if="
-                      bracket.path === 'LB' &&
-                      getFeedingBracketAt(bracket, 'WB', 1)
-                    "
-                  >
-                    {{
-                      formatFeedingText(
-                        bracket,
-                        getFeedingBracketAt(bracket, "WB", 1),
-                      )
-                    }}
+                      #{{
+                        getFeedingBracketAt(bracket, "WB", 1)?.team_1_seed || "?"
+                      }}<span
+                        v-if="getFeedingBracketAt(bracket, 'WB', 1)?.team_2_seed"
+                        >/{{
+                          getFeedingBracketAt(bracket, "WB", 1)?.team_2_seed
+                        }}</span
+                      >
+                    </span>
+                    <!-- LB: show only WB feeds in Team 1/2 -->
+                    <template
+                      v-if="
+                        bracket.path === 'LB' &&
+                        getFeedingBracketAt(bracket, 'WB', 1)
+                      "
+                    >
+                      {{
+                        formatFeedingText(
+                          bracket,
+                          getFeedingBracketAt(bracket, "WB", 1),
+                        )
+                      }}
+                    </template>
                   </template>
                 </span>
                 {{ getTeamName(bracket.team_2) }}

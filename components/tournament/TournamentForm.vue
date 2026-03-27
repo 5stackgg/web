@@ -14,7 +14,7 @@ import MatchOptions from "~/components/MatchOptions.vue";
 
 <template>
   <form @submit.prevent="updateCreateTournament" class="grid gap-4">
-    <MatchOptions :form="form" :force-veto="true" :hide-best-of="true">
+    <MatchOptions :form="form" :force-veto="true" :hide-best-of="true" :hide-match-mode="true">
       <FormField v-slot="{ componentField }" name="name">
         <FormItem>
           <FormLabel>{{ $t("tournament.form.name") }}</FormLabel>

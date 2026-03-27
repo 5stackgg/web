@@ -178,6 +178,30 @@ const getFeedingBracketAt = (
   return getFeedingBracketsByPath(bracket, path)[index];
 };
 
+/**
+ * Get the WB feeding bracket for a given team slot (1 or 2).
+ * In LB R1, there are two WB feeds mapped 1:1 to slots.
+ * In later LB rounds (R2, R4, etc.), there's only one WB feed.
+ * That single feed should appear in whichever slot doesn't already
+ * have a resolved team (the other slot is filled by an LB feed).
+ */
+const getWbFeedForSlot = (
+  bracket: Bracket,
+  slot: 1 | 2,
+): FeedingBracket | undefined => {
+  const wbFeeds = getFeedingBracketsByPath(bracket, "WB");
+  if (wbFeeds.length === 0) return undefined;
+
+  // Two or more WB feeds (e.g. LB R1): direct index mapping
+  if (wbFeeds.length >= 2) return wbFeeds[slot - 1];
+
+  // Single WB feed: show in slot 1 if team_1 is empty, slot 2 if team_1 is filled
+  if (slot === 1 && !bracket.team_1) return wbFeeds[0];
+  if (slot === 2 && bracket.team_1) return wbFeeds[0];
+
+  return undefined;
+};
+
 const isShowingDestinations = (bracket: Bracket) => {
   return bracket.path === "WB" && !bracket.match;
 };
@@ -358,17 +382,17 @@ const isLbFeedingToWb = (bracket: Bracket) => {
                     <span
                       v-if="
                         bracket.path !== 'WB' &&
-                        (getFeedingBracketAt(bracket, 'WB', 0)?.team_1_seed ||
-                          getFeedingBracketAt(bracket, 'WB', 0)?.team_2_seed)
+                        (getWbFeedForSlot(bracket, 1)?.team_1_seed ||
+                          getWbFeedForSlot(bracket, 1)?.team_2_seed)
                       "
                       class="text-xs text-gray-200/70 bg-gray-700/60 border border-gray-800 rounded px-1.5 py-0.5"
                     >
                       #{{
-                        getFeedingBracketAt(bracket, "WB", 0)?.team_1_seed || "?"
+                        getWbFeedForSlot(bracket, 1)?.team_1_seed || "?"
                       }}<span
-                        v-if="getFeedingBracketAt(bracket, 'WB', 0)?.team_2_seed"
+                        v-if="getWbFeedForSlot(bracket, 1)?.team_2_seed"
                         >/{{
-                          getFeedingBracketAt(bracket, "WB", 0)?.team_2_seed
+                          getWbFeedForSlot(bracket, 1)?.team_2_seed
                         }}</span
                       >
                     </span>
@@ -376,13 +400,13 @@ const isLbFeedingToWb = (bracket: Bracket) => {
                     <template
                       v-if="
                         bracket.path === 'LB' &&
-                        getFeedingBracketAt(bracket, 'WB', 0)
+                        getWbFeedForSlot(bracket, 1)
                       "
                     >
                       {{
                         formatFeedingText(
                           bracket,
-                          getFeedingBracketAt(bracket, "WB", 0),
+                          getWbFeedForSlot(bracket, 1),
                         )
                       }}
                     </template>
@@ -421,17 +445,17 @@ const isLbFeedingToWb = (bracket: Bracket) => {
                     <span
                       v-if="
                         bracket.path === 'LB' &&
-                        (getFeedingBracketAt(bracket, 'WB', 1)?.team_1_seed ||
-                          getFeedingBracketAt(bracket, 'WB', 1)?.team_2_seed)
+                        (getWbFeedForSlot(bracket, 2)?.team_1_seed ||
+                          getWbFeedForSlot(bracket, 2)?.team_2_seed)
                       "
                       class="text-xs text-gray-200/70 bg-gray-700/60 border border-gray-800 rounded px-1.5 py-0.5"
                     >
                       #{{
-                        getFeedingBracketAt(bracket, "WB", 1)?.team_1_seed || "?"
+                        getWbFeedForSlot(bracket, 2)?.team_1_seed || "?"
                       }}<span
-                        v-if="getFeedingBracketAt(bracket, 'WB', 1)?.team_2_seed"
+                        v-if="getWbFeedForSlot(bracket, 2)?.team_2_seed"
                         >/{{
-                          getFeedingBracketAt(bracket, "WB", 1)?.team_2_seed
+                          getWbFeedForSlot(bracket, 2)?.team_2_seed
                         }}</span
                       >
                     </span>
@@ -439,13 +463,13 @@ const isLbFeedingToWb = (bracket: Bracket) => {
                     <template
                       v-if="
                         bracket.path === 'LB' &&
-                        getFeedingBracketAt(bracket, 'WB', 1)
+                        getWbFeedForSlot(bracket, 2)
                       "
                     >
                       {{
                         formatFeedingText(
                           bracket,
-                          getFeedingBracketAt(bracket, "WB", 1),
+                          getWbFeedForSlot(bracket, 2),
                         )
                       }}
                     </template>

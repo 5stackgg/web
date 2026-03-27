@@ -844,6 +844,7 @@ export default {
         } else {
           this.form.setValues({
             groups: 1,
+            default_best_of: "1",
           });
           this.setDefaultAdvancedSettings();
         }

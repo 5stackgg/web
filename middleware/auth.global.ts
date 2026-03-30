@@ -71,7 +71,10 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
 
   if (hasMe && to.path === "/login") {
     if (to.query.redirect) {
-      return navigateTo(decodeURIComponent(to.query.redirect as string));
+      const redirectPath = decodeURIComponent(to.query.redirect as string);
+      if (redirectPath.startsWith("/") && !redirectPath.startsWith("//")) {
+        return navigateTo(redirectPath);
+      }
     }
     return navigateTo("/");
   }

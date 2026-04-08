@@ -535,6 +535,7 @@ export default {
     lobbyId: {
       immediate: true,
       handler() {
+        this.lobbyListener?.stop();
         this.lobby?.leave();
         this.lobby = socket.joinLobby(
           this.instance,

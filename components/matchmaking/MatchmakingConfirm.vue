@@ -80,6 +80,9 @@ export default {
         }
 
         if (!oldConfirmation) {
+          if (this.countdownInterval) {
+            clearInterval(this.countdownInterval);
+          }
           this.playMatchFoundSound();
           this.updateCountdown();
           this.countdownInterval = setInterval(this.updateCountdown, 1000);
@@ -122,7 +125,7 @@ export default {
     },
   },
   beforeUnmount() {
-    if (this.countdownInterval !== null) {
+    if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
     }
   },

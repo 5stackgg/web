@@ -4,6 +4,7 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { playerFields } from "~/graphql/playerFields";
+import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 
 type Notification = {
   id: string;
@@ -74,103 +75,114 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
   };
 
   function subscribeToAll(steam_id: string) {
-    getGraphqlClient()
-      .subscribe({
-        query: typedGql("subscription")({
-          team_invites: [
-            {
-              order_by: [{}, { created_at: order_by.desc }],
-              where: { steam_id: { _eq: $("steam_id", "bigint!") } },
-            },
-            {
-              id: true,
-              team: { id: true, name: true },
-              invited_by: { ...playerFields },
-              created_at: true,
-            },
-          ],
-        }),
-        variables: { steam_id },
-      })
-      .subscribe({
-        next: ({ data }) => {
-          team_invites.value = data.team_invites;
-        },
-      });
+    const { subscribe } = useSubscriptionManager();
 
-    getGraphqlClient()
-      .subscribe({
-        query: typedGql("subscription")({
-          tournament_team_invites: [
-            {
-              order_by: [{}, { created_at: order_by.desc }],
-              where: { steam_id: { _eq: $("steam_id", "bigint!") } },
-            },
-            {
-              id: true,
-              team: { id: true, name: true, tournament: { name: true } },
-              invited_by: { ...playerFields },
-              created_at: true,
-            },
-          ],
-        }),
-        variables: { steam_id },
-      })
-      .subscribe({
-        next: ({ data }) => {
-          tournament_team_invites.value = data.tournament_team_invites;
-        },
-      });
-
-    getGraphqlClient()
-      .subscribe({
-        query: typedGql("subscription")({
-          notifications: [
-            {
-              order_by: [{}, { created_at: order_by.desc }],
-              where: {
-                _and: [
-                  { deleted_at: { _is_null: true } },
-                  {
-                    _or: [
-                      { is_read: { _eq: false } },
-                      {
-                        _and: [
-                          { is_read: { _eq: true } },
-                          {
-                            created_at: {
-                              _gt: new Date(
-                                Date.now() - 7 * 24 * 60 * 60 * 1000,
-                              ),
-                            },
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                ],
+    subscribe(
+      "notifications:team_invites",
+      getGraphqlClient()
+        .subscribe({
+          query: typedGql("subscription")({
+            team_invites: [
+              {
+                order_by: [{}, { created_at: order_by.desc }],
+                where: { steam_id: { _eq: $("steam_id", "bigint!") } },
               },
-            },
-            {
-              id: true,
-              title: true,
-              message: true,
-              steam_id: true,
-              type: true,
-              entity_id: true,
-              is_read: true,
-              deletable: true,
-              created_at: true,
-              actions: true,
-            },
-          ],
+              {
+                id: true,
+                team: { id: true, name: true },
+                invited_by: { ...playerFields },
+                created_at: true,
+              },
+            ],
+          }),
+          variables: { steam_id },
+        })
+        .subscribe({
+          next: ({ data }) => {
+            team_invites.value = data.team_invites;
+          },
         }),
-      })
-      .subscribe({
-        next: ({ data }) => {
-          notifications.value = data.notifications;
-        },
-      });
+    );
+
+    subscribe(
+      "notifications:tournament_team_invites",
+      getGraphqlClient()
+        .subscribe({
+          query: typedGql("subscription")({
+            tournament_team_invites: [
+              {
+                order_by: [{}, { created_at: order_by.desc }],
+                where: { steam_id: { _eq: $("steam_id", "bigint!") } },
+              },
+              {
+                id: true,
+                team: { id: true, name: true, tournament: { name: true } },
+                invited_by: { ...playerFields },
+                created_at: true,
+              },
+            ],
+          }),
+          variables: { steam_id },
+        })
+        .subscribe({
+          next: ({ data }) => {
+            tournament_team_invites.value = data.tournament_team_invites;
+          },
+        }),
+    );
+
+    subscribe(
+      "notifications:notifications",
+      getGraphqlClient()
+        .subscribe({
+          query: typedGql("subscription")({
+            notifications: [
+              {
+                order_by: [{}, { created_at: order_by.desc }],
+                where: {
+                  _and: [
+                    { deleted_at: { _is_null: true } },
+                    {
+                      _or: [
+                        { is_read: { _eq: false } },
+                        {
+                          _and: [
+                            { is_read: { _eq: true } },
+                            {
+                              created_at: {
+                                _gt: new Date(
+                                  Date.now() - 7 * 24 * 60 * 60 * 1000,
+                                ),
+                              },
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                },
+              },
+              {
+                id: true,
+                title: true,
+                message: true,
+                steam_id: true,
+                type: true,
+                entity_id: true,
+                is_read: true,
+                deletable: true,
+                created_at: true,
+                actions: true,
+              },
+            ],
+          }),
+        })
+        .subscribe({
+          next: ({ data }) => {
+            notifications.value = data.notifications;
+          },
+        }),
+    );
   }
 
   watch(
@@ -178,6 +190,11 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     (me) => {
       if (me) {
         subscribeToAll(me.steam_id);
+      } else {
+        const { unsubscribe } = useSubscriptionManager();
+        unsubscribe("notifications:team_invites");
+        unsubscribe("notifications:tournament_team_invites");
+        unsubscribe("notifications:notifications");
       }
     },
     { immediate: true },

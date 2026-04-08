@@ -1,5 +1,6 @@
 import { ref, computed } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
+import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import {
   $,
@@ -51,14 +52,18 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       }),
     });
 
-    subscription.subscribe({
-      next: ({ data }) => {
-        liveMatchesCount.value = data?.matches_aggregate?.aggregate?.count || 0;
-      },
-      error: (error) => {
-        console.error("Error in live matches subscription:", error);
-      },
-    });
+    const { subscribe } = useSubscriptionManager();
+    subscribe(
+      "matchLobby:liveMatches",
+      subscription.subscribe({
+        next: ({ data }) => {
+          liveMatchesCount.value = data?.matches_aggregate?.aggregate?.count || 0;
+        },
+        error: (error) => {
+          console.error("Error in live matches subscription:", error);
+        },
+      }),
+    );
   };
 
   const subscribeToLiveTournaments = async () => {
@@ -81,15 +86,19 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       }),
     });
 
-    subscription.subscribe({
-      next: ({ data }) => {
-        liveTournamentsCount.value =
-          data?.tournaments_aggregate?.aggregate?.count || 0;
-      },
-      error: (error) => {
-        console.error("Error in live tournaments subscription:", error);
-      },
-    });
+    const { subscribe } = useSubscriptionManager();
+    subscribe(
+      "matchLobby:liveTournaments",
+      subscription.subscribe({
+        next: ({ data }) => {
+          liveTournamentsCount.value =
+            data?.tournaments_aggregate?.aggregate?.count || 0;
+        },
+        error: (error) => {
+          console.error("Error in live tournaments subscription:", error);
+        },
+      }),
+    );
   };
 
   const subscribeToOpenRegistrationTournaments = async () => {
@@ -112,18 +121,22 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       }),
     });
 
-    subscription.subscribe({
-      next: ({ data }) => {
-        openRegistrationTournamentsCount.value =
-          data?.tournaments_aggregate?.aggregate?.count || 0;
-      },
-      error: (error) => {
-        console.error(
-          "Error in open registration tournaments subscription:",
-          error,
-        );
-      },
-    });
+    const { subscribe } = useSubscriptionManager();
+    subscribe(
+      "matchLobby:openRegistrationTournaments",
+      subscription.subscribe({
+        next: ({ data }) => {
+          openRegistrationTournamentsCount.value =
+            data?.tournaments_aggregate?.aggregate?.count || 0;
+        },
+        error: (error) => {
+          console.error(
+            "Error in open registration tournaments subscription:",
+            error,
+          );
+        },
+      }),
+    );
   };
 
   const subscribeToOpenMatches = async () => {
@@ -151,14 +164,18 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       }),
     });
 
-    subscription.subscribe({
-      next: ({ data }) => {
-        openMatchesCount.value = data?.matches_aggregate?.aggregate?.count || 0;
-      },
-      error: (error) => {
-        console.error("Error in open matches subscription:", error);
-      },
-    });
+    const { subscribe } = useSubscriptionManager();
+    subscribe(
+      "matchLobby:openMatches",
+      subscription.subscribe({
+        next: ({ data }) => {
+          openMatchesCount.value = data?.matches_aggregate?.aggregate?.count || 0;
+        },
+        error: (error) => {
+          console.error("Error in open matches subscription:", error);
+        },
+      }),
+    );
   };
 
   const subscribeToChatTournaments = async () => {
@@ -198,14 +215,18 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       }),
     });
 
-    subscription.subscribe({
-      next: ({ data }) => {
-        chatTournaments.value = data?.tournaments || [];
-      },
-      error: (error) => {
-        console.error("Error in chat tournaments subscription:", error);
-      },
-    });
+    const { subscribe } = useSubscriptionManager();
+    subscribe(
+      "matchLobby:chatTournaments",
+      subscription.subscribe({
+        next: ({ data }) => {
+          chatTournaments.value = data?.tournaments || [];
+        },
+        error: (error) => {
+          console.error("Error in chat tournaments subscription:", error);
+        },
+      }),
+    );
   };
 
   const subscribeToManagingMatches = async () => {
@@ -240,18 +261,22 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       }),
     });
 
-    subscription.subscribe({
-      next: ({ data }) => {
-        if (data?.matches_aggregate?.aggregate?.count !== undefined) {
-          managingMatchesCount.value = data.matches_aggregate.aggregate.count;
-        } else {
-          managingMatchesCount.value = 0;
-        }
-      },
-      error: (error) => {
-        console.error("Error in managing matches subscription:", error);
-      },
-    });
+    const { subscribe } = useSubscriptionManager();
+    subscribe(
+      "matchLobby:managingMatches",
+      subscription.subscribe({
+        next: ({ data }) => {
+          if (data?.matches_aggregate?.aggregate?.count !== undefined) {
+            managingMatchesCount.value = data.matches_aggregate.aggregate.count;
+          } else {
+            managingMatchesCount.value = 0;
+          }
+        },
+        error: (error) => {
+          console.error("Error in managing matches subscription:", error);
+        },
+      }),
+    );
   };
 
   const subscribeToManagingTournaments = async () => {
@@ -284,19 +309,23 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       }),
     });
 
-    subscription.subscribe({
-      next: ({ data }) => {
-        if (data?.tournaments_aggregate?.aggregate?.count !== undefined) {
-          managingTournamentsCount.value =
-            data.tournaments_aggregate.aggregate.count;
-        } else {
-          managingTournamentsCount.value = 0;
-        }
-      },
-      error: (error) => {
-        console.error("Error in managing tournaments subscription:", error);
-      },
-    });
+    const { subscribe } = useSubscriptionManager();
+    subscribe(
+      "matchLobby:managingTournaments",
+      subscription.subscribe({
+        next: ({ data }) => {
+          if (data?.tournaments_aggregate?.aggregate?.count !== undefined) {
+            managingTournamentsCount.value =
+              data.tournaments_aggregate.aggregate.count;
+          } else {
+            managingTournamentsCount.value = 0;
+          }
+        },
+        error: (error) => {
+          console.error("Error in managing tournaments subscription:", error);
+        },
+      }),
+    );
   };
 
   const subscribeToMyMatches = async () => {
@@ -373,11 +402,15 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       },
     });
 
-    subscription.subscribe({
-      next: ({ data }) => {
-        myMatches.value = data?.matches;
-      },
-    });
+    const { subscribe } = useSubscriptionManager();
+    subscribe(
+      "matchLobby:myMatches",
+      subscription.subscribe({
+        next: ({ data }) => {
+          myMatches.value = data?.matches;
+        },
+      }),
+    );
   };
 
   const add = (

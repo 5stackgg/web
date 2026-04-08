@@ -81,7 +81,13 @@ class WebRTCClient {
     this.dataChannels.set(peer.id, dataChannel);
 
     return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        this.cleanupPeer(peer.id);
+        reject(new Error("Data channel open timeout"));
+      }, 10000);
+
       dataChannel.onopen = () => {
+        clearTimeout(timeout);
         resolve(dataChannel);
       };
 
@@ -90,6 +96,7 @@ class WebRTCClient {
       };
 
       dataChannel.onerror = (error: any) => {
+        clearTimeout(timeout);
         console.error(`[WebRTC] Data channel error for peer ${peer.id}:`, {
           label: dataChannel.label,
           readyState: dataChannel.readyState,
@@ -98,12 +105,13 @@ class WebRTCClient {
         reject(error);
       };
       dataChannel.onclose = () => {
+        clearTimeout(timeout);
         this.cleanupPeer(peer.id);
       };
     });
   }
 
-  private async createPeer(region: string): Promise<ExtendedPeer> {
+  private createPeer(region: string): Promise<ExtendedPeer> {
     return new Promise((resolve, reject) => {
       const peer = new Peer({
         trickle: true,
@@ -122,8 +130,15 @@ class WebRTCClient {
       peer.id = uuidv4();
       this.peers.set(peer.id, peer);
 
+      const timeout = setTimeout(() => {
+        peer.destroy();
+        this.cleanupPeer(peer.id);
+        reject(new Error("Peer connection timeout"));
+      }, 10000);
+
       peer
         .on("connect", () => {
+          clearTimeout(timeout);
           resolve(peer);
         })
         .on("signal", (data: any) => {
@@ -135,13 +150,16 @@ class WebRTCClient {
           });
         })
         .on("error", (err: Error) => {
+          clearTimeout(timeout);
           console.error(
             `[WebRTC] Peer connection error for peer ${peer.id}:`,
             err,
           );
+          peer.destroy();
           reject(err);
         })
         .on("close", () => {
+          clearTimeout(timeout);
           this.cleanupPeer(peer.id);
         });
     });

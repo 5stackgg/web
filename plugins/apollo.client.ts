@@ -78,7 +78,7 @@ export default defineNuxtPlugin((nuxtApp) => {
             "Invalid response from authorization hook",
           ].includes(graphqlError.message)
         ) {
-          return;
+          continue;
         }
 
         toast({

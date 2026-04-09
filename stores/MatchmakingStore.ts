@@ -1,5 +1,6 @@
 import { ref, watch, computed } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
+import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import {
   e_match_types_enum,
   $,
@@ -140,11 +141,15 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
       },
     });
 
-    subscription.subscribe({
-      next: ({ data }) => {
-        friends.value = data.my_friends;
-      },
-    });
+    const { subscribe } = useSubscriptionManager();
+    subscribe(
+      "matchmaking:friends",
+      subscription.subscribe({
+        next: ({ data }) => {
+          friends.value = data.my_friends;
+        },
+      }),
+    );
   };
 
   const matchInvites = ref([]);
@@ -180,11 +185,15 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
       },
     });
 
-    subscription.subscribe({
-      next: ({ data }) => {
-        matchInvites.value = data.match_invites;
-      },
-    });
+    const { subscribe } = useSubscriptionManager();
+    subscribe(
+      "matchmaking:match_invites",
+      subscription.subscribe({
+        next: ({ data }) => {
+          matchInvites.value = data.match_invites;
+        },
+      }),
+    );
   };
 
   const onlineFriends = computed(() => {
@@ -238,11 +247,15 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
       },
     });
 
-    subscription.subscribe({
-      next: ({ data }) => {
-        lobbies.value = data.lobbies;
-      },
-    });
+    const { subscribe } = useSubscriptionManager();
+    subscribe(
+      "matchmaking:lobbies",
+      subscription.subscribe({
+        next: ({ data }) => {
+          lobbies.value = data.lobbies;
+        },
+      }),
+    );
   };
 
   watch(
@@ -252,6 +265,11 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
         subscribeToFriends(me.steam_id);
         subscribeToMatchInvites(me.steam_id);
         subscribeToLobbies(me.steam_id);
+      } else {
+        const { unsubscribe } = useSubscriptionManager();
+        unsubscribe("matchmaking:friends");
+        unsubscribe("matchmaking:match_invites");
+        unsubscribe("matchmaking:lobbies");
       }
     },
     { immediate: true },

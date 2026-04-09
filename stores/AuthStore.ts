@@ -85,50 +85,49 @@ export const useAuthStore = defineStore("auth", () => {
       });
     }
 
-    return await new Promise(async (resolve) => {
-      try {
-        const response = await getGraphqlClient().query({
-          query: generateQuery({
-            me: {
-              role: true,
-              steam_id: true,
-              discord_id: true,
-            },
-          }),
-          fetchPolicy: "network-only", // Disable cache
+    try {
+      const response = await getGraphqlClient().query({
+        query: generateQuery({
+          me: {
+            role: true,
+            steam_id: true,
+            discord_id: true,
+          },
+        }),
+        fetchPolicy: "network-only", // Disable cache
+      });
+
+      if (!response.data.me) {
+        return false;
+      }
+
+      socket.connect();
+
+      hasDiscordLinked.value = !!response.data.me.discord_id;
+
+      const wsClient = useNuxtApp().$wsClient as import("graphql-ws").Client;
+      wsClient.terminate();
+      await new Promise<void>((resolveWs) => {
+        const timeout = setTimeout(() => {
+          dispose();
+          resolveWs();
+        }, 10000);
+        const dispose = wsClient.on("connected", () => {
+          clearTimeout(timeout);
+          dispose();
+          resolveWs();
         });
+      });
 
-        if (!response.data.me) {
-          resolve(false);
-          return;
-        }
-
-        socket.connect();
-
-        hasDiscordLinked.value = !!response.data.me.discord_id;
-
-        const wsClient = useNuxtApp().$wsClient as import("graphql-ws").Client;
-        wsClient.terminate();
-        await new Promise<void>((resolveWs) => {
-          const timeout = setTimeout(() => {
-            dispose();
-            resolveWs();
-          }, 10000);
-          const dispose = wsClient.on("connected", () => {
-            clearTimeout(timeout);
-            dispose();
-            resolveWs();
-          });
-        });
-
+      return await new Promise<boolean>((resolve) => {
         subscribeToMe(response.data.me.steam_id, () => {
           resolve(true);
         });
-      } catch (error) {
-        console.warn("auth failure", error);
-        resolve(false);
-      }
-    });
+      });
+    } catch (error) {
+      console.warn("auth failure", error);
+      return false;
+    }
   }
 
   const isUser = computed(() => me.value?.role === e_player_roles_enum.user);

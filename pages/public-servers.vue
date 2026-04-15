@@ -2,7 +2,7 @@
 import { Badge } from "@/components/ui/badge";
 import { AnimatedCard } from "@/components/ui/animated-card";
 import cleanMapName from "~/utilities/cleanMapName";
-import PageHeading from "~/components/PageHeading.vue";
+import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { mapFields } from "~/graphql/mapGraphql";
@@ -17,17 +17,20 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 
 <template>
   <PageTransition :delay="0">
-    <PageHeading>
-      <template #title> {{ $t("pages.public_servers.title") }} </template>
-      <template #description>
-        {{ $t("pages.public_servers.description") }}
-      </template>
-    </PageHeading>
+    <TacticalPageHeader>
+      <template #title>{{ $t("pages.public_servers.title") }}</template>
+    </TacticalPageHeader>
   </PageTransition>
 
   <PageTransition :delay="100">
     <div class="mt-6">
-      <Transition name="fade" mode="out-in">
+      <Transition
+        mode="out-in"
+        enter-active-class="transition-opacity duration-200 ease-out"
+        leave-active-class="transition-opacity duration-200 ease-out"
+        enter-from-class="opacity-0"
+        leave-to-class="opacity-0"
+      >
         <!-- Loading -->
         <div
           v-if="loading"
@@ -423,15 +426,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

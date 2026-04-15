@@ -78,7 +78,7 @@ import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
                 >
                   <Trash2 class="h-4 w-4" />
                   <span class="sr-only">{{
-                    $t("layouts.notifications.delete")
+                    $t("common.delete")
                   }}</span>
                 </Button>
                 <h3

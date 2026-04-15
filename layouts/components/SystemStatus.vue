@@ -22,7 +22,7 @@ import RegionStatuses from "~/components/RegionStatuses.vue";
               'bg-red-500': overalRegionStatus === 'Offline',
               'bg-yellow-500': overalRegionStatus === 'Degraded',
             }"
-            :title="overalRegionStatus"
+            :title="statusLabel"
           ></span>
         </div>
       </div>
@@ -52,6 +52,18 @@ export default {
         return "Offline";
       } else {
         return "Degraded";
+      }
+    },
+    statusLabel(): string {
+      switch (this.overalRegionStatus) {
+        case "Online":
+          return this.$t("common.online");
+        case "Offline":
+          return this.$t("common.offline");
+        case "Degraded":
+          return this.$t("common.degraded");
+        default:
+          return "";
       }
     },
   },

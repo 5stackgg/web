@@ -103,7 +103,7 @@ definePageMeta({
           :disabled="Object.keys(form.errors).length > 0"
           class="my-3"
         >
-          {{ $t("pages.settings.application.servers.update") }}
+          {{ $t("common.update") }}
         </Button>
       </div>
     </form>
@@ -183,7 +183,7 @@ export default {
       });
 
       toast({
-        title: this.$t("pages.settings.application.servers.update"),
+        title: this.$t("common.update"),
       });
     },
     async toggleCpuPinning() {

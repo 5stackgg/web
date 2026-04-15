@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute, useRouter } from "#app";
+import { useI18n } from "vue-i18n";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
 
@@ -8,6 +9,7 @@ definePageMeta({
   layout: "chat",
 });
 
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 
@@ -31,7 +33,7 @@ const tabFromQuery = computed<ChatTab | null>(() => {
   if (!type || !lobbyId || !instance) return null;
   return {
     id: tabId.value,
-    label: label || "Chat",
+    label: label || t("chat_page.fallback_title"),
     instance,
     type: type as
       | "match"
@@ -51,8 +53,13 @@ const currentTab = computed<ChatTab | null>(() => {
 const hasTab = computed(() => currentTab.value !== null);
 
 const windowTitle = computed(
-  () => `5stack - ${currentTab.value?.label ?? "Chat"}`,
+  () => `5stack - ${currentTab.value?.label ?? t("chat_page.fallback_title")}`,
 );
+
+const tabTypeLabel = computed(() => {
+  if (!currentTab.value) return "";
+  return t(`chat_tab_labels.${currentTab.value.type}`);
+});
 
 useHead({
   title: windowTitle,
@@ -75,23 +82,11 @@ function handleBackToHub() {
     >
       <div class="min-w-0">
         <h1 class="text-sm font-semibold truncate">
-          {{ currentTab?.label || "Chat" }}
+          {{ currentTab?.label || $t("chat_page.fallback_title") }}
         </h1>
         <p class="text-[11px] text-muted-foreground truncate">
-          <span v-if="currentTab">
-            {{
-              currentTab.type === "match"
-                ? "Match chat"
-                : currentTab.type === "team"
-                  ? "Team chat"
-                  : currentTab.type === "tournament"
-                    ? "Tournament chat"
-                    : currentTab.type === "organizers"
-                      ? "Organizers chat"
-                      : "Queue chat"
-            }}
-          </span>
-          <span v-else>Chat not found</span>
+          <span v-if="currentTab">{{ tabTypeLabel }}</span>
+          <span v-else>{{ $t("chat_page.not_found") }}</span>
         </p>
       </div>
       <a
@@ -99,7 +94,7 @@ function handleBackToHub() {
         class="inline-flex items-center justify-center h-7 px-2 rounded-md border border-border bg-background text-xs hover:bg-accent shrink-0"
         @click.prevent="handleBackToHub"
       >
-        Back to hub
+        {{ $t("chat_page.back_to_hub") }}
       </a>
     </div>
 
@@ -109,9 +104,9 @@ function handleBackToHub() {
         class="flex-1 flex items-center justify-center text-sm text-muted-foreground text-center px-4"
       >
         <div class="space-y-1.5">
-          <p>This chat is not currently open in your session.</p>
+          <p>{{ $t("chat_page.not_open_title") }}</p>
           <p class="text-xs">
-            Open it from the hub sidebar first, then pop it out again.
+            {{ $t("chat_page.not_open_description") }}
           </p>
         </div>
       </div>

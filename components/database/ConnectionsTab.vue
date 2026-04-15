@@ -5,7 +5,7 @@
       <Card>
         <CardHeader class="pb-2">
           <CardTitle class="text-sm font-medium text-muted-foreground"
-            >Total</CardTitle
+            >{{ $t("pages.database.connections.total") }}</CardTitle
           >
         </CardHeader>
         <CardContent>
@@ -17,7 +17,7 @@
       <Card>
         <CardHeader class="pb-2">
           <CardTitle class="text-sm font-medium text-muted-foreground"
-            >Active</CardTitle
+            >{{ $t("pages.database.connections.active") }}</CardTitle
           >
         </CardHeader>
         <CardContent>
@@ -29,7 +29,7 @@
       <Card>
         <CardHeader class="pb-2">
           <CardTitle class="text-sm font-medium text-muted-foreground"
-            >Idle</CardTitle
+            >{{ $t("pages.database.connections.idle") }}</CardTitle
           >
         </CardHeader>
         <CardContent>
@@ -39,7 +39,7 @@
       <Card>
         <CardHeader class="pb-2">
           <CardTitle class="text-sm font-medium text-muted-foreground"
-            >Idle in Txn</CardTitle
+            >{{ $t("pages.database.connections.idle_in_txn") }}</CardTitle
           >
         </CardHeader>
         <CardContent>
@@ -51,7 +51,7 @@
       <Card>
         <CardHeader class="pb-2">
           <CardTitle class="text-sm font-medium text-muted-foreground"
-            >Waiting</CardTitle
+            >{{ $t("pages.database.connections.waiting") }}</CardTitle
           >
         </CardHeader>
         <CardContent>
@@ -64,18 +64,18 @@
 
     <!-- Active Queries Section -->
     <div>
-      <h3 class="text-lg font-semibold mb-3">Active Queries</h3>
+      <h3 class="text-lg font-semibold mb-3">{{ $t("pages.database.connections.active_queries_title") }}</h3>
       <Card>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>PID</TableHead>
-              <TableHead>User</TableHead>
-              <TableHead>App</TableHead>
-              <TableHead>State</TableHead>
-              <TableHead>Wait Event</TableHead>
-              <TableHead>Duration</TableHead>
-              <TableHead>Query</TableHead>
+              <TableHead>{{ $t("pages.database.columns.pid") }}</TableHead>
+              <TableHead>{{ $t("pages.database.columns.user") }}</TableHead>
+              <TableHead>{{ $t("pages.database.columns.app") }}</TableHead>
+              <TableHead>{{ $t("pages.database.columns.state") }}</TableHead>
+              <TableHead>{{ $t("pages.database.connections.wait_event") }}</TableHead>
+              <TableHead>{{ $t("pages.database.columns.duration") }}</TableHead>
+              <TableHead>{{ $t("pages.database.columns.query") }}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -97,7 +97,7 @@
                     ({{ query.wait_event }})
                   </span>
                 </span>
-                <span v-else class="text-muted-foreground">None</span>
+                <span v-else class="text-muted-foreground">{{ $t("common.none") }}</span>
               </TableCell>
               <TableCell>
                 <Badge :variant="getDurationVariant(query.duration_seconds)">
@@ -134,23 +134,23 @@
 
     <!-- All Connections -->
     <div>
-      <h3 class="text-lg font-semibold mb-3">All Connections</h3>
+      <h3 class="text-lg font-semibold mb-3">{{ $t("pages.database.connections.all_connections_title") }}</h3>
       <Card>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>PID</TableHead>
-              <TableHead>User</TableHead>
-              <TableHead>App</TableHead>
-              <TableHead>Client</TableHead>
-              <TableHead>State</TableHead>
-              <TableHead>Query</TableHead>
+              <TableHead>{{ $t("pages.database.columns.pid") }}</TableHead>
+              <TableHead>{{ $t("pages.database.columns.user") }}</TableHead>
+              <TableHead>{{ $t("pages.database.columns.app") }}</TableHead>
+              <TableHead>{{ $t("pages.database.columns.client") }}</TableHead>
+              <TableHead>{{ $t("pages.database.columns.state") }}</TableHead>
+              <TableHead>{{ $t("pages.database.columns.query") }}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             <TableRow v-for="conn in activeConnections" :key="conn.pid">
               <TableCell>{{ conn.pid }}</TableCell>
-              <TableCell>{{ conn.usename || "System" }}</TableCell>
+              <TableCell>{{ conn.usename || $t("common.system") }}</TableCell>
               <TableCell class="text-xs">{{
                 conn.application_name || "N/A"
               }}</TableCell>

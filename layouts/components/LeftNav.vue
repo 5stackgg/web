@@ -28,8 +28,23 @@ import { Kbd, KbdGroup } from "~/components/ui/kbd";
 import Logout from "./Logout.vue";
 import { useMatchContext } from "~/composables/useMatchContext";
 import { useSidebar } from "~/components/ui/sidebar/utils";
+import { useAuthStore } from "~/stores/AuthStore";
 
 const { setOpenMobile, isMobile } = useSidebar();
+const route = useRoute();
+const authStore = useAuthStore();
+const logoPath = computed(() => (authStore.me ? "/me" : "/watch"));
+const isLogoRouteActive = computed(() => {
+  if (logoPath.value === "/me") {
+    return (
+      route.path === "/me" ||
+      (route.path.startsWith("/players/") &&
+        String(route.params.id) === String(authStore.me?.steam_id))
+    );
+  }
+
+  return route.path === logoPath.value;
+});
 const swipeStartX = ref(0);
 const swipeStartY = ref(0);
 function onLeftNavTouchStart(e: TouchEvent) {
@@ -56,12 +71,15 @@ function onLeftNavTouchEnd(e: TouchEvent) {
     >
       <Transition name="sidebar-header">
         <SidebarHeader v-if="isMobile || !isPWA || !sideBarOpen">
-          <nuxt-link
-            to="/"
-            class="flex min-w-0 items-center overflow-hidden transition-[gap,padding] duration-200 ease-linear"
+          <NuxtLink
+            :to="logoPath"
+            class="flex min-w-0 items-center overflow-hidden transition-[gap,padding] duration-200 ease-linear [&.router-link-active]:!bg-transparent [&.router-link-exact-active]:!bg-transparent"
             :class="{
               'gap-2 px-2 py-1.5': !isPWA && (isMobile || sideBarOpen),
+              'pointer-events-none cursor-default': isLogoRouteActive,
             }"
+            :tabindex="isLogoRouteActive ? -1 : undefined"
+            :aria-current="isLogoRouteActive ? 'page' : undefined"
           >
             <NuxtImg
               class="shrink-0 rounded max-w-8 max-h-8"
@@ -76,7 +94,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 {{ customBrandName || $t("layouts.app_nav.brand") }}
               </span>
             </Transition>
-          </nuxt-link>
+          </NuxtLink>
         </SidebarHeader>
       </Transition>
       <SidebarContent>
@@ -105,16 +123,16 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem tooltip="Search Players">
+            <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.search_players')">
               <SidebarMenuButton
                 @click="
                   setOpenMobile(false);
                   triggerSpotlightSearch();
                 "
-                tooltip="Search Players"
+                :tooltip="$t('layouts.app_nav.tooltips.search_players')"
               >
                 <Search />
-                <span>Search</span>
+                <span>{{ $t("layouts.app_nav.navigation.search") }}</span>
                 <KbdGroup class="ml-auto" v-if="isMobile || sideBarOpen">
                   <Kbd>{{ isMac ? "⌘" : "Ctrl" }}</Kbd>
                   <Kbd>K</Kbd>
@@ -573,10 +591,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
             class="p-2 flex items-center gap-2"
           >
             <Server class="w-3 h-3" />
-            {{ telemetryStats.online }} System{{
-              telemetryStats.online > 1 ? "s" : ""
-            }}
-            Online
+            {{ $t("layouts.app_nav.systems_online", telemetryStats.online, { count: telemetryStats.online }) }}
           </Badge>
         </SidebarGroup>
       </SidebarContent>

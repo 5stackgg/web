@@ -8,15 +8,15 @@
     <DropdownMenuContent align="end">
       <DropdownMenuItem v-if="!item.isDirectory" @click="handleEdit">
         <Pencil class="w-4 h-4 mr-2" />
-        Edit
+        {{ $t("common.actions.edit") }}
       </DropdownMenuItem>
       <DropdownMenuItem @click="handleRename">
         <Text class="w-4 h-4 mr-2" />
-        Rename
+        {{ $t("common.rename") }}
       </DropdownMenuItem>
       <DropdownMenuItem @click="handleDelete" class="text-destructive">
         <Trash class="w-4 h-4 mr-2" />
-        Delete
+        {{ $t("common.actions.delete") }}
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>

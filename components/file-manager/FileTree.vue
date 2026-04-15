@@ -22,7 +22,7 @@
             </Button>
           </TooltipTrigger>
           <TooltipContent side="bottom">
-            <p>New File</p>
+            <p>{{ $t("file_manager.toolbar.new_file") }}</p>
           </TooltipContent>
         </Tooltip>
 
@@ -38,7 +38,7 @@
             </Button>
           </TooltipTrigger>
           <TooltipContent side="bottom">
-            <p>New Folder</p>
+            <p>{{ $t("file_manager.toolbar.new_folder") }}</p>
           </TooltipContent>
         </Tooltip>
 
@@ -54,7 +54,7 @@
             </Button>
           </TooltipTrigger>
           <TooltipContent side="bottom">
-            <p>Upload Files</p>
+            <p>{{ $t("file_manager.toolbar.upload_files") }}</p>
           </TooltipContent>
         </Tooltip>
 
@@ -75,7 +75,7 @@
             </Button>
           </TooltipTrigger>
           <TooltipContent side="bottom">
-            <p>Refresh</p>
+            <p>{{ $t("file_manager.toolbar.refresh") }}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -112,8 +112,8 @@
             class="h-6 text-sm py-0 px-1"
             :placeholder="
               store.pendingCreate.type === 'directory'
-                ? 'folder name'
-                : 'file name'
+                ? $t('file_manager.tree.folder_name_placeholder')
+                : $t('file_manager.tree.file_name_placeholder')
             "
             @keydown.enter.prevent="confirmRootInlineCreate"
             @keydown.escape="cancelRootInlineCreate"
@@ -129,7 +129,7 @@
         :class="treeDragOver ? 'border-primary bg-primary/10' : 'border-muted'"
       >
         <Upload class="w-8 h-8 mx-auto mb-2" />
-        <p class="text-sm">Drop files here or right-click to create</p>
+        <p class="text-sm">{{ $t("file_manager.tree.drop_hint") }}</p>
       </div>
     </div>
 
@@ -147,20 +147,20 @@
       <DropdownMenuContent class="w-48">
         <DropdownMenuItem @click="handleCreateFileInRoot">
           <FilePlus class="mr-2 h-4 w-4" />
-          <span>New File</span>
+          <span>{{ $t("file_manager.toolbar.new_file") }}</span>
         </DropdownMenuItem>
         <DropdownMenuItem @click="handleCreateFolderInRoot">
           <FolderPlus class="mr-2 h-4 w-4" />
-          <span>New Folder</span>
+          <span>{{ $t("file_manager.toolbar.new_folder") }}</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem @click="openUploadDialog">
           <Upload class="mr-2 h-4 w-4" />
-          <span>Upload Files</span>
+          <span>{{ $t("file_manager.toolbar.upload_files") }}</span>
         </DropdownMenuItem>
         <DropdownMenuItem @click="refresh">
           <RefreshCcw class="mr-2 h-4 w-4" />
-          <span>Refresh</span>
+          <span>{{ $t("file_manager.toolbar.refresh") }}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -198,7 +198,7 @@
               <template v-else-if="store.uploadBatch.failedFiles.length === 0">
                 Upload complete
               </template>
-              <template v-else> Upload complete with errors </template>
+              <template v-else>{{ $t("file_manager.upload.complete_with_errors") }}</template>
             </span>
           </div>
           <div class="flex items-center gap-1">
@@ -254,7 +254,7 @@
         <CollapsibleTrigger
           class="w-full px-3 py-1.5 flex items-center justify-between text-xs text-muted-foreground hover:bg-muted/50 border-t"
         >
-          <span>{{ uploadDetailsOpen ? "Hide details" : "Show details" }}</span>
+          <span>{{ uploadDetailsOpen ? $t("common.hide_details") : $t("common.show_details") }}</span>
           <ChevronDown
             class="h-3 w-3 transition-transform"
             :class="{ 'rotate-180': uploadDetailsOpen }"
@@ -288,7 +288,7 @@
             >
               <AlertCircle class="w-3 h-3 shrink-0" />
               <span class="truncate">{{ filename }}</span>
-              <span class="ml-auto shrink-0">Failed</span>
+              <span class="ml-auto shrink-0">{{ $t("common.failed") }}</span>
             </div>
           </div>
         </CollapsibleContent>
@@ -302,14 +302,14 @@
     <AlertDialog v-model:open="deleteDialogOpen">
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogTitle>{{ $t("common.are_you_sure_short") }}</AlertDialogTitle>
           <AlertDialogDescription>
             This will permanently delete "{{ deletingItem?.name }}". This action
             cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
           <AlertDialogAction
             @click="confirmDelete"
             class="bg-destructive text-destructive-foreground hover:bg-destructive/90"

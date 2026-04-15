@@ -109,7 +109,7 @@ import { Card } from "~/components/ui/card";
     <template v-else>
       <FormField v-slot="{ componentField }" name="team_name">
         <FormItem>
-          <FormLabel>{{ $t("tournament.team.name") }}</FormLabel>
+          <FormLabel>{{ $t("common.team_name") }}</FormLabel>
           <Input v-bind="componentField"></Input>
           <FormMessage />
         </FormItem>

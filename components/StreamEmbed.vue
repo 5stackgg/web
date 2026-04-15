@@ -12,12 +12,12 @@ import { ExternalLink } from "lucide-vue-next";
           class="absolute top-2 right-2 w-8 h-8 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center z-10"
           @click="setGlobalStream(selectedStream)"
           type="button"
-          :title="'Move to global view'"
+          :title="$t('streams.move_to_global_view')"
           variant="ghost"
           size="icon"
         >
           <ExternalLink class="w-4 h-4" />
-          <span class="sr-only">Move to global view</span>
+          <span class="sr-only">{{ $t("streams.move_to_global_view") }}</span>
         </Button>
       </template>
     </div>

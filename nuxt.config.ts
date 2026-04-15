@@ -73,6 +73,17 @@ export default defineNuxtConfig({
     },
   },
 
+  experimental: {
+    defaults: {
+      nuxtLink: {
+        prefetchOn: {
+          visibility: false,
+          interaction: true,
+        },
+      },
+    },
+  },
+
   i18n: {
     strategy: "no_prefix",
     bundle: {
@@ -150,14 +161,30 @@ export default defineNuxtConfig({
       installPrompt: true,
     },
     workbox: {
+      cleanupOutdatedCaches: true,
       maximumFileSizeToCacheInBytes: 10 * 1024 * 1024,
-      globPatterns: ["**/*.{js,css,html}"],
+      // Do not precache every Nuxt chunk during service-worker install.
+      // Runtime caching below stores route assets only after a visited page needs them.
+      globPatterns: [],
       navigateFallbackDenylist: [
         /^\/auth/,
         /^\/discord-invite/,
         /^\/discord-bot/,
       ],
       runtimeCaching: [
+        {
+          urlPattern: ({ url }: { url: URL }) =>
+            url.pathname.startsWith("/_nuxt/"),
+          handler: "CacheFirst",
+          options: {
+            cacheName: "nuxt-assets",
+            expiration: {
+              maxEntries: 300,
+              maxAgeSeconds: 60 * 60 * 24 * 30,
+            },
+            cacheableResponse: { statuses: [0, 200] },
+          },
+        },
         {
           urlPattern: /\.(?:png|svg|webp|ico)$/i,
           handler: "CacheFirst",
@@ -189,7 +216,8 @@ export default defineNuxtConfig({
       ],
     },
     devOptions: {
-      enabled: true,
+      enabled: sw,
+      suppressWarnings: true,
     },
     manifest: {
       name: "5stack",

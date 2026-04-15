@@ -37,7 +37,18 @@ import {
   ChevronDown,
   ChevronUp,
   SettingsIcon,
+  Trophy,
+  Split,
+  RotateCw,
+  Shuffle,
 } from "lucide-vue-next";
+
+const stageTypeIcons: Record<string, any> = {
+  SingleElimination: Trophy,
+  DoubleElimination: Split,
+  RoundRobin: RotateCw,
+  Swiss: Shuffle,
+};
 import {
   Popover,
   PopoverContent,
@@ -55,105 +66,125 @@ import { $ } from "~/generated/zeus";
 
 <template>
   <form @submit.prevent="updateCreateStage" class="grid gap-4">
-    <FormField v-slot="{ componentField }" name="groups">
+    <FormField v-slot="{ value, handleChange }" name="stage_type">
       <FormItem>
-        <FormLabel>{{ $t("tournament.stage.groups") }}</FormLabel>
-        <FormControl>
-          <Input
-            v-bind="componentField"
-            type="number"
-            min="1"
-            :placeholder="$t('tournament.stage.groups_placeholder')"
-          />
-        </FormControl>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <button
+            v-for="type in sortedStageTypes"
+            :key="type.value"
+            type="button"
+            :class="[
+              'stage-type-tile group',
+              value === type.value && 'stage-type-tile--active',
+            ]"
+            @click="handleChange(type.value)"
+          >
+            <span
+              aria-hidden="true"
+              class="stage-type-tile__code"
+            >
+              {{
+                type.value === "SingleElimination"
+                  ? "SE"
+                  : type.value === "DoubleElimination"
+                    ? "DE"
+                    : type.value === "RoundRobin"
+                      ? "RR"
+                      : type.value === "Swiss"
+                        ? "SW"
+                        : ""
+              }}
+            </span>
+            <component
+              :is="stageTypeIcons[type.value]"
+              v-if="stageTypeIcons[type.value]"
+              class="stage-type-tile__icon"
+            />
+            <span class="stage-type-tile__label">
+              {{ type.description }}
+            </span>
+            <span aria-hidden="true" class="stage-type-tile__corner stage-type-tile__corner--tl" />
+            <span aria-hidden="true" class="stage-type-tile__corner stage-type-tile__corner--br" />
+          </button>
+        </div>
         <FormMessage />
       </FormItem>
     </FormField>
 
-    <FormField v-slot="{ componentField }" name="stage_type">
-      <FormItem>
-        <FormLabel>{{ $t("tournament.stage.type") }}</FormLabel>
-        <Select v-bind="componentField">
+    <div class="grid grid-cols-3 gap-4">
+      <FormField v-slot="{ componentField }" name="groups">
+        <FormItem>
+          <FormLabel>{{ $t("tournament.stage.groups") }}</FormLabel>
           <FormControl>
-            <SelectTrigger>
-              <SelectValue
-                :placeholder="$t('tournament.stage.type_placeholder')"
-              />
-            </SelectTrigger>
+            <Input
+              v-bind="componentField"
+              type="number"
+              min="1"
+              :placeholder="$t('tournament.stage.groups_placeholder')"
+            />
           </FormControl>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem
-                v-for="type in e_tournament_stage_types"
-                :key="type.value"
-                :value="type.value"
-              >
-                {{ type.description }}
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+          <FormMessage />
+        </FormItem>
+      </FormField>
 
-    <FormField v-slot="{ componentField }" name="min_teams">
-      <FormItem>
-        <FormLabel>{{ $t("tournament.stage.min_teams") }}</FormLabel>
-        <FormControl>
-          <Select v-bind="componentField">
-            <FormControl>
-              <SelectTrigger>
-                <SelectValue
-                  :placeholder="$t('tournament.stage.min_teams_placeholder')"
-                />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem
-                  v-for="option in minTeamOptions"
-                  :key="option.value"
-                  :value="option.value"
-                >
-                  {{ option.display }}
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+      <FormField v-slot="{ componentField }" name="min_teams">
+        <FormItem>
+          <FormLabel>{{ $t("tournament.stage.min_teams") }}</FormLabel>
+          <FormControl>
+            <Select v-bind="componentField">
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue
+                    :placeholder="$t('tournament.stage.min_teams_placeholder')"
+                  />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    v-for="option in minTeamOptions"
+                    :key="option.value"
+                    :value="option.value"
+                  >
+                    {{ option.display }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
 
-    <FormField v-slot="{ componentField }" name="max_teams">
-      <FormItem>
-        <FormLabel>{{ $t("tournament.stage.max_teams") }}</FormLabel>
-        <FormControl>
-          <Select v-bind="componentField">
-            <FormControl :disabled="!form.values.min_teams">
-              <SelectTrigger>
-                <SelectValue
-                  :placeholder="$t('tournament.stage.max_teams_placeholder')"
-                />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem
-                  v-for="option in maxTeamOptions"
-                  :key="option.value"
-                  :value="option.value"
-                >
-                  {{ option.display }}
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+      <FormField v-slot="{ componentField }" name="max_teams">
+        <FormItem>
+          <FormLabel>{{ $t("tournament.stage.max_teams") }}</FormLabel>
+          <FormControl>
+            <Select v-bind="componentField">
+              <FormControl :disabled="!form.values.min_teams">
+                <SelectTrigger>
+                  <SelectValue
+                    :placeholder="$t('tournament.stage.max_teams_placeholder')"
+                  />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    v-for="option in maxTeamOptions"
+                    :key="option.value"
+                    :value="option.value"
+                  >
+                    {{ option.display }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+    </div>
 
     <!-- Section A: Default Best Of -->
     <Card>
@@ -174,9 +205,9 @@ import { $ } from "~/generated/zeus";
               </FormControl>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="1">Best of 1</SelectItem>
-                  <SelectItem value="3">Best of 3</SelectItem>
-                  <SelectItem value="5">Best of 5</SelectItem>
+                  <SelectItem value="1">{{ $t("match.options.best_of.option", { count: 1 }) }}</SelectItem>
+                  <SelectItem value="3">{{ $t("match.options.best_of.option", { count: 3 }) }}</SelectItem>
+                  <SelectItem value="5">{{ $t("match.options.best_of.option", { count: 5 }) }}</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -186,27 +217,15 @@ import { $ } from "~/generated/zeus";
       </div>
     </Card>
 
-    <!-- Section B: Per-Round Best Of + Stage Options -->
+    <!-- Section B: Third Place Match (SE only) -->
     <Card
       v-if="
-        form.values.stage_type &&
-        form.values.stage_type !== 'RoundRobin' &&
+        form.values.stage_type === 'SingleElimination' &&
         form.values.max_teams
       "
     >
       <div class="p-4 space-y-4">
-        <StageRoundBestOfConfig
-          :stage-type="form.values.stage_type"
-          :max-teams="parseInt(form.values.max_teams)"
-          :groups="form.values.groups || 1"
-          :default-best-of="form.values.default_best_of || '1'"
-          :model-value="roundBestOf"
-          @update:model-value="roundBestOf = $event"
-        />
-
-        <!-- 3rd Place Match toggle (SE only) -->
         <FormField
-          v-if="form.values.stage_type === 'SingleElimination'"
           v-slot="{ value, handleChange }"
           name="third_place_match"
         >
@@ -253,9 +272,9 @@ import { $ } from "~/generated/zeus";
               </FormControl>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="1">Best of 1</SelectItem>
-                  <SelectItem value="3">Best of 3</SelectItem>
-                  <SelectItem value="5">Best of 5</SelectItem>
+                  <SelectItem value="1">{{ $t("match.options.best_of.option", { count: 1 }) }}</SelectItem>
+                  <SelectItem value="3">{{ $t("match.options.best_of.option", { count: 3 }) }}</SelectItem>
+                  <SelectItem value="5">{{ $t("match.options.best_of.option", { count: 5 }) }}</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -304,6 +323,26 @@ import { $ } from "~/generated/zeus";
 
       <CollapsibleContent>
         <div class="flex flex-col gap-4">
+          <!-- Per-Round Best Of -->
+          <Card
+            v-if="
+              form.values.stage_type &&
+              form.values.stage_type !== 'RoundRobin' &&
+              form.values.max_teams
+            "
+          >
+            <div class="p-4">
+              <StageRoundBestOfConfig
+                :stage-type="form.values.stage_type"
+                :max-teams="parseInt(form.values.max_teams)"
+                :groups="form.values.groups || 1"
+                :default-best-of="form.values.default_best_of || '1'"
+                :model-value="roundBestOf"
+                @update:model-value="roundBestOf = $event"
+              />
+            </div>
+          </Card>
+
           <!-- TV Delay -->
           <Card>
             <div class="flex flex-col space-y-3 p-4">
@@ -382,7 +421,7 @@ import { $ } from "~/generated/zeus";
                           {{ $t("match.options.advanced.region.preferred") }}
                         </template>
                         <template v-else>{{
-                          $t("match.options.advanced.region.single")
+                          $t("common.region")
                         }}</template>
                       </div>
                     </FormLabel>
@@ -853,6 +892,7 @@ export default {
           this.form.setValues({
             groups: 1,
             default_best_of: "1",
+            stage_type: e_tournament_stage_types_enum.SingleElimination,
           });
           this.setDefaultAdvancedSettings();
         }
@@ -891,8 +931,29 @@ export default {
         this.setDefaultRegion();
       },
     },
+    ["form.values.min_teams"]: {
+      handler(min_teams: string | undefined) {
+        if (!min_teams) return;
+        const min = parseInt(min_teams);
+        const max = parseInt(this.form.values.max_teams);
+        if (!this.form.values.max_teams || isNaN(max) || max < min) {
+          this.form.setFieldValue("max_teams", min_teams);
+        }
+      },
+    },
   },
   computed: {
+    sortedStageTypes() {
+      const order = [
+        e_tournament_stage_types_enum.SingleElimination,
+        e_tournament_stage_types_enum.DoubleElimination,
+        e_tournament_stage_types_enum.RoundRobin,
+        e_tournament_stage_types_enum.Swiss,
+      ];
+      return [...this.e_tournament_stage_types].sort(
+        (a, b) => order.indexOf(a.value as any) - order.indexOf(b.value as any),
+      );
+    },
     minTeamOptions() {
       return this.baseNumberOfTeamsOptions;
     },
@@ -1421,3 +1482,113 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.stage-type-tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-height: 8.5rem;
+  padding: 1rem 0.85rem;
+  border: 1px solid hsl(var(--border));
+  background: linear-gradient(
+    180deg,
+    hsl(var(--card) / 0.5) 0%,
+    hsl(var(--card) / 0.2) 100%
+  );
+  backdrop-filter: blur(6px);
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease,
+    transform 160ms ease;
+}
+.stage-type-tile:hover {
+  border-color: hsl(var(--tac-amber) / 0.45);
+  color: hsl(var(--foreground));
+  transform: translateY(-1px);
+}
+
+.stage-type-tile__code {
+  position: absolute;
+  top: 0.55rem;
+  left: 0.75rem;
+  font-family: "Oxanium", monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  color: hsl(var(--muted-foreground) / 0.7);
+  transition: color 160ms ease;
+}
+
+.stage-type-tile__icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  transition:
+    color 160ms ease,
+    transform 200ms ease;
+}
+.stage-type-tile:hover .stage-type-tile__icon {
+  transform: scale(1.08);
+  color: hsl(var(--tac-amber));
+}
+
+.stage-type-tile__label {
+  font-family: "Oxanium", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.1;
+  color: hsl(var(--foreground));
+}
+
+.stage-type-tile__corner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: hsl(var(--tac-amber));
+  border-style: solid;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease;
+}
+.stage-type-tile__corner--tl {
+  top: -1px;
+  left: -1px;
+  border-width: 2px 0 0 2px;
+}
+.stage-type-tile__corner--br {
+  bottom: -1px;
+  right: -1px;
+  border-width: 0 2px 2px 0;
+}
+
+/* Active state */
+.stage-type-tile--active {
+  border-color: hsl(var(--tac-amber));
+  background: linear-gradient(
+    180deg,
+    hsl(var(--tac-amber) / 0.12) 0%,
+    hsl(var(--tac-amber) / 0.04) 100%
+  );
+  color: hsl(var(--foreground));
+  box-shadow: inset 0 1px 0 hsl(var(--tac-amber) / 0.08);
+}
+.stage-type-tile--active:hover {
+  transform: none;
+}
+.stage-type-tile--active .stage-type-tile__code,
+.stage-type-tile--active .stage-type-tile__icon {
+  color: hsl(var(--tac-amber));
+}
+.stage-type-tile--active .stage-type-tile__corner {
+  opacity: 1;
+}
+</style>

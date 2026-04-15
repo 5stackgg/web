@@ -101,7 +101,7 @@ import FriendOptions from "~/components/matchmaking-lobby/FriendOptions.vue";
 
         <div v-if="filteredOnlinePlayers?.length > 0">
           <div class="mb-2 font-medium text-sm">
-            {{ $t("matchmaking.friends.online") }}
+            {{ $t("common.online") }}
             <span class="text-muted-foreground">
               ({{ filteredOnlinePlayers.length }})
             </span>
@@ -126,7 +126,7 @@ import FriendOptions from "~/components/matchmaking-lobby/FriendOptions.vue";
 
           <div>
             <div class="mb-2 font-medium text-sm">
-              {{ $t("matchmaking.friends.offline") }}
+              {{ $t("common.offline") }}
               <span class="text-muted-foreground">
                 ({{ filteredOfflinePlayers.length }})
               </span>

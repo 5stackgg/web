@@ -160,6 +160,7 @@ import { Input } from "~/components/ui/input";
 import { Button } from "@/components/ui/button";
 import DiscordMatchNotificationToggles from "~/components/discord/DiscordMatchNotificationToggles.vue";
 import { $, e_match_status_enum, e_player_roles_enum } from "~/generated/zeus";
+import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 
@@ -218,18 +219,54 @@ export default {
   data() {
     return {
       MATCH_STATUSES,
-      form: this.buildForm(this.tournament),
+      form: this.buildForm({}),
+      discordData: null as Record<string, any> | null,
       saving: false,
       dirty: false,
       statusOverrideDirty: false,
     };
   },
-  watch: {
-    tournament: {
-      handler(newTournament) {
-        if (newTournament && !this.dirty) {
-          this.form = this.buildForm(newTournament);
-        }
+  apollo: {
+    $subscribe: {
+      tournaments_by_pk: {
+        query: typedGql("subscription")({
+          tournaments_by_pk: [
+            {
+              id: $("tournamentId", "uuid!"),
+            },
+            {
+              id: true,
+              discord_guild_id: true,
+              discord_notifications_enabled: true,
+              discord_voice_enabled: true,
+              discord_webhook: true,
+              discord_role_id: true,
+              discord_notify_PickingPlayers: true,
+              discord_notify_Scheduled: true,
+              discord_notify_WaitingForCheckIn: true,
+              discord_notify_WaitingForServer: true,
+              discord_notify_Veto: true,
+              discord_notify_Live: true,
+              discord_notify_Finished: true,
+              discord_notify_Tie: true,
+              discord_notify_Canceled: true,
+              discord_notify_Forfeit: true,
+              discord_notify_Surrendered: true,
+              discord_notify_MapPaused: true,
+            },
+          ],
+        }),
+        variables(this: any) {
+          return {
+            tournamentId: this.tournament.id,
+          };
+        },
+        result(this: any, { data }: { data: { tournaments_by_pk: Record<string, any> } }) {
+          this.discordData = data.tournaments_by_pk;
+          if (!this.dirty) {
+            this.form = this.buildForm(this.discordData ?? {});
+          }
+        },
       },
     },
   },
@@ -347,7 +384,7 @@ export default {
       };
     },
     hasPersistedStatusOverrides(): boolean {
-      const t = this.tournament as Record<string, any> | null | undefined;
+      const t = this.discordData;
       if (!t) {
         return false;
       }

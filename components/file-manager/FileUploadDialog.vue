@@ -2,10 +2,8 @@
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Upload Files</DialogTitle>
-        <DialogDescription>
-          Select files to upload to the current directory
-        </DialogDescription>
+        <DialogTitle>{{ $t("file_manager.upload.title") }}</DialogTitle>
+        <DialogDescription>{{ $t("file_manager.upload.description") }}</DialogDescription>
       </DialogHeader>
 
       <div class="space-y-4">
@@ -20,9 +18,9 @@
         >
           <Upload class="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
           <p class="text-sm font-medium mb-1">
-            Drag and drop files here or click to browse
+            {{ $t("file_manager.upload.drag_drop") }}
           </p>
-          <p class="text-xs text-muted-foreground">Maximum file size: 100MB</p>
+          <p class="text-xs text-muted-foreground">{{ $t("file_manager.upload.max_size") }}</p>
         </div>
 
         <input
@@ -46,12 +44,14 @@
             <div class="flex items-center justify-between text-sm">
               <span class="font-medium">
                 {{
-                  store.uploadBatch.isUploading ? "Uploading..." : "Complete"
+                  store.uploadBatch.isUploading
+                    ? $t("file_manager.upload.uploading")
+                    : $t("file_manager.upload.complete")
                 }}
               </span>
               <span class="text-muted-foreground">
                 {{ store.uploadBatch.completedFiles }} /
-                {{ store.uploadBatch.totalFiles }} files
+                {{ store.uploadBatch.totalFiles }} {{ $t("file_manager.tree.files") }}
               </span>
             </div>
             <Progress :model-value="store.uploadOverallProgress" class="h-2" />
@@ -62,7 +62,7 @@
             v-if="store.uploadBatch.currentFile"
             class="text-xs text-muted-foreground"
           >
-            Current: {{ store.uploadBatch.currentFile }}
+            {{ $t("file_manager.tree.current") }}: {{ store.uploadBatch.currentFile }}
           </div>
 
           <!-- Failed files warning -->
@@ -70,14 +70,14 @@
             v-if="store.uploadBatch.failedFiles.length > 0"
             class="text-xs text-destructive"
           >
-            {{ store.uploadBatch.failedFiles.length }} file(s) failed to upload
+            {{ $t("file_manager.upload.files_failed", { count: store.uploadBatch.failedFiles.length }) }}
           </div>
         </div>
       </div>
 
       <DialogFooter>
         <Button variant="outline" @click="$emit('update:open', false)">
-          Close
+          {{ $t("common.close") }}
         </Button>
       </DialogFooter>
     </DialogContent>

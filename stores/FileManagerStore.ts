@@ -1,5 +1,6 @@
 import { ref, computed } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
+import { useI18n } from "vue-i18n";
 import {
   generateQuery,
   generateMutation,
@@ -29,6 +30,8 @@ export interface FileContentResponse {
 }
 
 export const useFileManagerStore = defineStore("fileManager", () => {
+  const { t } = useI18n();
+
   // State
   const nodeId = ref<string | null>(null);
   const serverId = ref<string | null>(null);
@@ -202,7 +205,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         fileTree.value.set(path, response.data.listServerFiles.items);
       }
     } catch (err: any) {
-      error.value = err.message || "Failed to load directory";
+      error.value = err.message || t("file_manager_store.load_directory_failed");
       console.error("Error loading directory:", err);
     } finally {
       isLoading.value = false;
@@ -238,7 +241,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
       return response.data.readServerFile;
     } catch (err: any) {
-      error.value = err.message || "Failed to read file";
+      error.value = err.message || t("file_manager_store.read_file_failed");
       console.error("Error reading file:", err);
       return null;
     } finally {
@@ -274,7 +277,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
       await loadDirectory(currentPath.value);
     } catch (err: any) {
-      error.value = err.message || "Failed to create directory";
+      error.value = err.message || t("file_manager_store.create_directory_failed");
       console.error("Error creating directory:", err);
       throw err;
     } finally {
@@ -352,7 +355,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
       // Refresh the parent directory
       await loadDirectory(parentPath);
     } catch (err: any) {
-      error.value = err.message || "Failed to delete item";
+      error.value = err.message || t("file_manager_store.delete_item_failed");
       console.error("Error deleting item:", err);
       throw err;
     } finally {
@@ -389,7 +392,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
       await loadDirectory(currentPath.value);
     } catch (err: any) {
-      error.value = err.message || "Failed to rename item";
+      error.value = err.message || t("file_manager_store.rename_item_failed");
       console.error("Error renaming item:", err);
       throw err;
     } finally {
@@ -424,7 +427,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
       await loadDirectory(sourceDir);
       await loadDirectory(destPath);
     } catch (err: any) {
-      error.value = err.message || "Failed to move item";
+      error.value = err.message || t("file_manager_store.move_item_failed");
       console.error("Error moving item:", err);
       throw err;
     } finally {
@@ -484,8 +487,8 @@ export const useFileManagerStore = defineStore("fileManager", () => {
               reject(new Error(`Upload failed: ${xhr.statusText}`));
             }
           };
-          xhr.onerror = () => reject(new Error("Network error"));
-          xhr.onabort = () => reject(new Error("Upload cancelled"));
+          xhr.onerror = () => reject(new Error(t("file_manager_store.network_error")));
+          xhr.onabort = () => reject(new Error(t("file_manager_store.upload_cancelled")));
           xhr.open("POST", apiUrl);
           xhr.send(formData);
         });
@@ -620,8 +623,8 @@ export const useFileManagerStore = defineStore("fileManager", () => {
               reject(new Error(`Upload failed: ${xhr.statusText}`));
             }
           };
-          xhr.onerror = () => reject(new Error("Network error"));
-          xhr.onabort = () => reject(new Error("Upload cancelled"));
+          xhr.onerror = () => reject(new Error(t("file_manager_store.network_error")));
+          xhr.onabort = () => reject(new Error(t("file_manager_store.upload_cancelled")));
           xhr.open("POST", apiUrl);
           xhr.send(formData);
         });
@@ -739,7 +742,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
       return true;
     } catch (err: any) {
-      error.value = err.message || "Failed to save file";
+      error.value = err.message || t("file_manager_store.save_file_failed");
       console.error("Error saving file:", err);
       return false;
     } finally {

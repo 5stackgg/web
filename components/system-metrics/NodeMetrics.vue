@@ -5,7 +5,14 @@ import NetworkChart from "~/components/charts/NetworkChart.vue";
 import DiskChart from "~/components/charts/DiskChart.vue";
 import { Card } from "@/components/ui/card";
 import Empty from "@/components/ui/empty/Empty.vue";
-import { BarChart3 } from "lucide-vue-next";
+import {
+  Activity,
+  BarChart3,
+  Cpu,
+  HardDrive,
+  MemoryStick,
+  Network,
+} from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 </script>
 
@@ -13,66 +20,204 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
   <div class="my-2">
     <!-- Metrics Charts -->
     <PageTransition v-if="metricsData && showCharts">
-      <!-- Detailed charts -->
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        <PageTransition :delay="0">
-          <Card class="p-4 rounded-lg border border-gray-200">
-            <h4 class="text-sm font-medium mb-2">
-              {{ $t("pages.system_metrics.cpu_usage") }}
-            </h4>
-            <div class="h-[350px]">
-              <CpuChart :metrics="metricsData.cpu" />
+      <div class="rounded-2xl border border-border/60 bg-muted/10 p-4 sm:p-5">
+        <div
+          class="flex flex-col gap-4 border-b border-border/60 pb-4 sm:flex-row sm:items-end sm:justify-between"
+        >
+          <div class="space-y-1">
+            <div
+              class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+            >
+              <Activity class="h-3.5 w-3.5" />
+              Live performance timeline
             </div>
-          </Card>
-        </PageTransition>
+            <h3 class="text-base font-semibold">{{ $t("system_metrics.node_telemetry") }}</h3>
+            <p class="max-w-2xl text-xs text-muted-foreground">
+              CPU and memory stay front and center, with network and disk
+              history grouped underneath for deeper inspection.
+            </p>
+          </div>
 
-        <PageTransition :delay="100">
-          <Card class="p-4 rounded-lg border border-gray-200">
-            <h4 class="text-sm font-medium mb-2">
-              {{ $t("pages.system_metrics.memory_usage") }}
-            </h4>
-            <div class="h-[350px]">
-              <MemoryChart :metrics="metricsData.memory" />
+          <div class="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:min-w-[32rem]">
+            <div
+              class="rounded-xl border border-border/50 bg-background/50 px-3 py-2.5"
+            >
+              <div
+                class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+              >
+                <Cpu class="h-3.5 w-3.5" />
+                CPU
+              </div>
+              <div class="mt-2 text-lg font-semibold tabular-nums">
+                {{ latestCpuUsage }}%
+              </div>
             </div>
-          </Card>
-        </PageTransition>
+            <div
+              class="rounded-xl border border-border/50 bg-background/50 px-3 py-2.5"
+            >
+              <div
+                class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+              >
+                <MemoryStick class="h-3.5 w-3.5" />
+                Memory
+              </div>
+              <div
+                class="mt-2 text-[13px] font-medium tabular-nums leading-snug"
+              >
+                {{ memoryUsageDisplay }}
+              </div>
+            </div>
+            <div
+              class="rounded-xl border border-border/50 bg-background/50 px-3 py-2.5"
+            >
+              <div
+                class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+              >
+                <Network class="h-3.5 w-3.5" />
+                Network
+              </div>
+              <div class="mt-2 text-lg font-semibold tabular-nums">
+                {{ networkUsageDisplay }}
+              </div>
+            </div>
+            <div
+              class="rounded-xl border border-border/50 bg-background/50 px-3 py-2.5"
+            >
+              <div
+                class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+              >
+                <HardDrive class="h-3.5 w-3.5" />
+                Disk
+              </div>
+              <div
+                class="mt-2 text-[13px] font-medium tabular-nums leading-snug"
+              >
+                {{ diskUsageDisplay }}
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <PageTransition :delay="200">
-          <Card class="p-4 rounded-lg border border-gray-200">
-            <h4 class="text-sm font-medium mb-2">
-              {{ $t("pages.system_metrics.network") }}
-            </h4>
-            <div class="h-[350px]">
-              <NetworkChart :metrics="metricsData.network" />
-            </div>
-          </Card>
-        </PageTransition>
+        <div class="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-12">
+          <PageTransition :delay="0" class="xl:col-span-6">
+            <Card class="rounded-2xl border border-border/60 bg-background/40 p-4">
+              <div class="mb-3 flex items-start justify-between gap-3">
+                <div>
+                  <h4 class="text-sm font-semibold">
+                    {{ $t("pages.system_metrics.cpu_usage") }}
+                  </h4>
+                  <p class="text-xs text-muted-foreground">
+                    Processor pressure over the last polling window.
+                  </p>
+                </div>
+                <div class="text-right">
+                  <div class="text-xl font-semibold tabular-nums">
+                    {{ latestCpuUsage }}%
+                  </div>
+                  <div class="text-[11px] uppercase tracking-wide text-muted-foreground">
+                    current
+                  </div>
+                </div>
+              </div>
+              <div class="h-[320px]">
+                <CpuChart :metrics="metricsData.cpu" />
+              </div>
+            </Card>
+          </PageTransition>
 
-        <PageTransition :delay="300">
-          <Card class="p-4 rounded-lg border border-gray-200">
-            <h4 class="text-sm font-medium mb-2">Disks</h4>
-            <div class="h-[350px]">
-              <DiskChart :metrics="metricsData.disks" />
-            </div>
-          </Card>
-        </PageTransition>
+          <PageTransition :delay="100" class="xl:col-span-6">
+            <Card class="rounded-2xl border border-border/60 bg-background/40 p-4">
+              <div class="mb-3 flex items-start justify-between gap-3">
+                <div>
+                  <h4 class="text-sm font-semibold">
+                    {{ $t("pages.system_metrics.memory_usage") }}
+                  </h4>
+                  <p class="text-xs text-muted-foreground">
+                    Working set usage compared against installed capacity.
+                  </p>
+                </div>
+                <div class="text-right">
+                  <div class="text-[13px] font-semibold tabular-nums">
+                    {{ memoryUsageDisplay }}
+                  </div>
+                  <div class="text-[11px] uppercase tracking-wide text-muted-foreground">
+                    {{ latestMemoryUsage }}% used
+                  </div>
+                </div>
+              </div>
+              <div class="h-[320px]">
+                <MemoryChart :metrics="metricsData.memory" />
+              </div>
+            </Card>
+          </PageTransition>
+
+          <PageTransition :delay="200" class="xl:col-span-6">
+            <Card class="rounded-2xl border border-border/60 bg-background/40 p-4">
+              <div class="mb-3 flex items-start justify-between gap-3">
+                <div>
+                  <h4 class="text-sm font-semibold">
+                    {{ $t("pages.system_metrics.network") }}
+                  </h4>
+                  <p class="text-xs text-muted-foreground">
+                    Combined receive and transmit throughput across interfaces.
+                  </p>
+                </div>
+                <div class="text-right">
+                  <div class="text-xl font-semibold tabular-nums">
+                    {{ networkUsageDisplay }}
+                  </div>
+                  <div class="text-[11px] uppercase tracking-wide text-muted-foreground">
+                    current
+                  </div>
+                </div>
+              </div>
+              <div class="h-[240px]">
+                <NetworkChart :metrics="metricsData.network" />
+              </div>
+            </Card>
+          </PageTransition>
+
+          <PageTransition :delay="300" class="xl:col-span-6">
+            <Card class="rounded-2xl border border-border/60 bg-background/40 p-4">
+              <div class="mb-3 flex items-start justify-between gap-3">
+                <div>
+                  <h4 class="text-sm font-semibold">{{ $t("game_server.disks_label") }}</h4>
+                  <p class="text-xs text-muted-foreground">
+                    Highest-utilization disk view with underlying timeline.
+                  </p>
+                </div>
+                <div class="text-right">
+                  <div class="text-[13px] font-semibold tabular-nums">
+                    {{ diskUsageDisplay }}
+                  </div>
+                  <div class="text-[11px] uppercase tracking-wide text-muted-foreground">
+                    {{ latestDiskUsage }}% used
+                  </div>
+                </div>
+              </div>
+              <div class="h-[240px]">
+                <DiskChart :metrics="metricsData.disks" />
+              </div>
+            </Card>
+          </PageTransition>
+        </div>
       </div>
     </PageTransition>
 
     <!-- Empty State -->
     <PageTransition v-else>
-      <Empty class="my-8">
+      <Empty class="my-8 rounded-2xl border border-border/60 bg-muted/10 py-8">
         <div class="flex flex-col items-center gap-4">
           <div class="rounded-full bg-muted p-4">
             <BarChart3 class="h-8 w-8 text-muted-foreground" />
           </div>
           <div class="space-y-1">
-            <h3 class="font-semibold text-lg">No Metrics Available</h3>
+            <h3 class="font-semibold text-lg">{{ $t("system_metrics.no_metrics_available") }}</h3>
             <p class="text-sm text-muted-foreground max-w-md">
               {{
                 metricsData === null
-                  ? "Loading metrics data..."
-                  : "No metrics data available for this node yet. Metrics will appear once the node starts reporting data."
+                  ? $t("system_metrics.loading_metrics")
+                  : $t("system_metrics.no_metrics_description")
               }}
             </p>
           </div>
@@ -85,6 +230,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 <script lang="ts">
 import { $ } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
+import { formatUsedOverTotalBytes } from "~/utilities/formatResourceUsage";
 export default {
   props: {
     gameServerNode: {
@@ -98,6 +244,33 @@ export default {
     };
   },
   computed: {
+    diskWithMaxPercent(): any | null {
+      if (!this.metricsData?.disks?.length) {
+        return null;
+      }
+      const last = this.metricsData.disks[this.metricsData.disks.length - 1];
+      if (!last?.disks?.length) {
+        return null;
+      }
+
+      let best: any = null;
+      let bestPct = -1;
+      for (const disk of last.disks) {
+        let value = Number(disk.usedPercent);
+        if (!Number.isFinite(value)) {
+          if (disk.size && disk.used) {
+            value = (Number(disk.used) / Number(disk.size)) * 100;
+          } else {
+            value = 0;
+          }
+        }
+        if (value > bestPct) {
+          bestPct = value;
+          best = disk;
+        }
+      }
+      return best;
+    },
     showCharts(): boolean {
       if (!this.metricsData) {
         return false;
@@ -127,18 +300,54 @@ export default {
       const usedPercent = (coresUsed * 100) / last.total;
       return Math.round(Math.min(100, Math.max(0, usedPercent)));
     },
+    latestMemoryUsage(): number {
+      if (!this.metricsData?.memory?.length) {
+        return 0;
+      }
+      const last = this.metricsData.memory[this.metricsData.memory.length - 1];
+      if (!last?.total) {
+        return 0;
+      }
+      const usedPercent = (Number(last.used || 0) / Number(last.total)) * 100;
+      return Math.round(Math.min(100, Math.max(0, usedPercent)));
+    },
+    memoryUsageDisplay(): string {
+      if (!this.metricsData?.memory?.length) {
+        return "—";
+      }
+      const last = this.metricsData.memory[this.metricsData.memory.length - 1];
+      if (!last?.total) {
+        return "—";
+      }
+      return formatUsedOverTotalBytes(
+        Number(last.used || 0),
+        Number(last.total),
+      );
+    },
     latestDiskUsage(): number {
-      if (!this.metricsData || !this.metricsData.disks?.length) {
+      const disk = this.diskWithMaxPercent;
+      if (!disk) {
         return 0;
       }
-      const last = this.metricsData.disks[this.metricsData.disks.length - 1];
-      if (!last?.disks || !last.disks.length) {
-        return 0;
+      let value = Number(disk.usedPercent);
+      if (!Number.isFinite(value)) {
+        if (disk.size && disk.used) {
+          value = (Number(disk.used) / Number(disk.size)) * 100;
+        } else {
+          value = 0;
+        }
       }
-      const maxUsed = last.disks.reduce((max: number, disk: any) => {
-        return Math.max(max, disk.usedPercent || 0);
-      }, 0);
-      return Math.round(Math.min(100, Math.max(0, maxUsed)));
+      return Math.round(Math.min(100, Math.max(0, value)));
+    },
+    diskUsageDisplay(): string {
+      const disk = this.diskWithMaxPercent;
+      if (!disk?.size) {
+        return "—";
+      }
+      return formatUsedOverTotalBytes(
+        Number(disk.used || 0),
+        Number(disk.size),
+      );
     },
     latestNetworkUsage(): number {
       if (!this.metricsData || !this.metricsData.network?.length) {
@@ -155,6 +364,9 @@ export default {
       );
       const mbPerSec = totalBytesPerSec / 1_000_000;
       return Math.round(Math.max(0, mbPerSec));
+    },
+    networkUsageDisplay(): string {
+      return `${this.latestNetworkUsage} MB/s`;
     },
   },
   apollo: {

@@ -3,7 +3,7 @@
     <!-- Location info -->
     <div class="p-4 border-b bg-muted/50">
       <div class="text-sm text-muted-foreground">
-        <span class="font-medium">Location:</span>
+        <span class="font-medium">{{ $t("file_manager.location") }}:</span>
         <code class="ml-2 px-2 py-1 bg-background rounded text-xs">
           {{
             store.isCustomPlugins
@@ -27,9 +27,12 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import FileTree from "./FileTree.vue";
 import FileDetailsPanel from "./FileDetailsPanel.vue";
 import { toast } from "@/components/ui/toast";
+
+const { t } = useI18n();
 
 const props = defineProps<{
   nodeId: string;
@@ -44,7 +47,7 @@ watch(
   (error) => {
     if (error) {
       toast({
-        title: "Error",
+        title: t("common.error"),
         description: error,
         variant: "destructive",
       });

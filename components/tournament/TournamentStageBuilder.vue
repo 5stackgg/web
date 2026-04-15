@@ -46,37 +46,41 @@ import {
         default-value="stage-1"
         class="w-full"
       >
-        <TabsList
-          :style="{ gridTemplateColumns: `repeat(${maxStageNumber}, 1fr)` }"
-        >
+        <TabsList class="stage-tabs__list">
           <TabsTrigger
             v-for="stageNumber in maxStageNumber"
             :key="stageNumber"
             :value="`stage-${stageNumber}`"
-            class="text-sm w-full [&>span]:!flex [&>span]:!items-center [&>span]:!justify-between [&>span]:!w-full [&>span]:gap-2 [&>span]:!whitespace-normal"
+            class="stage-tabs__trigger"
           >
-            <div class="flex flex-col items-start">
-              <span>{{
-                $t("tournament.stage.stage_tab", { stage: stageNumber })
-              }}</span>
-              <span
-                v-if="getFirstStageForTab(stageNumber)"
-                class="text-xs text-muted-foreground"
-              >
+            <div class="stage-tabs__trigger-body">
+              <div class="stage-tabs__trigger-number">
                 {{
-                  getFirstStageForTab(stageNumber)?.e_tournament_stage_type
-                    .description
+                  stageNumber.toString().padStart(2, "0")
                 }}
-              </span>
-              <div
-                v-if="getFirstStageForTab(stageNumber)"
-                class="text-xs text-muted-foreground flex gap-2 mt-0.5"
-              >
-                <span v-if="getBestOf(getFirstStageForTab(stageNumber))">
-                  BO{{ getBestOf(getFirstStageForTab(stageNumber)) }}
-                </span>
-                <span v-if="getFirstStageForTab(stageNumber)?.max_teams">
-                  {{ getFirstStageForTab(stageNumber).max_teams }} teams
+              </div>
+              <div class="stage-tabs__trigger-info">
+                <span class="stage-tabs__trigger-name">{{
+                  $t("tournament.stage.stage_tab", { stage: stageNumber })
+                }}</span>
+                <span
+                  v-if="getFirstStageForTab(stageNumber)"
+                  class="stage-tabs__trigger-meta"
+                >
+                  {{
+                    getFirstStageForTab(stageNumber)?.e_tournament_stage_type
+                      .description
+                  }}
+                  <template v-if="getBestOf(getFirstStageForTab(stageNumber))">
+                    ·
+                    <span class="stage-tabs__trigger-tag">
+                      BO{{ getBestOf(getFirstStageForTab(stageNumber)) }}
+                    </span>
+                  </template>
+                  <template v-if="getFirstStageForTab(stageNumber)?.max_teams">
+                    ·
+                    {{ getFirstStageForTab(stageNumber).max_teams }} teams
+                  </template>
                 </span>
               </div>
             </div>
@@ -87,12 +91,12 @@ import {
             >
               <DropdownMenuTrigger as-child @click.stop>
                 <Button
-                  variant="secondary"
-                  size="sm"
+                  variant="ghost"
+                  size="icon"
                   @click.stop
-                  class="h-8 shrink-0"
+                  class="stage-tabs__menu-btn h-7 w-7 shrink-0"
                 >
-                  <MoreHorizontal />
+                  <MoreHorizontal class="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" class="w-[200px]">
@@ -119,8 +123,15 @@ import {
               </DropdownMenuContent>
             </DropdownMenu>
           </TabsTrigger>
-          <TabsTrigger value="add-stage" class="text-sm" v-if="canEditStages">
-            {{ $t("tournament.stage.add_another") }}
+          <TabsTrigger
+            value="add-stage"
+            class="stage-tabs__trigger stage-tabs__trigger--add"
+            v-if="canEditStages"
+          >
+            <span class="stage-tabs__add-icon">+</span>
+            <span class="stage-tabs__add-label">
+              {{ $t("tournament.stage.add_another") }}
+            </span>
           </TabsTrigger>
         </TabsList>
 
@@ -247,22 +258,10 @@ import {
     </div>
 
     <template v-if="tournament.is_organizer">
-      <div v-if="tournament.stages.length === 0" class="text-center p-8">
-        <h2 class="text-2xl font-bold mb-4">
-          {{ $t("tournament.stage.no_stages") }}
-        </h2>
-        <p class="text-gray-600 mb-6">
-          {{ $t("tournament.stage.start_building") }}
-        </p>
-      </div>
-
       <Card
         class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 p-4 max-w-2xl mx-auto"
         v-if="tournament.stages.length === 0"
       >
-        <h2 class="text-xl font-semibold mb-4">
-          {{ $t("tournament.stage.add_first") }}
-        </h2>
         <TournamentStageForm
           :tournament="tournament"
           :order="tournament.stages.length + 1"
@@ -387,3 +386,132 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.stage-tabs__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0;
+  background: transparent;
+  border: none;
+  height: auto;
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.stage-tabs__trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 2.25rem 0.75rem 0.85rem !important;
+  min-width: 220px;
+  min-height: 72px;
+  height: auto !important;
+  background: hsl(var(--card) / 0.45) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 0.375rem !important;
+  color: hsl(var(--muted-foreground)) !important;
+  font-family: inherit;
+  letter-spacing: 0;
+  text-transform: none;
+  text-align: left;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    color 180ms ease;
+}
+.stage-tabs__trigger:hover {
+  border-color: hsl(var(--tac-amber) / 0.35) !important;
+  background: hsl(var(--card) / 0.7) !important;
+}
+.stage-tabs__trigger[data-state="active"] {
+  border-color: hsl(var(--tac-amber) / 0.55) !important;
+  background: hsl(var(--tac-amber) / 0.08) !important;
+  color: hsl(var(--foreground)) !important;
+  box-shadow: none !important;
+}
+
+.stage-tabs__trigger-body {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+.stage-tabs__trigger-number {
+  font-family: "Oxanium", monospace;
+  font-size: 1.25rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: hsl(var(--tac-amber) / 0.4);
+  line-height: 1;
+}
+.stage-tabs__trigger[data-state="active"] .stage-tabs__trigger-number {
+  color: hsl(var(--tac-amber));
+}
+.stage-tabs__trigger-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+  text-align: left;
+}
+.stage-tabs__trigger-name {
+  font-family: "Oxanium", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+.stage-tabs__trigger-meta {
+  font-size: 0.72rem;
+  color: hsl(var(--muted-foreground));
+  display: inline-flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.stage-tabs__trigger-tag {
+  font-family: "Oxanium", monospace;
+  letter-spacing: 0.08em;
+  color: hsl(var(--tac-amber));
+}
+
+.stage-tabs__trigger--add {
+  min-width: 200px;
+  min-height: 72px;
+  font-family: "Oxanium", monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border-style: dashed !important;
+  padding: 0.75rem 1rem !important;
+  justify-content: center;
+}
+.stage-tabs__trigger--add:hover {
+  color: hsl(var(--tac-amber)) !important;
+  border-color: hsl(var(--tac-amber) / 0.5) !important;
+}
+.stage-tabs__add-icon {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1;
+  margin-right: 0.35rem;
+}
+
+.stage-tabs__menu-btn {
+  position: absolute !important;
+  top: 0.3rem;
+  right: 0.3rem;
+  opacity: 0.55;
+  transition: opacity 160ms ease;
+}
+.stage-tabs__trigger:hover .stage-tabs__menu-btn,
+.stage-tabs__trigger[data-state="active"] .stage-tabs__menu-btn {
+  opacity: 1;
+}
+</style>

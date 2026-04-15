@@ -3,6 +3,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Card } from "~/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
+import { useI18n } from "vue-i18n";
 import { generateMutation } from "~/graphql/graphqlGen";
 import {
   AlertDialog,
@@ -19,6 +20,7 @@ definePageMeta({
   layout: "application-settings",
 });
 
+const { t } = useI18n();
 const config = useRuntimeConfig();
 const isDev = computed(
   () =>
@@ -56,12 +58,14 @@ async function doLoadFixtures() {
     });
 
     toast({
-      title: "Fixtures loaded successfully",
+      title: t("pages.settings.application.fixtures.loaded_success"),
     });
   } catch (error: any) {
     toast({
-      title: "Failed to load fixtures",
-      description: error?.message || "An error occurred",
+      title: t("pages.settings.application.fixtures.load_failed"),
+      description:
+        error?.message ||
+        t("pages.settings.application.players.error_occurred"),
       variant: "destructive",
     });
   } finally {
@@ -83,12 +87,14 @@ async function doRemoveFixtures() {
     });
 
     toast({
-      title: "Fixtures removed successfully",
+      title: t("pages.settings.application.fixtures.removed_success"),
     });
   } catch (error: any) {
     toast({
-      title: "Failed to remove fixtures",
-      description: error?.message || "An error occurred",
+      title: t("pages.settings.application.fixtures.remove_failed"),
+      description:
+        error?.message ||
+        t("pages.settings.application.players.error_occurred"),
       variant: "destructive",
     });
   } finally {
@@ -101,17 +107,18 @@ async function doRemoveFixtures() {
   <PageTransition :delay="0">
     <div v-if="!isDev" class="p-6">
       <p class="text-muted-foreground">
-        Fixtures are only available in development mode.
+        {{ $t("pages.settings.application.fixtures.dev_only_notice") }}
       </p>
     </div>
 
     <div v-else>
       <Card variant="gradient" class="p-6">
         <template v-if="!fixturesLoaded">
-          <h3 class="text-lg font-semibold">Load Demo Fixtures</h3>
+          <h3 class="text-lg font-semibold">
+            {{ $t("pages.settings.application.fixtures.load_title") }}
+          </h3>
           <p class="text-sm text-muted-foreground mt-1">
-            Populate the database with sample players, teams, matches, and
-            tournaments for testing.
+            {{ $t("pages.settings.application.fixtures.load_description") }}
           </p>
           <div class="mt-4">
             <Button
@@ -119,15 +126,21 @@ async function doRemoveFixtures() {
               :disabled="loading"
               @click="showLoadDialog = true"
             >
-              {{ loading ? "Loading..." : "Load Fixtures" }}
+              {{
+                loading
+                  ? $t("pages.settings.application.fixtures.loading")
+                  : $t("pages.settings.application.fixtures.load_button")
+              }}
             </Button>
           </div>
         </template>
 
         <template v-else>
-          <h3 class="text-lg font-semibold">Demo Fixtures Loaded</h3>
+          <h3 class="text-lg font-semibold">
+            {{ $t("pages.settings.application.fixtures.loaded_title") }}
+          </h3>
           <p class="text-sm text-muted-foreground mt-1">
-            Fixture data is currently loaded in the database.
+            {{ $t("pages.settings.application.fixtures.loaded_description") }}
           </p>
           <div class="mt-4 flex gap-3">
             <Button
@@ -135,14 +148,22 @@ async function doRemoveFixtures() {
               :disabled="loading"
               @click="showReloadDialog = true"
             >
-              {{ loading ? "Processing..." : "Reload Fixtures" }}
+              {{
+                loading
+                  ? $t("pages.settings.application.fixtures.processing")
+                  : $t("pages.settings.application.fixtures.reload_button")
+              }}
             </Button>
             <Button
               variant="outline"
               :disabled="loading"
               @click="showRemoveDialog = true"
             >
-              {{ loading ? "Processing..." : "Remove Fixtures" }}
+              {{
+                loading
+                  ? $t("pages.settings.application.fixtures.processing")
+                  : $t("pages.settings.application.fixtures.remove_button")
+              }}
             </Button>
           </div>
         </template>
@@ -151,20 +172,26 @@ async function doRemoveFixtures() {
       <AlertDialog v-model:open="showLoadDialog">
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Load Fixture Data?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {{ $t("pages.settings.application.fixtures.load_dialog_title") }}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              This will insert 40 players, 8 teams, ~120 matches, and 4
-              tournaments into the database. This is sample data for development
-              purposes.
+              {{
+                $t(
+                  "pages.settings.application.fixtures.load_dialog_description",
+                )
+              }}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>
+              {{ $t("common.cancel") }}
+            </AlertDialogCancel>
             <AlertDialogAction
               class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               @click="doLoadFixtures"
             >
-              Load Fixtures
+              {{ $t("pages.settings.application.fixtures.load_button") }}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -173,20 +200,26 @@ async function doRemoveFixtures() {
       <AlertDialog v-model:open="showReloadDialog">
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Reload Fixture Data?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {{ $t("pages.settings.application.fixtures.reload_dialog_title") }}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              This will delete all existing fixture data and reload fresh
-              copies. Any changes you've made to fixture players, matches, or
-              tournaments will be lost.
+              {{
+                $t(
+                  "pages.settings.application.fixtures.reload_dialog_description",
+                )
+              }}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>
+              {{ $t("common.cancel") }}
+            </AlertDialogCancel>
             <AlertDialogAction
               class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               @click="doLoadFixtures"
             >
-              Reload Fixtures
+              {{ $t("pages.settings.application.fixtures.reload_button") }}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -195,19 +228,26 @@ async function doRemoveFixtures() {
       <AlertDialog v-model:open="showRemoveDialog">
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Remove Fixture Data?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {{ $t("pages.settings.application.fixtures.remove_dialog_title") }}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              This will delete all fixture players, teams, matches, and
-              tournaments from the database. This action cannot be undone.
+              {{
+                $t(
+                  "pages.settings.application.fixtures.remove_dialog_description",
+                )
+              }}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>
+              {{ $t("common.cancel") }}
+            </AlertDialogCancel>
             <AlertDialogAction
               class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               @click="doRemoveFixtures"
             >
-              Remove Fixtures
+              {{ $t("pages.settings.application.fixtures.remove_button") }}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

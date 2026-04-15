@@ -1,26 +1,29 @@
 <script setup lang="ts">
-import { Button } from "@/components/ui/button";
 import { Check } from "lucide-vue-next";
 import MapDisplay from "~/components/MapDisplay.vue";
+import {
+  vetoTileClasses,
+  vetoTileHoverClasses,
+  vetoTileActiveClasses,
+  vetoTileDisabledClasses,
+  vetoTileConfirmOverlayClasses,
+  vetoTileConfirmPillClasses,
+} from "~/utilities/tacticalClasses";
 </script>
 
 <template>
   <div class="container mx-auto px-4">
     <div class="flex flex-wrap justify-center gap-6">
-      <div
-        v-for="map in mapPool"
-        :key="map.id"
-        class="relative group w-[150px]"
-      >
+      <div v-for="map in mapPool" :key="map.id" class="relative w-[150px]">
         <div
-          class="relative overflow-hidden rounded-[12px] h-[180px] transition-all duration-300 ease-in-out transform"
-          :class="{
-            'cursor-pointer': true,
-            'scale-105 ring-2 ring-primary': selectedMap?.id === map.id,
-            'hover:scale-105': !selectedMap || selectedMap.id !== map.id,
-            'opacity-30 pointer-events-none filter grayscale':
-              !availableMaps.includes(map),
-          }"
+          class="h-[180px]"
+          :class="[
+            vetoTileClasses,
+            selectedMap?.id === map.id
+              ? vetoTileActiveClasses
+              : vetoTileHoverClasses,
+            !availableMaps.includes(map) && vetoTileDisabledClasses,
+          ]"
           @click="selectMap(map)"
         >
           <MapDisplay :map="map" class="h-full w-full" />
@@ -34,16 +37,12 @@ import MapDisplay from "~/components/MapDisplay.vue";
           >
             <div
               v-if="selectedMap?.id === map.id && availableMaps.includes(map)"
-              class="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-[3px] cursor-pointer"
+              :class="vetoTileConfirmOverlayClasses"
               @click.stop="confirmMap"
             >
-              <div
-                class="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/15 backdrop-blur-xl border border-white/30 shadow-xl shadow-black/30 ring-1 ring-white/10"
-              >
-                <Check class="w-4 h-4 text-green-400" />
-                <span class="text-sm font-semibold text-white">{{
-                  confirmLabel || $t("common.confirm")
-                }}</span>
+              <div :class="vetoTileConfirmPillClasses">
+                <Check class="w-4 h-4" />
+                <span>{{ confirmLabel || $t("common.confirm") }}</span>
               </div>
             </div>
           </Transition>

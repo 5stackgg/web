@@ -387,7 +387,7 @@ const shouldShowCrossBracketDestination = (
         v-if="bracket.scheduled_at && !bracket.match"
         class="text-xs text-muted-foreground flex flex-col items-center gap-1"
       >
-        <span>{{ $t("tournament.bracket.scheduled_at") }}</span>
+        <span>{{ $t("common.scheduled") }}</span>
         <span class="text-green-400 font-medium">
           <TimeAgo :date="bracket.scheduled_at"></TimeAgo>
         </span>

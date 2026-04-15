@@ -4,10 +4,7 @@ import CpuChart from "~/components/charts/CpuChart.vue";
 import MemoryChart from "~/components/charts/MemoryChart.vue";
 import NodeMetrics from "~/components/system-metrics/NodeMetrics.vue";
 import NodeQuickStats from "~/components/system-metrics/NodeQuickStats.vue";
-import Separator from "@/components/ui/separator/Separator.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import PageHeading from "~/components/PageHeading.vue";
-import { Card } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import {
   Select,
@@ -17,161 +14,240 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Switch } from "~/components/ui/switch";
+import { Label } from "~/components/ui/label";
 import { Button } from "~/components/ui/button";
-import { Badge } from "~/components/ui/badge";
-import { Activity, Cpu, HardDrive, Network, Logs } from "lucide-vue-next";
+import {
+  Activity,
+  ArrowDownAZ,
+  ArrowDownWideNarrow,
+  ArrowUpNarrowWide,
+  ArrowUpZA,
+  Cpu,
+  HardDrive,
+  Logs,
+  Search,
+  Server,
+  Signal,
+} from "lucide-vue-next";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
-
-const showSeparators = computed(
-  () => useApplicationSettingsStore().showSeparators,
-);
 </script>
 
 <template>
-  <!-- Page heading & high-level summary -->
-  <PageTransition :delay="0">
-    <PageHeading>
-      <template #title>{{ $t("pages.system_metrics.title") }}</template>
-      <template #description>
-        {{ $t("pages.system_metrics.description") }}
-      </template>
-      <template #actions>
-        <div class="flex flex-wrap items-center gap-3">
-          <Badge variant="outline" class="text-xs px-3 py-1">
-            {{ $t("pages.system_metrics.services_count") }}:
-            {{ totalServices }}
-          </Badge>
-          <Badge variant="outline" class="text-xs px-3 py-1">
-            {{ $t("pages.system_metrics.nodes_count") }}:
-            {{ totalGameNodes }}
-          </Badge>
-        </div>
-      </template>
-    </PageHeading>
-  </PageTransition>
+  <div
+    class="relative space-y-6 [--tac-clip:14px] [--tac-clip-sm:10px]"
+  >
+    <div
+      aria-hidden="true"
+      class="pointer-events-none fixed inset-0 -z-10 opacity-[0.04] [background-image:linear-gradient(hsl(var(--tac-amber))_1px,transparent_1px),linear-gradient(90deg,hsl(var(--tac-amber))_1px,transparent_1px)] [background-size:64px_64px]"
+    />
 
-  <!-- Game server nodes section (now on top) -->
-  <PageTransition :delay="100" class="mt-6">
-    <Card class="p-4 space-y-4">
-      <div
-        class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
+    <PageTransition :delay="0">
+      <section
+        class="relative border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.25)_100%)] [backdrop-filter:blur(6px)]"
       >
-        <div class="flex items-center gap-2">
-          <Activity class="h-5 w-5 text-muted-foreground" />
-          <h2 class="text-base font-semibold">
-            {{ $t("pages.game_server_nodes.title") }}
-          </h2>
-        </div>
+        <span
+          aria-hidden="true"
+          class="pointer-events-none absolute left-2 top-2 h-3 w-3 border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
+        />
+        <span
+          aria-hidden="true"
+          class="pointer-events-none absolute bottom-2 right-2 h-3 w-3 border-b-2 border-r-2 border-[hsl(var(--tac-amber))]"
+        />
 
-        <!-- Nodes filters & quick stats -->
-        <div class="flex flex-wrap items-center gap-3">
-          <div class="w-full sm:w-60">
-            <Input
-              v-model="nodeSearchTerm"
-              :placeholder="$t('pages.system_metrics.search_nodes_placeholder')"
-            />
-          </div>
-          <div class="flex items-center gap-3 flex-wrap">
-            <div class="flex items-center gap-2">
-              <span class="text-xs text-muted-foreground">
-                {{ $t("pages.game_server_nodes.only_enabled") }}
-              </span>
-              <Switch v-model="onlyEnabledNodes" />
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="text-xs text-muted-foreground">
-                {{ $t("pages.system_metrics.only_online_nodes") }}
-              </span>
-              <Switch v-model="onlyOnlineNodes" />
-            </div>
-          </div>
-          <div
-            class="flex items-center gap-2 flex-wrap text-xs text-muted-foreground"
-          >
-            <span>Sort nodes by</span>
-            <Select v-model="nodeSortBy">
-              <SelectTrigger class="h-7 w-32">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="cpu">CPU</SelectItem>
-                <SelectItem value="memory">Memory</SelectItem>
-                <SelectItem value="name">Name</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select v-model="nodeSortDirection">
-              <SelectTrigger class="h-7 w-24">
-                <SelectValue placeholder="Order" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="desc">Desc</SelectItem>
-                <SelectItem value="asc">Asc</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div class="flex items-center gap-2 text-xs text-muted-foreground">
-            <Badge variant="outline">
-              {{ $t("pages.system_metrics.nodes_total") }}:
-              {{ totalGameNodes }}
-            </Badge>
-          </div>
-        </div>
-      </div>
-
-      <Separator
-        v-if="showSeparators && filteredNodes && filteredNodes.length"
-        class="my-2"
-      />
-
-      <div
-        v-if="filteredNodes && filteredNodes.length"
-        class="grid grid-cols-1 md:grid-cols-2 gap-4"
-      >
-        <Card
-          v-for="node in filteredNodes"
-          :key="node.id"
-          :class="[
-            'p-4 space-y-3',
-            isNodeExpanded(node) ? 'md:col-span-2' : '',
-          ]"
+        <header
+          class="flex flex-col gap-4 border-b border-border/70 px-5 py-4 lg:flex-row lg:items-center lg:justify-between"
         >
-          <div class="flex items-start justify-between gap-3">
-            <div class="space-y-1 min-w-0">
-              <div class="text-sm font-semibold truncate">
-                {{ node.label || node.id }}
-              </div>
-              <div class="w-full text-xs text-muted-foreground min-w-0">
-                <span class="truncate block">
-                  <template v-if="node.region">
-                    {{ node.region }} · {{ node.id }}
-                  </template>
-                  <template v-else>
-                    {{ node.id }}
-                  </template>
+          <div class="flex items-center gap-3">
+            <span
+              class="inline-block h-[2px] w-[14px] bg-[hsl(var(--tac-amber))]"
+            />
+            <div>
+              <h2
+                class="font-sans text-lg font-bold uppercase tracking-[0.08em]"
+              >
+                {{ $t("pages.game_server_nodes.title") }}
+                <span
+                  class="ml-2 font-mono text-xs font-normal tracking-[0.15em] text-[hsl(var(--tac-amber))]"
+                >
+                  [ {{ filteredNodes.length }} / {{ totalGameNodes }} ]
                 </span>
-              </div>
+              </h2>
             </div>
-            <div class="flex flex-col items-end gap-2">
-              <div class="flex items-center gap-2">
-                <Badge v-if="node.enabled" variant="outline" class="text-xs">
-                  {{ $t("common.enabled") }}
-                </Badge>
-                <Badge v-else variant="outline" class="text-xs">
-                  {{ $t("common.disabled") }}
-                </Badge>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="relative w-full sm:w-64">
+              <Search
+                class="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[hsl(var(--tac-amber))]"
+              />
+              <Input
+                v-model="nodeSearchTerm"
+                class="h-9 border-border bg-background/60 pl-8 font-mono text-xs tracking-wider placeholder:text-muted-foreground/60 focus-visible:border-[hsl(var(--tac-amber))] focus-visible:ring-0"
+                :placeholder="
+                  $t('pages.system_metrics.search_nodes_placeholder')
+                "
+              />
+            </div>
+
+            <div class="flex items-center gap-2">
+              <Switch v-model="onlyEnabledNodes" />
+              <Label class="text-sm cursor-pointer">
+                {{ $t("pages.game_server_nodes.only_enabled") }}
+              </Label>
+            </div>
+            <div class="flex items-center gap-2">
+              <Switch v-model="onlyOnlineNodes" />
+              <Label class="text-sm cursor-pointer">
+                {{ $t("pages.system_metrics.only_online_nodes") }}
+              </Label>
+            </div>
+
+            <div
+              class="flex h-9 items-center gap-1 border border-border bg-background/40 px-2 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground"
+            >
+              <span class="pl-1">sort</span>
+              <Select v-model="nodeSortBy">
+                <SelectTrigger
+                  class="h-7 w-20 border-none bg-transparent px-1 font-mono text-[0.65rem] uppercase tracking-[0.2em] shadow-none transition-colors hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] focus:ring-0 [&[data-state=open]]:bg-[hsl(var(--tac-amber)/0.16)] [&[data-state=open]]:text-[hsl(var(--tac-amber))]"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cpu">CPU</SelectItem>
+                  <SelectItem value="memory">MEM</SelectItem>
+                  <SelectItem value="name">NAME</SelectItem>
+                </SelectContent>
+              </Select>
+              <FiveStackToolTip :delay-duration="300">
+                <template #trigger>
+                  <button
+                    class="grid h-6 w-6 place-items-center border border-border text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.12)]"
+                    @click="
+                      nodeSortDirection =
+                        nodeSortDirection === 'asc' ? 'desc' : 'asc'
+                    "
+                  >
+                    <component
+                      :is="sortIconFor(nodeSortBy, nodeSortDirection)"
+                      class="h-3 w-3"
+                    />
+                  </button>
+                </template>
+                <span>
+                  {{
+                    nodeSortDirection === "asc"
+                      ? $t("common.sort_ascending")
+                      : $t("common.sort_descending")
+                  }}
+                </span>
+              </FiveStackToolTip>
+            </div>
+          </div>
+        </header>
+
+        <div class="p-4 sm:p-5">
+          <div
+            v-if="filteredNodes && filteredNodes.length"
+            class="grid grid-cols-1 gap-4 md:grid-cols-2"
+          >
+            <article
+              v-for="(node, idx) in filteredNodes"
+              :key="node.id"
+              :class="[
+                'group relative border border-border bg-background/40 p-4',
+                isNodeExpanded(node)
+                  ? 'border-[hsl(var(--tac-amber)/0.55)] md:col-span-2'
+                  : '',
+              ]"
+            >
+              <span
+                aria-hidden="true"
+                class="pointer-events-none absolute left-1.5 top-1.5 h-2.5 w-2.5 border-l-2 border-t-2"
+                :class="
+                  isNodeExpanded(node)
+                    ? 'border-[hsl(var(--tac-amber))]'
+                    : 'border-border/60'
+                "
+              />
+              <span
+                aria-hidden="true"
+                class="pointer-events-none absolute bottom-1.5 right-1.5 h-2.5 w-2.5 border-b-2 border-r-2"
+                :class="
+                  isNodeExpanded(node)
+                    ? 'border-[hsl(var(--tac-amber))]'
+                    : 'border-border/60'
+                "
+              />
+
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0 flex-1">
+                  <div
+                    class="flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.22em]"
+                  >
+                    <span class="text-[hsl(var(--tac-amber))]">
+                      N-{{ String(idx + 1).padStart(2, "0") }}
+                    </span>
+                    <span class="text-border">//</span>
+                    <span class="flex items-center gap-1.5">
+                      <span
+                        class="inline-block h-1.5 w-1.5"
+                        :class="
+                          isNodeOnline(node)
+                            ? 'bg-emerald-500 shadow-[0_0_8px_hsl(142_71%_45%/0.6)]'
+                            : 'bg-amber-500'
+                        "
+                      />
+                      <span
+                        :class="
+                          isNodeOnline(node)
+                            ? 'text-emerald-500'
+                            : 'text-amber-500'
+                        "
+                      >
+                        {{ isNodeOnline(node) ? "online" : "offline" }}
+                      </span>
+                    </span>
+                    <span class="text-border">//</span>
+                    <span
+                      :class="
+                        node.enabled
+                          ? 'text-foreground'
+                          : 'text-muted-foreground line-through'
+                      "
+                    >
+                      {{
+                        node.enabled
+                          ? $t("common.enabled")
+                          : $t("common.disabled")
+                      }}
+                    </span>
+                  </div>
+
+                  <div
+                    class="mt-1.5 truncate font-sans text-base font-semibold tracking-tight"
+                  >
+                    {{ nodeDisplayName(node) }}
+                  </div>
+                  <div
+                    class="truncate font-mono text-[11px] text-muted-foreground"
+                  >
+                    {{ nodeSubtitle(node) }}
+                  </div>
+                </div>
+
                 <FiveStackToolTip :delay-duration="300">
                   <template #trigger>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      class="h-7 w-7"
+                    <button
+                      class="grid h-9 w-9 place-items-center border transition-colors"
+                      :class="
+                        isNodeExpanded(node)
+                          ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.14)] text-[hsl(var(--tac-amber))]'
+                          : 'border-border bg-background/60 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]'
+                      "
                       @click="toggleNodeExpanded(node)"
                     >
-                      <Activity
-                        class="h-4 w-4"
-                        :class="isNodeExpanded(node) ? 'text-primary' : ''"
-                      />
-                    </Button>
+                      <Signal class="h-4 w-4" />
+                    </button>
                   </template>
                   <span>
                     {{
@@ -182,56 +258,86 @@ const showSeparators = computed(
                   </span>
                 </FiveStackToolTip>
               </div>
+
+              <div class="mt-4">
+                <NodeQuickStats
+                  :node-id="node.id"
+                  @update-latest-metrics="updateNodeMetrics"
+                />
+              </div>
+
+              <div
+                v-if="isNodeExpanded(node)"
+                class="mt-4 border border-border/60 bg-background/30 p-3 sm:p-4"
+              >
+                <NodeMetrics :game-server-node="node" />
+              </div>
+            </article>
+          </div>
+
+          <div
+            v-else
+            class="flex items-center justify-center gap-2 py-10 font-mono text-[0.7rem] uppercase tracking-[0.28em] text-muted-foreground"
+          >
+            <span class="text-[hsl(var(--tac-amber))]">◇</span>
+            {{ $t("pages.system_metrics.no_nodes_found") }}
+          </div>
+        </div>
+      </section>
+    </PageTransition>
+
+    <PageTransition :delay="60">
+      <section
+        class="relative border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.25)_100%)] [backdrop-filter:blur(6px)]"
+      >
+        <span
+          aria-hidden="true"
+          class="pointer-events-none absolute left-2 top-2 h-3 w-3 border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
+        />
+        <span
+          aria-hidden="true"
+          class="pointer-events-none absolute bottom-2 right-2 h-3 w-3 border-b-2 border-r-2 border-[hsl(var(--tac-amber))]"
+        />
+
+        <header
+          class="flex flex-col gap-4 border-b border-border/70 px-5 py-4 lg:flex-row lg:items-center lg:justify-between"
+        >
+          <div class="flex items-center gap-3">
+            <span
+              class="inline-block h-[2px] w-[14px] bg-[hsl(var(--tac-amber))]"
+            />
+            <div>
+              <h2
+                class="font-sans text-lg font-bold uppercase tracking-[0.08em]"
+              >
+                {{ $t("pages.system_metrics.services") }}
+                <span
+                  class="ml-2 font-mono text-xs font-normal tracking-[0.15em] text-[hsl(var(--tac-amber))]"
+                >
+                  [ {{ filteredServices.length }} / {{ totalServices }} ]
+                </span>
+              </h2>
             </div>
           </div>
 
-          <!-- Quick latest metrics summary -->
-          <NodeQuickStats
-            :node-id="node.id"
-            @update-latest-metrics="updateNodeMetrics"
-          />
+          <div class="flex flex-wrap items-center gap-2">
+            <div class="relative w-full sm:w-64">
+              <Search
+                class="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[hsl(var(--tac-amber))]"
+              />
+              <Input
+                v-model="serviceSearchTerm"
+                class="h-9 border-border bg-background/60 pl-8 font-mono text-xs tracking-wider placeholder:text-muted-foreground/60 focus-visible:border-[hsl(var(--tac-amber))] focus-visible:ring-0"
+                :placeholder="
+                  $t('pages.system_metrics.search_services_placeholder')
+                "
+              />
+            </div>
 
-          <div class="pt-2 border-t mt-2" v-if="isNodeExpanded(node)">
-            <NodeMetrics :game-server-node="node" />
-          </div>
-        </Card>
-      </div>
-
-      <div
-        v-else
-        class="flex items-center justify-center py-10 text-sm text-muted-foreground"
-      >
-        {{ $t("pages.system_metrics.no_nodes_found") }}
-      </div>
-    </Card>
-  </PageTransition>
-
-  <!-- Services section (now below game nodes) -->
-  <PageTransition :delay="300" class="mt-8">
-    <Card class="p-4 space-y-4">
-      <div
-        class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
-      >
-        <div class="flex items-center gap-2">
-          <Cpu class="h-5 w-5 text-muted-foreground" />
-          <h2 class="text-base font-semibold">
-            {{ $t("pages.system_metrics.services") }}
-          </h2>
-        </div>
-
-        <!-- Services filters -->
-        <div class="flex flex-wrap gap-3 items-center">
-          <div class="w-full sm:w-60">
-            <Input
-              v-model="serviceSearchTerm"
-              :placeholder="
-                $t('pages.system_metrics.search_services_placeholder')
-              "
-            />
-          </div>
-          <div class="w-full sm:w-48">
             <Select v-model="selectedServiceNode">
-              <SelectTrigger>
+              <SelectTrigger
+                class="h-9 w-44 border-border bg-background/40 font-mono text-[0.65rem] uppercase tracking-[0.18em] shadow-none transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))] focus:ring-0 [&[data-state=open]]:border-[hsl(var(--tac-amber))] [&[data-state=open]]:text-[hsl(var(--tac-amber))]"
+              >
                 <SelectValue
                   :placeholder="$t('pages.system_metrics.filter_by_node')"
                 />
@@ -249,200 +355,279 @@ const showSeparators = computed(
                 </SelectItem>
               </SelectContent>
             </Select>
+
+            <div
+              class="flex h-9 items-center gap-1 border border-border bg-background/40 px-2 font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground"
+            >
+              <span class="pl-1">sort</span>
+              <Select v-model="serviceSortBy">
+                <SelectTrigger
+                  class="h-7 w-20 border-none bg-transparent px-1 font-mono text-[0.65rem] uppercase tracking-[0.2em] shadow-none transition-colors hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] focus:ring-0 [&[data-state=open]]:bg-[hsl(var(--tac-amber)/0.16)] [&[data-state=open]]:text-[hsl(var(--tac-amber))]"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cpu">CPU</SelectItem>
+                  <SelectItem value="memory">MEM</SelectItem>
+                  <SelectItem value="name">NAME</SelectItem>
+                </SelectContent>
+              </Select>
+              <FiveStackToolTip :delay-duration="300">
+                <template #trigger>
+                  <button
+                    class="grid h-6 w-6 place-items-center border border-border text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.12)]"
+                    @click="
+                      serviceSortDirection =
+                        serviceSortDirection === 'asc' ? 'desc' : 'asc'
+                    "
+                  >
+                    <component
+                      :is="sortIconFor(serviceSortBy, serviceSortDirection)"
+                      class="h-3 w-3"
+                    />
+                  </button>
+                </template>
+                <span>
+                  {{
+                    serviceSortDirection === "asc"
+                      ? $t("common.sort_ascending")
+                      : $t("common.sort_descending")
+                  }}
+                </span>
+              </FiveStackToolTip>
+            </div>
           </div>
-          <div class="flex items-center gap-2 text-xs text-muted-foreground">
-            <span>Sort services by</span>
-            <Select v-model="serviceSortBy">
-              <SelectTrigger class="h-7 w-32">
-                <SelectValue placeholder="Sort by" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="cpu">CPU</SelectItem>
-                <SelectItem value="memory">Memory</SelectItem>
-                <SelectItem value="name">Name</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select v-model="serviceSortDirection">
-              <SelectTrigger class="h-7 w-24">
-                <SelectValue placeholder="Order" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="desc">Desc</SelectItem>
-                <SelectItem value="asc">Asc</SelectItem>
-              </SelectContent>
-            </Select>
+        </header>
+
+        <div class="p-4 sm:p-5">
+          <div
+            v-if="filteredServices && filteredServices.length"
+            class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3"
+          >
+            <article
+              v-for="(service, idx) in filteredServices"
+              :key="`${service.node}-${service.name}`"
+              :class="[
+                'group relative border bg-background/40 p-4',
+                serviceCpuStatus(service) === 'critical'
+                  ? 'border-destructive/70'
+                  : serviceCpuStatus(service) === 'warning'
+                    ? 'border-[hsl(var(--tac-amber)/0.55)]'
+                    : 'border-border',
+                isServiceExpanded(service)
+                  ? 'md:col-span-2 xl:col-span-3'
+                  : '',
+              ]"
+            >
+              <span
+                aria-hidden="true"
+                class="pointer-events-none absolute left-1.5 top-1.5 h-2.5 w-2.5 border-l-2 border-t-2"
+                :class="
+                  serviceCpuStatus(service) === 'critical'
+                    ? 'border-destructive'
+                    : serviceCpuStatus(service) === 'warning'
+                      ? 'border-[hsl(var(--tac-amber))]'
+                      : 'border-border/60'
+                "
+              />
+              <span
+                aria-hidden="true"
+                class="pointer-events-none absolute bottom-1.5 right-1.5 h-2.5 w-2.5 border-b-2 border-r-2"
+                :class="
+                  serviceCpuStatus(service) === 'critical'
+                    ? 'border-destructive'
+                    : serviceCpuStatus(service) === 'warning'
+                      ? 'border-[hsl(var(--tac-amber))]'
+                      : 'border-border/60'
+                "
+              />
+
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0 flex-1">
+                  <div
+                    class="truncate font-sans text-base font-semibold tracking-tight"
+                  >
+                    {{ service.name }}
+                  </div>
+                  <div class="font-mono text-[11px] text-muted-foreground">
+                    node // {{ service.node }}
+                  </div>
+                </div>
+
+                <div class="flex flex-shrink-0 items-start gap-1">
+                  <FiveStackToolTip :delay-duration="300">
+                    <template #trigger>
+                      <button
+                        class="grid h-8 w-8 place-items-center border transition-colors"
+                        :class="
+                          isServiceExpanded(service)
+                            ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.14)] text-[hsl(var(--tac-amber))]'
+                            : 'border-border bg-background/60 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]'
+                        "
+                        @click="toggleServiceExpanded(service)"
+                      >
+                        <Activity class="h-3.5 w-3.5" />
+                      </button>
+                    </template>
+                    <span>
+                      {{
+                        isServiceExpanded(service)
+                          ? $t("common.hide_metrics")
+                          : $t("common.show_metrics")
+                      }}
+                    </span>
+                  </FiveStackToolTip>
+                  <FiveStackToolTip :delay-duration="300">
+                    <template #trigger>
+                      <button
+                        class="grid h-8 w-8 place-items-center border border-border bg-background/60 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
+                        @click="
+                          $router.push({
+                            path: '/system-logs',
+                            query: { service: service.name },
+                          })
+                        "
+                      >
+                        <Logs class="h-3.5 w-3.5" />
+                      </button>
+                    </template>
+                    <span>{{ $t("layouts.app_nav.system.logs") }}</span>
+                  </FiveStackToolTip>
+                </div>
+              </div>
+
+              <div class="mt-4 grid gap-3 sm:grid-cols-2">
+                <div>
+                  <div
+                    class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground"
+                  >
+                    <span class="flex items-center gap-1.5">
+                      <Cpu class="h-3 w-3" />
+                      {{ $t("pages.system_metrics.cpu_short") }}
+                    </span>
+                    <span
+                      class="font-bold tabular-nums"
+                      :class="{
+                        'text-destructive':
+                          serviceCpuStatus(service) === 'critical',
+                        'text-[hsl(var(--tac-amber))]':
+                          serviceCpuStatus(service) === 'warning',
+                        'text-foreground':
+                          serviceCpuStatus(service) === 'normal',
+                      }"
+                    >
+                      {{ String(latestCpuUsage(service)).padStart(2, "0") }}%
+                    </span>
+                  </div>
+                  <div class="mt-2 flex h-2 gap-[2px]">
+                    <span
+                      v-for="i in 10"
+                      :key="`cpu-${i}`"
+                      class="flex-1"
+                      :class="
+                        i > Math.ceil(latestCpuUsage(service) / 10)
+                          ? 'bg-border/30'
+                          : latestCpuUsage(service) >= 85
+                            ? 'bg-destructive'
+                            : latestCpuUsage(service) >= 70
+                              ? 'bg-[hsl(var(--tac-amber))]'
+                              : 'bg-emerald-500/90'
+                      "
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div
+                    class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground"
+                  >
+                    <span class="flex items-center gap-1.5">
+                      <HardDrive class="h-3 w-3" />
+                      {{ $t("pages.system_metrics.memory_short") }}
+                    </span>
+                    <span class="font-bold tabular-nums text-foreground">
+                      {{ String(latestMemoryUsage(service)).padStart(2, "0") }}%
+                    </span>
+                  </div>
+                  <div class="mt-2 flex h-2 gap-[2px]">
+                    <span
+                      v-for="i in 10"
+                      :key="`mem-${i}`"
+                      class="flex-1"
+                      :class="
+                        i > Math.ceil(latestMemoryUsage(service) / 10)
+                          ? 'bg-border/30'
+                          : latestMemoryUsage(service) >= 85
+                            ? 'bg-destructive/90'
+                            : 'bg-[hsl(var(--tac-amber)/0.7)]'
+                      "
+                    />
+                  </div>
+                  <div
+                    class="mt-1.5 truncate font-mono text-[10px] tabular-nums text-muted-foreground"
+                  >
+                    {{ serviceMemoryUsageLabel(service) }}
+                  </div>
+                </div>
+              </div>
+
+              <div
+                v-if="isServiceExpanded(service)"
+                class="mt-4 border border-border/60 bg-background/30 p-3 sm:p-4"
+              >
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div class="border border-border/50 bg-background/30 p-3">
+                    <div
+                      class="mb-2 flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground"
+                    >
+                      <span
+                        class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"
+                      />
+                      {{ $t("pages.system_metrics.cpu_usage") }}
+                    </div>
+                    <div class="h-[260px]">
+                      <CpuChart :metrics="service.cpu" />
+                    </div>
+                  </div>
+                  <div class="border border-border/50 bg-background/30 p-3">
+                    <div
+                      class="mb-2 flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground"
+                    >
+                      <span
+                        class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"
+                      />
+                      {{ $t("pages.system_metrics.memory_usage") }}
+                    </div>
+                    <div class="h-[260px]">
+                      <MemoryChart :metrics="service.memory" label="MB" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div
+            v-else
+            class="flex items-center justify-center gap-2 py-10 font-mono text-[0.7rem] uppercase tracking-[0.28em] text-muted-foreground"
+          >
+            <span class="text-[hsl(var(--tac-amber))]">◇</span>
+            {{ $t("pages.system_metrics.no_services_found") }}
           </div>
         </div>
-      </div>
-
-      <Separator v-if="showSeparators" class="my-2" />
-
-      <div
-        v-if="filteredServices && filteredServices.length"
-        class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
-      >
-        <Card
-          v-for="service in filteredServices"
-          :key="`${service.node}-${service.name}`"
-          :class="[
-            'p-4 space-y-3',
-            isServiceExpanded(service) ? 'md:col-span-2 xl:col-span-3' : '',
-          ]"
-        >
-          <div class="flex items-start justify-between gap-3">
-            <div class="space-y-1 flex-1 min-w-0">
-              <div class="text-sm font-semibold truncate">
-                {{ service.name }}
-              </div>
-              <div class="text-xs text-muted-foreground truncate">
-                {{ service.node }}
-              </div>
-            </div>
-            <div class="flex flex-col items-end gap-2 flex-shrink-0">
-              <Badge
-                v-if="serviceCpuStatus(service) !== 'normal'"
-                :variant="
-                  serviceCpuStatus(service) === 'critical'
-                    ? 'destructive'
-                    : 'outline'
-                "
-                class="text-xs"
-              >
-                {{
-                  serviceCpuStatus(service) === "critical"
-                    ? $t("pages.system_metrics.status_high_cpu")
-                    : $t("pages.system_metrics.status_warning_cpu")
-                }}
-              </Badge>
-              <div class="flex items-center gap-1">
-                <FiveStackToolTip :delay-duration="300">
-                  <template #trigger>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      class="h-8 w-8"
-                      @click="toggleServiceExpanded(service)"
-                    >
-                      <Activity
-                        class="h-4 w-4"
-                        :class="
-                          isServiceExpanded(service) ? 'text-primary' : ''
-                        "
-                      />
-                    </Button>
-                  </template>
-                  <span>
-                    {{
-                      isServiceExpanded(service)
-                        ? $t("common.hide_metrics")
-                        : $t("common.show_metrics")
-                    }}
-                  </span>
-                </FiveStackToolTip>
-                <FiveStackToolTip :delay-duration="300">
-                  <template #trigger>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      class="h-8 w-8"
-                      @click="
-                        $router.push({
-                          path: '/system-logs',
-                          query: { service: service.name },
-                        })
-                      "
-                    >
-                      <Logs class="h-4 w-4" />
-                    </Button>
-                  </template>
-                  <span>{{ $t("layouts.app_nav.system.logs") }}</span>
-                </FiveStackToolTip>
-              </div>
-            </div>
-          </div>
-
-          <!-- Compact quick view row -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div
-              class="space-y-1.5 min-w-0 rounded-md border border-border/60 bg-muted/15 px-2.5 py-2"
-            >
-              <div class="flex items-center justify-between gap-2 min-w-0">
-                <span
-                  class="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
-                >
-                  {{ $t("pages.system_metrics.cpu_short") }}
-                </span>
-                <span class="text-sm font-semibold tabular-nums shrink-0">
-                  {{ latestCpuUsage(service) }}%
-                </span>
-              </div>
-              <div class="h-1.5 rounded-full bg-muted overflow-hidden">
-                <div
-                  class="h-full rounded-full bg-primary"
-                  :style="{ width: `${latestCpuUsage(service)}%` }"
-                />
-              </div>
-            </div>
-            <div
-              class="space-y-1.5 min-w-0 rounded-md border border-border/60 bg-muted/15 px-2.5 py-2"
-            >
-              <div class="flex items-center justify-between gap-2 min-w-0">
-                <span
-                  class="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
-                >
-                  {{ $t("pages.system_metrics.memory_short") }}
-                </span>
-                <span
-                  class="text-right text-[11px] sm:text-xs font-medium tabular-nums leading-snug break-words min-w-0"
-                >
-                  {{ serviceMemoryUsageLabel(service) }}
-                </span>
-              </div>
-              <div class="h-1.5 rounded-full bg-muted overflow-hidden">
-                <div
-                  class="h-full rounded-full bg-primary/60"
-                  :style="{ width: `${latestMemoryUsage(service)}%` }"
-                />
-              </div>
-            </div>
-          </div>
-
-          <!-- Expanded detailed charts -->
-          <div v-if="isServiceExpanded(service)" class="pt-2 border-t mt-2">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-              <div>
-                <h4 class="text-xs font-medium mb-2">
-                  {{ $t("pages.system_metrics.cpu_usage") }}
-                </h4>
-                <div class="h-[260px]">
-                  <CpuChart :metrics="service.cpu" />
-                </div>
-              </div>
-              <div>
-                <h4 class="text-xs font-medium mb-2">
-                  {{ $t("pages.system_metrics.memory_usage") }}
-                </h4>
-                <div class="h-[260px]">
-                  <MemoryChart :metrics="service.memory" label="MB" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      <div
-        v-else
-        class="flex items-center justify-center py-10 text-sm text-muted-foreground"
-      >
-        {{ $t("pages.system_metrics.no_services_found") }}
-      </div>
-    </Card>
-  </PageTransition>
+      </section>
+    </PageTransition>
+  </div>
 </template>
 
 <script lang="ts">
 import { formatUsedOverTotalBytes } from "~/utilities/formatResourceUsage";
+import {
+  ArrowDownAZ,
+  ArrowDownWideNarrow,
+  ArrowUpNarrowWide,
+  ArrowUpZA,
+} from "lucide-vue-next";
 
 export default {
   data() {
@@ -470,8 +655,23 @@ export default {
     };
   },
   methods: {
+    sortIconFor(sortBy: "cpu" | "memory" | "name", direction: "asc" | "desc") {
+      if (sortBy === "name") {
+        return direction === "asc" ? ArrowDownAZ : ArrowUpZA;
+      }
+      return direction === "asc" ? ArrowUpNarrowWide : ArrowDownWideNarrow;
+    },
     hasServiceMetrics(service: any): boolean {
       return service.cpu.length > 0 || service.memory.length > 0;
+    },
+    nodeDisplayName(node: any): string {
+      return node.label || node.id;
+    },
+    nodeSubtitle(node: any): string {
+      return node.region ? `${node.region} · ${node.id}` : node.id;
+    },
+    isNodeOnline(node: any): boolean {
+      return !node.offline_at;
     },
     serviceKey(service: any): string {
       return `${service.node}-${service.name}`;
@@ -531,6 +731,16 @@ export default {
       }
       return "normal";
     },
+    serviceCpuStateLabel(service: any): string {
+      const status = this.serviceCpuStatus(service);
+      if (status === "critical") {
+        return "critical";
+      }
+      if (status === "warning") {
+        return "elevated";
+      }
+      return "stable";
+    },
     isNodeExpanded(node: any): boolean {
       return !!this.expandedNodes[node.id];
     },
@@ -562,6 +772,13 @@ export default {
     },
     totalGameNodes(): number {
       return (this.game_server_nodes && this.game_server_nodes.length) || 0;
+    },
+    onlineNodesCount(): number {
+      if (!this.game_server_nodes) {
+        return 0;
+      }
+      return this.game_server_nodes.filter((node: any) => !node.offline_at)
+        .length;
     },
     uniqueServiceNodes(): string[] {
       if (!this.getServiceStats) {
@@ -629,6 +846,20 @@ export default {
 
       return services;
     },
+    topService(): any | null {
+      if (!this.filteredServices.length) {
+        return null;
+      }
+
+      return this.filteredServices.reduce((best: any, service: any) => {
+        if (!best) {
+          return service;
+        }
+        return this.latestCpuUsage(service) > this.latestCpuUsage(best)
+          ? service
+          : best;
+      }, null);
+    },
     filteredNodes(): any[] {
       if (!this.game_server_nodes) {
         return [];
@@ -687,6 +918,17 @@ export default {
       });
 
       return nodes;
+    },
+    topNode(): any | null {
+      if (!this.filteredNodes.length) {
+        return null;
+      }
+
+      return this.filteredNodes.reduce((best: any, node: any) => {
+        const bestCpu = best ? this.nodeMetricsCache[best.id]?.cpu ?? -1 : -1;
+        const nodeCpu = this.nodeMetricsCache[node.id]?.cpu ?? -1;
+        return nodeCpu > bestCpu ? node : best;
+      }, null);
     },
   },
   apollo: {

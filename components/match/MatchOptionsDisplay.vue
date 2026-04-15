@@ -28,20 +28,20 @@ import MiniMapDisplay from "~/components/MinIMapDisplay.vue";
 
   <Collapsible v-model:open="showDetails">
     <CollapsibleTrigger as-child v-if="!showDetailsByDefault">
-      <Button
-        variant="ghost"
-        size="sm"
-        class="text-xs text-muted-foreground hover:text-foreground -ml-2 h-auto py-1"
+      <button
+        type="button"
+        class="inline-flex items-center gap-1 text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors bg-transparent border-0 p-0 cursor-pointer"
       >
+        <span class="w-1.5 h-1.5 rounded-full bg-[hsl(var(--tac-amber))]"></span>
         {{ $t("match.options.advanced_settings") }}
-      </Button>
+      </button>
     </CollapsibleTrigger>
     <CollapsibleContent>
       <div class="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <!-- Game Settings -->
         <Card>
           <CardHeader class="pb-3">
-            <CardTitle class="text-sm font-medium">Game Settings</CardTitle>
+            <CardTitle class="text-sm font-medium">{{ $t("match.options.group.game_settings") }}</CardTitle>
           </CardHeader>
           <CardContent class="space-y-3">
             <div class="flex items-center justify-between">
@@ -82,12 +82,12 @@ import MiniMapDisplay from "~/components/MinIMapDisplay.vue";
         <!-- Team Settings -->
         <Card>
           <CardHeader class="pb-3">
-            <CardTitle class="text-sm font-medium">Team Settings</CardTitle>
+            <CardTitle class="text-sm font-medium">{{ $t("match.options.group.team_settings") }}</CardTitle>
           </CardHeader>
           <CardContent class="space-y-3">
             <div class="flex items-center justify-between">
               <span class="text-sm text-muted-foreground">{{
-                $t("match.options.coaches")
+                $t("common.coaches")
               }}</span>
               <BooleanToText :value="options.coaches" />
             </div>
@@ -105,12 +105,12 @@ import MiniMapDisplay from "~/components/MinIMapDisplay.vue";
         <!-- Veto Settings -->
         <Card>
           <CardHeader class="pb-3">
-            <CardTitle class="text-sm font-medium">Veto Settings</CardTitle>
+            <CardTitle class="text-sm font-medium">{{ $t("match.options.group.veto_settings") }}</CardTitle>
           </CardHeader>
           <CardContent class="space-y-3">
             <div class="flex items-center justify-between">
               <span class="text-sm text-muted-foreground">{{
-                $t("match.options.map_veto_enabled")
+                $t("common.map_veto")
               }}</span>
               <BooleanToText :value="options.map_veto" />
             </div>
@@ -126,7 +126,7 @@ import MiniMapDisplay from "~/components/MinIMapDisplay.vue";
         <!-- Control Settings -->
         <Card>
           <CardHeader class="pb-3">
-            <CardTitle class="text-sm font-medium">Control Settings</CardTitle>
+            <CardTitle class="text-sm font-medium">{{ $t("match.options.group.control_settings") }}</CardTitle>
           </CardHeader>
           <CardContent class="space-y-3">
             <div class="flex items-center justify-between">

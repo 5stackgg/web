@@ -19,23 +19,24 @@ definePageMeta({
   <!-- API Keys Table -->
   <PageTransition :delay="0">
     <div>
-      <CardHeader>
-        <CardTitle class="flex items-center justify-between">
-          {{ $t("pages.settings.account.api_keys_management.your_api_keys") }}
-
-          <Button size="sm" @click="openAddDialog">
-            <PlusIcon class="w-4 h-4 mr-2" />
-            {{ $t("pages.settings.account.api_keys_management.add_api_key") }}
-          </Button>
-        </CardTitle>
-        <CardDescription>
-          {{
-            $t(
-              "pages.settings.account.api_keys_management.api_keys_description",
-            )
-          }}
-        </CardDescription>
-      </CardHeader>
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h3 class="text-base font-semibold uppercase tracking-wide">
+            {{ $t("pages.settings.account.api_keys_management.your_api_keys") }}
+          </h3>
+          <p class="text-sm text-muted-foreground mt-0.5">
+            {{
+              $t(
+                "pages.settings.account.api_keys_management.api_keys_description",
+              )
+            }}
+          </p>
+        </div>
+        <Button size="sm" @click="openAddDialog">
+          <PlusIcon class="w-4 h-4 mr-2" />
+          {{ $t("pages.settings.account.api_keys_management.add_api_key") }}
+        </Button>
+      </div>
       <CardContent>
         <Table v-if="apiKeys.length > 0">
           <TableHeader>
@@ -143,7 +144,7 @@ definePageMeta({
 
           <DialogFooter>
             <Button type="button" variant="outline" @click="closeAddDialog">
-              {{ $t("pages.settings.account.api_keys_management.cancel") }}
+              {{ $t("common.cancel") }}
             </Button>
             <Button type="submit">
               {{
@@ -236,7 +237,7 @@ definePageMeta({
       </AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel @click="closeDeleteDialog">{{
-          $t("pages.settings.account.api_keys_management.cancel")
+          $t("common.cancel")
         }}</AlertDialogCancel>
         <AlertDialogAction
           @click="deleteApiKey"
@@ -305,8 +306,8 @@ export default {
           z.object({
             label: z
               .string()
-              .min(1, "Label is required")
-              .max(50, "Label must be less than 50 characters"),
+              .min(1, (this as any).$t("validation.label_required"))
+              .max(50, (this as any).$t("validation.label_too_long")),
           }),
         ),
       }),

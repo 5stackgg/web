@@ -1,8 +1,7 @@
 <script lang="ts" setup>
 import MatchesTable from "~/components/MatchesTable.vue";
 import Pagination from "~/components/Pagination.vue";
-import PageHeading from "~/components/PageHeading.vue";
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
@@ -16,7 +15,8 @@ import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import PlayerChangeName from "~/components/PlayerChangeName.vue";
 import { kdrStrokeColor } from "~/utilities/kdrColor";
-import { PlayIcon, MoreHorizontal } from "lucide-vue-next";
+import { PlayIcon, MoreHorizontal, ExternalLink } from "lucide-vue-next";
+import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import RadialStat from "~/components/charts/RadialStat.vue";
 import {
@@ -35,122 +35,219 @@ definePageMeta({
 });
 
 const { isMobile } = useSidebar();
+const playerHeroClasses =
+  "relative rounded-lg border border-border px-7 py-6 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-[''] max-md:px-4 max-md:py-5";
+const playerHeroEyebrowClasses =
+  "mb-5 inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground";
+const playerHeroChevronClasses =
+  "translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]";
+const playerHeroBodyClasses = "flex flex-wrap items-center gap-7 max-md:gap-4";
+const playerHeroAvatarFrameClasses =
+  "relative h-[140px] w-[140px] border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] p-1 max-md:h-24 max-md:w-24";
+const playerHeroAvatarClasses = "block h-full w-full object-cover";
+const playerHeroAvatarPlaceholderClasses = `${playerHeroAvatarClasses} flex items-center justify-center bg-muted/20 font-sans text-[3.5rem] font-bold text-[hsl(var(--tac-amber))]`;
+const playerHeroAvatarCornerClasses =
+  "absolute h-3 w-3 border-[hsl(var(--tac-amber))]";
+const playerHeroIdentityClasses = "flex min-w-0 flex-1 flex-col gap-[0.65rem]";
+const playerHeroNameRowClasses = "flex min-w-0 flex-wrap items-center gap-3";
+const playerHeroNameClasses =
+  "relative m-0 min-w-0 font-sans text-[clamp(2.25rem,5vw,3.75rem)] font-bold uppercase leading-[0.9] tracking-[0.02em] [font-stretch:80%]";
+const playerHeroNameMainClasses = "relative text-foreground";
+const playerHeroNameGhostClasses =
+  "pointer-events-none absolute left-[5px] top-[5px] right-[-5px] overflow-hidden whitespace-nowrap text-transparent select-none [-webkit-text-stroke:1px_hsl(var(--tac-amber)_/_0.35)]";
+const playerHeroMetaClasses =
+  "inline-flex flex-wrap items-center gap-[0.55rem] text-[0.8rem] text-muted-foreground";
+const playerHeroSteamIdClasses = "font-mono tracking-[0.05em]";
+const playerHeroSteamLinkClasses =
+  "inline-flex items-center gap-[0.35rem] rounded border border-border bg-card/60 px-[0.55rem] py-[0.2rem] text-[0.7rem] font-medium uppercase tracking-[0.08em] text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.5)] hover:bg-[hsl(var(--tac-amber)_/_0.08)] hover:text-[hsl(var(--tac-amber))]";
+const playerHeroBadgesClasses =
+  "mt-[0.15rem] flex flex-wrap items-center gap-2";
+const playerHeroNameEditClasses =
+  "inline-flex opacity-60 transition-opacity duration-150 hover:opacity-100";
+const playerHeroActionsClasses =
+  "ml-auto flex shrink-0 items-center justify-center gap-3 self-center max-md:ml-0";
+const playerHeroPlayClasses =
+  "player-hero-play group/play relative isolate inline-flex cursor-pointer items-center border font-sans text-[0.95rem] font-bold uppercase tracking-[0.18em] no-underline transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px active:translate-y-0";
+const playerHeroPlayInnerClasses =
+  "relative z-[1] inline-flex items-center gap-[0.65rem]";
+const playerHeroPlayIconClasses =
+  "h-5 w-5 fill-current transition-transform duration-300 group-hover/play:translate-x-0.5 group-hover/play:scale-110";
+const playerHeroPlayGlowClasses =
+  "pointer-events-none absolute inset-0 z-0 -translate-x-full bg-[linear-gradient(90deg,transparent_0%,hsl(0_0%_100%_/_0.4)_50%,transparent_100%)] transition-transform duration-500 group-hover/play:translate-x-full";
+const playerHeroTeamsClasses = "mt-6 border-t border-border pt-5";
+const playerTeamsLabelClasses =
+  "mb-[0.65rem] inline-flex items-center gap-2 font-mono text-[0.72rem] uppercase tracking-[0.24em] text-muted-foreground";
+const playerTeamsTickClasses = "h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]";
+const playerTeamsCountClasses =
+  "rounded-full border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.15)] px-[0.45rem] py-[0.05rem] text-[0.65rem] tracking-[0.08em] text-[hsl(var(--tac-amber))]";
+const playerTeamChipClasses =
+  "group/team inline-flex items-center gap-[0.55rem] rounded-md border border-border bg-card/55 px-[0.85rem] py-[0.45rem] [backdrop-filter:blur(6px)] transition-[transform,border-color,background-color] duration-150 hover:-translate-y-px hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.08)]";
+const playerTeamChipDotClasses =
+  "h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))] [box-shadow:0_0_0_3px_hsl(var(--tac-amber)_/_0.2)]";
+const playerTeamChipNameClasses =
+  "text-sm font-medium text-foreground group-hover/team:text-[hsl(var(--tac-amber))]";
+const playerTeamChipShortClasses =
+  "rounded bg-muted/40 px-1.5 py-[0.1rem] font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted-foreground";
 </script>
 
 <template>
   <div class="flex-grow flex flex-col gap-6" v-if="player">
-    <!-- Header Section with Fade In -->
+    <!-- Player Hero -->
     <PageTransition>
-      <PageHeading>
-        <template #title>
-          <div class="flex items-center justify-center gap-4">
-            <div class="flex flex-col gap-2">
-              <div class="flex items-center gap-3">
-                <PlayerChangeName :player="player" class="hidden sm:flex" />
-                <PlayerSanctions :playerId="playerId" class="hidden sm:flex" />
-              </div>
-              <div class="flex items-center gap-4">
-                <!-- <a
-                  v-if="player?.profile_url"
-                  :href="player.profile_url"
-                  target="_blank"
-                  class="flex items-center justify-center p-2 rounded-md bg-background hover:bg-accent/50 hover:scale-110 transition-all duration-200"
-                  title="View Steam Profile"
-                >
-                  <SteamIcon class="size-5 fill-foreground" />
-                </a> -->
-                <PlayerDisplay
-                  :player="player"
-                  size="xl"
-                  :show-steam-id="true"
-                  :show-add-friend="true"
-                  v-if="player"
-                />
+      <header :class="playerHeroClasses">
+        <div :class="playerHeroEyebrowClasses">
+          <span :class="playerHeroChevronClasses">◢</span>
+          Player Profile
+        </div>
+
+        <div :class="playerHeroBodyClasses">
+          <!-- Avatar with amber ring -->
+          <div class="shrink-0">
+            <div :class="playerHeroAvatarFrameClasses">
+              <img
+                v-if="player.avatar_url"
+                :src="player.avatar_url"
+                :alt="player.name"
+                :class="playerHeroAvatarClasses"
+              />
+              <div v-else :class="playerHeroAvatarPlaceholderClasses">
+                {{ (player.name || "?").charAt(0).toUpperCase() }}
               </div>
               <div
-                v-if="player?.teams && player.teams.length > 0"
-                class="flex flex-wrap gap-2 mt-2"
-              >
-                <NuxtLink
-                  v-for="(team, index) in player.teams"
-                  :key="team.id"
-                  :to="`/teams/${team.id}`"
-                  :style="{ animationDelay: `${index * 50}ms` }"
-                  class="group relative inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-muted/50 hover:bg-muted border border-transparent hover:border-primary/50 hover:shadow-lg hover:scale-105 transition-all duration-300 animate-in fade-in slide-in-from-bottom-2"
-                >
-                  <div class="flex items-center gap-2">
-                    <div
-                      class="w-2 h-2 rounded-full bg-primary/60 group-hover:bg-primary group-hover:animate-pulse transition-colors"
-                    ></div>
-                    <span
-                      class="font-medium text-sm text-foreground group-hover:text-primary transition-colors"
-                    >
-                      {{ team.name }}
-                    </span>
-                    <span
-                      v-if="team.short_name"
-                      class="text-xs text-muted-foreground bg-muted-foreground/10 px-1.5 py-0.5 rounded"
-                    >
-                      {{ team.short_name }}
-                    </span>
-                  </div>
-                </NuxtLink>
-              </div>
+                :class="[
+                  playerHeroAvatarCornerClasses,
+                  '-left-[2px] -top-[2px] border-l-2 border-t-2',
+                ]"
+              ></div>
+              <div
+                :class="[
+                  playerHeroAvatarCornerClasses,
+                  '-bottom-[2px] -right-[2px] border-b-2 border-r-2',
+                ]"
+              ></div>
             </div>
           </div>
-        </template>
 
-        <template #actions>
-          <div class="md:hidden">
-            <!-- Mobile: Show dropdown menu with actions -->
-            <DropdownMenu>
-              <DropdownMenuTrigger as-child>
-                <Button variant="outline" size="icon">
-                  <MoreHorizontal class="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <div class="p-1">
-                  <PlayerChangeName :player="player" />
-                </div>
-                <template v-if="canSanction">
+          <!-- Identity: name, meta row, badges -->
+          <div :class="playerHeroIdentityClasses">
+            <div :class="playerHeroNameRowClasses">
+              <h1 :class="playerHeroNameClasses">
+                <span :class="playerHeroNameGhostClasses" aria-hidden="true">
+                  {{ player.name }}
+                </span>
+                <span :class="playerHeroNameMainClasses">{{
+                  player.name
+                }}</span>
+              </h1>
+            </div>
+
+            <div :class="playerHeroMetaClasses">
+              <TimezoneFlag
+                v-if="player.country"
+                :country="player.country"
+                class="h-auto w-[1.35rem] shrink-0"
+              />
+              <span v-if="player.country" class="opacity-40">·</span>
+              <span :class="playerHeroSteamIdClasses">
+                {{ player.steam_id }}
+              </span>
+              <span v-if="player.profile_url" class="opacity-40">·</span>
+              <a
+                v-if="player.profile_url"
+                :href="player.profile_url"
+                target="_blank"
+                rel="noopener noreferrer"
+                :class="playerHeroSteamLinkClasses"
+                :title="$t('ui.tooltips.view_steam_profile')"
+              >
+                <ExternalLink class="w-3.5 h-3.5" />
+                <span>{{ $t("player.player.steam") }}</span>
+              </a>
+            </div>
+
+            <div :class="playerHeroBadgesClasses">
+              <div
+                v-if="me && player.steam_id === me.steam_id"
+                :class="playerHeroNameEditClasses"
+              >
+                <PlayerChangeName :player="player" />
+              </div>
+              <PlayerSanctions v-if="playerId" :playerId="playerId" />
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div :class="playerHeroActionsClasses">
+            <NuxtLink
+              v-if="me && player.steam_id === me.steam_id"
+              to="/play"
+              :class="playerHeroPlayClasses"
+            >
+              <span :class="playerHeroPlayInnerClasses">
+                <PlayIcon :class="playerHeroPlayIconClasses" />
+                <span>{{ $t("pages.players.detail.play_a_match") }}</span>
+              </span>
+              <span
+                :class="playerHeroPlayGlowClasses"
+                aria-hidden="true"
+              ></span>
+            </NuxtLink>
+
+            <template v-if="canSanction">
+              <div class="hidden sm:flex items-center gap-2">
+                <SanctionPlayer :player="player" />
+                <PlayerRoleForm :player="player" />
+              </div>
+            </template>
+
+            <div v-if="canSanction" class="sm:hidden">
+              <DropdownMenu>
+                <DropdownMenuTrigger as-child>
+                  <Button variant="outline" size="icon">
+                    <MoreHorizontal class="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
                   <div class="p-1">
                     <SanctionPlayer :player="player" />
                   </div>
                   <div class="p-1">
                     <PlayerRoleForm :player="player" />
                   </div>
-                </template>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
-          <!-- Desktop: Show sanction and role buttons -->
-          <template v-if="canSanction">
-            <div class="hidden sm:flex items-center gap-2">
-              <SanctionPlayer :player="player" />
-              <PlayerRoleForm :player="player" />
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
-          </template>
+          </div>
+        </div>
 
-          <div class="items-center gap-2 hidden md:flex">
-            <NuxtLink to="/play" v-if="me && player.steam_id === me.steam_id">
-              <Button
-                variant="default"
-                :size="isMobile ? 'default' : 'lg'"
-                class="shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 font-semibold group"
-              >
-                <PlayIcon
-                  class="w-5 h-5 group-hover:rotate-12 transition-transform duration-300"
-                />
-                <span class="hidden md:inline ml-2">{{
-                  $t("pages.players.detail.play_a_match")
-                }}</span>
-              </Button>
+        <!-- Teams row -->
+        <div
+          v-if="player?.teams && player.teams.length > 0"
+          :class="playerHeroTeamsClasses"
+        >
+          <div :class="playerTeamsLabelClasses">
+            <span :class="playerTeamsTickClasses"></span>
+            Teams
+            <span :class="playerTeamsCountClasses">{{
+              player.teams.length
+            }}</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <NuxtLink
+              v-for="team in player.teams"
+              :key="team.id"
+              :to="`/teams/${team.id}`"
+              :class="playerTeamChipClasses"
+            >
+              <span :class="playerTeamChipDotClasses"></span>
+              <span :class="playerTeamChipNameClasses">{{ team.name }}</span>
+              <span v-if="team.short_name" :class="playerTeamChipShortClasses">
+                {{ team.short_name }}
+              </span>
             </NuxtLink>
           </div>
-        </template>
-      </PageHeading>
+        </div>
+      </header>
     </PageTransition>
 
     <div class="flex flex-col gap-4 md:gap-6" v-if="player">
@@ -166,7 +263,7 @@ const { isMobile } = useSidebar();
                   <RadialStat
                     :value="winPercentage.toFixed(0) + '%'"
                     :percentage="winPercentage"
-                    :label="$t('pages.players.detail.win_rate')"
+                    :label="$t('common.stats.win_rate')"
                     :stroke-color="
                       winPercentage >= 50
                         ? 'hsl(142, 71%, 45%)'
@@ -181,7 +278,7 @@ const { isMobile } = useSidebar();
                       >
                       <span
                         class="text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-wider"
-                        >{{ $t("pages.players.detail.wins") }}</span
+                        >{{ $t("common.stats.wins") }}</span
                       >
                     </div>
                     <div
@@ -194,7 +291,7 @@ const { isMobile } = useSidebar();
                       >
                       <span
                         class="text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-wider"
-                        >{{ $t("pages.players.detail.losses") }}</span
+                        >{{ $t("common.stats.losses") }}</span
                       >
                     </div>
                   </div>
@@ -575,6 +672,7 @@ export default {
                 steam_id: $("playerId", "bigint!"),
               },
               {
+                steam_id: true,
                 matches: [
                   {
                     limit: $("limit", "Int!"),
@@ -623,6 +721,7 @@ export default {
                 steam_id: $("playerId", "bigint!"),
               },
               {
+                steam_id: true,
                 total_matches: true,
               },
             ],
@@ -705,13 +804,13 @@ export default {
         {
           key: "kills",
           value: this.player?.stats?.kills ?? "-",
-          label: this.$t("pages.players.detail.kills"),
+          label: this.$t("common.stats.kills"),
           colorClass: "text-foreground",
         },
         {
           key: "assists",
           value: this.player?.stats?.assists ?? "-",
-          label: "Assists",
+          label: this.$t("common.stats.assists"),
           colorClass: "text-foreground",
         },
         {
@@ -719,7 +818,7 @@ export default {
           value: this.player?.stats?.headshot_percentage
             ? (this.player.stats.headshot_percentage * 100).toFixed(1) + "%"
             : "-",
-          label: "HeadShot %",
+          label: this.$t("pages.players.filter_chips.headshot_pct"),
           colorClass: "text-primary",
         },
       ];
@@ -740,3 +839,34 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.player-hero-play {
+  padding: 0.85rem 1.6rem 0.85rem 1.4rem;
+  color: hsl(0 0% 8%);
+  border-color: hsl(var(--tac-amber));
+  background: linear-gradient(
+    135deg,
+    hsl(36 100% 65%) 0%,
+    hsl(var(--tac-amber)) 50%,
+    hsl(28 90% 52%) 100%
+  );
+  clip-path: polygon(
+    12px 0,
+    100% 0,
+    100% calc(100% - 12px),
+    calc(100% - 12px) 100%,
+    0 100%,
+    0 12px
+  );
+  box-shadow:
+    0 0 0 1px hsl(var(--tac-amber) / 0.4),
+    0 6px 20px -6px hsl(var(--tac-amber) / 0.6);
+}
+.player-hero-play:hover {
+  box-shadow:
+    0 0 0 1px hsl(var(--tac-amber) / 0.6),
+    0 12px 32px -6px hsl(var(--tac-amber) / 0.8),
+    0 0 24px hsl(var(--tac-amber) / 0.35);
+}
+</style>

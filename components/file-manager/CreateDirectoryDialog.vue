@@ -2,20 +2,18 @@
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Create New Directory</DialogTitle>
-        <DialogDescription>
-          Enter a name for the new directory
-        </DialogDescription>
+        <DialogTitle>{{ $t("file_manager.create_directory.title") }}</DialogTitle>
+        <DialogDescription>{{ $t("file_manager.create_directory.description") }}</DialogDescription>
       </DialogHeader>
 
       <div class="space-y-4">
         <div class="space-y-2">
-          <Label for="dir-name">Directory Name</Label>
+          <Label for="dir-name">{{ $t("file_manager.create_directory.label") }}</Label>
           <Input
             id="dir-name"
             ref="inputRef"
             v-model="dirName"
-            placeholder="my-directory"
+            :placeholder="$t('file_manager.create_directory.placeholder')"
             @keyup.enter="handleCreate"
           />
         </div>
@@ -27,9 +25,9 @@
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="handleCancel"> Cancel </Button>
+        <Button variant="outline" @click="handleCancel">{{ $t("common.cancel") }}</Button>
         <Button @click="handleCreate" :disabled="!dirName || store.isLoading">
-          Create
+          {{ $t("common.create") }}
         </Button>
       </DialogFooter>
     </DialogContent>

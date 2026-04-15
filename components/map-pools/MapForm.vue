@@ -106,7 +106,7 @@ import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
           <div v-if="form.values.poster" class="mt-2">
             <img
               :src="form.values.poster"
-              alt="Map poster"
+              :alt="$t('alt_text.map_poster')"
               class="max-w-xs rounded-md"
             />
           </div>
@@ -130,7 +130,7 @@ import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
           <div v-if="form.values.patch" class="mt-2">
             <img
               :src="form.values.patch"
-              alt="Map patch"
+              :alt="$t('alt_text.map_patch')"
               class="max-w-xs rounded-md"
             />
           </div>
@@ -161,10 +161,10 @@ import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{{
-              $t("pages.map_pools.form.delete_confirm.cancel")
+              $t("common.cancel")
             }}</AlertDialogCancel>
             <AlertDialogAction @click="deleteMap" variant="destructive">
-              {{ $t("pages.map_pools.form.delete_confirm.confirm") }}
+              {{ $t("common.delete") }}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

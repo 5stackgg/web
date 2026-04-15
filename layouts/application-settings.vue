@@ -9,6 +9,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Default from "~/layouts/default.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 
 const showSeparators = computed(
   () => useApplicationSettingsStore().showSeparators,
@@ -60,10 +61,16 @@ const navItems = computed(() => {
       path: "/settings/application/telemetry",
       label: $t("pages.settings.application.telemetry.title"),
     },
-    { path: "/settings/application/branding", label: "Branding" },
+    {
+      path: "/settings/application/branding",
+      label: $t("layouts.application_settings.branding_nav"),
+    },
   ];
   if (isDev.value) {
-    items.push({ path: "/settings/application/fixtures", label: "Fixtures" });
+    items.push({
+      path: "/settings/application/fixtures",
+      label: $t("layouts.application_settings.fixtures_nav"),
+    });
   }
   return items;
 });
@@ -74,7 +81,7 @@ const router = useRouter();
 /** Resolve current path to a nav item path (for sub-routes like /players/123). */
 const resolvedPath = computed(() => {
   const path = route.path;
-  const items = navItems.value;
+  const items = navItems.value ?? [];
   if (items.some((item) => item.path === path)) return path;
   const match = items.find((item) => path.startsWith(item.path + "/"));
   return match ? match.path : (items[0]?.path ?? path);
@@ -143,58 +150,66 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
 
 <template>
   <default>
-    <div class="space-y-0.5">
-      <h2 class="text-2xl font-bold tracking-tight">
-        {{ $t("layouts.application_settings.title") }}
-      </h2>
-      <p class="text-muted-foreground">
-        {{ $t("layouts.application_settings.description") }}
-      </p>
-    </div>
+    <PageTransition :delay="0">
+      <div class="space-y-0.5">
+        <h2 class="text-2xl font-bold tracking-tight">
+          {{ $t("layouts.application_settings.title") }}
+        </h2>
+        <p class="text-muted-foreground">
+          {{ $t("layouts.application_settings.description") }}
+        </p>
+      </div>
+    </PageTransition>
     <Separator v-if="showSeparators" class="my-6" />
     <div class="flex flex-col space-y-8 lg:flex-row lg:space-x-12 lg:space-y-0">
-      <aside class="w-full shrink-0 lg:w-auto">
-        <!-- Mobile: single dropdown so all sections are one tap away, no scroll -->
-        <div class="lg:hidden">
-          <Select v-model="selectedPath">
-            <SelectTrigger class="w-full" aria-label="Settings section">
-              <SelectValue placeholder="Select section" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem
-                v-for="item in navItems"
-                :key="item.path"
-                :value="item.path"
+      <PageTransition :delay="100">
+        <aside class="w-full shrink-0 lg:w-auto">
+          <!-- Mobile: single dropdown so all sections are one tap away, no scroll -->
+          <div class="lg:hidden">
+            <Select v-model="selectedPath">
+              <SelectTrigger class="w-full" :aria-label="$t('ui.tooltips.settings_section')">
+                <SelectValue :placeholder="$t('layouts.application_settings.select_section')" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="item in navItems"
+                  :key="item.path"
+                  :value="item.path"
+                >
+                  {{ item.label }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <!-- Desktop: vertical nav with sliding indicator -->
+          <nav
+            ref="navRef"
+            class="settings-nav relative hidden flex-col space-y-1 lg:flex"
+          >
+            <div
+              v-show="showIndicator"
+              class="settings-nav__indicator absolute top-0 right-0 w-0.5 z-10 pointer-events-none"
+              :class="hasAnimated ? 'settings-nav-indicator-animated' : ''"
+              :style="{
+                transform: `translateY(${indicatorY}px)`,
+                height: `${indicatorHeight}px`,
+              }"
+            />
+            <nuxt-link
+              v-for="item in navItems"
+              :key="item.path"
+              :to="item.path"
+            >
+              <Button
+                variant="ghost"
+                class="w-full text-left justify-start relative z-[1]"
               >
                 {{ item.label }}
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <!-- Desktop: vertical nav with sliding indicator -->
-        <nav
-          ref="navRef"
-          class="settings-nav relative hidden flex-col space-y-1 lg:flex"
-        >
-          <div
-            v-show="showIndicator"
-            class="absolute top-0 right-0 w-0.5 bg-primary z-10 pointer-events-none"
-            :class="hasAnimated ? 'settings-nav-indicator-animated' : ''"
-            :style="{
-              transform: `translateY(${indicatorY}px)`,
-              height: `${indicatorHeight}px`,
-            }"
-          />
-          <nuxt-link v-for="item in navItems" :key="item.path" :to="item.path">
-            <Button
-              variant="ghost"
-              class="w-full text-left justify-start relative z-[1]"
-            >
-              {{ item.label }}
-            </Button>
-          </nuxt-link>
-        </nav>
-      </aside>
+              </Button>
+            </nuxt-link>
+          </nav>
+        </aside>
+      </PageTransition>
       <div class="space-y-6 flex-1 min-w-0">
         <slot />
       </div>
@@ -212,6 +227,10 @@ export default {};
 }
 .settings-nav .router-link-exact-active > button {
   @apply text-sidebar-accent-foreground bg-transparent;
+}
+.settings-nav__indicator {
+  background: hsl(var(--tac-amber));
+  box-shadow: 0 0 8px hsl(var(--tac-amber) / 0.35);
 }
 .settings-nav-indicator-animated {
   transition:

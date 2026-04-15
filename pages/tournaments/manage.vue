@@ -4,6 +4,7 @@ import { PlusCircle, ArrowUpIcon, ArrowDownIcon } from "lucide-vue-next";
 import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
 import Pagination from "~/components/Pagination.vue";
 import { Button } from "~/components/ui/button";
+import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import {
@@ -29,16 +30,17 @@ const { isMobile } = useSidebar();
       <template #description>{{
         $t("pages.manage_tournaments.description")
       }}</template>
-      <template #actions>
-        <Button
-          :size="isMobile ? 'default' : 'lg'"
+      <template v-if="canCreateTournament" #actions>
+        <button
+          type="button"
+          :class="tacticalCtaButtonClasses"
           @click="navigateTo('/tournaments/create')"
         >
           <PlusCircle class="w-4 h-4" />
-          <span class="hidden md:inline ml-2">{{
+          <span class="hidden md:inline">{{
             $t("pages.tournaments.create")
           }}</span>
-        </Button>
+        </button>
       </template>
     </PageHeading>
   </PageTransition>
@@ -51,10 +53,10 @@ const { isMobile } = useSidebar();
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold">
-            {{ $t("pages.manage_tournaments.filters") }}
+            {{ $t("common.filters") }}
           </h3>
           <Button variant="outline" size="sm" @click="resetFilters">
-            {{ $t("pages.manage_tournaments.reset_filters") }}
+            {{ $t("common.reset_filters") }}
           </Button>
         </div>
 
@@ -212,7 +214,7 @@ const { isMobile } = useSidebar();
           <div
             class="w-4 h-4 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin"
           ></div>
-          <span>{{ $t("pages.manage_tournaments.loading") }}</span>
+          <span>{{ $t("common.loading") }}</span>
         </div>
       </div>
       <div v-if="tournaments && tournaments.length > 0" class="space-y-4">
@@ -602,6 +604,13 @@ export default {
   computed: {
     showSeparators() {
       return useApplicationSettingsStore().showSeparators;
+    },
+    canCreateTournament() {
+      const me = useAuthStore().me;
+      if (!me) return false;
+      return useAuthStore().isRoleAbove(
+        useApplicationSettingsStore().tournamentCreateRole,
+      );
     },
     hasActiveFilters(): boolean {
       const formValues = this.form.values;

@@ -12,7 +12,7 @@ import { Card } from "~/components/ui/card";
       <div class="p-6 space-y-6">
         <FormField v-slot="{ componentField }" name="team_name">
           <FormItem>
-            <FormLabel>{{ $t("team.form.name") }}</FormLabel>
+            <FormLabel>{{ $t("common.team_name") }}</FormLabel>
             <FormControl>
               <Input
                 v-bind="componentField"

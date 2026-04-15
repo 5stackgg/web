@@ -30,13 +30,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Team</TableHead>
-              <TableHead class="text-center">Games Played</TableHead>
-              <TableHead class="text-center">Wins</TableHead>
-              <TableHead class="text-center">Losses</TableHead>
-              <TableHead class="text-center">Rounds Won</TableHead>
-              <TableHead class="text-center">Rounds Lost</TableHead>
-              <TableHead class="text-center">Matches Remaining</TableHead>
+              <TableHead>{{ $t("team.table.team") }}</TableHead>
+              <TableHead class="text-center">{{ $t("tournament.round_robin.games_played") }}</TableHead>
+              <TableHead class="text-center">{{ $t("common.stats.wins") }}</TableHead>
+              <TableHead class="text-center">{{ $t("common.stats.losses") }}</TableHead>
+              <TableHead class="text-center">{{ $t("tournament.round_robin.rounds_won") }}</TableHead>
+              <TableHead class="text-center">{{ $t("tournament.round_robin.rounds_lost") }}</TableHead>
+              <TableHead class="text-center">{{ $t("tournament.round_robin.matches_remaining") }}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

@@ -1,28 +1,30 @@
 <script lang="ts" setup></script>
 
 <template>
-  <span
-    v-if="score"
-    class="font-bold"
-    :class="{
-      [`text-green-400`]: winning,
-      [`text-red-400`]: losing,
-      [`text-white-400`]: tied,
-    }"
-  >
-    <template v-if="matchMap">
-      {{ teamScore }}
-    </template>
-    <template v-else>
-      {{ matchStats.won }}
-    </template>
-  </span>
+  <span>
+    <span
+      v-if="score"
+      class="font-bold"
+      :class="{
+        [`text-green-400`]: winning,
+        [`text-red-400`]: losing,
+        [`text-white-400`]: tied,
+      }"
+    >
+      <template v-if="matchMap">
+        {{ teamScore }}
+      </template>
+      <template v-else>
+        {{ matchStats.won }}
+      </template>
+    </span>
 
-  <small v-if="matchMap && halves">
-    [<span class="text-yellow-500">{{ tWins }}</span
-    >:<span class="text-blue-400">{{ ctWins }}</span
-    >]
-  </small>
+    <small v-if="matchMap && halves">
+      [<span class="text-yellow-500">{{ tWins }}</span
+      >:<span class="text-blue-400">{{ ctWins }}</span
+      >]
+    </small>
+  </span>
 </template>
 
 <script lang="ts">

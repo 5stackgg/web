@@ -74,6 +74,9 @@
     --topnav-accent-foreground: 0 0% 98%;
     --topnav-border: 220 13% 91%;
     --topnav-ring: 217.2 91.2% 59.8%;
+
+    --tac-amber: 33 94% 58%;
+    --tac-amber-foreground: 0 0% 10%;
   }
 
   .dark {
@@ -136,6 +139,9 @@
     --topnav-accent-foreground: 0 0% 98%;
     --topnav-border: 240 3% 23%;
     --topnav-ring: 217.2 91.2% 59.8%;
+
+    --tac-amber: 33 94% 58%;
+    --tac-amber-foreground: 0 0% 10%;
   }
 }
 
@@ -240,7 +246,6 @@ div[role="menuitem"] {
 }
 
 
-
 @layer base {
   * {
     @apply border-border;
@@ -253,4 +258,35 @@ div[role="menuitem"] {
 
 mark {
   @apply bg-white/80;
+}
+
+.tac-amber-cta {
+  color: hsl(0 0% 8%);
+  border-color: hsl(var(--tac-amber));
+  background: linear-gradient(
+    135deg,
+    hsl(36 100% 65%) 0%,
+    hsl(var(--tac-amber)) 50%,
+    hsl(28 90% 52%) 100%
+  );
+  box-shadow:
+    0 0 0 1px hsl(var(--tac-amber) / 0.35),
+    0 4px 14px -4px hsl(var(--tac-amber) / 0.5);
+  transition:
+    transform 200ms,
+    box-shadow 200ms;
+}
+.tac-amber-cta:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1px hsl(var(--tac-amber) / 0.55),
+    0 8px 22px -4px hsl(var(--tac-amber) / 0.7),
+    0 0 18px hsl(var(--tac-amber) / 0.3);
+}
+.tac-amber-cta:active {
+  transform: translateY(0);
+}
+.tac-amber-cta:disabled {
+  pointer-events: none;
+  opacity: 0.6;
 }

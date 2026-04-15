@@ -2,15 +2,18 @@
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
     <DialogContent>
       <DialogHeader>
-        <DialogTitle
-          >Delete {{ item?.isDirectory ? "Directory" : "File" }}</DialogTitle
-        >
-        <DialogDescription>
-          Are you sure you want to delete "{{ item?.name }}"?
+        <DialogTitle>
           {{
             item?.isDirectory
-              ? "All contents will be permanently deleted."
-              : "This action cannot be undone."
+              ? $t("file_manager.delete_confirm.title_directory")
+              : $t("file_manager.delete_confirm.title_file")
+          }}
+        </DialogTitle>
+        <DialogDescription>
+          {{
+            item?.isDirectory
+              ? $t("file_manager.delete_confirm.description_directory", { name: item?.name })
+              : $t("file_manager.delete_confirm.description_file", { name: item?.name })
           }}
         </DialogDescription>
       </DialogHeader>
@@ -21,13 +24,13 @@
       </Alert>
 
       <DialogFooter>
-        <Button variant="outline" @click="handleCancel"> Cancel </Button>
+        <Button variant="outline" @click="handleCancel">{{ $t("common.cancel") }}</Button>
         <Button
           variant="destructive"
           @click="handleDelete"
           :disabled="store.isLoading"
         >
-          Delete
+          {{ $t("common.delete") }}
         </Button>
       </DialogFooter>
     </DialogContent>

@@ -268,7 +268,7 @@ export default {
           ...(totalWins > 0
             ? [
                 {
-                  label: "Wins",
+                  label: this.$t("common.stats.wins"),
                   backgroundColor: "rgba(74, 222, 128, .5)",
                   borderColor: "rgb(74, 222, 128)",
                   pointBackgroundColor: "rgb(74, 222, 128)",
@@ -280,7 +280,7 @@ export default {
           ...(totalLosses > 0
             ? [
                 {
-                  label: "Losses",
+                  label: this.$t("common.stats.losses"),
                   backgroundColor: "rgba(239, 68, 68, 0.3)",
                   borderColor: "rgb(239, 68, 68)",
                   pointBackgroundColor: "rgb(239, 68, 68)",

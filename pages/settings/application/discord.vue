@@ -193,7 +193,7 @@ definePageMeta({
           :disabled="Object.keys(form.errors).length > 0"
           class="my-3"
         >
-          {{ $t("pages.settings.application.discord.update") }}
+          {{ $t("common.update") }}
         </Button>
       </div>
     </form>

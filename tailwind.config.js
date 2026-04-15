@@ -87,6 +87,10 @@ module.exports = {
           border: "hsl(var(--topnav-border))",
           ring: "hsl(var(--topnav-ring))",
         },
+        "tac-amber": {
+          DEFAULT: "hsl(var(--tac-amber))",
+          foreground: "hsl(var(--tac-amber-foreground))",
+        },
       },
       borderRadius: {
         xl: "calc(var(--radius) + 4px)",
@@ -104,12 +108,20 @@ module.exports = {
           to: { height: 0 },
         },
         "collapsible-down": {
-          from: { height: 0 },
-          to: { height: "var(--radix-collapsible-content-height)" },
+          from: { height: 0, opacity: 0 },
+          to: {
+            height:
+              "var(--reka-collapsible-content-height, var(--radix-collapsible-content-height))",
+            opacity: 1,
+          },
         },
         "collapsible-up": {
-          from: { height: "var(--radix-collapsible-content-height)" },
-          to: { height: 0 },
+          from: {
+            height:
+              "var(--reka-collapsible-content-height, var(--radix-collapsible-content-height))",
+            opacity: 1,
+          },
+          to: { height: 0, opacity: 0 },
         },
         "caret-blink": {
           "0%,70%,100%": { opacity: "1" },
@@ -123,8 +135,10 @@ module.exports = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        "collapsible-down": "collapsible-down 0.2s ease-in-out",
-        "collapsible-up": "collapsible-up 0.2s ease-in-out",
+        "collapsible-down":
+          "collapsible-down 0.28s cubic-bezier(0.16, 1, 0.3, 1)",
+        "collapsible-up":
+          "collapsible-up 0.22s cubic-bezier(0.4, 0, 1, 1)",
         "caret-blink": "caret-blink 1.25s ease-out infinite",
         "spin-smooth": "spin-smooth 1s cubic-bezier(0.4, 0, 0.2, 1) infinite",
       },

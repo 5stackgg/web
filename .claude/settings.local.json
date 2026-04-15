@@ -16,7 +16,9 @@
       "Read(//Users/luke/code/5stack/web/i18n/locales/**)",
       "Bash(done)",
       "Bash(for f in ko_KR ru_RU tr_TR uk_UA zh_Hans)",
-      "Bash(for f in ar_SA ko_KR ru_RU tr_TR uk_UA zh_Hans it_IT ja_JP da_DK pt_BR de_DE pl_PL es_ES zh_Hant sv_SE fr_FR)"
+      "Bash(for f in ar_SA ko_KR ru_RU tr_TR uk_UA zh_Hans it_IT ja_JP da_DK pt_BR de_DE pl_PL es_ES zh_Hant sv_SE fr_FR)",
+      "Bash(tail *)",
+      "Bash(node *)"
     ]
   }
 }

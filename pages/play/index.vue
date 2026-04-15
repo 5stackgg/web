@@ -1,22 +1,79 @@
 <script setup lang="ts">
+import { ref } from "vue";
+import { Settings2 } from "lucide-vue-next";
 import MyUpcoming from "~/components/MyUpcoming.vue";
 import Matchmaking from "~/components/matchmaking/Matchmaking.vue";
+import MatchmakingSettings from "~/components/matchmaking/MatchmakingSettings.vue";
 import OpenMatches from "~/components/match/OpenMatches.vue";
 import CustomMatch from "~/components/CustomMatch.vue";
 import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { CardHeader, CardTitle, CardDescription } from "~/components/ui/card";
+import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
+import { Button } from "~/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
+import {
+  tacticalSectionDescriptionClasses,
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
+
+const settingsOpen = ref(false);
 </script>
 
 <template>
   <PageTransition>
+    <TacticalPageHeader>
+      <template #title>{{ $t("pages.play.title") }}</template>
+      <template v-if="matchmakingAllowed" #actions>
+        <Popover v-model:open="settingsOpen">
+          <PopoverTrigger as-child>
+            <Button
+              variant="outline"
+              class="h-11 px-4 gap-2 bg-card/60 backdrop-blur"
+              :class="{
+                'border-[hsl(var(--tac-amber)/0.55)] text-[hsl(var(--tac-amber))]':
+                  settingsOpen,
+              }"
+            >
+              <Settings2 class="w-4 h-4" />
+              <span class="hidden sm:inline">
+                {{ $t("matchmaking.settings_section.toggle") }}
+              </span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            align="end"
+            class="w-[min(92vw,520px)] origin-top-right p-4"
+          >
+            <div class="flex items-center justify-between mb-3">
+              <h4
+                class="font-mono text-xs tracking-[0.24em] uppercase text-muted-foreground"
+              >
+                {{ $t("pages.settings.matchmaking.title") }}
+              </h4>
+            </div>
+            <MatchmakingSettings />
+          </PopoverContent>
+        </Popover>
+      </template>
+    </TacticalPageHeader>
+  </PageTransition>
+
+  <PageTransition
+    v-if="matchmakingAllowed || canCreateMatch"
+    :delay="50"
+    class="mt-6"
+  >
     <div class="hidden md:block">
       <template v-if="matchmakingAllowed">
         <Matchmaking></Matchmaking>
-        <Separator v-if="showSeparators" class="my-4" />
       </template>
       <template v-else-if="canCreateMatch">
-        <CustomMatch class="bg-card p-8 rounded-lg" />
+        <CustomMatch />
       </template>
     </div>
   </PageTransition>
@@ -25,54 +82,41 @@ import { CardHeader, CardTitle, CardDescription } from "~/components/ui/card";
     <MyUpcoming></MyUpcoming>
   </PageTransition>
 
-  <PageTransition :delay="200" class="mt-6">
-    <div v-if="openRegistrationTournaments?.length > 0" class="p-4">
-      <CardHeader>
-        <CardTitle>{{
-          $t("pages.play.open_registration_tournaments.title")
-        }}</CardTitle>
-        <CardDescription>
-          {{ $t("pages.play.open_registration_tournaments.description") }}
-        </CardDescription>
-      </CardHeader>
-      <TournamentTableRow
-        v-for="tournament of openRegistrationTournaments"
-        :key="tournament.id"
-        :tournament="tournament"
-      ></TournamentTableRow>
+  <PageTransition
+    v-if="openRegistrationTournaments?.length > 0"
+    :delay="200"
+    class="mt-6"
+  >
+    <div>
+      <div :class="tacticalSectionLabelClasses">
+        <span :class="tacticalSectionTickClasses"></span>
+        TOURNAMENT.REGISTRATION
+      </div>
+      <div :class="tacticalSectionDescriptionClasses">
+        {{ $t("pages.play.open_registration_tournaments.description") }}
+      </div>
+      <div class="space-y-3">
+        <TournamentTableRow
+          v-for="tournament of openRegistrationTournaments"
+          :key="tournament.id"
+          :tournament="tournament"
+        ></TournamentTableRow>
+      </div>
     </div>
   </PageTransition>
 
-  <Separator
-    v-if="openRegistrationTournaments?.length > 0 && showSeparators"
-    class="my-4"
-  />
-
-  <Separator
-    v-if="
-      showSeparators &&
-      (matchmakingAllowed ||
-        canCreateMatch ||
-        openRegistrationTournaments?.length > 0)
-    "
-    class="my-4"
-  />
-
   <PageTransition :delay="300" class="mt-6">
     <div>
-      <div class="mb-2">
-        <div class="text-xl font-semibold">
-          {{ $t("pages.play.open_matches.title") }}
-        </div>
-        <div class="text-muted-foreground text-sm">
-          {{ $t("pages.play.open_matches.description") }}
-        </div>
+      <div :class="tacticalSectionLabelClasses">
+        <span :class="tacticalSectionTickClasses"></span>
+        OPEN.MATCHES
+      </div>
+      <div :class="tacticalSectionDescriptionClasses">
+        {{ $t("pages.play.open_matches.description") }}
       </div>
       <OpenMatches />
     </div>
   </PageTransition>
-
-  <div id="pagination"></div>
 </template>
 
 <script lang="ts">

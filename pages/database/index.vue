@@ -1,14 +1,20 @@
 <template>
-  <PageTransition :delay="100">
-    <div class="space-y-4">
-      <h1 class="text-2xl font-semibold">{{ $t("pages.database.title") }}</h1>
+  <div
+    class="relative space-y-6 [--tac-clip:14px] [--tac-clip-sm:10px]"
+  >
+    <div
+      aria-hidden="true"
+      class="pointer-events-none fixed inset-0 -z-10 opacity-[0.04] [background-image:linear-gradient(hsl(var(--tac-amber))_1px,transparent_1px),linear-gradient(90deg,hsl(var(--tac-amber))_1px,transparent_1px)] [background-size:64px_64px]"
+    />
 
+    <PageTransition :delay="0">
       <Tabs v-model="activeTab" default-value="queries" class="w-full">
-        <div class="flex items-center justify-between gap-4 mb-4">
-          <!-- Mobile: dropdown select -->
-          <div class="lg:hidden w-full">
+        <div
+          class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
+        >
+          <div class="lg:hidden">
             <Select v-model="activeTab">
-              <SelectTrigger class="w-full" aria-label="Database section">
+              <SelectTrigger class="w-full" :aria-label="$t('ui.tooltips.database_section')">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -22,41 +28,39 @@
               </SelectContent>
             </Select>
           </div>
-          <!-- Desktop: horizontal tabs -->
-          <TabsList class="hidden lg:flex">
+
+          <TabsList :class="[tacticalTabsListClasses, 'hidden lg:flex']">
             <TabsTrigger
               v-for="tab in tabItems"
               :key="tab.value"
               :value="tab.value"
+              :class="tacticalTabsTriggerClasses"
             >
               {{ tab.label }}
             </TabsTrigger>
           </TabsList>
 
-          <div class="flex items-center gap-2">
-            <!-- Refresh Interval with Pause Icon -->
-            <ButtonGroup>
-              <Button
-                variant="outline"
-                size="sm"
-                class="px-3 h-9"
-                @click="forceRefresh"
-              >
-                <RefreshCwIcon
-                  :class="[
-                    'w-4 h-4 transition-transform',
-                    isRefreshing && 'animate-spin',
-                  ]"
-                />
-              </Button>
+          <div
+            class="flex items-stretch gap-[1px] rounded-md border border-border bg-border overflow-hidden"
+          >
+            <button
+              class="grid place-items-center bg-card/80 px-2.5 py-2 text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
+              @click="forceRefresh"
+            >
+              <RefreshCwIcon
+                :class="[
+                  'h-3.5 w-3.5 transition-transform',
+                  isRefreshing && 'animate-spin',
+                ]"
+              />
+            </button>
+
+            <div class="bg-card/80">
               <Select v-model="refreshInterval" :disabled="isPaused">
                 <SelectTrigger
-                  data-slot="select-trigger"
-                  class="w-14 h-9 [&>svg]:hidden text-center justify-center"
+                  class="h-full w-14 border-none bg-transparent font-mono text-[0.65rem] tracking-widest shadow-none focus:ring-0 [&>svg]:hidden"
                 >
-                  <SelectValue
-                    :placeholder="$t('pages.database.auto_refresh.interval')"
-                  />
+                  <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="3">3s</SelectItem>
@@ -67,27 +71,33 @@
                   <SelectItem value="60">60s</SelectItem>
                 </SelectContent>
               </Select>
-              <Button
-                :variant="isPaused ? 'default' : 'outline'"
-                size="sm"
-                class="px-3 h-9"
-                @click="togglePause"
-              >
-                <component
-                  :is="isPaused ? PlayIcon : PauseIcon"
-                  class="w-4 h-4"
-                />
-              </Button>
-            </ButtonGroup>
+            </div>
+
+            <button
+              class="grid place-items-center px-2.5 py-2 transition-colors"
+              :class="
+                isPaused
+                  ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
+                  : 'bg-card/80 text-muted-foreground hover:text-[hsl(var(--tac-amber))]'
+              "
+              @click="togglePause"
+            >
+              <component
+                :is="isPaused ? PlayIcon : PauseIcon"
+                class="h-3.5 w-3.5"
+              />
+            </button>
           </div>
         </div>
 
-        <Transition name="database-tab-fade" mode="out-in">
-          <component :is="activeTabComponent" :key="activeTab" />
-        </Transition>
+        <div class="mt-4">
+          <Transition v-bind="databaseTabFadeTransition" mode="out-in">
+            <component :is="activeTabComponent" :key="activeTab" />
+          </Transition>
+        </div>
       </Tabs>
-    </div>
-  </PageTransition>
+    </PageTransition>
+  </div>
 </template>
 
 <script lang="ts">
@@ -96,6 +106,7 @@ import {
   PauseIcon,
   ChevronDownIcon,
   RefreshCwIcon,
+  DatabaseIcon,
 } from "lucide-vue-next";
 import PageTransition from "@/components/ui/transitions/PageTransition.vue";
 import { Button } from "@/components/ui/button";
@@ -110,6 +121,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  tacticalTabsListClasses,
+  tacticalTabsTriggerClasses,
+} from "~/utilities/tacticalClasses";
 import QueryPerformanceTab from "@/components/database/QueryPerformanceTab.vue";
 import ConnectionsTab from "@/components/database/ConnectionsTab.vue";
 import LocksTransactionsTab from "@/components/database/LocksTransactionsTab.vue";
@@ -118,6 +133,13 @@ import IndexUsageTab from "@/components/database/IndexUsageTab.vue";
 import StorageTab from "@/components/database/StorageTab.vue";
 import TimescaleTab from "@/components/database/TimescaleTab.vue";
 import BackupsTab from "@/components/database/BackupsTab.vue";
+
+const databaseTabFadeTransition = {
+  enterActiveClass: "transition-all duration-150 ease-out",
+  leaveActiveClass: "transition-all duration-150 ease-out",
+  enterFromClass: "translate-y-[2px] opacity-0",
+  leaveToClass: "translate-y-[2px] opacity-0",
+};
 
 export default {
   components: {
@@ -146,6 +168,7 @@ export default {
     PlayIcon,
     PauseIcon,
     RefreshCwIcon,
+    DatabaseIcon,
   },
   data() {
     return {
@@ -157,6 +180,9 @@ export default {
       PlayIcon,
       PauseIcon,
       RefreshCwIcon,
+      databaseTabFadeTransition,
+      tacticalTabsListClasses,
+      tacticalTabsTriggerClasses,
     };
   },
   computed: {
@@ -193,7 +219,7 @@ export default {
     },
     pollInterval() {
       if (this.isPaused) {
-        return 0; // 0 disables polling in Apollo
+        return 0;
       }
       return parseInt(this.refreshInterval) * 1000;
     },
@@ -212,11 +238,8 @@ export default {
       this.isPaused = !this.isPaused;
     },
     forceRefresh() {
-      // Show spinning animation
       this.loadingCount++;
-      // Increment trigger to force child components to refresh
       this.refreshTrigger++;
-      // Stop animation after 1 second
       setTimeout(() => {
         this.loadingCount = Math.max(0, this.loadingCount - 1);
       }, 1000);
@@ -224,17 +247,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-.database-tab-fade-enter-active,
-.database-tab-fade-leave-active {
-  transition:
-    opacity 150ms ease-out,
-    transform 150ms ease-out;
-}
-
-.database-tab-fade-enter-from,
-.database-tab-fade-leave-to {
-  opacity: 0;
-  transform: translateY(2px);
-}
-</style>

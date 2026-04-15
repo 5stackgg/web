@@ -6,23 +6,22 @@ import cleanMapName from "~/utilities/cleanMapName";
 
 <template>
   <div class="flex flex-col h-full">
-    <div class="px-4 pt-4 pb-3 flex-shrink-0 border-b border-zinc-800/60">
+    <div class="px-3 pt-3 pb-3 flex-shrink-0 border-b border-border">
       <div class="flex items-center justify-between gap-2">
-        <h2
-          class="text-xs font-semibold text-zinc-400 uppercase tracking-wider"
-        >
+        <div class="hub-panel-label">
+          <span class="hub-panel-tick"></span>
           {{ $t("layouts.recent_games.title") }}
-        </h2>
-        <p
+        </div>
+        <span
           v-if="summaryStats.total > 0"
-          class="text-[11px] text-muted-foreground"
+          class="text-[10px] font-mono tracking-[0.12em] text-muted-foreground tabular-nums"
         >
           {{
             $t("layouts.recent_games.last_matches", {
               count: summaryStats.total,
             })
           }}
-        </p>
+        </span>
       </div>
 
       <div
@@ -31,10 +30,10 @@ import cleanMapName from "~/utilities/cleanMapName";
       >
         <!-- Performance (Record + Win Rate) -->
         <div
-          class="rounded-lg border border-zinc-800/80 bg-[#09090b]/80 px-3 py-2.5 flex flex-col gap-1.5 shadow-sm h-full"
+          class="rounded-md border border-border bg-card/50 px-3 py-2.5 flex flex-col gap-1.5 h-full"
         >
           <span
-            class="text-[10px] font-semibold uppercase tracking-widest text-zinc-500"
+            class="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground"
           >
             {{ $t("layouts.recent_games.performance") }}
           </span>
@@ -54,13 +53,13 @@ import cleanMapName from "~/utilities/cleanMapName";
                     <span class="text-emerald-400 font-medium">
                       {{ summaryStats.wins }}
                     </span>
-                    {{ $t("layouts.recent_games.wins_label") }}
+                    {{ $t("common.stats.wins") }}
                   </span>
                   <span>
                     <span class="text-rose-400 font-medium">
                       {{ summaryStats.losses }}
                     </span>
-                    {{ $t("layouts.recent_games.losses_label") }}
+                    {{ $t("common.stats.losses") }}
                   </span>
                   <span v-if="summaryStats.draws">
                     <span class="text-amber-300 font-medium">
@@ -76,7 +75,7 @@ import cleanMapName from "~/utilities/cleanMapName";
                 <span
                   class="text-xs font-semibold uppercase tracking-wide text-zinc-500"
                 >
-                  {{ $t("layouts.recent_games.win_rate") }}
+                  {{ $t("common.stats.win_rate") }}
                 </span>
                 <span class="text-2xl font-semibold text-sky-300 leading-tight">
                   {{ summaryStats.winRate }}%
@@ -88,10 +87,10 @@ import cleanMapName from "~/utilities/cleanMapName";
 
         <!-- Most Played Maps -->
         <div
-          class="rounded-lg border border-zinc-800/80 bg-[#09090b]/80 px-3 py-2.5 flex flex-col gap-1.5 shadow-sm h-full"
+          class="rounded-md border border-border bg-card/50 px-3 py-2.5 flex flex-col gap-1.5 h-full"
         >
           <span
-            class="text-[10px] font-semibold uppercase tracking-widest text-zinc-500"
+            class="text-[10px] font-semibold uppercase tracking-[0.2em] text-muted-foreground"
           >
             {{ $t("layouts.recent_games.most_played_maps") }}
           </span>
@@ -102,10 +101,10 @@ import cleanMapName from "~/utilities/cleanMapName";
             <div
               v-for="map in summaryStats.mostPlayedMaps"
               :key="map.name"
-              class="relative w-full h-7 rounded-md border border-zinc-800/80 bg-zinc-900/60 overflow-hidden flex items-center"
+              class="relative w-full h-7 rounded-md border border-border bg-muted/30 overflow-hidden flex items-center"
             >
               <div
-                class="absolute inset-y-0 left-0 bg-sky-500/15"
+                class="absolute inset-y-0 left-0 bg-[hsl(var(--tac-amber)/0.15)]"
                 :style="{ width: barWidth(map) }"
               />
               <div
@@ -297,3 +296,22 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.hub-panel-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: "Oxanium", monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+.hub-panel-tick {
+  width: 8px;
+  height: 2px;
+  background: hsl(var(--tac-amber));
+}
+</style>

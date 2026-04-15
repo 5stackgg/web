@@ -15,7 +15,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
     <TableHeader>
       <TableRow>
         <TableHead>{{ $t("tournament.table.tournament") }}</TableHead>
-        <TableHead>{{ $t("tournament.table.status") }}</TableHead>
+        <TableHead>{{ $t("common.status") }}</TableHead>
         <TableHead>{{ $t("tournament.table.type") }}</TableHead>
         <TableHead>{{ $t("tournament.table.teams_joined") }}</TableHead>
         <TableHead>{{ $t("tournament.table.starts") }}</TableHead>

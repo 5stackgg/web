@@ -82,7 +82,7 @@ const showIndicator = computed(() => indicatorWidth.value > 0)
     <div
       v-if="variant === 'default'"
       v-show="showIndicator"
-      class="absolute top-1 bottom-1 left-0 rounded-md bg-background shadow pointer-events-none z-0"
+      class="absolute top-1 bottom-1 left-0 rounded-md pointer-events-none z-0 tabs-indicator-default"
       :class="hasAnimated ? 'tabs-indicator-animated' : ''"
       :style="{
         transform: `translateX(${indicatorX}px)`,
@@ -93,7 +93,7 @@ const showIndicator = computed(() => indicatorWidth.value > 0)
     <div
       v-if="variant === 'underline'"
       v-show="showIndicator"
-      class="absolute bottom-0 left-0 h-0.5 bg-primary rounded-full pointer-events-none z-0"
+      class="absolute bottom-0 left-0 h-0.5 rounded-full pointer-events-none z-0 tabs-indicator-underline"
       :class="hasAnimated ? 'tabs-indicator-animated' : ''"
       :style="{
         transform: `translateX(${indicatorX}px)`,
@@ -109,5 +109,16 @@ const showIndicator = computed(() => indicatorWidth.value > 0)
   transition:
     transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
     width 0.2s ease;
+}
+
+.tabs-indicator-default {
+  background: hsl(var(--tac-amber) / 0.12);
+  border: 1px solid hsl(var(--tac-amber) / 0.45);
+  box-shadow: 0 0 12px hsl(var(--tac-amber) / 0.25);
+}
+
+.tabs-indicator-underline {
+  background: hsl(var(--tac-amber));
+  box-shadow: 0 0 8px hsl(var(--tac-amber) / 0.45);
 }
 </style>

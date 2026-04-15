@@ -107,9 +107,7 @@ watch(open, (newOpen) => {
   if (newOpen) {
     // Use nextTick to ensure DOM is updated before focusing
     nextTick(() => {
-      const input = document.querySelector(
-        'input[placeholder="Search players..."]',
-      );
+      const input = document.getElementById("spotlight-search-input");
       if (input) {
         (input as HTMLInputElement).focus();
       }
@@ -160,8 +158,9 @@ const closeOnOverlayClick = (event: MouseEvent) => {
               class="size-5 text-muted-foreground flex-shrink-0"
             />
             <Input
+              id="spotlight-search-input"
               v-model="query"
-              placeholder="Search players..."
+              :placeholder="$t('spotlight_search.placeholder')"
               class="flex-1 border-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-base px-0 h-auto"
               autofocus
             />
@@ -173,7 +172,7 @@ const closeOnOverlayClick = (event: MouseEvent) => {
               v-if="loading"
               class="px-4 py-8 text-center text-muted-foreground text-sm"
             >
-              Searching...
+              {{ $t("spotlight_search.searching") }}
             </div>
 
             <div

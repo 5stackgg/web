@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { Search } from "lucide-vue-next";
+import { Search, X, PlusCircle } from "lucide-vue-next";
 import { FormItem, FormControl } from "@/components/ui/form";
 import { Button } from "~/components/ui/button";
 import TeamsTable from "~/components/TeamsTable.vue";
-import PageHeading from "~/components/PageHeading.vue";
-import { PlusCircle } from "lucide-vue-next";
+import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import Pagination from "@/components/Pagination.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -12,61 +11,74 @@ import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
+import {
+  tacticalCtaButtonClasses,
+  tacticalFilterPillActiveClasses,
+  tacticalFilterPillClasses,
+} from "~/utilities/tacticalClasses";
 
 const { isMobile } = useSidebar();
 </script>
 
 <template>
   <PageTransition>
-    <PageHeading>
+    <TacticalPageHeader>
       <template #title>{{ $t("pages.teams.title") }}</template>
-      <template #description>{{ $t("pages.teams.description") }}</template>
       <template #actions>
-        <NuxtLink v-if="me" :to="{ name: 'teams-create' }">
-          <Button :size="isMobile ? 'default' : 'lg'">
-            <PlusCircle class="w-4 h-4" />
-            <span class="hidden md:inline ml-2">{{
-              $t("pages.teams.create")
-            }}</span>
-          </Button>
+        <NuxtLink
+          v-if="me"
+          :to="{ name: 'teams-create' }"
+          :class="tacticalCtaButtonClasses"
+        >
+          <PlusCircle class="w-4 h-4" />
+          <span class="hidden md:inline">{{ $t("pages.teams.create") }}</span>
         </NuxtLink>
       </template>
-    </PageHeading>
+    </TacticalPageHeader>
   </PageTransition>
 
   <!-- Filters -->
   <PageTransition :delay="100" class="mt-6">
-    <div
-      class="flex flex-col md:flex-row gap-4 mb-4 items-center justify-between"
-    >
-      <form class="flex-1" @submit.prevent="viewTopTeam">
+    <div class="space-y-3">
+      <form class="relative" @submit.prevent="viewTopTeam">
         <FormField v-slot="{ componentField }" name="teamQuery">
           <FormItem>
             <FormControl>
-              <div class="relative w-full max-w-sm">
+              <div class="relative">
+                <Search
+                  class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none"
+                />
                 <Input
                   type="text"
                   :placeholder="$t('pages.teams.search')"
-                  class="pl-10"
+                  class="h-12 pl-12 pr-12 text-base bg-card/60 backdrop-blur border-border"
                   v-bind="componentField"
                 />
-                <Search
-                  class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
-                />
+                <button
+                  v-if="form.values.teamQuery"
+                  type="button"
+                  @click="form.setFieldValue('teamQuery', '')"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X class="w-4 h-4" />
+                </button>
               </div>
             </FormControl>
           </FormItem>
         </FormField>
       </form>
-      <div
-        v-if="me"
-        class="flex items-center space-x-2 cursor-pointer"
-        @click="showOnlyMyTeams = !showOnlyMyTeams"
-      >
-        <Switch :model-value="showOnlyMyTeams" />
-        <Label class="text-sm cursor-pointer">
+
+      <div v-if="me" class="flex flex-wrap gap-2">
+        <button
+          type="button"
+          :class="[
+            tacticalFilterPillClasses,
+            showOnlyMyTeams ? tacticalFilterPillActiveClasses : '',
+          ]"
+          @click="showOnlyMyTeams = !showOnlyMyTeams"
+        >
           {{ $t("team.search.my_teams_only") }}
-        </Label>
+        </button>
       </div>
     </div>
   </PageTransition>

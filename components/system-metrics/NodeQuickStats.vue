@@ -8,89 +8,109 @@ import { Cpu, MemoryStick, HardDrive, Network } from "lucide-vue-next";
 <template>
   <div
     v-if="metricsData"
-    class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 text-xs mt-2"
+    class="mt-2 rounded-2xl border border-border/60 bg-muted/10 p-2.5 sm:p-3"
   >
-    <div
-      class="rounded-lg border border-border/60 bg-muted/20 p-3 space-y-2 min-w-0"
-    >
+    <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4">
       <div
-        class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
+        class="min-w-0 rounded-xl border border-border/50 bg-background/40 px-3 py-3"
       >
-        <Cpu class="h-3.5 w-3.5 shrink-0" />
-        {{ $t("pages.system_metrics.cpu_short") }}
-      </div>
-      <div class="text-sm font-semibold tabular-nums">
-        {{ latestCpuUsage }}%
-      </div>
-      <div class="h-1.5 rounded-full bg-muted overflow-hidden">
         <div
-          class="h-full rounded-full bg-primary"
-          :style="{ width: `${latestCpuUsage}%` }"
-        />
+          class="flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+        >
+          <span class="flex items-center gap-2 min-w-0">
+            <Cpu class="h-3.5 w-3.5 shrink-0" />
+            {{ $t("pages.system_metrics.cpu_short") }}
+          </span>
+          <span class="truncate">{{ cpuStateLabel }}</span>
+        </div>
+        <div class="mt-3 flex items-end justify-between gap-3">
+          <div class="text-lg font-semibold tabular-nums">
+            {{ latestCpuUsage }}%
+          </div>
+          <div class="text-[11px] text-muted-foreground">current load</div>
+        </div>
+        <div class="mt-3 h-1.5 rounded-full bg-muted overflow-hidden">
+          <div
+            class="h-full rounded-full bg-primary"
+            :style="{ width: `${latestCpuUsage}%` }"
+          />
+        </div>
       </div>
-    </div>
 
-    <div
-      class="rounded-lg border border-border/60 bg-muted/20 p-3 space-y-2 min-w-0"
-    >
       <div
-        class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
+        class="min-w-0 rounded-xl border border-border/50 bg-background/40 px-3 py-3"
       >
-        <MemoryStick class="h-3.5 w-3.5 shrink-0" />
-        {{ $t("pages.system_metrics.memory_short") }}
-      </div>
-      <div
-        class="text-[11px] sm:text-xs font-medium tabular-nums leading-snug break-words"
-      >
-        {{ memoryUsageDisplay }}
-      </div>
-      <div class="h-1.5 rounded-full bg-muted overflow-hidden">
         <div
-          class="h-full rounded-full bg-primary/80"
-          :style="{ width: `${latestMemoryUsage}%` }"
-        />
+          class="flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+        >
+          <span class="flex items-center gap-2 min-w-0">
+            <MemoryStick class="h-3.5 w-3.5 shrink-0" />
+            {{ $t("pages.system_metrics.memory_short") }}
+          </span>
+          <span class="truncate">{{ latestMemoryUsage }}% used</span>
+        </div>
+        <div
+          class="mt-3 text-[12px] sm:text-[13px] font-medium tabular-nums leading-snug break-words"
+        >
+          {{ memoryUsageDisplay }}
+        </div>
+        <div class="mt-3 h-1.5 rounded-full bg-muted overflow-hidden">
+          <div
+            class="h-full rounded-full bg-primary/80"
+            :style="{ width: `${latestMemoryUsage}%` }"
+          />
+        </div>
       </div>
-    </div>
 
-    <div
-      class="rounded-lg border border-border/60 bg-muted/20 p-3 space-y-2 min-w-0"
-    >
       <div
-        class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
+        class="min-w-0 rounded-xl border border-border/50 bg-background/40 px-3 py-3"
       >
-        <HardDrive class="h-3.5 w-3.5 shrink-0" />
-        {{ $t("pages.system_metrics.disk_short") }}
-      </div>
-      <div
-        class="text-[11px] sm:text-xs font-medium tabular-nums leading-snug break-words"
-      >
-        {{ diskUsageDisplay }}
-      </div>
-      <div class="h-1.5 rounded-full bg-muted overflow-hidden">
         <div
-          class="h-full rounded-full bg-primary/60"
-          :style="{ width: `${latestDiskUsage}%` }"
-        />
+          class="flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+        >
+          <span class="flex items-center gap-2 min-w-0">
+            <HardDrive class="h-3.5 w-3.5 shrink-0" />
+            {{ $t("pages.system_metrics.disk_short") }}
+          </span>
+          <span class="truncate">{{ diskLabel }}</span>
+        </div>
+        <div
+          class="mt-3 text-[12px] sm:text-[13px] font-medium tabular-nums leading-snug break-words"
+        >
+          {{ diskUsageDisplay }}
+        </div>
+        <div class="mt-3 h-1.5 rounded-full bg-muted overflow-hidden">
+          <div
+            class="h-full rounded-full bg-primary/60"
+            :style="{ width: `${latestDiskUsage}%` }"
+          />
+        </div>
       </div>
-    </div>
 
-    <div
-      class="rounded-lg border border-border/60 bg-muted/20 p-3 space-y-2 min-w-0"
-    >
       <div
-        class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground"
+        class="min-w-0 rounded-xl border border-border/50 bg-background/40 px-3 py-3"
       >
-        <Network class="h-3.5 w-3.5 shrink-0" />
-        {{ $t("pages.system_metrics.network_short") }}
-      </div>
-      <div class="text-sm font-semibold tabular-nums">
-        {{ latestNetworkUsage }} Mbps
-      </div>
-      <div class="h-1.5 rounded-full bg-muted overflow-hidden">
         <div
-          class="h-full rounded-full bg-primary/40"
-          :style="{ width: `${Math.min(latestNetworkUsage, 100)}%` }"
-        />
+          class="flex items-center justify-between gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+        >
+          <span class="flex items-center gap-2 min-w-0">
+            <Network class="h-3.5 w-3.5 shrink-0" />
+            {{ $t("pages.system_metrics.network_short") }}
+          </span>
+          <span class="truncate">aggregate</span>
+        </div>
+        <div class="mt-3 flex items-end justify-between gap-3">
+          <div class="text-lg font-semibold tabular-nums">
+            {{ networkUsageDisplay }}
+          </div>
+          <div class="text-[11px] text-muted-foreground">rx + tx</div>
+        </div>
+        <div class="mt-3 h-1.5 rounded-full bg-muted overflow-hidden">
+          <div
+            class="h-full rounded-full bg-primary/40"
+            :style="{ width: `${Math.min(latestNetworkUsage, 100)}%` }"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -113,6 +133,11 @@ export default {
     };
   },
   computed: {
+    cpuStateLabel(): string {
+      if (this.latestCpuUsage >= 90) return "critical";
+      if (this.latestCpuUsage >= 75) return "elevated";
+      return "stable";
+    },
     diskWithMaxPercent(): any | null {
       if (!this.metricsData?.disks?.length) return null;
       const last = this.metricsData.disks[this.metricsData.disks.length - 1];
@@ -148,6 +173,11 @@ export default {
       const d = this.diskWithMaxPercent;
       if (!d || !Number(d.size)) return "—";
       return formatUsedOverTotalBytes(Number(d.used || 0), Number(d.size));
+    },
+    diskLabel(): string {
+      const d = this.diskWithMaxPercent;
+      if (!d) return "no disk data";
+      return d.mountpoint || d.filesystem || "disk usage";
     },
     latestCpuUsage(): number {
       if (!this.metricsData?.cpu?.length) return 0;
@@ -188,6 +218,9 @@ export default {
       );
       const mbps = totalBitsPerSec / 1_000_000;
       return Number(Math.max(0, mbps).toFixed(1));
+    },
+    networkUsageDisplay(): string {
+      return `${this.latestNetworkUsage} Mbps`;
     },
   },
   apollo: {

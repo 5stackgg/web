@@ -169,8 +169,8 @@ export default {
       return `rgba(${r},${g},${b},${alpha})`;
     },
     formatMountName(mount: string) {
-      if (mount === "/") return "OS";
-      if (mount === "/demos") return "Demos";
+      if (mount === "/") return this.$t("charts.mount_os");
+      if (mount === "/demos") return this.$t("charts.mount_demos");
       return mount;
     },
   },

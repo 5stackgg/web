@@ -5,11 +5,58 @@ import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
 import { provideApolloClient } from "@vue/apollo-composable";
 import { createHttpLink, from, split } from "@apollo/client/core";
+import type { ApolloClient } from "@apollo/client/core";
+import type { InMemoryCache, NormalizedCacheObject } from "@apollo/client/cache";
 import { toast } from "@/components/ui/toast";
 
+const mergeObjectFields = (
+  existing: Record<string, unknown> | undefined,
+  incoming: Record<string, unknown>,
+) => ({
+  ...existing,
+  ...incoming,
+});
+
+type NuxtApollo = {
+  defaultClient: ApolloClient<NormalizedCacheObject> & {
+    cache: InMemoryCache;
+  };
+};
+
+type NuxtI18n = {
+  t: (key: string) => string;
+};
+
 export default defineNuxtPlugin((nuxtApp) => {
-  const $apollo = nuxtApp.$apollo;
+  const $apollo = nuxtApp.$apollo as NuxtApollo;
+  const $i18n = nuxtApp.$i18n as NuxtI18n;
   const config = useRuntimeConfig();
+
+  $apollo.defaultClient.cache.policies.addTypePolicies({
+    players: {
+      keyFields: (player) => {
+        if (typeof player.steam_id === "string") {
+          return `players:${player.steam_id}`;
+        }
+
+        return false;
+      },
+    },
+    Query: {
+      fields: {
+        players_by_pk: {
+          merge: mergeObjectFields,
+        },
+      },
+    },
+    Subscription: {
+      fields: {
+        players_by_pk: {
+          merge: mergeObjectFields,
+        },
+      },
+    },
+  });
 
   const errorLink = onError((error) => {
     nuxtApp.callHook("apollo:error", error);
@@ -83,7 +130,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 
         toast({
           variant: "destructive",
-          title: nuxtApp.$i18n.t("common.error"),
+          title: $i18n.t("common.error"),
           description: graphqlError.message,
         });
       }

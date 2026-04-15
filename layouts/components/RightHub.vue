@@ -150,8 +150,8 @@ function hubBtnClass(hub: string) {
   return [
     "relative flex items-center justify-center w-10 h-10 rounded-md transition-colors duration-200",
     isHubActive(hub)
-      ? "text-sidebar-accent-foreground"
-      : "text-sidebar-foreground/50 hover:bg-sidebar-accent/40 hover:text-sidebar-foreground",
+      ? "text-[hsl(var(--tac-amber))]"
+      : "text-sidebar-foreground/50 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-sidebar-foreground",
   ];
 }
 
@@ -218,7 +218,7 @@ function onHubTouchEnd(e: TouchEvent) {
         <!-- Sliding active indicator -->
         <div
           v-show="showIndicator"
-          class="absolute top-0 left-0 w-0.5 bg-primary rounded-r-full z-10 pointer-events-none"
+          class="absolute top-0 left-0 w-0.5 rounded-r-full z-10 pointer-events-none bg-[hsl(var(--tac-amber))]"
           :class="hasAnimated ? 'hub-indicator-animated' : ''"
           :style="{
             transform: `translateY(${indicatorY + 4}px)`,
@@ -229,7 +229,7 @@ function onHubTouchEnd(e: TouchEvent) {
         <!-- Background highlight indicator -->
         <div
           v-show="showIndicator"
-          class="absolute top-0 left-2 right-2 rounded-md bg-sidebar-accent z-0 pointer-events-none"
+          class="absolute top-0 left-2 right-2 rounded-md z-0 pointer-events-none bg-[hsl(var(--tac-amber)/0.1)]"
           :class="hasAnimated ? 'hub-indicator-animated' : ''"
           :style="{
             transform: `translateY(${indicatorY}px)`,
@@ -328,7 +328,7 @@ function onHubTouchEnd(e: TouchEvent) {
         <SidebarMenu v-if="!isMobile">
           <SidebarMenuItem>
             <SidebarMenuButton
-              tooltip="Toggle sidebar"
+              :tooltip="$t('ui.tooltips.toggle_right_sidebar')"
               @click="setRightSidebarOpen(!rightSidebarOpen)"
               class="w-full h-auto group-data-[collapsible=icon]:!h-auto group-data-[collapsible=icon]:!w-full"
             >

@@ -8,7 +8,13 @@ import Empty from "~/components/ui/empty/Empty.vue";
 
 <template>
   <div class="flex flex-col h-full">
-    <div class="flex-1 overflow-y-auto p-4 flex flex-col">
+    <div class="px-3 pt-3 pb-2 flex-shrink-0 border-b border-border">
+      <div class="hub-panel-label">
+        <span class="hub-panel-tick"></span>
+        Notifications
+      </div>
+    </div>
+    <div class="flex-1 overflow-y-auto p-3 flex flex-col">
       <template
         v-if="
           team_invites.length > 0 ||
@@ -18,7 +24,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
       >
         <div
           v-if="team_invites.length > 0"
-          class="mb-4 p-4 bg-accent rounded-lg"
+          class="mb-3 p-3 bg-card/60 border border-border rounded-md"
         >
           <TeamInviteNotification
             type="team"
@@ -31,7 +37,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
 
         <div
           v-if="tournament_team_invites.length > 0"
-          class="mb-4 p-4 bg-accent rounded-lg"
+          class="mb-3 p-3 bg-card/60 border border-border rounded-md"
         >
           <TeamInviteNotification
             type="tournament"
@@ -43,7 +49,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
         </div>
 
         <template v-for="notification of notifications" :key="notification.id">
-          <div class="mb-4 p-4 rounded-lg shadow-md relative">
+          <div class="mb-3 p-3 rounded-md border border-border bg-card/40 relative">
             <Button
               v-if="notification.deletable !== false"
               size="icon"
@@ -53,7 +59,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
             >
               <Trash2 class="h-4 w-4" />
               <span class="sr-only">{{
-                $t("layouts.notifications.delete")
+                $t("common.delete")
               }}</span>
             </Button>
             <h3
@@ -146,7 +152,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
     </div>
 
     <div
-      class="flex gap-2 px-4 py-3 border-t border-zinc-800"
+      class="flex gap-2 px-3 py-3 border-t border-border"
       v-if="notifications.length > 0"
     >
       <Button
@@ -264,5 +270,22 @@ export default {
   a {
     @apply text-blue-500 underline hover:text-blue-700;
   }
+}
+
+.hub-panel-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: "Oxanium", monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+.hub-panel-tick {
+  width: 8px;
+  height: 2px;
+  background: hsl(var(--tac-amber));
 }
 </style>

@@ -20,7 +20,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
       >
         <div class="flex justify-between items-center mb-4">
           <h4 class="text-xl font-semibold">
-            {{ $t("match.clutches.round", { number: round.round }) }}
+            {{ $t("common.round", { number: round.round }) }}
           </h4>
           <span
             v-if="clutches[match_map.id] && clutches[match_map.id][round.round]"

@@ -42,7 +42,7 @@ const badgeVariant = computed(() => {
       {{ $t("match.status.cancelled") }}
     </template>
     <template v-else-if="match.status == e_match_status_enum.Finished">
-      {{ $t("match.status.finished") }}
+      {{ $t("common.finished") }}
     </template>
     <template v-else-if="match.status == e_match_status_enum.Scheduled">
       <div v-if="match.server && !match.is_match_server_available">

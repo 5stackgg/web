@@ -50,7 +50,7 @@ import MatchOptions from "~/components/MatchOptions.vue";
                     }"
                   >
                     <CalendarIcon class="mr-2 h-4 w-4" />
-                    {{ startDate || $t("tournament.form.pick_date") }}
+                    {{ startDate || $t("common.pick_date") }}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent class="w-auto p-0">
@@ -215,7 +215,7 @@ export default {
             {
               name: z.string().min(1),
               start: z.date().refine((date) => date > new Date(), {
-                message: "Date must be in the future",
+                message: (this as any).$t("validation.date_must_be_future"),
               }),
               description: z.string().nullable().default(null),
               auto_start: z.boolean().default(true),
@@ -393,7 +393,7 @@ export default {
         });
 
         toast({
-          title: "Updated Tournament",
+          title: this.$t("tournament.updated") as string,
         });
         return;
       }

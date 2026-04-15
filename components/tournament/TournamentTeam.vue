@@ -1,151 +1,191 @@
 <script setup lang="ts">
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/table";
 import TournamentTeamMemberRow from "~/components/tournament/TournamentTeamMemberRow.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
-import PlayerDisplay from "../PlayerDisplay.vue";
 import TournamentTeamInvite from "./TournamentTeamInvite.vue";
-import Badge from "../ui/badge/Badge.vue";
 import Input from "../ui/input/Input.vue";
 import { Button } from "~/components/ui/button";
+import { MoreHorizontal, LogOut, Trash, UserMinus, UserPlus } from "lucide-vue-next";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 </script>
 
 <template>
-  <div v-if="team && e_team_roles" class="grid gap-4">
-    <div
-      class="flex flex-col md:flex-row justify-between items-center mb-4 p-4 shadow rounded-lg"
-    >
-      <div>
-        <h2 class="text-2xl font-bold mb-2">
+  <div v-if="team && e_team_roles" class="tournament-team">
+    <!-- Team header -->
+    <header class="tournament-team__header">
+      <div class="tournament-team__identity">
+        <h2 class="tournament-team__name">
           {{ team.team?.name || team.name }}
-          <small> ({{ team.roster.length }} / {{ requiredPlayers }}) </small>
         </h2>
-        <div class="flex items-center gap-3 mb-2">
-          <template v-if="canEditSeed">
-            <label class="flex items-center gap-2 text-sm">
-              <span class="text-muted-foreground">
-                {{ $t("tournament.team.seed_label") }}
-              </span>
-              <Input
-                type="number"
-                min="1"
-                class="h-8 w-20"
-                :model-value="team.seed ?? ''"
-                @update:model-value="onSeedChange"
-              />
-            </label>
-          </template>
-          <Badge v-if="!canEditSeed && team.seed" variant="outline">
-            {{ $t("tournament.team.seed_display", { seed: team.seed }) }}
-          </Badge>
-        </div>
-        <template v-if="team.eligible_at">
-          <Badge>{{ $t("tournament.team.eligible") }}</Badge>
-        </template>
-        <template v-else>
-          <div class="text-sm text-red-600">
-            {{
-              $t("tournament.team.not_eligible", {
-                count: requiredPlayers - team.roster.length,
-              })
-            }}
-          </div>
-        </template>
-      </div>
-      <div class="flex gap-4">
-        <Button
-          @click="leaveTournament"
-          variant="destructive"
-          class="mt-4 md:mt-0"
-          v-if="!tournament.is_organizer && canLeaveTournament"
-        >
-          {{ $t("tournament.team.leave_tournament") }}
-        </Button>
-        <Button
-          @click="leaveTeam"
-          variant="destructive"
-          class="mt-4 md:mt-0"
-          v-if="canLeaveTeam"
-        >
-          {{ $t("tournament.team.leave_team") }}
-        </Button>
 
-        <Button
-          v-if="tournament.is_organizer && canRemoveTeam"
-          @click="removeTeam()"
-          variant="destructive"
-          class="w-full sm:w-auto"
-        >
-          {{ $t("tournament.tournament_team.remove") }}
-        </Button>
-      </div>
-    </div>
-
-    <div v-if="team.roster">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>{{ $t("tournament.team.player") }}</TableHead>
-            <TableHead>{{ $t("tournament.team.role") }}</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TournamentTeamMemberRow
-            v-for="member in team.roster"
-            :key="member.id"
-            :member="member"
-            :team="team"
-            :roles="e_team_roles"
-          />
-          <TableRow
-            v-for="slot of Math.max(0, requiredPlayers - team.roster.length)"
+        <div class="tournament-team__meta">
+          <span
+            class="tournament-team__status"
+            :class="
+              team.eligible_at
+                ? 'tournament-team__status--eligible'
+                : 'tournament-team__status--pending'
+            "
           >
-            <TableCell colspan="100%">
-              <div class="flex space-x-3">
-                <PlayerDisplay
-                  :show-flag="false"
-                  :show-role="false"
-                  :player="{
-                    name: $t('tournament.team.slot', {
-                      number: slot + team.roster.length,
-                    }),
-                  }"
-                />
-                <template v-if="slot === 1 && team.can_manage">
-                  <PlayerSearch
-                    :label="$t('tournament.team.add_player')"
-                    :self="true"
-                    :exclude="
-                      team.roster?.map((member) => member.player.steam_id) || []
-                    "
-                    :team-id="team.team_id"
-                    @selected="addMember"
-                  />
-                </template>
-              </div>
-            </TableCell>
-          </TableRow>
+            <span class="tournament-team__status-dot"></span>
+            <template v-if="team.eligible_at">
+              {{ $t("tournament.team.eligible") }}
+            </template>
+            <template v-else>
+              {{
+                $t("tournament.team.not_eligible", {
+                  count: requiredPlayers - team.roster.length,
+                })
+              }}
+            </template>
+          </span>
 
-          <TableRow v-if="team.invites && team.invites.length > 0">
-            <TableCell colspan="100%">
-              <div class="text-sm font-semibold text-gray-500 my-2">
-                {{ $t("tournament.team.pending_invites") }}
-              </div>
-            </TableCell>
-          </TableRow>
+          <span
+            v-if="!canEditSeed && team.seed"
+            class="tournament-team__seed"
+          >
+            {{ $t("tournament.team.seed_display", { seed: team.seed }) }}
+          </span>
+
+          <label
+            v-if="canEditSeed"
+            class="tournament-team__seed-editor"
+          >
+            <span>{{ $t("tournament.team.seed_label") }}</span>
+            <Input
+              type="number"
+              min="1"
+              class="h-7 w-16"
+              :model-value="team.seed ?? ''"
+              @update:model-value="onSeedChange"
+            />
+          </label>
+        </div>
+      </div>
+
+      <div class="tournament-team__actions">
+        <div class="tournament-team__counter">
+          <span class="tournament-team__counter-value">
+            {{ team.roster.length }}
+          </span>
+          <span class="tournament-team__counter-divider">/</span>
+          <span class="tournament-team__counter-total">
+            {{ requiredPlayers }}
+          </span>
+        </div>
+
+        <DropdownMenu
+          v-if="hasTeamActions"
+        >
+          <DropdownMenuTrigger as-child>
+            <Button variant="outline" size="icon" class="h-8 w-8">
+              <MoreHorizontal class="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" class="w-56">
+            <DropdownMenuItem
+              v-if="!tournament.is_organizer && canLeaveTournament"
+              class="text-destructive cursor-pointer"
+              @click="leaveTournament"
+            >
+              <LogOut class="mr-2 h-4 w-4" />
+              {{ $t("tournament.team.leave_tournament") }}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              v-if="canLeaveTeam"
+              class="text-destructive cursor-pointer"
+              @click="leaveTeam"
+            >
+              <UserMinus class="mr-2 h-4 w-4" />
+              {{ $t("tournament.team.leave_team") }}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              v-if="tournament.is_organizer && canRemoveTeam"
+              class="text-destructive cursor-pointer"
+              @click="removeTeam()"
+            >
+              <Trash class="mr-2 h-4 w-4" />
+              {{ $t("tournament.tournament_team.remove") }}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </header>
+
+    <!-- Roster list -->
+    <div v-if="team.roster" class="tournament-team__roster">
+      <div class="tournament-team__section-label">
+        <span class="tournament-team__tick"></span>
+        {{ $t("common.player") }}
+      </div>
+
+      <div class="tournament-team__list">
+        <TournamentTeamMemberRow
+          v-for="member in team.roster"
+          :key="member.id"
+          :member="member"
+          :team="team"
+          :roles="e_team_roles"
+        />
+
+        <!-- Empty slots -->
+        <div
+          v-for="slot of Math.max(0, requiredPlayers - team.roster.length)"
+          :key="`slot-${slot}`"
+          class="tournament-team__slot"
+        >
+          <div class="tournament-team__slot-label">
+            <span class="tournament-team__slot-number">
+              {{
+                (slot + team.roster.length).toString().padStart(2, "0")
+              }}
+            </span>
+            <span class="tournament-team__slot-text">
+              {{
+                $t("tournament.team.slot", {
+                  number: slot + team.roster.length,
+                })
+              }}
+            </span>
+          </div>
+          <div v-if="slot === 1 && team.can_manage" class="tournament-team__slot-action">
+            <PlayerSearch
+              :label="$t('tournament.team.add_player')"
+              :self="true"
+              :exclude="
+                team.roster?.map((member) => member.player.steam_id) || []
+              "
+              :team-id="team.team_id"
+              @selected="addMember"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending invites -->
+      <div
+        v-if="team.invites && team.invites.length > 0"
+        class="tournament-team__invites"
+      >
+        <div class="tournament-team__section-label tournament-team__section-label--muted">
+          <span class="tournament-team__tick tournament-team__tick--muted"></span>
+          {{ $t("tournament.team.pending_invites") }}
+          <span class="tournament-team__invite-count">
+            {{ team.invites.length }}
+          </span>
+        </div>
+        <div class="tournament-team__list">
           <TournamentTeamInvite
-            :invite="invite"
             v-for="invite in team.invites"
             :key="invite.id"
+            :invite="invite"
           ></TournamentTeamInvite>
-        </TableBody>
-      </Table>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -247,6 +287,13 @@ export default {
         e_tournament_status_enum.Finished,
       ].includes(status);
     },
+    hasTeamActions() {
+      return (
+        (!this.tournament.is_organizer && this.canLeaveTournament) ||
+        this.canLeaveTeam ||
+        (this.tournament.is_organizer && this.canRemoveTeam)
+      );
+    },
   },
   methods: {
     async onSeedChange(rawValue: string | number) {
@@ -344,3 +391,208 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.tournament-team {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Header */
+.tournament-team__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.tournament-team__identity {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.tournament-team__name {
+  font-family: "Oxanium", sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: hsl(var(--foreground));
+  margin: 0;
+  line-height: 1.15;
+}
+
+.tournament-team__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.tournament-team__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.55rem;
+  font-family: "Oxanium", monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border: 1px solid;
+  border-radius: 0.25rem;
+}
+.tournament-team__status-dot {
+  width: 5px;
+  height: 5px;
+  background: currentColor;
+  border-radius: 9999px;
+}
+.tournament-team__status--eligible {
+  color: hsl(var(--success));
+  background: hsl(var(--success) / 0.12);
+  border-color: hsl(var(--success) / 0.4);
+}
+.tournament-team__status--pending {
+  color: hsl(var(--destructive));
+  background: hsl(var(--destructive) / 0.1);
+  border-color: hsl(var(--destructive) / 0.35);
+}
+
+.tournament-team__seed {
+  padding: 0.15rem 0.5rem;
+  font-family: "Oxanium", monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--muted) / 0.3);
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.25rem;
+}
+.tournament-team__seed-editor {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: "Oxanium", monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+
+.tournament-team__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+.tournament-team__counter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.2rem;
+  padding: 0.35rem 0.7rem;
+  font-family: "Oxanium", monospace;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.25rem;
+  background: hsl(var(--muted) / 0.2);
+}
+.tournament-team__counter-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+}
+.tournament-team__counter-divider {
+  color: hsl(var(--muted-foreground) / 0.5);
+}
+.tournament-team__counter-total {
+  font-size: 0.85rem;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Roster */
+.tournament-team__roster {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.tournament-team__section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "Oxanium", monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+.tournament-team__section-label--muted {
+  color: hsl(var(--muted-foreground) / 0.7);
+}
+.tournament-team__tick {
+  width: 8px;
+  height: 2px;
+  background: hsl(var(--tac-amber));
+}
+.tournament-team__tick--muted {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+.tournament-team__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Empty slot */
+.tournament-team__slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px dashed hsl(var(--border));
+  border-radius: 0.375rem;
+  background: hsl(var(--muted) / 0.1);
+}
+.tournament-team__slot-label {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  color: hsl(var(--muted-foreground));
+}
+.tournament-team__slot-number {
+  font-family: "Oxanium", monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: hsl(var(--muted-foreground) / 0.55);
+}
+.tournament-team__slot-text {
+  font-size: 0.85rem;
+}
+.tournament-team__slot-action {
+  flex-shrink: 0;
+}
+
+/* Invites */
+.tournament-team__invites {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.tournament-team__invite-count {
+  padding: 0.02rem 0.4rem;
+  background: hsl(var(--muted) / 0.4);
+  color: hsl(var(--muted-foreground));
+  border-radius: 9999px;
+  font-size: 0.6rem;
+}
+</style>

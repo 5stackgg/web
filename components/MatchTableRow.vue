@@ -13,6 +13,7 @@ import {
 } from "~/components/ui/tooltip";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
+
 </script>
 
 <template>

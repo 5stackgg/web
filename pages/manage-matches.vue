@@ -224,6 +224,7 @@ const { isMobile } = useSidebar();
       <MatchesTable
         class="p-3"
         :matches="matches"
+        :show-all-matches="true"
         v-else-if="matches"
       ></MatchesTable>
     </Card>

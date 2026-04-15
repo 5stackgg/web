@@ -563,8 +563,8 @@ const shouldShowCrossBracketDestination = (
                       }}
                     </Badge>
                   </template>
+                  {{ getTeamName(bracket.team_2) }}
                 </span>
-                {{ getTeamName(bracket.team_2) }}
               </template>
             </div>
           </div>

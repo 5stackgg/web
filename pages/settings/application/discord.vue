@@ -132,6 +132,61 @@ definePageMeta({
         </div>
       </Card>
 
+      <Card variant="gradient">
+        <div class="p-6 space-y-6">
+          <div>
+            <h3 class="text-lg font-medium">
+              {{
+                $t(
+                  "pages.settings.application.discord.server_notifications.title",
+                )
+              }}
+            </h3>
+            <p class="text-sm text-muted-foreground">
+              {{
+                $t(
+                  "pages.settings.application.discord.server_notifications.description",
+                )
+              }}
+            </p>
+          </div>
+
+          <FormField v-slot="{ componentField }" name="disk_warning_percent">
+            <FormItem>
+              <FormLabel>{{
+                $t(
+                  "pages.settings.application.discord.server_notifications.disk_warning_percent",
+                )
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.discord.server_notifications.disk_warning_percent_description",
+                )
+              }}</FormDescription>
+              <Input type="number" v-bind="componentField" min="0" max="100" />
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField v-slot="{ componentField }" name="disk_critical_percent">
+            <FormItem>
+              <FormLabel>{{
+                $t(
+                  "pages.settings.application.discord.server_notifications.disk_critical_percent",
+                )
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.discord.server_notifications.disk_critical_percent_description",
+                )
+              }}</FormDescription>
+              <Input type="number" v-bind="componentField" min="0" max="100" />
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </Card>
+
       <div class="flex justify-start">
         <Button
           type="submit"
@@ -205,6 +260,8 @@ export default {
               ]),
             ),
             discord_match_notify_MapPaused: z.string().optional(),
+            disk_warning_percent: z.number().min(0).max(100).default(75),
+            disk_critical_percent: z.number().min(0).max(100).default(90),
           }),
         ),
       }),
@@ -215,7 +272,14 @@ export default {
       immediate: true,
       handler(newVal) {
         for (const setting of newVal) {
-          this.form.setFieldValue(setting.name, setting.value || "");
+          if (
+            setting.name === "disk_warning_percent" ||
+            setting.name === "disk_critical_percent"
+          ) {
+            this.form.setFieldValue(setting.name, parseInt(setting.value));
+          } else {
+            this.form.setFieldValue(setting.name, setting.value || "");
+          }
         }
       },
     },
@@ -245,11 +309,14 @@ export default {
           (s) => `discord_match_notify_${s}`,
         ),
         "discord_match_notify_MapPaused",
+        "disk_warning_percent",
+        "disk_critical_percent",
       ];
 
       const objects = fields.map((name) => ({
         name,
-        value: this.form.values[name] || "",
+        value:
+          this.form.values[name] != null ? String(this.form.values[name]) : "",
       }));
 
       await this.$apollo.mutate({

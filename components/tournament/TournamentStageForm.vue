@@ -774,6 +774,14 @@ export default {
                 message: "max teams must be greater than min teams",
                 path: ["min_teams"],
               },
+            )
+            .refine(
+              (data) =>
+                parseInt(data.min_teams) >= 4 && parseInt(data.max_teams) >= 4,
+              {
+                message: "min and max teams must be at least 4",
+                path: ["min_teams"],
+              },
             ),
         ),
       }),
@@ -903,20 +911,13 @@ export default {
       switch (this.form.values.stage_type) {
         case e_tournament_stage_types_enum.SingleElimination:
         case e_tournament_stage_types_enum.DoubleElimination:
-          while (max > 2) {
+          while (max > 3) {
             options.push({
               value: max.toString(),
               display: max,
             });
 
             max--;
-          }
-
-          if (this.order > 1) {
-            options.push({
-              value: "2",
-              display: 2,
-            });
           }
 
           break;

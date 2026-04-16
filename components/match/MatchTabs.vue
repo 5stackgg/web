@@ -43,7 +43,7 @@ const activeTab = ref("overview");
     <!-- Mobile: single dropdown -->
     <div class="mb-4 lg:hidden">
       <Select v-model="activeTab">
-        <SelectTrigger class="w-full" aria-label="Match section">
+        <SelectTrigger class="w-full" :aria-label="$t('ui.tooltips.match_section')">
           <SelectValue :placeholder="$t('match.tabs.overview')" />
         </SelectTrigger>
         <SelectContent>
@@ -68,7 +68,7 @@ const activeTab = ref("overview");
             value="veto"
             :disabled="match.match_maps.length === 0"
           >
-            {{ $t("match.tabs.map_veto_tab") }}
+            {{ $t("common.map_veto") }}
           </SelectItem>
           <SelectItem value="settings">
             {{ $t("match.tabs.settings") }}
@@ -82,7 +82,8 @@ const activeTab = ref("overview");
         </SelectContent>
       </Select>
     </div>
-    <TabsList variant="underline" class="hidden lg:inline-flex mb-4 h-auto">
+    <div class="hidden lg:block mb-4 max-w-full overflow-x-auto match-tabs__scroll">
+    <TabsList variant="underline" class="h-auto flex-nowrap">
       <TabsTrigger value="overview">
         {{ $t("match.tabs.overview") }}
       </TabsTrigger>
@@ -104,7 +105,7 @@ const activeTab = ref("overview");
         :disabled="match.match_maps.length === 0"
         v-if="match.options.map_veto || match.options.region_veto"
       >
-        {{ $t("match.tabs.map_veto_tab") }}
+        {{ $t("common.map_veto") }}
       </TabsTrigger>
       <TabsTrigger value="settings">
         {{ $t("match.tabs.settings") }}
@@ -116,9 +117,8 @@ const activeTab = ref("overview");
         {{ $t("match.tabs.admin") }}
       </TabsTrigger>
     </TabsList>
+    </div>
     <TabsContent value="overview">
-      <PlayerInvites v-if="me" />
-
       <div class="grid gap-4 max-w-[1500px]">
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
@@ -150,6 +150,8 @@ const activeTab = ref("overview");
           {{ $t("match.tabs.swap_lineups") }}
         </Button>
       </div>
+
+      <PlayerInvites v-if="me" class="mt-4" />
 
       <Drawer :open="inviteDialog">
         <DrawerContent class="p-4">
@@ -268,12 +270,7 @@ const activeTab = ref("overview");
           <AlertDialogHeader>
             <AlertDialogTitle>{{ $t("common.confirm") }}</AlertDialogTitle>
             <AlertDialogDescription class="flex flex-col gap-2">
-              <span>
-                {{
-                  $t("common.are_you_sure") ||
-                  "Are you sure you want to run this command?"
-                }}
-              </span>
+              <span>{{ $t("common.are_you_sure") }}</span>
               <Badge variant="secondary" class="w-fit">
                 {{ pendingCommand.display }}
               </Badge>
@@ -343,7 +340,7 @@ const activeTab = ref("overview");
                         :value="round.round.toString()"
                       >
                         {{
-                          $t("match.tabs.round", {
+                          $t("common.round", {
                             number: round.round.toString(),
                           })
                         }}

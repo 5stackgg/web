@@ -233,7 +233,7 @@ export default {
         ),
         datasets: [
           {
-            label: "ELO",
+            label: this.$t("pages.leaderboard.categories.elo"),
             fill: false,
             borderColor: eloColor,
             borderWidth: 2.5,

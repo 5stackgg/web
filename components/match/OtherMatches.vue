@@ -5,10 +5,24 @@ import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
+
+const fadeTransition = {
+  enterActiveClass: "transition-opacity duration-200 ease-out",
+  leaveActiveClass: "transition-opacity duration-200 ease-out",
+  enterFromClass: "opacity-0",
+  leaveToClass: "opacity-0",
+};
+
+const paginationFadeTransition = {
+  enterActiveClass: "transition-opacity duration-300 ease-out delay-1000",
+  leaveActiveClass: "transition-opacity duration-200 ease-out",
+  enterFromClass: "opacity-0",
+  leaveToClass: "opacity-0",
+};
 </script>
 <template>
-  <Transition name="fade" mode="out-in">
-    <Empty v-if="loading" key="loading" class="p-3 min-h-[200px]">
+  <Transition v-bind="fadeTransition" mode="out-in">
+    <Empty v-if="loading" key="loading" class="min-h-[200px]">
       <div class="space-y-3 w-full max-w-md">
         <Skeleton class="h-4 w-3/4 mx-auto" />
         <Skeleton class="h-3 w-full" />
@@ -19,11 +33,10 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
     <MatchesTable
       v-else-if="otherMatches && otherMatches.length > 0"
       key="matches"
-      class="p-3"
       :matches="otherMatches"
     ></MatchesTable>
 
-    <Empty v-else key="empty" class="p-3 min-h-[200px]">
+    <Empty v-else key="empty" class="min-h-[200px]">
       <EmptyTitle>{{ $t("match.no_matches") }}</EmptyTitle>
       <EmptyDescription>{{
         $t("match.no_matches_description")
@@ -32,17 +45,23 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
   </Transition>
 
   <Teleport defer to="#pagination">
-    <Pagination
-      v-if="otherMatchesAggregate && otherMatchesAggregate.aggregate.count > 0"
-      :page="page"
-      :per-page="perPage"
-      @page="
-        (_page) => {
-          page = _page;
-        }
-      "
-      :total="otherMatchesAggregate?.aggregate?.count"
-    ></Pagination>
+    <Transition v-bind="paginationFadeTransition">
+      <Pagination
+        v-if="
+          !loading &&
+          otherMatchesAggregate &&
+          otherMatchesAggregate.aggregate.count > 0
+        "
+        :page="page"
+        :per-page="perPage"
+        @page="
+          (_page) => {
+            page = _page;
+          }
+        "
+        :total="otherMatchesAggregate?.aggregate?.count"
+      ></Pagination>
+    </Transition>
   </Teleport>
 </template>
 
@@ -166,15 +185,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

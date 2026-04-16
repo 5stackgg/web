@@ -2,18 +2,18 @@
   <div class="space-y-6">
     <!-- Schema Selector -->
     <div class="max-w-xs space-y-2">
-      <Label class="text-sm">Schema</Label>
+      <Label class="text-sm">{{ $t("pages.database.columns.schema") }}</Label>
       <SchemaSelector @change="handleSchemaChange" />
     </div>
 
     <!-- Database Stats Cards -->
     <div>
-      <h3 class="text-lg font-semibold mb-3">Database Statistics</h3>
+      <h3 class="text-lg font-semibold mb-3">{{ $t("pages.database.locks.stats_title") }}</h3>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader class="pb-2">
             <CardTitle class="text-sm font-medium text-muted-foreground"
-              >Commits</CardTitle
+              >{{ $t("pages.database.locks.commits") }}</CardTitle
             >
           </CardHeader>
           <CardContent>
@@ -25,7 +25,7 @@
         <Card>
           <CardHeader class="pb-2">
             <CardTitle class="text-sm font-medium text-muted-foreground"
-              >Rollbacks</CardTitle
+              >{{ $t("pages.database.locks.rollbacks") }}</CardTitle
             >
           </CardHeader>
           <CardContent>
@@ -37,7 +37,7 @@
         <Card>
           <CardHeader class="pb-2">
             <CardTitle class="text-sm font-medium text-muted-foreground"
-              >Deadlocks</CardTitle
+              >{{ $t("pages.database.locks.deadlocks") }}</CardTitle
             >
           </CardHeader>
           <CardContent>
@@ -48,9 +48,7 @@
         </Card>
         <Card>
           <CardHeader class="pb-2">
-            <CardTitle class="text-sm font-medium text-muted-foreground"
-              >Cache Hit Ratio</CardTitle
-            >
+            <CardTitle class="text-sm font-medium text-muted-foreground">{{ $t("pages.database.locks.cache_hit_ratio") }}</CardTitle>
           </CardHeader>
           <CardContent>
             <div class="text-2xl font-bold">
@@ -69,9 +67,7 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground"
-            >Active Backends</CardTitle
-          >
+          <CardTitle class="text-sm font-medium text-muted-foreground">{{ $t("pages.database.locks.active_backends") }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="text-xl font-semibold">
@@ -81,9 +77,7 @@
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground"
-            >Tuples Inserted</CardTitle
-          >
+          <CardTitle class="text-sm font-medium text-muted-foreground">{{ $t("pages.database.locks.tuples_inserted") }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="text-xl font-semibold">
@@ -93,9 +87,7 @@
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground"
-            >Tuples Updated</CardTitle
-          >
+          <CardTitle class="text-sm font-medium text-muted-foreground">{{ $t("pages.database.locks.tuples_updated") }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="text-xl font-semibold">
@@ -105,9 +97,7 @@
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground"
-            >Tuples Deleted</CardTitle
-          >
+          <CardTitle class="text-sm font-medium text-muted-foreground">{{ $t("pages.database.locks.tuples_deleted") }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="text-xl font-semibold">
@@ -119,18 +109,18 @@
 
     <!-- Current Locks -->
     <div>
-      <h3 class="text-lg font-semibold mb-3">Current Locks</h3>
+      <h3 class="text-lg font-semibold mb-3">{{ $t("pages.database.locks.current_locks") }}</h3>
       <Card>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>PID</TableHead>
-              <TableHead>Lock Type</TableHead>
-              <TableHead>Relation</TableHead>
-              <TableHead>Mode</TableHead>
-              <TableHead class="text-center">Granted</TableHead>
-              <TableHead>User</TableHead>
-              <TableHead>Query</TableHead>
+              <TableHead>{{ $t("pages.database.columns.pid") }}</TableHead>
+              <TableHead>{{ $t("pages.database.locks.lock_type") }}</TableHead>
+              <TableHead>{{ $t("pages.database.query_performance.relation") }}</TableHead>
+              <TableHead>{{ $t("pages.database.query_performance.mode") }}</TableHead>
+              <TableHead class="text-center">{{ $t("pages.database.query_performance.granted") }}</TableHead>
+              <TableHead>{{ $t("pages.database.columns.user") }}</TableHead>
+              <TableHead>{{ $t("pages.database.columns.query") }}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -178,18 +168,18 @@
 
     <!-- Table Stats (vacuum info) -->
     <div>
-      <h3 class="text-lg font-semibold mb-3">Table Maintenance Statistics</h3>
+      <h3 class="text-lg font-semibold mb-3">{{ $t("pages.database.locks.table_maintenance_title") }}</h3>
       <Card>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Schema</TableHead>
-              <TableHead>Table</TableHead>
-              <TableHead class="text-right">Live Tuples</TableHead>
-              <TableHead class="text-right">Dead Tuples</TableHead>
-              <TableHead>Last Vacuum</TableHead>
-              <TableHead>Last Autovacuum</TableHead>
-              <TableHead>Last Analyze</TableHead>
+              <TableHead>{{ $t("pages.database.columns.schema") }}</TableHead>
+              <TableHead>{{ $t("pages.database.columns.table") }}</TableHead>
+              <TableHead class="text-right">{{ $t("pages.database.locks.live_tuples") }}</TableHead>
+              <TableHead class="text-right">{{ $t("pages.database.locks.dead_tuples") }}</TableHead>
+              <TableHead>{{ $t("pages.database.locks.last_vacuum") }}</TableHead>
+              <TableHead>{{ $t("pages.database.locks.last_autovacuum") }}</TableHead>
+              <TableHead>{{ $t("pages.database.locks.last_analyze") }}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -289,7 +279,7 @@ export default {
       }
     },
     formatDate(date: string | null) {
-      if (!date) return "Never";
+      if (!date) return this.$t("common.never");
       return new Date(date).toLocaleString();
     },
     getDeadTupleVariant(dead: number, live: number) {

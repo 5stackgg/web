@@ -1,68 +1,96 @@
 <script setup lang="ts">
 import ServiceLogs from "~/components/ServiceLogs.vue";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import { Switch } from "~/components/ui/switch";
+import { Label } from "~/components/ui/label";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Radio } from "lucide-vue-next";
+import {
+  tacticalTabsListClasses,
+  tacticalTabsTriggerClasses,
+} from "~/utilities/tacticalClasses";
 </script>
 
 <template>
-  <PageTransition :delay="100">
-    <Tabs v-model="activeService" default-value="api" orientation="vertical">
-      <div class="flex items-center justify-between flex-col lg:flex-row">
-        <TabsList class="lg:inline-flex grid grid-cols-1 w-full lg:w-fit">
-          <TabsTrigger
-            class="capitalize"
-            v-for="service in services"
-            :key="service"
-            :value="service"
-          >
-            {{ service }}
-          </TabsTrigger>
-        </TabsList>
+  <div
+    class="relative space-y-6 [--tac-clip:14px] [--tac-clip-sm:10px]"
+  >
+    <div
+      aria-hidden="true"
+      class="pointer-events-none fixed inset-0 -z-10 opacity-[0.04] [background-image:linear-gradient(hsl(var(--tac-amber))_1px,transparent_1px),linear-gradient(90deg,hsl(var(--tac-amber))_1px,transparent_1px)] [background-size:64px_64px]"
+    />
 
-        <div class="flex items-center gap-4">
+    <PageTransition :delay="0">
+      <div
+        class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
+      >
+        <Tabs v-model="activeService">
+          <TabsList :class="tacticalTabsListClasses">
+            <TabsTrigger
+              v-for="service in services"
+              :key="service"
+              :value="service"
+              :class="tacticalTabsTriggerClasses"
+            >
+              {{ service }}
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+
+        <div class="flex flex-wrap items-center gap-4">
           <div class="flex items-center gap-2">
             <Switch
-              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
               :model-value="followLogs"
               @click="followLogs = !followLogs"
-            >
-            </Switch>
-            {{ $t("pages.system_logs.follow_logs") }}
+            />
+            <Label class="text-sm cursor-pointer">
+              {{ $t("pages.system_logs.follow_logs") }}
+            </Label>
           </div>
 
           <div class="flex items-center gap-2">
             <Switch
-              class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
               :model-value="timestamps"
               @click="timestamps = !timestamps"
-            >
-            </Switch>
-            {{ $t("pages.system_logs.timestamps") }}
+            />
+            <Label class="text-sm cursor-pointer">
+              {{ $t("pages.system_logs.timestamps") }}
+            </Label>
           </div>
         </div>
       </div>
+    </PageTransition>
 
-      <Transition name="system-logs-tab-fade" mode="out-in">
-        <TabsContent :key="activeService" :value="activeService">
+    <PageTransition :delay="60">
+      <Transition v-bind="systemLogsTabFadeTransition" mode="out-in">
+        <div :key="activeService">
           <ServiceLogs
             :service="activeService"
             :timestamps="timestamps"
             :follow-logs="followLogs"
             @follow-logs-changed="(value: boolean) => (followLogs = value)"
           />
-        </TabsContent>
+        </div>
       </Transition>
-    </Tabs>
-  </PageTransition>
+    </PageTransition>
+  </div>
 </template>
 
 <script lang="ts">
+const systemLogsTabFadeTransition = {
+  enterActiveClass: "transition-all duration-150 ease-out",
+  leaveActiveClass: "transition-all duration-150 ease-out",
+  enterFromClass: "translate-y-[2px] opacity-0",
+  leaveToClass: "translate-y-[2px] opacity-0",
+};
+
 export default {
   data() {
     return {
       activeService: "api",
       _timestamps: true,
       _followLogs: true,
+      systemLogsTabFadeTransition,
       services: [
         `api`,
         "web",
@@ -111,18 +139,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.system-logs-tab-fade-enter-active,
-.system-logs-tab-fade-leave-active {
-  transition:
-    opacity 150ms ease-out,
-    transform 150ms ease-out;
-}
-
-.system-logs-tab-fade-enter-from,
-.system-logs-tab-fade-leave-to {
-  opacity: 0;
-  transform: translateY(2px);
-}
-</style>

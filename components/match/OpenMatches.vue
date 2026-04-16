@@ -9,19 +9,19 @@ import MatchesTable from "~/components/MatchesTable.vue";
     v-if="openMatches"
   ></MatchesTable>
 
-  <Teleport defer to="#pagination">
-    <Pagination
-      :page="page"
-      :per-page="perPage"
-      @page="
-        (_page) => {
-          page = _page;
-        }
-      "
-      :total="openMatchesAggregate?.aggregate?.count"
-      v-if="openMatchesAggregate"
-    ></Pagination>
-  </Teleport>
+  <Pagination
+    v-if="
+      !loading && openMatchesAggregate && openMatchesAggregate.aggregate.count > 0
+    "
+    :page="page"
+    :per-page="perPage"
+    @page="
+      (_page) => {
+        page = _page;
+      }
+    "
+    :total="openMatchesAggregate?.aggregate?.count"
+  ></Pagination>
 </template>
 
 <script lang="ts">
@@ -36,6 +36,7 @@ export default {
       perPage: 10,
       openMatches: [],
       openMatchesAggregate: undefined,
+      loading: true,
     };
   },
   apollo: {
@@ -75,6 +76,7 @@ export default {
         },
         result: function ({ data }) {
           this.openMatches = data.matches;
+          this.loading = false;
         },
       },
       openMatchesAggregate: {

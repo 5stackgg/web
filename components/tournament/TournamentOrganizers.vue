@@ -29,8 +29,8 @@ import TournamentOrganizerRow from "~/components/tournament/TournamentOrganizerR
         <Table v-if="tournament.organizers && tournament.organizers.length > 0">
           <TableHeader>
             <TableRow>
-              <TableHead>{{ $t("tournament.organizer.name") }}</TableHead>
-              <TableHead>{{ $t("tournament.organizer.actions") }}</TableHead>
+              <TableHead>{{ $t("common.name") }}</TableHead>
+              <TableHead>{{ $t("common.actions_label") }}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

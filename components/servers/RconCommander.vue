@@ -24,7 +24,7 @@ import debounce from "~/utilities/debounce";
         RCON Console
       </h4>
       <Badge variant="outline" class="text-xs">
-        {{ online ? "Connected" : "Disconnected" }}
+        {{ online ? $t("common.connected") : $t("common.disconnected") }}
       </Badge>
     </div>
 
@@ -157,7 +157,7 @@ import debounce from "~/utilities/debounce";
     <div class="bg-background rounded-lg border shadow-sm">
       <div class="p-4 border-b bg-muted/30">
         <div class="flex items-center justify-between">
-          <h5 class="text-sm font-medium text-foreground">Console Output</h5>
+          <h5 class="text-sm font-medium text-foreground">{{ $t("server.rcon.console_output") }}</h5>
           <div class="flex items-center gap-2">
             <span class="text-xs text-muted-foreground"
               >{{ logs.length }} entries</span
@@ -216,8 +216,8 @@ import debounce from "~/utilities/debounce";
             class="text-center py-12 text-muted-foreground"
           >
             <Terminal class="w-8 h-8 mx-auto mb-2 opacity-50" />
-            <p class="text-sm">No commands executed yet</p>
-            <p class="text-xs mt-1">Enter a command above to get started</p>
+            <p class="text-sm">{{ $t("server.rcon.no_commands_yet") }}</p>
+            <p class="text-xs mt-1">{{ $t("server.rcon.enter_command_hint") }}</p>
           </div>
         </div>
       </div>
@@ -326,7 +326,7 @@ export default {
             if (data.result === "unable to connect to rcon") {
               this.addCommandResponse(
                 data.command,
-                "Failed to connect to game server RCON",
+                this.$t("server.rcon.connect_failed"),
                 "error",
               );
             } else {

@@ -1,10 +1,12 @@
 import { watch, computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { useChatTabs } from "~/composables/useChatTabs";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 
 export function useChatTabSetup() {
+  const { t } = useI18n();
   const { tabs, activeTabId, openTab, closeTab, setActiveTab, setPinned } =
     useChatTabs();
 
@@ -57,7 +59,7 @@ export function useChatTabSetup() {
       if (!existingLobby) {
         openTab({
           id: lobbyTabId,
-          label: "Lobby",
+          label: t("chat_tab_labels.lobby_default"),
           instance: "matchmaking",
           type: "matchmaking",
           lobbyId: me.current_lobby_id,
@@ -75,7 +77,7 @@ export function useChatTabSetup() {
           id: matchTabId,
           label:
             currentMatch.label ||
-            `${currentMatch.lineup_1?.name ?? "TBD"} vs ${currentMatch.lineup_2?.name ?? "TBD"}`,
+            `${currentMatch.lineup_1?.name ?? t("common.tbd")} vs ${currentMatch.lineup_2?.name ?? t("common.tbd")}`,
           instance: "match",
           type: "match",
           lobbyId: currentMatch.id,
@@ -90,7 +92,7 @@ export function useChatTabSetup() {
       if (!existing) {
         openTab({
           id: organizerId,
-          label: "Organizers",
+          label: t("chat_tab_labels.organizers_default"),
           instance: "organizers",
           type: "organizers",
           lobbyId: organizerId,

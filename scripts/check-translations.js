@@ -19,11 +19,16 @@ function flattenTranslations(obj, prefix = "") {
 }
 
 // Function to extract translation keys from a file
-// - Direct usage via $t("..."), $t('...') or $t(`...`)
-// - String literals that *look* like translation keys based on known prefixes
-// - Dynamic template keys like $t(`foo.bar.${baz}`) are tracked by prefix
+// Returns:
+//   - directKeys: keys passed straight to $t("...") / t("...") / i18n.t("...").
+//     These MUST exist in the translation files; flag them as missing otherwise.
+//   - heuristicKeys: string literals that *look* like translation keys.
+//     Only used to mark keys as "used" — a false positive just means a
+//     shape-matching literal did not correspond to a real translation key.
+//   - Dynamic template keys like $t(`foo.bar.${baz}`) are tracked by prefix.
 function extractTranslationKeys(content, keyPrefixPattern, dynamicPrefixes) {
-  const keys = new Set();
+  const directKeys = new Set();
+  const heuristicKeys = new Set();
 
   // Regex to match $t("...") / t("...") / i18n.t("...") with various endings and spacing
   const directPattern = /\b(?:\$t|t)\s*\(\s*(['"`])([^'"`]+)\1(?:\s*[,)])/g;
@@ -31,8 +36,6 @@ function extractTranslationKeys(content, keyPrefixPattern, dynamicPrefixes) {
 
   directMatches.forEach((match) => {
     const key = match[2];
-    // If this is a dynamic template (contains ${...}), record its prefix so we
-    // can later treat all matching translation keys as \"used\".
     if (key.includes("${")) {
       const prefix = key.split("${")[0];
       if (prefix && dynamicPrefixes) {
@@ -40,7 +43,7 @@ function extractTranslationKeys(content, keyPrefixPattern, dynamicPrefixes) {
       }
       return;
     }
-    keys.add(key);
+    directKeys.add(key);
   });
 
   // Also catch namespaced calls like i18n.t("foo.bar.baz")
@@ -56,36 +59,37 @@ function extractTranslationKeys(content, keyPrefixPattern, dynamicPrefixes) {
       }
       return;
     }
-    keys.add(key);
+    directKeys.add(key);
   });
 
   // Additionally, capture string literals that look like translation keys
   // based on known prefixes from the translation files (e.g. pages.*, layouts.*, common.*, etc.)
   if (keyPrefixPattern) {
-    const literalPattern = /['"]([^'"]+)['"]/g;
+    const literalPattern = /'([^']+)'|"([^"]+)"|`([^`]+)`/g;
     const literalMatches = Array.from(content.matchAll(literalPattern));
+    const translationKeyShape = /^[a-z0-9_]+(\.[a-z0-9_]+){2,}$/;
 
     literalMatches.forEach((match) => {
-      const candidate = match[1];
-      // Heuristic: translation keys are typically lowercase with dots and at least
-      // three segments (e.g. pages.leaderboard.col.elo)
-      const translationKeyShape = /^[a-z0-9_]+(\.[a-z0-9_]+){2,}$/;
-
+      const candidate = match[1] || match[2] || match[3];
       if (
         translationKeyShape.test(candidate) &&
         keyPrefixPattern.test(candidate)
       ) {
-        keys.add(candidate);
+        heuristicKeys.add(candidate);
       }
     });
   }
 
-  return [...keys];
+  return {
+    directKeys: [...directKeys],
+    heuristicKeys: [...heuristicKeys],
+  };
 }
 
 // Function to find all translation keys in the project
 async function findAllTranslationKeys(keyPrefixPattern) {
-  const keys = new Set();
+  const directKeys = new Set();
+  const heuristicKeys = new Set();
   const keyLocations = new Map();
   const dynamicPrefixes = new Set();
 
@@ -107,8 +111,16 @@ async function findAllTranslationKeys(keyPrefixPattern) {
 
   // Collect all keys and their locations
   fileResults.forEach(({ file, fileKeys }) => {
-    fileKeys.forEach((key) => {
-      keys.add(key);
+    const { directKeys: dk, heuristicKeys: hk } = fileKeys;
+    dk.forEach((key) => {
+      directKeys.add(key);
+      if (!keyLocations.has(key)) {
+        keyLocations.set(key, []);
+      }
+      keyLocations.get(key).push(file);
+    });
+    hk.forEach((key) => {
+      heuristicKeys.add(key);
       if (!keyLocations.has(key)) {
         keyLocations.set(key, []);
       }
@@ -116,7 +128,12 @@ async function findAllTranslationKeys(keyPrefixPattern) {
     });
   });
 
-  return { keys: Array.from(keys), keyLocations, dynamicPrefixes };
+  return {
+    directKeys: Array.from(directKeys),
+    heuristicKeys: Array.from(heuristicKeys),
+    keyLocations,
+    dynamicPrefixes,
+  };
 }
 
 // Function to check for missing translations
@@ -178,34 +195,43 @@ async function main() {
       ? new RegExp(`^(${keyPrefixes.join("|")})\\.`)
       : null;
 
-  // Find all translation keys used in the project
+  // Find all translation keys used in the project.
+  // Direct keys ($t("...") calls) must exist and are subject to the missing
+  // check. Heuristic keys (string literals that look like keys) only count
+  // toward "used" because they may be false positives (JS expressions in
+  // Vue directive attributes that happen to match the key shape).
   const {
-    keys: usedKeysRaw,
+    directKeys,
+    heuristicKeys,
     keyLocations,
     dynamicPrefixes,
   } = await findAllTranslationKeys(keyPrefixPattern);
-  // Expand dynamic prefixes (e.g. \"foo.bar.${baz}\") into concrete keys based
+  // Expand dynamic prefixes (e.g. "foo.bar.${baz}") into concrete keys based
   // on what exists in the translation files.
-  const usedKeysSet = new Set(usedKeysRaw);
+  const dynamicallyExpanded = new Set();
   dynamicPrefixes.forEach((prefix) => {
     allAvailableKeys.forEach((key) => {
       if (key.startsWith(prefix)) {
-        usedKeysSet.add(key);
+        dynamicallyExpanded.add(key);
       }
     });
   });
-  const usedKeys = Array.from(usedKeysSet);
+  const usedKeys = Array.from(
+    new Set([...directKeys, ...heuristicKeys, ...dynamicallyExpanded]),
+  );
 
   console.log("\n=== Translation Check Results ===\n");
 
-  // Check each translation file
+  // Check each translation file.
+  // Only direct $t(...) calls are flagged as missing — heuristic matches may
+  // be false positives (e.g. a Vue directive expression that happens to match
+  // the key shape).
   const translationResults = translationData.map(
     ({ locale, filePath, flattenedTranslations }) => {
       const availableKeys = Object.keys(flattenedTranslations);
 
-      // Find missing and unused translations
       const missingTranslations = findMissingTranslations(
-        usedKeys,
+        directKeys,
         availableKeys,
       );
       const unusedTranslations = findUnusedTranslations(

@@ -262,7 +262,7 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
                     }"
                   >
                     <CalendarIcon class="mr-2 h-4 w-4" />
-                    {{ editDateDisplay || $t("player.sanctions.pick_date") }}
+                    {{ editDateDisplay || $t("common.pick_date") }}
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent class="w-auto p-0">

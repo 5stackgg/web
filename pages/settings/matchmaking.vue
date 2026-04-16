@@ -9,10 +9,10 @@ definePageMeta({
 <template>
   <PageTransition :delay="0">
     <div>
-      <h3 class="text-lg font-medium">
+      <h3 class="text-base font-semibold uppercase tracking-wide">
         {{ $t("pages.settings.matchmaking.title") }}
       </h3>
-      <p class="text-sm text-muted-foreground">
+      <p class="text-sm text-muted-foreground mt-0.5">
         {{ $t("pages.settings.matchmaking.description") }}
       </p>
     </div>

@@ -83,7 +83,7 @@ import {
                             v-bind="componentField"
                             v-model="editName"
                             :placeholder="
-                              $t('match.overview.team_name') as string
+                              $t('common.team_name') as string
                             "
                           />
                         </FormControl>
@@ -110,7 +110,7 @@ import {
           <TableHead class="w-10 md:w-[4ch] text-center whitespace-nowrap">
             <span class="xl:hidden">K</span>
             <span class="hidden xl:inline">{{
-              $t("match.overview.kills_full")
+              $t("common.stats.kills")
             }}</span>
           </TableHead>
           <TableHead
@@ -118,13 +118,13 @@ import {
           >
             <span class="xl:hidden">A</span>
             <span class="hidden xl:inline">{{
-              $t("match.overview.assists_full")
+              $t("common.stats.assists")
             }}</span>
           </TableHead>
           <TableHead class="w-10 md:w-[4ch] text-center whitespace-nowrap">
             <span class="xl:hidden">D</span>
             <span class="hidden xl:inline">{{
-              $t("match.overview.deaths_full")
+              $t("common.stats.deaths")
             }}</span>
           </TableHead>
           <TableHead

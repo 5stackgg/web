@@ -25,6 +25,7 @@ const isMobile = useMediaQuery("(max-width: 639px)");
         :match="match"
         :player="player"
         :compact="compact || isMobile"
+        :always-show="showAllMatches"
         :style="{ animationDelay: `${index * 50}ms` }"
         class="animate-in fade-in slide-in-from-bottom-2"
       />
@@ -45,6 +46,10 @@ export default {
       default: null,
     },
     compact: {
+      type: Boolean,
+      default: false,
+    },
+    showAllMatches: {
       type: Boolean,
       default: false,
     },

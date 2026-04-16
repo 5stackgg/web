@@ -12,6 +12,7 @@ import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { webrtc } from "~/web-sockets/Webrtc";
+import { setActiveHub } from "~/composables/useHubState";
 
 const REGION_LATENCY_PREFIX = "5stack_region_latency_";
 const MAX_LATENCY_KEY = "5stack_max_acceptable_latency";
@@ -91,6 +92,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
             status: true,
             invited_by_steam_id: true,
             player: {
+              steam_id: true,
               is_in_lobby: true,
               is_in_another_match: true,
               lobby_players: [
@@ -259,12 +261,12 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
   };
 
   watch(
-    () => useAuthStore().me,
-    (me) => {
-      if (me) {
-        subscribeToFriends(me.steam_id);
-        subscribeToMatchInvites(me.steam_id);
-        subscribeToLobbies(me.steam_id);
+    () => useAuthStore().me?.steam_id,
+    (steamId) => {
+      if (steamId) {
+        subscribeToFriends(steamId);
+        subscribeToMatchInvites(steamId);
+        subscribeToLobbies(steamId);
       } else {
         const { unsubscribe } = useSubscriptionManager();
         unsubscribe("matchmaking:friends");
@@ -297,7 +299,27 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
         ],
       }),
     });
-    return data.insert_lobbies_one.id;
+    const newLobbyId = data.insert_lobbies_one.id;
+
+    if ((currentLobby.value as any)?.id !== newLobbyId) {
+      await new Promise<void>((resolve) => {
+        let stop: (() => void) | undefined;
+        const timeout = setTimeout(() => {
+          stop?.();
+          resolve();
+        }, 5000);
+        stop = watch(currentLobby, (lobby: any) => {
+          if (lobby?.id === newLobbyId) {
+            clearTimeout(timeout);
+            stop?.();
+            resolve();
+          }
+        });
+      });
+    }
+
+    setActiveHub("lobby");
+    return newLobbyId;
   };
 
   const inviteToLobby = async (steam_id: string) => {

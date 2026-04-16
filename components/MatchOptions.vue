@@ -21,11 +21,8 @@ import { Card } from "~/components/ui/card";
 </script>
 
 <template>
-  <div
-    class="grid grid-cols-1 gap-6"
-    :class="{ 'md:grid-cols-2': !stageBracketOverride }"
-  >
-    <!-- Left Column -->
+  <div class="flex flex-col gap-6">
+    <!-- Primary Settings -->
     <div class="space-y-6">
       <!-- Match Settings -->
       <div class="space-y-4">
@@ -128,7 +125,7 @@ import { Card } from "~/components/ui/card";
               <div class="flex flex-col space-y-3 p-4">
                 <div class="flex justify-between items-center">
                   <FormLabel class="text-lg font-semibold">{{
-                    $t("match.options.map_veto_settings.label")
+                    $t("common.map_veto")
                   }}</FormLabel>
                   <FormControl>
                     <Switch
@@ -289,7 +286,7 @@ import { Card } from "~/components/ui/card";
       </FormField>
     </div>
 
-    <!-- Right Column -->
+    <!-- Advanced Settings (sticks to bottom on all viewports) -->
     <div class="space-y-6">
       <!-- Server does not support coaches yet  -->
       <!-- <FormField v-slot="{ value, handleChange }" name="coaches">
@@ -298,7 +295,7 @@ import { Card } from "~/components/ui/card";
           @click="handleChange(!value)"
         >
           <div class="flex justify-between items-center">
-            <FormLabel class="text-lg font-semibold">Allow Coaches</FormLabel>
+            <FormLabel class="text-lg font-semibold">{{ $t("match.options.allow_coaches") }}</FormLabel>
             <FormControl>
               <Switch
                 class="pointer-events-none"
@@ -518,7 +515,7 @@ import { Card } from "~/components/ui/card";
                             {{ $t("match.options.advanced.region.preferred") }}
                           </template>
                           <template v-else>{{
-                            $t("match.options.advanced.region.single")
+                            $t("common.region")
                           }}</template>
                         </div>
                       </FormLabel>
@@ -1481,3 +1478,4 @@ export default {
   },
 };
 </script>
+

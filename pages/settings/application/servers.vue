@@ -94,36 +94,6 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-
-          <FormField v-slot="{ componentField }" name="disk_warning_percent">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.servers.disk_warning_percent")
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.servers.disk_warning_percent_description",
-                )
-              }}</FormDescription>
-              <Input type="number" v-bind="componentField" min="0" max="100" />
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
-          <FormField v-slot="{ componentField }" name="disk_critical_percent">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.servers.disk_critical_percent")
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.servers.disk_critical_percent_description",
-                )
-              }}</FormDescription>
-              <Input type="number" v-bind="componentField" min="0" max="100" />
-              <FormMessage />
-            </FormItem>
-          </FormField>
         </div>
       </Card>
 
@@ -133,7 +103,7 @@ definePageMeta({
           :disabled="Object.keys(form.errors).length > 0"
           class="my-3"
         >
-          {{ $t("pages.settings.application.servers.update") }}
+          {{ $t("common.update") }}
         </Button>
       </div>
     </form>
@@ -157,8 +127,6 @@ export default {
             number_of_cpus_per_server: z.number().min(1).default(1),
             reserved_disk_space_fresh_gb: z.number().min(0).default(120),
             reserved_disk_space_existing_gb: z.number().min(0).default(60),
-            disk_warning_percent: z.number().min(0).max(100).default(75),
-            disk_critical_percent: z.number().min(0).max(100).default(90),
           }),
         ),
       }),
@@ -172,9 +140,7 @@ export default {
           if (
             setting.name === "number_of_cpus_per_server" ||
             setting.name === "reserved_disk_space_fresh_gb" ||
-            setting.name === "reserved_disk_space_existing_gb" ||
-            setting.name === "disk_warning_percent" ||
-            setting.name === "disk_critical_percent"
+            setting.name === "reserved_disk_space_existing_gb"
           ) {
             this.form.setFieldValue(setting.name, parseInt(setting.value));
           }
@@ -203,14 +169,6 @@ export default {
                   value:
                     this.form.values.reserved_disk_space_existing_gb?.toString(),
                 },
-                {
-                  name: "disk_warning_percent",
-                  value: this.form.values.disk_warning_percent?.toString(),
-                },
-                {
-                  name: "disk_critical_percent",
-                  value: this.form.values.disk_critical_percent?.toString(),
-                },
               ],
               on_conflict: {
                 constraint: settings_constraint.settings_pkey,
@@ -225,7 +183,7 @@ export default {
       });
 
       toast({
-        title: this.$t("pages.settings.application.servers.update"),
+        title: this.$t("common.update"),
       });
     },
     async toggleCpuPinning() {

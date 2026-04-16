@@ -24,7 +24,7 @@ import { Cross2Icon } from "@radix-icons/vue";
       type="button"
     >
       <Cross2Icon class="w-4 h-4" />
-      <span class="sr-only">Close</span>
+      <span class="sr-only">{{ $t("common.close") }}</span>
     </button>
   </div>
 </template>

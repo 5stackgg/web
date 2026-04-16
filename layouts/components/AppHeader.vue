@@ -41,7 +41,7 @@ const { openLastOrDefaultHub } = useHubState();
           @click="openLastOrDefaultHub()"
         >
           <Grid class="h-4 w-4" />
-          <span class="sr-only">Toggle Right Sidebar</span>
+          <span class="sr-only">{{ $t("ui.tooltips.toggle_right_sidebar") }}</span>
         </Button>
       </div>
     </div>

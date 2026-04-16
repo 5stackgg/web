@@ -13,7 +13,7 @@ import PlayerStatusDisplay from "./PlayerStatusDisplay.vue";
           <TooltipTrigger>
             <NuxtImg
               src="/img/logos/discord.svg"
-              alt="Discord"
+              :alt="$t('alt_text.discord')"
               class="w-5 h-5"
             />
           </TooltipTrigger>

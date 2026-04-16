@@ -13,6 +13,7 @@ import {
 } from "~/components/ui/tooltip";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
+
 </script>
 
 <template>
@@ -57,12 +58,12 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
               <TooltipContent class="max-w-xs">
                 <div>
                   <div class="font-semibold border-b border-border/50 pb-1">
-                    Elo Change Details
+                    {{ $t("match.elo_details.title") }}
                   </div>
                   <!-- Current Elo → Updated Elo -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">Elo:</span>
+                      <span class="text-muted-foreground">{{ $t("match.elo_details.elo") }}:</span>
                       <span class="font-medium">
                         {{ (eloChange.current_elo as number).toLocaleString() }}
                         →
@@ -73,7 +74,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                   <!-- Team Elo Averages -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">Team Elo Avg:</span>
+                      <span class="text-muted-foreground">{{ $t("match.elo_details.team_elo_avg") }}:</span>
                       <span class="font-medium">
                         {{
                           (
@@ -92,9 +93,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                   <!-- Performance Multiplier -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground"
-                        >Performance Multiplier:</span
-                      >
+                      <span class="text-muted-foreground">{{ $t("match.elo_details.performance_multiplier") }}:</span>
                       <span class="font-medium">
                         {{
                           parseFloat(eloChange.performance_multiplier).toFixed(
@@ -107,9 +106,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                   <!-- K/D/A -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground"
-                        >Kills / Deaths / Assists:</span
-                      >
+                      <span class="text-muted-foreground">{{ $t("match.elo_details.kills_deaths_assists") }}:</span>
                       <span class="font-medium">
                         {{ eloChange.kills }} / {{ eloChange.deaths }} /
                         {{ eloChange.assists }}
@@ -119,9 +116,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                   <!-- KDA -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground"
-                        >Kills + Assits / Deaths Ratio:</span
-                      >
+                      <span class="text-muted-foreground">{{ $t("match.elo_details.kda_ratio") }}:</span>
                       <span class="font-medium">{{
                         parseFloat(eloChange.kda).toFixed(2)
                       }}</span>
@@ -130,9 +125,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                   <!-- Team Avg KDA -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground"
-                        >Team Avg Kills + Assits / Deaths Ratio:</span
-                      >
+                      <span class="text-muted-foreground">{{ $t("match.elo_details.team_avg_kda") }}:</span>
                       <span class="font-medium">{{
                         parseFloat(eloChange.team_avg_kda).toFixed(2)
                       }}</span>
@@ -141,12 +134,11 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                   <!-- Damage -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">Damage:</span>
+                      <span class="text-muted-foreground">{{ $t("match.elo_details.damage") }}:</span>
                       <span class="font-medium">
                         {{ eloChange.damage }}
                         <span
-                          >({{ Math.round(eloChange.damage_percent * 100) }}% of
-                          teams damage)</span
+                          >({{ Math.round(eloChange.damage_percent * 100) }}% {{ $t("match.elo_details.teams_damage_suffix") }})</span
                         >
                       </span>
                     </div>
@@ -196,12 +188,12 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
               <TooltipContent class="max-w-xs">
                 <div>
                   <div class="font-semibold border-b border-border/50 pb-1">
-                    Elo Change Details
+                    {{ $t("match.elo_details.title") }}
                   </div>
                   <!-- Current Elo → Updated Elo -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">Elo:</span>
+                      <span class="text-muted-foreground">{{ $t("match.elo_details.elo") }}:</span>
                       <span class="font-medium">
                         {{ (eloChange.current_elo as number).toLocaleString() }}
                         →
@@ -212,7 +204,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                   <!-- Team Elo Averages -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">Team Elo Avg:</span>
+                      <span class="text-muted-foreground">{{ $t("match.elo_details.team_elo_avg") }}:</span>
                       <span class="font-medium">
                         {{
                           (
@@ -231,9 +223,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                   <!-- Performance Multiplier -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground"
-                        >Performance Multiplier:</span
-                      >
+                      <span class="text-muted-foreground">{{ $t("match.elo_details.performance_multiplier") }}:</span>
                       <span class="font-medium">
                         {{
                           parseFloat(eloChange.performance_multiplier).toFixed(
@@ -246,9 +236,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                   <!-- K/D/A -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground"
-                        >Kills / Deaths / Assists:</span
-                      >
+                      <span class="text-muted-foreground">{{ $t("match.elo_details.kills_deaths_assists") }}:</span>
                       <span class="font-medium">
                         {{ eloChange.kills }} / {{ eloChange.deaths }} /
                         {{ eloChange.assists }}
@@ -258,9 +246,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                   <!-- KDA -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground"
-                        >Kills + Assits / Deaths Ratio:</span
-                      >
+                      <span class="text-muted-foreground">{{ $t("match.elo_details.kda_ratio") }}:</span>
                       <span class="font-medium">{{
                         parseFloat(eloChange.kda).toFixed(2)
                       }}</span>
@@ -269,9 +255,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                   <!-- Team Avg KDA -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground"
-                        >Team Avg Kills + Assits / Deaths Ratio:</span
-                      >
+                      <span class="text-muted-foreground">{{ $t("match.elo_details.team_avg_kda") }}:</span>
                       <span class="font-medium">{{
                         parseFloat(eloChange.team_avg_kda).toFixed(2)
                       }}</span>
@@ -280,12 +264,11 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                   <!-- Damage -->
                   <div>
                     <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">Damage:</span>
+                      <span class="text-muted-foreground">{{ $t("match.elo_details.damage") }}:</span>
                       <span class="font-medium">
                         {{ eloChange.damage }}
                         <span
-                          >({{ Math.round(eloChange.damage_percent * 100) }}% of
-                          teams damage)</span
+                          >({{ Math.round(eloChange.damage_percent * 100) }}% {{ $t("match.elo_details.teams_damage_suffix") }})</span
                         >
                       </span>
                     </div>
@@ -297,19 +280,18 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
         </div>
         <div class="flex items-center space-x-2 sm:space-x-3 flex-wrap gap-y-1">
           <!-- Join Button - Prominent Position -->
-          <Button
+          <button
             v-if="canJoinMatch"
-            variant="default"
-            size="sm"
-            class="flex items-center space-x-1 sm:space-x-2 text-xs"
+            type="button"
+            class="match-row-join"
             @click.stop="navigateToMatch(match.id, $event)"
           >
-            <UserPlusIcon class="h-3 w-3 sm:h-4 sm:w-4" />
-            <span class="hidden sm:inline">{{
-              $t("match.options.table.join")
-            }}</span>
-            <span class="sm:hidden">Join</span>
-          </Button>
+            <span class="match-row-join__inner">
+              <UserPlusIcon class="h-3 w-3" />
+              <span>{{ $t("match.options.table.join") }}</span>
+            </span>
+            <span class="match-row-join__glow" aria-hidden="true"></span>
+          </button>
 
           <!-- moved player toggle below maps -->
           <div
@@ -644,7 +626,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
             ]"
           >
             <h5 class="text-sm font-semibold text-foreground mb-3">
-              {{ matchStats.lineup_1.name }} Stats
+              {{ $t("match.team_stats_heading", { name: matchStats.lineup_1.name }) }}
             </h5>
             <div class="overflow-x-auto flex-1 -mx-4 px-4">
               <table
@@ -818,7 +800,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
             <h5
               class="text-xs sm:text-sm font-semibold text-foreground mb-2 sm:mb-3"
             >
-              {{ matchStats.lineup_2.name }} Stats
+              {{ $t("match.team_stats_heading", { name: matchStats.lineup_2.name }) }}
             </h5>
             <div class="overflow-x-auto flex-1 -mx-2 sm:-mx-4 px-2 sm:px-4">
               <table
@@ -1264,3 +1246,77 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.match-row-join {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  isolation: isolate;
+  padding: 0.28rem 0.7rem;
+  font-family: "Oxanium", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: hsl(0 0% 8%);
+  background: linear-gradient(
+    135deg,
+    hsl(36 100% 65%) 0%,
+    hsl(var(--tac-amber)) 50%,
+    hsl(28 90% 52%) 100%
+  );
+  border: 1px solid hsl(var(--tac-amber));
+  clip-path: polygon(
+    8px 0,
+    100% 0,
+    100% calc(100% - 8px),
+    calc(100% - 8px) 100%,
+    0 100%,
+    0 8px
+  );
+  box-shadow:
+    0 0 0 1px hsl(var(--tac-amber) / 0.35),
+    0 4px 14px -4px hsl(var(--tac-amber) / 0.5);
+  transition:
+    transform 180ms cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 180ms ease;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.match-row-join:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 0 0 1px hsl(var(--tac-amber) / 0.55),
+    0 10px 24px -4px hsl(var(--tac-amber) / 0.7),
+    0 0 20px hsl(var(--tac-amber) / 0.3);
+}
+.match-row-join:active {
+  transform: translateY(0);
+}
+.match-row-join__inner {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.match-row-join__glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(0 0% 100% / 0.35) 50%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+.match-row-join:hover .match-row-join__glow {
+  transform: translateX(100%);
+}
+</style>

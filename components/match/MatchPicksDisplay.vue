@@ -23,7 +23,7 @@ import { Badge } from "~/components/ui/badge";
         <span class="text-xs font-semibold truncate block">
           {{ match.e_region.description || match.e_region.value }}
         </span>
-        <span class="text-[10px] text-muted-foreground">Region</span>
+        <span class="text-[10px] text-muted-foreground">{{ $t("common.region") }}</span>
       </div>
     </div>
 

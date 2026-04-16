@@ -2,17 +2,21 @@
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
     <DialogContent>
       <DialogHeader>
-        <DialogTitle
-          >Rename {{ item?.isDirectory ? "Directory" : "File" }}</DialogTitle
-        >
+        <DialogTitle>
+          {{
+            item?.isDirectory
+              ? $t("file_manager.rename.title_directory")
+              : $t("file_manager.rename.title_file")
+          }}
+        </DialogTitle>
         <DialogDescription>
-          Enter a new name for "{{ item?.name }}"
+          {{ $t("file_manager.rename.description", { name: item?.name }) }}
         </DialogDescription>
       </DialogHeader>
 
       <div class="space-y-4">
         <div class="space-y-2">
-          <Label for="new-name">New Name</Label>
+          <Label for="new-name">{{ $t("file_manager.rename.label") }}</Label>
           <Input id="new-name" v-model="newName" @keyup.enter="handleRename" />
         </div>
 
@@ -23,9 +27,9 @@
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="handleCancel"> Cancel </Button>
+        <Button variant="outline" @click="handleCancel">{{ $t("common.cancel") }}</Button>
         <Button @click="handleRename" :disabled="!newName || store.isLoading">
-          Rename
+          {{ $t("common.rename") }}
         </Button>
       </DialogFooter>
     </DialogContent>

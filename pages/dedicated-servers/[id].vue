@@ -143,7 +143,7 @@ const serverMenu = ref(false);
             <DropdownMenuContent align="end" class="w-[200px]">
               <DropdownMenuGroup>
                 <DropdownMenuItem @click="editServerSheet = true">
-                  {{ $t("pages.dedicated_servers.detail.edit") }}
+                  {{ $t("common.actions.edit") }}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   v-if="server?.game_server_node_id"
@@ -158,7 +158,7 @@ const serverMenu = ref(false);
                   @click="deleteServerAlertDialog = true"
                 >
                   <Trash class="mr-2 h-4 w-4 inline" />
-                  {{ $t("pages.dedicated_servers.detail.delete") }}
+                  {{ $t("common.delete") }}
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
@@ -192,7 +192,7 @@ const serverMenu = ref(false);
   >
     <SheetContent>
       <SheetHeader>
-        <SheetTitle>{{ $t("pages.dedicated_servers.detail.edit") }}</SheetTitle>
+        <SheetTitle>{{ $t("common.actions.edit") }}</SheetTitle>
         <SheetDescription>
           <ServerForm :server="server" @updated="editServerSheet = false" />
         </SheetDescription>
@@ -215,7 +215,7 @@ const serverMenu = ref(false);
       </AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel>{{
-          $t("pages.dedicated_servers.detail.delete_confirm.cancel")
+          $t("common.cancel")
         }}</AlertDialogCancel>
         <AlertDialogAction @click="deleteServer">{{
           $t("pages.dedicated_servers.detail.delete_confirm.continue")

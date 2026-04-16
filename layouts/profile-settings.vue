@@ -63,7 +63,7 @@ const router = useRouter();
 
 const resolvedPath = computed(() => {
   const path = route.path;
-  const items = navItems.value;
+  const items = navItems.value ?? [];
   if (items.some((item) => item.path === path)) return path;
   const match = items.find((item) => path.startsWith(item.path + "/"));
   return match ? match.path : (items[0]?.path ?? path);
@@ -158,11 +158,15 @@ async function unlinkDiscord() {
 
 <template>
   <default>
-    <div class="space-y-0.5">
-      <h2 class="text-2xl font-bold tracking-tight">
+    <div class="space-y-1">
+      <div class="inline-flex items-center gap-2 text-[0.65rem] font-mono font-bold uppercase tracking-[0.24em] text-muted-foreground mb-1">
+        <span class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
+        Settings
+      </div>
+      <h2 class="text-xl font-bold tracking-tight">
         {{ $t("layouts.account_settings.title") }}
       </h2>
-      <p class="text-muted-foreground">
+      <p class="text-sm text-muted-foreground">
         {{ $t("layouts.account_settings.description") }}
       </p>
     </div>
@@ -172,8 +176,8 @@ async function unlinkDiscord() {
         <!-- Mobile: single dropdown -->
         <div class="lg:hidden">
           <Select v-model="selectedPath">
-            <SelectTrigger class="w-full" aria-label="Settings section">
-              <SelectValue placeholder="Select section" />
+            <SelectTrigger class="w-full" :aria-label="$t('ui.tooltips.settings_section')">
+              <SelectValue :placeholder="$t('layouts.account_settings.select_section')" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem
@@ -193,7 +197,7 @@ async function unlinkDiscord() {
         >
           <div
             v-show="showIndicator"
-            class="absolute top-0 right-0 w-0.5 bg-primary z-10 pointer-events-none"
+            class="settings-nav__indicator absolute top-0 right-0 w-0.5 z-10 pointer-events-none"
             :class="hasAnimated ? 'settings-nav-indicator-animated' : ''"
             :style="{
               transform: `translateY(${indicatorY}px)`,
@@ -246,7 +250,7 @@ async function unlinkDiscord() {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel @click="showUnlinkDiscordDialog = false">
-            {{ $t("pages.settings.account.discord.unlink_dialog.cancel") }}
+            {{ $t("common.cancel") }}
           </AlertDialogCancel>
           <AlertDialogAction @click="unlinkDiscord" variant="destructive">
             {{ $t("pages.settings.account.discord.unlink_dialog.confirm") }}
@@ -264,10 +268,14 @@ export default {};
 <style lang="postcss">
 .settings-nav a > button,
 .settings-nav > button {
-  @apply hover:bg-sidebar-accent/40 hover:text-sidebar-accent-foreground transition-colors duration-200;
+  @apply text-muted-foreground hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground transition-colors duration-200;
 }
 .settings-nav .router-link-exact-active > button {
-  @apply text-sidebar-accent-foreground bg-transparent;
+  @apply text-foreground bg-[hsl(var(--tac-amber)/0.06)];
+}
+.settings-nav__indicator {
+  background: hsl(var(--tac-amber));
+  box-shadow: 0 0 8px hsl(var(--tac-amber) / 0.35);
 }
 .settings-nav-indicator-animated {
   transition:

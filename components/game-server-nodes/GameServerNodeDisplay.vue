@@ -51,7 +51,7 @@ import { Activity, Cpu, ExternalLink, AlertTriangle } from "lucide-vue-next";
             gameServerNode.status === e_game_server_node_statuses_enum.Offline
           "
         >
-          {{ $t("pages.game_server_nodes.status.offline") }}
+          {{ $t("common.offline") }}
           <template v-if="gameServerNode.offline_at">
             <TimeAgo :date="gameServerNode.offline_at" />
           </template>
@@ -61,7 +61,7 @@ import { Activity, Cpu, ExternalLink, AlertTriangle } from "lucide-vue-next";
             gameServerNode.status === e_game_server_node_statuses_enum.Online
           "
         >
-          {{ $t("pages.game_server_nodes.status.online") }}
+          {{ $t("common.online") }}
         </template>
         <template
           v-else-if="

@@ -1,25 +1,10 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Card } from "~/components/ui/card";
-import { Switch } from "~/components/ui/switch";
-import { e_match_status_enum } from "~/generated/zeus";
+import DiscordMatchNotificationToggles from "~/components/discord/DiscordMatchNotificationToggles.vue";
 definePageMeta({
   layout: "application-settings",
 });
-
-const MATCH_STATUSES: e_match_status_enum[] = [
-  e_match_status_enum.PickingPlayers,
-  e_match_status_enum.Scheduled,
-  e_match_status_enum.WaitingForCheckIn,
-  e_match_status_enum.WaitingForServer,
-  e_match_status_enum.Veto,
-  e_match_status_enum.Live,
-  e_match_status_enum.Finished,
-  e_match_status_enum.Tie,
-  e_match_status_enum.Canceled,
-  e_match_status_enum.Forfeit,
-  e_match_status_enum.Surrendered,
-];
 </script>
 
 <template>
@@ -126,85 +111,79 @@ const MATCH_STATUSES: e_match_status_enum[] = [
             </FormItem>
           </FormField>
 
+          <DiscordMatchNotificationToggles
+            :statuses="MATCH_STATUSES"
+            :values="statusToggleValues"
+            :status-labels="statusLabels"
+            :title="
+              $t(
+                'pages.settings.application.discord.match_notifications.statuses_title',
+              )
+            "
+            :events-title="
+              $t(
+                'pages.settings.application.discord.match_notifications.events_title',
+              )
+            "
+            :map-paused-key="'MapPaused'"
+            @toggle="toggleStatus"
+            @update="updateStatus"
+          />
+        </div>
+      </Card>
+
+      <Card variant="gradient">
+        <div class="p-6 space-y-6">
           <div>
-            <h4 class="text-base font-medium mb-3">
+            <h3 class="text-lg font-medium">
               {{
                 $t(
-                  "pages.settings.application.discord.match_notifications.statuses_title",
+                  "pages.settings.application.discord.server_notifications.title",
                 )
               }}
-            </h4>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div
-                v-for="status in MATCH_STATUSES"
-                :key="status"
-                class="flex items-center justify-between rounded-lg border p-3 cursor-pointer select-none"
-                role="button"
-                @click="
-                  form.setFieldValue(
-                    `discord_match_notify_${status}`,
-                    form.values[`discord_match_notify_${status}`] === 'true'
-                      ? 'false'
-                      : 'true',
-                  )
-                "
-              >
-                <span class="text-sm font-medium">{{
-                  statusLabels[status]
-                }}</span>
-                <Switch
-                  @click.stop
-                  :model-value="
-                    form.values[`discord_match_notify_${status}`] === 'true'
-                  "
-                  @update:model-value="
-                    form.setFieldValue(
-                      `discord_match_notify_${status}`,
-                      $event ? 'true' : 'false',
-                    )
-                  "
-                />
-              </div>
-            </div>
+            </h3>
+            <p class="text-sm text-muted-foreground">
+              {{
+                $t(
+                  "pages.settings.application.discord.server_notifications.description",
+                )
+              }}
+            </p>
           </div>
 
-          <div>
-            <h4 class="text-base font-medium mb-3">
-              {{
+          <FormField v-slot="{ componentField }" name="disk_warning_percent">
+            <FormItem>
+              <FormLabel>{{
                 $t(
-                  "pages.settings.application.discord.match_notifications.events_title",
+                  "pages.settings.application.discord.server_notifications.disk_warning_percent",
                 )
-              }}
-            </h4>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div
-                class="flex items-center justify-between rounded-lg border p-3 cursor-pointer select-none"
-                role="button"
-                @click="
-                  form.setFieldValue(
-                    'discord_match_notify_MapPaused',
-                    form.values['discord_match_notify_MapPaused'] === 'true'
-                      ? 'false'
-                      : 'true',
-                  )
-                "
-              >
-                <span class="text-sm font-medium">Map Paused</span>
-                <Switch
-                  @click.stop
-                  :model-value="
-                    form.values['discord_match_notify_MapPaused'] === 'true'
-                  "
-                  @update:model-value="
-                    form.setFieldValue(
-                      'discord_match_notify_MapPaused',
-                      $event ? 'true' : 'false',
-                    )
-                  "
-                />
-              </div>
-            </div>
-          </div>
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.discord.server_notifications.disk_warning_percent_description",
+                )
+              }}</FormDescription>
+              <Input type="number" v-bind="componentField" min="0" max="100" />
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField v-slot="{ componentField }" name="disk_critical_percent">
+            <FormItem>
+              <FormLabel>{{
+                $t(
+                  "pages.settings.application.discord.server_notifications.disk_critical_percent",
+                )
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.discord.server_notifications.disk_critical_percent_description",
+                )
+              }}</FormDescription>
+              <Input type="number" v-bind="componentField" min="0" max="100" />
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </div>
       </Card>
 
@@ -214,7 +193,7 @@ const MATCH_STATUSES: e_match_status_enum[] = [
           :disabled="Object.keys(form.errors).length > 0"
           class="my-3"
         >
-          {{ $t("pages.settings.application.discord.update") }}
+          {{ $t("common.update") }}
         </Button>
       </div>
     </form>
@@ -247,9 +226,24 @@ const STATUS_LABEL_MAP: Record<e_match_status_enum, string> = {
   [e_match_status_enum.Surrendered]: "Surrendered",
 };
 
+const MATCH_STATUSES: e_match_status_enum[] = [
+  e_match_status_enum.PickingPlayers,
+  e_match_status_enum.Scheduled,
+  e_match_status_enum.WaitingForCheckIn,
+  e_match_status_enum.WaitingForServer,
+  e_match_status_enum.Veto,
+  e_match_status_enum.Live,
+  e_match_status_enum.Finished,
+  e_match_status_enum.Tie,
+  e_match_status_enum.Canceled,
+  e_match_status_enum.Forfeit,
+  e_match_status_enum.Surrendered,
+];
+
 export default {
   data() {
     return {
+      MATCH_STATUSES,
       statusLabels: STATUS_LABEL_MAP,
       form: useForm({
         validationSchema: toTypedSchema(
@@ -266,6 +260,8 @@ export default {
               ]),
             ),
             discord_match_notify_MapPaused: z.string().optional(),
+            disk_warning_percent: z.number().min(0).max(100).default(75),
+            disk_critical_percent: z.number().min(0).max(100).default(90),
           }),
         ),
       }),
@@ -276,12 +272,32 @@ export default {
       immediate: true,
       handler(newVal) {
         for (const setting of newVal) {
-          this.form.setFieldValue(setting.name, setting.value || "");
+          if (
+            setting.name === "disk_warning_percent" ||
+            setting.name === "disk_critical_percent"
+          ) {
+            this.form.setFieldValue(setting.name, parseInt(setting.value));
+          } else {
+            this.form.setFieldValue(setting.name, setting.value || "");
+          }
         }
       },
     },
   },
   methods: {
+    toggleStatus(status: string) {
+      const key = `discord_match_notify_${status}`;
+      this.form.setFieldValue(
+        key,
+        this.form.values[key] === "true" ? "false" : "true",
+      );
+    },
+    updateStatus(status: string, enabled: boolean) {
+      this.form.setFieldValue(
+        `discord_match_notify_${status}`,
+        enabled ? "true" : "false",
+      );
+    },
     async updateSettings() {
       const fields = [
         "discord_invite_link",
@@ -293,11 +309,14 @@ export default {
           (s) => `discord_match_notify_${s}`,
         ),
         "discord_match_notify_MapPaused",
+        "disk_warning_percent",
+        "disk_critical_percent",
       ];
 
       const objects = fields.map((name) => ({
         name,
-        value: this.form.values[name] || "",
+        value:
+          this.form.values[name] != null ? String(this.form.values[name]) : "",
       }));
 
       await this.$apollo.mutate({
@@ -325,6 +344,17 @@ export default {
   computed: {
     settings() {
       return useApplicationSettingsStore().settings;
+    },
+    statusToggleValues(): Record<string, boolean> {
+      return {
+        ...Object.fromEntries(
+          MATCH_STATUSES.map((status) => [
+            status,
+            this.form.values[`discord_match_notify_${status}`] === "true",
+          ]),
+        ),
+        MapPaused: this.form.values.discord_match_notify_MapPaused === "true",
+      };
     },
   },
 };

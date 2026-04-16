@@ -36,33 +36,35 @@ const otherOnlineCount = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col h-full overflow-hidden p-4">
+  <div class="flex flex-col h-full overflow-hidden">
     <Tabs v-model="activeTab" class="flex flex-col h-full min-h-0">
       <div class="px-3 pt-3 pb-2 flex-shrink-0">
-        <TabsList class="grid w-full grid-cols-2">
-          <TabsTrigger value="friends" class="relative">
+        <div class="hub-panel-label mb-2">
+          <span class="hub-panel-tick"></span>
+          Social
+        </div>
+        <TabsList variant="underline" class="hub-tabs-list">
+          <TabsTrigger value="friends" class="hub-tabs-trigger relative">
             {{ $t("matchmaking.friends.title") }}
-            <span class="text-xs text-muted-foreground ml-1">
-              ({{ onlineFriends.length }} / {{ offlineFriends.length }})
+            <span class="hub-tabs-count">
+              {{ onlineFriends.length }}/{{ offlineFriends.length }}
             </span>
             <span
               v-if="hasSocialInvites"
-              class="absolute top-1 left-1.5 w-2 h-2 bg-red-500 rounded-full"
+              class="absolute top-0.5 left-1 w-2 h-2 bg-red-500 rounded-full"
             />
           </TabsTrigger>
-          <TabsTrigger value="online">
+          <TabsTrigger value="online" class="hub-tabs-trigger">
             {{ $t("matchmaking.others.title") }}
-            <span class="text-xs text-muted-foreground ml-1"
-              >({{ otherOnlineCount }})</span
-            >
+            <span class="hub-tabs-count">{{ otherOnlineCount }}</span>
           </TabsTrigger>
         </TabsList>
       </div>
-      <TabsContent value="friends" class="mt-0 flex-1 overflow-y-auto min-h-0">
+      <TabsContent value="friends" class="mt-0 flex-1 overflow-y-auto min-h-0 px-3">
         <MatchInvites />
         <PlayersList :friends-only="true" />
       </TabsContent>
-      <TabsContent value="online" class="mt-0 flex-1 overflow-y-auto min-h-0">
+      <TabsContent value="online" class="mt-0 flex-1 overflow-y-auto min-h-0 px-3">
         <template v-if="otherOnlineCount > 0">
           <PlayersList />
         </template>
@@ -75,3 +77,45 @@ const otherOnlineCount = computed(() => {
     </Tabs>
   </div>
 </template>
+
+<style scoped>
+.hub-panel-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: "Oxanium", monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+.hub-panel-tick {
+  width: 8px;
+  height: 2px;
+  background: hsl(var(--tac-amber));
+}
+.hub-tabs-list {
+  width: 100%;
+  gap: 0.15rem;
+  background: hsl(var(--muted) / 0.3);
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.375rem;
+  padding: 0.2rem;
+}
+.hub-tabs-trigger {
+  flex: 1;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.5rem;
+}
+.hub-tabs-count {
+  font-family: "Oxanium", monospace;
+  font-size: 0.6rem;
+  margin-left: 0.25rem;
+  opacity: 0.65;
+  font-variant-numeric: tabular-nums;
+}
+</style>

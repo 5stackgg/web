@@ -33,7 +33,7 @@ function isPublicRoute(path: string): boolean {
   return false;
 }
 
-export default defineNuxtRouteMiddleware(async (to, from) => {
+export default defineNuxtRouteMiddleware(async (to) => {
   if (process.server) return;
 
   if (to.query.error) {

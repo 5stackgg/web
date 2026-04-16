@@ -186,10 +186,10 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
   }
 
   watch(
-    () => useAuthStore().me,
-    (me) => {
-      if (me) {
-        subscribeToAll(me.steam_id);
+    () => useAuthStore().me?.steam_id,
+    (steamId) => {
+      if (steamId) {
+        subscribeToAll(steamId);
       } else {
         const { unsubscribe } = useSubscriptionManager();
         unsubscribe("notifications:team_invites");

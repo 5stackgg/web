@@ -108,11 +108,11 @@ export const useApplicationSettingsStore = defineStore(
       );
     };
 
-    // Watch for user authentication before subscribing
+    // Watch the auth identity so realtime me refreshes do not resubscribe.
     watch(
-      () => useAuthStore().me,
-      (me) => {
-        if (me) {
+      () => useAuthStore().me?.steam_id,
+      (steamId) => {
+        if (steamId) {
           subscribeToPluginVersion();
         }
       },

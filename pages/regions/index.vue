@@ -39,12 +39,12 @@ const { isMobile } = useSidebar();
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{{ $t("pages.regions.table.name") }}</TableHead>
-            <TableHead>{{ $t("pages.regions.table.status") }}</TableHead>
+            <TableHead>{{ $t("common.name") }}</TableHead>
+            <TableHead>{{ $t("common.status") }}</TableHead>
             <TableHead>{{
               $t("pages.regions.table.available_servers")
             }}</TableHead>
-            <TableHead>{{ $t("pages.regions.table.description") }}</TableHead>
+            <TableHead>{{ $t("common.description") }}</TableHead>
             <TableHead>
               <FivestackTooltip>
                 <template #trigger>
@@ -58,7 +58,7 @@ const { isMobile } = useSidebar();
             </TableHead>
             <TableHead>{{ $t("pages.regions.table.use_lan_ip") }}</TableHead>
             <TableHead class="w-[100px]">{{
-              $t("pages.regions.table.actions")
+              $t("common.actions_label")
             }}</TableHead>
           </TableRow>
         </TableHeader>
@@ -140,10 +140,10 @@ const { isMobile } = useSidebar();
       </DialogHeader>
       <DialogFooter>
         <Button variant="outline" @click="deleteDialogOpen = false">
-          {{ $t("pages.regions.delete.cancel") }}
+          {{ $t("common.cancel") }}
         </Button>
         <Button variant="destructive" @click="deleteRegion">
-          {{ $t("pages.regions.delete.confirm") }}
+          {{ $t("common.delete") }}
         </Button>
       </DialogFooter>
     </DialogContent>

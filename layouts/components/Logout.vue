@@ -13,7 +13,7 @@
       </AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel>{{
-          $t("layouts.app_nav.logout_dialog.cancel")
+          $t("common.cancel")
         }}</AlertDialogCancel>
         <AlertDialogAction @click="logout">{{
           $t("layouts.app_nav.logout_dialog.confirm")

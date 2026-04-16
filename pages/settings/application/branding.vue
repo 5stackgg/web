@@ -15,24 +15,36 @@ definePageMeta({
       <Card variant="gradient">
         <div class="p-6 space-y-4">
           <div>
-            <label class="text-sm font-medium">General</label>
+            <label class="text-sm font-medium">{{
+              $t("pages.settings.application.branding.general")
+            }}</label>
             <p class="text-sm text-muted-foreground">
-              Basic panel appearance settings.
+              {{ $t("pages.settings.application.branding.general_description") }}
             </p>
           </div>
 
           <div class="space-y-2">
-            <label class="text-sm font-medium">Brand Name</label>
+            <label class="text-sm font-medium">{{
+              $t("pages.settings.application.branding.brand_name")
+            }}</label>
             <p class="text-sm text-muted-foreground">
-              Displayed in the sidebar and page title.
+              {{
+                $t("pages.settings.application.branding.brand_name_description")
+              }}
             </p>
             <Input v-model="brandName" placeholder="5Stack" class="max-w-sm" />
           </div>
 
           <div class="space-y-2">
-            <label class="text-sm font-medium">Border Radius</label>
+            <label class="text-sm font-medium">{{
+              $t("pages.settings.application.branding.border_radius")
+            }}</label>
             <p class="text-sm text-muted-foreground">
-              Controls the roundness of buttons, cards, and inputs.
+              {{
+                $t(
+                  "pages.settings.application.branding.border_radius_description",
+                )
+              }}
             </p>
             <div class="flex items-center gap-3 max-w-sm">
               <input
@@ -56,11 +68,15 @@ definePageMeta({
           >
             <div class="flex flex-row items-center justify-between p-4">
               <div class="space-y-0.5">
-                <label class="text-sm font-medium cursor-pointer"
-                  >Show Separators</label
-                >
+                <label class="text-sm font-medium cursor-pointer">{{
+                  $t("pages.settings.application.branding.show_separators")
+                }}</label>
                 <p class="text-sm text-muted-foreground">
-                  Display horizontal divider lines between sections.
+                  {{
+                    $t(
+                      "pages.settings.application.branding.show_separators_description",
+                    )
+                  }}
                 </p>
               </div>
               <Switch
@@ -71,10 +87,11 @@ definePageMeta({
           </Card>
 
           <div class="space-y-2">
-            <label class="text-sm font-medium">Logo</label>
+            <label class="text-sm font-medium">{{
+              $t("pages.settings.application.branding.logo")
+            }}</label>
             <p class="text-sm text-muted-foreground">
-              Upload a custom logo for the sidebar. Recommended: square image,
-              PNG or SVG.
+              {{ $t("pages.settings.application.branding.logo_description") }}
             </p>
             <div class="flex items-center gap-4">
               <div
@@ -93,7 +110,7 @@ definePageMeta({
               </div>
               <div class="flex gap-2">
                 <Button size="sm" @click="$refs.logoInput.click()">
-                  Upload Logo
+                  {{ $t("pages.settings.application.branding.upload_logo") }}
                 </Button>
                 <Button
                   v-if="logoPreview"
@@ -101,7 +118,7 @@ definePageMeta({
                   variant="outline"
                   @click="removeLogo"
                 >
-                  Remove
+                  {{ $t("pages.settings.application.branding.remove") }}
                 </Button>
               </div>
               <input
@@ -115,9 +132,13 @@ definePageMeta({
           </div>
 
           <div class="space-y-2">
-            <label class="text-sm font-medium">Favicon</label>
+            <label class="text-sm font-medium">{{
+              $t("pages.settings.application.branding.favicon")
+            }}</label>
             <p class="text-sm text-muted-foreground">
-              Upload a custom favicon. Recommended: square image, PNG or ICO.
+              {{
+                $t("pages.settings.application.branding.favicon_description")
+              }}
             </p>
             <div class="flex items-center gap-4">
               <div
@@ -136,7 +157,7 @@ definePageMeta({
               </div>
               <div class="flex gap-2">
                 <Button size="sm" @click="$refs.faviconInput.click()">
-                  Upload Favicon
+                  {{ $t("pages.settings.application.branding.upload_favicon") }}
                 </Button>
                 <Button
                   v-if="faviconPreview"
@@ -144,7 +165,7 @@ definePageMeta({
                   variant="outline"
                   @click="removeFavicon"
                 >
-                  Remove
+                  {{ $t("pages.settings.application.branding.remove") }}
                 </Button>
               </div>
               <input
@@ -163,9 +184,15 @@ definePageMeta({
       <Card variant="gradient">
         <div class="p-6 space-y-4">
           <div>
-            <label class="text-sm font-medium">Login Page</label>
+            <label class="text-sm font-medium">{{
+              $t("pages.settings.application.branding.login_page")
+            }}</label>
             <p class="text-sm text-muted-foreground">
-              Customize the login page footer link.
+              {{
+                $t(
+                  "pages.settings.application.branding.login_page_description",
+                )
+              }}
             </p>
           </div>
 
@@ -176,11 +203,15 @@ definePageMeta({
           >
             <div class="flex flex-row items-center justify-between p-4">
               <div class="space-y-0.5">
-                <label class="text-sm font-medium cursor-pointer"
-                  >Show Login Footer</label
-                >
+                <label class="text-sm font-medium cursor-pointer">{{
+                  $t("pages.settings.application.branding.show_login_footer")
+                }}</label>
                 <p class="text-sm text-muted-foreground">
-                  Display a footer link on the login page.
+                  {{
+                    $t(
+                      "pages.settings.application.branding.show_login_footer_description",
+                    )
+                  }}
                 </p>
               </div>
               <Switch
@@ -191,7 +222,9 @@ definePageMeta({
           </Card>
 
           <div class="space-y-2">
-            <label class="text-sm font-medium">Footer Text</label>
+            <label class="text-sm font-medium">{{
+              $t("pages.settings.application.branding.footer_text")
+            }}</label>
             <Input
               v-model="loginFooterText"
               placeholder="5stack.gg"
@@ -200,7 +233,9 @@ definePageMeta({
           </div>
 
           <div class="space-y-2">
-            <label class="text-sm font-medium">Footer URL</label>
+            <label class="text-sm font-medium">{{
+              $t("pages.settings.application.branding.footer_url")
+            }}</label>
             <Input
               v-model="loginFooterUrl"
               placeholder="https://github.com/5stackgg/5stack-panel"
@@ -214,9 +249,15 @@ definePageMeta({
       <Card variant="gradient">
         <div class="p-6 space-y-4">
           <div>
-            <label class="text-sm font-medium">Theme Colors</label>
+            <label class="text-sm font-medium">{{
+              $t("pages.settings.application.branding.theme_colors")
+            }}</label>
             <p class="text-sm text-muted-foreground">
-              Customize the theme colors. Changes are previewed live.
+              {{
+                $t(
+                  "pages.settings.application.branding.theme_colors_description",
+                )
+              }}
             </p>
           </div>
 
@@ -226,24 +267,24 @@ definePageMeta({
               :variant="colorMode === 'light' ? 'default' : 'outline'"
               @click="colorMode = 'light'"
             >
-              Light Mode
+              {{ $t("pages.settings.application.branding.light_mode") }}
             </Button>
             <Button
               size="sm"
               :variant="colorMode === 'dark' ? 'default' : 'outline'"
               @click="colorMode = 'dark'"
             >
-              Dark Mode
+              {{ $t("pages.settings.application.branding.dark_mode") }}
             </Button>
           </div>
 
           <div
             v-for="section in currentColorSections"
-            :key="section.title"
+            :key="section.titleKey"
             class="space-y-3"
           >
             <h4 class="text-sm font-medium text-muted-foreground">
-              {{ section.title }}
+              {{ $t(section.titleKey) }}
             </h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div
@@ -258,7 +299,7 @@ definePageMeta({
                   class="w-10 h-10 rounded cursor-pointer bg-transparent"
                 />
                 <div>
-                  <p class="text-sm font-medium">{{ color.label }}</p>
+                  <p class="text-sm font-medium">{{ $t(color.labelKey) }}</p>
                   <p class="text-xs text-muted-foreground font-mono">
                     {{ colorValues[color.key] || color.default }}
                   </p>
@@ -271,15 +312,17 @@ definePageMeta({
 
       <!-- Actions -->
       <div class="flex gap-2 flex-wrap">
-        <Button @click="saveAll" :disabled="saving"> Save Branding </Button>
+        <Button @click="saveAll" :disabled="saving">
+          {{ $t("pages.settings.application.branding.save_branding") }}
+        </Button>
         <Button variant="destructive" @click="resetAll">
-          Reset to Defaults
+          {{ $t("pages.settings.application.branding.reset_to_defaults") }}
         </Button>
         <Button variant="outline" @click="exportTheme" :disabled="exporting">
-          Export Theme
+          {{ $t("pages.settings.application.branding.export_theme") }}
         </Button>
         <Button variant="outline" @click="$refs.importInput.click()">
-          Import Theme
+          {{ $t("pages.settings.application.branding.import_theme") }}
         </Button>
         <input
           ref="importInput"
@@ -300,419 +343,145 @@ import { toast } from "@/components/ui/toast";
 
 interface ColorField {
   key: string;
-  label: string;
+  labelKey: string;
   default: string;
 }
 
 interface ColorSection {
-  title: string;
+  titleKey: string;
   fields: ColorField[];
 }
 
 const lightColorSections: ColorSection[] = [
   {
-    title: "Core",
+    titleKey: "pages.settings.application.branding.sections.core",
     fields: [
-      {
-        key: "public.color_background",
-        label: "Background",
-        default: "0 0% 100%",
-      },
-      {
-        key: "public.color_foreground",
-        label: "Foreground (text)",
-        default: "240 10% 3.9%",
-      },
-      {
-        key: "public.color_primary",
-        label: "Primary (buttons)",
-        default: "240 5.9% 10%",
-      },
-      {
-        key: "public.color_primary_foreground",
-        label: "Primary Foreground (button text)",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_secondary",
-        label: "Secondary",
-        default: "240 4.8% 95.9%",
-      },
-      {
-        key: "public.color_secondary_foreground",
-        label: "Secondary Foreground",
-        default: "240 5.9% 10%",
-      },
-      {
-        key: "public.color_accent",
-        label: "Accent (selected items)",
-        default: "240 4.8% 95.9%",
-      },
-      {
-        key: "public.color_accent_foreground",
-        label: "Accent Foreground",
-        default: "240 5.9% 10%",
-      },
-      {
-        key: "public.color_muted",
-        label: "Muted (subtle backgrounds)",
-        default: "240 4.8% 95.9%",
-      },
-      {
-        key: "public.color_muted_foreground",
-        label: "Muted Foreground (secondary text)",
-        default: "240 3.8% 46.1%",
-      },
-      {
-        key: "public.color_destructive",
-        label: "Destructive (delete/error)",
-        default: "0 84.2% 60.2%",
-      },
-      {
-        key: "public.color_destructive_foreground",
-        label: "Destructive Foreground",
-        default: "0 0% 98%",
-      },
-      { key: "public.color_warning", label: "Warning", default: "36 100% 50%" },
-      {
-        key: "public.color_warning_foreground",
-        label: "Warning Foreground",
-        default: "0 0% 100%",
-      },
+      { key: "public.color_background", labelKey: "pages.settings.application.branding.colors.background", default: "0 0% 100%" },
+      { key: "public.color_foreground", labelKey: "pages.settings.application.branding.colors.foreground", default: "240 10% 3.9%" },
+      { key: "public.color_primary", labelKey: "pages.settings.application.branding.colors.primary", default: "240 5.9% 10%" },
+      { key: "public.color_primary_foreground", labelKey: "pages.settings.application.branding.colors.primary_foreground", default: "0 0% 98%" },
+      { key: "public.color_secondary", labelKey: "pages.settings.application.branding.colors.secondary", default: "240 4.8% 95.9%" },
+      { key: "public.color_secondary_foreground", labelKey: "pages.settings.application.branding.colors.secondary_foreground", default: "240 5.9% 10%" },
+      { key: "public.color_accent", labelKey: "pages.settings.application.branding.colors.accent", default: "240 4.8% 95.9%" },
+      { key: "public.color_accent_foreground", labelKey: "pages.settings.application.branding.colors.accent_foreground", default: "240 5.9% 10%" },
+      { key: "public.color_muted", labelKey: "pages.settings.application.branding.colors.muted", default: "240 4.8% 95.9%" },
+      { key: "public.color_muted_foreground", labelKey: "pages.settings.application.branding.colors.muted_foreground", default: "240 3.8% 46.1%" },
+      { key: "public.color_destructive", labelKey: "pages.settings.application.branding.colors.destructive", default: "0 84.2% 60.2%" },
+      { key: "public.color_destructive_foreground", labelKey: "pages.settings.application.branding.colors.destructive_foreground", default: "0 0% 98%" },
+      { key: "public.color_warning", labelKey: "pages.settings.application.branding.colors.warning", default: "36 100% 50%" },
+      { key: "public.color_warning_foreground", labelKey: "pages.settings.application.branding.colors.warning_foreground", default: "0 0% 100%" },
     ],
   },
   {
-    title: "Cards & Borders",
+    titleKey: "pages.settings.application.branding.sections.cards_borders",
     fields: [
-      {
-        key: "public.color_card",
-        label: "Card Background",
-        default: "0 0% 100%",
-      },
-      {
-        key: "public.color_card_foreground",
-        label: "Card Text",
-        default: "240 10% 3.9%",
-      },
-      { key: "public.color_border", label: "Borders", default: "240 5.9% 90%" },
-      {
-        key: "public.color_popover",
-        label: "Popover Background",
-        default: "0 0% 100%",
-      },
-      {
-        key: "public.color_popover_foreground",
-        label: "Popover Text",
-        default: "240 10% 3.9%",
-      },
-      {
-        key: "public.color_input",
-        label: "Input Borders",
-        default: "240 5.9% 90%",
-      },
-      {
-        key: "public.color_ring",
-        label: "Focus Ring",
-        default: "240 10% 3.9%",
-      },
+      { key: "public.color_card", labelKey: "pages.settings.application.branding.colors.card", default: "0 0% 100%" },
+      { key: "public.color_card_foreground", labelKey: "pages.settings.application.branding.colors.card_foreground", default: "240 10% 3.9%" },
+      { key: "public.color_border", labelKey: "pages.settings.application.branding.colors.border", default: "240 5.9% 90%" },
+      { key: "public.color_popover", labelKey: "pages.settings.application.branding.colors.popover", default: "0 0% 100%" },
+      { key: "public.color_popover_foreground", labelKey: "pages.settings.application.branding.colors.popover_foreground", default: "240 10% 3.9%" },
+      { key: "public.color_input", labelKey: "pages.settings.application.branding.colors.input", default: "240 5.9% 90%" },
+      { key: "public.color_ring", labelKey: "pages.settings.application.branding.colors.ring", default: "240 10% 3.9%" },
     ],
   },
   {
-    title: "Sidebar",
+    titleKey: "pages.settings.application.branding.sections.sidebar",
     fields: [
-      {
-        key: "public.color_sidebar_background",
-        label: "Sidebar Background",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_sidebar_foreground",
-        label: "Sidebar Text",
-        default: "240 5.3% 26.1%",
-      },
-      {
-        key: "public.color_sidebar_accent",
-        label: "Sidebar Active/Hover",
-        default: "240 4.8% 95.9%",
-      },
-      {
-        key: "public.color_sidebar_accent_foreground",
-        label: "Sidebar Active Text",
-        default: "240 5.9% 10%",
-      },
-      {
-        key: "public.color_sidebar_border",
-        label: "Sidebar Border",
-        default: "220 13% 91%",
-      },
-      {
-        key: "public.color_sidebar_primary",
-        label: "Sidebar Primary",
-        default: "240 5.9% 10%",
-      },
-      {
-        key: "public.color_sidebar_primary_foreground",
-        label: "Sidebar Primary Text",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_sidebar_ring",
-        label: "Sidebar Focus Ring",
-        default: "217.2 91.2% 59.8%",
-      },
+      { key: "public.color_sidebar_background", labelKey: "pages.settings.application.branding.colors.sidebar_background", default: "0 0% 98%" },
+      { key: "public.color_sidebar_foreground", labelKey: "pages.settings.application.branding.colors.sidebar_foreground", default: "240 5.3% 26.1%" },
+      { key: "public.color_sidebar_accent", labelKey: "pages.settings.application.branding.colors.sidebar_accent", default: "240 4.8% 95.9%" },
+      { key: "public.color_sidebar_accent_foreground", labelKey: "pages.settings.application.branding.colors.sidebar_accent_foreground", default: "240 5.9% 10%" },
+      { key: "public.color_sidebar_border", labelKey: "pages.settings.application.branding.colors.sidebar_border", default: "220 13% 91%" },
+      { key: "public.color_sidebar_primary", labelKey: "pages.settings.application.branding.colors.sidebar_primary", default: "240 5.9% 10%" },
+      { key: "public.color_sidebar_primary_foreground", labelKey: "pages.settings.application.branding.colors.sidebar_primary_foreground", default: "0 0% 98%" },
+      { key: "public.color_sidebar_ring", labelKey: "pages.settings.application.branding.colors.sidebar_ring", default: "217.2 91.2% 59.8%" },
     ],
   },
   {
-    title: "Top Nav",
+    titleKey: "pages.settings.application.branding.sections.top_nav",
     fields: [
-      {
-        key: "public.color_topnav_background",
-        label: "Top Nav Background",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_topnav_foreground",
-        label: "Top Nav Text",
-        default: "240 5.3% 26.1%",
-      },
-      {
-        key: "public.color_topnav_accent",
-        label: "Top Nav Hover",
-        default: "142 77% 73%",
-      },
-      {
-        key: "public.color_topnav_accent_foreground",
-        label: "Top Nav Hover Text",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_topnav_border",
-        label: "Top Nav Border",
-        default: "220 13% 91%",
-      },
-      {
-        key: "public.color_topnav_primary",
-        label: "Top Nav Primary",
-        default: "240 5.9% 10%",
-      },
-      {
-        key: "public.color_topnav_primary_foreground",
-        label: "Top Nav Primary Text",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_topnav_ring",
-        label: "Top Nav Focus Ring",
-        default: "217.2 91.2% 59.8%",
-      },
+      { key: "public.color_topnav_background", labelKey: "pages.settings.application.branding.colors.topnav_background", default: "0 0% 98%" },
+      { key: "public.color_topnav_foreground", labelKey: "pages.settings.application.branding.colors.topnav_foreground", default: "240 5.3% 26.1%" },
+      { key: "public.color_topnav_accent", labelKey: "pages.settings.application.branding.colors.topnav_accent", default: "142 77% 73%" },
+      { key: "public.color_topnav_accent_foreground", labelKey: "pages.settings.application.branding.colors.topnav_accent_foreground", default: "0 0% 98%" },
+      { key: "public.color_topnav_border", labelKey: "pages.settings.application.branding.colors.topnav_border", default: "220 13% 91%" },
+      { key: "public.color_topnav_primary", labelKey: "pages.settings.application.branding.colors.topnav_primary", default: "240 5.9% 10%" },
+      { key: "public.color_topnav_primary_foreground", labelKey: "pages.settings.application.branding.colors.topnav_primary_foreground", default: "0 0% 98%" },
+      { key: "public.color_topnav_ring", labelKey: "pages.settings.application.branding.colors.topnav_ring", default: "217.2 91.2% 59.8%" },
+    ],
+  },
+  {
+    titleKey: "pages.settings.application.branding.sections.tactical",
+    fields: [
+      { key: "public.color_tactical_amber", labelKey: "pages.settings.application.branding.colors.tactical_amber", default: "33 94% 58%" },
+      { key: "public.color_tactical_amber_foreground", labelKey: "pages.settings.application.branding.colors.tactical_amber_foreground", default: "0 0% 10%" },
     ],
   },
 ];
 
 const darkColorSections: ColorSection[] = [
   {
-    title: "Core",
+    titleKey: "pages.settings.application.branding.sections.core",
     fields: [
-      {
-        key: "public.color_dark_background",
-        label: "Background",
-        default: "240 10% 3.9%",
-      },
-      {
-        key: "public.color_dark_foreground",
-        label: "Foreground (text)",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_dark_primary",
-        label: "Primary (buttons)",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_dark_primary_foreground",
-        label: "Primary Foreground (button text)",
-        default: "240 5.9% 10%",
-      },
-      {
-        key: "public.color_dark_secondary",
-        label: "Secondary",
-        default: "240 3.7% 15.9%",
-      },
-      {
-        key: "public.color_dark_secondary_foreground",
-        label: "Secondary Foreground",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_dark_accent",
-        label: "Accent (selected items)",
-        default: "240 3.7% 15.9%",
-      },
-      {
-        key: "public.color_dark_accent_foreground",
-        label: "Accent Foreground",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_dark_muted",
-        label: "Muted (subtle backgrounds)",
-        default: "240 3.7% 15.9%",
-      },
-      {
-        key: "public.color_dark_muted_foreground",
-        label: "Muted Foreground (secondary text)",
-        default: "240 5% 64.9%",
-      },
-      {
-        key: "public.color_dark_destructive",
-        label: "Destructive (delete/error)",
-        default: "0 62.8% 30.6%",
-      },
-      {
-        key: "public.color_dark_destructive_foreground",
-        label: "Destructive Foreground",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_dark_warning",
-        label: "Warning",
-        default: "36 100% 30%",
-      },
-      {
-        key: "public.color_dark_warning_foreground",
-        label: "Warning Foreground",
-        default: "0 0% 100%",
-      },
+      { key: "public.color_dark_background", labelKey: "pages.settings.application.branding.colors.background", default: "240 10% 3.9%" },
+      { key: "public.color_dark_foreground", labelKey: "pages.settings.application.branding.colors.foreground", default: "0 0% 98%" },
+      { key: "public.color_dark_primary", labelKey: "pages.settings.application.branding.colors.primary", default: "0 0% 98%" },
+      { key: "public.color_dark_primary_foreground", labelKey: "pages.settings.application.branding.colors.primary_foreground", default: "240 5.9% 10%" },
+      { key: "public.color_dark_secondary", labelKey: "pages.settings.application.branding.colors.secondary", default: "240 3.7% 15.9%" },
+      { key: "public.color_dark_secondary_foreground", labelKey: "pages.settings.application.branding.colors.secondary_foreground", default: "0 0% 98%" },
+      { key: "public.color_dark_accent", labelKey: "pages.settings.application.branding.colors.accent", default: "240 3.7% 15.9%" },
+      { key: "public.color_dark_accent_foreground", labelKey: "pages.settings.application.branding.colors.accent_foreground", default: "0 0% 98%" },
+      { key: "public.color_dark_muted", labelKey: "pages.settings.application.branding.colors.muted", default: "240 3.7% 15.9%" },
+      { key: "public.color_dark_muted_foreground", labelKey: "pages.settings.application.branding.colors.muted_foreground", default: "240 5% 64.9%" },
+      { key: "public.color_dark_destructive", labelKey: "pages.settings.application.branding.colors.destructive", default: "0 62.8% 30.6%" },
+      { key: "public.color_dark_destructive_foreground", labelKey: "pages.settings.application.branding.colors.destructive_foreground", default: "0 0% 98%" },
+      { key: "public.color_dark_warning", labelKey: "pages.settings.application.branding.colors.warning", default: "36 100% 30%" },
+      { key: "public.color_dark_warning_foreground", labelKey: "pages.settings.application.branding.colors.warning_foreground", default: "0 0% 100%" },
     ],
   },
   {
-    title: "Cards & Borders",
+    titleKey: "pages.settings.application.branding.sections.cards_borders",
     fields: [
-      {
-        key: "public.color_dark_card",
-        label: "Card Background",
-        default: "240 10% 3.9%",
-      },
-      {
-        key: "public.color_dark_card_foreground",
-        label: "Card Text",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_dark_border",
-        label: "Borders",
-        default: "240 3.7% 15.9%",
-      },
-      {
-        key: "public.color_dark_popover",
-        label: "Popover Background",
-        default: "240 10% 3.9%",
-      },
-      {
-        key: "public.color_dark_popover_foreground",
-        label: "Popover Text",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_dark_input",
-        label: "Input Borders",
-        default: "240 3.7% 15.9%",
-      },
-      {
-        key: "public.color_dark_ring",
-        label: "Focus Ring",
-        default: "240 4.9% 83.9%",
-      },
+      { key: "public.color_dark_card", labelKey: "pages.settings.application.branding.colors.card", default: "240 10% 3.9%" },
+      { key: "public.color_dark_card_foreground", labelKey: "pages.settings.application.branding.colors.card_foreground", default: "0 0% 98%" },
+      { key: "public.color_dark_border", labelKey: "pages.settings.application.branding.colors.border", default: "240 3.7% 15.9%" },
+      { key: "public.color_dark_popover", labelKey: "pages.settings.application.branding.colors.popover", default: "240 10% 3.9%" },
+      { key: "public.color_dark_popover_foreground", labelKey: "pages.settings.application.branding.colors.popover_foreground", default: "0 0% 98%" },
+      { key: "public.color_dark_input", labelKey: "pages.settings.application.branding.colors.input", default: "240 3.7% 15.9%" },
+      { key: "public.color_dark_ring", labelKey: "pages.settings.application.branding.colors.ring", default: "240 4.9% 83.9%" },
     ],
   },
   {
-    title: "Sidebar",
+    titleKey: "pages.settings.application.branding.sections.sidebar",
     fields: [
-      {
-        key: "public.color_dark_sidebar_background",
-        label: "Sidebar Background",
-        default: "240 5.9% 10%",
-      },
-      {
-        key: "public.color_dark_sidebar_foreground",
-        label: "Sidebar Text",
-        default: "240 4.8% 95.9%",
-      },
-      {
-        key: "public.color_dark_sidebar_accent",
-        label: "Sidebar Active/Hover",
-        default: "240 3.7% 15.9%",
-      },
-      {
-        key: "public.color_dark_sidebar_accent_foreground",
-        label: "Sidebar Active Text",
-        default: "240 4.8% 95.9%",
-      },
-      {
-        key: "public.color_dark_sidebar_border",
-        label: "Sidebar Border",
-        default: "240 3.7% 15.9%",
-      },
-      {
-        key: "public.color_dark_sidebar_primary",
-        label: "Sidebar Primary",
-        default: "224.3 76.3% 48%",
-      },
-      {
-        key: "public.color_dark_sidebar_primary_foreground",
-        label: "Sidebar Primary Text",
-        default: "0 0% 100%",
-      },
-      {
-        key: "public.color_dark_sidebar_ring",
-        label: "Sidebar Focus Ring",
-        default: "217.2 91.2% 59.8%",
-      },
+      { key: "public.color_dark_sidebar_background", labelKey: "pages.settings.application.branding.colors.sidebar_background", default: "240 5.9% 10%" },
+      { key: "public.color_dark_sidebar_foreground", labelKey: "pages.settings.application.branding.colors.sidebar_foreground", default: "240 4.8% 95.9%" },
+      { key: "public.color_dark_sidebar_accent", labelKey: "pages.settings.application.branding.colors.sidebar_accent", default: "240 3.7% 15.9%" },
+      { key: "public.color_dark_sidebar_accent_foreground", labelKey: "pages.settings.application.branding.colors.sidebar_accent_foreground", default: "240 4.8% 95.9%" },
+      { key: "public.color_dark_sidebar_border", labelKey: "pages.settings.application.branding.colors.sidebar_border", default: "240 3.7% 15.9%" },
+      { key: "public.color_dark_sidebar_primary", labelKey: "pages.settings.application.branding.colors.sidebar_primary", default: "224.3 76.3% 48%" },
+      { key: "public.color_dark_sidebar_primary_foreground", labelKey: "pages.settings.application.branding.colors.sidebar_primary_foreground", default: "0 0% 100%" },
+      { key: "public.color_dark_sidebar_ring", labelKey: "pages.settings.application.branding.colors.sidebar_ring", default: "217.2 91.2% 59.8%" },
     ],
   },
   {
-    title: "Top Nav",
+    titleKey: "pages.settings.application.branding.sections.top_nav",
     fields: [
-      {
-        key: "public.color_dark_topnav_background",
-        label: "Top Nav Background",
-        default: "240 4% 16%",
-      },
-      {
-        key: "public.color_dark_topnav_foreground",
-        label: "Top Nav Text",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_dark_topnav_accent",
-        label: "Top Nav Hover",
-        default: "142 77% 73%",
-      },
-      {
-        key: "public.color_dark_topnav_accent_foreground",
-        label: "Top Nav Hover Text",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_dark_topnav_border",
-        label: "Top Nav Border",
-        default: "240 3% 23%",
-      },
-      {
-        key: "public.color_dark_topnav_primary",
-        label: "Top Nav Primary",
-        default: "240 6% 10%",
-      },
-      {
-        key: "public.color_dark_topnav_primary_foreground",
-        label: "Top Nav Primary Text",
-        default: "0 0% 98%",
-      },
-      {
-        key: "public.color_dark_topnav_ring",
-        label: "Top Nav Focus Ring",
-        default: "217.2 91.2% 59.8%",
-      },
+      { key: "public.color_dark_topnav_background", labelKey: "pages.settings.application.branding.colors.topnav_background", default: "240 4% 16%" },
+      { key: "public.color_dark_topnav_foreground", labelKey: "pages.settings.application.branding.colors.topnav_foreground", default: "0 0% 98%" },
+      { key: "public.color_dark_topnav_accent", labelKey: "pages.settings.application.branding.colors.topnav_accent", default: "142 77% 73%" },
+      { key: "public.color_dark_topnav_accent_foreground", labelKey: "pages.settings.application.branding.colors.topnav_accent_foreground", default: "0 0% 98%" },
+      { key: "public.color_dark_topnav_border", labelKey: "pages.settings.application.branding.colors.topnav_border", default: "240 3% 23%" },
+      { key: "public.color_dark_topnav_primary", labelKey: "pages.settings.application.branding.colors.topnav_primary", default: "240 6% 10%" },
+      { key: "public.color_dark_topnav_primary_foreground", labelKey: "pages.settings.application.branding.colors.topnav_primary_foreground", default: "0 0% 98%" },
+      { key: "public.color_dark_topnav_ring", labelKey: "pages.settings.application.branding.colors.topnav_ring", default: "217.2 91.2% 59.8%" },
+    ],
+  },
+  {
+    titleKey: "pages.settings.application.branding.sections.tactical",
+    fields: [
+      { key: "public.color_dark_tactical_amber", labelKey: "pages.settings.application.branding.colors.tactical_amber", default: "33 94% 58%" },
+      { key: "public.color_dark_tactical_amber_foreground", labelKey: "pages.settings.application.branding.colors.tactical_amber_foreground", default: "0 0% 10%" },
     ],
   },
 ];
@@ -883,10 +652,16 @@ export default {
           throw new Error(`Upload failed: ${response.statusText}`);
         }
 
-        toast({ title: `${type === "logo" ? "Logo" : "Favicon"} uploaded` });
+        toast({
+          title: this.$t(
+            type === "logo"
+              ? "pages.settings.application.branding.logo_uploaded"
+              : "pages.settings.application.branding.favicon_uploaded",
+          ) as string,
+        });
       } catch (error: any) {
         toast({
-          title: "Upload failed",
+          title: this.$t("pages.settings.application.branding.upload_failed") as string,
           description: error.message,
           variant: "destructive",
         });
@@ -913,12 +688,18 @@ export default {
         }
 
         if (!silent) {
-          toast({ title: `${type === "logo" ? "Logo" : "Favicon"} removed` });
+          toast({
+            title: this.$t(
+              type === "logo"
+                ? "pages.settings.application.branding.logo_removed"
+                : "pages.settings.application.branding.favicon_removed",
+            ) as string,
+          });
         }
       } catch (error: any) {
         if (!silent) {
           toast({
-            title: "Delete failed",
+            title: this.$t("pages.settings.application.branding.delete_failed") as string,
             description: error.message,
             variant: "destructive",
           });
@@ -978,10 +759,10 @@ export default {
           });
         }
 
-        toast({ title: "Branding saved" });
+        toast({ title: this.$t("pages.settings.application.branding.branding_saved") as string });
       } catch (error: any) {
         toast({
-          title: "Save failed",
+          title: this.$t("pages.settings.application.branding.save_failed") as string,
           description: error.message,
           variant: "destructive",
         });
@@ -1033,10 +814,10 @@ export default {
         this.loginFooterUrl = "";
         this.colorValues = {};
 
-        toast({ title: "Branding reset to defaults" });
+        toast({ title: this.$t("pages.settings.application.branding.branding_reset") as string });
       } catch (error: any) {
         toast({
-          title: "Reset failed",
+          title: this.$t("pages.settings.application.branding.reset_failed") as string,
           description: error.message,
           variant: "destructive",
         });
@@ -1116,10 +897,10 @@ export default {
         a.download = "5stack-theme.json";
         a.click();
         URL.revokeObjectURL(url);
-        toast({ title: "Theme exported" });
+        toast({ title: this.$t("pages.settings.application.branding.theme_exported") as string });
       } catch (error: any) {
         toast({
-          title: "Export failed",
+          title: this.$t("pages.settings.application.branding.export_failed") as string,
           description: error.message,
           variant: "destructive",
         });
@@ -1136,7 +917,7 @@ export default {
       try {
         const data = JSON.parse(text);
         if (typeof data !== "object" || !data.colors) {
-          throw new Error("Invalid theme file");
+          throw new Error(this.$t("pages.settings.application.branding.invalid_theme_file") as string);
         }
         if (data.brandName) {
           this.brandName = data.brandName;
@@ -1197,7 +978,7 @@ export default {
         await this.saveAll();
       } catch (error: any) {
         toast({
-          title: "Import failed",
+          title: this.$t("pages.settings.application.branding.import_failed") as string,
           description: error.message,
           variant: "destructive",
         });

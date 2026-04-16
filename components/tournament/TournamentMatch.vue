@@ -74,6 +74,12 @@ const isActiveMatch = (bracket: Bracket): boolean => {
   return [e_match_status_enum.Veto, e_match_status_enum.Live].includes(status);
 };
 
+const isWaitingForCheckIn = (bracket: Bracket): boolean => {
+  const status = bracket.match?.status as e_match_status_enum | undefined;
+  if (!status) return false;
+  return status === e_match_status_enum.WaitingForCheckIn;
+};
+
 const getBestOf = (
   bracket: Bracket,
   stage: any,
@@ -336,9 +342,13 @@ const shouldShowCrossBracketDestination = (
       class="tournament-match cursor-pointer border-2 rounded-lg p-1 transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/20 bg-gray-800/50 backdrop-blur-sm relative flex flex-col gap-2"
       :class="{
         'border-green-500 hover:border-green-400': isActiveMatch(bracket),
+        'border-amber-500 hover:border-amber-400':
+          isWaitingForCheckIn(bracket),
         'border-red-500 hover:border-red-400': hasProblemStatus(bracket),
         'border-gray-700 hover:border-blue-500':
-          !isActiveMatch(bracket) && !hasProblemStatus(bracket),
+          !isActiveMatch(bracket) &&
+          !isWaitingForCheckIn(bracket) &&
+          !hasProblemStatus(bracket),
       }"
       :data-bracket-id="bracket.id"
       :data-round="props.round"
@@ -377,7 +387,7 @@ const shouldShowCrossBracketDestination = (
         v-if="bracket.scheduled_at && !bracket.match"
         class="text-xs text-muted-foreground flex flex-col items-center gap-1"
       >
-        <span>{{ $t("tournament.bracket.scheduled_at") }}</span>
+        <span>{{ $t("common.scheduled") }}</span>
         <span class="text-green-400 font-medium">
           <TimeAgo :date="bracket.scheduled_at"></TimeAgo>
         </span>
@@ -553,8 +563,8 @@ const shouldShowCrossBracketDestination = (
                       }}
                     </Badge>
                   </template>
+                  {{ getTeamName(bracket.team_2) }}
                 </span>
-                {{ getTeamName(bracket.team_2) }}
               </template>
             </div>
           </div>

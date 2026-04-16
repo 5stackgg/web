@@ -72,7 +72,7 @@ const { isMobile } = useSidebar();
       >
         <div class="flex items-start justify-between">
           <div>
-            <h2 class="text-lg font-semibold">{{ pool.type }} Pool</h2>
+            <h2 class="text-lg font-semibold">{{ $t("pages.map_pools.pool.pool_heading", { type: pool.type }) }}</h2>
             <p class="text-sm text-muted-foreground mt-1">
               {{ pool.maps.map((map) => map.name).join(", ") }}
             </p>
@@ -84,7 +84,7 @@ const { isMobile } = useSidebar();
                 params: { id: pool.id },
               }"
             >
-              {{ $t("pages.map_pools.edit") }}
+              {{ $t("common.actions.edit") }}
             </NuxtLink>
           </Button>
         </div>
@@ -142,7 +142,7 @@ const { isMobile } = useSidebar();
   <Sheet :open="mapFormSheet" @update:open="(open) => (mapFormSheet = open)">
     <SheetContent>
       <SheetHeader>
-        <SheetTitle>{{ $t("pages.dedicated_servers.detail.edit") }}</SheetTitle>
+        <SheetTitle>{{ $t("common.actions.edit") }}</SheetTitle>
         <SheetDescription>
           <MapForm @created="mapFormSheet = false" />
         </SheetDescription>

@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import AppSidebar from "@/components/AppSidebar.vue";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useRightSidebar } from "@/composables/useRightSidebar";
 import SidebarMobileSync from "./SidebarMobileSync.vue";
-import { inject, computed } from "vue";
+import { inject, computed, defineAsyncComponent } from "vue";
+
+const AppSidebar = defineAsyncComponent(
+  () => import("@/components/AppSidebar.vue"),
+);
 
 const { rightSidebarOpen, setRightSidebarOpen } = useRightSidebar();
 
@@ -23,10 +26,10 @@ const containContentValue = computed(() => containContent?.value ?? true);
       :open="rightSidebarOpen"
       @update:open="setRightSidebarOpen"
       side="right"
-      class="min-h-0 h-full"
+      class="min-h-0 h-full !bg-transparent"
     >
       <SidebarMobileSync />
-      <SidebarInset class="overflow-scroll min-h-0 h-full">
+      <SidebarInset class="overflow-scroll min-h-0 h-full !bg-transparent">
         <!-- todo fix bg color bg-muted/10 -->
         <div
           class="p-4 w-full self-center"

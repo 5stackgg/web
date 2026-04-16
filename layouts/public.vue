@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import PublicFooter from "~/layouts/components/PublicFooter.vue";
-import PublicHeader from "~/layouts/components/PublicHeader.vue";
+import TopoBackground from "~/layouts/components/TopoBackground.vue";
 import { useGtm } from "@/layouts/composables/useGtm";
 
 useGtm();
 </script>
 
 <template>
-  <public-header></public-header>
-  <slot></slot>
-  <public-footer />
+  <TopoBackground />
+  <div class="relative z-10">
+    <slot></slot>
+    <public-footer />
+  </div>
 </template>
 
 <script lang="ts">

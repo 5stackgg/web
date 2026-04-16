@@ -23,6 +23,13 @@ if (initialSavedHub) {
   activeHub.value = initialSavedHub;
 }
 
+export function setActiveHub(hub: Hub) {
+  activeHub.value = hub;
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(HUB_STORAGE_KEY, hub);
+  }
+}
+
 export function useHubState() {
   const { rightSidebarOpen, setRightSidebarOpen } = useRightSidebar();
   const isMobile = useMediaQuery("(max-width: 768px)");

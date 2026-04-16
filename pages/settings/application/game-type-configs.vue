@@ -10,10 +10,12 @@ definePageMeta({
 </script>
 
 <template>
-  <GameTypeConfigTabs
-    :game-type-configs="gameTypeConfigs"
-    @updated="handleUpdated"
-  />
+  <PageTransition :delay="0">
+    <GameTypeConfigTabs
+      :game-type-configs="gameTypeConfigs"
+      @updated="handleUpdated"
+    />
+  </PageTransition>
 </template>
 
 <script lang="ts">

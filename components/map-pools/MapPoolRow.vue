@@ -79,7 +79,7 @@ import { PaginationEllipsis } from "~/components/ui/pagination";
   <Sheet :open="editMapSheet" @update:open="(open) => (editMapSheet = open)">
     <SheetContent>
       <SheetHeader>
-        <SheetTitle>{{ $t("pages.dedicated_servers.detail.edit") }}</SheetTitle>
+        <SheetTitle>{{ $t("common.actions.edit") }}</SheetTitle>
         <SheetDescription>
           <MapForm
             @updated="editMapSheet = false"

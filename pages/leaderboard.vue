@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PageHeading from "~/components/PageHeading.vue";
+import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import Pagination from "~/components/Pagination.vue";
 import { Trophy, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-vue-next";
@@ -14,104 +14,107 @@ import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Skeleton } from "~/components/ui/skeleton";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
-import { Switch } from "~/components/ui/switch";
-import { Label } from "~/components/ui/label";
+
+const leaderboardFadeTransition = {
+  enterActiveClass: "transition-all duration-150 ease-out",
+  leaveActiveClass: "transition-all duration-150 ease-out",
+  enterFromClass: "translate-y-[2px] opacity-0",
+  leaveToClass: "translate-y-[2px] opacity-0",
+};
 </script>
 
 <template>
   <PageTransition>
-    <PageHeading>
-      <template #title>
-        <div class="flex items-center gap-2">
-          {{ $t("pages.leaderboard.title") }}
-        </div>
+    <TacticalPageHeader>
+      <template #title>{{ $t("pages.leaderboard.title") }}</template>
+      <template #actions="{ tabs }">
+        <Tabs v-model="category">
+          <TabsList variant="underline" :class="tabs.listClass">
+            <TabsTrigger
+              v-for="cat in categories"
+              :key="cat.value"
+              :value="cat.value"
+              :class="tabs.triggerClass"
+            >
+              {{ $t(`pages.leaderboard.categories.${cat.value}`) }}
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       </template>
-      <template #description>{{
-        $t("pages.leaderboard.description")
-      }}</template>
-    </PageHeading>
+    </TacticalPageHeader>
   </PageTransition>
 
-  <!-- Filters -->
+  <!-- Compact filter bar -->
   <PageTransition :delay="100" class="mt-6">
-    <div class="flex flex-col md:flex-row gap-4 mb-4">
-      <div class="flex-1">
-        <Select v-model="windowDays">
-          <SelectTrigger class="w-full md:w-[200px]">
-            <SelectValue
-              :placeholder="$t('pages.leaderboard.time_periods.last_30_days')"
-            />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="7">{{
-              $t("pages.leaderboard.time_periods.last_7_days")
-            }}</SelectItem>
-            <SelectItem value="30">{{
-              $t("pages.leaderboard.time_periods.last_30_days")
-            }}</SelectItem>
-            <SelectItem value="0">{{
-              $t("pages.leaderboard.time_periods.all_time")
-            }}</SelectItem>
-          </SelectContent>
-        </Select>
+    <div
+      class="flex flex-wrap items-center gap-2 p-2 rounded-lg bg-card/40 backdrop-blur border border-border"
+    >
+      <div
+        class="flex items-center gap-2 px-2 text-[0.65rem] font-mono tracking-[0.22em] uppercase text-muted-foreground"
+      >
+        <span class="inline-block h-[2px] w-2 bg-[hsl(var(--tac-amber))]"></span>
+        {{ $t("common.filters") }}
       </div>
-      <div>
-        <Select v-model="matchType">
-          <SelectTrigger class="w-full md:w-[200px]">
-            <SelectValue
-              :placeholder="$t('pages.leaderboard.match_types.all')"
-            />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">{{
-              $t("pages.leaderboard.match_types.all")
-            }}</SelectItem>
-            <SelectItem value="Competitive">{{
-              $t("pages.leaderboard.match_types.competitive")
-            }}</SelectItem>
-            <SelectItem value="Wingman">{{
-              $t("pages.leaderboard.match_types.wingman")
-            }}</SelectItem>
-            <SelectItem value="Duel">{{
-              $t("pages.leaderboard.match_types.duel")
-            }}</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      <div class="flex items-center gap-2">
-        <Switch
-          id="exclude-tournaments"
-          :model-value="excludeTournaments"
-          @update:model-value="excludeTournaments = $event"
-        />
-        <Label for="exclude-tournaments" class="cursor-pointer">
-          {{ $t("pages.leaderboard.exclude_tournaments") }}
-        </Label>
-      </div>
-    </div>
-  </PageTransition>
 
-  <!-- Category Tabs -->
-  <PageTransition :delay="200" class="mt-2">
-    <Tabs v-model="category" class="w-full">
-      <TabsList class="w-full flex flex-wrap h-auto gap-1">
-        <TabsTrigger
-          v-for="cat in categories"
-          :key="cat.value"
-          :value="cat.value"
-          class="flex-1 min-w-[80px]"
-        >
-          {{ $t(`pages.leaderboard.categories.${cat.value}`) }}
-        </TabsTrigger>
-      </TabsList>
-    </Tabs>
+      <Select v-model="windowDays">
+        <SelectTrigger class="h-9 w-[180px]">
+          <SelectValue
+            :placeholder="$t('pages.leaderboard.time_periods.last_30_days')"
+          />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="7">{{
+            $t("pages.leaderboard.time_periods.last_7_days")
+          }}</SelectItem>
+          <SelectItem value="30">{{
+            $t("pages.leaderboard.time_periods.last_30_days")
+          }}</SelectItem>
+          <SelectItem value="0">{{
+            $t("pages.leaderboard.time_periods.all_time")
+          }}</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Select v-model="matchType">
+        <SelectTrigger class="h-9 w-[180px]">
+          <SelectValue :placeholder="$t('pages.leaderboard.match_types.all')" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">{{
+            $t("pages.leaderboard.match_types.all")
+          }}</SelectItem>
+          <SelectItem value="Competitive">{{
+            $t("pages.leaderboard.match_types.competitive")
+          }}</SelectItem>
+          <SelectItem value="Wingman">{{
+            $t("pages.leaderboard.match_types.wingman")
+          }}</SelectItem>
+          <SelectItem value="Duel">{{
+            $t("pages.leaderboard.match_types.duel")
+          }}</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <button
+        type="button"
+        class="ml-auto inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/30 px-3 py-1.5 text-xs tracking-[0.06em] text-muted-foreground transition-colors duration-150 hover:bg-muted/50 hover:text-foreground"
+        :class="
+          excludeTournaments
+            ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.22)] hover:text-[hsl(var(--tac-amber))]'
+            : ''
+        "
+        @click="excludeTournaments = !excludeTournaments"
+      >
+        {{ $t("pages.leaderboard.exclude_tournaments") }}
+      </button>
+    </div>
   </PageTransition>
 
   <!-- Results -->
   <PageTransition :delay="300" class="mt-6">
     <div>
       <div class="p-4 relative">
-        <Transition name="leaderboard-fade" mode="out-in">
+        <Transition v-bind="leaderboardFadeTransition" mode="out-in">
           <!-- Loading -->
           <div v-if="loading" key="loading" class="space-y-4">
             <div v-for="i in perPage" :key="i" class="flex items-center gap-4">
@@ -137,7 +140,7 @@ import { Label } from "~/components/ui/label";
                   $t("pages.leaderboard.columns.rank")
                 }}</TableHead>
                 <TableHead>{{
-                  $t("pages.leaderboard.columns.player")
+                  $t("common.player")
                 }}</TableHead>
                 <TableHead
                   class="text-right"
@@ -395,7 +398,7 @@ const CATEGORY_CONFIG: Record<
   },
   best_win_rate: {
     columns: {
-      value: "pages.leaderboard.col.win_rate",
+      value: "common.stats.win_rate",
       secondary_value: "pages.leaderboard.col.wins",
       tertiary_value: "pages.leaderboard.col.losses",
       matches_played: "pages.leaderboard.columns.matches",
@@ -597,17 +600,3 @@ export default {
   },
 };
 </script>
-<style scoped>
-.leaderboard-fade-enter-active,
-.leaderboard-fade-leave-active {
-  transition:
-    opacity 150ms ease-out,
-    transform 150ms ease-out;
-}
-
-.leaderboard-fade-enter-from,
-.leaderboard-fade-leave-to {
-  opacity: 0;
-  transform: translateY(2px);
-}
-</style>

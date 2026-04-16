@@ -27,6 +27,12 @@ import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 
 const { isMobile } = useSidebar();
+const fadeTransition = {
+  enterActiveClass: "transition-opacity duration-200 ease-out",
+  leaveActiveClass: "transition-opacity duration-200 ease-out",
+  enterFromClass: "opacity-0",
+  leaveToClass: "opacity-0",
+};
 </script>
 
 <template>
@@ -77,7 +83,7 @@ const { isMobile } = useSidebar();
             target="_blank"
             class="underline"
             href="https://docs.5stack.gg/servers/game-server-nodes/"
-            >Game Server Nodes</a
+            >{{ $t("layouts.app_nav.administration.game_server_nodes") }}</a
           >.
         </AlertDescription>
       </Alert>
@@ -116,10 +122,10 @@ const { isMobile } = useSidebar();
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold">
-            {{ $t("pages.game_server_nodes.filters") }}
+            {{ $t("common.filters") }}
           </h3>
           <Button variant="outline" size="sm" @click="resetFilters">
-            {{ $t("pages.manage_matches.reset_filters") }}
+            {{ $t("common.reset_filters") }}
           </Button>
         </div>
 
@@ -204,8 +210,8 @@ const { isMobile } = useSidebar();
                 />
                 <span class="text-sm text-muted-foreground">{{
                   hideOffline
-                    ? $t("pages.game_server_nodes.status.online")
-                    : $t("pages.game_server_nodes.status.offline")
+                    ? $t("common.online")
+                    : $t("common.offline")
                 }}</span>
               </div>
             </div>
@@ -217,7 +223,7 @@ const { isMobile } = useSidebar();
 
   <PageTransition :delay="400" class="mt-6">
     <Card variant="gradient" class="p-4">
-      <Transition name="fade" mode="out-in">
+      <Transition v-bind="fadeTransition" mode="out-in">
         <Empty v-if="loading" key="loading" class="min-h-[200px]">
           <div class="space-y-3 w-full max-w-md">
             <Skeleton class="h-4 w-3/4 mx-auto" />
@@ -248,7 +254,7 @@ const { isMobile } = useSidebar();
                   $t("game_server.hardware")
                 }}</TableHead>
                 <TableHead class="hidden xl:table-cell">{{
-                  $t("pages.game_server_nodes.table.region")
+                  $t("common.region")
                 }}</TableHead>
                 <TableHead class="hidden xl:table-cell text-center">
                   <div class="flex flex-col items-center gap-1">
@@ -267,7 +273,7 @@ const { isMobile } = useSidebar();
                   {{ $t("pages.game_server_nodes.table.cs_build_id") }}
                 </TableHead>
                 <TableHead class="hidden xl:table-cell pl-1">
-                  {{ $t("pages.game_server_nodes.table.pin_plugin_version") }}
+                  {{ $t("common.plugin_version") }}
                 </TableHead>
                 <TableHead></TableHead>
               </TableRow>
@@ -680,15 +686,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

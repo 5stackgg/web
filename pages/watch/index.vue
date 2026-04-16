@@ -1,52 +1,82 @@
 <script setup lang="ts">
-import PageHeading from "~/components/PageHeading.vue";
-import Separator from "~/components/ui/separator/Separator.vue";
+import { ref } from "vue";
 import OtherMatches from "~/components/match/OtherMatches.vue";
 import {
   e_match_status_enum,
   e_tournament_status_enum,
 } from "~/generated/zeus";
-import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
+import {
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
+
+const activeTab = ref("live-matches");
 </script>
 
 <template>
   <PageTransition>
-    <PageHeading>
+    <TacticalPageHeader>
       <template #title>{{ $t("pages.watch.title") }}</template>
-      <template #description>{{ $t("pages.watch.description") }}</template>
-    </PageHeading>
+      <template #actions="{ tabs }">
+        <Tabs v-model="activeTab">
+          <TabsList variant="underline" :class="tabs.listClass">
+            <TabsTrigger value="live-matches" :class="tabs.triggerClass">
+              <span
+                :class="[tabs.indicatorClass, tabs.indicatorLiveClass]"
+              ></span>
+              {{ $t("common.live") }}
+            </TabsTrigger>
+            <TabsTrigger value="upcoming-matches" :class="tabs.triggerClass">
+              <span
+                :class="[tabs.indicatorClass, tabs.indicatorUpcomingClass]"
+              ></span>
+              {{ $t("pages.watch.upcoming_matches") }}
+            </TabsTrigger>
+            <TabsTrigger value="finished-matches" :class="tabs.triggerClass">
+              <span
+                :class="[tabs.indicatorClass, tabs.indicatorFinishedClass]"
+              ></span>
+              {{ $t("common.finished") }}
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </template>
+    </TacticalPageHeader>
   </PageTransition>
 
-  <PageTransition :delay="100">
-    <div
-      v-if="liveTournaments && liveTournaments.length > 0"
-      class="space-y-4 mt-6"
-    >
-      <!-- @ts-expect-error - Type inference issues with GraphQL subscription data -->
-      <TournamentTableRow
-        v-for="tournament in liveTournaments"
-        :key="tournament.id"
-        :tournament="tournament"
-      ></TournamentTableRow>
+  <PageTransition
+    :delay="100"
+    v-if="liveTournaments && liveTournaments.length > 0"
+    class="mt-6"
+  >
+    <div>
+      <div :class="tacticalSectionLabelClasses">
+        <span :class="tacticalSectionTickClasses"></span>
+        TOURNAMENT.FEED
+      </div>
+      <div class="space-y-4">
+        <!-- @ts-expect-error - Type inference issues with GraphQL subscription data -->
+        <TournamentTableRow
+          v-for="tournament in liveTournaments"
+          :key="tournament.id"
+          :tournament="tournament"
+        ></TournamentTableRow>
+      </div>
     </div>
   </PageTransition>
 
-  <PageTransition :delay="200">
-    <div class="mt-6">
-      <Tabs default-value="live-matches">
-        <TabsList>
-          <TabsTrigger value="live-matches">{{
-            $t("pages.watch.live_matches")
-          }}</TabsTrigger>
-          <TabsTrigger value="upcoming-matches">{{
-            $t("pages.watch.upcoming_matches")
-          }}</TabsTrigger>
-          <TabsTrigger value="finished-matches">{{
-            $t("pages.watch.finished_matches")
-          }}</TabsTrigger>
-        </TabsList>
-
+  <PageTransition :delay="200" class="mt-6">
+    <div>
+      <div
+        v-if="liveTournaments && liveTournaments.length > 0"
+        :class="tacticalSectionLabelClasses"
+      >
+        <span :class="tacticalSectionTickClasses"></span>
+        MATCHES.FEED
+      </div>
+      <Tabs v-model="activeTab">
         <TabsContent value="live-matches">
           <OtherMatches
             :is-in-lineup="true"
@@ -79,7 +109,6 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 
 <script lang="ts">
 import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
-import { mapFields } from "~/graphql/mapGraphql";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";

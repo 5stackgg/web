@@ -32,7 +32,7 @@ import {
       <DropdownMenuTrigger as-child>
         <Button size="icon" variant="outline">
           <MoreVertical class="h-3.5 w-3.5" />
-          <span class="sr-only">More</span>
+          <span class="sr-only">{{ $t("common.more") }}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -107,7 +107,7 @@ import {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel @click="showDeleteDialog = false">
-            {{ $t("match.delete_confirm.cancel") }}
+            {{ $t("common.cancel") }}
           </AlertDialogCancel>
           <AlertDialogAction
             @click="
@@ -115,7 +115,7 @@ import {
               showDeleteDialog = false;
             "
           >
-            {{ $t("match.delete_confirm.confirm") }}
+            {{ $t("common.delete") }}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

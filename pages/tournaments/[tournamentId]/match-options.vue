@@ -10,7 +10,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
           <Button variant="ghost" size="icon" @click="$router.back()">
             <ArrowLeft class="h-4 w-4" />
           </Button>
-          <h1 class="text-2xl font-bold">Match Options</h1>
+          <h1 class="text-2xl font-bold">{{ $t("tournament.stage.match_options") }}</h1>
         </div>
       </div>
     </div>
@@ -56,7 +56,6 @@ export default {
                 description: true,
               },
               description: true,
-              discord_notifications_enabled: true,
               is_organizer: true,
               can_join: true,
               can_cancel: true,

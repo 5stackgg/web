@@ -98,7 +98,7 @@ const { height: viewportHeight } = useVisualViewport();
               :model-value="onlineOnly"
               @click="toggleOnlineOnly"
             />
-            {{ $t("player.search.online_only") }}
+            {{ $t("common.online") }}
           </div>
         </div>
       </div>
@@ -154,7 +154,7 @@ const { height: viewportHeight } = useVisualViewport();
               :model-value="onlineOnly"
               @click="toggleOnlineOnly"
             />
-            {{ $t("player.search.online_only") }}
+            {{ $t("common.online") }}
           </div>
         </div>
 

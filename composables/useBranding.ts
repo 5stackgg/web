@@ -43,6 +43,9 @@ const lightColorMap: Record<string, string> = {
   "public.color_topnav_primary": "--topnav-primary",
   "public.color_topnav_primary_foreground": "--topnav-primary-foreground",
   "public.color_topnav_ring": "--topnav-ring",
+  // Tactical
+  "public.color_tactical_amber": "--tac-amber",
+  "public.color_tactical_amber_foreground": "--tac-amber-foreground",
 };
 
 const darkColorMap: Record<string, string> = {
@@ -88,6 +91,9 @@ const darkColorMap: Record<string, string> = {
   "public.color_dark_topnav_primary": "--topnav-primary",
   "public.color_dark_topnav_primary_foreground": "--topnav-primary-foreground",
   "public.color_dark_topnav_ring": "--topnav-ring",
+  // Tactical
+  "public.color_dark_tactical_amber": "--tac-amber",
+  "public.color_dark_tactical_amber_foreground": "--tac-amber-foreground",
 };
 
 export function useBranding() {

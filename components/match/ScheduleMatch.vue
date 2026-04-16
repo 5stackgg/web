@@ -50,7 +50,7 @@ import { Calendar as CalendarIcon, X } from "lucide-vue-next";
                       }"
                     >
                       <CalendarIcon class="mr-2 h-4 w-4" />
-                      {{ startDate || $t("match.schedule.pick_date") }}
+                      {{ startDate || $t("common.pick_date") }}
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent class="w-auto p-0">
@@ -86,7 +86,7 @@ import { Calendar as CalendarIcon, X } from "lucide-vue-next";
                 <Button
                   type="submit"
                   size="sm"
-                  class="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white"
+                  class="w-full"
                 >
                   <span v-if="!form.values.scheduled_at">
                     {{ $t("match.schedule.start_match") }}
@@ -133,7 +133,7 @@ export default {
             scheduled_at: z
               .string()
               .refine((date) => new Date(date) > new Date(), {
-                message: "Date must be in the future",
+                message: (this as any).$t("validation.date_must_be_future"),
               })
               .optional(),
           }),

@@ -530,7 +530,7 @@ onMounted(() => {
               <div
                 class="bg-gray-800 text-white rounded-lg px-5 py-2.5 shadow-lg font-bold text-sm border border-gray-600"
               >
-                Round {{ roundData.round }}
+                {{ $t("common.round", { number: roundData.round }) }}
               </div>
             </div>
 
@@ -747,7 +747,7 @@ onMounted(() => {
           class="zoom-control-btn bg-gray-700/60 hover:bg-gray-600/80 active:bg-gray-500/90 text-white rounded-md p-2.5 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-700/60 transition-all duration-200 ease-in-out flex items-center justify-center"
           @click="zoomIn"
           :disabled="zoomLevel >= MAX_ZOOM"
-          title="Zoom In"
+          :title="$t('ui.tooltips.zoom_in')"
         >
           <ZoomIn class="w-4 h-4" />
         </button>
@@ -755,7 +755,7 @@ onMounted(() => {
           class="zoom-control-btn bg-gray-700/60 hover:bg-gray-600/80 active:bg-gray-500/90 text-white rounded-md p-2.5 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-700/60 transition-all duration-200 ease-in-out flex items-center justify-center"
           @click="zoomOut"
           :disabled="zoomLevel <= MIN_ZOOM"
-          title="Zoom Out"
+          :title="$t('ui.tooltips.zoom_out')"
         >
           <ZoomOut class="w-4 h-4" />
         </button>
@@ -763,7 +763,7 @@ onMounted(() => {
           class="zoom-control-btn bg-gray-700/60 hover:bg-gray-600/80 active:bg-gray-500/90 text-white rounded-md px-3 py-2 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-700/60 transition-all duration-200 ease-in-out text-xs font-medium min-w-[3rem] flex items-center justify-center"
           @click="resetZoom"
           :disabled="zoomLevel === 0.75"
-          title="Reset Zoom"
+          :title="$t('ui.tooltips.reset_zoom')"
         >
           {{ Math.round(zoomLevel * 100) }}%
         </button>
@@ -772,7 +772,7 @@ onMounted(() => {
       <button
         class="zoom-control-btn bg-gray-800/90 backdrop-blur-md hover:bg-gray-700/90 active:bg-gray-600/90 text-white rounded-lg p-2.5 shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 border border-gray-700/50 transition-all duration-200 ease-in-out flex items-center justify-center"
         @click="toggleFullscreen"
-        :title="isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'"
+        :title="isFullscreen ? $t('common.exit_fullscreen') : $t('common.enter_fullscreen')"
       >
         <Maximize v-if="!isFullscreen" class="w-4 h-4" />
         <Minimize v-else class="w-4 h-4" />

@@ -197,7 +197,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 :href="player.profile_url"
                 target="_blank"
                 class="hover:text-foreground transition-colors"
-                title="View Steam Profile"
+                :title="$t('ui.tooltips.view_steam_profile')"
               >
                 <SteamIcon class="size-3 fill-current" />
               </a>

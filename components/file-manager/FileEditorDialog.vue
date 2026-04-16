@@ -2,15 +2,15 @@
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
     <DialogContent class="max-w-4xl max-h-[80vh] flex flex-col">
       <DialogHeader>
-        <DialogTitle>Edit File: {{ filePath }}</DialogTitle>
+        <DialogTitle>{{ $t("file_manager.editor.title", { path: filePath }) }}</DialogTitle>
         <DialogDescription>
-          Make changes to the file content
+          {{ $t("file_manager.editor.description") }}
         </DialogDescription>
       </DialogHeader>
 
       <div class="space-y-4 flex-1 overflow-hidden flex flex-col">
         <div v-if="isLoading" class="text-center py-8 text-muted-foreground">
-          Loading file...
+          {{ $t("file_manager.editor.loading") }}
         </div>
 
         <div
@@ -31,18 +31,16 @@
           class="bg-green-50 border-green-200"
         >
           <Check class="w-4 h-4 text-green-600" />
-          <AlertDescription class="text-green-800"
-            >File saved successfully!</AlertDescription
-          >
+          <AlertDescription class="text-green-800">{{ $t("file_manager.editor.save_success") }}</AlertDescription>
         </Alert>
       </div>
 
       <DialogFooter>
         <Button variant="outline" @click="handleCancel" :disabled="isSaving">
-          Cancel
+          {{ $t("common.cancel") }}
         </Button>
         <Button @click="handleSave" :disabled="isSaving || !hasChanges">
-          {{ isSaving ? "Saving..." : "Save" }}
+          {{ isSaving ? $t("common.saving") : $t("common.save") }}
         </Button>
       </DialogFooter>
     </DialogContent>
@@ -58,6 +56,7 @@ import {
   onBeforeUnmount,
   nextTick,
 } from "vue";
+import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -69,12 +68,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AlertTriangle, Check } from "lucide-vue-next";
-import * as monaco from "monaco-editor";
+import type * as Monaco from "monaco-editor";
+import { loadMonaco } from "~/utilities/loadMonaco";
 
 const props = defineProps<{
   open: boolean;
   filePath: string;
 }>();
+
+const { t } = useI18n();
 
 const emit = defineEmits<{
   "update:open": [value: boolean];
@@ -84,7 +86,8 @@ const store = useFileManagerStore();
 const colorMode = useColorMode();
 
 const editorContainer = ref<HTMLElement | null>(null);
-const editorInstance = ref<monaco.editor.IStandaloneCodeEditor | null>(null);
+const editorInstance = ref<Monaco.editor.IStandaloneCodeEditor | null>(null);
+let monaco: typeof Monaco | null = null;
 const fileContent = ref<string | null>(null);
 const originalContent = ref<string | null>(null);
 const isLoading = ref(false);
@@ -138,8 +141,10 @@ function getLanguageFromPath(path: string): string {
   return languageMap[ext] || "plaintext";
 }
 
-function createEditor() {
+async function createEditor() {
   if (!editorContainer.value || !fileContent.value) return;
+
+  monaco ??= await loadMonaco();
 
   const theme = colorMode.value === "dark" ? "vs-dark" : "vs";
   const language = getLanguageFromPath(props.filePath);
@@ -170,7 +175,7 @@ watch(
     if (isOpen) {
       await loadFile();
       await nextTick();
-      createEditor();
+      await createEditor();
     } else {
       destroyEditor();
       resetState();
@@ -181,7 +186,7 @@ watch(
 watch(
   () => colorMode.value,
   (newMode) => {
-    if (editorInstance.value) {
+    if (editorInstance.value && monaco) {
       monaco.editor.setTheme(newMode === "dark" ? "vs-dark" : "vs");
     }
   },
@@ -199,7 +204,7 @@ async function loadFile() {
       originalContent.value = response.content;
     }
   } catch (err: any) {
-    error.value = err.message || "Failed to load file";
+    error.value = err.message || t("file_manager.editor.load_failed");
   } finally {
     isLoading.value = false;
   }
@@ -225,10 +230,10 @@ async function handleSave() {
         emit("update:open", false);
       }, 1500);
     } else {
-      error.value = store.error || "Failed to save file";
+      error.value = store.error || t("file_manager.editor.save_failed");
     }
   } catch (err: any) {
-    error.value = err.message || "Failed to save file";
+    error.value = err.message || t("file_manager.editor.save_failed");
   } finally {
     isSaving.value = false;
   }
@@ -236,7 +241,7 @@ async function handleSave() {
 
 function handleCancel() {
   if (hasChanges.value) {
-    if (!confirm("You have unsaved changes. Are you sure you want to close?")) {
+    if (!confirm(t("file_manager.editor.unsaved_close"))) {
       return;
     }
   }

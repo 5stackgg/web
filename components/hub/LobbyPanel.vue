@@ -15,16 +15,22 @@ const { hasLobbyInvites } = useInvites();
 
 <template>
   <div class="flex flex-col h-full">
-    <div class="flex-1 px-4 pt-4 flex flex-col gap-4 overflow-hidden">
+    <div class="px-3 pt-3 pb-2 flex-shrink-0 border-b border-border">
+      <div class="hub-panel-label">
+        <span class="hub-panel-tick"></span>
+        Lobby
+      </div>
+    </div>
+    <div class="flex-1 px-3 pt-3 flex flex-col gap-4 overflow-hidden">
       <!-- Scrollable main content (invites + squad) -->
-      <div class="flex-[3] min-h-0 flex flex-col gap-6 overflow-y-auto">
+      <div class="flex-[3] min-h-0 flex flex-col gap-4 overflow-y-auto">
         <!-- Lobby invites -->
         <template v-if="hasLobbyInvites">
           <div class="flex flex-col gap-3">
             <div
-              class="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest flex items-center gap-2"
+              class="hub-sub-label"
             >
-              <Merge class="h-3 w-3 text-zinc-500" />
+              <Merge class="h-3 w-3" />
               <span>{{ $t("layouts.lobby_panel.lobby_invites") }}</span>
             </div>
             <LobbyInvites />
@@ -37,10 +43,10 @@ const { hasLobbyInvites } = useInvites();
           <div class="flex flex-col gap-3">
             <div class="flex items-start justify-between gap-3">
               <div class="flex flex-col gap-1">
-                <div class="text-sm font-semibold text-zinc-200 tracking-wide">
+                <div class="hub-sub-label">
                   {{ $t("layouts.lobby_panel.your_squad") }}
                 </div>
-                <p class="text-[11px] text-zinc-500">
+                <p class="text-[11px] text-muted-foreground">
                   {{ $t("layouts.lobby_panel.squad_description") }}
                 </p>
               </div>
@@ -64,8 +70,8 @@ const { hasLobbyInvites } = useInvites();
 
         <!-- Create lobby — only when not in a lobby or match -->
         <template v-if="!currentLobby">
-          <Empty class="px-4 pb-5 pt-4">
-            <p class="text-sm text-zinc-400 text-center max-w-xs">
+          <Empty class="px-3 pb-5 pt-4">
+            <p class="text-sm text-muted-foreground text-center max-w-xs">
               {{ $t("layouts.lobby_panel.create_lobby_description") }}
             </p>
             <Button
@@ -310,3 +316,32 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.hub-panel-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: "Oxanium", monospace;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+.hub-panel-tick {
+  width: 8px;
+  height: 2px;
+  background: hsl(var(--tac-amber));
+}
+.hub-sub-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+</style>

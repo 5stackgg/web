@@ -20,6 +20,12 @@ import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 
 const { isMobile } = useSidebar();
+const fadeTransition = {
+  enterActiveClass: "transition-opacity duration-200 ease-out",
+  leaveActiveClass: "transition-opacity duration-200 ease-out",
+  enterFromClass: "opacity-0",
+  leaveToClass: "opacity-0",
+};
 </script>
 
 <template>
@@ -49,7 +55,7 @@ const { isMobile } = useSidebar();
 
   <PageTransition :delay="100" class="mt-6">
     <Card variant="gradient" class="p-4">
-      <Transition name="fade" mode="out-in">
+      <Transition v-bind="fadeTransition" mode="out-in">
         <Empty v-if="loading" key="loading" class="min-h-[200px]">
           <div class="space-y-3 w-full max-w-md">
             <Skeleton class="h-4 w-3/4 mx-auto" />
@@ -70,12 +76,8 @@ const { isMobile } = useSidebar();
               <TableHead>{{
                 $t("pages.dedicated_servers.table.type")
               }}</TableHead>
-              <TableHead>{{
-                $t("pages.dedicated_servers.table.region")
-              }}</TableHead>
-              <TableHead>{{
-                $t("pages.dedicated_servers.table.plugin_version")
-              }}</TableHead>
+              <TableHead>{{ $t("common.region") }}</TableHead>
+              <TableHead>{{ $t("common.plugin_version") }}</TableHead>
               <TableHead>{{
                 $t("pages.dedicated_servers.table.port")
               }}</TableHead>
@@ -125,8 +127,8 @@ const { isMobile } = useSidebar();
                 <TableCell>{{ server.tv_port }}</TableCell>
                 <TableCell>{{
                   server.enabled
-                    ? $t("pages.dedicated_servers.table.yes")
-                    : $t("pages.dedicated_servers.table.no")
+                    ? $t("common.yes")
+                    : $t("common.no")
                 }}</TableCell>
               </NuxtLink>
             </TableRow>
@@ -228,15 +230,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.2s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-</style>

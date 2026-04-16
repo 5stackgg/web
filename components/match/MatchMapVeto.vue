@@ -17,25 +17,19 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
     "
   >
     <div
-      class="relative rounded-lg border-l-4 border border-border/50 px-5 py-3 mb-4 mx-auto max-w-lg w-full flex flex-col items-center gap-2 transition-colors duration-300"
+      class="mx-auto mb-4 flex w-full max-w-lg flex-col items-center gap-2 rounded-md border px-5 py-3 backdrop-blur-[6px] transition-colors duration-300"
       :class="
         isPicking
-          ? 'border-l-blue-500 bg-blue-500/10 ring-1 ring-blue-500/30'
-          : 'border-l-primary bg-muted/40'
+          ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.08)] ring-1 ring-[hsl(var(--tac-amber)/0.25)]'
+          : 'border-border bg-card/40'
       "
     >
-      <Badge
-        v-if="isPicking"
-        variant="default"
-        class="absolute top-2 right-3 text-xs bg-blue-500 animate-pulse"
-      >
-        {{ $t("match.map_veto.your_turn") }}
-      </Badge>
-
-      <div class="flex items-center gap-2 text-center">
+      <div class="flex flex-wrap items-center justify-center gap-2 text-center">
         <span
-          class="text-lg font-bold"
-          :class="isPicking ? 'text-blue-400' : 'text-primary'"
+          class="font-sans text-lg font-bold uppercase tracking-wide"
+          :class="
+            isPicking ? 'text-[hsl(var(--tac-amber))]' : 'text-foreground'
+          "
         >
           <template v-if="match.lineup_1.is_picking_map_veto">
             {{ match.lineup_1.name }}
@@ -44,10 +38,15 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
             {{ match.lineup_2.name }}
           </template>
         </span>
-        <span class="text-muted-foreground">{{
-          $t("match.map_veto.is_picking")
-        }}</span>
-        <Badge variant="secondary" class="text-sm">{{ pickType }}</Badge>
+        <span
+          class="font-sans text-xs uppercase tracking-[0.18em] text-muted-foreground"
+          >{{ $t("match.map_veto.is_picking") }}</span
+        >
+        <Badge
+          variant="secondary"
+          class="font-sans uppercase tracking-[0.14em]"
+          >{{ pickType }}</Badge
+        >
       </div>
 
       <div

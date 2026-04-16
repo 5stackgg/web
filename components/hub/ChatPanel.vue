@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { useMediaQuery } from "@vueuse/core";
 import {
   Megaphone,
@@ -23,6 +24,7 @@ const props = defineProps<{
   isTabActive: boolean;
 }>();
 
+const { t } = useI18n();
 const router = useRouter();
 
 const { tabs, unreadCounts, setActiveTab, resetUnread, incrementUnread } =
@@ -186,11 +188,11 @@ function getRoomIcon(tab: ChatTab) {
 }
 
 function getRoomSubtitle(tab: ChatTab) {
-  if (tab.type === "organizers") return "Global Lobby";
-  if (tab.type === "tournament") return "Tournament Chat";
-  if (tab.id.startsWith("matchmaking:")) return "Queue Chat";
-  if (tab.type === "match") return "Match Chat";
-  if (tab.type === "team") return "Team Chat";
+  if (tab.type === "organizers") return t("chat_room_subtitles.organizers");
+  if (tab.type === "tournament") return t("chat_room_subtitles.tournament");
+  if (tab.id.startsWith("matchmaking:")) return t("chat_room_subtitles.matchmaking");
+  if (tab.type === "match") return t("chat_room_subtitles.match");
+  if (tab.type === "team") return t("chat_room_subtitles.team");
   return "";
 }
 
@@ -235,7 +237,7 @@ function handlePopOut() {
   <div class="flex h-full">
     <!-- Left channel rail (compact) -->
     <div
-      class="w-16 flex-shrink-0 border-r border-zinc-800 flex flex-col items-center py-2 gap-1"
+      class="w-16 flex-shrink-0 border-r border-border flex flex-col items-center py-2 gap-1"
     >
       <div
         v-if="orderedTabs.length"
@@ -245,7 +247,7 @@ function handlePopOut() {
         <!-- Sliding left accent bar -->
         <div
           v-show="showChatIndicator"
-          class="absolute top-0 left-0 w-0.5 bg-primary rounded-r-full z-10 pointer-events-none"
+          class="absolute top-0 left-0 w-0.5 rounded-r-full z-10 pointer-events-none bg-[hsl(var(--tac-amber))]"
           :class="chatHasAnimated ? 'chat-indicator-animated' : ''"
           :style="{
             transform: `translateY(${chatIndicatorY + 4}px)`,
@@ -315,15 +317,15 @@ function handlePopOut() {
       <template v-if="orderedTabs.length">
         <!-- Header with channel title + participants + controls -->
         <div
-          class="flex items-center justify-between px-3 py-2 border-b border-zinc-800/80 bg-zinc-950/40"
+          class="flex items-center justify-between px-3 py-3 border-b border-border bg-card/30"
         >
           <div class="min-w-0 flex items-center gap-3">
             <div class="min-w-0">
-              <div class="text-xs font-semibold text-zinc-100 truncate">
+              <div class="text-xs font-semibold text-foreground truncate">
                 {{ activeTab?.label || $t("layouts.chat_panel.default_title") }}
               </div>
               <div
-                class="flex items-center gap-2 text-[10px] text-zinc-500 truncate"
+                class="flex items-center gap-2 text-[10px] text-muted-foreground truncate"
               >
                 <span>
                   {{ activeTab ? getRoomSubtitle(activeTab) : "" }}
@@ -357,7 +359,7 @@ function handlePopOut() {
                   <button
                     v-if="!isMobile"
                     type="button"
-                    class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900/60 text-zinc-200 hover:bg-zinc-800/80"
+                    class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-card/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                     @click="handlePopOut"
                   >
                     <ExternalLink class="w-3.5 h-3.5" />

@@ -13,11 +13,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-vue-next";
-import * as monaco from "monaco-editor";
+import type * as Monaco from "monaco-editor";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { e_game_cfg_types_enum } from "~/generated/zeus";
 import { markRaw } from "vue";
+import { loadMonaco } from "~/utilities/loadMonaco";
 </script>
 
 <template>
@@ -40,7 +41,7 @@ import { markRaw } from "vue";
     >
       <Card class="w-full">
         <CardHeader class="flex flex-row items-center justify-between">
-          <CardTitle>{{ formatTypeName(config.type) }} Configuration</CardTitle>
+          <CardTitle>{{ $t("game_type_configs.configuration_title", { type: formatTypeName(config.type) }) }}</CardTitle>
           <div class="flex gap-2">
             <AlertDialog>
               <AlertDialogTrigger asChild>
@@ -62,7 +63,7 @@ import { markRaw } from "vue";
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>{{
-                    $t("game_type_configs.form.revert_confirm.cancel")
+                    $t("common.cancel")
                   }}</AlertDialogCancel>
                   <AlertDialogAction
                     @click="revertToDefaults(config)"
@@ -109,8 +110,9 @@ import { markRaw } from "vue";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { e_game_cfg_types_enum } from "~/generated/zeus";
-import * as monaco from "monaco-editor";
+import type * as Monaco from "monaco-editor";
 import { markRaw } from "vue";
+import { loadMonaco } from "~/utilities/loadMonaco";
 
 interface GameTypeConfig {
   type: string;
@@ -118,7 +120,8 @@ interface GameTypeConfig {
 }
 
 // Non-reactive map outside component instance
-const editorsMap = new Map<string, monaco.editor.IStandaloneCodeEditor>();
+let monaco: typeof Monaco | null = null;
+const editorsMap = new Map<string, Monaco.editor.IStandaloneCodeEditor>();
 
 export default {
   props: {
@@ -152,6 +155,10 @@ export default {
       },
     },
     "colorMode.value"(newMode: string) {
+      if (!monaco) {
+        return;
+      }
+
       editorsMap.forEach((editor) => {
         monaco.editor.setTheme(newMode === "dark" ? "vs-dark" : "vs");
       });
@@ -161,7 +168,7 @@ export default {
         // Create editor for the newly active tab if container is ready
         const container = this.pendingContainers.get(newTab);
         if (container && !editorsMap.has(newTab)) {
-          this.createEditor(container, newTab);
+          void this.createEditor(container, newTab);
         }
         // Layout existing editor
         const editor = editorsMap.get(newTab);
@@ -210,9 +217,11 @@ export default {
         this.createEditor(el, type);
       }
     },
-    createEditor(el: HTMLElement, type: string) {
+    async createEditor(el: HTMLElement, type: string) {
       const config = this.gameTypeConfigs.find((c) => c.type === type);
       if (!config) return;
+
+      monaco ??= await loadMonaco();
 
       const theme = this.colorMode.value === "dark" ? "vs-dark" : "vs";
 

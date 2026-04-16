@@ -237,7 +237,7 @@ definePageMeta({
           :disabled="Object.keys(form.errors).length > 0"
           class="my-3"
         >
-          {{ $t("pages.settings.application.update") }}
+          {{ $t("common.update") }}
         </Button>
       </div>
     </form>
@@ -255,29 +255,6 @@ import { toast } from "@/components/ui/toast";
 export default {
   data() {
     return {
-      roles: [
-        { value: e_player_roles_enum.user, display: "User" },
-        { value: e_player_roles_enum.verified_user, display: "Verified User" },
-        { value: e_player_roles_enum.streamer, display: "Streamer" },
-        {
-          value: e_player_roles_enum.match_organizer,
-          display: "Match Organizer",
-        },
-        {
-          value: e_player_roles_enum.tournament_organizer,
-          display: "Tournament Organizer",
-        },
-        { value: e_player_roles_enum.administrator, display: "Administrator" },
-      ],
-      lineupRoles: [
-        { value: e_player_roles_enum.user, display: "User" },
-        { value: e_player_roles_enum.verified_user, display: "Verified User" },
-        { value: e_player_roles_enum.streamer, display: "Streamer" },
-        {
-          value: e_player_roles_enum.match_organizer,
-          display: "Match Organizer",
-        },
-      ],
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -439,6 +416,24 @@ export default {
     },
   },
   computed: {
+    roles() {
+      return [
+        { value: e_player_roles_enum.user, display: this.$t("roles.user") },
+        { value: e_player_roles_enum.verified_user, display: this.$t("roles.verified_user") },
+        { value: e_player_roles_enum.streamer, display: this.$t("roles.streamer") },
+        { value: e_player_roles_enum.match_organizer, display: this.$t("roles.match_organizer") },
+        { value: e_player_roles_enum.tournament_organizer, display: this.$t("roles.tournament_organizer") },
+        { value: e_player_roles_enum.administrator, display: this.$t("roles.administrator") },
+      ];
+    },
+    lineupRoles() {
+      return [
+        { value: e_player_roles_enum.user, display: this.$t("roles.user") },
+        { value: e_player_roles_enum.verified_user, display: this.$t("roles.verified_user") },
+        { value: e_player_roles_enum.streamer, display: this.$t("roles.streamer") },
+        { value: e_player_roles_enum.match_organizer, display: this.$t("roles.match_organizer") },
+      ];
+    },
     settings() {
       return useApplicationSettingsStore().settings;
     },

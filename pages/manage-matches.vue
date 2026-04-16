@@ -4,6 +4,7 @@ import { PlusCircle, ArrowUpIcon, ArrowDownIcon } from "lucide-vue-next";
 import MatchesTable from "~/components/MatchesTable.vue";
 import Pagination from "~/components/Pagination.vue";
 import { Button } from "~/components/ui/button";
+import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import {
@@ -17,7 +18,6 @@ import { Switch } from "~/components/ui/switch";
 import { Separator } from "~/components/ui/separator";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { Card } from "~/components/ui/card";
 import Empty from "~/components/ui/empty/Empty.vue";
 
 const { isMobile } = useSidebar();
@@ -31,15 +31,16 @@ const { isMobile } = useSidebar();
         $t("pages.manage_matches.description")
       }}</template>
       <template #actions>
-        <Button
-          :size="isMobile ? 'default' : 'lg'"
+        <button
+          type="button"
+          :class="tacticalCtaButtonClasses"
           @click="navigateTo('/matches/create')"
         >
           <PlusCircle class="w-4 h-4" />
-          <span class="hidden md:inline ml-2">{{
+          <span class="hidden md:inline">{{
             $t("pages.matches.create")
           }}</span>
-        </Button>
+        </button>
       </template>
     </PageHeading>
   </PageTransition>
@@ -52,10 +53,10 @@ const { isMobile } = useSidebar();
       <div class="space-y-4">
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-semibold">
-            {{ $t("pages.manage_matches.filters") }}
+            {{ $t("common.filters") }}
           </h3>
           <Button variant="outline" size="sm" @click="resetFilters">
-            {{ $t("pages.manage_matches.reset_filters") }}
+            {{ $t("common.reset_filters") }}
           </Button>
         </div>
 
@@ -205,7 +206,7 @@ const { isMobile } = useSidebar();
   </PageTransition>
 
   <PageTransition :delay="300" class="mt-6">
-    <Card variant="gradient" class="p-4 relative">
+    <div class="relative">
       <div v-if="loading" class="absolute top-4 left-4 z-10">
         <div
           class="flex items-center space-x-2 text-sm text-muted-foreground bg-background/80 backdrop-blur-sm px-2 py-1 rounded"
@@ -213,7 +214,7 @@ const { isMobile } = useSidebar();
           <div
             class="w-4 h-4 border-2 border-muted-foreground border-t-transparent rounded-full animate-spin"
           ></div>
-          <span>{{ $t("pages.manage_matches.loading") }}</span>
+          <span>{{ $t("common.loading") }}</span>
         </div>
       </div>
       <Empty v-if="matches && matches.length === 0">
@@ -222,11 +223,11 @@ const { isMobile } = useSidebar();
         </p>
       </Empty>
       <MatchesTable
-        class="p-3"
         :matches="matches"
+        :show-all-matches="true"
         v-else-if="matches"
       ></MatchesTable>
-    </Card>
+    </div>
   </PageTransition>
 
   <Pagination

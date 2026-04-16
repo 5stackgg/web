@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Trash } from "lucide-vue-next";
-import * as monaco from "monaco-editor";
+import type * as Monaco from "monaco-editor";
+import { loadMonaco } from "~/utilities/loadMonaco";
 </script>
 
 <template>
@@ -56,7 +57,7 @@ import * as monaco from "monaco-editor";
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>{{
-              $t("game_type_configs.form.revert_confirm.cancel")
+              $t("common.cancel")
             }}</AlertDialogCancel>
             <AlertDialogAction @click="revertToDefaults" variant="destructive">
               {{ $t("game_type_configs.form.revert_confirm.confirm") }}
@@ -79,15 +80,17 @@ export default {
   emits: ["updated", "created", "deleted"],
   setup() {
     const editorContainer = ref<HTMLElement | null>(null);
-    const editorInstance = ref<monaco.editor.IStandaloneCodeEditor | null>(
+    const editorInstance = ref<Monaco.editor.IStandaloneCodeEditor | null>(
       null,
     );
     const colorMode = useColorMode();
+    let monaco: typeof Monaco | null = null;
 
     return {
       editorContainer,
       editorInstance,
       colorMode,
+      monaco,
     };
   },
   data() {
@@ -110,7 +113,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.createEditor();
+      void this.createEditor();
     });
   },
   beforeUnmount() {
@@ -118,18 +121,20 @@ export default {
   },
   watch: {
     "colorMode.value"(newMode: string) {
-      if (this.editorInstance) {
-        monaco.editor.setTheme(newMode === "dark" ? "vs-dark" : "vs");
+      if (this.editorInstance && this.monaco) {
+        this.monaco.editor.setTheme(newMode === "dark" ? "vs-dark" : "vs");
       }
     },
   },
   methods: {
-    createEditor() {
+    async createEditor() {
       if (!this.editorContainer || !this.gameTypeConfig?.cfg) return;
+
+      this.monaco ??= await loadMonaco();
 
       const theme = this.colorMode.value === "dark" ? "vs-dark" : "vs";
 
-      this.editorInstance = monaco.editor.create(this.editorContainer, {
+      this.editorInstance = this.monaco.editor.create(this.editorContainer, {
         value: this.gameTypeConfig.cfg,
         language: "plaintext",
         theme,

@@ -59,31 +59,31 @@
         <template v-if="item.isDirectory">
           <DropdownMenuItem @click="startCreateFile">
             <FilePlus class="mr-2 h-4 w-4" />
-            <span>New File</span>
+            <span>{{ $t("file_manager.toolbar.new_file") }}</span>
           </DropdownMenuItem>
           <DropdownMenuItem @click="startCreateFolder">
             <FolderPlus class="mr-2 h-4 w-4" />
-            <span>New Folder</span>
+            <span>{{ $t("file_manager.toolbar.new_folder") }}</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
         </template>
         <template v-else>
           <DropdownMenuItem @click="$emit('edit-file', item)">
             <Pencil class="mr-2 h-4 w-4" />
-            <span>Edit</span>
+            <span>{{ $t("common.actions.edit") }}</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
         </template>
         <DropdownMenuItem @click="$emit('rename-item', item)">
           <PenLine class="mr-2 h-4 w-4" />
-          <span>Rename</span>
+          <span>{{ $t("common.rename") }}</span>
         </DropdownMenuItem>
         <DropdownMenuItem
           @click="$emit('delete', item)"
           class="text-destructive"
         >
           <Trash2 class="mr-2 h-4 w-4" />
-          <span>Delete</span>
+          <span>{{ $t("common.actions.delete") }}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

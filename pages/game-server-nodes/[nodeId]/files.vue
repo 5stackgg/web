@@ -6,7 +6,7 @@
           <span class="capitalize">
             {{ node?.label || nodeId }}
           </span>
-          Game Server Node Files
+          {{ $t("file_manager.game_server_node_files") }}
         </template>
         <template #description>
           {{ $t("common.manage_custom_plugins_and_shared_files") }}

@@ -102,7 +102,7 @@ import { useSidebar } from "../ui/sidebar";
             </template>
             <template v-else>
               <template v-if="!isOnline && !inGame">
-                {{ $t("match.player.status.offline") }}
+                {{ $t("common.offline") }}
               </template>
               <template v-else-if="isOnline && !inGame">
                 {{ $t("match.player.status.online_not_in_game") }}

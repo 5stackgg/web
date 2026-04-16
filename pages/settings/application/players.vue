@@ -3,6 +3,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Card } from "~/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
+import { useI18n } from "vue-i18n";
 import { generateMutation } from "~/graphql/graphqlGen";
 import {
   AlertDialog,
@@ -19,6 +20,7 @@ definePageMeta({
   layout: "application-settings",
 });
 
+const { t } = useI18n();
 const showRefreshDialog = ref(false);
 const refreshing = ref(false);
 
@@ -36,12 +38,13 @@ async function doRefreshAllPlayers() {
     });
 
     toast({
-      title: "Player refresh queued successfully",
+      title: t("pages.settings.application.players.refresh_queued"),
     });
   } catch (error: any) {
     toast({
-      title: "Failed to refresh players",
-      description: error?.message || "An error occurred",
+      title: t("pages.settings.application.players.refresh_failed"),
+      description:
+        error?.message || t("pages.settings.application.players.error_occurred"),
       variant: "destructive",
     });
   } finally {
@@ -54,14 +57,19 @@ async function doRefreshAllPlayers() {
   <PageTransition :delay="0">
     <div>
       <Card variant="gradient" class="p-6 mb-6">
-        <h3 class="text-lg font-semibold">Refresh All Players</h3>
+        <h3 class="text-lg font-semibold">
+          {{ $t("pages.settings.application.players.refresh_all_title") }}
+        </h3>
         <p class="text-sm text-muted-foreground mt-1">
-          Re-sync all player data in the search index. Use this if player
-          information (like ELO) appears outdated or missing.
+          {{ $t("pages.settings.application.players.refresh_all_description") }}
         </p>
         <div class="mt-4">
           <Button :disabled="refreshing" @click="showRefreshDialog = true">
-            {{ refreshing ? "Refreshing..." : "Refresh All Players" }}
+            {{
+              refreshing
+                ? $t("pages.settings.application.players.refreshing")
+                : $t("pages.settings.application.players.refresh_button")
+            }}
           </Button>
         </div>
       </Card>
@@ -69,17 +77,23 @@ async function doRefreshAllPlayers() {
       <AlertDialog v-model:open="showRefreshDialog">
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Refresh All Players?</AlertDialogTitle>
+            <AlertDialogTitle>
+              {{ $t("pages.settings.application.players.refresh_dialog_title") }}
+            </AlertDialogTitle>
             <AlertDialogDescription>
-              This will queue a job to re-sync all player data in the Typesense
-              search index. This may take a few minutes depending on the number
-              of players.
+              {{
+                $t(
+                  "pages.settings.application.players.refresh_dialog_description",
+                )
+              }}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel>
+              {{ $t("common.cancel") }}
+            </AlertDialogCancel>
             <AlertDialogAction @click="doRefreshAllPlayers">
-              Refresh All Players
+              {{ $t("pages.settings.application.players.refresh_button") }}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -242,7 +256,7 @@ async function doRefreshAllPlayers() {
             :disabled="Object.keys(form.errors).length > 0"
             class="my-3"
           >
-            {{ $t("pages.settings.application.update") }}
+            {{ $t("common.update") }}
           </Button>
         </div>
       </form>
@@ -265,20 +279,6 @@ import { toast } from "@/components/ui/toast";
 export default {
   data() {
     return {
-      roles: [
-        { value: e_player_roles_enum.user, display: "User" },
-        { value: e_player_roles_enum.verified_user, display: "Verified User" },
-        { value: e_player_roles_enum.streamer, display: "Streamer" },
-        {
-          value: e_player_roles_enum.match_organizer,
-          display: "Match Organizer",
-        },
-        {
-          value: e_player_roles_enum.tournament_organizer,
-          display: "Tournament Organizer",
-        },
-        { value: e_player_roles_enum.administrator, display: "Administrator" },
-      ],
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -368,6 +368,16 @@ export default {
     },
   },
   computed: {
+    roles() {
+      return [
+        { value: e_player_roles_enum.user, display: this.$t("roles.user") },
+        { value: e_player_roles_enum.verified_user, display: this.$t("roles.verified_user") },
+        { value: e_player_roles_enum.streamer, display: this.$t("roles.streamer") },
+        { value: e_player_roles_enum.match_organizer, display: this.$t("roles.match_organizer") },
+        { value: e_player_roles_enum.tournament_organizer, display: this.$t("roles.tournament_organizer") },
+        { value: e_player_roles_enum.administrator, display: this.$t("roles.administrator") },
+      ];
+    },
     settings() {
       return useApplicationSettingsStore().settings;
     },

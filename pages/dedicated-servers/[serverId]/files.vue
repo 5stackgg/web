@@ -6,7 +6,7 @@
           <span class="capitalize">
             {{ server?.label }}
           </span>
-          Dedicated Server Files
+          {{ $t("file_manager.dedicated_server_files") }}
         </template>
         <template #description>
           {{ $t("common.manage_custom_plugins_and_shared_files") }}
@@ -23,7 +23,7 @@
             :server-id="serverId"
           />
           <div v-else class="p-8 text-center text-muted-foreground">
-            Loading server information...
+            {{ $t("file_manager.loading_server_info") }}
           </div>
         </Card>
       </div>

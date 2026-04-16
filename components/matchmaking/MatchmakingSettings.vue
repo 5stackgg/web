@@ -56,7 +56,7 @@ import { Loader2 } from "lucide-vue-next";
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
               >
-                {{ $t("pages.settings.matchmaking.region") }}
+                {{ $t("common.region") }}
               </th>
               <th
                 class="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
@@ -167,22 +167,22 @@ export default {
     getLatencyStatus(region: string): string {
       const regionLatency = this.getRegionLatency(region);
       if (!regionLatency) {
-        return "Measuring...";
+        return this.$t("latency_status.measuring");
       }
 
       if (regionLatency < 30) {
-        return "Excellent";
+        return this.$t("latency_status.excellent");
       }
 
       if (regionLatency < 50) {
-        return "Good";
+        return this.$t("latency_status.good");
       }
 
       if (regionLatency < this.maxAcceptableLatency) {
-        return "Fair";
+        return this.$t("latency_status.fair");
       }
 
-      return "Poor";
+      return this.$t("latency_status.poor");
     },
     isPreferredRegion(region: string): boolean {
       return (

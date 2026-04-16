@@ -36,10 +36,10 @@ import ClipBoard from "~/components/ClipBoard.vue";
       <div class="flex justify-center">
         <Button
           v-for="access in [
-            e_lobby_access_enum.Open,
-            e_lobby_access_enum.Friends,
-            e_lobby_access_enum.Invite,
             e_lobby_access_enum.Private,
+            e_lobby_access_enum.Invite,
+            e_lobby_access_enum.Friends,
+            e_lobby_access_enum.Open,
           ]"
           :key="access"
           @click="updateLobbyAccess(access)"
@@ -48,11 +48,11 @@ import ClipBoard from "~/components/ClipBoard.vue";
           "
           size="sm"
           :class="{
-            'rounded-r-none': access === e_lobby_access_enum.Open,
+            'rounded-r-none': access === e_lobby_access_enum.Private,
             'rounded-none border-x-0':
               access === e_lobby_access_enum.Invite ||
               access === e_lobby_access_enum.Friends,
-            'rounded-l-none': access === e_lobby_access_enum.Private,
+            'rounded-l-none': access === e_lobby_access_enum.Open,
           }"
         >
           <component :is="getIcon(access)" class="h-4 w-4 mr-2" />

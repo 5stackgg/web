@@ -2,18 +2,18 @@
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Create New File</DialogTitle>
-        <DialogDescription> Enter a name for the new file </DialogDescription>
+        <DialogTitle>{{ $t("file_manager.create_file.title") }}</DialogTitle>
+        <DialogDescription>{{ $t("file_manager.create_file.description") }}</DialogDescription>
       </DialogHeader>
 
       <div class="space-y-4">
         <div class="space-y-2">
-          <Label for="file-name">File Name</Label>
+          <Label for="file-name">{{ $t("file_manager.create_file.label") }}</Label>
           <Input
             id="file-name"
             ref="inputRef"
             v-model="fileName"
-            placeholder="my-file.txt"
+            :placeholder="$t('file_manager.create_file.placeholder')"
             @keyup.enter="handleCreate"
           />
         </div>
@@ -25,9 +25,9 @@
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="handleCancel"> Cancel </Button>
+        <Button variant="outline" @click="handleCancel">{{ $t("common.cancel") }}</Button>
         <Button @click="handleCreate" :disabled="!fileName || isCreating">
-          {{ isCreating ? "Creating..." : "Create" }}
+          {{ isCreating ? $t("common.creating") : $t("common.create") }}
         </Button>
       </DialogFooter>
     </DialogContent>
@@ -36,6 +36,7 @@
 
 <script setup lang="ts">
 import { ref, watch, nextTick } from "vue";
+import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -59,6 +60,7 @@ const emit = defineEmits<{
   "update:open": [value: boolean];
 }>();
 
+const { t } = useI18n();
 const store = useFileManagerStore();
 const fileName = ref("");
 const localError = ref<string | null>(null);
@@ -95,10 +97,10 @@ async function handleCreate() {
     if (success) {
       emit("update:open", false);
     } else {
-      localError.value = store.error || "Failed to create file";
+      localError.value = store.error || t("file_manager.create_file.failed");
     }
   } catch (error: any) {
-    localError.value = error.message || "Failed to create file";
+    localError.value = error.message || t("file_manager.create_file.failed");
   } finally {
     isCreating.value = false;
   }

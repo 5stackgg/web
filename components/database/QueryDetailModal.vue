@@ -283,6 +283,7 @@ import AnalyzeQuery from "./AnalyzeQuery.vue";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
 import { generateQuery } from "~/graphql/graphqlGen";
 
 export default {
@@ -314,15 +315,18 @@ export default {
     async copyToClipboard(text: string, type: string) {
       try {
         await navigator.clipboard.writeText(text);
-        // Show success notification
-        this.$toast?.success(
-          type === "query"
-            ? this.$t("pages.database.query_detail.query_copied")
-            : this.$t("pages.database.query_detail.plan_copied"),
-        );
+        toast({
+          title:
+            type === "query"
+              ? this.$t("pages.database.query_detail.query_copied")
+              : this.$t("pages.database.query_detail.plan_copied"),
+        });
       } catch (error) {
         console.error("Failed to copy:", error);
-        this.$toast?.error(this.$t("pages.database.query_detail.copy_failed"));
+        toast({
+          title: this.$t("pages.database.query_detail.copy_failed"),
+          variant: "destructive",
+        });
       }
     },
   },

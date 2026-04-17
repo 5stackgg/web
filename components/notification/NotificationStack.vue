@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { ChevronDown, ChevronUp, Layers } from "lucide-vue-next";
+import { computed, ref } from "vue";
+import { Check, ChevronDown, ChevronUp, Layers, Trash2 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
   Collapsible,
@@ -10,6 +10,7 @@ import {
 import TimeAgo from "~/components/TimeAgo.vue";
 import NotificationItem from "~/components/notification/NotificationItem.vue";
 import NotificationContext from "~/components/notification/NotificationContext.vue";
+import NotificationMessage from "~/components/notification/NotificationMessage.vue";
 
 type NotificationAction = {
   label: string;
@@ -80,11 +81,19 @@ const expandedWrapperClass = computed(() =>
     ? "mb-4 rounded-lg bg-accent/30 p-2"
     : "mb-3 rounded-md border border-border bg-card/20 p-2",
 );
+
+const isOpen = ref(false);
+
+function handleTopClick(event: MouseEvent) {
+  const el = event.target as HTMLElement | null;
+  if (el?.closest("a, button")) return;
+  isOpen.value = true;
+}
 </script>
 
 <template>
-  <Collapsible v-slot="{ open }" class="block">
-    <div v-if="!open" class="relative mb-4">
+  <Collapsible v-model:open="isOpen" class="block">
+    <div v-if="!isOpen" class="relative mb-4">
       <div
         v-if="notifications.length >= 3"
         :class="peekBaseClass"
@@ -98,69 +107,97 @@ const expandedWrapperClass = computed(() =>
         aria-hidden="true"
       />
 
-      <CollapsibleTrigger as-child>
-        <button type="button" :class="topCardClass">
+      <div
+        role="button"
+        tabindex="0"
+        :class="[topCardClass, 'cursor-pointer']"
+        @click="handleTopClick"
+        @keydown.enter.prevent="isOpen = true"
+        @keydown.space.prevent="isOpen = true"
+      >
+        <div class="absolute top-2 right-2 flex items-center gap-1">
           <span
             v-if="hasUnread"
-            class="absolute top-2 right-2 inline-block h-2 w-2 rounded-full bg-red-500"
+            class="inline-block h-2 w-2 rounded-full bg-red-500 mr-1"
             aria-hidden="true"
           />
+          <Button
+            v-if="!top.is_read && top.deletable !== false"
+            size="icon"
+            variant="ghost"
+            class="h-6 w-6"
+            @click.stop="emit('dismiss', top.id)"
+          >
+            <Check class="h-3.5 w-3.5" />
+            <span class="sr-only">{{ $t("layouts.notifications.dismiss") }}</span>
+          </Button>
+          <Button
+            v-if="top.deletable !== false"
+            size="icon"
+            variant="ghost"
+            class="h-6 w-6"
+            @click.stop="emit('delete', top.id)"
+          >
+            <Trash2 class="h-3.5 w-3.5" />
+            <span class="sr-only">{{ $t("common.delete") }}</span>
+          </Button>
+        </div>
 
-          <h3
+        <h3
+          :class="[
+            'text-lg font-semibold pr-20',
+            top.is_read ? 'text-muted-foreground' : '',
+          ]"
+        >
+          {{ top.title }}
+        </h3>
+
+        <p
+          v-if="top.type !== 'NameChangeRequest'"
+          class="[&_a]:text-blue-500 [&_a]:underline [&_a:hover]:text-blue-700 text-sm mt-1 line-clamp-2"
+          :class="
+            top.is_read ? 'text-muted-foreground/70' : 'text-muted-foreground'
+          "
+        >
+          <NotificationMessage :html="top.message" />
+        </p>
+        <p
+          v-else
+          class="text-sm mt-1 line-clamp-2"
+          :class="
+            top.is_read ? 'text-muted-foreground/70' : 'text-muted-foreground'
+          "
+        >
+          {{ top.message }}
+        </p>
+
+        <NotificationContext
+          v-if="top.entity_id"
+          :type="top.type"
+          :entity-id="top.entity_id"
+          class="mt-2"
+        />
+
+        <div class="flex justify-between items-center mt-2">
+          <span
             :class="[
-              'text-lg font-semibold pr-6',
-              top.is_read ? 'text-muted-foreground' : '',
+              'text-xs',
+              top.is_read
+                ? 'text-muted-foreground/50'
+                : 'text-muted-foreground',
             ]"
           >
-            {{ top.title }}
-          </h3>
-
-          <p
-            v-if="top.type !== 'NameChangeRequest'"
-            class="[&_a]:text-blue-500 [&_a]:underline text-sm mt-1 line-clamp-2"
-            :class="
-              top.is_read ? 'text-muted-foreground/70' : 'text-muted-foreground'
-            "
-            v-html="top.message"
-          />
-          <p
-            v-else
-            class="text-sm mt-1 line-clamp-2"
-            :class="
-              top.is_read ? 'text-muted-foreground/70' : 'text-muted-foreground'
-            "
+            <TimeAgo :date="top.created_at" />
+          </span>
+          <span
+            class="inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-xs font-medium text-muted-foreground"
           >
-            {{ top.message }}
-          </p>
-
-          <NotificationContext
-            v-if="top.entity_id"
-            :type="top.type"
-            :entity-id="top.entity_id"
-            class="mt-2"
-          />
-
-          <div class="flex justify-between items-center mt-2">
-            <span
-              :class="[
-                'text-xs',
-                top.is_read
-                  ? 'text-muted-foreground/50'
-                  : 'text-muted-foreground',
-              ]"
-            >
-              <TimeAgo :date="top.created_at" />
-            </span>
-            <span
-              class="inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-xs font-medium text-muted-foreground"
-            >
-              <Layers class="h-3 w-3" />
-              +{{ extraCount }}
-              <ChevronDown class="h-3 w-3" />
-            </span>
-          </div>
-        </button>
-      </CollapsibleTrigger>
+            <Layers class="h-3 w-3" />
+            +{{ extraCount }}
+            <ChevronDown class="h-3 w-3" />
+          </span>
+        </div>
+      </div>
     </div>
 
     <CollapsibleContent>

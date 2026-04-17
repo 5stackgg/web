@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Swords, Server, HardDrive } from "lucide-vue-next";
+import { Swords, Server, HardDrive, Loader2 } from "lucide-vue-next";
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 
@@ -25,7 +25,7 @@ const NODE_STATUS_TONE: Record<string, string> = {
 };
 
 export default defineComponent({
-  components: { Swords, Server, HardDrive },
+  components: { Swords, Server, HardDrive, Loader2 },
   props: {
     type: { type: String, required: true },
     entityId: { type: String, required: true },
@@ -35,9 +35,19 @@ export default defineComponent({
       match: null as any,
       server: null as any,
       node: null as any,
+      matchLoaded: false,
+      serverLoaded: false,
+      nodeLoaded: false,
     };
   },
   computed: {
+    loading() {
+      if (!this.kind) return false;
+      if (this.kind === "match") return !this.matchLoaded;
+      if (this.kind === "server") return !this.serverLoaded;
+      if (this.kind === "node") return !this.nodeLoaded;
+      return false;
+    },
     kind() {
       if (MATCH_TYPES.includes(this.type)) return "match";
       if (SERVER_TYPES.includes(this.type)) return "server";
@@ -118,6 +128,7 @@ export default defineComponent({
         },
         result: function (this: any, { data }: any) {
           this.match = data?.matches_by_pk ?? null;
+          this.matchLoaded = true;
         },
       },
       server: {
@@ -140,6 +151,7 @@ export default defineComponent({
         },
         result: function (this: any, { data }: any) {
           this.server = data?.servers_by_pk ?? null;
+          this.serverLoaded = true;
         },
       },
       node: {
@@ -161,6 +173,7 @@ export default defineComponent({
         },
         result: function (this: any, { data }: any) {
           this.node = data?.game_server_nodes_by_pk ?? null;
+          this.nodeLoaded = true;
         },
       },
     },
@@ -170,7 +183,14 @@ export default defineComponent({
 
 <template>
   <div
-    v-if="primaryText"
+    v-if="loading"
+    class="flex items-center gap-2 text-xs px-2 py-1 rounded border border-border bg-background/40 text-muted-foreground"
+  >
+    <Loader2 class="h-3 w-3 animate-spin" />
+    <span class="italic">Loading status…</span>
+  </div>
+  <div
+    v-else-if="primaryText"
     class="flex items-center gap-2 text-xs px-2 py-1 rounded border border-border bg-background/40"
   >
     <component

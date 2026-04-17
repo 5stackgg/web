@@ -272,6 +272,7 @@ import { Empty } from "@/components/ui/empty";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { toast } from "@/components/ui/toast";
 import { generateQuery } from "~/graphql/graphqlGen";
 import SchemaSelector from "./SchemaSelector.vue";
 
@@ -324,10 +325,13 @@ export default {
     async copyQuery(query: string) {
       try {
         await navigator.clipboard.writeText(query);
-        this.$toast?.success(this.$t("pages.database.query_copied"));
+        toast({ title: this.$t("pages.database.query_copied") });
       } catch (error) {
         console.error("Failed to copy:", error);
-        this.$toast?.error(this.$t("pages.database.copy_failed"));
+        toast({
+          title: this.$t("pages.database.copy_failed"),
+          variant: "destructive",
+        });
       }
     },
   },

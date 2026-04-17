@@ -34,7 +34,7 @@ import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 import AvatarUpload from "~/components/AvatarUpload.vue";
 
 definePageMeta({
-  alias: ["/me/:id?"],
+  alias: ["/me/:id"],
 });
 
 const { isMobile } = useSidebar();

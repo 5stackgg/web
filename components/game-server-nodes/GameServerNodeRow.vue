@@ -1538,7 +1538,7 @@ const isSectionExpanded = (section: string) => {
   <!-- Desktop Metrics Row (xl and up) -->
   <TableRow class="hidden xl:table-row border-t-0" v-if="shouldShowMetrics">
     <TableCell :colspan="8">
-      <NodeMetrics :game-server-node="gameServerNode" />
+      <NodeMetrics :game-server-node="gameServerNode" compact-charts />
     </TableCell>
   </TableRow>
 

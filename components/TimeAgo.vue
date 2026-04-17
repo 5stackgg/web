@@ -19,7 +19,7 @@ export default {
   props: {
     date: {
       required: true,
-      type: String,
+      type: [String, Number, Date],
     },
     seconds: {
       required: false,
@@ -56,6 +56,10 @@ export default {
     updateText() {
       const timeAgo = new TimeAgo("en-US");
       const time = new Date(this.date);
+      if (Number.isNaN(time.getTime())) {
+        this.text = "";
+        return;
+      }
       time.setSeconds(time.getSeconds() - 1);
 
       if (this.seconds) {

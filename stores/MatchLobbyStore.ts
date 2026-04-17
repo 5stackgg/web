@@ -429,13 +429,13 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
     matchId: string,
     users: Array<{ steam_id: string; name: string; avatar_url: string }>,
   ) => {
-    if (!lobbyChat.value[matchId]) {
-      lobbyChat.value[matchId] = new Map();
-    }
+    const nextLobby = new Map<string, unknown>();
 
     for (const user of users) {
-      lobbyChat.value[matchId].set(user.steam_id, user);
+      nextLobby.set(user.steam_id, user);
     }
+
+    lobbyChat.value[matchId] = nextLobby;
   };
 
   const remove = (

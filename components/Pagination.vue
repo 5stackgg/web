@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { ChevronLeftIcon, ChevronRightIcon } from "@radix-icons/vue";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  DoubleArrowLeftIcon,
+  DoubleArrowRightIcon,
+} from "@radix-icons/vue";
 import { Label } from "~/components/ui/label";
 import {
   Select,
@@ -20,7 +25,7 @@ import {
 } from "~/components/ui/pagination";
 
 const navControlClass =
-  "h-9 shrink-0 gap-1.5 rounded-md px-1.5 text-sm font-semibold text-muted-foreground shadow-none hover:bg-transparent hover:text-foreground disabled:opacity-35 sm:px-2.5";
+  "size-9 shrink-0 rounded-md p-0 text-muted-foreground shadow-none hover:bg-transparent hover:text-foreground disabled:opacity-35";
 const pageItemBaseClass =
   "size-9 shrink-0 rounded-md border text-sm font-semibold tabular-nums shadow-none";
 const activePageItemClass =
@@ -46,12 +51,12 @@ const inactivePageItemClass =
     >
       <PaginationContent v-slot="{ items }" class="flex-nowrap gap-1 pr-2">
         <PaginationFirst :class="navControlClass">
-          <ChevronLeftIcon class="size-3.5" />
-          <span>First</span>
+          <DoubleArrowLeftIcon class="size-3.5" />
+          <span class="sr-only">First page</span>
         </PaginationFirst>
         <PaginationPrevious :class="navControlClass">
           <ChevronLeftIcon class="size-3.5" />
-          <span>Previous</span>
+          <span class="sr-only">Previous page</span>
         </PaginationPrevious>
 
         <template v-for="(item, index) in items">
@@ -79,12 +84,12 @@ const inactivePageItemClass =
         </template>
 
         <PaginationNext :class="navControlClass">
-          <span>Next</span>
           <ChevronRightIcon class="size-3.5" />
+          <span class="sr-only">Next page</span>
         </PaginationNext>
         <PaginationLast :class="navControlClass">
-          <span>Last</span>
-          <ChevronRightIcon class="size-3.5" />
+          <DoubleArrowRightIcon class="size-3.5" />
+          <span class="sr-only">Last page</span>
         </PaginationLast>
       </PaginationContent>
     </PaginationRoot>

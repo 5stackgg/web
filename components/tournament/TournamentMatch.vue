@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
 import TournamentRoundLineup from "~/components/tournament/TournamentRoundLineup.vue";
+import MatchMapDots from "~/components/match/MatchMapDots.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import {
   e_match_status_enum,
@@ -379,6 +380,7 @@ const shouldShowCrossBracketDestination = (
             BO{{ getBestOf(bracket, stage, tournament) }}
           </span>
         </Badge>
+        <MatchMapDots v-if="bracket.match" :match="bracket.match" />
       </div>
 
       <!-- Display organizer-set schedule if available -->

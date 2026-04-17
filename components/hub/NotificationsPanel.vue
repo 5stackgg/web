@@ -52,9 +52,7 @@ import NotificationStack from "~/components/notification/NotificationStack.vue";
 
         <template
           v-for="item of stackedNotifications"
-          :key="
-            item.kind === 'single' ? item.notification.id : item.entityId
-          "
+          :key="item.kind === 'single' ? item.notification.id : item.entityId"
         >
           <NotificationStack
             v-if="item.kind === 'stack'"

@@ -5,10 +5,7 @@ import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 
 const MATCH_TYPES = ["MatchStatusChange", "MatchSupport"];
-const SERVER_TYPES = [
-  "DedicatedServerStatus",
-  "DedicatedServerRconStatus",
-];
+const SERVER_TYPES = ["DedicatedServerStatus", "DedicatedServerRconStatus"];
 const NODE_TYPES = ["GameNodeStatus"];
 
 const MATCH_STATUS_TONE: Record<string, string> = {

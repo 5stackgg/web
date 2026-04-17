@@ -39,7 +39,11 @@ const props = withDefaults(defineProps<NotificationItemProps>(), {
 const emit = defineEmits<{
   (e: "dismiss", id: string): void;
   (e: "delete", id: string): void;
-  (e: "action", notification: NotificationItemProps["notification"], action: NotificationAction): void;
+  (
+    e: "action",
+    notification: NotificationItemProps["notification"],
+    action: NotificationAction,
+  ): void;
 }>();
 
 const wrapperClass = computed(() =>

@@ -44,23 +44,23 @@ const props = withDefaults(
 const emit = defineEmits<{
   (e: "dismiss", id: string): void;
   (e: "delete", id: string): void;
-  (e: "action", notification: StackNotification, action: NotificationAction): void;
+  (
+    e: "action",
+    notification: StackNotification,
+    action: NotificationAction,
+  ): void;
   (e: "dismissAll", ids: string[]): void;
   (e: "deleteAll", ids: string[]): void;
 }>();
 
 const top = computed(() => props.notifications[0]);
 const extraCount = computed(() => props.notifications.length - 1);
-const hasUnread = computed(() =>
-  props.notifications.some((n) => !n.is_read),
-);
+const hasUnread = computed(() => props.notifications.some((n) => !n.is_read));
 const unreadIds = computed(() =>
   props.notifications.filter((n) => !n.is_read).map((n) => n.id),
 );
 const deletableIds = computed(() =>
-  props.notifications
-    .filter((n) => n.deletable !== false)
-    .map((n) => n.id),
+  props.notifications.filter((n) => n.deletable !== false).map((n) => n.id),
 );
 
 const topCardClass = computed(() =>
@@ -119,9 +119,7 @@ const expandedWrapperClass = computed(() =>
             v-if="top.type !== 'NameChangeRequest'"
             class="[&_a]:text-blue-500 [&_a]:underline text-sm mt-1 line-clamp-2"
             :class="
-              top.is_read
-                ? 'text-muted-foreground/70'
-                : 'text-muted-foreground'
+              top.is_read ? 'text-muted-foreground/70' : 'text-muted-foreground'
             "
             v-html="top.message"
           />
@@ -129,9 +127,7 @@ const expandedWrapperClass = computed(() =>
             v-else
             class="text-sm mt-1 line-clamp-2"
             :class="
-              top.is_read
-                ? 'text-muted-foreground/70'
-                : 'text-muted-foreground'
+              top.is_read ? 'text-muted-foreground/70' : 'text-muted-foreground'
             "
           >
             {{ top.message }}
@@ -212,7 +208,9 @@ const expandedWrapperClass = computed(() =>
           :show-context="false"
           @dismiss="(id) => emit('dismiss', id)"
           @delete="(id) => emit('delete', id)"
-          @action="(notification, action) => emit('action', notification, action)"
+          @action="
+            (notification, action) => emit('action', notification, action)
+          "
         />
       </div>
     </CollapsibleContent>

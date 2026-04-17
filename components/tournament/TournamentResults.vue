@@ -24,9 +24,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
           <TableHeader>
             <TableRow>
               <TableHead>{{ $t("team.table.team") }}</TableHead>
-              <TableHead class="text-center">{{ $t("common.stats.wins") }}</TableHead>
-              <TableHead class="text-center">{{ $t("common.stats.losses") }}</TableHead>
-              <TableHead class="text-center">{{ $t("tournament.results_table.matches") }}</TableHead>
+              <TableHead class="text-center">{{
+                $t("common.stats.wins")
+              }}</TableHead>
+              <TableHead class="text-center">{{
+                $t("common.stats.losses")
+              }}</TableHead>
+              <TableHead class="text-center">{{
+                $t("tournament.results_table.matches")
+              }}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

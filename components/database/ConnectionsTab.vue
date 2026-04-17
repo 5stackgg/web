@@ -4,9 +4,9 @@
     <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground"
-            >{{ $t("pages.database.connections.total") }}</CardTitle
-          >
+          <CardTitle class="text-sm font-medium text-muted-foreground">{{
+            $t("pages.database.connections.total")
+          }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="text-2xl font-bold">
@@ -16,9 +16,9 @@
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground"
-            >{{ $t("pages.database.connections.active") }}</CardTitle
-          >
+          <CardTitle class="text-sm font-medium text-muted-foreground">{{
+            $t("pages.database.connections.active")
+          }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="text-2xl font-bold">
@@ -28,9 +28,9 @@
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground"
-            >{{ $t("pages.database.connections.idle") }}</CardTitle
-          >
+          <CardTitle class="text-sm font-medium text-muted-foreground">{{
+            $t("pages.database.connections.idle")
+          }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="text-2xl font-bold">{{ connectionStats?.idle || 0 }}</div>
@@ -38,9 +38,9 @@
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground"
-            >{{ $t("pages.database.connections.idle_in_txn") }}</CardTitle
-          >
+          <CardTitle class="text-sm font-medium text-muted-foreground">{{
+            $t("pages.database.connections.idle_in_txn")
+          }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="text-2xl font-bold">
@@ -50,9 +50,9 @@
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground"
-            >{{ $t("pages.database.connections.waiting") }}</CardTitle
-          >
+          <CardTitle class="text-sm font-medium text-muted-foreground">{{
+            $t("pages.database.connections.waiting")
+          }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="text-2xl font-bold">
@@ -64,7 +64,9 @@
 
     <!-- Active Queries Section -->
     <div>
-      <h3 class="text-lg font-semibold mb-3">{{ $t("pages.database.connections.active_queries_title") }}</h3>
+      <h3 class="text-lg font-semibold mb-3">
+        {{ $t("pages.database.connections.active_queries_title") }}
+      </h3>
       <Card>
         <Table>
           <TableHeader>
@@ -73,7 +75,9 @@
               <TableHead>{{ $t("pages.database.columns.user") }}</TableHead>
               <TableHead>{{ $t("pages.database.columns.app") }}</TableHead>
               <TableHead>{{ $t("pages.database.columns.state") }}</TableHead>
-              <TableHead>{{ $t("pages.database.connections.wait_event") }}</TableHead>
+              <TableHead>{{
+                $t("pages.database.connections.wait_event")
+              }}</TableHead>
               <TableHead>{{ $t("pages.database.columns.duration") }}</TableHead>
               <TableHead>{{ $t("pages.database.columns.query") }}</TableHead>
             </TableRow>
@@ -97,7 +101,9 @@
                     ({{ query.wait_event }})
                   </span>
                 </span>
-                <span v-else class="text-muted-foreground">{{ $t("common.none") }}</span>
+                <span v-else class="text-muted-foreground">{{
+                  $t("common.none")
+                }}</span>
               </TableCell>
               <TableCell>
                 <Badge :variant="getDurationVariant(query.duration_seconds)">
@@ -134,7 +140,9 @@
 
     <!-- All Connections -->
     <div>
-      <h3 class="text-lg font-semibold mb-3">{{ $t("pages.database.connections.all_connections_title") }}</h3>
+      <h3 class="text-lg font-semibold mb-3">
+        {{ $t("pages.database.connections.all_connections_title") }}
+      </h3>
       <Card>
         <Table>
           <TableHeader>

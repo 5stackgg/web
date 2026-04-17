@@ -41,7 +41,11 @@ export async function loadMonaco() {
             if (label === "css" || label === "scss" || label === "less") {
               return new CssWorker();
             }
-            if (label === "html" || label === "handlebars" || label === "razor") {
+            if (
+              label === "html" ||
+              label === "handlebars" ||
+              label === "razor"
+            ) {
               return new HtmlWorker();
             }
             if (label === "typescript" || label === "javascript") {

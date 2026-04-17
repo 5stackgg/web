@@ -57,7 +57,8 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       "matchLobby:liveMatches",
       subscription.subscribe({
         next: ({ data }) => {
-          liveMatchesCount.value = data?.matches_aggregate?.aggregate?.count || 0;
+          liveMatchesCount.value =
+            data?.matches_aggregate?.aggregate?.count || 0;
         },
         error: (error) => {
           console.error("Error in live matches subscription:", error);
@@ -169,7 +170,8 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       "matchLobby:openMatches",
       subscription.subscribe({
         next: ({ data }) => {
-          openMatchesCount.value = data?.matches_aggregate?.aggregate?.count || 0;
+          openMatchesCount.value =
+            data?.matches_aggregate?.aggregate?.count || 0;
         },
         error: (error) => {
           console.error("Error in open matches subscription:", error);

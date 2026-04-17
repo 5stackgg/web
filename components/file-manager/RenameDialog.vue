@@ -27,7 +27,9 @@
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="handleCancel">{{ $t("common.cancel") }}</Button>
+        <Button variant="outline" @click="handleCancel">{{
+          $t("common.cancel")
+        }}</Button>
         <Button @click="handleRename" :disabled="!newName || store.isLoading">
           {{ $t("common.rename") }}
         </Button>

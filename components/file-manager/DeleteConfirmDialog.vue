@@ -12,8 +12,12 @@
         <DialogDescription>
           {{
             item?.isDirectory
-              ? $t("file_manager.delete_confirm.description_directory", { name: item?.name })
-              : $t("file_manager.delete_confirm.description_file", { name: item?.name })
+              ? $t("file_manager.delete_confirm.description_directory", {
+                  name: item?.name,
+                })
+              : $t("file_manager.delete_confirm.description_file", {
+                  name: item?.name,
+                })
           }}
         </DialogDescription>
       </DialogHeader>
@@ -24,7 +28,9 @@
       </Alert>
 
       <DialogFooter>
-        <Button variant="outline" @click="handleCancel">{{ $t("common.cancel") }}</Button>
+        <Button variant="outline" @click="handleCancel">{{
+          $t("common.cancel")
+        }}</Button>
         <Button
           variant="destructive"
           @click="handleDelete"

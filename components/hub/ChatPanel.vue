@@ -190,7 +190,8 @@ function getRoomIcon(tab: ChatTab) {
 function getRoomSubtitle(tab: ChatTab) {
   if (tab.type === "organizers") return t("chat_room_subtitles.organizers");
   if (tab.type === "tournament") return t("chat_room_subtitles.tournament");
-  if (tab.id.startsWith("matchmaking:")) return t("chat_room_subtitles.matchmaking");
+  if (tab.id.startsWith("matchmaking:"))
+    return t("chat_room_subtitles.matchmaking");
   if (tab.type === "match") return t("chat_room_subtitles.match");
   if (tab.type === "team") return t("chat_room_subtitles.team");
   return "";

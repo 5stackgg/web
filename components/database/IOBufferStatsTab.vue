@@ -13,7 +13,9 @@
 
         <!-- Schema Selector -->
         <div class="flex items-center gap-2">
-          <Label class="text-xs text-muted-foreground whitespace-nowrap">{{ $t("pages.database.columns.schema") }}</Label>
+          <Label class="text-xs text-muted-foreground whitespace-nowrap">{{
+            $t("pages.database.columns.schema")
+          }}</Label>
           <SchemaSelector @change="handleSchemaChange" class="w-40" />
         </div>
       </div>
@@ -28,13 +30,27 @@
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{{ $t("pages.database.columns.schema") }}</TableHead>
-                  <TableHead>{{ $t("pages.database.columns.table") }}</TableHead>
-                  <TableHead class="text-right">{{ $t("pages.database.io.heap_hits") }}</TableHead>
-                  <TableHead class="text-right">{{ $t("pages.database.io.heap_reads") }}</TableHead>
-                  <TableHead class="text-right">{{ $t("pages.database.io.index_hits") }}</TableHead>
-                  <TableHead class="text-right">{{ $t("pages.database.io.index_reads") }}</TableHead>
-                  <TableHead class="text-right">{{ $t("pages.database.io.cache_hit_pct") }}</TableHead>
+                  <TableHead>{{
+                    $t("pages.database.columns.schema")
+                  }}</TableHead>
+                  <TableHead>{{
+                    $t("pages.database.columns.table")
+                  }}</TableHead>
+                  <TableHead class="text-right">{{
+                    $t("pages.database.io.heap_hits")
+                  }}</TableHead>
+                  <TableHead class="text-right">{{
+                    $t("pages.database.io.heap_reads")
+                  }}</TableHead>
+                  <TableHead class="text-right">{{
+                    $t("pages.database.io.index_hits")
+                  }}</TableHead>
+                  <TableHead class="text-right">{{
+                    $t("pages.database.io.index_reads")
+                  }}</TableHead>
+                  <TableHead class="text-right">{{
+                    $t("pages.database.io.cache_hit_pct")
+                  }}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -95,12 +111,24 @@
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{{ $t("pages.database.columns.schema") }}</TableHead>
-                  <TableHead>{{ $t("pages.database.columns.table") }}</TableHead>
-                  <TableHead>{{ $t("pages.database.columns.index") }}</TableHead>
-                  <TableHead class="text-right">{{ $t("pages.database.io.blocks_hit") }}</TableHead>
-                  <TableHead class="text-right">{{ $t("pages.database.io.blocks_read") }}</TableHead>
-                  <TableHead class="text-right">{{ $t("pages.database.io.cache_hit_pct") }}</TableHead>
+                  <TableHead>{{
+                    $t("pages.database.columns.schema")
+                  }}</TableHead>
+                  <TableHead>{{
+                    $t("pages.database.columns.table")
+                  }}</TableHead>
+                  <TableHead>{{
+                    $t("pages.database.columns.index")
+                  }}</TableHead>
+                  <TableHead class="text-right">{{
+                    $t("pages.database.io.blocks_hit")
+                  }}</TableHead>
+                  <TableHead class="text-right">{{
+                    $t("pages.database.io.blocks_read")
+                  }}</TableHead>
+                  <TableHead class="text-right">{{
+                    $t("pages.database.io.cache_hit_pct")
+                  }}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

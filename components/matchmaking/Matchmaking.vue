@@ -118,7 +118,8 @@ const mmCardPending =
             :class="[
               mmCardBase,
               'transition-all duration-300 ease-out',
-              pendingMatchType === type.value && `${mmCardPending} scale-[1.03]`,
+              pendingMatchType === type.value &&
+                `${mmCardPending} scale-[1.03]`,
               pendingMatchType &&
                 pendingMatchType !== type.value &&
                 'opacity-40 scale-95',
@@ -469,4 +470,3 @@ export default {
   },
 };
 </script>
-

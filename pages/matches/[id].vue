@@ -54,9 +54,7 @@ const vsBaseClasses =
   <div v-if="match" class="flex flex-col gap-4 md:gap-6">
     <PageTransition>
       <header :class="heroClasses">
-        <div
-          class="flex items-center gap-3 flex-wrap mb-5 max-sm:mb-[0.85rem]"
-        >
+        <div class="flex items-center gap-3 flex-wrap mb-5 max-sm:mb-[0.85rem]">
           <span
             :class="[
               statusBaseClasses,
@@ -136,10 +134,7 @@ const vsBaseClasses =
           </div>
 
           <div class="flex items-center justify-center">
-            <div
-              v-if="hasScores"
-              class="inline-flex items-center gap-4"
-            >
+            <div v-if="hasScores" class="inline-flex items-center gap-4">
               <span
                 :class="[
                   scoreClasses,
@@ -160,12 +155,12 @@ const vsBaseClasses =
                 {{ mapScores.l2 }}
               </span>
             </div>
-            <span v-else :class="[vsBaseClasses, 'text-base px-4 py-[0.6rem]']">VS</span>
+            <span v-else :class="[vsBaseClasses, 'text-base px-4 py-[0.6rem]']"
+              >VS</span
+            >
           </div>
 
-          <div
-            class="flex flex-col gap-[0.35rem] min-w-0 text-right items-end"
-          >
+          <div class="flex flex-col gap-[0.35rem] min-w-0 text-right items-end">
             <span
               class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
             >
@@ -211,120 +206,124 @@ const vsBaseClasses =
       </header>
     </PageTransition>
 
-  <div
-    class="grid items-start gap-4 md:gap-6 lg:gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,_400px)_minmax(0,1fr)]"
-  >
-    <div class="grid grid-cols-1 gap-y-4 md:gap-y-6 min-w-0">
-      <PageTransition :delay="100">
-        <MatchInfo :match="match"></MatchInfo>
-      </PageTransition>
+    <div
+      class="grid items-start gap-4 md:gap-6 lg:gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,_400px)_minmax(0,1fr)]"
+    >
+      <div class="grid grid-cols-1 gap-y-4 md:gap-y-6 min-w-0">
+        <PageTransition :delay="100">
+          <MatchInfo :match="match"></MatchInfo>
+        </PageTransition>
 
-      <PageTransition :delay="200">
-        <ChatLobby
-          class="max-h-96"
-          instance="matches/id"
-          type="match"
-          :lobby-id="match.id"
-          :play-notification-sound="match.status !== e_match_status_enum.Live"
-          v-if="canJoinLobby"
-        />
-      </PageTransition>
+        <PageTransition :delay="200">
+          <ChatLobby
+            class="max-h-96"
+            instance="matches/id"
+            type="match"
+            :lobby-id="match.id"
+            :play-notification-sound="match.status !== e_match_status_enum.Live"
+            v-if="canJoinLobby"
+          />
+        </PageTransition>
 
-      <PageTransition :delay="200">
-        <div
-          v-if="
-            match.options.best_of &&
-            match.options.best_of > 0 &&
-            match.status !== e_match_status_enum.Veto
-          "
-          class="flex flex-col gap-3"
-        >
-          <div v-for="(slot, index) in mapSlots" :key="index">
-            <MatchMaps v-if="slot" :match="match" :match-map="slot"></MatchMaps>
-            <div
-              v-else
-              class="rounded-xl overflow-hidden border-2 border-dashed border-border/60"
-            >
+        <PageTransition :delay="200">
+          <div
+            v-if="
+              match.options.best_of &&
+              match.options.best_of > 0 &&
+              match.status !== e_match_status_enum.Veto
+            "
+            class="flex flex-col gap-3"
+          >
+            <div v-for="(slot, index) in mapSlots" :key="index">
+              <MatchMaps
+                v-if="slot"
+                :match="match"
+                :match-map="slot"
+              ></MatchMaps>
               <div
-                class="aspect-[16/5] bg-muted/40 flex items-center justify-center text-muted-foreground"
+                v-else
+                class="rounded-xl overflow-hidden border-2 border-dashed border-border/60"
               >
-                <div class="flex flex-col items-center gap-1">
-                  <span class="text-sm uppercase tracking-wide font-semibold">
-                    {{ $t("match.map_number", { count: index + 1 }) }}
-                  </span>
-                  <span class="text-xs">
-                    {{ $t("match.map_tbd") }}
-                  </span>
+                <div
+                  class="aspect-[16/5] bg-muted/40 flex items-center justify-center text-muted-foreground"
+                >
+                  <div class="flex flex-col items-center gap-1">
+                    <span class="text-sm uppercase tracking-wide font-semibold">
+                      {{ $t("match.map_number", { count: index + 1 }) }}
+                    </span>
+                    <span class="text-xs">
+                      {{ $t("match.map_tbd") }}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div class="bg-muted/40 border-t border-border/30 px-3 py-2.5">
-                <div class="flex items-center justify-center">
-                  <span class="text-xs text-muted-foreground">—</span>
+                <div class="bg-muted/40 border-t border-border/30 px-3 py-2.5">
+                  <div class="flex items-center justify-center">
+                    <span class="text-xs text-muted-foreground">—</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </PageTransition>
-    </div>
+        </PageTransition>
+      </div>
 
-    <div class="min-w-0">
-      <PageTransition>
-        <StreamEmbed
-          v-if="showLiveStreams && match.streams.length > 0"
-          :streams="match.streams"
-          class="pb-6 max-w-[1500px] w-full overflow-x-auto"
-        />
-      </PageTransition>
+      <div class="min-w-0">
+        <PageTransition>
+          <StreamEmbed
+            v-if="showLiveStreams && match.streams.length > 0"
+            :streams="match.streams"
+            class="pb-6 max-w-[1500px] w-full overflow-x-auto"
+          />
+        </PageTransition>
 
-      <PageTransition :delay="100">
-        <Alert
-          v-if="showServerErrorAlert"
-          variant="destructive"
-          class="bg-red-600 text-white max-w-md mb-6"
-        >
-          <AlertTriangle class="h-4 w-4" />
-          <AlertTitle>{{ $t("match.server_error.title") }}</AlertTitle>
-          <AlertDescription class="whitespace-pre-wrap break-words">
-            {{ match.server_error }}
-          </AlertDescription>
-        </Alert>
-      </PageTransition>
-
-      <PageTransition :delay="100">
-        <template
-          v-if="
-            regions.length === 0 && match.options.region_veto && !match.region
-          "
-        >
+        <PageTransition :delay="100">
           <Alert
+            v-if="showServerErrorAlert"
             variant="destructive"
             class="bg-red-600 text-white max-w-md mb-6"
           >
-            <AlertTitle>{{
-              $t("match.region_veto.no_regions_available")
-            }}</AlertTitle>
-            <AlertDescription>
-              {{ $t("match.region_veto.no_regions_available_description") }}
+            <AlertTriangle class="h-4 w-4" />
+            <AlertTitle>{{ $t("match.server_error.title") }}</AlertTitle>
+            <AlertDescription class="whitespace-pre-wrap break-words">
+              {{ match.server_error }}
             </AlertDescription>
           </Alert>
-        </template>
-      </PageTransition>
+        </PageTransition>
 
-      <PageTransition :delay="100">
-        <MatchRegionVeto :match="match" class="pb-6" />
-      </PageTransition>
+        <PageTransition :delay="100">
+          <template
+            v-if="
+              regions.length === 0 && match.options.region_veto && !match.region
+            "
+          >
+            <Alert
+              variant="destructive"
+              class="bg-red-600 text-white max-w-md mb-6"
+            >
+              <AlertTitle>{{
+                $t("match.region_veto.no_regions_available")
+              }}</AlertTitle>
+              <AlertDescription>
+                {{ $t("match.region_veto.no_regions_available_description") }}
+              </AlertDescription>
+            </Alert>
+          </template>
+        </PageTransition>
 
-      <PageTransition :delay="100">
-        <MatchMapVeto :match="match" class="pb-6" />
-      </PageTransition>
+        <PageTransition :delay="100">
+          <MatchRegionVeto :match="match" class="pb-6" />
+        </PageTransition>
 
-      <PageTransition :delay="200">
-        <CardContent class="p-4">
-          <MatchTabs :match="match"></MatchTabs>
-        </CardContent>
-      </PageTransition>
-    </div>
+        <PageTransition :delay="100">
+          <MatchMapVeto :match="match" class="pb-6" />
+        </PageTransition>
+
+        <PageTransition :delay="200">
+          <CardContent class="p-4">
+            <MatchTabs :match="match"></MatchTabs>
+          </CardContent>
+        </PageTransition>
+      </div>
     </div>
   </div>
 </template>
@@ -336,6 +335,7 @@ import { mapFields } from "~/graphql/mapGraphql";
 import { matchLineups } from "~/graphql/matchLineupsGraphql";
 import { playerFields } from "~/graphql/playerFields";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
+import { eloFields } from "~/graphql/eloFields";
 import { useMatchContext } from "~/composables/useMatchContext";
 
 export default {
@@ -489,6 +489,7 @@ export default {
               ],
               lineup_1: [{}, matchLineups],
               lineup_2: [{}, matchLineups],
+              elo_changes: [{}, eloFields],
               streams: [
                 {
                   order_by: [
@@ -709,4 +710,3 @@ export default {
   },
 };
 </script>
-

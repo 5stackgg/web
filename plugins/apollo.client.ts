@@ -6,7 +6,10 @@ import { createClient } from "graphql-ws";
 import { provideApolloClient } from "@vue/apollo-composable";
 import { createHttpLink, from, split } from "@apollo/client/core";
 import type { ApolloClient } from "@apollo/client/core";
-import type { InMemoryCache, NormalizedCacheObject } from "@apollo/client/cache";
+import type {
+  InMemoryCache,
+  NormalizedCacheObject,
+} from "@apollo/client/cache";
 import { toast } from "@/components/ui/toast";
 
 const mergeObjectFields = (

@@ -153,8 +153,7 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
         "collapsible-down":
           "collapsible-down 0.28s cubic-bezier(0.16, 1, 0.3, 1)",
-        "collapsible-up":
-          "collapsible-up 0.22s cubic-bezier(0.4, 0, 1, 1)",
+        "collapsible-up": "collapsible-up 0.22s cubic-bezier(0.4, 0, 1, 1)",
         "caret-blink": "caret-blink 1.25s ease-out infinite",
         "spin-smooth": "spin-smooth 1s cubic-bezier(0.4, 0, 0.2, 1) infinite",
         "topo-flow": "topo-flow linear infinite",

@@ -2,7 +2,9 @@
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
     <DialogContent class="max-w-4xl max-h-[80vh] flex flex-col">
       <DialogHeader>
-        <DialogTitle>{{ $t("file_manager.editor.title", { path: filePath }) }}</DialogTitle>
+        <DialogTitle>{{
+          $t("file_manager.editor.title", { path: filePath })
+        }}</DialogTitle>
         <DialogDescription>
           {{ $t("file_manager.editor.description") }}
         </DialogDescription>
@@ -31,7 +33,9 @@
           class="bg-green-50 border-green-200"
         >
           <Check class="w-4 h-4 text-green-600" />
-          <AlertDescription class="text-green-800">{{ $t("file_manager.editor.save_success") }}</AlertDescription>
+          <AlertDescription class="text-green-800">{{
+            $t("file_manager.editor.save_success")
+          }}</AlertDescription>
         </Alert>
       </div>
 

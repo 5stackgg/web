@@ -37,9 +37,7 @@ const { isMobile } = useSidebar();
           @click="navigateTo('/matches/create')"
         >
           <PlusCircle class="w-4 h-4" />
-          <span class="hidden md:inline">{{
-            $t("pages.matches.create")
-          }}</span>
+          <span class="hidden md:inline">{{ $t("pages.matches.create") }}</span>
         </button>
       </template>
     </PageHeading>

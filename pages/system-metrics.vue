@@ -33,9 +33,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 </script>
 
 <template>
-  <div
-    class="relative space-y-6 [--tac-clip:14px] [--tac-clip-sm:10px]"
-  >
+  <div class="relative space-y-6 [--tac-clip:14px] [--tac-clip-sm:10px]">
     <div
       aria-hidden="true"
       class="pointer-events-none fixed inset-0 -z-10 opacity-[0.04] [background-image:linear-gradient(hsl(var(--tac-amber))_1px,transparent_1px),linear-gradient(90deg,hsl(var(--tac-amber))_1px,transparent_1px)] [background-size:64px_64px]"
@@ -414,9 +412,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                   : serviceCpuStatus(service) === 'warning'
                     ? 'border-[hsl(var(--tac-amber)/0.55)]'
                     : 'border-border',
-                isServiceExpanded(service)
-                  ? 'md:col-span-2 xl:col-span-3'
-                  : '',
+                isServiceExpanded(service) ? 'md:col-span-2 xl:col-span-3' : '',
               ]"
             >
               <span
@@ -925,7 +921,7 @@ export default {
       }
 
       return this.filteredNodes.reduce((best: any, node: any) => {
-        const bestCpu = best ? this.nodeMetricsCache[best.id]?.cpu ?? -1 : -1;
+        const bestCpu = best ? (this.nodeMetricsCache[best.id]?.cpu ?? -1) : -1;
         const nodeCpu = this.nodeMetricsCache[node.id]?.cpu ?? -1;
         return nodeCpu > bestCpu ? node : best;
       }, null);

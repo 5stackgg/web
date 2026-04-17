@@ -686,7 +686,11 @@ function startMomentum() {
         :class="zoomBtnShineClasses"
         class="bg-gray-800/90 backdrop-blur-md hover:bg-gray-700/90 active:bg-gray-600/90 text-white rounded-lg p-2.5 shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 border border-gray-700/50 transition-all duration-200 ease-in-out flex items-center justify-center"
         @click="toggleFullscreen"
-        :title="isFullscreen ? $t('common.exit_fullscreen') : $t('common.enter_fullscreen')"
+        :title="
+          isFullscreen
+            ? $t('common.exit_fullscreen')
+            : $t('common.enter_fullscreen')
+        "
       >
         <Maximize v-if="!isFullscreen" class="w-4 h-4" />
         <Minimize v-else class="w-4 h-4" />

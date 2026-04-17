@@ -5,16 +5,22 @@
       <CardContent class="pt-6">
         <div class="flex gap-4 items-end">
           <div class="flex-1">
-            <Label>{{ $t("pages.database.query_performance.search_query") }}</Label>
+            <Label>{{
+              $t("pages.database.query_performance.search_query")
+            }}</Label>
             <Input
               v-model="searchQuery"
               type="text"
-              :placeholder="$t('pages.database.query_performance.filter_by_query_text')"
+              :placeholder="
+                $t('pages.database.query_performance.filter_by_query_text')
+              "
               class="mt-1.5"
             />
           </div>
           <div>
-            <Label>{{ $t("pages.database.query_performance.min_calls") }}</Label>
+            <Label>{{
+              $t("pages.database.query_performance.min_calls")
+            }}</Label>
             <Input
               v-model.number="minCalls"
               type="number"
@@ -26,13 +32,23 @@
             <Label>{{ $t("pages.database.query_performance.sort_by") }}</Label>
             <Select v-model="sortBy">
               <SelectTrigger class="mt-1.5">
-                <SelectValue :placeholder="$t('pages.database.query_performance.sort_by')" />
+                <SelectValue
+                  :placeholder="$t('pages.database.query_performance.sort_by')"
+                />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="mean_exec_time">{{ $t("pages.database.query_performance.avg_time") }}</SelectItem>
-                <SelectItem value="max_exec_time">{{ $t("pages.database.query_performance.max_time") }}</SelectItem>
-                <SelectItem value="calls">{{ $t("pages.database.query_performance.calls") }}</SelectItem>
-                <SelectItem value="total_exec_time">{{ $t("pages.database.query_performance.total_time") }}</SelectItem>
+                <SelectItem value="mean_exec_time">{{
+                  $t("pages.database.query_performance.avg_time")
+                }}</SelectItem>
+                <SelectItem value="max_exec_time">{{
+                  $t("pages.database.query_performance.max_time")
+                }}</SelectItem>
+                <SelectItem value="calls">{{
+                  $t("pages.database.query_performance.calls")
+                }}</SelectItem>
+                <SelectItem value="total_exec_time">{{
+                  $t("pages.database.query_performance.total_time")
+                }}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -46,12 +62,30 @@
         <TableHeader>
           <TableRow>
             <TableHead>{{ $t("pages.database.query_detail.query") }}</TableHead>
-            <TableHead class="text-right">{{ $t("pages.database.query_performance.calls") }}</TableHead>
-            <TableHead class="text-right">{{ $t("pages.database.query_performance.avg_time") }} (ms)</TableHead>
-            <TableHead class="text-right">{{ $t("pages.database.query_performance.max_time") }} (ms)</TableHead>
-            <TableHead class="text-right">{{ $t("pages.database.locks.cache_hit_ratio") }}</TableHead>
-            <TableHead class="text-right">{{ $t("pages.database.query_performance.temp_blocks") }}</TableHead>
-            <TableHead class="text-center">{{ $t("common.actions_label") }}</TableHead>
+            <TableHead class="text-right">{{
+              $t("pages.database.query_performance.calls")
+            }}</TableHead>
+            <TableHead class="text-right"
+              >{{
+                $t("pages.database.query_performance.avg_time")
+              }}
+              (ms)</TableHead
+            >
+            <TableHead class="text-right"
+              >{{
+                $t("pages.database.query_performance.max_time")
+              }}
+              (ms)</TableHead
+            >
+            <TableHead class="text-right">{{
+              $t("pages.database.locks.cache_hit_ratio")
+            }}</TableHead>
+            <TableHead class="text-right">{{
+              $t("pages.database.query_performance.temp_blocks")
+            }}</TableHead>
+            <TableHead class="text-center">{{
+              $t("common.actions_label")
+            }}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

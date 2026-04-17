@@ -342,8 +342,7 @@ const shouldShowCrossBracketDestination = (
       class="tournament-match cursor-pointer border-2 rounded-lg p-1 transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/20 bg-gray-800/50 backdrop-blur-sm relative flex flex-col gap-2"
       :class="{
         'border-green-500 hover:border-green-400': isActiveMatch(bracket),
-        'border-amber-500 hover:border-amber-400':
-          isWaitingForCheckIn(bracket),
+        'border-amber-500 hover:border-amber-400': isWaitingForCheckIn(bracket),
         'border-red-500 hover:border-red-400': hasProblemStatus(bracket),
         'border-gray-700 hover:border-blue-500':
           !isActiveMatch(bracket) &&

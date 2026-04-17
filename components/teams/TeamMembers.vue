@@ -19,7 +19,9 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
       <div class="space-y-1">
         <CardTitle>{{ $t("team.members.title") }}</CardTitle>
         <p class="text-xs text-muted-foreground">
-          {{ starters.length + bench.length + substitutes.length + coaches.length }}
+          {{
+            starters.length + bench.length + substitutes.length + coaches.length
+          }}
           {{ $t("team.roster_count_players") }}
         </p>
       </div>
@@ -37,15 +39,10 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
     </CardHeader>
 
     <CardContent class="space-y-5">
-      <section
-        v-if="team.can_invite && team_invites?.length"
-        class="space-y-1"
-      >
+      <section v-if="team.can_invite && team_invites?.length" class="space-y-1">
         <div class="flex items-center gap-2 px-1">
           <UserPlus class="h-3.5 w-3.5 text-muted-foreground" />
-          <h3
-            class="text-xs uppercase tracking-[0.14em] text-muted-foreground"
-          >
+          <h3 class="text-xs uppercase tracking-[0.14em] text-muted-foreground">
             {{ $t("team.members.pending_invites") }}
           </h3>
           <Badge variant="secondary">{{ team_invites.length }}</Badge>
@@ -90,9 +87,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
       <section v-if="bench.length" class="space-y-1">
         <div class="flex items-center gap-2 px-1">
           <UserMinus class="h-3.5 w-3.5 text-amber-500/80" />
-          <h3
-            class="text-xs uppercase tracking-[0.14em] text-amber-500/80"
-          >
+          <h3 class="text-xs uppercase tracking-[0.14em] text-amber-500/80">
             {{ $t("team.members.bench") }}
           </h3>
           <span
@@ -165,7 +160,12 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
       </section>
 
       <p
-        v-if="!starters.length && !bench.length && !substitutes.length && !coaches.length"
+        v-if="
+          !starters.length &&
+          !bench.length &&
+          !substitutes.length &&
+          !coaches.length
+        "
         class="py-6 text-center text-sm text-muted-foreground"
       >
         {{ $t("team.members.title") }} — 0

@@ -10,7 +10,9 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
           <Button variant="ghost" size="icon" @click="$router.back()">
             <ArrowLeft class="h-4 w-4" />
           </Button>
-          <h1 class="text-2xl font-bold">{{ $t("tournament.organizer.title") }}</h1>
+          <h1 class="text-2xl font-bold">
+            {{ $t("tournament.organizer.title") }}
+          </h1>
         </div>
       </div>
     </div>

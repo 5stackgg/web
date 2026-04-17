@@ -198,7 +198,9 @@
               <template v-else-if="store.uploadBatch.failedFiles.length === 0">
                 Upload complete
               </template>
-              <template v-else>{{ $t("file_manager.upload.complete_with_errors") }}</template>
+              <template v-else>{{
+                $t("file_manager.upload.complete_with_errors")
+              }}</template>
             </span>
           </div>
           <div class="flex items-center gap-1">
@@ -254,7 +256,11 @@
         <CollapsibleTrigger
           class="w-full px-3 py-1.5 flex items-center justify-between text-xs text-muted-foreground hover:bg-muted/50 border-t"
         >
-          <span>{{ uploadDetailsOpen ? $t("common.hide_details") : $t("common.show_details") }}</span>
+          <span>{{
+            uploadDetailsOpen
+              ? $t("common.hide_details")
+              : $t("common.show_details")
+          }}</span>
           <ChevronDown
             class="h-3 w-3 transition-transform"
             :class="{ 'rotate-180': uploadDetailsOpen }"
@@ -302,7 +308,9 @@
     <AlertDialog v-model:open="deleteDialogOpen">
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{{ $t("common.are_you_sure_short") }}</AlertDialogTitle>
+          <AlertDialogTitle>{{
+            $t("common.are_you_sure_short")
+          }}</AlertDialogTitle>
           <AlertDialogDescription>
             This will permanently delete "{{ deletingItem?.name }}". This action
             cannot be undone.

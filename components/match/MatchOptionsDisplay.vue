@@ -32,7 +32,9 @@ import MiniMapDisplay from "~/components/MinIMapDisplay.vue";
         type="button"
         class="inline-flex items-center gap-1 text-xs font-mono uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors bg-transparent border-0 p-0 cursor-pointer"
       >
-        <span class="w-1.5 h-1.5 rounded-full bg-[hsl(var(--tac-amber))]"></span>
+        <span
+          class="w-1.5 h-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
+        ></span>
         {{ $t("match.options.advanced_settings") }}
       </button>
     </CollapsibleTrigger>
@@ -41,7 +43,9 @@ import MiniMapDisplay from "~/components/MinIMapDisplay.vue";
         <!-- Game Settings -->
         <Card>
           <CardHeader class="pb-3">
-            <CardTitle class="text-sm font-medium">{{ $t("match.options.group.game_settings") }}</CardTitle>
+            <CardTitle class="text-sm font-medium">{{
+              $t("match.options.group.game_settings")
+            }}</CardTitle>
           </CardHeader>
           <CardContent class="space-y-3">
             <div class="flex items-center justify-between">
@@ -82,7 +86,9 @@ import MiniMapDisplay from "~/components/MinIMapDisplay.vue";
         <!-- Team Settings -->
         <Card>
           <CardHeader class="pb-3">
-            <CardTitle class="text-sm font-medium">{{ $t("match.options.group.team_settings") }}</CardTitle>
+            <CardTitle class="text-sm font-medium">{{
+              $t("match.options.group.team_settings")
+            }}</CardTitle>
           </CardHeader>
           <CardContent class="space-y-3">
             <div class="flex items-center justify-between">
@@ -105,7 +111,9 @@ import MiniMapDisplay from "~/components/MinIMapDisplay.vue";
         <!-- Veto Settings -->
         <Card>
           <CardHeader class="pb-3">
-            <CardTitle class="text-sm font-medium">{{ $t("match.options.group.veto_settings") }}</CardTitle>
+            <CardTitle class="text-sm font-medium">{{
+              $t("match.options.group.veto_settings")
+            }}</CardTitle>
           </CardHeader>
           <CardContent class="space-y-3">
             <div class="flex items-center justify-between">
@@ -126,7 +134,9 @@ import MiniMapDisplay from "~/components/MinIMapDisplay.vue";
         <!-- Control Settings -->
         <Card>
           <CardHeader class="pb-3">
-            <CardTitle class="text-sm font-medium">{{ $t("match.options.group.control_settings") }}</CardTitle>
+            <CardTitle class="text-sm font-medium">{{
+              $t("match.options.group.control_settings")
+            }}</CardTitle>
           </CardHeader>
           <CardContent class="space-y-3">
             <div class="flex items-center justify-between">

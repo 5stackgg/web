@@ -32,9 +32,7 @@ const compactClasses =
       aria-hidden="true"
     ></span>
 
-    <div
-      class="relative z-[1] flex-1 min-w-0 flex flex-col gap-[0.35rem]"
-    >
+    <div class="relative z-[1] flex-1 min-w-0 flex flex-col gap-[0.35rem]">
       <div
         :class="[
           'inline-flex items-center gap-[0.55rem] font-mono font-bold tracking-[0.24em] uppercase transition-colors [transition-duration:180ms] group-hover/cm:text-[hsl(var(--tac-amber))]',

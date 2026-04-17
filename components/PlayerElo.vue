@@ -33,7 +33,9 @@ import { ChevronUpIcon } from "lucide-vue-next";
     <HoverCardContent class="w-56">
       <div class="space-y-2 text-sm">
         <div class="flex items-center justify-between">
-          <span :class="['text-muted-foreground']">{{ $t("pages.leaderboard.match_types.competitive") }}</span>
+          <span :class="['text-muted-foreground']">{{
+            $t("pages.leaderboard.match_types.competitive")
+          }}</span>
 
           <span
             v-if="competitiveElo"
@@ -46,7 +48,9 @@ import { ChevronUpIcon } from "lucide-vue-next";
         </div>
 
         <div class="flex items-center justify-between">
-          <span :class="['text-muted-foreground']">{{ $t("pages.leaderboard.match_types.duel") }}</span>
+          <span :class="['text-muted-foreground']">{{
+            $t("pages.leaderboard.match_types.duel")
+          }}</span>
 
           <span
             v-if="duelElo"
@@ -59,7 +63,9 @@ import { ChevronUpIcon } from "lucide-vue-next";
         </div>
 
         <div class="flex items-center justify-between">
-          <span :class="['text-muted-foreground']">{{ $t("pages.leaderboard.match_types.wingman") }}</span>
+          <span :class="['text-muted-foreground']">{{
+            $t("pages.leaderboard.match_types.wingman")
+          }}</span>
 
           <span
             v-if="wingmanElo"

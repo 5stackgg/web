@@ -160,9 +160,7 @@ import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{{
-              $t("common.cancel")
-            }}</AlertDialogCancel>
+            <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
             <AlertDialogAction @click="deleteMap" variant="destructive">
               {{ $t("common.delete") }}
             </AlertDialogAction>

@@ -6,7 +6,9 @@
       class="rounded-none border-b border-t-0 border-x-0"
     >
       <MenubarMenu>
-        <MenubarTrigger>{{ $t("file_manager.details_panel.menu_file_label") }}</MenubarTrigger>
+        <MenubarTrigger>{{
+          $t("file_manager.details_panel.menu_file_label")
+        }}</MenubarTrigger>
         <MenubarContent>
           <MenubarItem
             @click="handleSave"
@@ -29,7 +31,9 @@
         </MenubarContent>
       </MenubarMenu>
       <MenubarMenu>
-        <MenubarTrigger>{{ $t("file_manager.details_panel.menu_edit_label") }}</MenubarTrigger>
+        <MenubarTrigger>{{
+          $t("file_manager.details_panel.menu_edit_label")
+        }}</MenubarTrigger>
         <MenubarContent>
           <MenubarItem @click="handleUndo">
             <Undo class="mr-2 h-4 w-4" />
@@ -44,7 +48,9 @@
         </MenubarContent>
       </MenubarMenu>
       <MenubarMenu>
-        <MenubarTrigger>{{ $t("file_manager.details_panel.menu_view_label") }}</MenubarTrigger>
+        <MenubarTrigger>{{
+          $t("file_manager.details_panel.menu_view_label")
+        }}</MenubarTrigger>
         <MenubarContent>
           <MenubarItem @click="toggleWordWrap">
             <WrapText class="mr-2 h-4 w-4" />
@@ -150,8 +156,12 @@
     >
       <div class="text-center">
         <FileCode class="w-16 h-16 mx-auto mb-4 opacity-50" />
-        <p class="text-lg font-medium">{{ $t("file_manager.details_panel.no_file_open_title") }}</p>
-        <p class="text-sm">{{ $t("file_manager.details_panel.no_file_open_description") }}</p>
+        <p class="text-lg font-medium">
+          {{ $t("file_manager.details_panel.no_file_open_title") }}
+        </p>
+        <p class="text-sm">
+          {{ $t("file_manager.details_panel.no_file_open_description") }}
+        </p>
       </div>
     </div>
   </div>

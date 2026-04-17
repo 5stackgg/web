@@ -19,7 +19,9 @@ definePageMeta({
               $t("pages.settings.application.branding.general")
             }}</label>
             <p class="text-sm text-muted-foreground">
-              {{ $t("pages.settings.application.branding.general_description") }}
+              {{
+                $t("pages.settings.application.branding.general_description")
+              }}
             </p>
           </div>
 
@@ -189,9 +191,7 @@ definePageMeta({
             }}</label>
             <p class="text-sm text-muted-foreground">
               {{
-                $t(
-                  "pages.settings.application.branding.login_page_description",
-                )
+                $t("pages.settings.application.branding.login_page_description")
               }}
             </p>
           </div>
@@ -356,65 +356,236 @@ const lightColorSections: ColorSection[] = [
   {
     titleKey: "pages.settings.application.branding.sections.core",
     fields: [
-      { key: "public.color_background", labelKey: "pages.settings.application.branding.colors.background", default: "0 0% 100%" },
-      { key: "public.color_foreground", labelKey: "pages.settings.application.branding.colors.foreground", default: "240 10% 3.9%" },
-      { key: "public.color_primary", labelKey: "pages.settings.application.branding.colors.primary", default: "240 5.9% 10%" },
-      { key: "public.color_primary_foreground", labelKey: "pages.settings.application.branding.colors.primary_foreground", default: "0 0% 98%" },
-      { key: "public.color_secondary", labelKey: "pages.settings.application.branding.colors.secondary", default: "240 4.8% 95.9%" },
-      { key: "public.color_secondary_foreground", labelKey: "pages.settings.application.branding.colors.secondary_foreground", default: "240 5.9% 10%" },
-      { key: "public.color_accent", labelKey: "pages.settings.application.branding.colors.accent", default: "240 4.8% 95.9%" },
-      { key: "public.color_accent_foreground", labelKey: "pages.settings.application.branding.colors.accent_foreground", default: "240 5.9% 10%" },
-      { key: "public.color_muted", labelKey: "pages.settings.application.branding.colors.muted", default: "240 4.8% 95.9%" },
-      { key: "public.color_muted_foreground", labelKey: "pages.settings.application.branding.colors.muted_foreground", default: "240 3.8% 46.1%" },
-      { key: "public.color_destructive", labelKey: "pages.settings.application.branding.colors.destructive", default: "0 84.2% 60.2%" },
-      { key: "public.color_destructive_foreground", labelKey: "pages.settings.application.branding.colors.destructive_foreground", default: "0 0% 98%" },
-      { key: "public.color_warning", labelKey: "pages.settings.application.branding.colors.warning", default: "36 100% 50%" },
-      { key: "public.color_warning_foreground", labelKey: "pages.settings.application.branding.colors.warning_foreground", default: "0 0% 100%" },
+      {
+        key: "public.color_background",
+        labelKey: "pages.settings.application.branding.colors.background",
+        default: "0 0% 100%",
+      },
+      {
+        key: "public.color_foreground",
+        labelKey: "pages.settings.application.branding.colors.foreground",
+        default: "240 10% 3.9%",
+      },
+      {
+        key: "public.color_primary",
+        labelKey: "pages.settings.application.branding.colors.primary",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_primary_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.primary_foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_secondary",
+        labelKey: "pages.settings.application.branding.colors.secondary",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_secondary_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.secondary_foreground",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_accent",
+        labelKey: "pages.settings.application.branding.colors.accent",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_accent_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.accent_foreground",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_muted",
+        labelKey: "pages.settings.application.branding.colors.muted",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_muted_foreground",
+        labelKey: "pages.settings.application.branding.colors.muted_foreground",
+        default: "240 3.8% 46.1%",
+      },
+      {
+        key: "public.color_destructive",
+        labelKey: "pages.settings.application.branding.colors.destructive",
+        default: "0 84.2% 60.2%",
+      },
+      {
+        key: "public.color_destructive_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.destructive_foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_warning",
+        labelKey: "pages.settings.application.branding.colors.warning",
+        default: "36 100% 50%",
+      },
+      {
+        key: "public.color_warning_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.warning_foreground",
+        default: "0 0% 100%",
+      },
     ],
   },
   {
     titleKey: "pages.settings.application.branding.sections.cards_borders",
     fields: [
-      { key: "public.color_card", labelKey: "pages.settings.application.branding.colors.card", default: "0 0% 100%" },
-      { key: "public.color_card_foreground", labelKey: "pages.settings.application.branding.colors.card_foreground", default: "240 10% 3.9%" },
-      { key: "public.color_border", labelKey: "pages.settings.application.branding.colors.border", default: "240 5.9% 90%" },
-      { key: "public.color_popover", labelKey: "pages.settings.application.branding.colors.popover", default: "0 0% 100%" },
-      { key: "public.color_popover_foreground", labelKey: "pages.settings.application.branding.colors.popover_foreground", default: "240 10% 3.9%" },
-      { key: "public.color_input", labelKey: "pages.settings.application.branding.colors.input", default: "240 5.9% 90%" },
-      { key: "public.color_ring", labelKey: "pages.settings.application.branding.colors.ring", default: "240 10% 3.9%" },
+      {
+        key: "public.color_card",
+        labelKey: "pages.settings.application.branding.colors.card",
+        default: "0 0% 100%",
+      },
+      {
+        key: "public.color_card_foreground",
+        labelKey: "pages.settings.application.branding.colors.card_foreground",
+        default: "240 10% 3.9%",
+      },
+      {
+        key: "public.color_border",
+        labelKey: "pages.settings.application.branding.colors.border",
+        default: "240 5.9% 90%",
+      },
+      {
+        key: "public.color_popover",
+        labelKey: "pages.settings.application.branding.colors.popover",
+        default: "0 0% 100%",
+      },
+      {
+        key: "public.color_popover_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.popover_foreground",
+        default: "240 10% 3.9%",
+      },
+      {
+        key: "public.color_input",
+        labelKey: "pages.settings.application.branding.colors.input",
+        default: "240 5.9% 90%",
+      },
+      {
+        key: "public.color_ring",
+        labelKey: "pages.settings.application.branding.colors.ring",
+        default: "240 10% 3.9%",
+      },
     ],
   },
   {
     titleKey: "pages.settings.application.branding.sections.sidebar",
     fields: [
-      { key: "public.color_sidebar_background", labelKey: "pages.settings.application.branding.colors.sidebar_background", default: "0 0% 98%" },
-      { key: "public.color_sidebar_foreground", labelKey: "pages.settings.application.branding.colors.sidebar_foreground", default: "240 5.3% 26.1%" },
-      { key: "public.color_sidebar_accent", labelKey: "pages.settings.application.branding.colors.sidebar_accent", default: "240 4.8% 95.9%" },
-      { key: "public.color_sidebar_accent_foreground", labelKey: "pages.settings.application.branding.colors.sidebar_accent_foreground", default: "240 5.9% 10%" },
-      { key: "public.color_sidebar_border", labelKey: "pages.settings.application.branding.colors.sidebar_border", default: "220 13% 91%" },
-      { key: "public.color_sidebar_primary", labelKey: "pages.settings.application.branding.colors.sidebar_primary", default: "240 5.9% 10%" },
-      { key: "public.color_sidebar_primary_foreground", labelKey: "pages.settings.application.branding.colors.sidebar_primary_foreground", default: "0 0% 98%" },
-      { key: "public.color_sidebar_ring", labelKey: "pages.settings.application.branding.colors.sidebar_ring", default: "217.2 91.2% 59.8%" },
+      {
+        key: "public.color_sidebar_background",
+        labelKey:
+          "pages.settings.application.branding.colors.sidebar_background",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_sidebar_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.sidebar_foreground",
+        default: "240 5.3% 26.1%",
+      },
+      {
+        key: "public.color_sidebar_accent",
+        labelKey: "pages.settings.application.branding.colors.sidebar_accent",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_sidebar_accent_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.sidebar_accent_foreground",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_sidebar_border",
+        labelKey: "pages.settings.application.branding.colors.sidebar_border",
+        default: "220 13% 91%",
+      },
+      {
+        key: "public.color_sidebar_primary",
+        labelKey: "pages.settings.application.branding.colors.sidebar_primary",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_sidebar_primary_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.sidebar_primary_foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_sidebar_ring",
+        labelKey: "pages.settings.application.branding.colors.sidebar_ring",
+        default: "217.2 91.2% 59.8%",
+      },
     ],
   },
   {
     titleKey: "pages.settings.application.branding.sections.top_nav",
     fields: [
-      { key: "public.color_topnav_background", labelKey: "pages.settings.application.branding.colors.topnav_background", default: "0 0% 98%" },
-      { key: "public.color_topnav_foreground", labelKey: "pages.settings.application.branding.colors.topnav_foreground", default: "240 5.3% 26.1%" },
-      { key: "public.color_topnav_accent", labelKey: "pages.settings.application.branding.colors.topnav_accent", default: "142 77% 73%" },
-      { key: "public.color_topnav_accent_foreground", labelKey: "pages.settings.application.branding.colors.topnav_accent_foreground", default: "0 0% 98%" },
-      { key: "public.color_topnav_border", labelKey: "pages.settings.application.branding.colors.topnav_border", default: "220 13% 91%" },
-      { key: "public.color_topnav_primary", labelKey: "pages.settings.application.branding.colors.topnav_primary", default: "240 5.9% 10%" },
-      { key: "public.color_topnav_primary_foreground", labelKey: "pages.settings.application.branding.colors.topnav_primary_foreground", default: "0 0% 98%" },
-      { key: "public.color_topnav_ring", labelKey: "pages.settings.application.branding.colors.topnav_ring", default: "217.2 91.2% 59.8%" },
+      {
+        key: "public.color_topnav_background",
+        labelKey:
+          "pages.settings.application.branding.colors.topnav_background",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_topnav_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.topnav_foreground",
+        default: "240 5.3% 26.1%",
+      },
+      {
+        key: "public.color_topnav_accent",
+        labelKey: "pages.settings.application.branding.colors.topnav_accent",
+        default: "142 77% 73%",
+      },
+      {
+        key: "public.color_topnav_accent_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.topnav_accent_foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_topnav_border",
+        labelKey: "pages.settings.application.branding.colors.topnav_border",
+        default: "220 13% 91%",
+      },
+      {
+        key: "public.color_topnav_primary",
+        labelKey: "pages.settings.application.branding.colors.topnav_primary",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_topnav_primary_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.topnav_primary_foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_topnav_ring",
+        labelKey: "pages.settings.application.branding.colors.topnav_ring",
+        default: "217.2 91.2% 59.8%",
+      },
     ],
   },
   {
     titleKey: "pages.settings.application.branding.sections.tactical",
     fields: [
-      { key: "public.color_tactical_amber", labelKey: "pages.settings.application.branding.colors.tactical_amber", default: "33 94% 58%" },
-      { key: "public.color_tactical_amber_foreground", labelKey: "pages.settings.application.branding.colors.tactical_amber_foreground", default: "0 0% 10%" },
+      {
+        key: "public.color_tactical_amber",
+        labelKey: "pages.settings.application.branding.colors.tactical_amber",
+        default: "33 94% 58%",
+      },
+      {
+        key: "public.color_tactical_amber_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.tactical_amber_foreground",
+        default: "0 0% 10%",
+      },
     ],
   },
 ];
@@ -423,65 +594,236 @@ const darkColorSections: ColorSection[] = [
   {
     titleKey: "pages.settings.application.branding.sections.core",
     fields: [
-      { key: "public.color_dark_background", labelKey: "pages.settings.application.branding.colors.background", default: "240 10% 3.9%" },
-      { key: "public.color_dark_foreground", labelKey: "pages.settings.application.branding.colors.foreground", default: "0 0% 98%" },
-      { key: "public.color_dark_primary", labelKey: "pages.settings.application.branding.colors.primary", default: "0 0% 98%" },
-      { key: "public.color_dark_primary_foreground", labelKey: "pages.settings.application.branding.colors.primary_foreground", default: "240 5.9% 10%" },
-      { key: "public.color_dark_secondary", labelKey: "pages.settings.application.branding.colors.secondary", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_secondary_foreground", labelKey: "pages.settings.application.branding.colors.secondary_foreground", default: "0 0% 98%" },
-      { key: "public.color_dark_accent", labelKey: "pages.settings.application.branding.colors.accent", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_accent_foreground", labelKey: "pages.settings.application.branding.colors.accent_foreground", default: "0 0% 98%" },
-      { key: "public.color_dark_muted", labelKey: "pages.settings.application.branding.colors.muted", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_muted_foreground", labelKey: "pages.settings.application.branding.colors.muted_foreground", default: "240 5% 64.9%" },
-      { key: "public.color_dark_destructive", labelKey: "pages.settings.application.branding.colors.destructive", default: "0 62.8% 30.6%" },
-      { key: "public.color_dark_destructive_foreground", labelKey: "pages.settings.application.branding.colors.destructive_foreground", default: "0 0% 98%" },
-      { key: "public.color_dark_warning", labelKey: "pages.settings.application.branding.colors.warning", default: "36 100% 30%" },
-      { key: "public.color_dark_warning_foreground", labelKey: "pages.settings.application.branding.colors.warning_foreground", default: "0 0% 100%" },
+      {
+        key: "public.color_dark_background",
+        labelKey: "pages.settings.application.branding.colors.background",
+        default: "240 10% 3.9%",
+      },
+      {
+        key: "public.color_dark_foreground",
+        labelKey: "pages.settings.application.branding.colors.foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_primary",
+        labelKey: "pages.settings.application.branding.colors.primary",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_primary_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.primary_foreground",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_dark_secondary",
+        labelKey: "pages.settings.application.branding.colors.secondary",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_secondary_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.secondary_foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_accent",
+        labelKey: "pages.settings.application.branding.colors.accent",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_accent_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.accent_foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_muted",
+        labelKey: "pages.settings.application.branding.colors.muted",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_muted_foreground",
+        labelKey: "pages.settings.application.branding.colors.muted_foreground",
+        default: "240 5% 64.9%",
+      },
+      {
+        key: "public.color_dark_destructive",
+        labelKey: "pages.settings.application.branding.colors.destructive",
+        default: "0 62.8% 30.6%",
+      },
+      {
+        key: "public.color_dark_destructive_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.destructive_foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_warning",
+        labelKey: "pages.settings.application.branding.colors.warning",
+        default: "36 100% 30%",
+      },
+      {
+        key: "public.color_dark_warning_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.warning_foreground",
+        default: "0 0% 100%",
+      },
     ],
   },
   {
     titleKey: "pages.settings.application.branding.sections.cards_borders",
     fields: [
-      { key: "public.color_dark_card", labelKey: "pages.settings.application.branding.colors.card", default: "240 10% 3.9%" },
-      { key: "public.color_dark_card_foreground", labelKey: "pages.settings.application.branding.colors.card_foreground", default: "0 0% 98%" },
-      { key: "public.color_dark_border", labelKey: "pages.settings.application.branding.colors.border", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_popover", labelKey: "pages.settings.application.branding.colors.popover", default: "240 10% 3.9%" },
-      { key: "public.color_dark_popover_foreground", labelKey: "pages.settings.application.branding.colors.popover_foreground", default: "0 0% 98%" },
-      { key: "public.color_dark_input", labelKey: "pages.settings.application.branding.colors.input", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_ring", labelKey: "pages.settings.application.branding.colors.ring", default: "240 4.9% 83.9%" },
+      {
+        key: "public.color_dark_card",
+        labelKey: "pages.settings.application.branding.colors.card",
+        default: "240 10% 3.9%",
+      },
+      {
+        key: "public.color_dark_card_foreground",
+        labelKey: "pages.settings.application.branding.colors.card_foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_border",
+        labelKey: "pages.settings.application.branding.colors.border",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_popover",
+        labelKey: "pages.settings.application.branding.colors.popover",
+        default: "240 10% 3.9%",
+      },
+      {
+        key: "public.color_dark_popover_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.popover_foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_input",
+        labelKey: "pages.settings.application.branding.colors.input",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_ring",
+        labelKey: "pages.settings.application.branding.colors.ring",
+        default: "240 4.9% 83.9%",
+      },
     ],
   },
   {
     titleKey: "pages.settings.application.branding.sections.sidebar",
     fields: [
-      { key: "public.color_dark_sidebar_background", labelKey: "pages.settings.application.branding.colors.sidebar_background", default: "240 5.9% 10%" },
-      { key: "public.color_dark_sidebar_foreground", labelKey: "pages.settings.application.branding.colors.sidebar_foreground", default: "240 4.8% 95.9%" },
-      { key: "public.color_dark_sidebar_accent", labelKey: "pages.settings.application.branding.colors.sidebar_accent", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_sidebar_accent_foreground", labelKey: "pages.settings.application.branding.colors.sidebar_accent_foreground", default: "240 4.8% 95.9%" },
-      { key: "public.color_dark_sidebar_border", labelKey: "pages.settings.application.branding.colors.sidebar_border", default: "240 3.7% 15.9%" },
-      { key: "public.color_dark_sidebar_primary", labelKey: "pages.settings.application.branding.colors.sidebar_primary", default: "224.3 76.3% 48%" },
-      { key: "public.color_dark_sidebar_primary_foreground", labelKey: "pages.settings.application.branding.colors.sidebar_primary_foreground", default: "0 0% 100%" },
-      { key: "public.color_dark_sidebar_ring", labelKey: "pages.settings.application.branding.colors.sidebar_ring", default: "217.2 91.2% 59.8%" },
+      {
+        key: "public.color_dark_sidebar_background",
+        labelKey:
+          "pages.settings.application.branding.colors.sidebar_background",
+        default: "240 5.9% 10%",
+      },
+      {
+        key: "public.color_dark_sidebar_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.sidebar_foreground",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_dark_sidebar_accent",
+        labelKey: "pages.settings.application.branding.colors.sidebar_accent",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_sidebar_accent_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.sidebar_accent_foreground",
+        default: "240 4.8% 95.9%",
+      },
+      {
+        key: "public.color_dark_sidebar_border",
+        labelKey: "pages.settings.application.branding.colors.sidebar_border",
+        default: "240 3.7% 15.9%",
+      },
+      {
+        key: "public.color_dark_sidebar_primary",
+        labelKey: "pages.settings.application.branding.colors.sidebar_primary",
+        default: "224.3 76.3% 48%",
+      },
+      {
+        key: "public.color_dark_sidebar_primary_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.sidebar_primary_foreground",
+        default: "0 0% 100%",
+      },
+      {
+        key: "public.color_dark_sidebar_ring",
+        labelKey: "pages.settings.application.branding.colors.sidebar_ring",
+        default: "217.2 91.2% 59.8%",
+      },
     ],
   },
   {
     titleKey: "pages.settings.application.branding.sections.top_nav",
     fields: [
-      { key: "public.color_dark_topnav_background", labelKey: "pages.settings.application.branding.colors.topnav_background", default: "240 4% 16%" },
-      { key: "public.color_dark_topnav_foreground", labelKey: "pages.settings.application.branding.colors.topnav_foreground", default: "0 0% 98%" },
-      { key: "public.color_dark_topnav_accent", labelKey: "pages.settings.application.branding.colors.topnav_accent", default: "142 77% 73%" },
-      { key: "public.color_dark_topnav_accent_foreground", labelKey: "pages.settings.application.branding.colors.topnav_accent_foreground", default: "0 0% 98%" },
-      { key: "public.color_dark_topnav_border", labelKey: "pages.settings.application.branding.colors.topnav_border", default: "240 3% 23%" },
-      { key: "public.color_dark_topnav_primary", labelKey: "pages.settings.application.branding.colors.topnav_primary", default: "240 6% 10%" },
-      { key: "public.color_dark_topnav_primary_foreground", labelKey: "pages.settings.application.branding.colors.topnav_primary_foreground", default: "0 0% 98%" },
-      { key: "public.color_dark_topnav_ring", labelKey: "pages.settings.application.branding.colors.topnav_ring", default: "217.2 91.2% 59.8%" },
+      {
+        key: "public.color_dark_topnav_background",
+        labelKey:
+          "pages.settings.application.branding.colors.topnav_background",
+        default: "240 4% 16%",
+      },
+      {
+        key: "public.color_dark_topnav_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.topnav_foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_topnav_accent",
+        labelKey: "pages.settings.application.branding.colors.topnav_accent",
+        default: "142 77% 73%",
+      },
+      {
+        key: "public.color_dark_topnav_accent_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.topnav_accent_foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_topnav_border",
+        labelKey: "pages.settings.application.branding.colors.topnav_border",
+        default: "240 3% 23%",
+      },
+      {
+        key: "public.color_dark_topnav_primary",
+        labelKey: "pages.settings.application.branding.colors.topnav_primary",
+        default: "240 6% 10%",
+      },
+      {
+        key: "public.color_dark_topnav_primary_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.topnav_primary_foreground",
+        default: "0 0% 98%",
+      },
+      {
+        key: "public.color_dark_topnav_ring",
+        labelKey: "pages.settings.application.branding.colors.topnav_ring",
+        default: "217.2 91.2% 59.8%",
+      },
     ],
   },
   {
     titleKey: "pages.settings.application.branding.sections.tactical",
     fields: [
-      { key: "public.color_dark_tactical_amber", labelKey: "pages.settings.application.branding.colors.tactical_amber", default: "33 94% 58%" },
-      { key: "public.color_dark_tactical_amber_foreground", labelKey: "pages.settings.application.branding.colors.tactical_amber_foreground", default: "0 0% 10%" },
+      {
+        key: "public.color_dark_tactical_amber",
+        labelKey: "pages.settings.application.branding.colors.tactical_amber",
+        default: "33 94% 58%",
+      },
+      {
+        key: "public.color_dark_tactical_amber_foreground",
+        labelKey:
+          "pages.settings.application.branding.colors.tactical_amber_foreground",
+        default: "0 0% 10%",
+      },
     ],
   },
 ];
@@ -661,7 +1003,9 @@ export default {
         });
       } catch (error: any) {
         toast({
-          title: this.$t("pages.settings.application.branding.upload_failed") as string,
+          title: this.$t(
+            "pages.settings.application.branding.upload_failed",
+          ) as string,
           description: error.message,
           variant: "destructive",
         });
@@ -699,7 +1043,9 @@ export default {
       } catch (error: any) {
         if (!silent) {
           toast({
-            title: this.$t("pages.settings.application.branding.delete_failed") as string,
+            title: this.$t(
+              "pages.settings.application.branding.delete_failed",
+            ) as string,
             description: error.message,
             variant: "destructive",
           });
@@ -759,10 +1105,16 @@ export default {
           });
         }
 
-        toast({ title: this.$t("pages.settings.application.branding.branding_saved") as string });
+        toast({
+          title: this.$t(
+            "pages.settings.application.branding.branding_saved",
+          ) as string,
+        });
       } catch (error: any) {
         toast({
-          title: this.$t("pages.settings.application.branding.save_failed") as string,
+          title: this.$t(
+            "pages.settings.application.branding.save_failed",
+          ) as string,
           description: error.message,
           variant: "destructive",
         });
@@ -814,10 +1166,16 @@ export default {
         this.loginFooterUrl = "";
         this.colorValues = {};
 
-        toast({ title: this.$t("pages.settings.application.branding.branding_reset") as string });
+        toast({
+          title: this.$t(
+            "pages.settings.application.branding.branding_reset",
+          ) as string,
+        });
       } catch (error: any) {
         toast({
-          title: this.$t("pages.settings.application.branding.reset_failed") as string,
+          title: this.$t(
+            "pages.settings.application.branding.reset_failed",
+          ) as string,
           description: error.message,
           variant: "destructive",
         });
@@ -897,10 +1255,16 @@ export default {
         a.download = "5stack-theme.json";
         a.click();
         URL.revokeObjectURL(url);
-        toast({ title: this.$t("pages.settings.application.branding.theme_exported") as string });
+        toast({
+          title: this.$t(
+            "pages.settings.application.branding.theme_exported",
+          ) as string,
+        });
       } catch (error: any) {
         toast({
-          title: this.$t("pages.settings.application.branding.export_failed") as string,
+          title: this.$t(
+            "pages.settings.application.branding.export_failed",
+          ) as string,
           description: error.message,
           variant: "destructive",
         });
@@ -917,7 +1281,11 @@ export default {
       try {
         const data = JSON.parse(text);
         if (typeof data !== "object" || !data.colors) {
-          throw new Error(this.$t("pages.settings.application.branding.invalid_theme_file") as string);
+          throw new Error(
+            this.$t(
+              "pages.settings.application.branding.invalid_theme_file",
+            ) as string,
+          );
         }
         if (data.brandName) {
           this.brandName = data.brandName;
@@ -978,7 +1346,9 @@ export default {
         await this.saveAll();
       } catch (error: any) {
         toast({
-          title: this.$t("pages.settings.application.branding.import_failed") as string,
+          title: this.$t(
+            "pages.settings.application.branding.import_failed",
+          ) as string,
           description: error.message,
           variant: "destructive",
         });

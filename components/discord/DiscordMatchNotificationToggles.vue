@@ -9,9 +9,7 @@
         :key="status"
         :class="[
           'flex items-center justify-between rounded-lg border p-3 cursor-pointer select-none',
-          isOverridden(status)
-            ? 'border-primary bg-primary/10'
-            : '',
+          isOverridden(status) ? 'border-primary bg-primary/10' : '',
         ]"
         role="button"
         tabindex="0"
@@ -39,9 +37,7 @@
       <div
         :class="[
           'flex items-center justify-between rounded-lg border p-3 cursor-pointer select-none',
-          isOverridden(mapPausedKey)
-            ? 'border-primary bg-primary/10'
-            : '',
+          isOverridden(mapPausedKey) ? 'border-primary bg-primary/10' : '',
         ]"
         role="button"
         tabindex="0"
@@ -94,6 +90,8 @@ function isOverridden(status: string): boolean {
   if (!props.defaultValues) {
     return false;
   }
-  return (props.defaultValues[status] === true) !== (props.values[status] === true);
+  return (
+    (props.defaultValues[status] === true) !== (props.values[status] === true)
+  );
 }
 </script>

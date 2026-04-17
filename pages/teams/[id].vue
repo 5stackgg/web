@@ -47,7 +47,8 @@ const teamHeroEmblemFrameClasses =
   "relative flex h-[140px] w-[140px] items-center justify-center border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] p-1 max-md:h-24 max-md:w-24";
 const teamHeroEmblemClasses =
   "font-sans text-[4.5rem] font-bold uppercase tracking-[0.02em] text-transparent [font-stretch:80%] [background:linear-gradient(180deg,hsl(var(--tac-amber))_0%,hsl(var(--tac-amber)_/_0.6)_100%)] [-webkit-background-clip:text] [background-clip:text] [-webkit-text-fill-color:transparent] [text-shadow:0_0_20px_hsl(var(--tac-amber)_/_0.2)] max-md:text-[3rem]";
-const teamHeroEmblemCornerClasses = "absolute h-3 w-3 border-[hsl(var(--tac-amber))]";
+const teamHeroEmblemCornerClasses =
+  "absolute h-3 w-3 border-[hsl(var(--tac-amber))]";
 const teamHeroIdentityClasses = "flex min-w-0 flex-1 flex-col gap-3";
 const teamHeroNameRowClasses = "flex min-w-0 flex-wrap items-center gap-3";
 const teamHeroNameClasses =
@@ -101,14 +102,18 @@ const teamHeroActionsClasses =
                 <span :class="teamHeroStatValueClasses">{{
                   team.roster?.length || 0
                 }}</span>
-                <span :class="teamHeroStatLabelClasses">{{ $t("team.hero.roster") }}</span>
+                <span :class="teamHeroStatLabelClasses">{{
+                  $t("team.hero.roster")
+                }}</span>
               </div>
               <span :class="teamHeroStatDividerClasses"></span>
               <div :class="teamHeroStatClasses">
                 <span :class="teamHeroStatValueClasses">{{
                   team.matches?.length || 0
                 }}</span>
-                <span :class="teamHeroStatLabelClasses">{{ $t("team.hero.matches") }}</span>
+                <span :class="teamHeroStatLabelClasses">{{
+                  $t("team.hero.matches")
+                }}</span>
               </div>
             </div>
           </div>

@@ -205,7 +205,8 @@ export const useFileManagerStore = defineStore("fileManager", () => {
         fileTree.value.set(path, response.data.listServerFiles.items);
       }
     } catch (err: any) {
-      error.value = err.message || t("file_manager_store.load_directory_failed");
+      error.value =
+        err.message || t("file_manager_store.load_directory_failed");
       console.error("Error loading directory:", err);
     } finally {
       isLoading.value = false;
@@ -277,7 +278,8 @@ export const useFileManagerStore = defineStore("fileManager", () => {
 
       await loadDirectory(currentPath.value);
     } catch (err: any) {
-      error.value = err.message || t("file_manager_store.create_directory_failed");
+      error.value =
+        err.message || t("file_manager_store.create_directory_failed");
       console.error("Error creating directory:", err);
       throw err;
     } finally {
@@ -487,8 +489,10 @@ export const useFileManagerStore = defineStore("fileManager", () => {
               reject(new Error(`Upload failed: ${xhr.statusText}`));
             }
           };
-          xhr.onerror = () => reject(new Error(t("file_manager_store.network_error")));
-          xhr.onabort = () => reject(new Error(t("file_manager_store.upload_cancelled")));
+          xhr.onerror = () =>
+            reject(new Error(t("file_manager_store.network_error")));
+          xhr.onabort = () =>
+            reject(new Error(t("file_manager_store.upload_cancelled")));
           xhr.open("POST", apiUrl);
           xhr.send(formData);
         });
@@ -623,8 +627,10 @@ export const useFileManagerStore = defineStore("fileManager", () => {
               reject(new Error(`Upload failed: ${xhr.statusText}`));
             }
           };
-          xhr.onerror = () => reject(new Error(t("file_manager_store.network_error")));
-          xhr.onabort = () => reject(new Error(t("file_manager_store.upload_cancelled")));
+          xhr.onerror = () =>
+            reject(new Error(t("file_manager_store.network_error")));
+          xhr.onabort = () =>
+            reject(new Error(t("file_manager_store.upload_cancelled")));
           xhr.open("POST", apiUrl);
           xhr.send(formData);
         });

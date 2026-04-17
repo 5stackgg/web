@@ -83,11 +83,7 @@ import { Calendar as CalendarIcon, X } from "lucide-vue-next";
 
               <!-- Schedule Button Row -->
               <div class="flex items-center gap-2">
-                <Button
-                  type="submit"
-                  size="sm"
-                  class="w-full"
-                >
+                <Button type="submit" size="sm" class="w-full">
                   <span v-if="!form.values.scheduled_at">
                     {{ $t("match.schedule.start_match") }}
                   </span>

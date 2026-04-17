@@ -201,7 +201,9 @@ async function doRemoveFixtures() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {{ $t("pages.settings.application.fixtures.reload_dialog_title") }}
+              {{
+                $t("pages.settings.application.fixtures.reload_dialog_title")
+              }}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {{
@@ -229,7 +231,9 @@ async function doRemoveFixtures() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {{ $t("pages.settings.application.fixtures.remove_dialog_title") }}
+              {{
+                $t("pages.settings.application.fixtures.remove_dialog_title")
+              }}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {{

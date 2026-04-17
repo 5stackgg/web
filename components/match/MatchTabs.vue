@@ -43,7 +43,10 @@ const activeTab = ref("overview");
     <!-- Mobile: single dropdown -->
     <div class="mb-4 lg:hidden">
       <Select v-model="activeTab">
-        <SelectTrigger class="w-full" :aria-label="$t('ui.tooltips.match_section')">
+        <SelectTrigger
+          class="w-full"
+          :aria-label="$t('ui.tooltips.match_section')"
+        >
           <SelectValue :placeholder="$t('match.tabs.overview')" />
         </SelectTrigger>
         <SelectContent>
@@ -82,41 +85,43 @@ const activeTab = ref("overview");
         </SelectContent>
       </Select>
     </div>
-    <div class="hidden lg:block mb-4 max-w-full overflow-x-auto match-tabs__scroll">
-    <TabsList variant="underline" class="h-auto flex-nowrap">
-      <TabsTrigger value="overview">
-        {{ $t("match.tabs.overview") }}
-      </TabsTrigger>
-      <TabsTrigger :disabled="disableStats" value="utility">
-        {{ $t("match.tabs.utility") }}
-      </TabsTrigger>
-      <TabsTrigger :disabled="disableStats" value="opening-duels">
-        {{ $t("match.tabs.opening_duels") }}
-      </TabsTrigger>
-      <TabsTrigger
-        :disabled="disableStats"
-        value="clutches"
-        v-if="match.options.type !== e_match_types_enum.Duel"
-      >
-        {{ $t("match.tabs.clutches") }}
-      </TabsTrigger>
-      <TabsTrigger
-        value="veto"
-        :disabled="match.match_maps.length === 0"
-        v-if="match.options.map_veto || match.options.region_veto"
-      >
-        {{ $t("common.map_veto") }}
-      </TabsTrigger>
-      <TabsTrigger value="settings">
-        {{ $t("match.tabs.settings") }}
-      </TabsTrigger>
-      <TabsTrigger value="streams" :disabled="!canConfigureStreams">
-        {{ $t("match.tabs.streams") }}
-      </TabsTrigger>
-      <TabsTrigger value="server" v-if="canViewAdmin">
-        {{ $t("match.tabs.admin") }}
-      </TabsTrigger>
-    </TabsList>
+    <div
+      class="hidden lg:block mb-4 max-w-full overflow-x-auto match-tabs__scroll"
+    >
+      <TabsList variant="underline" class="h-auto flex-nowrap">
+        <TabsTrigger value="overview">
+          {{ $t("match.tabs.overview") }}
+        </TabsTrigger>
+        <TabsTrigger :disabled="disableStats" value="utility">
+          {{ $t("match.tabs.utility") }}
+        </TabsTrigger>
+        <TabsTrigger :disabled="disableStats" value="opening-duels">
+          {{ $t("match.tabs.opening_duels") }}
+        </TabsTrigger>
+        <TabsTrigger
+          :disabled="disableStats"
+          value="clutches"
+          v-if="match.options.type !== e_match_types_enum.Duel"
+        >
+          {{ $t("match.tabs.clutches") }}
+        </TabsTrigger>
+        <TabsTrigger
+          value="veto"
+          :disabled="match.match_maps.length === 0"
+          v-if="match.options.map_veto || match.options.region_veto"
+        >
+          {{ $t("common.map_veto") }}
+        </TabsTrigger>
+        <TabsTrigger value="settings">
+          {{ $t("match.tabs.settings") }}
+        </TabsTrigger>
+        <TabsTrigger value="streams" :disabled="!canConfigureStreams">
+          {{ $t("match.tabs.streams") }}
+        </TabsTrigger>
+        <TabsTrigger value="server" v-if="canViewAdmin">
+          {{ $t("match.tabs.admin") }}
+        </TabsTrigger>
+      </TabsList>
     </div>
     <TabsContent value="overview">
       <div class="grid gap-4 max-w-[1500px]">

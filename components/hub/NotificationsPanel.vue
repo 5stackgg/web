@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Trash2 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
-import TimeAgo from "~/components/TimeAgo.vue";
 import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
+import NotificationItem from "~/components/notification/NotificationItem.vue";
+import NotificationStack from "~/components/notification/NotificationStack.vue";
 </script>
 
 <template>
@@ -50,93 +50,28 @@ import Empty from "~/components/ui/empty/Empty.vue";
           <Separator v-if="notifications.length > 0" />
         </div>
 
-        <template v-for="notification of notifications" :key="notification.id">
-          <div
-            class="mb-3 p-3 rounded-md border border-border bg-card/40 relative"
-          >
-            <Button
-              v-if="notification.deletable !== false"
-              size="icon"
-              variant="ghost"
-              @click="deleteNotification(notification.id)"
-              class="absolute top-2 right-2"
-            >
-              <Trash2 class="h-4 w-4" />
-              <span class="sr-only">{{ $t("common.delete") }}</span>
-            </Button>
-            <h3
-              :class="[
-                'text-lg font-semibold mb-2',
-                notification.is_read ? 'text-muted-foreground' : '',
-              ]"
-            >
-              {{ notification.title }}
-            </h3>
-
-            <template v-if="notification.type !== 'NameChangeRequest'">
-              <p
-                class="[&_a]:text-blue-500 [&_a]:underline [&_a:hover]:text-blue-700"
-                :class="[
-                  'text-sm mb-2',
-                  notification.is_read
-                    ? 'text-muted-foreground/70'
-                    : 'text-muted-foreground',
-                ]"
-                v-html="notification.message"
-              />
-            </template>
-            <template v-else>
-              <p
-                class="[&_a]:text-blue-500 [&_a]:underline [&_a:hover]:text-blue-700"
-                :class="[
-                  'text-sm mb-2',
-                  notification.is_read
-                    ? 'text-muted-foreground/70'
-                    : 'text-muted-foreground',
-                ]"
-              >
-                {{ notification.message }}
-              </p>
-            </template>
-
-            <div class="flex justify-between items-center">
-              <span
-                :class="[
-                  'text-xs',
-                  notification.is_read
-                    ? 'text-muted-foreground/50'
-                    : 'text-muted-foreground',
-                ]"
-              >
-                <TimeAgo :date="notification.created_at" />
-              </span>
-              <template v-if="notification.actions">
-                <div class="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    @click="handleAction(notification, action)"
-                    :key="index"
-                    v-for="(action, index) of notification.actions"
-                  >
-                    {{ action.label }}
-                  </Button>
-                </div>
-              </template>
-              <template v-else>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  @click="dismissNotification(notification.id)"
-                  v-if="
-                    !notification.is_read && notification.deletable !== false
-                  "
-                >
-                  {{ $t("layouts.notifications.dismiss") }}
-                </Button>
-              </template>
-            </div>
-          </div>
+        <template
+          v-for="item of stackedNotifications"
+          :key="item.kind === 'single' ? item.notification.id : item.entityId"
+        >
+          <NotificationStack
+            v-if="item.kind === 'stack'"
+            variant="hub"
+            :notifications="item.notifications"
+            @dismiss="dismissNotification"
+            @delete="deleteNotification"
+            @action="handleAction"
+            @dismiss-all="dismissMany"
+            @delete-all="deleteMany"
+          />
+          <NotificationItem
+            v-else
+            variant="hub"
+            :notification="item.notification"
+            @dismiss="dismissNotification"
+            @delete="deleteNotification"
+            @action="handleAction"
+          />
         </template>
       </template>
       <template v-else>
@@ -190,6 +125,9 @@ export default {
     },
     notifications() {
       return useNotificationStore().notifications;
+    },
+    stackedNotifications() {
+      return useNotificationStore().stackedNotifications;
     },
   },
   methods: {
@@ -257,6 +195,34 @@ export default {
             {
               where: { is_read: { _eq: false }, deletable: { _neq: false } },
               _set: { is_read: true },
+            },
+            { __typename: true },
+          ],
+        }),
+      });
+    },
+    async dismissMany(ids: string[]) {
+      if (ids.length === 0) return;
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          update_notifications: [
+            {
+              where: { id: { _in: ids }, deletable: { _neq: false } },
+              _set: { is_read: true },
+            },
+            { __typename: true },
+          ],
+        }),
+      });
+    },
+    async deleteMany(ids: string[]) {
+      if (ids.length === 0) return;
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          update_notifications: [
+            {
+              where: { id: { _in: ids }, deletable: { _neq: false } },
+              _set: { is_read: true, deleted_at: new Date() },
             },
             { __typename: true },
           ],

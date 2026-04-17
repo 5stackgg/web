@@ -214,9 +214,7 @@ const serverMenu = ref(false);
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel>{{
-          $t("common.cancel")
-        }}</AlertDialogCancel>
+        <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
         <AlertDialogAction @click="deleteServer">{{
           $t("pages.dedicated_servers.detail.delete_confirm.continue")
         }}</AlertDialogAction>

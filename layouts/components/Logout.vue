@@ -12,9 +12,7 @@
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel>{{
-          $t("common.cancel")
-        }}</AlertDialogCancel>
+        <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
         <AlertDialogAction @click="logout">{{
           $t("layouts.app_nav.logout_dialog.confirm")
         }}</AlertDialogAction>

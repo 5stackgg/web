@@ -104,7 +104,9 @@ import { useForm } from "vee-validate";
             <FormControl>
               <Select v-bind="componentField">
                 <SelectTrigger>
-                  <SelectValue :placeholder="$t('player.sanctions.select_duration')" />
+                  <SelectValue
+                    :placeholder="$t('player.sanctions.select_duration')"
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem
@@ -155,20 +157,50 @@ export default {
   computed: {
     sanctions(): Record<string, { icon: any; description: string }> {
       return {
-        ban: { icon: Ban, description: this.$t("player.sanction.types.ban_description") },
-        mute: { icon: MicOff, description: this.$t("player.sanction.types.mute_description") },
-        gag: { icon: MessageSquareOff, description: this.$t("player.sanction.types.gag_description") },
-        silence: { icon: BellOff, description: this.$t("player.sanction.types.silence_description") },
+        ban: {
+          icon: Ban,
+          description: this.$t("player.sanction.types.ban_description"),
+        },
+        mute: {
+          icon: MicOff,
+          description: this.$t("player.sanction.types.mute_description"),
+        },
+        gag: {
+          icon: MessageSquareOff,
+          description: this.$t("player.sanction.types.gag_description"),
+        },
+        silence: {
+          icon: BellOff,
+          description: this.$t("player.sanction.types.silence_description"),
+        },
       };
     },
     durations(): Array<{ label: string; duration: number }> {
       return [
-        { label: this.$t("player.sanction.durations.15_minutes"), duration: 1000 * 60 * 15 },
-        { label: this.$t("player.sanction.durations.30_minutes"), duration: 1000 * 60 * 30 },
-        { label: this.$t("player.sanction.durations.1_hour"), duration: 1000 * 60 * 60 },
-        { label: this.$t("player.sanction.durations.1_day"), duration: 1000 * 60 * 60 * 24 },
-        { label: this.$t("player.sanction.durations.1_week"), duration: 1000 * 60 * 60 * 24 * 7 },
-        { label: this.$t("player.sanction.durations.1_month"), duration: 1000 * 60 * 60 * 24 * 30 },
+        {
+          label: this.$t("player.sanction.durations.15_minutes"),
+          duration: 1000 * 60 * 15,
+        },
+        {
+          label: this.$t("player.sanction.durations.30_minutes"),
+          duration: 1000 * 60 * 30,
+        },
+        {
+          label: this.$t("player.sanction.durations.1_hour"),
+          duration: 1000 * 60 * 60,
+        },
+        {
+          label: this.$t("player.sanction.durations.1_day"),
+          duration: 1000 * 60 * 60 * 24,
+        },
+        {
+          label: this.$t("player.sanction.durations.1_week"),
+          duration: 1000 * 60 * 60 * 24 * 7,
+        },
+        {
+          label: this.$t("player.sanction.durations.1_month"),
+          duration: 1000 * 60 * 60 * 24 * 30,
+        },
         { label: this.$t("player.sanction.durations.permanent"), duration: 0 },
       ];
     },

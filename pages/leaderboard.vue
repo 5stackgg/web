@@ -52,7 +52,9 @@ const leaderboardFadeTransition = {
       <div
         class="flex items-center gap-2 px-2 text-[0.65rem] font-mono tracking-[0.22em] uppercase text-muted-foreground"
       >
-        <span class="inline-block h-[2px] w-2 bg-[hsl(var(--tac-amber))]"></span>
+        <span
+          class="inline-block h-[2px] w-2 bg-[hsl(var(--tac-amber))]"
+        ></span>
         {{ $t("common.filters") }}
       </div>
 
@@ -139,9 +141,7 @@ const leaderboardFadeTransition = {
                 <TableHead class="w-16">{{
                   $t("pages.leaderboard.columns.rank")
                 }}</TableHead>
-                <TableHead>{{
-                  $t("common.player")
-                }}</TableHead>
+                <TableHead>{{ $t("common.player") }}</TableHead>
                 <TableHead
                   class="text-right"
                   :class="{

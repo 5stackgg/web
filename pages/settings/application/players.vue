@@ -44,7 +44,8 @@ async function doRefreshAllPlayers() {
     toast({
       title: t("pages.settings.application.players.refresh_failed"),
       description:
-        error?.message || t("pages.settings.application.players.error_occurred"),
+        error?.message ||
+        t("pages.settings.application.players.error_occurred"),
       variant: "destructive",
     });
   } finally {
@@ -78,7 +79,9 @@ async function doRefreshAllPlayers() {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {{ $t("pages.settings.application.players.refresh_dialog_title") }}
+              {{
+                $t("pages.settings.application.players.refresh_dialog_title")
+              }}
             </AlertDialogTitle>
             <AlertDialogDescription>
               {{
@@ -371,11 +374,26 @@ export default {
     roles() {
       return [
         { value: e_player_roles_enum.user, display: this.$t("roles.user") },
-        { value: e_player_roles_enum.verified_user, display: this.$t("roles.verified_user") },
-        { value: e_player_roles_enum.streamer, display: this.$t("roles.streamer") },
-        { value: e_player_roles_enum.match_organizer, display: this.$t("roles.match_organizer") },
-        { value: e_player_roles_enum.tournament_organizer, display: this.$t("roles.tournament_organizer") },
-        { value: e_player_roles_enum.administrator, display: this.$t("roles.administrator") },
+        {
+          value: e_player_roles_enum.verified_user,
+          display: this.$t("roles.verified_user"),
+        },
+        {
+          value: e_player_roles_enum.streamer,
+          display: this.$t("roles.streamer"),
+        },
+        {
+          value: e_player_roles_enum.match_organizer,
+          display: this.$t("roles.match_organizer"),
+        },
+        {
+          value: e_player_roles_enum.tournament_organizer,
+          display: this.$t("roles.tournament_organizer"),
+        },
+        {
+          value: e_player_roles_enum.administrator,
+          display: this.$t("roles.administrator"),
+        },
       ];
     },
     settings() {

@@ -514,9 +514,7 @@ import { Card } from "~/components/ui/card";
                           <template v-if="form.values.region_veto">
                             {{ $t("match.options.advanced.region.preferred") }}
                           </template>
-                          <template v-else>{{
-                            $t("common.region")
-                          }}</template>
+                          <template v-else>{{ $t("common.region") }}</template>
                         </div>
                       </FormLabel>
 
@@ -1478,4 +1476,3 @@ export default {
   },
 };
 </script>
-

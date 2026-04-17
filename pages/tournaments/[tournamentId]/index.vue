@@ -149,8 +149,10 @@ const tournamentAdminPanelClasses =
   "relative border border-border p-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.65)_0%,hsl(var(--card)_/_0.35)_100%)] [backdrop-filter:blur(6px)]";
 const tournamentAdminCornerClasses =
   "pointer-events-none absolute h-3 w-3 border-[hsl(var(--tac-amber))]";
-const tournamentAdminHeaderClasses = "mb-[0.4rem] inline-flex items-center gap-2";
-const tournamentAdminTickClasses = "h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]";
+const tournamentAdminHeaderClasses =
+  "mb-[0.4rem] inline-flex items-center gap-2";
+const tournamentAdminTickClasses =
+  "h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]";
 const tournamentAdminLabelClasses =
   "font-mono text-[0.65rem] font-bold uppercase tracking-[0.24em] text-[hsl(var(--tac-amber))]";
 const tournamentAdminTitleClasses =
@@ -194,13 +196,19 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
                 </span>
                 <span
                   v-if="stageCount > 1"
-                  :class="[tournamentHeroTagClasses, tournamentHeroMutedTagClasses]"
+                  :class="[
+                    tournamentHeroTagClasses,
+                    tournamentHeroMutedTagClasses,
+                  ]"
                 >
                   {{ stageCount }} {{ $t("tournament.stage.stages") }}
                 </span>
                 <span
                   v-if="singleStageType"
-                  :class="[tournamentHeroTagClasses, tournamentHeroMutedTagClasses]"
+                  :class="[
+                    tournamentHeroTagClasses,
+                    tournamentHeroMutedTagClasses,
+                  ]"
                 >
                   {{ singleStageTypeWithBestOf }}
                 </span>
@@ -386,10 +394,16 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
             :class="tournamentHeroDetailsClasses"
           >
             <CollapsibleTrigger as-child>
-              <button type="button" :class="tournamentHeroDetailsTriggerClasses">
+              <button
+                type="button"
+                :class="tournamentHeroDetailsTriggerClasses"
+              >
                 <span
                   v-if="tournament.description"
-                  :class="[tournamentHeroDescriptionClasses, { 'line-clamp-2': !overviewExpanded }]"
+                  :class="[
+                    tournamentHeroDescriptionClasses,
+                    { 'line-clamp-2': !overviewExpanded },
+                  ]"
                 >
                   {{ tournament.description }}
                 </span>
@@ -579,7 +593,9 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
 
                   <div :class="tournamentAdminHeaderClasses">
                     <span :class="tournamentAdminTickClasses"></span>
-                    <span :class="tournamentAdminLabelClasses">{{ $t("tournament.admin_label") }}</span>
+                    <span :class="tournamentAdminLabelClasses">{{
+                      $t("tournament.admin_label")
+                    }}</span>
                   </div>
                   <h3 :class="tournamentAdminTitleClasses">
                     {{ $t("tournament.add_team.title") }}
@@ -1371,4 +1387,3 @@ export default {
   },
 };
 </script>
-

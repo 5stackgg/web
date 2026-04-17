@@ -30,6 +30,14 @@ import { useSidebar } from "../ui/sidebar";
       </Badge>
     </template>
 
+    <template v-if="$slots['name-postfix']" #name-postfix>
+      <slot name="name-postfix"></slot>
+    </template>
+
+    <template v-if="$slots['elo-postfix']" #elo-postfix>
+      <slot name="elo-postfix"></slot>
+    </template>
+
     <template v-slot:status v-if="showStatus">
       <FiveStackToolTip side="bottom" :delay-duration="300">
         <template #trigger>

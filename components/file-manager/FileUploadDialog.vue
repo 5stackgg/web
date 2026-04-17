@@ -3,7 +3,9 @@
     <DialogContent>
       <DialogHeader>
         <DialogTitle>{{ $t("file_manager.upload.title") }}</DialogTitle>
-        <DialogDescription>{{ $t("file_manager.upload.description") }}</DialogDescription>
+        <DialogDescription>{{
+          $t("file_manager.upload.description")
+        }}</DialogDescription>
       </DialogHeader>
 
       <div class="space-y-4">
@@ -20,7 +22,9 @@
           <p class="text-sm font-medium mb-1">
             {{ $t("file_manager.upload.drag_drop") }}
           </p>
-          <p class="text-xs text-muted-foreground">{{ $t("file_manager.upload.max_size") }}</p>
+          <p class="text-xs text-muted-foreground">
+            {{ $t("file_manager.upload.max_size") }}
+          </p>
         </div>
 
         <input
@@ -51,7 +55,8 @@
               </span>
               <span class="text-muted-foreground">
                 {{ store.uploadBatch.completedFiles }} /
-                {{ store.uploadBatch.totalFiles }} {{ $t("file_manager.tree.files") }}
+                {{ store.uploadBatch.totalFiles }}
+                {{ $t("file_manager.tree.files") }}
               </span>
             </div>
             <Progress :model-value="store.uploadOverallProgress" class="h-2" />
@@ -62,7 +67,8 @@
             v-if="store.uploadBatch.currentFile"
             class="text-xs text-muted-foreground"
           >
-            {{ $t("file_manager.tree.current") }}: {{ store.uploadBatch.currentFile }}
+            {{ $t("file_manager.tree.current") }}:
+            {{ store.uploadBatch.currentFile }}
           </div>
 
           <!-- Failed files warning -->
@@ -70,7 +76,11 @@
             v-if="store.uploadBatch.failedFiles.length > 0"
             class="text-xs text-destructive"
           >
-            {{ $t("file_manager.upload.files_failed", { count: store.uploadBatch.failedFiles.length }) }}
+            {{
+              $t("file_manager.upload.files_failed", {
+                count: store.uploadBatch.failedFiles.length,
+              })
+            }}
           </div>
         </div>
       </div>

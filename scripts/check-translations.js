@@ -200,12 +200,8 @@ async function main() {
   // check. Heuristic keys (string literals that look like keys) only count
   // toward "used" because they may be false positives (JS expressions in
   // Vue directive attributes that happen to match the key shape).
-  const {
-    directKeys,
-    heuristicKeys,
-    keyLocations,
-    dynamicPrefixes,
-  } = await findAllTranslationKeys(keyPrefixPattern);
+  const { directKeys, heuristicKeys, keyLocations, dynamicPrefixes } =
+    await findAllTranslationKeys(keyPrefixPattern);
   // Expand dynamic prefixes (e.g. "foo.bar.${baz}") into concrete keys based
   // on what exists in the translation files.
   const dynamicallyExpanded = new Set();

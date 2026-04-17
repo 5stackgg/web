@@ -77,9 +77,7 @@ import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
                   class="absolute top-2 right-2"
                 >
                   <Trash2 class="h-4 w-4" />
-                  <span class="sr-only">{{
-                    $t("common.delete")
-                  }}</span>
+                  <span class="sr-only">{{ $t("common.delete") }}</span>
                 </Button>
                 <h3
                   :class="[

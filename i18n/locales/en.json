@@ -1593,11 +1593,20 @@
             "elo": "Elo",
             "team_elo_avg": "Team Elo Avg",
             "performance_multiplier": "Performance Multiplier",
+            "series_multiplier": "Series Multiplier",
+            "maps_won_lost": "Maps Won / Lost",
             "kills_deaths_assists": "Kills / Deaths / Assists",
             "kda_ratio": "Kills + Assits / Deaths Ratio",
             "team_avg_kda": "Team Avg Kills + Assits / Deaths Ratio",
             "damage": "Damage",
-            "teams_damage_suffix": "of teams damage"
+            "teams_damage_suffix": "of teams damage",
+            "formula": {
+                "k_factor_hint": "K-factor — base ELO swing rate before any modifiers.",
+                "delta_hint": "Δ = actual ({actual}) − expected ({expected}). Positive means you outperformed the team-ELO prediction.",
+                "perf_hint": "Performance multiplier — scaled by your KDA vs team average and your share of team damage. Bounded 0.8×–1.2× on wins.",
+                "series_hint": "Series multiplier — net map differential. BO1 = ×1, BO3 sweep = ×2, BO5 sweep = ×3. Closer series move ELO less.",
+                "result_hint": "Final ELO change after all multipliers, rounded to the nearest integer."
+            }
         },
         "no_matches": "No Matches Found",
         "no_matches_description": "There are currently no matches available.",

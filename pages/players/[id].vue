@@ -839,4 +839,3 @@ export default {
   },
 };
 </script>
-

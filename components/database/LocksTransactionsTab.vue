@@ -8,13 +8,15 @@
 
     <!-- Database Stats Cards -->
     <div>
-      <h3 class="text-lg font-semibold mb-3">{{ $t("pages.database.locks.stats_title") }}</h3>
+      <h3 class="text-lg font-semibold mb-3">
+        {{ $t("pages.database.locks.stats_title") }}
+      </h3>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader class="pb-2">
-            <CardTitle class="text-sm font-medium text-muted-foreground"
-              >{{ $t("pages.database.locks.commits") }}</CardTitle
-            >
+            <CardTitle class="text-sm font-medium text-muted-foreground">{{
+              $t("pages.database.locks.commits")
+            }}</CardTitle>
           </CardHeader>
           <CardContent>
             <div class="text-2xl font-bold">
@@ -24,9 +26,9 @@
         </Card>
         <Card>
           <CardHeader class="pb-2">
-            <CardTitle class="text-sm font-medium text-muted-foreground"
-              >{{ $t("pages.database.locks.rollbacks") }}</CardTitle
-            >
+            <CardTitle class="text-sm font-medium text-muted-foreground">{{
+              $t("pages.database.locks.rollbacks")
+            }}</CardTitle>
           </CardHeader>
           <CardContent>
             <div class="text-2xl font-bold">
@@ -36,9 +38,9 @@
         </Card>
         <Card>
           <CardHeader class="pb-2">
-            <CardTitle class="text-sm font-medium text-muted-foreground"
-              >{{ $t("pages.database.locks.deadlocks") }}</CardTitle
-            >
+            <CardTitle class="text-sm font-medium text-muted-foreground">{{
+              $t("pages.database.locks.deadlocks")
+            }}</CardTitle>
           </CardHeader>
           <CardContent>
             <div class="text-2xl font-bold">
@@ -48,7 +50,9 @@
         </Card>
         <Card>
           <CardHeader class="pb-2">
-            <CardTitle class="text-sm font-medium text-muted-foreground">{{ $t("pages.database.locks.cache_hit_ratio") }}</CardTitle>
+            <CardTitle class="text-sm font-medium text-muted-foreground">{{
+              $t("pages.database.locks.cache_hit_ratio")
+            }}</CardTitle>
           </CardHeader>
           <CardContent>
             <div class="text-2xl font-bold">
@@ -67,7 +71,9 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">{{ $t("pages.database.locks.active_backends") }}</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground">{{
+            $t("pages.database.locks.active_backends")
+          }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="text-xl font-semibold">
@@ -77,7 +83,9 @@
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">{{ $t("pages.database.locks.tuples_inserted") }}</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground">{{
+            $t("pages.database.locks.tuples_inserted")
+          }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="text-xl font-semibold">
@@ -87,7 +95,9 @@
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">{{ $t("pages.database.locks.tuples_updated") }}</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground">{{
+            $t("pages.database.locks.tuples_updated")
+          }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="text-xl font-semibold">
@@ -97,7 +107,9 @@
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground">{{ $t("pages.database.locks.tuples_deleted") }}</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground">{{
+            $t("pages.database.locks.tuples_deleted")
+          }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="text-xl font-semibold">
@@ -109,16 +121,24 @@
 
     <!-- Current Locks -->
     <div>
-      <h3 class="text-lg font-semibold mb-3">{{ $t("pages.database.locks.current_locks") }}</h3>
+      <h3 class="text-lg font-semibold mb-3">
+        {{ $t("pages.database.locks.current_locks") }}
+      </h3>
       <Card>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>{{ $t("pages.database.columns.pid") }}</TableHead>
               <TableHead>{{ $t("pages.database.locks.lock_type") }}</TableHead>
-              <TableHead>{{ $t("pages.database.query_performance.relation") }}</TableHead>
-              <TableHead>{{ $t("pages.database.query_performance.mode") }}</TableHead>
-              <TableHead class="text-center">{{ $t("pages.database.query_performance.granted") }}</TableHead>
+              <TableHead>{{
+                $t("pages.database.query_performance.relation")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.database.query_performance.mode")
+              }}</TableHead>
+              <TableHead class="text-center">{{
+                $t("pages.database.query_performance.granted")
+              }}</TableHead>
               <TableHead>{{ $t("pages.database.columns.user") }}</TableHead>
               <TableHead>{{ $t("pages.database.columns.query") }}</TableHead>
             </TableRow>
@@ -168,18 +188,30 @@
 
     <!-- Table Stats (vacuum info) -->
     <div>
-      <h3 class="text-lg font-semibold mb-3">{{ $t("pages.database.locks.table_maintenance_title") }}</h3>
+      <h3 class="text-lg font-semibold mb-3">
+        {{ $t("pages.database.locks.table_maintenance_title") }}
+      </h3>
       <Card>
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>{{ $t("pages.database.columns.schema") }}</TableHead>
               <TableHead>{{ $t("pages.database.columns.table") }}</TableHead>
-              <TableHead class="text-right">{{ $t("pages.database.locks.live_tuples") }}</TableHead>
-              <TableHead class="text-right">{{ $t("pages.database.locks.dead_tuples") }}</TableHead>
-              <TableHead>{{ $t("pages.database.locks.last_vacuum") }}</TableHead>
-              <TableHead>{{ $t("pages.database.locks.last_autovacuum") }}</TableHead>
-              <TableHead>{{ $t("pages.database.locks.last_analyze") }}</TableHead>
+              <TableHead class="text-right">{{
+                $t("pages.database.locks.live_tuples")
+              }}</TableHead>
+              <TableHead class="text-right">{{
+                $t("pages.database.locks.dead_tuples")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.database.locks.last_vacuum")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.database.locks.last_autovacuum")
+              }}</TableHead>
+              <TableHead>{{
+                $t("pages.database.locks.last_analyze")
+              }}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

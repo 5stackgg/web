@@ -228,9 +228,15 @@ import { $ } from "~/generated/zeus";
               </FormControl>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="1">{{ $t("match.options.best_of.option", { count: 1 }) }}</SelectItem>
-                  <SelectItem value="3">{{ $t("match.options.best_of.option", { count: 3 }) }}</SelectItem>
-                  <SelectItem value="5">{{ $t("match.options.best_of.option", { count: 5 }) }}</SelectItem>
+                  <SelectItem value="1">{{
+                    $t("match.options.best_of.option", { count: 1 })
+                  }}</SelectItem>
+                  <SelectItem value="3">{{
+                    $t("match.options.best_of.option", { count: 3 })
+                  }}</SelectItem>
+                  <SelectItem value="5">{{
+                    $t("match.options.best_of.option", { count: 5 })
+                  }}</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -243,15 +249,11 @@ import { $ } from "~/generated/zeus";
     <!-- Section B: Third Place Match (SE only) -->
     <Card
       v-if="
-        form.values.stage_type === 'SingleElimination' &&
-        form.values.max_teams
+        form.values.stage_type === 'SingleElimination' && form.values.max_teams
       "
     >
       <div class="p-4 space-y-4">
-        <FormField
-          v-slot="{ value, handleChange }"
-          name="third_place_match"
-        >
+        <FormField v-slot="{ value, handleChange }" name="third_place_match">
           <FormItem>
             <div
               class="flex flex-row items-center justify-between cursor-pointer"
@@ -295,9 +297,15 @@ import { $ } from "~/generated/zeus";
               </FormControl>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="1">{{ $t("match.options.best_of.option", { count: 1 }) }}</SelectItem>
-                  <SelectItem value="3">{{ $t("match.options.best_of.option", { count: 3 }) }}</SelectItem>
-                  <SelectItem value="5">{{ $t("match.options.best_of.option", { count: 5 }) }}</SelectItem>
+                  <SelectItem value="1">{{
+                    $t("match.options.best_of.option", { count: 1 })
+                  }}</SelectItem>
+                  <SelectItem value="3">{{
+                    $t("match.options.best_of.option", { count: 3 })
+                  }}</SelectItem>
+                  <SelectItem value="5">{{
+                    $t("match.options.best_of.option", { count: 5 })
+                  }}</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -443,9 +451,7 @@ import { $ } from "~/generated/zeus";
                         <template v-if="form.values.region_veto">
                           {{ $t("match.options.advanced.region.preferred") }}
                         </template>
-                        <template v-else>{{
-                          $t("common.region")
-                        }}</template>
+                        <template v-else>{{ $t("common.region") }}</template>
                       </div>
                     </FormLabel>
 
@@ -826,9 +832,7 @@ export default {
               tech_timeout_setting: z
                 .string()
                 .default(e_timeout_settings_enum.Admin),
-              match_mode: z
-                .string()
-                .default(e_match_mode_enum.auto),
+              match_mode: z.string().default(e_match_mode_enum.auto),
             })
             .refine(
               (data) => parseInt(data.min_teams) <= parseInt(data.max_teams),
@@ -1137,8 +1141,7 @@ export default {
         ready_setting: options.ready_setting ?? e_ready_settings_enum.Players,
         tech_timeout_setting:
           options.tech_timeout_setting ?? e_timeout_settings_enum.Admin,
-        match_mode:
-          options.match_mode ?? e_match_mode_enum.auto,
+        match_mode: options.match_mode ?? e_match_mode_enum.auto,
       });
     },
     setDefaultRegion() {
@@ -1164,7 +1167,8 @@ export default {
         form.check_in_setting !== tournamentOptions.check_in_setting ||
         form.ready_setting !== tournamentOptions.ready_setting ||
         form.tech_timeout_setting !== tournamentOptions.tech_timeout_setting ||
-        form.match_mode !== (tournamentOptions.match_mode ?? e_match_mode_enum.auto)
+        form.match_mode !==
+          (tournamentOptions.match_mode ?? e_match_mode_enum.auto)
       ) {
         return true;
       }
@@ -1505,4 +1509,3 @@ export default {
   },
 };
 </script>
-

@@ -56,9 +56,7 @@ import { loadMonaco } from "~/utilities/loadMonaco";
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{{
-              $t("common.cancel")
-            }}</AlertDialogCancel>
+            <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
             <AlertDialogAction @click="revertToDefaults" variant="destructive">
               {{ $t("game_type_configs.form.revert_confirm.confirm") }}
             </AlertDialogAction>

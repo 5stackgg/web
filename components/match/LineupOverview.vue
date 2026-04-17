@@ -82,9 +82,7 @@ import {
                           <Input
                             v-bind="componentField"
                             v-model="editName"
-                            :placeholder="
-                              $t('common.team_name') as string
-                            "
+                            :placeholder="$t('common.team_name') as string"
                           />
                         </FormControl>
                         <FormMessage />
@@ -109,9 +107,7 @@ import {
         <template v-if="showStats">
           <TableHead class="w-10 md:w-[4ch] text-center whitespace-nowrap">
             <span class="xl:hidden">K</span>
-            <span class="hidden xl:inline">{{
-              $t("common.stats.kills")
-            }}</span>
+            <span class="hidden xl:inline">{{ $t("common.stats.kills") }}</span>
           </TableHead>
           <TableHead
             class="hidden md:table-cell w-10 md:w-[4ch] text-center whitespace-nowrap"

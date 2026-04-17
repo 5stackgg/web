@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="relative space-y-6 [--tac-clip:14px] [--tac-clip-sm:10px]"
-  >
+  <div class="relative space-y-6 [--tac-clip:14px] [--tac-clip-sm:10px]">
     <div
       aria-hidden="true"
       class="pointer-events-none fixed inset-0 -z-10 opacity-[0.04] [background-image:linear-gradient(hsl(var(--tac-amber))_1px,transparent_1px),linear-gradient(90deg,hsl(var(--tac-amber))_1px,transparent_1px)] [background-size:64px_64px]"
@@ -14,7 +12,10 @@
         >
           <div class="lg:hidden">
             <Select v-model="activeTab">
-              <SelectTrigger class="w-full" :aria-label="$t('ui.tooltips.database_section')">
+              <SelectTrigger
+                class="w-full"
+                :aria-label="$t('ui.tooltips.database_section')"
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

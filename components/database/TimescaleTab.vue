@@ -4,9 +4,9 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground"
-            >{{ $t("pages.database.timescale.hypertables") }}</CardTitle
-          >
+          <CardTitle class="text-sm font-medium text-muted-foreground">{{
+            $t("pages.database.timescale.hypertables")
+          }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="text-2xl font-bold">
@@ -16,8 +16,9 @@
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground"
-            >{{ $t("pages.database.timescale.total_chunks") }}</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground">{{
+            $t("pages.database.timescale.total_chunks")
+          }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="text-2xl font-bold">
@@ -27,8 +28,9 @@
       </Card>
       <Card>
         <CardHeader class="pb-2">
-          <CardTitle class="text-sm font-medium text-muted-foreground"
-            >{{ $t("pages.database.timescale.background_jobs") }}</CardTitle>
+          <CardTitle class="text-sm font-medium text-muted-foreground">{{
+            $t("pages.database.timescale.background_jobs")
+          }}</CardTitle>
         </CardHeader>
         <CardContent>
           <div class="text-2xl font-bold">
@@ -69,14 +71,22 @@
     <!-- Hypertables -->
     <template v-if="timescaleStats && timescaleStats.hypertables.length > 0">
       <div>
-        <h3 class="text-lg font-semibold mb-3">{{ $t("pages.database.timescale.hypertables") }}</h3>
+        <h3 class="text-lg font-semibold mb-3">
+          {{ $t("pages.database.timescale.hypertables") }}
+        </h3>
         <Card>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{{ $t("pages.database.timescale.hypertable_name") }}</TableHead>
-                <TableHead class="text-right">{{ $t("pages.database.timescale.chunks") }}</TableHead>
-                <TableHead class="text-center">{{ $t("pages.database.timescale.compression") }}</TableHead>
+                <TableHead>{{
+                  $t("pages.database.timescale.hypertable_name")
+                }}</TableHead>
+                <TableHead class="text-right">{{
+                  $t("pages.database.timescale.chunks")
+                }}</TableHead>
+                <TableHead class="text-center">{{
+                  $t("pages.database.timescale.compression")
+                }}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -111,16 +121,28 @@
 
       <!-- Background Jobs -->
       <div>
-        <h3 class="text-lg font-semibold mb-3">{{ $t("pages.database.timescale.background_jobs") }}</h3>
+        <h3 class="text-lg font-semibold mb-3">
+          {{ $t("pages.database.timescale.background_jobs") }}
+        </h3>
         <Card>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>{{ $t("pages.database.timescale.job_id") }}</TableHead>
-                <TableHead>{{ $t("pages.database.timescale.job_type") }}</TableHead>
-                <TableHead>{{ $t("pages.database.timescale.hypertable") }}</TableHead>
-                <TableHead>{{ $t("pages.database.timescale.last_run_status") }}</TableHead>
-                <TableHead>{{ $t("pages.database.timescale.next_start") }}</TableHead>
+                <TableHead>{{
+                  $t("pages.database.timescale.job_id")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.database.timescale.job_type")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.database.timescale.hypertable")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.database.timescale.last_run_status")
+                }}</TableHead>
+                <TableHead>{{
+                  $t("pages.database.timescale.next_start")
+                }}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -137,7 +159,9 @@
                   >
                     {{ job.last_run_status }}
                   </Badge>
-                  <span v-else class="text-muted-foreground text-xs">{{ $t("pages.database.timescale.not_run") }}</span>
+                  <span v-else class="text-muted-foreground text-xs">{{
+                    $t("pages.database.timescale.not_run")
+                  }}</span>
                 </TableCell>
                 <TableCell class="text-xs">{{
                   formatDate(job.next_start)

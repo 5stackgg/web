@@ -5,15 +5,9 @@ import { e_lobby_access_enum, e_match_status_enum } from "~/generated/zeus";
 import cleanMapName from "~/utilities/cleanMapName";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { eloFields } from "~/graphql/eloFields";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "~/components/ui/tooltip";
+import EloChangeBadge from "~/components/EloChangeBadge.vue";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
-
 </script>
 
 <template>
@@ -40,113 +34,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
           </Badge>
 
           <!-- Elo Change Display -->
-          <TooltipProvider v-if="eloChange?.elo_change">
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <Badge
-                  variant="outline"
-                  :class="[
-                    'text-[10px] font-semibold cursor-help',
-                    eloChange.elo_change > 0
-                      ? 'bg-green-500/20 text-green-500 border-green-500/30 hover:bg-green-500/30'
-                      : 'bg-red-500/20 text-red-500 border-red-500/30 hover:bg-red-500/30',
-                  ]"
-                >
-                  {{ formatEloChange(eloChange.elo_change) }}
-                </Badge>
-              </TooltipTrigger>
-              <TooltipContent class="max-w-xs">
-                <div>
-                  <div class="font-semibold border-b border-border/50 pb-1">
-                    {{ $t("match.elo_details.title") }}
-                  </div>
-                  <!-- Current Elo → Updated Elo -->
-                  <div>
-                    <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">{{ $t("match.elo_details.elo") }}:</span>
-                      <span class="font-medium">
-                        {{ (eloChange.current_elo as number).toLocaleString() }}
-                        →
-                        {{ (eloChange.updated_elo as number).toLocaleString() }}
-                      </span>
-                    </div>
-                  </div>
-                  <!-- Team Elo Averages -->
-                  <div>
-                    <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">{{ $t("match.elo_details.team_elo_avg") }}:</span>
-                      <span class="font-medium">
-                        {{
-                          (
-                            eloChange.player_team_elo_avg as number
-                          ).toLocaleString()
-                        }}
-                        vs
-                        {{
-                          (
-                            eloChange.opponent_team_elo_avg as number
-                          ).toLocaleString()
-                        }}
-                      </span>
-                    </div>
-                  </div>
-                  <!-- Performance Multiplier -->
-                  <div>
-                    <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">{{ $t("match.elo_details.performance_multiplier") }}:</span>
-                      <span class="font-medium">
-                        {{
-                          parseFloat(eloChange.performance_multiplier).toFixed(
-                            5,
-                          )
-                        }}%
-                      </span>
-                    </div>
-                  </div>
-                  <!-- K/D/A -->
-                  <div>
-                    <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">{{ $t("match.elo_details.kills_deaths_assists") }}:</span>
-                      <span class="font-medium">
-                        {{ eloChange.kills }} / {{ eloChange.deaths }} /
-                        {{ eloChange.assists }}
-                      </span>
-                    </div>
-                  </div>
-                  <!-- KDA -->
-                  <div>
-                    <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">{{ $t("match.elo_details.kda_ratio") }}:</span>
-                      <span class="font-medium">{{
-                        parseFloat(eloChange.kda).toFixed(2)
-                      }}</span>
-                    </div>
-                  </div>
-                  <!-- Team Avg KDA -->
-                  <div>
-                    <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">{{ $t("match.elo_details.team_avg_kda") }}:</span>
-                      <span class="font-medium">{{
-                        parseFloat(eloChange.team_avg_kda).toFixed(2)
-                      }}</span>
-                    </div>
-                  </div>
-                  <!-- Damage -->
-                  <div>
-                    <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">{{ $t("match.elo_details.damage") }}:</span>
-                      <span class="font-medium">
-                        {{ eloChange.damage }}
-                        <span
-                          >({{ Math.round(eloChange.damage_percent * 100) }}% {{ $t("match.elo_details.teams_damage_suffix") }})</span
-                        >
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <EloChangeBadge :elo-change="eloChange" size="xs" />
         </div>
 
         <!-- Right: Status + Time -->
@@ -170,113 +58,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
           </Badge>
 
           <!-- Elo Change Display -->
-          <TooltipProvider v-if="eloChange?.elo_change">
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <Badge
-                  variant="outline"
-                  :class="[
-                    'text-[10px] sm:text-xs font-semibold cursor-help',
-                    eloChange.elo_change > 0
-                      ? 'bg-green-500/20 text-green-500 border-green-500/30 hover:bg-green-500/30'
-                      : 'bg-red-500/20 text-red-500 border-red-500/30 hover:bg-red-500/30',
-                  ]"
-                >
-                  {{ formatEloChange(eloChange.elo_change) }}
-                </Badge>
-              </TooltipTrigger>
-              <TooltipContent class="max-w-xs">
-                <div>
-                  <div class="font-semibold border-b border-border/50 pb-1">
-                    {{ $t("match.elo_details.title") }}
-                  </div>
-                  <!-- Current Elo → Updated Elo -->
-                  <div>
-                    <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">{{ $t("match.elo_details.elo") }}:</span>
-                      <span class="font-medium">
-                        {{ (eloChange.current_elo as number).toLocaleString() }}
-                        →
-                        {{ (eloChange.updated_elo as number).toLocaleString() }}
-                      </span>
-                    </div>
-                  </div>
-                  <!-- Team Elo Averages -->
-                  <div>
-                    <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">{{ $t("match.elo_details.team_elo_avg") }}:</span>
-                      <span class="font-medium">
-                        {{
-                          (
-                            eloChange.player_team_elo_avg as number
-                          ).toLocaleString()
-                        }}
-                        vs
-                        {{
-                          (
-                            eloChange.opponent_team_elo_avg as number
-                          ).toLocaleString()
-                        }}
-                      </span>
-                    </div>
-                  </div>
-                  <!-- Performance Multiplier -->
-                  <div>
-                    <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">{{ $t("match.elo_details.performance_multiplier") }}:</span>
-                      <span class="font-medium">
-                        {{
-                          parseFloat(eloChange.performance_multiplier).toFixed(
-                            5,
-                          )
-                        }}%
-                      </span>
-                    </div>
-                  </div>
-                  <!-- K/D/A -->
-                  <div>
-                    <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">{{ $t("match.elo_details.kills_deaths_assists") }}:</span>
-                      <span class="font-medium">
-                        {{ eloChange.kills }} / {{ eloChange.deaths }} /
-                        {{ eloChange.assists }}
-                      </span>
-                    </div>
-                  </div>
-                  <!-- KDA -->
-                  <div>
-                    <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">{{ $t("match.elo_details.kda_ratio") }}:</span>
-                      <span class="font-medium">{{
-                        parseFloat(eloChange.kda).toFixed(2)
-                      }}</span>
-                    </div>
-                  </div>
-                  <!-- Team Avg KDA -->
-                  <div>
-                    <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">{{ $t("match.elo_details.team_avg_kda") }}:</span>
-                      <span class="font-medium">{{
-                        parseFloat(eloChange.team_avg_kda).toFixed(2)
-                      }}</span>
-                    </div>
-                  </div>
-                  <!-- Damage -->
-                  <div>
-                    <div class="flex items-center justify-between">
-                      <span class="text-muted-foreground">{{ $t("match.elo_details.damage") }}:</span>
-                      <span class="font-medium">
-                        {{ eloChange.damage }}
-                        <span
-                          >({{ Math.round(eloChange.damage_percent * 100) }}% {{ $t("match.elo_details.teams_damage_suffix") }})</span
-                        >
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <EloChangeBadge :elo-change="eloChange" />
         </div>
         <div class="flex items-center space-x-2 sm:space-x-3 flex-wrap gap-y-1">
           <!-- Join Button - Prominent Position -->
@@ -629,7 +411,11 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
             ]"
           >
             <h5 class="text-sm font-semibold text-foreground mb-3">
-              {{ $t("match.team_stats_heading", { name: matchStats.lineup_1.name }) }}
+              {{
+                $t("match.team_stats_heading", {
+                  name: matchStats.lineup_1.name,
+                })
+              }}
             </h5>
             <div class="overflow-x-auto flex-1 -mx-4 px-4">
               <table
@@ -803,7 +589,11 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
             <h5
               class="text-xs sm:text-sm font-semibold text-foreground mb-2 sm:mb-3"
             >
-              {{ $t("match.team_stats_heading", { name: matchStats.lineup_2.name }) }}
+              {{
+                $t("match.team_stats_heading", {
+                  name: matchStats.lineup_2.name,
+                })
+              }}
             </h5>
             <div class="overflow-x-auto flex-1 -mx-2 sm:-mx-4 px-2 sm:px-4">
               <table
@@ -1192,13 +982,6 @@ export default {
         return "text-red-500";
       }
     },
-    formatEloChange(change: number): string {
-      if (change === null || change === undefined) {
-        return "";
-      }
-      const sign = change > 0 ? "+" : "";
-      return `${sign}${change.toLocaleString()}`;
-    },
   },
   computed: {
     maxPlayersPerLineup() {
@@ -1249,4 +1032,3 @@ export default {
   },
 };
 </script>
-

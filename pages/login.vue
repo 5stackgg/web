@@ -48,7 +48,8 @@ const loginFooterLinkClasses =
           <span
             class="inline-flex items-center gap-2 font-sans text-[0.7rem] font-medium uppercase tracking-[0.32em] text-muted-foreground"
           >
-            <span class="translate-y-[-1px] text-[0.6rem] text-[hsl(var(--tac-amber))]"
+            <span
+              class="translate-y-[-1px] text-[0.6rem] text-[hsl(var(--tac-amber))]"
               >◢</span
             >
             AUTHORIZE

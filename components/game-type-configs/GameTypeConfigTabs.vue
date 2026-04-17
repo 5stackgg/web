@@ -41,7 +41,11 @@ import { loadMonaco } from "~/utilities/loadMonaco";
     >
       <Card class="w-full">
         <CardHeader class="flex flex-row items-center justify-between">
-          <CardTitle>{{ $t("game_type_configs.configuration_title", { type: formatTypeName(config.type) }) }}</CardTitle>
+          <CardTitle>{{
+            $t("game_type_configs.configuration_title", {
+              type: formatTypeName(config.type),
+            })
+          }}</CardTitle>
           <div class="flex gap-2">
             <AlertDialog>
               <AlertDialogTrigger asChild>

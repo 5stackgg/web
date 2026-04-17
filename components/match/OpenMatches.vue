@@ -11,7 +11,9 @@ import MatchesTable from "~/components/MatchesTable.vue";
 
   <Pagination
     v-if="
-      !loading && openMatchesAggregate && openMatchesAggregate.aggregate.count > 0
+      !loading &&
+      openMatchesAggregate &&
+      openMatchesAggregate.aggregate.count > 0
     "
     :page="page"
     :per-page="perPage"

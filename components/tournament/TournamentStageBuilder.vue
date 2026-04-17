@@ -59,18 +59,15 @@ import {
               <div
                 class="font-mono text-xl font-bold tabular-nums leading-none text-[hsl(var(--tac-amber)/0.4)] group-data-[state=active]/stg:text-[hsl(var(--tac-amber))]"
               >
-                {{
-                  stageNumber.toString().padStart(2, "0")
-                }}
+                {{ stageNumber.toString().padStart(2, "0") }}
               </div>
-              <div
-                class="flex flex-col gap-[0.1rem] min-w-0 text-left"
-              >
+              <div class="flex flex-col gap-[0.1rem] min-w-0 text-left">
                 <span
                   class="font-sans text-[0.85rem] font-semibold tracking-[0.04em] uppercase leading-[1.1]"
-                >{{
-                  $t("tournament.stage.stage_tab", { stage: stageNumber })
-                }}</span>
+                  >{{
+                    $t("tournament.stage.stage_tab", { stage: stageNumber })
+                  }}</span
+                >
                 <span
                   v-if="getFirstStageForTab(stageNumber)"
                   class="text-[0.72rem] text-muted-foreground inline-flex gap-[0.3rem] flex-wrap items-center"
@@ -138,7 +135,9 @@ import {
             class="inline-flex items-center justify-center gap-2 min-w-[200px] min-h-[72px] !px-4 !py-3 !bg-card/45 !border !border-dashed !border-border !rounded-md !text-muted-foreground font-mono text-[0.72rem] font-bold tracking-[0.18em] uppercase [transition:border-color_180ms_ease,background_180ms_ease,color_180ms_ease] hover:!border-[hsl(var(--tac-amber)/0.5)] hover:!text-[hsl(var(--tac-amber))]"
             v-if="canEditStages"
           >
-            <span class="text-base font-normal leading-none mr-[0.35rem]">+</span>
+            <span class="text-base font-normal leading-none mr-[0.35rem]"
+              >+</span
+            >
             <span>
               {{ $t("tournament.stage.add_another") }}
             </span>
@@ -396,4 +395,3 @@ export default {
   },
 };
 </script>
-

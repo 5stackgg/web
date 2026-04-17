@@ -28,7 +28,9 @@ import {
             : 'border-border bg-card/40'
         "
       >
-        <div class="flex flex-wrap items-center justify-center gap-2 text-center">
+        <div
+          class="flex flex-wrap items-center justify-center gap-2 text-center"
+        >
           <span
             class="font-sans text-lg font-bold uppercase tracking-wide"
             :class="

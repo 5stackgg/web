@@ -157,7 +157,9 @@ import debounce from "~/utilities/debounce";
     <div class="bg-background rounded-lg border shadow-sm">
       <div class="p-4 border-b bg-muted/30">
         <div class="flex items-center justify-between">
-          <h5 class="text-sm font-medium text-foreground">{{ $t("server.rcon.console_output") }}</h5>
+          <h5 class="text-sm font-medium text-foreground">
+            {{ $t("server.rcon.console_output") }}
+          </h5>
           <div class="flex items-center gap-2">
             <span class="text-xs text-muted-foreground"
               >{{ logs.length }} entries</span
@@ -217,7 +219,9 @@ import debounce from "~/utilities/debounce";
           >
             <Terminal class="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p class="text-sm">{{ $t("server.rcon.no_commands_yet") }}</p>
-            <p class="text-xs mt-1">{{ $t("server.rcon.enter_command_hint") }}</p>
+            <p class="text-xs mt-1">
+              {{ $t("server.rcon.enter_command_hint") }}
+            </p>
           </div>
         </div>
       </div>

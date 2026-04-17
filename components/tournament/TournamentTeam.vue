@@ -4,7 +4,13 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
 import TournamentTeamInvite from "./TournamentTeamInvite.vue";
 import Input from "../ui/input/Input.vue";
 import { Button } from "~/components/ui/button";
-import { MoreHorizontal, LogOut, Trash, UserMinus, UserPlus } from "lucide-vue-next";
+import {
+  MoreHorizontal,
+  LogOut,
+  Trash,
+  UserMinus,
+  UserPlus,
+} from "lucide-vue-next";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,9 +22,7 @@ import {
 <template>
   <div v-if="team && e_team_roles" class="flex flex-col gap-4">
     <!-- Team header -->
-    <header
-      class="flex items-start justify-between gap-4 flex-wrap"
-    >
+    <header class="flex items-start justify-between gap-4 flex-wrap">
       <div class="min-w-0 flex-1 flex flex-col gap-2">
         <h2
           class="font-sans text-[1.35rem] font-bold tracking-[0.02em] text-foreground m-0 leading-[1.15]"
@@ -35,9 +39,7 @@ import {
                 : 'text-destructive bg-destructive/10 border-destructive/35'
             "
           >
-            <span
-              class="w-[5px] h-[5px] bg-current rounded-full"
-            ></span>
+            <span class="w-[5px] h-[5px] bg-current rounded-full"></span>
             <template v-if="team.eligible_at">
               {{ $t("tournament.team.eligible") }}
             </template>
@@ -86,9 +88,7 @@ import {
           </span>
         </div>
 
-        <DropdownMenu
-          v-if="hasTeamActions"
-        >
+        <DropdownMenu v-if="hasTeamActions">
           <DropdownMenuTrigger as-child>
             <Button variant="outline" size="icon" class="h-8 w-8">
               <MoreHorizontal class="h-4 w-4" />
@@ -154,9 +154,7 @@ import {
             <span
               class="font-mono text-[0.75rem] font-bold tracking-[0.1em] text-muted-foreground/55"
             >
-              {{
-                (slot + team.roster.length).toString().padStart(2, "0")
-              }}
+              {{ (slot + team.roster.length).toString().padStart(2, "0") }}
             </span>
             <span class="text-[0.85rem]">
               {{
@@ -409,4 +407,3 @@ export default {
   },
 };
 </script>
-

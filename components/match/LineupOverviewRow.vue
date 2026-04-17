@@ -1,11 +1,16 @@
 <script lang="ts" setup>
 import formatStatValue from "~/utilities/formatStatValue";
 import { kdrColor } from "~/utilities/kdrColor";
+import EloChangeBadge from "~/components/EloChangeBadge.vue";
 </script>
 <template>
   <TableRow>
     <TableCell class="overflow-hidden">
-      <LineupMember :match="match" :member="member"></LineupMember>
+      <LineupMember :match="match" :member="member">
+        <template v-if="memberEloChange" #elo-postfix>
+          <EloChangeBadge :elo-change="memberEloChange" size="xs" />
+        </template>
+      </LineupMember>
     </TableCell>
     <template v-if="showStats">
       <TableCell class="text-center">
@@ -368,6 +373,17 @@ export default {
         rounds += match_map.lineup_1_score + match_map.lineup_2_score;
       }
       return rounds;
+    },
+    memberEloChange() {
+      const steamId = this.member?.steam_id ?? this.member?.player?.steam_id;
+      if (!steamId) {
+        return null;
+      }
+      return (
+        this.match.elo_changes?.find?.(
+          (ec: any) => String(ec.player_steam_id) === String(steamId),
+        ) ?? null
+      );
     },
   },
 };

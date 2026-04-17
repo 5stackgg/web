@@ -159,8 +159,12 @@ async function unlinkDiscord() {
 <template>
   <default>
     <div class="space-y-1">
-      <div class="inline-flex items-center gap-2 text-[0.65rem] font-mono font-bold uppercase tracking-[0.24em] text-muted-foreground mb-1">
-        <span class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
+      <div
+        class="inline-flex items-center gap-2 text-[0.65rem] font-mono font-bold uppercase tracking-[0.24em] text-muted-foreground mb-1"
+      >
+        <span
+          class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"
+        ></span>
         Settings
       </div>
       <h2 class="text-xl font-bold tracking-tight">
@@ -176,8 +180,13 @@ async function unlinkDiscord() {
         <!-- Mobile: single dropdown -->
         <div class="lg:hidden">
           <Select v-model="selectedPath">
-            <SelectTrigger class="w-full" :aria-label="$t('ui.tooltips.settings_section')">
-              <SelectValue :placeholder="$t('layouts.account_settings.select_section')" />
+            <SelectTrigger
+              class="w-full"
+              :aria-label="$t('ui.tooltips.settings_section')"
+            >
+              <SelectValue
+                :placeholder="$t('layouts.account_settings.select_section')"
+              />
             </SelectTrigger>
             <SelectContent>
               <SelectItem

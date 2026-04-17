@@ -54,9 +54,7 @@ const otherOnlineCount = computed(() => {
             class="relative flex-1 text-[0.7rem] font-semibold tracking-[0.1em] uppercase px-2 py-[0.35rem]"
           >
             {{ $t("matchmaking.friends.title") }}
-            <span
-              class="font-mono text-[0.6rem] ml-1 opacity-65 tabular-nums"
-            >
+            <span class="font-mono text-[0.6rem] ml-1 opacity-65 tabular-nums">
               {{ onlineFriends.length }}/{{ offlineFriends.length }}
             </span>
             <span
@@ -69,19 +67,23 @@ const otherOnlineCount = computed(() => {
             class="flex-1 text-[0.7rem] font-semibold tracking-[0.1em] uppercase px-2 py-[0.35rem]"
           >
             {{ $t("matchmaking.others.title") }}
-            <span
-              class="font-mono text-[0.6rem] ml-1 opacity-65 tabular-nums"
-            >
+            <span class="font-mono text-[0.6rem] ml-1 opacity-65 tabular-nums">
               {{ otherOnlineCount }}
             </span>
           </TabsTrigger>
         </TabsList>
       </div>
-      <TabsContent value="friends" class="mt-0 flex-1 overflow-y-auto min-h-0 px-3">
+      <TabsContent
+        value="friends"
+        class="mt-0 flex-1 overflow-y-auto min-h-0 px-3"
+      >
         <MatchInvites />
         <PlayersList :friends-only="true" />
       </TabsContent>
-      <TabsContent value="online" class="mt-0 flex-1 overflow-y-auto min-h-0 px-3">
+      <TabsContent
+        value="online"
+        class="mt-0 flex-1 overflow-y-auto min-h-0 px-3"
+      >
         <template v-if="otherOnlineCount > 0">
           <PlayersList />
         </template>

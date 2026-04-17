@@ -120,7 +120,8 @@
             <Input
               :model-value="form.discord_role_id ?? ''"
               :placeholder="
-                globalRoleId || $t('tournament.notifications.role_id_placeholder')
+                globalRoleId ||
+                $t('tournament.notifications.role_id_placeholder')
               "
               @update:model-value="updateRoleId($event)"
             />
@@ -201,10 +202,7 @@ const OTHER_DISCORD_FIELDS = [
   "discord_voice_enabled",
 ] as const;
 
-const DISCORD_FIELDS = [
-  ...OTHER_DISCORD_FIELDS,
-  ...STATUS_FIELDS,
-] as const;
+const DISCORD_FIELDS = [...OTHER_DISCORD_FIELDS, ...STATUS_FIELDS] as const;
 
 export default {
   components: {
@@ -261,7 +259,10 @@ export default {
             tournamentId: this.tournament.id,
           };
         },
-        result(this: any, { data }: { data: { tournaments_by_pk: Record<string, any> } }) {
+        result(
+          this: any,
+          { data }: { data: { tournaments_by_pk: Record<string, any> } },
+        ) {
           this.discordData = data.tournaments_by_pk;
           if (!this.dirty) {
             this.form = this.buildForm(this.discordData ?? {});
@@ -306,9 +307,7 @@ export default {
       };
     },
     globalMatchNotificationsWebhook(): string | null {
-      return this.resolveSettingValue([
-        "discord_match_notifications_webhook",
-      ]);
+      return this.resolveSettingValue(["discord_match_notifications_webhook"]);
     },
     globalDiscordWebhook(): string | null {
       return this.resolveSettingValue([

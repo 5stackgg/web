@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { MoreHorizontal, Trash2, UserMinus, GraduationCap } from "lucide-vue-next";
+import {
+  MoreHorizontal,
+  Trash2,
+  UserMinus,
+  GraduationCap,
+} from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
   DropdownMenu,
@@ -138,15 +143,20 @@ import { e_team_roster_statuses_enum } from "~/generated/zeus";
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>
                 <span>{{ $t("common.status") }}</span>
-                <span class="ml-auto text-muted-foreground text-xs capitalize">{{
-                  member.coach
-                    ? $t("team.member.coach")
-                    : $t(`team.member.${statusKey}`)
-                }}</span>
+                <span
+                  class="ml-auto text-muted-foreground text-xs capitalize"
+                  >{{
+                    member.coach
+                      ? $t("team.member.coach")
+                      : $t(`team.member.${statusKey}`)
+                  }}</span
+                >
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent class="w-48">
                 <DropdownMenuItem
-                  @click="updateMemberStatus(e_team_roster_statuses_enum.Starter)"
+                  @click="
+                    updateMemberStatus(e_team_roster_statuses_enum.Starter)
+                  "
                 >
                   {{ $t("team.member.starter") }}
                   <span
@@ -159,7 +169,9 @@ import { e_team_roster_statuses_enum } from "~/generated/zeus";
                   >
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  @click="updateMemberStatus(e_team_roster_statuses_enum.Benched)"
+                  @click="
+                    updateMemberStatus(e_team_roster_statuses_enum.Benched)
+                  "
                 >
                   {{ $t("team.member.benched") }}
                   <span
@@ -190,7 +202,9 @@ import { e_team_roster_statuses_enum } from "~/generated/zeus";
                 <DropdownMenuItem @click="toggleCoach">
                   <GraduationCap class="mr-2 h-4 w-4" />
                   {{ $t("team.member.coach") }}
-                  <span v-if="member.coach" class="ml-auto text-primary">✓</span>
+                  <span v-if="member.coach" class="ml-auto text-primary"
+                    >✓</span
+                  >
                 </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuSub>

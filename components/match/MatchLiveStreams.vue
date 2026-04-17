@@ -273,7 +273,10 @@ import { e_player_roles_enum } from "~/generated/zeus";
             <FormField v-slot="{ componentField }" name="title">
               <FormItem>
                 <FormLabel>{{ $t("streams.title") }}</FormLabel>
-                <Input v-bind="componentField" :placeholder="$t('streams.stream_title_placeholder')" />
+                <Input
+                  v-bind="componentField"
+                  :placeholder="$t('streams.stream_title_placeholder')"
+                />
               </FormItem>
             </FormField>
             <DialogFooter>

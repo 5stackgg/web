@@ -71,7 +71,9 @@ const isElevatedUser = computed(() =>
 
       <div class="relative flex items-center gap-2 z-10">
         <Merge class="h-5 w-5 drop-shadow-sm" />
-        <span class="font-semibold">{{ $t("layouts.lobby_panel.create_lobby_button") }}</span>
+        <span class="font-semibold">{{
+          $t("layouts.lobby_panel.create_lobby_button")
+        }}</span>
       </div>
     </Button>
   </template>

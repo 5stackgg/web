@@ -521,7 +521,9 @@ if (import.meta.client) {
             @click="openLastOrDefaultHub()"
           >
             <Grid class="h-4 w-4" />
-            <span class="sr-only">{{ $t("ui.tooltips.toggle_right_sidebar") }}</span>
+            <span class="sr-only">{{
+              $t("ui.tooltips.toggle_right_sidebar")
+            }}</span>
           </Button>
 
           <DropdownMenu v-model:open="profileMenuOpen">

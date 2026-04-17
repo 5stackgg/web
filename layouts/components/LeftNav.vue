@@ -136,7 +136,9 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.search_players')">
+            <SidebarMenuItem
+              :tooltip="$t('layouts.app_nav.tooltips.search_players')"
+            >
               <SidebarMenuButton
                 @click="
                   setOpenMobile(false);
@@ -604,7 +606,11 @@ function onLeftNavTouchEnd(e: TouchEvent) {
             class="p-2 flex items-center gap-2"
           >
             <Server class="w-3 h-3" />
-            {{ $t("layouts.app_nav.systems_online", telemetryStats.online, { count: telemetryStats.online }) }}
+            {{
+              $t("layouts.app_nav.systems_online", telemetryStats.online, {
+                count: telemetryStats.online,
+              })
+            }}
           </Badge>
         </SidebarGroup>
       </SidebarContent>
@@ -839,4 +845,3 @@ export default {
   },
 };
 </script>
-

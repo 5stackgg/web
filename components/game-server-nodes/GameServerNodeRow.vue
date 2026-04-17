@@ -437,10 +437,18 @@ const isSectionExpanded = (section: string) => {
                   <AlertCircle class="h-3 w-3" />
                 </div>
                 <div>
-                  <span class="font-semibold">{{ $t("game_server.note_label") }}</span>
-                  <i18n-t keypath="game_server.cpu_reservation_note" tag="span" scope="global">
+                  <span class="font-semibold">{{
+                    $t("game_server.note_label")
+                  }}</span>
+                  <i18n-t
+                    keypath="game_server.cpu_reservation_note"
+                    tag="span"
+                    scope="global"
+                  >
                     <template #cores>
-                      <span class="font-bold">{{ $t("game_server.one_cpu_core") }}</span>
+                      <span class="font-bold">{{
+                        $t("game_server.one_cpu_core")
+                      }}</span>
                     </template>
                   </i18n-t>
                 </div>
@@ -1214,7 +1222,9 @@ const isSectionExpanded = (section: string) => {
                           : 'text-muted-foreground'
                       "
                     />
-                    <span class="text-muted-foreground">{{ $t("game_server.low_latency") }}</span>
+                    <span class="text-muted-foreground">{{
+                      $t("game_server.low_latency")
+                    }}</span>
                   </div>
                   <div class="flex items-center gap-1">
                     <Cpu
@@ -1225,7 +1235,9 @@ const isSectionExpanded = (section: string) => {
                           : 'text-muted-foreground'
                       "
                     />
-                    <span class="text-muted-foreground">{{ $t("game_server.cpu_pinning") }}</span>
+                    <span class="text-muted-foreground">{{
+                      $t("game_server.cpu_pinning")
+                    }}</span>
                   </div>
                   <div class="flex items-center gap-1">
                     <svg
@@ -1274,7 +1286,9 @@ const isSectionExpanded = (section: string) => {
             >
               <div class="flex items-center gap-2">
                 <RefreshCw class="h-4 w-4" />
-                <span class="font-medium text-sm">{{ $t("game_server.game_server_versions") }}</span>
+                <span class="font-medium text-sm">{{
+                  $t("game_server.game_server_versions")
+                }}</span>
                 <FiveStackToolTip v-if="showBuildUpdateWarning">
                   <template #trigger>
                     <CircleFadingArrowUp class="h-3 w-3 text-yellow-500" />
@@ -1293,7 +1307,9 @@ const isSectionExpanded = (section: string) => {
             >
               <!-- CS Build -->
               <div class="space-y-1">
-                <label class="text-xs text-muted-foreground">{{ $t("game_server.cs_build") }}</label>
+                <label class="text-xs text-muted-foreground">{{
+                  $t("game_server.cs_build")
+                }}</label>
                 <template v-if="gameServerNode.update_status">
                   <div class="flex items-center gap-2">
                     <span class="capitalize text-xs">
@@ -1399,7 +1415,9 @@ const isSectionExpanded = (section: string) => {
 
               <!-- Plugin Version -->
               <div class="space-y-1" v-if="gameServerNode.build_id">
-                <label class="text-xs text-muted-foreground">{{ $t("common.plugin_version") }}</label>
+                <label class="text-xs text-muted-foreground">{{
+                  $t("common.plugin_version")
+                }}</label>
                 <Select
                   :model-value="pinPluginVersionForm.values.pin_plugin_version"
                   @update:model-value="(value) => pinPluginVersion(value)"
@@ -1489,7 +1507,11 @@ const isSectionExpanded = (section: string) => {
             @click="toggleNodeMetrics"
           >
             <Activity class="mr-2 h-4 w-4" />
-            {{ shouldShowMetrics ? $t("common.hide_metrics") : $t("common.show_metrics") }}
+            {{
+              shouldShowMetrics
+                ? $t("common.hide_metrics")
+                : $t("common.show_metrics")
+            }}
           </Button>
         </div>
       </div>

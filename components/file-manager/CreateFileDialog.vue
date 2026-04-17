@@ -3,12 +3,16 @@
     <DialogContent>
       <DialogHeader>
         <DialogTitle>{{ $t("file_manager.create_file.title") }}</DialogTitle>
-        <DialogDescription>{{ $t("file_manager.create_file.description") }}</DialogDescription>
+        <DialogDescription>{{
+          $t("file_manager.create_file.description")
+        }}</DialogDescription>
       </DialogHeader>
 
       <div class="space-y-4">
         <div class="space-y-2">
-          <Label for="file-name">{{ $t("file_manager.create_file.label") }}</Label>
+          <Label for="file-name">{{
+            $t("file_manager.create_file.label")
+          }}</Label>
           <Input
             id="file-name"
             ref="inputRef"
@@ -25,7 +29,9 @@
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="handleCancel">{{ $t("common.cancel") }}</Button>
+        <Button variant="outline" @click="handleCancel">{{
+          $t("common.cancel")
+        }}</Button>
         <Button @click="handleCreate" :disabled="!fileName || isCreating">
           {{ isCreating ? $t("common.creating") : $t("common.create") }}
         </Button>

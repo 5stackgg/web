@@ -126,9 +126,7 @@ const fadeTransition = {
                 <TableCell>{{ server.port }}</TableCell>
                 <TableCell>{{ server.tv_port }}</TableCell>
                 <TableCell>{{
-                  server.enabled
-                    ? $t("common.yes")
-                    : $t("common.no")
+                  server.enabled ? $t("common.yes") : $t("common.no")
                 }}</TableCell>
               </NuxtLink>
             </TableRow>

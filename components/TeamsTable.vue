@@ -55,10 +55,7 @@ import { Users } from "lucide-vue-next";
       </div>
 
       <!-- Top 5 starters by ELO -->
-      <div
-        v-if="topStarters(team).length"
-        class="flex items-center gap-1.5"
-      >
+      <div v-if="topStarters(team).length" class="flex items-center gap-1.5">
         <div class="flex -space-x-1.5">
           <Avatar
             v-for="rosterItem in topStarters(team)"
@@ -100,10 +97,7 @@ import { Users } from "lucide-vue-next";
         </div>
       </div>
 
-      <div
-        v-else
-        class="text-xs text-muted-foreground italic"
-      >
+      <div v-else class="text-xs text-muted-foreground italic">
         No roster yet.
       </div>
     </NuxtLink>

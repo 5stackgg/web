@@ -2,13 +2,19 @@
   <Dialog :open="open" @update:open="$emit('update:open', $event)">
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>{{ $t("file_manager.create_directory.title") }}</DialogTitle>
-        <DialogDescription>{{ $t("file_manager.create_directory.description") }}</DialogDescription>
+        <DialogTitle>{{
+          $t("file_manager.create_directory.title")
+        }}</DialogTitle>
+        <DialogDescription>{{
+          $t("file_manager.create_directory.description")
+        }}</DialogDescription>
       </DialogHeader>
 
       <div class="space-y-4">
         <div class="space-y-2">
-          <Label for="dir-name">{{ $t("file_manager.create_directory.label") }}</Label>
+          <Label for="dir-name">{{
+            $t("file_manager.create_directory.label")
+          }}</Label>
           <Input
             id="dir-name"
             ref="inputRef"
@@ -25,7 +31,9 @@
       </div>
 
       <DialogFooter>
-        <Button variant="outline" @click="handleCancel">{{ $t("common.cancel") }}</Button>
+        <Button variant="outline" @click="handleCancel">{{
+          $t("common.cancel")
+        }}</Button>
         <Button @click="handleCreate" :disabled="!dirName || store.isLoading">
           {{ $t("common.create") }}
         </Button>

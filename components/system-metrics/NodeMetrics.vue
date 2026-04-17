@@ -31,7 +31,9 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
               <Activity class="h-3.5 w-3.5" />
               Live performance timeline
             </div>
-            <h3 class="text-base font-semibold">{{ $t("system_metrics.node_telemetry") }}</h3>
+            <h3 class="text-base font-semibold">
+              {{ $t("system_metrics.node_telemetry") }}
+            </h3>
             <p class="max-w-2xl text-xs text-muted-foreground">
               CPU and memory stay front and center, with network and disk
               history grouped underneath for deeper inspection.
@@ -100,7 +102,9 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 
         <div class="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-12">
           <PageTransition :delay="0" class="xl:col-span-6">
-            <Card class="rounded-2xl border border-border/60 bg-background/40 p-4">
+            <Card
+              class="rounded-2xl border border-border/60 bg-background/40 p-4"
+            >
               <div class="mb-3 flex items-start justify-between gap-3">
                 <div>
                   <h4 class="text-sm font-semibold">
@@ -114,7 +118,9 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                   <div class="text-xl font-semibold tabular-nums">
                     {{ latestCpuUsage }}%
                   </div>
-                  <div class="text-[11px] uppercase tracking-wide text-muted-foreground">
+                  <div
+                    class="text-[11px] uppercase tracking-wide text-muted-foreground"
+                  >
                     current
                   </div>
                 </div>
@@ -126,7 +132,9 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
           </PageTransition>
 
           <PageTransition :delay="100" class="xl:col-span-6">
-            <Card class="rounded-2xl border border-border/60 bg-background/40 p-4">
+            <Card
+              class="rounded-2xl border border-border/60 bg-background/40 p-4"
+            >
               <div class="mb-3 flex items-start justify-between gap-3">
                 <div>
                   <h4 class="text-sm font-semibold">
@@ -140,7 +148,9 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                   <div class="text-[13px] font-semibold tabular-nums">
                     {{ memoryUsageDisplay }}
                   </div>
-                  <div class="text-[11px] uppercase tracking-wide text-muted-foreground">
+                  <div
+                    class="text-[11px] uppercase tracking-wide text-muted-foreground"
+                  >
                     {{ latestMemoryUsage }}% used
                   </div>
                 </div>
@@ -152,7 +162,9 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
           </PageTransition>
 
           <PageTransition :delay="200" class="xl:col-span-6">
-            <Card class="rounded-2xl border border-border/60 bg-background/40 p-4">
+            <Card
+              class="rounded-2xl border border-border/60 bg-background/40 p-4"
+            >
               <div class="mb-3 flex items-start justify-between gap-3">
                 <div>
                   <h4 class="text-sm font-semibold">
@@ -166,7 +178,9 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                   <div class="text-xl font-semibold tabular-nums">
                     {{ networkUsageDisplay }}
                   </div>
-                  <div class="text-[11px] uppercase tracking-wide text-muted-foreground">
+                  <div
+                    class="text-[11px] uppercase tracking-wide text-muted-foreground"
+                  >
                     current
                   </div>
                 </div>
@@ -178,10 +192,14 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
           </PageTransition>
 
           <PageTransition :delay="300" class="xl:col-span-6">
-            <Card class="rounded-2xl border border-border/60 bg-background/40 p-4">
+            <Card
+              class="rounded-2xl border border-border/60 bg-background/40 p-4"
+            >
               <div class="mb-3 flex items-start justify-between gap-3">
                 <div>
-                  <h4 class="text-sm font-semibold">{{ $t("game_server.disks_label") }}</h4>
+                  <h4 class="text-sm font-semibold">
+                    {{ $t("game_server.disks_label") }}
+                  </h4>
                   <p class="text-xs text-muted-foreground">
                     Highest-utilization disk view with underlying timeline.
                   </p>
@@ -190,7 +208,9 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                   <div class="text-[13px] font-semibold tabular-nums">
                     {{ diskUsageDisplay }}
                   </div>
-                  <div class="text-[11px] uppercase tracking-wide text-muted-foreground">
+                  <div
+                    class="text-[11px] uppercase tracking-wide text-muted-foreground"
+                  >
                     {{ latestDiskUsage }}% used
                   </div>
                 </div>
@@ -212,7 +232,9 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
             <BarChart3 class="h-8 w-8 text-muted-foreground" />
           </div>
           <div class="space-y-1">
-            <h3 class="font-semibold text-lg">{{ $t("system_metrics.no_metrics_available") }}</h3>
+            <h3 class="font-semibold text-lg">
+              {{ $t("system_metrics.no_metrics_available") }}
+            </h3>
             <p class="text-sm text-muted-foreground max-w-md">
               {{
                 metricsData === null

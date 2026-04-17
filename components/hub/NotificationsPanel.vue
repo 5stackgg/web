@@ -51,7 +51,9 @@ import Empty from "~/components/ui/empty/Empty.vue";
         </div>
 
         <template v-for="notification of notifications" :key="notification.id">
-          <div class="mb-3 p-3 rounded-md border border-border bg-card/40 relative">
+          <div
+            class="mb-3 p-3 rounded-md border border-border bg-card/40 relative"
+          >
             <Button
               v-if="notification.deletable !== false"
               size="icon"
@@ -60,9 +62,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
               class="absolute top-2 right-2"
             >
               <Trash2 class="h-4 w-4" />
-              <span class="sr-only">{{
-                $t("common.delete")
-              }}</span>
+              <span class="sr-only">{{ $t("common.delete") }}</span>
             </Button>
             <h3
               :class="[

@@ -209,9 +209,7 @@ const fadeTransition = {
                   @update:model-value="hideOffline = !hideOffline"
                 />
                 <span class="text-sm text-muted-foreground">{{
-                  hideOffline
-                    ? $t("common.online")
-                    : $t("common.offline")
+                  hideOffline ? $t("common.online") : $t("common.offline")
                 }}</span>
               </div>
             </div>

@@ -53,10 +53,7 @@ const tacLabelClasses =
 </script>
 
 <template>
-  <form
-    @submit.prevent="updateMatch"
-    class="mx-auto w-full max-w-4xl"
-  >
+  <form @submit.prevent="updateMatch" class="mx-auto w-full max-w-4xl">
     <MatchOptions :form="form" :match="match">
       <template #left>
         <!-- Match Lobby Access -->
@@ -65,12 +62,12 @@ const tacLabelClasses =
           v-slot="{ value, handleChange }"
           name="lobby_access"
         >
-          <FormItem class="px-5 py-4 border border-border rounded-lg bg-[hsl(var(--card)/0.55)] backdrop-blur-[6px] flex flex-col gap-3">
+          <FormItem
+            class="px-5 py-4 border border-border rounded-lg bg-[hsl(var(--card)/0.55)] backdrop-blur-[6px] flex flex-col gap-3"
+          >
             <div class="flex items-center gap-[0.65rem] flex-wrap">
               <span :class="tickClasses"></span>
-              <FormLabel :class="tacLabelClasses">
-                Lobby Access
-              </FormLabel>
+              <FormLabel :class="tacLabelClasses"> Lobby Access </FormLabel>
               <span class="ml-auto text-[0.78rem] text-muted-foreground">
                 {{ activeLobbyAccessDescription(value) }}
               </span>
@@ -80,7 +77,10 @@ const tacLabelClasses =
                 v-for="opt in lobbyAccessOptions"
                 :key="opt.value"
                 type="button"
-                :class="[accessBtnClasses, value === opt.value && accessBtnActiveClasses]"
+                :class="[
+                  accessBtnClasses,
+                  value === opt.value && accessBtnActiveClasses,
+                ]"
                 @click="handleChange(opt.value)"
               >
                 <component :is="opt.icon" class="w-4 h-4" />
@@ -95,12 +95,17 @@ const tacLabelClasses =
           <FormItem>
             <div
               class="relative flex items-center gap-4 px-5 py-4 border border-border rounded-lg bg-[hsl(var(--card)/0.6)] backdrop-blur-[6px] cursor-pointer [transition:border-color_160ms_ease,background_160ms_ease] hover:border-[hsl(var(--tac-amber)/0.4)] hover:bg-[hsl(var(--card)/0.8)]"
-              :class="[value && '!border-[hsl(var(--tac-amber)/0.55)] !bg-[hsl(var(--tac-amber)/0.06)]']"
+              :class="[
+                value &&
+                  '!border-[hsl(var(--tac-amber)/0.55)] !bg-[hsl(var(--tac-amber)/0.06)]',
+              ]"
               @click="handleChange(!value)"
             >
               <div class="flex-1 space-y-1.5">
                 <div class="flex items-center gap-2">
-                  <span class="text-[hsl(var(--tac-amber))] text-[0.7rem]">◢</span>
+                  <span class="text-[hsl(var(--tac-amber))] text-[0.7rem]"
+                    >◢</span
+                  >
                   <FormLabel
                     class="text-base font-semibold tracking-[0.08em] uppercase cursor-pointer"
                   >
@@ -123,19 +128,25 @@ const tacLabelClasses =
         </FormField>
 
         <!-- Team vs Team picker -->
-        <div v-if="!form.values.pug" class="relative p-5 border border-border rounded-lg [background:linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] backdrop-blur-[6px]">
-          <div class="inline-flex items-center gap-2 font-mono text-[0.68rem] tracking-[0.24em] uppercase text-muted-foreground mb-[0.85rem]">
+        <div
+          v-if="!form.values.pug"
+          class="relative p-5 border border-border rounded-lg [background:linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] backdrop-blur-[6px]"
+        >
+          <div
+            class="inline-flex items-center gap-2 font-mono text-[0.68rem] tracking-[0.24em] uppercase text-muted-foreground mb-[0.85rem]"
+          >
             <span :class="tickClasses"></span>
             Lineups
           </div>
 
-          <div class="grid grid-cols-[1fr_auto_1fr] gap-4 items-end max-sm:grid-cols-1 max-sm:gap-3">
-            <FormField
-              v-slot="{ handleChange, componentField }"
-              name="team_1"
-            >
+          <div
+            class="grid grid-cols-[1fr_auto_1fr] gap-4 items-end max-sm:grid-cols-1 max-sm:gap-3"
+          >
+            <FormField v-slot="{ handleChange, componentField }" name="team_1">
               <FormItem class="min-w-0">
-                <FormLabel class="font-mono text-[0.65rem] tracking-[0.22em] uppercase text-muted-foreground">
+                <FormLabel
+                  class="font-mono text-[0.65rem] tracking-[0.22em] uppercase text-muted-foreground"
+                >
                   {{ $t("pages.matches.create_page.team_1") }}
                 </FormLabel>
                 <TeamSearch
@@ -156,17 +167,19 @@ const tacLabelClasses =
               </FormItem>
             </FormField>
 
-            <div class="inline-flex items-center gap-[0.4rem] px-[0.85rem] py-[0.55rem] mb-0.5 font-bold text-[0.85rem] tracking-[0.22em] text-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)] border border-[hsl(var(--tac-amber)/0.4)] [clip-path:polygon(0_0,calc(100%-8px)_0,100%_8px,100%_100%,8px_100%,0_calc(100%-8px))] max-sm:justify-self-center" aria-hidden="true">
+            <div
+              class="inline-flex items-center gap-[0.4rem] px-[0.85rem] py-[0.55rem] mb-0.5 font-bold text-[0.85rem] tracking-[0.22em] text-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)] border border-[hsl(var(--tac-amber)/0.4)] [clip-path:polygon(0_0,calc(100%-8px)_0,100%_8px,100%_100%,8px_100%,0_calc(100%-8px))] max-sm:justify-self-center"
+              aria-hidden="true"
+            >
               <Swords class="w-4 h-4" />
               <span>VS</span>
             </div>
 
-            <FormField
-              v-slot="{ handleChange, componentField }"
-              name="team_2"
-            >
+            <FormField v-slot="{ handleChange, componentField }" name="team_2">
               <FormItem class="min-w-0">
-                <FormLabel class="font-mono text-[0.65rem] tracking-[0.22em] uppercase text-muted-foreground">
+                <FormLabel
+                  class="font-mono text-[0.65rem] tracking-[0.22em] uppercase text-muted-foreground"
+                >
                   {{ $t("pages.matches.create_page.team_2") }}
                 </FormLabel>
                 <TeamSearch
@@ -188,7 +201,9 @@ const tacLabelClasses =
             </FormField>
           </div>
 
-          <div class="flex items-center gap-2 mt-4 pt-[0.85rem] border-t border-border text-[0.78rem] italic text-muted-foreground">
+          <div
+            class="flex items-center gap-2 mt-4 pt-[0.85rem] border-t border-border text-[0.78rem] italic text-muted-foreground"
+          >
             <Info class="w-4 h-4 flex-shrink-0" />
             <span>
               {{ $t("pages.matches.create_page.intra_team_scrimmage") }}
@@ -199,9 +214,14 @@ const tacLabelClasses =
     </MatchOptions>
 
     <div class="mt-8 flex justify-center">
-      <button type="submit" class="group/submit relative isolate inline-flex items-center px-12 py-4 font-bold text-base tracking-[0.22em] uppercase text-[hsl(0_0%_8%)] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] border border-[hsl(var(--tac-amber))] [clip-path:polygon(14px_0,100%_0,100%_calc(100%-14px),calc(100%-14px)_100%,0_100%,0_14px)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_8px_24px_-6px_hsl(var(--tac-amber)/0.6)] [transition:transform_200ms_cubic-bezier(0.4,0,0.2,1),box-shadow_200ms_ease] cursor-pointer overflow-hidden hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_14px_36px_-6px_hsl(var(--tac-amber)/0.8),0_0_28px_hsl(var(--tac-amber)/0.35)] active:translate-y-0">
+      <button
+        type="submit"
+        class="group/submit relative isolate inline-flex items-center px-12 py-4 font-bold text-base tracking-[0.22em] uppercase text-[hsl(0_0%_8%)] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] border border-[hsl(var(--tac-amber))] [clip-path:polygon(14px_0,100%_0,100%_calc(100%-14px),calc(100%-14px)_100%,0_100%,0_14px)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_8px_24px_-6px_hsl(var(--tac-amber)/0.6)] [transition:transform_200ms_cubic-bezier(0.4,0,0.2,1),box-shadow_200ms_ease] cursor-pointer overflow-hidden hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_14px_36px_-6px_hsl(var(--tac-amber)/0.8),0_0_28px_hsl(var(--tac-amber)/0.35)] active:translate-y-0"
+      >
         <span class="relative z-[1] inline-flex items-center gap-3">
-          <PlayIcon class="w-5 h-5 fill-current [transition:transform_300ms_cubic-bezier(0.4,0,0.2,1)] group-hover/submit:translate-x-0.5 group-hover/submit:scale-[1.08]" />
+          <PlayIcon
+            class="w-5 h-5 fill-current [transition:transform_300ms_cubic-bezier(0.4,0,0.2,1)] group-hover/submit:translate-x-0.5 group-hover/submit:scale-[1.08]"
+          />
           <span>
             <template v-if="match">
               {{ $t("pages.matches.create_page.update_button") }}
@@ -211,7 +231,10 @@ const tacLabelClasses =
             </template>
           </span>
         </span>
-        <span class="absolute inset-0 [background:linear-gradient(90deg,transparent_0%,hsl(0_0%_100%/0.35)_50%,transparent_100%)] -translate-x-full [transition:transform_700ms_cubic-bezier(0.4,0,0.2,1)] pointer-events-none z-0 group-hover/submit:translate-x-full" aria-hidden="true"></span>
+        <span
+          class="absolute inset-0 [background:linear-gradient(90deg,transparent_0%,hsl(0_0%_100%/0.35)_50%,transparent_100%)] -translate-x-full [transition:transform_700ms_cubic-bezier(0.4,0,0.2,1)] pointer-events-none z-0 group-hover/submit:translate-x-full"
+          aria-hidden="true"
+        ></span>
       </button>
     </div>
   </form>

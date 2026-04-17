@@ -167,8 +167,15 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
           <!-- Mobile: single dropdown so all sections are one tap away, no scroll -->
           <div class="lg:hidden">
             <Select v-model="selectedPath">
-              <SelectTrigger class="w-full" :aria-label="$t('ui.tooltips.settings_section')">
-                <SelectValue :placeholder="$t('layouts.application_settings.select_section')" />
+              <SelectTrigger
+                class="w-full"
+                :aria-label="$t('ui.tooltips.settings_section')"
+              >
+                <SelectValue
+                  :placeholder="
+                    $t('layouts.application_settings.select_section')
+                  "
+                />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem
@@ -182,10 +189,7 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
             </Select>
           </div>
           <!-- Desktop: vertical nav with sliding indicator -->
-          <nav
-            ref="navRef"
-            class="relative hidden flex-col space-y-1 lg:flex"
-          >
+          <nav ref="navRef" class="relative hidden flex-col space-y-1 lg:flex">
             <div
               v-show="showIndicator"
               class="absolute top-0 right-0 w-0.5 z-10 pointer-events-none bg-[hsl(var(--tac-amber))] shadow-[0_0_8px_hsl(var(--tac-amber)/0.35)]"

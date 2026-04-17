@@ -72,7 +72,9 @@ const { isMobile } = useSidebar();
       >
         <div class="flex items-start justify-between">
           <div>
-            <h2 class="text-lg font-semibold">{{ $t("pages.map_pools.pool.pool_heading", { type: pool.type }) }}</h2>
+            <h2 class="text-lg font-semibold">
+              {{ $t("pages.map_pools.pool.pool_heading", { type: pool.type }) }}
+            </h2>
             <p class="text-sm text-muted-foreground mt-1">
               {{ pool.maps.map((map) => map.name).join(", ") }}
             </p>

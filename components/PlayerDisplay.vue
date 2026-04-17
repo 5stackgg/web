@@ -187,6 +187,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               </span>
             </FiveStackToolTip>
             <PlayerElo :elo="player.elo" v-if="showElo" />
+            <slot name="elo-postfix"></slot>
             <p
               class="text-muted-foreground text-xs flex items-center gap-1"
               v-if="showSteamId"

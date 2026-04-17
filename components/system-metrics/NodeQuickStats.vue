@@ -172,7 +172,10 @@ export default {
     diskUsageDisplay(): string {
       const d = this.diskWithMaxPercent;
       if (!d || !Number(d.size)) return "—";
-      return formatUsedOverTotalBytes(Number(d.used || 0), Number(d.size));
+      return formatUsedOverTotalBytes(
+        Number(d.used || 0) * 1024,
+        Number(d.size) * 1024,
+      );
     },
     diskLabel(): string {
       const d = this.diskWithMaxPercent;

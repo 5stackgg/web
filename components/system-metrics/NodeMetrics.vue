@@ -367,8 +367,8 @@ export default {
         return "—";
       }
       return formatUsedOverTotalBytes(
-        Number(disk.used || 0),
-        Number(disk.size),
+        Number(disk.used || 0) * 1024,
+        Number(disk.size) * 1024,
       );
     },
     latestNetworkUsage(): number {

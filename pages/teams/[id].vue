@@ -34,6 +34,7 @@ import TeamForm from "~/components/teams/TeamForm.vue";
 import MatchesTable from "~/components/MatchesTable.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import AvatarUpload from "~/components/AvatarUpload.vue";
 
 const teamMenu = ref(false);
 const teamHeroClasses =
@@ -46,7 +47,7 @@ const teamHeroBodyClasses = "flex flex-wrap items-center gap-7 max-md:gap-4";
 const teamHeroEmblemFrameClasses =
   "relative flex h-[140px] w-[140px] items-center justify-center border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] p-1 max-md:h-24 max-md:w-24";
 const teamHeroEmblemClasses =
-  "font-sans text-[4.5rem] font-bold uppercase tracking-[0.02em] text-transparent [font-stretch:80%] [background:linear-gradient(180deg,hsl(var(--tac-amber))_0%,hsl(var(--tac-amber)_/_0.6)_100%)] [-webkit-background-clip:text] [background-clip:text] [-webkit-text-fill-color:transparent] [text-shadow:0_0_20px_hsl(var(--tac-amber)_/_0.2)] max-md:text-[3rem]";
+  "font-sans font-bold uppercase tracking-[0.05em] text-[hsl(var(--tac-amber))] text-[2.5rem] max-md:text-[1.75rem] leading-none";
 const teamHeroEmblemCornerClasses =
   "absolute h-3 w-3 border-[hsl(var(--tac-amber))]";
 const teamHeroIdentityClasses = "flex min-w-0 flex-1 flex-col gap-3";
@@ -78,6 +79,31 @@ const teamHeroActionsClasses =
       </div>
 
       <div :class="teamHeroBodyClasses">
+        <!-- Emblem: avatar when uploaded, initials fallback -->
+        <div :class="teamHeroEmblemFrameClasses">
+          <img
+            v-if="teamAvatarSrc"
+            :src="teamAvatarSrc"
+            :alt="team.name"
+            class="h-full w-full object-cover"
+          />
+          <span v-else :class="teamHeroEmblemClasses">
+            {{ team.short_name || team.name }}
+          </span>
+          <div
+            :class="[
+              teamHeroEmblemCornerClasses,
+              '-left-[2px] -top-[2px] border-l-2 border-t-2',
+            ]"
+          ></div>
+          <div
+            :class="[
+              teamHeroEmblemCornerClasses,
+              '-bottom-[2px] -right-[2px] border-b-2 border-r-2',
+            ]"
+          ></div>
+        </div>
+
         <!-- Identity: name, short, captain -->
         <div :class="teamHeroIdentityClasses">
           <div :class="teamHeroNameRowClasses">
@@ -184,10 +210,28 @@ const teamHeroActionsClasses =
     <SheetContent>
       <SheetHeader>
         <SheetTitle>{{ $t("team.management.edit") }}</SheetTitle>
-        <SheetDescription>
-          <TeamForm :team="team" @updated="editTeamSheet = false" />
+        <SheetDescription class="sr-only">
+          {{ $t("team.management.edit") }}
         </SheetDescription>
       </SheetHeader>
+      <div class="mt-6 space-y-6">
+        <div class="space-y-2">
+          <div
+            class="inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
+          >
+            <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
+            {{ $t("avatar.team_avatar") }}
+          </div>
+          <AvatarUpload
+            variant="dropzone"
+            :upload-url="`https://${apiDomain}/avatars/teams/${team.id}`"
+            :delete-url="`https://${apiDomain}/avatars/teams/${team.id}`"
+            :has-custom="!!team.avatar_url"
+            :current-src="teamAvatarSrc"
+          />
+        </div>
+        <TeamForm :team="team" @updated="editTeamSheet = false" />
+      </div>
     </SheetContent>
   </Sheet>
 
@@ -263,6 +307,7 @@ export default {
               id: true,
               name: true,
               short_name: true,
+              avatar_url: true,
               owner_steam_id: true,
               owner: playerFields,
               roster: [
@@ -289,6 +334,13 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    apiDomain() {
+      return useRuntimeConfig().public.apiDomain;
+    },
+    teamAvatarSrc() {
+      if (!this.team?.avatar_url) return null;
+      return `https://${this.apiDomain}/${this.team.avatar_url}`;
     },
     isOnTeam() {
       return !!this.team?.roster.some(({ player }) => {

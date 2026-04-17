@@ -6,6 +6,7 @@ export const playerFields = Selector("players")({
   country: true,
   steam_id: true,
   avatar_url: true,
+  custom_avatar_url: true,
   is_banned: true,
   is_gagged: true,
   is_muted: true,

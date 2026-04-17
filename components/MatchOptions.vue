@@ -17,6 +17,7 @@ import {
   CollapsibleContent,
 } from "~/components/ui/collapsible";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
+import RegionStatusDot from "~/components/regions/RegionStatusDot.vue";
 import { Card } from "~/components/ui/card";
 </script>
 
@@ -538,7 +539,20 @@ import { Card } from "~/components/ui/card";
                                       'match.options.advanced.region.placeholder',
                                     )
                                   "
-                                />
+                                >
+                                  <span
+                                    v-if="selectedRegionDetails"
+                                    class="flex items-center gap-2"
+                                  >
+                                    <RegionStatusDot
+                                      :status="selectedRegionDetails.status"
+                                    />
+                                    {{
+                                      selectedRegionDetails.description ||
+                                      selectedRegionDetails.value
+                                    }}
+                                  </span>
+                                </SelectValue>
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
@@ -549,7 +563,10 @@ import { Card } from "~/components/ui/card";
                                   :value="region.value"
                                   :disabled="isLocked"
                                 >
-                                  {{ region.description || region.value }}
+                                  <span class="flex items-center gap-2">
+                                    <RegionStatusDot :status="region.status" />
+                                    {{ region.description || region.value }}
+                                  </span>
                                 </SelectItem>
                               </SelectGroup>
                             </SelectContent>
@@ -633,7 +650,12 @@ import { Card } from "~/components/ui/card";
                                     "
                                     :disabled="isLocked"
                                   >
-                                    {{ region.description || region.value }}
+                                    <span class="flex items-center gap-2">
+                                      <RegionStatusDot
+                                        :status="region.status"
+                                      />
+                                      {{ region.description || region.value }}
+                                    </span>
                                     <Check
                                       :class="[
                                         'mr-2 h-4 mx-auto',
@@ -1057,6 +1079,7 @@ interface Region {
   value: string;
   description: string;
   is_lan: boolean;
+  status?: string;
 }
 
 interface EnumSetting {
@@ -1183,6 +1206,18 @@ export default {
       handler(lan) {
         this.form.setFieldValue("region_veto", !lan);
         this.setDefaultRegion();
+      },
+    },
+    ["form.values.regions"]: {
+      immediate: true,
+      handler() {
+        this.syncLanFromRegions();
+      },
+    },
+    availableRegions: {
+      immediate: true,
+      handler() {
+        this.syncLanFromRegions();
       },
     },
     ["form.values.type"]: {
@@ -1415,6 +1450,14 @@ export default {
           : region.is_lan === false;
       });
     },
+    selectedRegionDetails(): Region | undefined {
+      if (!this.select_single_region) {
+        return undefined;
+      }
+      return this.availableRegions.find(
+        (region: Region) => region.value === this.select_single_region,
+      );
+    },
     canSetLan(): boolean {
       if (this.lanRegions.length === 0) {
         return false;
@@ -1458,20 +1501,55 @@ export default {
       this.form.setFieldValue("map_pool", pool);
     },
     setDefaultRegion() {
+      if (this.availableRegions.length === 0) {
+        return;
+      }
+
       const { lan, region_veto } = this.form.values;
 
-      let regions: string[] = [];
-
       if ((lan || !region_veto) && this.regions.length > 0) {
+        const existing = this.form.values.regions?.[0];
+        const existingMatch = this.regions.find(
+          (region: Region) => region.value === existing,
+        );
+
         this.select_single_region =
+          existingMatch?.value ||
           this.regions.find((region: Region) => region.is_lan === !!lan)
-            ?.value || null;
+            ?.value ||
+          null;
 
         return;
       }
 
       this.select_single_region = null;
-      this.form.setFieldValue("regions", regions);
+      this.form.setFieldValue("regions", []);
+    },
+    syncLanFromRegions() {
+      if (this.availableRegions.length === 0) {
+        return;
+      }
+
+      const selectedRegions = this.form.values.regions || [];
+      if (selectedRegions.length === 0) {
+        return;
+      }
+
+      const hasLan = selectedRegions.some((value: string) =>
+        this.lanRegions.some((lr: Region) => lr.value === value),
+      );
+
+      if (hasLan && !this.form.values.lan) {
+        this.form.setFieldValue("lan", true);
+        return;
+      }
+
+      if (
+        (this.form.values.lan || !this.form.values.region_veto) &&
+        !this.select_single_region
+      ) {
+        this.select_single_region = selectedRegions[0];
+      }
     },
   },
 };

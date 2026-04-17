@@ -15,20 +15,23 @@ import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import PlayerChangeName from "~/components/PlayerChangeName.vue";
 import { kdrStrokeColor } from "~/utilities/kdrColor";
-import { PlayIcon, MoreHorizontal, ExternalLink } from "lucide-vue-next";
+import { PlayIcon, Pencil, ExternalLink } from "lucide-vue-next";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import RadialStat from "~/components/charts/RadialStat.vue";
 import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-} from "~/components/ui/dropdown-menu";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { Separator } from "~/components/ui/separator";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
+import AvatarUpload from "~/components/AvatarUpload.vue";
 
 definePageMeta({
   alias: ["/me/:id?"],
@@ -64,7 +67,10 @@ const playerHeroBadgesClasses =
   "mt-[0.15rem] flex flex-wrap items-center gap-2";
 const playerHeroNameEditClasses =
   "inline-flex opacity-60 transition-opacity duration-150 hover:opacity-100";
-const playerHeroActionsClasses =
+const playerHeroActionsClasses = "mt-1 flex flex-wrap items-center gap-3";
+const playerHeroRoleChipClasses =
+  "inline-flex items-center rounded border border-border bg-card/60 px-[0.55rem] py-[0.25rem] text-[0.7rem] font-medium uppercase tracking-[0.12em] text-muted-foreground capitalize";
+const playerHeroRightActionsClasses =
   "ml-auto flex shrink-0 items-center justify-center gap-3 self-center max-md:ml-0";
 const playerHeroPlayClasses =
   "group/play relative isolate inline-flex cursor-pointer items-center border font-sans text-[0.95rem] font-bold uppercase tracking-[0.18em] no-underline transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px active:translate-y-0 py-[0.85rem] pr-[1.6rem] pl-[1.4rem] text-[hsl(0_0%_8%)] border-[hsl(var(--tac-amber))] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] [clip-path:polygon(12px_0,100%_0,100%_calc(100%_-_12px),calc(100%_-_12px)_100%,0_100%,0_12px)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_20px_-6px_hsl(var(--tac-amber)/0.6)] hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_12px_32px_-6px_hsl(var(--tac-amber)/0.8),0_0_24px_hsl(var(--tac-amber)/0.35)]";
@@ -105,8 +111,8 @@ const playerTeamChipShortClasses =
           <div class="shrink-0">
             <div :class="playerHeroAvatarFrameClasses">
               <img
-                v-if="player.avatar_url"
-                :src="player.avatar_url"
+                v-if="playerAvatarSrc"
+                :src="playerAvatarSrc"
                 :alt="player.name"
                 :class="playerHeroAvatarClasses"
               />
@@ -165,19 +171,34 @@ const playerTeamChipShortClasses =
               </a>
             </div>
 
-            <div :class="playerHeroBadgesClasses">
-              <div
-                v-if="me && player.steam_id === me.steam_id"
-                :class="playerHeroNameEditClasses"
+            <!-- Actions: role / sanction / edit -->
+            <div
+              v-if="player.role || canSanction || canEditPlayer"
+              :class="playerHeroActionsClasses"
+            >
+              <PlayerRoleForm v-if="canEditRole" :player="player" />
+              <span v-else-if="player.role" :class="playerHeroRoleChipClasses">
+                {{ (player.role || "user").replace("_", " ") }}
+              </span>
+              <SanctionPlayer v-if="canSanction" :player="player" />
+              <Button
+                v-if="canEditPlayer"
+                variant="outline"
+                size="icon"
+                :title="$t('pages.players.detail.edit_player')"
+                @click="editPlayerSheet = true"
               >
-                <PlayerChangeName :player="player" />
-              </div>
+                <Pencil class="w-4 h-4" />
+              </Button>
+            </div>
+
+            <div :class="playerHeroBadgesClasses">
               <PlayerSanctions v-if="playerId" :playerId="playerId" />
             </div>
           </div>
 
-          <!-- Actions -->
-          <div :class="playerHeroActionsClasses">
+          <!-- Right-side CTA -->
+          <div :class="playerHeroRightActionsClasses">
             <NuxtLink
               v-if="me && player.steam_id === me.steam_id"
               to="/play"
@@ -192,31 +213,6 @@ const playerTeamChipShortClasses =
                 aria-hidden="true"
               ></span>
             </NuxtLink>
-
-            <template v-if="canSanction">
-              <div class="hidden sm:flex items-center gap-2">
-                <SanctionPlayer :player="player" />
-                <PlayerRoleForm :player="player" />
-              </div>
-            </template>
-
-            <div v-if="canSanction" class="sm:hidden">
-              <DropdownMenu>
-                <DropdownMenuTrigger as-child>
-                  <Button variant="outline" size="icon">
-                    <MoreHorizontal class="w-4 h-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <div class="p-1">
-                    <SanctionPlayer :player="player" />
-                  </div>
-                  <div class="p-1">
-                    <PlayerRoleForm :player="player" />
-                  </div>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
           </div>
         </div>
 
@@ -537,6 +533,48 @@ const playerTeamChipShortClasses =
       </Tabs>
     </PageTransition>
   </div>
+
+  <Sheet
+    v-if="player"
+    :open="editPlayerSheet"
+    @update:open="(open) => (editPlayerSheet = open)"
+  >
+    <SheetContent>
+      <SheetHeader>
+        <SheetTitle>{{ $t("pages.players.detail.edit_player") }}</SheetTitle>
+        <SheetDescription class="sr-only">
+          {{ $t("pages.players.detail.edit_player") }}
+        </SheetDescription>
+      </SheetHeader>
+      <div class="mt-6 space-y-6">
+        <div v-if="canEditAvatar" class="space-y-2">
+          <div
+            class="inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
+          >
+            <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
+            {{ $t("avatar.player_avatar") }}
+          </div>
+          <AvatarUpload
+            variant="dropzone"
+            :upload-url="`https://${apiDomain}/avatars/players/${player.steam_id}`"
+            :delete-url="`https://${apiDomain}/avatars/players/${player.steam_id}`"
+            :has-custom="!!player.custom_avatar_url"
+            :current-src="playerAvatarSrc"
+          />
+        </div>
+
+        <div v-if="canEditName" class="space-y-2">
+          <div
+            class="inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
+          >
+            <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
+            {{ $t("pages.players.detail.name") }}
+          </div>
+          <PlayerChangeName :player="player" />
+        </div>
+      </div>
+    </SheetContent>
+  </Sheet>
 </template>
 
 <script lang="ts">
@@ -741,6 +779,7 @@ export default {
       page: 1,
       perPage: 10,
       playerTournaments: [],
+      editPlayerSheet: false,
     };
   },
   computed: {
@@ -770,6 +809,13 @@ export default {
     me() {
       return useAuthStore().me;
     },
+    apiDomain() {
+      return useRuntimeConfig().public.apiDomain;
+    },
+    playerAvatarSrc() {
+      if (!this.player) return null;
+      return this.player.custom_avatar_url || this.player.avatar_url || null;
+    },
     canSanction() {
       if (!this.me || !this.player) {
         return false;
@@ -778,6 +824,31 @@ export default {
         this.player.steam_id !== this.me.steam_id &&
         useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)
       );
+    },
+    isSelfProfile() {
+      return !!(
+        this.me &&
+        this.player &&
+        this.player.steam_id === this.me.steam_id
+      );
+    },
+    isAdmin() {
+      return useAuthStore().isRoleAbove(e_player_roles_enum.administrator);
+    },
+    canEditAvatar() {
+      return this.isSelfProfile || this.isAdmin;
+    },
+    canEditName() {
+      return this.isSelfProfile || this.isAdmin;
+    },
+    canEditRole() {
+      if (!this.me || !this.player || this.isSelfProfile) {
+        return false;
+      }
+      return useAuthStore().isRoleAbove(this.player.role);
+    },
+    canEditPlayer() {
+      return this.canEditAvatar || this.canEditName || this.canEditRole;
     },
     kd() {
       if (!this.player?.stats) {

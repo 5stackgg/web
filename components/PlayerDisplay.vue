@@ -38,9 +38,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
       <slot name="avatar">
         <Avatar shape="square" :class="{ 'h-8 w-8': size === 'xs' || compact }">
           <AvatarImage
-            :src="player.avatar_url"
+            :src="playerAvatarSrc"
             :alt="player.name"
-            v-if="player?.avatar_url"
+            v-if="playerAvatarSrc"
           />
           <AvatarFallback>
             <slot name="avatar-fallback">
@@ -295,6 +295,10 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    playerAvatarSrc() {
+      if (!this.player) return null;
+      return this.player.custom_avatar_url || this.player.avatar_url || null;
     },
     isMe() {
       if (!this.player) {

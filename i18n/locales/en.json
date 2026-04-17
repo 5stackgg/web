@@ -2,6 +2,22 @@
     "pagination": {
         "items_per_page": "per page"
     },
+    "avatar": {
+        "upload": "Upload avatar",
+        "change": "Change avatar",
+        "remove": "Remove avatar",
+        "team_avatar": "Team avatar",
+        "player_avatar": "Player avatar",
+        "upload_success": "Avatar uploaded",
+        "upload_failed": "Avatar upload failed",
+        "remove_success": "Avatar removed",
+        "remove_failed": "Failed to remove avatar",
+        "too_large": "Image must be 5MB or smaller",
+        "invalid_type": "Only PNG, JPEG, or WebP images are allowed",
+        "uploading": "Uploading...",
+        "drop_to_upload": "Drop to upload",
+        "hint": "Drag & drop or click · PNG, JPEG, WebP · up to 5 MB"
+    },
     "pages": {
         "system_metrics": {
             "cpu_usage": "CPU Usage",
@@ -466,7 +482,10 @@
                 "no_tournaments": "No tournaments found for this player.",
                 "no_tournaments_description": "Tournaments this player has joined will appear here.",
                 "weapon_kills": "Most Used Weapons",
-                "no_weapon_kills": "No weapons recorded"
+                "no_weapon_kills": "No weapons recorded",
+                "edit_player": "Edit Player",
+                "name": "Name",
+                "role": "Role"
             }
         },
         "play": {
@@ -1558,6 +1577,7 @@
             "pending_invites": "Pending Invites"
         },
         "form": {
+            "identity": "Identity",
             "name_placeholder": "Enter team name...",
             "short_name": "Short Name",
             "short_name_placeholder": "Enter short name (max 3 characters)...",
@@ -2073,6 +2093,16 @@
     "matchmaking": {
         "cancel_matchmaking": "Cancel Matchmaking",
         "searching_for_match": "Searching for a {type} match",
+        "in_queue_label": "In Queue",
+        "searching": "Searching",
+        "elapsed": "Elapsed",
+        "others_searching": "{count} other searching | {count} others searching",
+        "match_found": "Match Found",
+        "waiting_for_players": "Waiting for Players",
+        "waiting_on_others": "Waiting on Others",
+        "confirmed": "Confirmed",
+        "ready": "Ready",
+        "locked_in": "Locked In",
         "invites": "Invites",
         "lobby": {
             "access": "Lobby Access",

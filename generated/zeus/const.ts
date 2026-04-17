@@ -10037,6 +10037,7 @@ export const AllTypesProps: Record<string,any> = {
 		country:"String_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		current_lobby_id:"uuid_comparison_exp",
+		custom_avatar_url:"String_comparison_exp",
 		damage_dealt:"player_damages_bool_exp",
 		damage_dealt_aggregate:"player_damages_aggregate_bool_exp",
 		damage_taken:"player_damages_bool_exp",
@@ -10164,6 +10165,7 @@ export const AllTypesProps: Record<string,any> = {
 		country:"order_by",
 		created_at:"order_by",
 		current_lobby_id:"order_by",
+		custom_avatar_url:"order_by",
 		damage_dealt_aggregate:"player_damages_aggregate_order_by",
 		damage_taken_aggregate:"player_damages_aggregate_order_by",
 		deaths_aggregate:"player_kills_aggregate_order_by",
@@ -13758,6 +13760,7 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"teams_bool_exp",
 		_not:"teams_bool_exp",
 		_or:"teams_bool_exp",
+		avatar_url:"String_comparison_exp",
 		can_change_role:"Boolean_comparison_exp",
 		can_invite:"Boolean_comparison_exp",
 		can_remove:"Boolean_comparison_exp",
@@ -13791,12 +13794,14 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_teams:"tournament_teams_arr_rel_insert_input"
 	},
 	teams_max_order_by:{
+		avatar_url:"order_by",
 		id:"order_by",
 		name:"order_by",
 		owner_steam_id:"order_by",
 		short_name:"order_by"
 	},
 	teams_min_order_by:{
+		avatar_url:"order_by",
 		id:"order_by",
 		name:"order_by",
 		owner_steam_id:"order_by",
@@ -13812,6 +13817,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"teams_bool_exp"
 	},
 	teams_order_by:{
+		avatar_url:"order_by",
 		can_change_role:"order_by",
 		can_invite:"order_by",
 		can_remove:"order_by",
@@ -21688,6 +21694,7 @@ export const ReturnTypes: Record<string,any> = {
 		country:"String",
 		created_at:"timestamptz",
 		current_lobby_id:"uuid",
+		custom_avatar_url:"String",
 		damage_dealt:"player_damages",
 		damage_dealt_aggregate:"player_damages_aggregate",
 		damage_taken:"player_damages",
@@ -21786,6 +21793,7 @@ export const ReturnTypes: Record<string,any> = {
 		country:"String",
 		created_at:"timestamptz",
 		current_lobby_id:"uuid",
+		custom_avatar_url:"String",
 		discord_id:"String",
 		language:"String",
 		last_sign_in_at:"timestamptz",
@@ -21802,6 +21810,7 @@ export const ReturnTypes: Record<string,any> = {
 		country:"String",
 		created_at:"timestamptz",
 		current_lobby_id:"uuid",
+		custom_avatar_url:"String",
 		discord_id:"String",
 		language:"String",
 		last_sign_in_at:"timestamptz",
@@ -22929,6 +22938,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_steam_id:"Float"
 	},
 	teams:{
+		avatar_url:"String",
 		can_change_role:"Boolean",
 		can_invite:"Boolean",
 		can_remove:"Boolean",
@@ -22969,6 +22979,7 @@ export const ReturnTypes: Record<string,any> = {
 		owner_steam_id:"Float"
 	},
 	teams_max_fields:{
+		avatar_url:"String",
 		id:"uuid",
 		name:"String",
 		owner_steam_id:"bigint",
@@ -22976,6 +22987,7 @@ export const ReturnTypes: Record<string,any> = {
 		short_name:"String"
 	},
 	teams_min_fields:{
+		avatar_url:"String",
 		id:"uuid",
 		name:"String",
 		owner_steam_id:"bigint",

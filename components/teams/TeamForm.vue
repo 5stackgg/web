@@ -3,16 +3,36 @@ import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
-import { Card } from "~/components/ui/card";
+
+const cardClasses =
+  "relative rounded-lg border border-border p-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[12px] before:w-[12px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[12px] after:w-[12px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-['']";
+
+const eyebrowClasses =
+  "inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground";
+
+const tickClasses = "h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]";
+
+const labelClasses =
+  "font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground";
+
+const submitClasses =
+  "w-full bg-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.9)] text-[hsl(0_0%_8%)] font-sans font-bold uppercase tracking-[0.18em] disabled:opacity-60";
 </script>
 
 <template>
-  <form @submit.prevent="updateCreateTeam" class="grid gap-6">
-    <Card class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50">
-      <div class="p-6 space-y-6">
+  <form @submit.prevent="updateCreateTeam" class="grid gap-5">
+    <div :class="cardClasses">
+      <div :class="eyebrowClasses">
+        <span :class="tickClasses"></span>
+        {{ $t("team.form.identity") }}
+      </div>
+
+      <div class="mt-5 space-y-5">
         <FormField v-slot="{ componentField }" name="team_name">
-          <FormItem>
-            <FormLabel>{{ $t("common.team_name") }}</FormLabel>
+          <FormItem class="space-y-1.5">
+            <FormLabel :class="labelClasses">
+              {{ $t("common.team_name") }}
+            </FormLabel>
             <FormControl>
               <Input
                 v-bind="componentField"
@@ -24,13 +44,16 @@ import { Card } from "~/components/ui/card";
         </FormField>
 
         <FormField v-slot="{ componentField }" name="short_name">
-          <FormItem>
-            <FormLabel>{{ $t("team.form.short_name") }}</FormLabel>
+          <FormItem class="space-y-1.5">
+            <FormLabel :class="labelClasses">
+              {{ $t("team.form.short_name") }}
+            </FormLabel>
             <FormControl>
               <Input
                 v-bind="componentField"
                 :placeholder="$t('team.form.short_name_placeholder')"
                 maxlength="5"
+                class="uppercase tracking-[0.15em] font-mono"
               />
             </FormControl>
             <FormMessage />
@@ -42,8 +65,10 @@ import { Card } from "~/components/ui/card";
           v-slot="{ componentField }"
           name="owner_steam_id"
         >
-          <FormItem>
-            <FormLabel>{{ $t("team.form.owner") }}</FormLabel>
+          <FormItem class="space-y-1.5">
+            <FormLabel :class="labelClasses">
+              {{ $t("team.form.owner") }}
+            </FormLabel>
             <Select v-bind="componentField">
               <FormControl>
                 <SelectTrigger>
@@ -66,12 +91,12 @@ import { Card } from "~/components/ui/card";
           </FormItem>
         </FormField>
       </div>
-    </Card>
+    </div>
 
     <Button
       type="submit"
       :disabled="Object.keys(form.errors).length > 0"
-      class="w-full"
+      :class="submitClasses"
     >
       {{ team ? $t("team.form.update") : $t("team.form.create") }}
     </Button>

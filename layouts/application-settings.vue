@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -10,6 +9,7 @@ import {
 } from "@/components/ui/select";
 import Default from "~/layouts/default.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import SettingsSideTabs from "~/components/settings/SettingsSideTabs.vue";
 
 const showSeparators = computed(
   () => useApplicationSettingsStore().showSeparators,
@@ -83,7 +83,9 @@ const resolvedPath = computed(() => {
   const path = route.path;
   const items = navItems.value ?? [];
   if (items.some((item) => item.path === path)) return path;
-  const match = items.find((item) => path.startsWith(item.path + "/"));
+  const match = items
+    .filter((item) => path.startsWith(item.path + "/"))
+    .sort((a, b) => b.path.length - a.path.length)[0];
   return match ? match.path : (items[0]?.path ?? path);
 });
 
@@ -93,59 +95,6 @@ const selectedPath = computed({
     if (path !== route.path) router.push(path);
   },
 });
-
-const navRef = ref<HTMLElement | null>(null);
-const indicatorY = ref(0);
-const indicatorHeight = ref(0);
-const hasAnimated = ref(false);
-
-function updateIndicator() {
-  const nav = navRef.value;
-  if (!nav) return;
-  const active = nav.querySelector(
-    ".router-link-exact-active > button",
-  ) as HTMLElement | null;
-  if (!active) {
-    indicatorHeight.value = 0;
-    hasAnimated.value = false;
-    return;
-  }
-  const navRect = nav.getBoundingClientRect();
-  const activeRect = active.getBoundingClientRect();
-  indicatorY.value = activeRect.top - navRect.top;
-  indicatorHeight.value = activeRect.height;
-  nextTick(() => {
-    hasAnimated.value = true;
-  });
-}
-
-let observer: MutationObserver | null = null;
-
-watch(
-  () => route.path,
-  () => nextTick(updateIndicator),
-);
-
-onMounted(() => {
-  nextTick(updateIndicator);
-  const nav = navRef.value;
-  if (nav) {
-    observer = new MutationObserver(updateIndicator);
-    observer.observe(nav, {
-      attributes: true,
-      subtree: true,
-      attributeFilter: ["class"],
-    });
-    window.addEventListener("resize", updateIndicator);
-  }
-});
-
-onUnmounted(() => {
-  observer?.disconnect();
-  window.removeEventListener("resize", updateIndicator);
-});
-
-const showIndicator = computed(() => indicatorHeight.value > 0);
 </script>
 
 <template>
@@ -188,35 +137,11 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
               </SelectContent>
             </Select>
           </div>
-          <!-- Desktop: vertical nav with sliding indicator -->
-          <nav ref="navRef" class="relative hidden flex-col space-y-1 lg:flex">
-            <div
-              v-show="showIndicator"
-              class="absolute top-0 right-0 w-0.5 z-10 pointer-events-none bg-[hsl(var(--tac-amber))] shadow-[0_0_8px_hsl(var(--tac-amber)/0.35)]"
-              :class="
-                hasAnimated
-                  ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),width_0.2s_ease,height_0.2s_ease]'
-                  : ''
-              "
-              :style="{
-                transform: `translateY(${indicatorY}px)`,
-                height: `${indicatorHeight}px`,
-              }"
-            />
-            <nuxt-link
-              v-for="item in navItems"
-              :key="item.path"
-              :to="item.path"
-              exact-active-class="[&>button]:!text-sidebar-accent-foreground [&>button]:!bg-transparent"
-            >
-              <Button
-                variant="ghost"
-                class="w-full text-left justify-start relative z-[1] hover:bg-sidebar-accent/40 hover:text-sidebar-accent-foreground transition-colors duration-200"
-              >
-                {{ item.label }}
-              </Button>
-            </nuxt-link>
-          </nav>
+          <SettingsSideTabs
+            :items="navItems"
+            :active-path="resolvedPath"
+            :aria-label="$t('ui.tooltips.settings_section')"
+          />
         </aside>
       </PageTransition>
       <div class="space-y-6 flex-1 min-w-0">

@@ -212,7 +212,9 @@ function processIssues(
   });
 }
 
-function getDefaults(schema: ZodSchemaLike): Record<string, unknown> | undefined {
+function getDefaults(
+  schema: ZodSchemaLike,
+): Record<string, unknown> | undefined {
   if (!isObjectSchema(schema)) {
     return undefined;
   }

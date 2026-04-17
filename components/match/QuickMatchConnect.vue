@@ -32,12 +32,31 @@ import { e_match_status_enum } from "~/generated/zeus";
     <div v-if="match.connection_string">
       <template v-if="!match.is_server_online">
         <template v-if="match.server_type === 'Dedicated'">
-          {{ $t("match.server.offline") }}
+          <div
+            class="flex items-center gap-2 p-4 rounded-lg border border-destructive/30 bg-destructive/10 animate-fade-in"
+          >
+            <div
+              class="flex items-center justify-center gap-3 rounded-md p-3 w-full bg-background/40 text-destructive"
+            >
+              <AlertTriangle class="w-4 h-4 shrink-0" />
+              <span class="text-sm font-medium">{{
+                $t("match.server.offline")
+              }}</span>
+            </div>
+          </div>
         </template>
         <template v-else>
-          <div class="flex">
-            {{ $t("match.server.booting") }}
-            <Loader class="animate-spin ml-3"></Loader>
+          <div
+            class="flex items-center gap-2 p-4 rounded-lg border bg-foreground/10 animate-fade-in"
+          >
+            <div
+              class="flex items-center justify-center gap-3 rounded-md p-3 w-full bg-background/40 text-muted-foreground"
+            >
+              <Loader class="w-4 h-4 animate-spin-smooth shrink-0" />
+              <span class="text-sm font-medium tracking-wide">{{
+                $t("match.server.booting")
+              }}</span>
+            </div>
           </div>
         </template>
       </template>
@@ -91,7 +110,7 @@ import { e_match_status_enum } from "~/generated/zeus";
 </template>
 
 <script lang="ts">
-import { Loader, ExternalLink, Copy, Tv } from "lucide-vue-next";
+import { Loader, ExternalLink, Copy, Tv, AlertTriangle } from "lucide-vue-next";
 import ClipBoard from "~/components/ClipBoard.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 
@@ -101,6 +120,7 @@ export default {
     ExternalLink,
     Copy,
     Tv,
+    AlertTriangle,
     ClipBoard,
   },
   props: {

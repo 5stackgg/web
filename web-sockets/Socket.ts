@@ -29,10 +29,26 @@ class Socket extends EventEmitter {
     event: string;
     data: Record<string, unknown>;
   }> = [];
+  private retryCount = 0;
+  private static readonly MAX_RETRIES = 50;
+  private static readonly BASE_DELAY_MS = 1000;
+  private static readonly MAX_DELAY_MS = 30000;
 
   private lobbies: Map<string, Lobby> = new Map();
 
   public connect() {
+    // Clean up any existing connection before creating a new one
+    if (this.connection) {
+      try {
+        this.connection.onclose = null;
+        this.connection.onerror = null;
+        this.connection.close();
+      } catch {
+        // Ignore errors when closing stale connections
+      }
+      this.connection = undefined;
+    }
+
     const wsHost = `wss://${useRuntimeConfig().public.wsDomain}/web`;
     console.info(`[ws] connecting to ws: ${wsHost}`);
     const webSocket = new WebSocket(wsHost);
@@ -47,6 +63,7 @@ class Socket extends EventEmitter {
     webSocket.addEventListener("open", () => {
       this.emit("online");
       this.connected = true;
+      this.retryCount = 0;
 
       clearInterval(this.heartBeat);
 
@@ -88,9 +105,28 @@ class Socket extends EventEmitter {
       this.emit("offline");
       this.connected = false;
       console.warn("[ws] lost connection to websocket server", closeEvent);
+
+      if (this.retryCount >= Socket.MAX_RETRIES) {
+        console.warn(
+          `[ws] max reconnection attempts (${Socket.MAX_RETRIES}) reached, giving up`,
+        );
+        return;
+      }
+
+      const delay = Math.min(
+        Socket.BASE_DELAY_MS * Math.pow(2, this.retryCount),
+        Socket.MAX_DELAY_MS,
+      );
+      const jitter = Math.random() * 1000;
+      this.retryCount++;
+
+      console.info(
+        `[ws] reconnecting in ${Math.round(delay + jitter)}ms (attempt ${this.retryCount}/${Socket.MAX_RETRIES})`,
+      );
+
       setTimeout(() => {
         this.connect();
-      }, 1000);
+      }, delay + jitter);
     };
 
     webSocket.onerror = (error) => {

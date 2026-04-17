@@ -4,6 +4,7 @@ import { Trash2 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import TimeAgo from "~/components/TimeAgo.vue";
 import NotificationContext from "~/components/notification/NotificationContext.vue";
+import NotificationMessage from "~/components/notification/NotificationMessage.vue";
 
 type NotificationAction = {
   label: string;
@@ -83,8 +84,9 @@ const wrapperClass = computed(() =>
             ? 'text-muted-foreground/70'
             : 'text-muted-foreground',
         ]"
-        v-html="notification.message"
-      />
+      >
+        <NotificationMessage :html="notification.message" />
+      </p>
     </template>
     <template v-else>
       <p

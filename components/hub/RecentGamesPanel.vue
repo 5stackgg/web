@@ -8,8 +8,10 @@ import cleanMapName from "~/utilities/cleanMapName";
   <div class="flex flex-col h-full">
     <div class="px-3 pt-3 pb-3 flex-shrink-0 border-b border-border">
       <div class="flex items-center justify-between gap-2">
-        <div class="hub-panel-label">
-          <span class="hub-panel-tick"></span>
+        <div
+          class="inline-flex items-center gap-[0.4rem] font-mono text-[0.62rem] font-bold tracking-[0.24em] uppercase text-muted-foreground"
+        >
+          <span class="w-2 h-[2px] bg-[hsl(var(--tac-amber))]"></span>
           {{ $t("layouts.recent_games.title") }}
         </div>
         <span
@@ -296,22 +298,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.hub-panel-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-family: "Oxanium", monospace;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
-}
-.hub-panel-tick {
-  width: 8px;
-  height: 2px;
-  background: hsl(var(--tac-amber));
-}
-</style>

@@ -7,6 +7,12 @@ import TimeAgo from "../TimeAgo.vue";
 import CustomMatch from "~/components/CustomMatch.vue";
 
 const isMobile = useMediaQuery("(max-width: 768px)");
+
+const mmCardBase =
+  "group/mmc relative flex flex-col flex-1 min-h-[120px] px-[1.1rem] pt-4 pb-5 text-left cursor-pointer overflow-hidden isolate border border-border text-foreground [background:linear-gradient(135deg,hsl(var(--card)/0.7)_0%,hsl(var(--card)/0.35)_60%,hsl(var(--tac-amber)/0.05)_100%)] [transition:border-color_180ms_ease,background_220ms_ease,box-shadow_220ms_ease] hover:border-[hsl(var(--tac-amber)/0.55)] hover:[background:linear-gradient(135deg,hsl(var(--card)/0.8)_0%,hsl(var(--card)/0.45)_55%,hsl(var(--tac-amber)/0.12)_100%)] hover:shadow-[0_0_24px_hsl(var(--tac-amber)/0.12)] focus-visible:outline-none focus-visible:border-[hsl(var(--tac-amber))] focus-visible:shadow-[0_0_0_2px_hsl(var(--tac-amber)/0.35)]";
+
+const mmCardPending =
+  "!border-[hsl(var(--tac-amber))] ![background:linear-gradient(135deg,hsl(var(--card)/0.8)_0%,hsl(var(--tac-amber)/0.18)_100%)] !shadow-[0_0_32px_hsl(var(--tac-amber)/0.2)]";
 </script>
 
 <template>
@@ -37,7 +43,7 @@ const isMobile = useMediaQuery("(max-width: 768px)");
         class="mb-4 flex flex-col gap-6 p-12 rounded-xl border border-border shadow-lg relative overflow-hidden min-h-[300px] justify-center items-center animate-fade-in backdrop-blur-sm"
       >
         <div
-          class="absolute inset-0 bg-gradient-to-r from-primary/5 to-primary/10 animate-pulse"
+          class="absolute inset-0 bg-gradient-to-r from-primary/5 to-primary/10 animate-soft-pulse"
         ></div>
         <div class="absolute inset-0">
           <div
@@ -109,18 +115,23 @@ const isMobile = useMediaQuery("(max-width: 768px)");
             v-for="type in allowedMatchTypes"
             :key="type.value"
             type="button"
-            class="mm-card transition-all duration-300 ease-out"
-            :class="{
-              'mm-card--pending scale-[1.03]':
-                pendingMatchType === type.value,
-              'opacity-40 scale-95':
-                pendingMatchType && pendingMatchType !== type.value,
-              'hover:scale-[1.015]':
-                !pendingMatchType || pendingMatchType === type.value,
-            }"
+            :class="[
+              mmCardBase,
+              'transition-all duration-300 ease-out',
+              pendingMatchType === type.value && `${mmCardPending} scale-[1.03]`,
+              pendingMatchType &&
+                pendingMatchType !== type.value &&
+                'opacity-40 scale-95',
+              (!pendingMatchType || pendingMatchType === type.value) &&
+                'hover:scale-[1.015]',
+            ]"
             @click="handleMatchTypeClick(type.value)"
           >
-            <span class="mm-card__scan" aria-hidden="true"></span>
+            <span
+              class="absolute inset-0 z-0 pointer-events-none opacity-0 transition-opacity [transition-duration:220ms] [transition-timing-function:ease] [background-image:repeating-linear-gradient(180deg,transparent_0,transparent_3px,hsl(var(--tac-amber)/0.03)_3px,hsl(var(--tac-amber)/0.03)_4px)] group-hover/mmc:opacity-100"
+              :class="{ '!opacity-100': pendingMatchType === type.value }"
+              aria-hidden="true"
+            ></span>
 
             <Badge
               variant="secondary"
@@ -132,9 +143,20 @@ const isMobile = useMediaQuery("(max-width: 768px)");
               {{ $t("matchmaking.in_queue") }}
             </Badge>
 
-            <div class="mm-card__content">
-              <div class="mm-card__label">
-                <span class="mm-card__tick" aria-hidden="true"></span>
+            <div
+              class="relative z-[1] flex-1 min-w-0 flex flex-col gap-[0.4rem]"
+            >
+              <div
+                class="inline-flex items-center gap-[0.55rem] font-mono text-[0.72rem] font-bold tracking-[0.24em] uppercase text-muted-foreground transition-colors [transition-duration:180ms] group-hover/mmc:text-[hsl(var(--tac-amber))]"
+                :class="{
+                  '!text-[hsl(var(--tac-amber))]':
+                    pendingMatchType === type.value,
+                }"
+              >
+                <span
+                  class="inline-block w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]"
+                  aria-hidden="true"
+                ></span>
                 {{ type.value.toUpperCase() }}
               </div>
               <Transition
@@ -149,14 +171,14 @@ const isMobile = useMediaQuery("(max-width: 768px)");
                 <p
                   v-if="pendingMatchType !== type.value"
                   :key="`idle-${type.value}`"
-                  class="mm-card__description"
+                  class="m-0 text-[0.78rem] leading-[1.5] text-muted-foreground"
                 >
                   {{ type.description }}
                 </p>
                 <div
                   v-else
                   :key="`pending-${type.value}`"
-                  class="mm-card__confirm"
+                  class="relative z-[1] flex-1 flex items-center justify-center font-sans text-[1.05rem] font-bold tracking-[0.14em] uppercase text-[hsl(var(--tac-amber))] [text-shadow:0_0_12px_hsl(var(--tac-amber)/0.4)]"
                 >
                   {{ $t("matchmaking.confirm_selection") }}
                 </div>
@@ -448,169 +470,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.mm-card {
-  position: relative;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 120px;
-  padding: 1rem 1.1rem 1.25rem;
-  text-align: left;
-  cursor: pointer;
-  overflow: hidden;
-  isolation: isolate;
-  border: 1px solid hsl(var(--border));
-  background: linear-gradient(
-    135deg,
-    hsl(var(--card) / 0.7) 0%,
-    hsl(var(--card) / 0.35) 60%,
-    hsl(var(--tac-amber) / 0.05) 100%
-  );
-  color: hsl(var(--foreground));
-  transition: border-color 180ms ease, background 220ms ease,
-    box-shadow 220ms ease;
-}
-.mm-card:hover {
-  border-color: hsl(var(--tac-amber) / 0.55);
-  background: linear-gradient(
-    135deg,
-    hsl(var(--card) / 0.8) 0%,
-    hsl(var(--card) / 0.45) 55%,
-    hsl(var(--tac-amber) / 0.12) 100%
-  );
-  box-shadow: 0 0 24px hsl(var(--tac-amber) / 0.12);
-}
-.mm-card:focus-visible {
-  outline: none;
-  border-color: hsl(var(--tac-amber));
-  box-shadow: 0 0 0 2px hsl(var(--tac-amber) / 0.35);
-}
-.mm-card--pending {
-  border-color: hsl(var(--tac-amber));
-  background: linear-gradient(
-    135deg,
-    hsl(var(--card) / 0.8) 0%,
-    hsl(var(--tac-amber) / 0.18) 100%
-  );
-  box-shadow: 0 0 32px hsl(var(--tac-amber) / 0.2);
-}
-
-.mm-card__scan {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image: repeating-linear-gradient(
-    180deg,
-    transparent 0,
-    transparent 3px,
-    hsl(var(--tac-amber) / 0.03) 3px,
-    hsl(var(--tac-amber) / 0.03) 4px
-  );
-  opacity: 0;
-  transition: opacity 220ms ease;
-}
-.mm-card:hover .mm-card__scan,
-.mm-card--pending .mm-card__scan {
-  opacity: 1;
-}
-
-.mm-card__content {
-  position: relative;
-  z-index: 1;
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.mm-card__label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  font-family: "Oxanium", monospace;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
-  transition: color 180ms ease;
-}
-.mm-card:hover .mm-card__label,
-.mm-card--pending .mm-card__label {
-  color: hsl(var(--tac-amber));
-}
-.mm-card__tick {
-  display: inline-block;
-  width: 10px;
-  height: 2px;
-  background: hsl(var(--tac-amber));
-}
-
-.mm-card__description {
-  margin: 0;
-  font-size: 0.78rem;
-  line-height: 1.5;
-  color: hsl(var(--muted-foreground));
-}
-
-.mm-card__confirm {
-  position: relative;
-  z-index: 1;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: "Oxanium", sans-serif;
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: hsl(var(--tac-amber));
-  text-shadow: 0 0 12px hsl(var(--tac-amber) / 0.4);
-}
-
-@keyframes loading-bar {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(100%);
-  }
-}
-
-.animate-loading-bar {
-  animation: loading-bar 2s infinite;
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(5px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.animate-pulse {
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 0.5;
-  }
-  50% {
-    opacity: 0.8;
-  }
-}
-</style>

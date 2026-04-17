@@ -3,10 +3,16 @@ import PlayerDisplay from "../PlayerDisplay.vue";
 </script>
 
 <template>
-  <div class="tournament-invite-row">
-    <div class="tournament-invite-row__player">
+  <div
+    class="flex items-center justify-between gap-4 px-[0.85rem] py-[0.65rem] border border-dashed border-border bg-muted/15 rounded-md"
+  >
+    <div class="flex items-center gap-[0.65rem] min-w-0">
       <PlayerDisplay :player="invite.player"></PlayerDisplay>
-      <span class="tournament-invite-row__tag">{{ $t("tournament.team_invite.pending") }}</span>
+      <span
+        class="px-[0.45rem] py-[0.1rem] font-mono text-[0.6rem] font-bold tracking-[0.2em] uppercase bg-muted/40 text-muted-foreground rounded-full"
+      >
+        {{ $t("tournament.team_invite.pending") }}
+      </span>
     </div>
     <AlertDialog>
       <AlertDialogTrigger as-child>
@@ -38,37 +44,6 @@ import PlayerDisplay from "../PlayerDisplay.vue";
     </AlertDialog>
   </div>
 </template>
-
-<style scoped>
-.tournament-invite-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.65rem 0.85rem;
-  border: 1px dashed hsl(var(--border));
-  background: hsl(var(--muted) / 0.15);
-  border-radius: 0.375rem;
-}
-.tournament-invite-row__player {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  min-width: 0;
-}
-.tournament-invite-row__tag {
-  padding: 0.1rem 0.45rem;
-  font-family: "Oxanium", monospace;
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  background: hsl(var(--muted) / 0.4);
-  color: hsl(var(--muted-foreground));
-  border-radius: 9999px;
-}
-</style>
-
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
 export default {

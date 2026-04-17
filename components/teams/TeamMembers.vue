@@ -5,7 +5,6 @@ import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import {
   UserPlus,
-  X,
   Users,
   UserMinus,
   Users2,
@@ -24,47 +23,44 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
           {{ $t("team.roster_count_players") }}
         </p>
       </div>
-      <Button
+      <PlayerSearch
         v-if="team.can_invite"
-        size="sm"
-        variant="outline"
-        class="gap-2"
-        @click="inviteOpen = !inviteOpen"
+        :label="$t('team.members.invite_player')"
+        :exclude="team?.roster.map((m) => m.player.steam_id) || []"
+        @selected="onInvite"
       >
-        <component :is="inviteOpen ? X : UserPlus" class="h-4 w-4" />
-        {{
-          inviteOpen
-            ? $t("common.cancel")
-            : $t("team.members.invite_player")
-        }}
-      </Button>
+        <Button size="sm" variant="outline" class="gap-2">
+          <UserPlus class="h-4 w-4" />
+          {{ $t("team.members.invite_player") }}
+        </Button>
+      </PlayerSearch>
     </CardHeader>
 
     <CardContent class="space-y-5">
-      <div v-if="team.can_invite && inviteOpen" class="space-y-3 rounded-md border border-dashed p-3">
-        <PlayerSearch
-          :label="$t('team.members.invite_player')"
-          :exclude="team?.roster.map((m) => m.player.steam_id) || []"
-          @selected="onInvite"
-        />
-        <template v-if="team_invites?.length">
-          <div
-            class="flex items-center justify-between text-xs uppercase tracking-wide text-muted-foreground"
+      <section
+        v-if="team.can_invite && team_invites?.length"
+        class="space-y-1"
+      >
+        <div class="flex items-center gap-2 px-1">
+          <UserPlus class="h-3.5 w-3.5 text-muted-foreground" />
+          <h3
+            class="text-xs uppercase tracking-[0.14em] text-muted-foreground"
           >
-            <span>{{ $t("team.members.pending_invites") }}</span>
-            <Badge variant="secondary">{{ team_invites.length }}</Badge>
-          </div>
-          <div class="space-y-1">
-            <TeamMember
-              v-for="member of team_invites"
-              :key="member.id"
-              :team="team"
-              :member="member"
-              :is-invite="true"
-            />
-          </div>
-        </template>
-      </div>
+            {{ $t("team.members.pending_invites") }}
+          </h3>
+          <Badge variant="secondary">{{ team_invites.length }}</Badge>
+          <div class="h-px flex-1 bg-border/60" />
+        </div>
+        <div class="space-y-1">
+          <TeamMember
+            v-for="member of team_invites"
+            :key="member.id"
+            :team="team"
+            :member="member"
+            :is-invite="true"
+          />
+        </div>
+      </section>
 
       <section v-if="starters.length" class="space-y-1">
         <div class="flex items-center gap-2 px-1">
@@ -196,7 +192,6 @@ export default {
       team: undefined,
       roles: undefined,
       team_invites: [],
-      inviteOpen: false,
     };
   },
   apollo: {

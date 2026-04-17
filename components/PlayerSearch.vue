@@ -300,13 +300,7 @@ export default {
           : (this.exclude as string[]);
 
       if (this.onlineOnly) {
-        if (!this.query.trim()) {
-          this.players = [];
-          return;
-        }
-
-        const onlinePlayers = useSearchStore().search(this.query, exclude);
-        this.players = onlinePlayers;
+        this.players = useSearchStore().search(this.query, exclude);
         return;
       }
 

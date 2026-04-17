@@ -92,7 +92,7 @@ import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
 
                 <template v-if="notification.type !== 'NameChangeRequest'">
                   <p
-                    class="notification"
+                    class="[&_a]:text-blue-500 [&_a]:underline [&_a:hover]:text-blue-700"
                     :class="[
                       'text-sm mb-2',
                       notification.is_read
@@ -104,7 +104,7 @@ import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
                 </template>
                 <template v-else>
                   <p
-                    class="notification"
+                    class="[&_a]:text-blue-500 [&_a]:underline [&_a:hover]:text-blue-700"
                     :class="[
                       'text-sm mb-2',
                       notification.is_read
@@ -316,11 +316,3 @@ export default {
   },
 };
 </script>
-
-<style lang="postcss">
-.notification {
-  a {
-    @apply text-blue-500 underline hover:text-blue-700;
-  }
-}
-</style>

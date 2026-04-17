@@ -184,23 +184,18 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
         tournaments: [
           {
             where: {
+              status: {
+                _in: [
+                  e_tournament_status_enum.Setup,
+                  e_tournament_status_enum.RegistrationOpen,
+                  e_tournament_status_enum.RegistrationClosed,
+                  e_tournament_status_enum.Live,
+                  e_tournament_status_enum.Paused,
+                ],
+              },
               _or: [
-                {
-                  status: {
-                    _eq: e_tournament_status_enum.Live,
-                  },
-                  joined_tournament: {
-                    _eq: true,
-                  },
-                },
-                {
-                  status: {
-                    _eq: e_tournament_status_enum.Live,
-                  },
-                  is_organizer: {
-                    _eq: true,
-                  },
-                },
+                { joined_tournament: { _eq: true } },
+                { is_organizer: { _eq: true } },
               ],
             },
           },

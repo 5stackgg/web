@@ -94,7 +94,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
                 >
                   <TableCell class="w-12" v-if="canManageStreams">
                     <div
-                      class="grip-handle cursor-grab active:cursor-grabbing p-1 -m-1"
+                      class="cursor-grab active:cursor-grabbing p-1 -m-1 rounded hover:bg-black/5"
                     >
                       <GripVertical
                         class="h-4 w-4 text-muted-foreground transition-colors"
@@ -711,18 +711,10 @@ export default {
 };
 </script>
 
-<style scoped>
-.dragging {
+<style>
+.dragging,
+.dragging * {
   user-select: none;
   cursor: grabbing !important;
-}
-
-.dragging * {
-  cursor: grabbing !important;
-}
-
-.grip-handle:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-  border-radius: 4px;
 }
 </style>

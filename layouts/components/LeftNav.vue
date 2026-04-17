@@ -69,7 +69,12 @@ function onLeftNavTouchEnd(e: TouchEvent) {
       @touchstart.passive="onLeftNavTouchStart"
       @touchend="onLeftNavTouchEnd"
     >
-      <Transition name="sidebar-header">
+      <Transition
+        enter-active-class="[transition:opacity_0.2s_ease,max-height_0.2s_ease,padding_0.2s_ease,margin_0.2s_ease] overflow-hidden"
+        leave-active-class="[transition:opacity_0.2s_ease,max-height_0.2s_ease,padding_0.2s_ease,margin_0.2s_ease] overflow-hidden"
+        enter-from-class="opacity-0 max-h-0 py-0 my-0"
+        leave-to-class="opacity-0 max-h-0 py-0 my-0"
+      >
         <SidebarHeader v-if="isMobile || !isPWA || !sideBarOpen">
           <NuxtLink
             :to="logoPath"
@@ -85,7 +90,15 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               class="shrink-0 rounded max-w-8 max-h-8"
               :src="customLogoUrl || '/favicon/64.png'"
             />
-            <Transition name="sidebar-brand" mode="out-in">
+            <Transition
+              mode="out-in"
+              enter-active-class="[transition:opacity_0.15s_ease,max-width_0.2s_ease] overflow-hidden"
+              leave-active-class="[transition:opacity_0.15s_ease,max-width_0.2s_ease] overflow-hidden"
+              enter-from-class="opacity-0 max-w-0"
+              leave-to-class="opacity-0 max-w-0"
+              enter-to-class="max-w-48"
+              leave-from-class="max-w-48"
+            >
               <span
                 v-if="!isPWA && (isMobile || sideBarOpen)"
                 key="brand"
@@ -827,38 +840,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.sidebar-header-enter-active,
-.sidebar-header-leave-active {
-  transition:
-    opacity 0.2s ease,
-    max-height 0.2s ease,
-    padding 0.2s ease,
-    margin 0.2s ease;
-  overflow: hidden;
-}
-.sidebar-header-enter-from,
-.sidebar-header-leave-to {
-  opacity: 0;
-  max-height: 0;
-  padding-block: 0;
-  margin-block: 0;
-}
-
-.sidebar-brand-enter-active,
-.sidebar-brand-leave-active {
-  transition:
-    opacity 0.15s ease,
-    max-width 0.2s ease;
-  overflow: hidden;
-}
-.sidebar-brand-enter-from,
-.sidebar-brand-leave-to {
-  opacity: 0;
-  max-width: 0;
-}
-.sidebar-brand-enter-to,
-.sidebar-brand-leave-from {
-  max-width: 12rem;
-}
-</style>

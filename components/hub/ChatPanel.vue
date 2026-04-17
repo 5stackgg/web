@@ -248,7 +248,11 @@ function handlePopOut() {
         <div
           v-show="showChatIndicator"
           class="absolute top-0 left-0 w-0.5 rounded-r-full z-10 pointer-events-none bg-[hsl(var(--tac-amber))]"
-          :class="chatHasAnimated ? 'chat-indicator-animated' : ''"
+          :class="
+            chatHasAnimated
+              ? 'transition-transform [transition-duration:350ms] [transition-timing-function:cubic-bezier(0.34,1.56,0.64,1)]'
+              : ''
+          "
           :style="{
             transform: `translateY(${chatIndicatorY + 4}px)`,
             height: `${chatIndicatorHeight - 8}px`,
@@ -444,11 +448,3 @@ function handlePopOut() {
     </div>
   </div>
 </template>
-
-<style scoped>
-.chat-indicator-animated {
-  transition:
-    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-    height 0s;
-}
-</style>

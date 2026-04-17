@@ -1823,6 +1823,10 @@
             "picked": "Picked"
         },
         "auto_canceling": "Auto Canceling",
+        "server_error": {
+            "title": "Server provisioning failed",
+            "short_label": "Server Issue"
+        },
         "actions": {
             "call_support": "Call for Support",
             "start_veto": "Start Veto",

@@ -74,14 +74,20 @@ import { $ } from "~/generated/zeus";
             :key="type.value"
             type="button"
             :class="[
-              'stage-type-tile group',
-              value === type.value && 'stage-type-tile--active',
+              'group/tile relative flex flex-col items-center justify-center gap-[0.55rem] min-h-[8.5rem] px-[0.85rem] py-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.5)_0%,hsl(var(--card)/0.2)_100%)] backdrop-blur-[6px] text-muted-foreground cursor-pointer [transition:color_160ms_ease,border-color_160ms_ease,background_160ms_ease,transform_160ms_ease] hover:border-[hsl(var(--tac-amber)/0.45)] hover:text-foreground hover:-translate-y-px',
+              value === type.value &&
+                '!border-[hsl(var(--tac-amber))] ![background:linear-gradient(180deg,hsl(var(--tac-amber)/0.12)_0%,hsl(var(--tac-amber)/0.04)_100%)] !text-foreground !shadow-[inset_0_1px_0_hsl(var(--tac-amber)/0.08)] hover:!translate-y-0',
             ]"
             @click="handleChange(type.value)"
           >
             <span
               aria-hidden="true"
-              class="stage-type-tile__code"
+              :class="[
+                'absolute top-[0.55rem] left-3 font-mono text-[0.6rem] font-bold tracking-[0.24em] transition-colors [transition-duration:160ms]',
+                value === type.value
+                  ? 'text-[hsl(var(--tac-amber))]'
+                  : 'text-muted-foreground/70',
+              ]"
             >
               {{
                 type.value === "SingleElimination"
@@ -98,13 +104,30 @@ import { $ } from "~/generated/zeus";
             <component
               :is="stageTypeIcons[type.value]"
               v-if="stageTypeIcons[type.value]"
-              class="stage-type-tile__icon"
+              :class="[
+                'w-6 h-6 [transition:color_160ms_ease,transform_200ms_ease] group-hover/tile:scale-[1.08] group-hover/tile:text-[hsl(var(--tac-amber))]',
+                value === type.value && 'text-[hsl(var(--tac-amber))]',
+              ]"
             />
-            <span class="stage-type-tile__label">
+            <span
+              class="font-sans text-[0.72rem] font-bold tracking-[0.18em] uppercase text-center leading-[1.1] text-foreground"
+            >
               {{ type.description }}
             </span>
-            <span aria-hidden="true" class="stage-type-tile__corner stage-type-tile__corner--tl" />
-            <span aria-hidden="true" class="stage-type-tile__corner stage-type-tile__corner--br" />
+            <span
+              aria-hidden="true"
+              :class="[
+                'absolute -top-px -left-px w-[10px] h-[10px] border-solid border-[hsl(var(--tac-amber))] border-t-2 border-l-2 pointer-events-none transition-opacity [transition-duration:160ms]',
+                value === type.value ? 'opacity-100' : 'opacity-0',
+              ]"
+            />
+            <span
+              aria-hidden="true"
+              :class="[
+                'absolute -bottom-px -right-px w-[10px] h-[10px] border-solid border-[hsl(var(--tac-amber))] border-b-2 border-r-2 pointer-events-none transition-opacity [transition-duration:160ms]',
+                value === type.value ? 'opacity-100' : 'opacity-0',
+              ]"
+            />
           </button>
         </div>
         <FormMessage />
@@ -1483,112 +1506,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.stage-type-tile {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.55rem;
-  min-height: 8.5rem;
-  padding: 1rem 0.85rem;
-  border: 1px solid hsl(var(--border));
-  background: linear-gradient(
-    180deg,
-    hsl(var(--card) / 0.5) 0%,
-    hsl(var(--card) / 0.2) 100%
-  );
-  backdrop-filter: blur(6px);
-  color: hsl(var(--muted-foreground));
-  cursor: pointer;
-  transition:
-    color 160ms ease,
-    border-color 160ms ease,
-    background 160ms ease,
-    transform 160ms ease;
-}
-.stage-type-tile:hover {
-  border-color: hsl(var(--tac-amber) / 0.45);
-  color: hsl(var(--foreground));
-  transform: translateY(-1px);
-}
-
-.stage-type-tile__code {
-  position: absolute;
-  top: 0.55rem;
-  left: 0.75rem;
-  font-family: "Oxanium", monospace;
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.24em;
-  color: hsl(var(--muted-foreground) / 0.7);
-  transition: color 160ms ease;
-}
-
-.stage-type-tile__icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  transition:
-    color 160ms ease,
-    transform 200ms ease;
-}
-.stage-type-tile:hover .stage-type-tile__icon {
-  transform: scale(1.08);
-  color: hsl(var(--tac-amber));
-}
-
-.stage-type-tile__label {
-  font-family: "Oxanium", sans-serif;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  text-align: center;
-  line-height: 1.1;
-  color: hsl(var(--foreground));
-}
-
-.stage-type-tile__corner {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-color: hsl(var(--tac-amber));
-  border-style: solid;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 160ms ease;
-}
-.stage-type-tile__corner--tl {
-  top: -1px;
-  left: -1px;
-  border-width: 2px 0 0 2px;
-}
-.stage-type-tile__corner--br {
-  bottom: -1px;
-  right: -1px;
-  border-width: 0 2px 2px 0;
-}
-
-/* Active state */
-.stage-type-tile--active {
-  border-color: hsl(var(--tac-amber));
-  background: linear-gradient(
-    180deg,
-    hsl(var(--tac-amber) / 0.12) 0%,
-    hsl(var(--tac-amber) / 0.04) 100%
-  );
-  color: hsl(var(--foreground));
-  box-shadow: inset 0 1px 0 hsl(var(--tac-amber) / 0.08);
-}
-.stage-type-tile--active:hover {
-  transform: none;
-}
-.stage-type-tile--active .stage-type-tile__code,
-.stage-type-tile--active .stage-type-tile__icon {
-  color: hsl(var(--tac-amber));
-}
-.stage-type-tile--active .stage-type-tile__corner {
-  opacity: 1;
-}
-</style>

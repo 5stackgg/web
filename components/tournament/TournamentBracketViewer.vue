@@ -45,6 +45,9 @@ const props = defineProps({
 
 const { t } = useI18n();
 
+const zoomBtnShineClasses =
+  "relative overflow-hidden before:content-[''] before:absolute before:top-0 before:-left-full before:w-full before:h-full before:[background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)] before:transition-[left] before:duration-500 enabled:hover:-translate-y-px enabled:hover:shadow-[0_4px_12px_rgba(0,0,0,0.3)] enabled:active:translate-y-0 enabled:active:shadow-[0_2px_6px_rgba(0,0,0,0.2)] enabled:hover:before:left-full";
+
 const roundLabels = computed(() => {
   const labels = new Map<number, string>();
   const maxRound = Math.max(...props.rounds.keys());
@@ -591,7 +594,7 @@ function startMomentum() {
 <template>
   <div class="relative" ref="bracketWrapper">
     <div
-      class="tournament-bracket overflow-auto relative cursor-grab"
+      class="overflow-auto relative cursor-grab active:cursor-grabbing transition-[max-height] duration-300 ease-in-out"
       :style="{
         maxHeight: maxHeight,
         minHeight: props.totalGroups > 1 ? '200px' : 'auto',
@@ -599,10 +602,10 @@ function startMomentum() {
       ref="bracketContainer"
       @mousedown="onBracketPointerDown"
       @touchstart="onBracketPointerDown"
-      :class="{ 'fullscreen-bracket': isFullscreen }"
+      :class="{ '!max-h-none !h-screen': isFullscreen }"
     >
       <div
-        class="bracket-content-wrapper"
+        class="transition-transform duration-200 ease-out"
         ref="bracketContentWrapper"
         :style="{
           transform: `scale(${zoomLevel})`,
@@ -651,7 +654,8 @@ function startMomentum() {
         class="flex flex-col gap-1.5 bg-gray-800/90 backdrop-blur-md rounded-lg p-2.5 shadow-xl border border-gray-700/50"
       >
         <button
-          class="zoom-control-btn bg-gray-700/60 hover:bg-gray-600/80 active:bg-gray-500/90 text-white rounded-md p-2.5 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-700/60 transition-all duration-200 ease-in-out flex items-center justify-center"
+          :class="zoomBtnShineClasses"
+          class="bg-gray-700/60 hover:bg-gray-600/80 active:bg-gray-500/90 text-white rounded-md p-2.5 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-700/60 transition-all duration-200 ease-in-out flex items-center justify-center"
           @click="zoomIn"
           :disabled="zoomLevel >= MAX_ZOOM"
           :title="$t('ui.tooltips.zoom_in_scroll')"
@@ -659,7 +663,8 @@ function startMomentum() {
           <ZoomIn class="w-4 h-4" />
         </button>
         <button
-          class="zoom-control-btn bg-gray-700/60 hover:bg-gray-600/80 active:bg-gray-500/90 text-white rounded-md p-2.5 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-700/60 transition-all duration-200 ease-in-out flex items-center justify-center"
+          :class="zoomBtnShineClasses"
+          class="bg-gray-700/60 hover:bg-gray-600/80 active:bg-gray-500/90 text-white rounded-md p-2.5 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-700/60 transition-all duration-200 ease-in-out flex items-center justify-center"
           @click="zoomOut"
           :disabled="zoomLevel <= MIN_ZOOM"
           :title="$t('ui.tooltips.zoom_out_scroll')"
@@ -667,7 +672,8 @@ function startMomentum() {
           <ZoomOut class="w-4 h-4" />
         </button>
         <button
-          class="zoom-control-btn bg-gray-700/60 hover:bg-gray-600/80 active:bg-gray-500/90 text-white rounded-md px-3 py-2 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-700/60 transition-all duration-200 ease-in-out text-xs font-medium min-w-[3rem] flex items-center justify-center"
+          :class="zoomBtnShineClasses"
+          class="bg-gray-700/60 hover:bg-gray-600/80 active:bg-gray-500/90 text-white rounded-md px-3 py-2 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-700/60 transition-all duration-200 ease-in-out text-xs font-medium min-w-[3rem] flex items-center justify-center"
           @click="resetZoom"
           :disabled="zoomLevel === 0.75"
           :title="$t('ui.tooltips.reset_zoom')"
@@ -677,7 +683,8 @@ function startMomentum() {
       </div>
       <!-- Fullscreen Control -->
       <button
-        class="zoom-control-btn bg-gray-800/90 backdrop-blur-md hover:bg-gray-700/90 active:bg-gray-600/90 text-white rounded-lg p-2.5 shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 border border-gray-700/50 transition-all duration-200 ease-in-out flex items-center justify-center"
+        :class="zoomBtnShineClasses"
+        class="bg-gray-800/90 backdrop-blur-md hover:bg-gray-700/90 active:bg-gray-600/90 text-white rounded-lg p-2.5 shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 border border-gray-700/50 transition-all duration-200 ease-in-out flex items-center justify-center"
         @click="toggleFullscreen"
         :title="isFullscreen ? $t('common.exit_fullscreen') : $t('common.enter_fullscreen')"
       >
@@ -731,58 +738,3 @@ function startMomentum() {
     />
   </div>
 </template>
-
-<style scoped>
-.tournament-bracket {
-  position: relative;
-  transition: max-height 0.3s ease-in-out;
-}
-
-.tournament-bracket:active {
-  cursor: grabbing;
-}
-
-.fullscreen-bracket {
-  max-height: none !important;
-  height: 100vh !important;
-}
-
-.bracket-content-wrapper {
-  transition: transform 0.2s ease-out;
-}
-
-.zoom-control-btn {
-  position: relative;
-  overflow: hidden;
-}
-
-.zoom-control-btn:not(:disabled):hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.zoom-control-btn:not(:disabled):active {
-  transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-.zoom-control-btn:not(:disabled)::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.1),
-    transparent
-  );
-  transition: left 0.5s ease;
-}
-
-.zoom-control-btn:not(:disabled):hover::before {
-  left: 100%;
-}
-</style>

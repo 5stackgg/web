@@ -283,14 +283,17 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
           <button
             v-if="canJoinMatch"
             type="button"
-            class="match-row-join"
+            class="group/join relative inline-flex items-center isolate px-[0.7rem] py-[0.28rem] font-sans text-[0.68rem] font-bold tracking-[0.16em] uppercase text-[hsl(0_0%_8%)] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] border border-[hsl(var(--tac-amber))] [clip-path:polygon(8px_0,100%_0,100%_calc(100%_-_8px),calc(100%_-_8px)_100%,0_100%,0_8px)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.35),0_4px_14px_-4px_hsl(var(--tac-amber)/0.5)] [transition:transform_180ms_cubic-bezier(0.4,0,0.2,1),box-shadow_180ms_ease] cursor-pointer overflow-hidden whitespace-nowrap hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.55),0_10px_24px_-4px_hsl(var(--tac-amber)/0.7),0_0_20px_hsl(var(--tac-amber)/0.3)] active:translate-y-0"
             @click.stop="navigateToMatch(match.id, $event)"
           >
-            <span class="match-row-join__inner">
+            <span class="relative z-[1] inline-flex items-center gap-[0.45rem]">
               <UserPlusIcon class="h-3 w-3" />
               <span>{{ $t("match.options.table.join") }}</span>
             </span>
-            <span class="match-row-join__glow" aria-hidden="true"></span>
+            <span
+              class="absolute inset-0 [background:linear-gradient(90deg,transparent_0%,hsl(0_0%_100%/0.35)_50%,transparent_100%)] -translate-x-full [transition:transform_600ms_cubic-bezier(0.4,0,0.2,1)] pointer-events-none z-0 group-hover/join:translate-x-full"
+              aria-hidden="true"
+            ></span>
           </button>
 
           <!-- moved player toggle below maps -->
@@ -1247,76 +1250,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.match-row-join {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  isolation: isolate;
-  padding: 0.28rem 0.7rem;
-  font-family: "Oxanium", sans-serif;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: hsl(0 0% 8%);
-  background: linear-gradient(
-    135deg,
-    hsl(36 100% 65%) 0%,
-    hsl(var(--tac-amber)) 50%,
-    hsl(28 90% 52%) 100%
-  );
-  border: 1px solid hsl(var(--tac-amber));
-  clip-path: polygon(
-    8px 0,
-    100% 0,
-    100% calc(100% - 8px),
-    calc(100% - 8px) 100%,
-    0 100%,
-    0 8px
-  );
-  box-shadow:
-    0 0 0 1px hsl(var(--tac-amber) / 0.35),
-    0 4px 14px -4px hsl(var(--tac-amber) / 0.5);
-  transition:
-    transform 180ms cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 180ms ease;
-  cursor: pointer;
-  overflow: hidden;
-  white-space: nowrap;
-}
-.match-row-join:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    0 0 0 1px hsl(var(--tac-amber) / 0.55),
-    0 10px 24px -4px hsl(var(--tac-amber) / 0.7),
-    0 0 20px hsl(var(--tac-amber) / 0.3);
-}
-.match-row-join:active {
-  transform: translateY(0);
-}
-.match-row-join__inner {
-  position: relative;
-  z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-.match-row-join__glow {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    hsl(0 0% 100% / 0.35) 50%,
-    transparent 100%
-  );
-  transform: translateX(-100%);
-  transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
-  z-index: 0;
-}
-.match-row-join:hover .match-row-join__glow {
-  transform: translateX(100%);
-}
-</style>

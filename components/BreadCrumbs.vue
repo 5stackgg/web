@@ -5,7 +5,10 @@
     <BreadcrumbList>
       <BreadcrumbItem>
         <BreadcrumbLink as-child>
-          <NuxtLink :to="{ name: 'play' }" class="breadcrumb-link">
+          <NuxtLink
+            :to="{ name: 'play' }"
+            class="rounded-md px-2 py-1 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors [&.router-link-active]:bg-transparent [&.router-link-exact-active]:bg-transparent"
+          >
             dashboard
           </NuxtLink>
         </BreadcrumbLink>
@@ -16,7 +19,10 @@
 
         <BreadcrumbItem>
           <BreadcrumbLink as-child>
-            <NuxtLink :to="crumb.to" class="breadcrumb-link">
+            <NuxtLink
+              :to="crumb.to"
+              class="rounded-md px-2 py-1 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors [&.router-link-active]:bg-transparent [&.router-link-exact-active]:bg-transparent"
+            >
               {{ crumb.text.replace("-", " ") }}
             </NuxtLink>
           </BreadcrumbLink>
@@ -110,14 +116,3 @@ export default {
   },
 };
 </script>
-
-<style scoped lang="postcss">
-.router-link-active,
-.router-link-exact-active {
-  background-color: transparent;
-}
-
-:deep(.breadcrumb-link) {
-  @apply rounded-md px-2 py-1 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors;
-}
-</style>

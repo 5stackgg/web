@@ -557,26 +557,38 @@ export default {
           this.lobbyId,
           (message: any) => {
             this.messages.push(message);
-            if (this.isMinimized && this.global) {
+
+            const mySteamId = useAuthStore().me?.steam_id;
+            const fromSteamId = message?.from?.steam_id;
+            const isOwnMessage =
+              mySteamId != null &&
+              fromSteamId != null &&
+              String(fromSteamId) === String(mySteamId);
+
+            if (this.isMinimized && this.global && !isOwnMessage) {
               this.unreadCount++;
             }
             // Auto-scroll only when already at the bottom.
             this.safeScrollToBottom(false);
 
-            // If the user is actively viewing this chat and is already at
-            // the bottom (and the window isn't minimized), treat the message
-            // as read immediately so we don't render a \"New\" divider.
-            if (this.isActiveTab && !this.isMinimized && this.isAtBottom) {
+            // Treat our own messages as read everywhere (a parallel
+            // ChatLobby instance for the same lobby receives the echo too
+            // and would otherwise render a \"New\" divider on our own text).
+            // Otherwise, only advance when actively viewing at the bottom.
+            if (
+              isOwnMessage ||
+              (this.isActiveTab && !this.isMinimized && this.isAtBottom)
+            ) {
               this.lastReadMessageCount = this.messages.length;
             }
-            if (this.playNotificationSound) {
+            if (this.playNotificationSound && !isOwnMessage) {
               playNotificationSound();
             }
 
             this.$emit("message-received", {
               tabId: this.tabId,
               message,
-              direction: "inbound",
+              direction: isOwnMessage ? "outbound" : "inbound",
             });
           },
         );

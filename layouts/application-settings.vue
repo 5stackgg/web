@@ -184,12 +184,16 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
           <!-- Desktop: vertical nav with sliding indicator -->
           <nav
             ref="navRef"
-            class="settings-nav relative hidden flex-col space-y-1 lg:flex"
+            class="relative hidden flex-col space-y-1 lg:flex"
           >
             <div
               v-show="showIndicator"
-              class="settings-nav__indicator absolute top-0 right-0 w-0.5 z-10 pointer-events-none"
-              :class="hasAnimated ? 'settings-nav-indicator-animated' : ''"
+              class="absolute top-0 right-0 w-0.5 z-10 pointer-events-none bg-[hsl(var(--tac-amber))] shadow-[0_0_8px_hsl(var(--tac-amber)/0.35)]"
+              :class="
+                hasAnimated
+                  ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),width_0.2s_ease,height_0.2s_ease]'
+                  : ''
+              "
               :style="{
                 transform: `translateY(${indicatorY}px)`,
                 height: `${indicatorHeight}px`,
@@ -199,10 +203,11 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
               v-for="item in navItems"
               :key="item.path"
               :to="item.path"
+              exact-active-class="[&>button]:!text-sidebar-accent-foreground [&>button]:!bg-transparent"
             >
               <Button
                 variant="ghost"
-                class="w-full text-left justify-start relative z-[1]"
+                class="w-full text-left justify-start relative z-[1] hover:bg-sidebar-accent/40 hover:text-sidebar-accent-foreground transition-colors duration-200"
               >
                 {{ item.label }}
               </Button>
@@ -220,22 +225,3 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
 <script lang="ts">
 export default {};
 </script>
-
-<style lang="postcss">
-.settings-nav a > button {
-  @apply hover:bg-sidebar-accent/40 hover:text-sidebar-accent-foreground transition-colors duration-200;
-}
-.settings-nav .router-link-exact-active > button {
-  @apply text-sidebar-accent-foreground bg-transparent;
-}
-.settings-nav__indicator {
-  background: hsl(var(--tac-amber));
-  box-shadow: 0 0 8px hsl(var(--tac-amber) / 0.35);
-}
-.settings-nav-indicator-animated {
-  transition:
-    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-    width 0.2s ease,
-    height 0.2s ease;
-}
-</style>

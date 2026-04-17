@@ -14,6 +14,9 @@
       <template v-if="matchMap">
         {{ teamScore }}
       </template>
+      <template v-else-if="singleMap">
+        {{ singleMapTeamScore }}
+      </template>
       <template v-else>
         {{ matchStats.won }}
       </template>
@@ -54,6 +57,19 @@ export default {
     },
   },
   computed: {
+    singleMap() {
+      return !this.matchMap && this.match.match_maps?.length === 1
+        ? this.match.match_maps[0]
+        : null;
+    },
+    singleMapTeamScore() {
+      if (!this.singleMap) {
+        return;
+      }
+      return this.isLineup1
+        ? this.singleMap.lineup_1_score
+        : this.singleMap.lineup_2_score;
+    },
     winning() {
       if (this.matchMap) {
         return !this.tied && this.isLineup1
@@ -70,6 +86,12 @@ export default {
 
       if (this.tied) {
         return false;
+      }
+
+      if (this.singleMap) {
+        return this.isLineup1
+          ? this.singleMap.lineup_1_score > this.singleMap.lineup_2_score
+          : this.singleMap.lineup_2_score > this.singleMap.lineup_1_score;
       }
 
       return this.matchStats.won > this.matchStats.lost;
@@ -92,11 +114,21 @@ export default {
         return false;
       }
 
+      if (this.singleMap) {
+        return this.isLineup1
+          ? this.singleMap.lineup_1_score < this.singleMap.lineup_2_score
+          : this.singleMap.lineup_2_score < this.singleMap.lineup_1_score;
+      }
+
       return this.matchStats.lost > this.matchStats.won;
     },
     tied() {
       if (this.matchMap) {
         return this.matchMap.lineup_1_score === this.matchMap.lineup_2_score;
+      }
+
+      if (this.singleMap) {
+        return this.singleMap.lineup_1_score === this.singleMap.lineup_2_score;
       }
 
       return this.matchStats.won === this.matchStats.lost;

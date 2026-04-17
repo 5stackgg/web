@@ -35,10 +35,10 @@ const teamClasses =
   "relative font-sans font-bold [font-stretch:80%] text-[clamp(1.5rem,3.5vw,2.75rem)] leading-[0.95] tracking-[0.02em] uppercase min-w-0 max-w-full";
 
 const teamMainClasses =
-  "relative text-foreground [background:linear-gradient(180deg,hsl(var(--foreground))_0%,hsl(var(--foreground)/0.7)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent]";
+  "relative bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent";
 
 const teamMainWinnerClasses =
-  "[background:linear-gradient(180deg,hsl(var(--tac-amber))_0%,hsl(var(--tac-amber))_100%)]";
+  "from-[hsl(var(--tac-amber))] to-[hsl(var(--tac-amber))]";
 
 const teamGhostClasses =
   "absolute left-1 top-1 -right-1 whitespace-nowrap overflow-hidden text-transparent [-webkit-text-stroke:1px_hsl(var(--tac-amber)/0.3)] pointer-events-none select-none";

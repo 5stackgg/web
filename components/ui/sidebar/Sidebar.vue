@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import type { SidebarProps } from '.'
-import { computed } from 'vue'
-import { cn } from '@/lib/utils'
+import type { SidebarProps } from "."
+import { computed } from "vue"
+import { cn } from "@/lib/utils"
 import { Sheet, SheetContent } from '@/components/ui/sheet'
-import { SIDEBAR_WIDTH_MOBILE, useSidebar } from './utils'
-import { useApplicationSettingsStore } from '@/stores/ApplicationSettings'
+import { SIDEBAR_WIDTH_MOBILE, useSidebar } from "./utils"
+import { useApplicationSettingsStore } from "@/stores/ApplicationSettings"
 
 defineOptions({
   inheritAttrs: false,
 })
 
 const props = withDefaults(defineProps<SidebarProps>(), {
-  side: 'left',
-  variant: 'sidebar',
-  collapsible: 'offcanvas',
+  side: "left",
+  variant: "sidebar",
+  collapsible: "offcanvas",
   overlay: false,
 })
 
@@ -82,7 +82,6 @@ const showSeparators = computed(() => {
     <div
       :class="cn(
         'duration-200 fixed inset-y-0 z-10 hidden w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex',
-
         'mt-[var(--header-height)]',
         side === 'left'
           ? 'left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]'

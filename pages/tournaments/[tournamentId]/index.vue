@@ -91,8 +91,7 @@ const tournamentHeroEyebrowClasses =
 const tournamentHeroChevronClasses =
   "translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]";
 const tournamentHeroBodyClasses = "min-w-0";
-const tournamentHeroIdentityClasses =
-  "flex min-w-0 flex-col gap-[0.65rem]";
+const tournamentHeroIdentityClasses = "flex min-w-0 flex-col gap-[0.65rem]";
 const tournamentHeroNameRowClasses = "flex min-w-0 items-center";
 const tournamentHeroNameClasses =
   "relative m-0 min-w-0 font-sans text-[clamp(1.75rem,4vw,3rem)] font-bold uppercase leading-[0.95] tracking-[0.02em] [font-stretch:80%]";
@@ -183,17 +182,6 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
             </div>
 
             <div :class="tournamentHeroActionsClasses">
-              <span
-                :class="[
-                  tournamentHeroStatusClasses,
-                  tournamentHeroStatusTierClasses[statusTier] ??
-                    tournamentHeroStatusTierClasses.ended,
-                ]"
-              >
-                <span :class="tournamentHeroStatusDotClasses"></span>
-                {{ tournament.e_tournament_status.description }}
-              </span>
-
               <Button
                 v-if="
                   tournament.status ===
@@ -207,6 +195,17 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
                 <UserPlus class="h-3.5 w-3.5" />
                 {{ $t("tournament.join.title") }}
               </Button>
+
+              <span
+                :class="[
+                  tournamentHeroStatusClasses,
+                  tournamentHeroStatusTierClasses[statusTier] ??
+                    tournamentHeroStatusTierClasses.ended,
+                ]"
+              >
+                <span :class="tournamentHeroStatusDotClasses"></span>
+                {{ tournament.e_tournament_status.description }}
+              </span>
 
               <DropdownMenu v-if="tournament?.is_organizer">
                 <DropdownMenuTrigger as-child>

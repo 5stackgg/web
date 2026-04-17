@@ -52,7 +52,7 @@ import { AlertCircle } from "lucide-vue-next";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useForm } from "vee-validate";
 import { z } from "zod";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { $ } from "~/generated/zeus";

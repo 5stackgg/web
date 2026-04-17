@@ -16,7 +16,7 @@ import {
   Ban,
 } from "lucide-vue-next";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { z } from "zod";
 import { useForm } from "vee-validate";
 </script>

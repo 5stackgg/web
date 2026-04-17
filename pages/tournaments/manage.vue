@@ -249,7 +249,7 @@ const { isMobile } = useSidebar();
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
 import { useForm } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
 import { validate as validateUUID } from "uuid";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";

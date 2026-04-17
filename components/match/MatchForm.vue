@@ -252,7 +252,7 @@ import {
 } from "~/generated/zeus";
 import matchOptionsValidator from "~/utilities/match-options-validator";
 import { toast } from "@/components/ui/toast";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import {
   setupOptions,
   setupOptionsVariables,

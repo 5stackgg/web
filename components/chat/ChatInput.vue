@@ -59,7 +59,7 @@ import { CornerDownLeft } from "lucide-vue-next";
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import * as z from "zod";
 import { useForm } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 
 export default {
   props: {

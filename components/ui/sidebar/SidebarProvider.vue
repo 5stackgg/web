@@ -1,30 +1,31 @@
 <script setup lang="ts">
-import { cn } from '@/lib/utils'
-import { useEventListener, useMediaQuery, useVModel } from '@vueuse/core'
-import { TooltipProvider } from 'reka-ui'
-import { computed, type HTMLAttributes, type Ref, ref } from 'vue'
-import { provideSidebarContext, SIDEBAR_COOKIE_MAX_AGE, SIDEBAR_COOKIE_NAME, SIDEBAR_KEYBOARD_SHORTCUT, SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } from './utils'
+import type { HTMLAttributes, Ref } from "vue"
+import { useEventListener, useMediaQuery, useVModel } from "@vueuse/core"
+import { TooltipProvider } from "reka-ui"
+import { computed, ref, watch } from "vue"
+import { cn } from "@/lib/utils"
+import { provideSidebarContext, SIDEBAR_COOKIE_MAX_AGE, SIDEBAR_COOKIE_NAME, SIDEBAR_KEYBOARD_SHORTCUT, SIDEBAR_WIDTH, SIDEBAR_WIDTH_ICON } from "./utils"
 
 const props = withDefaults(defineProps<{
   defaultOpen?: boolean
   open?: boolean
-  class?: HTMLAttributes['class']
-  side?: 'left' | 'right'
+  class?: HTMLAttributes["class"]
+  side?: "left" | "right"
 }>(), {
   defaultOpen: true,
   open: undefined,
-  side: 'left',
+  side: "left",
 })
 
 const emits = defineEmits<{
-  'update:open': [open: boolean]
+  "update:open": [open: boolean]
 }>()
 
-const isMedium = useMediaQuery("(max-width: 1400px)");
-const isMobile = useMediaQuery('(max-width: 768px)')
+const isMedium = useMediaQuery("(max-width: 1400px)")
+const isMobile = useMediaQuery("(max-width: 768px)")
 const openMobile = ref(false)
 
-const open = useVModel(props, 'open', emits, {
+const open = useVModel(props, "open", emits, {
   defaultValue: props.defaultOpen ?? false,
   passive: (props.open === undefined) as false,
 }) as Ref<boolean>
@@ -45,32 +46,35 @@ function toggleSidebar() {
   return isMobile.value ? setOpenMobile(!openMobile.value) : setOpen(!open.value)
 }
 
-useEventListener('keydown', (event: KeyboardEvent) => {
-  // Only handle keyboard shortcut for left sidebar
-  if (event.key === SIDEBAR_KEYBOARD_SHORTCUT && props.side === 'left') {
+useEventListener("keydown", (event: KeyboardEvent) => {
+  const isSidebarShortcut = event.key === SIDEBAR_KEYBOARD_SHORTCUT || event.key === "~" || event.code === "Backquote"
+
+  if (isSidebarShortcut && props.side === "left") {
     event.preventDefault()
     toggleSidebar()
   }
 })
 
-watch(isMedium, (value) => {
-  if(!value && !isMobile.value) {
-    setOpen(true);
-    return;
-  }
+watch(
+  isMedium,
+  (value) => {
+    if (!value && !isMobile.value) {
+      setOpen(true)
+      return
+    }
 
-  if (value) {
-    setOpen(false);
-  }
+    if (value) {
+      setOpen(false)
+    }
   },
   {
     immediate: true,
   },
-);
+)
 
 // We add a state so that we can do data-state="expanded" or "collapsed".
 // This makes it easier to style the sidebar with Tailwind classes.
-const state = computed(() => open.value ? 'expanded' : 'collapsed')
+const state = computed(() => open.value ? "expanded" : "collapsed")
 
 provideSidebarContext({
   state,
@@ -82,12 +86,11 @@ provideSidebarContext({
   toggleSidebar,
 })
 
-
 defineSlots<{
   default: (props: {
     /** Current open state */
-    open: typeof open.value,
-    isMobile: typeof isMobile.value,
+    open: typeof open.value
+    isMobile: typeof isMobile.value
   }) => any
 }>()
 </script>

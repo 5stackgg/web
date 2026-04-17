@@ -35,7 +35,7 @@ import { generateMutation } from "~/graphql/graphqlGen";
 
 <script lang="ts">
 import { useForm } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
 
 export default {

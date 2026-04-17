@@ -232,7 +232,7 @@ import debounce from "~/utilities/debounce";
 <script lang="ts">
 import socket from "~/web-sockets/Socket";
 import { useForm } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
 import { v4 as uuidv4 } from "uuid";
 

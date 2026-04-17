@@ -36,7 +36,7 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
 <script lang="ts">
 import * as z from "zod";
 import { useForm } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {

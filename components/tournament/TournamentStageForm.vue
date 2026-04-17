@@ -739,7 +739,7 @@ import {
   e_player_roles_enum,
   e_match_mode_enum,
 } from "~/generated/zeus";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
 

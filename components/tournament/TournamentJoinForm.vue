@@ -131,7 +131,7 @@ import { Card } from "~/components/ui/card";
 <script lang="ts">
 import * as z from "zod";
 import { useForm } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { useAuthStore } from "~/stores/AuthStore";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { e_match_types_enum } from "~/generated/zeus";

@@ -42,9 +42,7 @@ import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
         <FormField v-slot="{ componentField }" name="teamQuery">
           <FormItem>
             <FormControl>
-              <InputGroup
-                class="h-12 bg-card/60 backdrop-blur border-border"
-              >
+              <InputGroup class="h-12 bg-card/60 backdrop-blur border-border">
                 <InputGroupAddon class="pl-4">
                   <Search class="w-5 h-5" />
                 </InputGroupAddon>
@@ -56,10 +54,7 @@ import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
                   v-bind="componentField"
                 />
 
-                <InputGroupAddon
-                  align="inline-end"
-                  class="gap-3 pr-2"
-                >
+                <InputGroupAddon align="inline-end" class="gap-3 pr-2">
                   <button
                     v-if="form.values.teamQuery"
                     type="button"
@@ -162,7 +157,7 @@ import { useAuthStore } from "#imports";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useForm } from "vee-validate";
 import { playerFields } from "~/graphql/playerFields";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
 
 export default {

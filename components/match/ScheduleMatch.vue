@@ -105,7 +105,7 @@ import { Calendar as CalendarIcon, X } from "lucide-vue-next";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useForm } from "vee-validate";
 import * as z from "zod";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import {
   CalendarDateTime,
   fromDate,

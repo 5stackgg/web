@@ -325,7 +325,7 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { order_by, $ } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useForm } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
 
 export default {

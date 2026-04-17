@@ -1685,7 +1685,7 @@ const isSectionExpanded = (section: string) => {
 <script lang="ts">
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { useForm } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
 import { toast } from "@/components/ui/toast";
 import { defineComponent } from "vue";

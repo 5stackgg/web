@@ -46,26 +46,34 @@ import {
         default-value="stage-1"
         class="w-full"
       >
-        <TabsList class="stage-tabs__list">
+        <TabsList
+          class="flex flex-wrap gap-2 p-0 bg-transparent border-none h-auto w-full justify-start"
+        >
           <TabsTrigger
             v-for="stageNumber in maxStageNumber"
             :key="stageNumber"
             :value="`stage-${stageNumber}`"
-            class="stage-tabs__trigger"
+            class="group/stg relative inline-flex items-center gap-2 !pl-[0.85rem] !pr-9 !py-3 min-w-[220px] min-h-[72px] !h-auto !bg-card/45 !border !border-border !rounded-md !text-muted-foreground font-[inherit] tracking-normal normal-case text-left [transition:border-color_180ms_ease,background_180ms_ease,color_180ms_ease] hover:!border-[hsl(var(--tac-amber)/0.35)] hover:!bg-card/70 data-[state=active]:!border-[hsl(var(--tac-amber)/0.55)] data-[state=active]:!bg-[hsl(var(--tac-amber)/0.08)] data-[state=active]:!text-foreground data-[state=active]:!shadow-none"
           >
-            <div class="stage-tabs__trigger-body">
-              <div class="stage-tabs__trigger-number">
+            <div class="flex items-center gap-3 flex-1 min-w-0">
+              <div
+                class="font-mono text-xl font-bold tabular-nums leading-none text-[hsl(var(--tac-amber)/0.4)] group-data-[state=active]/stg:text-[hsl(var(--tac-amber))]"
+              >
                 {{
                   stageNumber.toString().padStart(2, "0")
                 }}
               </div>
-              <div class="stage-tabs__trigger-info">
-                <span class="stage-tabs__trigger-name">{{
+              <div
+                class="flex flex-col gap-[0.1rem] min-w-0 text-left"
+              >
+                <span
+                  class="font-sans text-[0.85rem] font-semibold tracking-[0.04em] uppercase leading-[1.1]"
+                >{{
                   $t("tournament.stage.stage_tab", { stage: stageNumber })
                 }}</span>
                 <span
                   v-if="getFirstStageForTab(stageNumber)"
-                  class="stage-tabs__trigger-meta"
+                  class="text-[0.72rem] text-muted-foreground inline-flex gap-[0.3rem] flex-wrap items-center"
                 >
                   {{
                     getFirstStageForTab(stageNumber)?.e_tournament_stage_type
@@ -73,7 +81,9 @@ import {
                   }}
                   <template v-if="getBestOf(getFirstStageForTab(stageNumber))">
                     ·
-                    <span class="stage-tabs__trigger-tag">
+                    <span
+                      class="font-mono tracking-[0.08em] text-[hsl(var(--tac-amber))]"
+                    >
                       BO{{ getBestOf(getFirstStageForTab(stageNumber)) }}
                     </span>
                   </template>
@@ -94,7 +104,7 @@ import {
                   variant="ghost"
                   size="icon"
                   @click.stop
-                  class="stage-tabs__menu-btn h-7 w-7 shrink-0"
+                  class="!absolute top-[0.3rem] right-[0.3rem] opacity-55 transition-opacity [transition-duration:160ms] group-hover/stg:opacity-100 group-data-[state=active]/stg:opacity-100 h-7 w-7 shrink-0"
                 >
                   <MoreHorizontal class="h-4 w-4" />
                 </Button>
@@ -125,11 +135,11 @@ import {
           </TabsTrigger>
           <TabsTrigger
             value="add-stage"
-            class="stage-tabs__trigger stage-tabs__trigger--add"
+            class="inline-flex items-center justify-center gap-2 min-w-[200px] min-h-[72px] !px-4 !py-3 !bg-card/45 !border !border-dashed !border-border !rounded-md !text-muted-foreground font-mono text-[0.72rem] font-bold tracking-[0.18em] uppercase [transition:border-color_180ms_ease,background_180ms_ease,color_180ms_ease] hover:!border-[hsl(var(--tac-amber)/0.5)] hover:!text-[hsl(var(--tac-amber))]"
             v-if="canEditStages"
           >
-            <span class="stage-tabs__add-icon">+</span>
-            <span class="stage-tabs__add-label">
+            <span class="text-base font-normal leading-none mr-[0.35rem]">+</span>
+            <span>
               {{ $t("tournament.stage.add_another") }}
             </span>
           </TabsTrigger>
@@ -387,131 +397,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.stage-tabs__list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  padding: 0;
-  background: transparent;
-  border: none;
-  height: auto;
-  width: 100%;
-  justify-content: flex-start;
-}
-
-.stage-tabs__trigger {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 2.25rem 0.75rem 0.85rem !important;
-  min-width: 220px;
-  min-height: 72px;
-  height: auto !important;
-  background: hsl(var(--card) / 0.45) !important;
-  border: 1px solid hsl(var(--border)) !important;
-  border-radius: 0.375rem !important;
-  color: hsl(var(--muted-foreground)) !important;
-  font-family: inherit;
-  letter-spacing: 0;
-  text-transform: none;
-  text-align: left;
-  transition:
-    border-color 180ms ease,
-    background 180ms ease,
-    color 180ms ease;
-}
-.stage-tabs__trigger:hover {
-  border-color: hsl(var(--tac-amber) / 0.35) !important;
-  background: hsl(var(--card) / 0.7) !important;
-}
-.stage-tabs__trigger[data-state="active"] {
-  border-color: hsl(var(--tac-amber) / 0.55) !important;
-  background: hsl(var(--tac-amber) / 0.08) !important;
-  color: hsl(var(--foreground)) !important;
-  box-shadow: none !important;
-}
-
-.stage-tabs__trigger-body {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex: 1;
-  min-width: 0;
-}
-.stage-tabs__trigger-number {
-  font-family: "Oxanium", monospace;
-  font-size: 1.25rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  color: hsl(var(--tac-amber) / 0.4);
-  line-height: 1;
-}
-.stage-tabs__trigger[data-state="active"] .stage-tabs__trigger-number {
-  color: hsl(var(--tac-amber));
-}
-.stage-tabs__trigger-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  min-width: 0;
-  text-align: left;
-}
-.stage-tabs__trigger-name {
-  font-family: "Oxanium", sans-serif;
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  line-height: 1.1;
-}
-.stage-tabs__trigger-meta {
-  font-size: 0.72rem;
-  color: hsl(var(--muted-foreground));
-  display: inline-flex;
-  gap: 0.3rem;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.stage-tabs__trigger-tag {
-  font-family: "Oxanium", monospace;
-  letter-spacing: 0.08em;
-  color: hsl(var(--tac-amber));
-}
-
-.stage-tabs__trigger--add {
-  min-width: 200px;
-  min-height: 72px;
-  font-family: "Oxanium", monospace;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  border-style: dashed !important;
-  padding: 0.75rem 1rem !important;
-  justify-content: center;
-}
-.stage-tabs__trigger--add:hover {
-  color: hsl(var(--tac-amber)) !important;
-  border-color: hsl(var(--tac-amber) / 0.5) !important;
-}
-.stage-tabs__add-icon {
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1;
-  margin-right: 0.35rem;
-}
-
-.stage-tabs__menu-btn {
-  position: absolute !important;
-  top: 0.3rem;
-  right: 0.3rem;
-  opacity: 0.55;
-  transition: opacity 160ms ease;
-}
-.stage-tabs__trigger:hover .stage-tabs__menu-btn,
-.stage-tabs__trigger[data-state="active"] .stage-tabs__menu-btn {
-  opacity: 1;
-}
-</style>

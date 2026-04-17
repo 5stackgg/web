@@ -111,8 +111,10 @@ import { useForm } from "vee-validate";
 import * as z from "zod";
 import { toTypedSchema } from "@vee-validate/zod";
 import {
+  CalendarDateTime,
   fromDate,
   toCalendarDate,
+  toZoned,
   getLocalTimeZone,
 } from "@internationalized/date";
 
@@ -163,9 +165,6 @@ export default {
             fromDate(startDate, getLocalTimeZone()),
           );
           this.startTime = `${startDate.getHours().toString().padStart(2, "0")}:${startDate.getMinutes().toString().padStart(2, "0")}`;
-          this.form.setValues({
-            scheduled_at: startDate.toISOString(),
-          });
         }
       },
     },
@@ -178,10 +177,16 @@ export default {
       if (!this.startDate || !this.startTime) {
         return;
       }
+      const [hours, minutes] = this.startTime.split(":").map(Number);
+      const cdt = new CalendarDateTime(
+        this.startDate.year,
+        this.startDate.month,
+        this.startDate.day,
+        hours,
+        minutes,
+      );
       this.form.setValues({
-        scheduled_at: new Date(
-          `${this.startDate} ${this.startTime}`,
-        ).toISOString(),
+        scheduled_at: toZoned(cdt, getLocalTimeZone()).toAbsoluteString(),
       });
     },
     async scheduleMatch() {

@@ -14,24 +14,30 @@ import {
 </script>
 
 <template>
-  <div v-if="team && e_team_roles" class="tournament-team">
+  <div v-if="team && e_team_roles" class="flex flex-col gap-4">
     <!-- Team header -->
-    <header class="tournament-team__header">
-      <div class="tournament-team__identity">
-        <h2 class="tournament-team__name">
+    <header
+      class="flex items-start justify-between gap-4 flex-wrap"
+    >
+      <div class="min-w-0 flex-1 flex flex-col gap-2">
+        <h2
+          class="font-sans text-[1.35rem] font-bold tracking-[0.02em] text-foreground m-0 leading-[1.15]"
+        >
           {{ team.team?.name || team.name }}
         </h2>
 
-        <div class="tournament-team__meta">
+        <div class="flex items-center gap-2 flex-wrap">
           <span
-            class="tournament-team__status"
+            class="inline-flex items-center gap-[0.4rem] px-[0.55rem] py-[0.2rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase border rounded"
             :class="
               team.eligible_at
-                ? 'tournament-team__status--eligible'
-                : 'tournament-team__status--pending'
+                ? 'text-success bg-success/10 border-success/40'
+                : 'text-destructive bg-destructive/10 border-destructive/35'
             "
           >
-            <span class="tournament-team__status-dot"></span>
+            <span
+              class="w-[5px] h-[5px] bg-current rounded-full"
+            ></span>
             <template v-if="team.eligible_at">
               {{ $t("tournament.team.eligible") }}
             </template>
@@ -46,14 +52,14 @@ import {
 
           <span
             v-if="!canEditSeed && team.seed"
-            class="tournament-team__seed"
+            class="px-2 py-[0.15rem] font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase text-muted-foreground bg-muted/30 border border-border rounded"
           >
             {{ $t("tournament.team.seed_display", { seed: team.seed }) }}
           </span>
 
           <label
             v-if="canEditSeed"
-            class="tournament-team__seed-editor"
+            class="inline-flex items-center gap-[0.45rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase text-muted-foreground"
           >
             <span>{{ $t("tournament.team.seed_label") }}</span>
             <Input
@@ -67,13 +73,15 @@ import {
         </div>
       </div>
 
-      <div class="tournament-team__actions">
-        <div class="tournament-team__counter">
-          <span class="tournament-team__counter-value">
+      <div class="flex items-center gap-3 flex-shrink-0">
+        <div
+          class="inline-flex items-baseline gap-[0.2rem] px-[0.7rem] py-[0.35rem] font-mono tabular-nums border border-border rounded bg-muted/20"
+        >
+          <span class="text-base font-bold text-foreground">
             {{ team.roster.length }}
           </span>
-          <span class="tournament-team__counter-divider">/</span>
-          <span class="tournament-team__counter-total">
+          <span class="text-muted-foreground/50">/</span>
+          <span class="text-[0.85rem] text-muted-foreground">
             {{ requiredPlayers }}
           </span>
         </div>
@@ -117,13 +125,15 @@ import {
     </header>
 
     <!-- Roster list -->
-    <div v-if="team.roster" class="tournament-team__roster">
-      <div class="tournament-team__section-label">
-        <span class="tournament-team__tick"></span>
+    <div v-if="team.roster" class="flex flex-col gap-[0.85rem]">
+      <div
+        class="inline-flex items-center gap-2 font-mono text-[0.65rem] tracking-[0.24em] uppercase text-muted-foreground"
+      >
+        <span class="w-2 h-[2px] bg-[hsl(var(--tac-amber))]"></span>
         {{ $t("common.player") }}
       </div>
 
-      <div class="tournament-team__list">
+      <div class="flex flex-col gap-2">
         <TournamentTeamMemberRow
           v-for="member in team.roster"
           :key="member.id"
@@ -136,15 +146,19 @@ import {
         <div
           v-for="slot of Math.max(0, requiredPlayers - team.roster.length)"
           :key="`slot-${slot}`"
-          class="tournament-team__slot"
+          class="flex items-center justify-between gap-3 px-[0.85rem] py-[0.65rem] border border-dashed border-border rounded-md bg-muted/10"
         >
-          <div class="tournament-team__slot-label">
-            <span class="tournament-team__slot-number">
+          <div
+            class="flex items-center gap-[0.65rem] min-w-0 text-muted-foreground"
+          >
+            <span
+              class="font-mono text-[0.75rem] font-bold tracking-[0.1em] text-muted-foreground/55"
+            >
               {{
                 (slot + team.roster.length).toString().padStart(2, "0")
               }}
             </span>
-            <span class="tournament-team__slot-text">
+            <span class="text-[0.85rem]">
               {{
                 $t("tournament.team.slot", {
                   number: slot + team.roster.length,
@@ -152,7 +166,7 @@ import {
               }}
             </span>
           </div>
-          <div v-if="slot === 1 && team.can_manage" class="tournament-team__slot-action">
+          <div v-if="slot === 1 && team.can_manage" class="flex-shrink-0">
             <PlayerSearch
               :label="$t('tournament.team.add_player')"
               :self="true"
@@ -169,16 +183,20 @@ import {
       <!-- Pending invites -->
       <div
         v-if="team.invites && team.invites.length > 0"
-        class="tournament-team__invites"
+        class="mt-2 flex flex-col gap-2"
       >
-        <div class="tournament-team__section-label tournament-team__section-label--muted">
-          <span class="tournament-team__tick tournament-team__tick--muted"></span>
+        <div
+          class="inline-flex items-center gap-2 font-mono text-[0.65rem] tracking-[0.24em] uppercase text-muted-foreground/70"
+        >
+          <span class="w-2 h-[2px] bg-muted-foreground/50"></span>
           {{ $t("tournament.team.pending_invites") }}
-          <span class="tournament-team__invite-count">
+          <span
+            class="px-[0.4rem] py-[0.02rem] bg-muted/40 text-muted-foreground rounded-full text-[0.6rem]"
+          >
             {{ team.invites.length }}
           </span>
         </div>
-        <div class="tournament-team__list">
+        <div class="flex flex-col gap-2">
           <TournamentTeamInvite
             v-for="invite in team.invites"
             :key="invite.id"
@@ -392,207 +410,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.tournament-team {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-/* Header */
-.tournament-team__header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-.tournament-team__identity {
-  min-width: 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-.tournament-team__name {
-  font-family: "Oxanium", sans-serif;
-  font-size: 1.35rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: hsl(var(--foreground));
-  margin: 0;
-  line-height: 1.15;
-}
-
-.tournament-team__meta {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-.tournament-team__status {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.2rem 0.55rem;
-  font-family: "Oxanium", monospace;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  border: 1px solid;
-  border-radius: 0.25rem;
-}
-.tournament-team__status-dot {
-  width: 5px;
-  height: 5px;
-  background: currentColor;
-  border-radius: 9999px;
-}
-.tournament-team__status--eligible {
-  color: hsl(var(--success));
-  background: hsl(var(--success) / 0.12);
-  border-color: hsl(var(--success) / 0.4);
-}
-.tournament-team__status--pending {
-  color: hsl(var(--destructive));
-  background: hsl(var(--destructive) / 0.1);
-  border-color: hsl(var(--destructive) / 0.35);
-}
-
-.tournament-team__seed {
-  padding: 0.15rem 0.5rem;
-  font-family: "Oxanium", monospace;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
-  background: hsl(var(--muted) / 0.3);
-  border: 1px solid hsl(var(--border));
-  border-radius: 0.25rem;
-}
-.tournament-team__seed-editor {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-family: "Oxanium", monospace;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
-}
-
-.tournament-team__actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-shrink: 0;
-}
-.tournament-team__counter {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.2rem;
-  padding: 0.35rem 0.7rem;
-  font-family: "Oxanium", monospace;
-  font-variant-numeric: tabular-nums;
-  border: 1px solid hsl(var(--border));
-  border-radius: 0.25rem;
-  background: hsl(var(--muted) / 0.2);
-}
-.tournament-team__counter-value {
-  font-size: 1rem;
-  font-weight: 700;
-  color: hsl(var(--foreground));
-}
-.tournament-team__counter-divider {
-  color: hsl(var(--muted-foreground) / 0.5);
-}
-.tournament-team__counter-total {
-  font-size: 0.85rem;
-  color: hsl(var(--muted-foreground));
-}
-
-/* Roster */
-.tournament-team__roster {
-  display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-}
-
-.tournament-team__section-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: "Oxanium", monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
-}
-.tournament-team__section-label--muted {
-  color: hsl(var(--muted-foreground) / 0.7);
-}
-.tournament-team__tick {
-  width: 8px;
-  height: 2px;
-  background: hsl(var(--tac-amber));
-}
-.tournament-team__tick--muted {
-  background: hsl(var(--muted-foreground) / 0.5);
-}
-
-.tournament-team__list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-/* Empty slot */
-.tournament-team__slot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.65rem 0.85rem;
-  border: 1px dashed hsl(var(--border));
-  border-radius: 0.375rem;
-  background: hsl(var(--muted) / 0.1);
-}
-.tournament-team__slot-label {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  min-width: 0;
-  color: hsl(var(--muted-foreground));
-}
-.tournament-team__slot-number {
-  font-family: "Oxanium", monospace;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: hsl(var(--muted-foreground) / 0.55);
-}
-.tournament-team__slot-text {
-  font-size: 0.85rem;
-}
-.tournament-team__slot-action {
-  flex-shrink: 0;
-}
-
-/* Invites */
-.tournament-team__invites {
-  margin-top: 0.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-.tournament-team__invite-count {
-  padding: 0.02rem 0.4rem;
-  background: hsl(var(--muted) / 0.4);
-  color: hsl(var(--muted-foreground));
-  border-radius: 9999px;
-  font-size: 0.6rem;
-}
-</style>

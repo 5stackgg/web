@@ -67,7 +67,7 @@ const playerHeroNameEditClasses =
 const playerHeroActionsClasses =
   "ml-auto flex shrink-0 items-center justify-center gap-3 self-center max-md:ml-0";
 const playerHeroPlayClasses =
-  "player-hero-play group/play relative isolate inline-flex cursor-pointer items-center border font-sans text-[0.95rem] font-bold uppercase tracking-[0.18em] no-underline transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px active:translate-y-0";
+  "group/play relative isolate inline-flex cursor-pointer items-center border font-sans text-[0.95rem] font-bold uppercase tracking-[0.18em] no-underline transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px active:translate-y-0 py-[0.85rem] pr-[1.6rem] pl-[1.4rem] text-[hsl(0_0%_8%)] border-[hsl(var(--tac-amber))] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] [clip-path:polygon(12px_0,100%_0,100%_calc(100%_-_12px),calc(100%_-_12px)_100%,0_100%,0_12px)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_20px_-6px_hsl(var(--tac-amber)/0.6)] hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_12px_32px_-6px_hsl(var(--tac-amber)/0.8),0_0_24px_hsl(var(--tac-amber)/0.35)]";
 const playerHeroPlayInnerClasses =
   "relative z-[1] inline-flex items-center gap-[0.65rem]";
 const playerHeroPlayIconClasses =
@@ -840,33 +840,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.player-hero-play {
-  padding: 0.85rem 1.6rem 0.85rem 1.4rem;
-  color: hsl(0 0% 8%);
-  border-color: hsl(var(--tac-amber));
-  background: linear-gradient(
-    135deg,
-    hsl(36 100% 65%) 0%,
-    hsl(var(--tac-amber)) 50%,
-    hsl(28 90% 52%) 100%
-  );
-  clip-path: polygon(
-    12px 0,
-    100% 0,
-    100% calc(100% - 12px),
-    calc(100% - 12px) 100%,
-    0 100%,
-    0 12px
-  );
-  box-shadow:
-    0 0 0 1px hsl(var(--tac-amber) / 0.4),
-    0 6px 20px -6px hsl(var(--tac-amber) / 0.6);
-}
-.player-hero-play:hover {
-  box-shadow:
-    0 0 0 1px hsl(var(--tac-amber) / 0.6),
-    0 12px 32px -6px hsl(var(--tac-amber) / 0.8),
-    0 0 24px hsl(var(--tac-amber) / 0.35);
-}
-</style>

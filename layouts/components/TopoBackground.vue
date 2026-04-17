@@ -16,21 +16,25 @@ withDefaults(defineProps<{ animated?: boolean }>(), { animated: false });
 
 <template>
   <div
-    class="topo-bg"
-    :class="{ 'topo-bg--ambient': !animated }"
+    class="fixed inset-0 z-0 pointer-events-none overflow-hidden"
     aria-hidden="true"
   >
-    <div class="topo-bg__base"></div>
+    <div class="absolute inset-0 bg-background"></div>
 
     <svg
-      class="topo-bg__svg"
+      class="absolute inset-0 w-full h-full"
       xmlns="http://www.w3.org/2000/svg"
       :viewBox="`0 0 ${TOPO_VIEW_WIDTH} ${TOPO_VIEW_HEIGHT}`"
       preserveAspectRatio="xMidYMid slice"
     >
       <!-- Static base contours — the map -->
       <g
-        class="topo-bg__static"
+        :class="[
+          '[shape-rendering:optimizeSpeed]',
+          animated
+            ? 'text-foreground/10 dark:text-white/[0.08]'
+            : 'text-foreground/[0.03] dark:text-white/[0.02]',
+        ]"
         fill="none"
         stroke="currentColor"
         stroke-width="1"
@@ -52,7 +56,7 @@ withDefaults(defineProps<{ animated?: boolean }>(), { animated: false });
            frame, stacked strokes don't. -->
       <template v-if="animated">
         <g
-          class="topo-bg__flow topo-bg__flow--glow"
+          class="text-foreground/[0.12] dark:text-[hsl(36_100%_70%/0.18)]"
           fill="none"
           stroke="currentColor"
           stroke-width="4"
@@ -62,7 +66,7 @@ withDefaults(defineProps<{ animated?: boolean }>(), { animated: false });
             v-for="(c, i) in TOPO_FLOW"
             :key="`fg-${i}`"
             :d="c.d"
-            class="topo-bg__flow-path"
+            class="animate-topo-flow motion-reduce:animate-none motion-reduce:opacity-0"
             :style="{
               strokeDasharray: `${(c.len * 0.12).toFixed(1)} ${c.len}`,
               animationDuration: `${c.dur}s`,
@@ -73,7 +77,7 @@ withDefaults(defineProps<{ animated?: boolean }>(), { animated: false });
           />
         </g>
         <g
-          class="topo-bg__flow"
+          class="text-foreground/55 dark:text-[hsl(36_100%_70%/0.6)]"
           fill="none"
           stroke="currentColor"
           stroke-width="1.4"
@@ -83,7 +87,7 @@ withDefaults(defineProps<{ animated?: boolean }>(), { animated: false });
             v-for="(c, i) in TOPO_FLOW"
             :key="`f-${i}`"
             :d="c.d"
-            class="topo-bg__flow-path"
+            class="animate-topo-flow motion-reduce:animate-none motion-reduce:opacity-0"
             :style="{
               strokeDasharray: `${(c.len * 0.12).toFixed(1)} ${c.len}`,
               animationDuration: `${c.dur}s`,
@@ -97,80 +101,3 @@ withDefaults(defineProps<{ animated?: boolean }>(), { animated: false });
     </svg>
   </div>
 </template>
-
-<style scoped>
-.topo-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.topo-bg__base {
-  position: absolute;
-  inset: 0;
-  background: hsl(var(--background));
-}
-
-.topo-bg__svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.topo-bg__static {
-  color: hsl(var(--foreground) / 0.1);
-  shape-rendering: optimizeSpeed;
-}
-
-.topo-bg--ambient .topo-bg__static {
-  color: hsl(var(--foreground) / 0.03);
-}
-
-.topo-bg__flow {
-  color: hsl(var(--foreground) / 0.55);
-}
-
-.topo-bg__flow--glow {
-  color: hsl(var(--foreground) / 0.12);
-}
-
-.topo-bg__flow-path {
-  animation-name: topo-flow;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-}
-
-@keyframes topo-flow {
-  from {
-    stroke-dashoffset: 0;
-  }
-  to {
-    stroke-dashoffset: calc(var(--flow-length) * -1px);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .topo-bg__flow-path {
-    animation: none;
-    opacity: 0;
-  }
-}
-</style>
-
-<style>
-.dark .topo-bg__static {
-  color: hsl(0 0% 100% / 0.08);
-}
-.dark .topo-bg--ambient .topo-bg__static {
-  color: hsl(0 0% 100% / 0.02);
-}
-.dark .topo-bg__flow {
-  color: hsl(36 100% 70% / 0.6);
-}
-.dark .topo-bg__flow--glow {
-  color: hsl(36 100% 70% / 0.18);
-}
-</style>

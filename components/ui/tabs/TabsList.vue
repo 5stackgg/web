@@ -82,8 +82,12 @@ const showIndicator = computed(() => indicatorWidth.value > 0)
     <div
       v-if="variant === 'default'"
       v-show="showIndicator"
-      class="absolute top-1 bottom-1 left-0 rounded-md pointer-events-none z-0 tabs-indicator-default"
-      :class="hasAnimated ? 'tabs-indicator-animated' : ''"
+      class="absolute top-1 bottom-1 left-0 rounded-md pointer-events-none z-0 bg-[hsl(var(--tac-amber)/0.12)] border border-[hsl(var(--tac-amber)/0.45)] shadow-[0_0_12px_hsl(var(--tac-amber)/0.25)]"
+      :class="
+        hasAnimated
+          ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),width_0.2s_ease]'
+          : ''
+      "
       :style="{
         transform: `translateX(${indicatorX}px)`,
         width: `${indicatorWidth}px`,
@@ -93,8 +97,12 @@ const showIndicator = computed(() => indicatorWidth.value > 0)
     <div
       v-if="variant === 'underline'"
       v-show="showIndicator"
-      class="absolute bottom-0 left-0 h-0.5 rounded-full pointer-events-none z-0 tabs-indicator-underline"
-      :class="hasAnimated ? 'tabs-indicator-animated' : ''"
+      class="absolute bottom-0 left-0 h-0.5 rounded-full pointer-events-none z-0 bg-[hsl(var(--tac-amber))] shadow-[0_0_8px_hsl(var(--tac-amber)/0.45)]"
+      :class="
+        hasAnimated
+          ? '[transition:transform_0.35s_cubic-bezier(0.34,1.56,0.64,1),width_0.2s_ease]'
+          : ''
+      "
       :style="{
         transform: `translateX(${indicatorX}px)`,
         width: `${indicatorWidth}px`,
@@ -103,22 +111,3 @@ const showIndicator = computed(() => indicatorWidth.value > 0)
     <slot />
   </TabsList>
 </template>
-
-<style scoped>
-.tabs-indicator-animated {
-  transition:
-    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
-    width 0.2s ease;
-}
-
-.tabs-indicator-default {
-  background: hsl(var(--tac-amber) / 0.12);
-  border: 1px solid hsl(var(--tac-amber) / 0.45);
-  box-shadow: 0 0 12px hsl(var(--tac-amber) / 0.25);
-}
-
-.tabs-indicator-underline {
-  background: hsl(var(--tac-amber));
-  box-shadow: 0 0 8px hsl(var(--tac-amber) / 0.45);
-}
-</style>

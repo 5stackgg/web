@@ -16,8 +16,10 @@ const { hasLobbyInvites } = useInvites();
 <template>
   <div class="flex flex-col h-full">
     <div class="px-3 pt-3 pb-2 flex-shrink-0 border-b border-border">
-      <div class="hub-panel-label">
-        <span class="hub-panel-tick"></span>
+      <div
+        class="inline-flex items-center gap-[0.4rem] font-mono text-[0.62rem] font-bold tracking-[0.24em] uppercase text-muted-foreground"
+      >
+        <span class="w-2 h-[2px] bg-[hsl(var(--tac-amber))]"></span>
         Lobby
       </div>
     </div>
@@ -28,7 +30,7 @@ const { hasLobbyInvites } = useInvites();
         <template v-if="hasLobbyInvites">
           <div class="flex flex-col gap-3">
             <div
-              class="hub-sub-label"
+              class="inline-flex items-center gap-[0.35rem] text-[0.68rem] font-semibold tracking-[0.12em] uppercase text-muted-foreground"
             >
               <Merge class="h-3 w-3" />
               <span>{{ $t("layouts.lobby_panel.lobby_invites") }}</span>
@@ -43,7 +45,9 @@ const { hasLobbyInvites } = useInvites();
           <div class="flex flex-col gap-3">
             <div class="flex items-start justify-between gap-3">
               <div class="flex flex-col gap-1">
-                <div class="hub-sub-label">
+                <div
+                  class="inline-flex items-center gap-[0.35rem] text-[0.68rem] font-semibold tracking-[0.12em] uppercase text-muted-foreground"
+                >
                   {{ $t("layouts.lobby_panel.your_squad") }}
                 </div>
                 <p class="text-[11px] text-muted-foreground">
@@ -316,32 +320,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.hub-panel-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-family: "Oxanium", monospace;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
-}
-.hub-panel-tick {
-  width: 8px;
-  height: 2px;
-  background: hsl(var(--tac-amber));
-}
-.hub-sub-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.68rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
-}
-</style>

@@ -42,12 +42,20 @@ const lobbyAccessOptions = computed(() => [
     icon: Unlock,
   },
 ]);
+
+const tickClasses = "w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]";
+const accessBtnClasses =
+  "inline-flex items-center justify-center gap-[0.45rem] px-[0.65rem] py-[0.6rem] text-[0.8rem] font-semibold tracking-[0.12em] uppercase bg-[hsl(var(--muted)/0.3)] border border-border text-muted-foreground [transition:color_140ms_ease,background_140ms_ease,border-color_140ms_ease] cursor-pointer [clip-path:polygon(6px_0,100%_0,100%_calc(100%-6px),calc(100%-6px)_100%,0_100%,0_6px)] hover:text-foreground hover:bg-[hsl(var(--muted)/0.5)]";
+const accessBtnActiveClasses =
+  "!text-[hsl(0_0%_8%)] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_100%)] !border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_16px_-6px_hsl(var(--tac-amber)/0.5)] hover:[background:linear-gradient(135deg,hsl(36_100%_68%)_0%,hsl(var(--tac-amber))_100%)]";
+const tacLabelClasses =
+  "font-mono text-[0.7rem] tracking-[0.22em] uppercase text-muted-foreground";
 </script>
 
 <template>
   <form
     @submit.prevent="updateMatch"
-    class="match-form mx-auto w-full max-w-4xl"
+    class="mx-auto w-full max-w-4xl"
   >
     <MatchOptions :form="form" :match="match">
       <template #left>
@@ -57,25 +65,22 @@ const lobbyAccessOptions = computed(() => [
           v-slot="{ value, handleChange }"
           name="lobby_access"
         >
-          <FormItem class="match-form__access">
-            <div class="match-form__access-header">
-              <span class="match-form__access-tick"></span>
-              <FormLabel class="match-form__access-label">
+          <FormItem class="px-5 py-4 border border-border rounded-lg bg-[hsl(var(--card)/0.55)] backdrop-blur-[6px] flex flex-col gap-3">
+            <div class="flex items-center gap-[0.65rem] flex-wrap">
+              <span :class="tickClasses"></span>
+              <FormLabel :class="tacLabelClasses">
                 Lobby Access
               </FormLabel>
-              <span class="match-form__access-desc">
+              <span class="ml-auto text-[0.78rem] text-muted-foreground">
                 {{ activeLobbyAccessDescription(value) }}
               </span>
             </div>
-            <div class="match-form__access-grid">
+            <div class="grid grid-cols-4 gap-[0.4rem] max-sm:grid-cols-2">
               <button
                 v-for="opt in lobbyAccessOptions"
                 :key="opt.value"
                 type="button"
-                class="match-form__access-btn"
-                :class="{
-                  'match-form__access-btn--active': value === opt.value,
-                }"
+                :class="[accessBtnClasses, value === opt.value && accessBtnActiveClasses]"
                 @click="handleChange(opt.value)"
               >
                 <component :is="opt.icon" class="w-4 h-4" />
@@ -89,20 +94,20 @@ const lobbyAccessOptions = computed(() => [
         <FormField v-if="!match" v-slot="{ value, handleChange }" name="pug">
           <FormItem>
             <div
-              class="match-form__pug-card"
-              :class="{ 'match-form__pug-card--on': value }"
+              class="relative flex items-center gap-4 px-5 py-4 border border-border rounded-lg bg-[hsl(var(--card)/0.6)] backdrop-blur-[6px] cursor-pointer [transition:border-color_160ms_ease,background_160ms_ease] hover:border-[hsl(var(--tac-amber)/0.4)] hover:bg-[hsl(var(--card)/0.8)]"
+              :class="[value && '!border-[hsl(var(--tac-amber)/0.55)] !bg-[hsl(var(--tac-amber)/0.06)]']"
               @click="handleChange(!value)"
             >
               <div class="flex-1 space-y-1.5">
                 <div class="flex items-center gap-2">
-                  <span class="match-form__pug-chevron">◢</span>
+                  <span class="text-[hsl(var(--tac-amber))] text-[0.7rem]">◢</span>
                   <FormLabel
-                    class="match-form__pug-label cursor-pointer"
+                    class="text-base font-semibold tracking-[0.08em] uppercase cursor-pointer"
                   >
                     {{ $t("pages.matches.create_page.pick_up_game") }}
                   </FormLabel>
                 </div>
-                <FormDescription class="match-form__pug-desc">
+                <FormDescription class="text-[0.82rem] text-muted-foreground">
                   {{ $t("pages.matches.create_page.pick_up_game_description") }}
                 </FormDescription>
               </div>
@@ -118,19 +123,19 @@ const lobbyAccessOptions = computed(() => [
         </FormField>
 
         <!-- Team vs Team picker -->
-        <div v-if="!form.values.pug" class="match-form__teams">
-          <div class="match-form__teams-label">
-            <span class="match-form__teams-tick"></span>
+        <div v-if="!form.values.pug" class="relative p-5 border border-border rounded-lg [background:linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] backdrop-blur-[6px]">
+          <div class="inline-flex items-center gap-2 font-mono text-[0.68rem] tracking-[0.24em] uppercase text-muted-foreground mb-[0.85rem]">
+            <span :class="tickClasses"></span>
             Lineups
           </div>
 
-          <div class="match-form__versus">
+          <div class="grid grid-cols-[1fr_auto_1fr] gap-4 items-end max-sm:grid-cols-1 max-sm:gap-3">
             <FormField
               v-slot="{ handleChange, componentField }"
               name="team_1"
             >
-              <FormItem class="match-form__team match-form__team--left">
-                <FormLabel class="match-form__team-label">
+              <FormItem class="min-w-0">
+                <FormLabel class="font-mono text-[0.65rem] tracking-[0.22em] uppercase text-muted-foreground">
                   {{ $t("pages.matches.create_page.team_1") }}
                 </FormLabel>
                 <TeamSearch
@@ -151,7 +156,7 @@ const lobbyAccessOptions = computed(() => [
               </FormItem>
             </FormField>
 
-            <div class="match-form__vs" aria-hidden="true">
+            <div class="inline-flex items-center gap-[0.4rem] px-[0.85rem] py-[0.55rem] mb-0.5 font-bold text-[0.85rem] tracking-[0.22em] text-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)] border border-[hsl(var(--tac-amber)/0.4)] [clip-path:polygon(0_0,calc(100%-8px)_0,100%_8px,100%_100%,8px_100%,0_calc(100%-8px))] max-sm:justify-self-center" aria-hidden="true">
               <Swords class="w-4 h-4" />
               <span>VS</span>
             </div>
@@ -160,8 +165,8 @@ const lobbyAccessOptions = computed(() => [
               v-slot="{ handleChange, componentField }"
               name="team_2"
             >
-              <FormItem class="match-form__team match-form__team--right">
-                <FormLabel class="match-form__team-label">
+              <FormItem class="min-w-0">
+                <FormLabel class="font-mono text-[0.65rem] tracking-[0.22em] uppercase text-muted-foreground">
                   {{ $t("pages.matches.create_page.team_2") }}
                 </FormLabel>
                 <TeamSearch
@@ -183,7 +188,7 @@ const lobbyAccessOptions = computed(() => [
             </FormField>
           </div>
 
-          <div class="match-form__teams-note">
+          <div class="flex items-center gap-2 mt-4 pt-[0.85rem] border-t border-border text-[0.78rem] italic text-muted-foreground">
             <Info class="w-4 h-4 flex-shrink-0" />
             <span>
               {{ $t("pages.matches.create_page.intra_team_scrimmage") }}
@@ -193,10 +198,10 @@ const lobbyAccessOptions = computed(() => [
       </template>
     </MatchOptions>
 
-    <div class="match-form__submit-row">
-      <button type="submit" class="match-form__submit">
-        <span class="match-form__submit-inner">
-          <PlayIcon class="match-form__submit-icon w-5 h-5" />
+    <div class="mt-8 flex justify-center">
+      <button type="submit" class="group/submit relative isolate inline-flex items-center px-12 py-4 font-bold text-base tracking-[0.22em] uppercase text-[hsl(0_0%_8%)] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] border border-[hsl(var(--tac-amber))] [clip-path:polygon(14px_0,100%_0,100%_calc(100%-14px),calc(100%-14px)_100%,0_100%,0_14px)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_8px_24px_-6px_hsl(var(--tac-amber)/0.6)] [transition:transform_200ms_cubic-bezier(0.4,0,0.2,1),box-shadow_200ms_ease] cursor-pointer overflow-hidden hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_14px_36px_-6px_hsl(var(--tac-amber)/0.8),0_0_28px_hsl(var(--tac-amber)/0.35)] active:translate-y-0">
+        <span class="relative z-[1] inline-flex items-center gap-3">
+          <PlayIcon class="w-5 h-5 fill-current [transition:transform_300ms_cubic-bezier(0.4,0,0.2,1)] group-hover/submit:translate-x-0.5 group-hover/submit:scale-[1.08]" />
           <span>
             <template v-if="match">
               {{ $t("pages.matches.create_page.update_button") }}
@@ -206,7 +211,7 @@ const lobbyAccessOptions = computed(() => [
             </template>
           </span>
         </span>
-        <span class="match-form__submit-glow" aria-hidden="true"></span>
+        <span class="absolute inset-0 [background:linear-gradient(90deg,transparent_0%,hsl(0_0%_100%/0.35)_50%,transparent_100%)] -translate-x-full [transition:transform_700ms_cubic-bezier(0.4,0,0.2,1)] pointer-events-none z-0 group-hover/submit:translate-x-full" aria-hidden="true"></span>
       </button>
     </div>
   </form>
@@ -532,320 +537,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-/* ── Lobby Access ──────────────────────────── */
-.match-form__access {
-  padding: 1rem 1.25rem;
-  border: 1px solid hsl(var(--border));
-  border-radius: 0.5rem;
-  background: hsl(var(--card) / 0.55);
-  backdrop-filter: blur(6px);
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-.match-form__access-header {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  flex-wrap: wrap;
-}
-.match-form__access-tick {
-  width: 10px;
-  height: 2px;
-  background: hsl(var(--tac-amber));
-}
-.match-form__access-label {
-  font-family: "Oxanium", monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
-}
-.match-form__access-desc {
-  margin-left: auto;
-  font-size: 0.78rem;
-  color: hsl(var(--muted-foreground));
-}
-.match-form__access-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.4rem;
-}
-@media (max-width: 640px) {
-  .match-form__access-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-.match-form__access-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  padding: 0.6rem 0.65rem;
-  font-family: "Oxanium", sans-serif;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  background: hsl(var(--muted) / 0.3);
-  border: 1px solid hsl(var(--border));
-  color: hsl(var(--muted-foreground));
-  transition:
-    color 140ms ease,
-    background 140ms ease,
-    border-color 140ms ease;
-  cursor: pointer;
-  clip-path: polygon(
-    6px 0,
-    100% 0,
-    100% calc(100% - 6px),
-    calc(100% - 6px) 100%,
-    0 100%,
-    0 6px
-  );
-}
-.match-form__access-btn:hover {
-  color: hsl(var(--foreground));
-  background: hsl(var(--muted) / 0.5);
-}
-.match-form__access-btn--active {
-  color: hsl(0 0% 8%);
-  background: linear-gradient(
-    135deg,
-    hsl(36 100% 65%) 0%,
-    hsl(var(--tac-amber)) 100%
-  );
-  border-color: hsl(var(--tac-amber));
-  box-shadow:
-    0 0 0 1px hsl(var(--tac-amber) / 0.4),
-    0 6px 16px -6px hsl(var(--tac-amber) / 0.5);
-}
-.match-form__access-btn--active:hover {
-  color: hsl(0 0% 8%);
-  background: linear-gradient(
-    135deg,
-    hsl(36 100% 68%) 0%,
-    hsl(var(--tac-amber)) 100%
-  );
-}
-
-/* ── PUG toggle ────────────────────────────── */
-.match-form__pug-card {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.25rem;
-  border: 1px solid hsl(var(--border));
-  border-radius: 0.5rem;
-  background: hsl(var(--card) / 0.6);
-  backdrop-filter: blur(6px);
-  cursor: pointer;
-  transition:
-    border-color 160ms ease,
-    background 160ms ease;
-}
-.match-form__pug-card:hover {
-  border-color: hsl(var(--tac-amber) / 0.4);
-  background: hsl(var(--card) / 0.8);
-}
-.match-form__pug-card--on {
-  border-color: hsl(var(--tac-amber) / 0.55);
-  background: hsl(var(--tac-amber) / 0.06);
-}
-.match-form__pug-chevron {
-  color: hsl(var(--tac-amber));
-  font-size: 0.7rem;
-}
-.match-form__pug-label {
-  font-family: "Oxanium", sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.match-form__pug-desc {
-  font-size: 0.82rem;
-  color: hsl(var(--muted-foreground));
-}
-
-/* ── Teams VS picker ───────────────────────── */
-.match-form__teams {
-  position: relative;
-  padding: 1.25rem;
-  border: 1px solid hsl(var(--border));
-  border-radius: 0.5rem;
-  background: linear-gradient(
-    180deg,
-    hsl(var(--card) / 0.55) 0%,
-    hsl(var(--card) / 0.25) 100%
-  );
-  backdrop-filter: blur(6px);
-}
-.match-form__teams-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: "Oxanium", monospace;
-  font-size: 0.68rem;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
-  margin-bottom: 0.85rem;
-}
-.match-form__teams-tick {
-  width: 10px;
-  height: 2px;
-  background: hsl(var(--tac-amber));
-}
-
-.match-form__versus {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  gap: 1rem;
-  align-items: end;
-}
-
-.match-form__team {
-  min-width: 0;
-}
-.match-form__team-label {
-  font-family: "Oxanium", monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
-}
-
-.match-form__vs {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.55rem 0.85rem;
-  margin-bottom: 0.125rem;
-  font-family: "Oxanium", sans-serif;
-  font-weight: 700;
-  font-size: 0.85rem;
-  letter-spacing: 0.22em;
-  color: hsl(var(--tac-amber));
-  background: hsl(var(--tac-amber) / 0.12);
-  border: 1px solid hsl(var(--tac-amber) / 0.4);
-  clip-path: polygon(
-    0 0,
-    calc(100% - 8px) 0,
-    100% 8px,
-    100% 100%,
-    8px 100%,
-    0 calc(100% - 8px)
-  );
-}
-
-.match-form__teams-note {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  padding-top: 0.85rem;
-  border-top: 1px solid hsl(var(--border));
-  font-size: 0.78rem;
-  font-style: italic;
-  color: hsl(var(--muted-foreground));
-}
-
-@media (max-width: 640px) {
-  .match-form__versus {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-  .match-form__vs {
-    justify-self: center;
-  }
-}
-
-/* ── Tactical Submit button ────────────────── */
-.match-form__submit-row {
-  margin-top: 2rem;
-  display: flex;
-  justify-content: center;
-}
-
-.match-form__submit {
-  position: relative;
-  isolation: isolate;
-  display: inline-flex;
-  align-items: center;
-  padding: 1rem 3rem;
-  font-family: "Oxanium", sans-serif;
-  font-weight: 700;
-  font-size: 1rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: hsl(0 0% 8%);
-  background: linear-gradient(
-    135deg,
-    hsl(36 100% 65%) 0%,
-    hsl(var(--tac-amber)) 50%,
-    hsl(28 90% 52%) 100%
-  );
-  border: 1px solid hsl(var(--tac-amber));
-  clip-path: polygon(
-    14px 0,
-    100% 0,
-    100% calc(100% - 14px),
-    calc(100% - 14px) 100%,
-    0 100%,
-    0 14px
-  );
-  box-shadow:
-    0 0 0 1px hsl(var(--tac-amber) / 0.4),
-    0 8px 24px -6px hsl(var(--tac-amber) / 0.6);
-  transition:
-    transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
-    box-shadow 200ms ease;
-  cursor: pointer;
-  overflow: hidden;
-}
-.match-form__submit:hover {
-  transform: translateY(-1px);
-  box-shadow:
-    0 0 0 1px hsl(var(--tac-amber) / 0.6),
-    0 14px 36px -6px hsl(var(--tac-amber) / 0.8),
-    0 0 28px hsl(var(--tac-amber) / 0.35);
-}
-.match-form__submit:active {
-  transform: translateY(0);
-}
-.match-form__submit-inner {
-  position: relative;
-  z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-.match-form__submit-icon {
-  fill: currentColor;
-  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-.match-form__submit:hover .match-form__submit-icon {
-  transform: translateX(2px) scale(1.08);
-}
-.match-form__submit-glow {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    hsl(0 0% 100% / 0.35) 50%,
-    transparent 100%
-  );
-  transform: translateX(-100%);
-  transition: transform 700ms cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
-  z-index: 0;
-}
-.match-form__submit:hover .match-form__submit-glow {
-  transform: translateX(100%);
-}
-</style>

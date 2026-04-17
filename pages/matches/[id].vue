@@ -13,36 +13,86 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { AlertTriangle } from "lucide-vue-next";
+
+const heroClasses =
+  "relative min-w-0 max-w-full px-6 pt-5 pb-6 max-sm:p-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] backdrop-blur-[6px] [clip-path:polygon(0_0,calc(100%-18px)_0,100%_18px,100%_100%,18px_100%,0_calc(100%-18px))] before:content-[''] before:absolute before:w-[14px] before:h-[14px] before:border-[hsl(var(--tac-amber))] before:border-solid before:top-2 before:left-2 before:border-t-2 before:border-l-2 after:content-[''] after:absolute after:w-[14px] after:h-[14px] after:border-[hsl(var(--tac-amber))] after:border-solid after:bottom-2 after:right-2 after:border-b-2 after:border-r-2";
+
+const statusBaseClasses =
+  "inline-flex items-center gap-2 px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold tracking-[0.2em] uppercase border rounded";
+
+const statusTierClasses: Record<string, string> = {
+  live: "bg-[hsl(var(--destructive)/0.15)] border-[hsl(var(--destructive)/0.6)] text-destructive",
+  pending:
+    "bg-[hsl(var(--tac-amber)/0.12)] border-[hsl(var(--tac-amber)/0.5)] text-[hsl(var(--tac-amber))]",
+  veto: "bg-[hsl(var(--topnav-accent)/0.15)] border-[hsl(var(--topnav-accent)/0.5)] text-[hsl(var(--topnav-accent))]",
+  finished:
+    "bg-[hsl(var(--success)/0.15)] border-[hsl(var(--success)/0.5)] text-success",
+  ended: "bg-[hsl(var(--muted)/0.4)] border-border text-muted-foreground",
+  neutral: "bg-[hsl(var(--muted)/0.3)] border-border text-muted-foreground",
+};
+
+const teamClasses =
+  "relative font-sans font-bold [font-stretch:80%] text-[clamp(1.5rem,3.5vw,2.75rem)] leading-[0.95] tracking-[0.02em] uppercase min-w-0 max-w-full";
+
+const teamMainClasses =
+  "relative text-foreground [background:linear-gradient(180deg,hsl(var(--foreground))_0%,hsl(var(--foreground)/0.7)_100%)] [-webkit-background-clip:text] bg-clip-text [-webkit-text-fill-color:transparent]";
+
+const teamMainWinnerClasses =
+  "[background:linear-gradient(180deg,hsl(var(--tac-amber))_0%,hsl(var(--tac-amber))_100%)]";
+
+const teamGhostClasses =
+  "absolute left-1 top-1 -right-1 whitespace-nowrap overflow-hidden text-transparent [-webkit-text-stroke:1px_hsl(var(--tac-amber)/0.3)] pointer-events-none select-none";
+
+const scoreClasses =
+  "font-sans font-extrabold [font-stretch:80%] text-[clamp(2.5rem,5vw,4rem)] leading-none text-[hsl(var(--muted-foreground)/0.6)] [font-variant-numeric:tabular-nums] transition-colors duration-200 ease";
+
+const vsBaseClasses =
+  "font-mono text-[0.8rem] font-bold tracking-[0.3em] text-muted-foreground px-[0.6rem] py-[0.35rem] border border-border bg-[hsl(var(--card)/0.5)]";
 </script>
 
 <template>
   <div v-if="match" class="flex flex-col gap-4 md:gap-6">
     <PageTransition>
-      <header class="match-hero">
-        <div class="match-hero__top">
+      <header :class="heroClasses">
+        <div
+          class="flex items-center gap-3 flex-wrap mb-5 max-sm:mb-[0.85rem]"
+        >
           <span
-            class="match-hero__status"
-            :class="`match-hero__status--${statusTier}`"
+            :class="[
+              statusBaseClasses,
+              statusTierClasses[statusTier] || statusTierClasses.neutral,
+            ]"
           >
-            <span class="match-hero__status-dot"></span>
+            <span class="w-[6px] h-[6px] bg-current rounded-full"></span>
             {{ match.e_match_status?.description || match.status }}
           </span>
-          <span v-if="match.label" class="match-hero__label">
+          <span
+            v-if="match.label"
+            class="font-mono text-[0.7rem] tracking-[0.2em] uppercase text-muted-foreground"
+          >
             {{ match.label }}
           </span>
           <NuxtLink
             v-if="tournamentContext"
             :to="`/tournaments/${tournamentContext.id}`"
-            class="match-hero__tournament"
+            class="inline-flex items-center gap-[0.4rem] font-mono text-[0.72rem] tracking-[0.15em] uppercase text-muted-foreground [transition:color_140ms_ease] hover:text-[hsl(var(--tac-amber))] max-sm:w-full max-sm:ml-0"
           >
-            <span class="match-hero__tournament-chevron">◢</span>
+            <span class="text-[hsl(var(--tac-amber))] text-[0.65rem]">◢</span>
             {{ tournamentContext.name }}
           </NuxtLink>
 
-          <div class="match-hero__actions">
+          <div class="inline-flex items-center gap-2 ml-auto">
+            <span
+              v-if="match.server_error"
+              class="inline-flex items-center gap-[0.4rem] px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold tracking-[0.15em] uppercase border border-[hsl(var(--destructive)/0.6)] rounded bg-[hsl(var(--destructive)/0.15)] text-destructive"
+              :title="match.server_error"
+            >
+              <AlertTriangle class="w-3 h-3" />
+              <span>{{ $t("match.server_error.short_label") }}</span>
+            </span>
             <span
               v-if="showAutoCancel"
-              class="match-hero__auto-cancel"
+              class="inline-flex items-center gap-[0.4rem] px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold tracking-[0.15em] uppercase border border-[hsl(var(--destructive)/0.6)] rounded bg-[hsl(var(--destructive)/0.15)] text-destructive"
               :title="$t('match.auto_canceling')"
             >
               <AlertTriangle class="w-3 h-3" />
@@ -53,80 +103,108 @@ import { AlertTriangle } from "lucide-vue-next";
           </div>
         </div>
 
-        <div class="match-hero__matchup">
-          <div class="match-hero__side match-hero__side--left">
-            <span class="match-hero__side-label">Lineup 1</span>
-            <div
-              class="match-hero__team"
-              :class="{
-                'match-hero__team--winner':
-                  match.winning_lineup_id === match.lineup_1_id,
-              }"
+        <div
+          class="grid grid-cols-[1fr_auto_1fr] items-center gap-6 max-sm:gap-3"
+        >
+          <div
+            class="flex flex-col gap-[0.35rem] min-w-0 text-left items-start"
+          >
+            <span
+              class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
             >
-              <span class="match-hero__team-ghost" aria-hidden="true">
+              Lineup 1
+            </span>
+            <div
+              :class="[
+                teamClasses,
+                match.winning_lineup_id === match.lineup_1_id && 'is-winner',
+              ]"
+            >
+              <span :class="teamGhostClasses" aria-hidden="true">
                 {{ lineup1Name }}
               </span>
-              <span class="match-hero__team-main">{{ lineup1Name }}</span>
+              <span
+                :class="[
+                  teamMainClasses,
+                  match.winning_lineup_id === match.lineup_1_id &&
+                    teamMainWinnerClasses,
+                ]"
+              >
+                {{ lineup1Name }}
+              </span>
             </div>
           </div>
 
-          <div class="match-hero__center">
-            <div v-if="hasScores" class="match-hero__scores">
+          <div class="flex items-center justify-center">
+            <div
+              v-if="hasScores"
+              class="inline-flex items-center gap-4"
+            >
               <span
-                class="match-hero__score"
-                :class="{
-                  'match-hero__score--winner': mapScores.l1 > mapScores.l2,
-                }"
+                :class="[
+                  scoreClasses,
+                  mapScores.l1 > mapScores.l2 &&
+                    '!text-[hsl(var(--tac-amber))] [text-shadow:0_0_18px_hsl(var(--tac-amber)/0.35)]',
+                ]"
               >
                 {{ mapScores.l1 }}
               </span>
-              <span class="match-hero__vs">VS</span>
+              <span :class="vsBaseClasses">VS</span>
               <span
-                class="match-hero__score"
-                :class="{
-                  'match-hero__score--winner': mapScores.l2 > mapScores.l1,
-                }"
+                :class="[
+                  scoreClasses,
+                  mapScores.l2 > mapScores.l1 &&
+                    '!text-[hsl(var(--tac-amber))] [text-shadow:0_0_18px_hsl(var(--tac-amber)/0.35)]',
+                ]"
               >
                 {{ mapScores.l2 }}
               </span>
             </div>
-            <span v-else class="match-hero__vs match-hero__vs--solo">VS</span>
+            <span v-else :class="[vsBaseClasses, 'text-base px-4 py-[0.6rem]']">VS</span>
           </div>
 
-          <div class="match-hero__side match-hero__side--right">
-            <span class="match-hero__side-label">Lineup 2</span>
-            <div
-              class="match-hero__team"
-              :class="{
-                'match-hero__team--winner':
-                  match.winning_lineup_id === match.lineup_2_id,
-              }"
+          <div
+            class="flex flex-col gap-[0.35rem] min-w-0 text-right items-end"
+          >
+            <span
+              class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
             >
-              <span class="match-hero__team-ghost" aria-hidden="true">
+              Lineup 2
+            </span>
+            <div
+              :class="[
+                teamClasses,
+                match.winning_lineup_id === match.lineup_2_id && 'is-winner',
+              ]"
+            >
+              <span :class="teamGhostClasses" aria-hidden="true">
                 {{ lineup2Name }}
               </span>
-              <span class="match-hero__team-main">{{ lineup2Name }}</span>
+              <span
+                :class="[
+                  teamMainClasses,
+                  match.winning_lineup_id === match.lineup_2_id &&
+                    teamMainWinnerClasses,
+                ]"
+              >
+                {{ lineup2Name }}
+              </span>
             </div>
           </div>
         </div>
 
-        <div class="match-hero__meta">
-          <span v-if="match.options?.best_of" class="match-hero__meta-item">
+        <div
+          class="flex items-center gap-[0.6rem] justify-center flex-wrap mt-4 pt-[0.85rem] border-t border-border font-mono text-[0.72rem] tracking-[0.15em] uppercase text-muted-foreground"
+        >
+          <span v-if="match.options?.best_of">
             Best of {{ match.options.best_of }}
           </span>
-          <span
-            v-if="match.e_region?.description"
-            class="match-hero__meta-dot"
-            >·</span
-          >
-          <span
-            v-if="match.e_region?.description"
-            class="match-hero__meta-item"
-          >
+          <span v-if="match.e_region?.description" class="opacity-40">·</span>
+          <span v-if="match.e_region?.description">
             {{ match.e_region.description }}
           </span>
-          <span v-if="formattedSchedule" class="match-hero__meta-dot">·</span>
-          <span v-if="formattedSchedule" class="match-hero__meta-item">
+          <span v-if="formattedSchedule" class="opacity-40">·</span>
+          <span v-if="formattedSchedule">
             {{ formattedSchedule }}
           </span>
         </div>
@@ -197,6 +275,20 @@ import { AlertTriangle } from "lucide-vue-next";
           :streams="match.streams"
           class="pb-6 max-w-[1500px] w-full overflow-x-auto"
         />
+      </PageTransition>
+
+      <PageTransition :delay="100">
+        <Alert
+          v-if="showServerErrorAlert"
+          variant="destructive"
+          class="bg-red-600 text-white max-w-md mb-6"
+        >
+          <AlertTriangle class="h-4 w-4" />
+          <AlertTitle>{{ $t("match.server_error.title") }}</AlertTitle>
+          <AlertDescription class="whitespace-pre-wrap break-words">
+            {{ match.server_error }}
+          </AlertDescription>
+        </Alert>
       </PageTransition>
 
       <PageTransition :delay="100">
@@ -313,6 +405,7 @@ export default {
               cancels_at: true,
               scheduled_at: true,
               ended_at: true,
+              server_error: true,
               organizer: playerFields,
               options: {
                 lobby_access: true,
@@ -513,6 +606,20 @@ export default {
         this.match.status !== e_match_status_enum.Canceled
       );
     },
+    showServerErrorAlert() {
+      if (!this.match?.server_error) {
+        return false;
+      }
+      const visibleStatuses = [
+        e_match_status_enum.Scheduled,
+        e_match_status_enum.WaitingForCheckIn,
+        e_match_status_enum.WaitingForServer,
+        e_match_status_enum.Veto,
+        e_match_status_enum.PickingPlayers,
+        e_match_status_enum.Live,
+      ];
+      return visibleStatuses.includes(this.match.status);
+    },
     formattedSchedule() {
       const when = this.match?.scheduled_at || this.match?.ended_at;
       if (!when) return null;
@@ -603,303 +710,3 @@ export default {
 };
 </script>
 
-<style scoped>
-.match-hero {
-  position: relative;
-  min-width: 0;
-  max-width: 100%;
-  padding: 1.25rem 1.5rem 1.5rem 1.5rem;
-  border: 1px solid hsl(var(--border));
-  background: linear-gradient(
-    180deg,
-    hsl(var(--card) / 0.55) 0%,
-    hsl(var(--card) / 0.25) 100%
-  );
-  backdrop-filter: blur(6px);
-  clip-path: polygon(
-    0 0,
-    calc(100% - 18px) 0,
-    100% 18px,
-    100% 100%,
-    18px 100%,
-    0 calc(100% - 18px)
-  );
-}
-.match-hero::before,
-.match-hero::after {
-  content: "";
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border-color: hsl(var(--tac-amber));
-  border-style: solid;
-}
-.match-hero::before {
-  top: 8px;
-  left: 8px;
-  border-width: 2px 0 0 2px;
-}
-.match-hero::after {
-  bottom: 8px;
-  right: 8px;
-  border-width: 0 2px 2px 0;
-}
-
-.match-hero__top {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.25rem;
-}
-
-.match-hero__status {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.3rem 0.7rem;
-  font-family: "Oxanium", monospace;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  border: 1px solid hsl(var(--border));
-  border-radius: 0.25rem;
-  background: hsl(var(--muted) / 0.3);
-  color: hsl(var(--muted-foreground));
-}
-.match-hero__status-dot {
-  width: 6px;
-  height: 6px;
-  background: currentColor;
-  border-radius: 9999px;
-}
-.match-hero__status--live {
-  background: hsl(var(--destructive) / 0.15);
-  border-color: hsl(var(--destructive) / 0.6);
-  color: hsl(var(--destructive));
-}
-.match-hero__status--pending {
-  background: hsl(var(--tac-amber) / 0.12);
-  border-color: hsl(var(--tac-amber) / 0.5);
-  color: hsl(var(--tac-amber));
-}
-.match-hero__status--veto {
-  background: hsl(var(--topnav-accent) / 0.15);
-  border-color: hsl(var(--topnav-accent) / 0.5);
-  color: hsl(var(--topnav-accent));
-}
-.match-hero__status--finished {
-  background: hsl(var(--success) / 0.15);
-  border-color: hsl(var(--success) / 0.5);
-  color: hsl(var(--success));
-}
-.match-hero__status--ended {
-  background: hsl(var(--muted) / 0.4);
-  border-color: hsl(var(--border));
-  color: hsl(var(--muted-foreground));
-}
-
-.match-hero__label {
-  font-family: "Oxanium", monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
-}
-
-.match-hero__tournament {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-family: "Oxanium", monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
-  transition: color 140ms ease;
-}
-.match-hero__actions {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-left: auto;
-}
-
-.match-hero__auto-cancel {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.3rem 0.7rem;
-  font-family: "Oxanium", monospace;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  border: 1px solid hsl(var(--destructive) / 0.6);
-  border-radius: 0.25rem;
-  background: hsl(var(--destructive) / 0.15);
-  color: hsl(var(--destructive));
-}
-.match-hero__tournament:hover {
-  color: hsl(var(--tac-amber));
-}
-.match-hero__tournament-chevron {
-  color: hsl(var(--tac-amber));
-  font-size: 0.65rem;
-}
-
-/* Matchup row */
-.match-hero__matchup {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.match-hero__side {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  min-width: 0;
-}
-.match-hero__side--left {
-  text-align: left;
-  align-items: flex-start;
-}
-.match-hero__side--right {
-  text-align: right;
-  align-items: flex-end;
-}
-
-.match-hero__side-label {
-  font-family: "Oxanium", monospace;
-  font-size: 0.6rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground) / 0.7);
-}
-
-.match-hero__team {
-  position: relative;
-  font-family: "Oxanium", sans-serif;
-  font-weight: 700;
-  font-stretch: 80%;
-  font-size: clamp(1.5rem, 3.5vw, 2.75rem);
-  line-height: 0.95;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-  min-width: 0;
-  max-width: 100%;
-}
-.match-hero__team-main {
-  position: relative;
-  color: hsl(var(--foreground));
-  background: linear-gradient(
-    180deg,
-    hsl(var(--foreground)) 0%,
-    hsl(var(--foreground) / 0.7) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-.match-hero__team-ghost {
-  position: absolute;
-  left: 4px;
-  top: 4px;
-  right: -4px;
-  white-space: nowrap;
-  overflow: hidden;
-  color: transparent;
-  -webkit-text-stroke: 1px hsl(var(--tac-amber) / 0.3);
-  pointer-events: none;
-  user-select: none;
-}
-.match-hero__team--winner .match-hero__team-main {
-  background: linear-gradient(
-    180deg,
-    hsl(var(--tac-amber)) 0%,
-    hsl(var(--tac-amber)) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Center: scores or VS */
-.match-hero__center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.match-hero__scores {
-  display: inline-flex;
-  align-items: center;
-  gap: 1rem;
-}
-.match-hero__score {
-  font-family: "Oxanium", sans-serif;
-  font-weight: 800;
-  font-stretch: 80%;
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  line-height: 1;
-  color: hsl(var(--muted-foreground) / 0.6);
-  font-variant-numeric: tabular-nums;
-  transition: color 200ms ease;
-}
-.match-hero__score--winner {
-  color: hsl(var(--tac-amber));
-  text-shadow: 0 0 18px hsl(var(--tac-amber) / 0.35);
-}
-.match-hero__vs {
-  font-family: "Oxanium", monospace;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.3em;
-  color: hsl(var(--muted-foreground));
-  padding: 0.35rem 0.6rem;
-  border: 1px solid hsl(var(--border));
-  background: hsl(var(--card) / 0.5);
-}
-.match-hero__vs--solo {
-  font-size: 1rem;
-  padding: 0.6rem 1rem;
-}
-
-/* Meta */
-.match-hero__meta {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-top: 1rem;
-  padding-top: 0.85rem;
-  border-top: 1px solid hsl(var(--border));
-  font-family: "Oxanium", monospace;
-  font-size: 0.72rem;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
-}
-.match-hero__meta-dot {
-  opacity: 0.4;
-}
-
-@media (max-width: 640px) {
-  .match-hero {
-    padding: 1rem;
-  }
-  .match-hero__top {
-    margin-bottom: 0.85rem;
-  }
-  .match-hero__tournament {
-    margin-left: 0;
-    width: 100%;
-  }
-  .match-hero__matchup {
-    gap: 0.75rem;
-  }
-}
-</style>

@@ -29,12 +29,14 @@ import Separator from "../ui/separator/Separator.vue";
 </script>
 
 <template>
-  <div class="tournament-member-row">
-    <div class="tournament-member-row__player">
+  <div
+    class="flex items-center justify-between gap-4 px-[0.85rem] py-[0.65rem] bg-card/50 border border-border rounded-md [transition:border-color_160ms_ease,background_160ms_ease] hover:border-[hsl(var(--tac-amber)/0.35)] hover:bg-card/70"
+  >
+    <div class="flex items-center gap-[0.65rem] min-w-0 flex-1">
       <PlayerDisplay :player="member.player"></PlayerDisplay>
     </div>
 
-    <div class="tournament-member-row__role">
+    <div class="flex-shrink-0">
       <Popover v-if="canUpdateRole">
         <PopoverTrigger as-child>
           <Button variant="outline" size="sm" class="h-8">
@@ -75,7 +77,10 @@ import Separator from "../ui/separator/Separator.vue";
           </Command>
         </PopoverContent>
       </Popover>
-      <span v-else class="tournament-member-row__role-text">
+      <span
+        v-else
+        class="font-mono text-[0.7rem] tracking-[0.18em] uppercase text-muted-foreground"
+      >
         {{ member.role }}
       </span>
     </div>
@@ -198,38 +203,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.tournament-member-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 0.65rem 0.85rem;
-  background: hsl(var(--card) / 0.5);
-  border: 1px solid hsl(var(--border));
-  border-radius: 0.375rem;
-  transition: border-color 160ms ease, background 160ms ease;
-}
-.tournament-member-row:hover {
-  border-color: hsl(var(--tac-amber) / 0.35);
-  background: hsl(var(--card) / 0.7);
-}
-.tournament-member-row__player {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  min-width: 0;
-  flex: 1;
-}
-.tournament-member-row__role {
-  flex-shrink: 0;
-}
-.tournament-member-row__role-text {
-  font-family: "Oxanium", monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
-}
-</style>

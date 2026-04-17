@@ -9,8 +9,10 @@ import Empty from "~/components/ui/empty/Empty.vue";
 <template>
   <div class="flex flex-col h-full">
     <div class="px-3 pt-3 pb-2 flex-shrink-0 border-b border-border">
-      <div class="hub-panel-label">
-        <span class="hub-panel-tick"></span>
+      <div
+        class="inline-flex items-center gap-[0.4rem] font-mono text-[0.62rem] font-bold tracking-[0.24em] uppercase text-muted-foreground"
+      >
+        <span class="w-2 h-[2px] bg-[hsl(var(--tac-amber))]"></span>
         Notifications
       </div>
     </div>
@@ -73,7 +75,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
 
             <template v-if="notification.type !== 'NameChangeRequest'">
               <p
-                class="notification"
+                class="[&_a]:text-blue-500 [&_a]:underline [&_a:hover]:text-blue-700"
                 :class="[
                   'text-sm mb-2',
                   notification.is_read
@@ -85,7 +87,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
             </template>
             <template v-else>
               <p
-                class="notification"
+                class="[&_a]:text-blue-500 [&_a]:underline [&_a:hover]:text-blue-700"
                 :class="[
                   'text-sm mb-2',
                   notification.is_read
@@ -264,28 +266,3 @@ export default {
   },
 };
 </script>
-
-<style lang="postcss">
-.notification {
-  a {
-    @apply text-blue-500 underline hover:text-blue-700;
-  }
-}
-
-.hub-panel-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-family: "Oxanium", monospace;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
-}
-.hub-panel-tick {
-  width: 8px;
-  height: 2px;
-  background: hsl(var(--tac-amber));
-}
-</style>

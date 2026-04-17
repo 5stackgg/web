@@ -39,14 +39,24 @@ const otherOnlineCount = computed(() => {
   <div class="flex flex-col h-full overflow-hidden">
     <Tabs v-model="activeTab" class="flex flex-col h-full min-h-0">
       <div class="px-3 pt-3 pb-2 flex-shrink-0">
-        <div class="hub-panel-label mb-2">
-          <span class="hub-panel-tick"></span>
+        <div
+          class="inline-flex items-center gap-[0.4rem] font-mono text-[0.62rem] font-bold tracking-[0.24em] uppercase text-muted-foreground mb-2"
+        >
+          <span class="w-2 h-[2px] bg-[hsl(var(--tac-amber))]"></span>
           Social
         </div>
-        <TabsList variant="underline" class="hub-tabs-list">
-          <TabsTrigger value="friends" class="hub-tabs-trigger relative">
+        <TabsList
+          variant="underline"
+          class="w-full gap-[0.15rem] bg-muted/30 border border-border rounded-md p-[0.2rem]"
+        >
+          <TabsTrigger
+            value="friends"
+            class="relative flex-1 text-[0.7rem] font-semibold tracking-[0.1em] uppercase px-2 py-[0.35rem]"
+          >
             {{ $t("matchmaking.friends.title") }}
-            <span class="hub-tabs-count">
+            <span
+              class="font-mono text-[0.6rem] ml-1 opacity-65 tabular-nums"
+            >
               {{ onlineFriends.length }}/{{ offlineFriends.length }}
             </span>
             <span
@@ -54,9 +64,16 @@ const otherOnlineCount = computed(() => {
               class="absolute top-0.5 left-1 w-2 h-2 bg-red-500 rounded-full"
             />
           </TabsTrigger>
-          <TabsTrigger value="online" class="hub-tabs-trigger">
+          <TabsTrigger
+            value="online"
+            class="flex-1 text-[0.7rem] font-semibold tracking-[0.1em] uppercase px-2 py-[0.35rem]"
+          >
             {{ $t("matchmaking.others.title") }}
-            <span class="hub-tabs-count">{{ otherOnlineCount }}</span>
+            <span
+              class="font-mono text-[0.6rem] ml-1 opacity-65 tabular-nums"
+            >
+              {{ otherOnlineCount }}
+            </span>
           </TabsTrigger>
         </TabsList>
       </div>
@@ -77,45 +94,3 @@ const otherOnlineCount = computed(() => {
     </Tabs>
   </div>
 </template>
-
-<style scoped>
-.hub-panel-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-family: "Oxanium", monospace;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.24em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
-}
-.hub-panel-tick {
-  width: 8px;
-  height: 2px;
-  background: hsl(var(--tac-amber));
-}
-.hub-tabs-list {
-  width: 100%;
-  gap: 0.15rem;
-  background: hsl(var(--muted) / 0.3);
-  border: 1px solid hsl(var(--border));
-  border-radius: 0.375rem;
-  padding: 0.2rem;
-}
-.hub-tabs-trigger {
-  flex: 1;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.35rem 0.5rem;
-}
-.hub-tabs-count {
-  font-family: "Oxanium", monospace;
-  font-size: 0.6rem;
-  margin-left: 0.25rem;
-  opacity: 0.65;
-  font-variant-numeric: tabular-nums;
-}
-</style>

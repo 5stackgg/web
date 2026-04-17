@@ -28,10 +28,7 @@ const { height: viewportHeight } = useVisualViewport();
     >
       <Button variant="outline" class="justify-between w-full">
         <div class="flex items-center gap-2 min-w-0">
-          <Avatar
-            v-if="selectedTeam"
-            class="h-5 w-5 rounded shrink-0"
-          >
+          <Avatar v-if="selectedTeam" class="h-5 w-5 rounded shrink-0">
             <AvatarImage
               v-if="teamAvatarSrc(selectedTeam)"
               :src="teamAvatarSrc(selectedTeam)!"
@@ -138,10 +135,7 @@ const { height: viewportHeight } = useVisualViewport();
         class="justify-between w-full"
       >
         <div class="flex items-center gap-2 min-w-0">
-          <Avatar
-            v-if="selectedTeam"
-            class="h-5 w-5 rounded shrink-0"
-          >
+          <Avatar v-if="selectedTeam" class="h-5 w-5 rounded shrink-0">
             <AvatarImage
               v-if="teamAvatarSrc(selectedTeam)"
               :src="teamAvatarSrc(selectedTeam)!"

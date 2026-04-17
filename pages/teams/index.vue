@@ -1,23 +1,21 @@
 <script setup lang="ts">
 import { Search, X, PlusCircle } from "lucide-vue-next";
 import { FormItem, FormControl } from "@/components/ui/form";
-import { Button } from "~/components/ui/button";
 import TeamsTable from "~/components/TeamsTable.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import Pagination from "@/components/Pagination.vue";
-import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
+import { Switch } from "~/components/ui/switch";
 import {
-  tacticalCtaButtonClasses,
-  tacticalFilterPillActiveClasses,
-  tacticalFilterPillClasses,
-} from "~/utilities/tacticalClasses";
-
-const { isMobile } = useSidebar();
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "~/components/ui/input-group";
+import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 </script>
 
 <template>
@@ -39,47 +37,63 @@ const { isMobile } = useSidebar();
 
   <!-- Filters -->
   <PageTransition :delay="100" class="mt-6">
-    <div class="space-y-3">
-      <form class="relative" @submit.prevent="viewTopTeam">
+    <div>
+      <form @submit.prevent="viewTopTeam">
         <FormField v-slot="{ componentField }" name="teamQuery">
           <FormItem>
             <FormControl>
-              <div class="relative">
-                <Search
-                  class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none"
-                />
-                <Input
+              <InputGroup
+                class="h-12 bg-card/60 backdrop-blur border-border"
+              >
+                <InputGroupAddon class="pl-4">
+                  <Search class="w-5 h-5" />
+                </InputGroupAddon>
+
+                <InputGroupInput
                   type="text"
                   :placeholder="$t('pages.teams.search')"
-                  class="h-12 pl-12 pr-12 text-base bg-card/60 backdrop-blur border-border"
+                  class="h-full text-base"
                   v-bind="componentField"
                 />
-                <button
-                  v-if="form.values.teamQuery"
-                  type="button"
-                  @click="form.setFieldValue('teamQuery', '')"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+
+                <InputGroupAddon
+                  align="inline-end"
+                  class="gap-3 pr-2"
                 >
-                  <X class="w-4 h-4" />
-                </button>
-              </div>
+                  <button
+                    v-if="form.values.teamQuery"
+                    type="button"
+                    @click="form.setFieldValue('teamQuery', '')"
+                    class="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <X class="w-4 h-4" />
+                  </button>
+
+                  <div
+                    v-if="me"
+                    class="flex h-8 items-center gap-2 rounded-md border border-border bg-background/70 px-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground cursor-pointer whitespace-nowrap"
+                    :class="{
+                      'text-foreground border-primary/50 bg-primary/10':
+                        showOnlyMyTeams,
+                    }"
+                    @click="showOnlyMyTeams = !showOnlyMyTeams"
+                  >
+                    <Switch v-model="showOnlyMyTeams" @click.stop />
+                    <button
+                      type="button"
+                      class="text-left"
+                      :aria-pressed="showOnlyMyTeams"
+                      @click.stop="showOnlyMyTeams = !showOnlyMyTeams"
+                    >
+                      {{ $t("team.search.my_teams_only") }}
+                    </button>
+                  </div>
+                </InputGroupAddon>
+              </InputGroup>
             </FormControl>
           </FormItem>
         </FormField>
       </form>
-
-      <div v-if="me" class="flex flex-wrap gap-2">
-        <button
-          type="button"
-          :class="[
-            tacticalFilterPillClasses,
-            showOnlyMyTeams ? tacticalFilterPillActiveClasses : '',
-          ]"
-          @click="showOnlyMyTeams = !showOnlyMyTeams"
-        >
-          {{ $t("team.search.my_teams_only") }}
-        </button>
-      </div>
     </div>
   </PageTransition>
 

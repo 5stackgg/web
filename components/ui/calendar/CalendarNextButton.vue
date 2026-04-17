@@ -1,17 +1,15 @@
 <script lang="ts" setup>
-import { cn } from '@/lib/utils'
-import { buttonVariants } from '@/components/ui/button'
+import type { CalendarNextProps } from "reka-ui"
+import type { HTMLAttributes } from "vue"
+import { reactiveOmit } from "@vueuse/core"
 import { ChevronRightIcon } from '@radix-icons/vue'
-import { CalendarNext, type CalendarNextProps, useForwardProps } from 'reka-ui'
-import { computed, type HTMLAttributes } from 'vue'
+import { CalendarNext, useForwardProps } from "reka-ui"
+import { cn } from "@/lib/utils"
+import { buttonVariants } from '@/components/ui/button'
 
-const props = defineProps<CalendarNextProps & { class?: HTMLAttributes['class'] }>()
+const props = defineProps<CalendarNextProps & { class?: HTMLAttributes["class"] }>()
 
-const delegatedProps = computed(() => {
-  const { class: _, ...delegated } = props
-
-  return delegated
-})
+const delegatedProps = reactiveOmit(props, "class")
 
 const forwardedProps = useForwardProps(delegatedProps)
 </script>

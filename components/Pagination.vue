@@ -9,15 +9,14 @@ import {
 } from "~/components/ui/select";
 import {
   Pagination as PaginationRoot,
-  PaginationList,
-  PaginationListItem,
+  PaginationContent,
+  PaginationItem,
   PaginationFirst,
-  PaginationPrev,
+  PaginationPrevious,
   PaginationNext,
   PaginationLast,
   PaginationEllipsis,
 } from "~/components/ui/pagination";
-import { Button } from "~/components/ui/button";
 </script>
 
 <template>
@@ -32,30 +31,25 @@ import { Button } from "~/components/ui/button";
       :default-page="current"
       @update:page="paginate"
     >
-      <PaginationList v-slot="{ items }" class="flex items-center gap-1">
+      <PaginationContent v-slot="{ items }" class="flex items-center gap-1">
         <PaginationFirst />
-        <PaginationPrev />
+        <PaginationPrevious />
 
         <template v-for="(item, index) in items">
-          <PaginationListItem
+          <PaginationItem
             v-if="item.type === 'page'"
             :key="index"
             :value="item.value"
-            as-child
+            :is-active="item.value === page"
           >
-            <Button
-              class="w-10 h-10 p-0"
-              :variant="item.value === page ? 'default' : 'outline'"
-            >
-              {{ item.value }}
-            </Button>
-          </PaginationListItem>
+            {{ item.value }}
+          </PaginationItem>
           <PaginationEllipsis v-else :key="item.type" :index="index" />
         </template>
 
         <PaginationNext />
         <PaginationLast />
-      </PaginationList>
+      </PaginationContent>
     </PaginationRoot>
 
     <div v-if="showPerPageSelector" class="flex items-center gap-2">

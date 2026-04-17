@@ -86,9 +86,10 @@ export function useChatTabSetup() {
       }
     }
 
+    const organizerId = "organizers";
+    const existingOrganizer = tabs.value.find((t) => t.id === organizerId);
     if (isOrganizer.value) {
-      const organizerId = "organizers";
-      const existing = tabs.value.find((t) => t.id === organizerId);
+      const existing = existingOrganizer;
       if (!existing) {
         openTab({
           id: organizerId,
@@ -101,6 +102,8 @@ export function useChatTabSetup() {
       } else if (!existing.pinned) {
         setPinned(organizerId, true);
       }
+    } else if (existingOrganizer) {
+      closeTab(organizerId);
     }
 
     // Restore previously active tab so adding defaults doesn't steal focus.

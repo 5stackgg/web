@@ -5,6 +5,18 @@
 
       <template #actions="{ tabs }">
         <div class="flex items-center gap-2">
+          <NuxtLink
+            v-if="canCreateTournament"
+            to="/tournaments/create"
+            :class="tacticalCtaButtonClasses"
+            :title="$t('pages.tournaments.create')"
+          >
+            <PlusCircle class="w-4 h-4" />
+            <span class="hidden lg:inline">{{
+              $t("pages.tournaments.create")
+            }}</span>
+          </NuxtLink>
+
           <Tabs v-model="activeTab">
             <TabsList variant="underline" :class="tabs.listClass">
               <TabsTrigger value="live" :class="tabs.triggerClass">
@@ -27,17 +39,6 @@
               </TabsTrigger>
             </TabsList>
           </Tabs>
-          <NuxtLink
-            v-if="canCreateTournament"
-            to="/tournaments/create"
-            :class="tacticalCtaButtonClasses"
-            :title="$t('pages.tournaments.create')"
-          >
-            <PlusCircle class="w-4 h-4" />
-            <span class="hidden lg:inline">{{
-              $t("pages.tournaments.create")
-            }}</span>
-          </NuxtLink>
         </div>
       </template>
     </TacticalPageHeader>

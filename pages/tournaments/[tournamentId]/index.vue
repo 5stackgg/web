@@ -74,6 +74,7 @@ import {
 import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import {
+  tacticalCtaButtonClasses,
   tacticalSectionDescriptionClasses,
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -83,14 +84,14 @@ import {
 
 const tournamentHeroClasses =
   "relative rounded-lg border border-border px-7 py-6 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-[''] max-md:px-4 max-md:py-5";
+const tournamentHeroToplineClasses =
+  "mb-5 flex flex-wrap items-start justify-between gap-3";
 const tournamentHeroEyebrowClasses =
-  "mb-5 inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground";
+  "inline-flex min-h-9 items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground";
 const tournamentHeroChevronClasses =
   "translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]";
-const tournamentHeroBodyClasses =
-  "flex flex-wrap items-center gap-7 max-md:gap-4";
-const tournamentHeroIdentityClasses =
-  "flex min-w-0 flex-1 flex-col gap-[0.65rem]";
+const tournamentHeroBodyClasses = "min-w-0";
+const tournamentHeroIdentityClasses = "flex min-w-0 flex-col gap-[0.65rem]";
 const tournamentHeroNameRowClasses = "flex min-w-0 items-center";
 const tournamentHeroNameClasses =
   "relative m-0 min-w-0 font-sans text-[clamp(1.75rem,4vw,3rem)] font-bold uppercase leading-[0.95] tracking-[0.02em] [font-stretch:80%]";
@@ -111,9 +112,9 @@ const tournamentHeroOrganizersClasses = "inline-flex items-center gap-[0.3rem]";
 const tournamentHeroOrganizerClasses =
   "inline-flex cursor-pointer transition-[opacity,transform] duration-150 hover:-translate-y-px hover:opacity-85";
 const tournamentHeroActionsClasses =
-  "ml-auto flex shrink-0 flex-wrap items-center justify-end gap-[0.55rem] max-md:ml-0";
+  "flex min-w-0 shrink-0 flex-wrap items-center justify-end gap-2 max-sm:w-full max-sm:justify-start";
 const tournamentHeroStatusClasses =
-  "inline-flex items-center gap-2 rounded border border-border bg-muted/30 px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-muted-foreground";
+  "inline-flex h-9 items-center gap-2 whitespace-nowrap rounded border border-border bg-muted/30 px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold uppercase tracking-[0.2em] text-muted-foreground max-sm:flex-1 max-sm:justify-center";
 const tournamentHeroStatusDotClasses = "h-1.5 w-1.5 rounded-full bg-current";
 const tournamentHeroStatusTierClasses: Record<string, string> = {
   live: "border-destructive/55 bg-destructive/15 text-destructive",
@@ -125,6 +126,12 @@ const tournamentHeroStatusTierClasses: Record<string, string> = {
     "border-[hsl(var(--topnav-accent)_/_0.5)] bg-[hsl(var(--topnav-accent)_/_0.15)] text-[hsl(var(--topnav-accent))]",
   ended: "border-border bg-muted/40 text-muted-foreground",
 };
+const tournamentHeroJoinButtonClasses = [
+  tacticalCtaButtonClasses,
+  "h-9 px-4 py-2 text-[0.68rem] tracking-[0.14em] max-sm:flex-1 max-sm:px-3",
+];
+const tournamentHeroSettingsButtonClasses =
+  "h-9 w-9 border-[hsl(var(--tac-amber)_/_0.45)] bg-background/45 text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.12)] hover:text-[hsl(var(--tac-amber))]";
 const tournamentHeroDetailsClasses = "mt-5 border-t border-border pt-4";
 const tournamentHeroDetailsTriggerClasses =
   "flex w-full cursor-pointer items-center gap-3 border-0 bg-transparent p-0 text-left text-[0.85rem] text-muted-foreground transition-colors duration-150 hover:text-foreground";
@@ -168,9 +175,133 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
       <!-- Tactical Hero -->
       <PageTransition>
         <header :class="tournamentHeroClasses">
-          <div :class="tournamentHeroEyebrowClasses">
-            <span :class="tournamentHeroChevronClasses">◢</span>
-            Tournament
+          <div :class="tournamentHeroToplineClasses">
+            <div :class="tournamentHeroEyebrowClasses">
+              <span :class="tournamentHeroChevronClasses">◢</span>
+              Tournament
+            </div>
+
+            <div :class="tournamentHeroActionsClasses">
+              <Button
+                v-if="
+                  tournament.status ===
+                    e_tournament_status_enum.RegistrationOpen &&
+                  tournament.can_join
+                "
+                size="sm"
+                :class="tournamentHeroJoinButtonClasses"
+                @click="handleJoinTournament"
+              >
+                <UserPlus class="h-3.5 w-3.5" />
+                {{ $t("tournament.join.title") }}
+              </Button>
+
+              <span
+                :class="[
+                  tournamentHeroStatusClasses,
+                  tournamentHeroStatusTierClasses[statusTier] ??
+                    tournamentHeroStatusTierClasses.ended,
+                ]"
+              >
+                <span :class="tournamentHeroStatusDotClasses"></span>
+                {{ tournament.e_tournament_status.description }}
+              </span>
+
+              <DropdownMenu v-if="tournament?.is_organizer">
+                <DropdownMenuTrigger as-child>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    :class="tournamentHeroSettingsButtonClasses"
+                    :title="$t('tournament.settings')"
+                  >
+                    <Settings class="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent class="w-56" align="end">
+                  <DropdownMenuItem
+                    v-if="tournament.can_open_registration"
+                    @click="openRegistration"
+                    class="cursor-pointer"
+                  >
+                    <Unlock class="mr-2 h-4 w-4" />
+                    <span>{{
+                      $t("tournament.actions.open_registration")
+                    }}</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    v-if="tournament.can_close_registration"
+                    @click="closeRegistration"
+                    class="cursor-pointer"
+                  >
+                    <Lock class="mr-2 h-4 w-4" />
+                    <span>{{
+                      $t("tournament.actions.close_registration")
+                    }}</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    v-if="tournament.can_start && !tournament.can_resume"
+                    @click="startTournament"
+                    class="cursor-pointer"
+                  >
+                    <Play class="mr-2 h-4 w-4" />
+                    <span>{{ $t("tournament.actions.start") }}</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    v-if="tournament.can_pause"
+                    @click="pauseDialogOpen = true"
+                    class="cursor-pointer"
+                  >
+                    <Pause class="mr-2 h-4 w-4" />
+                    <span>{{ $t("tournament.actions.pause") }}</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    v-if="tournament.can_resume"
+                    @click="resumeDialogOpen = true"
+                    class="cursor-pointer"
+                  >
+                    <Play class="mr-2 h-4 w-4" />
+                    <span>{{ $t("tournament.actions.resume") }}</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    v-if="tournament.can_setup"
+                    @click="resetToSetup"
+                    class="cursor-pointer"
+                  >
+                    <RotateCcw class="mr-2 h-4 w-4" />
+                    <span>{{ $t("tournament.actions.reset_to_setup") }}</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator
+                    v-if="
+                      (tournament.can_open_registration ||
+                        tournament.can_close_registration ||
+                        tournament.can_start ||
+                        tournament.can_setup) &&
+                      (tournament.can_cancel || tournament.is_organizer)
+                    "
+                  />
+                  <DropdownMenuItem
+                    v-if="tournament.can_cancel"
+                    @click="cancelTournament"
+                    class="text-destructive cursor-pointer"
+                  >
+                    <Ban class="mr-2 h-4 w-4" />
+                    <span>{{ $t("tournament.actions.cancel") }}</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator
+                    v-if="tournament.can_cancel && tournament.is_organizer"
+                  />
+                  <DropdownMenuItem
+                    v-if="tournament.is_organizer"
+                    @click="deleteDialogOpen = true"
+                    class="text-destructive cursor-pointer"
+                  >
+                    <Trash class="mr-2 h-4 w-4" />
+                    <span>{{ $t("tournament.actions.delete") }}</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
 
           <div :class="tournamentHeroBodyClasses">
@@ -262,128 +393,6 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
                   </template>
                 </div>
               </div>
-            </div>
-
-            <!-- Actions -->
-            <div :class="tournamentHeroActionsClasses">
-              <span
-                :class="[
-                  tournamentHeroStatusClasses,
-                  tournamentHeroStatusTierClasses[statusTier] ??
-                    tournamentHeroStatusTierClasses.ended,
-                ]"
-              >
-                <span :class="tournamentHeroStatusDotClasses"></span>
-                {{ tournament.e_tournament_status.description }}
-              </span>
-
-              <Button
-                v-if="
-                  tournament.status ===
-                    e_tournament_status_enum.RegistrationOpen &&
-                  tournament.can_join
-                "
-                size="sm"
-                class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-semibold border-0"
-                @click="handleJoinTournament"
-              >
-                <UserPlus class="h-3.5 w-3.5 mr-1.5" />
-                {{ $t("tournament.join.title") }}
-              </Button>
-
-              <DropdownMenu v-if="tournament?.is_organizer">
-                <DropdownMenuTrigger as-child>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    :title="$t('tournament.settings')"
-                  >
-                    <Settings class="h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent class="w-56" align="end">
-                  <DropdownMenuItem
-                    v-if="tournament.can_open_registration"
-                    @click="openRegistration"
-                    class="cursor-pointer"
-                  >
-                    <Unlock class="mr-2 h-4 w-4" />
-                    <span>{{
-                      $t("tournament.actions.open_registration")
-                    }}</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    v-if="tournament.can_close_registration"
-                    @click="closeRegistration"
-                    class="cursor-pointer"
-                  >
-                    <Lock class="mr-2 h-4 w-4" />
-                    <span>{{
-                      $t("tournament.actions.close_registration")
-                    }}</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    v-if="tournament.can_start && !tournament.can_resume"
-                    @click="startTournament"
-                    class="cursor-pointer"
-                  >
-                    <Play class="mr-2 h-4 w-4" />
-                    <span>{{ $t("tournament.actions.start") }}</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    v-if="tournament.can_pause"
-                    @click="pauseDialogOpen = true"
-                    class="cursor-pointer"
-                  >
-                    <Pause class="mr-2 h-4 w-4" />
-                    <span>{{ $t("tournament.actions.pause") }}</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    v-if="tournament.can_resume"
-                    @click="resumeDialogOpen = true"
-                    class="cursor-pointer"
-                  >
-                    <Play class="mr-2 h-4 w-4" />
-                    <span>{{ $t("tournament.actions.resume") }}</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    v-if="tournament.can_setup"
-                    @click="resetToSetup"
-                    class="cursor-pointer"
-                  >
-                    <RotateCcw class="mr-2 h-4 w-4" />
-                    <span>{{ $t("tournament.actions.reset_to_setup") }}</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator
-                    v-if="
-                      (tournament.can_open_registration ||
-                        tournament.can_close_registration ||
-                        tournament.can_start ||
-                        tournament.can_setup) &&
-                      (tournament.can_cancel || tournament.is_organizer)
-                    "
-                  />
-                  <DropdownMenuItem
-                    v-if="tournament.can_cancel"
-                    @click="cancelTournament"
-                    class="text-destructive cursor-pointer"
-                  >
-                    <Ban class="mr-2 h-4 w-4" />
-                    <span>{{ $t("tournament.actions.cancel") }}</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator
-                    v-if="tournament.can_cancel && tournament.is_organizer"
-                  />
-                  <DropdownMenuItem
-                    v-if="tournament.is_organizer"
-                    @click="deleteDialogOpen = true"
-                    class="text-destructive cursor-pointer"
-                  >
-                    <Trash class="mr-2 h-4 w-4" />
-                    <span>{{ $t("tournament.actions.delete") }}</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
             </div>
           </div>
 

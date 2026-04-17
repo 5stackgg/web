@@ -35,6 +35,13 @@ class Socket extends EventEmitter {
   private static readonly MAX_DELAY_MS = 30000;
 
   private lobbies: Map<string, Lobby> = new Map();
+  private rooms: Map<
+    string,
+    {
+      room: string;
+      data: Record<string, unknown>;
+    }
+  > = new Map();
 
   public connect() {
     // Clean up any existing connection before creating a new one
@@ -87,7 +94,7 @@ class Socket extends EventEmitter {
 
       console.info("[ws] connected");
 
-      for (const [room, data] of Array.from(this.rooms).values()) {
+      for (const { room, data } of Array.from(this.rooms.values())) {
         this.join(room, data);
       }
 
@@ -134,12 +141,17 @@ class Socket extends EventEmitter {
     };
   }
 
-  private rooms: Map<string, Record<string, unknown>> = new Map();
+  private getRoomKey(room: string, data: Record<string, unknown>) {
+    const type = data.type ? String(data.type) : "";
+    const id = data.id ? String(data.id) : "";
+    return [room, type, id].filter(Boolean).join(":");
+  }
 
   public join(room: string, data: Record<string, unknown>) {
-    console.info(`[ws] joining room ${room}:${data.type}`);
+    const roomKey = this.getRoomKey(room, data);
+    console.info(`[ws] joining room ${roomKey}`);
 
-    this.rooms.set(room, data);
+    this.rooms.set(roomKey, { room, data });
 
     if (!this.connected || !this.connection) {
       return;
@@ -149,7 +161,7 @@ class Socket extends EventEmitter {
 
     // Our lobbies expire server-side after 24 hours, so we need to
     // periodically re-join to ensure we stay in the room for long-lived sessions.
-    const existingTimer = this.rejoinTimers.get(room);
+    const existingTimer = this.rejoinTimers.get(roomKey);
     if (existingTimer) {
       clearTimeout(existingTimer);
     }
@@ -157,28 +169,35 @@ class Socket extends EventEmitter {
     const REJOIN_INTERVAL_MS = 12 * 60 * 60 * 1000; // 12 hours
 
     const timer = setTimeout(() => {
-      if (this.connected && this.connection && this.rooms.has(room)) {
-        console.info(`[ws] rejoining room ${room} after 24 hours`);
+      if (this.connected && this.connection && this.rooms.has(roomKey)) {
+        console.info(`[ws] rejoining room ${roomKey}`);
         this.join(room, data);
       }
     }, REJOIN_INTERVAL_MS);
 
-    this.rejoinTimers.set(room, timer);
+    this.rejoinTimers.set(roomKey, timer);
   }
 
   public leave(room: string, type: ChatType, id: string) {
-    console.info(`[ws] leaving room ${room}:${type}:${id}`);
+    const roomKey = this.getRoomKey(room, { type, id });
+    console.info(`[ws] leaving room ${roomKey}`);
 
-    this.rooms.delete(room);
+    this.rooms.delete(roomKey);
     this.event(`lobby:leave`, {
       id,
       type,
     });
 
-    const existingTimer = this.rejoinTimers.get(room);
+    const existingTimer = this.rejoinTimers.get(roomKey);
     if (existingTimer) {
       clearTimeout(existingTimer);
-      this.rejoinTimers.delete(room);
+      this.rejoinTimers.delete(roomKey);
+    }
+  }
+
+  public rejoinAll() {
+    for (const { room, data } of Array.from(this.rooms.values())) {
+      this.join(room, data);
     }
   }
 

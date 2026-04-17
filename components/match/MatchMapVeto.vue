@@ -177,7 +177,7 @@ import {
   e_player_roles_enum,
 } from "~/generated/zeus/index";
 import { useForm } from "vee-validate";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
 import { useSound } from "~/composables/useSound";
 

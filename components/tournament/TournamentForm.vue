@@ -156,7 +156,7 @@ import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { mapFields } from "~/graphql/mapGraphql";
 import { $, e_map_pool_types_enum } from "~/generated/zeus";
 import matchOptionsValidator from "~/utilities/match-options-validator";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { fromDate, toCalendarDate } from "@internationalized/date";
 import { toast } from "@/components/ui/toast";
 import {

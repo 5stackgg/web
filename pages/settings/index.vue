@@ -231,7 +231,7 @@ definePageMeta({
 </template>
 
 <script lang="ts">
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { useForm } from "vee-validate";
 import * as z from "zod";
 import { getAllCountries } from "countries-and-timezones";

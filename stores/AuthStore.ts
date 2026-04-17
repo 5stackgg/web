@@ -1,4 +1,4 @@
-import { computed, ref, type ComputedRef, type Ref } from "vue";
+import { computed, nextTick, ref, type ComputedRef, type Ref } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { meFields } from "~/graphql/meGraphql";
@@ -67,6 +67,8 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
       return false;
     }
 
+    const previousRole = me.value?.role;
+    const previousSteamId = me.value?.steam_id;
     const nextSnapshot = JSON.stringify(nextMe);
     if (nextSnapshot === meSnapshot) {
       return false;
@@ -74,6 +76,17 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
 
     meSnapshot = nextSnapshot;
     me.value = nextMe;
+
+    if (
+      previousSteamId === nextMe.steam_id &&
+      previousRole &&
+      previousRole !== nextMe.role
+    ) {
+      void nextTick(() => {
+        socket.rejoinAll();
+      });
+    }
+
     return true;
   }
 

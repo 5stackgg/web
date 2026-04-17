@@ -12,6 +12,7 @@ import {
 } from "~/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Skeleton } from "~/components/ui/skeleton";
+import { Switch } from "~/components/ui/switch";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 
@@ -97,18 +98,26 @@ const leaderboardFadeTransition = {
         </SelectContent>
       </Select>
 
-      <button
-        type="button"
-        class="ml-auto inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/30 px-3 py-1.5 text-xs tracking-[0.06em] text-muted-foreground transition-colors duration-150 hover:bg-muted/50 hover:text-foreground"
+      <div
+        class="ml-auto flex h-9 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150"
         :class="
           excludeTournaments
-            ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.22)] hover:text-[hsl(var(--tac-amber))]'
-            : ''
+            ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
+            : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
         "
-        @click="excludeTournaments = !excludeTournaments"
+        @click="toggleExcludeTournaments"
       >
-        {{ $t("pages.leaderboard.exclude_tournaments") }}
-      </button>
+        <Trophy class="h-3.5 w-3.5" />
+        <span id="leaderboard-exclude-tournaments-label">
+          {{ $t("pages.leaderboard.exclude_tournaments") }}
+        </span>
+        <Switch
+          v-model="excludeTournaments"
+          aria-labelledby="leaderboard-exclude-tournaments-label"
+          class="ml-1 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
+          @click.stop
+        />
+      </div>
     </div>
   </PageTransition>
 
@@ -307,7 +316,7 @@ const LEADERBOARD_QUERY = gql`
     $category: String!
     $window_days: Int!
     $match_type: String
-    $exclude_tournaments: Boolean
+    $exclude_tournaments: Boolean!
     $limit: Int
     $offset: Int
     $order_by: [leaderboard_entries_order_by!]
@@ -471,7 +480,7 @@ export default {
         category: this.category,
         window_days: parseInt(this.windowDays),
         match_type: this.matchType === "all" ? null : this.matchType,
-        exclude_tournaments: this.excludeTournaments,
+        exclude_tournaments: Boolean(this.excludeTournaments),
         limit: this.perPage,
         offset: this.offset,
         order_by: this.orderBy,
@@ -524,6 +533,9 @@ export default {
     onFilterChange() {
       this.page = 1;
       this.fetchLeaderboard();
+    },
+    toggleExcludeTournaments() {
+      this.excludeTournaments = !this.excludeTournaments;
     },
     onPageChange(newPage: number) {
       this.page = newPage;

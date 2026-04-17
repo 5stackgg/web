@@ -148,12 +148,11 @@ const chipClipSm =
         :avoid-collisions="true"
         :collision-padding="12"
         :class="[
-          '!p-0 !rounded-none overflow-hidden relative',
+          '!p-0 !rounded-none overflow-visible relative',
           'w-[340px] max-w-[calc(100vw-32px)]',
           'bg-[hsl(240_8%_11%)] text-[hsl(var(--popover-foreground))]',
           'font-[\'Oxanium\',sans-serif]',
           'border border-[hsl(240_6%_22%)]',
-          '[clip-path:polygon(14px_0,100%_0,100%_calc(100%-14px),calc(100%-14px)_100%,0_100%,0_14px)]',
           isWin
             ? 'shadow-[inset_0_1px_0_hsl(0_0%_100%/0.06),0_0_0_1px_hsl(142_71%_50%/0.2),0_2px_4px_hsl(0_0%_0%/0.4),0_12px_28px_-8px_hsl(0_0%_0%/0.85),0_30px_70px_-20px_hsl(0_0%_0%/0.95),0_0_50px_-12px_hsl(142_71%_45%/0.35)]'
             : 'shadow-[inset_0_1px_0_hsl(0_0%_100%/0.06),0_0_0_1px_hsl(0_84%_60%/0.2),0_2px_4px_hsl(0_0%_0%/0.4),0_12px_28px_-8px_hsl(0_0%_0%/0.85),0_30px_70px_-20px_hsl(0_0%_0%/0.95),0_0_50px_-12px_hsl(0_84%_50%/0.35)]',
@@ -336,7 +335,7 @@ const chipClipSm =
                 class="absolute left-1/2 top-[-2px] bottom-[-2px] w-px bg-border opacity-80"
               />
               <span
-                class="absolute top-[-3px] bottom-[-3px] w-[3px] -translate-x-1/2 bg-[hsl(var(--tac-amber))] shadow-[0_0_8px_hsl(var(--tac-amber)/0.6)] transition-[left] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)]"
+                class="absolute top-[-3px] bottom-[-3px] w-[3px] -translate-x-1/2 bg-[hsl(var(--tac-amber))] shadow-[0_0_8px_hsl(var(--tac-amber)/0.6)] transition-[left] duration-300 [transition-timing-function:cubic-bezier(0.2,0.8,0.2,1)]"
                 :style="{ left: eloGapBar + '%' }"
               />
             </div>

@@ -258,7 +258,7 @@ definePageMeta({
 import { generateSubscription, generateMutation } from "~/graphql/graphqlGen";
 import { useForm } from "vee-validate";
 import { z } from "zod";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { $ } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
 

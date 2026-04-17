@@ -1,23 +1,21 @@
 <script setup lang="ts">
-import { Search, X, PlusCircle } from "lucide-vue-next";
+import { Search, X, PlusCircle, Users } from "lucide-vue-next";
 import { FormItem, FormControl } from "@/components/ui/form";
-import { Button } from "~/components/ui/button";
 import TeamsTable from "~/components/TeamsTable.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import Pagination from "@/components/Pagination.vue";
-import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
+import { Switch } from "~/components/ui/switch";
 import {
-  tacticalCtaButtonClasses,
-  tacticalFilterPillActiveClasses,
-  tacticalFilterPillClasses,
-} from "~/utilities/tacticalClasses";
-
-const { isMobile } = useSidebar();
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "~/components/ui/input-group";
+import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 </script>
 
 <template>
@@ -39,47 +37,60 @@ const { isMobile } = useSidebar();
 
   <!-- Filters -->
   <PageTransition :delay="100" class="mt-6">
-    <div class="space-y-3">
-      <form class="relative" @submit.prevent="viewTopTeam">
+    <div>
+      <form @submit.prevent="viewTopTeam">
         <FormField v-slot="{ componentField }" name="teamQuery">
           <FormItem>
             <FormControl>
-              <div class="relative">
-                <Search
-                  class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none"
-                />
-                <Input
+              <InputGroup class="h-12 bg-card/60 backdrop-blur border-border">
+                <InputGroupAddon class="pl-4">
+                  <Search class="w-5 h-5" />
+                </InputGroupAddon>
+
+                <InputGroupInput
                   type="text"
                   :placeholder="$t('pages.teams.search')"
-                  class="h-12 pl-12 pr-12 text-base bg-card/60 backdrop-blur border-border"
+                  class="h-full text-base"
                   v-bind="componentField"
                 />
-                <button
-                  v-if="form.values.teamQuery"
-                  type="button"
-                  @click="form.setFieldValue('teamQuery', '')"
-                  class="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <X class="w-4 h-4" />
-                </button>
-              </div>
+
+                <InputGroupAddon align="inline-end" class="gap-3 pr-2">
+                  <button
+                    v-if="form.values.teamQuery"
+                    type="button"
+                    @click="form.setFieldValue('teamQuery', '')"
+                    class="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <X class="w-4 h-4" />
+                  </button>
+
+                  <div
+                    v-if="me"
+                    class="flex h-9 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150 whitespace-nowrap"
+                    :class="
+                      showOnlyMyTeams
+                        ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
+                        : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                    "
+                    @click="toggleShowOnlyMyTeams"
+                  >
+                    <Users class="h-3.5 w-3.5" />
+                    <span id="teams-my-teams-only-label">
+                      {{ $t("team.search.my_teams_only") }}
+                    </span>
+                    <Switch
+                      v-model="showOnlyMyTeams"
+                      aria-labelledby="teams-my-teams-only-label"
+                      class="ml-1 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
+                      @click.stop
+                    />
+                  </div>
+                </InputGroupAddon>
+              </InputGroup>
             </FormControl>
           </FormItem>
         </FormField>
       </form>
-
-      <div v-if="me" class="flex flex-wrap gap-2">
-        <button
-          type="button"
-          :class="[
-            tacticalFilterPillClasses,
-            showOnlyMyTeams ? tacticalFilterPillActiveClasses : '',
-          ]"
-          @click="showOnlyMyTeams = !showOnlyMyTeams"
-        >
-          {{ $t("team.search.my_teams_only") }}
-        </button>
-      </div>
     </div>
   </PageTransition>
 
@@ -148,7 +159,7 @@ import { useAuthStore } from "#imports";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useForm } from "vee-validate";
 import { playerFields } from "~/graphql/playerFields";
-import { toTypedSchema } from "@vee-validate/zod";
+import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
 
 export default {
@@ -307,6 +318,9 @@ export default {
     },
   },
   methods: {
+    toggleShowOnlyMyTeams() {
+      this.showOnlyMyTeams = !this.showOnlyMyTeams;
+    },
     viewTopTeam() {
       const team = this.teams?.at(0);
       if (!team) {

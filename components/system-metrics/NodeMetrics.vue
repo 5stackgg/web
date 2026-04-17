@@ -100,8 +100,8 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
           </div>
         </div>
 
-        <div class="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-12">
-          <PageTransition :delay="0" class="xl:col-span-6">
+        <div class="mt-4 grid grid-cols-1 gap-4" :class="chartGridClass">
+          <PageTransition :delay="0" :class="chartColumnClass">
             <Card
               class="rounded-2xl border border-border/60 bg-background/40 p-4"
             >
@@ -110,7 +110,10 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                   <h4 class="text-sm font-semibold">
                     {{ $t("pages.system_metrics.cpu_usage") }}
                   </h4>
-                  <p class="text-xs text-muted-foreground">
+                  <p
+                    v-if="!compactCharts"
+                    class="text-xs text-muted-foreground"
+                  >
                     Processor pressure over the last polling window.
                   </p>
                 </div>
@@ -125,13 +128,13 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                   </div>
                 </div>
               </div>
-              <div class="h-[320px]">
+              <div :class="primaryChartHeightClass">
                 <CpuChart :metrics="metricsData.cpu" />
               </div>
             </Card>
           </PageTransition>
 
-          <PageTransition :delay="100" class="xl:col-span-6">
+          <PageTransition :delay="100" :class="chartColumnClass">
             <Card
               class="rounded-2xl border border-border/60 bg-background/40 p-4"
             >
@@ -140,7 +143,10 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                   <h4 class="text-sm font-semibold">
                     {{ $t("pages.system_metrics.memory_usage") }}
                   </h4>
-                  <p class="text-xs text-muted-foreground">
+                  <p
+                    v-if="!compactCharts"
+                    class="text-xs text-muted-foreground"
+                  >
                     Working set usage compared against installed capacity.
                   </p>
                 </div>
@@ -155,13 +161,13 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                   </div>
                 </div>
               </div>
-              <div class="h-[320px]">
+              <div :class="primaryChartHeightClass">
                 <MemoryChart :metrics="metricsData.memory" />
               </div>
             </Card>
           </PageTransition>
 
-          <PageTransition :delay="200" class="xl:col-span-6">
+          <PageTransition :delay="200" :class="chartColumnClass">
             <Card
               class="rounded-2xl border border-border/60 bg-background/40 p-4"
             >
@@ -170,7 +176,10 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                   <h4 class="text-sm font-semibold">
                     {{ $t("pages.system_metrics.network") }}
                   </h4>
-                  <p class="text-xs text-muted-foreground">
+                  <p
+                    v-if="!compactCharts"
+                    class="text-xs text-muted-foreground"
+                  >
                     Combined receive and transmit throughput across interfaces.
                   </p>
                 </div>
@@ -185,13 +194,13 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                   </div>
                 </div>
               </div>
-              <div class="h-[240px]">
+              <div :class="secondaryChartHeightClass">
                 <NetworkChart :metrics="metricsData.network" />
               </div>
             </Card>
           </PageTransition>
 
-          <PageTransition :delay="300" class="xl:col-span-6">
+          <PageTransition :delay="300" :class="chartColumnClass">
             <Card
               class="rounded-2xl border border-border/60 bg-background/40 p-4"
             >
@@ -200,7 +209,10 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                   <h4 class="text-sm font-semibold">
                     {{ $t("game_server.disks_label") }}
                   </h4>
-                  <p class="text-xs text-muted-foreground">
+                  <p
+                    v-if="!compactCharts"
+                    class="text-xs text-muted-foreground"
+                  >
                     Highest-utilization disk view with underlying timeline.
                   </p>
                 </div>
@@ -215,7 +227,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                   </div>
                 </div>
               </div>
-              <div class="h-[240px]">
+              <div :class="secondaryChartHeightClass">
                 <DiskChart :metrics="metricsData.disks" />
               </div>
             </Card>
@@ -258,6 +270,10 @@ export default {
     gameServerNode: {
       type: Object,
       required: true,
+    },
+    compactCharts: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -309,6 +325,18 @@ export default {
         network.length > 0 ||
         disks.length > 0
       );
+    },
+    chartGridClass(): string {
+      return this.compactCharts ? "xl:grid-cols-4" : "xl:grid-cols-12";
+    },
+    chartColumnClass(): string {
+      return this.compactCharts ? "" : "xl:col-span-6";
+    },
+    primaryChartHeightClass(): string {
+      return this.compactCharts ? "h-[220px]" : "h-[320px]";
+    },
+    secondaryChartHeightClass(): string {
+      return this.compactCharts ? "h-[220px]" : "h-[240px]";
     },
     latestCpuUsage(): number {
       if (!this.metricsData || !this.metricsData.cpu?.length) {

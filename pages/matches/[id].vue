@@ -32,16 +32,16 @@ const statusTierClasses: Record<string, string> = {
 };
 
 const teamClasses =
-  "relative font-sans font-bold [font-stretch:80%] text-[clamp(1.5rem,3.5vw,2.75rem)] leading-[0.95] tracking-[0.02em] uppercase min-w-0 max-w-full";
+  "relative grid font-sans font-bold [font-stretch:80%] text-[clamp(1.5rem,3.5vw,2.75rem)] leading-[0.95] tracking-[0.02em] uppercase min-w-0 max-w-full break-words";
 
 const teamMainClasses =
-  "relative bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent";
+  "col-start-1 row-start-1 relative bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent";
 
 const teamMainWinnerClasses =
   "from-[hsl(var(--tac-amber))] to-[hsl(var(--tac-amber))]";
 
 const teamGhostClasses =
-  "absolute left-1 top-1 -right-1 whitespace-nowrap overflow-hidden text-transparent [-webkit-text-stroke:1px_hsl(var(--tac-amber)/0.3)] pointer-events-none select-none";
+  "col-start-1 row-start-1 translate-x-1 translate-y-1 text-transparent [-webkit-text-stroke:1px_hsl(var(--tac-amber)/0.3)] pointer-events-none select-none";
 
 const scoreClasses =
   "font-sans font-extrabold [font-stretch:80%] text-[clamp(2.5rem,5vw,4rem)] leading-none text-[hsl(var(--muted-foreground)/0.6)] [font-variant-numeric:tabular-nums] transition-colors duration-200 ease";
@@ -104,32 +104,48 @@ const vsBaseClasses =
         <div
           class="grid grid-cols-[1fr_auto_1fr] items-center gap-6 max-sm:gap-3"
         >
-          <div
-            class="flex flex-col gap-[0.35rem] min-w-0 text-left items-start"
-          >
-            <span
-              class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
-            >
-              Lineup 1
-            </span>
+          <div class="flex items-center gap-3 min-w-0 text-left">
             <div
-              :class="[
-                teamClasses,
-                match.winning_lineup_id === match.lineup_1_id && 'is-winner',
-              ]"
+              class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
             >
-              <span :class="teamGhostClasses" aria-hidden="true">
-                {{ lineup1Name }}
-              </span>
+              <img
+                v-if="lineup1AvatarSrc"
+                :src="lineup1AvatarSrc"
+                :alt="lineup1Name"
+                class="h-full w-full object-cover"
+              />
               <span
+                v-else
+                class="font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+              >
+                {{ (lineup1Name || "?").slice(0, 3) }}
+              </span>
+            </div>
+            <div class="flex flex-col gap-[0.35rem] min-w-0 items-start">
+              <span
+                class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
+              >
+                Lineup 1
+              </span>
+              <div
                 :class="[
-                  teamMainClasses,
-                  match.winning_lineup_id === match.lineup_1_id &&
-                    teamMainWinnerClasses,
+                  teamClasses,
+                  match.winning_lineup_id === match.lineup_1_id && 'is-winner',
                 ]"
               >
-                {{ lineup1Name }}
-              </span>
+                <span :class="teamGhostClasses" aria-hidden="true">
+                  {{ lineup1Name }}
+                </span>
+                <span
+                  :class="[
+                    teamMainClasses,
+                    match.winning_lineup_id === match.lineup_1_id &&
+                      teamMainWinnerClasses,
+                  ]"
+                >
+                  {{ lineup1Name }}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -160,29 +176,47 @@ const vsBaseClasses =
             >
           </div>
 
-          <div class="flex flex-col gap-[0.35rem] min-w-0 text-right items-end">
-            <span
-              class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
-            >
-              Lineup 2
-            </span>
-            <div
-              :class="[
-                teamClasses,
-                match.winning_lineup_id === match.lineup_2_id && 'is-winner',
-              ]"
-            >
-              <span :class="teamGhostClasses" aria-hidden="true">
-                {{ lineup2Name }}
-              </span>
+          <div class="flex items-center gap-3 min-w-0 text-right justify-end">
+            <div class="flex flex-col gap-[0.35rem] min-w-0 items-end">
               <span
+                class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
+              >
+                Lineup 2
+              </span>
+              <div
                 :class="[
-                  teamMainClasses,
-                  match.winning_lineup_id === match.lineup_2_id &&
-                    teamMainWinnerClasses,
+                  teamClasses,
+                  match.winning_lineup_id === match.lineup_2_id && 'is-winner',
                 ]"
               >
-                {{ lineup2Name }}
+                <span :class="teamGhostClasses" aria-hidden="true">
+                  {{ lineup2Name }}
+                </span>
+                <span
+                  :class="[
+                    teamMainClasses,
+                    match.winning_lineup_id === match.lineup_2_id &&
+                      teamMainWinnerClasses,
+                  ]"
+                >
+                  {{ lineup2Name }}
+                </span>
+              </div>
+            </div>
+            <div
+              class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
+            >
+              <img
+                v-if="lineup2AvatarSrc"
+                :src="lineup2AvatarSrc"
+                :alt="lineup2Name"
+                class="h-full w-full object-cover"
+              />
+              <span
+                v-else
+                class="font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+              >
+                {{ (lineup2Name || "?").slice(0, 3) }}
               </span>
             </div>
           </div>
@@ -540,11 +574,24 @@ export default {
     },
   },
   computed: {
+    apiDomain() {
+      return useRuntimeConfig().public.apiDomain;
+    },
     lineup1Name() {
       return this.match?.lineup_1?.name || "Lineup 1";
     },
     lineup2Name() {
       return this.match?.lineup_2?.name || "Lineup 2";
+    },
+    lineup1AvatarSrc() {
+      const avatarUrl = this.match?.lineup_1?.team?.avatar_url;
+      if (!avatarUrl) return null;
+      return `https://${this.apiDomain}/${avatarUrl}`;
+    },
+    lineup2AvatarSrc() {
+      const avatarUrl = this.match?.lineup_2?.team?.avatar_url;
+      if (!avatarUrl) return null;
+      return `https://${this.apiDomain}/${avatarUrl}`;
     },
     mapScores() {
       const maps = this.match?.match_maps || [];

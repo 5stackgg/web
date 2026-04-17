@@ -5,6 +5,10 @@ export const matchLineups = Selector("match_lineups")({
   id: true,
   name: true,
   team_id: true,
+  team: {
+    name: true,
+    avatar_url: true,
+  },
   is_ready: true,
   is_on_lineup: true,
   can_pick_map_veto: true,

@@ -22,35 +22,53 @@ import { Users } from "lucide-vue-next";
         class="pointer-events-none absolute -bottom-[1px] -right-[1px] h-3 w-3 border-b-2 border-r-2 border-[hsl(var(--tac-amber)/0.55)] opacity-0 transition-opacity duration-200 group-hover:opacity-100"
       ></span>
 
-      <!-- Header: name + stats -->
-      <div class="min-w-0">
-        <div class="flex items-center gap-2 min-w-0">
+      <!-- Header: avatar + name + stats -->
+      <div class="flex items-start gap-3 min-w-0">
+        <div
+          class="relative shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
+        >
+          <img
+            v-if="teamAvatarSrc(team)"
+            :src="teamAvatarSrc(team)"
+            :alt="team.name"
+            class="h-full w-full object-cover"
+          />
           <span
-            class="truncate font-semibold text-base leading-tight"
-            :title="team.name"
+            v-else
+            class="font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
           >
-            {{ team.name }}
-          </span>
-          <span
-            v-if="team.short_name"
-            class="shrink-0 inline-flex items-center border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.1)] px-1.5 py-0.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
-          >
-            {{ team.short_name }}
+            {{ (team.short_name || team.name || "?").slice(0, 3) }}
           </span>
         </div>
-        <div
-          class="mt-1 flex items-center gap-1 text-[0.65rem] font-mono uppercase tracking-[0.18em] text-muted-foreground/80"
-        >
-          <Users class="w-3 h-3" />
-          <span class="tabular-nums">{{ rosterCount(team) }}</span>
-          <span>roster</span>
-          <template v-if="avgElo(team) !== null">
-            <span class="mx-1 opacity-40">·</span>
-            <span class="tabular-nums text-[hsl(var(--tac-amber))]">
-              {{ avgElo(team) }}
+        <div class="min-w-0 flex-1">
+          <div class="flex items-center gap-2 min-w-0">
+            <span
+              class="truncate font-semibold text-base leading-tight"
+              :title="team.name"
+            >
+              {{ team.name }}
             </span>
-            <span class="text-[hsl(var(--tac-amber))]">avg</span>
-          </template>
+            <span
+              v-if="team.short_name"
+              class="shrink-0 inline-flex items-center border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.1)] px-1.5 py-0.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+            >
+              {{ team.short_name }}
+            </span>
+          </div>
+          <div
+            class="mt-1 flex items-center gap-1 text-[0.65rem] font-mono uppercase tracking-[0.18em] text-muted-foreground/80"
+          >
+            <Users class="w-3 h-3" />
+            <span class="tabular-nums">{{ rosterCount(team) }}</span>
+            <span>roster</span>
+            <template v-if="avgElo(team) !== null">
+              <span class="mx-1 opacity-40">·</span>
+              <span class="tabular-nums text-[hsl(var(--tac-amber))]">
+                {{ avgElo(team) }}
+              </span>
+              <span class="text-[hsl(var(--tac-amber))]">avg</span>
+            </template>
+          </div>
         </div>
       </div>
 
@@ -126,7 +144,16 @@ export default {
       type: Object,
     },
   },
+  computed: {
+    apiDomain() {
+      return useRuntimeConfig().public.apiDomain;
+    },
+  },
   methods: {
+    teamAvatarSrc(team: { avatar_url?: string | null }): string | null {
+      if (!team.avatar_url) return null;
+      return `https://${this.apiDomain}/${team.avatar_url}`;
+    },
     rosterCount(team: { roster?: RosterEntry[] }): number {
       return team.roster?.length ?? 0;
     },

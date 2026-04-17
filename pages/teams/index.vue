@@ -215,6 +215,8 @@ export default {
             {
               id: true,
               name: true,
+              short_name: true,
+              avatar_url: true,
               roster: [
                 {},
                 {
@@ -281,6 +283,8 @@ export default {
                   {
                     id: true,
                     name: true,
+                    short_name: true,
+                    avatar_url: true,
                     roster: [
                       {},
                       {

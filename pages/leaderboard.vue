@@ -99,12 +99,13 @@ const leaderboardFadeTransition = {
       </Select>
 
       <div
-        class="ml-auto flex h-9 items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150"
+        class="ml-auto flex h-9 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150"
         :class="
           excludeTournaments
             ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
-            : 'border-border bg-muted/30 text-muted-foreground'
+            : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
         "
+        @click="toggleExcludeTournaments"
       >
         <Trophy class="h-3.5 w-3.5" />
         <span id="leaderboard-exclude-tournaments-label">
@@ -114,6 +115,7 @@ const leaderboardFadeTransition = {
           v-model="excludeTournaments"
           aria-labelledby="leaderboard-exclude-tournaments-label"
           class="ml-1 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
+          @click.stop
         />
       </div>
     </div>
@@ -531,6 +533,9 @@ export default {
     onFilterChange() {
       this.page = 1;
       this.fetchLeaderboard();
+    },
+    toggleExcludeTournaments() {
+      this.excludeTournaments = !this.excludeTournaments;
     },
     onPageChange(newPage: number) {
       this.page = newPage;

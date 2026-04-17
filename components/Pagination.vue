@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ChevronLeftIcon, ChevronRightIcon } from "@radix-icons/vue";
 import { Label } from "~/components/ui/label";
 import {
   Select,
@@ -17,13 +18,25 @@ import {
   PaginationLast,
   PaginationEllipsis,
 } from "~/components/ui/pagination";
+
+const navControlClass =
+  "h-9 shrink-0 gap-1.5 rounded-md px-1.5 text-sm font-semibold text-muted-foreground shadow-none hover:bg-transparent hover:text-foreground disabled:opacity-35 sm:px-2.5";
+const pageItemBaseClass =
+  "size-9 shrink-0 rounded-md border text-sm font-semibold tabular-nums shadow-none";
+const activePageItemClass =
+  "border-border/80 bg-background text-foreground hover:bg-background";
+const inactivePageItemClass =
+  "border-transparent bg-transparent text-muted-foreground hover:border-border/60 hover:bg-accent/40 hover:text-foreground";
 </script>
 
 <template>
-  <div class="flex items-center justify-between gap-4 mt-4">
+  <div
+    class="mt-4 flex w-full flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between"
+  >
     <PaginationRoot
       v-slot="{ page }"
       :key="`pagination-${current}`"
+      class="mx-0 min-w-0 flex-1 justify-start overflow-x-auto"
       :total="total"
       :items-per-page="perPage"
       :sibling-count="1"
@@ -31,24 +44,48 @@ import {
       :default-page="current"
       @update:page="paginate"
     >
-      <PaginationContent v-slot="{ items }" class="flex items-center gap-1">
-        <PaginationFirst />
-        <PaginationPrevious />
+      <PaginationContent v-slot="{ items }" class="flex-nowrap gap-1 pr-2">
+        <PaginationFirst :class="navControlClass">
+          <ChevronLeftIcon class="size-3.5" />
+          <span>First</span>
+        </PaginationFirst>
+        <PaginationPrevious :class="navControlClass">
+          <ChevronLeftIcon class="size-3.5" />
+          <span>Previous</span>
+        </PaginationPrevious>
 
         <template v-for="(item, index) in items">
           <PaginationItem
             v-if="item.type === 'page'"
-            :key="index"
+            :key="`page-${item.value}`"
             :value="item.value"
             :is-active="item.value === page"
+            :class="[
+              pageItemBaseClass,
+              item.value === page ? activePageItemClass : inactivePageItemClass,
+            ]"
           >
             {{ item.value }}
           </PaginationItem>
-          <PaginationEllipsis v-else :key="item.type" :index="index" />
+          <PaginationEllipsis
+            v-else
+            :key="`ellipsis-${index}`"
+            :index="index"
+            class="h-9 w-7 shrink-0 text-muted-foreground"
+          >
+            <span aria-hidden="true" class="text-sm font-semibold">...</span>
+            <span class="sr-only">More pages</span>
+          </PaginationEllipsis>
         </template>
 
-        <PaginationNext />
-        <PaginationLast />
+        <PaginationNext :class="navControlClass">
+          <span>Next</span>
+          <ChevronRightIcon class="size-3.5" />
+        </PaginationNext>
+        <PaginationLast :class="navControlClass">
+          <span>Last</span>
+          <ChevronRightIcon class="size-3.5" />
+        </PaginationLast>
       </PaginationContent>
     </PaginationRoot>
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Search, X, PlusCircle } from "lucide-vue-next";
+import { Search, X, PlusCircle, Users } from "lucide-vue-next";
 import { FormItem, FormControl } from "@/components/ui/form";
 import TeamsTable from "~/components/TeamsTable.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
@@ -66,22 +66,24 @@ import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 
                   <div
                     v-if="me"
-                    class="flex h-8 items-center gap-2 rounded-md border border-border bg-background/70 px-2.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground cursor-pointer whitespace-nowrap"
-                    :class="{
-                      'text-foreground border-primary/50 bg-primary/10':
-                        showOnlyMyTeams,
-                    }"
-                    @click="showOnlyMyTeams = !showOnlyMyTeams"
+                    class="flex h-9 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150 whitespace-nowrap"
+                    :class="
+                      showOnlyMyTeams
+                        ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
+                        : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                    "
+                    @click="toggleShowOnlyMyTeams"
                   >
-                    <Switch v-model="showOnlyMyTeams" @click.stop />
-                    <button
-                      type="button"
-                      class="text-left"
-                      :aria-pressed="showOnlyMyTeams"
-                      @click.stop="showOnlyMyTeams = !showOnlyMyTeams"
-                    >
+                    <Users class="h-3.5 w-3.5" />
+                    <span id="teams-my-teams-only-label">
                       {{ $t("team.search.my_teams_only") }}
-                    </button>
+                    </span>
+                    <Switch
+                      v-model="showOnlyMyTeams"
+                      aria-labelledby="teams-my-teams-only-label"
+                      class="ml-1 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
+                      @click.stop
+                    />
                   </div>
                 </InputGroupAddon>
               </InputGroup>
@@ -316,6 +318,9 @@ export default {
     },
   },
   methods: {
+    toggleShowOnlyMyTeams() {
+      this.showOnlyMyTeams = !this.showOnlyMyTeams;
+    },
     viewTopTeam() {
       const team = this.teams?.at(0);
       if (!team) {

@@ -40,58 +40,123 @@ const mmCardPending =
     <template v-else-if="!confirmationDetails">
       <div
         v-if="isInQueue && matchMakingQueueDetails"
-        class="mb-4 flex flex-col gap-6 p-12 rounded-xl border border-border shadow-lg relative overflow-hidden min-h-[300px] justify-center items-center animate-fade-in backdrop-blur-sm"
+        class="relative mb-4 overflow-hidden rounded-lg border border-border px-6 py-10 sm:px-10 sm:py-12 [backdrop-filter:blur(6px)] [background:linear-gradient(180deg,hsl(var(--card)/0.7)_0%,hsl(var(--card)/0.3)_100%)] animate-fade-in"
       >
-        <div
-          class="absolute inset-0 bg-gradient-to-r from-primary/5 to-primary/10 animate-soft-pulse"
-        ></div>
-        <div class="absolute inset-0">
-          <div
-            class="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,var(--primary)_/_0.1,transparent)]"
-          ></div>
-        </div>
+        <span
+          aria-hidden="true"
+          class="pointer-events-none absolute left-2 top-2 h-[14px] w-[14px] border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
+        ></span>
+        <span
+          aria-hidden="true"
+          class="pointer-events-none absolute bottom-2 right-2 h-[14px] w-[14px] border-b-2 border-r-2 border-[hsl(var(--tac-amber))]"
+        ></span>
 
-        <div class="absolute top-0 left-0 w-full h-1">
-          <div
-            class="h-full bg-gradient-to-r from-primary/80 to-primary animate-loading-bar"
-          ></div>
-        </div>
+        <span
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 opacity-40 [background-image:repeating-linear-gradient(180deg,transparent_0,transparent_3px,hsl(var(--tac-amber)/0.04)_3px,hsl(var(--tac-amber)/0.04)_4px)]"
+        ></span>
 
-        <div class="relative z-10 flex flex-col items-center text-center">
-          <div
-            class="flex items-center gap-4 mb-4 text-2xl font-medium capitalize"
-          >
-            {{
-              $t("matchmaking.searching_for_match", {
-                type: matchMakingQueueDetails.type,
-              })
-            }}
-          </div>
-          <div class="text-xl text-gray-400/90 flex items-center gap-2">
-            <TimeAgo
-              v-if="matchMakingQueueDetails.joinedAt"
-              :date="
-                Math.min(
-                  new Date().getTime(),
-                  new Date(matchMakingQueueDetails.joinedAt).getTime(),
-                )
-              "
-              :seconds="true"
-            />
-          </div>
-        </div>
+        <span
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 [background:radial-gradient(circle_at_50%_55%,hsl(var(--tac-amber)/0.12),transparent_65%)] animate-soft-pulse"
+        ></span>
 
-        <Button
-          class="relative group overflow-hidden bg-red-900/90 hover:bg-red-800 text-white transition-all duration-300 w-full max-w-md text-lg py-6 transform hover:scale-[1.02]"
-          @click="leaveMatchmaking"
+        <span
+          aria-hidden="true"
+          class="pointer-events-none absolute left-0 right-0 top-0 h-[2px] overflow-hidden"
         >
-          <span class="relative z-10 flex items-center justify-center gap-2">
-            <span>{{ $t("matchmaking.cancel_matchmaking") }}</span>
-          </span>
+          <span
+            class="block h-full w-1/2 bg-gradient-to-r from-transparent via-[hsl(var(--tac-amber))] to-transparent animate-loading-bar"
+          ></span>
+        </span>
+
+        <div class="relative z-10 flex flex-col items-center gap-6 text-center">
           <div
-            class="absolute inset-0 -translate-x-full group-hover:translate-x-0 bg-gradient-to-r from-red-800 to-red-900 transition-transform duration-300"
-          ></div>
-        </Button>
+            class="inline-flex items-center gap-2 font-mono text-[0.72rem] font-bold uppercase tracking-[0.28em] text-[hsl(var(--tac-amber))]"
+          >
+            <span
+              class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"
+            ></span>
+            {{ $t("matchmaking.in_queue_label") }}
+            <span
+              class="h-1 w-1 rounded-full bg-[hsl(var(--tac-amber))] animate-soft-pulse"
+            ></span>
+          </div>
+
+          <div class="flex flex-col items-center gap-1">
+            <div
+              class="font-sans text-2xl font-bold uppercase leading-none tracking-[0.08em] text-foreground sm:text-3xl [font-stretch:80%]"
+            >
+              {{ matchMakingQueueDetails.type }}
+            </div>
+            <div
+              class="font-mono text-[0.65rem] uppercase tracking-[0.3em] text-muted-foreground/80"
+            >
+              {{ $t("matchmaking.searching") }}
+            </div>
+          </div>
+
+          <div class="flex flex-col items-center gap-1">
+            <div
+              class="font-mono font-bold leading-none tracking-[0.06em] text-foreground text-[clamp(2.75rem,7vw,4rem)] tabular-nums [text-shadow:0_0_24px_hsl(var(--tac-amber)/0.3)]"
+            >
+              <TimeAgo
+                v-if="matchMakingQueueDetails.joinedAt"
+                :date="
+                  Math.min(
+                    new Date().getTime(),
+                    new Date(matchMakingQueueDetails.joinedAt).getTime(),
+                  )
+                "
+                :seconds="true"
+              />
+            </div>
+            <div
+              class="font-mono text-[0.65rem] uppercase tracking-[0.3em] text-muted-foreground/70"
+            >
+              {{ $t("matchmaking.elapsed") }}
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-center gap-2">
+            <span
+              v-for="region in matchMakingQueueDetails.regions"
+              :key="region"
+              class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.08)] px-2.5 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+            >
+              <span
+                class="h-1 w-1 rounded-full bg-[hsl(var(--tac-amber))]"
+              ></span>
+              {{ region }}
+            </span>
+            <span
+              v-if="matchMakingQueueDetails.totalInQueue > 1"
+              class="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/30 px-2.5 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
+            >
+              {{
+                $t(
+                  "matchmaking.others_searching",
+                  matchMakingQueueDetails.totalInQueue - 1,
+                  { count: matchMakingQueueDetails.totalInQueue - 1 },
+                )
+              }}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            class="group/cancel mt-2 inline-flex w-full max-w-md items-center justify-center gap-2 overflow-hidden rounded-md border border-[hsl(var(--destructive)/0.5)] bg-[hsl(var(--destructive)/0.1)] px-5 py-3 font-sans text-xs font-bold uppercase leading-none tracking-[0.2em] text-destructive transition-[background-color,border-color,box-shadow] duration-150 hover:border-[hsl(var(--destructive)/0.8)] hover:bg-[hsl(var(--destructive)/0.18)] hover:shadow-[0_0_18px_hsl(var(--destructive)/0.3)]"
+            @click="leaveMatchmaking"
+          >
+            <span
+              class="inline-block h-[2px] w-[10px] bg-destructive transition-transform group-hover/cancel:translate-x-[-2px]"
+            ></span>
+            {{ $t("matchmaking.cancel_matchmaking") }}
+            <span
+              class="inline-block h-[2px] w-[10px] bg-destructive transition-transform group-hover/cancel:translate-x-[2px]"
+            ></span>
+          </button>
+        </div>
       </div>
 
       <div class="flex flex-col gap-4 bg-card rounded-lg" v-else>

@@ -16,6 +16,7 @@ export const matchOptionsFields = Selector("match_options")({
   match_mode: true,
   overtime: true,
   region_veto: true,
+  regions: true,
   best_of: true,
   tv_delay: true,
   number_of_substitutes: true,

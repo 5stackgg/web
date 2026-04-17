@@ -1,63 +1,34 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { Input } from "~/components/ui/input";
+import { Button } from "~/components/ui/button";
+import { Loader2 } from "lucide-vue-next";
+</script>
 
 <template>
-  <div v-bind="$attrs">
-    <div
-      class="text-blue-500 text-sm hover:underline cursor-pointer w-fit"
-      @click.prevent="showRequestNameChangeDialog = true"
-      v-if="canChangeName"
+  <form
+    v-if="canChangeName"
+    class="flex items-center gap-2"
+    @submit.prevent="save"
+  >
+    <Input
+      v-model="name"
+      maxlength="32"
+      :placeholder="$t('player.change_name.name_label')"
+      class="flex-1 min-w-0"
+    />
+    <Button
+      type="submit"
+      size="sm"
+      :disabled="saving || !isValid || name === player.name"
     >
-      {{ $t("player.change_name.button") }}
-    </div>
-    <AlertDialog :open="showRequestNameChangeDialog">
-      <AlertDialogTrigger asChild> </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>
-            {{
-              mustRequestNameChange
-                ? $t("player.change_name.request_title")
-                : $t("player.change_name.title")
-            }}
-          </AlertDialogTitle>
-          <AlertDialogDescription>
-            {{
-              mustRequestNameChange
-                ? $t("player.change_name.request_description")
-                : $t("player.change_name.description")
-            }}
-
-            <FormField v-slot="{ componentField }" name="player_name">
-              <FormItem>
-                <FormLabel>{{ $t("player.change_name.name_label") }}</FormLabel>
-                <FormControl>
-                  <Input v-bind="componentField" />
-                </FormControl>
-              </FormItem>
-            </FormField>
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-
-        <AlertDialogFooter>
-          <AlertDialogCancel @click="showRequestNameChangeDialog = false">
-            {{ $t("common.cancel") }}
-          </AlertDialogCancel>
-          <AlertDialogAction
-            @click="mustRequestNameChange ? requestNameChange() : changeName()"
-          >
-            {{ $t("common.confirm") }}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  </div>
+      <Loader2 v-if="saving" class="mr-1 h-4 w-4 animate-spin" />
+      {{ $t("common.save") }}
+    </Button>
+  </form>
 </template>
 
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
-import { useForm } from "vee-validate";
-import { z } from "zod";
-import { toTypedSchema } from "@vee-validate/zod";
 import { $ } from "~/generated/zeus";
 import { toast } from "@/components/ui/toast";
 import { e_player_roles_enum } from "~/generated/zeus";
@@ -72,72 +43,16 @@ export default {
   },
   data() {
     return {
-      showRequestNameChangeDialog: false,
-      form: useForm({
-        validationSchema: toTypedSchema(
-          z.object({
-            player_name: z.string().min(3).max(32),
-          }),
-        ),
-      }),
+      name: "",
+      saving: false,
     };
   },
-  methods: {
-    async changeName() {
-      await this.$apollo.mutate({
-        variables: {
-          player_name: this.form.values.player_name,
-        },
-        mutation: generateMutation({
-          update_players_by_pk: [
-            {
-              pk_columns: { steam_id: this.player.steam_id },
-              _set: {
-                name: $("player_name", "String!"),
-              },
-            },
-            {
-              steam_id: true,
-            },
-          ],
-        }),
-      });
-
-      toast({
-        title: this.$t("player.change_name.success"),
-      });
-
-      this.showRequestNameChangeDialog = false;
-    },
-    async requestNameChange() {
-      const { valid } = await this.form.validate();
-
-      if (!valid) {
-        return;
-      }
-
-      await this.$apollo.mutate({
-        variables: {
-          player_name: this.form.values.player_name,
-        },
-        mutation: generateMutation({
-          requestNameChange: [
-            {
-              steam_id: this.player.steam_id,
-              name: $("player_name", "String!"),
-            },
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
-
-      toast({
-        title: this.$t("player.change_name.request_success"),
-      });
-
-      this.showRequestNameChangeDialog = false;
+  watch: {
+    player: {
+      immediate: true,
+      handler(player) {
+        if (player) this.name = player.name;
+      },
     },
   },
   computed: {
@@ -146,12 +61,55 @@ export default {
     },
     canChangeName() {
       return (
-        this.player.steam_id === this.me?.steam_id ||
+        this.player?.steam_id === this.me?.steam_id ||
         useAuthStore().isRoleAbove(e_player_roles_enum.administrator)
       );
     },
     mustRequestNameChange() {
       return !useAuthStore().isRoleAbove(e_player_roles_enum.administrator);
+    },
+    isValid() {
+      const trimmed = (this.name || "").trim();
+      return trimmed.length >= 3 && trimmed.length <= 32;
+    },
+  },
+  methods: {
+    async save() {
+      if (!this.isValid || this.saving) return;
+      this.saving = true;
+      try {
+        if (this.mustRequestNameChange) {
+          await this.$apollo.mutate({
+            variables: { player_name: this.name },
+            mutation: generateMutation({
+              requestNameChange: [
+                {
+                  steam_id: this.player.steam_id,
+                  name: $("player_name", "String!"),
+                },
+                { success: true },
+              ],
+            }),
+          });
+          toast({ title: this.$t("player.change_name.request_success") });
+        } else {
+          await this.$apollo.mutate({
+            variables: { player_name: this.name },
+            mutation: generateMutation({
+              update_players_by_pk: [
+                {
+                  pk_columns: { steam_id: this.player.steam_id },
+                  _set: { name: $("player_name", "String!") },
+                },
+                { steam_id: true },
+              ],
+            }),
+          });
+          toast({ title: this.$t("player.change_name.success") });
+        }
+      } finally {
+        this.saving = false;
+      }
     },
   },
 };

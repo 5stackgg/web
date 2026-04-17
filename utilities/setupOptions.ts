@@ -11,7 +11,16 @@ export const setupOptions = (
   options: any,
   overrides: any = {},
 ) => {
+  const selectedRegions: string[] = options.regions || [];
+  const availableRegions = useApplicationSettingsStore().availableRegions;
+  const lan =
+    selectedRegions.length > 0 &&
+    availableRegions.some(
+      (region) => region.is_lan && selectedRegions.includes(region.value),
+    );
+
   form.setValues({
+    lan,
     overtime: options.overtime,
     knife_round: options.knife_round,
     mr: options.mr.toString(),
@@ -26,7 +35,7 @@ export const setupOptions = (
     region_veto: options.region_veto,
     ready_setting: options.ready_setting,
     map_pool_id: options.map_pool.id,
-    regions: options.regions || [],
+    regions: selectedRegions,
     tv_delay: options.tv_delay,
     check_in_setting: options.check_in_setting,
     auto_cancellation: options.auto_cancellation,

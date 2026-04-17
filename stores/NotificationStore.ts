@@ -17,6 +17,7 @@ type Notification = {
   deletable: boolean;
   created_at: string;
   actions?: Array<{
+    label: string;
     graphql: {
       type: string;
       action: string;
@@ -25,6 +26,10 @@ type Notification = {
     };
   }>;
 };
+
+export type NotificationStackItem =
+  | { kind: "single"; notification: Notification }
+  | { kind: "stack"; entityId: string; notifications: Notification[] };
 
 export const useNotificationStore = defineStore("notifaicationStore", () => {
   const notificationsGranted = ref(false);
@@ -38,6 +43,45 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     if (team_invites.value.length > 0) return true;
     if (tournament_team_invites.value.length > 0) return true;
     return notifications.value.some((n) => !n.is_read);
+  });
+
+  const stackedNotifications = computed<NotificationStackItem[]>(() => {
+    const groups = new Map<string, Notification[]>();
+    const singles: Notification[] = [];
+
+    for (const n of notifications.value) {
+      if (!n.entity_id) {
+        singles.push(n);
+        continue;
+      }
+      const arr = groups.get(n.entity_id);
+      if (arr) {
+        arr.push(n);
+      } else {
+        groups.set(n.entity_id, [n]);
+      }
+    }
+
+    const items: NotificationStackItem[] = [];
+    for (const n of singles) {
+      items.push({ kind: "single", notification: n });
+    }
+    for (const [entityId, arr] of groups) {
+      arr.sort((a, b) => b.created_at.localeCompare(a.created_at));
+      if (arr.length === 1) {
+        items.push({ kind: "single", notification: arr[0] });
+      } else {
+        items.push({ kind: "stack", entityId, notifications: arr });
+      }
+    }
+
+    const latestAt = (item: NotificationStackItem) =>
+      item.kind === "single"
+        ? item.notification.created_at
+        : item.notifications[0].created_at;
+
+    items.sort((a, b) => latestAt(b).localeCompare(latestAt(a)));
+    return items;
   });
 
   const sendNotification = async (
@@ -209,6 +253,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     team_invites,
     tournament_team_invites,
     notifications,
+    stackedNotifications,
     hasNotifications,
   };
 });

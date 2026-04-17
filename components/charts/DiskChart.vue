@@ -45,11 +45,11 @@ export default {
       ? (this.metrics as any[])
       : [];
 
-    // Y-axis max: take the FIRST sample's (used + available) per mount
+    // Y-axis max: take the LAST sample's (used + available) per mount
     let maxGb = 0;
     if (metricsArr.length > 0) {
-      const first = metricsArr[0];
-      const disks = Array.isArray(first?.disks) ? first.disks : [];
+      const last = metricsArr[metricsArr.length - 1];
+      const disks = Array.isArray(last?.disks) ? last.disks : [];
       const byMount: Record<string, { used: number; available: number }> =
         {} as any;
       disks.forEach((d: any) => {

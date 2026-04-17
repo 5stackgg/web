@@ -6,9 +6,9 @@
       v-if="score"
       class="font-bold"
       :class="{
-        [`text-green-400`]: winning,
-        [`text-red-400`]: losing,
-        [`text-white-400`]: tied,
+        [`text-green-400`]: winning && showOutcomeColor,
+        [`text-red-400`]: losing && showOutcomeColor,
+        [`text-white-400`]: tied && showOutcomeColor,
       }"
     >
       <template v-if="matchMap">
@@ -57,9 +57,15 @@ export default {
     },
   },
   computed: {
+    showOutcomeColor() {
+      if (this.matchMap) {
+        return true;
+      }
+      return !!this.match.winning_lineup_id;
+    },
     singleMap() {
-      return !this.matchMap && this.match.match_maps?.length === 1
-        ? this.match.match_maps[0]
+      return !this.matchMap && this.match.options?.best_of === 1
+        ? this.match.match_maps?.[0]
         : null;
     },
     singleMapTeamScore() {

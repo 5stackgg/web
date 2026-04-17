@@ -23,55 +23,74 @@ import {
   <div v-if="team && e_team_roles" class="flex flex-col gap-4">
     <!-- Team header -->
     <header class="flex items-start justify-between gap-4 flex-wrap">
-      <div class="min-w-0 flex-1 flex flex-col gap-2">
-        <h2
-          class="font-sans text-[1.35rem] font-bold tracking-[0.02em] text-foreground m-0 leading-[1.15]"
+      <div class="min-w-0 flex-1 flex items-start gap-3">
+        <div
+          class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
         >
-          {{ team.team?.name || team.name }}
-        </h2>
-
-        <div class="flex items-center gap-2 flex-wrap">
+          <img
+            v-if="teamAvatarSrc"
+            :src="teamAvatarSrc"
+            :alt="team.team?.name || team.name"
+            class="h-full w-full object-cover"
+          />
           <span
-            class="inline-flex items-center gap-[0.4rem] px-[0.55rem] py-[0.2rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase border rounded"
-            :class="
-              team.eligible_at
-                ? 'text-success bg-success/10 border-success/40'
-                : 'text-destructive bg-destructive/10 border-destructive/35'
-            "
+            v-else
+            class="font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
           >
-            <span class="w-[5px] h-[5px] bg-current rounded-full"></span>
-            <template v-if="team.eligible_at">
-              {{ $t("tournament.team.eligible") }}
-            </template>
-            <template v-else>
-              {{
-                $t("tournament.team.not_eligible", {
-                  count: requiredPlayers - team.roster.length,
-                })
-              }}
-            </template>
+            {{ (team.team?.name || team.name || "?").slice(0, 3) }}
           </span>
-
-          <span
-            v-if="!canEditSeed && team.seed"
-            class="px-2 py-[0.15rem] font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase text-muted-foreground bg-muted/30 border border-border rounded"
+        </div>
+        <div class="min-w-0 flex-1 flex flex-col gap-2">
+          <h2
+            class="font-sans text-[1.35rem] font-bold tracking-[0.02em] text-foreground m-0 leading-[1.15]"
           >
-            {{ $t("tournament.team.seed_display", { seed: team.seed }) }}
-          </span>
+            {{ team.team?.name || team.name }}
+          </h2>
 
-          <label
-            v-if="canEditSeed"
-            class="inline-flex items-center gap-[0.45rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase text-muted-foreground"
-          >
-            <span>{{ $t("tournament.team.seed_label") }}</span>
-            <Input
-              type="number"
-              min="1"
-              class="h-7 w-16"
-              :model-value="team.seed ?? ''"
-              @update:model-value="onSeedChange"
-            />
-          </label>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span
+              class="inline-flex items-center gap-[0.4rem] px-[0.55rem] py-[0.2rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase border rounded"
+              :class="
+                team.eligible_at
+                  ? 'text-success bg-success/10 border-success/40'
+                  : 'text-destructive bg-destructive/10 border-destructive/35'
+              "
+            >
+              <span class="w-[5px] h-[5px] bg-current rounded-full"></span>
+              <template v-if="team.eligible_at">
+                {{ $t("tournament.team.eligible") }}
+              </template>
+              <template v-else>
+                {{
+                  $t("tournament.team.not_eligible", {
+                    count: requiredPlayers - team.roster.length,
+                  })
+                }}
+              </template>
+            </span>
+
+            <span
+              v-if="!canEditSeed && team.seed"
+              class="px-2 py-[0.15rem] font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase text-muted-foreground bg-muted/30 border border-border rounded"
+            >
+              {{ $t("tournament.team.seed_display", { seed: team.seed }) }}
+            </span>
+
+            <label
+              v-if="canEditSeed"
+              class="inline-flex items-center gap-[0.45rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase text-muted-foreground"
+            >
+              <span>{{ $t("tournament.team.seed_label") }}</span>
+              <Input
+                type="number"
+                min="1"
+                placeholder="-"
+                class="h-7 w-16"
+                :model-value="team.seed ?? ''"
+                @update:model-value="onSeedChange"
+              />
+            </label>
+          </div>
         </div>
       </div>
 
@@ -243,6 +262,14 @@ export default {
     },
   },
   computed: {
+    apiDomain() {
+      return useRuntimeConfig().public.apiDomain;
+    },
+    teamAvatarSrc() {
+      const avatarUrl = this.team?.team?.avatar_url;
+      if (!avatarUrl) return null;
+      return `https://${this.apiDomain}/${avatarUrl}`;
+    },
     canEditSeed() {
       if (!this.tournament?.is_organizer) return false;
       const status = this.tournament.status;

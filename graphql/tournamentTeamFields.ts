@@ -9,6 +9,7 @@ export default {
   can_manage: true,
   team: {
     name: true,
+    avatar_url: true,
   },
   roster: [
     {},

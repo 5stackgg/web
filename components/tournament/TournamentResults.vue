@@ -762,9 +762,7 @@ export default {
   },
   computed: {
     isLive() {
-      return (
-        (this.tournament as any)?.status === e_tournament_status_enum.Live
-      );
+      return (this.tournament as any)?.status === e_tournament_status_enum.Live;
     },
     podium() {
       const trophies = (this.tournament as any)?.trophies || [];

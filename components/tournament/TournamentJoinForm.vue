@@ -82,6 +82,7 @@ import { Card } from "~/components/ui/card";
         :label="$t('tournament.join.team_owner')"
         @selected="setOwnerTeamOwner"
         :selected="teamOwner"
+        :exclude="existingTournamentPlayerSteamIds"
         v-if="!form.values.add_self_to_lineup && form.values.new_team"
       ></PlayerSearch>
     </template>
@@ -120,7 +121,11 @@ import { Card } from "~/components/ui/card";
       type="submit"
       :disabled="
         (!form.values.new_team && !form.values.team_id) ||
-        (form.values.new_team && !form.values.team_name)
+        (form.values.new_team && !form.values.team_name) ||
+        (form.values.new_team &&
+          tournament.is_organizer &&
+          !form.values.add_self_to_lineup &&
+          !form.values.owner_steam_id)
       "
     >
       {{ $t("tournament.join.title") }}
@@ -153,7 +158,22 @@ export default {
           z.object({
             new_team: z.boolean().default(false),
             add_self_to_lineup: z.boolean().default(false),
-            owner_steam_id: z.string().optional(),
+            owner_steam_id: z
+              .string()
+              .optional()
+              .refine(
+                (value) => {
+                  if (
+                    !this.form.values.new_team ||
+                    this.form.values.add_self_to_lineup ||
+                    !this.tournament.is_organizer
+                  ) {
+                    return true;
+                  }
+                  return value !== undefined;
+                },
+                { message: "team owner is required" },
+              ),
             team_name: z
               .string()
               .optional()
@@ -194,6 +214,17 @@ export default {
       return (this.tournament.teams || [])
         .map((t) => t.team_id)
         .filter(Boolean);
+    },
+    existingTournamentPlayerSteamIds() {
+      const steamIds = new Set<string>();
+      for (const team of this.tournament.teams || []) {
+        for (const entry of team.roster || []) {
+          if (entry.player?.steam_id) {
+            steamIds.add(entry.player.steam_id);
+          }
+        }
+      }
+      return Array.from(steamIds);
     },
   },
   watch: {

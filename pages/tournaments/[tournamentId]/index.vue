@@ -289,10 +289,17 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
                     <span>{{ $t("tournament.actions.cancel") }}</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator
-                    v-if="tournament.can_cancel && tournament.is_organizer"
+                    v-if="
+                      tournament.can_cancel &&
+                      tournament.is_organizer &&
+                      tournament.status !== e_tournament_status_enum.Live
+                    "
                   />
                   <DropdownMenuItem
-                    v-if="tournament.is_organizer"
+                    v-if="
+                      tournament.is_organizer &&
+                      tournament.status !== e_tournament_status_enum.Live
+                    "
                     @click="deleteDialogOpen = true"
                     class="text-destructive cursor-pointer"
                   >

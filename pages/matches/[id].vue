@@ -389,7 +389,7 @@ export default {
             matchId: this.$route.params.id,
             order_by_name: order_by.asc,
             order_by_round_kills: order_by.asc,
-            order_by_round: order_by.asc,
+            order_by_round: order_by.desc,
           };
         },
         query: typedGql("subscription")({

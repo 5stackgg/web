@@ -158,6 +158,12 @@ export default {
       if (!this.matchMap) {
         return;
       }
+      const latestRound = this.matchMap.rounds?.[0];
+      if (latestRound) {
+        return this.isLineup1
+          ? latestRound.lineup_1_score
+          : latestRound.lineup_2_score;
+      }
       return this.isLineup1
         ? this.matchMap.lineup_1_score
         : this.matchMap.lineup_2_score;

@@ -89,25 +89,32 @@ export default {
           path = path.replace("/manage-matches", "/matches");
         }
 
-        // Replace tournament UUID with name when available
-        let displayText =
-          segments[0] === "tournaments" &&
-          index === 1 &&
-          tc.value?.id === segment
-            ? tc.value.name
-            : segment;
+        // Wait for tournament name to resolve before showing the crumb
+        if (segments[0] === "tournaments" && index === 1) {
+          if (tc.value?.id !== segment) {
+            return;
+          }
+          breadcrumbs.push({
+            text: tc.value.name,
+            to: path,
+          });
+          return;
+        }
 
-        // Replace match UUID with human-readable display text
-        if (
-          segments[0] === "matches" &&
-          index === 1 &&
-          mc.value?.id === segment
-        ) {
-          displayText = mc.value.displayText;
+        // Wait for match display text to resolve before showing the crumb
+        if (segments[0] === "matches" && index === 1) {
+          if (mc.value?.id !== segment) {
+            return;
+          }
+          breadcrumbs.push({
+            text: mc.value.displayText,
+            to: path,
+          });
+          return;
         }
 
         breadcrumbs.push({
-          text: displayText,
+          text: segment,
           to: path,
         });
       });

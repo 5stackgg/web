@@ -3,6 +3,7 @@ import MatchesTable from "~/components/MatchesTable.vue";
 import Pagination from "~/components/Pagination.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
+import TrophyCase from "~/components/trophy/TrophyCase.vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { e_player_roles_enum } from "~/generated/zeus";
@@ -244,6 +245,11 @@ const playerTeamChipShortClasses =
           </div>
         </div>
       </header>
+    </PageTransition>
+
+    <!-- Trophy Case -->
+    <PageTransition :delay="50" v-if="playerTrophies !== undefined">
+      <TrophyCase :trophies="playerTrophies" />
     </PageTransition>
 
     <div class="flex flex-col gap-4 md:gap-6" v-if="player">
@@ -586,6 +592,7 @@ import { playerFields } from "~/graphql/playerFields";
 import { eloFields } from "~/graphql/eloFields";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
+import { trophyFields } from "~/graphql/trophyFields";
 
 export default {
   apollo: {
@@ -699,6 +706,31 @@ export default {
           this.playerTournaments = data.tournaments || [];
         },
       },
+      playerTrophies: {
+        query: typedGql("subscription")({
+          tournament_trophies: [
+            {
+              where: {
+                player_steam_id: {
+                  _eq: $("steam_id", "bigint"),
+                },
+              },
+            },
+            trophyFields,
+          ],
+        }),
+        variables: function () {
+          return {
+            steam_id: this.playerId,
+          };
+        },
+        skip: function () {
+          return !this.playerId;
+        },
+        result: function ({ data }: { data: any }) {
+          this.playerTrophies = data.tournament_trophies || [];
+        },
+      },
     },
     playerWithMatches: {
       fetchPolicy: "network-only",
@@ -779,6 +811,7 @@ export default {
       page: 1,
       perPage: 10,
       playerTournaments: [],
+      playerTrophies: undefined,
       editPlayerSheet: false,
     };
   },

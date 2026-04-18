@@ -254,7 +254,7 @@ class Socket extends EventEmitter {
 
     if (lobby) {
       lobby.instances.add(instance);
-      return lobby;
+      return this.createLobbyHandle(lobbyId, lobby, instance, type, _id);
     }
 
     lobby = {
@@ -265,25 +265,14 @@ class Socket extends EventEmitter {
       on: function (event: string, callback: (data: any) => void) {
         this.callbacks[event] = callback;
       },
-      leave: () => {
-        const _lobby = this.lobbies.get(lobbyId);
-
-        _lobby?.instances.delete(instance);
-
-        if (_lobby?.instances.size !== 0) {
-          return;
-        }
-
-        for (const listener of _lobby.listeners) {
-          listener?.stop();
-        }
-
-        this.lobbies.delete(lobbyId);
-        socket.leave("lobby", type, _id);
-      },
+      leave: () => {},
       setMessages: function (data: any[]) {
         this.messages = data;
-        this.callbacks?.["lobby:messages"]?.(data);
+        for (const [key, callback] of Object.entries(this.callbacks)) {
+          if (key === "lobby:messages" || key.endsWith(":lobby:messages")) {
+            callback(data);
+          }
+        }
       },
     };
 
@@ -318,7 +307,65 @@ class Socket extends EventEmitter {
       type,
     });
 
-    return lobby;
+    return this.createLobbyHandle(lobbyId, lobby, instance, type, _id);
+  }
+
+  private createLobbyHandle(
+    lobbyId: string,
+    lobby: Lobby,
+    instance: string,
+    type: ChatType,
+    id: string,
+  ): Lobby {
+    return {
+      get messages() {
+        return lobby.messages;
+      },
+      get instances() {
+        return lobby.instances;
+      },
+      callbacks: lobby.callbacks,
+      listeners: lobby.listeners,
+      on: (event: string, callback: (data: any) => void) => {
+        lobby.callbacks[`${instance}:${event}`] = callback;
+      },
+      leave: () => {
+        this.leaveLobbyInstance(lobbyId, instance, type, id);
+      },
+      setMessages: (data: any[]) => {
+        lobby.setMessages(data);
+      },
+    };
+  }
+
+  private leaveLobbyInstance(
+    lobbyId: string,
+    instance: string,
+    type: ChatType,
+    id: string,
+  ) {
+    const lobby = this.lobbies.get(lobbyId);
+    if (!lobby) {
+      return;
+    }
+
+    lobby.instances.delete(instance);
+    for (const key of Object.keys(lobby.callbacks)) {
+      if (key.startsWith(`${instance}:`)) {
+        delete lobby.callbacks[key];
+      }
+    }
+
+    if (lobby.instances.size !== 0) {
+      return;
+    }
+
+    for (const listener of lobby.listeners) {
+      listener?.stop();
+    }
+
+    this.lobbies.delete(lobbyId);
+    this.leave("lobby", type, id);
   }
 }
 const socket = new Socket();

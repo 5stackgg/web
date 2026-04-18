@@ -159,7 +159,18 @@ const leaderboardFadeTransition = {
                   }"
                   @click="toggleSort('value')"
                 >
-                  <div class="flex items-center justify-end gap-1">
+                  <div
+                    class="flex items-center justify-end gap-1"
+                    :style="trophyTierColor('value') ? { color: trophyTierColor('value') } : {}"
+                  >
+                    <span
+                      v-if="trophyTierColor('value')"
+                      class="inline-block h-1.5 w-1.5 rounded-full"
+                      :style="{
+                        background: trophyTierColor('value'),
+                        boxShadow: `0 0 4px ${trophyTierColor('value')}`,
+                      }"
+                    ></span>
                     {{ columnLabels.value }}
                     <component
                       v-if="isSortable('value')"
@@ -177,7 +188,22 @@ const leaderboardFadeTransition = {
                   }"
                   @click="toggleSort('secondary_value')"
                 >
-                  <div class="flex items-center justify-end gap-1">
+                  <div
+                    class="flex items-center justify-end gap-1"
+                    :style="
+                      trophyTierColor('secondary_value')
+                        ? { color: trophyTierColor('secondary_value') }
+                        : {}
+                    "
+                  >
+                    <span
+                      v-if="trophyTierColor('secondary_value')"
+                      class="inline-block h-1.5 w-1.5 rounded-full"
+                      :style="{
+                        background: trophyTierColor('secondary_value'),
+                        boxShadow: `0 0 4px ${trophyTierColor('secondary_value')}`,
+                      }"
+                    ></span>
                     {{ columnLabels.secondary_value }}
                     <component
                       v-if="isSortable('secondary_value')"
@@ -195,7 +221,22 @@ const leaderboardFadeTransition = {
                   }"
                   @click="toggleSort('tertiary_value')"
                 >
-                  <div class="flex items-center justify-end gap-1">
+                  <div
+                    class="flex items-center justify-end gap-1"
+                    :style="
+                      trophyTierColor('tertiary_value')
+                        ? { color: trophyTierColor('tertiary_value') }
+                        : {}
+                    "
+                  >
+                    <span
+                      v-if="trophyTierColor('tertiary_value')"
+                      class="inline-block h-1.5 w-1.5 rounded-full"
+                      :style="{
+                        background: trophyTierColor('tertiary_value'),
+                        boxShadow: `0 0 4px ${trophyTierColor('tertiary_value')}`,
+                      }"
+                    ></span>
                     {{ columnLabels.tertiary_value }}
                     <component
                       v-if="isSortable('tertiary_value')"
@@ -213,7 +254,22 @@ const leaderboardFadeTransition = {
                   }"
                   @click="toggleSort('matches_played')"
                 >
-                  <div class="flex items-center justify-end gap-1">
+                  <div
+                    class="flex items-center justify-end gap-1"
+                    :style="
+                      trophyTierColor('matches_played')
+                        ? { color: trophyTierColor('matches_played') }
+                        : {}
+                    "
+                  >
+                    <span
+                      v-if="trophyTierColor('matches_played')"
+                      class="inline-block h-1.5 w-1.5 rounded-full"
+                      :style="{
+                        background: trophyTierColor('matches_played'),
+                        boxShadow: `0 0 4px ${trophyTierColor('matches_played')}`,
+                      }"
+                    ></span>
                     {{ columnLabels.matches_played }}
                     <component
                       v-if="isSortable('matches_played')"
@@ -266,24 +322,50 @@ const leaderboardFadeTransition = {
                       size="xs"
                     />
                   </TableCell>
-                  <TableCell class="text-right font-mono font-semibold">
+                  <TableCell
+                    class="text-right font-mono font-semibold tabular-nums"
+                    :style="
+                      trophyTierColor('value') ? { color: trophyTierColor('value') } : {}
+                    "
+                  >
                     {{ formatValue(entry.value) }}
                   </TableCell>
                   <TableCell
                     v-if="columnLabels.secondary_value"
-                    class="text-right font-mono text-muted-foreground"
+                    class="text-right font-mono tabular-nums"
+                    :class="{ 'text-muted-foreground': !trophyTierColor('secondary_value') }"
+                    :style="
+                      trophyTierColor('secondary_value')
+                        ? { color: trophyTierColor('secondary_value') }
+                        : {}
+                    "
                   >
                     {{ formatSecondary(entry.secondary_value) }}
                   </TableCell>
                   <TableCell
                     v-if="columnLabels.tertiary_value"
-                    class="text-right font-mono text-muted-foreground"
+                    class="text-right font-mono tabular-nums"
+                    :class="{ 'text-muted-foreground': !trophyTierColor('tertiary_value') }"
+                    :style="
+                      trophyTierColor('tertiary_value')
+                        ? { color: trophyTierColor('tertiary_value') }
+                        : {}
+                    "
                   >
                     {{ formatTertiary(entry.tertiary_value) }}
                   </TableCell>
                   <TableCell
                     v-if="columnLabels.matches_played"
-                    class="text-right font-mono text-muted-foreground"
+                    class="text-right font-mono tabular-nums"
+                    :class="{ 'text-muted-foreground': !trophyTierColor('matches_played') }"
+                    :style="
+                      trophyTierColor('matches_played')
+                        ? {
+                            color: trophyTierColor('matches_played'),
+                            fontWeight: category === 'trophies' ? 600 : 400,
+                          }
+                        : {}
+                    "
                   >
                     {{ entry.matches_played ?? "\u2014" }}
                   </TableCell>
@@ -422,6 +504,22 @@ const CATEGORY_CONFIG: Record<
     },
     sortable: ["value", "secondary_value", "matches_played"],
   },
+  trophies: {
+    columns: {
+      value: "pages.leaderboard.col.gold",
+      secondary_value: "pages.leaderboard.col.silver",
+      tertiary_value: "pages.leaderboard.col.bronze",
+      matches_played: "pages.leaderboard.col.mvp",
+    },
+    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
+  },
+};
+
+const TIER_COLORS: Record<string, string> = {
+  mvp: "hsl(195 85% 60%)",
+  gold: "hsl(45 95% 60%)",
+  silver: "hsl(0 0% 78%)",
+  bronze: "hsl(28 70% 52%)",
 };
 
 export default {
@@ -444,6 +542,7 @@ export default {
         { value: "best_kdr" },
         { value: "best_win_rate" },
         { value: "highest_hs_pct" },
+        { value: "trophies" },
       ],
     };
   },
@@ -472,6 +571,14 @@ export default {
     orderBy() {
       if (this.sortBy) {
         return [{ [this.sortBy]: this.sortDir }];
+      }
+      if (this.category === "trophies") {
+        return [
+          { matches_played: "desc" },
+          { value: "desc" },
+          { secondary_value: "desc" },
+          { tertiary_value: "desc" },
+        ];
       }
       return [{ value: "desc" }];
     },
@@ -593,6 +700,8 @@ export default {
         case "best_win_rate":
         case "highest_hs_pct":
           return value.toFixed(1) + "%";
+        case "trophies":
+          return Math.round(value).toLocaleString();
         default:
           return String(value);
       }
@@ -608,6 +717,16 @@ export default {
     formatTertiary(value: number | null): string {
       if (value == null) return "\u2014";
       return Math.round(value).toLocaleString();
+    },
+    trophyTierColor(
+      field: "value" | "secondary_value" | "tertiary_value" | "matches_played",
+    ): string | null {
+      if (this.category !== "trophies") return null;
+      if (field === "value") return TIER_COLORS.gold;
+      if (field === "secondary_value") return TIER_COLORS.silver;
+      if (field === "tertiary_value") return TIER_COLORS.bronze;
+      if (field === "matches_played") return TIER_COLORS.mvp;
+      return null;
     },
   },
 };

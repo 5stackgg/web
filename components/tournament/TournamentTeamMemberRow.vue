@@ -115,10 +115,15 @@ import Separator from "../ui/separator/Separator.vue";
 
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
+import { e_team_roles_enum } from "~/generated/zeus";
 
 export default {
   props: {
     team: {
+      type: Object,
+      required: true,
+    },
+    tournament: {
       type: Object,
       required: true,
     },
@@ -155,10 +160,18 @@ export default {
   },
   computed: {
     canUpdateRole() {
-      return (
-        this.team.can_manage &&
-        this.member.player.steam_id !== useAuthStore().me.steam_id
+      const me = useAuthStore().me;
+      if (!me) return false;
+      if (!this.team.can_manage) return false;
+      if (this.member.player.steam_id === me.steam_id) return false;
+
+      if (this.tournament.is_organizer) return true;
+      if (this.team.owner_steam_id === me.steam_id) return true;
+
+      const myRosterEntry = this.team.roster?.find(
+        (entry) => entry.player.steam_id === me.steam_id,
       );
+      return myRosterEntry?.role === e_team_roles_enum.Admin;
     },
   },
   methods: {

@@ -7,6 +7,7 @@ import TournamentForm from "~/components/tournament/TournamentForm.vue";
 import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
 import TournamentNotifications from "~/components/tournament/TournamentNotifications.vue";
 import TournamentResults from "~/components/tournament/TournamentResults.vue";
+import TournamentTrophiesConfig from "~/components/tournament/TournamentTrophiesConfig.vue";
 import Separator from "~/components/ui/separator/Separator.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchOptionsDisplay from "~/components/match/MatchOptionsDisplay.vue";
@@ -501,6 +502,13 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
               </TabsTrigger>
               <TabsTrigger
                 v-if="tournament?.is_organizer"
+                value="trophies"
+                :class="tacticalTabsTriggerClasses"
+              >
+                {{ $t("trophies.title") }}
+              </TabsTrigger>
+              <TabsTrigger
+                v-if="tournament?.is_organizer"
                 value="notifications"
                 :class="tacticalTabsTriggerClasses"
               >
@@ -669,6 +677,11 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
             <TournamentOrganizers
               :tournament="tournament"
             ></TournamentOrganizers>
+          </PageTransition>
+        </TabsContent>
+        <TabsContent value="trophies" v-if="tournament?.is_organizer">
+          <PageTransition>
+            <TournamentTrophiesConfig :tournament="tournament" />
           </PageTransition>
         </TabsContent>
         <TabsContent value="notifications" v-if="tournament?.is_organizer">
@@ -894,6 +907,72 @@ export default {
                   aggregate: {
                     count: true,
                   },
+                },
+              ],
+              trophies: [
+                {},
+                {
+                  id: true,
+                  placement: true,
+                  placement_tier: true,
+                  tournament_team_id: true,
+                  player_steam_id: true,
+                  tournament_name: true,
+                  tournament_start: true,
+                  tournament_type: true,
+                  player: playerFields,
+                  tournament_team: {
+                    id: true,
+                    name: true,
+                    roster: [
+                      {},
+                      {
+                        player_steam_id: true,
+                        player: playerFields,
+                      },
+                    ],
+                  },
+                },
+              ],
+              player_stats: [
+                {},
+                {
+                  player_steam_id: true,
+                  kills: true,
+                  deaths: true,
+                  assists: true,
+                  headshots: true,
+                  kdr: true,
+                  headshot_percentage: true,
+                  matches_played: true,
+                },
+              ],
+              results: [
+                {},
+                {
+                  tournament_team_id: true,
+                  wins: true,
+                  losses: true,
+                  matches_played: true,
+                  matches_remaining: true,
+                  maps_won: true,
+                  maps_lost: true,
+                  rounds_won: true,
+                  rounds_lost: true,
+                  head_to_head_match_wins: true,
+                  head_to_head_rounds_won: true,
+                  team_kdr: true,
+                },
+              ],
+              trophy_configs: [
+                {},
+                {
+                  id: true,
+                  tournament_id: true,
+                  placement: true,
+                  custom_name: true,
+                  silhouette: true,
+                  image_url: true,
                 },
               ],
               stages: [

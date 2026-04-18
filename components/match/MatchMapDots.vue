@@ -70,9 +70,7 @@ const dots = computed<Dot[]>(() => {
 });
 
 const mapDisplayName = (dot: Dot) =>
-  dot.matchMap?.map?.label ||
-  dot.matchMap?.map?.name ||
-  `Map ${dot.index + 1}`;
+  dot.matchMap?.map?.label || dot.matchMap?.map?.name || `Map ${dot.index + 1}`;
 
 const statusLabel = (status: DotStatus) => {
   switch (status) {
@@ -153,11 +151,7 @@ const monoNum = "font-mono tabular-nums tracking-[0.01em]";
 
 <template>
   <div class="flex gap-1.5 items-center justify-end w-16 shrink-0">
-    <TooltipProvider
-      v-for="dot in dots"
-      :key="dot.index"
-      :delay-duration="120"
-    >
+    <TooltipProvider v-for="dot in dots" :key="dot.index" :delay-duration="120">
       <Tooltip>
         <TooltipTrigger as-child>
           <button

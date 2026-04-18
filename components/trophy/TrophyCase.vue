@@ -107,7 +107,9 @@ function placementUplight(placement: number) {
     <div :class="scanlineClasses" aria-hidden="true"></div>
 
     <!-- Header: eyebrow + rack counters -->
-    <header class="relative mb-5 flex flex-wrap items-start justify-between gap-4">
+    <header
+      class="relative mb-5 flex flex-wrap items-start justify-between gap-4"
+    >
       <div class="flex flex-col gap-1.5">
         <div :class="eyebrowClasses">
           <span :class="chevronClasses">◢</span>

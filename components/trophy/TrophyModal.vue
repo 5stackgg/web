@@ -49,7 +49,11 @@ const formattedDate = computed(() => {
   const d = new Date(props.trophy.tournament_start);
   if (Number.isNaN(d.getTime())) return null;
   return d
-    .toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })
+    .toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
     .toUpperCase();
 });
 </script>
@@ -66,7 +70,9 @@ const formattedDate = computed(() => {
           <span class="text-muted-foreground/50">·</span>
           <span :style="{ color: tierColor }">{{ $t(placementLabelKey) }}</span>
         </div>
-        <DialogTitle class="text-xl font-bold uppercase tracking-[0.04em] sm:text-2xl">
+        <DialogTitle
+          class="text-xl font-bold uppercase tracking-[0.04em] sm:text-2xl"
+        >
           {{ trophy.tournament_name }}
         </DialogTitle>
         <DialogDescription class="sr-only">
@@ -120,7 +126,9 @@ const formattedDate = computed(() => {
             class="font-semibold uppercase tracking-wide"
             :style="{ color: tierColor }"
           >
-            <template v-if="trophy.placement === 0">★ {{ $t(placementLabelKey) }}</template>
+            <template v-if="trophy.placement === 0"
+              >★ {{ $t(placementLabelKey) }}</template
+            >
             <template v-else>
               #{{ String(trophy.placement).padStart(2, "0") }} ·
               {{ $t(placementLabelKey) }}
@@ -151,11 +159,13 @@ const formattedDate = computed(() => {
         :to="`/tournaments/${trophy.tournament_id}`"
         class="group/link inline-flex items-center justify-center gap-2 rounded-sm border border-border px-4 py-2.5 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.08)] hover:text-[hsl(var(--tac-amber))]"
       >
-        <span class="transition-transform duration-150 group-hover/link:translate-x-[-2px]"
+        <span
+          class="transition-transform duration-150 group-hover/link:translate-x-[-2px]"
           >▚</span
         >
         VIEW TOURNAMENT
-        <span class="transition-transform duration-150 group-hover/link:translate-x-[2px]"
+        <span
+          class="transition-transform duration-150 group-hover/link:translate-x-[2px]"
           >◢</span
         >
       </NuxtLink>

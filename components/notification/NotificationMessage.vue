@@ -36,7 +36,11 @@ function nodeToVNode(node: Node, NuxtLink: any): any {
     const target = attrs.target as string | undefined;
     const internalPath = toInternalPath(attrs.href as string | undefined);
     if (internalPath && (!target || target === "_self")) {
-      return h(NuxtLink, { to: internalPath, class: attrs.class }, () => children);
+      return h(
+        NuxtLink,
+        { to: internalPath, class: attrs.class },
+        () => children,
+      );
     }
   }
 

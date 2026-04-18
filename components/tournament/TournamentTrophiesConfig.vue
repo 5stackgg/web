@@ -37,7 +37,10 @@ export default {
         2: { custom_name: "", silhouette: null as number | null },
         3: { custom_name: "", silhouette: null as number | null },
       },
-      saving: { 0: false, 1: false, 2: false, 3: false } as Record<number, boolean>,
+      saving: { 0: false, 1: false, 2: false, 3: false } as Record<
+        number,
+        boolean
+      >,
     };
   },
   computed: {
@@ -184,7 +187,8 @@ export default {
       <div
         class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground"
       >
-        <span class="translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]"
+        <span
+          class="translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]"
           >◢</span
         >
         Trophy Configuration

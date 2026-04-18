@@ -7,7 +7,7 @@
         <BreadcrumbLink as-child>
           <NuxtLink
             :to="{ name: 'play' }"
-            class="rounded-md px-2 py-1 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors [&.router-link-active]:bg-transparent [&.router-link-exact-active]:bg-transparent"
+            class="inline-flex h-7 items-center rounded-md px-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors [&.router-link-active]:bg-transparent [&.router-link-exact-active]:bg-transparent"
           >
             dashboard
           </NuxtLink>
@@ -21,7 +21,7 @@
           <BreadcrumbLink as-child>
             <NuxtLink
               :to="crumb.to"
-              class="rounded-md px-2 py-1 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors [&.router-link-active]:bg-transparent [&.router-link-exact-active]:bg-transparent"
+              class="inline-flex h-7 items-center rounded-md px-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors [&.router-link-active]:bg-transparent [&.router-link-exact-active]:bg-transparent"
             >
               {{ crumb.text.replace("-", " ") }}
             </NuxtLink>
@@ -36,6 +36,8 @@
 import { e_player_roles_enum } from "~/generated/zeus";
 import { useTournamentContext } from "~/composables/useTournamentContext";
 import { useMatchContext } from "~/composables/useMatchContext";
+import { usePlayerContext } from "~/composables/usePlayerContext";
+import { useTeamContext } from "~/composables/useTeamContext";
 
 export default {
   computed: {
@@ -49,6 +51,8 @@ export default {
 
       const tc = useTournamentContext();
       const mc = useMatchContext();
+      const pc = usePlayerContext();
+      const teamc = useTeamContext();
       const breadcrumbs: Array<{
         text: string;
         to: string;
@@ -108,6 +112,30 @@ export default {
           }
           breadcrumbs.push({
             text: mc.value.displayText,
+            to: path,
+          });
+          return;
+        }
+
+        // Wait for player name to resolve before showing the crumb
+        if (segments[0] === "players" && index === 1) {
+          if (pc.value?.id !== segment) {
+            return;
+          }
+          breadcrumbs.push({
+            text: pc.value.name,
+            to: path,
+          });
+          return;
+        }
+
+        // Wait for team name to resolve before showing the crumb
+        if (segments[0] === "teams" && index === 1) {
+          if (teamc.value?.id !== segment) {
+            return;
+          }
+          breadcrumbs.push({
+            text: teamc.value.name,
             to: path,
           });
           return;

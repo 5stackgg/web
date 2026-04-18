@@ -248,7 +248,7 @@ const playerTeamChipShortClasses =
     </PageTransition>
 
     <!-- Trophy Case -->
-    <PageTransition :delay="50" v-if="playerTrophies !== undefined">
+    <PageTransition :delay="50" v-if="playerTrophies && playerTrophies.length > 0">
       <TrophyCase :trophies="playerTrophies" />
     </PageTransition>
 

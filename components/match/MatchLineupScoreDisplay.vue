@@ -171,46 +171,39 @@ export default {
     isLineup1() {
       return this.match.lineup_1_id === this.lineup.id;
     },
-    ctWins() {
-      if (!this.matchMap) {
-        return;
+    sideWins() {
+      if (!this.matchMap?.rounds) {
+        return { ct: 0, t: 0 };
       }
-      let wins = 0;
-      for (const round of this.matchMap.rounds) {
-        if (round.winning_side === e_sides_enum.CT) {
-          if (this.isLineup1 && round.lineup_1_side === e_sides_enum.CT) {
-            wins++;
-          } else if (
-            !this.isLineup1 &&
-            round.lineup_2_side === e_sides_enum.CT
-          ) {
-            wins++;
+      const chronological = [...this.matchMap.rounds].reverse();
+      let ct = 0;
+      let t = 0;
+      let prev1 = 0;
+      let prev2 = 0;
+      for (const round of chronological) {
+        const lineupWon = this.isLineup1
+          ? round.lineup_1_score > prev1
+          : round.lineup_2_score > prev2;
+        const lineupSide = this.isLineup1
+          ? round.lineup_1_side
+          : round.lineup_2_side;
+        if (lineupWon) {
+          if (lineupSide === e_sides_enum.CT) {
+            ct++;
+          } else if (lineupSide === e_sides_enum.TERRORIST) {
+            t++;
           }
         }
+        prev1 = round.lineup_1_score;
+        prev2 = round.lineup_2_score;
       }
-      return wins;
+      return { ct, t };
+    },
+    ctWins() {
+      return this.matchMap ? this.sideWins.ct : undefined;
     },
     tWins() {
-      if (!this.matchMap) {
-        return;
-      }
-      let wins = 0;
-      for (const round of this.matchMap.rounds) {
-        if (round.winning_side === e_sides_enum.TERRORIST) {
-          if (
-            this.isLineup1 &&
-            round.lineup_1_side === e_sides_enum.TERRORIST
-          ) {
-            wins++;
-          } else if (
-            !this.isLineup1 &&
-            round.lineup_2_side === e_sides_enum.TERRORIST
-          ) {
-            wins++;
-          }
-        }
-      }
-      return wins;
+      return this.matchMap ? this.sideWins.t : undefined;
     },
   },
 };

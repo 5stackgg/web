@@ -2,6 +2,21 @@
     "pagination": {
         "items_per_page": "per page"
     },
+    "trophies": {
+        "title": "Trophies",
+        "no_trophies": "No Trophies Yet",
+        "no_trophies_description": "Finish in the top 3 of a tournament to earn a trophy.",
+        "gold": "Gold",
+        "silver": "Silver",
+        "bronze": "Bronze",
+        "mvp": "MVP",
+        "first_place": "1st Place",
+        "second_place": "2nd Place",
+        "third_place": "3rd Place",
+        "tournament": "Tournament",
+        "placement": "Placement",
+        "teammates": "Teammates"
+    },
     "avatar": {
         "upload": "Upload avatar",
         "change": "Change avatar",
@@ -678,7 +693,8 @@
                 "elo": "ELO",
                 "best_kdr": "KDR",
                 "best_win_rate": "Win Rate",
-                "highest_hs_pct": "HS%"
+                "highest_hs_pct": "HS%",
+                "trophies": "Trophies"
             },
             "time_periods": {
                 "last_7_days": "Last 7 Days",
@@ -705,7 +721,12 @@
                 "wins": "Wins",
                 "losses": "Losses",
                 "hs_pct": "HS%",
-                "total_kills": "Total Kills"
+                "total_kills": "Total Kills",
+                "gold": "Gold",
+                "silver": "Silver",
+                "bronze": "Bronze",
+                "mvp": "MVP",
+                "total_trophies": "Total"
             },
             "exclude_tournaments": "Exclude Tournaments"
         },

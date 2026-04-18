@@ -158,6 +158,7 @@ import {
           :key="member.id"
           :member="member"
           :team="team"
+          :tournament="tournament"
           :roles="e_team_roles"
         />
 

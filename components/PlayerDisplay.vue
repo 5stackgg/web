@@ -5,6 +5,7 @@ import SteamIcon from "~/components/icons/SteamIcon.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import { Crown, Shield, BadgeCheck, BadgeIcon, Podcast } from "lucide-vue-next";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
+import TrophyCountBadge from "~/components/trophy/TrophyCountBadge.vue";
 </script>
 <template>
   <NuxtLink
@@ -187,6 +188,11 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               </span>
             </FiveStackToolTip>
             <PlayerElo :elo="player.elo" v-if="showElo" />
+            <TrophyCountBadge
+              v-if="showTrophies && player.tournament_trophies"
+              :trophies="player.tournament_trophies"
+              :compact="compact || size === 'xs'"
+            />
             <slot name="elo-postfix"></slot>
             <p
               class="text-muted-foreground text-xs flex items-center gap-1"
@@ -258,6 +264,10 @@ export default {
       default: false,
     },
     showElo: {
+      type: Boolean,
+      default: true,
+    },
+    showTrophies: {
       type: Boolean,
       default: true,
     },

@@ -11,4 +11,19 @@ export const playerFields = Selector("players")({
   is_gagged: true,
   is_muted: true,
   elo: true,
+  tournament_trophies_aggregate: [
+    {},
+    {
+      aggregate: {
+        count: true,
+      },
+    },
+  ],
+  tournament_trophies: [
+    {},
+    {
+      placement: true,
+      placement_tier: true,
+    },
+  ],
 });

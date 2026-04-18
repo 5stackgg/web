@@ -167,7 +167,7 @@ function placementUplight(placement: number) {
         v-for="trophy in sorted"
         :key="trophy.id"
         type="button"
-        class="group/pedestal relative flex flex-col items-center gap-2 rounded-sm border border-border/50 bg-background/40 px-2 pb-3 pt-4 transition-[transform,border-color,background-color] duration-200 hover:-translate-y-0.5 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.06)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+        class="group/pedestal relative flex flex-col items-center gap-2 rounded-sm px-2 pb-3 pt-4 transition-transform duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
         @click="openTrophy(trophy)"
       >
         <!-- Uplight -->
@@ -177,14 +177,6 @@ function placementUplight(placement: number) {
             background: `radial-gradient(ellipse at center bottom, ${placementUplight(trophy.placement)} 0%, transparent 65%)`,
           }"
         ></div>
-
-        <!-- Corner marks -->
-        <span
-          class="pointer-events-none absolute left-1 top-1 h-2 w-2 border-l border-t border-[hsl(var(--tac-amber)_/_0.4)] opacity-0 transition-opacity duration-200 group-hover/pedestal:opacity-100"
-        ></span>
-        <span
-          class="pointer-events-none absolute bottom-1 right-1 h-2 w-2 border-b border-r border-[hsl(var(--tac-amber)_/_0.4)] opacity-0 transition-opacity duration-200 group-hover/pedestal:opacity-100"
-        ></span>
 
         <TrophyBadge
           :tournament-id="trophy.tournament_id"

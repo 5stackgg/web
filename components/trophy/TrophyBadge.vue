@@ -112,13 +112,7 @@ const showOverlay = computed(() => props.size !== "xs");
     <!-- Custom uploaded image -->
     <div
       v-if="resolvedImageSrc"
-      class="relative h-full w-full overflow-hidden rounded-sm border-2 drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)]"
-      :style="{
-        borderColor: palette.primary,
-        background: `linear-gradient(180deg, ${palette.highlight}18 0%, ${palette.shadow}12 100%)`,
-        clipPath:
-          'polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px)',
-      }"
+      class="relative h-full w-full overflow-hidden drop-shadow-[0_4px_10px_rgba(0,0,0,0.45)]"
     >
       <img
         :src="resolvedImageSrc"
@@ -126,15 +120,6 @@ const showOverlay = computed(() => props.size !== "xs");
         class="h-full w-full object-contain"
         loading="lazy"
       />
-      <!-- corner marks -->
-      <span
-        class="pointer-events-none absolute left-0 top-0 h-3 w-3 border-l-2 border-t-2"
-        :style="{ borderColor: palette.primary }"
-      ></span>
-      <span
-        class="pointer-events-none absolute bottom-0 right-0 h-3 w-3 border-b-2 border-r-2"
-        :style="{ borderColor: palette.primary }"
-      ></span>
       <!-- shine sweep on hover -->
       <span
         v-if="interactive"

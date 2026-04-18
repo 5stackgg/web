@@ -23,7 +23,7 @@ import { ChevronRight } from "lucide-vue-next";
   <div class="space-y-6">
     <!-- Podium -->
     <section
-      v-if="showStandings && podium.length"
+      v-if="showStandings && podium.length && !isLive"
       class="relative overflow-hidden rounded-lg border border-border px-6 py-7 [background:radial-gradient(ellipse_at_top,hsl(var(--tac-amber)_/_0.08)_0%,transparent_60%),linear-gradient(180deg,hsl(var(--card)_/_0.6)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-['']"
     >
       <div
@@ -387,7 +387,16 @@ import { ChevronRight } from "lucide-vue-next";
     <!-- Standings Table -->
     <Card v-if="showStandings">
       <CardHeader>
-        <CardTitle>{{ $t("tournament.standings.title") }}</CardTitle>
+        <div class="flex items-center justify-between gap-3">
+          <CardTitle>{{ $t("tournament.standings.title") }}</CardTitle>
+          <span
+            v-if="isLive"
+            class="inline-flex items-center gap-2 rounded-sm border border-destructive/55 bg-destructive/15 px-2.5 py-1 font-mono text-[0.6rem] font-bold uppercase tracking-[0.22em] text-destructive"
+          >
+            <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+            LIVE · PROVISIONAL
+          </span>
+        </div>
       </CardHeader>
       <CardContent>
         <Table>
@@ -440,7 +449,7 @@ import { ChevronRight } from "lucide-vue-next";
                       {{ ordinal(teamResult.rank) }}
                     </span>
                     <span
-                      v-if="teamResult.tied"
+                      v-if="teamResult.tied && !isLive"
                       class="rounded-sm border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] px-1 py-[1px] font-mono text-[0.5rem] font-bold uppercase leading-none tracking-[0.18em] text-[hsl(var(--tac-amber))]"
                     >
                       TIED
@@ -672,6 +681,8 @@ import { ChevronRight } from "lucide-vue-next";
 </template>
 
 <script lang="ts">
+import { e_tournament_status_enum } from "~/generated/zeus";
+
 export default {
   props: {
     tournament: {
@@ -714,6 +725,7 @@ export default {
       return n + (s[(v - 20) % 10] || s[v] || s[0]);
     },
     rankStyle(rank: number) {
+      if ((this as any).isLive) return {};
       if (rank === 1) return { color: "hsl(45 95% 60%)" };
       if (rank === 2) return { color: "hsl(0 0% 78%)" };
       if (rank === 3) return { color: "hsl(28 70% 52%)" };
@@ -749,6 +761,11 @@ export default {
     },
   },
   computed: {
+    isLive() {
+      return (
+        (this.tournament as any)?.status === e_tournament_status_enum.Live
+      );
+    },
     podium() {
       const trophies = (this.tournament as any)?.trophies || [];
       if (trophies.length === 0) return [];

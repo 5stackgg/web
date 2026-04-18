@@ -327,9 +327,21 @@ export default {
         },
         result: function ({ data }) {
           this.team = data.teams_by_pk;
+          const ctx = useTeamContext();
+          if (this.team) {
+            ctx.value = {
+              id: this.team.id,
+              name: this.team.name,
+            };
+          } else {
+            ctx.value = null;
+          }
         },
       },
     },
+  },
+  unmounted() {
+    useTeamContext().value = null;
   },
   computed: {
     me() {

@@ -248,7 +248,10 @@ const playerTeamChipShortClasses =
     </PageTransition>
 
     <!-- Trophy Case -->
-    <PageTransition :delay="50" v-if="playerTrophies && playerTrophies.length > 0">
+    <PageTransition
+      :delay="50"
+      v-if="playerTrophies && playerTrophies.length > 0"
+    >
       <TrophyCase :trophies="playerTrophies" />
     </PageTransition>
 
@@ -670,6 +673,15 @@ export default {
         },
         result: function ({ data }) {
           this.player = data.players_by_pk;
+          const ctx = usePlayerContext();
+          if (this.player) {
+            ctx.value = {
+              id: String(this.player.steam_id),
+              name: this.player.name,
+            };
+          } else {
+            ctx.value = null;
+          }
         },
       },
       playerTournaments: {
@@ -804,6 +816,9 @@ export default {
         };
       },
     },
+  },
+  unmounted() {
+    usePlayerContext().value = null;
   },
   data() {
     return {

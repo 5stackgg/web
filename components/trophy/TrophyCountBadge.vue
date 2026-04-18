@@ -87,7 +87,9 @@ const hasAny = computed(() => visible.value.length > 0);
           boxShadow: `0 0 3px ${item.color}`,
         }"
       ></span>
-      <span class="tracking-[0.06em] text-muted-foreground">{{ item.label }}</span>
+      <span class="tracking-[0.06em] text-muted-foreground">{{
+        item.label
+      }}</span>
       <span>{{ item.count }}</span>
     </div>
   </div>

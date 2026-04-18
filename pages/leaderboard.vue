@@ -161,7 +161,11 @@ const leaderboardFadeTransition = {
                 >
                   <div
                     class="flex items-center justify-end gap-1"
-                    :style="trophyTierColor('value') ? { color: trophyTierColor('value') } : {}"
+                    :style="
+                      trophyTierColor('value')
+                        ? { color: trophyTierColor('value') }
+                        : {}
+                    "
                   >
                     <span
                       v-if="trophyTierColor('value')"
@@ -325,7 +329,9 @@ const leaderboardFadeTransition = {
                   <TableCell
                     class="text-right font-mono font-semibold tabular-nums"
                     :style="
-                      trophyTierColor('value') ? { color: trophyTierColor('value') } : {}
+                      trophyTierColor('value')
+                        ? { color: trophyTierColor('value') }
+                        : {}
                     "
                   >
                     {{ formatValue(entry.value) }}
@@ -333,7 +339,10 @@ const leaderboardFadeTransition = {
                   <TableCell
                     v-if="columnLabels.secondary_value"
                     class="text-right font-mono tabular-nums"
-                    :class="{ 'text-muted-foreground': !trophyTierColor('secondary_value') }"
+                    :class="{
+                      'text-muted-foreground':
+                        !trophyTierColor('secondary_value'),
+                    }"
                     :style="
                       trophyTierColor('secondary_value')
                         ? { color: trophyTierColor('secondary_value') }
@@ -345,7 +354,10 @@ const leaderboardFadeTransition = {
                   <TableCell
                     v-if="columnLabels.tertiary_value"
                     class="text-right font-mono tabular-nums"
-                    :class="{ 'text-muted-foreground': !trophyTierColor('tertiary_value') }"
+                    :class="{
+                      'text-muted-foreground':
+                        !trophyTierColor('tertiary_value'),
+                    }"
                     :style="
                       trophyTierColor('tertiary_value')
                         ? { color: trophyTierColor('tertiary_value') }
@@ -357,7 +369,10 @@ const leaderboardFadeTransition = {
                   <TableCell
                     v-if="columnLabels.matches_played"
                     class="text-right font-mono tabular-nums"
-                    :class="{ 'text-muted-foreground': !trophyTierColor('matches_played') }"
+                    :class="{
+                      'text-muted-foreground':
+                        !trophyTierColor('matches_played'),
+                    }"
                     :style="
                       trophyTierColor('matches_played')
                         ? {

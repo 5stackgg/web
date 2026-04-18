@@ -129,7 +129,9 @@ function handleTopClick(event: MouseEvent) {
             @click.stop="emit('dismiss', top.id)"
           >
             <Check class="h-3.5 w-3.5" />
-            <span class="sr-only">{{ $t("layouts.notifications.dismiss") }}</span>
+            <span class="sr-only">{{
+              $t("layouts.notifications.dismiss")
+            }}</span>
           </Button>
           <Button
             v-if="top.deletable !== false"

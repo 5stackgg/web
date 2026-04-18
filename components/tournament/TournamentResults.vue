@@ -35,7 +35,10 @@ import { ChevronRight } from "lucide-vue-next";
         <div
           class="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground"
         >
-          <span class="translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]">◢</span>
+          <span
+            class="translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]"
+            >◢</span
+          >
           {{ $t("trophies.title") }}
         </div>
         <div
@@ -90,7 +93,9 @@ import { ChevronRight } from "lucide-vue-next";
                   :tournament-start="tournament.start"
                   :tournament-type="entry.tournamentType"
                   :custom-name="trophyConfigFor(entry.placement)?.custom_name"
-                  :silhouette-override="trophyConfigFor(entry.placement)?.silhouette"
+                  :silhouette-override="
+                    trophyConfigFor(entry.placement)?.silhouette
+                  "
                   :image-url="trophyConfigFor(entry.placement)?.image_url"
                   :size="entry.placement === 1 ? 'lg' : 'md'"
                   :interactive="false"
@@ -104,8 +109,8 @@ import { ChevronRight } from "lucide-vue-next";
                   entry.placement === 1
                     ? 'min-h-[130px] sm:min-h-[150px]'
                     : entry.placement === 2
-                    ? 'min-h-[110px] sm:min-h-[125px]'
-                    : 'min-h-[95px] sm:min-h-[110px]'
+                      ? 'min-h-[110px] sm:min-h-[125px]'
+                      : 'min-h-[95px] sm:min-h-[110px]'
                 "
                 :style="{
                   clipPath:
@@ -191,7 +196,9 @@ import { ChevronRight } from "lucide-vue-next";
                 />
                 <template v-if="playerStatFor(p.steam_id)">
                   <div class="flex flex-col items-end">
-                    <span class="font-mono font-bold tabular-nums text-foreground">
+                    <span
+                      class="font-mono font-bold tabular-nums text-foreground"
+                    >
                       {{ playerStatFor(p.steam_id).kills }}
                     </span>
                     <span
@@ -200,7 +207,9 @@ import { ChevronRight } from "lucide-vue-next";
                     >
                   </div>
                   <div class="flex flex-col items-end">
-                    <span class="font-mono font-bold tabular-nums text-foreground">
+                    <span
+                      class="font-mono font-bold tabular-nums text-foreground"
+                    >
                       {{ playerStatFor(p.steam_id).assists }}
                     </span>
                     <span
@@ -209,7 +218,9 @@ import { ChevronRight } from "lucide-vue-next";
                     >
                   </div>
                   <div class="flex flex-col items-end">
-                    <span class="font-mono font-bold tabular-nums text-foreground">
+                    <span
+                      class="font-mono font-bold tabular-nums text-foreground"
+                    >
                       {{ playerStatFor(p.steam_id).deaths }}
                     </span>
                     <span
@@ -321,7 +332,9 @@ import { ChevronRight } from "lucide-vue-next";
           v-if="mvpStats"
           class="grid grid-cols-4 gap-0 overflow-hidden rounded-sm border border-border/80 bg-background/60 [backdrop-filter:blur(4px)] sm:w-auto"
         >
-          <div class="flex flex-col items-center border-r border-border/60 px-4 py-2">
+          <div
+            class="flex flex-col items-center border-r border-border/60 px-4 py-2"
+          >
             <span class="font-mono text-base font-bold tabular-nums">{{
               mvpStats.kills
             }}</span>
@@ -330,7 +343,9 @@ import { ChevronRight } from "lucide-vue-next";
               >KILLS</span
             >
           </div>
-          <div class="flex flex-col items-center border-r border-border/60 px-4 py-2">
+          <div
+            class="flex flex-col items-center border-r border-border/60 px-4 py-2"
+          >
             <span class="font-mono text-base font-bold tabular-nums">{{
               mvpStats.assists
             }}</span>
@@ -339,7 +354,9 @@ import { ChevronRight } from "lucide-vue-next";
               >ASSISTS</span
             >
           </div>
-          <div class="flex flex-col items-center border-r border-border/60 px-4 py-2">
+          <div
+            class="flex flex-col items-center border-r border-border/60 px-4 py-2"
+          >
             <span class="font-mono text-base font-bold tabular-nums">{{
               mvpStats.deaths
             }}</span>
@@ -391,19 +408,27 @@ import { ChevronRight } from "lucide-vue-next";
             </TableRow>
           </TableHeader>
           <TableBody>
-            <template v-for="teamResult in teamResults" :key="teamResult.teamId">
+            <template
+              v-for="teamResult in teamResults"
+              :key="teamResult.teamId"
+            >
               <TableRow
                 class="cursor-pointer transition-colors duration-150 hover:bg-[hsl(var(--tac-amber)_/_0.04)]"
                 :class="{
-                  'border-b-0 bg-[hsl(var(--tac-amber)_/_0.06)]':
-                    expanded.has(teamResult.teamId),
+                  'border-b-0 bg-[hsl(var(--tac-amber)_/_0.06)]': expanded.has(
+                    teamResult.teamId,
+                  ),
                 }"
                 @click="toggleExpanded(teamResult.teamId)"
               >
                 <TableCell>
                   <ChevronRight
                     class="h-4 w-4 text-muted-foreground transition-transform duration-200"
-                    :class="{ 'rotate-90 text-[hsl(var(--tac-amber))]': expanded.has(teamResult.teamId) }"
+                    :class="{
+                      'rotate-90 text-[hsl(var(--tac-amber))]': expanded.has(
+                        teamResult.teamId,
+                      ),
+                    }"
                   />
                 </TableCell>
                 <TableCell class="text-center">
@@ -447,7 +472,9 @@ import { ChevronRight } from "lucide-vue-next";
                 class="bg-[hsl(var(--tac-amber)_/_0.03)] hover:bg-[hsl(var(--tac-amber)_/_0.03)]"
               >
                 <TableCell :colspan="6" class="p-0">
-                  <div class="relative border-t border-[hsl(var(--tac-amber)_/_0.25)] px-4 py-3">
+                  <div
+                    class="relative border-t border-[hsl(var(--tac-amber)_/_0.25)] px-4 py-3"
+                  >
                     <span
                       class="pointer-events-none absolute inset-x-4 top-0 h-[1px]"
                       style="
@@ -462,26 +489,48 @@ import { ChevronRight } from "lucide-vue-next";
                     <div
                       class="mb-2 inline-flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
                     >
-                      <span class="h-[2px] w-2 bg-[hsl(var(--tac-amber))]"></span>
+                      <span
+                        class="h-[2px] w-2 bg-[hsl(var(--tac-amber))]"
+                      ></span>
                       ROSTER PERFORMANCE
                     </div>
-                    <div class="overflow-hidden rounded-sm border border-border/60">
+                    <div
+                      class="overflow-hidden rounded-sm border border-border/60"
+                    >
                       <table class="w-full text-xs">
                         <thead class="bg-background/50">
-                          <tr class="font-mono uppercase tracking-[0.18em] text-muted-foreground">
-                            <th class="px-3 py-1.5 text-left text-[0.6rem]">Player</th>
-                            <th class="px-2 py-1.5 text-right text-[0.6rem]">K</th>
-                            <th class="px-2 py-1.5 text-right text-[0.6rem]">A</th>
-                            <th class="px-2 py-1.5 text-right text-[0.6rem]">D</th>
-                            <th class="px-2 py-1.5 text-right text-[0.6rem]">K/D</th>
-                            <th class="px-2 py-1.5 text-right text-[0.6rem]">HS%</th>
-                            <th class="px-3 py-1.5 text-right text-[0.6rem]">MP</th>
+                          <tr
+                            class="font-mono uppercase tracking-[0.18em] text-muted-foreground"
+                          >
+                            <th class="px-3 py-1.5 text-left text-[0.6rem]">
+                              Player
+                            </th>
+                            <th class="px-2 py-1.5 text-right text-[0.6rem]">
+                              K
+                            </th>
+                            <th class="px-2 py-1.5 text-right text-[0.6rem]">
+                              A
+                            </th>
+                            <th class="px-2 py-1.5 text-right text-[0.6rem]">
+                              D
+                            </th>
+                            <th class="px-2 py-1.5 text-right text-[0.6rem]">
+                              K/D
+                            </th>
+                            <th class="px-2 py-1.5 text-right text-[0.6rem]">
+                              HS%
+                            </th>
+                            <th class="px-3 py-1.5 text-right text-[0.6rem]">
+                              MP
+                            </th>
                           </tr>
                         </thead>
                         <tbody class="divide-y divide-border/40">
                           <tr
                             v-for="rosterItem in teamResult.team?.roster || []"
-                            :key="rosterItem.player?.steam_id || rosterItem.steam_id"
+                            :key="
+                              rosterItem.player?.steam_id || rosterItem.steam_id
+                            "
                           >
                             <td class="px-3 py-2">
                               <PlayerDisplay
@@ -495,48 +544,80 @@ import { ChevronRight } from "lucide-vue-next";
                               />
                             </td>
                             <template
-                              v-if="playerStatFor(rosterItem.player?.steam_id || rosterItem.steam_id)"
+                              v-if="
+                                playerStatFor(
+                                  rosterItem.player?.steam_id ||
+                                    rosterItem.steam_id,
+                                )
+                              "
                             >
-                              <td class="px-2 py-2 text-right font-mono font-semibold tabular-nums">
+                              <td
+                                class="px-2 py-2 text-right font-mono font-semibold tabular-nums"
+                              >
                                 {{
-                                  playerStatFor(rosterItem.player?.steam_id || rosterItem.steam_id).kills
+                                  playerStatFor(
+                                    rosterItem.player?.steam_id ||
+                                      rosterItem.steam_id,
+                                  ).kills
                                 }}
                               </td>
-                              <td class="px-2 py-2 text-right font-mono tabular-nums text-muted-foreground">
+                              <td
+                                class="px-2 py-2 text-right font-mono tabular-nums text-muted-foreground"
+                              >
                                 {{
-                                  playerStatFor(rosterItem.player?.steam_id || rosterItem.steam_id).assists
+                                  playerStatFor(
+                                    rosterItem.player?.steam_id ||
+                                      rosterItem.steam_id,
+                                  ).assists
                                 }}
                               </td>
-                              <td class="px-2 py-2 text-right font-mono tabular-nums text-muted-foreground">
+                              <td
+                                class="px-2 py-2 text-right font-mono tabular-nums text-muted-foreground"
+                              >
                                 {{
-                                  playerStatFor(rosterItem.player?.steam_id || rosterItem.steam_id).deaths
+                                  playerStatFor(
+                                    rosterItem.player?.steam_id ||
+                                      rosterItem.steam_id,
+                                  ).deaths
                                 }}
                               </td>
                               <td
                                 class="px-2 py-2 text-right font-mono font-semibold tabular-nums"
                                 :style="{
                                   color:
-                                    playerStatFor(rosterItem.player?.steam_id || rosterItem.steam_id).kdr >= 1
+                                    playerStatFor(
+                                      rosterItem.player?.steam_id ||
+                                        rosterItem.steam_id,
+                                    ).kdr >= 1
                                       ? 'hsl(142, 71%, 55%)'
                                       : 'hsl(0, 84%, 65%)',
                                 }"
                               >
                                 {{
                                   playerStatFor(
-                                    rosterItem.player?.steam_id || rosterItem.steam_id,
+                                    rosterItem.player?.steam_id ||
+                                      rosterItem.steam_id,
                                   ).kdr.toFixed(2)
                                 }}
                               </td>
-                              <td class="px-2 py-2 text-right font-mono tabular-nums text-muted-foreground">
+                              <td
+                                class="px-2 py-2 text-right font-mono tabular-nums text-muted-foreground"
+                              >
                                 {{
                                   playerStatFor(
-                                    rosterItem.player?.steam_id || rosterItem.steam_id,
+                                    rosterItem.player?.steam_id ||
+                                      rosterItem.steam_id,
                                   ).headshot_percentage.toFixed(0)
                                 }}%
                               </td>
-                              <td class="px-3 py-2 text-right font-mono tabular-nums text-muted-foreground">
+                              <td
+                                class="px-3 py-2 text-right font-mono tabular-nums text-muted-foreground"
+                              >
                                 {{
-                                  playerStatFor(rosterItem.player?.steam_id || rosterItem.steam_id).matches_played
+                                  playerStatFor(
+                                    rosterItem.player?.steam_id ||
+                                      rosterItem.steam_id,
+                                  ).matches_played
                                 }}
                               </td>
                             </template>
@@ -685,8 +766,8 @@ export default {
         const players = rosterPlayers.length
           ? rosterPlayers
           : t.player
-          ? [t.player]
-          : [];
+            ? [t.player]
+            : [];
         byPlacement.set(t.placement, {
           placement: t.placement,
           teamId: t.tournament_team_id,
@@ -718,21 +799,23 @@ export default {
         b > 0 ? Number(a) / Number(b) : Number(a);
 
       const sorted = [...results].sort((a: any, b: any) => {
-        const aw = Number(a.wins) || 0, bw = Number(b.wins) || 0;
+        const aw = Number(a.wins) || 0,
+          bw = Number(b.wins) || 0;
         if (aw !== bw) return bw - aw;
         const ah = Number(a.head_to_head_match_wins) || 0,
-              bh = Number(b.head_to_head_match_wins) || 0;
+          bh = Number(b.head_to_head_match_wins) || 0;
         if (ah !== bh) return bh - ah;
         const ahr = Number(a.head_to_head_rounds_won) || 0,
-              bhr = Number(b.head_to_head_rounds_won) || 0;
+          bhr = Number(b.head_to_head_rounds_won) || 0;
         if (ahr !== bhr) return bhr - ahr;
         const amr = ratio(a.maps_won, a.maps_lost),
-              bmr = ratio(b.maps_won, b.maps_lost);
+          bmr = ratio(b.maps_won, b.maps_lost);
         if (amr !== bmr) return bmr - amr;
         const arr = ratio(a.rounds_won, a.rounds_lost),
-              brr = ratio(b.rounds_won, b.rounds_lost);
+          brr = ratio(b.rounds_won, b.rounds_lost);
         if (arr !== brr) return brr - arr;
-        const ak = Number(a.team_kdr) || 0, bk = Number(b.team_kdr) || 0;
+        const ak = Number(a.team_kdr) || 0,
+          bk = Number(b.team_kdr) || 0;
         return bk - ak;
       });
 

@@ -84,12 +84,18 @@ const displayName = computed(() => {
 
 const gradId = computed(() => `trophy-grad-${seed.value}-${tier.value}`);
 const shineId = computed(() => `trophy-shine-${seed.value}-${tier.value}`);
-const ornamentId = computed(() => `trophy-ornament-${seed.value}-${tier.value}`);
-const specularId = computed(() => `trophy-specular-${seed.value}-${tier.value}`);
+const ornamentId = computed(
+  () => `trophy-ornament-${seed.value}-${tier.value}`,
+);
+const specularId = computed(
+  () => `trophy-specular-${seed.value}-${tier.value}`,
+);
 const plinthId = computed(() => `trophy-plinth-${seed.value}-${tier.value}`);
 
 const pixelSize = computed(() => SIZES[props.size]);
-const showEngraving = computed(() => props.size === "md" || props.size === "lg");
+const showEngraving = computed(
+  () => props.size === "md" || props.size === "lg",
+);
 const showOverlay = computed(() => props.size !== "xs");
 </script>
 
@@ -97,7 +103,8 @@ const showOverlay = computed(() => props.size !== "xs");
   <div
     :class="[
       'relative inline-flex shrink-0 items-center justify-center',
-      interactive && 'group/trophy transition-transform duration-300 motion-reduce:transition-none',
+      interactive &&
+        'group/trophy transition-transform duration-300 motion-reduce:transition-none',
       interactive && 'hover:-translate-y-0.5 hover:scale-[1.03]',
     ]"
     :style="{ width: `${pixelSize}px`, height: `${pixelSize}px` }"
@@ -171,13 +178,33 @@ const showOverlay = computed(() => props.size !== "xs");
           patternTransform="rotate(30)"
         >
           <template v-if="variants.ornament === 0">
-            <line x1="0" y1="7" x2="14" y2="7" :stroke="palette.shadow" stroke-width="1.5" stroke-opacity="0.35" />
+            <line
+              x1="0"
+              y1="7"
+              x2="14"
+              y2="7"
+              :stroke="palette.shadow"
+              stroke-width="1.5"
+              stroke-opacity="0.35"
+            />
           </template>
           <template v-else-if="variants.ornament === 1">
-            <circle cx="7" cy="7" r="1.6" :fill="palette.shadow" fill-opacity="0.35" />
+            <circle
+              cx="7"
+              cy="7"
+              r="1.6"
+              :fill="palette.shadow"
+              fill-opacity="0.35"
+            />
           </template>
           <template v-else>
-            <path d="M0 14 L7 0 L14 14" :stroke="palette.shadow" stroke-width="1.2" stroke-opacity="0.35" fill="none" />
+            <path
+              d="M0 14 L7 0 L14 14"
+              :stroke="palette.shadow"
+              stroke-width="1.2"
+              stroke-opacity="0.35"
+              fill="none"
+            />
           </template>
         </pattern>
       </defs>
@@ -200,12 +227,36 @@ const showOverlay = computed(() => props.size !== "xs");
         />
       </g>
       <g v-else-if="variants.handleStyle === 1">
-        <path d="M60 90 C30 100 30 150 65 155" fill="none" :stroke="`url(#${gradId})`" stroke-width="10" stroke-linecap="round" />
-        <path d="M140 90 C170 100 170 150 135 155" fill="none" :stroke="`url(#${gradId})`" stroke-width="10" stroke-linecap="round" />
+        <path
+          d="M60 90 C30 100 30 150 65 155"
+          fill="none"
+          :stroke="`url(#${gradId})`"
+          stroke-width="10"
+          stroke-linecap="round"
+        />
+        <path
+          d="M140 90 C170 100 170 150 135 155"
+          fill="none"
+          :stroke="`url(#${gradId})`"
+          stroke-width="10"
+          stroke-linecap="round"
+        />
       </g>
       <g v-else>
-        <path d="M62 88 Q25 110 35 150 Q45 175 70 160" fill="none" :stroke="`url(#${gradId})`" stroke-width="7" stroke-linejoin="round" />
-        <path d="M138 88 Q175 110 165 150 Q155 175 130 160" fill="none" :stroke="`url(#${gradId})`" stroke-width="7" stroke-linejoin="round" />
+        <path
+          d="M62 88 Q25 110 35 150 Q45 175 70 160"
+          fill="none"
+          :stroke="`url(#${gradId})`"
+          stroke-width="7"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M138 88 Q175 110 165 150 Q155 175 130 160"
+          fill="none"
+          :stroke="`url(#${gradId})`"
+          stroke-width="7"
+          stroke-linejoin="round"
+        />
       </g>
 
       <!-- Silhouette variants -->
@@ -294,13 +345,25 @@ const showOverlay = computed(() => props.size !== "xs");
         />
       </g>
       <g v-else>
-        <circle cx="100" cy="95" r="10" :fill="gemColor" :stroke="palette.shadow" stroke-width="1.5" />
+        <circle
+          cx="100"
+          cy="95"
+          r="10"
+          :fill="gemColor"
+          :stroke="palette.shadow"
+          stroke-width="1.5"
+        />
         <circle cx="96" cy="91" r="3" fill="white" fill-opacity="0.7" />
       </g>
 
       <!-- Type overlay icon -->
       <g v-if="showOverlay && tournamentType" transform="translate(100 140)">
-        <g :stroke="palette.shadow" stroke-width="1.2" fill="none" stroke-opacity="0.55">
+        <g
+          :stroke="palette.shadow"
+          stroke-width="1.2"
+          fill="none"
+          stroke-opacity="0.55"
+        >
           <!-- Single/Double elimination: bracket -->
           <template v-if="tournamentType === 'SingleElimination'">
             <path d="M-12 -6 L-6 -6 L-6 0 L-12 0" />

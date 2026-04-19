@@ -319,10 +319,10 @@ import { ChevronRight } from "lucide-vue-next";
               size="sm"
             />
             <div
-              v-if="mvp.tournament_team?.name"
+              v-if="mvpTeamName"
               class="font-mono text-[0.68rem] uppercase tracking-[0.2em] text-muted-foreground"
             >
-              ↳ {{ mvp.tournament_team.name }}
+              ↳ {{ mvpTeamName }}
             </div>
           </div>
         </div>
@@ -741,6 +741,16 @@ export default {
       const configs = (this.tournament as any)?.trophy_configs || [];
       return configs.find((c: any) => c.placement === placement) || null;
     },
+    // Prefer the underlying linked team's name; tournament_team.name is a
+    // copy that sometimes holds a placeholder (e.g. "Team <uuid>"), so using
+    // it first produced inconsistent labels between podium and standings.
+    displayTeamName(tournamentTeam: any, fallbackId?: string) {
+      const underlying = tournamentTeam?.team?.name;
+      if (underlying) return underlying;
+      const ownName = tournamentTeam?.name;
+      if (ownName) return ownName;
+      return fallbackId ? `Team ${fallbackId}` : "";
+    },
     playerStatFor(steamId: string | number) {
       if (!steamId) return null;
       const stats = (this.tournament as any)?.player_stats || [];
@@ -786,7 +796,10 @@ export default {
         byPlacement.set(t.placement, {
           placement: t.placement,
           teamId: t.tournament_team_id,
-          teamName: t.tournament_team?.name || "",
+          teamName: this.displayTeamName(
+            t.tournament_team,
+            t.tournament_team_id,
+          ),
           tournamentType: t.tournament_type,
           players,
         });
@@ -799,6 +812,13 @@ export default {
       const trophies = (this.tournament as any)?.trophies || [];
       return trophies.find((t: any) => t.placement === 0) || null;
     },
+    mvpTeamName() {
+      if (!this.mvp?.tournament_team) return "";
+      return this.displayTeamName(
+        this.mvp.tournament_team,
+        this.mvp.tournament_team_id,
+      );
+    },
     mvpStats() {
       if (!this.mvp?.player_steam_id) return null;
       return this.playerStatFor(this.mvp.player_steam_id);
@@ -810,10 +830,32 @@ export default {
 
       const teamById = new Map(teams.map((t: any) => [t.id, t]));
 
+      // Trophy placements come from bracket outcomes, so for elim finals they
+      // reflect who actually won — not just best stats. Use them to pin the
+      // top rows of the standings so podium and table never disagree.
+      const trophies = ((this.tournament as any)?.trophies || []) as any[];
+      const placementByTeam = new Map<string, number>();
+      for (const t of trophies) {
+        if (
+          t.placement >= 1 &&
+          t.placement <= 3 &&
+          t.tournament_team_id &&
+          !placementByTeam.has(t.tournament_team_id)
+        ) {
+          placementByTeam.set(t.tournament_team_id, t.placement);
+        }
+      }
+
       const ratio = (a: number, b: number) =>
         b > 0 ? Number(a) / Number(b) : Number(a);
 
       const sorted = [...results].sort((a: any, b: any) => {
+        const aPlace = placementByTeam.get(a.tournament_team_id);
+        const bPlace = placementByTeam.get(b.tournament_team_id);
+        if (aPlace && bPlace) return aPlace - bPlace;
+        if (aPlace) return -1;
+        if (bPlace) return 1;
+
         const aw = Number(a.wins) || 0,
           bw = Number(b.wins) || 0;
         if (aw !== bw) return bw - aw;
@@ -834,8 +876,10 @@ export default {
         return bk - ak;
       });
 
-      const tieKey = (r: any) =>
-        [
+      const tieKey = (r: any) => {
+        const place = placementByTeam.get(r.tournament_team_id);
+        if (place) return `P${place}`;
+        return [
           Number(r.wins) || 0,
           Number(r.head_to_head_match_wins) || 0,
           Number(r.head_to_head_rounds_won) || 0,
@@ -843,6 +887,7 @@ export default {
           ratio(r.rounds_won, r.rounds_lost),
           Number(r.team_kdr) || 0,
         ].join("|");
+      };
 
       let currentRank = 0;
       let lastKey: string | null = null;
@@ -858,7 +903,7 @@ export default {
         const team = teamById.get(r.tournament_team_id);
         return {
           teamId: r.tournament_team_id,
-          teamName: team?.name || `Team ${r.tournament_team_id}`,
+          teamName: this.displayTeamName(team, r.tournament_team_id),
           team,
           rank: currentRank,
           wins: Number(r.wins) || 0,

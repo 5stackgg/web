@@ -924,6 +924,9 @@ export default {
                   tournament_team: {
                     id: true,
                     name: true,
+                    team: {
+                      name: true,
+                    },
                     roster: [
                       {},
                       {

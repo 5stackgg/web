@@ -35,6 +35,7 @@ import MatchesTable from "~/components/MatchesTable.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AvatarUpload from "~/components/AvatarUpload.vue";
+import TrophyCase from "~/components/trophy/TrophyCase.vue";
 
 const teamMenu = ref(false);
 const teamHeroClasses =
@@ -188,6 +189,14 @@ const teamHeroActionsClasses =
     </header>
   </PageTransition>
 
+  <PageTransition
+    :delay="50"
+    v-if="teamTrophies && teamTrophies.length > 0"
+    class="mt-6"
+  >
+    <TrophyCase :trophies="teamTrophies" />
+  </PageTransition>
+
   <div v-if="team" class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">
     <PageTransition :delay="100" class="lg:col-span-2">
       <TeamMembers :team-id="$route.params.id" />
@@ -285,11 +294,13 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { playerFields } from "~/graphql/playerFields";
+import { trophyFields } from "~/graphql/trophyFields";
 
 export default {
   data() {
     return {
       team: undefined,
+      teamTrophies: [] as any[],
       tournamentMatches: [] as any[],
       editTeamSheet: false,
       leaveTeamAlertDialog: false,
@@ -388,6 +399,33 @@ export default {
         },
         result: function ({ data }) {
           this.tournamentMatches = data.matches || [];
+        },
+      },
+      teamTrophies: {
+        query: typedGql("subscription")({
+          tournament_trophies: [
+            {
+              where: {
+                player_steam_id: {
+                  _is_null: true,
+                },
+                tournament_team: {
+                  team_id: {
+                    _eq: $("teamId", "uuid!"),
+                  },
+                },
+              },
+            },
+            trophyFields,
+          ],
+        }),
+        variables: function () {
+          return {
+            teamId: this.$route.params.id,
+          };
+        },
+        result: function ({ data }) {
+          this.teamTrophies = data.tournament_trophies || [];
         },
       },
     },

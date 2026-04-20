@@ -358,9 +358,6 @@ export default {
                 },
               ],
               where: {
-                is_tournament_match: {
-                  _eq: true,
-                },
                 tournament_brackets: {
                   _or: [
                     {

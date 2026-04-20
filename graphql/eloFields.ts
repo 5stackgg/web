@@ -9,6 +9,7 @@ export const eloFields = Selector("v_player_elo")({
   deaths: true,
   elo_change: true,
   expected_score: true,
+  impact: true,
   k_factor: true,
   kda: true,
   kills: true,

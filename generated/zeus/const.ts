@@ -25050,6 +25050,7 @@ export const ReturnTypes: Record<string,any> = {
 		deaths:"Int",
 		elo_change:"Int",
 		expected_score:"float8",
+		impact:"float8",
 		k_factor:"Int",
 		kda:"float8",
 		kills:"Int",

@@ -782,7 +782,14 @@ export default {
         if (t.placement === 0) continue;
         const existing = byPlacement.get(t.placement);
         if (existing) {
-          if (t.player) existing.players.push(t.player);
+          if (
+            t.player &&
+            !existing.players.some(
+              (p: any) => String(p.steam_id) === String(t.player.steam_id),
+            )
+          ) {
+            existing.players.push(t.player);
+          }
           continue;
         }
         const rosterPlayers = (t.tournament_team?.roster || [])

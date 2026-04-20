@@ -464,8 +464,7 @@ export default {
               game: z.string().default("cs2"),
               use_valve_modes: z.boolean().default(false),
               host: z
-                .string()
-                .ip({ version: "v4" })
+                .ipv4()
                 .or(
                   z
                     .string()

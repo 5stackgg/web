@@ -596,6 +596,7 @@ import { eloFields } from "~/graphql/eloFields";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
 import { trophyFields } from "~/graphql/trophyFields";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 export default {
   apollo: {
@@ -862,7 +863,10 @@ export default {
     },
     playerAvatarSrc() {
       if (!this.player) return null;
-      return this.player.custom_avatar_url || this.player.avatar_url || null;
+      return resolveAvatarUrl(
+        this.player.custom_avatar_url || this.player.avatar_url,
+        this.apiDomain,
+      );
     },
     canSanction() {
       if (!this.me || !this.player) {

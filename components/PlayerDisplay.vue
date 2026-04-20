@@ -220,6 +220,7 @@ import TrophyCountBadge from "~/components/trophy/TrophyCountBadge.vue";
 <script lang="ts">
 import { e_player_roles_enum } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 export default {
   props: {
@@ -306,9 +307,15 @@ export default {
     me() {
       return useAuthStore().me;
     },
+    apiDomain() {
+      return useRuntimeConfig().public.apiDomain;
+    },
     playerAvatarSrc() {
       if (!this.player) return null;
-      return this.player.custom_avatar_url || this.player.avatar_url || null;
+      return resolveAvatarUrl(
+        this.player.custom_avatar_url || this.player.avatar_url,
+        this.apiDomain,
+      );
     },
     isMe() {
       if (!this.player) {

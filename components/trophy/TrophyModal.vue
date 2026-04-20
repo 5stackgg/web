@@ -14,12 +14,16 @@ interface Trophy {
   placement: number;
   placement_tier?: string | null;
   tournament_id: string;
-  tournament_name: string;
-  tournament_start?: string | null;
-  tournament_type?: string | null;
-  custom_name?: string | null;
-  silhouette?: number | null;
-  image_url?: string | null;
+  tournament?: {
+    name: string;
+    start?: string | null;
+    stages?: Array<{ type: string }> | null;
+  } | null;
+  trophy_config?: {
+    custom_name?: string | null;
+    silhouette?: number | null;
+    image_url?: string | null;
+  } | null;
 }
 
 interface Props {
@@ -45,8 +49,8 @@ const tierColor = computed(() => {
 });
 
 const formattedDate = computed(() => {
-  if (!props.trophy.tournament_start) return null;
-  const d = new Date(props.trophy.tournament_start);
+  if (!props.trophy.tournament?.start) return null;
+  const d = new Date(props.trophy.tournament.start);
   if (Number.isNaN(d.getTime())) return null;
   return d
     .toLocaleDateString(undefined, {
@@ -56,6 +60,11 @@ const formattedDate = computed(() => {
     })
     .toUpperCase();
 });
+
+const tournamentName = computed(() => props.trophy.tournament?.name || "");
+const tournamentType = computed(
+  () => props.trophy.tournament?.stages?.[0]?.type || null,
+);
 </script>
 
 <template>
@@ -73,10 +82,10 @@ const formattedDate = computed(() => {
         <DialogTitle
           class="text-xl font-bold uppercase tracking-[0.04em] sm:text-2xl"
         >
-          {{ trophy.tournament_name }}
+          {{ tournamentName }}
         </DialogTitle>
         <DialogDescription class="sr-only">
-          {{ trophy.tournament_name }} — {{ $t(placementLabelKey) }}
+          {{ tournamentName }} — {{ $t(placementLabelKey) }}
         </DialogDescription>
       </DialogHeader>
 
@@ -100,12 +109,12 @@ const formattedDate = computed(() => {
           <TrophyBadge
             :tournament-id="trophy.tournament_id"
             :placement="trophy.placement"
-            :tournament-name="trophy.tournament_name"
-            :tournament-start="trophy.tournament_start"
-            :tournament-type="trophy.tournament_type"
-            :custom-name="trophy.custom_name"
-            :silhouette-override="trophy.silhouette"
-            :image-url="trophy.image_url"
+            :tournament-name="tournamentName"
+            :tournament-start="trophy.tournament?.start"
+            :tournament-type="tournamentType"
+            :custom-name="trophy.trophy_config?.custom_name"
+            :silhouette-override="trophy.trophy_config?.silhouette"
+            :image-url="trophy.trophy_config?.image_url"
             size="lg"
             :interactive="false"
           />
@@ -141,7 +150,7 @@ const formattedDate = computed(() => {
           >
             {{ $t("trophies.tournament") }}
           </dt>
-          <dd class="font-semibold">{{ trophy.tournament_type || "—" }}</dd>
+          <dd class="font-semibold">{{ tournamentType || "—" }}</dd>
         </div>
         <div class="flex flex-col gap-1 p-3">
           <dt

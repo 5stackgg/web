@@ -17,6 +17,19 @@ import {
   HoverCardTrigger,
 } from "~/components/ui/hover-card";
 import { ChevronRight } from "lucide-vue-next";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
+
+const apiDomain = useRuntimeConfig().public.apiDomain;
+
+function playerAvatarSrc(player: {
+  custom_avatar_url?: string | null;
+  avatar_url?: string | null;
+}) {
+  return resolveAvatarUrl(
+    player.custom_avatar_url || player.avatar_url,
+    apiDomain,
+  );
+}
 </script>
 
 <template>
@@ -143,8 +156,8 @@ import { ChevronRight } from "lucide-vue-next";
                       :title="p.name"
                     >
                       <img
-                        v-if="p.custom_avatar_url || p.avatar_url"
-                        :src="p.custom_avatar_url || p.avatar_url"
+                        v-if="playerAvatarSrc(p)"
+                        :src="playerAvatarSrc(p)"
                         :alt="p.name"
                         class="h-full w-full object-cover"
                       />
@@ -280,7 +293,7 @@ import { ChevronRight } from "lucide-vue-next";
               :placement="0"
               :tournament-name="tournament.name"
               :tournament-start="tournament.start"
-              :tournament-type="mvp.tournament_type"
+              :tournament-type="finalStageType"
               :custom-name="trophyConfigFor(0)?.custom_name"
               :silhouette-override="trophyConfigFor(0)?.silhouette"
               :image-url="trophyConfigFor(0)?.image_url"
@@ -774,6 +787,10 @@ export default {
     isLive() {
       return (this.tournament as any)?.status === e_tournament_status_enum.Live;
     },
+    finalStageType() {
+      const stages = (this.tournament as any)?.stages || [];
+      return stages.length ? stages[stages.length - 1]?.type || null : null;
+    },
     podium() {
       const trophies = (this.tournament as any)?.trophies || [];
       if (trophies.length === 0) return [];
@@ -807,7 +824,7 @@ export default {
             t.tournament_team,
             t.tournament_team_id,
           ),
-          tournamentType: t.tournament_type,
+          tournamentType: this.finalStageType,
           players,
         });
       }

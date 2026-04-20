@@ -135,7 +135,7 @@ const teamHeroActionsClasses =
               <span :class="teamHeroStatDividerClasses"></span>
               <div :class="teamHeroStatClasses">
                 <span :class="teamHeroStatValueClasses">{{
-                  team.matches?.length || 0
+                  teamMatches.length
                 }}</span>
                 <span :class="teamHeroStatLabelClasses">{{
                   $t("team.hero.matches")
@@ -197,7 +197,7 @@ const teamHeroActionsClasses =
         <h2 class="text-lg font-semibold tracking-tight">
           {{ $t("match.recent.title") }}
         </h2>
-        <MatchesTable :matches="team.matches" />
+        <MatchesTable :matches="teamMatches" :show-all-matches="true" />
       </div>
     </PageTransition>
   </div>
@@ -280,7 +280,7 @@ const teamHeroActionsClasses =
 </template>
 
 <script lang="ts">
-import { $ } from "~/generated/zeus";
+import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
@@ -290,6 +290,7 @@ export default {
   data() {
     return {
       team: undefined,
+      tournamentMatches: [] as any[],
       editTeamSheet: false,
       leaveTeamAlertDialog: false,
       deleteTeamAlertDialog: false,
@@ -316,7 +317,16 @@ export default {
                   player: playerFields,
                 },
               ],
-              matches: [{}, simpleMatchFields],
+              matches: [
+                {
+                  order_by: [
+                    {
+                      created_at: order_by.desc,
+                    },
+                  ],
+                },
+                simpleMatchFields,
+              ],
             },
           ],
         }),
@@ -338,6 +348,51 @@ export default {
           }
         },
       },
+      tournamentMatches: {
+        query: typedGql("subscription")({
+          matches: [
+            {
+              order_by: [
+                {
+                  created_at: order_by.desc,
+                },
+              ],
+              where: {
+                is_tournament_match: {
+                  _eq: true,
+                },
+                tournament_brackets: {
+                  _or: [
+                    {
+                      team_1: {
+                        team_id: {
+                          _eq: $("teamId", "uuid!"),
+                        },
+                      },
+                    },
+                    {
+                      team_2: {
+                        team_id: {
+                          _eq: $("teamId", "uuid!"),
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+            simpleMatchFields,
+          ],
+        }),
+        variables: function () {
+          return {
+            teamId: this.$route.params.id,
+          };
+        },
+        result: function ({ data }) {
+          this.tournamentMatches = data.matches || [];
+        },
+      },
     },
   },
   unmounted() {
@@ -353,6 +408,25 @@ export default {
     teamAvatarSrc() {
       if (!this.team?.avatar_url) return null;
       return `https://${this.apiDomain}/${this.team.avatar_url}`;
+    },
+    teamMatches() {
+      const matchesById = new Map<string, any>();
+
+      for (const match of [
+        ...(this.team?.matches || []),
+        ...this.tournamentMatches,
+      ]) {
+        if (match?.id && !matchesById.has(match.id)) {
+          matchesById.set(match.id, match);
+        }
+      }
+
+      return Array.from(matchesById.values()).sort((a, b) => {
+        const aDate = a.started_at || a.scheduled_at || a.created_at;
+        const bDate = b.started_at || b.scheduled_at || b.created_at;
+
+        return new Date(bDate).getTime() - new Date(aDate).getTime();
+      });
     },
     isOnTeam() {
       return !!this.team?.roster.some(({ player }) => {

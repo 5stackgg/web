@@ -8,12 +8,31 @@ interface Trophy {
   placement: number;
   placement_tier?: string | null;
   tournament_id: string;
-  tournament_name: string;
-  tournament_start?: string | null;
-  tournament_type?: string | null;
-  custom_name?: string | null;
-  silhouette?: number | null;
-  image_url?: string | null;
+  team_id?: string | null;
+  tournament?: {
+    name: string;
+    start?: string | null;
+    stages?: Array<{ type: string }> | null;
+  } | null;
+  tournament_team?: {
+    name?: string | null;
+    team_id?: string | null;
+    team?: {
+      id: string;
+      name?: string | null;
+      short_name?: string | null;
+    } | null;
+  } | null;
+  team?: {
+    id: string;
+    name?: string | null;
+    short_name?: string | null;
+  } | null;
+  trophy_config?: {
+    custom_name?: string | null;
+    silhouette?: number | null;
+    image_url?: string | null;
+  } | null;
 }
 
 interface Props {
@@ -33,8 +52,12 @@ const sorted = computed(() => {
   if (!props.trophies) return [];
   return [...props.trophies].sort((a, b) => {
     if (a.placement !== b.placement) return a.placement - b.placement;
-    const da = a.tournament_start ? new Date(a.tournament_start).getTime() : 0;
-    const db = b.tournament_start ? new Date(b.tournament_start).getTime() : 0;
+    const da = a.tournament?.start
+      ? new Date(a.tournament.start).getTime()
+      : 0;
+    const db = b.tournament?.start
+      ? new Date(b.tournament.start).getTime()
+      : 0;
     return db - da;
   });
 });
@@ -181,12 +204,12 @@ function placementUplight(placement: number) {
         <TrophyBadge
           :tournament-id="trophy.tournament_id"
           :placement="trophy.placement"
-          :tournament-name="trophy.tournament_name"
-          :tournament-start="trophy.tournament_start"
-          :tournament-type="trophy.tournament_type"
-          :custom-name="trophy.custom_name"
-          :silhouette-override="trophy.silhouette"
-          :image-url="trophy.image_url"
+          :tournament-name="trophy.tournament?.name"
+          :tournament-start="trophy.tournament?.start"
+          :tournament-type="trophy.tournament?.stages?.[0]?.type"
+          :custom-name="trophy.trophy_config?.custom_name"
+          :silhouette-override="trophy.trophy_config?.silhouette"
+          :image-url="trophy.trophy_config?.image_url"
           size="md"
           class="relative z-[1]"
         />
@@ -195,16 +218,16 @@ function placementUplight(placement: number) {
         <div class="relative z-[1] mt-1 w-full">
           <div
             class="truncate text-center text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-foreground group-hover/pedestal:text-[hsl(var(--tac-amber))]"
-            :title="trophy.custom_name || trophy.tournament_name"
+            :title="trophy.trophy_config?.custom_name || trophy.tournament?.name"
           >
-            {{ trophy.custom_name || trophy.tournament_name }}
+            {{ trophy.trophy_config?.custom_name || trophy.tournament?.name }}
           </div>
           <div
-            v-if="trophy.tournament_start"
+            v-if="trophy.tournament?.start"
             class="mt-0.5 flex items-center justify-center gap-1.5 font-mono text-[0.58rem] uppercase tracking-[0.2em] text-muted-foreground/80"
           >
             <span class="h-[1px] w-2 bg-border"></span>
-            {{ formatTrophyDate(trophy.tournament_start) }}
+            {{ formatTrophyDate(trophy.tournament.start) }}
             <span class="h-[1px] w-2 bg-border"></span>
           </div>
         </div>

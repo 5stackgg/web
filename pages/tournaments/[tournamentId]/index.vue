@@ -8,6 +8,7 @@ import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.v
 import TournamentNotifications from "~/components/tournament/TournamentNotifications.vue";
 import TournamentResults from "~/components/tournament/TournamentResults.vue";
 import TournamentTrophiesConfig from "~/components/tournament/TournamentTrophiesConfig.vue";
+import TournamentTrophiesManage from "~/components/tournament/TournamentTrophiesManage.vue";
 import Separator from "~/components/ui/separator/Separator.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchOptionsDisplay from "~/components/match/MatchOptionsDisplay.vue";
@@ -681,7 +682,10 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
         </TabsContent>
         <TabsContent value="trophies" v-if="tournament?.is_organizer">
           <PageTransition>
-            <TournamentTrophiesConfig :tournament="tournament" />
+            <div class="flex flex-col gap-4">
+              <TournamentTrophiesConfig :tournament="tournament" />
+              <TournamentTrophiesManage :tournament="tournament" />
+            </div>
           </PageTransition>
         </TabsContent>
         <TabsContent value="notifications" v-if="tournament?.is_organizer">
@@ -862,6 +866,7 @@ export default {
               start: true,
               status: true,
               auto_start: true,
+              trophies_enabled: true,
               e_tournament_status: {
                 description: true,
               },
@@ -917,9 +922,7 @@ export default {
                   placement_tier: true,
                   tournament_team_id: true,
                   player_steam_id: true,
-                  tournament_name: true,
-                  tournament_start: true,
-                  tournament_type: true,
+                  manual: true,
                   player: playerFields,
                   tournament_team: {
                     id: true,

@@ -17,6 +17,7 @@ interface EloChange {
   expected_score?: number | string | null;
   actual_score?: number | string | null;
   k_factor?: number | string | null;
+  impact?: number | string | null;
   performance_multiplier?: number | string | null;
   series_multiplier?: number | string | null;
   map_wins?: number | string | null;
@@ -55,6 +56,8 @@ const seriesMult = computed(() => toNum(props.eloChange?.series_multiplier));
 const hasSeriesBonus = computed(() => seriesMult.value > 1);
 
 const perfMult = computed(() => toNum(props.eloChange?.performance_multiplier));
+const impact = computed(() => toNum(props.eloChange?.impact) || perfMult.value);
+const impactDelta = computed(() => Math.round((impact.value - 1) * 100));
 const expectedScore = computed(() => toNum(props.eloChange?.expected_score));
 const actualScore = computed(() => toNum(props.eloChange?.actual_score));
 const kFactor = computed(() => toNum(props.eloChange?.k_factor) || 500);
@@ -89,6 +92,11 @@ const damagePercent = computed(() =>
 function formatSigned(n: number): string {
   const sign = n > 0 ? "+" : "";
   return `${sign}${n.toLocaleString()}`;
+}
+
+function formatSignedPercent(n: number): string {
+  const sign = n > 0 ? "+" : "";
+  return `${sign}${n}%`;
 }
 
 // shared building blocks
@@ -380,6 +388,40 @@ const chipClipSm =
                   class="text-[10px] text-muted-foreground font-normal ml-0.5"
                 >
                   · {{ damagePercent }}%
+                </span>
+              </span>
+            </div>
+            <div class="flex flex-col gap-0.5 px-2 py-1.5 bg-card/80">
+              <span :class="labelClass">SCORE</span>
+              <span
+                :class="[monoNum, 'font-semibold text-[12px] text-foreground']"
+              >
+                {{ actualScore.toFixed(2) }}
+                <span
+                  class="text-[10px] text-muted-foreground font-normal ml-0.5"
+                >
+                  · EXP {{ expectedScore.toFixed(2) }}
+                </span>
+              </span>
+            </div>
+            <div class="flex flex-col gap-0.5 px-2 py-1.5 bg-card/80">
+              <span :class="labelClass">IMPACT</span>
+              <span
+                :class="[
+                  monoNum,
+                  'font-semibold text-[12px]',
+                  impact > 1
+                    ? 'text-[hsl(142_71%_60%)]'
+                    : impact < 1
+                      ? 'text-[hsl(0_84%_66%)]'
+                      : 'text-foreground',
+                ]"
+              >
+                {{ impact.toFixed(2) }}×
+                <span
+                  class="text-[10px] text-muted-foreground font-normal ml-0.5"
+                >
+                  {{ formatSignedPercent(impactDelta) }}
                 </span>
               </span>
             </div>

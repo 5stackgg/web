@@ -14,10 +14,25 @@ interface Trophy {
   placement: number;
   placement_tier?: string | null;
   tournament_id: string;
+  team_id?: string | null;
   tournament?: {
     name: string;
     start?: string | null;
     stages?: Array<{ type: string }> | null;
+  } | null;
+  tournament_team?: {
+    name?: string | null;
+    team_id?: string | null;
+    team?: {
+      id: string;
+      name?: string | null;
+      short_name?: string | null;
+    } | null;
+  } | null;
+  team?: {
+    id: string;
+    name?: string | null;
+    short_name?: string | null;
   } | null;
   trophy_config?: {
     custom_name?: string | null;
@@ -65,6 +80,21 @@ const tournamentName = computed(() => props.trophy.tournament?.name || "");
 const tournamentType = computed(
   () => props.trophy.tournament?.stages?.[0]?.type || null,
 );
+const trophyTeam = computed(() => {
+  const team = props.trophy.team || props.trophy.tournament_team?.team || null;
+  const id =
+    props.trophy.team_id || team?.id || props.trophy.tournament_team?.team_id;
+  if (!id) return null;
+
+  return {
+    id,
+    name:
+      team?.name ||
+      team?.short_name ||
+      props.trophy.tournament_team?.name ||
+      "Team",
+  };
+});
 </script>
 
 <template>
@@ -88,6 +118,34 @@ const tournamentType = computed(
           {{ tournamentName }} — {{ $t(placementLabelKey) }}
         </DialogDescription>
       </DialogHeader>
+
+      <NuxtLink
+        v-if="trophyTeam"
+        :to="`/teams/${trophyTeam.id}`"
+        class="group/team relative flex items-center justify-between gap-3 overflow-hidden rounded-sm border border-[hsl(var(--tac-amber)_/_0.35)] bg-[hsl(var(--tac-amber)_/_0.07)] px-3 py-2.5 text-left transition-colors duration-150 hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.11)]"
+      >
+        <span
+          class="pointer-events-none absolute inset-0 [background-image:repeating-linear-gradient(90deg,transparent_0,transparent_11px,hsl(var(--tac-amber)_/_0.04)_11px,hsl(var(--tac-amber)_/_0.04)_12px)]"
+          aria-hidden="true"
+        ></span>
+        <span class="relative flex min-w-0 items-center gap-2">
+          <span
+            class="font-mono text-[0.58rem] uppercase tracking-[0.24em] text-muted-foreground"
+          >
+            TEAM
+          </span>
+          <span
+            class="min-w-0 truncate text-sm font-bold uppercase tracking-[0.08em] text-foreground transition-colors duration-150 group-hover/team:text-[hsl(var(--tac-amber))]"
+          >
+            {{ trophyTeam.name }}
+          </span>
+        </span>
+        <span
+          class="relative shrink-0 text-[0.72rem] text-[hsl(var(--tac-amber))] transition-transform duration-150 group-hover/team:translate-x-0.5"
+          aria-hidden="true"
+          >◢</span
+        >
+      </NuxtLink>
 
       <!-- Trophy hero with uplight + scanlines -->
       <div
@@ -123,9 +181,9 @@ const tournamentType = computed(
 
       <!-- Metadata strip -->
       <dl
-        class="grid grid-cols-3 divide-x divide-border/70 overflow-hidden rounded-sm border border-border/70 bg-background/60 text-xs"
+        class="grid grid-cols-3 gap-px overflow-hidden rounded-sm border border-border/70 bg-border/70 text-xs"
       >
-        <div class="flex flex-col gap-1 p-3">
+        <div class="flex min-w-0 flex-col gap-1 bg-background/60 p-3">
           <dt
             class="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-muted-foreground"
           >
@@ -144,7 +202,7 @@ const tournamentType = computed(
             </template>
           </dd>
         </div>
-        <div class="flex flex-col gap-1 p-3">
+        <div class="flex min-w-0 flex-col gap-1 bg-background/60 p-3">
           <dt
             class="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-muted-foreground"
           >
@@ -152,7 +210,7 @@ const tournamentType = computed(
           </dt>
           <dd class="font-semibold">{{ tournamentType || "—" }}</dd>
         </div>
-        <div class="flex flex-col gap-1 p-3">
+        <div class="flex min-w-0 flex-col gap-1 bg-background/60 p-3">
           <dt
             class="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-muted-foreground"
           >

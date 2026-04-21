@@ -8,10 +8,25 @@ interface Trophy {
   placement: number;
   placement_tier?: string | null;
   tournament_id: string;
+  team_id?: string | null;
   tournament?: {
     name: string;
     start?: string | null;
     stages?: Array<{ type: string }> | null;
+  } | null;
+  tournament_team?: {
+    name?: string | null;
+    team_id?: string | null;
+    team?: {
+      id: string;
+      name?: string | null;
+      short_name?: string | null;
+    } | null;
+  } | null;
+  team?: {
+    id: string;
+    name?: string | null;
+    short_name?: string | null;
   } | null;
   trophy_config?: {
     custom_name?: string | null;

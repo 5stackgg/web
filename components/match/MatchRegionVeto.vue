@@ -301,16 +301,32 @@ export default {
       );
     },
     regions() {
-      return useApplicationSettingsStore().availableRegions.filter((region) => {
-        return region.is_lan === false;
+      const configuredRegions: string[] = this.match.options?.regions || [];
+      const available = useApplicationSettingsStore().availableRegions;
+
+      return configuredRegions.map((value) => {
+        const existing = available.find(
+          (region) => region.value.toLowerCase() === value.toLowerCase(),
+        );
+        if (existing) {
+          return existing;
+        }
+
+        return {
+          value,
+          description: value,
+          status: "Offline",
+          is_lan: false,
+        };
       });
     },
     availableRegions() {
       return this.regions
         .filter(({ value }) => {
+          const normalizedValue = value.toLowerCase();
           if (
             this.picks.find(({ region }) => {
-              return region === value;
+              return region.toLowerCase() === normalizedValue;
             })
           ) {
             return false;

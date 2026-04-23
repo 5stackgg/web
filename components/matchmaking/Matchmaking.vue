@@ -159,7 +159,7 @@ const mmCardPending =
         </div>
       </div>
 
-      <div class="flex flex-col gap-4 bg-card rounded-lg" v-else>
+      <div class="flex flex-col gap-4" v-else>
         <div
           v-if="
             !isMobile &&

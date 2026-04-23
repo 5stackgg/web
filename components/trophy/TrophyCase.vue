@@ -52,12 +52,8 @@ const sorted = computed(() => {
   if (!props.trophies) return [];
   return [...props.trophies].sort((a, b) => {
     if (a.placement !== b.placement) return a.placement - b.placement;
-    const da = a.tournament?.start
-      ? new Date(a.tournament.start).getTime()
-      : 0;
-    const db = b.tournament?.start
-      ? new Date(b.tournament.start).getTime()
-      : 0;
+    const da = a.tournament?.start ? new Date(a.tournament.start).getTime() : 0;
+    const db = b.tournament?.start ? new Date(b.tournament.start).getTime() : 0;
     return db - da;
   });
 });
@@ -218,7 +214,9 @@ function placementUplight(placement: number) {
         <div class="relative z-[1] mt-1 w-full">
           <div
             class="truncate text-center text-[0.72rem] font-semibold uppercase tracking-[0.1em] text-foreground group-hover/pedestal:text-[hsl(var(--tac-amber))]"
-            :title="trophy.trophy_config?.custom_name || trophy.tournament?.name"
+            :title="
+              trophy.trophy_config?.custom_name || trophy.tournament?.name
+            "
           >
             {{ trophy.trophy_config?.custom_name || trophy.tournament?.name }}
           </div>

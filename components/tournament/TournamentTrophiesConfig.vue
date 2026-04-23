@@ -254,151 +254,151 @@ export default {
         />
       </div>
 
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      <div
-        v-for="p in placements"
-        :key="p"
-        class="relative flex flex-col gap-4 rounded-sm border border-border/60 bg-background/40 p-4"
-      >
-        <span
-          class="pointer-events-none absolute inset-x-4 top-0 h-[2px]"
-          :style="{
-            background: `linear-gradient(90deg, transparent, ${tierColor(p)}, transparent)`,
-          }"
-        ></span>
-
-        <div class="flex items-center justify-between">
-          <div
-            class="rounded-sm border px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.22em]"
-            :style="{
-              borderColor: tierColor(p) + '55',
-              background: tierColor(p) + '12',
-              color: tierColor(p),
-            }"
-          >
-            {{ placementLabel(p) }}
-          </div>
-          <span
-            v-if="hasImage(p)"
-            class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
-          >
-            CUSTOM
-          </span>
-        </div>
-
-        <!-- Live preview -->
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div
-          class="relative flex items-center justify-center overflow-hidden rounded-sm border border-border/40 bg-background/40 py-3"
+          v-for="p in placements"
+          :key="p"
+          class="relative flex flex-col gap-4 rounded-sm border border-border/60 bg-background/40 p-4"
         >
-          <div
-            class="pointer-events-none absolute inset-x-6 bottom-0 h-2/3 blur-2xl"
+          <span
+            class="pointer-events-none absolute inset-x-4 top-0 h-[2px]"
             :style="{
-              background: `radial-gradient(ellipse at center bottom, ${tierColor(p)} 0%, transparent 65%)`,
-              opacity: 0.35,
+              background: `linear-gradient(90deg, transparent, ${tierColor(p)}, transparent)`,
             }"
-            aria-hidden="true"
-          ></div>
-          <TrophyBadge
-            :tournament-id="tournament.id"
-            :placement="p"
-            :tournament-name="tournament.name"
-            :tournament-start="tournament.start"
-            :custom-name="drafts[p].custom_name || null"
-            :silhouette-override="drafts[p].silhouette"
-            :image-url="configFor(p)?.image_url || null"
-            size="md"
-            :interactive="false"
-            class="relative z-[1]"
-          />
-        </div>
+          ></span>
 
-        <!-- Image upload (always visible) -->
-        <div class="flex flex-col gap-1.5">
-          <label
-            class="inline-flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-          >
-            <span class="h-[2px] w-2 bg-[hsl(var(--tac-amber))]"></span>
-            Custom Image
-          </label>
-          <AvatarUpload
-            variant="dropzone"
-            :upload-url="uploadUrl(p)"
-            :delete-url="uploadUrl(p)"
-            :has-custom="hasImage(p)"
-            :current-src="imageUrlFor(p)"
-          />
-        </div>
-
-        <!-- Name + silhouette only when no custom image is set -->
-        <template v-if="!hasImage(p)">
-          <div class="flex flex-col gap-1.5">
-            <label
-              class="inline-flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
+          <div class="flex items-center justify-between">
+            <div
+              class="rounded-sm border px-2.5 py-1 font-mono text-[0.6rem] uppercase tracking-[0.22em]"
+              :style="{
+                borderColor: tierColor(p) + '55',
+                background: tierColor(p) + '12',
+                color: tierColor(p),
+              }"
             >
-              <span class="h-[2px] w-2 bg-[hsl(var(--tac-amber))]"></span>
-              Custom Name
-            </label>
-            <Input
-              v-model="drafts[p].custom_name"
-              :placeholder="tournament.name"
-              maxlength="40"
-              class="h-8 font-mono text-xs"
+              {{ placementLabel(p) }}
+            </div>
+            <span
+              v-if="hasImage(p)"
+              class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
+            >
+              CUSTOM
+            </span>
+          </div>
+
+          <!-- Live preview -->
+          <div
+            class="relative flex items-center justify-center overflow-hidden rounded-sm border border-border/40 bg-background/40 py-3"
+          >
+            <div
+              class="pointer-events-none absolute inset-x-6 bottom-0 h-2/3 blur-2xl"
+              :style="{
+                background: `radial-gradient(ellipse at center bottom, ${tierColor(p)} 0%, transparent 65%)`,
+                opacity: 0.35,
+              }"
+              aria-hidden="true"
+            ></div>
+            <TrophyBadge
+              :tournament-id="tournament.id"
+              :placement="p"
+              :tournament-name="tournament.name"
+              :tournament-start="tournament.start"
+              :custom-name="drafts[p].custom_name || null"
+              :silhouette-override="drafts[p].silhouette"
+              :image-url="configFor(p)?.image_url || null"
+              size="md"
+              :interactive="false"
+              class="relative z-[1]"
             />
           </div>
 
+          <!-- Image upload (always visible) -->
           <div class="flex flex-col gap-1.5">
             <label
               class="inline-flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
             >
               <span class="h-[2px] w-2 bg-[hsl(var(--tac-amber))]"></span>
-              Silhouette
+              Custom Image
             </label>
-            <div class="grid grid-cols-3 gap-1">
-              <button
-                v-for="opt in silhouetteOptions"
-                :key="opt.label"
-                type="button"
-                class="rounded-sm border px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] transition-colors duration-150"
-                :class="
-                  drafts[p].silhouette === opt.value
-                    ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)_/_0.12)] text-[hsl(var(--tac-amber))]'
-                    : 'border-border bg-background/40 text-muted-foreground hover:text-foreground'
-                "
-                @click="drafts[p].silhouette = opt.value"
+            <AvatarUpload
+              variant="dropzone"
+              :upload-url="uploadUrl(p)"
+              :delete-url="uploadUrl(p)"
+              :has-custom="hasImage(p)"
+              :current-src="imageUrlFor(p)"
+            />
+          </div>
+
+          <!-- Name + silhouette only when no custom image is set -->
+          <template v-if="!hasImage(p)">
+            <div class="flex flex-col gap-1.5">
+              <label
+                class="inline-flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
               >
-                {{ opt.label }}
-              </button>
+                <span class="h-[2px] w-2 bg-[hsl(var(--tac-amber))]"></span>
+                Custom Name
+              </label>
+              <Input
+                v-model="drafts[p].custom_name"
+                :placeholder="tournament.name"
+                maxlength="40"
+                class="h-8 font-mono text-xs"
+              />
             </div>
-          </div>
 
-          <div class="flex items-center gap-2 border-t border-border/60 pt-3">
-            <Button
-              size="sm"
-              class="flex-1"
-              :disabled="saving[p]"
-              @click="save(p as 0 | 1 | 2 | 3)"
-            >
-              {{ saving[p] ? "Saving…" : "Save" }}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              :disabled="saving[p]"
-              @click="resetDraft(p as 0 | 1 | 2 | 3)"
-            >
-              Reset
-            </Button>
-          </div>
-        </template>
+            <div class="flex flex-col gap-1.5">
+              <label
+                class="inline-flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
+              >
+                <span class="h-[2px] w-2 bg-[hsl(var(--tac-amber))]"></span>
+                Silhouette
+              </label>
+              <div class="grid grid-cols-3 gap-1">
+                <button
+                  v-for="opt in silhouetteOptions"
+                  :key="opt.label"
+                  type="button"
+                  class="rounded-sm border px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] transition-colors duration-150"
+                  :class="
+                    drafts[p].silhouette === opt.value
+                      ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)_/_0.12)] text-[hsl(var(--tac-amber))]'
+                      : 'border-border bg-background/40 text-muted-foreground hover:text-foreground'
+                  "
+                  @click="drafts[p].silhouette = opt.value"
+                >
+                  {{ opt.label }}
+                </button>
+              </div>
+            </div>
 
-        <div
-          v-else
-          class="rounded-sm border border-border/60 bg-background/40 px-3 py-2 text-center font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-        >
-          Remove image to customize name or silhouette
+            <div class="flex items-center gap-2 border-t border-border/60 pt-3">
+              <Button
+                size="sm"
+                class="flex-1"
+                :disabled="saving[p]"
+                @click="save(p as 0 | 1 | 2 | 3)"
+              >
+                {{ saving[p] ? "Saving…" : "Save" }}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                :disabled="saving[p]"
+                @click="resetDraft(p as 0 | 1 | 2 | 3)"
+              >
+                Reset
+              </Button>
+            </div>
+          </template>
+
+          <div
+            v-else
+            class="rounded-sm border border-border/60 bg-background/40 px-3 py-2 text-center font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            Remove image to customize name or silhouette
+          </div>
         </div>
       </div>
-    </div>
     </template>
   </section>
 </template>

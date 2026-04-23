@@ -143,7 +143,8 @@ export default {
       const team = this.teams.find((t) => t.id === trophy.tournament_team_id);
       const roster = team?.roster || [];
       const member = roster.find(
-        (r: any) => String(r.player?.steam_id) === String(trophy.player_steam_id),
+        (r: any) =>
+          String(r.player?.steam_id) === String(trophy.player_steam_id),
       );
       return member?.player?.name || String(trophy.player_steam_id);
     },
@@ -248,9 +249,7 @@ export default {
           <Button
             size="sm"
             :disabled="
-              saving ||
-              !draft.tournament_team_id ||
-              !draft.player_steam_id
+              saving || !draft.tournament_team_id || !draft.player_steam_id
             "
             @click="submitAdd"
           >

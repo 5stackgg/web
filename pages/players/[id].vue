@@ -38,6 +38,11 @@ definePageMeta({
   alias: ["/me/:id"],
 });
 
+const activeTab = useRouteTab({
+  defaultTab: "matches",
+  tabs: ["matches", "tournaments"],
+});
+
 const { isMobile } = useSidebar();
 const playerHeroClasses =
   "relative rounded-lg border border-border px-7 py-6 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-[''] max-md:px-4 max-md:py-5";
@@ -599,14 +604,6 @@ import { trophyFields } from "~/graphql/trophyFields";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 export default {
-  setup() {
-    const activeTab = useRouteTab({
-      defaultTab: "matches",
-      tabs: ["matches", "tournaments"],
-    });
-
-    return { activeTab };
-  },
   apollo: {
     $subscribe: {
       players_by_pk: {

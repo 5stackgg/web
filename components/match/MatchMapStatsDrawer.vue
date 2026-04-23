@@ -6,12 +6,7 @@ import {
   DrawerTitle,
   DrawerClose,
 } from "~/components/ui/drawer";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "~/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Card, CardContent } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Button } from "~/components/ui/button";
@@ -24,16 +19,13 @@ import cleanMapName from "~/utilities/cleanMapName";
 </script>
 
 <template>
-  <Drawer
-    :open="open"
-    @update:open="(v: boolean) => $emit('update:open', v)"
-  >
-    <DrawerContent :class="drawerHeightClass">
+  <Drawer :open="open" @update:open="(v: boolean) => $emit('update:open', v)">
+    <DrawerContent class="h-[80vh] max-h-[80vh]">
       <DrawerHeader class="flex items-center justify-between">
         <DrawerTitle>
-          {{ cleanMapName(matchMap.map.name) }} —
-          {{ match.lineup_1.name }} {{ matchMap.lineup_1_score }} :
-          {{ matchMap.lineup_2_score }} {{ match.lineup_2.name }}
+          {{ cleanMapName(matchMap.map.name) }} — {{ match.lineup_1.name }}
+          {{ matchMap.lineup_1_score }} : {{ matchMap.lineup_2_score }}
+          {{ match.lineup_2.name }}
         </DrawerTitle>
         <DrawerClose as-child>
           <Button variant="ghost" size="icon">
@@ -44,108 +36,108 @@ import cleanMapName from "~/utilities/cleanMapName";
       </DrawerHeader>
 
       <div class="flex-1 min-h-0 overflow-y-auto px-4 pb-4">
-      <template v-if="mapStats">
-        <Tabs default-value="overview">
-          <TabsList variant="underline" class="h-auto flex-nowrap">
-            <TabsTrigger value="overview">
-              {{ $t("match.tabs.overview") }}
-            </TabsTrigger>
-            <TabsTrigger value="utility">
-              {{ $t("match.tabs.utility") }}
-            </TabsTrigger>
-            <TabsTrigger value="opening-duels">
-              {{ $t("match.tabs.opening_duels") }}
-            </TabsTrigger>
-            <TabsTrigger value="clutches">
-              {{ $t("match.tabs.clutches") }}
-            </TabsTrigger>
-          </TabsList>
+        <template v-if="mapStats">
+          <Tabs default-value="overview">
+            <TabsList variant="underline" class="h-auto flex-nowrap">
+              <TabsTrigger value="overview">
+                {{ $t("match.tabs.overview") }}
+              </TabsTrigger>
+              <TabsTrigger value="utility">
+                {{ $t("match.tabs.utility") }}
+              </TabsTrigger>
+              <TabsTrigger value="opening-duels">
+                {{ $t("match.tabs.opening_duels") }}
+              </TabsTrigger>
+              <TabsTrigger value="clutches">
+                {{ $t("match.tabs.clutches") }}
+              </TabsTrigger>
+            </TabsList>
 
-          <TabsContent value="overview">
-            <div class="grid gap-4">
-              <Card class="overflow-x-auto">
-                <CardContent class="py-2">
-                  <LineupOverview
-                    :match="scopedMatch"
-                    :lineup="mapStats.lineup_1"
-                  />
-                </CardContent>
-              </Card>
-              <Card class="overflow-x-auto">
-                <CardContent class="py-2">
-                  <LineupOverview
-                    :match="scopedMatch"
-                    :lineup="mapStats.lineup_2"
-                  />
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
+            <TabsContent value="overview">
+              <div class="grid gap-4">
+                <Card class="overflow-x-auto">
+                  <CardContent class="py-2">
+                    <LineupOverview
+                      :match="scopedMatch"
+                      :lineup="mapStats.lineup_1"
+                    />
+                  </CardContent>
+                </Card>
+                <Card class="overflow-x-auto">
+                  <CardContent class="py-2">
+                    <LineupOverview
+                      :match="scopedMatch"
+                      :lineup="mapStats.lineup_2"
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
 
-          <TabsContent value="utility">
-            <div class="grid gap-4">
-              <Card class="overflow-x-auto">
-                <CardContent class="py-2">
-                  <LineupUtility
-                    :match="scopedMatch"
-                    :lineup="mapStats.lineup_1"
-                  />
-                </CardContent>
-              </Card>
-              <Card class="overflow-x-auto">
-                <CardContent class="py-2">
-                  <LineupUtility
-                    :match="scopedMatch"
-                    :lineup="mapStats.lineup_2"
-                  />
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
+            <TabsContent value="utility">
+              <div class="grid gap-4">
+                <Card class="overflow-x-auto">
+                  <CardContent class="py-2">
+                    <LineupUtility
+                      :match="scopedMatch"
+                      :lineup="mapStats.lineup_1"
+                    />
+                  </CardContent>
+                </Card>
+                <Card class="overflow-x-auto">
+                  <CardContent class="py-2">
+                    <LineupUtility
+                      :match="scopedMatch"
+                      :lineup="mapStats.lineup_2"
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
 
-          <TabsContent value="opening-duels">
-            <div class="grid gap-4">
+            <TabsContent value="opening-duels">
+              <div class="grid gap-4">
+                <Card class="overflow-x-auto">
+                  <CardContent class="py-2">
+                    <LineupOpeningDuels
+                      :match="match"
+                      :lineup="match.lineup_1"
+                      :selected-map-id="matchMap.id"
+                    />
+                  </CardContent>
+                </Card>
+                <Card class="overflow-x-auto">
+                  <CardContent class="py-2">
+                    <LineupOpeningDuels
+                      :match="match"
+                      :lineup="match.lineup_2"
+                      :selected-map-id="matchMap.id"
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="clutches">
               <Card class="overflow-x-auto">
                 <CardContent class="py-2">
-                  <LineupOpeningDuels
+                  <LineupClutches
                     :match="match"
-                    :lineup="match.lineup_1"
+                    :lineup1="match.lineup_1"
+                    :lineup2="match.lineup_2"
                     :selected-map-id="matchMap.id"
                   />
                 </CardContent>
               </Card>
-              <Card class="overflow-x-auto">
-                <CardContent class="py-2">
-                  <LineupOpeningDuels
-                    :match="match"
-                    :lineup="match.lineup_2"
-                    :selected-map-id="matchMap.id"
-                  />
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
+            </TabsContent>
+          </Tabs>
+        </template>
 
-          <TabsContent value="clutches">
-            <Card class="overflow-x-auto">
-              <CardContent class="py-2">
-                <LineupClutches
-                  :match="match"
-                  :lineup1="match.lineup_1"
-                  :lineup2="match.lineup_2"
-                  :selected-map-id="matchMap.id"
-                />
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </template>
-
-      <div v-else class="flex flex-col gap-3 py-4">
-        <Skeleton class="h-8 w-full" />
-        <Skeleton class="h-24 w-full" />
-        <Skeleton class="h-24 w-full" />
-      </div>
+        <div v-else class="flex flex-col gap-3 py-4">
+          <Skeleton class="h-8 w-full" />
+          <Skeleton class="h-24 w-full" />
+          <Skeleton class="h-24 w-full" />
+        </div>
       </div>
     </DrawerContent>
   </Drawer>
@@ -187,14 +179,6 @@ export default {
         ...this.match,
         match_maps: [this.matchMap],
       };
-    },
-    drawerHeightClass() {
-      const players = this.match.max_players_per_lineup ?? 5;
-      if (players <= 1) return "max-h-[30vh]";
-      if (players === 2) return "max-h-[40vh]";
-      if (players === 3) return "max-h-[55vh]";
-      if (players === 4) return "max-h-[65vh]";
-      return "max-h-[75vh]";
     },
   },
   watch: {

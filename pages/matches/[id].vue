@@ -56,11 +56,7 @@ const vsBaseClasses =
 </script>
 
 <template>
-  <div
-    v-if="match"
-    class="flex flex-col gap-4 md:gap-6"
-    :class="match.is_organizer && 'pb-16'"
-  >
+  <div v-if="match" class="flex flex-col gap-4 md:gap-6">
     <PageTransition>
       <header :class="heroClasses">
         <div class="flex items-center gap-3 flex-wrap mb-5 max-sm:mb-[0.85rem]">
@@ -388,7 +384,12 @@ const vsBaseClasses =
 </template>
 
 <script lang="ts">
-import { $, order_by, e_match_status_enum } from "~/generated/zeus";
+import {
+  $,
+  order_by,
+  e_match_status_enum,
+  e_veto_pick_types_enum,
+} from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { mapFields } from "~/graphql/mapGraphql";
 import { matchLineups } from "~/graphql/matchLineupsGraphql";
@@ -711,12 +712,33 @@ export default {
         return this.match?.match_maps ?? [];
       }
 
-      const slots = [];
       const bestOf = this.match.options.best_of;
       const maps = this.match.match_maps || [];
+      const matchEnded = [
+        e_match_status_enum.Finished,
+        e_match_status_enum.Forfeit,
+        e_match_status_enum.Surrendered,
+        e_match_status_enum.Tie,
+        e_match_status_enum.Canceled,
+      ].includes(this.match.status);
 
+      const visibleMaps = matchEnded
+        ? maps.filter((m) => {
+            if (m.status !== e_match_status_enum.Scheduled) return true;
+            const isDecider = m.vetos?.some(
+              (v) => v.type === e_veto_pick_types_enum.Decider,
+            );
+            return !isDecider;
+          })
+        : maps;
+
+      if (matchEnded) {
+        return visibleMaps;
+      }
+
+      const slots = [];
       for (let i = 0; i < bestOf; i++) {
-        slots.push(maps[i] || null);
+        slots.push(visibleMaps[i] || null);
       }
 
       return slots;

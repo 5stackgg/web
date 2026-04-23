@@ -15,7 +15,6 @@ import {
 } from "~/components/ui/select";
 import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 import MatchOptionsDisplay from "~/components/match//MatchOptionsDisplay.vue";
-import RoundHistoryBar from "~/components/match/RoundHistoryBar.vue";
 import { Cross2Icon } from "@radix-icons/vue";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { e_match_types_enum } from "~/generated/zeus";
@@ -120,18 +119,6 @@ import PlayerInvites from "~/components/match/PlayerInvites.vue";
               :match="match"
               :lineup="match.lineup_2"
             ></LineupOverview>
-          </CardContent>
-        </Card>
-
-        <Card
-          v-if="singleMapForHistory && singleMapForHistory.rounds?.length > 0"
-          class="overflow-x-auto"
-        >
-          <CardContent class="py-3">
-            <RoundHistoryBar
-              :match="match"
-              :match-map="singleMapForHistory"
-            />
           </CardContent>
         </Card>
       </div>
@@ -409,10 +396,6 @@ export default {
         e_match_status_enum.WaitingForCheckIn,
         e_match_status_enum.PickingPlayers,
       ].includes(this.match.status);
-    },
-    singleMapForHistory() {
-      if (this.match.options?.best_of !== 1) return null;
-      return this.match.match_maps?.[0] ?? null;
     },
     canAdjustLineups() {
       if (

@@ -6,7 +6,7 @@ import { Badge } from "~/components/ui/badge";
   <div class="flex w-full max-w-full flex-wrap justify-center gap-3 pb-1">
     <!-- Region card -->
     <div
-      v-if="regions.length > 1"
+      v-if="regions.length > 1 && match.e_region"
       class="shrink-0 w-[130px] rounded-xl overflow-hidden border border-border/50"
     >
       <div class="relative h-16">

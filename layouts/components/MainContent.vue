@@ -29,16 +29,21 @@ const containContentValue = computed(() => containContent?.value ?? true);
       class="!min-h-0 h-full !bg-transparent ![--sidebar-height:calc(100svh_-_var(--header-height))] ![--sidebar-width:30rem] ![--sidebar-width-icon:calc(2.5rem_-_2px)]"
     >
       <SidebarMobileSync />
-      <SidebarInset class="overflow-scroll min-h-0 h-full !bg-transparent">
-        <div
-          class="p-4 w-full self-center"
-          :class="{
-            'mx-auto': !showLeftNavValue,
-            'lg:max-w-7xl': containContentValue,
-          }"
-        >
-          <slot></slot>
+      <SidebarInset
+        class="flex flex-col min-h-0 h-[var(--sidebar-height)] !bg-transparent overflow-hidden"
+      >
+        <div class="flex-1 overflow-auto">
+          <div
+            class="p-4 w-full self-center"
+            :class="{
+              'mx-auto': !showLeftNavValue,
+              'lg:max-w-7xl': containContentValue,
+            }"
+          >
+            <slot></slot>
+          </div>
         </div>
+        <div id="main-bottom-dock" class="shrink-0"></div>
       </SidebarInset>
 
       <AppSidebar side="right" />

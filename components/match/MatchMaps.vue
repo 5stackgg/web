@@ -65,11 +65,7 @@ import cleanMapName from "~/utilities/cleanMapName";
           >{{ $t("match.decider") }}</Badge
         >
         <template v-if="matchMap.demos_download_url">
-          <a
-            target="_blank"
-            :href="matchMap.demos_download_url"
-            @click.stop
-          >
+          <a target="_blank" :href="matchMap.demos_download_url" @click.stop>
             <Button
               size="xs"
               variant="ghost"
@@ -97,8 +93,8 @@ import cleanMapName from "~/utilities/cleanMapName";
     </div>
 
     <!-- Score section -->
-    <div class="bg-muted/40 px-3 py-2.5">
-      <div class="flex items-center justify-between gap-1">
+    <div class="bg-muted/40">
+      <div class="flex items-center justify-between gap-1 px-3 pt-2.5 pb-2">
         <!-- Team 1 -->
         <div
           class="flex flex-col items-center justify-center gap-0.5 flex-1 min-w-0 min-h-[2.5rem]"
@@ -171,13 +167,17 @@ import cleanMapName from "~/utilities/cleanMapName";
         </div>
       </div>
 
-      <RoundHistoryBar
-        v-if="match.options.best_of > 1 && matchMap.rounds?.length > 0"
-        :match="match"
-        :match-map="matchMap"
-        compact
-        class="mt-2"
-      />
+      <div
+        v-if="matchMap.rounds?.length > 0"
+        class="border-t border-border/40 bg-background/30 px-5 pt-4 pb-5"
+      >
+        <RoundHistoryBar
+          :match="match"
+          :match-map="matchMap"
+          compact
+          seamless
+        />
+      </div>
     </div>
   </div>
 </template>

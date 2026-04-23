@@ -1,10 +1,12 @@
 <script lang="ts" setup>
-import { ref, computed, provide } from "vue";
+import { ref, computed, provide, onMounted } from "vue";
 import EventEmitter from "eventemitter3";
-import { ChevronDown, ChevronUp, Shield } from "lucide-vue-next";
+import { ChevronUp, GripHorizontal, Shield } from "lucide-vue-next";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import { Button } from "~/components/ui/button";
+import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
+import DropdownMenuSeparator from "~/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
 import {
   FormControl,
   FormField,
@@ -19,10 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import {
-  e_match_map_status_enum,
-  e_match_status_enum,
-} from "~/generated/zeus";
+import { e_match_map_status_enum, e_match_status_enum } from "~/generated/zeus";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
@@ -78,11 +77,49 @@ const CommandDetails: Record<string, CommandDetail> = {
   },
 };
 
-const expanded = ref(false);
+const open = ref(false);
+const mounted = ref(false);
 const hasLogs = ref(false);
 const showConfirmDialog = ref(false);
 const pendingCommand = ref<CommandDetail | null>(null);
 const executePending = ref<(() => void) | null>(null);
+
+const panelHeight = ref(240);
+const dragging = ref(false);
+const MIN_HEIGHT = 120;
+
+function maxHeight() {
+  return Math.round(window.innerHeight * 0.9);
+}
+
+function startDrag(e: MouseEvent) {
+  e.preventDefault();
+  dragging.value = true;
+  const startY = e.clientY;
+  const startHeight = panelHeight.value;
+
+  function onMove(ev: MouseEvent) {
+    const delta = startY - ev.clientY;
+    panelHeight.value = Math.max(
+      MIN_HEIGHT,
+      Math.min(maxHeight(), startHeight + delta),
+    );
+  }
+
+  function onUp() {
+    dragging.value = false;
+    document.removeEventListener("mousemove", onMove);
+    document.removeEventListener("mouseup", onUp);
+  }
+
+  document.addEventListener("mousemove", onMove);
+  document.addEventListener("mouseup", onUp);
+}
+
+onMounted(() => {
+  mounted.value = true;
+  panelHeight.value = Math.round(window.innerHeight * 0.25);
+});
 
 const form = useForm({
   validationSchema: toTypedSchema(
@@ -152,52 +189,68 @@ function runCommand(
 </script>
 
 <template>
-  <div
-    class="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
-  >
-    <AlertDialog :open="showConfirmDialog">
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{{ $t("common.confirm") }}</AlertDialogTitle>
-          <AlertDialogDescription class="flex flex-col gap-2">
-            <span>{{ $t("common.are_you_sure") }}</span>
-            <Badge variant="secondary" class="w-fit">
-              {{ pendingCommand?.display }}
-            </Badge>
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel @click="showConfirmDialog = false">
-            {{ $t("common.cancel") }}
-          </AlertDialogCancel>
-          <AlertDialogAction
-            @click="
-              executePending && executePending();
-              showConfirmDialog = false;
-            "
-          >
-            {{ $t("common.confirm") }}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-
-    <RconCommander
-      v-if="canSendRCONCommands"
-      :server-id="match.server_id"
-      :online="match.is_server_online"
-      :match-id="match.id"
-      v-slot="{ commander: send }"
+  <Teleport to="#main-bottom-dock" :disabled="!mounted">
+    <div
+      class="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
     >
-      <div class="flex items-center gap-2 px-4 py-2 flex-wrap">
+      <AlertDialog :open="showConfirmDialog">
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{{ $t("common.confirm") }}</AlertDialogTitle>
+            <AlertDialogDescription class="flex flex-col gap-2">
+              <span>{{ $t("common.are_you_sure") }}</span>
+              <Badge variant="secondary" class="w-fit">
+                {{ pendingCommand?.display }}
+              </Badge>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel @click="showConfirmDialog = false">
+              {{ $t("common.cancel") }}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              @click="
+                executePending && executePending();
+                showConfirmDialog = false;
+              "
+            >
+              {{ $t("common.confirm") }}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <div
+        v-show="open"
+        class="group h-2 cursor-ns-resize bg-border hover:bg-[hsl(var(--tac-amber)/0.4)] transition-colors flex items-center justify-center"
+        @mousedown="startDrag"
+      >
+        <GripHorizontal
+          class="w-4 h-4 text-muted-foreground/60 group-hover:text-[hsl(var(--tac-amber))] transition-colors pointer-events-none"
+        />
+      </div>
+
+      <button
+        type="button"
+        class="flex items-center gap-3 w-full px-4 py-2 hover:bg-muted/40 transition-colors duration-200 ease-out text-left"
+        :class="dragging && 'select-none'"
+        :aria-expanded="open"
+        @click="open = !open"
+      >
         <div
-          class="inline-flex items-center gap-1.5 px-2 py-1 font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase border border-[hsl(var(--tac-amber)/0.5)] rounded bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]"
+          class="inline-flex items-center gap-1.5 px-2 py-1 font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase border rounded transition-colors duration-200 ease-out"
+          :class="
+            canSendRCONCommands
+              ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+              : 'border-border bg-muted/40 text-muted-foreground'
+          "
         >
           <Shield class="w-3 h-3" />
           Admin
         </div>
 
         <span
+          v-if="canSendRCONCommands"
           class="font-mono text-[0.65rem] tracking-[0.18em] uppercase text-muted-foreground"
         >
           {{
@@ -207,139 +260,130 @@ function runCommand(
           }}
         </span>
 
-        <div class="flex items-center gap-2 flex-wrap">
-          <Button
-            v-for="command of availableCommands"
-            :key="command.value"
-            size="sm"
-            :variant="command.confirm ? 'destructive' : 'default'"
-            :disabled="!match.is_server_online"
-            @click="runCommand(command, send)"
-          >
-            {{ command.display }}
-          </Button>
-        </div>
-
-        <Button
-          size="sm"
-          variant="outline"
-          class="ml-auto"
-          @click="expanded = !expanded"
+        <span
+          class="ml-auto flex items-center gap-1.5 text-xs text-muted-foreground"
         >
-          <component
-            :is="expanded ? ChevronDown : ChevronUp"
-            class="w-4 h-4 mr-1"
+          {{ open ? $t("common.close") : $t("common.more") }}
+          <ChevronUp
+            class="w-4 h-4 transition-transform duration-300 ease-out"
+            :class="open ? 'rotate-180' : 'rotate-0'"
           />
-          {{ expanded ? $t("common.close") : $t("common.more") }}
-        </Button>
-      </div>
+        </span>
+      </button>
 
       <div
-        v-if="expanded"
-        class="border-t max-h-[60vh] overflow-auto px-4 py-4 flex flex-col gap-4"
+        class="overflow-hidden"
+        :class="[
+          !dragging && 'transition-[height] duration-300 ease-out',
+          open && 'border-t',
+        ]"
+        :style="{ height: open ? `${panelHeight}px` : '0px' }"
       >
-        <form
-          v-if="restorableRounds.length > 0"
-          @submit.prevent="send('restore_round', form.values.round)"
-          class="flex flex-col gap-3"
-        >
-          <FormField v-slot="{ componentField }" name="round">
-            <FormItem>
-              <FormLabel>{{ $t("match.tabs.restore_round") }}</FormLabel>
-              <Select
-                v-bind="componentField"
-                @update:model-value="
-                  (value) => form.setFieldValue('round', value)
-                "
+        <div class="h-full overflow-auto grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
+            <div class="min-w-0">
+              <RconCommander
+                v-if="canSendRCONCommands"
+                :server-id="match.server_id"
+                :online="match.is_server_online"
+                :match-id="match.id"
+                v-slot="{ commander: send }"
               >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      :placeholder="$t('match.tabs.select_round_to_restore')"
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem
-                      v-for="round of restorableRounds"
-                      :key="round.round"
-                      :value="round.round.toString()"
-                    >
-                      {{
-                        $t("common.round", { number: round.round.toString() })
-                      }}
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+                <DropdownMenuItem
+                  v-for="command of availableCommands"
+                  :key="command.value"
+                  :disabled="!match.is_server_online"
+                  @click="runCommand(command, send)"
+                >
+                  {{ command.display }}
+                </DropdownMenuItem>
 
-          <Button type="submit" class="w-fit">
-            {{ $t("match.tabs.restore_round") }}
-          </Button>
-        </form>
+                <template v-if="restorableRounds.length > 0">
+                  <DropdownMenuSeparator />
+                  <form
+                    class="p-2 flex flex-col gap-2"
+                    @submit.prevent="send('restore_round', form.values.round)"
+                  >
+                    <FormField v-slot="{ componentField }" name="round">
+                      <FormItem>
+                        <FormLabel>
+                          {{ $t("match.tabs.restore_round") }}
+                        </FormLabel>
+                        <Select
+                          v-bind="componentField"
+                          @update:model-value="
+                            (value) => form.setFieldValue('round', value)
+                          "
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue
+                                :placeholder="
+                                  $t('match.tabs.select_round_to_restore')
+                                "
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectItem
+                                v-for="round of restorableRounds"
+                                :key="round.round"
+                                :value="round.round.toString()"
+                              >
+                                {{
+                                  $t("common.round", {
+                                    number: round.round.toString(),
+                                  })
+                                }}
+                              </SelectItem>
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    </FormField>
 
-        <div
-          v-if="!hasLogs"
-          class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-6 text-center"
-        >
-          <h3 class="font-semibold">{{ $t("match.tabs.no_logs_title") }}</h3>
-          <p class="text-sm text-muted-foreground">
-            {{ $t("match.tabs.no_logs_description") }}
-          </p>
+                    <Button type="submit" size="sm" class="w-fit">
+                      {{ $t("match.tabs.restore_round") }}
+                    </Button>
+                  </form>
+                </template>
+              </RconCommander>
+
+              <div
+                v-else
+                class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-6 text-center h-full"
+              >
+                <h3 class="font-semibold">RCON unavailable</h3>
+                <p class="text-sm text-muted-foreground">
+                  Match is not in a controllable state.
+                </p>
+              </div>
+            </div>
+
+            <div class="min-w-0 flex flex-col gap-2">
+              <h4
+                class="font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase text-muted-foreground"
+              >
+                {{ $t("match.tabs.no_logs_title") }}
+              </h4>
+              <div
+                v-if="!hasLogs"
+                class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-6 text-center"
+              >
+                <p class="text-sm text-muted-foreground">
+                  {{ $t("match.tabs.no_logs_description") }}
+                </p>
+              </div>
+              <ServiceLogs
+                v-show="hasLogs"
+                :service="`m-${match.id}`"
+                :compact="true"
+                @has-logs="hasLogs = $event"
+              />
+            </div>
         </div>
-        <ServiceLogs
-          v-show="hasLogs"
-          :service="`m-${match.id}`"
-          :compact="true"
-          @has-logs="hasLogs = $event"
-        />
-      </div>
-    </RconCommander>
-
-    <div v-else class="flex items-center gap-2 px-4 py-2 flex-wrap">
-      <div
-        class="inline-flex items-center gap-1.5 px-2 py-1 font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase border border-border rounded bg-muted/40 text-muted-foreground"
-      >
-        <Shield class="w-3 h-3" />
-        Admin
-      </div>
-      <Button
-        size="sm"
-        variant="outline"
-        class="ml-auto"
-        @click="expanded = !expanded"
-      >
-        <component
-          :is="expanded ? ChevronDown : ChevronUp"
-          class="w-4 h-4 mr-1"
-        />
-        {{ expanded ? $t("common.close") : $t("common.more") }}
-      </Button>
-
-      <div
-        v-if="expanded"
-        class="basis-full border-t max-h-[60vh] overflow-auto mt-2 pt-4 flex flex-col gap-4"
-      >
-        <div
-          v-if="!hasLogs"
-          class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-6 text-center"
-        >
-          <h3 class="font-semibold">{{ $t("match.tabs.no_logs_title") }}</h3>
-          <p class="text-sm text-muted-foreground">
-            {{ $t("match.tabs.no_logs_description") }}
-          </p>
-        </div>
-        <ServiceLogs
-          v-show="hasLogs"
-          :service="`m-${match.id}`"
-          :compact="true"
-          @has-logs="hasLogs = $event"
-        />
       </div>
     </div>
-  </div>
+  </Teleport>
 </template>

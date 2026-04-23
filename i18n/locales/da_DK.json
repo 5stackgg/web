@@ -556,6 +556,7 @@
             "play_menu": "Afspil",
             "community_menu": "Fællesskab",
             "watch_menu": "Se",
+            "login_mobile": "Log ind",
             "play": {
                 "find_match": "Find et match",
                 "tournaments": "Turneringer",

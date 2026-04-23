@@ -810,6 +810,12 @@ import { playerFields } from "~/graphql/playerFields";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
+import {
+  getRequestedRouteTab,
+  getRouteTabValue,
+  normalizeRouteTab,
+  replaceRouteTab,
+} from "~/composables/useRouteTab";
 
 export default {
   data() {
@@ -827,6 +833,7 @@ export default {
       resumeDialogOpen: false,
       organizerPopoversOpen: {},
       activeTab: "overview",
+      myTeamLoaded: false,
       e_match_types: [],
     };
   },
@@ -1259,6 +1266,7 @@ export default {
         },
         result: function ({ data }) {
           this.myTeam = data.tournament_teams?.[0];
+          this.myTeamLoaded = true;
           const ctx = useTournamentContext();
           if (
             ctx.value &&
@@ -1362,8 +1370,57 @@ export default {
       }
       return "neutral";
     },
+    availableTournamentTabs() {
+      const tabs = ["overview"];
+
+      if (this.myTeam) {
+        tabs.push("my-team");
+      }
+
+      tabs.push("teams");
+
+      if (
+        this.tournament?.status === e_tournament_status_enum.Live ||
+        this.tournament?.status === e_tournament_status_enum.Finished
+      ) {
+        tabs.push("standings", "results");
+      }
+
+      if (this.tournament?.is_organizer) {
+        tabs.push("match-options", "organizers", "trophies", "notifications");
+      }
+
+      return tabs;
+    },
   },
   methods: {
+    syncActiveTabFromRoute() {
+      if (!this.tournament) {
+        return;
+      }
+
+      const requestedTab = getRequestedRouteTab(this.$route.query);
+      if (requestedTab === "my-team" && this.me && !this.myTeamLoaded) {
+        return;
+      }
+
+      const activeTab = getRouteTabValue(
+        this.$route,
+        this.availableTournamentTabs,
+        "overview",
+      );
+
+      if (this.activeTab !== activeTab) {
+        this.activeTab = activeTab;
+      }
+
+      void normalizeRouteTab(
+        this.$router,
+        this.$route,
+        this.availableTournamentTabs,
+        "overview",
+      );
+    },
     openSettingsDialog() {
       this.settingsDialogOpen = true;
     },
@@ -1463,12 +1520,26 @@ export default {
     },
   },
   watch: {
+    activeTab(newTab) {
+      if (!this.tournament || !this.availableTournamentTabs.includes(newTab)) {
+        return;
+      }
+
+      void replaceRouteTab(this.$router, this.$route, newTab, "overview");
+    },
+    "$route.query.tab"() {
+      this.syncActiveTabFromRoute();
+    },
+    availableTournamentTabs() {
+      this.syncActiveTabFromRoute();
+    },
     tournament: {
       handler(newTournament) {
         if (newTournament) {
           // Collapse overview by default when tournament is Live, expand otherwise
           this.overviewExpanded =
             newTournament.status !== e_tournament_status_enum.Live;
+          this.syncActiveTabFromRoute();
         }
       },
       immediate: true,

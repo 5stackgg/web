@@ -23,6 +23,7 @@ export const matchLineupStats = Selector("match_lineups")({
       captain: true,
       steam_id: true,
       checked_in: true,
+      placeholder_name: true,
       player: {
         ...playerFields,
         kills_aggregate: [

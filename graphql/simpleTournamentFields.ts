@@ -9,6 +9,17 @@ export const simpleTournamentFields = Selector("tournaments")({
   e_tournament_status: {
     description: true,
   },
+  trophy_configs: [
+    {},
+    {
+      id: true,
+      tournament_id: true,
+      placement: true,
+      custom_name: true,
+      silhouette: true,
+      image_url: true,
+    },
+  ],
   options: matchOptionsFields,
   stages: [
     {

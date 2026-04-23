@@ -7,6 +7,7 @@ import {
 } from "~/generated/zeus";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
+import TournamentFeatureCard from "~/components/tournament/TournamentFeatureCard.vue";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -56,13 +57,14 @@ const activeTab = ref("live-matches");
         <span :class="tacticalSectionTickClasses"></span>
         TOURNAMENT.FEED
       </div>
-      <div class="space-y-4">
-        <!-- @ts-expect-error - Type inference issues with GraphQL subscription data -->
-        <TournamentTableRow
+      <div class="space-y-3">
+        <TournamentFeatureCard
           v-for="tournament in liveTournaments"
           :key="tournament.id"
           :tournament="tournament"
-        ></TournamentTableRow>
+          status-variant="live"
+          :status-label="$t('common.live')"
+        />
       </div>
     </div>
   </PageTransition>
@@ -108,15 +110,11 @@ const activeTab = ref("live-matches");
 </template>
 
 <script lang="ts">
-import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
 
 export default {
-  components: {
-    TournamentTableRow,
-  },
   data() {
     return {
       liveTournaments: [] as any[],

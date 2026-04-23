@@ -34,10 +34,25 @@ const badgeVariant = computed(() => {
 
   return "secondary";
 });
+
+const badgeClasses = computed(() => {
+  const base =
+    "inline-flex min-w-0 items-center gap-1.5 rounded-md border px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] leading-none whitespace-nowrap";
+
+  if (badgeVariant.value === "destructive") {
+    return `${base} border-destructive/45 bg-destructive/10 text-destructive`;
+  }
+
+  if (props.match.status === e_match_status_enum.Live) {
+    return `${base} border-green-500/45 bg-green-500/10 text-green-500`;
+  }
+
+  return `${base} border-border/70 bg-muted/35 text-muted-foreground`;
+});
 </script>
 
 <template>
-  <Badge :variant="badgeVariant">
+  <span :class="badgeClasses">
     <template v-if="match.status == e_match_status_enum.Canceled">
       {{ $t("match.status.cancelled") }}
     </template>
@@ -45,15 +60,15 @@ const badgeVariant = computed(() => {
       {{ $t("common.finished") }}
     </template>
     <template v-else-if="match.status == e_match_status_enum.Scheduled">
-      <div v-if="match.server && !match.is_match_server_available">
+      <span v-if="match.server && !match.is_match_server_available">
         {{ $t("match.status.waiting_server") }}
-      </div>
-      <div class="flex items-center space-x-2" v-else>
+      </span>
+      <span class="flex items-center space-x-2" v-else>
         <template v-if="match.scheduled_at">
           <TimeAgo :date="match.scheduled_at"></TimeAgo>
         </template>
         <template v-else>{{ $t("match.status.scheduled_asap") }}</template>
-      </div>
+      </span>
     </template>
     <template
       v-else-if="match.status === e_match_status_enum.Live && hasPausedMap"
@@ -63,5 +78,5 @@ const badgeVariant = computed(() => {
     <template v-else>
       {{ match.e_match_status.description }}
     </template>
-  </Badge>
+  </span>
 </template>

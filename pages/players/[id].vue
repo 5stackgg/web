@@ -473,7 +473,7 @@ const playerTeamChipShortClasses =
     <Separator />
 
     <PageTransition :delay="500">
-      <Tabs default-value="matches">
+      <Tabs v-model="activeTab" default-value="matches">
         <TabsList class="grid grid-cols-2 w-full max-w-md mx-auto">
           <TabsTrigger
             value="matches"
@@ -599,6 +599,14 @@ import { trophyFields } from "~/graphql/trophyFields";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 export default {
+  setup() {
+    const activeTab = useRouteTab({
+      defaultTab: "matches",
+      tabs: ["matches", "tournaments"],
+    });
+
+    return { activeTab };
+  },
   apollo: {
     $subscribe: {
       players_by_pk: {

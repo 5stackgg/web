@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { UserPlusIcon, UsersIcon, ChevronsDownIcon } from "lucide-vue-next";
+import {
+  ChevronsDownIcon,
+  GitBranch,
+  Trophy,
+  UserPlusIcon,
+  UsersIcon,
+} from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { e_lobby_access_enum, e_match_status_enum } from "~/generated/zeus";
 import cleanMapName from "~/utilities/cleanMapName";
@@ -26,12 +32,17 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
       ]"
     >
       <!-- Mobile Header: Tags at opposite ends -->
-      <div class="flex sm:hidden items-center justify-between">
+      <div class="flex sm:hidden items-start justify-between gap-2">
         <!-- Left: Type + ELO -->
-        <div class="flex items-center space-x-2">
-          <Badge variant="secondary" class="text-[10px]">
+        <div class="flex min-w-0 flex-wrap items-center gap-2">
+          <span :class="matchTypePillClasses">
             {{ match.options.type }}
-          </Badge>
+          </span>
+
+          <span v-if="isTournamentMatch" :class="tournamentPillClasses">
+            <Trophy class="h-3 w-3 shrink-0" />
+            <span class="max-w-24 truncate">{{ tournamentLabel }}</span>
+          </span>
 
           <!-- Elo Change Display -->
           <EloChangeBadge :elo-change="eloChange" size="xs" />
@@ -39,7 +50,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
 
         <!-- Right: Status + Time -->
         <div
-          class="flex items-center space-x-2 text-[10px] text-muted-foreground"
+          class="flex shrink-0 items-center space-x-2 text-[10px] text-muted-foreground"
         >
           <MatchStatus v-if="!compact" :match="match" />
           <TimeAgo
@@ -53,9 +64,26 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
         class="hidden sm:flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
       >
         <div class="flex items-center space-x-2 sm:space-x-3 flex-wrap gap-y-1">
-          <Badge variant="secondary" class="text-[10px] sm:text-xs">
+          <span :class="matchTypePillClasses">
             {{ match.options.type }}
-          </Badge>
+          </span>
+
+          <span
+            v-if="isTournamentMatch"
+            :class="tournamentPillClasses"
+            :title="tournamentName"
+          >
+            <Trophy class="h-3 w-3 shrink-0" />
+            <span class="max-w-[16rem] truncate">{{ tournamentLabel }}</span>
+          </span>
+
+          <span
+            v-if="!compact && isTournamentMatch && tournamentRoundLabel"
+            :class="roundPillClasses"
+          >
+            <GitBranch class="h-3 w-3 shrink-0" />
+            {{ tournamentRoundLabel }}
+          </span>
 
           <!-- Elo Change Display -->
           <EloChangeBadge :elo-change="eloChange" />
@@ -403,7 +431,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
         <!-- Team 1 players -->
         <div class="space-y-2">
           <div
-            v-if="matchStats.lineup_1"
+            v-if="displayedMatchStats.lineup_1"
             :class="[
               'bg-muted/50 rounded-lg border border-border min-h-[200px] h-full flex flex-col',
               // Reduce padding overall; in compact mode keep it tight on all sizes
@@ -413,7 +441,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
             <h5 class="text-sm font-semibold text-foreground mb-3">
               {{
                 $t("match.team_stats_heading", {
-                  name: matchStats.lineup_1.name,
+                  name: displayedMatchStats.lineup_1.name,
                 })
               }}
             </h5>
@@ -458,40 +486,45 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                 </thead>
                 <tbody>
                   <template
-                    v-for="lineupPlayer in matchStats.lineup_1.lineup_players"
-                    :key="lineupPlayer.steam_id"
+                    v-for="(lineupPlayer, index) in lineup1Players"
+                    :key="
+                      lineupPlayer.steam_id ||
+                      lineupPlayer.placeholder_name ||
+                      `lineup-1-${index}`
+                    "
                   >
                     <tr
                       class="border-b border-border/50 last:border-b-0"
                       :class="{
                         'bg-primary/10 border-l-2 border-l-primary':
                           player &&
-                          lineupPlayer.player?.steam_id === player.steam_id,
+                          getLineupPlayerDisplayPlayer(lineupPlayer)
+                            ?.steam_id === player.steam_id,
                       }"
                     >
                       <td class="py-2 px-2 sm:py-3 sm:px-3">
                         <PlayerDisplay
-                          :player="lineupPlayer.player"
+                          :player="getLineupPlayerDisplayPlayer(lineupPlayer)"
                           :size="compact ? 'xs' : 'sm'"
                           :compact="compact"
                         />
                       </td>
                       <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
-                          lineupPlayer.player.kills_aggregate?.aggregate
-                            ?.count || 0
+                          getLineupPlayerDisplayPlayer(lineupPlayer)
+                            .kills_aggregate?.aggregate?.count || 0
                         }}
                       </td>
                       <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
-                          lineupPlayer.player.deaths_aggregate?.aggregate
-                            ?.count || 0
+                          getLineupPlayerDisplayPlayer(lineupPlayer)
+                            .deaths_aggregate?.aggregate?.count || 0
                         }}
                       </td>
                       <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
-                          lineupPlayer.player.assists_aggregate?.aggregate
-                            ?.count || 0
+                          getLineupPlayerDisplayPlayer(lineupPlayer)
+                            .assists_aggregate?.aggregate?.count || 0
                         }}
                       </td>
                       <td
@@ -500,7 +533,8 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                       >
                         {{
                           Math.round(
-                            lineupPlayer.player.damage_dealt_aggregate
+                            getLineupPlayerDisplayPlayer(lineupPlayer)
+                              .damage_dealt_aggregate
                               ?.aggregate?.sum?.damage || 0,
                           )
                         }}
@@ -508,10 +542,10 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                       <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
                           getKDRatio(
-                            lineupPlayer.player.kills_aggregate?.aggregate
-                              ?.count || 0,
-                            lineupPlayer.player.deaths_aggregate?.aggregate
-                              ?.count || 0,
+                            getLineupPlayerDisplayPlayer(lineupPlayer)
+                              .kills_aggregate?.aggregate?.count || 0,
+                            getLineupPlayerDisplayPlayer(lineupPlayer)
+                              .deaths_aggregate?.aggregate?.count || 0,
                           )
                         }}
                       </td>
@@ -522,10 +556,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                     v-if="match.status === e_match_status_enum.PickingPlayers"
                     v-for="i in Math.max(
                       0,
-                      maxPlayersPerLineup -
-                        (matchStats.lineup_1?.lineup_players?.length ||
-                          match.lineup_1?.lineup_players?.length ||
-                          0),
+                      maxPlayersPerLineup - lineup1Players.length,
                     )"
                     :key="`empty-${i}`"
                   >
@@ -539,7 +570,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                           :size="compact ? 'xs' : 'sm'"
                           :compact="compact"
                           :player="{
-                            name: `Slot ${(matchStats.lineup_1?.lineup_players?.length || match.lineup_1?.lineup_players?.length || 0) + i}`,
+                            name: `Slot ${lineup1Players.length + i}`,
                           }"
                         />
                       </td>
@@ -580,7 +611,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
         <!-- Team 2 players -->
         <div class="space-y-2">
           <div
-            v-if="matchStats.lineup_2"
+            v-if="displayedMatchStats.lineup_2"
             :class="[
               'bg-muted/50 rounded-lg border border-border min-h-[150px] sm:min-h-[200px] h-full flex flex-col',
               compact ? 'p-2' : 'p-3 sm:p-4',
@@ -591,7 +622,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
             >
               {{
                 $t("match.team_stats_heading", {
-                  name: matchStats.lineup_2.name,
+                  name: displayedMatchStats.lineup_2.name,
                 })
               }}
             </h5>
@@ -636,40 +667,45 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                 </thead>
                 <tbody>
                   <template
-                    v-for="lineupPlayer in matchStats.lineup_2.lineup_players"
-                    :key="lineupPlayer.steam_id"
+                    v-for="(lineupPlayer, index) in lineup2Players"
+                    :key="
+                      lineupPlayer.steam_id ||
+                      lineupPlayer.placeholder_name ||
+                      `lineup-2-${index}`
+                    "
                   >
                     <tr
                       class="border-b border-border/50 last:border-b-0"
                       :class="{
                         'bg-primary/10 border-l-2 border-l-primary':
                           player &&
-                          lineupPlayer.player?.steam_id === player.steam_id,
+                          getLineupPlayerDisplayPlayer(lineupPlayer)
+                            ?.steam_id === player.steam_id,
                       }"
                     >
                       <td class="py-2 px-2 sm:py-3 sm:px-3">
                         <PlayerDisplay
-                          :player="lineupPlayer.player"
+                          :player="getLineupPlayerDisplayPlayer(lineupPlayer)"
                           :size="compact ? 'xs' : 'sm'"
                           :compact="compact"
                         />
                       </td>
                       <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
-                          lineupPlayer.player.kills_aggregate?.aggregate
-                            ?.count || 0
+                          getLineupPlayerDisplayPlayer(lineupPlayer)
+                            .kills_aggregate?.aggregate?.count || 0
                         }}
                       </td>
                       <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
-                          lineupPlayer.player.deaths_aggregate?.aggregate
-                            ?.count || 0
+                          getLineupPlayerDisplayPlayer(lineupPlayer)
+                            .deaths_aggregate?.aggregate?.count || 0
                         }}
                       </td>
                       <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
-                          lineupPlayer.player.assists_aggregate?.aggregate
-                            ?.count || 0
+                          getLineupPlayerDisplayPlayer(lineupPlayer)
+                            .assists_aggregate?.aggregate?.count || 0
                         }}
                       </td>
                       <td
@@ -678,7 +714,8 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                       >
                         {{
                           Math.round(
-                            lineupPlayer.player.damage_dealt_aggregate
+                            getLineupPlayerDisplayPlayer(lineupPlayer)
+                              .damage_dealt_aggregate
                               ?.aggregate?.sum?.damage || 0,
                           )
                         }}
@@ -686,10 +723,10 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                       <td class="text-center py-2 px-1 sm:py-3 sm:px-2">
                         {{
                           getKDRatio(
-                            lineupPlayer.player.kills_aggregate?.aggregate
-                              ?.count || 0,
-                            lineupPlayer.player.deaths_aggregate?.aggregate
-                              ?.count || 0,
+                            getLineupPlayerDisplayPlayer(lineupPlayer)
+                              .kills_aggregate?.aggregate?.count || 0,
+                            getLineupPlayerDisplayPlayer(lineupPlayer)
+                              .deaths_aggregate?.aggregate?.count || 0,
                           )
                         }}
                       </td>
@@ -700,10 +737,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                     v-if="match.status === e_match_status_enum.PickingPlayers"
                     v-for="i in Math.max(
                       0,
-                      maxPlayersPerLineup -
-                        (matchStats.lineup_2?.lineup_players?.length ||
-                          match.lineup_2?.lineup_players?.length ||
-                          0),
+                      maxPlayersPerLineup - lineup2Players.length,
                     )"
                     :key="`empty-${i}`"
                   >
@@ -717,7 +751,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                           :size="compact ? 'xs' : 'sm'"
                           :compact="compact"
                           :player="{
-                            name: `Slot ${(matchStats.lineup_2?.lineup_players?.length || match.lineup_2?.lineup_players?.length || 0) + i}`,
+                            name: `Slot ${lineup2Players.length + i}`,
                           }"
                         />
                       </td>
@@ -757,29 +791,29 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
       </div>
 
       <div
-        class="flex justify-center transition-all duration-300 ease-out"
-        @click.stop="toggleShowPlayers"
+        class="relative flex items-center justify-center transition-all duration-300 ease-out"
         :class="{ '-mt-2': !showPlayers, 'mt-2': showPlayers }"
       >
-        <Separator class="relative">
-          <span
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 inline-flex items-center gap-1 rounded-full border border-border bg-muted/50 px-2 py-[2px] text-[10px] uppercase tracking-wide text-muted-foreground shadow-sm hover:bg-muted/60 hover:text-foreground transition-colors"
-            role="button"
-            tabindex="0"
-          >
-            <ChevronsDownIcon
-              class="h-3 w-3 transition-transform"
-              :class="{ 'rotate-180': showPlayers }"
-            />
-            <span>{{
-              showPlayers ? $t("match.hide_players") : $t("match.show_players")
-            }}</span>
-            <ChevronsDownIcon
-              class="h-3 w-3 transition-transform"
-              :class="{ 'rotate-180': showPlayers }"
-            />
-          </span>
-        </Separator>
+        <Separator class="absolute inset-x-0 top-1/2" />
+        <button
+          type="button"
+          class="relative z-[1] inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-[2px] text-[10px] uppercase tracking-wide text-muted-foreground shadow-sm transition-colors hover:bg-muted/80 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+          :aria-expanded="showPlayers"
+          :aria-busy="matchStatsLoading"
+          @click.stop="toggleShowPlayers"
+        >
+          <ChevronsDownIcon
+            class="h-3 w-3 transition-transform"
+            :class="{ 'rotate-180': showPlayers }"
+          />
+          <span>{{
+            showPlayers ? $t("match.hide_players") : $t("match.show_players")
+          }}</span>
+          <ChevronsDownIcon
+            class="h-3 w-3 transition-transform"
+            :class="{ 'rotate-180': showPlayers }"
+          />
+        </button>
       </div>
     </div>
   </div>
@@ -811,7 +845,8 @@ export default {
   },
   data() {
     return {
-      matchStats: {},
+      matchStats: null as any | null,
+      matchStatsLoading: false,
       showPlayers: false,
     };
   },
@@ -852,30 +887,55 @@ export default {
       return matchMap.lineup_1_score === 0 && matchMap.lineup_2_score === 0;
     },
     async getMatchStats() {
-      const {
-        data: { matches_by_pk },
-      } = await this.$apollo.query({
-        variables: {
-          matchId: this.match.id,
-        },
-        query: generateQuery({
-          matches_by_pk: [
-            {
-              id: this.match.id,
-            },
-            {
-              lineup_1: [{}, matchLineupStats],
-              lineup_2: [{}, matchLineupStats],
-            },
-          ],
-        }),
-      });
+      this.matchStatsLoading = true;
 
-      this.matchStats = matches_by_pk;
+      try {
+        const {
+          data: { matches_by_pk },
+        } = await this.$apollo.query({
+          variables: {
+            matchId: this.match.id,
+          },
+          fetchPolicy: "network-only",
+          query: generateQuery({
+            matches_by_pk: [
+              {
+                id: this.match.id,
+              },
+              {
+                lineup_1: [{}, matchLineupStats],
+                lineup_2: [{}, matchLineupStats],
+              },
+            ],
+          }),
+        });
+
+        this.matchStats = matches_by_pk;
+      } finally {
+        this.matchStatsLoading = false;
+      }
     },
     async toggleShowPlayers() {
-      this.showPlayers = !this.showPlayers;
-      await this.getMatchStats();
+      const shouldShow = !this.showPlayers;
+      this.showPlayers = shouldShow;
+
+      if (shouldShow) {
+        try {
+          await this.getMatchStats();
+        } catch (error) {
+          console.error("Failed to load match player stats", error);
+        }
+      }
+    },
+    getLineupPlayerDisplayPlayer(lineupPlayer: any) {
+      return (
+        lineupPlayer.player || {
+          name:
+            lineupPlayer.placeholder_name ||
+            (lineupPlayer.steam_id ? `Player ${lineupPlayer.steam_id}` : "Slot"),
+          steam_id: lineupPlayer.steam_id,
+        }
+      );
     },
     navigateToMatch(matchId: string) {
       this.$router.push({ name: "matches-id", params: { id: matchId } });
@@ -984,8 +1044,65 @@ export default {
     },
   },
   computed: {
+    isTournamentMatch(): boolean {
+      return Boolean(
+        this.match?.is_tournament_match || this.match?.tournament_brackets?.length,
+      );
+    },
+    tournamentBracket(): any {
+      return this.match?.tournament_brackets?.[0] ?? null;
+    },
+    tournamentName(): string {
+      return this.tournamentBracket?.stage?.tournament?.name || "";
+    },
+    tournamentLabel(): string {
+      return this.tournamentName || "Tournament Match";
+    },
+    tournamentRoundLabel(): string {
+      const stage = this.tournamentBracket?.stage;
+      const stageLabel = stage?.e_tournament_stage_type?.description;
+      const round = this.tournamentBracket?.round;
+      const matchNumber = this.tournamentBracket?.match_number;
+
+      if (stageLabel && round && matchNumber) {
+        return `${stageLabel} R${round} M${matchNumber}`;
+      }
+
+      if (stageLabel && round) {
+        return `${stageLabel} R${round}`;
+      }
+
+      if (round && matchNumber) {
+        return `R${round} M${matchNumber}`;
+      }
+
+      return stageLabel || "";
+    },
+    matchTypePillClasses(): string {
+      return "inline-flex min-w-0 items-center rounded-md border border-border/70 bg-muted/35 px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] leading-none text-foreground";
+    },
+    tournamentPillClasses(): string {
+      return "inline-flex min-w-0 items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.10)] px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] leading-none text-[hsl(var(--tac-amber))]";
+    },
+    roundPillClasses(): string {
+      return "inline-flex min-w-0 items-center gap-1.5 rounded-md border border-border/70 bg-muted/35 px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] leading-none text-muted-foreground";
+    },
     maxPlayersPerLineup() {
       return this.match.max_players_per_lineup;
+    },
+    displayedMatchStats(): any {
+      return (
+        this.matchStats || {
+          lineup_1: this.match.lineup_1,
+          lineup_2: this.match.lineup_2,
+        }
+      );
+    },
+    lineup1Players(): any[] {
+      return this.displayedMatchStats.lineup_1?.lineup_players ?? [];
+    },
+    lineup2Players(): any[] {
+      return this.displayedMatchStats.lineup_2?.lineup_players ?? [];
     },
     eloChange(): typeof eloFields {
       return this.match.elo_changes?.at(0);

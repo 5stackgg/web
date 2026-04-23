@@ -556,6 +556,7 @@
             "play_menu": "再生",
             "community_menu": "コミュニティ",
             "watch_menu": "見る",
+            "login_mobile": "ログイン",
             "play": {
                 "find_match": "マッチ相手を探す",
                 "tournaments": "トーナメント",

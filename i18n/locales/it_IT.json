@@ -556,6 +556,7 @@
             "play_menu": "Gioca",
             "community_menu": "Community",
             "watch_menu": "Osserva",
+            "login_mobile": "Accedi",
             "play": {
                 "find_match": "Trova una partita",
                 "tournaments": "Tornei",

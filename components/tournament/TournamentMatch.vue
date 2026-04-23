@@ -287,6 +287,12 @@ const executeResetFlow = async () => {
   }
 
   const scheduledAtIso = getScheduledAtIso();
+  const resolvedResetStatus =
+    resetTargetWinner.value === "clear"
+      ? scheduledAtIso
+        ? "Scheduled"
+        : "WaitingForCheckIn"
+      : null;
   resetLoading.value = true;
   try {
     await nuxtApp.$apollo.defaultClient.mutate({
@@ -294,7 +300,7 @@ const executeResetFlow = async () => {
       variables: {
         matchId: selectedBracket.value.match.id,
         winningLineupId: targetWinnerId,
-        resetStatus: resetTargetWinner.value === "clear" ? "Scheduled" : null,
+        resetStatus: resolvedResetStatus,
         scheduledAt: scheduledAtIso,
       },
     });
@@ -659,8 +665,7 @@ const shouldShowCrossBracketDestination = (
             v-if="
               canManageBracketReset &&
               bracket.match &&
-              !bracket.bye &&
-              !resetLoading
+              !bracket.bye
             "
           >
             <DropdownMenuTrigger as-child>
@@ -668,6 +673,7 @@ const shouldShowCrossBracketDestination = (
                 variant="outline"
                 size="icon"
                 class="h-7 w-7 border-slate-500/70 bg-slate-900/70 text-slate-100 hover:bg-slate-800 hover:text-slate-50 data-[state=open]:bg-slate-800 data-[state=open]:text-slate-50"
+                :disabled="resetLoading"
                 @click.stop
               >
                 <span class="sr-only">Open match actions</span>

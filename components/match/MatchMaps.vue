@@ -199,7 +199,10 @@ export default {
   },
   computed: {
     canOpenStats() {
-      return this.matchMap.status !== e_match_status_enum.Scheduled;
+      if (this.matchMap.status === e_match_status_enum.Scheduled) {
+        return false;
+      }
+      return (this.match.options?.best_of ?? 1) > 1;
     },
     showTeamPatch() {
       return (

@@ -118,7 +118,7 @@ function startDrag(e: MouseEvent) {
 
 onMounted(() => {
   mounted.value = true;
-  panelHeight.value = Math.round(window.innerHeight * 0.25);
+  panelHeight.value = Math.round(window.innerHeight * 0.45);
 });
 
 const form = useForm({
@@ -279,109 +279,111 @@ function runCommand(
         ]"
         :style="{ height: open ? `${panelHeight}px` : '0px' }"
       >
-        <div class="h-full overflow-auto grid grid-cols-1 lg:grid-cols-2 gap-4 p-4">
-            <div class="min-w-0">
-              <RconCommander
-                v-if="canSendRCONCommands"
-                :server-id="match.server_id"
-                :online="match.is_server_online"
-                :match-id="match.id"
-                v-slot="{ commander: send }"
+        <div
+          class="h-full overflow-auto grid grid-cols-1 lg:grid-cols-2 gap-4 p-4"
+        >
+          <div class="min-w-0">
+            <RconCommander
+              v-if="canSendRCONCommands"
+              :server-id="match.server_id"
+              :online="match.is_server_online"
+              :match-id="match.id"
+              v-slot="{ commander: send }"
+            >
+              <DropdownMenuItem
+                v-for="command of availableCommands"
+                :key="command.value"
+                :disabled="!match.is_server_online"
+                @click="runCommand(command, send)"
               >
-                <DropdownMenuItem
-                  v-for="command of availableCommands"
-                  :key="command.value"
-                  :disabled="!match.is_server_online"
-                  @click="runCommand(command, send)"
+                {{ command.display }}
+              </DropdownMenuItem>
+
+              <template v-if="restorableRounds.length > 0">
+                <DropdownMenuSeparator />
+                <form
+                  class="p-2 flex flex-col gap-2"
+                  @submit.prevent="send('restore_round', form.values.round)"
                 >
-                  {{ command.display }}
-                </DropdownMenuItem>
+                  <FormField v-slot="{ componentField }" name="round">
+                    <FormItem>
+                      <FormLabel>
+                        {{ $t("match.tabs.restore_round") }}
+                      </FormLabel>
+                      <Select
+                        v-bind="componentField"
+                        @update:model-value="
+                          (value) => form.setFieldValue('round', value)
+                        "
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue
+                              :placeholder="
+                                $t('match.tabs.select_round_to_restore')
+                              "
+                            />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectItem
+                              v-for="round of restorableRounds"
+                              :key="round.round"
+                              :value="round.round.toString()"
+                            >
+                              {{
+                                $t("common.round", {
+                                  number: round.round.toString(),
+                                })
+                              }}
+                            </SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  </FormField>
 
-                <template v-if="restorableRounds.length > 0">
-                  <DropdownMenuSeparator />
-                  <form
-                    class="p-2 flex flex-col gap-2"
-                    @submit.prevent="send('restore_round', form.values.round)"
-                  >
-                    <FormField v-slot="{ componentField }" name="round">
-                      <FormItem>
-                        <FormLabel>
-                          {{ $t("match.tabs.restore_round") }}
-                        </FormLabel>
-                        <Select
-                          v-bind="componentField"
-                          @update:model-value="
-                            (value) => form.setFieldValue('round', value)
-                          "
-                        >
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue
-                                :placeholder="
-                                  $t('match.tabs.select_round_to_restore')
-                                "
-                              />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectGroup>
-                              <SelectItem
-                                v-for="round of restorableRounds"
-                                :key="round.round"
-                                :value="round.round.toString()"
-                              >
-                                {{
-                                  $t("common.round", {
-                                    number: round.round.toString(),
-                                  })
-                                }}
-                              </SelectItem>
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    </FormField>
+                  <Button type="submit" size="sm" class="w-fit">
+                    {{ $t("match.tabs.restore_round") }}
+                  </Button>
+                </form>
+              </template>
+            </RconCommander>
 
-                    <Button type="submit" size="sm" class="w-fit">
-                      {{ $t("match.tabs.restore_round") }}
-                    </Button>
-                  </form>
-                </template>
-              </RconCommander>
-
-              <div
-                v-else
-                class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-6 text-center h-full"
-              >
-                <h3 class="font-semibold">RCON unavailable</h3>
-                <p class="text-sm text-muted-foreground">
-                  Match is not in a controllable state.
-                </p>
-              </div>
+            <div
+              v-else
+              class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-6 text-center h-full"
+            >
+              <h3 class="font-semibold">RCON unavailable</h3>
+              <p class="text-sm text-muted-foreground">
+                Match is not in a controllable state.
+              </p>
             </div>
+          </div>
 
-            <div class="min-w-0 flex flex-col gap-2">
-              <h4
-                class="font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase text-muted-foreground"
-              >
-                {{ $t("match.tabs.no_logs_title") }}
-              </h4>
-              <div
-                v-if="!hasLogs"
-                class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-6 text-center"
-              >
-                <p class="text-sm text-muted-foreground">
-                  {{ $t("match.tabs.no_logs_description") }}
-                </p>
-              </div>
-              <ServiceLogs
-                v-show="hasLogs"
-                :service="`m-${match.id}`"
-                :compact="true"
-                @has-logs="hasLogs = $event"
-              />
+          <div class="min-w-0 flex flex-col gap-2">
+            <h4
+              class="font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase text-muted-foreground"
+            >
+              {{ $t("match.tabs.no_logs_title") }}
+            </h4>
+            <div
+              v-if="!hasLogs"
+              class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-6 text-center"
+            >
+              <p class="text-sm text-muted-foreground">
+                {{ $t("match.tabs.no_logs_description") }}
+              </p>
             </div>
+            <ServiceLogs
+              v-show="hasLogs"
+              :service="`m-${match.id}`"
+              :compact="true"
+              @has-logs="hasLogs = $event"
+            />
+          </div>
         </div>
       </div>
     </div>

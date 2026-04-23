@@ -2,7 +2,6 @@
 import { ref } from "vue";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
-import MatchMapStatsDrawer from "~/components/match/MatchMapStatsDrawer.vue";
 import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
@@ -365,19 +364,16 @@ const vsBaseClasses =
 
         <PageTransition :delay="200">
           <CardContent class="p-4">
-            <MatchTabs :match="match"></MatchTabs>
+            <MatchTabs
+              :match="match"
+              :active-map="activeStatsMap"
+              @clear-active-map="activeStatsMap = null"
+              @select-map="activeStatsMap = $event"
+            ></MatchTabs>
           </CardContent>
         </PageTransition>
       </div>
     </div>
-
-    <MatchMapStatsDrawer
-      v-if="activeStatsMap"
-      :match="match"
-      :match-map="activeStatsMap"
-      :open="!!activeStatsMap"
-      @update:open="(v) => !v && (activeStatsMap = null)"
-    />
 
     <MatchAdminBottomBar v-if="match.is_organizer" :match="match" />
   </div>

@@ -123,9 +123,7 @@ const canManageBracketReset = computed(
     authStore.isRoleAbove(e_player_roles_enum.administrator),
 );
 
-const requiresScheduledAt = computed(
-  () => resetTargetWinner.value === "clear",
-);
+const requiresScheduledAt = computed(() => resetTargetWinner.value === "clear");
 
 const previewFormErrors = computed<Record<string, string>>(() => {
   const errors: Record<string, string> = {};
@@ -274,10 +272,7 @@ const executeResetFlow = async () => {
   if (!selectedBracket.value?.match?.id) return;
 
   const targetWinnerId = getWinningLineupId(selectedBracket.value);
-  if (
-    resetTargetWinner.value !== "clear" &&
-    !targetWinnerId
-  ) {
+  if (resetTargetWinner.value !== "clear" && !targetWinnerId) {
     toast({
       title: "Unable to set selected winner",
       description: "Selected lineup id is missing for this match.",
@@ -662,11 +657,7 @@ const shouldShowCrossBracketDestination = (
         <div class="flex items-center gap-2">
           <MatchMapDots v-if="bracket.match" :match="bracket.match" />
           <DropdownMenu
-            v-if="
-              canManageBracketReset &&
-              bracket.match &&
-              !bracket.bye
-            "
+            v-if="canManageBracketReset && bracket.match && !bracket.bye"
           >
             <DropdownMenuTrigger as-child>
               <Button
@@ -938,27 +929,39 @@ const shouldShowCrossBracketDestination = (
     </div>
   </template>
 
-  <AlertDialog :open="resetDialogOpen" @update:open="(open) => (resetDialogOpen = open)">
+  <AlertDialog
+    :open="resetDialogOpen"
+    @update:open="(open) => (resetDialogOpen = open)"
+  >
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle>Reset tournament match winner?</AlertDialogTitle>
         <AlertDialogDescription>
-          Changing this result can delete downstream matches in the bracket chain.
+          Changing this result can delete downstream matches in the bracket
+          chain.
         </AlertDialogDescription>
       </AlertDialogHeader>
 
       <div class="space-y-3 text-sm">
         <div class="font-medium">Affected match chain preview:</div>
-        <div class="grid grid-cols-1 gap-2 rounded-lg border border-border/80 bg-muted/20 p-2 text-xs md:grid-cols-2">
-          <div class="rounded border border-border/80 bg-background/70 px-2 py-1">
+        <div
+          class="grid grid-cols-1 gap-2 rounded-lg border border-border/80 bg-muted/20 p-2 text-xs md:grid-cols-2"
+        >
+          <div
+            class="rounded border border-border/80 bg-background/70 px-2 py-1"
+          >
             <div class="text-muted-foreground">Delete & recreate</div>
             <div class="font-semibold text-foreground">
               {{ impactSummary.deleteAndRecreate }}
             </div>
           </div>
-          <div class="rounded border border-border/80 bg-background/70 px-2 py-1">
+          <div
+            class="rounded border border-border/80 bg-background/70 px-2 py-1"
+          >
             <div class="text-muted-foreground">Reset only</div>
-            <div class="font-semibold text-foreground">{{ impactSummary.resetOnly }}</div>
+            <div class="font-semibold text-foreground">
+              {{ impactSummary.resetOnly }}
+            </div>
           </div>
         </div>
 
@@ -995,7 +998,9 @@ const shouldShowCrossBracketDestination = (
             >
               <div class="mb-1 flex items-start justify-between gap-2">
                 <div class="font-medium text-foreground">
-                  {{ impact.path || "Main" }} R{{ impact.round }} M{{ impact.match_number }}
+                  {{ impact.path || "Main" }} R{{ impact.round }} M{{
+                    impact.match_number
+                  }}
                 </div>
                 <Badge
                   :variant="getImpactBadgeVariant(impact)"
@@ -1010,7 +1015,10 @@ const shouldShowCrossBracketDestination = (
                 <span class="truncate">
                   {{ formatImpactLabel(impact) }}
                 </span>
-                <span v-if="impact.match_status" class="text-muted-foreground/90">
+                <span
+                  v-if="impact.match_status"
+                  class="text-muted-foreground/90"
+                >
                   {{ impact.match_status }}
                 </span>
               </div>
@@ -1133,8 +1141,9 @@ const shouldShowCrossBracketDestination = (
       <AlertDialogHeader>
         <AlertDialogTitle>Final confirmation required</AlertDialogTitle>
         <AlertDialogDescription>
-          This will reset the selected bracket chain and can remove already played downstream matches.
-          Use this only for tournament admin corrections.
+          This will reset the selected bracket chain and can remove already
+          played downstream matches. Use this only for tournament admin
+          corrections.
         </AlertDialogDescription>
       </AlertDialogHeader>
       <div

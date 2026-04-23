@@ -360,7 +360,21 @@ provide("commander", commander);
         </form>
       </RconCommander>
 
-      <ServiceLogs :service="`m-${match.id}`" :compact="true" />
+      <div
+        v-if="!hasLogs"
+        class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-8 text-center"
+      >
+        <h3 class="font-semibold">{{ $t("match.tabs.no_logs_title") }}</h3>
+        <p class="text-sm text-muted-foreground">
+          {{ $t("match.tabs.no_logs_description") }}
+        </p>
+      </div>
+      <ServiceLogs
+        v-show="hasLogs"
+        :service="`m-${match.id}`"
+        :compact="true"
+        @has-logs="hasLogs = $event"
+      />
     </TabsContent>
     <TabsContent value="settings" class="flex flex-col gap-4 max-w-[1500px]">
       <Card>
@@ -476,6 +490,7 @@ export default {
   data() {
     return {
       activeTab: "overview",
+      hasLogs: false,
       inviteDialog: false,
       showConfirmDialog: false,
       pendingCommand: null as

@@ -70,7 +70,9 @@ import Separator from "../ui/separator/Separator.vue";
                   </p>
                 </CommandItem>
 
-                <Separator v-if="canPromoteCaptain || canUpdateRole"></Separator>
+                <Separator
+                  v-if="canPromoteCaptain || canUpdateRole"
+                ></Separator>
 
                 <CommandItem
                   v-if="canPromoteCaptain"

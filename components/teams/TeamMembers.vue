@@ -207,8 +207,8 @@ export default {
               id: $("teamId", "uuid!"),
             },
             {
-                  id: true,
-                  captain_steam_id: true,
+              id: true,
+              captain_steam_id: true,
               can_invite: true,
               can_remove: true,
               can_change_role: true,

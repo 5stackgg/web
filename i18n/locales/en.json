@@ -1839,7 +1839,9 @@
             "select_round_to_restore": "Select the round to restore",
             "server_information": "Server Information",
             "type": "Type",
-            "region": "Region"
+            "region": "Region",
+            "no_logs_title": "No Logs Available",
+            "no_logs_description": "No logs are available and no server is connected."
         },
         "show_players": "Show Players",
         "hide_players": "Hide Players",

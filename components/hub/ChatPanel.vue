@@ -12,7 +12,6 @@ import {
 } from "lucide-vue-next";
 import { useRouter } from "#app";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
-import MatchTableRow from "~/components/MatchTableRow.vue";
 import { useChatTabs, type ChatTab } from "~/composables/useChatTabs";
 import TooltipProvider from "~/components/ui/tooltip/TooltipProvider.vue";
 import TooltipTrigger from "~/components/ui/tooltip/TooltipTrigger.vue";
@@ -123,13 +122,6 @@ watch(activeChatId, () => {
 const showChatIndicator = computed(
   () => activeChatId.value && chatIndicatorHeight.value > 0,
 );
-
-const activeMatch = computed<any | null>(() => {
-  const tab = activeTab.value;
-  if (!tab || tab.type !== "match") return null;
-  const matches = (matchLobbyStore.myMatches as any[]) || [];
-  return matches.find((m: any) => m.id === tab.lobbyId) || null;
-});
 
 // Default to first room when panel becomes active with no selection
 watch(
@@ -403,18 +395,6 @@ function handlePopOut() {
         </div>
 
         <div class="flex-1 min-h-0 flex flex-col">
-          <div
-            v-if="activeTab?.type === 'match' && activeMatch"
-            class="px-3 pt-3 pb-2 border-b border-zinc-800/80 bg-zinc-950/70"
-          >
-            <MatchTableRow
-              :match="activeMatch"
-              :player="null"
-              :compact="true"
-              :always-show="true"
-            />
-          </div>
-
           <ChatLobby
             v-for="tab in tabs"
             :key="tab.id"

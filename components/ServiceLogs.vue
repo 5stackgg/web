@@ -328,6 +328,12 @@ export default {
   },
 
   watch: {
+    podCount: {
+      immediate: true,
+      handler(count: number) {
+        this.$emit("has-logs", count > 0);
+      },
+    },
     $route: {
       immediate: true,
       handler() {

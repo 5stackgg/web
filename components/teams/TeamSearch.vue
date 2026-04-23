@@ -241,7 +241,9 @@ const { height: viewportHeight } = useVisualViewport();
                     v-if="tournamentJoinSelector"
                     class="ml-auto text-[10px] uppercase tracking-wide"
                     :class="
-                      canSelectTeam(team) ? 'text-emerald-600' : 'text-amber-600'
+                      canSelectTeam(team)
+                        ? 'text-emerald-600'
+                        : 'text-amber-600'
                     "
                   >
                     {{ teamEligibilityLabel(team) }}

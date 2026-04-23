@@ -534,8 +534,8 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                         {{
                           Math.round(
                             getLineupPlayerDisplayPlayer(lineupPlayer)
-                              .damage_dealt_aggregate
-                              ?.aggregate?.sum?.damage || 0,
+                              .damage_dealt_aggregate?.aggregate?.sum?.damage ||
+                              0,
                           )
                         }}
                       </td>
@@ -715,8 +715,8 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                         {{
                           Math.round(
                             getLineupPlayerDisplayPlayer(lineupPlayer)
-                              .damage_dealt_aggregate
-                              ?.aggregate?.sum?.damage || 0,
+                              .damage_dealt_aggregate?.aggregate?.sum?.damage ||
+                              0,
                           )
                         }}
                       </td>
@@ -932,7 +932,9 @@ export default {
         lineupPlayer.player || {
           name:
             lineupPlayer.placeholder_name ||
-            (lineupPlayer.steam_id ? `Player ${lineupPlayer.steam_id}` : "Slot"),
+            (lineupPlayer.steam_id
+              ? `Player ${lineupPlayer.steam_id}`
+              : "Slot"),
           steam_id: lineupPlayer.steam_id,
         }
       );
@@ -1046,7 +1048,8 @@ export default {
   computed: {
     isTournamentMatch(): boolean {
       return Boolean(
-        this.match?.is_tournament_match || this.match?.tournament_brackets?.length,
+        this.match?.is_tournament_match ||
+          this.match?.tournament_brackets?.length,
       );
     },
     tournamentBracket(): any {

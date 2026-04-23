@@ -12,11 +12,7 @@ import TimeAgo from "~/components/TimeAgo.vue";
 import MiniMapDisplay from "~/components/MinIMapDisplay.vue";
 import TrophyBadge from "~/components/trophy/TrophyBadge.vue";
 
-type TournamentStatusVariant =
-  | "default"
-  | "finished"
-  | "live"
-  | "registration";
+type TournamentStatusVariant = "default" | "finished" | "live" | "registration";
 
 const props = withDefaults(
   defineProps<{
@@ -147,7 +143,9 @@ const trophyBadgeClasses = computed(() => {
 });
 
 const eyebrowClasses = computed(() => {
-  return isLive.value ? "text-[hsl(var(--tac-amber))]" : "text-muted-foreground";
+  return isLive.value
+    ? "text-[hsl(var(--tac-amber))]"
+    : "text-muted-foreground";
 });
 
 const stageChipClasses = computed(() => {
@@ -167,7 +165,9 @@ const stagePanelClasses = computed(() => {
 });
 
 const stagePanelLabelClasses = computed(() => {
-  return isLive.value ? "text-[hsl(var(--tac-amber))]" : "text-muted-foreground";
+  return isLive.value
+    ? "text-[hsl(var(--tac-amber))]"
+    : "text-muted-foreground";
 });
 </script>
 

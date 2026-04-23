@@ -5,16 +5,7 @@ import LineupOverview from "~/components/match/LineupOverview.vue";
 import LineupUtility from "~/components/match/LineupUtility.vue";
 import LineupOpeningDuels from "~/components/match/LineupOpeningDuels.vue";
 import LineupClutches from "~/components/match/LineupClutches.vue";
-import RconCommander from "~/components/servers/RconCommander.vue";
-import { provide } from "vue";
-import EventEmitter from "eventemitter3";
 import { Button } from "~/components/ui/button";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "~/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -24,16 +15,13 @@ import {
 } from "~/components/ui/select";
 import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 import MatchOptionsDisplay from "~/components/match//MatchOptionsDisplay.vue";
+import RoundHistoryBar from "~/components/match/RoundHistoryBar.vue";
 import { Cross2Icon } from "@radix-icons/vue";
 import { ScrollArea } from "~/components/ui/scroll-area";
-import ServiceLogs from "~/components/ServiceLogs.vue";
 import { e_match_types_enum } from "~/generated/zeus";
 import MatchForm from "~/components/match/MatchForm.vue";
 import MatchLiveStreams from "~/components/match/MatchLiveStreams.vue";
 import PlayerInvites from "~/components/match/PlayerInvites.vue";
-
-const commander = new EventEmitter();
-provide("commander", commander);
 </script>
 
 <template>
@@ -77,9 +65,6 @@ provide("commander", commander);
           <SelectItem value="streams" :disabled="!canConfigureStreams">
             {{ $t("match.tabs.streams") }}
           </SelectItem>
-          <SelectItem v-if="canViewAdmin" value="server">
-            {{ $t("match.tabs.admin") }}
-          </SelectItem>
         </SelectContent>
       </Select>
     </div>
@@ -116,9 +101,6 @@ provide("commander", commander);
         <TabsTrigger value="streams" :disabled="!canConfigureStreams">
           {{ $t("match.tabs.streams") }}
         </TabsTrigger>
-        <TabsTrigger value="server" v-if="canViewAdmin">
-          {{ $t("match.tabs.admin") }}
-        </TabsTrigger>
       </TabsList>
     </div>
     <TabsContent value="overview">
@@ -138,6 +120,18 @@ provide("commander", commander);
               :match="match"
               :lineup="match.lineup_2"
             ></LineupOverview>
+          </CardContent>
+        </Card>
+
+        <Card
+          v-if="singleMapForHistory && singleMapForHistory.rounds?.length > 0"
+          class="overflow-x-auto"
+        >
+          <CardContent class="py-3">
+            <RoundHistoryBar
+              :match="match"
+              :match-map="singleMapForHistory"
+            />
           </CardContent>
         </Card>
       </div>
@@ -264,118 +258,6 @@ provide("commander", commander);
         </Card>
       </div>
     </TabsContent>
-    <TabsContent
-      value="server"
-      class="flex flex-col gap-4 max-w-[1500px] w-full overflow-x-auto"
-    >
-      <AlertDialog :open="showConfirmDialog">
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{{ $t("common.confirm") }}</AlertDialogTitle>
-            <AlertDialogDescription class="flex flex-col gap-2">
-              <span>{{ $t("common.are_you_sure") }}</span>
-              <Badge variant="secondary" class="w-fit">
-                {{ pendingCommand.display }}
-              </Badge>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel @click="showConfirmDialog = false">
-              {{ $t("common.cancel") }}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              @click="
-                executePending && executePending();
-                showConfirmDialog = false;
-              "
-            >
-              {{ $t("common.confirm") }}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      <RconCommander
-        :server-id="match.server_id"
-        :online="match.is_server_online"
-        :match-id="match.id"
-        v-slot="{ commander }"
-        v-if="canSendRCONCommands"
-      >
-        <template v-for="command of availableCommands">
-          <DropdownMenuItem
-            :disabled="!match.is_server_online"
-            @click="
-              command.confirm
-                ? confirmCommand(command, commander)
-                : commander(command.value, '')
-            "
-          >
-            {{ command.display }}
-          </DropdownMenuItem>
-        </template>
-
-        <form
-          @submit.prevent="commander('restore_round', form.values.round)"
-          v-if="currentMap?.rounds.length > 0"
-        >
-          <FormField v-slot="{ componentField }" name="round">
-            <FormItem>
-              <FormLabel>{{ $t("match.tabs.restore_round") }}</FormLabel>
-              <Select
-                v-bind="componentField"
-                @update:model-value="
-                  (value) => form.setFieldValue('round', value)
-                "
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      :placeholder="$t('match.tabs.select_round_to_restore')"
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <template v-for="round of currentMap.rounds">
-                      <SelectItem
-                        v-if="round.has_backup_file && round.round > 0"
-                        :value="round.round.toString()"
-                      >
-                        {{
-                          $t("common.round", {
-                            number: round.round.toString(),
-                          })
-                        }}
-                      </SelectItem>
-                    </template>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
-          <Button type="submit">{{ $t("match.tabs.restore_round") }}</Button>
-        </form>
-      </RconCommander>
-
-      <div
-        v-if="!hasLogs"
-        class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-8 text-center"
-      >
-        <h3 class="font-semibold">{{ $t("match.tabs.no_logs_title") }}</h3>
-        <p class="text-sm text-muted-foreground">
-          {{ $t("match.tabs.no_logs_description") }}
-        </p>
-      </div>
-      <ServiceLogs
-        v-show="hasLogs"
-        :service="`m-${match.id}`"
-        :compact="true"
-        @has-logs="hasLogs = $event"
-      />
-    </TabsContent>
     <TabsContent value="settings" class="flex flex-col gap-4 max-w-[1500px]">
       <Card>
         <CardContent class="py-4">
@@ -427,58 +309,13 @@ provide("commander", commander);
 </template>
 
 <script lang="ts">
-import {
-  e_match_map_status_enum,
-  e_match_status_enum,
-  e_player_roles_enum,
-} from "~/generated/zeus";
-import { useForm } from "vee-validate";
-import { toTypedSchema } from "~/utilities/vee-validate-zod";
-import * as z from "zod";
+import { e_match_status_enum, e_player_roles_enum } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import {
   getRouteTabValue,
   normalizeRouteTab,
   replaceRouteTab,
 } from "~/composables/useRouteTab";
-
-enum AvailableCommands {
-  Pause = "css_pause",
-  Resume = "css_resume",
-  SkipKnife = "skip_knife",
-  ForceReady = "force_ready",
-  Knife = "match_state Knife",
-  Warmup = "match_state Warmup",
-}
-
-const CommandDetails = {
-  [AvailableCommands.Pause]: {
-    display: "Pause Match",
-    value: AvailableCommands.Pause,
-  },
-  [AvailableCommands.Resume]: {
-    display: "Resume Match",
-    value: AvailableCommands.Resume,
-  },
-  [AvailableCommands.SkipKnife]: {
-    display: "Skip Knife",
-    value: AvailableCommands.SkipKnife,
-  },
-  [AvailableCommands.ForceReady]: {
-    display: "Force Ready",
-    value: AvailableCommands.ForceReady,
-  },
-  [AvailableCommands.Knife]: {
-    display: "Reset to Knife",
-    value: AvailableCommands.Knife,
-    confirm: true,
-  },
-  [AvailableCommands.Warmup]: {
-    display: "Reset to Warmup",
-    value: AvailableCommands.Warmup,
-    confirm: true,
-  },
-};
 
 export default {
   props: {
@@ -490,20 +327,7 @@ export default {
   data() {
     return {
       activeTab: "overview",
-      hasLogs: false,
       inviteDialog: false,
-      showConfirmDialog: false,
-      pendingCommand: null as
-        | undefined
-        | { value: string; display: string; confirm: boolean },
-      executePending: undefined as undefined | (() => void),
-      form: useForm({
-        validationSchema: toTypedSchema(
-          z.object({
-            round: z.string(),
-          }),
-        ),
-      }),
     };
   },
   watch: {
@@ -576,36 +400,6 @@ export default {
         e_match_status_enum.Tie,
       ].includes(this.match.status);
     },
-    currentMap() {
-      return this.match.match_maps.find((match_map) => {
-        return match_map.is_current_map;
-      });
-    },
-    availableCommands() {
-      const commands = [];
-
-      switch (this.currentMap?.status) {
-        case e_match_map_status_enum.Warmup:
-        case e_match_map_status_enum.Scheduled:
-          commands.push(CommandDetails[AvailableCommands.ForceReady]);
-          break;
-        case e_match_map_status_enum.Knife:
-          commands.push(CommandDetails[AvailableCommands.SkipKnife]);
-          commands.push(CommandDetails[AvailableCommands.Warmup]);
-          break;
-        case e_match_map_status_enum.Paused:
-          commands.push(CommandDetails[AvailableCommands.Resume]);
-          commands.push(CommandDetails[AvailableCommands.Warmup]);
-          commands.push(CommandDetails[AvailableCommands.Knife]);
-          break;
-        case e_match_map_status_enum.Live:
-        case e_match_map_status_enum.Overtime:
-          commands.push(CommandDetails[AvailableCommands.Pause]);
-          break;
-      }
-
-      return commands;
-    },
     displayServerInformation() {
       return [
         e_match_status_enum.Live,
@@ -616,24 +410,9 @@ export default {
         e_match_status_enum.PickingPlayers,
       ].includes(this.match.status);
     },
-    canViewAdmin() {
-      return this.match.is_organizer;
-    },
-    canSendRCONCommands() {
-      if (
-        ![
-          e_match_status_enum.Live,
-          e_match_status_enum.PickingPlayers,
-          e_match_status_enum.Scheduled,
-          e_match_status_enum.Veto,
-          e_match_status_enum.WaitingForCheckIn,
-          e_match_status_enum.WaitingForServer,
-        ].includes(this.match.status)
-      ) {
-        return false;
-      }
-
-      return true;
+    singleMapForHistory() {
+      if (this.match.options?.best_of !== 1) return null;
+      return this.match.match_maps?.[0] ?? null;
     },
     canAdjustLineups() {
       if (
@@ -678,10 +457,6 @@ export default {
         tabs.push("streams");
       }
 
-      if (this.canViewAdmin) {
-        tabs.push("server");
-      }
-
       return tabs;
     },
   },
@@ -703,18 +478,6 @@ export default {
         this.availableMatchTabs,
         "overview",
       );
-    },
-    async confirmCommand(
-      command: {
-        value: string;
-        display: string;
-        confirm: boolean;
-      },
-      commander,
-    ) {
-      this.pendingCommand = command;
-      this.executePending = () => commander(this.pendingCommand.value, "");
-      this.showConfirmDialog = true;
     },
     async swapLineups() {
       await this.$apollo.mutate({

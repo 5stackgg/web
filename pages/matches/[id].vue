@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
+import MatchMapStatsDrawer from "~/components/match/MatchMapStatsDrawer.vue";
+import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
@@ -13,6 +16,8 @@ import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { AlertTriangle } from "lucide-vue-next";
+
+const activeStatsMap = ref<null | { id: string; map: { name: string } }>(null);
 
 const heroClasses =
   "relative min-w-0 max-w-full px-6 pt-5 pb-6 max-sm:p-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] backdrop-blur-[6px] [clip-path:polygon(0_0,calc(100%-18px)_0,100%_18px,100%_100%,18px_100%,0_calc(100%-18px))] before:content-[''] before:absolute before:w-[14px] before:h-[14px] before:border-[hsl(var(--tac-amber))] before:border-solid before:top-2 before:left-2 before:border-t-2 before:border-l-2 after:content-[''] after:absolute after:w-[14px] after:h-[14px] after:border-[hsl(var(--tac-amber))] after:border-solid after:bottom-2 after:right-2 after:border-b-2 after:border-r-2";
@@ -51,7 +56,11 @@ const vsBaseClasses =
 </script>
 
 <template>
-  <div v-if="match" class="flex flex-col gap-4 md:gap-6">
+  <div
+    v-if="match"
+    class="flex flex-col gap-4 md:gap-6"
+    :class="match.is_organizer && 'pb-16'"
+  >
     <PageTransition>
       <header :class="heroClasses">
         <div class="flex items-center gap-3 flex-wrap mb-5 max-sm:mb-[0.85rem]">
@@ -273,6 +282,7 @@ const vsBaseClasses =
                 v-if="slot"
                 :match="match"
                 :match-map="slot"
+                @open-stats="activeStatsMap = $event"
               ></MatchMaps>
               <div
                 v-else
@@ -304,7 +314,12 @@ const vsBaseClasses =
       <div class="min-w-0">
         <PageTransition>
           <StreamEmbed
-            v-if="showLiveStreams && match.streams.length > 0"
+            v-if="
+              showLiveStreams &&
+              match.streams.length > 0 &&
+              !match.is_in_lineup &&
+              !match.is_coach
+            "
             :streams="match.streams"
             class="pb-6 max-w-[1500px] w-full overflow-x-auto"
           />
@@ -359,6 +374,16 @@ const vsBaseClasses =
         </PageTransition>
       </div>
     </div>
+
+    <MatchMapStatsDrawer
+      v-if="activeStatsMap"
+      :match="match"
+      :match-map="activeStatsMap"
+      :open="!!activeStatsMap"
+      @update:open="(v) => !v && (activeStatsMap = null)"
+    />
+
+    <MatchAdminBottomBar v-if="match.is_organizer" :match="match" />
   </div>
 </template>
 
@@ -500,6 +525,7 @@ export default {
                       lineup_1_side: true,
                       lineup_2_side: true,
                       winning_side: true,
+                      winning_reason: true,
                       has_backup_file: true,
                       round: true,
                       kills: [

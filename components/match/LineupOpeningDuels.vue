@@ -21,6 +21,7 @@ import LineupOpeningDuelRow from "~/components/match/LineupOpeningDuelRow.vue";
         :member="member"
         :lineup="lineup"
         :match="match"
+        :selected-map-id="selectedMapId"
         v-for="member of lineup.lineup_players"
       ></lineup-opening-duel-row>
     </TableBody>
@@ -37,6 +38,10 @@ export default {
     lineup: {
       required: true,
       type: Object,
+    },
+    selectedMapId: {
+      type: String as () => string | null,
+      default: null,
     },
   },
 };

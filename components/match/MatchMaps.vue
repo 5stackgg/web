@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Badge } from "~/components/ui/badge";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
+import RoundHistoryBar from "~/components/match/RoundHistoryBar.vue";
 import { Download, ChevronRight, ChevronLeft } from "lucide-vue-next";
 import {
   Tooltip,
@@ -12,10 +13,16 @@ import cleanMapName from "~/utilities/cleanMapName";
 
 <template>
   <div
-    class="rounded-xl overflow-hidden border border-border/50"
+    class="rounded-xl overflow-hidden border border-border/50 transition-colors"
     :class="{
       'ring-2 ring-red-500': matchMap.is_current_map,
+      'cursor-pointer hover:border-primary/60': canOpenStats,
     }"
+    :role="canOpenStats ? 'button' : undefined"
+    :tabindex="canOpenStats ? 0 : undefined"
+    @click="canOpenStats && $emit('open-stats', matchMap)"
+    @keydown.enter="canOpenStats && $emit('open-stats', matchMap)"
+    @keydown.space.prevent="canOpenStats && $emit('open-stats', matchMap)"
   >
     <!-- Map image header -->
     <div class="relative aspect-[16/5]">
@@ -58,7 +65,11 @@ import cleanMapName from "~/utilities/cleanMapName";
           >{{ $t("match.decider") }}</Badge
         >
         <template v-if="matchMap.demos_download_url">
-          <a target="_blank" :href="matchMap.demos_download_url">
+          <a
+            target="_blank"
+            :href="matchMap.demos_download_url"
+            @click.stop
+          >
             <Button
               size="xs"
               variant="ghost"
@@ -71,7 +82,7 @@ import cleanMapName from "~/utilities/cleanMapName";
         </template>
         <template v-else>
           <template v-for="demo in matchMap.demos" :key="demo.id">
-            <a :href="demo.download_url">
+            <a :href="demo.download_url" @click.stop>
               <Button
                 size="xs"
                 variant="ghost"
@@ -159,6 +170,14 @@ import cleanMapName from "~/utilities/cleanMapName";
           }}</span>
         </div>
       </div>
+
+      <RoundHistoryBar
+        v-if="match.options.best_of > 1 && matchMap.rounds?.length > 0"
+        :match="match"
+        :match-map="matchMap"
+        compact
+        class="mt-2"
+      />
     </div>
   </div>
 </template>
@@ -167,6 +186,7 @@ import cleanMapName from "~/utilities/cleanMapName";
 import { e_match_status_enum, e_veto_pick_types_enum } from "~/generated/zeus";
 
 export default {
+  emits: ["open-stats"],
   props: {
     match: {
       type: Object,
@@ -178,6 +198,9 @@ export default {
     },
   },
   computed: {
+    canOpenStats() {
+      return this.matchMap.status !== e_match_status_enum.Scheduled;
+    },
     showTeamPatch() {
       return (
         !this.isDecider || this.matchMap.status === e_match_status_enum.Live

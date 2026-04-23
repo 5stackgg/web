@@ -1845,6 +1845,7 @@
         },
         "show_players": "Show Players",
         "hide_players": "Hide Players",
+        "round_history": "Round History",
         "status": {
             "cancelled": "Cancelled",
             "waiting_server": "Waiting for server ...",

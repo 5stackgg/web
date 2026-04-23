@@ -42,41 +42,46 @@ provide("commander", commander);
 <template>
   <Tabs v-model="activeTab" class="match-tabs">
     <div
-      v-if="activeMap"
-      class="relative mb-4 flex items-center justify-between gap-3 px-3 py-2 border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.08)] [clip-path:polygon(0_0,calc(100%-10px)_0,100%_10px,100%_100%,10px_100%,0_calc(100%-10px))]"
+      class="map-filter-banner"
+      :class="{ 'is-active': !!activeMap }"
+      aria-live="polite"
     >
-      <div class="flex items-center gap-3 min-w-0">
-        <span
-          class="shrink-0 inline-block w-[6px] h-[6px] rounded-full bg-[hsl(var(--tac-amber))]"
-        ></span>
-        <div class="flex flex-col gap-0.5 min-w-0">
-          <span
-            class="font-mono text-[0.6rem] font-bold tracking-[0.28em] uppercase text-[hsl(var(--tac-amber))]"
-          >
-            Map Filter Active
-          </span>
-          <span
-            class="font-mono text-[0.75rem] tracking-[0.12em] uppercase text-foreground truncate"
-          >
-            {{ cleanMapName(activeMap.map.name) }}
-            <span
-              v-if="typeof activeMap.lineup_1_score === 'number'"
-              class="text-muted-foreground ml-2"
-            >
-              {{ activeMap.lineup_1_score }} : {{ activeMap.lineup_2_score }}
-            </span>
-          </span>
-        </div>
-      </div>
-      <Button
-        variant="ghost"
-        size="sm"
-        class="shrink-0 font-mono text-[0.65rem] tracking-[0.2em] uppercase gap-2 border border-transparent hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))]"
-        @click="$emit('clear-active-map')"
+      <div
+        class="relative flex items-center justify-between gap-3 px-3 py-2 border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.08)] [clip-path:polygon(0_0,calc(100%-10px)_0,100%_10px,100%_100%,10px_100%,0_calc(100%-10px))]"
       >
-        <Cross2Icon class="w-3 h-3" />
-        {{ $t("common.close") }}
-      </Button>
+        <div class="flex items-center gap-3 min-w-0">
+          <span
+            class="shrink-0 inline-block w-[6px] h-[6px] rounded-full bg-[hsl(var(--tac-amber))]"
+          ></span>
+          <div class="flex flex-col gap-0.5 min-w-0">
+            <span
+              class="font-mono text-[0.6rem] font-bold tracking-[0.28em] uppercase text-[hsl(var(--tac-amber))]"
+            >
+              Map Filter Active
+            </span>
+            <span
+              class="font-mono text-[0.75rem] tracking-[0.12em] uppercase text-foreground truncate"
+            >
+              {{ activeMap ? cleanMapName(activeMap.map.name) : "" }}
+              <span
+                v-if="activeMap && typeof activeMap.lineup_1_score === 'number'"
+                class="text-muted-foreground ml-2"
+              >
+                {{ activeMap.lineup_1_score }} : {{ activeMap.lineup_2_score }}
+              </span>
+            </span>
+          </div>
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          class="shrink-0 font-mono text-[0.65rem] tracking-[0.2em] uppercase gap-2 border border-transparent hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))]"
+          @click="$emit('clear-active-map')"
+        >
+          <Cross2Icon class="w-3 h-3" />
+          {{ $t("common.close") }}
+        </Button>
+      </div>
     </div>
     <!-- Mobile: map filter selector -->
     <div v-if="statsEligibleMaps.length > 1" class="mb-3 lg:hidden">
@@ -184,11 +189,10 @@ provide("commander", commander);
       </TabsList>
     </div>
     <TabsContent value="overview">
-      <div v-if="activeMap && !mapStats" class="grid gap-4 max-w-[1500px]">
-        <Skeleton class="h-24 w-full" />
-        <Skeleton class="h-24 w-full" />
-      </div>
-      <div v-else class="grid gap-4 max-w-[1500px]">
+      <div
+        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
+        :class="{ 'opacity-60': activeMap && !mapStats }"
+      >
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
             <LineupOverview
@@ -269,11 +273,10 @@ provide("commander", commander);
       </Drawer>
     </TabsContent>
     <TabsContent value="utility">
-      <div v-if="activeMap && !mapStats" class="grid gap-4 max-w-[1500px]">
-        <Skeleton class="h-24 w-full" />
-        <Skeleton class="h-24 w-full" />
-      </div>
-      <div v-else class="grid gap-4 max-w-[1500px]">
+      <div
+        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
+        :class="{ 'opacity-60': activeMap && !mapStats }"
+      >
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
             <lineup-utility
@@ -498,6 +501,30 @@ provide("commander", commander);
     </TabsContent>
   </Tabs>
 </template>
+
+<style scoped>
+.map-filter-banner {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  margin-bottom: 0;
+  transition:
+    grid-template-rows 220ms ease,
+    opacity 180ms ease,
+    margin-bottom 220ms ease;
+}
+
+.map-filter-banner > * {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.map-filter-banner.is-active {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-bottom: 1rem;
+}
+</style>
 
 <script lang="ts">
 import {

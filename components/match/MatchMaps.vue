@@ -17,6 +17,8 @@ import cleanMapName from "~/utilities/cleanMapName";
     :class="{
       'ring-2 ring-red-500': matchMap.is_current_map,
       'cursor-pointer hover:border-primary/60': canOpenStats,
+      'outline-dashed outline-2 outline-offset-2 outline-[hsl(var(--tac-amber))]':
+        isActive,
     }"
     :role="canOpenStats ? 'button' : undefined"
     :tabindex="canOpenStats ? 0 : undefined"
@@ -195,6 +197,10 @@ export default {
     matchMap: {
       type: Object,
       required: true,
+    },
+    isActive: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {

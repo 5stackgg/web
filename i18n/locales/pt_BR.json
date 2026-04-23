@@ -667,6 +667,7 @@
             "community_menu": "Comunidade",
             "watch_menu": "Partidas",
             "login": "Login para Jogar",
+            "login_mobile": "Login",
             "play": {
                 "find_match": "Encontrar uma partida",
                 "tournaments": "Campeonatos",

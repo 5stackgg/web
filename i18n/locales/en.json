@@ -1021,6 +1021,7 @@
             "community_menu": "Community",
             "watch_menu": "Watch",
             "login": "Login to Play",
+            "login_mobile": "Login",
             "play": {
                 "find_match": "Find a Match",
                 "tournaments": "Tournaments",

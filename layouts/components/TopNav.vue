@@ -589,9 +589,19 @@ if (import.meta.client) {
 
       <template v-else>
         <div :class="topNavRightClasses">
-          <button @click="signIn" :class="loginButtonClasses" type="button">
+          <button
+            @click="signIn"
+            :class="loginButtonClasses"
+            type="button"
+            :aria-label="$t('layouts.top_nav.login')"
+          >
             <SteamIcon class="h-3.5 w-3.5 fill-white" />
-            <span>{{ $t("layouts.top_nav.login") }}</span>
+            <span class="sm:hidden">{{
+              $t("layouts.top_nav.login_mobile")
+            }}</span>
+            <span class="hidden sm:inline">{{
+              $t("layouts.top_nav.login")
+            }}</span>
             <span :class="loginArrowClasses">→</span>
           </button>
         </div>

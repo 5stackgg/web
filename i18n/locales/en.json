@@ -1613,7 +1613,11 @@
             "found_teams": "{count} teams found",
             "placeholder": "Search for a team...",
             "my_teams_only": "My Teams Only",
-            "no_teams_found": "No teams found"
+            "no_teams_found": "No teams found",
+            "owner": "Owner",
+            "captain": "Captain",
+            "ineligible_short": "Locked",
+            "tournament_join_requires_owner_or_captain": "You can only join a tournament with teams where you are the owner or captain."
         },
         "member": {
             "coach": "Coach",

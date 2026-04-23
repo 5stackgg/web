@@ -79,6 +79,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
             :team="team"
             :member="member"
             :roles="roles"
+            :is-captain="member.player.steam_id === team.captain_steam_id"
             :is-invite="false"
           />
         </div>
@@ -104,6 +105,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
             :team="team"
             :member="member"
             :roles="roles"
+            :is-captain="member.player.steam_id === team.captain_steam_id"
             :is-invite="false"
           />
         </div>
@@ -129,6 +131,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
             :team="team"
             :member="member"
             :roles="roles"
+            :is-captain="member.player.steam_id === team.captain_steam_id"
             :is-invite="false"
           />
         </div>
@@ -154,6 +157,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
             :team="team"
             :member="member"
             :roles="roles"
+            :is-captain="member.player.steam_id === team.captain_steam_id"
             :is-invite="false"
           />
         </div>
@@ -203,6 +207,8 @@ export default {
               id: $("teamId", "uuid!"),
             },
             {
+                  id: true,
+                  captain_steam_id: true,
               can_invite: true,
               can_remove: true,
               can_change_role: true,

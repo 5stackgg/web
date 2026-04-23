@@ -23,6 +23,9 @@ const listRef = ref<ComponentPublicInstance | HTMLElement | null>(null)
 const indicatorX = ref(0)
 const indicatorWidth = ref(0)
 const hasAnimated = ref(false)
+let retryTimer: ReturnType<typeof setTimeout> | null = null
+let retryCount = 0
+const MAX_MEASURE_RETRIES = 8
 
 function getListElement(): HTMLElement | null {
   const target = listRef.value
@@ -45,6 +48,7 @@ function updateIndicator() {
   if (!activeTrigger) {
     indicatorWidth.value = 0
     hasAnimated.value = false
+    scheduleRetry()
     return
   }
 
@@ -57,9 +61,36 @@ function updateIndicator() {
   nextTick(() => {
     hasAnimated.value = true
   })
+
+  // If layout is still settling (e.g. enter transitions), try again shortly.
+  if (activeRect.width === 0) {
+    scheduleRetry()
+  } else {
+    clearRetry()
+  }
 }
 
 let observer: MutationObserver | null = null
+
+function clearRetry() {
+  if (retryTimer) {
+    clearTimeout(retryTimer)
+    retryTimer = null
+  }
+  retryCount = 0
+}
+
+function scheduleRetry() {
+  if (retryTimer || retryCount >= MAX_MEASURE_RETRIES) {
+    return
+  }
+
+  retryCount += 1
+  retryTimer = setTimeout(() => {
+    retryTimer = null
+    updateIndicator()
+  }, 80)
+}
 
 onMounted(() => {
   nextTick(() => {
@@ -75,11 +106,19 @@ onMounted(() => {
       subtree: true,
       attributeFilter: ["data-state"],
     })
+
+    // Some tabs initialize active state after the first paint.
+    // Re-run on subsequent frames so the indicator appears immediately.
+    requestAnimationFrame(() => {
+      updateIndicator()
+      requestAnimationFrame(updateIndicator)
+    })
     window.addEventListener("resize", updateIndicator)
   })
 })
 
 onUnmounted(() => {
+  clearRetry()
   observer?.disconnect()
   window.removeEventListener("resize", updateIndicator)
 })

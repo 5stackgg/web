@@ -119,7 +119,7 @@ const teamHeroActionsClasses =
               <span :class="teamHeroMetaLabelClasses">
                 {{ $t("team.roles.captain") }}
               </span>
-              <PlayerDisplay :player="team.owner" :linkable="true" size="sm" />
+              <PlayerDisplay :player="teamCaptain" :linkable="true" size="sm" />
             </div>
 
             <span class="hidden sm:inline-block h-5 w-px bg-border"></span>
@@ -321,7 +321,9 @@ export default {
               short_name: true,
               avatar_url: true,
               owner_steam_id: true,
+              captain_steam_id: true,
               owner: playerFields,
+              captain: playerFields,
               roster: [
                 {},
                 {
@@ -443,6 +445,9 @@ export default {
     teamAvatarSrc() {
       if (!this.team?.avatar_url) return null;
       return `https://${this.apiDomain}/${this.team.avatar_url}`;
+    },
+    teamCaptain() {
+      return this.team?.captain || this.team?.owner;
     },
     teamMatches() {
       const matchesById = new Map<string, any>();

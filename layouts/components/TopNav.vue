@@ -52,7 +52,7 @@ const isHome = computed(() => {
 });
 
 const navMenuClasses =
-  "ml-1 [&>div:last-child]:top-full [&>div:last-child]:[transform:translateX(var(--tac-viewport-offset,0))] [&>div:last-child]:transition-[transform,width] [&>div:last-child]:[transition-duration:220ms] [&>div:last-child>*]:!mt-0 [&>div:last-child>*]:!rounded-none [&>div:last-child>*]:!border-0 [&>div:last-child>*]:!bg-transparent [&>div:last-child>*]:!shadow-none";
+  "ml-1 [&>div:last-child>*]:!mt-0 [&>div:last-child>*]:!rounded-none [&>div:last-child>*]:!border-0 [&>div:last-child>*]:!bg-transparent [&>div:last-child>*]:!shadow-none";
 
 const navTickClasses =
   "nav-link-tick h-[5px] w-[5px] shrink-0 rotate-45 bg-[hsl(var(--topnav-foreground)/0.3)] transition-colors duration-150";
@@ -112,44 +112,6 @@ const loginButtonClasses =
 const loginArrowClasses =
   "font-sans text-[hsl(var(--tac-amber))] transition-transform duration-150 group-hover:translate-x-[3px]";
 
-const navMenuRef = ref<any>(null);
-const viewportOffset = ref(0);
-
-const getMenuEl = (): HTMLElement | null => {
-  const menuRef = navMenuRef.value;
-  return (menuRef?.$el ?? menuRef) as HTMLElement | null;
-};
-
-const updateViewportOffset = () => {
-  const root = getMenuEl();
-  if (!root) return;
-
-  const list = root.querySelector<HTMLElement>("ul");
-  const openTrigger = root.querySelector<HTMLElement>(
-    '.nav-trigger-anchor[data-state="open"]',
-  );
-
-  if (!list || !openTrigger) return;
-
-  const listRect = list.getBoundingClientRect();
-  const triggerRect = openTrigger.getBoundingClientRect();
-  viewportOffset.value = triggerRect.left - listRect.left;
-};
-
-const onMenuValueChange = (value: unknown) => {
-  if (!value) return;
-  requestAnimationFrame(() => requestAnimationFrame(updateViewportOffset));
-};
-
-if (import.meta.client) {
-  onMounted(() => {
-    window.addEventListener("resize", updateViewportOffset);
-  });
-
-  onBeforeUnmount(() => {
-    window.removeEventListener("resize", updateViewportOffset);
-  });
-}
 </script>
 
 <template>
@@ -206,12 +168,7 @@ if (import.meta.client) {
 
         <SystemStatus v-if="!isMobile" />
 
-        <NavigationMenu
-          ref="navMenuRef"
-          :class="navMenuClasses"
-          :style="{ '--tac-viewport-offset': `${viewportOffset}px` }"
-          @update:model-value="onMenuValueChange"
-        >
+        <NavigationMenu :class="navMenuClasses">
           <NavigationMenuList class="flex items-center gap-1">
             <NavigationMenuItem v-if="me" class="hidden md:block">
               <NavigationMenuLink as-child>

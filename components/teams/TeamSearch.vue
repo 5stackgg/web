@@ -64,7 +64,12 @@ const { height: viewportHeight } = useVisualViewport();
             <div
               v-for="team in teams"
               :key="team.id"
-              class="px-3 py-2 hover:bg-accent cursor-pointer"
+              class="px-3 py-2"
+              :class="
+                canSelectTeam(team)
+                  ? 'hover:bg-accent cursor-pointer'
+                  : 'opacity-60 cursor-not-allowed'
+              "
               @click="select(team)"
             >
               <div class="flex items-center gap-2 min-w-0">
@@ -82,7 +87,22 @@ const { height: viewportHeight } = useVisualViewport();
                   [{{ team.short_name }}]
                 </span>
                 <span class="truncate">{{ team.name }}</span>
+                <span
+                  v-if="tournamentJoinSelector"
+                  class="ml-auto text-[10px] uppercase tracking-wide"
+                  :class="
+                    canSelectTeam(team) ? 'text-emerald-600' : 'text-amber-600'
+                  "
+                >
+                  {{ teamEligibilityLabel(team) }}
+                </span>
               </div>
+              <p
+                v-if="teamDisabledReason(team)"
+                class="mt-1 text-[11px] text-muted-foreground"
+              >
+                {{ teamDisabledReason(team) }}
+              </p>
             </div>
           </div>
         </div>
@@ -194,7 +214,12 @@ const { height: viewportHeight } = useVisualViewport();
               <div
                 v-for="team in teams"
                 :key="team.id"
-                class="px-3 py-2 hover:bg-accent cursor-pointer"
+                class="px-3 py-2"
+                :class="
+                  canSelectTeam(team)
+                    ? 'hover:bg-accent cursor-pointer'
+                    : 'opacity-60 cursor-not-allowed'
+                "
                 @click="select(team)"
               >
                 <div class="flex items-center gap-2 min-w-0">
@@ -212,7 +237,22 @@ const { height: viewportHeight } = useVisualViewport();
                     [{{ team.short_name }}]
                   </span>
                   <span class="truncate">{{ team.name }}</span>
+                  <span
+                    v-if="tournamentJoinSelector"
+                    class="ml-auto text-[10px] uppercase tracking-wide"
+                    :class="
+                      canSelectTeam(team) ? 'text-emerald-600' : 'text-amber-600'
+                    "
+                  >
+                    {{ teamEligibilityLabel(team) }}
+                  </span>
                 </div>
+                <p
+                  v-if="teamDisabledReason(team)"
+                  class="mt-1 text-[11px] text-muted-foreground"
+                >
+                  {{ teamDisabledReason(team) }}
+                </p>
               </div>
             </div>
           </div>
@@ -229,7 +269,10 @@ interface Team {
   id: string;
   name: string;
   short_name: string;
+  owner_steam_id?: string | null;
+  captain_steam_id?: string | null;
   avatar_url?: string | null;
+  role?: e_team_roles_enum;
 }
 
 export default {
@@ -255,6 +298,11 @@ export default {
       default: false,
     },
     myTeams: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    tournamentJoinSelector: {
       type: Boolean,
       required: false,
       default: false,
@@ -329,6 +377,26 @@ export default {
     },
   },
   methods: {
+    canSelectTeam(team: Team): boolean {
+      if (!this.tournamentJoinSelector) return true;
+      const isOwner = team.owner_steam_id === this.me?.steam_id;
+      const isCaptain = team.captain_steam_id === this.me?.steam_id;
+      return isOwner || isCaptain;
+    },
+    teamEligibilityLabel(team: Team): string {
+      if (!this.tournamentJoinSelector) return "";
+      if (team.owner_steam_id === this.me?.steam_id) {
+        return this.$t("team.search.owner");
+      }
+      if (team.captain_steam_id === this.me?.steam_id) {
+        return this.$t("team.search.captain");
+      }
+      return this.$t("team.search.ineligible_short");
+    },
+    teamDisabledReason(team: Team): string {
+      if (!this.tournamentJoinSelector || this.canSelectTeam(team)) return "";
+      return this.$t("team.search.tournament_join_requires_owner_or_captain");
+    },
     teamAvatarSrc(team: { avatar_url?: string | null }): string | null {
       if (!team.avatar_url) return null;
       return `https://${this.apiDomain}/${team.avatar_url}`;
@@ -341,7 +409,7 @@ export default {
       });
     },
     select(team: Team) {
-      if (!team) {
+      if (!team || !this.canSelectTeam(team)) {
         return;
       }
       this.open = false;
@@ -355,11 +423,22 @@ export default {
 
       if (this.myTeamsOnly || this.myTeams) {
         this.teams = this.me.teams.filter((team: Team) => {
-          if (this.isAdmin && team.role !== e_team_roles_enum.Admin) {
+          if (this.exclude.includes(team.id)) {
             return false;
           }
 
-          return !this.exclude.includes(team.id);
+          const isTeamCaptain = team.captain_steam_id === this.me?.steam_id;
+          const isTeamOwner = team.owner_steam_id === this.me?.steam_id;
+          if (
+            this.isAdmin &&
+            team.role !== e_team_roles_enum.Admin &&
+            !isTeamOwner &&
+            !isTeamCaptain
+          ) {
+            return this.tournamentJoinSelector;
+          }
+
+          return true;
         });
         return;
       }

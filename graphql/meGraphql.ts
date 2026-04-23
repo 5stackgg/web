@@ -17,6 +17,8 @@ export const meFields = Selector("players")({
       name: true,
       short_name: true,
       role: true,
+      owner_steam_id: true,
+      captain_steam_id: true,
     },
   ],
 });

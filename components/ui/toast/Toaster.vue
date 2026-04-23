@@ -17,7 +17,7 @@ const { toasts } = useToast()
           <ToastDescription v-if="isVNode(toast.description)">
             <component :is="toast.description" />
           </ToastDescription>
-          <ToastDescription v-else>
+          <ToastDescription v-else class="select-text whitespace-pre-wrap break-words">
             {{ toast.description }}
           </ToastDescription>
         </template>

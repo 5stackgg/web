@@ -204,7 +204,6 @@ function playerAvatarSrc(player: {
                   :show-flag="true"
                   :show-role="false"
                   :show-elo="false"
-                  :show-trophies="false"
                   size="xs"
                 />
                 <template v-if="playerStatFor(p.steam_id)">
@@ -327,7 +326,6 @@ function playerAvatarSrc(player: {
               :show-flag="true"
               :show-role="false"
               :show-elo="true"
-              :show-trophies="false"
               :linkable="true"
               size="sm"
             />
@@ -560,7 +558,6 @@ function playerAvatarSrc(player: {
                                 :show-flag="true"
                                 :show-role="false"
                                 :show-elo="false"
-                                :show-trophies="false"
                                 :linkable="true"
                                 size="xs"
                               />

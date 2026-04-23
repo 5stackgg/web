@@ -1634,6 +1634,7 @@
     },
     "match": {
         "team_stats_heading": "{name} Stats",
+        "all_maps": "All Maps",
         "elo_details": {
             "title": "Elo Change Details",
             "elo": "Elo",

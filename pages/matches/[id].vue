@@ -277,6 +277,7 @@ const vsBaseClasses =
                 v-if="slot"
                 :match="match"
                 :match-map="slot"
+                :is-active="activeStatsMap?.id === slot.id"
                 @open-stats="activeStatsMap = $event"
               ></MatchMaps>
               <div

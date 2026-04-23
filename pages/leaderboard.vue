@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import gql from "graphql-tag";
+import { ref, computed, watch, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
+import { useApolloClient } from "@vue/apollo-composable";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import Pagination from "~/components/Pagination.vue";
@@ -22,6 +26,340 @@ const leaderboardFadeTransition = {
   enterFromClass: "translate-y-[2px] opacity-0",
   leaveToClass: "translate-y-[2px] opacity-0",
 };
+
+interface LeaderboardEntry {
+  rank: number;
+  player_steam_id: string;
+  player_name: string;
+  player_avatar_url: string | null;
+  player_country: string | null;
+  value: number;
+  secondary_value: number | null;
+  tertiary_value: number | null;
+  matches_played: number | null;
+}
+
+type SortField =
+  | "value"
+  | "secondary_value"
+  | "tertiary_value"
+  | "matches_played";
+
+const CATEGORY_CONFIG: Record<
+  string,
+  {
+    columns: {
+      value: string;
+      secondary_value?: string;
+      tertiary_value?: string;
+      matches_played?: string;
+    };
+    sortable: SortField[];
+  }
+> = {
+  elo: {
+    columns: {
+      value: "pages.leaderboard.col.elo",
+      secondary_value: "pages.leaderboard.col.elo_change",
+      tertiary_value: "pages.leaderboard.col.win_streak",
+      matches_played: "pages.leaderboard.columns.matches",
+    },
+    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
+  },
+  best_kdr: {
+    columns: {
+      value: "pages.leaderboard.col.kdr",
+      secondary_value: "pages.leaderboard.col.kills",
+      tertiary_value: "pages.leaderboard.col.deaths",
+      matches_played: "pages.leaderboard.columns.matches",
+    },
+    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
+  },
+  best_win_rate: {
+    columns: {
+      value: "common.stats.win_rate",
+      secondary_value: "pages.leaderboard.col.wins",
+      tertiary_value: "pages.leaderboard.col.losses",
+      matches_played: "pages.leaderboard.columns.matches",
+    },
+    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
+  },
+  highest_hs_pct: {
+    columns: {
+      value: "pages.leaderboard.col.hs_pct",
+      secondary_value: "pages.leaderboard.col.total_kills",
+      matches_played: "pages.leaderboard.columns.matches",
+    },
+    sortable: ["value", "secondary_value", "matches_played"],
+  },
+  trophies: {
+    columns: {
+      value: "pages.leaderboard.col.gold",
+      secondary_value: "pages.leaderboard.col.silver",
+      tertiary_value: "pages.leaderboard.col.bronze",
+      matches_played: "pages.leaderboard.col.mvp",
+    },
+    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
+  },
+};
+
+const TIER_COLORS: Record<string, string> = {
+  mvp: "hsl(195 85% 60%)",
+  gold: "hsl(45 95% 60%)",
+  silver: "hsl(0 0% 78%)",
+  bronze: "hsl(28 70% 52%)",
+};
+
+const LEADERBOARD_QUERY = gql`
+  query GetLeaderboard(
+    $category: String!
+    $window_days: Int!
+    $match_type: String
+    $exclude_tournaments: Boolean!
+    $limit: Int
+    $offset: Int
+    $order_by: [leaderboard_entries_order_by!]
+  ) {
+    get_leaderboard(
+      args: {
+        _category: $category
+        _window_days: $window_days
+        _match_type: $match_type
+        _exclude_tournaments: $exclude_tournaments
+      }
+      limit: $limit
+      offset: $offset
+      order_by: $order_by
+    ) {
+      player_steam_id
+      player_name
+      player_avatar_url
+      player_country
+      value
+      secondary_value
+      tertiary_value
+      matches_played
+    }
+    get_leaderboard_aggregate(
+      args: {
+        _category: $category
+        _window_days: $window_days
+        _match_type: $match_type
+        _exclude_tournaments: $exclude_tournaments
+      }
+    ) {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
+const { t } = useI18n();
+const { client: apolloClient } = useApolloClient();
+
+const category = useRouteTab({
+  defaultTab: "elo",
+  tabs: Object.keys(CATEGORY_CONFIG),
+});
+
+const windowDays = ref("30");
+const matchType = ref("all");
+const excludeTournaments = ref(false);
+const entries = ref<LeaderboardEntry[]>([]);
+const total = ref(0);
+const page = ref(1);
+const perPage = ref(10);
+const loading = ref(true);
+const sortBy = ref<SortField | null>(null);
+const sortDir = ref<"asc" | "desc">("desc");
+let fetchGeneration = 0;
+
+const categories = [
+  { value: "elo" },
+  { value: "best_kdr" },
+  { value: "best_win_rate" },
+  { value: "highest_hs_pct" },
+  { value: "trophies" },
+];
+
+const config = computed(() => CATEGORY_CONFIG[category.value]);
+
+const columnLabels = computed(() => {
+  const cols = config.value.columns;
+  return {
+    value: t(cols.value),
+    secondary_value: cols.secondary_value ? t(cols.secondary_value) : null,
+    tertiary_value: cols.tertiary_value ? t(cols.tertiary_value) : null,
+    matches_played: cols.matches_played ? t(cols.matches_played) : null,
+  };
+});
+
+const offset = computed(() => (page.value - 1) * perPage.value);
+
+const orderBy = computed(() => {
+  if (sortBy.value) {
+    return [{ [sortBy.value]: sortDir.value }];
+  }
+  if (category.value === "trophies") {
+    return [
+      { matches_played: "desc" },
+      { value: "desc" },
+      { secondary_value: "desc" },
+      { tertiary_value: "desc" },
+    ];
+  }
+  return [{ value: "desc" }];
+});
+
+const queryVariables = computed(() => ({
+  category: category.value,
+  window_days: parseInt(windowDays.value),
+  match_type: matchType.value === "all" ? null : matchType.value,
+  exclude_tournaments: Boolean(excludeTournaments.value),
+  limit: perPage.value,
+  offset: offset.value,
+  order_by: orderBy.value,
+}));
+
+function isSortable(field: SortField): boolean {
+  return config.value.sortable.includes(field);
+}
+
+function sortIcon(field: SortField) {
+  if (sortBy.value !== field) return ArrowUpDown;
+  return sortDir.value === "asc" ? ArrowUp : ArrowDown;
+}
+
+function toggleSort(field: SortField) {
+  if (!isSortable(field)) return;
+  if (sortBy.value === field) {
+    if (sortDir.value === "desc") {
+      sortDir.value = "asc";
+    } else {
+      sortBy.value = null;
+      sortDir.value = "desc";
+    }
+  } else {
+    sortBy.value = field;
+    sortDir.value = "desc";
+  }
+  page.value = 1;
+  fetchLeaderboard();
+}
+
+function onFilterChange() {
+  page.value = 1;
+  fetchLeaderboard();
+}
+
+function toggleExcludeTournaments() {
+  excludeTournaments.value = !excludeTournaments.value;
+}
+
+function onPageChange(newPage: number) {
+  page.value = newPage;
+  fetchLeaderboard();
+}
+
+function onPerPageChange(value: number) {
+  perPage.value = value;
+  page.value = 1;
+  fetchLeaderboard();
+}
+
+async function fetchLeaderboard() {
+  loading.value = true;
+  const gen = ++fetchGeneration;
+  try {
+    const { data } = await apolloClient.query({
+      query: LEADERBOARD_QUERY,
+      variables: queryVariables.value,
+      fetchPolicy: "network-only",
+    });
+    if (gen !== fetchGeneration) return;
+    const rows = data?.get_leaderboard || [];
+    entries.value = rows.map(
+      (row: any, index: number): LeaderboardEntry => ({
+        ...row,
+        rank: offset.value + index + 1,
+        value: Number(row.value),
+        secondary_value:
+          row.secondary_value != null ? Number(row.secondary_value) : null,
+        tertiary_value:
+          row.tertiary_value != null ? Number(row.tertiary_value) : null,
+        matches_played:
+          row.matches_played != null ? Number(row.matches_played) : null,
+      }),
+    );
+    total.value =
+      Number(data?.get_leaderboard_aggregate?.aggregate?.count) || 0;
+  } catch (error) {
+    if (gen !== fetchGeneration) return;
+    console.error("Error fetching leaderboard:", error);
+    entries.value = [];
+    total.value = 0;
+  } finally {
+    if (gen === fetchGeneration) {
+      loading.value = false;
+    }
+  }
+}
+
+function formatValue(value: number): string {
+  if (value == null) return "—";
+  switch (category.value) {
+    case "elo":
+      return Math.round(value).toLocaleString();
+    case "best_kdr":
+      return value.toFixed(2);
+    case "best_win_rate":
+    case "highest_hs_pct":
+      return value.toFixed(1) + "%";
+    case "trophies":
+      return Math.round(value).toLocaleString();
+    default:
+      return String(value);
+  }
+}
+
+function formatSecondary(value: number | null): string {
+  if (value == null) return "—";
+  if (category.value === "elo") {
+    const rounded = Math.round(value);
+    return (rounded >= 0 ? "+" : "") + rounded.toLocaleString();
+  }
+  return Math.round(value).toLocaleString();
+}
+
+function formatTertiary(value: number | null): string {
+  if (value == null) return "—";
+  return Math.round(value).toLocaleString();
+}
+
+function trophyTierColor(
+  field: "value" | "secondary_value" | "tertiary_value" | "matches_played",
+): string | null {
+  if (category.value !== "trophies") return null;
+  if (field === "value") return TIER_COLORS.gold;
+  if (field === "secondary_value") return TIER_COLORS.silver;
+  if (field === "tertiary_value") return TIER_COLORS.bronze;
+  if (field === "matches_played") return TIER_COLORS.mvp;
+  return null;
+}
+
+watch(category, () => {
+  sortBy.value = null;
+  sortDir.value = "desc";
+  onFilterChange();
+});
+watch(windowDays, onFilterChange);
+watch(matchType, onFilterChange);
+watch(excludeTournaments, onFilterChange);
+
+onMounted(() => {
+  fetchLeaderboard();
+});
 </script>
 
 <template>
@@ -382,7 +720,7 @@ const leaderboardFadeTransition = {
                         : {}
                     "
                   >
-                    {{ entry.matches_played ?? "\u2014" }}
+                    {{ entry.matches_played ?? "—" }}
                   </TableCell>
                 </NuxtLink>
               </TableRow>
@@ -404,352 +742,3 @@ const leaderboardFadeTransition = {
     </div>
   </PageTransition>
 </template>
-
-<script lang="ts">
-import gql from "graphql-tag";
-
-const LEADERBOARD_QUERY = gql`
-  query GetLeaderboard(
-    $category: String!
-    $window_days: Int!
-    $match_type: String
-    $exclude_tournaments: Boolean!
-    $limit: Int
-    $offset: Int
-    $order_by: [leaderboard_entries_order_by!]
-  ) {
-    get_leaderboard(
-      args: {
-        _category: $category
-        _window_days: $window_days
-        _match_type: $match_type
-        _exclude_tournaments: $exclude_tournaments
-      }
-      limit: $limit
-      offset: $offset
-      order_by: $order_by
-    ) {
-      player_steam_id
-      player_name
-      player_avatar_url
-      player_country
-      value
-      secondary_value
-      tertiary_value
-      matches_played
-    }
-    get_leaderboard_aggregate(
-      args: {
-        _category: $category
-        _window_days: $window_days
-        _match_type: $match_type
-        _exclude_tournaments: $exclude_tournaments
-      }
-    ) {
-      aggregate {
-        count
-      }
-    }
-  }
-`;
-
-interface LeaderboardEntry {
-  rank: number;
-  player_steam_id: string;
-  player_name: string;
-  player_avatar_url: string | null;
-  player_country: string | null;
-  value: number;
-  secondary_value: number | null;
-  tertiary_value: number | null;
-  matches_played: number | null;
-}
-
-type SortField =
-  | "value"
-  | "secondary_value"
-  | "tertiary_value"
-  | "matches_played";
-
-// Per-category column configuration
-const CATEGORY_CONFIG: Record<
-  string,
-  {
-    columns: {
-      value: string;
-      secondary_value?: string;
-      tertiary_value?: string;
-      matches_played?: string;
-    };
-    sortable: SortField[];
-  }
-> = {
-  elo: {
-    columns: {
-      value: "pages.leaderboard.col.elo",
-      secondary_value: "pages.leaderboard.col.elo_change",
-      tertiary_value: "pages.leaderboard.col.win_streak",
-      matches_played: "pages.leaderboard.columns.matches",
-    },
-    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
-  },
-  best_kdr: {
-    columns: {
-      value: "pages.leaderboard.col.kdr",
-      secondary_value: "pages.leaderboard.col.kills",
-      tertiary_value: "pages.leaderboard.col.deaths",
-      matches_played: "pages.leaderboard.columns.matches",
-    },
-    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
-  },
-  best_win_rate: {
-    columns: {
-      value: "common.stats.win_rate",
-      secondary_value: "pages.leaderboard.col.wins",
-      tertiary_value: "pages.leaderboard.col.losses",
-      matches_played: "pages.leaderboard.columns.matches",
-    },
-    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
-  },
-  highest_hs_pct: {
-    columns: {
-      value: "pages.leaderboard.col.hs_pct",
-      secondary_value: "pages.leaderboard.col.total_kills",
-      matches_played: "pages.leaderboard.columns.matches",
-    },
-    sortable: ["value", "secondary_value", "matches_played"],
-  },
-  trophies: {
-    columns: {
-      value: "pages.leaderboard.col.gold",
-      secondary_value: "pages.leaderboard.col.silver",
-      tertiary_value: "pages.leaderboard.col.bronze",
-      matches_played: "pages.leaderboard.col.mvp",
-    },
-    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
-  },
-};
-
-const TIER_COLORS: Record<string, string> = {
-  mvp: "hsl(195 85% 60%)",
-  gold: "hsl(45 95% 60%)",
-  silver: "hsl(0 0% 78%)",
-  bronze: "hsl(28 70% 52%)",
-};
-
-export default {
-  setup() {
-    const category = useRouteTab({
-      defaultTab: "elo",
-      tabs: Object.keys(CATEGORY_CONFIG),
-    });
-
-    return { category };
-  },
-  data() {
-    return {
-      windowDays: "30",
-      matchType: "all",
-      excludeTournaments: false,
-      entries: [] as LeaderboardEntry[],
-      total: 0,
-      page: 1,
-      perPage: 10,
-      loading: true,
-      fetchGeneration: 0,
-      sortBy: null as SortField | null,
-      sortDir: "desc" as "asc" | "desc",
-      categories: [
-        { value: "elo" },
-        { value: "best_kdr" },
-        { value: "best_win_rate" },
-        { value: "highest_hs_pct" },
-        { value: "trophies" },
-      ],
-    };
-  },
-  computed: {
-    config() {
-      return CATEGORY_CONFIG[this.category];
-    },
-    columnLabels() {
-      const cols = this.config.columns;
-      return {
-        value: this.$t(cols.value),
-        secondary_value: cols.secondary_value
-          ? this.$t(cols.secondary_value)
-          : null,
-        tertiary_value: cols.tertiary_value
-          ? this.$t(cols.tertiary_value)
-          : null,
-        matches_played: cols.matches_played
-          ? this.$t(cols.matches_played)
-          : null,
-      };
-    },
-    offset() {
-      return (this.page - 1) * this.perPage;
-    },
-    orderBy() {
-      if (this.sortBy) {
-        return [{ [this.sortBy]: this.sortDir }];
-      }
-      if (this.category === "trophies") {
-        return [
-          { matches_played: "desc" },
-          { value: "desc" },
-          { secondary_value: "desc" },
-          { tertiary_value: "desc" },
-        ];
-      }
-      return [{ value: "desc" }];
-    },
-    queryVariables() {
-      return {
-        category: this.category,
-        window_days: parseInt(this.windowDays),
-        match_type: this.matchType === "all" ? null : this.matchType,
-        exclude_tournaments: Boolean(this.excludeTournaments),
-        limit: this.perPage,
-        offset: this.offset,
-        order_by: this.orderBy,
-      };
-    },
-  },
-  watch: {
-    category() {
-      this.sortBy = null;
-      this.sortDir = "desc";
-      this.onFilterChange();
-    },
-    windowDays() {
-      this.onFilterChange();
-    },
-    matchType() {
-      this.onFilterChange();
-    },
-    excludeTournaments() {
-      this.onFilterChange();
-    },
-  },
-  mounted() {
-    this.fetchLeaderboard();
-  },
-  methods: {
-    isSortable(field: SortField): boolean {
-      return this.config.sortable.includes(field);
-    },
-    sortIcon(field: SortField) {
-      if (this.sortBy !== field) return ArrowUpDown;
-      return this.sortDir === "asc" ? ArrowUp : ArrowDown;
-    },
-    toggleSort(field: SortField) {
-      if (!this.isSortable(field)) return;
-      if (this.sortBy === field) {
-        if (this.sortDir === "desc") {
-          this.sortDir = "asc";
-        } else {
-          this.sortBy = null;
-          this.sortDir = "desc";
-        }
-      } else {
-        this.sortBy = field;
-        this.sortDir = "desc";
-      }
-      this.page = 1;
-      this.fetchLeaderboard();
-    },
-    onFilterChange() {
-      this.page = 1;
-      this.fetchLeaderboard();
-    },
-    toggleExcludeTournaments() {
-      this.excludeTournaments = !this.excludeTournaments;
-    },
-    onPageChange(newPage: number) {
-      this.page = newPage;
-      this.fetchLeaderboard();
-    },
-    onPerPageChange(value: number) {
-      this.perPage = value;
-      this.page = 1;
-      this.fetchLeaderboard();
-    },
-    async fetchLeaderboard() {
-      this.loading = true;
-      const gen = ++this.fetchGeneration;
-      try {
-        const { data } = await this.$apollo.query({
-          query: LEADERBOARD_QUERY,
-          variables: this.queryVariables,
-          fetchPolicy: "network-only",
-        });
-        if (gen !== this.fetchGeneration) return;
-        const rows = data?.get_leaderboard || [];
-        this.entries = rows.map(
-          (row: any, index: number): LeaderboardEntry => ({
-            ...row,
-            rank: this.offset + index + 1,
-            value: Number(row.value),
-            secondary_value:
-              row.secondary_value != null ? Number(row.secondary_value) : null,
-            tertiary_value:
-              row.tertiary_value != null ? Number(row.tertiary_value) : null,
-            matches_played:
-              row.matches_played != null ? Number(row.matches_played) : null,
-          }),
-        );
-        this.total =
-          Number(data?.get_leaderboard_aggregate?.aggregate?.count) || 0;
-      } catch (error) {
-        if (gen !== this.fetchGeneration) return;
-        console.error("Error fetching leaderboard:", error);
-        this.entries = [];
-        this.total = 0;
-      } finally {
-        if (gen === this.fetchGeneration) {
-          this.loading = false;
-        }
-      }
-    },
-    formatValue(value: number): string {
-      if (value == null) return "\u2014";
-      switch (this.category) {
-        case "elo":
-          return Math.round(value).toLocaleString();
-        case "best_kdr":
-          return value.toFixed(2);
-        case "best_win_rate":
-        case "highest_hs_pct":
-          return value.toFixed(1) + "%";
-        case "trophies":
-          return Math.round(value).toLocaleString();
-        default:
-          return String(value);
-      }
-    },
-    formatSecondary(value: number | null): string {
-      if (value == null) return "\u2014";
-      if (this.category === "elo") {
-        const rounded = Math.round(value);
-        return (rounded >= 0 ? "+" : "") + rounded.toLocaleString();
-      }
-      return Math.round(value).toLocaleString();
-    },
-    formatTertiary(value: number | null): string {
-      if (value == null) return "\u2014";
-      return Math.round(value).toLocaleString();
-    },
-    trophyTierColor(
-      field: "value" | "secondary_value" | "tertiary_value" | "matches_played",
-    ): string | null {
-      if (this.category !== "trophies") return null;
-      if (field === "value") return TIER_COLORS.gold;
-      if (field === "secondary_value") return TIER_COLORS.silver;
-      if (field === "tertiary_value") return TIER_COLORS.bronze;
-      if (field === "matches_played") return TIER_COLORS.mvp;
-      return null;
-    },
-  },
-};
-</script>

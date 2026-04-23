@@ -5,7 +5,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
 
 <template>
   <div
-    v-for="match_map in match.match_maps"
+    v-for="match_map in filteredMatchMaps"
     :key="match_map.id"
     class="bg-muted/30 p-6 rounded-lg mb-8"
   >
@@ -98,6 +98,10 @@ export default {
       required: true,
       type: Object,
     },
+    selectedMapId: {
+      type: String as () => string | null,
+      default: null,
+    },
   },
   methods: {
     getClutches(member: { steam_id: string }) {
@@ -133,6 +137,14 @@ export default {
     },
   },
   computed: {
+    filteredMatchMaps() {
+      if (!this.selectedMapId) {
+        return this.match.match_maps;
+      }
+      return this.match.match_maps.filter(
+        (match_map: any) => match_map.id === this.selectedMapId,
+      );
+    },
     clutches() {
       const lineup1 = this.lineup1.lineup_players;
       const lineup2 = this.lineup2.lineup_players;

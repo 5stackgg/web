@@ -18,6 +18,7 @@ import {
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -26,11 +27,13 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 import MatchOptionsDisplay from "~/components/match//MatchOptionsDisplay.vue";
 import { Cross2Icon } from "@radix-icons/vue";
 import { ScrollArea } from "~/components/ui/scroll-area";
+import { Skeleton } from "~/components/ui/skeleton";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import { e_match_types_enum } from "~/generated/zeus";
 import MatchForm from "~/components/match/MatchForm.vue";
 import MatchLiveStreams from "~/components/match/MatchLiveStreams.vue";
 import PlayerInvites from "~/components/match/PlayerInvites.vue";
+import cleanMapName from "~/utilities/cleanMapName";
 
 const commander = new EventEmitter();
 provide("commander", commander);
@@ -38,6 +41,65 @@ provide("commander", commander);
 
 <template>
   <Tabs v-model="activeTab" class="match-tabs">
+    <div
+      v-if="activeMap"
+      class="relative mb-4 flex items-center justify-between gap-3 px-3 py-2 border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.08)] [clip-path:polygon(0_0,calc(100%-10px)_0,100%_10px,100%_100%,10px_100%,0_calc(100%-10px))]"
+    >
+      <div class="flex items-center gap-3 min-w-0">
+        <span
+          class="shrink-0 inline-block w-[6px] h-[6px] rounded-full bg-[hsl(var(--tac-amber))]"
+        ></span>
+        <div class="flex flex-col gap-0.5 min-w-0">
+          <span
+            class="font-mono text-[0.6rem] font-bold tracking-[0.28em] uppercase text-[hsl(var(--tac-amber))]"
+          >
+            Map Filter Active
+          </span>
+          <span
+            class="font-mono text-[0.75rem] tracking-[0.12em] uppercase text-foreground truncate"
+          >
+            {{ cleanMapName(activeMap.map.name) }}
+            <span
+              v-if="typeof activeMap.lineup_1_score === 'number'"
+              class="text-muted-foreground ml-2"
+            >
+              {{ activeMap.lineup_1_score }} : {{ activeMap.lineup_2_score }}
+            </span>
+          </span>
+        </div>
+      </div>
+      <Button
+        variant="ghost"
+        size="sm"
+        class="shrink-0 font-mono text-[0.65rem] tracking-[0.2em] uppercase gap-2 border border-transparent hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))]"
+        @click="$emit('clear-active-map')"
+      >
+        <Cross2Icon class="w-3 h-3" />
+        {{ $t("common.close") }}
+      </Button>
+    </div>
+    <!-- Mobile: map filter selector -->
+    <div v-if="statsEligibleMaps.length > 1" class="mb-3 lg:hidden">
+      <Select :model-value="mapSelectValue" @update:model-value="onMapSelect">
+        <SelectTrigger class="w-full" aria-label="Filter stats by map">
+          <SelectValue :placeholder="$t('match.all_maps') || 'All Maps'" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="__all__">
+            {{ $t("match.all_maps") || "All Maps" }}
+          </SelectItem>
+          <SelectItem v-for="m in statsEligibleMaps" :key="m.id" :value="m.id">
+            {{ cleanMapName(m.map.name) }}
+            <span
+              v-if="typeof m.lineup_1_score === 'number'"
+              class="text-muted-foreground ml-2"
+            >
+              {{ m.lineup_1_score }} : {{ m.lineup_2_score }}
+            </span>
+          </SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
     <!-- Mobile: single dropdown -->
     <div class="mb-4 lg:hidden">
       <Select v-model="activeTab">
@@ -122,12 +184,16 @@ provide("commander", commander);
       </TabsList>
     </div>
     <TabsContent value="overview">
-      <div class="grid gap-4 max-w-[1500px]">
+      <div v-if="activeMap && !mapStats" class="grid gap-4 max-w-[1500px]">
+        <Skeleton class="h-24 w-full" />
+        <Skeleton class="h-24 w-full" />
+      </div>
+      <div v-else class="grid gap-4 max-w-[1500px]">
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
             <LineupOverview
-              :match="match"
-              :lineup="match.lineup_1"
+              :match="mapScopedMatch"
+              :lineup="activeLineup1"
             ></LineupOverview>
           </CardContent>
         </Card>
@@ -135,8 +201,8 @@ provide("commander", commander);
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
             <LineupOverview
-              :match="match"
-              :lineup="match.lineup_2"
+              :match="mapScopedMatch"
+              :lineup="activeLineup2"
             ></LineupOverview>
           </CardContent>
         </Card>
@@ -203,20 +269,24 @@ provide("commander", commander);
       </Drawer>
     </TabsContent>
     <TabsContent value="utility">
-      <div class="grid gap-4 max-w-[1500px]">
+      <div v-if="activeMap && !mapStats" class="grid gap-4 max-w-[1500px]">
+        <Skeleton class="h-24 w-full" />
+        <Skeleton class="h-24 w-full" />
+      </div>
+      <div v-else class="grid gap-4 max-w-[1500px]">
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
             <lineup-utility
-              :match="match"
-              :lineup="match.lineup_1"
+              :match="mapScopedMatch"
+              :lineup="activeLineup1"
             ></lineup-utility>
           </CardContent>
         </Card>
         <Card class="overflow-x-auto">
           <CardContent class="py-2">
             <lineup-utility
-              :match="match"
-              :lineup="match.lineup_2"
+              :match="mapScopedMatch"
+              :lineup="activeLineup2"
             ></lineup-utility>
           </CardContent>
         </Card>
@@ -229,6 +299,7 @@ provide("commander", commander);
             <lineup-opening-duels
               :match="match"
               :lineup="match.lineup_1"
+              :selected-map-id="activeMap?.id"
             ></lineup-opening-duels>
           </CardContent>
         </Card>
@@ -237,6 +308,7 @@ provide("commander", commander);
             <lineup-opening-duels
               :match="match"
               :lineup="match.lineup_2"
+              :selected-map-id="activeMap?.id"
             ></lineup-opening-duels>
           </CardContent>
         </Card>
@@ -250,6 +322,7 @@ provide("commander", commander);
               :match="match"
               :lineup1="match.lineup_1"
               :lineup2="match.lineup_2"
+              :selected-map-id="activeMap?.id"
             ></lineup-clutches>
           </CardContent>
         </Card>
@@ -275,7 +348,7 @@ provide("commander", commander);
             <AlertDialogDescription class="flex flex-col gap-2">
               <span>{{ $t("common.are_you_sure") }}</span>
               <Badge variant="secondary" class="w-fit">
-                {{ pendingCommand.display }}
+                {{ pendingCommand?.display }}
               </Badge>
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -299,7 +372,7 @@ provide("commander", commander);
         :server-id="match.server_id"
         :online="match.is_server_online"
         :match-id="match.id"
-        v-slot="{ commander }"
+        v-slot="{ commander: send }"
         v-if="canSendRCONCommands"
       >
         <template v-for="command of availableCommands">
@@ -307,8 +380,8 @@ provide("commander", commander);
             :disabled="!match.is_server_online"
             @click="
               command.confirm
-                ? confirmCommand(command, commander)
-                : commander(command.value, '')
+                ? confirmCommand(command, send)
+                : send(command.value, '')
             "
           >
             {{ command.display }}
@@ -316,7 +389,7 @@ provide("commander", commander);
         </template>
 
         <form
-          @submit.prevent="commander('restore_round', form.values.round)"
+          @submit.prevent="send('restore_round', form.values.round)"
           v-if="currentMap?.rounds.length > 0"
         >
           <FormField v-slot="{ componentField }" name="round">
@@ -428,14 +501,17 @@ provide("commander", commander);
 
 <script lang="ts">
 import {
+  $,
+  order_by,
   e_match_map_status_enum,
   e_match_status_enum,
   e_player_roles_enum,
 } from "~/generated/zeus";
+import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
+import { matchMapStats } from "~/graphql/matchMapStatsGraphql";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
-import { generateMutation } from "~/graphql/graphqlGen";
 import {
   getRouteTabValue,
   normalizeRouteTab,
@@ -481,17 +557,29 @@ const CommandDetails = {
 };
 
 export default {
+  emits: ["clear-active-map", "select-map"],
   props: {
     match: {
       type: Object,
       required: true,
     },
+    activeMap: {
+      type: Object as () => {
+        id: string;
+        map: { name: string };
+        lineup_1_score?: number;
+        lineup_2_score?: number;
+      } | null,
+      default: null,
+    },
   },
   data() {
     return {
       activeTab: "overview",
-      hasLogs: false,
       inviteDialog: false,
+      mapStats: null as null | { lineup_1: any; lineup_2: any },
+      mapStatsLoading: false,
+      hasLogs: false,
       showConfirmDialog: false,
       pendingCommand: null as
         | undefined
@@ -507,6 +595,30 @@ export default {
     };
   },
   watch: {
+    activeMap: {
+      immediate: true,
+      handler(map, prev) {
+        if (map) {
+          void this.fetchMapStats();
+          const statsTabs = [
+            "overview",
+            "utility",
+            "opening-duels",
+            "clutches",
+          ];
+          if (!prev && !statsTabs.includes(this.activeTab)) {
+            this.activeTab = "overview";
+          }
+        } else {
+          this.mapStats = null;
+        }
+      },
+    },
+    "activeMap.id"() {
+      if (this.activeMap) {
+        void this.fetchMapStats();
+      }
+    },
     activeTab(newTab) {
       if (!this.availableMatchTabs.includes(newTab)) {
         return;
@@ -542,6 +654,36 @@ export default {
     me() {
       return useAuthStore().me;
     },
+    mapScopedMatch() {
+      if (!this.activeMap) return this.match;
+      const scopedMap = this.match.match_maps?.find(
+        (m: any) => m.id === this.activeMap!.id,
+      );
+      return {
+        ...this.match,
+        match_maps: scopedMap ? [scopedMap] : [this.activeMap],
+      };
+    },
+    activeLineup1() {
+      if (this.activeMap && this.mapStats?.lineup_1) {
+        return this.mapStats.lineup_1;
+      }
+      return this.match.lineup_1;
+    },
+    activeLineup2() {
+      if (this.activeMap && this.mapStats?.lineup_2) {
+        return this.mapStats.lineup_2;
+      }
+      return this.match.lineup_2;
+    },
+    statsEligibleMaps() {
+      return (this.match.match_maps ?? []).filter(
+        (m: any) => m.status !== e_match_status_enum.Scheduled,
+      );
+    },
+    mapSelectValue() {
+      return this.activeMap?.id ?? "__all__";
+    },
     canConfigureStreams() {
       if (
         [
@@ -576,6 +718,16 @@ export default {
         e_match_status_enum.Tie,
       ].includes(this.match.status);
     },
+    displayServerInformation() {
+      return [
+        e_match_status_enum.Live,
+        e_match_status_enum.Veto,
+        e_match_status_enum.Scheduled,
+        e_match_status_enum.WaitingForServer,
+        e_match_status_enum.WaitingForCheckIn,
+        e_match_status_enum.PickingPlayers,
+      ].includes(this.match.status);
+    },
     currentMap() {
       return this.match.match_maps.find((match_map) => {
         return match_map.is_current_map;
@@ -606,34 +758,18 @@ export default {
 
       return commands;
     },
-    displayServerInformation() {
-      return [
-        e_match_status_enum.Live,
-        e_match_status_enum.Veto,
-        e_match_status_enum.Scheduled,
-        e_match_status_enum.WaitingForServer,
-        e_match_status_enum.WaitingForCheckIn,
-        e_match_status_enum.PickingPlayers,
-      ].includes(this.match.status);
-    },
     canViewAdmin() {
       return this.match.is_organizer;
     },
     canSendRCONCommands() {
-      if (
-        ![
-          e_match_status_enum.Live,
-          e_match_status_enum.PickingPlayers,
-          e_match_status_enum.Scheduled,
-          e_match_status_enum.Veto,
-          e_match_status_enum.WaitingForCheckIn,
-          e_match_status_enum.WaitingForServer,
-        ].includes(this.match.status)
-      ) {
-        return false;
-      }
-
-      return true;
+      return [
+        e_match_status_enum.Live,
+        e_match_status_enum.PickingPlayers,
+        e_match_status_enum.Scheduled,
+        e_match_status_enum.Veto,
+        e_match_status_enum.WaitingForCheckIn,
+        e_match_status_enum.WaitingForServer,
+      ].includes(this.match.status);
     },
     canAdjustLineups() {
       if (
@@ -686,6 +822,43 @@ export default {
     },
   },
   methods: {
+    onMapSelect(value: string) {
+      if (!value || value === "__all__") {
+        this.$emit("clear-active-map");
+        return;
+      }
+      const map = this.match.match_maps?.find((m: any) => m.id === value);
+      if (map) {
+        this.$emit("select-map", map);
+      }
+    },
+    async fetchMapStats() {
+      if (!this.activeMap) return;
+      this.mapStatsLoading = true;
+      this.mapStats = null;
+      try {
+        const { data } = await this.$apollo.query({
+          variables: {
+            matchId: this.match.id,
+            matchMapId: this.activeMap.id,
+            order_by_name: order_by.asc,
+          },
+          fetchPolicy: "network-only",
+          query: generateQuery({
+            matches_by_pk: [
+              { id: $("matchId", "uuid!") },
+              {
+                lineup_1: [{}, matchMapStats],
+                lineup_2: [{}, matchMapStats],
+              },
+            ],
+          }),
+        });
+        this.mapStats = data?.matches_by_pk ?? null;
+      } finally {
+        this.mapStatsLoading = false;
+      }
+    },
     syncActiveTabFromRoute() {
       const activeTab = getRouteTabValue(
         this.$route,
@@ -704,16 +877,16 @@ export default {
         "overview",
       );
     },
-    async confirmCommand(
+    confirmCommand(
       command: {
         value: string;
         display: string;
         confirm: boolean;
       },
-      commander,
+      send,
     ) {
       this.pendingCommand = command;
-      this.executePending = () => commander(this.pendingCommand.value, "");
+      this.executePending = () => send(command.value, "");
       this.showConfirmDialog = true;
     },
     async swapLineups() {

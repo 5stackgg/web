@@ -112,7 +112,7 @@ const dotClass = (status: DotStatus) => {
     case "current":
       return "bg-[hsl(142_71%_55%)] shadow-[0_0_8px_hsl(142_71%_55%/0.6)]";
     case "completed":
-      return "bg-white";
+      return "bg-[hsl(var(--tac-amber))] shadow-[0_0_6px_hsl(var(--tac-amber)/0.5)]";
     case "unused":
       return "bg-gray-500 opacity-30";
     default:

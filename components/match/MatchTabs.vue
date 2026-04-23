@@ -59,17 +59,24 @@ provide("commander", commander);
             >
               Map Filter Active
             </span>
-            <span
-              class="font-mono text-[0.75rem] tracking-[0.12em] uppercase text-foreground truncate"
-            >
-              {{ activeMap ? cleanMapName(activeMap.map.name) : "" }}
-              <span
-                v-if="activeMap && typeof activeMap.lineup_1_score === 'number'"
-                class="text-muted-foreground ml-2"
-              >
-                {{ activeMap.lineup_1_score }} : {{ activeMap.lineup_2_score }}
-              </span>
-            </span>
+            <div class="map-filter-flip relative min-w-0">
+              <Transition name="map-flip" mode="out-in">
+                <span
+                  v-if="activeMap"
+                  :key="activeMap.id"
+                  class="block font-mono text-[0.75rem] tracking-[0.12em] uppercase text-foreground truncate"
+                >
+                  {{ cleanMapName(activeMap.map.name) }}
+                  <span
+                    v-if="typeof activeMap.lineup_1_score === 'number'"
+                    class="text-muted-foreground ml-2"
+                  >
+                    {{ activeMap.lineup_1_score }} :
+                    {{ activeMap.lineup_2_score }}
+                  </span>
+                </span>
+              </Transition>
+            </div>
           </div>
         </div>
         <Button
@@ -524,6 +531,30 @@ provide("commander", commander);
   opacity: 1;
   margin-bottom: 1rem;
 }
+
+.map-filter-flip {
+  perspective: 600px;
+}
+
+.map-flip-enter-active,
+.map-flip-leave-active {
+  transition:
+    transform 240ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 160ms ease;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+.map-flip-enter-from {
+  transform: rotateX(-90deg);
+  opacity: 0;
+}
+
+.map-flip-leave-to {
+  transform: rotateX(90deg);
+  opacity: 0;
+}
 </style>
 
 <script lang="ts">
@@ -861,13 +892,13 @@ export default {
     },
     async fetchMapStats() {
       if (!this.activeMap) return;
+      const requestedMapId = this.activeMap.id;
       this.mapStatsLoading = true;
-      this.mapStats = null;
       try {
         const { data } = await this.$apollo.query({
           variables: {
             matchId: this.match.id,
-            matchMapId: this.activeMap.id,
+            matchMapId: requestedMapId,
             order_by_name: order_by.asc,
           },
           fetchPolicy: "network-only",
@@ -881,6 +912,7 @@ export default {
             ],
           }),
         });
+        if (this.activeMap?.id !== requestedMapId) return;
         this.mapStats = data?.matches_by_pk ?? null;
       } finally {
         this.mapStatsLoading = false;

@@ -11,12 +11,10 @@ const AppSidebar = defineAsyncComponent(
 const { rightSidebarOpen, setRightSidebarOpen } = useRightSidebar();
 
 // Inject values from default.vue
-const showLeftNav = inject<ReturnType<typeof computed<boolean>>>("showLeftNav");
 const containContent =
   inject<ReturnType<typeof computed<boolean>>>("containContent");
 
 // Get computed values
-const showLeftNavValue = computed(() => showLeftNav?.value ?? true);
 const containContentValue = computed(() => containContent?.value ?? true);
 </script>
 
@@ -34,9 +32,8 @@ const containContentValue = computed(() => containContent?.value ?? true);
       >
         <div class="flex-1 overflow-auto">
           <div
-            class="p-4 w-full self-center"
+            class="mx-auto p-4 w-full self-center"
             :class="{
-              'mx-auto': !showLeftNavValue,
               'lg:max-w-7xl': containContentValue,
             }"
           >

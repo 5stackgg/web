@@ -2,6 +2,7 @@
 import { ref, computed, provide, onMounted } from "vue";
 import EventEmitter from "eventemitter3";
 import { ChevronUp, GripHorizontal, Shield } from "lucide-vue-next";
+import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";

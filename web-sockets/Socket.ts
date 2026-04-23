@@ -232,18 +232,15 @@ class Socket extends EventEmitter {
   }
 
   public listen(event: string, callback: (data: any) => void) {
-    if (this.listening.has(event)) {
-      return;
-    }
-
     this.on(event, callback);
-
     this.listening.add(event);
 
     return {
       stop: () => {
-        this.listening.delete(event);
         this.removeListener(event, callback);
+        if (this.listenerCount(event) === 0) {
+          this.listening.delete(event);
+        }
       },
     };
   }

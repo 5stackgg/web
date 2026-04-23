@@ -79,7 +79,7 @@ async function downloadFullLogs(service: string) {
     />
 
     <header
-      class="flex flex-wrap items-center justify-between gap-2 border-b border-border/70 px-3 py-2 sm:gap-3 sm:px-4 sm:py-3"
+      class="flex flex-wrap items-center gap-1.5 border-b border-border/70 px-3 py-2 sm:gap-2 sm:px-4 sm:py-3"
     >
       <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
         <TooltipProvider v-if="compact">
@@ -165,7 +165,7 @@ async function downloadFullLogs(service: string) {
       </div>
 
       <button
-        class="flex h-9 items-center gap-2 whitespace-nowrap border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] px-3 font-mono text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.2)]"
+        class="ml-auto flex h-9 items-center gap-2 whitespace-nowrap border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] px-3 font-mono text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.2)]"
         @click="jumpToLive"
       >
         <PlayIcon class="h-3 w-3" />

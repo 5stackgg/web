@@ -11,7 +11,10 @@
   </div>
   <div
     ref="scrollContainer"
-    class="max-h-[50vh] overflow-auto whitespace-pre-wrap break-words border border-border/40 bg-[hsl(var(--background)/0.5)] [scrollbar-color:hsl(var(--tac-amber)/0.4)_transparent] [scrollbar-width:thin]"
+    :class="[
+      'overflow-auto whitespace-pre-wrap break-words border border-border/40 bg-[hsl(var(--background)/0.5)] [scrollbar-color:hsl(var(--tac-amber)/0.4)_transparent] [scrollbar-width:thin]',
+      fill ? 'h-80 lg:h-auto lg:min-h-0 lg:flex-1' : 'max-h-[50vh]',
+    ]"
     @scroll="handleScroll"
   >
     <div
@@ -64,6 +67,10 @@ export default {
     follow: {
       type: Boolean,
       default: true,
+    },
+    fill: {
+      type: Boolean,
+      default: false,
     },
   },
 

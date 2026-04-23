@@ -1883,8 +1883,8 @@
         },
         "auto_canceling": "Auto Canceling",
         "server_error": {
-            "title": "Server provisioning failed",
-            "short_label": "Server Issue"
+            "title": "Server status update",
+            "short_label": "Server Status"
         },
         "actions": {
             "call_support": "Call for Support",

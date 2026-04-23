@@ -17,8 +17,20 @@ import debounce from "~/utilities/debounce";
 
 <template>
   <!-- RCON Console Interface -->
-  <div class="bg-muted/50 p-6 rounded-xl border">
-    <div class="flex items-center justify-between mb-6">
+  <div
+    :class="[
+      'bg-muted/50 rounded-xl border',
+      compact
+        ? 'p-3 sm:p-4 gap-3 lg:flex lg:flex-col lg:min-h-0'
+        : 'p-6',
+    ]"
+  >
+    <div
+      :class="[
+        'flex items-center justify-between',
+        compact ? 'mb-0' : 'mb-6',
+      ]"
+    >
       <h4 class="text-foreground font-semibold text-lg flex items-center gap-2">
         <Terminal class="w-5 h-5" />
         RCON Console
@@ -29,7 +41,7 @@ import debounce from "~/utilities/debounce";
     </div>
 
     <!-- Command Controls: unified input with right-side send + quick-commands -->
-    <div class="mb-6">
+    <div :class="compact ? 'mb-0' : 'mb-6'">
       <form @submit.prevent="sendCommand" class="w-full">
         <div class="relative">
           <!-- The input with padding for left and right buttons -->
@@ -154,8 +166,20 @@ import debounce from "~/utilities/debounce";
     </div>
 
     <!-- Console Output -->
-    <div class="bg-background rounded-lg border shadow-sm">
-      <div class="p-4 border-b bg-muted/30">
+    <div
+      :class="[
+        'bg-background rounded-lg border shadow-sm',
+        compact
+          ? 'lg:flex lg:flex-col lg:min-h-0 lg:flex-1 lg:overflow-hidden'
+          : '',
+      ]"
+    >
+      <div
+        :class="[
+          'border-b bg-muted/30',
+          compact ? 'p-2 sm:p-3' : 'p-4',
+        ]"
+      >
         <div class="flex items-center justify-between">
           <h5 class="text-sm font-medium text-foreground">
             {{ $t("server.rcon.console_output") }}
@@ -175,7 +199,14 @@ import debounce from "~/utilities/debounce";
           </div>
         </div>
       </div>
-      <div class="p-4 h-96 overflow-y-auto">
+      <div
+        :class="[
+          'overflow-y-auto',
+          compact
+            ? 'p-2 sm:p-3 h-80 lg:h-auto lg:flex-1 lg:min-h-0'
+            : 'p-4 h-96',
+        ]"
+      >
         <div class="text-sm font-mono space-y-3">
           <template v-for="(log, index) in logs" :key="log.id">
             <Collapsible v-model:open="logStates[index]">
@@ -249,6 +280,10 @@ export default {
     matchId: {
       required: false,
       type: String,
+    },
+    compact: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

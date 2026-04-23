@@ -86,7 +86,7 @@ const vsBaseClasses =
           <div class="inline-flex items-center gap-2 ml-auto">
             <span
               v-if="match.server_error"
-              class="inline-flex items-center gap-[0.4rem] px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold tracking-[0.15em] uppercase border border-[hsl(var(--destructive)/0.6)] rounded bg-[hsl(var(--destructive)/0.15)] text-destructive"
+              class="inline-flex items-center gap-[0.4rem] rounded border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold uppercase tracking-[0.15em] text-[hsl(var(--tac-amber))]"
               :title="match.server_error"
             >
               <AlertTriangle class="w-3 h-3" />
@@ -324,10 +324,9 @@ const vsBaseClasses =
         <PageTransition :delay="100">
           <Alert
             v-if="showServerErrorAlert"
-            variant="destructive"
-            class="bg-red-600 text-white max-w-md mb-6"
+            class="mb-6 max-w-md border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)] text-foreground"
           >
-            <AlertTriangle class="h-4 w-4" />
+            <AlertTriangle class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
             <AlertTitle>{{ $t("match.server_error.title") }}</AlertTitle>
             <AlertDescription class="whitespace-pre-wrap break-words">
               {{ match.server_error }}

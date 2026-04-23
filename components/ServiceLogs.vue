@@ -67,7 +67,7 @@ async function downloadFullLogs(service: string) {
 
 <template>
   <section
-    class="relative overflow-hidden border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.25)_100%)] [backdrop-filter:blur(6px)]"
+    class="relative flex flex-col overflow-hidden border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.25)_100%)] [backdrop-filter:blur(6px)]"
   >
     <span
       aria-hidden="true"
@@ -79,9 +79,9 @@ async function downloadFullLogs(service: string) {
     />
 
     <header
-      class="flex flex-col gap-3 border-b border-border/70 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+      class="flex flex-wrap items-center justify-between gap-2 border-b border-border/70 px-3 py-2 sm:gap-3 sm:px-4 sm:py-3"
     >
-      <div class="flex flex-wrap items-center gap-2">
+      <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
         <TooltipProvider v-if="compact">
           <Tooltip>
             <TooltipTrigger as-child>
@@ -165,7 +165,7 @@ async function downloadFullLogs(service: string) {
       </div>
 
       <button
-        class="flex h-9 items-center gap-2 border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] px-3 font-mono text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.2)]"
+        class="flex h-9 items-center gap-2 whitespace-nowrap border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] px-3 font-mono text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.2)]"
         @click="jumpToLive"
       >
         <PlayIcon class="h-3 w-3" />
@@ -201,20 +201,33 @@ async function downloadFullLogs(service: string) {
     </div>
 
     <div
-      class="relative overflow-x-auto bg-[hsl(var(--background)/0.6)] p-3 sm:p-4"
+      :class="[
+        'relative flex flex-col overflow-hidden bg-[hsl(var(--background)/0.6)] p-2 sm:p-4',
+        compact && 'lg:min-h-0 lg:flex-1',
+      ]"
     >
       <div
         aria-hidden="true"
         class="pointer-events-none absolute inset-x-0 top-0 h-5 bg-gradient-to-b from-background/60 to-transparent"
       />
 
-      <Tabs v-if="podCount > 1" v-model="activePod">
-        <TabsContent v-for="pod in podList" :key="pod" :value="pod">
+      <Tabs
+        v-if="podCount > 1"
+        v-model="activePod"
+        :class="['flex flex-col', compact && 'lg:min-h-0 lg:flex-1']"
+      >
+        <TabsContent
+          v-for="pod in podList"
+          :key="pod"
+          :value="pod"
+          :class="['flex flex-col', compact && 'lg:min-h-0 lg:flex-1']"
+        >
           <PodLogs
             :pod="pod"
             :logs="logsByPod[pod] || []"
             :show-timestamps="effectiveTimestamps"
             :follow="effectiveFollowLogs"
+            :fill="compact"
             @follow-logs-changed="handleFollowLogsChanged"
             @load-more-logs="handleLoadMoreLogs"
           />
@@ -227,6 +240,7 @@ async function downloadFullLogs(service: string) {
         :logs="logsByPod[activePod] || []"
         :show-timestamps="effectiveTimestamps"
         :follow="effectiveFollowLogs"
+        :fill="compact"
         @follow-logs-changed="handleFollowLogsChanged"
         @load-more-logs="handleLoadMoreLogs"
       />
@@ -243,6 +257,8 @@ type LogEntry = {
   container: string;
   timestamp: string;
   pod: string;
+  kind?: string;
+  reason?: string | null;
 };
 
 export default {
@@ -263,6 +279,7 @@ export default {
       expanded: false,
       logListener: undefined as { stop: () => void } | undefined,
       retryTimeout: undefined as NodeJS.Timeout | undefined,
+      seenLogKeys: new Set<string>() as Set<string>,
     };
   },
 
@@ -282,6 +299,15 @@ export default {
   },
 
   methods: {
+    getLogKey(entry: LogEntry) {
+      return [
+        entry.pod || "default",
+        entry.container || "default",
+        entry.timestamp || "",
+        entry.log || "",
+      ].join("|");
+    },
+
     jumpToLive() {
       this.$emit("follow-logs-changed", true);
     },
@@ -339,6 +365,7 @@ export default {
       handler() {
         this.logsByPod = {};
         this.activePod = "";
+        this.seenLogKeys = new Set<string>();
         let partial: Record<string, any[]> = {};
 
         this.logListener?.stop();
@@ -375,11 +402,22 @@ export default {
               partial[log.pod] = [];
             }
 
-            partial[log.pod].push(log);
+            const key = this.getLogKey(log);
+            if (!this.seenLogKeys.has(key)) {
+              this.seenLogKeys.add(key);
+              partial[log.pod].push(log);
+            }
             return;
           }
 
           const pod = log.pod ?? "default";
+          const key = this.getLogKey(log);
+
+          if (this.seenLogKeys.has(key)) {
+            return;
+          }
+
+          this.seenLogKeys.add(key);
 
           if (!this.logsByPod[pod]) {
             this.logsByPod[pod] = [];

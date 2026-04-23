@@ -383,7 +383,7 @@ provide("commander", commander);
 
       <RconCommander
         :server-id="match.server_id"
-        :online="match.is_server_online"
+        :online="!!match.is_server_online"
         :match-id="match.id"
         v-slot="{ commander: send }"
         v-if="canSendRCONCommands"
@@ -830,7 +830,9 @@ export default {
         e_match_status_enum.Veto,
         e_match_status_enum.WaitingForCheckIn,
         e_match_status_enum.WaitingForServer,
-      ].includes(this.match.status);
+      ].includes(this.match.status)
+        ? !!this.match.server_id
+        : false;
     },
     canAdjustLineups() {
       if (

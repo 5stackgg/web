@@ -6463,9 +6463,6 @@ export const AllTypesProps: Record<string,any> = {
 		moveServerItem:{
 
 		},
-		overrideMatchRegion:{
-			match_id:"uuid"
-		},
 		randomizeTeams:{
 			match_id:"uuid"
 		},
@@ -11756,6 +11753,8 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"servers_bool_exp",
 		_or:"servers_bool_exp",
 		api_password:"uuid_comparison_exp",
+		boot_status:"String_comparison_exp",
+		boot_status_detail:"String_comparison_exp",
 		connect_password:"String_comparison_exp",
 		connected:"Boolean_comparison_exp",
 		connection_link:"String_comparison_exp",
@@ -11804,6 +11803,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	servers_max_order_by:{
 		api_password:"order_by",
+		boot_status:"order_by",
+		boot_status_detail:"order_by",
 		connect_password:"order_by",
 		game:"order_by",
 		game_server_node_id:"order_by",
@@ -11822,6 +11823,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	servers_min_order_by:{
 		api_password:"order_by",
+		boot_status:"order_by",
+		boot_status_detail:"order_by",
 		connect_password:"order_by",
 		game:"order_by",
 		game_server_node_id:"order_by",
@@ -11849,6 +11852,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	servers_order_by:{
 		api_password:"order_by",
+		boot_status:"order_by",
+		boot_status_detail:"order_by",
 		connect_password:"order_by",
 		connected:"order_by",
 		connection_link:"order_by",
@@ -21022,7 +21027,6 @@ export const ReturnTypes: Record<string,any> = {
 		loadFixtures:"SuccessOutput",
 		logout:"SuccessOutput",
 		moveServerItem:"SuccessOutput",
-		overrideMatchRegion:"SuccessOutput",
 		randomizeTeams:"SuccessOutput",
 		rebootMatchServer:"SuccessOutput",
 		recalculate_tournament_trophies:"tournament_trophies",
@@ -23202,6 +23206,8 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	servers:{
 		api_password:"uuid",
+		boot_status:"String",
+		boot_status_detail:"String",
 		connect_password:"String",
 		connected:"Boolean",
 		connection_link:"String",
@@ -23255,6 +23261,8 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	servers_max_fields:{
 		api_password:"uuid",
+		boot_status:"String",
+		boot_status_detail:"String",
 		connect_password:"String",
 		connection_link:"String",
 		connection_string:"String",
@@ -23275,6 +23283,8 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	servers_min_fields:{
 		api_password:"uuid",
+		boot_status:"String",
+		boot_status_detail:"String",
 		connect_password:"String",
 		connection_link:"String",
 		connection_string:"String",

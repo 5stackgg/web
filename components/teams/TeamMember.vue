@@ -4,6 +4,7 @@ import {
   Trash2,
   UserMinus,
   GraduationCap,
+  Shield,
 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
@@ -63,6 +64,13 @@ import { e_team_roster_statuses_enum } from "~/generated/zeus";
             class="h-3.5 w-3.5 text-muted-foreground/80"
             :aria-label="$t('team.member.coach')"
           />
+          <span
+            v-if="!isInvite && isCaptain"
+            class="inline-flex items-center gap-1 rounded-full border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-[hsl(var(--tac-amber))]"
+          >
+            <Shield class="h-3 w-3" />
+            {{ $t("team.roles.captain") }}
+          </span>
         </template>
       </PlayerDisplay>
     </div>
@@ -215,6 +223,17 @@ import { e_team_roster_statuses_enum } from "~/generated/zeus";
           />
 
           <DropdownMenuItem
+            v-if="canSetCaptain"
+            @click="setCaptain"
+            class="cursor-pointer"
+          >
+            <Shield class="mr-2 h-4 w-4" />
+            {{ $t("match.overview.promote_captain") }}
+          </DropdownMenuItem>
+
+          <DropdownMenuSeparator v-if="canSetCaptain && canRemoveMember" />
+
+          <DropdownMenuItem
             v-if="canRemoveMember"
             class="text-red-600 focus:text-red-600"
             @click="removeMemberDialog = true"
@@ -299,6 +318,11 @@ export default {
     isInvite: {
       required: true,
     },
+    isCaptain: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -316,8 +340,10 @@ export default {
       return !!this.team.can_remove && !this.isSelf;
     },
     showActionMenu(): boolean {
-      if (this.isSelf) return false;
       return !!(this.team.can_change_role || this.canRemoveMember);
+    },
+    canSetCaptain(): boolean {
+      return !!(this.team.can_change_role && !this.isInvite && !this.isCaptain);
     },
     statusKey(): string {
       switch (this.member.status) {
@@ -434,6 +460,25 @@ export default {
             },
             {
               __typename: true,
+            },
+          ],
+        }),
+      });
+    },
+    async setCaptain() {
+      await (this as any).$apollo.mutate({
+        mutation: generateMutation({
+          update_teams_by_pk: [
+            {
+              pk_columns: {
+                id: this.member.team_id,
+              },
+              _set: {
+                captain_steam_id: this.member.player.steam_id,
+              } as any,
+            },
+            {
+              id: true,
             },
           ],
         }),

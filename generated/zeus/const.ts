@@ -5242,6 +5242,13 @@ export const AllTypesProps: Record<string,any> = {
 		where:"migration_hashes_hashes_bool_exp"
 	},
 	mutation_root:{
+		PreviewTournamentMatchReset:{
+			match_id:"uuid"
+		},
+		ResetTournamentMatch:{
+			match_id:"uuid",
+			winning_lineup_id:"uuid"
+		},
 		acceptInvite:{
 			invite_id:"uuid"
 		},
@@ -13923,6 +13930,7 @@ export const AllTypesProps: Record<string,any> = {
 		on_conflict:"teams_on_conflict"
 	},
 	teams_avg_order_by:{
+		captain_steam_id:"order_by",
 		owner_steam_id:"order_by"
 	},
 	teams_bool_exp:{
@@ -13933,6 +13941,8 @@ export const AllTypesProps: Record<string,any> = {
 		can_change_role:"Boolean_comparison_exp",
 		can_invite:"Boolean_comparison_exp",
 		can_remove:"Boolean_comparison_exp",
+		captain:"players_bool_exp",
+		captain_steam_id:"bigint_comparison_exp",
 		id:"uuid_comparison_exp",
 		invites:"team_invites_bool_exp",
 		invites_aggregate:"team_invites_aggregate_bool_exp",
@@ -13951,9 +13961,12 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	teams_constraint: "enum" as const,
 	teams_inc_input:{
+		captain_steam_id:"bigint",
 		owner_steam_id:"bigint"
 	},
 	teams_insert_input:{
+		captain:"players_obj_rel_insert_input",
+		captain_steam_id:"bigint",
 		id:"uuid",
 		invites:"team_invites_arr_rel_insert_input",
 		match_lineups:"match_lineups_arr_rel_insert_input",
@@ -13964,6 +13977,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	teams_max_order_by:{
 		avatar_url:"order_by",
+		captain_steam_id:"order_by",
 		id:"order_by",
 		name:"order_by",
 		owner_steam_id:"order_by",
@@ -13971,6 +13985,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	teams_min_order_by:{
 		avatar_url:"order_by",
+		captain_steam_id:"order_by",
 		id:"order_by",
 		name:"order_by",
 		owner_steam_id:"order_by",
@@ -13990,6 +14005,8 @@ export const AllTypesProps: Record<string,any> = {
 		can_change_role:"order_by",
 		can_invite:"order_by",
 		can_remove:"order_by",
+		captain:"players_order_by",
+		captain_steam_id:"order_by",
 		id:"order_by",
 		invites_aggregate:"team_invites_aggregate_order_by",
 		match_lineups_aggregate:"match_lineups_aggregate_order_by",
@@ -14007,16 +14024,20 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	teams_select_column: "enum" as const,
 	teams_set_input:{
+		captain_steam_id:"bigint",
 		id:"uuid",
 		owner_steam_id:"bigint"
 	},
 	teams_stddev_order_by:{
+		captain_steam_id:"order_by",
 		owner_steam_id:"order_by"
 	},
 	teams_stddev_pop_order_by:{
+		captain_steam_id:"order_by",
 		owner_steam_id:"order_by"
 	},
 	teams_stddev_samp_order_by:{
+		captain_steam_id:"order_by",
 		owner_steam_id:"order_by"
 	},
 	teams_stream_cursor_input:{
@@ -14024,10 +14045,12 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	teams_stream_cursor_value_input:{
+		captain_steam_id:"bigint",
 		id:"uuid",
 		owner_steam_id:"bigint"
 	},
 	teams_sum_order_by:{
+		captain_steam_id:"order_by",
 		owner_steam_id:"order_by"
 	},
 	teams_update_column: "enum" as const,
@@ -14037,12 +14060,15 @@ export const AllTypesProps: Record<string,any> = {
 		where:"teams_bool_exp"
 	},
 	teams_var_pop_order_by:{
+		captain_steam_id:"order_by",
 		owner_steam_id:"order_by"
 	},
 	teams_var_samp_order_by:{
+		captain_steam_id:"order_by",
 		owner_steam_id:"order_by"
 	},
 	teams_variance_order_by:{
+		captain_steam_id:"order_by",
 		owner_steam_id:"order_by"
 	},
 	timestamp: `scalar.timestamp` as const,
@@ -15058,6 +15084,7 @@ export const AllTypesProps: Record<string,any> = {
 		on_conflict:"tournament_teams_on_conflict"
 	},
 	tournament_teams_avg_order_by:{
+		captain_steam_id:"order_by",
 		owner_steam_id:"order_by",
 		seed:"order_by"
 	},
@@ -15066,6 +15093,8 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"tournament_teams_bool_exp",
 		_or:"tournament_teams_bool_exp",
 		can_manage:"Boolean_comparison_exp",
+		captain:"players_bool_exp",
+		captain_steam_id:"bigint_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		creator:"players_bool_exp",
 		eligible_at:"timestamptz_comparison_exp",
@@ -15085,9 +15114,12 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_teams_constraint: "enum" as const,
 	tournament_teams_inc_input:{
+		captain_steam_id:"bigint",
 		owner_steam_id:"bigint"
 	},
 	tournament_teams_insert_input:{
+		captain:"players_obj_rel_insert_input",
+		captain_steam_id:"bigint",
 		created_at:"timestamptz",
 		creator:"players_obj_rel_insert_input",
 		eligible_at:"timestamptz",
@@ -15102,6 +15134,7 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_id:"uuid"
 	},
 	tournament_teams_max_order_by:{
+		captain_steam_id:"order_by",
 		created_at:"order_by",
 		eligible_at:"order_by",
 		id:"order_by",
@@ -15112,6 +15145,7 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_id:"order_by"
 	},
 	tournament_teams_min_order_by:{
+		captain_steam_id:"order_by",
 		created_at:"order_by",
 		eligible_at:"order_by",
 		id:"order_by",
@@ -15132,6 +15166,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_teams_order_by:{
 		can_manage:"order_by",
+		captain:"players_order_by",
+		captain_steam_id:"order_by",
 		created_at:"order_by",
 		creator:"players_order_by",
 		eligible_at:"order_by",
@@ -15152,6 +15188,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	tournament_teams_select_column: "enum" as const,
 	tournament_teams_set_input:{
+		captain_steam_id:"bigint",
 		created_at:"timestamptz",
 		eligible_at:"timestamptz",
 		id:"uuid",
@@ -15160,14 +15197,17 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_id:"uuid"
 	},
 	tournament_teams_stddev_order_by:{
+		captain_steam_id:"order_by",
 		owner_steam_id:"order_by",
 		seed:"order_by"
 	},
 	tournament_teams_stddev_pop_order_by:{
+		captain_steam_id:"order_by",
 		owner_steam_id:"order_by",
 		seed:"order_by"
 	},
 	tournament_teams_stddev_samp_order_by:{
+		captain_steam_id:"order_by",
 		owner_steam_id:"order_by",
 		seed:"order_by"
 	},
@@ -15176,6 +15216,7 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	tournament_teams_stream_cursor_value_input:{
+		captain_steam_id:"bigint",
 		created_at:"timestamptz",
 		eligible_at:"timestamptz",
 		id:"uuid",
@@ -15184,6 +15225,7 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_id:"uuid"
 	},
 	tournament_teams_sum_order_by:{
+		captain_steam_id:"order_by",
 		owner_steam_id:"order_by",
 		seed:"order_by"
 	},
@@ -15194,14 +15236,17 @@ export const AllTypesProps: Record<string,any> = {
 		where:"tournament_teams_bool_exp"
 	},
 	tournament_teams_var_pop_order_by:{
+		captain_steam_id:"order_by",
 		owner_steam_id:"order_by",
 		seed:"order_by"
 	},
 	tournament_teams_var_samp_order_by:{
+		captain_steam_id:"order_by",
 		owner_steam_id:"order_by",
 		seed:"order_by"
 	},
 	tournament_teams_variance_order_by:{
+		captain_steam_id:"order_by",
 		owner_steam_id:"order_by",
 		seed:"order_by"
 	},
@@ -17838,6 +17883,9 @@ export const ReturnTypes: Record<string,any> = {
 		name:"String",
 		node:"String"
 	},
+	PreviewTournamentMatchResetOutput:{
+		impacts:"TournamentMatchResetImpact"
+	},
 	QueryDetail:{
 		explain_plan:"String",
 		query:"String",
@@ -17932,6 +17980,18 @@ export const ReturnTypes: Record<string,any> = {
 		chunks_count:"Int",
 		hypertables:"HypertableInfo",
 		jobs:"TimescaleJob"
+	},
+	TournamentMatchResetImpact:{
+		bracket_id:"uuid",
+		depth:"Int",
+		is_source:"Boolean",
+		match_id:"uuid",
+		match_number:"Int",
+		match_status:"String",
+		path:"String",
+		round:"Int",
+		stage_type:"String",
+		will_delete_match:"Boolean"
 	},
 	_map_pool:{
 		map_id:"uuid",
@@ -20610,6 +20670,8 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"migration_hashes_hashes"
 	},
 	mutation_root:{
+		PreviewTournamentMatchReset:"PreviewTournamentMatchResetOutput",
+		ResetTournamentMatch:"SuccessOutput",
 		acceptInvite:"SuccessOutput",
 		approveNameChange:"SuccessOutput",
 		callForOrganizer:"SuccessOutput",
@@ -23796,6 +23858,8 @@ export const ReturnTypes: Record<string,any> = {
 		can_change_role:"Boolean",
 		can_invite:"Boolean",
 		can_remove:"Boolean",
+		captain:"players",
+		captain_steam_id:"bigint",
 		id:"uuid",
 		invites:"team_invites",
 		invites_aggregate:"team_invites_aggregate",
@@ -23830,10 +23894,12 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"teams_variance_fields"
 	},
 	teams_avg_fields:{
+		captain_steam_id:"Float",
 		owner_steam_id:"Float"
 	},
 	teams_max_fields:{
 		avatar_url:"String",
+		captain_steam_id:"bigint",
 		id:"uuid",
 		name:"String",
 		owner_steam_id:"bigint",
@@ -23842,6 +23908,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	teams_min_fields:{
 		avatar_url:"String",
+		captain_steam_id:"bigint",
 		id:"uuid",
 		name:"String",
 		owner_steam_id:"bigint",
@@ -23853,24 +23920,31 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"teams"
 	},
 	teams_stddev_fields:{
+		captain_steam_id:"Float",
 		owner_steam_id:"Float"
 	},
 	teams_stddev_pop_fields:{
+		captain_steam_id:"Float",
 		owner_steam_id:"Float"
 	},
 	teams_stddev_samp_fields:{
+		captain_steam_id:"Float",
 		owner_steam_id:"Float"
 	},
 	teams_sum_fields:{
+		captain_steam_id:"bigint",
 		owner_steam_id:"bigint"
 	},
 	teams_var_pop_fields:{
+		captain_steam_id:"Float",
 		owner_steam_id:"Float"
 	},
 	teams_var_samp_fields:{
+		captain_steam_id:"Float",
 		owner_steam_id:"Float"
 	},
 	teams_variance_fields:{
+		captain_steam_id:"Float",
 		owner_steam_id:"Float"
 	},
 	timestamp: `scalar.timestamp` as const,
@@ -24350,6 +24424,8 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	tournament_teams:{
 		can_manage:"Boolean",
+		captain:"players",
+		captain_steam_id:"bigint",
 		created_at:"timestamptz",
 		creator:"players",
 		eligible_at:"timestamptz",
@@ -24385,10 +24461,12 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"tournament_teams_variance_fields"
 	},
 	tournament_teams_avg_fields:{
+		captain_steam_id:"Float",
 		owner_steam_id:"Float",
 		seed:"Float"
 	},
 	tournament_teams_max_fields:{
+		captain_steam_id:"bigint",
 		created_at:"timestamptz",
 		eligible_at:"timestamptz",
 		id:"uuid",
@@ -24399,6 +24477,7 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_id:"uuid"
 	},
 	tournament_teams_min_fields:{
+		captain_steam_id:"bigint",
 		created_at:"timestamptz",
 		eligible_at:"timestamptz",
 		id:"uuid",
@@ -24413,30 +24492,37 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"tournament_teams"
 	},
 	tournament_teams_stddev_fields:{
+		captain_steam_id:"Float",
 		owner_steam_id:"Float",
 		seed:"Float"
 	},
 	tournament_teams_stddev_pop_fields:{
+		captain_steam_id:"Float",
 		owner_steam_id:"Float",
 		seed:"Float"
 	},
 	tournament_teams_stddev_samp_fields:{
+		captain_steam_id:"Float",
 		owner_steam_id:"Float",
 		seed:"Float"
 	},
 	tournament_teams_sum_fields:{
+		captain_steam_id:"bigint",
 		owner_steam_id:"bigint",
 		seed:"Int"
 	},
 	tournament_teams_var_pop_fields:{
+		captain_steam_id:"Float",
 		owner_steam_id:"Float",
 		seed:"Float"
 	},
 	tournament_teams_var_samp_fields:{
+		captain_steam_id:"Float",
 		owner_steam_id:"Float",
 		seed:"Float"
 	},
 	tournament_teams_variance_fields:{
+		captain_steam_id:"Float",
 		owner_steam_id:"Float",
 		seed:"Float"
 	},

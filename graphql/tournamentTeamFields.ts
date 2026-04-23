@@ -7,7 +7,9 @@ export default {
   seed: true,
   eligible_at: true,
   can_manage: true,
+  captain_steam_id: true,
   owner_steam_id: true,
+  captain: playerFields,
   team: {
     name: true,
     avatar_url: true,

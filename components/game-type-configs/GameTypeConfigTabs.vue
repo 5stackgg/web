@@ -1,26 +1,3 @@
-<script setup lang="ts">
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Trash } from "lucide-vue-next";
-import type * as Monaco from "monaco-editor";
-import { generateMutation } from "~/graphql/graphqlGen";
-import { toast } from "@/components/ui/toast";
-import { e_game_cfg_types_enum } from "~/generated/zeus";
-import { markRaw } from "vue";
-import { loadMonaco } from "~/utilities/loadMonaco";
-</script>
-
 <template>
   <Tabs v-model="activeTab" class="w-full">
     <TabsList class="grid w-full grid-cols-4 lg:inline-flex lg:w-auto mb-4">
@@ -117,6 +94,7 @@ import { e_game_cfg_types_enum } from "~/generated/zeus";
 import type * as Monaco from "monaco-editor";
 import { computed, markRaw } from "vue";
 import { loadMonaco } from "~/utilities/loadMonaco";
+import { Trash } from "lucide-vue-next";
 
 interface GameTypeConfig {
   type: string;
@@ -128,6 +106,9 @@ let monaco: typeof Monaco | null = null;
 const editorsMap = new Map<string, Monaco.editor.IStandaloneCodeEditor>();
 
 export default {
+  components: {
+    Trash,
+  },
   props: {
     gameTypeConfigs: {
       type: Array as () => GameTypeConfig[],
@@ -136,9 +117,38 @@ export default {
   },
   emits: ["updated"],
   setup(props) {
+    const orderedTabs = computed(() => {
+      const availableTabs = props.gameTypeConfigs
+        .map((config) => config.type)
+        .filter((type): type is string => Boolean(type));
+      const preferredOrder = [
+        e_game_cfg_types_enum.Lan,
+        e_game_cfg_types_enum.Competitive,
+        e_game_cfg_types_enum.Wingman,
+        e_game_cfg_types_enum.Duel,
+      ];
+
+      const preferredTabs = preferredOrder.filter((type) =>
+        availableTabs.includes(type),
+      );
+      const remainingTabs = availableTabs.filter(
+        (type) => !preferredTabs.includes(type),
+      );
+
+      return [...preferredTabs, ...remainingTabs];
+    });
+
+    const defaultTab = computed(() => {
+      if (orderedTabs.value.includes(e_game_cfg_types_enum.Lan)) {
+        return e_game_cfg_types_enum.Lan;
+      }
+
+      return orderedTabs.value[0] ?? "";
+    });
+
     const activeTab = useRouteTab({
-      defaultTab: computed(() => props.gameTypeConfigs[0]?.type ?? ""),
-      tabs: computed(() => props.gameTypeConfigs.map((config) => config.type)),
+      defaultTab,
+      tabs: orderedTabs,
       ready: computed(() => props.gameTypeConfigs.length > 0),
     });
 

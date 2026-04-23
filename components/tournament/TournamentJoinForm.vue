@@ -92,8 +92,9 @@ import { Card } from "~/components/ui/card";
         <FormItem>
           <TeamSearch
             :label="$t('tournament.team.select')"
-            :my-teams="tournament.is_organizer ? false : true"
-            :is-admin="tournament.is_organizer ? false : true"
+            :my-teams="canSelectAnyTeam ? false : true"
+            :is-admin="canSelectAnyTeam ? false : true"
+            :tournament-join-selector="!canSelectAnyTeam"
             :exclude="existingTeamIds"
             @selected="
               async (team) => {
@@ -210,6 +211,9 @@ export default {
     teams() {
       return this.me.teams;
     },
+    canSelectAnyTeam() {
+      return this.tournament.is_organizer || useAuthStore().isAdmin;
+    },
     existingTeamIds() {
       return (this.tournament.teams || [])
         .map((t) => t.team_id)
@@ -280,6 +284,11 @@ export default {
         addPlayerSteamId = this.form.values.owner_steam_id;
       }
 
+      const captainSteamId =
+        this.form.values.new_team && addPlayerSteamId
+          ? addPlayerSteamId
+          : this.me.steam_id;
+
       await this.$apollo.mutate({
         mutation: generateMutation({
           insert_tournament_teams_one: [
@@ -290,6 +299,7 @@ export default {
                 ...(this.tournament.is_organizer && addPlayerSteamId
                   ? { owner_steam_id: addPlayerSteamId }
                   : {}),
+                captain_steam_id: captainSteamId,
                 team_id: this.form.values.new_team
                   ? null
                   : this.form.values.team_id,

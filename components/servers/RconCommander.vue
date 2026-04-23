@@ -20,16 +20,11 @@ import debounce from "~/utilities/debounce";
   <div
     :class="[
       'bg-muted/50 rounded-xl border',
-      compact
-        ? 'p-3 sm:p-4 gap-3 lg:flex lg:flex-col lg:min-h-0'
-        : 'p-6',
+      compact ? 'p-3 sm:p-4 gap-3 lg:flex lg:flex-col lg:min-h-0' : 'p-6',
     ]"
   >
     <div
-      :class="[
-        'flex items-center justify-between',
-        compact ? 'mb-0' : 'mb-6',
-      ]"
+      :class="['flex items-center justify-between', compact ? 'mb-0' : 'mb-6']"
     >
       <h4 class="text-foreground font-semibold text-lg flex items-center gap-2">
         <Terminal class="w-5 h-5" />
@@ -174,12 +169,7 @@ import debounce from "~/utilities/debounce";
           : '',
       ]"
     >
-      <div
-        :class="[
-          'border-b bg-muted/30',
-          compact ? 'p-2 sm:p-3' : 'p-4',
-        ]"
-      >
+      <div :class="['border-b bg-muted/30', compact ? 'p-2 sm:p-3' : 'p-4']">
         <div class="flex items-center justify-between">
           <h5 class="text-sm font-medium text-foreground">
             {{ $t("server.rcon.console_output") }}

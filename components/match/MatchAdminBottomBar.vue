@@ -169,15 +169,16 @@ const availableCommands = computed<CommandDetail[]>(() => {
   return commands;
 });
 
-const canSendRCONCommands = computed(() =>
-  [
-    e_match_status_enum.Live,
-    e_match_status_enum.PickingPlayers,
-    e_match_status_enum.Scheduled,
-    e_match_status_enum.Veto,
-    e_match_status_enum.WaitingForCheckIn,
-    e_match_status_enum.WaitingForServer,
-  ].includes(props.match.status) && !!props.match.server_id,
+const canSendRCONCommands = computed(
+  () =>
+    [
+      e_match_status_enum.Live,
+      e_match_status_enum.PickingPlayers,
+      e_match_status_enum.Scheduled,
+      e_match_status_enum.Veto,
+      e_match_status_enum.WaitingForCheckIn,
+      e_match_status_enum.WaitingForServer,
+    ].includes(props.match.status) && !!props.match.server_id,
 );
 
 const restorableRounds = computed(() =>
@@ -294,7 +295,9 @@ function runCommand(
         <div
           class="h-full min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-3 p-3 sm:gap-4 sm:p-4 overflow-auto lg:overflow-hidden"
         >
-          <div class="min-w-0 flex flex-col gap-3 lg:min-h-0 lg:overflow-hidden">
+          <div
+            class="min-w-0 flex flex-col gap-3 lg:min-h-0 lg:overflow-hidden"
+          >
             <MatchServerRebootControl :match="match" />
 
             <RconCommander
@@ -379,7 +382,9 @@ function runCommand(
             </div>
           </div>
 
-          <div class="min-w-0 flex flex-col gap-2 lg:min-h-0 lg:overflow-hidden">
+          <div
+            class="min-w-0 flex flex-col gap-2 lg:min-h-0 lg:overflow-hidden"
+          >
             <div
               v-if="!hasLogs"
               class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-6 text-center"

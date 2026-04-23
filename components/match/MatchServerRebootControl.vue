@@ -136,7 +136,10 @@ async function rebootMatchServer() {
           <AlertDialogCancel :disabled="rebootLoading">
             {{ $t("common.cancel") }}
           </AlertDialogCancel>
-          <AlertDialogAction :disabled="rebootLoading" @click="rebootMatchServer">
+          <AlertDialogAction
+            :disabled="rebootLoading"
+            @click="rebootMatchServer"
+          >
             {{
               rebootLoading
                 ? $t("match.server.rebooting")

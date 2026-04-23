@@ -171,9 +171,25 @@ export default {
     RefreshCwIcon,
     DatabaseIcon,
   },
+  setup() {
+    const activeTab = useRouteTab({
+      defaultTab: "queries",
+      tabs: [
+        "queries",
+        "connections",
+        "locks",
+        "io",
+        "index-usage",
+        "storage",
+        "timescale",
+        "backups",
+      ],
+    });
+
+    return { activeTab };
+  },
   data() {
     return {
-      activeTab: "queries",
       refreshInterval: "5",
       isPaused: false,
       refreshTrigger: 0,

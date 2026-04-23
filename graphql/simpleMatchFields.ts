@@ -8,6 +8,7 @@ export const simpleMatchFields = Selector("matches")({
   ended_at: true,
   organizer_steam_id: true,
   is_in_lineup: true,
+  is_tournament_match: true,
   e_match_status: {
     description: true,
   },
@@ -73,4 +74,21 @@ export const simpleMatchFields = Selector("matches")({
   max_players_per_lineup: true,
   min_players_per_lineup: true,
   lineup_counts: [{}, true],
+  tournament_brackets: [
+    { limit: 1 },
+    {
+      round: true,
+      match_number: true,
+      stage: {
+        order: true,
+        e_tournament_stage_type: {
+          description: true,
+        },
+        tournament: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  ],
 });

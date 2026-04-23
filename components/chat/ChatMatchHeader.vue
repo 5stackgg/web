@@ -8,6 +8,6 @@ const props = defineProps<{
 
 <template>
   <div v-if="match" class="mb-2">
-    <MatchTableRow :match="match" :player="null" compact />
+    <MatchTableRow :match="match" :player="null" compact always-show />
   </div>
 </template>

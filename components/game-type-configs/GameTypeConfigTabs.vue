@@ -115,7 +115,7 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { e_game_cfg_types_enum } from "~/generated/zeus";
 import type * as Monaco from "monaco-editor";
-import { markRaw } from "vue";
+import { computed, markRaw } from "vue";
 import { loadMonaco } from "~/utilities/loadMonaco";
 
 interface GameTypeConfig {
@@ -135,9 +135,17 @@ export default {
     },
   },
   emits: ["updated"],
+  setup(props) {
+    const activeTab = useRouteTab({
+      defaultTab: computed(() => props.gameTypeConfigs[0]?.type ?? ""),
+      tabs: computed(() => props.gameTypeConfigs.map((config) => config.type)),
+      ready: computed(() => props.gameTypeConfigs.length > 0),
+    });
+
+    return { activeTab };
+  },
   data() {
     return {
-      activeTab: "" as string,
       colorMode: useColorMode(),
       pendingContainers: new Map<string, HTMLElement>(),
     };
@@ -146,9 +154,6 @@ export default {
     gameTypeConfigs: {
       immediate: true,
       handler(newConfigs: GameTypeConfig[]) {
-        if (newConfigs.length > 0 && !this.activeTab) {
-          this.activeTab = newConfigs[0].type;
-        }
         // Clear editors for configs that no longer exist
         editorsMap.forEach((editor, type) => {
           if (!newConfigs.find((c) => c.type === type)) {

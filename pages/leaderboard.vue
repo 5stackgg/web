@@ -538,9 +538,16 @@ const TIER_COLORS: Record<string, string> = {
 };
 
 export default {
+  setup() {
+    const category = useRouteTab({
+      defaultTab: "elo",
+      tabs: Object.keys(CATEGORY_CONFIG),
+    });
+
+    return { category };
+  },
   data() {
     return {
-      category: "elo",
       windowDays: "30",
       matchType: "all",
       excludeTournaments: false,

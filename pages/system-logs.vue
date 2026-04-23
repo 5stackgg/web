@@ -82,32 +82,34 @@ const systemLogsTabFadeTransition = {
   leaveToClass: "translate-y-[2px] opacity-0",
 };
 
+const SYSTEM_LOG_SERVICES = [
+  "api",
+  "web",
+  "game-server-node",
+  "hasura",
+  "typesense",
+  "timescaledb",
+  "redis",
+  "minio",
+];
+
 export default {
+  setup() {
+    const activeService = useRouteTab({
+      defaultTab: "api",
+      tabs: SYSTEM_LOG_SERVICES,
+      legacyParams: ["service"],
+    });
+
+    return { activeService };
+  },
   data() {
     return {
-      activeService: "api",
       _timestamps: true,
       _followLogs: true,
       systemLogsTabFadeTransition,
-      services: [
-        `api`,
-        "web",
-        "game-server-node",
-        "hasura",
-        "typesense",
-        "timescaledb",
-        "redis",
-        "minio",
-      ],
+      services: SYSTEM_LOG_SERVICES,
     };
-  },
-  created() {
-    this.syncServiceFromRoute();
-  },
-  watch: {
-    "$route.query.service"() {
-      this.syncServiceFromRoute();
-    },
   },
   computed: {
     timestamps: {
@@ -125,14 +127,6 @@ export default {
       set(value: boolean) {
         this._followLogs = value;
       },
-    },
-  },
-  methods: {
-    syncServiceFromRoute() {
-      const service = this.$route?.query?.service as string | undefined;
-      if (service && this.services.includes(service)) {
-        this.activeService = service;
-      }
     },
   },
 };

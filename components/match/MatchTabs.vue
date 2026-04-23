@@ -6,7 +6,7 @@ import LineupUtility from "~/components/match/LineupUtility.vue";
 import LineupOpeningDuels from "~/components/match/LineupOpeningDuels.vue";
 import LineupClutches from "~/components/match/LineupClutches.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
-import { provide, ref } from "vue";
+import { provide } from "vue";
 import EventEmitter from "eventemitter3";
 import { Button } from "~/components/ui/button";
 import {
@@ -34,8 +34,6 @@ import PlayerInvites from "~/components/match/PlayerInvites.vue";
 
 const commander = new EventEmitter();
 provide("commander", commander);
-
-const activeTab = ref("overview");
 </script>
 
 <template>
@@ -424,6 +422,11 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
 import { generateMutation } from "~/graphql/graphqlGen";
+import {
+  getRouteTabValue,
+  normalizeRouteTab,
+  replaceRouteTab,
+} from "~/composables/useRouteTab";
 
 enum AvailableCommands {
   Pause = "css_pause",
@@ -472,6 +475,7 @@ export default {
   },
   data() {
     return {
+      activeTab: "overview",
       inviteDialog: false,
       showConfirmDialog: false,
       pendingCommand: null as
@@ -488,6 +492,25 @@ export default {
     };
   },
   watch: {
+    activeTab(newTab) {
+      if (!this.availableMatchTabs.includes(newTab)) {
+        return;
+      }
+
+      void replaceRouteTab(this.$router, this.$route, newTab, "overview");
+    },
+    "$route.query.tab": {
+      immediate: true,
+      handler() {
+        this.syncActiveTabFromRoute();
+      },
+    },
+    availableMatchTabs: {
+      immediate: true,
+      handler() {
+        this.syncActiveTabFromRoute();
+      },
+    },
     $route: {
       immediate: true,
       handler() {
@@ -616,8 +639,56 @@ export default {
 
       return true;
     },
+    availableMatchTabs() {
+      const tabs = ["overview"];
+
+      if (!this.disableStats) {
+        tabs.push("utility", "opening-duels");
+
+        if (this.match.options.type !== e_match_types_enum.Duel) {
+          tabs.push("clutches");
+        }
+      }
+
+      if (
+        (this.match.options.map_veto || this.match.options.region_veto) &&
+        this.match.match_maps.length > 0
+      ) {
+        tabs.push("veto");
+      }
+
+      tabs.push("settings");
+
+      if (this.canConfigureStreams) {
+        tabs.push("streams");
+      }
+
+      if (this.canViewAdmin) {
+        tabs.push("server");
+      }
+
+      return tabs;
+    },
   },
   methods: {
+    syncActiveTabFromRoute() {
+      const activeTab = getRouteTabValue(
+        this.$route,
+        this.availableMatchTabs,
+        "overview",
+      );
+
+      if (this.activeTab !== activeTab) {
+        this.activeTab = activeTab;
+      }
+
+      void normalizeRouteTab(
+        this.$router,
+        this.$route,
+        this.availableMatchTabs,
+        "overview",
+      );
+    },
     async confirmCommand(
       command: {
         value: string;

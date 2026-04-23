@@ -19,13 +19,14 @@ const isMobile = useMediaQuery("(max-width: 639px)");
       </div>
     </template>
     <template v-else>
+      <!-- Mobile uses the compact layout, but should not inherit the compact-only finished-match filter. -->
       <MatchTableRow
         v-for="(match, index) of matches"
         :key="match.id"
         :match="match"
         :player="player"
         :compact="compact || isMobile"
-        :always-show="showAllMatches"
+        :always-show="showAllMatches || isMobile"
         :style="{ animationDelay: `${index * 50}ms` }"
         class="animate-in fade-in slide-in-from-bottom-2"
       />

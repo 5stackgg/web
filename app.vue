@@ -24,6 +24,33 @@ const applicationSettingsStore = useApplicationSettingsStore();
 
 const me = computed(() => authStore.me);
 const hasGlobalStream = computed(() => !!applicationSettingsStore.globalStream);
+
+function pageKeyWithoutTabQuery(route: {
+  path: string;
+  query: Record<string, unknown>;
+  hash?: string;
+}) {
+  const query = new URLSearchParams();
+
+  Object.keys(route.query)
+    .filter((key) => key !== "tab")
+    .sort()
+    .forEach((key) => {
+      const value = route.query[key];
+      const values = Array.isArray(value) ? value : [value];
+
+      values.forEach((item) => {
+        if (item == null) {
+          return;
+        }
+
+        query.append(key, String(item));
+      });
+    });
+
+  const queryString = query.toString();
+  return `${route.path}${queryString ? `?${queryString}` : ""}${route.hash || ""}`;
+}
 </script>
 
 <template>
@@ -37,7 +64,7 @@ const hasGlobalStream = computed(() => !!applicationSettingsStore.globalStream);
   </template>
 
   <NuxtLayout>
-    <NuxtPage :page-key="(route) => route.fullPath" />
+    <NuxtPage :page-key="pageKeyWithoutTabQuery" />
   </NuxtLayout>
   <Toaster />
 </template>

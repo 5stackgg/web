@@ -480,7 +480,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                         @click="
                           $router.push({
                             path: '/system-logs',
-                            query: { service: service.name },
+                            query: { tab: service.name },
                           })
                         "
                       >

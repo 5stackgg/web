@@ -25,6 +25,7 @@ import {
 } from "~/components/ui/select";
 import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 import MatchOptionsDisplay from "~/components/match//MatchOptionsDisplay.vue";
+import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import { Cross2Icon } from "@radix-icons/vue";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -377,6 +378,8 @@ provide("commander", commander);
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <MatchServerRebootControl :match="match" />
 
       <RconCommander
         :server-id="match.server_id"

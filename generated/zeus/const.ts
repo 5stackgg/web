@@ -6469,6 +6469,9 @@ export const AllTypesProps: Record<string,any> = {
 		randomizeTeams:{
 			match_id:"uuid"
 		},
+		rebootMatchServer:{
+			match_id:"uuid"
+		},
 		recalculate_tournament_trophies:{
 			args:"recalculate_tournament_trophies_args",
 			distinct_on:"tournament_trophies_select_column",
@@ -21021,6 +21024,7 @@ export const ReturnTypes: Record<string,any> = {
 		moveServerItem:"SuccessOutput",
 		overrideMatchRegion:"SuccessOutput",
 		randomizeTeams:"SuccessOutput",
+		rebootMatchServer:"SuccessOutput",
 		recalculate_tournament_trophies:"tournament_trophies",
 		refreshAllPlayers:"SuccessOutput",
 		registerName:"SuccessOutput",

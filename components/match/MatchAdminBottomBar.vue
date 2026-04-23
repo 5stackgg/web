@@ -4,6 +4,7 @@ import EventEmitter from "eventemitter3";
 import { ChevronUp, GripHorizontal, Shield } from "lucide-vue-next";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
+import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import { Button } from "~/components/ui/button";
 import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
 import DropdownMenuSeparator from "~/components/ui/dropdown-menu/DropdownMenuSeparator.vue";
@@ -282,7 +283,9 @@ function runCommand(
         <div
           class="h-full overflow-auto grid grid-cols-1 lg:grid-cols-2 gap-4 p-4"
         >
-          <div class="min-w-0">
+          <div class="min-w-0 flex flex-col gap-3">
+            <MatchServerRebootControl :match="match" />
+
             <RconCommander
               v-if="canSendRCONCommands"
               :server-id="match.server_id"

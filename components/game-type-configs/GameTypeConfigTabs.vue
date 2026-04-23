@@ -104,6 +104,7 @@ interface GameTypeConfig {
 // Non-reactive map outside component instance
 let monaco: typeof Monaco | null = null;
 const editorsMap = new Map<string, Monaco.editor.IStandaloneCodeEditor>();
+const pendingEditorCreates = new Set<string>();
 
 export default {
   components: {
@@ -237,26 +238,36 @@ export default {
       }
     },
     async createEditor(el: HTMLElement, type: string) {
+      if (pendingEditorCreates.has(type) || editorsMap.has(type)) {
+        return;
+      }
+
       const config = this.gameTypeConfigs.find((c) => c.type === type);
       if (!config) return;
+
+      pendingEditorCreates.add(type);
 
       monaco ??= await loadMonaco();
 
       const theme = this.colorMode.value === "dark" ? "vs-dark" : "vs";
 
-      const editor = monaco.editor.create(el, {
-        value: config.cfg,
-        language: "plaintext",
-        theme,
-        automaticLayout: true,
-        minimap: { enabled: false },
-        scrollBeyondLastLine: false,
-        fontSize: 14,
-        tabSize: 2,
-        wordWrap: "on",
-      });
+      try {
+        const editor = monaco.editor.create(el, {
+          value: config.cfg,
+          language: "plaintext",
+          theme,
+          automaticLayout: true,
+          minimap: { enabled: false },
+          scrollBeyondLastLine: false,
+          fontSize: 14,
+          tabSize: 2,
+          wordWrap: "on",
+        });
 
-      editorsMap.set(type, editor);
+        editorsMap.set(type, editor);
+      } finally {
+        pendingEditorCreates.delete(type);
+      }
     },
     getEditorValue(type: string): string {
       return editorsMap.get(type)?.getValue() || "";

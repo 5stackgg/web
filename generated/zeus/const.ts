@@ -5247,6 +5247,7 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		ResetTournamentMatch:{
 			match_id:"uuid",
+			scheduled_at:"timestamptz",
 			winning_lineup_id:"uuid"
 		},
 		acceptInvite:{

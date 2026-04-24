@@ -179,20 +179,19 @@ export default {
     isLive() {
       return this.match.status === e_match_status_enum.Live;
     },
-    isWaitingForServer() {
-      return this.match.status === e_match_status_enum.WaitingForServer;
-    },
-    showBootingState() {
+    isAssignedOnDemandServerBooting() {
       return (
-        this.isWaitingForServer ||
-        (this.isLive &&
-          !!this.match.connection_string &&
-          !this.match.is_server_online &&
-          this.match.server_type !== "Dedicated")
+        this.isLive &&
+        !!this.match.server_id &&
+        !this.match.is_server_online &&
+        this.match.server_type !== "Dedicated"
       );
     },
+    showBootingState() {
+      return this.isAssignedOnDemandServerBooting;
+    },
     showConnectPanel() {
-      return !!this.me && (this.isLive || this.isWaitingForServer);
+      return !!this.me && this.isLive;
     },
     me() {
       return useAuthStore().me;

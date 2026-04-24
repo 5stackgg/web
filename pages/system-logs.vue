@@ -9,6 +9,25 @@ import {
   tacticalTabsListClasses,
   tacticalTabsTriggerClasses,
 } from "~/utilities/tacticalClasses";
+
+const SYSTEM_LOG_SERVICES = [
+  "api",
+  "web",
+  "game-server-node",
+  "hasura",
+  "typesense",
+  "timescaledb",
+  "redis",
+  "minio",
+];
+
+const services = SYSTEM_LOG_SERVICES;
+
+const activeService = useRouteTab({
+  defaultTab: "api",
+  tabs: SYSTEM_LOG_SERVICES,
+  legacyParams: ["service"],
+});
 </script>
 
 <template>
@@ -82,33 +101,12 @@ const systemLogsTabFadeTransition = {
   leaveToClass: "translate-y-[2px] opacity-0",
 };
 
-const SYSTEM_LOG_SERVICES = [
-  "api",
-  "web",
-  "game-server-node",
-  "hasura",
-  "typesense",
-  "timescaledb",
-  "redis",
-  "minio",
-];
-
 export default {
-  setup() {
-    const activeService = useRouteTab({
-      defaultTab: "api",
-      tabs: SYSTEM_LOG_SERVICES,
-      legacyParams: ["service"],
-    });
-
-    return { activeService };
-  },
   data() {
     return {
       _timestamps: true,
       _followLogs: true,
       systemLogsTabFadeTransition,
-      services: SYSTEM_LOG_SERVICES,
     };
   },
   computed: {

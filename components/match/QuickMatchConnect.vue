@@ -3,8 +3,8 @@ import { e_match_status_enum } from "~/generated/zeus";
 </script>
 
 <template>
-  <div v-if="match.status === e_match_status_enum.Live && me">
-    <template v-if="canWatch && !match.tv_connection_string">
+  <div v-if="showConnectPanel">
+    <template v-if="isLive && canWatch && !match.tv_connection_string">
       <div
         class="flex items-center gap-2 p-4 rounded-lg border bg-foreground/10 mb-2"
       >
@@ -12,7 +12,9 @@ import { e_match_status_enum } from "~/generated/zeus";
         {{ $t("match.server.tv_delay", { delay: match.options.tv_delay }) }}
       </div>
     </template>
-    <template v-if="match.tv_connection_string && !match.connection_link">
+    <template
+      v-if="isLive && match.tv_connection_string && !match.connection_link"
+    >
       <div
         class="flex items-center gap-2 p-4 rounded-lg border bg-foreground/10 mb-2"
       >
@@ -28,6 +30,29 @@ import { e_match_status_enum } from "~/generated/zeus";
       </div>
       <Separator class="my-4" label="OR" v-if="match.connection_string" />
     </template>
+
+    <div v-if="showBootingState && !match.connection_string">
+      <div
+        class="flex items-center gap-2 p-4 rounded-lg border bg-foreground/10 animate-fade-in"
+      >
+        <div
+          class="flex w-full flex-col items-center justify-center gap-2 rounded-md bg-background/40 p-3 text-center text-muted-foreground"
+        >
+          <div class="flex items-center justify-center gap-3">
+            <Loader class="w-4 h-4 animate-spin-smooth shrink-0" />
+            <span class="text-sm font-medium tracking-wide">{{
+              $t("match.server.booting")
+            }}</span>
+          </div>
+          <p
+            v-if="match.server_error"
+            class="max-w-full whitespace-pre-wrap break-words text-xs leading-relaxed text-[hsl(var(--tac-amber))]"
+          >
+            {{ match.server_error }}
+          </p>
+        </div>
+      </div>
+    </div>
 
     <div v-if="match.connection_string">
       <template v-if="!match.is_server_online">
@@ -50,12 +75,20 @@ import { e_match_status_enum } from "~/generated/zeus";
             class="flex items-center gap-2 p-4 rounded-lg border bg-foreground/10 animate-fade-in"
           >
             <div
-              class="flex items-center justify-center gap-3 rounded-md p-3 w-full bg-background/40 text-muted-foreground"
+              class="flex w-full flex-col items-center justify-center gap-2 rounded-md bg-background/40 p-3 text-center text-muted-foreground"
             >
-              <Loader class="w-4 h-4 animate-spin-smooth shrink-0" />
-              <span class="text-sm font-medium tracking-wide">{{
-                $t("match.server.booting")
-              }}</span>
+              <div class="flex items-center justify-center gap-3">
+                <Loader class="w-4 h-4 animate-spin-smooth shrink-0" />
+                <span class="text-sm font-medium tracking-wide">{{
+                  $t("match.server.booting")
+                }}</span>
+              </div>
+              <p
+                v-if="match.server_error"
+                class="max-w-full whitespace-pre-wrap break-words text-xs leading-relaxed text-[hsl(var(--tac-amber))]"
+              >
+                {{ match.server_error }}
+              </p>
             </div>
           </div>
         </template>
@@ -143,6 +176,24 @@ export default {
     },
   },
   computed: {
+    isLive() {
+      return this.match.status === e_match_status_enum.Live;
+    },
+    isWaitingForServer() {
+      return this.match.status === e_match_status_enum.WaitingForServer;
+    },
+    showBootingState() {
+      return (
+        this.isWaitingForServer ||
+        (this.isLive &&
+          !!this.match.connection_string &&
+          !this.match.is_server_online &&
+          this.match.server_type !== "Dedicated")
+      );
+    },
+    showConnectPanel() {
+      return !!this.me && (this.isLive || this.isWaitingForServer);
+    },
     me() {
       return useAuthStore().me;
     },

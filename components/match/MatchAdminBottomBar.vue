@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { ref, computed, provide, onMounted } from "vue";
+import { ref, computed, provide, onMounted, onBeforeUnmount } from "vue";
 import EventEmitter from "eventemitter3";
 import { ChevronUp, GripHorizontal, Shield } from "lucide-vue-next";
+import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import { Button } from "~/components/ui/button";
@@ -92,33 +93,44 @@ function maxHeight() {
   return Math.round(window.innerHeight * 0.9);
 }
 
+let activeMove: ((ev: MouseEvent) => void) | null = null;
+let activeUp: (() => void) | null = null;
+
+function stopDrag() {
+  if (activeMove) document.removeEventListener("mousemove", activeMove);
+  if (activeUp) document.removeEventListener("mouseup", activeUp);
+  activeMove = null;
+  activeUp = null;
+  dragging.value = false;
+}
+
 function startDrag(e: MouseEvent) {
   e.preventDefault();
+  stopDrag();
   dragging.value = true;
   const startY = e.clientY;
   const startHeight = panelHeight.value;
 
-  function onMove(ev: MouseEvent) {
+  activeMove = (ev: MouseEvent) => {
     const delta = startY - ev.clientY;
     panelHeight.value = Math.max(
       MIN_HEIGHT,
       Math.min(maxHeight(), startHeight + delta),
     );
-  }
+  };
+  activeUp = () => stopDrag();
 
-  function onUp() {
-    dragging.value = false;
-    document.removeEventListener("mousemove", onMove);
-    document.removeEventListener("mouseup", onUp);
-  }
-
-  document.addEventListener("mousemove", onMove);
-  document.addEventListener("mouseup", onUp);
+  document.addEventListener("mousemove", activeMove);
+  document.addEventListener("mouseup", activeUp);
 }
 
 onMounted(() => {
   mounted.value = true;
   panelHeight.value = Math.round(window.innerHeight * 0.45);
+});
+
+onBeforeUnmount(() => {
+  stopDrag();
 });
 
 const form = useForm({
@@ -157,15 +169,16 @@ const availableCommands = computed<CommandDetail[]>(() => {
   return commands;
 });
 
-const canSendRCONCommands = computed(() =>
-  [
-    e_match_status_enum.Live,
-    e_match_status_enum.PickingPlayers,
-    e_match_status_enum.Scheduled,
-    e_match_status_enum.Veto,
-    e_match_status_enum.WaitingForCheckIn,
-    e_match_status_enum.WaitingForServer,
-  ].includes(props.match.status),
+const canSendRCONCommands = computed(
+  () =>
+    [
+      e_match_status_enum.Live,
+      e_match_status_enum.PickingPlayers,
+      e_match_status_enum.Scheduled,
+      e_match_status_enum.Veto,
+      e_match_status_enum.WaitingForCheckIn,
+      e_match_status_enum.WaitingForServer,
+    ].includes(props.match.status) && !!props.match.server_id,
 );
 
 const restorableRounds = computed(() =>
@@ -280,14 +293,20 @@ function runCommand(
         :style="{ height: open ? `${panelHeight}px` : '0px' }"
       >
         <div
-          class="h-full overflow-auto grid grid-cols-1 lg:grid-cols-2 gap-4 p-4"
+          class="h-full min-h-0 grid grid-cols-1 lg:grid-cols-2 gap-3 p-3 sm:gap-4 sm:p-4 overflow-auto lg:overflow-hidden"
         >
-          <div class="min-w-0">
+          <div
+            class="min-w-0 flex flex-col gap-3 lg:min-h-0 lg:overflow-hidden"
+          >
+            <MatchServerRebootControl :match="match" />
+
             <RconCommander
               v-if="canSendRCONCommands"
               :server-id="match.server_id"
-              :online="match.is_server_online"
+              :online="!!match.is_server_online"
               :match-id="match.id"
+              :compact="true"
+              class="lg:flex-1 lg:min-h-0"
               v-slot="{ commander: send }"
             >
               <DropdownMenuItem
@@ -363,16 +382,16 @@ function runCommand(
             </div>
           </div>
 
-          <div class="min-w-0 flex flex-col gap-2">
-            <h4
-              class="font-mono text-[0.65rem] font-bold tracking-[0.2em] uppercase text-muted-foreground"
-            >
-              {{ $t("match.tabs.no_logs_title") }}
-            </h4>
+          <div
+            class="min-w-0 flex flex-col gap-2 lg:min-h-0 lg:overflow-hidden"
+          >
             <div
               v-if="!hasLogs"
               class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-6 text-center"
             >
+              <h3 class="font-semibold">
+                {{ $t("match.tabs.no_logs_title") }}
+              </h3>
               <p class="text-sm text-muted-foreground">
                 {{ $t("match.tabs.no_logs_description") }}
               </p>
@@ -381,6 +400,7 @@ function runCommand(
               v-show="hasLogs"
               :service="`m-${match.id}`"
               :compact="true"
+              class="lg:flex-1 lg:min-h-0"
               @has-logs="hasLogs = $event"
             />
           </div>

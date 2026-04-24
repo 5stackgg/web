@@ -117,7 +117,12 @@ export default {
       return !!this.isInMatch && this.match.can_check_in;
     },
     showQuickConnectSection() {
-      return this.match.status === e_match_status_enum.Live && !!this.me;
+      return (
+        [
+          e_match_status_enum.Live,
+          e_match_status_enum.WaitingForServer,
+        ].includes(this.match.status) && !!this.me
+      );
     },
     showAnyActionSection() {
       return (

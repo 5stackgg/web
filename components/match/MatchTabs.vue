@@ -25,6 +25,7 @@ import {
 } from "~/components/ui/select";
 import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 import MatchOptionsDisplay from "~/components/match//MatchOptionsDisplay.vue";
+import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import { Cross2Icon } from "@radix-icons/vue";
 import { ScrollArea } from "~/components/ui/scroll-area";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -59,17 +60,24 @@ provide("commander", commander);
             >
               Map Filter Active
             </span>
-            <span
-              class="font-mono text-[0.75rem] tracking-[0.12em] uppercase text-foreground truncate"
-            >
-              {{ activeMap ? cleanMapName(activeMap.map.name) : "" }}
-              <span
-                v-if="activeMap && typeof activeMap.lineup_1_score === 'number'"
-                class="text-muted-foreground ml-2"
-              >
-                {{ activeMap.lineup_1_score }} : {{ activeMap.lineup_2_score }}
-              </span>
-            </span>
+            <div class="map-filter-flip relative min-w-0">
+              <Transition name="map-flip" mode="out-in">
+                <span
+                  v-if="activeMap"
+                  :key="activeMap.id"
+                  class="block font-mono text-[0.75rem] tracking-[0.12em] uppercase text-foreground truncate"
+                >
+                  {{ cleanMapName(activeMap.map.name) }}
+                  <span
+                    v-if="typeof activeMap.lineup_1_score === 'number'"
+                    class="text-muted-foreground ml-2"
+                  >
+                    {{ activeMap.lineup_1_score }} :
+                    {{ activeMap.lineup_2_score }}
+                  </span>
+                </span>
+              </Transition>
+            </div>
           </div>
         </div>
         <Button
@@ -371,9 +379,11 @@ provide("commander", commander);
         </AlertDialogContent>
       </AlertDialog>
 
+      <MatchServerRebootControl :match="match" />
+
       <RconCommander
         :server-id="match.server_id"
-        :online="match.is_server_online"
+        :online="!!match.is_server_online"
         :match-id="match.id"
         v-slot="{ commander: send }"
         v-if="canSendRCONCommands"
@@ -523,6 +533,30 @@ provide("commander", commander);
   grid-template-rows: 1fr;
   opacity: 1;
   margin-bottom: 1rem;
+}
+
+.map-filter-flip {
+  perspective: 600px;
+}
+
+.map-flip-enter-active,
+.map-flip-leave-active {
+  transition:
+    transform 240ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 160ms ease;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+.map-flip-enter-from {
+  transform: rotateX(-90deg);
+  opacity: 0;
+}
+
+.map-flip-leave-to {
+  transform: rotateX(90deg);
+  opacity: 0;
 }
 </style>
 
@@ -796,7 +830,9 @@ export default {
         e_match_status_enum.Veto,
         e_match_status_enum.WaitingForCheckIn,
         e_match_status_enum.WaitingForServer,
-      ].includes(this.match.status);
+      ].includes(this.match.status)
+        ? !!this.match.server_id
+        : false;
     },
     canAdjustLineups() {
       if (
@@ -861,13 +897,13 @@ export default {
     },
     async fetchMapStats() {
       if (!this.activeMap) return;
+      const requestedMapId = this.activeMap.id;
       this.mapStatsLoading = true;
-      this.mapStats = null;
       try {
         const { data } = await this.$apollo.query({
           variables: {
             matchId: this.match.id,
-            matchMapId: this.activeMap.id,
+            matchMapId: requestedMapId,
             order_by_name: order_by.asc,
           },
           fetchPolicy: "network-only",
@@ -881,6 +917,7 @@ export default {
             ],
           }),
         });
+        if (this.activeMap?.id !== requestedMapId) return;
         this.mapStats = data?.matches_by_pk ?? null;
       } finally {
         this.mapStatsLoading = false;

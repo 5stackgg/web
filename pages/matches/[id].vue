@@ -85,14 +85,6 @@ const vsBaseClasses =
 
           <div class="inline-flex items-center gap-2 ml-auto">
             <span
-              v-if="match.server_error"
-              class="inline-flex items-center gap-[0.4rem] px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold tracking-[0.15em] uppercase border border-[hsl(var(--destructive)/0.6)] rounded bg-[hsl(var(--destructive)/0.15)] text-destructive"
-              :title="match.server_error"
-            >
-              <AlertTriangle class="w-3 h-3" />
-              <span>{{ $t("match.server_error.short_label") }}</span>
-            </span>
-            <span
               v-if="showAutoCancel"
               class="inline-flex items-center gap-[0.4rem] px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold tracking-[0.15em] uppercase border border-[hsl(var(--destructive)/0.6)] rounded bg-[hsl(var(--destructive)/0.15)] text-destructive"
               :title="$t('match.auto_canceling')"
@@ -319,20 +311,6 @@ const vsBaseClasses =
             :streams="match.streams"
             class="pb-6 max-w-[1500px] w-full overflow-x-auto"
           />
-        </PageTransition>
-
-        <PageTransition :delay="100">
-          <Alert
-            v-if="showServerErrorAlert"
-            variant="destructive"
-            class="bg-red-600 text-white max-w-md mb-6"
-          >
-            <AlertTriangle class="h-4 w-4" />
-            <AlertTitle>{{ $t("match.server_error.title") }}</AlertTitle>
-            <AlertDescription class="whitespace-pre-wrap break-words">
-              {{ match.server_error }}
-            </AlertDescription>
-          </Alert>
         </PageTransition>
 
         <PageTransition :delay="100">
@@ -677,20 +655,6 @@ export default {
         this.match?.cancels_at &&
         this.match.status !== e_match_status_enum.Canceled
       );
-    },
-    showServerErrorAlert() {
-      if (!this.match?.server_error) {
-        return false;
-      }
-      const visibleStatuses = [
-        e_match_status_enum.Scheduled,
-        e_match_status_enum.WaitingForCheckIn,
-        e_match_status_enum.WaitingForServer,
-        e_match_status_enum.Veto,
-        e_match_status_enum.PickingPlayers,
-        e_match_status_enum.Live,
-      ];
-      return visibleStatuses.includes(this.match.status);
     },
     formattedSchedule() {
       const when = this.match?.scheduled_at || this.match?.ended_at;

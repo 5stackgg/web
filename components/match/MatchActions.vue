@@ -57,6 +57,19 @@ import {
           <MatchSelectWinner :match="match"></MatchSelectWinner>
         </DropdownMenuItem>
 
+        <template v-if="match.is_organizer">
+          <DropdownMenuSeparator />
+          <DropdownMenuItem @click="startLive">
+            {{ $t("match.actions.start_live") }}
+          </DropdownMenuItem>
+          <DropdownMenuItem @click="stopLive">
+            {{ $t("match.actions.stop_live") }}
+          </DropdownMenuItem>
+          <DropdownMenuItem @click="createClipsForMatch">
+            {{ $t("match.actions.create_clips") }}
+          </DropdownMenuItem>
+        </template>
+
         <DropdownMenuSeparator
           v-if="match.can_start || match.can_cancel || canDeleteMatch"
         />
@@ -195,6 +208,54 @@ export default {
           ],
         }),
       });
+    },
+    async startLive() {
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            startLive: [{ match_id: this.match.id }, { success: true }],
+          }),
+        });
+        toast({ title: this.$t("match.actions.live_started") });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+      }
+    },
+    async stopLive() {
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            stopLive: [{ match_id: this.match.id }, { success: true }],
+          }),
+        });
+        toast({ title: this.$t("match.actions.live_stopped") });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+      }
+    },
+    async createClipsForMatch() {
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            createClips: [{ match_id: this.match.id }, { success: true }],
+          }),
+        });
+        toast({ title: this.$t("match.actions.clips_started") });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+      }
     },
     onRconResponse(data: any) {
       if (data.uuid !== this.rconUuid) {

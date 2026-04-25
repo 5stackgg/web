@@ -1898,7 +1898,13 @@
             "pause": "Pause Match",
             "resume": "Resume Match",
             "match_paused": "Match paused",
-            "match_resumed": "Match resumed"
+            "match_resumed": "Match resumed",
+            "start_live": "Start Live Stream",
+            "stop_live": "Stop Live Stream",
+            "create_clips": "Create Clips",
+            "live_started": "Live stream starting",
+            "live_stopped": "Live stream stopped",
+            "clips_started": "Clip render queued"
         },
         "delete_confirm": {
             "title": "Delete Match",

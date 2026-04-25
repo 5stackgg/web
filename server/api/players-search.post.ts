@@ -136,6 +136,10 @@ export default defineEventHandler(async (event) => {
     sortBy = sortBy.replace("elo", "elo_competitive");
   }
 
+  if (sortBy.startsWith("last_sign_in_at:")) {
+    filterBy.push("last_sign_in_at:!=~~");
+  }
+
   const searchParams: any = {
     q: query ?? "*",
     query_by: queryBy,

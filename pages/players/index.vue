@@ -447,8 +447,26 @@ import {
             <TableHead v-if="canViewAdditionalDetails">{{
               $t("pages.players.table.privilege")
             }}</TableHead>
-            <TableHead v-if="canViewAdditionalDetails">
-              {{ $t("pages.players.table.last_sign_in_at") }}
+            <TableHead
+              v-if="canViewAdditionalDetails"
+              class="cursor-pointer"
+              @click="toggleSort('last_sign_in_at')"
+            >
+              <div class="flex items-center gap-1">
+                {{ $t("pages.players.table.last_sign_in_at") }}
+                <ArrowUpIcon
+                  v-if="
+                    sortField === 'last_sign_in_at' && sortDirection === 'desc'
+                  "
+                  class="w-4 h-4"
+                />
+                <ArrowDownIcon
+                  v-else-if="
+                    sortField === 'last_sign_in_at' && sortDirection === 'asc'
+                  "
+                  class="w-4 h-4"
+                />
+              </div>
             </TableHead>
           </TableRow>
         </TableHeader>
@@ -909,7 +927,7 @@ export default {
       this.saveFiltersToStorage();
       this.searchPlayers();
     },
-    toggleSort(field: "name" | "elo") {
+    toggleSort(field: "name" | "elo" | "last_sign_in_at") {
       if (this.sortField === field) {
         // If clicking the same column, toggle direction
         this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";

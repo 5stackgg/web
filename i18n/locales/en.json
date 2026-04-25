@@ -23,6 +23,7 @@
         "remove": "Remove avatar",
         "team_avatar": "Team avatar",
         "player_avatar": "Player avatar",
+        "player_roster_image": "Player roster image",
         "upload_success": "Avatar uploaded",
         "upload_failed": "Avatar upload failed",
         "remove_success": "Avatar removed",
@@ -1629,12 +1630,17 @@
             "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
             "confirm_remove": "Are you sure you want to remove this member?",
             "cancel_invite_description": "This will cancel the invite for this member",
-            "remove_description": "This will remove the member from the team"
+            "remove_description": "This will remove the member from the team",
+            "roster_image": "Roster image",
+            "roster_image_description": "Upload a roster image for {name} on this team. Overrides the player's default."
         }
     },
     "match": {
         "team_stats_heading": "{name} Stats",
         "all_maps": "All Maps",
+        "stream": {
+            "watch": "Live Stream"
+        },
         "elo_details": {
             "title": "Elo Change Details",
             "elo": "Elo",
@@ -1898,7 +1904,14 @@
             "pause": "Pause Match",
             "resume": "Resume Match",
             "match_paused": "Match paused",
-            "match_resumed": "Match resumed"
+            "match_resumed": "Match resumed",
+            "start_live": "Start Live Stream",
+            "stop_live": "Stop Live Stream",
+            "cancel_live_boot": "Cancel Live Stream (booting…)",
+            "create_clips": "Create Clips",
+            "live_started": "Live stream starting",
+            "live_stopped": "Live stream stopped",
+            "clips_started": "Clip render queued"
         },
         "delete_confirm": {
             "title": "Delete Match",

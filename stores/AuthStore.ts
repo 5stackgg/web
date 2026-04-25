@@ -36,6 +36,7 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
   let postAuthSubscriptionsStarted = false;
   let managingMatchesSubscriptionStarted = false;
   let managingTournamentsSubscriptionStarted = false;
+  let activeStreamingMatchesSubscriptionStarted = false;
 
   useSearchStore();
   useMatchmakingStore();
@@ -102,11 +103,15 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
     const shouldStartManagingTournaments =
       isRoleAbove(e_player_roles_enum.tournament_organizer) &&
       !managingTournamentsSubscriptionStarted;
+    const shouldStartActiveStreamingMatches =
+      isRoleAbove(e_player_roles_enum.streamer) &&
+      !activeStreamingMatchesSubscriptionStarted;
 
     if (
       !shouldStartBaseSubscriptions &&
       !shouldStartManagingMatches &&
-      !shouldStartManagingTournaments
+      !shouldStartManagingTournaments &&
+      !shouldStartActiveStreamingMatches
     ) {
       return;
     }
@@ -130,6 +135,11 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
     if (shouldStartManagingTournaments) {
       managingTournamentsSubscriptionStarted = true;
       useMatchLobbyStore().subscribeToManagingTournaments();
+    }
+
+    if (shouldStartActiveStreamingMatches) {
+      activeStreamingMatchesSubscriptionStarted = true;
+      useStreamerStore().subscribeToLiveStreams();
     }
   }
 

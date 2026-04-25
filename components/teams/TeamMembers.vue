@@ -225,6 +225,7 @@ export default {
                   coach: true,
                   status: true,
                   team_id: true,
+                  roster_image_url: true,
                   player: playerFields,
                 },
               ],

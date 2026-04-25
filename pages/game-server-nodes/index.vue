@@ -417,6 +417,7 @@ export default {
               supports_cpu_pinning: true,
               update_status: true,
               gpu: true,
+              gpu_info: true,
               cpu_sockets: true,
               cpu_governor_info: true,
               cpu_frequency_info: true,

@@ -331,6 +331,24 @@ const isSectionExpanded = (section: string) => {
               >
                 {{ $t("game_server.gpu_description") }}
               </div>
+              <ul
+                v-if="gpuDevices.length"
+                class="space-y-1 border-t border-border/40 pt-2 text-xs"
+              >
+                <li
+                  v-for="device in gpuDevices"
+                  :key="device.index ?? device.name"
+                  class="flex items-center justify-between gap-3"
+                >
+                  <span class="truncate">{{ device.name }}</span>
+                  <span
+                    v-if="device.memory_mb"
+                    class="text-muted-foreground tabular-nums"
+                  >
+                    {{ formatGpuMemory(device.memory_mb) }}
+                  </span>
+                </li>
+              </ul>
             </div>
           </FiveStackToolTip>
 
@@ -1928,6 +1946,14 @@ export default defineComponent({
     },
   },
   methods: {
+    formatGpuMemory(memoryMb: number): string {
+      if (!memoryMb) return "";
+      if (memoryMb >= 1024) {
+        const gb = memoryMb / 1024;
+        return `${gb >= 10 ? Math.round(gb) : gb.toFixed(1)} GB`;
+      }
+      return `${memoryMb} MB`;
+    },
     async updateCs() {
       await this.$apollo.mutate({
         mutation: generateMutation({
@@ -2180,6 +2206,15 @@ export default defineComponent({
     },
   },
   computed: {
+    gpuDevices(): Array<{
+      index?: number;
+      name?: string;
+      memory_mb?: number;
+    }> {
+      const raw = (this.gameServerNode as any)?.gpu_info;
+      if (!Array.isArray(raw)) return [];
+      return raw.filter((d: any) => d && typeof d === "object");
+    },
     shouldShowMetrics() {
       // Force show metrics if parent displayMetrics is true, otherwise use local state
       return this.displayMetrics || this.showNodeMetrics;

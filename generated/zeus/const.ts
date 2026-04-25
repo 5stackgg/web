@@ -1959,6 +1959,9 @@ export const AllTypesProps: Record<string,any> = {
 		cpu_governor_info:{
 
 		},
+		gpu_info:{
+
+		},
 		servers:{
 			distinct_on:"servers_select_column",
 			order_by:"servers_order_by",
@@ -2010,7 +2013,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	game_server_nodes_append_input:{
 		cpu_frequency_info:"jsonb",
-		cpu_governor_info:"jsonb"
+		cpu_governor_info:"jsonb",
+		gpu_info:"jsonb"
 	},
 	game_server_nodes_arr_rel_insert_input:{
 		data:"game_server_nodes_insert_input",
@@ -2049,6 +2053,7 @@ export const AllTypesProps: Record<string,any> = {
 		enabled:"Boolean_comparison_exp",
 		end_port_range:"Int_comparison_exp",
 		gpu:"Boolean_comparison_exp",
+		gpu_info:"jsonb_comparison_exp",
 		id:"String_comparison_exp",
 		label:"String_comparison_exp",
 		lan_ip:"inet_comparison_exp",
@@ -2089,6 +2094,7 @@ export const AllTypesProps: Record<string,any> = {
 		cpu_governor_info:"jsonb",
 		e_region:"server_regions_obj_rel_insert_input",
 		e_status:"e_game_server_node_statuses_obj_rel_insert_input",
+		gpu_info:"jsonb",
 		lan_ip:"inet",
 		node_ip:"inet",
 		offline_at:"timestamptz",
@@ -2164,6 +2170,7 @@ export const AllTypesProps: Record<string,any> = {
 		enabled:"order_by",
 		end_port_range:"order_by",
 		gpu:"order_by",
+		gpu_info:"order_by",
 		id:"order_by",
 		label:"order_by",
 		lan_ip:"order_by",
@@ -2190,7 +2197,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	game_server_nodes_prepend_input:{
 		cpu_frequency_info:"jsonb",
-		cpu_governor_info:"jsonb"
+		cpu_governor_info:"jsonb",
+		gpu_info:"jsonb"
 	},
 	game_server_nodes_select_column: "enum" as const,
 	game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
@@ -2198,6 +2206,7 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_set_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
+		gpu_info:"jsonb",
 		lan_ip:"inet",
 		node_ip:"inet",
 		offline_at:"timestamptz",
@@ -2250,6 +2259,7 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_stream_cursor_value_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
+		gpu_info:"jsonb",
 		lan_ip:"inet",
 		node_ip:"inet",
 		offline_at:"timestamptz",
@@ -4526,7 +4536,19 @@ export const AllTypesProps: Record<string,any> = {
 		where:"match_region_veto_picks_bool_exp"
 	},
 	match_streams_aggregate_bool_exp:{
+		bool_and:"match_streams_aggregate_bool_exp_bool_and",
+		bool_or:"match_streams_aggregate_bool_exp_bool_or",
 		count:"match_streams_aggregate_bool_exp_count"
+	},
+	match_streams_aggregate_bool_exp_bool_and:{
+		arguments:"match_streams_select_column_match_streams_aggregate_bool_exp_bool_and_arguments_columns",
+		filter:"match_streams_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	match_streams_aggregate_bool_exp_bool_or:{
+		arguments:"match_streams_select_column_match_streams_aggregate_bool_exp_bool_or_arguments_columns",
+		filter:"match_streams_bool_exp",
+		predicate:"Boolean_comparison_exp"
 	},
 	match_streams_aggregate_bool_exp_count:{
 		arguments:"match_streams_select_column",
@@ -4562,11 +4584,18 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"match_streams_bool_exp",
 		_not:"match_streams_bool_exp",
 		_or:"match_streams_bool_exp",
+		autodirector:"Boolean_comparison_exp",
+		error_message:"String_comparison_exp",
 		id:"uuid_comparison_exp",
+		is_game_streamer:"Boolean_comparison_exp",
+		is_live:"Boolean_comparison_exp",
+		last_status_at:"timestamptz_comparison_exp",
 		link:"String_comparison_exp",
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
 		priority:"Int_comparison_exp",
+		status:"String_comparison_exp",
+		stream_url:"String_comparison_exp",
 		title:"String_comparison_exp"
 	},
 	match_streams_constraint: "enum" as const,
@@ -4575,21 +4604,30 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_streams_insert_input:{
 		id:"uuid",
+		last_status_at:"timestamptz",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid"
 	},
 	match_streams_max_order_by:{
+		error_message:"order_by",
 		id:"order_by",
+		last_status_at:"order_by",
 		link:"order_by",
 		match_id:"order_by",
 		priority:"order_by",
+		status:"order_by",
+		stream_url:"order_by",
 		title:"order_by"
 	},
 	match_streams_min_order_by:{
+		error_message:"order_by",
 		id:"order_by",
+		last_status_at:"order_by",
 		link:"order_by",
 		match_id:"order_by",
 		priority:"order_by",
+		status:"order_by",
+		stream_url:"order_by",
 		title:"order_by"
 	},
 	match_streams_on_conflict:{
@@ -4598,19 +4636,29 @@ export const AllTypesProps: Record<string,any> = {
 		where:"match_streams_bool_exp"
 	},
 	match_streams_order_by:{
+		autodirector:"order_by",
+		error_message:"order_by",
 		id:"order_by",
+		is_game_streamer:"order_by",
+		is_live:"order_by",
+		last_status_at:"order_by",
 		link:"order_by",
 		match:"matches_order_by",
 		match_id:"order_by",
 		priority:"order_by",
+		status:"order_by",
+		stream_url:"order_by",
 		title:"order_by"
 	},
 	match_streams_pk_columns_input:{
 		id:"uuid"
 	},
 	match_streams_select_column: "enum" as const,
+	match_streams_select_column_match_streams_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
+	match_streams_select_column_match_streams_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	match_streams_set_input:{
 		id:"uuid",
+		last_status_at:"timestamptz",
 		match_id:"uuid"
 	},
 	match_streams_stddev_order_by:{
@@ -4628,6 +4676,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_streams_stream_cursor_value_input:{
 		id:"uuid",
+		last_status_at:"timestamptz",
 		match_id:"uuid"
 	},
 	match_streams_sum_order_by:{
@@ -5267,6 +5316,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		createApiKey:{
 
+		},
+		createClips:{
+			match_id:"uuid"
 		},
 		createServerDirectory:{
 
@@ -6498,9 +6550,30 @@ export const AllTypesProps: Record<string,any> = {
 			match_id:"uuid",
 			winning_lineup_id:"uuid"
 		},
+		specAutodirector:{
+			match_id:"uuid"
+		},
+		specClick:{
+			match_id:"uuid"
+		},
+		specJump:{
+			match_id:"uuid"
+		},
+		specPlayer:{
+			match_id:"uuid"
+		},
+		specSlot:{
+			match_id:"uuid"
+		},
+		startLive:{
+			match_id:"uuid"
+		},
 		startMatch:{
 			match_id:"uuid",
 			server_id:"uuid"
+		},
+		stopLive:{
+			match_id:"uuid"
 		},
 		swapLineups:{
 			match_id:"uuid"
@@ -10174,6 +10247,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate_bool_exp",
 		profile_url:"String_comparison_exp",
 		role:"e_player_roles_enum_comparison_exp",
+		roster_image_url:"String_comparison_exp",
 		sanctions:"player_sanctions_bool_exp",
 		sanctions_aggregate:"player_sanctions_aggregate_bool_exp",
 		stats:"player_stats_bool_exp",
@@ -10288,6 +10362,7 @@ export const AllTypesProps: Record<string,any> = {
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate_order_by",
 		profile_url:"order_by",
 		role:"order_by",
+		roster_image_url:"order_by",
 		sanctions_aggregate:"player_sanctions_aggregate_order_by",
 		stats:"player_stats_order_by",
 		steam_id:"order_by",
@@ -13773,6 +13848,7 @@ export const AllTypesProps: Record<string,any> = {
 		player:"players_bool_exp",
 		player_steam_id:"bigint_comparison_exp",
 		role:"e_team_roles_enum_comparison_exp",
+		roster_image_url:"String_comparison_exp",
 		status:"e_team_roster_statuses_enum_comparison_exp",
 		team:"teams_bool_exp",
 		team_id:"uuid_comparison_exp"
@@ -13791,10 +13867,12 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	team_roster_max_order_by:{
 		player_steam_id:"order_by",
+		roster_image_url:"order_by",
 		team_id:"order_by"
 	},
 	team_roster_min_order_by:{
 		player_steam_id:"order_by",
+		roster_image_url:"order_by",
 		team_id:"order_by"
 	},
 	team_roster_on_conflict:{
@@ -13807,6 +13885,7 @@ export const AllTypesProps: Record<string,any> = {
 		player:"players_order_by",
 		player_steam_id:"order_by",
 		role:"order_by",
+		roster_image_url:"order_by",
 		status:"order_by",
 		team:"teams_order_by",
 		team_id:"order_by"
@@ -17823,6 +17902,19 @@ export const ReturnTypes: Record<string,any> = {
 		error:"String",
 		link:"String"
 	},
+	GpuDeviceStat:{
+		index:"Int",
+		memory_mb:"Int",
+		memory_used_mb:"Int",
+		name:"String",
+		power_w:"Int",
+		temperature_c:"Int",
+		utilization_percent:"Int"
+	},
+	GpuStats:{
+		devices:"GpuDeviceStat",
+		time:"timestamp"
+	},
 	HypertableInfo:{
 		compression_enabled:"Boolean",
 		hypertable_name:"String",
@@ -17882,6 +17974,7 @@ export const ReturnTypes: Record<string,any> = {
 	NodeStats:{
 		cpu:"CpuStat",
 		disks:"DiskStats",
+		gpu:"GpuStats",
 		memory:"MemoryStat",
 		network:"NetworkStats",
 		node:"String"
@@ -18979,6 +19072,7 @@ export const ReturnTypes: Record<string,any> = {
 		enabled:"Boolean",
 		end_port_range:"Int",
 		gpu:"Boolean",
+		gpu_info:"jsonb",
 		id:"String",
 		label:"String",
 		lan_ip:"inet",
@@ -20357,11 +20451,18 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"match_region_veto_picks"
 	},
 	match_streams:{
+		autodirector:"Boolean",
+		error_message:"String",
 		id:"uuid",
+		is_game_streamer:"Boolean",
+		is_live:"Boolean",
+		last_status_at:"timestamptz",
 		link:"String",
 		match:"matches",
 		match_id:"uuid",
 		priority:"Int",
+		status:"String",
+		stream_url:"String",
 		title:"String"
 	},
 	match_streams_aggregate:{
@@ -20385,17 +20486,25 @@ export const ReturnTypes: Record<string,any> = {
 		priority:"Float"
 	},
 	match_streams_max_fields:{
+		error_message:"String",
 		id:"uuid",
+		last_status_at:"timestamptz",
 		link:"String",
 		match_id:"uuid",
 		priority:"Int",
+		status:"String",
+		stream_url:"String",
 		title:"String"
 	},
 	match_streams_min_fields:{
+		error_message:"String",
 		id:"uuid",
+		last_status_at:"timestamptz",
 		link:"String",
 		match_id:"uuid",
 		priority:"Int",
+		status:"String",
+		stream_url:"String",
 		title:"String"
 	},
 	match_streams_mutation_response:{
@@ -20687,6 +20796,7 @@ export const ReturnTypes: Record<string,any> = {
 		cancelMatch:"SuccessOutput",
 		checkIntoMatch:"SuccessOutput",
 		createApiKey:"ApiKeyResponse",
+		createClips:"SuccessOutput",
 		createServerDirectory:"SuccessOutput",
 		deleteMatch:"SuccessOutput",
 		deleteServerItem:"SuccessOutput",
@@ -21040,7 +21150,14 @@ export const ReturnTypes: Record<string,any> = {
 		setGameNodeSchedulingState:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",
+		specAutodirector:"SuccessOutput",
+		specClick:"SuccessOutput",
+		specJump:"SuccessOutput",
+		specPlayer:"SuccessOutput",
+		specSlot:"SuccessOutput",
+		startLive:"SuccessOutput",
 		startMatch:"SuccessOutput",
+		stopLive:"SuccessOutput",
 		swapLineups:"SuccessOutput",
 		switchLineup:"SuccessOutput",
 		syncSteamFriends:"SuccessOutput",
@@ -22649,6 +22766,7 @@ export const ReturnTypes: Record<string,any> = {
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate",
 		profile_url:"String",
 		role:"e_player_roles_enum",
+		roster_image_url:"String",
 		sanctions:"player_sanctions",
 		sanctions_aggregate:"player_sanctions_aggregate",
 		stats:"player_stats",
@@ -22707,6 +22825,7 @@ export const ReturnTypes: Record<string,any> = {
 		matchmaking_cooldown:"timestamptz",
 		name:"String",
 		profile_url:"String",
+		roster_image_url:"String",
 		steam_id:"bigint",
 		total_matches:"Int",
 		wins:"Int"
@@ -22724,6 +22843,7 @@ export const ReturnTypes: Record<string,any> = {
 		matchmaking_cooldown:"timestamptz",
 		name:"String",
 		profile_url:"String",
+		roster_image_url:"String",
 		steam_id:"bigint",
 		total_matches:"Int",
 		wins:"Int"
@@ -23811,6 +23931,7 @@ export const ReturnTypes: Record<string,any> = {
 		player:"players",
 		player_steam_id:"bigint",
 		role:"e_team_roles_enum",
+		roster_image_url:"String",
 		status:"e_team_roster_statuses_enum",
 		team:"teams",
 		team_id:"uuid"
@@ -23837,10 +23958,12 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	team_roster_max_fields:{
 		player_steam_id:"bigint",
+		roster_image_url:"String",
 		team_id:"uuid"
 	},
 	team_roster_min_fields:{
 		player_steam_id:"bigint",
+		roster_image_url:"String",
 		team_id:"uuid"
 	},
 	team_roster_mutation_response:{

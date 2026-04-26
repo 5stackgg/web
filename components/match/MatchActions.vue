@@ -59,11 +59,29 @@ import {
 
         <template v-if="match.is_organizer">
           <DropdownMenuSeparator />
-          <DropdownMenuItem @click="startLive">
+          <!-- "Start" only shows when there's nothing running. Once
+               a Job exists (booting OR live), the only remaining
+               action is to stop it — booting needs to be cancellable
+               so a stuck/wrong-server start can be undone. -->
+          <DropdownMenuItem
+            v-if="gameStreamerStatus === 'off'"
+            @click="startLive"
+          >
             {{ $t("match.actions.start_live") }}
           </DropdownMenuItem>
-          <DropdownMenuItem @click="stopLive">
-            {{ $t("match.actions.stop_live") }}
+          <DropdownMenuItem
+            v-else
+            @click="stopLive"
+          >
+            <template v-if="gameStreamerStatus === 'booting'">
+              {{
+                $t("match.actions.cancel_live_boot") ||
+                "Cancel live stream (booting…)"
+              }}
+            </template>
+            <template v-else>
+              {{ $t("match.actions.stop_live") }}
+            </template>
           </DropdownMenuItem>
           <DropdownMenuItem @click="createClipsForMatch">
             {{ $t("match.actions.create_clips") }}
@@ -298,6 +316,16 @@ export default {
   computed: {
     canAct() {
       return this.match.is_in_lineup || this.match.is_organizer;
+    },
+    // "off"     — no game-streamer row (Start button shown)
+    // "booting" — row exists, is_live = false (disabled "Booting…" item)
+    // "live"    — row exists, is_live = true (Stop button shown)
+    gameStreamerStatus() {
+      const row = (this.match.streams ?? []).find(
+        (s: any) => s.is_game_streamer,
+      );
+      if (!row) return "off";
+      return row.is_live ? "live" : "booting";
     },
     currentMap() {
       return this.match.match_maps?.find((m: any) => m.is_current_map);

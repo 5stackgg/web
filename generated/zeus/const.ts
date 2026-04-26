@@ -4526,7 +4526,19 @@ export const AllTypesProps: Record<string,any> = {
 		where:"match_region_veto_picks_bool_exp"
 	},
 	match_streams_aggregate_bool_exp:{
+		bool_and:"match_streams_aggregate_bool_exp_bool_and",
+		bool_or:"match_streams_aggregate_bool_exp_bool_or",
 		count:"match_streams_aggregate_bool_exp_count"
+	},
+	match_streams_aggregate_bool_exp_bool_and:{
+		arguments:"match_streams_select_column_match_streams_aggregate_bool_exp_bool_and_arguments_columns",
+		filter:"match_streams_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	match_streams_aggregate_bool_exp_bool_or:{
+		arguments:"match_streams_select_column_match_streams_aggregate_bool_exp_bool_or_arguments_columns",
+		filter:"match_streams_bool_exp",
+		predicate:"Boolean_comparison_exp"
 	},
 	match_streams_aggregate_bool_exp_count:{
 		arguments:"match_streams_select_column",
@@ -4563,6 +4575,8 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"match_streams_bool_exp",
 		_or:"match_streams_bool_exp",
 		id:"uuid_comparison_exp",
+		is_game_streamer:"Boolean_comparison_exp",
+		is_live:"Boolean_comparison_exp",
 		link:"String_comparison_exp",
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
@@ -4599,6 +4613,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_streams_order_by:{
 		id:"order_by",
+		is_game_streamer:"order_by",
+		is_live:"order_by",
 		link:"order_by",
 		match:"matches_order_by",
 		match_id:"order_by",
@@ -4609,6 +4625,8 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid"
 	},
 	match_streams_select_column: "enum" as const,
+	match_streams_select_column_match_streams_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
+	match_streams_select_column_match_streams_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	match_streams_set_input:{
 		id:"uuid",
 		match_id:"uuid"
@@ -5267,6 +5285,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		createApiKey:{
 
+		},
+		createClips:{
+			match_id:"uuid"
 		},
 		createServerDirectory:{
 
@@ -6498,9 +6519,15 @@ export const AllTypesProps: Record<string,any> = {
 			match_id:"uuid",
 			winning_lineup_id:"uuid"
 		},
+		startLive:{
+			match_id:"uuid"
+		},
 		startMatch:{
 			match_id:"uuid",
 			server_id:"uuid"
+		},
+		stopLive:{
+			match_id:"uuid"
 		},
 		swapLineups:{
 			match_id:"uuid"
@@ -20358,6 +20385,8 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_streams:{
 		id:"uuid",
+		is_game_streamer:"Boolean",
+		is_live:"Boolean",
 		link:"String",
 		match:"matches",
 		match_id:"uuid",
@@ -20687,6 +20716,7 @@ export const ReturnTypes: Record<string,any> = {
 		cancelMatch:"SuccessOutput",
 		checkIntoMatch:"SuccessOutput",
 		createApiKey:"ApiKeyResponse",
+		createClips:"SuccessOutput",
 		createServerDirectory:"SuccessOutput",
 		deleteMatch:"SuccessOutput",
 		deleteServerItem:"SuccessOutput",
@@ -21040,7 +21070,9 @@ export const ReturnTypes: Record<string,any> = {
 		setGameNodeSchedulingState:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",
+		startLive:"SuccessOutput",
 		startMatch:"SuccessOutput",
+		stopLive:"SuccessOutput",
 		swapLineups:"SuccessOutput",
 		switchLineup:"SuccessOutput",
 		syncSteamFriends:"SuccessOutput",

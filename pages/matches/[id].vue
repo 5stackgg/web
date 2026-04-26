@@ -542,6 +542,8 @@ export default {
                   link: true,
                   title: true,
                   priority: true,
+                  is_game_streamer: true,
+                  is_live: true,
                 },
               ],
             },

@@ -81,8 +81,9 @@ import { e_player_roles_enum } from "~/generated/zeus";
                 </tr>
                 <TableRow
                   :ref="(el) => setRowRef(el, index)"
-                  class="cursor-move hover:bg-muted/50 transition-all duration-200"
+                  class="hover:bg-muted/50 transition-all duration-200"
                   :class="{
+                    'cursor-move': !stream.is_game_streamer,
                     'opacity-0 pointer-events-none':
                       isDragging && draggedIndex === index,
                     'bg-blue-50':
@@ -90,10 +91,13 @@ import { e_player_roles_enum } from "~/generated/zeus";
                       dragOverIndex === index &&
                       draggedIndex !== index,
                   }"
-                  @mousedown="startDrag(index, $event)"
+                  @mousedown="
+                    !stream.is_game_streamer && startDrag(index, $event)
+                  "
                 >
                   <TableCell class="w-12" v-if="canManageStreams">
                     <div
+                      v-if="!stream.is_game_streamer"
                       class="cursor-grab active:cursor-grabbing p-1 -m-1 rounded hover:bg-black/5"
                     >
                       <GripVertical
@@ -103,19 +107,43 @@ import { e_player_roles_enum } from "~/generated/zeus";
                     </div>
                   </TableCell>
                   <TableCell class="w-full">
-                    {{ stream.title }}
+                    <div class="flex items-center gap-2">
+                      <span>{{ stream.title }}</span>
+                      <Badge
+                        v-if="stream.is_game_streamer && stream.is_live"
+                        variant="secondary"
+                        class="text-[10px] py-0 px-2"
+                      >
+                        {{ $t("streams.live_badge") || "LIVE" }}
+                      </Badge>
+                      <Badge
+                        v-else-if="
+                          stream.is_game_streamer && !stream.is_live
+                        "
+                        variant="outline"
+                        class="text-[10px] py-0 px-2"
+                      >
+                        {{ $t("streams.booting_badge") || "Booting…" }}
+                      </Badge>
+                    </div>
                   </TableCell>
                   <TableCell class="flex items-center justify-end">
                     <Button
                       variant="ghost"
                       size="sm"
+                      :disabled="
+                        stream.is_game_streamer && !stream.is_live
+                      "
                       @click="openStream(stream.link)"
                     >
                       <ExternalLink class="h-3 w-3" />
                     </Button>
 
-                    <!-- Actions Dropdown -->
-                    <DropdownMenu v-if="canManageStreams">
+                    <!-- Actions Dropdown — system-managed rows have no
+                         edit/delete; their lifecycle is owned by the API. -->
+                    <DropdownMenu
+                      v-if="canManageStreams && !stream.is_game_streamer"
+                    >
                       <DropdownMenuTrigger as-child>
                         <Button variant="ghost" size="icon">
                           <MoreVertical class="h-4 w-4" />
@@ -140,7 +168,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
                     <!-- Edit Dialog (opened via dropdown) -->
                     <Dialog
                       v-model:open="isEditStreamModalOpen[stream.id]"
-                      v-if="canManageStreams"
+                      v-if="canManageStreams && !stream.is_game_streamer"
                     >
                       <DialogContent class="sm:max-w-[425px]">
                         <DialogHeader>

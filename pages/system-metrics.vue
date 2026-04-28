@@ -3,6 +3,7 @@ import { generateQuery } from "~/graphql/graphqlGen";
 import CpuChart from "~/components/charts/CpuChart.vue";
 import MemoryChart from "~/components/charts/MemoryChart.vue";
 import NodeMetrics from "~/components/system-metrics/NodeMetrics.vue";
+import NodeGpuMetrics from "~/components/system-metrics/NodeGpuMetrics.vue";
 import NodeQuickStats from "~/components/system-metrics/NodeQuickStats.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Input } from "~/components/ui/input";
@@ -25,6 +26,7 @@ import {
   Cpu,
   HardDrive,
   Logs,
+  Microchip,
   Search,
   Server,
   Signal,
@@ -279,6 +281,139 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
           >
             <span class="text-[hsl(var(--tac-amber))]">◇</span>
             {{ $t("pages.system_metrics.no_nodes_found") }}
+          </div>
+        </div>
+      </section>
+    </PageTransition>
+
+    <PageTransition v-if="gpuNodes.length" :delay="40">
+      <section
+        class="relative border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.25)_100%)] [backdrop-filter:blur(6px)]"
+      >
+        <span
+          aria-hidden="true"
+          class="pointer-events-none absolute left-2 top-2 h-3 w-3 border-l-2 border-t-2 border-[hsl(var(--tac-amber))]"
+        />
+        <span
+          aria-hidden="true"
+          class="pointer-events-none absolute bottom-2 right-2 h-3 w-3 border-b-2 border-r-2 border-[hsl(var(--tac-amber))]"
+        />
+
+        <header
+          class="flex flex-col gap-4 border-b border-border/70 px-5 py-4 lg:flex-row lg:items-center lg:justify-between"
+        >
+          <div class="flex items-center gap-3">
+            <span
+              class="inline-block h-[2px] w-[14px] bg-[hsl(var(--tac-amber))]"
+            />
+            <div>
+              <h2
+                class="flex items-center gap-2 font-sans text-lg font-bold uppercase tracking-[0.08em]"
+              >
+                <Microchip class="h-4 w-4" />
+                GPUs
+                <span
+                  class="ml-2 font-mono text-xs font-normal tracking-[0.15em] text-[hsl(var(--tac-amber))]"
+                >
+                  [ {{ gpuNodes.length }} ]
+                </span>
+              </h2>
+            </div>
+          </div>
+        </header>
+
+        <div class="p-4 sm:p-5">
+          <div class="grid grid-cols-1 gap-4">
+            <article
+              v-for="(node, idx) in gpuNodes"
+              :key="`gpu-${node.id}`"
+              :class="[
+                'group relative border border-border bg-background/40 p-4',
+                isGpuExpanded(node)
+                  ? 'border-[hsl(var(--tac-amber)/0.55)]'
+                  : '',
+              ]"
+            >
+              <span
+                aria-hidden="true"
+                class="pointer-events-none absolute left-1.5 top-1.5 h-2.5 w-2.5 border-l-2 border-t-2"
+                :class="
+                  isGpuExpanded(node)
+                    ? 'border-[hsl(var(--tac-amber))]'
+                    : 'border-border/60'
+                "
+              />
+              <span
+                aria-hidden="true"
+                class="pointer-events-none absolute bottom-1.5 right-1.5 h-2.5 w-2.5 border-b-2 border-r-2"
+                :class="
+                  isGpuExpanded(node)
+                    ? 'border-[hsl(var(--tac-amber))]'
+                    : 'border-border/60'
+                "
+              />
+
+              <div class="mb-3 flex items-start justify-between gap-3">
+                <div class="min-w-0 flex-1">
+                  <div
+                    class="flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.22em]"
+                  >
+                    <span class="text-[hsl(var(--tac-amber))]">
+                      G-{{ String(idx + 1).padStart(2, "0") }}
+                    </span>
+                    <span class="text-border">//</span>
+                    <span class="text-muted-foreground">node</span>
+                    <NuxtLink
+                      :to="`/game-server-nodes`"
+                      class="truncate text-foreground hover:text-[hsl(var(--tac-amber))]"
+                    >
+                      {{ nodeDisplayName(node) }}
+                    </NuxtLink>
+                  </div>
+
+                  <div
+                    class="mt-1.5 truncate font-sans text-base font-semibold tracking-tight"
+                  >
+                    {{ gpuDevicesLabel(node) }}
+                  </div>
+                  <div
+                    class="truncate font-mono text-[11px] text-muted-foreground"
+                  >
+                    {{ nodeSubtitle(node) }}
+                  </div>
+                </div>
+
+                <FiveStackToolTip :delay-duration="300">
+                  <template #trigger>
+                    <button
+                      class="grid h-8 w-8 place-items-center border transition-colors"
+                      :class="
+                        isGpuExpanded(node)
+                          ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.14)] text-[hsl(var(--tac-amber))]'
+                          : 'border-border bg-background/60 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]'
+                      "
+                      @click="toggleGpuExpanded(node)"
+                    >
+                      <Activity class="h-3.5 w-3.5" />
+                    </button>
+                  </template>
+                  <span>
+                    {{
+                      isGpuExpanded(node)
+                        ? $t("common.hide_metrics")
+                        : $t("common.show_metrics")
+                    }}
+                  </span>
+                </FiveStackToolTip>
+              </div>
+
+              <NodeGpuMetrics
+                :node-id="node.id"
+                :show-label="false"
+                :show-quick-stats="true"
+                :show-charts="isGpuExpanded(node)"
+              />
+            </article>
           </div>
         </div>
       </section>
@@ -639,6 +774,8 @@ export default {
       onlyEnabledNodes: false,
       onlyOnlineNodes: true,
       expandedNodes: {} as Record<string, boolean>,
+      // GPUs
+      expandedGpus: {} as Record<string, boolean>,
       nodeSortBy: "cpu" as "cpu" | "memory" | "name",
       nodeSortDirection: "desc" as "asc" | "desc",
       nodeMetricsCache: {} as Record<
@@ -665,6 +802,23 @@ export default {
     },
     nodeSubtitle(node: any): string {
       return node.region ? `${node.region} · ${node.id}` : node.id;
+    },
+    gpuDevicesLabel(node: any): string {
+      const devices = Array.isArray(node?.gpu_info) ? node.gpu_info : [];
+      if (!devices.length) return this.$t("game_server.gpu_present");
+      return devices
+        .map((d: any) => {
+          const name = d?.name || `GPU ${d?.index ?? "?"}`;
+          if (d?.memory_mb) {
+            const mem =
+              d.memory_mb >= 1024
+                ? `${(d.memory_mb / 1024).toFixed(1)} GB`
+                : `${d.memory_mb} MB`;
+            return `${name} · ${mem}`;
+          }
+          return name;
+        })
+        .join(", ");
     },
     isNodeOnline(node: any): boolean {
       return !node.offline_at;
@@ -742,6 +896,12 @@ export default {
     },
     toggleNodeExpanded(node: any) {
       this.expandedNodes[node.id] = !this.expandedNodes[node.id];
+    },
+    isGpuExpanded(node: any): boolean {
+      return !!this.expandedGpus[node.id];
+    },
+    toggleGpuExpanded(node: any) {
+      this.expandedGpus[node.id] = !this.expandedGpus[node.id];
     },
     updateNodeMetrics(payload: {
       nodeId: string;
@@ -915,6 +1075,16 @@ export default {
 
       return nodes;
     },
+    gpuNodes(): any[] {
+      if (!this.game_server_nodes) return [];
+      return this.game_server_nodes
+        .filter((node: any) => node.gpu)
+        .sort((a: any, b: any) => {
+          const nameA = (a.label || a.id || "") as string;
+          const nameB = (b.label || b.id || "") as string;
+          return nameA.localeCompare(nameB);
+        });
+    },
     topNode(): any | null {
       if (!this.filteredNodes.length) {
         return null;
@@ -967,6 +1137,8 @@ export default {
             region: true,
             enabled: true,
             offline_at: true,
+            gpu: true,
+            gpu_info: true,
           },
         ],
       }),

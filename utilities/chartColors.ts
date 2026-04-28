@@ -6,6 +6,13 @@ export const NETWORK_USAGE_CHART_COLORS = ["#fdba74", "#e4e4e7", "#6ee7b7"];
 
 export const DISK_USAGE_CHART_COLORS = ["#8b5cf6", "#c084fc"];
 
+export const GPU_USAGE_CHART_COLORS = [
+  "#10b981",
+  "#34d399",
+  "#6ee7b7",
+  "#a7f3d0",
+];
+
 export const WEAPON_KILLS_CHART_COLORS = [
   "#f87171",
   "#60a5fa",

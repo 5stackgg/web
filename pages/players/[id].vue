@@ -577,6 +577,22 @@ const playerTeamChipShortClasses =
           />
         </div>
 
+        <div v-if="canEditAvatar" class="space-y-2">
+          <div
+            class="inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
+          >
+            <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
+            {{ $t("avatar.player_roster_image") }}
+          </div>
+          <AvatarUpload
+            variant="dropzone"
+            :upload-url="`https://${apiDomain}/avatars/roster-players/${player.steam_id}`"
+            :delete-url="`https://${apiDomain}/avatars/roster-players/${player.steam_id}`"
+            :has-custom="!!player.roster_image_url"
+            :current-src="playerRosterImageSrc"
+          />
+        </div>
+
         <div v-if="canEditName" class="space-y-2">
           <div
             class="inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
@@ -872,6 +888,10 @@ export default {
         this.player.custom_avatar_url || this.player.avatar_url,
         this.apiDomain,
       );
+    },
+    playerRosterImageSrc() {
+      if (!this.player) return null;
+      return resolveAvatarUrl(this.player.roster_image_url, this.apiDomain);
     },
     canSanction() {
       if (!this.me || !this.player) {

@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { Button } from "~/components/ui/button";
-import { ExternalLink } from "lucide-vue-next";
+import { ExternalLink, Volume2, VolumeX } from "lucide-vue-next";
 </script>
 
 <template>
   <div class="w-full space-y-3">
-    <div class="aspect-video relative w-full" v-if="selectedStream">
+    <div class="group aspect-video relative w-full" v-if="selectedStream">
       <div ref="playerRef" class="w-full h-full"></div>
       <template v-if="global === false">
         <Button
@@ -20,6 +20,26 @@ import { ExternalLink } from "lucide-vue-next";
           <span class="sr-only">{{ $t("streams.move_to_global_view") }}</span>
         </Button>
       </template>
+
+      <!-- Custom mute pill — same affordance as WhepPlayer. Always
+           muted on first load so embeds autoplay; this is the single
+           obvious place to bring audio in. Stays visible while muted
+           (so the call-to-action is reachable on touch devices); fades
+           in on hover once unmuted. -->
+      <button
+        type="button"
+        :aria-label="isMuted ? 'Unmute' : 'Mute'"
+        :class="[
+          'absolute bottom-2 right-2 z-10 inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-opacity duration-150 hover:bg-black/80 hover:text-white',
+          isMuted
+            ? 'opacity-100'
+            : 'opacity-0 group-hover:opacity-100 focus-visible:opacity-100',
+        ]"
+        @click="toggleMute"
+      >
+        <VolumeX v-if="isMuted" class="size-3.5" />
+        <Volume2 v-else class="size-3.5" />
+      </button>
     </div>
 
     <div
@@ -99,6 +119,13 @@ export default {
       platform: null as Platform,
       embedId: null as string | null,
       selectedStream: null as MatchStream | null,
+      // Always start muted so browsers actually autoplay. Toggled by
+      // the custom mute pill — for Twitch via the SDK's setMuted, for
+      // iframe-based embeds (YouTube/Kick/generic) by rebuilding the
+      // iframe with the inverted mute query param (those providers
+      // either don't expose a JS API or it's unstable enough that a
+      // reload is the most reliable path).
+      isMuted: true,
     };
   },
   computed: {
@@ -261,6 +288,7 @@ export default {
         height: "100%",
         parent: [window.location.hostname],
         autoplay: true,
+        muted: this.isMuted,
       };
 
       if (isVideo) {
@@ -286,7 +314,12 @@ export default {
       this.cleanupPlayer();
 
       const iframe = document.createElement("iframe");
-      iframe.src = `https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1`;
+      // controls=0 hides YouTube's player chrome so our custom mute
+      // pill is the only on-frame UI. modestbranding=1 strips the
+      // YouTube watermark in the corner. mute={0|1} drives autoplay
+      // permission on first load.
+      const mute = this.isMuted ? 1 : 0;
+      iframe.src = `https://www.youtube.com/embed/${videoId}?rel=0&autoplay=1&mute=${mute}&controls=0&modestbranding=1&playsinline=1`;
       iframe.width = "100%";
       iframe.height = "100%";
       iframe.allow =
@@ -306,7 +339,7 @@ export default {
       this.cleanupPlayer();
 
       const iframe = document.createElement("iframe");
-      iframe.src = `https://player.kick.com/${channelName}?autoplay=true`;
+      iframe.src = `https://player.kick.com/${channelName}?autoplay=true&muted=${this.isMuted}`;
       iframe.width = "100%";
       iframe.height = "100%";
       iframe.allow =
@@ -336,6 +369,38 @@ export default {
 
       playerRef.appendChild(iframe);
       this.playerInstance = iframe;
+    },
+    toggleMute() {
+      const next = !this.isMuted;
+      this.isMuted = next;
+
+      // Twitch SDK exposes setMuted directly — no reload needed.
+      if (this.platform === "twitch" && this.playerInstance?.setMuted) {
+        try {
+          this.playerInstance.setMuted(next);
+        } catch (error) {
+          console.warn("Twitch setMuted failed:", error);
+        }
+        return;
+      }
+
+      // YouTube/Kick/generic don't expose a stable JS API for mute
+      // toggling at runtime — rebuild the iframe with the inverted
+      // mute query param. Cheap (single re-mount) and matches the
+      // behavior the user opted into by clicking the pill.
+      if (this.embedId) {
+        switch (this.platform) {
+          case "youtube":
+            this.mountYouTubePlayer(this.embedId);
+            break;
+          case "kick":
+            this.mountKickPlayer(this.embedId);
+            break;
+          case "iframe":
+            this.mountGenericIframe(this.embedId);
+            break;
+        }
+      }
     },
     async loadStream() {
       if (!this.selectedStream || !this.selectedStream.link) {

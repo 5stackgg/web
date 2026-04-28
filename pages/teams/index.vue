@@ -231,6 +231,7 @@ export default {
               roster: [
                 {},
                 {
+                  roster_image_url: true,
                   player: playerFields,
                 },
               ],

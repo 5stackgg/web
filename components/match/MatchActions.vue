@@ -57,6 +57,44 @@ import {
           <MatchSelectWinner :match="match"></MatchSelectWinner>
         </DropdownMenuItem>
 
+        <template v-if="match.is_organizer">
+          <DropdownMenuSeparator />
+          <!-- "Start" only shows when there's nothing running. Once
+               a Job exists (booting OR live), the only remaining
+               action is to stop it — booting needs to be cancellable
+               so a stuck/wrong-server start can be undone. -->
+          <DropdownMenuItem
+            v-if="gameStreamerStatus === 'off'"
+            @click="startLive"
+          >
+            {{ $t("match.actions.start_live") }}
+          </DropdownMenuItem>
+          <DropdownMenuItem v-else @click="stopLive">
+            <template v-if="gameStreamerStatus === 'booting'">
+              <div class="flex flex-col items-start leading-tight">
+                <span>{{ $t("match.actions.cancel_live_boot") }}</span>
+                <span
+                  v-if="gameStreamerStatusLine"
+                  class="text-xs text-muted-foreground mt-0.5"
+                  :class="
+                    gameStreamerRow?.status === 'errored'
+                      ? 'text-destructive'
+                      : ''
+                  "
+                >
+                  {{ gameStreamerStatusLine }}
+                </span>
+              </div>
+            </template>
+            <template v-else>
+              {{ $t("match.actions.stop_live") }}
+            </template>
+          </DropdownMenuItem>
+          <DropdownMenuItem @click="createClipsForMatch">
+            {{ $t("match.actions.create_clips") }}
+          </DropdownMenuItem>
+        </template>
+
         <DropdownMenuSeparator
           v-if="match.can_start || match.can_cancel || canDeleteMatch"
         />
@@ -196,6 +234,54 @@ export default {
         }),
       });
     },
+    async startLive() {
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            startLive: [{ match_id: this.match.id }, { success: true }],
+          }),
+        });
+        toast({ title: this.$t("match.actions.live_started") });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+      }
+    },
+    async stopLive() {
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            stopLive: [{ match_id: this.match.id }, { success: true }],
+          }),
+        });
+        toast({ title: this.$t("match.actions.live_stopped") });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+      }
+    },
+    async createClipsForMatch() {
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            createClips: [{ match_id: this.match.id }, { success: true }],
+          }),
+        });
+        toast({ title: this.$t("match.actions.clips_started") });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+      }
+    },
     onRconResponse(data: any) {
       if (data.uuid !== this.rconUuid) {
         return;
@@ -237,6 +323,42 @@ export default {
   computed: {
     canAct() {
       return this.match.is_in_lineup || this.match.is_organizer;
+    },
+    // "off"     — no game-streamer row (Start button shown)
+    // "booting" — row exists, is_live = false (Cancel item with the
+    //             current boot step in the label)
+    // "live"    — row exists, is_live = true (Stop button shown)
+    gameStreamerStatus() {
+      const row = (this.match.streams ?? []).find(
+        (s: any) => s.is_game_streamer,
+      );
+      if (!row) return "off";
+      return row.is_live ? "live" : "booting";
+    },
+    gameStreamerRow() {
+      return (this.match.streams ?? []).find((s: any) => s.is_game_streamer);
+    },
+    // Sub-line under "Cancel Live Stream" while the streamer pod is
+    // booting. Mirrors the pod's `status` text so the operator can see
+    // exactly which boot step is running ("Downloading CS2…", "Logging
+    // in…", etc) — and the error message if the pod reported errored.
+    gameStreamerStatusLine() {
+      const row = this.gameStreamerRow as any;
+      if (!row) return "";
+      if (row.status === "errored") {
+        return row.error_message || "errored";
+      }
+      const status = row.status as string | undefined;
+      if (!status) return "";
+      const stepLabels: Record<string, string> = {
+        launching_steam: "Launching Steam…",
+        logging_in: "Logging in…",
+        downloading_cs2: "Downloading CS2…",
+        launching_cs2: "Launching CS2…",
+        connecting_to_game: "Connecting to game…",
+        starting_capture: "Starting capture…",
+      };
+      return stepLabels[status] || status.replace(/_/g, " ");
     },
     currentMap() {
       return this.match.match_maps?.find((m: any) => m.is_current_map);

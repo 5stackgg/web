@@ -12,7 +12,9 @@ import cleanMapName from "~/utilities/cleanMapName";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { eloFields } from "~/graphql/eloFields";
 import EloChangeBadge from "~/components/EloChangeBadge.vue";
-import StreamEmbed from "~/components/StreamEmbed.vue";
+import TwitchIcon from "~/components/icons/TwitchIcon.vue";
+import YouTubeIcon from "~/components/icons/YouTubeIcon.vue";
+import KickIcon from "~/components/icons/KickIcon.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
 </script>
 
@@ -52,6 +54,44 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
         <div
           class="flex shrink-0 items-center space-x-2 text-[10px] text-muted-foreground"
         >
+          <template v-if="match.streams?.length > 0">
+            <button
+              v-for="stream in match.streams"
+              :key="stream.id"
+              type="button"
+              :class="watchStreamPillClasses"
+              :title="stream.title || stream.link"
+              @click.stop="watchStream(stream)"
+            >
+              <span
+                class="relative z-[1] inline-flex items-center gap-[0.35rem]"
+              >
+                <span class="relative inline-flex h-1.5 w-1.5 shrink-0">
+                  <span
+                    class="animate-ping absolute inset-0 rounded-full bg-red-300 opacity-75"
+                    aria-hidden="true"
+                  ></span>
+                  <span
+                    class="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-200 shadow-[0_0_5px_1px_hsl(0_100%_85%/0.8)]"
+                  ></span>
+                </span>
+                <span class="text-white">{{ $t("match.stream.watch") }}</span>
+                <component
+                  :is="getStreamPlatformIcon(stream.link)"
+                  class="h-2.5 w-2.5 shrink-0 opacity-80"
+                  v-if="getStreamPlatformIcon(stream.link)"
+                />
+              </span>
+              <span
+                class="absolute inset-0 [background:linear-gradient(90deg,transparent_0%,hsl(0_0%_100%/0.28)_50%,transparent_100%)] -translate-x-full [transition:transform_700ms_cubic-bezier(0.4,0,0.2,1)] pointer-events-none z-0 group-hover/watch:translate-x-full"
+                aria-hidden="true"
+              ></span>
+              <span
+                class="absolute inset-0 pointer-events-none z-0 [background:repeating-linear-gradient(180deg,transparent_0,transparent_2px,hsl(0_0%_100%/0.04)_2px,hsl(0_0%_100%/0.04)_3px)] opacity-60"
+                aria-hidden="true"
+              ></span>
+            </button>
+          </template>
           <MatchStatus v-if="!compact" :match="match" />
           <TimeAgo
             :date="match.started_at || match.scheduled_at || match.created_at"
@@ -110,12 +150,44 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
           <div
             class="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-muted-foreground"
           >
-            <StreamEmbed
-              :streams="match.streams"
-              :show-title="false"
-              :set-global-stream-only="true"
-              v-if="match.streams?.length > 0"
-            />
+            <template v-if="match.streams?.length > 0">
+              <button
+                v-for="stream in match.streams"
+                :key="stream.id"
+                type="button"
+                :class="watchStreamPillClasses"
+                :title="stream.title || stream.link"
+                @click.stop="watchStream(stream)"
+              >
+                <span
+                  class="relative z-[1] inline-flex items-center gap-[0.35rem]"
+                >
+                  <span class="relative inline-flex h-1.5 w-1.5 shrink-0">
+                    <span
+                      class="animate-ping absolute inset-0 rounded-full bg-red-300 opacity-75"
+                      aria-hidden="true"
+                    ></span>
+                    <span
+                      class="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-200 shadow-[0_0_5px_1px_hsl(0_100%_85%/0.8)]"
+                    ></span>
+                  </span>
+                  <span class="text-white">{{ $t("match.stream.watch") }}</span>
+                  <component
+                    :is="getStreamPlatformIcon(stream.link)"
+                    class="h-2.5 w-2.5 shrink-0 opacity-80"
+                    v-if="getStreamPlatformIcon(stream.link)"
+                  />
+                </span>
+                <span
+                  class="absolute inset-0 [background:linear-gradient(90deg,transparent_0%,hsl(0_0%_100%/0.28)_50%,transparent_100%)] -translate-x-full [transition:transform_700ms_cubic-bezier(0.4,0,0.2,1)] pointer-events-none z-0 group-hover/watch:translate-x-full"
+                  aria-hidden="true"
+                ></span>
+                <span
+                  class="absolute inset-0 pointer-events-none z-0 [background:repeating-linear-gradient(180deg,transparent_0,transparent_2px,hsl(0_0%_100%/0.04)_2px,hsl(0_0%_100%/0.04)_3px)] opacity-60"
+                  aria-hidden="true"
+                ></span>
+              </button>
+            </template>
 
             <MatchStatus v-if="!compact" :match="match" />
 
@@ -942,6 +1014,24 @@ export default {
     navigateToMatch(matchId: string) {
       this.$router.push({ name: "matches-id", params: { id: matchId } });
     },
+    watchStream(stream: any) {
+      useApplicationSettingsStore().setGlobalStream({
+        ...stream,
+        match_id: this.match.id,
+      });
+    },
+    getStreamPlatformIcon(link: string) {
+      try {
+        const hostname = new URL(link).hostname.toLowerCase();
+        if (hostname.endsWith("twitch.tv")) return TwitchIcon;
+        if (hostname.includes("youtube.com") || hostname.includes("youtu.be"))
+          return YouTubeIcon;
+        if (hostname.includes("kick.com")) return KickIcon;
+      } catch {
+        return null;
+      }
+      return null;
+    },
     getTeamInitials(teamName: string): string {
       return teamName
         .split(" ")
@@ -1089,6 +1179,9 @@ export default {
     },
     roundPillClasses(): string {
       return "inline-flex min-w-0 items-center gap-1.5 rounded-md border border-border/70 bg-muted/35 px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] leading-none text-muted-foreground";
+    },
+    watchStreamPillClasses(): string {
+      return "group/watch relative inline-flex items-center isolate px-2 py-[3px] font-mono text-[0.6rem] font-bold tracking-[0.14em] uppercase leading-none text-white [background:linear-gradient(180deg,hsl(0_88%_55%)_0%,hsl(0_82%_44%)_55%,hsl(355_78%_36%)_100%)] border border-red-300/40 [clip-path:polygon(6px_0,100%_0,100%_calc(100%_-_6px),calc(100%_-_6px)_100%,0_100%,0_6px)] shadow-[0_0_0_1px_hsl(0_85%_45%/0.55),0_2px_8px_-2px_hsl(0_85%_50%/0.45),inset_0_1px_0_hsl(0_100%_82%/0.4),inset_0_-1px_0_hsl(0_85%_25%/0.55)] [transition:transform_180ms_cubic-bezier(0.4,0,0.2,1),box-shadow_180ms_ease,filter_180ms_ease] cursor-pointer overflow-hidden whitespace-nowrap hover:-translate-y-[1px] hover:[filter:saturate(1.15)] hover:shadow-[0_0_0_1px_hsl(0_90%_55%/0.8),0_0_18px_-2px_hsl(0_90%_60%/0.6),0_6px_14px_-4px_hsl(0_85%_50%/0.6),inset_0_1px_0_hsl(0_100%_88%/0.55),inset_0_-1px_0_hsl(0_85%_25%/0.55)] active:translate-y-0";
     },
     maxPlayersPerLineup() {
       return this.match.max_players_per_lineup;

@@ -2,6 +2,7 @@
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { Users } from "lucide-vue-next";
+import { resolveRosterImageUrl } from "~/utilities/rosterImage";
 </script>
 
 <template>
@@ -86,7 +87,7 @@ import { Users } from "lucide-vue-next";
             }`"
           >
             <AvatarImage
-              :src="rosterItem.player?.avatar_url"
+              :src="rosterPlayerImage(rosterItem)"
               :alt="rosterItem.player?.name"
             />
             <AvatarFallback class="rounded text-[10px]">
@@ -131,9 +132,11 @@ interface RosterPlayer {
   steam_id?: string;
   name?: string;
   avatar_url?: string;
+  roster_image_url?: string | null;
 }
 
 interface RosterEntry {
+  roster_image_url?: string | null;
   player?: RosterPlayer | null;
 }
 
@@ -153,6 +156,17 @@ export default {
     teamAvatarSrc(team: { avatar_url?: string | null }): string | null {
       if (!team.avatar_url) return null;
       return `https://${this.apiDomain}/${team.avatar_url}`;
+    },
+    rosterPlayerImage(rosterItem: RosterEntry): string | null {
+      return (
+        resolveRosterImageUrl(
+          rosterItem,
+          rosterItem.player ?? null,
+          this.apiDomain,
+        ) ??
+        rosterItem.player?.avatar_url ??
+        null
+      );
     },
     rosterCount(team: { roster?: RosterEntry[] }): number {
       return team.roster?.length ?? 0;

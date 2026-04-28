@@ -5,6 +5,7 @@ import {
   UserMinus,
   GraduationCap,
   Shield,
+  Image as ImageIcon,
 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
@@ -30,8 +31,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "~/components/ui/dialog";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import AvatarUpload from "~/components/AvatarUpload.vue";
 import { e_team_roster_statuses_enum } from "~/generated/zeus";
+import { resolveRosterImageUrl } from "~/utilities/rosterImage";
 </script>
 
 <template>
@@ -51,7 +61,11 @@ import { e_team_roster_statuses_enum } from "~/generated/zeus";
     ></div>
 
     <div class="flex-1 min-w-0">
-      <PlayerDisplay :player="member.player" :linkable="true">
+      <PlayerDisplay
+        :player="member.player"
+        :linkable="true"
+        :avatar-override="rosterImageSrc"
+      >
         <template #name-postfix>
           <span
             v-if="!isInvite && member.role"
@@ -223,6 +237,15 @@ import { e_team_roster_statuses_enum } from "~/generated/zeus";
           />
 
           <DropdownMenuItem
+            v-if="canEditRosterImage"
+            @click="rosterImageDialog = true"
+            class="cursor-pointer"
+          >
+            <ImageIcon class="mr-2 h-4 w-4" />
+            {{ $t("team.member.roster_image") }}
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
             v-if="canSetCaptain"
             @click="setCaptain"
             class="cursor-pointer"
@@ -245,6 +268,31 @@ import { e_team_roster_statuses_enum } from "~/generated/zeus";
       </DropdownMenu>
     </template>
   </div>
+
+  <Dialog
+    :open="rosterImageDialog"
+    @update:open="(open: boolean) => (rosterImageDialog = open)"
+  >
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>{{ $t("team.member.roster_image") }}</DialogTitle>
+        <DialogDescription>
+          {{
+            $t("team.member.roster_image_description", {
+              name: member.player.name,
+            })
+          }}
+        </DialogDescription>
+      </DialogHeader>
+      <AvatarUpload
+        variant="dropzone"
+        :upload-url="`https://${apiDomain}/avatars/roster-teams/${member.team_id}/${member.player.steam_id}`"
+        :delete-url="`https://${apiDomain}/avatars/roster-teams/${member.team_id}/${member.player.steam_id}`"
+        :has-custom="!!member.roster_image_url"
+        :current-src="rosterImageSrc"
+      />
+    </DialogContent>
+  </Dialog>
 
   <AlertDialog :open="removeMemberDialog">
     <AlertDialogContent>
@@ -294,10 +342,12 @@ interface Member {
   status?: e_team_roster_statuses_enum;
   id?: string;
   team_id: string;
+  roster_image_url?: string | null;
   player: {
     name: string;
     steam_id: string;
     avatar_url: string;
+    roster_image_url?: string | null;
   };
 }
 
@@ -327,11 +377,15 @@ export default {
   data() {
     return {
       removeMemberDialog: false,
+      rosterImageDialog: false,
     };
   },
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    apiDomain(): string {
+      return useRuntimeConfig().public.apiDomain as string;
     },
     isSelf(): boolean {
       return this.member.player.steam_id === this.me?.steam_id;
@@ -339,11 +393,25 @@ export default {
     canRemoveMember(): boolean {
       return !!this.team.can_remove && !this.isSelf;
     },
+    canEditRosterImage(): boolean {
+      return !!this.team.can_change_role && !this.isInvite;
+    },
     showActionMenu(): boolean {
-      return !!(this.team.can_change_role || this.canRemoveMember);
+      return !!(
+        this.team.can_change_role ||
+        this.canRemoveMember ||
+        this.canEditRosterImage
+      );
     },
     canSetCaptain(): boolean {
       return !!(this.team.can_change_role && !this.isInvite && !this.isCaptain);
+    },
+    rosterImageSrc(): string | null {
+      return resolveRosterImageUrl(
+        this.member,
+        this.member.player,
+        this.apiDomain,
+      );
     },
     statusKey(): string {
       switch (this.member.status) {

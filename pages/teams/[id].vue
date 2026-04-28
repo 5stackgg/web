@@ -119,7 +119,12 @@ const teamHeroActionsClasses =
               <span :class="teamHeroMetaLabelClasses">
                 {{ $t("team.roles.captain") }}
               </span>
-              <PlayerDisplay :player="teamCaptain" :linkable="true" size="sm" />
+              <PlayerDisplay
+                :player="teamCaptain"
+                :linkable="true"
+                size="sm"
+                :avatar-override="teamCaptainRosterImageSrc"
+              />
             </div>
 
             <span class="hidden sm:inline-block h-5 w-px bg-border"></span>
@@ -295,6 +300,7 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { playerFields } from "~/graphql/playerFields";
 import { trophyFields } from "~/graphql/trophyFields";
+import { resolveRosterImageUrl } from "~/utilities/rosterImage";
 
 export default {
   data() {
@@ -327,6 +333,7 @@ export default {
               roster: [
                 {},
                 {
+                  roster_image_url: true,
                   player: playerFields,
                 },
               ],
@@ -448,6 +455,14 @@ export default {
     },
     teamCaptain() {
       return this.team?.captain || this.team?.owner;
+    },
+    teamCaptainRosterImageSrc() {
+      const captain = this.teamCaptain;
+      if (!captain) return null;
+      const rosterEntry = this.team?.roster?.find(
+        (m: any) => m.player?.steam_id === captain.steam_id,
+      );
+      return resolveRosterImageUrl(rosterEntry, captain, this.apiDomain);
     },
     teamMatches() {
       const matchesById = new Map<string, any>();

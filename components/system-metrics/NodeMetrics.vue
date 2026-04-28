@@ -3,6 +3,7 @@ import CpuChart from "~/components/charts/CpuChart.vue";
 import MemoryChart from "~/components/charts/MemoryChart.vue";
 import NetworkChart from "~/components/charts/NetworkChart.vue";
 import DiskChart from "~/components/charts/DiskChart.vue";
+import GpuMetrics from "~/components/system-metrics/GpuMetrics.vue";
 import { Card } from "@/components/ui/card";
 import Empty from "@/components/ui/empty/Empty.vue";
 import {
@@ -13,6 +14,7 @@ import {
   MemoryStick,
   Network,
 } from "lucide-vue-next";
+import { Microchip } from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 </script>
 
@@ -40,7 +42,10 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
             </p>
           </div>
 
-          <div class="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:min-w-[32rem]">
+          <div
+            class="grid grid-cols-2 gap-2 sm:min-w-[32rem]"
+            :class="hasGpuMetrics ? 'sm:grid-cols-5' : 'sm:grid-cols-4'"
+          >
             <div
               class="rounded-xl border border-border/50 bg-background/50 px-3 py-2.5"
             >
@@ -95,6 +100,20 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                 class="mt-2 text-[13px] font-medium tabular-nums leading-snug"
               >
                 {{ diskUsageDisplay }}
+              </div>
+            </div>
+            <div
+              v-if="hasGpuMetrics"
+              class="rounded-xl border border-border/50 bg-background/50 px-3 py-2.5"
+            >
+              <div
+                class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
+              >
+                <Microchip class="h-3.5 w-3.5" />
+                GPU
+              </div>
+              <div class="mt-2 text-lg font-semibold tabular-nums">
+                {{ latestGpuUtilization }}%
               </div>
             </div>
           </div>
@@ -232,6 +251,13 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
               </div>
             </Card>
           </PageTransition>
+        </div>
+
+        <div v-if="hasGpuMetrics" class="mt-4">
+          <GpuMetrics
+            :metrics="metricsData.gpu"
+            :compact-charts="compactCharts"
+          />
         </div>
       </div>
     </PageTransition>
@@ -418,6 +444,26 @@ export default {
     networkUsageDisplay(): string {
       return `${this.latestNetworkUsage} MB/s`;
     },
+    latestGpuSnapshot(): any | null {
+      if (!this.metricsData?.gpu?.length) return null;
+      const last = this.metricsData.gpu[this.metricsData.gpu.length - 1];
+      if (!last?.devices?.length) return null;
+      return last;
+    },
+    hasGpuMetrics(): boolean {
+      return Boolean(this.latestGpuSnapshot);
+    },
+    latestGpuUtilization(): number {
+      const snapshot = this.latestGpuSnapshot;
+      if (!snapshot) return 0;
+      const values = snapshot.devices
+        .map((d: any) => d.utilization_percent)
+        .filter((v: any) => typeof v === "number");
+      if (values.length === 0) return 0;
+      return Math.round(
+        values.reduce((sum: number, v: number) => sum + v, 0) / values.length,
+      );
+    },
   },
   apollo: {
     getNodeStats: {
@@ -467,6 +513,21 @@ export default {
                   name: true,
                   rx: true,
                   tx: true,
+                },
+              },
+            ],
+            gpu: [
+              {},
+              {
+                time: true,
+                devices: {
+                  index: true,
+                  name: true,
+                  memory_mb: true,
+                  memory_used_mb: true,
+                  temperature_c: true,
+                  power_w: true,
+                  utilization_percent: true,
                 },
               },
             ],

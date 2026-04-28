@@ -274,6 +274,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    avatarOverride: {
+      type: String,
+      default: null,
+    },
   },
   methods: {
     async addAsFriend() {
@@ -301,6 +305,7 @@ export default {
       return useRuntimeConfig().public.apiDomain;
     },
     playerAvatarSrc() {
+      if (this.avatarOverride) return this.avatarOverride;
       if (!this.player) return null;
       return resolveAvatarUrl(
         this.player.custom_avatar_url || this.player.avatar_url,

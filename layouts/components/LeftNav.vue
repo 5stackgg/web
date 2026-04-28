@@ -10,6 +10,7 @@ import {
   Globe,
   Settings,
   CalendarCog,
+  Camera,
   ShieldHalf,
   ChevronRight,
   Users,
@@ -310,13 +311,15 @@ function onLeftNavTouchEnd(e: TouchEvent) {
         <Separator
           v-if="
             showSeparators &&
-            (isAdmin || isMatchOrganizer || isTournamentOrganizer)
+            (isAdmin || isMatchOrganizer || isTournamentOrganizer || isStreamer)
           "
           class="mx-4 w-auto"
         />
 
         <SidebarGroup
-          v-if="isAdmin || isMatchOrganizer || isTournamentOrganizer"
+          v-if="
+            isAdmin || isMatchOrganizer || isTournamentOrganizer || isStreamer
+          "
         >
           <SidebarGroupLabel>{{
             $t("layouts.app_nav.administration.title")
@@ -324,6 +327,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
 
           <SidebarMenu>
             <SidebarMenuItem
+              v-if="isAdmin || isMatchOrganizer || isTournamentOrganizer"
               :tooltip="$t('layouts.app_nav.tooltips.manage_matches')"
             >
               <SidebarMenuButton
@@ -340,6 +344,22 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   {{ $t("layouts.app_nav.administration.manage_matches") }}
                   <Badge size="sm" v-if="managingMatchesCount > 0">
                     {{ managingMatchesCount }}
+                  </Badge>
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem tooltip="Stream Deck">
+              <SidebarMenuButton as-child tooltip="Stream Deck">
+                <NuxtLink
+                  :to="{ name: 'stream-deck' }"
+                  :class="{
+                    'router-link-active': isRouteActive('stream-deck'),
+                  }"
+                >
+                  <Camera />
+                  Stream Deck
+                  <Badge size="sm" v-if="activeStreamingMatchesCount > 0">
+                    {{ activeStreamingMatchesCount }}
                   </Badge>
                 </NuxtLink>
               </SidebarMenuButton>
@@ -814,6 +834,9 @@ export default {
     isMatchOrganizer() {
       return useAuthStore().isMatchOrganizer;
     },
+    isStreamer() {
+      return useAuthStore().isStreamer;
+    },
     isTournamentOrganizer() {
       return useAuthStore().isTournamentOrganizer;
     },
@@ -829,6 +852,9 @@ export default {
     },
     managingTournamentsCount() {
       return useMatchLobbyStore().managingTournamentsCount;
+    },
+    activeStreamingMatchesCount() {
+      return useStreamerStore().activeStreamingMatchesCount;
     },
     liveMatchesCount() {
       return useMatchLobbyStore().liveMatchesCount;

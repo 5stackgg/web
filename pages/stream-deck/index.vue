@@ -23,6 +23,7 @@ import {
 } from "lucide-vue-next";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import WhepPlayer from "~/components/match/WhepPlayer.vue";
+import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
 import { useStreamerPopout } from "~/composables/useStreamerPopout";
 import {
   specSlotsForMatchType,
@@ -224,6 +225,19 @@ const STATUS_LABELS: Record<string, string> = {
   errored: "Errored",
   live: "Live",
 };
+
+// Stage list mirrors the values run-live.sh + setup-steam.sh actually
+// emit via report_status, in order. Stages that don't fire on a given
+// boot (e.g. downloading_cs2 only on a fresh pod) stay "pending".
+const LIVE_STAGES = [
+  { key: "booting", label: "Allocating GPU" },
+  { key: "downloading_cs2", label: "Downloading CS2" },
+  { key: "launching_steam", label: "Launching Steam" },
+  { key: "logging_in", label: "Logging in" },
+  { key: "launching_cs2", label: "Launching CS2" },
+  { key: "connecting_to_game", label: "Connecting to game server" },
+  { key: "live", label: "Streaming live" },
+];
 
 function statusBadgeLabel(stream: any) {
   if (stream.is_live) return "LIVE";
@@ -573,33 +587,23 @@ function statusBadgeLabel(stream: any) {
                 </button>
               </div>
 
-              <!-- Booting / errored: status overlay sized to the same
+              <!-- Booting / errored: full step-by-step pipeline so
+                 the operator can see how far the pod has gotten and
+                 whether a stage has stalled. Sized to the same
                  aspect-video frame so the layout doesn't jump when
-                 the stream finally goes live -->
+                 the stream finally goes live. -->
               <div
                 v-else
-                class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center px-4"
+                class="absolute inset-0 flex items-center justify-center px-4"
               >
-                <p
-                  :class="[
-                    'inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.2em]',
-                    stream.status === 'errored'
-                      ? 'text-destructive'
-                      : 'text-[hsl(var(--tac-amber))]',
-                  ]"
-                >
-                  <span
-                    v-if="stream.status !== 'errored'"
-                    class="size-2 rounded-full bg-[hsl(var(--tac-amber))] animate-pulse"
-                  />
-                  {{ statusBadgeLabel(stream) }}
-                </p>
-                <p class="text-xs text-muted-foreground/70 max-w-[36ch]">
-                  {{
-                    stream.error_message ||
-                    "Waiting for the game-streamer pod to come online…"
-                  }}
-                </p>
+                <StreamSessionProgress
+                  :status="stream.status || 'booting'"
+                  :error-message="stream.error_message"
+                  :last-status-at="stream.last_status_at"
+                  :status-history="stream.status_history || []"
+                  :stages="LIVE_STAGES"
+                  header-label="Stream boot"
+                />
               </div>
 
               <div class="pointer-events-none absolute inset-0">

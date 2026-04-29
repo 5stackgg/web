@@ -646,6 +646,7 @@ export default {
         | undefined
         | { value: string; display: string; confirm: boolean },
       executePending: undefined as undefined | (() => void),
+      cleanMapName,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({

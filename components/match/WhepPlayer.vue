@@ -23,12 +23,25 @@ const props = defineProps<{
 const videoRef = ref<HTMLVideoElement | null>(null);
 const status = ref<"idle" | "connecting" | "playing" | "error">("idle");
 const errorMessage = ref<string | null>(null);
+// True while a retry is queued. Lets the UI render the amber
+// "acquiring signal" state instead of the red destructive "signal
+// lost" — important for the demo flow where the stream is expected
+// to take a few seconds to come online after status='live'.
+const isRetrying = ref(false);
 // Tracks whether the element is currently muted so we can show / hide
 // the click-to-unmute overlay. Element starts muted so autoplay works
 // without prior user interaction; one click flips it.
 const isMuted = ref(true);
 
 let pc: RTCPeerConnection | null = null;
+let retryHandle: ReturnType<typeof setTimeout> | null = null;
+// Cancelled at teardown — any in-flight retry attempt checks this
+// before re-issuing connect() so unmount doesn't leak a connect after
+// the component is gone.
+let cancelled = false;
+const MAX_RETRY_DELAY_MS = 5_000;
+const INITIAL_RETRY_DELAY_MS = 500;
+let retryDelay = INITIAL_RETRY_DELAY_MS;
 
 function unmute() {
   const el = videoRef.value;
@@ -135,11 +148,38 @@ async function connect() {
     }
     const answerSdp = await res.text();
     await pc.setRemoteDescription({ type: "answer", sdp: answerSdp });
+    // Successful negotiation — reset the backoff so a future drop
+    // (e.g. caster swap → momentary stream gap) starts retrying fast
+    // again instead of inheriting an aged 5s delay.
+    retryDelay = INITIAL_RETRY_DELAY_MS;
+    isRetrying.value = false;
   } catch (err) {
+    const message = (err as Error)?.message ?? String(err);
     status.value = "error";
-    errorMessage.value = (err as Error)?.message ?? String(err);
+    errorMessage.value = message;
     await teardown();
+    // mediamtx returns 404 with body "no stream is available on path
+    // <id>" until the SRT publisher has registered; same shape on a
+    // brief mid-stream gap. Always retry — the demo session's parent
+    // page tears us down (via v-if on store.isLive) when the session
+    // genuinely ends, so we don't have to be conservative here.
+    scheduleRetry();
   }
+}
+
+function scheduleRetry() {
+  if (cancelled) return;
+  if (retryHandle) clearTimeout(retryHandle);
+  isRetrying.value = true;
+  retryHandle = setTimeout(() => {
+    retryHandle = null;
+    if (cancelled) return;
+    void connect();
+  }, retryDelay);
+  // Exponential up to a 5s cap. Slow-publish recovery is usually
+  // sub-second; the cap is there so an extended outage doesn't burn
+  // the cpu / network re-attempting every 100ms forever.
+  retryDelay = Math.min(MAX_RETRY_DELAY_MS, retryDelay * 2);
 }
 
 function waitForIceComplete(peer: RTCPeerConnection): Promise<void> {
@@ -176,6 +216,14 @@ async function teardown() {
   }
 }
 
+function cancelRetries() {
+  cancelled = true;
+  if (retryHandle) {
+    clearTimeout(retryHandle);
+    retryHandle = null;
+  }
+}
+
 // Initial connect runs after the DOM is mounted so videoRef is bound.
 // (A watcher with `immediate: true` fires during setup, before the
 // template renders, so the <video> element doesn't exist yet and
@@ -187,10 +235,21 @@ onMounted(() => {
 // Reconnect whenever the URL changes (e.g. user switches matches).
 watch(
   () => props.whepUrl,
-  () => connect(),
+  () => {
+    // URL change = a fresh connect attempt; reset the retry budget so
+    // we don't inherit a 5s backoff from the previous URL's flakiness.
+    retryDelay = INITIAL_RETRY_DELAY_MS;
+    if (retryHandle) {
+      clearTimeout(retryHandle);
+      retryHandle = null;
+    }
+    cancelled = false;
+    void connect();
+  },
 );
 
 onBeforeUnmount(() => {
+  cancelRetries();
   void teardown();
 });
 
@@ -330,6 +389,12 @@ defineExpose({ connect, teardown });
              text reads "Acquiring signal..." with a live cadence. -->
         <p
           v-if="status === 'connecting'"
+          class="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
+        >
+          Acquiring signal<span class="whep-dots" />
+        </p>
+        <p
+          v-else-if="status === 'error' && isRetrying"
           class="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
         >
           Acquiring signal<span class="whep-dots" />

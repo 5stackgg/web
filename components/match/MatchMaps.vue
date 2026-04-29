@@ -2,7 +2,12 @@
 import { Badge } from "~/components/ui/badge";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import RoundHistoryBar from "~/components/match/RoundHistoryBar.vue";
-import { Download, ChevronRight, ChevronLeft } from "lucide-vue-next";
+import {
+  Download,
+  ChevronRight,
+  ChevronLeft,
+  PlayCircle,
+} from "lucide-vue-next";
 import {
   Tooltip,
   TooltipContent,
@@ -52,7 +57,7 @@ import cleanMapName from "~/utilities/cleanMapName";
           class="w-1/4 max-w-[72px] h-auto max-h-[60%] object-contain drop-shadow-2xl opacity-80"
         />
       </div>
-      <!-- Status badge + demo download top-right -->
+      <!-- Status badge + demo controls top-right -->
       <div class="absolute top-2 right-2 z-10 flex items-center gap-1.5">
         <Badge
           v-if="matchMap.status !== e_match_status_enum.Scheduled"
@@ -66,6 +71,19 @@ import cleanMapName from "~/utilities/cleanMapName";
           class="text-xs px-2 py-0.5 backdrop-blur-sm"
           >{{ $t("match.decider") }}</Badge
         >
+        <Tooltip v-if="hasDemo">
+          <TooltipTrigger as-child>
+            <Button
+              size="xs"
+              variant="ghost"
+              class="h-6 w-6 p-0 text-white/70 hover:text-white"
+              @click.stop="openDemoWatcher"
+            >
+              <PlayCircle class="w-4 h-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Watch demo</TooltipContent>
+        </Tooltip>
         <template v-if="matchMap.demos_download_url">
           <a target="_blank" :href="matchMap.demos_download_url" @click.stop>
             <Button
@@ -210,6 +228,15 @@ export default {
       }
       return (this.match.options?.best_of ?? 1) > 1;
     },
+    hasDemo() {
+      // Either the per-map aggregate (demos_total_size > 0) or the
+      // demos relation has at least one row. Mirrors the v-if guards
+      // already used by the download button below.
+      return (
+        !!this.matchMap.demos_total_size ||
+        (this.matchMap.demos?.length ?? 0) > 0
+      );
+    },
     showTeamPatch() {
       return (
         !this.isDecider || this.matchMap.status === e_match_status_enum.Live
@@ -238,6 +265,25 @@ export default {
       return this.matchMap.lineup_2_side === "TERRORIST"
         ? "/img/teams/t_logo.svg"
         : "/img/teams/ct_logo.svg";
+    },
+  },
+  methods: {
+    openDemoWatcher() {
+      // Pop the demo watcher into a dedicated window. The popup owns
+      // the session lifecycle: closing the window kills the session
+      // server-side via the WS close handler. Sized to match the 16:9
+      // player + control bar; user can resize freely afterward.
+      const url = `/demo/${this.matchMap.id}`;
+      const features =
+        "width=1280,height=820,menubar=no,toolbar=no,location=no";
+      // The window name is keyed off the map id so re-clicking the
+      // same map's watch button focuses the existing popup instead
+      // of opening a second one. Different maps get different names.
+      const name = `demo-${this.matchMap.id}`;
+      const popup = window.open(url, name, features);
+      if (popup) {
+        popup.focus();
+      }
     },
   },
 };

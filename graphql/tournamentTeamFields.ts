@@ -18,7 +18,6 @@ export default {
     {},
     {
       role: true,
-      roster_image_url: true,
       player: playerFields,
     },
   ],

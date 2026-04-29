@@ -59,7 +59,7 @@ provide("containContent", containContent);
 <template>
   <TopoBackground />
 
-  <SidebarProvider class="relative z-10 !bg-transparent">
+  <SidebarProvider data-screenshot-root class="relative z-10 !bg-transparent">
     <AppSidebar v-if="showLeftNav" />
 
     <SidebarInset

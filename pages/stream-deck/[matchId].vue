@@ -16,6 +16,7 @@ import {
 } from "lucide-vue-next";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import WhepPlayer from "~/components/match/WhepPlayer.vue";
+import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
 import { announceFocusWindow } from "~/composables/useStreamerPopout";
 import {
   specSlotsForMatchType,
@@ -59,6 +60,11 @@ onMounted(() => {
             status: true,
             stream_url: true,
             error_message: true,
+            last_status_at: true,
+            // status_history is jsonb (array of {status, at}); the
+            // stepper renders ✓ only for stages that actually fired
+            // (skipped stages on warm boots stay greyed out).
+            status_history: true as any,
             autodirector: true,
             match: {
               id: true,
@@ -109,6 +115,19 @@ const STATUS_LABELS: Record<string, string> = {
   errored: "Errored",
   live: "Live",
 };
+
+// Stage list mirrors the values run-live.sh + setup-steam.sh actually
+// emit via report_status. Stages that don't fire on a given boot
+// (e.g. downloading_cs2 only on a fresh pod) stay "pending".
+const LIVE_STAGES = [
+  { key: "booting", label: "Allocating GPU" },
+  { key: "downloading_cs2", label: "Downloading CS2" },
+  { key: "launching_steam", label: "Launching Steam" },
+  { key: "logging_in", label: "Logging in" },
+  { key: "launching_cs2", label: "Launching CS2" },
+  { key: "connecting_to_game", label: "Connecting to game server" },
+  { key: "live", label: "Streaming live" },
+];
 function statusBadgeLabel(s: any) {
   if (!s) return "—";
   if (s.is_live) return "LIVE";
@@ -370,34 +389,22 @@ const team2Slots = computed(() => slotKeys.value.filter((s) => s.team === 2));
             v-if="stream?.is_live && whepUrlFor(stream)"
             :whep-url="whepUrlFor(stream)!"
           />
-          <!-- Mirrors the deck-card overlay: pulse dot + actual stream
-               status (LAUNCHING CS2 / LOGGING IN / errored / …) so the
-               operator sees the same boot stage they'd see on the deck
-               row instead of a generic "no signal" placeholder. -->
+          <!-- Mirrors the deck-card overlay: full step-by-step boot
+               pipeline so the caster sees how far the pod has gotten
+               and whether a stage has stalled, instead of a generic
+               "no signal" placeholder. -->
           <div
             v-else
-            class="aspect-video w-full flex flex-col items-center justify-center gap-2 text-center px-6"
+            class="aspect-video w-full flex items-center justify-center px-6"
           >
-            <p
-              :class="[
-                'inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.2em]',
-                stream?.status === 'errored'
-                  ? 'text-destructive'
-                  : 'text-[hsl(var(--tac-amber))]',
-              ]"
-            >
-              <span
-                v-if="stream?.status !== 'errored'"
-                class="size-2 rounded-full bg-[hsl(var(--tac-amber))] animate-pulse"
-              />
-              {{ statusBadgeLabel(stream) }}
-            </p>
-            <p class="text-xs text-muted-foreground/70 max-w-[36ch]">
-              {{
-                stream?.error_message ||
-                "Waiting for the game-streamer pod to come online…"
-              }}
-            </p>
+            <StreamSessionProgress
+              :status="stream?.status || 'booting'"
+              :error-message="stream?.error_message"
+              :last-status-at="stream?.last_status_at"
+              :status-history="stream?.status_history || []"
+              :stages="LIVE_STAGES"
+              header-label="Stream boot"
+            />
           </div>
 
           <!-- Corner crosshairs — broadcast-deck flourish -->

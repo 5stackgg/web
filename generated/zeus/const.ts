@@ -4,6 +4,9 @@ export const AllTypesProps: Record<string,any> = {
 	Boolean_comparison_exp:{
 
 	},
+	Float_comparison_exp:{
+
+	},
 	Int_comparison_exp:{
 
 	},
@@ -2965,6 +2968,131 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"maps_set_input",
 		where:"maps_bool_exp"
 	},
+	match_demo_sessions:{
+		status_history:{
+
+		}
+	},
+	match_demo_sessions_aggregate_fields:{
+		count:{
+			columns:"match_demo_sessions_select_column"
+		}
+	},
+	match_demo_sessions_append_input:{
+		status_history:"jsonb"
+	},
+	match_demo_sessions_bool_exp:{
+		_and:"match_demo_sessions_bool_exp",
+		_not:"match_demo_sessions_bool_exp",
+		_or:"match_demo_sessions_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		error_message:"String_comparison_exp",
+		id:"uuid_comparison_exp",
+		k8s_job_name:"String_comparison_exp",
+		last_activity_at:"timestamptz_comparison_exp",
+		last_status_at:"timestamptz_comparison_exp",
+		match:"matches_bool_exp",
+		match_id:"uuid_comparison_exp",
+		match_map:"match_maps_bool_exp",
+		match_map_id:"uuid_comparison_exp",
+		session_token:"String_comparison_exp",
+		status:"String_comparison_exp",
+		status_history:"jsonb_comparison_exp",
+		stream_url:"String_comparison_exp",
+		watcher:"players_bool_exp",
+		watcher_steam_id:"bigint_comparison_exp"
+	},
+	match_demo_sessions_constraint: "enum" as const,
+	match_demo_sessions_delete_at_path_input:{
+
+	},
+	match_demo_sessions_delete_elem_input:{
+
+	},
+	match_demo_sessions_delete_key_input:{
+
+	},
+	match_demo_sessions_inc_input:{
+		watcher_steam_id:"bigint"
+	},
+	match_demo_sessions_insert_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		last_activity_at:"timestamptz",
+		last_status_at:"timestamptz",
+		match:"matches_obj_rel_insert_input",
+		match_id:"uuid",
+		match_map:"match_maps_obj_rel_insert_input",
+		match_map_id:"uuid",
+		status_history:"jsonb",
+		watcher:"players_obj_rel_insert_input",
+		watcher_steam_id:"bigint"
+	},
+	match_demo_sessions_on_conflict:{
+		constraint:"match_demo_sessions_constraint",
+		update_columns:"match_demo_sessions_update_column",
+		where:"match_demo_sessions_bool_exp"
+	},
+	match_demo_sessions_order_by:{
+		created_at:"order_by",
+		error_message:"order_by",
+		id:"order_by",
+		k8s_job_name:"order_by",
+		last_activity_at:"order_by",
+		last_status_at:"order_by",
+		match:"matches_order_by",
+		match_id:"order_by",
+		match_map:"match_maps_order_by",
+		match_map_id:"order_by",
+		session_token:"order_by",
+		status:"order_by",
+		status_history:"order_by",
+		stream_url:"order_by",
+		watcher:"players_order_by",
+		watcher_steam_id:"order_by"
+	},
+	match_demo_sessions_pk_columns_input:{
+		id:"uuid"
+	},
+	match_demo_sessions_prepend_input:{
+		status_history:"jsonb"
+	},
+	match_demo_sessions_select_column: "enum" as const,
+	match_demo_sessions_set_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		last_activity_at:"timestamptz",
+		last_status_at:"timestamptz",
+		match_id:"uuid",
+		match_map_id:"uuid",
+		status_history:"jsonb",
+		watcher_steam_id:"bigint"
+	},
+	match_demo_sessions_stream_cursor_input:{
+		initial_value:"match_demo_sessions_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	match_demo_sessions_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		last_activity_at:"timestamptz",
+		last_status_at:"timestamptz",
+		match_id:"uuid",
+		match_map_id:"uuid",
+		status_history:"jsonb",
+		watcher_steam_id:"bigint"
+	},
+	match_demo_sessions_update_column: "enum" as const,
+	match_demo_sessions_updates:{
+		_append:"match_demo_sessions_append_input",
+		_delete_at_path:"match_demo_sessions_delete_at_path_input",
+		_delete_elem:"match_demo_sessions_delete_elem_input",
+		_delete_key:"match_demo_sessions_delete_key_input",
+		_inc:"match_demo_sessions_inc_input",
+		_prepend:"match_demo_sessions_prepend_input",
+		_set:"match_demo_sessions_set_input",
+		where:"match_demo_sessions_bool_exp"
+	},
 	match_invites_aggregate_bool_exp:{
 		count:"match_invites_aggregate_bool_exp_count"
 	},
@@ -3440,6 +3568,17 @@ export const AllTypesProps: Record<string,any> = {
 	match_lineups_variance_order_by:{
 		coach_steam_id:"order_by"
 	},
+	match_map_demos:{
+		bombs:{
+
+		},
+		kills:{
+
+		},
+		round_ticks:{
+
+		}
+	},
 	match_map_demos_aggregate_bool_exp:{
 		count:"match_map_demos_aggregate_bool_exp_count"
 	},
@@ -3466,50 +3605,95 @@ export const AllTypesProps: Record<string,any> = {
 		var_samp:"match_map_demos_var_samp_order_by",
 		variance:"match_map_demos_variance_order_by"
 	},
+	match_map_demos_append_input:{
+		bombs:"jsonb",
+		kills:"jsonb",
+		round_ticks:"jsonb"
+	},
 	match_map_demos_arr_rel_insert_input:{
 		data:"match_map_demos_insert_input",
 		on_conflict:"match_map_demos_on_conflict"
 	},
 	match_map_demos_avg_order_by:{
-		size:"order_by"
+		duration_seconds:"order_by",
+		size:"order_by",
+		tick_rate:"order_by",
+		total_ticks:"order_by"
 	},
 	match_map_demos_bool_exp:{
 		_and:"match_map_demos_bool_exp",
 		_not:"match_map_demos_bool_exp",
 		_or:"match_map_demos_bool_exp",
+		bombs:"jsonb_comparison_exp",
+		cs2_build:"String_comparison_exp",
 		download_url:"String_comparison_exp",
+		duration_seconds:"Float_comparison_exp",
 		file:"String_comparison_exp",
 		id:"uuid_comparison_exp",
+		kills:"jsonb_comparison_exp",
+		map_name:"String_comparison_exp",
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
 		match_map:"match_maps_bool_exp",
 		match_map_id:"uuid_comparison_exp",
-		size:"Int_comparison_exp"
+		metadata_parsed_at:"timestamptz_comparison_exp",
+		round_ticks:"jsonb_comparison_exp",
+		size:"Int_comparison_exp",
+		tick_rate:"Float_comparison_exp",
+		total_ticks:"Int_comparison_exp",
+		workshop_id:"String_comparison_exp"
 	},
 	match_map_demos_constraint: "enum" as const,
+	match_map_demos_delete_at_path_input:{
+
+	},
+	match_map_demos_delete_elem_input:{
+
+	},
+	match_map_demos_delete_key_input:{
+
+	},
 	match_map_demos_inc_input:{
 
 	},
 	match_map_demos_insert_input:{
+		bombs:"jsonb",
 		id:"uuid",
+		kills:"jsonb",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
 		match_map:"match_maps_obj_rel_insert_input",
-		match_map_id:"uuid"
+		match_map_id:"uuid",
+		metadata_parsed_at:"timestamptz",
+		round_ticks:"jsonb"
 	},
 	match_map_demos_max_order_by:{
+		cs2_build:"order_by",
+		duration_seconds:"order_by",
 		file:"order_by",
 		id:"order_by",
+		map_name:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
-		size:"order_by"
+		metadata_parsed_at:"order_by",
+		size:"order_by",
+		tick_rate:"order_by",
+		total_ticks:"order_by",
+		workshop_id:"order_by"
 	},
 	match_map_demos_min_order_by:{
+		cs2_build:"order_by",
+		duration_seconds:"order_by",
 		file:"order_by",
 		id:"order_by",
+		map_name:"order_by",
 		match_id:"order_by",
 		match_map_id:"order_by",
-		size:"order_by"
+		metadata_parsed_at:"order_by",
+		size:"order_by",
+		tick_rate:"order_by",
+		total_ticks:"order_by",
+		workshop_id:"order_by"
 	},
 	match_map_demos_on_conflict:{
 		constraint:"match_map_demos_constraint",
@@ -3517,59 +3701,108 @@ export const AllTypesProps: Record<string,any> = {
 		where:"match_map_demos_bool_exp"
 	},
 	match_map_demos_order_by:{
+		bombs:"order_by",
+		cs2_build:"order_by",
 		download_url:"order_by",
+		duration_seconds:"order_by",
 		file:"order_by",
 		id:"order_by",
+		kills:"order_by",
+		map_name:"order_by",
 		match:"matches_order_by",
 		match_id:"order_by",
 		match_map:"match_maps_order_by",
 		match_map_id:"order_by",
-		size:"order_by"
+		metadata_parsed_at:"order_by",
+		round_ticks:"order_by",
+		size:"order_by",
+		tick_rate:"order_by",
+		total_ticks:"order_by",
+		workshop_id:"order_by"
 	},
 	match_map_demos_pk_columns_input:{
 		id:"uuid"
 	},
+	match_map_demos_prepend_input:{
+		bombs:"jsonb",
+		kills:"jsonb",
+		round_ticks:"jsonb"
+	},
 	match_map_demos_select_column: "enum" as const,
 	match_map_demos_set_input:{
+		bombs:"jsonb",
 		id:"uuid",
+		kills:"jsonb",
 		match_id:"uuid",
-		match_map_id:"uuid"
+		match_map_id:"uuid",
+		metadata_parsed_at:"timestamptz",
+		round_ticks:"jsonb"
 	},
 	match_map_demos_stddev_order_by:{
-		size:"order_by"
+		duration_seconds:"order_by",
+		size:"order_by",
+		tick_rate:"order_by",
+		total_ticks:"order_by"
 	},
 	match_map_demos_stddev_pop_order_by:{
-		size:"order_by"
+		duration_seconds:"order_by",
+		size:"order_by",
+		tick_rate:"order_by",
+		total_ticks:"order_by"
 	},
 	match_map_demos_stddev_samp_order_by:{
-		size:"order_by"
+		duration_seconds:"order_by",
+		size:"order_by",
+		tick_rate:"order_by",
+		total_ticks:"order_by"
 	},
 	match_map_demos_stream_cursor_input:{
 		initial_value:"match_map_demos_stream_cursor_value_input",
 		ordering:"cursor_ordering"
 	},
 	match_map_demos_stream_cursor_value_input:{
+		bombs:"jsonb",
 		id:"uuid",
+		kills:"jsonb",
 		match_id:"uuid",
-		match_map_id:"uuid"
+		match_map_id:"uuid",
+		metadata_parsed_at:"timestamptz",
+		round_ticks:"jsonb"
 	},
 	match_map_demos_sum_order_by:{
-		size:"order_by"
+		duration_seconds:"order_by",
+		size:"order_by",
+		tick_rate:"order_by",
+		total_ticks:"order_by"
 	},
 	match_map_demos_update_column: "enum" as const,
 	match_map_demos_updates:{
+		_append:"match_map_demos_append_input",
+		_delete_at_path:"match_map_demos_delete_at_path_input",
+		_delete_elem:"match_map_demos_delete_elem_input",
+		_delete_key:"match_map_demos_delete_key_input",
 		_inc:"match_map_demos_inc_input",
+		_prepend:"match_map_demos_prepend_input",
 		_set:"match_map_demos_set_input",
 		where:"match_map_demos_bool_exp"
 	},
 	match_map_demos_var_pop_order_by:{
-		size:"order_by"
+		duration_seconds:"order_by",
+		size:"order_by",
+		tick_rate:"order_by",
+		total_ticks:"order_by"
 	},
 	match_map_demos_var_samp_order_by:{
-		size:"order_by"
+		duration_seconds:"order_by",
+		size:"order_by",
+		tick_rate:"order_by",
+		total_ticks:"order_by"
 	},
 	match_map_demos_variance_order_by:{
-		size:"order_by"
+		duration_seconds:"order_by",
+		size:"order_by",
+		tick_rate:"order_by",
+		total_ticks:"order_by"
 	},
 	match_map_rounds:{
 		kills:{
@@ -4535,6 +4768,11 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"match_region_veto_picks_set_input",
 		where:"match_region_veto_picks_bool_exp"
 	},
+	match_streams:{
+		status_history:{
+
+		}
+	},
 	match_streams_aggregate_bool_exp:{
 		bool_and:"match_streams_aggregate_bool_exp_bool_and",
 		bool_or:"match_streams_aggregate_bool_exp_bool_or",
@@ -4573,6 +4811,9 @@ export const AllTypesProps: Record<string,any> = {
 		var_samp:"match_streams_var_samp_order_by",
 		variance:"match_streams_variance_order_by"
 	},
+	match_streams_append_input:{
+		status_history:"jsonb"
+	},
 	match_streams_arr_rel_insert_input:{
 		data:"match_streams_insert_input",
 		on_conflict:"match_streams_on_conflict"
@@ -4595,10 +4836,20 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"uuid_comparison_exp",
 		priority:"Int_comparison_exp",
 		status:"String_comparison_exp",
+		status_history:"jsonb_comparison_exp",
 		stream_url:"String_comparison_exp",
 		title:"String_comparison_exp"
 	},
 	match_streams_constraint: "enum" as const,
+	match_streams_delete_at_path_input:{
+
+	},
+	match_streams_delete_elem_input:{
+
+	},
+	match_streams_delete_key_input:{
+
+	},
 	match_streams_inc_input:{
 
 	},
@@ -4606,7 +4857,8 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		last_status_at:"timestamptz",
 		match:"matches_obj_rel_insert_input",
-		match_id:"uuid"
+		match_id:"uuid",
+		status_history:"jsonb"
 	},
 	match_streams_max_order_by:{
 		error_message:"order_by",
@@ -4647,11 +4899,15 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"order_by",
 		priority:"order_by",
 		status:"order_by",
+		status_history:"order_by",
 		stream_url:"order_by",
 		title:"order_by"
 	},
 	match_streams_pk_columns_input:{
 		id:"uuid"
+	},
+	match_streams_prepend_input:{
+		status_history:"jsonb"
 	},
 	match_streams_select_column: "enum" as const,
 	match_streams_select_column_match_streams_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
@@ -4659,7 +4915,8 @@ export const AllTypesProps: Record<string,any> = {
 	match_streams_set_input:{
 		id:"uuid",
 		last_status_at:"timestamptz",
-		match_id:"uuid"
+		match_id:"uuid",
+		status_history:"jsonb"
 	},
 	match_streams_stddev_order_by:{
 		priority:"order_by"
@@ -4677,14 +4934,20 @@ export const AllTypesProps: Record<string,any> = {
 	match_streams_stream_cursor_value_input:{
 		id:"uuid",
 		last_status_at:"timestamptz",
-		match_id:"uuid"
+		match_id:"uuid",
+		status_history:"jsonb"
 	},
 	match_streams_sum_order_by:{
 		priority:"order_by"
 	},
 	match_streams_update_column: "enum" as const,
 	match_streams_updates:{
+		_append:"match_streams_append_input",
+		_delete_at_path:"match_streams_delete_at_path_input",
+		_delete_elem:"match_streams_delete_elem_input",
+		_delete_key:"match_streams_delete_key_input",
 		_inc:"match_streams_inc_input",
+		_prepend:"match_streams_prepend_input",
 		_set:"match_streams_set_input",
 		where:"match_streams_bool_exp"
 	},
@@ -5560,6 +5823,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_maps_by_pk:{
 			id:"uuid"
 		},
+		delete_match_demo_sessions:{
+			where:"match_demo_sessions_bool_exp"
+		},
+		delete_match_demo_sessions_by_pk:{
+			id:"uuid"
+		},
 		delete_match_invites:{
 			where:"match_invites_bool_exp"
 		},
@@ -6152,6 +6421,14 @@ export const AllTypesProps: Record<string,any> = {
 			object:"maps_insert_input",
 			on_conflict:"maps_on_conflict"
 		},
+		insert_match_demo_sessions:{
+			objects:"match_demo_sessions_insert_input",
+			on_conflict:"match_demo_sessions_on_conflict"
+		},
+		insert_match_demo_sessions_one:{
+			object:"match_demo_sessions_insert_input",
+			on_conflict:"match_demo_sessions_on_conflict"
+		},
 		insert_match_invites:{
 			objects:"match_invites_insert_input",
 			on_conflict:"match_invites_on_conflict"
@@ -6574,6 +6851,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		stopLive:{
 			match_id:"uuid"
+		},
+		stopWatchDemo:{
+			match_map_id:"uuid"
 		},
 		swapLineups:{
 			match_id:"uuid"
@@ -7033,6 +7313,29 @@ export const AllTypesProps: Record<string,any> = {
 		update_maps_many:{
 			updates:"maps_updates"
 		},
+		update_match_demo_sessions:{
+			_append:"match_demo_sessions_append_input",
+			_delete_at_path:"match_demo_sessions_delete_at_path_input",
+			_delete_elem:"match_demo_sessions_delete_elem_input",
+			_delete_key:"match_demo_sessions_delete_key_input",
+			_inc:"match_demo_sessions_inc_input",
+			_prepend:"match_demo_sessions_prepend_input",
+			_set:"match_demo_sessions_set_input",
+			where:"match_demo_sessions_bool_exp"
+		},
+		update_match_demo_sessions_by_pk:{
+			_append:"match_demo_sessions_append_input",
+			_delete_at_path:"match_demo_sessions_delete_at_path_input",
+			_delete_elem:"match_demo_sessions_delete_elem_input",
+			_delete_key:"match_demo_sessions_delete_key_input",
+			_inc:"match_demo_sessions_inc_input",
+			_prepend:"match_demo_sessions_prepend_input",
+			_set:"match_demo_sessions_set_input",
+			pk_columns:"match_demo_sessions_pk_columns_input"
+		},
+		update_match_demo_sessions_many:{
+			updates:"match_demo_sessions_updates"
+		},
 		update_match_invites:{
 			_inc:"match_invites_inc_input",
 			_set:"match_invites_set_input",
@@ -7073,12 +7376,22 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"match_lineups_updates"
 		},
 		update_match_map_demos:{
+			_append:"match_map_demos_append_input",
+			_delete_at_path:"match_map_demos_delete_at_path_input",
+			_delete_elem:"match_map_demos_delete_elem_input",
+			_delete_key:"match_map_demos_delete_key_input",
 			_inc:"match_map_demos_inc_input",
+			_prepend:"match_map_demos_prepend_input",
 			_set:"match_map_demos_set_input",
 			where:"match_map_demos_bool_exp"
 		},
 		update_match_map_demos_by_pk:{
+			_append:"match_map_demos_append_input",
+			_delete_at_path:"match_map_demos_delete_at_path_input",
+			_delete_elem:"match_map_demos_delete_elem_input",
+			_delete_key:"match_map_demos_delete_key_input",
 			_inc:"match_map_demos_inc_input",
+			_prepend:"match_map_demos_prepend_input",
 			_set:"match_map_demos_set_input",
 			pk_columns:"match_map_demos_pk_columns_input"
 		},
@@ -7147,12 +7460,22 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"match_region_veto_picks_updates"
 		},
 		update_match_streams:{
+			_append:"match_streams_append_input",
+			_delete_at_path:"match_streams_delete_at_path_input",
+			_delete_elem:"match_streams_delete_elem_input",
+			_delete_key:"match_streams_delete_key_input",
 			_inc:"match_streams_inc_input",
+			_prepend:"match_streams_prepend_input",
 			_set:"match_streams_set_input",
 			where:"match_streams_bool_exp"
 		},
 		update_match_streams_by_pk:{
+			_append:"match_streams_append_input",
+			_delete_at_path:"match_streams_delete_at_path_input",
+			_delete_elem:"match_streams_delete_elem_input",
+			_delete_key:"match_streams_delete_key_input",
 			_inc:"match_streams_inc_input",
+			_prepend:"match_streams_prepend_input",
 			_set:"match_streams_set_input",
 			pk_columns:"match_streams_pk_columns_input"
 		},
@@ -7614,6 +7937,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_v_pool_maps_many:{
 			updates:"v_pool_maps_updates"
+		},
+		watchDemo:{
+			match_map_id:"uuid"
 		},
 		writeServerFile:{
 
@@ -10984,6 +11310,19 @@ export const AllTypesProps: Record<string,any> = {
 		maps_by_pk:{
 			id:"uuid"
 		},
+		match_demo_sessions:{
+			distinct_on:"match_demo_sessions_select_column",
+			order_by:"match_demo_sessions_order_by",
+			where:"match_demo_sessions_bool_exp"
+		},
+		match_demo_sessions_aggregate:{
+			distinct_on:"match_demo_sessions_select_column",
+			order_by:"match_demo_sessions_order_by",
+			where:"match_demo_sessions_bool_exp"
+		},
+		match_demo_sessions_by_pk:{
+			id:"uuid"
+		},
 		match_invites:{
 			distinct_on:"match_invites_select_column",
 			order_by:"match_invites_order_by",
@@ -12728,6 +13067,23 @@ export const AllTypesProps: Record<string,any> = {
 		maps_stream:{
 			cursor:"maps_stream_cursor_input",
 			where:"maps_bool_exp"
+		},
+		match_demo_sessions:{
+			distinct_on:"match_demo_sessions_select_column",
+			order_by:"match_demo_sessions_order_by",
+			where:"match_demo_sessions_bool_exp"
+		},
+		match_demo_sessions_aggregate:{
+			distinct_on:"match_demo_sessions_select_column",
+			order_by:"match_demo_sessions_order_by",
+			where:"match_demo_sessions_bool_exp"
+		},
+		match_demo_sessions_by_pk:{
+			id:"uuid"
+		},
+		match_demo_sessions_stream:{
+			cursor:"match_demo_sessions_stream_cursor_input",
+			where:"match_demo_sessions_bool_exp"
 		},
 		match_invites:{
 			distinct_on:"match_invites_select_column",
@@ -18095,6 +18451,11 @@ export const ReturnTypes: Record<string,any> = {
 		stage_type:"String",
 		will_delete_match:"Boolean"
 	},
+	WatchDemoOutput:{
+		session_id:"String",
+		stream_url:"String",
+		success:"Boolean"
+	},
 	_map_pool:{
 		map_id:"uuid",
 		map_pool_id:"uuid"
@@ -19622,6 +19983,97 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"maps"
 	},
+	match_demo_sessions:{
+		created_at:"timestamptz",
+		error_message:"String",
+		id:"uuid",
+		k8s_job_name:"String",
+		last_activity_at:"timestamptz",
+		last_status_at:"timestamptz",
+		match:"matches",
+		match_id:"uuid",
+		match_map:"match_maps",
+		match_map_id:"uuid",
+		session_token:"String",
+		status:"String",
+		status_history:"jsonb",
+		stream_url:"String",
+		watcher:"players",
+		watcher_steam_id:"bigint"
+	},
+	match_demo_sessions_aggregate:{
+		aggregate:"match_demo_sessions_aggregate_fields",
+		nodes:"match_demo_sessions"
+	},
+	match_demo_sessions_aggregate_fields:{
+		avg:"match_demo_sessions_avg_fields",
+		count:"Int",
+		max:"match_demo_sessions_max_fields",
+		min:"match_demo_sessions_min_fields",
+		stddev:"match_demo_sessions_stddev_fields",
+		stddev_pop:"match_demo_sessions_stddev_pop_fields",
+		stddev_samp:"match_demo_sessions_stddev_samp_fields",
+		sum:"match_demo_sessions_sum_fields",
+		var_pop:"match_demo_sessions_var_pop_fields",
+		var_samp:"match_demo_sessions_var_samp_fields",
+		variance:"match_demo_sessions_variance_fields"
+	},
+	match_demo_sessions_avg_fields:{
+		watcher_steam_id:"Float"
+	},
+	match_demo_sessions_max_fields:{
+		created_at:"timestamptz",
+		error_message:"String",
+		id:"uuid",
+		k8s_job_name:"String",
+		last_activity_at:"timestamptz",
+		last_status_at:"timestamptz",
+		match_id:"uuid",
+		match_map_id:"uuid",
+		session_token:"String",
+		status:"String",
+		stream_url:"String",
+		watcher_steam_id:"bigint"
+	},
+	match_demo_sessions_min_fields:{
+		created_at:"timestamptz",
+		error_message:"String",
+		id:"uuid",
+		k8s_job_name:"String",
+		last_activity_at:"timestamptz",
+		last_status_at:"timestamptz",
+		match_id:"uuid",
+		match_map_id:"uuid",
+		session_token:"String",
+		status:"String",
+		stream_url:"String",
+		watcher_steam_id:"bigint"
+	},
+	match_demo_sessions_mutation_response:{
+		affected_rows:"Int",
+		returning:"match_demo_sessions"
+	},
+	match_demo_sessions_stddev_fields:{
+		watcher_steam_id:"Float"
+	},
+	match_demo_sessions_stddev_pop_fields:{
+		watcher_steam_id:"Float"
+	},
+	match_demo_sessions_stddev_samp_fields:{
+		watcher_steam_id:"Float"
+	},
+	match_demo_sessions_sum_fields:{
+		watcher_steam_id:"bigint"
+	},
+	match_demo_sessions_var_pop_fields:{
+		watcher_steam_id:"Float"
+	},
+	match_demo_sessions_var_samp_fields:{
+		watcher_steam_id:"Float"
+	},
+	match_demo_sessions_variance_fields:{
+		watcher_steam_id:"Float"
+	},
 	match_invites:{
 		created_at:"timestamptz",
 		id:"uuid",
@@ -19851,14 +20303,24 @@ export const ReturnTypes: Record<string,any> = {
 		coach_steam_id:"Float"
 	},
 	match_map_demos:{
+		bombs:"jsonb",
+		cs2_build:"String",
 		download_url:"String",
+		duration_seconds:"Float",
 		file:"String",
 		id:"uuid",
+		kills:"jsonb",
+		map_name:"String",
 		match:"matches",
 		match_id:"uuid",
 		match_map:"match_maps",
 		match_map_id:"uuid",
-		size:"Int"
+		metadata_parsed_at:"timestamptz",
+		round_ticks:"jsonb",
+		size:"Int",
+		tick_rate:"Float",
+		total_ticks:"Int",
+		workshop_id:"String"
 	},
 	match_map_demos_aggregate:{
 		aggregate:"match_map_demos_aggregate_fields",
@@ -19878,48 +20340,86 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"match_map_demos_variance_fields"
 	},
 	match_map_demos_avg_fields:{
-		size:"Float"
+		duration_seconds:"Float",
+		size:"Float",
+		tick_rate:"Float",
+		total_ticks:"Float"
 	},
 	match_map_demos_max_fields:{
+		cs2_build:"String",
 		download_url:"String",
+		duration_seconds:"Float",
 		file:"String",
 		id:"uuid",
+		map_name:"String",
 		match_id:"uuid",
 		match_map_id:"uuid",
-		size:"Int"
+		metadata_parsed_at:"timestamptz",
+		size:"Int",
+		tick_rate:"Float",
+		total_ticks:"Int",
+		workshop_id:"String"
 	},
 	match_map_demos_min_fields:{
+		cs2_build:"String",
 		download_url:"String",
+		duration_seconds:"Float",
 		file:"String",
 		id:"uuid",
+		map_name:"String",
 		match_id:"uuid",
 		match_map_id:"uuid",
-		size:"Int"
+		metadata_parsed_at:"timestamptz",
+		size:"Int",
+		tick_rate:"Float",
+		total_ticks:"Int",
+		workshop_id:"String"
 	},
 	match_map_demos_mutation_response:{
 		affected_rows:"Int",
 		returning:"match_map_demos"
 	},
 	match_map_demos_stddev_fields:{
-		size:"Float"
+		duration_seconds:"Float",
+		size:"Float",
+		tick_rate:"Float",
+		total_ticks:"Float"
 	},
 	match_map_demos_stddev_pop_fields:{
-		size:"Float"
+		duration_seconds:"Float",
+		size:"Float",
+		tick_rate:"Float",
+		total_ticks:"Float"
 	},
 	match_map_demos_stddev_samp_fields:{
-		size:"Float"
+		duration_seconds:"Float",
+		size:"Float",
+		tick_rate:"Float",
+		total_ticks:"Float"
 	},
 	match_map_demos_sum_fields:{
-		size:"Int"
+		duration_seconds:"Float",
+		size:"Int",
+		tick_rate:"Float",
+		total_ticks:"Int"
 	},
 	match_map_demos_var_pop_fields:{
-		size:"Float"
+		duration_seconds:"Float",
+		size:"Float",
+		tick_rate:"Float",
+		total_ticks:"Float"
 	},
 	match_map_demos_var_samp_fields:{
-		size:"Float"
+		duration_seconds:"Float",
+		size:"Float",
+		tick_rate:"Float",
+		total_ticks:"Float"
 	},
 	match_map_demos_variance_fields:{
-		size:"Float"
+		duration_seconds:"Float",
+		size:"Float",
+		tick_rate:"Float",
+		total_ticks:"Float"
 	},
 	match_map_rounds:{
 		backup_file:"String",
@@ -20462,6 +20962,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_id:"uuid",
 		priority:"Int",
 		status:"String",
+		status_history:"jsonb",
 		stream_url:"String",
 		title:"String"
 	},
@@ -20876,6 +21377,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_map_pools_by_pk:"map_pools",
 		delete_maps:"maps_mutation_response",
 		delete_maps_by_pk:"maps",
+		delete_match_demo_sessions:"match_demo_sessions_mutation_response",
+		delete_match_demo_sessions_by_pk:"match_demo_sessions",
 		delete_match_invites:"match_invites_mutation_response",
 		delete_match_invites_by_pk:"match_invites",
 		delete_match_lineup_players:"match_lineup_players_mutation_response",
@@ -21042,6 +21545,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_map_pools_one:"map_pools",
 		insert_maps:"maps_mutation_response",
 		insert_maps_one:"maps",
+		insert_match_demo_sessions:"match_demo_sessions_mutation_response",
+		insert_match_demo_sessions_one:"match_demo_sessions",
 		insert_match_invites:"match_invites_mutation_response",
 		insert_match_invites_one:"match_invites",
 		insert_match_lineup_players:"match_lineup_players_mutation_response",
@@ -21158,6 +21663,7 @@ export const ReturnTypes: Record<string,any> = {
 		startLive:"SuccessOutput",
 		startMatch:"SuccessOutput",
 		stopLive:"SuccessOutput",
+		stopWatchDemo:"SuccessOutput",
 		swapLineups:"SuccessOutput",
 		switchLineup:"SuccessOutput",
 		syncSteamFriends:"SuccessOutput",
@@ -21278,6 +21784,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_maps:"maps_mutation_response",
 		update_maps_by_pk:"maps",
 		update_maps_many:"maps_mutation_response",
+		update_match_demo_sessions:"match_demo_sessions_mutation_response",
+		update_match_demo_sessions_by_pk:"match_demo_sessions",
+		update_match_demo_sessions_many:"match_demo_sessions_mutation_response",
 		update_match_invites:"match_invites_mutation_response",
 		update_match_invites_by_pk:"match_invites",
 		update_match_invites_many:"match_invites_mutation_response",
@@ -21410,6 +21919,7 @@ export const ReturnTypes: Record<string,any> = {
 		update_v_match_captains_many:"v_match_captains_mutation_response",
 		update_v_pool_maps:"v_pool_maps_mutation_response",
 		update_v_pool_maps_many:"v_pool_maps_mutation_response",
+		watchDemo:"WatchDemoOutput",
 		writeServerFile:"SuccessOutput"
 	},
 	my_friends:{
@@ -23089,6 +23599,9 @@ export const ReturnTypes: Record<string,any> = {
 		maps:"maps",
 		maps_aggregate:"maps_aggregate",
 		maps_by_pk:"maps",
+		match_demo_sessions:"match_demo_sessions",
+		match_demo_sessions_aggregate:"match_demo_sessions_aggregate",
+		match_demo_sessions_by_pk:"match_demo_sessions",
 		match_invites:"match_invites",
 		match_invites_aggregate:"match_invites_aggregate",
 		match_invites_by_pk:"match_invites",
@@ -23641,6 +24154,10 @@ export const ReturnTypes: Record<string,any> = {
 		maps_aggregate:"maps_aggregate",
 		maps_by_pk:"maps",
 		maps_stream:"maps",
+		match_demo_sessions:"match_demo_sessions",
+		match_demo_sessions_aggregate:"match_demo_sessions_aggregate",
+		match_demo_sessions_by_pk:"match_demo_sessions",
+		match_demo_sessions_stream:"match_demo_sessions",
 		match_invites:"match_invites",
 		match_invites_aggregate:"match_invites_aggregate",
 		match_invites_by_pk:"match_invites",

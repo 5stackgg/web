@@ -70,6 +70,9 @@ export const useStreamerStore = defineStore("streamer", () => {
             status: true,
             stream_url: true,
             error_message: true,
+            // jsonb array of {status, at} — drives the stepper's
+            // skipped-vs-done distinction.
+            status_history: true as any,
             last_status_at: true,
             autodirector: true,
             match: {

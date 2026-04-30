@@ -3625,6 +3625,7 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"match_map_demos_bool_exp",
 		_or:"match_map_demos_bool_exp",
 		bombs:"jsonb_comparison_exp",
+		cs2_build:"String_comparison_exp",
 		download_url:"String_comparison_exp",
 		duration_seconds:"Float_comparison_exp",
 		file:"String_comparison_exp",
@@ -3667,6 +3668,7 @@ export const AllTypesProps: Record<string,any> = {
 		round_ticks:"jsonb"
 	},
 	match_map_demos_max_order_by:{
+		cs2_build:"order_by",
 		duration_seconds:"order_by",
 		file:"order_by",
 		id:"order_by",
@@ -3680,6 +3682,7 @@ export const AllTypesProps: Record<string,any> = {
 		workshop_id:"order_by"
 	},
 	match_map_demos_min_order_by:{
+		cs2_build:"order_by",
 		duration_seconds:"order_by",
 		file:"order_by",
 		id:"order_by",
@@ -3699,6 +3702,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_map_demos_order_by:{
 		bombs:"order_by",
+		cs2_build:"order_by",
 		download_url:"order_by",
 		duration_seconds:"order_by",
 		file:"order_by",
@@ -20300,6 +20304,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_map_demos:{
 		bombs:"jsonb",
+		cs2_build:"String",
 		download_url:"String",
 		duration_seconds:"Float",
 		file:"String",
@@ -20341,6 +20346,7 @@ export const ReturnTypes: Record<string,any> = {
 		total_ticks:"Float"
 	},
 	match_map_demos_max_fields:{
+		cs2_build:"String",
 		download_url:"String",
 		duration_seconds:"Float",
 		file:"String",
@@ -20355,6 +20361,7 @@ export const ReturnTypes: Record<string,any> = {
 		workshop_id:"String"
 	},
 	match_map_demos_min_fields:{
+		cs2_build:"String",
 		download_url:"String",
 		duration_seconds:"Float",
 		file:"String",

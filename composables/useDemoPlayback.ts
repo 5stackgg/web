@@ -63,6 +63,18 @@ export function useDemoPlayback() {
             store.reset();
             return;
           }
+          // When the spec-server transitions us to "playing", the
+          // demo is freshly paused at tick 0 (we pause it on the
+          // server side via `demo_togglepause` after demoui hide).
+          // Sync local state so the play button shows ▶ and the
+          // scrubber sits at 0 instead of estimating against an
+          // unmounted demo.
+          const becamePlaying =
+            row.status === "playing" &&
+            store.sessionRow?.status !== "playing";
+          if (becamePlaying) {
+            store.syncFromControl({ tick: 0, paused: true });
+          }
           store.sessionRow = row;
         },
         error: (error: any) => {

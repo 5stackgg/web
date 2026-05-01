@@ -91,6 +91,37 @@ export function useDemoPlayback() {
             kills: true as any,
             bombs: true as any,
             metadata_parsed_at: true as any,
+            // Pulled through for the player-switcher UI: match type
+            // governs slot layout (Competitive 5v5 / Wingman 2v2 /
+            // Duel 1v1) and lineup names label the team groups.
+            // lineup_players resolves kill killer/victim steam IDs to
+            // display names in the seek-bar marker tooltips.
+            match: {
+              id: true,
+              options: { type: true },
+              lineup_1: {
+                id: true,
+                name: true,
+                lineup_players: [
+                  {},
+                  {
+                    placeholder_name: true,
+                    player: { steam_id: true, name: true },
+                  },
+                ],
+              },
+              lineup_2: {
+                id: true,
+                name: true,
+                lineup_players: [
+                  {},
+                  {
+                    placeholder_name: true,
+                    player: { steam_id: true, name: true },
+                  },
+                ],
+              },
+            } as any,
           },
         ],
       }),
@@ -103,6 +134,31 @@ export function useDemoPlayback() {
     if (Array.isArray(demo.round_ticks)) store.roundTicks = demo.round_ticks;
     if (Array.isArray(demo.kills)) store.kills = demo.kills;
     if (Array.isArray(demo.bombs)) store.bombs = demo.bombs;
+    if (demo.match) {
+      store.matchType = demo.match.options?.type ?? null;
+      store.lineup1Name = demo.match.lineup_1?.name ?? null;
+      store.lineup2Name = demo.match.lineup_2?.name ?? null;
+      // Flatten both lineups into a steam_id → display-name map and a
+      // per-team roster array. The roster array keeps lineup grouping
+      // for the player-filter dropdown; the names map is the lookup
+      // for kill tooltips.
+      const names: Record<string, string> = {};
+      const buildRoster = (lu: any) => {
+        const out: Array<{ steam_id: string; name: string }> = [];
+        for (const lp of lu?.lineup_players ?? []) {
+          const sid = lp?.player?.steam_id;
+          const name = lp?.player?.name ?? lp?.placeholder_name ?? null;
+          if (!sid || !name) continue;
+          names[sid] = name;
+          out.push({ steam_id: sid, name });
+        }
+        return out;
+      };
+      const lineup1 = buildRoster(demo.match.lineup_1);
+      const lineup2 = buildRoster(demo.match.lineup_2);
+      store.playerNames = names;
+      store.rosters = { lineup1, lineup2 };
+    }
     return demo;
   }
 
@@ -181,7 +237,11 @@ export function useDemoPlayback() {
       | "skip"
       | "speed"
       | "round"
-      | "state",
+      | "state"
+      | "slot"
+      | "reload"
+      | "xray"
+      | "hud",
     payload: Record<string, unknown> = {},
   ) {
     if (!store.matchMapId) {
@@ -249,46 +309,139 @@ export function useDemoPlayback() {
   }
 
   // Step navigation across an event timeline. Generic over kills,
-  // bombs, rounds — pass the array. Anchors a few ticks before the
-  // event so the operator sees the lead-up rather than landing on
-  // the kill itself with no context.
-  const ANTICIPATION_TICKS = 64; // ~1s at 64-tick demos
-  function jumpToNextEvent(events: Array<{ tick: number }>) {
+  // bombs, rounds — pass the array plus an "anticipation" lead-in
+  // (in seconds). Anchors `lead` seconds before the event so the
+  // operator sees the buildup rather than landing on the kill itself.
+  // Kills/bombs default to 5s — a kill happens fast and you want the
+  // approach + engagement, not the body hitting the floor. Rounds
+  // jump to the start tick exactly (no lead) since the round_start
+  // tick already includes freezetime.
+  const KILL_LEAD_SECS = 5;
+  const BOMB_LEAD_SECS = 5;
+  const ROUND_LEAD_SECS = 0;
+  function leadTicks(secs: number) {
+    return Math.round(secs * store.tickRate);
+  }
+  function jumpToNextEvent(events: Array<{ tick: number }>, leadSecs: number) {
     if (!events.length) return;
     const cur = store.currentTick;
-    const next = events.find((e) => e.tick > cur);
-    if (next) seek(Math.max(0, next.tick - ANTICIPATION_TICKS));
+    const lead = leadTicks(leadSecs);
+    // Look ahead past the upcoming lead window: if we don't, "next
+    // kill" right after a jump that already anchored on this kill
+    // would just re-target the same one.
+    const cursor = cur + lead;
+    const next = events.find((e) => e.tick > cursor);
+    if (next) seek(Math.max(0, next.tick - lead));
   }
-  function jumpToPrevEvent(events: Array<{ tick: number }>) {
+  function jumpToPrevEvent(events: Array<{ tick: number }>, leadSecs: number) {
     if (!events.length) return;
-    // "Prev" means the most recent event before (currentTick - small
-    // grace). Without the grace, hammering "prev" right after a jump
-    // re-targets the same event.
+    // "Prev" means the most recent event whose anchor is before
+    // (currentTick - small grace). Without the grace, hammering
+    // "prev" right after a jump re-targets the same event.
     const cur = store.currentTick - 5 * store.tickRate;
+    const lead = leadTicks(leadSecs);
     let last = null as { tick: number } | null;
     for (const e of events) {
       if (e.tick < cur) last = e;
       else break;
     }
-    if (last) seek(Math.max(0, last.tick - ANTICIPATION_TICKS));
+    if (last) seek(Math.max(0, last.tick - lead));
+  }
+  // The kill nav respects the active player filter so the operator
+  // can pick e.g. "Slowking" from the dropdown and step through only
+  // their kills. Falls back to the full list when no filter is set.
+  function filteredKills() {
+    const filter = store.killFilterSteamId;
+    if (!filter) return store.kills;
+    return store.kills.filter((k) =>
+      store.killFilterMode === "victim"
+        ? k.victim === filter
+        : k.killer === filter,
+    );
   }
   function jumpToNextKill() {
-    jumpToNextEvent(store.kills);
+    jumpToNextEvent(filteredKills(), KILL_LEAD_SECS);
   }
   function jumpToPrevKill() {
-    jumpToPrevEvent(store.kills);
+    jumpToPrevEvent(filteredKills(), KILL_LEAD_SECS);
+  }
+  function setKillFilter(steamId: string | null) {
+    store.killFilterSteamId = steamId;
+  }
+  function setKillFilterMode(mode: "killer" | "victim") {
+    store.killFilterMode = mode;
+  }
+  function toggleKillFilterMode() {
+    setKillFilterMode(store.killFilterMode === "killer" ? "victim" : "killer");
   }
   function jumpToNextBomb() {
-    jumpToNextEvent(store.bombs);
+    jumpToNextEvent(store.bombs, BOMB_LEAD_SECS);
   }
   function jumpToPrevBomb() {
-    jumpToPrevEvent(store.bombs);
+    jumpToPrevEvent(store.bombs, BOMB_LEAD_SECS);
   }
   function jumpToNextRound() {
-    jumpToNextEvent(store.roundTicks.map((r) => ({ tick: r.start_tick })));
+    jumpToNextEvent(
+      store.roundTicks.map((r) => ({ tick: r.start_tick })),
+      ROUND_LEAD_SECS,
+    );
   }
   function jumpToPrevRound() {
-    jumpToPrevEvent(store.roundTicks.map((r) => ({ tick: r.start_tick })));
+    jumpToPrevEvent(
+      store.roundTicks.map((r) => ({ tick: r.start_tick })),
+      ROUND_LEAD_SECS,
+    );
+  }
+
+  // Player switching — same observer-slot model as the live stream
+  // deck (utilities/streamerSpecSlots.ts). Slots are 1-indexed and
+  // match cs2's `spec_player <n>` numbering: team 1 fills slots 1..N,
+  // team 2 fills (N+1)..(2N). The api routes this to the spec-server's
+  // /spec/slot which uses cs2's number-row digit binds — works on the
+  // demo pod since run-demo.sh writes the same observer.cfg.
+  function switchToSlot(slot: number) {
+    control("slot", { slot });
+  }
+
+  // End-of-demo cs2 drops back to the menu — reload re-fires playdemo
+  // so the operator doesn't have to tear the pod down + restart. We
+  // also reset the operator-toggled cvars (xray off, HUD visible) so
+  // the reloaded demo starts from a clean default state. cs2 keeps
+  // client cvars across `playdemo` calls, so we have to actively
+  // toggle them back if they're not already at defaults.
+  function reloadDemo() {
+    if (store.xrayEnabled) {
+      // F12 is bound to `toggle spec_show_xray 0 1`; fire once to
+      // flip the cvar off, then sync local state.
+      control("xray", { enabled: false });
+      store.xrayEnabled = false;
+    }
+    if (!store.hudVisible) {
+      // /spec/hud takes an absolute visible flag (windowmap /
+      // windowunmap) so this is idempotent — safe even if the
+      // overlay was destroyed and recreated.
+      control("hud", { visible: true });
+      store.hudVisible = true;
+    }
+    store.syncFromControl({ tick: 0, paused: false });
+    control("reload");
+  }
+  // X-ray (player wallhack outlines). Default off; stored locally so
+  // repeated clicks toggle without an api round-trip.
+  function setXray(enabled: boolean) {
+    store.xrayEnabled = enabled;
+    control("xray", { enabled });
+  }
+  function toggleXray() {
+    setXray(!store.xrayEnabled);
+  }
+  // Hide / show the OpenHud overlay window without tearing it down.
+  function setHudVisible(visible: boolean) {
+    store.hudVisible = visible;
+    control("hud", { visible });
+  }
+  function toggleHud() {
+    setHudVisible(!store.hudVisible);
   }
 
   return {
@@ -308,5 +461,14 @@ export function useDemoPlayback() {
     jumpToPrevBomb,
     jumpToNextRound,
     jumpToPrevRound,
+    switchToSlot,
+    setKillFilter,
+    setKillFilterMode,
+    toggleKillFilterMode,
+    reloadDemo,
+    setXray,
+    toggleXray,
+    setHudVisible,
+    toggleHud,
   };
 }

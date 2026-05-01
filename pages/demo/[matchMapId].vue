@@ -112,7 +112,7 @@ function onKeyDown(e: KeyboardEvent) {
   }
 
   // Everything else only fires while a session is live.
-  if (!store.isLive) return;
+  if (!store.isPlaying) return;
   if (e.repeat) return;
 
   // Slot digits 1..9 / 0 → spec slot.

@@ -18,6 +18,12 @@ const DEMO_STAGES = [
   { key: "launching_cs2", label: "Launching CS2" },
   { key: "connecting_to_game", label: "Loading demo into CS2" },
   { key: "live", label: "Capturing video" },
+  // `playing` fires from spec-server's GSI handler on the first
+  // game-state event from cs2 — the deterministic "demo is actually
+  // rolling" signal. We gate the WHEP player on this rather than
+  // `live` so the operator never sees a black/menu frame before
+  // gameplay starts.
+  { key: "playing", label: "Demo loaded" },
 ];
 
 // Pure presentation: the parent page (pages/demo/[matchMapId].vue)
@@ -72,7 +78,7 @@ function closeWindow() {
            absolute layers fighting over the same space). -->
       <Transition name="boot-live" mode="out-in">
         <WhepPlayer
-          v-if="store.isLive && whepUrl"
+          v-if="store.isPlaying && whepUrl"
           key="live"
           :whep-url="whepUrl"
           class="absolute inset-0"
@@ -127,7 +133,7 @@ function closeWindow() {
     </div>
 
     <Transition name="controls-slide">
-      <DemoPlaybackControls v-if="store.isLive" class="shrink-0" />
+      <DemoPlaybackControls v-if="store.isPlaying" class="shrink-0" />
     </Transition>
   </div>
 </template>

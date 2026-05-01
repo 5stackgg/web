@@ -147,6 +147,12 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   // GStreamer starts publishing to mediamtx — that's when the WHEP
   // egress on mediamtx will actually return a stream.
   const isLive = computed(() => status.value === "live");
+  // `playing` is reported by spec-server's GSI handler on the first
+  // game-state event from cs2 — the moment the demo is genuinely
+  // rendering frames. The WHEP player gates on this so we never show
+  // a menu/loading frame; the timeline gates on this so it doesn't
+  // estimate ticks against a not-yet-playing demo.
+  const isPlaying = computed(() => status.value === "playing");
   const isErrored = computed(
     () => status.value === "errored" || status.value === "error",
   );
@@ -232,6 +238,7 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     status,
     streamUrl,
     isLive,
+    isPlaying,
     isErrored,
     syncFromControl,
     reset,

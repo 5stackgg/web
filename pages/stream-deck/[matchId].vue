@@ -18,6 +18,7 @@ import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import WhepPlayer from "~/components/match/WhepPlayer.vue";
 import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
 import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
+import { Kbd } from "~/components/ui/kbd";
 import { announceFocusWindow } from "~/composables/useStreamerPopout";
 import {
   specSlotsForMatchType,
@@ -701,6 +702,15 @@ const team2Slots = computed(() => slotKeys.value.filter((s) => s.team === 2));
         </div>
       </div>
     </PageTransition>
+    <button
+      type="button"
+      class="fixed bottom-4 right-4 z-20 inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/80 px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-muted-foreground/80 backdrop-blur-md cursor-pointer transition-all duration-150 hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground hover:scale-105 active:scale-95"
+      title="Show keyboard shortcuts"
+      @click="shortcutsOpen = true"
+    >
+      Shortcuts
+      <Kbd>?</Kbd>
+    </button>
     <ShortcutOverlay
       :open="shortcutsOpen"
       :groups="SHORTCUT_GROUPS"

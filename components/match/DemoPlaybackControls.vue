@@ -586,7 +586,9 @@ const killMarkers = computed<Marker[]>(() => {
                 <ChevronsLeft class="h-4 w-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Previous round</TooltipContent>
+            <TooltipContent class="flex items-center gap-2">
+              Previous round <Kbd>[</Kbd>
+            </TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger as-child>
@@ -600,7 +602,9 @@ const killMarkers = computed<Marker[]>(() => {
                 <ChevronsRight class="h-4 w-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Next round</TooltipContent>
+            <TooltipContent class="flex items-center gap-2">
+              Next round <Kbd>]</Kbd>
+            </TooltipContent>
           </Tooltip>
 
           <button
@@ -696,39 +700,59 @@ const killMarkers = computed<Marker[]>(() => {
                 <Skull class="h-4 w-4" :stroke-width="2.25" />
               </button>
             </TooltipTrigger>
-            <TooltipContent>Previous kill (5s lead-in)</TooltipContent>
+            <TooltipContent class="flex items-center gap-2">
+              Previous kill <Kbd>P</Kbd>
+            </TooltipContent>
           </Tooltip>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            class="h-10 w-10 cursor-pointer transition-all duration-150 hover:scale-110 hover:bg-accent/70 active:scale-95"
-            title="Skip back 15s"
-            @click="skip(-15)"
-          >
-            <SkipBack class="h-5 w-5" />
-          </Button>
-          <Button
-            variant="default"
-            size="icon"
-            class="h-12 w-12 rounded-full shadow-md cursor-pointer transition-all duration-150 hover:scale-105 hover:shadow-lg active:scale-95"
-            :title="store.paused ? 'Play' : 'Pause'"
-            @click="togglePause"
-          >
-            <Transition name="play-pause" mode="out-in">
-              <Play v-if="store.paused" key="play" class="h-6 w-6" />
-              <Pause v-else key="pause" class="h-6 w-6" />
-            </Transition>
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            class="h-10 w-10 cursor-pointer transition-all duration-150 hover:scale-110 hover:bg-accent/70 active:scale-95"
-            title="Skip forward 15s"
-            @click="skip(15)"
-          >
-            <SkipForward class="h-5 w-5" />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button
+                variant="ghost"
+                size="icon"
+                class="h-10 w-10 cursor-pointer transition-all duration-150 hover:scale-110 hover:bg-accent/70 active:scale-95"
+                @click="skip(-15)"
+              >
+                <SkipBack class="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent class="flex items-center gap-2">
+              Skip back 15s <Kbd>←</Kbd>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button
+                variant="default"
+                size="icon"
+                class="h-12 w-12 rounded-full shadow-md cursor-pointer transition-all duration-150 hover:scale-105 hover:shadow-lg active:scale-95"
+                @click="togglePause"
+              >
+                <Transition name="play-pause" mode="out-in">
+                  <Play v-if="store.paused" key="play" class="h-6 w-6" />
+                  <Pause v-else key="pause" class="h-6 w-6" />
+                </Transition>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent class="flex items-center gap-2">
+              {{ store.paused ? "Play" : "Pause" }} <Kbd>Space</Kbd>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button
+                variant="ghost"
+                size="icon"
+                class="h-10 w-10 cursor-pointer transition-all duration-150 hover:scale-110 hover:bg-accent/70 active:scale-95"
+                @click="skip(15)"
+              >
+                <SkipForward class="h-5 w-5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent class="flex items-center gap-2">
+              Skip forward 15s <Kbd>→</Kbd>
+            </TooltipContent>
+          </Tooltip>
 
           <Tooltip>
             <TooltipTrigger as-child>
@@ -742,7 +766,9 @@ const killMarkers = computed<Marker[]>(() => {
                 <ChevronsRight class="h-3.5 w-3.5" />
               </button>
             </TooltipTrigger>
-            <TooltipContent>Next kill (5s lead-in)</TooltipContent>
+            <TooltipContent class="flex items-center gap-2">
+              Next kill <Kbd>N</Kbd>
+            </TooltipContent>
           </Tooltip>
         </div>
 
@@ -760,9 +786,7 @@ const killMarkers = computed<Marker[]>(() => {
                 <PanelBottom class="h-4 w-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
-              Toggle CS2 demo HUD (manual fallback)
-            </TooltipContent>
+            <TooltipContent>Toggle CS2 demo HUD</TooltipContent>
           </Tooltip>
 
           <Tooltip>
@@ -770,14 +794,16 @@ const killMarkers = computed<Marker[]>(() => {
               <Button
                 variant="outline"
                 size="icon"
-                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 hover:rotate-[-30deg] active:scale-95"
+                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95"
                 title="Reload demo"
                 @click="reloadDemo"
               >
                 <RotateCcw class="h-4 w-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Reload demo (cs2 dropped to menu)</TooltipContent>
+            <TooltipContent class="flex items-center gap-2">
+              Reload demo <Kbd>R</Kbd>
+            </TooltipContent>
           </Tooltip>
 
           <Tooltip>
@@ -796,8 +822,8 @@ const killMarkers = computed<Marker[]>(() => {
                 <Bone class="h-4 w-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
-              X-ray {{ store.xrayEnabled ? "on" : "off" }}
+            <TooltipContent class="flex items-center gap-2">
+              X-ray {{ store.xrayEnabled ? "on" : "off" }} <Kbd>X</Kbd>
             </TooltipContent>
           </Tooltip>
 
@@ -816,8 +842,9 @@ const killMarkers = computed<Marker[]>(() => {
                 <EyeOff v-else class="h-4 w-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
+            <TooltipContent class="flex items-center gap-2">
               {{ store.hudVisible ? "Hide" : "Show" }} OpenHud overlay
+              <Kbd>H</Kbd>
             </TooltipContent>
           </Tooltip>
 

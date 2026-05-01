@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import DemoPlayer from "~/components/match/DemoPlayer.vue";
 import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
+import { Kbd } from "~/components/ui/kbd";
 import { specSlotsForMatchType } from "~/utilities/streamerSpecSlots";
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -231,6 +232,19 @@ const isOrganizer = false;
       :is-organizer="isOrganizer"
       class="flex-1"
     />
+    <!-- Floating "?" hint — sits above the controls strip in the
+         lower-right corner. Discoverability anchor for the keyboard
+         shortcut overlay; if the operator doesn't know to press ?,
+         this surfaces it. -->
+    <button
+      type="button"
+      class="absolute right-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/80 px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-muted-foreground/80 backdrop-blur-md cursor-pointer transition-all duration-150 hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground hover:scale-105 active:scale-95"
+      title="Show keyboard shortcuts"
+      @click="shortcutsOpen = true"
+    >
+      Shortcuts
+      <Kbd>?</Kbd>
+    </button>
     <ShortcutOverlay
       :open="shortcutsOpen"
       :groups="SHORTCUT_GROUPS"

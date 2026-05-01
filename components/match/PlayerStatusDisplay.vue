@@ -6,6 +6,8 @@ import {
   e_match_status_enum,
 } from "~/generated/zeus";
 import { useSidebar } from "../ui/sidebar";
+
+const { isMobile } = useSidebar();
 </script>
 
 <template>
@@ -155,9 +157,6 @@ export default {
     },
   },
   computed: {
-    isMobile() {
-      return useSidebar().isMobile.value;
-    },
     e_match_status_enum() {
       return e_match_status_enum;
     },

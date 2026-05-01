@@ -7,7 +7,11 @@ import {
   ChevronRight,
   ChevronLeft,
   PlayCircle,
+  RefreshCw,
+  Loader2,
 } from "lucide-vue-next";
+import { toast } from "@/components/ui/toast";
+import { generateMutation } from "~/graphql/graphqlGen";
 import {
   Tooltip,
   TooltipContent,
@@ -71,18 +75,48 @@ import cleanMapName from "~/utilities/cleanMapName";
           class="text-xs px-2 py-0.5 backdrop-blur-sm"
           >{{ $t("match.decider") }}</Badge
         >
-        <Tooltip v-if="hasDemo">
+        <Tooltip v-if="hasDemo && canWatchDemo && hasDemoMetadata">
           <TooltipTrigger as-child>
             <Button
               size="xs"
               variant="ghost"
               class="h-6 w-6 p-0 text-white/70 hover:text-white"
-              @click.stop="openDemoWatcher"
+              @click.stop="openDemoWatcher()"
             >
               <PlayCircle class="w-4 h-4" />
             </Button>
           </TooltipTrigger>
           <TooltipContent>Watch demo</TooltipContent>
+        </Tooltip>
+        <Tooltip v-else-if="hasDemo && canParseDemo">
+          <TooltipTrigger as-child>
+            <Button
+              size="xs"
+              variant="ghost"
+              class="h-6 w-6 p-0 text-white/70 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              :disabled="isParsingDemo"
+              @click.stop="parseDemo()"
+            >
+              <Loader2 v-if="isParsingDemo" class="w-4 h-4 animate-spin" />
+              <RefreshCw v-else class="w-4 h-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {{ isParsingDemo ? "Parsing demo…" : "Parse demo metadata" }}
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip v-else-if="hasDemo && canWatchDemo">
+          <TooltipTrigger as-child>
+            <Button
+              size="xs"
+              variant="ghost"
+              class="h-6 w-6 p-0 text-white/70 opacity-50 cursor-not-allowed"
+              disabled
+            >
+              <PlayCircle class="w-4 h-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Demo metadata has not been parsed</TooltipContent>
         </Tooltip>
         <template v-if="matchMap.demos_download_url">
           <a target="_blank" :href="matchMap.demos_download_url" @click.stop>
@@ -203,7 +237,12 @@ import cleanMapName from "~/utilities/cleanMapName";
 </template>
 
 <script lang="ts">
-import { e_match_status_enum, e_veto_pick_types_enum } from "~/generated/zeus";
+import {
+  e_match_status_enum,
+  e_player_roles_enum,
+  e_veto_pick_types_enum,
+} from "~/generated/zeus";
+import { useAuthStore } from "~/stores/AuthStore";
 
 export default {
   emits: ["open-stats"],
@@ -221,6 +260,11 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      isParsingDemo: false,
+    };
+  },
   computed: {
     canOpenStats() {
       if (this.matchMap.status === e_match_status_enum.Scheduled) {
@@ -229,13 +273,24 @@ export default {
       return (this.match.options?.best_of ?? 1) > 1;
     },
     hasDemo() {
-      // Either the per-map aggregate (demos_total_size > 0) or the
-      // demos relation has at least one row. Mirrors the v-if guards
-      // already used by the download button below.
       return (
         !!this.matchMap.demos_total_size ||
         (this.matchMap.demos?.length ?? 0) > 0
       );
+    },
+    canWatchDemo() {
+      return (
+        this.match.is_organizer ||
+        useAuthStore().isRoleAbove(e_player_roles_enum.streamer)
+      );
+    },
+    hasDemoMetadata() {
+      return (this.matchMap.demos ?? []).some(
+        (d) => !!d.metadata_parsed_at && !!d.total_ticks,
+      );
+    },
+    canParseDemo() {
+      return useAuthStore().isAdmin;
     },
     showTeamPatch() {
       return (
@@ -268,6 +323,29 @@ export default {
     },
   },
   methods: {
+    async parseDemo() {
+      if (this.isParsingDemo) return;
+      this.isParsingDemo = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            reparseDemo: [
+              { match_map_id: this.matchMap.id },
+              { success: true },
+            ],
+          }),
+        });
+        toast({ title: "Demo parsed" });
+      } catch (error) {
+        toast({
+          title: "Failed to parse demo",
+          description: (error as Error)?.message,
+          variant: "destructive",
+        });
+      } finally {
+        this.isParsingDemo = false;
+      }
+    },
     openDemoWatcher() {
       // Pop the demo watcher into a dedicated window. The popup owns
       // the session lifecycle: closing the window kills the session

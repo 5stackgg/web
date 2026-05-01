@@ -181,6 +181,16 @@ const canSendRCONCommands = computed(
     ].includes(props.match.status) && !!props.match.server_id,
 );
 
+const canShowLogs = computed(
+  () =>
+    ![
+      e_match_status_enum.Scheduled,
+      e_match_status_enum.WaitingForCheckIn,
+      e_match_status_enum.PickingPlayers,
+      e_match_status_enum.Veto,
+    ].includes(props.match.status),
+);
+
 const restorableRounds = computed(() =>
   (currentMap.value?.rounds ?? []).filter(
     (r: any) => r.has_backup_file && r.round > 0,
@@ -386,7 +396,7 @@ function runCommand(
             class="min-w-0 flex flex-col gap-2 lg:min-h-0 lg:overflow-hidden"
           >
             <div
-              v-if="!hasLogs"
+              v-if="!canShowLogs || !hasLogs"
               class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-6 text-center"
             >
               <h3 class="font-semibold">
@@ -397,6 +407,7 @@ function runCommand(
               </p>
             </div>
             <ServiceLogs
+              v-if="canShowLogs"
               v-show="hasLogs"
               :service="`m-${match.id}`"
               :compact="true"

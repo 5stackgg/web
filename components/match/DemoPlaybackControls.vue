@@ -14,7 +14,11 @@ import {
   RotateCcw,
   Bone,
   PanelBottom,
+  Film,
 } from "lucide-vue-next";
+import { useAuthStore } from "~/stores/AuthStore";
+import { e_player_roles_enum } from "~/generated/zeus";
+import CreateClipDialog from "~/components/clips/CreateClipDialog.vue";
 import { Button } from "~/components/ui/button";
 import { Kbd } from "~/components/ui/kbd";
 import { Slider } from "~/components/ui/slider";
@@ -38,6 +42,15 @@ import {
   specSlotsForMatchType,
   type SpecSlot,
 } from "~/utilities/streamerSpecSlots";
+
+// Clip creation is gated at verified_user — rendering consumes a
+// game-streamer pod. The button is hidden below that role; the api also
+// rejects createClipRender for un-gated callers as a defense-in-depth
+// (don't trust the client). See plan file.
+const canCreateClip = computed(() =>
+  useAuthStore().isRoleAbove(e_player_roles_enum.verified_user),
+);
+const showCreateClipDialog = ref(false);
 
 const {
   store,
@@ -774,6 +787,22 @@ const killMarkers = computed<Marker[]>(() => {
 
         <!-- Right: quick actions + speed selector. -->
         <div class="flex items-center justify-end gap-2">
+          <Tooltip v-if="canCreateClip">
+            <TooltipTrigger as-child>
+              <Button
+                variant="outline"
+                size="icon"
+                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 hover:border-[hsl(var(--tac-amber)/0.6)] active:scale-95"
+                :disabled="!hasMetadata"
+                title="Create clip"
+                @click="showCreateClipDialog = true"
+              >
+                <Film class="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Create clip from this demo</TooltipContent>
+          </Tooltip>
+
           <Tooltip>
             <TooltipTrigger as-child>
               <Button
@@ -871,6 +900,12 @@ const killMarkers = computed<Marker[]>(() => {
         </div>
       </div>
     </div>
+
+    <CreateClipDialog
+      v-if="canCreateClip && store.matchMapId"
+      v-model:open="showCreateClipDialog"
+      :match-map-id="store.matchMapId"
+    />
   </TooltipProvider>
 </template>
 

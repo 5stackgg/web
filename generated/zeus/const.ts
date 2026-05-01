@@ -4,6 +4,25 @@ export const AllTypesProps: Record<string,any> = {
 	Boolean_comparison_exp:{
 
 	},
+	ClipAudioInput:{
+
+	},
+	ClipOutputInput:{
+
+	},
+	ClipOverlayInput:{
+		payload:"jsonb"
+	},
+	ClipSegmentInput:{
+
+	},
+	ClipSpecInput:{
+		audio:"ClipAudioInput",
+		match_map_id:"uuid",
+		output:"ClipOutputInput",
+		overlays:"ClipOverlayInput",
+		segments:"ClipSegmentInput"
+	},
 	Float_comparison_exp:{
 
 	},
@@ -263,6 +282,223 @@ export const AllTypesProps: Record<string,any> = {
 		_lte:"bytea",
 		_neq:"bytea",
 		_nin:"bytea"
+	},
+	clip_render_jobs:{
+		spec:{
+
+		},
+		status_history:{
+
+		}
+	},
+	clip_render_jobs_aggregate_bool_exp:{
+		count:"clip_render_jobs_aggregate_bool_exp_count"
+	},
+	clip_render_jobs_aggregate_bool_exp_count:{
+		arguments:"clip_render_jobs_select_column",
+		filter:"clip_render_jobs_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	clip_render_jobs_aggregate_fields:{
+		count:{
+			columns:"clip_render_jobs_select_column"
+		}
+	},
+	clip_render_jobs_aggregate_order_by:{
+		avg:"clip_render_jobs_avg_order_by",
+		count:"order_by",
+		max:"clip_render_jobs_max_order_by",
+		min:"clip_render_jobs_min_order_by",
+		stddev:"clip_render_jobs_stddev_order_by",
+		stddev_pop:"clip_render_jobs_stddev_pop_order_by",
+		stddev_samp:"clip_render_jobs_stddev_samp_order_by",
+		sum:"clip_render_jobs_sum_order_by",
+		var_pop:"clip_render_jobs_var_pop_order_by",
+		var_samp:"clip_render_jobs_var_samp_order_by",
+		variance:"clip_render_jobs_variance_order_by"
+	},
+	clip_render_jobs_append_input:{
+		spec:"jsonb",
+		status_history:"jsonb"
+	},
+	clip_render_jobs_arr_rel_insert_input:{
+		data:"clip_render_jobs_insert_input",
+		on_conflict:"clip_render_jobs_on_conflict"
+	},
+	clip_render_jobs_avg_order_by:{
+		progress:"order_by",
+		user_steam_id:"order_by"
+	},
+	clip_render_jobs_bool_exp:{
+		_and:"clip_render_jobs_bool_exp",
+		_not:"clip_render_jobs_bool_exp",
+		_or:"clip_render_jobs_bool_exp",
+		clip:"match_clips_bool_exp",
+		clip_id:"uuid_comparison_exp",
+		created_at:"timestamptz_comparison_exp",
+		error_message:"String_comparison_exp",
+		id:"uuid_comparison_exp",
+		k8s_job_name:"String_comparison_exp",
+		last_status_at:"timestamptz_comparison_exp",
+		match_map:"match_maps_bool_exp",
+		match_map_id:"uuid_comparison_exp",
+		progress:"numeric_comparison_exp",
+		session_token:"String_comparison_exp",
+		spec:"jsonb_comparison_exp",
+		status:"String_comparison_exp",
+		status_history:"jsonb_comparison_exp",
+		user:"players_bool_exp",
+		user_steam_id:"bigint_comparison_exp"
+	},
+	clip_render_jobs_constraint: "enum" as const,
+	clip_render_jobs_delete_at_path_input:{
+
+	},
+	clip_render_jobs_delete_elem_input:{
+
+	},
+	clip_render_jobs_delete_key_input:{
+
+	},
+	clip_render_jobs_inc_input:{
+		progress:"numeric",
+		user_steam_id:"bigint"
+	},
+	clip_render_jobs_insert_input:{
+		clip:"match_clips_obj_rel_insert_input",
+		clip_id:"uuid",
+		created_at:"timestamptz",
+		id:"uuid",
+		last_status_at:"timestamptz",
+		match_map:"match_maps_obj_rel_insert_input",
+		match_map_id:"uuid",
+		progress:"numeric",
+		spec:"jsonb",
+		status_history:"jsonb",
+		user:"players_obj_rel_insert_input",
+		user_steam_id:"bigint"
+	},
+	clip_render_jobs_max_order_by:{
+		clip_id:"order_by",
+		created_at:"order_by",
+		error_message:"order_by",
+		id:"order_by",
+		k8s_job_name:"order_by",
+		last_status_at:"order_by",
+		match_map_id:"order_by",
+		progress:"order_by",
+		session_token:"order_by",
+		status:"order_by",
+		user_steam_id:"order_by"
+	},
+	clip_render_jobs_min_order_by:{
+		clip_id:"order_by",
+		created_at:"order_by",
+		error_message:"order_by",
+		id:"order_by",
+		k8s_job_name:"order_by",
+		last_status_at:"order_by",
+		match_map_id:"order_by",
+		progress:"order_by",
+		session_token:"order_by",
+		status:"order_by",
+		user_steam_id:"order_by"
+	},
+	clip_render_jobs_on_conflict:{
+		constraint:"clip_render_jobs_constraint",
+		update_columns:"clip_render_jobs_update_column",
+		where:"clip_render_jobs_bool_exp"
+	},
+	clip_render_jobs_order_by:{
+		clip:"match_clips_order_by",
+		clip_id:"order_by",
+		created_at:"order_by",
+		error_message:"order_by",
+		id:"order_by",
+		k8s_job_name:"order_by",
+		last_status_at:"order_by",
+		match_map:"match_maps_order_by",
+		match_map_id:"order_by",
+		progress:"order_by",
+		session_token:"order_by",
+		spec:"order_by",
+		status:"order_by",
+		status_history:"order_by",
+		user:"players_order_by",
+		user_steam_id:"order_by"
+	},
+	clip_render_jobs_pk_columns_input:{
+		id:"uuid"
+	},
+	clip_render_jobs_prepend_input:{
+		spec:"jsonb",
+		status_history:"jsonb"
+	},
+	clip_render_jobs_select_column: "enum" as const,
+	clip_render_jobs_set_input:{
+		clip_id:"uuid",
+		created_at:"timestamptz",
+		id:"uuid",
+		last_status_at:"timestamptz",
+		match_map_id:"uuid",
+		progress:"numeric",
+		spec:"jsonb",
+		status_history:"jsonb",
+		user_steam_id:"bigint"
+	},
+	clip_render_jobs_stddev_order_by:{
+		progress:"order_by",
+		user_steam_id:"order_by"
+	},
+	clip_render_jobs_stddev_pop_order_by:{
+		progress:"order_by",
+		user_steam_id:"order_by"
+	},
+	clip_render_jobs_stddev_samp_order_by:{
+		progress:"order_by",
+		user_steam_id:"order_by"
+	},
+	clip_render_jobs_stream_cursor_input:{
+		initial_value:"clip_render_jobs_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	clip_render_jobs_stream_cursor_value_input:{
+		clip_id:"uuid",
+		created_at:"timestamptz",
+		id:"uuid",
+		last_status_at:"timestamptz",
+		match_map_id:"uuid",
+		progress:"numeric",
+		spec:"jsonb",
+		status_history:"jsonb",
+		user_steam_id:"bigint"
+	},
+	clip_render_jobs_sum_order_by:{
+		progress:"order_by",
+		user_steam_id:"order_by"
+	},
+	clip_render_jobs_update_column: "enum" as const,
+	clip_render_jobs_updates:{
+		_append:"clip_render_jobs_append_input",
+		_delete_at_path:"clip_render_jobs_delete_at_path_input",
+		_delete_elem:"clip_render_jobs_delete_elem_input",
+		_delete_key:"clip_render_jobs_delete_key_input",
+		_inc:"clip_render_jobs_inc_input",
+		_prepend:"clip_render_jobs_prepend_input",
+		_set:"clip_render_jobs_set_input",
+		where:"clip_render_jobs_bool_exp"
+	},
+	clip_render_jobs_var_pop_order_by:{
+		progress:"order_by",
+		user_steam_id:"order_by"
+	},
+	clip_render_jobs_var_samp_order_by:{
+		progress:"order_by",
+		user_steam_id:"order_by"
+	},
+	clip_render_jobs_variance_order_by:{
+		progress:"order_by",
+		user_steam_id:"order_by"
 	},
 	cursor_ordering: "enum" as const,
 	db_backups_aggregate_fields:{
@@ -2968,6 +3204,103 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"maps_set_input",
 		where:"maps_bool_exp"
 	},
+	match_clips:{
+		render_jobs:{
+			distinct_on:"clip_render_jobs_select_column",
+			order_by:"clip_render_jobs_order_by",
+			where:"clip_render_jobs_bool_exp"
+		},
+		render_jobs_aggregate:{
+			distinct_on:"clip_render_jobs_select_column",
+			order_by:"clip_render_jobs_order_by",
+			where:"clip_render_jobs_bool_exp"
+		}
+	},
+	match_clips_aggregate_fields:{
+		count:{
+			columns:"match_clips_select_column"
+		}
+	},
+	match_clips_bool_exp:{
+		_and:"match_clips_bool_exp",
+		_not:"match_clips_bool_exp",
+		_or:"match_clips_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		duration_ms:"Int_comparison_exp",
+		id:"uuid_comparison_exp",
+		match_map:"match_maps_bool_exp",
+		match_map_id:"uuid_comparison_exp",
+		render_jobs:"clip_render_jobs_bool_exp",
+		render_jobs_aggregate:"clip_render_jobs_aggregate_bool_exp",
+		s3_url:"String_comparison_exp",
+		thumbnail_url:"String_comparison_exp",
+		title:"String_comparison_exp",
+		user:"players_bool_exp",
+		user_steam_id:"bigint_comparison_exp",
+		visibility:"String_comparison_exp"
+	},
+	match_clips_constraint: "enum" as const,
+	match_clips_inc_input:{
+		user_steam_id:"bigint"
+	},
+	match_clips_insert_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		match_map:"match_maps_obj_rel_insert_input",
+		match_map_id:"uuid",
+		render_jobs:"clip_render_jobs_arr_rel_insert_input",
+		user:"players_obj_rel_insert_input",
+		user_steam_id:"bigint"
+	},
+	match_clips_obj_rel_insert_input:{
+		data:"match_clips_insert_input",
+		on_conflict:"match_clips_on_conflict"
+	},
+	match_clips_on_conflict:{
+		constraint:"match_clips_constraint",
+		update_columns:"match_clips_update_column",
+		where:"match_clips_bool_exp"
+	},
+	match_clips_order_by:{
+		created_at:"order_by",
+		duration_ms:"order_by",
+		id:"order_by",
+		match_map:"match_maps_order_by",
+		match_map_id:"order_by",
+		render_jobs_aggregate:"clip_render_jobs_aggregate_order_by",
+		s3_url:"order_by",
+		thumbnail_url:"order_by",
+		title:"order_by",
+		user:"players_order_by",
+		user_steam_id:"order_by",
+		visibility:"order_by"
+	},
+	match_clips_pk_columns_input:{
+		id:"uuid"
+	},
+	match_clips_select_column: "enum" as const,
+	match_clips_set_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		match_map_id:"uuid",
+		user_steam_id:"bigint"
+	},
+	match_clips_stream_cursor_input:{
+		initial_value:"match_clips_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	match_clips_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		match_map_id:"uuid",
+		user_steam_id:"bigint"
+	},
+	match_clips_update_column: "enum" as const,
+	match_clips_updates:{
+		_inc:"match_clips_inc_input",
+		_set:"match_clips_set_input",
+		where:"match_clips_bool_exp"
+	},
 	match_demo_sessions:{
 		status_history:{
 
@@ -5571,6 +5904,9 @@ export const AllTypesProps: Record<string,any> = {
 		callForOrganizer:{
 
 		},
+		cancelClipRender:{
+			job_id:"uuid"
+		},
 		cancelMatch:{
 			match_id:"uuid"
 		},
@@ -5580,11 +5916,17 @@ export const AllTypesProps: Record<string,any> = {
 		createApiKey:{
 
 		},
+		createClipRender:{
+			spec:"ClipSpecInput"
+		},
 		createClips:{
 			match_id:"uuid"
 		},
 		createServerDirectory:{
 
+		},
+		deleteClip:{
+			clip_id:"uuid"
 		},
 		deleteMatch:{
 
@@ -5612,6 +5954,12 @@ export const AllTypesProps: Record<string,any> = {
 			where:"api_keys_bool_exp"
 		},
 		delete_api_keys_by_pk:{
+			id:"uuid"
+		},
+		delete_clip_render_jobs:{
+			where:"clip_render_jobs_bool_exp"
+		},
+		delete_clip_render_jobs_by_pk:{
 			id:"uuid"
 		},
 		delete_db_backups:{
@@ -5821,6 +6169,12 @@ export const AllTypesProps: Record<string,any> = {
 			where:"maps_bool_exp"
 		},
 		delete_maps_by_pk:{
+			id:"uuid"
+		},
+		delete_match_clips:{
+			where:"match_clips_bool_exp"
+		},
+		delete_match_clips_by_pk:{
 			id:"uuid"
 		},
 		delete_match_demo_sessions:{
@@ -6143,6 +6497,14 @@ export const AllTypesProps: Record<string,any> = {
 			object:"api_keys_insert_input",
 			on_conflict:"api_keys_on_conflict"
 		},
+		insert_clip_render_jobs:{
+			objects:"clip_render_jobs_insert_input",
+			on_conflict:"clip_render_jobs_on_conflict"
+		},
+		insert_clip_render_jobs_one:{
+			object:"clip_render_jobs_insert_input",
+			on_conflict:"clip_render_jobs_on_conflict"
+		},
 		insert_db_backups:{
 			objects:"db_backups_insert_input",
 			on_conflict:"db_backups_on_conflict"
@@ -6420,6 +6782,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_maps_one:{
 			object:"maps_insert_input",
 			on_conflict:"maps_on_conflict"
+		},
+		insert_match_clips:{
+			objects:"match_clips_insert_input",
+			on_conflict:"match_clips_on_conflict"
+		},
+		insert_match_clips_one:{
+			object:"match_clips_insert_input",
+			on_conflict:"match_clips_on_conflict"
 		},
 		insert_match_demo_sessions:{
 			objects:"match_demo_sessions_insert_input",
@@ -6810,6 +7180,9 @@ export const AllTypesProps: Record<string,any> = {
 		renameServerItem:{
 
 		},
+		reparseDemo:{
+			match_map_id:"uuid"
+		},
 		requestNameChange:{
 			steam_id:"bigint"
 		},
@@ -6900,6 +7273,29 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_api_keys_many:{
 			updates:"api_keys_updates"
+		},
+		update_clip_render_jobs:{
+			_append:"clip_render_jobs_append_input",
+			_delete_at_path:"clip_render_jobs_delete_at_path_input",
+			_delete_elem:"clip_render_jobs_delete_elem_input",
+			_delete_key:"clip_render_jobs_delete_key_input",
+			_inc:"clip_render_jobs_inc_input",
+			_prepend:"clip_render_jobs_prepend_input",
+			_set:"clip_render_jobs_set_input",
+			where:"clip_render_jobs_bool_exp"
+		},
+		update_clip_render_jobs_by_pk:{
+			_append:"clip_render_jobs_append_input",
+			_delete_at_path:"clip_render_jobs_delete_at_path_input",
+			_delete_elem:"clip_render_jobs_delete_elem_input",
+			_delete_key:"clip_render_jobs_delete_key_input",
+			_inc:"clip_render_jobs_inc_input",
+			_prepend:"clip_render_jobs_prepend_input",
+			_set:"clip_render_jobs_set_input",
+			pk_columns:"clip_render_jobs_pk_columns_input"
+		},
+		update_clip_render_jobs_many:{
+			updates:"clip_render_jobs_updates"
 		},
 		update_db_backups:{
 			_inc:"db_backups_inc_input",
@@ -7312,6 +7708,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_maps_many:{
 			updates:"maps_updates"
+		},
+		update_match_clips:{
+			_inc:"match_clips_inc_input",
+			_set:"match_clips_set_input",
+			where:"match_clips_bool_exp"
+		},
+		update_match_clips_by_pk:{
+			_inc:"match_clips_inc_input",
+			_set:"match_clips_set_input",
+			pk_columns:"match_clips_pk_columns_input"
+		},
+		update_match_clips_many:{
+			updates:"match_clips_updates"
 		},
 		update_match_demo_sessions:{
 			_append:"match_demo_sessions_append_input",
@@ -10820,6 +11229,19 @@ export const AllTypesProps: Record<string,any> = {
 		api_keys_by_pk:{
 			id:"uuid"
 		},
+		clip_render_jobs:{
+			distinct_on:"clip_render_jobs_select_column",
+			order_by:"clip_render_jobs_order_by",
+			where:"clip_render_jobs_bool_exp"
+		},
+		clip_render_jobs_aggregate:{
+			distinct_on:"clip_render_jobs_select_column",
+			order_by:"clip_render_jobs_order_by",
+			where:"clip_render_jobs_bool_exp"
+		},
+		clip_render_jobs_by_pk:{
+			id:"uuid"
+		},
 		db_backups:{
 			distinct_on:"db_backups_select_column",
 			order_by:"db_backups_order_by",
@@ -11308,6 +11730,19 @@ export const AllTypesProps: Record<string,any> = {
 			where:"maps_bool_exp"
 		},
 		maps_by_pk:{
+			id:"uuid"
+		},
+		match_clips:{
+			distinct_on:"match_clips_select_column",
+			order_by:"match_clips_order_by",
+			where:"match_clips_bool_exp"
+		},
+		match_clips_aggregate:{
+			distinct_on:"match_clips_select_column",
+			order_by:"match_clips_order_by",
+			where:"match_clips_bool_exp"
+		},
+		match_clips_by_pk:{
 			id:"uuid"
 		},
 		match_demo_sessions:{
@@ -12462,6 +12897,23 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"api_keys_stream_cursor_input",
 			where:"api_keys_bool_exp"
 		},
+		clip_render_jobs:{
+			distinct_on:"clip_render_jobs_select_column",
+			order_by:"clip_render_jobs_order_by",
+			where:"clip_render_jobs_bool_exp"
+		},
+		clip_render_jobs_aggregate:{
+			distinct_on:"clip_render_jobs_select_column",
+			order_by:"clip_render_jobs_order_by",
+			where:"clip_render_jobs_bool_exp"
+		},
+		clip_render_jobs_by_pk:{
+			id:"uuid"
+		},
+		clip_render_jobs_stream:{
+			cursor:"clip_render_jobs_stream_cursor_input",
+			where:"clip_render_jobs_bool_exp"
+		},
 		db_backups:{
 			distinct_on:"db_backups_select_column",
 			order_by:"db_backups_order_by",
@@ -13067,6 +13519,23 @@ export const AllTypesProps: Record<string,any> = {
 		maps_stream:{
 			cursor:"maps_stream_cursor_input",
 			where:"maps_bool_exp"
+		},
+		match_clips:{
+			distinct_on:"match_clips_select_column",
+			order_by:"match_clips_order_by",
+			where:"match_clips_bool_exp"
+		},
+		match_clips_aggregate:{
+			distinct_on:"match_clips_select_column",
+			order_by:"match_clips_order_by",
+			where:"match_clips_bool_exp"
+		},
+		match_clips_by_pk:{
+			id:"uuid"
+		},
+		match_clips_stream:{
+			cursor:"match_clips_stream_cursor_input",
+			where:"match_clips_bool_exp"
 		},
 		match_demo_sessions:{
 			distinct_on:"match_demo_sessions_select_column",
@@ -18189,6 +18658,10 @@ export const ReturnTypes: Record<string,any> = {
 		used:"bigint",
 		window:"Float"
 	},
+	CreateClipRenderOutput:{
+		job_id:"uuid",
+		success:"Boolean"
+	},
 	DatabaseStats:{
 		blks_hit:"Int",
 		blks_read:"Int",
@@ -18609,6 +19082,103 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	bigint: `scalar.bigint` as const,
 	bytea: `scalar.bytea` as const,
+	clip_render_jobs:{
+		clip:"match_clips",
+		clip_id:"uuid",
+		created_at:"timestamptz",
+		error_message:"String",
+		id:"uuid",
+		k8s_job_name:"String",
+		last_status_at:"timestamptz",
+		match_map:"match_maps",
+		match_map_id:"uuid",
+		progress:"numeric",
+		session_token:"String",
+		spec:"jsonb",
+		status:"String",
+		status_history:"jsonb",
+		user:"players",
+		user_steam_id:"bigint"
+	},
+	clip_render_jobs_aggregate:{
+		aggregate:"clip_render_jobs_aggregate_fields",
+		nodes:"clip_render_jobs"
+	},
+	clip_render_jobs_aggregate_fields:{
+		avg:"clip_render_jobs_avg_fields",
+		count:"Int",
+		max:"clip_render_jobs_max_fields",
+		min:"clip_render_jobs_min_fields",
+		stddev:"clip_render_jobs_stddev_fields",
+		stddev_pop:"clip_render_jobs_stddev_pop_fields",
+		stddev_samp:"clip_render_jobs_stddev_samp_fields",
+		sum:"clip_render_jobs_sum_fields",
+		var_pop:"clip_render_jobs_var_pop_fields",
+		var_samp:"clip_render_jobs_var_samp_fields",
+		variance:"clip_render_jobs_variance_fields"
+	},
+	clip_render_jobs_avg_fields:{
+		progress:"Float",
+		user_steam_id:"Float"
+	},
+	clip_render_jobs_max_fields:{
+		clip_id:"uuid",
+		created_at:"timestamptz",
+		error_message:"String",
+		id:"uuid",
+		k8s_job_name:"String",
+		last_status_at:"timestamptz",
+		match_map_id:"uuid",
+		progress:"numeric",
+		session_token:"String",
+		status:"String",
+		user_steam_id:"bigint"
+	},
+	clip_render_jobs_min_fields:{
+		clip_id:"uuid",
+		created_at:"timestamptz",
+		error_message:"String",
+		id:"uuid",
+		k8s_job_name:"String",
+		last_status_at:"timestamptz",
+		match_map_id:"uuid",
+		progress:"numeric",
+		session_token:"String",
+		status:"String",
+		user_steam_id:"bigint"
+	},
+	clip_render_jobs_mutation_response:{
+		affected_rows:"Int",
+		returning:"clip_render_jobs"
+	},
+	clip_render_jobs_stddev_fields:{
+		progress:"Float",
+		user_steam_id:"Float"
+	},
+	clip_render_jobs_stddev_pop_fields:{
+		progress:"Float",
+		user_steam_id:"Float"
+	},
+	clip_render_jobs_stddev_samp_fields:{
+		progress:"Float",
+		user_steam_id:"Float"
+	},
+	clip_render_jobs_sum_fields:{
+		progress:"numeric",
+		user_steam_id:"bigint"
+	},
+	clip_render_jobs_var_pop_fields:{
+		progress:"Float",
+		user_steam_id:"Float"
+	},
+	clip_render_jobs_var_samp_fields:{
+		progress:"Float",
+		user_steam_id:"Float"
+	},
+	clip_render_jobs_variance_fields:{
+		progress:"Float",
+		user_steam_id:"Float"
+	},
 	db_backups:{
 		created_at:"timestamptz",
 		id:"uuid",
@@ -19983,6 +20553,96 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"maps"
 	},
+	match_clips:{
+		created_at:"timestamptz",
+		duration_ms:"Int",
+		id:"uuid",
+		match_map:"match_maps",
+		match_map_id:"uuid",
+		render_jobs:"clip_render_jobs",
+		render_jobs_aggregate:"clip_render_jobs_aggregate",
+		s3_url:"String",
+		thumbnail_url:"String",
+		title:"String",
+		user:"players",
+		user_steam_id:"bigint",
+		visibility:"String"
+	},
+	match_clips_aggregate:{
+		aggregate:"match_clips_aggregate_fields",
+		nodes:"match_clips"
+	},
+	match_clips_aggregate_fields:{
+		avg:"match_clips_avg_fields",
+		count:"Int",
+		max:"match_clips_max_fields",
+		min:"match_clips_min_fields",
+		stddev:"match_clips_stddev_fields",
+		stddev_pop:"match_clips_stddev_pop_fields",
+		stddev_samp:"match_clips_stddev_samp_fields",
+		sum:"match_clips_sum_fields",
+		var_pop:"match_clips_var_pop_fields",
+		var_samp:"match_clips_var_samp_fields",
+		variance:"match_clips_variance_fields"
+	},
+	match_clips_avg_fields:{
+		duration_ms:"Float",
+		user_steam_id:"Float"
+	},
+	match_clips_max_fields:{
+		created_at:"timestamptz",
+		duration_ms:"Int",
+		id:"uuid",
+		match_map_id:"uuid",
+		s3_url:"String",
+		thumbnail_url:"String",
+		title:"String",
+		user_steam_id:"bigint",
+		visibility:"String"
+	},
+	match_clips_min_fields:{
+		created_at:"timestamptz",
+		duration_ms:"Int",
+		id:"uuid",
+		match_map_id:"uuid",
+		s3_url:"String",
+		thumbnail_url:"String",
+		title:"String",
+		user_steam_id:"bigint",
+		visibility:"String"
+	},
+	match_clips_mutation_response:{
+		affected_rows:"Int",
+		returning:"match_clips"
+	},
+	match_clips_stddev_fields:{
+		duration_ms:"Float",
+		user_steam_id:"Float"
+	},
+	match_clips_stddev_pop_fields:{
+		duration_ms:"Float",
+		user_steam_id:"Float"
+	},
+	match_clips_stddev_samp_fields:{
+		duration_ms:"Float",
+		user_steam_id:"Float"
+	},
+	match_clips_sum_fields:{
+		duration_ms:"Int",
+		user_steam_id:"bigint"
+	},
+	match_clips_var_pop_fields:{
+		duration_ms:"Float",
+		user_steam_id:"Float"
+	},
+	match_clips_var_samp_fields:{
+		duration_ms:"Float",
+		user_steam_id:"Float"
+	},
+	match_clips_variance_fields:{
+		duration_ms:"Float",
+		user_steam_id:"Float"
+	},
 	match_demo_sessions:{
 		created_at:"timestamptz",
 		error_message:"String",
@@ -21294,11 +21954,14 @@ export const ReturnTypes: Record<string,any> = {
 		acceptInvite:"SuccessOutput",
 		approveNameChange:"SuccessOutput",
 		callForOrganizer:"SuccessOutput",
+		cancelClipRender:"SuccessOutput",
 		cancelMatch:"SuccessOutput",
 		checkIntoMatch:"SuccessOutput",
 		createApiKey:"ApiKeyResponse",
+		createClipRender:"CreateClipRenderOutput",
 		createClips:"SuccessOutput",
 		createServerDirectory:"SuccessOutput",
+		deleteClip:"SuccessOutput",
 		deleteMatch:"SuccessOutput",
 		deleteServerItem:"SuccessOutput",
 		deleteTournament:"SuccessOutput",
@@ -21308,6 +21971,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_abandoned_matches_by_pk:"abandoned_matches",
 		delete_api_keys:"api_keys_mutation_response",
 		delete_api_keys_by_pk:"api_keys",
+		delete_clip_render_jobs:"clip_render_jobs_mutation_response",
+		delete_clip_render_jobs_by_pk:"clip_render_jobs",
 		delete_db_backups:"db_backups_mutation_response",
 		delete_db_backups_by_pk:"db_backups",
 		delete_e_check_in_settings:"e_check_in_settings_mutation_response",
@@ -21377,6 +22042,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_map_pools_by_pk:"map_pools",
 		delete_maps:"maps_mutation_response",
 		delete_maps_by_pk:"maps",
+		delete_match_clips:"match_clips_mutation_response",
+		delete_match_clips_by_pk:"match_clips",
 		delete_match_demo_sessions:"match_demo_sessions_mutation_response",
 		delete_match_demo_sessions_by_pk:"match_demo_sessions",
 		delete_match_invites:"match_invites_mutation_response",
@@ -21475,6 +22142,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_abandoned_matches_one:"abandoned_matches",
 		insert_api_keys:"api_keys_mutation_response",
 		insert_api_keys_one:"api_keys",
+		insert_clip_render_jobs:"clip_render_jobs_mutation_response",
+		insert_clip_render_jobs_one:"clip_render_jobs",
 		insert_db_backups:"db_backups_mutation_response",
 		insert_db_backups_one:"db_backups",
 		insert_e_check_in_settings:"e_check_in_settings_mutation_response",
@@ -21545,6 +22214,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_map_pools_one:"map_pools",
 		insert_maps:"maps_mutation_response",
 		insert_maps_one:"maps",
+		insert_match_clips:"match_clips_mutation_response",
+		insert_match_clips_one:"match_clips",
 		insert_match_demo_sessions:"match_demo_sessions_mutation_response",
 		insert_match_demo_sessions_one:"match_demo_sessions",
 		insert_match_invites:"match_invites_mutation_response",
@@ -21649,6 +22320,7 @@ export const ReturnTypes: Record<string,any> = {
 		registerName:"SuccessOutput",
 		removeFixtures:"SuccessOutput",
 		renameServerItem:"SuccessOutput",
+		reparseDemo:"SuccessOutput",
 		requestNameChange:"SuccessOutput",
 		restartService:"SuccessOutput",
 		scheduleMatch:"SuccessOutput",
@@ -21680,6 +22352,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_api_keys:"api_keys_mutation_response",
 		update_api_keys_by_pk:"api_keys",
 		update_api_keys_many:"api_keys_mutation_response",
+		update_clip_render_jobs:"clip_render_jobs_mutation_response",
+		update_clip_render_jobs_by_pk:"clip_render_jobs",
+		update_clip_render_jobs_many:"clip_render_jobs_mutation_response",
 		update_db_backups:"db_backups_mutation_response",
 		update_db_backups_by_pk:"db_backups",
 		update_db_backups_many:"db_backups_mutation_response",
@@ -21784,6 +22459,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_maps:"maps_mutation_response",
 		update_maps_by_pk:"maps",
 		update_maps_many:"maps_mutation_response",
+		update_match_clips:"match_clips_mutation_response",
+		update_match_clips_by_pk:"match_clips",
+		update_match_clips_many:"match_clips_mutation_response",
 		update_match_demo_sessions:"match_demo_sessions_mutation_response",
 		update_match_demo_sessions_by_pk:"match_demo_sessions",
 		update_match_demo_sessions_many:"match_demo_sessions_mutation_response",
@@ -23474,6 +24152,9 @@ export const ReturnTypes: Record<string,any> = {
 		api_keys:"api_keys",
 		api_keys_aggregate:"api_keys_aggregate",
 		api_keys_by_pk:"api_keys",
+		clip_render_jobs:"clip_render_jobs",
+		clip_render_jobs_aggregate:"clip_render_jobs_aggregate",
+		clip_render_jobs_by_pk:"clip_render_jobs",
 		dbStats:"DbStats",
 		db_backups:"db_backups",
 		db_backups_aggregate:"db_backups_aggregate",
@@ -23599,6 +24280,9 @@ export const ReturnTypes: Record<string,any> = {
 		maps:"maps",
 		maps_aggregate:"maps_aggregate",
 		maps_by_pk:"maps",
+		match_clips:"match_clips",
+		match_clips_aggregate:"match_clips_aggregate",
+		match_clips_by_pk:"match_clips",
 		match_demo_sessions:"match_demo_sessions",
 		match_demo_sessions_aggregate:"match_demo_sessions_aggregate",
 		match_demo_sessions_by_pk:"match_demo_sessions",
@@ -24013,6 +24697,10 @@ export const ReturnTypes: Record<string,any> = {
 		api_keys_aggregate:"api_keys_aggregate",
 		api_keys_by_pk:"api_keys",
 		api_keys_stream:"api_keys",
+		clip_render_jobs:"clip_render_jobs",
+		clip_render_jobs_aggregate:"clip_render_jobs_aggregate",
+		clip_render_jobs_by_pk:"clip_render_jobs",
+		clip_render_jobs_stream:"clip_render_jobs",
 		db_backups:"db_backups",
 		db_backups_aggregate:"db_backups_aggregate",
 		db_backups_by_pk:"db_backups",
@@ -24154,6 +24842,10 @@ export const ReturnTypes: Record<string,any> = {
 		maps_aggregate:"maps_aggregate",
 		maps_by_pk:"maps",
 		maps_stream:"maps",
+		match_clips:"match_clips",
+		match_clips_aggregate:"match_clips_aggregate",
+		match_clips_by_pk:"match_clips",
+		match_clips_stream:"match_clips",
 		match_demo_sessions:"match_demo_sessions",
 		match_demo_sessions_aggregate:"match_demo_sessions_aggregate",
 		match_demo_sessions_by_pk:"match_demo_sessions",

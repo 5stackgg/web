@@ -17,13 +17,11 @@ const DEMO_STAGES = [
   { key: "downloading_workshop_map", label: "Downloading workshop map" },
   { key: "launching_cs2", label: "Launching CS2" },
   { key: "connecting_to_game", label: "Loading demo into CS2" },
-  { key: "live", label: "Capturing video" },
-  // `playing` fires from spec-server's GSI handler on the first
-  // game-state event from cs2 — the deterministic "demo is actually
-  // rolling" signal. We gate the WHEP player on this rather than
-  // `live` so the operator never sees a black/menu frame before
-  // gameplay starts.
-  { key: "playing", label: "Demo loaded" },
+  // `live` (capture publishing) is the last visible stepper stage.
+  // `playing` (GSI-confirmed demo rolling) isn't shown — the WHEP
+  // player mounts at that moment, so the stepper would only flash
+  // for one frame before being unmounted anyway.
+  { key: "live", label: "Demo Loading" },
 ];
 
 // Pure presentation: the parent page (pages/demo/[matchMapId].vue)

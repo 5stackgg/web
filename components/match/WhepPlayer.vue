@@ -18,18 +18,11 @@ const props = defineProps<{
   // hardcoded to a public Google server below as a sane default.
   iceServers?: RTCIceServer[];
   muted?: boolean;
-  // Optional URL to a "normal" playback page (mediamtx serves a built-in
-  // HLS web player at the stream's base path). If provided, we switch
-  // to an <iframe> pointing at this URL after WHEP fails persistently
-  // — e.g. WebRTC blocked by network policy, browser without WebRTC,
-  // or sustained negotiation failures.
   fallbackUrl?: string | null;
 }>();
 
 const videoRef = ref<HTMLVideoElement | null>(null);
 const status = ref<"idle" | "connecting" | "playing" | "error">("idle");
-// Once tripped, we stop attempting WHEP and render the fallback iframe
-// instead. One-way switch — recovery requires unmount/remount.
 const useFallback = ref(false);
 let failureCount = 0;
 const MAX_WHEP_FAILURES = 3;
@@ -213,9 +206,7 @@ async function connect() {
     await pc.setRemoteDescription({ type: "answer", sdp: answerSdp });
     // Successful negotiation — reset the backoff so a future drop
     // (e.g. caster swap → momentary stream gap) starts retrying fast
-    // again instead of inheriting an aged 5s delay. Also reset the
-    // fallback budget so a brief drop later doesn't push us into the
-    // iframe immediately.
+    // again instead of inheriting an aged 5s delay.
     retryDelay = INITIAL_RETRY_DELAY_MS;
     failureCount = 0;
     isRetrying.value = false;
@@ -225,11 +216,6 @@ async function connect() {
     errorMessage.value = message;
     await teardown();
     failureCount += 1;
-    // If we've exhausted the WHEP retry budget and the parent gave us
-    // a fallback URL, stop retrying and let the template render the
-    // mediamtx web player instead. WebRTC may be blocked by network
-    // policy or unsupported by the browser — falling back to the
-    // hosted player gives the user something watchable.
     if (failureCount >= MAX_WHEP_FAILURES && props.fallbackUrl) {
       cancelRetries();
       useFallback.value = true;
@@ -363,10 +349,6 @@ defineExpose({ connect, teardown });
     ref="containerRef"
     class="group relative aspect-video w-full h-full bg-black rounded overflow-hidden"
   >
-    <!-- Fallback path: WHEP failed enough times that we've given up on
-         WebRTC for this session. Render the mediamtx-hosted player at
-         the stream's base URL — higher latency than WHEP but works in
-         networks/browsers where WebRTC is blocked or unavailable. -->
     <iframe
       v-if="useFallback && fallbackUrl"
       :src="fallbackUrl"

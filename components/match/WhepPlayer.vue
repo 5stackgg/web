@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount } from "vue";
-import { Volume2, VolumeX } from "lucide-vue-next";
+import { Volume2, VolumeX, Maximize2, Minimize2 } from "lucide-vue-next";
 
 // Plays a mediamtx WebRTC (WHEP) stream in a <video> element.
 // WHEP = "WebRTC-HTTP Egress Protocol" — single POST exchanges an SDP
@@ -32,6 +32,58 @@ const isRetrying = ref(false);
 // the click-to-unmute overlay. Element starts muted so autoplay works
 // without prior user interaction; one click flips it.
 const isMuted = ref(true);
+const volume = ref(1);
+const isFullscreen = ref(false);
+const containerRef = ref<HTMLDivElement | null>(null);
+
+function setVolume(v: number) {
+  volume.value = Math.max(0, Math.min(1, v));
+  const el = videoRef.value;
+  if (!el) return;
+  el.volume = volume.value;
+  // Slider drag below 0.01 reads as "they want it off". Above 0
+  // implicitly unmutes.
+  if (volume.value <= 0.01) {
+    el.muted = true;
+    isMuted.value = true;
+  } else if (el.muted) {
+    el.muted = false;
+    isMuted.value = false;
+  }
+}
+
+async function toggleFullscreen() {
+  const target = containerRef.value;
+  if (!target) return;
+  if (document.fullscreenElement) {
+    await document.exitFullscreen().catch(() => undefined);
+  } else {
+    await target.requestFullscreen().catch(() => undefined);
+  }
+}
+
+function onFullscreenChange() {
+  isFullscreen.value = !!document.fullscreenElement;
+}
+
+function onKeyDown(e: KeyboardEvent) {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const target = e.target;
+  if (
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    (target instanceof HTMLElement && target.isContentEditable)
+  ) {
+    return;
+  }
+  if (e.key === "f" || e.key === "F") {
+    e.preventDefault();
+    void toggleFullscreen();
+  } else if (e.key === "m" || e.key === "M") {
+    e.preventDefault();
+    toggleMute();
+  }
+}
 
 let pc: RTCPeerConnection | null = null;
 let retryHandle: ReturnType<typeof setTimeout> | null = null;
@@ -230,6 +282,8 @@ function cancelRetries() {
 // connect() bails out — leaving status stuck at "idle".)
 onMounted(() => {
   void connect();
+  document.addEventListener("fullscreenchange", onFullscreenChange);
+  window.addEventListener("keydown", onKeyDown);
 });
 
 // Reconnect whenever the URL changes (e.g. user switches matches).
@@ -251,6 +305,8 @@ watch(
 onBeforeUnmount(() => {
   cancelRetries();
   void teardown();
+  document.removeEventListener("fullscreenchange", onFullscreenChange);
+  window.removeEventListener("keydown", onKeyDown);
 });
 
 // Mute toggle for the overlay button. Reuses the `unmute()` helper
@@ -272,8 +328,13 @@ defineExpose({ connect, teardown });
 </script>
 
 <template>
+  <!-- `aspect-video` is the default sizing for inline embeds, but parents
+       that render us inside `absolute inset-0` (the demo-player popup)
+       want us to stretch — `aspect-[unset]` lets the parent's height
+       win in that case. -->
   <div
-    class="group relative aspect-video w-full bg-black rounded overflow-hidden"
+    ref="containerRef"
+    class="group relative aspect-video w-full h-full bg-black rounded overflow-hidden"
   >
     <!-- `muted` and `autoplay` written as static attributes (not Vue
          bindings) so they're present on the element from the very
@@ -281,37 +342,66 @@ defineExpose({ connect, teardown });
          a late-arriving :muted binding can lose the race.
          Native controls are intentionally omitted — we surface only a
          minimal mute toggle on hover via the overlay below. -->
-    <!-- object-cover so the video element can never push past its
-         wrapper width while waiting for media — without it, an empty
-         <video> falls back to its 300px intrinsic size and can blow
-         out a constrained grid column on first paint. -->
+    <!-- object-contain so the 16:9 stream letterboxes inside whatever
+         box the parent gives us instead of cropping to fill. The
+         absolute inset-0 + h-full/w-full keeps the empty <video> from
+         falling back to its 300px intrinsic size on first paint. -->
     <video
       ref="videoRef"
-      class="absolute inset-0 h-full w-full object-cover"
+      class="absolute inset-0 h-full w-full object-contain"
       autoplay
       muted
       playsinline
     />
 
-    <!-- Mute / unmute pill — fades in on hover. Shown unconditionally
-         on touch devices (no hover) via opacity-100 sm:opacity-0 +
-         group-hover. Stays visible while muted so users have a clear
-         affordance to enable audio without hunting for it. -->
-    <button
+    <!-- Bottom-right control cluster: mute pill (with hover-revealed
+         volume slider) + fullscreen toggle. The whole strip fades in
+         on hover; the mute pill stays visible while muted so users
+         have an affordance to enable audio without hunting for it. -->
+    <div
       v-if="status === 'playing'"
-      type="button"
-      :aria-label="isMuted ? 'Unmute' : 'Mute'"
       :class="[
-        'absolute bottom-2 right-2 z-10 inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-opacity duration-150 hover:bg-black/80 hover:text-white',
+        'absolute bottom-2 right-2 z-10 flex items-center gap-2 transition-opacity duration-150',
         isMuted
           ? 'opacity-100'
-          : 'opacity-0 group-hover:opacity-100 focus-visible:opacity-100',
+          : 'opacity-0 group-hover:opacity-100 focus-within:opacity-100',
       ]"
-      @click="toggleMute"
     >
-      <VolumeX v-if="isMuted" class="size-3.5" />
-      <Volume2 v-else class="size-3.5" />
-    </button>
+      <div class="flex items-center group/vol">
+        <button
+          type="button"
+          :aria-label="isMuted ? 'Unmute' : 'Mute'"
+          class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-colors duration-150 hover:bg-black/80 hover:text-white cursor-pointer"
+          @click="toggleMute"
+        >
+          <VolumeX v-if="isMuted" class="size-3.5" />
+          <Volume2 v-else class="size-3.5" />
+        </button>
+        <!-- Slider grows to its full width on volume-pill hover. The
+             range input itself is styled minimal — track + thumb in
+             the deck colors so it doesn't fight the broadcast feel. -->
+        <input
+          type="range"
+          min="0"
+          max="1"
+          step="0.01"
+          :value="isMuted ? 0 : volume"
+          aria-label="Volume"
+          class="vol-slider ml-0 w-0 group-hover/vol:w-20 group-hover/vol:ml-2 focus-visible:w-20 focus-visible:ml-2 transition-all duration-200 cursor-pointer"
+          @input="setVolume(Number(($event.target as HTMLInputElement).value))"
+        />
+      </div>
+      <button
+        type="button"
+        :aria-label="isFullscreen ? 'Exit fullscreen' : 'Fullscreen'"
+        title="Fullscreen (F)"
+        class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-150 hover:bg-black/80 hover:text-white hover:scale-110 cursor-pointer"
+        @click="toggleFullscreen"
+      >
+        <Minimize2 v-if="isFullscreen" class="size-3.5" />
+        <Maximize2 v-else class="size-3.5" />
+      </button>
+    </div>
     <!-- Status overlay (connecting / error). pointer-events-none so
          clicks pass through to the <video> below. Visually evokes a
          broadcast deck "signal acquisition" pattern: ambient amber
@@ -506,6 +596,44 @@ defineExpose({ connect, teardown });
 }
 .whep-progress {
   animation: whep-progress-slide 1.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
+/* Volume slider — minimal styling, sized small so it tucks beside
+   the mute pill. h-1 track, 12px round thumb. Track gets a thin
+   white tint; thumb is full white so it pops against dark video. */
+.vol-slider {
+  appearance: none;
+  height: 0.25rem;
+  background: transparent;
+}
+.vol-slider:focus {
+  outline: none;
+}
+.vol-slider::-webkit-slider-runnable-track {
+  height: 0.25rem;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+}
+.vol-slider::-moz-range-track {
+  height: 0.25rem;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+}
+.vol-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  background: white;
+  border: 2px solid rgba(0, 0, 0, 0.6);
+  margin-top: -0.25rem;
+}
+.vol-slider::-moz-range-thumb {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  background: white;
+  border: 2px solid rgba(0, 0, 0, 0.6);
 }
 
 /* Respect reduced-motion preferences — drop the live motion but

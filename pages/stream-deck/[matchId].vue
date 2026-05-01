@@ -17,6 +17,8 @@ import {
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import WhepPlayer from "~/components/match/WhepPlayer.vue";
 import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
+import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
+import { Kbd } from "~/components/ui/kbd";
 import { announceFocusWindow } from "~/composables/useStreamerPopout";
 import {
   specSlotsForMatchType,
@@ -247,9 +249,41 @@ function isTypingInForm(target: EventTarget | null) {
   return target.isContentEditable === true;
 }
 
+const shortcutsOpen = ref(false);
+const SHORTCUT_GROUPS = computed(() => [
+  {
+    title: "Spectate",
+    items: [
+      {
+        keys: ["1", "—", "0"],
+        label: `Switch player (slot 1–${slotKeys.value.length})`,
+      },
+      { keys: ["←"], label: "Previous spec target" },
+      { keys: ["→"], label: "Next spec target" },
+      { keys: ["Space"], label: "Lock / free-roam" },
+    ],
+  },
+  {
+    title: "Help",
+    items: [{ keys: ["?"], label: "Show this help" }],
+  },
+]);
+
 function onKeyDown(e: KeyboardEvent) {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   if (isTypingInForm(e.target)) return;
+
+  if (e.key === "?" || (e.shiftKey && e.key === "/")) {
+    e.preventDefault();
+    shortcutsOpen.value = !shortcutsOpen.value;
+    return;
+  }
+  if (e.key === "Escape" && shortcutsOpen.value) {
+    e.preventDefault();
+    shortcutsOpen.value = false;
+    return;
+  }
+
   if (e.repeat) return;
 
   // Digits: 0..9 → slots
@@ -298,7 +332,7 @@ const team2Slots = computed(() => slotKeys.value.filter((s) => s.team === 2));
 
 <template>
   <div
-    class="min-h-screen bg-[hsl(var(--background))] text-foreground flex flex-col"
+    class="relative min-h-screen bg-[hsl(var(--background))] text-foreground flex flex-col"
     style="
       background-image:
         radial-gradient(
@@ -668,5 +702,19 @@ const team2Slots = computed(() => slotKeys.value.filter((s) => s.team === 2));
         </div>
       </div>
     </PageTransition>
+    <button
+      type="button"
+      class="fixed bottom-4 right-4 z-20 inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/80 px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-muted-foreground/80 backdrop-blur-md cursor-pointer transition-all duration-150 hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground hover:scale-105 active:scale-95"
+      title="Show keyboard shortcuts"
+      @click="shortcutsOpen = true"
+    >
+      Shortcuts
+      <Kbd>?</Kbd>
+    </button>
+    <ShortcutOverlay
+      :open="shortcutsOpen"
+      :groups="SHORTCUT_GROUPS"
+      @close="shortcutsOpen = false"
+    />
   </div>
 </template>

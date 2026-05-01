@@ -62,6 +62,10 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
       killer?: string;
       victim?: string;
       assist?: string;
+      // "ct" / "t" / undefined — recorded at kill time so half-time
+      // side-swaps don't need to be replayed in the UI.
+      killer_team?: "ct" | "t";
+      victim_team?: "ct" | "t";
       weapon?: string;
       headshot?: boolean;
     }>
@@ -75,6 +79,34 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     }>
   >([]);
 
+  // Match shape — mirrors what the live stream-deck reads off
+  // match_streams.match. Drives the slot-grid layout (5v5/2v2/1v1)
+  // and the team labels in the player-switcher row.
+  const matchType = ref<string | null>(null);
+  const lineup1Name = ref<string | null>(null);
+  const lineup2Name = ref<string | null>(null);
+  // steam_id → display name. Built from match.lineup_*.lineup_players
+  // at session start. Used to resolve killer/victim in kill tooltips.
+  const playerNames = ref<Record<string, string>>({});
+  // Roster info for the player filter — preserves lineup grouping +
+  // team color hint so the dropdown can render team-grouped sections.
+  const rosters = ref<{
+    lineup1: Array<{ steam_id: string; name: string }>;
+    lineup2: Array<{ steam_id: string; name: string }>;
+  }>({ lineup1: [], lineup2: [] });
+  // Active player filter for the kill nav. When set, jumpToNextKill /
+  // jumpToPrevKill + the skull markers scope to kills *by* this steam
+  // id only. null = show all kills.
+  const killFilterSteamId = ref<string | null>(null);
+  // "killer" = filter to kills BY this player (highlight reel mode).
+  // "victim" = filter to deaths OF this player (mistakes review mode).
+  const killFilterMode = ref<"killer" | "victim">("killer");
+  // Toggled UI state for quick actions. Local-only — the api fires
+  // the corresponding console command immediately, no subscription
+  // round-trip required.
+  const xrayEnabled = ref<boolean>(false);
+  const hudVisible = ref<boolean>(true);
+
   // Tick estimator state. Real tick =
   //   lastTickAtSync + (now - lastSyncRealMs) / 1000 * rate * tickRate
   // unless paused. Updated on every user-initiated control (seek,
@@ -85,6 +117,21 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   const lastSyncRealMs = ref<number>(Date.now());
   const rate = ref<number>(1);
   const paused = ref<boolean>(false);
+
+  // Reactive wall-clock ref the live-tick computed depends on.
+  // `Date.now()` itself isn't a reactive dep, so without this the
+  // currentTick computed cached the moment of the last control event
+  // and the seek bar froze between user actions. The interval ticks
+  // at 50ms (~20Hz) which is plenty smooth for a tick estimator —
+  // visualTick smoothing in DemoPlaybackControls reads currentTick
+  // every rAF frame and snaps when the diff is tiny, so the
+  // ~50ms freshness floor is invisible to the user.
+  const nowMs = ref<number>(Date.now());
+  if (typeof window !== "undefined") {
+    setInterval(() => {
+      nowMs.value = Date.now();
+    }, 50);
+  }
 
   // Surface a single status string to the UI. Subscription-driven
   // status (booting / launching_steam / live / errored) wins; local
@@ -100,6 +147,12 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   // GStreamer starts publishing to mediamtx — that's when the WHEP
   // egress on mediamtx will actually return a stream.
   const isLive = computed(() => status.value === "live");
+  // `playing` is reported by spec-server's GSI handler on the first
+  // game-state event from cs2 — the moment the demo is genuinely
+  // rendering frames. The WHEP player gates on this so we never show
+  // a menu/loading frame; the timeline gates on this so it doesn't
+  // estimate ticks against a not-yet-playing demo.
+  const isPlaying = computed(() => status.value === "playing");
   const isErrored = computed(
     () => status.value === "errored" || status.value === "error",
   );
@@ -120,7 +173,7 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   // user-initiated control via syncFromControl.
   const currentTick = computed<number>(() => {
     if (paused.value) return lastTickAtSync.value;
-    const elapsedSec = (Date.now() - lastSyncRealMs.value) / 1000;
+    const elapsedSec = (nowMs.value - lastSyncRealMs.value) / 1000;
     return Math.max(
       0,
       Math.round(
@@ -145,6 +198,15 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     lastSyncRealMs.value = Date.now();
     rate.value = 1;
     paused.value = false;
+    matchType.value = null;
+    lineup1Name.value = null;
+    lineup2Name.value = null;
+    playerNames.value = {};
+    rosters.value = { lineup1: [], lineup2: [] };
+    killFilterSteamId.value = null;
+    killFilterMode.value = "killer";
+    xrayEnabled.value = false;
+    hudVisible.value = true;
   }
 
   return {
@@ -157,6 +219,15 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     roundTicks,
     kills,
     bombs,
+    matchType,
+    lineup1Name,
+    lineup2Name,
+    playerNames,
+    rosters,
+    killFilterSteamId,
+    killFilterMode,
+    xrayEnabled,
+    hudVisible,
     rate,
     paused,
     lastTickAtSync,
@@ -167,6 +238,7 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     status,
     streamUrl,
     isLive,
+    isPlaying,
     isErrored,
     syncFromControl,
     reset,

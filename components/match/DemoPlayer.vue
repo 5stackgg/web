@@ -17,7 +17,11 @@ const DEMO_STAGES = [
   { key: "downloading_workshop_map", label: "Downloading workshop map" },
   { key: "launching_cs2", label: "Launching CS2" },
   { key: "connecting_to_game", label: "Loading demo into CS2" },
-  { key: "live", label: "Capturing video" },
+  // `live` (capture publishing) is the last visible stepper stage.
+  // `playing` (GSI-confirmed demo rolling) isn't shown — the WHEP
+  // player mounts at that moment, so the stepper would only flash
+  // for one frame before being unmounted anyway.
+  { key: "live", label: "Demo Loading" },
 ];
 
 // Pure presentation: the parent page (pages/demo/[matchMapId].vue)
@@ -59,61 +63,103 @@ function closeWindow() {
 </script>
 
 <template>
-  <div
-    class="flex flex-col rounded-lg overflow-hidden border border-border/70 bg-black"
-  >
-    <div class="relative aspect-video w-full">
-      <WhepPlayer v-if="store.isLive && whepUrl" :whep-url="whepUrl" />
+  <div class="flex flex-col bg-black h-full min-h-0">
+    <!-- Video area fills the remaining height; aspect ratio is preserved
+         by `object-contain` on the inner <video>, with letterboxing on
+         either axis. The previous `aspect-video w-full` forced a 16:9
+         box that pushed the controls strip off-screen on wide popups. -->
+    <div class="relative flex-1 min-h-0 w-full">
+      <!-- Boot panel ↔ live video swap is a high-impact transition —
+           crossfade so the moment cs2 starts publishing doesn't feel
+           like a hard cut. mode="out-in" so the boot panel finishes
+           fading before the WHEP player mounts (avoids two stacked
+           absolute layers fighting over the same space). -->
+      <Transition name="boot-live" mode="out-in">
+        <WhepPlayer
+          v-if="store.isPlaying && whepUrl"
+          key="live"
+          :whep-url="whepUrl"
+          class="absolute inset-0"
+        />
 
-      <div
-        v-else
-        class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center px-6"
-      >
-        <!-- Active session, not yet live: full step-by-step progress
-             with the current stage highlighted + an elapsed timer so
-             stalls are visible. -->
-        <template v-if="store.sessionRow && !store.isErrored">
-          <StreamSessionProgress
-            :status="store.status"
-            :error-message="store.sessionRow?.error_message"
-            :last-status-at="store.sessionRow?.last_status_at"
-            :status-history="store.sessionRow?.status_history || []"
-            :stages="DEMO_STAGES"
-            header-label="Demo session boot"
-          />
-          <Button size="sm" variant="ghost" @click="closeWindow">
-            Cancel
-          </Button>
-        </template>
+        <div
+          v-else
+          key="boot"
+          class="absolute inset-0 flex flex-col items-center justify-center gap-4 text-center px-6 py-8"
+        >
+          <template v-if="store.sessionRow && !store.isErrored">
+            <StreamSessionProgress
+              :status="store.status"
+              :error-message="store.sessionRow?.error_message"
+              :last-status-at="store.sessionRow?.last_status_at"
+              :status-history="store.sessionRow?.status_history || []"
+              :stages="DEMO_STAGES"
+              header-label="Demo session boot"
+            />
+            <Button size="sm" variant="ghost" @click="closeWindow">
+              Cancel
+            </Button>
+          </template>
 
-        <!-- Optimistic local-only states (between mount and first
-             subscription event). -->
-        <template v-else-if="store.localStatus === 'starting'">
-          <StreamSessionProgress
-            status="booting"
-            :stages="DEMO_STAGES"
-            header-label="Demo session boot"
-          />
-        </template>
+          <template v-else-if="store.localStatus === 'starting'">
+            <StreamSessionProgress
+              status="booting"
+              :stages="DEMO_STAGES"
+              header-label="Demo session boot"
+            />
+          </template>
 
-        <template v-else-if="store.isErrored || store.localStatus === 'error'">
-          <StreamSessionProgress
-            status="errored"
-            :error-message="
-              store.sessionRow?.error_message ?? store.errorMessage
-            "
-            :last-status-at="store.sessionRow?.last_status_at"
-            :status-history="store.sessionRow?.status_history || []"
-            :stages="DEMO_STAGES"
-            header-label="Demo session boot"
-          />
-          <Button size="sm" variant="outline" @click="closeWindow">
-            Close
-          </Button>
-        </template>
-      </div>
+          <template
+            v-else-if="store.isErrored || store.localStatus === 'error'"
+          >
+            <StreamSessionProgress
+              status="errored"
+              :error-message="
+                store.sessionRow?.error_message ?? store.errorMessage
+              "
+              :last-status-at="store.sessionRow?.last_status_at"
+              :status-history="store.sessionRow?.status_history || []"
+              :stages="DEMO_STAGES"
+              header-label="Demo session boot"
+            />
+            <Button size="sm" variant="outline" @click="closeWindow">
+              Close
+            </Button>
+          </template>
+        </div>
+      </Transition>
     </div>
 
-    <DemoPlaybackControls v-if="store.isLive" />
+    <Transition name="controls-slide">
+      <DemoPlaybackControls v-if="store.isPlaying" class="shrink-0" />
+    </Transition>
   </div>
 </template>
+
+<style scoped>
+.boot-live-enter-active,
+.boot-live-leave-active {
+  transition:
+    opacity 350ms ease,
+    transform 350ms ease;
+}
+.boot-live-enter-from {
+  opacity: 0;
+  transform: scale(1.02);
+}
+.boot-live-leave-to {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+/* Controls strip slides up from below when the session goes live. */
+.controls-slide-enter-active {
+  transition:
+    opacity 300ms ease,
+    transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.controls-slide-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+</style>

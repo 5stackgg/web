@@ -14,11 +14,13 @@ const SYSTEM_LOG_SERVICES = [
   "api",
   "web",
   "game-server-node",
+  "demo-parser",
   "hasura",
   "typesense",
   "timescaledb",
   "redis",
   "minio",
+  "mediamtx",
 ];
 
 const services = SYSTEM_LOG_SERVICES;

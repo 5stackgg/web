@@ -488,6 +488,8 @@ export default {
                   demos: {
                     size: true,
                     download_url: true,
+                    metadata_parsed_at: true,
+                    total_ticks: true,
                   },
                   rounds: [
                     {

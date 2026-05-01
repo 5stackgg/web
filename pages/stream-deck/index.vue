@@ -558,6 +558,7 @@ function statusBadgeLabel(stream: any) {
                   !isPopoutOpen(stream.match_id)
                 "
                 :whep-url="whepUrlFor(stream)!"
+                :fallback-url="stream.link"
               />
 
               <!-- Live + popout open: paused so the focus window owns

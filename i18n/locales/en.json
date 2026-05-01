@@ -23,7 +23,6 @@
         "remove": "Remove avatar",
         "team_avatar": "Team avatar",
         "player_avatar": "Player avatar",
-        "player_roster_image": "Player roster image",
         "upload_success": "Avatar uploaded",
         "upload_failed": "Avatar upload failed",
         "remove_success": "Avatar removed",
@@ -1630,17 +1629,11 @@
             "confirm_cancel_invite": "Are you sure you want to cancel this invite?",
             "confirm_remove": "Are you sure you want to remove this member?",
             "cancel_invite_description": "This will cancel the invite for this member",
-            "remove_description": "This will remove the member from the team",
-            "roster_image": "Roster image",
-            "roster_image_description": "Upload a roster image for {name} on this team. Overrides the player's default."
+            "remove_description": "This will remove the member from the team"
         }
     },
     "match": {
         "team_stats_heading": "{name} Stats",
-        "all_maps": "All Maps",
-        "stream": {
-            "watch": "Live Stream"
-        },
         "elo_details": {
             "title": "Elo Change Details",
             "elo": "Elo",
@@ -1846,13 +1839,10 @@
             "select_round_to_restore": "Select the round to restore",
             "server_information": "Server Information",
             "type": "Type",
-            "region": "Region",
-            "no_logs_title": "No Logs Available",
-            "no_logs_description": "No logs are available and no server is connected."
+            "region": "Region"
         },
         "show_players": "Show Players",
         "hide_players": "Hide Players",
-        "round_history": "Round History",
         "status": {
             "cancelled": "Cancelled",
             "waiting_server": "Waiting for server ...",
@@ -1889,8 +1879,8 @@
         },
         "auto_canceling": "Auto Canceling",
         "server_error": {
-            "title": "Server status update",
-            "short_label": "Server Status"
+            "title": "Server provisioning failed",
+            "short_label": "Server Issue"
         },
         "actions": {
             "call_support": "Call for Support",
@@ -1904,14 +1894,7 @@
             "pause": "Pause Match",
             "resume": "Resume Match",
             "match_paused": "Match paused",
-            "match_resumed": "Match resumed",
-            "start_live": "Start Live Stream",
-            "stop_live": "Stop Live Stream",
-            "cancel_live_boot": "Cancel Live Stream (booting…)",
-            "create_clips": "Create Clips",
-            "live_started": "Live stream starting",
-            "live_stopped": "Live stream stopped",
-            "clips_started": "Clip render queued"
+            "match_resumed": "Match resumed"
         },
         "delete_confirm": {
             "title": "Delete Match",
@@ -1993,13 +1976,6 @@
             "dedicated": "Dedicated Servers",
             "on_demand": "On Demand",
             "assigned": "Assigned Match Server",
-            "reboot_label": "Server Reboot",
-            "reboot": "Reboot Server",
-            "rebooting": "Rebooting...",
-            "reboot_description": "Recreate this match's on-demand game server without changing the match state.",
-            "reboot_confirm_title": "Reboot match server?",
-            "reboot_confirm_description": "This will restart the current on-demand match server and keep the match in its current state while the server reconnects.",
-            "reboot_started": "Server reboot started",
             "join_server": "Join Server",
             "join_as_spectator": "Spectator Details",
             "join_tv_stream": "TV Stream Details",

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from "vue";
-import { Film, Trash2, Download, Loader2 } from "lucide-vue-next";
+import { Film, Trash2, Download, Play } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import {
@@ -29,18 +29,26 @@ import {
 } from "~/components/ui/alert-dialog";
 
 const auth = useAuthStore();
-const { $apollo } = useNuxtApp();
+// Holding nuxtApp instead of destructuring `$apollo`: vue-apollo's
+// global `beforeCreate` mixin does `this.$apollo = ...`, and a
+// `<script setup>` binding called `$apollo` would be read-only on the
+// component proxy, making that mixin throw on mount.
+const nuxtApp = useNuxtApp();
 
 type Clip = {
   id: string;
   title: string | null;
   duration_ms: number | null;
-  s3_url: string | null;
+  download_url: string | null;
   thumbnail_url: string | null;
   created_at: string;
   match_map?: {
     id: string;
-    map?: { name: string; thumbnail: string | null } | null;
+    map?: {
+      name: string;
+      poster: string | null;
+      label: string | null;
+    } | null;
     match?: {
       id: string;
       lineup_1?: { name: string } | null;
@@ -99,7 +107,7 @@ async function confirmDelete() {
   if (!id || deleting.value) return;
   deleting.value = true;
   try {
-    await $apollo.defaultClient.mutate({
+    await nuxtApp.$apollo.defaultClient.mutate({
       mutation: generateMutation({
         deleteClip: [
           { clip_id: id },
@@ -124,6 +132,10 @@ function formatDuration(ms: number | null): string {
   const m = Math.floor(total / 60);
   const s = total % 60;
   return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
+function openClip(id: string) {
+  navigateTo(`/clips/${id}`);
 }
 
 function matchupLabel(c: Clip): string {
@@ -158,24 +170,36 @@ const isEmpty = computed(() => !loading.value && clips.value.length === 0);
     </Empty>
 
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      <Card v-for="c in clips" :key="c.id" class="overflow-hidden">
-        <div class="relative aspect-video bg-black">
-          <video
-            v-if="c.s3_url"
-            :src="c.s3_url"
-            :poster="c.thumbnail_url ?? undefined"
-            class="absolute inset-0 h-full w-full object-contain"
-            controls
-            preload="metadata"
+      <Card
+        v-for="c in clips"
+        :key="c.id"
+        class="overflow-hidden group cursor-pointer transition-all hover:border-[hsl(var(--tac-amber)/0.6)] hover:shadow-md"
+        @click="openClip(c.id)"
+      >
+        <!-- Thumbnail uses the map poster; the mp4 only loads on the
+             detail page so the library renders fast even with many
+             clips. Clicking the card or any non-action child opens the
+             player. The Play overlay is the obvious affordance. -->
+        <div class="relative aspect-video bg-black overflow-hidden">
+          <NuxtImg
+            v-if="c.match_map?.map?.poster"
+            :src="c.match_map.map.poster"
+            class="absolute inset-0 h-full w-full object-cover opacity-70 transition-transform group-hover:scale-105"
+            :alt="c.match_map?.map?.label ?? c.match_map?.map?.name ?? ''"
           />
           <div
             v-else
             class="absolute inset-0 flex items-center justify-center text-muted-foreground"
           >
-            <Loader2 class="h-6 w-6 animate-spin" />
+            <Film class="h-10 w-10 opacity-30" />
+          </div>
+          <div
+            class="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100"
+          >
+            <Play class="h-12 w-12 text-white drop-shadow-lg" :stroke-width="2.5" />
           </div>
           <span
-            class="absolute bottom-2 right-2 rounded bg-black/70 px-1.5 py-0.5 text-[0.65rem] font-mono tabular-nums text-white"
+            class="absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5 text-[0.65rem] font-mono tabular-nums text-white"
           >
             {{ formatDuration(c.duration_ms) }}
           </span>
@@ -186,21 +210,25 @@ const isEmpty = computed(() => !loading.value && clips.value.length === 0);
               <div class="truncate font-medium">
                 {{ c.title || "Untitled clip" }}
               </div>
-              <NuxtLink
-                v-if="c.match_map?.match?.id"
-                :to="`/matches/${c.match_map.match.id}`"
-                class="block truncate text-xs text-muted-foreground hover:text-foreground"
-              >
-                {{ matchupLabel(c) }}
-              </NuxtLink>
-              <span v-else class="block truncate text-xs text-muted-foreground">
+              <span class="block truncate text-xs text-muted-foreground">
                 {{ matchupLabel(c) }}
               </span>
             </div>
           </div>
-          <div class="flex items-center justify-end gap-1">
-            <Button v-if="c.s3_url" size="icon" variant="ghost" as-child>
-              <a :href="c.s3_url" download :title="`Download ${c.title ?? 'clip'}`">
+          <div class="flex items-center justify-end gap-1" @click.stop>
+            <Button v-if="c.download_url" size="icon" variant="ghost" as-child>
+              <!-- &dl=1 (not ?) — download_url already carries
+                   ?file=<key>, so a second ? would make `dl=1` part
+                   of the file value. The worker reads `dl` as its
+                   own query param + sets Content-Disposition:
+                   attachment so the browser downloads instead of
+                   playing inline. The HTML `download` attribute
+                   alone is unreliable cross-origin. -->
+              <a
+                :href="`${c.download_url}&dl=1`"
+                download
+                :title="`Download ${c.title ?? 'clip'}`"
+              >
                 <Download class="h-4 w-4" />
               </a>
             </Button>

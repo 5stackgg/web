@@ -1,0 +1,51 @@
+# Cloudflare worker config for the Backblaze proxy that fronts both
+# demo files and clip files (path-tolerant: /demo?file=… and
+# /clips?file=…). Deploy from this directory: `wrangler deploy`.
+#
+# Secrets are NOT in this file — see .dev.vars for local dev and
+# `wrangler secret put` for production. See the comments at the
+# bottom for the full list.
+
+name = "backblaze-proxy"
+main = "index.ts"
+compatibility_date = "2024-09-01"
+
+# Non-sensitive config — safe to commit. Override per-environment in
+# the [env.<name>.vars] blocks below if you run staging vs prod.
+[vars]
+# Backblaze bucket name (e.g. "5stack-demos"). Combined with
+# S3_ENDPOINT to form the upstream hostname:
+#   https://${BUCKET_NAME}.${S3_ENDPOINT}/<key>
+BUCKET_NAME = "5stack"
+# Backblaze S3 endpoint hostname (e.g. "s3.us-west-001.backblazeb2.com").
+# Find this in the bucket's "Endpoint" panel — strip the leading
+# "https://" and the "/${bucket}" suffix; only the host goes here.
+S3_ENDPOINT = "s3.us-east-005.backblazeb2.com"
+
+# ----------------------------------------------------------------------
+# Routes — point Cloudflare at the worker for both /demo* and /clips*
+# (and OPTIONS for both, for video range preflights). Replace the
+# zone_name with your domain. The 1016 you saw earlier was almost
+# certainly the /clips* path falling through because only /demo* was
+# wired up.
+# ----------------------------------------------------------------------
+# routes = [
+#   { pattern = "demo-dl.5stack.gg/demo*",  zone_name = "5stack.gg" },
+#   { pattern = "demo-dl.5stack.gg/clips*", zone_name = "5stack.gg" },
+# ]
+
+# ----------------------------------------------------------------------
+# Secrets — DO NOT add to this file. Use one of:
+#
+# Local dev (`wrangler dev`):
+#   create a `.dev.vars` file next to wrangler.toml with:
+#     S3_ACCESS_KEY="…"
+#     S3_SECRET="…"
+#   it's gitignored.
+#
+# Production (`wrangler deploy`):
+#   wrangler secret put S3_ACCESS_KEY
+#   wrangler secret put S3_SECRET
+#   (each one prompts you for the value, encrypts it on Cloudflare's side,
+#    and never echoes back. See `wrangler secret list` to verify.)
+# ----------------------------------------------------------------------

@@ -19,7 +19,11 @@ import { clipRenderJobFields } from "~/graphql/clipRenderJob";
 // as composables/useDemoPlayback.ts.
 const props = defineProps<{ jobId: string }>();
 const emit = defineEmits<{ (e: "close"): void }>();
-const { $apollo } = useNuxtApp();
+// Holding nuxtApp instead of destructuring `$apollo`: vue-apollo's
+// global `beforeCreate` mixin does `this.$apollo = ...`, and a
+// `<script setup>` binding called `$apollo` would be read-only on the
+// component proxy, making that mixin throw and unmount the component.
+const nuxtApp = useNuxtApp();
 
 const job = ref<null | {
   id: string;
@@ -28,7 +32,7 @@ const job = ref<null | {
   error_message: string | null;
   clip_id: string | null;
 }>(null);
-const clip = ref<null | { id: string; s3_url: string; title?: string }>(null);
+const clip = ref<null | { id: string; download_url: string; title?: string }>(null);
 const cancelling = ref(false);
 
 let activeSub: { unsubscribe: () => void } | null = null;
@@ -63,12 +67,12 @@ function subscribe(jobId: string) {
 
 async function fetchClip(id: string) {
   try {
-    const { data } = await $apollo.defaultClient.query({
+    const { data } = await nuxtApp.$apollo.defaultClient.query({
       fetchPolicy: "network-only",
       query: generateQuery({
         match_clips: [
           { where: { id: { _eq: id } }, limit: 1 } as any,
-          { id: true, s3_url: true, title: true },
+          { id: true, download_url: true, title: true },
         ],
       } as any),
     });
@@ -82,7 +86,7 @@ async function cancel() {
   if (!job.value || cancelling.value) return;
   cancelling.value = true;
   try {
-    await $apollo.defaultClient.mutate({
+    await nuxtApp.$apollo.defaultClient.mutate({
       mutation: generateMutation({
         cancelClipRender: [
           { job_id: job.value.id },
@@ -169,13 +173,16 @@ const progressPct = computed(() => {
       >
         Cancel render
       </Button>
-      <Button v-if="isDone && clip?.s3_url" variant="outline" size="sm" as-child>
-        <a :href="clip.s3_url" download>
+      <Button v-if="isDone && clip?.download_url" variant="outline" size="sm" as-child>
+        <a :href="`${clip.download_url}&dl=1`" download>
           <Download class="h-4 w-4 mr-2" />
           Download
         </a>
       </Button>
-      <Button v-if="isDone" size="sm" as-child>
+      <Button v-if="isDone && clip?.id" size="sm" as-child>
+        <NuxtLink :to="`/clips/${clip.id}`">Open clip</NuxtLink>
+      </Button>
+      <Button v-else-if="isDone" size="sm" as-child>
         <NuxtLink to="/clips">Open library</NuxtLink>
       </Button>
       <Button

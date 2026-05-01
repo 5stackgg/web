@@ -38,7 +38,14 @@ const emit = defineEmits<{
 }>();
 
 const store = useDemoPlaybackStore();
-const { $apollo } = useNuxtApp();
+// Don't destructure `$apollo` here — vue-apollo registers a global
+// `beforeCreate` mixin that does `this.$apollo = ...`. When `$apollo`
+// is a `<script setup>` binding it's exposed read-only on the proxy
+// and that mixin throws ("Cannot mutate <script setup> binding"),
+// which crashes this component and any parent that mounts it. Holding
+// the nuxtApp reference and reading `.$apollo` at call-time avoids
+// the binding entirely.
+const nuxtApp = useNuxtApp();
 
 const startTick = ref(0);
 const endTick = ref(0);
@@ -117,7 +124,7 @@ async function submit() {
     title: title.value || undefined,
   };
   try {
-    const { data } = await $apollo.defaultClient.mutate({
+    const { data } = await nuxtApp.$apollo.defaultClient.mutate({
       // Cast: schema not yet in zeus — see graphql/clipRenderJob.ts.
       mutation: generateMutation({
         createClipRender: [

@@ -17,7 +17,6 @@ import {
   Film,
 } from "lucide-vue-next";
 import { useAuthStore } from "~/stores/AuthStore";
-import { e_player_roles_enum } from "~/generated/zeus";
 import CreateClipDialog from "~/components/clips/CreateClipDialog.vue";
 import { Button } from "~/components/ui/button";
 import { Kbd } from "~/components/ui/kbd";
@@ -43,13 +42,14 @@ import {
   type SpecSlot,
 } from "~/utilities/streamerSpecSlots";
 
-// Clip creation is gated at verified_user — rendering consumes a
-// game-streamer pod. The button is hidden below that role; the api also
-// rejects createClipRender for un-gated callers as a defense-in-depth
-// (don't trust the client). See plan file.
-const canCreateClip = computed(() =>
-  useAuthStore().isRoleAbove(e_player_roles_enum.verified_user),
-);
+// Clip rendering consumes a game-streamer pod, so the api gates this
+// at `verified_user` server-side (matches.controller#createClipRender).
+// We only check "is logged in" on the client so the button is visible
+// to anyone watching a demo — the api returns a clear error if the
+// caller isn't allowed, which the dialog surfaces. Hiding the button
+// behind a role check on the client meant role mismatches looked like
+// the feature didn't exist.
+const canCreateClip = computed(() => !!useAuthStore().me?.steam_id);
 const showCreateClipDialog = ref(false);
 
 const {
@@ -899,13 +899,20 @@ const killMarkers = computed<Marker[]>(() => {
           </Select>
         </div>
       </div>
-    </div>
 
-    <CreateClipDialog
-      v-if="canCreateClip && store.matchMapId"
-      v-model:open="showCreateClipDialog"
-      :match-map-id="store.matchMapId"
-    />
+      <!-- Mounted INSIDE the single root div on purpose: TooltipProvider
+           is a render-no-dom context provider, and adding the dialog
+           as a sibling of this div would make the component multi-root.
+           The parent's `<Transition name="controls-slide">` in
+           DemoPlayer.vue can't manage multi-root children — it stops
+           cleaning up old copies on reactive updates and the controls
+           bar starts accumulating duplicates on every skull-click pulse. -->
+      <CreateClipDialog
+        v-if="canCreateClip && store.matchMapId"
+        v-model:open="showCreateClipDialog"
+        :match-map-id="store.matchMapId"
+      />
+    </div>
   </TooltipProvider>
 </template>
 

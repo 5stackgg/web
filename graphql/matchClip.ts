@@ -1,21 +1,21 @@
-// Generated Zeus types lag the new clip-manager schema until codegen
-// runs against an api with the migrations applied — same pattern as
-// match_demo_sessions before its schema landed (see
-// composables/useDemoPlayback.ts). Selectors here are typed loosely
-// with `as any` so the rest of the codebase compiles before then.
+// `download_url` is a Hasura computed field backed by the
+// `clip_download_url(match_clips)` SQL function — same pattern as
+// match_map_demos.download_url. It builds a worker URL like
+// `${cloudflare_worker_url}/clips?file=${file}` at read time so the
+// URL is always live + free egress through Cloudflare.
 export const matchClipFields = {
   id: true,
   user_steam_id: true,
   match_map_id: true,
   title: true,
   duration_ms: true,
-  s3_url: true,
+  download_url: true,
   thumbnail_url: true,
   visibility: true,
   created_at: true,
   match_map: {
     id: true,
-    map: { name: true, thumbnail: true },
+    map: { name: true, poster: true, label: true },
     match: {
       id: true,
       lineup_1: { name: true },

@@ -13,6 +13,7 @@ import {
   EyeOff,
   RotateCcw,
   Bone,
+  PanelBottom,
 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { Kbd } from "~/components/ui/kbd";
@@ -55,6 +56,7 @@ const {
   reloadDemo,
   toggleXray,
   toggleHud,
+  toggleDemoUI,
 } = useDemoPlayback();
 
 // Same slot-table the live stream-deck uses (utilities/streamerSpecSlots.ts).
@@ -746,6 +748,23 @@ const killMarkers = computed<Marker[]>(() => {
 
         <!-- Right: quick actions + speed selector. -->
         <div class="flex items-center justify-end gap-2">
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button
+                variant="outline"
+                size="icon"
+                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95"
+                title="Toggle CS2 demo HUD"
+                @click="toggleDemoUI"
+              >
+                <PanelBottom class="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Toggle CS2 demo HUD (manual fallback)
+            </TooltipContent>
+          </Tooltip>
+
           <Tooltip>
             <TooltipTrigger as-child>
               <Button

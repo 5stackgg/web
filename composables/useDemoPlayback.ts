@@ -241,7 +241,8 @@ export function useDemoPlayback() {
       | "slot"
       | "reload"
       | "xray"
-      | "hud",
+      | "hud"
+      | "demoui",
     payload: Record<string, unknown> = {},
   ) {
     if (!store.matchMapId) {
@@ -443,6 +444,13 @@ export function useDemoPlayback() {
   function toggleHud() {
     setHudVisible(!store.hudVisible);
   }
+  // Manual fallback for the cs2 demoui Panorama panel — fires the
+  // F11 toggle in cs2. The auto-hide logic on initial-load + reload
+  // is best-effort (timing-based); this lets the operator nudge it
+  // off if the auto path missed.
+  function toggleDemoUI() {
+    control("demoui");
+  }
 
   return {
     store,
@@ -470,5 +478,6 @@ export function useDemoPlayback() {
     toggleXray,
     setHudVisible,
     toggleHud,
+    toggleDemoUI,
   };
 }

@@ -79,6 +79,7 @@ function closeWindow() {
           v-if="store.isPlaying && whepUrl"
           key="live"
           :whep-url="whepUrl"
+          :fallback-url="store.streamUrl"
           class="absolute inset-0"
         />
 

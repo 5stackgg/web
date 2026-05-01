@@ -18,10 +18,14 @@ const props = defineProps<{
   // hardcoded to a public Google server below as a sane default.
   iceServers?: RTCIceServer[];
   muted?: boolean;
+  fallbackUrl?: string | null;
 }>();
 
 const videoRef = ref<HTMLVideoElement | null>(null);
 const status = ref<"idle" | "connecting" | "playing" | "error">("idle");
+const useFallback = ref(false);
+let failureCount = 0;
+const MAX_WHEP_FAILURES = 3;
 const errorMessage = ref<string | null>(null);
 // True while a retry is queued. Lets the UI render the amber
 // "acquiring signal" state instead of the red destructive "signal
@@ -204,12 +208,19 @@ async function connect() {
     // (e.g. caster swap → momentary stream gap) starts retrying fast
     // again instead of inheriting an aged 5s delay.
     retryDelay = INITIAL_RETRY_DELAY_MS;
+    failureCount = 0;
     isRetrying.value = false;
   } catch (err) {
     const message = (err as Error)?.message ?? String(err);
     status.value = "error";
     errorMessage.value = message;
     await teardown();
+    failureCount += 1;
+    if (failureCount >= MAX_WHEP_FAILURES && props.fallbackUrl) {
+      cancelRetries();
+      useFallback.value = true;
+      return;
+    }
     // mediamtx returns 404 with body "no stream is available on path
     // <id>" until the SRT publisher has registered; same shape on a
     // brief mid-stream gap. Always retry — the demo session's parent
@@ -220,12 +231,12 @@ async function connect() {
 }
 
 function scheduleRetry() {
-  if (cancelled) return;
+  if (cancelled || useFallback.value) return;
   if (retryHandle) clearTimeout(retryHandle);
   isRetrying.value = true;
   retryHandle = setTimeout(() => {
     retryHandle = null;
-    if (cancelled) return;
+    if (cancelled || useFallback.value) return;
     void connect();
   }, retryDelay);
   // Exponential up to a 5s cap. Slow-publish recovery is usually
@@ -293,6 +304,8 @@ watch(
     // URL change = a fresh connect attempt; reset the retry budget so
     // we don't inherit a 5s backoff from the previous URL's flakiness.
     retryDelay = INITIAL_RETRY_DELAY_MS;
+    failureCount = 0;
+    useFallback.value = false;
     if (retryHandle) {
       clearTimeout(retryHandle);
       retryHandle = null;
@@ -336,6 +349,14 @@ defineExpose({ connect, teardown });
     ref="containerRef"
     class="group relative aspect-video w-full h-full bg-black rounded overflow-hidden"
   >
+    <iframe
+      v-if="useFallback && fallbackUrl"
+      :src="fallbackUrl"
+      class="absolute inset-0 h-full w-full border-0"
+      allow="autoplay; fullscreen; picture-in-picture"
+      allowfullscreen
+    />
+
     <!-- `muted` and `autoplay` written as static attributes (not Vue
          bindings) so they're present on the element from the very
          first render — Chrome's autoplay gate reads them eagerly and
@@ -347,6 +368,7 @@ defineExpose({ connect, teardown });
          absolute inset-0 + h-full/w-full keeps the empty <video> from
          falling back to its 300px intrinsic size on first paint. -->
     <video
+      v-show="!useFallback"
       ref="videoRef"
       class="absolute inset-0 h-full w-full object-contain"
       autoplay
@@ -359,7 +381,7 @@ defineExpose({ connect, teardown });
          on hover; the mute pill stays visible while muted so users
          have an affordance to enable audio without hunting for it. -->
     <div
-      v-if="status === 'playing'"
+      v-if="status === 'playing' && !useFallback"
       :class="[
         'absolute bottom-2 right-2 z-10 flex items-center gap-2 transition-opacity duration-150',
         isMuted
@@ -409,7 +431,7 @@ defineExpose({ connect, teardown });
          mono uppercase status, swapping to a destructive-themed
          glitch frame on error. -->
     <div
-      v-if="status !== 'playing'"
+      v-if="status !== 'playing' && !useFallback"
       class="absolute inset-0 overflow-hidden pointer-events-none"
     >
       <!-- Ambient color wash — amber while connecting, red on error -->

@@ -172,11 +172,19 @@ const pulseLeft = computed(() =>
     ? `${(pulseTick.value / store.totalTicks) * 100}%`
     : "0%",
 );
+// rAF loop. Writes to visualTick / seekModel reactively trigger the
+// component to re-render — we skip the write when nothing changed so
+// a paused demo (where the source tick is constant) doesn't fire a
+// reactive update every frame. That eliminated a steady stream of
+// "Component inside <Transition> renders non-element root" warnings
+// from the parent's controls-slide Transition reconciling against
+// 60fps reactive churn, and stops thrashing the GPU on the slider.
 function frame() {
   rafHandle = requestAnimationFrame(frame);
   if (!hasMetadata.value || dragging.value) return;
   const target = store.currentTick;
   const diff = target - visualTick.value;
+  if (diff === 0) return; // already at target — no-op
   const threshold = store.tickRate * 0.75;
   if (Math.abs(diff) > threshold) {
     // Big jump — ease toward the target. 0.18 gives a ~300ms settle
@@ -188,14 +196,107 @@ function frame() {
   } else {
     visualTick.value = target;
   }
-  seekModel.value = [Math.round(visualTick.value)];
+  const nextSlider = Math.round(visualTick.value);
+  if (seekModel.value[0] !== nextSlider) {
+    seekModel.value = [nextSlider];
+  }
 }
+// ---- Keyboard shortcuts ----
+// Mirrors the live stream-deck (pages/stream-deck/[matchId].vue) plus
+// the playback-specific keys hinted at in the Kbd tooltips. Digit keys
+// 1..9, 0 fire spec_player <slot> via the same path the on-screen
+// slot buttons use — so keyboard and click stay in lockstep with cs2.
+//
+// We bail when focus is in a form field or modifier keys are held so
+// users typing a clip title or doing browser shortcuts don't trigger
+// scrubbing by accident.
+function isTypingTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false;
+  if (
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target.isContentEditable
+  ) {
+    return true;
+  }
+  // Allow shortcuts when the element is just a button/select inside
+  // the controls — these don't capture text input.
+  return false;
+}
+const SLOT_KEY_MAP: Record<string, number> = {
+  "1": 1, "2": 2, "3": 3, "4": 4, "5": 5,
+  "6": 6, "7": 7, "8": 8, "9": 9, "0": 10,
+};
+function onKeyDown(e: KeyboardEvent) {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (isTypingTarget(e.target)) return;
+
+  const slot = SLOT_KEY_MAP[e.key];
+  if (slot != null) {
+    e.preventDefault();
+    pressSlot(slot);
+    return;
+  }
+  if (e.key === " " || e.code === "Space") {
+    e.preventDefault();
+    togglePause();
+    return;
+  }
+  if (e.key === "ArrowLeft") {
+    e.preventDefault();
+    skip(-15);
+    return;
+  }
+  if (e.key === "ArrowRight") {
+    e.preventDefault();
+    skip(15);
+    return;
+  }
+  if (e.key === "[") {
+    e.preventDefault();
+    jumpToPrevRound();
+    return;
+  }
+  if (e.key === "]") {
+    e.preventDefault();
+    jumpToNextRound();
+    return;
+  }
+  if (e.key === "p" || e.key === "P") {
+    e.preventDefault();
+    jumpToPrevKill();
+    return;
+  }
+  if (e.key === "n" || e.key === "N") {
+    e.preventDefault();
+    jumpToNextKill();
+    return;
+  }
+  if (e.key === "r" || e.key === "R") {
+    e.preventDefault();
+    reloadDemo();
+    return;
+  }
+  if (e.key === "x" || e.key === "X") {
+    e.preventDefault();
+    toggleXray();
+    return;
+  }
+  if (e.key === "h" || e.key === "H") {
+    e.preventDefault();
+    toggleHud();
+    return;
+  }
+}
+
 onMounted(() => {
   visualTick.value = store.currentTick;
   rafHandle = requestAnimationFrame(frame);
+  window.addEventListener("keydown", onKeyDown);
 });
 onBeforeUnmount(() => {
   if (rafHandle !== null) cancelAnimationFrame(rafHandle);
+  window.removeEventListener("keydown", onKeyDown);
 });
 
 function onSeekStart() {
@@ -429,14 +530,17 @@ const killMarkers = computed<Marker[]>(() => {
 </script>
 
 <template>
-  <!-- All Tooltip primitives in this component need a TooltipProvider
-       ancestor — without it reka-ui throws "Injection
-       Symbol(TooltipProviderContext) not found" at setup time and the
-       whole controls panel fails to mount. -->
-  <TooltipProvider :delay-duration="200">
-    <div
-      class="flex flex-col gap-3 px-5 py-4 bg-card/95 backdrop-blur-sm border-t border-border/60"
-    >
+  <!-- Real <div> at the root so the parent's <Transition> in
+       DemoPlayer.vue has an element to animate. TooltipProvider was
+       previously the root, but it renders no DOM and Vue's Transition
+       can't drive enter/leave animations on non-element roots ("non-
+       element root node that cannot be animated" warn). All Tooltip
+       primitives below still need a TooltipProvider ancestor — wrapping
+       the inside (rather than the outside) preserves that context. -->
+  <div
+    class="flex flex-col gap-3 px-5 py-4 bg-card/95 backdrop-blur-sm border-t border-border/60"
+  >
+    <TooltipProvider :delay-duration="200">
       <!-- End-of-demo prompt. cs2 drops back to the menu when the
            demo finishes; the operator can click here (or hit R) to
            re-fire playdemo without restarting the pod. -->
@@ -517,38 +621,40 @@ const killMarkers = computed<Marker[]>(() => {
                TransitionGroup so filter changes fade markers in/out
                instead of popping. Key includes the kill tick so Vue
                treats filtered-in skulls as new nodes. -->
+          <!-- TransitionGroup needs element children to animate; reka-ui's
+               Tooltip is a context provider that renders no DOM, which
+               trips Vue's "non-element root" warn for every marker on
+               every reactive update. Use plain buttons with native
+               `title` attributes — same hover affordance, valid roots. -->
           <TransitionGroup
             tag="div"
             name="skull"
             class="relative h-4 mb-1 pointer-events-none"
             aria-hidden="true"
           >
-            <Tooltip v-for="m in killMarkers" :key="`s-${m.tick}`">
-              <TooltipTrigger as-child>
-                <button
-                  type="button"
-                  :style="{ left: m.left }"
-                  class="absolute bottom-0 -translate-x-1/2 pointer-events-auto cursor-pointer transition-all duration-150 hover:scale-150 hover:-translate-y-0.5 active:scale-125"
-                  :title="`${m.label} — click to jump`"
-                  @click="jumpToKill(m.tick)"
-                >
-                  <Skull
-                    :class="[
-                      m.headshot ? 'h-4 w-4' : 'h-3 w-3',
-                      {
-                        'text-blue-400 drop-shadow-[0_0_4px_rgba(96,165,250,0.7)]':
-                          m.victimTeam === 'ct',
-                        'text-amber-400 drop-shadow-[0_0_4px_rgba(251,191,36,0.7)]':
-                          m.victimTeam === 't',
-                        'text-red-400/70': !m.victimTeam,
-                      },
-                    ]"
-                    :stroke-width="m.headshot ? 3 : 2.25"
-                  />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>{{ m.label }}</TooltipContent>
-            </Tooltip>
+            <button
+              v-for="m in killMarkers"
+              :key="`s-${m.tick}`"
+              type="button"
+              :style="{ left: m.left }"
+              class="absolute bottom-0 -translate-x-1/2 pointer-events-auto cursor-pointer transition-all duration-150 hover:scale-150 hover:-translate-y-0.5 active:scale-125"
+              :title="`${m.label} — click to jump`"
+              @click="jumpToKill(m.tick)"
+            >
+              <Skull
+                :class="[
+                  m.headshot ? 'h-4 w-4' : 'h-3 w-3',
+                  {
+                    'text-blue-400 drop-shadow-[0_0_4px_rgba(96,165,250,0.7)]':
+                      m.victimTeam === 'ct',
+                    'text-amber-400 drop-shadow-[0_0_4px_rgba(251,191,36,0.7)]':
+                      m.victimTeam === 't',
+                    'text-red-400/70': !m.victimTeam,
+                  },
+                ]"
+                :stroke-width="m.headshot ? 3 : 2.25"
+              />
+            </button>
           </TransitionGroup>
 
           <!-- Slider + round-tick rail. -->
@@ -1070,8 +1176,8 @@ const killMarkers = computed<Marker[]>(() => {
         v-model:open="showCreateClipDialog"
         :match-map-id="store.matchMapId"
       />
-    </div>
-  </TooltipProvider>
+    </TooltipProvider>
+  </div>
 </template>
 
 <style scoped>

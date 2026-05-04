@@ -25,7 +25,9 @@ const props = defineProps<{
 }>();
 
 const videoRef = ref<HTMLVideoElement | null>(null);
-const status = ref<"idle" | "connecting" | "playing" | "error">("idle");
+const status = ref<"idle" | "connecting" | "playing" | "error" | "rendering">(
+  "idle",
+);
 const useFallback = ref(false);
 let failureCount = 0;
 const MAX_WHEP_FAILURES = 3;
@@ -130,6 +132,13 @@ async function connect() {
     console.debug("[whep] connect skipped: <video> not mounted yet");
     return;
   }
+  // Pod is rendering a clip — the SRT publisher is intentionally
+  // down. Don't even try; the watcher on clipRenderActive triggers
+  // a fresh connect when the render finishes.
+  if (clipRenderActive.value) {
+    console.debug("[whep] connect skipped: clip render in progress");
+    return;
+  }
 
   await teardown();
   status.value = "connecting";
@@ -187,9 +196,17 @@ async function connect() {
       if (state === "connected") {
         status.value = "playing";
       } else if (state === "failed" || state === "disconnected") {
-        // The peer dropped mid-stream (e.g. clip render killed the SRT
-        // publisher). The catch-block retry only fires for connect-time
-        // failures, so without this we'd sit in "error" forever.
+        // Peer dropped mid-stream. If a clip render is in progress
+        // we KNOW why (pod stopped its publisher) — keep the last
+        // frame on screen and surface a quiet "rendering" state
+        // instead of a red error. Retry path is the watcher on
+        // clipRenderActive flipping back to false.
+        if (clipRenderActive.value) {
+          status.value = "rendering";
+          errorMessage.value = null;
+          isRetrying.value = false;
+          return;
+        }
         status.value = "error";
         errorMessage.value = `peer connection ${state}`;
         retryDelay = INITIAL_RETRY_DELAY_MS;
@@ -226,6 +243,16 @@ async function connect() {
     isRetrying.value = false;
   } catch (err) {
     const message = (err as Error)?.message ?? String(err);
+    // Connect raced with a clip render starting. Keep whatever frame
+    // the <video> already has, surface "rendering" instead of error,
+    // and let the clipRenderActive watcher trigger a fresh connect
+    // when the render finishes.
+    if (clipRenderActive.value) {
+      status.value = "rendering";
+      errorMessage.value = null;
+      isRetrying.value = false;
+      return;
+    }
     status.value = "error";
     errorMessage.value = message;
     await teardown();
@@ -250,6 +277,17 @@ async function connect() {
 
 function scheduleRetry() {
   if (cancelled || useFallback.value) return;
+  // While a clip render is active the pod has intentionally killed
+  // its SRT publisher to free the GPU + capture pipeline for the
+  // render. Reconnect attempts will 404 until the render finishes,
+  // so we stay put. The watcher on `clipRenderActive` (below) does
+  // a fresh teardown+connect the moment it flips back to false, so
+  // we resume cleanly without burning retries here. The <video>
+  // element keeps showing the last frame in the meantime.
+  if (clipRenderActive.value) {
+    isRetrying.value = false;
+    return;
+  }
   if (retryHandle) clearTimeout(retryHandle);
   isRetrying.value = true;
   retryHandle = setTimeout(() => {
@@ -502,14 +540,33 @@ defineExpose({ connect, teardown });
         <Maximize2 v-else class="size-3.5" />
       </button>
     </div>
+    <!-- "Rendering clip" chip. Shown over the last-good frame while
+         the pod has stopped its publisher to free the GPU for a
+         render. We keep the <video> intact (no teardown) so users
+         see the freeze frame instead of a black panel. -->
+    <div
+      v-if="status === 'rendering'"
+      class="absolute top-3 left-3 z-20 inline-flex items-center gap-2 rounded-full border border-[hsl(var(--tac-amber)/0.6)] bg-black/70 px-3 py-1.5 backdrop-blur-sm pointer-events-none"
+    >
+      <span
+        class="inline-flex size-2 rounded-full bg-[hsl(var(--tac-amber))] animate-pulse"
+      />
+      <span
+        class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+      >
+        Rendering clip<span class="whep-dots" />
+      </span>
+    </div>
+
     <!-- Status overlay (connecting / error). pointer-events-none so
          clicks pass through to the <video> below. Visually evokes a
          broadcast deck "signal acquisition" pattern: ambient amber
          pulse + horizontal scanline sweep + animated radar ring +
          mono uppercase status, swapping to a destructive-themed
-         glitch frame on error. -->
+         glitch frame on error. Suppressed during 'rendering' since
+         the freeze-frame already conveys the state. -->
     <div
-      v-if="status !== 'playing' && !useFallback"
+      v-if="status !== 'playing' && status !== 'rendering' && !useFallback"
       class="absolute inset-0 overflow-hidden pointer-events-none"
     >
       <!-- Ambient color wash — amber while connecting, red on error -->

@@ -25,6 +25,7 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import { useDemoPlaybackStore } from "~/stores/DemoPlaybackStore";
 import type { ClipSpec } from "~/graphql/clipRenderJob";
 import ClipRenderProgress from "~/components/clips/ClipRenderProgress.vue";
+import { useClipRenderActive } from "~/composables/useClipRenderActive";
 
 // MVP single-segment trim. Full timeline editor (multi-segment,
 // overlays, audio) is phase 2 — see plan file. The render itself runs
@@ -55,6 +56,8 @@ const resolution = ref<"720p" | "1080p">("1080p");
 const submitting = ref(false);
 const submitError = ref<string | null>(null);
 const renderingJobId = ref<string | null>(null);
+const { setActive: setRenderActive } = useClipRenderActive();
+watch(renderingJobId, (id) => setRenderActive(!!id));
 
 // Re-seed every time the dialog opens — closing without submit
 // discards in-progress edits, and the user expects to resume from the

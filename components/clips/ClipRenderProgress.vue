@@ -28,7 +28,9 @@ const nuxtApp = useNuxtApp();
 const job = ref<null | {
   id: string;
   status: string;
-  progress: number | null;
+  // Postgres numeric(4,3) — Hasura serialises it as a string ("0.153")
+  // not a number. Normalised in the progressPct computed below.
+  progress: number | string | null;
   error_message: string | null;
   clip_id: string | null;
 }>(null);
@@ -139,9 +141,36 @@ const isError = computed(
 );
 const progressPct = computed(() => {
   if (isDone.value) return 100;
-  const p = job.value?.progress;
-  if (typeof p !== "number") return 0;
+  const raw = job.value?.progress;
+  // Hasura serialises postgres `numeric(4,3)` as a string. Coerce
+  // before scaling — without the parseFloat we'd hit the
+  // `typeof !== number` branch and the bar would stay at 0% all
+  // the way through the render.
+  const p =
+    typeof raw === "number"
+      ? raw
+      : typeof raw === "string"
+        ? parseFloat(raw)
+        : NaN;
+  if (!Number.isFinite(p)) return 0;
   return Math.max(0, Math.min(100, Math.round(p * 100)));
+});
+
+// Two-phase view: render owns 0% → 50%, upload owns 50% → 100%
+// (matches the milestones reported by inline-clip-render.sh on the
+// pod). The stepper makes the two-phase progression obvious — the
+// single bar alone could read as "one long render" without it.
+const phaseStatus = computed<{
+  render: "pending" | "active" | "done";
+  upload: "pending" | "active" | "done";
+}>(() => {
+  const s = job.value?.status;
+  if (isDone.value) return { render: "done", upload: "done" };
+  if (s === "uploading") return { render: "done", upload: "active" };
+  if (s === "rendering" || s === "queued") {
+    return { render: "active", upload: "pending" };
+  }
+  return { render: "pending", upload: "pending" };
 });
 </script>
 
@@ -152,6 +181,47 @@ const progressPct = computed(() => {
       <AlertCircle v-else-if="isError" class="h-5 w-5 text-destructive" />
       <Loader2 v-else class="h-5 w-5 animate-spin text-muted-foreground" />
       <span class="text-sm">{{ statusLabel }}</span>
+    </div>
+
+    <!-- Phase stepper: visually splits the progress into "render"
+         (0-50%) + "upload" (50-100%) so the user sees the two-phase
+         pipeline at a glance. -->
+    <div v-if="!isError" class="flex items-center gap-2 text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground">
+      <span
+        :class="[
+          'flex items-center gap-1.5',
+          phaseStatus.render === 'done' && 'text-emerald-400',
+          phaseStatus.render === 'active' && 'text-foreground',
+        ]"
+      >
+        <span
+          :class="[
+            'inline-block h-1.5 w-1.5 rounded-full',
+            phaseStatus.render === 'done' && 'bg-emerald-400',
+            phaseStatus.render === 'active' && 'bg-[hsl(var(--tac-amber))]',
+            phaseStatus.render === 'pending' && 'bg-muted-foreground/40',
+          ]"
+        />
+        Render
+      </span>
+      <span class="h-px flex-1 bg-border/60" />
+      <span
+        :class="[
+          'flex items-center gap-1.5',
+          phaseStatus.upload === 'done' && 'text-emerald-400',
+          phaseStatus.upload === 'active' && 'text-foreground',
+        ]"
+      >
+        <span
+          :class="[
+            'inline-block h-1.5 w-1.5 rounded-full',
+            phaseStatus.upload === 'done' && 'bg-emerald-400',
+            phaseStatus.upload === 'active' && 'bg-[hsl(var(--tac-amber))]',
+            phaseStatus.upload === 'pending' && 'bg-muted-foreground/40',
+          ]"
+        />
+        Upload
+      </span>
     </div>
 
     <Progress v-if="!isError" :model-value="progressPct" class="h-2" />

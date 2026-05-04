@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, onBeforeUnmount } from "vue";
 import { Volume2, VolumeX, Maximize2, Minimize2 } from "lucide-vue-next";
+import { useClipRenderActive } from "~/composables/useClipRenderActive";
+
+const { active: clipRenderActive } = useClipRenderActive();
 
 // Plays a mediamtx WebRTC (WHEP) stream in a <video> element.
 // WHEP = "WebRTC-HTTP Egress Protocol" — single POST exchanges an SDP
@@ -26,6 +29,11 @@ const status = ref<"idle" | "connecting" | "playing" | "error">("idle");
 const useFallback = ref(false);
 let failureCount = 0;
 const MAX_WHEP_FAILURES = 3;
+// True once WHEP has played a single frame. After that, never fall
+// back to HLS — keep retrying WHEP forever. mediamtx briefly drops
+// the path during clip-render's restart_capture; falling back to HLS
+// at that moment locks us at ~2s latency for the rest of the session.
+let hasEverPlayed = false;
 const errorMessage = ref<string | null>(null);
 // True while a retry is queued. Lets the UI render the amber
 // "acquiring signal" state instead of the red destructive "signal
@@ -179,8 +187,13 @@ async function connect() {
       if (state === "connected") {
         status.value = "playing";
       } else if (state === "failed" || state === "disconnected") {
+        // The peer dropped mid-stream (e.g. clip render killed the SRT
+        // publisher). The catch-block retry only fires for connect-time
+        // failures, so without this we'd sit in "error" forever.
         status.value = "error";
         errorMessage.value = `peer connection ${state}`;
+        retryDelay = INITIAL_RETRY_DELAY_MS;
+        scheduleRetry();
       }
     };
 
@@ -209,6 +222,7 @@ async function connect() {
     // again instead of inheriting an aged 5s delay.
     retryDelay = INITIAL_RETRY_DELAY_MS;
     failureCount = 0;
+    hasEverPlayed = true;
     isRetrying.value = false;
   } catch (err) {
     const message = (err as Error)?.message ?? String(err);
@@ -216,7 +230,11 @@ async function connect() {
     errorMessage.value = message;
     await teardown();
     failureCount += 1;
-    if (failureCount >= MAX_WHEP_FAILURES && props.fallbackUrl) {
+    if (
+      failureCount >= MAX_WHEP_FAILURES &&
+      props.fallbackUrl &&
+      !hasEverPlayed
+    ) {
       cancelRetries();
       useFallback.value = true;
       return;
@@ -287,14 +305,72 @@ function cancelRetries() {
   }
 }
 
+// When mediamtx loses the SRT publisher (e.g. the pod stops the live
+// capture during a clip render and restarts it), the browser's
+// RTCPeerConnection stays "connected" but no media flows — the video
+// element freezes. Poll currentTime and force a reconnect if it
+// hasn't advanced for STALL_MS.
+const STALL_MS = 5_000;
+let stallTimer: ReturnType<typeof setInterval> | null = null;
+let lastTime = 0;
+let lastTimeAt = 0;
+
+function startStallWatch() {
+  stopStallWatch();
+  lastTime = videoRef.value?.currentTime ?? 0;
+  lastTimeAt = Date.now();
+  stallTimer = setInterval(() => {
+    const el = videoRef.value;
+    if (!el || status.value !== "playing" || cancelled || useFallback.value) {
+      return;
+    }
+    if (clipRenderActive.value) {
+      // Reset the timer so it doesn't fire the moment the render ends.
+      lastTime = el.currentTime;
+      lastTimeAt = Date.now();
+      return;
+    }
+    const now = el.currentTime;
+    if (now !== lastTime) {
+      lastTime = now;
+      lastTimeAt = Date.now();
+      return;
+    }
+    if (Date.now() - lastTimeAt < STALL_MS) return;
+    console.debug("[whep] stalled — forcing reconnect");
+    lastTimeAt = Date.now();
+    retryDelay = INITIAL_RETRY_DELAY_MS;
+    void teardown().then(() => connect());
+  }, 1_000);
+}
+
+function stopStallWatch() {
+  if (stallTimer) {
+    clearInterval(stallTimer);
+    stallTimer = null;
+  }
+}
+
 // Initial connect runs after the DOM is mounted so videoRef is bound.
 // (A watcher with `immediate: true` fires during setup, before the
 // template renders, so the <video> element doesn't exist yet and
 // connect() bails out — leaving status stuck at "idle".)
 onMounted(() => {
   void connect();
+  startStallWatch();
   document.addEventListener("fullscreenchange", onFullscreenChange);
   window.addEventListener("keydown", onKeyDown);
+});
+
+// When a clip render finishes, force a fresh connect — the publisher
+// was killed and restarted on the pod, so the existing peer is dead
+// regardless of what connectionState reports.
+watch(clipRenderActive, (active, was) => {
+  if (was && !active) {
+    console.debug("[whep] clip render ended — forcing reconnect");
+    retryDelay = INITIAL_RETRY_DELAY_MS;
+    void teardown().then(() => connect());
+  }
 });
 
 // Reconnect whenever the URL changes (e.g. user switches matches).
@@ -305,6 +381,7 @@ watch(
     // we don't inherit a 5s backoff from the previous URL's flakiness.
     retryDelay = INITIAL_RETRY_DELAY_MS;
     failureCount = 0;
+    hasEverPlayed = false;
     useFallback.value = false;
     if (retryHandle) {
       clearTimeout(retryHandle);
@@ -317,6 +394,7 @@ watch(
 
 onBeforeUnmount(() => {
   cancelRetries();
+  stopStallWatch();
   void teardown();
   document.removeEventListener("fullscreenchange", onFullscreenChange);
   window.removeEventListener("keydown", onKeyDown);

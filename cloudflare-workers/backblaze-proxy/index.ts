@@ -121,25 +121,47 @@ export default {
 
     const headers = new Headers(upstream.headers);
 
+    // Suggested filename. Callers append `?name=<filename>` when they
+    // want a human-readable download name (e.g. the clip title);
+    // otherwise we fall back to the basename of the S3 key. We strip
+    // backslash, slash, double-quote, CR, LF — those break Content-
+    // Disposition's quoted-string form. Dashes, underscores, dots,
+    // and spaces are left alone so titles read naturally.
+    const requestedNameRaw = url.searchParams.get("name") ?? "";
+    let requestedName = requestedNameRaw;
+    try {
+      // SQL builds `?name=<slug>.mp4` with raw chars; pasted-in URLs
+      // may percent-encode the slug. decodeURIComponent normalises
+      // both, so "Joe Best Round 3K.mp4" lands intact whether the
+      // sender sent it raw or encoded.
+      requestedName = decodeURIComponent(requestedNameRaw);
+    } catch {
+      requestedName = requestedNameRaw;
+    }
+    const fallbackName = key.split("/").pop() ?? key;
+    const sanitize = (s: string) =>
+      s.replace(/[\\\/"\r\n]/g, "").trim();
+    const filename =
+      sanitize(requestedName) || sanitize(fallbackName) || "clip.mp4";
+
     // Only force a download when the caller explicitly asked. Default
     // behaviour is `inline` so <video src> on the clip detail page (and
     // pasting a clip URL into a new tab) plays the file instead of
     // dumping it to the user's downloads folder. The web's "Download"
     // button appends ?dl=1 to opt in.
+    //
+    // We set Content-Disposition WITH a filename for both inline and
+    // attachment dispositions. Browsers respect the filename in either
+    // case for "Save Video As…" / right-click → save — so a recipient
+    // of a copied share link gets the human-readable name instead of
+    // "clips".
     const wantDownload =
       url.searchParams.get("dl") === "1" ||
       url.searchParams.get("download") === "1";
-    if (wantDownload) {
-      const filename = key.split("/").pop() ?? key;
-      headers.set(
-        "Content-Disposition",
-        `attachment; filename="${filename.replace(/"/g, "")}"`,
-      );
-    } else {
-      // Strip any attachment disposition Backblaze might have set so
-      // <video> playback isn't blocked by Chromium's "Save As" path.
-      headers.delete("Content-Disposition");
-    }
+    headers.set(
+      "Content-Disposition",
+      `${wantDownload ? "attachment" : "inline"}; filename="${filename}"`,
+    );
 
     // Streaming + seeking for <video src>:
     //   - Backblaze already responds 206 + Content-Range when the

@@ -198,7 +198,7 @@ async function confirmDelete() {
       } as any),
     });
     showDelete.value = false;
-    router.replace("/clips");
+    router.replace("/manage-highlights");
   } catch (e) {
     console.error("[clip] delete failed:", e);
   } finally {
@@ -254,9 +254,9 @@ const mapLabel = computed(
   <PageTransition>
     <div class="mb-4 flex items-center gap-2">
       <Button variant="ghost" size="sm" as-child>
-        <NuxtLink to="/clips" class="flex items-center gap-2">
+        <NuxtLink :to="isOwner ? '/manage-highlights' : '/highlights'" class="flex items-center gap-2">
           <ArrowLeft class="h-4 w-4" />
-          My Clips
+          {{ isOwner ? "Manage Highlights" : "Highlights" }}
         </NuxtLink>
       </Button>
     </div>
@@ -281,7 +281,7 @@ const mapLabel = computed(
         It may have been deleted or doesn't belong to you.
       </p>
       <Button as-child variant="outline">
-        <NuxtLink to="/clips">Back to my clips</NuxtLink>
+        <NuxtLink to="/highlights">Back to highlights</NuxtLink>
       </Button>
     </div>
   </PageTransition>

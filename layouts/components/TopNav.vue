@@ -396,12 +396,12 @@ const loginArrowClasses =
                           </NuxtLink>
                         </NavigationMenuLink>
                       </li>
-                      <!-- Public clips browse. Distinct from the
-                           Watch tab's "what's live now" focus —
-                           highlights is asynchronous, click-to-play,
-                           and growable as users mark their clips
-                           public. -->
-                      <li>
+                      <!-- Public highlights browse. Hidden when
+                           public-mode is off AND viewer isn't
+                           streamer-rank+ — matches the LeftNav gate
+                           so the entry only renders for users who
+                           can actually reach the page. -->
+                      <li v-if="canViewHighlights">
                         <NavigationMenuLink as-child>
                           <NuxtLink
                             to="/highlights"
@@ -618,6 +618,9 @@ export default {
     },
     showReportIssue() {
       return useApplicationSettingsStore().showReportIssue;
+    },
+    canViewHighlights() {
+      return useApplicationSettingsStore().canViewHighlights;
     },
     me() {
       return useAuthStore().me;

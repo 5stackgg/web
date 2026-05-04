@@ -21,6 +21,7 @@ import {
   Trophy,
   Film,
   Sparkles,
+  Library,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
@@ -308,7 +309,18 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem tooltip="Highlights">
+            <!-- Highlights browse — public-facing for everyone. The
+                 admin curation tools (per-card visibility toggles +
+                 see-all-clips view) are inside this same page,
+                 conditionally rendered when isAdmin is true. -->
+            <!-- Hidden when public-mode is off AND viewer isn't
+                 streamer-rank+. canViewHighlights bakes both checks
+                 in, so this v-if doubles for "guest-with-public-mode-on"
+                 AND "logged-in streamer regardless of public-mode". -->
+            <SidebarMenuItem
+              v-if="canViewHighlights"
+              tooltip="Highlights"
+            >
               <SidebarMenuButton as-child tooltip="Highlights">
                 <NuxtLink
                   :to="{ name: 'highlights' }"
@@ -380,16 +392,26 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            <SidebarMenuItem v-if="me" tooltip="My Clips">
-              <SidebarMenuButton as-child tooltip="My Clips">
+            <!-- Manage Highlights = streamer-rank+ curation surface.
+                 Lives in Administration but the gate is "any of
+                 streamer / match_organizer / tournament_organizer /
+                 administrator" (the same predicate the section
+                 itself uses), not just isAdmin. Streamer visibility
+                 is intentional — they're the operators promoting /
+                 demoting highlights for their broadcasts. -->
+            <SidebarMenuItem
+              v-if="isStreamer || isMatchOrganizer || isTournamentOrganizer || isAdmin"
+              tooltip="Manage Highlights"
+            >
+              <SidebarMenuButton as-child tooltip="Manage Highlights">
                 <NuxtLink
-                  :to="{ name: 'clips' }"
+                  :to="{ name: 'manage-highlights' }"
                   :class="{
-                    'router-link-active': isRouteActive('clips'),
+                    'router-link-active': isRouteActive('manage-highlights'),
                   }"
                 >
-                  <Film />
-                  My Clips
+                  <Library />
+                  Manage Highlights
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -841,6 +863,9 @@ export default {
     },
     showSeparators() {
       return useApplicationSettingsStore().showSeparators;
+    },
+    canViewHighlights() {
+      return useApplicationSettingsStore().canViewHighlights;
     },
     showReportIssue() {
       return useApplicationSettingsStore().showReportIssue;

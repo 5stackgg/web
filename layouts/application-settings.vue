@@ -50,6 +50,10 @@ const navItems = computed(() => {
       label: $t("pages.settings.application.demo_settings.title"),
     },
     {
+      path: "/settings/application/highlights",
+      label: "Highlights",
+    },
+    {
       path: "/settings/application/servers",
       label: $t("pages.settings.application.servers.title"),
     },

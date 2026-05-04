@@ -215,6 +215,27 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    // Whether /highlights and the Highlights nav surfaces are visible
+    // to guests + regular users. Streamer-rank+ ALWAYS see them
+    // regardless of this flag — the gate is purely "is the public
+    // browse exposed". Defaults true so existing installs that never
+    // touched the row keep behaving the same.
+    const highlightsPublicEnabled = computed(() => {
+      const row = settings.value?.find(
+        (setting) => setting.name === "public.highlights_public_enabled",
+      );
+      // Missing row → default ON. Explicit "false" → OFF. Anything
+      // else (true, missing-but-truthy, etc.) → ON.
+      if (!row || row.value == null) return true;
+      return row.value !== "false";
+    });
+    // Whether the current viewer can SEE Highlights surfaces. Combines
+    // the flag above with the user's role: streamer+ bypass.
+    const canViewHighlights = computed(() => {
+      if (useAuthStore().isRoleAbove(e_player_roles_enum.streamer)) return true;
+      return highlightsPublicEnabled.value;
+    });
+
     const availableRegions = ref<Region[]>([]);
 
     let latencyCheckInterval: ReturnType<typeof setInterval> | null = null;
@@ -362,6 +383,8 @@ export const useApplicationSettingsStore = defineStore(
       supportsGameServerNodes,
       supportsGameServerVersionPinning,
       playerNameRegistration,
+      highlightsPublicEnabled,
+      canViewHighlights,
       canCreateMatch,
       currentPluginVersion,
       canAddWithoutInvite,

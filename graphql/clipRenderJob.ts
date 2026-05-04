@@ -9,6 +9,8 @@ export const clipRenderJobFields = {
   error_message: true,
   clip_id: true,
   created_at: true,
+  last_status_at: true,
+  spec: true,
 } as const;
 
 // Tick-based clip-spec contract. Tick math is deterministic across

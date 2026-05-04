@@ -1,12 +1,18 @@
 # Cloudflare worker config for the Backblaze proxy that fronts both
 # demo files and clip files (path-tolerant: /demo?file=… and
-# /clips?file=…). Deploy from this directory: `wrangler deploy`.
+# /clips?file=…). Deploy from the web/ root: `yarn wrangler deploy`.
+#
+# Worker name MUST stay "5stack" — that's what Cloudflare's existing
+# routes (demo-dl.5stack.gg/*, etc.) point at. Renaming it spawns a
+# brand-new worker in the Cloudflare dashboard while the routes keep
+# hitting the old "5stack" worker, which is exactly the trap that
+# made earlier deploys "succeed" without any visible behaviour change.
 #
 # Secrets are NOT in this file — see .dev.vars for local dev and
 # `wrangler secret put` for production. See the comments at the
 # bottom for the full list.
 
-name = "backblaze-proxy"
+name = "5stack"
 main = "index.ts"
 compatibility_date = "2024-09-01"
 

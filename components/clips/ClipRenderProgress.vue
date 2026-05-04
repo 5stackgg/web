@@ -11,6 +11,7 @@ import {
   generateSubscription,
 } from "~/graphql/graphqlGen";
 import { clipRenderJobFields } from "~/graphql/clipRenderJob";
+import { clipDownloadName } from "~/utilities/clipDownloadName";
 
 // Subscribes to a clip_render_jobs row and surfaces queued / rendering
 // / uploading / done / error transitions. On `done`, fetches the
@@ -36,6 +37,12 @@ const job = ref<null | {
 }>(null);
 const clip = ref<null | { id: string; download_url: string; title?: string }>(null);
 const cancelling = ref(false);
+
+// Note: the WHEP "render in progress" gate (useClipRenderActive)
+// auto-clears when the underlying clip_render_jobs row hits a
+// terminal status — the composable owns its own subscription so
+// the flag self-manages even if this component unmounts mid-render.
+// We don't need to touch it here.
 
 let activeSub: { unsubscribe: () => void } | null = null;
 
@@ -244,7 +251,14 @@ const phaseStatus = computed<{
         Cancel render
       </Button>
       <Button v-if="isDone && clip?.download_url" variant="outline" size="sm" as-child>
-        <a :href="`${clip.download_url}&dl=1`" download>
+        <a
+          :href="`${clip.download_url}&dl=1`"
+          :download="clipDownloadName({
+            id: clip.id,
+            title: clip.title ?? null,
+            download_url: clip.download_url,
+          })"
+        >
           <Download class="h-4 w-4 mr-2" />
           Download
         </a>

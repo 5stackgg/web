@@ -6,6 +6,7 @@
 export const matchClipFields = {
   id: true,
   user_steam_id: true,
+  target_steam_id: true,
   match_map_id: true,
   title: true,
   duration_ms: true,
@@ -13,6 +14,16 @@ export const matchClipFields = {
   thumbnail_url: true,
   visibility: true,
   created_at: true,
+  user: {
+    steam_id: true,
+    name: true,
+    avatar_url: true,
+  },
+  target: {
+    steam_id: true,
+    name: true,
+    avatar_url: true,
+  },
   match_map: {
     id: true,
     map: { name: true, poster: true, label: true },

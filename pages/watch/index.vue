@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import OtherMatches from "~/components/match/OtherMatches.vue";
+import RecentHighlights from "~/components/clips/RecentHighlights.vue";
 import {
   e_match_status_enum,
   e_tournament_status_enum,
@@ -67,6 +68,10 @@ const activeTab = ref("live-matches");
         />
       </div>
     </div>
+  </PageTransition>
+
+  <PageTransition :delay="150" class="mt-6">
+    <RecentHighlights />
   </PageTransition>
 
   <PageTransition :delay="200" class="mt-6">

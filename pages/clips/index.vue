@@ -17,6 +17,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import { clipDownloadName } from "~/utilities/clipDownloadName";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -226,7 +227,7 @@ const isEmpty = computed(() => !loading.value && clips.value.length === 0);
                    alone is unreliable cross-origin. -->
               <a
                 :href="`${c.download_url}&dl=1`"
-                download
+                :download="clipDownloadName(c)"
                 :title="`Download ${c.title ?? 'clip'}`"
               >
                 <Download class="h-4 w-4" />

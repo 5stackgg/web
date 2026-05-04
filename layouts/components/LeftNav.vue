@@ -20,6 +20,7 @@ import {
   Database,
   Trophy,
   Film,
+  Sparkles,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
@@ -307,16 +308,16 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem v-if="me" tooltip="My Clips">
-              <SidebarMenuButton as-child tooltip="My Clips">
+            <SidebarMenuItem tooltip="Highlights">
+              <SidebarMenuButton as-child tooltip="Highlights">
                 <NuxtLink
-                  :to="{ name: 'clips' }"
+                  :to="{ name: 'highlights' }"
                   :class="{
-                    'router-link-active': isRouteActive('clips'),
+                    'router-link-active': isRouteActive('highlights'),
                   }"
                 >
-                  <Film />
-                  My Clips
+                  <Sparkles />
+                  Highlights
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -376,6 +377,19 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   <Badge size="sm" v-if="activeStreamingMatchesCount > 0">
                     {{ activeStreamingMatchesCount }}
                   </Badge>
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem v-if="me" tooltip="My Clips">
+              <SidebarMenuButton as-child tooltip="My Clips">
+                <NuxtLink
+                  :to="{ name: 'clips' }"
+                  :class="{
+                    'router-link-active': isRouteActive('clips'),
+                  }"
+                >
+                  <Film />
+                  My Clips
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>

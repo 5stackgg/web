@@ -8,7 +8,21 @@ import {
   Trash2,
   Share2,
   Check,
+  Pencil,
+  Eye,
+  Lock,
+  Globe,
 } from "lucide-vue-next";
+import { useAuthStore } from "~/stores/AuthStore";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import { useNuxtApp } from "#app";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import {
@@ -30,6 +44,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
+import { clipDownloadName } from "~/utilities/clipDownloadName";
 
 // Single-clip viewer. Big player up top, metadata + actions sidebar
 // next to it on wide screens, stacks under on mobile. Subscribes to the
@@ -43,12 +58,15 @@ const nuxtApp = useNuxtApp();
 type Clip = {
   id: string;
   user_steam_id: string;
+  target_steam_id: string | null;
   title: string | null;
   duration_ms: number | null;
   download_url: string | null;
   thumbnail_url: string | null;
   visibility: string;
   created_at: string;
+  user?: { steam_id: string; name: string; avatar_url: string | null } | null;
+  target?: { steam_id: string; name: string; avatar_url: string | null } | null;
   match_map?: {
     id: string;
     map?: {
@@ -70,6 +88,63 @@ const notFound = ref(false);
 const showDelete = ref(false);
 const deleting = ref(false);
 const linkCopied = ref(false);
+
+// Edit-mode state. Only owners see the affordance; others see the
+// readonly inspector. We snapshot title + visibility into draftTitle
+// / draftVisibility on enter, write back on save, discard on cancel.
+const auth = useAuthStore();
+const isOwner = computed(
+  () => !!clip.value && clip.value.user_steam_id === auth.me?.steam_id,
+);
+const editing = ref(false);
+const draftTitle = ref("");
+const draftVisibility = ref<"private" | "unlisted" | "match" | "public">(
+  "private",
+);
+const saving = ref(false);
+const editError = ref<string | null>(null);
+
+function startEdit() {
+  if (!clip.value) return;
+  draftTitle.value = clip.value.title ?? "";
+  draftVisibility.value = (clip.value.visibility as any) ?? "private";
+  editError.value = null;
+  editing.value = true;
+}
+function cancelEdit() {
+  editing.value = false;
+  editError.value = null;
+}
+async function saveEdit() {
+  if (!clip.value || saving.value) return;
+  saving.value = true;
+  editError.value = null;
+  try {
+    await nuxtApp.$apollo.defaultClient.mutate({
+      // Cast: updateClip is gated behind the latest hasura metadata
+      // apply; zeus types lag until codegen runs.
+      mutation: generateMutation({
+        updateClip: [
+          {
+            clip_id: clip.value.id,
+            title: draftTitle.value.trim(),
+            visibility: draftVisibility.value,
+          },
+          { success: true },
+        ],
+      } as any),
+    });
+    editing.value = false;
+    // Subscription will deliver the updated row — no manual refetch.
+  } catch (e) {
+    editError.value =
+      (e as any)?.graphQLErrors?.[0]?.message ??
+      (e as Error)?.message ??
+      "Failed to update clip";
+  } finally {
+    saving.value = false;
+  }
+}
 
 let activeSub: { unsubscribe: () => void } | null = null;
 function subscribe(id: string) {
@@ -164,6 +239,12 @@ const matchupLabel = computed(() => {
   return clip.value?.match_map?.map?.label ?? clip.value?.match_map?.map?.name ?? null;
 });
 
+const downloadFilename = computed<string>(() => {
+  return clip.value
+    ? clipDownloadName(clip.value)
+    : "clip.mp4";
+});
+
 const mapLabel = computed(
   () => clip.value?.match_map?.map?.label ?? clip.value?.match_map?.map?.name ?? null,
 );
@@ -235,10 +316,22 @@ const mapLabel = computed(
 
       <!-- Inspector — title, source match, actions. -->
       <div class="space-y-4">
-        <div>
-          <h1 class="text-2xl font-semibold leading-tight">
-            {{ clip.title || "Untitled clip" }}
-          </h1>
+        <div v-if="!editing">
+          <div class="flex items-start justify-between gap-2">
+            <h1 class="text-2xl font-semibold leading-tight">
+              {{ clip.title || "Untitled clip" }}
+            </h1>
+            <Button
+              v-if="isOwner"
+              variant="ghost"
+              size="icon"
+              class="h-8 w-8 shrink-0"
+              title="Edit title and visibility"
+              @click="startEdit"
+            >
+              <Pencil class="h-4 w-4" />
+            </Button>
+          </div>
           <p class="mt-1 text-sm text-muted-foreground">
             <NuxtLink
               v-if="clip.match_map?.match?.id && matchupLabel"
@@ -249,6 +342,86 @@ const mapLabel = computed(
             </NuxtLink>
             <span v-else-if="matchupLabel">{{ matchupLabel }}</span>
           </p>
+          <p
+            v-if="clip.target?.name"
+            class="mt-1 text-xs text-muted-foreground"
+          >
+            Highlighting
+            <NuxtLink
+              :to="`/players/${clip.target.steam_id}`"
+              class="text-foreground hover:underline"
+            >
+              {{ clip.target.name }}
+            </NuxtLink>
+          </p>
+        </div>
+
+        <!-- Owner-only edit form. Inline above the metadata card so
+             the contextual placement reads as "you're editing the
+             title above, here's where it goes". -->
+        <div v-else class="space-y-3 rounded-md border border-border/60 bg-muted/20 p-3">
+          <div class="space-y-1">
+            <Label for="clip-edit-title">Title</Label>
+            <Input
+              id="clip-edit-title"
+              v-model="draftTitle"
+              placeholder="Untitled clip"
+              maxlength="120"
+              :disabled="saving"
+            />
+          </div>
+          <div class="space-y-1">
+            <Label>Visibility</Label>
+            <Select v-model="draftVisibility" :disabled="saving">
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="private">
+                  <span class="inline-flex items-center gap-2">
+                    <Lock class="h-3.5 w-3.5" />
+                    Private — only you
+                  </span>
+                </SelectItem>
+                <SelectItem value="unlisted">
+                  <span class="inline-flex items-center gap-2">
+                    <Eye class="h-3.5 w-3.5" />
+                    Unlisted — anyone with the link
+                  </span>
+                </SelectItem>
+                <SelectItem value="public">
+                  <span class="inline-flex items-center gap-2">
+                    <Globe class="h-3.5 w-3.5" />
+                    Public — show in highlights feed
+                  </span>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <p
+            v-if="editError"
+            class="text-xs text-destructive"
+          >
+            {{ editError }}
+          </p>
+          <div class="flex items-center justify-end gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              :disabled="saving"
+              @click="cancelEdit"
+            >
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              :disabled="saving"
+              @click="saveEdit"
+            >
+              <Loader2 v-if="saving" class="h-4 w-4 mr-2 animate-spin" />
+              Save
+            </Button>
+          </div>
         </div>
 
         <Card>
@@ -265,7 +438,33 @@ const mapLabel = computed(
             </div>
             <div class="flex items-center justify-between">
               <span class="text-muted-foreground">Visibility</span>
-              <span class="capitalize">{{ clip.visibility }}</span>
+              <span class="inline-flex items-center gap-1.5 capitalize">
+                <Lock
+                  v-if="clip.visibility === 'private'"
+                  class="h-3 w-3 text-muted-foreground"
+                />
+                <Eye
+                  v-else-if="clip.visibility === 'unlisted'"
+                  class="h-3 w-3 text-muted-foreground"
+                />
+                <Globe
+                  v-else-if="clip.visibility === 'public'"
+                  class="h-3 w-3 text-emerald-400"
+                />
+                {{ clip.visibility }}
+              </span>
+            </div>
+            <div
+              v-if="clip.user?.name"
+              class="flex items-center justify-between"
+            >
+              <span class="text-muted-foreground">Created by</span>
+              <NuxtLink
+                :to="`/players/${clip.user.steam_id}`"
+                class="hover:text-foreground"
+              >
+                {{ clip.user.name }}
+              </NuxtLink>
             </div>
             <div class="flex items-center justify-between">
               <span class="text-muted-foreground">Created</span>
@@ -276,10 +475,15 @@ const mapLabel = computed(
 
         <div class="flex flex-wrap gap-2">
           <Button v-if="clip.download_url" as-child class="flex-1 min-w-[8rem]">
-            <!-- &dl=1 (not ?) — download_url already carries
-                 ?file=<key>, so a second ? would mash `dl=1` into the
-                 file value and Backblaze would 404. -->
-            <a :href="`${clip.download_url}&dl=1`" download>
+            <!-- `&dl=1` (not `?`) because download_url already carries
+                 a query string. Explicit `:download="downloadFilename"`
+                 (not just `download`) forces the browser to use the
+                 friendly filename even when Chromium would otherwise
+                 fall back to the URL path's UUID basename. -->
+            <a
+              :href="`${clip.download_url}&dl=1`"
+              :download="downloadFilename"
+            >
               <Download class="h-4 w-4 mr-2" />
               Download
             </a>
@@ -295,6 +499,7 @@ const mapLabel = computed(
             {{ linkCopied ? "Copied" : "Copy link" }}
           </Button>
           <Button
+            v-if="isOwner"
             variant="outline"
             class="text-destructive hover:text-destructive"
             @click="showDelete = true"

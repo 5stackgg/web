@@ -396,6 +396,29 @@ const loginArrowClasses =
                           </NuxtLink>
                         </NavigationMenuLink>
                       </li>
+                      <!-- Public clips browse. Distinct from the
+                           Watch tab's "what's live now" focus —
+                           highlights is asynchronous, click-to-play,
+                           and growable as users mark their clips
+                           public. -->
+                      <li>
+                        <NavigationMenuLink as-child>
+                          <NuxtLink
+                            to="/highlights"
+                            :class="[navItemClasses, navItemStackedClasses]"
+                          >
+                            <span :class="navItemChevronClasses">◢</span>
+                            <span :class="navItemContentClasses">
+                              <span :class="navItemLabelClasses">
+                                Highlights
+                              </span>
+                              <span :class="navItemSubClasses">
+                                Public clips from across the platform.
+                              </span>
+                            </span>
+                          </NuxtLink>
+                        </NavigationMenuLink>
+                      </li>
                     </ul>
                   </div>
 

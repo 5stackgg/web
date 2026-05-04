@@ -74,8 +74,12 @@ const resolution = ref<"720p" | "1080p">("1080p");
 const submitting = ref(false);
 const submitError = ref<string | null>(null);
 const renderingJobId = ref<string | null>(null);
-const { setActive: setRenderActive } = useClipRenderActive();
-watch(renderingJobId, (id) => setRenderActive(!!id));
+const { trackJob: trackRenderJob } = useClipRenderActive();
+// Pass the job id (or null) so the composable subscribes and auto-
+// clears the WHEP gate when the render finishes — even if the user
+// closes this dialog mid-render. Previously we passed a boolean,
+// which left the flag stuck true forever after the dialog closed.
+watch(renderingJobId, (id) => trackRenderJob(id));
 
 // Auto-clip preset state. The api builds the multi-segment spec on
 // its end (see ClipsService.buildPresetSpec) — the web side just

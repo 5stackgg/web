@@ -49,6 +49,18 @@ export function useDemoPlayback() {
       } else if (gsi.spectated_steam_id === null) {
         store.spectatedSteamId = null;
       }
+      if (typeof gsi.team_ct_name === "string") {
+        store.gsiTeamCtName = gsi.team_ct_name;
+      }
+      if (typeof gsi.team_t_name === "string") {
+        store.gsiTeamTName = gsi.team_t_name;
+      }
+      if (typeof gsi.team_ct_score === "number") {
+        store.gsiTeamCtScore = gsi.team_ct_score;
+      }
+      if (typeof gsi.team_t_score === "number") {
+        store.gsiTeamTScore = gsi.team_t_score;
+      }
     };
     socket.on("demo-session:state", stateSocketHandler);
     // Fire immediately + every 1s. The pod returns its in-memory GSI
@@ -127,6 +139,18 @@ export function useDemoPlayback() {
             store.sessionRow?.status !== "playing";
           if (becamePlaying) {
             store.syncFromControl({ tick: 0, paused: true });
+            // Pod is reachable now — start polling /demo/state for
+            // the GSI snapshot. Doing this before "playing" just
+            // spams ECONNREFUSED while the pod is still booting.
+            startStatePoll();
+          }
+          // Status dropped back below "playing" (errored / restart):
+          // stop polling so we don't keep hitting a dead pod.
+          if (
+            row.status !== "playing" &&
+            store.sessionRow?.status === "playing"
+          ) {
+            stopStatePoll();
           }
           store.sessionRow = row;
         },
@@ -261,10 +285,10 @@ export function useDemoPlayback() {
 
       // Subscription will populate store.sessionRow with the latest
       // status (booting → launching_steam → live, or errored).
+      // The status-driven branch in subscribeToSession kicks off the
+      // GSI poll once status='playing' lands — polling earlier would
+      // just spam ECONNREFUSED while the pod is still booting.
       subscribeToSession(out.session_id);
-      // Begin 1Hz GSI poll so slot/player snapshot is live for the
-      // controls before the user even hits play.
-      startStatePoll();
     } catch (error) {
       store.localStatus = "error";
       store.errorMessage = (error as Error)?.message ?? String(error);

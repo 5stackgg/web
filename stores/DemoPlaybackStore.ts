@@ -127,6 +127,14 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   // target stays the same, so the highlight follows the death-switch
   // without us having to track it separately.
   const spectatedSteamId = ref<string | null>(null);
+  // Team names from cs2 GSI (the demo file's mp_teamname_1/2). The
+  // api's lineup.name can drift from the actual demo when a different
+  // demo file got attached to a match_map row, so for the player UI
+  // we prefer GSI here. Null until the first GSI tick lands.
+  const gsiTeamCtName = ref<string | null>(null);
+  const gsiTeamTName = ref<string | null>(null);
+  const gsiTeamCtScore = ref<number>(0);
+  const gsiTeamTScore = ref<number>(0);
 
   // Tick estimator state. Real tick =
   //   lastTickAtSync + (now - lastSyncRealMs) / 1000 * rate * tickRate
@@ -230,6 +238,10 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     hudVisible.value = true;
     specSlots.value = [];
     spectatedSteamId.value = null;
+    gsiTeamCtName.value = null;
+    gsiTeamTName.value = null;
+    gsiTeamCtScore.value = 0;
+    gsiTeamTScore.value = 0;
   }
 
   return {
@@ -253,6 +265,10 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     hudVisible,
     specSlots,
     spectatedSteamId,
+    gsiTeamCtName,
+    gsiTeamTName,
+    gsiTeamCtScore,
+    gsiTeamTScore,
     rate,
     paused,
     lastTickAtSync,

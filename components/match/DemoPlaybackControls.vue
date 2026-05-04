@@ -37,11 +37,6 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
-import {
-  specSlotsForMatchType,
-  teamSizeForMatchType,
-  type SpecSlot,
-} from "~/utilities/streamerSpecSlots";
 
 // Clip rendering consumes a game-streamer pod, so the api gates this
 // at `verified_user` server-side (matches.controller#createClipRender).
@@ -73,117 +68,58 @@ const {
   toggleDemoUI,
 } = useDemoPlayback();
 
-// Same slot-table the live stream-deck uses (utilities/streamerSpecSlots.ts).
-// matchType comes from the match_map_demos -> match.options.type query in
-// useDemoPlayback.loadMetadata. Falls through to Competitive on null.
-const slotKeys = computed<SpecSlot[]>(() =>
-  specSlotsForMatchType(store.matchType),
-);
-const team1Slots = computed(() => slotKeys.value.filter((s) => s.team === 1));
-const team2Slots = computed(() => slotKeys.value.filter((s) => s.team === 2));
-
-// Source of truth for slot → player is the LINEUP ROSTER, not GSI's
-// observer_slot. cs2's `spec_player_<N>` keybinds (which the slot
-// buttons fire) bind to the Nth player by lineup join-order at demo
-// playback start, and that ordering stays stable for the whole demo.
-// GSI's observer_slot, in contrast, can be team-relative or shift
-// across rounds — using it for slot identity makes "click slot 2 →
-// rawr" out of sync with the label, and leaves team 2 unlabelled when
-// cs2 doesn't include their team in `allplayers`.
+// Slot identity comes ENTIRELY from cs2 GSI now. Demos can be
+// attached to a different match_map than they were originally from
+// (operator dragged a wrong .dem file in), and the api's lineup will
+// be wrong in that case — but cs2 is always reading the actual demo
+// file, so observer_slot + the player's real name + their current
+// team are guaranteed correct.
 //
-// We still use GSI for the LIVE state (alive/dead, currently spec'd)
-// because the roster doesn't change but liveness does.
-const teamSize = computed(() => teamSizeForMatchType(store.matchType));
-function rosterFor(slot: number): { steam_id: string; name: string } | null {
-  const ts = teamSize.value;
-  if (slot >= 1 && slot <= ts) {
-    return store.rosters.lineup1[slot - 1] ?? null;
-  }
-  if (slot > ts && slot <= ts * 2) {
-    return store.rosters.lineup2[slot - ts - 1] ?? null;
-  }
-  return null;
+// Each slot button fires `spec_player_<slot>` via xdotool — that
+// targets cs2's observer_slot directly, so click and label stay in
+// lockstep automatically.
+type SlotInfo = (typeof store.specSlots)[number];
+const ctSlots = computed(() =>
+  store.specSlots
+    .filter((s) => s.team === "CT")
+    .slice()
+    .sort((a, b) => a.slot - b.slot),
+);
+const tSlots = computed(() =>
+  store.specSlots
+    .filter((s) => s.team === "T")
+    .slice()
+    .sort((a, b) => a.slot - b.slot),
+);
+const hasGsi = computed(() => store.specSlots.length > 0);
+
+function slotIsActive(s: SlotInfo): boolean {
+  if (!store.spectatedSteamId) return false;
+  return s.steam_id === store.spectatedSteamId;
 }
-const gsiBySteamId = computed(() => {
-  const map = new Map<string, (typeof store.specSlots)[number]>();
-  for (const s of store.specSlots) {
-    if (s.steam_id) map.set(s.steam_id, s);
-  }
-  return map;
-});
-function slotName(slot: number): string {
-  const r = rosterFor(slot);
-  if (r?.name) return r.name;
-  // No lineup data yet (metadata still loading) — use whatever GSI
-  // happened to give us as a last-resort, then fall back to the
-  // generic placeholder.
-  const gsi = store.specSlots.find((x) => x.slot === slot);
-  if (gsi?.name) return gsi.name;
-  return `Slot ${slot}`;
-}
-function slotIsActive(slot: number): boolean {
-  const r = rosterFor(slot);
-  if (!r || !store.spectatedSteamId) return false;
-  return r.steam_id === store.spectatedSteamId;
-}
-function slotIsDead(slot: number): boolean {
-  const r = rosterFor(slot);
-  if (!r) return false;
-  const gsi = gsiBySteamId.value.get(r.steam_id);
-  // Only mark dead when GSI explicitly reports them dead. Missing
-  // data ≠ dead — that just means we haven't received a snapshot
-  // yet (or this team isn't in cs2's allplayers block).
-  return !!gsi && !gsi.alive;
-}
-// Current side (CT/T) per lineup — flips at halftime. Derived from
-// any GSI entry whose steamid matches a roster member, so we don't
-// have to assume cs2's team field is consistent across the entry.
-// Without GSI data we report null and the UI falls back to neutral
-// styling (no side badge, original lineup color).
-function sideForLineup(
-  lineup: Array<{ steam_id: string; name: string }>,
-): "T" | "CT" | null {
-  for (const p of lineup) {
-    const gsi = gsiBySteamId.value.get(p.steam_id);
-    if (gsi?.team === "T" || gsi?.team === "CT") return gsi.team;
-  }
-  return null;
-}
-const team1Side = computed(() => sideForLineup(store.rosters.lineup1));
-const team2Side = computed(() => sideForLineup(store.rosters.lineup2));
-function sideClasses(
-  side: "T" | "CT" | null,
-  isActive: boolean,
-  isFlash: boolean,
-) {
-  // Active / flash uses the side's saturated color; idle uses a
-  // dim tint so two teams on opposite sides read as distinct rows
-  // even when nobody's selected.
+function sideClasses(side: "T" | "CT", isActive: boolean, isFlash: boolean) {
   const wantHighlight = isActive || isFlash;
   if (side === "CT") {
     return wantHighlight
       ? "border-blue-400 bg-blue-500/20 text-blue-200"
       : "border-blue-500/40 bg-blue-500/5 text-foreground/80 hover:border-blue-400/70 hover:bg-blue-500/10 hover:text-blue-100 active:scale-95";
   }
-  if (side === "T") {
-    return wantHighlight
-      ? "border-amber-400 bg-amber-500/20 text-amber-100"
-      : "border-amber-500/40 bg-amber-500/5 text-foreground/80 hover:border-amber-400/70 hover:bg-amber-500/10 hover:text-amber-100 active:scale-95";
-  }
-  // No GSI data — neutral so the user still sees a button.
   return wantHighlight
-    ? "border-foreground/60 bg-foreground/10 text-foreground"
-    : "border-border/70 bg-card/40 text-foreground/80 hover:border-foreground/40 hover:bg-muted/40 active:scale-95";
+    ? "border-amber-400 bg-amber-500/20 text-amber-100"
+    : "border-amber-500/40 bg-amber-500/5 text-foreground/80 hover:border-amber-400/70 hover:bg-amber-500/10 hover:text-amber-100 active:scale-95";
 }
-function sideDotClass(side: "T" | "CT" | null) {
-  if (side === "CT") return "bg-blue-400";
-  if (side === "T") return "bg-amber-400";
-  return "bg-muted-foreground/50";
+function sideDotClass(side: "T" | "CT") {
+  return side === "CT" ? "bg-blue-400" : "bg-amber-400";
 }
-function sideLabel(side: "T" | "CT" | null) {
-  if (side === "CT") return "CT";
-  if (side === "T") return "T";
-  return "";
+// Team name source-of-truth: GSI (the demo file). API lineup name is
+// only used as a fallback when GSI hasn't filled team_*_name yet —
+// and even then we hedge "(team 1)" / "(team 2)" rather than commit
+// to which lineup is on which side, since that's what flips at half.
+function ctTeamName(): string {
+  return store.gsiTeamCtName || "Counter-Terrorists";
+}
+function tTeamName(): string {
+  return store.gsiTeamTName || "Terrorists";
 }
 
 const flashSlot = ref<number | null>(null);
@@ -311,9 +247,57 @@ function formatSeconds(s: number): string {
 // never flashes the dev console.
 const SPEED_OPTIONS = [0.25, 0.5, 1, 2, 4];
 
-const hasRosters = computed(
-  () => store.rosters.lineup1.length > 0 || store.rosters.lineup2.length > 0,
+// Kill filter dropdown derives its players from the parsed demo's
+// kill events, NOT from the api lineup. Demos can be loaded against
+// a mismatched match_map row, in which case the lineup contains the
+// wrong steam_ids and the filter would silently report 0 kills for
+// every player. The killer/victim steam_ids in the kills array are
+// always the real demo players, so unique-ing those gives us the
+// authoritative list. Names + side come from GSI when available,
+// with a steam-id-suffix fallback for stragglers (bots, world
+// damage attribution, etc).
+type KillPlayer = {
+  steam_id: string;
+  name: string;
+  team: "T" | "CT" | null;
+};
+const demoPlayers = computed<KillPlayer[]>(() => {
+  const seen = new Set<string>();
+  const players: KillPlayer[] = [];
+  const gsiByStId = new Map<string, (typeof store.specSlots)[number]>();
+  for (const s of store.specSlots) {
+    if (s.steam_id) gsiByStId.set(s.steam_id, s);
+  }
+  const add = (sid: string | undefined) => {
+    if (!sid || seen.has(sid)) return;
+    seen.add(sid);
+    const gsi = gsiByStId.get(sid);
+    players.push({
+      steam_id: sid,
+      name: gsi?.name ?? store.playerNames[sid] ?? `#${sid.slice(-4)}`,
+      team: gsi?.team ?? null,
+    });
+  };
+  for (const k of store.kills) {
+    add(k.killer);
+    add(k.victim);
+  }
+  // Names sort within each team for predictable scanning.
+  return players.sort((a, b) => a.name.localeCompare(b.name));
+});
+const ctDemoPlayers = computed(() =>
+  demoPlayers.value.filter((p) => p.team === "CT"),
 );
+const tDemoPlayers = computed(() =>
+  demoPlayers.value.filter((p) => p.team === "T"),
+);
+// Players we couldn't team-assign via GSI (their steam_id only
+// shows up in kills metadata, not in current allplayers — common
+// for demos where someone left mid-match, or before GSI lands).
+const otherDemoPlayers = computed(() =>
+  demoPlayers.value.filter((p) => p.team !== "CT" && p.team !== "T"),
+);
+const hasDemoPlayers = computed(() => demoPlayers.value.length > 0);
 function killCountFor(steamId: string) {
   let n = 0;
   for (const k of store.kills) {
@@ -328,7 +312,10 @@ function killCountFor(steamId: string) {
 const activeFilterLabel = computed(() => {
   const sid = store.killFilterSteamId;
   if (!sid) return "All players";
-  const name = store.playerNames[sid] ?? `#${sid.slice(-4)}`;
+  // Prefer GSI's name (always matches the demo file) over the api
+  // lineup name (which can be wrong for cross-loaded demos).
+  const gsi = store.specSlots.find((s) => s.steam_id === sid);
+  const name = gsi?.name ?? store.playerNames[sid] ?? `#${sid.slice(-4)}`;
   return `${name} (${killCountFor(sid)})`;
 });
 
@@ -618,120 +605,117 @@ const killMarkers = computed<Marker[]>(() => {
         Demo metadata not parsed yet — play/pause + skip + speed still work.
       </p>
 
-      <!-- Player switcher. Slot index → player comes from the lineup
-           roster (stable across the demo, matches cs2's spec_player_<N>
-           keybinds). The team's COLOR + side badge follow the GSI
-           "team" field, which flips at halftime — that way the visual
-           styling matches what's on screen even though the slot numbers
-           stay anchored to lineup order. -->
-      <div v-if="slotKeys.length" class="flex flex-col gap-1.5">
+      <!-- Player switcher. Everything (slot index, name, side, alive)
+           comes from cs2 GSI — the demo file is the source of truth.
+           CT row is on top, T row below, matching cs2's HUD ordering.
+           At halftime + every OT swap, players move between rows
+           automatically because their `team` field flips in GSI. -->
+      <div v-if="hasGsi" class="flex flex-col gap-1.5">
         <div class="flex items-center gap-3">
-          <div class="flex items-center gap-1.5 min-w-[7rem]">
+          <div class="flex items-center gap-1.5 min-w-[8rem]">
             <span
-              :class="['inline-block size-1.5 rounded-full', sideDotClass(team1Side)]"
+              :class="['inline-block size-1.5 rounded-full', sideDotClass('CT')]"
             />
             <span
               class="truncate font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground/80"
             >
-              {{ store.lineup1Name ?? "Team 1" }}
+              {{ ctTeamName() }}
+              <span class="ml-1 px-1 rounded font-bold bg-blue-500/20 text-blue-300">
+                CT
+              </span>
               <span
-                v-if="team1Side"
-                :class="[
-                  'ml-1 px-1 rounded font-bold',
-                  team1Side === 'CT'
-                    ? 'bg-blue-500/20 text-blue-300'
-                    : 'bg-amber-500/20 text-amber-200',
-                ]"
+                v-if="store.gsiTeamCtScore || store.gsiTeamTScore"
+                class="ml-1 text-foreground"
               >
-                {{ sideLabel(team1Side) }}
+                {{ store.gsiTeamCtScore }}
               </span>
             </span>
           </div>
           <div class="flex flex-wrap items-center gap-1.5">
             <button
-              v-for="slot in team1Slots"
-              :key="slot.slot"
+              v-for="s in ctSlots"
+              :key="`ct-${s.slot}-${s.steam_id}`"
               type="button"
               :class="[
                 'group inline-flex h-9 items-center gap-1.5 rounded-md border px-2 font-mono text-xs transition-all duration-100 select-none cursor-pointer',
-                sideClasses(team1Side, slotIsActive(slot.slot), flashSlot === slot.slot),
-                slotIsDead(slot.slot) && !slotIsActive(slot.slot)
-                  ? 'opacity-50'
-                  : '',
+                sideClasses('CT', slotIsActive(s), flashSlot === s.slot),
+                !s.alive && !slotIsActive(s) ? 'opacity-50' : '',
               ]"
-              :title="slotName(slot.slot)"
-              @click="pressSlot(slot.slot)"
+              :title="s.name ?? `Slot ${s.slot}`"
+              @click="pressSlot(s.slot)"
             >
               <span
                 class="inline-flex h-5 w-5 items-center justify-center rounded text-[0.65rem] font-bold tabular-nums bg-foreground/10"
               >
-                {{ slot.slot }}
+                {{ s.slot }}
               </span>
               <span
                 :class="[
                   'truncate max-w-[8rem] font-medium',
-                  slotIsDead(slot.slot) ? 'line-through' : '',
+                  !s.alive ? 'line-through' : '',
                 ]"
               >
-                {{ slotName(slot.slot) }}
+                {{ s.name ?? `Slot ${s.slot}` }}
               </span>
             </button>
           </div>
         </div>
         <div class="flex items-center gap-3">
-          <div class="flex items-center gap-1.5 min-w-[7rem]">
+          <div class="flex items-center gap-1.5 min-w-[8rem]">
             <span
-              :class="['inline-block size-1.5 rounded-full', sideDotClass(team2Side)]"
+              :class="['inline-block size-1.5 rounded-full', sideDotClass('T')]"
             />
             <span
               class="truncate font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground/80"
             >
-              {{ store.lineup2Name ?? "Team 2" }}
+              {{ tTeamName() }}
+              <span class="ml-1 px-1 rounded font-bold bg-amber-500/20 text-amber-200">
+                T
+              </span>
               <span
-                v-if="team2Side"
-                :class="[
-                  'ml-1 px-1 rounded font-bold',
-                  team2Side === 'CT'
-                    ? 'bg-blue-500/20 text-blue-300'
-                    : 'bg-amber-500/20 text-amber-200',
-                ]"
+                v-if="store.gsiTeamCtScore || store.gsiTeamTScore"
+                class="ml-1 text-foreground"
               >
-                {{ sideLabel(team2Side) }}
+                {{ store.gsiTeamTScore }}
               </span>
             </span>
           </div>
           <div class="flex flex-wrap items-center gap-1.5">
             <button
-              v-for="slot in team2Slots"
-              :key="slot.slot"
+              v-for="s in tSlots"
+              :key="`t-${s.slot}-${s.steam_id}`"
               type="button"
               :class="[
                 'group inline-flex h-9 items-center gap-1.5 rounded-md border px-2 font-mono text-xs transition-all duration-100 select-none cursor-pointer',
-                sideClasses(team2Side, slotIsActive(slot.slot), flashSlot === slot.slot),
-                slotIsDead(slot.slot) && !slotIsActive(slot.slot)
-                  ? 'opacity-50'
-                  : '',
+                sideClasses('T', slotIsActive(s), flashSlot === s.slot),
+                !s.alive && !slotIsActive(s) ? 'opacity-50' : '',
               ]"
-              :title="slotName(slot.slot)"
-              @click="pressSlot(slot.slot)"
+              :title="s.name ?? `Slot ${s.slot}`"
+              @click="pressSlot(s.slot)"
             >
               <span
                 class="inline-flex h-5 w-5 items-center justify-center rounded text-[0.65rem] font-bold tabular-nums bg-foreground/10"
               >
-                {{ slot.slot }}
+                {{ s.slot }}
               </span>
               <span
                 :class="[
                   'truncate max-w-[8rem] font-medium',
-                  slotIsDead(slot.slot) ? 'line-through' : '',
+                  !s.alive ? 'line-through' : '',
                 ]"
               >
-                {{ slotName(slot.slot) }}
+                {{ s.name ?? `Slot ${s.slot}` }}
               </span>
             </button>
           </div>
         </div>
       </div>
+      <p
+        v-else-if="store.isPlaying"
+        class="text-[0.65rem] uppercase tracking-wider text-muted-foreground/60 font-mono"
+      >
+        Waiting for cs2 game state…
+      </p>
 
       <!-- Buttons row.
            Layout: 3-column grid so the transport cluster (prev-round,
@@ -780,7 +764,7 @@ const killMarkers = computed<Marker[]>(() => {
           </Tooltip>
 
           <button
-            v-if="hasRosters"
+            v-if="hasDemoPlayers"
             type="button"
             class="ml-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] cursor-pointer transition-all duration-150 hover:text-foreground"
             :class="
@@ -798,7 +782,7 @@ const killMarkers = computed<Marker[]>(() => {
             {{ store.killFilterMode === "killer" ? "Kills by" : "Deaths of" }}
           </button>
           <Select
-            v-if="hasRosters"
+            v-if="hasDemoPlayers"
             :model-value="store.killFilterSteamId ?? '__all__'"
             @update:model-value="onKillFilterChange"
           >
@@ -821,14 +805,14 @@ const killMarkers = computed<Marker[]>(() => {
               <SelectItem value="__all__" class="cursor-pointer">
                 All players ({{ store.kills.length }})
               </SelectItem>
-              <SelectGroup v-if="store.rosters.lineup1.length">
+              <SelectGroup v-if="ctDemoPlayers.length">
                 <SelectLabel
-                  class="text-[0.65rem] uppercase tracking-wider text-[hsl(var(--tac-amber))]"
+                  class="text-[0.65rem] uppercase tracking-wider text-blue-300"
                 >
-                  {{ store.lineup1Name ?? "Team 1" }}
+                  {{ ctTeamName() }} (CT)
                 </SelectLabel>
                 <SelectItem
-                  v-for="p in store.rosters.lineup1"
+                  v-for="p in ctDemoPlayers"
                   :key="p.steam_id"
                   :value="p.steam_id"
                   class="cursor-pointer"
@@ -836,14 +820,29 @@ const killMarkers = computed<Marker[]>(() => {
                   {{ p.name }} ({{ killCountFor(p.steam_id) }})
                 </SelectItem>
               </SelectGroup>
-              <SelectGroup v-if="store.rosters.lineup2.length">
+              <SelectGroup v-if="tDemoPlayers.length">
                 <SelectLabel
-                  class="text-[0.65rem] uppercase tracking-wider text-destructive"
+                  class="text-[0.65rem] uppercase tracking-wider text-amber-300"
                 >
-                  {{ store.lineup2Name ?? "Team 2" }}
+                  {{ tTeamName() }} (T)
                 </SelectLabel>
                 <SelectItem
-                  v-for="p in store.rosters.lineup2"
+                  v-for="p in tDemoPlayers"
+                  :key="p.steam_id"
+                  :value="p.steam_id"
+                  class="cursor-pointer"
+                >
+                  {{ p.name }} ({{ killCountFor(p.steam_id) }})
+                </SelectItem>
+              </SelectGroup>
+              <SelectGroup v-if="otherDemoPlayers.length">
+                <SelectLabel
+                  class="text-[0.65rem] uppercase tracking-wider text-muted-foreground"
+                >
+                  Other
+                </SelectLabel>
+                <SelectItem
+                  v-for="p in otherDemoPlayers"
                   :key="p.steam_id"
                   :value="p.steam_id"
                   class="cursor-pointer"

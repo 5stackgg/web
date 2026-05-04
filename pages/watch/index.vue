@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { Tv } from "lucide-vue-next";
 import OtherMatches from "~/components/match/OtherMatches.vue";
 import RecentHighlights from "~/components/clips/RecentHighlights.vue";
 import {
@@ -12,6 +13,12 @@ import TournamentFeatureCard from "~/components/tournament/TournamentFeatureCard
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
+  tacticalTabsListClasses,
+  tacticalTabsTriggerClasses,
+  tacticalTabIndicatorClasses,
+  tacticalTabIndicatorLiveClasses,
+  tacticalTabIndicatorUpcomingClasses,
+  tacticalTabIndicatorFinishedClasses,
 } from "~/utilities/tacticalClasses";
 
 const activeTab = ref("live-matches");
@@ -20,37 +27,17 @@ const activeTab = ref("live-matches");
 <template>
   <PageTransition>
     <TacticalPageHeader>
-      <template #title>{{ $t("pages.watch.title") }}</template>
-      <template #actions="{ tabs }">
-        <Tabs v-model="activeTab">
-          <TabsList variant="underline" :class="tabs.listClass">
-            <TabsTrigger value="live-matches" :class="tabs.triggerClass">
-              <span
-                :class="[tabs.indicatorClass, tabs.indicatorLiveClass]"
-              ></span>
-              {{ $t("common.live") }}
-            </TabsTrigger>
-            <TabsTrigger value="upcoming-matches" :class="tabs.triggerClass">
-              <span
-                :class="[tabs.indicatorClass, tabs.indicatorUpcomingClass]"
-              ></span>
-              {{ $t("pages.watch.upcoming_matches") }}
-            </TabsTrigger>
-            <TabsTrigger value="finished-matches" :class="tabs.triggerClass">
-              <span
-                :class="[tabs.indicatorClass, tabs.indicatorFinishedClass]"
-              ></span>
-              {{ $t("common.finished") }}
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+      <template #description>
+        <Tv class="h-3.5 w-3.5" />
+        Live Feed
       </template>
+      <template #title>{{ $t("pages.watch.title") }}</template>
     </TacticalPageHeader>
   </PageTransition>
 
   <PageTransition
-    :delay="100"
     v-if="liveTournaments && liveTournaments.length > 0"
+    :delay="100"
     class="mt-6"
   >
     <div>
@@ -71,17 +58,53 @@ const activeTab = ref("live-matches");
   </PageTransition>
 
   <PageTransition :delay="150" class="mt-6">
-    <RecentHighlights />
+    <div>
+      <div :class="tacticalSectionLabelClasses">
+        <span :class="tacticalSectionTickClasses"></span>
+        RECENT.HIGHLIGHTS
+      </div>
+      <RecentHighlights :showHeader="false" />
+    </div>
   </PageTransition>
 
   <PageTransition :delay="200" class="mt-6">
     <div>
-      <div
-        v-if="liveTournaments && liveTournaments.length > 0"
-        :class="tacticalSectionLabelClasses"
-      >
-        <span :class="tacticalSectionTickClasses"></span>
-        MATCHES.FEED
+      <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+        <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+          <span :class="tacticalSectionTickClasses"></span>
+          MATCHES.FEED
+        </div>
+        <Tabs v-model="activeTab">
+          <TabsList variant="underline" :class="tacticalTabsListClasses">
+            <TabsTrigger value="live-matches" :class="tacticalTabsTriggerClasses">
+              <span
+                :class="[
+                  tacticalTabIndicatorClasses,
+                  tacticalTabIndicatorLiveClasses,
+                ]"
+              ></span>
+              {{ $t("common.live") }}
+            </TabsTrigger>
+            <TabsTrigger value="upcoming-matches" :class="tacticalTabsTriggerClasses">
+              <span
+                :class="[
+                  tacticalTabIndicatorClasses,
+                  tacticalTabIndicatorUpcomingClasses,
+                ]"
+              ></span>
+              {{ $t("pages.watch.upcoming_matches") }}
+            </TabsTrigger>
+            <TabsTrigger value="finished-matches" :class="tacticalTabsTriggerClasses">
+              <span
+                :class="[
+                  tacticalTabIndicatorClasses,
+                  tacticalTabIndicatorFinishedClasses,
+                ]"
+              ></span>
+              {{ $t("common.finished") }}
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
       <Tabs v-model="activeTab">
         <TabsContent value="live-matches">

@@ -13,6 +13,11 @@ const UNSIGNABLE_HEADERS = [
   "if-none-match",
   "if-range",
   "if-unmodified-since",
+  // Drop Range so the upstream fetch always asks B2 for the full object.
+  // CF's cache stores the 200 once and slices 206s out of cache for every
+  // subsequent <video> seek. If we forwarded Range, B2 would 206 → CF
+  // wouldn't cache a complete object → every seek would punch through.
+  "range",
 ];
 
 function filterHeaders(headers: Headers, env: { ALLOWED_HEADERS?: string }) {
@@ -114,9 +119,19 @@ export default {
       headers: filterHeaders(request.headers, env),
     });
 
+    // Edge cache the upstream response. Clip / demo keys are content-
+    // addressed (UUIDs) so they never change — safe to cache for the full
+    // 30d that Cloudflare's free tier allows. cacheEverything is required
+    // because Workers don't auto-cache MP4/dem responses without it. The
+    // per-status TTL keeps 4xx/5xx from getting pinned for a month.
     const upstream = await fetch(signedRequest.url, {
       method: signedRequest.method,
       headers: signedRequest.headers,
+      cf: {
+        cacheEverything: true,
+        cacheTtl: 2592000,
+        cacheTtlByStatus: { "200-299": 2592000, "404": 60, "500-599": 0 },
+      },
     });
 
     const headers = new Headers(upstream.headers);
@@ -164,9 +179,11 @@ export default {
     );
 
     // Streaming + seeking for <video src>:
-    //   - Backblaze already responds 206 + Content-Range when the
-    //     browser sends Range; that flows through unchanged because we
-    //     reuse upstream.status / upstream.body.
+    //   - We strip Range from the upstream request (see UNSIGNABLE_HEADERS)
+    //     so B2 always returns the full 200, which CF caches once. Cloudflare
+    //     itself slices 206 + Content-Range responses out of that cached
+    //     object for every subsequent Range request from the client — no
+    //     B2 hit per seek.
     //   - Some Backblaze responses omit Accept-Ranges on the initial
     //     200; set it explicitly so the player knows it can issue
     //     range requests for seeks.
@@ -175,6 +192,12 @@ export default {
     //     that the player buffers the whole file before any seek works.
     if (!headers.has("Accept-Ranges")) {
       headers.set("Accept-Ranges", "bytes");
+    }
+    // Public + immutable: clip/demo keys are UUID-addressed and never
+    // mutate. max-age matches the edge cacheTtl so browsers cache for the
+    // same window. Only set if upstream didn't already provide one.
+    if (!headers.has("Cache-Control")) {
+      headers.set("Cache-Control", "public, max-age=2592000, immutable");
     }
     for (const [k, v] of Object.entries(corsHeaders())) {
       headers.set(k, v);

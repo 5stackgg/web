@@ -30,11 +30,13 @@ import {
   generateSubscription,
 } from "~/graphql/graphqlGen";
 import { matchClipFields } from "~/graphql/matchClip";
+import type { Clip } from "~/types/clip";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
 import DeleteClipDialog from "~/components/clips/DeleteClipDialog.vue";
+import ClipMatchSummary from "~/components/clips/ClipMatchSummary.vue";
 import { clipDownloadName } from "~/utilities/clipDownloadName";
 
 // Single-clip viewer. Big player up top, metadata + actions sidebar
@@ -45,33 +47,6 @@ import { clipDownloadName } from "~/utilities/clipDownloadName";
 const route = useRoute();
 const router = useRouter();
 const nuxtApp = useNuxtApp();
-
-type Clip = {
-  id: string;
-  user_steam_id: string;
-  target_steam_id: string | null;
-  title: string | null;
-  duration_ms: number | null;
-  download_url: string | null;
-  thumbnail_url: string | null;
-  visibility: string;
-  created_at: string;
-  user?: { steam_id: string; name: string; avatar_url: string | null } | null;
-  target?: { steam_id: string; name: string; avatar_url: string | null } | null;
-  match_map?: {
-    id: string;
-    map?: {
-      name: string;
-      poster: string | null;
-      label: string | null;
-    } | null;
-    match?: {
-      id: string;
-      lineup_1?: { name: string } | null;
-      lineup_2?: { name: string } | null;
-    } | null;
-  } | null;
-};
 
 const clip = ref<Clip | null>(null);
 const loading = ref(true);
@@ -176,7 +151,7 @@ onBeforeUnmount(() => {
 });
 
 function onDeleted() {
-  router.replace("/manage-highlights");
+  router.replace("/highlights");
 }
 
 async function copyLink() {
@@ -217,19 +192,15 @@ const downloadFilename = computed<string>(() => {
     ? clipDownloadName(clip.value)
     : "clip.mp4";
 });
-
-const mapLabel = computed(
-  () => clip.value?.match_map?.map?.label ?? clip.value?.match_map?.map?.name ?? null,
-);
 </script>
 
 <template>
   <PageTransition>
     <div class="mb-4 flex items-center gap-2">
       <Button variant="ghost" size="sm" as-child>
-        <NuxtLink :to="isOwner ? '/manage-highlights' : '/highlights'" class="flex items-center gap-2">
+        <NuxtLink to="/highlights" class="flex items-center gap-2">
           <ArrowLeft class="h-4 w-4" />
-          {{ isOwner ? "Manage Highlights" : "Highlights" }}
+          Highlights
         </NuxtLink>
       </Button>
     </div>
@@ -397,6 +368,8 @@ const mapLabel = computed(
           </div>
         </div>
 
+        <ClipMatchSummary v-if="clip.match_map?.match" :clip="clip" />
+
         <Card>
           <CardContent class="p-4 space-y-3 text-sm">
             <div class="flex items-center justify-between">
@@ -404,10 +377,6 @@ const mapLabel = computed(
               <span class="font-mono tabular-nums">
                 {{ formatDuration(clip.duration_ms) }}
               </span>
-            </div>
-            <div v-if="mapLabel" class="flex items-center justify-between">
-              <span class="text-muted-foreground">Map</span>
-              <span>{{ mapLabel }}</span>
             </div>
             <div class="flex items-center justify-between">
               <span class="text-muted-foreground">Visibility</span>

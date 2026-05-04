@@ -14,7 +14,7 @@ import {
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 
-// One dialog used by both /manage-highlights and /clips/[id]. Owns the
+// One dialog used by both /highlights and /clips/[id]. Owns the
 // mutation + toast itself so neither page has to re-implement the
 // delete flow (and so a fix to the delete behavior only has to land
 // in one place). Parent controls open via v-model and reacts to the

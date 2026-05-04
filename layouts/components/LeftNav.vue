@@ -20,8 +20,6 @@ import {
   Database,
   Trophy,
   Film,
-  Sparkles,
-  Library,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
@@ -328,7 +326,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                     'router-link-active': isRouteActive('highlights'),
                   }"
                 >
-                  <Sparkles />
+                  <Film />
                   Highlights
                 </NuxtLink>
               </SidebarMenuButton>
@@ -389,29 +387,6 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   <Badge size="sm" v-if="activeStreamingMatchesCount > 0">
                     {{ activeStreamingMatchesCount }}
                   </Badge>
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <!-- Manage Highlights = streamer-rank+ curation surface.
-                 Lives in Administration but the gate is "any of
-                 streamer / match_organizer / tournament_organizer /
-                 administrator" (the same predicate the section
-                 itself uses), not just isAdmin. Streamer visibility
-                 is intentional — they're the operators promoting /
-                 demoting highlights for their broadcasts. -->
-            <SidebarMenuItem
-              v-if="isStreamer || isMatchOrganizer || isTournamentOrganizer || isAdmin"
-              tooltip="Manage Highlights"
-            >
-              <SidebarMenuButton as-child tooltip="Manage Highlights">
-                <NuxtLink
-                  :to="{ name: 'manage-highlights' }"
-                  :class="{
-                    'router-link-active': isRouteActive('manage-highlights'),
-                  }"
-                >
-                  <Library />
-                  Manage Highlights
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>

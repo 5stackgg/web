@@ -1,40 +1,29 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { Sparkles, Play, Info, Lock, Eye, Globe } from "lucide-vue-next";
+import {
+  Film,
+  Play,
+  Info,
+  Lock,
+  Eye,
+  Globe,
+  Trophy,
+  ArrowUpRight,
+} from "lucide-vue-next";
 import { Card, CardContent } from "~/components/ui/card";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import ClipMatchSummary from "~/components/clips/ClipMatchSummary.vue";
+import type { Clip } from "~/types/clip";
 
 // Reusable highlight card. Click anywhere = inline play. Hover the
-// info icon = popover with extended metadata (creator, match, target
-// player, visibility, created time). Default state is a still preview
-// (poster + lifted hover); once clicked we mount an autoplaying
-// <video controls> in the same slot. Re-clicking the play surface
-// while the video is mounted toggles back to the preview.
-
-type Clip = {
-  id: string;
-  title: string | null;
-  duration_ms: number | null;
-  download_url: string | null;
-  thumbnail_url: string | null;
-  visibility: string;
-  created_at: string;
-  user?: { steam_id: string; name: string; avatar_url: string | null } | null;
-  target?: { steam_id: string; name: string; avatar_url: string | null } | null;
-  match_map?: {
-    id: string;
-    map?: { name: string; poster: string | null; label: string | null } | null;
-    match?: {
-      id: string;
-      lineup_1?: { name: string } | null;
-      lineup_2?: { name: string } | null;
-    } | null;
-  } | null;
-};
+// info icon = popover with extended metadata (creator, target player,
+// visibility, created time) plus a compact match-summary block linking
+// to the source match. Default state is a still preview; once clicked
+// we mount an autoplaying <video controls> in the same slot.
 
 const props = defineProps<{
   clip: Clip;
@@ -88,6 +77,27 @@ const matchupLabel = computed(() => {
     null
   );
 });
+
+// Score chip data — only render when both scores are present so we
+// don't show a stale `0:0` for an in-progress map.
+const score1 = computed(() => props.clip.match_map?.lineup_1_score);
+const score2 = computed(() => props.clip.match_map?.lineup_2_score);
+const hasScore = computed(
+  () =>
+    typeof score1.value === "number" &&
+    typeof score2.value === "number" &&
+    !(score1.value === 0 && score2.value === 0),
+);
+const winningSide = computed<"1" | "2" | null>(() => {
+  const w = props.clip.match_map?.winning_lineup_id;
+  if (!w) return null;
+  if (w === props.clip.match_map?.match?.lineup_1_id) return "1";
+  if (w === props.clip.match_map?.match?.lineup_2_id) return "2";
+  return null;
+});
+const isTournament = computed(
+  () => props.clip.match_map?.match?.is_tournament_match === true,
+);
 </script>
 
 <template>
@@ -127,7 +137,7 @@ const matchupLabel = computed(() => {
           v-else
           class="absolute inset-0 flex items-center justify-center text-muted-foreground"
         >
-          <Sparkles class="h-8 w-8 opacity-50" />
+          <Film class="h-8 w-8 opacity-50" />
         </div>
         <button
           type="button"
@@ -158,21 +168,22 @@ const matchupLabel = computed(() => {
           <Info class="h-3.5 w-3.5" />
         </PopoverTrigger>
         <PopoverContent
-          class="w-72 text-sm"
+          class="w-80 text-sm"
           align="end"
           @click.stop
         >
-          <div class="space-y-2">
+          <div class="space-y-3">
             <div class="font-medium leading-tight">
               {{ clip.title ?? "Untitled clip" }}
             </div>
-            <div
-              v-if="matchupLabel"
-              class="text-xs text-muted-foreground"
-            >
-              {{ matchupLabel }}
-            </div>
-            <div class="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs pt-1">
+
+            <ClipMatchSummary
+              v-if="clip.match_map?.match"
+              :clip="clip"
+              variant="compact"
+            />
+
+            <div class="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
               <span class="text-muted-foreground">Duration</span>
               <span class="font-mono tabular-nums text-right">
                 {{ formatDuration(clip.duration_ms) }}
@@ -216,17 +227,36 @@ const matchupLabel = computed(() => {
               <span class="text-muted-foreground">Created</span>
               <span class="text-right">{{ formatDate(clip.created_at) }}</span>
             </div>
-            <div class="pt-2 flex items-center justify-end">
-              <NuxtLink
-                :to="`/clips/${clip.id}`"
-                class="text-xs text-muted-foreground hover:text-foreground"
-              >
-                Open detail page →
-              </NuxtLink>
-            </div>
           </div>
         </PopoverContent>
       </Popover>
+
+      <!-- Top-left chips: tournament badge + map score. The score chip
+           highlights the winning side in amber so the result is
+           legible at a glance without opening the popover. -->
+      <div
+        class="absolute top-2 left-2 flex items-center gap-1 pointer-events-none"
+      >
+        <span
+          v-if="isTournament"
+          class="inline-flex items-center gap-0.5 rounded bg-black/80 px-1 py-0.5 text-[0.6rem] text-[hsl(var(--tac-amber))] backdrop-blur-sm"
+          title="Tournament match"
+        >
+          <Trophy class="h-2.5 w-2.5" />
+        </span>
+        <span
+          v-if="hasScore"
+          class="inline-flex items-center gap-0.5 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[0.65rem] tabular-nums text-white backdrop-blur-sm"
+        >
+          <span :class="winningSide === '1' ? 'text-[hsl(var(--tac-amber))] font-semibold' : ''">
+            {{ score1 }}
+          </span>
+          <span class="opacity-50">:</span>
+          <span :class="winningSide === '2' ? 'text-[hsl(var(--tac-amber))] font-semibold' : ''">
+            {{ score2 }}
+          </span>
+        </span>
+      </div>
 
       <span
         class="absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5 text-[0.65rem] font-mono tabular-nums text-white pointer-events-none"
@@ -236,9 +266,21 @@ const matchupLabel = computed(() => {
     </div>
 
     <CardContent class="p-3 space-y-1">
-      <div class="truncate text-sm font-medium">
-        {{ clip.title || "Untitled clip" }}
-      </div>
+      <!-- Title doubles as the link to the full clip detail page. The
+           arrow icon makes the link affordance visible without
+           depending on hover-to-discover on the info popover. -->
+      <NuxtLink
+        :to="`/clips/${clip.id}`"
+        class="group/link flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-[hsl(var(--tac-amber))] transition-colors"
+        :title="clip.title || 'Open clip'"
+      >
+        <span class="truncate">
+          {{ clip.title || "Untitled clip" }}
+        </span>
+        <ArrowUpRight
+          class="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-all group-hover/link:text-[hsl(var(--tac-amber))] group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
+        />
+      </NuxtLink>
       <div
         class="flex items-center justify-between gap-2 text-xs text-muted-foreground"
       >

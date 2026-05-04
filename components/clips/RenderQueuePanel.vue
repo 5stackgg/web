@@ -8,7 +8,10 @@ import {
   ListVideo,
   X,
   Clock,
-  Cpu,
+  Upload,
+  Film,
+  Swords,
+  CircleDot,
 } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
@@ -19,22 +22,13 @@ import {
 import { clipRenderJobFields } from "~/graphql/clipRenderJob";
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
-import { Progress } from "~/components/ui/progress";
 
-// Operator panel for the render queue. Shows every in-flight or
-// recently-finished clip_render_jobs row across the platform (the
-// streamer-rank+ Hasura permission returns all rows, not just the
-// caller's), grouped by match_map. Each group has ONE Cancel button
-// that cancels the whole batch — not per-row. Match highlights are
-// 1-clip-per-player and the operator's mental model is "cancel this
-// match's recap run", not "cancel Joe's clip but keep Bob's";
-// per-clip granularity adds noise without buying anything when the
-// pod processes the batch sequentially anyway.
-//
-// The pod's render script reads each row's status before each clip
-// and skips on `cancelled`, so the cancel propagates without us
-// having to coordinate with the in-flight render. The cancel action
-// also tears down the pod so the in-flight clip itself dies.
+// Operator panel for the render queue. One card per match_map batch
+// (one pod processes the batch sequentially), every job in the batch
+// shown vertically with status, progress, and timing. Cancel happens
+// at batch level — the pod's render script reads each row's status
+// before each clip and skips on `cancelled`, plus the cancel mutation
+// tears down the pod itself.
 type Job = {
   id: string;
   user_steam_id: string;
@@ -46,14 +40,23 @@ type Job = {
   created_at: string;
   last_status_at: string | null;
   spec: any;
+  user?: { steam_id: string; name: string; avatar_url: string | null } | null;
+  match_map?: {
+    id: string;
+    map?: { name: string; poster: string | null; label: string | null } | null;
+    match?: {
+      id: string;
+      lineup_1?: { name: string } | null;
+      lineup_2?: { name: string } | null;
+    } | null;
+  } | null;
 };
 
 const props = withDefaults(
   defineProps<{
-    // Compact mode trims the visible content to just the active
-    // batch (no recently-finished strip, no progress bars per row).
-    // Used on the Manage Highlights summary; the dedicated queue
-    // page renders the full layout.
+    // Compact mode trims to in-flight batches with one summary line each.
+    // Used when embedded somewhere small (formerly the Manage Highlights
+    // summary). Keep the full layout for the dedicated queue surface.
     compact?: boolean;
   }>(),
   { compact: false },
@@ -69,9 +72,6 @@ function subscribe() {
   activeSub?.unsubscribe();
   const obs = getGraphqlClient().subscribe({
     query: generateSubscription({
-      // Include recent terminal jobs so the operator can see what
-      // JUST finished without bouncing into the clips grid. Cap at
-      // 50 — typical workload is 1-10 in-flight.
       clip_render_jobs: [
         {
           order_by: [{ created_at: "desc" }],
@@ -103,10 +103,6 @@ const recentlyDone = computed(() =>
   jobs.value.filter((j) => TERMINAL.has(j.status)).slice(0, 12),
 );
 
-// Group in-flight by match_map. One pod per group; the operator
-// cancels at this level. Inside each group, render order:
-// rendering > uploading > queued so the in-progress row is visible
-// at a glance.
 const STATUS_ORDER: Record<string, number> = {
   rendering: 0,
   uploading: 1,
@@ -119,16 +115,27 @@ const groups = computed(() => {
     list.push(j);
     map.set(j.match_map_id, list);
   }
-  return Array.from(map.entries()).map(([matchMapId, list]) => ({
-    matchMapId,
-    jobs: list.sort(
+  return Array.from(map.entries()).map(([matchMapId, list]) => {
+    const sorted = list.sort(
       (a, b) =>
         (STATUS_ORDER[a.status] ?? 99) - (STATUS_ORDER[b.status] ?? 99),
-    ),
-    activeJob: list.find(
+    );
+    const activeJob = sorted.find(
       (j) => j.status === "rendering" || j.status === "uploading",
-    ),
-  }));
+    );
+    const sample = sorted[0];
+    const oldest = sorted.reduce<string>(
+      (acc, j) => (j.created_at < acc ? j.created_at : acc),
+      sorted[0].created_at,
+    );
+    return {
+      matchMapId,
+      jobs: sorted,
+      activeJob,
+      sample,
+      startedAt: oldest,
+    };
+  });
 });
 
 function progressPct(j: Job): number {
@@ -156,10 +163,69 @@ function statusLabel(s: string): string {
   }
 }
 
+const STATUS_TONE: Record<
+  string,
+  { dot: string; pill: string; iconColor: string }
+> = {
+  queued: {
+    dot: "bg-muted-foreground/60",
+    pill: "border-border/60 bg-muted/30 text-muted-foreground",
+    iconColor: "text-muted-foreground",
+  },
+  rendering: {
+    dot: "bg-[hsl(var(--tac-amber))]",
+    pill: "border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]",
+    iconColor: "text-[hsl(var(--tac-amber))]",
+  },
+  uploading: {
+    dot: "bg-primary",
+    pill: "border-primary/40 bg-primary/10 text-primary",
+    iconColor: "text-primary",
+  },
+  done: {
+    dot: "bg-emerald-400",
+    pill: "border-emerald-400/40 bg-emerald-400/10 text-emerald-400",
+    iconColor: "text-emerald-400",
+  },
+  error: {
+    dot: "bg-destructive",
+    pill: "border-destructive/40 bg-destructive/10 text-destructive",
+    iconColor: "text-destructive",
+  },
+  cancelled: {
+    dot: "bg-muted-foreground/40",
+    pill: "border-border/60 bg-muted/30 text-muted-foreground/80",
+    iconColor: "text-muted-foreground/70",
+  },
+};
+
 function clipTitle(j: Job): string {
   const t = j.spec?.title;
   if (typeof t === "string" && t.length > 0) return t;
+  const target = j.spec?.target_name;
+  if (typeof target === "string" && target.length > 0) return `${target} clip`;
   return `Render ${j.id.slice(0, 8)}`;
+}
+
+function matchupLabel(j: Job): string | null {
+  const a = j.match_map?.match?.lineup_1?.name;
+  const b = j.match_map?.match?.lineup_2?.name;
+  if (a && b) return `${a} vs ${b}`;
+  return null;
+}
+
+function clipDurationLabel(j: Job): string | null {
+  const segs = j.spec?.segments;
+  if (!Array.isArray(segs) || segs.length === 0) return null;
+  // Fall back to segment count when ms isn't on the spec.
+  const ms = typeof j.spec?.duration_ms === "number" ? j.spec.duration_ms : 0;
+  if (ms > 0) {
+    const total = Math.round(ms / 1000);
+    const m = Math.floor(total / 60);
+    const s = total % 60;
+    return `${m}:${s.toString().padStart(2, "0")}`;
+  }
+  return `${segs.length} seg${segs.length === 1 ? "" : "s"}`;
 }
 
 async function cancelBatch(matchMapId: string) {
@@ -174,8 +240,6 @@ async function cancelBatch(matchMapId: string) {
         ],
       } as any),
     });
-    // Subscription delivers the new status flips; affected rows
-    // disappear from in-flight automatically.
   } catch (e) {
     console.error("[render-queue] batch cancel failed:", e);
   } finally {
@@ -192,211 +256,348 @@ function formatTimeAgo(iso: string | null): string {
   const m = Math.floor(seconds / 60);
   if (m < 60) return `${m}m`;
   const h = Math.floor(m / 60);
-  return `${h}h`;
+  if (h < 24) return `${h}h`;
+  const d = Math.floor(h / 24);
+  return `${d}d`;
 }
+
+const totalInFlight = computed(() => inFlight.value.length);
+const totalActive = computed(
+  () => inFlight.value.filter((j) => j.status === "rendering" || j.status === "uploading").length,
+);
+const totalQueued = computed(
+  () => inFlight.value.filter((j) => j.status === "queued").length,
+);
 </script>
 
 <template>
   <div
     v-if="!loading && (groups.length > 0 || (!compact && recentlyDone.length > 0))"
-    class="space-y-4"
+    class="space-y-5"
   >
-    <div class="flex items-center gap-2">
-      <ListVideo class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
-      <h2 class="font-mono text-xs uppercase tracking-[0.18em] text-foreground/80">
-        Render Queue
-      </h2>
-      <span
-        v-if="inFlight.length"
-        class="ml-2 inline-flex items-center gap-1 rounded-full border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] px-2 py-0.5 text-[0.65rem] font-mono uppercase tracking-wider text-[hsl(var(--tac-amber))]"
-      >
-        <Loader2 class="h-3 w-3 animate-spin" />
-        {{ inFlight.length }} in flight
-      </span>
+    <!-- Top-line summary: in-flight count + breakdown. Anchors the panel
+         when there's nothing currently rendering but recently-finished
+         items are still listed. -->
+    <div
+      v-if="!compact && groups.length > 0"
+      class="flex flex-wrap items-center gap-3 rounded-lg border border-border/50 bg-card/40 px-3 py-2 [backdrop-filter:blur(6px)]"
+    >
+      <div class="flex items-center gap-2">
+        <ListVideo class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
+        <span class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground">
+          In Flight
+        </span>
+        <span class="font-mono text-sm font-semibold tabular-nums">
+          {{ totalInFlight }}
+        </span>
+      </div>
+      <div class="ml-auto flex items-center gap-3 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground">
+        <span class="inline-flex items-center gap-1.5">
+          <Loader2 class="h-3 w-3 animate-spin text-[hsl(var(--tac-amber))]" />
+          {{ totalActive }} active
+        </span>
+        <span class="text-border">·</span>
+        <span class="inline-flex items-center gap-1.5">
+          <Clock class="h-3 w-3" />
+          {{ totalQueued }} queued
+        </span>
+      </div>
     </div>
 
-    <!-- Per-match_map group = one batch pod, one demo, processing
-         the listed jobs sequentially. Header has the Cancel button;
-         the rows underneath are read-only listings of what's queued
-         in this batch. -->
-    <div
-      v-if="groups.length"
-      class="grid gap-3 grid-cols-1"
-      :class="{ 'lg:grid-cols-2': !compact }"
-    >
+    <!-- Active batches — one card per match_map. Each card stacks
+         vertically: header w/ matchup + cancel, hero progress for the
+         active job, then the per-job ladder. -->
+    <div v-if="groups.length" class="space-y-3">
       <Card
         v-for="g in groups"
         :key="g.matchMapId"
-        class="p-3 space-y-2"
+        class="overflow-hidden border-border/60"
       >
-        <div
-          class="flex items-center justify-between gap-2 pb-2 border-b border-border/40"
-        >
-          <div class="flex items-center gap-2 min-w-0">
-            <Cpu class="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-            <span
-              class="font-mono text-[0.65rem] uppercase tracking-wider text-muted-foreground truncate"
-              :title="g.matchMapId"
-            >
-              {{ g.matchMapId.slice(0, 8) }} · {{ g.jobs.length }} job{{
-                g.jobs.length === 1 ? "" : "s"
-              }}
-            </span>
-          </div>
-          <Button
-            size="sm"
-            variant="outline"
-            class="h-7 text-[0.7rem] hover:border-destructive hover:text-destructive shrink-0"
-            :disabled="cancellingBatch[g.matchMapId]"
-            @click="cancelBatch(g.matchMapId)"
+        <!-- Header banner: map poster background, lineup matchup label -->
+        <div class="relative">
+          <div
+            v-if="g.sample.match_map?.map?.poster"
+            class="absolute inset-0 -z-0"
           >
-            <Loader2
-              v-if="cancellingBatch[g.matchMapId]"
-              class="h-3 w-3 mr-1 animate-spin"
+            <NuxtImg
+              :src="g.sample.match_map.map.poster"
+              :alt="g.sample.match_map.map.name ?? ''"
+              class="h-full w-full object-cover opacity-25"
             />
-            <X v-else class="h-3 w-3 mr-1" />
-            Cancel batch
-          </Button>
+            <div
+              class="absolute inset-0 bg-gradient-to-r from-card via-card/80 to-card/40"
+            ></div>
+          </div>
+          <div class="relative flex items-start gap-3 p-3 sm:p-4">
+            <div
+              class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)]"
+            >
+              <Film class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2">
+                <span
+                  v-if="matchupLabel(g.sample)"
+                  class="inline-flex items-center gap-1.5 truncate font-semibold leading-tight"
+                >
+                  <Swords class="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                  <span class="truncate">{{ matchupLabel(g.sample) }}</span>
+                </span>
+                <span v-else class="truncate font-semibold leading-tight">
+                  {{ g.sample.match_map?.map?.label ?? g.sample.match_map?.map?.name ?? "Unknown match" }}
+                </span>
+              </div>
+              <div
+                class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground"
+              >
+                <span v-if="g.sample.match_map?.map?.label || g.sample.match_map?.map?.name">
+                  {{ g.sample.match_map.map.label ?? g.sample.match_map.map.name }}
+                </span>
+                <span v-if="g.sample.match_map?.map" class="text-border">·</span>
+                <span>{{ g.jobs.length }} job{{ g.jobs.length === 1 ? "" : "s" }}</span>
+                <span class="text-border">·</span>
+                <span class="inline-flex items-center gap-1">
+                  <Clock class="h-3 w-3" />
+                  {{ formatTimeAgo(g.startedAt) }}
+                </span>
+              </div>
+            </div>
+            <Button
+              size="sm"
+              variant="outline"
+              class="h-7 shrink-0 px-2 text-[0.7rem] hover:border-destructive hover:text-destructive"
+              :disabled="cancellingBatch[g.matchMapId]"
+              @click="cancelBatch(g.matchMapId)"
+            >
+              <Loader2
+                v-if="cancellingBatch[g.matchMapId]"
+                class="h-3 w-3 mr-1 animate-spin"
+              />
+              <X v-else class="h-3 w-3 mr-1" />
+              Cancel
+            </Button>
+          </div>
         </div>
 
-        <!-- Active job's progress, broken into two distinct phases.
-             RENDER bar fills 0→100% during status='rendering' (the
-             pod's per-segment progress reports drive it). UPLOAD bar
-             stays empty until status flips to 'uploading', then
-             pulses indeterminate — we don't have real upload-bytes
-             progress (single chunked POST, no readback). When status
-             reaches 'done' both bars sit at 100%. This replaces the
-             old single bar that jumped to 50% on entering upload
-             phase, which read as "stuck halfway" until completion. -->
+        <!-- Hero progress for the active job (compact mode hides this). -->
         <div
           v-if="g.activeJob && !compact"
-          class="space-y-2"
+          class="border-t border-border/40 px-3 py-3 sm:px-4"
         >
-          <div class="flex items-center gap-2 text-xs">
-            <Loader2
-              class="h-3.5 w-3.5 shrink-0 animate-spin text-[hsl(var(--tac-amber))]"
-            />
-            <span class="truncate font-medium">
+          <div class="mb-2 flex items-center gap-2">
+            <span class="relative flex h-2 w-2 shrink-0">
+              <span
+                class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-60"
+                :class="STATUS_TONE[g.activeJob.status]?.dot"
+              ></span>
+              <span
+                class="relative inline-flex h-2 w-2 rounded-full"
+                :class="STATUS_TONE[g.activeJob.status]?.dot"
+              ></span>
+            </span>
+            <span class="truncate text-sm font-medium">
               {{ clipTitle(g.activeJob) }}
             </span>
             <span
-              class="ml-auto shrink-0 font-mono text-[0.6rem] uppercase tracking-wider text-muted-foreground"
+              class="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em]"
+              :class="STATUS_TONE[g.activeJob.status]?.pill"
             >
               {{ statusLabel(g.activeJob.status) }}
-              · {{ formatTimeAgo(g.activeJob.last_status_at ?? g.activeJob.created_at) }}
+              <span class="opacity-60">·</span>
+              {{ formatTimeAgo(g.activeJob.last_status_at ?? g.activeJob.created_at) }}
             </span>
           </div>
 
-          <div class="grid grid-cols-2 gap-2">
-            <div class="space-y-0.5">
-              <div class="flex items-center justify-between text-[0.6rem] font-mono uppercase tracking-wider text-muted-foreground">
-                <span>Render</span>
-                <span v-if="g.activeJob.status === 'rendering'">
-                  {{ progressPct(g.activeJob) }}%
+          <!-- Two-phase progress visual. Render bar fills during 'rendering';
+               upload pulses during 'uploading' (no bytes-progress signal). -->
+          <div class="space-y-2">
+            <div class="space-y-1">
+              <div class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground">
+                <span class="inline-flex items-center gap-1.5">
+                  <Film class="h-3 w-3" />
+                  Render
                 </span>
-                <span v-else>100%</span>
+                <span class="tabular-nums">
+                  {{
+                    g.activeJob.status === "rendering"
+                      ? progressPct(g.activeJob) + "%"
+                      : g.activeJob.status === "queued"
+                        ? "—"
+                        : "100%"
+                  }}
+                </span>
               </div>
-              <Progress
-                :model-value="
-                  g.activeJob.status === 'rendering'
-                    ? progressPct(g.activeJob)
-                    : 100
-                "
-                class="h-1"
-              />
+              <div class="relative h-1.5 overflow-hidden rounded-full bg-muted/40">
+                <div
+                  class="h-full rounded-full bg-[hsl(var(--tac-amber))] transition-[width] duration-300"
+                  :style="{
+                    width:
+                      g.activeJob.status === 'rendering'
+                        ? progressPct(g.activeJob) + '%'
+                        : g.activeJob.status === 'queued'
+                          ? '0%'
+                          : '100%',
+                  }"
+                ></div>
+              </div>
             </div>
-            <div class="space-y-0.5">
-              <div class="flex items-center justify-between text-[0.6rem] font-mono uppercase tracking-wider text-muted-foreground">
-                <span>Upload</span>
-                <span v-if="g.activeJob.status === 'uploading'">…</span>
-                <span v-else-if="g.activeJob.status === 'done'">100%</span>
-                <span v-else>—</span>
+            <div class="space-y-1">
+              <div class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground">
+                <span class="inline-flex items-center gap-1.5">
+                  <Upload class="h-3 w-3" />
+                  Upload
+                </span>
+                <span class="tabular-nums">
+                  {{
+                    g.activeJob.status === "uploading"
+                      ? "…"
+                      : g.activeJob.status === "done"
+                        ? "100%"
+                        : "—"
+                  }}
+                </span>
               </div>
-              <!-- Indeterminate pulse during upload (no bytes-progress
-                   signal — single chunked POST). Shadcn's Progress
-                   doesn't support indeterminate state, so we render
-                   a custom track with a sliding gradient bar. Solid
-                   100% on done; empty bar otherwise. -->
               <div
                 v-if="g.activeJob.status === 'uploading'"
-                class="relative h-1 overflow-hidden rounded-full bg-primary/20"
+                class="relative h-1.5 overflow-hidden rounded-full bg-primary/20"
               >
                 <div class="upload-pulse-bar" />
               </div>
-              <Progress
-                v-else-if="g.activeJob.status === 'done'"
-                :model-value="100"
-                class="h-1"
-              />
               <div
                 v-else
-                class="h-1 rounded-full bg-muted/40"
-              />
+                class="h-1.5 rounded-full bg-muted/40"
+                :class="g.activeJob.status === 'done' && '!bg-primary'"
+              ></div>
             </div>
           </div>
         </div>
 
-        <!-- Queued list (rows below the active one). In compact mode
-             we show a one-line summary instead of the per-row list. -->
-        <div
-          v-if="!compact"
-          class="space-y-1"
-        >
+        <!-- Per-job ladder: every clip in the batch with its own status + meta.
+             Compact mode collapses this to a single summary line. -->
+        <div v-if="!compact" class="border-t border-border/40 divide-y divide-border/30">
           <div
-            v-for="j in g.jobs.filter((x) => x !== g.activeJob)"
+            v-for="j in g.jobs"
             :key="j.id"
-            class="flex items-center gap-2 rounded border border-border/40 bg-muted/10 px-2 py-1 text-xs"
+            class="flex items-center gap-3 px-3 py-2 sm:px-4"
+            :class="{ 'bg-[hsl(var(--tac-amber)/0.04)]': j === g.activeJob }"
           >
-            <Clock class="h-3 w-3 shrink-0 text-muted-foreground" />
-            <span class="truncate">{{ clipTitle(j) }}</span>
-            <span class="ml-auto shrink-0 font-mono text-[0.6rem] uppercase tracking-wider text-muted-foreground">
-              {{ statusLabel(j.status) }}
+            <component
+              :is="j.status === 'rendering' || j.status === 'uploading' ? Loader2 : j.status === 'queued' ? Clock : CircleDot"
+              class="h-3.5 w-3.5 shrink-0"
+              :class="[
+                STATUS_TONE[j.status]?.iconColor,
+                (j.status === 'rendering' || j.status === 'uploading') && 'animate-spin',
+              ]"
+            />
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2">
+                <span class="truncate text-sm">{{ clipTitle(j) }}</span>
+                <span
+                  v-if="clipDurationLabel(j)"
+                  class="shrink-0 font-mono text-[0.6rem] tabular-nums text-muted-foreground/70"
+                >
+                  {{ clipDurationLabel(j) }}
+                </span>
+              </div>
+              <div
+                v-if="j.user?.name || j.spec?.target_name"
+                class="truncate font-mono text-[0.6rem] uppercase tracking-[0.12em] text-muted-foreground/70"
+              >
+                <span v-if="j.spec?.target_name" class="text-foreground/70">
+                  {{ j.spec.target_name }}
+                </span>
+                <span v-if="j.spec?.target_name && j.user?.name"> · </span>
+                <span v-if="j.user?.name">by {{ j.user.name }}</span>
+              </div>
+            </div>
+            <span
+              class="shrink-0 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[0.58rem] uppercase tracking-[0.14em]"
+              :class="STATUS_TONE[j.status]?.pill"
+            >
+              <template v-if="j.status === 'rendering'">
+                {{ progressPct(j) }}%
+              </template>
+              <template v-else>
+                {{ statusLabel(j.status) }}
+              </template>
             </span>
           </div>
         </div>
+
+        <!-- Compact mode summary: skip the ladder, just say what the
+             batch is doing in one line. -->
         <div
           v-else
-          class="text-[0.65rem] uppercase tracking-wider text-muted-foreground"
+          class="border-t border-border/40 px-3 py-2 sm:px-4 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground"
         >
-          {{ g.jobs.length - (g.activeJob ? 1 : 0) }} queued
-          {{ g.activeJob ? `· active: ${clipTitle(g.activeJob)}` : "" }}
+          <span v-if="g.activeJob">
+            {{ statusLabel(g.activeJob.status) }} · {{ clipTitle(g.activeJob) }}
+          </span>
+          <span v-else>
+            {{ g.jobs.length }} queued
+          </span>
         </div>
       </Card>
     </div>
 
-    <!-- Recently-terminal strip — dedicated queue page only. Manage
-         Highlights' compact summary doesn't need this; the clips
-         grid below already shows the produced clips. -->
-    <div v-if="!compact && recentlyDone.length" class="space-y-1">
-      <div class="flex items-center gap-2 mb-1">
+    <!-- Recently terminal — full surface only. Match-aware so an
+         operator scanning sees what was just rendered without bouncing
+         to /clips/<id>. -->
+    <div v-if="!compact && recentlyDone.length" class="space-y-2">
+      <div class="flex items-center gap-2">
         <span
-          class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/80"
+          class="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground/80"
         >
-          Recently finished
+          Recently Finished
+        </span>
+        <span class="text-border">·</span>
+        <span class="font-mono text-[0.6rem] tabular-nums text-muted-foreground/70">
+          {{ recentlyDone.length }}
         </span>
       </div>
-      <div class="grid gap-1 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="space-y-1">
         <div
           v-for="j in recentlyDone"
           :key="j.id"
-          class="flex items-center gap-2 rounded border border-border/40 bg-muted/10 px-2 py-1 text-xs"
+          class="flex items-center gap-2.5 rounded-md border border-border/40 bg-card/30 px-2.5 py-1.5 text-xs [backdrop-filter:blur(6px)]"
         >
           <CheckCircle2
             v-if="j.status === 'done'"
-            class="h-3 w-3 shrink-0 text-emerald-400"
+            class="h-3.5 w-3.5 shrink-0 text-emerald-400"
           />
           <CircleSlash
             v-else-if="j.status === 'cancelled'"
-            class="h-3 w-3 shrink-0 text-muted-foreground"
+            class="h-3.5 w-3.5 shrink-0 text-muted-foreground"
           />
           <AlertCircle
             v-else
-            class="h-3 w-3 shrink-0 text-destructive"
+            class="h-3.5 w-3.5 shrink-0 text-destructive"
           />
-          <span class="truncate" :title="j.error_message ?? clipTitle(j)">
-            {{ clipTitle(j) }}
-          </span>
-          <span class="ml-auto shrink-0 text-[0.6rem] text-muted-foreground/80">
+          <div class="min-w-0 flex-1">
+            <div class="truncate" :title="j.error_message ?? clipTitle(j)">
+              {{ clipTitle(j) }}
+            </div>
+            <div
+              v-if="matchupLabel(j) || j.error_message"
+              class="truncate font-mono text-[0.58rem] uppercase tracking-[0.12em] text-muted-foreground/70"
+            >
+              <span v-if="j.error_message" class="text-destructive/80">
+                {{ j.error_message }}
+              </span>
+              <span v-else>{{ matchupLabel(j) }}</span>
+            </div>
+          </div>
+          <NuxtLink
+            v-if="j.status === 'done' && j.clip_id"
+            :to="`/clips/${j.clip_id}`"
+            class="shrink-0 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Open →
+          </NuxtLink>
+          <span
+            v-else
+            class="shrink-0 font-mono text-[0.58rem] tabular-nums text-muted-foreground/70"
+          >
             {{ formatTimeAgo(j.last_status_at ?? j.created_at) }}
           </span>
         </div>
@@ -406,10 +607,8 @@ function formatTimeAgo(iso: string | null): string {
 </template>
 
 <style scoped>
-/* Indeterminate "uploading" track. A short bright gradient slides
-   left-to-right repeatedly so the user sees activity without an
-   accurate percentage. ~1.4s loop is the same cadence shadcn's
-   skeleton uses, so it reads as "loading happening" by familiarity. */
+/* Indeterminate "uploading" track. Short bright gradient slides
+   across so the user sees activity without an accurate percentage. */
 .upload-pulse-bar {
   position: absolute;
   inset: 0;

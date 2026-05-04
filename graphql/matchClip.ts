@@ -26,11 +26,25 @@ export const matchClipFields = {
   },
   match_map: {
     id: true,
+    lineup_1_score: true,
+    lineup_2_score: true,
+    winning_lineup_id: true,
     map: { name: true, poster: true, label: true },
     match: {
       id: true,
-      lineup_1: { name: true },
-      lineup_2: { name: true },
+      status: true,
+      started_at: true,
+      ended_at: true,
+      winning_lineup_id: true,
+      is_tournament_match: true,
+      lineup_1_id: true,
+      lineup_2_id: true,
+      lineup_1: { id: true, name: true },
+      lineup_2: { id: true, name: true },
+      options: {
+        best_of: true,
+        mr: true,
+      },
     },
   },
 } as const;

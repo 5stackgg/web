@@ -267,7 +267,7 @@ const phaseStatus = computed<{
         <NuxtLink :to="`/clips/${clip.id}`">Open clip</NuxtLink>
       </Button>
       <Button v-else-if="isDone" size="sm" as-child>
-        <NuxtLink to="/manage-highlights">Open library</NuxtLink>
+        <NuxtLink to="/highlights">Open library</NuxtLink>
       </Button>
       <Button
         v-if="isDone || isError"

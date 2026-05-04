@@ -1,6 +1,17 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from "vue";
-import { Sparkles, Filter, Loader2, Lock, Eye, Globe } from "lucide-vue-next";
+import {
+  Film,
+  Loader2,
+  Lock,
+  Eye,
+  Globe,
+  Clapperboard,
+  ListVideo,
+  Trash2,
+  Download,
+  ArrowUpRight,
+} from "lucide-vue-next";
 import { useNuxtApp } from "#app";
 import { useAuthStore } from "~/stores/AuthStore";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
@@ -17,80 +28,61 @@ import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import { Button } from "~/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+  SheetTrigger,
+} from "~/components/ui/sheet";
 import HighlightCard from "~/components/clips/HighlightCard.vue";
+import RenderQueuePanel from "~/components/clips/RenderQueuePanel.vue";
+import DeleteClipDialog from "~/components/clips/DeleteClipDialog.vue";
+import { clipDownloadName } from "~/utilities/clipDownloadName";
+import type { Clip } from "~/types/clip";
+import {
+  tacticalFilterPillClasses,
+  tacticalFilterPillActiveClasses,
+} from "~/utilities/tacticalClasses";
 
-// Two-mode page:
-//   - Guests / regular users → browse public clips only.
-//     The Hasura guest + user role permissions filter rows to
-//     visibility = 'public' (and 'unlisted' for users), so a query
-//     without an explicit filter still respects row-level visibility.
-//   - Admins → see EVERY clip plus per-card visibility toggles, so
-//     they can promote a private clip to public (or pull one back)
-//     in one click.
-//
-// One page covers both cases because Hasura's row permissions do the
-// actual gating; the UI just exposes more affordances when isAdmin
-// is true.
-//
-// The `highlights` middleware enforces the operator-controlled
-// public.highlights_public_enabled flag — when off, only streamer+
-// users can reach this page; everyone else gets redirected to /.
+// Single Highlights surface for everyone. Hasura row-level permissions
+// gate which clips each role sees. Curators (streamer+) get extra
+// affordances: visibility filters (admin only), per-card visibility
+// toggles (admin only), delete, and a slide-in render queue.
 definePageMeta({
   middleware: "highlights",
 });
 
-type Clip = {
-  id: string;
-  user_steam_id: string;
-  target_steam_id: string | null;
-  title: string | null;
-  duration_ms: number | null;
-  download_url: string | null;
-  thumbnail_url: string | null;
-  visibility: string;
-  created_at: string;
-  user?: { steam_id: string; name: string; avatar_url: string | null } | null;
-  target?: { steam_id: string; name: string; avatar_url: string | null } | null;
-  match_map?: {
-    id: string;
-    map?: { name: string; poster: string | null; label: string | null } | null;
-    match?: {
-      id: string;
-      lineup_1?: { name: string } | null;
-      lineup_2?: { name: string } | null;
-    } | null;
-  } | null;
-};
+type Visibility = "public" | "private" | "unlisted";
+type Filter = "all" | Visibility;
 
 const nuxtApp = useNuxtApp();
 const auth = useAuthStore();
 const isAdmin = computed(() => auth.isAdmin);
+const canCurate = computed(
+  () =>
+    auth.isAdmin ||
+    auth.isStreamer ||
+    auth.isMatchOrganizer ||
+    auth.isTournamentOrganizer,
+);
 
 const clips = ref<Clip[]>([]);
 const loading = ref(true);
 const activeClipId = ref<string | null>(null);
-// Visibility filter is admin-only — non-admins always see "public"
-// (the only thing Hasura returns for them). Default "public" so a
-// fresh load is the same as the public browse.
-const visibilityFilter = ref<"all" | "public" | "private" | "unlisted">(
-  "public",
-);
+const visibilityFilter = ref<Filter>("all");
 const saving = ref<Record<string, boolean>>({});
+const queueOpen = ref(false);
+
+const pendingDeleteId = ref<string | null>(null);
+const pendingDeleteTitle = ref<string | null>(null);
+const deleteDialogOpen = ref(false);
 
 let activeSub: { unsubscribe: () => void } | null = null;
 function subscribe() {
   activeSub?.unsubscribe();
-  // Admins query without a visibility filter to see every clip.
-  // Non-admins (and guests) still get a clean query — Hasura's
-  // row-level permission filters down to public / unlisted as
-  // appropriate per role, so the result for them is "all the public
-  // clips" without us having to spell that out client-side.
+  // Admins can browse every visibility; everyone else relies on Hasura
+  // row permissions (which already trim non-admins to public/unlisted).
   const where = isAdmin.value ? {} : { visibility: { _eq: "public" } };
   const obs = getGraphqlClient().subscribe({
     query: generateSubscription({
@@ -118,14 +110,8 @@ function subscribe() {
 subscribe();
 onBeforeUnmount(() => activeSub?.unsubscribe());
 
-const filteredClips = computed(() => {
-  // For non-admins the server already trimmed to public — show as-is.
-  if (!isAdmin.value) return clips.value;
-  if (visibilityFilter.value === "all") return clips.value;
-  return clips.value.filter((c) => c.visibility === visibilityFilter.value);
-});
 const counts = computed(() => {
-  const byVis: Record<string, number> = {
+  const byVis: Record<Filter, number> = {
     all: clips.value.length,
     public: 0,
     private: 0,
@@ -134,18 +120,27 @@ const counts = computed(() => {
   for (const c of clips.value) byVis[c.visibility] = (byVis[c.visibility] ?? 0) + 1;
   return byVis;
 });
+
+const filteredClips = computed(() => {
+  if (!isAdmin.value) return clips.value;
+  if (visibilityFilter.value === "all") return clips.value;
+  return clips.value.filter((c) => c.visibility === visibilityFilter.value);
+});
+
 const hasClips = computed(() => filteredClips.value.length > 0);
 
-async function setVisibility(
-  clip: Clip,
-  visibility: "public" | "private" | "unlisted",
-) {
-  if (saving.value[clip.id]) return;
+const adminFilters: Array<{ value: Filter; label: string; icon?: any }> = [
+  { value: "all", label: "All" },
+  { value: "public", label: "Public", icon: Globe },
+  { value: "unlisted", label: "Unlisted", icon: Eye },
+  { value: "private", label: "Private", icon: Lock },
+];
+
+async function setVisibility(clip: Clip, visibility: Visibility) {
+  if (saving.value[clip.id] || clip.visibility === visibility) return;
   saving.value = { ...saving.value, [clip.id]: true };
   try {
     await nuxtApp.$apollo.defaultClient.mutate({
-      // Cast: updateClip rolls in with the latest hasura metadata
-      // apply; zeus types lag until codegen runs.
       mutation: generateMutation({
         updateClip: [
           { clip_id: clip.id, visibility },
@@ -153,72 +148,119 @@ async function setVisibility(
         ],
       } as any),
     });
-    // Subscription delivers the new row state; no manual refetch.
   } catch (e) {
-    console.error("[highlights-admin] visibility toggle failed:", e);
+    console.error("[highlights] visibility toggle failed:", e);
   } finally {
     saving.value = { ...saving.value, [clip.id]: false };
   }
+}
+
+function askDelete(c: Clip) {
+  pendingDeleteId.value = c.id;
+  pendingDeleteTitle.value = c.title;
+  deleteDialogOpen.value = true;
+}
+function onDeleted(id: string) {
+  clips.value = clips.value.filter((c) => c.id !== id);
 }
 </script>
 
 <template>
   <PageTransition>
-    <TacticalPageHeader
-      :icon="Sparkles"
-      title="Highlights"
-      :subtitle="
-        isAdmin
-          ? 'Admin curation — promote any clip to public, or pull one back.'
-          : 'Public clips from across the platform — click any clip to play it here.'
-      "
-    >
-      <!-- Admin-only visibility filter. Hidden for guests / regular
-           users since their server-side row permission already
-           constrains them to public clips. -->
-      <template v-if="isAdmin" #actions>
-        <div class="flex items-center gap-2">
-          <Filter class="h-4 w-4 text-muted-foreground" />
-          <Select v-model="visibilityFilter">
-            <SelectTrigger class="w-[180px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All ({{ counts.all }})</SelectItem>
-              <SelectItem value="public">
-                Public ({{ counts.public }})
-              </SelectItem>
-              <SelectItem value="private">
-                Private ({{ counts.private }})
-              </SelectItem>
-              <SelectItem value="unlisted">
-                Unlisted ({{ counts.unlisted }})
-              </SelectItem>
-            </SelectContent>
-          </Select>
+    <TacticalPageHeader>
+      <template #description>
+        <Film class="h-3.5 w-3.5" />
+        Community Reel
+      </template>
+      <template #title>Highlights</template>
+      <template #actions>
+        <div class="flex items-center gap-3">
+          <div
+            class="hidden sm:flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            <Clapperboard class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
+            <span>
+              <span class="text-foreground font-semibold">{{ counts.all }}</span>
+              {{ counts.all === 1 ? "clip" : "clips" }}
+            </span>
+            <template v-if="isAdmin">
+              <span class="text-border">·</span>
+              <span>{{ counts.public }} public</span>
+            </template>
+          </div>
+          <Sheet v-if="canCurate" v-model:open="queueOpen">
+            <SheetTrigger as-child>
+              <Button variant="outline" size="sm">
+                <ListVideo class="h-3.5 w-3.5 mr-1.5" />
+                Queue
+              </Button>
+            </SheetTrigger>
+            <SheetContent
+              side="right"
+              class="w-full sm:max-w-xl overflow-y-auto"
+            >
+              <SheetHeader>
+                <SheetTitle class="flex items-center gap-2">
+                  <ListVideo class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
+                  Render Queue
+                </SheetTitle>
+                <SheetDescription>
+                  Active and recently-finished render batches across the platform.
+                </SheetDescription>
+              </SheetHeader>
+              <div class="mt-6">
+                <RenderQueuePanel />
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </template>
     </TacticalPageHeader>
   </PageTransition>
 
-  <PageTransition v-if="loading" :delay="80">
-    <div
-      class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-    >
-      <Skeleton v-for="i in 6" :key="i" class="aspect-video w-full rounded-lg" />
+  <PageTransition v-if="isAdmin" :delay="60" class="mt-4">
+    <div class="flex flex-wrap items-center gap-2">
+      <button
+        v-for="opt in adminFilters"
+        :key="opt.value"
+        type="button"
+        :class="[
+          tacticalFilterPillClasses,
+          visibilityFilter === opt.value && tacticalFilterPillActiveClasses,
+        ]"
+        @click="visibilityFilter = opt.value"
+      >
+        <component :is="opt.icon" v-if="opt.icon" class="h-3 w-3" />
+        <span>{{ opt.label }}</span>
+        <span class="font-mono tabular-nums opacity-70">
+          {{ counts[opt.value] }}
+        </span>
+      </button>
     </div>
   </PageTransition>
 
-  <PageTransition v-else-if="!hasClips" :delay="80">
+  <PageTransition v-if="loading" :delay="80" class="mt-6">
+    <div
+      class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+    >
+      <Skeleton v-for="i in 8" :key="i" class="aspect-video w-full rounded-lg" />
+    </div>
+  </PageTransition>
+
+  <PageTransition v-else-if="!hasClips" :delay="80" class="mt-6">
     <Empty>
-      <EmptyTitle>No clips match this filter</EmptyTitle>
+      <EmptyTitle>No clips here yet</EmptyTitle>
       <EmptyDescription>
-        Try a different visibility filter or wait for new clips to be rendered.
+        {{
+          isAdmin
+            ? "Try a different filter — or wait for new clips to render."
+            : "Public clips will appear here as they're rendered. Check back soon."
+        }}
       </EmptyDescription>
     </Empty>
   </PageTransition>
 
-  <PageTransition v-else :delay="80">
+  <PageTransition v-else :delay="80" class="mt-6">
     <div
       class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
     >
@@ -228,41 +270,80 @@ async function setVisibility(
           :active="activeClipId === c.id"
           @activate="activeClipId = c.id"
         />
-        <!-- Admin-only curation row beneath each card. Three buttons
-             matching the three visibility states; current state
-             renders as the "active" variant so the admin sees the
-             clip's status at a glance. Hidden for non-admins —
-             they see a plain card grid. -->
+
+        <!-- Admin visibility row -->
         <div
           v-if="isAdmin"
-          class="flex items-center gap-1 rounded-md border border-border/50 bg-muted/20 p-1"
+          class="flex items-stretch gap-1 rounded-md border border-border/50 bg-card/40 p-1 [backdrop-filter:blur(6px)]"
         >
-          <Button
+          <button
             v-for="opt in [
               { value: 'private', icon: Lock, label: 'Private' },
               { value: 'unlisted', icon: Eye, label: 'Unlisted' },
               { value: 'public', icon: Globe, label: 'Public' },
             ]"
             :key="opt.value"
-            size="sm"
-            :variant="c.visibility === opt.value ? 'default' : 'ghost'"
-            class="flex-1 h-7 text-[0.7rem]"
+            type="button"
+            :title="`Set ${opt.label.toLowerCase()}`"
+            class="group relative flex-1 inline-flex items-center justify-center gap-1.5 rounded-sm px-2 py-1.5 font-mono text-[0.62rem] uppercase tracking-[0.14em] transition-colors duration-150 disabled:cursor-not-allowed"
+            :class="
+              c.visibility === opt.value
+                ? 'bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))] border border-[hsl(var(--tac-amber)/0.4)]'
+                : 'border border-transparent text-muted-foreground hover:bg-muted/30 hover:text-foreground'
+            "
             :disabled="saving[c.id] || c.visibility === opt.value"
             @click="setVisibility(c, opt.value as any)"
           >
             <Loader2
-              v-if="saving[c.id]"
-              class="h-3 w-3 mr-1 animate-spin"
+              v-if="saving[c.id] && c.visibility !== opt.value"
+              class="h-3 w-3 animate-spin"
             />
-            <component
-              v-else
-              :is="opt.icon"
-              class="h-3 w-3 mr-1"
-            />
+            <component v-else :is="opt.icon" class="h-3 w-3" />
             {{ opt.label }}
-          </Button>
+          </button>
+        </div>
+
+        <!-- Curator action row (streamer+). Open / Download / Delete. -->
+        <div
+          v-if="canCurate"
+          class="flex items-center justify-between gap-1 rounded-md border border-border/50 bg-card/40 px-1.5 py-1 [backdrop-filter:blur(6px)]"
+        >
+          <NuxtLink
+            :to="`/clips/${c.id}`"
+            class="inline-flex items-center gap-1.5 px-1.5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Open
+            <ArrowUpRight class="h-3 w-3" />
+          </NuxtLink>
+          <div class="flex items-center gap-0.5">
+            <a
+              v-if="c.download_url"
+              :href="`${c.download_url}&dl=1`"
+              :download="clipDownloadName(c)"
+              :title="`Download ${c.title ?? 'clip'}`"
+              class="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+            >
+              <Download class="h-3.5 w-3.5" />
+            </a>
+            <button
+              type="button"
+              :title="`Delete ${c.title ?? 'clip'}`"
+              class="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors cursor-pointer"
+              @click="askDelete(c)"
+            >
+              <Trash2 class="h-3.5 w-3.5" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
   </PageTransition>
+
+  <DeleteClipDialog
+    v-if="canCurate"
+    v-model="deleteDialogOpen"
+    :clip-id="pendingDeleteId"
+    :title="pendingDeleteTitle"
+    @deleted="onDeleted"
+  />
 </template>

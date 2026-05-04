@@ -33,10 +33,9 @@ function isPublicRoute(path: string): boolean {
   // /highlights = public browse of public clips. Hasura row
   // permissions filter by visibility for guests so the underlying
   // data is safe — the page just needs to be reachable without a
-  // login redirect. Same reasoning for /clips/<id>: an unlisted /
-  // public share link landed on a guest should play, not bounce
-  // them through /login. /manage-highlights is operator-only and
-  // is gated by its own page middleware (streamer), not here.
+  // login redirect. Same for /clips/<id>: an unlisted / public share
+  // link landed on a guest should play, not bounce them through /login.
+  // Curators (streamer+) get extra controls inline on /highlights.
   if (path === "/highlights") {
     return true;
   }

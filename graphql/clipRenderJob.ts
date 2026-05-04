@@ -11,6 +11,20 @@ export const clipRenderJobFields = {
   created_at: true,
   last_status_at: true,
   spec: true,
+  user: {
+    steam_id: true,
+    name: true,
+    avatar_url: true,
+  },
+  match_map: {
+    id: true,
+    map: { name: true, poster: true, label: true },
+    match: {
+      id: true,
+      lineup_1: { name: true },
+      lineup_2: { name: true },
+    },
+  },
 } as const;
 
 // Tick-based clip-spec contract. Tick math is deterministic across

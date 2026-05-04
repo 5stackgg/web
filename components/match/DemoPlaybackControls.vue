@@ -135,6 +135,56 @@ function slotIsDead(slot: number): boolean {
   // yet (or this team isn't in cs2's allplayers block).
   return !!gsi && !gsi.alive;
 }
+// Current side (CT/T) per lineup — flips at halftime. Derived from
+// any GSI entry whose steamid matches a roster member, so we don't
+// have to assume cs2's team field is consistent across the entry.
+// Without GSI data we report null and the UI falls back to neutral
+// styling (no side badge, original lineup color).
+function sideForLineup(
+  lineup: Array<{ steam_id: string; name: string }>,
+): "T" | "CT" | null {
+  for (const p of lineup) {
+    const gsi = gsiBySteamId.value.get(p.steam_id);
+    if (gsi?.team === "T" || gsi?.team === "CT") return gsi.team;
+  }
+  return null;
+}
+const team1Side = computed(() => sideForLineup(store.rosters.lineup1));
+const team2Side = computed(() => sideForLineup(store.rosters.lineup2));
+function sideClasses(
+  side: "T" | "CT" | null,
+  isActive: boolean,
+  isFlash: boolean,
+) {
+  // Active / flash uses the side's saturated color; idle uses a
+  // dim tint so two teams on opposite sides read as distinct rows
+  // even when nobody's selected.
+  const wantHighlight = isActive || isFlash;
+  if (side === "CT") {
+    return wantHighlight
+      ? "border-blue-400 bg-blue-500/20 text-blue-200"
+      : "border-blue-500/40 bg-blue-500/5 text-foreground/80 hover:border-blue-400/70 hover:bg-blue-500/10 hover:text-blue-100 active:scale-95";
+  }
+  if (side === "T") {
+    return wantHighlight
+      ? "border-amber-400 bg-amber-500/20 text-amber-100"
+      : "border-amber-500/40 bg-amber-500/5 text-foreground/80 hover:border-amber-400/70 hover:bg-amber-500/10 hover:text-amber-100 active:scale-95";
+  }
+  // No GSI data — neutral so the user still sees a button.
+  return wantHighlight
+    ? "border-foreground/60 bg-foreground/10 text-foreground"
+    : "border-border/70 bg-card/40 text-foreground/80 hover:border-foreground/40 hover:bg-muted/40 active:scale-95";
+}
+function sideDotClass(side: "T" | "CT" | null) {
+  if (side === "CT") return "bg-blue-400";
+  if (side === "T") return "bg-amber-400";
+  return "bg-muted-foreground/50";
+}
+function sideLabel(side: "T" | "CT" | null) {
+  if (side === "CT") return "CT";
+  if (side === "T") return "T";
+  return "";
+}
 
 const flashSlot = ref<number | null>(null);
 let flashTimer: ReturnType<typeof setTimeout> | null = null;
@@ -568,21 +618,33 @@ const killMarkers = computed<Marker[]>(() => {
         Demo metadata not parsed yet — play/pause + skip + speed still work.
       </p>
 
-      <!-- Player switcher. One row per team, slot numbers map 1:1 to
-           cs2's `spec_player <n>`. Each button shows the live player
-           in that slot (from GSI) plus an alive/dead state — clicking
-           jumps the spec target, clicking a dead player still works
-           since cs2 will free-roam from their last position. -->
+      <!-- Player switcher. Slot index → player comes from the lineup
+           roster (stable across the demo, matches cs2's spec_player_<N>
+           keybinds). The team's COLOR + side badge follow the GSI
+           "team" field, which flips at halftime — that way the visual
+           styling matches what's on screen even though the slot numbers
+           stay anchored to lineup order. -->
       <div v-if="slotKeys.length" class="flex flex-col gap-1.5">
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-1.5 min-w-[7rem]">
             <span
-              class="inline-block size-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
+              :class="['inline-block size-1.5 rounded-full', sideDotClass(team1Side)]"
             />
             <span
               class="truncate font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground/80"
             >
               {{ store.lineup1Name ?? "Team 1" }}
+              <span
+                v-if="team1Side"
+                :class="[
+                  'ml-1 px-1 rounded font-bold',
+                  team1Side === 'CT'
+                    ? 'bg-blue-500/20 text-blue-300'
+                    : 'bg-amber-500/20 text-amber-200',
+                ]"
+              >
+                {{ sideLabel(team1Side) }}
+              </span>
             </span>
           </div>
           <div class="flex flex-wrap items-center gap-1.5">
@@ -592,9 +654,7 @@ const killMarkers = computed<Marker[]>(() => {
               type="button"
               :class="[
                 'group inline-flex h-9 items-center gap-1.5 rounded-md border px-2 font-mono text-xs transition-all duration-100 select-none cursor-pointer',
-                flashSlot === slot.slot || slotIsActive(slot.slot)
-                  ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.2)] text-[hsl(var(--tac-amber))]'
-                  : 'border-border/70 bg-card/40 text-foreground/80 hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground active:scale-95',
+                sideClasses(team1Side, slotIsActive(slot.slot), flashSlot === slot.slot),
                 slotIsDead(slot.slot) && !slotIsActive(slot.slot)
                   ? 'opacity-50'
                   : '',
@@ -620,11 +680,24 @@ const killMarkers = computed<Marker[]>(() => {
         </div>
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-1.5 min-w-[7rem]">
-            <span class="inline-block size-1.5 rounded-full bg-destructive" />
+            <span
+              :class="['inline-block size-1.5 rounded-full', sideDotClass(team2Side)]"
+            />
             <span
               class="truncate font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground/80"
             >
               {{ store.lineup2Name ?? "Team 2" }}
+              <span
+                v-if="team2Side"
+                :class="[
+                  'ml-1 px-1 rounded font-bold',
+                  team2Side === 'CT'
+                    ? 'bg-blue-500/20 text-blue-300'
+                    : 'bg-amber-500/20 text-amber-200',
+                ]"
+              >
+                {{ sideLabel(team2Side) }}
+              </span>
             </span>
           </div>
           <div class="flex flex-wrap items-center gap-1.5">
@@ -634,9 +707,7 @@ const killMarkers = computed<Marker[]>(() => {
               type="button"
               :class="[
                 'group inline-flex h-9 items-center gap-1.5 rounded-md border px-2 font-mono text-xs transition-all duration-100 select-none cursor-pointer',
-                flashSlot === slot.slot || slotIsActive(slot.slot)
-                  ? 'border-destructive bg-destructive/20 text-destructive'
-                  : 'border-border/70 bg-card/40 text-foreground/80 hover:border-destructive/50 hover:bg-destructive/10 hover:text-foreground active:scale-95',
+                sideClasses(team2Side, slotIsActive(slot.slot), flashSlot === slot.slot),
                 slotIsDead(slot.slot) && !slotIsActive(slot.slot)
                   ? 'opacity-50'
                   : '',

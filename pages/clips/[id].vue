@@ -34,16 +34,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Button } from "~/components/ui/button";
 import { Card, CardContent } from "~/components/ui/card";
 import { Skeleton } from "~/components/ui/skeleton";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "~/components/ui/alert-dialog";
+import DeleteClipDialog from "~/components/clips/DeleteClipDialog.vue";
 import { clipDownloadName } from "~/utilities/clipDownloadName";
 
 // Single-clip viewer. Big player up top, metadata + actions sidebar
@@ -86,7 +77,6 @@ const clip = ref<Clip | null>(null);
 const loading = ref(true);
 const notFound = ref(false);
 const showDelete = ref(false);
-const deleting = ref(false);
 const linkCopied = ref(false);
 
 // Edit-mode state. Only owners see the affordance; others see the
@@ -185,25 +175,8 @@ onBeforeUnmount(() => {
   activeSub = null;
 });
 
-async function confirmDelete() {
-  if (!clip.value || deleting.value) return;
-  deleting.value = true;
-  try {
-    await nuxtApp.$apollo.defaultClient.mutate({
-      mutation: generateMutation({
-        deleteClip: [
-          { clip_id: clip.value.id },
-          { success: true },
-        ],
-      } as any),
-    });
-    showDelete.value = false;
-    router.replace("/manage-highlights");
-  } catch (e) {
-    console.error("[clip] delete failed:", e);
-  } finally {
-    deleting.value = false;
-  }
+function onDeleted() {
+  router.replace("/manage-highlights");
 }
 
 async function copyLink() {
@@ -512,24 +485,10 @@ const mapLabel = computed(
     </div>
   </PageTransition>
 
-  <AlertDialog
-    :open="showDelete"
-    @update:open="(v) => { if (!v) showDelete = false; }"
-  >
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>Delete this clip?</AlertDialogTitle>
-        <AlertDialogDescription>
-          The clip is removed from your library and the underlying file is
-          deleted. This cannot be undone.
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel :disabled="deleting">Cancel</AlertDialogCancel>
-        <AlertDialogAction :disabled="deleting" @click="confirmDelete">
-          {{ deleting ? "Deleting…" : "Delete" }}
-        </AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  </AlertDialog>
+  <DeleteClipDialog
+    v-model="showDelete"
+    :clip-id="clip?.id ?? null"
+    :title="clip?.title ?? null"
+    @deleted="onDeleted"
+  />
 </template>

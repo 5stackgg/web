@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { Film, Trash2, Download, Play, ListVideo } from "lucide-vue-next";
-import { useNuxtApp } from "#app";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import {
-  generateMutation,
-  generateSubscription,
-} from "~/graphql/graphqlGen";
+import { generateSubscription } from "~/graphql/graphqlGen";
 import { matchClipFields } from "~/graphql/matchClip";
 import { useAuthStore } from "~/stores/AuthStore";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
@@ -19,16 +15,7 @@ import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import { clipDownloadName } from "~/utilities/clipDownloadName";
 import RenderQueuePanel from "~/components/clips/RenderQueuePanel.vue";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "~/components/ui/alert-dialog";
+import DeleteClipDialog from "~/components/clips/DeleteClipDialog.vue";
 
 // Streamer-rank+ curation surface — every clip across the platform.
 // "Manage Highlights" in the UI; path is /manage-highlights. The streamer middleware
@@ -41,11 +28,6 @@ definePageMeta({
 });
 
 const auth = useAuthStore();
-// Holding nuxtApp instead of destructuring `$apollo`: vue-apollo's
-// global `beforeCreate` mixin does `this.$apollo = ...`, and a
-// `<script setup>` binding called `$apollo` would be read-only on the
-// component proxy, making that mixin throw on mount.
-const nuxtApp = useNuxtApp();
 
 type Clip = {
   id: string;
@@ -116,29 +98,17 @@ onBeforeUnmount(() => {
 });
 
 const pendingDeleteId = ref<string | null>(null);
-const deleting = ref(false);
-async function confirmDelete() {
-  const id = pendingDeleteId.value;
-  if (!id || deleting.value) return;
-  deleting.value = true;
-  try {
-    await nuxtApp.$apollo.defaultClient.mutate({
-      mutation: generateMutation({
-        deleteClip: [
-          { clip_id: id },
-          { success: true },
-        ],
-      } as any),
-    });
-    // Subscription will repopulate; remove optimistically too so the
-    // card disappears immediately instead of waiting for the round-trip.
-    clips.value = clips.value.filter((c) => c.id !== id);
-  } catch (e) {
-    console.error("[clips] delete failed:", e);
-  } finally {
-    deleting.value = false;
-    pendingDeleteId.value = null;
-  }
+const pendingDeleteTitle = ref<string | null>(null);
+const deleteDialogOpen = ref(false);
+function askDelete(c: Clip) {
+  pendingDeleteId.value = c.id;
+  pendingDeleteTitle.value = c.title;
+  deleteDialogOpen.value = true;
+}
+function onDeleted(id: string) {
+  // Subscription will repopulate; prune optimistically so the card
+  // disappears immediately instead of waiting for the round-trip.
+  clips.value = clips.value.filter((c) => c.id !== id);
 }
 
 function formatDuration(ms: number | null): string {
@@ -255,48 +225,42 @@ const isEmpty = computed(() => !loading.value && clips.value.length === 0);
               {{ matchupLabel(c) }}
             </span>
           </NuxtLink>
+          <!-- Native <button> for the trash, NOT the shadcn `<Button>`
+               wrapper. <Button>'s reka-ui Primitive root doesn't
+               always pass `@click` listeners through to the underlying
+               element via fallthrough attrs (depends on the asChild
+               path) — and on this card layout it didn't, so the
+               click never reached our handler regardless of how the
+               surrounding markup was structured. The native button
+               sidesteps the wrapper entirely. -->
           <div class="flex items-center justify-end gap-1">
-            <Button v-if="c.download_url" size="icon" variant="ghost" as-child>
-              <a
-                :href="`${c.download_url}&dl=1`"
-                :download="clipDownloadName(c)"
-                :title="`Download ${c.title ?? 'clip'}`"
-              >
-                <Download class="h-4 w-4" />
-              </a>
-            </Button>
-            <Button
-              size="icon"
-              variant="ghost"
+            <a
+              v-if="c.download_url"
+              :href="`${c.download_url}&dl=1`"
+              :download="clipDownloadName(c)"
+              :title="`Download ${c.title ?? 'clip'}`"
+              class="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+            >
+              <Download class="h-4 w-4" />
+            </a>
+            <button
+              type="button"
               :title="`Delete ${c.title ?? 'clip'}`"
-              @click="pendingDeleteId = c.id"
+              class="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive cursor-pointer"
+              @click="askDelete(c)"
             >
               <Trash2 class="h-4 w-4" />
-            </Button>
+            </button>
           </div>
         </CardContent>
       </Card>
     </div>
   </PageTransition>
 
-  <AlertDialog
-    :open="pendingDeleteId !== null"
-    @update:open="(v) => { if (!v) pendingDeleteId = null; }"
-  >
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>Delete this clip?</AlertDialogTitle>
-        <AlertDialogDescription>
-          The clip is removed from your library and the underlying file is
-          deleted. This cannot be undone.
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel :disabled="deleting">Cancel</AlertDialogCancel>
-        <AlertDialogAction :disabled="deleting" @click="confirmDelete">
-          {{ deleting ? "Deleting…" : "Delete" }}
-        </AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  </AlertDialog>
+  <DeleteClipDialog
+    v-model="deleteDialogOpen"
+    :clip-id="pendingDeleteId"
+    :title="pendingDeleteTitle"
+    @deleted="onDeleted"
+  />
 </template>

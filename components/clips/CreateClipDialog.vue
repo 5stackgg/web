@@ -351,6 +351,20 @@ async function submitPreset() {
   }
   submitError.value = null;
   submitting.value = true;
+  // Look up the player's display name so the api can build a
+  // human-readable title ("Joe — Multi-Kills (1× 4K, 2× 3K)") instead
+  // of falling back to a steam-id suffix. GSI is the freshest source
+  // (matches the actual demo file); rosters / playerNames are the
+  // fallback for cross-loaded demos where GSI hasn't landed yet.
+  const targetName = (() => {
+    const sid = presetTarget.value!;
+    const gsi = store.specSlots.find((s) => s.steam_id === sid);
+    if (gsi?.name) return gsi.name;
+    const rosterMatch =
+      store.rosters.lineup1.find((p) => p.steam_id === sid) ??
+      store.rosters.lineup2.find((p) => p.steam_id === sid);
+    return rosterMatch?.name ?? store.playerNames[sid] ?? undefined;
+  })();
   try {
     const { data } = await nuxtApp.$apollo.defaultClient.mutate({
       mutation: generateMutation({
@@ -362,6 +376,7 @@ async function submitPreset() {
             resolution: resolution.value,
             fps: 60,
             title: title.value || undefined,
+            target_name: targetName,
           },
           { success: true, job_id: true },
         ],
@@ -387,6 +402,58 @@ const canSubmit = computed(() =>
     ? isValid.value
     : !!presetTarget.value && !submitting.value,
 );
+
+// Player list for the highlights picker comes from the parsed
+// demo's kill events + live GSI — NOT the api lineup. A demo can
+// be cross-loaded against a different match (lineup says rawr/Saint
+// but the demo file is actually some other match), and we want to
+// surface the actual players in the demo. Mirrors the kill-filter
+// dropdown logic in DemoPlaybackControls.
+type DemoPlayer = {
+  steam_id: string;
+  name: string;
+  team: "T" | "CT" | null;
+};
+const presetPlayers = computed<DemoPlayer[]>(() => {
+  const seen = new Set<string>();
+  const out: DemoPlayer[] = [];
+  const gsiByStId = new Map<string, (typeof store.specSlots)[number]>();
+  for (const s of store.specSlots) {
+    if (s.steam_id) gsiByStId.set(s.steam_id, s);
+  }
+  const add = (sid: string | undefined) => {
+    if (!sid || seen.has(sid)) return;
+    seen.add(sid);
+    const gsi = gsiByStId.get(sid);
+    out.push({
+      steam_id: sid,
+      name: gsi?.name ?? store.playerNames[sid] ?? `#${sid.slice(-4)}`,
+      team: gsi?.team ?? null,
+    });
+  };
+  for (const k of store.kills) {
+    add(k.killer);
+    add(k.victim);
+  }
+  // Also pick up players present in GSI but never in a kill event
+  // (rare — alive the whole demo). Means an alive non-fragger still
+  // appears in the picker so users can pull a recap for them too.
+  for (const s of store.specSlots) add(s.steam_id);
+  return out.sort((a, b) => a.name.localeCompare(b.name));
+});
+const ctPresetPlayers = computed(() =>
+  presetPlayers.value.filter((p) => p.team === "CT"),
+);
+const tPresetPlayers = computed(() =>
+  presetPlayers.value.filter((p) => p.team === "T"),
+);
+const otherPresetPlayers = computed(() =>
+  presetPlayers.value.filter((p) => p.team !== "CT" && p.team !== "T"),
+);
+const ctTeamLabel = computed(
+  () => store.gsiTeamCtName || "Counter-Terrorists",
+);
+const tTeamLabel = computed(() => store.gsiTeamTName || "Terrorists");
 
 function close(v: boolean) {
   emit("update:open", v);
@@ -417,12 +484,16 @@ function close(v: boolean) {
         <Tabs v-model="mode" class="w-full">
           <TabsList class="grid w-full grid-cols-2">
             <TabsTrigger value="manual">
-              <Scissors class="h-3.5 w-3.5 mr-1.5" />
-              Trim
+              <span class="inline-flex items-center gap-1.5">
+                <Scissors class="h-3.5 w-3.5" />
+                Trim
+              </span>
             </TabsTrigger>
             <TabsTrigger value="auto">
-              <Sparkles class="h-3.5 w-3.5 mr-1.5" />
-              Highlights
+              <span class="inline-flex items-center gap-1.5">
+                <Sparkles class="h-3.5 w-3.5" />
+                Highlights
+              </span>
             </TabsTrigger>
           </TabsList>
 
@@ -573,38 +644,72 @@ function close(v: boolean) {
           </TabsContent>
 
           <TabsContent value="auto" class="space-y-4 mt-4">
-            <!-- Pick the player to highlight. Defaults to whoever the
-                 operator is spectating, but they can switch to anyone
-                 in either lineup. The api builds the segments. -->
+            <!-- Player picker. Sourced from the parsed demo's kill
+                 events + GSI — NOT the api lineup, which can be wrong
+                 for cross-loaded demos. Required: submit is gated on
+                 a selection (canSubmit). -->
             <div class="space-y-2">
-              <Label>Player</Label>
-              <Select :model-value="presetTarget ?? ''" @update:model-value="(v) => (presetTarget = (v as string) || null)">
-                <SelectTrigger>
+              <Label>
+                Player
+                <span class="text-destructive">*</span>
+              </Label>
+              <Select
+                :model-value="presetTarget ?? ''"
+                @update:model-value="(v) => (presetTarget = (v as string) || null)"
+              >
+                <SelectTrigger
+                  :class="[
+                    !presetTarget && submitError
+                      ? 'border-destructive ring-1 ring-destructive/40'
+                      : '',
+                  ]"
+                >
                   <SelectValue placeholder="Pick a player to highlight" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectGroup v-if="store.rosters.lineup1.length">
+                  <div
+                    v-if="presetPlayers.length === 0"
+                    class="px-2 py-3 text-xs text-muted-foreground"
+                  >
+                    No players found yet — wait for the demo to start
+                    playing, then try again.
+                  </div>
+                  <SelectGroup v-if="ctPresetPlayers.length">
                     <SelectLabel
-                      class="text-[0.65rem] uppercase tracking-wider text-[hsl(var(--tac-amber))]"
+                      class="text-[0.65rem] uppercase tracking-wider text-blue-300"
                     >
-                      {{ store.lineup1Name ?? "Team 1" }}
+                      {{ ctTeamLabel }} (CT)
                     </SelectLabel>
                     <SelectItem
-                      v-for="p in store.rosters.lineup1"
+                      v-for="p in ctPresetPlayers"
                       :key="p.steam_id"
                       :value="p.steam_id"
                     >
                       {{ p.name }}
                     </SelectItem>
                   </SelectGroup>
-                  <SelectGroup v-if="store.rosters.lineup2.length">
+                  <SelectGroup v-if="tPresetPlayers.length">
                     <SelectLabel
-                      class="text-[0.65rem] uppercase tracking-wider text-destructive"
+                      class="text-[0.65rem] uppercase tracking-wider text-amber-300"
                     >
-                      {{ store.lineup2Name ?? "Team 2" }}
+                      {{ tTeamLabel }} (T)
                     </SelectLabel>
                     <SelectItem
-                      v-for="p in store.rosters.lineup2"
+                      v-for="p in tPresetPlayers"
+                      :key="p.steam_id"
+                      :value="p.steam_id"
+                    >
+                      {{ p.name }}
+                    </SelectItem>
+                  </SelectGroup>
+                  <SelectGroup v-if="otherPresetPlayers.length">
+                    <SelectLabel
+                      class="text-[0.65rem] uppercase tracking-wider text-muted-foreground"
+                    >
+                      Other
+                    </SelectLabel>
+                    <SelectItem
+                      v-for="p in otherPresetPlayers"
                       :key="p.steam_id"
                       :value="p.steam_id"
                     >

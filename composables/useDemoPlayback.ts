@@ -9,6 +9,13 @@ import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import socket from "~/web-sockets/Socket";
 
+// Module-level — multiple `useDemoPlayback()` callers (DemoPlayer,
+// DemoPlaybackControls, CreateClipDialog) share one poll loop and one
+// socket listener. Per-instance timers would multiply the request rate
+// for every mount.
+let statePollTimer: ReturnType<typeof setInterval> | null = null;
+let stateSocketHandler: ((data: any) => void) | null = null;
+
 // Wrapper around the watchDemo / stopWatchDemo / demoControl actions
 // plus the Hasura subscription on match_demo_sessions. The store
 // holds reactive state; this composable is the side-effect bridge.
@@ -24,6 +31,51 @@ export function useDemoPlayback() {
 
   function subscriptionKey(sessionId: string) {
     return `demo-session:${sessionId}`;
+  }
+
+  // 1Hz polling of /demo/state for the GSI slot/player snapshot. The
+  // pod doesn't push GSI to the api on every tick (would explode the
+  // bus); we ask for state on a steady rhythm and the api proxies the
+  // latest cached value from spec-server. Started on `start()`,
+  // stopped on `stop()` / clean unsubscribe.
+  function startStatePoll() {
+    stopStatePoll();
+    stateSocketHandler = (data: any) => {
+      const gsi = data?.state?.gsi;
+      if (!gsi) return;
+      if (Array.isArray(gsi.spec_slots)) store.specSlots = gsi.spec_slots;
+      if (typeof gsi.spectated_steam_id === "string") {
+        store.spectatedSteamId = gsi.spectated_steam_id;
+      } else if (gsi.spectated_steam_id === null) {
+        store.spectatedSteamId = null;
+      }
+    };
+    socket.on("demo-session:state", stateSocketHandler);
+    // Fire immediately + every 1s. The pod returns its in-memory GSI
+    // snapshot — this is just a "latest known" pull, not a poll of the
+    // game itself. cs2 GSI fires at ~10Hz internally so 1s gives us
+    // strictly fresh data with minimal overhead.
+    const tick = () => {
+      if (!store.matchMapId) return;
+      try {
+        control("state");
+      } catch {
+        // matchMapId could've cleared between the guard and call;
+        // swallow rather than crashing the timer.
+      }
+    };
+    tick();
+    statePollTimer = setInterval(tick, 1000);
+  }
+  function stopStatePoll() {
+    if (statePollTimer) {
+      clearInterval(statePollTimer);
+      statePollTimer = null;
+    }
+    if (stateSocketHandler) {
+      socket.off("demo-session:state", stateSocketHandler);
+      stateSocketHandler = null;
+    }
   }
 
   function subscribeToSession(sessionId: string) {
@@ -60,6 +112,7 @@ export function useDemoPlayback() {
             // by clearing our local state so the UI returns to the
             // "Watch demo" call-to-action.
             unsubscribe(subscriptionKey(sessionId));
+            stopStatePoll();
             store.reset();
             return;
           }
@@ -209,6 +262,9 @@ export function useDemoPlayback() {
       // Subscription will populate store.sessionRow with the latest
       // status (booting → launching_steam → live, or errored).
       subscribeToSession(out.session_id);
+      // Begin 1Hz GSI poll so slot/player snapshot is live for the
+      // controls before the user even hits play.
+      startStatePoll();
     } catch (error) {
       store.localStatus = "error";
       store.errorMessage = (error as Error)?.message ?? String(error);
@@ -231,6 +287,7 @@ export function useDemoPlayback() {
       });
     } finally {
       if (sessionId) unsubscribe(subscriptionKey(sessionId));
+      stopStatePoll();
       store.reset();
     }
   }

@@ -39,6 +39,7 @@ import {
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
 import {
   specSlotsForMatchType,
+  teamSizeForMatchType,
   type SpecSlot,
 } from "~/utilities/streamerSpecSlots";
 
@@ -80,6 +81,60 @@ const slotKeys = computed<SpecSlot[]>(() =>
 );
 const team1Slots = computed(() => slotKeys.value.filter((s) => s.team === 1));
 const team2Slots = computed(() => slotKeys.value.filter((s) => s.team === 2));
+
+// Source of truth for slot → player is the LINEUP ROSTER, not GSI's
+// observer_slot. cs2's `spec_player_<N>` keybinds (which the slot
+// buttons fire) bind to the Nth player by lineup join-order at demo
+// playback start, and that ordering stays stable for the whole demo.
+// GSI's observer_slot, in contrast, can be team-relative or shift
+// across rounds — using it for slot identity makes "click slot 2 →
+// rawr" out of sync with the label, and leaves team 2 unlabelled when
+// cs2 doesn't include their team in `allplayers`.
+//
+// We still use GSI for the LIVE state (alive/dead, currently spec'd)
+// because the roster doesn't change but liveness does.
+const teamSize = computed(() => teamSizeForMatchType(store.matchType));
+function rosterFor(slot: number): { steam_id: string; name: string } | null {
+  const ts = teamSize.value;
+  if (slot >= 1 && slot <= ts) {
+    return store.rosters.lineup1[slot - 1] ?? null;
+  }
+  if (slot > ts && slot <= ts * 2) {
+    return store.rosters.lineup2[slot - ts - 1] ?? null;
+  }
+  return null;
+}
+const gsiBySteamId = computed(() => {
+  const map = new Map<string, (typeof store.specSlots)[number]>();
+  for (const s of store.specSlots) {
+    if (s.steam_id) map.set(s.steam_id, s);
+  }
+  return map;
+});
+function slotName(slot: number): string {
+  const r = rosterFor(slot);
+  if (r?.name) return r.name;
+  // No lineup data yet (metadata still loading) — use whatever GSI
+  // happened to give us as a last-resort, then fall back to the
+  // generic placeholder.
+  const gsi = store.specSlots.find((x) => x.slot === slot);
+  if (gsi?.name) return gsi.name;
+  return `Slot ${slot}`;
+}
+function slotIsActive(slot: number): boolean {
+  const r = rosterFor(slot);
+  if (!r || !store.spectatedSteamId) return false;
+  return r.steam_id === store.spectatedSteamId;
+}
+function slotIsDead(slot: number): boolean {
+  const r = rosterFor(slot);
+  if (!r) return false;
+  const gsi = gsiBySteamId.value.get(r.steam_id);
+  // Only mark dead when GSI explicitly reports them dead. Missing
+  // data ≠ dead — that just means we haven't received a snapshot
+  // yet (or this team isn't in cs2's allplayers block).
+  return !!gsi && !gsi.alive;
+}
 
 const flashSlot = ref<number | null>(null);
 let flashTimer: ReturnType<typeof setTimeout> | null = null;
@@ -514,9 +569,10 @@ const killMarkers = computed<Marker[]>(() => {
       </p>
 
       <!-- Player switcher. One row per team, slot numbers map 1:1 to
-           cs2's `spec_player <n>`. Same layout as the live stream deck
-           (pages/stream-deck/[matchId].vue) but compacted to a single
-           inline strip so it co-exists with the playback controls. -->
+           cs2's `spec_player <n>`. Each button shows the live player
+           in that slot (from GSI) plus an alive/dead state — clicking
+           jumps the spec target, clicking a dead player still works
+           since cs2 will free-roam from their last position. -->
       <div v-if="slotKeys.length" class="flex flex-col gap-1.5">
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-1.5 min-w-[7rem]">
@@ -529,20 +585,36 @@ const killMarkers = computed<Marker[]>(() => {
               {{ store.lineup1Name ?? "Team 1" }}
             </span>
           </div>
-          <div class="flex items-center gap-1.5">
+          <div class="flex flex-wrap items-center gap-1.5">
             <button
               v-for="slot in team1Slots"
               :key="slot.slot"
               type="button"
               :class="[
-                'h-9 min-w-[2.5rem] rounded-md border font-mono text-sm font-bold transition-all duration-100 select-none cursor-pointer',
-                flashSlot === slot.slot
-                  ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))] scale-95'
+                'group inline-flex h-9 items-center gap-1.5 rounded-md border px-2 font-mono text-xs transition-all duration-100 select-none cursor-pointer',
+                flashSlot === slot.slot || slotIsActive(slot.slot)
+                  ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.2)] text-[hsl(var(--tac-amber))]'
                   : 'border-border/70 bg-card/40 text-foreground/80 hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground active:scale-95',
+                slotIsDead(slot.slot) && !slotIsActive(slot.slot)
+                  ? 'opacity-50'
+                  : '',
               ]"
+              :title="slotName(slot.slot)"
               @click="pressSlot(slot.slot)"
             >
-              {{ slot.slot }}
+              <span
+                class="inline-flex h-5 w-5 items-center justify-center rounded text-[0.65rem] font-bold tabular-nums bg-foreground/10"
+              >
+                {{ slot.slot }}
+              </span>
+              <span
+                :class="[
+                  'truncate max-w-[8rem] font-medium',
+                  slotIsDead(slot.slot) ? 'line-through' : '',
+                ]"
+              >
+                {{ slotName(slot.slot) }}
+              </span>
             </button>
           </div>
         </div>
@@ -555,20 +627,36 @@ const killMarkers = computed<Marker[]>(() => {
               {{ store.lineup2Name ?? "Team 2" }}
             </span>
           </div>
-          <div class="flex items-center gap-1.5">
+          <div class="flex flex-wrap items-center gap-1.5">
             <button
               v-for="slot in team2Slots"
               :key="slot.slot"
               type="button"
               :class="[
-                'h-9 min-w-[2.5rem] rounded-md border font-mono text-sm font-bold transition-all duration-100 select-none cursor-pointer',
-                flashSlot === slot.slot
-                  ? 'border-destructive bg-destructive/25 text-destructive scale-95'
+                'group inline-flex h-9 items-center gap-1.5 rounded-md border px-2 font-mono text-xs transition-all duration-100 select-none cursor-pointer',
+                flashSlot === slot.slot || slotIsActive(slot.slot)
+                  ? 'border-destructive bg-destructive/20 text-destructive'
                   : 'border-border/70 bg-card/40 text-foreground/80 hover:border-destructive/50 hover:bg-destructive/10 hover:text-foreground active:scale-95',
+                slotIsDead(slot.slot) && !slotIsActive(slot.slot)
+                  ? 'opacity-50'
+                  : '',
               ]"
+              :title="slotName(slot.slot)"
               @click="pressSlot(slot.slot)"
             >
-              {{ slot.slot }}
+              <span
+                class="inline-flex h-5 w-5 items-center justify-center rounded text-[0.65rem] font-bold tabular-nums bg-foreground/10"
+              >
+                {{ slot.slot }}
+              </span>
+              <span
+                :class="[
+                  'truncate max-w-[8rem] font-medium',
+                  slotIsDead(slot.slot) ? 'line-through' : '',
+                ]"
+              >
+                {{ slotName(slot.slot) }}
+              </span>
             </button>
           </div>
         </div>

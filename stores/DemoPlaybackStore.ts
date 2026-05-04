@@ -107,6 +107,27 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   const xrayEnabled = ref<boolean>(false);
   const hudVisible = ref<boolean>(true);
 
+  // Live slot → player snapshot from the pod's GSI feed. Updated
+  // ~1Hz by useDemoPlayback's poll loop — cs2 only changes
+  // observer_slot at round transitions, but `alive` flips on every
+  // death. Empty until the first /demo/state poll lands.
+  const specSlots = ref<
+    Array<{
+      slot: number;
+      steam_id: string;
+      name: string | null;
+      team: "T" | "CT" | null;
+      alive: boolean;
+      health: number;
+    }>
+  >([]);
+  // Steamid of the player cs2 is currently centered on. Drives the
+  // "active slot" highlight in the slot grid — when the spec target
+  // dies and cs2 auto-switches, this changes but the slot of the new
+  // target stays the same, so the highlight follows the death-switch
+  // without us having to track it separately.
+  const spectatedSteamId = ref<string | null>(null);
+
   // Tick estimator state. Real tick =
   //   lastTickAtSync + (now - lastSyncRealMs) / 1000 * rate * tickRate
   // unless paused. Updated on every user-initiated control (seek,
@@ -207,6 +228,8 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     killFilterMode.value = "killer";
     xrayEnabled.value = false;
     hudVisible.value = true;
+    specSlots.value = [];
+    spectatedSteamId.value = null;
   }
 
   return {
@@ -228,6 +251,8 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     killFilterMode,
     xrayEnabled,
     hudVisible,
+    specSlots,
+    spectatedSteamId,
     rate,
     paused,
     lastTickAtSync,

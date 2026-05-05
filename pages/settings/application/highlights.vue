@@ -31,32 +31,6 @@ definePageMeta({
         <div class="p-6 space-y-6">
           <FormField
             v-slot="{ value, handleChange }"
-            name="public.highlights_public_enabled"
-            type="checkbox"
-            :value="true"
-          >
-            <FormItem class="flex flex-row items-center justify-between gap-4">
-              <div class="space-y-1">
-                <FormLabel>Show Highlights to guests</FormLabel>
-                <FormDescription>
-                  When enabled, anyone (including guests) can browse the
-                  /highlights page. When disabled, only streamers, match
-                  organizers, tournament organizers, and administrators can see
-                  the Highlights pages — guests and regular users won't even see
-                  the nav links.
-                </FormDescription>
-              </div>
-              <FormControl>
-                <Switch
-                  :model-value="value"
-                  @update:model-value="handleChange"
-                />
-              </FormControl>
-            </FormItem>
-          </FormField>
-
-          <FormField
-            v-slot="{ value, handleChange }"
             name="auto_generate_match_clips"
             type="checkbox"
             :value="true"
@@ -141,7 +115,6 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
-            "public.highlights_public_enabled": z.boolean().default(true),
             auto_generate_match_clips: z.boolean().default(false),
             auto_clip_default_visibility: z
               .enum(["private", "unlisted", "public"])
@@ -156,10 +129,7 @@ export default {
       immediate: true,
       handler(rows: any[]) {
         for (const setting of rows ?? []) {
-          if (
-            setting.name === "auto_generate_match_clips" ||
-            setting.name === "public.highlights_public_enabled"
-          ) {
+          if (setting.name === "auto_generate_match_clips") {
             // Settings are stored as text; coerce.
             this.form.setFieldValue(
               setting.name,
@@ -181,12 +151,6 @@ export default {
           insert_settings: [
             {
               objects: [
-                {
-                  name: "public.highlights_public_enabled",
-                  value: this.form.values["public.highlights_public_enabled"]
-                    ? "true"
-                    : "false",
-                },
                 {
                   name: "auto_generate_match_clips",
                   value: this.form.values.auto_generate_match_clips

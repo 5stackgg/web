@@ -396,7 +396,7 @@ const loginArrowClasses =
                           </NuxtLink>
                         </NavigationMenuLink>
                       </li>
-                      <li v-if="canViewHighlights">
+                      <li>
                         <NavigationMenuLink as-child>
                           <NuxtLink
                             to="/highlights"
@@ -613,9 +613,6 @@ export default {
     },
     showReportIssue() {
       return useApplicationSettingsStore().showReportIssue;
-    },
-    canViewHighlights() {
-      return useApplicationSettingsStore().canViewHighlights;
     },
     me() {
       return useAuthStore().me;

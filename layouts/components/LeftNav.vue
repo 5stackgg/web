@@ -307,7 +307,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem v-if="canViewHighlights" tooltip="Highlights">
+            <SidebarMenuItem tooltip="Highlights">
               <SidebarMenuButton as-child tooltip="Highlights">
                 <NuxtLink
                   :to="{ name: 'highlights' }"
@@ -827,9 +827,6 @@ export default {
     },
     showSeparators() {
       return useApplicationSettingsStore().showSeparators;
-    },
-    canViewHighlights() {
-      return useApplicationSettingsStore().canViewHighlights;
     },
     showReportIssue() {
       return useApplicationSettingsStore().showReportIssue;

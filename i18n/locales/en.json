@@ -1906,6 +1906,7 @@
             "match_paused": "Match paused",
             "match_resumed": "Match resumed",
             "start_live": "Start Live Stream",
+            "start_live_waiting_tv": "Waiting for TV connection…",
             "stop_live": "Stop Live Stream",
             "cancel_live_boot": "Cancel Live Stream (booting…)",
             "create_clips": "Create Player Highlights",

@@ -6,6 +6,7 @@ import { generateSubscription } from "~/graphql/graphqlGen";
 import { matchClipFields } from "~/graphql/matchClip";
 import { Skeleton } from "~/components/ui/skeleton";
 import HighlightCard from "~/components/clips/HighlightCard.vue";
+import MatchClipsGroupCard from "~/components/clips/MatchClipsGroupCard.vue";
 import type { Clip } from "~/types/clip";
 import {
   tacticalSectionLabelClasses,
@@ -66,6 +67,53 @@ const hasClips = computed(() => clips.value.length > 0);
 const shouldRender = computed(() =>
   props.sectionLabel ? hasClips.value : loading.value || hasClips.value,
 );
+
+// Mirror the highlights page: collapse multi-clip matches into a
+// single group card, keep singletons as HighlightCards, and sort the
+// resulting items by the newest clip in each.
+type GridItem =
+  | { kind: "single"; clip: Clip; sortKey: string }
+  | { kind: "group"; matchId: string; clips: Clip[]; sortKey: string };
+const gridItems = computed<GridItem[]>(() => {
+  const byMatch = new Map<string, Clip[]>();
+  const orphans: Clip[] = [];
+  for (const c of clips.value) {
+    const matchId = c.match_map?.match?.id;
+    if (!matchId) {
+      orphans.push(c);
+      continue;
+    }
+    const list = byMatch.get(matchId) ?? [];
+    list.push(c);
+    byMatch.set(matchId, list);
+  }
+  const items: GridItem[] = [];
+  for (const [matchId, group] of byMatch) {
+    const sorted = [...group].sort((a, b) =>
+      a.created_at < b.created_at ? 1 : a.created_at > b.created_at ? -1 : 0,
+    );
+    if (sorted.length === 1) {
+      items.push({
+        kind: "single",
+        clip: sorted[0],
+        sortKey: sorted[0].created_at,
+      });
+    } else {
+      items.push({
+        kind: "group",
+        matchId,
+        clips: sorted,
+        sortKey: sorted[0].created_at,
+      });
+    }
+  }
+  for (const c of orphans) {
+    items.push({ kind: "single", clip: c, sortKey: c.created_at });
+  }
+  return items.sort((a, b) =>
+    a.sortKey < b.sortKey ? 1 : a.sortKey > b.sortKey ? -1 : 0,
+  );
+});
 </script>
 
 <template>
@@ -130,7 +178,19 @@ const shouldRender = computed(() =>
     </div>
 
     <div v-else class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-      <HighlightCard v-for="c in clips" :key="c.id" :clip="c" />
+      <template v-for="item in gridItems">
+        <MatchClipsGroupCard
+          v-if="item.kind === 'group'"
+          :key="`group-${item.matchId}`"
+          :match-id="item.matchId"
+          :clips="item.clips"
+        />
+        <HighlightCard
+          v-else
+          :key="`single-${item.clip.id}`"
+          :clip="item.clip"
+        />
+      </template>
     </div>
   </div>
 </template>

@@ -32,7 +32,7 @@ function isPublicRoute(path: string): boolean {
 
   // Hasura row perms gate clip data by visibility; the routes just
   // need to be reachable without a login bounce.
-  if (path === "/highlights") {
+  if (path === "/highlights" || path.startsWith("/highlights/")) {
     return true;
   }
   if (path.startsWith("/clips/")) {

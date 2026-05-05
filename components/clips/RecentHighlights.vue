@@ -7,16 +7,26 @@ import { matchClipFields } from "~/graphql/matchClip";
 import { Skeleton } from "~/components/ui/skeleton";
 import HighlightCard from "~/components/clips/HighlightCard.vue";
 import type { Clip } from "~/types/clip";
+import {
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
 
-// Compact strip of the latest public clips. Same HighlightCard the
-// /highlights page uses (inline play on click, info popover on
-// hover); this just trims the limit + adds a header + "See all" so
-// it slots into the Watch tab without competing with the matches feed.
+// Compact strip of the latest public clips for embedding on /watch
+// and similar surfaces. Hides itself entirely when there's nothing to
+// show — empty strips read as broken section dividers and crowd the
+// page above the actual matches feed.
+//
+// `sectionLabel` opts into the tactical section-header wrapper so the
+// hide-when-empty behavior includes the label, not just the grid. Use
+// it instead of wrapping this component yourself when you want both
+// the label and the strip to disappear together on quiet days.
 const props = withDefaults(
   defineProps<{
     limit?: number;
     title?: string;
     showHeader?: boolean;
+    sectionLabel?: string;
   }>(),
   {
     limit: 8,
@@ -27,7 +37,6 @@ const props = withDefaults(
 
 const clips = ref<Clip[]>([]);
 const loading = ref(true);
-const activeClipId = ref<string | null>(null);
 
 let activeSub: { unsubscribe: () => void } | null = null;
 function subscribe() {
@@ -59,13 +68,40 @@ subscribe();
 onBeforeUnmount(() => activeSub?.unsubscribe());
 
 const hasClips = computed(() => clips.value.length > 0);
+// Render only when we have something to display. We deliberately don't
+// show the loading skeleton when sectionLabel is set — the section
+// header itself would imply content that isn't there yet, and a flash
+// of skeleton-then-vanish is worse than a single beat of nothing.
+const shouldRender = computed(() =>
+  props.sectionLabel ? hasClips.value : loading.value || hasClips.value,
+);
 </script>
 
 <template>
-  <!-- Hide entirely when there's nothing to show; an empty strip
-       on the Watch tab is just visual noise above the matches feed. -->
-  <div v-if="loading || hasClips">
-    <div v-if="showHeader" class="flex items-center justify-between mb-3">
+  <div v-if="shouldRender">
+    <!-- Tactical section header — opt-in via `sectionLabel`. Wraps the
+         strip so the entire section hides together when empty. -->
+    <div
+      v-if="sectionLabel"
+      :class="[tacticalSectionLabelClasses, 'flex items-center justify-between']"
+    >
+      <span class="inline-flex items-center gap-2">
+        <span :class="tacticalSectionTickClasses"></span>
+        {{ sectionLabel }}
+      </span>
+      <NuxtLink
+        :to="{ name: 'highlights' }"
+        class="inline-flex items-center gap-1 font-mono text-[0.65rem] tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors normal-case"
+      >
+        See all
+        <ArrowRight class="h-3 w-3" />
+      </NuxtLink>
+    </div>
+
+    <div
+      v-else-if="showHeader"
+      class="flex items-center justify-between mb-3"
+    >
       <div class="flex items-center gap-2">
         <Film class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
         <h2
@@ -82,7 +118,11 @@ const hasClips = computed(() => clips.value.length > 0);
         <ArrowRight class="h-3 w-3" />
       </NuxtLink>
     </div>
-    <div v-else class="flex justify-end mb-3 -mt-1">
+
+    <div
+      v-else
+      class="flex justify-end mb-3 -mt-1"
+    >
       <NuxtLink
         :to="{ name: 'highlights' }"
         class="inline-flex items-center gap-1 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
@@ -107,8 +147,6 @@ const hasClips = computed(() => clips.value.length > 0);
         v-for="c in clips"
         :key="c.id"
         :clip="c"
-        :active="activeClipId === c.id"
-        @activate="activeClipId = c.id"
       />
     </div>
   </div>

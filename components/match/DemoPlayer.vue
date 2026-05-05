@@ -3,25 +3,33 @@ import { computed } from "vue";
 import WhepPlayer from "~/components/match/WhepPlayer.vue";
 import DemoPlaybackControls from "~/components/match/DemoPlaybackControls.vue";
 import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
+import ClipEditorBar from "~/components/clips/ClipEditorBar.vue";
 import { Button } from "~/components/ui/button";
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
+import { useClipEditor } from "~/composables/useClipEditor";
 
+// `meta` controls how each stage handles non-emission — see the
+// rationale at the top of StreamSessionProgress.vue.
 const DEMO_STAGES = [
-  { key: "booting", label: "Allocating GPU" },
-  { key: "downloading_cs2", label: "Downloading CS2" },
-  { key: "launching_steam", label: "Launching Steam" },
-  { key: "logging_in", label: "Logging in" },
-  { key: "downloading_demo", label: "Downloading demo" },
-  // Only fires for workshop-map demos; stock-map demos skip past this
-  // stage and it stays "pending" in the UI.
-  { key: "downloading_workshop_map", label: "Downloading workshop map" },
-  { key: "launching_cs2", label: "Launching CS2" },
-  { key: "connecting_to_game", label: "Loading demo into CS2" },
+  { key: "booting", label: "Allocating GPU", meta: "required" as const },
+  // Cold pods only — warm pods skip past this and the operator should
+  // know it was avoided (saves minutes of wait).
+  { key: "downloading_cs2", label: "Downloading CS2", meta: "conditional" as const },
+  { key: "launching_steam", label: "Launching Steam", meta: "required" as const },
+  // Internal sub-step of the steam launch sequence; cached creds skip
+  // emitting it. Hidden when not fired so we don't suggest something
+  // went wrong.
+  { key: "logging_in", label: "Logging in", meta: "implicit" as const },
+  { key: "downloading_demo", label: "Downloading demo", meta: "required" as const },
+  // Only fires for workshop-map demos; stock-map demos genuinely skip.
+  { key: "downloading_workshop_map", label: "Downloading workshop map", meta: "conditional" as const },
+  { key: "launching_cs2", label: "Launching CS2", meta: "required" as const },
+  { key: "connecting_to_game", label: "Loading demo into CS2", meta: "required" as const },
   // `live` (capture publishing) is the last visible stepper stage.
   // `playing` (GSI-confirmed demo rolling) isn't shown — the WHEP
   // player mounts at that moment, so the stepper would only flash
   // for one frame before being unmounted anyway.
-  { key: "live", label: "Demo Loading" },
+  { key: "live", label: "Demo Loading", meta: "required" as const },
 ];
 
 // Pure presentation: the parent page (pages/demo/[matchMapId].vue)
@@ -38,6 +46,7 @@ defineProps<{
 }>();
 
 const { store } = useDemoPlayback();
+const editor = useClipEditor();
 
 const whepUrl = computed(() => {
   if (!store.streamUrl) return null;
@@ -131,6 +140,18 @@ function closeWindow() {
       </Transition>
     </div>
 
+    <!-- Inline clip editor. Slides in above the playback controls
+         when the operator opens it from the Scissors button. Scoped
+         to a live session — it depends on store.matchMapId being
+         resolved. -->
+    <Transition name="editor-slide">
+      <ClipEditorBar
+        v-if="store.isPlaying && editor.active.value && store.matchMapId"
+        :match-map-id="store.matchMapId"
+        class="shrink-0"
+      />
+    </Transition>
+
     <Transition name="controls-slide">
       <DemoPlaybackControls v-if="store.isPlaying" class="shrink-0" />
     </Transition>
@@ -162,5 +183,18 @@ function closeWindow() {
 .controls-slide-enter-from {
   opacity: 0;
   transform: translateY(20px);
+}
+
+/* Clip editor bar slides in/out from below the video when toggled. */
+.editor-slide-enter-active,
+.editor-slide-leave-active {
+  transition:
+    opacity 220ms ease,
+    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.editor-slide-enter-from,
+.editor-slide-leave-to {
+  opacity: 0;
+  transform: translateY(12px);
 }
 </style>

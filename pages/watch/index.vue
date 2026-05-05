@@ -59,16 +59,6 @@ const activeTab = ref("live-matches");
 
   <PageTransition :delay="150" class="mt-6">
     <div>
-      <div :class="tacticalSectionLabelClasses">
-        <span :class="tacticalSectionTickClasses"></span>
-        RECENT.HIGHLIGHTS
-      </div>
-      <RecentHighlights :showHeader="false" />
-    </div>
-  </PageTransition>
-
-  <PageTransition :delay="200" class="mt-6">
-    <div>
       <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
         <div :class="[tacticalSectionLabelClasses, 'mb-0']">
           <span :class="tacticalSectionTickClasses"></span>
@@ -132,6 +122,14 @@ const activeTab = ref("live-matches");
         </TabsContent>
       </Tabs>
     </div>
+  </PageTransition>
+
+  <!-- Recent highlights live below the matches feed and hide entirely
+       when there are no public clips — see `sectionLabel` in
+       RecentHighlights.vue. Avoids leaving a dead "RECENT.HIGHLIGHTS"
+       header on quiet days. -->
+  <PageTransition :delay="200" class="mt-6">
+    <RecentHighlights section-label="RECENT.HIGHLIGHTS" />
   </PageTransition>
 
   <div id="pagination" class="mt-6"></div>

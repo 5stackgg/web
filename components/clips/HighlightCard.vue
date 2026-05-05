@@ -3,52 +3,48 @@ import { computed, ref } from "vue";
 import {
   Film,
   Play,
-  Info,
   Lock,
   Eye,
   Globe,
   Trophy,
   ArrowUpRight,
+  Loader2,
+  Check,
 } from "lucide-vue-next";
+import { useNuxtApp } from "#app";
 import { Card, CardContent } from "~/components/ui/card";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
-import ClipMatchSummary from "~/components/clips/ClipMatchSummary.vue";
 import type { Clip } from "~/types/clip";
+import { useClipModal } from "~/composables/useClipModal";
+import { useAuthStore } from "~/stores/AuthStore";
+import { generateMutation } from "~/graphql/graphqlGen";
 
-// Reusable highlight card. Click anywhere = inline play. Hover the
-// info icon = popover with extended metadata (creator, target player,
-// visibility, created time) plus a compact match-summary block linking
-// to the source match. Default state is a still preview; once clicked
-// we mount an autoplaying <video controls> in the same slot.
-
+// Reusable highlight card. Click the play surface to open the clip
+// in the global modal. Top-right corner shows the clip's visibility
+// as an icon — admins get a popover that switches the visibility in
+// place; everyone else just sees the status indicator.
 const props = defineProps<{
   clip: Clip;
-  // When true, this card autoplays + shows controls immediately.
-  // The parent toggles which clip is the "active" one — only one at
-  // a time so we don't overload the network with 8 simultaneous
-  // streams. Soft-coupling: the card still works standalone if the
-  // parent doesn't manage activeness (each card flips its own
-  // playing state on click).
-  active?: boolean;
-}>();
-const emit = defineEmits<{
-  (e: "activate"): void;
 }>();
 
-const localPlaying = ref(false);
-const isPlaying = computed(() => props.active === true || localPlaying.value);
+const { openClip } = useClipModal();
+const auth = useAuthStore();
+const isAdmin = computed(() => auth.isAdmin);
+const nuxtApp = useNuxtApp();
 
 function onPlayClick(e: MouseEvent) {
+  // Modifier-clicks fall through so right-click + cmd-click still
+  // navigate to the standalone /clips/<id> route via the title link
+  // — but the play button itself isn't an anchor, so plain click
+  // always opens the modal.
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
   e.preventDefault();
   e.stopPropagation();
-  if (!isPlaying.value) {
-    localPlaying.value = true;
-    emit("activate");
-  }
+  openClip(props.clip.id);
 }
 
 function formatDuration(ms: number | null): string {
@@ -58,15 +54,7 @@ function formatDuration(ms: number | null): string {
   const s = total % 60;
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
+
 const matchupLabel = computed(() => {
   const a = props.clip.match_map?.match?.lineup_1?.name;
   const b = props.clip.match_map?.match?.lineup_2?.name;
@@ -78,8 +66,8 @@ const matchupLabel = computed(() => {
   );
 });
 
-// Score chip data — only render when both scores are present so we
-// don't show a stale `0:0` for an in-progress map.
+// Score chip — only render when both scores are present so we don't
+// flash a stale 0:0 for an in-progress map.
 const score1 = computed(() => props.clip.match_map?.lineup_1_score);
 const score2 = computed(() => props.clip.match_map?.lineup_2_score);
 const hasScore = computed(
@@ -98,142 +86,212 @@ const winningSide = computed<"1" | "2" | null>(() => {
 const isTournament = computed(
   () => props.clip.match_map?.match?.is_tournament_match === true,
 );
+
+function onTitleClick(e: MouseEvent) {
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
+  e.preventDefault();
+  openClip(props.clip.id);
+}
+
+// Visibility chip — admin clicks to switch. The mutation lives here
+// so the parent grid can stay declarative; the subscription delivers
+// the new row state, no manual refetch needed.
+type Visibility = "public" | "unlisted" | "private";
+const VISIBILITY_OPTIONS: Array<{
+  value: Visibility;
+  label: string;
+  icon: any;
+  hint: string;
+}> = [
+  {
+    value: "public",
+    label: "Public",
+    icon: Globe,
+    hint: "Visible in the highlights feed",
+  },
+  {
+    value: "unlisted",
+    label: "Unlisted",
+    icon: Eye,
+    hint: "Anyone with the link",
+  },
+  {
+    value: "private",
+    label: "Private",
+    icon: Lock,
+    hint: "Only the owner",
+  },
+];
+const saving = ref(false);
+const visPopoverOpen = ref(false);
+
+const currentVisibilityMeta = computed(() => {
+  return (
+    VISIBILITY_OPTIONS.find((o) => o.value === props.clip.visibility) ??
+    VISIBILITY_OPTIONS[2]
+  );
+});
+
+async function setVisibility(v: Visibility) {
+  if (saving.value || props.clip.visibility === v) {
+    visPopoverOpen.value = false;
+    return;
+  }
+  saving.value = true;
+  try {
+    await nuxtApp.$apollo.defaultClient.mutate({
+      mutation: generateMutation({
+        updateClip: [
+          { clip_id: props.clip.id, visibility: v },
+          { success: true },
+        ],
+      } as any),
+    });
+    visPopoverOpen.value = false;
+  } catch (e) {
+    console.error("[highlight-card] visibility toggle failed:", e);
+  } finally {
+    saving.value = false;
+  }
+}
 </script>
 
 <template>
   <Card class="overflow-hidden transition-all hover:border-foreground/30">
-    <div
-      class="relative aspect-video w-full overflow-hidden bg-black"
-    >
-      <!-- Active state: real <video> with controls. Mounted only on
-           click so 8 cards in a grid don't all open WHEP-like
-           connections at once — important on the highlights page
-           where the user is browsing. -->
+    <div class="relative aspect-video w-full overflow-hidden bg-black group">
+      <!-- Idle state: silent thumbnail teaser. Click anywhere flips to
+           the modal viewer. The hover scale gives the affordance "this
+           is interactive". -->
       <video
-        v-if="isPlaying && clip.download_url"
+        v-if="clip.download_url"
         :src="clip.download_url"
         :poster="clip.thumbnail_url ?? clip.match_map?.map?.poster ?? undefined"
-        class="absolute inset-0 h-full w-full object-cover"
-        controls
-        autoplay
+        class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+        muted
         playsinline
-        preload="auto"
+        preload="metadata"
       />
+      <div
+        v-else
+        class="absolute inset-0 flex items-center justify-center text-muted-foreground"
+      >
+        <Film class="h-8 w-8 opacity-50" />
+      </div>
 
-      <!-- Idle state: silent thumbnail teaser. Click anywhere flips
-           to the active state. The hover scale gives the affordance
-           "this is interactive". -->
-      <template v-else>
-        <video
-          v-if="clip.download_url"
-          :src="clip.download_url"
-          :poster="clip.thumbnail_url ?? clip.match_map?.map?.poster ?? undefined"
-          class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-          muted
-          playsinline
-          preload="metadata"
-        />
-        <div
-          v-else
-          class="absolute inset-0 flex items-center justify-center text-muted-foreground"
+      <button
+        type="button"
+        class="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/80 via-transparent to-transparent transition-opacity opacity-60 hover:opacity-100 cursor-pointer"
+        :aria-label="`Play ${clip.title ?? 'clip'}`"
+        @click="onPlayClick"
+      >
+        <span
+          class="rounded-full bg-foreground/90 p-3 backdrop-blur-sm transition-transform hover:scale-110"
         >
-          <Film class="h-8 w-8 opacity-50" />
-        </div>
-        <button
-          type="button"
-          class="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/80 via-transparent to-transparent transition-opacity hover:opacity-100"
-          :class="isPlaying ? 'opacity-0' : 'opacity-60 hover:opacity-100'"
-          :aria-label="`Play ${clip.title ?? 'clip'}`"
-          @click="onPlayClick"
+          <Play class="h-5 w-5 text-background fill-background" />
+        </span>
+      </button>
+
+      <!-- Top-right visibility chip. Admin gets a clickable Popover
+           with the three options; non-admins see a static indicator
+           so the visibility status is still legible from the grid. -->
+      <Popover v-if="isAdmin" v-model:open="visPopoverOpen">
+        <PopoverTrigger
+          class="absolute top-2 right-2 inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+          :aria-label="`Visibility: ${clip.visibility}. Click to change.`"
+          :title="`Visibility: ${clip.visibility}`"
+          @click.stop
         >
           <span
-            class="rounded-full bg-foreground/90 p-3 backdrop-blur-sm transition-transform hover:scale-110"
+            class="inline-flex h-4 w-4 items-center justify-center rounded-full"
+            :class="
+              clip.visibility === 'public'
+                ? 'bg-emerald-400/20 text-emerald-300'
+                : clip.visibility === 'unlisted'
+                  ? 'bg-amber-400/20 text-amber-300'
+                  : 'bg-white/10 text-white/80'
+            "
           >
-            <Play class="h-5 w-5 text-background fill-background" />
-          </span>
-        </button>
-      </template>
-
-      <!-- Hover-only info popover. Sits in the top-right so it doesn't
-           overlap the video's center play button. Clicking it doesn't
-           navigate — it toggles the inline detail card. The detail
-           page link is one click further in, for users who really
-           want the full /clips/<id> view. -->
-      <Popover>
-        <PopoverTrigger
-          class="absolute top-2 right-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          :aria-label="`Details for ${clip.title ?? 'clip'}`"
-          @click.stop
-        >
-          <Info class="h-3.5 w-3.5" />
-        </PopoverTrigger>
-        <PopoverContent
-          class="w-80 text-sm"
-          align="end"
-          @click.stop
-        >
-          <div class="space-y-3">
-            <div class="font-medium leading-tight">
-              {{ clip.title ?? "Untitled clip" }}
-            </div>
-
-            <ClipMatchSummary
-              v-if="clip.match_map?.match"
-              :clip="clip"
-              variant="compact"
+            <Loader2 v-if="saving" class="h-3 w-3 animate-spin" />
+            <component
+              v-else
+              :is="currentVisibilityMeta.icon"
+              class="h-3 w-3"
             />
-
-            <div class="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs">
-              <span class="text-muted-foreground">Duration</span>
-              <span class="font-mono tabular-nums text-right">
-                {{ formatDuration(clip.duration_ms) }}
-              </span>
-              <template v-if="clip.target?.name">
-                <span class="text-muted-foreground">Player</span>
-                <NuxtLink
-                  :to="`/players/${clip.target.steam_id}`"
-                  class="text-right truncate hover:underline"
-                  @click.stop
-                >
-                  {{ clip.target.name }}
-                </NuxtLink>
-              </template>
-              <template v-if="clip.user?.name">
-                <span class="text-muted-foreground">Created by</span>
-                <NuxtLink
-                  :to="`/players/${clip.user.steam_id}`"
-                  class="text-right truncate hover:underline"
-                  @click.stop
-                >
-                  {{ clip.user.name }}
-                </NuxtLink>
-              </template>
-              <span class="text-muted-foreground">Visibility</span>
-              <span class="text-right inline-flex items-center justify-end gap-1 capitalize">
-                <Lock
-                  v-if="clip.visibility === 'private'"
-                  class="h-3 w-3 text-muted-foreground"
-                />
-                <Eye
-                  v-else-if="clip.visibility === 'unlisted'"
-                  class="h-3 w-3 text-muted-foreground"
-                />
-                <Globe
-                  v-else-if="clip.visibility === 'public'"
-                  class="h-3 w-3 text-emerald-400"
-                />
-                {{ clip.visibility }}
-              </span>
-              <span class="text-muted-foreground">Created</span>
-              <span class="text-right">{{ formatDate(clip.created_at) }}</span>
-            </div>
+          </span>
+          <span
+            class="font-mono text-[0.58rem] uppercase tracking-[0.14em]"
+          >
+            {{ currentVisibilityMeta.label }}
+          </span>
+        </PopoverTrigger>
+        <PopoverContent class="w-56 p-1" align="end" @click.stop>
+          <div class="px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground">
+            Visibility
           </div>
+          <button
+            v-for="opt in VISIBILITY_OPTIONS"
+            :key="opt.value"
+            type="button"
+            class="w-full text-left flex items-start gap-2 rounded px-2 py-1.5 text-xs hover:bg-muted/60 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+            :class="
+              clip.visibility === opt.value ? 'bg-muted/40' : ''
+            "
+            :disabled="saving"
+            @click="setVisibility(opt.value)"
+          >
+            <span
+              class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded"
+              :class="
+                opt.value === 'public'
+                  ? 'bg-emerald-400/15 text-emerald-300'
+                  : opt.value === 'unlisted'
+                    ? 'bg-amber-400/15 text-amber-300'
+                    : 'bg-muted/40 text-muted-foreground'
+              "
+            >
+              <component :is="opt.icon" class="h-3 w-3" />
+            </span>
+            <span class="flex-1 min-w-0">
+              <span class="flex items-center gap-1.5 font-medium">
+                {{ opt.label }}
+                <Check
+                  v-if="clip.visibility === opt.value"
+                  class="h-3 w-3 text-[hsl(var(--tac-amber))]"
+                />
+              </span>
+              <span class="block text-[0.7rem] text-muted-foreground leading-snug">
+                {{ opt.hint }}
+              </span>
+            </span>
+          </button>
         </PopoverContent>
       </Popover>
+      <span
+        v-else
+        class="absolute top-2 right-2 inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm pointer-events-none"
+        :title="`Visibility: ${clip.visibility}`"
+        :aria-label="`Visibility: ${clip.visibility}`"
+      >
+        <span
+          class="inline-flex h-4 w-4 items-center justify-center rounded-full"
+          :class="
+            clip.visibility === 'public'
+              ? 'bg-emerald-400/20 text-emerald-300'
+              : clip.visibility === 'unlisted'
+                ? 'bg-amber-400/20 text-amber-300'
+                : 'bg-white/10 text-white/80'
+          "
+        >
+          <component :is="currentVisibilityMeta.icon" class="h-3 w-3" />
+        </span>
+        <span class="font-mono text-[0.58rem] uppercase tracking-[0.14em]">
+          {{ currentVisibilityMeta.label }}
+        </span>
+      </span>
 
       <!-- Top-left chips: tournament badge + map score. The score chip
-           highlights the winning side in amber so the result is
-           legible at a glance without opening the popover. -->
+           highlights the winning side in amber so the result is legible
+           at a glance. -->
       <div
         class="absolute top-2 left-2 flex items-center gap-1 pointer-events-none"
       >
@@ -266,13 +324,14 @@ const isTournament = computed(
     </div>
 
     <CardContent class="p-3 space-y-1">
-      <!-- Title doubles as the link to the full clip detail page. The
-           arrow icon makes the link affordance visible without
-           depending on hover-to-discover on the info popover. -->
+      <!-- Title is the link to the full clip detail. Modifier-clicks
+           fall through to the NuxtLink href so right-click + open-in-
+           new-tab still lands on the standalone /clips/<id> route. -->
       <NuxtLink
         :to="`/clips/${clip.id}`"
         class="group/link flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-[hsl(var(--tac-amber))] transition-colors"
         :title="clip.title || 'Open clip'"
+        @click="onTitleClick"
       >
         <span class="truncate">
           {{ clip.title || "Untitled clip" }}

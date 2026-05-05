@@ -3,10 +3,6 @@ import { computed, ref, watch } from "vue";
 import {
   Film,
   Loader2,
-  Plus,
-  Trash2,
-  Scissors,
-  MapPin,
   Sparkles,
   Sword,
   Crown,
@@ -33,57 +29,30 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "~/components/ui/tabs";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useDemoPlaybackStore } from "~/stores/DemoPlaybackStore";
-import { useDemoPlayback } from "~/composables/useDemoPlayback";
-import type { ClipSpec } from "~/graphql/clipRenderJob";
 import ClipRenderProgress from "~/components/clips/ClipRenderProgress.vue";
 import { useClipRenderActive } from "~/composables/useClipRenderActive";
 
-// Multi-segment trim editor. The user assembles 1..N tick ranges along
-// a single timeline rail; the server concatenates them in render. Each
-// segment can be dragged whole, resized via its left/right edges, or
-// split at the playhead. The editor is intentionally one-track: future
-// overlays / audio rows attach to the same timeline.
+// Highlights-preset clip generator. The api scans this match's parsed
+// kills, builds the multi-segment spec from the chosen preset, and
+// fires the same render pipeline a manual trim would. Manual trim
+// editing happens inline on the demo page via ClipEditorBar — this
+// dialog is the "one-click highlight reel" path.
 const props = defineProps<{
   open: boolean;
   matchMapId: string;
+  // Kept for backwards-compatibility with callers that still pass it;
+  // the tabs are gone, this dialog is highlights-only now.
+  initialMode?: "manual" | "auto";
 }>();
 const emit = defineEmits<{
   (e: "update:open", v: boolean): void;
 }>();
 
 const store = useDemoPlaybackStore();
-const { seek } = useDemoPlayback();
 const nuxtApp = useNuxtApp();
 
-type Segment = { id: string; start_tick: number; end_tick: number };
-
-const mode = ref<"manual" | "auto">("manual");
-const segments = ref<Segment[]>([]);
-const selectedId = ref<string | null>(null);
-const title = ref("");
-const destination = ref<"library" | "download">("library");
-const resolution = ref<"720p" | "1080p">("1080p");
-const submitting = ref(false);
-const submitError = ref<string | null>(null);
-const renderingJobId = ref<string | null>(null);
-const { trackJob: trackRenderJob } = useClipRenderActive();
-// Pass the job id (or null) so the composable subscribes and auto-
-// clears the WHEP gate when the render finishes — even if the user
-// closes this dialog mid-render. Previously we passed a boolean,
-// which left the flag stuck true forever after the dialog closed.
-watch(renderingJobId, (id) => trackRenderJob(id));
-
-// Auto-clip preset state. The api builds the multi-segment spec on
-// its end (see ClipsService.buildPresetSpec) — the web side just
-// picks a player + preset and submits a different mutation.
 type Preset = "knife" | "multikills" | "best_round" | "recap";
 const presetTarget = ref<string | null>(null);
 const presetChoice = ref<Preset>("multikills");
@@ -119,235 +88,79 @@ const PRESETS: Array<{
   },
 ];
 
-// Reseed on every open. Drop a single ~30s seed segment anchored to
-// the current playback tick — gives the user something to immediately
-// trim or extend rather than staring at an empty rail.
+const title = ref("");
+const resolution = ref<"720p" | "1080p">("1080p");
+const submitting = ref(false);
+const submitError = ref<string | null>(null);
+const renderingJobId = ref<string | null>(null);
+const { trackJob: trackRenderJob } = useClipRenderActive();
+watch(renderingJobId, (id) => trackRenderJob(id));
+
 watch(
   () => props.open,
   (v) => {
     if (!v) return;
-    const max = store.totalTicks || store.tickRate * 60;
-    const at = Math.min(store.currentTick, Math.max(0, max - 1));
-    const span = store.tickRate > 0 ? store.tickRate * 30 : 1920;
-    const end = Math.min(at + span, max);
-    segments.value = [{ id: crypto.randomUUID(), start_tick: at, end_tick: end }];
-    selectedId.value = segments.value[0].id;
     title.value = "";
-    destination.value = "library";
     resolution.value = "1080p";
     submitting.value = false;
     submitError.value = null;
     renderingJobId.value = null;
-    mode.value = "manual";
-    // Default the preset target to whoever the operator is currently
-    // spectating — saves a click when they think "I want clips of
-    // this guy" right after watching them play.
     presetTarget.value = store.spectatedSteamId ?? null;
     presetChoice.value = "multikills";
   },
 );
 
-const max = computed(() => Math.max(1, store.totalTicks || 0));
-const totalTicks = computed(() =>
-  segments.value.reduce(
-    (acc, s) => acc + Math.max(0, s.end_tick - s.start_tick),
-    0,
-  ),
-);
-const isValid = computed(
-  () => segments.value.length > 0 && totalTicks.value > 0,
-);
-const playheadPct = computed(
-  () => `${(Math.min(store.currentTick, max.value) / max.value) * 100}%`,
+const canSubmit = computed(
+  () => !!presetTarget.value && !submitting.value,
 );
 
-function formatSeconds(s: number) {
-  if (!Number.isFinite(s) || s < 0) return "0:00";
-  const total = Math.floor(s);
-  const m = Math.floor(total / 60);
-  const sec = total % 60;
-  return `${m}:${sec.toString().padStart(2, "0")}`;
-}
-function ticksToSeconds(t: number) {
-  return store.tickRate > 0 ? t / store.tickRate : 0;
-}
-function pctOf(tick: number) {
-  return `${(tick / max.value) * 100}%`;
-}
-function widthOf(seg: Segment) {
-  return `${((seg.end_tick - seg.start_tick) / max.value) * 100}%`;
-}
-
-function addSegmentAtPlayhead() {
-  const at = Math.min(store.currentTick, max.value - 1);
-  const span = store.tickRate > 0 ? store.tickRate * 10 : 640;
-  const end = Math.min(at + span, max.value);
-  const seg = { id: crypto.randomUUID(), start_tick: at, end_tick: end };
-  segments.value.push(seg);
-  segments.value.sort((a, b) => a.start_tick - b.start_tick);
-  selectedId.value = seg.id;
-}
-function splitSelectedAtPlayhead() {
-  const id = selectedId.value;
-  if (!id) return;
-  const seg = segments.value.find((s) => s.id === id);
-  if (!seg) return;
-  const at = store.currentTick;
-  // Refuse to split if the playhead is outside the segment or too
-  // close to either edge — the resulting sliver would be unusable.
-  const minSpan = Math.max(1, Math.round(store.tickRate * 0.5));
-  if (at <= seg.start_tick + minSpan || at >= seg.end_tick - minSpan) return;
-  const right = {
-    id: crypto.randomUUID(),
-    start_tick: at,
-    end_tick: seg.end_tick,
-  };
-  seg.end_tick = at;
-  segments.value.push(right);
-  segments.value.sort((a, b) => a.start_tick - b.start_tick);
-  selectedId.value = right.id;
-}
-function removeSelected() {
-  const id = selectedId.value;
-  if (!id) return;
-  segments.value = segments.value.filter((s) => s.id !== id);
-  selectedId.value = segments.value[0]?.id ?? null;
-}
-function selectSegment(id: string) {
-  selectedId.value = id;
-}
-function jumpToSegmentStart(seg: Segment) {
-  selectedId.value = seg.id;
-  void seek(seg.start_tick);
-}
-
-// Drag handling. We compute the rail's bounding rect once at
-// pointerdown and convert each pointermove's clientX into ticks via
-// (x - left) / width * max. Edges, body, and add-handle all share the
-// same math but apply the delta differently.
-const railEl = ref<HTMLDivElement | null>(null);
-type DragMode = "left" | "right" | "body";
-let dragState:
-  | {
-      mode: DragMode;
-      seg: Segment;
-      origStart: number;
-      origEnd: number;
-      grabTick: number;
-      rect: DOMRect;
-    }
-  | null = null;
-function startDrag(seg: Segment, mode: DragMode, e: PointerEvent) {
-  if (!railEl.value) return;
-  e.stopPropagation();
-  selectedId.value = seg.id;
-  const rect = railEl.value.getBoundingClientRect();
-  dragState = {
-    mode,
-    seg,
-    origStart: seg.start_tick,
-    origEnd: seg.end_tick,
-    grabTick: pointerTick(e.clientX, rect),
-    rect,
-  };
-  (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
-  window.addEventListener("pointermove", onDragMove);
-  window.addEventListener("pointerup", onDragEnd);
-  window.addEventListener("pointercancel", onDragEnd);
-}
-function pointerTick(clientX: number, rect: DOMRect) {
-  const ratio = (clientX - rect.left) / rect.width;
-  return Math.round(Math.max(0, Math.min(1, ratio)) * max.value);
-}
-function onDragMove(e: PointerEvent) {
-  if (!dragState) return;
-  const tick = pointerTick(e.clientX, dragState.rect);
-  const minSpan = Math.max(1, Math.round(store.tickRate * 0.5));
-  const { mode, seg, origStart, origEnd, grabTick } = dragState;
-  if (mode === "left") {
-    seg.start_tick = Math.max(0, Math.min(tick, seg.end_tick - minSpan));
-  } else if (mode === "right") {
-    seg.end_tick = Math.max(seg.start_tick + minSpan, Math.min(tick, max.value));
-  } else {
-    const delta = tick - grabTick;
-    const span = origEnd - origStart;
-    let nextStart = origStart + delta;
-    nextStart = Math.max(0, Math.min(nextStart, max.value - span));
-    seg.start_tick = nextStart;
-    seg.end_tick = nextStart + span;
+type DemoPlayer = {
+  steam_id: string;
+  name: string;
+  team: "T" | "CT" | null;
+};
+// Player picker — kills + GSI, NOT the api lineup. A demo can be
+// cross-loaded against a different match; trust the parsed demo
+// content over the database row.
+const presetPlayers = computed<DemoPlayer[]>(() => {
+  const seen = new Set<string>();
+  const out: DemoPlayer[] = [];
+  const gsiByStId = new Map<string, (typeof store.specSlots)[number]>();
+  for (const s of store.specSlots) {
+    if (s.steam_id) gsiByStId.set(s.steam_id, s);
   }
-}
-function onDragEnd() {
-  if (!dragState) return;
-  dragState = null;
-  segments.value.sort((a, b) => a.start_tick - b.start_tick);
-  window.removeEventListener("pointermove", onDragMove);
-  window.removeEventListener("pointerup", onDragEnd);
-  window.removeEventListener("pointercancel", onDragEnd);
-}
-
-// Click on empty rail: seek the demo to that tick (preview the
-// position before deciding where to add). Clicking on a segment
-// (handled separately) selects it.
-function onRailClick(e: MouseEvent) {
-  if (!railEl.value) return;
-  const rect = railEl.value.getBoundingClientRect();
-  const tick = pointerTick(e.clientX, rect);
-  void seek(tick);
-}
-
-// Round/kill markers — same source as DemoPlaybackControls so the
-// editor feels continuous with the player below it.
-const roundMarkers = computed(() =>
-  store.totalTicks > 0
-    ? store.roundTicks.map((r) => ({
-        round: r.round,
-        left: pctOf(r.start_tick),
-        tick: r.start_tick,
-      }))
-    : [],
+  const add = (sid: string | undefined) => {
+    if (!sid || seen.has(sid)) return;
+    seen.add(sid);
+    const gsi = gsiByStId.get(sid);
+    out.push({
+      steam_id: sid,
+      name: gsi?.name ?? store.playerNames[sid] ?? `#${sid.slice(-4)}`,
+      team: gsi?.team ?? null,
+    });
+  };
+  for (const k of store.kills) {
+    add(k.killer);
+    add(k.victim);
+  }
+  for (const s of store.specSlots) add(s.steam_id);
+  return out.sort((a, b) => a.name.localeCompare(b.name));
+});
+const ctPresetPlayers = computed(() =>
+  presetPlayers.value.filter((p) => p.team === "CT"),
 );
+const tPresetPlayers = computed(() =>
+  presetPlayers.value.filter((p) => p.team === "T"),
+);
+const otherPresetPlayers = computed(() =>
+  presetPlayers.value.filter((p) => p.team !== "CT" && p.team !== "T"),
+);
+const ctTeamLabel = computed(
+  () => store.gsiTeamCtName || "Counter-Terrorists",
+);
+const tTeamLabel = computed(() => store.gsiTeamTName || "Terrorists");
 
 async function submit() {
-  if (mode.value === "auto") return submitPreset();
-  if (!isValid.value || submitting.value) return;
-  submitError.value = null;
-  submitting.value = true;
-  const spec: ClipSpec = {
-    match_map_id: props.matchMapId,
-    segments: segments.value
-      .slice()
-      .sort((a, b) => a.start_tick - b.start_tick)
-      .map((s) => ({ start_tick: s.start_tick, end_tick: s.end_tick })),
-    output: { format: "mp4", resolution: resolution.value, fps: 60 },
-    destination: destination.value,
-    title: title.value || undefined,
-  };
-  try {
-    const { data } = await nuxtApp.$apollo.defaultClient.mutate({
-      mutation: generateMutation({
-        createClipRender: [
-          { spec },
-          { success: true, job_id: true },
-        ],
-      } as any),
-    });
-    const out = (data as any)?.createClipRender;
-    if (!out?.success || !out?.job_id) {
-      throw new Error("createClipRender returned no job");
-    }
-    renderingJobId.value = out.job_id;
-  } catch (e) {
-    submitError.value =
-      (e as any)?.graphQLErrors?.[0]?.message ??
-      (e as Error)?.message ??
-      "Failed to submit clip";
-  } finally {
-    submitting.value = false;
-  }
-}
-
-async function submitPreset() {
   if (submitting.value) return;
   if (!presetTarget.value) {
     submitError.value = "Pick a player to highlight";
@@ -355,11 +168,11 @@ async function submitPreset() {
   }
   submitError.value = null;
   submitting.value = true;
-  // Look up the player's display name so the api can build a
-  // human-readable title ("Joe — Multi-Kills (1× 4K, 2× 3K)") instead
-  // of falling back to a steam-id suffix. GSI is the freshest source
+  // Look up the player's display name so the api can build a human-
+  // readable title ("Joe — Multi-Kills (1× 4K, 2× 3K)") instead of
+  // falling back to a steam-id suffix. GSI is the freshest source
   // (matches the actual demo file); rosters / playerNames are the
-  // fallback for cross-loaded demos where GSI hasn't landed yet.
+  // fallback for cross-loaded demos.
   const targetName = (() => {
     const sid = presetTarget.value!;
     const gsi = store.specSlots.find((s) => s.steam_id === sid);
@@ -401,64 +214,6 @@ async function submitPreset() {
   }
 }
 
-const canSubmit = computed(() =>
-  mode.value === "manual"
-    ? isValid.value
-    : !!presetTarget.value && !submitting.value,
-);
-
-// Player list for the highlights picker comes from the parsed
-// demo's kill events + live GSI — NOT the api lineup. A demo can
-// be cross-loaded against a different match (lineup says rawr/Saint
-// but the demo file is actually some other match), and we want to
-// surface the actual players in the demo. Mirrors the kill-filter
-// dropdown logic in DemoPlaybackControls.
-type DemoPlayer = {
-  steam_id: string;
-  name: string;
-  team: "T" | "CT" | null;
-};
-const presetPlayers = computed<DemoPlayer[]>(() => {
-  const seen = new Set<string>();
-  const out: DemoPlayer[] = [];
-  const gsiByStId = new Map<string, (typeof store.specSlots)[number]>();
-  for (const s of store.specSlots) {
-    if (s.steam_id) gsiByStId.set(s.steam_id, s);
-  }
-  const add = (sid: string | undefined) => {
-    if (!sid || seen.has(sid)) return;
-    seen.add(sid);
-    const gsi = gsiByStId.get(sid);
-    out.push({
-      steam_id: sid,
-      name: gsi?.name ?? store.playerNames[sid] ?? `#${sid.slice(-4)}`,
-      team: gsi?.team ?? null,
-    });
-  };
-  for (const k of store.kills) {
-    add(k.killer);
-    add(k.victim);
-  }
-  // Also pick up players present in GSI but never in a kill event
-  // (rare — alive the whole demo). Means an alive non-fragger still
-  // appears in the picker so users can pull a recap for them too.
-  for (const s of store.specSlots) add(s.steam_id);
-  return out.sort((a, b) => a.name.localeCompare(b.name));
-});
-const ctPresetPlayers = computed(() =>
-  presetPlayers.value.filter((p) => p.team === "CT"),
-);
-const tPresetPlayers = computed(() =>
-  presetPlayers.value.filter((p) => p.team === "T"),
-);
-const otherPresetPlayers = computed(() =>
-  presetPlayers.value.filter((p) => p.team !== "CT" && p.team !== "T"),
-);
-const ctTeamLabel = computed(
-  () => store.gsiTeamCtName || "Counter-Terrorists",
-);
-const tTeamLabel = computed(() => store.gsiTeamTName || "Terrorists");
-
 function close(v: boolean) {
   emit("update:open", v);
 }
@@ -466,15 +221,15 @@ function close(v: boolean) {
 
 <template>
   <Dialog :open="open" @update:open="close">
-    <DialogContent class="sm:max-w-[820px]">
+    <DialogContent class="sm:max-w-[600px]">
       <DialogHeader>
         <DialogTitle class="flex items-center gap-2">
-          <Film class="h-4 w-4" />
-          Create clip
+          <Sparkles class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
+          Auto Clip
         </DialogTitle>
         <DialogDescription>
-          Trim the demo into one or more segments. They render as a single
-          mp4 in the order they appear on the timeline.
+          Pick a player and a preset — the server scans the match's parsed
+          kills, builds the segments, and renders an mp4.
         </DialogDescription>
       </DialogHeader>
 
@@ -485,319 +240,128 @@ function close(v: boolean) {
       />
 
       <form v-else class="space-y-5" @submit.prevent="submit">
-        <Tabs v-model="mode" class="w-full">
-          <TabsList class="grid w-full grid-cols-2">
-            <TabsTrigger value="manual">
-              <span class="inline-flex items-center gap-1.5">
-                <Scissors class="h-3.5 w-3.5" />
-                Trim
-              </span>
-            </TabsTrigger>
-            <TabsTrigger value="auto">
-              <span class="inline-flex items-center gap-1.5">
-                <Sparkles class="h-3.5 w-3.5" />
-                Highlights
-              </span>
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="manual" class="space-y-5 mt-4">
-        <!-- Timeline rail. Segments sit on the rail as draggable bars;
-             round-start ticks are landmarks so the user can navigate
-             the demo without leaving the dialog. The amber playhead
-             tracks the live demo tick (driven by the store's tick
-             estimator) so users can scrub via the player below and see
-             where they'd be cutting in real time. -->
+        <!-- Player picker. Sourced from the parsed demo's kill events
+             + GSI — NOT the api lineup, which can be wrong for cross-
+             loaded demos. Required: submit is gated on a selection. -->
         <div class="space-y-2">
-          <div class="flex items-center justify-between">
-            <Label>Segments</Label>
-            <span class="font-mono text-xs text-muted-foreground tabular-nums">
-              {{ segments.length }}
-              {{ segments.length === 1 ? "segment" : "segments" }}
-              · total {{ formatSeconds(ticksToSeconds(totalTicks)) }}
-            </span>
-          </div>
-
-          <div class="rounded-md border border-border/60 bg-muted/20 p-2">
-            <div
-              ref="railEl"
-              class="relative h-12 rounded bg-card/40 border border-border/40 cursor-pointer overflow-hidden"
-              @click="onRailClick"
-            >
-              <!-- Round marker rail. Same amber tick as the player. -->
-              <div
-                v-for="m in roundMarkers"
-                :key="`r-${m.round}`"
-                :style="{ left: m.left }"
-                class="absolute top-0 bottom-0 w-px bg-[hsl(var(--tac-amber)/0.45)] pointer-events-none"
-                :title="`Round ${m.round}`"
-              />
-
-              <!-- Segments. Body is draggable; left/right edges resize.
-                   Selected gets a stronger border + brighter fill so
-                   the inspector + delete actions feel anchored. -->
-              <div
-                v-for="seg in segments"
-                :key="seg.id"
-                :style="{ left: pctOf(seg.start_tick), width: widthOf(seg) }"
-                :class="[
-                  'absolute top-1 bottom-1 rounded border flex items-stretch transition-colors',
-                  selectedId === seg.id
-                    ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.25)]'
-                    : 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] hover:bg-[hsl(var(--tac-amber)/0.18)]',
-                ]"
-                @click.stop="selectSegment(seg.id)"
-                @dblclick.stop="jumpToSegmentStart(seg)"
-              >
-                <!-- Left edge handle. Stops click-propagation so the
-                     rail's onRailClick (which seeks the demo) doesn't
-                     fire when the user starts a resize. -->
-                <span
-                  class="w-1.5 cursor-ew-resize bg-[hsl(var(--tac-amber)/0.55)] hover:bg-[hsl(var(--tac-amber))] rounded-l"
-                  @pointerdown="(e) => startDrag(seg, 'left', e)"
-                  @click.stop
-                />
-                <span
-                  class="flex-1 cursor-grab active:cursor-grabbing"
-                  @pointerdown="(e) => startDrag(seg, 'body', e)"
-                  @click.stop="selectSegment(seg.id)"
-                />
-                <span
-                  class="w-1.5 cursor-ew-resize bg-[hsl(var(--tac-amber)/0.55)] hover:bg-[hsl(var(--tac-amber))] rounded-r"
-                  @pointerdown="(e) => startDrag(seg, 'right', e)"
-                  @click.stop
-                />
-              </div>
-
-              <!-- Live playhead. Pointer-events-none so it doesn't
-                   eat seek-clicks on the rail. Tracks the demo's
-                   currentTick which animates ~20Hz. -->
-              <div
-                :style="{ left: playheadPct }"
-                class="absolute top-0 bottom-0 w-0.5 bg-foreground/80 pointer-events-none shadow-[0_0_4px_rgba(255,255,255,0.5)]"
-              />
-            </div>
-
-            <div class="flex flex-wrap items-center gap-1.5 mt-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                class="h-7 text-xs"
-                @click="addSegmentAtPlayhead"
-              >
-                <Plus class="h-3.5 w-3.5 mr-1" />
-                Add at playhead
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                class="h-7 text-xs"
-                :disabled="!selectedId"
-                @click="splitSelectedAtPlayhead"
-              >
-                <Scissors class="h-3.5 w-3.5 mr-1" />
-                Split
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                class="h-7 text-xs"
-                :disabled="!selectedId"
-                @click="removeSelected"
-              >
-                <Trash2 class="h-3.5 w-3.5 mr-1" />
-                Delete
-              </Button>
-              <span class="ml-auto inline-flex items-center gap-1 text-[0.65rem] text-muted-foreground/80 font-mono uppercase tracking-wider">
-                <MapPin class="h-3 w-3" />
-                Click rail to seek · drag edges to trim
-              </span>
-            </div>
-          </div>
-
-          <!-- Per-segment list, mirrors the rail. Useful for tick-precise
-               adjustments + as the place to surface duration deltas at
-               a glance. -->
-          <div class="space-y-1.5 max-h-32 overflow-y-auto">
-            <div
-              v-for="(seg, idx) in segments"
-              :key="seg.id"
+          <Label>
+            Player
+            <span class="text-destructive">*</span>
+          </Label>
+          <Select
+            :model-value="presetTarget ?? ''"
+            @update:model-value="(v) => (presetTarget = (v as string) || null)"
+          >
+            <SelectTrigger
               :class="[
-                'flex items-center gap-2 rounded border px-2 py-1 text-xs cursor-pointer transition-colors',
-                selectedId === seg.id
-                  ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.1)]'
-                  : 'border-border/60 bg-card/40 hover:bg-muted/40',
+                !presetTarget && submitError
+                  ? 'border-destructive ring-1 ring-destructive/40'
+                  : '',
               ]"
-              @click="selectSegment(seg.id)"
-              @dblclick="jumpToSegmentStart(seg)"
             >
-              <span class="font-mono w-6 text-muted-foreground">#{{ idx + 1 }}</span>
-              <span class="font-mono tabular-nums">
-                {{ formatSeconds(ticksToSeconds(seg.start_tick)) }} →
-                {{ formatSeconds(ticksToSeconds(seg.end_tick)) }}
+              <SelectValue placeholder="Pick a player to highlight" />
+            </SelectTrigger>
+            <SelectContent>
+              <div
+                v-if="presetPlayers.length === 0"
+                class="px-2 py-3 text-xs text-muted-foreground"
+              >
+                No players found yet — wait for the demo to start
+                playing, then try again.
+              </div>
+              <SelectGroup v-if="ctPresetPlayers.length">
+                <SelectLabel
+                  class="text-[0.65rem] uppercase tracking-wider text-blue-300"
+                >
+                  {{ ctTeamLabel }} (CT)
+                </SelectLabel>
+                <SelectItem
+                  v-for="p in ctPresetPlayers"
+                  :key="p.steam_id"
+                  :value="p.steam_id"
+                >
+                  {{ p.name }}
+                </SelectItem>
+              </SelectGroup>
+              <SelectGroup v-if="tPresetPlayers.length">
+                <SelectLabel
+                  class="text-[0.65rem] uppercase tracking-wider text-amber-300"
+                >
+                  {{ tTeamLabel }} (T)
+                </SelectLabel>
+                <SelectItem
+                  v-for="p in tPresetPlayers"
+                  :key="p.steam_id"
+                  :value="p.steam_id"
+                >
+                  {{ p.name }}
+                </SelectItem>
+              </SelectGroup>
+              <SelectGroup v-if="otherPresetPlayers.length">
+                <SelectLabel
+                  class="text-[0.65rem] uppercase tracking-wider text-muted-foreground"
+                >
+                  Other
+                </SelectLabel>
+                <SelectItem
+                  v-for="p in otherPresetPlayers"
+                  :key="p.steam_id"
+                  :value="p.steam_id"
+                >
+                  {{ p.name }}
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div class="space-y-2">
+          <Label>Preset</Label>
+          <div class="grid grid-cols-2 gap-2">
+            <button
+              v-for="p in PRESETS"
+              :key="p.value"
+              type="button"
+              :class="[
+                'flex items-start gap-2 rounded-md border p-3 text-left transition-all duration-150',
+                presetChoice === p.value
+                  ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.1)]'
+                  : 'border-border/60 bg-card/40 hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-muted/40',
+              ]"
+              @click="presetChoice = p.value"
+            >
+              <component :is="p.icon" class="h-4 w-4 mt-0.5 shrink-0" />
+              <span class="flex flex-col gap-0.5 min-w-0">
+                <span class="text-sm font-medium">{{ p.label }}</span>
+                <span class="text-[0.7rem] text-muted-foreground leading-snug">
+                  {{ p.hint }}
+                </span>
               </span>
-              <span class="ml-auto font-mono tabular-nums text-muted-foreground">
-                {{ formatSeconds(ticksToSeconds(seg.end_tick - seg.start_tick)) }}
-              </span>
-            </div>
+            </button>
           </div>
         </div>
-          </TabsContent>
-
-          <TabsContent value="auto" class="space-y-4 mt-4">
-            <!-- Player picker. Sourced from the parsed demo's kill
-                 events + GSI — NOT the api lineup, which can be wrong
-                 for cross-loaded demos. Required: submit is gated on
-                 a selection (canSubmit). -->
-            <div class="space-y-2">
-              <Label>
-                Player
-                <span class="text-destructive">*</span>
-              </Label>
-              <Select
-                :model-value="presetTarget ?? ''"
-                @update:model-value="(v) => (presetTarget = (v as string) || null)"
-              >
-                <SelectTrigger
-                  :class="[
-                    !presetTarget && submitError
-                      ? 'border-destructive ring-1 ring-destructive/40'
-                      : '',
-                  ]"
-                >
-                  <SelectValue placeholder="Pick a player to highlight" />
-                </SelectTrigger>
-                <SelectContent>
-                  <div
-                    v-if="presetPlayers.length === 0"
-                    class="px-2 py-3 text-xs text-muted-foreground"
-                  >
-                    No players found yet — wait for the demo to start
-                    playing, then try again.
-                  </div>
-                  <SelectGroup v-if="ctPresetPlayers.length">
-                    <SelectLabel
-                      class="text-[0.65rem] uppercase tracking-wider text-blue-300"
-                    >
-                      {{ ctTeamLabel }} (CT)
-                    </SelectLabel>
-                    <SelectItem
-                      v-for="p in ctPresetPlayers"
-                      :key="p.steam_id"
-                      :value="p.steam_id"
-                    >
-                      {{ p.name }}
-                    </SelectItem>
-                  </SelectGroup>
-                  <SelectGroup v-if="tPresetPlayers.length">
-                    <SelectLabel
-                      class="text-[0.65rem] uppercase tracking-wider text-amber-300"
-                    >
-                      {{ tTeamLabel }} (T)
-                    </SelectLabel>
-                    <SelectItem
-                      v-for="p in tPresetPlayers"
-                      :key="p.steam_id"
-                      :value="p.steam_id"
-                    >
-                      {{ p.name }}
-                    </SelectItem>
-                  </SelectGroup>
-                  <SelectGroup v-if="otherPresetPlayers.length">
-                    <SelectLabel
-                      class="text-[0.65rem] uppercase tracking-wider text-muted-foreground"
-                    >
-                      Other
-                    </SelectLabel>
-                    <SelectItem
-                      v-for="p in otherPresetPlayers"
-                      :key="p.steam_id"
-                      :value="p.steam_id"
-                    >
-                      {{ p.name }}
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div class="space-y-2">
-              <Label>Preset</Label>
-              <div class="grid grid-cols-2 gap-2">
-                <button
-                  v-for="p in PRESETS"
-                  :key="p.value"
-                  type="button"
-                  :class="[
-                    'flex items-start gap-2 rounded-md border p-3 text-left transition-all duration-150',
-                    presetChoice === p.value
-                      ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.1)]'
-                      : 'border-border/60 bg-card/40 hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-muted/40',
-                  ]"
-                  @click="presetChoice = p.value"
-                >
-                  <component :is="p.icon" class="h-4 w-4 mt-0.5 shrink-0" />
-                  <span class="flex flex-col gap-0.5 min-w-0">
-                    <span class="text-sm font-medium">{{ p.label }}</span>
-                    <span class="text-[0.7rem] text-muted-foreground leading-snug">
-                      {{ p.hint }}
-                    </span>
-                  </span>
-                </button>
-              </div>
-            </div>
-
-            <p class="text-[0.7rem] text-muted-foreground/80 leading-relaxed">
-              The server scans this match's parsed kills, builds the segment
-              list automatically, and submits to the same render pipeline
-              as a manual trim. Falls back to the player's best single kill
-              if the chosen preset finds nothing.
-            </p>
-          </TabsContent>
-        </Tabs>
 
         <div class="space-y-2">
           <Label for="clip-title">Title</Label>
           <Input
             id="clip-title"
             v-model="title"
-            :placeholder="
-              mode === 'auto'
-                ? 'Defaults to preset name'
-                : 'Untitled clip'
-            "
+            placeholder="Defaults to preset name"
             maxlength="80"
           />
         </div>
 
-        <div class="grid grid-cols-2 gap-4">
-          <div class="space-y-2">
-            <Label>Resolution</Label>
-            <Select v-model="resolution">
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="720p">720p</SelectItem>
-                <SelectItem value="1080p">1080p</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <div class="space-y-2">
-            <Label>Destination</Label>
-            <Select v-model="destination">
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="library">Save to my library</SelectItem>
-                <SelectItem value="download">Download only</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div class="space-y-2">
+          <Label>Resolution</Label>
+          <Select v-model="resolution">
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="720p">720p</SelectItem>
+              <SelectItem value="1080p">1080p</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
         <p v-if="submitError" class="text-xs text-destructive">
@@ -815,10 +379,8 @@ function close(v: boolean) {
           </Button>
           <Button type="submit" :disabled="!canSubmit || submitting">
             <Loader2 v-if="submitting" class="h-4 w-4 mr-2 animate-spin" />
-            <span v-if="mode === 'auto'">Generate highlights</span>
-            <span v-else>
-              Render {{ segments.length > 1 ? `${segments.length} segments` : "" }}
-            </span>
+            <Film v-else class="h-4 w-4 mr-2" />
+            Generate highlights
           </Button>
         </DialogFooter>
       </form>

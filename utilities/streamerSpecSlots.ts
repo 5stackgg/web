@@ -13,7 +13,13 @@ export type SpecSlot = {
   key: string;
 };
 
-const KEY_FOR_SLOT = (slot: number) => (slot === 10 ? "0" : String(slot));
+// Slot 10 binds to keyboard "0" so the digit row covers all slots.
+// Exposed so UI badges (player switcher buttons) can display the
+// keypress instead of the raw slot number — operators expect to see
+// the key they actually press.
+export const keyForSlot = (slot: number): string =>
+  slot === 10 ? "0" : String(slot);
+const KEY_FOR_SLOT = keyForSlot;
 
 function buildSlots(perTeam: number): SpecSlot[] {
   const out: SpecSlot[] = [];

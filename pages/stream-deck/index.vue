@@ -226,17 +226,16 @@ const STATUS_LABELS: Record<string, string> = {
   live: "Live",
 };
 
-// Stage list mirrors the values run-live.sh + setup-steam.sh actually
-// emit via report_status, in order. Stages that don't fire on a given
-// boot (e.g. downloading_cs2 only on a fresh pod) stay "pending".
+// Stage list mirrors run-live.sh + setup-steam.sh report_status emits.
+// `meta` controls non-emission rendering (see StreamSessionProgress).
 const LIVE_STAGES = [
-  { key: "booting", label: "Allocating GPU" },
-  { key: "downloading_cs2", label: "Downloading CS2" },
-  { key: "launching_steam", label: "Launching Steam" },
-  { key: "logging_in", label: "Logging in" },
-  { key: "launching_cs2", label: "Launching CS2" },
-  { key: "connecting_to_game", label: "Connecting to game server" },
-  { key: "live", label: "Streaming live" },
+  { key: "booting", label: "Allocating GPU", meta: "required" as const },
+  { key: "downloading_cs2", label: "Downloading CS2", meta: "conditional" as const },
+  { key: "launching_steam", label: "Launching Steam", meta: "required" as const },
+  { key: "logging_in", label: "Logging in", meta: "implicit" as const },
+  { key: "launching_cs2", label: "Launching CS2", meta: "required" as const },
+  { key: "connecting_to_game", label: "Connecting to game server", meta: "required" as const },
+  { key: "live", label: "Streaming live", meta: "required" as const },
 ];
 
 function statusBadgeLabel(stream: any) {
@@ -738,14 +737,10 @@ function statusBadgeLabel(stream: any) {
                         ? 'cursor-pointer'
                         : 'opacity-40 cursor-not-allowed',
                     ]"
+                    :title="`Slot ${entry.slot} · key ${entry.key}`"
                     @click="specSlot(stream.match_id, entry.slot)"
                   >
-                    <span>{{ entry.slot }}</span>
-                    <span
-                      class="absolute bottom-0.5 right-1 font-sans text-[0.5rem] uppercase tracking-[0.1em] text-muted-foreground/60"
-                    >
-                      {{ entry.key }}
-                    </span>
+                    <span>{{ entry.key }}</span>
                   </button>
                 </div>
               </div>

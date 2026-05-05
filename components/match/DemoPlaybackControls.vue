@@ -15,6 +15,8 @@ import {
   Bone,
   PanelBottom,
   Film,
+  Sparkles,
+  Scissors,
 } from "lucide-vue-next";
 import { useAuthStore } from "~/stores/AuthStore";
 import CreateClipDialog from "~/components/clips/CreateClipDialog.vue";
@@ -37,6 +39,8 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
+import { useClipEditor } from "~/composables/useClipEditor";
+import { keyForSlot } from "~/utilities/streamerSpecSlots";
 
 // Clip rendering consumes a game-streamer pod, so the api gates this
 // at `verified_user` server-side (matches.controller#createClipRender).
@@ -46,7 +50,22 @@ import { useDemoPlayback } from "~/composables/useDemoPlayback";
 // behind a role check on the client meant role mismatches looked like
 // the feature didn't exist.
 const canCreateClip = computed(() => !!useAuthStore().me?.steam_id);
+// Two clip-creation entry points share one dialog component:
+//   • "Auto Clip" opens the dialog pre-selected on the highlights tab.
+//   • "Create Clip" toggles the inline ClipEditorBar that lives in the
+//     parent DemoPlayer; we just flip a composable flag here so the
+//     bar mounts without yanking the operator into a modal.
 const showCreateClipDialog = ref(false);
+const dialogInitialMode = ref<"manual" | "auto">("auto");
+const editor = useClipEditor();
+function openAutoClip() {
+  dialogInitialMode.value = "auto";
+  showCreateClipDialog.value = true;
+}
+function toggleClipEditor() {
+  if (editor.active.value) editor.close();
+  else editor.open();
+}
 
 const {
   store,
@@ -752,8 +771,9 @@ const killMarkers = computed<Marker[]>(() => {
             >
               <span
                 class="inline-flex h-5 w-5 items-center justify-center rounded text-[0.65rem] font-bold tabular-nums bg-foreground/10"
+                :title="`Slot ${s.slot} · key ${keyForSlot(s.slot)}`"
               >
-                {{ s.slot }}
+                {{ keyForSlot(s.slot) }}
               </span>
               <span
                 :class="[
@@ -801,8 +821,9 @@ const killMarkers = computed<Marker[]>(() => {
             >
               <span
                 class="inline-flex h-5 w-5 items-center justify-center rounded text-[0.65rem] font-bold tabular-nums bg-foreground/10"
+                :title="`Slot ${s.slot} · key ${keyForSlot(s.slot)}`"
               >
-                {{ s.slot }}
+                {{ keyForSlot(s.slot) }}
               </span>
               <span
                 :class="[
@@ -1051,6 +1072,9 @@ const killMarkers = computed<Marker[]>(() => {
 
         <!-- Right: quick actions + speed selector. -->
         <div class="flex items-center justify-end gap-2">
+          <!-- Auto Clip: server-built highlight reel from preset
+               (multi-kills / best round / knife / recap). One click,
+               server picks the segments. -->
           <Tooltip v-if="canCreateClip">
             <TooltipTrigger as-child>
               <Button
@@ -1058,13 +1082,40 @@ const killMarkers = computed<Marker[]>(() => {
                 size="icon"
                 class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 hover:border-[hsl(var(--tac-amber)/0.6)] active:scale-95"
                 :disabled="!hasMetadata"
-                title="Create clip"
-                @click="showCreateClipDialog = true"
+                title="Auto clip"
+                @click="openAutoClip"
               >
-                <Film class="h-4 w-4" />
+                <Sparkles class="h-4 w-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Create clip from this demo</TooltipContent>
+            <TooltipContent>Auto clip from preset</TooltipContent>
+          </Tooltip>
+
+          <!-- Create Clip: toggles the inline track-based editor under
+               the video. Operator builds the cut by drag-defining
+               ranges and assigning a POV per segment, with live
+               preview + render in place. -->
+          <Tooltip v-if="canCreateClip">
+            <TooltipTrigger as-child>
+              <Button
+                variant="outline"
+                size="icon"
+                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95"
+                :class="
+                  editor.active.value
+                    ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'
+                    : 'hover:border-[hsl(var(--tac-amber)/0.6)]'
+                "
+                :disabled="!hasMetadata"
+                title="Create clip"
+                @click="toggleClipEditor"
+              >
+                <Scissors class="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {{ editor.active.value ? "Hide clip editor" : "Open clip editor" }}
+            </TooltipContent>
           </Tooltip>
 
           <Tooltip>
@@ -1175,6 +1226,7 @@ const killMarkers = computed<Marker[]>(() => {
         v-if="canCreateClip && store.matchMapId"
         v-model:open="showCreateClipDialog"
         :match-map-id="store.matchMapId"
+        :initial-mode="dialogInitialMode"
       />
     </TooltipProvider>
   </div>

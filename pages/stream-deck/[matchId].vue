@@ -23,6 +23,7 @@ import { announceFocusWindow } from "~/composables/useStreamerPopout";
 import {
   specSlotsForMatchType,
   teamSizeForMatchType,
+  keyForSlot,
   type SpecSlot,
 } from "~/utilities/streamerSpecSlots";
 
@@ -141,17 +142,16 @@ const STATUS_LABELS: Record<string, string> = {
   live: "Live",
 };
 
-// Stage list mirrors the values run-live.sh + setup-steam.sh actually
-// emit via report_status. Stages that don't fire on a given boot
-// (e.g. downloading_cs2 only on a fresh pod) stay "pending".
+// Stage list mirrors run-live.sh + setup-steam.sh report_status emits.
+// `meta` controls non-emission rendering (see StreamSessionProgress).
 const LIVE_STAGES = [
-  { key: "booting", label: "Allocating GPU" },
-  { key: "downloading_cs2", label: "Downloading CS2" },
-  { key: "launching_steam", label: "Launching Steam" },
-  { key: "logging_in", label: "Logging in" },
-  { key: "launching_cs2", label: "Launching CS2" },
-  { key: "connecting_to_game", label: "Connecting to game server" },
-  { key: "live", label: "Streaming live" },
+  { key: "booting", label: "Allocating GPU", meta: "required" as const },
+  { key: "downloading_cs2", label: "Downloading CS2", meta: "conditional" as const },
+  { key: "launching_steam", label: "Launching Steam", meta: "required" as const },
+  { key: "logging_in", label: "Logging in", meta: "implicit" as const },
+  { key: "launching_cs2", label: "Launching CS2", meta: "required" as const },
+  { key: "connecting_to_game", label: "Connecting to game server", meta: "required" as const },
+  { key: "live", label: "Streaming live", meta: "required" as const },
 ];
 function statusBadgeLabel(s: any) {
   if (!s) return "—";
@@ -676,7 +676,7 @@ function tTeamName(): string {
                   :title="s.name ?? `Slot ${s.slot}`"
                   @click="pressSlot(s.slot, String(s.slot))"
                 >
-                  <span class="text-2xl font-bold">{{ s.slot }}</span>
+                  <span class="text-2xl font-bold">{{ keyForSlot(s.slot) }}</span>
                   <span
                     :class="[
                       'text-[0.65rem] truncate w-full text-center font-medium',
@@ -720,7 +720,7 @@ function tTeamName(): string {
                   :title="s.name ?? `Slot ${s.slot}`"
                   @click="pressSlot(s.slot, String(s.slot))"
                 >
-                  <span class="text-2xl font-bold">{{ s.slot }}</span>
+                  <span class="text-2xl font-bold">{{ keyForSlot(s.slot) }}</span>
                   <span
                     :class="[
                       'text-[0.65rem] truncate w-full text-center font-medium',

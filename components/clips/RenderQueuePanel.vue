@@ -66,16 +66,29 @@ const nuxtApp = useNuxtApp();
 const jobs = ref<Job[]>([]);
 const loading = ref(true);
 const cancellingBatch = ref<Record<string, boolean>>({});
+const finishedExpanded = ref<Record<string, boolean>>({});
+
+function toggleFinishedExpanded(matchMapId: string) {
+  finishedExpanded.value = {
+    ...finishedExpanded.value,
+    [matchMapId]: !finishedExpanded.value[matchMapId],
+  };
+}
 
 let activeSub: { unsubscribe: () => void } | null = null;
 function subscribe() {
   activeSub?.unsubscribe();
+  // Limit covers active batches + the last ~12 finished BATCHES we
+  // show in "Recently Finished". 200 is roughly 20 × 10-clip batches —
+  // plenty of headroom even when several large recap runs land back-
+  // to-back. The grouping logic still slices the finished list to 12,
+  // so this just bounds the worst-case payload.
   const obs = getGraphqlClient().subscribe({
     query: generateSubscription({
       clip_render_jobs: [
         {
           order_by: [{ created_at: "desc" }],
-          limit: 50,
+          limit: 200,
         } as any,
         clipRenderJobFields,
       ],
@@ -96,47 +109,131 @@ subscribe();
 onBeforeUnmount(() => activeSub?.unsubscribe());
 
 const TERMINAL = new Set(["done", "error", "cancelled"]);
-const inFlight = computed(() =>
-  jobs.value.filter((j) => !TERMINAL.has(j.status)),
-);
-const recentlyDone = computed(() =>
-  jobs.value.filter((j) => TERMINAL.has(j.status)).slice(0, 12),
-);
 
+// Ordering inside a batch: active phases first, then queued, then any
+// already-terminal jobs at the bottom. Within a phase the rows still
+// follow created_at so the operator's mental model ("clip 3 of 10") is
+// preserved when statuses cycle through quickly.
 const STATUS_ORDER: Record<string, number> = {
   rendering: 0,
   uploading: 1,
   queued: 2,
+  done: 3,
+  error: 3,
+  cancelled: 3,
 };
-const groups = computed(() => {
+
+// Group EVERY visible job by match_map_id, then bucket batches into
+// "active" (at least one in-flight job) and "recently finished" (every
+// job is terminal). Active batches keep their already-completed jobs
+// inline so the operator sees the whole 10-of-10 ladder advance, not
+// just the queued tail. The previous version moved finished jobs to a
+// flat "Recently Finished" list as soon as they hit done/error, which
+// made it look like they were no longer part of the batch.
+type BatchGroup = {
+  matchMapId: string;
+  jobs: Job[];
+  activeJob: Job | undefined;
+  sample: Job;
+  startedAt: string;
+  totalCount: number;
+  doneCount: number;
+  errorCount: number;
+  cancelledCount: number;
+  terminalCount: number;
+  inFlightCount: number;
+  // 0..1 across the batch: per-job render fraction summed and divided
+  // by total. Lets the header bar show 23% even when only 1 of 10
+  // jobs is mid-render.
+  overallProgress: number;
+  // True when every job has reached a terminal state.
+  isFinished: boolean;
+};
+
+function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
+  const sorted = [...list].sort((a, b) => {
+    const ord =
+      (STATUS_ORDER[a.status] ?? 99) - (STATUS_ORDER[b.status] ?? 99);
+    if (ord !== 0) return ord;
+    return a.created_at < b.created_at ? -1 : a.created_at > b.created_at ? 1 : 0;
+  });
+  const activeJob = sorted.find(
+    (j) => j.status === "rendering" || j.status === "uploading",
+  );
+  const oldest = sorted.reduce<string>(
+    (acc, j) => (j.created_at < acc ? j.created_at : acc),
+    sorted[0].created_at,
+  );
+  let doneCount = 0;
+  let errorCount = 0;
+  let cancelledCount = 0;
+  let progressSum = 0;
+  for (const j of sorted) {
+    if (j.status === "done") {
+      doneCount++;
+      progressSum += 1;
+    } else if (j.status === "error") {
+      errorCount++;
+    } else if (j.status === "cancelled") {
+      cancelledCount++;
+    } else if (j.status === "rendering") {
+      const n =
+        typeof j.progress === "number" ? j.progress : Number(j.progress);
+      progressSum += Number.isFinite(n) ? Math.max(0, Math.min(1, n)) : 0;
+    } else if (j.status === "uploading") {
+      // Upload phase has no real % signal, but the render did finish —
+      // count it as effectively done for batch progress.
+      progressSum += 1;
+    }
+  }
+  const terminalCount = doneCount + errorCount + cancelledCount;
+  const inFlightCount = sorted.length - terminalCount;
+  const overallProgress = sorted.length === 0 ? 0 : progressSum / sorted.length;
+  return {
+    matchMapId,
+    jobs: sorted,
+    activeJob,
+    sample: sorted[0],
+    startedAt: oldest,
+    totalCount: sorted.length,
+    doneCount,
+    errorCount,
+    cancelledCount,
+    terminalCount,
+    inFlightCount,
+    overallProgress,
+    isFinished: inFlightCount === 0,
+  };
+}
+
+const allGroups = computed<BatchGroup[]>(() => {
   const map = new Map<string, Job[]>();
-  for (const j of inFlight.value) {
+  for (const j of jobs.value) {
     const list = map.get(j.match_map_id) ?? [];
     list.push(j);
     map.set(j.match_map_id, list);
   }
-  return Array.from(map.entries()).map(([matchMapId, list]) => {
-    const sorted = list.sort(
-      (a, b) =>
-        (STATUS_ORDER[a.status] ?? 99) - (STATUS_ORDER[b.status] ?? 99),
-    );
-    const activeJob = sorted.find(
-      (j) => j.status === "rendering" || j.status === "uploading",
-    );
-    const sample = sorted[0];
-    const oldest = sorted.reduce<string>(
-      (acc, j) => (j.created_at < acc ? j.created_at : acc),
-      sorted[0].created_at,
-    );
-    return {
-      matchMapId,
-      jobs: sorted,
-      activeJob,
-      sample,
-      startedAt: oldest,
-    };
-  });
+  return Array.from(map.entries()).map(([matchMapId, list]) =>
+    buildBatchGroup(matchMapId, list),
+  );
 });
+
+const groups = computed(() =>
+  allGroups.value
+    .filter((g) => !g.isFinished)
+    .sort((a, b) => (a.startedAt < b.startedAt ? 1 : -1)),
+);
+
+const recentlyDoneGroups = computed(() =>
+  allGroups.value
+    .filter((g) => g.isFinished)
+    .sort((a, b) => (a.startedAt < b.startedAt ? 1 : -1))
+    .slice(0, 12),
+);
+
+const inFlight = computed(() =>
+  jobs.value.filter((j) => !TERMINAL.has(j.status)),
+);
 
 function progressPct(j: Job): number {
   const n = typeof j.progress === "number" ? j.progress : Number(j.progress);
@@ -272,7 +369,7 @@ const totalQueued = computed(
 
 <template>
   <div
-    v-if="!loading && (groups.length > 0 || (!compact && recentlyDone.length > 0))"
+    v-if="!loading && (groups.length > 0 || (!compact && recentlyDoneGroups.length > 0))"
     class="space-y-5"
   >
     <!-- Top-line summary: in-flight count + breakdown. Anchors the panel
@@ -354,12 +451,32 @@ const totalQueued = computed(
                   {{ g.sample.match_map.map.label ?? g.sample.match_map.map.name }}
                 </span>
                 <span v-if="g.sample.match_map?.map" class="text-border">·</span>
-                <span>{{ g.jobs.length }} job{{ g.jobs.length === 1 ? "" : "s" }}</span>
+                <span class="tabular-nums">
+                  {{ g.terminalCount }}/{{ g.totalCount }} done
+                </span>
+                <span v-if="g.errorCount > 0" class="text-destructive/80">
+                  · {{ g.errorCount }} err
+                </span>
                 <span class="text-border">·</span>
                 <span class="inline-flex items-center gap-1">
                   <Clock class="h-3 w-3" />
                   {{ formatTimeAgo(g.startedAt) }}
                 </span>
+              </div>
+              <!-- Batch-level progress: aggregates per-job render % so a
+                   long batch shows steady forward motion at the top
+                   instead of "23% / 0% / 0% / …" per row only. -->
+              <div class="mt-2 space-y-1">
+                <div class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground">
+                  <span>Batch progress</span>
+                  <span class="tabular-nums">{{ Math.round(g.overallProgress * 100) }}%</span>
+                </div>
+                <div class="relative h-1.5 overflow-hidden rounded-full bg-muted/40">
+                  <div
+                    class="h-full rounded-full bg-[hsl(var(--tac-amber))] transition-[width] duration-300"
+                    :style="{ width: Math.round(g.overallProgress * 100) + '%' }"
+                  ></div>
+                </div>
               </div>
             </div>
             <Button
@@ -482,7 +599,19 @@ const totalQueued = computed(
             :class="{ 'bg-[hsl(var(--tac-amber)/0.04)]': j === g.activeJob }"
           >
             <component
-              :is="j.status === 'rendering' || j.status === 'uploading' ? Loader2 : j.status === 'queued' ? Clock : CircleDot"
+              :is="
+                j.status === 'rendering' || j.status === 'uploading'
+                  ? Loader2
+                  : j.status === 'queued'
+                    ? Clock
+                    : j.status === 'done'
+                      ? CheckCircle2
+                      : j.status === 'cancelled'
+                        ? CircleSlash
+                        : j.status === 'error'
+                          ? AlertCircle
+                          : CircleDot
+              "
               class="h-3.5 w-3.5 shrink-0"
               :class="[
                 STATUS_TONE[j.status]?.iconColor,
@@ -521,6 +650,13 @@ const totalQueued = computed(
                 {{ statusLabel(j.status) }}
               </template>
             </span>
+            <NuxtLink
+              v-if="j.status === 'done' && j.clip_id"
+              :to="`/clips/${j.clip_id}`"
+              class="shrink-0 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Open →
+            </NuxtLink>
           </div>
         </div>
 
@@ -540,10 +676,11 @@ const totalQueued = computed(
       </Card>
     </div>
 
-    <!-- Recently terminal — full surface only. Match-aware so an
-         operator scanning sees what was just rendered without bouncing
-         to /clips/<id>. -->
-    <div v-if="!compact && recentlyDone.length" class="space-y-2">
+    <!-- Recently finished — one line per BATCH (not per clip), so a
+         10-job recap renders as a single row showing 10 outcomes
+         instead of flooding the panel with 10 individual entries.
+         Click expand to see the per-job ladder for that batch. -->
+    <div v-if="!compact && recentlyDoneGroups.length" class="space-y-2">
       <div class="flex items-center gap-2">
         <span
           class="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground/80"
@@ -552,54 +689,107 @@ const totalQueued = computed(
         </span>
         <span class="text-border">·</span>
         <span class="font-mono text-[0.6rem] tabular-nums text-muted-foreground/70">
-          {{ recentlyDone.length }}
+          {{ recentlyDoneGroups.length }}
         </span>
       </div>
       <div class="space-y-1">
         <div
-          v-for="j in recentlyDone"
-          :key="j.id"
-          class="flex items-center gap-2.5 rounded-md border border-border/40 bg-card/30 px-2.5 py-1.5 text-xs [backdrop-filter:blur(6px)]"
+          v-for="g in recentlyDoneGroups"
+          :key="g.matchMapId"
+          class="rounded-md border border-border/40 bg-card/30 [backdrop-filter:blur(6px)]"
         >
-          <CheckCircle2
-            v-if="j.status === 'done'"
-            class="h-3.5 w-3.5 shrink-0 text-emerald-400"
-          />
-          <CircleSlash
-            v-else-if="j.status === 'cancelled'"
-            class="h-3.5 w-3.5 shrink-0 text-muted-foreground"
-          />
-          <AlertCircle
-            v-else
-            class="h-3.5 w-3.5 shrink-0 text-destructive"
-          />
-          <div class="min-w-0 flex-1">
-            <div class="truncate" :title="j.error_message ?? clipTitle(j)">
-              {{ clipTitle(j) }}
+          <button
+            type="button"
+            class="flex w-full items-center gap-2.5 px-2.5 py-1.5 text-left text-xs"
+            @click="toggleFinishedExpanded(g.matchMapId)"
+          >
+            <CheckCircle2
+              v-if="g.errorCount === 0 && g.cancelledCount === 0"
+              class="h-3.5 w-3.5 shrink-0 text-emerald-400"
+            />
+            <AlertCircle
+              v-else-if="g.errorCount > 0"
+              class="h-3.5 w-3.5 shrink-0 text-destructive"
+            />
+            <CircleSlash
+              v-else
+              class="h-3.5 w-3.5 shrink-0 text-muted-foreground"
+            />
+            <div class="min-w-0 flex-1">
+              <div class="truncate">
+                <span v-if="matchupLabel(g.sample)">
+                  {{ matchupLabel(g.sample) }}
+                </span>
+                <span v-else>
+                  {{ g.sample.match_map?.map?.label ?? g.sample.match_map?.map?.name ?? "Unknown match" }}
+                </span>
+              </div>
+              <div
+                class="truncate font-mono text-[0.58rem] uppercase tracking-[0.12em] text-muted-foreground/70"
+              >
+                <span v-if="g.sample.match_map?.map?.label || g.sample.match_map?.map?.name">
+                  {{ g.sample.match_map.map.label ?? g.sample.match_map.map.name }} ·
+                </span>
+                <span class="tabular-nums">{{ g.totalCount }} clip{{ g.totalCount === 1 ? "" : "s" }}</span>
+                <span v-if="g.doneCount > 0" class="text-emerald-400/80">
+                  · {{ g.doneCount }} done
+                </span>
+                <span v-if="g.errorCount > 0" class="text-destructive/80">
+                  · {{ g.errorCount }} err
+                </span>
+                <span v-if="g.cancelledCount > 0" class="text-muted-foreground/70">
+                  · {{ g.cancelledCount }} cancelled
+                </span>
+              </div>
             </div>
+            <span class="shrink-0 font-mono text-[0.58rem] tabular-nums text-muted-foreground/70">
+              {{ formatTimeAgo(g.startedAt) }}
+            </span>
+          </button>
+          <!-- Expanded ladder: same per-job rows as active batches use,
+               minus the spinner. Operator can grab any successful clip
+               or read the error_message of any failed one without
+               scrolling somewhere else. -->
+          <div
+            v-if="finishedExpanded[g.matchMapId]"
+            class="border-t border-border/30 divide-y divide-border/30"
+          >
             <div
-              v-if="matchupLabel(j) || j.error_message"
-              class="truncate font-mono text-[0.58rem] uppercase tracking-[0.12em] text-muted-foreground/70"
+              v-for="j in g.jobs"
+              :key="j.id"
+              class="flex items-center gap-3 px-2.5 py-1.5"
             >
-              <span v-if="j.error_message" class="text-destructive/80">
-                {{ j.error_message }}
-              </span>
-              <span v-else>{{ matchupLabel(j) }}</span>
+              <component
+                :is="
+                  j.status === 'done'
+                    ? CheckCircle2
+                    : j.status === 'cancelled'
+                      ? CircleSlash
+                      : AlertCircle
+                "
+                class="h-3.5 w-3.5 shrink-0"
+                :class="STATUS_TONE[j.status]?.iconColor"
+              />
+              <div class="min-w-0 flex-1">
+                <div class="truncate text-xs" :title="j.error_message ?? clipTitle(j)">
+                  {{ clipTitle(j) }}
+                </div>
+                <div
+                  v-if="j.error_message"
+                  class="truncate font-mono text-[0.58rem] uppercase tracking-[0.12em] text-destructive/80"
+                >
+                  {{ j.error_message }}
+                </div>
+              </div>
+              <NuxtLink
+                v-if="j.status === 'done' && j.clip_id"
+                :to="`/clips/${j.clip_id}`"
+                class="shrink-0 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Open →
+              </NuxtLink>
             </div>
           </div>
-          <NuxtLink
-            v-if="j.status === 'done' && j.clip_id"
-            :to="`/clips/${j.clip_id}`"
-            class="shrink-0 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
-          >
-            Open →
-          </NuxtLink>
-          <span
-            v-else
-            class="shrink-0 font-mono text-[0.58rem] tabular-nums text-muted-foreground/70"
-          >
-            {{ formatTimeAgo(j.last_status_at ?? j.created_at) }}
-          </span>
         </div>
       </div>
     </div>

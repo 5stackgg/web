@@ -13,18 +13,28 @@ import {
 // for live, match_demo_sessions for demo); the parent subscribes and
 // feeds us the row.
 //
-// We render every stage in the predefined list, but the icons reflect
-// what actually happened — driven by the `status_history` array (each
-// status the reporter has emitted, with timestamps), NOT just the
-// latest status. With parallelization a stage like `downloading_cs2`
-// only fires on cold pods; the old "if status is past stage X, mark X
-// done" logic falsely marked X as ✓ on warm boots. Now: a stage shows
-// ✓ only if its key appears in status_history; stages we skipped past
-// without seeing render with a Minus (skipped) icon.
+// Stage emission isn't strictly serial — some run in parallel and some
+// internal sub-steps (e.g. logging in with cached creds) don't always
+// emit. To avoid showing misleading "skipped" labels on those, each
+// stage is tagged with `meta`:
 //
-// On a fresh refresh the parent re-fetches the row → status_history
-// arrives populated → the stepper shows the correct cumulative state
-// instantly without replay.
+//   • required    → if we're past it without seeing it fire, the
+//                    pipeline must have done it anyway (parallelized
+//                    with another stage, or status push dropped). Mark
+//                    ✓ silently — operators care about session health,
+//                    not whether each event was literally emitted.
+//   • conditional → meaningful skip; the pod genuinely didn't run this
+//                    on this boot (warm pod skips downloading_cs2,
+//                    stock map skips downloading_workshop_map). Render
+//                    with a "skipped" label so the operator sees what
+//                    was avoided.
+//   • implicit    → internal sub-step. Hide entirely when not fired —
+//                    surfacing "logging in: skipped" reads as an
+//                    error to operators when in reality the step ran
+//                    inside another stage.
+
+type StageMeta = "required" | "conditional" | "implicit";
+type Stage = { key: string; label: string; meta?: StageMeta };
 
 const props = withDefaults(
   defineProps<{
@@ -34,7 +44,7 @@ const props = withDefaults(
     // render a "12s" ticker on the current stage; helps the operator
     // decide whether a stage has stalled or is just slow.
     lastStatusAt?: string | null;
-    stages: { key: string; label: string }[];
+    stages: Stage[];
     headerLabel?: string;
     // Each entry the streamer pod reported in chronological order.
     // The row default is `[]` so this is always present after the
@@ -86,16 +96,34 @@ function stateOf(index: number): StageState {
   const stage = props.stages[index];
   if (!stage) return "pending";
   if (index === currentIndex.value) return "current";
-  // A stage is "done" only if its key appears in the history. A
-  // stage that we're past but never saw fired = "skipped" (the
-  // pipeline went a different route — e.g. cs2 already installed).
   if (firedStatuses.value.has(stage.key)) return "done";
-  // Past the current index without firing → skipped. Future →
-  // pending. (`current` on errored stays current with the alert
-  // icon.)
   if (currentIndex.value < 0) return "pending";
-  return index < currentIndex.value ? "skipped" : "pending";
+  if (index < currentIndex.value) {
+    // We're past this stage without seeing it fire. How we render
+    // depends on the stage's meta tag — see top-of-file rationale.
+    const meta = stage.meta ?? "required";
+    if (meta === "conditional") return "skipped";
+    // required + implicit both default to "done" here; implicit gets
+    // filtered out of the visible list so this state never renders
+    // for it.
+    return "done";
+  }
+  return "pending";
 }
+
+// Filtered view for the template: implicit stages are dropped from
+// the rendered list when they didn't fire and aren't current. Other
+// stages always render. We pair each visible stage with its original
+// index so stateOf() / durationFor() keep working off the source list.
+const visibleStages = computed(() =>
+  props.stages
+    .map((stage, index) => ({ stage, index }))
+    .filter(({ stage, index }) => {
+      if ((stage.meta ?? "required") !== "implicit") return true;
+      // Implicit: only render when it actually fired or is current.
+      return firedStatuses.value.has(stage.key) || index === currentIndex.value;
+    }),
+);
 
 function fmt(ms: number): string {
   if (!Number.isFinite(ms) || ms < 0) return "";
@@ -136,7 +164,7 @@ function durationFor(stageKey: string): string {
     </p>
     <ul class="flex flex-col gap-1.5">
       <li
-        v-for="(stage, index) in stages"
+        v-for="{ stage, index } in visibleStages"
         :key="stage.key"
         class="flex items-center gap-2.5 text-xs transition-colors"
         :class="{

@@ -3226,13 +3226,16 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"match_clips_bool_exp",
 		_or:"match_clips_bool_exp",
 		created_at:"timestamptz_comparison_exp",
+		download_url:"String_comparison_exp",
 		duration_ms:"Int_comparison_exp",
+		file:"String_comparison_exp",
 		id:"uuid_comparison_exp",
 		match_map:"match_maps_bool_exp",
 		match_map_id:"uuid_comparison_exp",
 		render_jobs:"clip_render_jobs_bool_exp",
 		render_jobs_aggregate:"clip_render_jobs_aggregate_bool_exp",
-		s3_url:"String_comparison_exp",
+		target:"players_bool_exp",
+		target_steam_id:"bigint_comparison_exp",
 		thumbnail_url:"String_comparison_exp",
 		title:"String_comparison_exp",
 		user:"players_bool_exp",
@@ -3241,6 +3244,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_clips_constraint: "enum" as const,
 	match_clips_inc_input:{
+		target_steam_id:"bigint",
 		user_steam_id:"bigint"
 	},
 	match_clips_insert_input:{
@@ -3249,6 +3253,8 @@ export const AllTypesProps: Record<string,any> = {
 		match_map:"match_maps_obj_rel_insert_input",
 		match_map_id:"uuid",
 		render_jobs:"clip_render_jobs_arr_rel_insert_input",
+		target:"players_obj_rel_insert_input",
+		target_steam_id:"bigint",
 		user:"players_obj_rel_insert_input",
 		user_steam_id:"bigint"
 	},
@@ -3263,12 +3269,15 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_clips_order_by:{
 		created_at:"order_by",
+		download_url:"order_by",
 		duration_ms:"order_by",
+		file:"order_by",
 		id:"order_by",
 		match_map:"match_maps_order_by",
 		match_map_id:"order_by",
 		render_jobs_aggregate:"clip_render_jobs_aggregate_order_by",
-		s3_url:"order_by",
+		target:"players_order_by",
+		target_steam_id:"order_by",
 		thumbnail_url:"order_by",
 		title:"order_by",
 		user:"players_order_by",
@@ -3283,6 +3292,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		id:"uuid",
 		match_map_id:"uuid",
+		target_steam_id:"bigint",
 		user_steam_id:"bigint"
 	},
 	match_clips_stream_cursor_input:{
@@ -3293,6 +3303,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		id:"uuid",
 		match_map_id:"uuid",
+		target_steam_id:"bigint",
 		user_steam_id:"bigint"
 	},
 	match_clips_update_column: "enum" as const,
@@ -3908,6 +3919,9 @@ export const AllTypesProps: Record<string,any> = {
 		kills:{
 
 		},
+		players:{
+
+		},
 		round_ticks:{
 
 		}
@@ -3941,6 +3955,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_map_demos_append_input:{
 		bombs:"jsonb",
 		kills:"jsonb",
+		players:"jsonb",
 		round_ticks:"jsonb"
 	},
 	match_map_demos_arr_rel_insert_input:{
@@ -3970,6 +3985,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map:"match_maps_bool_exp",
 		match_map_id:"uuid_comparison_exp",
 		metadata_parsed_at:"timestamptz_comparison_exp",
+		players:"jsonb_comparison_exp",
 		round_ticks:"jsonb_comparison_exp",
 		size:"Int_comparison_exp",
 		tick_rate:"Float_comparison_exp",
@@ -3998,6 +4014,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map:"match_maps_obj_rel_insert_input",
 		match_map_id:"uuid",
 		metadata_parsed_at:"timestamptz",
+		players:"jsonb",
 		round_ticks:"jsonb"
 	},
 	match_map_demos_max_order_by:{
@@ -4047,6 +4064,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map:"match_maps_order_by",
 		match_map_id:"order_by",
 		metadata_parsed_at:"order_by",
+		players:"order_by",
 		round_ticks:"order_by",
 		size:"order_by",
 		tick_rate:"order_by",
@@ -4059,6 +4077,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_map_demos_prepend_input:{
 		bombs:"jsonb",
 		kills:"jsonb",
+		players:"jsonb",
 		round_ticks:"jsonb"
 	},
 	match_map_demos_select_column: "enum" as const,
@@ -4069,6 +4088,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"uuid",
 		match_map_id:"uuid",
 		metadata_parsed_at:"timestamptz",
+		players:"jsonb",
 		round_ticks:"jsonb"
 	},
 	match_map_demos_stddev_order_by:{
@@ -4100,6 +4120,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"uuid",
 		match_map_id:"uuid",
 		metadata_parsed_at:"timestamptz",
+		players:"jsonb",
 		round_ticks:"jsonb"
 	},
 	match_map_demos_sum_order_by:{
@@ -5907,6 +5928,9 @@ export const AllTypesProps: Record<string,any> = {
 		cancelClipRender:{
 			job_id:"uuid"
 		},
+		cancelClipRenderBatch:{
+			match_map_id:"uuid"
+		},
 		cancelMatch:{
 			match_id:"uuid"
 		},
@@ -5915,6 +5939,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		createApiKey:{
 
+		},
+		createClipFromPreset:{
+			match_map_id:"uuid"
 		},
 		createClipRender:{
 			spec:"ClipSpecInput"
@@ -6472,6 +6499,9 @@ export const AllTypesProps: Record<string,any> = {
 		forfeitMatch:{
 			match_id:"uuid",
 			winning_lineup_id:"uuid"
+		},
+		getLiveStreamSpecState:{
+			match_id:"uuid"
 		},
 		insert__map_pool:{
 			objects:"_map_pool_insert_input",
@@ -7233,6 +7263,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		switchLineup:{
 
+		},
+		updateClip:{
+			clip_id:"uuid"
 		},
 		updateCs:{
 			game_server_node_id:"uuid"
@@ -18766,6 +18799,29 @@ export const ReturnTypes: Record<string,any> = {
 		table_size:"Int",
 		tablename:"String"
 	},
+	LiveSpecGsi:{
+		map_name:"String",
+		map_phase:"String",
+		round_number:"Int",
+		round_phase:"String",
+		spec_slots:"LiveSpecSlot",
+		spectated_steam_id:"String",
+		team_ct_name:"String",
+		team_ct_score:"Int",
+		team_t_name:"String",
+		team_t_score:"Int"
+	},
+	LiveSpecSlot:{
+		alive:"Boolean",
+		health:"Int",
+		name:"String",
+		slot:"Int",
+		steam_id:"String",
+		team:"String"
+	},
+	LiveStreamSpecState:{
+		gsi:"LiveSpecGsi"
+	},
 	LockInfo:{
 		granted:"Boolean",
 		locktype:"String",
@@ -20555,13 +20611,16 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_clips:{
 		created_at:"timestamptz",
+		download_url:"String",
 		duration_ms:"Int",
+		file:"String",
 		id:"uuid",
 		match_map:"match_maps",
 		match_map_id:"uuid",
 		render_jobs:"clip_render_jobs",
 		render_jobs_aggregate:"clip_render_jobs_aggregate",
-		s3_url:"String",
+		target:"players",
+		target_steam_id:"bigint",
 		thumbnail_url:"String",
 		title:"String",
 		user:"players",
@@ -20587,14 +20646,17 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_clips_avg_fields:{
 		duration_ms:"Float",
+		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_clips_max_fields:{
 		created_at:"timestamptz",
+		download_url:"String",
 		duration_ms:"Int",
+		file:"String",
 		id:"uuid",
 		match_map_id:"uuid",
-		s3_url:"String",
+		target_steam_id:"bigint",
 		thumbnail_url:"String",
 		title:"String",
 		user_steam_id:"bigint",
@@ -20602,10 +20664,12 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_clips_min_fields:{
 		created_at:"timestamptz",
+		download_url:"String",
 		duration_ms:"Int",
+		file:"String",
 		id:"uuid",
 		match_map_id:"uuid",
-		s3_url:"String",
+		target_steam_id:"bigint",
 		thumbnail_url:"String",
 		title:"String",
 		user_steam_id:"bigint",
@@ -20617,30 +20681,37 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_clips_stddev_fields:{
 		duration_ms:"Float",
+		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_clips_stddev_pop_fields:{
 		duration_ms:"Float",
+		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_clips_stddev_samp_fields:{
 		duration_ms:"Float",
+		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_clips_sum_fields:{
 		duration_ms:"Int",
+		target_steam_id:"bigint",
 		user_steam_id:"bigint"
 	},
 	match_clips_var_pop_fields:{
 		duration_ms:"Float",
+		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_clips_var_samp_fields:{
 		duration_ms:"Float",
+		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_clips_variance_fields:{
 		duration_ms:"Float",
+		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_demo_sessions:{
@@ -20976,6 +21047,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_map:"match_maps",
 		match_map_id:"uuid",
 		metadata_parsed_at:"timestamptz",
+		players:"jsonb",
 		round_ticks:"jsonb",
 		size:"Int",
 		tick_rate:"Float",
@@ -21955,9 +22027,11 @@ export const ReturnTypes: Record<string,any> = {
 		approveNameChange:"SuccessOutput",
 		callForOrganizer:"SuccessOutput",
 		cancelClipRender:"SuccessOutput",
+		cancelClipRenderBatch:"SuccessOutput",
 		cancelMatch:"SuccessOutput",
 		checkIntoMatch:"SuccessOutput",
 		createApiKey:"ApiKeyResponse",
+		createClipFromPreset:"CreateClipRenderOutput",
 		createClipRender:"CreateClipRenderOutput",
 		createClips:"SuccessOutput",
 		createServerDirectory:"SuccessOutput",
@@ -22135,6 +22209,7 @@ export const ReturnTypes: Record<string,any> = {
 		delete_v_pool_maps:"v_pool_maps_mutation_response",
 		denyInvite:"SuccessOutput",
 		forfeitMatch:"SuccessOutput",
+		getLiveStreamSpecState:"LiveStreamSpecState",
 		getTestUploadLink:"GetTestUploadResponse",
 		insert__map_pool:"_map_pool_mutation_response",
 		insert__map_pool_one:"_map_pool",
@@ -22341,6 +22416,7 @@ export const ReturnTypes: Record<string,any> = {
 		syncSteamFriends:"SuccessOutput",
 		testUpload:"TestUploadResponse",
 		unlinkDiscord:"SuccessOutput",
+		updateClip:"SuccessOutput",
 		updateCs:"SuccessOutput",
 		updateServices:"SuccessOutput",
 		update__map_pool:"_map_pool_mutation_response",

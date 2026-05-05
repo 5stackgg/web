@@ -6,13 +6,13 @@ import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
+import MatchHighlightsReel from "~/components/match/MatchHighlightsReel.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import { e_match_status_enum } from "~/generated/zeus";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { CardContent } from "~/components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
@@ -24,6 +24,7 @@ const activeStatsMap = ref<null | { id: string; map: { name: string } }>(null);
 const route = useRoute();
 const routeMatchId = computed(() => String(route.params.id));
 const matchClipsState = useMatchClips(routeMatchId);
+const hasMatchClips = computed(() => matchClipsState.clips.value.length > 0);
 provide("matchClips", matchClipsState.clips);
 provide("matchClipsLoading", matchClipsState.loading);
 provide("matchClipsByTarget", matchClipsState.byTarget);
@@ -78,6 +79,13 @@ const vsBaseClasses =
             <span class="w-[6px] h-[6px] bg-current rounded-full"></span>
             {{ match.e_match_status?.description || match.status }}
           </span>
+          <TimeAgo
+            v-if="
+              match.status === e_match_status_enum.Finished && match.ended_at
+            "
+            :date="match.ended_at"
+            class="font-mono text-[0.7rem] tracking-[0.2em] uppercase text-muted-foreground"
+          />
           <span
             v-if="match.label"
             class="font-mono text-[0.7rem] tracking-[0.2em] uppercase text-muted-foreground"
@@ -246,6 +254,10 @@ const vsBaseClasses =
       </header>
     </PageTransition>
 
+    <PageTransition v-if="hasMatchClips" :delay="60">
+      <MatchHighlightsReel :match="match" />
+    </PageTransition>
+
     <div
       class="grid items-start gap-4 md:gap-6 lg:gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,_400px)_minmax(0,1fr)]"
     >
@@ -352,14 +364,12 @@ const vsBaseClasses =
         </PageTransition>
 
         <PageTransition :delay="200">
-          <CardContent class="p-4">
-            <MatchTabs
-              :match="match"
-              :active-map="activeStatsMap"
-              @clear-active-map="activeStatsMap = null"
-              @select-map="activeStatsMap = $event"
-            ></MatchTabs>
-          </CardContent>
+          <MatchTabs
+            :match="match"
+            :active-map="activeStatsMap"
+            @clear-active-map="activeStatsMap = null"
+            @select-map="activeStatsMap = $event"
+          ></MatchTabs>
         </PageTransition>
       </div>
     </div>

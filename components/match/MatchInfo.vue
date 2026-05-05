@@ -2,7 +2,6 @@
 import { Card, CardContent } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
-import TimeAgo from "~/components/TimeAgo.vue";
 import AssignCoachToLineup from "~/components/match/AssignCoachToLineup.vue";
 import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
@@ -24,29 +23,14 @@ import { e_match_status_enum } from "~/generated/zeus";
     <!-- Server Connect — standalone -->
     <QuickMatchConnect :match="match" v-if="showQuickConnectSection" />
 
-    <!-- Scheduled / Finished-at badges -->
+    <!-- Scheduled badge -->
     <div
-      v-if="
-        (match.scheduled_at && isPreLiveStatus) ||
-        (match.status === e_match_status_enum.Finished && match.ended_at)
-      "
+      v-if="match.scheduled_at && isPreLiveStatus"
       class="flex flex-col gap-2"
     >
-      <Badge
-        v-if="match.scheduled_at && isPreLiveStatus"
-        variant="secondary"
-        class="flex items-center gap-2 w-fit"
-      >
+      <Badge variant="secondary" class="flex items-center gap-2 w-fit">
         <span>{{ $t("common.scheduled") }}</span>
         <span>{{ new Date(match.scheduled_at).toLocaleString() }}</span>
-      </Badge>
-      <Badge
-        v-if="match.status === e_match_status_enum.Finished && match.ended_at"
-        variant="secondary"
-        class="flex items-center gap-2 w-fit"
-      >
-        <span>{{ $t("common.finished") }}</span>
-        <TimeAgo :date="match.ended_at" />
       </Badge>
     </div>
 
@@ -129,17 +113,10 @@ export default {
     hasScheduledBadge() {
       return this.match.scheduled_at && this.isPreLiveStatus;
     },
-    hasFinishedBadge() {
-      return (
-        this.match.status === e_match_status_enum.Finished &&
-        this.match.ended_at
-      );
-    },
     hasContent() {
       return (
         this.showAnyActionSection ||
         this.hasScheduledBadge ||
-        this.hasFinishedBadge ||
         this.match.options.coaches
       );
     },

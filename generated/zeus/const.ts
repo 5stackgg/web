@@ -3230,6 +3230,7 @@ export const AllTypesProps: Record<string,any> = {
 		duration_ms:"Int_comparison_exp",
 		file:"String_comparison_exp",
 		id:"uuid_comparison_exp",
+		kills_count:"Int_comparison_exp",
 		match_map:"match_maps_bool_exp",
 		match_map_id:"uuid_comparison_exp",
 		render_jobs:"clip_render_jobs_bool_exp",
@@ -3273,6 +3274,7 @@ export const AllTypesProps: Record<string,any> = {
 		duration_ms:"order_by",
 		file:"order_by",
 		id:"order_by",
+		kills_count:"order_by",
 		match_map:"match_maps_order_by",
 		match_map_id:"order_by",
 		render_jobs_aggregate:"clip_render_jobs_aggregate_order_by",
@@ -20615,6 +20617,7 @@ export const ReturnTypes: Record<string,any> = {
 		duration_ms:"Int",
 		file:"String",
 		id:"uuid",
+		kills_count:"Int",
 		match_map:"match_maps",
 		match_map_id:"uuid",
 		render_jobs:"clip_render_jobs",
@@ -20646,6 +20649,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_clips_avg_fields:{
 		duration_ms:"Float",
+		kills_count:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
@@ -20655,6 +20659,7 @@ export const ReturnTypes: Record<string,any> = {
 		duration_ms:"Int",
 		file:"String",
 		id:"uuid",
+		kills_count:"Int",
 		match_map_id:"uuid",
 		target_steam_id:"bigint",
 		thumbnail_url:"String",
@@ -20668,6 +20673,7 @@ export const ReturnTypes: Record<string,any> = {
 		duration_ms:"Int",
 		file:"String",
 		id:"uuid",
+		kills_count:"Int",
 		match_map_id:"uuid",
 		target_steam_id:"bigint",
 		thumbnail_url:"String",
@@ -20681,36 +20687,43 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_clips_stddev_fields:{
 		duration_ms:"Float",
+		kills_count:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_clips_stddev_pop_fields:{
 		duration_ms:"Float",
+		kills_count:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_clips_stddev_samp_fields:{
 		duration_ms:"Float",
+		kills_count:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_clips_sum_fields:{
 		duration_ms:"Int",
+		kills_count:"Int",
 		target_steam_id:"bigint",
 		user_steam_id:"bigint"
 	},
 	match_clips_var_pop_fields:{
 		duration_ms:"Float",
+		kills_count:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_clips_var_samp_fields:{
 		duration_ms:"Float",
+		kills_count:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_clips_variance_fields:{
 		duration_ms:"Float",
+		kills_count:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},

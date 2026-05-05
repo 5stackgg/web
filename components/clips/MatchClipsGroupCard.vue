@@ -54,7 +54,7 @@ const maps = computed(() => {
 </script>
 
 <template>
-  <NuxtLink :to="`/highlights/match/${matchId}`" class="block group/group-card">
+  <NuxtLink :to="`/matches/${matchId}`" class="block group/group-card">
     <Card
       class="overflow-hidden transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.5)]"
     >

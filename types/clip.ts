@@ -5,9 +5,21 @@ export type ClipPlayerRef = {
   avatar_url: string | null;
 };
 
+export type ClipLineupPlayerRef = {
+  steam_id: string;
+  captain?: boolean | null;
+  placeholder_name?: string | null;
+  player?: ClipPlayerRef | null;
+};
+
 export type ClipLineupRef = {
   id: string;
   name: string;
+  team?: {
+    name: string | null;
+    avatar_url: string | null;
+  } | null;
+  lineup_players?: ClipLineupPlayerRef[] | null;
 };
 
 export type ClipMatchContext = {
@@ -42,6 +54,8 @@ export type Clip = {
   duration_ms: number | null;
   download_url: string | null;
   thumbnail_url: string | null;
+  thumbnail_download_url: string | null;
+  kills_count: number | null;
   visibility: string;
   created_at: string;
   user?: ClipPlayerRef | null;

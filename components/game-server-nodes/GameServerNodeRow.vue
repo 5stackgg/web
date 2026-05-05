@@ -1281,7 +1281,9 @@ const isSectionExpanded = (section: string) => {
                       <circle cx="16" cy="11" r="2" />
                       <circle cx="8" cy="11" r="2" />
                     </svg>
-                    <span class="text-muted-foreground">GPU</span>
+                    <span class="text-muted-foreground">{{
+                      gpuLabel || "GPU"
+                    }}</span>
                   </div>
                   <div class="flex items-center gap-1">
                     <HardDrive class="h-3 w-3" :class="diskColorClass" />
@@ -2214,6 +2216,17 @@ export default defineComponent({
       const raw = (this.gameServerNode as any)?.gpu_info;
       if (!Array.isArray(raw)) return [];
       return raw.filter((d: any) => d && typeof d === "object");
+    },
+    gpuLabel(): string {
+      const names = this.gpuDevices
+        .map((d) => (typeof d.name === "string" ? d.name.trim() : ""))
+        .filter((n) => n.length > 0);
+      if (!names.length) return "";
+      const counts = new Map<string, number>();
+      for (const n of names) counts.set(n, (counts.get(n) ?? 0) + 1);
+      return Array.from(counts.entries())
+        .map(([name, count]) => (count > 1 ? `${count}× ${name}` : name))
+        .join(", ");
     },
     shouldShowMetrics() {
       // Force show metrics if parent displayMetrics is true, otherwise use local state

@@ -10,6 +10,13 @@ import { Microchip, MemoryStick } from "lucide-vue-next";
       class="mb-2 flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground"
     >
       <span class="truncate">{{ nodeLabel || nodeId }}</span>
+      <span
+        v-if="deviceNames"
+        class="truncate normal-case tracking-normal text-foreground/80"
+        :title="deviceNames"
+      >
+        · {{ deviceNames }}
+      </span>
     </div>
 
     <div v-if="showQuickStats" class="grid gap-3 sm:grid-cols-2">
@@ -174,6 +181,20 @@ export default {
       if (this.latestUtilization >= 90) return "critical";
       if (this.latestUtilization >= 75) return "warning";
       return "normal";
+    },
+    deviceNames(): string {
+      const snapshot = this.latestSnapshot;
+      if (!snapshot) return "";
+      const names = (snapshot.devices as any[])
+        .map((d) => (typeof d?.name === "string" ? d.name.trim() : ""))
+        .filter((n) => n.length > 0);
+      if (!names.length) return "";
+      // Collapse duplicates (e.g. 2× same GPU) into "2× <name>"
+      const counts = new Map<string, number>();
+      for (const n of names) counts.set(n, (counts.get(n) ?? 0) + 1);
+      return Array.from(counts.entries())
+        .map(([name, count]) => (count > 1 ? `${count}× ${name}` : name))
+        .join(", ");
     },
   },
   apollo: {

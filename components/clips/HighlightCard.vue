@@ -10,6 +10,7 @@ import {
   ArrowUpRight,
   Loader2,
   Check,
+  Shield,
 } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
 import { Card, CardContent } from "~/components/ui/card";
@@ -75,6 +76,21 @@ const winningSide = computed<"1" | "2" | null>(() => {
 const isTournament = computed(
   () => props.clip.match_map?.match?.is_tournament_match === true,
 );
+const targetLineup = computed(() => {
+  const sid = props.clip.target_steam_id;
+  const match = props.clip.match_map?.match;
+  if (!sid || !match) return null;
+  const lineups = [match.lineup_1, match.lineup_2];
+  return (
+    lineups.find((lineup) =>
+      lineup?.lineup_players?.some(
+        (member) =>
+          String(member.steam_id ?? member.player?.steam_id) === String(sid),
+      ),
+    ) ?? null
+  );
+});
+const targetTeamName = computed(() => targetLineup.value?.name ?? null);
 
 function onTitleClick(e: MouseEvent) {
   if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
@@ -148,7 +164,7 @@ async function setVisibility(v: Visibility) {
       <video
         v-if="clip.download_url"
         :src="clip.download_url"
-        :poster="clip.thumbnail_url ?? clip.match_map?.map?.poster ?? undefined"
+        :poster="clip.thumbnail_download_url ?? clip.match_map?.map?.poster ?? undefined"
         class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
         muted
         playsinline
@@ -327,14 +343,28 @@ async function setVisibility(v: Visibility) {
         />
       </NuxtLink>
       <div
-        class="flex items-center justify-between gap-2 text-xs text-muted-foreground"
+        class="flex items-end justify-between gap-2 text-xs text-muted-foreground"
       >
-        <span class="truncate">
-          <span v-if="clip.target?.name" class="text-foreground/80">
-            {{ clip.target.name }}
+        <span class="min-w-0 flex-1">
+          <span class="flex min-w-0 items-center gap-1.5">
+            <span
+              v-if="clip.target?.name"
+              class="truncate font-semibold text-foreground/85"
+            >
+              {{ clip.target.name }}
+            </span>
+            <span
+              v-if="targetTeamName"
+              class="inline-flex max-w-[52%] shrink-0 items-center gap-1 rounded border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.1)] px-1.5 py-0.5 font-mono text-[0.55rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+              :title="targetTeamName"
+            >
+              <Shield class="h-2.5 w-2.5 shrink-0" />
+              <span class="truncate">{{ targetTeamName }}</span>
+            </span>
           </span>
-          <span v-if="clip.target?.name && matchupLabel"> · </span>
-          <span class="truncate">{{ matchupLabel }}</span>
+          <span v-if="matchupLabel" class="mt-0.5 block truncate">
+            {{ matchupLabel }}
+          </span>
         </span>
         <span
           v-if="clip.user?.name"

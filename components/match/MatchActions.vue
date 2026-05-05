@@ -57,7 +57,7 @@ import {
           <MatchSelectWinner :match="match"></MatchSelectWinner>
         </DropdownMenuItem>
 
-        <template v-if="match.is_organizer">
+        <template v-if="match.is_organizer && hasOrganizerLiveActions">
           <DropdownMenuSeparator />
           <!-- "Start" only shows when there's nothing running. Once
                a Job exists (booting OR live), the only remaining
@@ -342,6 +342,13 @@ export default {
     hasMatchDemos() {
       return (this.match.match_maps ?? []).some(
         (m: any) => (m?.demos?.length ?? 0) > 0,
+      );
+    },
+    hasOrganizerLiveActions() {
+      return (
+        (this.isLive && this.gameStreamerStatus === "off") ||
+        this.gameStreamerStatus !== "off" ||
+        this.hasMatchDemos
       );
     },
     // The streamer pod connects to the match through the GOTV link, so

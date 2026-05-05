@@ -27,6 +27,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import PlayerSearch from "~/components/PlayerSearch.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -124,8 +125,22 @@ function setSince(v: SincePreset) {
 }
 
 function clearPlayer() {
+  pickedPlayerName.value = null;
   const next = { ...route.query } as Record<string, any>;
   delete next.player;
+  router.replace({ path: route.path, query: next, hash: route.hash });
+}
+
+// Cache the just-picked name so the filter chip shows the right label
+// during the re-subscribe gap, before any clips with this target have
+// loaded. The derived name from `clips.value` takes precedence once
+// it's available.
+const pickedPlayerName = ref<string | null>(null);
+function selectPlayer(player: { steam_id: string; name: string } | null) {
+  if (!player?.steam_id) return;
+  pickedPlayerName.value = player.name;
+  const next = { ...route.query } as Record<string, any>;
+  next.player = player.steam_id;
   router.replace({ path: route.path, query: next, hash: route.hash });
 }
 
@@ -142,7 +157,7 @@ const playerFilterName = computed<string | null>(() => {
   for (const c of clips.value) {
     if (c.target?.steam_id === sid) return c.target.name;
   }
-  return null;
+  return pickedPlayerName.value;
 });
 
 // "Since X" bound — feeds into the subscription's where clause as an
@@ -461,10 +476,9 @@ function onDeleted(id: string) {
         <span class="h-5 w-px bg-border/60 mx-1"></span>
       </template>
 
-      <!-- Player chip — only renders when ?player=<sid> is in the URL,
-           which today happens via "See all" on a player profile or via
-           a shared deep link. The X clears the param without losing
-           any other filter state. -->
+      <!-- Player chip — when ?player=<sid> is set (via the picker
+           below, "See all" on a profile, or a shared deep link). The X
+           clears the param without losing any other filter state. -->
       <button
         v-if="playerFilter"
         type="button"
@@ -481,6 +495,24 @@ function onDeleted(id: string) {
         </span>
         <X class="h-3 w-3 opacity-70" />
       </button>
+
+      <!-- Player picker — opens the global player search. Hidden when
+           a player is already selected; the chip above doubles as the
+           clear affordance. -->
+      <PlayerSearch
+        v-else
+        label="Filter by player"
+        @selected="selectPlayer"
+      >
+        <button
+          type="button"
+          :class="[tacticalFilterPillClasses]"
+          title="Filter by player"
+        >
+          <User class="h-3 w-3" />
+          <span>Player</span>
+        </button>
+      </PlayerSearch>
 
       <!-- Date select — quick presets. "All time" is the default; non-
            default values land in the URL as `?since=`. Compact width

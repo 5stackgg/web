@@ -48,11 +48,6 @@ import { useClipModal } from "~/composables/useClipModal";
 
 const apiDomain = computed(() => useRuntimeConfig().public.apiDomain as string);
 
-// Broadcast-feed playback window. Subscribes by id so we react to
-// edits / deletes / render completion without remounting. Closing
-// pops the `?clip` query param via useClipModal — back/forward
-// natively traverses recently-viewed clips.
-
 const props = defineProps<{
   clipId: string | null;
 }>();
@@ -76,9 +71,6 @@ const draftTitle = ref("");
 const saving = ref(false);
 const editError = ref<string | null>(null);
 
-// Inline visibility switcher (no edit-mode required). Owners + admins
-// can flip the chip in the header strip; everyone else sees it as a
-// read-only status indicator.
 type Visibility = "private" | "unlisted" | "public";
 const VISIBILITY_OPTIONS: Array<{
   value: Visibility;
@@ -86,9 +78,9 @@ const VISIBILITY_OPTIONS: Array<{
   icon: any;
   hint: string;
 }> = [
-  { value: "public", label: "Public", icon: Globe, hint: "Visible in the highlights feed" },
-  { value: "unlisted", label: "Unlisted", icon: Eye, hint: "Anyone with the link" },
-  { value: "private", label: "Private", icon: Lock, hint: "Only the owner" },
+  { value: "public", label: "Public", icon: Globe, hint: "Listed in the highlights feed" },
+  { value: "unlisted", label: "Unlisted", icon: Eye, hint: "Hidden from feeds — anyone with the link can view" },
+  { value: "private", label: "Private", icon: Lock, hint: "Hidden from feeds — file URL still plays if shared" },
 ];
 const canEditVisibility = computed(() => isOwner.value || auth.isAdmin);
 const visPopoverOpen = ref(false);
@@ -116,10 +108,7 @@ async function setVisibility(v: Visibility) {
   }
 }
 
-// Clip mp4 size — schema doesn't track it, so we discover it via a
-// HEAD on the download URL. Cloudflare returns Content-Length cheaply
-// without serving the bytes. Failures (CORS, expired URL, network)
-// fall through silently — the row in the meta block just hides.
+// HEAD the download URL for Content-Length; schema doesn't track size.
 const fileSizeBytes = ref<number | null>(null);
 let lastSizeUrl: string | null = null;
 async function fetchFileSize(url: string) {
@@ -134,7 +123,7 @@ async function fetchFileSize(url: string) {
       if (Number.isFinite(n) && n > 0) fileSizeBytes.value = n;
     }
   } catch {
-    // Swallow — best-effort indicator, not load-bearing.
+    // best-effort
   }
 }
 function formatBytes(b: number | null): string | null {
@@ -194,9 +183,6 @@ watch(
   { immediate: true },
 );
 
-// Re-probe size whenever the download URL changes — usually fires
-// once when the subscription delivers, but covers the rare case of a
-// re-upload mid-view.
 watch(
   () => clip.value?.download_url ?? null,
   (url) => {
@@ -229,10 +215,8 @@ async function saveEdit() {
   saving.value = true;
   editError.value = null;
   try {
-    // Title-only update — visibility is owned by the inline chip and
-    // shouldn't get rewritten by a stale snapshot taken at edit-mode
-    // entry. Sending only the title here also lets the chip and the
-    // edit form be used in any order without stomping each other.
+    // Title-only — visibility is owned by the header chip; sending it
+    // here would stomp concurrent edits.
     await nuxtApp.$apollo.defaultClient.mutate({
       mutation: generateMutation({
         updateClip: [
@@ -256,9 +240,12 @@ async function saveEdit() {
 }
 
 async function copyLink() {
-  if (!clip.value?.download_url) return;
+  if (!clip.value) return;
+  const origin =
+    typeof window !== "undefined" ? window.location.origin : "";
+  const shareUrl = `${origin}/clips/${clip.value.id}`;
   try {
-    await navigator.clipboard.writeText(clip.value.download_url);
+    await navigator.clipboard.writeText(shareUrl);
     linkCopied.value = true;
     setTimeout(() => (linkCopied.value = false), 1500);
   } catch (e) {
@@ -334,9 +321,6 @@ const targetAvatarSrc = computed(() =>
           </DialogDescription>
         </VisuallyHidden>
 
-        <!-- Four-corner brackets — extend the tactical page-header
-             corner motif so the modal reads as a focused field of
-             that same system, not a generic radix dialog. -->
         <span
           aria-hidden="true"
           class="pointer-events-none absolute left-2 top-2 h-[14px] w-[14px] border-l-2 border-t-2 border-[hsl(var(--tac-amber))] z-10"
@@ -354,8 +338,6 @@ const targetAvatarSrc = computed(() =>
           class="pointer-events-none absolute right-2 bottom-2 h-[14px] w-[14px] border-r-2 border-b-2 border-[hsl(var(--tac-amber))] z-10"
         ></span>
 
-        <!-- Top transmission strip: source label + close. Mirrors the
-             broadcast lower-third style used elsewhere in the app. -->
         <div
           class="relative flex items-center gap-3 border-b border-border/40 px-4 sm:px-5 py-2.5"
         >
@@ -374,10 +356,6 @@ const targetAvatarSrc = computed(() =>
             Highlight
           </span>
 
-          <!-- Inline visibility switcher. Owner/admin: clickable
-               popover with the three options; everyone else sees a
-               read-only status chip. Sits in the header strip so the
-               state is always visible without entering edit mode. -->
           <Popover v-if="clip && canEditVisibility" v-model:open="visPopoverOpen">
             <PopoverTrigger
               class="ml-auto inline-flex h-7 items-center gap-1.5 rounded-full border border-border/60 bg-card/50 pl-1.5 pr-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] transition-colors cursor-pointer hover:border-[hsl(var(--tac-amber)/0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -538,14 +516,9 @@ const targetAvatarSrc = computed(() =>
                 </span>
               </div>
 
-              <!-- Subtle scanline veneer over the player. CSS-only,
-                   no extra layers. Pointer-events-none so it doesn't
-                   eat clicks on the native video controls. -->
               <div class="clip-scanlines pointer-events-none absolute inset-0"></div>
             </div>
 
-            <!-- Caption strip — broadcast lower-third style. Holds
-                 title + matchup + edit affordance. -->
             <div
               class="relative rounded-md border border-border/50 bg-[linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] [backdrop-filter:blur(6px)] px-4 py-3"
             >

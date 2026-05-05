@@ -24,11 +24,8 @@ import {
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import WhepPlayer from "~/components/match/WhepPlayer.vue";
 import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
+import SpectatorGrid from "~/components/stream-deck/SpectatorGrid.vue";
 import { useStreamerPopout } from "~/composables/useStreamerPopout";
-import {
-  specSlotsForMatchType,
-  teamSizeForMatchType,
-} from "~/utilities/streamerSpecSlots";
 import NodeGpuMetrics from "~/components/system-metrics/NodeGpuMetrics.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
@@ -121,15 +118,6 @@ function ensureState(matchId: string): MatchControlState {
 // runs with on first launch.
 function isAutodirector(stream: any): boolean {
   return stream?.autodirector !== false;
-}
-
-// Derive the slot list and grid sizing from the match type so a
-// Wingman row doesn't expose 10 buttons that map to nothing in CS2.
-function streamSpecSlots(stream: any) {
-  return specSlotsForMatchType(stream?.match?.options?.type);
-}
-function streamTeamSize(stream: any) {
-  return teamSizeForMatchType(stream?.match?.options?.type);
 }
 
 // Subscription lives on the global StreamerStore so the sidebar badge
@@ -694,11 +682,12 @@ function statusBadgeLabel(stream: any) {
                 </div>
               </div>
 
-              <!-- Slot grid — fills the remaining height of the controls
-                 column so the bottom of the grid lines up with the
-                 bottom of the video preview on the left. `min-h-0` on
-                 the parent flex column lets this child actually shrink
-                 instead of overflowing. -->
+              <!-- Observer target — same CT/T grid driven by GSI as the
+                 focus popout. cs2 itself decides who's on which side at
+                 halftime + every OT swap, so labels and click targets
+                 stay in lockstep with what the broadcast is actually
+                 rendering. `min-h-0` on the parent flex column lets
+                 this section shrink instead of overflowing. -->
               <div class="flex flex-1 flex-col min-h-0">
                 <div class="mb-1.5 flex items-center justify-between">
                   <span
@@ -714,47 +703,20 @@ function statusBadgeLabel(stream: any) {
                     Use keyboard →
                   </button>
                 </div>
-                <!-- grid-cols matches per-team count so wingman shows
-                   2 across, duel 1, competitive 5. The 5v5 grid
-                   stretches (`flex-1` + grid-rows-2) to line its
-                   bottom up with the video preview. With fewer slots
-                   we cap the grid width and switch to fixed-aspect
-                   tiles so a single Duel button doesn't blow up to
-                   the full column width / height. -->
-                <div
-                  :class="[
-                    'grid grid-rows-2 gap-1.5 min-h-0',
-                    streamTeamSize(stream) === 5 && 'flex-1 grid-cols-5',
-                    streamTeamSize(stream) === 2 && 'grid-cols-2 max-w-[40%]',
-                    streamTeamSize(stream) === 1 && 'grid-cols-1 max-w-[20%]',
-                  ]"
-                >
-                  <button
-                    v-for="entry in streamSpecSlots(stream)"
-                    :key="entry.slot"
-                    type="button"
-                    :disabled="
-                      !stream.is_live ||
-                      ensureState(stream.match_id).busy ||
-                      isAutodirector(stream)
-                    "
-                    :class="[
-                      'group relative rounded-md border font-mono text-base font-bold transition-all duration-100 select-none',
-                      'border-border/70 bg-card/40 text-foreground/80 active:scale-95',
-                      streamTeamSize(stream) !== 5 && 'aspect-[5/4]',
-                      entry.team === 1
-                        ? 'hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground'
-                        : 'hover:border-destructive/50 hover:bg-destructive/10 hover:text-foreground',
-                      stream.is_live && !isAutodirector(stream)
-                        ? 'cursor-pointer'
-                        : 'opacity-40 cursor-not-allowed',
-                    ]"
-                    :title="`Slot ${entry.slot} · key ${entry.key}`"
-                    @click="specSlot(stream.match_id, entry.slot)"
-                  >
-                    <span>{{ entry.key }}</span>
-                  </button>
-                </div>
+                <SpectatorGrid
+                  :match-id="stream.match_id"
+                  :is-live="!!stream.is_live"
+                  :match-type="stream.match?.options?.type"
+                  :controls-active="
+                    !!stream.is_live &&
+                    !ensureState(stream.match_id).busy &&
+                    !isAutodirector(stream)
+                  "
+                  compact
+                  @press-slot="
+                    (slot: number) => specSlot(stream.match_id, slot)
+                  "
+                />
               </div>
             </div>
           </div>

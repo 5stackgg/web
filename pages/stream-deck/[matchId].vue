@@ -6,24 +6,17 @@ import { useToast } from "~/components/ui/toast/use-toast";
 import { Switch } from "~/components/ui/switch";
 import { Label } from "~/components/ui/label";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import {
-  ChevronLeft,
-  ChevronRight,
-  Square,
-  ArrowLeft,
-  Lock,
-  AlertTriangle,
-} from "lucide-vue-next";
+import { Square, ArrowLeft, AlertTriangle } from "lucide-vue-next";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import WhepPlayer from "~/components/match/WhepPlayer.vue";
 import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
 import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
+import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
 import { Kbd } from "~/components/ui/kbd";
 import { announceFocusWindow } from "~/composables/useStreamerPopout";
+import { useStreamerGsi } from "~/composables/useStreamerGsi";
 import {
   specSlotsForMatchType,
-  teamSizeForMatchType,
-  keyForSlot,
   type SpecSlot,
 } from "~/utilities/streamerSpecSlots";
 
@@ -73,31 +66,11 @@ onMounted(() => {
               id: true,
               status: true,
               options: { type: true },
-              // lineup_players w/ steam_id so we can label slot
-              // buttons with player names + look them up in GSI for
-              // current side / alive state. Without this we'd be
-              // stuck rendering raw slot numbers like the demo deck
-              // used to before the GSI wiring.
-              lineup_1: {
-                name: true,
-                lineup_players: [
-                  {},
-                  {
-                    placeholder_name: true,
-                    player: { steam_id: true, name: true },
-                  },
-                ],
-              },
-              lineup_2: {
-                name: true,
-                lineup_players: [
-                  {},
-                  {
-                    placeholder_name: true,
-                    player: { steam_id: true, name: true },
-                  },
-                ],
-              },
+              // Slot buttons are populated from GSI (`spec_slots`)
+              // rather than the api lineup, so we only need lineup
+              // names here for the page header.
+              lineup_1: { name: true },
+              lineup_2: { name: true },
             } as any,
           },
         ],
@@ -203,49 +176,51 @@ async function runMutation(
 const slotKeys = computed<SpecSlot[]>(() =>
   specSlotsForMatchType(stream.value?.match?.options?.type),
 );
-const teamSize = computed(() =>
-  teamSizeForMatchType(stream.value?.match?.options?.type),
-);
-
-// Tracks the most-recently-fired action so we can flash the
-// corresponding button. Reset after a short window so the user gets
-// clear "I pressed it" feedback even on quick taps.
-const flashKey = ref<string | null>(null);
-let flashTimer: ReturnType<typeof setTimeout> | null = null;
-function flash(key: string) {
-  flashKey.value = key;
-  if (flashTimer) clearTimeout(flashTimer);
-  flashTimer = setTimeout(() => {
-    flashKey.value = null;
-  }, 220);
-}
 
 function isLive() {
   return !!stream.value?.is_live;
 }
+// Buttons are "clickable" whenever the stream is live and we're not
+// already mid-mutation. Autodirector is *not* part of this gate —
+// pressing a target is a manual takeover signal, so we transparently
+// flip autodirector off and then issue the spec command. (See the
+// `takeManualControl` helper below.)
 function controlsActive() {
-  return isLive() && !autodirector.value && !busy.value;
+  return isLive() && !busy.value;
 }
 
-async function pressSlot(slot: number, key: string) {
-  flash(key);
+// If autodirector is on, clicking/keying a target means the operator
+// wants the camera under their thumb — turn it off so the next spec
+// command actually lands instead of being overruled the next frame.
+async function takeManualControl() {
+  if (autodirector.value) {
+    await setAutodirector(false);
+  }
+}
+
+async function pressSlot(slot: number, _key?: string) {
+  flashForSlot(slot);
   if (!controlsActive()) return;
+  await takeManualControl();
   await runMutation(`spec slot ${slot}`, () => ({
     specSlot: [{ match_id: matchId.value, slot }, { success: true }],
   }));
 }
 
-async function pressClick(button: "left" | "right", key: string) {
-  flash(key);
+// Cycle / lock keyboard handlers stay so ←/→/Space still drive cs2,
+// even though we no longer render dedicated buttons for them — the
+// shortcut overlay (?) documents the keys.
+async function pressClick(button: "left" | "right", _key: string) {
   if (!controlsActive()) return;
+  await takeManualControl();
   await runMutation(`spec ${button} click`, () => ({
     specClick: [{ match_id: matchId.value, button }, { success: true }],
   }));
 }
 
-async function pressJump(key: string) {
-  flash(key);
+async function pressJump(_key: string) {
   if (!controlsActive()) return;
+  await takeManualControl();
   await runMutation("spec jump", () => ({
     specJump: [{ match_id: matchId.value }, { success: true }],
   }));
@@ -356,146 +331,64 @@ onMounted(() => {
 });
 onBeforeUnmount(() => {
   window.removeEventListener("keydown", onKeyDown);
-  if (flashTimer) clearTimeout(flashTimer);
+  if (flashSlotTimer) clearTimeout(flashSlotTimer);
   if (confirmStopTimer) clearTimeout(confirmStopTimer);
   stopAnnouncing?.();
 });
 
-// ---- GSI polling ----
-// Pulls live slot/player state from the streamer pod via a Hasura
-// action that proxies spec-server's /demo/state. Source of truth for
-// player names, slot indices, and team grouping is GSI (cs2 itself),
-// not the api's lineup data — that way the deck always matches what
-// cs2 is actually rendering, even if the api lineup is mismatched.
-type LiveSpecSlot = {
-  slot: number;
-  steam_id: string;
-  name: string | null;
-  team: "T" | "CT" | null;
-  alive: boolean;
-  health: number;
-};
-const specSlots = ref<LiveSpecSlot[]>([]);
-const spectatedSteamId = ref<string | null>(null);
-const gsiTeamCtName = ref<string | null>(null);
-const gsiTeamTName = ref<string | null>(null);
-const gsiTeamCtScore = ref<number>(0);
-const gsiTeamTScore = ref<number>(0);
-let specPollTimer: ReturnType<typeof setInterval> | null = null;
+// GSI polling — same composable the demo player and deck list cards
+// consume so all three surfaces render identical CT/T grouping,
+// scores, alive state, and active-target highlighting.
+const isLiveRef = computed(() => !!stream.value?.is_live);
+const {
+  ctSlots,
+  tSlots,
+  spectatedSteamId,
+  teamCtName,
+  teamTName,
+  teamCtScore,
+  teamTScore,
+} = useStreamerGsi(matchId, isLiveRef);
 
-async function pollLiveState() {
-  if (!matchId.value || !isLive()) return;
-  try {
-    const { data } = await apolloClient.mutate({
-      // Cast: action lives outside zeus until codegen runs, same
-      // pattern as createClipRender / createClipFromPreset.
-      mutation: generateMutation({
-        getLiveStreamSpecState: [
-          { match_id: matchId.value },
-          {
-            gsi: {
-              spectated_steam_id: true,
-              team_ct_name: true,
-              team_t_name: true,
-              team_ct_score: true,
-              team_t_score: true,
-              spec_slots: {
-                slot: true,
-                steam_id: true,
-                name: true,
-                team: true,
-                alive: true,
-                health: true,
-              },
-            },
-          },
-        ],
-      } as any),
-      // Don't pollute the apollo cache — this is a high-frequency
-      // poll, the data is short-lived and never re-read.
-      fetchPolicy: "no-cache",
-    });
-    const gsi = (data as any)?.getLiveStreamSpecState?.gsi;
-    if (!gsi) return;
-    if (Array.isArray(gsi.spec_slots)) specSlots.value = gsi.spec_slots;
-    spectatedSteamId.value = gsi.spectated_steam_id ?? null;
-    if (typeof gsi.team_ct_name === "string")
-      gsiTeamCtName.value = gsi.team_ct_name;
-    if (typeof gsi.team_t_name === "string")
-      gsiTeamTName.value = gsi.team_t_name;
-    if (typeof gsi.team_ct_score === "number")
-      gsiTeamCtScore.value = gsi.team_ct_score;
-    if (typeof gsi.team_t_score === "number")
-      gsiTeamTScore.value = gsi.team_t_score;
-  } catch {
-    // Pod transient: ignore. Next tick will retry.
+// Flash-by-slot mirrors the demo's pressSlot: a button click or a
+// digit-key press both highlight the matching slot button. Keyboard
+// arrows / Space don't have a slot button to flash, so they're
+// excluded from the highlight system here (the demo treats it the
+// same way).
+// Flash holds until either:
+//   1. GSI confirms cs2 switched to the requested slot (the button's
+//      `active` styling takes over seamlessly — no visible swap), or
+//   2. a 2.5s ceiling hits, so a stale press doesn't keep glowing
+//      forever if the mutation silently failed.
+// Without this, the flash cleared in 220ms — way before the GSI poll
+// (~1s) lands the new spec target — and operators saw a brief blip
+// then nothing, thinking the press hadn't registered.
+const flashSlot = ref<number | null>(null);
+let flashSlotTimer: ReturnType<typeof setTimeout> | null = null;
+function flashForSlot(slot: number) {
+  flashSlot.value = slot;
+  if (flashSlotTimer) clearTimeout(flashSlotTimer);
+  flashSlotTimer = setTimeout(() => {
+    flashSlot.value = null;
+    flashSlotTimer = null;
+  }, 2500);
+}
+// Early-clear: when GSI's spectated_steam_id matches the slot we're
+// flashing, the active styling now carries the highlight — drop the
+// flash so a future press immediately re-flashes a different slot.
+watch(spectatedSteamId, (sid) => {
+  if (flashSlot.value == null || !sid) return;
+  const matched = [...ctSlots.value, ...tSlots.value].find(
+    (s) => s.slot === flashSlot.value && s.steam_id === sid,
+  );
+  if (matched) {
+    flashSlot.value = null;
+    if (flashSlotTimer) {
+      clearTimeout(flashSlotTimer);
+      flashSlotTimer = null;
+    }
   }
-}
-function startSpecPoll() {
-  stopSpecPoll();
-  void pollLiveState();
-  specPollTimer = setInterval(pollLiveState, 1000);
-}
-function stopSpecPoll() {
-  if (specPollTimer) {
-    clearInterval(specPollTimer);
-    specPollTimer = null;
-  }
-}
-// React to is_live transitions — start polling when the stream goes
-// live, stop when it drops, so we don't hammer a dead pod with state
-// requests while the operator's still on the page.
-watch(
-  () => isLive(),
-  (live) => {
-    if (live) startSpecPoll();
-    else stopSpecPoll();
-  },
-  { immediate: true },
-);
-onBeforeUnmount(() => stopSpecPoll());
-
-// CT / T groupings come straight from GSI. cs2 maintains the
-// keybinds (spec_player_<N> ↔ observer_slot N), so click target and
-// label are sourced from the same place — no risk of drift.
-const ctSlots = computed(() =>
-  specSlots.value
-    .filter((s) => s.team === "CT")
-    .slice()
-    .sort((a, b) => a.slot - b.slot),
-);
-const tSlots = computed(() =>
-  specSlots.value
-    .filter((s) => s.team === "T")
-    .slice()
-    .sort((a, b) => a.slot - b.slot),
-);
-const hasGsi = computed(() => specSlots.value.length > 0);
-
-function slotIsActive(s: LiveSpecSlot): boolean {
-  if (!spectatedSteamId.value) return false;
-  return s.steam_id === spectatedSteamId.value;
-}
-function sideClasses(side: "T" | "CT", isActive: boolean, isFlash: boolean) {
-  const wantHighlight = isActive || isFlash;
-  if (side === "CT") {
-    return wantHighlight
-      ? "border-blue-400 bg-blue-500/20 text-blue-200"
-      : "border-blue-500/40 bg-blue-500/5 text-foreground/80 hover:border-blue-400/70 hover:bg-blue-500/10 hover:text-blue-100";
-  }
-  return wantHighlight
-    ? "border-amber-400 bg-amber-500/20 text-amber-100"
-    : "border-amber-500/40 bg-amber-500/5 text-foreground/80 hover:border-amber-400/70 hover:bg-amber-500/10 hover:text-amber-100";
-}
-function sideDotClass(side: "T" | "CT") {
-  return side === "CT" ? "bg-blue-400" : "bg-amber-400";
-}
-function ctTeamName(): string {
-  return gsiTeamCtName.value || "Counter-Terrorists";
-}
-function tTeamName(): string {
-  return gsiTeamTName.value || "Terrorists";
-}
+});
 </script>
 
 <template>
@@ -633,283 +526,31 @@ function tTeamName(): string {
           <AlertTriangle class="size-4 flex-shrink-0 mt-px" />
           <p>
             <span class="font-semibold">Auto-director is on.</span>
-            CS2 is choosing the camera — keypresses are previewed but not sent.
-            Disable above to take manual control.
+            CS2 is choosing the camera — clicking a target or pressing a key
+            will turn this off and take manual control.
           </p>
         </div>
 
-        <!-- CONTROL DECK (below video) -->
-        <div class="grid gap-5 lg:grid-cols-3">
-          <!-- Observer target — spans 2 cols on lg -->
-          <section class="lg:col-span-2 space-y-2">
-            <div class="flex items-center justify-between">
-              <span
-                class="font-mono text-[0.65rem] uppercase tracking-[0.22em] text-muted-foreground"
-              >
-                Observer target
-              </span>
-              <span
-                class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/60"
-              >
-                Tap or press the matching key
-              </span>
-            </div>
-
-            <!-- CT row + T row from GSI. Cs2 itself decides who's on
-                 which side — at halftime + every OT swap, players move
-                 between rows automatically. The slot number on the
-                 button is cs2's observer_slot (== the digit-key bind),
-                 so click target stays in lockstep with the label. -->
-            <div v-if="hasGsi">
-              <div class="mb-1 flex items-center gap-1.5">
-                <span
-                  :class="[
-                    'inline-block size-1.5 rounded-full',
-                    sideDotClass('CT'),
-                  ]"
-                />
-                <span
-                  class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/80"
-                >
-                  {{ ctTeamName() }}
-                  <span
-                    class="ml-1 px-1 rounded font-bold bg-blue-500/20 text-blue-300"
-                    >CT</span
-                  >
-                  <span class="ml-1 text-foreground">{{ gsiTeamCtScore }}</span>
-                </span>
-              </div>
-              <div
-                :class="[
-                  'grid gap-2',
-                  teamSize === 5 && 'grid-cols-5',
-                  teamSize === 2 && 'grid-cols-2 max-w-[40%]',
-                  teamSize === 1 && 'grid-cols-1 max-w-[20%]',
-                ]"
-              >
-                <button
-                  v-for="s in ctSlots"
-                  :key="`ct-${s.slot}-${s.steam_id}`"
-                  type="button"
-                  :disabled="!controlsActive()"
-                  :class="[
-                    'group relative aspect-[5/4] rounded-md border font-mono transition-all duration-100 select-none flex flex-col items-center justify-center gap-0.5 px-1',
-                    sideClasses(
-                      'CT',
-                      slotIsActive(s),
-                      flashKey === String(s.slot),
-                    ),
-                    !s.alive && !slotIsActive(s) ? 'opacity-50' : '',
-                    !controlsActive()
-                      ? 'opacity-40 cursor-not-allowed'
-                      : 'cursor-pointer',
-                  ]"
-                  :title="s.name ?? `Slot ${s.slot}`"
-                  @click="pressSlot(s.slot, String(s.slot))"
-                >
-                  <span class="text-2xl font-bold">{{
-                    keyForSlot(s.slot)
-                  }}</span>
-                  <span
-                    :class="[
-                      'text-[0.65rem] truncate w-full text-center font-medium',
-                      !s.alive ? 'line-through' : '',
-                    ]"
-                  >
-                    {{ s.name ?? `Slot ${s.slot}` }}
-                  </span>
-                </button>
-              </div>
-            </div>
-
-            <div v-if="hasGsi">
-              <div class="mb-1 mt-1 flex items-center gap-1.5">
-                <span
-                  :class="[
-                    'inline-block size-1.5 rounded-full',
-                    sideDotClass('T'),
-                  ]"
-                />
-                <span
-                  class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/80"
-                >
-                  {{ tTeamName() }}
-                  <span
-                    class="ml-1 px-1 rounded font-bold bg-amber-500/20 text-amber-200"
-                    >T</span
-                  >
-                  <span class="ml-1 text-foreground">{{ gsiTeamTScore }}</span>
-                </span>
-              </div>
-              <div
-                :class="[
-                  'grid gap-2',
-                  teamSize === 5 && 'grid-cols-5',
-                  teamSize === 2 && 'grid-cols-2 max-w-[40%]',
-                  teamSize === 1 && 'grid-cols-1 max-w-[20%]',
-                ]"
-              >
-                <button
-                  v-for="s in tSlots"
-                  :key="`t-${s.slot}-${s.steam_id}`"
-                  type="button"
-                  :disabled="!controlsActive()"
-                  :class="[
-                    'group relative aspect-[5/4] rounded-md border font-mono transition-all duration-100 select-none flex flex-col items-center justify-center gap-0.5 px-1',
-                    sideClasses(
-                      'T',
-                      slotIsActive(s),
-                      flashKey === String(s.slot),
-                    ),
-                    !s.alive && !slotIsActive(s) ? 'opacity-50' : '',
-                    !controlsActive()
-                      ? 'opacity-40 cursor-not-allowed'
-                      : 'cursor-pointer',
-                  ]"
-                  :title="s.name ?? `Slot ${s.slot}`"
-                  @click="pressSlot(s.slot, String(s.slot))"
-                >
-                  <span class="text-2xl font-bold">{{
-                    keyForSlot(s.slot)
-                  }}</span>
-                  <span
-                    :class="[
-                      'text-[0.65rem] truncate w-full text-center font-medium',
-                      !s.alive ? 'line-through' : '',
-                    ]"
-                  >
-                    {{ s.name ?? `Slot ${s.slot}` }}
-                  </span>
-                </button>
-              </div>
-            </div>
-            <p
-              v-else-if="isLive()"
-              class="text-[0.6rem] uppercase tracking-wider text-muted-foreground/60 font-mono"
-            >
-              Waiting for cs2 game state…
-            </p>
-          </section>
-
-          <!-- Cycle / lock + keybinds (right column) -->
-          <aside class="space-y-4">
-            <div>
-              <span
-                class="mb-2 block font-mono text-[0.65rem] uppercase tracking-[0.22em] text-muted-foreground"
-              >
-                Cycle &amp; lock
-              </span>
-              <div class="grid grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  :disabled="!controlsActive()"
-                  :class="[
-                    'flex flex-col items-center justify-center gap-1.5 rounded-md border aspect-[5/4] transition-all duration-100 select-none',
-                    flashKey === 'ArrowLeft'
-                      ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))] scale-95 shadow-[0_0_0_3px_hsl(var(--tac-amber)/0.15),0_0_22px_hsl(var(--tac-amber)/0.45)]'
-                      : 'border-border/70 bg-card/40 hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-[hsl(var(--tac-amber)/0.08)] active:scale-95',
-                    !controlsActive()
-                      ? 'opacity-40 cursor-not-allowed'
-                      : 'cursor-pointer',
-                  ]"
-                  @click="pressClick('right', 'ArrowLeft')"
-                >
-                  <ChevronLeft class="size-8" :stroke-width="2.5" />
-                  <span
-                    class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
-                  >
-                    Prev <span class="opacity-60">←</span>
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  :disabled="!controlsActive()"
-                  :class="[
-                    'flex flex-col items-center justify-center gap-1.5 rounded-md border aspect-[5/4] transition-all duration-100 select-none',
-                    flashKey === 'Space'
-                      ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))] scale-95 shadow-[0_0_0_3px_hsl(var(--tac-amber)/0.15),0_0_22px_hsl(var(--tac-amber)/0.45)]'
-                      : 'border-border/70 bg-card/40 hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-[hsl(var(--tac-amber)/0.08)] active:scale-95',
-                    !controlsActive()
-                      ? 'opacity-40 cursor-not-allowed'
-                      : 'cursor-pointer',
-                  ]"
-                  @click="pressJump('Space')"
-                >
-                  <Lock class="size-7" :stroke-width="2.5" />
-                  <span
-                    class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
-                  >
-                    Lock <span class="opacity-60">␣</span>
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  :disabled="!controlsActive()"
-                  :class="[
-                    'flex flex-col items-center justify-center gap-1.5 rounded-md border aspect-[5/4] transition-all duration-100 select-none',
-                    flashKey === 'ArrowRight'
-                      ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))] scale-95 shadow-[0_0_0_3px_hsl(var(--tac-amber)/0.15),0_0_22px_hsl(var(--tac-amber)/0.45)]'
-                      : 'border-border/70 bg-card/40 hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-[hsl(var(--tac-amber)/0.08)] active:scale-95',
-                    !controlsActive()
-                      ? 'opacity-40 cursor-not-allowed'
-                      : 'cursor-pointer',
-                  ]"
-                  @click="pressClick('left', 'ArrowRight')"
-                >
-                  <ChevronRight class="size-8" :stroke-width="2.5" />
-                  <span
-                    class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
-                  >
-                    Next <span class="opacity-60">→</span>
-                  </span>
-                </button>
-              </div>
-            </div>
-
-            <div class="rounded-md border border-border/60 bg-card/30 p-3">
-              <span
-                class="mb-2 block font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-              >
-                Keybinds
-              </span>
-              <ul class="space-y-1.5 text-xs text-muted-foreground">
-                <li class="flex items-center justify-between gap-2">
-                  <span>Jump to slot</span>
-                  <span class="flex items-center gap-1">
-                    <kbd
-                      v-for="entry in slotKeys"
-                      :key="entry.slot"
-                      class="font-mono text-[0.65rem] rounded border border-border/70 bg-background/60 px-1.5 py-0.5"
-                    >
-                      {{ entry.key }}
-                    </kbd>
-                  </span>
-                </li>
-                <li class="flex items-center justify-between gap-2">
-                  <span>Prev / Next target</span>
-                  <span class="flex items-center gap-1">
-                    <kbd
-                      class="font-mono text-[0.65rem] rounded border border-border/70 bg-background/60 px-1.5 py-0.5"
-                      >←</kbd
-                    >
-                    <kbd
-                      class="font-mono text-[0.65rem] rounded border border-border/70 bg-background/60 px-1.5 py-0.5"
-                      >→</kbd
-                    >
-                  </span>
-                </li>
-                <li class="flex items-center justify-between gap-2">
-                  <span>Toggle lock / free-roam</span>
-                  <kbd
-                    class="font-mono text-[0.65rem] rounded border border-border/70 bg-background/60 px-1.5 py-0.5"
-                    >Space</kbd
-                  >
-                </li>
-              </ul>
-            </div>
-          </aside>
+        <!-- CONTROL DECK — shared SpectatorSlots used here, on the
+             match page, the demo, and the deck index card so all four
+             surfaces render the identical row design (health bars,
+             active caret, autodirector wash). -->
+        <div class="rounded-md border border-border/60 bg-card/30 px-4 py-3">
+          <SpectatorSlots
+            layout="grid"
+            :ct-slots="ctSlots"
+            :t-slots="tSlots"
+            :team-ct-name="teamCtName"
+            :team-t-name="teamTName"
+            :team-ct-score="teamCtScore"
+            :team-t-score="teamTScore"
+            :active-steam-id="spectatedSteamId"
+            :flash-slot="flashSlot"
+            :controls-active="controlsActive()"
+            :match-type="stream?.match?.options?.type"
+            :autodirector-on="autodirector && isLive()"
+            @press-slot="(slot: number) => pressSlot(slot, String(slot))"
+          />
         </div>
       </div>
     </PageTransition>

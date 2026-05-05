@@ -164,7 +164,11 @@ async function setVisibility(v: Visibility) {
       <video
         v-if="clip.download_url"
         :src="clip.download_url"
-        :poster="clip.thumbnail_download_url ?? clip.match_map?.map?.poster ?? undefined"
+        :poster="
+          clip.thumbnail_download_url ??
+          clip.match_map?.map?.poster ??
+          undefined
+        "
         class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
         muted
         playsinline

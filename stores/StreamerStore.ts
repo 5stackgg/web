@@ -67,6 +67,7 @@ export const useStreamerStore = defineStore("streamer", () => {
             title: true,
             link: true,
             is_live: true,
+            mode: true,
             status: true,
             stream_url: true,
             error_message: true,

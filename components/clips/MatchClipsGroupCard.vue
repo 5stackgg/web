@@ -51,6 +51,21 @@ const maps = computed(() => {
   }
   return out;
 });
+
+// Featured target players across all clips in this match — gives the
+// group card the same content height as a single HighlightCard.
+const featuredTargets = computed(() => {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const c of props.clips) {
+    const name = c.target?.name;
+    if (name && !seen.has(name)) {
+      seen.add(name);
+      out.push(name);
+    }
+  }
+  return out;
+});
 </script>
 
 <template>
@@ -133,13 +148,22 @@ const maps = computed(() => {
           />
         </div>
         <div
-          class="flex items-center justify-between gap-2 text-xs text-muted-foreground"
+          class="flex items-end justify-between gap-2 text-xs text-muted-foreground"
         >
-          <span class="truncate">
-            <template v-for="(m, i) in maps" :key="m.name">
-              <span v-if="i > 0" class="opacity-50"> · </span>
-              <span class="text-foreground/80">{{ m.label ?? m.name }}</span>
-            </template>
+          <span class="min-w-0 flex-1">
+            <span
+              v-if="featuredTargets.length"
+              class="block truncate font-semibold text-foreground/85"
+              :title="featuredTargets.join(' · ')"
+            >
+              {{ featuredTargets.join(" · ") }}
+            </span>
+            <span class="mt-0.5 block truncate">
+              <template v-for="(m, i) in maps" :key="m.name">
+                <span v-if="i > 0" class="opacity-50"> · </span>
+                <span class="text-foreground/80">{{ m.label ?? m.name }}</span>
+              </template>
+            </span>
           </span>
           <span
             class="shrink-0 font-mono text-[0.65rem] uppercase tracking-wider"

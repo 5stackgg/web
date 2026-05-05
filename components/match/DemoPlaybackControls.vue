@@ -40,7 +40,7 @@ import {
 } from "~/components/ui/tooltip";
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
 import { useClipEditor } from "~/composables/useClipEditor";
-import { keyForSlot } from "~/utilities/streamerSpecSlots";
+import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
 
 // API gates clip creation at verified_user; we only check "logged in"
 // on the client so any logged-in viewer sees the button.
@@ -78,7 +78,6 @@ const {
 } = useDemoPlayback();
 
 // Slot identity is GSI — survives a demo attached to the wrong match_map.
-type SlotInfo = (typeof store.specSlots)[number];
 const ctSlots = computed(() =>
   store.specSlots
     .filter((s) => s.team === "CT")
@@ -91,26 +90,9 @@ const tSlots = computed(() =>
     .slice()
     .sort((a, b) => a.slot - b.slot),
 );
-const hasGsi = computed(() => store.specSlots.length > 0);
 
-function slotIsActive(s: SlotInfo): boolean {
-  if (!store.spectatedSteamId) return false;
-  return s.steam_id === store.spectatedSteamId;
-}
-function sideClasses(side: "T" | "CT", isActive: boolean, isFlash: boolean) {
-  const wantHighlight = isActive || isFlash;
-  if (side === "CT") {
-    return wantHighlight
-      ? "border-blue-400 bg-blue-500/20 text-blue-200"
-      : "border-blue-500/40 bg-blue-500/5 text-foreground/80 hover:border-blue-400/70 hover:bg-blue-500/10 hover:text-blue-100 active:scale-95";
-  }
-  return wantHighlight
-    ? "border-amber-400 bg-amber-500/20 text-amber-100"
-    : "border-amber-500/40 bg-amber-500/5 text-foreground/80 hover:border-amber-400/70 hover:bg-amber-500/10 hover:text-amber-100 active:scale-95";
-}
-function sideDotClass(side: "T" | "CT") {
-  return side === "CT" ? "bg-blue-400" : "bg-amber-400";
-}
+// Kill-filter dropdown uses these for the side group labels even
+// after the slot row moved into SpectatorSlots, so they stay here.
 function ctTeamName(): string {
   return store.gsiTeamCtName || "Counter-Terrorists";
 }
@@ -118,6 +100,10 @@ function tTeamName(): string {
   return store.gsiTeamTName || "Terrorists";
 }
 
+// Flash holds until GSI's spec target lands on the slot we pressed,
+// or a 2.5s ceiling — so the operator sees their press is "in
+// flight" while cs2 round-trips, instead of a 220ms blip that's
+// gone before the demo player actually switches cameras.
 const flashSlot = ref<number | null>(null);
 let flashTimer: ReturnType<typeof setTimeout> | null = null;
 function pressSlot(slot: number) {
@@ -125,9 +111,26 @@ function pressSlot(slot: number) {
   if (flashTimer) clearTimeout(flashTimer);
   flashTimer = setTimeout(() => {
     flashSlot.value = null;
-  }, 220);
+    flashTimer = null;
+  }, 2500);
   switchToSlot(slot);
 }
+watch(
+  () => store.spectatedSteamId,
+  (sid) => {
+    if (flashSlot.value == null || !sid) return;
+    const matched = store.specSlots.find(
+      (s) => s.slot === flashSlot.value && s.steam_id === sid,
+    );
+    if (matched) {
+      flashSlot.value = null;
+      if (flashTimer) {
+        clearTimeout(flashTimer);
+        flashTimer = null;
+      }
+    }
+  },
+);
 
 // Seek/round-jump need parser metadata; without it we fall back to
 // just play/pause/skip/speed.
@@ -646,121 +649,19 @@ const killMarkers = computed<Marker[]>(() => {
         Demo metadata not parsed yet — play/pause + skip + speed still work.
       </p>
 
-      <div v-if="hasGsi" class="flex flex-col gap-1.5">
-        <div class="flex items-center gap-3">
-          <div class="flex items-center gap-1.5 min-w-[8rem]">
-            <span
-              :class="[
-                'inline-block size-1.5 rounded-full',
-                sideDotClass('CT'),
-              ]"
-            />
-            <span
-              class="truncate font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground/80"
-            >
-              {{ ctTeamName() }}
-              <span
-                class="ml-1 px-1 rounded font-bold bg-blue-500/20 text-blue-300"
-              >
-                CT
-              </span>
-              <span
-                v-if="store.gsiTeamCtScore || store.gsiTeamTScore"
-                class="ml-1 text-foreground"
-              >
-                {{ store.gsiTeamCtScore }}
-              </span>
-            </span>
-          </div>
-          <div class="flex flex-wrap items-center gap-1.5">
-            <button
-              v-for="s in ctSlots"
-              :key="`ct-${s.slot}-${s.steam_id}`"
-              type="button"
-              :class="[
-                'group inline-flex h-9 items-center gap-1.5 rounded-md border px-2 font-mono text-xs transition-all duration-100 select-none cursor-pointer',
-                sideClasses('CT', slotIsActive(s), flashSlot === s.slot),
-                !s.alive && !slotIsActive(s) ? 'opacity-50' : '',
-              ]"
-              :title="s.name ?? `Slot ${s.slot}`"
-              @click="pressSlot(s.slot)"
-            >
-              <span
-                class="inline-flex h-5 w-5 items-center justify-center rounded text-[0.65rem] font-bold tabular-nums bg-foreground/10"
-                :title="`Slot ${s.slot} · key ${keyForSlot(s.slot)}`"
-              >
-                {{ keyForSlot(s.slot) }}
-              </span>
-              <span
-                :class="[
-                  'truncate max-w-[8rem] font-medium',
-                  !s.alive ? 'line-through' : '',
-                ]"
-              >
-                {{ s.name ?? `Slot ${s.slot}` }}
-              </span>
-            </button>
-          </div>
-        </div>
-        <div class="flex items-center gap-3">
-          <div class="flex items-center gap-1.5 min-w-[8rem]">
-            <span
-              :class="['inline-block size-1.5 rounded-full', sideDotClass('T')]"
-            />
-            <span
-              class="truncate font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground/80"
-            >
-              {{ tTeamName() }}
-              <span
-                class="ml-1 px-1 rounded font-bold bg-amber-500/20 text-amber-200"
-              >
-                T
-              </span>
-              <span
-                v-if="store.gsiTeamCtScore || store.gsiTeamTScore"
-                class="ml-1 text-foreground"
-              >
-                {{ store.gsiTeamTScore }}
-              </span>
-            </span>
-          </div>
-          <div class="flex flex-wrap items-center gap-1.5">
-            <button
-              v-for="s in tSlots"
-              :key="`t-${s.slot}-${s.steam_id}`"
-              type="button"
-              :class="[
-                'group inline-flex h-9 items-center gap-1.5 rounded-md border px-2 font-mono text-xs transition-all duration-100 select-none cursor-pointer',
-                sideClasses('T', slotIsActive(s), flashSlot === s.slot),
-                !s.alive && !slotIsActive(s) ? 'opacity-50' : '',
-              ]"
-              :title="s.name ?? `Slot ${s.slot}`"
-              @click="pressSlot(s.slot)"
-            >
-              <span
-                class="inline-flex h-5 w-5 items-center justify-center rounded text-[0.65rem] font-bold tabular-nums bg-foreground/10"
-                :title="`Slot ${s.slot} · key ${keyForSlot(s.slot)}`"
-              >
-                {{ keyForSlot(s.slot) }}
-              </span>
-              <span
-                :class="[
-                  'truncate max-w-[8rem] font-medium',
-                  !s.alive ? 'line-through' : '',
-                ]"
-              >
-                {{ s.name ?? `Slot ${s.slot}` }}
-              </span>
-            </button>
-          </div>
-        </div>
-      </div>
-      <p
-        v-else-if="store.isPlaying"
-        class="text-[0.65rem] uppercase tracking-wider text-muted-foreground/60 font-mono"
-      >
-        Waiting for cs2 game state…
-      </p>
+      <SpectatorSlots
+        v-if="store.isPlaying || ctSlots.length || tSlots.length"
+        layout="grid"
+        :ct-slots="ctSlots"
+        :t-slots="tSlots"
+        :team-ct-name="store.gsiTeamCtName"
+        :team-t-name="store.gsiTeamTName"
+        :team-ct-score="store.gsiTeamCtScore"
+        :team-t-score="store.gsiTeamTScore"
+        :active-steam-id="store.spectatedSteamId"
+        :flash-slot="flashSlot"
+        @press-slot="(slot: number) => pressSlot(slot)"
+      />
 
       <!-- 3-col grid keeps the transport cluster centered regardless
            of how wide the panel gets. -->

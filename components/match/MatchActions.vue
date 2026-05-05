@@ -1,8 +1,13 @@
 <script setup lang="ts">
-import { MoreVertical } from "lucide-vue-next";
+import { MoreVertical, Radio } from "lucide-vue-next";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
+import {
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+} from "~/components/ui/dropdown-menu";
 import MatchLobbyAccess from "./MatchLobbyAccess.vue";
 import {
   e_match_status_enum,
@@ -62,24 +67,48 @@ import {
           <!-- "Start" only shows when there's nothing running. Once
                a Job exists (booting OR live), the only remaining
                action is to stop it — booting needs to be cancellable
-               so a stuck/wrong-server start can be undone. -->
-          <DropdownMenuItem
-            v-if="isLive && gameStreamerStatus === 'off'"
-            :disabled="!canStartLive"
-            @click="startLive"
-          >
-            <div class="flex flex-col items-start leading-tight">
+               so a stuck/wrong-server start can be undone.
+
+               Two modes:
+               - "live"  — direct game-port observer connect, no GOTV delay
+               - "tv"    — GOTV/Playcast, honors tv_delay (default ~115s) -->
+          <DropdownMenuSub v-if="isLive && gameStreamerStatus === 'off'">
+            <DropdownMenuSubTrigger
+              :disabled="!canStartLiveDirect && !canStartLiveTv"
+            >
+              <Radio class="h-3.5 w-3.5 mr-2 text-muted-foreground" />
               <span>{{ $t("match.actions.start_live") }}</span>
-              <span
-                v-if="!canStartLive"
-                class="text-xs text-muted-foreground mt-0.5"
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent class="w-64">
+              <DropdownMenuItem
+                :disabled="!canStartLiveDirect"
+                class="flex flex-col items-start gap-0.5"
+                @click="startLive('live')"
               >
-                {{ $t("match.actions.start_live_waiting_tv") }}
-              </span>
-            </div>
-          </DropdownMenuItem>
+                <span>{{ $t("match.actions.start_live_direct") }}</span>
+                <span class="text-xs text-muted-foreground">
+                  {{ $t("match.actions.start_live_direct_hint") }}
+                </span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                :disabled="!canStartLiveTv"
+                class="flex flex-col items-start gap-0.5"
+                @click="startLive('tv')"
+              >
+                <span>{{ $t("match.actions.start_live_tv") }}</span>
+                <span class="text-xs text-muted-foreground">
+                  {{
+                    canStartLiveTv
+                      ? $t("match.actions.start_live_tv_hint")
+                      : $t("match.actions.start_live_waiting_tv")
+                  }}
+                </span>
+              </DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
           <DropdownMenuItem
-            v-else-if="gameStreamerStatus !== 'off'"
+            v-if="gameStreamerStatus !== 'off'"
+            class="text-destructive"
             @click="stopLive"
           >
             <template v-if="gameStreamerStatus === 'booting'">
@@ -189,6 +218,9 @@ export default {
     return {
       showDeleteDialog: false,
       rconUuid: undefined as string | undefined,
+      // Guards the auto-stop watcher so we don't fire `stopLive` more
+      // than once when the match settles into a finished status.
+      autoStopFired: false,
     };
   },
   created() {
@@ -197,6 +229,24 @@ export default {
   },
   beforeUnmount() {
     socket.removeListener("rcon", this.onRconResponse);
+  },
+  watch: {
+    // Match transitioning out of Live (Finished/Forfeit/Tie/Surrendered/
+    // Canceled) while the streamer pod is still attached — fire stopLive
+    // once so the pod tears down cleanly without an organizer having to
+    // remember to click Stop. Booting jobs are stopped too: a half-booted
+    // pod after the match wraps is just wasted compute.
+    "match.status"(status: e_match_status_enum) {
+      if (status === e_match_status_enum.Live) {
+        this.autoStopFired = false;
+        return;
+      }
+      if (this.autoStopFired) return;
+      if (this.gameStreamerStatus === "off") return;
+      if (!this.match.is_organizer) return;
+      this.autoStopFired = true;
+      this.stopLiveSilently();
+    },
   },
   methods: {
     async cancelMatch() {
@@ -246,11 +296,11 @@ export default {
         }),
       });
     },
-    async startLive() {
+    async startLive(mode: "live" | "tv") {
       try {
         await this.$apollo.mutate({
           mutation: generateMutation({
-            startLive: [{ match_id: this.match.id }, { success: true }],
+            startLive: [{ match_id: this.match.id, mode }, { success: true }],
           }),
         });
         toast({ title: this.$t("match.actions.live_started") });
@@ -276,6 +326,20 @@ export default {
           title: this.$t("common.error"),
           description: error?.message,
         });
+      }
+    },
+    // Auto-stop variant — no toast on success (the pod going away is
+    // self-evident from the UI), but still surface errors so a stuck
+    // pod is visible.
+    async stopLiveSilently() {
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            stopLive: [{ match_id: this.match.id }, { success: true }],
+          }),
+        });
+      } catch (error: any) {
+        console.error("[match-actions] auto stopLive failed:", error);
       }
     },
     async createClipsForMatch() {
@@ -344,19 +408,32 @@ export default {
         (m: any) => (m?.demos?.length ?? 0) > 0,
       );
     },
+    // True only when the live-actions block in the dropdown will render
+    // at least one item — otherwise its leading separator becomes an
+    // orphan (visible as a stray divider with no content following).
     hasOrganizerLiveActions() {
-      return (
-        (this.isLive && this.gameStreamerStatus === "off") ||
-        this.gameStreamerStatus !== "off" ||
-        this.hasMatchDemos
-      );
+      const startVisible =
+        this.gameStreamerStatus === "off" &&
+        (this.canStartLiveDirect || this.canStartLiveTv);
+      const stopVisible = this.gameStreamerStatus !== "off";
+      return startVisible || stopVisible || this.hasMatchDemos;
     },
-    // The streamer pod connects to the match through the GOTV link, so
-    // there's nothing to attach to until `tv_connection_string` is
-    // published — which only happens after the configured `tv_delay`
-    // (default 115s) elapses on the game server.
-    canStartLive() {
-      return !!this.match.tv_connection_string;
+    // Direct (live) mode: the streamer pod joins the game port as an
+    // observer with no GOTV delay. Available the moment the match goes
+    // Live and the server is up — `can_stream_live` is the SQL truth.
+    canStartLiveDirect() {
+      return !!this.match.can_stream_live;
+    },
+    // TV mode: GOTV/Playcast path. Both `can_stream_tv` and
+    // `tv_connection_string` come back null for organizers who are also
+    // in the match (Hasura row perms gate connection details to
+    // non-participants), so neither can drive the gate. TV doesn't
+    // conflict with players occupying game-port slots, so we just
+    // require a Live match on a reachable server — the streamer pod
+    // handles the `tv_delay` wait on its own and retries until GOTV
+    // accepts the connection.
+    canStartLiveTv() {
+      return this.isLive && !!this.match.is_server_online;
     },
     // "off"     — no game-streamer row (Start button shown)
     // "booting" — row exists, is_live = false (Cancel item with the

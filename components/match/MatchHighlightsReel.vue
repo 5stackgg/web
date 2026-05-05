@@ -399,7 +399,9 @@ function clipTeamName(c: Clip): string | null {
             inlinePlaying = true;
             startProgressLoop();
           "
-          @volumechange="inlineMuted = ($event.target as HTMLVideoElement).muted"
+          @volumechange="
+            inlineMuted = ($event.target as HTMLVideoElement).muted
+          "
           @click="toggleInlinePlayback"
         />
         <NuxtImg
@@ -629,7 +631,9 @@ function clipTeamName(c: Clip): string | null {
                 v-if="c.download_url"
                 :src="c.download_url"
                 :poster="
-                  c.thumbnail_download_url ?? c.match_map?.map?.poster ?? undefined
+                  c.thumbnail_download_url ??
+                  c.match_map?.map?.poster ??
+                  undefined
                 "
                 class="h-full w-full object-cover opacity-80"
                 muted
@@ -638,7 +642,9 @@ function clipTeamName(c: Clip): string | null {
               />
               <NuxtImg
                 v-else-if="c.thumbnail_download_url ?? c.match_map?.map?.poster"
-                :src="c.thumbnail_download_url ?? c.match_map?.map?.poster ?? ''"
+                :src="
+                  c.thumbnail_download_url ?? c.match_map?.map?.poster ?? ''
+                "
                 :alt="c.title ?? 'Highlight'"
                 class="h-full w-full object-cover opacity-80"
               />

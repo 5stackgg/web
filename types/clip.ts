@@ -1,0 +1,50 @@
+// Mirrors graphql/matchClip.ts — extend both together.
+export type ClipPlayerRef = {
+  steam_id: string;
+  name: string;
+  avatar_url: string | null;
+};
+
+export type ClipLineupRef = {
+  id: string;
+  name: string;
+};
+
+export type ClipMatchContext = {
+  id: string;
+  status: string | null;
+  started_at: string | null;
+  ended_at: string | null;
+  winning_lineup_id: string | null;
+  is_tournament_match: boolean | null;
+  lineup_1_id: string | null;
+  lineup_2_id: string | null;
+  lineup_1?: ClipLineupRef | null;
+  lineup_2?: ClipLineupRef | null;
+  options?: { best_of: number | null; mr: number | null } | null;
+};
+
+export type ClipMatchMapContext = {
+  id: string;
+  lineup_1_score: number | null;
+  lineup_2_score: number | null;
+  winning_lineup_id: string | null;
+  map?: { name: string; poster: string | null; label: string | null } | null;
+  match?: ClipMatchContext | null;
+};
+
+export type Clip = {
+  id: string;
+  user_steam_id: string;
+  target_steam_id: string | null;
+  match_map_id?: string | null;
+  title: string | null;
+  duration_ms: number | null;
+  download_url: string | null;
+  thumbnail_url: string | null;
+  visibility: string;
+  created_at: string;
+  user?: ClipPlayerRef | null;
+  target?: ClipPlayerRef | null;
+  match_map?: ClipMatchMapContext | null;
+};

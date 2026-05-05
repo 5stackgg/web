@@ -1906,12 +1906,13 @@
             "match_paused": "Match paused",
             "match_resumed": "Match resumed",
             "start_live": "Start Live Stream",
+            "start_live_waiting_tv": "Waiting for TV connection…",
             "stop_live": "Stop Live Stream",
             "cancel_live_boot": "Cancel Live Stream (booting…)",
-            "create_clips": "Create Clips",
+            "create_clips": "Create Player Highlights",
             "live_started": "Live stream starting",
             "live_stopped": "Live stream stopped",
-            "clips_started": "Clip render queued"
+            "clips_started": "Player highlight renders queued"
         },
         "delete_confirm": {
             "title": "Delete Match",

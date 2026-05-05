@@ -5,9 +5,11 @@ import LineupOverview from "~/components/match/LineupOverview.vue";
 import LineupUtility from "~/components/match/LineupUtility.vue";
 import LineupOpeningDuels from "~/components/match/LineupOpeningDuels.vue";
 import LineupClutches from "~/components/match/LineupClutches.vue";
+import MatchClipsTab from "~/components/match/MatchClipsTab.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
-import { provide } from "vue";
+import { computed, inject, provide, type Ref } from "vue";
 import EventEmitter from "eventemitter3";
+import type { Clip } from "~/types/clip";
 import { Button } from "~/components/ui/button";
 import {
   FormControl,
@@ -38,6 +40,12 @@ import cleanMapName from "~/utilities/cleanMapName";
 
 const commander = new EventEmitter();
 provide("commander", commander);
+
+// Inject in setup, not Options-`inject:` — Options-side returns a
+// non-reactive snapshot of `.value`.
+const matchClipsRef = inject<Ref<Clip[]> | null>("matchClips", null);
+const matchClipsCount = computed(() => matchClipsRef?.value?.length ?? 0);
+const hasMatchClips = computed(() => matchClipsCount.value > 0);
 </script>
 
 <template>
@@ -146,6 +154,10 @@ provide("commander", commander);
           >
             {{ $t("common.map_veto") }}
           </SelectItem>
+          <SelectItem v-if="hasMatchClips" value="clips">
+            {{ $t("match.tabs.clips") || "Clips" }}
+            ({{ matchClipsCount }})
+          </SelectItem>
           <SelectItem value="settings">
             {{ $t("match.tabs.settings") }}
           </SelectItem>
@@ -184,6 +196,14 @@ provide("commander", commander);
           v-if="match.options.map_veto || match.options.region_veto"
         >
           {{ $t("common.map_veto") }}
+        </TabsTrigger>
+        <TabsTrigger value="clips" v-if="hasMatchClips">
+          {{ $t("match.tabs.clips") || "Clips" }}
+          <span
+            class="ml-1.5 inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[hsl(var(--tac-amber)/0.15)] px-1 font-mono text-[0.55rem] font-bold tabular-nums text-[hsl(var(--tac-amber))]"
+          >
+            {{ matchClipsCount }}
+          </span>
         </TabsTrigger>
         <TabsTrigger value="settings">
           {{ $t("match.tabs.settings") }}
@@ -459,6 +479,7 @@ provide("commander", commander);
         v-show="hasLogs"
         :service="`m-${match.id}`"
         :compact="true"
+        :disable-retry="isMatchTerminal"
         @has-logs="hasLogs = $event"
       />
     </TabsContent>
@@ -508,6 +529,9 @@ provide("commander", commander);
     </TabsContent>
     <TabsContent value="streams" class="max-w-[1500px]">
       <MatchLiveStreams :match="match" />
+    </TabsContent>
+    <TabsContent value="clips" class="max-w-[1500px]">
+      <MatchClipsTab :match="match" />
     </TabsContent>
   </Tabs>
 </template>
@@ -746,16 +770,17 @@ export default {
     mapSelectValue() {
       return this.activeMap?.id ?? "__all__";
     },
+    isMatchTerminal() {
+      return [
+        e_match_status_enum.Finished,
+        e_match_status_enum.Forfeit,
+        e_match_status_enum.Surrendered,
+        e_match_status_enum.Tie,
+        e_match_status_enum.Canceled,
+      ].includes(this.match.status);
+    },
     canConfigureStreams() {
-      if (
-        [
-          e_match_status_enum.Finished,
-          e_match_status_enum.Forfeit,
-          e_match_status_enum.Surrendered,
-          e_match_status_enum.Tie,
-          e_match_status_enum.Canceled,
-        ].includes(this.match.status)
-      ) {
+      if (this.isMatchTerminal) {
         return false;
       }
 
@@ -870,6 +895,10 @@ export default {
         this.match.match_maps.length > 0
       ) {
         tabs.push("veto");
+      }
+
+      if (this.hasMatchClips) {
+        tabs.push("clips");
       }
 
       tabs.push("settings");

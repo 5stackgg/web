@@ -8,38 +8,25 @@ import {
   Minus,
 } from "lucide-vue-next";
 
-// Step-by-step boot status for a streamer pod session. The pod's
-// status-reporter writes the current stage to the row (match_streams
-// for live, match_demo_sessions for demo); the parent subscribes and
-// feeds us the row.
+// Stepper for a streamer-pod session boot.
 //
-// We render every stage in the predefined list, but the icons reflect
-// what actually happened — driven by the `status_history` array (each
-// status the reporter has emitted, with timestamps), NOT just the
-// latest status. With parallelization a stage like `downloading_cs2`
-// only fires on cold pods; the old "if status is past stage X, mark X
-// done" logic falsely marked X as ✓ on warm boots. Now: a stage shows
-// ✓ only if its key appears in status_history; stages we skipped past
-// without seeing render with a Minus (skipped) icon.
-//
-// On a fresh refresh the parent re-fetches the row → status_history
-// arrives populated → the stepper shows the correct cumulative state
-// instantly without replay.
+// Stages aren't serial — some parallelise, others (cached-creds
+// login) don't always emit. `meta` controls how a non-fired stage
+// renders when we're already past it:
+//   • required    → mark ✓ silently (must have happened)
+//   • conditional → "skipped" label (warm pod / stock map)
+//   • implicit    → hide entirely (internal sub-step)
+type StageMeta = "required" | "conditional" | "implicit";
+type Stage = { key: string; label: string; meta?: StageMeta };
 
 const props = withDefaults(
   defineProps<{
     status: string;
     errorMessage?: string | null;
-    // ISO timestamp of when the row last changed status. Used to
-    // render a "12s" ticker on the current stage; helps the operator
-    // decide whether a stage has stalled or is just slow.
+    // Drives the live "12s" ticker on the current stage.
     lastStatusAt?: string | null;
-    stages: { key: string; label: string }[];
+    stages: Stage[];
     headerLabel?: string;
-    // Each entry the streamer pod reported in chronological order.
-    // The row default is `[]` so this is always present after the
-    // 1778100000000 migration; older rows pre-migration just look
-    // like a stepper with no completed-stages indicator (graceful).
     statusHistory?: Array<{ status: string; at: string }>;
   }>(),
   {
@@ -50,9 +37,7 @@ const props = withDefaults(
 
 const firedStatuses = computed(() => {
   const set = new Set<string>(props.statusHistory.map((h) => h.status));
-  // The current `status` prop is the most recent push — append in
-  // case it hasn't landed in history yet (race between the row
-  // update fan-out and the subscription delivery).
+  // status push may race ahead of history fan-out.
   if (props.status) set.add(props.status);
   return set;
 });
@@ -61,9 +46,6 @@ const currentIndex = computed(() => {
   return props.stages.findIndex((s) => s.key === props.status);
 });
 
-// Tick every second for the elapsed counter. We rely on a ref'd Date
-// value so reactivity fires; setInterval doesn't auto-trigger Vue
-// without something reactive to read.
 const now = ref(Date.now());
 const ticker = setInterval(() => {
   now.value = Date.now();
@@ -86,16 +68,24 @@ function stateOf(index: number): StageState {
   const stage = props.stages[index];
   if (!stage) return "pending";
   if (index === currentIndex.value) return "current";
-  // A stage is "done" only if its key appears in the history. A
-  // stage that we're past but never saw fired = "skipped" (the
-  // pipeline went a different route — e.g. cs2 already installed).
   if (firedStatuses.value.has(stage.key)) return "done";
-  // Past the current index without firing → skipped. Future →
-  // pending. (`current` on errored stays current with the alert
-  // icon.)
   if (currentIndex.value < 0) return "pending";
-  return index < currentIndex.value ? "skipped" : "pending";
+  if (index < currentIndex.value) {
+    const meta = stage.meta ?? "required";
+    if (meta === "conditional") return "skipped";
+    return "done";
+  }
+  return "pending";
 }
+
+const visibleStages = computed(() =>
+  props.stages
+    .map((stage, index) => ({ stage, index }))
+    .filter(({ stage, index }) => {
+      if ((stage.meta ?? "required") !== "implicit") return true;
+      return firedStatuses.value.has(stage.key) || index === currentIndex.value;
+    }),
+);
 
 function fmt(ms: number): string {
   if (!Number.isFinite(ms) || ms < 0) return "";
@@ -106,19 +96,13 @@ function fmt(ms: number): string {
   return `${m}m ${s.toString().padStart(2, "0")}s`;
 }
 
-// Duration of a completed stage = (next history entry's `at`) - (this
-// stage's `at`). Looking up the NEXT entry — not the next stage in
-// our predefined list — is what matters: the pipeline may have
-// jumped over a stage we don't know about, and the wall time we want
-// is "from this stage's emit to whatever came after it".
+// Look up the next history entry — the pipeline may have skipped
+// stages we don't know about; we want emit-to-emit wall time.
 function durationFor(stageKey: string): string {
   const history = props.statusHistory;
   const idx = history.findIndex((h) => h.status === stageKey);
   if (idx < 0) return "";
   const start = new Date(history[idx].at).getTime();
-  // If a later entry exists, use its time; otherwise this is the
-  // most-recent emit and it's still "ticking" — caller renders the
-  // live elapsedOnCurrent for that one instead.
   const next = history[idx + 1];
   if (!next) return "";
   return fmt(new Date(next.at).getTime() - start);
@@ -136,7 +120,7 @@ function durationFor(stageKey: string): string {
     </p>
     <ul class="flex flex-col gap-1.5">
       <li
-        v-for="(stage, index) in stages"
+        v-for="{ stage, index } in visibleStages"
         :key="stage.key"
         class="flex items-center gap-2.5 text-xs transition-colors"
         :class="{

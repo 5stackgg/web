@@ -396,6 +396,24 @@ const loginArrowClasses =
                           </NuxtLink>
                         </NavigationMenuLink>
                       </li>
+                      <li v-if="canViewHighlights">
+                        <NavigationMenuLink as-child>
+                          <NuxtLink
+                            to="/highlights"
+                            :class="[navItemClasses, navItemStackedClasses]"
+                          >
+                            <span :class="navItemChevronClasses">◢</span>
+                            <span :class="navItemContentClasses">
+                              <span :class="navItemLabelClasses">
+                                Highlights
+                              </span>
+                              <span :class="navItemSubClasses">
+                                Public clips from across the platform.
+                              </span>
+                            </span>
+                          </NuxtLink>
+                        </NavigationMenuLink>
+                      </li>
                     </ul>
                   </div>
 
@@ -595,6 +613,9 @@ export default {
     },
     showReportIssue() {
       return useApplicationSettingsStore().showReportIssue;
+    },
+    canViewHighlights() {
+      return useApplicationSettingsStore().canViewHighlights;
     },
     me() {
       return useAuthStore().me;

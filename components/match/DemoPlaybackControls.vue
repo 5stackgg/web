@@ -14,7 +14,12 @@ import {
   RotateCcw,
   Bone,
   PanelBottom,
+  Film,
+  Sparkles,
+  Scissors,
 } from "lucide-vue-next";
+import { useAuthStore } from "~/stores/AuthStore";
+import CreateClipDialog from "~/components/clips/CreateClipDialog.vue";
 import { Button } from "~/components/ui/button";
 import { Kbd } from "~/components/ui/kbd";
 import { Slider } from "~/components/ui/slider";
@@ -34,10 +39,23 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
-import {
-  specSlotsForMatchType,
-  type SpecSlot,
-} from "~/utilities/streamerSpecSlots";
+import { useClipEditor } from "~/composables/useClipEditor";
+import { keyForSlot } from "~/utilities/streamerSpecSlots";
+
+// API gates clip creation at verified_user; we only check "logged in"
+// on the client so any logged-in viewer sees the button.
+const canCreateClip = computed(() => !!useAuthStore().me?.steam_id);
+const showCreateClipDialog = ref(false);
+const dialogInitialMode = ref<"manual" | "auto">("auto");
+const editor = useClipEditor();
+function openAutoClip() {
+  dialogInitialMode.value = "auto";
+  showCreateClipDialog.value = true;
+}
+function toggleClipEditor() {
+  if (editor.active.value) editor.close();
+  else editor.open();
+}
 
 const {
   store,
@@ -59,14 +77,46 @@ const {
   toggleDemoUI,
 } = useDemoPlayback();
 
-// Same slot-table the live stream-deck uses (utilities/streamerSpecSlots.ts).
-// matchType comes from the match_map_demos -> match.options.type query in
-// useDemoPlayback.loadMetadata. Falls through to Competitive on null.
-const slotKeys = computed<SpecSlot[]>(() =>
-  specSlotsForMatchType(store.matchType),
+// Slot identity is GSI — survives a demo attached to the wrong match_map.
+type SlotInfo = (typeof store.specSlots)[number];
+const ctSlots = computed(() =>
+  store.specSlots
+    .filter((s) => s.team === "CT")
+    .slice()
+    .sort((a, b) => a.slot - b.slot),
 );
-const team1Slots = computed(() => slotKeys.value.filter((s) => s.team === 1));
-const team2Slots = computed(() => slotKeys.value.filter((s) => s.team === 2));
+const tSlots = computed(() =>
+  store.specSlots
+    .filter((s) => s.team === "T")
+    .slice()
+    .sort((a, b) => a.slot - b.slot),
+);
+const hasGsi = computed(() => store.specSlots.length > 0);
+
+function slotIsActive(s: SlotInfo): boolean {
+  if (!store.spectatedSteamId) return false;
+  return s.steam_id === store.spectatedSteamId;
+}
+function sideClasses(side: "T" | "CT", isActive: boolean, isFlash: boolean) {
+  const wantHighlight = isActive || isFlash;
+  if (side === "CT") {
+    return wantHighlight
+      ? "border-blue-400 bg-blue-500/20 text-blue-200"
+      : "border-blue-500/40 bg-blue-500/5 text-foreground/80 hover:border-blue-400/70 hover:bg-blue-500/10 hover:text-blue-100 active:scale-95";
+  }
+  return wantHighlight
+    ? "border-amber-400 bg-amber-500/20 text-amber-100"
+    : "border-amber-500/40 bg-amber-500/5 text-foreground/80 hover:border-amber-400/70 hover:bg-amber-500/10 hover:text-amber-100 active:scale-95";
+}
+function sideDotClass(side: "T" | "CT") {
+  return side === "CT" ? "bg-blue-400" : "bg-amber-400";
+}
+function ctTeamName(): string {
+  return store.gsiTeamCtName || "Counter-Terrorists";
+}
+function tTeamName(): string {
+  return store.gsiTeamTName || "Terrorists";
+}
 
 const flashSlot = ref<number | null>(null);
 let flashTimer: ReturnType<typeof setTimeout> | null = null;
@@ -79,34 +129,18 @@ function pressSlot(slot: number) {
   switchToSlot(slot);
 }
 
-// Most controls bind to keys in cs2's autoexec — each click fires a
-// single xdotool keystroke (no console flash). The seek slider, round
-// chips, and event-jump buttons depend on parser metadata; without it
-// we render a thinner UI with just play/pause/skip/speed.
+// Seek/round-jump need parser metadata; without it we fall back to
+// just play/pause/skip/speed.
 const hasMetadata = computed(() => store.totalTicks > 0 && store.tickRate > 0);
 
 const seekModel = ref<number[]>([0]);
 const dragging = ref(false);
 
-// rAF-driven smoothing layer for the seek thumb. The store's
-// `currentTick` is the source of truth, but raw it advances by ~1
-// tick per frame during playback (smooth) and by thousands of ticks
-// at once on seek/skip/round-jump (jumpy). We render `visualTick`
-// instead — for small diffs (normal playback) it tracks `currentTick`
-// 1:1, but when a jump opens a gap larger than the threshold, we
-// ease the visual position into the target with exponential
-// smoothing so the thumb glides into the new position instead of
-// teleporting. Threshold is ~0.75s of ticks so a single dropped
-// frame at high host_timescale doesn't trigger a tween.
+// Smooths the seek thumb on jumps; small per-frame diffs track 1:1.
 const visualTick = ref(0);
 let rafHandle: number | null = null;
 
-// One-shot pulse ring overlay. Bumped on every seek that originates
-// from a user click (slider, skull, round tick, kill nav). The
-// `:key` on the ring forces Vue to mount a fresh element each pulse
-// so the CSS animation re-runs from frame 0; otherwise consecutive
-// clicks at the same spot would just re-target a still-running
-// animation and the ring wouldn't appear to retrigger.
+// :key bumps each pulse so the CSS animation restarts from frame 0.
 const pulseSerial = ref(0);
 const pulseTick = ref(0);
 function pulseAt(tick: number) {
@@ -118,30 +152,118 @@ const pulseLeft = computed(() =>
     ? `${(pulseTick.value / store.totalTicks) * 100}%`
     : "0%",
 );
+// Skip writes when nothing changed so a paused demo doesn't fire a
+// reactive update every frame.
 function frame() {
   rafHandle = requestAnimationFrame(frame);
   if (!hasMetadata.value || dragging.value) return;
   const target = store.currentTick;
   const diff = target - visualTick.value;
+  if (diff === 0) return;
   const threshold = store.tickRate * 0.75;
   if (Math.abs(diff) > threshold) {
-    // Big jump — ease toward the target. 0.18 gives a ~300ms settle
-    // at 60fps, which reads as a quick glide instead of a teleport.
+    // Big jump — ease in (0.18 ≈ 300ms at 60fps).
     visualTick.value += diff * 0.18;
-    // Snap the last few ticks so the slider lands exactly on target
-    // (otherwise floating-point drift leaves it perpetually short).
     if (Math.abs(target - visualTick.value) < 2) visualTick.value = target;
   } else {
     visualTick.value = target;
   }
-  seekModel.value = [Math.round(visualTick.value)];
+  const nextSlider = Math.round(visualTick.value);
+  if (seekModel.value[0] !== nextSlider) {
+    seekModel.value = [nextSlider];
+  }
 }
+// Keyboard shortcuts. Mirrors stream-deck plus playback-specific keys.
+function isTypingTarget(target: EventTarget | null): boolean {
+  if (!(target instanceof HTMLElement)) return false;
+  return (
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    target.isContentEditable
+  );
+}
+const SLOT_KEY_MAP: Record<string, number> = {
+  "1": 1,
+  "2": 2,
+  "3": 3,
+  "4": 4,
+  "5": 5,
+  "6": 6,
+  "7": 7,
+  "8": 8,
+  "9": 9,
+  "0": 10,
+};
+function onKeyDown(e: KeyboardEvent) {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  if (isTypingTarget(e.target)) return;
+
+  const slot = SLOT_KEY_MAP[e.key];
+  if (slot != null) {
+    e.preventDefault();
+    pressSlot(slot);
+    return;
+  }
+  if (e.key === " " || e.code === "Space") {
+    e.preventDefault();
+    togglePause();
+    return;
+  }
+  if (e.key === "ArrowLeft") {
+    e.preventDefault();
+    skip(-15);
+    return;
+  }
+  if (e.key === "ArrowRight") {
+    e.preventDefault();
+    skip(15);
+    return;
+  }
+  if (e.key === "[") {
+    e.preventDefault();
+    jumpToPrevRound();
+    return;
+  }
+  if (e.key === "]") {
+    e.preventDefault();
+    jumpToNextRound();
+    return;
+  }
+  if (e.key === "p" || e.key === "P") {
+    e.preventDefault();
+    jumpToPrevKill();
+    return;
+  }
+  if (e.key === "n" || e.key === "N") {
+    e.preventDefault();
+    jumpToNextKill();
+    return;
+  }
+  if (e.key === "r" || e.key === "R") {
+    e.preventDefault();
+    reloadDemo();
+    return;
+  }
+  if (e.key === "x" || e.key === "X") {
+    e.preventDefault();
+    toggleXray();
+    return;
+  }
+  if (e.key === "h" || e.key === "H") {
+    e.preventDefault();
+    toggleHud();
+    return;
+  }
+}
+
 onMounted(() => {
   visualTick.value = store.currentTick;
   rafHandle = requestAnimationFrame(frame);
+  window.addEventListener("keydown", onKeyDown);
 });
 onBeforeUnmount(() => {
   if (rafHandle !== null) cancelAnimationFrame(rafHandle);
+  window.removeEventListener("keydown", onKeyDown);
 });
 
 function onSeekStart() {
@@ -193,9 +315,57 @@ function formatSeconds(s: number): string {
 // never flashes the dev console.
 const SPEED_OPTIONS = [0.25, 0.5, 1, 2, 4];
 
-const hasRosters = computed(
-  () => store.rosters.lineup1.length > 0 || store.rosters.lineup2.length > 0,
+// Kill filter dropdown derives its players from the parsed demo's
+// kill events, NOT from the api lineup. Demos can be loaded against
+// a mismatched match_map row, in which case the lineup contains the
+// wrong steam_ids and the filter would silently report 0 kills for
+// every player. The killer/victim steam_ids in the kills array are
+// always the real demo players, so unique-ing those gives us the
+// authoritative list. Names + side come from GSI when available,
+// with a steam-id-suffix fallback for stragglers (bots, world
+// damage attribution, etc).
+type KillPlayer = {
+  steam_id: string;
+  name: string;
+  team: "T" | "CT" | null;
+};
+const demoPlayers = computed<KillPlayer[]>(() => {
+  const seen = new Set<string>();
+  const players: KillPlayer[] = [];
+  const gsiByStId = new Map<string, (typeof store.specSlots)[number]>();
+  for (const s of store.specSlots) {
+    if (s.steam_id) gsiByStId.set(s.steam_id, s);
+  }
+  const add = (sid: string | undefined) => {
+    if (!sid || seen.has(sid)) return;
+    seen.add(sid);
+    const gsi = gsiByStId.get(sid);
+    players.push({
+      steam_id: sid,
+      name: gsi?.name ?? store.playerNames[sid] ?? `#${sid.slice(-4)}`,
+      team: gsi?.team ?? null,
+    });
+  };
+  for (const k of store.kills) {
+    add(k.killer);
+    add(k.victim);
+  }
+  // Names sort within each team for predictable scanning.
+  return players.sort((a, b) => a.name.localeCompare(b.name));
+});
+const ctDemoPlayers = computed(() =>
+  demoPlayers.value.filter((p) => p.team === "CT"),
 );
+const tDemoPlayers = computed(() =>
+  demoPlayers.value.filter((p) => p.team === "T"),
+);
+// Players we couldn't team-assign via GSI (their steam_id only
+// shows up in kills metadata, not in current allplayers — common
+// for demos where someone left mid-match, or before GSI lands).
+const otherDemoPlayers = computed(() =>
+  demoPlayers.value.filter((p) => p.team !== "CT" && p.team !== "T"),
+);
+const hasDemoPlayers = computed(() => demoPlayers.value.length > 0);
 function killCountFor(steamId: string) {
   let n = 0;
   for (const k of store.kills) {
@@ -210,7 +380,10 @@ function killCountFor(steamId: string) {
 const activeFilterLabel = computed(() => {
   const sid = store.killFilterSteamId;
   if (!sid) return "All players";
-  const name = store.playerNames[sid] ?? `#${sid.slice(-4)}`;
+  // Prefer GSI's name (always matches the demo file) over the api
+  // lineup name (which can be wrong for cross-loaded demos).
+  const gsi = store.specSlots.find((s) => s.steam_id === sid);
+  const name = gsi?.name ?? store.playerNames[sid] ?? `#${sid.slice(-4)}`;
   return `${name} (${killCountFor(sid)})`;
 });
 
@@ -324,17 +497,12 @@ const killMarkers = computed<Marker[]>(() => {
 </script>
 
 <template>
-  <!-- All Tooltip primitives in this component need a TooltipProvider
-       ancestor — without it reka-ui throws "Injection
-       Symbol(TooltipProviderContext) not found" at setup time and the
-       whole controls panel fails to mount. -->
-  <TooltipProvider :delay-duration="200">
-    <div
-      class="flex flex-col gap-3 px-5 py-4 bg-card/95 backdrop-blur-sm border-t border-border/60"
-    >
-      <!-- End-of-demo prompt. cs2 drops back to the menu when the
-           demo finishes; the operator can click here (or hit R) to
-           re-fire playdemo without restarting the pod. -->
+  <!-- Real <div> root so the parent's Transition has an element to
+       animate; TooltipProvider renders no DOM. -->
+  <div
+    class="flex flex-col gap-3 px-5 py-4 bg-card/95 backdrop-blur-sm border-t border-border/60"
+  >
+    <TooltipProvider :delay-duration="200">
       <Transition name="reload-prompt">
         <div
           v-if="showReloadPrompt"
@@ -357,11 +525,6 @@ const killMarkers = computed<Marker[]>(() => {
         </div>
       </Transition>
 
-      <!-- Round chips at the top — they map directly onto the seek bar
-           below as landmarks, so reading downward is "round map → time
-           cursor". Render winner color when known. pt-1 leaves room
-           for the hover-lift translate so it isn't clipped by the
-           overflow-y-auto wrapper. -->
       <div
         v-if="store.roundTicks.length"
         class="flex flex-wrap gap-1.5 max-h-20 pt-1 overflow-y-auto"
@@ -393,11 +556,6 @@ const killMarkers = computed<Marker[]>(() => {
         </button>
       </div>
 
-      <!-- Seek slider + two marker rails. The skull rail floats above
-           the bar (so the icons read clearly without overlapping the
-           thumb), the round-tick rail sits inside the bar as a subtle
-           landmark. Both are pointer-events: auto only on the glyph
-           itself so dragging the slider underneath still works. -->
       <div v-if="hasMetadata" class="flex items-center gap-4">
         <span
           class="font-mono text-sm tabular-nums text-muted-foreground min-w-[3.5rem] text-right"
@@ -405,48 +563,39 @@ const killMarkers = computed<Marker[]>(() => {
           {{ formattedCurrent }}
         </span>
         <div class="flex-1 relative">
-          <!-- Skull rail — sits above the bar. Two-tone by victim team:
-               blue = CT killed, amber = T killed. Faint missing-team
-               skulls fall through to neutral red when the parser hasn't
-               filled victim_team yet (older demos / partial parses).
-               TransitionGroup so filter changes fade markers in/out
-               instead of popping. Key includes the kill tick so Vue
-               treats filtered-in skulls as new nodes. -->
+          <!-- Skull rail — two-tone by victim team. Plain buttons (not
+               reka-ui Tooltip) because TransitionGroup needs real DOM. -->
           <TransitionGroup
             tag="div"
             name="skull"
             class="relative h-4 mb-1 pointer-events-none"
             aria-hidden="true"
           >
-            <Tooltip v-for="m in killMarkers" :key="`s-${m.tick}`">
-              <TooltipTrigger as-child>
-                <button
-                  type="button"
-                  :style="{ left: m.left }"
-                  class="absolute bottom-0 -translate-x-1/2 pointer-events-auto cursor-pointer transition-all duration-150 hover:scale-150 hover:-translate-y-0.5 active:scale-125"
-                  :title="`${m.label} — click to jump`"
-                  @click="jumpToKill(m.tick)"
-                >
-                  <Skull
-                    :class="[
-                      m.headshot ? 'h-4 w-4' : 'h-3 w-3',
-                      {
-                        'text-blue-400 drop-shadow-[0_0_4px_rgba(96,165,250,0.7)]':
-                          m.victimTeam === 'ct',
-                        'text-amber-400 drop-shadow-[0_0_4px_rgba(251,191,36,0.7)]':
-                          m.victimTeam === 't',
-                        'text-red-400/70': !m.victimTeam,
-                      },
-                    ]"
-                    :stroke-width="m.headshot ? 3 : 2.25"
-                  />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>{{ m.label }}</TooltipContent>
-            </Tooltip>
+            <button
+              v-for="m in killMarkers"
+              :key="`s-${m.tick}`"
+              type="button"
+              :style="{ left: m.left }"
+              class="absolute bottom-0 -translate-x-1/2 pointer-events-auto cursor-pointer transition-all duration-150 hover:scale-150 hover:-translate-y-0.5 active:scale-125"
+              :title="`${m.label} — click to jump`"
+              @click="jumpToKill(m.tick)"
+            >
+              <Skull
+                :class="[
+                  m.headshot ? 'h-4 w-4' : 'h-3 w-3',
+                  {
+                    'text-blue-400 drop-shadow-[0_0_4px_rgba(96,165,250,0.7)]':
+                      m.victimTeam === 'ct',
+                    'text-amber-400 drop-shadow-[0_0_4px_rgba(251,191,36,0.7)]':
+                      m.victimTeam === 't',
+                    'text-red-400/70': !m.victimTeam,
+                  },
+                ]"
+                :stroke-width="m.headshot ? 3 : 2.25"
+              />
+            </button>
           </TransitionGroup>
 
-          <!-- Slider + round-tick rail. -->
           <div class="relative h-6">
             <Slider
               :model-value="seekModel"
@@ -475,9 +624,6 @@ const killMarkers = computed<Marker[]>(() => {
               </Tooltip>
             </div>
 
-            <!-- Click-pulse ring. Re-keyed on every pulse so the CSS
-                 animation restarts for back-to-back clicks. z-20 so it
-                 paints above the slider thumb but below tooltips. -->
             <span
               v-if="pulseSerial > 0"
               :key="pulseSerial"
@@ -500,79 +646,125 @@ const killMarkers = computed<Marker[]>(() => {
         Demo metadata not parsed yet — play/pause + skip + speed still work.
       </p>
 
-      <!-- Player switcher. One row per team, slot numbers map 1:1 to
-           cs2's `spec_player <n>`. Same layout as the live stream deck
-           (pages/stream-deck/[matchId].vue) but compacted to a single
-           inline strip so it co-exists with the playback controls. -->
-      <div v-if="slotKeys.length" class="flex flex-col gap-1.5">
+      <div v-if="hasGsi" class="flex flex-col gap-1.5">
         <div class="flex items-center gap-3">
-          <div class="flex items-center gap-1.5 min-w-[7rem]">
+          <div class="flex items-center gap-1.5 min-w-[8rem]">
             <span
-              class="inline-block size-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
+              :class="[
+                'inline-block size-1.5 rounded-full',
+                sideDotClass('CT'),
+              ]"
             />
             <span
               class="truncate font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground/80"
             >
-              {{ store.lineup1Name ?? "Team 1" }}
+              {{ ctTeamName() }}
+              <span
+                class="ml-1 px-1 rounded font-bold bg-blue-500/20 text-blue-300"
+              >
+                CT
+              </span>
+              <span
+                v-if="store.gsiTeamCtScore || store.gsiTeamTScore"
+                class="ml-1 text-foreground"
+              >
+                {{ store.gsiTeamCtScore }}
+              </span>
             </span>
           </div>
-          <div class="flex items-center gap-1.5">
+          <div class="flex flex-wrap items-center gap-1.5">
             <button
-              v-for="slot in team1Slots"
-              :key="slot.slot"
+              v-for="s in ctSlots"
+              :key="`ct-${s.slot}-${s.steam_id}`"
               type="button"
               :class="[
-                'h-9 min-w-[2.5rem] rounded-md border font-mono text-sm font-bold transition-all duration-100 select-none cursor-pointer',
-                flashSlot === slot.slot
-                  ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))] scale-95'
-                  : 'border-border/70 bg-card/40 text-foreground/80 hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground active:scale-95',
+                'group inline-flex h-9 items-center gap-1.5 rounded-md border px-2 font-mono text-xs transition-all duration-100 select-none cursor-pointer',
+                sideClasses('CT', slotIsActive(s), flashSlot === s.slot),
+                !s.alive && !slotIsActive(s) ? 'opacity-50' : '',
               ]"
-              @click="pressSlot(slot.slot)"
+              :title="s.name ?? `Slot ${s.slot}`"
+              @click="pressSlot(s.slot)"
             >
-              {{ slot.slot }}
+              <span
+                class="inline-flex h-5 w-5 items-center justify-center rounded text-[0.65rem] font-bold tabular-nums bg-foreground/10"
+                :title="`Slot ${s.slot} · key ${keyForSlot(s.slot)}`"
+              >
+                {{ keyForSlot(s.slot) }}
+              </span>
+              <span
+                :class="[
+                  'truncate max-w-[8rem] font-medium',
+                  !s.alive ? 'line-through' : '',
+                ]"
+              >
+                {{ s.name ?? `Slot ${s.slot}` }}
+              </span>
             </button>
           </div>
         </div>
         <div class="flex items-center gap-3">
-          <div class="flex items-center gap-1.5 min-w-[7rem]">
-            <span class="inline-block size-1.5 rounded-full bg-destructive" />
+          <div class="flex items-center gap-1.5 min-w-[8rem]">
+            <span
+              :class="['inline-block size-1.5 rounded-full', sideDotClass('T')]"
+            />
             <span
               class="truncate font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground/80"
             >
-              {{ store.lineup2Name ?? "Team 2" }}
+              {{ tTeamName() }}
+              <span
+                class="ml-1 px-1 rounded font-bold bg-amber-500/20 text-amber-200"
+              >
+                T
+              </span>
+              <span
+                v-if="store.gsiTeamCtScore || store.gsiTeamTScore"
+                class="ml-1 text-foreground"
+              >
+                {{ store.gsiTeamTScore }}
+              </span>
             </span>
           </div>
-          <div class="flex items-center gap-1.5">
+          <div class="flex flex-wrap items-center gap-1.5">
             <button
-              v-for="slot in team2Slots"
-              :key="slot.slot"
+              v-for="s in tSlots"
+              :key="`t-${s.slot}-${s.steam_id}`"
               type="button"
               :class="[
-                'h-9 min-w-[2.5rem] rounded-md border font-mono text-sm font-bold transition-all duration-100 select-none cursor-pointer',
-                flashSlot === slot.slot
-                  ? 'border-destructive bg-destructive/25 text-destructive scale-95'
-                  : 'border-border/70 bg-card/40 text-foreground/80 hover:border-destructive/50 hover:bg-destructive/10 hover:text-foreground active:scale-95',
+                'group inline-flex h-9 items-center gap-1.5 rounded-md border px-2 font-mono text-xs transition-all duration-100 select-none cursor-pointer',
+                sideClasses('T', slotIsActive(s), flashSlot === s.slot),
+                !s.alive && !slotIsActive(s) ? 'opacity-50' : '',
               ]"
-              @click="pressSlot(slot.slot)"
+              :title="s.name ?? `Slot ${s.slot}`"
+              @click="pressSlot(s.slot)"
             >
-              {{ slot.slot }}
+              <span
+                class="inline-flex h-5 w-5 items-center justify-center rounded text-[0.65rem] font-bold tabular-nums bg-foreground/10"
+                :title="`Slot ${s.slot} · key ${keyForSlot(s.slot)}`"
+              >
+                {{ keyForSlot(s.slot) }}
+              </span>
+              <span
+                :class="[
+                  'truncate max-w-[8rem] font-medium',
+                  !s.alive ? 'line-through' : '',
+                ]"
+              >
+                {{ s.name ?? `Slot ${s.slot}` }}
+              </span>
             </button>
           </div>
         </div>
       </div>
+      <p
+        v-else-if="store.isPlaying"
+        class="text-[0.65rem] uppercase tracking-wider text-muted-foreground/60 font-mono"
+      >
+        Waiting for cs2 game state…
+      </p>
 
-      <!-- Buttons row.
-           Layout: 3-column grid so the transport cluster (prev-round,
-           skip-back, play/pause, skip-fwd, next-round) stays visually
-           centered no matter how wide the panel gets — the previous
-           flex-wrap layout drifted left as the speed selector pushed
-           everything around. Left = event jumps, center = transport,
-           right = speed. -->
+      <!-- 3-col grid keeps the transport cluster centered regardless
+           of how wide the panel gets. -->
       <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-        <!-- Left: round nav + kill-by-player filter. The filter scopes
-             prev/next-kill nav AND the skull markers — useful for
-             reviewing one player's frags without scrubbing through
-             everyone else's. Click "All" to clear. -->
         <div class="flex items-center gap-1.5 flex-wrap">
           <Tooltip>
             <TooltipTrigger as-child>
@@ -608,7 +800,7 @@ const killMarkers = computed<Marker[]>(() => {
           </Tooltip>
 
           <button
-            v-if="hasRosters"
+            v-if="hasDemoPlayers"
             type="button"
             class="ml-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] cursor-pointer transition-all duration-150 hover:text-foreground"
             :class="
@@ -626,7 +818,7 @@ const killMarkers = computed<Marker[]>(() => {
             {{ store.killFilterMode === "killer" ? "Kills by" : "Deaths of" }}
           </button>
           <Select
-            v-if="hasRosters"
+            v-if="hasDemoPlayers"
             :model-value="store.killFilterSteamId ?? '__all__'"
             @update:model-value="onKillFilterChange"
           >
@@ -649,14 +841,14 @@ const killMarkers = computed<Marker[]>(() => {
               <SelectItem value="__all__" class="cursor-pointer">
                 All players ({{ store.kills.length }})
               </SelectItem>
-              <SelectGroup v-if="store.rosters.lineup1.length">
+              <SelectGroup v-if="ctDemoPlayers.length">
                 <SelectLabel
-                  class="text-[0.65rem] uppercase tracking-wider text-[hsl(var(--tac-amber))]"
+                  class="text-[0.65rem] uppercase tracking-wider text-blue-300"
                 >
-                  {{ store.lineup1Name ?? "Team 1" }}
+                  {{ ctTeamName() }} (CT)
                 </SelectLabel>
                 <SelectItem
-                  v-for="p in store.rosters.lineup1"
+                  v-for="p in ctDemoPlayers"
                   :key="p.steam_id"
                   :value="p.steam_id"
                   class="cursor-pointer"
@@ -664,14 +856,29 @@ const killMarkers = computed<Marker[]>(() => {
                   {{ p.name }} ({{ killCountFor(p.steam_id) }})
                 </SelectItem>
               </SelectGroup>
-              <SelectGroup v-if="store.rosters.lineup2.length">
+              <SelectGroup v-if="tDemoPlayers.length">
                 <SelectLabel
-                  class="text-[0.65rem] uppercase tracking-wider text-destructive"
+                  class="text-[0.65rem] uppercase tracking-wider text-amber-300"
                 >
-                  {{ store.lineup2Name ?? "Team 2" }}
+                  {{ tTeamName() }} (T)
                 </SelectLabel>
                 <SelectItem
-                  v-for="p in store.rosters.lineup2"
+                  v-for="p in tDemoPlayers"
+                  :key="p.steam_id"
+                  :value="p.steam_id"
+                  class="cursor-pointer"
+                >
+                  {{ p.name }} ({{ killCountFor(p.steam_id) }})
+                </SelectItem>
+              </SelectGroup>
+              <SelectGroup v-if="otherDemoPlayers.length">
+                <SelectLabel
+                  class="text-[0.65rem] uppercase tracking-wider text-muted-foreground"
+                >
+                  Other
+                </SelectLabel>
+                <SelectItem
+                  v-for="p in otherDemoPlayers"
                   :key="p.steam_id"
                   :value="p.steam_id"
                   class="cursor-pointer"
@@ -683,10 +890,6 @@ const killMarkers = computed<Marker[]>(() => {
           </Select>
         </div>
 
-        <!-- Center: primary transport. Kill nav flanks play/pause so
-             the most-used "go to next death" action sits within thumb
-             reach of the play button. Skull buttons get a red accent on
-             hover + an active:scale-95 squish for tactile feedback. -->
         <div class="flex items-center justify-center gap-1.5">
           <Tooltip>
             <TooltipTrigger as-child>
@@ -772,8 +975,48 @@ const killMarkers = computed<Marker[]>(() => {
           </Tooltip>
         </div>
 
-        <!-- Right: quick actions + speed selector. -->
         <div class="flex items-center justify-end gap-2">
+          <Tooltip v-if="canCreateClip">
+            <TooltipTrigger as-child>
+              <Button
+                variant="outline"
+                size="icon"
+                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 hover:border-[hsl(var(--tac-amber)/0.6)] active:scale-95"
+                :disabled="!hasMetadata"
+                title="Auto clip"
+                @click="openAutoClip"
+              >
+                <Sparkles class="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Auto clip from preset</TooltipContent>
+          </Tooltip>
+
+          <Tooltip v-if="canCreateClip">
+            <TooltipTrigger as-child>
+              <Button
+                variant="outline"
+                size="icon"
+                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95"
+                :class="
+                  editor.active.value
+                    ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'
+                    : 'hover:border-[hsl(var(--tac-amber)/0.6)]'
+                "
+                :disabled="!hasMetadata"
+                title="Create clip"
+                @click="toggleClipEditor"
+              >
+                <Scissors class="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {{
+                editor.active.value ? "Hide clip editor" : "Open clip editor"
+              }}
+            </TooltipContent>
+          </Tooltip>
+
           <Tooltip>
             <TooltipTrigger as-child>
               <Button
@@ -870,14 +1113,20 @@ const killMarkers = computed<Marker[]>(() => {
           </Select>
         </div>
       </div>
-    </div>
-  </TooltipProvider>
+
+      <!-- Inside this div on purpose: parent's Transition needs a
+           single root, and TooltipProvider renders no DOM. -->
+      <CreateClipDialog
+        v-if="canCreateClip && store.matchMapId"
+        v-model:open="showCreateClipDialog"
+        :match-map-id="store.matchMapId"
+        :initial-mode="dialogInitialMode"
+      />
+    </TooltipProvider>
+  </div>
 </template>
 
 <style scoped>
-/* Play/pause icon swap. mode="out-in" runs leave then enter, so a
-   quick scale-down + fade-out followed by scale-up + fade-in reads
-   as the icon flipping through the button face. */
 .play-pause-enter-active,
 .play-pause-leave-active {
   transition:
@@ -893,9 +1142,6 @@ const killMarkers = computed<Marker[]>(() => {
   transform: scale(0.6) rotate(15deg);
 }
 
-/* Skull marker enter/leave for the player-filter swap. Coming in: a
-   little drop from above with a fade. Going out: a quick collapse so
-   the rail clears before the new set lands. */
 .skull-enter-active,
 .skull-leave-active {
   transition:
@@ -911,8 +1157,6 @@ const killMarkers = computed<Marker[]>(() => {
   transform: translate(-50%, 0) scale(0.4);
 }
 .skull-leave-active {
-  /* Leaving items keep their absolute slot so the rail doesn't
-     collapse during the transition. */
   position: absolute;
 }
 
@@ -935,9 +1179,6 @@ const killMarkers = computed<Marker[]>(() => {
   max-height: 4rem;
 }
 
-/* One-shot click-pulse on the seek bar. Two layered rings spreading
-   outward — the outer ring fades fast for impact, the inner one
-   lingers a touch longer for follow-through. */
 .seek-pulse {
   width: 0.75rem;
   height: 0.75rem;

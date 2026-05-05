@@ -1,0 +1,24 @@
+# Backblaze proxy worker. Fronts demo files (/demo*) and clip files
+# (/clips*). Deploy from the web/ root: `yarn wrangler deploy`.
+#
+# Worker name MUST stay "5stack" — Cloudflare's existing routes point
+# at it. Renaming spawns a new worker while the old one keeps serving.
+#
+# Secrets live in .dev.vars locally and `wrangler secret put` in prod.
+
+name = "5stack"
+main = "index.ts"
+compatibility_date = "2024-09-01"
+
+[vars]
+BUCKET_NAME = "5stack"
+S3_ENDPOINT = "s3.us-east-005.backblazeb2.com"
+
+routes = [
+  { pattern = "demo-dl.5stack.gg/demo*",  zone_name = "5stack.gg" },
+  { pattern = "demo-dl.5stack.gg/clips*", zone_name = "5stack.gg" },
+]
+
+# Secrets (S3_ACCESS_KEY, S3_SECRET):
+#   dev:  put them in .dev.vars (gitignored)
+#   prod: `wrangler secret put S3_ACCESS_KEY` and S3_SECRET

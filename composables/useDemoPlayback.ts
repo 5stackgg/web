@@ -9,6 +9,11 @@ import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import socket from "~/web-sockets/Socket";
 
+// Module-level so multiple useDemoPlayback() callers share one poll
+// loop instead of multiplying the request rate per mount.
+let statePollTimer: ReturnType<typeof setInterval> | null = null;
+let stateSocketHandler: ((data: any) => void) | null = null;
+
 // Wrapper around the watchDemo / stopWatchDemo / demoControl actions
 // plus the Hasura subscription on match_demo_sessions. The store
 // holds reactive state; this composable is the side-effect bridge.
@@ -24,6 +29,55 @@ export function useDemoPlayback() {
 
   function subscriptionKey(sessionId: string) {
     return `demo-session:${sessionId}`;
+  }
+
+  // 1Hz pull of the pod's cached GSI snapshot. The pod doesn't push
+  // GSI per-tick (bus pressure), so we poll its in-memory cache.
+  function startStatePoll() {
+    stopStatePoll();
+    stateSocketHandler = (data: any) => {
+      const gsi = data?.state?.gsi;
+      if (!gsi) return;
+      if (Array.isArray(gsi.spec_slots)) store.specSlots = gsi.spec_slots;
+      if (typeof gsi.spectated_steam_id === "string") {
+        store.spectatedSteamId = gsi.spectated_steam_id;
+      } else if (gsi.spectated_steam_id === null) {
+        store.spectatedSteamId = null;
+      }
+      if (typeof gsi.team_ct_name === "string") {
+        store.gsiTeamCtName = gsi.team_ct_name;
+      }
+      if (typeof gsi.team_t_name === "string") {
+        store.gsiTeamTName = gsi.team_t_name;
+      }
+      if (typeof gsi.team_ct_score === "number") {
+        store.gsiTeamCtScore = gsi.team_ct_score;
+      }
+      if (typeof gsi.team_t_score === "number") {
+        store.gsiTeamTScore = gsi.team_t_score;
+      }
+    };
+    socket.on("demo-session:state", stateSocketHandler);
+    const tick = () => {
+      if (!store.matchMapId) return;
+      try {
+        control("state");
+      } catch {
+        // matchMapId may have cleared between guard and call
+      }
+    };
+    tick();
+    statePollTimer = setInterval(tick, 1000);
+  }
+  function stopStatePoll() {
+    if (statePollTimer) {
+      clearInterval(statePollTimer);
+      statePollTimer = null;
+    }
+    if (stateSocketHandler) {
+      socket.off("demo-session:state", stateSocketHandler);
+      stateSocketHandler = null;
+    }
   }
 
   function subscribeToSession(sessionId: string) {
@@ -56,24 +110,28 @@ export function useDemoPlayback() {
         next: ({ data }: any) => {
           const row = data?.match_demo_sessions?.[0];
           if (!row) {
-            // Row deleted — server-side stop or reaper. Reflect that
-            // by clearing our local state so the UI returns to the
-            // "Watch demo" call-to-action.
+            // Row deleted (server-side stop or reaper).
             unsubscribe(subscriptionKey(sessionId));
+            stopStatePoll();
             store.reset();
             return;
           }
-          // When the spec-server transitions us to "playing", the
-          // demo is freshly paused at tick 0 (we pause it on the
-          // server side via `demo_togglepause` after demoui hide).
-          // Sync local state so the play button shows ▶ and the
-          // scrubber sits at 0 instead of estimating against an
-          // unmounted demo.
+          // Spec-server pauses the demo at tick 0 when it transitions
+          // to playing; sync local state so the scrubber doesn't
+          // estimate against an unmounted demo.
           const becamePlaying =
-            row.status === "playing" &&
-            store.sessionRow?.status !== "playing";
+            row.status === "playing" && store.sessionRow?.status !== "playing";
           if (becamePlaying) {
             store.syncFromControl({ tick: 0, paused: true });
+            // Wait until status='playing' to poll — earlier requests
+            // just ECONNREFUSED while the pod is booting.
+            startStatePoll();
+          }
+          if (
+            row.status !== "playing" &&
+            store.sessionRow?.status === "playing"
+          ) {
+            stopStatePoll();
           }
           store.sessionRow = row;
         },
@@ -231,15 +289,13 @@ export function useDemoPlayback() {
       });
     } finally {
       if (sessionId) unsubscribe(subscriptionKey(sessionId));
+      stopStatePoll();
       store.reset();
     }
   }
 
-  // Fire-and-forget over the existing WS. Lower latency than a Hasura
-  // mutation round-trip, no extra HTTP per click. The api proxies to
-  // the spec-server pod and the next subscription tick on
-  // match_demo_sessions reflects the resulting state — so the UI
-  // stays optimistic between click and confirm.
+  // Fire-and-forget over the existing WS — lower latency than a
+  // Hasura mutation round-trip; the next subscription tick reflects state.
   function control(
     action:
       | "pause"

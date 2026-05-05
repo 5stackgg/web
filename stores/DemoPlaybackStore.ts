@@ -107,6 +107,25 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   const xrayEnabled = ref<boolean>(false);
   const hudVisible = ref<boolean>(true);
 
+  // ~1Hz GSI snapshot from useDemoPlayback's poll loop.
+  const specSlots = ref<
+    Array<{
+      slot: number;
+      steam_id: string;
+      name: string | null;
+      team: "T" | "CT" | null;
+      alive: boolean;
+      health: number;
+    }>
+  >([]);
+  const spectatedSteamId = ref<string | null>(null);
+  // GSI team names — the demo's mp_teamname_1/2. Prefer over
+  // lineup.name since it can drift on cross-loaded demos.
+  const gsiTeamCtName = ref<string | null>(null);
+  const gsiTeamTName = ref<string | null>(null);
+  const gsiTeamCtScore = ref<number>(0);
+  const gsiTeamTScore = ref<number>(0);
+
   // Tick estimator state. Real tick =
   //   lastTickAtSync + (now - lastSyncRealMs) / 1000 * rate * tickRate
   // unless paused. Updated on every user-initiated control (seek,
@@ -207,6 +226,12 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     killFilterMode.value = "killer";
     xrayEnabled.value = false;
     hudVisible.value = true;
+    specSlots.value = [];
+    spectatedSteamId.value = null;
+    gsiTeamCtName.value = null;
+    gsiTeamTName.value = null;
+    gsiTeamCtScore.value = 0;
+    gsiTeamTScore.value = 0;
   }
 
   return {
@@ -228,6 +253,12 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     killFilterMode,
     xrayEnabled,
     hudVisible,
+    specSlots,
+    spectatedSteamId,
+    gsiTeamCtName,
+    gsiTeamTName,
+    gsiTeamCtScore,
+    gsiTeamTScore,
     rate,
     paused,
     lastTickAtSync,

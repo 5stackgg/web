@@ -19,6 +19,7 @@ import {
   Search,
   Database,
   Trophy,
+  Film,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
@@ -302,6 +303,20 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 >
                   <Trophy />
                   {{ $t("layouts.app_nav.navigation.leaderboard") }}
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem v-if="canViewHighlights" tooltip="Highlights">
+              <SidebarMenuButton as-child tooltip="Highlights">
+                <NuxtLink
+                  :to="{ name: 'highlights' }"
+                  :class="{
+                    'router-link-active': isRouteActive('highlights'),
+                  }"
+                >
+                  <Film />
+                  Highlights
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -812,6 +827,9 @@ export default {
     },
     showSeparators() {
       return useApplicationSettingsStore().showSeparators;
+    },
+    canViewHighlights() {
+      return useApplicationSettingsStore().canViewHighlights;
     },
     showReportIssue() {
       return useApplicationSettingsStore().showReportIssue;

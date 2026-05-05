@@ -20,6 +20,12 @@ const TopNav = defineAsyncComponent(
 const AppHeader = defineAsyncComponent(
   () => import("@/layouts/components/AppHeader.vue"),
 );
+const ClipDetailModal = defineAsyncComponent(
+  () => import("~/components/clips/ClipDetailModal.vue"),
+);
+import { useClipModal } from "~/composables/useClipModal";
+
+const { activeClipId } = useClipModal();
 
 useGtm();
 useChatTabSetup();
@@ -76,6 +82,8 @@ provide("containContent", containContent);
   </SidebarProvider>
 
   <div id="global-chat-container"></div>
+
+  <ClipDetailModal :clip-id="activeClipId" />
 </template>
 
 <script lang="ts">

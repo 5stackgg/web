@@ -33,6 +33,7 @@ import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 import AvatarUpload from "~/components/AvatarUpload.vue";
+import PlayerHighlights from "~/components/clips/PlayerHighlights.vue";
 
 definePageMeta({
   alias: ["/me/:id"],
@@ -474,6 +475,10 @@ const playerTeamChipShortClasses =
         </PageTransition>
       </div>
     </div>
+
+    <PageTransition :delay="450" v-if="playerId">
+      <PlayerHighlights :steam-id="playerId" />
+    </PageTransition>
 
     <Separator />
 

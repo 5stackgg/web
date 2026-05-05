@@ -2,11 +2,15 @@
 import formatStatValue from "~/utilities/formatStatValue";
 import { kdrColor } from "~/utilities/kdrColor";
 import EloChangeBadge from "~/components/EloChangeBadge.vue";
+import PlayerMatchClipsButton from "~/components/match/PlayerMatchClipsButton.vue";
 </script>
 <template>
   <TableRow>
     <TableCell class="overflow-hidden">
       <LineupMember :match="match" :member="member">
+        <template v-if="member.player?.steam_id" #name-postfix>
+          <PlayerMatchClipsButton :steam-id="member.player.steam_id" />
+        </template>
         <template v-if="memberEloChange" #elo-postfix>
           <EloChangeBadge :elo-change="memberEloChange" size="xs" />
         </template>

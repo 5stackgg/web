@@ -64,12 +64,24 @@ import {
                action is to stop it — booting needs to be cancellable
                so a stuck/wrong-server start can be undone. -->
           <DropdownMenuItem
-            v-if="gameStreamerStatus === 'off'"
+            v-if="isLive && gameStreamerStatus === 'off'"
+            :disabled="!canStartLive"
             @click="startLive"
           >
-            {{ $t("match.actions.start_live") }}
+            <div class="flex flex-col items-start leading-tight">
+              <span>{{ $t("match.actions.start_live") }}</span>
+              <span
+                v-if="!canStartLive"
+                class="text-xs text-muted-foreground mt-0.5"
+              >
+                {{ $t("match.actions.start_live_waiting_tv") }}
+              </span>
+            </div>
           </DropdownMenuItem>
-          <DropdownMenuItem v-else @click="stopLive">
+          <DropdownMenuItem
+            v-else-if="gameStreamerStatus !== 'off'"
+            @click="stopLive"
+          >
             <template v-if="gameStreamerStatus === 'booting'">
               <div class="flex flex-col items-start leading-tight">
                 <span>{{ $t("match.actions.cancel_live_boot") }}</span>
@@ -90,7 +102,7 @@ import {
               {{ $t("match.actions.stop_live") }}
             </template>
           </DropdownMenuItem>
-          <DropdownMenuItem @click="createClipsForMatch">
+          <DropdownMenuItem v-if="hasMatchDemos" @click="createClipsForMatch">
             {{ $t("match.actions.create_clips") }}
           </DropdownMenuItem>
         </template>
@@ -323,6 +335,21 @@ export default {
   computed: {
     canAct() {
       return this.match.is_in_lineup || this.match.is_organizer;
+    },
+    isLive() {
+      return this.match.status === e_match_status_enum.Live;
+    },
+    hasMatchDemos() {
+      return (this.match.match_maps ?? []).some(
+        (m: any) => (m?.demos?.length ?? 0) > 0,
+      );
+    },
+    // The streamer pod connects to the match through the GOTV link, so
+    // there's nothing to attach to until `tv_connection_string` is
+    // published — which only happens after the configured `tv_delay`
+    // (default 115s) elapses on the game server.
+    canStartLive() {
+      return !!this.match.tv_connection_string;
     },
     // "off"     — no game-streamer row (Start button shown)
     // "booting" — row exists, is_live = false (Cancel item with the

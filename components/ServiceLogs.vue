@@ -267,6 +267,7 @@ export default {
     timestamps: { type: Boolean, default: undefined },
     followLogs: { type: Boolean, default: undefined },
     compact: { type: Boolean, default: false },
+    disableRetry: { type: Boolean, default: false },
   },
 
   data() {
@@ -374,7 +375,11 @@ export default {
           const log = JSON.parse(raw);
 
           if (log.end) {
-            if (log.job_finshed !== true && log.partial !== true) {
+            if (
+              log.job_finshed !== true &&
+              log.partial !== true &&
+              !this.disableRetry
+            ) {
               this.retryTimeout = setTimeout(() => {
                 socket.event("logs", {
                   tailLines: 250,

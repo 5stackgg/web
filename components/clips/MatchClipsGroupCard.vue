@@ -1,22 +1,21 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Trophy, Crown, ArrowUpRight, Layers } from "lucide-vue-next";
+import { Trophy, Layers, ArrowUpRight } from "lucide-vue-next";
 import { Card, CardContent } from "~/components/ui/card";
 import type { Clip } from "~/types/clip";
 
 // Match-grouped highlights tile — replaces the standalone clip card
-// when a match has 2+ clips. Renders like one of those broadcast
-// "match recap" tiles: map poster as a backdrop, stacked thumbnail
-// strip showing the included clips, and a clip count badge so the
-// operator immediately reads "this is a match with N highlights" not
-// "another single clip in the same scroll".
+// when a match has 2+ clips. Mirrors HighlightCard's layout (poster
+// hero with corner chips, title + meta in CardContent below) so the
+// two card types sit cohesively in the same grid. The marquee signal
+// that this is a group is a single amber count badge in the corner;
+// everything else is intentionally restrained.
 const props = defineProps<{
   matchId: string;
   clips: Clip[];
 }>();
 
-// Lead clip drives the display. Caller sorts the group newest-first
-// so this surfaces the most recent matchup label / map / score.
+// Lead clip drives display. Caller sorts the group newest-first.
 const lead = computed(() => props.clips[0]);
 const match = computed(() => lead.value.match_map?.match);
 const matchMap = computed(() => lead.value.match_map);
@@ -48,22 +47,20 @@ const isTournament = computed(
 );
 const bestOf = computed(() => match.value?.options?.best_of ?? null);
 
-// Distinct maps featured in this group's clips. A single-map match
-// has length 1; a BO3 with clips on multiple maps shows the icons in
-// the corner so the operator sees "clips span maps M1 + M3".
+// Distinct maps featured in this group's clips. Single-map matches
+// have length 1; multi-map matches list each map name in the caption.
 const maps = computed(() => {
   const seen = new Set<string>();
-  const out: Array<{ name: string; label: string | null; poster: string | null }> = [];
+  const out: Array<{ name: string; label: string | null }> = [];
   for (const c of props.clips) {
     const m = c.match_map?.map;
     if (m && !seen.has(m.name)) {
       seen.add(m.name);
-      out.push({ name: m.name, label: m.label, poster: m.poster });
+      out.push({ name: m.name, label: m.label });
     }
   }
   return out;
 });
-
 </script>
 
 <template>
@@ -72,25 +69,27 @@ const maps = computed(() => {
     class="block group/group-card"
   >
     <Card
-      class="relative overflow-hidden transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.6)] hover:shadow-[0_8px_32px_-12px_hsl(var(--tac-amber)/0.4)]"
+      class="overflow-hidden transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.5)]"
     >
       <div class="relative aspect-video w-full overflow-hidden bg-black">
-        <!-- Map poster backdrop. Falls back to a solid card surface
-             if the lead clip has no poster. -->
         <NuxtImg
           v-if="matchMap?.map?.poster"
           :src="matchMap.map.poster"
           :alt="matchMap.map.name ?? ''"
-          class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover/group-card:scale-105"
+          class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover/group-card:scale-[1.03]"
         />
+        <!-- Single, gentle gradient — just enough to keep chips
+             readable. Drops the heavy bottom-darken since there's no
+             centered hero text fighting for legibility anymore. -->
         <div
-          class="absolute inset-0 bg-[linear-gradient(180deg,hsl(0_0%_0%_/_0.35)_0%,hsl(0_0%_0%_/_0.55)_45%,hsl(0_0%_0%_/_0.92)_100%)]"
+          class="absolute inset-0 bg-[linear-gradient(180deg,hsl(0_0%_0%_/_0.4)_0%,transparent_45%,hsl(0_0%_0%_/_0.55)_100%)]"
         ></div>
 
-        <!-- Top-left: tournament + score chips (matches HighlightCard
-             aesthetic for consistency). -->
+        <!-- Top-left: tournament + score + BO chips. Identical
+             treatment to HighlightCard so the two card types share a
+             visual vocabulary in the grid. -->
         <div
-          class="absolute top-2 left-2 flex items-center gap-1 pointer-events-none z-[2]"
+          class="absolute top-2 left-2 flex items-center gap-1 pointer-events-none"
         >
           <span
             v-if="isTournament"
@@ -119,72 +118,27 @@ const maps = computed(() => {
           </span>
         </div>
 
-        <!-- Top-right: clip count badge — the marquee element. Amber
-             fill, oversized number, mono-track caps "highlights" so it
-             reads as "this is a multi-clip group". -->
-        <div
-          class="absolute top-2 right-2 inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.18)] backdrop-blur-md pl-2 pr-2.5 py-1 text-[hsl(var(--tac-amber))] z-[2]"
+        <!-- Top-right: count badge. Single visual cue that this is a
+             group, not a single clip. -->
+        <span
+          class="absolute top-2 right-2 inline-flex items-center gap-1 rounded bg-[hsl(var(--tac-amber)/0.92)] px-1.5 py-0.5 font-mono text-[0.65rem] font-bold tabular-nums text-[hsl(var(--tac-amber-foreground))] backdrop-blur-sm shadow-sm"
+          :title="`${clips.length} highlights for this match`"
         >
-          <Layers class="h-3 w-3" />
-          <span class="font-mono text-sm font-bold tabular-nums leading-none">
-            {{ clips.length }}
-          </span>
-          <span
-            class="font-mono text-[0.55rem] uppercase tracking-[0.18em] leading-none translate-y-[1px]"
-          >
-            highlights
-          </span>
-        </div>
-
-        <!-- Center: matchup label, broadcast caption style. -->
-        <div
-          class="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-[1] pointer-events-none"
-        >
-          <h3
-            v-if="matchupLabel"
-            class="relative font-sans text-[clamp(1rem,2.4vw,1.6rem)] font-bold uppercase leading-[0.95] tracking-[0.02em] text-foreground drop-shadow-[0_2px_6px_rgba(0,0,0,0.7)]"
-          >
-            <span
-              aria-hidden="true"
-              class="absolute left-[2px] top-[2px] right-[-2px] select-none whitespace-nowrap text-transparent [-webkit-text-stroke:1px_hsl(var(--tac-amber)/0.4)]"
-            >
-              {{ matchupLabel }}
-            </span>
-            <span class="relative">{{ matchupLabel }}</span>
-          </h3>
-          <div
-            class="mt-2 inline-flex items-center gap-1.5 rounded-full border border-foreground/30 bg-black/40 backdrop-blur-md px-3 py-1 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-foreground/90"
-          >
-            <Crown
-              v-if="winningSide && (winningSide === '1' ? match?.lineup_1?.name : match?.lineup_2?.name)"
-              class="h-3 w-3 text-[hsl(var(--tac-amber))]"
-            />
-            <span class="truncate max-w-[14ch]">
-              {{
-                winningSide === "1"
-                  ? match?.lineup_1?.name
-                  : winningSide === "2"
-                    ? match?.lineup_2?.name
-                    : matchMap?.map?.label ?? matchMap?.map?.name
-              }}
-            </span>
-            <template v-if="winningSide">
-              <span class="opacity-60">·</span>
-              <span>Match Winner</span>
-            </template>
-          </div>
-        </div>
-
+          <Layers class="h-2.5 w-2.5" />
+          {{ clips.length }}
+        </span>
       </div>
 
-      <!-- Caption strip below the hero — completes the match identity
-           with map list + a hint that this resolves to a dedicated
-           page. Small font, mono-track, amber arrow on hover. -->
+      <!-- Caption — same shape as HighlightCard. Title is the matchup
+           label, sub-line shows the maps + clip count. -->
       <CardContent class="p-3 space-y-1">
         <div
-          class="group/link flex items-center gap-1.5 text-sm font-medium text-foreground transition-colors group-hover/group-card:text-[hsl(var(--tac-amber))]"
+          class="group/link flex items-center gap-1.5 text-sm font-medium text-foreground group-hover/group-card:text-[hsl(var(--tac-amber))] transition-colors"
+          :title="matchupLabel ?? 'Match highlights'"
         >
-          <span class="truncate">View match highlights</span>
+          <span class="truncate">
+            {{ matchupLabel ?? "Match highlights" }}
+          </span>
           <ArrowUpRight
             class="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-all group-hover/group-card:text-[hsl(var(--tac-amber))] group-hover/group-card:translate-x-0.5 group-hover/group-card:-translate-y-0.5"
           />

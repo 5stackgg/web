@@ -12,6 +12,7 @@ import {
   Globe,
   X,
   Radio,
+  ArrowUpRight,
 } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -42,7 +43,10 @@ import {
 import DeleteClipDialog from "~/components/clips/DeleteClipDialog.vue";
 import ClipMatchSummary from "~/components/clips/ClipMatchSummary.vue";
 import { clipDownloadName } from "~/utilities/clipDownloadName";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { useClipModal } from "~/composables/useClipModal";
+
+const apiDomain = computed(() => useRuntimeConfig().public.apiDomain as string);
 
 // Broadcast-feed playback window. Subscribes by id so we react to
 // edits / deletes / render completion without remounting. Closing
@@ -294,6 +298,10 @@ const matchupLabel = computed(() => {
 
 const downloadFilename = computed<string>(() =>
   clip.value ? clipDownloadName(clip.value) : "clip.mp4",
+);
+
+const targetAvatarSrc = computed(() =>
+  resolveAvatarUrl(clip.value?.target?.avatar_url ?? null, apiDomain.value),
 );
 </script>
 
@@ -563,20 +571,57 @@ const downloadFilename = computed<string>(() =>
                       {{ clip.title || "Untitled clip" }}
                     </span>
                   </h2>
-                  <p v-if="matchupLabel" class="mt-1 text-sm text-muted-foreground">
-                    {{ matchupLabel }}
+                  <!-- Target player chip — the subject of the clip.
+                       Promoted from a buried inline link to a proper
+                       clickable affordance so operators can jump to
+                       the player's profile in one move. Avatar +
+                       name, with a "highlighting" eyebrow so the role
+                       reads at a glance. Hidden when the clip has
+                       no target (rare — preset clips always set one). -->
+                  <NuxtLink
+                    v-if="clip.target?.name"
+                    :to="`/players/${clip.target.steam_id}`"
+                    class="group/target mt-2 inline-flex items-center gap-2 rounded-full border border-border/50 bg-card/40 [backdrop-filter:blur(6px)] py-1 pl-1 pr-3 transition-all hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[hsl(var(--tac-amber)/0.08)]"
+                    :title="`Open ${clip.target.name}'s profile`"
+                  >
                     <span
-                      v-if="clip.target?.name"
-                      class="ml-1 text-muted-foreground/70"
+                      class="inline-flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)]"
                     >
-                      · highlighting
-                      <NuxtLink
-                        :to="`/players/${clip.target.steam_id}`"
-                        class="text-foreground/90 hover:text-[hsl(var(--tac-amber))] transition-colors"
+                      <NuxtImg
+                        v-if="targetAvatarSrc"
+                        :src="targetAvatarSrc"
+                        :alt="clip.target.name"
+                        class="h-full w-full object-cover"
+                      />
+                      <span
+                        v-else
+                        class="font-mono text-[0.6rem] font-bold uppercase text-[hsl(var(--tac-amber))]"
+                      >
+                        {{ clip.target.name.charAt(0) }}
+                      </span>
+                    </span>
+                    <span class="flex flex-col leading-tight min-w-0">
+                      <span
+                        class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground/80 group-hover/target:text-[hsl(var(--tac-amber))]"
+                      >
+                        Highlighting
+                      </span>
+                      <span
+                        class="truncate text-sm font-medium text-foreground group-hover/target:text-[hsl(var(--tac-amber))] transition-colors"
                       >
                         {{ clip.target.name }}
-                      </NuxtLink>
+                      </span>
                     </span>
+                    <ArrowUpRight
+                      class="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-all group-hover/target:text-[hsl(var(--tac-amber))] group-hover/target:translate-x-0.5 group-hover/target:-translate-y-0.5"
+                    />
+                  </NuxtLink>
+
+                  <p
+                    v-if="matchupLabel"
+                    class="mt-2 text-sm text-muted-foreground"
+                  >
+                    {{ matchupLabel }}
                   </p>
                 </div>
                 <button
@@ -661,6 +706,22 @@ const downloadFilename = computed<string>(() =>
                 </dt>
                 <dd class="text-right font-mono tabular-nums">
                   {{ formatBytes(fileSizeBytes) }}
+                </dd>
+              </template>
+
+              <template v-if="clip.target?.name">
+                <dt
+                  class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground self-center"
+                >
+                  Player
+                </dt>
+                <dd class="text-right truncate">
+                  <NuxtLink
+                    :to="`/players/${clip.target.steam_id}`"
+                    class="hover:text-[hsl(var(--tac-amber))] transition-colors"
+                  >
+                    {{ clip.target.name }}
+                  </NuxtLink>
                 </dd>
               </template>
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import {
   ArrowLeft,
   Film,
@@ -9,6 +9,8 @@ import {
   Calendar,
   Swords,
   ArrowUpRight,
+  User,
+  X,
 } from "lucide-vue-next";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
@@ -20,11 +22,22 @@ import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import { Button } from "~/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
 import HighlightCard from "~/components/clips/HighlightCard.vue";
 import type { Clip } from "~/types/clip";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
+  tacticalFilterPillClasses,
+  tacticalFilterPillActiveClasses,
 } from "~/utilities/tacticalClasses";
 
 // Match-scoped highlights view. Subscribes to every clip whose
@@ -38,10 +51,24 @@ definePageMeta({
 });
 
 const route = useRoute();
+const router = useRouter();
 const matchId = computed(() => String(route.params.matchId));
 
 const clips = ref<Clip[]>([]);
 const loading = ref(true);
+
+// URL-driven player filter. Survives refresh + share so an operator
+// can hand someone "highlights for player X in match Y".
+const playerFilter = computed<string | null>(() => {
+  const v = route.query.player;
+  return typeof v === "string" && v.length > 0 ? v : null;
+});
+function setPlayerFilter(sid: string | null) {
+  const next = { ...route.query } as Record<string, any>;
+  if (sid) next.player = sid;
+  else delete next.player;
+  router.replace({ path: route.path, query: next, hash: route.hash });
+}
 
 let activeSub: { unsubscribe: () => void } | null = null;
 function subscribe() {
@@ -119,6 +146,53 @@ const playedDate = computed(() =>
   formatDate(match.value?.ended_at ?? match.value?.started_at ?? null),
 );
 
+// Players available to filter on — derived from the match's clip
+// targets (the people clipped, not the renderers). Sorted by name
+// with a clip count next to each so the operator picks a fragger
+// without guessing.
+type PlayerOption = {
+  steamId: string;
+  name: string;
+  team: "T" | "CT" | null;
+  count: number;
+};
+const playerOptions = computed<PlayerOption[]>(() => {
+  const map = new Map<string, PlayerOption>();
+  for (const c of clips.value) {
+    const sid = c.target_steam_id;
+    if (!sid) continue;
+    const existing = map.get(sid);
+    if (existing) {
+      existing.count += 1;
+      continue;
+    }
+    map.set(sid, {
+      steamId: sid,
+      name: c.target?.name ?? `#${sid.slice(-4)}`,
+      // Match_clips don't carry the target's CT/T side — leave null
+      // and let the picker render without a colored chip.
+      team: null,
+      count: 1,
+    });
+  }
+  return Array.from(map.values()).sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
+});
+
+const playerFilterName = computed<string | null>(() => {
+  const sid = playerFilter.value;
+  if (!sid) return null;
+  return playerOptions.value.find((p) => p.steamId === sid)?.name ?? null;
+});
+
+// Filtered clip list — the player filter narrows BOTH the per-map
+// sub-sections AND the flat fallback grid below.
+const filteredClips = computed(() => {
+  if (!playerFilter.value) return clips.value;
+  return clips.value.filter((c) => c.target_steam_id === playerFilter.value);
+});
+
 // Group clips by match_map. When the match has multiple maps, render
 // sub-sections per map; single-map matches collapse to one grid.
 type MapGroup = {
@@ -133,7 +207,7 @@ type MapGroup = {
 };
 const mapGroups = computed<MapGroup[]>(() => {
   const map = new Map<string, MapGroup>();
-  for (const c of clips.value) {
+  for (const c of filteredClips.value) {
     const mm = c.match_map;
     if (!mm) continue;
     const id = mm.id;
@@ -437,6 +511,70 @@ const showPerMapSections = computed(() => mapGroups.value.length > 1);
       </header>
     </PageTransition>
 
+    <!-- Player filter toolbar. URL-driven (?player=<sid>) so links
+         survive. Shows a select pre-populated with every player who
+         has at least one clip in this match, plus a chip + result
+         count when a filter is active. -->
+    <PageTransition v-if="playerOptions.length > 1" :delay="60" class="mt-4">
+      <div class="flex flex-wrap items-center gap-2">
+        <Select
+          :model-value="playerFilter ?? '__all__'"
+          @update:model-value="
+            (v) => setPlayerFilter(v === '__all__' ? null : (v as string))
+          "
+        >
+          <SelectTrigger
+            class="h-8 w-auto min-w-[12rem] gap-2 rounded-full border-border/60 bg-muted/30 px-3 text-xs"
+          >
+            <User class="h-3.5 w-3.5 text-muted-foreground" />
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel
+                class="text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground"
+              >
+                Filter by Player
+              </SelectLabel>
+              <SelectItem value="__all__">
+                All players ({{ clips.length }})
+              </SelectItem>
+              <SelectItem
+                v-for="p in playerOptions"
+                :key="p.steamId"
+                :value="p.steamId"
+              >
+                {{ p.name }} ({{ p.count }})
+              </SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+
+        <button
+          v-if="playerFilter"
+          type="button"
+          :class="[
+            tacticalFilterPillClasses,
+            tacticalFilterPillActiveClasses,
+          ]"
+          @click="setPlayerFilter(null)"
+        >
+          <User class="h-3 w-3" />
+          <span class="truncate max-w-[10rem]">
+            {{ playerFilterName ?? "Player" }}
+          </span>
+          <X class="h-3 w-3 opacity-70" />
+        </button>
+
+        <span
+          class="ml-auto font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground tabular-nums"
+        >
+          {{ filteredClips.length }}
+          {{ filteredClips.length === 1 ? "clip" : "clips" }}
+        </span>
+      </div>
+    </PageTransition>
+
     <!-- Per-map sections — one block per map for multi-map matches.
          Each section gets its own label with the map's score so the
          operator reads the series flow without leaving this page. -->
@@ -493,11 +631,27 @@ const showPerMapSections = computed(() => mapGroups.value.length > 1);
 
     <!-- Single-map match — flat clips grid, no sub-sections. -->
     <PageTransition v-else :delay="80" class="mt-6">
+      <Empty v-if="!filteredClips.length" class="min-h-[160px]">
+        <EmptyTitle>No highlights for this player</EmptyTitle>
+        <EmptyDescription>
+          Try a different player or clear the filter to see every clip in
+          this match.
+        </EmptyDescription>
+        <Button
+          variant="outline"
+          size="sm"
+          class="mt-3"
+          @click="setPlayerFilter(null)"
+        >
+          Clear filter
+        </Button>
+      </Empty>
       <div
+        v-else
         class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
       >
         <HighlightCard
-          v-for="c in clips"
+          v-for="c in filteredClips"
           :key="c.id"
           :clip="c"
         />

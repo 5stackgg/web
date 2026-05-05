@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, provide, ref } from "vue";
+import { useRoute } from "vue-router";
+import { useMatchClips } from "~/composables/useMatchClips";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
@@ -17,6 +19,17 @@ import TimeAgo from "~/components/TimeAgo.vue";
 import { AlertTriangle } from "lucide-vue-next";
 
 const activeStatsMap = ref<null | { id: string; map: { name: string } }>(null);
+
+// Match-scoped clips subscription. One WS round-trip per match page,
+// shared by the new "Clips" tab AND the per-player clip indicators
+// next to lineup names. Driven off the route param so the watcher
+// fires before MatchTabs mounts.
+const route = useRoute();
+const routeMatchId = computed(() => String(route.params.id));
+const matchClipsState = useMatchClips(routeMatchId);
+provide("matchClips", matchClipsState.clips);
+provide("matchClipsLoading", matchClipsState.loading);
+provide("matchClipsByTarget", matchClipsState.byTarget);
 
 const heroClasses =
   "relative min-w-0 max-w-full px-6 pt-5 pb-6 max-sm:p-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] backdrop-blur-[6px] [clip-path:polygon(0_0,calc(100%-18px)_0,100%_18px,100%_100%,18px_100%,0_calc(100%-18px))] before:content-[''] before:absolute before:w-[14px] before:h-[14px] before:border-[hsl(var(--tac-amber))] before:border-solid before:top-2 before:left-2 before:border-t-2 before:border-l-2 after:content-[''] after:absolute after:w-[14px] after:h-[14px] after:border-[hsl(var(--tac-amber))] after:border-solid after:bottom-2 after:right-2 after:border-b-2 after:border-r-2";

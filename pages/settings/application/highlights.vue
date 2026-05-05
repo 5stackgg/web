@@ -150,7 +150,7 @@ export default {
             auto_generate_match_clips: z.boolean().default(false),
             auto_clip_default_visibility: z
               .enum(["private", "unlisted", "public"])
-              .default("private"),
+              .default("public"),
           }),
         ),
       }),
@@ -175,7 +175,7 @@ export default {
             continue;
           }
           if (setting.name === "auto_clip_default_visibility") {
-            this.form.setFieldValue(setting.name, setting.value ?? "private");
+            this.form.setFieldValue(setting.name, setting.value ?? "public");
           }
         }
       },
@@ -203,7 +203,7 @@ export default {
                 {
                   name: "auto_clip_default_visibility",
                   value:
-                    this.form.values.auto_clip_default_visibility ?? "private",
+                    this.form.values.auto_clip_default_visibility ?? "public",
                 },
               ],
               on_conflict: {

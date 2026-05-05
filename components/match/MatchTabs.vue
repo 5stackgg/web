@@ -5,6 +5,7 @@ import LineupOverview from "~/components/match/LineupOverview.vue";
 import LineupUtility from "~/components/match/LineupUtility.vue";
 import LineupOpeningDuels from "~/components/match/LineupOpeningDuels.vue";
 import LineupClutches from "~/components/match/LineupClutches.vue";
+import MatchClipsTab from "~/components/match/MatchClipsTab.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
 import { provide } from "vue";
 import EventEmitter from "eventemitter3";
@@ -146,6 +147,10 @@ provide("commander", commander);
           >
             {{ $t("common.map_veto") }}
           </SelectItem>
+          <SelectItem v-if="hasMatchClips" value="clips">
+            {{ $t("match.tabs.clips") || "Clips" }}
+            ({{ matchClipsCount }})
+          </SelectItem>
           <SelectItem value="settings">
             {{ $t("match.tabs.settings") }}
           </SelectItem>
@@ -184,6 +189,14 @@ provide("commander", commander);
           v-if="match.options.map_veto || match.options.region_veto"
         >
           {{ $t("common.map_veto") }}
+        </TabsTrigger>
+        <TabsTrigger value="clips" v-if="hasMatchClips">
+          {{ $t("match.tabs.clips") || "Clips" }}
+          <span
+            class="ml-1.5 inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[hsl(var(--tac-amber)/0.15)] px-1 font-mono text-[0.55rem] font-bold tabular-nums text-[hsl(var(--tac-amber))]"
+          >
+            {{ matchClipsCount }}
+          </span>
         </TabsTrigger>
         <TabsTrigger value="settings">
           {{ $t("match.tabs.settings") }}
@@ -510,6 +523,9 @@ provide("commander", commander);
     <TabsContent value="streams" class="max-w-[1500px]">
       <MatchLiveStreams :match="match" />
     </TabsContent>
+    <TabsContent value="clips" class="max-w-[1500px]">
+      <MatchClipsTab :match="match" />
+    </TabsContent>
   </Tabs>
 </template>
 
@@ -620,6 +636,12 @@ const CommandDetails = {
 
 export default {
   emits: ["clear-active-map", "select-map"],
+  inject: {
+    // Shared match-clips subscription provided by pages/matches/[id].vue.
+    // The default null path lets MatchTabs render in environments
+    // without the provider (storybook, tests) without crashing.
+    matchClipsRef: { from: "matchClips", default: null },
+  },
   props: {
     match: {
       type: Object,
@@ -874,6 +896,13 @@ export default {
         tabs.push("veto");
       }
 
+      // Only surface the Clips tab when there's actually something
+      // to show — otherwise the trigger reads as a dead end and adds
+      // no signal next to "Settings/Streams/Admin".
+      if (this.hasMatchClips) {
+        tabs.push("clips");
+      }
+
       tabs.push("settings");
 
       if (this.canConfigureStreams) {
@@ -885,6 +914,15 @@ export default {
       }
 
       return tabs;
+    },
+    matchClipsCount() {
+      // matchClipsRef is the parent-provided ref/computed of clips
+      // for this match. Falls through to 0 if no provider is in place
+      // (direct mount in tests/storybook).
+      return this.matchClipsRef?.value?.length ?? 0;
+    },
+    hasMatchClips() {
+      return this.matchClipsCount > 0;
     },
   },
   methods: {

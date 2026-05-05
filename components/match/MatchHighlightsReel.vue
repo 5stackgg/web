@@ -15,6 +15,8 @@ import {
   Film,
   ListVideo,
   MapPin,
+  Maximize,
+  Minimize,
   Play,
   Shield,
   Volume2,
@@ -97,6 +99,8 @@ const filteredClips = computed(() => {
 });
 
 const inlineVideoRef = ref<HTMLVideoElement | null>(null);
+const inlineStageRef = ref<HTMLElement | null>(null);
+const isFullscreen = ref(false);
 const activeInlineClipId = ref<string | null>(null);
 const inlineProgress = ref(0);
 const inlinePlaying = ref(false);
@@ -110,6 +114,41 @@ function toggleMute() {
   const video = inlineVideoRef.value;
   inlineMuted.value = !inlineMuted.value;
   if (video) video.muted = inlineMuted.value;
+}
+
+async function toggleFullscreen() {
+  const stage = inlineStageRef.value;
+  if (!stage) return;
+  const doc = document as Document & {
+    webkitFullscreenElement?: Element | null;
+    webkitExitFullscreen?: () => Promise<void>;
+  };
+  const el = stage as HTMLElement & {
+    webkitRequestFullscreen?: () => Promise<void>;
+  };
+  const fsElement = doc.fullscreenElement ?? doc.webkitFullscreenElement;
+  try {
+    if (fsElement) {
+      await (doc.exitFullscreen?.() ?? doc.webkitExitFullscreen?.());
+    } else {
+      await (el.requestFullscreen?.() ?? el.webkitRequestFullscreen?.());
+    }
+  } catch {
+    // ignore — browser may reject without a user gesture
+  }
+}
+
+function onFullscreenChange() {
+  const doc = document as Document & {
+    webkitFullscreenElement?: Element | null;
+  };
+  const fsElement = doc.fullscreenElement ?? doc.webkitFullscreenElement;
+  isFullscreen.value = fsElement === inlineStageRef.value;
+}
+
+if (typeof document !== "undefined") {
+  document.addEventListener("fullscreenchange", onFullscreenChange);
+  document.addEventListener("webkitfullscreenchange", onFullscreenChange);
 }
 
 function formatDuration(ms: number | null): string {
@@ -262,6 +301,10 @@ function onInlineEnded() {
 onBeforeUnmount(() => {
   stopProgressLoop();
   if (introOverlayTimer) clearTimeout(introOverlayTimer);
+  if (typeof document !== "undefined") {
+    document.removeEventListener("fullscreenchange", onFullscreenChange);
+    document.removeEventListener("webkitfullscreenchange", onFullscreenChange);
+  }
 });
 
 watch(
@@ -328,7 +371,13 @@ function clipTeamName(c: Clip): string | null {
 
     <div class="relative grid gap-4 p-3 sm:p-4 lg:grid-cols-2">
       <div
+        ref="inlineStageRef"
         class="group/feature relative aspect-video w-full overflow-hidden rounded-md border border-border/60 bg-black text-left"
+        :class="
+          isFullscreen
+            ? 'flex items-center justify-center !aspect-auto !rounded-none !border-0'
+            : ''
+        "
       >
         <video
           v-if="featuredClip.download_url"
@@ -484,15 +533,26 @@ function clipTeamName(c: Clip): string | null {
             </h2>
           </div>
         </div>
-        <button
-          type="button"
-          class="absolute bottom-3 right-3 z-[3] inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
-          :title="inlineMuted ? 'Unmute' : 'Mute'"
-          @click.stop="toggleMute"
-        >
-          <VolumeX v-if="inlineMuted" class="h-4 w-4" />
-          <Volume2 v-else class="h-4 w-4" />
-        </button>
+        <div class="absolute bottom-3 right-3 z-[3] flex items-center gap-2">
+          <button
+            type="button"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+            :title="inlineMuted ? 'Unmute' : 'Mute'"
+            @click.stop="toggleMute"
+          >
+            <VolumeX v-if="inlineMuted" class="h-4 w-4" />
+            <Volume2 v-else class="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+            :title="isFullscreen ? 'Exit fullscreen' : 'Fullscreen'"
+            @click.stop="toggleFullscreen"
+          >
+            <Minimize v-if="isFullscreen" class="h-4 w-4" />
+            <Maximize v-else class="h-4 w-4" />
+          </button>
+        </div>
         <span
           class="pointer-events-none absolute inset-x-0 bottom-0 h-0.5 overflow-hidden bg-white/10"
         >

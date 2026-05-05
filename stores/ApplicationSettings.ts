@@ -215,20 +215,6 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
-    // Defaults ON when the row is missing.
-    const highlightsPublicEnabled = computed(() => {
-      const row = settings.value?.find(
-        (setting) => setting.name === "public.highlights_public_enabled",
-      );
-      if (!row || row.value == null) return true;
-      return row.value !== "false";
-    });
-    // Streamer-rank+ bypass the public flag.
-    const canViewHighlights = computed(() => {
-      if (useAuthStore().isRoleAbove(e_player_roles_enum.streamer)) return true;
-      return highlightsPublicEnabled.value;
-    });
-
     const availableRegions = ref<Region[]>([]);
 
     let latencyCheckInterval: ReturnType<typeof setInterval> | null = null;
@@ -376,8 +362,6 @@ export const useApplicationSettingsStore = defineStore(
       supportsGameServerNodes,
       supportsGameServerVersionPinning,
       playerNameRegistration,
-      highlightsPublicEnabled,
-      canViewHighlights,
       canCreateMatch,
       currentPluginVersion,
       canAddWithoutInvite,

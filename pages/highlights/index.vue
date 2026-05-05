@@ -70,9 +70,6 @@ import {
 // gate which clips each role sees. Curators (streamer+) get extra
 // affordances: visibility filters (admin only), per-card visibility
 // toggles (admin only), delete, and a slide-in render queue.
-definePageMeta({
-  middleware: "highlights",
-});
 
 type Filter = "all" | "public" | "private" | "unlisted";
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import {
   Film,
@@ -52,9 +52,10 @@ import {
   clipDownloadUrl,
 } from "~/utilities/clipDownloadName";
 import type { Clip } from "~/types/clip";
-import { useClipModal } from "~/composables/useClipModal";
+import { useClipModal, type ClipQueueItem } from "~/composables/useClipModal";
 
-const { openClip } = useClipModal();
+const clipQueueScope = "highlights-index";
+const { clearClipQueue, openClip, setClipQueue } = useClipModal();
 function onOpenClipClick(e: MouseEvent, clipId: string) {
   if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
   e.preventDefault();
@@ -258,6 +259,7 @@ watch([playerFilter, sinceFilter, isAdmin], () => subscribe());
 onBeforeUnmount(() => {
   activeSub?.unsubscribe();
   pendingSub?.unsubscribe();
+  clearClipQueue(clipQueueScope);
 });
 
 const counts = computed(() => {
@@ -276,6 +278,22 @@ const filteredClips = computed(() => {
   if (!isAdmin.value) return clips.value;
   if (visibilityFilter.value === "all") return clips.value;
   return clips.value.filter((c) => c.visibility === visibilityFilter.value);
+});
+
+function clipQueueItem(c: Clip): ClipQueueItem {
+  return {
+    id: c.id,
+    title: c.title,
+    playerName: c.target?.name ?? null,
+    teamName: null,
+    durationMs: c.duration_ms,
+    thumbnailUrl: c.thumbnail_download_url,
+    posterUrl: c.match_map?.map?.poster ?? null,
+  };
+}
+
+watchEffect(() => {
+  setClipQueue(filteredClips.value.map(clipQueueItem), clipQueueScope);
 });
 
 const hasClips = computed(() => filteredClips.value.length > 0);

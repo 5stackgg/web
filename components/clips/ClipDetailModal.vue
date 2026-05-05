@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from "vue";
 import {
   Download,
   Loader2,
@@ -13,12 +20,15 @@ import {
   X,
   Radio,
   ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
+  Shield,
 } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
 import { useAuthStore } from "~/stores/AuthStore";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
-import { matchClipFields } from "~/graphql/matchClip";
+import { matchClipFieldsWithLineups } from "~/graphql/matchClip";
 import type { Clip } from "~/types/clip";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -54,17 +64,29 @@ const props = defineProps<{
 
 const auth = useAuthStore();
 const nuxtApp = useNuxtApp();
-const { closeClip } = useClipModal();
+const {
+  activeClipIndex,
+  clipQueue,
+  closeClip,
+  nextClip,
+  openNextClip,
+  openPreviousClip,
+  previousClip,
+} = useClipModal();
 
 const clip = ref<Clip | null>(null);
 const loading = ref(false);
 const notFound = ref(false);
 const showDelete = ref(false);
 const linkCopied = ref(false);
+const videoRef = ref<HTMLVideoElement | null>(null);
+const videoProgress = ref(0);
+const modalAutoAdvanced = ref(false);
 
 const isOwner = computed(
   () => !!clip.value && clip.value.user_steam_id === auth.me?.steam_id,
 );
+const canDelete = computed(() => isOwner.value || auth.isAdmin);
 
 const editing = ref(false);
 const draftTitle = ref("");
@@ -162,7 +184,7 @@ function subscribe(id: string) {
     query: generateSubscription({
       match_clips: [
         { where: { id: { _eq: id } }, limit: 1 } as any,
-        matchClipFields,
+        matchClipFieldsWithLineups,
       ],
     } as any),
   });
@@ -207,9 +229,17 @@ watch(
 onBeforeUnmount(() => {
   activeSub?.unsubscribe();
   activeSub = null;
+  window.removeEventListener("keydown", onModalKeydown);
 });
 
 const open = computed(() => !!props.clipId);
+const hasQueueNav = computed(
+  () => clipQueue.value.length > 1 && activeClipIndex.value >= 0,
+);
+const queuePositionLabel = computed(() => {
+  if (!hasQueueNav.value) return null;
+  return `${activeClipIndex.value + 1} / ${clipQueue.value.length}`;
+});
 
 function onUpdateOpen(v: boolean) {
   if (!v) closeClip();
@@ -304,6 +334,95 @@ const downloadFilename = computed<string>(() =>
 const targetAvatarSrc = computed(() =>
   resolveAvatarUrl(clip.value?.target?.avatar_url ?? null, apiDomain.value),
 );
+const targetLineup = computed(() => {
+  const sid = clip.value?.target_steam_id;
+  const match = clip.value?.match_map?.match;
+  if (!sid || !match) return null;
+  const lineups = [match.lineup_1, match.lineup_2];
+  return (
+    lineups.find((lineup) =>
+      lineup?.lineup_players?.some(
+        (member) =>
+          String(member.steam_id ?? member.player?.steam_id) === String(sid),
+      ),
+    ) ?? null
+  );
+});
+const targetTeamName = computed(() => targetLineup.value?.name ?? null);
+const targetTeamAvatarSrc = computed(() =>
+  resolveAvatarUrl(
+    targetLineup.value?.team?.avatar_url ?? null,
+    apiDomain.value,
+  ),
+);
+const nextClipImage = computed(
+  () => nextClip.value?.thumbnailUrl ?? nextClip.value?.posterUrl ?? null,
+);
+async function playModalVideo() {
+  await nextTick();
+  const video = videoRef.value;
+  if (!video) return;
+  try {
+    await video.play();
+  } catch {
+    // Browser autoplay policy can still refuse; controls remain available.
+  }
+}
+
+function onModalTimeUpdate() {
+  const video = videoRef.value;
+  if (!video || !Number.isFinite(video.duration) || video.duration <= 0) {
+    videoProgress.value = 0;
+    return;
+  }
+  videoProgress.value = Math.min(1, video.currentTime / video.duration);
+  const remaining = video.duration - video.currentTime;
+  if (nextClip.value && remaining <= 0.35 && !modalAutoAdvanced.value) {
+    modalAutoAdvanced.value = true;
+    openNextClip();
+  }
+}
+
+function onModalEnded() {
+  videoProgress.value = 1;
+  if (nextClip.value && !modalAutoAdvanced.value) {
+    modalAutoAdvanced.value = true;
+    openNextClip();
+  }
+}
+
+watch(
+  () => clip.value?.id,
+  (id) => {
+    videoProgress.value = 0;
+    modalAutoAdvanced.value = false;
+    if (id) void playModalVideo();
+  },
+);
+
+function isTypingTarget(target: EventTarget | null): boolean {
+  return (
+    target instanceof HTMLInputElement ||
+    target instanceof HTMLTextAreaElement ||
+    (target instanceof HTMLElement && target.isContentEditable)
+  );
+}
+
+function onModalKeydown(e: KeyboardEvent) {
+  if (!open.value || isTypingTarget(e.target)) return;
+  if (e.key === "ArrowLeft" && previousClip.value) {
+    e.preventDefault();
+    openPreviousClip();
+  }
+  if (e.key === "ArrowRight" && nextClip.value) {
+    e.preventDefault();
+    openNextClip();
+  }
+}
+
+onMounted(() => {
+  window.addEventListener("keydown", onModalKeydown);
+});
 </script>
 
 <template>
@@ -468,13 +587,40 @@ const targetAvatarSrc = computed(() =>
             {{ clip.visibility }}
           </span>
 
+          <span
+            v-if="hasQueueNav"
+            class="hidden sm:inline-flex h-7 items-center rounded-full border border-border/60 bg-card/35 px-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground tabular-nums"
+          >
+            {{ queuePositionLabel }}
+          </span>
+          <div v-if="hasQueueNav" class="inline-flex items-center gap-1">
+            <button
+              type="button"
+              class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] disabled:cursor-not-allowed disabled:opacity-35"
+              :disabled="!previousClip"
+              :title="previousClip?.title ?? 'Previous clip'"
+              @click="openPreviousClip"
+            >
+              <ChevronLeft class="h-3.5 w-3.5" />
+            </button>
+            <button
+              type="button"
+              class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] disabled:cursor-not-allowed disabled:opacity-35"
+              :disabled="!nextClip"
+              :title="nextClip?.title ?? 'Next clip'"
+              @click="openNextClip"
+            >
+              <ChevronRight class="h-3.5 w-3.5" />
+            </button>
+          </div>
+
           <button
             type="button"
             class="inline-flex h-7 items-center gap-1.5 rounded-full border border-border/60 bg-card/40 px-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] transition-colors cursor-pointer"
             @click="closeClip"
           >
             <X class="h-3 w-3" />
-            Close
+            <span class="hidden sm:inline">Close</span>
           </button>
         </div>
 
@@ -514,13 +660,15 @@ const targetAvatarSrc = computed(() =>
         >
           <div class="flex flex-col gap-3 min-w-0">
             <div
-              class="relative aspect-video w-full overflow-hidden rounded-md bg-black border border-border/60"
+              class="group/video relative aspect-video w-full overflow-hidden rounded-md bg-black border border-border/60"
             >
               <video
                 v-if="clip.download_url"
+                :key="clip.id"
+                ref="videoRef"
                 :src="clip.download_url"
                 :poster="
-                  clip.thumbnail_url ?? clip.match_map?.map?.poster ?? undefined
+                  clip.thumbnail_download_url ?? clip.match_map?.map?.poster ?? undefined
                 "
                 class="absolute inset-0 h-full w-full object-contain"
                 controls
@@ -528,6 +676,9 @@ const targetAvatarSrc = computed(() =>
                 muted
                 playsinline
                 preload="auto"
+                @ended="onModalEnded"
+                @loadedmetadata="onModalTimeUpdate"
+                @timeupdate="onModalTimeUpdate"
               />
               <div
                 v-else
@@ -544,6 +695,35 @@ const targetAvatarSrc = computed(() =>
               <div
                 class="clip-scanlines pointer-events-none absolute inset-0"
               ></div>
+
+              <div
+                v-if="nextClip"
+                class="pointer-events-none absolute right-3 top-3 z-[2] inline-flex max-w-[60%] items-center gap-1.5 rounded-full border border-white/15 bg-black/65 px-2.5 py-1 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/75 backdrop-blur-md"
+              >
+                <span class="text-[hsl(var(--tac-amber))]">Next:</span>
+                <span class="truncate">
+                  {{ nextClip.playerName ?? "clip" }}
+                </span>
+              </div>
+
+              <button
+                v-if="previousClip"
+                type="button"
+                class="clip-nav-button clip-nav-button--prev opacity-0 transition-opacity duration-200 group-hover/video:opacity-100 focus-visible:opacity-100"
+                :title="previousClip.title ?? 'Previous clip'"
+                @click="openPreviousClip"
+              >
+                <ChevronLeft class="h-5 w-5" />
+              </button>
+              <button
+                v-if="nextClip"
+                type="button"
+                class="clip-nav-button clip-nav-button--next opacity-0 transition-opacity duration-200 group-hover/video:opacity-100 focus-visible:opacity-100"
+                :title="nextClip.title ?? 'Next clip'"
+                @click="openNextClip"
+              >
+                <ChevronRight class="h-5 w-5" />
+              </button>
             </div>
 
             <div
@@ -663,6 +843,24 @@ const targetAvatarSrc = computed(() =>
                 >
                   {{ clip.target.name }}
                 </span>
+                <span
+                  v-if="targetTeamName"
+                  class="mt-1 inline-flex max-w-full items-center gap-1.5 self-start rounded border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.1)] px-1.5 py-0.5 font-mono text-[0.56rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
+                  :title="targetTeamName"
+                >
+                  <span
+                    v-if="targetTeamAvatarSrc"
+                    class="inline-flex h-4 w-4 shrink-0 overflow-hidden rounded-full border border-[hsl(var(--tac-amber)/0.35)]"
+                  >
+                    <NuxtImg
+                      :src="targetTeamAvatarSrc"
+                      :alt="targetTeamName"
+                      class="h-full w-full object-cover"
+                    />
+                  </span>
+                  <Shield v-else class="h-3 w-3 shrink-0" />
+                  <span class="truncate">{{ targetTeamName }}</span>
+                </span>
               </span>
               <ArrowUpRight
                 class="h-4 w-4 shrink-0 text-muted-foreground/60 transition-all group-hover/target:text-[hsl(var(--tac-amber))] group-hover/target:translate-x-0.5 group-hover/target:-translate-y-0.5"
@@ -670,6 +868,62 @@ const targetAvatarSrc = computed(() =>
             </NuxtLink>
 
             <ClipMatchSummary v-if="clip.match_map?.match" :clip="clip" />
+
+            <button
+              v-if="nextClip"
+              type="button"
+              class="next-clip-card group/next"
+              :title="nextClip.title ?? 'Next clip'"
+              @click="openNextClip"
+            >
+              <span
+                class="relative h-16 w-24 shrink-0 overflow-hidden rounded border border-border/60 bg-black"
+              >
+                <NuxtImg
+                  v-if="nextClipImage"
+                  :src="nextClipImage"
+                  :alt="nextClip.title ?? 'Next clip'"
+                  class="h-full w-full object-cover opacity-80 transition-transform duration-300 group-hover/next:scale-105"
+                />
+                <span
+                  v-else
+                  class="flex h-full w-full items-center justify-center text-muted-foreground"
+                >
+                  <Radio class="h-4 w-4" />
+                </span>
+                <span
+                  class="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,hsl(var(--tac-amber)/0.16)_100%)]"
+                ></span>
+              </span>
+              <span class="min-w-0 flex-1 text-left">
+                <span
+                  class="block font-mono text-[0.56rem] uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
+                >
+                  Up next
+                </span>
+                <span class="mt-1 block truncate text-sm font-semibold">
+                  {{ nextClip.title ?? "Untitled clip" }}
+                </span>
+                <span class="mt-0.5 flex min-w-0 items-center gap-1.5">
+                  <span
+                    v-if="nextClip.playerName"
+                    class="truncate text-xs text-muted-foreground"
+                  >
+                    {{ nextClip.playerName }}
+                  </span>
+                  <span
+                    v-if="nextClip.teamName"
+                    class="inline-flex max-w-[9rem] shrink-0 items-center gap-1 rounded border border-[hsl(var(--tac-amber)/0.3)] bg-[hsl(var(--tac-amber)/0.08)] px-1.5 py-0.5 font-mono text-[0.52rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+                  >
+                    <Shield class="h-2.5 w-2.5 shrink-0" />
+                    <span class="truncate">{{ nextClip.teamName }}</span>
+                  </span>
+                </span>
+              </span>
+              <ChevronRight
+                class="h-4 w-4 shrink-0 text-muted-foreground/60 transition-all group-hover/next:translate-x-0.5 group-hover/next:text-[hsl(var(--tac-amber))]"
+              />
+            </button>
 
             <dl
               class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm rounded-md border border-border/50 bg-card/30 [backdrop-filter:blur(6px)] px-4 py-3"
@@ -691,38 +945,6 @@ const targetAvatarSrc = computed(() =>
                 </dt>
                 <dd class="text-right font-mono tabular-nums">
                   {{ formatBytes(fileSizeBytes) }}
-                </dd>
-              </template>
-
-              <template v-if="clip.target?.name">
-                <dt
-                  class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground self-center"
-                >
-                  Player
-                </dt>
-                <dd class="text-right truncate">
-                  <NuxtLink
-                    :to="`/players/${clip.target.steam_id}`"
-                    class="hover:text-[hsl(var(--tac-amber))] transition-colors"
-                  >
-                    {{ clip.target.name }}
-                  </NuxtLink>
-                </dd>
-              </template>
-
-              <template v-if="clip.user?.name">
-                <dt
-                  class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground self-center"
-                >
-                  Author
-                </dt>
-                <dd class="text-right truncate">
-                  <NuxtLink
-                    :to="`/players/${clip.user.steam_id}`"
-                    class="hover:text-[hsl(var(--tac-amber))] transition-colors"
-                  >
-                    {{ clip.user.name }}
-                  </NuxtLink>
                 </dd>
               </template>
 
@@ -752,7 +974,7 @@ const targetAvatarSrc = computed(() =>
                 <span>{{ linkCopied ? "Copied" : "Copy link" }}</span>
               </button>
               <button
-                v-if="isOwner"
+                v-if="canDelete"
                 type="button"
                 class="action-tile action-tile--danger group col-span-2"
                 @click="showDelete = true"
@@ -793,6 +1015,89 @@ const targetAvatarSrc = computed(() =>
   mix-blend-mode: multiply;
   opacity: 0.35;
   transform: translateZ(0);
+}
+
+.clip-nav-button {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: inline-flex;
+  height: 2.5rem;
+  width: 2.5rem;
+  transform: translateY(-50%);
+  align-items: center;
+  justify-content: center;
+  border: 1px solid hsl(var(--border) / 0.65);
+  border-radius: 0.375rem;
+  background: hsl(0 0% 0% / 0.58);
+  color: hsl(var(--foreground) / 0.8);
+  cursor: pointer;
+  opacity: 0.78;
+  backdrop-filter: blur(8px);
+  transition:
+    opacity 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
+}
+.clip-nav-button:hover {
+  border-color: hsl(var(--tac-amber) / 0.7);
+  color: hsl(var(--tac-amber));
+  opacity: 1;
+}
+.clip-nav-button--prev {
+  left: 0.75rem;
+}
+.clip-nav-button--prev:hover {
+  transform: translate(-2px, -50%);
+}
+.clip-nav-button--next {
+  right: 0.75rem;
+}
+.clip-nav-button--next:hover {
+  transform: translate(2px, -50%);
+}
+
+.next-clip-card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.75rem;
+  overflow: hidden;
+  border: 1px solid hsl(var(--border) / 0.55);
+  border-radius: 0.375rem;
+  background:
+    linear-gradient(
+      135deg,
+      hsl(var(--tac-amber) / 0.11) 0%,
+      hsl(var(--card) / 0.38) 58%
+    ),
+    hsl(var(--card) / 0.28);
+  padding: 0.625rem;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  text-align: left;
+  backdrop-filter: blur(6px);
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+.next-clip-card::after {
+  content: "";
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  height: 7px;
+  width: 7px;
+  border-right: 1px solid hsl(var(--tac-amber) / 0.65);
+  border-top: 1px solid hsl(var(--tac-amber) / 0.65);
+}
+.next-clip-card:hover {
+  transform: translateY(-1px);
+  border-color: hsl(var(--tac-amber) / 0.62);
+  background-color: hsl(var(--tac-amber) / 0.06);
 }
 
 .action-tile {

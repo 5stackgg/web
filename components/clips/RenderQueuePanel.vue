@@ -98,17 +98,6 @@ onBeforeUnmount(() => activeSub?.unsubscribe());
 
 const TERMINAL = new Set(["done", "error", "cancelled"]);
 
-// Active phases first, then queued, then terminal. Within a phase
-// rows follow created_at so "clip 3 of 10" stays stable.
-const STATUS_ORDER: Record<string, number> = {
-  rendering: 0,
-  uploading: 1,
-  queued: 2,
-  done: 3,
-  error: 3,
-  cancelled: 3,
-};
-
 // Group jobs by match_map_id; bucket into active vs recently-finished.
 // Active batches keep their finished jobs inline so the 10-of-10
 // ladder advances visibly.
@@ -130,15 +119,11 @@ type BatchGroup = {
 };
 
 function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
-  const sorted = [...list].sort((a, b) => {
-    const ord = (STATUS_ORDER[a.status] ?? 99) - (STATUS_ORDER[b.status] ?? 99);
-    if (ord !== 0) return ord;
-    return a.created_at < b.created_at
-      ? -1
-      : a.created_at > b.created_at
-        ? 1
-        : 0;
-  });
+  // Sort by created_at only — status-based sorting causes visible
+  // jumps when jobs flip rendering → done. Keep rows where they were.
+  const sorted = [...list].sort((a, b) =>
+    a.created_at < b.created_at ? -1 : a.created_at > b.created_at ? 1 : 0,
+  );
   const activeJob = sorted.find(
     (j) => j.status === "rendering" || j.status === "uploading",
   );

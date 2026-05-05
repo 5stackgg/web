@@ -1,3 +1,25 @@
+const clipLineupWithPlayersFields = {
+  id: true,
+  name: true,
+  team: {
+    name: true,
+    avatar_url: true,
+  },
+  lineup_players: [
+    {},
+    {
+      captain: true,
+      steam_id: true,
+      placeholder_name: true,
+      player: {
+        steam_id: true,
+        name: true,
+        avatar_url: true,
+      },
+    },
+  ],
+} as const;
+
 // download_url is a Hasura computed field returning a CF worker URL.
 export const matchClipFields = {
   id: true,
@@ -8,6 +30,8 @@ export const matchClipFields = {
   duration_ms: true,
   download_url: true,
   thumbnail_url: true,
+  thumbnail_download_url: true,
+  kills_count: true,
   visibility: true,
   created_at: true,
   user: {
@@ -41,6 +65,18 @@ export const matchClipFields = {
         best_of: true,
         mr: true,
       },
+    },
+  },
+} as const;
+
+export const matchClipFieldsWithLineups = {
+  ...matchClipFields,
+  match_map: {
+    ...matchClipFields.match_map,
+    match: {
+      ...matchClipFields.match_map.match,
+      lineup_1: clipLineupWithPlayersFields,
+      lineup_2: clipLineupWithPlayersFields,
     },
   },
 } as const;

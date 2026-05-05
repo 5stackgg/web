@@ -1,5 +1,4 @@
-// See note in graphql/matchClip.ts — these tables aren't in zeus yet,
-// so consumers should `as any` the operation map until codegen catches up.
+// Not in zeus yet — consumers cast operation maps as any.
 export const clipRenderJobFields = {
   id: true,
   user_steam_id: true,
@@ -27,10 +26,7 @@ export const clipRenderJobFields = {
   },
 } as const;
 
-// Tick-based clip-spec contract. Tick math is deterministic across
-// replays of the same demo, so server-side rendering can reproduce the
-// exact range the user picked in the editor. `output.format` is mp4 /
-// h264 only at launch — see plan file.
+// Tick-addressed so server-side render reproduces the editor's range.
 export type ClipSpec = {
   match_map_id: string;
   segments: Array<{

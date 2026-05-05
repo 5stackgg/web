@@ -307,18 +307,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <!-- Highlights browse — public-facing for everyone. The
-                 admin curation tools (per-card visibility toggles +
-                 see-all-clips view) are inside this same page,
-                 conditionally rendered when isAdmin is true. -->
-            <!-- Hidden when public-mode is off AND viewer isn't
-                 streamer-rank+. canViewHighlights bakes both checks
-                 in, so this v-if doubles for "guest-with-public-mode-on"
-                 AND "logged-in streamer regardless of public-mode". -->
-            <SidebarMenuItem
-              v-if="canViewHighlights"
-              tooltip="Highlights"
-            >
+            <SidebarMenuItem v-if="canViewHighlights" tooltip="Highlights">
               <SidebarMenuButton as-child tooltip="Highlights">
                 <NuxtLink
                   :to="{ name: 'highlights' }"

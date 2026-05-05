@@ -11,38 +11,29 @@ import {
   generateSubscription,
 } from "~/graphql/graphqlGen";
 import { clipRenderJobFields } from "~/graphql/clipRenderJob";
-import { clipDownloadName } from "~/utilities/clipDownloadName";
+import {
+  clipDownloadName,
+  clipDownloadUrl,
+} from "~/utilities/clipDownloadName";
 
-// Subscribes to a clip_render_jobs row and surfaces queued / rendering
-// / uploading / done / error transitions. On `done`, fetches the
-// resulting match_clips row and exposes its s3 url so the user can
-// download or jump straight to their library. Same subscription pattern
-// as composables/useDemoPlayback.ts.
 const props = defineProps<{ jobId: string }>();
 const emit = defineEmits<{ (e: "close"): void }>();
-// Holding nuxtApp instead of destructuring `$apollo`: vue-apollo's
-// global `beforeCreate` mixin does `this.$apollo = ...`, and a
-// `<script setup>` binding called `$apollo` would be read-only on the
-// component proxy, making that mixin throw and unmount the component.
+// Don't destructure $apollo — vue-apollo's beforeCreate mixin
+// reassigns `this.$apollo`, which conflicts with a setup binding.
 const nuxtApp = useNuxtApp();
 
 const job = ref<null | {
   id: string;
   status: string;
-  // Postgres numeric(4,3) — Hasura serialises it as a string ("0.153")
-  // not a number. Normalised in the progressPct computed below.
+  // Hasura serialises numeric(4,3) as a string; coerce in progressPct.
   progress: number | string | null;
   error_message: string | null;
   clip_id: string | null;
 }>(null);
-const clip = ref<null | { id: string; download_url: string; title?: string }>(null);
+const clip = ref<null | { id: string; download_url: string; title?: string }>(
+  null,
+);
 const cancelling = ref(false);
-
-// Note: the WHEP "render in progress" gate (useClipRenderActive)
-// auto-clears when the underlying clip_render_jobs row hits a
-// terminal status — the composable owns its own subscription so
-// the flag self-manages even if this component unmounts mid-render.
-// We don't need to touch it here.
 
 let activeSub: { unsubscribe: () => void } | null = null;
 
@@ -50,9 +41,7 @@ function subscribe(jobId: string) {
   activeSub?.unsubscribe();
   const obs = getGraphqlClient().subscribe({
     query: generateSubscription({
-      // Cast: clip_render_jobs is not in zeus yet (server schema lands
-      // separately). Same pattern as match_demo_sessions before its
-      // migration ran — see composables/useDemoPlayback.ts.
+      // Cast: clip_render_jobs lags zeus codegen.
       clip_render_jobs: [
         {
           where: { id: { _eq: jobId } },
@@ -97,10 +86,7 @@ async function cancel() {
   try {
     await nuxtApp.$apollo.defaultClient.mutate({
       mutation: generateMutation({
-        cancelClipRender: [
-          { job_id: job.value.id },
-          { success: true },
-        ],
+        cancelClipRender: [{ job_id: job.value.id }, { success: true }],
       } as any),
     });
     emit("close");
@@ -149,10 +135,6 @@ const isError = computed(
 const progressPct = computed(() => {
   if (isDone.value) return 100;
   const raw = job.value?.progress;
-  // Hasura serialises postgres `numeric(4,3)` as a string. Coerce
-  // before scaling — without the parseFloat we'd hit the
-  // `typeof !== number` branch and the bar would stay at 0% all
-  // the way through the render.
   const p =
     typeof raw === "number"
       ? raw
@@ -163,10 +145,7 @@ const progressPct = computed(() => {
   return Math.max(0, Math.min(100, Math.round(p * 100)));
 });
 
-// Two-phase view: render owns 0% → 50%, upload owns 50% → 100%
-// (matches the milestones reported by inline-clip-render.sh on the
-// pod). The stepper makes the two-phase progression obvious — the
-// single bar alone could read as "one long render" without it.
+// Render = 0–50%, upload = 50–100% (matches inline-clip-render.sh).
 const phaseStatus = computed<{
   render: "pending" | "active" | "done";
   upload: "pending" | "active" | "done";
@@ -190,10 +169,10 @@ const phaseStatus = computed<{
       <span class="text-sm">{{ statusLabel }}</span>
     </div>
 
-    <!-- Phase stepper: visually splits the progress into "render"
-         (0-50%) + "upload" (50-100%) so the user sees the two-phase
-         pipeline at a glance. -->
-    <div v-if="!isError" class="flex items-center gap-2 text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground">
+    <div
+      v-if="!isError"
+      class="flex items-center gap-2 text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
+    >
       <span
         :class="[
           'flex items-center gap-1.5',
@@ -250,14 +229,21 @@ const phaseStatus = computed<{
       >
         Cancel render
       </Button>
-      <Button v-if="isDone && clip?.download_url" variant="outline" size="sm" as-child>
+      <Button
+        v-if="isDone && clip?.download_url"
+        variant="outline"
+        size="sm"
+        as-child
+      >
         <a
-          :href="`${clip.download_url}&dl=1`"
-          :download="clipDownloadName({
-            id: clip.id,
-            title: clip.title ?? null,
-            download_url: clip.download_url,
-          })"
+          :href="clipDownloadUrl(clip.download_url)"
+          :download="
+            clipDownloadName({
+              id: clip.id,
+              title: clip.title ?? null,
+              download_url: clip.download_url,
+            })
+          "
         >
           <Download class="h-4 w-4 mr-2" />
           Download

@@ -14,17 +14,8 @@ import {
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 
-// One dialog used by both /highlights and /clips/[id]. Owns the
-// mutation + toast itself so neither page has to re-implement the
-// delete flow (and so a fix to the delete behavior only has to land
-// in one place). Parent controls open via v-model and reacts to the
-// emitted `deleted` event (e.g. to redirect or optimistically prune
-// from a list).
 const props = defineProps<{
-  // v-model: open/closed
   modelValue: boolean;
-  // Pass the id by itself OR the whole clip; we only need id + title
-  // for the mutation + toast text.
   clipId: string | null;
   title?: string | null;
 }>();
@@ -85,10 +76,7 @@ async function confirm() {
 </script>
 
 <template>
-  <AlertDialog
-    :open="open"
-    @update:open="(v) => emit('update:modelValue', v)"
-  >
+  <AlertDialog :open="open" @update:open="(v) => emit('update:modelValue', v)">
     <AlertDialogContent>
       <AlertDialogHeader>
         <AlertDialogTitle>Delete this clip?</AlertDialogTitle>
@@ -99,13 +87,8 @@ async function confirm() {
       </AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel :disabled="deleting">Cancel</AlertDialogCancel>
-        <!-- Native button instead of <AlertDialogAction>: the radix
-             AlertDialogAction primitive auto-closes on click before
-             our async confirm() can run, which on slow networks
-             unmounts the dialog (and our @click handler with it)
-             before the mutation fires. Using a plain <button> with
-             our own close-on-success keeps the dialog mounted while
-             the request is in flight. -->
+        <!-- Plain button — radix's AlertDialogAction auto-closes
+             before the async mutation can run. -->
         <button
           type="button"
           :disabled="deleting"

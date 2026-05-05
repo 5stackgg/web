@@ -1,5 +1,4 @@
-// Shared shape for match_clips rows. Kept in sync with
-// graphql/matchClip.ts — extending one means extending the other.
+// Mirrors graphql/matchClip.ts — extend both together.
 export type ClipPlayerRef = {
   steam_id: string;
   name: string;

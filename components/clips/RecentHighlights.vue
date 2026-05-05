@@ -12,15 +12,8 @@ import {
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
 
-// Compact strip of the latest public clips for embedding on /watch
-// and similar surfaces. Hides itself entirely when there's nothing to
-// show — empty strips read as broken section dividers and crowd the
-// page above the actual matches feed.
-//
-// `sectionLabel` opts into the tactical section-header wrapper so the
-// hide-when-empty behavior includes the label, not just the grid. Use
-// it instead of wrapping this component yourself when you want both
-// the label and the strip to disappear together on quiet days.
+// Hides itself when there are no clips. `sectionLabel` opts into the
+// tactical header wrapper so the label hides with the strip.
 const props = withDefaults(
   defineProps<{
     limit?: number;
@@ -68,10 +61,8 @@ subscribe();
 onBeforeUnmount(() => activeSub?.unsubscribe());
 
 const hasClips = computed(() => clips.value.length > 0);
-// Render only when we have something to display. We deliberately don't
-// show the loading skeleton when sectionLabel is set — the section
-// header itself would imply content that isn't there yet, and a flash
-// of skeleton-then-vanish is worse than a single beat of nothing.
+// Skip the skeleton when sectionLabel is set — a flash of header +
+// skeleton then vanish is worse than one beat of nothing.
 const shouldRender = computed(() =>
   props.sectionLabel ? hasClips.value : loading.value || hasClips.value,
 );
@@ -79,11 +70,12 @@ const shouldRender = computed(() =>
 
 <template>
   <div v-if="shouldRender">
-    <!-- Tactical section header — opt-in via `sectionLabel`. Wraps the
-         strip so the entire section hides together when empty. -->
     <div
       v-if="sectionLabel"
-      :class="[tacticalSectionLabelClasses, 'flex items-center justify-between']"
+      :class="[
+        tacticalSectionLabelClasses,
+        'flex items-center justify-between',
+      ]"
     >
       <span class="inline-flex items-center gap-2">
         <span :class="tacticalSectionTickClasses"></span>
@@ -98,10 +90,7 @@ const shouldRender = computed(() =>
       </NuxtLink>
     </div>
 
-    <div
-      v-else-if="showHeader"
-      class="flex items-center justify-between mb-3"
-    >
+    <div v-else-if="showHeader" class="flex items-center justify-between mb-3">
       <div class="flex items-center gap-2">
         <Film class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
         <h2
@@ -119,10 +108,7 @@ const shouldRender = computed(() =>
       </NuxtLink>
     </div>
 
-    <div
-      v-else
-      class="flex justify-end mb-3 -mt-1"
-    >
+    <div v-else class="flex justify-end mb-3 -mt-1">
       <NuxtLink
         :to="{ name: 'highlights' }"
         class="inline-flex items-center gap-1 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
@@ -136,18 +122,15 @@ const shouldRender = computed(() =>
       v-if="loading"
       class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
     >
-      <Skeleton v-for="i in 4" :key="i" class="aspect-video w-full rounded-lg" />
+      <Skeleton
+        v-for="i in 4"
+        :key="i"
+        class="aspect-video w-full rounded-lg"
+      />
     </div>
 
-    <div
-      v-else
-      class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
-    >
-      <HighlightCard
-        v-for="c in clips"
-        :key="c.id"
-        :clip="c"
-      />
+    <div v-else class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+      <HighlightCard v-for="c in clips" :key="c.id" :clip="c" />
     </div>
   </div>
 </template>

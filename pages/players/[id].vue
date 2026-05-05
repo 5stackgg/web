@@ -476,10 +476,6 @@ const playerTeamChipShortClasses =
       </div>
     </div>
 
-    <!-- Highlights row — single horizontal scroll between stats and
-         the matches/tournaments tabs. Hides itself when there are no
-         clips for this player; "See all" deep-links to the highlights
-         browse filtered to this steam id. -->
     <PageTransition :delay="450" v-if="playerId">
       <PlayerHighlights :steam-id="playerId" />
     </PageTransition>

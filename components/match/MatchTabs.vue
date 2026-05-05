@@ -41,11 +41,8 @@ import cleanMapName from "~/utilities/cleanMapName";
 const commander = new EventEmitter();
 provide("commander", commander);
 
-// Match-clips presence is provided by pages/matches/[id].vue. We
-// inject in setup (not Options-API `inject:`) because the Options
-// path was returning a non-reactive snapshot of the ref's `.value` —
-// the Clips tab stayed hidden even after clips landed. Setup-side
-// inject + computed tracks `.value` accesses correctly.
+// Inject in setup, not Options-`inject:` — Options-side returns a
+// non-reactive snapshot of `.value`.
 const matchClipsRef = inject<Ref<Clip[]> | null>("matchClips", null);
 const matchClipsCount = computed(() => matchClipsRef?.value?.length ?? 0);
 const hasMatchClips = computed(() => matchClipsCount.value > 0);
@@ -900,9 +897,6 @@ export default {
         tabs.push("veto");
       }
 
-      // Only surface the Clips tab when there's actually something
-      // to show — otherwise the trigger reads as a dead end and adds
-      // no signal next to "Settings/Streams/Admin".
       if (this.hasMatchClips) {
         tabs.push("clips");
       }

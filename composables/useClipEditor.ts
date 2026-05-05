@@ -2,16 +2,7 @@ import { computed, ref, watch } from "vue";
 import { useDemoPlaybackStore } from "~/stores/DemoPlaybackStore";
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
 
-// Inline clip-editor state. Lives at module scope so toggling the
-// editor on/off preserves the current segment list — operators can
-// hide the rail to watch fullscreen, then re-open without losing work.
-//
-// Each segment carries one POV (steam_id) — the api's ClipSpec
-// already supports that per-segment. Mid-clip POV switches happen via
-// Split: the user splits at the playhead and assigns a different POV
-// to the right half. Two visual tracks (segments + POV chips) round-
-// trip through the render pipeline as a single canonical structure.
-
+// Module-scoped so closing the editor preserves the segment list.
 export type EditorSegment = {
   id: string;
   start_tick: number;
@@ -52,8 +43,6 @@ export function useClipEditor() {
   function open() {
     active.value = true;
     if (segments.value.length === 0) {
-      // Seed at playhead so the operator has something tangible
-      // immediately rather than an empty rail.
       const at = Math.min(store.currentTick, totalTicks.value - 1);
       const span = tickRate.value * 30;
       const end = Math.min(at + span, totalTicks.value);
@@ -172,10 +161,6 @@ export function useClipEditor() {
     );
   }
 
-  // Preview driver — seek to the head segment, switch to its POV, then
-  // watch the demo's currentTick and advance segments as their end_tick
-  // is reached. Stops between segments so the preview reads as a single
-  // composed cut, not the raw demo with our POV switches.
   function startPreview() {
     if (previewing.value) return;
     if (!isValid.value) return;

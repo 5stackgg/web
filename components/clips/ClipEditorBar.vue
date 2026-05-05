@@ -36,15 +36,6 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import type { ClipSpec } from "~/graphql/clipRenderJob";
 import ClipRenderProgress from "~/components/clips/ClipRenderProgress.vue";
 
-// Inline timeline editor for the demo page. Renders two aligned rows:
-//   • Segments rail — bars are draggable; the empty rail accepts a
-//     click-drag gesture to define a new range.
-//   • POV chips     — one chip per segment (aligned widths) showing
-//     the currently-assigned player. Click to pick.
-// Operator submits the resulting spec straight from this bar; rendering
-// progress takes over the same surface so the editor and progress
-// readout don't compete for visual real estate.
-
 const props = defineProps<{
   matchMapId: string;
 }>();
@@ -96,9 +87,8 @@ const roundMarkers = computed(() =>
     : [],
 );
 
-// Player picker — kills + GSI, same source the dialog uses. Demos can
-// be cross-loaded against a different match's lineup, so trust the
-// parsed demo content over the api lineup.
+// Sourced from kills + GSI rather than the api lineup — demos can be
+// cross-loaded against a different match.
 type DemoPlayer = {
   steam_id: string;
   name: string;
@@ -140,19 +130,16 @@ function povTeamFor(seg: EditorSegment): "CT" | "T" | null {
   return p?.team ?? null;
 }
 
-// Drag state for moving / resizing existing segments.
 const railEl = ref<HTMLDivElement | null>(null);
 type DragMode = "left" | "right" | "body";
-let dragState:
-  | {
-      mode: DragMode;
-      seg: EditorSegment;
-      origStart: number;
-      origEnd: number;
-      grabTick: number;
-      rect: DOMRect;
-    }
-  | null = null;
+let dragState: {
+  mode: DragMode;
+  seg: EditorSegment;
+  origStart: number;
+  origEnd: number;
+  grabTick: number;
+  rect: DOMRect;
+} | null = null;
 function pointerTick(clientX: number, rect: DOMRect) {
   const ratio = (clientX - rect.left) / rect.width;
   return Math.round(Math.max(0, Math.min(1, ratio)) * max.value);
@@ -196,17 +183,12 @@ function onDragEnd() {
   window.removeEventListener("pointercancel", onDragEnd);
 }
 
-// Click-drag on empty rail = define a new segment range. We render a
-// translucent draft bar following the pointer; on pointerup the bar
-// commits to a real segment via the composable. The threshold guards
-// against accidental clicks creating zero-length segments.
+// Click-drag on the empty rail commits a new segment.
 const draft = ref<{ startTick: number; endTick: number } | null>(null);
 let draftRect: DOMRect | null = null;
 function onRailPointerDown(e: PointerEvent) {
   if (!railEl.value) return;
-  // Pointerdown that originates inside an existing segment bubbles to
-  // here; ignore those — segment drag handlers already stopped them
-  // when relevant. This catches genuine empty-rail starts.
+  // Bubbled pointerdown from an existing segment's body — ignore.
   if ((e.target as HTMLElement).dataset.segmentBody === "true") return;
   draftRect = railEl.value.getBoundingClientRect();
   const tick = pointerTick(e.clientX, draftRect);
@@ -299,10 +281,7 @@ async function submit() {
   try {
     const { data } = await nuxtApp.$apollo.defaultClient.mutate({
       mutation: generateMutation({
-        createClipRender: [
-          { spec },
-          { success: true, job_id: true },
-        ],
+        createClipRender: [{ spec }, { success: true, job_id: true }],
       } as any),
     });
     const out = (data as any)?.createClipRender;
@@ -341,7 +320,6 @@ function onRenderClose() {
     />
 
     <div v-else class="space-y-3">
-      <!-- Header strip: label, segment summary, close. -->
       <div class="flex items-center gap-3 flex-wrap">
         <div class="flex items-center gap-2">
           <Film class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
@@ -422,14 +400,13 @@ function onRenderClose() {
         </div>
       </div>
 
-      <!-- Two-track timeline. The segments rail is the master grid;
-           the POV row beneath aligns chips to each segment width. -->
       <div class="space-y-1">
-        <!-- Track label: SEGMENTS -->
         <div
           class="flex items-center gap-2 text-[0.58rem] font-mono uppercase tracking-[0.18em] text-muted-foreground/70"
         >
-          <span class="inline-block h-[2px] w-2.5 bg-[hsl(var(--tac-amber)/0.7)]"></span>
+          <span
+            class="inline-block h-[2px] w-2.5 bg-[hsl(var(--tac-amber)/0.7)]"
+          ></span>
           Segments
           <span class="ml-auto text-muted-foreground/50">
             click + drag empty rail to add range
@@ -441,7 +418,6 @@ function onRenderClose() {
           class="relative h-10 rounded-md border border-border/40 bg-card/60 overflow-hidden"
           @pointerdown="onRailPointerDown"
         >
-          <!-- Round markers — same amber tick as DemoPlaybackControls -->
           <div
             v-for="m in roundMarkers"
             :key="`r-${m.round}`"
@@ -450,7 +426,6 @@ function onRenderClose() {
             :title="`Round ${m.round}`"
           />
 
-          <!-- Existing segments. Body is draggable; left/right edges resize. -->
           <div
             v-for="seg in editor.segments.value"
             :key="seg.id"
@@ -480,21 +455,18 @@ function onRenderClose() {
             />
           </div>
 
-          <!-- Pointer-drag draft (preview the range you're about to commit). -->
           <div
             v-if="draftStyle"
             :style="draftStyle"
             class="absolute top-1 bottom-1 rounded border border-dashed border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] pointer-events-none"
           />
 
-          <!-- Live demo playhead. -->
           <div
             :style="{ left: playheadPct }"
             class="absolute top-0 bottom-0 w-0.5 bg-foreground/80 pointer-events-none shadow-[0_0_4px_rgba(255,255,255,0.5)]"
           />
         </div>
 
-        <!-- POV TRACK -->
         <div
           class="flex items-center gap-2 mt-2 text-[0.58rem] font-mono uppercase tracking-[0.18em] text-muted-foreground/70"
         >
@@ -505,14 +477,8 @@ function onRenderClose() {
           </span>
         </div>
 
-        <!-- POV chips — absolutely positioned over a track-height row,
-             widths matching their segments. Lets the operator see at
-             a glance which player is being viewed where. -->
         <div class="relative h-9 rounded-md bg-card/30 border border-border/40">
-          <Popover
-            v-for="seg in editor.segments.value"
-            :key="`pov-${seg.id}`"
-          >
+          <Popover v-for="seg in editor.segments.value" :key="`pov-${seg.id}`">
             <PopoverTrigger as-child>
               <button
                 type="button"
@@ -583,21 +549,29 @@ function onRenderClose() {
             </PopoverContent>
           </Popover>
 
-          <!-- Active preview indicator — shows which segment we're
-               currently inside while preview is running. -->
           <div
-            v-if="editor.previewing.value && editor.previewSegmentIndex.value >= 0 && editor.sortedSegments.value[editor.previewSegmentIndex.value]"
+            v-if="
+              editor.previewing.value &&
+              editor.previewSegmentIndex.value >= 0 &&
+              editor.sortedSegments.value[editor.previewSegmentIndex.value]
+            "
             :style="{
-              left: pctOf(editor.sortedSegments.value[editor.previewSegmentIndex.value].start_tick),
-              width: widthPct(editor.sortedSegments.value[editor.previewSegmentIndex.value]),
+              left: pctOf(
+                editor.sortedSegments.value[editor.previewSegmentIndex.value]
+                  .start_tick,
+              ),
+              width: widthPct(
+                editor.sortedSegments.value[editor.previewSegmentIndex.value],
+              ),
             }"
             class="absolute top-0 bottom-0 rounded-md border-2 border-primary pointer-events-none animate-pulse"
           />
         </div>
       </div>
 
-      <!-- Render form: title + resolution + destination + submit. -->
-      <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto_auto] gap-2 items-end">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto_auto] gap-2 items-end"
+      >
         <div class="space-y-1">
           <Label
             for="clip-editor-title"
@@ -657,7 +631,9 @@ function onRenderClose() {
         </Button>
       </div>
 
-      <p v-if="submitError" class="text-xs text-destructive">{{ submitError }}</p>
+      <p v-if="submitError" class="text-xs text-destructive">
+        {{ submitError }}
+      </p>
     </div>
   </div>
 </template>

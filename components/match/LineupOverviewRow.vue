@@ -8,14 +8,7 @@ import PlayerMatchClipsButton from "~/components/match/PlayerMatchClipsButton.vu
   <TableRow>
     <TableCell class="overflow-hidden">
       <LineupMember :match="match" :member="member">
-        <!-- Clip indicator next to the player name. Renders only when
-             they have at least one clip targeted at them in this
-             match — driven by the parent-provided shared subscription
-             so we don't fan out N WS connections per row. -->
-        <template
-          v-if="member.player?.steam_id"
-          #name-postfix
-        >
+        <template v-if="member.player?.steam_id" #name-postfix>
           <PlayerMatchClipsButton :steam-id="member.player.steam_id" />
         </template>
         <template v-if="memberEloChange" #elo-postfix>

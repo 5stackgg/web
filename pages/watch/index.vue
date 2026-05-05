@@ -66,7 +66,10 @@ const activeTab = ref("live-matches");
         </div>
         <Tabs v-model="activeTab">
           <TabsList variant="underline" :class="tacticalTabsListClasses">
-            <TabsTrigger value="live-matches" :class="tacticalTabsTriggerClasses">
+            <TabsTrigger
+              value="live-matches"
+              :class="tacticalTabsTriggerClasses"
+            >
               <span
                 :class="[
                   tacticalTabIndicatorClasses,
@@ -75,7 +78,10 @@ const activeTab = ref("live-matches");
               ></span>
               {{ $t("common.live") }}
             </TabsTrigger>
-            <TabsTrigger value="upcoming-matches" :class="tacticalTabsTriggerClasses">
+            <TabsTrigger
+              value="upcoming-matches"
+              :class="tacticalTabsTriggerClasses"
+            >
               <span
                 :class="[
                   tacticalTabIndicatorClasses,
@@ -84,7 +90,10 @@ const activeTab = ref("live-matches");
               ></span>
               {{ $t("pages.watch.upcoming_matches") }}
             </TabsTrigger>
-            <TabsTrigger value="finished-matches" :class="tacticalTabsTriggerClasses">
+            <TabsTrigger
+              value="finished-matches"
+              :class="tacticalTabsTriggerClasses"
+            >
               <span
                 :class="[
                   tacticalTabIndicatorClasses,

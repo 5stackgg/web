@@ -29,35 +29,28 @@ definePageMeta({
     <form @submit.prevent="updateSettings" class="grid gap-6">
       <Card variant="gradient">
         <div class="p-6 space-y-6">
-          <!-- Public visibility toggle. When OFF, /highlights and the
-               Highlights nav entries are hidden from guests + regular
-               users; streamer-rank and above (streamer / match-organizer
-               / tournament-organizer / administrator) still see them
-               so the curation surface remains usable. The setting is
-               stored under `public.*` so the guest hasura permission
-               picks it up — that's what lets the frontend render
-               role-aware nav without an extra round-trip. -->
           <FormField
             v-slot="{ value, handleChange }"
             name="public.highlights_public_enabled"
             type="checkbox"
             :value="true"
           >
-            <FormItem
-              class="flex flex-row items-center justify-between gap-4"
-            >
+            <FormItem class="flex flex-row items-center justify-between gap-4">
               <div class="space-y-1">
                 <FormLabel>Show Highlights to guests</FormLabel>
                 <FormDescription>
                   When enabled, anyone (including guests) can browse the
                   /highlights page. When disabled, only streamers, match
-                  organizers, tournament organizers, and administrators
-                  can see the Highlights pages — guests and regular
-                  users won't even see the nav links.
+                  organizers, tournament organizers, and administrators can see
+                  the Highlights pages — guests and regular users won't even see
+                  the nav links.
                 </FormDescription>
               </div>
               <FormControl>
-                <Switch :model-value="value" @update:model-value="handleChange" />
+                <Switch
+                  :model-value="value"
+                  @update:model-value="handleChange"
+                />
               </FormControl>
             </FormItem>
           </FormField>
@@ -68,22 +61,22 @@ definePageMeta({
             type="checkbox"
             :value="true"
           >
-            <FormItem
-              class="flex flex-row items-center justify-between gap-4"
-            >
+            <FormItem class="flex flex-row items-center justify-between gap-4">
               <div class="space-y-1">
                 <FormLabel>Auto-generate match highlights</FormLabel>
                 <FormDescription>
                   When a match finishes and the demo metadata parses,
-                  automatically queue a "Match recap" highlight for
-                  every player who got at least one kill. Renders run
-                  sequentially against the demo on a single
-                  game-streamer pod and land on each player's library
-                  with the default visibility set below.
+                  automatically queue a "Match recap" highlight for every player
+                  who got at least one kill. Renders run sequentially against
+                  the demo on a single game-streamer pod and land on each
+                  player's library with the default visibility set below.
                 </FormDescription>
               </div>
               <FormControl>
-                <Switch :model-value="value" @update:model-value="handleChange" />
+                <Switch
+                  :model-value="value"
+                  @update:model-value="handleChange"
+                />
               </FormControl>
             </FormItem>
           </FormField>
@@ -93,13 +86,15 @@ definePageMeta({
             name="auto_clip_default_visibility"
           >
             <FormItem>
-              <FormLabel>Default visibility for auto-generated highlights</FormLabel>
+              <FormLabel
+                >Default visibility for auto-generated highlights</FormLabel
+              >
               <FormDescription>
-                What visibility level new auto-generated highlights
-                start with. Private is safest — only streamer+ users
-                can see private highlights via Manage Highlights.
-                Public skips curation and lands the highlight on the
-                public feed straight away (when public-mode is on).
+                What visibility level new auto-generated highlights start with.
+                Private is safest — only streamer+ users can see private
+                highlights via Manage Highlights. Public skips curation and
+                lands the highlight on the public feed straight away (when
+                public-mode is on).
               </FormDescription>
               <Select :model-value="value" @update:model-value="handleChange">
                 <FormControl>
@@ -165,9 +160,7 @@ export default {
             setting.name === "auto_generate_match_clips" ||
             setting.name === "public.highlights_public_enabled"
           ) {
-            // Settings are stored as text; coerce. New installs that
-            // never touched this row default to true (visible) — the
-            // form schema's default handles that.
+            // Settings are stored as text; coerce.
             this.form.setFieldValue(
               setting.name,
               setting.value === "true" || setting.value === true,

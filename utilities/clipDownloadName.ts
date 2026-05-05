@@ -1,14 +1,5 @@
-// Derive the filename the browser should suggest when downloading a
-// clip. We can't lean on Content-Disposition alone — Chromium will
-// silently fall back to the URL path's basename (the clip UUID) when
-// the `<a download>` attribute has no value AND the response is
-// cross-origin. Setting `download="<filename>"` explicitly forces the
-// right name in every browser.
-//
-// Source priority:
-//   1. `?name=` from the worker URL (computed by clip_download_url)
-//   2. JS-side slug of the clip title
-//   3. UUID-based fallback
+// Chromium falls back to the URL basename (clip UUID) for cross-origin
+// downloads when `<a download>` has no value, so always set it explicitly.
 export function clipDownloadName(clip: {
   id: string;
   title: string | null;
@@ -20,7 +11,7 @@ export function clipDownloadName(clip: {
       const fromQuery = u.searchParams.get("name");
       if (fromQuery) return fromQuery;
     } catch {
-      // Bad URL — fall through to title/id paths.
+      // fall through
     }
   }
   if (clip.title) {
@@ -31,4 +22,15 @@ export function clipDownloadName(clip: {
     if (slug) return `${slug}.mp4`;
   }
   return `clip-${clip.id.slice(0, 8)}.mp4`;
+}
+
+// Append `dl=1` so the worker forces Content-Disposition: attachment.
+export function clipDownloadUrl(downloadUrl: string): string {
+  try {
+    const u = new URL(downloadUrl);
+    u.searchParams.set("dl", "1");
+    return u.toString();
+  } catch {
+    return downloadUrl;
+  }
 }

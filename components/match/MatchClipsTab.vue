@@ -12,9 +12,7 @@ import {
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
 
-// Match-scoped clips view. Reads the parent-provided shared
-// subscription so we don't duplicate the WS round-trip the lineup
-// rows already need for the per-player clip indicators.
+// Reads the shared parent subscription provided by pages/matches/[id].vue.
 const props = defineProps<{
   match: {
     id: string;
@@ -41,9 +39,6 @@ const loading = inject<ComputedRef<boolean>>(
 
 const hasClips = computed(() => clips.value.length > 0);
 
-// Resolve match_map metadata from the prop (we already have it on
-// the page) and order maps by their `order` if available — this
-// surface mirrors the order the maps were played.
 type MapBucket = {
   matchMapId: string;
   label: string | null;
@@ -63,8 +58,7 @@ const mapBuckets = computed<MapBucket[]>(() => {
     byMm.set(id, list);
   }
   const out: MapBucket[] = [];
-  // Walk match_maps in order so empty maps don't render and the
-  // surface stays in match order.
+  // Walk match_maps in order so the section order matches play order.
   for (const mm of props.match.match_maps ?? []) {
     const list = byMm.get(mm.id);
     if (!list || list.length === 0) continue;
@@ -87,7 +81,6 @@ const showPerMapSections = computed(() => mapBuckets.value.length > 1);
 
 <template>
   <div class="max-w-[1500px] space-y-6">
-    <!-- Top strip: clip count + link to the dedicated highlights page. -->
     <div class="flex flex-wrap items-center justify-between gap-3">
       <div class="flex items-center gap-2">
         <Film class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
@@ -134,7 +127,10 @@ const showPerMapSections = computed(() => mapBuckets.value.length > 1);
     <div v-else-if="showPerMapSections" class="space-y-8">
       <section v-for="b in mapBuckets" :key="b.matchMapId">
         <div
-          :class="[tacticalSectionLabelClasses, 'flex items-center justify-between']"
+          :class="[
+            tacticalSectionLabelClasses,
+            'flex items-center justify-between',
+          ]"
         >
           <span class="inline-flex items-center gap-2">
             <span :class="tacticalSectionTickClasses"></span>
@@ -162,7 +158,9 @@ const showPerMapSections = computed(() => mapBuckets.value.length > 1);
               </span>
             </span>
           </span>
-          <span class="font-mono text-[0.6rem] tabular-nums text-muted-foreground/70">
+          <span
+            class="font-mono text-[0.6rem] tabular-nums text-muted-foreground/70"
+          >
             {{ b.clips.length }} {{ b.clips.length === 1 ? "clip" : "clips" }}
           </span>
         </div>

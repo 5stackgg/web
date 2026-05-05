@@ -40,12 +40,6 @@ import {
   tacticalFilterPillActiveClasses,
 } from "~/utilities/tacticalClasses";
 
-// Match-scoped highlights view. Subscribes to every clip whose
-// match_map belongs to this matchId. Falls back gracefully when the
-// match has zero clips (deep-link from a stale cache, deleted clips,
-// etc). Sub-groups the grid by map when the match spans multiple maps
-// (BO3+) so the operator sees the per-map breakdown — single-map
-// matches just render a flat clips grid.
 definePageMeta({
   middleware: "highlights",
 });
@@ -57,8 +51,6 @@ const matchId = computed(() => String(route.params.matchId));
 const clips = ref<Clip[]>([]);
 const loading = ref(true);
 
-// URL-driven player filter. Survives refresh + share so an operator
-// can hand someone "highlights for player X in match Y".
 const playerFilter = computed<string | null>(() => {
   const v = route.query.player;
   return typeof v === "string" && v.length > 0 ? v : null;
@@ -105,8 +97,7 @@ function subscribe() {
 watch(matchId, () => subscribe(), { immediate: true });
 onBeforeUnmount(() => activeSub?.unsubscribe());
 
-// All match-level info comes from the joined `match` on each clip —
-// avoids a parallel matches_by_pk subscription. Lead clip drives.
+// Avoids a parallel matches_by_pk sub by reading `match` off each clip.
 const lead = computed<Clip | null>(() => clips.value[0] ?? null);
 const match = computed(() => lead.value?.match_map?.match ?? null);
 
@@ -128,9 +119,7 @@ const winningSide = computed<"1" | "2" | null>(() => {
 const isFinished = computed(() => match.value?.status === "Finished");
 const isLive = computed(() => match.value?.status === "Live");
 const bestOf = computed(() => match.value?.options?.best_of ?? null);
-const isTournament = computed(
-  () => match.value?.is_tournament_match === true,
-);
+const isTournament = computed(() => match.value?.is_tournament_match === true);
 
 function formatDate(iso: string | null | undefined): string | null {
   if (!iso) return null;
@@ -146,10 +135,7 @@ const playedDate = computed(() =>
   formatDate(match.value?.ended_at ?? match.value?.started_at ?? null),
 );
 
-// Players available to filter on — derived from the match's clip
-// targets (the people clipped, not the renderers). Sorted by name
-// with a clip count next to each so the operator picks a fragger
-// without guessing.
+// Derived from clip targets (the people clipped, not the renderers).
 type PlayerOption = {
   steamId: string;
   name: string;
@@ -169,15 +155,12 @@ const playerOptions = computed<PlayerOption[]>(() => {
     map.set(sid, {
       steamId: sid,
       name: c.target?.name ?? `#${sid.slice(-4)}`,
-      // Match_clips don't carry the target's CT/T side — leave null
-      // and let the picker render without a colored chip.
+      // match_clips doesn't carry CT/T side.
       team: null,
       count: 1,
     });
   }
-  return Array.from(map.values()).sort((a, b) =>
-    a.name.localeCompare(b.name),
-  );
+  return Array.from(map.values()).sort((a, b) => a.name.localeCompare(b.name));
 });
 
 const playerFilterName = computed<string | null>(() => {
@@ -186,15 +169,11 @@ const playerFilterName = computed<string | null>(() => {
   return playerOptions.value.find((p) => p.steamId === sid)?.name ?? null;
 });
 
-// Filtered clip list — the player filter narrows BOTH the per-map
-// sub-sections AND the flat fallback grid below.
 const filteredClips = computed(() => {
   if (!playerFilter.value) return clips.value;
   return clips.value.filter((c) => c.target_steam_id === playerFilter.value);
 });
 
-// Group clips by match_map. When the match has multiple maps, render
-// sub-sections per map; single-map matches collapse to one grid.
 type MapGroup = {
   matchMapId: string;
   mapName: string | null;
@@ -227,9 +206,7 @@ const mapGroups = computed<MapGroup[]>(() => {
     }
     g.clips.push(c);
   }
-  // Sort each group's clips newest-first and the groups themselves by
-  // newest-clip-within. That keeps the most recent maps at the top
-  // when a series is played in order.
+  // Newest-first within each map; groups by newest-clip-within.
   for (const g of map.values()) {
     g.clips.sort((a, b) =>
       a.created_at < b.created_at ? 1 : a.created_at > b.created_at ? -1 : 0,
@@ -244,9 +221,6 @@ const showPerMapSections = computed(() => mapGroups.value.length > 1);
 </script>
 
 <template>
-  <!-- Breadcrumb / back link — replaces page chrome that doesn't
-       exist on this dedicated route. Sits above the header so it
-       doesn't fight the corner-bracket motif of TacticalPageHeader. -->
   <PageTransition>
     <div class="mb-4 flex items-center gap-2">
       <Button variant="ghost" size="sm" as-child>
@@ -285,10 +259,6 @@ const showPerMapSections = computed(() => mapGroups.value.length > 1);
   </PageTransition>
 
   <template v-else>
-    <!-- Hero — match recap card that spans the page. Map poster as
-         backdrop, scores typeset broadcast-style, winner crowned. The
-         visual language extends the modal's caption strip + match
-         summary into a full-page banner. -->
     <PageTransition :delay="40">
       <header
         class="relative overflow-hidden rounded-lg border border-border bg-card/40 [backdrop-filter:blur(6px)]"
@@ -303,8 +273,6 @@ const showPerMapSections = computed(() => mapGroups.value.length > 1);
           class="absolute inset-0 bg-[linear-gradient(180deg,hsl(var(--card)/0.5)_0%,hsl(var(--card)/0.85)_60%,hsl(var(--card))_100%)]"
         ></div>
 
-        <!-- Four-corner brackets — same motif as TacticalPageHeader and
-             the clip modal. Anchors this page in the same system. -->
         <span
           aria-hidden="true"
           class="pointer-events-none absolute left-2 top-2 h-[14px] w-[14px] border-l-2 border-t-2 border-[hsl(var(--tac-amber))] z-10"
@@ -323,7 +291,6 @@ const showPerMapSections = computed(() => mapGroups.value.length > 1);
         ></span>
 
         <div class="relative px-5 sm:px-7 py-6 sm:py-8 space-y-5">
-          <!-- Eyebrow row: section label + match status pill + clip count. -->
           <div class="flex flex-wrap items-center gap-3">
             <span
               class="inline-flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.24em] text-muted-foreground"
@@ -374,7 +341,6 @@ const showPerMapSections = computed(() => mapGroups.value.length > 1);
             </span>
           </div>
 
-          <!-- Title block — broadcast-style "TEAM A vs TEAM B" -->
           <div v-if="matchupLabel" class="flex items-center gap-3">
             <Swords class="h-6 w-6 shrink-0 text-[hsl(var(--tac-amber))]" />
             <h1
@@ -394,9 +360,6 @@ const showPerMapSections = computed(() => mapGroups.value.length > 1);
             </h1>
           </div>
 
-          <!-- Series score — sums per-map scores across all maps in this
-               match. Shows the overall outcome at a glance, with the
-               crown decorating the match-winner side. -->
           <div
             class="grid grid-cols-[1fr_auto_1fr] items-center gap-4 sm:gap-6 max-w-3xl"
           >
@@ -485,7 +448,6 @@ const showPerMapSections = computed(() => mapGroups.value.length > 1);
             </div>
           </div>
 
-          <!-- Footer meta + link to full match page. -->
           <div
             class="flex flex-wrap items-center gap-x-3 gap-y-1 pt-3 border-t border-border/40 text-[0.65rem] font-mono uppercase tracking-[0.14em] text-muted-foreground"
           >
@@ -511,10 +473,6 @@ const showPerMapSections = computed(() => mapGroups.value.length > 1);
       </header>
     </PageTransition>
 
-    <!-- Player filter toolbar. URL-driven (?player=<sid>) so links
-         survive. Shows a select pre-populated with every player who
-         has at least one clip in this match, plus a chip + result
-         count when a filter is active. -->
     <PageTransition v-if="playerOptions.length > 1" :delay="60" class="mt-4">
       <div class="flex flex-wrap items-center gap-2">
         <Select
@@ -553,10 +511,7 @@ const showPerMapSections = computed(() => mapGroups.value.length > 1);
         <button
           v-if="playerFilter"
           type="button"
-          :class="[
-            tacticalFilterPillClasses,
-            tacticalFilterPillActiveClasses,
-          ]"
+          :class="[tacticalFilterPillClasses, tacticalFilterPillActiveClasses]"
           @click="setPlayerFilter(null)"
         >
           <User class="h-3 w-3" />
@@ -575,14 +530,14 @@ const showPerMapSections = computed(() => mapGroups.value.length > 1);
       </div>
     </PageTransition>
 
-    <!-- Per-map sections — one block per map for multi-map matches.
-         Each section gets its own label with the map's score so the
-         operator reads the series flow without leaving this page. -->
     <PageTransition v-if="showPerMapSections" :delay="80" class="mt-6">
       <div class="space-y-8">
         <section v-for="g in mapGroups" :key="g.matchMapId">
           <div
-            :class="[tacticalSectionLabelClasses, 'flex items-center justify-between']"
+            :class="[
+              tacticalSectionLabelClasses,
+              'flex items-center justify-between',
+            ]"
           >
             <span class="inline-flex items-center gap-2">
               <span :class="tacticalSectionTickClasses"></span>
@@ -612,30 +567,27 @@ const showPerMapSections = computed(() => mapGroups.value.length > 1);
                 </span>
               </span>
             </span>
-            <span class="font-mono text-[0.6rem] tabular-nums text-muted-foreground/70">
+            <span
+              class="font-mono text-[0.6rem] tabular-nums text-muted-foreground/70"
+            >
               {{ g.clips.length }} {{ g.clips.length === 1 ? "clip" : "clips" }}
             </span>
           </div>
           <div
             class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
           >
-            <HighlightCard
-              v-for="c in g.clips"
-              :key="c.id"
-              :clip="c"
-            />
+            <HighlightCard v-for="c in g.clips" :key="c.id" :clip="c" />
           </div>
         </section>
       </div>
     </PageTransition>
 
-    <!-- Single-map match — flat clips grid, no sub-sections. -->
     <PageTransition v-else :delay="80" class="mt-6">
       <Empty v-if="!filteredClips.length" class="min-h-[160px]">
         <EmptyTitle>No highlights for this player</EmptyTitle>
         <EmptyDescription>
-          Try a different player or clear the filter to see every clip in
-          this match.
+          Try a different player or clear the filter to see every clip in this
+          match.
         </EmptyDescription>
         <Button
           variant="outline"
@@ -650,11 +602,7 @@ const showPerMapSections = computed(() => mapGroups.value.length > 1);
         v-else
         class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
       >
-        <HighlightCard
-          v-for="c in filteredClips"
-          :key="c.id"
-          :clip="c"
-        />
+        <HighlightCard v-for="c in filteredClips" :key="c.id" :clip="c" />
       </div>
     </PageTransition>
   </template>

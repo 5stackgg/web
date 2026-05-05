@@ -47,7 +47,10 @@ import HighlightCard from "~/components/clips/HighlightCard.vue";
 import MatchClipsGroupCard from "~/components/clips/MatchClipsGroupCard.vue";
 import RenderQueuePanel from "~/components/clips/RenderQueuePanel.vue";
 import DeleteClipDialog from "~/components/clips/DeleteClipDialog.vue";
-import { clipDownloadName } from "~/utilities/clipDownloadName";
+import {
+  clipDownloadName,
+  clipDownloadUrl,
+} from "~/utilities/clipDownloadName";
 import type { Clip } from "~/types/clip";
 import { useClipModal } from "~/composables/useClipModal";
 
@@ -87,11 +90,7 @@ const loading = ref(true);
 const visibilityFilter = ref<Filter>("all");
 const queueOpen = ref(false);
 
-// URL-driven filters so deep links survive: `?player=<sid>` scopes
-// the grid to a single player (target OR creator), `?since=<preset>`
-// bounds clip created_at to a recent window. Keeping the source of
-// truth in the URL also makes the back/forward arrows traverse the
-// filter history naturally.
+// URL-driven filters: ?player=<sid>, ?since=<preset>.
 const route = useRoute();
 const router = useRouter();
 
@@ -131,10 +130,7 @@ function clearPlayer() {
   router.replace({ path: route.path, query: next, hash: route.hash });
 }
 
-// Cache the just-picked name so the filter chip shows the right label
-// during the re-subscribe gap, before any clips with this target have
-// loaded. The derived name from `clips.value` takes precedence once
-// it's available.
+// Cache so the chip shows the right label during the re-subscribe gap.
 const pickedPlayerName = ref<string | null>(null);
 function selectPlayer(player: { steam_id: string; name: string } | null) {
   if (!player?.steam_id) return;
@@ -144,25 +140,16 @@ function selectPlayer(player: { steam_id: string; name: string } | null) {
   router.replace({ path: route.path, query: next, hash: route.hash });
 }
 
-// Derive the active player's display name from the loaded clips —
-// every match_clip carries user/target with name attached. Prefer the
-// most recent match for the most up-to-date alias.
 const playerFilterName = computed<string | null>(() => {
   const sid = playerFilter.value;
   if (!sid) return null;
-  // Filter is target-scoped, so the name comes from the target row on
-  // any loaded clip. Don't fall back to `user` — that's the author and
-  // would mislabel the chip when the rendering streamer happens to
-  // also appear elsewhere in the clip set.
+  // Filter is target-scoped — don't fall back to user (the author).
   for (const c of clips.value) {
     if (c.target?.steam_id === sid) return c.target.name;
   }
   return pickedPlayerName.value;
 });
 
-// "Since X" bound — feeds into the subscription's where clause as an
-// ISO timestamp. Computed live so the filter rolls forward without a
-// page reload.
 function sinceCutoffIso(preset: SincePreset): string | null {
   const ms: Record<SincePreset, number> = {
     all: 0,
@@ -175,19 +162,18 @@ function sinceCutoffIso(preset: SincePreset): string | null {
   return new Date(Date.now() - ms[preset]).toISOString();
 }
 
-// Render-queue counters — drives the inline counts on the "Queue"
-// button so curators see how many clips are queued and how many are
-// actively rendering/uploading without having to open the panel.
-// Subscribes to the thin (id, status) projection of every in-flight
-// row instead of two _aggregate subs, because Hasura's aggregate
-// subscriptions need a non-empty selection set to push deltas — and
-// "active vs queued" is exactly the split we want anyway.
+// Render-queue counters for the "Queue" button. Hasura aggregate subs
+// need a non-empty selection set to push deltas, so we subscribe to
+// (id, status) and split active/queued client-side.
 const activeClips = ref(0);
 const queuedClips = ref(0);
 const pendingClips = computed(() => activeClips.value + queuedClips.value);
 let pendingSub: { unsubscribe: () => void } | null = null;
 function subscribePending() {
   pendingSub?.unsubscribe();
+  pendingSub = null;
+  activeClips.value = 0;
+  queuedClips.value = 0;
   if (!canCurate.value) return;
   const obs = getGraphqlClient().subscribe({
     query: generateSubscription({
@@ -219,7 +205,7 @@ function subscribePending() {
     },
   });
 }
-subscribePending();
+watch(canCurate, subscribePending, { immediate: true });
 
 const pendingDeleteId = ref<string | null>(null);
 const pendingDeleteTitle = ref<string | null>(null);
@@ -229,15 +215,13 @@ let activeSub: { unsubscribe: () => void } | null = null;
 function subscribe() {
   activeSub?.unsubscribe();
   loading.value = true;
-  // Admins can browse every visibility; everyone else relies on Hasura
-  // row permissions (which already trim non-admins to public/unlisted).
+  // Admins see all visibilities; non-admins are trimmed by Hasura row perms.
   const conditions: any[] = [];
   if (!isAdmin.value) {
     conditions.push({ visibility: { _eq: "public" } });
   }
   if (playerFilter.value) {
-    // Scope by who the clip is OF (target), not who rendered it
-    // (user). Author info still rides along on the row for crediting.
+    // Scope by clip target, not author.
     conditions.push({ target_steam_id: { _eq: playerFilter.value } });
   }
   const cutoff = sinceCutoffIso(sinceFilter.value);
@@ -270,14 +254,7 @@ function subscribe() {
 }
 subscribe();
 
-// Re-subscribe whenever filters change. Kept as a single handler so
-// changes that arrive in the same tick (e.g. clearing the player chip
-// + flipping the date dropdown together) collapse into one network
-// round-trip.
-watch(
-  [playerFilter, sinceFilter, isAdmin],
-  () => subscribe(),
-);
+watch([playerFilter, sinceFilter, isAdmin], () => subscribe());
 onBeforeUnmount(() => {
   activeSub?.unsubscribe();
   pendingSub?.unsubscribe();
@@ -290,7 +267,8 @@ const counts = computed(() => {
     private: 0,
     unlisted: 0,
   };
-  for (const c of clips.value) byVis[c.visibility] = (byVis[c.visibility] ?? 0) + 1;
+  for (const c of clips.value)
+    byVis[c.visibility] = (byVis[c.visibility] ?? 0) + 1;
   return byVis;
 });
 
@@ -302,11 +280,9 @@ const filteredClips = computed(() => {
 
 const hasClips = computed(() => filteredClips.value.length > 0);
 
-// Group clips by match for the grid. Multi-clip matches collapse into
-// a single MatchClipsGroupCard tile that links to the dedicated match
-// highlights page; singleton matches (or clips with no match context)
-// stay as standalone HighlightCards. Keeping this on the client side
-// is fine — we cap the subscription at 200 rows.
+// Multi-clip matches collapse to a MatchClipsGroupCard, singletons
+// stay as HighlightCards. Subscription capped at 200, so client-side
+// grouping is fine.
 type GridItem =
   | { kind: "single"; clip: Clip; sortKey: string }
   | { kind: "group"; matchId: string; clips: Clip[]; sortKey: string };
@@ -325,8 +301,7 @@ const gridItems = computed<GridItem[]>(() => {
   }
   const items: GridItem[] = [];
   for (const [matchId, group] of byMatch) {
-    // Sort each group's clips newest-first so the lead drives display
-    // (used for matchup label, score chip, hero thumbnail).
+    // Newest-first so the lead drives display.
     const sorted = [...group].sort((a, b) =>
       a.created_at < b.created_at ? 1 : a.created_at > b.created_at ? -1 : 0,
     );
@@ -341,8 +316,6 @@ const gridItems = computed<GridItem[]>(() => {
         kind: "group",
         matchId,
         clips: sorted,
-        // Ranks the group by its newest clip so a matchup with fresh
-        // activity floats up next to single new clips.
         sortKey: sorted[0].created_at,
       });
     }
@@ -387,7 +360,9 @@ function onDeleted(id: string) {
           >
             <Clapperboard class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
             <span>
-              <span class="text-foreground font-semibold">{{ counts.all }}</span>
+              <span class="text-foreground font-semibold">{{
+                counts.all
+              }}</span>
               {{ counts.all === 1 ? "clip" : "clips" }}
             </span>
             <template v-if="isAdmin">
@@ -400,11 +375,6 @@ function onDeleted(id: string) {
               <Button variant="outline" size="sm" class="relative">
                 <ListVideo class="h-3.5 w-3.5 mr-1.5" />
                 Queue
-                <!-- Active + queued breakdown so the operator can see
-                     "1 rendering, 6 waiting" without opening the panel.
-                     Both pills are present whenever anything is in
-                     flight; collapsing to one number hid the "waiting
-                     to be generated" half the user wanted to see. -->
                 <span
                   v-if="pendingClips > 0"
                   class="ml-2 inline-flex items-center gap-1 font-mono text-[0.6rem] font-semibold tabular-nums"
@@ -437,7 +407,8 @@ function onDeleted(id: string) {
                   Render Queue
                 </SheetTitle>
                 <SheetDescription>
-                  Active and recently-finished render batches across the platform.
+                  Active and recently-finished render batches across the
+                  platform.
                 </SheetDescription>
               </SheetHeader>
               <div class="mt-6">
@@ -450,10 +421,6 @@ function onDeleted(id: string) {
     </TacticalPageHeader>
   </PageTransition>
 
-  <!-- Filter toolbar — visibility pills (admin only) on the left, then
-       the player chip (when filtering by ?player=) and the date select
-       on the right. Everything is URL-driven so back/forward replays
-       the operator's filtering history. -->
   <PageTransition :delay="60" class="mt-4">
     <div class="flex flex-wrap items-center gap-2">
       <template v-if="isAdmin">
@@ -476,9 +443,6 @@ function onDeleted(id: string) {
         <span class="h-5 w-px bg-border/60 mx-1"></span>
       </template>
 
-      <!-- Player chip — when ?player=<sid> is set (via the picker
-           below, "See all" on a profile, or a shared deep link). The X
-           clears the param without losing any other filter state. -->
       <button
         v-if="playerFilter"
         type="button"
@@ -496,14 +460,7 @@ function onDeleted(id: string) {
         <X class="h-3 w-3 opacity-70" />
       </button>
 
-      <!-- Player picker — opens the global player search. Hidden when
-           a player is already selected; the chip above doubles as the
-           clear affordance. -->
-      <PlayerSearch
-        v-else
-        label="Filter by player"
-        @selected="selectPlayer"
-      >
+      <PlayerSearch v-else label="Filter by player" @selected="selectPlayer">
         <button
           type="button"
           :class="[tacticalFilterPillClasses]"
@@ -514,10 +471,6 @@ function onDeleted(id: string) {
         </button>
       </PlayerSearch>
 
-      <!-- Date select — quick presets. "All time" is the default; non-
-           default values land in the URL as `?since=`. Compact width
-           keeps it from dominating the row when paired with the
-           visibility pills. -->
       <Select
         :model-value="sinceFilter"
         @update:model-value="(v) => setSince(v as SincePreset)"
@@ -553,14 +506,22 @@ function onDeleted(id: string) {
     <div
       class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
     >
-      <Skeleton v-for="i in 8" :key="i" class="aspect-video w-full rounded-lg" />
+      <Skeleton
+        v-for="i in 8"
+        :key="i"
+        class="aspect-video w-full rounded-lg"
+      />
     </div>
   </PageTransition>
 
   <PageTransition v-else-if="!hasClips" :delay="80" class="mt-6">
     <Empty>
       <EmptyTitle>
-        {{ playerFilter || sinceFilter !== "all" ? "No clips match these filters" : "No clips here yet" }}
+        {{
+          playerFilter || sinceFilter !== "all"
+            ? "No clips match these filters"
+            : "No clips here yet"
+        }}
       </EmptyTitle>
       <EmptyDescription>
         <template v-if="playerFilter || sinceFilter !== 'all'">
@@ -604,22 +565,13 @@ function onDeleted(id: string) {
       class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
     >
       <template v-for="item in gridItems">
-        <!-- Multi-clip match → group tile. Routes to the dedicated
-             match highlights page (no curator action row — operators
-             manage individual clips on the match page or via the
-             modal). -->
         <MatchClipsGroupCard
           v-if="item.kind === 'group'"
           :key="`group-${item.matchId}`"
           :match-id="item.matchId"
           :clips="item.clips"
         />
-        <!-- Single clip → standard HighlightCard + curator row. -->
-        <div
-          v-else
-          :key="`single-${item.clip.id}`"
-          class="space-y-2"
-        >
+        <div v-else :key="`single-${item.clip.id}`" class="space-y-2">
           <HighlightCard :clip="item.clip" />
 
           <div
@@ -637,7 +589,7 @@ function onDeleted(id: string) {
             <div class="flex items-center gap-0.5">
               <a
                 v-if="item.clip.download_url"
-                :href="`${item.clip.download_url}&dl=1`"
+                :href="clipDownloadUrl(item.clip.download_url)"
                 :download="clipDownloadName(item.clip)"
                 :title="`Download ${item.clip.title ?? 'clip'}`"
                 class="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"

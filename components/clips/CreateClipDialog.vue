@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
-import {
-  Film,
-  Loader2,
-  Sparkles,
-  Sword,
-  Crown,
-  Trophy,
-} from "lucide-vue-next";
+import { Film, Loader2, Sparkles, Sword, Crown, Trophy } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
 import { Button } from "~/components/ui/button";
 import {
@@ -34,16 +27,11 @@ import { useDemoPlaybackStore } from "~/stores/DemoPlaybackStore";
 import ClipRenderProgress from "~/components/clips/ClipRenderProgress.vue";
 import { useClipRenderActive } from "~/composables/useClipRenderActive";
 
-// Highlights-preset clip generator. The api scans this match's parsed
-// kills, builds the multi-segment spec from the chosen preset, and
-// fires the same render pipeline a manual trim would. Manual trim
-// editing happens inline on the demo page via ClipEditorBar — this
-// dialog is the "one-click highlight reel" path.
+// One-click highlight-reel preset. Manual trim editing lives in
+// ClipEditorBar on the demo page.
 const props = defineProps<{
   open: boolean;
   matchMapId: string;
-  // Kept for backwards-compatibility with callers that still pass it;
-  // the tabs are gone, this dialog is highlights-only now.
   initialMode?: "manual" | "auto";
 }>();
 const emit = defineEmits<{
@@ -110,18 +98,15 @@ watch(
   },
 );
 
-const canSubmit = computed(
-  () => !!presetTarget.value && !submitting.value,
-);
+const canSubmit = computed(() => !!presetTarget.value && !submitting.value);
 
 type DemoPlayer = {
   steam_id: string;
   name: string;
   team: "T" | "CT" | null;
 };
-// Player picker — kills + GSI, NOT the api lineup. A demo can be
-// cross-loaded against a different match; trust the parsed demo
-// content over the database row.
+// Sourced from kills + GSI rather than the api lineup — demos can be
+// cross-loaded against a different match.
 const presetPlayers = computed<DemoPlayer[]>(() => {
   const seen = new Set<string>();
   const out: DemoPlayer[] = [];
@@ -155,9 +140,7 @@ const tPresetPlayers = computed(() =>
 const otherPresetPlayers = computed(() =>
   presetPlayers.value.filter((p) => p.team !== "CT" && p.team !== "T"),
 );
-const ctTeamLabel = computed(
-  () => store.gsiTeamCtName || "Counter-Terrorists",
-);
+const ctTeamLabel = computed(() => store.gsiTeamCtName || "Counter-Terrorists");
 const tTeamLabel = computed(() => store.gsiTeamTName || "Terrorists");
 
 async function submit() {
@@ -168,11 +151,7 @@ async function submit() {
   }
   submitError.value = null;
   submitting.value = true;
-  // Look up the player's display name so the api can build a human-
-  // readable title ("Joe — Multi-Kills (1× 4K, 2× 3K)") instead of
-  // falling back to a steam-id suffix. GSI is the freshest source
-  // (matches the actual demo file); rosters / playerNames are the
-  // fallback for cross-loaded demos.
+  // GSI is freshest; fall back to rosters / playerNames for cross-loaded demos.
   const targetName = (() => {
     const sid = presetTarget.value!;
     const gsi = store.specSlots.find((s) => s.steam_id === sid);
@@ -240,9 +219,6 @@ function close(v: boolean) {
       />
 
       <form v-else class="space-y-5" @submit.prevent="submit">
-        <!-- Player picker. Sourced from the parsed demo's kill events
-             + GSI — NOT the api lineup, which can be wrong for cross-
-             loaded demos. Required: submit is gated on a selection. -->
         <div class="space-y-2">
           <Label>
             Player
@@ -266,8 +242,8 @@ function close(v: boolean) {
                 v-if="presetPlayers.length === 0"
                 class="px-2 py-3 text-xs text-muted-foreground"
               >
-                No players found yet — wait for the demo to start
-                playing, then try again.
+                No players found yet — wait for the demo to start playing, then
+                try again.
               </div>
               <SelectGroup v-if="ctPresetPlayers.length">
                 <SelectLabel

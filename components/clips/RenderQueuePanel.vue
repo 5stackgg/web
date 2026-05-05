@@ -15,20 +15,14 @@ import {
 } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import {
-  generateMutation,
-  generateSubscription,
-} from "~/graphql/graphqlGen";
+import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { clipRenderJobFields } from "~/graphql/clipRenderJob";
 import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
 
-// Operator panel for the render queue. One card per match_map batch
-// (one pod processes the batch sequentially), every job in the batch
-// shown vertically with status, progress, and timing. Cancel happens
-// at batch level — the pod's render script reads each row's status
-// before each clip and skips on `cancelled`, plus the cancel mutation
-// tears down the pod itself.
+// One card per match_map batch (one pod processes a batch
+// sequentially). Cancel is batch-level — the render script checks
+// each row's status before each clip.
 type Job = {
   id: string;
   user_steam_id: string;
@@ -54,9 +48,7 @@ type Job = {
 
 const props = withDefaults(
   defineProps<{
-    // Compact mode trims to in-flight batches with one summary line each.
-    // Used when embedded somewhere small (formerly the Manage Highlights
-    // summary). Keep the full layout for the dedicated queue surface.
+    // Trims to in-flight batches with a one-line summary each.
     compact?: boolean;
   }>(),
   { compact: false },
@@ -78,11 +70,7 @@ function toggleFinishedExpanded(matchMapId: string) {
 let activeSub: { unsubscribe: () => void } | null = null;
 function subscribe() {
   activeSub?.unsubscribe();
-  // Limit covers active batches + the last ~12 finished BATCHES we
-  // show in "Recently Finished". 200 is roughly 20 × 10-clip batches —
-  // plenty of headroom even when several large recap runs land back-
-  // to-back. The grouping logic still slices the finished list to 12,
-  // so this just bounds the worst-case payload.
+  // 200 ≈ 20 × 10-clip batches; finished list still slices to 12.
   const obs = getGraphqlClient().subscribe({
     query: generateSubscription({
       clip_render_jobs: [
@@ -110,10 +98,8 @@ onBeforeUnmount(() => activeSub?.unsubscribe());
 
 const TERMINAL = new Set(["done", "error", "cancelled"]);
 
-// Ordering inside a batch: active phases first, then queued, then any
-// already-terminal jobs at the bottom. Within a phase the rows still
-// follow created_at so the operator's mental model ("clip 3 of 10") is
-// preserved when statuses cycle through quickly.
+// Active phases first, then queued, then terminal. Within a phase
+// rows follow created_at so "clip 3 of 10" stays stable.
 const STATUS_ORDER: Record<string, number> = {
   rendering: 0,
   uploading: 1,
@@ -123,13 +109,9 @@ const STATUS_ORDER: Record<string, number> = {
   cancelled: 3,
 };
 
-// Group EVERY visible job by match_map_id, then bucket batches into
-// "active" (at least one in-flight job) and "recently finished" (every
-// job is terminal). Active batches keep their already-completed jobs
-// inline so the operator sees the whole 10-of-10 ladder advance, not
-// just the queued tail. The previous version moved finished jobs to a
-// flat "Recently Finished" list as soon as they hit done/error, which
-// made it look like they were no longer part of the batch.
+// Group jobs by match_map_id; bucket into active vs recently-finished.
+// Active batches keep their finished jobs inline so the 10-of-10
+// ladder advances visibly.
 type BatchGroup = {
   matchMapId: string;
   jobs: Job[];
@@ -142,20 +124,20 @@ type BatchGroup = {
   cancelledCount: number;
   terminalCount: number;
   inFlightCount: number;
-  // 0..1 across the batch: per-job render fraction summed and divided
-  // by total. Lets the header bar show 23% even when only 1 of 10
-  // jobs is mid-render.
+  // 0..1 across the batch — sum of per-job render fractions / total.
   overallProgress: number;
-  // True when every job has reached a terminal state.
   isFinished: boolean;
 };
 
 function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
   const sorted = [...list].sort((a, b) => {
-    const ord =
-      (STATUS_ORDER[a.status] ?? 99) - (STATUS_ORDER[b.status] ?? 99);
+    const ord = (STATUS_ORDER[a.status] ?? 99) - (STATUS_ORDER[b.status] ?? 99);
     if (ord !== 0) return ord;
-    return a.created_at < b.created_at ? -1 : a.created_at > b.created_at ? 1 : 0;
+    return a.created_at < b.created_at
+      ? -1
+      : a.created_at > b.created_at
+        ? 1
+        : 0;
   });
   const activeJob = sorted.find(
     (j) => j.status === "rendering" || j.status === "uploading",
@@ -181,8 +163,7 @@ function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
         typeof j.progress === "number" ? j.progress : Number(j.progress);
       progressSum += Number.isFinite(n) ? Math.max(0, Math.min(1, n)) : 0;
     } else if (j.status === "uploading") {
-      // Upload phase has no real % signal, but the render did finish —
-      // count it as effectively done for batch progress.
+      // No % signal during upload, but render finished — count as done.
       progressSum += 1;
     }
   }
@@ -314,7 +295,6 @@ function matchupLabel(j: Job): string | null {
 function clipDurationLabel(j: Job): string | null {
   const segs = j.spec?.segments;
   if (!Array.isArray(segs) || segs.length === 0) return null;
-  // Fall back to segment count when ms isn't on the spec.
   const ms = typeof j.spec?.duration_ms === "number" ? j.spec.duration_ms : 0;
   if (ms > 0) {
     const total = Math.round(ms / 1000);
@@ -360,7 +340,10 @@ function formatTimeAgo(iso: string | null): string {
 
 const totalInFlight = computed(() => inFlight.value.length);
 const totalActive = computed(
-  () => inFlight.value.filter((j) => j.status === "rendering" || j.status === "uploading").length,
+  () =>
+    inFlight.value.filter(
+      (j) => j.status === "rendering" || j.status === "uploading",
+    ).length,
 );
 const totalQueued = computed(
   () => inFlight.value.filter((j) => j.status === "queued").length,
@@ -369,26 +352,30 @@ const totalQueued = computed(
 
 <template>
   <div
-    v-if="!loading && (groups.length > 0 || (!compact && recentlyDoneGroups.length > 0))"
+    v-if="
+      !loading &&
+      (groups.length > 0 || (!compact && recentlyDoneGroups.length > 0))
+    "
     class="space-y-5"
   >
-    <!-- Top-line summary: in-flight count + breakdown. Anchors the panel
-         when there's nothing currently rendering but recently-finished
-         items are still listed. -->
     <div
       v-if="!compact && groups.length > 0"
       class="flex flex-wrap items-center gap-3 rounded-lg border border-border/50 bg-card/40 px-3 py-2 [backdrop-filter:blur(6px)]"
     >
       <div class="flex items-center gap-2">
         <ListVideo class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
-        <span class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground">
+        <span
+          class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
+        >
           In Flight
         </span>
         <span class="font-mono text-sm font-semibold tabular-nums">
           {{ totalInFlight }}
         </span>
       </div>
-      <div class="ml-auto flex items-center gap-3 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground">
+      <div
+        class="ml-auto flex items-center gap-3 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground"
+      >
         <span class="inline-flex items-center gap-1.5">
           <Loader2 class="h-3 w-3 animate-spin text-[hsl(var(--tac-amber))]" />
           {{ totalActive }} active
@@ -401,16 +388,12 @@ const totalQueued = computed(
       </div>
     </div>
 
-    <!-- Active batches — one card per match_map. Each card stacks
-         vertically: header w/ matchup + cancel, hero progress for the
-         active job, then the per-job ladder. -->
     <div v-if="groups.length" class="space-y-3">
       <Card
         v-for="g in groups"
         :key="g.matchMapId"
         class="overflow-hidden border-border/60"
       >
-        <!-- Header banner: map poster background, lineup matchup label -->
         <div class="relative">
           <div
             v-if="g.sample.match_map?.map?.poster"
@@ -441,16 +424,29 @@ const totalQueued = computed(
                   <span class="truncate">{{ matchupLabel(g.sample) }}</span>
                 </span>
                 <span v-else class="truncate font-semibold leading-tight">
-                  {{ g.sample.match_map?.map?.label ?? g.sample.match_map?.map?.name ?? "Unknown match" }}
+                  {{
+                    g.sample.match_map?.map?.label ??
+                    g.sample.match_map?.map?.name ??
+                    "Unknown match"
+                  }}
                 </span>
               </div>
               <div
                 class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground"
               >
-                <span v-if="g.sample.match_map?.map?.label || g.sample.match_map?.map?.name">
-                  {{ g.sample.match_map.map.label ?? g.sample.match_map.map.name }}
+                <span
+                  v-if="
+                    g.sample.match_map?.map?.label ||
+                    g.sample.match_map?.map?.name
+                  "
+                >
+                  {{
+                    g.sample.match_map.map.label ?? g.sample.match_map.map.name
+                  }}
                 </span>
-                <span v-if="g.sample.match_map?.map" class="text-border">·</span>
+                <span v-if="g.sample.match_map?.map" class="text-border"
+                  >·</span
+                >
                 <span class="tabular-nums">
                   {{ g.terminalCount }}/{{ g.totalCount }} done
                 </span>
@@ -463,18 +459,23 @@ const totalQueued = computed(
                   {{ formatTimeAgo(g.startedAt) }}
                 </span>
               </div>
-              <!-- Batch-level progress: aggregates per-job render % so a
-                   long batch shows steady forward motion at the top
-                   instead of "23% / 0% / 0% / …" per row only. -->
               <div class="mt-2 space-y-1">
-                <div class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground">
+                <div
+                  class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+                >
                   <span>Batch progress</span>
-                  <span class="tabular-nums">{{ Math.round(g.overallProgress * 100) }}%</span>
+                  <span class="tabular-nums"
+                    >{{ Math.round(g.overallProgress * 100) }}%</span
+                  >
                 </div>
-                <div class="relative h-1.5 overflow-hidden rounded-full bg-muted/40">
+                <div
+                  class="relative h-1.5 overflow-hidden rounded-full bg-muted/40"
+                >
                   <div
                     class="h-full rounded-full bg-[hsl(var(--tac-amber))] transition-[width] duration-300"
-                    :style="{ width: Math.round(g.overallProgress * 100) + '%' }"
+                    :style="{
+                      width: Math.round(g.overallProgress * 100) + '%',
+                    }"
                   ></div>
                 </div>
               </div>
@@ -496,7 +497,6 @@ const totalQueued = computed(
           </div>
         </div>
 
-        <!-- Hero progress for the active job (compact mode hides this). -->
         <div
           v-if="g.activeJob && !compact"
           class="border-t border-border/40 px-3 py-3 sm:px-4"
@@ -521,15 +521,19 @@ const totalQueued = computed(
             >
               {{ statusLabel(g.activeJob.status) }}
               <span class="opacity-60">·</span>
-              {{ formatTimeAgo(g.activeJob.last_status_at ?? g.activeJob.created_at) }}
+              {{
+                formatTimeAgo(
+                  g.activeJob.last_status_at ?? g.activeJob.created_at,
+                )
+              }}
             </span>
           </div>
 
-          <!-- Two-phase progress visual. Render bar fills during 'rendering';
-               upload pulses during 'uploading' (no bytes-progress signal). -->
           <div class="space-y-2">
             <div class="space-y-1">
-              <div class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground">
+              <div
+                class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+              >
                 <span class="inline-flex items-center gap-1.5">
                   <Film class="h-3 w-3" />
                   Render
@@ -544,7 +548,9 @@ const totalQueued = computed(
                   }}
                 </span>
               </div>
-              <div class="relative h-1.5 overflow-hidden rounded-full bg-muted/40">
+              <div
+                class="relative h-1.5 overflow-hidden rounded-full bg-muted/40"
+              >
                 <div
                   class="h-full rounded-full bg-[hsl(var(--tac-amber))] transition-[width] duration-300"
                   :style="{
@@ -559,7 +565,9 @@ const totalQueued = computed(
               </div>
             </div>
             <div class="space-y-1">
-              <div class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground">
+              <div
+                class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+              >
                 <span class="inline-flex items-center gap-1.5">
                   <Upload class="h-3 w-3" />
                   Upload
@@ -589,9 +597,10 @@ const totalQueued = computed(
           </div>
         </div>
 
-        <!-- Per-job ladder: every clip in the batch with its own status + meta.
-             Compact mode collapses this to a single summary line. -->
-        <div v-if="!compact" class="border-t border-border/40 divide-y divide-border/30">
+        <div
+          v-if="!compact"
+          class="border-t border-border/40 divide-y divide-border/30"
+        >
           <div
             v-for="j in g.jobs"
             :key="j.id"
@@ -615,7 +624,8 @@ const totalQueued = computed(
               class="h-3.5 w-3.5 shrink-0"
               :class="[
                 STATUS_TONE[j.status]?.iconColor,
-                (j.status === 'rendering' || j.status === 'uploading') && 'animate-spin',
+                (j.status === 'rendering' || j.status === 'uploading') &&
+                  'animate-spin',
               ]"
             />
             <div class="min-w-0 flex-1">
@@ -660,8 +670,6 @@ const totalQueued = computed(
           </div>
         </div>
 
-        <!-- Compact mode summary: skip the ladder, just say what the
-             batch is doing in one line. -->
         <div
           v-else
           class="border-t border-border/40 px-3 py-2 sm:px-4 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground"
@@ -669,17 +677,11 @@ const totalQueued = computed(
           <span v-if="g.activeJob">
             {{ statusLabel(g.activeJob.status) }} · {{ clipTitle(g.activeJob) }}
           </span>
-          <span v-else>
-            {{ g.jobs.length }} queued
-          </span>
+          <span v-else> {{ g.jobs.length }} queued </span>
         </div>
       </Card>
     </div>
 
-    <!-- Recently finished — one line per BATCH (not per clip), so a
-         10-job recap renders as a single row showing 10 outcomes
-         instead of flooding the panel with 10 individual entries.
-         Click expand to see the per-job ladder for that batch. -->
     <div v-if="!compact && recentlyDoneGroups.length" class="space-y-2">
       <div class="flex items-center gap-2">
         <span
@@ -688,7 +690,9 @@ const totalQueued = computed(
           Recently Finished
         </span>
         <span class="text-border">·</span>
-        <span class="font-mono text-[0.6rem] tabular-nums text-muted-foreground/70">
+        <span
+          class="font-mono text-[0.6rem] tabular-nums text-muted-foreground/70"
+        >
           {{ recentlyDoneGroups.length }}
         </span>
       </div>
@@ -721,35 +725,52 @@ const totalQueued = computed(
                   {{ matchupLabel(g.sample) }}
                 </span>
                 <span v-else>
-                  {{ g.sample.match_map?.map?.label ?? g.sample.match_map?.map?.name ?? "Unknown match" }}
+                  {{
+                    g.sample.match_map?.map?.label ??
+                    g.sample.match_map?.map?.name ??
+                    "Unknown match"
+                  }}
                 </span>
               </div>
               <div
                 class="truncate font-mono text-[0.58rem] uppercase tracking-[0.12em] text-muted-foreground/70"
               >
-                <span v-if="g.sample.match_map?.map?.label || g.sample.match_map?.map?.name">
-                  {{ g.sample.match_map.map.label ?? g.sample.match_map.map.name }} ·
+                <span
+                  v-if="
+                    g.sample.match_map?.map?.label ||
+                    g.sample.match_map?.map?.name
+                  "
+                >
+                  {{
+                    g.sample.match_map.map.label ?? g.sample.match_map.map.name
+                  }}
+                  ·
                 </span>
-                <span class="tabular-nums">{{ g.totalCount }} clip{{ g.totalCount === 1 ? "" : "s" }}</span>
+                <span class="tabular-nums"
+                  >{{ g.totalCount }} clip{{
+                    g.totalCount === 1 ? "" : "s"
+                  }}</span
+                >
                 <span v-if="g.doneCount > 0" class="text-emerald-400/80">
                   · {{ g.doneCount }} done
                 </span>
                 <span v-if="g.errorCount > 0" class="text-destructive/80">
                   · {{ g.errorCount }} err
                 </span>
-                <span v-if="g.cancelledCount > 0" class="text-muted-foreground/70">
+                <span
+                  v-if="g.cancelledCount > 0"
+                  class="text-muted-foreground/70"
+                >
                   · {{ g.cancelledCount }} cancelled
                 </span>
               </div>
             </div>
-            <span class="shrink-0 font-mono text-[0.58rem] tabular-nums text-muted-foreground/70">
+            <span
+              class="shrink-0 font-mono text-[0.58rem] tabular-nums text-muted-foreground/70"
+            >
               {{ formatTimeAgo(g.startedAt) }}
             </span>
           </button>
-          <!-- Expanded ladder: same per-job rows as active batches use,
-               minus the spinner. Operator can grab any successful clip
-               or read the error_message of any failed one without
-               scrolling somewhere else. -->
           <div
             v-if="finishedExpanded[g.matchMapId]"
             class="border-t border-border/30 divide-y divide-border/30"
@@ -771,7 +792,10 @@ const totalQueued = computed(
                 :class="STATUS_TONE[j.status]?.iconColor"
               />
               <div class="min-w-0 flex-1">
-                <div class="truncate text-xs" :title="j.error_message ?? clipTitle(j)">
+                <div
+                  class="truncate text-xs"
+                  :title="j.error_message ?? clipTitle(j)"
+                >
                   {{ clipTitle(j) }}
                 </div>
                 <div
@@ -797,8 +821,6 @@ const totalQueued = computed(
 </template>
 
 <style scoped>
-/* Indeterminate "uploading" track. Short bright gradient slides
-   across so the user sees activity without an accurate percentage. */
 .upload-pulse-bar {
   position: absolute;
   inset: 0;

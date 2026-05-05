@@ -9,10 +9,8 @@ import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import socket from "~/web-sockets/Socket";
 
-// Module-level — multiple `useDemoPlayback()` callers (DemoPlayer,
-// DemoPlaybackControls, CreateClipDialog) share one poll loop and one
-// socket listener. Per-instance timers would multiply the request rate
-// for every mount.
+// Module-level so multiple useDemoPlayback() callers share one poll
+// loop instead of multiplying the request rate per mount.
 let statePollTimer: ReturnType<typeof setInterval> | null = null;
 let stateSocketHandler: ((data: any) => void) | null = null;
 
@@ -33,11 +31,8 @@ export function useDemoPlayback() {
     return `demo-session:${sessionId}`;
   }
 
-  // 1Hz polling of /demo/state for the GSI slot/player snapshot. The
-  // pod doesn't push GSI to the api on every tick (would explode the
-  // bus); we ask for state on a steady rhythm and the api proxies the
-  // latest cached value from spec-server. Started on `start()`,
-  // stopped on `stop()` / clean unsubscribe.
+  // 1Hz pull of the pod's cached GSI snapshot. The pod doesn't push
+  // GSI per-tick (bus pressure), so we poll its in-memory cache.
   function startStatePoll() {
     stopStatePoll();
     stateSocketHandler = (data: any) => {
@@ -63,17 +58,12 @@ export function useDemoPlayback() {
       }
     };
     socket.on("demo-session:state", stateSocketHandler);
-    // Fire immediately + every 1s. The pod returns its in-memory GSI
-    // snapshot — this is just a "latest known" pull, not a poll of the
-    // game itself. cs2 GSI fires at ~10Hz internally so 1s gives us
-    // strictly fresh data with minimal overhead.
     const tick = () => {
       if (!store.matchMapId) return;
       try {
         control("state");
       } catch {
-        // matchMapId could've cleared between the guard and call;
-        // swallow rather than crashing the timer.
+        // matchMapId may have cleared between guard and call
       }
     };
     tick();
@@ -120,32 +110,23 @@ export function useDemoPlayback() {
         next: ({ data }: any) => {
           const row = data?.match_demo_sessions?.[0];
           if (!row) {
-            // Row deleted — server-side stop or reaper. Reflect that
-            // by clearing our local state so the UI returns to the
-            // "Watch demo" call-to-action.
+            // Row deleted (server-side stop or reaper).
             unsubscribe(subscriptionKey(sessionId));
             stopStatePoll();
             store.reset();
             return;
           }
-          // When the spec-server transitions us to "playing", the
-          // demo is freshly paused at tick 0 (we pause it on the
-          // server side via `demo_togglepause` after demoui hide).
-          // Sync local state so the play button shows ▶ and the
-          // scrubber sits at 0 instead of estimating against an
-          // unmounted demo.
+          // Spec-server pauses the demo at tick 0 when it transitions
+          // to playing; sync local state so the scrubber doesn't
+          // estimate against an unmounted demo.
           const becamePlaying =
-            row.status === "playing" &&
-            store.sessionRow?.status !== "playing";
+            row.status === "playing" && store.sessionRow?.status !== "playing";
           if (becamePlaying) {
             store.syncFromControl({ tick: 0, paused: true });
-            // Pod is reachable now — start polling /demo/state for
-            // the GSI snapshot. Doing this before "playing" just
-            // spams ECONNREFUSED while the pod is still booting.
+            // Wait until status='playing' to poll — earlier requests
+            // just ECONNREFUSED while the pod is booting.
             startStatePoll();
           }
-          // Status dropped back below "playing" (errored / restart):
-          // stop polling so we don't keep hitting a dead pod.
           if (
             row.status !== "playing" &&
             store.sessionRow?.status === "playing"
@@ -285,9 +266,6 @@ export function useDemoPlayback() {
 
       // Subscription will populate store.sessionRow with the latest
       // status (booting → launching_steam → live, or errored).
-      // The status-driven branch in subscribeToSession kicks off the
-      // GSI poll once status='playing' lands — polling earlier would
-      // just spam ECONNREFUSED while the pod is still booting.
       subscribeToSession(out.session_id);
     } catch (error) {
       store.localStatus = "error";
@@ -316,11 +294,8 @@ export function useDemoPlayback() {
     }
   }
 
-  // Fire-and-forget over the existing WS. Lower latency than a Hasura
-  // mutation round-trip, no extra HTTP per click. The api proxies to
-  // the spec-server pod and the next subscription tick on
-  // match_demo_sessions reflects the resulting state — so the UI
-  // stays optimistic between click and confirm.
+  // Fire-and-forget over the existing WS — lower latency than a
+  // Hasura mutation round-trip; the next subscription tick reflects state.
   function control(
     action:
       | "pause"

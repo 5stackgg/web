@@ -396,11 +396,6 @@ const loginArrowClasses =
                           </NuxtLink>
                         </NavigationMenuLink>
                       </li>
-                      <!-- Public highlights browse. Hidden when
-                           public-mode is off AND viewer isn't
-                           streamer-rank+ — matches the LeftNav gate
-                           so the entry only renders for users who
-                           can actually reach the page. -->
                       <li v-if="canViewHighlights">
                         <NavigationMenuLink as-child>
                           <NuxtLink

@@ -17,10 +17,7 @@ import {
 import { useNuxtApp } from "#app";
 import { useAuthStore } from "~/stores/AuthStore";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import {
-  generateMutation,
-  generateSubscription,
-} from "~/graphql/graphqlGen";
+import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { matchClipFields } from "~/graphql/matchClip";
 import type { Clip } from "~/types/clip";
 import { Button } from "~/components/ui/button";
@@ -42,7 +39,10 @@ import {
 } from "~/components/ui/popover";
 import DeleteClipDialog from "~/components/clips/DeleteClipDialog.vue";
 import ClipMatchSummary from "~/components/clips/ClipMatchSummary.vue";
-import { clipDownloadName } from "~/utilities/clipDownloadName";
+import {
+  clipDownloadName,
+  clipDownloadUrl,
+} from "~/utilities/clipDownloadName";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { useClipModal } from "~/composables/useClipModal";
 
@@ -78,9 +78,24 @@ const VISIBILITY_OPTIONS: Array<{
   icon: any;
   hint: string;
 }> = [
-  { value: "public", label: "Public", icon: Globe, hint: "Listed in the highlights feed" },
-  { value: "unlisted", label: "Unlisted", icon: Eye, hint: "Hidden from feeds — anyone with the link can view" },
-  { value: "private", label: "Private", icon: Lock, hint: "Hidden from feeds — file URL still plays if shared" },
+  {
+    value: "public",
+    label: "Public",
+    icon: Globe,
+    hint: "Listed in the highlights feed",
+  },
+  {
+    value: "unlisted",
+    label: "Unlisted",
+    icon: Eye,
+    hint: "Hidden from feeds — anyone with the link can view",
+  },
+  {
+    value: "private",
+    label: "Private",
+    icon: Lock,
+    hint: "Hidden from feeds — file URL still plays if shared",
+  },
 ];
 const canEditVisibility = computed(() => isOwner.value || auth.isAdmin);
 const visPopoverOpen = ref(false);
@@ -241,8 +256,7 @@ async function saveEdit() {
 
 async function copyLink() {
   if (!clip.value) return;
-  const origin =
-    typeof window !== "undefined" ? window.location.origin : "";
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
   const shareUrl = `${origin}/clips/${clip.value.id}`;
   try {
     await navigator.clipboard.writeText(shareUrl);
@@ -316,9 +330,7 @@ const targetAvatarSrc = computed(() =>
           <DialogTitle>{{ clip?.title || "Clip" }}</DialogTitle>
         </VisuallyHidden>
         <VisuallyHidden as-child>
-          <DialogDescription>
-            Highlight clip viewer
-          </DialogDescription>
+          <DialogDescription> Highlight clip viewer </DialogDescription>
         </VisuallyHidden>
 
         <span
@@ -356,7 +368,10 @@ const targetAvatarSrc = computed(() =>
             Highlight
           </span>
 
-          <Popover v-if="clip && canEditVisibility" v-model:open="visPopoverOpen">
+          <Popover
+            v-if="clip && canEditVisibility"
+            v-model:open="visPopoverOpen"
+          >
             <PopoverTrigger
               class="ml-auto inline-flex h-7 items-center gap-1.5 rounded-full border border-border/60 bg-card/50 pl-1.5 pr-2.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] transition-colors cursor-pointer hover:border-[hsl(var(--tac-amber)/0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               :class="
@@ -379,8 +394,14 @@ const targetAvatarSrc = computed(() =>
                 "
               >
                 <Loader2 v-if="visSaving" class="h-3 w-3 animate-spin" />
-                <Lock v-else-if="clip.visibility === 'private'" class="h-3 w-3" />
-                <Eye v-else-if="clip.visibility === 'unlisted'" class="h-3 w-3" />
+                <Lock
+                  v-else-if="clip.visibility === 'private'"
+                  class="h-3 w-3"
+                />
+                <Eye
+                  v-else-if="clip.visibility === 'unlisted'"
+                  class="h-3 w-3"
+                />
                 <Globe v-else class="h-3 w-3" />
               </span>
               {{ clip.visibility }}
@@ -420,7 +441,9 @@ const targetAvatarSrc = computed(() =>
                       class="h-3 w-3 text-[hsl(var(--tac-amber))]"
                     />
                   </span>
-                  <span class="block text-[0.7rem] text-muted-foreground leading-snug">
+                  <span
+                    class="block text-[0.7rem] text-muted-foreground leading-snug"
+                  >
                     {{ opt.hint }}
                   </span>
                 </span>
@@ -455,12 +478,13 @@ const targetAvatarSrc = computed(() =>
           </button>
         </div>
 
-        <!-- Loading skeleton -->
         <div
           v-if="loading || (!clip && !notFound)"
           class="grid gap-4 p-4 sm:p-5 lg:grid-cols-[2fr_1fr]"
         >
-          <div class="aspect-video w-full rounded-md bg-muted/30 animate-pulse"></div>
+          <div
+            class="aspect-video w-full rounded-md bg-muted/30 animate-pulse"
+          ></div>
           <div class="space-y-3">
             <div class="h-7 w-3/4 rounded bg-muted/30 animate-pulse"></div>
             <div class="h-4 w-1/2 rounded bg-muted/30 animate-pulse"></div>
@@ -468,7 +492,6 @@ const targetAvatarSrc = computed(() =>
           </div>
         </div>
 
-        <!-- Not found -->
         <div
           v-else-if="notFound"
           class="flex flex-col items-center justify-center gap-3 px-6 py-16 text-center"
@@ -485,12 +508,10 @@ const targetAvatarSrc = computed(() =>
           <Button variant="outline" size="sm" @click="closeClip">Close</Button>
         </div>
 
-        <!-- Body -->
         <div
           v-else-if="clip"
           class="grid gap-4 sm:gap-5 p-4 sm:p-5 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)] flex-1 min-h-0"
         >
-          <!-- LEFT: Player + caption strip -->
           <div class="flex flex-col gap-3 min-w-0">
             <div
               class="relative aspect-video w-full overflow-hidden rounded-md bg-black border border-border/60"
@@ -498,7 +519,9 @@ const targetAvatarSrc = computed(() =>
               <video
                 v-if="clip.download_url"
                 :src="clip.download_url"
-                :poster="clip.thumbnail_url ?? clip.match_map?.map?.poster ?? undefined"
+                :poster="
+                  clip.thumbnail_url ?? clip.match_map?.map?.poster ?? undefined
+                "
                 class="absolute inset-0 h-full w-full object-contain"
                 controls
                 autoplay
@@ -511,12 +534,16 @@ const targetAvatarSrc = computed(() =>
                 class="absolute inset-0 flex items-center justify-center text-muted-foreground"
               >
                 <Loader2 class="h-6 w-6 animate-spin" />
-                <span class="ml-3 text-sm font-mono uppercase tracking-[0.18em]">
+                <span
+                  class="ml-3 text-sm font-mono uppercase tracking-[0.18em]"
+                >
                   Render finalizing…
                 </span>
               </div>
 
-              <div class="clip-scanlines pointer-events-none absolute inset-0"></div>
+              <div
+                class="clip-scanlines pointer-events-none absolute inset-0"
+              ></div>
             </div>
 
             <div
@@ -562,11 +589,6 @@ const targetAvatarSrc = computed(() =>
                 </button>
               </div>
 
-              <!-- Edit form: title only. Visibility moved to the
-                   inline chip in the header strip — clicking it
-                   switches in place without entering edit mode, so
-                   the form stays narrow and keeps focus on the title
-                   change. -->
               <div v-else class="space-y-3">
                 <div class="space-y-1">
                   <Label
@@ -596,7 +618,10 @@ const targetAvatarSrc = computed(() =>
                     Cancel
                   </Button>
                   <Button size="sm" :disabled="saving" @click="saveEdit">
-                    <Loader2 v-if="saving" class="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                    <Loader2
+                      v-if="saving"
+                      class="h-3.5 w-3.5 mr-1.5 animate-spin"
+                    />
                     Save
                   </Button>
                 </div>
@@ -604,10 +629,6 @@ const targetAvatarSrc = computed(() =>
             </div>
           </div>
 
-          <!-- RIGHT: Target player → match summary → meta → actions.
-               The target chip leads the rail so the answer to "who is
-               this clip about" is the first thing the operator sees,
-               above the broader match context. -->
           <aside class="flex flex-col gap-3 min-w-0">
             <NuxtLink
               v-if="clip.target?.name"
@@ -650,10 +671,6 @@ const targetAvatarSrc = computed(() =>
 
             <ClipMatchSummary v-if="clip.match_map?.match" :clip="clip" />
 
-            <!-- Meta block — broadcast-style data row, no card.
-                 Visibility lives in the header chip now (always
-                 visible, switchable for owner/admin without entering
-                 edit mode), so we don't repeat it here. -->
             <dl
               class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm rounded-md border border-border/50 bg-card/30 [backdrop-filter:blur(6px)] px-4 py-3"
             >
@@ -719,28 +736,18 @@ const targetAvatarSrc = computed(() =>
               </dd>
             </dl>
 
-            <!-- Action tile row — broadcast switcher style. Each tile
-                 is a hard button with a corner tick + uppercase label. -->
             <div class="grid grid-cols-2 gap-2">
               <a
                 v-if="clip.download_url"
-                :href="`${clip.download_url}&dl=1`"
+                :href="clipDownloadUrl(clip.download_url)"
                 :download="downloadFilename"
                 class="action-tile group"
               >
                 <Download class="h-4 w-4" />
                 <span>Download</span>
               </a>
-              <button
-                v-if="clip.download_url"
-                type="button"
-                class="action-tile group"
-                @click="copyLink"
-              >
-                <Check
-                  v-if="linkCopied"
-                  class="h-4 w-4 text-emerald-400"
-                />
+              <button type="button" class="action-tile group" @click="copyLink">
+                <Check v-if="linkCopied" class="h-4 w-4 text-emerald-400" />
                 <Share2 v-else class="h-4 w-4" />
                 <span>{{ linkCopied ? "Copied" : "Copy link" }}</span>
               </button>
@@ -769,12 +776,9 @@ const targetAvatarSrc = computed(() =>
 </template>
 
 <style scoped>
-/* Scanline veneer on the player. Two stacked linear-gradients (one
-   horizontal scan + one vertical chroma fringe) at low opacity; reads
-   as broadcast-CRT character without obscuring the video. The
-   transform: translateZ(0) hint lets the GPU compose the layer. */
 .clip-scanlines {
-  background-image: repeating-linear-gradient(
+  background-image:
+    repeating-linear-gradient(
       to bottom,
       rgba(255, 255, 255, 0) 0,
       rgba(255, 255, 255, 0) 2px,
@@ -791,10 +795,6 @@ const targetAvatarSrc = computed(() =>
   transform: translateZ(0);
 }
 
-/* Action tile — broadcast switcher button. Hard edge, mono label,
-   amber affordance on hover/focus. The corner tick is a tiny notch
-   at top-right that mirrors the page-header corner brackets but at a
-   smaller scale, anchoring the tile in the same visual system. */
 .action-tile {
   position: relative;
   display: inline-flex;

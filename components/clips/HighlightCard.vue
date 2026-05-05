@@ -23,10 +23,6 @@ import { useClipModal } from "~/composables/useClipModal";
 import { useAuthStore } from "~/stores/AuthStore";
 import { generateMutation } from "~/graphql/graphqlGen";
 
-// Reusable highlight card. Click the play surface to open the clip
-// in the global modal. Top-right corner shows the clip's visibility
-// as an icon — admins get a popover that switches the visibility in
-// place; everyone else just sees the status indicator.
 const props = defineProps<{
   clip: Clip;
 }>();
@@ -37,10 +33,6 @@ const isAdmin = computed(() => auth.isAdmin);
 const nuxtApp = useNuxtApp();
 
 function onPlayClick(e: MouseEvent) {
-  // Modifier-clicks fall through so right-click + cmd-click still
-  // navigate to the standalone /clips/<id> route via the title link
-  // — but the play button itself isn't an anchor, so plain click
-  // always opens the modal.
   if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
   e.preventDefault();
   e.stopPropagation();
@@ -60,14 +52,11 @@ const matchupLabel = computed(() => {
   const b = props.clip.match_map?.match?.lineup_2?.name;
   if (a && b) return `${a} vs ${b}`;
   return (
-    props.clip.match_map?.map?.label ??
-    props.clip.match_map?.map?.name ??
-    null
+    props.clip.match_map?.map?.label ?? props.clip.match_map?.map?.name ?? null
   );
 });
 
-// Score chip — only render when both scores are present so we don't
-// flash a stale 0:0 for an in-progress map.
+// Suppress 0:0 chips for in-progress maps.
 const score1 = computed(() => props.clip.match_map?.lineup_1_score);
 const score2 = computed(() => props.clip.match_map?.lineup_2_score);
 const hasScore = computed(
@@ -93,9 +82,6 @@ function onTitleClick(e: MouseEvent) {
   openClip(props.clip.id);
 }
 
-// Visibility chip — admin clicks to switch. The mutation lives here
-// so the parent grid can stay declarative; the subscription delivers
-// the new row state, no manual refetch needed.
 type Visibility = "public" | "unlisted" | "private";
 const VISIBILITY_OPTIONS: Array<{
   value: Visibility;
@@ -107,19 +93,19 @@ const VISIBILITY_OPTIONS: Array<{
     value: "public",
     label: "Public",
     icon: Globe,
-    hint: "Visible in the highlights feed",
+    hint: "Listed in the highlights feed",
   },
   {
     value: "unlisted",
     label: "Unlisted",
     icon: Eye,
-    hint: "Anyone with the link",
+    hint: "Hidden from feeds — anyone with the link can view",
   },
   {
     value: "private",
     label: "Private",
     icon: Lock,
-    hint: "Only the owner",
+    hint: "Hidden from feeds — file URL still plays if shared",
   },
 ];
 const saving = ref(false);
@@ -159,9 +145,6 @@ async function setVisibility(v: Visibility) {
 <template>
   <Card class="overflow-hidden transition-all hover:border-foreground/30">
     <div class="relative aspect-video w-full overflow-hidden bg-black group">
-      <!-- Idle state: silent thumbnail teaser. Click anywhere flips to
-           the modal viewer. The hover scale gives the affordance "this
-           is interactive". -->
       <video
         v-if="clip.download_url"
         :src="clip.download_url"
@@ -191,9 +174,6 @@ async function setVisibility(v: Visibility) {
         </span>
       </button>
 
-      <!-- Top-right visibility chip. Admin gets a clickable Popover
-           with the three options; non-admins see a static indicator
-           so the visibility status is still legible from the grid. -->
       <Popover v-if="isAdmin" v-model:open="visPopoverOpen">
         <PopoverTrigger
           class="absolute top-2 right-2 inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
@@ -218,14 +198,14 @@ async function setVisibility(v: Visibility) {
               class="h-3 w-3"
             />
           </span>
-          <span
-            class="font-mono text-[0.58rem] uppercase tracking-[0.14em]"
-          >
+          <span class="font-mono text-[0.58rem] uppercase tracking-[0.14em]">
             {{ currentVisibilityMeta.label }}
           </span>
         </PopoverTrigger>
         <PopoverContent class="w-56 p-1" align="end" @click.stop>
-          <div class="px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground">
+          <div
+            class="px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
             Visibility
           </div>
           <button
@@ -233,9 +213,7 @@ async function setVisibility(v: Visibility) {
             :key="opt.value"
             type="button"
             class="w-full text-left flex items-start gap-2 rounded px-2 py-1.5 text-xs hover:bg-muted/60 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
-            :class="
-              clip.visibility === opt.value ? 'bg-muted/40' : ''
-            "
+            :class="clip.visibility === opt.value ? 'bg-muted/40' : ''"
             :disabled="saving"
             @click="setVisibility(opt.value)"
           >
@@ -259,7 +237,9 @@ async function setVisibility(v: Visibility) {
                   class="h-3 w-3 text-[hsl(var(--tac-amber))]"
                 />
               </span>
-              <span class="block text-[0.7rem] text-muted-foreground leading-snug">
+              <span
+                class="block text-[0.7rem] text-muted-foreground leading-snug"
+              >
                 {{ opt.hint }}
               </span>
             </span>
@@ -289,9 +269,6 @@ async function setVisibility(v: Visibility) {
         </span>
       </span>
 
-      <!-- Top-left chips: tournament badge + map score. The score chip
-           highlights the winning side in amber so the result is legible
-           at a glance. -->
       <div
         class="absolute top-2 left-2 flex items-center gap-1 pointer-events-none"
       >
@@ -306,11 +283,23 @@ async function setVisibility(v: Visibility) {
           v-if="hasScore"
           class="inline-flex items-center gap-0.5 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[0.65rem] tabular-nums text-white backdrop-blur-sm"
         >
-          <span :class="winningSide === '1' ? 'text-[hsl(var(--tac-amber))] font-semibold' : ''">
+          <span
+            :class="
+              winningSide === '1'
+                ? 'text-[hsl(var(--tac-amber))] font-semibold'
+                : ''
+            "
+          >
             {{ score1 }}
           </span>
           <span class="opacity-50">:</span>
-          <span :class="winningSide === '2' ? 'text-[hsl(var(--tac-amber))] font-semibold' : ''">
+          <span
+            :class="
+              winningSide === '2'
+                ? 'text-[hsl(var(--tac-amber))] font-semibold'
+                : ''
+            "
+          >
             {{ score2 }}
           </span>
         </span>
@@ -324,9 +313,6 @@ async function setVisibility(v: Visibility) {
     </div>
 
     <CardContent class="p-3 space-y-1">
-      <!-- Title is the link to the full clip detail. Modifier-clicks
-           fall through to the NuxtLink href so right-click + open-in-
-           new-tab still lands on the standalone /clips/<id> route. -->
       <NuxtLink
         :to="`/clips/${clip.id}`"
         class="group/link flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-[hsl(var(--tac-amber))] transition-colors"

@@ -20,10 +20,7 @@ import { AlertTriangle } from "lucide-vue-next";
 
 const activeStatsMap = ref<null | { id: string; map: { name: string } }>(null);
 
-// Match-scoped clips subscription. One WS round-trip per match page,
-// shared by the new "Clips" tab AND the per-player clip indicators
-// next to lineup names. Driven off the route param so the watcher
-// fires before MatchTabs mounts.
+// One subscription shared by MatchTabs (Clips) + lineup row indicators.
 const route = useRoute();
 const routeMatchId = computed(() => String(route.params.id));
 const matchClipsState = useMatchClips(routeMatchId);

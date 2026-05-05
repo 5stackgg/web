@@ -1,9 +1,5 @@
 import { AwsClient } from "aws4fetch";
 
-// Headers we don't carry through to the signed S3 request. Conditional
-// request headers complicate the v4 signature without buying us much
-// (the worker isn't a write proxy), and the cf-/proto/ip headers are
-// edge-only metadata that backblaze rejects when present.
 const UNSIGNABLE_HEADERS = [
   "x-forwarded-proto",
   "x-real-ip",
@@ -13,10 +9,8 @@ const UNSIGNABLE_HEADERS = [
   "if-none-match",
   "if-range",
   "if-unmodified-since",
-  // Drop Range so the upstream fetch always asks B2 for the full object.
-  // CF's cache stores the 200 once and slices 206s out of cache for every
-  // subsequent <video> seek. If we forwarded Range, B2 would 206 → CF
-  // wouldn't cache a complete object → every seek would punch through.
+  // Strip Range so B2 returns the full 200 once; CF caches it and
+  // slices 206s out of cache for every <video> seek.
   "range",
 ];
 
@@ -27,31 +21,19 @@ function filterHeaders(headers: Headers, env: { ALLOWED_HEADERS?: string }) {
         !(
           UNSIGNABLE_HEADERS.includes(pair[0]) ||
           pair[0].startsWith("cf-") ||
-          (env.ALLOWED_HEADERS != null && !env.ALLOWED_HEADERS.includes(pair[0]))
+          (env.ALLOWED_HEADERS != null &&
+            !env.ALLOWED_HEADERS.includes(pair[0]))
         ),
     ),
   );
 }
 
-// Resolve which S3 object the caller wants. Two URL forms are supported:
-//
-//   1. Path-style:  https://<worker>/clips/<user>/<uuid>.mp4
-//   2. Query-style: https://<worker>/?file=clips/<user>/<uuid>.mp4
-//
-// Path-style is the friendlier one — the URL ends in a real filename
-// so browsers + chat apps render the right thing in previews, and it
-// matches the shape the api stores on `match_clips.s3_url`. Query-style
-// is preserved so anything still pointing at the old `?file=` URLs (or
-// callers building them manually) keeps working.
+// Path-style (/clips/<user>/<uuid>.mp4) or query-style (?file=<key>).
 function resolveKey(url: URL): string | null {
   const fromQuery = url.searchParams.get("file");
   if (fromQuery) {
-    // Defensive: strip any stray query suffix that snuck into the
-    // value. Older callers built URLs like `?file=foo.mp4?dl=1`
-    // (a `?` after a URL that already had a query string), which
-    // browsers parse as `file=foo.mp4?dl=1` — meaning the key we'd
-    // ask Backblaze for ends in `?dl=1` and 404s. Anything past the
-    // first `?` in the key isn't part of an S3 key anyway.
+    // Older callers built `?file=foo.mp4?dl=1` which parses as
+    // file=foo.mp4?dl=1; drop anything past the first `?`.
     const cleaned = fromQuery.split("?")[0];
     return cleaned ? decodeURIComponent(cleaned) : null;
   }
@@ -70,9 +52,6 @@ export default {
       ALLOWED_HEADERS?: string;
     },
   ) {
-    // CORS preflight. <video crossorigin> + Range requests trigger
-    // preflights for `Range` cross-origin; respond before doing any
-    // work so we don't burn cpu signing for an OPTIONS noop.
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
@@ -93,10 +72,6 @@ export default {
       return new Response("No file provided", { status: 400 });
     }
 
-    // Bail loudly when env vars are missing instead of letting
-    // aws4fetch sign a URL with empty hostname segments (which
-    // surfaces as a Cloudflare 1016 "origin DNS" error and is hard
-    // to diagnose from the outside).
     if (!env.BUCKET_NAME || !env.S3_ENDPOINT) {
       return new Response(
         "Worker misconfigured: BUCKET_NAME / S3_ENDPOINT not set",
@@ -119,11 +94,8 @@ export default {
       headers: filterHeaders(request.headers, env),
     });
 
-    // Edge cache the upstream response. Clip / demo keys are content-
-    // addressed (UUIDs) so they never change — safe to cache for the full
-    // 30d that Cloudflare's free tier allows. cacheEverything is required
-    // because Workers don't auto-cache MP4/dem responses without it. The
-    // per-status TTL keeps 4xx/5xx from getting pinned for a month.
+    // cacheEverything is required for MP4/dem responses; per-status
+    // TTL keeps 4xx/5xx from getting pinned for 30d.
     const upstream = await fetch(signedRequest.url, {
       method: signedRequest.method,
       headers: signedRequest.headers,
@@ -136,40 +108,20 @@ export default {
 
     const headers = new Headers(upstream.headers);
 
-    // Suggested filename. Callers append `?name=<filename>` when they
-    // want a human-readable download name (e.g. the clip title);
-    // otherwise we fall back to the basename of the S3 key. We strip
-    // backslash, slash, double-quote, CR, LF — those break Content-
-    // Disposition's quoted-string form. Dashes, underscores, dots,
-    // and spaces are left alone so titles read naturally.
     const requestedNameRaw = url.searchParams.get("name") ?? "";
     let requestedName = requestedNameRaw;
     try {
-      // SQL builds `?name=<slug>.mp4` with raw chars; pasted-in URLs
-      // may percent-encode the slug. decodeURIComponent normalises
-      // both, so "Joe Best Round 3K.mp4" lands intact whether the
-      // sender sent it raw or encoded.
       requestedName = decodeURIComponent(requestedNameRaw);
     } catch {
       requestedName = requestedNameRaw;
     }
     const fallbackName = key.split("/").pop() ?? key;
-    const sanitize = (s: string) =>
-      s.replace(/[\\\/"\r\n]/g, "").trim();
+    const sanitize = (s: string) => s.replace(/[\\\/"\r\n]/g, "").trim();
     const filename =
       sanitize(requestedName) || sanitize(fallbackName) || "clip.mp4";
 
-    // Only force a download when the caller explicitly asked. Default
-    // behaviour is `inline` so <video src> on the clip detail page (and
-    // pasting a clip URL into a new tab) plays the file instead of
-    // dumping it to the user's downloads folder. The web's "Download"
-    // button appends ?dl=1 to opt in.
-    //
-    // We set Content-Disposition WITH a filename for both inline and
-    // attachment dispositions. Browsers respect the filename in either
-    // case for "Save Video As…" / right-click → save — so a recipient
-    // of a copied share link gets the human-readable name instead of
-    // "clips".
+    // Default to inline so pasting a clip URL plays in the browser;
+    // ?dl=1 opts into attachment.
     const wantDownload =
       url.searchParams.get("dl") === "1" ||
       url.searchParams.get("download") === "1";
@@ -178,24 +130,9 @@ export default {
       `${wantDownload ? "attachment" : "inline"}; filename="${filename}"`,
     );
 
-    // Streaming + seeking for <video src>:
-    //   - We strip Range from the upstream request (see UNSIGNABLE_HEADERS)
-    //     so B2 always returns the full 200, which CF caches once. Cloudflare
-    //     itself slices 206 + Content-Range responses out of that cached
-    //     object for every subsequent Range request from the client — no
-    //     B2 hit per seek.
-    //   - Some Backblaze responses omit Accept-Ranges on the initial
-    //     200; set it explicitly so the player knows it can issue
-    //     range requests for seeks.
-    //   - Cross-origin <video> can't see Content-Range / Content-Length
-    //     unless they're in Access-Control-Expose-Headers — without
-    //     that the player buffers the whole file before any seek works.
     if (!headers.has("Accept-Ranges")) {
       headers.set("Accept-Ranges", "bytes");
     }
-    // Public + immutable: clip/demo keys are UUID-addressed and never
-    // mutate. max-age matches the edge cacheTtl so browsers cache for the
-    // same window. Only set if upstream didn't already provide one.
     if (!headers.has("Cache-Control")) {
       headers.set("Cache-Control", "public, max-age=2592000, immutable");
     }
@@ -212,13 +149,12 @@ export default {
 };
 
 function corsHeaders(): Record<string, string> {
+  // Expose-Headers is required so cross-origin <video> can see
+  // Content-Range / Content-Length and seek without rebuffering.
   return {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
     "Access-Control-Allow-Headers": "Range, If-Range, Content-Type",
-    // Without these the <video> element gets an opaque response and
-    // can't read Content-Range / Content-Length — which means it
-    // can't seek without re-buffering the whole file.
     "Access-Control-Expose-Headers":
       "Accept-Ranges, Content-Length, Content-Range, Content-Type, ETag, Last-Modified",
   };

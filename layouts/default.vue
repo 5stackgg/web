@@ -20,8 +20,6 @@ const TopNav = defineAsyncComponent(
 const AppHeader = defineAsyncComponent(
   () => import("@/layouts/components/AppHeader.vue"),
 );
-// Lazy-loaded so the layout doesn't pull in the dialog + scanline CSS
-// for users who never open a clip.
 const ClipDetailModal = defineAsyncComponent(
   () => import("~/components/clips/ClipDetailModal.vue"),
 );
@@ -85,10 +83,6 @@ provide("containContent", containContent);
 
   <div id="global-chat-container"></div>
 
-  <!-- Global clip viewer. Driven by the URL's `?clip=<id>` query
-       param so any page can pop the modal — clicking a card on
-       /highlights, /watch, a player profile, or anywhere else just
-       updates the param and this listens. Closing pops the param. -->
   <ClipDetailModal :clip-id="activeClipId" />
 </template>
 

@@ -5,20 +5,11 @@ import { useClipRenderActive } from "~/composables/useClipRenderActive";
 
 const { active: clipRenderActive } = useClipRenderActive();
 
-// Plays a mediamtx WebRTC (WHEP) stream in a <video> element.
-// WHEP = "WebRTC-HTTP Egress Protocol" — single POST exchanges an SDP
-// offer for an SDP answer; mediamtx serves it at $base/<path>/whep.
-//
-// We rely entirely on the browser's built-in RTCPeerConnection. No
-// dependency on whep.js or webrtc-adapter — modern Chromium / Firefox
-// / Safari all support the bare WHEP exchange.
-//
-// Latency: ~100–500ms end-to-end (vs ~2s on LL-HLS, ~6–30s on plain HLS).
+// Bare WHEP playback over RTCPeerConnection (no whep.js / adapter).
+// Latency: ~100–500ms vs ~2s LL-HLS, ~6–30s plain HLS.
 
 const props = defineProps<{
   whepUrl: string;
-  // Optional: extra ICE servers (TURN) for restrictive NATs. STUN is
-  // hardcoded to a public Google server below as a sane default.
   iceServers?: RTCIceServer[];
   muted?: boolean;
   fallbackUrl?: string | null;
@@ -31,20 +22,12 @@ const status = ref<"idle" | "connecting" | "playing" | "error" | "rendering">(
 const useFallback = ref(false);
 let failureCount = 0;
 const MAX_WHEP_FAILURES = 3;
-// True once WHEP has played a single frame. After that, never fall
-// back to HLS — keep retrying WHEP forever. mediamtx briefly drops
-// the path during clip-render's restart_capture; falling back to HLS
-// at that moment locks us at ~2s latency for the rest of the session.
+// Once WHEP has played a frame, never fall back to HLS — mediamtx
+// briefly drops the path during clip-render's restart_capture, and
+// falling back at that moment locks us at HLS latency.
 let hasEverPlayed = false;
 const errorMessage = ref<string | null>(null);
-// True while a retry is queued. Lets the UI render the amber
-// "acquiring signal" state instead of the red destructive "signal
-// lost" — important for the demo flow where the stream is expected
-// to take a few seconds to come online after status='live'.
 const isRetrying = ref(false);
-// Tracks whether the element is currently muted so we can show / hide
-// the click-to-unmute overlay. Element starts muted so autoplay works
-// without prior user interaction; one click flips it.
 const isMuted = ref(true);
 const volume = ref(1);
 const isFullscreen = ref(false);
@@ -55,8 +38,6 @@ function setVolume(v: number) {
   const el = videoRef.value;
   if (!el) return;
   el.volume = volume.value;
-  // Slider drag below 0.01 reads as "they want it off". Above 0
-  // implicitly unmutes.
   if (volume.value <= 0.01) {
     el.muted = true;
     isMuted.value = true;
@@ -132,9 +113,8 @@ async function connect() {
     console.debug("[whep] connect skipped: <video> not mounted yet");
     return;
   }
-  // Pod is rendering a clip — the SRT publisher is intentionally
-  // down. Don't even try; the watcher on clipRenderActive triggers
-  // a fresh connect when the render finishes.
+  // SRT publisher is down during a render. The clipRenderActive
+  // watcher kicks off a fresh connect when the render finishes.
   if (clipRenderActive.value) {
     console.debug("[whep] connect skipped: clip render in progress");
     return;
@@ -159,26 +139,17 @@ async function connect() {
     pc.ontrack = (event) => {
       const el = videoRef.value;
       if (!el || !event.streams[0]) return;
-      // Force every property browsers check before allowing programmatic
-      // playback. Doing this in JS (not just template attributes) is
-      // load-bearing — Vue's `:muted` binding can land *after* the
-      // element is mounted, and Chrome's autoplay policy reads the
-      // current property at play() time, not the original attribute.
+      // Set muted/autoplay in JS — Vue's :muted binding can land after
+      // mount, and Chrome's autoplay policy reads the property at play().
       el.muted = true;
       el.autoplay = true;
       el.playsInline = true;
       el.srcObject = event.streams[0];
-      // The `autoplay` HTML attribute kicks playback off when the
-      // element first gets a src, but assigning `srcObject` later
-      // (after the element has been mounted with no source) does NOT
-      // re-trigger autoplay in Chrome/Safari. Call play() ourselves
-      // and retry once on failure with a fresh muted/srcObject.
+      // Assigning srcObject after mount doesn't re-trigger autoplay in
+      // Chrome/Safari, so call play() explicitly with one retry.
       const tryPlay = () =>
         el.play().catch((err) => {
           console.debug("[whep] autoplay blocked:", err?.name ?? err);
-          // One retry: re-assert muted, then play again. Some Safari
-          // versions reject the first play() if any audio track is
-          // attached even with muted=true on the element.
           el.muted = true;
           return el.play().catch((retryErr) => {
             console.warn(
@@ -196,11 +167,8 @@ async function connect() {
       if (state === "connected") {
         status.value = "playing";
       } else if (state === "failed" || state === "disconnected") {
-        // Peer dropped mid-stream. If a clip render is in progress
-        // we KNOW why (pod stopped its publisher) — keep the last
-        // frame on screen and surface a quiet "rendering" state
-        // instead of a red error. Retry path is the watcher on
-        // clipRenderActive flipping back to false.
+        // Peer dropped mid-stream. During a render, keep the last
+        // frame and show "rendering" — clipRenderActive watcher reconnects.
         if (clipRenderActive.value) {
           status.value = "rendering";
           errorMessage.value = null;
@@ -234,19 +202,15 @@ async function connect() {
     }
     const answerSdp = await res.text();
     await pc.setRemoteDescription({ type: "answer", sdp: answerSdp });
-    // Successful negotiation — reset the backoff so a future drop
-    // (e.g. caster swap → momentary stream gap) starts retrying fast
-    // again instead of inheriting an aged 5s delay.
+    // Reset backoff so a future drop starts retrying fast.
     retryDelay = INITIAL_RETRY_DELAY_MS;
     failureCount = 0;
     hasEverPlayed = true;
     isRetrying.value = false;
   } catch (err) {
     const message = (err as Error)?.message ?? String(err);
-    // Connect raced with a clip render starting. Keep whatever frame
-    // the <video> already has, surface "rendering" instead of error,
-    // and let the clipRenderActive watcher trigger a fresh connect
-    // when the render finishes.
+    // Connect raced with a render starting. clipRenderActive watcher
+    // will retry when the render finishes.
     if (clipRenderActive.value) {
       status.value = "rendering";
       errorMessage.value = null;
@@ -266,24 +230,15 @@ async function connect() {
       useFallback.value = true;
       return;
     }
-    // mediamtx returns 404 with body "no stream is available on path
-    // <id>" until the SRT publisher has registered; same shape on a
-    // brief mid-stream gap. Always retry — the demo session's parent
-    // page tears us down (via v-if on store.isLive) when the session
-    // genuinely ends, so we don't have to be conservative here.
+    // mediamtx 404s until the SRT publisher registers; always retry —
+    // the parent page unmounts us when the session ends.
     scheduleRetry();
   }
 }
 
 function scheduleRetry() {
   if (cancelled || useFallback.value) return;
-  // While a clip render is active the pod has intentionally killed
-  // its SRT publisher to free the GPU + capture pipeline for the
-  // render. Reconnect attempts will 404 until the render finishes,
-  // so we stay put. The watcher on `clipRenderActive` (below) does
-  // a fresh teardown+connect the moment it flips back to false, so
-  // we resume cleanly without burning retries here. The <video>
-  // element keeps showing the last frame in the meantime.
+  // Don't burn retries during a render — clipRenderActive watcher reconnects.
   if (clipRenderActive.value) {
     isRetrying.value = false;
     return;
@@ -295,9 +250,6 @@ function scheduleRetry() {
     if (cancelled || useFallback.value) return;
     void connect();
   }, retryDelay);
-  // Exponential up to a 5s cap. Slow-publish recovery is usually
-  // sub-second; the cap is there so an extended outage doesn't burn
-  // the cpu / network re-attempting every 100ms forever.
   retryDelay = Math.min(MAX_RETRY_DELAY_MS, retryDelay * 2);
 }
 
@@ -311,8 +263,6 @@ function waitForIceComplete(peer: RTCPeerConnection): Promise<void> {
       }
     };
     peer.addEventListener("icegatheringstatechange", onChange);
-    // Hard cap so a single dropped UDP packet doesn't hang the
-    // connect — mediamtx will accept what we have.
     setTimeout(() => {
       peer.removeEventListener("icegatheringstatechange", onChange);
       resolve();
@@ -343,11 +293,8 @@ function cancelRetries() {
   }
 }
 
-// When mediamtx loses the SRT publisher (e.g. the pod stops the live
-// capture during a clip render and restarts it), the browser's
-// RTCPeerConnection stays "connected" but no media flows — the video
-// element freezes. Poll currentTime and force a reconnect if it
-// hasn't advanced for STALL_MS.
+// When the SRT publisher drops, RTCPeerConnection stays "connected"
+// but currentTime stops advancing. Poll and force a reconnect on stall.
 const STALL_MS = 5_000;
 let stallTimer: ReturnType<typeof setInterval> | null = null;
 let lastTime = 0;
@@ -363,7 +310,7 @@ function startStallWatch() {
       return;
     }
     if (clipRenderActive.value) {
-      // Reset the timer so it doesn't fire the moment the render ends.
+      // Reset so the timer doesn't fire the moment the render ends.
       lastTime = el.currentTime;
       lastTimeAt = Date.now();
       return;
@@ -389,10 +336,8 @@ function stopStallWatch() {
   }
 }
 
-// Initial connect runs after the DOM is mounted so videoRef is bound.
-// (A watcher with `immediate: true` fires during setup, before the
-// template renders, so the <video> element doesn't exist yet and
-// connect() bails out — leaving status stuck at "idle".)
+// Wait for mount so videoRef is bound — `immediate: true` fires
+// during setup before the template renders.
 onMounted(() => {
   void connect();
   startStallWatch();
@@ -400,9 +345,8 @@ onMounted(() => {
   window.addEventListener("keydown", onKeyDown);
 });
 
-// When a clip render finishes, force a fresh connect — the publisher
-// was killed and restarted on the pod, so the existing peer is dead
-// regardless of what connectionState reports.
+// Force a fresh connect when a render ends — the publisher was
+// restarted, so the existing peer is dead regardless of state.
 watch(clipRenderActive, (active, was) => {
   if (was && !active) {
     console.debug("[whep] clip render ended — forcing reconnect");
@@ -411,12 +355,10 @@ watch(clipRenderActive, (active, was) => {
   }
 });
 
-// Reconnect whenever the URL changes (e.g. user switches matches).
+// Reconnect on URL change (user switches matches).
 watch(
   () => props.whepUrl,
   () => {
-    // URL change = a fresh connect attempt; reset the retry budget so
-    // we don't inherit a 5s backoff from the previous URL's flakiness.
     retryDelay = INITIAL_RETRY_DELAY_MS;
     failureCount = 0;
     hasEverPlayed = false;
@@ -438,10 +380,6 @@ onBeforeUnmount(() => {
   window.removeEventListener("keydown", onKeyDown);
 });
 
-// Mute toggle for the overlay button. Reuses the `unmute()` helper
-// declared above (which handles the play() re-kick browsers require
-// after a programmatic mute change) so all unmute paths run the same
-// gesture-bound recovery.
 function toggleMute() {
   const el = videoRef.value;
   if (!el) return;
@@ -457,10 +395,6 @@ defineExpose({ connect, teardown });
 </script>
 
 <template>
-  <!-- `aspect-video` is the default sizing for inline embeds, but parents
-       that render us inside `absolute inset-0` (the demo-player popup)
-       want us to stretch — `aspect-[unset]` lets the parent's height
-       win in that case. -->
   <div
     ref="containerRef"
     class="group relative aspect-video w-full h-full bg-black rounded overflow-hidden"
@@ -473,16 +407,8 @@ defineExpose({ connect, teardown });
       allowfullscreen
     />
 
-    <!-- `muted` and `autoplay` written as static attributes (not Vue
-         bindings) so they're present on the element from the very
-         first render — Chrome's autoplay gate reads them eagerly and
-         a late-arriving :muted binding can lose the race.
-         Native controls are intentionally omitted — we surface only a
-         minimal mute toggle on hover via the overlay below. -->
-    <!-- object-contain so the 16:9 stream letterboxes inside whatever
-         box the parent gives us instead of cropping to fill. The
-         absolute inset-0 + h-full/w-full keeps the empty <video> from
-         falling back to its 300px intrinsic size on first paint. -->
+    <!-- muted/autoplay as static attributes — Chrome's autoplay gate
+         reads them eagerly and a late :muted binding loses the race. -->
     <video
       v-show="!useFallback"
       ref="videoRef"
@@ -492,10 +418,6 @@ defineExpose({ connect, teardown });
       playsinline
     />
 
-    <!-- Bottom-right control cluster: mute pill (with hover-revealed
-         volume slider) + fullscreen toggle. The whole strip fades in
-         on hover; the mute pill stays visible while muted so users
-         have an affordance to enable audio without hunting for it. -->
     <div
       v-if="status === 'playing' && !useFallback"
       :class="[

@@ -42,19 +42,9 @@ import { useDemoPlayback } from "~/composables/useDemoPlayback";
 import { useClipEditor } from "~/composables/useClipEditor";
 import { keyForSlot } from "~/utilities/streamerSpecSlots";
 
-// Clip rendering consumes a game-streamer pod, so the api gates this
-// at `verified_user` server-side (matches.controller#createClipRender).
-// We only check "is logged in" on the client so the button is visible
-// to anyone watching a demo — the api returns a clear error if the
-// caller isn't allowed, which the dialog surfaces. Hiding the button
-// behind a role check on the client meant role mismatches looked like
-// the feature didn't exist.
+// API gates clip creation at verified_user; we only check "logged in"
+// on the client so any logged-in viewer sees the button.
 const canCreateClip = computed(() => !!useAuthStore().me?.steam_id);
-// Two clip-creation entry points share one dialog component:
-//   • "Auto Clip" opens the dialog pre-selected on the highlights tab.
-//   • "Create Clip" toggles the inline ClipEditorBar that lives in the
-//     parent DemoPlayer; we just flip a composable flag here so the
-//     bar mounts without yanking the operator into a modal.
 const showCreateClipDialog = ref(false);
 const dialogInitialMode = ref<"manual" | "auto">("auto");
 const editor = useClipEditor();
@@ -87,16 +77,7 @@ const {
   toggleDemoUI,
 } = useDemoPlayback();
 
-// Slot identity comes ENTIRELY from cs2 GSI now. Demos can be
-// attached to a different match_map than they were originally from
-// (operator dragged a wrong .dem file in), and the api's lineup will
-// be wrong in that case — but cs2 is always reading the actual demo
-// file, so observer_slot + the player's real name + their current
-// team are guaranteed correct.
-//
-// Each slot button fires `spec_player_<slot>` via xdotool — that
-// targets cs2's observer_slot directly, so click and label stay in
-// lockstep automatically.
+// Slot identity is GSI — survives a demo attached to the wrong match_map.
 type SlotInfo = (typeof store.specSlots)[number];
 const ctSlots = computed(() =>
   store.specSlots
@@ -130,10 +111,6 @@ function sideClasses(side: "T" | "CT", isActive: boolean, isFlash: boolean) {
 function sideDotClass(side: "T" | "CT") {
   return side === "CT" ? "bg-blue-400" : "bg-amber-400";
 }
-// Team name source-of-truth: GSI (the demo file). API lineup name is
-// only used as a fallback when GSI hasn't filled team_*_name yet —
-// and even then we hedge "(team 1)" / "(team 2)" rather than commit
-// to which lineup is on which side, since that's what flips at half.
 function ctTeamName(): string {
   return store.gsiTeamCtName || "Counter-Terrorists";
 }
@@ -152,34 +129,18 @@ function pressSlot(slot: number) {
   switchToSlot(slot);
 }
 
-// Most controls bind to keys in cs2's autoexec — each click fires a
-// single xdotool keystroke (no console flash). The seek slider, round
-// chips, and event-jump buttons depend on parser metadata; without it
-// we render a thinner UI with just play/pause/skip/speed.
+// Seek/round-jump need parser metadata; without it we fall back to
+// just play/pause/skip/speed.
 const hasMetadata = computed(() => store.totalTicks > 0 && store.tickRate > 0);
 
 const seekModel = ref<number[]>([0]);
 const dragging = ref(false);
 
-// rAF-driven smoothing layer for the seek thumb. The store's
-// `currentTick` is the source of truth, but raw it advances by ~1
-// tick per frame during playback (smooth) and by thousands of ticks
-// at once on seek/skip/round-jump (jumpy). We render `visualTick`
-// instead — for small diffs (normal playback) it tracks `currentTick`
-// 1:1, but when a jump opens a gap larger than the threshold, we
-// ease the visual position into the target with exponential
-// smoothing so the thumb glides into the new position instead of
-// teleporting. Threshold is ~0.75s of ticks so a single dropped
-// frame at high host_timescale doesn't trigger a tween.
+// Smooths the seek thumb on jumps; small per-frame diffs track 1:1.
 const visualTick = ref(0);
 let rafHandle: number | null = null;
 
-// One-shot pulse ring overlay. Bumped on every seek that originates
-// from a user click (slider, skull, round tick, kill nav). The
-// `:key` on the ring forces Vue to mount a fresh element each pulse
-// so the CSS animation re-runs from frame 0; otherwise consecutive
-// clicks at the same spot would just re-target a still-running
-// animation and the ring wouldn't appear to retrigger.
+// :key bumps each pulse so the CSS animation restarts from frame 0.
 const pulseSerial = ref(0);
 const pulseTick = ref(0);
 function pulseAt(tick: number) {
@@ -191,26 +152,18 @@ const pulseLeft = computed(() =>
     ? `${(pulseTick.value / store.totalTicks) * 100}%`
     : "0%",
 );
-// rAF loop. Writes to visualTick / seekModel reactively trigger the
-// component to re-render — we skip the write when nothing changed so
-// a paused demo (where the source tick is constant) doesn't fire a
-// reactive update every frame. That eliminated a steady stream of
-// "Component inside <Transition> renders non-element root" warnings
-// from the parent's controls-slide Transition reconciling against
-// 60fps reactive churn, and stops thrashing the GPU on the slider.
+// Skip writes when nothing changed so a paused demo doesn't fire a
+// reactive update every frame.
 function frame() {
   rafHandle = requestAnimationFrame(frame);
   if (!hasMetadata.value || dragging.value) return;
   const target = store.currentTick;
   const diff = target - visualTick.value;
-  if (diff === 0) return; // already at target — no-op
+  if (diff === 0) return;
   const threshold = store.tickRate * 0.75;
   if (Math.abs(diff) > threshold) {
-    // Big jump — ease toward the target. 0.18 gives a ~300ms settle
-    // at 60fps, which reads as a quick glide instead of a teleport.
+    // Big jump — ease in (0.18 ≈ 300ms at 60fps).
     visualTick.value += diff * 0.18;
-    // Snap the last few ticks so the slider lands exactly on target
-    // (otherwise floating-point drift leaves it perpetually short).
     if (Math.abs(target - visualTick.value) < 2) visualTick.value = target;
   } else {
     visualTick.value = target;
@@ -220,31 +173,26 @@ function frame() {
     seekModel.value = [nextSlider];
   }
 }
-// ---- Keyboard shortcuts ----
-// Mirrors the live stream-deck (pages/stream-deck/[matchId].vue) plus
-// the playback-specific keys hinted at in the Kbd tooltips. Digit keys
-// 1..9, 0 fire spec_player <slot> via the same path the on-screen
-// slot buttons use — so keyboard and click stay in lockstep with cs2.
-//
-// We bail when focus is in a form field or modifier keys are held so
-// users typing a clip title or doing browser shortcuts don't trigger
-// scrubbing by accident.
+// Keyboard shortcuts. Mirrors stream-deck plus playback-specific keys.
 function isTypingTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
-  if (
+  return (
     target instanceof HTMLInputElement ||
     target instanceof HTMLTextAreaElement ||
     target.isContentEditable
-  ) {
-    return true;
-  }
-  // Allow shortcuts when the element is just a button/select inside
-  // the controls — these don't capture text input.
-  return false;
+  );
 }
 const SLOT_KEY_MAP: Record<string, number> = {
-  "1": 1, "2": 2, "3": 3, "4": 4, "5": 5,
-  "6": 6, "7": 7, "8": 8, "9": 9, "0": 10,
+  "1": 1,
+  "2": 2,
+  "3": 3,
+  "4": 4,
+  "5": 5,
+  "6": 6,
+  "7": 7,
+  "8": 8,
+  "9": 9,
+  "0": 10,
 };
 function onKeyDown(e: KeyboardEvent) {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -549,20 +497,12 @@ const killMarkers = computed<Marker[]>(() => {
 </script>
 
 <template>
-  <!-- Real <div> at the root so the parent's <Transition> in
-       DemoPlayer.vue has an element to animate. TooltipProvider was
-       previously the root, but it renders no DOM and Vue's Transition
-       can't drive enter/leave animations on non-element roots ("non-
-       element root node that cannot be animated" warn). All Tooltip
-       primitives below still need a TooltipProvider ancestor — wrapping
-       the inside (rather than the outside) preserves that context. -->
+  <!-- Real <div> root so the parent's Transition has an element to
+       animate; TooltipProvider renders no DOM. -->
   <div
     class="flex flex-col gap-3 px-5 py-4 bg-card/95 backdrop-blur-sm border-t border-border/60"
   >
     <TooltipProvider :delay-duration="200">
-      <!-- End-of-demo prompt. cs2 drops back to the menu when the
-           demo finishes; the operator can click here (or hit R) to
-           re-fire playdemo without restarting the pod. -->
       <Transition name="reload-prompt">
         <div
           v-if="showReloadPrompt"
@@ -585,11 +525,6 @@ const killMarkers = computed<Marker[]>(() => {
         </div>
       </Transition>
 
-      <!-- Round chips at the top — they map directly onto the seek bar
-           below as landmarks, so reading downward is "round map → time
-           cursor". Render winner color when known. pt-1 leaves room
-           for the hover-lift translate so it isn't clipped by the
-           overflow-y-auto wrapper. -->
       <div
         v-if="store.roundTicks.length"
         class="flex flex-wrap gap-1.5 max-h-20 pt-1 overflow-y-auto"
@@ -621,11 +556,6 @@ const killMarkers = computed<Marker[]>(() => {
         </button>
       </div>
 
-      <!-- Seek slider + two marker rails. The skull rail floats above
-           the bar (so the icons read clearly without overlapping the
-           thumb), the round-tick rail sits inside the bar as a subtle
-           landmark. Both are pointer-events: auto only on the glyph
-           itself so dragging the slider underneath still works. -->
       <div v-if="hasMetadata" class="flex items-center gap-4">
         <span
           class="font-mono text-sm tabular-nums text-muted-foreground min-w-[3.5rem] text-right"
@@ -633,18 +563,8 @@ const killMarkers = computed<Marker[]>(() => {
           {{ formattedCurrent }}
         </span>
         <div class="flex-1 relative">
-          <!-- Skull rail — sits above the bar. Two-tone by victim team:
-               blue = CT killed, amber = T killed. Faint missing-team
-               skulls fall through to neutral red when the parser hasn't
-               filled victim_team yet (older demos / partial parses).
-               TransitionGroup so filter changes fade markers in/out
-               instead of popping. Key includes the kill tick so Vue
-               treats filtered-in skulls as new nodes. -->
-          <!-- TransitionGroup needs element children to animate; reka-ui's
-               Tooltip is a context provider that renders no DOM, which
-               trips Vue's "non-element root" warn for every marker on
-               every reactive update. Use plain buttons with native
-               `title` attributes — same hover affordance, valid roots. -->
+          <!-- Skull rail — two-tone by victim team. Plain buttons (not
+               reka-ui Tooltip) because TransitionGroup needs real DOM. -->
           <TransitionGroup
             tag="div"
             name="skull"
@@ -676,7 +596,6 @@ const killMarkers = computed<Marker[]>(() => {
             </button>
           </TransitionGroup>
 
-          <!-- Slider + round-tick rail. -->
           <div class="relative h-6">
             <Slider
               :model-value="seekModel"
@@ -705,9 +624,6 @@ const killMarkers = computed<Marker[]>(() => {
               </Tooltip>
             </div>
 
-            <!-- Click-pulse ring. Re-keyed on every pulse so the CSS
-                 animation restarts for back-to-back clicks. z-20 so it
-                 paints above the slider thumb but below tooltips. -->
             <span
               v-if="pulseSerial > 0"
               :key="pulseSerial"
@@ -730,22 +646,22 @@ const killMarkers = computed<Marker[]>(() => {
         Demo metadata not parsed yet — play/pause + skip + speed still work.
       </p>
 
-      <!-- Player switcher. Everything (slot index, name, side, alive)
-           comes from cs2 GSI — the demo file is the source of truth.
-           CT row is on top, T row below, matching cs2's HUD ordering.
-           At halftime + every OT swap, players move between rows
-           automatically because their `team` field flips in GSI. -->
       <div v-if="hasGsi" class="flex flex-col gap-1.5">
         <div class="flex items-center gap-3">
           <div class="flex items-center gap-1.5 min-w-[8rem]">
             <span
-              :class="['inline-block size-1.5 rounded-full', sideDotClass('CT')]"
+              :class="[
+                'inline-block size-1.5 rounded-full',
+                sideDotClass('CT'),
+              ]"
             />
             <span
               class="truncate font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground/80"
             >
               {{ ctTeamName() }}
-              <span class="ml-1 px-1 rounded font-bold bg-blue-500/20 text-blue-300">
+              <span
+                class="ml-1 px-1 rounded font-bold bg-blue-500/20 text-blue-300"
+              >
                 CT
               </span>
               <span
@@ -795,7 +711,9 @@ const killMarkers = computed<Marker[]>(() => {
               class="truncate font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground/80"
             >
               {{ tTeamName() }}
-              <span class="ml-1 px-1 rounded font-bold bg-amber-500/20 text-amber-200">
+              <span
+                class="ml-1 px-1 rounded font-bold bg-amber-500/20 text-amber-200"
+              >
                 T
               </span>
               <span
@@ -844,18 +762,9 @@ const killMarkers = computed<Marker[]>(() => {
         Waiting for cs2 game state…
       </p>
 
-      <!-- Buttons row.
-           Layout: 3-column grid so the transport cluster (prev-round,
-           skip-back, play/pause, skip-fwd, next-round) stays visually
-           centered no matter how wide the panel gets — the previous
-           flex-wrap layout drifted left as the speed selector pushed
-           everything around. Left = event jumps, center = transport,
-           right = speed. -->
+      <!-- 3-col grid keeps the transport cluster centered regardless
+           of how wide the panel gets. -->
       <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
-        <!-- Left: round nav + kill-by-player filter. The filter scopes
-             prev/next-kill nav AND the skull markers — useful for
-             reviewing one player's frags without scrubbing through
-             everyone else's. Click "All" to clear. -->
         <div class="flex items-center gap-1.5 flex-wrap">
           <Tooltip>
             <TooltipTrigger as-child>
@@ -981,10 +890,6 @@ const killMarkers = computed<Marker[]>(() => {
           </Select>
         </div>
 
-        <!-- Center: primary transport. Kill nav flanks play/pause so
-             the most-used "go to next death" action sits within thumb
-             reach of the play button. Skull buttons get a red accent on
-             hover + an active:scale-95 squish for tactile feedback. -->
         <div class="flex items-center justify-center gap-1.5">
           <Tooltip>
             <TooltipTrigger as-child>
@@ -1070,11 +975,7 @@ const killMarkers = computed<Marker[]>(() => {
           </Tooltip>
         </div>
 
-        <!-- Right: quick actions + speed selector. -->
         <div class="flex items-center justify-end gap-2">
-          <!-- Auto Clip: server-built highlight reel from preset
-               (multi-kills / best round / knife / recap). One click,
-               server picks the segments. -->
           <Tooltip v-if="canCreateClip">
             <TooltipTrigger as-child>
               <Button
@@ -1091,10 +992,6 @@ const killMarkers = computed<Marker[]>(() => {
             <TooltipContent>Auto clip from preset</TooltipContent>
           </Tooltip>
 
-          <!-- Create Clip: toggles the inline track-based editor under
-               the video. Operator builds the cut by drag-defining
-               ranges and assigning a POV per segment, with live
-               preview + render in place. -->
           <Tooltip v-if="canCreateClip">
             <TooltipTrigger as-child>
               <Button
@@ -1114,7 +1011,9 @@ const killMarkers = computed<Marker[]>(() => {
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              {{ editor.active.value ? "Hide clip editor" : "Open clip editor" }}
+              {{
+                editor.active.value ? "Hide clip editor" : "Open clip editor"
+              }}
             </TooltipContent>
           </Tooltip>
 
@@ -1215,13 +1114,8 @@ const killMarkers = computed<Marker[]>(() => {
         </div>
       </div>
 
-      <!-- Mounted INSIDE the single root div on purpose: TooltipProvider
-           is a render-no-dom context provider, and adding the dialog
-           as a sibling of this div would make the component multi-root.
-           The parent's `<Transition name="controls-slide">` in
-           DemoPlayer.vue can't manage multi-root children — it stops
-           cleaning up old copies on reactive updates and the controls
-           bar starts accumulating duplicates on every skull-click pulse. -->
+      <!-- Inside this div on purpose: parent's Transition needs a
+           single root, and TooltipProvider renders no DOM. -->
       <CreateClipDialog
         v-if="canCreateClip && store.matchMapId"
         v-model:open="showCreateClipDialog"
@@ -1233,9 +1127,6 @@ const killMarkers = computed<Marker[]>(() => {
 </template>
 
 <style scoped>
-/* Play/pause icon swap. mode="out-in" runs leave then enter, so a
-   quick scale-down + fade-out followed by scale-up + fade-in reads
-   as the icon flipping through the button face. */
 .play-pause-enter-active,
 .play-pause-leave-active {
   transition:
@@ -1251,9 +1142,6 @@ const killMarkers = computed<Marker[]>(() => {
   transform: scale(0.6) rotate(15deg);
 }
 
-/* Skull marker enter/leave for the player-filter swap. Coming in: a
-   little drop from above with a fade. Going out: a quick collapse so
-   the rail clears before the new set lands. */
 .skull-enter-active,
 .skull-leave-active {
   transition:
@@ -1269,8 +1157,6 @@ const killMarkers = computed<Marker[]>(() => {
   transform: translate(-50%, 0) scale(0.4);
 }
 .skull-leave-active {
-  /* Leaving items keep their absolute slot so the rail doesn't
-     collapse during the transition. */
   position: absolute;
 }
 
@@ -1293,9 +1179,6 @@ const killMarkers = computed<Marker[]>(() => {
   max-height: 4rem;
 }
 
-/* One-shot click-pulse on the seek bar. Two layered rings spreading
-   outward — the outer ring fades fast for impact, the inner one
-   lingers a touch longer for follow-through. */
 .seek-pulse {
   width: 0.75rem;
   height: 0.75rem;

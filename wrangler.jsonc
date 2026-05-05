@@ -1,25 +1,6 @@
 {
-  /**
-   * NOT THE ACTIVE CONFIG.
-   *
-   * The "5stack" Cloudflare worker is configured in
-   *   cloudflare-workers/backblaze-proxy/wrangler.toml
-   * which is what `yarn wrangler …` (see package.json) targets via
-   * `--config`. The TOML is the source of truth — it has the right
-   * name, BUCKET_NAME, and S3_ENDPOINT.
-   *
-   * This file is left as a stub so anyone who runs `wrangler …`
-   * from the web/ root without the npm script gets a clear pointer
-   * instead of accidentally deploying a misconfigured worker (no
-   * S3_ENDPOINT, no routes), which is what the previous content
-   * here would have produced.
-   *
-   * To deploy:
-   *   yarn wrangler deploy
-   *
-   * To dev locally:
-   *   yarn wrangler dev
-   */
+  // Stub — the real config is cloudflare-workers/backblaze-proxy/wrangler.toml.
+  // `yarn wrangler …` (package.json) points at it via --config.
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "5stack",
   "main": "./cloudflare-workers/backblaze-proxy/index.ts",

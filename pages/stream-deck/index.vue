@@ -230,11 +230,23 @@ const STATUS_LABELS: Record<string, string> = {
 // `meta` controls non-emission rendering (see StreamSessionProgress).
 const LIVE_STAGES = [
   { key: "booting", label: "Allocating GPU", meta: "required" as const },
-  { key: "downloading_cs2", label: "Downloading CS2", meta: "conditional" as const },
-  { key: "launching_steam", label: "Launching Steam", meta: "required" as const },
+  {
+    key: "downloading_cs2",
+    label: "Downloading CS2",
+    meta: "conditional" as const,
+  },
+  {
+    key: "launching_steam",
+    label: "Launching Steam",
+    meta: "required" as const,
+  },
   { key: "logging_in", label: "Logging in", meta: "implicit" as const },
   { key: "launching_cs2", label: "Launching CS2", meta: "required" as const },
-  { key: "connecting_to_game", label: "Connecting to game server", meta: "required" as const },
+  {
+    key: "connecting_to_game",
+    label: "Connecting to game server",
+    meta: "required" as const,
+  },
   { key: "live", label: "Streaming live", meta: "required" as const },
 ];
 

@@ -11,12 +11,13 @@ import { generateSubscription } from "~/graphql/graphqlGen";
 import { matchClipFields } from "~/graphql/matchClip";
 import type { Clip } from "~/types/clip";
 
-// Single subscription for every clip belonging to a match (across all
-// of its match_maps). Returned shape is reactive — consumers can read
-// the flat list, or pull a per-player Map keyed by target_steam_id to
-// drive in-place clip indicators next to player names without each
-// row spinning up its own subscription.
-export function useMatchClips(matchId: Ref<string | null | undefined> | ComputedRef<string | null | undefined>) {
+// One subscription shared by the match page; consumers fan out via
+// the byTarget / byMatchMap maps so each row doesn't open its own.
+export function useMatchClips(
+  matchId:
+    | Ref<string | null | undefined>
+    | ComputedRef<string | null | undefined>,
+) {
   const clips = ref<Clip[]>([]);
   const loading = ref(true);
 
@@ -64,9 +65,6 @@ export function useMatchClips(matchId: Ref<string | null | undefined> | Computed
     activeSub = null;
   });
 
-  // Per-target map for fast O(1) lookup from a steam_id. Builds once
-  // per clip update — the cost is linear in clips.length and clips is
-  // capped at 200 by the subscription, so this is cheap.
   const byTarget = computed(() => {
     const m = new Map<string, Clip[]>();
     for (const c of clips.value) {
@@ -79,7 +77,6 @@ export function useMatchClips(matchId: Ref<string | null | undefined> | Computed
     return m;
   });
 
-  // Per-match-map grouping for the clips tab — sub-sections in BO3+.
   const byMatchMap = computed(() => {
     const m = new Map<string, Clip[]>();
     for (const c of clips.value) {

@@ -9,13 +9,7 @@ import {
 import { useClipModal } from "~/composables/useClipModal";
 import type { Clip } from "~/types/clip";
 
-// Inline clip indicator that sits next to a player's name on the
-// match page. Reads the parent-provided `matchClipsByTarget` map so
-// every row in a 10-player lineup shares one subscription.
-//
-// Single clip → click opens the global clip modal directly.
-// Multi-clip → small popover lists each clip with its title +
-//              duration; clicking an item pops the modal.
+// Reads the shared `matchClipsByTarget` map provided by the page.
 const props = defineProps<{
   steamId: string | number;
 }>();
@@ -55,10 +49,7 @@ function pickClip(c: Clip) {
 </script>
 
 <template>
-  <!-- Hidden when the player has no clips. Keeps the row identical to
-       its prior layout for non-clipped players. -->
   <template v-if="hasClips">
-    <!-- Single-clip path: direct shortcut, no popover layer. -->
     <button
       v-if="count === 1 && single"
       type="button"
@@ -67,14 +58,11 @@ function pickClip(c: Clip) {
       @click="onSingleClick"
     >
       <Film class="h-3 w-3" />
-      <span
-        class="font-mono text-[0.55rem] uppercase tracking-[0.16em]"
-      >
+      <span class="font-mono text-[0.55rem] uppercase tracking-[0.16em]">
         Clip
       </span>
     </button>
 
-    <!-- Multi-clip path: popover lists each clip, click → modal. -->
     <Popover v-else>
       <PopoverTrigger
         class="ml-1.5 inline-flex h-5 items-center gap-1 rounded-full border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] px-1.5 text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
@@ -82,9 +70,7 @@ function pickClip(c: Clip) {
         @click.stop
       >
         <Film class="h-3 w-3" />
-        <span
-          class="font-mono text-[0.55rem] tabular-nums"
-        >
+        <span class="font-mono text-[0.55rem] tabular-nums">
           {{ count }}
         </span>
       </PopoverTrigger>

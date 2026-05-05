@@ -146,11 +146,23 @@ const STATUS_LABELS: Record<string, string> = {
 // `meta` controls non-emission rendering (see StreamSessionProgress).
 const LIVE_STAGES = [
   { key: "booting", label: "Allocating GPU", meta: "required" as const },
-  { key: "downloading_cs2", label: "Downloading CS2", meta: "conditional" as const },
-  { key: "launching_steam", label: "Launching Steam", meta: "required" as const },
+  {
+    key: "downloading_cs2",
+    label: "Downloading CS2",
+    meta: "conditional" as const,
+  },
+  {
+    key: "launching_steam",
+    label: "Launching Steam",
+    meta: "required" as const,
+  },
   { key: "logging_in", label: "Logging in", meta: "implicit" as const },
   { key: "launching_cs2", label: "Launching CS2", meta: "required" as const },
-  { key: "connecting_to_game", label: "Connecting to game server", meta: "required" as const },
+  {
+    key: "connecting_to_game",
+    label: "Connecting to game server",
+    meta: "required" as const,
+  },
   { key: "live", label: "Streaming live", meta: "required" as const },
 ];
 function statusBadgeLabel(s: any) {
@@ -349,7 +361,6 @@ onBeforeUnmount(() => {
   stopAnnouncing?.();
 });
 
-
 // ---- GSI polling ----
 // Pulls live slot/player state from the streamer pod via a Hasura
 // action that proxies spec-server's /demo/state. Source of truth for
@@ -408,10 +419,14 @@ async function pollLiveState() {
     if (!gsi) return;
     if (Array.isArray(gsi.spec_slots)) specSlots.value = gsi.spec_slots;
     spectatedSteamId.value = gsi.spectated_steam_id ?? null;
-    if (typeof gsi.team_ct_name === "string") gsiTeamCtName.value = gsi.team_ct_name;
-    if (typeof gsi.team_t_name === "string") gsiTeamTName.value = gsi.team_t_name;
-    if (typeof gsi.team_ct_score === "number") gsiTeamCtScore.value = gsi.team_ct_score;
-    if (typeof gsi.team_t_score === "number") gsiTeamTScore.value = gsi.team_t_score;
+    if (typeof gsi.team_ct_name === "string")
+      gsiTeamCtName.value = gsi.team_ct_name;
+    if (typeof gsi.team_t_name === "string")
+      gsiTeamTName.value = gsi.team_t_name;
+    if (typeof gsi.team_ct_score === "number")
+      gsiTeamCtScore.value = gsi.team_ct_score;
+    if (typeof gsi.team_t_score === "number")
+      gsiTeamTScore.value = gsi.team_t_score;
   } catch {
     // Pod transient: ignore. Next tick will retry.
   }
@@ -647,10 +662,20 @@ function tTeamName(): string {
                  so click target stays in lockstep with the label. -->
             <div v-if="hasGsi">
               <div class="mb-1 flex items-center gap-1.5">
-                <span :class="['inline-block size-1.5 rounded-full', sideDotClass('CT')]" />
-                <span class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/80">
+                <span
+                  :class="[
+                    'inline-block size-1.5 rounded-full',
+                    sideDotClass('CT'),
+                  ]"
+                />
+                <span
+                  class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/80"
+                >
                   {{ ctTeamName() }}
-                  <span class="ml-1 px-1 rounded font-bold bg-blue-500/20 text-blue-300">CT</span>
+                  <span
+                    class="ml-1 px-1 rounded font-bold bg-blue-500/20 text-blue-300"
+                    >CT</span
+                  >
                   <span class="ml-1 text-foreground">{{ gsiTeamCtScore }}</span>
                 </span>
               </div>
@@ -669,14 +694,22 @@ function tTeamName(): string {
                   :disabled="!controlsActive()"
                   :class="[
                     'group relative aspect-[5/4] rounded-md border font-mono transition-all duration-100 select-none flex flex-col items-center justify-center gap-0.5 px-1',
-                    sideClasses('CT', slotIsActive(s), flashKey === String(s.slot)),
+                    sideClasses(
+                      'CT',
+                      slotIsActive(s),
+                      flashKey === String(s.slot),
+                    ),
                     !s.alive && !slotIsActive(s) ? 'opacity-50' : '',
-                    !controlsActive() ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer',
+                    !controlsActive()
+                      ? 'opacity-40 cursor-not-allowed'
+                      : 'cursor-pointer',
                   ]"
                   :title="s.name ?? `Slot ${s.slot}`"
                   @click="pressSlot(s.slot, String(s.slot))"
                 >
-                  <span class="text-2xl font-bold">{{ keyForSlot(s.slot) }}</span>
+                  <span class="text-2xl font-bold">{{
+                    keyForSlot(s.slot)
+                  }}</span>
                   <span
                     :class="[
                       'text-[0.65rem] truncate w-full text-center font-medium',
@@ -691,10 +724,20 @@ function tTeamName(): string {
 
             <div v-if="hasGsi">
               <div class="mb-1 mt-1 flex items-center gap-1.5">
-                <span :class="['inline-block size-1.5 rounded-full', sideDotClass('T')]" />
-                <span class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/80">
+                <span
+                  :class="[
+                    'inline-block size-1.5 rounded-full',
+                    sideDotClass('T'),
+                  ]"
+                />
+                <span
+                  class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/80"
+                >
                   {{ tTeamName() }}
-                  <span class="ml-1 px-1 rounded font-bold bg-amber-500/20 text-amber-200">T</span>
+                  <span
+                    class="ml-1 px-1 rounded font-bold bg-amber-500/20 text-amber-200"
+                    >T</span
+                  >
                   <span class="ml-1 text-foreground">{{ gsiTeamTScore }}</span>
                 </span>
               </div>
@@ -713,14 +756,22 @@ function tTeamName(): string {
                   :disabled="!controlsActive()"
                   :class="[
                     'group relative aspect-[5/4] rounded-md border font-mono transition-all duration-100 select-none flex flex-col items-center justify-center gap-0.5 px-1',
-                    sideClasses('T', slotIsActive(s), flashKey === String(s.slot)),
+                    sideClasses(
+                      'T',
+                      slotIsActive(s),
+                      flashKey === String(s.slot),
+                    ),
                     !s.alive && !slotIsActive(s) ? 'opacity-50' : '',
-                    !controlsActive() ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer',
+                    !controlsActive()
+                      ? 'opacity-40 cursor-not-allowed'
+                      : 'cursor-pointer',
                   ]"
                   :title="s.name ?? `Slot ${s.slot}`"
                   @click="pressSlot(s.slot, String(s.slot))"
                 >
-                  <span class="text-2xl font-bold">{{ keyForSlot(s.slot) }}</span>
+                  <span class="text-2xl font-bold">{{
+                    keyForSlot(s.slot)
+                  }}</span>
                   <span
                     :class="[
                       'text-[0.65rem] truncate w-full text-center font-medium',

@@ -3,11 +3,6 @@ import { computed } from "vue";
 import { Trophy, ArrowUpRight, Crown, Calendar, Swords } from "lucide-vue-next";
 import type { Clip } from "~/types/clip";
 
-// Rich match-context card for a clip. Two layouts:
-//   - "card" (default): full hero with map poster banner, scores, winner
-//     highlight, status pill, link to the match page.
-//   - "compact": dense matchup line + score chip + tiny "View match" link
-//     suitable for popovers / sidebars.
 const props = withDefaults(
   defineProps<{
     clip: Clip;
@@ -38,13 +33,7 @@ function isMatchWinner(lineupId: string | null | undefined): boolean {
   return !!lineupId && matchWinnerId.value === lineupId;
 }
 
-const matchStatusLabel = computed(() => {
-  const s = match.value?.status;
-  if (!s) return null;
-  // Normalize into title case for display (Hasura enums come through
-  // as PascalCase already, e.g. "Finished", "Live").
-  return s;
-});
+const matchStatusLabel = computed(() => match.value?.status ?? null);
 
 const isFinished = computed(() => match.value?.status === "Finished");
 const isLive = computed(() => match.value?.status === "Live");
@@ -76,9 +65,10 @@ const playedDate = computed(() =>
 </script>
 
 <template>
-  <div v-if="match && variant === 'card'" class="relative overflow-hidden rounded-lg border border-border/60 bg-card/40 [backdrop-filter:blur(6px)]">
-    <!-- Map poster banner — washed out behind the content. Gradient mask
-         keeps text legible regardless of poster brightness. -->
+  <div
+    v-if="match && variant === 'card'"
+    class="relative overflow-hidden rounded-lg border border-border/60 bg-card/40 [backdrop-filter:blur(6px)]"
+  >
     <div v-if="matchMap?.map?.poster" class="absolute inset-0 -z-0">
       <NuxtImg
         :src="matchMap.map.poster"
@@ -91,7 +81,6 @@ const playedDate = computed(() =>
     </div>
 
     <div class="relative p-4 space-y-4">
-      <!-- Header row: Match label + status pill + link -->
       <div class="flex items-center gap-2">
         <Swords class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
         <span
@@ -126,10 +115,7 @@ const playedDate = computed(() =>
                   : 'border-border/60 bg-muted/30 text-muted-foreground'
             "
           >
-            <span
-              v-if="isLive"
-              class="relative flex h-1.5 w-1.5"
-            >
+            <span v-if="isLive" class="relative flex h-1.5 w-1.5">
               <span
                 class="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75"
               ></span>
@@ -142,8 +128,6 @@ const playedDate = computed(() =>
         </span>
       </div>
 
-      <!-- Score row — two lineup blocks with their scores between them.
-           Winner gets a Crown + amber tint; loser is muted. -->
       <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
         <div
           class="text-right"
@@ -156,7 +140,10 @@ const playedDate = computed(() =>
           "
         >
           <div class="flex items-center justify-end gap-1.5">
-            <span class="truncate font-semibold leading-tight" :title="lineup1?.name ?? ''">
+            <span
+              class="truncate font-semibold leading-tight"
+              :title="lineup1?.name ?? ''"
+            >
               {{ lineup1?.name ?? "TBD" }}
             </span>
             <Crown
@@ -219,7 +206,10 @@ const playedDate = computed(() =>
               v-if="isMatchWinner(lineup2?.id)"
               class="h-3.5 w-3.5 shrink-0 text-[hsl(var(--tac-amber))]"
             />
-            <span class="truncate font-semibold leading-tight" :title="lineup2?.name ?? ''">
+            <span
+              class="truncate font-semibold leading-tight"
+              :title="lineup2?.name ?? ''"
+            >
               {{ lineup2?.name ?? "TBD" }}
             </span>
           </div>
@@ -232,7 +222,6 @@ const playedDate = computed(() =>
         </div>
       </div>
 
-      <!-- Footer — map name, date played, link to match -->
       <div
         class="flex flex-wrap items-center gap-x-3 gap-y-1 pt-3 border-t border-border/40 text-[0.65rem] font-mono uppercase tracking-[0.14em] text-muted-foreground"
       >
@@ -253,10 +242,11 @@ const playedDate = computed(() =>
     </div>
   </div>
 
-  <!-- Compact variant — for popovers / tight sidebars. -->
   <div v-else-if="match && variant === 'compact'" class="space-y-2">
     <div class="flex items-center gap-2">
-      <span class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground">
+      <span
+        class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+      >
         Match
       </span>
       <span
@@ -265,14 +255,24 @@ const playedDate = computed(() =>
       >
         · {{ bestOfLabel }}
       </span>
-      <span v-if="match.is_tournament_match" class="ml-1 inline-flex items-center gap-0.5 text-[0.6rem] text-[hsl(var(--tac-amber))]">
+      <span
+        v-if="match.is_tournament_match"
+        class="ml-1 inline-flex items-center gap-0.5 text-[0.6rem] text-[hsl(var(--tac-amber))]"
+      >
         <Trophy class="h-2.5 w-2.5" />
       </span>
     </div>
 
     <div class="rounded-md border border-border/50 bg-muted/20 px-2.5 py-2">
       <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2 text-xs">
-        <div class="text-right truncate" :class="isMatchWinner(lineup1?.id) ? 'text-[hsl(var(--tac-amber))] font-semibold' : 'text-foreground'">
+        <div
+          class="text-right truncate"
+          :class="
+            isMatchWinner(lineup1?.id)
+              ? 'text-[hsl(var(--tac-amber))] font-semibold'
+              : 'text-foreground'
+          "
+        >
           <span class="truncate">{{ lineup1?.name ?? "TBD" }}</span>
         </div>
         <div class="font-mono text-sm font-bold tabular-nums">
@@ -280,7 +280,14 @@ const playedDate = computed(() =>
           <span class="text-muted-foreground mx-0.5">:</span>
           {{ hasMapScore ? score2 : "—" }}
         </div>
-        <div class="text-left truncate" :class="isMatchWinner(lineup2?.id) ? 'text-[hsl(var(--tac-amber))] font-semibold' : 'text-foreground'">
+        <div
+          class="text-left truncate"
+          :class="
+            isMatchWinner(lineup2?.id)
+              ? 'text-[hsl(var(--tac-amber))] font-semibold'
+              : 'text-foreground'
+          "
+        >
           <span class="truncate">{{ lineup2?.name ?? "TBD" }}</span>
         </div>
       </div>

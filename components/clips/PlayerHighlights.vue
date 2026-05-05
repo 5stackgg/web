@@ -12,11 +12,7 @@ import {
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
 
-// Horizontal-scroll strip of a player's highlights for the player
-// profile page. Scoped to clips where this player is the TARGET —
-// the rendered subject of the clip — not the creator. A streamer
-// rendering a montage of someone else's frags should attach the clip
-// to that fragger's profile, not their own.
+// Scoped to clips where this player is the target, not the creator.
 const props = defineProps<{
   steamId: string | number;
 }>();
@@ -72,11 +68,6 @@ watch(
 );
 onBeforeUnmount(() => activeSub?.unsubscribe());
 
-// Infinite-scroll sentinel. When the trailing tile becomes visible
-// inside the rail's scroll viewport AND the current page is full,
-// bump the limit and re-subscribe. The `clips.length >= limit` guard
-// stops fetching once the server has fewer rows than we asked for —
-// no more pages exist.
 let observer: IntersectionObserver | null = null;
 function ensureObserver() {
   observer?.disconnect();
@@ -102,7 +93,6 @@ onMounted(ensureObserver);
 watch([sentinelEl, railEl], () => ensureObserver());
 onBeforeUnmount(() => observer?.disconnect());
 
-// Manual arrows for desktop. Touch + trackpad scroll naturally.
 function scrollByDir(dir: "left" | "right") {
   const el = railEl.value;
   if (!el) return;
@@ -122,7 +112,10 @@ const hitMaxLimit = computed(() => limit.value >= MAX_LIMIT);
 <template>
   <div v-if="loading || hasClips">
     <div
-      :class="[tacticalSectionLabelClasses, 'flex items-center justify-between']"
+      :class="[
+        tacticalSectionLabelClasses,
+        'flex items-center justify-between',
+      ]"
     >
       <span class="inline-flex items-center gap-2">
         <span :class="tacticalSectionTickClasses"></span>
@@ -161,10 +154,7 @@ const hitMaxLimit = computed(() => limit.value >= MAX_LIMIT);
       </div>
     </div>
 
-    <div
-      v-if="loading"
-      class="flex gap-3 overflow-hidden pb-1"
-    >
+    <div v-if="loading" class="flex gap-3 overflow-hidden pb-1">
       <Skeleton
         v-for="i in 5"
         :key="i"
@@ -177,18 +167,10 @@ const hitMaxLimit = computed(() => limit.value >= MAX_LIMIT);
       ref="railEl"
       class="flex gap-3 overflow-x-auto pb-2 scroll-smooth snap-x snap-mandatory player-highlights-rail"
     >
-      <div
-        v-for="c in clips"
-        :key="c.id"
-        class="w-[18rem] shrink-0 snap-start"
-      >
+      <div v-for="c in clips" :key="c.id" class="w-[18rem] shrink-0 snap-start">
         <HighlightCard :clip="c" />
       </div>
 
-      <!-- Trailing sentinel triggers the next page when scrolled into
-           view. Hidden visually but takes up enough space to be
-           observable. Replaced by a "See all" tile once we hit the
-           in-page cap. -->
       <div
         v-if="hasMore"
         ref="sentinelEl"
@@ -197,7 +179,9 @@ const hitMaxLimit = computed(() => limit.value >= MAX_LIMIT);
         <div
           class="aspect-video w-full rounded-lg border border-dashed border-border/50 bg-card/20 flex items-center justify-center"
         >
-          <span class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground">
+          <span
+            class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
             Loading more…
           </span>
         </div>
@@ -216,7 +200,9 @@ const hitMaxLimit = computed(() => limit.value >= MAX_LIMIT);
           >
             <Plus class="h-4 w-4" />
           </span>
-          <span class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-foreground/80">
+          <span
+            class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-foreground/80"
+          >
             See all highlights
           </span>
           <span class="text-[0.65rem] text-muted-foreground">
@@ -229,8 +215,6 @@ const hitMaxLimit = computed(() => limit.value >= MAX_LIMIT);
 </template>
 
 <style scoped>
-/* Subtle scrollbar inside the horizontal rail — visible enough to
-   communicate "this scrolls" but doesn't dominate the row. */
 .player-highlights-rail {
   scrollbar-width: thin;
   scrollbar-color: hsl(var(--border) / 0.6) transparent;

@@ -571,55 +571,9 @@ const targetAvatarSrc = computed(() =>
                       {{ clip.title || "Untitled clip" }}
                     </span>
                   </h2>
-                  <!-- Target player chip — the subject of the clip.
-                       Promoted from a buried inline link to a proper
-                       clickable affordance so operators can jump to
-                       the player's profile in one move. Avatar +
-                       name, with a "highlighting" eyebrow so the role
-                       reads at a glance. Hidden when the clip has
-                       no target (rare — preset clips always set one). -->
-                  <NuxtLink
-                    v-if="clip.target?.name"
-                    :to="`/players/${clip.target.steam_id}`"
-                    class="group/target mt-2 inline-flex items-center gap-2 rounded-full border border-border/50 bg-card/40 [backdrop-filter:blur(6px)] py-1 pl-1 pr-3 transition-all hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[hsl(var(--tac-amber)/0.08)]"
-                    :title="`Open ${clip.target.name}'s profile`"
-                  >
-                    <span
-                      class="inline-flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)]"
-                    >
-                      <NuxtImg
-                        v-if="targetAvatarSrc"
-                        :src="targetAvatarSrc"
-                        :alt="clip.target.name"
-                        class="h-full w-full object-cover"
-                      />
-                      <span
-                        v-else
-                        class="font-mono text-[0.6rem] font-bold uppercase text-[hsl(var(--tac-amber))]"
-                      >
-                        {{ clip.target.name.charAt(0) }}
-                      </span>
-                    </span>
-                    <span class="flex flex-col leading-tight min-w-0">
-                      <span
-                        class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground/80 group-hover/target:text-[hsl(var(--tac-amber))]"
-                      >
-                        Highlighting
-                      </span>
-                      <span
-                        class="truncate text-sm font-medium text-foreground group-hover/target:text-[hsl(var(--tac-amber))] transition-colors"
-                      >
-                        {{ clip.target.name }}
-                      </span>
-                    </span>
-                    <ArrowUpRight
-                      class="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-all group-hover/target:text-[hsl(var(--tac-amber))] group-hover/target:translate-x-0.5 group-hover/target:-translate-y-0.5"
-                    />
-                  </NuxtLink>
-
                   <p
                     v-if="matchupLabel"
-                    class="mt-2 text-sm text-muted-foreground"
+                    class="mt-1 text-sm text-muted-foreground"
                   >
                     {{ matchupLabel }}
                   </p>
@@ -677,9 +631,50 @@ const targetAvatarSrc = computed(() =>
             </div>
           </div>
 
-          <!-- RIGHT: Match summary + meta + actions. On lg+ this is a
-               sidebar; below lg it stacks. -->
+          <!-- RIGHT: Target player → match summary → meta → actions.
+               The target chip leads the rail so the answer to "who is
+               this clip about" is the first thing the operator sees,
+               above the broader match context. -->
           <aside class="flex flex-col gap-3 min-w-0">
+            <NuxtLink
+              v-if="clip.target?.name"
+              :to="`/players/${clip.target.steam_id}`"
+              class="group/target relative flex items-center gap-3 rounded-md border border-border/50 bg-[linear-gradient(135deg,hsl(var(--tac-amber)/0.08)_0%,hsl(var(--card)/0.4)_60%)] [backdrop-filter:blur(6px)] py-2.5 pl-2.5 pr-3 transition-all hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[linear-gradient(135deg,hsl(var(--tac-amber)/0.14)_0%,hsl(var(--card)/0.45)_60%)]"
+              :title="`Open ${clip.target.name}'s profile`"
+            >
+              <span
+                class="relative inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)]"
+              >
+                <NuxtImg
+                  v-if="targetAvatarSrc"
+                  :src="targetAvatarSrc"
+                  :alt="clip.target.name"
+                  class="h-full w-full object-cover transition-transform duration-300 group-hover/target:scale-110"
+                />
+                <span
+                  v-else
+                  class="font-sans text-base font-bold uppercase text-[hsl(var(--tac-amber))]"
+                >
+                  {{ clip.target.name.charAt(0) }}
+                </span>
+              </span>
+              <span class="flex flex-col leading-tight min-w-0 flex-1">
+                <span
+                  class="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-muted-foreground/80 group-hover/target:text-[hsl(var(--tac-amber))] transition-colors"
+                >
+                  Highlighting
+                </span>
+                <span
+                  class="truncate text-base font-semibold text-foreground group-hover/target:text-[hsl(var(--tac-amber))] transition-colors"
+                >
+                  {{ clip.target.name }}
+                </span>
+              </span>
+              <ArrowUpRight
+                class="h-4 w-4 shrink-0 text-muted-foreground/60 transition-all group-hover/target:text-[hsl(var(--tac-amber))] group-hover/target:translate-x-0.5 group-hover/target:-translate-y-0.5"
+              />
+            </NuxtLink>
+
             <ClipMatchSummary v-if="clip.match_map?.match" :clip="clip" />
 
             <!-- Meta block — broadcast-style data row, no card.

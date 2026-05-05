@@ -7,8 +7,9 @@ import LineupOpeningDuels from "~/components/match/LineupOpeningDuels.vue";
 import LineupClutches from "~/components/match/LineupClutches.vue";
 import MatchClipsTab from "~/components/match/MatchClipsTab.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
-import { provide } from "vue";
+import { computed, inject, provide, type Ref } from "vue";
 import EventEmitter from "eventemitter3";
+import type { Clip } from "~/types/clip";
 import { Button } from "~/components/ui/button";
 import {
   FormControl,
@@ -39,6 +40,15 @@ import cleanMapName from "~/utilities/cleanMapName";
 
 const commander = new EventEmitter();
 provide("commander", commander);
+
+// Match-clips presence is provided by pages/matches/[id].vue. We
+// inject in setup (not Options-API `inject:`) because the Options
+// path was returning a non-reactive snapshot of the ref's `.value` —
+// the Clips tab stayed hidden even after clips landed. Setup-side
+// inject + computed tracks `.value` accesses correctly.
+const matchClipsRef = inject<Ref<Clip[]> | null>("matchClips", null);
+const matchClipsCount = computed(() => matchClipsRef?.value?.length ?? 0);
+const hasMatchClips = computed(() => matchClipsCount.value > 0);
 </script>
 
 <template>
@@ -636,12 +646,6 @@ const CommandDetails = {
 
 export default {
   emits: ["clear-active-map", "select-map"],
-  inject: {
-    // Shared match-clips subscription provided by pages/matches/[id].vue.
-    // The default null path lets MatchTabs render in environments
-    // without the provider (storybook, tests) without crashing.
-    matchClipsRef: { from: "matchClips", default: null },
-  },
   props: {
     match: {
       type: Object,
@@ -914,15 +918,6 @@ export default {
       }
 
       return tabs;
-    },
-    matchClipsCount() {
-      // matchClipsRef is the parent-provided ref/computed of clips
-      // for this match. Falls through to 0 if no provider is in place
-      // (direct mount in tests/storybook).
-      return this.matchClipsRef?.value?.length ?? 0;
-    },
-    hasMatchClips() {
-      return this.matchClipsCount > 0;
     },
   },
   methods: {

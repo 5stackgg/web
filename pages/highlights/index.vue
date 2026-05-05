@@ -9,9 +9,6 @@ import {
   Globe,
   Clapperboard,
   ListVideo,
-  Trash2,
-  Download,
-  ArrowUpRight,
   Calendar,
   User,
   X,
@@ -46,25 +43,15 @@ import {
 import HighlightCard from "~/components/clips/HighlightCard.vue";
 import MatchClipsGroupCard from "~/components/clips/MatchClipsGroupCard.vue";
 import RenderQueuePanel from "~/components/clips/RenderQueuePanel.vue";
-import DeleteClipDialog from "~/components/clips/DeleteClipDialog.vue";
-import {
-  clipDownloadName,
-  clipDownloadUrl,
-} from "~/utilities/clipDownloadName";
 import type { Clip } from "~/types/clip";
 import { useClipModal, type ClipQueueItem } from "~/composables/useClipModal";
-
-const clipQueueScope = "highlights-index";
-const { clearClipQueue, openClip, setClipQueue } = useClipModal();
-function onOpenClipClick(e: MouseEvent, clipId: string) {
-  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
-  e.preventDefault();
-  openClip(clipId);
-}
 import {
   tacticalFilterPillClasses,
   tacticalFilterPillActiveClasses,
 } from "~/utilities/tacticalClasses";
+
+const clipQueueScope = "highlights-index";
+const { clearClipQueue, setClipQueue } = useClipModal();
 
 // Single Highlights surface for everyone. Hasura row-level permissions
 // gate which clips each role sees. Curators (streamer+) get extra
@@ -204,10 +191,6 @@ function subscribePending() {
   });
 }
 watch(canCurate, subscribePending, { immediate: true });
-
-const pendingDeleteId = ref<string | null>(null);
-const pendingDeleteTitle = ref<string | null>(null);
-const deleteDialogOpen = ref(false);
 
 let activeSub: { unsubscribe: () => void } | null = null;
 function subscribe() {
@@ -349,15 +332,6 @@ const adminFilters: Array<{ value: Filter; label: string; icon?: any }> = [
   { value: "unlisted", label: "Unlisted", icon: Eye },
   { value: "private", label: "Private", icon: Lock },
 ];
-
-function askDelete(c: Clip) {
-  pendingDeleteId.value = c.id;
-  pendingDeleteTitle.value = c.title;
-  deleteDialogOpen.value = true;
-}
-function onDeleted(id: string) {
-  clips.value = clips.value.filter((c) => c.id !== id);
-}
 </script>
 
 <template>
@@ -586,51 +560,12 @@ function onDeleted(id: string) {
           :match-id="item.matchId"
           :clips="item.clips"
         />
-        <div v-else :key="`single-${item.clip.id}`" class="space-y-2">
-          <HighlightCard :clip="item.clip" />
-
-          <div
-            v-if="canCurate"
-            class="flex items-center justify-between gap-1 rounded-md border border-border/50 bg-card/40 px-1.5 py-1 [backdrop-filter:blur(6px)]"
-          >
-            <NuxtLink
-              :to="`/clips/${item.clip.id}`"
-              class="inline-flex items-center gap-1.5 px-1.5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
-              @click="(e) => onOpenClipClick(e, item.clip.id)"
-            >
-              Open
-              <ArrowUpRight class="h-3 w-3" />
-            </NuxtLink>
-            <div class="flex items-center gap-0.5">
-              <a
-                v-if="item.clip.download_url"
-                :href="clipDownloadUrl(item.clip.download_url)"
-                :download="clipDownloadName(item.clip)"
-                :title="`Download ${item.clip.title ?? 'clip'}`"
-                class="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-              >
-                <Download class="h-3.5 w-3.5" />
-              </a>
-              <button
-                type="button"
-                :title="`Delete ${item.clip.title ?? 'clip'}`"
-                class="inline-flex h-7 w-7 items-center justify-center rounded text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors cursor-pointer"
-                @click="askDelete(item.clip)"
-              >
-                <Trash2 class="h-3.5 w-3.5" />
-              </button>
-            </div>
-          </div>
-        </div>
+        <HighlightCard
+          v-else
+          :key="`single-${item.clip.id}`"
+          :clip="item.clip"
+        />
       </template>
     </div>
   </PageTransition>
-
-  <DeleteClipDialog
-    v-if="canCurate"
-    v-model="deleteDialogOpen"
-    :clip-id="pendingDeleteId"
-    :title="pendingDeleteTitle"
-    @deleted="onDeleted"
-  />
 </template>

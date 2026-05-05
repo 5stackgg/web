@@ -418,34 +418,58 @@ defineExpose({ connect, teardown });
       playsinline
     />
 
+    <!-- Prominent "click to unmute" affordance. Browsers force WHEP
+         playback to start muted (autoplay policy), so this pill stays
+         loud + visible until the viewer clicks it. Once unmuted the
+         control collapses to the slim icon-only treatment that hides
+         on mouse-out, matching twitch/youtube convention. -->
+    <button
+      v-if="status === 'playing' && !useFallback && isMuted"
+      type="button"
+      aria-label="Unmute"
+      class="whep-unmute group/unmute absolute bottom-3 right-3 z-10 inline-flex items-center gap-2 rounded-full border border-[hsl(var(--tac-amber)/0.65)] bg-black/75 pl-2 pr-3 py-1.5 backdrop-blur-md cursor-pointer transition-[transform,box-shadow,border-color] duration-150 hover:scale-[1.03] hover:border-[hsl(var(--tac-amber))] [box-shadow:0_0_0_1px_hsl(var(--tac-amber)/0.15),0_0_22px_-4px_hsl(var(--tac-amber)/0.55)]"
+      @click="toggleMute"
+    >
+      <!-- Speaker glyph behind a ping halo so the pill reads as
+           "live audio waiting for you" rather than a static button. -->
+      <span class="relative inline-flex size-5 items-center justify-center">
+        <span
+          class="absolute inset-0 rounded-full bg-[hsl(var(--tac-amber)/0.35)] animate-ping"
+          aria-hidden="true"
+        />
+        <span
+          class="relative inline-flex size-5 items-center justify-center rounded-full bg-[hsl(var(--tac-amber))] text-black"
+        >
+          <VolumeX class="size-3" />
+        </span>
+      </span>
+      <span
+        class="font-mono text-[0.65rem] font-bold uppercase tracking-[0.22em] leading-none text-[hsl(var(--tac-amber))]"
+      >
+        Tap to unmute
+      </span>
+    </button>
+
+    <!-- Audio + fullscreen tray (visible only when audio is on). -->
     <div
-      v-if="status === 'playing' && !useFallback"
-      :class="[
-        'absolute bottom-2 right-2 z-10 flex items-center gap-2 transition-opacity duration-150',
-        isMuted
-          ? 'opacity-100'
-          : 'opacity-0 group-hover:opacity-100 focus-within:opacity-100',
-      ]"
+      v-if="status === 'playing' && !useFallback && !isMuted"
+      class="absolute bottom-2 right-2 z-10 flex items-center gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-150"
     >
       <div class="flex items-center group/vol">
         <button
           type="button"
-          :aria-label="isMuted ? 'Unmute' : 'Mute'"
+          aria-label="Mute"
           class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-colors duration-150 hover:bg-black/80 hover:text-white cursor-pointer"
           @click="toggleMute"
         >
-          <VolumeX v-if="isMuted" class="size-3.5" />
-          <Volume2 v-else class="size-3.5" />
+          <Volume2 class="size-3.5" />
         </button>
-        <!-- Slider grows to its full width on volume-pill hover. The
-             range input itself is styled minimal — track + thumb in
-             the deck colors so it doesn't fight the broadcast feel. -->
         <input
           type="range"
           min="0"
           max="1"
           step="0.01"
-          :value="isMuted ? 0 : volume"
+          :value="volume"
           aria-label="Volume"
           class="vol-slider ml-0 w-0 group-hover/vol:w-20 group-hover/vol:ml-2 focus-visible:w-20 focus-visible:ml-2 transition-all duration-200 cursor-pointer"
           @input="setVolume(Number(($event.target as HTMLInputElement).value))"
@@ -462,6 +486,21 @@ defineExpose({ connect, teardown });
         <Maximize2 v-else class="size-3.5" />
       </button>
     </div>
+
+    <!-- Always-available fullscreen entry, top-right of the player.
+         Stays accessible while the unmute pill is occupying the
+         bottom-right corner. -->
+    <button
+      v-if="status === 'playing' && !useFallback && isMuted"
+      type="button"
+      :aria-label="isFullscreen ? 'Exit fullscreen' : 'Fullscreen'"
+      title="Fullscreen (F)"
+      class="absolute bottom-3 left-3 z-10 inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-150 hover:bg-black/80 hover:text-white hover:scale-110 cursor-pointer opacity-0 group-hover:opacity-100"
+      @click="toggleFullscreen"
+    >
+      <Minimize2 v-if="isFullscreen" class="size-3.5" />
+      <Maximize2 v-else class="size-3.5" />
+    </button>
     <!-- "Rendering clip" chip. Shown over the last-good frame while
          the pod has stopped its publisher to free the GPU for a
          render. We keep the <video> intact (no teardown) so users

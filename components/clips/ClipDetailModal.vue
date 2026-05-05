@@ -668,7 +668,9 @@ onMounted(() => {
                 ref="videoRef"
                 :src="clip.download_url"
                 :poster="
-                  clip.thumbnail_download_url ?? clip.match_map?.map?.poster ?? undefined
+                  clip.thumbnail_download_url ??
+                  clip.match_map?.map?.poster ??
+                  undefined
                 "
                 class="absolute inset-0 h-full w-full object-contain"
                 controls

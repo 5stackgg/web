@@ -111,7 +111,7 @@ async function downloadFullLogs(service: string) {
         </TooltipProvider>
 
         <label
-          v-if="followLogs === undefined"
+          v-if="followLogs === undefined && !disableRetry"
           class="flex h-9 cursor-pointer items-center gap-2 border px-3 font-mono text-[0.65rem] uppercase tracking-[0.2em] transition-colors"
           :class="
             _followLogs
@@ -165,6 +165,7 @@ async function downloadFullLogs(service: string) {
       </div>
 
       <button
+        v-if="!disableRetry"
         class="ml-auto flex h-9 items-center gap-2 whitespace-nowrap border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] px-3 font-mono text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.2)]"
         @click="jumpToLive"
       >

@@ -229,9 +229,7 @@ definePageMeta({
           <FormField v-slot="{ componentField }" name="clips_max_storage">
             <FormItem>
               <FormLabel>{{
-                $t(
-                  "pages.settings.application.demo_settings.clips_max_storage",
-                )
+                $t("pages.settings.application.demo_settings.clips_max_storage")
               }}</FormLabel>
               <FormDescription>{{
                 $t(

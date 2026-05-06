@@ -448,9 +448,6 @@ export default {
               server_type: true,
               server_region: true,
               is_server_online: true,
-              server: {
-                game_server_node_id: true,
-              },
               lineup_1_id: true,
               lineup_2_id: true,
               winning_lineup_id: true,

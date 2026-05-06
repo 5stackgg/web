@@ -828,13 +828,14 @@ export default {
       return this.match.is_organizer;
     },
     canViewMatchServerLogs() {
-      if (this.match.server_type === "On Demand") {
-        return true;
-      }
-      if (this.match.server_type === "Dedicated") {
-        return !!this.match.server?.game_server_node_id;
-      }
-      return false;
+      return [
+        e_match_status_enum.Live,
+        e_match_status_enum.Finished,
+        e_match_status_enum.Forfeit,
+        e_match_status_enum.Surrendered,
+        e_match_status_enum.Tie,
+        e_match_status_enum.Canceled,
+      ].includes(this.match.status);
     },
     canSendRCONCommands() {
       return [

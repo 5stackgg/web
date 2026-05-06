@@ -457,6 +457,7 @@ provide("commander", commander);
         </p>
       </div>
       <ServiceLogs
+        v-if="canViewMatchServerLogs"
         v-show="hasLogs"
         :service="`m-${match.id}`"
         :compact="true"
@@ -825,6 +826,15 @@ export default {
     },
     canViewAdmin() {
       return this.match.is_organizer;
+    },
+    canViewMatchServerLogs() {
+      if (this.match.server_type === "On Demand") {
+        return true;
+      }
+      if (this.match.server_type === "Dedicated") {
+        return !!this.match.server?.game_server_node_id;
+      }
+      return false;
     },
     canSendRCONCommands() {
       return [

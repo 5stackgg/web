@@ -75,48 +75,31 @@ import cleanMapName from "~/utilities/cleanMapName";
           class="text-xs px-2 py-0.5 backdrop-blur-sm"
           >{{ $t("match.decider") }}</Badge
         >
-        <Tooltip v-if="hasDemo && canWatchDemo && hasDemoMetadata">
+        <Tooltip v-if="hasDemo && canWatchDemo">
           <TooltipTrigger as-child>
-            <Button
-              size="xs"
-              variant="ghost"
-              class="h-6 w-6 p-0 text-white/70 hover:text-white"
-              @click.stop="openDemoWatcher()"
-            >
-              <PlayCircle class="w-4 h-4" />
-            </Button>
+            <span class="inline-flex">
+              <Button
+                size="xs"
+                variant="ghost"
+                :disabled="demoButtonState.disabled"
+                class="h-6 w-6 p-0 text-white/70 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                @click.stop="
+                  demoButtonState.onClick && demoButtonState.onClick()
+                "
+              >
+                <Loader2
+                  v-if="demoButtonState.icon === 'loading'"
+                  class="w-4 h-4 animate-spin"
+                />
+                <RefreshCw
+                  v-else-if="demoButtonState.icon === 'parse'"
+                  class="w-4 h-4"
+                />
+                <PlayCircle v-else class="w-4 h-4" />
+              </Button>
+            </span>
           </TooltipTrigger>
-          <TooltipContent>Watch demo</TooltipContent>
-        </Tooltip>
-        <Tooltip v-else-if="hasDemo && canParseDemo">
-          <TooltipTrigger as-child>
-            <Button
-              size="xs"
-              variant="ghost"
-              class="h-6 w-6 p-0 text-white/70 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-              :disabled="isParsingDemo"
-              @click.stop="parseDemo()"
-            >
-              <Loader2 v-if="isParsingDemo" class="w-4 h-4 animate-spin" />
-              <RefreshCw v-else class="w-4 h-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>
-            {{ isParsingDemo ? "Parsing demo…" : "Parse demo metadata" }}
-          </TooltipContent>
-        </Tooltip>
-        <Tooltip v-else-if="hasDemo && canWatchDemo">
-          <TooltipTrigger as-child>
-            <Button
-              size="xs"
-              variant="ghost"
-              class="h-6 w-6 p-0 text-white/70 opacity-50 cursor-not-allowed"
-              disabled
-            >
-              <PlayCircle class="w-4 h-4" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Demo metadata has not been parsed</TooltipContent>
+          <TooltipContent>{{ demoButtonState.tooltip }}</TooltipContent>
         </Tooltip>
         <template v-if="matchMap.demos_download_url">
           <a target="_blank" :href="matchMap.demos_download_url" @click.stop>
@@ -243,6 +226,7 @@ import {
   e_veto_pick_types_enum,
 } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useGpuPoolStatusStore } from "~/stores/GpuPoolStatusStore";
 
 export default {
   emits: ["open-stats"],
@@ -291,6 +275,47 @@ export default {
     },
     canParseDemo() {
       return useAuthStore().isAdmin;
+    },
+    demoButtonState() {
+      if (this.isParsingDemo) {
+        return {
+          icon: "loading",
+          disabled: true,
+          tooltip: "Parsing demo…",
+          onClick: null,
+        };
+      }
+      if (!this.hasDemoMetadata) {
+        if (this.canParseDemo) {
+          return {
+            icon: "parse",
+            disabled: false,
+            tooltip: "Parse demo metadata",
+            onClick: () => this.parseDemo(),
+          };
+        }
+        return {
+          icon: "play",
+          disabled: true,
+          tooltip: "Demo metadata has not been parsed",
+          onClick: null,
+        };
+      }
+      const gpu = useGpuPoolStatusStore();
+      if (gpu.hasLoaded && !gpu.hasFreeGpu) {
+        return {
+          icon: "play",
+          disabled: true,
+          tooltip: gpu.busyReason || "GPU busy",
+          onClick: null,
+        };
+      }
+      return {
+        icon: "play",
+        disabled: false,
+        tooltip: "Watch demo",
+        onClick: () => this.openDemoWatcher(),
+      };
     },
     showTeamPatch() {
       return (

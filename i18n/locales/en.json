@@ -530,6 +530,22 @@
         "toasts": {
             "copied_to_clipboard": "Copied to Clipboard"
         },
+        "gpu_nodes": {
+            "title": "GPU Nodes",
+            "description": "GPU-capable game server nodes that host live streams, demo playback, and highlight renders. Each GPU runs at most one consumer at a time.",
+            "idle": "Idle",
+            "table": {
+                "node": "Node",
+                "region": "Region",
+                "gpu_devices": "GPU Devices",
+                "status": "Status",
+                "busy_with": "Busy With"
+            },
+            "empty": {
+                "title": "No GPU Nodes",
+                "description": "No game server nodes have been registered with a GPU. Enable GPU support on a node to make it available for streaming and rendering."
+            }
+        },
         "game_server_nodes": {
             "title": "Game Server Nodes",
             "description": "Game server nodes expand your server offerings into different regions or provide redundancy for on-demand servers.",
@@ -969,6 +985,7 @@
                 "servers": "Servers",
                 "dedicated_servers": "Dedicated Servers",
                 "game_server_nodes": "Game Server Nodes",
+                "gpu_nodes": "GPU Nodes",
                 "app_settings": "App Settings",
                 "manage_matches": "Manage Matches",
                 "manage_tournaments": "Manage Tournaments"
@@ -1000,6 +1017,7 @@
                 "servers": "Servers",
                 "dedicated_servers": "Dedicated Servers",
                 "game_server_nodes": "Game Server Nodes",
+                "gpu_nodes": "GPU Nodes",
                 "system_logs": "System Logs",
                 "database": "Database",
                 "system_metrics": "System Metrics",

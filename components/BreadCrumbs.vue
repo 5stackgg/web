@@ -17,13 +17,17 @@
       <template v-for="(crumb, index) in crumbs" :key="index">
         <BreadcrumbSeparator class="shrink-0" />
 
-        <BreadcrumbItem :class="index === crumbs.length - 1 ? 'min-w-0' : 'shrink-0'">
+        <BreadcrumbItem
+          :class="index === crumbs.length - 1 ? 'min-w-0' : 'shrink-0'"
+        >
           <BreadcrumbLink as-child>
             <NuxtLink
               :to="crumb.to"
               :class="[
                 'inline-flex h-7 items-center rounded-md px-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors [&.router-link-active]:bg-transparent [&.router-link-exact-active]:bg-transparent',
-                index === crumbs.length - 1 ? 'min-w-0 max-w-full truncate block' : '',
+                index === crumbs.length - 1
+                  ? 'min-w-0 max-w-full truncate block'
+                  : '',
               ]"
             >
               {{ crumb.text.replace("-", " ") }}

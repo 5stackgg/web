@@ -8,6 +8,11 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from "~/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import MatchLobbyAccess from "./MatchLobbyAccess.vue";
 import {
   e_match_status_enum,
@@ -73,9 +78,18 @@ import {
                - "live"  — direct game-port observer connect, no GOTV delay
                - "tv"    — GOTV/Playcast, honors tv_delay (default ~115s) -->
           <DropdownMenuSub v-if="isLive && gameStreamerStatus === 'off'">
-            <DropdownMenuSubTrigger
-              :disabled="!canStartLiveDirect && !canStartLiveTv"
-            >
+            <Tooltip v-if="liveStartDisabledReason">
+              <TooltipTrigger as-child>
+                <DropdownMenuSubTrigger disabled>
+                  <Radio class="h-3.5 w-3.5 mr-2 text-muted-foreground" />
+                  <span>{{ $t("match.actions.start_live") }}</span>
+                </DropdownMenuSubTrigger>
+              </TooltipTrigger>
+              <TooltipContent side="left">
+                {{ liveStartDisabledReason }}
+              </TooltipContent>
+            </Tooltip>
+            <DropdownMenuSubTrigger v-else>
               <Radio class="h-3.5 w-3.5 mr-2 text-muted-foreground" />
               <span>{{ $t("match.actions.start_live") }}</span>
             </DropdownMenuSubTrigger>
@@ -87,7 +101,11 @@ import {
               >
                 <span>{{ $t("match.actions.start_live_direct") }}</span>
                 <span class="text-xs text-muted-foreground">
-                  {{ $t("match.actions.start_live_direct_hint") }}
+                  {{
+                    gpuBlocksAction
+                      ? gpuBusyReason || "GPU busy"
+                      : $t("match.actions.start_live_direct_hint")
+                  }}
                 </span>
               </DropdownMenuItem>
               <DropdownMenuItem
@@ -98,9 +116,11 @@ import {
                 <span>{{ $t("match.actions.start_live_tv") }}</span>
                 <span class="text-xs text-muted-foreground">
                   {{
-                    canStartLiveTv
-                      ? $t("match.actions.start_live_tv_hint")
-                      : $t("match.actions.start_live_waiting_tv")
+                    gpuBlocksAction
+                      ? gpuBusyReason || "GPU busy"
+                      : canStartLiveTv
+                        ? $t("match.actions.start_live_tv_hint")
+                        : $t("match.actions.start_live_waiting_tv")
                   }}
                 </span>
               </DropdownMenuItem>
@@ -207,6 +227,7 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import socket from "~/web-sockets/Socket";
 import { v4 as uuidv4 } from "uuid";
+import { useGpuPoolStatusStore } from "~/stores/GpuPoolStatusStore";
 export default {
   props: {
     match: {
@@ -421,8 +442,22 @@ export default {
     // Direct (live) mode: the streamer pod joins the game port as an
     // observer with no GOTV delay. Available the moment the match goes
     // Live and the server is up — `can_stream_live` is the SQL truth.
+    gpuBlocksAction() {
+      const gpu = useGpuPoolStatusStore();
+      return gpu.hasLoaded && !gpu.hasFreeGpu;
+    },
+    gpuBusyReason() {
+      const gpu = useGpuPoolStatusStore();
+      return gpu.busyReason;
+    },
     canStartLiveDirect() {
-      return !!this.match.can_stream_live;
+      return !!this.match.can_stream_live && !this.gpuBlocksAction;
+    },
+    liveStartDisabledReason() {
+      if (this.canStartLiveDirect || this.canStartLiveTv) return null;
+      if (this.gpuBlocksAction) return this.gpuBusyReason || "GPU busy";
+      if (!this.match.is_server_online) return "Server is offline";
+      return "Live streaming isn't available for this match right now";
     },
     // TV mode: GOTV/Playcast path. Both `can_stream_tv` and
     // `tv_connection_string` come back null for organizers who are also
@@ -433,7 +468,9 @@ export default {
     // handles the `tv_delay` wait on its own and retries until GOTV
     // accepts the connection.
     canStartLiveTv() {
-      return this.isLive && !!this.match.is_server_online;
+      return (
+        this.isLive && !!this.match.is_server_online && !this.gpuBlocksAction
+      );
     },
     // "off"     — no game-streamer row (Start button shown)
     // "booting" — row exists, is_live = false (Cancel item with the

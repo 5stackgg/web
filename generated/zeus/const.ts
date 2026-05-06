@@ -337,6 +337,8 @@ export const AllTypesProps: Record<string,any> = {
 		clip_id:"uuid_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		error_message:"String_comparison_exp",
+		game_server_node:"game_server_nodes_bool_exp",
+		game_server_node_id:"String_comparison_exp",
 		id:"uuid_comparison_exp",
 		k8s_job_name:"String_comparison_exp",
 		last_status_at:"timestamptz_comparison_exp",
@@ -368,6 +370,7 @@ export const AllTypesProps: Record<string,any> = {
 		clip:"match_clips_obj_rel_insert_input",
 		clip_id:"uuid",
 		created_at:"timestamptz",
+		game_server_node:"game_server_nodes_obj_rel_insert_input",
 		id:"uuid",
 		last_status_at:"timestamptz",
 		match_map:"match_maps_obj_rel_insert_input",
@@ -382,6 +385,7 @@ export const AllTypesProps: Record<string,any> = {
 		clip_id:"order_by",
 		created_at:"order_by",
 		error_message:"order_by",
+		game_server_node_id:"order_by",
 		id:"order_by",
 		k8s_job_name:"order_by",
 		last_status_at:"order_by",
@@ -395,6 +399,7 @@ export const AllTypesProps: Record<string,any> = {
 		clip_id:"order_by",
 		created_at:"order_by",
 		error_message:"order_by",
+		game_server_node_id:"order_by",
 		id:"order_by",
 		k8s_job_name:"order_by",
 		last_status_at:"order_by",
@@ -414,6 +419,8 @@ export const AllTypesProps: Record<string,any> = {
 		clip_id:"order_by",
 		created_at:"order_by",
 		error_message:"order_by",
+		game_server_node:"game_server_nodes_order_by",
+		game_server_node_id:"order_by",
 		id:"order_by",
 		k8s_job_name:"order_by",
 		last_status_at:"order_by",
@@ -3335,6 +3342,8 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"match_demo_sessions_bool_exp",
 		created_at:"timestamptz_comparison_exp",
 		error_message:"String_comparison_exp",
+		game_server_node:"game_server_nodes_bool_exp",
+		game_server_node_id:"String_comparison_exp",
 		id:"uuid_comparison_exp",
 		k8s_job_name:"String_comparison_exp",
 		last_activity_at:"timestamptz_comparison_exp",
@@ -3365,6 +3374,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_demo_sessions_insert_input:{
 		created_at:"timestamptz",
+		game_server_node:"game_server_nodes_obj_rel_insert_input",
 		id:"uuid",
 		last_activity_at:"timestamptz",
 		last_status_at:"timestamptz",
@@ -3384,6 +3394,8 @@ export const AllTypesProps: Record<string,any> = {
 	match_demo_sessions_order_by:{
 		created_at:"order_by",
 		error_message:"order_by",
+		game_server_node:"game_server_nodes_order_by",
+		game_server_node_id:"order_by",
 		id:"order_by",
 		k8s_job_name:"order_by",
 		last_activity_at:"order_by",
@@ -5185,6 +5197,8 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"match_streams_bool_exp",
 		autodirector:"Boolean_comparison_exp",
 		error_message:"String_comparison_exp",
+		game_server_node:"game_server_nodes_bool_exp",
+		game_server_node_id:"String_comparison_exp",
 		id:"uuid_comparison_exp",
 		is_game_streamer:"Boolean_comparison_exp",
 		is_live:"Boolean_comparison_exp",
@@ -5192,6 +5206,7 @@ export const AllTypesProps: Record<string,any> = {
 		link:"String_comparison_exp",
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
+		mode:"String_comparison_exp",
 		priority:"Int_comparison_exp",
 		status:"String_comparison_exp",
 		status_history:"jsonb_comparison_exp",
@@ -5212,6 +5227,7 @@ export const AllTypesProps: Record<string,any> = {
 
 	},
 	match_streams_insert_input:{
+		game_server_node:"game_server_nodes_obj_rel_insert_input",
 		id:"uuid",
 		last_status_at:"timestamptz",
 		match:"matches_obj_rel_insert_input",
@@ -5220,10 +5236,12 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_streams_max_order_by:{
 		error_message:"order_by",
+		game_server_node_id:"order_by",
 		id:"order_by",
 		last_status_at:"order_by",
 		link:"order_by",
 		match_id:"order_by",
+		mode:"order_by",
 		priority:"order_by",
 		status:"order_by",
 		stream_url:"order_by",
@@ -5231,10 +5249,12 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_streams_min_order_by:{
 		error_message:"order_by",
+		game_server_node_id:"order_by",
 		id:"order_by",
 		last_status_at:"order_by",
 		link:"order_by",
 		match_id:"order_by",
+		mode:"order_by",
 		priority:"order_by",
 		status:"order_by",
 		stream_url:"order_by",
@@ -5248,6 +5268,8 @@ export const AllTypesProps: Record<string,any> = {
 	match_streams_order_by:{
 		autodirector:"order_by",
 		error_message:"order_by",
+		game_server_node:"game_server_nodes_order_by",
+		game_server_node_id:"order_by",
 		id:"order_by",
 		is_game_streamer:"order_by",
 		is_live:"order_by",
@@ -5255,6 +5277,7 @@ export const AllTypesProps: Record<string,any> = {
 		link:"order_by",
 		match:"matches_order_by",
 		match_id:"order_by",
+		mode:"order_by",
 		priority:"order_by",
 		status:"order_by",
 		status_history:"order_by",
@@ -5565,6 +5588,8 @@ export const AllTypesProps: Record<string,any> = {
 		can_reassign_winner:"Boolean_comparison_exp",
 		can_schedule:"Boolean_comparison_exp",
 		can_start:"Boolean_comparison_exp",
+		can_stream_live:"Boolean_comparison_exp",
+		can_stream_tv:"Boolean_comparison_exp",
 		cancels_at:"timestamptz_comparison_exp",
 		connection_link:"String_comparison_exp",
 		connection_string:"String_comparison_exp",
@@ -5738,6 +5763,8 @@ export const AllTypesProps: Record<string,any> = {
 		can_reassign_winner:"order_by",
 		can_schedule:"order_by",
 		can_start:"order_by",
+		can_stream_live:"order_by",
+		can_stream_tv:"order_by",
 		cancels_at:"order_by",
 		connection_link:"order_by",
 		connection_string:"order_by",
@@ -12376,6 +12403,16 @@ export const AllTypesProps: Record<string,any> = {
 		tournaments_by_pk:{
 			id:"uuid"
 		},
+		v_gpu_pool_status:{
+			distinct_on:"v_gpu_pool_status_select_column",
+			order_by:"v_gpu_pool_status_order_by",
+			where:"v_gpu_pool_status_bool_exp"
+		},
+		v_gpu_pool_status_aggregate:{
+			distinct_on:"v_gpu_pool_status_select_column",
+			order_by:"v_gpu_pool_status_order_by",
+			where:"v_gpu_pool_status_bool_exp"
+		},
 		v_match_captains:{
 			distinct_on:"v_match_captains_select_column",
 			order_by:"v_match_captains_order_by",
@@ -14340,6 +14377,20 @@ export const AllTypesProps: Record<string,any> = {
 		tournaments_stream:{
 			cursor:"tournaments_stream_cursor_input",
 			where:"tournaments_bool_exp"
+		},
+		v_gpu_pool_status:{
+			distinct_on:"v_gpu_pool_status_select_column",
+			order_by:"v_gpu_pool_status_order_by",
+			where:"v_gpu_pool_status_bool_exp"
+		},
+		v_gpu_pool_status_aggregate:{
+			distinct_on:"v_gpu_pool_status_select_column",
+			order_by:"v_gpu_pool_status_order_by",
+			where:"v_gpu_pool_status_bool_exp"
+		},
+		v_gpu_pool_status_stream:{
+			cursor:"v_gpu_pool_status_stream_cursor_input",
+			where:"v_gpu_pool_status_bool_exp"
 		},
 		v_match_captains:{
 			distinct_on:"v_match_captains_select_column",
@@ -16900,6 +16951,38 @@ export const AllTypesProps: Record<string,any> = {
 		_neq:"uuid",
 		_nin:"uuid"
 	},
+	v_gpu_pool_status_aggregate_fields:{
+		count:{
+			columns:"v_gpu_pool_status_select_column"
+		}
+	},
+	v_gpu_pool_status_bool_exp:{
+		_and:"v_gpu_pool_status_bool_exp",
+		_not:"v_gpu_pool_status_bool_exp",
+		_or:"v_gpu_pool_status_bool_exp",
+		demo_in_progress:"Boolean_comparison_exp",
+		free_gpu_nodes:"Int_comparison_exp",
+		highlights_in_progress:"Boolean_comparison_exp",
+		id:"Int_comparison_exp",
+		live_in_progress:"Boolean_comparison_exp",
+		total_gpu_nodes:"Int_comparison_exp"
+	},
+	v_gpu_pool_status_order_by:{
+		demo_in_progress:"order_by",
+		free_gpu_nodes:"order_by",
+		highlights_in_progress:"order_by",
+		id:"order_by",
+		live_in_progress:"order_by",
+		total_gpu_nodes:"order_by"
+	},
+	v_gpu_pool_status_select_column: "enum" as const,
+	v_gpu_pool_status_stream_cursor_input:{
+		initial_value:"v_gpu_pool_status_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_gpu_pool_status_stream_cursor_value_input:{
+
+	},
 	v_match_captains_aggregate_fields:{
 		count:{
 			columns:"v_match_captains_select_column"
@@ -19147,6 +19230,8 @@ export const ReturnTypes: Record<string,any> = {
 		clip_id:"uuid",
 		created_at:"timestamptz",
 		error_message:"String",
+		game_server_node:"game_server_nodes",
+		game_server_node_id:"String",
 		id:"uuid",
 		k8s_job_name:"String",
 		last_status_at:"timestamptz",
@@ -19185,6 +19270,7 @@ export const ReturnTypes: Record<string,any> = {
 		clip_id:"uuid",
 		created_at:"timestamptz",
 		error_message:"String",
+		game_server_node_id:"String",
 		id:"uuid",
 		k8s_job_name:"String",
 		last_status_at:"timestamptz",
@@ -19198,6 +19284,7 @@ export const ReturnTypes: Record<string,any> = {
 		clip_id:"uuid",
 		created_at:"timestamptz",
 		error_message:"String",
+		game_server_node_id:"String",
 		id:"uuid",
 		k8s_job_name:"String",
 		last_status_at:"timestamptz",
@@ -20735,6 +20822,8 @@ export const ReturnTypes: Record<string,any> = {
 	match_demo_sessions:{
 		created_at:"timestamptz",
 		error_message:"String",
+		game_server_node:"game_server_nodes",
+		game_server_node_id:"String",
 		id:"uuid",
 		k8s_job_name:"String",
 		last_activity_at:"timestamptz",
@@ -20773,6 +20862,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_demo_sessions_max_fields:{
 		created_at:"timestamptz",
 		error_message:"String",
+		game_server_node_id:"String",
 		id:"uuid",
 		k8s_job_name:"String",
 		last_activity_at:"timestamptz",
@@ -20787,6 +20877,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_demo_sessions_min_fields:{
 		created_at:"timestamptz",
 		error_message:"String",
+		game_server_node_id:"String",
 		id:"uuid",
 		k8s_job_name:"String",
 		last_activity_at:"timestamptz",
@@ -21703,6 +21794,8 @@ export const ReturnTypes: Record<string,any> = {
 	match_streams:{
 		autodirector:"Boolean",
 		error_message:"String",
+		game_server_node:"game_server_nodes",
+		game_server_node_id:"String",
 		id:"uuid",
 		is_game_streamer:"Boolean",
 		is_live:"Boolean",
@@ -21710,6 +21803,7 @@ export const ReturnTypes: Record<string,any> = {
 		link:"String",
 		match:"matches",
 		match_id:"uuid",
+		mode:"String",
 		priority:"Int",
 		status:"String",
 		status_history:"jsonb",
@@ -21738,10 +21832,12 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_streams_max_fields:{
 		error_message:"String",
+		game_server_node_id:"String",
 		id:"uuid",
 		last_status_at:"timestamptz",
 		link:"String",
 		match_id:"uuid",
+		mode:"String",
 		priority:"Int",
 		status:"String",
 		stream_url:"String",
@@ -21749,10 +21845,12 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_streams_min_fields:{
 		error_message:"String",
+		game_server_node_id:"String",
 		id:"uuid",
 		last_status_at:"timestamptz",
 		link:"String",
 		match_id:"uuid",
+		mode:"String",
 		priority:"Int",
 		status:"String",
 		stream_url:"String",
@@ -21813,6 +21911,8 @@ export const ReturnTypes: Record<string,any> = {
 		can_reassign_winner:"Boolean",
 		can_schedule:"Boolean",
 		can_start:"Boolean",
+		can_stream_live:"Boolean",
+		can_stream_tv:"Boolean",
 		cancels_at:"timestamptz",
 		connection_link:"String",
 		connection_string:"String",
@@ -24511,6 +24611,8 @@ export const ReturnTypes: Record<string,any> = {
 		tournaments:"tournaments",
 		tournaments_aggregate:"tournaments_aggregate",
 		tournaments_by_pk:"tournaments",
+		v_gpu_pool_status:"v_gpu_pool_status",
+		v_gpu_pool_status_aggregate:"v_gpu_pool_status_aggregate",
 		v_match_captains:"v_match_captains",
 		v_match_captains_aggregate:"v_match_captains_aggregate",
 		v_match_lineups:"v_match_lineups",
@@ -25115,6 +25217,9 @@ export const ReturnTypes: Record<string,any> = {
 		tournaments_aggregate:"tournaments_aggregate",
 		tournaments_by_pk:"tournaments",
 		tournaments_stream:"tournaments",
+		v_gpu_pool_status:"v_gpu_pool_status",
+		v_gpu_pool_status_aggregate:"v_gpu_pool_status_aggregate",
+		v_gpu_pool_status_stream:"v_gpu_pool_status",
 		v_match_captains:"v_match_captains",
 		v_match_captains_aggregate:"v_match_captains_aggregate",
 		v_match_captains_stream:"v_match_captains",
@@ -26291,6 +26396,81 @@ export const ReturnTypes: Record<string,any> = {
 		organizer_steam_id:"Float"
 	},
 	uuid: `scalar.uuid` as const,
+	v_gpu_pool_status:{
+		demo_in_progress:"Boolean",
+		free_gpu_nodes:"Int",
+		highlights_in_progress:"Boolean",
+		id:"Int",
+		live_in_progress:"Boolean",
+		total_gpu_nodes:"Int"
+	},
+	v_gpu_pool_status_aggregate:{
+		aggregate:"v_gpu_pool_status_aggregate_fields",
+		nodes:"v_gpu_pool_status"
+	},
+	v_gpu_pool_status_aggregate_fields:{
+		avg:"v_gpu_pool_status_avg_fields",
+		count:"Int",
+		max:"v_gpu_pool_status_max_fields",
+		min:"v_gpu_pool_status_min_fields",
+		stddev:"v_gpu_pool_status_stddev_fields",
+		stddev_pop:"v_gpu_pool_status_stddev_pop_fields",
+		stddev_samp:"v_gpu_pool_status_stddev_samp_fields",
+		sum:"v_gpu_pool_status_sum_fields",
+		var_pop:"v_gpu_pool_status_var_pop_fields",
+		var_samp:"v_gpu_pool_status_var_samp_fields",
+		variance:"v_gpu_pool_status_variance_fields"
+	},
+	v_gpu_pool_status_avg_fields:{
+		free_gpu_nodes:"Float",
+		id:"Float",
+		total_gpu_nodes:"Float"
+	},
+	v_gpu_pool_status_max_fields:{
+		free_gpu_nodes:"Int",
+		id:"Int",
+		total_gpu_nodes:"Int"
+	},
+	v_gpu_pool_status_min_fields:{
+		free_gpu_nodes:"Int",
+		id:"Int",
+		total_gpu_nodes:"Int"
+	},
+	v_gpu_pool_status_stddev_fields:{
+		free_gpu_nodes:"Float",
+		id:"Float",
+		total_gpu_nodes:"Float"
+	},
+	v_gpu_pool_status_stddev_pop_fields:{
+		free_gpu_nodes:"Float",
+		id:"Float",
+		total_gpu_nodes:"Float"
+	},
+	v_gpu_pool_status_stddev_samp_fields:{
+		free_gpu_nodes:"Float",
+		id:"Float",
+		total_gpu_nodes:"Float"
+	},
+	v_gpu_pool_status_sum_fields:{
+		free_gpu_nodes:"Int",
+		id:"Int",
+		total_gpu_nodes:"Int"
+	},
+	v_gpu_pool_status_var_pop_fields:{
+		free_gpu_nodes:"Float",
+		id:"Float",
+		total_gpu_nodes:"Float"
+	},
+	v_gpu_pool_status_var_samp_fields:{
+		free_gpu_nodes:"Float",
+		id:"Float",
+		total_gpu_nodes:"Float"
+	},
+	v_gpu_pool_status_variance_fields:{
+		free_gpu_nodes:"Float",
+		id:"Float",
+		total_gpu_nodes:"Float"
+	},
 	v_match_captains:{
 		captain:"Boolean",
 		discord_id:"String",

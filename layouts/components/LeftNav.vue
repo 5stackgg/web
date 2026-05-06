@@ -491,6 +491,22 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                           </NuxtLink>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
+
+                      <SidebarMenuSubItem>
+                        <SidebarMenuSubButton
+                          as-child
+                          :tooltip="$t('layouts.app_nav.tooltips.gpu_nodes')"
+                        >
+                          <NuxtLink
+                            :to="{ name: 'gpu-nodes' }"
+                            :class="{
+                              'router-link-active': isRouteActive('gpu-nodes'),
+                            }"
+                          >
+                            {{ $t("layouts.app_nav.administration.gpu_nodes") }}
+                          </NuxtLink>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </SidebarMenuItem>
@@ -538,6 +554,15 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                               "layouts.app_nav.administration.game_server_nodes",
                             )
                           }}
+                        </NuxtLink>
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        class="flex gap-2 cursor-pointer"
+                        as-child
+                      >
+                        <NuxtLink :to="{ name: 'gpu-nodes' }">
+                          {{ $t("layouts.app_nav.administration.gpu_nodes") }}
                         </NuxtLink>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>

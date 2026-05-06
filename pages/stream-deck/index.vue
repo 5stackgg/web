@@ -3,6 +3,7 @@ import { reactive } from "vue";
 import { storeToRefs } from "pinia";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useStreamerStore } from "~/stores/StreamerStore";
+import { useGpuAvailability } from "~/composables/useGpuAvailability";
 import { useToast } from "~/components/ui/toast/use-toast";
 import { Button } from "~/components/ui/button";
 import { Switch } from "~/components/ui/switch";
@@ -19,30 +20,18 @@ import {
   PictureInPicture2,
   X,
   Cpu,
-  CircleAlert,
 } from "lucide-vue-next";
-import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
+import { generateMutation } from "~/graphql/graphqlGen";
 import WhepPlayer from "~/components/match/WhepPlayer.vue";
 import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
 import SpectatorGrid from "~/components/stream-deck/SpectatorGrid.vue";
 import { useStreamerPopout } from "~/composables/useStreamerPopout";
-import NodeGpuMetrics from "~/components/system-metrics/NodeGpuMetrics.vue";
-import { useAuthStore } from "~/stores/AuthStore";
-import { e_player_roles_enum } from "~/generated/zeus";
-import { computed, ref, watch } from "vue";
+import { computed } from "vue";
 
-const isAdmin = computed(() =>
-  useAuthStore().isRoleAbove(e_player_roles_enum.administrator),
-);
-
-// List of GPU-enabled nodes. The set rarely changes during a deck
-// session, so a one-shot query (refetched if the user gains admin)
-// is enough — the per-panel poll covers the live telemetry.
-const gpuNodes = ref<Array<{ id: string; label: string | null }>>([]);
-// GPU panels are hidden by default; admins toggle them on via the GPU
-// pill in the header so the deck stays focused on streams during a
-// normal session.
-const showGpu = ref(false);
+const { status: gpuPoolStatus, hasFreeGpu, busyReason } = useGpuAvailability();
+const gpuTotal = computed(() => gpuPoolStatus.value?.total_gpu_nodes ?? 0);
+const gpuFree = computed(() => gpuPoolStatus.value?.free_gpu_nodes ?? 0);
+const gpuPoolReady = computed(() => gpuPoolStatus.value !== null);
 
 const {
   isOpen: isPopoutOpen,
@@ -66,36 +55,6 @@ definePageMeta({
 
 const { toast } = useToast();
 const { client: apolloClient } = useApolloClient();
-
-watch(
-  isAdmin,
-  async (admin) => {
-    if (!admin) {
-      gpuNodes.value = [];
-      return;
-    }
-    try {
-      const { data } = await apolloClient.query({
-        query: generateQuery({
-          game_server_nodes: [
-            {
-              where: {
-                gpu: { _eq: true },
-                enabled: { _eq: true },
-              },
-            },
-            { id: true, label: true },
-          ],
-        }),
-        fetchPolicy: "network-only",
-      });
-      gpuNodes.value = (data as any)?.game_server_nodes ?? [];
-    } catch (error) {
-      console.error("failed to load GPU nodes for stream deck", error);
-    }
-  },
-  { immediate: true },
-);
 
 // `busy` is the only piece of UI state kept locally — autodirector
 // state lives on the match_streams row now and rides the Hasura
@@ -126,16 +85,12 @@ function isAutodirector(stream: any): boolean {
 // it here too as a safety net for cold-start navigations.
 const streamerStore = useStreamerStore();
 streamerStore.subscribeToLiveStreams();
-streamerStore.subscribeToGpuNodes();
 const {
   liveStreams,
   hasLoaded,
   activeStreamingMatchesCount,
   maxStreams,
   isAtCapacity,
-  hasGpuNode,
-  hasLoadedGpuNodes,
-  gpuNodeCount,
 } = storeToRefs(streamerStore);
 
 async function runMutation(
@@ -251,59 +206,24 @@ function statusBadgeLabel(stream: any) {
     <TacticalPageHeader>
       <template #title>Stream Deck</template>
       <template #actions>
-        <!-- GPU node pill — green chip when ≥1 GPU node is enabled,
-             destructive chip when none. Skipped until the subscription
-             reports back so we don't render a misleading "no GPU" on
-             first paint.
-             Admins get a toggle that shows live per-node GPU
-             telemetry below; non-admins (or no-GPU clusters) get a
-             link to the nodes page. -->
-        <template v-if="hasLoadedGpuNodes">
-          <button
-            v-if="isAdmin && hasGpuNode"
-            type="button"
-            :class="[
-              'inline-flex items-center gap-2 rounded-md border px-3 py-1.5 font-mono text-[0.7rem] uppercase tracking-[0.18em] backdrop-blur-sm transition-colors',
-              showGpu
-                ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
-                : 'border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.14)]',
-            ]"
-            :aria-pressed="showGpu"
-            :title="
-              showGpu
-                ? 'Hide GPU telemetry'
-                : 'Show live GPU telemetry for each GPU node'
-            "
-            @click="showGpu = !showGpu"
-          >
-            <Cpu class="size-3.5" />
-            <span class="font-semibold">GPU</span>
-            <span class="opacity-60">·</span>
-            <span class="tabular-nums">{{ gpuNodeCount }}</span>
-          </button>
-          <NuxtLink
-            v-else
-            to="/game-server-nodes"
-            :class="[
-              'inline-flex items-center gap-2 rounded-md border px-3 py-1.5 font-mono text-[0.7rem] uppercase tracking-[0.18em] backdrop-blur-sm transition-colors',
-              hasGpuNode
-                ? 'border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.14)]'
-                : 'border-destructive/45 bg-destructive/10 text-destructive hover:bg-destructive/15',
-            ]"
-            :title="
-              hasGpuNode
-                ? 'One or more game-server-nodes report a GPU'
-                : 'No GPU detected on any game-server-node'
-            "
-          >
-            <Cpu class="size-3.5" />
-            <span class="font-semibold">GPU</span>
-            <span class="opacity-60">·</span>
-            <span class="tabular-nums">{{
-              hasGpuNode ? gpuNodeCount : "0"
-            }}</span>
-          </NuxtLink>
-        </template>
+        <NuxtLink
+          v-if="gpuPoolReady"
+          to="/gpu-nodes"
+          :class="[
+            'inline-flex items-center gap-2 rounded-md border px-3 py-1.5 font-mono text-[0.7rem] uppercase tracking-[0.18em] backdrop-blur-sm transition-colors',
+            gpuTotal === 0
+              ? 'border-destructive/45 bg-destructive/10 text-destructive hover:bg-destructive/15'
+              : !hasFreeGpu
+                ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.22)]'
+                : 'border-emerald-700/45 bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/15',
+          ]"
+          :title="busyReason || 'GPU pool — open the GPU Nodes page'"
+        >
+          <Cpu class="size-3.5" />
+          <span class="font-semibold">GPU</span>
+          <span class="opacity-60">·</span>
+          <span class="tabular-nums">{{ gpuFree }}/{{ gpuTotal }}</span>
+        </NuxtLink>
 
         <!-- Capacity readout. Reads n / max from StreamerStore so once
              the backend exposes a real cap (gpu nodes × credentials)
@@ -338,56 +258,6 @@ function statusBadgeLabel(stream: any) {
          confuse Vue's animation pass and produce a flicker / empty
          top region during the v-if swap from skeleton → cards. -->
     <div class="mt-6 space-y-4">
-      <!-- No-GPU callout — game-streamer pods need a GPU node to
-           schedule onto, so without one the deck can't actually
-           drive a broadcast. Linked to the nodes page so the user
-           can enable GPU on an existing node or add a new one. -->
-      <div
-        v-if="hasLoadedGpuNodes && !hasGpuNode"
-        class="relative flex items-start gap-3 overflow-hidden rounded-xl border border-destructive/40 bg-destructive/5 p-4"
-      >
-        <div
-          class="flex size-9 flex-shrink-0 items-center justify-center rounded-md border border-destructive/40 bg-destructive/10 text-destructive"
-        >
-          <Cpu class="size-4" />
-        </div>
-        <div class="min-w-0 flex-1">
-          <p
-            class="font-mono text-[0.7rem] font-bold uppercase tracking-[0.2em] text-destructive flex items-center gap-2"
-          >
-            <CircleAlert class="size-3.5" />
-            No GPU detected
-          </p>
-          <p class="mt-1 text-sm text-foreground/85">
-            Stream Deck needs at least one game-server-node with a GPU to launch
-            broadcast pods. Add a GPU to one of your nodes (or enable an
-            existing GPU node) to unlock streaming.
-          </p>
-          <NuxtLink
-            to="/game-server-nodes"
-            class="mt-2 inline-flex items-center gap-1.5 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-destructive hover:underline"
-          >
-            Open game-server-nodes →
-          </NuxtLink>
-        </div>
-      </div>
-
-      <!-- Admin GPU telemetry — live utilization + memory for each
-           GPU-enabled node so an operator can see at a glance whether
-           a streamer pod is going to fight for VRAM/util before they
-           kick off a broadcast. Hidden until the operator clicks the
-           GPU pill in the header so the deck stays focused on streams
-           by default. Each panel is full-width so the two charts
-           inside have room to align side-by-side. -->
-      <div v-if="isAdmin && showGpu && gpuNodes.length" class="space-y-4">
-        <NodeGpuMetrics
-          v-for="node in gpuNodes"
-          :key="node.id"
-          :node-id="node.id"
-          :node-label="node.label || ''"
-        />
-      </div>
-
       <!-- Empty state — only after the first subscription result so
            we don't briefly flash "Off air" when streams are present. -->
       <div

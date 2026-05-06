@@ -17,6 +17,7 @@ import { announceFocusWindow } from "~/composables/useStreamerPopout";
 import { useStreamerGsi } from "~/composables/useStreamerGsi";
 import {
   specSlotsForMatchType,
+  resolveKeyToRealSlot,
   type SpecSlot,
 } from "~/utilities/streamerSpecSlots";
 
@@ -296,11 +297,20 @@ function onKeyDown(e: KeyboardEvent) {
 
   if (e.repeat) return;
 
-  // Digits: 0..9 → slots
-  const slot = slotKeys.value.find((s) => s.key === e.key);
-  if (slot) {
-    e.preventDefault();
-    void pressSlot(slot.slot, slot.key);
+  // Digits: 0..9 → UI position → real GSI slot of whoever is at
+  // that position in the SpectatorSlots row. Keeps the keypress in
+  // sync with the chip the operator sees on the tile.
+  if (/^[0-9]$/.test(e.key)) {
+    const real = resolveKeyToRealSlot(
+      e.key,
+      ctSlots.value,
+      tSlots.value,
+      stream.value?.match?.options?.type,
+    );
+    if (real != null) {
+      e.preventDefault();
+      void pressSlot(real, e.key);
+    }
     return;
   }
 
@@ -542,8 +552,6 @@ watch(spectatedSteamId, (sid) => {
             :t-slots="tSlots"
             :team-ct-name="teamCtName"
             :team-t-name="teamTName"
-            :team-ct-score="teamCtScore"
-            :team-t-score="teamTScore"
             :active-steam-id="spectatedSteamId"
             :flash-slot="flashSlot"
             :controls-active="controlsActive()"

@@ -56,8 +56,6 @@ const flashSlotNum = computed<number | null>(() => {
     :t-slots="tSlots"
     :team-ct-name="teamCtName"
     :team-t-name="teamTName"
-    :team-ct-score="teamCtScore"
-    :team-t-score="teamTScore"
     :active-steam-id="spectatedSteamId"
     :flash-slot="flashSlotNum"
     :controls-active="controlsActive"

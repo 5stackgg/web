@@ -95,6 +95,11 @@ onMounted(() => {
             // so skipped stages on warm boots stay greyed out.
             status_history: true as any,
             autodirector: true,
+            // Spec-grid layout (5v5/2v2/1v1) needs the match's
+            // type to size the row + ordering correctly.
+            match: {
+              options: { type: true },
+            },
           },
         ],
       } as any),
@@ -128,6 +133,9 @@ function whepUrlFor(s: any): string | null {
 
 const hasStream = computed(() => !!stream.value);
 const isLive = computed(() => !!stream.value?.is_live);
+const matchType = computed<string | null>(
+  () => stream.value?.match?.options?.type ?? null,
+);
 const isErrored = computed(() => stream.value?.status === "errored");
 // Slot buttons are "clickable" whenever the pod is live and we're not
 // mid-mutation; autodirector is intentionally NOT in this gate, since
@@ -451,8 +459,7 @@ function openExternal() {
           :t-slots="tSlots"
           :team-ct-name="teamCtName"
           :team-t-name="teamTName"
-          :team-ct-score="teamCtScore"
-          :team-t-score="teamTScore"
+          :match-type="matchType"
           :active-steam-id="spectatedSteamId"
           :flash-slot="flashSlot"
           :controls-active="controlsActive"

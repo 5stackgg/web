@@ -41,6 +41,7 @@ import {
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
 import { useClipEditor } from "~/composables/useClipEditor";
 import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
+import { resolveKeyToRealSlot } from "~/utilities/streamerSpecSlots";
 
 // API gates clip creation at verified_user; we only check "logged in"
 // on the client so any logged-in viewer sees the button.
@@ -185,26 +186,25 @@ function isTypingTarget(target: EventTarget | null): boolean {
     target.isContentEditable
   );
 }
-const SLOT_KEY_MAP: Record<string, number> = {
-  "1": 1,
-  "2": 2,
-  "3": 3,
-  "4": 4,
-  "5": 5,
-  "6": 6,
-  "7": 7,
-  "8": 8,
-  "9": 9,
-  "0": 10,
-};
 function onKeyDown(e: KeyboardEvent) {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   if (isTypingTarget(e.target)) return;
 
-  const slot = SLOT_KEY_MAP[e.key];
-  if (slot != null) {
-    e.preventDefault();
-    pressSlot(slot);
+  // Digit keys map to UI positions, not raw cs2 slots — same
+  // ordering as the SpectatorSlots row, so what you press matches
+  // what you see. resolveKeyToRealSlot returns null if the slot
+  // is empty (placeholder) so we can no-op cleanly.
+  if (/^[0-9]$/.test(e.key)) {
+    const real = resolveKeyToRealSlot(
+      e.key,
+      ctSlots.value,
+      tSlots.value,
+      store.matchType,
+    );
+    if (real != null) {
+      e.preventDefault();
+      pressSlot(real);
+    }
     return;
   }
   if (e.key === " " || e.code === "Space") {
@@ -656,8 +656,7 @@ const killMarkers = computed<Marker[]>(() => {
         :t-slots="tSlots"
         :team-ct-name="store.gsiTeamCtName"
         :team-t-name="store.gsiTeamTName"
-        :team-ct-score="store.gsiTeamCtScore"
-        :team-t-score="store.gsiTeamTScore"
+        :match-type="store.matchType"
         :active-steam-id="store.spectatedSteamId"
         :flash-slot="flashSlot"
         @press-slot="(slot: number) => pressSlot(slot)"

@@ -19,13 +19,13 @@ const { openLastOrDefaultHub } = useHubState();
     class="flex h-[60px] shrink-0 items-center gap-2 transition-[width] ease-linear bg-background sticky top-0 z-50"
   >
     <div class="flex items-center justify-between w-full">
-      <div class="flex items-center gap-2">
-        <SidebarTrigger />
-        <Separator orientation="vertical" class="h-4" />
+      <div class="flex items-center gap-2 min-w-0 flex-1">
+        <SidebarTrigger class="shrink-0" />
+        <Separator orientation="vertical" class="h-4 shrink-0" />
         <bread-crumbs></bread-crumbs>
       </div>
 
-      <div class="flex gap-4">
+      <div class="flex gap-4 shrink-0">
         <SpotlightPlayerSearch v-if="me" />
 
         <MatchLobbies v-if="!isMobile"></MatchLobbies>

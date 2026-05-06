@@ -42,8 +42,6 @@ const props = withDefaults(
     tSlots: SpecSlotData[];
     teamCtName?: string | null;
     teamTName?: string | null;
-    teamCtScore?: number;
-    teamTScore?: number;
     activeSteamId?: string | null;
     flashSlot?: number | null;
     controlsActive?: boolean;
@@ -56,15 +54,10 @@ const props = withDefaults(
     // of the takeover. Wired only on live surfaces; the demo never
     // sets this since there's no AI driver in playback.
     autodirectorOn?: boolean;
-    // Hides "Waiting for cs2 game state…" placeholder. The demo
-    // controls already render their own message.
-    hideEmptyMessage?: boolean;
   }>(),
   {
     teamCtName: null,
     teamTName: null,
-    teamCtScore: 0,
-    teamTScore: 0,
     activeSteamId: null,
     flashSlot: null,
     controlsActive: true,
@@ -72,7 +65,6 @@ const props = withDefaults(
     compact: false,
     matchType: null,
     autodirectorOn: false,
-    hideEmptyMessage: false,
   },
 );
 
@@ -80,10 +72,52 @@ const emit = defineEmits<{
   (e: "press-slot", slot: number): void;
 }>();
 
-const hasGsi = computed(
-  () => props.ctSlots.length > 0 || props.tSlots.length > 0,
-);
 const teamSize = computed(() => teamSizeForMatchType(props.matchType));
+
+// Pad each side to teamSize with placeholders. Mapping is by
+// team+order, NOT raw GSI slot number — GSI assigns slots by join
+// order, so in a sparsely-populated lobby a T player can show up at
+// slot 2 in a 5v5. We still want them in the bottom row at uiSlot 6
+// so the layout reads consistently: CT always 1..N on top, T always
+// N+1..2N on bottom, no matter how cs2 numbered them. The chip label
+// uses uiSlot for that consistent visual; the click handler emits
+// the player's real GSI slot so cs2's `spec_player <n>` still picks
+// the right player.
+type PaddedSlot = SpecSlotData & { isPlaceholder: boolean; uiSlot: number };
+function buildPadded(
+  source: SpecSlotData[],
+  side: "CT" | "T",
+  size: number,
+  uiSlotStart: number,
+): PaddedSlot[] {
+  const sorted = [...source].sort((a, b) => a.slot - b.slot);
+  const out: PaddedSlot[] = [];
+  for (let i = 0; i < size; i++) {
+    const uiSlot = uiSlotStart + i;
+    const real = sorted[i];
+    if (real) {
+      out.push({ ...real, isPlaceholder: false, uiSlot });
+    } else {
+      out.push({
+        slot: uiSlot,
+        steam_id: "",
+        name: null,
+        team: side,
+        alive: false,
+        health: 0,
+        isPlaceholder: true,
+        uiSlot,
+      });
+    }
+  }
+  return out;
+}
+const paddedCtSlots = computed<PaddedSlot[]>(() =>
+  buildPadded(props.ctSlots, "CT", teamSize.value, 1),
+);
+const paddedTSlots = computed<PaddedSlot[]>(() =>
+  buildPadded(props.tSlots, "T", teamSize.value, teamSize.value + 1),
+);
 
 function ctTeamLabel(): string {
   return props.teamCtName || "Counter-Terrorists";
@@ -124,11 +158,17 @@ function healthWidth(h: number): string {
   return `${Math.max(0, Math.min(100, h))}%`;
 }
 
+// Bounded widths keep tiles a readable broadcast size on wide
+// container widths instead of letting grid-cols-N stretch each cell
+// to 1/N of the video panel — that path made the spec strip
+// dominate the video on widescreen. The min-h on the row reserves
+// the same vertical footprint whether a side has 0 or teamSize
+// players, so the video doesn't bounce as the round flips.
 function gridColsClass(): string {
-  if (teamSize.value === 5) return "grid-cols-5";
+  if (teamSize.value === 5) return "grid-cols-5 max-w-[40rem]";
   if (teamSize.value === 2) return "grid-cols-2 max-w-[16rem]";
   if (teamSize.value === 1) return "grid-cols-1 max-w-[8rem]";
-  return "grid-cols-5";
+  return "grid-cols-5 max-w-[40rem]";
 }
 
 // Health → readable label for the corner numeric. cs2 reports raw 0-100.
@@ -137,7 +177,8 @@ function healthLabel(h: number): string {
   return String(Math.round(Math.max(0, Math.min(100, h))));
 }
 
-function press(s: SpecSlotData) {
+function press(s: PaddedSlot) {
+  if (s.isPlaceholder) return;
   emit("press-slot", s.slot);
 }
 </script>
@@ -151,8 +192,7 @@ function press(s: SpecSlotData) {
         : '',
     ]"
   >
-    <template v-if="hasGsi">
-      <!-- ============== CT side ============== -->
+    <!-- ============== CT side ============== -->
       <div :class="layout === 'inline' ? 'flex items-center gap-3' : ''">
         <div
           :class="[
@@ -173,12 +213,6 @@ function press(s: SpecSlotData) {
           >
             {{ ctTeamLabel() }}
           </span>
-          <span
-            v-if="teamCtScore || teamTScore"
-            class="ml-auto font-mono text-sm font-bold tabular-nums text-foreground"
-          >
-            {{ teamCtScore }}
-          </span>
         </div>
 
         <div
@@ -189,29 +223,41 @@ function press(s: SpecSlotData) {
           "
         >
           <button
-            v-for="s in ctSlots"
-            :key="`ct-${s.slot}-${s.steam_id}`"
+            v-for="s in paddedCtSlots"
+            :key="`ct-${s.slot}-${s.steam_id || 'empty'}`"
             type="button"
-            :disabled="!controlsActive"
+            :disabled="!controlsActive || s.isPlaceholder"
             :class="[
-              'spec-slot group relative font-mono select-none transition-[filter,opacity,box-shadow,border-color,background-color,color] duration-150 cursor-pointer overflow-hidden',
+              'spec-slot group relative font-mono select-none transition-[filter,opacity,box-shadow,border-color,background-color,color] duration-150 overflow-hidden',
+              s.isPlaceholder ? 'cursor-default' : 'cursor-pointer',
               layout === 'inline'
                 ? 'inline-flex h-9 items-center gap-1.5 rounded-md border px-2 text-xs'
                 : [
                     'aspect-[5/4] rounded-md border flex flex-col items-center justify-center gap-0.5 px-1',
                     compact ? 'text-base' : 'text-2xl',
                   ],
-              sideClasses('CT', slotIsActive(s), flashSlot === s.slot),
-              !s.alive && !slotIsActive(s) ? 'opacity-50' : '',
-              !controlsActive ? 'cursor-not-allowed opacity-60' : '',
-              autodirectorOn && !slotIsActive(s) && flashSlot !== s.slot
+              s.isPlaceholder
+                ? 'border-dashed border-blue-500/25 bg-blue-500/[0.04] text-foreground/35'
+                : sideClasses('CT', slotIsActive(s), flashSlot === s.slot),
+              !s.isPlaceholder && !s.alive && !slotIsActive(s)
+                ? 'opacity-50'
+                : '',
+              !controlsActive && !s.isPlaceholder
+                ? 'cursor-not-allowed opacity-60'
+                : '',
+              !s.isPlaceholder &&
+              autodirectorOn &&
+              !slotIsActive(s) &&
+              flashSlot !== s.slot
                 ? 'is-auto-passive'
                 : '',
             ]"
             :title="
-              autodirectorOn
-                ? 'Click to take manual control'
-                : (s.name ?? `Slot ${s.slot}`)
+              s.isPlaceholder
+                ? `Slot ${s.slot} · waiting for player…`
+                : autodirectorOn
+                  ? 'Click to take manual control'
+                  : (s.name ?? `Slot ${s.slot}`)
             "
             @click="press(s)"
           >
@@ -226,7 +272,7 @@ function press(s: SpecSlotData) {
                     ? 'gap-1 px-1.5 bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
                     : 'w-5 bg-foreground/10',
                 ]"
-                :title="`Slot ${s.slot} · key ${keyForSlot(s.slot)}`"
+                :title="`Slot ${s.uiSlot}${s.isPlaceholder ? '' : ` · key ${keyForSlot(s.slot)}`}`"
               >
                 <Bot
                   v-if="autodirectorOn && slotIsActive(s)"
@@ -236,16 +282,17 @@ function press(s: SpecSlotData) {
                 <span>{{
                   autodirectorOn && slotIsActive(s)
                     ? "AUTO"
-                    : keyForSlot(s.slot)
+                    : keyForSlot(s.uiSlot)
                 }}</span>
               </span>
               <span
                 :class="[
                   'truncate max-w-[8rem] font-medium',
-                  !s.alive ? 'line-through' : '',
+                  s.isPlaceholder ? 'italic opacity-70' : '',
+                  !s.isPlaceholder && !s.alive ? 'line-through' : '',
                 ]"
               >
-                {{ s.name ?? `Slot ${s.slot}` }}
+                {{ s.isPlaceholder ? "—" : (s.name ?? `Slot ${s.slot}`) }}
               </span>
               <!-- Inline pills get the same health bar as a thin sliver
                    at the bottom edge of the pill. -->
@@ -287,7 +334,7 @@ function press(s: SpecSlotData) {
                       ? 'bg-blue-500/30 text-blue-100'
                       : 'bg-amber-500/30 text-amber-100',
                 ]"
-                :title="`Slot ${s.slot} · key ${keyForSlot(s.slot)}`"
+                :title="`Slot ${s.uiSlot}${s.isPlaceholder ? '' : ` · key ${keyForSlot(s.slot)}`}`"
               >
                 <Bot
                   v-if="autodirectorOn && slotIsActive(s)"
@@ -295,7 +342,9 @@ function press(s: SpecSlotData) {
                   aria-hidden="true"
                 />
                 <span>{{
-                  autodirectorOn && slotIsActive(s) ? "AI" : keyForSlot(s.slot)
+                  autodirectorOn && slotIsActive(s)
+                    ? "AI"
+                    : keyForSlot(s.uiSlot)
                 }}</span>
               </span>
 
@@ -324,10 +373,11 @@ function press(s: SpecSlotData) {
                 :class="[
                   'mt-3 truncate max-w-full px-1 text-center font-semibold',
                   compact ? 'text-[0.6rem]' : 'text-[0.78rem]',
-                  !s.alive ? 'line-through opacity-70' : '',
+                  s.isPlaceholder ? 'italic opacity-60' : '',
+                  !s.isPlaceholder && !s.alive ? 'line-through opacity-70' : '',
                 ]"
               >
-                {{ s.name ?? `Slot ${s.slot}` }}
+                {{ s.isPlaceholder ? "—" : (s.name ?? `Slot ${s.slot}`) }}
               </span>
 
               <!-- Footer health rail — thicker than inline so the bar
@@ -372,12 +422,6 @@ function press(s: SpecSlotData) {
           >
             {{ tTeamLabel() }}
           </span>
-          <span
-            v-if="teamCtScore || teamTScore"
-            class="ml-auto font-mono text-sm font-bold tabular-nums text-foreground"
-          >
-            {{ teamTScore }}
-          </span>
         </div>
 
         <div
@@ -388,29 +432,41 @@ function press(s: SpecSlotData) {
           "
         >
           <button
-            v-for="s in tSlots"
-            :key="`t-${s.slot}-${s.steam_id}`"
+            v-for="s in paddedTSlots"
+            :key="`t-${s.slot}-${s.steam_id || 'empty'}`"
             type="button"
-            :disabled="!controlsActive"
+            :disabled="!controlsActive || s.isPlaceholder"
             :class="[
-              'spec-slot group relative font-mono select-none transition-[filter,opacity,box-shadow,border-color,background-color,color] duration-150 cursor-pointer overflow-hidden',
+              'spec-slot group relative font-mono select-none transition-[filter,opacity,box-shadow,border-color,background-color,color] duration-150 overflow-hidden',
+              s.isPlaceholder ? 'cursor-default' : 'cursor-pointer',
               layout === 'inline'
                 ? 'inline-flex h-9 items-center gap-1.5 rounded-md border px-2 text-xs'
                 : [
                     'aspect-[5/4] rounded-md border flex flex-col items-center justify-center gap-0.5 px-1',
                     compact ? 'text-base' : 'text-2xl',
                   ],
-              sideClasses('T', slotIsActive(s), flashSlot === s.slot),
-              !s.alive && !slotIsActive(s) ? 'opacity-50' : '',
-              !controlsActive ? 'cursor-not-allowed opacity-60' : '',
-              autodirectorOn && !slotIsActive(s) && flashSlot !== s.slot
+              s.isPlaceholder
+                ? 'border-dashed border-amber-500/25 bg-amber-500/[0.04] text-foreground/35'
+                : sideClasses('T', slotIsActive(s), flashSlot === s.slot),
+              !s.isPlaceholder && !s.alive && !slotIsActive(s)
+                ? 'opacity-50'
+                : '',
+              !controlsActive && !s.isPlaceholder
+                ? 'cursor-not-allowed opacity-60'
+                : '',
+              !s.isPlaceholder &&
+              autodirectorOn &&
+              !slotIsActive(s) &&
+              flashSlot !== s.slot
                 ? 'is-auto-passive'
                 : '',
             ]"
             :title="
-              autodirectorOn
-                ? 'Click to take manual control'
-                : (s.name ?? `Slot ${s.slot}`)
+              s.isPlaceholder
+                ? `Slot ${s.slot} · waiting for player…`
+                : autodirectorOn
+                  ? 'Click to take manual control'
+                  : (s.name ?? `Slot ${s.slot}`)
             "
             @click="press(s)"
           >
@@ -425,7 +481,7 @@ function press(s: SpecSlotData) {
                     ? 'gap-1 px-1.5 bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
                     : 'w-5 bg-foreground/10',
                 ]"
-                :title="`Slot ${s.slot} · key ${keyForSlot(s.slot)}`"
+                :title="`Slot ${s.uiSlot}${s.isPlaceholder ? '' : ` · key ${keyForSlot(s.slot)}`}`"
               >
                 <Bot
                   v-if="autodirectorOn && slotIsActive(s)"
@@ -435,16 +491,17 @@ function press(s: SpecSlotData) {
                 <span>{{
                   autodirectorOn && slotIsActive(s)
                     ? "AUTO"
-                    : keyForSlot(s.slot)
+                    : keyForSlot(s.uiSlot)
                 }}</span>
               </span>
               <span
                 :class="[
                   'truncate max-w-[8rem] font-medium',
-                  !s.alive ? 'line-through' : '',
+                  s.isPlaceholder ? 'italic opacity-70' : '',
+                  !s.isPlaceholder && !s.alive ? 'line-through' : '',
                 ]"
               >
-                {{ s.name ?? `Slot ${s.slot}` }}
+                {{ s.isPlaceholder ? "—" : (s.name ?? `Slot ${s.slot}`) }}
               </span>
               <span
                 v-if="s.alive"
@@ -477,7 +534,7 @@ function press(s: SpecSlotData) {
                       ? 'bg-blue-500/30 text-blue-100'
                       : 'bg-amber-500/30 text-amber-100',
                 ]"
-                :title="`Slot ${s.slot} · key ${keyForSlot(s.slot)}`"
+                :title="`Slot ${s.uiSlot}${s.isPlaceholder ? '' : ` · key ${keyForSlot(s.slot)}`}`"
               >
                 <Bot
                   v-if="autodirectorOn && slotIsActive(s)"
@@ -485,7 +542,9 @@ function press(s: SpecSlotData) {
                   aria-hidden="true"
                 />
                 <span>{{
-                  autodirectorOn && slotIsActive(s) ? "AI" : keyForSlot(s.slot)
+                  autodirectorOn && slotIsActive(s)
+                    ? "AI"
+                    : keyForSlot(s.uiSlot)
                 }}</span>
               </span>
 
@@ -509,10 +568,11 @@ function press(s: SpecSlotData) {
                 :class="[
                   'mt-3 truncate max-w-full px-1 text-center font-semibold',
                   compact ? 'text-[0.6rem]' : 'text-[0.78rem]',
-                  !s.alive ? 'line-through opacity-70' : '',
+                  s.isPlaceholder ? 'italic opacity-60' : '',
+                  !s.isPlaceholder && !s.alive ? 'line-through opacity-70' : '',
                 ]"
               >
-                {{ s.name ?? `Slot ${s.slot}` }}
+                {{ s.isPlaceholder ? "—" : (s.name ?? `Slot ${s.slot}`) }}
               </span>
 
               <span
@@ -535,14 +595,6 @@ function press(s: SpecSlotData) {
           </button>
         </div>
       </div>
-    </template>
-
-    <p
-      v-else-if="!hideEmptyMessage"
-      class="text-[0.6rem] uppercase tracking-wider text-muted-foreground/60 font-mono"
-    >
-      Waiting for cs2 game state…
-    </p>
   </div>
 </template>
 

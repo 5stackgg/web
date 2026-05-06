@@ -56,3 +56,29 @@ export function teamSizeForMatchType(type: string | null | undefined): number {
   if (type === "Duel") return 1;
   return 5;
 }
+
+// Resolve a digit-row keypress to the real GSI slot of whoever is
+// rendered at that UI position. Mirrors the team-grouped placement
+// in components/stream-deck/SpectatorSlots.vue so keyboard shortcuts
+// agree with the chip the operator sees: pressing "6" specs the
+// first T-side player, pressing "1" specs the first CT-side player,
+// regardless of cs2's join-order slot numbering. Returns null when
+// the digit doesn't map to a populated tile (placeholder slot, or
+// digit out of range for the match type).
+type SlotLike = { slot: number; team: "CT" | "T" | null };
+export function resolveKeyToRealSlot(
+  key: string,
+  ctSlots: SlotLike[],
+  tSlots: SlotLike[],
+  matchType: string | null | undefined,
+): number | null {
+  const uiSlot = key === "0" ? 10 : Number(key);
+  if (!Number.isInteger(uiSlot) || uiSlot < 1 || uiSlot > 10) return null;
+  const size = teamSizeForMatchType(matchType);
+  if (uiSlot > 2 * size) return null;
+  const onCt = uiSlot <= size;
+  const source = onCt ? ctSlots : tSlots;
+  const index = onCt ? uiSlot - 1 : uiSlot - size - 1;
+  const sorted = [...source].sort((a, b) => a.slot - b.slot);
+  return sorted[index]?.slot ?? null;
+}

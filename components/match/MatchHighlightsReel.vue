@@ -110,10 +110,37 @@ let introOverlayTimer: ReturnType<typeof setTimeout> | null = null;
 // Try to autoplay with audio; browsers may force-mute on autoplay until the
 // user interacts. We track that state so the mute toggle reflects reality.
 const inlineMuted = ref(false);
+const inlineVolume = ref(1);
 function toggleMute() {
   const video = inlineVideoRef.value;
   inlineMuted.value = !inlineMuted.value;
-  if (video) video.muted = inlineMuted.value;
+  if (video) {
+    video.muted = inlineMuted.value;
+    // Restore audible volume on unmute — if the slider was dragged to
+    // zero before muting, leaving it there means the user clicks
+    // unmute and still hears nothing. Default back to full volume so
+    // the slider can immediately fine-tune from there.
+    if (!inlineMuted.value) {
+      if (inlineVolume.value <= 0.01) inlineVolume.value = 1;
+      video.volume = inlineVolume.value;
+    }
+  }
+}
+// Mirrors WhepPlayer.setVolume: sliding to ~0 implicitly mutes, sliding
+// up from a muted state implicitly unmutes, so the mute icon and the
+// slider position never disagree.
+function setInlineVolume(v: number) {
+  inlineVolume.value = Math.max(0, Math.min(1, v));
+  const el = inlineVideoRef.value;
+  if (!el) return;
+  el.volume = inlineVolume.value;
+  if (inlineVolume.value <= 0.01) {
+    el.muted = true;
+    inlineMuted.value = true;
+  } else if (el.muted) {
+    el.muted = false;
+    inlineMuted.value = false;
+  }
 }
 
 async function toggleFullscreen() {
@@ -400,7 +427,8 @@ function clipTeamName(c: Clip): string | null {
             startProgressLoop();
           "
           @volumechange="
-            inlineMuted = ($event.target as HTMLVideoElement).muted
+            inlineMuted = ($event.target as HTMLVideoElement).muted;
+            inlineVolume = ($event.target as HTMLVideoElement).volume;
           "
           @click="toggleInlinePlayback"
         />
@@ -536,15 +564,40 @@ function clipTeamName(c: Clip): string | null {
           </div>
         </div>
         <div class="absolute bottom-3 right-3 z-[3] flex items-center gap-2">
-          <button
-            type="button"
-            class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
-            :title="inlineMuted ? 'Unmute' : 'Mute'"
-            @click.stop="toggleMute"
-          >
-            <VolumeX v-if="inlineMuted" class="h-4 w-4" />
-            <Volume2 v-else class="h-4 w-4" />
-          </button>
+          <!-- Audio tray — same hover-expand slider pattern as WhepPlayer
+               so once the viewer unmutes they can immediately dial the
+               volume in without leaving the player surface. Slider is
+               kept out of the DOM while muted so the rail doesn't sit
+               next to a "tap to unmute" affordance suggesting it's
+               already producing sound. -->
+          <div class="flex items-center group/vol">
+            <button
+              type="button"
+              class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+              :title="inlineMuted ? 'Unmute' : 'Mute'"
+              @click.stop="toggleMute"
+            >
+              <VolumeX v-if="inlineMuted" class="h-4 w-4" />
+              <Volume2 v-else class="h-4 w-4" />
+            </button>
+            <input
+              v-if="!inlineMuted"
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              :value="inlineVolume"
+              aria-label="Volume"
+              class="vol-slider ml-0 w-0 group-hover/vol:w-20 group-hover/vol:ml-2 focus-visible:w-20 focus-visible:ml-2 transition-all duration-200 cursor-pointer"
+              @click.stop
+              @mousedown.stop
+              @input="
+                setInlineVolume(
+                  Number(($event.target as HTMLInputElement).value),
+                )
+              "
+            />
+          </div>
           <button
             type="button"
             class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
@@ -798,5 +851,43 @@ function clipTeamName(c: Clip): string | null {
 .queue-row--active .queue-row__index {
   opacity: 0;
   transform: scale(0.85);
+}
+
+/* Volume slider — minimal styling, sized small so it tucks beside
+   the mute pill. Mirrors WhepPlayer.vue so both player surfaces
+   share the same audio chrome. */
+.vol-slider {
+  appearance: none;
+  height: 0.25rem;
+  background: transparent;
+}
+.vol-slider:focus {
+  outline: none;
+}
+.vol-slider::-webkit-slider-runnable-track {
+  height: 0.25rem;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+}
+.vol-slider::-moz-range-track {
+  height: 0.25rem;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+}
+.vol-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  background: white;
+  border: 2px solid rgba(0, 0, 0, 0.6);
+  margin-top: -0.25rem;
+}
+.vol-slider::-moz-range-thumb {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 9999px;
+  background: white;
+  border: 2px solid rgba(0, 0, 0, 0.6);
 }
 </style>

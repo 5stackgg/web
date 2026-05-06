@@ -384,6 +384,7 @@ import {
   order_by,
   e_match_status_enum,
   e_veto_pick_types_enum,
+  e_player_roles_enum,
 } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { mapFields } from "~/graphql/mapGraphql";
@@ -392,6 +393,7 @@ import { playerFields } from "~/graphql/playerFields";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { eloFields } from "~/graphql/eloFields";
 import { useMatchContext } from "~/composables/useMatchContext";
+import { useAuthStore } from "~/stores/AuthStore";
 
 export default {
   unmounted() {
@@ -413,7 +415,11 @@ export default {
             order_by_round: order_by.desc,
           };
         },
-        query: typedGql("subscription")({
+        query: function () {
+          const isAdmin = useAuthStore().isRoleAbove(
+            e_player_roles_enum.administrator,
+          );
+          return typedGql("subscription")({
           matches_by_pk: [
             {
               id: $("matchId", "uuid!"),
@@ -448,9 +454,13 @@ export default {
               server_type: true,
               server_region: true,
               is_server_online: true,
-              server: {
-                game_server_node_id: true,
-              },
+              ...(isAdmin
+                ? {
+                    server: {
+                      game_server_node_id: true,
+                    },
+                  }
+                : {}),
               lineup_1_id: true,
               lineup_2_id: true,
               winning_lineup_id: true,
@@ -579,7 +589,8 @@ export default {
               ],
             },
           ],
-        }),
+        });
+        },
         result: function ({ data }) {
           const match = data.matches_by_pk;
 

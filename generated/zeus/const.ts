@@ -3242,6 +3242,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"uuid_comparison_exp",
 		render_jobs:"clip_render_jobs_bool_exp",
 		render_jobs_aggregate:"clip_render_jobs_aggregate_bool_exp",
+		size:"bigint_comparison_exp",
 		target:"players_bool_exp",
 		target_steam_id:"bigint_comparison_exp",
 		thumbnail_download_url:"String_comparison_exp",
@@ -3253,6 +3254,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_clips_constraint: "enum" as const,
 	match_clips_inc_input:{
+		size:"bigint",
 		target_steam_id:"bigint",
 		user_steam_id:"bigint"
 	},
@@ -3262,6 +3264,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map:"match_maps_obj_rel_insert_input",
 		match_map_id:"uuid",
 		render_jobs:"clip_render_jobs_arr_rel_insert_input",
+		size:"bigint",
 		target:"players_obj_rel_insert_input",
 		target_steam_id:"bigint",
 		user:"players_obj_rel_insert_input",
@@ -3286,6 +3289,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map:"match_maps_order_by",
 		match_map_id:"order_by",
 		render_jobs_aggregate:"clip_render_jobs_aggregate_order_by",
+		size:"order_by",
 		target:"players_order_by",
 		target_steam_id:"order_by",
 		thumbnail_download_url:"order_by",
@@ -3303,6 +3307,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		id:"uuid",
 		match_map_id:"uuid",
+		size:"bigint",
 		target_steam_id:"bigint",
 		user_steam_id:"bigint"
 	},
@@ -3314,6 +3319,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		id:"uuid",
 		match_map_id:"uuid",
+		size:"bigint",
 		target_steam_id:"bigint",
 		user_steam_id:"bigint"
 	},
@@ -20711,6 +20717,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_id:"uuid",
 		render_jobs:"clip_render_jobs",
 		render_jobs_aggregate:"clip_render_jobs_aggregate",
+		size:"bigint",
 		target:"players",
 		target_steam_id:"bigint",
 		thumbnail_download_url:"String",
@@ -20740,6 +20747,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_avg_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		size:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
@@ -20751,6 +20759,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		kills_count:"Int",
 		match_map_id:"uuid",
+		size:"bigint",
 		target_steam_id:"bigint",
 		thumbnail_download_url:"String",
 		thumbnail_url:"String",
@@ -20766,6 +20775,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		kills_count:"Int",
 		match_map_id:"uuid",
+		size:"bigint",
 		target_steam_id:"bigint",
 		thumbnail_download_url:"String",
 		thumbnail_url:"String",
@@ -20780,42 +20790,49 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_stddev_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		size:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_clips_stddev_pop_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		size:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_clips_stddev_samp_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		size:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_clips_sum_fields:{
 		duration_ms:"Int",
 		kills_count:"Int",
+		size:"bigint",
 		target_steam_id:"bigint",
 		user_steam_id:"bigint"
 	},
 	match_clips_var_pop_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		size:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_clips_var_samp_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		size:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},
 	match_clips_variance_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		size:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
 	},

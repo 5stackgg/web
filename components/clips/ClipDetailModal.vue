@@ -817,6 +817,7 @@ onMounted(() => {
               :to="`/players/${clip.target.steam_id}`"
               class="group/target relative flex items-center gap-3 rounded-md border border-border/50 bg-[linear-gradient(135deg,hsl(var(--tac-amber)/0.08)_0%,hsl(var(--card)/0.4)_60%)] [backdrop-filter:blur(6px)] py-2.5 pl-2.5 pr-3 transition-all hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[linear-gradient(135deg,hsl(var(--tac-amber)/0.14)_0%,hsl(var(--card)/0.45)_60%)]"
               :title="`Open ${clip.target.name}'s profile`"
+              @click="closeClip"
             >
               <span
                 class="relative inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)]"
@@ -869,7 +870,11 @@ onMounted(() => {
               />
             </NuxtLink>
 
-            <ClipMatchSummary v-if="clip.match_map?.match" :clip="clip" />
+            <ClipMatchSummary
+              v-if="clip.match_map?.match"
+              :clip="clip"
+              @navigate="closeClip"
+            />
 
             <button
               v-if="nextClip"

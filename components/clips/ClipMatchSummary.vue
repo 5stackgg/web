@@ -11,6 +11,11 @@ const props = withDefaults(
   { variant: "card" },
 );
 
+// Lets the embedding surface (e.g. ClipDetailModal) close itself when
+// the viewer follows the "View match" link, so they aren't sitting on
+// the new page with the old modal still floating on top.
+defineEmits<{ (e: "navigate"): void }>();
+
 const match = computed(() => props.clip.match_map?.match ?? null);
 const matchMap = computed(() => props.clip.match_map ?? null);
 
@@ -234,6 +239,7 @@ const playedDate = computed(() =>
         <NuxtLink
           :to="`/matches/${match.id}`"
           class="ml-auto inline-flex items-center gap-1 rounded-full border border-border/60 bg-card/60 px-2.5 py-1 text-[0.6rem] tracking-[0.18em] text-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))] transition-colors"
+          @click="$emit('navigate')"
         >
           View match
           <ArrowUpRight class="h-3 w-3" />
@@ -296,6 +302,7 @@ const playedDate = computed(() =>
     <NuxtLink
       :to="`/matches/${match.id}`"
       class="inline-flex items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
+      @click="$emit('navigate')"
     >
       View match
       <ArrowUpRight class="h-2.5 w-2.5" />

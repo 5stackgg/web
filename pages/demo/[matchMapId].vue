@@ -27,21 +27,7 @@ definePageMeta({
 const route = useRoute();
 const matchMapId = computed(() => String(route.params.matchMapId));
 const authStore = useAuthStore();
-const {
-  store,
-  start,
-  stop,
-  togglePause,
-  skip,
-  jumpToNextKill,
-  jumpToPrevKill,
-  jumpToNextRound,
-  jumpToPrevRound,
-  reloadDemo,
-  toggleXray,
-  toggleHud,
-  switchToSlot,
-} = useDemoPlayback();
+const { store, start, stop } = useDemoPlayback();
 
 const shortcutsOpen = ref(false);
 const slotKeys = computed(() => specSlotsForMatchType(store.matchType));
@@ -111,65 +97,16 @@ function onKeyDown(e: KeyboardEvent) {
     return;
   }
 
-  // Everything else only fires while a session is live.
-  if (!store.isPlaying) return;
-  if (e.repeat) return;
-
-  // Slot digits 1..9 / 0 → spec slot.
-  const slot = slotKeys.value.find((s) => s.key === e.key);
-  if (slot) {
-    e.preventDefault();
-    switchToSlot(slot.slot);
-    return;
-  }
-
-  switch (e.key) {
-    case " ":
-      e.preventDefault();
-      togglePause();
-      break;
-    case "ArrowLeft":
-      e.preventDefault();
-      void skip(-15);
-      break;
-    case "ArrowRight":
-      e.preventDefault();
-      void skip(15);
-      break;
-    case "[":
-      e.preventDefault();
-      jumpToPrevRound();
-      break;
-    case "]":
-      e.preventDefault();
-      jumpToNextRound();
-      break;
-    case "n":
-    case "N":
-      e.preventDefault();
-      jumpToNextKill();
-      break;
-    case "p":
-    case "P":
-      e.preventDefault();
-      jumpToPrevKill();
-      break;
-    case "x":
-    case "X":
-      e.preventDefault();
-      toggleXray();
-      break;
-    case "h":
-    case "H":
-      e.preventDefault();
-      toggleHud();
-      break;
-    case "r":
-    case "R":
-      e.preventDefault();
-      reloadDemo();
-      break;
-  }
+  // All playback shortcuts (slot digits, space, arrows, [/], P/N,
+  // R, X, H) are owned by DemoPlaybackControls' own window keydown
+  // listener — it's the only thing mounted while store.isPlaying,
+  // and it knows how to map digits through resolveKeyToRealSlot so
+  // the keypress matches the visual chip on the SpectatorSlots row.
+  // Re-implementing them here would double-fire on every keystroke
+  // (preventDefault doesn't stop other window listeners), which
+  // sent two `spec_player` commands per digit press: the canonical
+  // cs2 slot from this handler and the resolved real slot from the
+  // controls handler.
 }
 
 // Re-fire the watch event periodically as a defense in depth: if the

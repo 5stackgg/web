@@ -42,8 +42,6 @@ const props = withDefaults(
     tSlots: SpecSlotData[];
     teamCtName?: string | null;
     teamTName?: string | null;
-    teamCtScore?: number;
-    teamTScore?: number;
     activeSteamId?: string | null;
     flashSlot?: number | null;
     controlsActive?: boolean;
@@ -56,15 +54,10 @@ const props = withDefaults(
     // of the takeover. Wired only on live surfaces; the demo never
     // sets this since there's no AI driver in playback.
     autodirectorOn?: boolean;
-    // Hides "Waiting for cs2 game state…" placeholder. The demo
-    // controls already render their own message.
-    hideEmptyMessage?: boolean;
   }>(),
   {
     teamCtName: null,
     teamTName: null,
-    teamCtScore: 0,
-    teamTScore: 0,
     activeSteamId: null,
     flashSlot: null,
     controlsActive: true,
@@ -72,7 +65,6 @@ const props = withDefaults(
     compact: false,
     matchType: null,
     autodirectorOn: false,
-    hideEmptyMessage: false,
   },
 );
 
@@ -80,10 +72,52 @@ const emit = defineEmits<{
   (e: "press-slot", slot: number): void;
 }>();
 
-const hasGsi = computed(
-  () => props.ctSlots.length > 0 || props.tSlots.length > 0,
-);
 const teamSize = computed(() => teamSizeForMatchType(props.matchType));
+
+// Pad each side to teamSize with placeholders. Mapping is by
+// team+order, NOT raw GSI slot number — GSI assigns slots by join
+// order, so in a sparsely-populated lobby a T player can show up at
+// slot 2 in a 5v5. We still want them in the bottom row at uiSlot 6
+// so the layout reads consistently: CT always 1..N on top, T always
+// N+1..2N on bottom, no matter how cs2 numbered them. The chip label
+// uses uiSlot for that consistent visual; the click handler emits
+// the player's real GSI slot so cs2's `spec_player <n>` still picks
+// the right player.
+type PaddedSlot = SpecSlotData & { isPlaceholder: boolean; uiSlot: number };
+function buildPadded(
+  source: SpecSlotData[],
+  side: "CT" | "T",
+  size: number,
+  uiSlotStart: number,
+): PaddedSlot[] {
+  const sorted = [...source].sort((a, b) => a.slot - b.slot);
+  const out: PaddedSlot[] = [];
+  for (let i = 0; i < size; i++) {
+    const uiSlot = uiSlotStart + i;
+    const real = sorted[i];
+    if (real) {
+      out.push({ ...real, isPlaceholder: false, uiSlot });
+    } else {
+      out.push({
+        slot: uiSlot,
+        steam_id: "",
+        name: null,
+        team: side,
+        alive: false,
+        health: 0,
+        isPlaceholder: true,
+        uiSlot,
+      });
+    }
+  }
+  return out;
+}
+const paddedCtSlots = computed<PaddedSlot[]>(() =>
+  buildPadded(props.ctSlots, "CT", teamSize.value, 1),
+);
+const paddedTSlots = computed<PaddedSlot[]>(() =>
+  buildPadded(props.tSlots, "T", teamSize.value, teamSize.value + 1),
+);
 
 function ctTeamLabel(): string {
   return props.teamCtName || "Counter-Terrorists";
@@ -124,11 +158,17 @@ function healthWidth(h: number): string {
   return `${Math.max(0, Math.min(100, h))}%`;
 }
 
+// Bounded widths keep tiles a readable broadcast size on wide
+// container widths instead of letting grid-cols-N stretch each cell
+// to 1/N of the video panel — that path made the spec strip
+// dominate the video on widescreen. The min-h on the row reserves
+// the same vertical footprint whether a side has 0 or teamSize
+// players, so the video doesn't bounce as the round flips.
 function gridColsClass(): string {
-  if (teamSize.value === 5) return "grid-cols-5";
+  if (teamSize.value === 5) return "grid-cols-5 max-w-[40rem]";
   if (teamSize.value === 2) return "grid-cols-2 max-w-[16rem]";
   if (teamSize.value === 1) return "grid-cols-1 max-w-[8rem]";
-  return "grid-cols-5";
+  return "grid-cols-5 max-w-[40rem]";
 }
 
 // Health → readable label for the corner numeric. cs2 reports raw 0-100.
@@ -137,7 +177,8 @@ function healthLabel(h: number): string {
   return String(Math.round(Math.max(0, Math.min(100, h))));
 }
 
-function press(s: SpecSlotData) {
+function press(s: PaddedSlot) {
+  if (s.isPlaceholder) return;
   emit("press-slot", s.slot);
 }
 </script>
@@ -151,120 +192,126 @@ function press(s: SpecSlotData) {
         : '',
     ]"
   >
-    <template v-if="hasGsi">
-      <!-- ============== CT side ============== -->
-      <div :class="layout === 'inline' ? 'flex items-center gap-3' : ''">
-        <div
-          :class="[
-            'flex items-center gap-2',
-            layout === 'inline' ? 'min-w-[8rem]' : 'mb-1.5',
-          ]"
-        >
-          <!-- Side chip — solid-filled tactical tag. Replaces the
+    <!-- ============== CT side ============== -->
+    <div :class="layout === 'inline' ? 'flex items-center gap-3' : ''">
+      <div
+        :class="[
+          'flex items-center gap-2',
+          layout === 'inline' ? 'min-w-[8rem]' : 'mb-1.5',
+        ]"
+      >
+        <!-- Side chip — solid-filled tactical tag. Replaces the
                redundant dot+pill combo with a single broadcast-style
                jersey letter. -->
-          <span
-            class="inline-flex items-center justify-center h-[18px] w-[22px] rounded-[3px] bg-blue-500 font-mono text-[0.62rem] font-black tabular-nums leading-none text-blue-50 [box-shadow:inset_0_-1px_0_0_hsl(0_0%_0%_/_0.25)]"
-          >
-            CT
-          </span>
-          <span
-            class="truncate font-mono text-[0.68rem] uppercase tracking-[0.18em] text-foreground/80"
-          >
-            {{ ctTeamLabel() }}
-          </span>
-          <span
-            v-if="teamCtScore || teamTScore"
-            class="ml-auto font-mono text-sm font-bold tabular-nums text-foreground"
-          >
-            {{ teamCtScore }}
-          </span>
-        </div>
-
-        <div
-          :class="
-            layout === 'inline'
-              ? 'flex flex-wrap items-center gap-1.5'
-              : ['grid gap-1.5', gridColsClass()]
-          "
+        <span
+          class="inline-flex items-center justify-center h-[18px] w-[22px] rounded-[3px] bg-blue-500 font-mono text-[0.62rem] font-black tabular-nums leading-none text-blue-50 [box-shadow:inset_0_-1px_0_0_hsl(0_0%_0%_/_0.25)]"
         >
-          <button
-            v-for="s in ctSlots"
-            :key="`ct-${s.slot}-${s.steam_id}`"
-            type="button"
-            :disabled="!controlsActive"
-            :class="[
-              'spec-slot group relative font-mono select-none transition-[filter,opacity,box-shadow,border-color,background-color,color] duration-150 cursor-pointer overflow-hidden',
-              layout === 'inline'
-                ? 'inline-flex h-9 items-center gap-1.5 rounded-md border px-2 text-xs'
-                : [
-                    'aspect-[5/4] rounded-md border flex flex-col items-center justify-center gap-0.5 px-1',
-                    compact ? 'text-base' : 'text-2xl',
-                  ],
-              sideClasses('CT', slotIsActive(s), flashSlot === s.slot),
-              !s.alive && !slotIsActive(s) ? 'opacity-50' : '',
-              !controlsActive ? 'cursor-not-allowed opacity-60' : '',
-              autodirectorOn && !slotIsActive(s) && flashSlot !== s.slot
-                ? 'is-auto-passive'
-                : '',
-            ]"
-            :title="
-              autodirectorOn
+          CT
+        </span>
+        <span
+          class="truncate font-mono text-[0.68rem] uppercase tracking-[0.18em] text-foreground/80"
+        >
+          {{ ctTeamLabel() }}
+        </span>
+      </div>
+
+      <div
+        :class="
+          layout === 'inline'
+            ? 'flex flex-wrap items-center gap-1.5'
+            : ['grid gap-1.5', gridColsClass()]
+        "
+      >
+        <button
+          v-for="s in paddedCtSlots"
+          :key="`ct-${s.slot}-${s.steam_id || 'empty'}`"
+          type="button"
+          :disabled="!controlsActive || s.isPlaceholder"
+          :class="[
+            'spec-slot group relative font-mono select-none transition-[filter,opacity,box-shadow,border-color,background-color,color] duration-150 overflow-hidden',
+            s.isPlaceholder ? 'cursor-default' : 'cursor-pointer',
+            layout === 'inline'
+              ? 'inline-flex h-9 items-center gap-1.5 rounded-md border px-2 text-xs'
+              : [
+                  'aspect-[5/4] rounded-md border flex flex-col items-center justify-center gap-0.5 px-1',
+                  compact ? 'text-base' : 'text-2xl',
+                ],
+            s.isPlaceholder
+              ? 'border-dashed border-blue-500/25 bg-blue-500/[0.04] text-foreground/35'
+              : sideClasses('CT', slotIsActive(s), flashSlot === s.slot),
+            !s.isPlaceholder && !s.alive && !slotIsActive(s)
+              ? 'opacity-50'
+              : '',
+            !controlsActive && !s.isPlaceholder
+              ? 'cursor-not-allowed opacity-60'
+              : '',
+            !s.isPlaceholder &&
+            autodirectorOn &&
+            !slotIsActive(s) &&
+            flashSlot !== s.slot
+              ? 'is-auto-passive'
+              : '',
+          ]"
+          :title="
+            s.isPlaceholder
+              ? `Slot ${s.slot} · waiting for player…`
+              : autodirectorOn
                 ? 'Click to take manual control'
                 : (s.name ?? `Slot ${s.slot}`)
-            "
-            @click="press(s)"
-          >
-            <!-- ============================================
+          "
+          @click="press(s)"
+        >
+          <!-- ============================================
                  INLINE pill body — h-9 row of slot-key + name.
                  ============================================ -->
-            <template v-if="layout === 'inline'">
-              <span
-                :class="[
-                  'inline-flex h-5 items-center justify-center rounded text-[0.6rem] font-bold tabular-nums leading-none',
-                  autodirectorOn && slotIsActive(s)
-                    ? 'gap-1 px-1.5 bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
-                    : 'w-5 bg-foreground/10',
-                ]"
-                :title="`Slot ${s.slot} · key ${keyForSlot(s.slot)}`"
-              >
-                <Bot
-                  v-if="autodirectorOn && slotIsActive(s)"
-                  class="size-3"
-                  aria-hidden="true"
-                />
-                <span>{{
-                  autodirectorOn && slotIsActive(s)
-                    ? "AUTO"
-                    : keyForSlot(s.slot)
-                }}</span>
-              </span>
-              <span
-                :class="[
-                  'truncate max-w-[8rem] font-medium',
-                  !s.alive ? 'line-through' : '',
-                ]"
-              >
-                {{ s.name ?? `Slot ${s.slot}` }}
-              </span>
-              <!-- Inline pills get the same health bar as a thin sliver
-                   at the bottom edge of the pill. -->
-              <span
-                v-if="s.alive"
-                class="absolute inset-x-0 bottom-0 h-[2px] bg-foreground/10 overflow-hidden"
+          <template v-if="layout === 'inline'">
+            <span
+              :class="[
+                'inline-flex h-5 items-center justify-center rounded text-[0.6rem] font-bold tabular-nums leading-none',
+                autodirectorOn && slotIsActive(s)
+                  ? 'gap-1 px-1.5 bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
+                  : 'w-5 bg-foreground/10',
+              ]"
+              :title="`Slot ${s.uiSlot}${s.isPlaceholder ? '' : ` · key ${keyForSlot(s.slot)}`}`"
+            >
+              <Bot
+                v-if="autodirectorOn && slotIsActive(s)"
+                class="size-3"
                 aria-hidden="true"
-              >
-                <span
-                  :class="[
-                    'block h-full transition-[width] duration-300 ease-out',
-                    healthColor(s.health),
-                  ]"
-                  :style="{ width: healthWidth(s.health) }"
-                />
-              </span>
-            </template>
+              />
+              <span>{{
+                autodirectorOn && slotIsActive(s)
+                  ? "AUTO"
+                  : keyForSlot(s.uiSlot)
+              }}</span>
+            </span>
+            <span
+              :class="[
+                'truncate max-w-[8rem] font-medium',
+                s.isPlaceholder ? 'italic opacity-70' : '',
+                !s.isPlaceholder && !s.alive ? 'line-through' : '',
+              ]"
+            >
+              {{ s.isPlaceholder ? "—" : (s.name ?? `Slot ${s.slot}`) }}
+            </span>
+            <!-- Inline pills get the same health bar as a thin sliver
+                   at the bottom edge of the pill. -->
+            <span
+              v-if="s.alive"
+              class="absolute inset-x-0 bottom-0 h-[2px] bg-foreground/10 overflow-hidden"
+              aria-hidden="true"
+            >
+              <span
+                :class="[
+                  'block h-full transition-[width] duration-300 ease-out',
+                  healthColor(s.health),
+                ]"
+                :style="{ width: healthWidth(s.health) }"
+              />
+            </span>
+          </template>
 
-            <!-- ============================================
+          <!-- ============================================
                  GRID tile body — full broadcast player card.
                  Slot-key chip pinned top-left, health number top-
                  right, name as the headline, health bar as a thick
@@ -273,276 +320,277 @@ function press(s: SpecSlotData) {
                  variant tightens text/spacing but keeps the same
                  anatomy.
                  ============================================ -->
-            <template v-else>
-              <!-- Top-left slot key chip / AUTO badge -->
-              <span
-                :class="[
-                  'absolute top-1 left-1 inline-flex items-center justify-center rounded font-bold tabular-nums leading-none',
-                  compact
-                    ? 'h-4 min-w-[1rem] px-1 text-[0.55rem]'
-                    : 'h-5 min-w-[1.25rem] px-1.5 text-[0.65rem]',
-                  autodirectorOn && slotIsActive(s)
-                    ? 'gap-0.5 bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
-                    : s.team === 'CT'
-                      ? 'bg-blue-500/30 text-blue-100'
-                      : 'bg-amber-500/30 text-amber-100',
-                ]"
-                :title="`Slot ${s.slot} · key ${keyForSlot(s.slot)}`"
-              >
-                <Bot
-                  v-if="autodirectorOn && slotIsActive(s)"
-                  :class="compact ? 'size-2.5' : 'size-3'"
-                  aria-hidden="true"
-                />
-                <span>{{
-                  autodirectorOn && slotIsActive(s) ? "AI" : keyForSlot(s.slot)
-                }}</span>
-              </span>
+          <template v-else>
+            <!-- Top-left slot key chip / AUTO badge -->
+            <span
+              :class="[
+                'absolute top-1 left-1 inline-flex items-center justify-center rounded font-bold tabular-nums leading-none',
+                compact
+                  ? 'h-4 min-w-[1rem] px-1 text-[0.55rem]'
+                  : 'h-5 min-w-[1.25rem] px-1.5 text-[0.65rem]',
+                autodirectorOn && slotIsActive(s)
+                  ? 'gap-0.5 bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
+                  : s.team === 'CT'
+                    ? 'bg-blue-500/30 text-blue-100'
+                    : 'bg-amber-500/30 text-amber-100',
+              ]"
+              :title="`Slot ${s.uiSlot}${s.isPlaceholder ? '' : ` · key ${keyForSlot(s.slot)}`}`"
+            >
+              <Bot
+                v-if="autodirectorOn && slotIsActive(s)"
+                :class="compact ? 'size-2.5' : 'size-3'"
+                aria-hidden="true"
+              />
+              <span>{{
+                autodirectorOn && slotIsActive(s) ? "AI" : keyForSlot(s.uiSlot)
+              }}</span>
+            </span>
 
-              <!-- Top-right health number — surfaces real GSI signal
+            <!-- Top-right health number — surfaces real GSI signal
                    at glance speed. Hidden when dead (the line-through
                    on the name carries that state instead). -->
-              <span
-                v-if="s.alive"
-                :class="[
-                  'absolute top-1 right-1.5 font-mono tabular-nums leading-none',
-                  compact ? 'text-[0.55rem]' : 'text-[0.65rem]',
-                  s.health < 25
-                    ? 'text-red-300'
-                    : s.health < 60
-                      ? 'text-amber-200'
-                      : 'text-foreground/65',
-                ]"
-                aria-hidden="true"
-              >
-                {{ healthLabel(s.health) }}
-              </span>
+            <span
+              v-if="s.alive"
+              :class="[
+                'absolute top-1 right-1.5 font-mono tabular-nums leading-none',
+                compact ? 'text-[0.55rem]' : 'text-[0.65rem]',
+                s.health < 25
+                  ? 'text-red-300'
+                  : s.health < 60
+                    ? 'text-amber-200'
+                    : 'text-foreground/65',
+              ]"
+              aria-hidden="true"
+            >
+              {{ healthLabel(s.health) }}
+            </span>
 
-              <!-- Player name — the centerpiece. Larger than the
+            <!-- Player name — the centerpiece. Larger than the
                    inline pill since the tile has the room. -->
-              <span
-                :class="[
-                  'mt-3 truncate max-w-full px-1 text-center font-semibold',
-                  compact ? 'text-[0.6rem]' : 'text-[0.78rem]',
-                  !s.alive ? 'line-through opacity-70' : '',
-                ]"
-              >
-                {{ s.name ?? `Slot ${s.slot}` }}
-              </span>
+            <span
+              :class="[
+                'mt-3 truncate max-w-full px-1 text-center font-semibold',
+                compact ? 'text-[0.6rem]' : 'text-[0.78rem]',
+                s.isPlaceholder ? 'italic opacity-60' : '',
+                !s.isPlaceholder && !s.alive ? 'line-through opacity-70' : '',
+              ]"
+            >
+              {{ s.isPlaceholder ? "—" : (s.name ?? `Slot ${s.slot}`) }}
+            </span>
 
-              <!-- Footer health rail — thicker than inline so the bar
+            <!-- Footer health rail — thicker than inline so the bar
                    reads as a chunk of UI, not a hairline. Shrinks
                    smoothly on damage. -->
+            <span
+              v-if="s.alive"
+              :class="[
+                'absolute inset-x-0 bottom-0 overflow-hidden bg-foreground/10',
+                compact ? 'h-[5px]' : 'h-[8px]',
+              ]"
+              aria-hidden="true"
+            >
               <span
-                v-if="s.alive"
                 :class="[
-                  'absolute inset-x-0 bottom-0 overflow-hidden bg-foreground/10',
-                  compact ? 'h-[5px]' : 'h-[8px]',
+                  'block h-full transition-[width] duration-300 ease-out',
+                  healthColor(s.health),
                 ]"
-                aria-hidden="true"
-              >
-                <span
-                  :class="[
-                    'block h-full transition-[width] duration-300 ease-out',
-                    healthColor(s.health),
-                  ]"
-                  :style="{ width: healthWidth(s.health) }"
-                />
-              </span>
-            </template>
-          </button>
-        </div>
+                :style="{ width: healthWidth(s.health) }"
+              />
+            </span>
+          </template>
+        </button>
+      </div>
+    </div>
+
+    <!-- ============== T side ============== -->
+    <div :class="layout === 'inline' ? 'flex items-center gap-3' : ''">
+      <div
+        :class="[
+          'flex items-center gap-2',
+          layout === 'inline' ? 'min-w-[8rem]' : 'mb-1.5 mt-3',
+        ]"
+      >
+        <span
+          class="inline-flex items-center justify-center h-[18px] w-[22px] rounded-[3px] bg-amber-500 font-mono text-[0.62rem] font-black tabular-nums leading-none text-amber-50 [box-shadow:inset_0_-1px_0_0_hsl(0_0%_0%_/_0.25)]"
+        >
+          T
+        </span>
+        <span
+          class="truncate font-mono text-[0.68rem] uppercase tracking-[0.18em] text-foreground/80"
+        >
+          {{ tTeamLabel() }}
+        </span>
       </div>
 
-      <!-- ============== T side ============== -->
-      <div :class="layout === 'inline' ? 'flex items-center gap-3' : ''">
-        <div
+      <div
+        :class="
+          layout === 'inline'
+            ? 'flex flex-wrap items-center gap-1.5'
+            : ['grid gap-1.5', gridColsClass()]
+        "
+      >
+        <button
+          v-for="s in paddedTSlots"
+          :key="`t-${s.slot}-${s.steam_id || 'empty'}`"
+          type="button"
+          :disabled="!controlsActive || s.isPlaceholder"
           :class="[
-            'flex items-center gap-2',
-            layout === 'inline' ? 'min-w-[8rem]' : 'mb-1.5 mt-3',
-          ]"
-        >
-          <span
-            class="inline-flex items-center justify-center h-[18px] w-[22px] rounded-[3px] bg-amber-500 font-mono text-[0.62rem] font-black tabular-nums leading-none text-amber-50 [box-shadow:inset_0_-1px_0_0_hsl(0_0%_0%_/_0.25)]"
-          >
-            T
-          </span>
-          <span
-            class="truncate font-mono text-[0.68rem] uppercase tracking-[0.18em] text-foreground/80"
-          >
-            {{ tTeamLabel() }}
-          </span>
-          <span
-            v-if="teamCtScore || teamTScore"
-            class="ml-auto font-mono text-sm font-bold tabular-nums text-foreground"
-          >
-            {{ teamTScore }}
-          </span>
-        </div>
-
-        <div
-          :class="
+            'spec-slot group relative font-mono select-none transition-[filter,opacity,box-shadow,border-color,background-color,color] duration-150 overflow-hidden',
+            s.isPlaceholder ? 'cursor-default' : 'cursor-pointer',
             layout === 'inline'
-              ? 'flex flex-wrap items-center gap-1.5'
-              : ['grid gap-1.5', gridColsClass()]
-          "
-        >
-          <button
-            v-for="s in tSlots"
-            :key="`t-${s.slot}-${s.steam_id}`"
-            type="button"
-            :disabled="!controlsActive"
-            :class="[
-              'spec-slot group relative font-mono select-none transition-[filter,opacity,box-shadow,border-color,background-color,color] duration-150 cursor-pointer overflow-hidden',
-              layout === 'inline'
-                ? 'inline-flex h-9 items-center gap-1.5 rounded-md border px-2 text-xs'
-                : [
-                    'aspect-[5/4] rounded-md border flex flex-col items-center justify-center gap-0.5 px-1',
-                    compact ? 'text-base' : 'text-2xl',
-                  ],
-              sideClasses('T', slotIsActive(s), flashSlot === s.slot),
-              !s.alive && !slotIsActive(s) ? 'opacity-50' : '',
-              !controlsActive ? 'cursor-not-allowed opacity-60' : '',
-              autodirectorOn && !slotIsActive(s) && flashSlot !== s.slot
-                ? 'is-auto-passive'
-                : '',
-            ]"
-            :title="
-              autodirectorOn
+              ? 'inline-flex h-9 items-center gap-1.5 rounded-md border px-2 text-xs'
+              : [
+                  'aspect-[5/4] rounded-md border flex flex-col items-center justify-center gap-0.5 px-1',
+                  compact ? 'text-base' : 'text-2xl',
+                ],
+            s.isPlaceholder
+              ? 'border-dashed border-amber-500/25 bg-amber-500/[0.04] text-foreground/35'
+              : sideClasses('T', slotIsActive(s), flashSlot === s.slot),
+            !s.isPlaceholder && !s.alive && !slotIsActive(s)
+              ? 'opacity-50'
+              : '',
+            !controlsActive && !s.isPlaceholder
+              ? 'cursor-not-allowed opacity-60'
+              : '',
+            !s.isPlaceholder &&
+            autodirectorOn &&
+            !slotIsActive(s) &&
+            flashSlot !== s.slot
+              ? 'is-auto-passive'
+              : '',
+          ]"
+          :title="
+            s.isPlaceholder
+              ? `Slot ${s.slot} · waiting for player…`
+              : autodirectorOn
                 ? 'Click to take manual control'
                 : (s.name ?? `Slot ${s.slot}`)
-            "
-            @click="press(s)"
-          >
-            <!-- ============================================
+          "
+          @click="press(s)"
+        >
+          <!-- ============================================
                  INLINE pill body — h-9 row of slot-key + name.
                  ============================================ -->
-            <template v-if="layout === 'inline'">
-              <span
-                :class="[
-                  'inline-flex h-5 items-center justify-center rounded text-[0.6rem] font-bold tabular-nums leading-none',
-                  autodirectorOn && slotIsActive(s)
-                    ? 'gap-1 px-1.5 bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
-                    : 'w-5 bg-foreground/10',
-                ]"
-                :title="`Slot ${s.slot} · key ${keyForSlot(s.slot)}`"
-              >
-                <Bot
-                  v-if="autodirectorOn && slotIsActive(s)"
-                  class="size-3"
-                  aria-hidden="true"
-                />
-                <span>{{
-                  autodirectorOn && slotIsActive(s)
-                    ? "AUTO"
-                    : keyForSlot(s.slot)
-                }}</span>
-              </span>
-              <span
-                :class="[
-                  'truncate max-w-[8rem] font-medium',
-                  !s.alive ? 'line-through' : '',
-                ]"
-              >
-                {{ s.name ?? `Slot ${s.slot}` }}
-              </span>
-              <span
-                v-if="s.alive"
-                class="absolute inset-x-0 bottom-0 h-[2px] bg-foreground/10 overflow-hidden"
+          <template v-if="layout === 'inline'">
+            <span
+              :class="[
+                'inline-flex h-5 items-center justify-center rounded text-[0.6rem] font-bold tabular-nums leading-none',
+                autodirectorOn && slotIsActive(s)
+                  ? 'gap-1 px-1.5 bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
+                  : 'w-5 bg-foreground/10',
+              ]"
+              :title="`Slot ${s.uiSlot}${s.isPlaceholder ? '' : ` · key ${keyForSlot(s.slot)}`}`"
+            >
+              <Bot
+                v-if="autodirectorOn && slotIsActive(s)"
+                class="size-3"
                 aria-hidden="true"
-              >
-                <span
-                  :class="[
-                    'block h-full transition-[width] duration-300 ease-out',
-                    healthColor(s.health),
-                  ]"
-                  :style="{ width: healthWidth(s.health) }"
-                />
-              </span>
-            </template>
+              />
+              <span>{{
+                autodirectorOn && slotIsActive(s)
+                  ? "AUTO"
+                  : keyForSlot(s.uiSlot)
+              }}</span>
+            </span>
+            <span
+              :class="[
+                'truncate max-w-[8rem] font-medium',
+                s.isPlaceholder ? 'italic opacity-70' : '',
+                !s.isPlaceholder && !s.alive ? 'line-through' : '',
+              ]"
+            >
+              {{ s.isPlaceholder ? "—" : (s.name ?? `Slot ${s.slot}`) }}
+            </span>
+            <span
+              v-if="s.alive"
+              class="absolute inset-x-0 bottom-0 h-[2px] bg-foreground/10 overflow-hidden"
+              aria-hidden="true"
+            >
+              <span
+                :class="[
+                  'block h-full transition-[width] duration-300 ease-out',
+                  healthColor(s.health),
+                ]"
+                :style="{ width: healthWidth(s.health) }"
+              />
+            </span>
+          </template>
 
-            <!-- ============================================
+          <!-- ============================================
                  GRID tile body — full broadcast player card.
                  ============================================ -->
-            <template v-else>
-              <span
-                :class="[
-                  'absolute top-1 left-1 inline-flex items-center justify-center rounded font-bold tabular-nums leading-none',
-                  compact
-                    ? 'h-4 min-w-[1rem] px-1 text-[0.55rem]'
-                    : 'h-5 min-w-[1.25rem] px-1.5 text-[0.65rem]',
-                  autodirectorOn && slotIsActive(s)
-                    ? 'gap-0.5 bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
-                    : s.team === 'CT'
-                      ? 'bg-blue-500/30 text-blue-100'
-                      : 'bg-amber-500/30 text-amber-100',
-                ]"
-                :title="`Slot ${s.slot} · key ${keyForSlot(s.slot)}`"
-              >
-                <Bot
-                  v-if="autodirectorOn && slotIsActive(s)"
-                  :class="compact ? 'size-2.5' : 'size-3'"
-                  aria-hidden="true"
-                />
-                <span>{{
-                  autodirectorOn && slotIsActive(s) ? "AI" : keyForSlot(s.slot)
-                }}</span>
-              </span>
-
-              <span
-                v-if="s.alive"
-                :class="[
-                  'absolute top-1 right-1.5 font-mono tabular-nums leading-none',
-                  compact ? 'text-[0.55rem]' : 'text-[0.65rem]',
-                  s.health < 25
-                    ? 'text-red-300'
-                    : s.health < 60
-                      ? 'text-amber-200'
-                      : 'text-foreground/65',
-                ]"
+          <template v-else>
+            <span
+              :class="[
+                'absolute top-1 left-1 inline-flex items-center justify-center rounded font-bold tabular-nums leading-none',
+                compact
+                  ? 'h-4 min-w-[1rem] px-1 text-[0.55rem]'
+                  : 'h-5 min-w-[1.25rem] px-1.5 text-[0.65rem]',
+                autodirectorOn && slotIsActive(s)
+                  ? 'gap-0.5 bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
+                  : s.team === 'CT'
+                    ? 'bg-blue-500/30 text-blue-100'
+                    : 'bg-amber-500/30 text-amber-100',
+              ]"
+              :title="`Slot ${s.uiSlot}${s.isPlaceholder ? '' : ` · key ${keyForSlot(s.slot)}`}`"
+            >
+              <Bot
+                v-if="autodirectorOn && slotIsActive(s)"
+                :class="compact ? 'size-2.5' : 'size-3'"
                 aria-hidden="true"
-              >
-                {{ healthLabel(s.health) }}
-              </span>
+              />
+              <span>{{
+                autodirectorOn && slotIsActive(s) ? "AI" : keyForSlot(s.uiSlot)
+              }}</span>
+            </span>
 
+            <span
+              v-if="s.alive"
+              :class="[
+                'absolute top-1 right-1.5 font-mono tabular-nums leading-none',
+                compact ? 'text-[0.55rem]' : 'text-[0.65rem]',
+                s.health < 25
+                  ? 'text-red-300'
+                  : s.health < 60
+                    ? 'text-amber-200'
+                    : 'text-foreground/65',
+              ]"
+              aria-hidden="true"
+            >
+              {{ healthLabel(s.health) }}
+            </span>
+
+            <span
+              :class="[
+                'mt-3 truncate max-w-full px-1 text-center font-semibold',
+                compact ? 'text-[0.6rem]' : 'text-[0.78rem]',
+                s.isPlaceholder ? 'italic opacity-60' : '',
+                !s.isPlaceholder && !s.alive ? 'line-through opacity-70' : '',
+              ]"
+            >
+              {{ s.isPlaceholder ? "—" : (s.name ?? `Slot ${s.slot}`) }}
+            </span>
+
+            <span
+              v-if="s.alive"
+              :class="[
+                'absolute inset-x-0 bottom-0 overflow-hidden bg-foreground/10',
+                compact ? 'h-[5px]' : 'h-[8px]',
+              ]"
+              aria-hidden="true"
+            >
               <span
                 :class="[
-                  'mt-3 truncate max-w-full px-1 text-center font-semibold',
-                  compact ? 'text-[0.6rem]' : 'text-[0.78rem]',
-                  !s.alive ? 'line-through opacity-70' : '',
+                  'block h-full transition-[width] duration-300 ease-out',
+                  healthColor(s.health),
                 ]"
-              >
-                {{ s.name ?? `Slot ${s.slot}` }}
-              </span>
-
-              <span
-                v-if="s.alive"
-                :class="[
-                  'absolute inset-x-0 bottom-0 overflow-hidden bg-foreground/10',
-                  compact ? 'h-[5px]' : 'h-[8px]',
-                ]"
-                aria-hidden="true"
-              >
-                <span
-                  :class="[
-                    'block h-full transition-[width] duration-300 ease-out',
-                    healthColor(s.health),
-                  ]"
-                  :style="{ width: healthWidth(s.health) }"
-                />
-              </span>
-            </template>
-          </button>
-        </div>
+                :style="{ width: healthWidth(s.health) }"
+              />
+            </span>
+          </template>
+        </button>
       </div>
-    </template>
-
-    <p
-      v-else-if="!hideEmptyMessage"
-      class="text-[0.6rem] uppercase tracking-wider text-muted-foreground/60 font-mono"
-    >
-      Waiting for cs2 game state…
-    </p>
+    </div>
   </div>
 </template>
 

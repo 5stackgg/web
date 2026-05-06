@@ -1,9 +1,9 @@
 <script lang="ts" setup></script>
 
 <template>
-  <Breadcrumb class="hidden md:flex capitalize">
-    <BreadcrumbList>
-      <BreadcrumbItem>
+  <Breadcrumb class="hidden md:flex capitalize min-w-0 flex-1">
+    <BreadcrumbList class="flex-nowrap min-w-0">
+      <BreadcrumbItem class="shrink-0">
         <BreadcrumbLink as-child>
           <NuxtLink
             :to="{ name: 'play' }"
@@ -15,13 +15,20 @@
       </BreadcrumbItem>
 
       <template v-for="(crumb, index) in crumbs" :key="index">
-        <BreadcrumbSeparator />
+        <BreadcrumbSeparator class="shrink-0" />
 
-        <BreadcrumbItem>
+        <BreadcrumbItem
+          :class="index === crumbs.length - 1 ? 'min-w-0' : 'shrink-0'"
+        >
           <BreadcrumbLink as-child>
             <NuxtLink
               :to="crumb.to"
-              class="inline-flex h-7 items-center rounded-md px-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors [&.router-link-active]:bg-transparent [&.router-link-exact-active]:bg-transparent"
+              :class="[
+                'inline-flex h-7 items-center rounded-md px-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors [&.router-link-active]:bg-transparent [&.router-link-exact-active]:bg-transparent',
+                index === crumbs.length - 1
+                  ? 'min-w-0 max-w-full truncate block'
+                  : '',
+              ]"
             >
               {{ crumb.text.replace("-", " ") }}
             </NuxtLink>

@@ -8,7 +8,7 @@ import PlayerMatchClipsButton from "~/components/match/PlayerMatchClipsButton.vu
   <TableRow>
     <TableCell class="overflow-hidden">
       <LineupMember :match="match" :member="member">
-        <template v-if="member.player?.steam_id" #name-postfix>
+        <template v-if="member.player?.steam_id" #avatar-badge>
           <PlayerMatchClipsButton :steam-id="member.player.steam_id" />
         </template>
         <template v-if="memberEloChange" #elo-postfix>

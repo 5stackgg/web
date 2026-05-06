@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { LucideDownload, LucideUpload, LucideHardDrive } from "lucide-vue-next";
+import {
+  LucideDownload,
+  LucideUpload,
+  LucideHardDrive,
+  LucideSparkles,
+} from "lucide-vue-next";
 import formatBytes from "~/utilities/formatBytes";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Card } from "~/components/ui/card";
@@ -14,7 +19,7 @@ definePageMeta({
     <Card
       v-if="match_map_demos_aggregate"
       variant="gradient"
-      class="mb-8 p-4 flex items-center gap-4"
+      class="mb-4 p-4 flex items-center gap-4"
     >
       <div
         class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10"
@@ -27,6 +32,30 @@ definePageMeta({
         </h3>
         <p class="text-2xl font-bold mt-1">
           {{ formatBytes(match_map_demos_aggregate.aggregate.sum.size) }}~
+        </p>
+      </div>
+    </Card>
+  </PageTransition>
+
+  <PageTransition :delay="50">
+    <Card
+      v-if="match_clips_aggregate"
+      variant="gradient"
+      class="mb-8 p-4 flex items-center gap-4"
+    >
+      <div
+        class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10"
+      >
+        <LucideSparkles class="w-6 h-6 text-primary" />
+      </div>
+      <div class="flex-1">
+        <h3 class="text-sm font-medium text-muted-foreground">
+          {{
+            $t("pages.settings.application.demo_settings.clips_used_storage")
+          }}
+        </h3>
+        <p class="text-2xl font-bold mt-1">
+          {{ formatBytes(match_clips_aggregate.aggregate.sum.size || 0) }}~
         </p>
       </div>
     </Card>
@@ -171,6 +200,132 @@ definePageMeta({
         </div>
       </Card>
 
+      <Card variant="gradient">
+        <div class="p-6 space-y-6">
+          <h3 class="text-lg font-semibold flex items-center gap-2">
+            <LucideSparkles class="w-5 h-5 text-primary" />
+            {{
+              $t("pages.settings.application.demo_settings.highlights_section")
+            }}
+          </h3>
+
+          <FormField v-slot="{ componentField }" name="clips_min_retention">
+            <FormItem>
+              <FormLabel>{{
+                $t(
+                  "pages.settings.application.demo_settings.clips_min_retention",
+                )
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.demo_settings.clips_min_retention_description",
+                )
+              }}</FormDescription>
+              <Input type="number" v-bind="componentField"></Input>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField v-slot="{ componentField }" name="clips_max_storage">
+            <FormItem>
+              <FormLabel>{{
+                $t(
+                  "pages.settings.application.demo_settings.clips_max_storage",
+                )
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.demo_settings.clips_max_storage_description",
+                )
+              }}</FormDescription>
+              <Input type="number" v-bind="componentField"></Input>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField
+            v-slot="{ value, handleChange }"
+            name="auto_generate_match_clips"
+            type="checkbox"
+            :value="true"
+          >
+            <FormItem class="flex flex-row items-center justify-between gap-4">
+              <div class="space-y-1">
+                <FormLabel>{{
+                  $t(
+                    "pages.settings.application.demo_settings.auto_generate_match_clips",
+                  )
+                }}</FormLabel>
+                <FormDescription>
+                  {{
+                    $t(
+                      "pages.settings.application.demo_settings.auto_generate_match_clips_description",
+                    )
+                  }}
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  :model-value="value"
+                  @update:model-value="handleChange"
+                />
+              </FormControl>
+            </FormItem>
+          </FormField>
+
+          <FormField
+            v-slot="{ value, handleChange }"
+            name="auto_clip_default_visibility"
+          >
+            <FormItem>
+              <FormLabel>{{
+                $t(
+                  "pages.settings.application.demo_settings.auto_clip_default_visibility",
+                )
+              }}</FormLabel>
+              <FormDescription>
+                {{
+                  $t(
+                    "pages.settings.application.demo_settings.auto_clip_default_visibility_description",
+                  )
+                }}
+              </FormDescription>
+              <Select :model-value="value" @update:model-value="handleChange">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      :placeholder="
+                        $t(
+                          'pages.settings.application.demo_settings.visibility_private',
+                        )
+                      "
+                    />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="private">{{
+                    $t(
+                      "pages.settings.application.demo_settings.visibility_private",
+                    )
+                  }}</SelectItem>
+                  <SelectItem value="unlisted">{{
+                    $t(
+                      "pages.settings.application.demo_settings.visibility_unlisted",
+                    )
+                  }}</SelectItem>
+                  <SelectItem value="public">{{
+                    $t(
+                      "pages.settings.application.demo_settings.visibility_public",
+                    )
+                  }}</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </Card>
+
       <div class="flex justify-start">
         <Button
           type="submit"
@@ -208,6 +363,20 @@ export default {
         ],
       }),
     },
+    match_clips_aggregate: {
+      query: generateQuery({
+        match_clips_aggregate: [
+          {},
+          {
+            aggregate: {
+              sum: {
+                size: true,
+              },
+            },
+          },
+        ],
+      }),
+    },
   },
   data() {
     return {
@@ -218,6 +387,12 @@ export default {
             s3_max_storage: z.number().int().min(1).default(10),
             cloudflare_worker_url: z.string().url().optional(),
             demo_network_limiter: z.number().int().optional().nullable(),
+            clips_min_retention: z.number().int().min(1).default(1),
+            clips_max_storage: z.number().int().min(1).default(10),
+            auto_generate_match_clips: z.boolean().default(false),
+            auto_clip_default_visibility: z
+              .enum(["private", "unlisted", "public"])
+              .default("private"),
           }),
         ),
       }),
@@ -231,12 +406,27 @@ export default {
           if (
             setting.name === "s3_min_retention" ||
             setting.name === "s3_max_storage" ||
-            setting.name === "demo_network_limiter"
+            setting.name === "demo_network_limiter" ||
+            setting.name === "clips_min_retention" ||
+            setting.name === "clips_max_storage"
           ) {
             if (!setting.value) {
               continue;
             }
             this.form.setFieldValue(setting.name, parseInt(setting.value));
+            continue;
+          }
+
+          if (setting.name === "auto_generate_match_clips") {
+            this.form.setFieldValue(
+              setting.name,
+              setting.value === "true" || setting.value === true,
+            );
+            continue;
+          }
+
+          if (setting.name === "auto_clip_default_visibility") {
+            this.form.setFieldValue(setting.name, setting.value ?? "private");
             continue;
           }
 
@@ -318,6 +508,25 @@ export default {
                 {
                   name: "demo_network_limiter",
                   value: this.form.values.demo_network_limiter?.toString(),
+                },
+                {
+                  name: "clips_min_retention",
+                  value: this.form.values.clips_min_retention?.toString(),
+                },
+                {
+                  name: "clips_max_storage",
+                  value: this.form.values.clips_max_storage?.toString(),
+                },
+                {
+                  name: "auto_generate_match_clips",
+                  value: this.form.values.auto_generate_match_clips
+                    ? "true"
+                    : "false",
+                },
+                {
+                  name: "auto_clip_default_visibility",
+                  value:
+                    this.form.values.auto_clip_default_visibility ?? "private",
                 },
               ],
               on_conflict: {

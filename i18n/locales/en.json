@@ -391,7 +391,7 @@
                     "update_cpu_pinning": "CPU Pinning updated"
                 },
                 "demo_settings": {
-                    "title": "Demo Settings",
+                    "title": "Demos / Highlights",
                     "min_retention": "Minimum Retention",
                     "max_storage": "Maximum Storage",
                     "cloudflare_worker_url": "Cloudflare Worker URL",
@@ -408,7 +408,20 @@
                     "test_download_failed": "Test Download Failed",
                     "demo_network_limiter": "Global Demo Network Limiter",
                     "demo_network_limiter_description": "The global network limiter for the demo files.",
-                    "updated_s3_settings": "Updated S3 Settings"
+                    "updated_s3_settings": "Updated S3 Settings",
+                    "clips_used_storage": "Approximate Highlight Storage Used",
+                    "clips_min_retention": "Minimum Retention",
+                    "clips_min_retention_description": "The minimum retention days for highlight clips before they can be auto-deleted.",
+                    "clips_max_storage": "Maximum Storage",
+                    "clips_max_storage_description": "The maximum storage size for highlight clips in GB. Oldest clips are deleted first when this is exceeded.",
+                    "highlights_section": "Highlights",
+                    "auto_generate_match_clips": "Auto-generate match highlights",
+                    "auto_generate_match_clips_description": "When a match finishes and the demo metadata parses, automatically queue a \"Match recap\" highlight for every player who got at least one kill. Renders run sequentially against the demo on a single game-streamer pod and land on each player's library with the default visibility set below.",
+                    "auto_clip_default_visibility": "Default visibility for auto-generated highlights",
+                    "auto_clip_default_visibility_description": "What visibility level new auto-generated highlights start with. Private is safest — only streamer+ users can see private highlights via Manage Highlights. Public skips curation and lands the highlight on the public feed straight away (when public-mode is on).",
+                    "visibility_private": "Private",
+                    "visibility_unlisted": "Unlisted",
+                    "visibility_public": "Public"
                 },
                 "update_map_pools": {
                     "title": "Automatic Update Map Pools",

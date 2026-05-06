@@ -57,7 +57,14 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  if (body.registeredOnly) {
+  // Use provided sort_by or default to name:asc
+  let sortBy = body.sort_by || "name:asc";
+
+  if (sortBy.includes("elo")) {
+    sortBy = sortBy.replace("elo", "elo_competitive");
+  }
+
+  if (body.registeredOnly || sortBy.includes("last_sign_in_at")) {
     filterBy.push(`last_sign_in_at:!~~`);
   }
 
@@ -127,13 +134,6 @@ export default defineEventHandler(async (event) => {
   // Filter by is_muted
   if (body.is_muted !== undefined && body.is_muted !== null) {
     filterBy.push(`is_muted:=${body.is_muted}`);
-  }
-
-  // Use provided sort_by or default to name:asc
-  let sortBy = body.sort_by || "name:asc";
-
-  if (sortBy.includes("elo")) {
-    sortBy = sortBy.replace("elo", "elo_competitive");
   }
 
   const searchParams: any = {

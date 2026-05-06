@@ -40,6 +40,10 @@ const { isMobile } = useSidebar();
       <slot name="elo-postfix"></slot>
     </template>
 
+    <template v-if="$slots['avatar-badge']" #avatar-badge>
+      <slot name="avatar-badge"></slot>
+    </template>
+
     <template v-slot:status v-if="showStatus">
       <FiveStackToolTip side="bottom" :delay-duration="300">
         <template #trigger>

@@ -63,6 +63,12 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
       <div class="mt-2" v-if="$slots['avatar-sub']">
         <slot name="avatar-sub"></slot>
       </div>
+      <div
+        class="absolute -top-1 -right-1 z-10"
+        v-if="$slots['avatar-badge']"
+      >
+        <slot name="avatar-badge"></slot>
+      </div>
     </div>
     <div
       :class="{

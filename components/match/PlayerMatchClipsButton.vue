@@ -53,24 +53,23 @@ function pickClip(c: Clip) {
     <button
       v-if="count === 1 && single"
       type="button"
-      class="ml-1.5 inline-flex h-5 items-center gap-1 rounded-full border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] px-1.5 text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
+      class="relative inline-flex h-5 w-5 items-center justify-center rounded-full border-2 border-background bg-[hsl(var(--tac-amber))] text-background shadow-[0_0_0_1px_hsl(var(--tac-amber)),0_0_6px_hsl(var(--tac-amber)/0.6)] hover:brightness-110 transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.8)]"
       :title="single.title || 'Open highlight'"
       @click="onSingleClick"
     >
       <Film class="h-3 w-3" />
-      <span class="font-mono text-[0.55rem] uppercase tracking-[0.16em]">
-        Clip
-      </span>
     </button>
 
     <Popover v-else>
       <PopoverTrigger
-        class="ml-1.5 inline-flex h-5 items-center gap-1 rounded-full border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] px-1.5 text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
+        class="relative inline-flex h-5 w-5 items-center justify-center rounded-full border-2 border-background bg-[hsl(var(--tac-amber))] text-background shadow-[0_0_0_1px_hsl(var(--tac-amber)),0_0_6px_hsl(var(--tac-amber)/0.6)] hover:brightness-110 transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.8)]"
         :title="`${count} highlights for this player`"
         @click.stop
       >
         <Film class="h-3 w-3" />
-        <span class="font-mono text-[0.55rem] tabular-nums">
+        <span
+          class="absolute -top-1 -right-1 inline-flex min-w-[0.875rem] h-3.5 px-1 items-center justify-center rounded-full border border-background bg-red-500 text-[0.55rem] font-mono font-bold tabular-nums text-white"
+        >
           {{ count }}
         </span>
       </PopoverTrigger>

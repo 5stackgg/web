@@ -25,6 +25,8 @@ const applicationSettingsStore = useApplicationSettingsStore();
 const me = computed(() => authStore.me);
 const hasGlobalStream = computed(() => !!applicationSettingsStore.globalStream);
 
+const TAB_QUERY_KEYS = new Set(["tab", "mode"]);
+
 function pageKeyWithoutTabQuery(route: {
   path: string;
   query: Record<string, unknown>;
@@ -33,7 +35,7 @@ function pageKeyWithoutTabQuery(route: {
   const query = new URLSearchParams();
 
   Object.keys(route.query)
-    .filter((key) => key !== "tab")
+    .filter((key) => !TAB_QUERY_KEYS.has(key))
     .sort()
     .forEach((key) => {
       const value = route.query[key];

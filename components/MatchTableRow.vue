@@ -1201,7 +1201,11 @@ export default {
       return this.displayedMatchStats.lineup_2?.lineup_players ?? [];
     },
     eloChange(): typeof eloFields {
-      return this.match.elo_changes?.at(0);
+      const matchType = this.match.options?.type;
+      return (
+        this.match.elo_changes?.find((ec: any) => ec.type === matchType) ??
+        this.match.elo_changes?.at(0)
+      );
     },
     playerLineup(): string | null {
       if (!this.eloChange?.player_steam_id) {

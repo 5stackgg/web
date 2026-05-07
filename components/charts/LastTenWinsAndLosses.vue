@@ -35,6 +35,11 @@ export default {
       type: String,
       required: false,
     },
+    match_type: {
+      type: String as () => "Competitive" | "Wingman" | "Duel" | null,
+      required: false,
+      default: null,
+    },
   },
   apollo: {
     v_player_map_wins: {
@@ -44,6 +49,13 @@ export default {
             where: {
               steam_id: {
                 _eq: $("steam_id", "bigint"),
+              },
+              match: {
+                options: {
+                  type: {
+                    _in: $("match_types", "[e_match_types_enum!]"),
+                  },
+                },
               },
             },
           },
@@ -59,6 +71,9 @@ export default {
       variables() {
         return {
           steam_id: this.steam_id || this.me?.steam_id,
+          match_types: this.match_type
+            ? [this.match_type]
+            : ["Competitive", "Wingman", "Duel"],
         };
       },
     },
@@ -70,6 +85,13 @@ export default {
               steam_id: {
                 _eq: $("steam_id", "bigint"),
               },
+              match: {
+                options: {
+                  type: {
+                    _in: $("match_types", "[e_match_types_enum!]"),
+                  },
+                },
+              },
             },
           },
           {
@@ -84,6 +106,9 @@ export default {
       variables() {
         return {
           steam_id: this.steam_id || this.me?.steam_id,
+          match_types: this.match_type
+            ? [this.match_type]
+            : ["Competitive", "Wingman", "Duel"],
         };
       },
     },

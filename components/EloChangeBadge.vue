@@ -89,6 +89,19 @@ const damagePercent = computed(() =>
   Math.round(toNum(props.eloChange?.damage_percent) * 100),
 );
 
+const typeLabel = computed(() => {
+  switch (props.eloChange?.type) {
+    case "Competitive":
+      return "COMP";
+    case "Wingman":
+      return "WINGMAN";
+    case "Duel":
+      return "DUEL";
+    default:
+      return null;
+  }
+});
+
 function formatSigned(n: number): string {
   const sign = n > 0 ? "+" : "";
   return `${sign}${n.toLocaleString()}`;
@@ -208,15 +221,23 @@ const chipClipSm =
               <span class="text-[9px] text-[hsl(var(--tac-amber))]">◢</span>
               <span>{{ $t("match.elo_details.title") }}</span>
             </span>
-            <span
-              :class="[
-                'text-[10px] tracking-[0.22em] uppercase font-extrabold px-2 py-0.5 border border-current rounded-[2px]',
-                isWin
-                  ? 'text-[hsl(142_71%_60%)] bg-[hsl(142_71%_40%/0.12)]'
-                  : 'text-[hsl(0_84%_66%)] bg-[hsl(0_84%_50%/0.12)]',
-              ]"
-            >
-              {{ isWin ? "WIN" : "LOSS" }}
+            <span class="inline-flex items-center gap-1.5">
+              <span
+                v-if="typeLabel"
+                class="text-[10px] tracking-[0.22em] uppercase font-extrabold px-2 py-0.5 border border-[hsl(var(--tac-amber)/0.55)] text-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.1)] rounded-[2px]"
+              >
+                {{ typeLabel }}
+              </span>
+              <span
+                :class="[
+                  'text-[10px] tracking-[0.22em] uppercase font-extrabold px-2 py-0.5 border border-current rounded-[2px]',
+                  isWin
+                    ? 'text-[hsl(142_71%_60%)] bg-[hsl(142_71%_40%/0.12)]'
+                    : 'text-[hsl(0_84%_66%)] bg-[hsl(0_84%_50%/0.12)]',
+                ]"
+              >
+                {{ isWin ? "WIN" : "LOSS" }}
+              </span>
             </span>
           </header>
 

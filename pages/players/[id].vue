@@ -34,6 +34,7 @@ import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 import AvatarUpload from "~/components/AvatarUpload.vue";
 import PlayerHighlights from "~/components/clips/PlayerHighlights.vue";
+import PlayerElo from "~/components/PlayerElo.vue";
 
 definePageMeta({
   alias: ["/me/:id"],
@@ -42,6 +43,12 @@ definePageMeta({
 const activeTab = useRouteTab({
   defaultTab: "matches",
   tabs: ["matches", "tournaments"],
+});
+
+const modeTab = useRouteTab({
+  param: "mode",
+  defaultTab: "all",
+  tabs: ["all", "Competitive", "Wingman", "Duel"],
 });
 
 const { isMobile } = useSidebar();
@@ -176,6 +183,11 @@ const playerTeamChipShortClasses =
                 <ExternalLink class="w-3.5 h-3.5" />
                 <span>{{ $t("player.player.steam") }}</span>
               </a>
+              <PlayerElo
+                v-if="player.elo"
+                :elo="player.elo"
+                :peak="player.peak_elo"
+              />
             </div>
 
             <!-- Actions: role / sanction / edit -->
@@ -262,6 +274,24 @@ const playerTeamChipShortClasses =
     </PageTransition>
 
     <div class="flex flex-col gap-4 md:gap-6" v-if="player">
+      <!-- Mode selector -->
+      <Tabs v-model="modeTab">
+        <TabsList class="grid grid-cols-4 w-full max-w-md mx-auto">
+          <TabsTrigger value="all">{{
+            $t("pages.leaderboard.match_types.all")
+          }}</TabsTrigger>
+          <TabsTrigger value="Competitive">{{
+            $t("pages.leaderboard.match_types.competitive")
+          }}</TabsTrigger>
+          <TabsTrigger value="Wingman">{{
+            $t("pages.leaderboard.match_types.wingman")
+          }}</TabsTrigger>
+          <TabsTrigger value="Duel">{{
+            $t("pages.leaderboard.match_types.duel")
+          }}</TabsTrigger>
+        </TabsList>
+      </Tabs>
+
       <!-- Stats and Elo Section -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <!-- Performance Stats -->
@@ -271,6 +301,12 @@ const playerTeamChipShortClasses =
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 h-full">
                 <!-- Win Rate Column -->
                 <div class="flex flex-col items-center justify-center gap-4">
+                  <span
+                    class="text-[9px] uppercase tracking-[0.18em] opacity-0 select-none"
+                    aria-hidden="true"
+                  >
+                    .
+                  </span>
                   <RadialStat
                     :value="winPercentage.toFixed(0) + '%'"
                     :percentage="winPercentage"
@@ -285,7 +321,7 @@ const playerTeamChipShortClasses =
                     <div class="flex flex-col items-center group/stat">
                       <span
                         class="text-xl md:text-lg lg:text-2xl font-bold text-green-500 group-hover/stat:scale-110 transition-transform duration-300"
-                        >{{ player.wins || 0 }}</span
+                        >{{ selectedWins }}</span
                       >
                       <span
                         class="text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-wider"
@@ -298,7 +334,7 @@ const playerTeamChipShortClasses =
                     <div class="flex flex-col items-center group/stat">
                       <span
                         class="text-xl md:text-lg lg:text-2xl font-bold text-red-500 group-hover/stat:scale-110 transition-transform duration-300"
-                        >{{ player.losses || 0 }}</span
+                        >{{ selectedLosses }}</span
                       >
                       <span
                         class="text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-wider"
@@ -310,6 +346,13 @@ const playerTeamChipShortClasses =
 
                 <!-- K/D Column -->
                 <div class="flex flex-col items-center justify-center gap-4">
+                  <span
+                    class="text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70 transition-opacity duration-150"
+                    :class="selectedMode !== 'all' ? 'opacity-100' : 'opacity-0'"
+                    aria-hidden="true"
+                  >
+                    {{ $t("pages.players.detail.global_stats", "Global stats") }}
+                  </span>
                   <RadialStat
                     :value="kd"
                     :percentage="kdPercentage"
@@ -349,11 +392,7 @@ const playerTeamChipShortClasses =
 
         <!-- Elo History Chart -->
         <PageTransition :delay="200">
-          <AnimatedCard
-            variant="elevated"
-            class="flex flex-col h-full p-4"
-            v-if="player?.elo_history"
-          >
+          <AnimatedCard variant="elevated" class="flex flex-col h-full p-4">
             <CardHeader>
               <CardTitle
                 class="text-lg md:text-base lg:text-xl font-bold text-center"
@@ -364,8 +403,8 @@ const playerTeamChipShortClasses =
             <CardContent
               class="flex-1 min-h-[200px] sm:min-h-[250px] md:min-h-[300px]"
             >
-              <template v-if="player.elo_history.length > 0">
-                <PlayerEloChart :elo-history="player.elo_history" />
+              <template v-if="hasEloChartData">
+                <PlayerEloChart :series="eloChartSeries" />
               </template>
               <template v-else>
                 <div
@@ -400,11 +439,18 @@ const playerTeamChipShortClasses =
               >
                 {{ $t("pages.players.detail.recent_wins_and_losses") }}
               </CardTitle>
+              <div
+                class="text-center text-[9px] uppercase tracking-[0.18em] opacity-0 select-none"
+                aria-hidden="true"
+              >
+                .
+              </div>
             </CardHeader>
             <CardContent class="flex flex-col h-full">
               <LastTenWinsAndLosses
                 class="max-h-[250px] sm:max-h-[300px] md:max-h-[375px] w-full flex-grow"
                 :steam_id="playerId"
+                :match_type="selectedMode === 'all' ? null : selectedMode"
               />
             </CardContent>
           </AnimatedCard>
@@ -419,6 +465,13 @@ const playerTeamChipShortClasses =
               >
                 {{ $t("pages.players.detail.weapon_kills") }}
               </CardTitle>
+              <div
+                class="text-center text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70 transition-opacity duration-150"
+                :class="selectedMode !== 'all' ? 'opacity-100' : 'opacity-0'"
+                aria-hidden="true"
+              >
+                {{ $t("pages.players.detail.global_stats", "Global stats") }}
+              </div>
             </CardHeader>
             <CardContent class="flex flex-col h-full">
               <div
@@ -637,6 +690,7 @@ export default {
               ...playerFields,
               role: true,
               profile_url: true,
+              peak_elo: true,
               teams: [
                 {},
                 {
@@ -647,6 +701,12 @@ export default {
               ],
               wins: true,
               losses: true,
+              wins_competitive: true,
+              wins_wingman: true,
+              wins_duel: true,
+              losses_competitive: true,
+              losses_wingman: true,
+              losses_duel: true,
               stats: {
                 kills: true,
                 deaths: true,
@@ -668,28 +728,80 @@ export default {
                   kill_count: true,
                 },
               ],
-              elo_history: [
-                {
-                  limit: 10,
-                  where: {
-                    type: {
-                      _eq: e_match_types_enum.Competitive,
-                    },
-                    match: {
-                      winning_lineup_id: {
-                        _is_null: false,
-                      },
-                    },
-                  },
-                  order_by: [
-                    {},
+              __alias: {
+                competitive_elo_history: {
+                  elo_history: [
                     {
-                      match_created_at: order_by.desc,
+                      limit: 10,
+                      where: {
+                        type: {
+                          _eq: e_match_types_enum.Competitive,
+                        },
+                        match: {
+                          winning_lineup_id: {
+                            _is_null: false,
+                          },
+                        },
+                      },
+                      order_by: [
+                        {},
+                        {
+                          match_created_at: order_by.desc,
+                        },
+                      ],
                     },
+                    eloFields,
                   ],
                 },
-                eloFields,
-              ],
+                wingman_elo_history: {
+                  elo_history: [
+                    {
+                      limit: 10,
+                      where: {
+                        type: {
+                          _eq: e_match_types_enum.Wingman,
+                        },
+                        match: {
+                          winning_lineup_id: {
+                            _is_null: false,
+                          },
+                        },
+                      },
+                      order_by: [
+                        {},
+                        {
+                          match_created_at: order_by.desc,
+                        },
+                      ],
+                    },
+                    eloFields,
+                  ],
+                },
+                duel_elo_history: {
+                  elo_history: [
+                    {
+                      limit: 10,
+                      where: {
+                        type: {
+                          _eq: e_match_types_enum.Duel,
+                        },
+                        match: {
+                          winning_lineup_id: {
+                            _is_null: false,
+                          },
+                        },
+                      },
+                      order_by: [
+                        {},
+                        {
+                          match_created_at: order_by.desc,
+                        },
+                      ],
+                    },
+                    eloFields,
+                  ],
+                },
+              },
             },
           ],
         }),
@@ -858,12 +970,86 @@ export default {
     };
   },
   computed: {
+    selectedMode() {
+      const raw = this.$route.query.mode;
+      const value = Array.isArray(raw) ? raw[0] : raw;
+      if (value === "Competitive" || value === "Wingman" || value === "Duel") {
+        return value;
+      }
+      return "all";
+    },
+    selectedWins() {
+      if (!this.player) return 0;
+      switch (this.selectedMode) {
+        case "Competitive":
+          return this.player.wins_competitive || 0;
+        case "Wingman":
+          return this.player.wins_wingman || 0;
+        case "Duel":
+          return this.player.wins_duel || 0;
+        default:
+          return this.player.wins || 0;
+      }
+    },
+    selectedLosses() {
+      if (!this.player) return 0;
+      switch (this.selectedMode) {
+        case "Competitive":
+          return this.player.losses_competitive || 0;
+        case "Wingman":
+          return this.player.losses_wingman || 0;
+        case "Duel":
+          return this.player.losses_duel || 0;
+        default:
+          return this.player.losses || 0;
+      }
+    },
+    eloChartSeries() {
+      if (!this.player) return [];
+      const comp = this.player.competitive_elo_history || [];
+      const wing = this.player.wingman_elo_history || [];
+      const duel = this.player.duel_elo_history || [];
+
+      const compSeries = {
+        key: "Competitive",
+        label: this.$t("pages.leaderboard.match_types.competitive"),
+        history: comp,
+      };
+      const wingSeries = {
+        key: "Wingman",
+        label: this.$t("pages.leaderboard.match_types.wingman"),
+        history: wing,
+      };
+      const duelSeries = {
+        key: "Duel",
+        label: this.$t("pages.leaderboard.match_types.duel"),
+        history: duel,
+      };
+
+      switch (this.selectedMode) {
+        case "Competitive":
+          return [{ ...compSeries, focus: true }];
+        case "Wingman":
+          return [{ ...wingSeries, focus: true }];
+        case "Duel":
+          return [{ ...duelSeries, focus: true }];
+        default:
+          return [
+            { ...compSeries, focus: true },
+            { ...wingSeries, focus: false },
+            { ...duelSeries, focus: false },
+          ].filter((s) => s.history.length > 0);
+      }
+    },
+    hasEloChartData() {
+      return this.eloChartSeries.some((s) => s.history.length > 0);
+    },
     winPercentage() {
-      const total = (this.player?.wins || 0) + (this.player?.losses || 0);
+      const total = this.selectedWins + this.selectedLosses;
       if (!this.player) {
         return 0;
       }
-      return total > 0 ? ((this.player?.wins || 0) / total) * 100 : 0;
+      return total > 0 ? (this.selectedWins / total) * 100 : 0;
     },
 
     kdPercentage() {

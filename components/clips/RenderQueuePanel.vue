@@ -119,11 +119,17 @@ type BatchGroup = {
 };
 
 function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
-  // Sort by created_at only — status-based sorting causes visible
-  // jumps when jobs flip rendering → done. Keep rows where they were.
-  const sorted = [...list].sort((a, b) =>
-    a.created_at < b.created_at ? -1 : a.created_at > b.created_at ? 1 : 0,
-  );
+  // Sort by created_at, then id — status-based sorting causes visible
+  // jumps when jobs flip rendering → done. Batch-inserted rows share
+  // the same created_at (one INSERT in clips.service.ts), so id is the
+  // stable tiebreaker; without it the subscription payload order leaks
+  // through and rows visibly swap when any job's status changes.
+  // Ascending matches the api's queue processing order (oldest first).
+  const sorted = [...list].sort((a, b) => {
+    if (a.created_at < b.created_at) return -1;
+    if (a.created_at > b.created_at) return 1;
+    return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+  });
   const activeJob = sorted.find(
     (j) => j.status === "rendering" || j.status === "uploading",
   );

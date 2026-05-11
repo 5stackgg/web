@@ -143,7 +143,7 @@ const loginArrowClasses =
           />
 
           <span
-            class="relative inline-flex font-sans text-[1.1rem] font-bold uppercase leading-none tracking-[0.05em] [font-stretch:82%]"
+            class="relative inline-flex whitespace-nowrap font-sans text-[1.1rem] font-bold uppercase leading-none tracking-[0.05em] [font-stretch:82%]"
           >
             <span
               aria-hidden="true"

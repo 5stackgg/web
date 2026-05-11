@@ -737,14 +737,15 @@ export default {
                   elo_history: [
                     {
                       limit: 10,
+                      // Note: no `match: { winning_lineup_id: ... }` filter —
+                      // player_elo rows are only generated for matches with a
+                      // winning lineup (see generate_player_elo_for_match), so
+                      // the filter is redundant and crossing the `match`
+                      // relationship would cascade the matches permission
+                      // filter into the subquery for no benefit.
                       where: {
                         type: {
                           _eq: e_match_types_enum.Competitive,
-                        },
-                        match: {
-                          winning_lineup_id: {
-                            _is_null: false,
-                          },
                         },
                       },
                       order_by: [
@@ -765,11 +766,6 @@ export default {
                         type: {
                           _eq: e_match_types_enum.Wingman,
                         },
-                        match: {
-                          winning_lineup_id: {
-                            _is_null: false,
-                          },
-                        },
                       },
                       order_by: [
                         {},
@@ -788,11 +784,6 @@ export default {
                       where: {
                         type: {
                           _eq: e_match_types_enum.Duel,
-                        },
-                        match: {
-                          winning_lineup_id: {
-                            _is_null: false,
-                          },
                         },
                       },
                       order_by: [

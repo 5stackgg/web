@@ -11,6 +11,7 @@ export default {
   owner_steam_id: true,
   captain: playerFields,
   team: {
+    id: true,
     name: true,
     avatar_url: true,
   },

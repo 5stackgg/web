@@ -3,6 +3,11 @@ import formatStatValue from "~/utilities/formatStatValue";
 import { kdrColor } from "~/utilities/kdrColor";
 import EloChangeBadge from "~/components/EloChangeBadge.vue";
 import PlayerMatchClipsButton from "~/components/match/PlayerMatchClipsButton.vue";
+import MultiKillDrilldown from "~/components/match/MultiKillDrilldown.vue";
+
+// Placeholder shown while the lineup-stats subscription is still loading
+// (the shell match sub doesn't carry per-player aggregates anymore).
+const DASH = "—";
 </script>
 <template>
   <TableRow>
@@ -17,55 +22,63 @@ import PlayerMatchClipsButton from "~/components/match/PlayerMatchClipsButton.vu
       </LineupMember>
     </TableCell>
     <template v-if="showStats">
-      <TableCell class="text-center">
-        {{ member.player?.kills_aggregate.aggregate.count }}
-      </TableCell>
+      <TableCell class="text-center">{{ stats?.kills ?? DASH }}</TableCell>
       <TableCell class="hidden md:table-cell text-center">
-        {{ member.player?.assists_aggregate.aggregate.count }}
+        {{ stats?.assists ?? DASH }}
       </TableCell>
-      <TableCell class="text-center">
-        {{ member.player?.deaths_aggregate.aggregate.count }}
-      </TableCell>
+      <TableCell class="text-center">{{ stats?.deaths ?? DASH }}</TableCell>
       <TableCell class="hidden md:table-cell text-center">
-        <span :class="kdrColor(kd)">
-          {{ kd }}
-        </span>
+        <span :class="kdrColor(kd)">{{ kd }}</span>
       </TableCell>
-      <TableCell class="hidden lg:table-cell text-center">
-        {{ hs }}
-      </TableCell>
+      <TableCell class="hidden lg:table-cell text-center">{{ hs }}</TableCell>
       <TableCell class="hidden 2xl:table-cell text-center">
-        {{ member.player?.team_damage_aggregate.aggregate.sum.damage || 0 }}
+        {{ stats?.team_damage ?? DASH }}
       </TableCell>
       <TableCell class="hidden xl:table-cell text-center">
-        {{ member.player?.multi_kills.length }}
+        {{ totalMultiKills ?? DASH }}
       </TableCell>
-      <TableCell class="hidden 2xl:table-cell text-center">
+      <TableCell
+        class="hidden 2xl:table-cell text-center"
+        :class="{ 'cursor-pointer hover:underline': hasMultiKillsToShow(2) }"
+        @click="hasMultiKillsToShow(2) && openMultiKillDrilldown(2)"
+      >
         {{ twoKills }}
       </TableCell>
-      <TableCell class="hidden 2xl:table-cell text-center">
+      <TableCell
+        class="hidden 2xl:table-cell text-center"
+        :class="{ 'cursor-pointer hover:underline': hasMultiKillsToShow(3) }"
+        @click="hasMultiKillsToShow(3) && openMultiKillDrilldown(3)"
+      >
         {{ threeKills }}
       </TableCell>
-      <TableCell class="hidden 2xl:table-cell text-center">
+      <TableCell
+        class="hidden 2xl:table-cell text-center"
+        :class="{ 'cursor-pointer hover:underline': hasMultiKillsToShow(4) }"
+        @click="hasMultiKillsToShow(4) && openMultiKillDrilldown(4)"
+      >
         {{ fourKills }}
       </TableCell>
-      <TableCell class="hidden 2xl:table-cell text-center">
+      <TableCell
+        class="hidden 2xl:table-cell text-center"
+        :class="{ 'cursor-pointer hover:underline': hasMultiKillsToShow(5) }"
+        @click="hasMultiKillsToShow(5) && openMultiKillDrilldown(5)"
+      >
         {{ fiveKills }}
       </TableCell>
       <TableCell class="hidden 2xl:table-cell text-center">
-        {{ member.player?.knife_kills_aggregate.aggregate.count }}
+        {{ stats?.knife_kills ?? DASH }}
       </TableCell>
       <TableCell class="hidden 2xl:table-cell text-center">
-        {{ member.player?.zeus_kills_aggregate.aggregate.count }}
+        {{ stats?.zeus_kills ?? DASH }}
       </TableCell>
       <TableCell class="hidden table-cell text-center">
         <div class="flex items-center justify-center gap-2">
-          <span>
-            {{
-              member.player?.damage_dealt_aggregate.aggregate.sum.damage || 0
-            }}
-          </span>
-          <Badge class="text-xs whitespace-nowrap" variant="outline">
+          <span>{{ stats?.damage ?? DASH }}</span>
+          <Badge
+            v-if="hasStats"
+            class="text-xs whitespace-nowrap"
+            variant="outline"
+          >
             <span
               :class="{
                 'text-red-500': adr >= 0 && adr < 50,
@@ -82,6 +95,15 @@ import PlayerMatchClipsButton from "~/components/match/PlayerMatchClipsButton.vu
         </div>
       </TableCell>
     </template>
+    <MultiKillDrilldown
+      v-if="drilldownKillCount !== null"
+      :open="drilldownKillCount !== null"
+      :match-id="match.id"
+      :steam-id="member.steam_id"
+      :player-name="member.player?.name ?? member.placeholder_name"
+      :kills="drilldownKillCount"
+      @close="drilldownKillCount = null"
+    />
     <TableCell v-if="canDoActions">
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
@@ -139,6 +161,11 @@ export default {
   components: {
     LineupMember,
   },
+  data() {
+    return {
+      drilldownKillCount: null as null | number,
+    };
+  },
   props: {
     match: {
       required: true,
@@ -158,6 +185,21 @@ export default {
     },
   },
   methods: {
+    hasMultiKillsToShow(kills: number): boolean {
+      if (!this.stats) return false;
+      const key = (
+        {
+          2: "two_kill_rounds",
+          3: "three_kill_rounds",
+          4: "four_kill_rounds",
+          5: "five_kill_rounds",
+        } as const
+      )[kills];
+      return key ? (this.stats[key] ?? 0) > 0 : false;
+    },
+    openMultiKillDrilldown(kills: number) {
+      this.drilldownKillCount = kills;
+    },
     async switchTeams() {
       if (!this.lineup.can_update_lineup) {
         return await this.$apollo.mutate({
@@ -317,59 +359,63 @@ export default {
     me() {
       return useAuthStore().me;
     },
+    // The Overview tab now reads from player_match_stats_v (all maps) and
+    // player_match_map_stats (per map) via array_relationships. Both return
+    // a one-row array; we resolve whichever the parent passed us here.
+    stats() {
+      const arr =
+        this.member?.player?.match_map_stats ??
+        this.member?.player?.match_stats ??
+        null;
+      return Array.isArray(arr) && arr.length > 0 ? arr[0] : null;
+    },
+    // True once the lineup-stats subscription has hydrated this player.
+    // Used by stat computeds and template cells to fall back to a dash
+    // placeholder while the shell-only sub is the source of truth.
+    hasStats() {
+      return !!this.stats;
+    },
     kd() {
-      if (this.member.player?.deaths_aggregate.aggregate.count === 0) {
-        return this.member.player?.kills_aggregate.aggregate.count;
-      }
-      return formatStatValue(
-        this.member.player?.kills_aggregate.aggregate.count /
-          this.member.player?.deaths_aggregate.aggregate.count,
-      );
+      if (!this.hasStats) return "—";
+      const kills = this.stats.kills ?? 0;
+      const deaths = this.stats.deaths ?? 0;
+      if (deaths === 0) return kills;
+      return formatStatValue(kills / deaths);
     },
     hs() {
-      if (this.member.player?.kills_aggregate.aggregate.count === 0) {
-        return 0;
-      }
-      return (
-        formatStatValue(
-          (this.member.player?.hs_kills_aggregate.aggregate.count /
-            this.member.player?.kills_aggregate.aggregate.count) *
-            100,
-        ) + "%"
-      );
+      if (!this.hasStats) return "—";
+      const kills = this.stats.kills ?? 0;
+      if (kills === 0) return 0;
+      const hsKills = this.stats.hs_kills ?? 0;
+      return formatStatValue((hsKills / kills) * 100) + "%";
     },
     adr() {
-      if (
-        !this.member?.player?.damage_dealt_aggregate ||
-        this.totalRounds === 0
-      ) {
-        return 0;
-      }
-
-      return formatStatValue(
-        this.member.player.damage_dealt_aggregate.aggregate.sum.damage /
-          this.totalRounds,
-      );
+      if (!this.hasStats || this.totalRounds === 0) return 0;
+      const damage = this.stats.damage ?? 0;
+      return formatStatValue(damage / this.totalRounds);
     },
     twoKills() {
-      return this.member.player?.multi_kills.filter(({ kills }) => {
-        return kills == 2;
-      }).length;
+      return this.stats?.two_kill_rounds ?? "—";
     },
     threeKills() {
-      return this.member.player?.multi_kills.filter(({ kills }) => {
-        return kills == 3;
-      }).length;
+      return this.stats?.three_kill_rounds ?? "—";
     },
     fourKills() {
-      return this.member.player?.multi_kills.filter(({ kills }) => {
-        return kills == 4;
-      }).length;
+      return this.stats?.four_kill_rounds ?? "—";
     },
     fiveKills() {
-      return this.member.player?.multi_kills.filter(({ kills }) => {
-        return kills == 5;
-      }).length;
+      return this.stats?.five_kill_rounds ?? "—";
+    },
+    // For the "M" multi-kills column (xl:table-cell): total rounds where the
+    // player had >=2 kills. Sum of the four counter columns.
+    totalMultiKills() {
+      if (!this.stats) return null;
+      return (
+        (this.stats.two_kill_rounds ?? 0) +
+        (this.stats.three_kill_rounds ?? 0) +
+        (this.stats.four_kill_rounds ?? 0) +
+        (this.stats.five_kill_rounds ?? 0)
+      );
     },
     totalRounds() {
       let rounds = 0;

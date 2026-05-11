@@ -49,15 +49,6 @@ function pickClip(c: Clip) {
 </script>
 
 <template>
-  <!--
-    PlayerMatchClipsButton sits inside the NuxtLink that PlayerDisplay
-    renders, so we have to guarantee no click here ever bubbles up to
-    that link and navigates to /players/:id. Native HTML elements honor
-    Vue's `.stop` modifier reliably; PopoverTrigger does not (it's a
-    custom component, so the listener is forwarded rather than bound
-    directly to the underlying button), so we wrap everything in a
-    span that swallows clicks before they escape this subtree.
-  -->
   <span
     v-if="hasClips"
     class="inline-flex"

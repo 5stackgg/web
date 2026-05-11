@@ -216,9 +216,6 @@ const featuredClipImage = computed(() => {
   const c = featuredClip.value;
   return c?.thumbnail_download_url ?? c?.match_map?.map?.poster ?? null;
 });
-// Render every clip in the side rail — the panel is `overflow-y-auto`
-// so it scrolls. Capping at 8 hid clips from other maps when the head
-// of the list (sorted by kills) happened to skew toward one map.
 const reelQueue = computed(() => filteredClips.value);
 const featuredPlayer = computed(() =>
   featuredClip.value?.target_steam_id

@@ -142,13 +142,19 @@ export function useDemoPlayback() {
     );
   }
 
-  async function loadMetadata(matchMapId: string) {
+  async function loadMetadata(matchMapId: string, demoId?: string | null) {
+    const where = demoId
+      ? { id: { _eq: demoId } }
+      : { match_map_id: { _eq: matchMapId } };
     const { data } = await $apollo.defaultClient.query({
       fetchPolicy: "network-only",
       query: generateQuery({
         match_map_demos: [
           {
-            where: { match_map_id: { _eq: matchMapId } },
+            where,
+            order_by: demoId
+              ? undefined
+              : [{ metadata_parsed_at: "desc_nulls_last" }, { id: "desc" }],
             limit: 1,
           },
           {
@@ -232,7 +238,7 @@ export function useDemoPlayback() {
     return demo;
   }
 
-  async function start(matchMapId: string) {
+  async function start(matchMapId: string, demoId?: string | null) {
     store.reset();
     store.matchMapId = matchMapId;
     store.localStatus = "starting";
@@ -248,7 +254,10 @@ export function useDemoPlayback() {
         // runs — cast the operation map until the types catch up.
         mutation: generateMutation({
           watchDemo: [
-            { match_map_id: matchMapId },
+            {
+              match_map_id: matchMapId,
+              ...(demoId ? { match_map_demo_id: demoId } : {}),
+            },
             { success: true, session_id: true, stream_url: true },
           ],
         } as any),
@@ -262,7 +271,7 @@ export function useDemoPlayback() {
       // tick_rate / kills / bombs / round_ticks. Populate the store
       // so the seek bar + event nav appear as soon as the popup
       // moves out of the booting state.
-      await loadMetadata(matchMapId);
+      await loadMetadata(matchMapId, demoId ?? null);
 
       // Subscription will populate store.sessionRow with the latest
       // status (booting → launching_steam → live, or errored).

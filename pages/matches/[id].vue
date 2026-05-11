@@ -507,10 +507,12 @@ export default {
                     match_lineup_id: true,
                   },
                   demos: {
+                    id: true,
                     size: true,
                     download_url: true,
                     metadata_parsed_at: true,
                     total_ticks: true,
+                    created_at: true,
                   },
                   rounds: [
                     {

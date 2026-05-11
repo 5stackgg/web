@@ -260,6 +260,16 @@ const filteredClips = computed(() => {
   return clips.value.filter((c) => c.visibility === visibilityFilter.value);
 });
 
+const showMap = computed(() => {
+  const seen = new Set<string>();
+  for (const c of filteredClips.value) {
+    const name = c.match_map?.map?.name;
+    if (name) seen.add(name);
+    if (seen.size > 1) return true;
+  }
+  return false;
+});
+
 function clipQueueItem(c: Clip): ClipQueueItem {
   return {
     id: c.id,
@@ -564,6 +574,7 @@ const adminFilters: Array<{ value: Filter; label: string; icon?: any }> = [
           v-else
           :key="`single-${item.clip.id}`"
           :clip="item.clip"
+          :show-map="showMap"
         />
       </template>
     </div>

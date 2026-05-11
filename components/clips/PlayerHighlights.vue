@@ -107,6 +107,15 @@ const hasMore = computed(
   () => clips.value.length >= limit.value && limit.value < MAX_LIMIT,
 );
 const hitMaxLimit = computed(() => limit.value >= MAX_LIMIT);
+const showMap = computed(() => {
+  const seen = new Set<string>();
+  for (const c of clips.value) {
+    const name = c.match_map?.map?.name;
+    if (name) seen.add(name);
+    if (seen.size > 1) return true;
+  }
+  return false;
+});
 </script>
 
 <template>
@@ -168,7 +177,7 @@ const hitMaxLimit = computed(() => limit.value >= MAX_LIMIT);
       class="flex gap-3 overflow-x-auto pb-2 scroll-smooth snap-x snap-mandatory player-highlights-rail"
     >
       <div v-for="c in clips" :key="c.id" class="w-[18rem] shrink-0 snap-start">
-        <HighlightCard :clip="c" />
+        <HighlightCard :clip="c" :show-map="showMap" />
       </div>
 
       <div

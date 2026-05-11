@@ -348,10 +348,14 @@ const playerTeamChipShortClasses =
                 <div class="flex flex-col items-center justify-center gap-4">
                   <span
                     class="text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70 transition-opacity duration-150"
-                    :class="selectedMode !== 'all' ? 'opacity-100' : 'opacity-0'"
+                    :class="
+                      selectedMode !== 'all' ? 'opacity-100' : 'opacity-0'
+                    "
                     aria-hidden="true"
                   >
-                    {{ $t("pages.players.detail.global_stats", "Global stats") }}
+                    {{
+                      $t("pages.players.detail.global_stats", "Global stats")
+                    }}
                   </span>
                   <RadialStat
                     :value="kd"

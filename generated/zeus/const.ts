@@ -343,6 +343,8 @@ export const AllTypesProps: Record<string,any> = {
 		k8s_job_name:"String_comparison_exp",
 		last_status_at:"timestamptz_comparison_exp",
 		match_map:"match_maps_bool_exp",
+		match_map_demo:"match_map_demos_bool_exp",
+		match_map_demo_id:"uuid_comparison_exp",
 		match_map_id:"uuid_comparison_exp",
 		progress:"numeric_comparison_exp",
 		session_token:"String_comparison_exp",
@@ -374,6 +376,8 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		last_status_at:"timestamptz",
 		match_map:"match_maps_obj_rel_insert_input",
+		match_map_demo:"match_map_demos_obj_rel_insert_input",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		progress:"numeric",
 		spec:"jsonb",
@@ -389,6 +393,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		k8s_job_name:"order_by",
 		last_status_at:"order_by",
+		match_map_demo_id:"order_by",
 		match_map_id:"order_by",
 		progress:"order_by",
 		session_token:"order_by",
@@ -403,6 +408,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		k8s_job_name:"order_by",
 		last_status_at:"order_by",
+		match_map_demo_id:"order_by",
 		match_map_id:"order_by",
 		progress:"order_by",
 		session_token:"order_by",
@@ -425,6 +431,8 @@ export const AllTypesProps: Record<string,any> = {
 		k8s_job_name:"order_by",
 		last_status_at:"order_by",
 		match_map:"match_maps_order_by",
+		match_map_demo:"match_map_demos_order_by",
+		match_map_demo_id:"order_by",
 		match_map_id:"order_by",
 		progress:"order_by",
 		session_token:"order_by",
@@ -447,6 +455,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		id:"uuid",
 		last_status_at:"timestamptz",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		progress:"numeric",
 		spec:"jsonb",
@@ -474,6 +483,7 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		id:"uuid",
 		last_status_at:"timestamptz",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		progress:"numeric",
 		spec:"jsonb",
@@ -3223,10 +3233,42 @@ export const AllTypesProps: Record<string,any> = {
 			where:"clip_render_jobs_bool_exp"
 		}
 	},
+	match_clips_aggregate_bool_exp:{
+		count:"match_clips_aggregate_bool_exp_count"
+	},
+	match_clips_aggregate_bool_exp_count:{
+		arguments:"match_clips_select_column",
+		filter:"match_clips_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
 	match_clips_aggregate_fields:{
 		count:{
 			columns:"match_clips_select_column"
 		}
+	},
+	match_clips_aggregate_order_by:{
+		avg:"match_clips_avg_order_by",
+		count:"order_by",
+		max:"match_clips_max_order_by",
+		min:"match_clips_min_order_by",
+		stddev:"match_clips_stddev_order_by",
+		stddev_pop:"match_clips_stddev_pop_order_by",
+		stddev_samp:"match_clips_stddev_samp_order_by",
+		sum:"match_clips_sum_order_by",
+		var_pop:"match_clips_var_pop_order_by",
+		var_samp:"match_clips_var_samp_order_by",
+		variance:"match_clips_variance_order_by"
+	},
+	match_clips_arr_rel_insert_input:{
+		data:"match_clips_insert_input",
+		on_conflict:"match_clips_on_conflict"
+	},
+	match_clips_avg_order_by:{
+		duration_ms:"order_by",
+		kills_count:"order_by",
+		size:"order_by",
+		target_steam_id:"order_by",
+		user_steam_id:"order_by"
 	},
 	match_clips_bool_exp:{
 		_and:"match_clips_bool_exp",
@@ -3239,6 +3281,8 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid_comparison_exp",
 		kills_count:"Int_comparison_exp",
 		match_map:"match_maps_bool_exp",
+		match_map_demo:"match_map_demos_bool_exp",
+		match_map_demo_id:"uuid_comparison_exp",
 		match_map_id:"uuid_comparison_exp",
 		render_jobs:"clip_render_jobs_bool_exp",
 		render_jobs_aggregate:"clip_render_jobs_aggregate_bool_exp",
@@ -3262,6 +3306,8 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		id:"uuid",
 		match_map:"match_maps_obj_rel_insert_input",
+		match_map_demo:"match_map_demos_obj_rel_insert_input",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		render_jobs:"clip_render_jobs_arr_rel_insert_input",
 		size:"bigint",
@@ -3269,6 +3315,36 @@ export const AllTypesProps: Record<string,any> = {
 		target_steam_id:"bigint",
 		user:"players_obj_rel_insert_input",
 		user_steam_id:"bigint"
+	},
+	match_clips_max_order_by:{
+		created_at:"order_by",
+		duration_ms:"order_by",
+		file:"order_by",
+		id:"order_by",
+		kills_count:"order_by",
+		match_map_demo_id:"order_by",
+		match_map_id:"order_by",
+		size:"order_by",
+		target_steam_id:"order_by",
+		thumbnail_url:"order_by",
+		title:"order_by",
+		user_steam_id:"order_by",
+		visibility:"order_by"
+	},
+	match_clips_min_order_by:{
+		created_at:"order_by",
+		duration_ms:"order_by",
+		file:"order_by",
+		id:"order_by",
+		kills_count:"order_by",
+		match_map_demo_id:"order_by",
+		match_map_id:"order_by",
+		size:"order_by",
+		target_steam_id:"order_by",
+		thumbnail_url:"order_by",
+		title:"order_by",
+		user_steam_id:"order_by",
+		visibility:"order_by"
 	},
 	match_clips_obj_rel_insert_input:{
 		data:"match_clips_insert_input",
@@ -3287,6 +3363,8 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		kills_count:"order_by",
 		match_map:"match_maps_order_by",
+		match_map_demo:"match_map_demos_order_by",
+		match_map_demo_id:"order_by",
 		match_map_id:"order_by",
 		render_jobs_aggregate:"clip_render_jobs_aggregate_order_by",
 		size:"order_by",
@@ -3306,10 +3384,32 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_set_input:{
 		created_at:"timestamptz",
 		id:"uuid",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		size:"bigint",
 		target_steam_id:"bigint",
 		user_steam_id:"bigint"
+	},
+	match_clips_stddev_order_by:{
+		duration_ms:"order_by",
+		kills_count:"order_by",
+		size:"order_by",
+		target_steam_id:"order_by",
+		user_steam_id:"order_by"
+	},
+	match_clips_stddev_pop_order_by:{
+		duration_ms:"order_by",
+		kills_count:"order_by",
+		size:"order_by",
+		target_steam_id:"order_by",
+		user_steam_id:"order_by"
+	},
+	match_clips_stddev_samp_order_by:{
+		duration_ms:"order_by",
+		kills_count:"order_by",
+		size:"order_by",
+		target_steam_id:"order_by",
+		user_steam_id:"order_by"
 	},
 	match_clips_stream_cursor_input:{
 		initial_value:"match_clips_stream_cursor_value_input",
@@ -3318,10 +3418,18 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_stream_cursor_value_input:{
 		created_at:"timestamptz",
 		id:"uuid",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		size:"bigint",
 		target_steam_id:"bigint",
 		user_steam_id:"bigint"
+	},
+	match_clips_sum_order_by:{
+		duration_ms:"order_by",
+		kills_count:"order_by",
+		size:"order_by",
+		target_steam_id:"order_by",
+		user_steam_id:"order_by"
 	},
 	match_clips_update_column: "enum" as const,
 	match_clips_updates:{
@@ -3329,18 +3437,67 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"match_clips_set_input",
 		where:"match_clips_bool_exp"
 	},
+	match_clips_var_pop_order_by:{
+		duration_ms:"order_by",
+		kills_count:"order_by",
+		size:"order_by",
+		target_steam_id:"order_by",
+		user_steam_id:"order_by"
+	},
+	match_clips_var_samp_order_by:{
+		duration_ms:"order_by",
+		kills_count:"order_by",
+		size:"order_by",
+		target_steam_id:"order_by",
+		user_steam_id:"order_by"
+	},
+	match_clips_variance_order_by:{
+		duration_ms:"order_by",
+		kills_count:"order_by",
+		size:"order_by",
+		target_steam_id:"order_by",
+		user_steam_id:"order_by"
+	},
 	match_demo_sessions:{
 		status_history:{
 
 		}
+	},
+	match_demo_sessions_aggregate_bool_exp:{
+		count:"match_demo_sessions_aggregate_bool_exp_count"
+	},
+	match_demo_sessions_aggregate_bool_exp_count:{
+		arguments:"match_demo_sessions_select_column",
+		filter:"match_demo_sessions_bool_exp",
+		predicate:"Int_comparison_exp"
 	},
 	match_demo_sessions_aggregate_fields:{
 		count:{
 			columns:"match_demo_sessions_select_column"
 		}
 	},
+	match_demo_sessions_aggregate_order_by:{
+		avg:"match_demo_sessions_avg_order_by",
+		count:"order_by",
+		max:"match_demo_sessions_max_order_by",
+		min:"match_demo_sessions_min_order_by",
+		stddev:"match_demo_sessions_stddev_order_by",
+		stddev_pop:"match_demo_sessions_stddev_pop_order_by",
+		stddev_samp:"match_demo_sessions_stddev_samp_order_by",
+		sum:"match_demo_sessions_sum_order_by",
+		var_pop:"match_demo_sessions_var_pop_order_by",
+		var_samp:"match_demo_sessions_var_samp_order_by",
+		variance:"match_demo_sessions_variance_order_by"
+	},
 	match_demo_sessions_append_input:{
 		status_history:"jsonb"
+	},
+	match_demo_sessions_arr_rel_insert_input:{
+		data:"match_demo_sessions_insert_input",
+		on_conflict:"match_demo_sessions_on_conflict"
+	},
+	match_demo_sessions_avg_order_by:{
+		watcher_steam_id:"order_by"
 	},
 	match_demo_sessions_bool_exp:{
 		_and:"match_demo_sessions_bool_exp",
@@ -3357,6 +3514,8 @@ export const AllTypesProps: Record<string,any> = {
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
 		match_map:"match_maps_bool_exp",
+		match_map_demo:"match_map_demos_bool_exp",
+		match_map_demo_id:"uuid_comparison_exp",
 		match_map_id:"uuid_comparison_exp",
 		session_token:"String_comparison_exp",
 		status:"String_comparison_exp",
@@ -3387,10 +3546,44 @@ export const AllTypesProps: Record<string,any> = {
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
 		match_map:"match_maps_obj_rel_insert_input",
+		match_map_demo:"match_map_demos_obj_rel_insert_input",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		status_history:"jsonb",
 		watcher:"players_obj_rel_insert_input",
 		watcher_steam_id:"bigint"
+	},
+	match_demo_sessions_max_order_by:{
+		created_at:"order_by",
+		error_message:"order_by",
+		game_server_node_id:"order_by",
+		id:"order_by",
+		k8s_job_name:"order_by",
+		last_activity_at:"order_by",
+		last_status_at:"order_by",
+		match_id:"order_by",
+		match_map_demo_id:"order_by",
+		match_map_id:"order_by",
+		session_token:"order_by",
+		status:"order_by",
+		stream_url:"order_by",
+		watcher_steam_id:"order_by"
+	},
+	match_demo_sessions_min_order_by:{
+		created_at:"order_by",
+		error_message:"order_by",
+		game_server_node_id:"order_by",
+		id:"order_by",
+		k8s_job_name:"order_by",
+		last_activity_at:"order_by",
+		last_status_at:"order_by",
+		match_id:"order_by",
+		match_map_demo_id:"order_by",
+		match_map_id:"order_by",
+		session_token:"order_by",
+		status:"order_by",
+		stream_url:"order_by",
+		watcher_steam_id:"order_by"
 	},
 	match_demo_sessions_on_conflict:{
 		constraint:"match_demo_sessions_constraint",
@@ -3409,6 +3602,8 @@ export const AllTypesProps: Record<string,any> = {
 		match:"matches_order_by",
 		match_id:"order_by",
 		match_map:"match_maps_order_by",
+		match_map_demo:"match_map_demos_order_by",
+		match_map_demo_id:"order_by",
 		match_map_id:"order_by",
 		session_token:"order_by",
 		status:"order_by",
@@ -3430,9 +3625,19 @@ export const AllTypesProps: Record<string,any> = {
 		last_activity_at:"timestamptz",
 		last_status_at:"timestamptz",
 		match_id:"uuid",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		status_history:"jsonb",
 		watcher_steam_id:"bigint"
+	},
+	match_demo_sessions_stddev_order_by:{
+		watcher_steam_id:"order_by"
+	},
+	match_demo_sessions_stddev_pop_order_by:{
+		watcher_steam_id:"order_by"
+	},
+	match_demo_sessions_stddev_samp_order_by:{
+		watcher_steam_id:"order_by"
 	},
 	match_demo_sessions_stream_cursor_input:{
 		initial_value:"match_demo_sessions_stream_cursor_value_input",
@@ -3444,9 +3649,13 @@ export const AllTypesProps: Record<string,any> = {
 		last_activity_at:"timestamptz",
 		last_status_at:"timestamptz",
 		match_id:"uuid",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		status_history:"jsonb",
 		watcher_steam_id:"bigint"
+	},
+	match_demo_sessions_sum_order_by:{
+		watcher_steam_id:"order_by"
 	},
 	match_demo_sessions_update_column: "enum" as const,
 	match_demo_sessions_updates:{
@@ -3458,6 +3667,15 @@ export const AllTypesProps: Record<string,any> = {
 		_prepend:"match_demo_sessions_prepend_input",
 		_set:"match_demo_sessions_set_input",
 		where:"match_demo_sessions_bool_exp"
+	},
+	match_demo_sessions_var_pop_order_by:{
+		watcher_steam_id:"order_by"
+	},
+	match_demo_sessions_var_samp_order_by:{
+		watcher_steam_id:"order_by"
+	},
+	match_demo_sessions_variance_order_by:{
+		watcher_steam_id:"order_by"
 	},
 	match_invites_aggregate_bool_exp:{
 		count:"match_invites_aggregate_bool_exp_count"
@@ -3938,8 +4156,38 @@ export const AllTypesProps: Record<string,any> = {
 		bombs:{
 
 		},
+		clip_render_jobs:{
+			distinct_on:"clip_render_jobs_select_column",
+			order_by:"clip_render_jobs_order_by",
+			where:"clip_render_jobs_bool_exp"
+		},
+		clip_render_jobs_aggregate:{
+			distinct_on:"clip_render_jobs_select_column",
+			order_by:"clip_render_jobs_order_by",
+			where:"clip_render_jobs_bool_exp"
+		},
+		demo_sessions:{
+			distinct_on:"match_demo_sessions_select_column",
+			order_by:"match_demo_sessions_order_by",
+			where:"match_demo_sessions_bool_exp"
+		},
+		demo_sessions_aggregate:{
+			distinct_on:"match_demo_sessions_select_column",
+			order_by:"match_demo_sessions_order_by",
+			where:"match_demo_sessions_bool_exp"
+		},
 		kills:{
 
+		},
+		match_clips:{
+			distinct_on:"match_clips_select_column",
+			order_by:"match_clips_order_by",
+			where:"match_clips_bool_exp"
+		},
+		match_clips_aggregate:{
+			distinct_on:"match_clips_select_column",
+			order_by:"match_clips_order_by",
+			where:"match_clips_bool_exp"
 		},
 		players:{
 
@@ -3995,7 +4243,12 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"match_map_demos_bool_exp",
 		_or:"match_map_demos_bool_exp",
 		bombs:"jsonb_comparison_exp",
+		clip_render_jobs:"clip_render_jobs_bool_exp",
+		clip_render_jobs_aggregate:"clip_render_jobs_aggregate_bool_exp",
+		created_at:"timestamptz_comparison_exp",
 		cs2_build:"String_comparison_exp",
+		demo_sessions:"match_demo_sessions_bool_exp",
+		demo_sessions_aggregate:"match_demo_sessions_aggregate_bool_exp",
 		download_url:"String_comparison_exp",
 		duration_seconds:"Float_comparison_exp",
 		file:"String_comparison_exp",
@@ -4003,6 +4256,8 @@ export const AllTypesProps: Record<string,any> = {
 		kills:"jsonb_comparison_exp",
 		map_name:"String_comparison_exp",
 		match:"matches_bool_exp",
+		match_clips:"match_clips_bool_exp",
+		match_clips_aggregate:"match_clips_aggregate_bool_exp",
 		match_id:"uuid_comparison_exp",
 		match_map:"match_maps_bool_exp",
 		match_map_id:"uuid_comparison_exp",
@@ -4029,9 +4284,13 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_map_demos_insert_input:{
 		bombs:"jsonb",
+		clip_render_jobs:"clip_render_jobs_arr_rel_insert_input",
+		created_at:"timestamptz",
+		demo_sessions:"match_demo_sessions_arr_rel_insert_input",
 		id:"uuid",
 		kills:"jsonb",
 		match:"matches_obj_rel_insert_input",
+		match_clips:"match_clips_arr_rel_insert_input",
 		match_id:"uuid",
 		match_map:"match_maps_obj_rel_insert_input",
 		match_map_id:"uuid",
@@ -4040,6 +4299,7 @@ export const AllTypesProps: Record<string,any> = {
 		round_ticks:"jsonb"
 	},
 	match_map_demos_max_order_by:{
+		created_at:"order_by",
 		cs2_build:"order_by",
 		duration_seconds:"order_by",
 		file:"order_by",
@@ -4054,6 +4314,7 @@ export const AllTypesProps: Record<string,any> = {
 		workshop_id:"order_by"
 	},
 	match_map_demos_min_order_by:{
+		created_at:"order_by",
 		cs2_build:"order_by",
 		duration_seconds:"order_by",
 		file:"order_by",
@@ -4067,6 +4328,10 @@ export const AllTypesProps: Record<string,any> = {
 		total_ticks:"order_by",
 		workshop_id:"order_by"
 	},
+	match_map_demos_obj_rel_insert_input:{
+		data:"match_map_demos_insert_input",
+		on_conflict:"match_map_demos_on_conflict"
+	},
 	match_map_demos_on_conflict:{
 		constraint:"match_map_demos_constraint",
 		update_columns:"match_map_demos_update_column",
@@ -4074,7 +4339,10 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_map_demos_order_by:{
 		bombs:"order_by",
+		clip_render_jobs_aggregate:"clip_render_jobs_aggregate_order_by",
+		created_at:"order_by",
 		cs2_build:"order_by",
+		demo_sessions_aggregate:"match_demo_sessions_aggregate_order_by",
 		download_url:"order_by",
 		duration_seconds:"order_by",
 		file:"order_by",
@@ -4082,6 +4350,7 @@ export const AllTypesProps: Record<string,any> = {
 		kills:"order_by",
 		map_name:"order_by",
 		match:"matches_order_by",
+		match_clips_aggregate:"match_clips_aggregate_order_by",
 		match_id:"order_by",
 		match_map:"match_maps_order_by",
 		match_map_id:"order_by",
@@ -4105,6 +4374,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_map_demos_select_column: "enum" as const,
 	match_map_demos_set_input:{
 		bombs:"jsonb",
+		created_at:"timestamptz",
 		id:"uuid",
 		kills:"jsonb",
 		match_id:"uuid",
@@ -4137,6 +4407,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_map_demos_stream_cursor_value_input:{
 		bombs:"jsonb",
+		created_at:"timestamptz",
 		id:"uuid",
 		kills:"jsonb",
 		match_id:"uuid",
@@ -8418,6 +8689,7 @@ export const AllTypesProps: Record<string,any> = {
 			updates:"v_pool_maps_updates"
 		},
 		watchDemo:{
+			match_map_demo_id:"uuid",
 			match_map_id:"uuid"
 		},
 		writeServerFile:{
@@ -10874,6 +11146,9 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"teams_order_by",
 			where:"teams_bool_exp"
 		},
+		peak_elo:{
+
+		},
 		player_lineup:{
 			distinct_on:"match_lineup_players_select_column",
 			order_by:"match_lineup_players_order_by",
@@ -11034,6 +11309,9 @@ export const AllTypesProps: Record<string,any> = {
 		lobby_players:"lobby_players_bool_exp",
 		lobby_players_aggregate:"lobby_players_aggregate_bool_exp",
 		losses:"Int_comparison_exp",
+		losses_competitive:"Int_comparison_exp",
+		losses_duel:"Int_comparison_exp",
+		losses_wingman:"Int_comparison_exp",
 		matches:"matches_bool_exp",
 		matchmaking_cooldown:"timestamptz_comparison_exp",
 		multi_kills:"v_player_multi_kills_bool_exp",
@@ -11046,6 +11324,7 @@ export const AllTypesProps: Record<string,any> = {
 		objectives_aggregate:"player_objectives_aggregate_bool_exp",
 		owned_teams:"teams_bool_exp",
 		owned_teams_aggregate:"teams_aggregate_bool_exp",
+		peak_elo:"jsonb_comparison_exp",
 		player_lineup:"match_lineup_players_bool_exp",
 		player_lineup_aggregate:"match_lineup_players_aggregate_bool_exp",
 		player_unused_utilities:"player_unused_utility_bool_exp",
@@ -11073,7 +11352,10 @@ export const AllTypesProps: Record<string,any> = {
 		tournaments_aggregate:"tournaments_aggregate_bool_exp",
 		utility_thrown:"player_utility_bool_exp",
 		utility_thrown_aggregate:"player_utility_aggregate_bool_exp",
-		wins:"Int_comparison_exp"
+		wins:"Int_comparison_exp",
+		wins_competitive:"Int_comparison_exp",
+		wins_duel:"Int_comparison_exp",
+		wins_wingman:"Int_comparison_exp"
 	},
 	players_constraint: "enum" as const,
 	players_inc_input:{
@@ -11155,6 +11437,9 @@ export const AllTypesProps: Record<string,any> = {
 		last_sign_in_at:"order_by",
 		lobby_players_aggregate:"lobby_players_aggregate_order_by",
 		losses:"order_by",
+		losses_competitive:"order_by",
+		losses_duel:"order_by",
+		losses_wingman:"order_by",
 		matches_aggregate:"matches_aggregate_order_by",
 		matchmaking_cooldown:"order_by",
 		multi_kills_aggregate:"v_player_multi_kills_aggregate_order_by",
@@ -11163,6 +11448,7 @@ export const AllTypesProps: Record<string,any> = {
 		notifications_aggregate:"notifications_aggregate_order_by",
 		objectives_aggregate:"player_objectives_aggregate_order_by",
 		owned_teams_aggregate:"teams_aggregate_order_by",
+		peak_elo:"order_by",
 		player_lineup_aggregate:"match_lineup_players_aggregate_order_by",
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate_order_by",
 		profile_url:"order_by",
@@ -11180,7 +11466,10 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_trophies_aggregate:"tournament_trophies_aggregate_order_by",
 		tournaments_aggregate:"tournaments_aggregate_order_by",
 		utility_thrown_aggregate:"player_utility_aggregate_order_by",
-		wins:"order_by"
+		wins:"order_by",
+		wins_competitive:"order_by",
+		wins_duel:"order_by",
+		wins_wingman:"order_by"
 	},
 	players_pk_columns_input:{
 		steam_id:"bigint"
@@ -19242,6 +19531,8 @@ export const ReturnTypes: Record<string,any> = {
 		k8s_job_name:"String",
 		last_status_at:"timestamptz",
 		match_map:"match_maps",
+		match_map_demo:"match_map_demos",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		progress:"numeric",
 		session_token:"String",
@@ -19280,6 +19571,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		k8s_job_name:"String",
 		last_status_at:"timestamptz",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		progress:"numeric",
 		session_token:"String",
@@ -19294,6 +19586,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		k8s_job_name:"String",
 		last_status_at:"timestamptz",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		progress:"numeric",
 		session_token:"String",
@@ -20714,6 +21007,8 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		kills_count:"Int",
 		match_map:"match_maps",
+		match_map_demo:"match_map_demos",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		render_jobs:"clip_render_jobs",
 		render_jobs_aggregate:"clip_render_jobs_aggregate",
@@ -20758,6 +21053,7 @@ export const ReturnTypes: Record<string,any> = {
 		file:"String",
 		id:"uuid",
 		kills_count:"Int",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		size:"bigint",
 		target_steam_id:"bigint",
@@ -20774,6 +21070,7 @@ export const ReturnTypes: Record<string,any> = {
 		file:"String",
 		id:"uuid",
 		kills_count:"Int",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		size:"bigint",
 		target_steam_id:"bigint",
@@ -20848,6 +21145,8 @@ export const ReturnTypes: Record<string,any> = {
 		match:"matches",
 		match_id:"uuid",
 		match_map:"match_maps",
+		match_map_demo:"match_map_demos",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		session_token:"String",
 		status:"String",
@@ -20885,6 +21184,7 @@ export const ReturnTypes: Record<string,any> = {
 		last_activity_at:"timestamptz",
 		last_status_at:"timestamptz",
 		match_id:"uuid",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		session_token:"String",
 		status:"String",
@@ -20900,6 +21200,7 @@ export const ReturnTypes: Record<string,any> = {
 		last_activity_at:"timestamptz",
 		last_status_at:"timestamptz",
 		match_id:"uuid",
+		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		session_token:"String",
 		status:"String",
@@ -21161,7 +21462,12 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_map_demos:{
 		bombs:"jsonb",
+		clip_render_jobs:"clip_render_jobs",
+		clip_render_jobs_aggregate:"clip_render_jobs_aggregate",
+		created_at:"timestamptz",
 		cs2_build:"String",
+		demo_sessions:"match_demo_sessions",
+		demo_sessions_aggregate:"match_demo_sessions_aggregate",
 		download_url:"String",
 		duration_seconds:"Float",
 		file:"String",
@@ -21169,6 +21475,8 @@ export const ReturnTypes: Record<string,any> = {
 		kills:"jsonb",
 		map_name:"String",
 		match:"matches",
+		match_clips:"match_clips",
+		match_clips_aggregate:"match_clips_aggregate",
 		match_id:"uuid",
 		match_map:"match_maps",
 		match_map_id:"uuid",
@@ -21204,6 +21512,7 @@ export const ReturnTypes: Record<string,any> = {
 		total_ticks:"Float"
 	},
 	match_map_demos_max_fields:{
+		created_at:"timestamptz",
 		cs2_build:"String",
 		download_url:"String",
 		duration_seconds:"Float",
@@ -21219,6 +21528,7 @@ export const ReturnTypes: Record<string,any> = {
 		workshop_id:"String"
 	},
 	match_map_demos_min_fields:{
+		created_at:"timestamptz",
 		cs2_build:"String",
 		download_url:"String",
 		duration_seconds:"Float",
@@ -24147,6 +24457,9 @@ export const ReturnTypes: Record<string,any> = {
 		lobby_players:"lobby_players",
 		lobby_players_aggregate:"lobby_players_aggregate",
 		losses:"Int",
+		losses_competitive:"Int",
+		losses_duel:"Int",
+		losses_wingman:"Int",
 		matches:"matches",
 		matchmaking_cooldown:"timestamptz",
 		multi_kills:"v_player_multi_kills",
@@ -24159,6 +24472,7 @@ export const ReturnTypes: Record<string,any> = {
 		objectives_aggregate:"player_objectives_aggregate",
 		owned_teams:"teams",
 		owned_teams_aggregate:"teams_aggregate",
+		peak_elo:"jsonb",
 		player_lineup:"match_lineup_players",
 		player_lineup_aggregate:"match_lineup_players_aggregate",
 		player_unused_utilities:"player_unused_utility",
@@ -24186,7 +24500,10 @@ export const ReturnTypes: Record<string,any> = {
 		tournaments_aggregate:"tournaments_aggregate",
 		utility_thrown:"player_utility",
 		utility_thrown_aggregate:"player_utility_aggregate",
-		wins:"Int"
+		wins:"Int",
+		wins_competitive:"Int",
+		wins_duel:"Int",
+		wins_wingman:"Int"
 	},
 	players_aggregate:{
 		aggregate:"players_aggregate_fields",
@@ -24207,9 +24524,15 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	players_avg_fields:{
 		losses:"Int",
+		losses_competitive:"Int",
+		losses_duel:"Int",
+		losses_wingman:"Int",
 		steam_id:"Float",
 		total_matches:"Int",
-		wins:"Int"
+		wins:"Int",
+		wins_competitive:"Int",
+		wins_duel:"Int",
+		wins_wingman:"Int"
 	},
 	players_max_fields:{
 		avatar_url:"String",
@@ -24221,13 +24544,19 @@ export const ReturnTypes: Record<string,any> = {
 		language:"String",
 		last_sign_in_at:"timestamptz",
 		losses:"Int",
+		losses_competitive:"Int",
+		losses_duel:"Int",
+		losses_wingman:"Int",
 		matchmaking_cooldown:"timestamptz",
 		name:"String",
 		profile_url:"String",
 		roster_image_url:"String",
 		steam_id:"bigint",
 		total_matches:"Int",
-		wins:"Int"
+		wins:"Int",
+		wins_competitive:"Int",
+		wins_duel:"Int",
+		wins_wingman:"Int"
 	},
 	players_min_fields:{
 		avatar_url:"String",
@@ -24239,13 +24568,19 @@ export const ReturnTypes: Record<string,any> = {
 		language:"String",
 		last_sign_in_at:"timestamptz",
 		losses:"Int",
+		losses_competitive:"Int",
+		losses_duel:"Int",
+		losses_wingman:"Int",
 		matchmaking_cooldown:"timestamptz",
 		name:"String",
 		profile_url:"String",
 		roster_image_url:"String",
 		steam_id:"bigint",
 		total_matches:"Int",
-		wins:"Int"
+		wins:"Int",
+		wins_competitive:"Int",
+		wins_duel:"Int",
+		wins_wingman:"Int"
 	},
 	players_mutation_response:{
 		affected_rows:"Int",
@@ -24253,45 +24588,87 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	players_stddev_fields:{
 		losses:"Int",
+		losses_competitive:"Int",
+		losses_duel:"Int",
+		losses_wingman:"Int",
 		steam_id:"Float",
 		total_matches:"Int",
-		wins:"Int"
+		wins:"Int",
+		wins_competitive:"Int",
+		wins_duel:"Int",
+		wins_wingman:"Int"
 	},
 	players_stddev_pop_fields:{
 		losses:"Int",
+		losses_competitive:"Int",
+		losses_duel:"Int",
+		losses_wingman:"Int",
 		steam_id:"Float",
 		total_matches:"Int",
-		wins:"Int"
+		wins:"Int",
+		wins_competitive:"Int",
+		wins_duel:"Int",
+		wins_wingman:"Int"
 	},
 	players_stddev_samp_fields:{
 		losses:"Int",
+		losses_competitive:"Int",
+		losses_duel:"Int",
+		losses_wingman:"Int",
 		steam_id:"Float",
 		total_matches:"Int",
-		wins:"Int"
+		wins:"Int",
+		wins_competitive:"Int",
+		wins_duel:"Int",
+		wins_wingman:"Int"
 	},
 	players_sum_fields:{
 		losses:"Int",
+		losses_competitive:"Int",
+		losses_duel:"Int",
+		losses_wingman:"Int",
 		steam_id:"bigint",
 		total_matches:"Int",
-		wins:"Int"
+		wins:"Int",
+		wins_competitive:"Int",
+		wins_duel:"Int",
+		wins_wingman:"Int"
 	},
 	players_var_pop_fields:{
 		losses:"Int",
+		losses_competitive:"Int",
+		losses_duel:"Int",
+		losses_wingman:"Int",
 		steam_id:"Float",
 		total_matches:"Int",
-		wins:"Int"
+		wins:"Int",
+		wins_competitive:"Int",
+		wins_duel:"Int",
+		wins_wingman:"Int"
 	},
 	players_var_samp_fields:{
 		losses:"Int",
+		losses_competitive:"Int",
+		losses_duel:"Int",
+		losses_wingman:"Int",
 		steam_id:"Float",
 		total_matches:"Int",
-		wins:"Int"
+		wins:"Int",
+		wins_competitive:"Int",
+		wins_duel:"Int",
+		wins_wingman:"Int"
 	},
 	players_variance_fields:{
 		losses:"Int",
+		losses_competitive:"Int",
+		losses_duel:"Int",
+		losses_wingman:"Int",
 		steam_id:"Float",
 		total_matches:"Int",
-		wins:"Int"
+		wins:"Int",
+		wins_competitive:"Int",
+		wins_duel:"Int",
+		wins_wingman:"Int"
 	},
 	plugin_versions:{
 		min_game_build_id:"Int",

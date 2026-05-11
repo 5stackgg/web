@@ -17,6 +17,14 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "~/components/ui/dropdown-menu";
 import cleanMapName from "~/utilities/cleanMapName";
 </script>
 
@@ -75,32 +83,75 @@ import cleanMapName from "~/utilities/cleanMapName";
           class="text-xs px-2 py-0.5 backdrop-blur-sm"
           >{{ $t("match.decider") }}</Badge
         >
-        <Tooltip v-if="hasDemo && canWatchDemo">
-          <TooltipTrigger as-child>
-            <span class="inline-flex">
+        <template v-if="hasDemo && canWatchDemo">
+          <Tooltip v-if="!showDemoDropdown">
+            <TooltipTrigger as-child>
+              <span class="inline-flex">
+                <Button
+                  size="xs"
+                  variant="ghost"
+                  :disabled="demoButtonState.disabled"
+                  class="h-6 w-6 p-0 text-white/70 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                  @click.stop="
+                    demoButtonState.onClick && demoButtonState.onClick()
+                  "
+                >
+                  <Loader2
+                    v-if="demoButtonState.icon === 'loading'"
+                    class="w-4 h-4 animate-spin"
+                  />
+                  <RefreshCw
+                    v-else-if="demoButtonState.icon === 'parse'"
+                    class="w-4 h-4"
+                  />
+                  <PlayCircle v-else class="w-4 h-4" />
+                </Button>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent>{{ demoButtonState.tooltip }}</TooltipContent>
+          </Tooltip>
+          <DropdownMenu v-else>
+            <DropdownMenuTrigger as-child>
               <Button
                 size="xs"
                 variant="ghost"
-                :disabled="demoButtonState.disabled"
-                class="h-6 w-6 p-0 text-white/70 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                @click.stop="
-                  demoButtonState.onClick && demoButtonState.onClick()
-                "
+                class="h-6 w-6 p-0 text-white/70 hover:text-white"
+                @click.stop
               >
-                <Loader2
-                  v-if="demoButtonState.icon === 'loading'"
-                  class="w-4 h-4 animate-spin"
-                />
-                <RefreshCw
-                  v-else-if="demoButtonState.icon === 'parse'"
-                  class="w-4 h-4"
-                />
-                <PlayCircle v-else class="w-4 h-4" />
+                <PlayCircle class="w-4 h-4" />
               </Button>
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>{{ demoButtonState.tooltip }}</TooltipContent>
-        </Tooltip>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" class="w-64" @click.stop>
+              <DropdownMenuLabel class="text-xs">
+                {{ matchMap.demos.length }} demos for this map
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                v-for="demo in sortedDemos"
+                :key="demo.id"
+                :disabled="!demo.metadata_parsed_at || !demo.total_ticks"
+                @click.stop="openDemoWatcher(demo.id)"
+              >
+                <div class="flex flex-col gap-0.5 w-full">
+                  <div
+                    class="flex items-center justify-between gap-2 text-xs font-medium"
+                  >
+                    <span>{{ formatDemoUploaded(demo.created_at) }}</span>
+                    <span class="text-muted-foreground tabular-nums">{{
+                      formatDemoSize(demo.size)
+                    }}</span>
+                  </div>
+                  <span
+                    v-if="!demo.metadata_parsed_at || !demo.total_ticks"
+                    class="text-[10px] uppercase tracking-wider text-muted-foreground"
+                  >
+                    not parsed
+                  </span>
+                </div>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </template>
         <template v-if="matchMap.demos_download_url">
           <a target="_blank" :href="matchMap.demos_download_url" @click.stop>
             <Button
@@ -273,6 +324,22 @@ export default {
         (d) => !!d.metadata_parsed_at && !!d.total_ticks,
       );
     },
+    sortedDemos() {
+      const demos = (this.matchMap.demos ?? []).slice();
+      demos.sort((a, b) => {
+        const at = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const bt = b.created_at ? new Date(b.created_at).getTime() : 0;
+        if (at !== bt) return bt - at;
+        return String(b.id ?? "").localeCompare(String(a.id ?? ""));
+      });
+      return demos;
+    },
+    showDemoDropdown() {
+      if ((this.matchMap.demos?.length ?? 0) <= 1) return false;
+      if (this.demoButtonState.disabled) return false;
+      if (this.demoButtonState.icon !== "play") return false;
+      return true;
+    },
     canParseDemo() {
       return useAuthStore().isAdmin;
     },
@@ -371,22 +438,42 @@ export default {
         this.isParsingDemo = false;
       }
     },
-    openDemoWatcher() {
-      // Pop the demo watcher into a dedicated window. The popup owns
-      // the session lifecycle: closing the window kills the session
-      // server-side via the WS close handler. Sized to match the 16:9
-      // player + control bar; user can resize freely afterward.
-      const url = `/demo/${this.matchMap.id}`;
+    openDemoWatcher(demoId) {
+      const url = demoId
+        ? `/demo/${this.matchMap.id}?demoId=${demoId}`
+        : `/demo/${this.matchMap.id}`;
       const features =
         "width=1280,height=820,menubar=no,toolbar=no,location=no";
-      // The window name is keyed off the map id so re-clicking the
-      // same map's watch button focuses the existing popup instead
-      // of opening a second one. Different maps get different names.
-      const name = `demo-${this.matchMap.id}`;
+      const name = demoId
+        ? `demo-${this.matchMap.id}-${demoId}`
+        : `demo-${this.matchMap.id}`;
       const popup = window.open(url, name, features);
       if (popup) {
         popup.focus();
       }
+    },
+    formatDemoSize(bytes) {
+      if (typeof bytes !== "number" || bytes <= 0) return "—";
+      const units = ["B", "KB", "MB", "GB"];
+      let i = 0;
+      let n = bytes;
+      while (n >= 1024 && i < units.length - 1) {
+        n /= 1024;
+        i++;
+      }
+      return `${n.toFixed(n >= 100 || i === 0 ? 0 : 1)} ${units[i]}`;
+    },
+    formatDemoUploaded(iso) {
+      if (!iso) return "Unknown date";
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return "Unknown date";
+      return d.toLocaleString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+      });
     },
   },
 };

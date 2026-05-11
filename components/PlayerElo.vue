@@ -34,10 +34,22 @@ import {
       :class="cardClasses"
     >
       <!-- corner ticks -->
-      <span :class="[cornerTickClasses, '-left-px -top-px border-l border-t']" aria-hidden="true"></span>
-      <span :class="[cornerTickClasses, '-right-px -top-px border-r border-t']" aria-hidden="true"></span>
-      <span :class="[cornerTickClasses, '-left-px -bottom-px border-l border-b']" aria-hidden="true"></span>
-      <span :class="[cornerTickClasses, '-right-px -bottom-px border-r border-b']" aria-hidden="true"></span>
+      <span
+        :class="[cornerTickClasses, '-left-px -top-px border-l border-t']"
+        aria-hidden="true"
+      ></span>
+      <span
+        :class="[cornerTickClasses, '-right-px -top-px border-r border-t']"
+        aria-hidden="true"
+      ></span>
+      <span
+        :class="[cornerTickClasses, '-left-px -bottom-px border-l border-b']"
+        aria-hidden="true"
+      ></span>
+      <span
+        :class="[cornerTickClasses, '-right-px -bottom-px border-r border-b']"
+        aria-hidden="true"
+      ></span>
 
       <!-- scanline overlay -->
       <span :class="scanlineClasses" aria-hidden="true"></span>
@@ -48,9 +60,7 @@ import {
           <span :class="headerChevronClasses">◢</span>
           Rank Readout
         </span>
-        <span :class="headerCountClasses">
-          {{ activeCount }}/3
-        </span>
+        <span :class="headerCountClasses"> {{ activeCount }}/3 </span>
       </header>
 
       <!-- rank rows -->
@@ -72,7 +82,11 @@ import {
 
           <!-- center: bracket bar -->
           <div :class="rowMidClasses">
-            <div v-if="row.value" :class="rowBarTrackClasses" aria-hidden="true">
+            <div
+              v-if="row.value"
+              :class="rowBarTrackClasses"
+              aria-hidden="true"
+            >
               <span
                 :class="rowBarFillClasses"
                 :style="{ width: row.bracketProgress + '%' }"
@@ -81,7 +95,7 @@ import {
                 v-for="n in 4"
                 :key="n"
                 :class="rowBarTickClasses"
-                :style="{ left: (n * 20) + '%' }"
+                :style="{ left: n * 20 + '%' }"
               ></span>
             </div>
           </div>

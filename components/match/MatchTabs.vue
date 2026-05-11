@@ -800,9 +800,7 @@ export default {
         return this.mapStats.lineup_1;
       }
       if (!this.activeMap && this.allMapsStats?.lineup_1) {
-        // Merge the stats lineup_players onto the shell lineup so we keep
-        // shell-only fields (team, captain flags, is_ready) while picking up
-        // aggregates from the stats sub.
+        // Keep shell fields (team, captain flags, is_ready); add stats players.
         return {
           ...this.match.lineup_1,
           ...this.allMapsStats.lineup_1,

@@ -16,7 +16,13 @@ import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import PlayerChangeName from "~/components/PlayerChangeName.vue";
 import { kdrStrokeColor } from "~/utilities/kdrColor";
-import { PlayIcon, Pencil, ExternalLink } from "lucide-vue-next";
+import {
+  PlayIcon,
+  Pencil,
+  ExternalLink,
+  Settings2,
+  Maximize2,
+} from "lucide-vue-next";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import RadialStat from "~/components/charts/RadialStat.vue";
@@ -35,6 +41,597 @@ import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 import AvatarUpload from "~/components/AvatarUpload.vue";
 import PlayerHighlights from "~/components/clips/PlayerHighlights.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
+import PlayerEloHistoryDialog from "~/components/PlayerEloHistoryDialog.vue";
+import { useApolloClient } from "@vue/apollo-composable";
+import gql from "graphql-tag";
+import { $, order_by } from "~/generated/zeus";
+import { generateQuery } from "~/graphql/graphqlGen";
+import { simpleMatchFields } from "~/graphql/simpleMatchFields";
+import { eloFields } from "~/graphql/eloFields";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
+import { Checkbox } from "~/components/ui/checkbox";
+
+// ─── Windowed time-series — drives the ELO chart + stats panels ────────
+// The global range chip bar (7D/30D/…/ALL/custom) feeds a single
+// v_player_elo subscription scoped to this player. Mode filtering happens
+// client-side so toggling modes is instant without re-subscribing.
+type RangeKey = "7d" | "30d" | "90d" | "1y" | "all" | "custom";
+
+interface WindowedEloEntry {
+  current_elo: number | null;
+  updated_elo: number | null;
+  elo_change: number | null;
+  match_created_at: string;
+  match_id: string | null;
+  match_result: string | null;
+  type: string;
+  kills: number | null;
+  deaths: number | null;
+  assists: number | null;
+}
+
+const presetRanges: {
+  key: Exclude<RangeKey, "custom">;
+  label: string;
+  days: number | null;
+}[] = [
+  { key: "7d", label: "7D", days: 7 },
+  { key: "30d", label: "30D", days: 30 },
+  { key: "90d", label: "90D", days: 90 },
+  { key: "1y", label: "1Y", days: 365 },
+  { key: "all", label: "ALL", days: null },
+];
+
+const eloRange = ref<RangeKey>("all");
+const eloDialogOpen = ref(false);
+const customFrom = ref<string>("");
+const customTo = ref<string>("");
+const compareLifetime = ref(false);
+const excludeTournaments = ref(false);
+const settingsOpen = ref(false);
+const eloHistory = ref<WindowedEloEntry[]>([]);
+const eloHistoryLoading = ref(false);
+
+const { client: apolloClient } = useApolloClient();
+const route = useRoute();
+
+const selectedModeRef = computed<"all" | "Competitive" | "Wingman" | "Duel">(
+  () => {
+    const raw = route.query.mode;
+    const v = Array.isArray(raw) ? raw[0] : raw;
+    if (v === "Competitive" || v === "Wingman" || v === "Duel") return v;
+    return "all";
+  },
+);
+
+const playerIdRef = computed<string | null>(() => {
+  const p = route.params.id;
+  if (Array.isArray(p)) return p[0] ?? null;
+  if (typeof p === "string" && p.length > 0) return p;
+  return useAuthStore().me?.steam_id ?? null;
+});
+
+const sinceTimestamp = computed<string | null>(() => {
+  if (eloRange.value === "custom") {
+    return customFrom.value
+      ? new Date(customFrom.value + "T00:00:00").toISOString()
+      : null;
+  }
+  const r = presetRanges.find((x) => x.key === eloRange.value);
+  if (!r || r.days === null) return null;
+  return new Date(Date.now() - r.days * 86_400_000).toISOString();
+});
+
+const untilTimestamp = computed<string | null>(() => {
+  if (eloRange.value === "custom" && customTo.value) {
+    return new Date(customTo.value + "T23:59:59.999").toISOString();
+  }
+  return null;
+});
+
+const rangeLimit = computed(() => {
+  switch (eloRange.value) {
+    case "7d":
+      return 500;
+    case "30d":
+      return 1500;
+    case "90d":
+      return 3000;
+    case "1y":
+      return 6000;
+    case "custom":
+      return 6000;
+    default:
+      return 10000;
+  }
+});
+
+// Built dynamically so the `match: { is_tournament_match: ... }` filter is
+// only added when the setting is on — avoids Hasura forcing a join when
+// it isn't needed.
+const whereClause = computed(() => {
+  const w: Record<string, any> = {
+    player_steam_id: { _eq: playerIdRef.value },
+  };
+  if (sinceTimestamp.value || untilTimestamp.value) {
+    w.match_created_at = {};
+    if (sinceTimestamp.value) w.match_created_at._gte = sinceTimestamp.value;
+    if (untilTimestamp.value) w.match_created_at._lte = untilTimestamp.value;
+  }
+  if (excludeTournaments.value) {
+    w.match = { is_tournament_match: { _eq: false } };
+  }
+  return w;
+});
+
+const PLAYER_ELO_HISTORY_SUB = gql`
+  subscription PlayerWindowedEloHistory(
+    $where: v_player_elo_bool_exp!
+    $limit: Int!
+  ) {
+    v_player_elo(
+      where: $where
+      order_by: { match_created_at: asc }
+      limit: $limit
+    ) {
+      current_elo
+      updated_elo
+      elo_change
+      match_created_at
+      match_id
+      match_result
+      type
+      kills
+      deaths
+      assists
+    }
+  }
+`;
+
+let eloSubHandle: { unsubscribe: () => void } | null = null;
+let eloSubGen = 0;
+
+function teardownEloSub() {
+  if (eloSubHandle) {
+    eloSubHandle.unsubscribe();
+    eloSubHandle = null;
+  }
+}
+
+function startEloSub() {
+  teardownEloSub();
+  if (!playerIdRef.value) return;
+  eloHistoryLoading.value = true;
+  const gen = ++eloSubGen;
+  const obs = apolloClient.subscribe({
+    query: PLAYER_ELO_HISTORY_SUB,
+    variables: { where: whereClause.value, limit: rangeLimit.value },
+  });
+  eloSubHandle = obs.subscribe({
+    next: ({ data }: any) => {
+      if (gen !== eloSubGen) return;
+      eloHistory.value = (data?.v_player_elo ?? []) as WindowedEloEntry[];
+      eloHistoryLoading.value = false;
+    },
+    error: () => {
+      if (gen === eloSubGen) eloHistoryLoading.value = false;
+    },
+  });
+}
+
+watch(
+  [playerIdRef, sinceTimestamp, untilTimestamp, excludeTournaments, rangeLimit],
+  () => startEloSub(),
+  { immediate: true },
+);
+
+onUnmounted(() => teardownEloSub());
+
+// ─── Windowed matches table (Matches tab) ──────────────────────────────
+// The range bar drives the matches list + count as well. We pull the
+// player→matches relation with a where clause; the count uses the
+// matches_aggregate on the same relation so list + count stay in sync.
+const matchesPage = ref(1);
+const matchesPerPage = ref(10);
+const playerMatches = ref<any[]>([]);
+const playerMatchesTotal = ref(0);
+
+const matchesWhere = computed(() => {
+  const w: Record<string, any> = {};
+  if (sinceTimestamp.value || untilTimestamp.value) {
+    w.created_at = {};
+    if (sinceTimestamp.value) w.created_at._gte = sinceTimestamp.value;
+    if (untilTimestamp.value) w.created_at._lte = untilTimestamp.value;
+  }
+  if (excludeTournaments.value) {
+    w.is_tournament_match = { _eq: false };
+  }
+  return w;
+});
+
+// Built with Zeus so we keep the same selector source-of-truth as the
+// other matches queries on this codebase (simpleMatchFields). The
+// `where` is hoisted to a variable so Apollo can normalize cache keys
+// across filter changes.
+const PLAYER_MATCHES_QUERY = generateQuery({
+  __alias: {
+    playerWithMatches: {
+      players_by_pk: [
+        { steam_id: $("playerId", "bigint!") },
+        {
+          steam_id: true,
+          matches: [
+            {
+              where: $("matchesWhere", "matches_bool_exp"),
+              limit: $("limit", "Int!"),
+              offset: $("offset", "Int!"),
+              order_by: [{}, { created_at: order_by.desc }],
+            },
+            {
+              ...simpleMatchFields,
+              elo_changes: [
+                {
+                  where: {
+                    player_steam_id: { _eq: $("playerId", "bigint!") },
+                  },
+                },
+                eloFields,
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  },
+});
+
+// Count query is intentionally minimal — just IDs — since Hasura's
+// players->matches relationship doesn't expose an aggregate.
+const PLAYER_MATCHES_COUNT_QUERY = generateQuery({
+  __alias: {
+    playerMatchesCount: {
+      players_by_pk: [
+        { steam_id: $("playerId", "bigint!") },
+        {
+          steam_id: true,
+          matches: [
+            { where: $("matchesWhere", "matches_bool_exp") },
+            { id: true },
+          ],
+        },
+      ],
+    },
+  },
+});
+
+async function loadMatches() {
+  if (!playerIdRef.value) {
+    playerMatches.value = [];
+    playerMatchesTotal.value = 0;
+    return;
+  }
+  try {
+    const [list, count] = await Promise.all([
+      apolloClient.query({
+        query: PLAYER_MATCHES_QUERY,
+        variables: {
+          playerId: playerIdRef.value,
+          matchesWhere: matchesWhere.value,
+          limit: matchesPerPage.value,
+          offset: (matchesPage.value - 1) * matchesPerPage.value,
+        },
+        fetchPolicy: "network-only",
+      }),
+      apolloClient.query({
+        query: PLAYER_MATCHES_COUNT_QUERY,
+        variables: {
+          playerId: playerIdRef.value,
+          matchesWhere: matchesWhere.value,
+        },
+        fetchPolicy: "network-only",
+      }),
+    ]);
+    playerMatches.value = (list.data as any)?.playerWithMatches?.matches ?? [];
+    playerMatchesTotal.value =
+      (count.data as any)?.playerMatchesCount?.matches?.length ?? 0;
+  } catch {
+    // swallow — page is subscription-driven elsewhere; matches table
+    // simply shows whatever last succeeded.
+  }
+}
+
+// Reset to page 1 whenever the filter changes — otherwise a deep page
+// in a large window becomes empty when the user narrows the window.
+watch(matchesWhere, () => {
+  matchesPage.value = 1;
+});
+
+watch([playerIdRef, matchesWhere, matchesPage], () => loadMatches(), {
+  immediate: true,
+});
+
+const modeFilteredWindowed = computed<WindowedEloEntry[]>(() => {
+  if (selectedModeRef.value === "all") return eloHistory.value;
+  return eloHistory.value.filter((e) => e.type === selectedModeRef.value);
+});
+
+const windowedStats = computed(() => {
+  const list = modeFilteredWindowed.value;
+  if (list.length === 0) {
+    return {
+      current: null as number | null,
+      peak: null as number | null,
+      lowest: null as number | null,
+      total: 0,
+      wins: 0,
+      losses: 0,
+      ties: 0,
+      winPct: 0,
+      avgChange: 0,
+      kills: 0,
+      deaths: 0,
+      assists: 0,
+      kd: 0,
+      kdPct: 0,
+      bestGain: null as WindowedEloEntry | null,
+      worstLoss: null as WindowedEloEntry | null,
+      peakEntry: null as WindowedEloEntry | null,
+    };
+  }
+  let peak = -Infinity;
+  let lowest = Infinity;
+  let wins = 0;
+  let losses = 0;
+  let ties = 0;
+  let changeSum = 0;
+  let changeCount = 0;
+  let kills = 0;
+  let deaths = 0;
+  let assists = 0;
+  let bestGain: WindowedEloEntry | null = null;
+  let worstLoss: WindowedEloEntry | null = null;
+  let peakEntry: WindowedEloEntry | null = null;
+
+  for (const e of list) {
+    const elo = e.updated_elo ?? e.current_elo ?? null;
+    if (elo !== null) {
+      if (elo > peak) {
+        peak = elo;
+        peakEntry = e;
+      }
+      if (elo < lowest) lowest = elo;
+    }
+    if (e.match_result === "won" || e.match_result === "win") wins++;
+    else if (e.match_result === "lost" || e.match_result === "loss") losses++;
+    else if (e.match_result === "tied" || e.match_result === "tie") ties++;
+
+    if (typeof e.elo_change === "number") {
+      changeSum += e.elo_change;
+      changeCount++;
+      if (!bestGain || e.elo_change > (bestGain.elo_change ?? -Infinity))
+        bestGain = e;
+      if (!worstLoss || e.elo_change < (worstLoss.elo_change ?? Infinity))
+        worstLoss = e;
+    }
+    kills += e.kills ?? 0;
+    deaths += e.deaths ?? 0;
+    assists += e.assists ?? 0;
+  }
+
+  const last = list[list.length - 1];
+  const current = last?.updated_elo ?? last?.current_elo ?? null;
+  const decided = wins + losses;
+  const kd = deaths > 0 ? kills / deaths : kills;
+  const kdPct = Math.min((kd / 2) * 100, 100);
+
+  return {
+    current,
+    peak: peak === -Infinity ? null : peak,
+    lowest: lowest === Infinity ? null : lowest,
+    total: list.length,
+    wins,
+    losses,
+    ties,
+    winPct: decided > 0 ? (wins / decided) * 100 : 0,
+    avgChange: changeCount > 0 ? changeSum / changeCount : 0,
+    kills,
+    deaths,
+    assists,
+    kd,
+    kdPct,
+    bestGain,
+    worstLoss,
+    peakEntry,
+  };
+});
+
+// ─── Time-bucketing ────────────────────────────────────────────────────
+// At wide ranges (1Y / ALL / long custom spans) plotting every match
+// drowns the trend in daily noise. We collapse points into period
+// buckets — last entry per bucket wins (= "ELO at end of period"),
+// and elo_change is the sum across the bucket (= net Δ over the
+// period). The modal stays raw so the drill-down keeps full detail.
+type BucketSize = "raw" | "week" | "month";
+
+// Density floor — below ~30 points the raw chart isn't crowded, and
+// bucketing those few entries into months just throws away resolution
+// (and produces sparse, lonely-looking points). Only collapse into
+// period buckets when there's enough data to actually need summarising.
+const BUCKET_MIN_POINTS = 30;
+
+const bucketSize = computed<BucketSize>(() => {
+  if (eloHistory.value.length < BUCKET_MIN_POINTS) return "raw";
+  if (eloRange.value === "all" || eloRange.value === "1y") return "month";
+  if (eloRange.value === "90d") return "week";
+  if (eloRange.value === "custom") {
+    const since = sinceTimestamp.value
+      ? new Date(sinceTimestamp.value).getTime()
+      : null;
+    const until = untilTimestamp.value
+      ? new Date(untilTimestamp.value).getTime()
+      : Date.now();
+    if (since === null) return "month";
+    const days = (until - since) / 86_400_000;
+    if (days > 270) return "month";
+    if (days > 60) return "week";
+    return "raw";
+  }
+  return "raw";
+});
+
+function bucketKeyFor(iso: string, size: BucketSize): string {
+  const d = new Date(iso);
+  if (size === "month") {
+    return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
+  }
+  if (size === "week") {
+    // ISO-week key — matches what TimescaleDB's `time_bucket('1 week')`
+    // produces on UTC, so swapping to a backend function later won't
+    // shift the bucket boundaries on the user.
+    const tmp = new Date(
+      Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()),
+    );
+    tmp.setUTCDate(tmp.getUTCDate() + 4 - (tmp.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(tmp.getUTCFullYear(), 0, 1));
+    const week = Math.ceil(
+      ((tmp.getTime() - yearStart.getTime()) / 86_400_000 + 1) / 7,
+    );
+    return `${tmp.getUTCFullYear()}-W${String(week).padStart(2, "0")}`;
+  }
+  return iso;
+}
+
+function bucketHistory(
+  list: WindowedEloEntry[],
+  size: BucketSize,
+): WindowedEloEntry[] {
+  if (size === "raw" || list.length === 0) return list;
+  const groups = new Map<string, WindowedEloEntry[]>();
+  for (const e of list) {
+    const k = bucketKeyFor(e.match_created_at, size);
+    let arr = groups.get(k);
+    if (!arr) {
+      arr = [];
+      groups.set(k, arr);
+    }
+    arr.push(e);
+  }
+  return Array.from(groups.values())
+    .map((entries) => {
+      entries.sort(
+        (a, b) =>
+          new Date(a.match_created_at).getTime() -
+          new Date(b.match_created_at).getTime(),
+      );
+      const last = entries[entries.length - 1];
+      const netChange = entries.reduce(
+        (sum, e) => sum + (e.elo_change ?? 0),
+        0,
+      );
+      return { ...last, elo_change: netChange };
+    })
+    .sort(
+      (a, b) =>
+        new Date(a.match_created_at).getTime() -
+        new Date(b.match_created_at).getTime(),
+    );
+}
+
+// Multi-series chart driven by the window. When a specific mode is
+// active the chart shows ONLY that mode — other modes' lines would
+// be visual noise once you've narrowed in. In "all" mode we show
+// all three, with Competitive focused (bold + Δ labels) since it
+// usually carries the most volume.
+const windowedChartSeries = computed(() => {
+  const size = bucketSize.value;
+  const groupBy = (m: "Competitive" | "Wingman" | "Duel") =>
+    bucketHistory(
+      eloHistory.value.filter((e) => e.type === m),
+      size,
+    );
+
+  const allModes = ["Competitive", "Wingman", "Duel"] as const;
+  const visibleModes =
+    selectedModeRef.value === "all"
+      ? allModes
+      : ([selectedModeRef.value] as readonly (
+          | "Competitive"
+          | "Wingman"
+          | "Duel"
+        )[]);
+
+  return visibleModes
+    .map((m) => ({
+      key: m,
+      label: m,
+      history: groupBy(m),
+      focus: selectedModeRef.value === "all" ? m === "Competitive" : true,
+    }))
+    .filter((s) => s.history.length > 0);
+});
+
+const bucketLabel = computed(() => {
+  switch (bucketSize.value) {
+    case "month":
+      return "Monthly";
+    case "week":
+      return "Weekly";
+    default:
+      return "Per match";
+  }
+});
+
+const hasWindowedEloData = computed(
+  () => modeFilteredWindowed.value.length > 0,
+);
+
+// Range labels are date-aware so the popover and chips agree on what's
+// currently active without each side having to recompute.
+const activeRangeLabel = computed(() => {
+  if (eloRange.value === "custom") {
+    const from = customFrom.value || "—";
+    const to = customTo.value || "now";
+    return `${from} → ${to}`;
+  }
+  const r = presetRanges.find((x) => x.key === eloRange.value);
+  return r?.label ?? "—";
+});
+
+function setRange(r: RangeKey) {
+  eloRange.value = r;
+}
+
+function applyCustomRange() {
+  if (customFrom.value || customTo.value) {
+    eloRange.value = "custom";
+  }
+}
+
+function fmtRangeStat(n: number | null | undefined): string {
+  if (n === null || n === undefined || !Number.isFinite(n)) return "—";
+  return Math.round(n).toLocaleString();
+}
+
+function fmtSignedStat(n: number | null | undefined): string {
+  if (n === null || n === undefined || !Number.isFinite(n)) return "—";
+  const rounded = Math.round(n);
+  return rounded > 0
+    ? `+${rounded.toLocaleString()}`
+    : rounded.toLocaleString();
+}
+
+function fmtDateShort(iso: string | null | undefined): string {
+  if (!iso) return "—";
+  return new Date(iso).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
 
 definePageMeta({
   alias: ["/me/:id"],
@@ -292,6 +889,139 @@ const playerTeamChipShortClasses =
         </TabsList>
       </Tabs>
 
+      <!-- Global time-range bar — drives the stats strip inside the ELO
+           History card and the windowed values in the Win Rate / K/D card.
+           Cog opens a popover with custom range, lifetime compare, and
+           tournament filtering. -->
+      <div
+        class="flex flex-wrap items-center gap-3 rounded-lg border border-border/60 bg-card/40 px-3 py-2.5 [backdrop-filter:blur(6px)]"
+      >
+        <span
+          class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
+        >
+          Range
+        </span>
+        <div class="flex flex-wrap items-center gap-1.5">
+          <button
+            v-for="r in presetRanges"
+            :key="r.key"
+            type="button"
+            class="rounded border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
+            :class="
+              eloRange === r.key
+                ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
+                : 'border-border/60 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
+            "
+            @click="setRange(r.key)"
+          >
+            {{ r.label }}
+          </button>
+          <span
+            v-if="eloRange === 'custom'"
+            class="rounded border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+          >
+            {{ activeRangeLabel }}
+          </span>
+        </div>
+        <span
+          class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground"
+        >
+          <template v-if="eloHistoryLoading && eloHistory.length === 0">
+            Loading…
+          </template>
+          <template v-else>
+            {{ windowedStats.total.toLocaleString() }} matches
+            <template v-if="excludeTournaments"> · No tournaments</template>
+            <template v-if="selectedModeRef !== 'all'">
+              · {{ selectedModeRef }}
+            </template>
+          </template>
+        </span>
+        <div class="ml-auto flex items-center gap-2">
+          <span
+            v-if="compareLifetime"
+            class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
+          >
+            vs Lifetime
+          </span>
+          <Popover v-model:open="settingsOpen">
+            <PopoverTrigger as-child>
+              <button
+                type="button"
+                class="inline-flex h-8 w-8 items-center justify-center rounded border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+                :title="
+                  $t('pages.players.detail.range_settings', 'Range settings')
+                "
+              >
+                <Settings2 class="h-4 w-4" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="end" class="w-80 space-y-4">
+              <div class="space-y-2">
+                <div
+                  class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
+                >
+                  Custom Range
+                </div>
+                <div class="flex items-center gap-2">
+                  <input
+                    v-model="customFrom"
+                    type="date"
+                    class="flex-1 rounded border border-border bg-background px-2 py-1 text-xs"
+                    :max="customTo || undefined"
+                    @change="applyCustomRange"
+                  />
+                  <span class="text-muted-foreground text-xs">→</span>
+                  <input
+                    v-model="customTo"
+                    type="date"
+                    class="flex-1 rounded border border-border bg-background px-2 py-1 text-xs"
+                    :min="customFrom || undefined"
+                    @change="applyCustomRange"
+                  />
+                </div>
+                <p
+                  v-if="eloRange === 'custom'"
+                  class="text-[0.65rem] text-muted-foreground"
+                >
+                  Custom window active. Choosing a preset clears it.
+                </p>
+              </div>
+              <label
+                class="flex items-start gap-2 cursor-pointer rounded p-1 -mx-1 hover:bg-muted/40"
+              >
+                <Checkbox
+                  :model-value="compareLifetime"
+                  @update:model-value="(v) => (compareLifetime = !!v)"
+                  class="mt-0.5"
+                />
+                <div class="flex-1">
+                  <div class="text-sm font-medium">Compare vs lifetime</div>
+                  <div class="text-[0.65rem] text-muted-foreground">
+                    Show lifetime totals alongside the window.
+                  </div>
+                </div>
+              </label>
+              <label
+                class="flex items-start gap-2 cursor-pointer rounded p-1 -mx-1 hover:bg-muted/40"
+              >
+                <Checkbox
+                  :model-value="excludeTournaments"
+                  @update:model-value="(v) => (excludeTournaments = !!v)"
+                  class="mt-0.5"
+                />
+                <div class="flex-1">
+                  <div class="text-sm font-medium">Exclude tournaments</div>
+                  <div class="text-[0.65rem] text-muted-foreground">
+                    Skip tournament matches in stats and chart.
+                  </div>
+                </div>
+              </label>
+            </PopoverContent>
+          </Popover>
+        </div>
+      </div>
+
       <!-- Stats and Elo Section -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <!-- Performance Stats -->
@@ -299,20 +1029,21 @@ const playerTeamChipShortClasses =
           <AnimatedCard variant="elevated" class="flex flex-col h-full p-4">
             <CardContent class="flex-1 p-4">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 h-full">
-                <!-- Win Rate Column -->
+                <!-- Win Rate Column — driven by the windowed v_player_elo
+                     subscription so it reflects the active time range. -->
                 <div class="flex flex-col items-center justify-center gap-4">
                   <span
-                    class="text-[9px] uppercase tracking-[0.18em] opacity-0 select-none"
+                    class="text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70"
                     aria-hidden="true"
                   >
-                    .
+                    {{ activeRangeLabel }}
                   </span>
                   <RadialStat
-                    :value="winPercentage.toFixed(0) + '%'"
-                    :percentage="winPercentage"
+                    :value="windowedStats.winPct.toFixed(0) + '%'"
+                    :percentage="windowedStats.winPct"
                     :label="$t('common.stats.win_rate')"
                     :stroke-color="
-                      winPercentage >= 50
+                      windowedStats.winPct >= 50
                         ? 'hsl(142, 71%, 45%)'
                         : 'hsl(0, 84%, 60%)'
                     "
@@ -321,7 +1052,7 @@ const playerTeamChipShortClasses =
                     <div class="flex flex-col items-center group/stat">
                       <span
                         class="text-xl md:text-lg lg:text-2xl font-bold text-green-500 group-hover/stat:scale-110 transition-transform duration-300"
-                        >{{ selectedWins }}</span
+                        >{{ windowedStats.wins }}</span
                       >
                       <span
                         class="text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-wider"
@@ -334,7 +1065,7 @@ const playerTeamChipShortClasses =
                     <div class="flex flex-col items-center group/stat">
                       <span
                         class="text-xl md:text-lg lg:text-2xl font-bold text-red-500 group-hover/stat:scale-110 transition-transform duration-300"
-                        >{{ selectedLosses }}</span
+                        >{{ windowedStats.losses }}</span
                       >
                       <span
                         class="text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-wider"
@@ -342,51 +1073,99 @@ const playerTeamChipShortClasses =
                       >
                     </div>
                   </div>
+                  <div
+                    v-if="compareLifetime"
+                    class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground text-center"
+                  >
+                    Lifetime
+                    <span class="text-green-500">{{ selectedWins }}W</span>
+                    ·
+                    <span class="text-red-500">{{ selectedLosses }}L</span>
+                  </div>
                 </div>
 
-                <!-- K/D Column -->
+                <!-- K/D Column — windowed kills/deaths/assists from
+                     v_player_elo. HS% stays lifetime since it's not in the
+                     time-series view; labelled accordingly. -->
                 <div class="flex flex-col items-center justify-center gap-4">
                   <span
-                    class="text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70 transition-opacity duration-150"
-                    :class="
-                      selectedMode !== 'all' ? 'opacity-100' : 'opacity-0'
-                    "
+                    class="text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70"
                     aria-hidden="true"
                   >
-                    {{
-                      $t("pages.players.detail.global_stats", "Global stats")
-                    }}
+                    {{ activeRangeLabel }}
                   </span>
                   <RadialStat
-                    :value="kd"
-                    :percentage="kdPercentage"
+                    :value="windowedStats.kd.toFixed(2)"
+                    :percentage="windowedStats.kdPct"
                     :label="$t('pages.players.detail.kd')"
-                    :stroke-color="kdrStrokeColor(Number(kd))"
+                    :stroke-color="kdrStrokeColor(windowedStats.kd)"
                   />
                   <div
                     class="flex flex-wrap items-center justify-center gap-x-4 sm:gap-x-2 gap-y-3"
                   >
-                    <template
-                      v-for="(stat, index) in combatStats"
-                      :key="stat.key"
+                    <div class="flex flex-col items-center group/stat">
+                      <span
+                        class="text-lg md:text-base lg:text-xl font-bold text-foreground group-hover/stat:scale-110 transition-transform duration-300"
+                      >
+                        {{ windowedStats.kills.toLocaleString() }}
+                      </span>
+                      <span
+                        class="text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-wider"
+                        >{{ $t("common.stats.kills") }}</span
+                      >
+                    </div>
+                    <div
+                      class="w-px h-6 sm:h-8 bg-gradient-to-b from-transparent via-border to-transparent"
+                    ></div>
+                    <div class="flex flex-col items-center group/stat">
+                      <span
+                        class="text-lg md:text-base lg:text-xl font-bold text-foreground group-hover/stat:scale-110 transition-transform duration-300"
+                      >
+                        {{ windowedStats.assists.toLocaleString() }}
+                      </span>
+                      <span
+                        class="text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-wider"
+                        >{{ $t("common.stats.assists") }}</span
+                      >
+                    </div>
+                    <div
+                      class="w-px h-6 sm:h-8 bg-gradient-to-b from-transparent via-border to-transparent"
+                    ></div>
+                    <div
+                      class="flex flex-col items-center group/stat"
+                      :title="
+                        $t(
+                          'pages.players.detail.hs_lifetime',
+                          'Headshot % is lifetime',
+                        )
+                      "
                     >
-                      <div class="flex flex-col items-center group/stat">
-                        <span
-                          class="text-lg md:text-base lg:text-xl font-bold group-hover/stat:scale-110 transition-transform duration-300"
-                          :class="stat.colorClass"
-                        >
-                          {{ stat.value }}
-                        </span>
-                        <span
-                          class="text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-wider"
-                          >{{ stat.label }}</span
-                        >
-                      </div>
-                      <div
-                        v-if="index < combatStats.length - 1"
-                        class="w-px h-6 sm:h-8 bg-gradient-to-b from-transparent via-border to-transparent"
-                      ></div>
-                    </template>
+                      <span
+                        class="text-lg md:text-base lg:text-xl font-bold text-primary group-hover/stat:scale-110 transition-transform duration-300"
+                      >
+                        {{
+                          player?.stats?.headshot_percentage
+                            ? (player.stats.headshot_percentage * 100).toFixed(
+                                1,
+                              ) + "%"
+                            : "—"
+                        }}
+                      </span>
+                      <span
+                        class="text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground uppercase tracking-wider"
+                      >
+                        {{ $t("pages.players.filter_chips.headshot_pct") }}*
+                      </span>
+                    </div>
+                  </div>
+                  <div
+                    v-if="compareLifetime && player?.stats"
+                    class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground text-center"
+                  >
+                    Lifetime K/D
+                    <span class="text-foreground">{{ kd }}</span>
+                    · {{ player.stats.kills?.toLocaleString() ?? "—" }} K /
+                    {{ player.stats.deaths?.toLocaleString() ?? "—" }} D
                   </div>
                 </div>
               </div>
@@ -394,37 +1173,242 @@ const playerTeamChipShortClasses =
           </AnimatedCard>
         </PageTransition>
 
-        <!-- Elo History Chart -->
+        <!-- Elo History Chart — matches the other panels' chrome: plain
+             AnimatedCard, centered CardHeader title + subtitle, no extra
+             card-level backgrounds or corner accents. The chart well
+             keeps its inner frame + registration ticks + faint grid, and
+             the Peak cell keeps its amber rail — those are the per-data
+             accents, not card chrome. -->
         <PageTransition :delay="200">
-          <AnimatedCard variant="elevated" class="flex flex-col h-full p-4">
-            <CardHeader>
-              <CardTitle
-                class="text-lg md:text-base lg:text-xl font-bold text-center"
-              >
-                {{ $t("pages.players.detail.elo_history") }}
-              </CardTitle>
-            </CardHeader>
-            <CardContent
-              class="flex-1 min-h-[200px] sm:min-h-[250px] md:min-h-[300px]"
+          <AnimatedCard
+            variant="elevated"
+            class="relative flex flex-col h-full p-4"
+          >
+            <!-- No title bar — the strip's "Current ELO" cell carries
+                 the card's identity. Maximize lives in the top-right
+                 corner as a floating affordance instead. -->
+            <button
+              type="button"
+              class="absolute right-3 top-3 z-10 inline-flex h-7 w-7 items-center justify-center rounded border border-border/60 bg-card/60 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+              :title="
+                $t(
+                  'pages.players.detail.view_full_elo_history',
+                  'View full ELO history',
+                )
+              "
+              @click="eloDialogOpen = true"
             >
-              <template v-if="hasEloChartData">
-                <PlayerEloChart :series="eloChartSeries" />
-              </template>
-              <template v-else>
+              <Maximize2 class="h-3.5 w-3.5" />
+            </button>
+            <CardContent class="flex flex-1 flex-col gap-3 p-0">
+              <!-- Stats strip — two cells now (Current ELO + Peak/Lowest).
+                   Matches/W/L lives in the Win Rate card next door so we
+                   don't repeat it here. Peak gets a vertical amber rail. -->
+              <div
+                class="grid grid-cols-1 divide-y divide-border/40 overflow-hidden rounded-md border border-border/60 sm:grid-cols-2 sm:divide-x sm:divide-y-0"
+              >
+                <!-- Headline metric — Current ELO. Much larger typography
+                     than the supporting Peak / Lowest cell so the user
+                     reads it first; this is "the point" of the chart. -->
+                <div class="relative min-h-[88px] px-4 py-3 pr-12">
+                  <div
+                    class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
+                  >
+                    Current ELO
+                  </div>
+                  <div
+                    class="mt-1 text-3xl font-bold leading-none tabular-nums tracking-tight sm:text-4xl"
+                  >
+                    {{ fmtRangeStat(windowedStats.current) }}
+                  </div>
+                  <div
+                    v-if="
+                      compareLifetime &&
+                      player?.elo &&
+                      selectedModeRef !== 'all'
+                    "
+                    class="mt-0.5 font-mono text-[0.5rem] uppercase tracking-[0.18em] text-muted-foreground"
+                  >
+                    Lifetime
+                    {{
+                      fmtRangeStat(
+                        player.elo[selectedModeRef.toLowerCase()] ?? null,
+                      )
+                    }}
+                  </div>
+                </div>
+
+                <div class="relative min-h-[88px] px-4 py-3 sm:pl-5">
+                  <!-- Amber rail anchoring the headline metric -->
+                  <span
+                    class="pointer-events-none absolute left-0 top-3 bottom-3 hidden w-[2px] bg-[hsl(var(--tac-amber))] sm:block"
+                    aria-hidden="true"
+                  ></span>
+                  <div
+                    class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
+                  >
+                    Peak / Lowest
+                  </div>
+                  <div class="mt-1 flex items-baseline gap-2.5">
+                    <span
+                      class="text-xl font-bold tabular-nums text-[hsl(var(--tac-amber))] [text-shadow:0_0_18px_hsl(var(--tac-amber)/0.35)]"
+                    >
+                      {{ fmtRangeStat(windowedStats.peak) }}
+                    </span>
+                    <span
+                      class="font-mono text-[hsl(var(--tac-amber)/0.35)]"
+                      aria-hidden="true"
+                      >/</span
+                    >
+                    <span
+                      class="text-base font-semibold tabular-nums text-muted-foreground/80"
+                    >
+                      {{ fmtRangeStat(windowedStats.lowest) }}
+                    </span>
+                  </div>
+                  <!-- Date row is ALWAYS rendered (placeholder when no
+                       peakEntry yet) so the cell height never changes
+                       between empty/loaded states. -->
+                  <div
+                    class="mt-0.5 font-mono text-[0.5rem] uppercase tracking-[0.18em] text-muted-foreground"
+                  >
+                    <template v-if="windowedStats.peakEntry">
+                      Peak
+                      {{
+                        fmtDateShort(windowedStats.peakEntry.match_created_at)
+                      }}
+                    </template>
+                    <template v-else>&nbsp;</template>
+                  </div>
+                  <div
+                    v-if="
+                      compareLifetime &&
+                      player?.peak_elo &&
+                      selectedModeRef !== 'all'
+                    "
+                    class="mt-0.5 font-mono text-[0.5rem] uppercase tracking-[0.18em] text-muted-foreground"
+                  >
+                    Lifetime Peak
+                    {{
+                      fmtRangeStat(
+                        player.peak_elo[selectedModeRef.toLowerCase()] ?? null,
+                      )
+                    }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Chart well: fixed height (NOT min-h) so the card never
+                   grows when data arrives or when the empty/loading state
+                   swaps for the chart. Frame + grid stay constant; the
+                   contents inside just swap. -->
+              <div
+                class="relative h-[260px] sm:h-[300px] overflow-hidden rounded-md border border-border/40"
+              >
+                <!-- Registration ticks on the inner frame -->
+                <span
+                  class="pointer-events-none absolute -top-px left-3 h-1.5 w-1.5 border-l border-t border-[hsl(var(--tac-amber)/0.45)]"
+                  aria-hidden="true"
+                ></span>
+                <span
+                  class="pointer-events-none absolute -top-px right-3 h-1.5 w-1.5 border-r border-t border-[hsl(var(--tac-amber)/0.45)]"
+                  aria-hidden="true"
+                ></span>
+                <span
+                  class="pointer-events-none absolute -bottom-px left-3 h-1.5 w-1.5 border-l border-b border-[hsl(var(--tac-amber)/0.45)]"
+                  aria-hidden="true"
+                ></span>
+                <span
+                  class="pointer-events-none absolute -bottom-px right-3 h-1.5 w-1.5 border-r border-b border-[hsl(var(--tac-amber)/0.45)]"
+                  aria-hidden="true"
+                ></span>
+                <!-- Faint coordinate grid: keeps the surface visually
+                     populated when only a few datapoints exist. -->
                 <div
-                  class="flex justify-center items-center h-full uppercase text-muted-foreground text-center flex-col"
+                  class="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(0deg,hsl(var(--foreground))_1px,transparent_1px),linear-gradient(90deg,hsl(var(--foreground))_1px,transparent_1px)] [background-size:48px_48px]"
+                  aria-hidden="true"
+                ></div>
+
+                <!-- Loading: own state distinct from "truly empty" so we
+                     don't briefly show "Play a match" while the
+                     subscription is just warming up. Pure decoration —
+                     animate-ping on the indicator dot only. -->
+                <div
+                  v-if="eloHistoryLoading && !hasWindowedEloData"
+                  class="elo-skeleton relative flex h-full flex-col items-center justify-center gap-3 px-6"
+                  aria-busy="true"
                 >
-                  {{ $t("pages.players.detail.no_elo_history") }}
-                  <NuxtLink v-if="me" to="/play" class="mt-2">
+                  <!-- Skeleton plot lines — three faint horizontal
+                       bars hinting at the chart's grid axes. -->
+                  <div
+                    class="pointer-events-none absolute inset-x-8 top-[28%] h-px bg-[hsl(var(--foreground)/0.08)]"
+                    aria-hidden="true"
+                  ></div>
+                  <div
+                    class="pointer-events-none absolute inset-x-8 top-1/2 h-px bg-[hsl(var(--foreground)/0.12)]"
+                    aria-hidden="true"
+                  ></div>
+                  <div
+                    class="pointer-events-none absolute inset-x-8 bottom-[28%] h-px bg-[hsl(var(--foreground)/0.08)]"
+                    aria-hidden="true"
+                  ></div>
+                  <div
+                    class="inline-flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground"
+                  >
+                    <span class="relative flex h-2 w-2">
+                      <span
+                        class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
+                      ></span>
+                      <span
+                        class="relative inline-flex h-2 w-2 rounded-full bg-[hsl(var(--tac-amber))]"
+                      ></span>
+                    </span>
+                    Acquiring telemetry…
+                  </div>
+                </div>
+
+                <PlayerEloChart
+                  v-else-if="hasWindowedEloData"
+                  class="relative h-full"
+                  :series="windowedChartSeries"
+                />
+
+                <div
+                  v-else
+                  class="relative flex h-full flex-col items-center justify-center gap-2 px-6 text-center uppercase text-muted-foreground"
+                >
+                  <template v-if="eloRange !== 'all'">
+                    <span
+                      class="font-mono text-[0.65rem] tracking-[0.22em] text-muted-foreground"
+                    >
+                      No matches in this window
+                    </span>
                     <Button
                       variant="outline"
                       size="sm"
-                      class="hover:scale-105 transition-transform"
-                      >{{ $t("pages.players.detail.play_a_match") }}</Button
+                      class="transition-transform hover:scale-105"
+                      @click="setRange('all')"
                     >
-                  </NuxtLink>
+                      Expand to all time
+                    </Button>
+                  </template>
+                  <template v-else>
+                    <span
+                      class="font-mono text-[0.65rem] tracking-[0.22em] text-muted-foreground"
+                    >
+                      {{ $t("pages.players.detail.no_elo_history") }}
+                    </span>
+                    <NuxtLink v-if="me" to="/play" class="mt-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        class="transition-transform hover:scale-105"
+                        >{{ $t("pages.players.detail.play_a_match") }}</Button
+                      >
+                    </NuxtLink>
+                  </template>
                 </div>
-              </template>
+              </div>
             </CardContent>
           </AnimatedCard>
         </PageTransition>
@@ -555,33 +1539,31 @@ const playerTeamChipShortClasses =
         </TabsList>
 
         <TabsContent value="matches">
-          <Empty
-            v-if="
-              playerWithMatchesAggregate &&
-              playerWithMatchesAggregate.total_matches === 0
-            "
-            class="min-h-[200px]"
-          >
+          <Empty v-if="playerMatchesTotal === 0" class="min-h-[200px]">
             <EmptyTitle>{{ $t("pages.players.detail.no_matches") }}</EmptyTitle>
-            <EmptyDescription>{{
-              $t("pages.players.detail.no_matches_description")
-            }}</EmptyDescription>
+            <EmptyDescription>
+              <template v-if="eloRange !== 'all' || excludeTournaments">
+                No matches in this window.
+                <button
+                  type="button"
+                  class="ml-1 text-[hsl(var(--tac-amber))] hover:underline"
+                  @click="setRange('all')"
+                >
+                  Expand to all time
+                </button>
+              </template>
+              <template v-else>
+                {{ $t("pages.players.detail.no_matches_description") }}
+              </template>
+            </EmptyDescription>
           </Empty>
-          <template v-else-if="playerWithMatches?.matches?.length">
-            <MatchesTable
-              :player="player"
-              :matches="playerWithMatches?.matches"
-            />
+          <template v-else>
+            <MatchesTable :player="player" :matches="playerMatches" />
             <Pagination
-              :page="page"
-              :per-page="perPage"
-              @page="
-                (_page) => {
-                  page = _page;
-                }
-              "
-              :total="playerWithMatchesAggregate.total_matches"
-              v-if="playerWithMatchesAggregate"
+              :page="matchesPage"
+              :per-page="matchesPerPage"
+              :total="playerMatchesTotal"
+              @page="(p) => (matchesPage = p)"
             />
           </template>
         </TabsContent>
@@ -609,6 +1591,17 @@ const playerTeamChipShortClasses =
       </Tabs>
     </PageTransition>
   </div>
+
+  <PlayerEloHistoryDialog
+    v-if="playerIdRef"
+    :open="eloDialogOpen"
+    :player-id="playerIdRef"
+    :player-name="player?.name ?? null"
+    :default-mode="selectedModeRef"
+    :default-range="eloRange === 'custom' ? '1y' : eloRange"
+    :exclude-tournaments="excludeTournaments"
+    @update:open="(o) => (eloDialogOpen = o)"
+  />
 
   <Sheet
     v-if="player"
@@ -671,11 +1664,8 @@ const playerTeamChipShortClasses =
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { $, order_by, e_match_types_enum } from "~/generated/zeus";
-import { generateQuery } from "~/graphql/graphqlGen";
-import { simpleMatchFields } from "~/graphql/simpleMatchFields";
+import { e_match_types_enum } from "~/generated/zeus";
 import { playerFields } from "~/graphql/playerFields";
-import { eloFields } from "~/graphql/eloFields";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
 import { trophyFields } from "~/graphql/trophyFields";
@@ -878,78 +1868,6 @@ export default {
         },
       },
     },
-    playerWithMatches: {
-      fetchPolicy: "network-only",
-      query: generateQuery({
-        __alias: {
-          playerWithMatches: {
-            players_by_pk: [
-              {
-                steam_id: $("playerId", "bigint!"),
-              },
-              {
-                steam_id: true,
-                matches: [
-                  {
-                    limit: $("limit", "Int!"),
-                    offset: $("offset", "Int!"),
-                    order_by: [
-                      {},
-                      {
-                        created_at: order_by.desc,
-                      },
-                    ],
-                  },
-                  {
-                    ...simpleMatchFields,
-                    elo_changes: [
-                      {
-                        where: {
-                          player_steam_id: {
-                            _eq: $("playerId", "bigint!"),
-                          },
-                        },
-                      },
-                      eloFields,
-                    ],
-                  },
-                ],
-              },
-            ],
-          },
-        },
-      }),
-      variables: function () {
-        return {
-          playerId: this.playerId,
-          limit: this.perPage,
-          offset: (this.page - 1) * this.perPage,
-        };
-      },
-    },
-    playerWithMatchesAggregate: {
-      fetchPolicy: "network-only",
-      query: generateQuery({
-        __alias: {
-          playerWithMatchesAggregate: {
-            players_by_pk: [
-              {
-                steam_id: $("playerId", "bigint!"),
-              },
-              {
-                steam_id: true,
-                total_matches: true,
-              },
-            ],
-          },
-        },
-      }),
-      variables: function () {
-        return {
-          playerId: this.playerId,
-        };
-      },
-    },
   },
   unmounted() {
     usePlayerContext().value = null;
@@ -957,8 +1875,6 @@ export default {
   data() {
     return {
       player: undefined,
-      page: 1,
-      perPage: 10,
       playerTournaments: [],
       playerTrophies: undefined,
       editPlayerSheet: false,

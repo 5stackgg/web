@@ -571,8 +571,13 @@ import {
   e_match_status_enum,
   e_player_roles_enum,
 } from "~/generated/zeus";
-import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
+import {
+  generateMutation,
+  generateQuery,
+  generateSubscription,
+} from "~/graphql/graphqlGen";
 import { matchMapStats } from "~/graphql/matchMapStatsGraphql";
+import { matchAllMapsStats } from "~/graphql/matchAllMapsStatsGraphql";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
@@ -581,6 +586,22 @@ import {
   normalizeRouteTab,
   replaceRouteTab,
 } from "~/composables/useRouteTab";
+
+// Hasura subscriptions require one top-level field, so we query the
+// match_lineups list and split by id client-side.
+const allMapsStatsSubscription = generateSubscription({
+  match_lineups: [
+    { where: { id: { _in: $("lineup_ids", "[uuid!]!") } } },
+    matchAllMapsStats,
+  ],
+});
+
+const allMapsStatsQuery = generateQuery({
+  match_lineups: [
+    { where: { id: { _in: $("lineup_ids", "[uuid!]!") } } },
+    matchAllMapsStats,
+  ],
+});
 
 enum AvailableCommands {
   Pause = "css_pause",
@@ -643,6 +664,7 @@ export default {
       inviteDialog: false,
       mapStats: null as null | { lineup_1: any; lineup_2: any },
       mapStatsLoading: false,
+      allMapsStats: null as null | { lineup_1: any; lineup_2: any },
       hasLogs: false,
       showConfirmDialog: false,
       pendingCommand: null as
@@ -658,6 +680,39 @@ export default {
         ),
       }),
     };
+  },
+  apollo: {
+    $subscribe: {
+      allMapsStats: {
+        variables() {
+          return {
+            matchId: this.match.id,
+            lineup_ids: [this.match.lineup_1_id, this.match.lineup_2_id],
+            order_by_name: order_by.asc,
+          };
+        },
+        skip() {
+          // Per-map view uses mapStats; terminal matches use a one-shot query.
+          return (
+            !!this.activeMap ||
+            this.isMatchTerminal ||
+            !this.match.lineup_1_id ||
+            !this.match.lineup_2_id
+          );
+        },
+        query: allMapsStatsSubscription,
+        result({ data }) {
+          if (!data) return;
+          const rows = data.match_lineups ?? [];
+          this.allMapsStats = {
+            lineup_1:
+              rows.find((r: any) => r.id === this.match.lineup_1_id) ?? null,
+            lineup_2:
+              rows.find((r: any) => r.id === this.match.lineup_2_id) ?? null,
+          };
+        },
+      },
+    },
   },
   watch: {
     activeMap: {
@@ -676,6 +731,17 @@ export default {
           }
         } else {
           this.mapStats = null;
+          if (this.isMatchTerminal) {
+            void this.fetchAllMapsStats();
+          }
+        }
+      },
+    },
+    isMatchTerminal: {
+      immediate: true,
+      handler(terminal) {
+        if (terminal && !this.activeMap) {
+          void this.fetchAllMapsStats();
         }
       },
     },
@@ -733,11 +799,24 @@ export default {
       if (this.activeMap && this.mapStats?.lineup_1) {
         return this.mapStats.lineup_1;
       }
+      if (!this.activeMap && this.allMapsStats?.lineup_1) {
+        // Keep shell fields (team, captain flags, is_ready); add stats players.
+        return {
+          ...this.match.lineup_1,
+          ...this.allMapsStats.lineup_1,
+        };
+      }
       return this.match.lineup_1;
     },
     activeLineup2() {
       if (this.activeMap && this.mapStats?.lineup_2) {
         return this.mapStats.lineup_2;
+      }
+      if (!this.activeMap && this.allMapsStats?.lineup_2) {
+        return {
+          ...this.match.lineup_2,
+          ...this.allMapsStats.lineup_2,
+        };
       }
       return this.match.lineup_2;
     },
@@ -909,6 +988,26 @@ export default {
       if (map) {
         this.$emit("select-map", map);
       }
+    },
+    async fetchAllMapsStats() {
+      if (!this.match.lineup_1_id || !this.match.lineup_2_id) return;
+      const { data } = await this.$apollo.query({
+        variables: {
+          matchId: this.match.id,
+          lineup_ids: [this.match.lineup_1_id, this.match.lineup_2_id],
+          order_by_name: order_by.asc,
+        },
+        fetchPolicy: "network-only",
+        query: allMapsStatsQuery,
+      });
+      if (!data) return;
+      const rows = data.match_lineups ?? [];
+      this.allMapsStats = {
+        lineup_1:
+          rows.find((r: any) => r.id === this.match.lineup_1_id) ?? null,
+        lineup_2:
+          rows.find((r: any) => r.id === this.match.lineup_2_id) ?? null,
+      };
     },
     async fetchMapStats() {
       if (!this.activeMap) return;

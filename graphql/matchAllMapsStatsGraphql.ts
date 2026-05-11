@@ -1,13 +1,8 @@
 import { $, order_by, Selector } from "~/generated/zeus";
 import { playerFields } from "~/graphql/playerFields";
 
-// Lineup shape for the "all maps" Overview tab. Reads from player_match_stats_v
-// (a SUM-over-maps Postgres view backed by player_match_map_stats) instead of
-// running ~13 hypertable aggregates per player.
-//
-// The match_stats relationship is array_relationship since manual_configuration
-// joins on steam_id alone; we scope to the current match with `where:` and
-// read [0] in the UI.
+// All-maps Overview tab. Reads from player_match_stats_v scoped to the current
+// match — array_relationship of length <= 1; the UI reads [0].
 export const matchAllMapsStats = Selector("match_lineups")({
   id: true,
   name: true,

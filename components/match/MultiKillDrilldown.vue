@@ -32,14 +32,12 @@ type DrilldownRow = {
 
 const rounds = ref<DrilldownRow[] | null>(null);
 
-// Pulls every (match_map_id, round) where this player had kills matching
-// `props.kills`. Implemented client-side by fetching raw player_kills rows
-// for the match and grouping, because v_player_multi_kills doesn't expose
-// match_map_id (it groups by match_id + round only, which merges same-round
-// numbers across maps — a known oddity in that view we don't want to inherit).
+// Group raw player_kills client-side. v_player_multi_kills doesn't expose
+// match_map_id and merges same-round-numbers across maps.
 const multiKillRoundsQuery = generateQuery({
   player_kills: [
     {
+      // _not: exclude suicide kills, matching v_player_multi_kills.
       where: {
         match_id: { _eq: $("matchId", "uuid!") },
         attacker_steam_id: { _eq: $("steamId", "bigint!") },

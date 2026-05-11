@@ -5,8 +5,6 @@ import EloChangeBadge from "~/components/EloChangeBadge.vue";
 import PlayerMatchClipsButton from "~/components/match/PlayerMatchClipsButton.vue";
 import MultiKillDrilldown from "~/components/match/MultiKillDrilldown.vue";
 
-// Placeholder shown while the lineup-stats subscription is still loading
-// (the shell match sub doesn't carry per-player aggregates anymore).
 const DASH = "—";
 </script>
 <template>
@@ -359,9 +357,6 @@ export default {
     me() {
       return useAuthStore().me;
     },
-    // The Overview tab now reads from player_match_stats_v (all maps) and
-    // player_match_map_stats (per map) via array_relationships. Both return
-    // a one-row array; we resolve whichever the parent passed us here.
     stats() {
       const arr =
         this.member?.player?.match_map_stats ??
@@ -369,9 +364,6 @@ export default {
         null;
       return Array.isArray(arr) && arr.length > 0 ? arr[0] : null;
     },
-    // True once the lineup-stats subscription has hydrated this player.
-    // Used by stat computeds and template cells to fall back to a dash
-    // placeholder while the shell-only sub is the source of truth.
     hasStats() {
       return !!this.stats;
     },
@@ -406,8 +398,6 @@ export default {
     fiveKills() {
       return this.stats?.five_kill_rounds ?? "—";
     },
-    // For the "M" multi-kills column (xl:table-cell): total rounds where the
-    // player had >=2 kills. Sum of the four counter columns.
     totalMultiKills() {
       if (!this.stats) return null;
       return (

@@ -1,9 +1,7 @@
 import { $, order_by, Selector } from "~/generated/zeus";
 import { playerFields } from "~/graphql/playerFields";
 
-// Lineup shape for the per-map Overview tab. Reads from player_match_map_stats
-// (one indexed row per player+map) instead of running ~13 hypertable aggregates
-// per player with a match_map_id filter.
+// Per-map Overview tab. Reads one row from player_match_map_stats per player.
 export const matchMapStats = Selector("match_lineups")({
   id: true,
   name: true,

@@ -61,9 +61,7 @@ import LineupMember from "~/components/match/LineupMember.vue";
 <script lang="ts">
 import formatStatValue from "../../utilities/formatStatValue";
 
-// Hasura serialises Postgres `numeric` as a string. Accept either form so the
-// helpers below can read the view (avg_flash_duration) and the per-map table
-// (flash_duration_sum / _count) without caring which one Apollo handed us.
+// Hasura returns `numeric` columns as strings; coerce either form.
 function toNumber(value: unknown): number | null {
   if (value === null || value === undefined) return null;
   const n = typeof value === "number" ? value : Number(value);
@@ -73,18 +71,12 @@ function toNumber(value: unknown): number | null {
 export default {
   methods: {
     formatStatValue,
-    // Resolve to the per-map row (player_match_map_stats) if present, else fall
-    // back to the all-maps view row (player_match_stats_v). Both are exposed
-    // as array_relationships of length <= 1, so we pluck [0].
     statsFor(member: any) {
       const arr =
         member?.player?.match_map_stats ?? member?.player?.match_stats ?? null;
       return Array.isArray(arr) && arr.length > 0 ? arr[0] : null;
     },
-    // The all-maps view exposes avg_flash_duration directly; the per-map table
-    // exposes sum + count so we can compute it the same way the SQL view does.
-    // Postgres `numeric` columns come over the wire as strings (Hasura preserves
-    // precision), so we coerce here.
+    // All-maps view has avg_flash_duration; per-map table has sum + count.
     avgFlashDuration(member: any): number | null {
       const s = this.statsFor(member);
       if (!s) return null;

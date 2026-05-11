@@ -1,10 +1,8 @@
 import { $, order_by, Selector } from "~/generated/zeus";
 import { playerFields } from "~/graphql/playerFields";
 
-// Shell-only lineup shape used by the page subscription on /matches/[id].
-// Per-player stat aggregates (kills/damage/multi-kills/flashes/etc.) live in
-// matchAllMapsStatsGraphql and matchMapStatsGraphql so the page header, scores,
-// chat, streams, and map list don't wait on hypertable aggregates.
+// Shell-only lineup shape. Per-player stats live in matchAllMapsStatsGraphql
+// and matchMapStatsGraphql so the page shell doesn't wait on aggregates.
 export const matchLineups = Selector("match_lineups")({
   id: true,
   name: true,

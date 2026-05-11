@@ -587,10 +587,8 @@ import {
   replaceRouteTab,
 } from "~/composables/useRouteTab";
 
-// Hasura requires subscriptions to have exactly one top-level field, so we
-// query the match_lineups list filtered to both lineup ids and split the rows
-// client-side in the result handler. Both the live $subscribe and the
-// terminal-match one-shot use the same shape.
+// Hasura subscriptions require one top-level field, so we query the
+// match_lineups list and split by id client-side.
 const allMapsStatsSubscription = generateSubscription({
   match_lineups: [
     { where: { id: { _in: $("lineup_ids", "[uuid!]!") } } },
@@ -666,9 +664,6 @@ export default {
       inviteDialog: false,
       mapStats: null as null | { lineup_1: any; lineup_2: any },
       mapStatsLoading: false,
-      // Whole-match per-player aggregates for the Overview tab when no
-      // specific map is selected. Lives on its own subscription so the page
-      // shell can paint without waiting on hypertable aggregates.
       allMapsStats: null as null | { lineup_1: any; lineup_2: any },
       hasLogs: false,
       showConfirmDialog: false,
@@ -697,9 +692,7 @@ export default {
           };
         },
         skip() {
-          // Per-map view is handled by mapStats; terminal matches use a
-          // one-shot query so we stop holding a websocket open for an
-          // archived match.
+          // Per-map view uses mapStats; terminal matches use a one-shot query.
           return (
             !!this.activeMap ||
             this.isMatchTerminal ||
@@ -738,8 +731,6 @@ export default {
           }
         } else {
           this.mapStats = null;
-          // Refresh all-maps stats when returning to the aggregate view on a
-          // finished match. For live matches the $subscribe handler takes over.
           if (this.isMatchTerminal) {
             void this.fetchAllMapsStats();
           }

@@ -587,41 +587,22 @@ import {
   replaceRouteTab,
 } from "~/composables/useRouteTab";
 
-// Shared query shape for the all-maps lineup stats — used by both the live
-// $subscribe and the terminal-match one-shot fetch. Pulled out of the apollo
-// block so the same DocumentNode is reused on every render.
+// Hasura requires subscriptions to have exactly one top-level field, so we
+// query the match_lineups list filtered to both lineup ids and split the rows
+// client-side in the result handler. Both the live $subscribe and the
+// terminal-match one-shot use the same shape.
 const allMapsStatsSubscription = generateSubscription({
-  __alias: {
-    lineup_1: {
-      match_lineups_by_pk: [
-        { id: $("lineup_1_id", "uuid!") },
-        matchAllMapsStats,
-      ],
-    },
-    lineup_2: {
-      match_lineups_by_pk: [
-        { id: $("lineup_2_id", "uuid!") },
-        matchAllMapsStats,
-      ],
-    },
-  },
+  match_lineups: [
+    { where: { id: { _in: $("lineup_ids", "[uuid!]!") } } },
+    matchAllMapsStats,
+  ],
 });
 
 const allMapsStatsQuery = generateQuery({
-  __alias: {
-    lineup_1: {
-      match_lineups_by_pk: [
-        { id: $("lineup_1_id", "uuid!") },
-        matchAllMapsStats,
-      ],
-    },
-    lineup_2: {
-      match_lineups_by_pk: [
-        { id: $("lineup_2_id", "uuid!") },
-        matchAllMapsStats,
-      ],
-    },
-  },
+  match_lineups: [
+    { where: { id: { _in: $("lineup_ids", "[uuid!]!") } } },
+    matchAllMapsStats,
+  ],
 });
 
 enum AvailableCommands {
@@ -711,8 +692,7 @@ export default {
         variables() {
           return {
             matchId: this.match.id,
-            lineup_1_id: this.match.lineup_1_id,
-            lineup_2_id: this.match.lineup_2_id,
+            lineup_ids: [this.match.lineup_1_id, this.match.lineup_2_id],
             order_by_name: order_by.asc,
           };
         },
@@ -730,9 +710,12 @@ export default {
         query: allMapsStatsSubscription,
         result({ data }) {
           if (!data) return;
+          const rows = data.match_lineups ?? [];
           this.allMapsStats = {
-            lineup_1: data.lineup_1 ?? null,
-            lineup_2: data.lineup_2 ?? null,
+            lineup_1:
+              rows.find((r: any) => r.id === this.match.lineup_1_id) ?? null,
+            lineup_2:
+              rows.find((r: any) => r.id === this.match.lineup_2_id) ?? null,
           };
         },
       },
@@ -1022,17 +1005,19 @@ export default {
       const { data } = await this.$apollo.query({
         variables: {
           matchId: this.match.id,
-          lineup_1_id: this.match.lineup_1_id,
-          lineup_2_id: this.match.lineup_2_id,
+          lineup_ids: [this.match.lineup_1_id, this.match.lineup_2_id],
           order_by_name: order_by.asc,
         },
         fetchPolicy: "network-only",
         query: allMapsStatsQuery,
       });
       if (!data) return;
+      const rows = data.match_lineups ?? [];
       this.allMapsStats = {
-        lineup_1: data.lineup_1 ?? null,
-        lineup_2: data.lineup_2 ?? null,
+        lineup_1:
+          rows.find((r: any) => r.id === this.match.lineup_1_id) ?? null,
+        lineup_2:
+          rows.find((r: any) => r.id === this.match.lineup_2_id) ?? null,
       };
     },
     async fetchMapStats() {

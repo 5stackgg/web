@@ -54,6 +54,14 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
+        </div>
+      </Card>
+
+      <Card variant="gradient">
+        <div class="p-6 space-y-6">
+          <h3 class="text-lg font-semibold">
+            {{ $t("pages.settings.application.servers.disk_section") }}
+          </h3>
 
           <FormField
             v-slot="{ componentField }"

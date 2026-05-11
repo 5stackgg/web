@@ -14,10 +14,10 @@ definePageMeta({
       <!-- General -->
       <Card variant="gradient">
         <div class="p-6 space-y-4">
-          <div>
-            <label class="text-sm font-medium">{{
-              $t("pages.settings.application.branding.general")
-            }}</label>
+          <div class="space-y-1">
+            <h3 class="text-lg font-semibold">
+              {{ $t("pages.settings.application.branding.general") }}
+            </h3>
             <p class="text-sm text-muted-foreground">
               {{
                 $t("pages.settings.application.branding.general_description")
@@ -63,120 +63,121 @@ definePageMeta({
             </div>
           </div>
 
-          <Card
-            variant="gradient"
-            class="cursor-pointer"
+          <div
+            class="flex flex-row items-center justify-between p-4 rounded-lg border cursor-pointer hover:bg-accent/40 transition-colors"
             @click="toggleSeparators()"
           >
-            <div class="flex flex-row items-center justify-between p-4">
-              <div class="space-y-0.5">
-                <label class="text-sm font-medium cursor-pointer">{{
-                  $t("pages.settings.application.branding.show_separators")
-                }}</label>
-                <p class="text-sm text-muted-foreground">
-                  {{
-                    $t(
-                      "pages.settings.application.branding.show_separators_description",
-                    )
-                  }}
-                </p>
-              </div>
-              <Switch
-                :model-value="showSeparators"
-                @update:model-value="toggleSeparators"
-              />
+            <div class="space-y-0.5">
+              <label class="text-sm font-medium cursor-pointer">{{
+                $t("pages.settings.application.branding.show_separators")
+              }}</label>
+              <p class="text-sm text-muted-foreground">
+                {{
+                  $t(
+                    "pages.settings.application.branding.show_separators_description",
+                  )
+                }}
+              </p>
             </div>
-          </Card>
-
-          <div class="space-y-2">
-            <label class="text-sm font-medium">{{
-              $t("pages.settings.application.branding.logo")
-            }}</label>
-            <p class="text-sm text-muted-foreground">
-              {{ $t("pages.settings.application.branding.logo_description") }}
-            </p>
-            <div class="flex items-center gap-4">
-              <div
-                class="w-16 h-16 rounded flex items-center justify-center overflow-hidden bg-muted"
-              >
-                <img
-                  v-if="logoPreview"
-                  :src="logoPreview"
-                  class="max-w-full max-h-full object-contain"
-                />
-                <NuxtImg
-                  v-else
-                  src="/favicon/64.png"
-                  class="max-w-full max-h-full"
-                />
-              </div>
-              <div class="flex gap-2">
-                <Button size="sm" @click="$refs.logoInput.click()">
-                  {{ $t("pages.settings.application.branding.upload_logo") }}
-                </Button>
-                <Button
-                  v-if="logoPreview"
-                  size="sm"
-                  variant="outline"
-                  @click="removeLogo"
-                >
-                  {{ $t("pages.settings.application.branding.remove") }}
-                </Button>
-              </div>
-              <input
-                ref="logoInput"
-                type="file"
-                accept="image/png,image/jpeg,image/svg+xml,image/webp"
-                class="hidden"
-                @change="handleLogoUpload"
-              />
-            </div>
+            <Switch
+              :model-value="showSeparators"
+              @update:model-value="toggleSeparators"
+            />
           </div>
 
-          <div class="space-y-2">
-            <label class="text-sm font-medium">{{
-              $t("pages.settings.application.branding.favicon")
-            }}</label>
-            <p class="text-sm text-muted-foreground">
-              {{
-                $t("pages.settings.application.branding.favicon_description")
-              }}
-            </p>
-            <div class="flex items-center gap-4">
-              <div
-                class="w-16 h-16 rounded flex items-center justify-center overflow-hidden bg-muted"
-              >
-                <img
-                  v-if="faviconPreview"
-                  :src="faviconPreview"
-                  class="max-w-full max-h-full object-contain"
-                />
-                <NuxtImg
-                  v-else
-                  src="/favicon/64.png"
-                  class="max-w-full max-h-full"
-                />
-              </div>
-              <div class="flex gap-2">
-                <Button size="sm" @click="$refs.faviconInput.click()">
-                  {{ $t("pages.settings.application.branding.upload_favicon") }}
-                </Button>
-                <Button
-                  v-if="faviconPreview"
-                  size="sm"
-                  variant="outline"
-                  @click="removeFavicon"
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="text-sm font-medium">{{
+                $t("pages.settings.application.branding.logo")
+              }}</label>
+              <p class="text-sm text-muted-foreground">
+                {{ $t("pages.settings.application.branding.logo_description") }}
+              </p>
+              <div class="flex items-center gap-4">
+                <div
+                  class="w-16 h-16 rounded flex items-center justify-center overflow-hidden bg-muted shrink-0"
                 >
-                  {{ $t("pages.settings.application.branding.remove") }}
-                </Button>
+                  <img
+                    v-if="logoPreview"
+                    :src="logoPreview"
+                    class="max-w-full max-h-full object-contain"
+                  />
+                  <NuxtImg
+                    v-else
+                    src="/favicon/64.png"
+                    class="max-w-full max-h-full"
+                  />
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                  <Button size="sm" @click="$refs.logoInput.click()">
+                    {{ $t("pages.settings.application.branding.upload_logo") }}
+                  </Button>
+                  <Button
+                    v-if="logoPreview"
+                    size="sm"
+                    variant="outline"
+                    @click="removeLogo"
+                  >
+                    {{ $t("pages.settings.application.branding.remove") }}
+                  </Button>
+                </div>
+                <input
+                  ref="logoInput"
+                  type="file"
+                  accept="image/png,image/jpeg,image/svg+xml,image/webp"
+                  class="hidden"
+                  @change="handleLogoUpload"
+                />
               </div>
-              <input
-                ref="faviconInput"
-                type="file"
-                accept="image/png,image/jpeg,image/x-icon,image/webp"
-                class="hidden"
-                @change="handleFaviconUpload"
-              />
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-sm font-medium">{{
+                $t("pages.settings.application.branding.favicon")
+              }}</label>
+              <p class="text-sm text-muted-foreground">
+                {{
+                  $t("pages.settings.application.branding.favicon_description")
+                }}
+              </p>
+              <div class="flex items-center gap-4">
+                <div
+                  class="w-16 h-16 rounded flex items-center justify-center overflow-hidden bg-muted shrink-0"
+                >
+                  <img
+                    v-if="faviconPreview"
+                    :src="faviconPreview"
+                    class="max-w-full max-h-full object-contain"
+                  />
+                  <NuxtImg
+                    v-else
+                    src="/favicon/64.png"
+                    class="max-w-full max-h-full"
+                  />
+                </div>
+                <div class="flex gap-2 flex-wrap">
+                  <Button size="sm" @click="$refs.faviconInput.click()">
+                    {{
+                      $t("pages.settings.application.branding.upload_favicon")
+                    }}
+                  </Button>
+                  <Button
+                    v-if="faviconPreview"
+                    size="sm"
+                    variant="outline"
+                    @click="removeFavicon"
+                  >
+                    {{ $t("pages.settings.application.branding.remove") }}
+                  </Button>
+                </div>
+                <input
+                  ref="faviconInput"
+                  type="file"
+                  accept="image/png,image/jpeg,image/x-icon,image/webp"
+                  class="hidden"
+                  @change="handleFaviconUpload"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -185,10 +186,10 @@ definePageMeta({
       <!-- Login Page -->
       <Card variant="gradient">
         <div class="p-6 space-y-4">
-          <div>
-            <label class="text-sm font-medium">{{
-              $t("pages.settings.application.branding.login_page")
-            }}</label>
+          <div class="space-y-1">
+            <h3 class="text-lg font-semibold">
+              {{ $t("pages.settings.application.branding.login_page") }}
+            </h3>
             <p class="text-sm text-muted-foreground">
               {{
                 $t("pages.settings.application.branding.login_page_description")
@@ -196,51 +197,45 @@ definePageMeta({
             </p>
           </div>
 
-          <Card
-            variant="gradient"
-            class="cursor-pointer"
+          <div
+            class="flex flex-row items-center justify-between p-4 rounded-lg border cursor-pointer hover:bg-accent/40 transition-colors"
             @click="toggleLoginFooter()"
           >
-            <div class="flex flex-row items-center justify-between p-4">
-              <div class="space-y-0.5">
-                <label class="text-sm font-medium cursor-pointer">{{
-                  $t("pages.settings.application.branding.show_login_footer")
-                }}</label>
-                <p class="text-sm text-muted-foreground">
-                  {{
-                    $t(
-                      "pages.settings.application.branding.show_login_footer_description",
-                    )
-                  }}
-                </p>
-              </div>
-              <Switch
-                :model-value="loginShowFooter"
-                @update:model-value="toggleLoginFooter"
-              />
+            <div class="space-y-0.5">
+              <label class="text-sm font-medium cursor-pointer">{{
+                $t("pages.settings.application.branding.show_login_footer")
+              }}</label>
+              <p class="text-sm text-muted-foreground">
+                {{
+                  $t(
+                    "pages.settings.application.branding.show_login_footer_description",
+                  )
+                }}
+              </p>
             </div>
-          </Card>
-
-          <div class="space-y-2">
-            <label class="text-sm font-medium">{{
-              $t("pages.settings.application.branding.footer_text")
-            }}</label>
-            <Input
-              v-model="loginFooterText"
-              placeholder="5stack.gg"
-              class="max-w-sm"
+            <Switch
+              :model-value="loginShowFooter"
+              @update:model-value="toggleLoginFooter"
             />
           </div>
 
-          <div class="space-y-2">
-            <label class="text-sm font-medium">{{
-              $t("pages.settings.application.branding.footer_url")
-            }}</label>
-            <Input
-              v-model="loginFooterUrl"
-              placeholder="https://github.com/5stackgg/5stack-panel"
-              class="max-w-sm"
-            />
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="space-y-2">
+              <label class="text-sm font-medium">{{
+                $t("pages.settings.application.branding.footer_text")
+              }}</label>
+              <Input v-model="loginFooterText" placeholder="5stack.gg" />
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-sm font-medium">{{
+                $t("pages.settings.application.branding.footer_url")
+              }}</label>
+              <Input
+                v-model="loginFooterUrl"
+                placeholder="https://github.com/5stackgg/5stack-panel"
+              />
+            </div>
           </div>
         </div>
       </Card>
@@ -248,34 +243,35 @@ definePageMeta({
       <!-- Theme Colors -->
       <Card variant="gradient">
         <div class="p-6 space-y-4">
-          <div>
-            <label class="text-sm font-medium">{{
-              $t("pages.settings.application.branding.theme_colors")
-            }}</label>
-            <p class="text-sm text-muted-foreground">
-              {{
-                $t(
-                  "pages.settings.application.branding.theme_colors_description",
-                )
-              }}
-            </p>
-          </div>
-
-          <div class="flex gap-2 mb-4">
-            <Button
-              size="sm"
-              :variant="colorMode === 'light' ? 'default' : 'outline'"
-              @click="colorMode = 'light'"
-            >
-              {{ $t("pages.settings.application.branding.light_mode") }}
-            </Button>
-            <Button
-              size="sm"
-              :variant="colorMode === 'dark' ? 'default' : 'outline'"
-              @click="colorMode = 'dark'"
-            >
-              {{ $t("pages.settings.application.branding.dark_mode") }}
-            </Button>
+          <div class="flex items-start justify-between gap-4">
+            <div class="space-y-1">
+              <h3 class="text-lg font-semibold">
+                {{ $t("pages.settings.application.branding.theme_colors") }}
+              </h3>
+              <p class="text-sm text-muted-foreground">
+                {{
+                  $t(
+                    "pages.settings.application.branding.theme_colors_description",
+                  )
+                }}
+              </p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+              <Button
+                size="sm"
+                :variant="colorMode === 'light' ? 'default' : 'outline'"
+                @click="colorMode = 'light'"
+              >
+                {{ $t("pages.settings.application.branding.light_mode") }}
+              </Button>
+              <Button
+                size="sm"
+                :variant="colorMode === 'dark' ? 'default' : 'outline'"
+                @click="colorMode = 'dark'"
+              >
+                {{ $t("pages.settings.application.branding.dark_mode") }}
+              </Button>
+            </div>
           </div>
 
           <div
@@ -941,6 +937,10 @@ export default {
           ],
         }),
       });
+
+      toast({
+        title: this.$t("pages.settings.application.branding.branding_saved"),
+      });
     },
     async toggleLoginFooter() {
       await (this as any).$apollo.mutate({
@@ -961,6 +961,10 @@ export default {
             },
           ],
         }),
+      });
+
+      toast({
+        title: this.$t("pages.settings.application.branding.branding_saved"),
       });
     },
     async handleLogoUpload(event: Event) {

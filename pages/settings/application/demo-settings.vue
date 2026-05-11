@@ -15,51 +15,53 @@ definePageMeta({
 </script>
 
 <template>
-  <PageTransition :delay="0">
-    <Card
-      v-if="match_map_demos_aggregate"
-      variant="gradient"
-      class="mb-4 p-4 flex items-center gap-4"
-    >
-      <div
-        class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10"
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+    <PageTransition :delay="0">
+      <Card
+        v-if="match_map_demos_aggregate"
+        variant="gradient"
+        class="p-4 flex items-center gap-4 h-full"
       >
-        <LucideHardDrive class="w-6 h-6 text-primary" />
-      </div>
-      <div class="flex-1">
-        <h3 class="text-sm font-medium text-muted-foreground">
-          {{ $t("pages.settings.application.demo_settings.used_storage") }}
-        </h3>
-        <p class="text-2xl font-bold mt-1">
-          {{ formatBytes(match_map_demos_aggregate.aggregate.sum.size) }}~
-        </p>
-      </div>
-    </Card>
-  </PageTransition>
+        <div
+          class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10"
+        >
+          <LucideHardDrive class="w-6 h-6 text-primary" />
+        </div>
+        <div class="flex-1">
+          <h3 class="text-sm font-medium text-muted-foreground">
+            {{ $t("pages.settings.application.demo_settings.used_storage") }}
+          </h3>
+          <p class="text-2xl font-bold mt-1">
+            {{ formatBytes(match_map_demos_aggregate.aggregate.sum.size) }}~
+          </p>
+        </div>
+      </Card>
+    </PageTransition>
 
-  <PageTransition :delay="50">
-    <Card
-      v-if="match_clips_aggregate"
-      variant="gradient"
-      class="mb-8 p-4 flex items-center gap-4"
-    >
-      <div
-        class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10"
+    <PageTransition :delay="50">
+      <Card
+        v-if="match_clips_aggregate"
+        variant="gradient"
+        class="p-4 flex items-center gap-4 h-full"
       >
-        <LucideSparkles class="w-6 h-6 text-primary" />
-      </div>
-      <div class="flex-1">
-        <h3 class="text-sm font-medium text-muted-foreground">
-          {{
-            $t("pages.settings.application.demo_settings.clips_used_storage")
-          }}
-        </h3>
-        <p class="text-2xl font-bold mt-1">
-          {{ formatBytes(match_clips_aggregate.aggregate.sum.size || 0) }}~
-        </p>
-      </div>
-    </Card>
-  </PageTransition>
+        <div
+          class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10"
+        >
+          <LucideSparkles class="w-6 h-6 text-primary" />
+        </div>
+        <div class="flex-1">
+          <h3 class="text-sm font-medium text-muted-foreground">
+            {{
+              $t("pages.settings.application.demo_settings.clips_used_storage")
+            }}
+          </h3>
+          <p class="text-2xl font-bold mt-1">
+            {{ formatBytes(match_clips_aggregate.aggregate.sum.size || 0) }}~
+          </p>
+        </div>
+      </Card>
+    </PageTransition>
+  </div>
 
   <PageTransition :delay="100">
     <Card variant="gradient" class="mb-8 p-4 flex flex-col gap-2">
@@ -96,6 +98,11 @@ definePageMeta({
     <form @submit.prevent="updateSettings" class="grid gap-6">
       <Card variant="gradient">
         <div class="p-6 space-y-6">
+          <h3 class="text-lg font-semibold flex items-center gap-2">
+            <LucideHardDrive class="w-5 h-5 text-primary" />
+            {{ $t("pages.settings.application.demo_settings.demos_section") }}
+          </h3>
+
           <FormField v-slot="{ componentField }" name="demo_network_limiter">
             <FormItem>
               <FormLabel>{{
@@ -142,35 +149,46 @@ definePageMeta({
             </FormItem>
           </FormField>
 
-          <FormField v-slot="{ componentField }" name="s3_min_retention">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.demo_settings.min_retention")
-              }}</FormLabel>
-              <FormDescription>{{
+          <div class="space-y-2">
+            <p class="text-sm text-muted-foreground">
+              {{
                 $t(
-                  "pages.settings.application.demo_settings.min_retention_description",
+                  "pages.settings.application.demo_settings.retention_storage_description",
                 )
-              }}</FormDescription>
-              <Input type="number" v-bind="componentField"></Input>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+              }}
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <FormField v-slot="{ componentField }" name="s3_min_retention">
+                <FormItem>
+                  <FormLabel>
+                    {{
+                      $t(
+                        "pages.settings.application.demo_settings.min_retention",
+                      )
+                    }}
+                    <span class="text-muted-foreground font-normal"
+                      >(days)</span
+                    >
+                  </FormLabel>
+                  <Input type="number" v-bind="componentField"></Input>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
 
-          <FormField v-slot="{ componentField }" name="s3_max_storage">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.demo_settings.max_storage")
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.demo_settings.max_storage_description",
-                )
-              }}</FormDescription>
-              <Input type="number" v-bind="componentField"></Input>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+              <FormField v-slot="{ componentField }" name="s3_max_storage">
+                <FormItem>
+                  <FormLabel>
+                    {{
+                      $t("pages.settings.application.demo_settings.max_storage")
+                    }}
+                    <span class="text-muted-foreground font-normal">(GB)</span>
+                  </FormLabel>
+                  <Input type="number" v-bind="componentField"></Input>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </div>
+          </div>
 
           <FormField v-slot="{ componentField }" name="cloudflare_worker_url">
             <FormItem>
@@ -186,11 +204,11 @@ definePageMeta({
                   )
                 }}
                 <a
-                  href="https://docs.5stack.gg/s3/backblaze"
+                  href="https://docs.5stack.gg/advanced/s3/backblaze#backblaze-cloudflare"
                   target="_blank"
                   class="text-primary hover:underline"
                 >
-                  https://docs.5stack.gg/s3/backblaze
+                  docs.5stack.gg/advanced/s3/backblaze
                 </a>
               </FormDescription>
               <Input v-bind="componentField"></Input>
@@ -209,118 +227,136 @@ definePageMeta({
             }}
           </h3>
 
-          <FormField v-slot="{ componentField }" name="clips_min_retention">
-            <FormItem>
-              <FormLabel>{{
-                $t(
-                  "pages.settings.application.demo_settings.clips_min_retention",
-                )
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.demo_settings.clips_min_retention_description",
-                )
-              }}</FormDescription>
-              <Input type="number" v-bind="componentField"></Input>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
-          <FormField v-slot="{ componentField }" name="clips_max_storage">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.demo_settings.clips_max_storage")
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.demo_settings.clips_max_storage_description",
-                )
-              }}</FormDescription>
-              <Input type="number" v-bind="componentField"></Input>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
           <FormField
             v-slot="{ value, handleChange }"
             name="auto_generate_match_clips"
             type="checkbox"
             :value="true"
           >
-            <FormItem class="flex flex-row items-center justify-between gap-4">
-              <div class="space-y-1">
-                <FormLabel>{{
-                  $t(
-                    "pages.settings.application.demo_settings.auto_generate_match_clips",
-                  )
-                }}</FormLabel>
-                <FormDescription>
-                  {{
-                    $t(
-                      "pages.settings.application.demo_settings.auto_generate_match_clips_description",
-                    )
-                  }}
-                </FormDescription>
+            <FormItem>
+              <div
+                class="flex flex-row items-center justify-between cursor-pointer"
+                @click="handleChange(!value)"
+              >
+                <div class="space-y-0.5">
+                  <h4 class="text-base font-medium">
+                    {{
+                      $t(
+                        "pages.settings.application.demo_settings.auto_generate_match_clips",
+                      )
+                    }}
+                  </h4>
+                  <p class="text-sm text-muted-foreground">
+                    {{
+                      $t(
+                        "pages.settings.application.demo_settings.auto_generate_match_clips_description",
+                      )
+                    }}
+                  </p>
+                </div>
+                <FormControl>
+                  <Switch
+                    :model-value="value"
+                    @update:model-value="handleChange"
+                  />
+                </FormControl>
               </div>
-              <FormControl>
-                <Switch
-                  :model-value="value"
-                  @update:model-value="handleChange"
-                />
-              </FormControl>
             </FormItem>
           </FormField>
 
-          <FormField
-            v-slot="{ value, handleChange }"
-            name="auto_clip_default_visibility"
-          >
-            <FormItem>
-              <FormLabel>{{
-                $t(
-                  "pages.settings.application.demo_settings.auto_clip_default_visibility",
-                )
-              }}</FormLabel>
-              <FormDescription>
+          <template v-if="form.values.auto_generate_match_clips">
+            <div class="space-y-2">
+              <p class="text-sm text-muted-foreground">
                 {{
                   $t(
-                    "pages.settings.application.demo_settings.auto_clip_default_visibility_description",
+                    "pages.settings.application.demo_settings.clips_retention_storage_description",
                   )
                 }}
-              </FormDescription>
-              <Select :model-value="value" @update:model-value="handleChange">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      :placeholder="
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <FormField
+                  v-slot="{ componentField }"
+                  name="clips_min_retention"
+                >
+                  <FormItem>
+                    <FormLabel>
+                      {{
                         $t(
-                          'pages.settings.application.demo_settings.visibility_private',
+                          "pages.settings.application.demo_settings.clips_min_retention",
                         )
-                      "
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="private">{{
-                    $t(
-                      "pages.settings.application.demo_settings.visibility_private",
-                    )
-                  }}</SelectItem>
-                  <SelectItem value="unlisted">{{
-                    $t(
-                      "pages.settings.application.demo_settings.visibility_unlisted",
-                    )
-                  }}</SelectItem>
-                  <SelectItem value="public">{{
-                    $t(
-                      "pages.settings.application.demo_settings.visibility_public",
-                    )
-                  }}</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+                      }}
+                      <span class="text-muted-foreground font-normal"
+                        >(days)</span
+                      >
+                    </FormLabel>
+                    <Input type="number" v-bind="componentField"></Input>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+
+                <FormField v-slot="{ componentField }" name="clips_max_storage">
+                  <FormItem>
+                    <FormLabel>
+                      {{
+                        $t(
+                          "pages.settings.application.demo_settings.clips_max_storage",
+                        )
+                      }}
+                      <span class="text-muted-foreground font-normal"
+                        >(GB)</span
+                      >
+                    </FormLabel>
+                    <Input type="number" v-bind="componentField"></Input>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+              </div>
+            </div>
+
+            <FormField
+              v-slot="{ value, handleChange }"
+              name="auto_clip_default_visibility"
+            >
+              <FormItem>
+                <FormLabel>{{
+                  $t(
+                    "pages.settings.application.demo_settings.auto_clip_default_visibility",
+                  )
+                }}</FormLabel>
+                <Select :model-value="value" @update:model-value="handleChange">
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue
+                        :placeholder="
+                          $t(
+                            'pages.settings.application.demo_settings.visibility_private',
+                          )
+                        "
+                      />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="private">{{
+                      $t(
+                        "pages.settings.application.demo_settings.visibility_private",
+                      )
+                    }}</SelectItem>
+                    <SelectItem value="unlisted">{{
+                      $t(
+                        "pages.settings.application.demo_settings.visibility_unlisted",
+                      )
+                    }}</SelectItem>
+                    <SelectItem value="public">{{
+                      $t(
+                        "pages.settings.application.demo_settings.visibility_public",
+                      )
+                    }}</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+          </template>
         </div>
       </Card>
 

@@ -132,126 +132,111 @@ async function doRefreshAllPlayers() {
           </div>
         </Card>
 
-        <div class="space-y-6">
-          <FormField
-            v-slot="{ componentField }"
-            name="public.create_matches_role"
-          >
-            <FormItem>
-              <FormLabel class="text-lg font-semibold">{{
-                $t("pages.settings.application.create_matches_role")
-              }}</FormLabel>
-              <FormDescription>
-                {{
-                  $t(
-                    "pages.settings.application.create_matches_role_description",
-                  )
-                }}
-              </FormDescription>
-              <FormControl>
-                <Select v-bind="componentField">
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem
-                        :value="role.value"
-                        v-for="role in roles"
-                        :key="role.value"
-                      >
-                        <span>{{ role.display }}</span>
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+        <Card variant="gradient">
+          <div class="p-6 space-y-6">
+            <h3 class="text-lg font-semibold">
+              {{ $t("pages.settings.application.players.permissions_section") }}
+            </h3>
 
-          <FormField
-            v-slot="{ componentField }"
-            name="public.create_tournaments_role"
-          >
-            <FormItem>
-              <FormLabel class="text-lg font-semibold">{{
-                $t("pages.settings.application.create_tournaments_role")
-              }}</FormLabel>
-              <FormDescription>
-                {{
-                  $t(
-                    "pages.settings.application.create_tournaments_role_description",
-                  )
-                }}
-              </FormDescription>
-              <FormControl>
-                <Select v-bind="componentField">
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem
-                        :value="role.value"
-                        v-for="role in roles"
-                        :key="role.value"
-                      >
-                        <span class="capitalize">{{ role.display }}</span>
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          </FormField>
+            <FormField
+              v-slot="{ componentField }"
+              name="public.create_matches_role"
+            >
+              <FormItem>
+                <FormLabel>{{
+                  $t("pages.settings.application.create_matches_role")
+                }}</FormLabel>
+                <FormControl>
+                  <Select v-bind="componentField">
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem
+                          :value="role.value"
+                          v-for="role in roles"
+                          :key="role.value"
+                        >
+                          <span>{{ role.display }}</span>
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
 
-          <FormField
-            v-slot="{ componentField }"
-            name="dedicated_servers_min_role_to_connect"
-          >
-            <FormItem>
-              <FormLabel class="text-lg font-semibold">{{
-                $t(
-                  "pages.settings.application.dedicated_servers_min_role_to_connect",
-                )
-              }}</FormLabel>
-              <FormDescription>
-                {{
+            <FormField
+              v-slot="{ componentField }"
+              name="public.create_tournaments_role"
+            >
+              <FormItem>
+                <FormLabel>{{
+                  $t("pages.settings.application.create_tournaments_role")
+                }}</FormLabel>
+                <FormControl>
+                  <Select v-bind="componentField">
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem
+                          :value="role.value"
+                          v-for="role in roles"
+                          :key="role.value"
+                        >
+                          <span class="capitalize">{{ role.display }}</span>
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+
+            <FormField
+              v-slot="{ componentField }"
+              name="dedicated_servers_min_role_to_connect"
+            >
+              <FormItem>
+                <FormLabel>{{
                   $t(
-                    "pages.settings.application.dedicated_servers_min_role_to_connect_description",
+                    "pages.settings.application.dedicated_servers_min_role_to_connect",
                   )
-                }}
-              </FormDescription>
-              <FormControl>
-                <Select v-bind="componentField">
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem
-                        :value="role.value"
-                        v-for="role in roles"
-                        :key="role.value"
-                      >
-                        <span class="capitalize">{{ role.display }}</span>
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-        </div>
+                }}</FormLabel>
+                <FormControl>
+                  <Select v-bind="componentField">
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem
+                          :value="role.value"
+                          v-for="role in roles"
+                          :key="role.value"
+                        >
+                          <span class="capitalize">{{ role.display }}</span>
+                        </SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+          </div>
+        </Card>
 
         <div class="flex justify-start">
           <Button
@@ -330,6 +315,10 @@ export default {
             },
           ],
         }),
+      });
+
+      toast({
+        title: this.$t("pages.settings.application.update_success") as string,
       });
     },
     async updateSettings() {

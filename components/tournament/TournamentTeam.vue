@@ -44,7 +44,16 @@ import {
           <h2
             class="font-sans text-[1.35rem] font-bold tracking-[0.02em] text-foreground m-0 leading-[1.15]"
           >
-            {{ team.team?.name || team.name }}
+            <NuxtLink
+              v-if="team.team?.id"
+              :to="`/teams/${team.team.id}`"
+              class="hover:text-[hsl(var(--tac-amber))] transition-colors"
+            >
+              {{ team.team.name }}
+            </NuxtLink>
+            <template v-else>
+              {{ team.name }}
+            </template>
           </h2>
 
           <div class="flex items-center gap-2 flex-wrap">

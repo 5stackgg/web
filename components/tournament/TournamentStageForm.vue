@@ -842,10 +842,19 @@ export default {
               },
             )
             .refine(
-              (data) =>
-                parseInt(data.min_teams) >= 4 && parseInt(data.max_teams) >= 4,
+              (data) => {
+                const min =
+                  data.stage_type === e_tournament_stage_types_enum.RoundRobin
+                    ? 3
+                    : 4;
+                return (
+                  parseInt(data.min_teams) >= min &&
+                  parseInt(data.max_teams) >= min
+                );
+              },
               {
-                message: "min and max teams must be at least 4",
+                message:
+                  "min and max teams must be at least 3 for Round Robin, 4 otherwise",
                 path: ["min_teams"],
               },
             ),
@@ -1010,7 +1019,7 @@ export default {
 
           break;
         case e_tournament_stage_types_enum.RoundRobin:
-          for (let i = 16; i >= 4; i -= 2) {
+          for (let i = 16; i >= 3; i--) {
             options.push({
               value: i.toString(),
               display: i,

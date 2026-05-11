@@ -216,7 +216,7 @@ const featuredClipImage = computed(() => {
   const c = featuredClip.value;
   return c?.thumbnail_download_url ?? c?.match_map?.map?.poster ?? null;
 });
-const reelQueue = computed(() => filteredClips.value.slice(0, 8));
+const reelQueue = computed(() => filteredClips.value);
 const featuredPlayer = computed(() =>
   featuredClip.value?.target_steam_id
     ? playerOptions.value.find(

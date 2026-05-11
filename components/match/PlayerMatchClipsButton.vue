@@ -6,10 +6,9 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
-import { useClipModal } from "~/composables/useClipModal";
+import { useClipModal, type ClipQueueItem } from "~/composables/useClipModal";
 import type { Clip } from "~/types/clip";
 
-// Reads the shared `matchClipsByTarget` map provided by the page.
 const props = defineProps<{
   steamId: string | number;
 }>();
@@ -18,7 +17,7 @@ const byTarget = inject<ComputedRef<Map<string, Clip[]>>>(
   "matchClipsByTarget",
   computed(() => new Map()) as any,
 );
-const { openClip } = useClipModal();
+const { openClip, setClipQueue } = useClipModal();
 
 const clips = computed<Clip[]>(() => {
   const sid = String(props.steamId);
@@ -36,14 +35,30 @@ function formatDuration(ms: number | null | undefined): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
+function publishQueue() {
+  const items: ClipQueueItem[] = clips.value.map((c) => ({
+    id: c.id,
+    title: c.title,
+    playerName: c.target?.name ?? null,
+    teamName: null,
+    durationMs: c.duration_ms,
+    thumbnailUrl: c.thumbnail_download_url,
+    posterUrl: c.match_map?.map?.poster ?? null,
+  }));
+  setClipQueue(items, `player-match-clips:${String(props.steamId)}`);
+}
+
 function onSingleClick(e: MouseEvent) {
   if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
   e.preventDefault();
   e.stopPropagation();
-  if (single.value) openClip(single.value.id);
+  if (!single.value) return;
+  publishQueue();
+  openClip(single.value.id);
 }
 
 function pickClip(c: Clip) {
+  publishQueue();
   openClip(c.id);
 }
 </script>
@@ -52,7 +67,7 @@ function pickClip(c: Clip) {
   <span
     v-if="hasClips"
     class="inline-flex"
-    @click.stop
+    @click.stop.prevent
     @mousedown.stop
     @mouseup.stop
   >

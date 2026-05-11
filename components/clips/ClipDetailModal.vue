@@ -23,6 +23,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Shield,
+  ListVideo,
+  Film,
 } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -69,6 +71,7 @@ const {
   clipQueue,
   closeClip,
   nextClip,
+  openClip,
   openNextClip,
   openPreviousClip,
   previousClip,
@@ -82,11 +85,28 @@ const linkCopied = ref(false);
 const videoRef = ref<HTMLVideoElement | null>(null);
 const videoProgress = ref(0);
 const modalAutoAdvanced = ref(false);
+const videoPlaying = ref(false);
+const showIntroOverlay = ref(false);
+let introOverlayTimer: ReturnType<typeof setTimeout> | null = null;
 
 const isOwner = computed(
   () => !!clip.value && clip.value.user_steam_id === auth.me?.steam_id,
 );
 const canDelete = computed(() => isOwner.value || auth.isAdmin);
+
+// Strip a leading "<player> — " (or " - ", " – ") prefix from the clip
+// title because the player is already named in the Highlighting card.
+const displayTitle = computed(() => {
+  const raw = clip.value?.title?.trim() ?? "";
+  if (!raw) return "Untitled clip";
+  const player = clip.value?.target?.name?.trim();
+  if (!player) return raw;
+  const escaped = player.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const stripped = raw
+    .replace(new RegExp(`^${escaped}\\s*[—–-]\\s*`, "i"), "")
+    .trim();
+  return stripped || raw;
+});
 
 const editing = ref(false);
 const draftTitle = ref("");
@@ -177,9 +197,11 @@ function formatBytes(b: number | null): string | null {
 let activeSub: { unsubscribe: () => void } | null = null;
 function subscribe(id: string) {
   activeSub?.unsubscribe();
-  loading.value = true;
   notFound.value = false;
-  clip.value = null;
+  // Keep the previous clip visible while switching so the layout
+  // doesn't collapse into the skeleton state every time the queue
+  // advances; only the initial open shows the full loader.
+  if (!clip.value) loading.value = true;
   const obs = getGraphqlClient().subscribe({
     query: generateSubscription({
       match_clips: [
@@ -229,6 +251,10 @@ watch(
 onBeforeUnmount(() => {
   activeSub?.unsubscribe();
   activeSub = null;
+  if (introOverlayTimer) {
+    clearTimeout(introOverlayTimer);
+    introOverlayTimer = null;
+  }
   window.removeEventListener("keydown", onModalKeydown);
 });
 
@@ -316,17 +342,6 @@ function formatDate(iso: string | null | undefined): string {
   return d.toLocaleString();
 }
 
-const matchupLabel = computed(() => {
-  const a = clip.value?.match_map?.match?.lineup_1?.name;
-  const b = clip.value?.match_map?.match?.lineup_2?.name;
-  if (a && b) return `${a} vs ${b}`;
-  return (
-    clip.value?.match_map?.map?.label ??
-    clip.value?.match_map?.map?.name ??
-    null
-  );
-});
-
 const downloadFilename = computed<string>(() =>
   clip.value ? clipDownloadName(clip.value) : "clip.mp4",
 );
@@ -355,9 +370,6 @@ const targetTeamAvatarSrc = computed(() =>
     apiDomain.value,
   ),
 );
-const nextClipImage = computed(
-  () => nextClip.value?.thumbnailUrl ?? nextClip.value?.posterUrl ?? null,
-);
 async function playModalVideo() {
   await nextTick();
   const video = videoRef.value;
@@ -385,10 +397,19 @@ function onModalTimeUpdate() {
 
 function onModalEnded() {
   videoProgress.value = 1;
+  videoPlaying.value = false;
   if (nextClip.value && !modalAutoAdvanced.value) {
     modalAutoAdvanced.value = true;
     openNextClip();
   }
+}
+
+function onModalPlay() {
+  videoPlaying.value = true;
+}
+
+function onModalPause() {
+  videoPlaying.value = false;
 }
 
 watch(
@@ -396,7 +417,17 @@ watch(
   (id) => {
     videoProgress.value = 0;
     modalAutoAdvanced.value = false;
-    if (id) void playModalVideo();
+    videoPlaying.value = false;
+    if (introOverlayTimer) clearTimeout(introOverlayTimer);
+    if (id) {
+      showIntroOverlay.value = true;
+      introOverlayTimer = setTimeout(() => {
+        showIntroOverlay.value = false;
+      }, 1800);
+      void playModalVideo();
+    } else {
+      showIntroOverlay.value = false;
+    }
   },
 );
 
@@ -658,13 +689,15 @@ onMounted(() => {
           v-else-if="clip"
           class="grid gap-4 sm:gap-5 p-4 sm:p-5 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)] flex-1 min-h-0"
         >
-          <div class="flex flex-col gap-3 min-w-0">
+          <div
+            class="flex flex-col gap-3 min-w-0"
+            :class="clipQueue.length > 1 ? 'justify-start' : 'justify-center'"
+          >
             <div
               class="group/video relative aspect-video w-full overflow-hidden rounded-md bg-black border border-border/60"
             >
               <video
                 v-if="clip.download_url"
-                :key="clip.id"
                 ref="videoRef"
                 :src="clip.download_url"
                 :poster="
@@ -681,6 +714,8 @@ onMounted(() => {
                 @ended="onModalEnded"
                 @loadedmetadata="onModalTimeUpdate"
                 @timeupdate="onModalTimeUpdate"
+                @play="onModalPlay"
+                @pause="onModalPause"
               />
               <div
                 v-else
@@ -692,6 +727,31 @@ onMounted(() => {
                 >
                   Render finalizing…
                 </span>
+              </div>
+
+              <div
+                class="pointer-events-none absolute inset-x-0 top-0 z-[3] flex items-start gap-2 p-3 sm:p-4 bg-[linear-gradient(180deg,hsl(0_0%_0%/0.7)_0%,transparent_100%)] transition-opacity duration-300"
+                :class="
+                  videoPlaying && !showIntroOverlay && !editing
+                    ? 'opacity-0 group-hover/video:opacity-100'
+                    : 'opacity-100'
+                "
+              >
+                <h2
+                  class="min-w-0 flex-1 truncate text-base sm:text-xl font-bold uppercase leading-tight tracking-[0.01em] text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.65)]"
+                  :title="displayTitle"
+                >
+                  {{ displayTitle }}
+                </h2>
+                <button
+                  v-if="isOwner && !editing"
+                  type="button"
+                  class="pointer-events-auto inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-white/20 bg-black/55 text-white/85 backdrop-blur-sm transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] cursor-pointer"
+                  title="Edit title"
+                  @click="startEdit"
+                >
+                  <Pencil class="h-3.5 w-3.5" />
+                </button>
               </div>
 
               <div
@@ -729,49 +789,14 @@ onMounted(() => {
             </div>
 
             <div
+              v-if="editing"
               class="relative rounded-md border border-border/50 bg-[linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] [backdrop-filter:blur(6px)] px-4 py-3"
             >
               <span
                 aria-hidden="true"
                 class="pointer-events-none absolute left-0 top-0 h-full w-[3px] bg-gradient-to-b from-[hsl(var(--tac-amber))] via-[hsl(var(--tac-amber)/0.6)] to-transparent"
               ></span>
-
-              <div v-if="!editing" class="flex items-start gap-2">
-                <div class="flex-1 min-w-0">
-                  <h2
-                    class="relative text-xl sm:text-2xl font-bold uppercase leading-tight tracking-[0.01em] [font-stretch:85%]"
-                  >
-                    <span
-                      aria-hidden="true"
-                      class="pointer-events-none absolute left-[3px] top-[3px] select-none whitespace-nowrap text-transparent [-webkit-text-stroke:1px_hsl(var(--tac-amber)/0.3)]"
-                    >
-                      {{ clip.title || "Untitled clip" }}
-                    </span>
-                    <span
-                      class="relative bg-[linear-gradient(180deg,hsl(var(--foreground))_0%,hsl(var(--foreground)/0.7)_100%)] bg-clip-text text-transparent"
-                    >
-                      {{ clip.title || "Untitled clip" }}
-                    </span>
-                  </h2>
-                  <p
-                    v-if="matchupLabel"
-                    class="mt-1 text-sm text-muted-foreground"
-                  >
-                    {{ matchupLabel }}
-                  </p>
-                </div>
-                <button
-                  v-if="isOwner"
-                  type="button"
-                  class="shrink-0 inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground hover:bg-muted/40 hover:text-foreground transition-colors cursor-pointer"
-                  title="Edit title"
-                  @click="startEdit"
-                >
-                  <Pencil class="h-3.5 w-3.5" />
-                </button>
-              </div>
-
-              <div v-else class="space-y-3">
+              <div class="space-y-3">
                 <div class="space-y-1">
                   <Label
                     for="clip-modal-title"
@@ -807,6 +832,80 @@ onMounted(() => {
                     Save
                   </Button>
                 </div>
+              </div>
+            </div>
+
+            <div
+              v-if="clipQueue.length > 1"
+              class="flex flex-1 min-h-0 flex-col rounded-md border border-border/50 bg-card/30 [backdrop-filter:blur(6px)]"
+            >
+              <div
+                class="flex items-center justify-between gap-3 border-b border-border/40 px-3 py-2 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
+              >
+                <span class="inline-flex items-center gap-2">
+                  <ListVideo class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
+                  Other clips
+                </span>
+                <span class="tabular-nums">
+                  {{ activeClipIndex + 1 }} / {{ clipQueue.length }}
+                </span>
+              </div>
+              <div class="clip-queue-list min-h-0 flex-1 overflow-y-auto p-1.5">
+                <button
+                  v-for="q in clipQueue"
+                  :key="q.id"
+                  type="button"
+                  class="group/q relative flex w-full items-center gap-2 rounded border px-1.5 py-1.5 text-left transition-colors"
+                  :class="
+                    q.id === clip.id
+                      ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.12)]'
+                      : 'border-transparent hover:bg-muted/40'
+                  "
+                  :title="q.title ?? 'Clip'"
+                  @click="openClip(q.id)"
+                >
+                  <span
+                    class="relative h-10 w-16 shrink-0 overflow-hidden rounded border border-border/50 bg-black"
+                  >
+                    <NuxtImg
+                      v-if="q.thumbnailUrl ?? q.posterUrl"
+                      :src="q.thumbnailUrl ?? q.posterUrl ?? ''"
+                      :alt="q.title ?? 'Clip'"
+                      class="h-full w-full object-cover opacity-85 transition-transform duration-300 group-hover/q:scale-[1.04]"
+                    />
+                    <span
+                      v-else
+                      class="flex h-full w-full items-center justify-center text-muted-foreground"
+                    >
+                      <Film class="h-3.5 w-3.5" />
+                    </span>
+                    <span
+                      v-if="q.id === clip.id"
+                      class="absolute left-1 top-1 inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_6px_hsl(var(--tac-amber)/0.8)]"
+                    ></span>
+                  </span>
+                  <span class="min-w-0 flex-1">
+                    <span
+                      class="block truncate text-sm font-semibold"
+                      :class="
+                        q.id === clip.id
+                          ? 'text-[hsl(var(--tac-amber))]'
+                          : 'text-foreground'
+                      "
+                    >
+                      {{ q.playerName ?? "Clip" }}
+                    </span>
+                    <span
+                      class="block truncate font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground"
+                    >
+                      {{ q.title ?? "Untitled" }}
+                    </span>
+                  </span>
+                  <ChevronRight
+                    v-if="q.id !== clip.id"
+                    class="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-all group-hover/q:translate-x-0.5 group-hover/q:text-[hsl(var(--tac-amber))]"
+                  />
+                </button>
               </div>
             </div>
           </div>
@@ -875,62 +974,6 @@ onMounted(() => {
               :clip="clip"
               @navigate="closeClip"
             />
-
-            <button
-              v-if="nextClip"
-              type="button"
-              class="next-clip-card group/next"
-              :title="nextClip.title ?? 'Next clip'"
-              @click="openNextClip"
-            >
-              <span
-                class="relative h-16 w-24 shrink-0 overflow-hidden rounded border border-border/60 bg-black"
-              >
-                <NuxtImg
-                  v-if="nextClipImage"
-                  :src="nextClipImage"
-                  :alt="nextClip.title ?? 'Next clip'"
-                  class="h-full w-full object-cover opacity-80 transition-transform duration-300 group-hover/next:scale-105"
-                />
-                <span
-                  v-else
-                  class="flex h-full w-full items-center justify-center text-muted-foreground"
-                >
-                  <Radio class="h-4 w-4" />
-                </span>
-                <span
-                  class="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,hsl(var(--tac-amber)/0.16)_100%)]"
-                ></span>
-              </span>
-              <span class="min-w-0 flex-1 text-left">
-                <span
-                  class="block font-mono text-[0.56rem] uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
-                >
-                  Up next
-                </span>
-                <span class="mt-1 block truncate text-sm font-semibold">
-                  {{ nextClip.title ?? "Untitled clip" }}
-                </span>
-                <span class="mt-0.5 flex min-w-0 items-center gap-1.5">
-                  <span
-                    v-if="nextClip.playerName"
-                    class="truncate text-xs text-muted-foreground"
-                  >
-                    {{ nextClip.playerName }}
-                  </span>
-                  <span
-                    v-if="nextClip.teamName"
-                    class="inline-flex max-w-[9rem] shrink-0 items-center gap-1 rounded border border-[hsl(var(--tac-amber)/0.3)] bg-[hsl(var(--tac-amber)/0.08)] px-1.5 py-0.5 font-mono text-[0.52rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
-                  >
-                    <Shield class="h-2.5 w-2.5 shrink-0" />
-                    <span class="truncate">{{ nextClip.teamName }}</span>
-                  </span>
-                </span>
-              </span>
-              <ChevronRight
-                class="h-4 w-4 shrink-0 text-muted-foreground/60 transition-all group-hover/next:translate-x-0.5 group-hover/next:text-[hsl(var(--tac-amber))]"
-              />
-            </button>
 
             <dl
               class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm rounded-md border border-border/50 bg-card/30 [backdrop-filter:blur(6px)] px-4 py-3"
@@ -1065,48 +1108,6 @@ onMounted(() => {
   transform: translate(2px, -50%);
 }
 
-.next-clip-card {
-  position: relative;
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 0.75rem;
-  overflow: hidden;
-  border: 1px solid hsl(var(--border) / 0.55);
-  border-radius: 0.375rem;
-  background:
-    linear-gradient(
-      135deg,
-      hsl(var(--tac-amber) / 0.11) 0%,
-      hsl(var(--card) / 0.38) 58%
-    ),
-    hsl(var(--card) / 0.28);
-  padding: 0.625rem;
-  color: hsl(var(--foreground));
-  cursor: pointer;
-  text-align: left;
-  backdrop-filter: blur(6px);
-  transition:
-    border-color 150ms ease,
-    background-color 150ms ease,
-    transform 150ms ease;
-}
-.next-clip-card::after {
-  content: "";
-  position: absolute;
-  right: 5px;
-  top: 5px;
-  height: 7px;
-  width: 7px;
-  border-right: 1px solid hsl(var(--tac-amber) / 0.65);
-  border-top: 1px solid hsl(var(--tac-amber) / 0.65);
-}
-.next-clip-card:hover {
-  transform: translateY(-1px);
-  border-color: hsl(var(--tac-amber) / 0.62);
-  background-color: hsl(var(--tac-amber) / 0.06);
-}
-
 .action-tile {
   position: relative;
   display: inline-flex;
@@ -1165,5 +1166,23 @@ onMounted(() => {
 .action-tile--danger:hover::after {
   border-top-color: hsl(var(--destructive));
   border-right-color: hsl(var(--destructive));
+}
+
+.clip-queue-list {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--border) / 0.6) transparent;
+}
+.clip-queue-list::-webkit-scrollbar {
+  width: 6px;
+}
+.clip-queue-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.clip-queue-list::-webkit-scrollbar-thumb {
+  background: hsl(var(--border) / 0.6);
+  border-radius: 999px;
+}
+.clip-queue-list::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--tac-amber) / 0.5);
 }
 </style>

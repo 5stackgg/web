@@ -160,6 +160,7 @@ import { mapFields } from "~/graphql/mapGraphql";
 import { settings_constraint, settings_update_column } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { order_by } from "~/generated/zeus";
+import { toast } from "@/components/ui/toast";
 interface Map {
   id: string;
   name: string;
@@ -270,6 +271,10 @@ export default {
             },
           ],
         }),
+      });
+
+      toast({
+        title: this.$t("pages.settings.application.update_success") as string,
       });
     },
   },

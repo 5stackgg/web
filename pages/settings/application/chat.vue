@@ -23,7 +23,7 @@ definePageMeta({
 
           <FormField v-slot="{ componentField }" name="public.chat_message_ttl">
             <FormItem>
-              <FormLabel class="text-lg font-semibold">
+              <FormLabel>
                 {{ $t("pages.settings.application.chat.chat_message_ttl") }}
               </FormLabel>
               <FormDescription>

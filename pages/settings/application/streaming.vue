@@ -14,23 +14,25 @@ definePageMeta({
     <form @submit.prevent="updateSettings" class="grid gap-4">
       <Card variant="gradient">
         <div class="p-6 space-y-6">
+          <h3 class="text-lg font-semibold">
+            {{ $t("pages.settings.application.streaming.access_section") }}
+          </h3>
+
           <FormField
             v-slot="{ componentField }"
             name="public.minimum_role_to_spectate"
           >
             <FormItem>
-              <FormLabel class="text-lg font-semibold">{{
+              <FormLabel>{{
                 $t(
                   "pages.settings.application.streaming.minimum_role_to_spectate",
                 )
               }}</FormLabel>
-              <FormDescription>
-                {{
-                  $t(
-                    "pages.settings.application.streaming.minimum_role_to_spectate_description",
-                  )
-                }}
-              </FormDescription>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.streaming.minimum_role_to_spectate_description",
+                )
+              }}</FormDescription>
               <FormControl>
                 <Select v-bind="componentField">
                   <FormControl>
@@ -60,18 +62,16 @@ definePageMeta({
             name="public.minimum_role_to_stream"
           >
             <FormItem>
-              <FormLabel class="text-lg font-semibold">{{
+              <FormLabel>{{
                 $t(
                   "pages.settings.application.streaming.minimum_role_to_stream",
                 )
               }}</FormLabel>
-              <FormDescription>
-                {{
-                  $t(
-                    "pages.settings.application.streaming.minimum_role_to_stream_description",
-                  )
-                }}
-              </FormDescription>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.streaming.minimum_role_to_stream_description",
+                )
+              }}</FormDescription>
               <FormControl>
                 <Select v-bind="componentField">
                   <FormControl>
@@ -199,6 +199,10 @@ export default {
             },
           ],
         }),
+      });
+
+      toast({
+        title: this.$t("pages.settings.application.streaming.updated"),
       });
     },
     async updateSettings() {

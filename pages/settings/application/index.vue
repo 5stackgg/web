@@ -34,20 +34,24 @@ definePageMeta({
 
           <template v-if="matchMakingAllowed">
             <Separator />
-            <div class="space-y-2">
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+            <div class="space-y-3">
+              <p class="text-sm text-muted-foreground">
+                {{
+                  $t(`pages.settings.application.matchmaking_type_description`)
+                }}
+              </p>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
                 <template
                   v-for="match_type in ['competitive', 'wingman', 'duel']"
                 >
                   <div
-                    class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 p-4 rounded-lg border cursor-pointer"
+                    class="flex flex-row items-center justify-between gap-3 p-3 rounded-lg border cursor-pointer hover:bg-accent/40 transition-colors"
                     @click="toggleMatchmakingType(match_type)"
                   >
-                    <div class="space-y-0.5">
-                      <h4 class="text-base font-medium capitalize">
-                        {{ match_type }}
-                      </h4>
-                    </div>
+                    <h4 class="text-sm font-medium capitalize">
+                      {{ match_type }}
+                    </h4>
                     <Switch
                       :model-value="isMatchmakingTypeEnabled(match_type)"
                       @update:model-value="toggleMatchmakingType(match_type)"
@@ -55,11 +59,6 @@ definePageMeta({
                   </div>
                 </template>
               </div>
-              <p class="text-sm text-muted-foreground">
-                {{
-                  $t(`pages.settings.application.matchmaking_type_description`)
-                }}
-              </p>
             </div>
 
             <Separator />
@@ -69,16 +68,9 @@ definePageMeta({
               name="public.matchmaking_min_role"
             >
               <FormItem>
-                <FormLabel class="text-lg font-semibold">{{
+                <FormLabel>{{
                   $t("pages.settings.application.matchmaking_min_role")
                 }}</FormLabel>
-                <FormDescription>
-                  {{
-                    $t(
-                      "pages.settings.application.matchmaking_min_role_description",
-                    )
-                  }}
-                </FormDescription>
                 <FormControl>
                   <Select v-bind="componentField">
                     <FormControl>
@@ -103,109 +95,108 @@ definePageMeta({
               </FormItem>
             </FormField>
 
-            <FormField
-              v-slot="{ componentField }"
-              name="public.max_acceptable_latency"
-            >
-              <FormItem>
-                <FormLabel class="text-lg font-semibold">{{
-                  $t("pages.settings.application.max_acceptable_latency")
-                }}</FormLabel>
-                <FormDescription>
-                  {{
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <FormField
+                v-slot="{ componentField }"
+                name="public.max_acceptable_latency"
+              >
+                <FormItem>
+                  <FormLabel>
+                    {{
+                      $t("pages.settings.application.max_acceptable_latency")
+                    }}
+                    <span class="text-muted-foreground font-normal">(ms)</span>
+                  </FormLabel>
+                  <FormDescription>{{
                     $t(
                       "pages.settings.application.max_acceptable_latency_description",
                     )
-                  }}
-                </FormDescription>
-                <FormControl>
-                  <Input v-bind="componentField" type="number" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            </FormField>
+                  }}</FormDescription>
+                  <FormControl>
+                    <Input v-bind="componentField" type="number" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
 
-            <FormField v-slot="{ componentField }" name="auto_cancel_duration">
-              <FormItem>
-                <FormLabel class="text-lg font-semibold">{{
-                  $t("pages.settings.application.auto_cancel_duration")
-                }}</FormLabel>
-                <FormDescription>
-                  {{
+              <FormField
+                v-slot="{ componentField }"
+                name="auto_cancel_duration"
+              >
+                <FormItem>
+                  <FormLabel>
+                    {{ $t("pages.settings.application.auto_cancel_duration") }}
+                    <span class="text-muted-foreground font-normal">(min)</span>
+                  </FormLabel>
+                  <FormDescription>{{
                     $t(
                       "pages.settings.application.auto_cancel_duration_description",
                     )
-                  }}
-                </FormDescription>
-                <FormControl>
-                  <Input v-bind="componentField" type="number" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            </FormField>
+                  }}</FormDescription>
+                  <FormControl>
+                    <Input v-bind="componentField" type="number" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
 
-            <FormField v-slot="{ componentField }" name="live_match_timeout">
-              <FormItem>
-                <FormLabel class="text-lg font-semibold">{{
-                  $t("pages.settings.application.live_match_timeout")
-                }}</FormLabel>
-                <FormDescription>
-                  {{
+              <FormField v-slot="{ componentField }" name="live_match_timeout">
+                <FormItem>
+                  <FormLabel>
+                    {{ $t("pages.settings.application.live_match_timeout") }}
+                    <span class="text-muted-foreground font-normal">(min)</span>
+                  </FormLabel>
+                  <FormDescription>{{
                     $t(
                       "pages.settings.application.live_match_timeout_description",
                     )
-                  }}
-                </FormDescription>
-                <FormControl>
-                  <Input v-bind="componentField" type="number" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            </FormField>
+                  }}</FormDescription>
+                  <FormControl>
+                    <Input v-bind="componentField" type="number" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              </FormField>
+            </div>
           </template>
         </div>
       </Card>
 
-      <div class="space-y-6">
-        <FormField
-          v-slot="{ componentField }"
-          name="public.lineup_add_without_invite"
-        >
-          <FormItem>
-            <FormLabel class="text-lg font-semibold">{{
-              $t("pages.settings.application.lineup_add_without_invite")
-            }}</FormLabel>
-            <FormDescription>
-              {{
-                $t(
-                  "pages.settings.application.lineup_add_without_invite_description",
-                )
-              }}
-            </FormDescription>
-            <FormControl>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem
-                      :value="role.value"
-                      v-for="role in lineupRoles"
-                      :key="role.value"
-                    >
-                      <span class="capitalize">{{ role.display }}</span>
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        </FormField>
-      </div>
+      <Card variant="gradient">
+        <div class="p-6">
+          <FormField
+            v-slot="{ componentField }"
+            name="public.lineup_add_without_invite"
+          >
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.lineup_add_without_invite")
+              }}</FormLabel>
+              <FormControl>
+                <Select v-bind="componentField">
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        :value="role.value"
+                        v-for="role in lineupRoles"
+                        :key="role.value"
+                      >
+                        <span class="capitalize">{{ role.display }}</span>
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </Card>
 
       <Card variant="gradient">
         <div class="p-6 space-y-6">
@@ -316,6 +307,10 @@ export default {
           ],
         }),
       });
+
+      toast({
+        title: this.$t("pages.settings.application.matchmaking.updated"),
+      });
     },
     isMatchmakingTypeEnabled(match_type: e_match_types_enum) {
       const matchmakingTypeSetting = this.settings.find(
@@ -346,6 +341,10 @@ export default {
           ],
         }),
       });
+
+      toast({
+        title: this.$t("pages.settings.application.matchmaking.updated"),
+      });
     },
     async toggleDefaultModels() {
       await (this as any).$apollo.mutate({
@@ -366,6 +365,10 @@ export default {
             },
           ],
         }),
+      });
+
+      toast({
+        title: this.$t("pages.settings.application.matchmaking.updated"),
       });
     },
     async updateSettings() {

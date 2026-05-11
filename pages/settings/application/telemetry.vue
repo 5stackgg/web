@@ -43,12 +43,7 @@ definePageMeta({
                   "pages.settings.application.telemetry.google_tag_manager_code",
                 )
               }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.telemetry.google_tag_manager_code_description",
-                )
-              }}</FormDescription>
-              <Input v-bind="componentField" />
+              <Input v-bind="componentField" placeholder="GTM-XXXXXXX" />
             </FormItem>
           </FormField>
         </div>

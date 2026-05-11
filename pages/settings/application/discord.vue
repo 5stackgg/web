@@ -12,6 +12,10 @@ definePageMeta({
     <form @submit.prevent="updateSettings" class="grid gap-6">
       <Card variant="gradient">
         <div class="p-6 space-y-6">
+          <h3 class="text-lg font-semibold">
+            {{ $t("pages.settings.application.discord.support_section") }}
+          </h3>
+
           <FormField v-slot="{ componentField }" name="discord_invite_link">
             <FormItem>
               <FormLabel>{{
@@ -55,7 +59,7 @@ definePageMeta({
       <Card variant="gradient">
         <div class="p-6 space-y-6">
           <div>
-            <h3 class="text-lg font-medium">
+            <h3 class="text-lg font-semibold">
               {{
                 $t(
                   "pages.settings.application.discord.match_notifications.title",
@@ -135,7 +139,7 @@ definePageMeta({
       <Card variant="gradient">
         <div class="p-6 space-y-6">
           <div>
-            <h3 class="text-lg font-medium">
+            <h3 class="text-lg font-semibold">
               {{
                 $t(
                   "pages.settings.application.discord.server_notifications.title",

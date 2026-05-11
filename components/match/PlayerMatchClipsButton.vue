@@ -49,7 +49,22 @@ function pickClip(c: Clip) {
 </script>
 
 <template>
-  <template v-if="hasClips">
+  <!--
+    PlayerMatchClipsButton sits inside the NuxtLink that PlayerDisplay
+    renders, so we have to guarantee no click here ever bubbles up to
+    that link and navigates to /players/:id. Native HTML elements honor
+    Vue's `.stop` modifier reliably; PopoverTrigger does not (it's a
+    custom component, so the listener is forwarded rather than bound
+    directly to the underlying button), so we wrap everything in a
+    span that swallows clicks before they escape this subtree.
+  -->
+  <span
+    v-if="hasClips"
+    class="inline-flex"
+    @click.stop
+    @mousedown.stop
+    @mouseup.stop
+  >
     <button
       v-if="count === 1 && single"
       type="button"
@@ -64,7 +79,6 @@ function pickClip(c: Clip) {
       <PopoverTrigger
         class="relative inline-flex h-5 w-5 items-center justify-center rounded-full border-2 border-background bg-[hsl(var(--tac-amber))] text-background shadow-[0_0_0_1px_hsl(var(--tac-amber)),0_0_6px_hsl(var(--tac-amber)/0.6)] hover:brightness-110 transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.8)]"
         :title="`${count} highlights for this player`"
-        @click.stop
       >
         <Film class="h-3 w-3" />
         <span
@@ -114,5 +128,5 @@ function pickClip(c: Clip) {
         </div>
       </PopoverContent>
     </Popover>
-  </template>
+  </span>
 </template>

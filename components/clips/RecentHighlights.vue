@@ -62,6 +62,15 @@ subscribe();
 onBeforeUnmount(() => activeSub?.unsubscribe());
 
 const hasClips = computed(() => clips.value.length > 0);
+const showMap = computed(() => {
+  const seen = new Set<string>();
+  for (const c of clips.value) {
+    const name = c.match_map?.map?.name;
+    if (name) seen.add(name);
+    if (seen.size > 1) return true;
+  }
+  return false;
+});
 // Skip the skeleton when sectionLabel is set — a flash of header +
 // skeleton then vanish is worse than one beat of nothing.
 const shouldRender = computed(() =>
@@ -189,6 +198,7 @@ const gridItems = computed<GridItem[]>(() => {
           v-else
           :key="`single-${item.clip.id}`"
           :clip="item.clip"
+          :show-map="showMap"
         />
       </template>
     </div>

@@ -26,6 +26,7 @@ import { generateMutation } from "~/graphql/graphqlGen";
 
 const props = defineProps<{
   clip: Clip;
+  showMap?: boolean;
 }>();
 
 const { openClip } = useClipModal();
@@ -368,6 +369,12 @@ async function setVisibility(v: Visibility) {
           </span>
           <span v-if="matchupLabel" class="mt-0.5 block truncate">
             {{ matchupLabel }}
+          </span>
+          <span
+            v-if="showMap && clip.match_map?.map?.name"
+            class="mt-0.5 block truncate font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground/80"
+          >
+            {{ clip.match_map.map.label ?? clip.match_map.map.name }}
           </span>
         </span>
         <span

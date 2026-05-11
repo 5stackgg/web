@@ -26,6 +26,10 @@ definePageMeta({
 
 const route = useRoute();
 const matchMapId = computed(() => String(route.params.matchMapId));
+const demoId = computed(() => {
+  const v = route.query.demoId;
+  return typeof v === "string" && v ? v : null;
+});
 const authStore = useAuthStore();
 const { store, start, stop } = useDemoPlayback();
 
@@ -128,7 +132,7 @@ onMounted(async () => {
   }
 
   try {
-    await start(matchMapId.value);
+    await start(matchMapId.value, demoId.value);
   } catch {
     // store.errorMessage is populated; UI renders the error state.
     return;

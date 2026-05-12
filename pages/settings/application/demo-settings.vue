@@ -513,7 +513,8 @@ export default {
             // legacy "default" (now folded into "horizontal" since the
             // two render identically) — coerce so the Select doesn't
             // render an unknown option.
-            const value = setting.value === "vertical" ? "vertical" : "horizontal";
+            const value =
+              setting.value === "vertical" ? "vertical" : "horizontal";
             this.form.setFieldValue(setting.name, value);
             continue;
           }

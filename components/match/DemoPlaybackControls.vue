@@ -87,10 +87,7 @@ const {
 // "vertical"] in hud.json — but `default` and `horizontal` render the
 // same layout, so we only expose the two distinct ones. Legacy
 // `default` payloads are folded into `horizontal` at the boundary.
-const HUD_MODES: Array<"horizontal" | "vertical"> = [
-  "horizontal",
-  "vertical",
-];
+const HUD_MODES: Array<"horizontal" | "vertical"> = ["horizontal", "vertical"];
 const HUD_MODE_LABELS: Record<(typeof HUD_MODES)[number], string> = {
   horizontal: "Horizontal",
   vertical: "Vertical",

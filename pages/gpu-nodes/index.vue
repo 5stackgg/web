@@ -52,10 +52,7 @@ async function stopGpuSession(nodeId: string) {
   try {
     await apolloClient.mutate({
       mutation: generateMutation({
-        stopGpuSession: [
-          { game_server_node_id: nodeId },
-          { success: true },
-        ],
+        stopGpuSession: [{ game_server_node_id: nodeId }, { success: true }],
       }),
     });
     toast({ title: "GPU session stopped" });
@@ -214,7 +211,9 @@ const summaryTiles = computed(() => {
             <Button
               v-if="busyByNode[node.id]"
               size="sm"
-              :variant="confirmStopByNodeId[node.id] ? 'destructive' : 'outline'"
+              :variant="
+                confirmStopByNodeId[node.id] ? 'destructive' : 'outline'
+              "
               :disabled="busyByNodeId[node.id]"
               class="h-7 px-2 text-xs"
               @click="stopGpuSession(node.id)"

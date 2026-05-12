@@ -27,10 +27,7 @@ import {
   Dot,
 } from "lucide-vue-next";
 import gql from "graphql-tag";
-import {
-  generateMutation,
-  generateSubscription,
-} from "~/graphql/graphqlGen";
+import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { e_match_status_enum } from "~/generated/zeus";
 import WhepPlayer from "~/components/match/WhepPlayer.vue";
 import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
@@ -406,9 +403,9 @@ function currentMapFor(m: LiveMatch): LiveMatchMap | null {
     const found = m.match_maps.find((mm) => mm.id === m.current_match_map_id);
     if (found) return found;
   }
-  const scored = [...m.match_maps].reverse().find(
-    (mm) => (mm.lineup_1_score ?? 0) + (mm.lineup_2_score ?? 0) > 0,
-  );
+  const scored = [...m.match_maps]
+    .reverse()
+    .find((mm) => (mm.lineup_1_score ?? 0) + (mm.lineup_2_score ?? 0) > 0);
   return scored ?? null;
 }
 
@@ -544,7 +541,9 @@ function currentMapName(m: LiveMatch): string | null {
                 v-else
                 class="inline-flex items-center gap-1.5 rounded-sm border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] px-2 py-0.5 font-mono text-[0.6rem] font-bold uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
               >
-                <span class="size-1.5 rounded-full bg-[hsl(var(--tac-amber))]" />
+                <span
+                  class="size-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
+                />
                 {{ statusBadgeLabel(stream) }}
               </span>
               <h3 class="text-base font-semibold tracking-tight truncate">
@@ -1102,7 +1101,8 @@ function currentMapName(m: LiveMatch): string | null {
    is too aggressive for an always-on broadcast badge. Mirrors the
    game-server-node indicator cadence. */
 @keyframes ping-slow {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }

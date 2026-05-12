@@ -284,10 +284,7 @@ async function setHudVisible(visible: boolean) {
   if (hudVisible.value === visible) return;
   hudVisible.value = visible;
   await runMutation("spec hud", () => ({
-    specHud: [
-      { match_id: matchId.value, visible },
-      { success: true },
-    ],
+    specHud: [{ match_id: matchId.value, visible }, { success: true }],
   }));
 }
 
@@ -305,10 +302,7 @@ function setScoreboard(show: boolean) {
   void apolloClient
     .mutate({
       mutation: generateMutation({
-        specScoreboard: [
-          { match_id: matchId.value, show },
-          { success: true },
-        ],
+        specScoreboard: [{ match_id: matchId.value, show }, { success: true }],
       }),
     })
     .catch(() => undefined);

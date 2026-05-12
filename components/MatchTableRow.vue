@@ -54,7 +54,13 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
         <div
           class="flex shrink-0 items-center space-x-2 text-[10px] text-muted-foreground"
         >
-          <template v-if="match.streams?.length > 0">
+          <template
+            v-if="
+              match.streams?.length > 0 &&
+              !match.is_in_lineup &&
+              !match.is_coach
+            "
+          >
             <button
               v-for="stream in match.streams"
               :key="stream.id"
@@ -150,7 +156,13 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
           <div
             class="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-muted-foreground"
           >
-            <template v-if="match.streams?.length > 0">
+            <template
+              v-if="
+                match.streams?.length > 0 &&
+                !match.is_in_lineup &&
+                !match.is_coach
+              "
+            >
               <button
                 v-for="stream in match.streams"
                 :key="stream.id"

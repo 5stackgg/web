@@ -1,25 +1,41 @@
 <script lang="ts" setup>
 import { Button } from "~/components/ui/button";
 import { ExternalLink, Volume2, VolumeX } from "lucide-vue-next";
+import MatchScoreboardOverlay from "~/components/match/MatchScoreboardOverlay.vue";
+import StreamCanvas from "~/components/match/StreamCanvas.vue";
 </script>
 
 <template>
   <div class="w-full space-y-3">
-    <div class="group aspect-video relative w-full" v-if="selectedStream">
-      <div ref="playerRef" class="w-full h-full"></div>
-      <template v-if="global === false">
-        <Button
-          class="absolute top-2 right-2 w-8 h-8 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center z-10"
-          @click="setGlobalStream(selectedStream)"
-          type="button"
-          :title="$t('streams.move_to_global_view')"
-          variant="ghost"
-          size="icon"
-        >
-          <ExternalLink class="w-4 h-4" />
-          <span class="sr-only">{{ $t("streams.move_to_global_view") }}</span>
-        </Button>
+    <StreamCanvas
+      v-if="selectedStream"
+      :is-live="true"
+      class="group aspect-video w-full"
+    >
+      <template #video>
+        <div ref="playerRef" class="absolute inset-0 h-full w-full"></div>
       </template>
+
+      <Button
+        v-if="global === false"
+        class="absolute top-2 right-2 w-8 h-8 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center z-10"
+        @click="setGlobalStream(selectedStream)"
+        type="button"
+        :title="$t('streams.move_to_global_view')"
+        variant="ghost"
+        size="icon"
+      >
+        <ExternalLink class="w-4 h-4" />
+        <span class="sr-only">{{ $t("streams.move_to_global_view") }}</span>
+      </Button>
+
+      <MatchScoreboardOverlay
+        v-if="effectiveMatchId"
+        v-model:open="scoreboardOpen"
+        :match-id="effectiveMatchId"
+        :compact="global"
+        :require-fullscreen="!global"
+      />
 
       <!-- Custom mute pill — same affordance as WhepPlayer. Always
            muted on first load so embeds autoplay; this is the single
@@ -40,7 +56,7 @@ import { ExternalLink, Volume2, VolumeX } from "lucide-vue-next";
         <VolumeX v-if="isMuted" class="size-3.5" />
         <Volume2 v-else class="size-3.5" />
       </button>
-    </div>
+    </StreamCanvas>
 
     <div
       v-if="streams.length > 1 || (showTitle == false && streams.length > 0)"
@@ -112,6 +128,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    // When set, mounts MatchScoreboardOverlay on top of the embed so
+    // viewers watching via Twitch/YouTube/Kick/iframe get the same
+    // live scoreboard pulldown that the WHEP LiveStreamPlayer has.
+    // Pulled from `global` stream's `match_id` when in StreamGlobal.
+    matchId: {
+      type: String,
+      default: null,
+    },
   },
   data() {
     return {
@@ -119,6 +143,7 @@ export default {
       platform: null as Platform,
       embedId: null as string | null,
       selectedStream: null as MatchStream | null,
+      scoreboardOpen: false,
       // Always start muted so browsers actually autoplay. Toggled by
       // the custom mute pill — for Twitch via the SDK's setMuted, for
       // iframe-based embeds (YouTube/Kick/generic) by rebuilding the
@@ -131,6 +156,18 @@ export default {
   computed: {
     globalStream() {
       return useApplicationSettingsStore().globalStream;
+    },
+    // Resolve the matchId from either the explicit prop or the
+    // selected stream's match_id (set on game-streamer rows / when
+    // promoted to StreamGlobal). Lets parents drop in <StreamEmbed>
+    // without thinking about match context unless they need to.
+    effectiveMatchId() {
+      return (
+        this.matchId ||
+        (this.selectedStream as any)?.match_id ||
+        (this.streams?.[0] as any)?.match_id ||
+        null
+      );
     },
   },
   methods: {
@@ -459,6 +496,21 @@ export default {
           }
         }
       },
+    },
+    // When the floating global-stream overlay is closed (globalStream
+    // goes null), the inline embed previously nulled its selectedStream
+    // when promoting the stream to global — so without this watcher the
+    // inline player never came back on close. Re-select the first
+    // available stream so the page-level player is restored.
+    globalStream(next, prev) {
+      if (prev && !next && !this.global && !this.setGlobalStreamOnly) {
+        if (!this.selectedStream && this.streams && this.streams.length > 0) {
+          const firstStream = this.streams.at(0);
+          if (firstStream) {
+            this.selectStream(firstStream);
+          }
+        }
+      }
     },
   },
 };

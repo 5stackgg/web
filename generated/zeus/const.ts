@@ -5486,6 +5486,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid_comparison_exp",
 		is_game_streamer:"Boolean_comparison_exp",
 		is_live:"Boolean_comparison_exp",
+		k8s_service_name:"String_comparison_exp",
 		last_status_at:"timestamptz_comparison_exp",
 		link:"String_comparison_exp",
 		match:"matches_bool_exp",
@@ -5522,6 +5523,7 @@ export const AllTypesProps: Record<string,any> = {
 		error_message:"order_by",
 		game_server_node_id:"order_by",
 		id:"order_by",
+		k8s_service_name:"order_by",
 		last_status_at:"order_by",
 		link:"order_by",
 		match_id:"order_by",
@@ -5535,6 +5537,7 @@ export const AllTypesProps: Record<string,any> = {
 		error_message:"order_by",
 		game_server_node_id:"order_by",
 		id:"order_by",
+		k8s_service_name:"order_by",
 		last_status_at:"order_by",
 		link:"order_by",
 		match_id:"order_by",
@@ -5557,6 +5560,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		is_game_streamer:"order_by",
 		is_live:"order_by",
+		k8s_service_name:"order_by",
 		last_status_at:"order_by",
 		link:"order_by",
 		match:"matches_order_by",
@@ -7556,6 +7560,9 @@ export const AllTypesProps: Record<string,any> = {
 		setGameNodeSchedulingState:{
 
 		},
+		setHudMode:{
+			match_id:"uuid"
+		},
 		setMatchWinner:{
 			match_id:"uuid",
 			winning_lineup_id:"uuid"
@@ -7566,13 +7573,22 @@ export const AllTypesProps: Record<string,any> = {
 		specClick:{
 			match_id:"uuid"
 		},
+		specHud:{
+			match_id:"uuid"
+		},
 		specJump:{
 			match_id:"uuid"
 		},
 		specPlayer:{
 			match_id:"uuid"
 		},
+		specScoreboard:{
+			match_id:"uuid"
+		},
 		specSlot:{
+			match_id:"uuid"
+		},
+		specXray:{
 			match_id:"uuid"
 		},
 		startLive:{
@@ -7581,6 +7597,9 @@ export const AllTypesProps: Record<string,any> = {
 		startMatch:{
 			match_id:"uuid",
 			server_id:"uuid"
+		},
+		stopGpuSession:{
+			game_server_node_id:"uuid"
 		},
 		stopLive:{
 			match_id:"uuid"
@@ -7593,6 +7612,10 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		switchLineup:{
 
+		},
+		switchLiveMatch:{
+			from_match_id:"uuid",
+			to_match_id:"uuid"
 		},
 		updateClip:{
 			clip_id:"uuid"
@@ -22931,6 +22954,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		is_game_streamer:"Boolean",
 		is_live:"Boolean",
+		k8s_service_name:"String",
 		last_status_at:"timestamptz",
 		link:"String",
 		match:"matches",
@@ -22966,6 +22990,7 @@ export const ReturnTypes: Record<string,any> = {
 		error_message:"String",
 		game_server_node_id:"String",
 		id:"uuid",
+		k8s_service_name:"String",
 		last_status_at:"timestamptz",
 		link:"String",
 		match_id:"uuid",
@@ -22979,6 +23004,7 @@ export const ReturnTypes: Record<string,any> = {
 		error_message:"String",
 		game_server_node_id:"String",
 		id:"uuid",
+		k8s_service_name:"String",
 		last_status_at:"timestamptz",
 		link:"String",
 		match_id:"uuid",
@@ -23654,19 +23680,25 @@ export const ReturnTypes: Record<string,any> = {
 		restartService:"SuccessOutput",
 		scheduleMatch:"SuccessOutput",
 		setGameNodeSchedulingState:"SuccessOutput",
+		setHudMode:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",
 		specAutodirector:"SuccessOutput",
 		specClick:"SuccessOutput",
+		specHud:"SuccessOutput",
 		specJump:"SuccessOutput",
 		specPlayer:"SuccessOutput",
+		specScoreboard:"SuccessOutput",
 		specSlot:"SuccessOutput",
+		specXray:"SuccessOutput",
 		startLive:"SuccessOutput",
 		startMatch:"SuccessOutput",
+		stopGpuSession:"SuccessOutput",
 		stopLive:"SuccessOutput",
 		stopWatchDemo:"SuccessOutput",
 		swapLineups:"SuccessOutput",
 		switchLineup:"SuccessOutput",
+		switchLiveMatch:"SuccessOutput",
 		syncSteamFriends:"SuccessOutput",
 		testUpload:"TestUploadResponse",
 		unlinkDiscord:"SuccessOutput",

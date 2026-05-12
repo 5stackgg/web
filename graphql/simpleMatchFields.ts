@@ -8,6 +8,7 @@ export const simpleMatchFields = Selector("matches")({
   ended_at: true,
   organizer_steam_id: true,
   is_in_lineup: true,
+  is_coach: true,
   is_tournament_match: true,
   e_match_status: {
     description: true,

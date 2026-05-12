@@ -69,7 +69,11 @@ import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
            and starts muted (autoplay-friendly) — the StreamEmbed
            overlays a custom mute pill matching the WHEP player. -->
       <div v-if="embeddableStreams.length > 0" class="mb-4">
-        <StreamEmbed :streams="embeddableStreams" :show-title="false" />
+        <StreamEmbed
+          :streams="embeddableStreams"
+          :match-id="match.id"
+          :show-title="false"
+        />
       </div>
 
       <!-- Streams Table -->
@@ -425,10 +429,8 @@ export default {
   },
   methods: {
     // Render the streamer pod's current boot step on the booting badge
-    // so operators can tell *which* phase is taking time. Falls back to
-    // the raw status text (with underscores → spaces) for any value not
-    // in the curated label map — the streamer image can introduce new
-    // statuses without the web client needing to ship in lockstep.
+    // so operators can tell *which* phase is taking time. Appends "NN.N%"
+    // when the latest status_history entry carries a progress field.
     gameStreamerStatusLabel(stream) {
       const status = stream?.status;
       const labels = {
@@ -439,8 +441,22 @@ export default {
         connecting_to_game: "Connecting to game…",
         starting_capture: "Starting capture…",
       };
-      if (!status) return this.$t("streams.booting_badge") || "Booting…";
-      return labels[status] || status.replace(/_/g, " ");
+      const base = status
+        ? labels[status] || status.replace(/_/g, " ")
+        : this.$t("streams.booting_badge") || "Booting…";
+
+      const history = Array.isArray(stream?.status_history)
+        ? stream.status_history
+        : [];
+      for (let i = history.length - 1; i >= 0; i--) {
+        if (history[i]?.status !== status) continue;
+        const p = history[i].progress;
+        if (typeof p === "number" && Number.isFinite(p)) {
+          return `${base} ${p.toFixed(1)}%`;
+        }
+        break;
+      }
+      return base;
     },
     async addStream() {
       const { valid } = await this.form.validate();

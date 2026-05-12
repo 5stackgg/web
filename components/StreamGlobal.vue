@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import StreamEmbed from "~/components/StreamEmbed.vue";
+import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
 import { Cross2Icon } from "@radix-icons/vue";
+import { ArrowUpRight } from "lucide-vue-next";
 </script>
 
 <template>
@@ -9,8 +11,17 @@ import { Cross2Icon } from "@radix-icons/vue";
     class="fixed bottom-4 right-4 z-50 rounded-lg overflow-hidden shadow-2xl border border-border bg-background"
     :style="containerStyle"
   >
-    <div :class="{ 'pointer-events-none': isResizing }">
-      <StreamEmbed :streams="[stream]" :global="true" />
+    <div class="h-full w-full" :class="{ 'pointer-events-none': isResizing }">
+      <!-- Game-streamer rows have a dedicated WHEP surface with built-
+           in scoreboard pulldown + native PiP; embeds (twitch/yt/kick)
+           keep going through StreamEmbed. -->
+      <LiveStreamPlayer
+        v-if="isGameStreamer && stream.match_id"
+        :match-id="stream.match_id"
+        :in-global="true"
+        class="h-full w-full [&>div]:rounded-none [&>div]:border-0"
+      />
+      <StreamEmbed v-else :streams="[stream]" :global="true" />
     </div>
     <div
       class="absolute top-0 left-0 w-6 h-6 cursor-nwse-resize bg-border hover:bg-primary/50 transition-colors z-10 flex items-center justify-center"
@@ -18,14 +29,28 @@ import { Cross2Icon } from "@radix-icons/vue";
     >
       <div class="w-3 h-3 border-l-2 border-t-2 border-foreground/40"></div>
     </div>
-    <button
-      class="absolute top-2 right-2 w-6 h-6 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center z-10"
-      @click="closePreview"
-      type="button"
-    >
-      <Cross2Icon class="w-4 h-4" />
-      <span class="sr-only">{{ $t("common.close") }}</span>
-    </button>
+    <div class="absolute top-2 right-2 z-10 flex items-center gap-1">
+      <NuxtLink
+        v-if="stream.match_id"
+        :to="`/matches/${stream.match_id}`"
+        class="w-6 h-6 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center"
+        :title="$t('match.open_match') || 'Open match'"
+        @click="closePreview"
+      >
+        <ArrowUpRight class="w-4 h-4" />
+        <span class="sr-only">{{
+          $t("match.open_match") || "Open match"
+        }}</span>
+      </NuxtLink>
+      <button
+        class="w-6 h-6 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center"
+        @click="closePreview"
+        type="button"
+      >
+        <Cross2Icon class="w-4 h-4" />
+        <span class="sr-only">{{ $t("common.close") }}</span>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -43,6 +68,9 @@ export default {
   computed: {
     stream() {
       return useApplicationSettingsStore().globalStream;
+    },
+    isGameStreamer() {
+      return (this.stream as any)?.is_game_streamer === true;
     },
     containerStyle() {
       return {

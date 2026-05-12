@@ -53,7 +53,11 @@ function setVolume(v: number) {
 }
 
 async function toggleFullscreen() {
-  const target = containerRef.value;
+  // Prefer the parent surface (eg. LiveStreamPlayer's aspect-video
+  // wrapper) so siblings like the scoreboard pulldown, corner markers,
+  // and any HUD overlays remain visible in fullscreen. Falls back to
+  // our own container when we're mounted at the top level.
+  const target = containerRef.value?.parentElement ?? containerRef.value;
   if (!target) return;
   if (document.fullscreenElement) {
     await document.exitFullscreen().catch(() => undefined);
@@ -88,9 +92,6 @@ function onKeyDown(e: KeyboardEvent) {
 
 let pc: RTCPeerConnection | null = null;
 let retryHandle: ReturnType<typeof setTimeout> | null = null;
-// Cancelled at teardown — any in-flight retry attempt checks this
-// before re-issuing connect() so unmount doesn't leak a connect after
-// the component is gone.
 let cancelled = false;
 const MAX_RETRY_DELAY_MS = 5_000;
 const INITIAL_RETRY_DELAY_MS = 500;
@@ -111,25 +112,13 @@ function unmute() {
 }
 
 async function connect() {
-  if (!props.whepUrl) {
-    console.debug("[whep] connect skipped: no whepUrl");
-    return;
-  }
-  if (!videoRef.value) {
-    console.debug("[whep] connect skipped: <video> not mounted yet");
-    return;
-  }
-  // SRT publisher is down during a render. The clipRenderActive
-  // watcher kicks off a fresh connect when the render finishes.
-  if (clipRenderActive.value) {
-    console.debug("[whep] connect skipped: clip render in progress");
-    return;
-  }
+  if (!props.whepUrl) return;
+  if (!videoRef.value) return;
+  if (clipRenderActive.value) return;
 
   await teardown();
   status.value = "connecting";
   errorMessage.value = null;
-  console.debug("[whep] connecting to", props.whepUrl);
 
   try {
     pc = new RTCPeerConnection({
@@ -138,21 +127,16 @@ async function connect() {
       ],
     });
 
-    // mediamtx WHEP egress is recv-only from the browser's perspective.
     pc.addTransceiver("video", { direction: "recvonly" });
     pc.addTransceiver("audio", { direction: "recvonly" });
 
     pc.ontrack = (event) => {
       const el = videoRef.value;
       if (!el || !event.streams[0]) return;
-      // Set muted/autoplay in JS — Vue's :muted binding can land after
-      // mount, and Chrome's autoplay policy reads the property at play().
       el.muted = true;
       el.autoplay = true;
       el.playsInline = true;
       el.srcObject = event.streams[0];
-      // Assigning srcObject after mount doesn't re-trigger autoplay in
-      // Chrome/Safari, so call play() explicitly with one retry.
       const tryPlay = () =>
         el.play().catch((err) => {
           console.debug("[whep] autoplay blocked:", err?.name ?? err);
@@ -169,12 +153,9 @@ async function connect() {
 
     pc.onconnectionstatechange = () => {
       const state = pc?.connectionState;
-      console.debug("[whep] connectionState=", state);
       if (state === "connected") {
         status.value = "playing";
       } else if (state === "failed" || state === "disconnected") {
-        // Peer dropped mid-stream. During a render, keep the last
-        // frame and show "rendering" — clipRenderActive watcher reconnects.
         if (clipRenderActive.value) {
           status.value = "rendering";
           errorMessage.value = null;
@@ -190,10 +171,6 @@ async function connect() {
 
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
-
-    // Wait for ICE gathering to complete so we send a non-trickle
-    // offer — mediamtx's WHEP endpoint is single-shot (no PATCH for
-    // trickle ICE candidates), so the SDP must include all candidates.
     await waitForIceComplete(pc);
 
     const res = await fetch(props.whepUrl, {
@@ -208,15 +185,12 @@ async function connect() {
     }
     const answerSdp = await res.text();
     await pc.setRemoteDescription({ type: "answer", sdp: answerSdp });
-    // Reset backoff so a future drop starts retrying fast.
     retryDelay = INITIAL_RETRY_DELAY_MS;
     failureCount = 0;
     hasEverPlayed = true;
     isRetrying.value = false;
   } catch (err) {
     const message = (err as Error)?.message ?? String(err);
-    // Connect raced with a render starting. clipRenderActive watcher
-    // will retry when the render finishes.
     if (clipRenderActive.value) {
       status.value = "rendering";
       errorMessage.value = null;
@@ -236,8 +210,6 @@ async function connect() {
       useFallback.value = true;
       return;
     }
-    // mediamtx 404s until the SRT publisher registers; always retry —
-    // the parent page unmounts us when the session ends.
     scheduleRetry();
   }
 }
@@ -351,17 +323,13 @@ onMounted(() => {
   window.addEventListener("keydown", onKeyDown);
 });
 
-// Force a fresh connect when a render ends — the publisher was
-// restarted, so the existing peer is dead regardless of state.
 watch(clipRenderActive, (active, was) => {
   if (was && !active) {
-    console.debug("[whep] clip render ended — forcing reconnect");
     retryDelay = INITIAL_RETRY_DELAY_MS;
     void teardown().then(() => connect());
   }
 });
 
-// Reconnect on URL change (user switches matches).
 watch(
   () => props.whepUrl,
   () => {
@@ -414,7 +382,12 @@ defineExpose({ connect, teardown });
     />
 
     <!-- muted/autoplay as static attributes — Chrome's autoplay gate
-         reads them eagerly and a late :muted binding loses the race. -->
+         reads them eagerly and a late :muted binding loses the race.
+         disablepictureinpicture + disableremoteplayback suppress
+         Chrome's auto-injected hover overlay (scrubber, PiP button,
+         3-dot menu). We do all our own chrome and don't want the
+         browser racing it. controlslist is a belt-and-suspenders for
+         the case where some future code path flips `controls` on. -->
     <video
       v-show="!useFallback"
       ref="videoRef"
@@ -422,6 +395,9 @@ defineExpose({ connect, teardown });
       autoplay
       muted
       playsinline
+      disablepictureinpicture
+      disableremoteplayback
+      controlslist="nodownload nofullscreen noremoteplayback noplaybackrate"
     />
 
     <!-- Prominent "click to unmute" affordance. Browsers force WHEP
@@ -493,9 +469,8 @@ defineExpose({ connect, teardown });
       </button>
     </div>
 
-    <!-- Always-available fullscreen entry, top-right of the player.
-         Stays accessible while the unmute pill is occupying the
-         bottom-right corner. -->
+    <!-- Always-available fullscreen entry, bottom-left while the
+         unmute pill is occupying the bottom-right corner. -->
     <button
       v-if="status === 'playing' && !useFallback && isMuted"
       type="button"
@@ -525,13 +500,6 @@ defineExpose({ connect, teardown });
       </span>
     </div>
 
-    <!-- Status overlay (connecting / error). pointer-events-none so
-         clicks pass through to the <video> below. Visually evokes a
-         broadcast deck "signal acquisition" pattern: ambient amber
-         pulse + horizontal scanline sweep + animated radar ring +
-         mono uppercase status, swapping to a destructive-themed
-         glitch frame on error. Suppressed during 'rendering' since
-         the freeze-frame already conveys the state. -->
     <div
       v-if="status !== 'playing' && status !== 'rendering' && !useFallback"
       class="absolute inset-0 overflow-hidden pointer-events-none"
@@ -647,6 +615,24 @@ defineExpose({ connect, teardown });
 </template>
 
 <style scoped>
+/* Belt-and-suspenders: even with `disablepictureinpicture` and no
+   `controls` attribute, Chrome can briefly flash its built-in media
+   controls overlay (the small PiP/3-dot tray on hover) — particularly
+   on small or floating videos. Nuke the WebKit pseudo-elements so we
+   can guarantee only our own chrome is ever visible. */
+video::-webkit-media-controls,
+video::-webkit-media-controls-enclosure,
+video::-webkit-media-controls-panel,
+video::-webkit-media-controls-overlay-play-button,
+video::-webkit-media-controls-pip-button,
+video::-webkit-media-controls-toggle-pip-button,
+video::-internal-media-controls-overlay-cast-button {
+  display: none !important;
+  appearance: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* Scanline that sweeps top → bottom of the player while we're
    connecting. Easing favors a slow body and quick fade at the edges
    so the eye locks onto the middle of the sweep. */

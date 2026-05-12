@@ -25,6 +25,7 @@ import {
 import type { Clip } from "~/types/clip";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { useClipModal } from "~/composables/useClipModal";
+import StreamCanvas from "~/components/match/StreamCanvas.vue";
 
 const props = defineProps<{
   match: any;
@@ -99,7 +100,12 @@ const filteredClips = computed(() => {
 });
 
 const inlineVideoRef = ref<HTMLVideoElement | null>(null);
-const inlineStageRef = ref<HTMLElement | null>(null);
+// inlineStageRef now points at the StreamCanvas component instance —
+// HTMLElement access goes through the exposed `rootEl` ref.
+const inlineStageRef = ref<InstanceType<typeof StreamCanvas> | null>(null);
+const stageEl = computed<HTMLElement | null>(
+  () => (inlineStageRef.value as any)?.rootEl ?? null,
+);
 const isFullscreen = ref(false);
 const activeInlineClipId = ref<string | null>(null);
 const inlineProgress = ref(0);
@@ -144,7 +150,7 @@ function setInlineVolume(v: number) {
 }
 
 async function toggleFullscreen() {
-  const stage = inlineStageRef.value;
+  const stage = stageEl.value;
   if (!stage) return;
   const doc = document as Document & {
     webkitFullscreenElement?: Element | null;
@@ -170,7 +176,7 @@ function onFullscreenChange() {
     webkitFullscreenElement?: Element | null;
   };
   const fsElement = doc.fullscreenElement ?? doc.webkitFullscreenElement;
-  isFullscreen.value = fsElement === inlineStageRef.value;
+  isFullscreen.value = fsElement === stageEl.value;
 }
 
 if (typeof document !== "undefined") {
@@ -239,6 +245,8 @@ async function tryPlay(video: HTMLVideoElement) {
   try {
     await video.play();
     inlinePlaying.value = true;
+    startProgressLoop();
+    return;
   } catch {
     if (!video.muted) {
       video.muted = true;
@@ -246,6 +254,7 @@ async function tryPlay(video: HTMLVideoElement) {
       try {
         await video.play();
         inlinePlaying.value = true;
+        startProgressLoop();
         return;
       } catch {
         // fall through
@@ -397,53 +406,56 @@ function clipTeamName(c: Clip): string | null {
     ></div>
 
     <div class="relative grid gap-4 p-3 sm:p-4 lg:grid-cols-2">
-      <div
+      <StreamCanvas
         ref="inlineStageRef"
-        class="group/feature relative aspect-video w-full overflow-hidden rounded-md border border-border/60 bg-black text-left"
+        :is-live="true"
+        class="group/feature aspect-video w-full overflow-hidden rounded-md border border-border/60 text-left"
         :class="
           isFullscreen
             ? 'flex items-center justify-center !aspect-auto !rounded-none !border-0'
             : ''
         "
       >
-        <video
-          v-if="featuredClip.download_url"
-          :key="featuredClip.id"
-          ref="inlineVideoRef"
-          :src="featuredClip.download_url"
-          :poster="featuredClipImage ?? undefined"
-          class="absolute inset-0 h-full w-full cursor-pointer object-contain transition-transform duration-500 group-hover/feature:scale-[1.025]"
-          :muted="inlineMuted"
-          playsinline
-          preload="auto"
-          @ended="onInlineEnded"
-          @loadedmetadata="syncProgress"
-          @pause="
-            inlinePlaying = false;
-            stopProgressLoop();
-          "
-          @play="
-            inlinePlaying = true;
-            startProgressLoop();
-          "
-          @volumechange="
-            inlineMuted = ($event.target as HTMLVideoElement).muted;
-            inlineVolume = ($event.target as HTMLVideoElement).volume;
-          "
-          @click="toggleInlinePlayback"
-        />
-        <NuxtImg
-          v-else-if="featuredClipImage"
-          :src="featuredClipImage"
-          :alt="featuredClip.title ?? 'Featured highlight'"
-          class="absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover/feature:scale-[1.025]"
-        />
-        <div
-          v-else
-          class="absolute inset-0 flex items-center justify-center text-muted-foreground"
-        >
-          <Film class="h-10 w-10 opacity-50" />
-        </div>
+        <template #video>
+          <video
+            v-if="featuredClip.download_url"
+            :key="featuredClip.id"
+            ref="inlineVideoRef"
+            :src="featuredClip.download_url"
+            :poster="featuredClipImage ?? undefined"
+            class="absolute inset-0 h-full w-full cursor-pointer object-contain transition-transform duration-500 group-hover/feature:scale-[1.025]"
+            :muted="inlineMuted"
+            playsinline
+            preload="auto"
+            @ended="onInlineEnded"
+            @loadedmetadata="syncProgress"
+            @pause="
+              inlinePlaying = false;
+              stopProgressLoop();
+            "
+            @play="
+              inlinePlaying = true;
+              startProgressLoop();
+            "
+            @volumechange="
+              inlineMuted = ($event.target as HTMLVideoElement).muted;
+              inlineVolume = ($event.target as HTMLVideoElement).volume;
+            "
+            @click="toggleInlinePlayback"
+          />
+          <NuxtImg
+            v-else-if="featuredClipImage"
+            :src="featuredClipImage"
+            :alt="featuredClip.title ?? 'Featured highlight'"
+            class="absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover/feature:scale-[1.025]"
+          />
+          <div
+            v-else
+            class="absolute inset-0 flex items-center justify-center text-muted-foreground"
+          >
+            <Film class="h-10 w-10 opacity-50" />
+          </div>
+        </template>
         <div
           class="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-[linear-gradient(180deg,transparent_0%,hsl(0_0%_0%/0.7)_100%)] transition-opacity duration-300"
           :class="
@@ -616,7 +628,7 @@ function clipTeamName(c: Clip): string | null {
             :style="{ width: `${(inlineProgress * 100).toFixed(2)}%` }"
           ></span>
         </span>
-      </div>
+      </StreamCanvas>
 
       <aside
         class="reel-queue relative flex max-h-80 min-h-0 flex-col overflow-hidden rounded-md border border-border/60 bg-card/35 [backdrop-filter:blur(8px)] lg:aspect-video lg:max-h-none"

@@ -29,8 +29,7 @@ import {
 import gql from "graphql-tag";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { e_match_status_enum } from "~/generated/zeus";
-import WhepPlayer from "~/components/match/WhepPlayer.vue";
-import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
+import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import SpectatorGrid from "~/components/stream-deck/SpectatorGrid.vue";
 import { useStreamerPopout } from "~/composables/useStreamerPopout";
 
@@ -45,15 +44,6 @@ const {
   focusPopout,
   closePopout,
 } = useStreamerPopout();
-
-// Derive the WHEP URL from the row's HLS link rather than configuring
-// a separate domain — mediamtx serves both protocols from the same
-// process and the ingress routes /<matchId>/whep to port 8889 while
-// everything else under /<matchId>/ goes to HLS on 8888.
-function whepUrlFor(stream: any): string | null {
-  if (!stream?.link) return null;
-  return stream.link.replace(/\/?$/, "/whep");
-}
 
 definePageMeta({
   middleware: "streamer",
@@ -655,81 +645,42 @@ function currentMapName(m: LiveMatch): string | null {
           <div
             class="grid gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:items-start"
           >
-            <div
-              class="relative aspect-video w-full overflow-hidden rounded-md border border-border/60 bg-black"
+            <StreamCanvas
+              :stream="stream"
+              :stages="LIVE_STAGES"
+              header-label="Stream boot"
+              :show-boot="true"
+              class="aspect-video w-full overflow-hidden rounded-md border border-border/60"
             >
-              <!-- Live + popout closed: actual WHEP playback -->
-              <WhepPlayer
-                v-if="
-                  stream.is_live &&
-                  whepUrlFor(stream) &&
-                  !isPopoutOpen(stream.match_id)
-                "
-                :whep-url="whepUrlFor(stream)!"
-                :fallback-url="stream.link"
-              />
-
-              <!-- Live + popout open: paused so the focus window owns
-                 the WebRTC connection -->
-              <div
-                v-else-if="stream.is_live && isPopoutOpen(stream.match_id)"
-                class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center px-4"
+              <template
+                v-if="stream.is_live && isPopoutOpen(stream.match_id)"
+                #video
               >
-                <PictureInPicture2
-                  class="size-7 text-[hsl(var(--tac-amber))]"
-                />
-                <p
-                  class="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
+                <div
+                  class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center px-4"
                 >
-                  Playing in pop-out
-                </p>
-                <p class="text-xs text-muted-foreground/70 max-w-[24ch]">
-                  Preview is paused here so the focus window owns the stream.
-                </p>
-                <button
-                  type="button"
-                  class="mt-1 inline-flex items-center gap-1 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
-                  @click="focusPopout(stream.match_id)"
-                >
-                  <PictureInPicture2 class="size-3" />
-                  Bring window to front
-                </button>
-              </div>
-
-              <!-- Booting / errored: full step-by-step pipeline so
-                 the operator can see how far the pod has gotten and
-                 whether a stage has stalled. Sized to the same
-                 aspect-video frame so the layout doesn't jump when
-                 the stream finally goes live. -->
-              <div
-                v-else
-                class="absolute inset-0 flex items-center justify-center px-4"
-              >
-                <StreamSessionProgress
-                  :status="stream.status || 'booting'"
-                  :error-message="stream.error_message"
-                  :last-status-at="stream.last_status_at"
-                  :status-history="stream.status_history || []"
-                  :stages="LIVE_STAGES"
-                  header-label="Stream boot"
-                />
-              </div>
-
-              <div class="pointer-events-none absolute inset-0">
-                <div
-                  class="absolute top-1.5 left-1.5 size-3 border-t border-l border-[hsl(var(--tac-amber)/0.55)]"
-                />
-                <div
-                  class="absolute top-1.5 right-1.5 size-3 border-t border-r border-[hsl(var(--tac-amber)/0.55)]"
-                />
-                <div
-                  class="absolute bottom-1.5 left-1.5 size-3 border-b border-l border-[hsl(var(--tac-amber)/0.55)]"
-                />
-                <div
-                  class="absolute bottom-1.5 right-1.5 size-3 border-b border-r border-[hsl(var(--tac-amber)/0.55)]"
-                />
-              </div>
-            </div>
+                  <PictureInPicture2
+                    class="size-7 text-[hsl(var(--tac-amber))]"
+                  />
+                  <p
+                    class="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
+                  >
+                    Playing in pop-out
+                  </p>
+                  <p class="text-xs text-muted-foreground/70 max-w-[24ch]">
+                    Preview is paused here so the focus window owns the stream.
+                  </p>
+                  <button
+                    type="button"
+                    class="mt-1 inline-flex items-center gap-1 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
+                    @click="focusPopout(stream.match_id)"
+                  >
+                    <PictureInPicture2 class="size-3" />
+                    Bring window to front
+                  </button>
+                </div>
+              </template>
+            </StreamCanvas>
 
             <!-- self-stretch + h-full so the controls column expands to
                the video's aspect-video height (set by its left peer),

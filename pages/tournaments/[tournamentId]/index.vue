@@ -1153,6 +1153,8 @@ export default {
                         max_players_per_lineup: true,
                         min_players_per_lineup: true,
                         lineup_counts: [{}, true],
+                        is_in_lineup: true,
+                        is_coach: true,
                         streams: [
                           {
                             order_by: [
@@ -1166,6 +1168,7 @@ export default {
                             link: true,
                             title: true,
                             priority: true,
+                            is_game_streamer: true,
                           },
                         ],
                         elo_changes: [

@@ -12,6 +12,7 @@ import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import { e_match_status_enum } from "~/generated/zeus";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
 import StreamEmbed from "~/components/StreamEmbed.vue";
+import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
@@ -323,16 +324,32 @@ const vsBaseClasses =
 
       <div class="min-w-0">
         <PageTransition>
-          <StreamEmbed
+          <!-- Spectator stream surface. game-streamer rows get the
+               full LiveStreamPlayer (WHEP + scoreboard pulldown);
+               regular embeds stay in StreamEmbed. Mirrors the split
+               that MatchLiveStreams uses on the Streams tab so the
+               scoreboard is reachable from either view. -->
+          <div
             v-if="
               showLiveStreams &&
               match.streams.length > 0 &&
               !match.is_in_lineup &&
               !match.is_coach
             "
-            :streams="match.streams"
-            class="pb-6 max-w-[1500px] w-full overflow-x-auto"
-          />
+            class="pb-6 space-y-4"
+          >
+            <LiveStreamPlayer
+              v-if="hasGameStreamer"
+              :match-id="match.id"
+              class="max-w-[1500px] w-full"
+            />
+            <StreamEmbed
+              v-if="embeddableStreams.length > 0"
+              :streams="embeddableStreams"
+              :match-id="match.id"
+              class="max-w-[1500px] w-full overflow-x-auto"
+            />
+          </div>
         </PageTransition>
 
         <PageTransition :delay="100">
@@ -564,6 +581,7 @@ export default {
                 },
                 {
                   id: true,
+                  match_id: true,
                   link: true,
                   title: true,
                   priority: true,
@@ -574,6 +592,7 @@ export default {
                   stream_url: true,
                   error_message: true,
                   last_status_at: true,
+                  status_history: true as any,
                 },
               ],
             },
@@ -770,6 +789,12 @@ export default {
         this.match.is_organizer ||
         this.match.is_coach
       );
+    },
+    hasGameStreamer() {
+      return (this.match?.streams || []).some((s) => s.is_game_streamer);
+    },
+    embeddableStreams() {
+      return (this.match?.streams || []).filter((s) => !s.is_game_streamer);
     },
     showLiveStreams() {
       if (

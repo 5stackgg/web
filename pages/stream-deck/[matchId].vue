@@ -18,8 +18,7 @@ import {
   Trophy,
 } from "lucide-vue-next";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
-import WhepPlayer from "~/components/match/WhepPlayer.vue";
-import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
+import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
 import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
 import { Kbd } from "~/components/ui/kbd";
@@ -109,11 +108,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   streamSubscription?.unsubscribe();
 });
-
-function whepUrlFor(s: any): string | null {
-  if (!s?.link) return null;
-  return s.link.replace(/\/?$/, "/whep");
-}
 
 const STATUS_LABELS: Record<string, string> = {
   launching_steam: "Launching Steam",
@@ -724,49 +718,14 @@ watch(spectatedSteamId, (sid) => {
     <!-- ============ MAIN BODY ============ -->
     <PageTransition :delay="0" class="flex-1">
       <div class="mx-auto max-w-7xl w-full px-4 py-6 space-y-5">
-        <!-- VIDEO (full width) -->
-        <div
-          class="relative overflow-hidden rounded-lg border border-border/70 bg-black shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
-        >
-          <WhepPlayer
-            v-if="stream?.is_live && whepUrlFor(stream)"
-            :whep-url="whepUrlFor(stream)!"
-            :disable-fullscreen-shortcut="true"
-          />
-          <!-- Mirrors the deck-card overlay: full step-by-step boot
-               pipeline so the caster sees how far the pod has gotten
-               and whether a stage has stalled, instead of a generic
-               "no signal" placeholder. -->
-          <div
-            v-else
-            class="aspect-video w-full flex items-center justify-center px-6"
-          >
-            <StreamSessionProgress
-              :status="stream?.status || 'booting'"
-              :error-message="stream?.error_message"
-              :last-status-at="stream?.last_status_at"
-              :status-history="stream?.status_history || []"
-              :stages="LIVE_STAGES"
-              header-label="Stream boot"
-            />
-          </div>
-
-          <!-- Corner crosshairs — broadcast-deck flourish -->
-          <div class="pointer-events-none absolute inset-0">
-            <div
-              class="absolute top-2 left-2 size-4 border-t-2 border-l-2 border-[hsl(var(--tac-amber)/0.6)]"
-            />
-            <div
-              class="absolute top-2 right-2 size-4 border-t-2 border-r-2 border-[hsl(var(--tac-amber)/0.6)]"
-            />
-            <div
-              class="absolute bottom-2 left-2 size-4 border-b-2 border-l-2 border-[hsl(var(--tac-amber)/0.6)]"
-            />
-            <div
-              class="absolute bottom-2 right-2 size-4 border-b-2 border-r-2 border-[hsl(var(--tac-amber)/0.6)]"
-            />
-          </div>
-        </div>
+        <StreamCanvas
+          :stream="stream"
+          :stages="LIVE_STAGES"
+          header-label="Stream boot"
+          :disable-fullscreen-shortcut="true"
+          :show-boot="true"
+          class="aspect-video w-full overflow-hidden rounded-lg border border-border/70 shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
+        />
 
         <div
           v-if="autodirector && isLive()"

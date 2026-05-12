@@ -57,17 +57,11 @@ import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
         </Button>
       </div>
 
-      <!-- Game-streamer pod surface — same broadcast layout as the
-           dedicated /stream-deck/[matchId] popout (corner crosshairs,
-           StreamSessionProgress while booting, WhepPlayer when live,
-           autodirector toggle + segmented Stop in the header). Lives
-           inline so organizers can drive the pod without leaving the
-           match page. -->
+      <!-- Read-only live-stream surface for viewers. Spectator-control
+           UI (autodirector, slot picker, x-ray, HUD, scoreboard) lives
+           on the /stream-deck/[matchId] page that organizers open. -->
       <div v-if="hasGameStreamer" class="mb-4">
-        <LiveStreamPlayer
-          :match-id="match.id"
-          :is-organizer="!!match.is_organizer"
-        />
+        <LiveStreamPlayer :match-id="match.id" />
       </div>
 
       <!-- Inline embed of the active stream so viewers don't have to

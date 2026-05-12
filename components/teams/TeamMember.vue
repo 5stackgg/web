@@ -286,6 +286,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
       </DialogHeader>
       <AvatarUpload
         variant="dropzone"
+        kind="roster"
         :upload-url="`https://${apiDomain}/avatars/roster-teams/${member.team_id}/${member.player.steam_id}`"
         :delete-url="`https://${apiDomain}/avatars/roster-teams/${member.team_id}/${member.player.steam_id}`"
         :has-custom="!!member.roster_image_url"

@@ -190,6 +190,47 @@ definePageMeta({
             </div>
           </div>
 
+          <!-- Default HUD bundle the game-streamer pod loads at boot.
+               Used for live, demo playback, and batch-highlights pods.
+               Streamers can still hot-swap mid-stream from the live /
+               demo player UI; this is just the persistent default. -->
+          <FormField v-slot="{ value, handleChange }" name="default_hud_mode">
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.demo_settings.default_hud_mode")
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.demo_settings.default_hud_mode_description",
+                )
+              }}</FormDescription>
+              <Select :model-value="value" @update:model-value="handleChange">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="horizontal">
+                    {{
+                      $t(
+                        "pages.settings.application.demo_settings.hud_mode_horizontal",
+                      )
+                    }}
+                  </SelectItem>
+                  <SelectItem value="vertical">
+                    {{
+                      $t(
+                        "pages.settings.application.demo_settings.hud_mode_vertical",
+                      )
+                    }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
           <FormField v-slot="{ componentField }" name="cloudflare_worker_url">
             <FormItem>
               <FormLabel>{{
@@ -427,6 +468,9 @@ export default {
             auto_clip_default_visibility: z
               .enum(["private", "unlisted", "public"])
               .default("private"),
+            default_hud_mode: z
+              .enum(["horizontal", "vertical"])
+              .default("horizontal"),
           }),
         ),
       }),
@@ -461,6 +505,16 @@ export default {
 
           if (setting.name === "auto_clip_default_visibility") {
             this.form.setFieldValue(setting.name, setting.value ?? "private");
+            continue;
+          }
+
+          if (setting.name === "default_hud_mode") {
+            // Persisted value may be an old typo, stale enum, or the
+            // legacy "default" (now folded into "horizontal" since the
+            // two render identically) — coerce so the Select doesn't
+            // render an unknown option.
+            const value = setting.value === "vertical" ? "vertical" : "horizontal";
+            this.form.setFieldValue(setting.name, value);
             continue;
           }
 
@@ -561,6 +615,10 @@ export default {
                   name: "auto_clip_default_visibility",
                   value:
                     this.form.values.auto_clip_default_visibility ?? "private",
+                },
+                {
+                  name: "default_hud_mode",
+                  value: this.form.values.default_hud_mode ?? "horizontal",
                 },
               ],
               on_conflict: {

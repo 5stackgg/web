@@ -106,6 +106,21 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   // round-trip required.
   const xrayEnabled = ref<boolean>(false);
   const hudVisible = ref<boolean>(true);
+  // Which JTs Hud Manager variant is currently loaded in the streamer
+  // pod's Electron overlay. Initial value mirrors the pod's HUD_MODE
+  // env (the api stamps `horizontal` at job-create time unless
+  // overridden by the `default_hud_mode` Hasura setting); operator
+  // can hot-swap via the toolbar (control() → "hud-mode") which
+  // proxies to JTs Hud Manager's POST /api/overlay/start. Ephemeral;
+  // reset by a pod restart. The legacy `default` variant is folded
+  // into `horizontal` at the boundary (they render identically).
+  const hudMode = ref<"horizontal" | "vertical">("horizontal");
+  // cs2-better-autodirector daemon: default on (the streamer pod
+  // starts it for both live + demo). Operator flips this off from the
+  // toolbar to take manual F-key control without the daemon switching
+  // back on top of them; the control() socket round-trip pauses
+  // (SIGSTOP) / resumes (SIGCONT) the daemon in the pod via spec-server.
+  const autodirectorEnabled = ref<boolean>(true);
 
   // ~1Hz GSI snapshot from useDemoPlayback's poll loop.
   const specSlots = ref<
@@ -226,6 +241,8 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     killFilterMode.value = "killer";
     xrayEnabled.value = false;
     hudVisible.value = true;
+    hudMode.value = "horizontal";
+    autodirectorEnabled.value = true;
     specSlots.value = [];
     spectatedSteamId.value = null;
     gsiTeamCtName.value = null;
@@ -253,6 +270,8 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     killFilterMode,
     xrayEnabled,
     hudVisible,
+    hudMode,
+    autodirectorEnabled,
     specSlots,
     spectatedSteamId,
     gsiTeamCtName,

@@ -6,7 +6,17 @@ import { useToast } from "~/components/ui/toast/use-toast";
 import { Switch } from "~/components/ui/switch";
 import { Label } from "~/components/ui/label";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { Square, ArrowLeft, AlertTriangle } from "lucide-vue-next";
+import {
+  Square,
+  ArrowLeft,
+  AlertTriangle,
+  Maximize2,
+  Minimize2,
+  Eye,
+  EyeOff,
+  Scan,
+  Trophy,
+} from "lucide-vue-next";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import WhepPlayer from "~/components/match/WhepPlayer.vue";
 import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
@@ -234,6 +244,76 @@ async function setAutodirector(enabled: boolean) {
   }));
 }
 
+// `default` and `horizontal` render identically in JTs Hud's bundle;
+// the picker only exposes the two distinct layouts. Legacy `default`
+// values from earlier sessions get folded into `horizontal`.
+const HUD_MODES = ["horizontal", "vertical"] as const;
+type HudMode = (typeof HUD_MODES)[number];
+const HUD_MODE_LABELS: Record<HudMode, string> = {
+  horizontal: "Horizontal",
+  vertical: "Vertical",
+};
+const hudMode = ref<HudMode>("horizontal");
+const xrayEnabled = ref(false);
+const hudVisible = ref(true);
+
+async function setHudMode(mode: HudMode) {
+  // Picking a layout while the overlay is hidden also brings it back
+  // — the picker doubles as the visibility control, so selecting a
+  // mode is the natural way to leave the "hide" state.
+  const needsShow = !hudVisible.value;
+  if (hudMode.value === mode && !needsShow) return;
+  hudMode.value = mode;
+  await runMutation("set HUD mode", () => ({
+    setHudMode: [{ match_id: matchId.value, mode }, { success: true }],
+  }));
+  if (needsShow) await setHudVisible(true);
+}
+
+async function toggleXray() {
+  xrayEnabled.value = !xrayEnabled.value;
+  await runMutation("spec xray", () => ({
+    specXray: [
+      { match_id: matchId.value, enabled: xrayEnabled.value },
+      { success: true },
+    ],
+  }));
+}
+
+async function setHudVisible(visible: boolean) {
+  if (hudVisible.value === visible) return;
+  hudVisible.value = visible;
+  await runMutation("spec hud", () => ({
+    specHud: [
+      { match_id: matchId.value, visible },
+      { success: true },
+    ],
+  }));
+}
+
+async function toggleHud() {
+  await setHudVisible(!hudVisible.value);
+}
+
+// Hold-to-show scoreboard. Bypasses runMutation's busy gate on
+// purpose — the gate silently drops queued calls, which would leave
+// the scoreboard stuck on if the user releases the button before the
+// +showscores mutation has returned. Spec-server's execCfgCommand has
+// its own mutex so the +/-showscores edges land in order regardless.
+let scoreboardHeld = false;
+function setScoreboard(show: boolean) {
+  void apolloClient
+    .mutate({
+      mutation: generateMutation({
+        specScoreboard: [
+          { match_id: matchId.value, show },
+          { success: true },
+        ],
+      }),
+    })
+    .catch(() => undefined);
+}
+
 const confirmStop = ref(false);
 let confirmStopTimer: ReturnType<typeof setTimeout> | null = null;
 async function stopLive() {
@@ -275,14 +355,45 @@ const SHORTCUT_GROUPS = computed(() => [
     ],
   },
   {
-    title: "Help",
-    items: [{ keys: ["?"], label: "Show this help" }],
+    title: "View",
+    items: [
+      { keys: ["F"], label: "Toggle fullscreen" },
+      { keys: ["Tab"], label: "Hold to show scoreboard" },
+      { keys: ["?"], label: "Show this help" },
+    ],
   },
 ]);
+
+// Page-level fullscreen — fullscreens the deck wrapper (video + spec
+// row + autodirector banner) instead of just the <video>, so the
+// caster keeps slot buttons and keyboard targets while the broadcast
+// fills the screen. WhepPlayer's own F shortcut is suppressed via
+// `disableFullscreenShortcut` so a single press here doesn't trigger
+// two competing requestFullscreen calls.
+const pageRoot = ref<HTMLDivElement | null>(null);
+const isPageFullscreen = ref(false);
+async function togglePageFullscreen() {
+  if (document.fullscreenElement) {
+    await document.exitFullscreen().catch(() => undefined);
+  } else if (pageRoot.value) {
+    await pageRoot.value.requestFullscreen().catch(() => undefined);
+  }
+}
+function onFullscreenChange() {
+  isPageFullscreen.value = !!document.fullscreenElement;
+}
 
 function onKeyDown(e: KeyboardEvent) {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   if (isTypingInForm(e.target)) return;
+
+  // Tab hold → +showscores. Browser auto-repeats while held, so gate
+  // on scoreboardHeld to fire exactly once.
+  if (e.key === "Tab") {
+    e.preventDefault();
+    if (!scoreboardHeld) startScoreboardHold();
+    return;
+  }
 
   if (e.key === "?" || (e.shiftKey && e.key === "/")) {
     e.preventDefault();
@@ -292,6 +403,11 @@ function onKeyDown(e: KeyboardEvent) {
   if (e.key === "Escape" && shortcutsOpen.value) {
     e.preventDefault();
     shortcutsOpen.value = false;
+    return;
+  }
+  if (e.key === "f" || e.key === "F") {
+    e.preventDefault();
+    void togglePageFullscreen();
     return;
   }
 
@@ -332,18 +448,49 @@ function onKeyDown(e: KeyboardEvent) {
   }
 }
 
+function onKeyUp(e: KeyboardEvent) {
+  if (e.key === "Tab" && scoreboardHeld) {
+    e.preventDefault();
+    endScoreboardHold();
+  }
+}
+
+// Press-and-hold scoreboard. mousedown / Tab keydown → +showscores;
+// mouseup / Tab keyup / blur → -showscores. Window-level mouseup so a
+// drag-off-then-release still drops the scoreboard, blur covers the
+// alt-tab case where keyup never fires.
+function startScoreboardHold() {
+  if (scoreboardHeld) return;
+  scoreboardHeld = true;
+  setScoreboard(true);
+  window.addEventListener("mouseup", endScoreboardHold);
+  window.addEventListener("blur", endScoreboardHold);
+}
+function endScoreboardHold() {
+  if (!scoreboardHeld) return;
+  scoreboardHeld = false;
+  setScoreboard(false);
+  window.removeEventListener("mouseup", endScoreboardHold);
+  window.removeEventListener("blur", endScoreboardHold);
+}
+
 let stopAnnouncing: (() => void) | null = null;
 onMounted(() => {
   window.addEventListener("keydown", onKeyDown);
+  window.addEventListener("keyup", onKeyUp);
+  document.addEventListener("fullscreenchange", onFullscreenChange);
   // Tell the originating deck UI we own this match so it can pause
   // its own WHEP player while we're up.
   stopAnnouncing = announceFocusWindow(matchId.value);
 });
 onBeforeUnmount(() => {
   window.removeEventListener("keydown", onKeyDown);
+  window.removeEventListener("keyup", onKeyUp);
+  document.removeEventListener("fullscreenchange", onFullscreenChange);
   if (flashSlotTimer) clearTimeout(flashSlotTimer);
   if (confirmStopTimer) clearTimeout(confirmStopTimer);
   stopAnnouncing?.();
+  endScoreboardHold();
 });
 
 // GSI polling — same composable the demo player and deck list cards
@@ -403,6 +550,7 @@ watch(spectatedSteamId, (sid) => {
 
 <template>
   <div
+    ref="pageRoot"
     class="relative min-h-screen bg-[hsl(var(--background))] text-foreground flex flex-col"
     style="
       background-image:
@@ -457,11 +605,107 @@ watch(spectatedSteamId, (sid) => {
             />
           </div>
 
+          <!-- X-ray spectator wallhack toggle. -->
+          <button
+            v-if="isLive()"
+            type="button"
+            :disabled="busy"
+            :class="[
+              'inline-flex items-center gap-1.5 rounded-md border px-2 h-7 font-mono text-[0.6rem] uppercase tracking-[0.16em] cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 transition-colors',
+              xrayEnabled
+                ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
+                : 'border-border/60 bg-card/40 text-muted-foreground hover:text-foreground',
+            ]"
+            :title="xrayEnabled ? 'Hide x-ray' : 'Show x-ray'"
+            @click="toggleXray"
+          >
+            <Scan class="size-3" />
+            X-ray
+          </button>
+
+          <!-- Scoreboard: press-and-hold for momentary +showscores.
+               Mouseup outside the button still releases (window-level
+               handler attached on mousedown). -->
+          <button
+            v-if="isLive()"
+            type="button"
+            :class="[
+              'inline-flex items-center gap-1.5 rounded-md border px-2 h-7 font-mono text-[0.6rem] uppercase tracking-[0.16em] cursor-pointer transition-colors select-none',
+              'border-border/60 bg-card/40 text-muted-foreground hover:text-foreground active:border-[hsl(var(--tac-amber)/0.5)] active:bg-[hsl(var(--tac-amber)/0.18)] active:text-[hsl(var(--tac-amber))]',
+            ]"
+            title="Hold to show scoreboard"
+            @mousedown.prevent="startScoreboardHold"
+          >
+            <Trophy class="size-3" />
+            Scoreboard
+          </button>
+
+          <!-- HUD bundle picker — calls setHudMode → hud-manager
+               POST /api/overlay/start which rebuilds the BrowserWindow
+               against /huds/default/index.html?variant=<mode>. The
+               trailing Eye toggle absorbs the former standalone HUD
+               button so visibility reads as a third HUD state. -->
+          <div
+            v-if="isLive()"
+            class="inline-flex rounded-md border border-border/60 bg-card/40 p-0.5"
+            title="HUD layout / visibility"
+          >
+            <button
+              v-for="m in HUD_MODES"
+              :key="m"
+              type="button"
+              :disabled="busy"
+              :class="[
+                'px-2 h-6 font-mono text-[0.55rem] uppercase tracking-[0.16em] rounded-sm cursor-pointer transition-colors disabled:cursor-not-allowed disabled:opacity-50',
+                hudVisible && hudMode === m
+                  ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
+                  : 'text-muted-foreground hover:text-foreground',
+              ]"
+              @click="setHudMode(m)"
+            >
+              {{ HUD_MODE_LABELS[m] }}
+            </button>
+            <button
+              type="button"
+              :disabled="busy"
+              :class="[
+                'inline-flex items-center justify-center px-2 h-6 rounded-sm cursor-pointer transition-colors disabled:cursor-not-allowed disabled:opacity-50',
+                !hudVisible
+                  ? 'bg-red-500/15 text-red-300'
+                  : 'text-muted-foreground hover:text-foreground',
+              ]"
+              :title="hudVisible ? 'Hide HUD' : 'Show HUD'"
+              @click="toggleHud"
+            >
+              <component :is="hudVisible ? Eye : EyeOff" class="size-3" />
+            </button>
+          </div>
+
           <!-- Same segmented tactical bar treatment as the deck card —
-               armed Stop inverts to filled red w/ glow + filled icon. -->
+               armed Stop inverts to filled red w/ glow + filled icon.
+               Fullscreen pairs with Stop so the broadcast view fills
+               the display while leaving the spec controls intact. -->
           <div
             class="inline-flex items-stretch overflow-hidden rounded-md border border-border/70 bg-card/40 backdrop-blur-sm"
           >
+            <button
+              type="button"
+              :title="
+                isPageFullscreen ? 'Exit fullscreen (F)' : 'Fullscreen (F)'
+              "
+              :aria-label="
+                isPageFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'
+              "
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-foreground/80 hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] transition-colors cursor-pointer"
+              @click="togglePageFullscreen"
+            >
+              <component
+                :is="isPageFullscreen ? Minimize2 : Maximize2"
+                class="size-3.5"
+              />
+              {{ isPageFullscreen ? "Exit" : "Full" }}
+            </button>
+            <div class="w-px bg-border/70" />
             <button
               type="button"
               :disabled="busy"
@@ -493,6 +737,7 @@ watch(spectatedSteamId, (sid) => {
           <WhepPlayer
             v-if="stream?.is_live && whepUrlFor(stream)"
             :whep-url="whepUrlFor(stream)!"
+            :disable-fullscreen-shortcut="true"
           />
           <!-- Mirrors the deck-card overlay: full step-by-step boot
                pipeline so the caster sees how far the pod has gotten

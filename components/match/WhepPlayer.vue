@@ -13,6 +13,11 @@ const props = defineProps<{
   iceServers?: RTCIceServer[];
   muted?: boolean;
   fallbackUrl?: string | null;
+  // When the parent owns page-level fullscreen (eg. the broadcast
+  // deck focus page), suppress the in-player "F" key so a single
+  // press doesn't fire both handlers and race two requestFullscreen
+  // calls against each other.
+  disableFullscreenShortcut?: boolean;
 }>();
 
 const videoRef = ref<HTMLVideoElement | null>(null);
@@ -72,6 +77,7 @@ function onKeyDown(e: KeyboardEvent) {
     return;
   }
   if (e.key === "f" || e.key === "F") {
+    if (props.disableFullscreenShortcut) return;
     e.preventDefault();
     void toggleFullscreen();
   } else if (e.key === "m" || e.key === "M") {

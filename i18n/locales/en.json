@@ -21,6 +21,9 @@
         "upload": "Upload avatar",
         "change": "Change avatar",
         "remove": "Remove avatar",
+        "upload_roster": "Upload roster",
+        "change_roster": "Change roster",
+        "remove_roster": "Remove roster",
         "team_avatar": "Team avatar",
         "player_avatar": "Player avatar",
         "player_roster_image": "Player roster image",
@@ -428,7 +431,11 @@
                     "auto_clip_default_visibility_description": "Starting visibility for new auto-generated highlights.",
                     "visibility_private": "Private",
                     "visibility_unlisted": "Unlisted",
-                    "visibility_public": "Public"
+                    "visibility_public": "Public",
+                    "default_hud_mode": "Default HUD style",
+                    "default_hud_mode_description": "Which JTs Hud Manager layout the game-streamer pod loads at boot for live streams, demo playback, and batch highlights. Streamers can still switch styles per-stream from the player controls.",
+                    "hud_mode_horizontal": "Horizontal",
+                    "hud_mode_vertical": "Vertical"
                 },
                 "update_map_pools": {
                     "title": "Automatic Update Map Pools",

@@ -319,7 +319,10 @@ export function useDemoPlayback() {
       | "reload"
       | "xray"
       | "hud"
-      | "demoui",
+      | "hud-mode"
+      | "demoui"
+      | "autodirector"
+      | "scoreboard",
     payload: Record<string, unknown> = {},
   ) {
     if (!store.matchMapId) {
@@ -472,12 +475,13 @@ export function useDemoPlayback() {
   }
 
   // Player switching — same observer-slot model as the live stream
-  // deck (utilities/streamerSpecSlots.ts). Slots are 1-indexed and
-  // match cs2's `spec_player <n>` numbering: team 1 fills slots 1..N,
-  // team 2 fills (N+1)..(2N). The api routes this to the spec-server's
-  // /spec/slot which uses cs2's number-row digit binds — works on the
-  // demo pod since run-demo.sh writes the same observer.cfg.
+  // deck. If the operator clicks a slot while autodirector is on, the
+  // daemon would overrule the pick on the next GSI tick. Flip it off
+  // first (mirrors live's pressSlot behavior).
   function switchToSlot(slot: number) {
+    if (store.autodirectorEnabled) {
+      setAutodirector(false);
+    }
     control("slot", { slot });
   }
 
@@ -521,12 +525,42 @@ export function useDemoPlayback() {
   function toggleHud() {
     setHudVisible(!store.hudVisible);
   }
+  // Hot-swap the active HUD bundle (horizontal | vertical). The api
+  // spec-server's /spec/hud-mode handler proxies to JTs Hud Manager's
+  // POST /api/overlay/start which rebuilds the BrowserWindow against
+  // /huds/<mode>/index.html. Ephemeral — a pod restart resets to
+  // whatever HUD_MODE the api stamped at job creation. Picking a mode
+  // also force-shows the overlay so the operator doesn't have to
+  // hunt for a separate visibility toggle after a hot-swap.
+  function setHudMode(mode: "horizontal" | "vertical") {
+    store.hudMode = mode;
+    control("hud-mode", { mode });
+    if (!store.hudVisible) setHudVisible(true);
+  }
   // Manual fallback for the cs2 demoui Panorama panel — fires the
   // F11 toggle in cs2. The auto-hide logic on initial-load + reload
   // is best-effort (timing-based); this lets the operator nudge it
   // off if the auto path missed.
   function toggleDemoUI() {
     control("demoui");
+  }
+  // cs2-better-autodirector pause/resume. Default on (the streamer
+  // pod starts the daemon for both live + demo). Toggling off here
+  // SIGSTOPs the daemon in the pod so its 1-0 key injection stops
+  // fighting the operator's manual F-key picks; toggling on SIGCONTs.
+  function setAutodirector(enabled: boolean) {
+    store.autodirectorEnabled = enabled;
+    control("autodirector", { enabled });
+  }
+  function toggleAutodirector() {
+    setAutodirector(!store.autodirectorEnabled);
+  }
+
+  // Momentary scoreboard hold — caller fires true on Tab-down, false
+  // on Tab-up. cs2's +/-showscores cmds drive the in-game scoreboard
+  // overlay; nothing to mirror locally since cs2 owns the rendering.
+  function setScoreboard(show: boolean) {
+    control("scoreboard", { show });
   }
 
   return {
@@ -555,6 +589,10 @@ export function useDemoPlayback() {
     toggleXray,
     setHudVisible,
     toggleHud,
+    setHudMode,
     toggleDemoUI,
+    setAutodirector,
+    toggleAutodirector,
+    setScoreboard,
   };
 }

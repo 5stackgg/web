@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, reactive } from "vue";
+import { useApolloClient } from "@vue/apollo-composable";
 import { Card } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
+import { useToast } from "~/components/ui/toast/use-toast";
 import PageHeading from "~/components/PageHeading.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNodeDisplay.vue";
@@ -9,14 +12,63 @@ import NodeGpuMetrics from "~/components/system-metrics/NodeGpuMetrics.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
-import { Cpu, Radio, PlayCircle, Film, CheckCircle2 } from "lucide-vue-next";
+import {
+  Cpu,
+  Radio,
+  PlayCircle,
+  Film,
+  CheckCircle2,
+  Square,
+} from "lucide-vue-next";
 import { useGpuAvailability } from "~/composables/useGpuAvailability";
+import { generateMutation } from "~/graphql/graphqlGen";
 
 definePageMeta({
   middleware: "admin",
 });
 
 const { status: poolStatus } = useGpuAvailability();
+const { toast } = useToast();
+const { client: apolloClient } = useApolloClient();
+
+// Two-stage confirm so a stray click can't kill an operator's live
+// match — first click flips the button into "Confirm Stop" for 5s,
+// the second actually fires the mutation. `busyByNodeId` blocks
+// re-entrancy while the request is in flight.
+const confirmStopByNodeId = reactive<Record<string, boolean>>({});
+const busyByNodeId = reactive<Record<string, boolean>>({});
+
+async function stopGpuSession(nodeId: string) {
+  if (busyByNodeId[nodeId]) return;
+  if (!confirmStopByNodeId[nodeId]) {
+    confirmStopByNodeId[nodeId] = true;
+    setTimeout(() => {
+      confirmStopByNodeId[nodeId] = false;
+    }, 5000);
+    return;
+  }
+  confirmStopByNodeId[nodeId] = false;
+  busyByNodeId[nodeId] = true;
+  try {
+    await apolloClient.mutate({
+      mutation: generateMutation({
+        stopGpuSession: [
+          { game_server_node_id: nodeId },
+          { success: true },
+        ],
+      }),
+    });
+    toast({ title: "GPU session stopped" });
+  } catch (error: any) {
+    toast({
+      variant: "destructive",
+      title: "stop gpu session",
+      description: error?.message ?? "request failed",
+    });
+  } finally {
+    busyByNodeId[nodeId] = false;
+  }
+}
 
 const summaryTiles = computed(() => {
   const s = poolStatus.value;
@@ -159,6 +211,17 @@ const summaryTiles = computed(() => {
                 </span>
               </div>
             </div>
+            <Button
+              v-if="busyByNode[node.id]"
+              size="sm"
+              :variant="confirmStopByNodeId[node.id] ? 'destructive' : 'outline'"
+              :disabled="busyByNodeId[node.id]"
+              class="h-7 px-2 text-xs"
+              @click="stopGpuSession(node.id)"
+            >
+              <Square class="w-3.5 h-3.5 mr-1" />
+              {{ confirmStopByNodeId[node.id] ? "Confirm Stop" : "Stop" }}
+            </Button>
             <Badge
               v-else
               variant="outline"

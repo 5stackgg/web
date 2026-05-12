@@ -720,6 +720,7 @@ watch(spectatedSteamId, (sid) => {
       <div class="mx-auto max-w-7xl w-full px-4 py-6 space-y-5">
         <StreamCanvas
           :stream="stream"
+          :is-live="isLiveRef"
           :stages="LIVE_STAGES"
           header-label="Stream boot"
           :disable-fullscreen-shortcut="true"

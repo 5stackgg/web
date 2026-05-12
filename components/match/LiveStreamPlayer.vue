@@ -6,6 +6,8 @@ import { generateSubscription } from "~/graphql/graphqlGen";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import MatchScoreboardOverlay from "~/components/match/MatchScoreboardOverlay.vue";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { useAuthStore } from "~/stores/AuthStore";
+import { e_player_roles_enum } from "~/generated/zeus";
 
 const props = defineProps<{
   matchId: string;
@@ -91,6 +93,15 @@ const displayStream = computed(() => stream.value ?? lastGoodStream.value);
 const hasStream = computed(() => !!displayStream.value);
 const isLive = computed(() => !!stream.value?.is_live);
 
+// Boot pipeline (Allocating GPU / Launching Steam / …) is operator
+// info — regulars get nothing to look at until the pod is actually
+// publishing. Streamer+ (streamer, match_organizer, tournament_organizer,
+// administrator — see AuthStore.roleOrder) keep the stepper.
+const authStore = useAuthStore();
+const canSeeBoot = computed(() =>
+  authStore.isRoleAbove(e_player_roles_enum.streamer),
+);
+
 const applicationSettings = useApplicationSettingsStore();
 const isPoppedOut = computed(() => {
   if (props.inGlobal) return false;
@@ -123,12 +134,13 @@ function openPopoutWindow() {
 
 <template>
   <div
-    v-if="hasStream && !isPoppedOut"
+    v-if="hasStream && !isPoppedOut && (isLive || canSeeBoot)"
     class="overflow-hidden rounded-lg border border-border/70 bg-black shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
     :class="compact ? 'flex h-full w-full flex-col' : ''"
   >
     <StreamCanvas
       :stream="displayStream"
+      :is-live="isLive"
       :stages="LIVE_STAGES"
       header-label="Stream boot"
       :show-boot="true"

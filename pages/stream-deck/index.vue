@@ -647,6 +647,7 @@ function currentMapName(m: LiveMatch): string | null {
           >
             <StreamCanvas
               :stream="stream"
+              :is-live="!!stream.is_live"
               :stages="LIVE_STAGES"
               header-label="Stream boot"
               :show-boot="true"

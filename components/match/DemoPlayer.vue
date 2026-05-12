@@ -7,6 +7,8 @@ import ClipEditorBar from "~/components/clips/ClipEditorBar.vue";
 import { Button } from "~/components/ui/button";
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
 import { useClipEditor } from "~/composables/useClipEditor";
+import { useAuthStore } from "~/stores/AuthStore";
+import { e_player_roles_enum } from "~/generated/zeus";
 
 // `meta` controls non-emission rendering — see StreamSessionProgress.vue.
 const DEMO_STAGES = [
@@ -49,6 +51,13 @@ defineProps<{
 
 const { store } = useDemoPlayback();
 const editor = useClipEditor();
+const authStore = useAuthStore();
+// Boot pipeline is operator info — gate the stepper to streamer+.
+// (`/stream-deck/*` already has middleware/streamer.ts; the demo page
+// has no middleware, so we gate inline.)
+const canSeeBoot = computed(() =>
+  authStore.isRoleAbove(e_player_roles_enum.streamer),
+);
 
 const whepUrl = computed(() => {
   if (!store.streamUrl) return null;
@@ -79,31 +88,17 @@ function closeWindow() {
       class="flex-1 min-h-0"
     >
       <template #boot>
-        <template v-if="store.sessionRow && !store.isErrored">
+        <!-- Streamer+ only. The stepper exposes pod-internal stages
+             (Allocating GPU, Launching Steam, …) — operator info, not
+             viewer info. Regulars get an empty canvas until WHEP is
+             actually publishing. -->
+        <template v-if="canSeeBoot">
+          <!-- One stepper, always rendered. `status` is the unified
+             surface from the store (sessionRow.status when present,
+             else localStatus) so we never get a dead-air frame between
+             page mount and the first subscription tick. -->
           <StreamSessionProgress
             :status="store.status"
-            :error-message="store.sessionRow?.error_message"
-            :last-status-at="store.sessionRow?.last_status_at"
-            :status-history="store.sessionRow?.status_history || []"
-            :stages="DEMO_STAGES"
-            header-label="Demo session boot"
-          />
-          <Button size="sm" variant="ghost" @click="closeWindow">
-            Cancel
-          </Button>
-        </template>
-
-        <template v-else-if="store.localStatus === 'starting'">
-          <StreamSessionProgress
-            status="booting"
-            :stages="DEMO_STAGES"
-            header-label="Demo session boot"
-          />
-        </template>
-
-        <template v-else-if="store.isErrored || store.localStatus === 'error'">
-          <StreamSessionProgress
-            status="errored"
             :error-message="
               store.sessionRow?.error_message ?? store.errorMessage
             "
@@ -112,8 +107,16 @@ function closeWindow() {
             :stages="DEMO_STAGES"
             header-label="Demo session boot"
           />
-          <Button size="sm" variant="outline" @click="closeWindow">
+          <Button
+            v-if="store.isErrored || store.localStatus === 'error'"
+            size="sm"
+            variant="outline"
+            @click="closeWindow"
+          >
             Close
+          </Button>
+          <Button v-else size="sm" variant="ghost" @click="closeWindow">
+            Cancel
           </Button>
         </template>
       </template>

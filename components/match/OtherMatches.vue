@@ -119,6 +119,7 @@ export default {
                 {
                   id: true,
                   link: true,
+                  is_game_streamer: true,
                 },
               ],
             },

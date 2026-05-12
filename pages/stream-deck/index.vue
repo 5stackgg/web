@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive } from "vue";
+import { reactive, computed, ref, onMounted, onBeforeUnmount } from "vue";
 import { storeToRefs } from "pinia";
 import { useApolloClient } from "@vue/apollo-composable";
 import { useStreamerStore } from "~/stores/StreamerStore";
@@ -20,13 +20,18 @@ import {
   PictureInPicture2,
   X,
   Cpu,
+  ArrowRightLeft,
+  Play,
+  Server,
+  Tv,
+  Dot,
 } from "lucide-vue-next";
-import { generateMutation } from "~/graphql/graphqlGen";
-import WhepPlayer from "~/components/match/WhepPlayer.vue";
-import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
+import gql from "graphql-tag";
+import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
+import { e_match_status_enum } from "~/generated/zeus";
+import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import SpectatorGrid from "~/components/stream-deck/SpectatorGrid.vue";
 import { useStreamerPopout } from "~/composables/useStreamerPopout";
-import { computed } from "vue";
 
 const { status: gpuPoolStatus, hasFreeGpu, busyReason } = useGpuAvailability();
 const gpuTotal = computed(() => gpuPoolStatus.value?.total_gpu_nodes ?? 0);
@@ -39,15 +44,6 @@ const {
   focusPopout,
   closePopout,
 } = useStreamerPopout();
-
-// Derive the WHEP URL from the row's HLS link rather than configuring
-// a separate domain — mediamtx serves both protocols from the same
-// process and the ingress routes /<matchId>/whep to port 8889 while
-// everything else under /<matchId>/ goes to HLS on 8888.
-function whepUrlFor(stream: any): string | null {
-  if (!stream?.link) return null;
-  return stream.link.replace(/\/?$/, "/whep");
-}
 
 definePageMeta({
   middleware: "streamer",
@@ -92,6 +88,121 @@ const {
   maxStreams,
   isAtCapacity,
 } = storeToRefs(streamerStore);
+
+// Live matches board — every match the deck can target. Kept on the
+// page (not in the store) because nothing else needs it; one socket,
+// one consumer. The `streams` aggregate lets each tile know whether
+// it's the one the active pod is bound to without a second join.
+type LiveMatchMap = {
+  id: string;
+  lineup_1_score: number;
+  lineup_2_score: number;
+  is_current_map?: boolean | null;
+  map: { name: string | null } | null;
+};
+
+type LiveMatch = {
+  id: string;
+  status: string;
+  scheduled_at: string | null;
+  started_at: string | null;
+  current_match_map_id: string | null;
+  options: { type: string | null } | null;
+  lineup_1: { id: string; name: string | null } | null;
+  lineup_2: { id: string; name: string | null } | null;
+  server: {
+    host: string | null;
+    label: string | null;
+    region: string | null;
+  } | null;
+  match_maps: LiveMatchMap[];
+};
+
+const liveMatches = ref<LiveMatch[]>([]);
+const liveMatchesLoaded = ref(false);
+let liveMatchesSub: { unsubscribe: () => void } | undefined;
+
+onMounted(() => {
+  liveMatchesSub = apolloClient
+    .subscribe({
+      query: generateSubscription({
+        matches: [
+          {
+            where: {
+              status: {
+                _in: [
+                  e_match_status_enum.Live,
+                  e_match_status_enum.Veto,
+                  e_match_status_enum.WaitingForServer,
+                  e_match_status_enum.WaitingForCheckIn,
+                ],
+              },
+            } as any,
+          },
+          {
+            id: true,
+            status: true,
+            scheduled_at: true,
+            started_at: true,
+            current_match_map_id: true,
+            options: { type: true },
+            lineup_1: { id: true, name: true },
+            lineup_2: { id: true, name: true },
+            server: {
+              host: true,
+              label: true,
+              // `region` on servers is the scalar enum value (the
+              // string the user sees as "us-east"/etc.) — the
+              // matching object relationship is `server_region`.
+              region: true,
+            } as any,
+            // Pull match_maps (small list — usually 1–5 rows per Bo)
+            // and pick the live one client-side via
+            // current_match_map_id. Cheaper than re-deriving
+            // is_current_map on the server, which is a computed
+            // function call per row.
+            match_maps: [
+              {},
+              {
+                id: true,
+                lineup_1_score: true,
+                lineup_2_score: true,
+                map: { name: true },
+              },
+            ],
+          },
+        ],
+      }),
+    })
+    .subscribe({
+      next: ({ data }: any) => {
+        liveMatches.value = (data?.matches ?? []) as LiveMatch[];
+        liveMatchesLoaded.value = true;
+      },
+      error: (err: any) => {
+        // eslint-disable-next-line no-console
+        console.error("[stream-deck] live matches subscription error", err);
+      },
+    });
+});
+
+onBeforeUnmount(() => {
+  liveMatchesSub?.unsubscribe();
+});
+
+// Map match_id → active stream row for quick tile lookup. Multiple
+// rows on a single match are not currently produced by the api, but
+// .find() vs .reduce() costs nothing here and is robust to drift.
+const streamByMatchId = computed(() => {
+  const out: Record<string, any> = {};
+  for (const s of liveStreams.value) {
+    if (s?.match_id) out[s.match_id] = s;
+  }
+  return out;
+});
+
+const activeStream = computed(() => liveStreams.value[0] ?? null);
+const activeMatchId = computed(() => activeStream.value?.match_id ?? null);
 
 async function runMutation(
   matchId: string,
@@ -158,6 +269,69 @@ async function setAutodirector(matchId: string, enabled: boolean) {
   }));
 }
 
+// Start a fresh stream for a match (no pod currently up). Uses the
+// existing startLive Hasura action — same path the per-match
+// MatchActions button takes.
+async function startLive(matchId: string, mode: "live" | "tv") {
+  await runMutation(matchId, "start live", () => ({
+    startLive: [{ match_id: matchId, mode }, { success: true }],
+  }));
+}
+
+// Hot-swap: keep the running pod, point it at a different match.
+// Hand-written gql tag because the mutation isn't in the generated
+// zeus types yet (regen Hasura metadata to pick it up). Done this way
+// so the page compiles without forcing a codegen step first.
+const SWITCH_LIVE_MATCH_MUTATION = gql`
+  mutation SwitchLiveMatch(
+    $from_match_id: uuid!
+    $to_match_id: uuid!
+    $mode: String!
+  ) {
+    switchLiveMatch(
+      from_match_id: $from_match_id
+      to_match_id: $to_match_id
+      mode: $mode
+    ) {
+      success
+    }
+  }
+`;
+
+const switching = ref<string | null>(null);
+async function switchTo(toMatchId: string, mode: "live" | "tv" = "live") {
+  const fromMatchId = activeMatchId.value;
+  if (!fromMatchId) {
+    await startLive(toMatchId, mode);
+    return;
+  }
+  if (fromMatchId === toMatchId) return;
+  if (switching.value) return;
+  switching.value = toMatchId;
+  try {
+    await apolloClient.mutate({
+      mutation: SWITCH_LIVE_MATCH_MUTATION,
+      variables: {
+        from_match_id: fromMatchId,
+        to_match_id: toMatchId,
+        mode,
+      },
+    });
+    toast({
+      title: "Stream switched",
+      description: "Pod reused — feed will repoint in a few seconds.",
+    });
+  } catch (error: any) {
+    toast({
+      variant: "destructive",
+      title: "Switch failed",
+      description: error?.message ?? "request failed",
+    });
+  } finally {
+    switching.value = null;
+  }
+}
+
 const STATUS_LABELS: Record<string, string> = {
   launching_steam: "Launching Steam",
   logging_in: "Logging in",
@@ -198,6 +372,41 @@ function statusBadgeLabel(stream: any) {
   const s = stream?.status as string | undefined;
   if (!s) return "BOOTING";
   return (STATUS_LABELS[s] ?? s.replace(/_/g, " ")).toUpperCase();
+}
+
+// Tile helpers — keep template terse.
+function matchStatusLabel(m: LiveMatch): string {
+  if (m.status === "Live") return "LIVE";
+  if (m.status === "Veto") return "VETO";
+  if (m.status === "WaitingForServer") return "SPINNING UP";
+  if (m.status === "WaitingForCheckIn") return "CHECK-IN";
+  return m.status.toUpperCase();
+}
+
+// Resolve the live map for a tile. Prefers current_match_map_id (set
+// by the server while a map is actively running); falls back to the
+// last map with any non-zero score so a paused/just-finished match
+// still shows the latest scoreline instead of "vs".
+function currentMapFor(m: LiveMatch): LiveMatchMap | null {
+  if (!m.match_maps?.length) return null;
+  if (m.current_match_map_id) {
+    const found = m.match_maps.find((mm) => mm.id === m.current_match_map_id);
+    if (found) return found;
+  }
+  const scored = [...m.match_maps]
+    .reverse()
+    .find((mm) => (mm.lineup_1_score ?? 0) + (mm.lineup_2_score ?? 0) > 0);
+  return scored ?? null;
+}
+
+function scoreFor(m: LiveMatch): { l: number; r: number } | null {
+  const cm = currentMapFor(m);
+  if (!cm) return null;
+  return { l: cm.lineup_1_score ?? 0, r: cm.lineup_2_score ?? 0 };
+}
+
+function currentMapName(m: LiveMatch): string | null {
+  return currentMapFor(m)?.map?.name ?? null;
 }
 </script>
 
@@ -257,7 +466,8 @@ function statusBadgeLabel(stream: any) {
     <!-- Single root child for <Transition> — multiple siblings here
          confuse Vue's animation pass and produce a flicker / empty
          top region during the v-if swap from skeleton → cards. -->
-    <div class="mt-6 space-y-4">
+    <div class="mt-6 space-y-8">
+      <!-- ============ ON-AIR (active stream) ============ -->
       <!-- Empty state — only after the first subscription result so
            we don't briefly flash "Off air" when streams are present. -->
       <div
@@ -281,11 +491,12 @@ function statusBadgeLabel(stream: any) {
           Off air
         </p>
         <p class="mt-1 text-sm text-muted-foreground/80">
-          No active game-streamer broadcasts. Start one from a match page.
+          No active game-streamer broadcast. Pick a live match below to take
+          over a GPU and start streaming.
         </p>
       </div>
 
-      <!-- Stream cards -->
+      <!-- Stream cards (existing design — kept intact) -->
       <article
         v-for="stream in liveStreams"
         :key="stream.id"
@@ -306,7 +517,25 @@ function statusBadgeLabel(stream: any) {
         <div class="p-5 space-y-4">
           <!-- Header -->
           <header class="flex flex-wrap items-start justify-between gap-3">
-            <div class="min-w-0">
+            <div class="min-w-0 flex items-center gap-3">
+              <span
+                v-if="stream.is_live"
+                class="inline-flex items-center gap-1.5 rounded-sm border border-destructive/60 bg-destructive/15 px-2 py-0.5 font-mono text-[0.6rem] font-bold uppercase tracking-[0.22em] text-destructive"
+              >
+                <span
+                  class="size-1.5 rounded-full bg-destructive shadow-[0_0_8px_hsl(var(--destructive))] animate-ping-slow"
+                />
+                On Air
+              </span>
+              <span
+                v-else
+                class="inline-flex items-center gap-1.5 rounded-sm border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] px-2 py-0.5 font-mono text-[0.6rem] font-bold uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
+              >
+                <span
+                  class="size-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
+                />
+                {{ statusBadgeLabel(stream) }}
+              </span>
               <h3 class="text-base font-semibold tracking-tight truncate">
                 {{ stream.match?.lineup_1?.name ?? "Team A" }}
                 <span class="mx-1 text-muted-foreground/60 font-light">vs</span>
@@ -414,83 +643,45 @@ function statusBadgeLabel(stream: any) {
              Controls use self-stretch + h-full to match video height
              instead. -->
           <div
-            class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:items-start"
+            class="grid gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:items-start"
           >
-            <div
-              class="relative aspect-video w-full overflow-hidden rounded-md border border-border/60 bg-black"
+            <StreamCanvas
+              :stream="stream"
+              :is-live="!!stream.is_live"
+              :stages="LIVE_STAGES"
+              header-label="Stream boot"
+              :show-boot="true"
+              class="aspect-video w-full overflow-hidden rounded-md border border-border/60"
             >
-              <!-- Live + popout closed: actual WHEP playback -->
-              <WhepPlayer
-                v-if="
-                  stream.is_live &&
-                  whepUrlFor(stream) &&
-                  !isPopoutOpen(stream.match_id)
-                "
-                :whep-url="whepUrlFor(stream)!"
-                :fallback-url="stream.link"
-              />
-
-              <!-- Live + popout open: paused so the focus window owns
-                 the WebRTC connection -->
-              <div
-                v-else-if="stream.is_live && isPopoutOpen(stream.match_id)"
-                class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center px-4"
+              <template
+                v-if="stream.is_live && isPopoutOpen(stream.match_id)"
+                #video
               >
-                <PictureInPicture2
-                  class="size-7 text-[hsl(var(--tac-amber))]"
-                />
-                <p
-                  class="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
+                <div
+                  class="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center px-4"
                 >
-                  Playing in pop-out
-                </p>
-                <p class="text-xs text-muted-foreground/70 max-w-[24ch]">
-                  Preview is paused here so the focus window owns the stream.
-                </p>
-                <button
-                  type="button"
-                  class="mt-1 inline-flex items-center gap-1 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
-                  @click="focusPopout(stream.match_id)"
-                >
-                  <PictureInPicture2 class="size-3" />
-                  Bring window to front
-                </button>
-              </div>
-
-              <!-- Booting / errored: full step-by-step pipeline so
-                 the operator can see how far the pod has gotten and
-                 whether a stage has stalled. Sized to the same
-                 aspect-video frame so the layout doesn't jump when
-                 the stream finally goes live. -->
-              <div
-                v-else
-                class="absolute inset-0 flex items-center justify-center px-4"
-              >
-                <StreamSessionProgress
-                  :status="stream.status || 'booting'"
-                  :error-message="stream.error_message"
-                  :last-status-at="stream.last_status_at"
-                  :status-history="stream.status_history || []"
-                  :stages="LIVE_STAGES"
-                  header-label="Stream boot"
-                />
-              </div>
-
-              <div class="pointer-events-none absolute inset-0">
-                <div
-                  class="absolute top-1.5 left-1.5 size-3 border-t border-l border-[hsl(var(--tac-amber)/0.55)]"
-                />
-                <div
-                  class="absolute top-1.5 right-1.5 size-3 border-t border-r border-[hsl(var(--tac-amber)/0.55)]"
-                />
-                <div
-                  class="absolute bottom-1.5 left-1.5 size-3 border-b border-l border-[hsl(var(--tac-amber)/0.55)]"
-                />
-                <div
-                  class="absolute bottom-1.5 right-1.5 size-3 border-b border-r border-[hsl(var(--tac-amber)/0.55)]"
-                />
-              </div>
-            </div>
+                  <PictureInPicture2
+                    class="size-7 text-[hsl(var(--tac-amber))]"
+                  />
+                  <p
+                    class="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
+                  >
+                    Playing in pop-out
+                  </p>
+                  <p class="text-xs text-muted-foreground/70 max-w-[24ch]">
+                    Preview is paused here so the focus window owns the stream.
+                  </p>
+                  <button
+                    type="button"
+                    class="mt-1 inline-flex items-center gap-1 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
+                    @click="focusPopout(stream.match_id)"
+                  >
+                    <PictureInPicture2 class="size-3" />
+                    Bring window to front
+                  </button>
+                </div>
+              </template>
+            </StreamCanvas>
 
             <!-- self-stretch + h-full so the controls column expands to
                the video's aspect-video height (set by its left peer),
@@ -592,6 +783,287 @@ function statusBadgeLabel(stream: any) {
           </div>
         </div>
       </article>
+
+      <!-- ============ LIVE MATCHES BOARD ============ -->
+      <!-- Multi-tile board of every live match the deck can target. A
+           click on a non-active tile either:
+             • starts a fresh stream (no pod up), or
+             • calls switchLiveMatch (pod up, swap match in place).
+           The active tile keeps a glow + "Bound" badge so the operator
+           always knows which match is currently consuming the GPU. -->
+      <section>
+        <div class="flex items-end justify-between gap-3 mb-3 px-px">
+          <div class="flex items-baseline gap-3">
+            <h2
+              class="font-mono text-[0.7rem] font-bold uppercase tracking-[0.28em] text-foreground"
+            >
+              Live matches
+            </h2>
+            <span
+              class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground tabular-nums"
+            >
+              {{ liveMatches.length }}
+              {{ liveMatches.length === 1 ? "match" : "matches" }}
+            </span>
+          </div>
+          <span
+            v-if="activeStream"
+            class="hidden sm:inline-flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            <ArrowRightLeft class="size-3" />
+            Click another match to reuse the pod
+          </span>
+        </div>
+
+        <!-- Empty list — loaded but nothing live. -->
+        <div
+          v-if="liveMatchesLoaded && liveMatches.length === 0"
+          class="rounded-xl border border-dashed border-border/60 bg-card/20 p-8 text-center"
+        >
+          <p
+            class="font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground"
+          >
+            No live matches
+          </p>
+          <p class="mt-1 text-sm text-muted-foreground/70">
+            Tiles will appear here as soon as a match goes Live.
+          </p>
+        </div>
+
+        <div
+          v-else
+          class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3 [grid-auto-rows:1fr]"
+        >
+          <article
+            v-for="m in liveMatches"
+            :key="m.id"
+            :class="[
+              'group relative overflow-hidden rounded-lg border bg-card/35 backdrop-blur-sm transition-all duration-200 flex flex-col',
+              activeMatchId === m.id
+                ? 'border-destructive/60 shadow-[0_0_0_1px_hsl(var(--destructive)/0.35),0_0_28px_-4px_hsl(var(--destructive)/0.5)]'
+                : switching === m.id
+                  ? 'border-[hsl(var(--tac-amber)/0.7)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.35),0_0_24px_-4px_hsl(var(--tac-amber)/0.55)]'
+                  : 'border-border/70 hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-card/50',
+            ]"
+          >
+            <!-- Diagonal hatch background on the active tile — quiet
+                 broadcast-cue, only visible at this size. -->
+            <div
+              v-if="activeMatchId === m.id"
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 opacity-[0.07]"
+              :style="{
+                backgroundImage:
+                  'repeating-linear-gradient(135deg, hsl(var(--destructive)) 0 2px, transparent 2px 10px)',
+              }"
+            />
+
+            <!-- Top row: status + map -->
+            <div
+              class="relative flex items-center justify-between gap-2 border-b border-border/50 px-3 py-2"
+            >
+              <span
+                :class="[
+                  'inline-flex items-center gap-1.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.22em]',
+                  m.status === 'Live'
+                    ? 'text-destructive'
+                    : 'text-[hsl(var(--tac-amber))]',
+                ]"
+              >
+                <span
+                  :class="[
+                    'size-1.5 rounded-full',
+                    m.status === 'Live'
+                      ? 'bg-destructive shadow-[0_0_6px_hsl(var(--destructive))]'
+                      : 'bg-[hsl(var(--tac-amber))]',
+                  ]"
+                />
+                {{ matchStatusLabel(m) }}
+              </span>
+
+              <span
+                v-if="currentMapName(m)"
+                class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground truncate"
+                :title="currentMapName(m)!"
+              >
+                {{ currentMapName(m) }}
+              </span>
+            </div>
+
+            <!-- Middle: lineup names + score. Score is the visual
+                 anchor — tabular nums + big type so the eye lands
+                 there first when scanning tiles. -->
+            <div class="flex flex-1 flex-col justify-center px-4 py-3">
+              <div
+                class="grid grid-cols-[1fr_auto_1fr] items-center gap-3 min-w-0"
+              >
+                <div class="min-w-0 text-right">
+                  <p class="truncate text-sm font-semibold leading-snug">
+                    {{ m.lineup_1?.name ?? "Team A" }}
+                  </p>
+                </div>
+
+                <div
+                  v-if="scoreFor(m)"
+                  class="flex items-baseline gap-2 font-mono tabular-nums"
+                >
+                  <span
+                    :class="[
+                      'text-2xl font-bold leading-none',
+                      scoreFor(m)!.l > scoreFor(m)!.r
+                        ? 'text-foreground'
+                        : 'text-muted-foreground/80',
+                    ]"
+                  >
+                    {{ scoreFor(m)!.l }}
+                  </span>
+                  <span class="text-xs text-muted-foreground/50">·</span>
+                  <span
+                    :class="[
+                      'text-2xl font-bold leading-none',
+                      scoreFor(m)!.r > scoreFor(m)!.l
+                        ? 'text-foreground'
+                        : 'text-muted-foreground/80',
+                    ]"
+                  >
+                    {{ scoreFor(m)!.r }}
+                  </span>
+                </div>
+                <div
+                  v-else
+                  class="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground/60"
+                >
+                  vs
+                </div>
+
+                <div class="min-w-0 text-left">
+                  <p class="truncate text-sm font-semibold leading-snug">
+                    {{ m.lineup_2?.name ?? "Team B" }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Server / region hint — keeps tile useful even when
+                   the same teams appear in two parallel matches. -->
+              <div
+                class="mt-2 flex items-center justify-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/70"
+              >
+                <Server class="size-3 opacity-60" />
+                <span class="truncate max-w-[18ch]">
+                  {{
+                    m.server?.label ||
+                    m.server?.region ||
+                    m.server?.host ||
+                    "no server"
+                  }}
+                </span>
+              </div>
+            </div>
+
+            <!-- CTA row — what action this tile triggers depends on
+                 whether it owns the active stream and whether any pod
+                 is up at all. Keeps the affordance unambiguous:
+                   ON AIR  → "Open controls"
+                   ELSE if pod up → "Switch stream here"
+                   ELSE          → "Start"  (live + tv split)
+            -->
+            <div
+              class="relative border-t border-border/50 bg-background/30 px-3 py-2"
+            >
+              <!-- Case 1: this tile IS the active stream -->
+              <NuxtLink
+                v-if="activeMatchId === m.id"
+                :to="`/stream-deck/${m.id}`"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-md border border-destructive/55 bg-destructive/12 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-destructive hover:bg-destructive/18 transition-colors"
+              >
+                <Dot class="size-4" />
+                Open broadcast controls
+              </NuxtLink>
+
+              <!-- Case 2: another match is on air → switch -->
+              <button
+                v-else-if="activeStream"
+                type="button"
+                :disabled="!!switching || ensureState(m.id).busy"
+                :class="[
+                  'group/cta inline-flex w-full items-center justify-center gap-2 rounded-md border px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed',
+                  switching === m.id
+                    ? 'border-[hsl(var(--tac-amber)/0.7)] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
+                    : 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] hover:border-[hsl(var(--tac-amber)/0.75)]',
+                ]"
+                :title="`Reuse the running pod and switch the broadcast to ${m.lineup_1?.name ?? 'Team A'} vs ${m.lineup_2?.name ?? 'Team B'}`"
+                @click="switchTo(m.id, 'live')"
+              >
+                <ArrowRightLeft
+                  :class="[
+                    'size-3.5 transition-transform',
+                    switching === m.id
+                      ? 'animate-pulse'
+                      : 'group-hover/cta:translate-x-0.5',
+                  ]"
+                />
+                {{ switching === m.id ? "Switching…" : "Switch stream here" }}
+              </button>
+
+              <!-- Case 3: no pod up — start fresh, with mode picker. -->
+              <div v-else class="flex gap-1.5">
+                <button
+                  type="button"
+                  :disabled="
+                    ensureState(m.id).busy || !hasFreeGpu || gpuTotal === 0
+                  "
+                  class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.08)] px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  :title="
+                    !hasFreeGpu
+                      ? busyReason || 'No free GPU'
+                      : 'Start a live stream'
+                  "
+                  @click="startLive(m.id, 'live')"
+                >
+                  <Play class="size-3.5" />
+                  Live
+                </button>
+                <button
+                  type="button"
+                  :disabled="
+                    ensureState(m.id).busy || !hasFreeGpu || gpuTotal === 0
+                  "
+                  class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-md border border-border/60 bg-card/40 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  :title="
+                    !hasFreeGpu
+                      ? busyReason || 'No free GPU'
+                      : 'Start a delayed TV stream'
+                  "
+                  @click="startLive(m.id, 'tv')"
+                >
+                  <Tv class="size-3.5" />
+                  TV
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
     </div>
   </PageTransition>
 </template>
+
+<style scoped>
+/* Slow ping for the ON AIR dot — distinct from animate-ping which
+   is too aggressive for an always-on broadcast badge. Mirrors the
+   game-server-node indicator cadence. */
+@keyframes ping-slow {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.45);
+    opacity: 0.55;
+  }
+}
+.animate-ping-slow {
+  animation: ping-slow 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+</style>

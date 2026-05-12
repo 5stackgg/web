@@ -870,6 +870,10 @@ const playerTeamChipShortClasses =
       <TrophyCase :trophies="playerTrophies" />
     </PageTransition>
 
+    <PageTransition :delay="75" v-if="playerId">
+      <PlayerHighlights :steam-id="playerId" />
+    </PageTransition>
+
     <div class="flex flex-col gap-4 md:gap-6" v-if="player">
       <!-- Mode selector -->
       <Tabs v-model="modeTab">
@@ -1517,10 +1521,6 @@ const playerTeamChipShortClasses =
       </div>
     </div>
 
-    <PageTransition :delay="450" v-if="playerId">
-      <PlayerHighlights :steam-id="playerId" />
-    </PageTransition>
-
     <Separator />
 
     <PageTransition :delay="500">
@@ -1641,6 +1641,7 @@ const playerTeamChipShortClasses =
           </div>
           <AvatarUpload
             variant="dropzone"
+            kind="roster"
             :upload-url="`https://${apiDomain}/avatars/roster-players/${player.steam_id}`"
             :delete-url="`https://${apiDomain}/avatars/roster-players/${player.steam_id}`"
             :has-custom="!!player.roster_image_url"

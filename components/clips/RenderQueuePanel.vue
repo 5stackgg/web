@@ -12,6 +12,9 @@ import {
   Film,
   Swords,
   CircleDot,
+  Check,
+  CircleDashed,
+  Server,
 } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
@@ -23,6 +26,13 @@ import { Button } from "~/components/ui/button";
 // One card per match_map batch (one pod processes a batch
 // sequentially). Cancel is batch-level — the render script checks
 // each row's status before each clip.
+type StatusHistoryEntry = {
+  status: string;
+  at: string;
+  boot_stage?: string;
+  boot_progress?: number;
+};
+
 type Job = {
   id: string;
   user_steam_id: string;
@@ -34,6 +44,7 @@ type Job = {
   created_at: string;
   last_status_at: string | null;
   spec: any;
+  status_history?: StatusHistoryEntry[] | null;
   user?: { steam_id: string; name: string; avatar_url: string | null } | null;
   match_map?: {
     id: string;
@@ -45,6 +56,31 @@ type Job = {
     } | null;
   } | null;
 };
+
+// Boot stages a batch pod emits, in order. `meta` matches
+// StreamSessionProgress vocabulary (required/conditional/implicit).
+const QUEUE_BOOT_STAGES: Array<{
+  key: string;
+  label: string;
+  meta: "required" | "conditional" | "implicit";
+}> = [
+  { key: "downloading_cs2", label: "Downloading CS2", meta: "conditional" },
+  { key: "launching_steam", label: "Launching Steam", meta: "required" },
+  { key: "logging_in", label: "Logging in", meta: "implicit" },
+  { key: "downloading_demo", label: "Downloading demo", meta: "required" },
+  {
+    key: "downloading_workshop_map",
+    label: "Downloading workshop map",
+    meta: "conditional",
+  },
+  { key: "launching_cs2", label: "Loading demo in CS2", meta: "required" },
+  { key: "connecting_to_game", label: "Cueing demo", meta: "implicit" },
+];
+
+// Cold CS2 install + Steam login fits comfortably in 5 min; older
+// booting ticks mean the broadcast loop died — fall back to the
+// regular Cancel-able queue UI.
+const BOOT_RECENCY_MS = 5 * 60 * 1000;
 
 const props = withDefaults(
   defineProps<{
@@ -116,6 +152,15 @@ type BatchGroup = {
   // 0..1 across the batch — sum of per-job render fractions / total.
   overallProgress: number;
   isFinished: boolean;
+  // Pod boot state — null once any job has left "queued" or no
+  // recent booting tick exists. Same tick fans out to every job.
+  bootInfo: {
+    stage: string;
+    stageSub: string | null;
+    progress: number | null;
+    at: string;
+    firedStages: Set<string>;
+  } | null;
 };
 
 function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
@@ -161,6 +206,42 @@ function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
   const terminalCount = doneCount + errorCount + cancelledCount;
   const inFlightCount = sorted.length - terminalCount;
   const overallProgress = sorted.length === 0 ? 0 : progressSum / sorted.length;
+
+  let bootInfo: BatchGroup["bootInfo"] = null;
+  const noneStarted = sorted.every((j) => j.status === "queued");
+  if (noneStarted) {
+    const firedStages = new Set<string>();
+    let latest: { entry: StatusHistoryEntry; at: number } | null = null;
+    for (const j of sorted) {
+      const history = j.status_history;
+      if (!Array.isArray(history)) continue;
+      for (const e of history) {
+        if (e?.status !== "booting") continue;
+        // boot_stage is "downloading_cs2:Validating" — strip sub-stage.
+        if (typeof e.boot_stage === "string" && e.boot_stage) {
+          firedStages.add(e.boot_stage.split(":")[0]);
+        }
+        const t = Date.parse(e.at);
+        if (!Number.isFinite(t)) continue;
+        if (!latest || t > latest.at) latest = { entry: e, at: t };
+      }
+    }
+    if (latest && Date.now() - latest.at < BOOT_RECENCY_MS) {
+      const raw = latest.entry.boot_stage ?? "";
+      const [stage, stageSub = null] = raw.split(":");
+      bootInfo = {
+        stage: stage || "booting",
+        stageSub: stageSub && stageSub.length > 0 ? stageSub : null,
+        progress:
+          typeof latest.entry.boot_progress === "number"
+            ? Math.max(0, Math.min(1, latest.entry.boot_progress))
+            : null,
+        at: latest.entry.at,
+        firedStages,
+      };
+    }
+  }
+
   return {
     matchMapId,
     jobs: sorted,
@@ -175,7 +256,35 @@ function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
     inFlightCount,
     overallProgress,
     isFinished: inFlightCount === 0,
+    bootInfo,
   };
+}
+
+function stageStateFor(
+  group: BatchGroup,
+  stage: { key: string; meta: "required" | "conditional" | "implicit" },
+): "done" | "current" | "skipped" | "pending" {
+  if (!group.bootInfo) return "pending";
+  if (group.bootInfo.stage === stage.key) return "current";
+  if (group.bootInfo.firedStages.has(stage.key)) return "done";
+  const order = QUEUE_BOOT_STAGES.findIndex((s) => s.key === stage.key);
+  const currOrder = QUEUE_BOOT_STAGES.findIndex(
+    (s) => s.key === group.bootInfo!.stage,
+  );
+  if (order >= 0 && currOrder >= 0 && order < currOrder) {
+    return stage.meta === "conditional" ? "skipped" : "done";
+  }
+  return "pending";
+}
+
+function visibleBootStages(group: BatchGroup): typeof QUEUE_BOOT_STAGES {
+  if (!group.bootInfo) return [];
+  return QUEUE_BOOT_STAGES.filter((s) => {
+    if (s.meta !== "implicit") return true;
+    return (
+      group.bootInfo!.firedStages.has(s.key) || group.bootInfo!.stage === s.key
+    );
+  });
 }
 
 const allGroups = computed<BatchGroup[]>(() => {
@@ -454,15 +563,29 @@ const totalQueued = computed(
                 <div
                   class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
                 >
-                  <span>Batch progress</span>
-                  <span class="tabular-nums"
-                    >{{ Math.round(g.overallProgress * 100) }}%</span
-                  >
+                  <span>{{ g.bootInfo ? "Pod boot" : "Batch progress" }}</span>
+                  <span class="tabular-nums">
+                    <template v-if="g.bootInfo && g.bootInfo.progress !== null">
+                      {{ Math.round(g.bootInfo.progress * 100) }}%
+                    </template>
+                    <template v-else-if="g.bootInfo">…</template>
+                    <template v-else>
+                      {{ Math.round(g.overallProgress * 100) }}%
+                    </template>
+                  </span>
                 </div>
                 <div
                   class="relative h-1.5 overflow-hidden rounded-full bg-muted/40"
                 >
                   <div
+                    v-if="g.bootInfo"
+                    class="h-full rounded-full bg-primary transition-[width] duration-300"
+                    :style="{
+                      width: Math.round((g.bootInfo.progress ?? 0) * 100) + '%',
+                    }"
+                  ></div>
+                  <div
+                    v-else
                     class="h-full rounded-full bg-[hsl(var(--tac-amber))] transition-[width] duration-300"
                     :style="{
                       width: Math.round(g.overallProgress * 100) + '%',
@@ -486,6 +609,79 @@ const totalQueued = computed(
               Cancel
             </Button>
           </div>
+        </div>
+
+        <div
+          v-if="g.bootInfo && !compact"
+          class="border-t border-border/40 px-3 py-3 sm:px-4 bg-primary/[0.03]"
+        >
+          <div class="mb-2 flex items-center gap-2">
+            <span
+              class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-primary/40 bg-primary/10"
+            >
+              <Server class="h-3 w-3 text-primary" />
+            </span>
+            <span class="text-sm font-medium">Render pod booting</span>
+            <span
+              class="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-primary"
+            >
+              <Loader2 class="h-2.5 w-2.5 animate-spin" />
+              {{ g.bootInfo.stage.replace(/_/g, " ") }}
+              <span v-if="g.bootInfo.stageSub" class="opacity-70">
+                · {{ g.bootInfo.stageSub }}
+              </span>
+            </span>
+          </div>
+          <ul class="flex flex-col gap-1">
+            <li
+              v-for="stage in visibleBootStages(g)"
+              :key="stage.key"
+              class="flex items-center gap-2.5 text-xs"
+              :class="{
+                'text-muted-foreground/60':
+                  stageStateFor(g, stage) === 'pending',
+                'text-muted-foreground/40 line-through decoration-muted-foreground/30':
+                  stageStateFor(g, stage) === 'skipped',
+                'text-foreground': stageStateFor(g, stage) === 'done',
+                'text-primary font-medium':
+                  stageStateFor(g, stage) === 'current',
+              }"
+            >
+              <span
+                class="w-4 h-4 inline-flex items-center justify-center shrink-0"
+              >
+                <Check
+                  v-if="stageStateFor(g, stage) === 'done'"
+                  class="w-3.5 h-3.5"
+                />
+                <Loader2
+                  v-else-if="stageStateFor(g, stage) === 'current'"
+                  class="w-3.5 h-3.5 animate-spin"
+                />
+                <X
+                  v-else-if="stageStateFor(g, stage) === 'skipped'"
+                  class="w-3.5 h-3.5 opacity-50"
+                />
+                <CircleDashed v-else class="w-3.5 h-3.5 opacity-50" />
+              </span>
+              <span class="flex-1">{{ stage.label }}</span>
+              <span
+                v-if="
+                  stageStateFor(g, stage) === 'current' &&
+                  g.bootInfo.progress !== null
+                "
+                class="font-mono text-[0.6rem] tabular-nums opacity-80"
+              >
+                {{ Math.round(g.bootInfo.progress * 100) }}%
+              </span>
+              <span
+                v-else-if="stageStateFor(g, stage) === 'skipped'"
+                class="font-mono text-[0.6rem] uppercase tracking-wider opacity-50"
+              >
+                skipped
+              </span>
+            </li>
+          </ul>
         </div>
 
         <div

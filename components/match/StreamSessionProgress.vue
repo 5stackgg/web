@@ -27,7 +27,12 @@ const props = withDefaults(
     lastStatusAt?: string | null;
     stages: Stage[];
     headerLabel?: string;
-    statusHistory?: Array<{ status: string; at: string }>;
+    statusHistory?: Array<{
+      status: string;
+      at: string;
+      progress?: number;
+      progress_stage?: string;
+    }>;
   }>(),
   {
     headerLabel: "Session boot",
@@ -96,6 +101,24 @@ function fmt(ms: number): string {
   return `${m}m ${s.toString().padStart(2, "0")}s`;
 }
 
+// Latest progress recorded against a stage key. Null when missing.
+function progressFor(stageKey: string): {
+  percent: number;
+  stage: string | null;
+} | null {
+  const history = props.statusHistory;
+  for (let i = history.length - 1; i >= 0; i--) {
+    if (history[i].status !== stageKey) continue;
+    const p = history[i].progress;
+    if (typeof p !== "number" || !Number.isFinite(p)) return null;
+    return {
+      percent: Math.max(0, Math.min(100, p)),
+      stage: history[i].progress_stage ?? null,
+    };
+  }
+  return null;
+}
+
 // Look up the next history entry — the pipeline may have skipped
 // stages we don't know about; we want emit-to-emit wall time.
 function durationFor(stageKey: string): string {
@@ -151,6 +174,17 @@ function durationFor(stageKey: string): string {
           <CircleDashed v-else class="w-3.5 h-3.5 opacity-50" />
         </span>
         <span class="flex-1">{{ stage.label }}</span>
+        <span
+          v-if="stateOf(index) === 'current' && progressFor(stage.key) !== null"
+          class="font-mono text-[0.65rem] tabular-nums opacity-80"
+        >
+          {{ progressFor(stage.key)!.percent.toFixed(1) }}%<span
+            v-if="progressFor(stage.key)!.stage"
+            class="opacity-60"
+          >
+            ({{ progressFor(stage.key)!.stage }})</span
+          >
+        </span>
         <span
           v-if="stateOf(index) === 'current' && elapsedOnCurrent"
           class="font-mono text-[0.65rem] tabular-nums opacity-70"

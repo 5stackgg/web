@@ -2,8 +2,8 @@
 import { computed } from "vue";
 import { Bot } from "lucide-vue-next";
 import {
+  effectivePerSideSize,
   keyForSlot,
-  teamSizeForMatchType,
 } from "~/utilities/streamerSpecSlots";
 
 // Pure presentational slot row used by every spec-target surface:
@@ -72,7 +72,17 @@ const emit = defineEmits<{
   (e: "press-slot", slot: number): void;
 }>();
 
-const teamSize = computed(() => teamSizeForMatchType(props.matchType));
+// Effective per-side slot count: at minimum the match-type's team
+// size (so an empty Duel still draws 1v1 placeholders), but expands
+// when the demo carries more players on either side. Both sides
+// share the same N so CT/T digit-key numbering stays contiguous.
+const teamSize = computed(() =>
+  effectivePerSideSize(
+    props.matchType,
+    props.ctSlots.length,
+    props.tSlots.length,
+  ),
+);
 
 // Pad each side to teamSize with placeholders. Mapping is by
 // team+order, NOT raw GSI slot number — GSI assigns slots by join
@@ -164,11 +174,25 @@ function healthWidth(h: number): string {
 // dominate the video on widescreen. The min-h on the row reserves
 // the same vertical footprint whether a side has 0 or teamSize
 // players, so the video doesn't bounce as the round flips.
-function gridColsClass(): string {
-  if (teamSize.value === 5) return "grid-cols-5 max-w-[40rem]";
-  if (teamSize.value === 2) return "grid-cols-2 max-w-[16rem]";
-  if (teamSize.value === 1) return "grid-cols-1 max-w-[8rem]";
-  return "grid-cols-5 max-w-[40rem]";
+// Grid sized off the effective per-side count so a Duel demo with
+// extra players still gets one column per slot. Tile width stays
+// fixed (8rem cap × N) instead of letting grid-cols-N stretch each
+// cell to 1/N of the container — that path made the spec strip
+// dominate widescreen video panels.
+function gridColsStyle(): Record<string, string> {
+  const n = Math.max(1, teamSize.value);
+  // Compact (stream-deck index card) sits next to a video panel
+  // capped at aspect-video — when the slot row's natural height
+  // exceeds the video height the card goes lopsided. Lowering the
+  // per-tile cap from 8rem → 5.5rem in compact mode shrinks each
+  // tile uniformly (preserves the 5/4 portrait look) so two rows
+  // of slots fit inside the video's 9/16 envelope. Non-compact
+  // surfaces (focus popout, demo) keep the broadcast-sized 8rem.
+  const cap = props.compact ? 5.5 : 8;
+  return {
+    gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))`,
+    maxWidth: `${n * cap}rem`,
+  };
 }
 
 // Health → readable label for the corner numeric. cs2 reports raw 0-100.
@@ -219,8 +243,9 @@ function press(s: PaddedSlot) {
         :class="
           layout === 'inline'
             ? 'flex flex-wrap items-center gap-1.5'
-            : ['grid gap-1.5', gridColsClass()]
+            : 'grid gap-1.5'
         "
+        :style="layout === 'inline' ? undefined : gridColsStyle()"
       >
         <button
           v-for="s in paddedCtSlots"
@@ -407,7 +432,11 @@ function press(s: PaddedSlot) {
       <div
         :class="[
           'flex items-center gap-2',
-          layout === 'inline' ? 'min-w-[8rem]' : 'mb-1.5 mt-3',
+          layout === 'inline'
+            ? 'min-w-[8rem]'
+            : compact
+              ? 'mb-1 mt-1.5'
+              : 'mb-1.5 mt-3',
         ]"
       >
         <span
@@ -426,8 +455,9 @@ function press(s: PaddedSlot) {
         :class="
           layout === 'inline'
             ? 'flex flex-wrap items-center gap-1.5'
-            : ['grid gap-1.5', gridColsClass()]
+            : 'grid gap-1.5'
         "
+        :style="layout === 'inline' ? undefined : gridColsStyle()"
       >
         <button
           v-for="s in paddedTSlots"

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { toast } from "@/components/ui/toast";
-import { Upload, Trash2, Loader2 } from "lucide-vue-next";
+import { Upload, Trash2, Loader2, X } from "lucide-vue-next";
 
 const props = withDefaults(
   defineProps<{
@@ -11,11 +11,23 @@ const props = withDefaults(
     variant?: "inline" | "dropzone";
     currentSrc?: string | null;
     maxSize?: number;
+    kind?: "avatar" | "roster";
   }>(),
   {
     variant: "inline",
     currentSrc: null,
+    kind: "avatar",
   },
+);
+
+const uploadKey = computed(() =>
+  props.kind === "roster" ? "avatar.upload_roster" : "avatar.upload",
+);
+const changeKey = computed(() =>
+  props.kind === "roster" ? "avatar.change_roster" : "avatar.change",
+);
+const removeKey = computed(() =>
+  props.kind === "roster" ? "avatar.remove_roster" : "avatar.remove",
 );
 
 const emit = defineEmits<{
@@ -144,7 +156,7 @@ async function remove() {
 </script>
 
 <template>
-  <div v-if="variant === 'dropzone'" class="space-y-2">
+  <div v-if="variant === 'dropzone'">
     <input
       ref="fileInput"
       type="file"
@@ -169,16 +181,30 @@ async function remove() {
       @dragleave.prevent="onDragLeave"
       @drop.prevent="onDrop"
     >
-      <div
-        class="relative h-16 w-16 shrink-0 border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.1)] overflow-hidden flex items-center justify-center"
-      >
-        <img
-          v-if="currentSrc"
-          :src="currentSrc"
-          alt=""
-          class="h-full w-full object-cover"
-        />
-        <Upload v-else class="w-6 h-6 text-[hsl(var(--tac-amber))]" />
+      <div class="relative shrink-0">
+        <div
+          class="relative h-16 w-16 border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.1)] overflow-hidden flex items-center justify-center"
+        >
+          <img
+            v-if="currentSrc"
+            :src="currentSrc"
+            alt=""
+            class="h-full w-full object-cover"
+          />
+          <Upload v-else class="w-6 h-6 text-[hsl(var(--tac-amber))]" />
+        </div>
+        <button
+          v-if="hasCustom"
+          type="button"
+          :title="$t(removeKey)"
+          :aria-label="$t(removeKey)"
+          class="absolute -top-1.5 -right-1.5 z-10 inline-flex h-5 w-5 items-center justify-center rounded-full border border-[hsl(var(--tac-amber)_/_0.6)] bg-background text-red-500 shadow-sm transition-colors hover:bg-red-500 hover:text-white hover:border-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          :disabled="isUploading || isRemoving"
+          @click.prevent.stop="remove"
+        >
+          <Loader2 v-if="isRemoving" class="h-3 w-3 animate-spin" />
+          <X v-else class="h-3 w-3" />
+        </button>
       </div>
       <div class="flex-1 min-w-0">
         <div class="text-sm font-medium text-foreground">
@@ -187,7 +213,7 @@ async function remove() {
             $t("avatar.drop_to_upload")
           }}</template>
           <template v-else>{{
-            hasCustom ? $t("avatar.change") : $t("avatar.upload")
+            hasCustom ? $t(changeKey) : $t(uploadKey)
           }}</template>
         </div>
         <div
@@ -201,17 +227,6 @@ async function remove() {
         class="w-5 h-5 animate-spin text-[hsl(var(--tac-amber))]"
       />
     </div>
-    <button
-      v-if="hasCustom"
-      type="button"
-      class="inline-flex items-center gap-1.5 text-xs text-red-500 hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
-      :disabled="isUploading || isRemoving"
-      @click.prevent.stop="remove"
-    >
-      <Loader2 v-if="isRemoving" class="w-3.5 h-3.5 animate-spin" />
-      <Trash2 v-else class="w-3.5 h-3.5" />
-      <span>{{ $t("avatar.remove") }}</span>
-    </button>
   </div>
 
   <div v-else class="flex items-center gap-2">
@@ -230,7 +245,7 @@ async function remove() {
     >
       <Loader2 v-if="isUploading" class="w-4 h-4 animate-spin" />
       <Upload v-else class="w-4 h-4" />
-      <span>{{ hasCustom ? $t("avatar.change") : $t("avatar.upload") }}</span>
+      <span>{{ hasCustom ? $t(changeKey) : $t(uploadKey) }}</span>
     </button>
     <button
       v-if="hasCustom"
@@ -241,7 +256,7 @@ async function remove() {
     >
       <Loader2 v-if="isRemoving" class="w-4 h-4 animate-spin" />
       <Trash2 v-else class="w-4 h-4" />
-      <span>{{ $t("avatar.remove") }}</span>
+      <span>{{ $t(removeKey) }}</span>
     </button>
   </div>
 </template>

@@ -9,6 +9,7 @@ export const clipRenderJobFields = {
   clip_id: true,
   created_at: true,
   last_status_at: true,
+  status_history: true,
   spec: true,
   user: {
     steam_id: true,

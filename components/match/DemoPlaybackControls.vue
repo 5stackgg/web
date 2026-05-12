@@ -17,6 +17,8 @@ import {
   Film,
   Sparkles,
   Scissors,
+  Wand2,
+  Trophy,
 } from "lucide-vue-next";
 import { useAuthStore } from "~/stores/AuthStore";
 import CreateClipDialog from "~/components/clips/CreateClipDialog.vue";
@@ -75,8 +77,21 @@ const {
   reloadDemo,
   toggleXray,
   toggleHud,
+  setHudMode,
   toggleDemoUI,
+  toggleAutodirector,
+  setScoreboard,
 } = useDemoPlayback();
+
+// JTs Hud's default bundle declares variants ["default","horizontal",
+// "vertical"] in hud.json — but `default` and `horizontal` render the
+// same layout, so we only expose the two distinct ones. Legacy
+// `default` payloads are folded into `horizontal` at the boundary.
+const HUD_MODES: Array<"horizontal" | "vertical"> = ["horizontal", "vertical"];
+const HUD_MODE_LABELS: Record<(typeof HUD_MODES)[number], string> = {
+  horizontal: "Horizontal",
+  vertical: "Vertical",
+};
 
 // Slot identity is GSI — survives a demo attached to the wrong match_map.
 const ctSlots = computed(() =>
@@ -186,9 +201,35 @@ function isTypingTarget(target: EventTarget | null): boolean {
     target.isContentEditable
   );
 }
+// Press-and-hold scoreboard. mousedown → +showscores, mouseup OR
+// window blur → -showscores. Window-level mouseup so a drag-off-then
+// -release still drops the scoreboard.
+let scoreboardHeld = false;
+function startScoreboardHold() {
+  if (scoreboardHeld) return;
+  scoreboardHeld = true;
+  setScoreboard(true);
+  window.addEventListener("mouseup", endScoreboardHold);
+  window.addEventListener("blur", endScoreboardHold);
+}
+function endScoreboardHold() {
+  if (!scoreboardHeld) return;
+  scoreboardHeld = false;
+  setScoreboard(false);
+  window.removeEventListener("mouseup", endScoreboardHold);
+  window.removeEventListener("blur", endScoreboardHold);
+}
 function onKeyDown(e: KeyboardEvent) {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   if (isTypingTarget(e.target)) return;
+
+  // Tab hold → +showscores. Browser auto-repeats keydown while held,
+  // so gate on scoreboardHeld to fire exactly once.
+  if (e.key === "Tab") {
+    e.preventDefault();
+    if (!scoreboardHeld) startScoreboardHold();
+    return;
+  }
 
   // Digit keys map to UI positions, not raw cs2 slots — same
   // ordering as the SpectatorSlots row, so what you press matches
@@ -259,14 +300,24 @@ function onKeyDown(e: KeyboardEvent) {
   }
 }
 
+function onKeyUp(e: KeyboardEvent) {
+  if (e.key === "Tab" && scoreboardHeld) {
+    e.preventDefault();
+    endScoreboardHold();
+  }
+}
+
 onMounted(() => {
   visualTick.value = store.currentTick;
   rafHandle = requestAnimationFrame(frame);
   window.addEventListener("keydown", onKeyDown);
+  window.addEventListener("keyup", onKeyUp);
 });
 onBeforeUnmount(() => {
   if (rafHandle !== null) cancelAnimationFrame(rafHandle);
   window.removeEventListener("keydown", onKeyDown);
+  window.removeEventListener("keyup", onKeyUp);
+  endScoreboardHold();
 });
 
 function onSeekStart() {
@@ -956,6 +1007,28 @@ const killMarkers = computed<Marker[]>(() => {
                 size="icon"
                 class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95"
                 :class="
+                  store.autodirectorEnabled
+                    ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'
+                    : ''
+                "
+                @click="toggleAutodirector"
+              >
+                <Wand2 class="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent class="flex items-center gap-2">
+              Auto director
+              {{ store.autodirectorEnabled ? "on" : "off" }}
+            </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button
+                variant="outline"
+                size="icon"
+                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95"
+                :class="
                   store.xrayEnabled
                     ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'
                     : ''
@@ -970,24 +1043,65 @@ const killMarkers = computed<Marker[]>(() => {
             </TooltipContent>
           </Tooltip>
 
+          <!-- Scoreboard: press-and-hold for momentary +showscores. -->
           <Tooltip>
             <TooltipTrigger as-child>
               <Button
                 variant="outline"
                 size="icon"
-                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95"
-                :class="
-                  !store.hudVisible ? 'border-red-500/60 text-red-300' : ''
-                "
-                @click="toggleHud"
+                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95 select-none active:border-amber-400/60 active:text-amber-300"
+                @mousedown.prevent="startScoreboardHold"
               >
-                <Eye v-if="store.hudVisible" class="h-4 w-4" />
-                <EyeOff v-else class="h-4 w-4" />
+                <Trophy class="h-4 w-4" />
               </Button>
             </TooltipTrigger>
+            <TooltipContent>Hold to show scoreboard</TooltipContent>
+          </Tooltip>
+
+          <!-- HUD bundle picker. Hot-swaps the active JTs Hud Manager
+               BrowserWindow in the streamer pod via /spec/hud-mode →
+               POST /api/overlay/start. Ephemeral; reset by a pod
+               restart to whatever HUD_MODE the api stamped. The
+               trailing Eye toggle lives inside the picker (where the
+               legacy "Default" segment used to sit) so visibility is
+               framed as a third HUD state alongside the two layouts. -->
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <div
+                class="inline-flex rounded-md border border-border/60 bg-card/40 p-0.5"
+              >
+                <button
+                  v-for="m in HUD_MODES"
+                  :key="m"
+                  type="button"
+                  class="px-2 h-8 font-mono text-[0.6rem] uppercase tracking-[0.18em] rounded-sm cursor-pointer transition-colors"
+                  :class="
+                    store.hudVisible && store.hudMode === m
+                      ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
+                      : 'text-muted-foreground hover:text-foreground'
+                  "
+                  @click="setHudMode(m)"
+                >
+                  {{ HUD_MODE_LABELS[m] }}
+                </button>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center px-2 h-8 rounded-sm cursor-pointer transition-colors"
+                  :class="
+                    !store.hudVisible
+                      ? 'bg-red-500/15 text-red-300'
+                      : 'text-muted-foreground hover:text-foreground'
+                  "
+                  :title="store.hudVisible ? 'Hide HUD' : 'Show HUD'"
+                  @click="toggleHud"
+                >
+                  <Eye v-if="store.hudVisible" class="h-4 w-4" />
+                  <EyeOff v-else class="h-4 w-4" />
+                </button>
+              </div>
+            </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              {{ store.hudVisible ? "Hide" : "Show" }} OpenHud overlay
-              <Kbd>H</Kbd>
+              HUD layout / visibility <Kbd>H</Kbd>
             </TooltipContent>
           </Tooltip>
 

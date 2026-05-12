@@ -57,6 +57,21 @@ export function teamSizeForMatchType(type: string | null | undefined): number {
   return 5;
 }
 
+// Effective per-side slot count for layout/keymap. The match type
+// gives the *minimum* (so an empty Duel still renders 1v1 placeholders)
+// but a demo that contains more players than that — common when a
+// Duel/Wingman lobby was actually full of bots, or when the match
+// type metadata is stale — gets enough slots to show every player.
+// Both sides share the same effective size to keep CT/T digit-key
+// numbering contiguous (CT = 1..N, T = N+1..2N).
+export function effectivePerSideSize(
+  type: string | null | undefined,
+  ctCount: number,
+  tCount: number,
+): number {
+  return Math.max(teamSizeForMatchType(type), ctCount, tCount);
+}
+
 // Resolve a digit-row keypress to the real GSI slot of whoever is
 // rendered at that UI position. Mirrors the team-grouped placement
 // in components/stream-deck/SpectatorSlots.vue so keyboard shortcuts
@@ -74,7 +89,7 @@ export function resolveKeyToRealSlot(
 ): number | null {
   const uiSlot = key === "0" ? 10 : Number(key);
   if (!Number.isInteger(uiSlot) || uiSlot < 1 || uiSlot > 10) return null;
-  const size = teamSizeForMatchType(matchType);
+  const size = effectivePerSideSize(matchType, ctSlots.length, tSlots.length);
   if (uiSlot > 2 * size) return null;
   const onCt = uiSlot <= size;
   const source = onCt ? ctSlots : tSlots;

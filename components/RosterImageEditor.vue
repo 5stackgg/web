@@ -19,14 +19,9 @@ import {
   retryDynamicImport,
 } from "@/utilities/imagePipeline";
 
-// Final output dimensions — close to HLTV's 400×417 roster portrait.
 const OUTPUT_W = 400;
 const OUTPUT_H = 420;
 const ASPECT = OUTPUT_W / OUTPUT_H;
-
-// Source images get shrunk to this longest-edge before bg-removal / crop.
-// Keeps memory in check and lets bg-removal complete in a reasonable time
-// for the 4–5MB phone photos users tend to drop in.
 const MAX_SOURCE_EDGE = 1600;
 
 interface BulkTeam {
@@ -61,7 +56,6 @@ const cropper = shallowRef<Cropper | null>(null);
 const removingBg = ref(false);
 const uploading = ref(false);
 const workingSrc = ref<string | null>(null);
-// teamId → checked. Reset to all-unchecked each time the dialog opens.
 const selectedTeams = ref<Record<string, boolean>>({});
 
 const showBulk = computed(
@@ -110,10 +104,7 @@ watch(
     if (!file) return;
     revokeSource();
     workingSrc.value = null;
-    // Start with every team unchecked — conservative per the chosen UX.
     selectedTeams.value = {};
-    // Downscale on the way in so 5MB+ phone photos don't blow up the
-    // cropper / bg-removal step. Falls back to the raw file on error.
     try {
       sourceUrl.value = await downscaleFileToObjectUrl(file, MAX_SOURCE_EDGE);
     } catch {
@@ -143,8 +134,6 @@ async function removeBackground() {
     const { removeBackground: imglyRemove } = await retryDynamicImport(
       () => import("@imgly/background-removal"),
     );
-    // Prefer the already-shrunk sourceUrl over the raw props.file so we
-    // don't hand a 20MP image to bg-removal.
     const input = workingSrc.value ?? sourceUrl.value ?? props.file!;
     const blob = await imglyRemove(input as any);
     const dataUrl = await blobToDataUrl(blob);
@@ -178,8 +167,6 @@ async function renderBlob(): Promise<Blob> {
     imageSmoothingQuality: "high",
     fillColor: "transparent",
   });
-  // WebP keeps the alpha channel from bg-removal but is a fraction of the
-  // PNG size. 0.92 is visually indistinguishable at 400×420.
   return new Promise<Blob>((resolve, reject) =>
     canvas.toBlob(
       (b) => (b ? resolve(b) : reject(new Error("toBlob failed"))),
@@ -211,9 +198,6 @@ async function save() {
     const blob = await renderBlob();
     const path = await postBlob(props.uploadUrl, blob);
 
-    // Bulk-apply runs in parallel after the primary succeeds. We don't
-    // fail the whole save if a sub-upload fails — surface each failure
-    // as a toast and continue.
     const chosenTeams = showBulk.value
       ? props.bulkTeams.filter((t) => selectedTeams.value[t.teamId])
       : [];

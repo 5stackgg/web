@@ -55,9 +55,6 @@ const editorOpen = ref(false);
 const editorFile = ref<File | null>(null);
 
 const ACCEPT = "image/png,image/jpeg,image/webp";
-// Roster images get downscaled + re-encoded to WebP before upload, so we
-// can comfortably accept ~5MP phone photos (~20MB JPEGs). Plain avatars
-// keep the tighter 5MB cap.
 const DEFAULT_MAX_SIZE =
   props.kind === "roster" || props.kind === "team-roster"
     ? 20 * 1024 * 1024
@@ -121,7 +118,6 @@ async function handleFile(file: File) {
     return;
   }
 
-  // Roster images go through the crop / bg-removal editor before upload.
   if (useEditor.value) {
     editorFile.value = file;
     editorOpen.value = true;

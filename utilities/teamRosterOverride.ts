@@ -1,14 +1,3 @@
-// Build a (steam_id) -> roster_image_url lookup for a given match lineup.
-//
-// When a lineup has a team_id set, the team's per-roster portraits should
-// override the player's own avatar/roster image. Lineup-only matches (no
-// team_id) return a no-op lookup so PlayerDisplay falls back to the
-// player's own portrait.
-//
-// Expects each lineup to fetch:
-//   team_id: true
-//   team: { roster: [ {}, { player_steam_id: true, roster_image_url: true } ] }
-
 interface RosterEntry {
   player_steam_id: string | number;
   roster_image_url?: string | null;

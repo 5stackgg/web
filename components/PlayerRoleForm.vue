@@ -6,11 +6,11 @@ import { e_player_roles_enum } from "~/generated/zeus";
 <template>
   <Popover v-if="canChangeRole" v-model:open="popoverOpen">
     <PopoverTrigger as-child>
-      <Button variant="outline">
+      <Button variant="outline" size="sm" class="h-7 px-2.5 text-xs">
         <span class="capitalize">{{
           player.role?.replace("_", " ") || "User"
         }}</span>
-        <ChevronDownIcon class="ml-2 h-4 w-4 text-muted-foreground" />
+        <ChevronDownIcon class="ml-1.5 h-3.5 w-3.5 text-muted-foreground" />
       </Button>
     </PopoverTrigger>
     <PopoverContent class="p-0" align="end">

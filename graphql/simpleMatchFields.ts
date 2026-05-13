@@ -49,6 +49,16 @@ export const simpleMatchFields = Selector("matches")({
     id: true,
     name: true,
     is_on_lineup: true,
+    team_id: true,
+    team: {
+      roster: [
+        {},
+        {
+          player_steam_id: true,
+          roster_image_url: true,
+        },
+      ],
+    },
     lineup_players: [
       {},
       {
@@ -62,6 +72,16 @@ export const simpleMatchFields = Selector("matches")({
     id: true,
     name: true,
     is_on_lineup: true,
+    team_id: true,
+    team: {
+      roster: [
+        {},
+        {
+          player_steam_id: true,
+          roster_image_url: true,
+        },
+      ],
+    },
     lineup_players: [
       {},
       {

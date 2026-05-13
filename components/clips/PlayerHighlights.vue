@@ -4,7 +4,6 @@ import { ArrowRight, ChevronLeft, ChevronRight, Plus } from "lucide-vue-next";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import { matchClipFields } from "~/graphql/matchClip";
-import { Skeleton } from "~/components/ui/skeleton";
 import HighlightCard from "~/components/clips/HighlightCard.vue";
 import type { Clip } from "~/types/clip";
 import {
@@ -119,108 +118,109 @@ const showMap = computed(() => {
 </script>
 
 <template>
-  <div v-if="loading || hasClips">
-    <div
-      :class="[
-        tacticalSectionLabelClasses,
-        'flex items-center justify-between',
-      ]"
-    >
-      <span class="inline-flex items-center gap-2">
-        <span :class="tacticalSectionTickClasses"></span>
-        HIGHLIGHTS
-        <span
-          v-if="hasClips"
-          class="rounded-full border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] px-2 py-0.5 font-mono text-[0.55rem] text-[hsl(var(--tac-amber))] tracking-[0.16em]"
-        >
-          {{ clips.length }}
+  <Transition
+    enter-active-class="transition-[opacity,transform] [transition-duration:520ms] [transition-timing-function:cubic-bezier(0.16,1,0.3,1)] will-change-[opacity,transform] motion-reduce:![transition-duration:1ms]"
+    enter-from-class="opacity-0 translate-y-4 motion-reduce:translate-y-0"
+    leave-active-class="transition-[opacity] [transition-duration:200ms]"
+    leave-to-class="opacity-0"
+  >
+    <div v-if="hasClips">
+      <div
+        :class="[
+          tacticalSectionLabelClasses,
+          'flex items-center justify-between',
+        ]"
+      >
+        <span class="inline-flex items-center gap-2">
+          <span :class="tacticalSectionTickClasses"></span>
+          HIGHLIGHTS
+          <span
+            class="rounded-full border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] px-2 py-0.5 font-mono text-[0.55rem] text-[hsl(var(--tac-amber))] tracking-[0.16em]"
+          >
+            {{ clips.length }}
+          </span>
         </span>
-      </span>
-      <div class="flex items-center gap-1">
-        <button
-          type="button"
-          class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border/50 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-          aria-label="Scroll left"
-          @click="scrollByDir('left')"
-        >
-          <ChevronLeft class="h-3.5 w-3.5" />
-        </button>
-        <button
-          type="button"
-          class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border/50 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-          aria-label="Scroll right"
-          @click="scrollByDir('right')"
-        >
-          <ChevronRight class="h-3.5 w-3.5" />
-        </button>
-        <NuxtLink
-          :to="{ path: '/highlights', query: { player: String(steamId) } }"
-          class="ml-2 inline-flex items-center gap-1 font-mono text-[0.65rem] tracking-[0.16em] text-muted-foreground hover:text-[hsl(var(--tac-amber))] transition-colors normal-case"
-        >
-          See all
-          <ArrowRight class="h-3 w-3" />
-        </NuxtLink>
-      </div>
-    </div>
-
-    <div v-if="loading" class="flex gap-3 overflow-hidden pb-1">
-      <Skeleton
-        v-for="i in 5"
-        :key="i"
-        class="aspect-video w-[18rem] shrink-0 rounded-lg"
-      />
-    </div>
-
-    <div
-      v-else
-      ref="railEl"
-      class="flex gap-3 overflow-x-auto pb-2 scroll-smooth snap-x snap-mandatory player-highlights-rail"
-    >
-      <div v-for="c in clips" :key="c.id" class="w-[18rem] shrink-0 snap-start">
-        <HighlightCard :clip="c" :show-map="showMap" />
+        <div class="flex items-center gap-1">
+          <button
+            type="button"
+            class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border/50 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+            aria-label="Scroll left"
+            @click="scrollByDir('left')"
+          >
+            <ChevronLeft class="h-3.5 w-3.5" />
+          </button>
+          <button
+            type="button"
+            class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border/50 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+            aria-label="Scroll right"
+            @click="scrollByDir('right')"
+          >
+            <ChevronRight class="h-3.5 w-3.5" />
+          </button>
+          <NuxtLink
+            :to="{ path: '/highlights', query: { player: String(steamId) } }"
+            class="ml-2 inline-flex items-center gap-1 font-mono text-[0.65rem] tracking-[0.16em] text-muted-foreground hover:text-[hsl(var(--tac-amber))] transition-colors normal-case"
+          >
+            See all
+            <ArrowRight class="h-3 w-3" />
+          </NuxtLink>
+        </div>
       </div>
 
       <div
-        v-if="hasMore"
-        ref="sentinelEl"
-        class="w-[18rem] shrink-0 snap-start"
+        ref="railEl"
+        class="flex gap-3 overflow-x-auto pb-2 scroll-smooth snap-x snap-mandatory player-highlights-rail"
       >
         <div
-          class="aspect-video w-full rounded-lg border border-dashed border-border/50 bg-card/20 flex items-center justify-center"
+          v-for="c in clips"
+          :key="c.id"
+          class="w-[18rem] shrink-0 snap-start"
         >
-          <span
-            class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
-          >
-            Loading more…
-          </span>
+          <HighlightCard :clip="c" :show-map="showMap" />
         </div>
-      </div>
 
-      <NuxtLink
-        v-else-if="hitMaxLimit"
-        :to="{ path: '/highlights', query: { player: String(steamId) } }"
-        class="w-[18rem] shrink-0 snap-start group/more"
-      >
         <div
-          class="aspect-video w-full rounded-lg border border-border/50 bg-[linear-gradient(135deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.2)_100%)] [backdrop-filter:blur(6px)] flex flex-col items-center justify-center gap-2 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[hsl(var(--tac-amber)/0.05)]"
+          v-if="hasMore"
+          ref="sentinelEl"
+          class="w-[18rem] shrink-0 snap-start"
         >
-          <span
-            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))] transition-transform group-hover/more:scale-110"
+          <div
+            class="aspect-video w-full rounded-lg border border-dashed border-border/50 bg-card/20 flex items-center justify-center"
           >
-            <Plus class="h-4 w-4" />
-          </span>
-          <span
-            class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-foreground/80"
-          >
-            See all highlights
-          </span>
-          <span class="text-[0.65rem] text-muted-foreground">
-            for this player
-          </span>
+            <span
+              class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
+            >
+              Loading more…
+            </span>
+          </div>
         </div>
-      </NuxtLink>
+
+        <NuxtLink
+          v-else-if="hitMaxLimit"
+          :to="{ path: '/highlights', query: { player: String(steamId) } }"
+          class="w-[18rem] shrink-0 snap-start group/more"
+        >
+          <div
+            class="aspect-video w-full rounded-lg border border-border/50 bg-[linear-gradient(135deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.2)_100%)] [backdrop-filter:blur(6px)] flex flex-col items-center justify-center gap-2 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[hsl(var(--tac-amber)/0.05)]"
+          >
+            <span
+              class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))] transition-transform group-hover/more:scale-110"
+            >
+              <Plus class="h-4 w-4" />
+            </span>
+            <span
+              class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-foreground/80"
+            >
+              See all highlights
+            </span>
+            <span class="text-[0.65rem] text-muted-foreground">
+              for this player
+            </span>
+          </div>
+        </NuxtLink>
+      </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <style scoped>

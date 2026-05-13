@@ -7,6 +7,7 @@ import ScheduleMatch from "~/components/match/ScheduleMatch.vue";
 import CheckIntoMatch from "~/components/match/CheckIntoMatch.vue";
 import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
 import { e_match_status_enum } from "~/generated/zeus";
+import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
 </script>
 
 <template>
@@ -45,7 +46,13 @@ import { e_match_status_enum } from "~/generated/zeus";
             class="flex flex-col gap-2"
           >
             <div class="text-muted-foreground">{{ lineup.name }}</div>
-            <PlayerDisplay v-if="lineup.coach" :player="lineup.coach" />
+            <PlayerDisplay
+              v-if="lineup.coach"
+              :player="lineup.coach"
+              :avatar-override="
+                buildLineupAvatarOverride(lineup)(lineup.coach.steam_id)
+              "
+            />
             <AssignCoachToLineup
               v-if="lineup.can_update_lineup"
               :lineup="lineup"

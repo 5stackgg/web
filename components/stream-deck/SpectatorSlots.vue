@@ -51,8 +51,9 @@ const props = withDefaults(
     // When true the row reads as "AI piloting" — non-active slots get
     // a saturate-50 wash, the autodirector-picked slot is tagged AUTO
     // in place of its keybind. Hover restores full color as a preview
-    // of the takeover. Wired only on live surfaces; the demo never
-    // sets this since there's no AI driver in playback.
+    // of the takeover. Wired on both live and demo surfaces — the
+    // streamer pod runs cs2-better-autodirector in either mode and
+    // the UI mirrors its on/off state.
     autodirectorOn?: boolean;
   }>(),
   {

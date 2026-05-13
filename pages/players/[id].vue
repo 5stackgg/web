@@ -15,6 +15,7 @@ import formatStatValue from "~/utilities/formatStatValue";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import PlayerChangeName from "~/components/PlayerChangeName.vue";
+import PlayerChangeCountry from "~/components/PlayerChangeCountry.vue";
 import { kdrStrokeColor } from "~/utilities/kdrColor";
 import {
   PlayIcon,
@@ -801,10 +802,11 @@ const playerTeamChipShortClasses =
                 v-if="canEditPlayer"
                 variant="outline"
                 size="icon"
+                class="h-7 w-7 [&_svg]:size-3.5"
                 :title="$t('pages.players.detail.edit_player')"
                 @click="editPlayerSheet = true"
               >
-                <Pencil class="w-4 h-4" />
+                <Pencil />
               </Button>
             </div>
 
@@ -1616,6 +1618,16 @@ const playerTeamChipShortClasses =
         </SheetDescription>
       </SheetHeader>
       <div class="mt-6 space-y-6">
+        <div v-if="canEditCountry" class="space-y-2">
+          <div
+            class="inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
+          >
+            <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
+            {{ $t("pages.settings.account.country") }}
+          </div>
+          <PlayerChangeCountry :player="player" />
+        </div>
+
         <div v-if="canEditAvatar" class="space-y-2">
           <div
             class="inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
@@ -1646,6 +1658,11 @@ const playerTeamChipShortClasses =
             :delete-url="`https://${apiDomain}/avatars/roster-players/${player.steam_id}`"
             :has-custom="!!player.roster_image_url"
             :current-src="playerRosterImageSrc"
+            :bulk-teams="bulkApplyTeams"
+            :bulk-url-builder="
+              (teamId) =>
+                `https://${apiDomain}/avatars/roster-teams/${teamId}/${player.steam_id}`
+            "
           />
         </div>
 
@@ -1665,7 +1682,7 @@ const playerTeamChipShortClasses =
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { e_match_types_enum } from "~/generated/zeus";
+import { e_match_types_enum, e_team_roles_enum } from "~/generated/zeus";
 import { playerFields } from "~/graphql/playerFields";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
@@ -1843,6 +1860,59 @@ export default {
           this.playerTournaments = data.tournaments || [];
         },
       },
+      // Teams that contain the displayed player, fetched alongside the
+      // current viewer's role in each team so we can offer a bulk-apply
+      // checklist in the roster editor (player-roster flow only).
+      // Excludes Invite rows — those aren't real memberships yet.
+      playerTeamMemberships: {
+        query: typedGql("subscription")({
+          team_roster: [
+            {
+              where: {
+                player_steam_id: { _eq: $("steam_id", "bigint") },
+                role: { _neq: e_team_roles_enum.Invite },
+              },
+            },
+            {
+              team_id: true,
+              roster_image_url: true,
+              team: {
+                id: true,
+                name: true,
+                owner_steam_id: true,
+                __alias: {
+                  viewer_roster: {
+                    roster: [
+                      {
+                        where: {
+                          player_steam_id: {
+                            _eq: $("viewer_steam_id", "bigint"),
+                          },
+                        },
+                      },
+                      {
+                        role: true,
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          ],
+        }),
+        variables: function () {
+          return {
+            steam_id: this.playerId,
+            viewer_steam_id: useAuthStore().me?.steam_id ?? "0",
+          };
+        },
+        skip: function () {
+          return !this.playerId || !useAuthStore().me;
+        },
+        result: function ({ data }: { data: any }) {
+          this.playerTeamMemberships = data.team_roster || [];
+        },
+      },
       playerTrophies: {
         query: typedGql("subscription")({
           tournament_trophies: [
@@ -1878,6 +1948,16 @@ export default {
       player: undefined,
       playerTournaments: [],
       playerTrophies: undefined,
+      playerTeamMemberships: [] as Array<{
+        team_id: string;
+        roster_image_url: string | null;
+        team: {
+          id: string;
+          name: string;
+          owner_steam_id: string;
+          viewer_roster: Array<{ role: string }>;
+        };
+      }>,
       editPlayerSheet: false,
     };
   },
@@ -2021,6 +2101,15 @@ export default {
     canEditName() {
       return this.isSelfProfile || this.isAdmin;
     },
+    canEditCountry() {
+      if (!this.me || !this.player) {
+        return false;
+      }
+      return (
+        this.isSelfProfile ||
+        useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)
+      );
+    },
     canEditRole() {
       if (!this.me || !this.player || this.isSelfProfile) {
         return false;
@@ -2028,7 +2117,37 @@ export default {
       return useAuthStore().isRoleAbove(this.player.role);
     },
     canEditPlayer() {
-      return this.canEditAvatar || this.canEditName || this.canEditRole;
+      return (
+        this.canEditAvatar ||
+        this.canEditName ||
+        this.canEditCountry ||
+        this.canEditRole
+      );
+    },
+    // Teams the current viewer can push the new portrait into. Server-side
+    // permission is the source of truth — these filters are just so we
+    // don't show teams we know the request would be rejected for.
+    bulkApplyTeams() {
+      const me = useAuthStore().me;
+      if (!me) return [];
+      const isGlobalOrganizer = useAuthStore().isRoleAbove(
+        e_player_roles_enum.match_organizer,
+      );
+      const memberships = this.playerTeamMemberships ?? [];
+      return memberships
+        .filter((m) => {
+          if (isGlobalOrganizer) return true;
+          if (String(m.team.owner_steam_id) === String(me.steam_id))
+            return true;
+          return m.team.viewer_roster.some(
+            (r) => r.role === e_team_roles_enum.Admin,
+          );
+        })
+        .map((m) => ({
+          teamId: m.team.id,
+          teamName: m.team.name,
+          hasCustomImage: !!m.roster_image_url,
+        }));
     },
     kd() {
       if (!this.player?.stats) {

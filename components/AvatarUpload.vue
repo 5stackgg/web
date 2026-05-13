@@ -55,7 +55,14 @@ const editorOpen = ref(false);
 const editorFile = ref<File | null>(null);
 
 const ACCEPT = "image/png,image/jpeg,image/webp";
-const MAX_SIZE = props.maxSize ?? 5 * 1024 * 1024;
+// Roster images get downscaled + re-encoded to WebP before upload, so we
+// can comfortably accept ~5MP phone photos (~20MB JPEGs). Plain avatars
+// keep the tighter 5MB cap.
+const DEFAULT_MAX_SIZE =
+  props.kind === "roster" || props.kind === "team-roster"
+    ? 20 * 1024 * 1024
+    : 5 * 1024 * 1024;
+const MAX_SIZE = props.maxSize ?? DEFAULT_MAX_SIZE;
 
 const useEditor = computed(
   () => props.kind === "roster" || props.kind === "team-roster",
@@ -106,7 +113,9 @@ async function handleFile(file: File) {
 
   if (file.size > MAX_SIZE) {
     toast({
-      title: useNuxtApp().$i18n.t("avatar.too_large") as string,
+      title: useNuxtApp().$i18n.t("avatar.too_large", {
+        size: Math.round(MAX_SIZE / 1024 / 1024),
+      }) as string,
       variant: "destructive",
     });
     return;

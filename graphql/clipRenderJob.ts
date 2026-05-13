@@ -8,6 +8,7 @@ export const clipRenderJobFields = {
   error_message: true,
   clip_id: true,
   created_at: true,
+  sort_index: true,
   last_status_at: true,
   status_history: true,
   spec: true,

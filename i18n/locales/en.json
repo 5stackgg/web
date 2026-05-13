@@ -35,7 +35,22 @@
         "invalid_type": "Only PNG, JPEG, or WebP images are allowed",
         "uploading": "Uploading...",
         "drop_to_upload": "Drop to upload",
-        "hint": "Drag & drop or click · PNG, JPEG, WebP · up to 5 MB"
+        "hint": "Drag & drop or click · PNG, JPEG, WebP · up to 5 MB",
+        "roster_hint": "Drag & drop or click · head & shoulders, 400×420 · crop and remove background in the next step",
+        "bg_removal_failed": "Failed to remove background",
+        "roster_editor": {
+            "title": "Edit roster image",
+            "description": "Crop to a head-and-shoulders portrait. Optionally remove the background for a transparent PNG.",
+            "size_hint": "Output: {w}×{h} PNG · transparent background supported",
+            "remove_bg": "Remove background",
+            "removing_bg": "Removing background…",
+            "notice_player": "Used in matches when this player is not assigned to a team. In team-assigned matches the team's roster image is used instead.",
+            "notice_team": "Used in matches when this player joins as part of this team. For solo / individual matches the player's own roster image is used.",
+            "bulk_label": "Also apply to your teams",
+            "bulk_will_overwrite": "Will overwrite existing",
+            "bulk_success": "Applied to {count} team(s)",
+            "bulk_failed": "Failed to apply to {name}"
+        }
     },
     "pages": {
         "system_metrics": {
@@ -1152,6 +1167,8 @@
         "delete": "Delete",
         "cancel": "Cancel",
         "save": "Save",
+        "reset": "Reset",
+        "copy": "Copy",
         "update": "Update",
         "error": "Error",
         "enabled": "Enabled",

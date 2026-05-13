@@ -2,6 +2,13 @@
 import { ref, computed } from "vue";
 import { toast } from "@/components/ui/toast";
 import { Upload, Trash2, Loader2, X } from "lucide-vue-next";
+import RosterImageEditor from "@/components/RosterImageEditor.vue";
+
+interface BulkTeam {
+  teamId: string;
+  teamName: string;
+  hasCustomImage: boolean;
+}
 
 const props = withDefaults(
   defineProps<{
@@ -11,12 +18,15 @@ const props = withDefaults(
     variant?: "inline" | "dropzone";
     currentSrc?: string | null;
     maxSize?: number;
-    kind?: "avatar" | "roster";
+    kind?: "avatar" | "roster" | "team-roster";
+    bulkTeams?: BulkTeam[];
+    bulkUrlBuilder?: (teamId: string) => string;
   }>(),
   {
     variant: "inline",
     currentSrc: null,
     kind: "avatar",
+    bulkTeams: () => [],
   },
 );
 
@@ -41,8 +51,18 @@ const isRemoving = ref(false);
 const dragDepth = ref(0);
 const isDragOver = ref(false);
 
+const editorOpen = ref(false);
+const editorFile = ref<File | null>(null);
+
 const ACCEPT = "image/png,image/jpeg,image/webp";
 const MAX_SIZE = props.maxSize ?? 5 * 1024 * 1024;
+
+const useEditor = computed(
+  () => props.kind === "roster" || props.kind === "team-roster",
+);
+const editorMode = computed<"player-roster" | "team-roster">(() =>
+  props.kind === "team-roster" ? "team-roster" : "player-roster",
+);
 
 function triggerPicker() {
   if (isUploading.value || isRemoving.value) return;
@@ -92,6 +112,13 @@ async function handleFile(file: File) {
     return;
   }
 
+  // Roster images go through the crop / bg-removal editor before upload.
+  if (useEditor.value) {
+    editorFile.value = file;
+    editorOpen.value = true;
+    return;
+  }
+
   isUploading.value = true;
   try {
     const formData = new FormData();
@@ -123,6 +150,10 @@ async function handleFile(file: File) {
   } finally {
     isUploading.value = false;
   }
+}
+
+function onEditorUploaded(path: string) {
+  emit("uploaded", path);
 }
 
 async function remove() {
@@ -219,13 +250,26 @@ async function remove() {
         <div
           class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground mt-1"
         >
-          {{ $t("avatar.hint") }}
+          {{ useEditor ? $t("avatar.roster_hint") : $t("avatar.hint") }}
         </div>
       </div>
       <Loader2
         v-if="isUploading"
         class="w-5 h-5 animate-spin text-[hsl(var(--tac-amber))]"
       />
+    </div>
+
+    <div v-if="hasCustom" class="mt-2 flex justify-end">
+      <button
+        type="button"
+        class="inline-flex items-center gap-1.5 text-xs text-red-500 hover:text-red-400 disabled:opacity-50 disabled:cursor-not-allowed"
+        :disabled="isUploading || isRemoving"
+        @click.prevent.stop="remove"
+      >
+        <Loader2 v-if="isRemoving" class="w-3.5 h-3.5 animate-spin" />
+        <Trash2 v-else class="w-3.5 h-3.5" />
+        <span>{{ $t(removeKey) }}</span>
+      </button>
     </div>
   </div>
 
@@ -259,4 +303,15 @@ async function remove() {
       <span>{{ $t(removeKey) }}</span>
     </button>
   </div>
+
+  <RosterImageEditor
+    v-if="useEditor"
+    v-model:open="editorOpen"
+    :file="editorFile"
+    :upload-url="uploadUrl"
+    :mode="editorMode"
+    :bulk-teams="bulkTeams"
+    :bulk-url-builder="bulkUrlBuilder"
+    @uploaded="onEditorUploaded"
+  />
 </template>

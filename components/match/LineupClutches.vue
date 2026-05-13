@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import cleanMapName from "~/utilities/cleanMapName";
 import PlayerDisplay from "../PlayerDisplay.vue";
+import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
 </script>
 
 <template>
@@ -54,6 +55,11 @@ import PlayerDisplay from "../PlayerDisplay.vue";
             <div class="flex items-center space-x-3">
               <PlayerDisplay
                 :player="clutches[match_map.id][round.round].player.player"
+                :avatar-override="
+                  avatarOverrideFor(
+                    clutches[match_map.id][round.round].player.player?.steam_id,
+                  )
+                "
                 class="text-lg"
               ></PlayerDisplay>
             </div>
@@ -69,6 +75,7 @@ import PlayerDisplay from "../PlayerDisplay.vue";
               >
                 <PlayerDisplay
                   :player="player"
+                  :avatar-override="avatarOverrideFor(player?.steam_id)"
                   class="w-full text-sm bg-muted/50 px-3 py-2 rounded"
                 ></PlayerDisplay>
               </template>
@@ -133,6 +140,18 @@ export default {
       ) {
         return this.lineup2.id;
       }
+      return null;
+    },
+    avatarOverrideFor(steamId: string | number | null | undefined) {
+      if (!steamId) return null;
+      const inL1 = this.lineup1.lineup_players?.some(
+        (p: any) => String(p.steam_id) === String(steamId),
+      );
+      if (inL1) return buildLineupAvatarOverride(this.lineup1)(steamId);
+      const inL2 = this.lineup2.lineup_players?.some(
+        (p: any) => String(p.steam_id) === String(steamId),
+      );
+      if (inL2) return buildLineupAvatarOverride(this.lineup2)(steamId);
       return null;
     },
   },

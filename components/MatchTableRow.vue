@@ -9,6 +9,7 @@ import {
 import TimeAgo from "~/components/TimeAgo.vue";
 import { e_lobby_access_enum, e_match_status_enum } from "~/generated/zeus";
 import cleanMapName from "~/utilities/cleanMapName";
+import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { eloFields } from "~/graphql/eloFields";
 import EloChangeBadge from "~/components/EloChangeBadge.vue";
@@ -589,6 +590,12 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                       <td class="py-2 px-2 sm:py-3 sm:px-3">
                         <PlayerDisplay
                           :player="getLineupPlayerDisplayPlayer(lineupPlayer)"
+                          :avatar-override="
+                            lineup1AvatarOverride(
+                              getLineupPlayerDisplayPlayer(lineupPlayer)
+                                ?.steam_id,
+                            )
+                          "
                           :size="compact ? 'xs' : 'sm'"
                           :compact="compact"
                         />
@@ -770,6 +777,12 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
                       <td class="py-2 px-2 sm:py-3 sm:px-3">
                         <PlayerDisplay
                           :player="getLineupPlayerDisplayPlayer(lineupPlayer)"
+                          :avatar-override="
+                            lineup2AvatarOverride(
+                              getLineupPlayerDisplayPlayer(lineupPlayer)
+                                ?.steam_id,
+                            )
+                          "
                           :size="compact ? 'xs' : 'sm'"
                           :compact="compact"
                         />
@@ -1211,6 +1224,12 @@ export default {
     },
     lineup2Players(): any[] {
       return this.displayedMatchStats.lineup_2?.lineup_players ?? [];
+    },
+    lineup1AvatarOverride() {
+      return buildLineupAvatarOverride(this.displayedMatchStats.lineup_1);
+    },
+    lineup2AvatarOverride() {
+      return buildLineupAvatarOverride(this.displayedMatchStats.lineup_2);
     },
     eloChange(): typeof eloFields {
       const matchType = this.match.options?.type;

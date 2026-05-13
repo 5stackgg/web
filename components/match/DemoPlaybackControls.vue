@@ -710,6 +710,7 @@ const killMarkers = computed<Marker[]>(() => {
         :match-type="store.matchType"
         :active-steam-id="store.spectatedSteamId"
         :flash-slot="flashSlot"
+        :autodirector-on="store.autodirectorEnabled"
         @press-slot="(slot: number) => pressSlot(slot)"
       />
 

@@ -5,6 +5,15 @@ export const matchLineupStats = Selector("match_lineups")({
   id: true,
   name: true,
   team_id: true,
+  team: {
+    roster: [
+      {},
+      {
+        player_steam_id: true,
+        roster_image_url: true,
+      },
+    ],
+  },
   coach: playerFields,
   lineup_players: [
     {

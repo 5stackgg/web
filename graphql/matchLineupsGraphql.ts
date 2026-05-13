@@ -10,6 +10,13 @@ export const matchLineups = Selector("match_lineups")({
   team: {
     name: true,
     avatar_url: true,
+    roster: [
+      {},
+      {
+        player_steam_id: true,
+        roster_image_url: true,
+      },
+    ],
   },
   is_ready: true,
   is_on_lineup: true,

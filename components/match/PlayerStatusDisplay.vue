@@ -6,6 +6,7 @@ import {
   e_match_status_enum,
 } from "~/generated/zeus";
 import { useSidebar } from "../ui/sidebar";
+import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
 
 const { isMobile } = useSidebar();
 </script>
@@ -13,6 +14,7 @@ const { isMobile } = useSidebar();
 <template>
   <PlayerDisplay
     :player="member.player"
+    :avatar-override="teamRosterAvatar"
     :show-online="showStatus"
     :show-flag="showDetails"
     :show-name="showDetails"
@@ -163,6 +165,24 @@ export default {
   computed: {
     e_match_status_enum() {
       return e_match_status_enum;
+    },
+    // Resolve a team-roster portrait for the player based on whichever
+    // lineup they sit in for this match. Falls through to player's own
+    // portrait when there's no match context or no team_id on the lineup.
+    teamRosterAvatar() {
+      const steamId = this.member?.player?.steam_id;
+      if (!steamId || !this.match) return null;
+      const lineups = [this.match.lineup_1, this.match.lineup_2].filter(
+        Boolean,
+      );
+      for (const lineup of lineups) {
+        const inLineup = lineup.lineup_players?.some(
+          (lp: any) => String(lp.steam_id) === String(steamId),
+        );
+        if (!inLineup) continue;
+        return buildLineupAvatarOverride(lineup)(steamId);
+      }
+      return null;
     },
     lobby() {
       return useMatchLobbyStore().lobbyChat[`match:${this.match?.id}`];

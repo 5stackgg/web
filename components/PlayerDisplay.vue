@@ -308,10 +308,18 @@ export default {
       return useRuntimeConfig().public.apiDomain;
     },
     playerAvatarSrc() {
-      if (this.avatarOverride) return this.avatarOverride;
+      // Override wins (callers pass team_roster.roster_image_url here when
+      // rendering inside a team-assigned match). Otherwise the player's
+      // own roster portrait beats their avatar — uploading a roster image
+      // is an explicit "use this picture of me" signal.
+      if (this.avatarOverride) {
+        return resolveAvatarUrl(this.avatarOverride, this.apiDomain);
+      }
       if (!this.player) return null;
       return resolveAvatarUrl(
-        this.player.custom_avatar_url || this.player.avatar_url,
+        this.player.roster_image_url ||
+          this.player.custom_avatar_url ||
+          this.player.avatar_url,
         this.apiDomain,
       );
     },

@@ -327,6 +327,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	clip_render_jobs_avg_order_by:{
 		progress:"order_by",
+		sort_index:"order_by",
 		user_steam_id:"order_by"
 	},
 	clip_render_jobs_bool_exp:{
@@ -348,6 +349,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"uuid_comparison_exp",
 		progress:"numeric_comparison_exp",
 		session_token:"String_comparison_exp",
+		sort_index:"Int_comparison_exp",
 		spec:"jsonb_comparison_exp",
 		status:"String_comparison_exp",
 		status_history:"jsonb_comparison_exp",
@@ -397,6 +399,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"order_by",
 		progress:"order_by",
 		session_token:"order_by",
+		sort_index:"order_by",
 		status:"order_by",
 		user_steam_id:"order_by"
 	},
@@ -412,6 +415,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"order_by",
 		progress:"order_by",
 		session_token:"order_by",
+		sort_index:"order_by",
 		status:"order_by",
 		user_steam_id:"order_by"
 	},
@@ -436,6 +440,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"order_by",
 		progress:"order_by",
 		session_token:"order_by",
+		sort_index:"order_by",
 		spec:"order_by",
 		status:"order_by",
 		status_history:"order_by",
@@ -464,14 +469,17 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	clip_render_jobs_stddev_order_by:{
 		progress:"order_by",
+		sort_index:"order_by",
 		user_steam_id:"order_by"
 	},
 	clip_render_jobs_stddev_pop_order_by:{
 		progress:"order_by",
+		sort_index:"order_by",
 		user_steam_id:"order_by"
 	},
 	clip_render_jobs_stddev_samp_order_by:{
 		progress:"order_by",
+		sort_index:"order_by",
 		user_steam_id:"order_by"
 	},
 	clip_render_jobs_stream_cursor_input:{
@@ -492,6 +500,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	clip_render_jobs_sum_order_by:{
 		progress:"order_by",
+		sort_index:"order_by",
 		user_steam_id:"order_by"
 	},
 	clip_render_jobs_update_column: "enum" as const,
@@ -507,14 +516,17 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	clip_render_jobs_var_pop_order_by:{
 		progress:"order_by",
+		sort_index:"order_by",
 		user_steam_id:"order_by"
 	},
 	clip_render_jobs_var_samp_order_by:{
 		progress:"order_by",
+		sort_index:"order_by",
 		user_steam_id:"order_by"
 	},
 	clip_render_jobs_variance_order_by:{
 		progress:"order_by",
+		sort_index:"order_by",
 		user_steam_id:"order_by"
 	},
 	cursor_ordering: "enum" as const,
@@ -20361,6 +20373,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_id:"uuid",
 		progress:"numeric",
 		session_token:"String",
+		sort_index:"Int",
 		spec:"jsonb",
 		status:"String",
 		status_history:"jsonb",
@@ -20386,6 +20399,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	clip_render_jobs_avg_fields:{
 		progress:"Float",
+		sort_index:"Float",
 		user_steam_id:"Float"
 	},
 	clip_render_jobs_max_fields:{
@@ -20400,6 +20414,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_id:"uuid",
 		progress:"numeric",
 		session_token:"String",
+		sort_index:"Int",
 		status:"String",
 		user_steam_id:"bigint"
 	},
@@ -20415,6 +20430,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_id:"uuid",
 		progress:"numeric",
 		session_token:"String",
+		sort_index:"Int",
 		status:"String",
 		user_steam_id:"bigint"
 	},
@@ -20424,30 +20440,37 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	clip_render_jobs_stddev_fields:{
 		progress:"Float",
+		sort_index:"Float",
 		user_steam_id:"Float"
 	},
 	clip_render_jobs_stddev_pop_fields:{
 		progress:"Float",
+		sort_index:"Float",
 		user_steam_id:"Float"
 	},
 	clip_render_jobs_stddev_samp_fields:{
 		progress:"Float",
+		sort_index:"Float",
 		user_steam_id:"Float"
 	},
 	clip_render_jobs_sum_fields:{
 		progress:"numeric",
+		sort_index:"Int",
 		user_steam_id:"bigint"
 	},
 	clip_render_jobs_var_pop_fields:{
 		progress:"Float",
+		sort_index:"Float",
 		user_steam_id:"Float"
 	},
 	clip_render_jobs_var_samp_fields:{
 		progress:"Float",
+		sort_index:"Float",
 		user_steam_id:"Float"
 	},
 	clip_render_jobs_variance_fields:{
 		progress:"Float",
+		sort_index:"Float",
 		user_steam_id:"Float"
 	},
 	db_backups:{

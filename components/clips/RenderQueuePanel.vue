@@ -42,6 +42,7 @@ type Job = {
   error_message: string | null;
   clip_id: string | null;
   created_at: string;
+  sort_index: number;
   last_status_at: string | null;
   spec: any;
   status_history?: StatusHistoryEntry[] | null;
@@ -164,15 +165,18 @@ type BatchGroup = {
 };
 
 function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
-  // Sort by created_at, then id — status-based sorting causes visible
-  // jumps when jobs flip rendering → done. Batch-inserted rows share
-  // the same created_at (one INSERT in clips.service.ts), so id is the
-  // stable tiebreaker; without it the subscription payload order leaks
-  // through and rows visibly swap when any job's status changes.
-  // Ascending matches the api's queue processing order (oldest first).
+  // Sort by created_at, then sort_index — status-based sorting causes
+  // visible jumps when jobs flip rendering → done. Batch-inserted rows
+  // share the same created_at (one INSERT in clips.service.ts), so
+  // sort_index is the stable tiebreaker matching the api's render-pod
+  // dispatch order in BatchHighlightsRenderJob.fetchInFlightJobs. id is
+  // a final fallback for legacy rows inserted before sort_index existed.
   const sorted = [...list].sort((a, b) => {
     if (a.created_at < b.created_at) return -1;
     if (a.created_at > b.created_at) return 1;
+    const ai = a.sort_index ?? 0;
+    const bi = b.sort_index ?? 0;
+    if (ai !== bi) return ai - bi;
     return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
   });
   const activeJob = sorted.find(
@@ -302,13 +306,13 @@ const allGroups = computed<BatchGroup[]>(() => {
 const groups = computed(() =>
   allGroups.value
     .filter((g) => !g.isFinished)
-    .sort((a, b) => (a.startedAt < b.startedAt ? 1 : -1)),
+    .sort((a, b) => (a.startedAt < b.startedAt ? -1 : 1)),
 );
 
 const recentlyDoneGroups = computed(() =>
   allGroups.value
     .filter((g) => g.isFinished)
-    .sort((a, b) => (a.startedAt < b.startedAt ? 1 : -1))
+    .sort((a, b) => (a.startedAt < b.startedAt ? -1 : 1))
     .slice(0, 12),
 );
 

@@ -3,6 +3,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
 import { Switch } from "~/components/ui/switch";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Card } from "~/components/ui/card";
+import { TriangleAlert } from "lucide-vue-next";
 
 definePageMeta({
   layout: "application-settings",
@@ -58,6 +59,89 @@ definePageMeta({
                     />
                   </div>
                 </template>
+              </div>
+            </div>
+
+            <Separator />
+
+            <div class="space-y-3">
+              <div class="space-y-0.5">
+                <h4 class="text-base font-medium">
+                  {{ $t("pages.settings.application.fivestack_ranks.title") }}
+                </h4>
+                <p class="text-sm text-muted-foreground">
+                  {{
+                    $t("pages.settings.application.fivestack_ranks.description")
+                  }}
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div
+                  class="flex flex-row items-center justify-between gap-3 p-3 rounded-lg border cursor-pointer hover:bg-accent/40 transition-colors"
+                  @click="toggleFivestackRanks('matches')"
+                >
+                  <h4 class="text-sm font-medium">
+                    {{
+                      $t("pages.settings.application.fivestack_ranks.matches")
+                    }}
+                  </h4>
+                  <Switch
+                    :model-value="fivestackRanksMatchesEnabled"
+                    @update:model-value="toggleFivestackRanks('matches')"
+                  />
+                </div>
+                <div
+                  class="flex flex-row items-center justify-between gap-3 p-3 rounded-lg border cursor-pointer hover:bg-accent/40 transition-colors"
+                  @click="toggleFivestackRanks('tournaments')"
+                >
+                  <h4 class="text-sm font-medium">
+                    {{
+                      $t(
+                        "pages.settings.application.fivestack_ranks.tournaments",
+                      )
+                    }}
+                  </h4>
+                  <Switch
+                    :model-value="fivestackRanksTournamentsEnabled"
+                    @update:model-value="toggleFivestackRanks('tournaments')"
+                  />
+                </div>
+              </div>
+
+              <div
+                class="flex items-start gap-3 rounded-lg border border-yellow-500/40 bg-yellow-500/10 p-3 text-sm text-yellow-300"
+                role="alert"
+              >
+                <TriangleAlert class="h-4 w-4 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p class="font-medium">
+                    {{
+                      $t(
+                        "pages.settings.application.fivestack_ranks.warning_title",
+                      )
+                    }}
+                  </p>
+                  <p class="text-yellow-300/90 mt-0.5">
+                    {{
+                      $t(
+                        "pages.settings.application.fivestack_ranks.warning_description",
+                      )
+                    }}
+                  </p>
+                  <a
+                    href="https://blog.counter-strike.net/index.php/server_guidelines/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="mt-1 inline-block underline text-yellow-200 hover:text-yellow-100"
+                  >
+                    {{
+                      $t(
+                        "pages.settings.application.fivestack_ranks.warning_link_label",
+                      )
+                    }}
+                  </a>
+                </div>
               </div>
             </div>
 
@@ -346,6 +430,40 @@ export default {
         title: this.$t("pages.settings.application.matchmaking.updated"),
       });
     },
+    async toggleFivestackRanks(scope: "matches" | "tournaments") {
+      const settingName =
+        scope === "tournaments"
+          ? "fivestack_ranks_tournaments"
+          : "fivestack_ranks_matches";
+      const currentlyEnabled =
+        scope === "tournaments"
+          ? this.fivestackRanksTournamentsEnabled
+          : this.fivestackRanksMatchesEnabled;
+
+      await (this as any).$apollo.mutate({
+        mutation: generateMutation({
+          insert_settings_one: [
+            {
+              object: {
+                name: settingName,
+                value: currentlyEnabled ? "false" : "true",
+              },
+              on_conflict: {
+                constraint: settings_constraint.settings_pkey,
+                update_columns: [settings_update_column.value],
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+
+      toast({
+        title: this.$t("pages.settings.application.matchmaking.updated"),
+      });
+    },
     async toggleDefaultModels() {
       await (this as any).$apollo.mutate({
         mutation: generateMutation({
@@ -487,6 +605,20 @@ export default {
       }
 
       return false;
+    },
+    fivestackRanksMatchesEnabled() {
+      const setting = this.settings.find(
+        (setting: { name: string; value: string | null }) =>
+          setting.name === "fivestack_ranks_matches",
+      );
+      return setting?.value === "true";
+    },
+    fivestackRanksTournamentsEnabled() {
+      const setting = this.settings.find(
+        (setting: { name: string; value: string | null }) =>
+          setting.name === "fivestack_ranks_tournaments",
+      );
+      return setting?.value === "true";
     },
   },
 };

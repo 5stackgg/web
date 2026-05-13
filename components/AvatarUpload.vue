@@ -55,7 +55,11 @@ const editorOpen = ref(false);
 const editorFile = ref<File | null>(null);
 
 const ACCEPT = "image/png,image/jpeg,image/webp";
-const MAX_SIZE = props.maxSize ?? 5 * 1024 * 1024;
+const DEFAULT_MAX_SIZE =
+  props.kind === "roster" || props.kind === "team-roster"
+    ? 20 * 1024 * 1024
+    : 5 * 1024 * 1024;
+const MAX_SIZE = props.maxSize ?? DEFAULT_MAX_SIZE;
 
 const useEditor = computed(
   () => props.kind === "roster" || props.kind === "team-roster",
@@ -106,13 +110,14 @@ async function handleFile(file: File) {
 
   if (file.size > MAX_SIZE) {
     toast({
-      title: useNuxtApp().$i18n.t("avatar.too_large") as string,
+      title: useNuxtApp().$i18n.t("avatar.too_large", {
+        size: Math.round(MAX_SIZE / 1024 / 1024),
+      }) as string,
       variant: "destructive",
     });
     return;
   }
 
-  // Roster images go through the crop / bg-removal editor before upload.
   if (useEditor.value) {
     editorFile.value = file;
     editorOpen.value = true;

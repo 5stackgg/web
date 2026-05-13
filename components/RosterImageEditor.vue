@@ -14,11 +14,15 @@ import { Loader2, RotateCcw, Sparkles, Upload, Info } from "lucide-vue-next";
 import { toast } from "@/components/ui/toast";
 import Cropper from "cropperjs";
 import "cropperjs/dist/cropper.css";
+import {
+  downscaleFileToObjectUrl,
+  retryDynamicImport,
+} from "@/utilities/imagePipeline";
 
-// Final output dimensions — close to HLTV's 400×417 roster portrait.
 const OUTPUT_W = 400;
 const OUTPUT_H = 420;
 const ASPECT = OUTPUT_W / OUTPUT_H;
+const MAX_SOURCE_EDGE = 1600;
 
 interface BulkTeam {
   teamId: string;
@@ -52,7 +56,6 @@ const cropper = shallowRef<Cropper | null>(null);
 const removingBg = ref(false);
 const uploading = ref(false);
 const workingSrc = ref<string | null>(null);
-// teamId → checked. Reset to all-unchecked each time the dialog opens.
 const selectedTeams = ref<Record<string, boolean>>({});
 
 const showBulk = computed(
@@ -90,7 +93,7 @@ function revokeSource() {
 
 watch(
   () => [props.open, props.file] as const,
-  ([open, file]) => {
+  async ([open, file]) => {
     if (!open) {
       teardownCropper();
       revokeSource();
@@ -101,9 +104,12 @@ watch(
     if (!file) return;
     revokeSource();
     workingSrc.value = null;
-    sourceUrl.value = URL.createObjectURL(file);
-    // Start with every team unchecked — conservative per the chosen UX.
     selectedTeams.value = {};
+    try {
+      sourceUrl.value = await downscaleFileToObjectUrl(file, MAX_SOURCE_EDGE);
+    } catch {
+      sourceUrl.value = URL.createObjectURL(file);
+    }
   },
   { immediate: true },
 );
@@ -122,13 +128,13 @@ function reset() {
 }
 
 async function removeBackground() {
-  if (!props.file && !workingSrc.value) return;
+  if (!props.file && !workingSrc.value && !sourceUrl.value) return;
   removingBg.value = true;
   try {
-    const { removeBackground: imglyRemove } = await import(
-      "@imgly/background-removal"
+    const { removeBackground: imglyRemove } = await retryDynamicImport(
+      () => import("@imgly/background-removal"),
     );
-    const input = workingSrc.value ?? props.file!;
+    const input = workingSrc.value ?? sourceUrl.value ?? props.file!;
     const blob = await imglyRemove(input as any);
     const dataUrl = await blobToDataUrl(blob);
     workingSrc.value = dataUrl;
@@ -164,14 +170,15 @@ async function renderBlob(): Promise<Blob> {
   return new Promise<Blob>((resolve, reject) =>
     canvas.toBlob(
       (b) => (b ? resolve(b) : reject(new Error("toBlob failed"))),
-      "image/png",
+      "image/webp",
+      0.92,
     ),
   );
 }
 
 async function postBlob(url: string, blob: Blob): Promise<string> {
   const formData = new FormData();
-  formData.append("file", blob, "roster.png");
+  formData.append("file", blob, "roster.webp");
   const response = await fetch(url, {
     method: "POST",
     body: formData,
@@ -191,9 +198,6 @@ async function save() {
     const blob = await renderBlob();
     const path = await postBlob(props.uploadUrl, blob);
 
-    // Bulk-apply runs in parallel after the primary succeeds. We don't
-    // fail the whole save if a sub-upload fails — surface each failure
-    // as a toast and continue.
     const chosenTeams = showBulk.value
       ? props.bulkTeams.filter((t) => selectedTeams.value[t.teamId])
       : [];

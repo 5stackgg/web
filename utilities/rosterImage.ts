@@ -1,5 +1,10 @@
 import { resolveAvatarUrl } from "./avatarUrl";
 
+// Team contexts must only use a per-team roster portrait. A player's
+// personal roster image is NOT a fallback here — uploading a personal
+// roster portrait should not silently apply to every team the player is
+// on. Bulk-applying to teams is opt-in via the editor's team checkboxes.
+
 type PlayerLike =
   | {
       roster_image_url?: string | null;
@@ -16,9 +21,9 @@ type TeamRosterLike =
 
 export function pickRosterImagePath(
   teamRoster: TeamRosterLike,
-  player: PlayerLike,
+  _player: PlayerLike,
 ): string | null {
-  return teamRoster?.roster_image_url ?? player?.roster_image_url ?? null;
+  return teamRoster?.roster_image_url ?? null;
 }
 
 export function resolveRosterImageUrl(

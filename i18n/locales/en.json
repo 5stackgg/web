@@ -206,6 +206,15 @@
                     "description": "Matchmaking allows players to join a queue and be matched with other players.",
                     "updated": "Settings updated successfully"
                 },
+                "fivestack_ranks": {
+                    "title": "5stack Ranks",
+                    "description": "Send each player's 5stack ELO to the server so the plugin can display ranks in-game.",
+                    "matches": "Show ranks in regular matches",
+                    "tournaments": "Show ranks in tournament matches",
+                    "warning_title": "Warning: this can get your Steam GSLTs banned",
+                    "warning_description": "Showing ranks uses plugin functionality that falls outside Valve's official server guidelines. Per Valve, this can trigger every Game Server Login Token (GSLT) on the server owner's Steam account to be banned. Enable at your own risk.",
+                    "warning_link_label": "Valve's server guidelines"
+                },
                 "chat": {
                     "title": "Chat Settings",
                     "description": "Configure how long chat messages are retained.",

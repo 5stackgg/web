@@ -1567,6 +1567,9 @@
         "standings": {
             "title": "Standings"
         },
+        "group_standings": {
+            "title": "Group Standings"
+        },
         "results": {
             "title": "Results"
         },

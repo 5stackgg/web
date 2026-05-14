@@ -7,6 +7,7 @@ import TournamentForm from "~/components/tournament/TournamentForm.vue";
 import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
 import TournamentNotifications from "~/components/tournament/TournamentNotifications.vue";
 import TournamentResults from "~/components/tournament/TournamentResults.vue";
+import TournamentGroupStandings from "~/components/tournament/TournamentGroupStandings.vue";
 import TournamentTrophiesConfig from "~/components/tournament/TournamentTrophiesConfig.vue";
 import TournamentTrophiesManage from "~/components/tournament/TournamentTrophiesManage.vue";
 import Separator from "~/components/ui/separator/Separator.vue";
@@ -479,6 +480,17 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
               </TabsTrigger>
               <TabsTrigger
                 v-if="
+                  hasMultiGroupStages &&
+                  (tournament.status === e_tournament_status_enum.Live ||
+                    tournament.status === e_tournament_status_enum.Finished)
+                "
+                value="group-standings"
+                :class="tacticalTabsTriggerClasses"
+              >
+                {{ $t("tournament.group_standings.title") }}
+              </TabsTrigger>
+              <TabsTrigger
+                v-if="
                   tournament.status === e_tournament_status_enum.Live ||
                   tournament.status === e_tournament_status_enum.Finished
                 "
@@ -651,6 +663,18 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
               :show-standings="true"
               :show-matches="false"
             />
+          </PageTransition>
+        </TabsContent>
+        <TabsContent
+          v-if="
+            hasMultiGroupStages &&
+            (tournament.status === e_tournament_status_enum.Live ||
+              tournament.status === e_tournament_status_enum.Finished)
+          "
+          value="group-standings"
+        >
+          <PageTransition>
+            <TournamentGroupStandings :tournament="tournament" />
           </PageTransition>
         </TabsContent>
         <TabsContent
@@ -1014,13 +1038,20 @@ export default {
                   results: [
                     {},
                     {
+                      tournament_team_id: true,
                       wins: true,
                       losses: true,
                       rounds_won: true,
                       rounds_lost: true,
+                      maps_won: true,
+                      maps_lost: true,
+                      head_to_head_match_wins: true,
+                      head_to_head_rounds_won: true,
+                      team_kdr: true,
                       matches_played: true,
                       matches_remaining: true,
                       team: {
+                        id: true,
                         name: true,
                       },
                     },
@@ -1386,7 +1417,11 @@ export default {
         this.tournament?.status === e_tournament_status_enum.Live ||
         this.tournament?.status === e_tournament_status_enum.Finished
       ) {
-        tabs.push("standings", "results");
+        tabs.push("standings");
+        if (this.hasMultiGroupStages) {
+          tabs.push("group-standings");
+        }
+        tabs.push("results");
       }
 
       if (this.tournament?.is_organizer) {
@@ -1394,6 +1429,10 @@ export default {
       }
 
       return tabs;
+    },
+    hasMultiGroupStages() {
+      const stages = (this.tournament as any)?.stages || [];
+      return stages.some((stage: any) => (stage?.groups || 0) > 1);
     },
   },
   methods: {

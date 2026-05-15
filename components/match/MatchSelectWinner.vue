@@ -65,7 +65,7 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
-            lineup_id: z.string(),
+            lineup_id: z.string().nullable(),
           }),
         ),
       }),

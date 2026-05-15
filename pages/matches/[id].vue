@@ -262,7 +262,38 @@ const vsBaseClasses =
     <div
       class="grid items-start gap-4 md:gap-6 lg:gap-8 grid-cols-1 lg:grid-cols-[minmax(320px,_400px)_minmax(0,1fr)]"
     >
-      <div class="grid grid-cols-1 gap-y-4 md:gap-y-6 min-w-0">
+      <!-- Spectator stream surface. game-streamer rows get the
+           full LiveStreamPlayer (WHEP + scoreboard pulldown);
+           regular embeds stay in StreamEmbed. Mirrors the split
+           that MatchLiveStreams uses on the Streams tab so the
+           scoreboard is reachable from either view. Lives as its
+           own grid item so on mobile (1-col) it appears above the
+           maps, while on desktop it sits at the top of the right
+           column. -->
+      <PageTransition v-if="showLiveStreamBlock">
+        <div
+          class="order-first min-w-0 pb-6 space-y-4 lg:order-none lg:col-start-2 lg:row-start-1"
+        >
+          <LiveStreamPlayer
+            v-if="hasGameStreamer"
+            :match-id="match.id"
+            class="max-w-[1500px] w-full"
+          />
+          <StreamEmbed
+            v-if="embeddableStreams.length > 0"
+            :streams="embeddableStreams"
+            :match-id="match.id"
+            class="max-w-[1500px] w-full overflow-x-auto"
+          />
+        </div>
+      </PageTransition>
+
+      <div
+        class="grid grid-cols-1 gap-y-4 md:gap-y-6 min-w-0"
+        :class="
+          showLiveStreamBlock ? 'lg:col-start-1 lg:row-start-1 lg:row-span-2' : ''
+        "
+      >
         <PageTransition :delay="100">
           <MatchInfo :match="match"></MatchInfo>
         </PageTransition>
@@ -322,36 +353,10 @@ const vsBaseClasses =
         </PageTransition>
       </div>
 
-      <div class="min-w-0">
-        <PageTransition>
-          <!-- Spectator stream surface. game-streamer rows get the
-               full LiveStreamPlayer (WHEP + scoreboard pulldown);
-               regular embeds stay in StreamEmbed. Mirrors the split
-               that MatchLiveStreams uses on the Streams tab so the
-               scoreboard is reachable from either view. -->
-          <div
-            v-if="
-              showLiveStreams &&
-              match.streams.length > 0 &&
-              !match.is_in_lineup &&
-              !match.is_coach
-            "
-            class="pb-6 space-y-4"
-          >
-            <LiveStreamPlayer
-              v-if="hasGameStreamer"
-              :match-id="match.id"
-              class="max-w-[1500px] w-full"
-            />
-            <StreamEmbed
-              v-if="embeddableStreams.length > 0"
-              :streams="embeddableStreams"
-              :match-id="match.id"
-              class="max-w-[1500px] w-full overflow-x-auto"
-            />
-          </div>
-        </PageTransition>
-
+      <div
+        class="min-w-0"
+        :class="showLiveStreamBlock ? 'lg:col-start-2 lg:row-start-2' : ''"
+      >
         <PageTransition :delay="100">
           <template
             v-if="
@@ -795,6 +800,14 @@ export default {
     },
     embeddableStreams() {
       return (this.match?.streams || []).filter((s) => !s.is_game_streamer);
+    },
+    showLiveStreamBlock() {
+      return (
+        this.showLiveStreams &&
+        (this.match?.streams?.length || 0) > 0 &&
+        !this.match?.is_in_lineup &&
+        !this.match?.is_coach
+      );
     },
     showLiveStreams() {
       if (

@@ -3,6 +3,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import LineupOverview from "~/components/match/LineupOverview.vue";
 import LineupUtility from "~/components/match/LineupUtility.vue";
+import LineupTradeStats from "~/components/match/LineupTradeStats.vue";
+import LineupAimStats from "~/components/match/LineupAimStats.vue";
 import LineupOpeningDuels from "~/components/match/LineupOpeningDuels.vue";
 import LineupClutches from "~/components/match/LineupClutches.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
@@ -130,6 +132,12 @@ provide("commander", commander);
           <SelectItem value="utility" :disabled="disableStats">
             {{ $t("match.tabs.utility") }}
           </SelectItem>
+          <SelectItem value="trade-stats" :disabled="disableStats">
+            {{ $t("match.tabs.trade_stats") }}
+          </SelectItem>
+          <SelectItem value="aim-stats" :disabled="disableStats">
+            {{ $t("match.tabs.aim_stats") }}
+          </SelectItem>
           <SelectItem value="opening-duels" :disabled="disableStats">
             {{ $t("match.tabs.opening_duels") }}
           </SelectItem>
@@ -168,6 +176,12 @@ provide("commander", commander);
         </TabsTrigger>
         <TabsTrigger :disabled="disableStats" value="utility">
           {{ $t("match.tabs.utility") }}
+        </TabsTrigger>
+        <TabsTrigger :disabled="disableStats" value="trade-stats">
+          {{ $t("match.tabs.trade_stats") }}
+        </TabsTrigger>
+        <TabsTrigger :disabled="disableStats" value="aim-stats">
+          {{ $t("match.tabs.aim_stats") }}
         </TabsTrigger>
         <TabsTrigger :disabled="disableStats" value="opening-duels">
           {{ $t("match.tabs.opening_duels") }}
@@ -300,6 +314,52 @@ provide("commander", commander);
               :match="mapScopedMatch"
               :lineup="activeLineup2"
             ></lineup-utility>
+          </CardContent>
+        </Card>
+      </div>
+    </TabsContent>
+    <TabsContent value="trade-stats">
+      <div
+        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
+        :class="{ 'opacity-60': activeMap && !mapStats }"
+      >
+        <Card class="overflow-x-auto">
+          <CardContent class="py-2">
+            <lineup-trade-stats
+              :match="mapScopedMatch"
+              :lineup="activeLineup1"
+            ></lineup-trade-stats>
+          </CardContent>
+        </Card>
+        <Card class="overflow-x-auto">
+          <CardContent class="py-2">
+            <lineup-trade-stats
+              :match="mapScopedMatch"
+              :lineup="activeLineup2"
+            ></lineup-trade-stats>
+          </CardContent>
+        </Card>
+      </div>
+    </TabsContent>
+    <TabsContent value="aim-stats">
+      <div
+        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
+        :class="{ 'opacity-60': activeMap && !mapStats }"
+      >
+        <Card class="overflow-x-auto">
+          <CardContent class="py-2">
+            <lineup-aim-stats
+              :match="mapScopedMatch"
+              :lineup="activeLineup1"
+            ></lineup-aim-stats>
+          </CardContent>
+        </Card>
+        <Card class="overflow-x-auto">
+          <CardContent class="py-2">
+            <lineup-aim-stats
+              :match="mapScopedMatch"
+              :lineup="activeLineup2"
+            ></lineup-aim-stats>
           </CardContent>
         </Card>
       </div>
@@ -723,6 +783,8 @@ export default {
           const statsTabs = [
             "overview",
             "utility",
+            "trade-stats",
+            "aim-stats",
             "opening-duels",
             "clutches",
           ];
@@ -951,7 +1013,7 @@ export default {
       const tabs = ["overview"];
 
       if (!this.disableStats) {
-        tabs.push("utility", "opening-duels");
+        tabs.push("utility", "trade-stats", "aim-stats", "opening-duels");
 
         if (this.match.options.type !== e_match_types_enum.Duel) {
           tabs.push("clutches");

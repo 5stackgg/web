@@ -1909,6 +1909,8 @@
         "tabs": {
             "overview": "Overview",
             "utility": "Utility",
+            "trade_stats": "Trades",
+            "aim_stats": "Aim",
             "opening_duels": "Opening Duels",
             "clutches": "Clutches",
             "settings": "Match Settings",
@@ -1997,7 +1999,9 @@
             "create_clips": "Create Player Highlights",
             "live_started": "Live stream starting",
             "live_stopped": "Live stream stopped",
-            "clips_started": "Player highlight renders queued"
+            "clips_started": "Player highlight renders queued",
+            "reparse_demos": "Reparse Match Demos",
+            "reparse_demos_started": "Reparsing all demos for this match"
         },
         "delete_confirm": {
             "title": "Delete Match",
@@ -2012,7 +2016,20 @@
                 "avg_blind_time": "Avg blind time",
                 "he_damage": "HE Damage",
                 "molotov_damage": "Incendiary / Molotov Damage",
-                "seconds": "seconds"
+                "seconds": "seconds",
+                "trade_kill_opportunities": "Trade Kill Opps",
+                "trade_kill_attempts": "Trade Kill Attempts",
+                "trade_kill_pct": "Trade Kill %",
+                "traded_death_opportunities": "Traded Death Opps",
+                "traded_death_pct": "Traded Death %",
+                "net_trade": "Net Trade",
+                "accuracy": "Accuracy",
+                "head_accuracy": "Head Accuracy",
+                "hs_kill_pct": "HS Kill %",
+                "time_to_damage": "Time to Damage",
+                "spotted_acc": "Spotted Acc",
+                "crosshair_placement": "Cross. Placement",
+                "counter_strafing": "Counter-Strafing"
             },
             "discord_user": "This is a Discord user, register your discord id to enable stat tracking by typing",
             "discord_link": "in the official discord channel."

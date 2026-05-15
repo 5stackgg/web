@@ -15,7 +15,7 @@ const DEMO_STAGES = [
   { key: "booting", label: "Allocating GPU", meta: "required" as const },
   {
     key: "downloading_cs2",
-    label: "Updating CS",
+    label: "Installing CS2",
     meta: "conditional" as const,
   },
   {

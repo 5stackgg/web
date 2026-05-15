@@ -492,7 +492,7 @@ export default {
     },
     // Sub-line under "Cancel Live Stream" while the streamer pod is
     // booting. Mirrors the pod's `status` text so the operator can see
-    // exactly which boot step is running ("Updating CS…", "Logging
+    // exactly which boot step is running ("Installing CS2…", "Logging
     // in…", etc) — and the error message if the pod reported errored.
     gameStreamerStatusLine() {
       const row = this.gameStreamerRow as any;
@@ -505,7 +505,7 @@ export default {
       const stepLabels: Record<string, string> = {
         launching_steam: "Launching Steam…",
         logging_in: "Logging in…",
-        downloading_cs2: "Updating CS…",
+        downloading_cs2: "Installing CS2…",
         launching_cs2: "Launching CS2…",
         connecting_to_game: "Connecting to game…",
         starting_capture: "Starting capture…",

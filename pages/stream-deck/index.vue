@@ -23,8 +23,10 @@ import {
   ArrowRightLeft,
   Play,
   Server,
+  ServerOff,
   Tv,
   Dot,
+  RefreshCw,
 } from "lucide-vue-next";
 import gql from "graphql-tag";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
@@ -107,14 +109,12 @@ type LiveMatch = {
   scheduled_at: string | null;
   started_at: string | null;
   current_match_map_id: string | null;
+  server_id: string | null;
+  is_server_online: boolean | null;
+  server_region: string | null;
   options: { type: string | null } | null;
   lineup_1: { id: string; name: string | null } | null;
   lineup_2: { id: string; name: string | null } | null;
-  server: {
-    host: string | null;
-    label: string | null;
-    region: string | null;
-  } | null;
   match_maps: LiveMatchMap[];
 };
 
@@ -145,17 +145,15 @@ onMounted(() => {
             scheduled_at: true,
             started_at: true,
             current_match_map_id: true,
+            // Computed fields, not the `server` join — guest's filter
+            // on `servers` requires connection_string IS NOT NULL,
+            // which hides assigned-but-not-yet-connected servers.
+            server_id: true,
+            is_server_online: true,
+            server_region: true,
             options: { type: true },
             lineup_1: { id: true, name: true },
             lineup_2: { id: true, name: true },
-            server: {
-              host: true,
-              label: true,
-              // `region` on servers is the scalar enum value (the
-              // string the user sees as "us-east"/etc.) — the
-              // matching object relationship is `server_region`.
-              region: true,
-            } as any,
             // Pull match_maps (small list — usually 1–5 rows per Bo)
             // and pick the live one client-side via
             // current_match_map_id. Cheaper than re-deriving
@@ -269,13 +267,45 @@ async function setAutodirector(matchId: string, enabled: boolean) {
   }));
 }
 
-// Start a fresh stream for a match (no pod currently up). Uses the
-// existing startLive Hasura action — same path the per-match
-// MatchActions button takes.
 async function startLive(matchId: string, mode: "live" | "tv") {
   await runMutation(matchId, "start live", () => ({
     startLive: [{ match_id: matchId, mode }, { success: true }],
   }));
+}
+
+async function reconnectLive(matchId: string) {
+  await runMutation(matchId, "reconnect", () => ({
+    reconnectLive: [{ match_id: matchId }, { success: true }],
+  }));
+  toast({
+    title: "Reconnecting",
+    description: "Re-issuing the connect to the game server.",
+  });
+}
+
+type DeckReady = {
+  ready: boolean;
+  reason: string | null;
+};
+function deckReadiness(m: LiveMatch): DeckReady {
+  if (m.status !== "Live") {
+    return {
+      ready: false,
+      reason: `match is ${m.status.toLowerCase()} — wait for it to go live`,
+    };
+  }
+  if (!m.server_id) {
+    return { ready: false, reason: "no server assigned for this match" };
+  }
+  if (m.is_server_online !== true) {
+    return { ready: false, reason: "server is offline — waiting for it to come online" };
+  }
+  return { ready: true, reason: null };
+}
+
+function serverLabel(m: LiveMatch): string {
+  if (!m.server_id) return "no server";
+  return m.server_region || "server assigned";
 }
 
 // Hot-swap: keep the running pod, point it at a different match.
@@ -300,6 +330,18 @@ const SWITCH_LIVE_MATCH_MUTATION = gql`
 
 const switching = ref<string | null>(null);
 async function switchTo(toMatchId: string, mode: "live" | "tv" = "live") {
+  const target = liveMatches.value.find((m) => m.id === toMatchId);
+  if (target) {
+    const { ready, reason } = deckReadiness(target);
+    if (!ready) {
+      toast({
+        variant: "destructive",
+        title: "Can't switch",
+        description: reason ?? "destination match isn't ready",
+      });
+      return;
+    }
+  }
   const fromMatchId = activeMatchId.value;
   if (!fromMatchId) {
     await startLive(toMatchId, mode);
@@ -602,6 +644,21 @@ function currentMapName(m: LiveMatch): string | null {
                     <X class="size-3.5" />
                   </button>
                 </template>
+
+                <div class="w-px bg-border/70" />
+
+                <button
+                  type="button"
+                  :disabled="
+                    ensureState(stream.match_id).busy || !stream.is_live
+                  "
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-foreground/80 hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Re-issue connect (recover from a disconnect)"
+                  @click="reconnectLive(stream.match_id)"
+                >
+                  <RefreshCw class="size-3.5" />
+                  Reconnect
+                </button>
 
                 <div class="w-px bg-border/70" />
 
@@ -943,19 +1000,25 @@ function currentMapName(m: LiveMatch): string | null {
                 </div>
               </div>
 
-              <!-- Server / region hint — keeps tile useful even when
-                   the same teams appear in two parallel matches. -->
               <div
-                class="mt-2 flex items-center justify-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/70"
+                :class="[
+                  'mt-2 flex items-center justify-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em]',
+                  !m.server_id
+                    ? 'text-destructive/80'
+                    : m.is_server_online
+                      ? 'text-emerald-500/80'
+                      : 'text-[hsl(var(--tac-amber))]/80',
+                ]"
               >
-                <Server class="size-3 opacity-60" />
-                <span class="truncate max-w-[18ch]">
-                  {{
-                    m.server?.label ||
-                    m.server?.region ||
-                    m.server?.host ||
-                    "no server"
-                  }}
+                <component
+                  :is="!m.server_id ? ServerOff : Server"
+                  class="size-3 opacity-70"
+                />
+                <span class="truncate max-w-[20ch]">
+                  {{ serverLabel(m) }}
+                  <template v-if="m.server_id && !m.is_server_online">
+                    · offline
+                  </template>
                 </span>
               </div>
             </div>
@@ -980,18 +1043,24 @@ function currentMapName(m: LiveMatch): string | null {
                 Open broadcast controls
               </NuxtLink>
 
-              <!-- Case 2: another match is on air → switch -->
               <button
                 v-else-if="activeStream"
                 type="button"
-                :disabled="!!switching || ensureState(m.id).busy"
+                :disabled="
+                  !!switching ||
+                  ensureState(m.id).busy ||
+                  !deckReadiness(m).ready
+                "
                 :class="[
                   'group/cta inline-flex w-full items-center justify-center gap-2 rounded-md border px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed',
                   switching === m.id
                     ? 'border-[hsl(var(--tac-amber)/0.7)] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
                     : 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] hover:border-[hsl(var(--tac-amber)/0.75)]',
                 ]"
-                :title="`Reuse the running pod and switch the broadcast to ${m.lineup_1?.name ?? 'Team A'} vs ${m.lineup_2?.name ?? 'Team B'}`"
+                :title="
+                  deckReadiness(m).reason ||
+                  `Reuse the running pod and switch the broadcast to ${m.lineup_1?.name ?? 'Team A'} vs ${m.lineup_2?.name ?? 'Team B'}`
+                "
                 @click="switchTo(m.id, 'live')"
               >
                 <ArrowRightLeft
@@ -1002,21 +1071,28 @@ function currentMapName(m: LiveMatch): string | null {
                       : 'group-hover/cta:translate-x-0.5',
                   ]"
                 />
-                {{ switching === m.id ? "Switching…" : "Switch stream here" }}
+                <template v-if="switching === m.id">Switching…</template>
+                <template v-else-if="!deckReadiness(m).ready">
+                  {{ !m.server_id ? "No server" : m.status !== "Live" ? "Not live yet" : "Server offline" }}
+                </template>
+                <template v-else>Switch stream here</template>
               </button>
 
-              <!-- Case 3: no pod up — start fresh, with mode picker. -->
               <div v-else class="flex gap-1.5">
                 <button
                   type="button"
                   :disabled="
-                    ensureState(m.id).busy || !hasFreeGpu || gpuTotal === 0
+                    ensureState(m.id).busy ||
+                    !hasFreeGpu ||
+                    gpuTotal === 0 ||
+                    !deckReadiness(m).ready
                   "
                   class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.08)] px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   :title="
-                    !hasFreeGpu
+                    deckReadiness(m).reason ||
+                    (!hasFreeGpu
                       ? busyReason || 'No free GPU'
-                      : 'Start a live stream'
+                      : 'Start a live stream')
                   "
                   @click="startLive(m.id, 'live')"
                 >
@@ -1026,13 +1102,17 @@ function currentMapName(m: LiveMatch): string | null {
                 <button
                   type="button"
                   :disabled="
-                    ensureState(m.id).busy || !hasFreeGpu || gpuTotal === 0
+                    ensureState(m.id).busy ||
+                    !hasFreeGpu ||
+                    gpuTotal === 0 ||
+                    !deckReadiness(m).ready
                   "
                   class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-md border border-border/60 bg-card/40 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground hover:bg-muted/30 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   :title="
-                    !hasFreeGpu
+                    deckReadiness(m).reason ||
+                    (!hasFreeGpu
                       ? busyReason || 'No free GPU'
-                      : 'Start a delayed TV stream'
+                      : 'Start a delayed TV stream')
                   "
                   @click="startLive(m.id, 'tv')"
                 >

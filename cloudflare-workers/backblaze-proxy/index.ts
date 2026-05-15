@@ -51,6 +51,7 @@ export default {
       S3_ENDPOINT: string;
       ALLOWED_HEADERS?: string;
     },
+    ctx: ExecutionContext,
   ) {
     if (request.method === "OPTIONS") {
       return new Response(null, {
@@ -64,6 +65,18 @@ export default {
         status: 405,
         statusText: "Method Not Allowed",
       });
+    }
+
+    // Edge-cache short-circuit: serve repeat hits without re-running SigV4
+    // or making a B2 subrequest. Range requests fall through so the existing
+    // cf.cacheEverything path handles slicing from the cached full object.
+    const cache = caches.default;
+    const cacheKey = new Request(request.url, { method: "GET" });
+    const skipEdgeCache =
+      request.method !== "GET" || request.headers.has("range");
+    if (!skipEdgeCache) {
+      const cached = await cache.match(cacheKey);
+      if (cached) return cached;
     }
 
     const url = new URL(request.url);
@@ -101,7 +114,6 @@ export default {
       headers: signedRequest.headers,
       cf: {
         cacheEverything: true,
-        cacheTtl: 2592000,
         cacheTtlByStatus: { "200-299": 2592000, "404": 60, "500-599": 0 },
       },
     });
@@ -133,18 +145,24 @@ export default {
     if (!headers.has("Accept-Ranges")) {
       headers.set("Accept-Ranges", "bytes");
     }
-    if (!headers.has("Cache-Control")) {
-      headers.set("Cache-Control", "public, max-age=2592000, immutable");
-    }
+    // Force long browser cache regardless of what B2 returned — second view
+    // of a clip serves from the user's disk cache and never hits the Worker.
+    headers.set("Cache-Control", "public, max-age=2592000, immutable");
     for (const [k, v] of Object.entries(corsHeaders())) {
       headers.set(k, v);
     }
 
-    return new Response(upstream.body, {
+    const response = new Response(upstream.body, {
       headers,
       status: upstream.status,
       statusText: upstream.statusText,
     });
+
+    if (!skipEdgeCache && response.status === 200) {
+      ctx.waitUntil(cache.put(cacheKey, response.clone()));
+    }
+
+    return response;
   },
 };
 

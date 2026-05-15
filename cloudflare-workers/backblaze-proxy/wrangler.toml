@@ -8,7 +8,10 @@
 
 name = "5stack"
 main = "index.ts"
-compatibility_date = "2024-09-01"
+compatibility_date = "2025-04-29"
+
+[observability]
+enabled = true
 
 [vars]
 BUCKET_NAME = "5stack"

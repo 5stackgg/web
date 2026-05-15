@@ -376,10 +376,7 @@ export default {
       try {
         await this.$apollo.mutate({
           mutation: generateMutation({
-            reparseMatchDemos: [
-              { match_id: this.match.id },
-              { success: true },
-            ],
+            reparseMatchDemos: [{ match_id: this.match.id }, { success: true }],
           }),
         });
         toast({ title: this.$t("match.actions.reparse_demos_started") });

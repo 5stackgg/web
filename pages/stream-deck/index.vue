@@ -298,7 +298,10 @@ function deckReadiness(m: LiveMatch): DeckReady {
     return { ready: false, reason: "no server assigned for this match" };
   }
   if (m.is_server_online !== true) {
-    return { ready: false, reason: "server is offline — waiting for it to come online" };
+    return {
+      ready: false,
+      reason: "server is offline — waiting for it to come online",
+    };
   }
   return { ready: true, reason: null };
 }
@@ -1073,7 +1076,13 @@ function currentMapName(m: LiveMatch): string | null {
                 />
                 <template v-if="switching === m.id">Switching…</template>
                 <template v-else-if="!deckReadiness(m).ready">
-                  {{ !m.server_id ? "No server" : m.status !== "Live" ? "Not live yet" : "Server offline" }}
+                  {{
+                    !m.server_id
+                      ? "No server"
+                      : m.status !== "Live"
+                        ? "Not live yet"
+                        : "Server offline"
+                  }}
                 </template>
                 <template v-else>Switch stream here</template>
               </button>

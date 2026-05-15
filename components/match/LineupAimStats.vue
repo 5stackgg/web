@@ -60,7 +60,7 @@ import LineupMember from "~/components/match/LineupMember.vue";
         </TableCell>
         <TableCell>
           <template v-if="ttd(member) !== null">
-            {{ ttd(member) }}{{ $t("match.lineup.stats.seconds") }}
+            {{ ttd(member) }} {{ $t("match.lineup.stats.seconds") }}
           </template>
           <template v-else>—</template>
         </TableCell>
@@ -70,11 +70,18 @@ import LineupMember from "~/components/match/LineupMember.vue";
           </template>
           <template v-else>—</template>
         </TableCell>
-        <!-- Crosshair placement & counter-strafing land with Phase 3
-             (per-tick view-angle + velocity). The columns are visible
-             now so the layout doesn't shift later. -->
-        <TableCell class="text-muted-foreground">—</TableCell>
-        <TableCell class="text-muted-foreground">—</TableCell>
+        <TableCell>
+          <template v-if="crosshairPlacement(member) !== null">
+            {{ crosshairPlacement(member) }}°
+          </template>
+          <template v-else>—</template>
+        </TableCell>
+        <TableCell>
+          <template v-if="counterStrafePct(member) !== null">
+            {{ counterStrafePct(member) }}%
+          </template>
+          <template v-else>—</template>
+        </TableCell>
       </TableRow>
     </TableBody>
   </Table>
@@ -113,14 +120,14 @@ export default {
     },
     ttd(member: any): number | null {
       const s = this.statsFor(member);
-      // All-maps view exposes avg_time_to_damage_s directly; per-map row
-      // carries sum + count so we average client-side.
-      const direct = toNumber(s?.avg_time_to_damage_s);
-      if (direct !== null) return Math.round(direct * 100) / 100;
       const sum = toNumber(s?.time_to_damage_sum_s);
       const count = toNumber(s?.time_to_damage_count);
       if (sum !== null && count) {
         return Math.round((sum / count) * 100) / 100;
+      }
+      const direct = toNumber(s?.avg_time_to_damage_s);
+      if (direct !== null && direct > 0) {
+        return Math.round(direct * 100) / 100;
       }
       return null;
     },
@@ -130,6 +137,21 @@ export default {
         toNumber(s?.spotted_with_damage_count),
         toNumber(s?.spotted_count),
       );
+    },
+    crosshairPlacement(member: any): number | null {
+      const s = this.statsFor(member);
+      const sum = toNumber(s?.crosshair_angle_sum_deg);
+      const count = toNumber(s?.crosshair_angle_count);
+      if (sum !== null && count) {
+        return Math.round((sum / count) * 10) / 10;
+      }
+      const direct = toNumber(s?.avg_crosshair_angle_deg);
+      if (direct !== null) return Math.round(direct * 10) / 10;
+      return null;
+    },
+    counterStrafePct(member: any): number | null {
+      const s = this.statsFor(member);
+      return pct(toNumber(s?.counter_strafed_shots), toNumber(s?.shots_fired));
     },
   },
   props: {

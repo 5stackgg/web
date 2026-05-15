@@ -59,6 +59,8 @@ export const matchAllMapsStats = Selector("match_lineups")({
             molotov_throws: true,
             smoke_throws: true,
             decoy_throws: true,
+            counter_strafed_shots: true,
+            avg_crosshair_angle_deg: true,
             rounds_played: true,
           },
         ],

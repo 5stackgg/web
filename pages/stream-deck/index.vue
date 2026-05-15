@@ -377,7 +377,7 @@ async function switchTo(toMatchId: string, mode: "live" | "tv" = "live") {
 const STATUS_LABELS: Record<string, string> = {
   launching_steam: "Launching Steam",
   logging_in: "Logging in",
-  downloading_cs2: "Downloading CS2",
+  downloading_cs2: "Installing CS2",
   launching_cs2: "Launching CS2",
   connecting_to_game: "Connecting to game",
   starting_capture: "Starting capture",
@@ -391,7 +391,7 @@ const LIVE_STAGES = [
   { key: "booting", label: "Allocating GPU", meta: "required" as const },
   {
     key: "downloading_cs2",
-    label: "Downloading CS2",
+    label: "Installing CS2",
     meta: "conditional" as const,
   },
   {

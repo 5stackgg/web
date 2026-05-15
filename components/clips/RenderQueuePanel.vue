@@ -65,7 +65,7 @@ const QUEUE_BOOT_STAGES: Array<{
   label: string;
   meta: "required" | "conditional" | "implicit";
 }> = [
-  { key: "downloading_cs2", label: "Downloading CS2", meta: "conditional" },
+  { key: "downloading_cs2", label: "Installing CS2", meta: "conditional" },
   { key: "launching_steam", label: "Launching Steam", meta: "required" },
   { key: "logging_in", label: "Logging in", meta: "implicit" },
   { key: "downloading_demo", label: "Downloading demo", meta: "required" },

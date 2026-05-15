@@ -436,7 +436,7 @@ export default {
       const labels = {
         launching_steam: "Launching Steam…",
         logging_in: "Logging in…",
-        downloading_cs2: "Downloading CS2…",
+        downloading_cs2: "Updating CS…",
         launching_cs2: "Launching CS2…",
         connecting_to_game: "Connecting to game…",
         starting_capture: "Starting capture…",

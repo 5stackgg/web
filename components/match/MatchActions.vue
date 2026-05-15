@@ -451,7 +451,11 @@ export default {
       return gpu.busyReason;
     },
     canStartLiveDirect() {
-      return !!this.match.can_stream_live && !this.gpuBlocksAction;
+      return (
+        !!this.match.can_stream_live &&
+        !!this.match.is_server_online &&
+        !this.gpuBlocksAction
+      );
     },
     liveStartDisabledReason() {
       if (this.canStartLiveDirect || this.canStartLiveTv) return null;

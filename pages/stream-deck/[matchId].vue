@@ -16,6 +16,7 @@ import {
   EyeOff,
   Scan,
   Trophy,
+  RefreshCw,
 } from "lucide-vue-next";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
@@ -300,6 +301,16 @@ function setScoreboard(show: boolean) {
       }),
     })
     .catch(() => undefined);
+}
+
+async function reconnectLive() {
+  await runMutation("reconnect", () => ({
+    reconnectLive: [{ match_id: matchId.value }, { success: true }],
+  }));
+  toast({
+    title: "Reconnecting",
+    description: "Re-issuing the connect to the game server.",
+  });
 }
 
 const confirmStop = ref(false);
@@ -692,6 +703,17 @@ watch(spectatedSteamId, (sid) => {
                 class="size-3.5"
               />
               {{ isPageFullscreen ? "Exit" : "Full" }}
+            </button>
+            <div class="w-px bg-border/70" />
+            <button
+              type="button"
+              :disabled="busy"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-foreground/80 hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              title="Re-issue connect (recover from a disconnect)"
+              @click="reconnectLive"
+            >
+              <RefreshCw class="size-3.5" />
+              Reconnect
             </button>
             <div class="w-px bg-border/70" />
             <button

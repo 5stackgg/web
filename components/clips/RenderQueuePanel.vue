@@ -75,7 +75,7 @@ const QUEUE_BOOT_STAGES: Array<{
     meta: "conditional",
   },
   { key: "launching_cs2", label: "Loading demo in CS2", meta: "required" },
-  { key: "connecting_to_game", label: "Cueing demo", meta: "implicit" },
+  { key: "connecting_to_game", label: "Queuing demo", meta: "implicit" },
 ];
 
 // Cold CS2 install + Steam login fits comfortably in 5 min; older

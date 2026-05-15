@@ -2,21 +2,13 @@
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import MatchTableRow from "~/components/MatchTableRow.vue";
 import TrophyBadge from "~/components/trophy/TrophyBadge.vue";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "~/components/ui/table";
+import StageStandings from "~/components/tournament/StageStandings.vue";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "~/components/ui/hover-card";
-import { ChevronRight } from "lucide-vue-next";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
 const apiDomain = useRuntimeConfig().public.apiDomain;
@@ -395,276 +387,41 @@ function playerAvatarSrc(player: {
       </div>
     </section>
 
-    <!-- Standings Table -->
-    <Card v-if="showStandings">
-      <CardHeader>
-        <div class="flex items-center justify-between gap-3">
-          <CardTitle>{{ $t("tournament.standings.title") }}</CardTitle>
-          <span
-            v-if="isLive"
-            class="inline-flex items-center gap-2 rounded-sm border border-destructive/55 bg-destructive/15 px-2.5 py-1 font-mono text-[0.6rem] font-bold uppercase tracking-[0.22em] text-destructive"
-          >
-            <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
-            LIVE · PROVISIONAL
-          </span>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead class="w-10"></TableHead>
-              <TableHead class="w-16 text-center">#</TableHead>
-              <TableHead>{{ $t("team.table.team") }}</TableHead>
-              <TableHead class="text-center">{{
-                $t("common.stats.wins")
-              }}</TableHead>
-              <TableHead class="text-center">{{
-                $t("common.stats.losses")
-              }}</TableHead>
-              <TableHead class="text-center">{{
-                $t("tournament.results_table.matches")
-              }}</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <template
-              v-for="teamResult in teamResults"
-              :key="teamResult.teamId"
+    <!-- Per-stage Standings -->
+    <template v-if="showStandings">
+      <Card v-for="stage in stagesWithStandings" :key="stage.id">
+        <CardHeader>
+          <div class="flex items-center justify-between gap-3">
+            <CardTitle>
+              <template v-if="stagesWithStandings.length > 1">
+                {{ $t("tournament.stage.stage_tab", { stage: stage.order }) }}
+                ·
+                {{ stage.e_tournament_stage_type?.description || "" }}
+              </template>
+              <template v-else>
+                {{ $t("tournament.standings.title") }}
+              </template>
+            </CardTitle>
+            <span
+              v-if="isLive"
+              class="inline-flex items-center gap-2 rounded-sm border border-destructive/55 bg-destructive/15 px-2.5 py-1 font-mono text-[0.6rem] font-bold uppercase tracking-[0.22em] text-destructive"
             >
-              <TableRow
-                class="cursor-pointer transition-colors duration-150 hover:bg-[hsl(var(--tac-amber)_/_0.04)]"
-                :class="{
-                  'border-b-0 bg-[hsl(var(--tac-amber)_/_0.06)]': expanded.has(
-                    teamResult.teamId,
-                  ),
-                }"
-                @click="toggleExpanded(teamResult.teamId)"
-              >
-                <TableCell>
-                  <ChevronRight
-                    class="h-4 w-4 text-muted-foreground transition-transform duration-200"
-                    :class="{
-                      'rotate-90 text-[hsl(var(--tac-amber))]': expanded.has(
-                        teamResult.teamId,
-                      ),
-                    }"
-                  />
-                </TableCell>
-                <TableCell class="text-center">
-                  <div class="flex flex-col items-center gap-0.5">
-                    <span
-                      class="font-mono text-sm font-bold leading-none tabular-nums"
-                      :style="rankStyle(teamResult.rank)"
-                    >
-                      {{ ordinal(teamResult.rank) }}
-                    </span>
-                    <span
-                      v-if="teamResult.tied && !isLive"
-                      class="rounded-sm border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] px-1 py-[1px] font-mono text-[0.5rem] font-bold uppercase leading-none tracking-[0.18em] text-[hsl(var(--tac-amber))]"
-                    >
-                      TIED
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div class="font-medium">{{ teamResult.teamName }}</div>
-                  <div
-                    class="mt-1 font-mono text-[0.58rem] uppercase tracking-[0.2em] text-muted-foreground/70"
-                  >
-                    {{ (teamResult.team?.roster || []).length }}
-                    {{ $t("trophies.teammates") }}
-                  </div>
-                </TableCell>
-                <TableCell class="text-center font-mono tabular-nums">{{
-                  teamResult.wins
-                }}</TableCell>
-                <TableCell class="text-center font-mono tabular-nums">{{
-                  teamResult.losses
-                }}</TableCell>
-                <TableCell class="text-center font-mono tabular-nums">{{
-                  teamResult.matchesPlayed
-                }}</TableCell>
-              </TableRow>
-              <TableRow
-                v-if="expanded.has(teamResult.teamId)"
-                :key="teamResult.teamId + '-expanded'"
-                class="bg-[hsl(var(--tac-amber)_/_0.03)] hover:bg-[hsl(var(--tac-amber)_/_0.03)]"
-              >
-                <TableCell :colspan="6" class="p-0">
-                  <div
-                    class="relative border-t border-[hsl(var(--tac-amber)_/_0.25)] px-4 py-3"
-                  >
-                    <span
-                      class="pointer-events-none absolute inset-x-4 top-0 h-[1px]"
-                      style="
-                        background: linear-gradient(
-                          90deg,
-                          transparent,
-                          hsl(var(--tac-amber) / 0.55),
-                          transparent
-                        );
-                      "
-                    ></span>
-                    <div
-                      class="mb-2 inline-flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-                    >
-                      <span
-                        class="h-[2px] w-2 bg-[hsl(var(--tac-amber))]"
-                      ></span>
-                      ROSTER PERFORMANCE
-                    </div>
-                    <div
-                      class="overflow-hidden rounded-sm border border-border/60"
-                    >
-                      <table class="w-full text-xs">
-                        <thead class="bg-background/50">
-                          <tr
-                            class="font-mono uppercase tracking-[0.18em] text-muted-foreground"
-                          >
-                            <th class="px-3 py-1.5 text-left text-[0.6rem]">
-                              Player
-                            </th>
-                            <th class="px-2 py-1.5 text-right text-[0.6rem]">
-                              K
-                            </th>
-                            <th class="px-2 py-1.5 text-right text-[0.6rem]">
-                              A
-                            </th>
-                            <th class="px-2 py-1.5 text-right text-[0.6rem]">
-                              D
-                            </th>
-                            <th class="px-2 py-1.5 text-right text-[0.6rem]">
-                              K/D
-                            </th>
-                            <th class="px-2 py-1.5 text-right text-[0.6rem]">
-                              HS%
-                            </th>
-                            <th class="px-3 py-1.5 text-right text-[0.6rem]">
-                              MP
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody class="divide-y divide-border/40">
-                          <tr
-                            v-for="rosterItem in teamResult.team?.roster || []"
-                            :key="
-                              rosterItem.player?.steam_id || rosterItem.steam_id
-                            "
-                          >
-                            <td class="px-3 py-2">
-                              <PlayerDisplay
-                                :player="rosterItem.player || rosterItem"
-                                :show-flag="true"
-                                :show-role="false"
-                                :show-elo="false"
-                                :linkable="true"
-                                size="xs"
-                              />
-                            </td>
-                            <template
-                              v-if="
-                                playerStatFor(
-                                  rosterItem.player?.steam_id ||
-                                    rosterItem.steam_id,
-                                )
-                              "
-                            >
-                              <td
-                                class="px-2 py-2 text-right font-mono font-semibold tabular-nums"
-                              >
-                                {{
-                                  playerStatFor(
-                                    rosterItem.player?.steam_id ||
-                                      rosterItem.steam_id,
-                                  ).kills
-                                }}
-                              </td>
-                              <td
-                                class="px-2 py-2 text-right font-mono tabular-nums text-muted-foreground"
-                              >
-                                {{
-                                  playerStatFor(
-                                    rosterItem.player?.steam_id ||
-                                      rosterItem.steam_id,
-                                  ).assists
-                                }}
-                              </td>
-                              <td
-                                class="px-2 py-2 text-right font-mono tabular-nums text-muted-foreground"
-                              >
-                                {{
-                                  playerStatFor(
-                                    rosterItem.player?.steam_id ||
-                                      rosterItem.steam_id,
-                                  ).deaths
-                                }}
-                              </td>
-                              <td
-                                class="px-2 py-2 text-right font-mono font-semibold tabular-nums"
-                                :style="{
-                                  color:
-                                    playerStatFor(
-                                      rosterItem.player?.steam_id ||
-                                        rosterItem.steam_id,
-                                    ).kdr >= 1
-                                      ? 'hsl(142, 71%, 55%)'
-                                      : 'hsl(0, 84%, 65%)',
-                                }"
-                              >
-                                {{
-                                  playerStatFor(
-                                    rosterItem.player?.steam_id ||
-                                      rosterItem.steam_id,
-                                  ).kdr.toFixed(2)
-                                }}
-                              </td>
-                              <td
-                                class="px-2 py-2 text-right font-mono tabular-nums text-muted-foreground"
-                              >
-                                {{
-                                  playerStatFor(
-                                    rosterItem.player?.steam_id ||
-                                      rosterItem.steam_id,
-                                  ).headshot_percentage.toFixed(0)
-                                }}%
-                              </td>
-                              <td
-                                class="px-3 py-2 text-right font-mono tabular-nums text-muted-foreground"
-                              >
-                                {{
-                                  playerStatFor(
-                                    rosterItem.player?.steam_id ||
-                                      rosterItem.steam_id,
-                                  ).matches_played
-                                }}
-                              </td>
-                            </template>
-                            <template v-else>
-                              <td
-                                :colspan="6"
-                                class="px-3 py-2 text-right font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground/60"
-                              >
-                                NO DATA
-                              </td>
-                            </template>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </TableCell>
-              </TableRow>
-            </template>
-            <TableRow v-if="teamResults.length === 0">
-              <TableCell colspan="6" class="text-center text-muted-foreground">
-                No standings yet
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+              <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+              LIVE · PROVISIONAL
+            </span>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <StageStandings :stage="stage" />
+        </CardContent>
+      </Card>
+      <div
+        v-if="stagesWithStandings.length === 0"
+        class="rounded-md border border-dashed border-border p-10 text-center text-muted-foreground"
+      >
+        {{ $t("tournament.stage.no_standings") }}
+      </div>
+    </template>
 
     <!-- All Matches -->
     <Card v-if="showMatches">
@@ -708,38 +465,12 @@ export default {
       default: true,
     },
   },
-  data() {
-    return {
-      expanded: new Set<string>(),
-    };
-  },
   methods: {
-    toggleExpanded(teamId: string) {
-      if (this.expanded.has(teamId)) {
-        this.expanded.delete(teamId);
-      } else {
-        this.expanded.add(teamId);
-      }
-      // force reactivity for Set
-      this.expanded = new Set(this.expanded);
-    },
     tierColor(placement: number) {
       if (placement === 0) return "hsl(195 85% 60%)";
       if (placement === 1) return "hsl(45 95% 60%)";
       if (placement === 2) return "hsl(0 0% 78%)";
       return "hsl(28 70% 52%)";
-    },
-    ordinal(n: number) {
-      const s = ["th", "st", "nd", "rd"];
-      const v = n % 100;
-      return n + (s[(v - 20) % 10] || s[v] || s[0]);
-    },
-    rankStyle(rank: number) {
-      if ((this as any).isLive) return {};
-      if (rank === 1) return { color: "hsl(45 95% 60%)" };
-      if (rank === 2) return { color: "hsl(0 0% 78%)" };
-      if (rank === 3) return { color: "hsl(28 70% 52%)" };
-      return {};
     },
     placementLabel(placement: number) {
       if (placement === 0) return this.$t("trophies.mvp");
@@ -844,105 +575,17 @@ export default {
       if (!this.mvp?.player_steam_id) return null;
       return this.playerStatFor(this.mvp.player_steam_id);
     },
-    teamResults() {
-      const results = ((this.tournament as any)?.results || []) as any[];
-      const teams = ((this.tournament as any)?.teams || []) as any[];
-      if (!results.length) return [];
-
-      const teamById = new Map(teams.map((t: any) => [t.id, t]));
-
-      // Trophy placements come from bracket outcomes, so for elim finals they
-      // reflect who actually won — not just best stats. Use them to pin the
-      // top rows of the standings so podium and table never disagree.
-      const trophies = ((this.tournament as any)?.trophies || []) as any[];
-      const placementByTeam = new Map<string, number>();
-      for (const t of trophies) {
-        if (
-          t.placement >= 1 &&
-          t.placement <= 3 &&
-          t.tournament_team_id &&
-          !placementByTeam.has(t.tournament_team_id)
-        ) {
-          placementByTeam.set(t.tournament_team_id, t.placement);
-        }
-      }
-
-      const ratio = (a: number, b: number) =>
-        b > 0 ? Number(a) / Number(b) : Number(a);
-
-      const sorted = [...results].sort((a: any, b: any) => {
-        const aPlace = placementByTeam.get(a.tournament_team_id);
-        const bPlace = placementByTeam.get(b.tournament_team_id);
-        if (aPlace && bPlace) return aPlace - bPlace;
-        if (aPlace) return -1;
-        if (bPlace) return 1;
-
-        const aw = Number(a.wins) || 0,
-          bw = Number(b.wins) || 0;
-        if (aw !== bw) return bw - aw;
-        const ah = Number(a.head_to_head_match_wins) || 0,
-          bh = Number(b.head_to_head_match_wins) || 0;
-        if (ah !== bh) return bh - ah;
-        const ahr = Number(a.head_to_head_rounds_won) || 0,
-          bhr = Number(b.head_to_head_rounds_won) || 0;
-        if (ahr !== bhr) return bhr - ahr;
-        const amr = ratio(a.maps_won, a.maps_lost),
-          bmr = ratio(b.maps_won, b.maps_lost);
-        if (amr !== bmr) return bmr - amr;
-        const arr = ratio(a.rounds_won, a.rounds_lost),
-          brr = ratio(b.rounds_won, b.rounds_lost);
-        if (arr !== brr) return brr - arr;
-        const ak = Number(a.team_kdr) || 0,
-          bk = Number(b.team_kdr) || 0;
-        return bk - ak;
-      });
-
-      const tieKey = (r: any) => {
-        const place = placementByTeam.get(r.tournament_team_id);
-        if (place) return `P${place}`;
-        return [
-          Number(r.wins) || 0,
-          Number(r.head_to_head_match_wins) || 0,
-          Number(r.head_to_head_rounds_won) || 0,
-          ratio(r.maps_won, r.maps_lost),
-          ratio(r.rounds_won, r.rounds_lost),
-          Number(r.team_kdr) || 0,
-        ].join("|");
-      };
-
-      let currentRank = 0;
-      let lastKey: string | null = null;
-      const rankCounts = new Map<number, number>();
-
-      const ranked = sorted.map((r: any, i: number) => {
-        const key = tieKey(r);
-        if (key !== lastKey) {
-          currentRank = i + 1;
-          lastKey = key;
-        }
-        rankCounts.set(currentRank, (rankCounts.get(currentRank) || 0) + 1);
-        const team = teamById.get(r.tournament_team_id);
-        return {
-          teamId: r.tournament_team_id,
-          teamName: this.displayTeamName(team, r.tournament_team_id),
-          team,
-          rank: currentRank,
-          wins: Number(r.wins) || 0,
-          losses: Number(r.losses) || 0,
-          matches: [] as any[],
-          matchesPlayed: Number(r.matches_played) || 0,
-          matchesRemaining: Number(r.matches_remaining) || 0,
-        };
-      });
-
-      return ranked.map((entry) => ({
-        ...entry,
-        tied: (rankCounts.get(entry.rank) || 0) > 1,
-      }));
-    },
-    standingsMaxRank() {
-      const ranked = this.teamResults as any[];
-      return ranked.reduce((m, r) => Math.max(m, r.rank), 0);
+    stagesWithStandings() {
+      const stages = ((this.tournament as any)?.stages || []) as any[];
+      return stages
+        .filter(
+          (stage: any) =>
+            Array.isArray(stage?.results) && stage.results.length > 0,
+        )
+        .slice()
+        .sort(
+          (a: any, b: any) => (Number(a.order) || 0) - (Number(b.order) || 0),
+        );
     },
     allMatches() {
       if (!this.tournament?.stages) {

@@ -7,7 +7,6 @@ import TournamentForm from "~/components/tournament/TournamentForm.vue";
 import TournamentOrganizers from "~/components/tournament/TournamentOrganizers.vue";
 import TournamentNotifications from "~/components/tournament/TournamentNotifications.vue";
 import TournamentResults from "~/components/tournament/TournamentResults.vue";
-import TournamentGroupStandings from "~/components/tournament/TournamentGroupStandings.vue";
 import TournamentTrophiesConfig from "~/components/tournament/TournamentTrophiesConfig.vue";
 import TournamentTrophiesManage from "~/components/tournament/TournamentTrophiesManage.vue";
 import Separator from "~/components/ui/separator/Separator.vue";
@@ -469,25 +468,11 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
                 }}
               </TabsTrigger>
               <TabsTrigger
-                v-if="
-                  tournament.status === e_tournament_status_enum.Live ||
-                  tournament.status === e_tournament_status_enum.Finished
-                "
+                v-if="standingsTabVisible"
                 value="standings"
                 :class="tacticalTabsTriggerClasses"
               >
                 {{ $t("tournament.standings.title") }}
-              </TabsTrigger>
-              <TabsTrigger
-                v-if="
-                  hasMultiGroupStages &&
-                  (tournament.status === e_tournament_status_enum.Live ||
-                    tournament.status === e_tournament_status_enum.Finished)
-                "
-                value="group-standings"
-                :class="tacticalTabsTriggerClasses"
-              >
-                {{ $t("tournament.group_standings.title") }}
               </TabsTrigger>
               <TabsTrigger
                 v-if="
@@ -650,31 +635,13 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
             </div>
           </div>
         </TabsContent>
-        <TabsContent
-          v-if="
-            tournament.status === e_tournament_status_enum.Live ||
-            tournament.status === e_tournament_status_enum.Finished
-          "
-          value="standings"
-        >
+        <TabsContent v-if="standingsTabVisible" value="standings">
           <PageTransition>
             <TournamentResults
               :tournament="tournament"
               :show-standings="true"
               :show-matches="false"
             />
-          </PageTransition>
-        </TabsContent>
-        <TabsContent
-          v-if="
-            hasMultiGroupStages &&
-            (tournament.status === e_tournament_status_enum.Live ||
-              tournament.status === e_tournament_status_enum.Finished)
-          "
-          value="group-standings"
-        >
-          <PageTransition>
-            <TournamentGroupStandings :tournament="tournament" />
           </PageTransition>
         </TabsContent>
         <TabsContent
@@ -984,23 +951,6 @@ export default {
                   matches_played: true,
                 },
               ],
-              results: [
-                {},
-                {
-                  tournament_team_id: true,
-                  wins: true,
-                  losses: true,
-                  matches_played: true,
-                  matches_remaining: true,
-                  maps_won: true,
-                  maps_lost: true,
-                  rounds_won: true,
-                  rounds_lost: true,
-                  head_to_head_match_wins: true,
-                  head_to_head_rounds_won: true,
-                  team_kdr: true,
-                },
-              ],
               trophy_configs: [
                 {},
                 {
@@ -1039,15 +989,14 @@ export default {
                     {},
                     {
                       tournament_team_id: true,
+                      group_number: true,
+                      rank: true,
                       wins: true,
                       losses: true,
                       rounds_won: true,
                       rounds_lost: true,
                       maps_won: true,
                       maps_lost: true,
-                      head_to_head_match_wins: true,
-                      head_to_head_rounds_won: true,
-                      team_kdr: true,
                       matches_played: true,
                       matches_remaining: true,
                       team: {
@@ -1413,14 +1362,14 @@ export default {
 
       tabs.push("teams");
 
+      if (this.standingsTabVisible) {
+        tabs.push("standings");
+      }
+
       if (
         this.tournament?.status === e_tournament_status_enum.Live ||
         this.tournament?.status === e_tournament_status_enum.Finished
       ) {
-        tabs.push("standings");
-        if (this.hasMultiGroupStages) {
-          tabs.push("group-standings");
-        }
         tabs.push("results");
       }
 
@@ -1430,9 +1379,13 @@ export default {
 
       return tabs;
     },
-    hasMultiGroupStages() {
-      const stages = (this.tournament as any)?.stages || [];
-      return stages.some((stage: any) => (stage?.groups || 0) > 1);
+    standingsTabVisible() {
+      const status = this.tournament?.status;
+      return (
+        status === e_tournament_status_enum.Live ||
+        status === e_tournament_status_enum.Paused ||
+        status === e_tournament_status_enum.Finished
+      );
     },
   },
   methods: {

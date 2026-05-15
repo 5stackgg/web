@@ -157,8 +157,17 @@ import {
         </template>
 
         <DropdownMenuSeparator
-          v-if="match.can_start || match.can_cancel || canDeleteMatch"
+          v-if="
+            match.can_start ||
+            match.can_cancel ||
+            canDeleteMatch ||
+            canReparseDemos
+          "
         />
+
+        <DropdownMenuItem v-if="canReparseDemos" @click="reparseAllDemos">
+          {{ $t("match.actions.reparse_demos") }}
+        </DropdownMenuItem>
 
         <template v-if="match.can_start">
           <DropdownMenuItem
@@ -363,6 +372,25 @@ export default {
         console.error("[match-actions] auto stopLive failed:", error);
       }
     },
+    async reparseAllDemos() {
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            reparseMatchDemos: [
+              { match_id: this.match.id },
+              { success: true },
+            ],
+          }),
+        });
+        toast({ title: this.$t("match.actions.reparse_demos_started") });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+      }
+    },
     async createClipsForMatch() {
       try {
         await this.$apollo.mutate({
@@ -535,6 +563,15 @@ export default {
     canDeleteMatch() {
       return (
         this.match.status !== e_match_status_enum.Live &&
+        useAuthStore().isRoleAbove(e_player_roles_enum.administrator)
+      );
+    },
+    // Reparse-all is admin-only (matches the Hasura action permission) and
+    // only meaningful once at least one demo has been uploaded somewhere in
+    // the match — otherwise the action handler throws "no demos for this match".
+    canReparseDemos() {
+      return (
+        this.hasMatchDemos &&
         useAuthStore().isRoleAbove(e_player_roles_enum.administrator)
       );
     },

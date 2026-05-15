@@ -1999,7 +1999,9 @@
             "create_clips": "Create Player Highlights",
             "live_started": "Live stream starting",
             "live_stopped": "Live stream stopped",
-            "clips_started": "Player highlight renders queued"
+            "clips_started": "Player highlight renders queued",
+            "reparse_demos": "Reparse Match Demos",
+            "reparse_demos_started": "Reparsing all demos for this match"
         },
         "delete_confirm": {
             "title": "Delete Match",

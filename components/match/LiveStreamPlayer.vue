@@ -26,7 +26,7 @@ const LIVE_STAGES = [
   { key: "booting", label: "Allocating GPU", meta: "required" as const },
   {
     key: "downloading_cs2",
-    label: "Downloading CS2",
+    label: "Updating CS",
     meta: "conditional" as const,
   },
   {

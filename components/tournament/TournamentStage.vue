@@ -1,7 +1,11 @@
 <script lang="ts" setup>
 import TournamentBracketViewer from "./TournamentBracketViewer.vue";
 import SwissBracketViewer from "./SwissBracketViewer.vue";
-import { e_tournament_stage_types_enum } from "~/generated/zeus";
+import StageStandings from "./StageStandings.vue";
+import {
+  e_tournament_stage_types_enum,
+  e_tournament_status_enum,
+} from "~/generated/zeus";
 </script>
 <template>
   <!-- Swiss Format - groups represent record pools, so don't loop through them -->
@@ -19,6 +23,16 @@ import { e_tournament_stage_types_enum } from "~/generated/zeus";
           $t("tournament.stage.group", { group: getGroupDisplay(groupNumber) })
         }}
       </h3>
+
+      <StageStandings
+        v-if="
+          stage.groups > 1 && groupNumber <= stage.groups && shouldShowStandings
+        "
+        class="mb-4"
+        :stage="stage"
+        :only-group="groupNumber"
+      />
+
       <TournamentBracketViewer
         :stage="stage"
         :tournament="tournament"
@@ -79,13 +93,21 @@ export default {
     },
     getGroupDisplay() {
       return (groupNumber: number) => {
-        // If we have 26 or fewer groups, use letters a-z
+        // If we have 26 or fewer groups, use letters A-Z
         if (this.stage.groups <= 26) {
           return String.fromCharCode(96 + groupNumber).toUpperCase();
         }
         // Otherwise use the original number
         return groupNumber;
       };
+    },
+    shouldShowStandings() {
+      const status = (this.tournament as any)?.status;
+      return (
+        status === e_tournament_status_enum.Live ||
+        status === e_tournament_status_enum.Paused ||
+        status === e_tournament_status_enum.Finished
+      );
     },
   },
 };

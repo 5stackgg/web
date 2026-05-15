@@ -112,6 +112,14 @@ const inlineProgress = ref(0);
 const inlinePlaying = ref(false);
 const inlineAutoAdvanced = ref(false);
 const showIntroOverlay = ref(false);
+// Touch devices don't have a hover state to gate "show controls" on,
+// and Safari's sticky :hover-after-tap keeps the overlay visible long
+// after the viewer wants it gone. Track coarse pointer so we can drop
+// the hover-reveal entirely on phones/tablets.
+const coarsePointer = ref(false);
+if (typeof window !== "undefined" && window.matchMedia) {
+  coarsePointer.value = window.matchMedia("(pointer: coarse)").matches;
+}
 let introOverlayTimer: ReturnType<typeof setTimeout> | null = null;
 // Try to autoplay with audio; browsers may force-mute on autoplay until the
 // user interacts. We track that state so the mute toggle reflects reality.
@@ -149,22 +157,54 @@ function setInlineVolume(v: number) {
   }
 }
 
+type IosVideoEl = HTMLVideoElement & {
+  webkitEnterFullscreen?: () => void;
+  webkitExitFullscreen?: () => void;
+  webkitDisplayingFullscreen?: boolean;
+};
+
 async function toggleFullscreen() {
   const stage = stageEl.value;
   if (!stage) return;
   const doc = document as Document & {
     webkitFullscreenElement?: Element | null;
-    webkitExitFullscreen?: () => Promise<void>;
+    webkitExitFullscreen?: () => Promise<void> | void;
+    fullscreenEnabled?: boolean;
+    webkitFullscreenEnabled?: boolean;
   };
   const el = stage as HTMLElement & {
-    webkitRequestFullscreen?: () => Promise<void>;
+    webkitRequestFullscreen?: () => Promise<void> | void;
   };
+
+  // iPhone Safari has no Element.requestFullscreen — the only path is
+  // video.webkitEnterFullscreen(). Detect by missing document-level
+  // fullscreen support OR a missing requestFullscreen on the stage
+  // (some webkit builds expose `fullscreenEnabled` but still leave
+  // requestFullscreen off non-video elements).
+  const docFsSupported = !!(
+    doc.fullscreenEnabled ?? doc.webkitFullscreenEnabled
+  );
+  if (!docFsSupported || !el.requestFullscreen) {
+    const video = inlineVideoRef.value as IosVideoEl | null;
+    if (!video) return;
+    if (video.webkitDisplayingFullscreen) {
+      video.webkitExitFullscreen?.();
+    } else {
+      video.webkitEnterFullscreen?.();
+    }
+    return;
+  }
+
   const fsElement = doc.fullscreenElement ?? doc.webkitFullscreenElement;
   try {
     if (fsElement) {
-      await (doc.exitFullscreen?.() ?? doc.webkitExitFullscreen?.());
+      const exit =
+        doc.exitFullscreen?.bind(doc) ?? doc.webkitExitFullscreen?.bind(doc);
+      await Promise.resolve(exit?.());
     } else {
-      await (el.requestFullscreen?.() ?? el.webkitRequestFullscreen?.());
+      const request =
+        el.requestFullscreen?.bind(el) ?? el.webkitRequestFullscreen?.bind(el);
+      await Promise.resolve(request?.());
     }
   } catch {
     // ignore — browser may reject without a user gesture
@@ -177,6 +217,13 @@ function onFullscreenChange() {
   };
   const fsElement = doc.fullscreenElement ?? doc.webkitFullscreenElement;
   isFullscreen.value = fsElement === stageEl.value;
+}
+
+function onVideoWebkitBeginFullscreen() {
+  isFullscreen.value = true;
+}
+function onVideoWebkitEndFullscreen() {
+  isFullscreen.value = false;
 }
 
 if (typeof document !== "undefined") {
@@ -441,6 +488,8 @@ function clipTeamName(c: Clip): string | null {
               inlineMuted = ($event.target as HTMLVideoElement).muted;
               inlineVolume = ($event.target as HTMLVideoElement).volume;
             "
+            @webkitbeginfullscreen="onVideoWebkitBeginFullscreen"
+            @webkitendfullscreen="onVideoWebkitEndFullscreen"
             @click="toggleInlinePlayback"
           />
           <NuxtImg
@@ -460,7 +509,9 @@ function clipTeamName(c: Clip): string | null {
           class="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-[linear-gradient(180deg,transparent_0%,hsl(0_0%_0%/0.7)_100%)] transition-opacity duration-300"
           :class="
             inlinePlaying && !showIntroOverlay
-              ? 'opacity-0 group-hover/feature:opacity-100'
+              ? coarsePointer
+                ? 'opacity-0'
+                : 'opacity-0 group-hover/feature:opacity-100'
               : 'opacity-100'
           "
         ></div>
@@ -468,7 +519,9 @@ function clipTeamName(c: Clip): string | null {
           class="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between gap-2 p-3 transition-opacity duration-300"
           :class="
             inlinePlaying && !showIntroOverlay
-              ? 'opacity-0 group-hover/feature:opacity-100'
+              ? coarsePointer
+                ? 'opacity-0'
+                : 'opacity-0 group-hover/feature:opacity-100'
               : 'opacity-100'
           "
         >
@@ -478,10 +531,17 @@ function clipTeamName(c: Clip): string | null {
             <Play class="h-3 w-3 fill-current" />
             Inline Reel
           </div>
-          <div class="pointer-events-auto flex items-center gap-2">
+          <!-- Mobile: only the Details link captures taps so the rest of
+               the top tray (kills + duration chips) lets clicks fall
+               through to the video instead of trapping the tap and
+               feeling broken. Desktop keeps the whole tray interactive
+               so the chips behave like a real toolbar surface. -->
+          <div
+            class="pointer-events-none flex items-center gap-2 md:pointer-events-auto"
+          >
             <button
               type="button"
-              class="inline-flex h-7 items-center gap-1.5 rounded-full border border-white/20 bg-black/70 px-2.5 font-mono text-[0.56rem] uppercase tracking-[0.16em] text-white/80 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+              class="pointer-events-auto inline-flex h-7 items-center gap-1.5 rounded-full border border-white/20 bg-black/70 px-2.5 font-mono text-[0.56rem] uppercase tracking-[0.16em] text-white/80 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
               :title="`Open ${featuredClip.title ?? 'clip'} details`"
               @click.stop="openClip(featuredClip.id)"
             >
@@ -516,7 +576,9 @@ function clipTeamName(c: Clip): string | null {
           class="pointer-events-none absolute inset-x-0 bottom-0 transition-opacity duration-300"
           :class="
             inlinePlaying && !showIntroOverlay
-              ? 'opacity-0 group-hover/feature:opacity-100'
+              ? coarsePointer
+                ? 'opacity-0'
+                : 'opacity-0 group-hover/feature:opacity-100'
               : 'opacity-100'
           "
         >
@@ -631,7 +693,7 @@ function clipTeamName(c: Clip): string | null {
       </StreamCanvas>
 
       <aside
-        class="reel-queue relative flex max-h-80 min-h-0 flex-col overflow-hidden rounded-md border border-border/60 bg-card/35 [backdrop-filter:blur(8px)] lg:aspect-video lg:max-h-none"
+        class="reel-queue relative hidden min-h-0 flex-col overflow-hidden rounded-md border border-border/60 bg-card/35 [backdrop-filter:blur(8px)] lg:flex lg:aspect-video lg:max-h-none"
       >
         <div
           class="flex items-center justify-between gap-3 border-b border-border/50 px-3 py-2.5"

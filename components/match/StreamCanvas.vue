@@ -19,11 +19,13 @@ const props = withDefaults(
     statusHistory?: any[];
     disableFullscreenShortcut?: boolean;
     showBoot?: boolean;
+    enablePip?: boolean;
   }>(),
   {
     isLive: null,
     stages: () => [],
     showBoot: false,
+    enablePip: false,
   },
 );
 
@@ -98,6 +100,7 @@ defineExpose({ rootEl });
         :whep-url="displayWhepUrl"
         :fallback-url="displayFallback"
         :disable-fullscreen-shortcut="disableFullscreenShortcut"
+        :enable-pip="enablePip"
         class="absolute inset-0"
       />
     </template>
@@ -108,6 +111,7 @@ defineExpose({ rootEl });
         :whep-url="displayWhepUrl"
         :fallback-url="displayFallback"
         :disable-fullscreen-shortcut="disableFullscreenShortcut"
+        :enable-pip="enablePip"
         class="absolute inset-0"
       />
       <div

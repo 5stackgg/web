@@ -552,7 +552,11 @@
                 "no_weapon_kills": "No weapons recorded",
                 "edit_player": "Edit Player",
                 "name": "Name",
-                "role": "Role"
+                "role": "Role",
+                "range_settings": "Range settings",
+                "hs_lifetime": "Headshot % is lifetime",
+                "view_full_elo_history": "View full ELO history",
+                "global_stats": "Global stats"
             }
         },
         "play": {
@@ -1488,6 +1492,7 @@
             "deleted": "Stage deleted",
             "delete_failed": "Failed to delete stage",
             "group": "Group {group}",
+            "no_standings": "No standings yet",
             "stage_tab": "Stage {stage}",
             "min_teams": "Minimum Teams",
             "min_teams_placeholder": "Select minimum teams...",
@@ -1566,9 +1571,6 @@
         },
         "standings": {
             "title": "Standings"
-        },
-        "group_standings": {
-            "title": "Group Standings"
         },
         "results": {
             "title": "Results"

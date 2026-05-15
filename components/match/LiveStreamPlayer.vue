@@ -144,6 +144,7 @@ function openPopoutWindow() {
       :stages="LIVE_STAGES"
       header-label="Stream boot"
       :show-boot="true"
+      :enable-pip="true"
       class="group"
       :class="compact ? 'min-h-0 flex-1' : 'aspect-video'"
     >

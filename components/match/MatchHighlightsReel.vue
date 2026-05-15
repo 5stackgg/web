@@ -17,6 +17,7 @@ import {
   MapPin,
   Maximize,
   Minimize,
+  Pause,
   Play,
   Shield,
   Volume2,
@@ -563,14 +564,33 @@ function clipTeamName(c: Clip): string | null {
             </span>
           </div>
         </div>
+        <!-- Unified play/pause toggle. Icon mirrors actual playback
+             state so a paused video shows Play (tap to resume) and a
+             playing video shows Pause (tap to halt) — same affordance
+             viewers expect from YouTube/Twitch. Fades along with the
+             rest of the overlay so it doesn't sit over the frame for
+             the entire clip; on coarse pointers it just hides outright
+             since there's no hover to bring it back. -->
         <button
-          v-if="!inlinePlaying"
           type="button"
-          class="absolute left-1/2 top-1/2 inline-flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/45 bg-white/16 text-white shadow-[0_0_30px_hsl(var(--tac-amber)/0.35)] backdrop-blur-sm transition-transform duration-200 hover:scale-110"
-          :title="`Play ${featuredClip.title ?? 'clip'} inline`"
+          class="absolute left-1/2 top-1/2 inline-flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/45 bg-white/16 text-white shadow-[0_0_30px_hsl(var(--tac-amber)/0.35)] backdrop-blur-sm transition duration-200 hover:scale-110"
+          :class="
+            inlinePlaying && !showIntroOverlay
+              ? coarsePointer
+                ? 'pointer-events-none opacity-0'
+                : 'pointer-events-none opacity-0 group-hover/feature:pointer-events-auto group-hover/feature:opacity-100'
+              : 'opacity-100'
+          "
+          :title="
+            inlinePlaying
+              ? `Pause ${featuredClip.title ?? 'clip'}`
+              : `Play ${featuredClip.title ?? 'clip'} inline`
+          "
+          :aria-label="inlinePlaying ? 'Pause' : 'Play'"
           @click.stop="toggleInlinePlayback"
         >
-          <Play class="h-7 w-7 translate-x-0.5 fill-current" />
+          <Pause v-if="inlinePlaying" class="h-7 w-7 fill-current" />
+          <Play v-else class="h-7 w-7 translate-x-0.5 fill-current" />
         </button>
         <div
           class="pointer-events-none absolute inset-x-0 bottom-0 transition-opacity duration-300"

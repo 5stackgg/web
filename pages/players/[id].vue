@@ -828,7 +828,7 @@ const playerTeamChipShortClasses =
             <NuxtLink
               v-if="me && player.steam_id === me.steam_id"
               to="/play"
-              :class="playerHeroPlayClasses"
+              :class="[playerHeroPlayClasses, 'max-md:hidden']"
             >
               <span :class="playerHeroPlayInnerClasses">
                 <PlayIcon :class="playerHeroPlayIconClasses" />

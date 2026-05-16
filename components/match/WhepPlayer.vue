@@ -238,6 +238,34 @@ function unmute() {
   });
 }
 
+function tryPlay() {
+  const el = videoRef.value;
+  if (!el) return;
+  return el.play().catch((err) => {
+    console.debug("[whep] autoplay blocked:", err?.name ?? err);
+    el.muted = true;
+    return el.play().catch((retryErr) => {
+      console.warn(
+        "[whep] autoplay blocked after retry:",
+        retryErr?.name ?? retryErr,
+      );
+    });
+  });
+}
+
+// The WHEP <video> has no user pause control (browser chrome is
+// suppressed, our overlay has no pause button), so any `pause` event
+// is involuntary — most commonly the browser pausing during heavy
+// layout churn (eg. floating PIP resize) or a backgrounded tab. Kick
+// it back to playing as long as we still have a live srcObject.
+function onInvoluntaryPause() {
+  const el = videoRef.value;
+  if (!el || !el.srcObject) return;
+  if (cancelled || useFallback.value) return;
+  if (clipRenderActive.value) return;
+  void tryPlay();
+}
+
 async function connect() {
   if (!props.whepUrl) return;
   if (!videoRef.value) return;
@@ -264,17 +292,6 @@ async function connect() {
       el.autoplay = true;
       el.playsInline = true;
       el.srcObject = event.streams[0];
-      const tryPlay = () =>
-        el.play().catch((err) => {
-          console.debug("[whep] autoplay blocked:", err?.name ?? err);
-          el.muted = true;
-          return el.play().catch((retryErr) => {
-            console.warn(
-              "[whep] autoplay blocked after retry:",
-              retryErr?.name ?? retryErr,
-            );
-          });
-        });
       void tryPlay();
     };
 
@@ -466,6 +483,7 @@ onMounted(() => {
       "webkitpresentationmodechanged",
       onWebkitPresentationModeChanged,
     );
+    video.addEventListener("pause", onInvoluntaryPause);
   }
 });
 
@@ -510,6 +528,7 @@ onBeforeUnmount(() => {
       "webkitpresentationmodechanged",
       onWebkitPresentationModeChanged,
     );
+    video.removeEventListener("pause", onInvoluntaryPause);
   }
 });
 

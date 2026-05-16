@@ -74,6 +74,12 @@ export default {
       isResizing: false,
       resizeStart: { x: 0, y: 0, width: 0, height: 0 },
       maxWidth: 400,
+      // Latest mouse position captured by mousemove; consumed by the
+      // rAF loop. Decouples DOM writes from input events so width/height
+      // update at most once per frame instead of per-pixel — fewer
+      // reflows on the <video> child, fewer involuntary WebRTC pauses.
+      pendingMouse: null as { x: number; y: number } | null,
+      resizeRaf: 0,
     };
   },
   computed: {
@@ -150,9 +156,18 @@ export default {
       if (!this.isResizing) {
         return;
       }
+      this.pendingMouse = { x: e.clientX, y: e.clientY };
+      if (this.resizeRaf) return;
+      this.resizeRaf = requestAnimationFrame(this.applyResize);
+    },
+    applyResize() {
+      this.resizeRaf = 0;
+      const mouse = this.pendingMouse;
+      this.pendingMouse = null;
+      if (!mouse || !this.isResizing) return;
 
-      const deltaX = this.resizeStart.x - e.clientX;
-      const deltaY = this.resizeStart.y - e.clientY;
+      const deltaX = this.resizeStart.x - mouse.x;
+      const deltaY = this.resizeStart.y - mouse.y;
 
       const minWidth = 400;
       const aspectRatio = 16 / 9;
@@ -196,6 +211,11 @@ export default {
     },
     stopResize() {
       this.isResizing = false;
+      if (this.resizeRaf) {
+        cancelAnimationFrame(this.resizeRaf);
+        this.resizeRaf = 0;
+      }
+      this.pendingMouse = null;
     },
   },
   mounted() {
@@ -215,6 +235,10 @@ export default {
     document.removeEventListener("mousemove", this.handleResize);
     document.removeEventListener("mouseup", this.stopResize);
     window.removeEventListener("resize", this.handleWindowResize);
+    if (this.resizeRaf) {
+      cancelAnimationFrame(this.resizeRaf);
+      this.resizeRaf = 0;
+    }
   },
 };
 </script>

@@ -10,6 +10,7 @@ import {
   ArrowUpRight,
   Loader2,
   Check,
+  Share2,
   Shield,
 } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
@@ -22,6 +23,7 @@ import {
 import TimeAgo from "~/components/TimeAgo.vue";
 import type { Clip } from "~/types/clip";
 import { useClipModal } from "~/composables/useClipModal";
+import { useClipShare } from "~/composables/useClipShare";
 import { useAuthStore } from "~/stores/AuthStore";
 import { generateMutation } from "~/graphql/graphqlGen";
 
@@ -31,6 +33,7 @@ const props = defineProps<{
 }>();
 
 const { openClip } = useClipModal();
+const { copiedClipId, shareClip } = useClipShare();
 const auth = useAuthStore();
 const isAdmin = computed(() => auth.isAdmin);
 const nuxtApp = useNuxtApp();
@@ -190,12 +193,99 @@ async function setVisibility(v: Visibility) {
         </span>
       </button>
 
-      <Popover v-if="isAdmin" v-model:open="visPopoverOpen">
-        <PopoverTrigger
-          class="absolute top-2 right-2 inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
-          :aria-label="`Visibility: ${clip.visibility}. Click to change.`"
+      <div class="absolute top-2 right-2 flex items-center gap-1">
+        <button
+          type="button"
+          class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/75 backdrop-blur-sm transition-all duration-200 hover:bg-black/90 hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+          :class="
+            copiedClipId === clip.id
+              ? 'share-flash text-[hsl(var(--tac-amber))] scale-110'
+              : 'text-white/90'
+          "
+          :title="copiedClipId === clip.id ? 'Link copied!' : 'Share clip'"
+          aria-label="Share clip"
+          @click.stop="shareClip(clip.id)"
+        >
+          <Check v-if="copiedClipId === clip.id" class="h-3.5 w-3.5" />
+          <Share2 v-else class="h-3.5 w-3.5" />
+        </button>
+        <Popover v-if="isAdmin" v-model:open="visPopoverOpen">
+          <PopoverTrigger
+            class="inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+            :aria-label="`Visibility: ${clip.visibility}. Click to change.`"
+            :title="`Visibility: ${clip.visibility}`"
+            @click.stop
+          >
+            <span
+              class="inline-flex h-4 w-4 items-center justify-center rounded-full"
+              :class="
+                clip.visibility === 'public'
+                  ? 'bg-emerald-400/20 text-emerald-300'
+                  : clip.visibility === 'unlisted'
+                    ? 'bg-amber-400/20 text-amber-300'
+                    : 'bg-white/10 text-white/80'
+              "
+            >
+              <Loader2 v-if="saving" class="h-3 w-3 animate-spin" />
+              <component
+                v-else
+                :is="currentVisibilityMeta.icon"
+                class="h-3 w-3"
+              />
+            </span>
+            <span class="font-mono text-[0.58rem] uppercase tracking-[0.14em]">
+              {{ currentVisibilityMeta.label }}
+            </span>
+          </PopoverTrigger>
+          <PopoverContent class="w-56 p-1" align="end" @click.stop>
+            <div
+              class="px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+            >
+              Visibility
+            </div>
+            <button
+              v-for="opt in VISIBILITY_OPTIONS"
+              :key="opt.value"
+              type="button"
+              class="w-full text-left flex items-start gap-2 rounded px-2 py-1.5 text-xs hover:bg-muted/60 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+              :class="clip.visibility === opt.value ? 'bg-muted/40' : ''"
+              :disabled="saving"
+              @click="setVisibility(opt.value)"
+            >
+              <span
+                class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded"
+                :class="
+                  opt.value === 'public'
+                    ? 'bg-emerald-400/15 text-emerald-300'
+                    : opt.value === 'unlisted'
+                      ? 'bg-amber-400/15 text-amber-300'
+                      : 'bg-muted/40 text-muted-foreground'
+                "
+              >
+                <component :is="opt.icon" class="h-3 w-3" />
+              </span>
+              <span class="flex-1 min-w-0">
+                <span class="flex items-center gap-1.5 font-medium">
+                  {{ opt.label }}
+                  <Check
+                    v-if="clip.visibility === opt.value"
+                    class="h-3 w-3 text-[hsl(var(--tac-amber))]"
+                  />
+                </span>
+                <span
+                  class="block text-[0.7rem] text-muted-foreground leading-snug"
+                >
+                  {{ opt.hint }}
+                </span>
+              </span>
+            </button>
+          </PopoverContent>
+        </Popover>
+        <span
+          v-else
+          class="inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm pointer-events-none"
           :title="`Visibility: ${clip.visibility}`"
-          @click.stop
+          :aria-label="`Visibility: ${clip.visibility}`"
         >
           <span
             class="inline-flex h-4 w-4 items-center justify-center rounded-full"
@@ -207,83 +297,13 @@ async function setVisibility(v: Visibility) {
                   : 'bg-white/10 text-white/80'
             "
           >
-            <Loader2 v-if="saving" class="h-3 w-3 animate-spin" />
-            <component
-              v-else
-              :is="currentVisibilityMeta.icon"
-              class="h-3 w-3"
-            />
+            <component :is="currentVisibilityMeta.icon" class="h-3 w-3" />
           </span>
           <span class="font-mono text-[0.58rem] uppercase tracking-[0.14em]">
             {{ currentVisibilityMeta.label }}
           </span>
-        </PopoverTrigger>
-        <PopoverContent class="w-56 p-1" align="end" @click.stop>
-          <div
-            class="px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-          >
-            Visibility
-          </div>
-          <button
-            v-for="opt in VISIBILITY_OPTIONS"
-            :key="opt.value"
-            type="button"
-            class="w-full text-left flex items-start gap-2 rounded px-2 py-1.5 text-xs hover:bg-muted/60 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
-            :class="clip.visibility === opt.value ? 'bg-muted/40' : ''"
-            :disabled="saving"
-            @click="setVisibility(opt.value)"
-          >
-            <span
-              class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded"
-              :class="
-                opt.value === 'public'
-                  ? 'bg-emerald-400/15 text-emerald-300'
-                  : opt.value === 'unlisted'
-                    ? 'bg-amber-400/15 text-amber-300'
-                    : 'bg-muted/40 text-muted-foreground'
-              "
-            >
-              <component :is="opt.icon" class="h-3 w-3" />
-            </span>
-            <span class="flex-1 min-w-0">
-              <span class="flex items-center gap-1.5 font-medium">
-                {{ opt.label }}
-                <Check
-                  v-if="clip.visibility === opt.value"
-                  class="h-3 w-3 text-[hsl(var(--tac-amber))]"
-                />
-              </span>
-              <span
-                class="block text-[0.7rem] text-muted-foreground leading-snug"
-              >
-                {{ opt.hint }}
-              </span>
-            </span>
-          </button>
-        </PopoverContent>
-      </Popover>
-      <span
-        v-else
-        class="absolute top-2 right-2 inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm pointer-events-none"
-        :title="`Visibility: ${clip.visibility}`"
-        :aria-label="`Visibility: ${clip.visibility}`"
-      >
-        <span
-          class="inline-flex h-4 w-4 items-center justify-center rounded-full"
-          :class="
-            clip.visibility === 'public'
-              ? 'bg-emerald-400/20 text-emerald-300'
-              : clip.visibility === 'unlisted'
-                ? 'bg-amber-400/20 text-amber-300'
-                : 'bg-white/10 text-white/80'
-          "
-        >
-          <component :is="currentVisibilityMeta.icon" class="h-3 w-3" />
         </span>
-        <span class="font-mono text-[0.58rem] uppercase tracking-[0.14em]">
-          {{ currentVisibilityMeta.label }}
-        </span>
-      </span>
+      </div>
 
       <div
         class="absolute top-2 left-2 flex items-center gap-1 pointer-events-none"

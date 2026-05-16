@@ -8,6 +8,7 @@ import {
   watch,
 } from "vue";
 import {
+  Crosshair,
   Download,
   Loader2,
   Trash2,
@@ -19,10 +20,8 @@ import {
   Globe,
   X,
   Radio,
-  ArrowUpRight,
   ChevronLeft,
   ChevronRight,
-  Shield,
   ListVideo,
   Film,
 } from "lucide-vue-next";
@@ -35,6 +34,7 @@ import type { Clip } from "~/types/clip";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import ClipPlayer from "~/components/clips/ClipPlayer.vue";
 import {
   DialogRoot as Dialog,
   DialogPortal,
@@ -57,6 +57,7 @@ import {
 } from "~/utilities/clipDownloadName";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { useClipModal } from "~/composables/useClipModal";
+import { useClipShare } from "~/composables/useClipShare";
 
 const apiDomain = computed(() => useRuntimeConfig().public.apiDomain as string);
 
@@ -81,13 +82,12 @@ const clip = ref<Clip | null>(null);
 const loading = ref(false);
 const notFound = ref(false);
 const showDelete = ref(false);
-const linkCopied = ref(false);
-const videoRef = ref<HTMLVideoElement | null>(null);
-const videoProgress = ref(0);
+const { copiedClipId, shareClip } = useClipShare();
+const linkCopied = computed(() =>
+  clip.value ? copiedClipId.value === clip.value.id : false,
+);
+const modalPlayerRef = ref<InstanceType<typeof ClipPlayer> | null>(null);
 const modalAutoAdvanced = ref(false);
-const videoPlaying = ref(false);
-const showIntroOverlay = ref(false);
-let introOverlayTimer: ReturnType<typeof setTimeout> | null = null;
 
 const isOwner = computed(
   () => !!clip.value && clip.value.user_steam_id === auth.me?.steam_id,
@@ -234,7 +234,6 @@ watch(
       activeSub = null;
       clip.value = null;
       editing.value = false;
-      linkCopied.value = false;
       fileSizeBytes.value = null;
       lastSizeUrl = null;
     }
@@ -251,10 +250,6 @@ watch(
 onBeforeUnmount(() => {
   activeSub?.unsubscribe();
   activeSub = null;
-  if (introOverlayTimer) {
-    clearTimeout(introOverlayTimer);
-    introOverlayTimer = null;
-  }
   window.removeEventListener("keydown", onModalKeydown);
 });
 
@@ -310,17 +305,9 @@ async function saveEdit() {
   }
 }
 
-async function copyLink() {
+function copyLink() {
   if (!clip.value) return;
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
-  const shareUrl = `${origin}/clips/${clip.value.id}`;
-  try {
-    await navigator.clipboard.writeText(shareUrl);
-    linkCopied.value = true;
-    setTimeout(() => (linkCopied.value = false), 1500);
-  } catch (e) {
-    console.error("[clip-modal] copy failed:", e);
-  }
+  void shareClip(clip.value.id);
 }
 
 function onDeleted() {
@@ -333,6 +320,25 @@ function formatDuration(ms: number | null): string {
   const m = Math.floor(total / 60);
   const s = total % 60;
   return `${m}:${s.toString().padStart(2, "0")}`;
+}
+
+// Same compact tactical format the reel uses ("5D AGO", "1H AGO"…)
+// so the bottom player-display row reads identically in both surfaces.
+function formatRelativeTime(iso: string | null | undefined): string | null {
+  if (!iso) return null;
+  const ts = new Date(iso).getTime();
+  if (!Number.isFinite(ts)) return null;
+  const diff = Date.now() - ts;
+  if (diff < 0) return "just now";
+  const minute = 60_000;
+  const hour = 60 * minute;
+  const day = 24 * hour;
+  if (diff < minute) return "just now";
+  if (diff < hour) return `${Math.floor(diff / minute)}m ago`;
+  if (diff < day) return `${Math.floor(diff / hour)}h ago`;
+  if (diff < 7 * day) return `${Math.floor(diff / day)}d ago`;
+  if (diff < 30 * day) return `${Math.floor(diff / (7 * day))}w ago`;
+  return `${Math.floor(diff / (30 * day))}mo ago`;
 }
 
 function formatDate(iso: string | null | undefined): string {
@@ -364,31 +370,16 @@ const targetLineup = computed(() => {
   );
 });
 const targetTeamName = computed(() => targetLineup.value?.name ?? null);
-const targetTeamAvatarSrc = computed(() =>
-  resolveAvatarUrl(
-    targetLineup.value?.team?.avatar_url ?? null,
-    apiDomain.value,
-  ),
-);
-async function playModalVideo() {
-  await nextTick();
-  const video = videoRef.value;
-  if (!video) return;
-  try {
-    await video.play();
-  } catch {
-    // Browser autoplay policy can still refuse; controls remain available.
-  }
-}
-
-function onModalTimeUpdate() {
-  const video = videoRef.value;
-  if (!video || !Number.isFinite(video.duration) || video.duration <= 0) {
-    videoProgress.value = 0;
-    return;
-  }
-  videoProgress.value = Math.min(1, video.currentTime / video.duration);
-  const remaining = video.duration - video.currentTime;
+function onModalProgress({
+  currentTime,
+  duration,
+}: {
+  progress: number;
+  currentTime: number;
+  duration: number;
+}) {
+  if (!Number.isFinite(duration) || duration <= 0) return;
+  const remaining = duration - currentTime;
   if (nextClip.value && remaining <= 0.35 && !modalAutoAdvanced.value) {
     modalAutoAdvanced.value = true;
     openNextClip();
@@ -396,37 +387,18 @@ function onModalTimeUpdate() {
 }
 
 function onModalEnded() {
-  videoProgress.value = 1;
-  videoPlaying.value = false;
   if (nextClip.value && !modalAutoAdvanced.value) {
     modalAutoAdvanced.value = true;
     openNextClip();
   }
 }
 
-function onModalPlay() {
-  videoPlaying.value = true;
-}
-
-function onModalPause() {
-  videoPlaying.value = false;
-}
-
 watch(
   () => clip.value?.id,
   (id) => {
-    videoProgress.value = 0;
     modalAutoAdvanced.value = false;
-    videoPlaying.value = false;
-    if (introOverlayTimer) clearTimeout(introOverlayTimer);
     if (id) {
-      showIntroOverlay.value = true;
-      introOverlayTimer = setTimeout(() => {
-        showIntroOverlay.value = false;
-      }, 1800);
-      void playModalVideo();
-    } else {
-      showIntroOverlay.value = false;
+      void nextTick().then(() => modalPlayerRef.value?.play());
     }
   },
 );
@@ -687,86 +659,149 @@ onMounted(() => {
 
         <div
           v-else-if="clip"
-          class="grid gap-4 sm:gap-5 p-4 sm:p-5 lg:grid-cols-[minmax(0,2fr)_minmax(280px,1fr)] flex-1 min-h-0"
+          class="grid gap-4 sm:gap-5 p-4 sm:p-5 lg:grid-cols-[minmax(0,3fr)_minmax(260px,1fr)] flex-1 min-h-0"
         >
           <div
             class="flex flex-col gap-3 min-w-0"
             :class="clipQueue.length > 1 ? 'justify-start' : 'justify-center'"
           >
-            <div
-              class="group/video relative aspect-video w-full overflow-hidden rounded-md bg-black border border-border/60"
-            >
-              <video
-                v-if="clip.download_url"
-                ref="videoRef"
+            <div class="group/video relative">
+              <ClipPlayer
+                ref="modalPlayerRef"
                 :src="clip.download_url"
                 :poster="
                   clip.thumbnail_download_url ??
                   clip.match_map?.map?.poster ??
-                  undefined
+                  null
                 "
-                class="absolute inset-0 h-full w-full object-contain"
-                controls
-                autoplay
-                muted
-                playsinline
-                preload="auto"
+                :clip-key="clip.id"
                 @ended="onModalEnded"
-                @loadedmetadata="onModalTimeUpdate"
-                @timeupdate="onModalTimeUpdate"
-                @play="onModalPlay"
-                @pause="onModalPause"
-              />
-              <div
-                v-else
-                class="absolute inset-0 flex items-center justify-center text-muted-foreground"
+                @progress="onModalProgress"
               >
-                <Loader2 class="h-6 w-6 animate-spin" />
-                <span
-                  class="ml-3 text-sm font-mono uppercase tracking-[0.18em]"
-                >
-                  Render finalizing…
-                </span>
-              </div>
-
-              <div
-                class="pointer-events-none absolute inset-x-0 top-0 z-[3] flex items-start gap-2 p-3 sm:p-4 bg-[linear-gradient(180deg,hsl(0_0%_0%/0.7)_0%,transparent_100%)] transition-opacity duration-300"
-                :class="
-                  videoPlaying && !showIntroOverlay && !editing
-                    ? 'opacity-0 group-hover/video:opacity-100'
-                    : 'opacity-100'
-                "
-              >
-                <h2
-                  class="min-w-0 flex-1 truncate text-base sm:text-xl font-bold uppercase leading-tight tracking-[0.01em] text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.65)]"
-                  :title="displayTitle"
-                >
-                  {{ displayTitle }}
-                </h2>
-                <button
-                  v-if="isOwner && !editing"
-                  type="button"
-                  class="pointer-events-auto inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md border border-white/20 bg-black/55 text-white/85 backdrop-blur-sm transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] cursor-pointer"
-                  title="Edit title"
-                  @click="startEdit"
-                >
-                  <Pencil class="h-3.5 w-3.5" />
-                </button>
-              </div>
-
-              <div
-                class="clip-scanlines pointer-events-none absolute inset-0"
-              ></div>
-
-              <div
-                v-if="nextClip"
-                class="pointer-events-none absolute right-3 top-3 z-[2] inline-flex max-w-[60%] items-center gap-1.5 rounded-full border border-white/15 bg-black/65 px-2.5 py-1 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/75 backdrop-blur-md"
-              >
-                <span class="text-[hsl(var(--tac-amber))]">Next:</span>
-                <span class="truncate">
-                  {{ nextClip.playerName ?? "clip" }}
-                </span>
-              </div>
+                <template #empty>
+                  <div
+                    class="absolute inset-0 flex items-center justify-center text-muted-foreground"
+                  >
+                    <Loader2 class="h-6 w-6 animate-spin" />
+                    <span
+                      class="ml-3 text-sm font-mono uppercase tracking-[0.18em]"
+                    >
+                      Render finalizing…
+                    </span>
+                  </div>
+                </template>
+                <template #top-left>
+                  <h2
+                    class="min-w-0 truncate text-base sm:text-xl font-bold uppercase leading-tight tracking-[0.01em] text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.65)]"
+                    :title="displayTitle"
+                  >
+                    {{ displayTitle }}
+                  </h2>
+                </template>
+                <template #top-right>
+                  <button
+                    v-if="isOwner && !editing"
+                    type="button"
+                    class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/20 bg-black/55 text-white/85 backdrop-blur-sm transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] cursor-pointer"
+                    title="Edit title"
+                    @click.stop="startEdit"
+                  >
+                    <Pencil class="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border bg-black/55 backdrop-blur-sm transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] cursor-pointer"
+                    :class="
+                      linkCopied
+                        ? 'share-flash border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber))] scale-110'
+                        : 'border-white/20 text-white/85'
+                    "
+                    :title="linkCopied ? 'Link copied!' : 'Share clip'"
+                    aria-label="Share clip"
+                    @click.stop="copyLink"
+                  >
+                    <Check v-if="linkCopied" class="h-3.5 w-3.5" />
+                    <Share2 v-else class="h-3.5 w-3.5" />
+                  </button>
+                </template>
+                <template #bottom>
+                  <div class="flex min-w-0 items-center gap-2.5">
+                    <span
+                      class="inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.14)]"
+                    >
+                      <NuxtImg
+                        v-if="targetAvatarSrc"
+                        :src="targetAvatarSrc"
+                        :alt="clip.target?.name ?? 'Player'"
+                        class="h-full w-full object-cover"
+                      />
+                      <span
+                        v-else
+                        class="font-mono text-xs font-bold uppercase text-[hsl(var(--tac-amber))]"
+                      >
+                        {{
+                          clip.target?.name?.charAt(0) ??
+                          clip.title?.charAt(0) ??
+                          "H"
+                        }}
+                      </span>
+                    </span>
+                    <div class="min-w-0 flex-1">
+                      <div class="flex min-w-0 items-center gap-2">
+                        <span
+                          class="min-w-0 truncate text-sm font-semibold text-white sm:text-base"
+                          ><!--
+                        --><NuxtLink
+                            v-if="clip.target_steam_id"
+                            :to="`/players/${clip.target_steam_id}`"
+                            class="pointer-events-auto text-white transition-colors hover:text-[hsl(var(--tac-amber))]"
+                            :title="`Open ${clip.target?.name ?? 'player'}'s profile`"
+                            @click.stop="closeClip"
+                            >{{
+                              clip.target?.name ?? "Match highlight"
+                            }}</NuxtLink
+                          ><template v-else>{{
+                            clip.target?.name ?? "Match highlight"
+                          }}</template
+                          ><span
+                            v-if="targetTeamName"
+                            class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-white/55"
+                          >
+                            · {{ targetTeamName }}</span
+                          ></span
+                        >
+                        <span
+                          v-if="(clip.kills_count ?? 0) > 0"
+                          class="inline-flex shrink-0 items-center gap-1 rounded border border-[hsl(var(--destructive))] bg-[hsl(var(--destructive)/0.85)] px-1.5 py-0.5 font-mono text-[0.65rem] font-bold text-white tabular-nums shadow-[0_0_10px_hsl(var(--destructive)/0.4)]"
+                          :title="`${clip.kills_count} kill${clip.kills_count === 1 ? '' : 's'} in clip`"
+                        >
+                          <Crosshair class="h-3 w-3" />
+                          {{ clip.kills_count }}K
+                        </span>
+                      </div>
+                      <div class="mt-0.5 flex min-w-0 items-center gap-1.5">
+                        <span
+                          v-if="clip.match_map?.map?.name"
+                          class="min-w-0 truncate font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/55"
+                          ><!--
+                        -->{{ clip.match_map.map.name }}</span
+                        >
+                        <span
+                          v-if="formatRelativeTime(clip.created_at)"
+                          class="shrink-0 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/40"
+                        >
+                          · {{ formatRelativeTime(clip.created_at) }}
+                        </span>
+                        <span
+                          class="shrink-0 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/40 tabular-nums"
+                        >
+                          · {{ formatDuration(clip.duration_ms) }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+              </ClipPlayer>
 
               <button
                 v-if="previousClip"
@@ -911,64 +946,6 @@ onMounted(() => {
           </div>
 
           <aside class="flex flex-col gap-3 min-w-0">
-            <NuxtLink
-              v-if="clip.target?.name"
-              :to="`/players/${clip.target.steam_id}`"
-              class="group/target relative flex items-center gap-3 rounded-md border border-border/50 bg-[linear-gradient(135deg,hsl(var(--tac-amber)/0.08)_0%,hsl(var(--card)/0.4)_60%)] [backdrop-filter:blur(6px)] py-2.5 pl-2.5 pr-3 transition-all hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[linear-gradient(135deg,hsl(var(--tac-amber)/0.14)_0%,hsl(var(--card)/0.45)_60%)]"
-              :title="`Open ${clip.target.name}'s profile`"
-              @click="closeClip"
-            >
-              <span
-                class="relative inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)]"
-              >
-                <NuxtImg
-                  v-if="targetAvatarSrc"
-                  :src="targetAvatarSrc"
-                  :alt="clip.target.name"
-                  class="h-full w-full object-cover transition-transform duration-300 group-hover/target:scale-110"
-                />
-                <span
-                  v-else
-                  class="font-sans text-base font-bold uppercase text-[hsl(var(--tac-amber))]"
-                >
-                  {{ clip.target.name.charAt(0) }}
-                </span>
-              </span>
-              <span class="flex flex-col leading-tight min-w-0 flex-1">
-                <span
-                  class="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-muted-foreground/80 group-hover/target:text-[hsl(var(--tac-amber))] transition-colors"
-                >
-                  Highlighting
-                </span>
-                <span
-                  class="truncate text-base font-semibold text-foreground group-hover/target:text-[hsl(var(--tac-amber))] transition-colors"
-                >
-                  {{ clip.target.name }}
-                </span>
-                <span
-                  v-if="targetTeamName"
-                  class="mt-1 inline-flex max-w-full items-center gap-1.5 self-start rounded border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.1)] px-1.5 py-0.5 font-mono text-[0.56rem] uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))]"
-                  :title="targetTeamName"
-                >
-                  <span
-                    v-if="targetTeamAvatarSrc"
-                    class="inline-flex h-4 w-4 shrink-0 overflow-hidden rounded-full border border-[hsl(var(--tac-amber)/0.35)]"
-                  >
-                    <NuxtImg
-                      :src="targetTeamAvatarSrc"
-                      :alt="targetTeamName"
-                      class="h-full w-full object-cover"
-                    />
-                  </span>
-                  <Shield v-else class="h-3 w-3 shrink-0" />
-                  <span class="truncate">{{ targetTeamName }}</span>
-                </span>
-              </span>
-              <ArrowUpRight
-                class="h-4 w-4 shrink-0 text-muted-foreground/60 transition-all group-hover/target:text-[hsl(var(--tac-amber))] group-hover/target:translate-x-0.5 group-hover/target:-translate-y-0.5"
-              />
-            </NuxtLink>
-
             <ClipMatchSummary
               v-if="clip.match_map?.match"
               :clip="clip"
@@ -1025,19 +1002,16 @@ onMounted(() => {
                 :href="clipDownloadUrl(clip.download_url)"
                 :download="downloadFilename"
                 class="action-tile group"
+                :class="canDelete ? '' : 'col-span-2'"
               >
                 <Download class="h-4 w-4" />
                 <span>Download</span>
               </a>
-              <button type="button" class="action-tile group" @click="copyLink">
-                <Check v-if="linkCopied" class="h-4 w-4 text-emerald-400" />
-                <Share2 v-else class="h-4 w-4" />
-                <span>{{ linkCopied ? "Copied" : "Copy link" }}</span>
-              </button>
               <button
                 v-if="canDelete"
                 type="button"
-                class="action-tile action-tile--danger group col-span-2"
+                class="action-tile action-tile--danger group"
+                :class="clip.download_url ? '' : 'col-span-2'"
                 @click="showDelete = true"
               >
                 <Trash2 class="h-4 w-4" />

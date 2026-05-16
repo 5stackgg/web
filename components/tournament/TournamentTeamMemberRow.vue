@@ -23,7 +23,20 @@ import {
   CommandItem,
   CommandList,
 } from "~/components/ui/command";
-import { ChevronDownIcon, Shield } from "lucide-vue-next";
+import {
+  ChevronDownIcon,
+  Shield,
+  LogOut,
+  MoreHorizontal,
+  Trash,
+} from "lucide-vue-next";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import Separator from "../ui/separator/Separator.vue";
 </script>
@@ -39,68 +52,97 @@ import Separator from "../ui/separator/Separator.vue";
     <div class="flex flex-shrink-0 items-center gap-2">
       <span
         v-if="isCaptain"
-        class="inline-flex h-7 items-center gap-1 rounded-sm border border-border/70 bg-muted/25 px-1.5 text-[9px] font-medium uppercase tracking-[0.06em] text-muted-foreground"
+        class="inline-flex h-8 items-center gap-1.5 rounded-md border border-border/70 bg-muted/25 px-3 text-xs font-medium uppercase tracking-[0.1em] text-muted-foreground"
       >
-        <Shield class="h-3 w-3" />
+        <Shield class="h-3.5 w-3.5" />
         {{ $t("team.roles.captain") }}
       </span>
 
-      <Popover v-if="canManageActions" v-model:open="roleMenuOpen">
-        <PopoverTrigger as-child>
-          <Button variant="outline" size="sm" class="h-8">
-            {{ member.role }}
-            <ChevronDownIcon class="ml-2 h-3.5 w-3.5 text-muted-foreground" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent class="p-0" align="end">
-          <Command v-model="memberRole">
-            <CommandInput :placeholder="$t('tournament.team.select_role')" />
-            <CommandList>
-              <CommandEmpty>{{ $t("tournament.team.no_roles") }}</CommandEmpty>
-              <CommandGroup>
-                <CommandItem
-                  v-if="canUpdateRole"
-                  :value="role.value"
-                  class="flex flex-col items-start px-4 py-2 cursor-pointer"
-                  v-for="role of roles"
-                >
-                  <p>{{ role.value }}</p>
-                  <p class="text-sm text-muted-foreground">
-                    {{ role.description }}
-                  </p>
-                </CommandItem>
+      <div v-if="canUpdateRole || hasMenuActions" class="inline-flex isolate">
+        <Popover v-if="canUpdateRole" v-model:open="roleMenuOpen">
+          <PopoverTrigger as-child>
+            <Button
+              variant="outline"
+              size="sm"
+              class="h-8 -mr-px !rounded-r-none hover:z-10 focus:z-10"
+            >
+              {{ member.role }}
+              <ChevronDownIcon class="ml-2 h-3.5 w-3.5 text-muted-foreground" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent class="p-0" align="end">
+            <Command v-model="memberRole">
+              <CommandInput :placeholder="$t('tournament.team.select_role')" />
+              <CommandList>
+                <CommandEmpty>{{
+                  $t("tournament.team.no_roles")
+                }}</CommandEmpty>
+                <CommandGroup>
+                  <CommandItem
+                    v-for="role of roles"
+                    :key="role.value"
+                    :value="role.value"
+                    class="flex flex-col items-start px-4 py-2 cursor-pointer"
+                  >
+                    <p>{{ role.value }}</p>
+                    <p class="text-sm text-muted-foreground">
+                      {{ role.description }}
+                    </p>
+                  </CommandItem>
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
+        <span
+          v-else
+          class="inline-flex h-8 items-center border border-border bg-muted/30 px-3 font-mono text-[0.7rem] tracking-[0.18em] uppercase text-muted-foreground rounded-l-md rounded-r-none -mr-px"
+        >
+          {{ member.role }}
+        </span>
 
-                <Separator
-                  v-if="canPromoteCaptain || canUpdateRole"
-                ></Separator>
-
-                <CommandItem
-                  v-if="canPromoteCaptain"
-                  :value="'promote-captain'"
-                  class="flex px-4 py-2 cursor-pointer"
-                  @click.stop="promoteCaptain"
-                >
-                  <div class="inline-flex items-center gap-2">
-                    <Shield class="h-4 w-4" />
-                    {{ $t("match.overview.promote_captain") }}
-                  </div>
-                </CommandItem>
-
-                <CommandItem
-                  v-if="canUpdateRole"
-                  :value="false"
-                  class="flex px-4 py-2 cursor-pointer"
-                  @click.stop="removeMemberDialog = true"
-                >
-                  <div class="text-red-600">
-                    {{ $t("tournament.team.remove_member") }}
-                  </div>
-                </CommandItem>
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+        <DropdownMenu>
+          <DropdownMenuTrigger as-child>
+            <Button
+              variant="outline"
+              size="icon"
+              class="h-8 w-8 !rounded-l-none hover:z-10 focus:z-10"
+              :title="$t('common.actions_label')"
+            >
+              <MoreHorizontal class="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" class="w-56">
+            <DropdownMenuItem
+              v-if="canPromoteCaptain"
+              class="cursor-pointer"
+              @click="promoteCaptain"
+            >
+              <Shield class="mr-2 h-4 w-4" />
+              {{ $t("match.overview.promote_captain") }}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator
+              v-if="canPromoteCaptain && (canLeaveSelf || canUpdateRole)"
+            />
+            <DropdownMenuItem
+              v-if="canLeaveSelf"
+              class="text-destructive cursor-pointer"
+              @click="$emit('leave')"
+            >
+              <LogOut class="mr-2 h-4 w-4" />
+              {{ $t("tournament.team.leave_team") }}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              v-if="canUpdateRole"
+              class="text-destructive cursor-pointer"
+              @click="removeMemberDialog = true"
+            >
+              <Trash class="mr-2 h-4 w-4" />
+              {{ $t("tournament.team.remove_member") }}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       <span
         v-else
         class="font-mono text-[0.7rem] tracking-[0.18em] uppercase text-muted-foreground"
@@ -141,6 +183,7 @@ import Separator from "../ui/separator/Separator.vue";
 import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
+  emits: ["leave"],
   props: {
     team: {
       type: Object,
@@ -157,6 +200,10 @@ export default {
     roles: {
       type: Array,
       required: true,
+    },
+    canLeave: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -186,11 +233,17 @@ export default {
     isCaptain() {
       return this.member.player.steam_id === this.team.captain_steam_id;
     },
+    isCurrentUser() {
+      return this.member.player.steam_id === useAuthStore().me?.steam_id;
+    },
     canManageTeam() {
       return Boolean(this.tournament?.is_organizer || this.team?.can_manage);
     },
-    canManageActions() {
-      return this.canUpdateRole || this.canPromoteCaptain;
+    canLeaveSelf() {
+      return this.isCurrentUser && this.canLeave;
+    },
+    hasMenuActions() {
+      return this.canPromoteCaptain || this.canLeaveSelf || this.canUpdateRole;
     },
     canUpdateRole() {
       const me = useAuthStore().me;

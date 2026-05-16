@@ -782,17 +782,18 @@ const playerTeamChipShortClasses =
                 <ExternalLink class="w-3.5 h-3.5" />
                 <span>{{ $t("player.player.steam") }}</span>
               </a>
-              <span class="inline-flex items-center gap-[0.55rem]">
-                <PlayerElo
-                  v-if="player.elo"
-                  :elo="player.elo"
-                  :peak="player.peak_elo"
-                />
-                <PlayerLeaderboardRank
-                  v-if="player.steam_id"
-                  :playerSteamId="player.steam_id"
-                />
-              </span>
+            </div>
+
+            <div :class="playerHeroMetaClasses">
+              <PlayerElo
+                v-if="player.elo"
+                :elo="player.elo"
+                :peak="player.peak_elo"
+              />
+              <PlayerLeaderboardRank
+                v-if="player.steam_id"
+                :playerSteamId="player.steam_id"
+              />
             </div>
 
             <!-- Actions: role / sanction / edit -->

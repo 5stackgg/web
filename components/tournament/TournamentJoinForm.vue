@@ -312,10 +312,12 @@ export default {
         addPlayerSteamId = this.form.values.owner_steam_id;
       }
 
-      const captainSteamId =
-        this.form.values.new_team && addPlayerSteamId
-          ? addPlayerSteamId
-          : this.me.steam_id;
+      // For a new tournament-only team, the captain is the player being added.
+      // For an existing team, leave it unset so the trigger picks the team's
+      // captain/owner — the organizer adding the team isn't necessarily on its roster.
+      const captainSteamId = this.form.values.new_team
+        ? addPlayerSteamId || this.me.steam_id
+        : null;
 
       await this.$apollo.mutate({
         mutation: generateMutation({
@@ -328,7 +330,7 @@ export default {
                 ...(this.tournament.is_organizer && addPlayerSteamId
                   ? { owner_steam_id: addPlayerSteamId }
                   : {}),
-                captain_steam_id: captainSteamId,
+                ...(captainSteamId ? { captain_steam_id: captainSteamId } : {}),
                 team_id: this.form.values.new_team
                   ? null
                   : this.form.values.team_id,

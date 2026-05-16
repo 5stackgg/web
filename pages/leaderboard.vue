@@ -19,6 +19,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 import { Switch } from "~/components/ui/switch";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
+import { useAuthStore } from "~/stores/AuthStore";
 
 const leaderboardFadeTransition = {
   enterActiveClass: "transition-all duration-150 ease-out",
@@ -181,6 +182,8 @@ const PLAYER_RANK_QUERY = gql`
 const { t } = useI18n();
 const { client: apolloClient } = useApolloClient();
 const route = useRoute();
+const auth = useAuthStore();
+const loggedInSteamId = computed(() => auth.me?.steam_id ?? null);
 
 const category = useRouteTab({
   defaultTab: "elo",
@@ -771,11 +774,15 @@ onMounted(() => {
                     setHighlightedRowRef(el, entry.player_steam_id)
                 "
                 class="cursor-pointer"
-                :class="
+                :class="[
                   entry.player_steam_id === highlightedSteamId
                     ? 'leaderboard-row--highlight'
-                    : ''
-                "
+                    : '',
+                  entry.player_steam_id === loggedInSteamId &&
+                  entry.player_steam_id !== highlightedSteamId
+                    ? 'leaderboard-row--me'
+                    : '',
+                ]"
               >
                 <NuxtLink
                   :to="{
@@ -910,5 +917,15 @@ onMounted(() => {
   100% {
     background: hsl(var(--tac-amber) / 0.12);
   }
+}
+
+/* "You are here" — the logged-in user's row gets a quieter mark so it
+   stays present without competing with a deep-linked highlight. */
+:deep(.leaderboard-row--me) {
+  background: hsl(var(--tac-amber) / 0.06);
+  box-shadow: inset 3px 0 0 hsl(var(--tac-amber) / 0.55);
+}
+:deep(.leaderboard-row--me:hover) {
+  background: hsl(var(--tac-amber) / 0.1);
 }
 </style>

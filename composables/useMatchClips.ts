@@ -45,7 +45,6 @@ export function useMatchClips(
               { kills_count: order_by.desc_nulls_last },
               { created_at: order_by.desc },
             ],
-            limit: 200,
           } as any,
           matchClipFields,
         ],

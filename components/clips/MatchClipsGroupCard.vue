@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { Trophy, Layers, ArrowUpRight } from "lucide-vue-next";
 import { Card, CardContent } from "~/components/ui/card";
+import TimeAgo from "~/components/TimeAgo.vue";
 import type { Clip } from "~/types/clip";
 
 const props = defineProps<{
@@ -66,6 +67,8 @@ const featuredTargets = computed(() => {
   }
   return out;
 });
+
+const leadCreatedAt = computed(() => lead.value?.created_at ?? null);
 </script>
 
 <template>
@@ -165,10 +168,15 @@ const featuredTargets = computed(() => {
               </template>
             </span>
           </span>
-          <span
-            class="shrink-0 font-mono text-[0.65rem] uppercase tracking-wider"
-          >
-            {{ clips.length }} clips
+          <span class="shrink-0 flex flex-col items-end gap-0.5">
+            <span class="font-mono text-[0.65rem] uppercase tracking-wider">
+              {{ clips.length }} clips
+            </span>
+            <TimeAgo
+              v-if="leadCreatedAt"
+              :date="leadCreatedAt"
+              class="text-[0.65rem] text-muted-foreground/70"
+            />
           </span>
         </div>
       </CardContent>

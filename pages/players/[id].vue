@@ -42,6 +42,7 @@ import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 import AvatarUpload from "~/components/AvatarUpload.vue";
 import PlayerHighlights from "~/components/clips/PlayerHighlights.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
+import PlayerLeaderboardRank from "~/components/PlayerLeaderboardRank.vue";
 import PlayerEloHistoryDialog from "~/components/PlayerEloHistoryDialog.vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
@@ -781,11 +782,17 @@ const playerTeamChipShortClasses =
                 <ExternalLink class="w-3.5 h-3.5" />
                 <span>{{ $t("player.player.steam") }}</span>
               </a>
-              <PlayerElo
-                v-if="player.elo"
-                :elo="player.elo"
-                :peak="player.peak_elo"
-              />
+              <span class="inline-flex items-center gap-[0.55rem]">
+                <PlayerElo
+                  v-if="player.elo"
+                  :elo="player.elo"
+                  :peak="player.peak_elo"
+                />
+                <PlayerLeaderboardRank
+                  v-if="player.steam_id"
+                  :playerSteamId="player.steam_id"
+                />
+              </span>
             </div>
 
             <!-- Actions: role / sanction / edit -->

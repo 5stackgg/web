@@ -4,28 +4,29 @@ import {
   inject,
   nextTick,
   onBeforeUnmount,
+  onMounted,
   ref,
   watch,
   type Ref,
 } from "vue";
 import {
   ArrowUpRight,
-  Clock,
+  Check,
   Crosshair,
   Film,
   ListVideo,
-  MapPin,
   Maximize,
   Minimize,
   Pause,
   Play,
-  Shield,
+  Share2,
   Volume2,
   VolumeX,
 } from "lucide-vue-next";
 import type { Clip } from "~/types/clip";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { useClipModal } from "~/composables/useClipModal";
+import { useToast } from "~/components/ui/toast/use-toast";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 
 const props = defineProps<{
@@ -34,6 +35,56 @@ const props = defineProps<{
 
 const apiDomain = computed(() => useRuntimeConfig().public.apiDomain as string);
 const { openClip, activeClipId } = useClipModal();
+const { toast } = useToast();
+
+// Discord/Slack unfurls the /clips/<id> URL via the Nitro route at
+// server/routes/clips/[id].get.ts — the share path always points there
+// so pasted links auto-play as inline video.
+// Tracks the clip whose share button was just used so the icon can
+// swap to a checkmark and the button glows briefly — toast in the
+// corner is easy to miss when the user's eyes are on the click target.
+const copiedClipId = ref<string | null>(null);
+let copiedTimer: ReturnType<typeof setTimeout> | null = null;
+function flashCopied(clipId: string) {
+  copiedClipId.value = clipId;
+  if (copiedTimer) clearTimeout(copiedTimer);
+  copiedTimer = setTimeout(() => {
+    copiedClipId.value = null;
+    copiedTimer = null;
+  }, 1500);
+}
+async function shareClip(clipId: string) {
+  if (typeof window === "undefined") return;
+  const url = `${window.location.origin}/clips/${clipId}`;
+
+  // Prefer the OS share sheet on touch devices (iOS/Android) — one
+  // tap to Messages, Discord, etc. instead of paste-and-go.
+  const isTouch =
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(pointer: coarse)").matches;
+  if (isTouch && typeof navigator.share === "function") {
+    try {
+      await navigator.share({ url });
+      flashCopied(clipId);
+      return;
+    } catch (err: any) {
+      if (err?.name === "AbortError") return;
+      // anything else → fall through to clipboard
+    }
+  }
+
+  try {
+    await navigator.clipboard.writeText(url);
+    flashCopied(clipId);
+    toast({ title: "Link copied" });
+  } catch {
+    toast({
+      title: "Copy failed",
+      description: url,
+      variant: "destructive",
+    });
+  }
+}
 
 // Provided by pages/matches/[id].vue (single shared subscription).
 const injectedClips = inject<Ref<Clip[]>>("matchClips");
@@ -113,14 +164,6 @@ const inlineProgress = ref(0);
 const inlinePlaying = ref(false);
 const inlineAutoAdvanced = ref(false);
 const showIntroOverlay = ref(false);
-// Touch devices don't have a hover state to gate "show controls" on,
-// and Safari's sticky :hover-after-tap keeps the overlay visible long
-// after the viewer wants it gone. Track coarse pointer so we can drop
-// the hover-reveal entirely on phones/tablets.
-const coarsePointer = ref(false);
-if (typeof window !== "undefined" && window.matchMedia) {
-  coarsePointer.value = window.matchMedia("(pointer: coarse)").matches;
-}
 let introOverlayTimer: ReturnType<typeof setTimeout> | null = null;
 // Try to autoplay with audio; browsers may force-mute on autoplay until the
 // user interacts. We track that state so the mute toggle reflects reality.
@@ -270,7 +313,52 @@ const featuredClipImage = computed(() => {
   const c = featuredClip.value;
   return c?.thumbnail_download_url ?? c?.match_map?.map?.poster ?? null;
 });
-const reelQueue = computed(() => filteredClips.value);
+const fullQueue = computed(() => filteredClips.value);
+
+// Infinite-scroll the queue so a match with hundreds of clips doesn't
+// hand the browser hundreds of DOM rows up-front. We keep the full set
+// in memory (so featured/next/queue counts stay accurate) and only
+// render a sliding window that grows when the sentinel scrolls into view.
+const QUEUE_PAGE_SIZE = 30;
+const queueVisibleCount = ref(QUEUE_PAGE_SIZE);
+const reelQueue = computed(() =>
+  fullQueue.value.slice(0, queueVisibleCount.value),
+);
+const hasMoreQueue = computed(
+  () => queueVisibleCount.value < fullQueue.value.length,
+);
+const queueScrollEl = ref<HTMLElement | null>(null);
+const queueSentinelEl = ref<HTMLElement | null>(null);
+let queueObserver: IntersectionObserver | null = null;
+function ensureQueueObserver() {
+  queueObserver?.disconnect();
+  queueObserver = null;
+  if (!queueSentinelEl.value || !queueScrollEl.value) return;
+  queueObserver = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting && hasMoreQueue.value) {
+          queueVisibleCount.value = Math.min(
+            queueVisibleCount.value + QUEUE_PAGE_SIZE,
+            fullQueue.value.length,
+          );
+        }
+      }
+    },
+    { root: queueScrollEl.value, rootMargin: "0px 0px 240px 0px" },
+  );
+  queueObserver.observe(queueSentinelEl.value);
+}
+onMounted(ensureQueueObserver);
+watch([queueSentinelEl, queueScrollEl, hasMoreQueue], () =>
+  ensureQueueObserver(),
+);
+// Reset the window when the visible set changes shape so the user
+// doesn't have to scroll past stale rows after picking a player filter.
+watch(playerFilter, () => {
+  queueVisibleCount.value = QUEUE_PAGE_SIZE;
+  queueScrollEl.value?.scrollTo({ top: 0 });
+});
 const featuredPlayer = computed(() =>
   featuredClip.value?.target_steam_id
     ? playerOptions.value.find(
@@ -372,6 +460,54 @@ function startProgressLoop() {
   progressRafId = requestAnimationFrame(tickProgress);
 }
 
+// While playing, fade the play button + overlay out after a couple
+// seconds of continued hover so the clip itself isn't obstructed.
+// `bumpInlineControls` is called on every mousemove inside the stage
+// to reset the timer; `hideInlineControls` runs on mouseleave (and the
+// timeout) to dismiss. When paused, controls always stay visible so
+// the play affordance is unmistakable.
+const inlineControlsVisible = ref(true);
+const CONTROLS_HIDE_DELAY = 1100;
+let controlsHideTimer: ReturnType<typeof setTimeout> | null = null;
+function clearControlsTimer() {
+  if (controlsHideTimer) {
+    clearTimeout(controlsHideTimer);
+    controlsHideTimer = null;
+  }
+}
+function bumpInlineControls() {
+  inlineControlsVisible.value = true;
+  clearControlsTimer();
+  if (inlinePlaying.value && !showIntroOverlay.value) {
+    controlsHideTimer = setTimeout(() => {
+      inlineControlsVisible.value = false;
+      controlsHideTimer = null;
+    }, CONTROLS_HIDE_DELAY);
+  }
+}
+function hideInlineControls() {
+  clearControlsTimer();
+  if (inlinePlaying.value && !showIntroOverlay.value) {
+    inlineControlsVisible.value = false;
+  }
+}
+watch(inlinePlaying, (playing) => {
+  if (playing) {
+    bumpInlineControls();
+  } else {
+    clearControlsTimer();
+    inlineControlsVisible.value = true;
+  }
+});
+watch(showIntroOverlay, (showing) => {
+  if (showing) {
+    clearControlsTimer();
+    inlineControlsVisible.value = true;
+  } else if (inlinePlaying.value) {
+    bumpInlineControls();
+  }
+});
+
 function onInlineEnded() {
   inlinePlaying.value = false;
   stopProgressLoop();
@@ -385,6 +521,11 @@ function onInlineEnded() {
 onBeforeUnmount(() => {
   stopProgressLoop();
   if (introOverlayTimer) clearTimeout(introOverlayTimer);
+  clearControlsTimer();
+  if (copiedTimer) clearTimeout(copiedTimer);
+  copiedTimer = null;
+  queueObserver?.disconnect();
+  queueObserver = null;
   if (typeof document !== "undefined") {
     document.removeEventListener("fullscreenchange", onFullscreenChange);
     document.removeEventListener("webkitfullscreenchange", onFullscreenChange);
@@ -463,6 +604,8 @@ function clipTeamName(c: Clip): string | null {
             ? 'flex items-center justify-center !aspect-auto !rounded-none !border-0'
             : ''
         "
+        @mousemove="bumpInlineControls"
+        @mouseleave="hideInlineControls"
       >
         <template #video>
           <video
@@ -471,7 +614,7 @@ function clipTeamName(c: Clip): string | null {
             ref="inlineVideoRef"
             :src="featuredClip.download_url"
             :poster="featuredClipImage ?? undefined"
-            class="absolute inset-0 h-full w-full cursor-pointer object-contain transition-transform duration-500 group-hover/feature:scale-[1.025]"
+            class="absolute inset-0 h-full w-full cursor-pointer object-contain"
             :muted="inlineMuted"
             playsinline
             preload="auto"
@@ -497,7 +640,7 @@ function clipTeamName(c: Clip): string | null {
             v-else-if="featuredClipImage"
             :src="featuredClipImage"
             :alt="featuredClip.title ?? 'Featured highlight'"
-            class="absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover/feature:scale-[1.025]"
+            class="absolute inset-0 h-full w-full object-contain"
           />
           <div
             v-else
@@ -508,30 +651,12 @@ function clipTeamName(c: Clip): string | null {
         </template>
         <div
           class="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-[linear-gradient(180deg,transparent_0%,hsl(0_0%_0%/0.7)_100%)] transition-opacity duration-300"
-          :class="
-            inlinePlaying && !showIntroOverlay
-              ? coarsePointer
-                ? 'opacity-0'
-                : 'opacity-0 group-hover/feature:opacity-100'
-              : 'opacity-100'
-          "
+          :class="inlineControlsVisible ? 'opacity-100' : 'opacity-0'"
         ></div>
         <div
-          class="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-between gap-2 p-3 transition-opacity duration-300"
-          :class="
-            inlinePlaying && !showIntroOverlay
-              ? coarsePointer
-                ? 'opacity-0'
-                : 'opacity-0 group-hover/feature:opacity-100'
-              : 'opacity-100'
-          "
+          class="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-end gap-2 p-3 transition-opacity duration-300"
+          :class="inlineControlsVisible ? 'opacity-100' : 'opacity-0'"
         >
-          <div
-            class="inline-flex items-center gap-2 rounded-full border border-[hsl(var(--tac-amber)/0.55)] bg-black/65 px-2.5 py-1 font-mono text-[0.58rem] uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))] backdrop-blur-md"
-          >
-            <Play class="h-3 w-3 fill-current" />
-            Inline Reel
-          </div>
           <!-- Mobile: only the Details link captures taps so the rest of
                the top tray (kills + duration chips) lets clicks fall
                through to the video instead of trapping the tap and
@@ -549,19 +674,26 @@ function clipTeamName(c: Clip): string | null {
               Details
               <ArrowUpRight class="h-3 w-3" />
             </button>
-            <span
-              v-if="(featuredClip.kills_count ?? 0) > 0"
-              class="inline-flex items-center gap-1 rounded border border-[hsl(var(--destructive))] bg-[hsl(var(--destructive)/0.85)] px-2 py-1 font-mono text-[0.65rem] font-bold text-white tabular-nums shadow-[0_0_10px_hsl(var(--destructive)/0.4)]"
-              :title="`${featuredClip.kills_count} kill${featuredClip.kills_count === 1 ? '' : 's'} in clip`"
+            <button
+              type="button"
+              class="pointer-events-auto inline-flex h-7 w-7 items-center justify-center rounded-full border bg-black/70 backdrop-blur-md transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+              :class="
+                copiedClipId === featuredClip.id
+                  ? 'share-flash border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber))] scale-110'
+                  : 'border-white/20 text-white/80'
+              "
+              :title="
+                copiedClipId === featuredClip.id ? 'Link copied!' : 'Share clip'
+              "
+              aria-label="Share clip"
+              @click.stop="shareClip(featuredClip.id)"
             >
-              <Crosshair class="h-3 w-3" />
-              {{ featuredClip.kills_count }}K
-            </span>
-            <span
-              class="rounded bg-black/75 px-2 py-1 font-mono text-[0.65rem] text-white"
-            >
-              {{ formatDuration(featuredClip.duration_ms) }}
-            </span>
+              <Check
+                v-if="copiedClipId === featuredClip.id"
+                class="h-3.5 w-3.5"
+              />
+              <Share2 v-else class="h-3.5 w-3.5" />
+            </button>
           </div>
         </div>
         <!-- Unified play/pause toggle. Icon mirrors actual playback
@@ -573,13 +705,11 @@ function clipTeamName(c: Clip): string | null {
              since there's no hover to bring it back. -->
         <button
           type="button"
-          class="absolute left-1/2 top-1/2 inline-flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/45 bg-white/16 text-white shadow-[0_0_30px_hsl(var(--tac-amber)/0.35)] backdrop-blur-sm transition duration-200 hover:scale-110"
+          class="absolute left-1/2 top-1/2 inline-flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/45 bg-white/16 text-white shadow-[0_0_30px_hsl(var(--tac-amber)/0.35)] backdrop-blur-sm transition duration-200 hover:scale-110 group-hover/feature:scale-110 group-hover/feature:border-[hsl(var(--tac-amber)/0.7)] group-hover/feature:bg-white/25"
           :class="
-            inlinePlaying && !showIntroOverlay
-              ? coarsePointer
-                ? 'pointer-events-none opacity-0'
-                : 'pointer-events-none opacity-0 group-hover/feature:pointer-events-auto group-hover/feature:opacity-100'
-              : 'opacity-100'
+            inlineControlsVisible
+              ? 'opacity-100'
+              : 'pointer-events-none opacity-0'
           "
           :title="
             inlinePlaying
@@ -594,34 +724,12 @@ function clipTeamName(c: Clip): string | null {
         </button>
         <div
           class="pointer-events-none absolute inset-x-0 bottom-0 transition-opacity duration-300"
-          :class="
-            inlinePlaying && !showIntroOverlay
-              ? coarsePointer
-                ? 'opacity-0'
-                : 'opacity-0 group-hover/feature:opacity-100'
-              : 'opacity-100'
-          "
+          :class="inlineControlsVisible ? 'opacity-100' : 'opacity-0'"
         >
           <div class="p-4 sm:p-5">
-            <div
-              v-if="nextInlineClip"
-              class="mb-2 flex flex-wrap items-center gap-2 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/55"
-            >
-              <span>Next: {{ nextInlineClip.target?.name ?? "clip" }}</span>
+            <div class="flex min-w-0 items-center gap-2.5">
               <span
-                v-if="(nextInlineClip.kills_count ?? 0) > 0"
-                class="inline-flex items-center gap-1 rounded border border-[hsl(var(--destructive))] bg-[hsl(var(--destructive)/0.85)] px-1.5 py-0.5 text-white tabular-nums"
-              >
-                <Crosshair class="h-2.5 w-2.5" />
-                {{ nextInlineClip.kills_count }}K
-              </span>
-              <span v-if="nextInlineClip.match_map?.map?.name">
-                · {{ nextInlineClip.match_map.map.name }}
-              </span>
-            </div>
-            <div class="mb-2 flex min-w-0 items-center gap-2.5">
-              <span
-                class="inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.14)]"
+                class="inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.14)]"
               >
                 <NuxtImg
                   v-if="featuredPlayer?.avatarSrc"
@@ -640,21 +748,67 @@ function clipTeamName(c: Clip): string | null {
                   }}
                 </span>
               </span>
-              <span class="min-w-0 truncate text-xs font-semibold text-white">
-                {{ featuredClip.target?.name ?? "Match highlight" }}
-                <span
-                  v-if="featuredPlayer?.teamName"
-                  class="font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/55"
-                >
-                  · {{ featuredPlayer.teamName }}
-                </span>
-              </span>
+              <div class="min-w-0 flex-1">
+                <div class="flex min-w-0 items-center gap-2">
+                  <span
+                    class="min-w-0 truncate text-sm font-semibold text-white sm:text-base"
+                    ><!--
+                  --><NuxtLink
+                      v-if="featuredClip.target_steam_id"
+                      :to="`/players/${featuredClip.target_steam_id}`"
+                      class="pointer-events-auto text-white transition-colors hover:text-[hsl(var(--tac-amber))]"
+                      :title="`Open ${featuredClip.target?.name ?? 'player'}'s profile`"
+                      @click.stop
+                      >{{
+                        featuredClip.target?.name ?? "Match highlight"
+                      }}</NuxtLink
+                    ><template v-else>{{
+                      featuredClip.target?.name ?? "Match highlight"
+                    }}</template
+                    ><span
+                      v-if="featuredPlayer?.teamName"
+                      class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-white/55"
+                    >
+                      · {{ featuredPlayer.teamName }}</span
+                    ></span
+                  >
+                  <span
+                    v-if="(featuredClip.kills_count ?? 0) > 0"
+                    class="inline-flex shrink-0 items-center gap-1 rounded border border-[hsl(var(--destructive))] bg-[hsl(var(--destructive)/0.85)] px-1.5 py-0.5 font-mono text-[0.65rem] font-bold text-white tabular-nums shadow-[0_0_10px_hsl(var(--destructive)/0.4)]"
+                    :title="`${featuredClip.kills_count} kill${featuredClip.kills_count === 1 ? '' : 's'} in clip`"
+                  >
+                    <Crosshair class="h-3 w-3" />
+                    {{ featuredClip.kills_count }}K
+                  </span>
+                </div>
+                <div class="mt-0.5 flex min-w-0 items-center gap-1.5">
+                  <span
+                    v-if="featuredClip.match_map?.map?.name"
+                    class="min-w-0 truncate font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/55"
+                    ><!--
+                  -->{{ featuredClip.match_map.map.name }}</span
+                  >
+                  <span
+                    v-if="featuredClip.round != null"
+                    class="shrink-0 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/55"
+                    :title="`Round ${featuredClip.round}`"
+                  >
+                    · R{{ featuredClip.round }}
+                  </span>
+                  <span
+                    v-if="formatRelativeTime(featuredClip.created_at)"
+                    class="shrink-0 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/40"
+                  >
+                    · {{ formatRelativeTime(featuredClip.created_at) }}
+                  </span>
+                  <span
+                    class="shrink-0 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/40 tabular-nums"
+                  >
+                    · {{ formatDuration(featuredClip.duration_ms) }}
+                  </span>
+                </div>
+              </div>
             </div>
-            <h2
-              class="max-w-3xl truncate text-base font-bold uppercase leading-tight text-white sm:text-xl"
-            >
-              {{ featuredClip.title ?? "Untitled highlight" }}
-            </h2>
           </div>
         </div>
         <div class="absolute bottom-3 right-3 z-[3] flex items-center gap-2">
@@ -713,7 +867,7 @@ function clipTeamName(c: Clip): string | null {
       </StreamCanvas>
 
       <aside
-        class="reel-queue relative hidden min-h-0 flex-col overflow-hidden rounded-md border border-border/60 bg-card/35 [backdrop-filter:blur(8px)] lg:flex lg:aspect-video lg:max-h-none"
+        class="reel-queue relative flex min-h-0 max-h-80 flex-col overflow-hidden rounded-md border border-border/60 bg-card/35 [backdrop-filter:blur(8px)] lg:aspect-video lg:max-h-none"
       >
         <div
           class="flex items-center justify-between gap-3 border-b border-border/50 px-3 py-2.5"
@@ -730,131 +884,149 @@ function clipTeamName(c: Clip): string | null {
             {{ filteredClips.length }} clips
           </span>
         </div>
-        <div class="min-h-0 flex-1 overflow-y-auto p-2">
-          <button
+        <div ref="queueScrollEl" class="min-h-0 flex-1 overflow-y-auto p-2">
+          <div
             v-for="(c, index) in reelQueue"
             :key="c.id"
-            type="button"
-            class="group/queue queue-row relative flex w-full min-w-0 items-center gap-3 rounded-md border border-transparent px-2 py-2 text-left hover:border-[hsl(var(--tac-amber)/0.45)] hover:bg-[hsl(var(--tac-amber)/0.08)]"
-            :class="
-              c.id === featuredClip.id
-                ? 'queue-row--active border-[hsl(var(--tac-amber)/0.65)] bg-[hsl(var(--tac-amber)/0.16)]'
-                : ''
-            "
-            @click="playInlineClip(c.id)"
+            class="group/queue-wrap flex items-center gap-1"
           >
-            <span
-              class="queue-row__rail pointer-events-none absolute inset-y-1 left-0 w-[3px] rounded-full bg-[hsl(var(--tac-amber))]"
-            ></span>
-            <span
-              class="relative flex w-6 shrink-0 items-center justify-center"
-              :title="
+            <button
+              type="button"
+              class="group/queue queue-row relative flex min-w-0 flex-1 items-center gap-2.5 rounded-md border border-transparent px-2 py-2 text-left hover:border-[hsl(var(--tac-amber)/0.45)] hover:bg-[hsl(var(--tac-amber)/0.08)]"
+              :class="
                 c.id === featuredClip.id
-                  ? inlinePlaying
-                    ? 'Now playing'
-                    : 'Selected'
+                  ? 'queue-row--active border-[hsl(var(--tac-amber)/0.65)] bg-[hsl(var(--tac-amber)/0.16)]'
                   : ''
               "
+              @click="playInlineClip(c.id)"
             >
               <span
-                class="queue-row__index absolute inset-0 flex items-center justify-center font-mono text-[0.62rem] text-muted-foreground tabular-nums"
-              >
-                {{ String(index + 1).padStart(2, "0") }}
-              </span>
-              <span class="queue-row__dot relative flex h-2 w-2">
-                <span
-                  v-if="c.id === featuredClip.id && inlinePlaying"
-                  class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
-                ></span>
-                <span
-                  class="relative inline-flex h-2 w-2 rounded-full bg-[hsl(var(--tac-amber))]"
-                ></span>
-              </span>
-            </span>
-            <span
-              class="relative h-12 w-20 shrink-0 overflow-hidden rounded border border-border/50 bg-black"
-            >
-              <video
-                v-if="c.download_url"
-                :src="c.download_url"
-                :poster="
-                  c.thumbnail_download_url ??
-                  c.match_map?.map?.poster ??
-                  undefined
-                "
-                class="h-full w-full object-cover opacity-80"
-                muted
-                playsinline
-                preload="metadata"
-              />
-              <NuxtImg
-                v-else-if="c.thumbnail_download_url ?? c.match_map?.map?.poster"
-                :src="
-                  c.thumbnail_download_url ?? c.match_map?.map?.poster ?? ''
-                "
-                :alt="c.title ?? 'Highlight'"
-                class="h-full w-full object-cover opacity-80"
-              />
+                class="queue-row__rail pointer-events-none absolute inset-y-1 left-0 w-[3px] rounded-full bg-[hsl(var(--tac-amber))]"
+              ></span>
               <span
-                class="absolute inset-0 flex items-center justify-center bg-black/25 text-white/85"
-              >
-                <Play class="h-3.5 w-3.5 fill-current" />
-              </span>
-            </span>
-            <span class="min-w-0 flex-1">
-              <span
-                class="block truncate text-sm font-semibold group-hover/queue:text-[hsl(var(--tac-amber))]"
-                :class="
+                class="relative flex w-5 shrink-0 items-center justify-center self-center"
+                :title="
                   c.id === featuredClip.id
-                    ? 'text-[hsl(var(--tac-amber))]'
-                    : 'text-foreground'
+                    ? inlinePlaying
+                      ? 'Now playing'
+                      : 'Selected'
+                    : ''
                 "
               >
-                {{ c.title ?? "Untitled highlight" }}
-              </span>
-              <span class="mt-1 flex min-w-0 flex-wrap items-center gap-1.5">
-                <span class="truncate text-xs text-muted-foreground">
-                  {{ c.target?.name ?? "Player" }}
-                </span>
                 <span
-                  v-if="clipTeamName(c)"
-                  class="inline-flex max-w-[7rem] shrink-0 items-center gap-1 rounded border border-[hsl(var(--tac-amber)/0.3)] bg-[hsl(var(--tac-amber)/0.08)] px-1.5 py-0.5 font-mono text-[0.5rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+                  class="queue-row__index absolute inset-0 flex items-center justify-center font-mono text-[0.62rem] text-muted-foreground tabular-nums"
                 >
-                  <Shield class="h-2.5 w-2.5 shrink-0" />
-                  <span class="truncate">{{ clipTeamName(c) }}</span>
+                  {{ String(index + 1).padStart(2, "0") }}
                 </span>
-                <span
-                  v-if="c.match_map?.map?.name"
-                  class="inline-flex shrink-0 items-center gap-1 font-mono text-[0.5rem] uppercase tracking-[0.12em] text-muted-foreground/80"
-                >
-                  <MapPin class="h-2.5 w-2.5" />
-                  <span class="truncate">{{ c.match_map.map.name }}</span>
-                </span>
-                <span
-                  v-if="formatRelativeTime(c.created_at)"
-                  class="font-mono text-[0.5rem] uppercase tracking-[0.12em] text-muted-foreground/60"
-                >
-                  · {{ formatRelativeTime(c.created_at) }}
+                <span class="queue-row__dot relative flex h-2 w-2">
+                  <span
+                    v-if="c.id === featuredClip.id && inlinePlaying"
+                    class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
+                  ></span>
+                  <span
+                    class="relative inline-flex h-2 w-2 rounded-full bg-[hsl(var(--tac-amber))]"
+                  ></span>
                 </span>
               </span>
-            </span>
-            <span class="flex shrink-0 flex-col items-end gap-1">
+              <span
+                class="inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)]"
+              >
+                <NuxtImg
+                  v-if="
+                    resolveAvatarUrl(c.target?.avatar_url ?? null, apiDomain)
+                  "
+                  :src="
+                    resolveAvatarUrl(c.target?.avatar_url ?? null, apiDomain) ??
+                    ''
+                  "
+                  :alt="c.target?.name ?? 'Player'"
+                  loading="lazy"
+                  class="h-full w-full object-cover"
+                />
+                <span
+                  v-else
+                  class="font-mono text-[0.65rem] font-bold uppercase text-[hsl(var(--tac-amber))]"
+                >
+                  {{ c.target?.name?.charAt(0) ?? "?" }}
+                </span>
+              </span>
+              <div class="min-w-0 flex-1">
+                <div class="flex min-w-0 items-center gap-2">
+                  <span
+                    class="min-w-0 truncate text-sm font-semibold group-hover/queue:text-[hsl(var(--tac-amber))]"
+                    :class="
+                      c.id === featuredClip.id
+                        ? 'text-[hsl(var(--tac-amber))]'
+                        : 'text-foreground'
+                    "
+                    ><!--
+                  -->{{ c.target?.name ?? "Player"
+                    }}<span
+                      v-if="clipTeamName(c)"
+                      class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground/80"
+                    >
+                      · {{ clipTeamName(c) }}</span
+                    ></span
+                  >
+                </div>
+                <div class="mt-0.5 flex min-w-0 items-center gap-1.5">
+                  <span
+                    v-if="c.match_map?.map?.name"
+                    class="min-w-0 truncate font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground/80"
+                    ><!--
+                  -->{{ c.match_map.map.name }}</span
+                  >
+                  <span
+                    v-if="c.round != null"
+                    class="shrink-0 font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground/80"
+                    :title="`Round ${c.round}`"
+                  >
+                    · R{{ c.round }}
+                  </span>
+                  <span
+                    v-if="formatRelativeTime(c.created_at)"
+                    class="shrink-0 font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground/60"
+                  >
+                    · {{ formatRelativeTime(c.created_at) }}
+                  </span>
+                  <span
+                    class="shrink-0 font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground/60 tabular-nums"
+                  >
+                    · {{ formatDuration(c.duration_ms) }}
+                  </span>
+                </div>
+              </div>
               <span
                 v-if="(c.kills_count ?? 0) > 0"
-                class="inline-flex items-center gap-1 rounded border border-[hsl(var(--destructive))] bg-[hsl(var(--destructive)/0.85)] px-1.5 py-0.5 font-mono text-[0.58rem] font-bold uppercase tracking-[0.12em] text-white tabular-nums"
-                :title="`${c.kills_count} kill${c.kills_count === 1 ? '' : 's'}`"
+                class="inline-flex shrink-0 items-center gap-1 self-stretch rounded-md border border-[hsl(var(--destructive))] bg-[hsl(var(--destructive)/0.85)] px-2 font-mono text-[0.65rem] font-bold text-white tabular-nums"
+                :title="`${c.kills_count} kill${c.kills_count === 1 ? '' : 's'} in clip`"
               >
                 <Crosshair class="h-3 w-3" />
                 {{ c.kills_count }}K
               </span>
-              <span
-                class="inline-flex items-center gap-1 font-mono text-[0.58rem] text-muted-foreground tabular-nums"
-              >
-                <Clock class="h-3 w-3" />
-                {{ formatDuration(c.duration_ms) }}
-              </span>
-            </span>
-          </button>
+            </button>
+            <button
+              type="button"
+              class="inline-flex w-8 shrink-0 items-center justify-center self-stretch rounded-md transition-all duration-200 hover:bg-[hsl(var(--tac-amber)/0.18)] hover:text-[hsl(var(--tac-amber))]"
+              :class="
+                copiedClipId === c.id
+                  ? 'share-flash bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
+                  : 'text-muted-foreground'
+              "
+              :title="copiedClipId === c.id ? 'Link copied!' : 'Share clip'"
+              aria-label="Share clip"
+              @click.stop="shareClip(c.id)"
+            >
+              <Check v-if="copiedClipId === c.id" class="h-3.5 w-3.5" />
+              <Share2 v-else class="h-3.5 w-3.5" />
+            </button>
+          </div>
+          <div
+            v-if="hasMoreQueue"
+            ref="queueSentinelEl"
+            class="h-1 w-full"
+            aria-hidden="true"
+          />
         </div>
       </aside>
     </div>
@@ -945,6 +1117,24 @@ function clipTeamName(c: Clip): string | null {
 .queue-row--active .queue-row__index {
   opacity: 0;
   transform: scale(0.85);
+}
+
+/* One-shot pulse when a share button has just copied its link. The
+   toast is far from the click target so the button itself flashes
+   amber + scales briefly — primary feedback for "it worked". */
+@keyframes share-flash {
+  0% {
+    box-shadow: 0 0 0 0 hsl(var(--tac-amber) / 0.55);
+  }
+  60% {
+    box-shadow: 0 0 0 8px hsl(var(--tac-amber) / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--tac-amber) / 0);
+  }
+}
+.share-flash {
+  animation: share-flash 600ms ease-out;
 }
 
 /* Volume slider — minimal styling, sized small so it tucks beside

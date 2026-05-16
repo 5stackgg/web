@@ -6,7 +6,10 @@ const tradeColumns: Array<{ label: string; tooltipKey: string }> = [
   { label: "trade_kill_opportunities", tooltipKey: "trade_kill_opportunities" },
   { label: "trade_kill_attempts", tooltipKey: "trade_kill_attempts" },
   { label: "trade_kill_pct", tooltipKey: "trade_kill_pct" },
-  { label: "traded_death_opportunities", tooltipKey: "traded_death_opportunities" },
+  {
+    label: "traded_death_opportunities",
+    tooltipKey: "traded_death_opportunities",
+  },
   { label: "traded_death_pct", tooltipKey: "traded_death_pct" },
   { label: "net_trade", tooltipKey: "net_trade" },
 ];
@@ -33,10 +36,16 @@ const tradeColumns: Array<{ label: string; tooltipKey: string }> = [
               <TooltipContent class="max-w-sm space-y-3">
                 <div>
                   <div class="font-semibold">
-                    {{ $t(`match.lineup.stats.tooltips.${col.tooltipKey}.title`) }}
+                    {{
+                      $t(`match.lineup.stats.tooltips.${col.tooltipKey}.title`)
+                    }}
                   </div>
                   <div class="text-xs mt-1 leading-snug">
-                    {{ $t(`match.lineup.stats.tooltips.${col.tooltipKey}.description`) }}
+                    {{
+                      $t(
+                        `match.lineup.stats.tooltips.${col.tooltipKey}.description`,
+                      )
+                    }}
                   </div>
                 </div>
                 <div>
@@ -44,7 +53,11 @@ const tradeColumns: Array<{ label: string; tooltipKey: string }> = [
                     {{ $t("match.lineup.stats.calc_header") }}
                   </div>
                   <div class="text-xs mt-1 leading-snug">
-                    {{ $t(`match.lineup.stats.tooltips.${col.tooltipKey}.calculation`) }}
+                    {{
+                      $t(
+                        `match.lineup.stats.tooltips.${col.tooltipKey}.calculation`,
+                      )
+                    }}
                   </div>
                 </div>
               </TooltipContent>

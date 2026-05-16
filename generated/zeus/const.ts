@@ -2690,6 +2690,9 @@ export const AllTypesProps: Record<string,any> = {
 	get_leaderboard_args:{
 
 	},
+	get_player_leaderboard_rank_args:{
+
+	},
 	inet: `scalar.inet` as const,
 	inet_comparison_exp:{
 		_eq:"inet",
@@ -3278,6 +3281,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_avg_order_by:{
 		duration_ms:"order_by",
 		kills_count:"order_by",
+		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
 		user_steam_id:"order_by"
@@ -3298,6 +3302,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"uuid_comparison_exp",
 		render_jobs:"clip_render_jobs_bool_exp",
 		render_jobs_aggregate:"clip_render_jobs_aggregate_bool_exp",
+		round:"Int_comparison_exp",
 		size:"bigint_comparison_exp",
 		target:"players_bool_exp",
 		target_steam_id:"bigint_comparison_exp",
@@ -3336,6 +3341,7 @@ export const AllTypesProps: Record<string,any> = {
 		kills_count:"order_by",
 		match_map_demo_id:"order_by",
 		match_map_id:"order_by",
+		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
 		thumbnail_url:"order_by",
@@ -3351,6 +3357,7 @@ export const AllTypesProps: Record<string,any> = {
 		kills_count:"order_by",
 		match_map_demo_id:"order_by",
 		match_map_id:"order_by",
+		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
 		thumbnail_url:"order_by",
@@ -3379,6 +3386,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_demo_id:"order_by",
 		match_map_id:"order_by",
 		render_jobs_aggregate:"clip_render_jobs_aggregate_order_by",
+		round:"order_by",
 		size:"order_by",
 		target:"players_order_by",
 		target_steam_id:"order_by",
@@ -3405,6 +3413,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_stddev_order_by:{
 		duration_ms:"order_by",
 		kills_count:"order_by",
+		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
 		user_steam_id:"order_by"
@@ -3412,6 +3421,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_stddev_pop_order_by:{
 		duration_ms:"order_by",
 		kills_count:"order_by",
+		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
 		user_steam_id:"order_by"
@@ -3419,6 +3429,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_stddev_samp_order_by:{
 		duration_ms:"order_by",
 		kills_count:"order_by",
+		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
 		user_steam_id:"order_by"
@@ -3439,6 +3450,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_sum_order_by:{
 		duration_ms:"order_by",
 		kills_count:"order_by",
+		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
 		user_steam_id:"order_by"
@@ -3452,6 +3464,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_var_pop_order_by:{
 		duration_ms:"order_by",
 		kills_count:"order_by",
+		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
 		user_steam_id:"order_by"
@@ -3459,6 +3472,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_var_samp_order_by:{
 		duration_ms:"order_by",
 		kills_count:"order_by",
+		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
 		user_steam_id:"order_by"
@@ -3466,6 +3480,7 @@ export const AllTypesProps: Record<string,any> = {
 	match_clips_variance_order_by:{
 		duration_ms:"order_by",
 		kills_count:"order_by",
+		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
 		user_steam_id:"order_by"
@@ -6690,6 +6705,9 @@ export const AllTypesProps: Record<string,any> = {
 		delete_player_kills_by_weapon_by_pk:{
 			player_steam_id:"bigint"
 		},
+		delete_player_leaderboard_rank:{
+			where:"player_leaderboard_rank_bool_exp"
+		},
 		delete_player_match_map_stats:{
 			where:"player_match_map_stats_bool_exp"
 		},
@@ -7373,6 +7391,12 @@ export const AllTypesProps: Record<string,any> = {
 		insert_player_kills_one:{
 			object:"player_kills_insert_input",
 			on_conflict:"player_kills_on_conflict"
+		},
+		insert_player_leaderboard_rank:{
+			objects:"player_leaderboard_rank_insert_input"
+		},
+		insert_player_leaderboard_rank_one:{
+			object:"player_leaderboard_rank_insert_input"
 		},
 		insert_player_match_map_stats:{
 			objects:"player_match_map_stats_insert_input",
@@ -8526,6 +8550,14 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_player_kills_many:{
 			updates:"player_kills_updates"
+		},
+		update_player_leaderboard_rank:{
+			_inc:"player_leaderboard_rank_inc_input",
+			_set:"player_leaderboard_rank_set_input",
+			where:"player_leaderboard_rank_bool_exp"
+		},
+		update_player_leaderboard_rank_many:{
+			updates:"player_leaderboard_rank_updates"
 		},
 		update_player_match_map_stats:{
 			_inc:"player_match_map_stats_inc_input",
@@ -10679,6 +10711,48 @@ export const AllTypesProps: Record<string,any> = {
 		attacked_steam_id:"order_by",
 		attacker_steam_id:"order_by",
 		round:"order_by"
+	},
+	player_leaderboard_rank_aggregate_fields:{
+		count:{
+			columns:"player_leaderboard_rank_select_column"
+		}
+	},
+	player_leaderboard_rank_bool_exp:{
+		_and:"player_leaderboard_rank_bool_exp",
+		_not:"player_leaderboard_rank_bool_exp",
+		_or:"player_leaderboard_rank_bool_exp",
+		player_steam_id:"String_comparison_exp",
+		rank:"Int_comparison_exp",
+		total:"Int_comparison_exp",
+		value:"float8_comparison_exp"
+	},
+	player_leaderboard_rank_inc_input:{
+		value:"float8"
+	},
+	player_leaderboard_rank_insert_input:{
+		value:"float8"
+	},
+	player_leaderboard_rank_order_by:{
+		player_steam_id:"order_by",
+		rank:"order_by",
+		total:"order_by",
+		value:"order_by"
+	},
+	player_leaderboard_rank_select_column: "enum" as const,
+	player_leaderboard_rank_set_input:{
+		value:"float8"
+	},
+	player_leaderboard_rank_stream_cursor_input:{
+		initial_value:"player_leaderboard_rank_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	player_leaderboard_rank_stream_cursor_value_input:{
+		value:"float8"
+	},
+	player_leaderboard_rank_updates:{
+		_inc:"player_leaderboard_rank_inc_input",
+		_set:"player_leaderboard_rank_set_input",
+		where:"player_leaderboard_rank_bool_exp"
 	},
 	player_match_map_stats_aggregate_bool_exp:{
 		count:"player_match_map_stats_aggregate_bool_exp_count"
@@ -13966,6 +14040,18 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"leaderboard_entries_order_by",
 			where:"leaderboard_entries_bool_exp"
 		},
+		get_player_leaderboard_rank:{
+			args:"get_player_leaderboard_rank_args",
+			distinct_on:"player_leaderboard_rank_select_column",
+			order_by:"player_leaderboard_rank_order_by",
+			where:"player_leaderboard_rank_bool_exp"
+		},
+		get_player_leaderboard_rank_aggregate:{
+			args:"get_player_leaderboard_rank_args",
+			distinct_on:"player_leaderboard_rank_select_column",
+			order_by:"player_leaderboard_rank_order_by",
+			where:"player_leaderboard_rank_bool_exp"
+		},
 		leaderboard_entries:{
 			distinct_on:"leaderboard_entries_select_column",
 			order_by:"leaderboard_entries_order_by",
@@ -14367,6 +14453,16 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		player_kills_by_weapon_by_pk:{
 			player_steam_id:"bigint"
+		},
+		player_leaderboard_rank:{
+			distinct_on:"player_leaderboard_rank_select_column",
+			order_by:"player_leaderboard_rank_order_by",
+			where:"player_leaderboard_rank_bool_exp"
+		},
+		player_leaderboard_rank_aggregate:{
+			distinct_on:"player_leaderboard_rank_select_column",
+			order_by:"player_leaderboard_rank_order_by",
+			where:"player_leaderboard_rank_bool_exp"
 		},
 		player_match_map_stats:{
 			distinct_on:"player_match_map_stats_select_column",
@@ -15814,6 +15910,18 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"leaderboard_entries_order_by",
 			where:"leaderboard_entries_bool_exp"
 		},
+		get_player_leaderboard_rank:{
+			args:"get_player_leaderboard_rank_args",
+			distinct_on:"player_leaderboard_rank_select_column",
+			order_by:"player_leaderboard_rank_order_by",
+			where:"player_leaderboard_rank_bool_exp"
+		},
+		get_player_leaderboard_rank_aggregate:{
+			args:"get_player_leaderboard_rank_args",
+			distinct_on:"player_leaderboard_rank_select_column",
+			order_by:"player_leaderboard_rank_order_by",
+			where:"player_leaderboard_rank_bool_exp"
+		},
 		leaderboard_entries:{
 			distinct_on:"leaderboard_entries_select_column",
 			order_by:"leaderboard_entries_order_by",
@@ -16332,6 +16440,20 @@ export const AllTypesProps: Record<string,any> = {
 		player_kills_stream:{
 			cursor:"player_kills_stream_cursor_input",
 			where:"player_kills_bool_exp"
+		},
+		player_leaderboard_rank:{
+			distinct_on:"player_leaderboard_rank_select_column",
+			order_by:"player_leaderboard_rank_order_by",
+			where:"player_leaderboard_rank_bool_exp"
+		},
+		player_leaderboard_rank_aggregate:{
+			distinct_on:"player_leaderboard_rank_select_column",
+			order_by:"player_leaderboard_rank_order_by",
+			where:"player_leaderboard_rank_bool_exp"
+		},
+		player_leaderboard_rank_stream:{
+			cursor:"player_leaderboard_rank_stream_cursor_input",
+			where:"player_leaderboard_rank_bool_exp"
 		},
 		player_match_map_stats:{
 			distinct_on:"player_match_map_stats_select_column",
@@ -23100,6 +23222,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_id:"uuid",
 		render_jobs:"clip_render_jobs",
 		render_jobs_aggregate:"clip_render_jobs_aggregate",
+		round:"Int",
 		size:"bigint",
 		target:"players",
 		target_steam_id:"bigint",
@@ -23130,6 +23253,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_avg_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
@@ -23143,6 +23267,7 @@ export const ReturnTypes: Record<string,any> = {
 		kills_count:"Int",
 		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
+		round:"Int",
 		size:"bigint",
 		target_steam_id:"bigint",
 		thumbnail_download_url:"String",
@@ -23160,6 +23285,7 @@ export const ReturnTypes: Record<string,any> = {
 		kills_count:"Int",
 		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
+		round:"Int",
 		size:"bigint",
 		target_steam_id:"bigint",
 		thumbnail_download_url:"String",
@@ -23175,6 +23301,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_stddev_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
@@ -23182,6 +23309,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_stddev_pop_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
@@ -23189,6 +23317,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_stddev_samp_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
@@ -23196,6 +23325,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_sum_fields:{
 		duration_ms:"Int",
 		kills_count:"Int",
+		round:"Int",
 		size:"bigint",
 		target_steam_id:"bigint",
 		user_steam_id:"bigint"
@@ -23203,6 +23333,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_var_pop_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
@@ -23210,6 +23341,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_var_samp_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
@@ -23217,6 +23349,7 @@ export const ReturnTypes: Record<string,any> = {
 	match_clips_variance_fields:{
 		duration_ms:"Float",
 		kills_count:"Float",
+		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
 		user_steam_id:"Float"
@@ -24704,6 +24837,7 @@ export const ReturnTypes: Record<string,any> = {
 		delete_player_kills_by_pk:"player_kills",
 		delete_player_kills_by_weapon:"player_kills_by_weapon_mutation_response",
 		delete_player_kills_by_weapon_by_pk:"player_kills_by_weapon",
+		delete_player_leaderboard_rank:"player_leaderboard_rank_mutation_response",
 		delete_player_match_map_stats:"player_match_map_stats_mutation_response",
 		delete_player_match_map_stats_by_pk:"player_match_map_stats",
 		delete_player_objectives:"player_objectives_mutation_response",
@@ -24888,6 +25022,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_player_kills_by_weapon:"player_kills_by_weapon_mutation_response",
 		insert_player_kills_by_weapon_one:"player_kills_by_weapon",
 		insert_player_kills_one:"player_kills",
+		insert_player_leaderboard_rank:"player_leaderboard_rank_mutation_response",
+		insert_player_leaderboard_rank_one:"player_leaderboard_rank",
 		insert_player_match_map_stats:"player_match_map_stats_mutation_response",
 		insert_player_match_map_stats_one:"player_match_map_stats",
 		insert_player_objectives:"player_objectives_mutation_response",
@@ -25176,6 +25312,8 @@ export const ReturnTypes: Record<string,any> = {
 		update_player_kills_by_weapon_by_pk:"player_kills_by_weapon",
 		update_player_kills_by_weapon_many:"player_kills_by_weapon_mutation_response",
 		update_player_kills_many:"player_kills_mutation_response",
+		update_player_leaderboard_rank:"player_leaderboard_rank_mutation_response",
+		update_player_leaderboard_rank_many:"player_leaderboard_rank_mutation_response",
 		update_player_match_map_stats:"player_match_map_stats_mutation_response",
 		update_player_match_map_stats_by_pk:"player_match_map_stats",
 		update_player_match_map_stats_many:"player_match_map_stats_mutation_response",
@@ -26615,6 +26753,85 @@ export const ReturnTypes: Record<string,any> = {
 		attacked_steam_id:"Float",
 		attacker_steam_id:"Float",
 		round:"Float"
+	},
+	player_leaderboard_rank:{
+		player_steam_id:"String",
+		rank:"Int",
+		total:"Int",
+		value:"float8"
+	},
+	player_leaderboard_rank_aggregate:{
+		aggregate:"player_leaderboard_rank_aggregate_fields",
+		nodes:"player_leaderboard_rank"
+	},
+	player_leaderboard_rank_aggregate_fields:{
+		avg:"player_leaderboard_rank_avg_fields",
+		count:"Int",
+		max:"player_leaderboard_rank_max_fields",
+		min:"player_leaderboard_rank_min_fields",
+		stddev:"player_leaderboard_rank_stddev_fields",
+		stddev_pop:"player_leaderboard_rank_stddev_pop_fields",
+		stddev_samp:"player_leaderboard_rank_stddev_samp_fields",
+		sum:"player_leaderboard_rank_sum_fields",
+		var_pop:"player_leaderboard_rank_var_pop_fields",
+		var_samp:"player_leaderboard_rank_var_samp_fields",
+		variance:"player_leaderboard_rank_variance_fields"
+	},
+	player_leaderboard_rank_avg_fields:{
+		rank:"Float",
+		total:"Float",
+		value:"Float"
+	},
+	player_leaderboard_rank_max_fields:{
+		player_steam_id:"String",
+		rank:"Int",
+		total:"Int",
+		value:"float8"
+	},
+	player_leaderboard_rank_min_fields:{
+		player_steam_id:"String",
+		rank:"Int",
+		total:"Int",
+		value:"float8"
+	},
+	player_leaderboard_rank_mutation_response:{
+		affected_rows:"Int",
+		returning:"player_leaderboard_rank"
+	},
+	player_leaderboard_rank_stddev_fields:{
+		rank:"Float",
+		total:"Float",
+		value:"Float"
+	},
+	player_leaderboard_rank_stddev_pop_fields:{
+		rank:"Float",
+		total:"Float",
+		value:"Float"
+	},
+	player_leaderboard_rank_stddev_samp_fields:{
+		rank:"Float",
+		total:"Float",
+		value:"Float"
+	},
+	player_leaderboard_rank_sum_fields:{
+		rank:"Int",
+		total:"Int",
+		value:"float8"
+	},
+	player_leaderboard_rank_var_pop_fields:{
+		rank:"Float",
+		total:"Float",
+		value:"Float"
+	},
+	player_leaderboard_rank_var_samp_fields:{
+		rank:"Float",
+		total:"Float",
+		value:"Float"
+	},
+	player_leaderboard_rank_variance_fields:{
+		rank:"Float",
+		total:"Float",
+		value:"Float"
 	},
 	player_match_map_stats:{
 		assists:"Int",
@@ -28801,6 +29018,8 @@ export const ReturnTypes: Record<string,any> = {
 		getTimescaleStats:"TimescaleStats",
 		get_leaderboard:"leaderboard_entries",
 		get_leaderboard_aggregate:"leaderboard_entries_aggregate",
+		get_player_leaderboard_rank:"player_leaderboard_rank",
+		get_player_leaderboard_rank_aggregate:"player_leaderboard_rank_aggregate",
 		leaderboard_entries:"leaderboard_entries",
 		leaderboard_entries_aggregate:"leaderboard_entries_aggregate",
 		listServerFiles:"FileListResponse",
@@ -28891,6 +29110,8 @@ export const ReturnTypes: Record<string,any> = {
 		player_kills_by_weapon:"player_kills_by_weapon",
 		player_kills_by_weapon_aggregate:"player_kills_by_weapon_aggregate",
 		player_kills_by_weapon_by_pk:"player_kills_by_weapon",
+		player_leaderboard_rank:"player_leaderboard_rank",
+		player_leaderboard_rank_aggregate:"player_leaderboard_rank_aggregate",
 		player_match_map_stats:"player_match_map_stats",
 		player_match_map_stats_aggregate:"player_match_map_stats_aggregate",
 		player_match_map_stats_by_pk:"player_match_map_stats",
@@ -29376,6 +29597,8 @@ export const ReturnTypes: Record<string,any> = {
 		game_versions_stream:"game_versions",
 		get_leaderboard:"leaderboard_entries",
 		get_leaderboard_aggregate:"leaderboard_entries_aggregate",
+		get_player_leaderboard_rank:"player_leaderboard_rank",
+		get_player_leaderboard_rank_aggregate:"player_leaderboard_rank_aggregate",
 		leaderboard_entries:"leaderboard_entries",
 		leaderboard_entries_aggregate:"leaderboard_entries_aggregate",
 		leaderboard_entries_stream:"leaderboard_entries",
@@ -29494,6 +29717,9 @@ export const ReturnTypes: Record<string,any> = {
 		player_kills_by_weapon_by_pk:"player_kills_by_weapon",
 		player_kills_by_weapon_stream:"player_kills_by_weapon",
 		player_kills_stream:"player_kills",
+		player_leaderboard_rank:"player_leaderboard_rank",
+		player_leaderboard_rank_aggregate:"player_leaderboard_rank_aggregate",
+		player_leaderboard_rank_stream:"player_leaderboard_rank",
 		player_match_map_stats:"player_match_map_stats",
 		player_match_map_stats_aggregate:"player_match_map_stats_aggregate",
 		player_match_map_stats_by_pk:"player_match_map_stats",

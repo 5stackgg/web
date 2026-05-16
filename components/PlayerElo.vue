@@ -17,7 +17,7 @@ import {
         type="button"
         :class="triggerClasses"
         :style="{ '--tier-rgb': primaryTier.rgb }"
-        :aria-label="`Rank readout, primary ${primaryTier.label} ${primaryElo}`"
+        :aria-label="`ELO, primary ${primaryTier.label} ${primaryElo}`"
       >
         <span :class="triggerNotchClasses" aria-hidden="true"></span>
         <span :class="triggerLabelClasses">ELO</span>
@@ -58,7 +58,7 @@ import {
       <header :class="headerClasses">
         <span :class="headerEyebrowClasses">
           <span :class="headerChevronClasses">◢</span>
-          Rank Readout
+          ELO
         </span>
         <span :class="headerCountClasses"> {{ activeCount }}/3 </span>
       </header>

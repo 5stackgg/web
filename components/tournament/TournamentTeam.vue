@@ -10,6 +10,9 @@ import {
   Trash,
   UserMinus,
   UserPlus,
+  Pencil,
+  Check,
+  X,
 } from "lucide-vue-next";
 import {
   DropdownMenu,
@@ -30,31 +33,80 @@ import {
           <img
             v-if="teamAvatarSrc"
             :src="teamAvatarSrc"
-            :alt="team.team?.name || team.name"
+            :alt="displayName"
             class="h-full w-full object-cover"
           />
           <span
             v-else
             class="font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
           >
-            {{ (team.team?.name || team.name || "?").slice(0, 3) }}
+            {{ (displayShortName || displayName || "?").slice(0, 3) }}
           </span>
         </div>
         <div class="min-w-0 flex-1 flex flex-col gap-2">
           <h2
-            class="font-sans text-[1.35rem] font-bold tracking-[0.02em] text-foreground m-0 leading-[1.15]"
+            v-if="!isEditingIdentity"
+            class="font-sans text-[1.35rem] font-bold tracking-[0.02em] text-foreground m-0 leading-[1.15] flex items-center gap-2"
           >
             <NuxtLink
               v-if="team.team?.id"
               :to="`/teams/${team.team.id}`"
               class="hover:text-[hsl(var(--tac-amber))] transition-colors"
             >
-              {{ team.team.name }}
+              {{ displayName }}
             </NuxtLink>
             <template v-else>
-              {{ team.name }}
+              {{ displayName }}
             </template>
+            <span
+              v-if="displayShortName"
+              class="px-2 py-[0.1rem] font-mono text-[0.7rem] font-bold tracking-[0.18em] uppercase text-muted-foreground bg-muted/30 border border-border rounded"
+            >
+              {{ displayShortName }}
+            </span>
+            <Button
+              v-if="canEditIdentity"
+              variant="ghost"
+              size="icon"
+              class="h-6 w-6 text-muted-foreground hover:text-foreground"
+              @click="startEditIdentity"
+            >
+              <Pencil class="h-3.5 w-3.5" />
+            </Button>
           </h2>
+          <div v-else class="flex items-center gap-2 flex-wrap">
+            <Input
+              v-model="editName"
+              :placeholder="$t('common.team_name')"
+              class="h-8 max-w-[260px]"
+              @keydown.enter.prevent="saveIdentity"
+              @keydown.escape.prevent="cancelEditIdentity"
+            />
+            <Input
+              v-model="editShortName"
+              :placeholder="$t('team.form.short_name')"
+              maxlength="5"
+              class="h-8 w-24 uppercase tracking-[0.15em] font-mono"
+              @keydown.enter.prevent="saveIdentity"
+              @keydown.escape.prevent="cancelEditIdentity"
+            />
+            <Button
+              size="icon"
+              class="h-7 w-7"
+              :disabled="!editName"
+              @click="saveIdentity"
+            >
+              <Check class="h-4 w-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              class="h-7 w-7"
+              @click="cancelEditIdentity"
+            >
+              <X class="h-4 w-4" />
+            </Button>
+          </div>
 
           <div class="flex items-center gap-2 flex-wrap">
             <span
@@ -251,6 +303,13 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      isEditingIdentity: false,
+      editName: "",
+      editShortName: "",
+    };
+  },
   apollo: {
     e_team_roles: {
       fetchPolicy: "cache-first",
@@ -279,6 +338,24 @@ export default {
       const avatarUrl = this.team?.team?.avatar_url;
       if (!avatarUrl) return null;
       return `https://${this.apiDomain}/${avatarUrl}`;
+    },
+    displayName() {
+      return this.team.team?.name || this.team.name || "";
+    },
+    displayShortName() {
+      return this.team.team?.short_name || this.team.short_name || "";
+    },
+    canEditIdentity() {
+      if (this.isEditingIdentity) return false;
+      if (this.team.team_id) return false;
+      const status = this.tournament.status;
+      const blocked = [
+        e_tournament_status_enum.Finished,
+        e_tournament_status_enum.Cancelled,
+        e_tournament_status_enum.CancelledMinTeams,
+      ];
+      if (blocked.includes(status)) return false;
+      return this.tournament.is_organizer || this.team.can_manage;
     },
     canEditSeed() {
       if (!this.tournament?.is_organizer) return false;
@@ -349,6 +426,46 @@ export default {
     },
   },
   methods: {
+    startEditIdentity() {
+      this.editName = this.team.name || "";
+      this.editShortName = this.team.short_name || "";
+      this.isEditingIdentity = true;
+    },
+    cancelEditIdentity() {
+      this.isEditingIdentity = false;
+      this.editName = "";
+      this.editShortName = "";
+    },
+    async saveIdentity() {
+      const name = this.editName?.trim();
+      if (!name) return;
+
+      const shortName = this.editShortName?.trim();
+      if (shortName && shortName.length > 5) return;
+
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          update_tournament_teams_by_pk: [
+            {
+              pk_columns: {
+                id: this.team.id,
+              },
+              _set: {
+                name,
+                short_name: shortName || null,
+              },
+            },
+            {
+              id: true,
+              name: true,
+              short_name: true,
+            },
+          ],
+        }),
+      });
+
+      this.isEditingIdentity = false;
+    },
     async onSeedChange(rawValue: string | number) {
       const stringValue = String(rawValue);
       const value = stringValue.trim() === "" ? null : Number(stringValue);

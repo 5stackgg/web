@@ -116,6 +116,19 @@ import { Card } from "~/components/ui/card";
           <FormMessage />
         </FormItem>
       </FormField>
+
+      <FormField v-slot="{ componentField }" name="short_name">
+        <FormItem>
+          <FormLabel>{{ $t("team.form.short_name") }}</FormLabel>
+          <Input
+            v-bind="componentField"
+            :placeholder="$t('team.form.short_name_placeholder')"
+            maxlength="5"
+            class="uppercase tracking-[0.15em] font-mono"
+          ></Input>
+          <FormMessage />
+        </FormItem>
+      </FormField>
     </template>
 
     <Button
@@ -123,6 +136,7 @@ import { Card } from "~/components/ui/card";
       :disabled="
         (!form.values.new_team && !form.values.team_id) ||
         (form.values.new_team && !form.values.team_name) ||
+        (form.values.new_team && !form.values.short_name) ||
         (form.values.new_team &&
           tournament.is_organizer &&
           !form.values.add_self_to_lineup &&
@@ -186,6 +200,19 @@ export default {
                   return value !== undefined;
                 },
                 { message: "team name is required" },
+              ),
+            short_name: z
+              .string()
+              .max(5)
+              .optional()
+              .refine(
+                (value) => {
+                  if (!this.form.values.new_team) {
+                    return true;
+                  }
+                  return value !== undefined && value.length > 0;
+                },
+                { message: "short name is required" },
               ),
             team_id: z
               .string()
@@ -272,6 +299,7 @@ export default {
       }
 
       let teamName = this.form.values.team_name;
+      let shortName = this.form.values.short_name;
 
       let addPlayerSteamId = null;
       if (
@@ -296,6 +324,7 @@ export default {
               object: {
                 tournament_id: this.$route.params.tournamentId,
                 name: teamName,
+                short_name: this.form.values.new_team ? shortName : null,
                 ...(this.tournament.is_organizer && addPlayerSteamId
                   ? { owner_steam_id: addPlayerSteamId }
                   : {}),

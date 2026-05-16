@@ -482,9 +482,6 @@ export default {
       const configs = (this.tournament as any)?.trophy_configs || [];
       return configs.find((c: any) => c.placement === placement) || null;
     },
-    // Prefer the underlying linked team's name; tournament_team.name is a
-    // copy that sometimes holds a placeholder (e.g. "Team <uuid>"), so using
-    // it first produced inconsistent labels between podium and standings.
     displayTeamName(tournamentTeam: any, fallbackId?: string) {
       const underlying = tournamentTeam?.team?.name;
       if (underlying) return underlying;

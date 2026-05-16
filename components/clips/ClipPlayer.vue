@@ -75,15 +75,24 @@ function clearControlsTimer() {
     controlsHideTimer = null;
   }
 }
+// Always schedule a hide when playing, and re-check at fire time. If the
+// intro grace is still up when the timer expires, reschedule rather than
+// hide. This is self-correcting on mobile, where the @play / intro-watch
+// ordering isn't deterministic enough to rely on the showIntroOverlay
+// watcher chain to kick off the hide.
 function bumpControls() {
   controlsVisible.value = true;
   clearControlsTimer();
-  if (playing.value && !showIntroOverlay.value) {
-    controlsHideTimer = setTimeout(() => {
-      controlsVisible.value = false;
-      controlsHideTimer = null;
-    }, CONTROLS_HIDE_DELAY);
-  }
+  if (!playing.value) return;
+  controlsHideTimer = setTimeout(() => {
+    controlsHideTimer = null;
+    if (!playing.value) return;
+    if (showIntroOverlay.value) {
+      bumpControls();
+      return;
+    }
+    controlsVisible.value = false;
+  }, CONTROLS_HIDE_DELAY);
 }
 function hideControls() {
   clearControlsTimer();
@@ -317,6 +326,7 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
     "
     @mousemove="bumpControls"
     @mouseleave="hideControls"
+    @touchstart="bumpControls"
   >
     <template #video>
       <video

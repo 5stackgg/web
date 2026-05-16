@@ -32,6 +32,7 @@ export const matchClipFields = {
   thumbnail_url: true,
   thumbnail_download_url: true,
   kills_count: true,
+  round: true,
   visibility: true,
   created_at: true,
   user: {

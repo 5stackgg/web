@@ -556,7 +556,11 @@
                 "range_settings": "Range settings",
                 "hs_lifetime": "Headshot % is lifetime",
                 "view_full_elo_history": "View full ELO history",
-                "global_stats": "Global stats"
+                "global_stats": "Global stats",
+                "rank": "Rank",
+                "global_rank": "Global Rank",
+                "top_percent": "Top {percent}%",
+                "rank_of_total": "{rank} of {total}"
             }
         },
         "play": {
@@ -2325,6 +2329,17 @@
         "open_description": "Anyone can join the lobby"
     },
     "matchmaking": {
+        "match_types": {
+            "competitive": {
+                "description": "The classic 5 vs 5 competitive experience with full team coordination"
+            },
+            "wingman": {
+                "description": "Team up with a friend and compete in fast-paced 2v2 matches"
+            },
+            "duel": {
+                "description": "A competitive 1 vs 1 experience, perfect for practicing individual skill"
+            }
+        },
         "cancel_matchmaking": "Cancel Matchmaking",
         "searching_for_match": "Searching for a {type} match",
         "in_queue_label": "In Queue",

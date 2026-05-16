@@ -998,6 +998,17 @@ onMounted(() => {
                 </dd>
               </template>
 
+              <template v-if="clip.round != null">
+                <dt
+                  class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground self-center"
+                >
+                  Round
+                </dt>
+                <dd class="text-right font-mono tabular-nums">
+                  {{ clip.round }}
+                </dd>
+              </template>
+
               <dt
                 class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground self-center"
               >

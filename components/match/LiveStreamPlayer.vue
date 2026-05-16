@@ -19,6 +19,7 @@ const { client: apolloClient } = useApolloClient();
 
 const stream = ref<any | null>(null);
 const lastGoodStream = ref<any | null>(null);
+const hasEverBeenLive = ref(false);
 const scoreboardOpen = ref(false);
 let streamSubscription: { unsubscribe: () => void } | undefined;
 
@@ -77,6 +78,7 @@ onMounted(() => {
         const next = result?.data?.match_streams?.[0] ?? null;
         stream.value = next;
         if (next) lastGoodStream.value = next;
+        if (next?.is_live) hasEverBeenLive.value = true;
       },
       error: (err: any) => {
         // eslint-disable-next-line no-console
@@ -91,7 +93,10 @@ onBeforeUnmount(() => {
 
 const displayStream = computed(() => stream.value ?? lastGoodStream.value);
 const hasStream = computed(() => !!displayStream.value);
-const isLive = computed(() => !!stream.value?.is_live);
+// Once the stream has been live, treat it as live for display gating so a
+// mid-match pause (which flips is_live false server-side) doesn't tear
+// down the WhepPlayer and snap viewers back to the boot screen.
+const isLive = computed(() => !!stream.value?.is_live || hasEverBeenLive.value);
 
 // Boot pipeline (Allocating GPU / Launching Steam / …) is operator
 // info — regulars get nothing to look at until the pod is actually

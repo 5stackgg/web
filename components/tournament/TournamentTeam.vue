@@ -5,14 +5,19 @@ import TournamentTeamInvite from "./TournamentTeamInvite.vue";
 import Input from "../ui/input/Input.vue";
 import { Button } from "~/components/ui/button";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
+import { Label } from "~/components/ui/label";
+import {
   MoreHorizontal,
   LogOut,
   Trash,
   UserMinus,
   UserPlus,
   Pencil,
-  Check,
-  X,
+  Loader2,
 } from "lucide-vue-next";
 import {
   DropdownMenu,
@@ -45,8 +50,7 @@ import {
         </div>
         <div class="min-w-0 flex-1 flex flex-col gap-2">
           <h2
-            v-if="!isEditingIdentity"
-            class="font-sans text-[1.35rem] font-bold tracking-[0.02em] text-foreground m-0 leading-[1.15] flex items-center gap-2"
+            class="group/identity font-sans text-[1.35rem] font-bold tracking-[0.02em] text-foreground m-0 leading-[1.15] flex items-center gap-2"
           >
             <NuxtLink
               v-if="team.team?.id"
@@ -64,49 +68,112 @@ import {
             >
               {{ displayShortName }}
             </span>
-            <Button
+            <Popover
               v-if="canEditIdentity"
-              variant="ghost"
-              size="icon"
-              class="h-6 w-6 text-muted-foreground hover:text-foreground"
-              @click="startEditIdentity"
+              v-model:open="isEditingIdentity"
+              @update:open="onIdentityPopoverToggle"
             >
-              <Pencil class="h-3.5 w-3.5" />
-            </Button>
+              <PopoverTrigger as-child>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  class="h-6 w-6 text-muted-foreground hover:text-[hsl(var(--tac-amber))] opacity-0 group-hover/identity:opacity-100 focus-visible:opacity-100 data-[state=open]:opacity-100 data-[state=open]:text-[hsl(var(--tac-amber))] transition-opacity"
+                  :title="$t('common.actions.edit')"
+                >
+                  <Pencil class="h-3.5 w-3.5" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                align="start"
+                :side-offset="8"
+                class="w-[320px] p-0"
+                @open-auto-focus="onIdentityPopoverOpenAutoFocus"
+                @escape-key-down="cancelEditIdentity"
+              >
+                <form
+                  class="flex flex-col gap-3 p-4"
+                  @submit.prevent="saveIdentity"
+                >
+                  <div
+                    class="inline-flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.22em] text-muted-foreground"
+                  >
+                    <span
+                      class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"
+                    ></span>
+                    {{ $t("team.form.identity") }}
+                  </div>
+
+                  <div class="flex flex-col gap-1.5">
+                    <Label
+                      for="tournament-team-name"
+                      class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
+                    >
+                      {{ $t("common.team_name") }}
+                    </Label>
+                    <Input
+                      id="tournament-team-name"
+                      ref="nameInput"
+                      v-model="editName"
+                      :placeholder="$t('team.form.name_placeholder')"
+                      maxlength="40"
+                      :disabled="savingIdentity"
+                      class="h-9"
+                      @keydown.enter.prevent="saveIdentity"
+                    />
+                  </div>
+
+                  <div class="flex flex-col gap-1.5">
+                    <Label
+                      for="tournament-team-tag"
+                      class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
+                    >
+                      {{ $t("team.form.short_name") }}
+                    </Label>
+                    <Input
+                      id="tournament-team-tag"
+                      v-model="editShortName"
+                      :placeholder="$t('team.form.short_name')"
+                      maxlength="5"
+                      :disabled="savingIdentity"
+                      class="h-9 uppercase tracking-[0.18em] font-mono"
+                      @input="onShortNameInput"
+                      @keydown.enter.prevent="saveIdentity"
+                    />
+                  </div>
+
+                  <p
+                    v-if="identityError"
+                    class="font-mono text-[0.65rem] uppercase tracking-[0.15em] text-destructive"
+                  >
+                    {{ identityError }}
+                  </p>
+
+                  <div class="flex items-center justify-end gap-2 pt-1">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      :disabled="savingIdentity"
+                      @click="cancelEditIdentity"
+                    >
+                      {{ $t("common.cancel") }}
+                    </Button>
+                    <Button
+                      type="submit"
+                      size="sm"
+                      :disabled="!canSaveIdentity"
+                    >
+                      <Loader2
+                        v-if="savingIdentity"
+                        class="mr-1 h-4 w-4 animate-spin"
+                      />
+                      {{ $t("common.save") }}
+                    </Button>
+                  </div>
+                </form>
+              </PopoverContent>
+            </Popover>
           </h2>
-          <div v-else class="flex items-center gap-2 flex-wrap">
-            <Input
-              v-model="editName"
-              :placeholder="$t('common.team_name')"
-              class="h-8 max-w-[260px]"
-              @keydown.enter.prevent="saveIdentity"
-              @keydown.escape.prevent="cancelEditIdentity"
-            />
-            <Input
-              v-model="editShortName"
-              :placeholder="$t('team.form.short_name')"
-              maxlength="5"
-              class="h-8 w-24 uppercase tracking-[0.15em] font-mono"
-              @keydown.enter.prevent="saveIdentity"
-              @keydown.escape.prevent="cancelEditIdentity"
-            />
-            <Button
-              size="icon"
-              class="h-7 w-7"
-              :disabled="!editName"
-              @click="saveIdentity"
-            >
-              <Check class="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              class="h-7 w-7"
-              @click="cancelEditIdentity"
-            >
-              <X class="h-4 w-4" />
-            </Button>
-          </div>
 
           <div class="flex items-center gap-2 flex-wrap">
             <span
@@ -308,6 +375,8 @@ export default {
       isEditingIdentity: false,
       editName: "",
       editShortName: "",
+      savingIdentity: false,
+      identityError: "",
     };
   },
   apollo: {
@@ -346,7 +415,6 @@ export default {
       return this.team.team?.short_name || this.team.short_name || "";
     },
     canEditIdentity() {
-      if (this.isEditingIdentity) return false;
       if (this.team.team_id) return false;
       const status = this.tournament.status;
       const blocked = [
@@ -385,6 +453,26 @@ export default {
     },
     requiredPlayers() {
       return this.tournament.max_players_per_lineup;
+    },
+    trimmedEditName() {
+      return (this.editName || "").trim();
+    },
+    trimmedEditShortName() {
+      return (this.editShortName || "").trim();
+    },
+    identityHasChanges() {
+      const currentName = this.team.name || "";
+      const currentShort = this.team.short_name || "";
+      return (
+        this.trimmedEditName !== currentName ||
+        this.trimmedEditShortName !== currentShort
+      );
+    },
+    canSaveIdentity() {
+      if (this.savingIdentity) return false;
+      if (this.trimmedEditName.length < 1) return false;
+      if (this.trimmedEditShortName.length > 5) return false;
+      return this.identityHasChanges;
     },
     canLeaveTeam() {
       const isMember =
@@ -426,45 +514,80 @@ export default {
     },
   },
   methods: {
-    startEditIdentity() {
-      this.editName = this.team.name || "";
-      this.editShortName = this.team.short_name || "";
-      this.isEditingIdentity = true;
-    },
-    cancelEditIdentity() {
-      this.isEditingIdentity = false;
+    onIdentityPopoverToggle(open: boolean) {
+      if (open) {
+        this.editName = this.team.name || "";
+        this.editShortName = (this.team.short_name || "").toUpperCase();
+        this.identityError = "";
+        return;
+      }
+      if (this.savingIdentity) return;
       this.editName = "";
       this.editShortName = "";
+      this.identityError = "";
+    },
+    onIdentityPopoverOpenAutoFocus(event: Event) {
+      event.preventDefault();
+      const input = this.$refs.nameInput as
+        | { $el?: HTMLInputElement }
+        | undefined;
+      const el = input?.$el;
+      if (el && typeof el.focus === "function") {
+        el.focus();
+        el.select?.();
+      }
+    },
+    cancelEditIdentity() {
+      if (this.savingIdentity) return;
+      this.isEditingIdentity = false;
+    },
+    onShortNameInput(event: Event) {
+      const target = event.target as HTMLInputElement | null;
+      if (!target) return;
+      const upper = target.value.toUpperCase();
+      if (target.value !== upper) {
+        target.value = upper;
+      }
+      this.editShortName = upper;
     },
     async saveIdentity() {
-      const name = this.editName?.trim();
-      if (!name) return;
+      if (!this.canSaveIdentity) return;
 
-      const shortName = this.editShortName?.trim();
-      if (shortName && shortName.length > 5) return;
+      const name = this.trimmedEditName;
+      const shortName = this.trimmedEditShortName;
 
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_tournament_teams_by_pk: [
-            {
-              pk_columns: {
-                id: this.team.id,
+      this.savingIdentity = true;
+      this.identityError = "";
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            update_tournament_teams_by_pk: [
+              {
+                pk_columns: {
+                  id: this.team.id,
+                },
+                _set: {
+                  name,
+                  short_name: shortName || null,
+                },
               },
-              _set: {
-                name,
-                short_name: shortName || null,
+              {
+                id: true,
+                name: true,
+                short_name: true,
               },
-            },
-            {
-              id: true,
-              name: true,
-              short_name: true,
-            },
-          ],
-        }),
-      });
+            ],
+          }),
+        });
 
-      this.isEditingIdentity = false;
+        this.isEditingIdentity = false;
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error ? error.message : String(error ?? "");
+        this.identityError = message || this.$t("common.error");
+      } finally {
+        this.savingIdentity = false;
+      }
     },
     async onSeedChange(rawValue: string | number) {
       const stringValue = String(rawValue);

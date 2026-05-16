@@ -2,7 +2,7 @@
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
 import { Cross2Icon } from "@radix-icons/vue";
-import { ArrowUpRight } from "lucide-vue-next";
+import { ArrowUpRight, ExternalLink } from "lucide-vue-next";
 </script>
 
 <template>
@@ -30,12 +30,23 @@ import { ArrowUpRight } from "lucide-vue-next";
       <div class="w-3 h-3 border-l-2 border-t-2 border-foreground/40"></div>
     </div>
     <div class="absolute top-2 right-2 z-10 flex items-center gap-1">
+      <button
+        v-if="isGameStreamer && stream.match_id"
+        type="button"
+        class="w-6 h-6 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center"
+        :title="$t('match.open_popout') || 'Open in popout window'"
+        @click="openPopoutWindow"
+      >
+        <ExternalLink class="w-4 h-4" />
+        <span class="sr-only">{{
+          $t("match.open_popout") || "Open in popout window"
+        }}</span>
+      </button>
       <NuxtLink
         v-if="stream.match_id"
         :to="`/matches/${stream.match_id}`"
         class="w-6 h-6 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center"
         :title="$t('match.open_match') || 'Open match'"
-        @click="closePreview"
       >
         <ArrowUpRight class="w-4 h-4" />
         <span class="sr-only">{{
@@ -111,6 +122,18 @@ export default {
     },
     closePreview() {
       useApplicationSettingsStore().setGlobalStream();
+    },
+    openPopoutWindow() {
+      const matchId = (this.stream as any)?.match_id;
+      if (!matchId || typeof window === "undefined") {
+        return;
+      }
+      window.open(
+        `/match-popout/${matchId}`,
+        `match-popout-${matchId}`,
+        "popup=yes,width=960,height=640,resizable=yes,scrollbars=no",
+      );
+      this.closePreview();
     },
     startResize(e: MouseEvent) {
       this.isResizing = true;

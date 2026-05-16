@@ -239,7 +239,11 @@ const mmCardPending =
                   :key="`idle-${type.value}`"
                   class="m-0 text-[0.78rem] leading-[1.5] text-muted-foreground"
                 >
-                  {{ type.description }}
+                  {{
+                    $t(
+                      `matchmaking.match_types.${type.value.toLowerCase()}.description`,
+                    )
+                  }}
                 </p>
                 <div
                   v-else

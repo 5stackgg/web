@@ -19,6 +19,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/components/ui/popover";
+import TimeAgo from "~/components/TimeAgo.vue";
 import type { Clip } from "~/types/clip";
 import { useClipModal } from "~/composables/useClipModal";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -162,18 +163,12 @@ async function setVisibility(v: Visibility) {
 <template>
   <Card class="overflow-hidden transition-all hover:border-foreground/30">
     <div class="relative aspect-video w-full overflow-hidden bg-black group">
-      <video
-        v-if="clip.download_url"
-        :src="clip.download_url"
-        :poster="
-          clip.thumbnail_download_url ??
-          clip.match_map?.map?.poster ??
-          undefined
-        "
+      <NuxtImg
+        v-if="clip.thumbnail_download_url ?? clip.match_map?.map?.poster"
+        :src="clip.thumbnail_download_url ?? clip.match_map?.map?.poster ?? ''"
+        :alt="clip.title ?? 'Highlight'"
+        loading="lazy"
         class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-        muted
-        playsinline
-        preload="metadata"
       />
       <div
         v-else
@@ -326,11 +321,22 @@ async function setVisibility(v: Visibility) {
         </span>
       </div>
 
-      <span
-        class="absolute bottom-2 right-2 rounded bg-black/80 px-1.5 py-0.5 text-[0.65rem] font-mono tabular-nums text-white pointer-events-none"
+      <div
+        class="absolute bottom-2 right-2 flex flex-col items-end gap-1 pointer-events-none"
       >
-        {{ formatDuration(clip.duration_ms) }}
-      </span>
+        <span
+          v-if="clip.round != null"
+          class="rounded bg-black/80 px-1.5 py-0.5 text-[0.6rem] font-mono uppercase tracking-[0.12em] text-white/85"
+          :title="`Round ${clip.round}`"
+        >
+          R{{ clip.round }}
+        </span>
+        <span
+          class="rounded bg-black/80 px-1.5 py-0.5 text-[0.65rem] font-mono tabular-nums text-white"
+        >
+          {{ formatDuration(clip.duration_ms) }}
+        </span>
+      </div>
     </div>
 
     <CardContent class="p-3 space-y-1">
@@ -351,16 +357,9 @@ async function setVisibility(v: Visibility) {
         class="flex items-end justify-between gap-2 text-xs text-muted-foreground"
       >
         <span class="min-w-0 flex-1">
-          <span class="flex min-w-0 items-center gap-1.5">
+          <span v-if="targetTeamName" class="flex min-w-0 items-center gap-1.5">
             <span
-              v-if="clip.target?.name"
-              class="truncate font-semibold text-foreground/85"
-            >
-              {{ clip.target.name }}
-            </span>
-            <span
-              v-if="targetTeamName"
-              class="inline-flex max-w-[52%] shrink-0 items-center gap-1 rounded border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.1)] px-1.5 py-0.5 font-mono text-[0.55rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+              class="inline-flex max-w-full shrink items-center gap-1 rounded border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.1)] px-1.5 py-0.5 font-mono text-[0.55rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
               :title="targetTeamName"
             >
               <Shield class="h-2.5 w-2.5 shrink-0" />
@@ -377,12 +376,12 @@ async function setVisibility(v: Visibility) {
             {{ clip.match_map.map.label ?? clip.match_map.map.name }}
           </span>
         </span>
-        <span
-          v-if="clip.user?.name"
-          class="shrink-0 truncate max-w-[40%]"
-          :title="`Clipped by ${clip.user.name}`"
-        >
-          by {{ clip.user.name }}
+        <span class="shrink-0 flex flex-col items-end gap-0.5 max-w-[45%]">
+          <TimeAgo
+            v-if="clip.created_at"
+            :date="clip.created_at"
+            class="text-[0.65rem] text-muted-foreground/70"
+          />
         </span>
       </div>
     </CardContent>

@@ -36,10 +36,16 @@ const aimColumns: Array<{ label: string; tooltipKey: string }> = [
               <TooltipContent class="max-w-sm space-y-3">
                 <div>
                   <div class="font-semibold">
-                    {{ $t(`match.lineup.stats.tooltips.${col.tooltipKey}.title`) }}
+                    {{
+                      $t(`match.lineup.stats.tooltips.${col.tooltipKey}.title`)
+                    }}
                   </div>
                   <div class="text-xs mt-1 leading-snug">
-                    {{ $t(`match.lineup.stats.tooltips.${col.tooltipKey}.description`) }}
+                    {{
+                      $t(
+                        `match.lineup.stats.tooltips.${col.tooltipKey}.description`,
+                      )
+                    }}
                   </div>
                 </div>
                 <div>
@@ -47,7 +53,11 @@ const aimColumns: Array<{ label: string; tooltipKey: string }> = [
                     {{ $t("match.lineup.stats.calc_header") }}
                   </div>
                   <div class="text-xs mt-1 leading-snug">
-                    {{ $t(`match.lineup.stats.tooltips.${col.tooltipKey}.calculation`) }}
+                    {{
+                      $t(
+                        `match.lineup.stats.tooltips.${col.tooltipKey}.calculation`,
+                      )
+                    }}
                   </div>
                 </div>
               </TooltipContent>
@@ -95,7 +105,9 @@ const aimColumns: Array<{ label: string; tooltipKey: string }> = [
           <template v-else>—</template>
         </TableCell>
         <TableCell>
-          <template v-if="ttdMs(member) !== null">{{ ttdMs(member) }} ms</template>
+          <template v-if="ttdMs(member) !== null"
+            >{{ ttdMs(member) }} ms</template
+          >
           <template v-else>—</template>
         </TableCell>
         <TableCell>
@@ -146,10 +158,7 @@ export default {
     },
     accuracySpottedPct(member: any): number | null {
       const s = this.statsFor(member);
-      return pct(
-        toNumber(s?.hits_at_spotted),
-        toNumber(s?.shots_at_spotted),
-      );
+      return pct(toNumber(s?.hits_at_spotted), toNumber(s?.shots_at_spotted));
     },
     headAccuracyPct(member: any): number | null {
       const s = this.statsFor(member);

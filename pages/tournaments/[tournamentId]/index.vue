@@ -1002,6 +1002,9 @@ export default {
                       team: {
                         id: true,
                         name: true,
+                        team: {
+                          name: true,
+                        },
                       },
                     },
                   ],

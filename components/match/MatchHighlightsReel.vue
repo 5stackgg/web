@@ -15,19 +15,13 @@ import {
   Crosshair,
   Film,
   ListVideo,
-  Maximize,
-  Minimize,
-  Pause,
-  Play,
   Share2,
-  Volume2,
-  VolumeX,
 } from "lucide-vue-next";
 import type { Clip } from "~/types/clip";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { useClipModal } from "~/composables/useClipModal";
-import { useToast } from "~/components/ui/toast/use-toast";
-import StreamCanvas from "~/components/match/StreamCanvas.vue";
+import { useClipShare } from "~/composables/useClipShare";
+import ClipPlayer from "~/components/clips/ClipPlayer.vue";
 
 const props = defineProps<{
   match: any;
@@ -35,56 +29,7 @@ const props = defineProps<{
 
 const apiDomain = computed(() => useRuntimeConfig().public.apiDomain as string);
 const { openClip, activeClipId } = useClipModal();
-const { toast } = useToast();
-
-// Discord/Slack unfurls the /clips/<id> URL via the Nitro route at
-// server/routes/clips/[id].get.ts — the share path always points there
-// so pasted links auto-play as inline video.
-// Tracks the clip whose share button was just used so the icon can
-// swap to a checkmark and the button glows briefly — toast in the
-// corner is easy to miss when the user's eyes are on the click target.
-const copiedClipId = ref<string | null>(null);
-let copiedTimer: ReturnType<typeof setTimeout> | null = null;
-function flashCopied(clipId: string) {
-  copiedClipId.value = clipId;
-  if (copiedTimer) clearTimeout(copiedTimer);
-  copiedTimer = setTimeout(() => {
-    copiedClipId.value = null;
-    copiedTimer = null;
-  }, 1500);
-}
-async function shareClip(clipId: string) {
-  if (typeof window === "undefined") return;
-  const url = `${window.location.origin}/clips/${clipId}`;
-
-  // Prefer the OS share sheet on touch devices (iOS/Android) — one
-  // tap to Messages, Discord, etc. instead of paste-and-go.
-  const isTouch =
-    typeof window !== "undefined" &&
-    window.matchMedia?.("(pointer: coarse)").matches;
-  if (isTouch && typeof navigator.share === "function") {
-    try {
-      await navigator.share({ url });
-      flashCopied(clipId);
-      return;
-    } catch (err: any) {
-      if (err?.name === "AbortError") return;
-      // anything else → fall through to clipboard
-    }
-  }
-
-  try {
-    await navigator.clipboard.writeText(url);
-    flashCopied(clipId);
-    toast({ title: "Link copied" });
-  } catch {
-    toast({
-      title: "Copy failed",
-      description: url,
-      variant: "destructive",
-    });
-  }
-}
+const { copiedClipId, shareClip } = useClipShare();
 
 // Provided by pages/matches/[id].vue (single shared subscription).
 const injectedClips = inject<Ref<Clip[]>>("matchClips");
@@ -151,129 +96,13 @@ const filteredClips = computed(() => {
   return clips.value.filter((c) => c.target_steam_id === playerFilter.value);
 });
 
-const inlineVideoRef = ref<HTMLVideoElement | null>(null);
-// inlineStageRef now points at the StreamCanvas component instance —
-// HTMLElement access goes through the exposed `rootEl` ref.
-const inlineStageRef = ref<InstanceType<typeof StreamCanvas> | null>(null);
-const stageEl = computed<HTMLElement | null>(
-  () => (inlineStageRef.value as any)?.rootEl ?? null,
-);
-const isFullscreen = ref(false);
+// Video chrome (play/pause overlay, mute, volume, fullscreen, progress
+// bar) lives inside ClipPlayer now. We just track which clip is
+// featured and what state the player exposes via events.
+const inlinePlayerRef = ref<InstanceType<typeof ClipPlayer> | null>(null);
 const activeInlineClipId = ref<string | null>(null);
-const inlineProgress = ref(0);
 const inlinePlaying = ref(false);
 const inlineAutoAdvanced = ref(false);
-const showIntroOverlay = ref(false);
-let introOverlayTimer: ReturnType<typeof setTimeout> | null = null;
-// Try to autoplay with audio; browsers may force-mute on autoplay until the
-// user interacts. We track that state so the mute toggle reflects reality.
-const inlineMuted = ref(false);
-const inlineVolume = ref(1);
-function toggleMute() {
-  const video = inlineVideoRef.value;
-  inlineMuted.value = !inlineMuted.value;
-  if (video) {
-    video.muted = inlineMuted.value;
-    // Restore audible volume on unmute — if the slider was dragged to
-    // zero before muting, leaving it there means the user clicks
-    // unmute and still hears nothing. Default back to full volume so
-    // the slider can immediately fine-tune from there.
-    if (!inlineMuted.value) {
-      if (inlineVolume.value <= 0.01) inlineVolume.value = 1;
-      video.volume = inlineVolume.value;
-    }
-  }
-}
-// Mirrors WhepPlayer.setVolume: sliding to ~0 implicitly mutes, sliding
-// up from a muted state implicitly unmutes, so the mute icon and the
-// slider position never disagree.
-function setInlineVolume(v: number) {
-  inlineVolume.value = Math.max(0, Math.min(1, v));
-  const el = inlineVideoRef.value;
-  if (!el) return;
-  el.volume = inlineVolume.value;
-  if (inlineVolume.value <= 0.01) {
-    el.muted = true;
-    inlineMuted.value = true;
-  } else if (el.muted) {
-    el.muted = false;
-    inlineMuted.value = false;
-  }
-}
-
-type IosVideoEl = HTMLVideoElement & {
-  webkitEnterFullscreen?: () => void;
-  webkitExitFullscreen?: () => void;
-  webkitDisplayingFullscreen?: boolean;
-};
-
-async function toggleFullscreen() {
-  const stage = stageEl.value;
-  if (!stage) return;
-  const doc = document as Document & {
-    webkitFullscreenElement?: Element | null;
-    webkitExitFullscreen?: () => Promise<void> | void;
-    fullscreenEnabled?: boolean;
-    webkitFullscreenEnabled?: boolean;
-  };
-  const el = stage as HTMLElement & {
-    webkitRequestFullscreen?: () => Promise<void> | void;
-  };
-
-  // iPhone Safari has no Element.requestFullscreen — the only path is
-  // video.webkitEnterFullscreen(). Detect by missing document-level
-  // fullscreen support OR a missing requestFullscreen on the stage
-  // (some webkit builds expose `fullscreenEnabled` but still leave
-  // requestFullscreen off non-video elements).
-  const docFsSupported = !!(
-    doc.fullscreenEnabled ?? doc.webkitFullscreenEnabled
-  );
-  if (!docFsSupported || !el.requestFullscreen) {
-    const video = inlineVideoRef.value as IosVideoEl | null;
-    if (!video) return;
-    if (video.webkitDisplayingFullscreen) {
-      video.webkitExitFullscreen?.();
-    } else {
-      video.webkitEnterFullscreen?.();
-    }
-    return;
-  }
-
-  const fsElement = doc.fullscreenElement ?? doc.webkitFullscreenElement;
-  try {
-    if (fsElement) {
-      const exit =
-        doc.exitFullscreen?.bind(doc) ?? doc.webkitExitFullscreen?.bind(doc);
-      await Promise.resolve(exit?.());
-    } else {
-      const request =
-        el.requestFullscreen?.bind(el) ?? el.webkitRequestFullscreen?.bind(el);
-      await Promise.resolve(request?.());
-    }
-  } catch {
-    // ignore — browser may reject without a user gesture
-  }
-}
-
-function onFullscreenChange() {
-  const doc = document as Document & {
-    webkitFullscreenElement?: Element | null;
-  };
-  const fsElement = doc.fullscreenElement ?? doc.webkitFullscreenElement;
-  isFullscreen.value = fsElement === stageEl.value;
-}
-
-function onVideoWebkitBeginFullscreen() {
-  isFullscreen.value = true;
-}
-function onVideoWebkitEndFullscreen() {
-  isFullscreen.value = false;
-}
-
-if (typeof document !== "undefined") {
-  document.addEventListener("fullscreenchange", onFullscreenChange);
-  document.addEventListener("webkitfullscreenchange", onFullscreenChange);
-}
 
 function formatDuration(ms: number | null): string {
   if (!ms || ms <= 0) return "--";
@@ -374,144 +203,44 @@ const nextInlineClip = computed<Clip | null>(() => {
   return list[index + 1] ?? null;
 });
 
-// Try to play with the user's current mute preference; on a browser
-// autoplay-policy rejection (sound not allowed yet), fall back to muted.
-async function tryPlay(video: HTMLVideoElement) {
-  video.muted = inlineMuted.value;
-  try {
-    await video.play();
-    inlinePlaying.value = true;
-    startProgressLoop();
-    return;
-  } catch {
-    if (!video.muted) {
-      video.muted = true;
-      inlineMuted.value = true;
-      try {
-        await video.play();
-        inlinePlaying.value = true;
-        startProgressLoop();
-        return;
-      } catch {
-        // fall through
-      }
-    }
-    inlinePlaying.value = false;
-  }
-}
-
+// Switch the featured clip and ask the shared player to start playing.
+// ClipPlayer's `tryPlay` handles the audio-fallback dance internally.
 async function playInlineClip(id: string) {
   activeInlineClipId.value = id;
-  inlineProgress.value = 0;
   inlineAutoAdvanced.value = false;
   await nextTick();
-  const video = inlineVideoRef.value;
-  if (!video) return;
-  await tryPlay(video);
+  await inlinePlayerRef.value?.play();
 }
 
-async function toggleInlinePlayback() {
-  const video = inlineVideoRef.value;
-  if (!video || !featuredClip.value?.download_url) {
-    if (featuredClip.value) openClip(featuredClip.value.id);
-    return;
-  }
-  if (video.paused) {
-    await tryPlay(video);
-  } else {
-    video.pause();
-    inlinePlaying.value = false;
-  }
+function onInlinePlay() {
+  inlinePlaying.value = true;
+}
+function onInlinePause() {
+  inlinePlaying.value = false;
 }
 
-// `timeupdate` fires roughly every 250ms which makes the progress bar
-// look jumpy. We instead poll `currentTime` each animation frame while
-// playing, which gives a smooth fill at 60fps.
-let progressRafId: number | null = null;
-function stopProgressLoop() {
-  if (progressRafId !== null) {
-    cancelAnimationFrame(progressRafId);
-    progressRafId = null;
-  }
-}
-function syncProgress() {
-  const video = inlineVideoRef.value;
-  if (!video || !Number.isFinite(video.duration) || video.duration <= 0) {
-    inlineProgress.value = 0;
-    return;
-  }
-  inlineProgress.value = Math.min(1, video.currentTime / video.duration);
-  const remaining = video.duration - video.currentTime;
+// ClipPlayer emits raw timing info each frame while playing; we use it
+// to auto-advance to the next clip just before the current one ends
+// (so there's no awkward black frame between clips). The `ended` event
+// is the fallback path in case the timeupdate threshold is missed.
+function onInlineProgress({
+  currentTime,
+  duration,
+}: {
+  progress: number;
+  currentTime: number;
+  duration: number;
+}) {
+  if (!Number.isFinite(duration) || duration <= 0) return;
+  const remaining = duration - currentTime;
   if (nextInlineClip.value && remaining <= 0.35 && !inlineAutoAdvanced.value) {
     inlineAutoAdvanced.value = true;
     void playInlineClip(nextInlineClip.value.id);
   }
 }
-function tickProgress() {
-  syncProgress();
-  if (inlinePlaying.value) {
-    progressRafId = requestAnimationFrame(tickProgress);
-  } else {
-    progressRafId = null;
-  }
-}
-function startProgressLoop() {
-  if (progressRafId !== null) return;
-  progressRafId = requestAnimationFrame(tickProgress);
-}
-
-// While playing, fade the play button + overlay out after a couple
-// seconds of continued hover so the clip itself isn't obstructed.
-// `bumpInlineControls` is called on every mousemove inside the stage
-// to reset the timer; `hideInlineControls` runs on mouseleave (and the
-// timeout) to dismiss. When paused, controls always stay visible so
-// the play affordance is unmistakable.
-const inlineControlsVisible = ref(true);
-const CONTROLS_HIDE_DELAY = 1100;
-let controlsHideTimer: ReturnType<typeof setTimeout> | null = null;
-function clearControlsTimer() {
-  if (controlsHideTimer) {
-    clearTimeout(controlsHideTimer);
-    controlsHideTimer = null;
-  }
-}
-function bumpInlineControls() {
-  inlineControlsVisible.value = true;
-  clearControlsTimer();
-  if (inlinePlaying.value && !showIntroOverlay.value) {
-    controlsHideTimer = setTimeout(() => {
-      inlineControlsVisible.value = false;
-      controlsHideTimer = null;
-    }, CONTROLS_HIDE_DELAY);
-  }
-}
-function hideInlineControls() {
-  clearControlsTimer();
-  if (inlinePlaying.value && !showIntroOverlay.value) {
-    inlineControlsVisible.value = false;
-  }
-}
-watch(inlinePlaying, (playing) => {
-  if (playing) {
-    bumpInlineControls();
-  } else {
-    clearControlsTimer();
-    inlineControlsVisible.value = true;
-  }
-});
-watch(showIntroOverlay, (showing) => {
-  if (showing) {
-    clearControlsTimer();
-    inlineControlsVisible.value = true;
-  } else if (inlinePlaying.value) {
-    bumpInlineControls();
-  }
-});
 
 function onInlineEnded() {
   inlinePlaying.value = false;
-  stopProgressLoop();
-  inlineProgress.value = 1;
   if (nextInlineClip.value && !inlineAutoAdvanced.value) {
     inlineAutoAdvanced.value = true;
     void playInlineClip(nextInlineClip.value.id);
@@ -519,17 +248,8 @@ function onInlineEnded() {
 }
 
 onBeforeUnmount(() => {
-  stopProgressLoop();
-  if (introOverlayTimer) clearTimeout(introOverlayTimer);
-  clearControlsTimer();
-  if (copiedTimer) clearTimeout(copiedTimer);
-  copiedTimer = null;
   queueObserver?.disconnect();
   queueObserver = null;
-  if (typeof document !== "undefined") {
-    document.removeEventListener("fullscreenchange", onFullscreenChange);
-    document.removeEventListener("webkitfullscreenchange", onFullscreenChange);
-  }
 });
 
 watch(
@@ -543,34 +263,19 @@ watch(
   { immediate: true },
 );
 
+// When the detail modal opens, pause inline playback so the same clip
+// isn't fighting itself across two surfaces.
 watch(activeClipId, (id) => {
-  if (!id) return;
-  const video = inlineVideoRef.value;
-  if (video && !video.paused) {
-    video.pause();
-    inlinePlaying.value = false;
-    stopProgressLoop();
-  }
+  if (id) inlinePlayerRef.value?.pause();
 });
 
+// Reset the auto-advance latch whenever the featured clip changes.
+// ClipPlayer handles its own progress/intro reset internally via the
+// clip-key prop watcher.
 watch(
   () => featuredClip.value?.id,
-  (id) => {
-    inlineProgress.value = 0;
-    inlinePlaying.value = false;
+  () => {
     inlineAutoAdvanced.value = false;
-    stopProgressLoop();
-    if (introOverlayTimer) clearTimeout(introOverlayTimer);
-    if (id) {
-      // Briefly reveal the player/title overlay so viewers see what's
-      // starting next, then fade out so the clip is unobstructed.
-      showIntroOverlay.value = true;
-      introOverlayTimer = setTimeout(() => {
-        showIntroOverlay.value = false;
-      }, 1500);
-    } else {
-      showIntroOverlay.value = false;
-    }
   },
 );
 
@@ -595,49 +300,19 @@ function clipTeamName(c: Clip): string | null {
     ></div>
 
     <div class="relative grid gap-4 p-3 sm:p-4 lg:grid-cols-2">
-      <StreamCanvas
-        ref="inlineStageRef"
-        :is-live="true"
-        class="group/feature aspect-video w-full overflow-hidden rounded-md border border-border/60 text-left"
-        :class="
-          isFullscreen
-            ? 'flex items-center justify-center !aspect-auto !rounded-none !border-0'
-            : ''
-        "
-        @mousemove="bumpInlineControls"
-        @mouseleave="hideInlineControls"
+      <ClipPlayer
+        ref="inlinePlayerRef"
+        :src="featuredClip.download_url"
+        :poster="featuredClipImage"
+        :clip-key="featuredClip.id"
+        @play="onInlinePlay"
+        @pause="onInlinePause"
+        @ended="onInlineEnded"
+        @progress="onInlineProgress"
       >
-        <template #video>
-          <video
-            v-if="featuredClip.download_url"
-            :key="featuredClip.id"
-            ref="inlineVideoRef"
-            :src="featuredClip.download_url"
-            :poster="featuredClipImage ?? undefined"
-            class="absolute inset-0 h-full w-full cursor-pointer object-contain"
-            :muted="inlineMuted"
-            playsinline
-            preload="auto"
-            @ended="onInlineEnded"
-            @loadedmetadata="syncProgress"
-            @pause="
-              inlinePlaying = false;
-              stopProgressLoop();
-            "
-            @play="
-              inlinePlaying = true;
-              startProgressLoop();
-            "
-            @volumechange="
-              inlineMuted = ($event.target as HTMLVideoElement).muted;
-              inlineVolume = ($event.target as HTMLVideoElement).volume;
-            "
-            @webkitbeginfullscreen="onVideoWebkitBeginFullscreen"
-            @webkitendfullscreen="onVideoWebkitEndFullscreen"
-            @click="toggleInlinePlayback"
-          />
+        <template #empty>
           <NuxtImg
-            v-else-if="featuredClipImage"
+            v-if="featuredClipImage"
             :src="featuredClipImage"
             :alt="featuredClip.title ?? 'Featured highlight'"
             class="absolute inset-0 h-full w-full object-contain"
@@ -649,222 +324,122 @@ function clipTeamName(c: Clip): string | null {
             <Film class="h-10 w-10 opacity-50" />
           </div>
         </template>
-        <div
-          class="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-[linear-gradient(180deg,transparent_0%,hsl(0_0%_0%/0.7)_100%)] transition-opacity duration-300"
-          :class="inlineControlsVisible ? 'opacity-100' : 'opacity-0'"
-        ></div>
-        <div
-          class="pointer-events-none absolute inset-x-0 top-0 flex items-start justify-end gap-2 p-3 transition-opacity duration-300"
-          :class="inlineControlsVisible ? 'opacity-100' : 'opacity-0'"
-        >
-          <!-- Mobile: only the Details link captures taps so the rest of
-               the top tray (kills + duration chips) lets clicks fall
-               through to the video instead of trapping the tap and
-               feeling broken. Desktop keeps the whole tray interactive
-               so the chips behave like a real toolbar surface. -->
-          <div
-            class="pointer-events-none flex items-center gap-2 md:pointer-events-auto"
+        <template #top-right>
+          <button
+            type="button"
+            class="inline-flex h-7 items-center gap-1.5 rounded-full border border-white/20 bg-black/70 px-2.5 font-mono text-[0.56rem] uppercase tracking-[0.16em] text-white/80 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+            :title="`Open ${featuredClip.title ?? 'clip'} details`"
+            @click.stop="openClip(featuredClip.id)"
           >
-            <button
-              type="button"
-              class="pointer-events-auto inline-flex h-7 items-center gap-1.5 rounded-full border border-white/20 bg-black/70 px-2.5 font-mono text-[0.56rem] uppercase tracking-[0.16em] text-white/80 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
-              :title="`Open ${featuredClip.title ?? 'clip'} details`"
-              @click.stop="openClip(featuredClip.id)"
+            Details
+            <ArrowUpRight class="h-3 w-3" />
+          </button>
+          <button
+            type="button"
+            class="inline-flex h-7 w-7 items-center justify-center rounded-full border bg-black/70 backdrop-blur-md transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+            :class="
+              copiedClipId === featuredClip.id
+                ? 'share-flash border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber))] scale-110'
+                : 'border-white/20 text-white/80'
+            "
+            :title="
+              copiedClipId === featuredClip.id ? 'Link copied!' : 'Share clip'
+            "
+            aria-label="Share clip"
+            @click.stop="shareClip(featuredClip.id)"
+          >
+            <Check
+              v-if="copiedClipId === featuredClip.id"
+              class="h-3.5 w-3.5"
+            />
+            <Share2 v-else class="h-3.5 w-3.5" />
+          </button>
+        </template>
+        <template #bottom>
+          <div class="flex min-w-0 items-center gap-2.5">
+            <span
+              class="inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.14)]"
             >
-              Details
-              <ArrowUpRight class="h-3 w-3" />
-            </button>
-            <button
-              type="button"
-              class="pointer-events-auto inline-flex h-7 w-7 items-center justify-center rounded-full border bg-black/70 backdrop-blur-md transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
-              :class="
-                copiedClipId === featuredClip.id
-                  ? 'share-flash border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber))] scale-110'
-                  : 'border-white/20 text-white/80'
-              "
-              :title="
-                copiedClipId === featuredClip.id ? 'Link copied!' : 'Share clip'
-              "
-              aria-label="Share clip"
-              @click.stop="shareClip(featuredClip.id)"
-            >
-              <Check
-                v-if="copiedClipId === featuredClip.id"
-                class="h-3.5 w-3.5"
+              <NuxtImg
+                v-if="featuredPlayer?.avatarSrc"
+                :src="featuredPlayer.avatarSrc"
+                :alt="featuredPlayer.name"
+                class="h-full w-full object-cover"
               />
-              <Share2 v-else class="h-3.5 w-3.5" />
-            </button>
-          </div>
-        </div>
-        <!-- Unified play/pause toggle. Icon mirrors actual playback
-             state so a paused video shows Play (tap to resume) and a
-             playing video shows Pause (tap to halt) — same affordance
-             viewers expect from YouTube/Twitch. Fades along with the
-             rest of the overlay so it doesn't sit over the frame for
-             the entire clip; on coarse pointers it just hides outright
-             since there's no hover to bring it back. -->
-        <button
-          type="button"
-          class="absolute left-1/2 top-1/2 inline-flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/45 bg-white/16 text-white shadow-[0_0_30px_hsl(var(--tac-amber)/0.35)] backdrop-blur-sm transition duration-200 hover:scale-110 group-hover/feature:scale-110 group-hover/feature:border-[hsl(var(--tac-amber)/0.7)] group-hover/feature:bg-white/25"
-          :class="
-            inlineControlsVisible
-              ? 'opacity-100'
-              : 'pointer-events-none opacity-0'
-          "
-          :title="
-            inlinePlaying
-              ? `Pause ${featuredClip.title ?? 'clip'}`
-              : `Play ${featuredClip.title ?? 'clip'} inline`
-          "
-          :aria-label="inlinePlaying ? 'Pause' : 'Play'"
-          @click.stop="toggleInlinePlayback"
-        >
-          <Pause v-if="inlinePlaying" class="h-7 w-7 fill-current" />
-          <Play v-else class="h-7 w-7 translate-x-0.5 fill-current" />
-        </button>
-        <div
-          class="pointer-events-none absolute inset-x-0 bottom-0 transition-opacity duration-300"
-          :class="inlineControlsVisible ? 'opacity-100' : 'opacity-0'"
-        >
-          <div class="p-4 sm:p-5">
-            <div class="flex min-w-0 items-center gap-2.5">
               <span
-                class="inline-flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.14)]"
+                v-else
+                class="font-mono text-xs font-bold uppercase text-[hsl(var(--tac-amber))]"
               >
-                <NuxtImg
-                  v-if="featuredPlayer?.avatarSrc"
-                  :src="featuredPlayer.avatarSrc"
-                  :alt="featuredPlayer.name"
-                  class="h-full w-full object-cover"
-                />
-                <span
-                  v-else
-                  class="font-mono text-xs font-bold uppercase text-[hsl(var(--tac-amber))]"
-                >
-                  {{
-                    featuredClip.target?.name?.charAt(0) ??
-                    featuredClip.title?.charAt(0) ??
-                    "H"
-                  }}
-                </span>
+                {{
+                  featuredClip.target?.name?.charAt(0) ??
+                  featuredClip.title?.charAt(0) ??
+                  "H"
+                }}
               </span>
-              <div class="min-w-0 flex-1">
-                <div class="flex min-w-0 items-center gap-2">
-                  <span
-                    class="min-w-0 truncate text-sm font-semibold text-white sm:text-base"
-                    ><!--
-                  --><NuxtLink
-                      v-if="featuredClip.target_steam_id"
-                      :to="`/players/${featuredClip.target_steam_id}`"
-                      class="pointer-events-auto text-white transition-colors hover:text-[hsl(var(--tac-amber))]"
-                      :title="`Open ${featuredClip.target?.name ?? 'player'}'s profile`"
-                      @click.stop
-                      >{{
-                        featuredClip.target?.name ?? "Match highlight"
-                      }}</NuxtLink
-                    ><template v-else>{{
+            </span>
+            <div class="min-w-0 flex-1">
+              <div class="flex min-w-0 items-center gap-2">
+                <span
+                  class="min-w-0 truncate text-sm font-semibold text-white sm:text-base"
+                  ><!--
+                --><NuxtLink
+                    v-if="featuredClip.target_steam_id"
+                    :to="`/players/${featuredClip.target_steam_id}`"
+                    class="pointer-events-auto text-white transition-colors hover:text-[hsl(var(--tac-amber))]"
+                    :title="`Open ${featuredClip.target?.name ?? 'player'}'s profile`"
+                    @click.stop
+                    >{{
                       featuredClip.target?.name ?? "Match highlight"
-                    }}</template
-                    ><span
-                      v-if="featuredPlayer?.teamName"
-                      class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-white/55"
-                    >
-                      · {{ featuredPlayer.teamName }}</span
-                    ></span
+                    }}</NuxtLink
+                  ><template v-else>{{
+                    featuredClip.target?.name ?? "Match highlight"
+                  }}</template
+                  ><span
+                    v-if="featuredPlayer?.teamName"
+                    class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-white/55"
                   >
-                  <span
-                    v-if="(featuredClip.kills_count ?? 0) > 0"
-                    class="inline-flex shrink-0 items-center gap-1 rounded border border-[hsl(var(--destructive))] bg-[hsl(var(--destructive)/0.85)] px-1.5 py-0.5 font-mono text-[0.65rem] font-bold text-white tabular-nums shadow-[0_0_10px_hsl(var(--destructive)/0.4)]"
-                    :title="`${featuredClip.kills_count} kill${featuredClip.kills_count === 1 ? '' : 's'} in clip`"
-                  >
-                    <Crosshair class="h-3 w-3" />
-                    {{ featuredClip.kills_count }}K
-                  </span>
-                </div>
-                <div class="mt-0.5 flex min-w-0 items-center gap-1.5">
-                  <span
-                    v-if="featuredClip.match_map?.map?.name"
-                    class="min-w-0 truncate font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/55"
-                    ><!--
-                  -->{{ featuredClip.match_map.map.name }}</span
-                  >
-                  <span
-                    v-if="featuredClip.round != null"
-                    class="shrink-0 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/55"
-                    :title="`Round ${featuredClip.round}`"
-                  >
-                    · R{{ featuredClip.round }}
-                  </span>
-                  <span
-                    v-if="formatRelativeTime(featuredClip.created_at)"
-                    class="shrink-0 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/40"
-                  >
-                    · {{ formatRelativeTime(featuredClip.created_at) }}
-                  </span>
-                  <span
-                    class="shrink-0 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/40 tabular-nums"
-                  >
-                    · {{ formatDuration(featuredClip.duration_ms) }}
-                  </span>
-                </div>
+                    · {{ featuredPlayer.teamName }}</span
+                  ></span
+                >
+                <span
+                  v-if="(featuredClip.kills_count ?? 0) > 0"
+                  class="inline-flex shrink-0 items-center gap-1 rounded border border-[hsl(var(--destructive))] bg-[hsl(var(--destructive)/0.85)] px-1.5 py-0.5 font-mono text-[0.65rem] font-bold text-white tabular-nums shadow-[0_0_10px_hsl(var(--destructive)/0.4)]"
+                  :title="`${featuredClip.kills_count} kill${featuredClip.kills_count === 1 ? '' : 's'} in clip`"
+                >
+                  <Crosshair class="h-3 w-3" />
+                  {{ featuredClip.kills_count }}K
+                </span>
+              </div>
+              <div class="mt-0.5 flex min-w-0 items-center gap-1.5">
+                <span
+                  v-if="featuredClip.match_map?.map?.name"
+                  class="min-w-0 truncate font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/55"
+                  ><!--
+                -->{{ featuredClip.match_map.map.name }}</span
+                >
+                <span
+                  v-if="featuredClip.round != null"
+                  class="shrink-0 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/55"
+                  :title="`Round ${featuredClip.round}`"
+                >
+                  · R{{ featuredClip.round }}
+                </span>
+                <span
+                  v-if="formatRelativeTime(featuredClip.created_at)"
+                  class="shrink-0 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/40"
+                >
+                  · {{ formatRelativeTime(featuredClip.created_at) }}
+                </span>
+                <span
+                  class="shrink-0 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/40 tabular-nums"
+                >
+                  · {{ formatDuration(featuredClip.duration_ms) }}
+                </span>
               </div>
             </div>
           </div>
-        </div>
-        <div class="absolute bottom-3 right-3 z-[3] flex items-center gap-2">
-          <!-- Audio tray — same hover-expand slider pattern as WhepPlayer
-               so once the viewer unmutes they can immediately dial the
-               volume in without leaving the player surface. Slider is
-               kept out of the DOM while muted so the rail doesn't sit
-               next to a "tap to unmute" affordance suggesting it's
-               already producing sound. -->
-          <div class="flex items-center group/vol">
-            <button
-              type="button"
-              class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
-              :title="inlineMuted ? 'Unmute' : 'Mute'"
-              @click.stop="toggleMute"
-            >
-              <VolumeX v-if="inlineMuted" class="h-4 w-4" />
-              <Volume2 v-else class="h-4 w-4" />
-            </button>
-            <input
-              v-if="!inlineMuted"
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              :value="inlineVolume"
-              aria-label="Volume"
-              class="vol-slider ml-0 w-0 group-hover/vol:w-20 group-hover/vol:ml-2 focus-visible:w-20 focus-visible:ml-2 transition-all duration-200 cursor-pointer"
-              @click.stop
-              @mousedown.stop
-              @input="
-                setInlineVolume(
-                  Number(($event.target as HTMLInputElement).value),
-                )
-              "
-            />
-          </div>
-          <button
-            type="button"
-            class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
-            :title="isFullscreen ? 'Exit fullscreen' : 'Fullscreen'"
-            @click.stop="toggleFullscreen"
-          >
-            <Minimize v-if="isFullscreen" class="h-4 w-4" />
-            <Maximize v-else class="h-4 w-4" />
-          </button>
-        </div>
-        <span
-          class="pointer-events-none absolute inset-x-0 bottom-0 h-0.5 overflow-hidden bg-white/10"
-        >
-          <span
-            class="absolute inset-y-0 left-0 bg-[hsl(var(--tac-amber))] shadow-[0_0_12px_hsl(var(--tac-amber)/0.45)]"
-            :style="{ width: `${(inlineProgress * 100).toFixed(2)}%` }"
-          ></span>
-        </span>
-      </StreamCanvas>
+        </template>
+      </ClipPlayer>
 
       <aside
         class="reel-queue relative flex min-h-0 max-h-80 flex-col overflow-hidden rounded-md border border-border/60 bg-card/35 [backdrop-filter:blur(8px)] lg:aspect-video lg:max-h-none"
@@ -1119,59 +694,7 @@ function clipTeamName(c: Clip): string | null {
   transform: scale(0.85);
 }
 
-/* One-shot pulse when a share button has just copied its link. The
-   toast is far from the click target so the button itself flashes
-   amber + scales briefly — primary feedback for "it worked". */
-@keyframes share-flash {
-  0% {
-    box-shadow: 0 0 0 0 hsl(var(--tac-amber) / 0.55);
-  }
-  60% {
-    box-shadow: 0 0 0 8px hsl(var(--tac-amber) / 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 hsl(var(--tac-amber) / 0);
-  }
-}
-.share-flash {
-  animation: share-flash 600ms ease-out;
-}
-
-/* Volume slider — minimal styling, sized small so it tucks beside
-   the mute pill. Mirrors WhepPlayer.vue so both player surfaces
-   share the same audio chrome. */
-.vol-slider {
-  appearance: none;
-  height: 0.25rem;
-  background: transparent;
-}
-.vol-slider:focus {
-  outline: none;
-}
-.vol-slider::-webkit-slider-runnable-track {
-  height: 0.25rem;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 9999px;
-}
-.vol-slider::-moz-range-track {
-  height: 0.25rem;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 9999px;
-}
-.vol-slider::-webkit-slider-thumb {
-  appearance: none;
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 9999px;
-  background: white;
-  border: 2px solid rgba(0, 0, 0, 0.6);
-  margin-top: -0.25rem;
-}
-.vol-slider::-moz-range-thumb {
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 9999px;
-  background: white;
-  border: 2px solid rgba(0, 0, 0, 0.6);
-}
+/* `.share-flash` keyframe lives in assets/css/tailwind.css so the
+   feedback is identical across the reel, HighlightCard, and the
+   ClipDetailModal. */
 </style>

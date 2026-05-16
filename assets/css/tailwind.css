@@ -290,3 +290,21 @@ mark {
   pointer-events: none;
   opacity: 0.6;
 }
+/* One-shot pulse for clip share buttons — toast is far from the click
+   target, so the button itself flashes amber + scales briefly. Used
+   by MatchHighlightsReel queue/featured share, HighlightCard, and
+   ClipDetailModal so every share button gives the same feedback. */
+@keyframes share-flash {
+  0% {
+    box-shadow: 0 0 0 0 hsl(var(--tac-amber) / 0.55);
+  }
+  60% {
+    box-shadow: 0 0 0 8px hsl(var(--tac-amber) / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 hsl(var(--tac-amber) / 0);
+  }
+}
+.share-flash {
+  animation: share-flash 600ms ease-out;
+}

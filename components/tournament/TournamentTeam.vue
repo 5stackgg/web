@@ -11,7 +11,6 @@ import {
 } from "~/components/ui/popover";
 import { Label } from "~/components/ui/label";
 import {
-  MoreHorizontal,
   LogOut,
   Trash,
   UserMinus,
@@ -20,11 +19,16 @@ import {
   Loader2,
 } from "lucide-vue-next";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "~/components/ui/alert-dialog";
+import { toast } from "~/components/ui/toast";
 </script>
 
 <template>
@@ -235,41 +239,58 @@ import {
           </span>
         </div>
 
-        <DropdownMenu v-if="hasTeamActions">
-          <DropdownMenuTrigger as-child>
-            <Button variant="outline" size="icon" class="h-8 w-8">
-              <MoreHorizontal class="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" class="w-56">
-            <DropdownMenuItem
-              v-if="!tournament.is_organizer && canLeaveTournament"
-              class="text-destructive cursor-pointer"
-              @click="leaveTournament"
-            >
-              <LogOut class="mr-2 h-4 w-4" />
-              {{ $t("tournament.team.leave_tournament") }}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              v-if="canLeaveTeam"
-              class="text-destructive cursor-pointer"
-              @click="leaveTeam"
-            >
-              <UserMinus class="mr-2 h-4 w-4" />
-              {{ $t("tournament.team.leave_team") }}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              v-if="tournament.is_organizer && canRemoveTeam"
-              class="text-destructive cursor-pointer"
-              @click="removeTeam()"
-            >
-              <Trash class="mr-2 h-4 w-4" />
-              {{ $t("tournament.tournament_team.remove") }}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Button
+          v-if="!tournament.is_organizer && canLeaveTournament"
+          variant="outline"
+          size="sm"
+          class="h-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
+          @click="leaveTournament"
+        >
+          <LogOut class="mr-1.5 h-4 w-4" />
+          {{ $t("tournament.team.leave_tournament") }}
+        </Button>
+
+        <Button
+          v-if="tournament.is_organizer && canRemoveTeam"
+          variant="outline"
+          size="icon"
+          class="h-8 w-8 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
+          :title="$t('tournament.tournament_team.remove')"
+          @click="removeTeamDialog = true"
+        >
+          <Trash class="h-4 w-4" />
+        </Button>
       </div>
     </header>
+
+    <AlertDialog
+      :open="removeTeamDialog"
+      @update:open="(open) => (removeTeamDialog = open)"
+    >
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            {{ $t("tournament.tournament_team.remove") }}
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            {{
+              $t("tournament.tournament_team.confirm_remove", {
+                name: displayName,
+              })
+            }}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+          <AlertDialogAction
+            class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            @click="removeTeam"
+          >
+            {{ $t("tournament.tournament_team.remove") }}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
 
     <!-- Roster list -->
     <div v-if="team.roster" class="flex flex-col gap-[0.85rem]">
@@ -288,6 +309,8 @@ import {
           :team="team"
           :tournament="tournament"
           :roles="e_team_roles"
+          :can-leave="canLeaveTeam"
+          @leave="leaveTeam"
         />
 
         <!-- Empty slots -->
@@ -377,6 +400,7 @@ export default {
       editShortName: "",
       savingIdentity: false,
       identityError: "",
+      removeTeamDialog: false,
     };
   },
   apollo: {
@@ -504,13 +528,6 @@ export default {
         e_tournament_status_enum.CancelledMinTeams,
         e_tournament_status_enum.Finished,
       ].includes(status);
-    },
-    hasTeamActions() {
-      return (
-        (!this.tournament.is_organizer && this.canLeaveTournament) ||
-        this.canLeaveTeam ||
-        (this.tournament.is_organizer && this.canRemoveTeam)
-      );
     },
   },
   methods: {
@@ -668,18 +685,37 @@ export default {
       });
     },
     async removeTeam() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          delete_tournament_teams_by_pk: [
-            {
-              id: this.team.id,
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
+      this.removeTeamDialog = false;
+      try {
+        const result = await this.$apollo.mutate({
+          mutation: generateMutation({
+            delete_tournament_teams_by_pk: [
+              {
+                id: this.team.id,
+              },
+              {
+                id: true,
+              },
+            ],
+          }),
+        });
+
+        if (!result.data?.delete_tournament_teams_by_pk?.id) {
+          throw new Error("Delete returned no row — permission denied?");
+        }
+
+        toast({
+          title: this.$t("tournament.tournament_team.remove"),
+          description: this.displayName,
+        });
+      } catch (error: unknown) {
+        console.error("removeTeam failed", error);
+        toast({
+          title: this.$t("tournament.tournament_team.remove"),
+          description: error instanceof Error ? error.message : String(error),
+          variant: "destructive",
+        });
+      }
     },
   },
 };

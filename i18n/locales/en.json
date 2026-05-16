@@ -1426,7 +1426,8 @@
             "requirements": "You need at least {count} players to join this tournament"
         },
         "tournament_team": {
-            "remove": "Remove Team"
+            "remove": "Remove Team",
+            "confirm_remove": "Are you sure you want to remove {name} from this tournament? This cannot be undone."
         },
         "add_team": {
             "title": "Add Team",

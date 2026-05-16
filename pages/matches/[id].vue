@@ -291,7 +291,9 @@ const vsBaseClasses =
       <div
         class="grid grid-cols-1 gap-y-4 md:gap-y-6 min-w-0"
         :class="
-          showLiveStreamBlock ? 'lg:col-start-1 lg:row-start-1 lg:row-span-2' : ''
+          showLiveStreamBlock
+            ? 'lg:col-start-1 lg:row-start-1 lg:row-span-2'
+            : ''
         "
       >
         <PageTransition :delay="100">

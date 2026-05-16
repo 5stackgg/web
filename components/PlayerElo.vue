@@ -18,6 +18,7 @@ import {
         :class="triggerClasses"
         :style="{ '--tier-rgb': primaryTier.rgb }"
         :aria-label="`ELO, primary ${primaryTier.label} ${primaryElo}`"
+        @click="onBadgeClick"
       >
         <span :class="triggerNotchClasses" aria-hidden="true"></span>
         <span :class="triggerLabelClasses">ELO</span>
@@ -434,6 +435,18 @@ export default {
   methods: {
     peakRgbFor(elo: number): string {
       return tierFor(elo).rgb;
+    },
+    onBadgeClick(event: MouseEvent) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.$router.push({
+        path: "/leaderboard",
+        query: {
+          tab: "elo",
+          period: "0",
+          type: "Competitive",
+        },
+      });
     },
   },
 };

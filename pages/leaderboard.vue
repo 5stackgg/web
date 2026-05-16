@@ -157,14 +157,32 @@ const LEADERBOARD_QUERY = gql`
 
 const { t } = useI18n();
 const { client: apolloClient } = useApolloClient();
+const route = useRoute();
 
 const category = useRouteTab({
   defaultTab: "elo",
   tabs: Object.keys(CATEGORY_CONFIG),
 });
 
-const windowDays = ref("30");
-const matchType = ref("all");
+const WINDOW_OPTIONS = ["0", "7", "30"] as const;
+const MATCH_TYPE_OPTIONS = ["all", "Competitive", "Wingman", "Duel"] as const;
+
+function readQueryParam<T extends string>(
+  key: string,
+  allowed: readonly T[],
+  fallback: T,
+): T {
+  const raw = route.query[key];
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return typeof value === "string" && (allowed as readonly string[]).includes(value)
+    ? (value as T)
+    : fallback;
+}
+
+const windowDays = ref<string>(readQueryParam("period", WINDOW_OPTIONS, "0"));
+const matchType = ref<string>(
+  readQueryParam("type", MATCH_TYPE_OPTIONS, "Competitive"),
+);
 const excludeTournaments = ref(false);
 const entries = ref<LeaderboardEntry[]>([]);
 const total = ref(0);

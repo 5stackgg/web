@@ -1,9 +1,14 @@
 <script lang="ts" setup>
+import { useMediaQuery } from "@vueuse/core";
 import {
   HoverCard,
   HoverCardTrigger,
   HoverCardContent,
 } from "~/components/ui/hover-card";
+
+// Touch surfaces have no usable hover; suppress the popover so a tap
+// doesn't leave a sticky card open over the row underneath.
+const isMobile = useMediaQuery("(max-width: 768px)");
 </script>
 
 <template>
@@ -29,6 +34,7 @@ import {
     </HoverCardTrigger>
 
     <HoverCardContent
+      v-if="!isMobile"
       :side-offset="8"
       :collision-padding="12"
       :class="cardClasses"

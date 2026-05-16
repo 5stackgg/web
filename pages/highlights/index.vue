@@ -10,6 +10,7 @@ import {
   Clapperboard,
   ListVideo,
   Calendar,
+  Crosshair,
   User,
   X,
 } from "lucide-vue-next";
@@ -88,6 +89,15 @@ const SINCE_OPTIONS: Array<{ value: SincePreset; label: string }> = [
   { value: "90d", label: "Last 90 days" },
 ];
 
+type KillsPreset = "any" | "2" | "3" | "4" | "5";
+const KILLS_OPTIONS: Array<{ value: KillsPreset; label: string }> = [
+  { value: "any", label: "Any kills" },
+  { value: "2", label: "2+ kills" },
+  { value: "3", label: "3+ kills" },
+  { value: "4", label: "4+ kills" },
+  { value: "5", label: "5K (Ace)" },
+];
+
 const playerFilter = computed<string | null>(() => {
   const v = route.query.player;
   return typeof v === "string" && v.length > 0 ? v : null;
@@ -100,11 +110,26 @@ const sinceFilter = computed<SincePreset>(() => {
   }
   return "all";
 });
+const killsFilter = computed<KillsPreset>(() => {
+  const v = route.query.kills;
+  if (typeof v === "string") {
+    const match = KILLS_OPTIONS.find((o) => o.value === v);
+    if (match) return match.value;
+  }
+  return "any";
+});
 
 function setSince(v: SincePreset) {
   const next = { ...route.query } as Record<string, any>;
   if (v === "all") delete next.since;
   else next.since = v;
+  router.replace({ path: route.path, query: next, hash: route.hash });
+}
+
+function setKills(v: KillsPreset) {
+  const next = { ...route.query } as Record<string, any>;
+  if (v === "any") delete next.kills;
+  else next.kills = v;
   router.replace({ path: route.path, query: next, hash: route.hash });
 }
 
@@ -209,6 +234,11 @@ function subscribe() {
   if (cutoff) {
     conditions.push({ created_at: { _gte: cutoff } });
   }
+  if (killsFilter.value !== "any") {
+    conditions.push({
+      kills_count: { _gte: parseInt(killsFilter.value, 10) },
+    });
+  }
   const where = conditions.length === 0 ? {} : { _and: conditions };
   const obs = getGraphqlClient().subscribe({
     query: generateSubscription({
@@ -235,7 +265,7 @@ function subscribe() {
 }
 subscribe();
 
-watch([playerFilter, sinceFilter, isAdmin], () => subscribe());
+watch([playerFilter, sinceFilter, killsFilter, isAdmin], () => subscribe());
 onBeforeUnmount(() => {
   activeSub?.unsubscribe();
   pendingSub?.unsubscribe();
@@ -290,11 +320,24 @@ const hasClips = computed(() => filteredClips.value.length > 0);
 
 // Multi-clip matches collapse to a MatchClipsGroupCard, singletons
 // stay as HighlightCards. Subscription capped at 200, so client-side
-// grouping is fine.
+// grouping is fine. When the user has filtered to a specific player,
+// skip grouping entirely — they're browsing that player's individual
+// plays, not the match-by-match digest.
 type GridItem =
   | { kind: "single"; clip: Clip; sortKey: string }
   | { kind: "group"; matchId: string; clips: Clip[]; sortKey: string };
 const gridItems = computed<GridItem[]>(() => {
+  if (playerFilter.value) {
+    return filteredClips.value
+      .map<GridItem>((clip) => ({
+        kind: "single",
+        clip,
+        sortKey: clip.created_at,
+      }))
+      .sort((a, b) =>
+        a.sortKey < b.sortKey ? 1 : a.sortKey > b.sortKey ? -1 : 0,
+      );
+  }
   const byMatch = new Map<string, Clip[]>();
   const orphans: Clip[] = [];
   for (const c of filteredClips.value) {
@@ -491,6 +534,39 @@ const adminFilters: Array<{ value: Filter; label: string; icon?: any }> = [
         </SelectContent>
       </Select>
 
+      <Select
+        :model-value="killsFilter"
+        @update:model-value="(v) => setKills(v as KillsPreset)"
+      >
+        <SelectTrigger
+          class="h-8 w-auto min-w-[9rem] gap-2 rounded-full border-border/60 bg-muted/30 px-3 text-xs"
+          :class="
+            killsFilter !== 'any'
+              ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+              : ''
+          "
+        >
+          <Crosshair
+            class="h-3.5 w-3.5"
+            :class="
+              killsFilter !== 'any'
+                ? 'text-[hsl(var(--tac-amber))]'
+                : 'text-muted-foreground'
+            "
+          />
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem
+            v-for="opt in KILLS_OPTIONS"
+            :key="opt.value"
+            :value="opt.value"
+          >
+            {{ opt.label }}
+          </SelectItem>
+        </SelectContent>
+      </Select>
+
       <span
         v-if="!loading"
         class="ml-auto font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground tabular-nums"
@@ -517,14 +593,16 @@ const adminFilters: Array<{ value: Filter; label: string; icon?: any }> = [
     <Empty>
       <EmptyTitle>
         {{
-          playerFilter || sinceFilter !== "all"
+          playerFilter || sinceFilter !== "all" || killsFilter !== "any"
             ? "No clips match these filters"
             : "No clips here yet"
         }}
       </EmptyTitle>
       <EmptyDescription>
-        <template v-if="playerFilter || sinceFilter !== 'all'">
-          Try widening the date range or clearing the player filter.
+        <template
+          v-if="playerFilter || sinceFilter !== 'all' || killsFilter !== 'any'"
+        >
+          Try widening the filters or clearing one.
         </template>
         <template v-else-if="isAdmin">
           Try a different filter — or wait for new clips to render.
@@ -534,7 +612,7 @@ const adminFilters: Array<{ value: Filter; label: string; icon?: any }> = [
         </template>
       </EmptyDescription>
       <div
-        v-if="playerFilter || sinceFilter !== 'all'"
+        v-if="playerFilter || sinceFilter !== 'all' || killsFilter !== 'any'"
         class="mt-3 flex flex-wrap items-center justify-center gap-2"
       >
         <button
@@ -554,6 +632,15 @@ const adminFilters: Array<{ value: Filter; label: string; icon?: any }> = [
         >
           <X class="h-3 w-3" />
           Clear date
+        </button>
+        <button
+          v-if="killsFilter !== 'any'"
+          type="button"
+          :class="[tacticalFilterPillClasses]"
+          @click="setKills('any')"
+        >
+          <X class="h-3 w-3" />
+          Clear kills
         </button>
       </div>
     </Empty>

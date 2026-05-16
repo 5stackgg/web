@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import gql from "graphql-tag";
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, watch, onMounted, nextTick } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
@@ -19,6 +19,7 @@ import { Skeleton } from "~/components/ui/skeleton";
 import { Switch } from "~/components/ui/switch";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
+import { useAuthStore } from "~/stores/AuthStore";
 
 const leaderboardFadeTransition = {
   enterActiveClass: "transition-all duration-150 ease-out",
@@ -155,16 +156,59 @@ const LEADERBOARD_QUERY = gql`
   }
 `;
 
+const PLAYER_RANK_QUERY = gql`
+  query LeaderboardPlayerRank(
+    $category: String!
+    $window_days: Int!
+    $match_type: String
+    $exclude_tournaments: Boolean!
+    $player_steam_id: String!
+  ) {
+    get_player_leaderboard_rank(
+      args: {
+        _category: $category
+        _window_days: $window_days
+        _match_type: $match_type
+        _exclude_tournaments: $exclude_tournaments
+        _player_steam_id: $player_steam_id
+      }
+    ) {
+      rank
+      total
+    }
+  }
+`;
+
 const { t } = useI18n();
 const { client: apolloClient } = useApolloClient();
+const route = useRoute();
+const auth = useAuthStore();
+const loggedInSteamId = computed(() => auth.me?.steam_id ?? null);
 
 const category = useRouteTab({
   defaultTab: "elo",
   tabs: Object.keys(CATEGORY_CONFIG),
 });
 
-const windowDays = ref("30");
-const matchType = ref("all");
+const WINDOW_OPTIONS = ["0", "7", "30"] as const;
+const MATCH_TYPE_OPTIONS = ["all", "Competitive", "Wingman", "Duel"] as const;
+
+function readQueryParam<T extends string>(
+  key: string,
+  allowed: readonly T[],
+  fallback: T,
+): T {
+  const raw = route.query[key];
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return typeof value === "string" && (allowed as readonly string[]).includes(value)
+    ? (value as T)
+    : fallback;
+}
+
+const windowDays = ref<string>(readQueryParam("period", WINDOW_OPTIONS, "0"));
+const matchType = ref<string>(
+  readQueryParam("type", MATCH_TYPE_OPTIONS, "Competitive"),
+);
 const excludeTournaments = ref(false);
 const entries = ref<LeaderboardEntry[]>([]);
 const total = ref(0);
@@ -173,6 +217,13 @@ const perPage = ref(10);
 const loading = ref(true);
 const sortBy = ref<SortField | null>(null);
 const sortDir = ref<"asc" | "desc">("desc");
+// Steam id from the URL — when set we look up that player's rank, jump
+// to the page they sit on, and highlight their row on render.
+const highlightedSteamId = computed(() => {
+  const raw = route.query.player;
+  const v = Array.isArray(raw) ? raw[0] : raw;
+  return typeof v === "string" && v.length > 0 ? v : null;
+});
 let fetchGeneration = 0;
 
 const categories = [
@@ -250,6 +301,7 @@ function toggleSort(field: SortField) {
 
 function onFilterChange() {
   page.value = 1;
+  pageAlignedForSteamId = null;
   fetchLeaderboard();
 }
 
@@ -265,13 +317,62 @@ function onPageChange(newPage: number) {
 function onPerPageChange(value: number) {
   perPage.value = value;
   page.value = 1;
+  pageAlignedForSteamId = null;
   fetchLeaderboard();
 }
+
+// When the URL carries a player id and we haven't yet aligned the page
+// to their rank, look up the player's rank under the current filters
+// and snap to the page they sit on. Returning false means we changed
+// page and the caller should re-enter the fetch (we update offset).
+async function alignPageToHighlightedPlayer(): Promise<boolean> {
+  const sid = highlightedSteamId.value;
+  if (!sid || pageAlignedForSteamId === sid) return true;
+  try {
+    const { data } = await apolloClient.query({
+      query: PLAYER_RANK_QUERY,
+      variables: {
+        category: category.value,
+        window_days: parseInt(windowDays.value),
+        match_type: matchType.value === "all" ? null : matchType.value,
+        exclude_tournaments: Boolean(excludeTournaments.value),
+        player_steam_id: sid,
+      },
+      fetchPolicy: "network-only",
+    });
+    const row = (data as any)?.get_player_leaderboard_rank?.[0];
+    pageAlignedForSteamId = sid;
+    const rank = Number(row?.rank);
+    if (!Number.isFinite(rank) || rank <= 0) return true;
+    const targetPage = Math.max(1, Math.ceil(rank / perPage.value));
+    if (targetPage !== page.value) {
+      page.value = targetPage;
+      return false;
+    }
+    return true;
+  } catch (error) {
+    console.error("Error looking up player leaderboard rank:", error);
+    pageAlignedForSteamId = sid;
+    return true;
+  }
+}
+
+// Tracks which steam id we've already snapped the page for, so filter
+// changes re-snap but a manual page change by the user sticks.
+let pageAlignedForSteamId: string | null = null;
 
 async function fetchLeaderboard() {
   loading.value = true;
   const gen = ++fetchGeneration;
   try {
+    const aligned = await alignPageToHighlightedPlayer();
+    if (gen !== fetchGeneration) return;
+    if (!aligned) {
+      // Page changed; the watcher will not re-fire fetchLeaderboard for
+      // us, so kick it off again with the new page applied.
+      void fetchLeaderboard();
+      return;
+    }
     const { data } = await apolloClient.query({
       query: LEADERBOARD_QUERY,
       variables: queryVariables.value,
@@ -356,6 +457,48 @@ watch(category, () => {
 watch(windowDays, onFilterChange);
 watch(matchType, onFilterChange);
 watch(excludeTournaments, onFilterChange);
+watch(highlightedSteamId, (sid) => {
+  // A different player was deep-linked — re-resolve their page.
+  if (sid && sid !== pageAlignedForSteamId) {
+    pageAlignedForSteamId = null;
+    fetchLeaderboard();
+  }
+});
+
+// Scroll the highlighted player into view once the entries land — only
+// the first time we see them, so a user scrolling away after the snap
+// doesn't get yanked back.
+const highlightedRowEl = ref<HTMLElement | null>(null);
+let highlightScrolledForSteamId: string | null = null;
+function setHighlightedRowRef(
+  el: Element | { $el?: Element } | null,
+  steamId: string,
+) {
+  if (steamId !== highlightedSteamId.value) return;
+  const node = (el as { $el?: Element } | null)?.$el ?? (el as Element | null);
+  if (node instanceof HTMLElement) {
+    highlightedRowEl.value = node;
+  }
+}
+watch(
+  [entries, highlightedSteamId],
+  () => {
+    const sid = highlightedSteamId.value;
+    if (!sid) {
+      highlightScrolledForSteamId = null;
+      return;
+    }
+    if (highlightScrolledForSteamId === sid) return;
+    if (!entries.value.some((e) => e.player_steam_id === sid)) return;
+    void nextTick(() => {
+      highlightedRowEl.value?.scrollIntoView({
+        block: "center",
+        behavior: "smooth",
+      });
+      highlightScrolledForSteamId = sid;
+    });
+  },
+);
 
 onMounted(() => {
   fetchLeaderboard();
@@ -626,7 +769,20 @@ onMounted(() => {
               <TableRow
                 v-for="entry in entries"
                 :key="entry.player_steam_id"
+                :ref="
+                  (el) =>
+                    setHighlightedRowRef(el, entry.player_steam_id)
+                "
                 class="cursor-pointer"
+                :class="[
+                  entry.player_steam_id === highlightedSteamId
+                    ? 'leaderboard-row--highlight'
+                    : '',
+                  entry.player_steam_id === loggedInSteamId &&
+                  entry.player_steam_id !== highlightedSteamId
+                    ? 'leaderboard-row--me'
+                    : '',
+                ]"
               >
                 <NuxtLink
                   :to="{
@@ -742,3 +898,34 @@ onMounted(() => {
     </div>
   </PageTransition>
 </template>
+
+<style scoped>
+:deep(.leaderboard-row--highlight) {
+  background: hsl(var(--tac-amber) / 0.12);
+  box-shadow:
+    inset 3px 0 0 hsl(var(--tac-amber)),
+    inset 0 0 0 1px hsl(var(--tac-amber) / 0.45);
+  animation: leaderboard-row-pulse 1600ms ease-out 1;
+}
+:deep(.leaderboard-row--highlight:hover) {
+  background: hsl(var(--tac-amber) / 0.18);
+}
+@keyframes leaderboard-row-pulse {
+  0% {
+    background: hsl(var(--tac-amber) / 0.28);
+  }
+  100% {
+    background: hsl(var(--tac-amber) / 0.12);
+  }
+}
+
+/* "You are here" — the logged-in user's row gets a quieter mark so it
+   stays present without competing with a deep-linked highlight. */
+:deep(.leaderboard-row--me) {
+  background: hsl(var(--tac-amber) / 0.06);
+  box-shadow: inset 3px 0 0 hsl(var(--tac-amber) / 0.55);
+}
+:deep(.leaderboard-row--me:hover) {
+  background: hsl(var(--tac-amber) / 0.1);
+}
+</style>

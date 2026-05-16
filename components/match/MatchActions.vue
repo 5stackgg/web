@@ -151,7 +151,20 @@ import {
               {{ $t("match.actions.stop_live") }}
             </template>
           </DropdownMenuItem>
-          <DropdownMenuItem v-if="hasMatchDemos" @click="createClipsForMatch">
+          <Tooltip v-if="hasMatchDemos && !hasRegisteredGpu">
+            <TooltipTrigger as-child>
+              <DropdownMenuItem disabled>
+                {{ $t("match.actions.create_clips") }}
+              </DropdownMenuItem>
+            </TooltipTrigger>
+            <TooltipContent side="left">
+              {{ $t("match.actions.create_clips_needs_gpu_node") }}
+            </TooltipContent>
+          </Tooltip>
+          <DropdownMenuItem
+            v-else-if="hasMatchDemos"
+            @click="createClipsForMatch"
+          >
             {{ $t("match.actions.create_clips") }}
           </DropdownMenuItem>
         </template>
@@ -474,6 +487,14 @@ export default {
     gpuBusyReason() {
       const gpu = useGpuPoolStatusStore();
       return gpu.busyReason;
+    },
+    // Highlight queueing only needs a GPU node to *exist* (offline is OK).
+    // hasFreeGpu collapses to false when the GPU is offline too, which is
+    // why we use a separate "is there any GPU registered" signal here.
+    hasRegisteredGpu() {
+      const gpu = useGpuPoolStatusStore();
+      if (!gpu.hasLoaded) return true;
+      return gpu.hasRegisteredGpu;
     },
     canStartLiveDirect() {
       return (

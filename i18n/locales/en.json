@@ -1997,6 +1997,7 @@
             "cancel_live_boot_short": "Cancel Boot",
             "cancel_live_boot_confirm_short": "Cancel?",
             "create_clips": "Create Player Highlights",
+            "create_clips_needs_gpu_node": "Register a GPU node to queue highlights (offline is fine — jobs dispatch when it's back online)",
             "live_started": "Live stream starting",
             "live_stopped": "Live stream stopped",
             "clips_started": "Player highlight renders queued",
@@ -2029,7 +2030,87 @@
                 "time_to_damage": "Time to Damage",
                 "spotted_acc": "Spotted Acc",
                 "crosshair_placement": "Cross. Placement",
-                "counter_strafing": "Counter-Strafing"
+                "counter_strafing": "Counter-Strafing",
+                "spray_accuracy": "Spray Accuracy",
+                "accuracy_spotted": "Accuracy (Spotted)",
+                "calc_header": "How it is calculated",
+                "tooltips": {
+                    "accuracy": {
+                        "title": "Accuracy (All Shots)",
+                        "description": "Out of the total bullets you fired, how many hit an enemy.",
+                        "calculation": "All hits divided by all shots."
+                    },
+                    "accuracy_spotted": {
+                        "title": "Accuracy (Enemy Spotted)",
+                        "description": "Accuracy when you were actually shooting at an enemy in your field of view. Spam through smoke or walls is excluded.",
+                        "calculation": "Hits on spotted enemies divided by shots fired while an enemy was in vision."
+                    },
+                    "head_accuracy": {
+                        "title": "Headshot Accuracy",
+                        "description": "How many of your hits landed in the head. Excludes shots with AWP.",
+                        "calculation": "Head hits divided by total hits (AWP excluded from both)."
+                    },
+                    "hs_kill_pct": {
+                        "title": "HS Kill %",
+                        "description": "Share of your kills that were headshots, as the scoreboard shows.",
+                        "calculation": "Headshot kills divided by total kills."
+                    },
+                    "time_to_damage": {
+                        "title": "Time to Damage",
+                        "description": "Average time from first seeing an enemy to dealing damage to them. Trigger-discipline / hold-angle plays are excluded.",
+                        "calculation": "Per engagement, time from the rising-edge spot to the first damage on that enemy. Averaged across all engagements; capped at 3s."
+                    },
+                    "spotted_acc": {
+                        "title": "Spotted Accuracy",
+                        "description": "How often you convert sightings into damage — measures engagement aggression, not aim.",
+                        "calculation": "Spots that led to damage on the same enemy this round, divided by total spots."
+                    },
+                    "crosshair_placement": {
+                        "title": "Crosshair Placement",
+                        "description": "Average angle (degrees) your crosshair moved from first seeing the enemy until you hit them. Lower is better.",
+                        "calculation": "Per engagement, the angle between your eye direction at the moment of first spot and at the first hit. Outliers above 45° are excluded."
+                    },
+                    "counter_strafing": {
+                        "title": "Counter-Strafing",
+                        "description": "How often you stopped before firing with a rifle. Only counts rifle shots at an enemy in vision; excludes movement while fully crouched.",
+                        "calculation": "Rifle shots at a spotted enemy where speed was under 34% of the weapon's max, divided by all rifle shots at spotted enemies (not crouched)."
+                    },
+                    "spray_accuracy": {
+                        "title": "Spray Accuracy",
+                        "description": "Your accuracy on the second and later shots of a burst — the shots where recoil matters most.",
+                        "calculation": "Hits attributed to spray shots divided by total spray shots. A shot is a spray shot if the same shooter fired within 250ms before it."
+                    },
+                    "trade_kill_opportunities": {
+                        "title": "Trade Kill Opportunities",
+                        "description": "Rounds where a teammate died while you were alive — i.e. you had a chance to trade.",
+                        "calculation": "Distinct rounds in which at least one teammate was killed by an enemy while you were still alive."
+                    },
+                    "trade_kill_attempts": {
+                        "title": "Trade Kill Attempts",
+                        "description": "Enemies you killed shortly after they killed a teammate.",
+                        "calculation": "Kills against an enemy within 5 seconds of them killing one of your teammates."
+                    },
+                    "trade_kill_pct": {
+                        "title": "Trade Kill %",
+                        "description": "How often you converted a trade opportunity into a trade kill.",
+                        "calculation": "Trade kill successes divided by trade kill opportunity rounds."
+                    },
+                    "traded_death_opportunities": {
+                        "title": "Traded Death Opportunities",
+                        "description": "Your enemy deaths — i.e. each death was a chance for a teammate to trade for you.",
+                        "calculation": "Total times you were killed by an enemy."
+                    },
+                    "traded_death_pct": {
+                        "title": "Traded Death %",
+                        "description": "How often your deaths were avenged by a teammate.",
+                        "calculation": "Your deaths a teammate traded within 5 seconds, divided by total deaths."
+                    },
+                    "net_trade": {
+                        "title": "Net Trade",
+                        "description": "Your contribution to your team's trade balance.",
+                        "calculation": "Trade kills you completed minus your untraded deaths."
+                    }
+                }
             },
             "discord_user": "This is a Discord user, register your discord id to enable stat tracking by typing",
             "discord_link": "in the official discord channel."

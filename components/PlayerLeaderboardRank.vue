@@ -2,11 +2,6 @@
 import { ref, watch, computed, onBeforeUnmount } from "vue";
 import gql from "graphql-tag";
 import { useApolloClient } from "@vue/apollo-composable";
-import {
-  HoverCard,
-  HoverCardTrigger,
-  HoverCardContent,
-} from "~/components/ui/hover-card";
 
 const props = defineProps<{
   playerSteamId: string;
@@ -119,75 +114,32 @@ const rankValueClasses =
 
 const percentileClasses =
   "font-mono text-[0.6rem] font-semibold uppercase tabular-nums tracking-[0.14em] text-[hsl(var(--tac-amber)/0.85)]";
-
-const cardClasses = [
-  "relative w-[260px] p-0 overflow-hidden",
-  "border border-border/80 rounded-none",
-  "bg-[hsl(240_8%_10%)] text-[hsl(var(--popover-foreground))]",
-  "[font-family:'Oxanium',sans-serif]",
-  "shadow-[inset_0_1px_0_hsl(0_0%_100%/0.04),0_0_0_1px_hsl(var(--tac-amber)/0.08),0_18px_40px_-12px_hsl(0_0%_0%/0.85)]",
-  "[background-image:radial-gradient(circle_at_top_right,hsl(var(--tac-amber)/0.10)_0%,transparent_55%),linear-gradient(180deg,hsl(0_0%_100%/0.02)_0%,transparent_60%)]",
-].join(" ");
-
-const cardHeaderClasses =
-  "flex items-center justify-between px-3 pt-2.5 pb-2 border-b border-border/60 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.26em] text-muted-foreground";
-
-const cardHeaderAccent = "text-[hsl(var(--tac-amber))]";
-
-const cardRowClasses =
-  "flex items-center justify-between px-3 py-2 font-mono text-[0.7rem] uppercase tracking-[0.14em]";
-
-const cardRowLabel = "text-muted-foreground";
-
-const cardRowValue =
-  "tabular-nums text-[hsl(var(--tac-amber))] [text-shadow:0_0_8px_hsl(var(--tac-amber)/0.35)]";
 </script>
 
 <template>
-  <HoverCard v-if="rankLabel" :open-delay="80" :close-delay="140">
-    <HoverCardTrigger as-child>
-      <button
-        type="button"
-        :class="triggerClasses"
-        :aria-label="`${$t('pages.players.detail.global_rank')} ${rankLabel}`"
-      >
-        <span :class="notchClasses" aria-hidden="true"></span>
-        <span :class="labelClasses">{{ $t("pages.players.detail.rank") }}</span>
-        <span :class="sepClasses" aria-hidden="true"></span>
-        <span :class="rankValueClasses">{{ rankLabel }}</span>
-        <span v-if="percentile" :class="sepClasses" aria-hidden="true"></span>
-        <span v-if="percentile" :class="percentileClasses">
-          {{ $t("pages.players.detail.top_percent", { percent: percentile }) }}
-        </span>
-      </button>
-    </HoverCardTrigger>
-    <HoverCardContent
-      :side-offset="8"
-      :collision-padding="12"
-      :class="cardClasses"
-    >
-      <header :class="cardHeaderClasses">
-        <span>
-          <span :class="cardHeaderAccent">◢</span>
-          {{ $t("pages.players.detail.global_rank") }}
-        </span>
-        <span :class="cardHeaderAccent">
-          {{ $t("pages.leaderboard.match_types.competitive") }}
-        </span>
-      </header>
-      <div :class="cardRowClasses">
-        <span :class="cardRowLabel">
-          {{ $t("pages.leaderboard.time_periods.all_time") }}
-        </span>
-        <span :class="cardRowValue">
-          {{
-            $t("pages.players.detail.rank_of_total", {
-              rank: rank!.toLocaleString(),
-              total: total!.toLocaleString(),
-            })
-          }}
-        </span>
-      </div>
-    </HoverCardContent>
-  </HoverCard>
+  <NuxtLink
+    v-if="rankLabel"
+    :to="{
+      path: '/leaderboard',
+      query: {
+        tab: 'elo',
+        period: '0',
+        type: 'Competitive',
+        player: playerSteamId,
+      },
+    }"
+    :class="triggerClasses"
+    :aria-label="`${$t('pages.players.detail.global_rank')} ${rankLabel}`"
+    :title="$t('pages.players.detail.global_rank')"
+    @click.stop
+  >
+    <span :class="notchClasses" aria-hidden="true"></span>
+    <span :class="labelClasses">{{ $t("pages.players.detail.rank") }}</span>
+    <span :class="sepClasses" aria-hidden="true"></span>
+    <span :class="rankValueClasses">{{ rankLabel }}</span>
+    <span v-if="percentile" :class="sepClasses" aria-hidden="true"></span>
+    <span v-if="percentile" :class="percentileClasses">
+      {{ $t("pages.players.detail.top_percent", { percent: percentile }) }}
+    </span>
+  </NuxtLink>
 </template>

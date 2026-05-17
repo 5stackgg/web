@@ -786,6 +786,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
+import { getDiscordInviteLink } from "~/utilities/communityLinks";
 export default {
   props: {
     isMobile: {
@@ -883,9 +884,8 @@ export default {
     isAdmin() {
       return useAuthStore().isAdmin;
     },
-    // TODO - move to global
     inviteLink() {
-      return `https://${useRuntimeConfig().public.webDomain}/discord-invite`;
+      return getDiscordInviteLink();
     },
     managingMatchesCount() {
       return useMatchLobbyStore().managingMatchesCount;

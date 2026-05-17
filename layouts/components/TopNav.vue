@@ -597,6 +597,7 @@ const loginArrowClasses =
 </template>
 
 <script lang="ts">
+import { getDiscordInviteLink } from "~/utilities/communityLinks";
 export default {
   data() {
     return {
@@ -606,7 +607,7 @@ export default {
   },
   computed: {
     inviteLink() {
-      return `https://${useRuntimeConfig().public.webDomain}/discord-invite`;
+      return getDiscordInviteLink();
     },
     githubUrl() {
       return useApplicationSettingsStore().githubUrl;

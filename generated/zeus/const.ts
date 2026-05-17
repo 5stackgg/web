@@ -4866,6 +4866,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"player_flashes_order_by",
 			where:"player_flashes_bool_exp"
 		},
+		match_clips:{
+			distinct_on:"match_clips_select_column",
+			order_by:"match_clips_order_by",
+			where:"match_clips_bool_exp"
+		},
+		match_clips_aggregate:{
+			distinct_on:"match_clips_select_column",
+			order_by:"match_clips_order_by",
+			where:"match_clips_bool_exp"
+		},
 		objectives:{
 			distinct_on:"player_objectives_select_column",
 			order_by:"player_objectives_order_by",
@@ -4978,14 +4988,17 @@ export const AllTypesProps: Record<string,any> = {
 		on_conflict:"match_maps_on_conflict"
 	},
 	match_maps_avg_order_by:{
+		clips_count:"order_by",
 		lineup_1_timeouts_available:"order_by",
 		lineup_2_timeouts_available:"order_by",
-		order:"order_by"
+		order:"order_by",
+		public_clips_count:"order_by"
 	},
 	match_maps_bool_exp:{
 		_and:"match_maps_bool_exp",
 		_not:"match_maps_bool_exp",
 		_or:"match_maps_bool_exp",
+		clips_count:"Int_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
 		demos:"match_map_demos_bool_exp",
 		demos_aggregate:"match_map_demos_aggregate_bool_exp",
@@ -4997,6 +5010,7 @@ export const AllTypesProps: Record<string,any> = {
 		flashes_aggregate:"player_flashes_aggregate_bool_exp",
 		id:"uuid_comparison_exp",
 		is_current_map:"Boolean_comparison_exp",
+		latest_clip_at:"timestamptz_comparison_exp",
 		lineup_1_score:"Int_comparison_exp",
 		lineup_1_side:"e_sides_enum_comparison_exp",
 		lineup_1_timeouts_available:"Int_comparison_exp",
@@ -5006,6 +5020,8 @@ export const AllTypesProps: Record<string,any> = {
 		map:"maps_bool_exp",
 		map_id:"uuid_comparison_exp",
 		match:"matches_bool_exp",
+		match_clips:"match_clips_bool_exp",
+		match_clips_aggregate:"match_clips_aggregate_bool_exp",
 		match_id:"uuid_comparison_exp",
 		objectives:"player_objectives_bool_exp",
 		objectives_aggregate:"player_objectives_aggregate_bool_exp",
@@ -5018,6 +5034,8 @@ export const AllTypesProps: Record<string,any> = {
 		player_kills_aggregate:"player_kills_aggregate_bool_exp",
 		player_unused_utilities:"player_unused_utility_bool_exp",
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate_bool_exp",
+		public_clips_count:"Int_comparison_exp",
+		public_latest_clip_at:"timestamptz_comparison_exp",
 		rounds:"match_map_rounds_bool_exp",
 		rounds_aggregate:"match_map_rounds_aggregate_bool_exp",
 		started_at:"timestamptz_comparison_exp",
@@ -5039,17 +5057,20 @@ export const AllTypesProps: Record<string,any> = {
 		ended_at:"timestamptz",
 		flashes:"player_flashes_arr_rel_insert_input",
 		id:"uuid",
+		latest_clip_at:"timestamptz",
 		lineup_1_side:"e_sides_enum",
 		lineup_2_side:"e_sides_enum",
 		map:"maps_obj_rel_insert_input",
 		map_id:"uuid",
 		match:"matches_obj_rel_insert_input",
+		match_clips:"match_clips_arr_rel_insert_input",
 		match_id:"uuid",
 		objectives:"player_objectives_arr_rel_insert_input",
 		player_assists:"player_assists_arr_rel_insert_input",
 		player_damages:"player_damages_arr_rel_insert_input",
 		player_kills:"player_kills_arr_rel_insert_input",
 		player_unused_utilities:"player_unused_utility_arr_rel_insert_input",
+		public_latest_clip_at:"timestamptz",
 		rounds:"match_map_rounds_arr_rel_insert_input",
 		started_at:"timestamptz",
 		status:"e_match_map_status_enum",
@@ -5058,26 +5079,34 @@ export const AllTypesProps: Record<string,any> = {
 		winning_lineup_id:"uuid"
 	},
 	match_maps_max_order_by:{
+		clips_count:"order_by",
 		created_at:"order_by",
 		ended_at:"order_by",
 		id:"order_by",
+		latest_clip_at:"order_by",
 		lineup_1_timeouts_available:"order_by",
 		lineup_2_timeouts_available:"order_by",
 		map_id:"order_by",
 		match_id:"order_by",
 		order:"order_by",
+		public_clips_count:"order_by",
+		public_latest_clip_at:"order_by",
 		started_at:"order_by",
 		winning_lineup_id:"order_by"
 	},
 	match_maps_min_order_by:{
+		clips_count:"order_by",
 		created_at:"order_by",
 		ended_at:"order_by",
 		id:"order_by",
+		latest_clip_at:"order_by",
 		lineup_1_timeouts_available:"order_by",
 		lineup_2_timeouts_available:"order_by",
 		map_id:"order_by",
 		match_id:"order_by",
 		order:"order_by",
+		public_clips_count:"order_by",
+		public_latest_clip_at:"order_by",
 		started_at:"order_by",
 		winning_lineup_id:"order_by"
 	},
@@ -5091,6 +5120,7 @@ export const AllTypesProps: Record<string,any> = {
 		where:"match_maps_bool_exp"
 	},
 	match_maps_order_by:{
+		clips_count:"order_by",
 		created_at:"order_by",
 		demos_aggregate:"match_map_demos_aggregate_order_by",
 		demos_download_url:"order_by",
@@ -5100,6 +5130,7 @@ export const AllTypesProps: Record<string,any> = {
 		flashes_aggregate:"player_flashes_aggregate_order_by",
 		id:"order_by",
 		is_current_map:"order_by",
+		latest_clip_at:"order_by",
 		lineup_1_score:"order_by",
 		lineup_1_side:"order_by",
 		lineup_1_timeouts_available:"order_by",
@@ -5109,6 +5140,7 @@ export const AllTypesProps: Record<string,any> = {
 		map:"maps_order_by",
 		map_id:"order_by",
 		match:"matches_order_by",
+		match_clips_aggregate:"match_clips_aggregate_order_by",
 		match_id:"order_by",
 		objectives_aggregate:"player_objectives_aggregate_order_by",
 		order:"order_by",
@@ -5116,6 +5148,8 @@ export const AllTypesProps: Record<string,any> = {
 		player_damages_aggregate:"player_damages_aggregate_order_by",
 		player_kills_aggregate:"player_kills_aggregate_order_by",
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate_order_by",
+		public_clips_count:"order_by",
+		public_latest_clip_at:"order_by",
 		rounds_aggregate:"match_map_rounds_aggregate_order_by",
 		started_at:"order_by",
 		status:"order_by",
@@ -5131,28 +5165,36 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		ended_at:"timestamptz",
 		id:"uuid",
+		latest_clip_at:"timestamptz",
 		lineup_1_side:"e_sides_enum",
 		lineup_2_side:"e_sides_enum",
 		map_id:"uuid",
 		match_id:"uuid",
+		public_latest_clip_at:"timestamptz",
 		started_at:"timestamptz",
 		status:"e_match_map_status_enum",
 		winning_lineup_id:"uuid"
 	},
 	match_maps_stddev_order_by:{
+		clips_count:"order_by",
 		lineup_1_timeouts_available:"order_by",
 		lineup_2_timeouts_available:"order_by",
-		order:"order_by"
+		order:"order_by",
+		public_clips_count:"order_by"
 	},
 	match_maps_stddev_pop_order_by:{
+		clips_count:"order_by",
 		lineup_1_timeouts_available:"order_by",
 		lineup_2_timeouts_available:"order_by",
-		order:"order_by"
+		order:"order_by",
+		public_clips_count:"order_by"
 	},
 	match_maps_stddev_samp_order_by:{
+		clips_count:"order_by",
 		lineup_1_timeouts_available:"order_by",
 		lineup_2_timeouts_available:"order_by",
-		order:"order_by"
+		order:"order_by",
+		public_clips_count:"order_by"
 	},
 	match_maps_stream_cursor_input:{
 		initial_value:"match_maps_stream_cursor_value_input",
@@ -5162,18 +5204,22 @@ export const AllTypesProps: Record<string,any> = {
 		created_at:"timestamptz",
 		ended_at:"timestamptz",
 		id:"uuid",
+		latest_clip_at:"timestamptz",
 		lineup_1_side:"e_sides_enum",
 		lineup_2_side:"e_sides_enum",
 		map_id:"uuid",
 		match_id:"uuid",
+		public_latest_clip_at:"timestamptz",
 		started_at:"timestamptz",
 		status:"e_match_map_status_enum",
 		winning_lineup_id:"uuid"
 	},
 	match_maps_sum_order_by:{
+		clips_count:"order_by",
 		lineup_1_timeouts_available:"order_by",
 		lineup_2_timeouts_available:"order_by",
-		order:"order_by"
+		order:"order_by",
+		public_clips_count:"order_by"
 	},
 	match_maps_update_column: "enum" as const,
 	match_maps_updates:{
@@ -5182,19 +5228,25 @@ export const AllTypesProps: Record<string,any> = {
 		where:"match_maps_bool_exp"
 	},
 	match_maps_var_pop_order_by:{
+		clips_count:"order_by",
 		lineup_1_timeouts_available:"order_by",
 		lineup_2_timeouts_available:"order_by",
-		order:"order_by"
+		order:"order_by",
+		public_clips_count:"order_by"
 	},
 	match_maps_var_samp_order_by:{
+		clips_count:"order_by",
 		lineup_1_timeouts_available:"order_by",
 		lineup_2_timeouts_available:"order_by",
-		order:"order_by"
+		order:"order_by",
+		public_clips_count:"order_by"
 	},
 	match_maps_variance_order_by:{
+		clips_count:"order_by",
 		lineup_1_timeouts_available:"order_by",
 		lineup_2_timeouts_available:"order_by",
-		order:"order_by"
+		order:"order_by",
+		public_clips_count:"order_by"
 	},
 	match_options:{
 		matches:{
@@ -24003,6 +24055,7 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"match_map_veto_picks"
 	},
 	match_maps:{
+		clips_count:"Int",
 		created_at:"timestamptz",
 		demos:"match_map_demos",
 		demos_aggregate:"match_map_demos_aggregate",
@@ -24014,6 +24067,7 @@ export const ReturnTypes: Record<string,any> = {
 		flashes_aggregate:"player_flashes_aggregate",
 		id:"uuid",
 		is_current_map:"Boolean",
+		latest_clip_at:"timestamptz",
 		lineup_1_score:"Int",
 		lineup_1_side:"e_sides_enum",
 		lineup_1_timeouts_available:"Int",
@@ -24023,6 +24077,8 @@ export const ReturnTypes: Record<string,any> = {
 		map:"maps",
 		map_id:"uuid",
 		match:"matches",
+		match_clips:"match_clips",
+		match_clips_aggregate:"match_clips_aggregate",
 		match_id:"uuid",
 		objectives:"player_objectives",
 		objectives_aggregate:"player_objectives_aggregate",
@@ -24035,6 +24091,8 @@ export const ReturnTypes: Record<string,any> = {
 		player_kills_aggregate:"player_kills_aggregate",
 		player_unused_utilities:"player_unused_utility",
 		player_unused_utilities_aggregate:"player_unused_utility_aggregate",
+		public_clips_count:"Int",
+		public_latest_clip_at:"timestamptz",
 		rounds:"match_map_rounds",
 		rounds_aggregate:"match_map_rounds_aggregate",
 		started_at:"timestamptz",
@@ -24063,19 +24121,23 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"match_maps_variance_fields"
 	},
 	match_maps_avg_fields:{
+		clips_count:"Float",
 		demos_total_size:"Int",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Float",
 		lineup_2_score:"Int",
 		lineup_2_timeouts_available:"Float",
-		order:"Float"
+		order:"Float",
+		public_clips_count:"Float"
 	},
 	match_maps_max_fields:{
+		clips_count:"Int",
 		created_at:"timestamptz",
 		demos_download_url:"String",
 		demos_total_size:"Int",
 		ended_at:"timestamptz",
 		id:"uuid",
+		latest_clip_at:"timestamptz",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Int",
 		lineup_2_score:"Int",
@@ -24083,15 +24145,19 @@ export const ReturnTypes: Record<string,any> = {
 		map_id:"uuid",
 		match_id:"uuid",
 		order:"Int",
+		public_clips_count:"Int",
+		public_latest_clip_at:"timestamptz",
 		started_at:"timestamptz",
 		winning_lineup_id:"uuid"
 	},
 	match_maps_min_fields:{
+		clips_count:"Int",
 		created_at:"timestamptz",
 		demos_download_url:"String",
 		demos_total_size:"Int",
 		ended_at:"timestamptz",
 		id:"uuid",
+		latest_clip_at:"timestamptz",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Int",
 		lineup_2_score:"Int",
@@ -24099,6 +24165,8 @@ export const ReturnTypes: Record<string,any> = {
 		map_id:"uuid",
 		match_id:"uuid",
 		order:"Int",
+		public_clips_count:"Int",
+		public_latest_clip_at:"timestamptz",
 		started_at:"timestamptz",
 		winning_lineup_id:"uuid"
 	},
@@ -24107,60 +24175,74 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"match_maps"
 	},
 	match_maps_stddev_fields:{
+		clips_count:"Float",
 		demos_total_size:"Int",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Float",
 		lineup_2_score:"Int",
 		lineup_2_timeouts_available:"Float",
-		order:"Float"
+		order:"Float",
+		public_clips_count:"Float"
 	},
 	match_maps_stddev_pop_fields:{
+		clips_count:"Float",
 		demos_total_size:"Int",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Float",
 		lineup_2_score:"Int",
 		lineup_2_timeouts_available:"Float",
-		order:"Float"
+		order:"Float",
+		public_clips_count:"Float"
 	},
 	match_maps_stddev_samp_fields:{
+		clips_count:"Float",
 		demos_total_size:"Int",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Float",
 		lineup_2_score:"Int",
 		lineup_2_timeouts_available:"Float",
-		order:"Float"
+		order:"Float",
+		public_clips_count:"Float"
 	},
 	match_maps_sum_fields:{
+		clips_count:"Int",
 		demos_total_size:"Int",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Int",
 		lineup_2_score:"Int",
 		lineup_2_timeouts_available:"Int",
-		order:"Int"
+		order:"Int",
+		public_clips_count:"Int"
 	},
 	match_maps_var_pop_fields:{
+		clips_count:"Float",
 		demos_total_size:"Int",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Float",
 		lineup_2_score:"Int",
 		lineup_2_timeouts_available:"Float",
-		order:"Float"
+		order:"Float",
+		public_clips_count:"Float"
 	},
 	match_maps_var_samp_fields:{
+		clips_count:"Float",
 		demos_total_size:"Int",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Float",
 		lineup_2_score:"Int",
 		lineup_2_timeouts_available:"Float",
-		order:"Float"
+		order:"Float",
+		public_clips_count:"Float"
 	},
 	match_maps_variance_fields:{
+		clips_count:"Float",
 		demos_total_size:"Int",
 		lineup_1_score:"Int",
 		lineup_1_timeouts_available:"Float",
 		lineup_2_score:"Int",
 		lineup_2_timeouts_available:"Float",
-		order:"Float"
+		order:"Float",
+		public_clips_count:"Float"
 	},
 	match_options:{
 		auto_cancel_duration:"Int",

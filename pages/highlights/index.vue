@@ -13,11 +13,13 @@ import {
   Crosshair,
   User,
   X,
+  Layers,
 } from "lucide-vue-next";
 import { useAuthStore } from "~/stores/AuthStore";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { generateSubscription } from "~/graphql/graphqlGen";
+import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
 import { matchClipFields } from "~/graphql/matchClip";
+import { order_by, $ } from "~/generated/zeus";
 import {
   Select,
   SelectContent,
@@ -44,6 +46,7 @@ import {
 import HighlightCard from "~/components/clips/HighlightCard.vue";
 import MatchClipsGroupCard from "~/components/clips/MatchClipsGroupCard.vue";
 import RenderQueuePanel from "~/components/clips/RenderQueuePanel.vue";
+import Pagination from "~/components/Pagination.vue";
 import type { Clip } from "~/types/clip";
 import { useClipModal, type ClipQueueItem } from "~/composables/useClipModal";
 import {
@@ -53,11 +56,6 @@ import {
 
 const clipQueueScope = "highlights-index";
 const { clearClipQueue, setClipQueue } = useClipModal();
-
-// Single Highlights surface for everyone. Hasura row-level permissions
-// gate which clips each role sees. Curators (streamer+) get extra
-// affordances: visibility filters (admin only), per-card visibility
-// toggles (admin only), delete, and a slide-in render queue.
 
 type Filter = "all" | "public" | "private" | "unlisted";
 
@@ -71,12 +69,20 @@ const canCurate = computed(
     auth.isTournamentOrganizer,
 );
 
-const clips = ref<Clip[]>([]);
+type ClipGroup = { matchId: string; clips: Clip[] };
+const groups = ref<ClipGroup[]>([]);
 const loading = ref(true);
 const visibilityFilter = ref<Filter>("all");
 const queueOpen = ref(false);
 
-// URL-driven filters: ?player=<sid>, ?since=<preset>.
+type ViewMode = "matches" | "singles";
+
+const page = ref(1);
+const perPage = 24;
+const totalCount = ref(0);
+
+const flatClips = computed<Clip[]>(() => groups.value.flatMap((g) => g.clips));
+
 const route = useRoute();
 const router = useRouter();
 
@@ -95,7 +101,7 @@ const KILLS_OPTIONS: Array<{ value: KillsPreset; label: string }> = [
   { value: "2", label: "2+ kills" },
   { value: "3", label: "3+ kills" },
   { value: "4", label: "4+ kills" },
-  { value: "5", label: "5K (Ace)" },
+  { value: "5", label: "5 kills" },
 ];
 
 const playerFilter = computed<string | null>(() => {
@@ -118,6 +124,16 @@ const killsFilter = computed<KillsPreset>(() => {
   }
   return "any";
 });
+const viewMode = computed<ViewMode>(() =>
+  route.query.view === "singles" ? "singles" : "matches",
+);
+
+function setViewMode(v: ViewMode) {
+  const next = { ...route.query } as Record<string, any>;
+  if (v === "matches") delete next.view;
+  else next.view = v;
+  router.replace({ path: route.path, query: next, hash: route.hash });
+}
 
 function setSince(v: SincePreset) {
   const next = { ...route.query } as Record<string, any>;
@@ -140,7 +156,6 @@ function clearPlayer() {
   router.replace({ path: route.path, query: next, hash: route.hash });
 }
 
-// Cache so the chip shows the right label during the re-subscribe gap.
 const pickedPlayerName = ref<string | null>(null);
 function selectPlayer(player: { steam_id: string; name: string } | null) {
   if (!player?.steam_id) return;
@@ -153,8 +168,7 @@ function selectPlayer(player: { steam_id: string; name: string } | null) {
 const playerFilterName = computed<string | null>(() => {
   const sid = playerFilter.value;
   if (!sid) return null;
-  // Filter is target-scoped — don't fall back to user (the author).
-  for (const c of clips.value) {
+  for (const c of flatClips.value) {
     if (c.target?.steam_id === sid) return c.target.name;
   }
   return pickedPlayerName.value;
@@ -172,9 +186,8 @@ function sinceCutoffIso(preset: SincePreset): string | null {
   return new Date(Date.now() - ms[preset]).toISOString();
 }
 
-// Render-queue counters for the "Queue" button. Hasura aggregate subs
-// need a non-empty selection set to push deltas, so we subscribe to
-// (id, status) and split active/queued client-side.
+// Hasura aggregate subs need a non-empty selection set to push deltas, so
+// we subscribe to (id, status) and split active/queued client-side.
 const activeClips = ref(0);
 const queuedClips = ref(0);
 const pendingClips = computed(() => activeClips.value + queuedClips.value);
@@ -217,82 +230,204 @@ function subscribePending() {
 }
 watch(canCurate, subscribePending, { immediate: true });
 
-let activeSub: { unsubscribe: () => void } | null = null;
-function subscribe() {
-  activeSub?.unsubscribe();
-  loading.value = true;
-  // Admins see all visibilities; non-admins are trimmed by Hasura row perms.
-  const conditions: any[] = [];
-  if (!isAdmin.value) {
-    conditions.push({ visibility: { _eq: "public" } });
+const hasActiveFilter = computed(
+  () =>
+    playerFilter.value !== null ||
+    sinceFilter.value !== "all" ||
+    killsFilter.value !== "any" ||
+    (isAdmin.value && visibilityFilter.value !== "all"),
+);
+
+const effectiveMode = computed<ViewMode>(() =>
+  hasActiveFilter.value ? "singles" : viewMode.value,
+);
+
+const innerClipFilter = computed<Record<string, any>>(() => {
+  const f: Record<string, any> = {};
+  if (isAdmin.value && visibilityFilter.value !== "all") {
+    f.visibility = { _eq: visibilityFilter.value };
+  } else if (!isAdmin.value) {
+    f.visibility = { _eq: "public" };
   }
   if (playerFilter.value) {
-    // Scope by clip target, not author.
-    conditions.push({ target_steam_id: { _eq: playerFilter.value } });
+    f.target_steam_id = { _eq: playerFilter.value };
   }
   const cutoff = sinceCutoffIso(sinceFilter.value);
   if (cutoff) {
-    conditions.push({ created_at: { _gte: cutoff } });
+    f.created_at = { _gte: cutoff };
   }
   if (killsFilter.value !== "any") {
-    conditions.push({
-      kills_count: { _gte: parseInt(killsFilter.value, 10) },
-    });
+    f.kills_count = { _gte: parseInt(killsFilter.value, 10) };
   }
-  const where = conditions.length === 0 ? {} : { _and: conditions };
-  const obs = getGraphqlClient().subscribe({
-    query: generateSubscription({
-      match_clips: [
-        {
-          where,
-          order_by: [{ created_at: "desc" }],
-          limit: 200,
-        } as any,
-        matchClipFields,
-      ],
-    } as any),
-  });
-  activeSub = obs.subscribe({
-    next: ({ data }: any) => {
-      clips.value = data?.match_clips ?? [];
-      loading.value = false;
-    },
-    error: (err: any) => {
-      console.error("[highlights] subscription error:", err);
-      loading.value = false;
-    },
-  });
-}
-subscribe();
+  return f;
+});
 
-watch([playerFilter, sinceFilter, killsFilter, isAdmin], () => subscribe());
+let dataFetchId = 0;
+async function fetchData() {
+  const myId = ++dataFetchId;
+  if (groups.value.length === 0) {
+    loading.value = true;
+  }
+  const filter = innerClipFilter.value;
+  const filterIsEmpty = Object.keys(filter).length === 0;
+
+  try {
+    if (effectiveMode.value === "singles") {
+      const { data } = await getGraphqlClient().query({
+        query: generateQuery({
+          match_clips: [
+            {
+              where: filterIsEmpty ? {} : filter,
+              order_by: [{ created_at: order_by.desc }],
+              limit: perPage,
+              offset: (page.value - 1) * perPage,
+            } as any,
+            matchClipFields,
+          ],
+        } as any),
+        fetchPolicy: "network-only",
+      });
+      if (myId !== dataFetchId) return;
+      const list: Clip[] = (data as any)?.match_clips ?? [];
+      groups.value = list.map((clip) => ({
+        matchId: clip.match_map?.match?.id ?? clip.id,
+        clips: [clip],
+      }));
+      return;
+    }
+
+    const orderColumn = isAdmin.value
+      ? "latest_clip_at"
+      : "public_latest_clip_at";
+    const baseFilter: Record<string, any> = isAdmin.value
+      ? { clips_count: { _gt: 0 } }
+      : { public_clips_count: { _gt: 0 } };
+    const groupWhere = filterIsEmpty
+      ? baseFilter
+      : { ...baseFilter, match_clips: filter };
+    const { data } = await getGraphqlClient().query({
+      query: generateQuery({
+        match_maps: [
+          {
+            where: groupWhere,
+            order_by: $("groups_order_by", "[match_maps_order_by!]!"),
+            limit: perPage,
+            offset: (page.value - 1) * perPage,
+          } as any,
+          {
+            id: true,
+            match: { id: true },
+            match_clips: [
+              {
+                where: filterIsEmpty ? {} : filter,
+                order_by: $("clips_order_by", "[match_clips_order_by!]!"),
+              },
+              matchClipFields,
+            ],
+          },
+        ],
+      } as any),
+      variables: {
+        groups_order_by: [{ [orderColumn]: order_by.desc }],
+        clips_order_by: [{ created_at: order_by.desc }],
+      },
+      fetchPolicy: "network-only",
+    });
+    if (myId !== dataFetchId) return;
+    const rows: Array<{
+      id: string;
+      match?: { id: string } | null;
+      match_clips: Clip[];
+    }> = (data as any)?.match_maps ?? [];
+    groups.value = rows
+      .filter((g) => (g.match_clips?.length ?? 0) > 0)
+      .map((g) => ({
+        matchId: g.match?.id ?? g.id,
+        clips: g.match_clips ?? [],
+      }));
+  } catch (err) {
+    if (myId === dataFetchId) {
+      console.error("[highlights] fetch error:", err);
+    }
+  } finally {
+    if (myId === dataFetchId) {
+      loading.value = false;
+    }
+  }
+}
+
+let aggregateFetchId = 0;
+async function fetchAggregate() {
+  const myId = ++aggregateFetchId;
+  const filter = innerClipFilter.value;
+  const filterIsEmpty = Object.keys(filter).length === 0;
+
+  try {
+    if (effectiveMode.value === "singles") {
+      const { data } = await getGraphqlClient().query({
+        query: generateQuery({
+          match_clips_aggregate: [
+            { where: filterIsEmpty ? {} : filter } as any,
+            { aggregate: { count: true } },
+          ],
+        } as any),
+        fetchPolicy: "network-only",
+      });
+      if (myId !== aggregateFetchId) return;
+      totalCount.value =
+        (data as any)?.match_clips_aggregate?.aggregate?.count ?? 0;
+      return;
+    }
+
+    const baseFilter: Record<string, any> = isAdmin.value
+      ? { clips_count: { _gt: 0 } }
+      : { public_clips_count: { _gt: 0 } };
+    const groupWhere = filterIsEmpty
+      ? baseFilter
+      : { ...baseFilter, match_clips: filter };
+    const { data } = await getGraphqlClient().query({
+      query: generateQuery({
+        match_maps_aggregate: [
+          { where: groupWhere } as any,
+          { aggregate: { count: true } },
+        ],
+      } as any),
+      fetchPolicy: "network-only",
+    });
+    if (myId !== aggregateFetchId) return;
+    totalCount.value =
+      (data as any)?.match_maps_aggregate?.aggregate?.count ?? 0;
+  } catch (err) {
+    if (myId === aggregateFetchId) {
+      console.error("[highlights] aggregate fetch error:", err);
+    }
+  }
+}
+
+fetchData();
+fetchAggregate();
+
+watch(
+  [playerFilter, sinceFilter, killsFilter, isAdmin, visibilityFilter, viewMode],
+  () => {
+    if (page.value !== 1) {
+      page.value = 1;
+    } else {
+      fetchData();
+    }
+    fetchAggregate();
+  },
+);
+watch(page, () => fetchData());
+
 onBeforeUnmount(() => {
-  activeSub?.unsubscribe();
   pendingSub?.unsubscribe();
   clearClipQueue(clipQueueScope);
 });
 
-const counts = computed(() => {
-  const byVis: Record<Filter, number> = {
-    all: clips.value.length,
-    public: 0,
-    private: 0,
-    unlisted: 0,
-  };
-  for (const c of clips.value)
-    byVis[c.visibility] = (byVis[c.visibility] ?? 0) + 1;
-  return byVis;
-});
-
-const filteredClips = computed(() => {
-  if (!isAdmin.value) return clips.value;
-  if (visibilityFilter.value === "all") return clips.value;
-  return clips.value.filter((c) => c.visibility === visibilityFilter.value);
-});
-
 const showMap = computed(() => {
   const seen = new Set<string>();
-  for (const c of filteredClips.value) {
+  for (const c of flatClips.value) {
     const name = c.match_map?.map?.name;
     if (name) seen.add(name);
     if (seen.size > 1) return true;
@@ -313,70 +448,32 @@ function clipQueueItem(c: Clip): ClipQueueItem {
 }
 
 watchEffect(() => {
-  setClipQueue(filteredClips.value.map(clipQueueItem), clipQueueScope);
+  setClipQueue(flatClips.value.map(clipQueueItem), clipQueueScope);
 });
 
-const hasClips = computed(() => filteredClips.value.length > 0);
+const hasClips = computed(() => groups.value.length > 0);
 
-// Multi-clip matches collapse to a MatchClipsGroupCard, singletons
-// stay as HighlightCards. Subscription capped at 200, so client-side
-// grouping is fine. When the user has filtered to a specific player,
-// skip grouping entirely — they're browsing that player's individual
-// plays, not the match-by-match digest.
-type GridItem =
-  | { kind: "single"; clip: Clip; sortKey: string }
-  | { kind: "group"; matchId: string; clips: Clip[]; sortKey: string };
-const gridItems = computed<GridItem[]>(() => {
-  if (playerFilter.value) {
-    return filteredClips.value
-      .map<GridItem>((clip) => ({
-        kind: "single",
-        clip,
-        sortKey: clip.created_at,
-      }))
-      .sort((a, b) =>
-        a.sortKey < b.sortKey ? 1 : a.sortKey > b.sortKey ? -1 : 0,
-      );
+const totalCountLabel = computed(() => {
+  if (effectiveMode.value === "singles") {
+    return totalCount.value === 1 ? "clip" : "clips";
   }
-  const byMatch = new Map<string, Clip[]>();
-  const orphans: Clip[] = [];
-  for (const c of filteredClips.value) {
-    const matchId = c.match_map?.match?.id;
-    if (!matchId) {
-      orphans.push(c);
+  return totalCount.value === 1 ? "match" : "matches";
+});
+
+type GridItem =
+  | { kind: "single"; clip: Clip }
+  | { kind: "group"; matchId: string; clips: Clip[] };
+const gridItems = computed<GridItem[]>(() => {
+  const items: GridItem[] = [];
+  for (const g of groups.value) {
+    if (g.clips.length === 0) continue;
+    if (g.clips.length === 1) {
+      items.push({ kind: "single", clip: g.clips[0] });
       continue;
     }
-    const list = byMatch.get(matchId) ?? [];
-    list.push(c);
-    byMatch.set(matchId, list);
+    items.push({ kind: "group", matchId: g.matchId, clips: g.clips });
   }
-  const items: GridItem[] = [];
-  for (const [matchId, group] of byMatch) {
-    // Newest-first so the lead drives display.
-    const sorted = [...group].sort((a, b) =>
-      a.created_at < b.created_at ? 1 : a.created_at > b.created_at ? -1 : 0,
-    );
-    if (sorted.length === 1) {
-      items.push({
-        kind: "single",
-        clip: sorted[0],
-        sortKey: sorted[0].created_at,
-      });
-    } else {
-      items.push({
-        kind: "group",
-        matchId,
-        clips: sorted,
-        sortKey: sorted[0].created_at,
-      });
-    }
-  }
-  for (const c of orphans) {
-    items.push({ kind: "single", clip: c, sortKey: c.created_at });
-  }
-  return items.sort((a, b) =>
-    a.sortKey < b.sortKey ? 1 : a.sortKey > b.sortKey ? -1 : 0,
-  );
+  return items;
 });
 
 const adminFilters: Array<{ value: Filter; label: string; icon?: any }> = [
@@ -384,6 +481,15 @@ const adminFilters: Array<{ value: Filter; label: string; icon?: any }> = [
   { value: "public", label: "Public", icon: Globe },
   { value: "unlisted", label: "Unlisted", icon: Eye },
   { value: "private", label: "Private", icon: Lock },
+];
+
+const viewModeOptions: Array<{
+  value: ViewMode;
+  label: string;
+  icon: any;
+}> = [
+  { value: "matches", label: "Match Clips", icon: Layers },
+  { value: "singles", label: "Singular Clips", icon: Film },
 ];
 </script>
 
@@ -403,14 +509,10 @@ const adminFilters: Array<{ value: Filter; label: string; icon?: any }> = [
             <Clapperboard class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
             <span>
               <span class="text-foreground font-semibold">{{
-                counts.all
+                totalCount
               }}</span>
-              {{ counts.all === 1 ? "clip" : "clips" }}
+              {{ totalCountLabel }}
             </span>
-            <template v-if="isAdmin">
-              <span class="text-border">·</span>
-              <span>{{ counts.public }} public</span>
-            </template>
           </div>
           <Sheet v-if="canCurate" v-model:open="queueOpen">
             <SheetTrigger as-child>
@@ -478,9 +580,6 @@ const adminFilters: Array<{ value: Filter; label: string; icon?: any }> = [
         >
           <component :is="opt.icon" v-if="opt.icon" class="h-3 w-3" />
           <span>{{ opt.label }}</span>
-          <span class="font-mono tabular-nums opacity-70">
-            {{ counts[opt.value] }}
-          </span>
         </button>
         <span class="h-5 w-px bg-border/60 mx-1"></span>
       </template>
@@ -567,12 +666,44 @@ const adminFilters: Array<{ value: Filter; label: string; icon?: any }> = [
         </SelectContent>
       </Select>
 
+      <div
+        class="ml-auto flex items-center rounded-full border border-border/60 bg-muted/30 p-0.5"
+        role="group"
+        aria-label="View mode"
+      >
+        <button
+          v-for="opt in viewModeOptions"
+          :key="opt.value"
+          type="button"
+          :disabled="hasActiveFilter && opt.value === 'matches'"
+          :title="
+            hasActiveFilter && opt.value === 'matches'
+              ? 'Cleared while filtering'
+              : undefined
+          "
+          :class="[
+            'inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs transition-colors',
+            effectiveMode === opt.value
+              ? 'bg-background text-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground',
+            hasActiveFilter && opt.value === 'matches'
+              ? 'cursor-not-allowed opacity-40 hover:text-muted-foreground'
+              : '',
+          ]"
+          :aria-pressed="effectiveMode === opt.value"
+          @click="setViewMode(opt.value)"
+        >
+          <component :is="opt.icon" class="h-3 w-3" />
+          {{ opt.label }}
+        </button>
+      </div>
+
       <span
         v-if="!loading"
-        class="ml-auto font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground tabular-nums"
+        class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground tabular-nums"
       >
-        {{ filteredClips.length }}
-        {{ filteredClips.length === 1 ? "result" : "results" }}
+        {{ totalCount }}
+        {{ totalCount === 1 ? "result" : "results" }}
       </span>
     </div>
   </PageTransition>
@@ -666,4 +797,13 @@ const adminFilters: Array<{ value: Filter; label: string; icon?: any }> = [
       </template>
     </div>
   </PageTransition>
+
+  <Pagination
+    v-if="!loading && totalCount > perPage"
+    class="mt-6"
+    :page="page"
+    :per-page="perPage"
+    :total="totalCount"
+    @page="(p) => (page = p)"
+  />
 </template>

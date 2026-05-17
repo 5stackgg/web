@@ -200,7 +200,8 @@ function readQueryParam<T extends string>(
 ): T {
   const raw = route.query[key];
   const value = Array.isArray(raw) ? raw[0] : raw;
-  return typeof value === "string" && (allowed as readonly string[]).includes(value)
+  return typeof value === "string" &&
+    (allowed as readonly string[]).includes(value)
     ? (value as T)
     : fallback;
 }
@@ -480,25 +481,22 @@ function setHighlightedRowRef(
     highlightedRowEl.value = node;
   }
 }
-watch(
-  [entries, highlightedSteamId],
-  () => {
-    const sid = highlightedSteamId.value;
-    if (!sid) {
-      highlightScrolledForSteamId = null;
-      return;
-    }
-    if (highlightScrolledForSteamId === sid) return;
-    if (!entries.value.some((e) => e.player_steam_id === sid)) return;
-    void nextTick(() => {
-      highlightedRowEl.value?.scrollIntoView({
-        block: "center",
-        behavior: "smooth",
-      });
-      highlightScrolledForSteamId = sid;
+watch([entries, highlightedSteamId], () => {
+  const sid = highlightedSteamId.value;
+  if (!sid) {
+    highlightScrolledForSteamId = null;
+    return;
+  }
+  if (highlightScrolledForSteamId === sid) return;
+  if (!entries.value.some((e) => e.player_steam_id === sid)) return;
+  void nextTick(() => {
+    highlightedRowEl.value?.scrollIntoView({
+      block: "center",
+      behavior: "smooth",
     });
-  },
-);
+    highlightScrolledForSteamId = sid;
+  });
+});
 
 onMounted(() => {
   fetchLeaderboard();
@@ -769,10 +767,7 @@ onMounted(() => {
               <TableRow
                 v-for="entry in entries"
                 :key="entry.player_steam_id"
-                :ref="
-                  (el) =>
-                    setHighlightedRowRef(el, entry.player_steam_id)
-                "
+                :ref="(el) => setHighlightedRowRef(el, entry.player_steam_id)"
                 class="cursor-pointer"
                 :class="[
                   entry.player_steam_id === highlightedSteamId

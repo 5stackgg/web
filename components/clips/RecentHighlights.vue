@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { Film, ArrowRight } from "lucide-vue-next";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { generateSubscription } from "~/graphql/graphqlGen";
+import { generateQuery } from "~/graphql/graphqlGen";
 import { matchClipFields } from "~/graphql/matchClip";
+import { order_by, $ } from "~/generated/zeus";
 import { Skeleton } from "~/components/ui/skeleton";
 import HighlightCard from "~/components/clips/HighlightCard.vue";
 import MatchClipsGroupCard from "~/components/clips/MatchClipsGroupCard.vue";
@@ -13,8 +14,6 @@ import {
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
 
-// Hides itself when there are no clips. `sectionLabel` opts into the
-// tactical header wrapper so the label hides with the strip.
 const props = withDefaults(
   defineProps<{
     limit?: number;
@@ -29,179 +28,97 @@ const props = withDefaults(
   },
 );
 
-// Match-first feed: subscription A picks the top-N matches by most
-// recent clip (distinct_on per match_map, deduped to match.id client-
-// side), then subscription B fetches every clip for those matches so
-// the group cards render the same count / featured targets they would
-// on the full highlights page.
-//
-// LEAD_POOL is the slack for the dedupe step: distinct_on hits per
-// match_map, and Bo3+ matches can contribute several maps with clips.
-// Keeping it a few × the display limit ensures we still find limit
-// distinct matches even when the recent stream is heavy on multi-map
-// tournaments.
+// Over-fetched so we can dedupe to one card per match (a Bo3+ contributes
+// up to one match_map per map).
 const LEAD_POOL = Math.max(40, props.limit * 4);
 
-const clips = ref<Clip[]>([]);
-const loadingLeads = ref(true);
-const loadingClips = ref(true);
-const loading = computed(() => loadingLeads.value || loadingClips.value);
+type MatchMapRow = {
+  id: string;
+  match?: { id: string } | null;
+  match_clips: Clip[];
+};
 
-// Top-N match IDs (newest clip first). Drives the second subscription.
-const topMatchIds = ref<string[]>([]);
+const matchMaps = ref<MatchMapRow[]>([]);
+const loading = ref(true);
 
-let leadSub: { unsubscribe: () => void } | null = null;
-let clipsSub: { unsubscribe: () => void } | null = null;
-
-function subscribeLeads() {
-  leadSub?.unsubscribe();
-  const obs = getGraphqlClient().subscribe({
-    query: generateSubscription({
-      match_clips: [
-        {
-          where: { visibility: { _eq: "public" } },
-          // distinct_on requires the leading order_by column to match.
-          distinct_on: ["match_map_id"],
-          order_by: [{ match_map_id: "asc" }, { created_at: "desc" }],
-          limit: LEAD_POOL,
-        } as any,
-        // Lightweight projection — we only need the lead clip's match
-        // identity to derive the top-N match list.
-        {
-          created_at: true,
-          match_map: {
-            match: { id: true },
-          },
-        },
-      ],
-    } as any),
-  });
-  leadSub = obs.subscribe({
-    next: ({ data }: any) => {
-      const leads = (data?.match_clips ?? []) as Array<{
-        created_at: string;
-        match_map?: { match?: { id?: string } } | null;
-      }>;
-      const ordered = [...leads].sort((a, b) =>
-        a.created_at < b.created_at ? 1 : a.created_at > b.created_at ? -1 : 0,
-      );
-      const seen = new Set<string>();
-      const ids: string[] = [];
-      for (const row of ordered) {
-        const mid = row.match_map?.match?.id;
-        if (!mid || seen.has(mid)) continue;
-        seen.add(mid);
-        ids.push(mid);
-        if (ids.length >= props.limit) break;
-      }
-      topMatchIds.value = ids;
-      loadingLeads.value = false;
-      if (ids.length === 0) {
-        clips.value = [];
-        loadingClips.value = false;
-      }
-    },
-    error: (err: any) => {
-      console.error("[recent-highlights] lead subscription error:", err);
-      loadingLeads.value = false;
-      loadingClips.value = false;
-    },
-  });
-}
-
-function subscribeClips(matchIds: string[]) {
-  clipsSub?.unsubscribe();
-  clipsSub = null;
-  if (matchIds.length === 0) {
-    clips.value = [];
-    loadingClips.value = false;
-    return;
+async function fetchData() {
+  if (matchMaps.value.length === 0) {
+    loading.value = true;
   }
-  loadingClips.value = true;
-  const obs = getGraphqlClient().subscribe({
-    query: generateSubscription({
-      match_clips: [
-        {
-          where: {
-            _and: [
-              { visibility: { _eq: "public" } },
-              { match_map: { match_id: { _in: matchIds } } },
+  try {
+    const { data } = await getGraphqlClient().query({
+      query: generateQuery({
+        match_maps: [
+          {
+            where: { public_clips_count: { _gt: 0 } },
+            order_by: $("groups_order_by", "[match_maps_order_by!]!"),
+            limit: LEAD_POOL,
+          } as any,
+          {
+            id: true,
+            match: { id: true },
+            match_clips: [
+              {
+                where: { visibility: { _eq: "public" } },
+                order_by: $("clips_order_by", "[match_clips_order_by!]!"),
+              },
+              matchClipFields,
             ],
           },
-          order_by: [{ created_at: "desc" }],
-        } as any,
-        matchClipFields,
-      ],
-    } as any),
-  });
-  clipsSub = obs.subscribe({
-    next: ({ data }: any) => {
-      clips.value = data?.match_clips ?? [];
-      loadingClips.value = false;
-    },
-    error: (err: any) => {
-      console.error("[recent-highlights] clips subscription error:", err);
-      loadingClips.value = false;
-    },
-  });
+        ],
+      } as any),
+      variables: {
+        groups_order_by: [{ public_latest_clip_at: order_by.desc }],
+        clips_order_by: [{ created_at: order_by.desc }],
+      },
+      fetchPolicy: "network-only",
+    });
+    matchMaps.value = ((data as any)?.match_maps ?? []) as MatchMapRow[];
+  } catch (err) {
+    console.error("[recent-highlights] fetch error:", err);
+  } finally {
+    loading.value = false;
+  }
 }
+fetchData();
 
-subscribeLeads();
-watch(
-  topMatchIds,
-  (ids, prev) => {
-    // Only resubscribe when the set actually changes — a no-op match
-    // list shouldn't reset clipsSub on every lead push.
-    if (
-      prev &&
-      ids.length === prev.length &&
-      ids.every((id, i) => id === prev[i])
-    ) {
-      return;
-    }
-    subscribeClips(ids);
-  },
-  { immediate: true },
+const hasClips = computed(() =>
+  matchMaps.value.some((mm) => (mm.match_clips?.length ?? 0) > 0),
 );
 
-onBeforeUnmount(() => {
-  leadSub?.unsubscribe();
-  clipsSub?.unsubscribe();
-});
-
-const hasClips = computed(() => clips.value.length > 0);
 const showMap = computed(() => {
   const seen = new Set<string>();
-  for (const c of clips.value) {
-    const name = c.match_map?.map?.name;
-    if (name) seen.add(name);
-    if (seen.size > 1) return true;
+  for (const mm of matchMaps.value) {
+    for (const c of mm.match_clips ?? []) {
+      const name = c.match_map?.map?.name;
+      if (name) seen.add(name);
+      if (seen.size > 1) return true;
+    }
   }
   return false;
 });
-// Skip the skeleton when sectionLabel is set — a flash of header +
-// skeleton then vanish is worse than one beat of nothing.
+
+// With sectionLabel, a flash of header + skeleton that then vanishes is
+// worse than one beat of nothing.
 const shouldRender = computed(() =>
   props.sectionLabel ? hasClips.value : loading.value || hasClips.value,
 );
 
-// Mirror the highlights page: collapse multi-clip matches into a
-// single group card, keep singletons as HighlightCards, and sort the
-// resulting items by the newest clip in each.
 type GridItem =
   | { kind: "single"; clip: Clip; sortKey: string }
   | { kind: "group"; matchId: string; clips: Clip[]; sortKey: string };
 const gridItems = computed<GridItem[]>(() => {
   const byMatch = new Map<string, Clip[]>();
   const orphans: Clip[] = [];
-  for (const c of clips.value) {
-    const matchId = c.match_map?.match?.id;
+  for (const mm of matchMaps.value) {
+    const matchId = mm.match?.id;
+    const clips = mm.match_clips ?? [];
     if (!matchId) {
-      orphans.push(c);
+      orphans.push(...clips);
       continue;
     }
     const list = byMatch.get(matchId) ?? [];
-    list.push(c);
+    list.push(...clips);
     byMatch.set(matchId, list);
   }
   const items: GridItem[] = [];

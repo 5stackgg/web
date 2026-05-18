@@ -991,6 +991,7 @@ export default {
                       tournament_team_id: true,
                       group_number: true,
                       rank: true,
+                      placement: true,
                       wins: true,
                       losses: true,
                       rounds_won: true,

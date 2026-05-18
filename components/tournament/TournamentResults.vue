@@ -29,7 +29,7 @@ function playerAvatarSrc(player: {
     <!-- Podium -->
     <section
       v-if="showStandings && podium.length && !isLive"
-      class="relative overflow-hidden rounded-lg border border-border px-6 py-7 [background:radial-gradient(ellipse_at_top,hsl(var(--tac-amber)_/_0.08)_0%,transparent_60%),linear-gradient(180deg,hsl(var(--card)_/_0.6)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-['']"
+      class="relative rounded-lg border border-border px-6 py-7 [background:radial-gradient(ellipse_at_top,hsl(var(--tac-amber)_/_0.08)_0%,transparent_60%),linear-gradient(180deg,hsl(var(--card)_/_0.6)_0%,hsl(var(--card)_/_0.25)_100%)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-['']"
     >
       <div
         class="pointer-events-none absolute inset-0 [background-image:repeating-linear-gradient(3deg,transparent_0,transparent_3px,hsl(var(--tac-amber)_/_0.025)_3px,hsl(var(--tac-amber)_/_0.025)_4px)]"
@@ -135,7 +135,16 @@ function playerAvatarSrc(player: {
                   >
                     #{{ String(entry.placement).padStart(2, "0") }}
                   </div>
+                  <NuxtLink
+                    v-if="entry.realTeamId"
+                    :to="`/teams/${entry.realTeamId}`"
+                    class="text-center text-base font-bold uppercase leading-tight tracking-[0.02em] hover:underline sm:text-lg"
+                    @click.stop
+                  >
+                    {{ entry.teamName }}
+                  </NuxtLink>
                   <div
+                    v-else
                     class="text-center text-base font-bold uppercase leading-tight tracking-[0.02em] sm:text-lg"
                   >
                     {{ entry.teamName }}
@@ -172,8 +181,10 @@ function playerAvatarSrc(player: {
             </div>
           </HoverCardTrigger>
           <HoverCardContent
-            class="w-[320px] border-[hsl(var(--tac-amber)_/_0.5)] bg-background/95 p-0 [backdrop-filter:blur(8px)]"
-            side="top"
+            class="z-[100] w-[320px] border-[hsl(var(--tac-amber)_/_0.5)] bg-background/95 p-0 [backdrop-filter:blur(8px)]"
+            side="bottom"
+            :side-offset="8"
+            :avoid-collisions="false"
           >
             <div class="border-b border-border/60 px-3 py-2">
               <div
@@ -181,7 +192,14 @@ function playerAvatarSrc(player: {
               >
                 ▚ TOURNAMENT STATS · {{ placementLabel(entry.placement) }}
               </div>
-              <div class="text-sm font-bold uppercase tracking-[0.04em]">
+              <NuxtLink
+                v-if="entry.realTeamId"
+                :to="`/teams/${entry.realTeamId}`"
+                class="text-sm font-bold uppercase tracking-[0.04em] hover:underline"
+              >
+                {{ entry.teamName }}
+              </NuxtLink>
+              <div v-else class="text-sm font-bold uppercase tracking-[0.04em]">
                 {{ entry.teamName }}
               </div>
             </div>
@@ -545,6 +563,7 @@ export default {
         byPlacement.set(t.placement, {
           placement: t.placement,
           teamId: t.tournament_team_id,
+          realTeamId: t.tournament_team?.team?.id || null,
           teamName: this.displayTeamName(
             t.tournament_team,
             t.tournament_team_id,

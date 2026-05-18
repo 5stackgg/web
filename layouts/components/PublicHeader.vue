@@ -19,7 +19,7 @@ const gridRef = computed(() => {
 });
 
 const metricClasses =
-  "inline-flex items-center gap-[0.45rem] border border-border bg-card/45 px-[0.7rem] py-[0.4rem] font-sans text-[0.66rem] font-medium uppercase leading-none tracking-[0.22em] text-muted-foreground [clip-path:polygon(6px_0,100%_0,100%_calc(100%-6px),calc(100%-6px)_100%,0_100%,0_6px)]";
+  "inline-flex items-center gap-[0.45rem] border border-border bg-card/45 px-[0.7rem] py-[0.4rem] font-sans text-[0.66rem] font-medium uppercase leading-none tracking-[0.22em] text-muted-foreground";
 
 const metricKeyClasses = "text-[hsl(var(--muted-foreground)/0.7)]";
 const metricSepClasses = "text-[hsl(var(--tac-amber)/0.6)]";
@@ -47,7 +47,7 @@ const metricValueClasses =
       >
         <span
           aria-hidden="true"
-          class="relative inline-flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-card/65 [clip-path:polygon(0_0,calc(100%-8px)_0,100%_8px,100%_100%,8px_100%,0_calc(100%-8px))]"
+          class="relative inline-flex h-10 w-10 shrink-0 items-center justify-center border border-border bg-card/65"
         >
           <span
             class="absolute left-[3px] top-[3px] h-2 w-2 border-l-[1.5px] border-t-[1.5px] border-[hsl(var(--tac-amber))]"
@@ -129,7 +129,7 @@ const metricValueClasses =
           target="_blank"
           rel="noopener noreferrer"
           aria-label="GitHub"
-          class="inline-flex items-center gap-2 border border-border bg-transparent px-3 py-[0.45rem] font-sans text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[hsl(var(--foreground)/0.78)] no-underline transition-[color,background-color,border-color] duration-150 [clip-path:polygon(6px_0,100%_0,100%_calc(100%-6px),calc(100%-6px)_100%,0_100%,0_6px)] hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-[hsl(var(--tac-amber)/0.1)] hover:text-foreground focus-visible:border-[hsl(var(--tac-amber)/0.55)] focus-visible:bg-[hsl(var(--tac-amber)/0.1)] focus-visible:text-foreground focus-visible:outline-none"
+          class="inline-flex items-center gap-2 border border-border bg-transparent px-3 py-[0.45rem] font-sans text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[hsl(var(--foreground)/0.78)] no-underline transition-[color,background-color,border-color] duration-150 hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-[hsl(var(--tac-amber)/0.1)] hover:text-foreground focus-visible:border-[hsl(var(--tac-amber)/0.55)] focus-visible:bg-[hsl(var(--tac-amber)/0.1)] focus-visible:text-foreground focus-visible:outline-none"
         >
           <GithubLogoIcon class="h-[14px] w-[14px]" />
           <span class="hidden sm:inline">SOURCE</span>

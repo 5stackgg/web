@@ -24,6 +24,7 @@ import {
   ChevronRight,
   ListVideo,
   Film,
+  ArrowUpRight,
 } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -50,7 +51,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import DeleteClipDialog from "~/components/clips/DeleteClipDialog.vue";
-import ClipMatchSummary from "~/components/clips/ClipMatchSummary.vue";
+import MatchTableRow from "~/components/MatchTableRow.vue";
 import {
   clipDownloadName,
   clipDownloadUrl,
@@ -339,13 +340,6 @@ function formatRelativeTime(iso: string | null | undefined): string | null {
   if (diff < 7 * day) return `${Math.floor(diff / day)}d ago`;
   if (diff < 30 * day) return `${Math.floor(diff / (7 * day))}w ago`;
   return `${Math.floor(diff / (30 * day))}mo ago`;
-}
-
-function formatDate(iso: string | null | undefined): string {
-  if (!iso) return "—";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "—";
-  return d.toLocaleString();
 }
 
 const downloadFilename = computed<string>(() =>
@@ -872,7 +866,7 @@ onMounted(() => {
 
             <div
               v-if="clipQueue.length > 1"
-              class="flex flex-1 min-h-0 flex-col rounded-md border border-border/50 bg-card/30 [backdrop-filter:blur(6px)]"
+              class="flex flex-col rounded-md border border-border/50 bg-card/30 [backdrop-filter:blur(6px)]"
             >
               <div
                 class="flex items-center justify-between gap-3 border-b border-border/40 px-3 py-2 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
@@ -885,7 +879,7 @@ onMounted(() => {
                   {{ activeClipIndex + 1 }} / {{ clipQueue.length }}
                 </span>
               </div>
-              <div class="clip-queue-list min-h-0 flex-1 overflow-y-auto p-1.5">
+              <div class="clip-queue-list max-h-[17rem] overflow-y-auto p-1.5">
                 <button
                   v-for="q in clipQueue"
                   :key="q.id"
@@ -946,77 +940,75 @@ onMounted(() => {
           </div>
 
           <aside class="flex flex-col gap-3 min-w-0">
-            <ClipMatchSummary
+            <NuxtLink
               v-if="clip.match_map?.match"
-              :clip="clip"
-              @navigate="closeClip"
-            />
+              :to="`/matches/${clip.match_map.match.id}`"
+              class="group/match-link flex flex-col items-stretch !h-auto"
+              @click="closeClip"
+            >
+              <MatchTableRow
+                :match="clip.match_map.match"
+                compact
+                always-show
+                hide-overview
+                class="!h-auto pointer-events-none"
+              />
+              <span
+                class="mt-1 inline-flex items-center gap-1 self-end font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover/match-link:text-[hsl(var(--tac-amber))]"
+              >
+                View match
+                <ArrowUpRight class="h-3 w-3" />
+              </span>
+            </NuxtLink>
 
             <dl
+              v-if="formatBytes(fileSizeBytes)"
               class="grid grid-cols-[auto_1fr] gap-x-3 gap-y-2 text-sm rounded-md border border-border/50 bg-card/30 [backdrop-filter:blur(6px)] px-4 py-3"
             >
               <dt
                 class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground self-center"
               >
-                Duration
+                Size
               </dt>
               <dd class="text-right font-mono tabular-nums">
-                {{ formatDuration(clip.duration_ms) }}
-              </dd>
-
-              <template v-if="formatBytes(fileSizeBytes)">
-                <dt
-                  class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground self-center"
-                >
-                  Size
-                </dt>
-                <dd class="text-right font-mono tabular-nums">
-                  {{ formatBytes(fileSizeBytes) }}
-                </dd>
-              </template>
-
-              <template v-if="clip.round != null">
-                <dt
-                  class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground self-center"
-                >
-                  Round
-                </dt>
-                <dd class="text-right font-mono tabular-nums">
-                  {{ clip.round }}
-                </dd>
-              </template>
-
-              <dt
-                class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground self-center"
-              >
-                Created
-              </dt>
-              <dd class="text-right text-muted-foreground/90 text-xs">
-                {{ formatDate(clip.created_at) }}
+                {{ formatBytes(fileSizeBytes) }}
               </dd>
             </dl>
 
-            <div class="grid grid-cols-2 gap-2">
-              <a
-                v-if="clip.download_url"
-                :href="clipDownloadUrl(clip.download_url)"
-                :download="downloadFilename"
-                class="action-tile group"
-                :class="canDelete ? '' : 'col-span-2'"
-              >
-                <Download class="h-4 w-4" />
-                <span>Download</span>
-              </a>
+            <div class="mt-auto flex flex-col gap-2">
               <button
-                v-if="canDelete"
                 type="button"
-                class="action-tile action-tile--danger group"
-                :class="clip.download_url ? '' : 'col-span-2'"
-                @click="showDelete = true"
+                class="action-tile action-tile--primary group"
+                :class="linkCopied ? 'action-tile--primary-copied' : ''"
+                :aria-label="linkCopied ? 'Link copied' : 'Share clip'"
+                @click.stop="copyLink"
               >
-                <Trash2 class="h-4 w-4" />
-                <span>Delete clip</span>
+                <Check v-if="linkCopied" class="h-4 w-4" />
+                <Share2 v-else class="h-4 w-4" />
+                <span>{{ linkCopied ? "Link copied!" : "Share clip" }}</span>
               </button>
+              <div class="grid grid-cols-2 gap-2">
+                <a
+                  v-if="clip.download_url"
+                  :href="clipDownloadUrl(clip.download_url)"
+                  :download="downloadFilename"
+                  class="action-tile group"
+                  :class="canDelete ? '' : 'col-span-2'"
+                >
+                  <Download class="h-4 w-4" />
+                  <span>Download</span>
+                </a>
+                <button
+                  v-if="canDelete"
+                  type="button"
+                  class="action-tile action-tile--danger group"
+                  :class="clip.download_url ? '' : 'col-span-2'"
+                  @click="showDelete = true"
+                >
+                  <Trash2 class="h-4 w-4" />
+                  <span>Delete clip</span>
+                </button>
+              </div>
             </div>
           </aside>
         </div>
@@ -1136,6 +1128,64 @@ onMounted(() => {
 .action-tile:active {
   transform: translateY(1px);
 }
+.action-tile--primary {
+  height: 2.75rem;
+  border-color: hsl(var(--tac-amber));
+  background: linear-gradient(
+    135deg,
+    hsl(36 100% 65%) 0%,
+    hsl(var(--tac-amber)) 50%,
+    hsl(28 90% 52%) 100%
+  );
+  color: hsl(0 0% 8%);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  box-shadow:
+    0 0 0 1px hsl(var(--tac-amber) / 0.35),
+    0 6px 18px -6px hsl(var(--tac-amber) / 0.55);
+}
+.action-tile--primary::after {
+  border-top-color: hsl(0 0% 8% / 0.65);
+  border-right-color: hsl(0 0% 8% / 0.65);
+}
+.action-tile--primary:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(
+    135deg,
+    hsl(36 100% 70%) 0%,
+    hsl(var(--tac-amber)) 50%,
+    hsl(28 92% 56%) 100%
+  );
+  color: hsl(0 0% 6%);
+  border-color: hsl(var(--tac-amber));
+  box-shadow:
+    0 0 0 1px hsl(var(--tac-amber) / 0.55),
+    0 12px 28px -6px hsl(var(--tac-amber) / 0.75),
+    0 0 24px hsl(var(--tac-amber) / 0.35);
+}
+.action-tile--primary:hover::after {
+  border-top-color: hsl(0 0% 8%);
+  border-right-color: hsl(0 0% 8%);
+}
+.action-tile--primary:active {
+  transform: translateY(0);
+}
+.action-tile--primary-copied {
+  animation: share-flash 480ms ease-out;
+}
+@keyframes share-flash {
+  0% {
+    box-shadow:
+      0 0 0 1px hsl(var(--tac-amber)),
+      0 0 32px hsl(var(--tac-amber) / 0.9);
+  }
+  100% {
+    box-shadow:
+      0 0 0 1px hsl(var(--tac-amber) / 0.55),
+      0 12px 28px -6px hsl(var(--tac-amber) / 0.75);
+  }
+}
+
 .action-tile--danger {
   color: hsl(var(--destructive) / 0.9);
 }

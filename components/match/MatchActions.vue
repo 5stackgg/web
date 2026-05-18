@@ -322,7 +322,7 @@ export default {
       });
 
       this.$router.push({
-        name: "manage-matches",
+        name: "matches",
       });
     },
     async startMatch() {

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Trophy, Layers, ArrowUpRight } from "lucide-vue-next";
+import { Trophy, Film, ArrowUpRight } from "lucide-vue-next";
 import { Card, CardContent } from "~/components/ui/card";
 import TimeAgo from "~/components/TimeAgo.vue";
+import cleanMapName from "~/utilities/cleanMapName";
 import type { Clip } from "~/types/clip";
 
 const props = defineProps<{
@@ -13,23 +14,16 @@ const props = defineProps<{
 // Caller sorts the group newest-first.
 const lead = computed(() => props.clips[0]);
 const match = computed(() => lead.value.match_map?.match);
-const matchMap = computed(() => lead.value.match_map);
+const leadMap = computed(() => lead.value.match_map);
 
+const lineup1Name = computed(() => match.value?.lineup_1?.name ?? null);
+const lineup2Name = computed(() => match.value?.lineup_2?.name ?? null);
 const matchupLabel = computed(() => {
-  const a = match.value?.lineup_1?.name;
-  const b = match.value?.lineup_2?.name;
-  if (a && b) return `${a} vs ${b}`;
+  if (lineup1Name.value && lineup2Name.value) {
+    return `${lineup1Name.value} vs ${lineup2Name.value}`;
+  }
   return null;
 });
-
-const score1 = computed(() => matchMap.value?.lineup_1_score);
-const score2 = computed(() => matchMap.value?.lineup_2_score);
-const hasScore = computed(
-  () =>
-    typeof score1.value === "number" &&
-    typeof score2.value === "number" &&
-    !(score1.value === 0 && score2.value === 0),
-);
 const winningSide = computed<"1" | "2" | null>(() => {
   const w = match.value?.winning_lineup_id;
   if (!w) return null;
@@ -37,24 +31,68 @@ const winningSide = computed<"1" | "2" | null>(() => {
   if (w === match.value?.lineup_2_id) return "2";
   return null;
 });
+
 const isTournament = computed(() => match.value?.is_tournament_match === true);
 const bestOf = computed(() => match.value?.options?.best_of ?? null);
 
-const maps = computed(() => {
+// All maps played, sorted by play order. Falls back to the lead clip's
+// map when match.match_maps isn't on the payload yet.
+const playedMaps = computed(() => {
+  const list = (match.value?.match_maps || []).filter(
+    (mm: any) =>
+      typeof mm.lineup_1_score === "number" &&
+      typeof mm.lineup_2_score === "number" &&
+      !(mm.lineup_1_score === 0 && mm.lineup_2_score === 0),
+  );
+  if (list.length > 0) {
+    return [...list].sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0));
+  }
+  // Fallback path — single map from lead clip
+  if (
+    leadMap.value &&
+    typeof leadMap.value.lineup_1_score === "number" &&
+    typeof leadMap.value.lineup_2_score === "number" &&
+    !(leadMap.value.lineup_1_score === 0 && leadMap.value.lineup_2_score === 0)
+  ) {
+    return [leadMap.value];
+  }
+  return [];
+});
+
+const isMultiMap = computed(() => playedMaps.value.length > 1);
+
+const perMapDisplay = computed(() => {
+  const lineup1Id = match.value?.lineup_1_id;
+  const lineup2Id = match.value?.lineup_2_id;
+  return playedMaps.value.map((mm: any) => ({
+    id: mm.id,
+    name: mm.map?.label || (mm.map?.name ? cleanMapName(mm.map.name) : ""),
+    score1: mm.lineup_1_score ?? 0,
+    score2: mm.lineup_2_score ?? 0,
+    winningSide:
+      mm.winning_lineup_id === lineup1Id
+        ? ("1" as const)
+        : mm.winning_lineup_id === lineup2Id
+          ? ("2" as const)
+          : null,
+  }));
+});
+
+const mapNamesLabel = computed(() => {
   const seen = new Set<string>();
-  const out: Array<{ name: string; label: string | null }> = [];
+  const out: string[] = [];
   for (const c of props.clips) {
     const m = c.match_map?.map;
-    if (m && !seen.has(m.name)) {
-      seen.add(m.name);
-      out.push({ name: m.name, label: m.label });
+    if (!m) continue;
+    const label = m.label || (m.name ? cleanMapName(m.name) : null);
+    if (label && !seen.has(label)) {
+      seen.add(label);
+      out.push(label);
     }
   }
   return out;
 });
 
-// Featured target players across all clips in this match — gives the
-// group card the same content height as a single HighlightCard.
 const featuredTargets = computed(() => {
   const seen = new Set<string>();
   const out: string[] = [];
@@ -68,19 +106,32 @@ const featuredTargets = computed(() => {
   return out;
 });
 
+// Prefer the first clip's thumbnail (real action shot) over the map poster.
+const thumbnailSrc = computed(() => {
+  for (const c of props.clips) {
+    if (c.thumbnail_download_url) return c.thumbnail_download_url;
+  }
+  return leadMap.value?.map?.poster ?? null;
+});
+
 const leadCreatedAt = computed(() => lead.value?.created_at ?? null);
+
+// Consistent pill chrome — same padding, leading, and font size for all
+// top-left badges so trophy/score/BO line up flush.
+const pillBaseClasses =
+  "inline-flex h-5 items-center gap-1 rounded bg-black/80 px-1.5 font-mono text-[0.62rem] leading-none tabular-nums text-white/90 backdrop-blur-sm";
 </script>
 
 <template>
-  <NuxtLink :to="`/matches/${matchId}`" class="block group/group-card">
+  <NuxtLink :to="`/matches/${matchId}`" class="block h-full group/group-card">
     <Card
-      class="overflow-hidden transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.5)]"
+      class="flex h-full flex-col overflow-hidden transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.5)]"
     >
       <div class="relative aspect-video w-full overflow-hidden bg-black">
         <NuxtImg
-          v-if="matchMap?.map?.poster"
-          :src="matchMap.map.poster"
-          :alt="matchMap.map.name ?? ''"
+          v-if="thumbnailSrc"
+          :src="thumbnailSrc"
+          :alt="matchupLabel ?? 'Match highlights'"
           class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover/group-card:scale-[1.03]"
         />
         <div
@@ -88,70 +139,84 @@ const leadCreatedAt = computed(() => lead.value?.created_at ?? null);
         ></div>
 
         <div
-          class="absolute top-2 left-2 flex items-center gap-1 pointer-events-none"
+          class="pointer-events-none absolute top-2 left-2 flex items-center gap-1"
         >
           <span
             v-if="isTournament"
-            class="inline-flex items-center gap-0.5 rounded bg-black/80 px-1 py-0.5 text-[0.6rem] text-[hsl(var(--tac-amber))] backdrop-blur-sm"
+            :class="[pillBaseClasses, 'text-[hsl(var(--tac-amber))]']"
             title="Tournament match"
           >
             <Trophy class="h-2.5 w-2.5" />
           </span>
-          <span
-            v-if="hasScore"
-            class="inline-flex items-center gap-0.5 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[0.65rem] tabular-nums text-white backdrop-blur-sm"
-          >
-            <span
-              :class="
-                winningSide === '1'
-                  ? 'text-[hsl(var(--tac-amber))] font-semibold'
-                  : ''
-              "
-            >
-              {{ score1 }}
-            </span>
-            <span class="opacity-50">:</span>
-            <span
-              :class="
-                winningSide === '2'
-                  ? 'text-[hsl(var(--tac-amber))] font-semibold'
-                  : ''
-              "
-            >
-              {{ score2 }}
-            </span>
-          </span>
-          <span
-            v-if="bestOf"
-            class="inline-flex items-center gap-0.5 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[0.6rem] tabular-nums text-white/90 backdrop-blur-sm"
-          >
-            BO{{ bestOf }}
-          </span>
+          <span v-if="bestOf" :class="pillBaseClasses">BO{{ bestOf }}</span>
         </div>
 
         <span
-          class="absolute top-2 right-2 inline-flex items-center gap-1 rounded bg-[hsl(var(--tac-amber)/0.92)] px-1.5 py-0.5 font-mono text-[0.65rem] font-bold tabular-nums text-[hsl(var(--tac-amber-foreground))] backdrop-blur-sm shadow-sm"
+          class="absolute top-2 right-2 inline-flex h-5 items-center gap-1 rounded bg-[hsl(var(--tac-amber)/0.92)] px-1.5 font-mono text-[0.62rem] font-bold leading-none tabular-nums text-[hsl(var(--tac-amber-foreground))] shadow-sm backdrop-blur-sm"
           :title="`${clips.length} highlights for this match`"
         >
-          <Layers class="h-2.5 w-2.5" />
+          <Film class="h-2.5 w-2.5" />
           {{ clips.length }}
         </span>
+
+        <!-- Map list on the preview image. Single row, dot-separated,
+             truncated when there are too many. -->
+        <div
+          v-if="perMapDisplay.length > 0"
+          class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent px-2 pb-1.5 pt-4"
+        >
+          <div
+            class="truncate font-sans text-sm font-bold uppercase leading-tight text-white/70 drop-shadow-md"
+            :title="perMapDisplay.map((mm) => mm.name).join(' · ')"
+          >
+            {{ perMapDisplay.map((mm) => mm.name).join(" · ") }}
+          </div>
+        </div>
       </div>
 
-      <CardContent class="p-3 space-y-1">
+      <CardContent class="flex flex-1 flex-col gap-1 p-3">
+        <!-- Title with winning side highlighted in amber. Tight space
+             means no scoreboard pill, so colored team names carry the
+             "who won" signal. -->
         <div
-          class="group/link flex items-center gap-1.5 text-sm font-medium text-foreground group-hover/group-card:text-[hsl(var(--tac-amber))] transition-colors"
+          class="group/link flex items-center gap-1.5 text-sm font-medium text-foreground transition-colors"
           :title="matchupLabel ?? 'Match highlights'"
         >
-          <span class="truncate">
-            {{ matchupLabel ?? "Match highlights" }}
+          <span class="min-w-0 flex-1 truncate">
+            <template v-if="lineup1Name && lineup2Name">
+              <span
+                :class="
+                  winningSide === '1'
+                    ? 'font-bold text-[hsl(var(--tac-amber))]'
+                    : winningSide === '2'
+                      ? 'text-muted-foreground'
+                      : ''
+                "
+              >
+                {{ lineup1Name }}
+              </span>
+              <span class="mx-1 text-muted-foreground/60">vs</span>
+              <span
+                :class="
+                  winningSide === '2'
+                    ? 'font-bold text-[hsl(var(--tac-amber))]'
+                    : winningSide === '1'
+                      ? 'text-muted-foreground'
+                      : ''
+                "
+              >
+                {{ lineup2Name }}
+              </span>
+            </template>
+            <template v-else>Match highlights</template>
           </span>
           <ArrowUpRight
-            class="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-all group-hover/group-card:text-[hsl(var(--tac-amber))] group-hover/group-card:translate-x-0.5 group-hover/group-card:-translate-y-0.5"
+            class="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-all group-hover/group-card:translate-x-0.5 group-hover/group-card:-translate-y-0.5 group-hover/group-card:text-[hsl(var(--tac-amber))]"
           />
         </div>
+
         <div
-          class="flex items-end justify-between gap-2 text-xs text-muted-foreground"
+          class="mt-auto flex items-end justify-between gap-2 text-xs text-muted-foreground"
         >
           <span class="min-w-0 flex-1">
             <span
@@ -161,23 +226,12 @@ const leadCreatedAt = computed(() => lead.value?.created_at ?? null);
             >
               {{ featuredTargets.join(" · ") }}
             </span>
-            <span class="mt-0.5 block truncate">
-              <template v-for="(m, i) in maps" :key="m.name">
-                <span v-if="i > 0" class="opacity-50"> · </span>
-                <span class="text-foreground/80">{{ m.label ?? m.name }}</span>
-              </template>
-            </span>
           </span>
-          <span class="shrink-0 flex flex-col items-end gap-0.5">
-            <span class="font-mono text-[0.65rem] uppercase tracking-wider">
-              {{ clips.length }} clips
-            </span>
-            <TimeAgo
-              v-if="leadCreatedAt"
-              :date="leadCreatedAt"
-              class="text-[0.65rem] text-muted-foreground/70"
-            />
-          </span>
+          <TimeAgo
+            v-if="leadCreatedAt"
+            :date="leadCreatedAt"
+            class="shrink-0 text-[0.65rem] text-muted-foreground/70"
+          />
         </div>
       </CardContent>
     </Card>

@@ -8,7 +8,7 @@ const baseClasses =
   "group/cm relative flex items-start gap-4 border border-border [background:linear-gradient(135deg,hsl(var(--card)/0.7)_0%,hsl(var(--card)/0.35)_60%,hsl(var(--tac-amber)/0.05)_100%)] text-foreground overflow-hidden isolate [transition:border-color_180ms_ease,background_220ms_ease,transform_180ms_ease,box-shadow_220ms_ease] cursor-pointer hover:border-[hsl(var(--tac-amber)/0.55)] hover:[background:linear-gradient(135deg,hsl(var(--card)/0.8)_0%,hsl(var(--card)/0.45)_55%,hsl(var(--tac-amber)/0.12)_100%)] hover:shadow-[0_0_24px_hsl(var(--tac-amber)/0.12)] focus-visible:outline-none focus-visible:border-[hsl(var(--tac-amber))] focus-visible:shadow-[0_0_0_2px_hsl(var(--tac-amber)/0.35)]";
 
 const fullClasses =
-  "px-[1.75rem] py-6 gap-5 items-center [clip-path:polygon(0_0,calc(100%_-_18px)_0,100%_18px,100%_100%,18px_100%,0_calc(100%_-_18px))] max-sm:!flex-col max-sm:!items-start max-sm:!p-5";
+  "px-[1.75rem] py-6 gap-5 items-center max-sm:!flex-col max-sm:!items-start max-sm:!p-5";
 
 const compactClasses =
   "flex-1 flex-col gap-3 px-[1.1rem] pt-4 pb-5 min-h-[120px]";

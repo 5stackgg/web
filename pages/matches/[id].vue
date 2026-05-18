@@ -31,7 +31,7 @@ provide("matchClipsLoading", matchClipsState.loading);
 provide("matchClipsByTarget", matchClipsState.byTarget);
 
 const heroClasses =
-  "relative min-w-0 max-w-full px-6 pt-5 pb-6 max-sm:p-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] backdrop-blur-[6px] [clip-path:polygon(0_0,calc(100%-18px)_0,100%_18px,100%_100%,18px_100%,0_calc(100%-18px))] before:content-[''] before:absolute before:w-[14px] before:h-[14px] before:border-[hsl(var(--tac-amber))] before:border-solid before:top-2 before:left-2 before:border-t-2 before:border-l-2 after:content-[''] after:absolute after:w-[14px] after:h-[14px] after:border-[hsl(var(--tac-amber))] after:border-solid after:bottom-2 after:right-2 after:border-b-2 after:border-r-2";
+  "relative min-w-0 max-w-full px-6 pt-5 pb-6 max-sm:p-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] backdrop-blur-[6px] before:content-[''] before:absolute before:w-[14px] before:h-[14px] before:border-[hsl(var(--tac-amber))] before:border-solid before:top-2 before:left-2 before:border-t-2 before:border-l-2 after:content-[''] after:absolute after:w-[14px] after:h-[14px] after:border-[hsl(var(--tac-amber))] after:border-solid after:bottom-2 after:right-2 after:border-b-2 after:border-r-2";
 
 const statusBaseClasses =
   "inline-flex items-center gap-2 px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold tracking-[0.2em] uppercase border rounded";
@@ -117,9 +117,11 @@ const vsBaseClasses =
         </div>
 
         <div
-          class="grid grid-cols-[1fr_auto_1fr] items-center gap-6 max-sm:gap-3"
+          class="flex flex-col gap-4 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-6 items-stretch lg:items-center"
         >
-          <div class="flex items-center gap-3 min-w-0 text-left">
+          <div
+            class="flex items-center gap-3 min-w-0 justify-center text-center lg:justify-start lg:text-left"
+          >
             <div
               class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
             >
@@ -136,7 +138,9 @@ const vsBaseClasses =
                 {{ (lineup1Name || "?").slice(0, 3) }}
               </span>
             </div>
-            <div class="flex flex-col gap-[0.35rem] min-w-0 items-start">
+            <div
+              class="flex flex-col gap-[0.35rem] min-w-0 items-start lg:items-start"
+            >
               <span
                 class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
               >
@@ -191,8 +195,12 @@ const vsBaseClasses =
             >
           </div>
 
-          <div class="flex items-center gap-3 min-w-0 text-right justify-end">
-            <div class="flex flex-col gap-[0.35rem] min-w-0 items-end">
+          <div
+            class="flex items-center gap-3 min-w-0 justify-center text-center lg:justify-end lg:text-right flex-row-reverse lg:flex-row"
+          >
+            <div
+              class="flex flex-col gap-[0.35rem] min-w-0 items-start lg:items-end"
+            >
               <span
                 class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
               >
@@ -421,6 +429,22 @@ export default {
   unmounted() {
     useMatchContext().value = null;
   },
+  beforeRouteLeave(_to: any, _from: any, next: any) {
+    // Keep the live stream playing across navigation: if a stream was
+    // mounted inline on this page and nothing is in the global PiP yet,
+    // hand it off to the global player so the user isn't cut off when
+    // they navigate away.
+    const store = useApplicationSettingsStore();
+    if (this.showLiveStreamBlock && !store.globalStream) {
+      const streams = this.match?.streams || [];
+      const promote =
+        streams.find((s: any) => s.is_game_streamer) || streams[0];
+      if (promote) {
+        store.setGlobalStream({ ...promote, match_id: this.match.id });
+      }
+    }
+    next();
+  },
   data() {
     return {
       match: undefined,
@@ -560,12 +584,22 @@ export default {
                           },
                         },
                         {
+                          with: true,
+                          headshot: true,
                           player: {
                             steam_id: true,
                           },
                           attacked_player: {
                             steam_id: true,
                           },
+                        },
+                      ],
+                      assists: [
+                        {},
+                        {
+                          attacker_steam_id: true,
+                          attacked_steam_id: true,
+                          flash: true,
                         },
                       ],
                     },

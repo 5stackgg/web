@@ -101,67 +101,56 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 {{ player.name }}
               </div>
               <div class="flex gap-2">
-                <TooltipProvider v-if="player.is_banned">
-                  <Tooltip>
+                <Tooltip v-if="player.is_banned">
+                  <TooltipTrigger>
+                    <Ban class="w-4 h-4 text-red-500" v-if="player.is_banned" />
+                  </TooltipTrigger>
+                  <TooltipContent>{{
+                    $t("player.status.banned")
+                  }}</TooltipContent>
+                </Tooltip>
+                <template v-else>
+                  <Tooltip v-if="player.is_muted">
                     <TooltipTrigger>
-                      <Ban
+                      <MicOff
                         class="w-4 h-4 text-red-500"
-                        v-if="player.is_banned"
+                        v-if="player.is_muted"
                       />
                     </TooltipTrigger>
                     <TooltipContent>{{
-                      $t("player.status.banned")
+                      $t("player.status.muted")
                     }}</TooltipContent>
                   </Tooltip>
-                </TooltipProvider>
-                <template v-else>
-                  <TooltipProvider v-if="player.is_muted">
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <MicOff
-                          class="w-4 h-4 text-red-500"
-                          v-if="player.is_muted"
-                        />
-                      </TooltipTrigger>
-                      <TooltipContent>{{
-                        $t("player.status.muted")
-                      }}</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                  <TooltipProvider v-if="player.is_gagged">
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <MessageSquareOff
-                          class="w-4 h-4 text-red-500"
-                          v-if="player.is_gagged"
-                        />
-                      </TooltipTrigger>
-                      <TooltipContent>{{
-                        $t("player.status.gagged")
-                      }}</TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <Tooltip v-if="player.is_gagged">
+                    <TooltipTrigger>
+                      <MessageSquareOff
+                        class="w-4 h-4 text-red-500"
+                        v-if="player.is_gagged"
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>{{
+                      $t("player.status.gagged")
+                    }}</TooltipContent>
+                  </Tooltip>
                 </template>
               </div>
             </div>
             <slot name="name-postfix"></slot>
-            <TooltipProvider
+            <Tooltip
               v-if="
                 me && !isMe && showAddFriend && !isFriend && player?.steam_id
               "
             >
-              <Tooltip>
-                <TooltipTrigger>
-                  <UserPlus
-                    class="w-4 h-4 cursor-pointer hover:text-primary"
-                    @click.stop.prevent="addAsFriend"
-                  />
-                </TooltipTrigger>
-                <TooltipContent>{{
-                  $t("player.status.add_friend")
-                }}</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+              <TooltipTrigger>
+                <UserPlus
+                  class="w-4 h-4 cursor-pointer hover:text-primary"
+                  @click.stop.prevent="addAsFriend"
+                />
+              </TooltipTrigger>
+              <TooltipContent>{{
+                $t("player.status.add_friend")
+              }}</TooltipContent>
+            </Tooltip>
           </div>
           <div class="flex items-center gap-2" v-if="player.steam_id">
             <FiveStackToolTip v-if="showRole && tooltip">

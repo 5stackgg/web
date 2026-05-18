@@ -3,7 +3,6 @@ import { computed } from "vue";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { e_veto_pick_types_enum } from "~/generated/zeus";
@@ -151,7 +150,7 @@ const monoNum = "font-mono tabular-nums tracking-[0.01em]";
 
 <template>
   <div class="flex gap-1.5 items-center justify-end w-16 shrink-0">
-    <TooltipProvider v-for="dot in dots" :key="dot.index" :delay-duration="120">
+    <template v-for="dot in dots" :key="dot.index">
       <Tooltip>
         <TooltipTrigger as-child>
           <button
@@ -185,7 +184,6 @@ const monoNum = "font-mono tabular-nums tracking-[0.01em]";
               `[background-image:radial-gradient(circle_at_top_right,hsl(var(--tac-amber)/0.14)_0%,transparent_55%),linear-gradient(180deg,hsl(0_0%_100%/0.035)_0%,transparent_55%)]`,
             ]"
           >
-            <!-- Corner ticks -->
             <span
               class="absolute top-1 left-1 w-[8px] h-[8px] border-t-[1.5px] border-l-[1.5px] border-[hsl(var(--tac-amber))] pointer-events-none"
               aria-hidden="true"
@@ -203,13 +201,11 @@ const monoNum = "font-mono tabular-nums tracking-[0.01em]";
               aria-hidden="true"
             />
 
-            <!-- Scanline overlay -->
             <span
               class="absolute inset-0 pointer-events-none mix-blend-overlay opacity-70 [background-image:repeating-linear-gradient(0deg,transparent_0,transparent_3px,hsl(0_0%_100%/0.015)_3px,hsl(0_0%_100%/0.015)_4px)]"
               aria-hidden="true"
             />
 
-            <!-- Header band -->
             <header
               class="relative flex items-center justify-between mb-2 pb-2 border-b border-border"
             >
@@ -229,7 +225,6 @@ const monoNum = "font-mono tabular-nums tracking-[0.01em]";
               </span>
             </header>
 
-            <!-- Map name -->
             <div class="relative mb-2">
               <span
                 :class="[
@@ -241,7 +236,6 @@ const monoNum = "font-mono tabular-nums tracking-[0.01em]";
               </span>
             </div>
 
-            <!-- Score section -->
             <section
               v-if="showScoreFor(dot.status) && dot.matchMap"
               class="relative grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-2.5 py-2 bg-muted/35 border border-border/70 mb-2"
@@ -280,7 +274,6 @@ const monoNum = "font-mono tabular-nums tracking-[0.01em]";
               </div>
             </section>
 
-            <!-- Meta grid -->
             <section
               class="relative grid grid-cols-2 gap-px bg-border/60 border border-border/60"
             >
@@ -320,7 +313,7 @@ const monoNum = "font-mono tabular-nums tracking-[0.01em]";
           </div>
         </TooltipContent>
       </Tooltip>
-    </TooltipProvider>
+    </template>
   </div>
 </template>
 

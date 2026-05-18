@@ -53,10 +53,12 @@ export default {
     },
     ctx: ExecutionContext,
   ) {
+    const reqOrigin = request.headers.get("Origin");
+
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
-        headers: corsHeaders(),
+        headers: corsHeaders(reqOrigin),
       });
     }
 
@@ -70,8 +72,14 @@ export default {
     // Edge-cache short-circuit: serve repeat hits without re-running SigV4
     // or making a B2 subrequest. Range requests fall through so the existing
     // cf.cacheEverything path handles slicing from the cached full object.
+    // The cache key includes Origin so each calling origin gets a response
+    // with its own Access-Control-Allow-Origin — required for credentialed
+    // fetches, which can't accept `*`.
     const cache = caches.default;
-    const cacheKey = new Request(request.url, { method: "GET" });
+    const cacheKey = new Request(
+      `${request.url}#origin=${reqOrigin ?? ""}`,
+      { method: "GET" },
+    );
     const skipEdgeCache =
       request.method !== "GET" || request.headers.has("range");
     if (!skipEdgeCache) {
@@ -148,7 +156,7 @@ export default {
     // Force long browser cache regardless of what B2 returned — second view
     // of a clip serves from the user's disk cache and never hits the Worker.
     headers.set("Cache-Control", "public, max-age=2592000, immutable");
-    for (const [k, v] of Object.entries(corsHeaders())) {
+    for (const [k, v] of Object.entries(corsHeaders(reqOrigin))) {
       headers.set(k, v);
     }
 
@@ -166,14 +174,23 @@ export default {
   },
 };
 
-function corsHeaders(): Record<string, string> {
-  // Expose-Headers is required so cross-origin <video> can see
-  // Content-Range / Content-Length and seek without rebuffering.
-  return {
-    "Access-Control-Allow-Origin": "*",
+function corsHeaders(reqOrigin: string | null): Record<string, string> {
+  // Reflect the request's Origin so credentialed fetches (which can't
+  // accept Allow-Origin: *) work. Non-CORS requests (no Origin header)
+  // fall back to `*` — same as before, keeps anon <video>/<a> usage
+  // unchanged. Vary: Origin keeps shared caches from leaking the wrong
+  // value to a different origin.
+  const allowOrigin = reqOrigin ?? "*";
+  const headers: Record<string, string> = {
+    "Access-Control-Allow-Origin": allowOrigin,
     "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
     "Access-Control-Allow-Headers": "Range, If-Range, Content-Type",
     "Access-Control-Expose-Headers":
       "Accept-Ranges, Content-Length, Content-Range, Content-Type, ETag, Last-Modified",
+    Vary: "Origin",
   };
+  if (allowOrigin !== "*") {
+    headers["Access-Control-Allow-Credentials"] = "true";
+  }
+  return headers;
 }

@@ -26,7 +26,6 @@ function playerAvatarSrc(player: {
 
 <template>
   <div class="space-y-6">
-    <!-- Podium -->
     <section
       v-if="showStandings && podium.length && !isLive"
       class="relative rounded-lg border border-border px-6 py-7 [background:radial-gradient(ellipse_at_top,hsl(var(--tac-amber)_/_0.08)_0%,transparent_60%),linear-gradient(180deg,hsl(var(--card)_/_0.6)_0%,hsl(var(--card)_/_0.25)_100%)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-['']"
@@ -150,10 +149,11 @@ function playerAvatarSrc(player: {
                     {{ entry.teamName }}
                   </div>
                   <div class="mt-1.5 flex -space-x-2">
-                    <div
+                    <NuxtLink
                       v-for="p in entry.players.slice(0, 5)"
                       :key="p.steam_id"
-                      class="relative h-6 w-6 overflow-hidden rounded-sm border border-border/80 bg-muted/40"
+                      :to="p.steam_id ? `/players/${p.steam_id}` : undefined"
+                      class="relative h-6 w-6 overflow-hidden rounded-sm border border-border/80 bg-muted/40 transition-transform hover:scale-110 hover:border-[hsl(var(--tac-amber))] hover:z-10"
                       :title="p.name"
                     >
                       <img
@@ -168,7 +168,7 @@ function playerAvatarSrc(player: {
                       >
                         {{ (p.name || "?").slice(0, 1) }}
                       </span>
-                    </div>
+                    </NuxtLink>
                     <div
                       v-if="entry.players.length > 5"
                       class="flex h-6 min-w-6 items-center justify-center rounded-sm border border-border/80 bg-muted/40 px-1 text-[0.55rem] font-bold text-muted-foreground"
@@ -214,6 +214,7 @@ function playerAvatarSrc(player: {
                   :show-flag="true"
                   :show-role="false"
                   :show-elo="false"
+                  :linkable="true"
                   size="xs"
                 />
                 <template v-if="playerStatFor(p.steam_id)">
@@ -281,7 +282,6 @@ function playerAvatarSrc(player: {
         </HoverCard>
       </div>
 
-      <!-- MVP award -->
       <div
         v-if="mvp"
         class="relative mt-7 flex flex-col gap-4 border-t border-dashed border-border pt-6 sm:flex-row sm:items-center"
@@ -348,7 +348,6 @@ function playerAvatarSrc(player: {
           </div>
         </div>
 
-        <!-- MVP headline stats -->
         <div
           v-if="mvpStats"
           class="grid grid-cols-4 gap-0 overflow-hidden rounded-sm border border-border/80 bg-background/60 [backdrop-filter:blur(4px)] sm:w-auto"
@@ -405,7 +404,6 @@ function playerAvatarSrc(player: {
       </div>
     </section>
 
-    <!-- Per-stage Standings -->
     <template v-if="showStandings">
       <Card v-for="stage in stagesWithStandings" :key="stage.id">
         <CardHeader>
@@ -430,7 +428,10 @@ function playerAvatarSrc(player: {
           </div>
         </CardHeader>
         <CardContent>
-          <StageStandings :stage="stage" />
+          <StageStandings
+            :stage="stage"
+            :player-stats="tournamentPlayerStats"
+          />
         </CardContent>
       </Card>
       <div
@@ -441,7 +442,6 @@ function playerAvatarSrc(player: {
       </div>
     </template>
 
-    <!-- All Matches -->
     <Card v-if="showMatches">
       <CardHeader>
         <CardTitle>{{ $t("tournament.results.title") }}</CardTitle>
@@ -466,7 +466,10 @@ function playerAvatarSrc(player: {
 </template>
 
 <script lang="ts">
-import { e_tournament_status_enum } from "~/generated/zeus";
+import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
+import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { mapFields } from "~/graphql/mapGraphql";
+import { playerFields } from "~/graphql/playerFields";
 
 export default {
   props: {
@@ -481,6 +484,170 @@ export default {
     showMatches: {
       type: Boolean,
       default: true,
+    },
+  },
+  data() {
+    return {
+      tournamentMatches: [] as any[],
+      tournamentPlayerStats: [] as any[],
+    };
+  },
+  apollo: {
+    $subscribe: {
+      tournamentMatches: {
+        query: typedGql("subscription")({
+          matches: [
+            {
+              where: {
+                tournament_brackets: {
+                  stage: {
+                    tournament_id: {
+                      _eq: $("tournamentId", "uuid!"),
+                    },
+                  },
+                },
+              },
+              order_by: [{ created_at: order_by.desc }],
+            },
+            {
+              id: true,
+              status: true,
+              ended_at: true,
+              e_match_status: { description: true },
+              winning_lineup_id: true,
+              lineup_1_id: true,
+              lineup_2_id: true,
+              created_at: true,
+              started_at: true,
+              scheduled_at: true,
+              options: {
+                mr: true,
+                best_of: true,
+                type: true,
+                lobby_access: true,
+              },
+              match_maps: [
+                { order_by: [{ order: order_by.asc }] },
+                {
+                  map: mapFields,
+                  lineup_1_score: true,
+                  lineup_2_score: true,
+                  winning_lineup_id: true,
+                  order: true,
+                  status: true,
+                  vetos: {
+                    side: true,
+                    type: true,
+                    match_lineup_id: true,
+                  },
+                },
+              ],
+              lineup_1: {
+                id: true,
+                name: true,
+                is_on_lineup: true,
+                team_id: true,
+                lineup_players: [
+                  {},
+                  {
+                    checked_in: true,
+                    placeholder_name: true,
+                    player: playerFields,
+                  },
+                ],
+              },
+              lineup_2: {
+                id: true,
+                name: true,
+                is_on_lineup: true,
+                team_id: true,
+                lineup_players: [
+                  {},
+                  {
+                    checked_in: true,
+                    placeholder_name: true,
+                    player: playerFields,
+                  },
+                ],
+              },
+              max_players_per_lineup: true,
+              min_players_per_lineup: true,
+              lineup_counts: [{}, true],
+              is_in_lineup: true,
+              is_coach: true,
+              streams: [
+                { order_by: [{ priority: order_by.asc }] },
+                {
+                  id: true,
+                  link: true,
+                  title: true,
+                  priority: true,
+                  is_game_streamer: true,
+                },
+              ],
+              elo_changes: [
+                {},
+                {
+                  player_steam_id: true,
+                  elo_change: true,
+                },
+              ],
+            },
+          ],
+        }),
+        variables: function () {
+          return {
+            tournamentId: (this as any).tournament?.id,
+          };
+        },
+        skip: function () {
+          return !(this as any).showMatches || !(this as any).tournament?.id;
+        },
+        result: function ({ data }: { data: { matches: any[] } }) {
+          (this as any).tournamentMatches = data?.matches || [];
+        },
+      },
+      tournamentPlayerStats: {
+        query: typedGql("subscription")({
+          v_tournament_player_stats: [
+            {
+              where: {
+                tournament_id: {
+                  _eq: $("tournamentId", "uuid!"),
+                },
+              },
+            },
+            {
+              player_steam_id: true,
+              kills: true,
+              deaths: true,
+              assists: true,
+              headshots: true,
+              kdr: true,
+              headshot_percentage: true,
+              matches_played: true,
+            },
+          ],
+        }),
+        variables: function () {
+          return {
+            tournamentId: (this as any).tournament?.id,
+          };
+        },
+        skip: function () {
+          const self = this as any;
+          if (!self.tournament?.id) return true;
+          return !self.showMatches && !self.showStandings;
+        },
+        result: function ({
+          data,
+        }: {
+          data: { v_tournament_player_stats: any[] };
+        }) {
+          (this as any).tournamentPlayerStats =
+            data?.v_tournament_player_stats || [];
+        },
+      },
     },
   },
   methods: {
@@ -509,7 +676,7 @@ export default {
     },
     playerStatFor(steamId: string | number) {
       if (!steamId) return null;
-      const stats = (this.tournament as any)?.player_stats || [];
+      const stats = (this as any).tournamentPlayerStats || [];
       const raw = stats.find(
         (s: any) => String(s.player_steam_id) === String(steamId),
       );
@@ -604,27 +771,7 @@ export default {
         );
     },
     allMatches() {
-      if (!this.tournament?.stages) {
-        return [];
-      }
-
-      const matchesMap = new Map();
-
-      this.tournament.stages.forEach((stage: any) => {
-        if (stage.brackets) {
-          stage.brackets.forEach((bracket: any) => {
-            if (bracket.match && !matchesMap.has(bracket.match.id)) {
-              matchesMap.set(bracket.match.id, bracket.match);
-            }
-          });
-        }
-      });
-
-      return Array.from(matchesMap.values()).sort((a: any, b: any) => {
-        const dateA = new Date(a.created_at || 0).getTime();
-        const dateB = new Date(b.created_at || 0).getTime();
-        return dateB - dateA;
-      });
+      return (this as any).tournamentMatches || [];
     },
   },
 };

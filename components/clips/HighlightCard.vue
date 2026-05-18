@@ -11,7 +11,6 @@ import {
   Loader2,
   Check,
   Share2,
-  Shield,
 } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
 import { Card, CardContent } from "~/components/ui/card";
@@ -21,6 +20,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import TimeAgo from "~/components/TimeAgo.vue";
+import cleanMapName from "~/utilities/cleanMapName";
 import type { Clip } from "~/types/clip";
 import { useClipModal } from "~/composables/useClipModal";
 import { useClipShare } from "~/composables/useClipShare";
@@ -29,7 +29,6 @@ import { generateMutation } from "~/graphql/graphqlGen";
 
 const props = defineProps<{
   clip: Clip;
-  showMap?: boolean;
 }>();
 
 const { openClip } = useClipModal();
@@ -62,40 +61,9 @@ const matchupLabel = computed(() => {
   );
 });
 
-// Suppress 0:0 chips for in-progress maps.
-const score1 = computed(() => props.clip.match_map?.lineup_1_score);
-const score2 = computed(() => props.clip.match_map?.lineup_2_score);
-const hasScore = computed(
-  () =>
-    typeof score1.value === "number" &&
-    typeof score2.value === "number" &&
-    !(score1.value === 0 && score2.value === 0),
-);
-const winningSide = computed<"1" | "2" | null>(() => {
-  const w = props.clip.match_map?.winning_lineup_id;
-  if (!w) return null;
-  if (w === props.clip.match_map?.match?.lineup_1_id) return "1";
-  if (w === props.clip.match_map?.match?.lineup_2_id) return "2";
-  return null;
-});
 const isTournament = computed(
   () => props.clip.match_map?.match?.is_tournament_match === true,
 );
-const targetLineup = computed(() => {
-  const sid = props.clip.target_steam_id;
-  const match = props.clip.match_map?.match;
-  if (!sid || !match) return null;
-  const lineups = [match.lineup_1, match.lineup_2];
-  return (
-    lineups.find((lineup) =>
-      lineup?.lineup_players?.some(
-        (member) =>
-          String(member.steam_id ?? member.player?.steam_id) === String(sid),
-      ),
-    ) ?? null
-  );
-});
-const targetTeamName = computed(() => targetLineup.value?.name ?? null);
 
 function onTitleClick(e: MouseEvent) {
   if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
@@ -164,57 +132,135 @@ async function setVisibility(v: Visibility) {
 </script>
 
 <template>
-  <Card class="overflow-hidden transition-all hover:border-foreground/30">
-    <div class="relative aspect-video w-full overflow-hidden bg-black group">
-      <NuxtImg
-        v-if="clip.thumbnail_download_url ?? clip.match_map?.map?.poster"
-        :src="clip.thumbnail_download_url ?? clip.match_map?.map?.poster ?? ''"
-        :alt="clip.title ?? 'Highlight'"
-        loading="lazy"
-        class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-      />
-      <div
-        v-else
-        class="absolute inset-0 flex items-center justify-center text-muted-foreground"
-      >
-        <Film class="h-8 w-8 opacity-50" />
-      </div>
-
-      <button
-        type="button"
-        class="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/80 via-transparent to-transparent transition-opacity opacity-60 hover:opacity-100 cursor-pointer"
-        :aria-label="`Play ${clip.title ?? 'clip'}`"
-        @click="onPlayClick"
-      >
-        <span
-          class="rounded-full bg-foreground/90 p-3 backdrop-blur-sm transition-transform hover:scale-110"
+  <div class="block h-full">
+    <Card
+      class="flex h-full flex-col overflow-hidden transition-all hover:border-foreground/30"
+    >
+      <div class="relative aspect-video w-full overflow-hidden bg-black group">
+        <NuxtImg
+          v-if="clip.thumbnail_download_url ?? clip.match_map?.map?.poster"
+          :src="
+            clip.thumbnail_download_url ?? clip.match_map?.map?.poster ?? ''
+          "
+          :alt="clip.title ?? 'Highlight'"
+          loading="lazy"
+          class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+        />
+        <div
+          v-else
+          class="absolute inset-0 flex items-center justify-center text-muted-foreground"
         >
-          <Play class="h-5 w-5 text-background fill-background" />
-        </span>
-      </button>
+          <Film class="h-8 w-8 opacity-50" />
+        </div>
 
-      <div class="absolute top-2 right-2 flex items-center gap-1">
         <button
           type="button"
-          class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/75 backdrop-blur-sm transition-all duration-200 hover:bg-black/90 hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
-          :class="
-            copiedClipId === clip.id
-              ? 'share-flash text-[hsl(var(--tac-amber))] scale-110'
-              : 'text-white/90'
-          "
-          :title="copiedClipId === clip.id ? 'Link copied!' : 'Share clip'"
-          aria-label="Share clip"
-          @click.stop="shareClip(clip.id)"
+          class="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/80 via-transparent to-transparent transition-opacity opacity-60 hover:opacity-100 cursor-pointer"
+          :aria-label="`Play ${clip.title ?? 'clip'}`"
+          @click="onPlayClick"
         >
-          <Check v-if="copiedClipId === clip.id" class="h-3.5 w-3.5" />
-          <Share2 v-else class="h-3.5 w-3.5" />
+          <span
+            class="rounded-full bg-foreground/90 p-3 backdrop-blur-sm transition-transform hover:scale-110"
+          >
+            <Play class="h-5 w-5 text-background fill-background" />
+          </span>
         </button>
-        <Popover v-if="isAdmin" v-model:open="visPopoverOpen">
-          <PopoverTrigger
-            class="inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
-            :aria-label="`Visibility: ${clip.visibility}. Click to change.`"
+
+        <div class="absolute top-2 right-2 flex items-center gap-1">
+          <button
+            type="button"
+            class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/75 backdrop-blur-sm transition-all duration-200 hover:bg-black/90 hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+            :class="
+              copiedClipId === clip.id
+                ? 'share-flash text-[hsl(var(--tac-amber))] scale-110'
+                : 'text-white/90'
+            "
+            :title="copiedClipId === clip.id ? 'Link copied!' : 'Share clip'"
+            aria-label="Share clip"
+            @click.stop="shareClip(clip.id)"
+          >
+            <Check v-if="copiedClipId === clip.id" class="h-3.5 w-3.5" />
+            <Share2 v-else class="h-3.5 w-3.5" />
+          </button>
+          <Popover v-if="isAdmin" v-model:open="visPopoverOpen">
+            <PopoverTrigger
+              class="inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+              :aria-label="`Visibility: ${clip.visibility}. Click to change.`"
+              :title="`Visibility: ${clip.visibility}`"
+              @click.stop
+            >
+              <span
+                class="inline-flex h-4 w-4 items-center justify-center rounded-full"
+                :class="
+                  clip.visibility === 'public'
+                    ? 'bg-emerald-400/20 text-emerald-300'
+                    : clip.visibility === 'unlisted'
+                      ? 'bg-amber-400/20 text-amber-300'
+                      : 'bg-white/10 text-white/80'
+                "
+              >
+                <Loader2 v-if="saving" class="h-3 w-3 animate-spin" />
+                <component
+                  v-else
+                  :is="currentVisibilityMeta.icon"
+                  class="h-3 w-3"
+                />
+              </span>
+              <span
+                class="font-mono text-[0.58rem] uppercase tracking-[0.14em]"
+              >
+                {{ currentVisibilityMeta.label }}
+              </span>
+            </PopoverTrigger>
+            <PopoverContent class="w-56 p-1" align="end" @click.stop>
+              <div
+                class="px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+              >
+                Visibility
+              </div>
+              <button
+                v-for="opt in VISIBILITY_OPTIONS"
+                :key="opt.value"
+                type="button"
+                class="w-full text-left flex items-start gap-2 rounded px-2 py-1.5 text-xs hover:bg-muted/60 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                :class="clip.visibility === opt.value ? 'bg-muted/40' : ''"
+                :disabled="saving"
+                @click="setVisibility(opt.value)"
+              >
+                <span
+                  class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded"
+                  :class="
+                    opt.value === 'public'
+                      ? 'bg-emerald-400/15 text-emerald-300'
+                      : opt.value === 'unlisted'
+                        ? 'bg-amber-400/15 text-amber-300'
+                        : 'bg-muted/40 text-muted-foreground'
+                  "
+                >
+                  <component :is="opt.icon" class="h-3 w-3" />
+                </span>
+                <span class="flex-1 min-w-0">
+                  <span class="flex items-center gap-1.5 font-medium">
+                    {{ opt.label }}
+                    <Check
+                      v-if="clip.visibility === opt.value"
+                      class="h-3 w-3 text-[hsl(var(--tac-amber))]"
+                    />
+                  </span>
+                  <span
+                    class="block text-[0.7rem] text-muted-foreground leading-snug"
+                  >
+                    {{ opt.hint }}
+                  </span>
+                </span>
+              </button>
+            </PopoverContent>
+          </Popover>
+          <span
+            v-else
+            class="inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm pointer-events-none"
             :title="`Visibility: ${clip.visibility}`"
-            @click.stop
+            :aria-label="`Visibility: ${clip.visibility}`"
           >
             <span
               class="inline-flex h-4 w-4 items-center justify-center rounded-full"
@@ -226,184 +272,85 @@ async function setVisibility(v: Visibility) {
                     : 'bg-white/10 text-white/80'
               "
             >
-              <Loader2 v-if="saving" class="h-3 w-3 animate-spin" />
-              <component
-                v-else
-                :is="currentVisibilityMeta.icon"
-                class="h-3 w-3"
-              />
+              <component :is="currentVisibilityMeta.icon" class="h-3 w-3" />
             </span>
             <span class="font-mono text-[0.58rem] uppercase tracking-[0.14em]">
               {{ currentVisibilityMeta.label }}
             </span>
-          </PopoverTrigger>
-          <PopoverContent class="w-56 p-1" align="end" @click.stop>
-            <div
-              class="px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-            >
-              Visibility
-            </div>
-            <button
-              v-for="opt in VISIBILITY_OPTIONS"
-              :key="opt.value"
-              type="button"
-              class="w-full text-left flex items-start gap-2 rounded px-2 py-1.5 text-xs hover:bg-muted/60 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
-              :class="clip.visibility === opt.value ? 'bg-muted/40' : ''"
-              :disabled="saving"
-              @click="setVisibility(opt.value)"
-            >
-              <span
-                class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded"
-                :class="
-                  opt.value === 'public'
-                    ? 'bg-emerald-400/15 text-emerald-300'
-                    : opt.value === 'unlisted'
-                      ? 'bg-amber-400/15 text-amber-300'
-                      : 'bg-muted/40 text-muted-foreground'
-                "
-              >
-                <component :is="opt.icon" class="h-3 w-3" />
-              </span>
-              <span class="flex-1 min-w-0">
-                <span class="flex items-center gap-1.5 font-medium">
-                  {{ opt.label }}
-                  <Check
-                    v-if="clip.visibility === opt.value"
-                    class="h-3 w-3 text-[hsl(var(--tac-amber))]"
-                  />
-                </span>
-                <span
-                  class="block text-[0.7rem] text-muted-foreground leading-snug"
-                >
-                  {{ opt.hint }}
-                </span>
-              </span>
-            </button>
-          </PopoverContent>
-        </Popover>
-        <span
-          v-else
-          class="inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm pointer-events-none"
-          :title="`Visibility: ${clip.visibility}`"
-          :aria-label="`Visibility: ${clip.visibility}`"
+          </span>
+        </div>
+
+        <!-- Top-left badges share the same h-5 / px-1.5 / text-[0.62rem]
+           pill chrome so the trophy doesn't look like a smaller skinny
+           sibling of the score. -->
+        <div
+          class="absolute top-2 left-2 flex items-center gap-1 pointer-events-none"
         >
           <span
-            class="inline-flex h-4 w-4 items-center justify-center rounded-full"
-            :class="
-              clip.visibility === 'public'
-                ? 'bg-emerald-400/20 text-emerald-300'
-                : clip.visibility === 'unlisted'
-                  ? 'bg-amber-400/20 text-amber-300'
-                  : 'bg-white/10 text-white/80'
-            "
+            v-if="isTournament"
+            class="inline-flex h-5 items-center gap-0.5 rounded bg-black/80 px-1.5 font-mono text-[0.62rem] leading-none text-[hsl(var(--tac-amber))] backdrop-blur-sm"
+            title="Tournament match"
           >
-            <component :is="currentVisibilityMeta.icon" class="h-3 w-3" />
+            <Trophy class="h-2.5 w-2.5" />
           </span>
-          <span class="font-mono text-[0.58rem] uppercase tracking-[0.14em]">
-            {{ currentVisibilityMeta.label }}
-          </span>
-        </span>
-      </div>
-
-      <div
-        class="absolute top-2 left-2 flex items-center gap-1 pointer-events-none"
-      >
-        <span
-          v-if="isTournament"
-          class="inline-flex items-center gap-0.5 rounded bg-black/80 px-1 py-0.5 text-[0.6rem] text-[hsl(var(--tac-amber))] backdrop-blur-sm"
-          title="Tournament match"
-        >
-          <Trophy class="h-2.5 w-2.5" />
-        </span>
-        <span
-          v-if="hasScore"
-          class="inline-flex items-center gap-0.5 rounded bg-black/80 px-1.5 py-0.5 font-mono text-[0.65rem] tabular-nums text-white backdrop-blur-sm"
-        >
           <span
-            :class="
-              winningSide === '1'
-                ? 'text-[hsl(var(--tac-amber))] font-semibold'
-                : ''
+            v-if="clip.duration_ms != null"
+            class="inline-flex h-5 items-center gap-0.5 rounded bg-black/80 px-1.5 font-mono text-[0.62rem] leading-none tabular-nums text-white backdrop-blur-sm"
+          >
+            {{ formatDuration(clip.duration_ms) }}
+          </span>
+        </div>
+
+        <div
+          v-if="clip.match_map?.map?.name"
+          class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent px-2 pb-1.5 pt-4"
+        >
+          <div
+            class="truncate font-sans text-sm font-bold uppercase leading-tight text-white/70 drop-shadow-md"
+            :title="
+              clip.match_map.map.label || cleanMapName(clip.match_map.map.name)
             "
           >
-            {{ score1 }}
-          </span>
-          <span class="opacity-50">:</span>
-          <span
-            :class="
-              winningSide === '2'
-                ? 'text-[hsl(var(--tac-amber))] font-semibold'
-                : ''
-            "
-          >
-            {{ score2 }}
-          </span>
-        </span>
+            {{
+              clip.match_map.map.label || cleanMapName(clip.match_map.map.name)
+            }}
+          </div>
+        </div>
       </div>
 
-      <div
-        class="absolute bottom-2 right-2 flex flex-col items-end gap-1 pointer-events-none"
-      >
-        <span
-          v-if="clip.round != null"
-          class="rounded bg-black/80 px-1.5 py-0.5 text-[0.6rem] font-mono uppercase tracking-[0.12em] text-white/85"
-          :title="`Round ${clip.round}`"
+      <CardContent class="flex flex-1 flex-col gap-1 p-3">
+        <NuxtLink
+          :to="`/clips/${clip.id}`"
+          class="group/link flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-[hsl(var(--tac-amber))] transition-colors"
+          :title="clip.title || 'Open clip'"
+          @click="onTitleClick"
         >
-          R{{ clip.round }}
-        </span>
-        <span
-          class="rounded bg-black/80 px-1.5 py-0.5 text-[0.65rem] font-mono tabular-nums text-white"
+          <span class="truncate">
+            {{ clip.title || "Untitled clip" }}
+          </span>
+          <ArrowUpRight
+            class="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-all group-hover/link:text-[hsl(var(--tac-amber))] group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
+          />
+        </NuxtLink>
+        <div
+          class="mt-auto flex items-end justify-between gap-2 text-xs text-muted-foreground"
         >
-          {{ formatDuration(clip.duration_ms) }}
-        </span>
-      </div>
-    </div>
-
-    <CardContent class="p-3 space-y-1">
-      <NuxtLink
-        :to="`/clips/${clip.id}`"
-        class="group/link flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-[hsl(var(--tac-amber))] transition-colors"
-        :title="clip.title || 'Open clip'"
-        @click="onTitleClick"
-      >
-        <span class="truncate">
-          {{ clip.title || "Untitled clip" }}
-        </span>
-        <ArrowUpRight
-          class="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-all group-hover/link:text-[hsl(var(--tac-amber))] group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
-        />
-      </NuxtLink>
-      <div
-        class="flex items-end justify-between gap-2 text-xs text-muted-foreground"
-      >
-        <span class="min-w-0 flex-1">
-          <span v-if="targetTeamName" class="flex min-w-0 items-center gap-1.5">
+          <span class="min-w-0 flex-1">
             <span
-              class="inline-flex max-w-full shrink items-center gap-1 rounded border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.1)] px-1.5 py-0.5 font-mono text-[0.55rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
-              :title="targetTeamName"
+              v-if="matchupLabel"
+              class="block truncate font-semibold text-foreground/85"
+              :title="matchupLabel"
             >
-              <Shield class="h-2.5 w-2.5 shrink-0" />
-              <span class="truncate">{{ targetTeamName }}</span>
+              {{ matchupLabel }}
             </span>
           </span>
-          <span v-if="matchupLabel" class="mt-0.5 block truncate">
-            {{ matchupLabel }}
-          </span>
-          <span
-            v-if="showMap && clip.match_map?.map?.name"
-            class="mt-0.5 block truncate font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground/80"
-          >
-            {{ clip.match_map.map.label ?? clip.match_map.map.name }}
-          </span>
-        </span>
-        <span class="shrink-0 flex flex-col items-end gap-0.5 max-w-[45%]">
           <TimeAgo
             v-if="clip.created_at"
             :date="clip.created_at"
-            class="text-[0.65rem] text-muted-foreground/70"
+            class="shrink-0 text-[0.65rem] text-muted-foreground/70"
           />
-        </span>
-      </div>
-    </CardContent>
-  </Card>
+        </div>
+      </CardContent>
+    </Card>
+  </div>
 </template>

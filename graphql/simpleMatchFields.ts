@@ -34,10 +34,12 @@ export const simpleMatchFields = Selector("matches")({
       ],
     },
     {
+      id: true,
       map: mapFields,
       lineup_1_score: true,
       lineup_2_score: true,
       winning_lineup_id: true,
+      public_clips_count: true,
       vetos: {
         side: true,
         type: true,

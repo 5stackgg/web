@@ -7,6 +7,8 @@ import {
   TableHeader,
   TableRow,
 } from "~/components/ui/table";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import { ChevronRight } from "lucide-vue-next";
 </script>
 
 <template>
@@ -24,6 +26,7 @@ import {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead class="w-8"></TableHead>
                 <TableHead class="w-12 text-center">#</TableHead>
                 <TableHead>{{ $t("team.table.team") }}</TableHead>
                 <TableHead class="text-center">
@@ -38,49 +41,187 @@ import {
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow
+              <template
                 v-for="entry in group.entries"
                 :key="entry.teamId || entry.teamName"
               >
-                <TableCell class="text-center">
-                  <div class="flex flex-col items-center gap-0.5">
-                    <span
-                      class="font-mono text-sm font-bold leading-none tabular-nums"
-                      :style="rankStyle(entry.rank)"
+                <TableRow
+                  class="cursor-pointer transition-colors hover:bg-muted/30"
+                  :class="{ 'bg-muted/20': isExpanded(entry.teamId) }"
+                  @click="toggleExpanded(entry.teamId)"
+                >
+                  <TableCell class="text-center">
+                    <ChevronRight
+                      class="mx-auto h-4 w-4 text-muted-foreground transition-transform duration-150"
+                      :class="{ 'rotate-90': isExpanded(entry.teamId) }"
+                    />
+                  </TableCell>
+                  <TableCell class="text-center">
+                    <div class="flex flex-col items-center gap-0.5">
+                      <span
+                        class="font-mono text-sm font-bold leading-none tabular-nums"
+                        :style="rankStyle(entry.rank)"
+                      >
+                        {{ ordinal(entry.rank) }}
+                      </span>
+                      <span
+                        v-if="entry.tied"
+                        class="rounded-sm border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] px-1 py-[1px] font-mono text-[0.5rem] font-bold uppercase leading-none tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+                      >
+                        TIED
+                      </span>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <NuxtLink
+                      v-if="entry.teamLinkId"
+                      :to="`/teams/${entry.teamLinkId}`"
+                      class="font-medium hover:text-[hsl(var(--tac-amber))] transition-colors"
+                      @click.stop
                     >
-                      {{ ordinal(entry.rank) }}
-                    </span>
-                    <span
-                      v-if="entry.tied"
-                      class="rounded-sm border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] px-1 py-[1px] font-mono text-[0.5rem] font-bold uppercase leading-none tracking-[0.18em] text-[hsl(var(--tac-amber))]"
-                    >
-                      TIED
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <NuxtLink
-                    v-if="entry.realTeamId"
-                    :to="`/teams/${entry.realTeamId}`"
-                    class="font-medium hover:underline"
+                      {{ entry.teamName }}
+                    </NuxtLink>
+                    <div v-else class="font-medium">{{ entry.teamName }}</div>
+                  </TableCell>
+                  <TableCell class="text-center font-mono tabular-nums">
+                    {{ entry.wins }}
+                  </TableCell>
+                  <TableCell class="text-center font-mono tabular-nums">
+                    {{ entry.losses }}
+                  </TableCell>
+                  <TableCell class="text-center font-mono tabular-nums">
+                    {{ entry.matchesPlayed }}
+                  </TableCell>
+                </TableRow>
+                <TableRow
+                  v-if="isExpanded(entry.teamId)"
+                  class="hover:bg-transparent"
+                >
+                  <TableCell
+                    colspan="6"
+                    class="border-t border-border/40 bg-background/40 p-0"
                   >
-                    {{ entry.teamName }}
-                  </NuxtLink>
-                  <div v-else class="font-medium">{{ entry.teamName }}</div>
-                </TableCell>
-                <TableCell class="text-center font-mono tabular-nums">
-                  {{ entry.wins }}
-                </TableCell>
-                <TableCell class="text-center font-mono tabular-nums">
-                  {{ entry.losses }}
-                </TableCell>
-                <TableCell class="text-center font-mono tabular-nums">
-                  {{ entry.matchesPlayed }}
-                </TableCell>
-              </TableRow>
+                    <div
+                      v-if="entry.roster.length === 0"
+                      class="px-4 py-3 text-center font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground"
+                    >
+                      NO ROSTER
+                    </div>
+                    <div v-else class="overflow-x-auto">
+                      <table class="w-full text-sm">
+                        <thead>
+                          <tr
+                            class="border-b border-border/40 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground"
+                          >
+                            <th class="px-4 py-2 text-left font-normal">
+                              {{ $t("common.player") }}
+                            </th>
+                            <th class="px-2 py-2 text-center font-normal">K</th>
+                            <th class="px-2 py-2 text-center font-normal">D</th>
+                            <th class="px-2 py-2 text-center font-normal">A</th>
+                            <th class="px-2 py-2 text-center font-normal">
+                              K/D
+                            </th>
+                            <th class="px-2 py-2 text-center font-normal">
+                              HS%
+                            </th>
+                            <th class="px-2 py-2 text-center font-normal">
+                              MP
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr
+                            v-for="member in entry.roster"
+                            :key="member.player.steam_id"
+                            class="border-b border-border/20 last:border-b-0"
+                          >
+                            <td class="px-4 py-2">
+                              <PlayerDisplay
+                                :player="member.player"
+                                :show-flag="true"
+                                :show-role="false"
+                                :show-elo="true"
+                                :linkable="true"
+                                size="xs"
+                              />
+                            </td>
+                            <template
+                              v-if="playerStatFor(member.player.steam_id)"
+                            >
+                              <td
+                                class="px-2 py-2 text-center font-mono tabular-nums"
+                              >
+                                {{
+                                  playerStatFor(member.player.steam_id).kills
+                                }}
+                              </td>
+                              <td
+                                class="px-2 py-2 text-center font-mono tabular-nums"
+                              >
+                                {{
+                                  playerStatFor(member.player.steam_id).deaths
+                                }}
+                              </td>
+                              <td
+                                class="px-2 py-2 text-center font-mono tabular-nums"
+                              >
+                                {{
+                                  playerStatFor(member.player.steam_id).assists
+                                }}
+                              </td>
+                              <td
+                                class="px-2 py-2 text-center font-mono tabular-nums font-bold"
+                                :style="{
+                                  color:
+                                    playerStatFor(member.player.steam_id).kdr >=
+                                    1
+                                      ? 'hsl(142, 71%, 55%)'
+                                      : 'hsl(0, 84%, 65%)',
+                                }"
+                              >
+                                {{
+                                  playerStatFor(
+                                    member.player.steam_id,
+                                  ).kdr.toFixed(2)
+                                }}
+                              </td>
+                              <td
+                                class="px-2 py-2 text-center font-mono tabular-nums"
+                              >
+                                {{
+                                  playerStatFor(
+                                    member.player.steam_id,
+                                  ).headshot_percentage.toFixed(0)
+                                }}%
+                              </td>
+                              <td
+                                class="px-2 py-2 text-center font-mono tabular-nums text-muted-foreground"
+                              >
+                                {{
+                                  playerStatFor(member.player.steam_id)
+                                    .matches_played
+                                }}
+                              </td>
+                            </template>
+                            <template v-else>
+                              <td
+                                colspan="6"
+                                class="px-2 py-2 text-center font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/60"
+                              >
+                                NO DATA
+                              </td>
+                            </template>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </template>
               <TableRow v-if="group.entries.length === 0">
                 <TableCell
-                  colspan="5"
+                  colspan="6"
                   class="text-center text-muted-foreground"
                 >
                   {{ $t("tournament.stage.no_standings") }}
@@ -119,6 +260,15 @@ export default {
       type: Number,
       default: null,
     },
+    playerStats: {
+      type: Array,
+      default: () => [],
+    },
+  },
+  data() {
+    return {
+      expandedTeams: new Set<string>(),
+    };
   },
   computed: {
     totalGroups() {
@@ -127,6 +277,14 @@ export default {
     showGroupHeading() {
       if (this.onlyGroup != null) return false;
       return this.forceGroupHeading || this.totalGroups > 1;
+    },
+    statsByPlayer() {
+      const map = new Map<string, any>();
+      for (const s of (this.playerStats as any[]) || []) {
+        if (s?.player_steam_id == null) continue;
+        map.set(String(s.player_steam_id), s);
+      }
+      return map;
     },
     groups() {
       const results = (((this.stage as any)?.results || []) as any[])
@@ -175,7 +333,7 @@ export default {
         const entries = sorted.map((row: any) => ({
           rank: Number(row.rank) || 0,
           teamId: row.tournament_team_id || row.team?.id,
-          realTeamId: row.team?.team?.id || null,
+          teamLinkId: row.team?.team?.id || null,
           teamName: this.displayTeamName(
             row.team,
             row.tournament_team_id || row.team?.id,
@@ -184,6 +342,7 @@ export default {
           losses: Number(row.losses) || 0,
           matchesPlayed: Number(row.matches_played) || 0,
           tied: (placementCounts.get(Number(row.placement) || 0) || 0) > 1,
+          roster: (row.team?.roster || []).filter((m: any) => m?.player),
         }));
         out.push({
           number: gn,
@@ -218,6 +377,35 @@ export default {
       const ownName = tournamentTeam?.name;
       if (ownName) return ownName;
       return fallbackId ? `Team ${fallbackId}` : "";
+    },
+    isExpanded(teamId: string | undefined) {
+      if (!teamId) return false;
+      return this.expandedTeams.has(String(teamId));
+    },
+    toggleExpanded(teamId: string | undefined) {
+      if (!teamId) return;
+      const key = String(teamId);
+      const next = new Set(this.expandedTeams);
+      if (next.has(key)) {
+        next.delete(key);
+      } else {
+        next.add(key);
+      }
+      this.expandedTeams = next;
+    },
+    playerStatFor(steamId: string | number | undefined) {
+      if (steamId == null) return null;
+      const raw = this.statsByPlayer.get(String(steamId));
+      if (!raw) return null;
+      return {
+        kills: Number(raw.kills ?? 0),
+        deaths: Number(raw.deaths ?? 0),
+        assists: Number(raw.assists ?? 0),
+        headshots: Number(raw.headshots ?? 0),
+        kdr: Number(raw.kdr ?? 0),
+        headshot_percentage: Number(raw.headshot_percentage ?? 0),
+        matches_played: Number(raw.matches_played ?? 0),
+      };
     },
   },
 };

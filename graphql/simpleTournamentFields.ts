@@ -6,6 +6,7 @@ export const simpleTournamentFields = Selector("tournaments")({
   name: true,
   start: true,
   description: true,
+  trophies_enabled: true,
   e_tournament_status: {
     description: true,
   },

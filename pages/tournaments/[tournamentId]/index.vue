@@ -174,7 +174,6 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
 <template>
   <div v-if="tournament">
     <Tabs v-model="activeTab" default-value="overview">
-      <!-- Tactical Hero -->
       <PageTransition>
         <header :class="tournamentHeroClasses">
           <div :class="tournamentHeroToplineClasses">
@@ -314,7 +313,6 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
           </div>
 
           <div :class="tournamentHeroBodyClasses">
-            <!-- Identity -->
             <div :class="tournamentHeroIdentityClasses">
               <div :class="tournamentHeroNameRowClasses">
                 <h1 :class="tournamentHeroNameClasses">
@@ -405,7 +403,6 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
             </div>
           </div>
 
-          <!-- Description + Match Options collapsible -->
           <Collapsible
             v-if="tournament.description || tournament.options"
             v-model:open="overviewExpanded"
@@ -444,7 +441,6 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
             </CollapsibleContent>
           </Collapsible>
 
-          <!-- Tabs inside the hero (bottom row) -->
           <div :class="tournamentHeroTabsClasses">
             <TabsList
               variant="underline"
@@ -570,12 +566,12 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
                 <span :class="tacticalSectionTickClasses"></span>
                 Roster
                 <span :class="tacticalSectionCountClasses">
-                  {{ tournament?.teams?.length || 0 }}
+                  {{ visibleTeams.length }}
                 </span>
               </div>
 
               <div
-                v-if="!tournament.teams || tournament.teams.length === 0"
+                v-if="visibleTeams.length === 0"
                 class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
               >
                 No teams yet.
@@ -583,7 +579,7 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
 
               <div class="space-y-4">
                 <PageTransition
-                  v-for="(team, index) of tournament.teams"
+                  v-for="(team, index) of visibleTeams"
                   :key="team.id"
                   :delay="index * 40"
                 >
@@ -796,7 +792,6 @@ import { $, e_tournament_status_enum, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useAuthStore } from "~/stores/AuthStore";
 import tournamentTeamFields from "~/graphql/tournamentTeamFields";
-import { mapFields } from "~/graphql/mapGraphql";
 import { playerFields } from "~/graphql/playerFields";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
@@ -939,19 +934,6 @@ export default {
                   },
                 },
               ],
-              player_stats: [
-                {},
-                {
-                  player_steam_id: true,
-                  kills: true,
-                  deaths: true,
-                  assists: true,
-                  headshots: true,
-                  kdr: true,
-                  headshot_percentage: true,
-                  matches_played: true,
-                },
-              ],
               trophy_configs: [
                 {},
                 {
@@ -1007,7 +989,15 @@ export default {
                         team: {
                           id: true,
                           name: true,
+                          avatar_url: true,
                         },
+                        roster: [
+                          {},
+                          {
+                            role: true,
+                            player: playerFields,
+                          },
+                        ],
                       },
                     },
                   ],
@@ -1029,6 +1019,7 @@ export default {
                       ],
                     },
                     {
+                      // Heavy match fields are fetched by TournamentResults.vue.
                       id: true,
                       round: true,
                       group: true,
@@ -1041,7 +1032,9 @@ export default {
                       path: true,
                       loser_parent_bracket_id: true,
                       match_options_id: true,
-                      options: matchOptionsFields,
+                      options: {
+                        best_of: true,
+                      },
                       parent_bracket: {
                         id: true,
                         round: true,
@@ -1070,21 +1063,11 @@ export default {
                       match: {
                         id: true,
                         status: true,
-                        ended_at: true,
-                        e_match_status: {
-                          description: true,
-                        },
                         winning_lineup_id: true,
                         lineup_1_id: true,
                         lineup_2_id: true,
-                        created_at: true,
-                        started_at: true,
-                        scheduled_at: true,
                         options: {
-                          mr: true,
                           best_of: true,
-                          type: true,
-                          lobby_access: true,
                         },
                         match_maps: [
                           {
@@ -1095,75 +1078,23 @@ export default {
                             ],
                           },
                           {
-                            map: mapFields,
                             lineup_1_score: true,
                             lineup_2_score: true,
                             winning_lineup_id: true,
                             order: true,
                             status: true,
-                            vetos: {
-                              side: true,
-                              type: true,
-                              match_lineup_id: true,
-                            },
                           },
                         ],
                         lineup_1: {
                           id: true,
                           name: true,
-                          is_on_lineup: true,
                           team_id: true,
-                          lineup_players: [
-                            {},
-                            {
-                              checked_in: true,
-                              placeholder_name: true,
-                              player: playerFields,
-                            },
-                          ],
                         },
                         lineup_2: {
                           id: true,
                           name: true,
-                          is_on_lineup: true,
                           team_id: true,
-                          lineup_players: [
-                            {},
-                            {
-                              checked_in: true,
-                              placeholder_name: true,
-                              player: playerFields,
-                            },
-                          ],
                         },
-                        max_players_per_lineup: true,
-                        min_players_per_lineup: true,
-                        lineup_counts: [{}, true],
-                        is_in_lineup: true,
-                        is_coach: true,
-                        streams: [
-                          {
-                            order_by: [
-                              {
-                                priority: order_by.asc,
-                              },
-                            ],
-                          },
-                          {
-                            id: true,
-                            link: true,
-                            title: true,
-                            priority: true,
-                            is_game_streamer: true,
-                          },
-                        ],
-                        elo_changes: [
-                          {},
-                          {
-                            player_steam_id: true,
-                            elo_change: true,
-                          },
-                        ],
                       },
                       team_1: {
                         id: true,
@@ -1320,7 +1251,6 @@ export default {
       const stage = this.tournament?.stages?.[0];
       if (!stage) return this.singleStageType;
 
-      // Get best_of from stage default_best_of, or fall back to tournament defaults
       let bestOf: number | null = null;
       if (stage.default_best_of) {
         bestOf = stage.default_best_of;
@@ -1338,6 +1268,20 @@ export default {
     },
     e_tournament_status_enum() {
       return e_tournament_status_enum;
+    },
+    tournamentHasStarted() {
+      const status = this.tournament?.status;
+      if (!status) return false;
+      return ![
+        e_tournament_status_enum.Setup,
+        e_tournament_status_enum.RegistrationOpen,
+        e_tournament_status_enum.RegistrationClosed,
+      ].includes(status);
+    },
+    visibleTeams() {
+      const teams = this.tournament?.teams || [];
+      if (!this.tournamentHasStarted) return teams;
+      return teams.filter((team) => !!team.eligible_at);
     },
     statusTier() {
       const s = this.tournament?.status;
@@ -1537,7 +1481,6 @@ export default {
     tournament: {
       handler(newTournament) {
         if (newTournament) {
-          // Collapse overview by default when tournament is Live, expand otherwise
           this.overviewExpanded =
             newTournament.status !== e_tournament_status_enum.Live;
           this.syncActiveTabFromRoute();
@@ -1547,7 +1490,6 @@ export default {
     },
     organizersList: {
       handler(newList) {
-        // Initialize organizer popovers state based on the combined list
         if (newList && newList.length > 0) {
           this.organizerPopoversOpen = newList.reduce((acc, _, index) => {
             acc[index] = false;

@@ -8,6 +8,10 @@ import { order_by, $ } from "~/generated/zeus";
 import { Skeleton } from "~/components/ui/skeleton";
 import HighlightCard from "~/components/clips/HighlightCard.vue";
 import MatchClipsGroupCard from "~/components/clips/MatchClipsGroupCard.vue";
+import HorizontalScrollRow from "~/components/ui/HorizontalScrollRow.vue";
+import ScrollArrows from "~/components/ui/ScrollArrows.vue";
+
+const scrollRef = ref<InstanceType<typeof HorizontalScrollRow> | null>(null);
 import type { Clip } from "~/types/clip";
 import {
   tacticalSectionLabelClasses,
@@ -20,17 +24,23 @@ const props = withDefaults(
     title?: string;
     showHeader?: boolean;
     sectionLabel?: string;
+    horizontal?: boolean;
   }>(),
   {
     limit: 8,
     title: "Recent Highlights",
     showHeader: true,
+    horizontal: false,
   },
 );
 
 // Over-fetched so we can dedupe to one card per match (a Bo3+ contributes
-// up to one match_map per map).
-const LEAD_POOL = Math.max(40, props.limit * 4);
+// up to one match_map per map). LEAD_POOL is the base, extendedPool
+// grows as the user approaches the right edge.
+const LEAD_POOL_BASE = Math.max(40, props.limit * 4);
+const extendedPool = ref(LEAD_POOL_BASE);
+const reachedEnd = ref(false);
+const inFlight = ref(false);
 
 type MatchMapRow = {
   id: string;
@@ -52,7 +62,7 @@ async function fetchData() {
           {
             where: { public_clips_count: { _gt: 0 } },
             order_by: $("groups_order_by", "[match_maps_order_by!]!"),
-            limit: LEAD_POOL,
+            limit: $("pool_size", "Int!"),
           } as any,
           {
             id: true,
@@ -70,33 +80,32 @@ async function fetchData() {
       variables: {
         groups_order_by: [{ public_latest_clip_at: order_by.desc }],
         clips_order_by: [{ created_at: order_by.desc }],
+        pool_size: extendedPool.value,
       },
       fetchPolicy: "network-only",
     });
     matchMaps.value = ((data as any)?.match_maps ?? []) as MatchMapRow[];
+    reachedEnd.value = matchMaps.value.length < extendedPool.value;
   } catch (err) {
     console.error("[recent-highlights] fetch error:", err);
   } finally {
     loading.value = false;
+    inFlight.value = false;
   }
 }
+
+async function loadMore() {
+  if (reachedEnd.value || inFlight.value) return;
+  inFlight.value = true;
+  extendedPool.value += LEAD_POOL_BASE;
+  await fetchData();
+}
+
 fetchData();
 
 const hasClips = computed(() =>
   matchMaps.value.some((mm) => (mm.match_clips?.length ?? 0) > 0),
 );
-
-const showMap = computed(() => {
-  const seen = new Set<string>();
-  for (const mm of matchMaps.value) {
-    for (const c of mm.match_clips ?? []) {
-      const name = c.match_map?.map?.name;
-      if (name) seen.add(name);
-      if (seen.size > 1) return true;
-    }
-  }
-  return false;
-});
 
 // With sectionLabel, a flash of header + skeleton that then vanishes is
 // worse than one beat of nothing.
@@ -147,30 +156,49 @@ const gridItems = computed<GridItem[]>(() => {
   items.sort((a, b) =>
     a.sortKey < b.sortKey ? 1 : a.sortKey > b.sortKey ? -1 : 0,
   );
-  return items.slice(0, props.limit);
+  // Display cap scales with extendedPool so load-more reveals more
+  // grouped cards alongside its over-fetched pool.
+  const displayLimit = Math.max(
+    props.limit,
+    Math.round((extendedPool.value / LEAD_POOL_BASE) * props.limit),
+  );
+  return items.slice(0, displayLimit);
 });
 </script>
 
 <template>
-  <div v-if="shouldRender">
+  <div v-show="shouldRender">
     <div
       v-if="sectionLabel"
       :class="[
         tacticalSectionLabelClasses,
-        'flex items-center justify-between',
+        '!flex w-full items-center justify-between',
       ]"
     >
-      <span class="inline-flex items-center gap-2">
-        <span :class="tacticalSectionTickClasses"></span>
-        {{ sectionLabel }}
-      </span>
-      <NuxtLink
-        :to="{ name: 'highlights' }"
-        class="inline-flex items-center gap-1 font-mono text-[0.65rem] tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors normal-case"
-      >
-        See all
-        <ArrowRight class="h-3 w-3" />
-      </NuxtLink>
+      <div class="inline-flex items-center gap-3">
+        <span class="inline-flex items-center gap-2">
+          <span :class="tacticalSectionTickClasses"></span>
+          {{ sectionLabel }}
+        </span>
+        <NuxtLink
+          :to="{ name: 'highlights' }"
+          class="inline-flex items-center gap-1 font-mono text-[0.65rem] tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors normal-case"
+        >
+          See all
+          <ArrowRight class="h-3 w-3" />
+        </NuxtLink>
+      </div>
+      <ScrollArrows
+        v-if="horizontal"
+        :can-left="scrollRef?.state?.canScrollLeft"
+        :can-right="scrollRef?.state?.canScrollRight || !reachedEnd"
+        @scroll="
+          (d) => {
+            scrollRef?.scrollByDirection(d);
+            if (d === 'right') loadMore();
+          }
+        "
+      />
     </div>
 
     <div v-else-if="showHeader" class="flex items-center justify-between mb-3">
@@ -201,8 +229,16 @@ const gridItems = computed<GridItem[]>(() => {
       </NuxtLink>
     </div>
 
+    <HorizontalScrollRow v-if="loading && horizontal" ref="scrollRef">
+      <Skeleton
+        v-for="i in 4"
+        :key="i"
+        class="aspect-video w-64 shrink-0 rounded-lg"
+      />
+    </HorizontalScrollRow>
+
     <div
-      v-if="loading"
+      v-else-if="loading"
       class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
     >
       <Skeleton
@@ -211,6 +247,28 @@ const gridItems = computed<GridItem[]>(() => {
         class="aspect-video w-full rounded-lg"
       />
     </div>
+
+    <HorizontalScrollRow
+      v-else-if="horizontal"
+      ref="scrollRef"
+      @approaching-end="loadMore"
+    >
+      <template v-for="item in gridItems">
+        <MatchClipsGroupCard
+          v-if="item.kind === 'group'"
+          :key="`group-${item.matchId}`"
+          :match-id="item.matchId"
+          :clips="item.clips"
+          class="w-64 shrink-0 snap-start"
+        />
+        <HighlightCard
+          v-else
+          :key="`single-${item.clip.id}`"
+          :clip="item.clip"
+          class="w-64 shrink-0 snap-start"
+        />
+      </template>
+    </HorizontalScrollRow>
 
     <div v-else class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
       <template v-for="item in gridItems">
@@ -224,7 +282,6 @@ const gridItems = computed<GridItem[]>(() => {
           v-else
           :key="`single-${item.clip.id}`"
           :clip="item.clip"
-          :show-map="showMap"
         />
       </template>
     </div>

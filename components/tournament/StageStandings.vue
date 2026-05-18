@@ -153,15 +153,16 @@ export default {
             (a: any, b: any) => (Number(a.rank) || 0) - (Number(b.rank) || 0),
           );
 
-        // Same (wins, losses) record = tied. The API breaks ties via head-to-head
-        // / map ratio / KDR for a deterministic seed-friendly order, but at the
-        // record level these teams are still tied — surface that to the viewer.
-        const recordKey = (row: any) =>
-          `${Number(row.wins) || 0}-${Number(row.losses) || 0}`;
-        const recordCounts = new Map<string, number>();
+        // Tied iff multiple teams share the same `placement` (RANK with ties)
+        // from the API. `rank` itself is a deterministic ROW_NUMBER and never
+        // ties, so we can't read tied-ness off it. Using `placement` avoids
+        // false positives in DE where two teams at different elimination tiers
+        // can coincidentally share the same W-L record.
+        const placementCounts = new Map<number, number>();
         for (const row of sorted) {
-          const k = recordKey(row);
-          recordCounts.set(k, (recordCounts.get(k) || 0) + 1);
+          const p = Number(row.placement) || 0;
+          if (!p) continue;
+          placementCounts.set(p, (placementCounts.get(p) || 0) + 1);
         }
 
         const entries = sorted.map((row: any) => ({
@@ -174,7 +175,7 @@ export default {
           wins: Number(row.wins) || 0,
           losses: Number(row.losses) || 0,
           matchesPlayed: Number(row.matches_played) || 0,
-          tied: (recordCounts.get(recordKey(row)) || 0) > 1,
+          tied: (placementCounts.get(Number(row.placement) || 0) || 0) > 1,
         }));
         out.push({
           number: gn,

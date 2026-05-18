@@ -199,7 +199,7 @@ const teamHeroActionsClasses =
     v-if="teamTrophies && teamTrophies.length > 0"
     class="mt-6"
   >
-    <TrophyCase :trophies="teamTrophies" />
+    <TrophyCase :trophies="teamTrophies" :hide-mvp="true" />
   </PageTransition>
 
   <div v-if="team" class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">

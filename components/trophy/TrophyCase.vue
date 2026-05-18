@@ -38,11 +38,13 @@ interface Trophy {
 interface Props {
   trophies?: Trophy[] | null;
   emptyState?: boolean;
+  hideMvp?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   trophies: null,
   emptyState: true,
+  hideMvp: false,
 });
 
 const selected = ref<Trophy | null>(null);
@@ -105,12 +107,15 @@ const tierColors: Record<"mvp" | "gold" | "silver" | "bronze", string> = {
   bronze: "hsl(28 70% 52%)",
 };
 
-const tierRack = [
-  { key: "mvp" as const, label: "MVP", full: "Most Valuable Player" },
-  { key: "gold" as const, label: "1ST", full: "1st Place" },
-  { key: "silver" as const, label: "2ND", full: "2nd Place" },
-  { key: "bronze" as const, label: "3RD", full: "3rd Place" },
-];
+const tierRack = computed(() => {
+  const tiers = [
+    { key: "mvp" as const, label: "MVP", full: "Most Valuable Player" },
+    { key: "gold" as const, label: "1ST", full: "1st Place" },
+    { key: "silver" as const, label: "2ND", full: "2nd Place" },
+    { key: "bronze" as const, label: "3RD", full: "3rd Place" },
+  ];
+  return props.hideMvp ? tiers.filter((t) => t.key !== "mvp") : tiers;
+});
 
 function placementUplight(placement: number) {
   if (placement === 0) return tierColors.mvp;

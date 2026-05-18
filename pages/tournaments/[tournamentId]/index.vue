@@ -926,6 +926,7 @@ export default {
                     id: true,
                     name: true,
                     team: {
+                      id: true,
                       name: true,
                     },
                     roster: [
@@ -1004,6 +1005,7 @@ export default {
                         id: true,
                         name: true,
                         team: {
+                          id: true,
                           name: true,
                         },
                       },

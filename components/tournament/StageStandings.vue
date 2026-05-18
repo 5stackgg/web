@@ -59,7 +59,14 @@ import {
                   </div>
                 </TableCell>
                 <TableCell>
-                  <div class="font-medium">{{ entry.teamName }}</div>
+                  <NuxtLink
+                    v-if="entry.realTeamId"
+                    :to="`/teams/${entry.realTeamId}`"
+                    class="font-medium hover:underline"
+                  >
+                    {{ entry.teamName }}
+                  </NuxtLink>
+                  <div v-else class="font-medium">{{ entry.teamName }}</div>
                 </TableCell>
                 <TableCell class="text-center font-mono tabular-nums">
                   {{ entry.wins }}
@@ -168,6 +175,7 @@ export default {
         const entries = sorted.map((row: any) => ({
           rank: Number(row.rank) || 0,
           teamId: row.tournament_team_id || row.team?.id,
+          realTeamId: row.team?.team?.id || null,
           teamName: this.displayTeamName(
             row.team,
             row.tournament_team_id || row.team?.id,

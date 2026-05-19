@@ -147,7 +147,30 @@ const vsBaseClasses =
               >
                 {{ $t("match.lineup.lineup_1") }}
               </span>
+              <NuxtLink
+                v-if="lineup1TeamId"
+                :to="`/teams/${lineup1TeamId}`"
+                :class="[
+                  teamClasses,
+                  match.winning_lineup_id === match.lineup_1_id && 'is-winner',
+                  'transition-opacity hover:opacity-80 cursor-pointer',
+                ]"
+              >
+                <span :class="teamGhostClasses" aria-hidden="true">
+                  {{ lineup1Name }}
+                </span>
+                <span
+                  :class="[
+                    teamMainClasses,
+                    match.winning_lineup_id === match.lineup_1_id &&
+                      teamMainWinnerClasses,
+                  ]"
+                >
+                  {{ lineup1Name }}
+                </span>
+              </NuxtLink>
               <div
+                v-else
                 :class="[
                   teamClasses,
                   match.winning_lineup_id === match.lineup_1_id && 'is-winner',
@@ -207,7 +230,30 @@ const vsBaseClasses =
               >
                 {{ $t("match.lineup.lineup_2") }}
               </span>
+              <NuxtLink
+                v-if="lineup2TeamId"
+                :to="`/teams/${lineup2TeamId}`"
+                :class="[
+                  teamClasses,
+                  match.winning_lineup_id === match.lineup_2_id && 'is-winner',
+                  'transition-opacity hover:opacity-80 cursor-pointer',
+                ]"
+              >
+                <span :class="teamGhostClasses" aria-hidden="true">
+                  {{ lineup2Name }}
+                </span>
+                <span
+                  :class="[
+                    teamMainClasses,
+                    match.winning_lineup_id === match.lineup_2_id &&
+                      teamMainWinnerClasses,
+                  ]"
+                >
+                  {{ lineup2Name }}
+                </span>
+              </NuxtLink>
               <div
+                v-else
                 :class="[
                   teamClasses,
                   match.winning_lineup_id === match.lineup_2_id && 'is-winner',
@@ -697,6 +743,12 @@ export default {
       const avatarUrl = this.match?.lineup_2?.team?.avatar_url;
       if (!avatarUrl) return null;
       return `https://${this.apiDomain}/${avatarUrl}`;
+    },
+    lineup1TeamId() {
+      return this.match?.lineup_1?.team_id ?? null;
+    },
+    lineup2TeamId() {
+      return this.match?.lineup_2?.team_id ?? null;
     },
     mapScores() {
       const maps = this.match?.match_maps || [];

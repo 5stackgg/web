@@ -32,7 +32,7 @@ const containContentValue = computed(() => containContent?.value ?? true);
       >
         <div class="flex-1 overflow-auto">
           <div
-            class="mx-auto p-4 w-full self-center"
+            class="mx-auto p-1 sm:p-4 w-full self-center"
             :class="{
               'lg:max-w-7xl': containContentValue,
             }"

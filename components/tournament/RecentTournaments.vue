@@ -9,8 +9,8 @@ import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
 import { Skeleton } from "~/components/ui/skeleton";
 import TournamentFeatureCard from "~/components/tournament/TournamentFeatureCard.vue";
 import TournamentCompactCard from "~/components/tournament/TournamentCompactCard.vue";
-import HorizontalScrollRow from "~/components/ui/HorizontalScrollRow.vue";
-import ScrollArrows from "~/components/ui/ScrollArrows.vue";
+import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
+import ScrollArrows from "~/components/common/ScrollArrows.vue";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,

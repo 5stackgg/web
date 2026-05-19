@@ -24,8 +24,8 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
 import { ref } from "vue";
 import MatchPlayerDetailsPanel from "~/components/match/MatchPlayerDetailsPanel.vue";
 import HighlightCard from "~/components/clips/HighlightCard.vue";
-import HorizontalScrollRow from "~/components/ui/HorizontalScrollRow.vue";
-import ScrollArrows from "~/components/ui/ScrollArrows.vue";
+import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
+import ScrollArrows from "~/components/common/ScrollArrows.vue";
 
 const highlightsScrollRef = ref<InstanceType<
   typeof HorizontalScrollRow
@@ -999,25 +999,31 @@ import {
         </div>
       </div>
 
-      <!-- Quick overview button — only when no player-focus analysis
-           area is attached. Otherwise the analysis area carries both
-           actions (Quick Overview + More Stats) together. -->
+      <!-- Quick overview + Open match buttons — only when no player-focus
+           analysis area is attached. Otherwise the analysis area carries
+           both actions together. The Open match button makes it explicit
+           that a full details page exists (the row click is not obvious). -->
       <div
         v-if="!hasPlayerAnalysis && !hideOverview"
-        :class="compact ? 'mt-auto' : 'mt-auto flex justify-end'"
+        class="mt-auto flex gap-2"
       >
         <button
           type="button"
-          :class="[
-            'inline-flex items-center justify-center gap-1.5 rounded-md border border-border bg-muted/40 px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-background hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]',
-            compact ? 'w-full' : '',
-          ]"
+          class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-border bg-muted/40 px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-background hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
           :aria-busy="matchStatsLoading"
           @click.stop="openDrawer"
         >
           <ListChecks class="h-3.5 w-3.5" />
           <span>{{ $t("ui_extras.quick_overview") }}</span>
         </button>
+        <NuxtLink
+          :to="`/matches/${match.id}`"
+          class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.08)] px-3 py-1.5 text-xs font-medium text-[hsl(var(--tac-amber))] transition-colors hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.15)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
+          @click.stop
+        >
+          <ExternalLink class="h-3.5 w-3.5" />
+          <span>{{ $t("match.open_match") }}</span>
+        </NuxtLink>
       </div>
     </div>
 
@@ -1094,18 +1100,28 @@ import {
           No highlights from this map.
         </p>
       </Transition>
-      <!-- Quick Overview button — full width like the mini display so
-           it anchors the bottom of the analysis zone consistently
-           across compact and non-compact layouts. -->
-      <button
-        type="button"
-        class="inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-border bg-muted/40 px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-background hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
-        :aria-busy="matchStatsLoading"
-        @click.stop="openDrawer"
-      >
-        <ListChecks class="h-3.5 w-3.5" />
-        <span>{{ $t("ui_extras.quick_overview") }}</span>
-      </button>
+      <!-- Quick Overview + Open match buttons — anchor the bottom of the
+           analysis zone. Open match is highlighted so the affordance to
+           reach the full details page is obvious (row click is not). -->
+      <div class="flex gap-2">
+        <button
+          type="button"
+          class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-border bg-muted/40 px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-background hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
+          :aria-busy="matchStatsLoading"
+          @click.stop="openDrawer"
+        >
+          <ListChecks class="h-3.5 w-3.5" />
+          <span>{{ $t("ui_extras.quick_overview") }}</span>
+        </button>
+        <NuxtLink
+          :to="`/matches/${match.id}`"
+          class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.08)] px-3 py-1.5 text-xs font-medium text-[hsl(var(--tac-amber))] transition-colors hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.15)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
+          @click.stop
+        >
+          <ExternalLink class="h-3.5 w-3.5" />
+          <span>{{ $t("match.open_match") }}</span>
+        </NuxtLink>
+      </div>
     </div>
 
     <!-- Match details drawer — full picks/deciders map breakdown + player

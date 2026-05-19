@@ -15,10 +15,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <TableHead
-    v-if="props.disabled"
-    :class="$attrs.class"
-  >
+  <TableHead v-if="props.disabled" :class="$attrs.class">
     <slot />
   </TableHead>
   <TableHead

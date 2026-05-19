@@ -5,8 +5,8 @@ import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import { matchClipFields } from "~/graphql/matchClip";
 import HighlightCard from "~/components/clips/HighlightCard.vue";
-import HorizontalScrollRow from "~/components/ui/HorizontalScrollRow.vue";
-import ScrollArrows from "~/components/ui/ScrollArrows.vue";
+import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
+import ScrollArrows from "~/components/common/ScrollArrows.vue";
 import type { Clip } from "~/types/clip";
 import {
   tacticalSectionLabelClasses,

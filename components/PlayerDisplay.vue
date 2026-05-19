@@ -66,6 +66,12 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
       <div class="absolute -top-1 -right-1 z-10" v-if="$slots['avatar-badge']">
         <slot name="avatar-badge"></slot>
       </div>
+      <div
+        class="absolute -bottom-1 -right-1 z-10"
+        v-if="$slots['avatar-corner']"
+      >
+        <slot name="avatar-corner"></slot>
+      </div>
     </div>
     <div
       :class="{

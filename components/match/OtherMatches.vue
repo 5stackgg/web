@@ -8,8 +8,8 @@ import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
-import HorizontalScrollRow from "~/components/ui/HorizontalScrollRow.vue";
-import ScrollArrows from "~/components/ui/ScrollArrows.vue";
+import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
+import ScrollArrows from "~/components/common/ScrollArrows.vue";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,

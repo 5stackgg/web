@@ -11,6 +11,7 @@ import MatchActions from "~/components/match/MatchActions.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import { e_match_status_enum } from "~/generated/zeus";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
+import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -363,6 +364,17 @@ const vsBaseClasses =
                 </div>
               </div>
             </div>
+            <div
+              v-if="showVetoPicks"
+              class="rounded-xl border border-border/40 bg-card/40 px-1.5 py-1.5"
+            >
+              <div
+                class="font-mono text-[0.6rem] font-bold tracking-[0.28em] uppercase text-muted-foreground/70 text-center mb-1"
+              >
+                {{ $t("common.map_veto") }}
+              </div>
+              <MatchPicksDisplay :match="match" />
+            </div>
           </div>
         </PageTransition>
       </div>
@@ -415,12 +427,7 @@ const vsBaseClasses =
 </template>
 
 <script lang="ts">
-import {
-  $,
-  order_by,
-  e_match_status_enum,
-  e_veto_pick_types_enum,
-} from "~/generated/zeus";
+import { $, order_by, e_match_status_enum } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { mapFields } from "~/graphql/mapGraphql";
 import { matchLineups } from "~/graphql/matchLineupsGraphql";
@@ -764,6 +771,13 @@ export default {
         return null;
       }
     },
+    showVetoPicks() {
+      if (!this.match) return false;
+      const hasVeto =
+        this.match.options?.map_veto || this.match.options?.region_veto;
+      if (!hasVeto) return false;
+      return this.match.status !== e_match_status_enum.Veto;
+    },
     mapSlots() {
       if (!this.match || !this.match.options?.best_of) {
         return this.match?.match_maps ?? [];
@@ -779,23 +793,13 @@ export default {
         e_match_status_enum.Canceled,
       ].includes(this.match.status);
 
-      const visibleMaps = matchEnded
-        ? maps.filter((m) => {
-            if (m.status !== e_match_status_enum.Scheduled) return true;
-            const isDecider = m.vetos?.some(
-              (v) => v.type === e_veto_pick_types_enum.Decider,
-            );
-            return !isDecider;
-          })
-        : maps;
-
       if (matchEnded) {
-        return visibleMaps;
+        return maps;
       }
 
       const slots = [];
       for (let i = 0; i < bestOf; i++) {
-        slots.push(visibleMaps[i] || null);
+        slots.push(maps[i] || null);
       }
 
       return slots;

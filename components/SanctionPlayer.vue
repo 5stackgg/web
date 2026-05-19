@@ -8,13 +8,7 @@ import {
   DrawerDescription,
 } from "~/components/ui/drawer";
 import { Button } from "~/components/ui/button";
-import {
-  ChevronDownIcon,
-  MicOff,
-  MessageSquareOff,
-  BellOff,
-  Ban,
-} from "lucide-vue-next";
+import { MicOff, MessageSquareOff, BellOff, Ban } from "lucide-vue-next";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { z } from "zod";
@@ -24,10 +18,14 @@ import { useForm } from "vee-validate";
 <template>
   <Popover>
     <PopoverTrigger as-child>
-      <Button variant="outline" size="sm" class="h-7 px-2.5 text-xs">
-        {{ $t("player.sanction.button") }}
-        <ChevronDownIcon class="ml-1.5 h-3.5 w-3.5 text-muted-foreground" />
-      </Button>
+      <button
+        type="button"
+        :title="$t('player.sanction.button')"
+        :aria-label="$t('player.sanction.button')"
+        class="group/sanction inline-flex h-9 w-9 shrink-0 items-center justify-center rounded border border-red-500/45 bg-red-500/10 text-red-400 transition-[border-color,background-color,color,box-shadow] duration-150 hover:border-red-500/80 hover:bg-red-500/20 hover:text-red-200 hover:shadow-[0_0_0_1px_rgb(239_68_68_/_0.35),0_6px_18px_-6px_rgb(239_68_68_/_0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+      >
+        <Ban class="h-4 w-4" />
+      </button>
     </PopoverTrigger>
     <PopoverContent class="p-0" align="end">
       <Command v-model="sanctionType">

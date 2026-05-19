@@ -419,18 +419,17 @@ function clipTeamName(c: Clip): string | null {
                   ></span
                 >
                 <span
-                  v-if="(featuredClip.kills_count ?? 0) > 0"
                   class="inline-flex shrink-0 items-center gap-1 rounded border border-[hsl(var(--destructive))] bg-[hsl(var(--destructive)/0.85)] px-1.5 py-0.5 font-mono text-[0.65rem] font-bold text-white tabular-nums shadow-[0_0_10px_hsl(var(--destructive)/0.4)]"
                   :title="
                     t(
                       'clips.kills_in_clip',
-                      { count: featuredClip.kills_count },
-                      featuredClip.kills_count,
+                      { count: featuredClip.kills_count ?? 1 },
+                      featuredClip.kills_count ?? 1,
                     )
                   "
                 >
                   <Crosshair class="h-3 w-3" />
-                  {{ featuredClip.kills_count }}K
+                  {{ featuredClip.kills_count ?? 1 }}K
                 </span>
               </div>
               <div class="mt-0.5 flex min-w-0 items-center gap-1.5">
@@ -595,18 +594,17 @@ function clipTeamName(c: Clip): string | null {
                 </div>
               </div>
               <span
-                v-if="(c.kills_count ?? 0) > 0"
                 class="inline-flex shrink-0 items-center gap-1 self-stretch rounded-md border border-[hsl(var(--destructive))] bg-[hsl(var(--destructive)/0.85)] px-2 font-mono text-[0.65rem] font-bold text-white tabular-nums"
                 :title="
                   t(
                     'clips.kills_in_clip',
-                    { count: c.kills_count },
-                    c.kills_count,
+                    { count: c.kills_count ?? 1 },
+                    c.kills_count ?? 1,
                   )
                 "
               >
                 <Crosshair class="h-3 w-3" />
-                {{ c.kills_count }}K
+                {{ c.kills_count ?? 1 }}K
               </span>
             </button>
             <button

@@ -7,6 +7,7 @@ import {
 } from "~/generated/zeus";
 import { useSidebar } from "../ui/sidebar";
 import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
+import { Crown } from "lucide-vue-next";
 
 const { isMobile } = useSidebar();
 </script>
@@ -24,14 +25,13 @@ const { isMobile } = useSidebar();
     :show-elo="true"
     :compact="isMobile"
   >
-    <template v-slot:avatar-sub v-if="showDetails">
-      <Badge
-        variant="outline"
-        class="hidden md:inline-flex text-[10px] px-1 py-0"
-        v-if="member.captain"
+    <template v-slot:avatar-corner v-if="member.captain">
+      <span
+        :title="$t('match.player.captain')"
+        class="inline-flex items-center justify-center h-3.5 w-3.5 rounded-sm bg-[hsl(var(--tac-amber))] text-black ring-1 ring-background shadow"
       >
-        {{ $t("match.player.captain") }}
-      </Badge>
+        <Crown class="h-2.5 w-2.5" />
+      </span>
     </template>
 
     <template v-if="$slots['name-postfix']" #name-postfix>

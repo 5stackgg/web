@@ -1,5 +1,9 @@
 <script lang="ts" setup>
-import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Columns3 } from "lucide-vue-next";
 import { useTableColumns, type ColumnDef } from "~/composables/useTableColumns";

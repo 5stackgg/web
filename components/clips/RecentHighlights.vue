@@ -8,8 +8,8 @@ import { order_by, $ } from "~/generated/zeus";
 import { Skeleton } from "~/components/ui/skeleton";
 import HighlightCard from "~/components/clips/HighlightCard.vue";
 import MatchClipsGroupCard from "~/components/clips/MatchClipsGroupCard.vue";
-import HorizontalScrollRow from "~/components/ui/HorizontalScrollRow.vue";
-import ScrollArrows from "~/components/ui/ScrollArrows.vue";
+import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
+import ScrollArrows from "~/components/common/ScrollArrows.vue";
 
 const scrollRef = ref<InstanceType<typeof HorizontalScrollRow> | null>(null);
 import type { Clip } from "~/types/clip";

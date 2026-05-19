@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import LineupMember from "~/components/match/LineupMember.vue";
-import SortableTableHead from "~/components/ui/SortableTableHead.vue";
+import SortableTableHead from "~/components/common/SortableTableHead.vue";
 import { useTableSort } from "~/composables/useTableSort";
 import { useTradeColumns } from "~/composables/useMatchTableColumns";
 import { useCurrentUserRow } from "~/composables/useCurrentUserRow";
@@ -66,123 +66,130 @@ const tradeColumns = computed(() =>
 </script>
 
 <template>
-  <Table class="table-fixed">
-    <TableHeader>
-      <TableRow>
-        <TableHead
-          v-if="!hideMember"
-          class="w-[220px] text-left whitespace-nowrap sticky left-0 z-20 bg-card border-r border-border shadow-[3px_0_6px_-3px_hsl(0_0%_0%/0.7)]"
-        >
-          {{ lineup.name }}
-        </TableHead>
-        <SortableTableHead
-          v-for="col of tradeColumns"
-          :key="col.label"
-          :sort-key="col.label"
-          :active-key="sortKey"
-          :direction="sortDir"
-          class="whitespace-nowrap"
-          @sort="toggle"
-        >
-          <Tooltip>
-            <TooltipTrigger
-              class="inline-flex items-center gap-1 underline decoration-dotted decoration-muted-foreground/50 underline-offset-[3px] hover:decoration-foreground"
-            >
-              {{ $t(`match.lineup.stats.${col.label}`) }}
-            </TooltipTrigger>
-            <TooltipContent class="max-w-sm space-y-3">
-              <div>
-                <div
-                  class="font-mono text-[0.7rem] font-bold tracking-[0.18em] uppercase text-[hsl(var(--tac-amber))]"
-                >
-                  {{
-                    $t(`match.lineup.stats.tooltips.${col.tooltipKey}.title`)
-                  }}
-                </div>
-                <div class="text-xs mt-1 leading-snug text-foreground/90">
-                  {{
-                    $t(
-                      `match.lineup.stats.tooltips.${col.tooltipKey}.description`,
-                    )
-                  }}
-                </div>
-              </div>
-              <div class="pt-2 border-t border-border/60">
-                <div
-                  class="font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase text-muted-foreground"
-                >
-                  {{ $t("match.lineup.stats.calc_header") }}
-                </div>
-                <div class="text-xs mt-1 leading-snug text-foreground/80">
-                  {{
-                    $t(
-                      `match.lineup.stats.tooltips.${col.tooltipKey}.calculation`,
-                    )
-                  }}
-                </div>
-              </div>
-            </TooltipContent>
-          </Tooltip>
-        </SortableTableHead>
-      </TableRow>
-    </TableHeader>
-    <TableBody>
-      <TableRow
-        v-for="member of sortRows(lineup.lineup_players, sortGetters)"
-        :class="['group', rowClass(member)]"
+  <Table
+    class="min-w-full w-max [&_td]:whitespace-nowrap [&_th]:px-2 [&_td]:px-2"
+  >
+    <template v-for="(lp, lpIdx) of lineupsToRender" :key="lp.id">
+      <TableHeader
+        :class="[
+          '[&_th]:h-12 bg-muted/20',
+          lpIdx > 0 ? '[&_th]:pt-7 border-t-[3px] border-border/80' : '',
+        ]"
       >
-        <TableCell
-          v-if="!hideMember"
-          :class="[
-            'sticky left-0 z-10 border-r border-border',
-            stickyCellClass(member) ||
-              'bg-card group-hover:bg-muted shadow-[3px_0_6px_-3px_hsl(0_0%_0%/0.7)]',
-          ]"
+        <TableRow>
+          <TableHead
+            v-if="!hideMember"
+            class="w-[110px] md:w-[220px] text-left whitespace-nowrap sticky left-0 z-20 bg-card border-r border-border shadow-[3px_0_6px_-3px_hsl(0_0%_0%/0.7)] [transform:translateZ(0)]"
+          >
+            {{ lp.name }}
+          </TableHead>
+          <SortableTableHead
+            v-for="col of tradeColumns"
+            :key="col.label"
+            :sort-key="col.label"
+            :active-key="sortKey"
+            :direction="sortDir"
+            class="whitespace-nowrap"
+            @sort="toggle"
+          >
+            <Tooltip>
+              <TooltipTrigger
+                class="inline-flex items-center gap-1 underline decoration-dotted decoration-muted-foreground/50 underline-offset-[3px] hover:decoration-foreground"
+              >
+                {{ $t(`match.lineup.stats.${col.label}`) }}
+              </TooltipTrigger>
+              <TooltipContent class="max-w-sm space-y-3">
+                <div>
+                  <div
+                    class="font-mono text-[0.7rem] font-bold tracking-[0.18em] uppercase text-[hsl(var(--tac-amber))]"
+                  >
+                    {{
+                      $t(`match.lineup.stats.tooltips.${col.tooltipKey}.title`)
+                    }}
+                  </div>
+                  <div class="text-xs mt-1 leading-snug text-foreground/90">
+                    {{
+                      $t(
+                        `match.lineup.stats.tooltips.${col.tooltipKey}.description`,
+                      )
+                    }}
+                  </div>
+                </div>
+                <div class="pt-2 border-t border-border/60">
+                  <div
+                    class="font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase text-muted-foreground"
+                  >
+                    {{ $t("match.lineup.stats.calc_header") }}
+                  </div>
+                  <div class="text-xs mt-1 leading-snug text-foreground/80">
+                    {{
+                      $t(
+                        `match.lineup.stats.tooltips.${col.tooltipKey}.calculation`,
+                      )
+                    }}
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </SortableTableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow
+          v-for="member of sortRows(lp.lineup_players, sortGetters)"
+          :class="['group', rowClass(member)]"
         >
-          <lineup-member
-            :member="member"
-            :lineup_id="lineup.id"
-          ></lineup-member>
-        </TableCell>
-        <TableCell>
-          {{ statsFor(member)?.trade_kill_opportunities ?? "—" }}
-        </TableCell>
-        <TableCell v-if="tradeVis.trade_kill_attempts !== false">
-          {{ statsFor(member)?.trade_kill_attempts ?? "—" }}
-        </TableCell>
-        <TableCell v-if="tradeVis.trade_kill_pct !== false">
-          <template v-if="tradeKillPct(member) !== null">
-            {{ tradeKillPct(member) }}%
-          </template>
-          <template v-else>—</template>
-        </TableCell>
-        <TableCell v-if="tradeVis.traded_death_opportunities !== false">
-          {{ statsFor(member)?.traded_death_opportunities ?? "—" }}
-        </TableCell>
-        <TableCell v-if="tradeVis.traded_death_attempts !== false">
-          {{ statsFor(member)?.traded_death_attempts ?? "—" }}
-        </TableCell>
-        <TableCell v-if="tradeVis.traded_death_pct !== false">
-          <template v-if="tradedDeathPct(member) !== null">
-            {{ tradedDeathPct(member) }}%
-          </template>
-          <template v-else>—</template>
-        </TableCell>
-        <TableCell v-if="tradeVis.net_trade !== false">
-          <template v-if="netTrade(member) !== null">
-            <span
-              :class="{
-                'text-success': (netTrade(member) ?? 0) > 0,
-                'text-destructive': (netTrade(member) ?? 0) < 0,
-              }"
-            >
-              {{ (netTrade(member) ?? 0) > 0 ? "+" : "" }}{{ netTrade(member) }}
-            </span>
-          </template>
-          <template v-else>—</template>
-        </TableCell>
-      </TableRow>
-    </TableBody>
+          <TableCell
+            v-if="!hideMember"
+            :class="[
+              'w-[110px] md:w-[220px] sticky left-0 z-10 border-r border-border [transform:translateZ(0)]',
+              stickyCellClass(member) ||
+                'bg-card group-hover:bg-muted shadow-[3px_0_6px_-3px_hsl(0_0%_0%/0.7)]',
+            ]"
+          >
+            <lineup-member :member="member" :lineup_id="lp.id"></lineup-member>
+          </TableCell>
+          <TableCell>
+            {{ statsFor(member)?.trade_kill_opportunities ?? "—" }}
+          </TableCell>
+          <TableCell v-if="tradeVis.trade_kill_attempts !== false">
+            {{ statsFor(member)?.trade_kill_attempts ?? "—" }}
+          </TableCell>
+          <TableCell v-if="tradeVis.trade_kill_pct !== false">
+            <template v-if="tradeKillPct(member) !== null">
+              {{ tradeKillPct(member) }}%
+            </template>
+            <template v-else>—</template>
+          </TableCell>
+          <TableCell v-if="tradeVis.traded_death_opportunities !== false">
+            {{ statsFor(member)?.traded_death_opportunities ?? "—" }}
+          </TableCell>
+          <TableCell v-if="tradeVis.traded_death_attempts !== false">
+            {{ statsFor(member)?.traded_death_attempts ?? "—" }}
+          </TableCell>
+          <TableCell v-if="tradeVis.traded_death_pct !== false">
+            <template v-if="tradedDeathPct(member) !== null">
+              {{ tradedDeathPct(member) }}%
+            </template>
+            <template v-else>—</template>
+          </TableCell>
+          <TableCell v-if="tradeVis.net_trade !== false">
+            <template v-if="netTrade(member) !== null">
+              <span
+                :class="{
+                  'text-success': (netTrade(member) ?? 0) > 0,
+                  'text-destructive': (netTrade(member) ?? 0) < 0,
+                }"
+              >
+                {{ (netTrade(member) ?? 0) > 0 ? "+" : ""
+                }}{{ netTrade(member) }}
+              </span>
+            </template>
+            <template v-else>—</template>
+          </TableCell>
+        </TableRow>
+      </TableBody>
+    </template>
   </Table>
 </template>
 
@@ -199,6 +206,11 @@ function pct(num: number | null, den: number | null): number | null {
 }
 
 export default {
+  computed: {
+    lineupsToRender(): any[] {
+      return this.combineWith ? [this.lineup, this.combineWith] : [this.lineup];
+    },
+  },
   methods: {
     statsFor(member: any) {
       const arr =
@@ -237,6 +249,10 @@ export default {
     lineup: {
       required: true,
       type: Object,
+    },
+    combineWith: {
+      type: Object,
+      default: null,
     },
     hideMember: {
       type: Boolean,

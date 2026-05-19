@@ -9,7 +9,11 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
     :team-id="lineup.team_id"
     :self="true"
     @selected="(player) => addMember(player.steam_id)"
-  ></PlayerSearch>
+  >
+    <template v-if="$slots.default" #default>
+      <slot />
+    </template>
+  </PlayerSearch>
 </template>
 
 <script lang="ts">

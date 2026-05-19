@@ -206,9 +206,8 @@ import {
                 ></span>
               </div>
               <span class="truncate">{{ lp.name }}</span>
-              <div class="w-6 h-6 flex-shrink-0">
+              <div v-if="canEditTeamName(lp)" class="w-6 h-6 flex-shrink-0">
                 <Dialog
-                  v-if="lp.can_update_lineup"
                   :open="editingLineupId === lp.id"
                   @update:open="(v) => (editingLineupId = v ? lp.id : null)"
                 >
@@ -674,6 +673,16 @@ export default {
     },
     canAddToLineupFor(lp: any): boolean {
       return lp.can_update_lineup && lp.lineup_players.length < this.maxPlayers;
+    },
+    canEditTeamName(lp: any): boolean {
+      if (!lp?.can_update_lineup) return false;
+      return [
+        e_match_status_enum.Scheduled,
+        e_match_status_enum.PickingPlayers,
+        e_match_status_enum.WaitingForCheckIn,
+        e_match_status_enum.WaitingForServer,
+        e_match_status_enum.Veto,
+      ].includes(this.match.status);
     },
     prepareEditName(lp: any) {
       this.editName = lp?.name ?? "";

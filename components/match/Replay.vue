@@ -1,11 +1,54 @@
 <script lang="ts" setup>
 import ReplayViewer from "~/components/match/ReplayViewer.vue";
+import cleanMapName from "~/utilities/cleanMapName";
 </script>
 
 <template>
   <div>
-    <!-- If the match has exactly one map we fall back to it so single-
-         map matches don't show "select a map" with nothing to click. -->
+    <!-- Inline map picker — when the match has more than one playable
+         map, surface them all here so the user doesn't have to scroll up
+         to use the match-wide filter just to pick a 2D replay. Picking a
+         map is local to this tab; it does NOT mutate the parent's
+         match-wide map filter. -->
+    <div
+      v-if="selectableMaps.length > 1"
+      class="mb-4 flex flex-wrap gap-2"
+      role="tablist"
+    >
+      <button
+        v-for="m in selectableMaps"
+        :key="m.id"
+        type="button"
+        role="tab"
+        :aria-selected="effectiveMap?.id === m.id"
+        class="group inline-flex items-center gap-2 px-3 py-1.5 border font-mono text-[0.7rem] tracking-[0.18em] uppercase transition-colors"
+        :class="
+          effectiveMap?.id === m.id
+            ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
+            : 'border-border/60 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
+        "
+        @click="selectMap(m.id)"
+      >
+        <span
+          class="inline-block h-1.5 w-1.5 rounded-full"
+          :class="
+            effectiveMap?.id === m.id
+              ? 'bg-[hsl(var(--tac-amber))]'
+              : 'bg-muted-foreground/50'
+          "
+        ></span>
+        {{ cleanMapName(m.map.name) }}
+        <span
+          v-if="typeof m.lineup_1_score === 'number'"
+          class="text-muted-foreground/70 tabular-nums"
+        >
+          {{ m.lineup_1_score }}:{{ m.lineup_2_score }}
+        </span>
+      </button>
+    </div>
+
+    <!-- No selection yet on a multi-map match — the picker above is the
+         entire affordance. Quiet helper line nudges first-time users. -->
     <div v-if="!effectiveMap" class="py-6 text-center">
       <p
         class="font-mono text-[0.7rem] tracking-[0.2em] uppercase text-muted-foreground"
@@ -72,6 +115,7 @@ import ReplayViewer from "~/components/match/ReplayViewer.vue";
 <script lang="ts">
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+import { e_match_status_enum } from "~/generated/zeus";
 import {
   fetchReplayBlob,
   normalizeBlobGrenades,
@@ -114,6 +158,10 @@ export default {
       tickRate: 64 as number,
       loadRequested: false as boolean,
       loading: false as boolean,
+      // Tab-local map override — independent of the parent's match-wide
+      // map filter so picking a 2D Replay map doesn't reach across and
+      // scope the other tabs.
+      localSelectedMapId: null as string | null,
     };
   },
   watch: {
@@ -125,6 +173,9 @@ export default {
     },
   },
   methods: {
+    selectMap(id: string) {
+      this.localSelectedMapId = id;
+    },
     resetState() {
       this.loadRequested = false;
       this.loading = false;
@@ -180,11 +231,23 @@ export default {
     },
   },
   computed: {
-    // Single-map matches: no map selector above, so fall back to the
-    // sole match_map. Otherwise honor whatever the user picked above.
+    // Maps the user can actually replay — scheduled maps have no demo
+    // yet, so don't surface them as selectable.
+    selectableMaps(): any[] {
+      return (this.match?.match_maps ?? []).filter(
+        (m: any) => m.status !== e_match_status_enum.Scheduled,
+      );
+    },
+    // Priority: tab-local pick > match-wide active filter > sole map.
     effectiveMap(): any {
+      if (this.localSelectedMapId) {
+        const local = this.selectableMaps.find(
+          (m: any) => m.id === this.localSelectedMapId,
+        );
+        if (local) return local;
+      }
       if (this.activeMap) return this.activeMap;
-      const maps = this.match?.match_maps ?? [];
+      const maps = this.selectableMaps;
       if (maps.length === 1) return maps[0];
       return null;
     },

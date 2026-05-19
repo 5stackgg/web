@@ -58,6 +58,11 @@ const muted = ref(props.initialMuted);
 const volume = ref(1);
 const progress = ref(0);
 const isFullscreen = ref(false);
+// Once playback has actually started we treat subsequent clipKey changes
+// as auto-advances and suppress the big center play/pause button so the
+// transition just shows the bottom-left clip chip. Resets only if the
+// player gets paused/ended.
+const hasPlayedOnce = ref(false);
 
 // Auto-hide overlay state — see MatchHighlightsReel history for the
 // rationale: viewers want the clip visible, not a permanent pause
@@ -114,7 +119,12 @@ watch(showIntroOverlay, (showing) => {
     clearControlsTimer();
     controlsVisible.value = true;
   } else if (playing.value) {
-    bumpControls();
+    // Intro just ended while still playing — DON'T bumpControls here
+    // (that would briefly re-show the center pause button for a beat
+    // before fading out). Hide the chrome straight away; mouse activity
+    // will bring it back if the user actually wants it.
+    clearControlsTimer();
+    controlsVisible.value = false;
   }
 });
 
@@ -122,7 +132,11 @@ watch(
   () => props.clipKey,
   () => {
     progress.value = 0;
-    playing.value = false;
+    // Don't reset `playing` here — the new <video> element is paused
+    // naturally on mount and its @play event will flip the ref to true
+    // as soon as playback actually starts. Resetting synchronously caused
+    // a race where the watcher fired after the new video's @play and
+    // left the play icon stuck on screen during auto-advance.
     if (introOverlayTimer) clearTimeout(introOverlayTimer);
     showIntroOverlay.value = true;
     introOverlayTimer = setTimeout(() => {
@@ -190,6 +204,14 @@ async function play() {
   const v = videoRef.value;
   if (!v) return;
   await tryPlay(v);
+  // Belt-and-suspenders: if @play didn't reach us (browser sometimes
+  // swallows it across :key remounts on auto-advance) but the video is
+  // actually playing, force the state so the play icon doesn't stick.
+  if (!v.paused) {
+    playing.value = true;
+    hasPlayedOnce.value = true;
+    startProgressLoop();
+  }
 }
 function pause() {
   videoRef.value?.pause();
@@ -353,6 +375,7 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
         "
         @play="
           playing = true;
+          hasPlayedOnce = true;
           startProgressLoop();
           emit('play');
         "
@@ -394,8 +417,12 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
     <!-- Center play/pause toggle — fades with the rest of the chrome
          while playing, always visible while paused. `group-hover/player`
          on the canvas wraps the whole surface so hovering ANYWHERE
-         scales the button — signals "click anywhere to toggle". -->
+         scales the button — signals "click anywhere to toggle".
+         Hidden during the intro overlay AFTER first playback so an
+         auto-advance just slides the bottom-left chip in without
+         briefly flashing a giant play/pause button on top. -->
     <button
+      v-if="!(showIntroOverlay && hasPlayedOnce)"
       type="button"
       class="absolute left-1/2 top-1/2 inline-flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/45 bg-white/16 text-white shadow-[0_0_30px_hsl(var(--tac-amber)/0.35)] backdrop-blur-sm transition duration-200 hover:scale-110 group-hover/player:scale-110 group-hover/player:border-[hsl(var(--tac-amber)/0.7)] group-hover/player:bg-white/25"
       :class="controlsVisible ? 'opacity-100' : 'pointer-events-none opacity-0'"

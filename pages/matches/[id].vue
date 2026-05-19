@@ -147,10 +147,14 @@ const vsBaseClasses =
               >
                 {{ $t("match.lineup.lineup_1") }}
               </span>
-              <div
+              <component
+                :is="lineup1TeamId ? 'NuxtLink' : 'div'"
+                :to="lineup1TeamId ? `/teams/${lineup1TeamId}` : undefined"
                 :class="[
                   teamClasses,
                   match.winning_lineup_id === match.lineup_1_id && 'is-winner',
+                  lineup1TeamId &&
+                    'transition-opacity hover:opacity-80 cursor-pointer',
                 ]"
               >
                 <span :class="teamGhostClasses" aria-hidden="true">
@@ -165,7 +169,7 @@ const vsBaseClasses =
                 >
                   {{ lineup1Name }}
                 </span>
-              </div>
+              </component>
             </div>
           </div>
 
@@ -207,10 +211,14 @@ const vsBaseClasses =
               >
                 {{ $t("match.lineup.lineup_2") }}
               </span>
-              <div
+              <component
+                :is="lineup2TeamId ? 'NuxtLink' : 'div'"
+                :to="lineup2TeamId ? `/teams/${lineup2TeamId}` : undefined"
                 :class="[
                   teamClasses,
                   match.winning_lineup_id === match.lineup_2_id && 'is-winner',
+                  lineup2TeamId &&
+                    'transition-opacity hover:opacity-80 cursor-pointer',
                 ]"
               >
                 <span :class="teamGhostClasses" aria-hidden="true">
@@ -225,7 +233,7 @@ const vsBaseClasses =
                 >
                   {{ lineup2Name }}
                 </span>
-              </div>
+              </component>
             </div>
             <div
               class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
@@ -697,6 +705,12 @@ export default {
       const avatarUrl = this.match?.lineup_2?.team?.avatar_url;
       if (!avatarUrl) return null;
       return `https://${this.apiDomain}/${avatarUrl}`;
+    },
+    lineup1TeamId() {
+      return this.match?.lineup_1?.team_id ?? null;
+    },
+    lineup2TeamId() {
+      return this.match?.lineup_2?.team_id ?? null;
     },
     mapScores() {
       const maps = this.match?.match_maps || [];

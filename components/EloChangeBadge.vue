@@ -112,7 +112,6 @@ function formatSignedPercent(n: number): string {
   return `${sign}${n}%`;
 }
 
-// shared building blocks
 const badgeBase =
   "inline-flex items-center gap-[3px] font-['Oxanium',sans-serif] font-bold tracking-[0.04em] tabular-nums rounded-[3px] border leading-none whitespace-nowrap cursor-help transition-all duration-150 hover:-translate-y-px";
 const badgeSizeXs = "text-[10px] px-1.5 h-4";
@@ -127,8 +126,7 @@ const labelClass =
 
 const monoNum = "font-mono tabular-nums tracking-[0.01em]";
 
-const chipClipSm =
-  "[clip-path:polygon(6px_0,100%_0,100%_calc(100%-6px),calc(100%-6px)_100%,0_100%,0_6px)]";
+const chipClipSm = "";
 </script>
 
 <template>
@@ -187,7 +185,6 @@ const chipClipSm =
             '[background-image:radial-gradient(circle_at_top_right,hsl(var(--tac-amber)/0.14)_0%,transparent_55%),linear-gradient(180deg,hsl(0_0%_100%/0.035)_0%,transparent_55%)]',
           ]"
         >
-          <!-- Corner ticks -->
           <span
             class="absolute top-1 left-1 w-[10px] h-[10px] border-t-[1.5px] border-l-[1.5px] border-[hsl(var(--tac-amber))] pointer-events-none"
             aria-hidden="true"
@@ -205,13 +202,11 @@ const chipClipSm =
             aria-hidden="true"
           />
 
-          <!-- Scanline overlay -->
           <span
             class="absolute inset-0 pointer-events-none mix-blend-overlay opacity-70 [background-image:repeating-linear-gradient(0deg,transparent_0,transparent_3px,hsl(0_0%_100%/0.015)_3px,hsl(0_0%_100%/0.015)_4px)]"
             aria-hidden="true"
           />
 
-          <!-- Header band -->
           <header
             class="relative flex items-center justify-between mb-2.5 pb-2 border-b border-border"
           >
@@ -241,7 +236,6 @@ const chipClipSm =
             </span>
           </header>
 
-          <!-- Hero: before → after, giant delta -->
           <section
             class="relative grid grid-cols-[1fr_auto] gap-2.5 items-stretch mb-2.5"
           >
@@ -298,7 +292,6 @@ const chipClipSm =
             </div>
           </section>
 
-          <!-- Series multiplier callout -->
           <section
             v-if="hasSeriesBonus"
             :class="[
@@ -337,7 +330,6 @@ const chipClipSm =
             </div>
           </section>
 
-          <!-- Team ELO gap bar -->
           <section class="relative mb-2.5">
             <div class="flex justify-between items-baseline mb-1">
               <span :class="labelClass">TEAM ELO</span>
@@ -370,7 +362,6 @@ const chipClipSm =
             </div>
           </section>
 
-          <!-- Performance grid -->
           <section
             class="relative grid grid-cols-2 gap-px mb-2.5 bg-border/60 border border-border/60"
           >
@@ -456,7 +447,6 @@ const chipClipSm =
             </div>
           </section>
 
-          <!-- Formula trace -->
           <footer
             class="relative flex flex-wrap items-center justify-center gap-x-[5px] gap-y-1 pt-[7px] pb-[3px] px-1.5 border-t border-dashed border-border font-mono text-[10px] text-muted-foreground tracking-[0.02em]"
           >

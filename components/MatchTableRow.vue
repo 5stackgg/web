@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import {
-  ChevronsDownIcon,
+  ArrowUpRight,
+  ExternalLink,
+  Film,
   GitBranch,
+  ListChecks,
   Trophy,
   UserPlusIcon,
   UsersIcon,
+  X,
 } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { e_lobby_access_enum, e_match_status_enum } from "~/generated/zeus";
@@ -17,6 +21,23 @@ import TwitchIcon from "~/components/icons/TwitchIcon.vue";
 import YouTubeIcon from "~/components/icons/YouTubeIcon.vue";
 import KickIcon from "~/components/icons/KickIcon.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
+import { ref } from "vue";
+import MatchPlayerDetailsPanel from "~/components/match/MatchPlayerDetailsPanel.vue";
+import HighlightCard from "~/components/clips/HighlightCard.vue";
+import HorizontalScrollRow from "~/components/ui/HorizontalScrollRow.vue";
+import ScrollArrows from "~/components/ui/ScrollArrows.vue";
+
+const highlightsScrollRef = ref<InstanceType<
+  typeof HorizontalScrollRow
+> | null>(null);
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerClose,
+} from "~/components/ui/drawer";
 </script>
 
 <template>
@@ -24,34 +45,41 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
     v-if="
       alwaysShow || !compact || match.status === e_match_status_enum.Finished
     "
-    class="bg-muted/30 border border-border rounded-lg hover:shadow-lg hover:shadow-primary/10 hover:bg-muted/20 hover:border-primary/30 transition-all duration-300 cursor-pointer group overflow-hidden"
+    class="bg-muted/30 border border-border rounded-lg hover:shadow-lg hover:shadow-primary/10 hover:bg-muted/20 hover:border-primary/30 transition-all duration-300 cursor-pointer group overflow-hidden flex flex-col h-full"
     @click="navigateToMatch(match.id, $event)"
   >
     <div
       :class="[
-        'flex flex-col gap-3',
-        // Tighter padding to keep content from overflowing; in compact mode keep padding small on all breakpoints
+        'flex flex-col gap-3 flex-1',
         compact ? 'p-2' : 'p-2 sm:p-3 md:p-4',
       ]"
     >
-      <!-- Mobile Header: Tags at opposite ends -->
       <div class="flex sm:hidden items-start justify-between gap-2">
-        <!-- Left: Type + ELO -->
         <div class="flex min-w-0 flex-wrap items-center gap-2">
-          <span :class="matchTypePillClasses">
+          <span v-if="!compact" :class="matchTypePillClasses">
             {{ match.options.type }}
           </span>
 
-          <span v-if="isTournamentMatch" :class="tournamentPillClasses">
+          <span v-if="match.options?.best_of" :class="matchTypePillClasses">
+            BO{{ match.options.best_of }}
+          </span>
+
+          <span
+            v-if="isTournamentMatch && !compact"
+            :class="tournamentPillClasses"
+          >
             <Trophy class="h-3 w-3 shrink-0" />
             <span class="max-w-24 truncate">{{ tournamentLabel }}</span>
           </span>
 
-          <!-- Elo Change Display -->
+          <span v-if="clipCount > 0" :class="clipPillClasses">
+            <Film class="h-3 w-3 shrink-0" />
+            <span class="tabular-nums">{{ clipCount }}</span>
+          </span>
+
           <EloChangeBadge :elo-change="eloChange" size="xs" />
         </div>
 
-        <!-- Right: Status + Time -->
         <div
           class="flex shrink-0 items-center space-x-2 text-[10px] text-muted-foreground"
         >
@@ -59,7 +87,8 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
             v-if="
               match.streams?.length > 0 &&
               !match.is_in_lineup &&
-              !match.is_coach
+              !match.is_coach &&
+              isStreamableStatus
             "
           >
             <button
@@ -106,41 +135,36 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
         </div>
       </div>
 
-      <!-- Desktop Header -->
       <div
         class="hidden sm:flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"
       >
         <div class="flex items-center space-x-2 sm:space-x-3 flex-wrap gap-y-1">
-          <span :class="matchTypePillClasses">
+          <span v-if="!compact" :class="matchTypePillClasses">
             {{ match.options.type }}
           </span>
 
-          <span
-            v-if="isTournamentMatch"
-            :class="tournamentPillClasses"
-            :title="tournamentName"
-          >
-            <Trophy class="h-3 w-3 shrink-0" />
-            <span class="max-w-[16rem] truncate">{{ tournamentLabel }}</span>
+          <span v-if="match.options?.best_of" :class="matchTypePillClasses">
+            BO{{ match.options.best_of }}
           </span>
 
-          <span
-            v-if="!compact && isTournamentMatch && tournamentRoundLabel"
-            :class="roundPillClasses"
-          >
-            <GitBranch class="h-3 w-3 shrink-0" />
-            {{ tournamentRoundLabel }}
+          <span v-if="clipCount > 0" :class="clipPillClasses">
+            <Film class="h-3 w-3 shrink-0" />
+            <span class="tabular-nums">{{ clipCount }}</span>
+            <span
+              v-if="!compact"
+              class="hidden sm:inline normal-case tracking-normal font-normal text-muted-foreground"
+            >
+              {{ clipCount === 1 ? "clip" : "clips" }}
+            </span>
           </span>
 
-          <!-- Elo Change Display -->
           <EloChangeBadge :elo-change="eloChange" />
         </div>
         <div class="flex items-center space-x-2 sm:space-x-3 flex-wrap gap-y-1">
-          <!-- Join Button - Prominent Position -->
           <button
             v-if="canJoinMatch"
             type="button"
-            class="group/join relative inline-flex items-center isolate px-[0.7rem] py-[0.28rem] font-sans text-[0.68rem] font-bold tracking-[0.16em] uppercase text-[hsl(0_0%_8%)] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] border border-[hsl(var(--tac-amber))] [clip-path:polygon(8px_0,100%_0,100%_calc(100%_-_8px),calc(100%_-_8px)_100%,0_100%,0_8px)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.35),0_4px_14px_-4px_hsl(var(--tac-amber)/0.5)] [transition:transform_180ms_cubic-bezier(0.4,0,0.2,1),box-shadow_180ms_ease] cursor-pointer overflow-hidden whitespace-nowrap hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.55),0_10px_24px_-4px_hsl(var(--tac-amber)/0.7),0_0_20px_hsl(var(--tac-amber)/0.3)] active:translate-y-0"
+            class="group/join relative inline-flex items-center isolate px-[0.7rem] py-[0.28rem] font-sans text-[0.68rem] font-bold tracking-[0.16em] uppercase text-[hsl(0_0%_8%)] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] border border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.35),0_4px_14px_-4px_hsl(var(--tac-amber)/0.5)] [transition:transform_180ms_cubic-bezier(0.4,0,0.2,1),box-shadow_180ms_ease] cursor-pointer overflow-hidden whitespace-nowrap hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.55),0_10px_24px_-4px_hsl(var(--tac-amber)/0.7),0_0_20px_hsl(var(--tac-amber)/0.3)] active:translate-y-0"
             @click.stop="navigateToMatch(match.id, $event)"
           >
             <span class="relative z-[1] inline-flex items-center gap-[0.45rem]">
@@ -153,7 +177,6 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
             ></span>
           </button>
 
-          <!-- moved player toggle below maps -->
           <div
             class="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-muted-foreground"
           >
@@ -161,7 +184,8 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
               v-if="
                 match.streams?.length > 0 &&
                 !match.is_in_lineup &&
-                !match.is_coach
+                !match.is_coach &&
+                isStreamableStatus
               "
             >
               <button
@@ -217,58 +241,114 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
         </div>
       </div>
 
-      <!-- Teams + score: vertical layout in compact mode, responsive split layout otherwise -->
-      <!-- Compact: Teams stacked vertically (all breakpoints) -->
-      <div v-if="compact" class="flex flex-col items-center gap-2">
-        <!-- Team 1 -->
-        <div class="flex items-center space-x-2">
-          <h3 class="font-semibold text-foreground text-sm">
-            <span
-              :class="{
-                'border-b border-primary/40':
-                  playerLineup === match.lineup_1_id,
-              }"
-            >
-              {{ match.lineup_1.name }}
+      <div
+        v-if="
+          isTournamentMatch || (match.match_maps && match.match_maps.length > 0)
+        "
+        class="flex min-w-0 items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] leading-none"
+        :title="
+          [
+            isTournamentMatch ? tournamentLabel : null,
+            isTournamentMatch && tournamentRoundLabel
+              ? tournamentRoundLabel
+              : null,
+            ...match.match_maps.map((mm) => mm.map?.label || mm.map?.name),
+          ]
+            .filter(Boolean)
+            .join(' · ')
+        "
+      >
+        <Trophy
+          v-if="isTournamentMatch"
+          class="h-3 w-3 shrink-0 text-[hsl(var(--tac-amber))]/85"
+        />
+        <ListChecks v-else class="h-3 w-3 shrink-0 opacity-50" />
+        <span class="min-w-0 flex-1 truncate">
+          <span
+            v-if="isTournamentMatch"
+            class="font-semibold text-[hsl(var(--tac-amber))]/90"
+          >
+            {{ tournamentLabel }}
+          </span>
+          <template
+            v-if="isTournamentMatch && tournamentRoundLabel && !compact"
+          >
+            <span class="mx-1.5 text-muted-foreground/40">·</span>
+            <span class="text-muted-foreground/85">
+              {{ tournamentRoundLabel }}
             </span>
-          </h3>
-        </div>
-
-        <!-- Score -->
-        <div class="text-2xl font-bold">
-          <span :class="getScoreColorClasses(match.lineup_1.id)">{{
-            getTeamScore(match, match.lineup_1.id)
-          }}</span>
-          <span class="mx-2 text-muted-foreground">-</span>
-          <span :class="getScoreColorClasses(match.lineup_2.id)">{{
-            getTeamScore(match, match.lineup_2.id)
-          }}</span>
-        </div>
-
-        <!-- Team 2 -->
-        <div class="flex items-center space-x-2">
-          <h3 class="font-semibold text-foreground text-sm">
-            <span
-              :class="{
-                'border-b border-primary/40':
-                  playerLineup === match.lineup_2_id,
-              }"
-            >
-              {{ match.lineup_2.name }}
+          </template>
+          <span
+            v-if="
+              isTournamentMatch &&
+              match.match_maps &&
+              match.match_maps.length > 0
+            "
+            class="mx-1.5 text-muted-foreground/40"
+          >
+            ·
+          </span>
+          <template v-for="(mm, i) in match.match_maps" :key="mm.id || i">
+            <span v-if="i > 0" class="text-muted-foreground/40"> · </span>
+            <span class="text-muted-foreground">
+              {{ cleanMapName(mm.map?.label || mm.map?.name || "") }}
             </span>
+          </template>
+        </span>
+      </div>
+
+      <div v-if="compact" class="flex flex-col gap-1.5">
+        <div class="flex items-center justify-between gap-3">
+          <h3
+            class="min-w-0 truncate text-sm font-semibold text-foreground"
+            :class="{
+              'text-[hsl(var(--tac-amber))]':
+                focusPlayerLineupId === match.lineup_1_id,
+            }"
+            :title="match.lineup_1.name"
+          >
+            {{ match.lineup_1.name }}
           </h3>
+          <span
+            class="shrink-0 text-2xl font-bold tabular-nums"
+            :class="getScoreColorClasses(match.lineup_1.id)"
+          >
+            {{ getTeamScore(match, match.lineup_1.id) }}
+          </span>
+        </div>
+        <div class="flex items-center justify-between gap-3">
+          <h3
+            class="min-w-0 truncate text-sm font-semibold text-foreground"
+            :class="{
+              'text-[hsl(var(--tac-amber))]':
+                focusPlayerLineupId === match.lineup_2_id,
+            }"
+            :title="match.lineup_2.name"
+          >
+            {{ match.lineup_2.name }}
+          </h3>
+          <span
+            class="shrink-0 text-2xl font-bold tabular-nums"
+            :class="getScoreColorClasses(match.lineup_2.id)"
+          >
+            {{ getTeamScore(match, match.lineup_2.id) }}
+          </span>
         </div>
       </div>
 
-      <!-- Full (non-compact): Desktop 3-column grid, mobile version above -->
       <div
         v-else
         class="hidden sm:grid grid-cols-1 lg:grid-cols-3 gap-2 lg:gap-6 items-center"
       >
-        <!-- Team 1 -->
         <div class="flex items-center space-x-2 lg:space-x-3">
           <div class="flex-1 min-w-0">
-            <h3 class="font-semibold text-foreground truncate">
+            <h3
+              class="font-semibold text-foreground truncate"
+              :class="{
+                'text-[hsl(var(--tac-amber))]':
+                  focusPlayerLineupId === match.lineup_1_id,
+              }"
+            >
               <span
                 :class="{
                   'border-b border-primary/40':
@@ -293,7 +373,6 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
           </div>
         </div>
 
-        <!-- Center score -->
         <div
           class="flex items-center justify-center order-first lg:order-none py-2 lg:py-0"
         >
@@ -308,10 +387,15 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
           </div>
         </div>
 
-        <!-- Team 2 -->
         <div class="flex items-center space-x-3 justify-end">
           <div class="flex-1 min-w-0">
-            <h3 class="font-semibold text-foreground truncate text-right">
+            <h3
+              class="font-semibold text-foreground truncate text-right"
+              :class="{
+                'text-[hsl(var(--tac-amber))]':
+                  focusPlayerLineupId === match.lineup_2_id,
+              }"
+            >
               <span
                 :class="{
                   'border-b border-primary/40':
@@ -337,19 +421,52 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
         </div>
       </div>
 
-      <!-- Maps Section: lineup1 picks | deciders | lineup2 picks -->
-      <div
-        class="border-t border-border py-2"
-        v-if="match.match_maps.length > 0"
-      >
+      <div v-if="false" class="border-t border-border py-2">
+        <div v-if="compact" class="grid grid-cols-2 gap-1.5">
+          <div
+            v-for="(match_map, index) in match.match_maps"
+            :key="`compact-${index}`"
+            class="flex min-w-0 items-center gap-1.5 bg-muted/50 rounded-lg px-2.5 py-1.5 border border-border"
+            :class="{ 'opacity-50 grayscale': hasMapStarted(match_map) }"
+          >
+            <img
+              :src="match_map.map.patch"
+              :alt="match_map.map.name"
+              class="w-5 h-5 shrink-0"
+              @error="
+                ($event.target as HTMLImageElement).style.display = 'none'
+              "
+            />
+            <span
+              class="min-w-0 truncate text-xs font-medium first-letter:uppercase"
+              >{{ cleanMapName(match_map.map.name) }}</span
+            >
+            <div
+              class="ml-auto flex shrink-0 items-center gap-1 text-xs tabular-nums"
+            >
+              <span
+                :class="[
+                  'font-semibold',
+                  getMapScoreColorClasses(match_map, match.lineup_1.id),
+                ]"
+                >{{ match_map.lineup_1_score }}</span
+              >
+              <span class="text-muted-foreground">-</span>
+              <span
+                :class="[
+                  'font-semibold',
+                  getMapScoreColorClasses(match_map, match.lineup_2.id),
+                ]"
+                >{{ match_map.lineup_2_score }}</span
+              >
+            </div>
+          </div>
+        </div>
+
         <div
-          :class="[
-            'grid grid-cols-1 gap-4 items-start',
-            // In non-compact mode, restore 3-column desktop layout
-            !compact && 'lg:grid-cols-3',
-          ]"
+          v-else
+          :class="['grid grid-cols-1 gap-4 items-start', 'lg:grid-cols-3']"
         >
-          <!-- Lineup 1 Picks -->
           <div
             v-if="!compact || getLineupPicks(match.lineup_1.id).length"
             class="flex flex-col items-start justify-start gap-2"
@@ -399,7 +516,6 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
             </div>
           </div>
 
-          <!-- Deciders (middle) -->
           <div
             v-if="!compact || getDeciderMaps().length"
             class="flex items-center justify-center lg:border-x lg:border-border/60 lg:px-4"
@@ -450,7 +566,6 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
             </div>
           </div>
 
-          <!-- Lineup 2 Picks -->
           <div
             v-if="!compact || getLineupPicks(match.lineup_2.id).length"
             class="flex flex-col items-end justify-start gap-2"
@@ -502,24 +617,21 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
         </div>
       </div>
 
-      <!-- Players Section (tables only) now below maps -->
       <div
+        v-if="false"
         :class="[
           'grid grid-cols-1 items-stretch overflow-hidden transition-all duration-300 ease-out',
-          // In compact mode, always stack teams vertically; otherwise use 2 columns on large screens
           !compact && 'lg:grid-cols-2',
-          showPlayers
+          drawerOpen
             ? 'gap-6 border-t border-border pt-4 opacity-100 translate-y-0 max-h-[2000px]'
             : 'gap-0 border-0 pt-0 opacity-0 -translate-y-1 max-h-0',
         ]"
       >
-        <!-- Team 1 players -->
         <div class="space-y-2">
           <div
             v-if="displayedMatchStats.lineup_1"
             :class="[
               'bg-muted/50 rounded-lg border border-border min-h-[200px] h-full flex flex-col',
-              // Reduce padding overall; in compact mode keep it tight on all sizes
               compact ? 'p-2' : 'p-3 sm:p-4',
             ]"
           >
@@ -699,7 +811,6 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
           </div>
         </div>
 
-        <!-- Team 2 players -->
         <div class="space-y-2">
           <div
             v-if="displayedMatchStats.lineup_2"
@@ -887,38 +998,611 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
         </div>
       </div>
 
+      <!-- Quick overview button — only when no player-focus analysis
+           area is attached. Otherwise the analysis area carries both
+           actions (Quick Overview + More Stats) together. -->
       <div
-        class="relative flex items-center justify-center transition-all duration-300 ease-out"
-        :class="{ '-mt-2': !showPlayers, 'mt-2': showPlayers }"
+        v-if="!hasPlayerAnalysis && !hideOverview"
+        :class="compact ? 'mt-auto' : 'mt-auto flex justify-end'"
       >
-        <Separator class="absolute inset-x-0 top-1/2" />
         <button
           type="button"
-          class="relative z-[1] inline-flex items-center gap-1 rounded-full border border-border bg-muted px-2 py-[2px] text-[10px] uppercase tracking-wide text-muted-foreground shadow-sm transition-colors hover:bg-muted/80 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
-          :aria-expanded="showPlayers"
+          :class="[
+            'inline-flex items-center justify-center gap-1.5 rounded-md border border-border bg-muted/40 px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-background hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]',
+            compact ? 'w-full' : '',
+          ]"
           :aria-busy="matchStatsLoading"
-          @click.stop="toggleShowPlayers"
+          @click.stop="openDrawer"
         >
-          <ChevronsDownIcon
-            class="h-3 w-3 transition-transform"
-            :class="{ 'rotate-180': showPlayers }"
-          />
-          <span>{{
-            showPlayers ? $t("match.hide_players") : $t("match.show_players")
-          }}</span>
-          <ChevronsDownIcon
-            class="h-3 w-3 transition-transform"
-            :class="{ 'rotate-180': showPlayers }"
-          />
+          <ListChecks class="h-3.5 w-3.5" />
+          <span>Quick Overview</span>
         </button>
       </div>
     </div>
+
+    <!-- Player-focus analysis zone. Sits below the match info, sharing
+         the same outer card frame but separated by a top border so it
+         reads as a "connection area" — stats + highlights + actions
+         live here together instead of being infused into the team rows. -->
+    <div
+      v-if="hasPlayerAnalysis"
+      class="border-t border-border bg-card/40 px-2 py-2.5 space-y-2.5"
+      :class="compact ? '' : 'sm:px-4 sm:py-3'"
+      @click.stop
+    >
+      <MatchPlayerDetailsPanel
+        :match="match"
+        :focus-lineup="focusPlayerLineupDetailed"
+        :loading="detailsStatsLoading"
+        :active-tab="detailsTab"
+        :selected-map-id="selectedMapId"
+        @update:active-tab="(v) => (detailsTab = v)"
+        @update:selected-map-id="(v) => (selectedMapId = v)"
+      />
+
+      <!-- Highlights below the tabs — every clip is a full hero card
+           in a horizontal scroll row. Snap + arrows let users scrub
+           through the queue without the page reshaping. click.capture
+           seeds the modal's prev/next queue before any card opens. -->
+      <Transition
+        enter-active-class="transition-opacity duration-200 ease-out"
+        leave-active-class="transition-opacity duration-150 ease-in"
+        enter-from-class="opacity-0"
+        leave-to-class="opacity-0"
+        mode="out-in"
+      >
+        <div
+          v-if="filteredPlayerClips.length > 0"
+          :key="`clips-${selectedMapId ?? 'all'}`"
+          class="space-y-2"
+          @click.capture="seedPlayerClipQueue"
+        >
+          <div
+            class="flex items-center justify-between gap-2 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            <span class="inline-flex items-center gap-1.5">
+              <Film class="h-3 w-3 text-[hsl(var(--tac-amber))]/80" />
+              Highlights
+              <span class="text-foreground/70">·</span>
+              <span class="text-foreground/80">
+                {{ filteredPlayerClips.length }}
+              </span>
+            </span>
+            <ScrollArrows
+              v-if="filteredPlayerClips.length > 1"
+              :can-left="highlightsScrollRef?.state?.canScrollLeft"
+              :can-right="highlightsScrollRef?.state?.canScrollRight"
+              @scroll="(d) => highlightsScrollRef?.scrollByDirection(d)"
+            />
+          </div>
+          <HorizontalScrollRow ref="highlightsScrollRef">
+            <HighlightCard
+              v-for="clip in filteredPlayerClips"
+              :key="clip.id"
+              :clip="clip"
+              :show-map="false"
+              class="w-80 shrink-0 snap-start"
+            />
+          </HorizontalScrollRow>
+        </div>
+        <p
+          v-else-if="playerClips.length > 0"
+          key="no-clips"
+          class="text-[0.65rem] text-muted-foreground"
+        >
+          No highlights from this map.
+        </p>
+      </Transition>
+      <!-- Quick Overview button — full width like the mini display so
+           it anchors the bottom of the analysis zone consistently
+           across compact and non-compact layouts. -->
+      <button
+        type="button"
+        class="inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-border bg-muted/40 px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-background hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
+        :aria-busy="matchStatsLoading"
+        @click.stop="openDrawer"
+      >
+        <ListChecks class="h-3.5 w-3.5" />
+        <span>Quick Overview</span>
+      </button>
+    </div>
+
+    <!-- Match details drawer — full picks/deciders map breakdown + player
+         stat tables. Triggered by the View details button. Renders to a
+         portal so it doesn't perturb the card layout. Lives inside the
+         card root so the component has a single top-level node and
+         class fallthrough (h-full etc) keeps working. -->
+    <Drawer v-model:open="drawerOpen">
+      <DrawerContent class="max-h-[70vh]">
+        <DrawerHeader class="px-4 pt-3 pb-2 text-left">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0 flex-1">
+              <DrawerTitle class="truncate text-base">
+                {{ match.lineup_1?.name }} vs {{ match.lineup_2?.name }}
+              </DrawerTitle>
+              <DrawerDescription
+                class="mt-0.5 inline-flex flex-wrap items-center gap-x-3 gap-y-0.5 font-mono text-[0.62rem] uppercase tracking-[0.16em]"
+              >
+                <span>{{ match.options.type }}</span>
+                <span
+                  v-if="isTournamentMatch"
+                  class="inline-flex items-center gap-1 text-[hsl(var(--tac-amber))]"
+                >
+                  <Trophy class="h-3 w-3" />
+                  {{ tournamentLabel }}
+                </span>
+                <MatchStatus :match="match" />
+              </DrawerDescription>
+            </div>
+            <div class="inline-flex shrink-0 items-center gap-1.5">
+              <NuxtLink
+                :to="`/matches/${match.id}`"
+                class="inline-flex items-center gap-1 rounded-md border border-border bg-muted/40 px-2 py-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-foreground/80 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-background hover:text-[hsl(var(--tac-amber))]"
+                @click="drawerOpen = false"
+              >
+                <ExternalLink class="h-3 w-3" />
+                Full page
+              </NuxtLink>
+              <DrawerClose as-child>
+                <button
+                  type="button"
+                  aria-label="Close"
+                  class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-muted/40 text-foreground/80 transition-colors hover:border-destructive/60 hover:bg-background hover:text-destructive"
+                >
+                  <X class="h-3.5 w-3.5" />
+                </button>
+              </DrawerClose>
+            </div>
+          </div>
+        </DrawerHeader>
+
+        <div class="overflow-y-auto px-4 pb-4 space-y-4">
+          <div class="flex items-center justify-center gap-4">
+            <span
+              class="truncate text-sm text-muted-foreground"
+              :title="match.lineup_1.name"
+            >
+              {{ match.lineup_1.name }}
+            </span>
+            <span
+              class="text-3xl font-bold tabular-nums"
+              :class="getScoreColorClasses(match.lineup_1.id)"
+            >
+              {{ getTeamScore(match, match.lineup_1.id) }}
+            </span>
+            <span class="text-xl font-bold text-muted-foreground">–</span>
+            <span
+              class="text-3xl font-bold tabular-nums"
+              :class="getScoreColorClasses(match.lineup_2.id)"
+            >
+              {{ getTeamScore(match, match.lineup_2.id) }}
+            </span>
+            <span
+              class="truncate text-sm text-muted-foreground"
+              :title="match.lineup_2.name"
+            >
+              {{ match.lineup_2.name }}
+            </span>
+          </div>
+
+          <div v-if="match.match_maps.length > 0">
+            <h4
+              class="mb-3 font-mono text-[0.7rem] font-bold uppercase tracking-[0.2em] text-muted-foreground"
+            >
+              Maps
+            </h4>
+            <div class="grid grid-cols-1 gap-4 items-start lg:grid-cols-3">
+              <div class="flex flex-col items-start gap-2">
+                <div
+                  class="text-xs uppercase tracking-wide text-muted-foreground"
+                >
+                  {{ match.lineup_1.name }} Picks
+                </div>
+                <div class="flex flex-wrap gap-1.5">
+                  <div
+                    v-for="(match_map, index) in getLineupPicks(
+                      match.lineup_1.id,
+                    )"
+                    :key="`drawer-l1-${index}`"
+                    class="flex items-center space-x-1.5 bg-muted/50 rounded-lg px-2.5 py-1.5 border border-border"
+                    :class="{
+                      'opacity-50 grayscale': hasMapStarted(match_map),
+                    }"
+                  >
+                    <img
+                      :src="match_map.map.patch"
+                      :alt="match_map.map.name"
+                      class="w-5 h-5"
+                      @error="
+                        ($event.target as HTMLImageElement).style.display =
+                          'none'
+                      "
+                    />
+                    <span class="text-xs font-medium first-letter:uppercase">{{
+                      cleanMapName(match_map.map.name)
+                    }}</span>
+                    <div
+                      class="flex items-center space-x-1 text-xs tabular-nums"
+                    >
+                      <span
+                        :class="[
+                          'font-semibold',
+                          getMapScoreColorClasses(match_map, match.lineup_1.id),
+                        ]"
+                        >{{ match_map.lineup_1_score }}</span
+                      >
+                      <span class="text-muted-foreground">-</span>
+                      <span
+                        :class="[
+                          'font-semibold',
+                          getMapScoreColorClasses(match_map, match.lineup_2.id),
+                        ]"
+                        >{{ match_map.lineup_2_score }}</span
+                      >
+                    </div>
+                  </div>
+                  <span
+                    v-if="getLineupPicks(match.lineup_1.id).length === 0"
+                    class="text-xs text-muted-foreground"
+                  >
+                    —
+                  </span>
+                </div>
+              </div>
+
+              <div
+                class="flex flex-col items-center gap-2 lg:border-x lg:border-border/60 lg:px-4"
+              >
+                <div
+                  class="text-xs uppercase tracking-wide text-muted-foreground"
+                >
+                  Decider
+                </div>
+                <div class="flex flex-wrap gap-1.5 justify-center">
+                  <div
+                    v-for="(match_map, index) in getDeciderMaps()"
+                    :key="`drawer-dec-${index}`"
+                    class="flex items-center space-x-1.5 bg-muted/50 rounded-lg px-2.5 py-1.5 border border-border"
+                    :class="{
+                      'opacity-50 grayscale': hasMapStarted(match_map),
+                    }"
+                  >
+                    <img
+                      :src="match_map.map.patch"
+                      :alt="match_map.map.name"
+                      class="w-5 h-5"
+                      @error="
+                        ($event.target as HTMLImageElement).style.display =
+                          'none'
+                      "
+                    />
+                    <span class="text-xs font-medium first-letter:uppercase">{{
+                      cleanMapName(match_map.map.name)
+                    }}</span>
+                    <div
+                      class="flex items-center space-x-1 text-xs tabular-nums"
+                    >
+                      <span
+                        :class="[
+                          'font-semibold',
+                          getMapScoreColorClasses(match_map, match.lineup_1.id),
+                        ]"
+                        >{{ match_map.lineup_1_score }}</span
+                      >
+                      <span class="text-muted-foreground">-</span>
+                      <span
+                        :class="[
+                          'font-semibold',
+                          getMapScoreColorClasses(match_map, match.lineup_2.id),
+                        ]"
+                        >{{ match_map.lineup_2_score }}</span
+                      >
+                    </div>
+                  </div>
+                  <span
+                    v-if="getDeciderMaps().length === 0"
+                    class="text-xs text-muted-foreground"
+                  >
+                    —
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex flex-col items-end gap-2">
+                <div
+                  class="text-xs uppercase tracking-wide text-muted-foreground"
+                >
+                  {{ match.lineup_2.name }} Picks
+                </div>
+                <div class="flex flex-wrap gap-1.5 justify-end">
+                  <div
+                    v-for="(match_map, index) in getLineupPicks(
+                      match.lineup_2.id,
+                    )"
+                    :key="`drawer-l2-${index}`"
+                    class="flex items-center space-x-1.5 bg-muted/50 rounded-lg px-2.5 py-1.5 border border-border"
+                    :class="{
+                      'opacity-50 grayscale': hasMapStarted(match_map),
+                    }"
+                  >
+                    <img
+                      :src="match_map.map.patch"
+                      :alt="match_map.map.name"
+                      class="w-5 h-5"
+                      @error="
+                        ($event.target as HTMLImageElement).style.display =
+                          'none'
+                      "
+                    />
+                    <span class="text-xs font-medium first-letter:uppercase">{{
+                      cleanMapName(match_map.map.name)
+                    }}</span>
+                    <div
+                      class="flex items-center space-x-1 text-xs tabular-nums"
+                    >
+                      <span
+                        :class="[
+                          'font-semibold',
+                          getMapScoreColorClasses(match_map, match.lineup_2.id),
+                        ]"
+                        >{{ match_map.lineup_2_score }}</span
+                      >
+                      <span class="text-muted-foreground">-</span>
+                      <span
+                        :class="[
+                          'font-semibold',
+                          getMapScoreColorClasses(match_map, match.lineup_1.id),
+                        ]"
+                        >{{ match_map.lineup_1_score }}</span
+                      >
+                    </div>
+                  </div>
+                  <span
+                    v-if="getLineupPicks(match.lineup_2.id).length === 0"
+                    class="text-xs text-muted-foreground"
+                  >
+                    —
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h4
+              class="mb-3 font-mono text-[0.7rem] font-bold uppercase tracking-[0.2em] text-muted-foreground"
+            >
+              Players
+            </h4>
+            <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <div
+                v-if="displayedMatchStats.lineup_1"
+                class="rounded-lg border border-border bg-muted/40 p-3 sm:p-4"
+              >
+                <h5 class="mb-3 text-sm font-semibold text-foreground">
+                  {{
+                    $t("match.team_stats_heading", {
+                      name: displayedMatchStats.lineup_1.name,
+                    })
+                  }}
+                </h5>
+                <div class="overflow-x-auto">
+                  <table class="w-full min-w-[360px] text-xs">
+                    <thead>
+                      <tr class="border-b border-border">
+                        <th class="text-left py-2 px-3 font-medium">Player</th>
+                        <th class="text-center py-2 px-2 font-medium w-10">
+                          K
+                        </th>
+                        <th class="text-center py-2 px-2 font-medium w-10">
+                          D
+                        </th>
+                        <th class="text-center py-2 px-2 font-medium w-10">
+                          A
+                        </th>
+                        <th class="text-center py-2 px-2 font-medium w-14">
+                          DMG
+                        </th>
+                        <th class="text-center py-2 px-2 font-medium w-10">
+                          K/D
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(lineupPlayer, index) in lineup1Players"
+                        :key="
+                          lineupPlayer.steam_id ||
+                          lineupPlayer.placeholder_name ||
+                          `drawer-l1p-${index}`
+                        "
+                        class="border-b border-border/50 last:border-b-0"
+                        :class="{
+                          'bg-primary/10 border-l-2 border-l-primary':
+                            player &&
+                            getLineupPlayerDisplayPlayer(lineupPlayer)
+                              ?.steam_id === player.steam_id,
+                        }"
+                      >
+                        <td class="py-2 px-3">
+                          <PlayerDisplay
+                            :player="getLineupPlayerDisplayPlayer(lineupPlayer)"
+                            :avatar-override="
+                              lineup1AvatarOverride(
+                                getLineupPlayerDisplayPlayer(lineupPlayer)
+                                  ?.steam_id,
+                              )
+                            "
+                            size="sm"
+                          />
+                        </td>
+                        <td class="text-center py-2 px-2 tabular-nums">
+                          {{
+                            getLineupPlayerDisplayPlayer(lineupPlayer)
+                              .kills_aggregate?.aggregate?.count || 0
+                          }}
+                        </td>
+                        <td class="text-center py-2 px-2 tabular-nums">
+                          {{
+                            getLineupPlayerDisplayPlayer(lineupPlayer)
+                              .deaths_aggregate?.aggregate?.count || 0
+                          }}
+                        </td>
+                        <td class="text-center py-2 px-2 tabular-nums">
+                          {{
+                            getLineupPlayerDisplayPlayer(lineupPlayer)
+                              .assists_aggregate?.aggregate?.count || 0
+                          }}
+                        </td>
+                        <td class="text-center py-2 px-2 tabular-nums">
+                          {{
+                            Math.round(
+                              getLineupPlayerDisplayPlayer(lineupPlayer)
+                                .damage_dealt_aggregate?.aggregate?.sum
+                                ?.damage || 0,
+                            )
+                          }}
+                        </td>
+                        <td class="text-center py-2 px-2 tabular-nums">
+                          {{
+                            getKDRatio(
+                              getLineupPlayerDisplayPlayer(lineupPlayer)
+                                .kills_aggregate?.aggregate?.count || 0,
+                              getLineupPlayerDisplayPlayer(lineupPlayer)
+                                .deaths_aggregate?.aggregate?.count || 0,
+                            )
+                          }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div
+                v-if="displayedMatchStats.lineup_2"
+                class="rounded-lg border border-border bg-muted/40 p-3 sm:p-4"
+              >
+                <h5 class="mb-3 text-sm font-semibold text-foreground">
+                  {{
+                    $t("match.team_stats_heading", {
+                      name: displayedMatchStats.lineup_2.name,
+                    })
+                  }}
+                </h5>
+                <div class="overflow-x-auto">
+                  <table class="w-full min-w-[360px] text-xs">
+                    <thead>
+                      <tr class="border-b border-border">
+                        <th class="text-left py-2 px-3 font-medium">Player</th>
+                        <th class="text-center py-2 px-2 font-medium w-10">
+                          K
+                        </th>
+                        <th class="text-center py-2 px-2 font-medium w-10">
+                          D
+                        </th>
+                        <th class="text-center py-2 px-2 font-medium w-10">
+                          A
+                        </th>
+                        <th class="text-center py-2 px-2 font-medium w-14">
+                          DMG
+                        </th>
+                        <th class="text-center py-2 px-2 font-medium w-10">
+                          K/D
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr
+                        v-for="(lineupPlayer, index) in lineup2Players"
+                        :key="
+                          lineupPlayer.steam_id ||
+                          lineupPlayer.placeholder_name ||
+                          `drawer-l2p-${index}`
+                        "
+                        class="border-b border-border/50 last:border-b-0"
+                        :class="{
+                          'bg-primary/10 border-l-2 border-l-primary':
+                            player &&
+                            getLineupPlayerDisplayPlayer(lineupPlayer)
+                              ?.steam_id === player.steam_id,
+                        }"
+                      >
+                        <td class="py-2 px-3">
+                          <PlayerDisplay
+                            :player="getLineupPlayerDisplayPlayer(lineupPlayer)"
+                            :avatar-override="
+                              lineup2AvatarOverride(
+                                getLineupPlayerDisplayPlayer(lineupPlayer)
+                                  ?.steam_id,
+                              )
+                            "
+                            size="sm"
+                          />
+                        </td>
+                        <td class="text-center py-2 px-2 tabular-nums">
+                          {{
+                            getLineupPlayerDisplayPlayer(lineupPlayer)
+                              .kills_aggregate?.aggregate?.count || 0
+                          }}
+                        </td>
+                        <td class="text-center py-2 px-2 tabular-nums">
+                          {{
+                            getLineupPlayerDisplayPlayer(lineupPlayer)
+                              .deaths_aggregate?.aggregate?.count || 0
+                          }}
+                        </td>
+                        <td class="text-center py-2 px-2 tabular-nums">
+                          {{
+                            getLineupPlayerDisplayPlayer(lineupPlayer)
+                              .assists_aggregate?.aggregate?.count || 0
+                          }}
+                        </td>
+                        <td class="text-center py-2 px-2 tabular-nums">
+                          {{
+                            Math.round(
+                              getLineupPlayerDisplayPlayer(lineupPlayer)
+                                .damage_dealt_aggregate?.aggregate?.sum
+                                ?.damage || 0,
+                            )
+                          }}
+                        </td>
+                        <td class="text-center py-2 px-2 tabular-nums">
+                          {{
+                            getKDRatio(
+                              getLineupPlayerDisplayPlayer(lineupPlayer)
+                                .kills_aggregate?.aggregate?.count || 0,
+                              getLineupPlayerDisplayPlayer(lineupPlayer)
+                                .deaths_aggregate?.aggregate?.count || 0,
+                            )
+                          }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div
+              v-if="matchStatsLoading"
+              class="mt-2 text-center text-xs text-muted-foreground"
+            >
+              Loading player stats…
+            </div>
+          </div>
+        </div>
+      </DrawerContent>
+    </Drawer>
   </div>
 </template>
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
 import { matchLineupStats } from "~/graphql/matchLineupStats";
+import { matchAllMapsStats } from "~/graphql/matchAllMapsStatsGraphql";
+import { matchClipFields } from "~/graphql/matchClip";
+import { $, order_by } from "~/generated/zeus";
+import { useClipModal } from "~/composables/useClipModal";
 
 export default {
   props: {
@@ -939,13 +1623,47 @@ export default {
       type: Boolean,
       default: false,
     },
+    hideOverview: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       matchStats: null as any | null,
       matchStatsLoading: false,
-      showPlayers: false,
+      drawerOpen: false,
+      playerClips: [] as any[],
+      playerClipsLoading: false,
+      detailsStats: null as any | null,
+      detailsStatsLoading: false,
+      detailsTab: "overview",
+      // null = "All maps" — analysis zone aggregates across the match.
+      // When set, the More Stats tabs filter to this map and the clip
+      // strip narrows to clips from that map.
+      selectedMapId: null as string | null,
     };
+  },
+  mounted() {
+    if (
+      (this.player as any)?.steam_id &&
+      (this.match as any)?.status === e_match_status_enum.Finished
+    ) {
+      // Eager-load the full match_stats row (matchAllMapsStats). One
+      // query, all fields — powers the inline Overview readout AND
+      // the Utility/Trades/Aim tabs when the user expands. The drawer
+      // still lazy-fetches its own matchLineupStats on open.
+      if (!this.detailsStats && !this.detailsStatsLoading) {
+        this.getDetailedStats().catch((err) => {
+          console.error("Failed to eager-load player overview stats", err);
+        });
+      }
+      if (this.playerClips.length === 0 && !this.playerClipsLoading) {
+        this.getPlayerClips().catch((err) => {
+          console.error("Failed to eager-load player clips", err);
+        });
+      }
+    }
   },
   methods: {
     getLineupPicks(lineupId: string) {
@@ -1012,11 +1730,89 @@ export default {
         this.matchStatsLoading = false;
       }
     },
-    async toggleShowPlayers() {
-      const shouldShow = !this.showPlayers;
-      this.showPlayers = shouldShow;
-
-      if (shouldShow) {
+    async getPlayerClips() {
+      const playerSteamId = (this.player as any)?.steam_id;
+      if (!playerSteamId || !this.match?.id) return;
+      this.playerClipsLoading = true;
+      try {
+        const { data } = await this.$apollo.query({
+          fetchPolicy: "network-only",
+          variables: {
+            matchId: this.match.id,
+            playerId: String(playerSteamId),
+          },
+          query: generateQuery({
+            // Pull the full clip shape so we can render a real
+            // HighlightCard (with title link, score/round/duration
+            // overlays, target metadata) for the focus player.
+            match_clips: [
+              {
+                limit: 6,
+                where: {
+                  visibility: { _eq: "public" },
+                  match_map: { match_id: { _eq: $("matchId", "uuid!") } },
+                  _or: [
+                    { user_steam_id: { _eq: $("playerId", "bigint!") } },
+                    { target_steam_id: { _eq: $("playerId", "bigint!") } },
+                  ],
+                },
+                order_by: [{}, { created_at: order_by.desc }],
+              } as any,
+              matchClipFields,
+            ],
+          } as any),
+        });
+        this.playerClips = (data as any)?.match_clips ?? [];
+      } finally {
+        this.playerClipsLoading = false;
+      }
+    },
+    seedPlayerClipQueue() {
+      // Click.capture handler: runs before HighlightCard's own
+      // openClip on bubble. Seeds the modal queue with whichever clips
+      // match the current map filter so prev/next can scrub through
+      // them all. Scope is keyed to match + player + selected map so
+      // switching contexts replaces the queue cleanly.
+      const { setClipQueue } = useClipModal();
+      const items = (this.filteredPlayerClips as any[]).map((c: any) => ({
+        id: c.id,
+        title: c.title ?? null,
+        playerName: c.target?.name ?? c.user?.name ?? null,
+        teamName: null,
+        durationMs: c.duration_ms ?? null,
+        thumbnailUrl: c.thumbnail_download_url ?? null,
+        posterUrl: c.match_map?.map?.poster ?? null,
+      }));
+      const scope = `match-${this.match?.id}-player-${(this.player as any)?.steam_id}-map-${this.selectedMapId ?? "all"}`;
+      setClipQueue(items, scope);
+    },
+    async getDetailedStats() {
+      this.detailsStatsLoading = true;
+      try {
+        const { data } = await this.$apollo.query({
+          fetchPolicy: "network-only",
+          variables: {
+            matchId: this.match.id,
+            order_by_name: order_by.asc,
+          },
+          query: generateQuery({
+            matches_by_pk: [
+              { id: this.match.id },
+              {
+                lineup_1: [{}, matchAllMapsStats],
+                lineup_2: [{}, matchAllMapsStats],
+              },
+            ],
+          }),
+        });
+        this.detailsStats = (data as any)?.matches_by_pk ?? null;
+      } finally {
+        this.detailsStatsLoading = false;
+      }
+    },
+    async openDrawer() {
+      this.drawerOpen = true;
+      if (!this.matchStats && !this.matchStatsLoading) {
         try {
           await this.getMatchStats();
         } catch (error) {
@@ -1167,6 +1963,21 @@ export default {
           this.match?.tournament_brackets?.length,
       );
     },
+    isStreamableStatus(): boolean {
+      return ![
+        e_match_status_enum.Finished,
+        e_match_status_enum.Cancelled,
+      ].includes(this.match.status);
+    },
+    clipCount(): number {
+      return (this.match?.match_maps || []).reduce(
+        (sum: number, mm: any) => sum + (mm.public_clips_count || 0),
+        0,
+      );
+    },
+    clipPillClasses(): string {
+      return "inline-flex min-w-0 items-center gap-1.5 rounded-md border border-border/70 bg-muted/35 px-2 py-1 font-mono text-[0.6rem] font-bold uppercase tracking-[0.14em] leading-none text-foreground/80";
+    },
     tournamentBracket(): any {
       return this.match?.tournament_brackets?.[0] ?? null;
     },
@@ -1206,7 +2017,7 @@ export default {
       return "inline-flex min-w-0 items-center gap-1.5 rounded-md border border-border/70 bg-muted/35 px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] leading-none text-muted-foreground";
     },
     watchStreamPillClasses(): string {
-      return "group/watch relative inline-flex items-center isolate px-2 py-[3px] font-mono text-[0.6rem] font-bold tracking-[0.14em] uppercase leading-none text-white [background:linear-gradient(180deg,hsl(0_88%_55%)_0%,hsl(0_82%_44%)_55%,hsl(355_78%_36%)_100%)] border border-red-300/40 [clip-path:polygon(6px_0,100%_0,100%_calc(100%_-_6px),calc(100%_-_6px)_100%,0_100%,0_6px)] shadow-[0_0_0_1px_hsl(0_85%_45%/0.55),0_2px_8px_-2px_hsl(0_85%_50%/0.45),inset_0_1px_0_hsl(0_100%_82%/0.4),inset_0_-1px_0_hsl(0_85%_25%/0.55)] [transition:transform_180ms_cubic-bezier(0.4,0,0.2,1),box-shadow_180ms_ease,filter_180ms_ease] cursor-pointer overflow-hidden whitespace-nowrap hover:-translate-y-[1px] hover:[filter:saturate(1.15)] hover:shadow-[0_0_0_1px_hsl(0_90%_55%/0.8),0_0_18px_-2px_hsl(0_90%_60%/0.6),0_6px_14px_-4px_hsl(0_85%_50%/0.6),inset_0_1px_0_hsl(0_100%_88%/0.55),inset_0_-1px_0_hsl(0_85%_25%/0.55)] active:translate-y-0";
+      return "group/watch relative inline-flex items-center isolate px-2 py-[3px] font-mono text-[0.6rem] font-bold tracking-[0.14em] uppercase leading-none text-white [background:linear-gradient(180deg,hsl(0_88%_55%)_0%,hsl(0_82%_44%)_55%,hsl(355_78%_36%)_100%)] border border-red-300/40 shadow-[0_0_0_1px_hsl(0_85%_45%/0.55),0_2px_8px_-2px_hsl(0_85%_50%/0.45),inset_0_1px_0_hsl(0_100%_82%/0.4),inset_0_-1px_0_hsl(0_85%_25%/0.55)] [transition:transform_180ms_cubic-bezier(0.4,0,0.2,1),box-shadow_180ms_ease,filter_180ms_ease] cursor-pointer overflow-hidden whitespace-nowrap hover:-translate-y-[1px] hover:[filter:saturate(1.15)] hover:shadow-[0_0_0_1px_hsl(0_90%_55%/0.8),0_0_18px_-2px_hsl(0_90%_60%/0.6),0_6px_14px_-4px_hsl(0_85%_50%/0.6),inset_0_1px_0_hsl(0_100%_88%/0.55),inset_0_-1px_0_hsl(0_85%_25%/0.55)] active:translate-y-0";
     },
     maxPlayersPerLineup() {
       return this.match.max_players_per_lineup;
@@ -1230,6 +2041,192 @@ export default {
     },
     lineup2AvatarOverride() {
       return buildLineupAvatarOverride(this.displayedMatchStats.lineup_2);
+    },
+    focusPlayerSteamId(): string | null {
+      return String((this.player as any)?.steam_id ?? "") || null;
+    },
+    focusPlayerLineupId(): string | null {
+      const sid = this.focusPlayerSteamId;
+      if (!sid) return null;
+      const onL1 = this.lineup1Players.some(
+        (lp: any) =>
+          String(this.getLineupPlayerDisplayPlayer(lp)?.steam_id ?? "") === sid,
+      );
+      if (onL1) return this.match.lineup_1_id;
+      const onL2 = this.lineup2Players.some(
+        (lp: any) =>
+          String(this.getLineupPlayerDisplayPlayer(lp)?.steam_id ?? "") === sid,
+      );
+      if (onL2) return this.match.lineup_2_id;
+      return null;
+    },
+    filteredPlayerClips(): any[] {
+      const base = !this.selectedMapId
+        ? this.playerClips
+        : this.playerClips.filter(
+            (c: any) => c.match_map?.id === this.selectedMapId,
+          );
+      // Best highlight first — most kills wins, shorter duration as
+      // tiebreak. Drives which thumbnail surfaces in the single-card
+      // strip; the modal queue follows the same order so navigating
+      // forward scrubs from "best" to "rest".
+      return [...base].sort((a: any, b: any) => {
+        const ak = a.kills_count ?? 0;
+        const bk = b.kills_count ?? 0;
+        if (bk !== ak) return bk - ak;
+        const ad = a.duration_ms ?? Number.MAX_SAFE_INTEGER;
+        const bd = b.duration_ms ?? Number.MAX_SAFE_INTEGER;
+        return ad - bd;
+      });
+    },
+    hasPlayerAnalysis(): boolean {
+      // Show the analysis zone only when this row is in player-focus
+      // mode and we actually have stats to render. Otherwise the card
+      // looks the same as before.
+      return Boolean(
+        (this.player as any)?.steam_id &&
+          (this.match as any)?.status === e_match_status_enum.Finished,
+      );
+    },
+    focusPlayerLineupDetailed(): any {
+      // Returns the focus player's lineup from the detailed-stats fetch
+      // with `lineup_players` narrowed to just that player. When a map
+      // is selected we also narrow the per-map `match_map_stats` array
+      // to ONLY that map's row — the existing Lineup* tabs call
+      // `statsFor` which prefers match_map_stats over match_stats, so
+      // they automatically render per-map numbers when a map is
+      // selected and aggregate when "All" is selected.
+      const sid = this.focusPlayerSteamId;
+      if (!sid || !this.detailsStats) return null;
+      const findPlayer = (lineup: any) =>
+        (lineup?.lineup_players || []).find(
+          (lp: any) => String(lp.player?.steam_id ?? lp.steam_id ?? "") === sid,
+        );
+      const narrowMapStats = (lp: any) => {
+        if (!lp?.player) return lp;
+        if (!this.selectedMapId) {
+          // Use `null` (not `[]`) — LineupOverviewRow.statsFor uses
+          // nullish coalescing, so an empty array would override the
+          // aggregate `match_stats` fallback and show nothing.
+          return {
+            ...lp,
+            player: { ...lp.player, match_map_stats: null },
+          };
+        }
+        const mapRow = (lp.player?.match_map_stats || []).find(
+          (s: any) => s.match_map_id === this.selectedMapId,
+        );
+        return {
+          ...lp,
+          player: {
+            ...lp.player,
+            match_map_stats: mapRow ? [mapRow] : null,
+          },
+        };
+      };
+      for (const key of ["lineup_1", "lineup_2"]) {
+        const lineup = (this.detailsStats as any)?.[key];
+        const player = findPlayer(lineup);
+        if (player) {
+          return {
+            ...lineup,
+            lineup_players: [narrowMapStats(player)],
+          };
+        }
+      }
+      return null;
+    },
+    focusPlayerStats(): null | {
+      name: string;
+      kills: number;
+      deaths: number;
+      assists: number;
+      damage: number;
+      kd: string;
+      hsPct: number | null;
+      adr: number | null;
+    } {
+      // Reads from matchAllMapsStats (detailsStats) so we get the full
+      // Overview-tier row — kills, deaths, assists, damage, hs%, ADR —
+      // from a single fetch. Falls back to matchLineupStats aggregates
+      // if detailsStats hasn't loaded yet but the drawer has been
+      // opened (which loads matchLineupStats).
+      const sid = this.focusPlayerSteamId;
+      if (!sid) return null;
+
+      // When a map is selected, prefer that map's row from
+      // match_map_stats; otherwise use the aggregate match_stats row.
+      const detailedLineups = [
+        (this.detailsStats as any)?.lineup_1,
+        (this.detailsStats as any)?.lineup_2,
+      ];
+      for (const lineup of detailedLineups) {
+        const lp = (lineup?.lineup_players || []).find(
+          (lp: any) => String(lp.player?.steam_id ?? lp.steam_id ?? "") === sid,
+        );
+        if (!lp) continue;
+        const p = lp.player;
+        let s: any | null = null;
+        if (this.selectedMapId) {
+          s =
+            (p?.match_map_stats || []).find(
+              (row: any) => row.match_map_id === this.selectedMapId,
+            ) || null;
+        } else {
+          s = (p?.match_stats || [])[0] || null;
+        }
+        if (!s) continue;
+        const kills = s.kills ?? 0;
+        const deaths = s.deaths ?? 0;
+        const assists = s.assists ?? 0;
+        const damage = Math.round(s.damage ?? 0);
+        const rounds = s.rounds_played ?? 0;
+        const hsPct = kills > 0 ? Math.round((s.hs_kills / kills) * 100) : null;
+        const adr = rounds > 0 ? Math.round(damage / rounds) : null;
+        if (kills === 0 && deaths === 0 && assists === 0 && damage === 0) {
+          return null;
+        }
+        return {
+          name: p?.name ?? "",
+          kills,
+          deaths,
+          assists,
+          damage,
+          kd: this.getKDRatio(kills, deaths),
+          hsPct,
+          adr,
+        };
+      }
+
+      // Fallback to matchLineupStats aggregates (drawer-loaded).
+      const findIn = (players: any[]) =>
+        players.find(
+          (lp: any) =>
+            String(this.getLineupPlayerDisplayPlayer(lp)?.steam_id ?? "") ===
+            sid,
+        );
+      const lp = findIn(this.lineup1Players) || findIn(this.lineup2Players);
+      if (!lp) return null;
+      const p = this.getLineupPlayerDisplayPlayer(lp);
+      const kills = p?.kills_aggregate?.aggregate?.count ?? 0;
+      const deaths = p?.deaths_aggregate?.aggregate?.count ?? 0;
+      const assists = p?.assists_aggregate?.aggregate?.count ?? 0;
+      const damage = Math.round(
+        p?.damage_dealt_aggregate?.aggregate?.sum?.damage ?? 0,
+      );
+      if (kills === 0 && deaths === 0 && assists === 0 && damage === 0) {
+        return null;
+      }
+      return {
+        name: p?.name ?? "",
+        kills,
+        deaths,
+        assists,
+        damage,
+        kd: this.getKDRatio(kills, deaths),
+        hsPct: null,
+        adr: null,
+      };
     },
     eloChange(): typeof eloFields {
       const matchType = this.match.options?.type;

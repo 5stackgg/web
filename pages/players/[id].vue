@@ -2,9 +2,9 @@
 import MatchesTable from "~/components/MatchesTable.vue";
 import Pagination from "~/components/Pagination.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
-import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
+import RecentTournaments from "~/components/tournament/RecentTournaments.vue";
 import TrophyCase from "~/components/trophy/TrophyCase.vue";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { e_player_roles_enum } from "~/generated/zeus";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -17,6 +17,10 @@ import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import PlayerChangeName from "~/components/PlayerChangeName.vue";
 import PlayerChangeCountry from "~/components/PlayerChangeCountry.vue";
 import { kdrStrokeColor } from "~/utilities/kdrColor";
+import {
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
 import {
   PlayIcon,
   Pencil,
@@ -46,7 +50,7 @@ import PlayerLeaderboardRank from "~/components/PlayerLeaderboardRank.vue";
 import PlayerEloHistoryDialog from "~/components/PlayerEloHistoryDialog.vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
-import { $, order_by } from "~/generated/zeus";
+import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { eloFields } from "~/graphql/eloFields";
@@ -57,7 +61,6 @@ import {
 } from "~/components/ui/popover";
 import { Checkbox } from "~/components/ui/checkbox";
 
-// ─── Windowed time-series — drives the ELO chart + stats panels ────────
 // The global range chip bar (7D/30D/…/ALL/custom) feeds a single
 // v_player_elo subscription scoped to this player. Mode filtering happens
 // client-side so toggling modes is instant without re-subscribing.
@@ -233,7 +236,6 @@ watch(
 
 onUnmounted(() => teardownEloSub());
 
-// ─── Windowed matches table (Matches tab) ──────────────────────────────
 // The range bar drives the matches list + count as well. We pull the
 // player→matches relation with a where clause; the count uses the
 // matches_aggregate on the same relation so list + count stay in sync.
@@ -451,7 +453,6 @@ const windowedStats = computed(() => {
   };
 });
 
-// ─── Time-bucketing ────────────────────────────────────────────────────
 // At wide ranges (1Y / ALL / long custom spans) plotting every match
 // drowns the trend in daily noise. We collapse points into period
 // buckets — last entry per bucket wins (= "ELO at end of period"),
@@ -639,11 +640,6 @@ definePageMeta({
   alias: ["/me/:id"],
 });
 
-const activeTab = useRouteTab({
-  defaultTab: "matches",
-  tabs: ["matches", "tournaments"],
-});
-
 const modeTab = useRouteTab({
   param: "mode",
   defaultTab: "all",
@@ -686,7 +682,7 @@ const playerHeroRoleChipClasses =
 const playerHeroRightActionsClasses =
   "ml-auto flex shrink-0 items-center justify-center gap-3 self-center max-md:ml-0";
 const playerHeroPlayClasses =
-  "group/play relative isolate inline-flex cursor-pointer items-center border font-sans text-[0.95rem] font-bold uppercase tracking-[0.18em] no-underline transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px active:translate-y-0 py-[0.85rem] pr-[1.6rem] pl-[1.4rem] text-[hsl(0_0%_8%)] border-[hsl(var(--tac-amber))] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] [clip-path:polygon(12px_0,100%_0,100%_calc(100%_-_12px),calc(100%_-_12px)_100%,0_100%,0_12px)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_20px_-6px_hsl(var(--tac-amber)/0.6)] hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_12px_32px_-6px_hsl(var(--tac-amber)/0.8),0_0_24px_hsl(var(--tac-amber)/0.35)]";
+  "group/play relative isolate inline-flex cursor-pointer items-center overflow-hidden border font-sans text-[0.95rem] font-bold uppercase tracking-[0.18em] no-underline transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px active:translate-y-0 py-[0.85rem] pr-[1.6rem] pl-[1.4rem] text-[hsl(0_0%_8%)] border-[hsl(var(--tac-amber))] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_20px_-6px_hsl(var(--tac-amber)/0.6)] hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_12px_32px_-6px_hsl(var(--tac-amber)/0.8),0_0_24px_hsl(var(--tac-amber)/0.35)]";
 const playerHeroPlayInnerClasses =
   "relative z-[1] inline-flex items-center gap-[0.65rem]";
 const playerHeroPlayIconClasses =
@@ -711,7 +707,6 @@ const playerTeamChipShortClasses =
 
 <template>
   <div class="flex-grow flex flex-col gap-6" v-if="player">
-    <!-- Player Hero -->
     <PageTransition>
       <header :class="playerHeroClasses">
         <div :class="playerHeroEyebrowClasses">
@@ -720,7 +715,6 @@ const playerTeamChipShortClasses =
         </div>
 
         <div :class="playerHeroBodyClasses">
-          <!-- Avatar with amber ring -->
           <div class="shrink-0">
             <div :class="playerHeroAvatarFrameClasses">
               <img
@@ -747,7 +741,6 @@ const playerTeamChipShortClasses =
             </div>
           </div>
 
-          <!-- Identity: name, meta row, badges -->
           <div :class="playerHeroIdentityClasses">
             <div :class="playerHeroNameRowClasses">
               <h1 :class="playerHeroNameClasses">
@@ -789,6 +782,7 @@ const playerTeamChipShortClasses =
                 v-if="player.elo"
                 :elo="player.elo"
                 :peak="player.peak_elo"
+                bordered
               />
               <PlayerLeaderboardRank
                 v-if="player.steam_id"
@@ -796,7 +790,6 @@ const playerTeamChipShortClasses =
               />
             </div>
 
-            <!-- Actions: role / sanction / edit -->
             <div
               v-if="player.role || canSanction || canEditPlayer"
               :class="playerHeroActionsClasses"
@@ -823,7 +816,6 @@ const playerTeamChipShortClasses =
             </div>
           </div>
 
-          <!-- Right-side CTA -->
           <div :class="playerHeroRightActionsClasses">
             <NuxtLink
               v-if="me && player.steam_id === me.steam_id"
@@ -842,7 +834,6 @@ const playerTeamChipShortClasses =
           </div>
         </div>
 
-        <!-- Teams row -->
         <div
           v-if="player?.teams && player.teams.length > 0"
           :class="playerHeroTeamsClasses"
@@ -872,7 +863,6 @@ const playerTeamChipShortClasses =
       </header>
     </PageTransition>
 
-    <!-- Trophy Case -->
     <PageTransition
       :delay="50"
       v-if="playerTrophies && playerTrophies.length > 0"
@@ -881,11 +871,13 @@ const playerTeamChipShortClasses =
     </PageTransition>
 
     <PageTransition :delay="75" v-if="playerId">
-      <PlayerHighlights :steam-id="playerId" />
+      <PlayerHighlights
+        :steam-id="playerId"
+        @resolved="highlightsResolved = true"
+      />
     </PageTransition>
 
-    <div class="flex flex-col gap-4 md:gap-6" v-if="player">
-      <!-- Mode selector -->
+    <div class="flex flex-col gap-4 md:gap-6" v-if="player && pageContentReady">
       <Tabs v-model="modeTab">
         <TabsList class="grid grid-cols-4 w-full max-w-md mx-auto">
           <TabsTrigger value="all">{{
@@ -1533,72 +1525,59 @@ const playerTeamChipShortClasses =
 
     <Separator />
 
+    <PageTransition :delay="450" v-if="playerId">
+      <RecentTournaments
+        section-label="TOURNAMENTS"
+        :statuses="[
+          e_tournament_status_enum.Finished,
+          e_tournament_status_enum.Live,
+          e_tournament_status_enum.RegistrationOpen,
+          e_tournament_status_enum.RegistrationClosed,
+          e_tournament_status_enum.Setup,
+        ]"
+        status-variant="finished"
+        order-direction="desc"
+        horizontal
+        hide-when-empty
+        :player-steam-id="playerId"
+        :limit="8"
+      />
+    </PageTransition>
+
     <PageTransition :delay="500">
-      <Tabs v-model="activeTab" default-value="matches">
-        <TabsList class="grid grid-cols-2 w-full max-w-md mx-auto">
-          <TabsTrigger
-            value="matches"
-            class="transition-all duration-300 data-[state=active]:shadow-lg"
-            >{{ $t("pages.players.detail.matches") }}</TabsTrigger
-          >
-          <TabsTrigger
-            value="tournaments"
-            class="transition-all duration-300 data-[state=active]:shadow-lg"
-            >{{ $t("pages.players.detail.tournaments") }}</TabsTrigger
-          >
-        </TabsList>
-
-        <TabsContent value="matches">
-          <Empty v-if="playerMatchesTotal === 0" class="min-h-[200px]">
-            <EmptyTitle>{{ $t("pages.players.detail.no_matches") }}</EmptyTitle>
-            <EmptyDescription>
-              <template v-if="eloRange !== 'all' || excludeTournaments">
-                No matches in this window.
-                <button
-                  type="button"
-                  class="ml-1 text-[hsl(var(--tac-amber))] hover:underline"
-                  @click="setRange('all')"
-                >
-                  Expand to all time
-                </button>
-              </template>
-              <template v-else>
-                {{ $t("pages.players.detail.no_matches_description") }}
-              </template>
-            </EmptyDescription>
-          </Empty>
-          <template v-else>
-            <MatchesTable :player="player" :matches="playerMatches" />
-            <Pagination
-              :page="matchesPage"
-              :per-page="matchesPerPage"
-              :total="playerMatchesTotal"
-              @page="(p) => (matchesPage = p)"
-            />
-          </template>
-        </TabsContent>
-
-        <TabsContent value="tournaments">
-          <Empty
-            v-if="!playerTournaments || playerTournaments.length === 0"
-            class="min-h-[200px]"
-          >
-            <EmptyTitle>{{
-              $t("pages.players.detail.no_tournaments")
-            }}</EmptyTitle>
-            <EmptyDescription>{{
-              $t("pages.players.detail.no_tournaments_description")
-            }}</EmptyDescription>
-          </Empty>
-          <div v-else class="space-y-4">
-            <TournamentTableRow
-              v-for="tournament in playerTournaments"
-              :key="tournament.id"
-              :tournament="tournament"
-            ></TournamentTableRow>
-          </div>
-        </TabsContent>
-      </Tabs>
+      <div>
+        <div :class="tacticalSectionLabelClasses">
+          <span :class="tacticalSectionTickClasses"></span>
+          MATCHES
+        </div>
+        <Empty v-if="playerMatchesTotal === 0" class="min-h-[200px]">
+          <EmptyTitle>{{ $t("pages.players.detail.no_matches") }}</EmptyTitle>
+          <EmptyDescription>
+            <template v-if="eloRange !== 'all' || excludeTournaments">
+              No matches in this window.
+              <button
+                type="button"
+                class="ml-1 text-[hsl(var(--tac-amber))] hover:underline"
+                @click="setRange('all')"
+              >
+                Expand to all time
+              </button>
+            </template>
+            <template v-else>
+              {{ $t("pages.players.detail.no_matches_description") }}
+            </template>
+          </EmptyDescription>
+        </Empty>
+        <template v-else>
+          <MatchesTable :player="player" :matches="playerMatches" />
+          <Pagination
+            :page="matchesPage"
+            :per-page="matchesPerPage"
+            :total="playerMatchesTotal"
+            @page="(p) => (matchesPage = p)"
+          />
+        </template>
+      </div>
     </PageTransition>
   </div>
 
@@ -1693,7 +1672,6 @@ import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { e_match_types_enum, e_team_roles_enum } from "~/generated/zeus";
 import { playerFields } from "~/graphql/playerFields";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
-import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
 import { trophyFields } from "~/graphql/trophyFields";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 
@@ -1834,40 +1812,6 @@ export default {
           }
         },
       },
-      playerTournaments: {
-        query: typedGql("subscription")({
-          tournaments: [
-            {
-              limit: 10,
-              where: {
-                rosters: {
-                  player_steam_id: {
-                    _eq: $("steam_id", "bigint"),
-                  },
-                },
-              },
-              order_by: [
-                {},
-                {
-                  start: order_by.desc,
-                },
-              ],
-            },
-            simpleTournamentFields,
-          ],
-        }),
-        variables: function () {
-          return {
-            steam_id: this.playerId,
-          };
-        },
-        skip: function () {
-          return !this.playerId;
-        },
-        result: function ({ data }: { data: any }) {
-          this.playerTournaments = data.tournaments || [];
-        },
-      },
       // Teams that contain the displayed player, fetched alongside the
       // current viewer's role in each team so we can offer a bulk-apply
       // checklist in the roster editor (player-roster flow only).
@@ -1948,14 +1892,29 @@ export default {
       },
     },
   },
+  mounted() {
+    // Fallback in case the highlights subscription is slow / never
+    // responds — don't keep the stats section hidden forever.
+    this.pageContentTimeout = window.setTimeout(() => {
+      this.pageContentTimedOut = true;
+    }, 800);
+  },
   unmounted() {
     usePlayerContext().value = null;
+    if (this.pageContentTimeout) {
+      window.clearTimeout(this.pageContentTimeout);
+    }
   },
   data() {
     return {
       player: undefined,
-      playerTournaments: [],
       playerTrophies: undefined,
+      // Trophy + highlights queries resolve out-of-order with the main
+      // player query; we hold the stats section until they've settled so
+      // their late arrival doesn't push the stats block downward.
+      highlightsResolved: false,
+      pageContentTimedOut: false,
+      pageContentTimeout: null as number | null,
       playerTeamMemberships: [] as Array<{
         team_id: string;
         roster_image_url: string | null;
@@ -1970,6 +1929,10 @@ export default {
     };
   },
   computed: {
+    pageContentReady(): boolean {
+      if (this.pageContentTimedOut) return true;
+      return this.playerTrophies !== undefined && this.highlightsResolved;
+    },
     selectedMode() {
       const raw = this.$route.query.mode;
       const value = Array.isArray(raw) ? raw[0] : raw;

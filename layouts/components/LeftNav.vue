@@ -350,9 +350,9 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 :tooltip="$t('layouts.app_nav.tooltips.manage_matches')"
               >
                 <NuxtLink
-                  :to="{ name: 'manage-matches' }"
+                  :to="{ name: 'matches' }"
                   :class="{
-                    'router-link-active': isRouteActive('manage-matches'),
+                    'router-link-active': isRouteActive('matches'),
                   }"
                 >
                   <CalendarCog />

@@ -87,7 +87,7 @@ const loginFooterLinkClasses =
         type="button"
         @click="signIn"
         :aria-label="$t ? $t('layouts.top_nav.login') : 'Sign in through Steam'"
-        class="group relative border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.35)_100%)] px-[1.1rem] py-[0.85rem] transition-[background-color,border-color,transform] duration-200 [clip-path:polygon(10px_0,100%_0,100%_calc(100%-10px),calc(100%-10px)_100%,0_100%,0_10px)] hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.15)_0%,hsl(var(--tac-amber)/0.05)_100%)] active:translate-y-px"
+        class="group relative border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.35)_100%)] px-[1.1rem] py-[0.85rem] transition-[background-color,border-color,transform] duration-200 hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.15)_0%,hsl(var(--tac-amber)/0.05)_100%)] active:translate-y-px"
       >
         <span
           aria-hidden="true"

@@ -1194,6 +1194,7 @@
         "yes": "Yes",
         "no": "No",
         "more": "More",
+        "columns": "Columns",
         "none": "None",
         "failed": "Failed",
         "disabled": "Disabled",
@@ -1918,6 +1919,10 @@
             "aim_stats": "Aim",
             "opening_duels": "Opening Duels",
             "clutches": "Clutches",
+            "head_to_head": "Head to Head",
+            "replay": "2D Replay",
+            "mobile_label_map": "Map Filter",
+            "mobile_label_view": "View",
             "settings": "Match Settings",
             "streams": "Match Live Streams",
             "admin": "Admin",
@@ -2021,12 +2026,20 @@
                 "team_flashed": "Team Flashed",
                 "avg_blind_time": "Avg blind time",
                 "he_damage": "HE Damage",
-                "molotov_damage": "Incendiary / Molotov Damage",
+                "molotov_damage": "Fire Damage",
+                "utility_summary_total": "total",
+                "utility_summary_flashes": "Flashes",
+                "utility_summary_smokes": "Smokes",
+                "utility_summary_hes": "HEs",
+                "utility_summary_molotovs": "Molotovs",
+                "he_team_damage": "HE Team Dmg",
+                "unused_utility": "Unused Utility",
                 "seconds": "seconds",
                 "trade_kill_opportunities": "Trade Kill Opps",
                 "trade_kill_attempts": "Trade Kill Attempts",
                 "trade_kill_pct": "Trade Kill %",
                 "traded_death_opportunities": "Traded Death Opps",
+                "traded_death_attempts": "Traded Death Attempts",
                 "traded_death_pct": "Traded Death %",
                 "net_trade": "Net Trade",
                 "accuracy": "Accuracy",
@@ -2036,6 +2049,7 @@
                 "spotted_acc": "Spotted Acc",
                 "crosshair_placement": "Cross. Placement",
                 "counter_strafing": "Counter-Strafing",
+                "wasted_magazine_pct": "Wasted Mag %",
                 "spray_accuracy": "Spray Accuracy",
                 "accuracy_spotted": "Accuracy (Spotted)",
                 "calc_header": "How it is calculated",
@@ -2085,6 +2099,11 @@
                         "description": "Your accuracy on the second and later shots of a burst — the shots where recoil matters most.",
                         "calculation": "Hits attributed to spray shots divided by total spray shots. A shot is a spray shot if the same shooter fired within 250ms before it."
                     },
+                    "wasted_magazine_pct": {
+                        "title": "Wasted Magazine %",
+                        "description": "How often you reload with bullets still in the magazine. Lower is better — finishing the clip is more efficient.",
+                        "calculation": "Bullets left in the mag at each reload, divided by (shots fired + wasted bullets)."
+                    },
                     "trade_kill_opportunities": {
                         "title": "Trade Kill Opportunities",
                         "description": "Rounds where a teammate died while you were alive — i.e. you had a chance to trade.",
@@ -2104,6 +2123,11 @@
                         "title": "Traded Death Opportunities",
                         "description": "Your enemy deaths — i.e. each death was a chance for a teammate to trade for you.",
                         "calculation": "Total times you were killed by an enemy."
+                    },
+                    "traded_death_attempts": {
+                        "title": "Traded Death Attempts",
+                        "description": "Total trade attempts your team made on your deaths (a teammate killing your killer within 5s).",
+                        "calculation": "Sum of every teammate kill that traded one of your deaths within 5 seconds."
                     },
                     "traded_death_pct": {
                         "title": "Traded Death %",
@@ -2138,7 +2162,10 @@
             "leave_lineup": "Leave Lineup",
             "update_team_name": "Update Team Name",
             "kd": "K/D",
+            "hltv": "HLTV",
             "hs": "HS%",
+            "kast": "KAST",
+            "survived": "Survived",
             "team_damage": "Team Damage",
             "multi_kill_rounds": "Multi Kill Rounds",
             "mkr": "MKR",
@@ -2151,18 +2178,50 @@
             "total_damage": "Total Damage",
             "substitute": "(substitute)",
             "join": "Join",
-            "slot": "Slot {number}"
+            "slot": "Slot {number}",
+            "tooltips": {
+                "hltv": {
+                    "title": "HLTV Rating 2.0",
+                    "description": "Composite rating from kills/round, deaths/round, assists/round, ADR, and KAST. >1.0 means above-average; >1.2 is elite, <0.85 is poor."
+                },
+                "kast": {
+                    "title": "KAST %",
+                    "description": "Percent of rounds where you contributed: got a Kill, an Assist, Survived the round, or were Traded after dying. Pros average 70–80%."
+                },
+                "survived": {
+                    "title": "Rounds Survived",
+                    "description": "Rounds you finished alive (didn't appear as the victim of any kill). Includes won, lost, and saved rounds."
+                }
+            }
         },
         "opening_duels": {
             "attempts": "Attempts",
-            "success": "Success"
+            "success": "Success",
+            "traded": "Traded",
+            "most_killed": "Most Killed",
+            "best_weapon": "Best Weapon",
+            "most_died_to": "Most Died To"
+        },
+        "head_to_head": {
+            "kills": "Kills",
+            "damage": "Damage",
+            "flashes": "Flashes"
         },
         "clutches": {
             "won": "Won",
             "lost": "Lost",
+            "saved": "Saved",
             "against": "Against",
             "no_clutches": "No clutches this round",
-            "vs": "vs {count}"
+            "no_attempts": "No clutch attempts",
+            "vs": "vs {count}",
+            "vs_short": "1v{count}",
+            "round_short": "Round {number}",
+            "win_rate": "Win Rate",
+            "total_kills": "Total Kills",
+            "clutches_won": "Clutches Won",
+            "clutches_lost": "Clutches Lost",
+            "saves": "Saves"
         },
         "check_in": {
             "checked_in": "Checked In",

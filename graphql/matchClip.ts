@@ -65,7 +65,28 @@ export const matchClipFields = {
       options: {
         best_of: true,
         mr: true,
+        type: true,
       },
+      tournament_brackets: [
+        { limit: 1 },
+        {
+          stage: {
+            e_tournament_stage_type: { description: true },
+            tournament: { id: true, name: true },
+          },
+        },
+      ],
+      match_maps: [
+        {},
+        {
+          id: true,
+          order: true,
+          lineup_1_score: true,
+          lineup_2_score: true,
+          winning_lineup_id: true,
+          map: { name: true, label: true },
+        },
+      ],
     },
   },
 } as const;

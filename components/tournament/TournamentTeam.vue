@@ -33,7 +33,6 @@ import { toast } from "~/components/ui/toast";
 
 <template>
   <div v-if="team && e_team_roles" class="flex flex-col gap-4">
-    <!-- Team header -->
     <header class="flex items-start justify-between gap-4 flex-wrap">
       <div class="min-w-0 flex-1 flex items-start gap-3">
         <div
@@ -181,6 +180,16 @@ import { toast } from "~/components/ui/toast";
 
           <div class="flex items-center gap-2 flex-wrap">
             <span
+              v-if="finalPlacement"
+              class="inline-flex items-center gap-[0.4rem] px-[0.55rem] py-[0.2rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase border rounded"
+              :style="placementBadgeStyle"
+            >
+              <span class="w-[5px] h-[5px] bg-current rounded-full"></span>
+              {{ ordinal(finalPlacement) }}
+            </span>
+
+            <span
+              v-if="showEligibilityBadge"
               class="inline-flex items-center gap-[0.4rem] px-[0.55rem] py-[0.2rem] font-mono text-[0.65rem] font-bold tracking-[0.18em] uppercase border rounded"
               :class="
                 team.eligible_at
@@ -292,7 +301,6 @@ import { toast } from "~/components/ui/toast";
       </AlertDialogContent>
     </AlertDialog>
 
-    <!-- Roster list -->
     <div v-if="team.roster" class="flex flex-col gap-[0.85rem]">
       <div
         class="inline-flex items-center gap-2 font-mono text-[0.65rem] tracking-[0.24em] uppercase text-muted-foreground"
@@ -313,7 +321,6 @@ import { toast } from "~/components/ui/toast";
           @leave="leaveTeam"
         />
 
-        <!-- Empty slots -->
         <div
           v-for="slot of Math.max(0, requiredPlayers - team.roster.length)"
           :key="`slot-${slot}`"
@@ -349,7 +356,6 @@ import { toast } from "~/components/ui/toast";
         </div>
       </div>
 
-      <!-- Pending invites -->
       <div
         v-if="team.invites && team.invites.length > 0"
         class="mt-2 flex flex-col gap-2"
@@ -468,7 +474,6 @@ export default {
         e_tournament_status_enum.Finished,
       ];
 
-      // For non-organizers, also restrict Live status
       if (!this.tournament.is_organizer) {
         restrictedStatuses.push(e_tournament_status_enum.Live);
       }
@@ -513,7 +518,6 @@ export default {
         e_tournament_status_enum.Finished,
       ];
 
-      // For non-organizers, also restrict Live status
       if (!this.tournament.is_organizer) {
         restrictedStatuses.push(e_tournament_status_enum.Live);
       }
@@ -529,8 +533,78 @@ export default {
         e_tournament_status_enum.Finished,
       ].includes(status);
     },
+    hasStarted() {
+      const status = this.tournament.status;
+      return ![
+        e_tournament_status_enum.Setup,
+        e_tournament_status_enum.RegistrationOpen,
+        e_tournament_status_enum.RegistrationClosed,
+      ].includes(status);
+    },
+    showEligibilityBadge() {
+      return !this.hasStarted;
+    },
+    finalPlacement() {
+      if (this.tournament.status !== e_tournament_status_enum.Finished) {
+        return null;
+      }
+      const trophies = (this.tournament as any).trophies || [];
+      const trophy = trophies.find(
+        (t: any) =>
+          t.tournament_team_id === this.team.id && Number(t.placement) > 0,
+      );
+      if (trophy) return Number(trophy.placement);
+
+      const stages = ((this.tournament as any).stages || [])
+        .slice()
+        .sort(
+          (a: any, b: any) => (Number(b.order) || 0) - (Number(a.order) || 0),
+        );
+      for (const stage of stages) {
+        const result = (stage.results || []).find(
+          (r: any) => r.tournament_team_id === this.team.id,
+        );
+        if (result?.placement) return Number(result.placement);
+        if (result?.rank) return Number(result.rank);
+      }
+      return null;
+    },
+    placementBadgeStyle() {
+      const p = this.finalPlacement;
+      if (p === 1) {
+        return {
+          color: "hsl(45 95% 60%)",
+          borderColor: "hsl(45 95% 60% / 0.45)",
+          background: "hsl(45 95% 60% / 0.12)",
+        };
+      }
+      if (p === 2) {
+        return {
+          color: "hsl(0 0% 78%)",
+          borderColor: "hsl(0 0% 78% / 0.45)",
+          background: "hsl(0 0% 78% / 0.12)",
+        };
+      }
+      if (p === 3) {
+        return {
+          color: "hsl(28 70% 52%)",
+          borderColor: "hsl(28 70% 52% / 0.45)",
+          background: "hsl(28 70% 52% / 0.12)",
+        };
+      }
+      return {
+        color: "hsl(var(--muted-foreground))",
+        borderColor: "hsl(var(--border))",
+        background: "hsl(var(--muted) / 0.3)",
+      };
+    },
   },
   methods: {
+    ordinal(n: number) {
+      const s = ["th", "st", "nd", "rd"];
+      const v = n % 100;
+      return n + (s[(v - 20) % 10] || s[v] || s[0]);
+    },
     onIdentityPopoverToggle(open: boolean) {
       if (open) {
         this.editName = this.team.name || "";

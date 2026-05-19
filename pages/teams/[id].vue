@@ -80,7 +80,6 @@ const teamHeroActionsClasses =
       </div>
 
       <div :class="teamHeroBodyClasses">
-        <!-- Emblem: avatar when uploaded, initials fallback -->
         <div :class="teamHeroEmblemFrameClasses">
           <img
             v-if="teamAvatarSrc"
@@ -105,7 +104,6 @@ const teamHeroActionsClasses =
           ></div>
         </div>
 
-        <!-- Identity: name, short, captain -->
         <div :class="teamHeroIdentityClasses">
           <div :class="teamHeroNameRowClasses">
             <h1 :class="teamHeroNameClasses">{{ team.name }}</h1>
@@ -151,7 +149,6 @@ const teamHeroActionsClasses =
           </div>
         </div>
 
-        <!-- Actions -->
         <div :class="teamHeroActionsClasses">
           <DropdownMenu v-model:open="teamMenu" v-if="isOnTeam || isAdmin">
             <DropdownMenuTrigger as-child>
@@ -202,7 +199,10 @@ const teamHeroActionsClasses =
     <TrophyCase :trophies="teamTrophies" :hide-mvp="true" />
   </PageTransition>
 
-  <div v-if="team" class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">
+  <div
+    v-if="team"
+    class="mt-6 grid grid-cols-1 items-start gap-6 lg:grid-cols-5"
+  >
     <PageTransition :delay="100" class="lg:col-span-2">
       <TeamMembers :team-id="$route.params.id" />
     </PageTransition>

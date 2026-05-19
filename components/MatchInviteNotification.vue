@@ -7,36 +7,32 @@ import { Check, XIcon } from "lucide-vue-next";
   <div class="flex flex-row gap-2 justify-between" v-if="matches_by_pk">
     <div class="flex flex-row gap-2 items-center overflow-scroll">
       <div class="flex flex-row gap-2 items-center overflow-scroll">
-        <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger as-child>
+            <PlayerDisplay
+              :player="invitedBy"
+              :showOnline="false"
+              :showFlag="false"
+              :showName="false"
+              :showRole="false"
+            />
+          </TooltipTrigger>
+          <TooltipContent> {{ invitedBy.name }} </TooltipContent>
+        </Tooltip>
+
+        <template v-for="player in players">
           <Tooltip>
             <TooltipTrigger as-child>
               <PlayerDisplay
-                :player="invitedBy"
+                :player="player.player"
                 :showOnline="false"
                 :showFlag="false"
                 :showName="false"
                 :showRole="false"
               />
             </TooltipTrigger>
-            <TooltipContent> {{ invitedBy.name }} </TooltipContent>
+            <TooltipContent> {{ player.player.name }} </TooltipContent>
           </Tooltip>
-        </TooltipProvider>
-
-        <template v-for="player in players">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <PlayerDisplay
-                  :player="player.player"
-                  :showOnline="false"
-                  :showFlag="false"
-                  :showName="false"
-                  :showRole="false"
-                />
-              </TooltipTrigger>
-              <TooltipContent> {{ player.player.name }} </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
         </template>
       </div>
 

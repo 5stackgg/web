@@ -22,6 +22,15 @@ export type ClipLineupRef = {
   lineup_players?: ClipLineupPlayerRef[] | null;
 };
 
+export type ClipMatchMapEntry = {
+  id: string;
+  order: number | null;
+  lineup_1_score: number | null;
+  lineup_2_score: number | null;
+  winning_lineup_id: string | null;
+  map?: { name: string; label: string | null } | null;
+};
+
 export type ClipMatchContext = {
   id: string;
   status: string | null;
@@ -34,6 +43,7 @@ export type ClipMatchContext = {
   lineup_1?: ClipLineupRef | null;
   lineup_2?: ClipLineupRef | null;
   options?: { best_of: number | null; mr: number | null } | null;
+  match_maps?: ClipMatchMapEntry[] | null;
 };
 
 export type ClipMatchMapContext = {

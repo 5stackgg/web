@@ -64,7 +64,7 @@ const navTriggerClasses =
   "nav-trigger-anchor group gap-[0.55rem] h-auto rounded-none border-0 bg-transparent px-[0.85rem] py-2 font-sans text-[0.78rem] font-bold uppercase leading-none tracking-[0.18em] text-[hsl(var(--topnav-foreground)/0.78)] transition-[color,background-color] duration-150 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-foreground focus:bg-[hsl(var(--tac-amber)/0.08)] focus:text-topnav-foreground focus-visible:outline-none data-[state=open]:bg-[hsl(var(--tac-amber)/0.08)] data-[state=open]:text-topnav-foreground hover:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] focus:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] data-[state=open]:[&>.nav-link-tick]:bg-[hsl(var(--tac-amber))] [&>svg]:ml-[0.15rem] [&>svg]:h-3 [&>svg]:w-3 [&>svg]:opacity-60 data-[state=open]:[&>svg]:text-[hsl(var(--tac-amber))] data-[state=open]:[&>svg]:opacity-100";
 
 const navBadgeClasses =
-  "inline-flex min-w-[1.3rem] items-center justify-center gap-[0.3rem] border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.14)] px-[0.4rem] py-[0.15rem] font-sans text-[0.62rem] font-bold leading-none tracking-[0.12em] text-[hsl(var(--tac-amber))] [clip-path:polygon(4px_0,100%_0,100%_calc(100%-4px),calc(100%-4px)_100%,0_100%,0_4px)] [font-variant-numeric:tabular-nums]";
+  "inline-flex min-w-[1.3rem] items-center justify-center gap-[0.3rem] border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.14)] px-[0.4rem] py-[0.15rem] font-sans text-[0.62rem] font-bold leading-none tracking-[0.12em] text-[hsl(var(--tac-amber))] [font-variant-numeric:tabular-nums]";
 
 const navBadgeInlineClasses = "ml-auto";
 const navBadgeLiveClasses =
@@ -73,7 +73,7 @@ const navBadgeDotClasses =
   "h-[5px] w-[5px] rounded-full bg-current shadow-[0_0_6px_currentColor]";
 
 const navContentClasses =
-  "relative mt-0 min-w-[360px] max-w-[95vw] overflow-hidden border border-topnav-border bg-[linear-gradient(180deg,hsl(var(--topnav-background)/0.98)_0%,hsl(var(--topnav-background)/0.92)_100%)] p-0 shadow-[inset_0_1px_0_hsl(var(--tac-amber)/0.12),0_20px_40px_-12px_hsl(0_0%_0%/0.55)] [clip-path:polygon(0_0,calc(100%-12px)_0,100%_12px,100%_100%,12px_100%,0_calc(100%-12px))] [backdrop-filter:blur(8px)] [-webkit-backdrop-filter:blur(8px)] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-[linear-gradient(90deg,transparent,hsl(var(--tac-amber)/0.5),transparent)]";
+  "relative mt-0 min-w-[360px] max-w-[95vw] overflow-hidden border border-topnav-border bg-[linear-gradient(180deg,hsl(var(--topnav-background)/0.98)_0%,hsl(var(--topnav-background)/0.92)_100%)] p-0 shadow-[inset_0_1px_0_hsl(var(--tac-amber)/0.12),0_20px_40px_-12px_hsl(0_0%_0%/0.55)] [backdrop-filter:blur(8px)] [-webkit-backdrop-filter:blur(8px)] before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-[linear-gradient(90deg,transparent,hsl(var(--tac-amber)/0.5),transparent)]";
 const playContentClasses = `${navContentClasses} min-w-[500px]`;
 const communityContentClasses = `${navContentClasses} min-w-[560px]`;
 
@@ -106,7 +106,7 @@ const heroSubtitleClasses =
 
 const topNavRightClasses = "flex items-center gap-2";
 const profileButtonClasses =
-  "inline-flex items-center gap-1.5 border border-transparent bg-transparent px-[0.6rem] py-[0.35rem] text-topnav-foreground transition-[background-color,border-color,color] duration-150 [clip-path:polygon(6px_0,100%_0,100%_calc(100%-6px),calc(100%-6px)_100%,0_100%,0_6px)] hover:border-[hsl(var(--tac-amber)/0.35)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]";
+  "inline-flex items-center gap-1.5 border border-transparent bg-transparent px-[0.6rem] py-[0.35rem] text-topnav-foreground transition-[background-color,border-color,color] duration-150 hover:border-[hsl(var(--tac-amber)/0.35)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]";
 const loginButtonClasses =
   "group relative inline-flex items-center gap-[0.45rem] rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.14)_0%,hsl(var(--tac-amber)/0.06)_100%)] px-[0.8rem] py-[0.45rem] font-sans text-[0.68rem] font-bold uppercase tracking-[0.16em] text-topnav-foreground transition-[background-color,color,transform] duration-150 hover:bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.28)_0%,hsl(var(--tac-amber)/0.14)_100%)] active:translate-y-px sm:px-3 sm:py-[0.35rem] sm:text-[0.65rem] sm:tracking-[0.18em]";
 const loginArrowClasses =

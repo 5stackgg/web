@@ -40,7 +40,6 @@
 </template>
 
 <script lang="ts">
-import { e_player_roles_enum } from "~/generated/zeus";
 import { useTournamentContext } from "~/composables/useTournamentContext";
 import { useMatchContext } from "~/composables/useMatchContext";
 import { usePlayerContext } from "~/composables/usePlayerContext";
@@ -90,17 +89,9 @@ export default {
           path = "/";
         }
 
-        if (path === "/matches" || path.startsWith("/matches/")) {
-          path = useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)
-            ? "/manage-matches"
-            : "/play";
-        }
+        // /matches is the unified browser page for everyone; deeper paths
+        // (eg /matches/<id>) keep their natural crumb trail.
 
-        if (path.startsWith("/manage-matches/")) {
-          path = path.replace("/manage-matches", "/matches");
-        }
-
-        // Wait for tournament name to resolve before showing the crumb
         if (segments[0] === "tournaments" && index === 1) {
           if (tc.value?.id !== segment) {
             return;
@@ -112,7 +103,6 @@ export default {
           return;
         }
 
-        // Wait for match display text to resolve before showing the crumb
         if (segments[0] === "matches" && index === 1) {
           if (mc.value?.id !== segment) {
             return;
@@ -124,7 +114,6 @@ export default {
           return;
         }
 
-        // Wait for player name to resolve before showing the crumb
         if (segments[0] === "players" && index === 1) {
           if (pc.value?.id !== segment) {
             return;
@@ -136,7 +125,6 @@ export default {
           return;
         }
 
-        // Wait for team name to resolve before showing the crumb
         if (segments[0] === "teams" && index === 1) {
           if (teamc.value?.id !== segment) {
             return;

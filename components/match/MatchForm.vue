@@ -45,7 +45,7 @@ const lobbyAccessOptions = computed(() => [
 
 const tickClasses = "w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]";
 const accessBtnClasses =
-  "inline-flex items-center justify-center gap-[0.45rem] px-[0.65rem] py-[0.6rem] text-[0.8rem] font-semibold tracking-[0.12em] uppercase bg-[hsl(var(--muted)/0.3)] border border-border text-muted-foreground [transition:color_140ms_ease,background_140ms_ease,border-color_140ms_ease] cursor-pointer [clip-path:polygon(6px_0,100%_0,100%_calc(100%-6px),calc(100%-6px)_100%,0_100%,0_6px)] hover:text-foreground hover:bg-[hsl(var(--muted)/0.5)]";
+  "inline-flex items-center justify-center gap-[0.45rem] px-[0.65rem] py-[0.6rem] text-[0.8rem] font-semibold tracking-[0.12em] uppercase bg-[hsl(var(--muted)/0.3)] border border-border text-muted-foreground [transition:color_140ms_ease,background_140ms_ease,border-color_140ms_ease] cursor-pointer hover:text-foreground hover:bg-[hsl(var(--muted)/0.5)]";
 const accessBtnActiveClasses =
   "!text-[hsl(0_0%_8%)] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_100%)] !border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_16px_-6px_hsl(var(--tac-amber)/0.5)] hover:[background:linear-gradient(135deg,hsl(36_100%_68%)_0%,hsl(var(--tac-amber))_100%)]";
 const tacLabelClasses =
@@ -56,7 +56,6 @@ const tacLabelClasses =
   <form @submit.prevent="updateMatch" class="mx-auto w-full max-w-4xl">
     <MatchOptions :form="form" :match="match">
       <template #left>
-        <!-- Match Lobby Access -->
         <FormField
           v-if="!isTournamentMatch"
           v-slot="{ value, handleChange }"
@@ -90,7 +89,6 @@ const tacLabelClasses =
           </FormItem>
         </FormField>
 
-        <!-- Pick Up Game toggle -->
         <FormField v-if="!match" v-slot="{ value, handleChange }" name="pug">
           <FormItem>
             <div
@@ -127,7 +125,6 @@ const tacLabelClasses =
           </FormItem>
         </FormField>
 
-        <!-- Team vs Team picker -->
         <div
           v-if="!form.values.pug"
           class="relative p-5 border border-border rounded-lg [background:linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] backdrop-blur-[6px]"
@@ -168,7 +165,7 @@ const tacLabelClasses =
             </FormField>
 
             <div
-              class="inline-flex items-center gap-[0.4rem] px-[0.85rem] py-[0.55rem] mb-0.5 font-bold text-[0.85rem] tracking-[0.22em] text-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)] border border-[hsl(var(--tac-amber)/0.4)] [clip-path:polygon(0_0,calc(100%-8px)_0,100%_8px,100%_100%,8px_100%,0_calc(100%-8px))] max-sm:justify-self-center"
+              class="inline-flex items-center gap-[0.4rem] px-[0.85rem] py-[0.55rem] mb-0.5 font-bold text-[0.85rem] tracking-[0.22em] text-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)] border border-[hsl(var(--tac-amber)/0.4)] max-sm:justify-self-center"
               aria-hidden="true"
             >
               <Swords class="w-4 h-4" />
@@ -216,7 +213,7 @@ const tacLabelClasses =
     <div class="mt-8 flex justify-center">
       <button
         type="submit"
-        class="group/submit relative isolate inline-flex items-center px-12 py-4 font-bold text-base tracking-[0.22em] uppercase text-[hsl(0_0%_8%)] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] border border-[hsl(var(--tac-amber))] [clip-path:polygon(14px_0,100%_0,100%_calc(100%-14px),calc(100%-14px)_100%,0_100%,0_14px)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_8px_24px_-6px_hsl(var(--tac-amber)/0.6)] [transition:transform_200ms_cubic-bezier(0.4,0,0.2,1),box-shadow_200ms_ease] cursor-pointer overflow-hidden hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_14px_36px_-6px_hsl(var(--tac-amber)/0.8),0_0_28px_hsl(var(--tac-amber)/0.35)] active:translate-y-0"
+        class="group/submit relative isolate inline-flex items-center px-12 py-4 font-bold text-base tracking-[0.22em] uppercase text-[hsl(0_0%_8%)] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] border border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_8px_24px_-6px_hsl(var(--tac-amber)/0.6)] [transition:transform_200ms_cubic-bezier(0.4,0,0.2,1),box-shadow_200ms_ease] cursor-pointer overflow-hidden hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_14px_36px_-6px_hsl(var(--tac-amber)/0.8),0_0_28px_hsl(var(--tac-amber)/0.35)] active:translate-y-0"
       >
         <span class="relative z-[1] inline-flex items-center gap-3">
           <PlayIcon

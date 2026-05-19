@@ -3,8 +3,8 @@ import { CalendarIcon } from "lucide-vue-next";
 </script>
 
 <template>
-  <span class="flex items-center gap-2">
-    <CalendarIcon class="h-4 w-4" v-if="!seconds" />
+  <span class="inline-flex items-center gap-2 whitespace-nowrap">
+    <CalendarIcon class="h-4 w-4 shrink-0" v-if="!seconds" />
     {{ text }}
   </span>
 </template>

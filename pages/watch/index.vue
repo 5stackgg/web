@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { ref } from "vue";
 import { Tv } from "lucide-vue-next";
 import OtherMatches from "~/components/match/OtherMatches.vue";
 import RecentHighlights from "~/components/clips/RecentHighlights.vue";
@@ -10,18 +9,11 @@ import {
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import TournamentFeatureCard from "~/components/tournament/TournamentFeatureCard.vue";
+import RecentTournaments from "~/components/tournament/RecentTournaments.vue";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
-  tacticalTabsListClasses,
-  tacticalTabsTriggerClasses,
-  tacticalTabIndicatorClasses,
-  tacticalTabIndicatorLiveClasses,
-  tacticalTabIndicatorUpcomingClasses,
-  tacticalTabIndicatorFinishedClasses,
 } from "~/utilities/tacticalClasses";
-
-const activeTab = ref("live-matches");
 </script>
 
 <template>
@@ -43,7 +35,7 @@ const activeTab = ref("live-matches");
     <div>
       <div :class="tacticalSectionLabelClasses">
         <span :class="tacticalSectionTickClasses"></span>
-        TOURNAMENT.FEED
+        LIVE.TOURNAMENTS
       </div>
       <div class="space-y-3">
         <TournamentFeatureCard
@@ -57,91 +49,82 @@ const activeTab = ref("live-matches");
     </div>
   </PageTransition>
 
+  <PageTransition :delay="125" class="mt-6">
+    <OtherMatches
+      section-label="LIVE.MATCHES"
+      empty-label="STANDBY · NO LIVE MATCHES"
+      :is-in-lineup="true"
+      :show-pagination="false"
+      :use-subscription="true"
+      compact
+      :limit="12"
+      :statuses="[
+        e_match_status_enum.Live,
+        e_match_status_enum.WaitingForCheckIn,
+        e_match_status_enum.WaitingForServer,
+        e_match_status_enum.Veto,
+      ]"
+    />
+  </PageTransition>
+
   <PageTransition :delay="150" class="mt-6">
-    <div>
-      <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
-        <div :class="[tacticalSectionLabelClasses, 'mb-0']">
-          <span :class="tacticalSectionTickClasses"></span>
-          MATCHES.FEED
-        </div>
-        <Tabs v-model="activeTab">
-          <TabsList variant="underline" :class="tacticalTabsListClasses">
-            <TabsTrigger
-              value="live-matches"
-              :class="tacticalTabsTriggerClasses"
-            >
-              <span
-                :class="[
-                  tacticalTabIndicatorClasses,
-                  tacticalTabIndicatorLiveClasses,
-                ]"
-              ></span>
-              {{ $t("common.live") }}
-            </TabsTrigger>
-            <TabsTrigger
-              value="upcoming-matches"
-              :class="tacticalTabsTriggerClasses"
-            >
-              <span
-                :class="[
-                  tacticalTabIndicatorClasses,
-                  tacticalTabIndicatorUpcomingClasses,
-                ]"
-              ></span>
-              {{ $t("pages.watch.upcoming_matches") }}
-            </TabsTrigger>
-            <TabsTrigger
-              value="finished-matches"
-              :class="tacticalTabsTriggerClasses"
-            >
-              <span
-                :class="[
-                  tacticalTabIndicatorClasses,
-                  tacticalTabIndicatorFinishedClasses,
-                ]"
-              ></span>
-              {{ $t("common.finished") }}
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div>
-      <Tabs v-model="activeTab">
-        <TabsContent value="live-matches">
-          <OtherMatches
-            :is-in-lineup="true"
-            :statuses="[
-              e_match_status_enum.Live,
-              e_match_status_enum.WaitingForCheckIn,
-              e_match_status_enum.WaitingForServer,
-              e_match_status_enum.Veto,
-            ]"
-          ></OtherMatches>
-        </TabsContent>
-        <TabsContent value="upcoming-matches">
-          <OtherMatches
-            :is-in-lineup="true"
-            :statuses="[e_match_status_enum.Scheduled]"
-          ></OtherMatches>
-        </TabsContent>
-        <TabsContent value="finished-matches">
-          <OtherMatches
-            :is-in-lineup="true"
-            :statuses="[e_match_status_enum.Finished]"
-          ></OtherMatches>
-        </TabsContent>
-      </Tabs>
-    </div>
+    <RecentTournaments
+      section-label="UPCOMING.TOURNAMENTS"
+      :statuses="[
+        e_tournament_status_enum.RegistrationOpen,
+        e_tournament_status_enum.RegistrationClosed,
+        e_tournament_status_enum.Setup,
+      ]"
+      status-variant="registration"
+      status-label="Upcoming"
+      order-direction="asc"
+      horizontal
+      hide-when-empty
+      :limit="8"
+    />
   </PageTransition>
 
-  <!-- Recent highlights live below the matches feed and hide entirely
-       when there are no public clips — see `sectionLabel` in
-       RecentHighlights.vue. Avoids leaving a dead "RECENT.HIGHLIGHTS"
-       header on quiet days. -->
+  <PageTransition :delay="175" class="mt-6">
+    <OtherMatches
+      section-label="UPCOMING.MATCHES"
+      :is-in-lineup="true"
+      :show-pagination="false"
+      :hide-when-empty="true"
+      compact
+      :limit="10"
+      :statuses="[e_match_status_enum.Scheduled]"
+    />
+  </PageTransition>
+
   <PageTransition :delay="200" class="mt-6">
-    <RecentHighlights section-label="RECENT.HIGHLIGHTS" />
+    <RecentHighlights section-label="RECENT.HIGHLIGHTS" horizontal />
   </PageTransition>
 
-  <div id="pagination" class="mt-6"></div>
+  <PageTransition :delay="225" class="mt-6">
+    <OtherMatches
+      section-label="RECENT.MATCHES"
+      see-all-to="/matches"
+      :is-in-lineup="true"
+      :show-pagination="false"
+      :hide-when-empty="true"
+      compact
+      :limit="10"
+      :statuses="[e_match_status_enum.Finished]"
+    />
+  </PageTransition>
+
+  <PageTransition :delay="250" class="mt-6">
+    <RecentTournaments
+      section-label="RECENT.TOURNAMENTS"
+      :statuses="[e_tournament_status_enum.Finished]"
+      status-variant="finished"
+      :status-label="$t('common.finished')"
+      order-direction="desc"
+      horizontal
+      hide-when-empty
+      :limit="8"
+    />
+  </PageTransition>
 </template>
 
 <script lang="ts">

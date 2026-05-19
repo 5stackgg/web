@@ -1,97 +1,38 @@
 <script lang="ts" setup>
-import cleanMapName from "~/utilities/cleanMapName";
-import PlayerDisplay from "../PlayerDisplay.vue";
 import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
 </script>
 
 <template>
-  <div
-    v-for="match_map in filteredMatchMaps"
-    :key="match_map.id"
-    class="bg-muted/30 p-6 rounded-lg mb-8"
-  >
-    <h3 class="text-2xl font-bold mb-6 text-foreground">
-      {{ cleanMapName(match_map.map.name) }}
-    </h3>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div
-        v-for="round in [...match_map.rounds]
-          .sort((a: any, b: any) => a.round - b.round)
-          .filter((r: any) => r.round !== 0)"
-        :key="round.round"
-        class="bg-background p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg"
-      >
-        <div class="flex justify-between items-center mb-4">
-          <h4 class="text-xl font-semibold">
-            {{ $t("common.round", { number: round.round }) }}
-          </h4>
-          <span
-            v-if="clutches[match_map.id] && clutches[match_map.id][round.round]"
-            :class="[
-              'px-3 py-1 rounded-full text-sm font-medium',
-              clutches[match_map.id][round.round].success
-                ? 'bg-green-900/50 text-green-400'
-                : 'bg-red-900/50 text-red-400',
-            ]"
-          >
-            {{
-              clutches[match_map.id][round.round].success
-                ? $t("match.clutches.won")
-                : $t("match.clutches.lost")
-            }}
-
-            {{
-              $t("match.clutches.vs", {
-                count: clutches[match_map.id][round.round].against.length,
-              })
-            }}
-          </span>
-        </div>
-        <div
-          v-if="clutches[match_map.id] && clutches[match_map.id][round.round]"
-          class="space-y-4"
-        >
-          <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-              <PlayerDisplay
-                :player="clutches[match_map.id][round.round].player.player"
-                :avatar-override="
-                  avatarOverrideFor(
-                    clutches[match_map.id][round.round].player.player?.steam_id,
-                  )
-                "
-                class="text-lg"
-              ></PlayerDisplay>
-            </div>
-          </div>
-          <div class="mt-4">
-            <p class="text-sm mb-2 font-medium">
-              {{ $t("match.clutches.against") }}:
-            </p>
-            <div class="flex flex-wrap gap-4">
-              <template
-                v-for="{ player } of clutches[match_map.id][round.round]
-                  .against"
-              >
-                <PlayerDisplay
-                  :player="player"
-                  :avatar-override="avatarOverrideFor(player?.steam_id)"
-                  class="w-full text-sm bg-muted/50 px-3 py-2 rounded"
-                ></PlayerDisplay>
-              </template>
-            </div>
-          </div>
-        </div>
-        <p v-else class="text-sm text-muted-foreground italic mt-4">
-          {{ $t("match.clutches.no_clutches") }}
-        </p>
-      </div>
-    </div>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <ClutchTeamPanel
+      :lineup="lineup1"
+      :clutches="clutchesByLineup[lineup1.id] || []"
+      :avatar-override="lineup1AvatarOverride"
+    />
+    <ClutchTeamPanel
+      :lineup="lineup2"
+      :clutches="clutchesByLineup[lineup2.id] || []"
+      :avatar-override="lineup2AvatarOverride"
+    />
   </div>
 </template>
 
 <script lang="ts">
+import ClutchTeamPanel from "~/components/match/ClutchTeamPanel.vue";
+
+type ClutchOutcome = "won" | "lost" | "saved";
+
+type Clutch = {
+  outcome: ClutchOutcome;
+  round: number;
+  match_map_id: string;
+  clutcher_steam_id: string;
+  against_count: number;
+  kills_in_clutch: number;
+};
+
 export default {
+  components: { ClutchTeamPanel },
   props: {
     match: {
       required: true,
@@ -110,142 +51,130 @@ export default {
       default: null,
     },
   },
-  methods: {
-    getClutches(member: { steam_id: string }) {
-      const clutches = [];
-      for (const match_map_id in this.clutches) {
-        for (const round in this.clutches[match_map_id]) {
-          if (
-            this.clutches[match_map_id][round].player.steam_id ===
-            member.steam_id
-          ) {
-            clutches.push(this.clutches[match_map_id][round]);
-          }
-        }
-      }
-      return clutches;
-    },
-    getLineupIdBySteamId(steam_id: string) {
-      if (
-        this.lineup1.lineup_players.some(
-          (player) => player.steam_id === steam_id,
-        )
-      ) {
-        return this.lineup1.id;
-      }
-      if (
-        this.lineup2.lineup_players.some(
-          (player) => player.steam_id === steam_id,
-        )
-      ) {
-        return this.lineup2.id;
-      }
-      return null;
-    },
-    avatarOverrideFor(steamId: string | number | null | undefined) {
-      if (!steamId) return null;
-      const inL1 = this.lineup1.lineup_players?.some(
-        (p: any) => String(p.steam_id) === String(steamId),
-      );
-      if (inL1) return buildLineupAvatarOverride(this.lineup1)(steamId);
-      const inL2 = this.lineup2.lineup_players?.some(
-        (p: any) => String(p.steam_id) === String(steamId),
-      );
-      if (inL2) return buildLineupAvatarOverride(this.lineup2)(steamId);
-      return null;
-    },
-  },
   computed: {
     filteredMatchMaps() {
-      if (!this.selectedMapId) {
-        return this.match.match_maps;
-      }
+      if (!this.selectedMapId) return this.match.match_maps;
       return this.match.match_maps.filter(
-        (match_map: any) => match_map.id === this.selectedMapId,
+        (m: any) => m.id === this.selectedMapId,
       );
     },
-    clutches() {
-      const lineup1 = this.lineup1.lineup_players;
-      const lineup2 = this.lineup2.lineup_players;
+    lineup1AvatarOverride() {
+      return buildLineupAvatarOverride(this.lineup1);
+    },
+    lineup2AvatarOverride() {
+      return buildLineupAvatarOverride(this.lineup2);
+    },
+    clutchesByLineup(): Record<string, Clutch[]> {
+      const result: Record<string, Clutch[]> = {
+        [this.lineup1.id]: [],
+        [this.lineup2.id]: [],
+      };
+      const lineup1Ids = new Set(
+        this.lineup1.lineup_players.map((p: any) => String(p.steam_id)),
+      );
 
-      const clutches: Record<
-        string,
-        Record<
-          number,
-          {
-            success: boolean;
-            round: number;
-            match_map_id: string;
-            player: Object;
-            against: Object[];
-          }
-        >
-      > = {};
-
-      for (const match_map of this.match.match_maps) {
-        clutches[match_map.id] = {};
-
+      for (const match_map of this.filteredMatchMaps) {
         for (const round of match_map.rounds) {
-          let lineups = [[...lineup1], [...lineup2]];
-
-          let clutchStarted = false;
-          let clutcher: { player: Object; team: number } | null = null;
-
-          for (const kill of round.kills) {
-            // Remove the killed player from their team
-            for (let i = 0; i < 2; i++) {
-              const playerIndex = lineups[i].findIndex(
-                (player) => player.steam_id === kill.attacked_player.steam_id,
-              );
-              if (playerIndex !== -1) {
-                lineups[i].splice(playerIndex, 1);
-                break;
-              }
-            }
-
-            const lineup1Alive = lineups[0].length;
-            const lineup2Alive = lineups[1].length;
-
-            // Check if a clutch situation has started
-            if (!clutchStarted && (lineup1Alive === 1 || lineup2Alive === 1)) {
-              clutchStarted = true;
-              const clutchTeam = lineup1Alive === 1 ? 0 : 1;
-              clutcher = {
-                player: lineups[clutchTeam][0],
-                team: clutchTeam,
-              };
-
-              clutches[match_map.id][round.round] = {
-                success: false,
-                round: round.round,
-                match_map_id: match_map.id,
-                player: clutcher.player,
-                against: [...lineups[1 - clutchTeam]],
-              };
-            }
-
-            // If clutch has started, check if the clutcher got a kill
-            if (
-              clutchStarted &&
-              clutcher &&
-              kill.player?.steam_id === clutcher.player.steam_id
-            ) {
-              if (lineups[1 - clutcher.team].length === 0) {
-                // Clutch successful
-                clutches[match_map.id][round.round].success = true;
-                break;
-              }
-            }
-
-            // If all players on one team are dead, end the round
-            if (lineup1Alive === 0 || lineup2Alive === 0) {
-              break;
-            }
+          if (round.round === 0) continue;
+          const detected = this.detectClutch(round, match_map.id, lineup1Ids);
+          if (detected) {
+            const lineupId = lineup1Ids.has(detected.clutcher_steam_id)
+              ? this.lineup1.id
+              : this.lineup2.id;
+            result[lineupId].push(detected);
           }
         }
       }
+      return result;
+    },
+  },
+  methods: {
+    detectClutch(
+      round: any,
+      match_map_id: string,
+      lineup1Ids: Set<string>,
+    ): Clutch | null {
+      const alive: [Set<string>, Set<string>] = [
+        new Set(
+          this.lineup1.lineup_players.map((p: any) => String(p.steam_id)),
+        ),
+        new Set(
+          this.lineup2.lineup_players.map((p: any) => String(p.steam_id)),
+        ),
+      ];
 
-      return clutches;
+      let clutchStarted = false;
+      let clutcherTeam: 0 | 1 | null = null;
+      let clutcherSteamId: string | null = null;
+      let killsInClutch = 0;
+      let againstCount = 0;
+      let killedAllOpponents = false;
+
+      for (const kill of round.kills) {
+        const victimSteamId = String(kill.attacked_player.steam_id);
+        const killerSteamId = kill.player?.steam_id
+          ? String(kill.player.steam_id)
+          : null;
+
+        if (alive[0].has(victimSteamId)) alive[0].delete(victimSteamId);
+        else if (alive[1].has(victimSteamId)) alive[1].delete(victimSteamId);
+
+        if (
+          clutchStarted &&
+          clutcherSteamId &&
+          killerSteamId === clutcherSteamId
+        ) {
+          killsInClutch++;
+        }
+
+        if (
+          !clutchStarted &&
+          (alive[0].size === 1 || alive[1].size === 1) &&
+          alive[0].size > 0 &&
+          alive[1].size > 0
+        ) {
+          clutchStarted = true;
+          clutcherTeam = alive[0].size === 1 ? 0 : 1;
+          clutcherSteamId = [...alive[clutcherTeam]][0];
+          againstCount = alive[1 - clutcherTeam].size;
+        }
+
+        if (clutchStarted && clutcherTeam !== null) {
+          if (alive[1 - clutcherTeam].size === 0) {
+            killedAllOpponents = true;
+            break;
+          }
+          if (alive[clutcherTeam].size === 0) break;
+        }
+      }
+
+      if (!clutchStarted || !clutcherSteamId || clutcherTeam === null)
+        return null;
+
+      const clutcherLineupSide: "lineup_1" | "lineup_2" = lineup1Ids.has(
+        clutcherSteamId,
+      )
+        ? "lineup_1"
+        : "lineup_2";
+      const clutcherSide =
+        clutcherLineupSide === "lineup_1"
+          ? round.lineup_1_side
+          : round.lineup_2_side;
+      const clutcherTeamWonRound = round.winning_side === clutcherSide;
+
+      let outcome: ClutchOutcome;
+      if (killedAllOpponents) outcome = "won";
+      else if (clutcherTeamWonRound) outcome = "saved";
+      else outcome = "lost";
+
+      return {
+        outcome,
+        round: round.round,
+        match_map_id,
+        clutcher_steam_id: clutcherSteamId,
+        against_count: againstCount,
+        kills_in_clutch: killsInClutch,
+      };
     },
   },
 };

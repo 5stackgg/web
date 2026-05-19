@@ -24,9 +24,11 @@ const isMobile = useMediaQuery("(max-width: 768px)");
         :style="{ '--tier-rgb': primaryTier.rgb }"
         :aria-label="`ELO, primary ${primaryTier.label} ${primaryElo}`"
       >
-        <span :class="triggerNotchClasses" aria-hidden="true"></span>
-        <span :class="triggerLabelClasses">ELO</span>
-        <span :class="triggerSeparatorClasses" aria-hidden="true"></span>
+        <template v-if="bordered">
+          <span :class="triggerNotchClasses" aria-hidden="true"></span>
+          <span :class="triggerLabelClasses">ELO</span>
+          <span :class="triggerSeparatorClasses" aria-hidden="true"></span>
+        </template>
         <span :class="triggerValueClasses">
           {{ primaryElo ?? "—" }}
         </span>
@@ -39,7 +41,6 @@ const isMobile = useMediaQuery("(max-width: 768px)");
       :collision-padding="12"
       :class="cardClasses"
     >
-      <!-- corner ticks -->
       <span
         :class="[cornerTickClasses, '-left-px -top-px border-l border-t']"
         aria-hidden="true"
@@ -57,10 +58,8 @@ const isMobile = useMediaQuery("(max-width: 768px)");
         aria-hidden="true"
       ></span>
 
-      <!-- scanline overlay -->
       <span :class="scanlineClasses" aria-hidden="true"></span>
 
-      <!-- header band -->
       <header :class="headerClasses">
         <span :class="headerEyebrowClasses">
           <span :class="headerChevronClasses">◢</span>
@@ -69,7 +68,6 @@ const isMobile = useMediaQuery("(max-width: 768px)");
         <span :class="headerCountClasses"> {{ activeCount }}/3 </span>
       </header>
 
-      <!-- rank rows -->
       <div :class="rowsContainerClasses">
         <div
           v-for="(row, idx) in eloRows"
@@ -81,12 +79,10 @@ const isMobile = useMediaQuery("(max-width: 768px)");
           ]"
           :style="row.value ? { '--row-rgb': row.rgb } : undefined"
         >
-          <!-- left rail: mode name -->
           <div :class="rowRailClasses">
             <span :class="rowModeClasses">{{ row.mode }}</span>
           </div>
 
-          <!-- center: bracket bar -->
           <div :class="rowMidClasses">
             <div
               v-if="row.value"
@@ -106,7 +102,6 @@ const isMobile = useMediaQuery("(max-width: 768px)");
             </div>
           </div>
 
-          <!-- right: value + per-row peak hint -->
           <div :class="rowValueWrapClasses">
             <template v-if="row.value">
               <span :class="rowValueClasses">
@@ -123,7 +118,6 @@ const isMobile = useMediaQuery("(max-width: 768px)");
             <span v-else :class="rowValueEmptyClasses">— — —</span>
           </div>
 
-          <!-- at-peak indicator (currently sitting at all-time high) -->
           <span
             v-if="row.atPeak"
             :class="rowPeakBadgeClasses"
@@ -134,7 +128,6 @@ const isMobile = useMediaQuery("(max-width: 768px)");
         </div>
       </div>
 
-      <!-- footer: all-time peak trace -->
       <footer
         v-if="peakRow"
         :class="footerClasses"
@@ -236,6 +229,11 @@ export default {
       required: false,
       default: "competitive",
     },
+    bordered: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   computed: {
@@ -320,17 +318,25 @@ export default {
       };
     },
 
-    // ----- class bundles (kept off-template for legibility) -----
     triggerClasses(): string {
+      if (this.bordered) {
+        return [
+          "group/elo relative inline-flex items-center gap-1.5 cursor-pointer select-none",
+          "px-[0.55rem] py-[0.2rem] rounded",
+          "border border-[rgb(var(--tier-rgb)/0.4)] bg-[hsl(var(--card)/0.55)]",
+          "[backdrop-filter:blur(6px)]",
+          "transition-[transform,border-color,box-shadow] duration-150",
+          "hover:border-[rgb(var(--tier-rgb)/0.85)] hover:-translate-y-px",
+          "hover:shadow-[0_0_0_1px_rgb(var(--tier-rgb)/0.25),0_6px_18px_-8px_rgb(var(--tier-rgb)/0.55)]",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.5)]",
+        ].join(" ");
+      }
       return [
-        "group/elo relative inline-flex items-center gap-1.5 cursor-pointer select-none",
-        "px-[0.55rem] py-[0.2rem] rounded",
-        "border border-[rgb(var(--tier-rgb)/0.4)] bg-[hsl(var(--card)/0.55)]",
-        "[backdrop-filter:blur(6px)]",
-        "transition-[transform,border-color,box-shadow] duration-150",
-        "hover:border-[rgb(var(--tier-rgb)/0.85)] hover:-translate-y-px",
-        "hover:shadow-[0_0_0_1px_rgb(var(--tier-rgb)/0.25),0_6px_18px_-8px_rgb(var(--tier-rgb)/0.55)]",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.5)]",
+        "group/elo relative inline-flex items-center cursor-pointer select-none",
+        "px-0 py-0 bg-transparent border-0",
+        "transition-[transform,color] duration-150",
+        "hover:-translate-y-px",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.5)] focus-visible:ring-offset-1",
       ].join(" ");
     },
     triggerNotchClasses(): string {

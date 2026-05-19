@@ -46,7 +46,7 @@ import Separator from "../ui/separator/Separator.vue";
     class="flex items-center justify-between gap-4 px-[0.85rem] py-[0.65rem] bg-card/50 border border-border rounded-md [transition:border-color_160ms_ease,background_160ms_ease] hover:border-[hsl(var(--tac-amber)/0.35)] hover:bg-card/70"
   >
     <div class="flex items-center gap-[0.65rem] min-w-0 flex-1">
-      <PlayerDisplay :player="member.player" />
+      <PlayerDisplay :player="member.player" :linkable="true" />
     </div>
 
     <div class="flex flex-shrink-0 items-center gap-2">

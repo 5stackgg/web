@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Tv } from "lucide-vue-next";
 import OtherMatches from "~/components/match/OtherMatches.vue";
 import RecentHighlights from "~/components/clips/RecentHighlights.vue";
 import {
@@ -19,10 +18,6 @@ import {
 <template>
   <PageTransition>
     <TacticalPageHeader>
-      <template #description>
-        <Tv class="h-3.5 w-3.5" />
-        {{ $t("pages.watch.live_feed") }}
-      </template>
       <template #title>{{ $t("pages.watch.title") }}</template>
     </TacticalPageHeader>
   </PageTransition>

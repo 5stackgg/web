@@ -3,7 +3,6 @@ import {
   PlusCircle,
   ArrowUpIcon,
   ArrowDownIcon,
-  Swords,
   Calendar as CalendarIcon,
   X,
 } from "lucide-vue-next";
@@ -45,34 +44,33 @@ import {
 
 const auth = useAuthStore();
 // Admin-tier roles see the extended filter set (match-ID search, in-lineup
-// filter, only-my-matches toggle, Create button). Anyone below sees a
-// trimmed view — server-side RLS already enforces what they can read.
+// filter, only-my-matches toggle). Anyone below sees a trimmed view —
+// server-side RLS already enforces what they can read.
 const canManageMatches = computed(
   () =>
     auth.isAdmin.value ||
     auth.isMatchOrganizer.value ||
     auth.isTournamentOrganizer.value,
 );
+const canCreateMatch = computed(
+  () => useApplicationSettingsStore().canCreateMatch,
+);
 </script>
 
 <template>
   <PageTransition>
     <TacticalPageHeader>
-      <template #description>
-        <Swords class="h-3.5 w-3.5" />
-        {{ $t("pages.matches.browser") }}
-      </template>
       <template #title>{{ $t("pages.matches.title") }}</template>
       <template #actions>
-        <button
-          v-if="canManageMatches"
-          type="button"
+        <NuxtLink
+          v-if="canCreateMatch"
+          to="/matches/create"
           :class="tacticalCtaButtonClasses"
-          @click="navigateTo('/matches/create')"
+          :title="$t('pages.matches.create')"
         >
           <PlusCircle class="w-4 h-4" />
           <span class="hidden md:inline">{{ $t("pages.matches.create") }}</span>
-        </button>
+        </NuxtLink>
       </template>
     </TacticalPageHeader>
   </PageTransition>

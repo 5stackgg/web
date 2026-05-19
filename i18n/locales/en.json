@@ -2407,7 +2407,15 @@
         },
         "picks": {
             "decider": "Decider",
-            "empty": "No Veto Picks"
+            "empty": "No Veto Picks",
+            "counter_terrorist": "Counter-Terrorist",
+            "terrorist": "Terrorist",
+            "action_pick": "{team} picked {map}",
+            "action_ban": "{team} banned {map}",
+            "action_side": "{team} chose {side} on {map}",
+            "action_decider": "{map} was the decider",
+            "side_picked_by": "{team} chose {side}",
+            "starts_on": "{team} starts {side}"
         },
         "decider": "Decider",
         "map_veto": {

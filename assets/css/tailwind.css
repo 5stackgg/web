@@ -181,10 +181,6 @@
   html {
     touch-action: manipulation;
   }
-  html,
-  body {
-    overscroll-behavior-x: none;
-  }
 }
 
 @media screen and (max-width: 768px) {

@@ -395,10 +395,11 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
       class="pointer-events-none absolute inset-x-0 top-0 h-2/5 bg-[linear-gradient(180deg,hsl(0_0%_0%/0.7)_0%,transparent_100%)] transition-opacity duration-300"
       :class="controlsVisible ? 'opacity-100' : 'opacity-0'"
     ></div>
-    <!-- Bottom fade — same for the bottom-slot info. -->
+    <!-- Bottom fade — kept visible at all times so the persistent
+         player-info HUD in the bottom slot stays legible against bright
+         clips, even when the rest of the chrome auto-hides. -->
     <div
-      class="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-[linear-gradient(180deg,transparent_0%,hsl(0_0%_0%/0.7)_100%)] transition-opacity duration-300"
-      :class="controlsVisible ? 'opacity-100' : 'opacity-0'"
+      class="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-[linear-gradient(180deg,transparent_0%,hsl(0_0%_0%/0.7)_100%)]"
     ></div>
 
     <!-- Top tray — consumer fills left + right via slots. -->
@@ -434,11 +435,10 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
       <Play v-else class="h-7 w-7 translate-x-0.5 fill-current" />
     </button>
 
-    <!-- Bottom slot — player display in the reel, title in the modal. -->
-    <div
-      class="pointer-events-none absolute inset-x-0 bottom-0 transition-opacity duration-300"
-      :class="controlsVisible ? 'opacity-100' : 'opacity-0'"
-    >
+    <!-- Bottom slot — player display in the reel, title in the modal.
+         Stays visible during playback so viewers always see who they're
+         watching, on which map, and when the clip was created. -->
+    <div class="pointer-events-none absolute inset-x-0 bottom-0">
       <div class="p-4 sm:p-5">
         <slot name="bottom" />
       </div>

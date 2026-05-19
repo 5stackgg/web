@@ -64,10 +64,10 @@ export default {
   },
   methods: {
     placementLabel(p: number) {
-      if (p === 0) return "MVP";
-      if (p === 1) return "1st Place";
-      if (p === 2) return "2nd Place";
-      if (p === 3) return "3rd Place";
+      if (p === 0) return this.$t("trophies.mvp");
+      if (p === 1) return this.$t("trophies.first_place");
+      if (p === 2) return this.$t("trophies.second_place");
+      if (p === 3) return this.$t("trophies.third_place");
       return `#${p}`;
     },
     tierColor(p: number) {
@@ -214,7 +214,7 @@ export default {
           class="translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]"
           >◢</span
         >
-        Trophy Configuration
+        {{ $t("tournament.trophies_config.title") }}
       </div>
       <div
         class="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-muted-foreground/70"
@@ -227,7 +227,7 @@ export default {
       v-if="!isOrganizer"
       class="rounded-sm border border-dashed border-border px-4 py-6 text-center font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground"
     >
-      ORGANIZER ACCESS REQUIRED
+      {{ $t("tournament.trophies_config.organizer_access_required") }}
     </div>
 
     <template v-else>
@@ -238,7 +238,7 @@ export default {
           <span
             class="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.2em]"
           >
-            AWARD TROPHIES
+            {{ $t("tournament.trophies_config.award_trophies") }}
           </span>
           <span
             class="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground"
@@ -282,7 +282,7 @@ export default {
               v-if="hasImage(p)"
               class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
             >
-              CUSTOM
+              {{ $t("tournament.trophies_config.custom") }}
             </span>
           </div>
 
@@ -318,7 +318,7 @@ export default {
               class="inline-flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
             >
               <span class="h-[2px] w-2 bg-[hsl(var(--tac-amber))]"></span>
-              Custom Image
+              {{ $t("tournament.trophies_config.custom_image") }}
             </label>
             <AvatarUpload
               variant="dropzone"
@@ -336,7 +336,7 @@ export default {
                 class="inline-flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
               >
                 <span class="h-[2px] w-2 bg-[hsl(var(--tac-amber))]"></span>
-                Custom Name
+                {{ $t("tournament.trophies_config.custom_name") }}
               </label>
               <Input
                 v-model="drafts[p].custom_name"
@@ -351,7 +351,7 @@ export default {
                 class="inline-flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
               >
                 <span class="h-[2px] w-2 bg-[hsl(var(--tac-amber))]"></span>
-                Silhouette
+                {{ $t("tournament.trophies_config.silhouette") }}
               </label>
               <div class="grid grid-cols-3 gap-1">
                 <button
@@ -386,7 +386,7 @@ export default {
                 :disabled="saving[p]"
                 @click="resetDraft(p as 0 | 1 | 2 | 3)"
               >
-                Reset
+                {{ $t("tournament.trophies_config.reset") }}
               </Button>
             </div>
           </template>
@@ -395,7 +395,7 @@ export default {
             v-else
             class="rounded-sm border border-border/60 bg-background/40 px-3 py-2 text-center font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
           >
-            Remove image to customize name or silhouette
+            {{ $t("tournament.trophies_config.remove_image_hint") }}
           </div>
         </div>
       </div>

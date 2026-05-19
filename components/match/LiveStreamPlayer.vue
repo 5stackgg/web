@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
+
+const { t } = useI18n();
 import { ExternalLink, PictureInPicture } from "lucide-vue-next";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
@@ -23,27 +26,39 @@ const hasEverBeenLive = ref(false);
 const scoreboardOpen = ref(false);
 let streamSubscription: { unsubscribe: () => void } | undefined;
 
-const LIVE_STAGES = [
-  { key: "booting", label: "Allocating GPU", meta: "required" as const },
+const LIVE_STAGES = computed(() => [
+  {
+    key: "booting",
+    label: t("live_stages.booting"),
+    meta: "required" as const,
+  },
   {
     key: "downloading_cs2",
-    label: "Installing CS2",
+    label: t("live_stages.downloading_cs2"),
     meta: "conditional" as const,
   },
   {
     key: "launching_steam",
-    label: "Launching Steam",
+    label: t("live_stages.launching_steam"),
     meta: "required" as const,
   },
-  { key: "logging_in", label: "Logging in", meta: "implicit" as const },
-  { key: "launching_cs2", label: "Launching CS2", meta: "required" as const },
+  {
+    key: "logging_in",
+    label: t("live_stages.logging_in"),
+    meta: "implicit" as const,
+  },
+  {
+    key: "launching_cs2",
+    label: t("live_stages.launching_cs2"),
+    meta: "required" as const,
+  },
   {
     key: "connecting_to_game",
-    label: "Connecting to game server",
+    label: t("live_stages.connecting_to_game"),
     meta: "required" as const,
   },
-  { key: "live", label: "Streaming live", meta: "required" as const },
-];
+  { key: "live", label: t("live_stages.live"), meta: "required" as const },
+]);
 
 onMounted(() => {
   streamSubscription = apolloClient
@@ -147,7 +162,7 @@ function openPopoutWindow() {
       :stream="displayStream"
       :is-live="isLive"
       :stages="LIVE_STAGES"
-      header-label="Stream boot"
+      :header-label="$t('live_stages.stream_boot')"
       :show-boot="true"
       :enable-pip="true"
       class="group"
@@ -166,8 +181,8 @@ function openPopoutWindow() {
       >
         <button
           type="button"
-          title="Pin as floating overlay"
-          aria-label="Pin as floating overlay"
+          :title="$t('ui.pin_overlay')"
+          :aria-label="$t('ui.pin_overlay')"
           class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-150 hover:bg-black/80 hover:text-white hover:scale-110 cursor-pointer"
           @click="promoteToPip"
         >
@@ -175,8 +190,8 @@ function openPopoutWindow() {
         </button>
         <button
           type="button"
-          title="Open in new window"
-          aria-label="Open in new window"
+          :title="$t('ui.open_new_window')"
+          :aria-label="$t('ui.open_new_window')"
           class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-150 hover:bg-black/80 hover:text-white hover:scale-110 cursor-pointer"
           @click="openPopoutWindow"
         >

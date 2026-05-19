@@ -594,7 +594,7 @@ defineExpose({ connect, teardown });
     <button
       v-if="status === 'playing' && !useFallback && isMuted"
       type="button"
-      aria-label="Unmute"
+      :aria-label="$t('ui.unmute')"
       class="whep-unmute group/unmute absolute bottom-3 right-3 z-10 inline-flex items-center gap-2 rounded-full border border-[hsl(var(--tac-amber)/0.65)] bg-black/75 pl-2 pr-3 py-1.5 backdrop-blur-md cursor-pointer transition-[transform,box-shadow,border-color] duration-150 hover:scale-[1.03] hover:border-[hsl(var(--tac-amber))] [box-shadow:0_0_0_1px_hsl(var(--tac-amber)/0.15),0_0_22px_-4px_hsl(var(--tac-amber)/0.55)]"
       @click="toggleMute"
     >
@@ -614,7 +614,7 @@ defineExpose({ connect, teardown });
       <span
         class="font-mono text-[0.65rem] font-bold uppercase tracking-[0.22em] leading-none text-[hsl(var(--tac-amber))]"
       >
-        Tap to unmute
+        {{ $t("match.tap_to_unmute") }}
       </span>
     </button>
 
@@ -634,7 +634,7 @@ defineExpose({ connect, teardown });
       <div class="flex items-center group/vol">
         <button
           type="button"
-          aria-label="Mute"
+          :aria-label="$t('ui.mute')"
           class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-colors duration-150 hover:bg-black/80 hover:text-white cursor-pointer"
           @click="toggleMute"
         >
@@ -646,7 +646,7 @@ defineExpose({ connect, teardown });
           max="1"
           step="0.01"
           :value="volume"
-          aria-label="Volume"
+          :aria-label="$t('ui.volume')"
           class="vol-slider ml-0 w-0 group-hover/vol:w-20 group-hover/vol:ml-2 focus-visible:w-20 focus-visible:ml-2 transition-all duration-200 cursor-pointer"
           @input="setVolume(Number(($event.target as HTMLInputElement).value))"
         />
@@ -654,8 +654,12 @@ defineExpose({ connect, teardown });
       <button
         v-if="showPip"
         type="button"
-        :aria-label="isPip ? 'Exit picture-in-picture' : 'Picture-in-picture'"
-        title="Picture-in-picture"
+        :aria-label="
+          isPip
+            ? $t('ui_extras.exit_picture_in_picture')
+            : $t('ui_extras.picture_in_picture')
+        "
+        :title="$t('replay_extras.picture_in_picture')"
         class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-150 hover:bg-black/80 hover:text-white hover:scale-110 cursor-pointer"
         @click="togglePip"
       >
@@ -663,8 +667,12 @@ defineExpose({ connect, teardown });
       </button>
       <button
         type="button"
-        :aria-label="isFullscreen ? 'Exit fullscreen' : 'Fullscreen'"
-        title="Fullscreen (F)"
+        :aria-label="
+          isFullscreen
+            ? $t('ui_extras.exit_fullscreen')
+            : $t('ui_extras.fullscreen')
+        "
+        :title="$t('replay_extras.fullscreen_key')"
         class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-150 hover:bg-black/80 hover:text-white hover:scale-110 cursor-pointer"
         @click="toggleFullscreen"
       >
@@ -683,8 +691,12 @@ defineExpose({ connect, teardown });
     >
       <button
         type="button"
-        :aria-label="isFullscreen ? 'Exit fullscreen' : 'Fullscreen'"
-        title="Fullscreen (F)"
+        :aria-label="
+          isFullscreen
+            ? $t('ui_extras.exit_fullscreen')
+            : $t('ui_extras.fullscreen')
+        "
+        :title="$t('replay_extras.fullscreen_key')"
         class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-150 hover:bg-black/80 hover:text-white hover:scale-110 cursor-pointer"
         @click="toggleFullscreen"
       >
@@ -694,8 +706,12 @@ defineExpose({ connect, teardown });
       <button
         v-if="showPip"
         type="button"
-        :aria-label="isPip ? 'Exit picture-in-picture' : 'Picture-in-picture'"
-        title="Picture-in-picture"
+        :aria-label="
+          isPip
+            ? $t('ui_extras.exit_picture_in_picture')
+            : $t('ui_extras.picture_in_picture')
+        "
+        :title="$t('replay_extras.picture_in_picture')"
         class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-150 hover:bg-black/80 hover:text-white hover:scale-110 cursor-pointer"
         @click="togglePip"
       >

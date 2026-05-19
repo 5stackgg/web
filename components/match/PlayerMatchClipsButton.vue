@@ -75,7 +75,7 @@ function pickClip(c: Clip) {
       v-if="count === 1 && single"
       type="button"
       class="relative inline-flex h-5 w-5 items-center justify-center rounded-full border-2 border-background bg-[hsl(var(--tac-amber))] text-background shadow-[0_0_0_1px_hsl(var(--tac-amber)),0_0_6px_hsl(var(--tac-amber)/0.6)] hover:brightness-110 transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.8)]"
-      :title="single.title || 'Open highlight'"
+      :title="single.title || $t('ui_extras.open_highlight')"
       @click="onSingleClick"
     >
       <Film class="h-3 w-3" />
@@ -99,7 +99,7 @@ function pickClip(c: Clip) {
         >
           <span class="inline-flex items-center gap-1.5">
             <Film class="h-3 w-3 text-[hsl(var(--tac-amber))]" />
-            Highlights
+            {{ $t("common.highlights") }}
           </span>
           <span class="tabular-nums opacity-70">{{ count }}</span>
         </div>
@@ -118,7 +118,7 @@ function pickClip(c: Clip) {
             </span>
             <span class="flex-1 min-w-0">
               <span class="block truncate font-medium">
-                {{ c.title || "Untitled clip" }}
+                {{ c.title || $t("clips.untitled_clip") }}
               </span>
               <span
                 class="block font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground/80 truncate"

@@ -234,7 +234,7 @@ const stagePanelLabelClasses = computed(() => {
             >
               <span class="inline-flex items-center gap-1.5">
                 <component :is="statusIcon" class="h-3.5 w-3.5" />
-                Tournament
+                {{ $t("tournament.feature_card.tournament") }}
               </span>
               <span
                 class="inline-flex max-w-[14rem] items-center rounded border px-1.5 py-0.5"
@@ -280,7 +280,7 @@ const stagePanelLabelClasses = computed(() => {
           <span
             class="font-mono text-[0.62rem] font-bold uppercase tracking-[0.18em] text-muted-foreground"
           >
-            Maps
+            {{ $t("maps.label") }}
           </span>
           <MiniMapDisplay
             v-for="map in visibleTournamentMaps"
@@ -324,7 +324,7 @@ const stagePanelLabelClasses = computed(() => {
             class="mb-1 flex items-center gap-1.5 font-mono text-[0.6rem] font-bold uppercase tracking-[0.16em] text-muted-foreground"
           >
             <UsersRound class="h-3 w-3" />
-            Teams
+            {{ $t("tournament.feature_card.teams") }}
           </div>
           <div class="text-sm font-semibold text-foreground">
             {{ teamsCount }}
@@ -339,7 +339,7 @@ const stagePanelLabelClasses = computed(() => {
             class="mb-1 font-mono text-[0.6rem] font-bold uppercase tracking-[0.16em]"
             :class="stagePanelLabelClasses"
           >
-            Stages
+            {{ $t("tournament.feature_card.stages") }}
           </div>
           <div class="text-sm font-semibold text-foreground">
             {{ stageCount || 1 }}

@@ -87,7 +87,7 @@
               <TableCell>{{ query.pid }}</TableCell>
               <TableCell>{{ query.usename }}</TableCell>
               <TableCell class="text-xs">{{
-                query.application_name || "N/A"
+                query.application_name || $t("common.na")
               }}</TableCell>
               <TableCell>
                 <Badge :variant="getStateVariant(query.state)">
@@ -160,7 +160,7 @@
               <TableCell>{{ conn.pid }}</TableCell>
               <TableCell>{{ conn.usename || $t("common.system") }}</TableCell>
               <TableCell class="text-xs">{{
-                conn.application_name || "N/A"
+                conn.application_name || $t("common.na")
               }}</TableCell>
               <TableCell class="text-xs">{{
                 conn.client_addr || "local"

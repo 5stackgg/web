@@ -13,7 +13,7 @@ import NotificationStack from "~/components/notification/NotificationStack.vue";
         class="inline-flex items-center gap-[0.4rem] font-mono text-[0.62rem] font-bold tracking-[0.24em] uppercase text-muted-foreground"
       >
         <span class="w-2 h-[2px] bg-[hsl(var(--tac-amber))]"></span>
-        Notifications
+        {{ $t("layouts.hub.notifications") }}
       </div>
     </div>
     <div class="flex-1 overflow-y-auto p-3 flex flex-col">

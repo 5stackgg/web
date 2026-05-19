@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { computed, ref, watch, onMounted, onUnmounted } from "vue";
+import { useI18n } from "vue-i18n";
 import {
   Play,
   Pause,
@@ -10,8 +11,14 @@ import {
   Users,
   Hash,
   Crosshair,
+  Settings2,
 } from "lucide-vue-next";
 import { Kbd } from "~/components/ui/kbd";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "~/components/ui/popover";
 
 type Position = {
   round: number;
@@ -24,6 +31,10 @@ type Position = {
   z: number;
   yaw: number | null;
   health: number | null;
+  armor?: number | null;
+  helmet?: boolean;
+  has_bomb?: boolean;
+  has_defuser?: boolean;
   player?: { name?: string | null; avatar_url?: string | null } | null;
 };
 
@@ -55,6 +66,21 @@ type DemoBomb = {
   type: string;
   player?: string;
   site?: string;
+  has_kit?: boolean;
+  // Position captured on "dropped" / "planted" — lets the radar paint
+  // the bomb at the right spot between drop+pickup or after a plant.
+  x?: number;
+  y?: number;
+  z?: number;
+};
+
+type DemoKitDrop = {
+  tick: number;
+  round?: number;
+  player?: string;
+  x: number;
+  y: number;
+  z: number;
 };
 
 type RoundTick = {
@@ -112,14 +138,20 @@ const props = defineProps<{
   demoPlayers?: DemoPlayer[];
   demoKills?: DemoKill[];
   demoBombs?: DemoBomb[];
+  demoKitDrops?: DemoKitDrop[];
   demoRoundTicks?: RoundTick[];
   tickRate?: number;
   mapName?: string | null;
+  // True when the viewer is already inside the popout window — we
+  // hide the popout button so the user can't open the popout of the
+  // popout.
+  isPopout?: boolean;
 }>();
 
 // CS2 defaults: 20s freezetime warmup (we anchor to the engine's
 // reported freeze_end_tick), 1:55 (115s) round time, 0:40 (40s) bomb
 // timer after plant.
+const { t } = useI18n();
 const ROUND_TIME_SEC = 115;
 const BOMB_TIMER_SEC = 40;
 
@@ -224,19 +256,6 @@ const shotsByRoundPlayer = computed(() => {
   return out;
 });
 
-const damagesByRoundPlayer = computed(() => {
-  // Keyed by victim steam_id so we can show "took damage recently" rings.
-  const out = new Map<number, Map<string, Damage[]>>();
-  for (const d of props.damages ?? []) {
-    if (!out.has(d.round)) out.set(d.round, new Map());
-    const m = out.get(d.round)!;
-    const sid = String(d.attacked_steam_id);
-    if (!m.has(sid)) m.set(sid, []);
-    m.get(sid)!.push(d);
-  }
-  return out;
-});
-
 const rounds = computed(() =>
   [...positionsByRound.value.keys()].sort((a, b) => a - b),
 );
@@ -300,6 +319,7 @@ const activeRoundBombs = computed<DemoBomb[]>(() => {
 const bombPlantThisRound = computed<DemoBomb | null>(() => {
   return activeRoundBombs.value.find((b) => b.type === "planted") ?? null;
 });
+
 const bombDefuseThisRound = computed<DemoBomb | null>(() => {
   return activeRoundBombs.value.find((b) => b.type === "defused") ?? null;
 });
@@ -451,6 +471,56 @@ const nextTickValue = computed(
   () => ticks.value[Math.min(tickIndex.value + 1, ticks.value.length - 1)] ?? 0,
 );
 
+// Bomb-on-ground position for the active round at the cursor tick.
+// Walks the round's bomb timeline in order:
+//   - dropped: set pos to drop location
+//   - pickup:  clear (back to a carrier)
+//   - planted: pin pos to plant location
+//   - defused / exploded: clear (bomb is gone)
+// Returns null while the bomb is on a carrier, was never dropped, or
+// the round has ended in defuse/explosion.
+const groundBombAt = computed<{ x: number; y: number; z: number } | null>(
+  () => {
+    if (!activeRoundBombs.value.length) return null;
+    const cursor = currentTick.value;
+    let pos: { x: number; y: number; z: number } | null = null;
+    for (const b of activeRoundBombs.value) {
+      if (b.tick > cursor) break;
+      if (
+        (b.type === "dropped" || b.type === "planted") &&
+        b.x !== undefined &&
+        b.y !== undefined
+      ) {
+        pos = { x: b.x, y: b.y, z: b.z ?? 0 };
+      } else if (
+        b.type === "pickup" ||
+        b.type === "defused" ||
+        b.type === "exploded"
+      ) {
+        pos = null;
+      }
+    }
+    return pos;
+  },
+);
+
+// Dropped defuse kits visible at the cursor tick. The parser only
+// emits kit_drops on CT deaths, so each entry is a permanent ground
+// marker for the rest of the round (we don't currently track
+// repickups). Kits from prior rounds are filtered out via tick range.
+const groundKitsAt = computed<
+  Array<{ x: number; y: number; z: number; tick: number }>
+>(() => {
+  const rt = activeRoundTick.value;
+  if (!rt) return [];
+  const start = rt.start_tick ?? 0;
+  const end = rt.end_tick ?? Infinity;
+  const cursor = currentTick.value;
+  return (props.demoKitDrops ?? []).filter(
+    (k) => k.tick >= start && k.tick <= end && k.tick <= cursor,
+  );
+});
+
 // Sliding window in ticks for "did this player just fire / take damage".
 // At 64 tps a 0.2s window = ~13 ticks.
 const RECENT_TICKS = 16;
@@ -526,6 +596,52 @@ function blindStrengthFor(
   return max;
 }
 
+// Per-player bomb interaction state for the active round at the
+// current cursor tick. Derived by walking that round's bomb events in
+// order: pickup/dropped flip the carrier (the last sample's has_bomb
+// is the source of truth for the live carrier); plant_begin starts a
+// "planting" state that ends at planted/plant_abort; defuse_begin
+// starts a "defusing" state that ends at defused/defuse_abort. Old
+// demos without the new event types simply produce no state.
+type BombInteraction = "planting" | "defusing" | null;
+const bombStateByPlayer = computed(() => {
+  const out = new Map<string, BombInteraction>();
+  const round = activeRound.value;
+  if (round === null) return out;
+  const cursor = currentTick.value;
+  const rt = (props.demoRoundTicks ?? []).find((r) => r.round === round);
+  const start = rt?.start_tick ?? -Infinity;
+  const end = rt?.end_tick ?? Infinity;
+  for (const b of props.demoBombs ?? []) {
+    if (b.tick < start || b.tick > end || b.tick > cursor) continue;
+    if (!b.player) {
+      // Terminal events with no player (exploded) clear any lingering
+      // planting state regardless of who set it.
+      if (b.type === "exploded") {
+        for (const [sid, s] of out) if (s === "planting") out.delete(sid);
+      }
+      continue;
+    }
+    switch (b.type) {
+      case "plant_begin":
+        out.set(b.player, "planting");
+        break;
+      case "defuse_begin":
+        out.set(b.player, "defusing");
+        break;
+      case "plant_abort":
+      case "planted":
+        if (out.get(b.player) === "planting") out.delete(b.player);
+        break;
+      case "defuse_abort":
+      case "defused":
+        if (out.get(b.player) === "defusing") out.delete(b.player);
+        break;
+    }
+  }
+  return out;
+});
+
 const interpolatedPlayers = computed(() => {
   const result: Array<{
     steamId: string;
@@ -536,19 +652,23 @@ const interpolatedPlayers = computed(() => {
     z: number;
     yaw: number;
     firing: boolean;
-    hurting: boolean;
     blinded: number;
     // null when the loaded demo predates the health column — skip
     // rendering the bar entirely rather than showing a fake full bar.
     health: number | null;
+    armor: number | null;
+    helmet: boolean;
+    hasBomb: boolean;
+    hasDefuser: boolean;
+    bombAction: BombInteraction;
   }> = [];
   const t0 = currentTick.value;
   const t1 = nextTickValue.value;
   const span = Math.max(1, t1 - t0);
   const f = fractional.value;
   const shotsMap = shotsByRoundPlayer.value.get(activeRound.value ?? -1);
-  const dmgMap = damagesByRoundPlayer.value.get(activeRound.value ?? -1);
   const flashesNow = flashesByRound.value.get(activeRound.value ?? -1);
+  const bombStates = bombStateByPlayer.value;
 
   for (const [sid, samples] of positionsByPlayer.value) {
     const a = samples.find((p) => p.tick === t0);
@@ -569,9 +689,6 @@ const interpolatedPlayers = computed(() => {
         break;
       }
     }
-    const recentDmg = dmgMap?.get(sid) ?? [];
-    const hurting = cur.alive && recentDmg.length > 0;
-
     const yawA = cur.yaw ?? 0;
     const yawB = next.yaw ?? yawA;
     const yaw = lerpAngle(yawA, yawB, k);
@@ -589,6 +706,14 @@ const interpolatedPlayers = computed(() => {
       const hb = next.health ?? cur.health ?? 100;
       health = Math.max(0, Math.min(100, Math.round(ha + (hb - ha) * k)));
     }
+    // Armor: same lerp treatment. null on old demos that pre-date
+    // the armor column so we don't paint a phantom full bar.
+    let armor: number | null = null;
+    if (cur.armor != null || next.armor != null) {
+      const aa = cur.armor ?? next.armor ?? 0;
+      const ab = next.armor ?? cur.armor ?? 0;
+      armor = Math.max(0, Math.min(100, Math.round(aa + (ab - aa) * k)));
+    }
 
     result.push({
       steamId: sid,
@@ -599,27 +724,42 @@ const interpolatedPlayers = computed(() => {
       z: cur.z + (next.z - cur.z) * k,
       yaw,
       firing,
-      hurting,
       blinded,
       health,
+      armor,
+      helmet: cur.helmet === true || next.helmet === true,
+      hasBomb: cur.has_bomb === true,
+      hasDefuser: cur.has_defuser === true,
+      bombAction: bombStates.get(sid) ?? null,
     });
   }
   return result;
 });
 
-// Render order: the focused player (if any) is moved to the end of
-// the list so SVG paints them last → they sit on top of any kites
-// they're overlapping. Without this, a focused dot can disappear
-// underneath a friendly stacked at the same position.
+// Render order: the hovered + focused players (if any) are moved to
+// the end of the list so SVG paints them last → they sit on top of
+// any kites they're overlapping AND their tooltip card paints above
+// every other marker (the hovered tooltip used to disappear behind
+// later-painted players stacked on top of it).
+// Focused renders last (after hovered) so the pulse ring + tooltip
+// always dominate when both states apply to different players.
 const playersForRender = computed(() => {
   const focused = focusedPlayerId.value;
-  if (!focused) return interpolatedPlayers.value;
+  const hovered = hoveredPlayerSid.value;
+  if (!focused && !hovered) return interpolatedPlayers.value;
   const rest: typeof interpolatedPlayers.value = [];
+  let hoveredEntry: (typeof interpolatedPlayers.value)[number] | null = null;
   let focusedEntry: (typeof interpolatedPlayers.value)[number] | null = null;
   for (const p of interpolatedPlayers.value) {
-    if (p.steamId === focused) focusedEntry = p;
-    else rest.push(p);
+    if (p.steamId === focused) {
+      focusedEntry = p;
+    } else if (p.steamId === hovered) {
+      hoveredEntry = p;
+    } else {
+      rest.push(p);
+    }
   }
+  if (hoveredEntry) rest.push(hoveredEntry);
   if (focusedEntry) rest.push(focusedEntry);
   return rest;
 });
@@ -1089,13 +1229,13 @@ function toggleFocus(sid: string) {
 // shows the player's Steam avatar clipped to a circle. Persisted in
 // localStorage so the user's pick survives reloads + popouts.
 const REPLAY_MARKER_PREF_KEY = "5s.replay.marker_style";
-const showAvatars = ref(false);
+const showAvatars = ref(true);
 if (typeof window !== "undefined") {
   try {
-    showAvatars.value =
-      localStorage.getItem(REPLAY_MARKER_PREF_KEY) === "avatar";
+    const pref = localStorage.getItem(REPLAY_MARKER_PREF_KEY);
+    if (pref === "number") showAvatars.value = false;
   } catch {
-    /* localStorage unavailable; default to number */
+    /* localStorage unavailable; default to avatar */
   }
 }
 watch(showAvatars, (v) => {
@@ -1106,6 +1246,38 @@ watch(showAvatars, (v) => {
     /* private browsing or storage full — fail silent */
   }
 });
+
+// Per-feature visibility toggles for the bomb/kit overlays. Persisted
+// per-key so a coach can hide the noise they don't care about (e.g.
+// dropped kits during a casual playback) and have it stick across
+// reloads + popouts. All default ON since these are the new
+// affordances the user explicitly asked for; the toggles are escape
+// hatches, not opt-in.
+function persistedBool(key: string, defaultValue: boolean) {
+  const r = ref(defaultValue);
+  if (typeof window !== "undefined") {
+    try {
+      const v = localStorage.getItem(key);
+      if (v === "0") r.value = false;
+      else if (v === "1") r.value = true;
+    } catch {
+      /* localStorage unavailable */
+    }
+  }
+  watch(r, (v) => {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.setItem(key, v ? "1" : "0");
+    } catch {
+      /* private browsing — fail silent */
+    }
+  });
+  return r;
+}
+const showC4 = persistedBool("5s.replay.show_c4", true);
+const showDefuser = persistedBool("5s.replay.show_defuser", true);
+const showGroundBomb = persistedBool("5s.replay.show_ground_bomb", true);
+const showGroundKits = persistedBool("5s.replay.show_ground_kits", true);
 
 const layoutRootEl = ref<HTMLElement | null>(null);
 // playbarRowEl is referenced from the in-radar overlay; kept here so
@@ -1251,7 +1423,9 @@ const playerNameMap = computed(() => {
   for (const side of ["lineup_1", "lineup_2"] as const) {
     const lineup = props.match?.[side];
     for (const m of lineup?.lineup_players ?? []) {
-      const id = String(m.steam_id);
+      const sid = m.player?.steam_id ?? m.steam_id;
+      if (sid == null) continue;
+      const id = String(sid);
       if (!out[id]) out[id] = m.player?.name ?? m.placeholder_name ?? id;
     }
   }
@@ -1271,7 +1445,12 @@ const playerAvatarMap = computed(() => {
   for (const side of ["lineup_1", "lineup_2"] as const) {
     const lineup = props.match?.[side];
     for (const m of lineup?.lineup_players ?? []) {
-      const id = String(m.steam_id);
+      // `steam_id` lives on the joined `player` object — the lineup
+      // queries we use don't select it at the top of lineup_players,
+      // so reading `m.steam_id` directly always failed silently.
+      const sid = m.player?.steam_id ?? m.steam_id;
+      if (sid == null) continue;
+      const id = String(sid);
       const a = m.player?.avatar_url;
       if (a && !out[id]) out[id] = a;
     }
@@ -1359,6 +1538,162 @@ const slotByPlayer = computed(() => {
 
 function playerName(steamId: string): string {
   return playerNameMap.value[String(steamId)] ?? String(steamId);
+}
+
+// Per-player running stats. Kills/Deaths/Assists are tick-bounded so
+// they match the kill feed; damage is round-bounded (the damages we
+// have only carry round + wall-clock time, no engine tick) and limited
+// to rounds strictly before the active one so the current round's
+// damage doesn't leak before its kills resolve.
+type PlayerStats = { k: number; d: number; a: number; dmg: number };
+const playerStats = computed(() => {
+  const out = new Map<string, PlayerStats>();
+  const get = (sid: string): PlayerStats => {
+    let s = out.get(sid);
+    if (!s) {
+      s = { k: 0, d: 0, a: 0, dmg: 0 };
+      out.set(sid, s);
+    }
+    return s;
+  };
+  const cursor = currentTick.value;
+  for (const k of props.demoKills ?? []) {
+    if (k.tick > cursor) continue;
+    if (k.killer) get(String(k.killer)).k++;
+    if (k.victim) get(String(k.victim)).d++;
+    if (k.assist) get(String(k.assist)).a++;
+  }
+  const activeR = activeRound.value ?? 0;
+  for (const d of props.damages ?? []) {
+    if (d.round >= activeR) continue;
+    if (!d.attacker_steam_id) continue;
+    get(String(d.attacker_steam_id)).dmg += d.damage ?? 0;
+  }
+  return out;
+});
+function statsFor(sid: string): PlayerStats {
+  return playerStats.value.get(sid) ?? { k: 0, d: 0, a: 0, dmg: 0 };
+}
+function kdrText(s: PlayerStats): string {
+  if (s.d === 0) return s.k > 0 ? s.k.toFixed(2) : "0.00";
+  return (s.k / s.d).toFixed(2);
+}
+// Per-steamId lookup for the live carrier / defuser / action flags.
+// Backed by interpolatedPlayers so it tracks the playhead and avoids
+// repeatedly scanning the array from inside template expressions.
+const interpBySteamId = computed(() => {
+  const out = new Map<string, (typeof interpolatedPlayers.value)[number]>();
+  for (const p of interpolatedPlayers.value) out.set(p.steamId, p);
+  return out;
+});
+function hasBombFor(sid: string): boolean {
+  return interpBySteamId.value.get(sid)?.hasBomb === true;
+}
+function hasDefuserFor(sid: string): boolean {
+  return interpBySteamId.value.get(sid)?.hasDefuser === true;
+}
+function bombActionFor(sid: string): BombInteraction {
+  return interpBySteamId.value.get(sid)?.bombAction ?? null;
+}
+// Ground-marker hover state. Keyed so we can show a hover halo on a
+// specific kit / the bomb without using CSS :hover (which is
+// unreliable on SVG <g> children once you start nesting transforms +
+// scoped styles).
+const hoveredGroundMarker = ref<string | null>(null);
+// Currently-hovered player steam_id on the map, drives the inline
+// foreignObject tooltip on the kite. Same approach as the ground
+// markers for visual consistency.
+const hoveredPlayerSid = ref<string | null>(null);
+
+// Tooltip content for a dropped defuse kit. Returns the label +
+// dropper name as a small typed object so the template can format
+// each line independently.
+function groundKitTooltip(k: DemoKitDrop): { title: string; sub: string } {
+  const who = k.player ? playerName(k.player) : "unknown";
+  return { title: "Defuse kit", sub: `Dropped by ${who}` };
+}
+// Tooltip content for the bomb-on-ground marker. Walks the active
+// round's bomb timeline up to the cursor to find the event that
+// produced the current position (last drop or plant).
+const groundBombTooltip = computed<{ title: string; sub: string }>(() => {
+  if (!groundBombAt.value) return { title: "", sub: "" };
+  const cursor = currentTick.value;
+  let last: DemoBomb | null = null;
+  for (const b of activeRoundBombs.value) {
+    if (b.tick > cursor) break;
+    if (b.type === "dropped" || b.type === "planted") last = b;
+    else if (
+      b.type === "pickup" ||
+      b.type === "defused" ||
+      b.type === "exploded"
+    )
+      last = null;
+  }
+  if (!last) return { title: "Bomb", sub: "" };
+  const who = last.player ? playerName(last.player) : "unknown";
+  if (last.type === "planted") {
+    return {
+      title: `Bomb planted${last.site ? ` (${last.site})` : ""}`,
+      sub: `By ${who}`,
+    };
+  }
+  return { title: "Bomb dropped", sub: `By ${who}` };
+});
+
+// Structured player tooltip data. The template renders this as a
+// styled card; the field names mirror what the kill feed + lineup
+// already show so a hover surfaces the same vocabulary.
+type PlayerTooltip = {
+  name: string;
+  team: "ct" | "t" | null;
+  status: string | null; // DEAD or "<N> HP / <A> AR"
+  bombFlags: string[]; // HAS BOMB / DEFUSE KIT / PLANTING… / DEFUSING…
+  k: number;
+  d: number;
+  a: number;
+  kdr: string;
+  dmg: number;
+};
+function playerTooltipFor(sid: string): PlayerTooltip {
+  const s = statsFor(sid);
+  const live = liveStateBySteam.value.get(sid);
+  const interp = interpolatedPlayers.value.find((ip) => ip.steamId === sid);
+  const flags: string[] = [];
+  if (interp?.hasBomb) flags.push("HAS BOMB");
+  if (interp?.hasDefuser && interp?.bombAction !== "defusing") {
+    flags.push("DEFUSE KIT");
+  }
+  if (interp?.bombAction === "planting") flags.push("PLANTING…");
+  else if (interp?.bombAction === "defusing") flags.push("DEFUSING…");
+
+  let status: string | null = null;
+  if (live?.alive === false) {
+    status = "DEAD";
+  } else if (live?.health != null) {
+    const hp = live.health;
+    const ar = live.armor;
+    if (ar != null && ar > 0) {
+      const kit = live.helmet ? "kevlar+helmet" : "kevlar";
+      status = `${hp} HP / ${ar} AR (${kit})`;
+    } else {
+      status = `${hp} HP`;
+    }
+  }
+
+  return {
+    name: playerName(sid),
+    team:
+      interp?.team === "ct" || interp?.team === "t"
+        ? interp.team
+        : (slotByPlayer.value[sid]?.team ?? null),
+    status,
+    bombFlags: flags,
+    k: s.k,
+    d: s.d,
+    a: s.a,
+    kdr: kdrText(s),
+    dmg: s.dmg,
+  };
 }
 
 // Legend grouping follows the CURRENT round's side mapping. Slot
@@ -1471,19 +1806,32 @@ const scoreboard = computed(() => {
     rightScore = mm?.lineup_2_score ?? 0;
   }
   return {
-    leftName: l1?.name ?? "Team 1",
-    rightName: l2?.name ?? "Team 2",
+    leftName: l1?.name ?? t("match.lineup.lineup_1"),
+    rightName: l2?.name ?? t("match.lineup.lineup_2"),
     leftScore,
     rightScore,
   };
 });
 
-// steam_id → live { health, alive } for the lineup panel so we can
-// render HP bars next to each name (Boltobserv/HLTV-overlay style).
+// steam_id → live { health, armor, alive } for the lineup panel so we
+// can render HP + armor bars next to each name (Boltobserv/HLTV-style).
 const liveStateBySteam = computed(() => {
-  const m = new Map<string, { health: number | null; alive: boolean }>();
+  const m = new Map<
+    string,
+    {
+      health: number | null;
+      armor: number | null;
+      helmet: boolean;
+      alive: boolean;
+    }
+  >();
   for (const p of interpolatedPlayers.value) {
-    m.set(p.steamId, { health: p.health, alive: p.alive });
+    m.set(p.steamId, {
+      health: p.health,
+      armor: p.armor,
+      helmet: p.helmet,
+      alive: p.alive,
+    });
   }
   return m;
 });
@@ -1566,6 +1914,7 @@ function openReplayPopout() {
     demoPlayers: props.demoPlayers,
     demoKills: props.demoKills,
     demoBombs: props.demoBombs,
+    demoKitDrops: props.demoKitDrops,
     demoRoundTicks: props.demoRoundTicks,
     tickRate: props.tickRate,
     mapName: props.mapName,
@@ -1620,12 +1969,70 @@ function openReplayPopout() {
             <TooltipContent>
               {{
                 showAvatars
-                  ? "Switch to slot numbers"
-                  : "Switch to player avatars"
+                  ? $t("match.replay.toggle_to_slots")
+                  : $t("match.replay.toggle_to_avatars")
               }}
             </TooltipContent>
           </Tooltip>
-          <Tooltip>
+          <Popover>
+            <PopoverTrigger as-child>
+              <button
+                type="button"
+                class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
+                :title="$t('match.replay.overlays')"
+              >
+                <Settings2 class="w-5 h-5" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="end" class="w-56 p-2 text-xs font-mono">
+              <div
+                class="px-1 py-1 text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
+              >
+                {{ $t("match.replay.overlays") }}
+              </div>
+              <label
+                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+              >
+                <input
+                  v-model="showC4"
+                  type="checkbox"
+                  class="accent-[hsl(var(--tac-amber))]"
+                />
+                <span>{{ $t("match.replay.overlay_c4") }}</span>
+              </label>
+              <label
+                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+              >
+                <input
+                  v-model="showDefuser"
+                  type="checkbox"
+                  class="accent-[hsl(var(--tac-amber))]"
+                />
+                <span>{{ $t("match.replay.overlay_defuser") }}</span>
+              </label>
+              <label
+                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+              >
+                <input
+                  v-model="showGroundBomb"
+                  type="checkbox"
+                  class="accent-[hsl(var(--tac-amber))]"
+                />
+                <span>{{ $t("match.replay.overlay_ground_bomb") }}</span>
+              </label>
+              <label
+                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+              >
+                <input
+                  v-model="showGroundKits"
+                  type="checkbox"
+                  class="accent-[hsl(var(--tac-amber))]"
+                />
+                <span>{{ $t("match.replay.overlay_ground_kits") }}</span>
+              </label>
+            </PopoverContent>
+          </Popover>
+          <Tooltip v-if="!isPopout">
             <TooltipTrigger as-child>
               <button
                 type="button"
@@ -1635,7 +2042,7 @@ function openReplayPopout() {
                 <ExternalLink class="w-5 h-5" />
               </button>
             </TooltipTrigger>
-            <TooltipContent> Pop out into a separate window </TooltipContent>
+            <TooltipContent>{{ $t("match.replay.popout") }}</TooltipContent>
           </Tooltip>
         </div>
 
@@ -1657,13 +2064,13 @@ function openReplayPopout() {
               v-if="timer.phase === 'freeze'"
               class="text-[0.55rem] tracking-[0.25em] uppercase mr-1.5"
             >
-              Freeze
+              {{ $t("match.replay.phase_freeze") }}
             </span>
             <span
               v-else-if="timer.phase === 'bomb'"
               class="text-[0.55rem] tracking-[0.25em] uppercase mr-1.5"
             >
-              Bomb
+              {{ $t("match.replay.phase_bomb") }}
             </span>
             {{ formatMMSS(timer.secondsRemaining) }}
           </div>
@@ -1672,7 +2079,11 @@ function openReplayPopout() {
             class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--destructive)/0.6)] bg-[hsl(var(--destructive)/0.15)] text-[hsl(var(--destructive))] backdrop-blur-sm"
           >
             <span class="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
-            Planted {{ bombPlantThisRound?.site ?? "" }}
+            {{
+              $t("match.replay.bomb_planted", {
+                site: bombPlantThisRound?.site ?? "",
+              })
+            }}
           </div>
           <div
             v-else-if="
@@ -1681,7 +2092,7 @@ function openReplayPopout() {
             class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--success)/0.6)] bg-[hsl(var(--success)/0.15)] text-[hsl(var(--success))] backdrop-blur-sm"
           >
             <span class="w-1.5 h-1.5 rounded-full bg-current" />
-            Defused
+            {{ $t("match.replay.bomb_defused") }}
           </div>
           <div
             v-else-if="
@@ -1689,7 +2100,7 @@ function openReplayPopout() {
             "
             class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--destructive)/0.8)] bg-[hsl(var(--destructive)/0.25)] text-[hsl(var(--destructive))] backdrop-blur-sm"
           >
-            Exploded
+            {{ $t("match.replay.bomb_exploded") }}
           </div>
         </div>
 
@@ -1796,14 +2207,6 @@ function openReplayPopout() {
               <stop offset="0%" stop-color="rgba(255,255,255,0.95)" />
               <stop offset="60%" stop-color="rgba(255,255,255,0.55)" />
               <stop offset="100%" stop-color="rgba(255,255,255,0)" />
-            </radialGradient>
-
-            <!-- Hit ripple: a red-to-transparent radial used for the
-                 hurting indicator. -->
-            <radialGradient id="hit-ripple" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="rgba(255,40,30,0)" />
-              <stop offset="65%" stop-color="rgba(255,50,40,0.55)" />
-              <stop offset="100%" stop-color="rgba(220,0,0,0)" />
             </radialGradient>
 
             <!-- One shared circular clip for all player avatars. Each
@@ -2374,13 +2777,287 @@ function openReplayPopout() {
             </g>
           </g>
 
+          <!-- Dropped defuse kits: cyan disc with the defuser icon,
+               offset above the actual drop point with a thin leader
+               line so it doesn't fight the death X. A larger
+               transparent circle is the hover hit-area; Vue tracks
+               which marker is hovered so we can draw a clean halo. -->
+          <g
+            v-if="showGroundKits"
+            v-for="(k, i) of groundKitsAt"
+            :key="'kit-' + i"
+          >
+            <g :transform="`translate(${project(k).x}, ${project(k).y})`">
+              <!-- Leader: thin cyan line from the death spot up to
+                   the icon. -->
+              <line
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="-13"
+                stroke="hsl(190, 90%, 55%)"
+                stroke-width="0.8"
+                stroke-opacity="0.85"
+                stroke-linecap="round"
+                pointer-events="none"
+              />
+              <g transform="translate(0, -16)">
+                <!-- Hover halo: rendered first so it sits behind the
+                     icon. Toggled by the hit-area's mouseenter. -->
+                <circle
+                  v-if="hoveredGroundMarker === 'kit-' + i"
+                  r="11"
+                  fill="hsl(190, 90%, 55%)"
+                  opacity="0.28"
+                  pointer-events="none"
+                />
+                <circle
+                  v-if="hoveredGroundMarker === 'kit-' + i"
+                  r="11"
+                  fill="none"
+                  stroke="hsl(190, 90%, 70%)"
+                  stroke-width="1.5"
+                  pointer-events="none"
+                />
+                <circle
+                  r="6.5"
+                  fill="hsl(190, 90%, 55%)"
+                  stroke="hsl(0 0% 0% / 0.95)"
+                  stroke-width="1.3"
+                  opacity="0.95"
+                  pointer-events="none"
+                />
+                <image
+                  href="/img/equipment/defuser.svg"
+                  x="-4.8"
+                  y="-4.2"
+                  width="9.6"
+                  height="8.4"
+                  preserveAspectRatio="xMidYMid meet"
+                  pointer-events="none"
+                />
+                <!-- Hit-area: transparent r=10 circle that catches the
+                     hover. Sized generously so coaches scrubbing the
+                     map don't have to aim. Native <title> here works
+                     because it's the element the cursor actually
+                     intersects. -->
+                <circle
+                  r="10"
+                  fill="transparent"
+                  style="cursor: pointer"
+                  @mouseenter="hoveredGroundMarker = 'kit-' + i"
+                  @mouseleave="hoveredGroundMarker = null"
+                />
+                <!-- Tooltip card via foreignObject so we can use HTML +
+                     Tailwind for styling instead of measuring SVG text.
+                     Rendered only on hover and sized generously to fit
+                     longer names. -->
+                <foreignObject
+                  v-if="hoveredGroundMarker === 'kit-' + i"
+                  x="-80"
+                  y="-50"
+                  width="160"
+                  height="40"
+                  style="overflow: visible; pointer-events: none"
+                >
+                  <div
+                    xmlns="http://www.w3.org/1999/xhtml"
+                    class="font-mono text-[10px] leading-tight px-2 py-1 rounded-sm bg-[hsl(var(--background)/0.95)] border border-[hsl(190,90%,55%)] text-foreground inline-block whitespace-nowrap shadow-lg"
+                  >
+                    <div class="font-bold text-[hsl(190,90%,75%)]">
+                      {{ groundKitTooltip(k).title }}
+                    </div>
+                    <div class="text-muted-foreground">
+                      {{ groundKitTooltip(k).sub }}
+                    </div>
+                  </div>
+                </foreignObject>
+              </g>
+            </g>
+          </g>
+
+          <!-- Bomb on the ground (or planted at site). Derived from
+               the active round's drop/pickup/plant timeline. A subtle
+               pulsing ring around the planted bomb makes the
+               post-plant site obvious. Hover surfaces the source
+               event (drop / plant) and lights up a halo. -->
+          <g v-if="showGroundBomb && groundBombAt">
+            <g
+              :transform="`translate(${project(groundBombAt).x}, ${project(groundBombAt).y})`"
+            >
+              <circle
+                v-if="
+                  bombPlantThisRound && currentTick >= bombPlantThisRound.tick
+                "
+                r="14"
+                fill="none"
+                stroke="hsl(0, 90%, 55%)"
+                stroke-width="1.5"
+                opacity="0.45"
+                pointer-events="none"
+              >
+                <animate
+                  attributeName="r"
+                  values="12;18;12"
+                  dur="1.6s"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0.55;0.15;0.55"
+                  dur="1.6s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+              <circle
+                v-if="hoveredGroundMarker === 'bomb'"
+                r="12"
+                fill="hsl(28, 100%, 55%)"
+                opacity="0.28"
+                pointer-events="none"
+              />
+              <circle
+                v-if="hoveredGroundMarker === 'bomb'"
+                r="12"
+                fill="none"
+                stroke="hsl(28, 100%, 70%)"
+                stroke-width="1.5"
+                pointer-events="none"
+              />
+              <circle
+                r="7"
+                fill="hsl(28, 100%, 55%)"
+                stroke="hsl(0 0% 0% / 0.95)"
+                stroke-width="1.4"
+                pointer-events="none"
+              />
+              <image
+                href="/img/equipment/c4.svg"
+                x="-5"
+                y="-5"
+                width="10"
+                height="10"
+                preserveAspectRatio="xMidYMid meet"
+                pointer-events="none"
+              />
+              <circle
+                r="11"
+                fill="transparent"
+                style="cursor: pointer"
+                @mouseenter="hoveredGroundMarker = 'bomb'"
+                @mouseleave="hoveredGroundMarker = null"
+              />
+              <foreignObject
+                v-if="hoveredGroundMarker === 'bomb'"
+                x="-80"
+                y="-50"
+                width="160"
+                height="40"
+                style="overflow: visible; pointer-events: none"
+              >
+                <div
+                  xmlns="http://www.w3.org/1999/xhtml"
+                  class="font-mono text-[10px] leading-tight px-2 py-1 rounded-sm bg-[hsl(var(--background)/0.95)] border border-[hsl(28,100%,55%)] text-foreground inline-block whitespace-nowrap shadow-lg"
+                >
+                  <div class="font-bold text-[hsl(28,100%,75%)]">
+                    {{ groundBombTooltip.title }}
+                  </div>
+                  <div
+                    v-if="groundBombTooltip.sub"
+                    class="text-muted-foreground"
+                  >
+                    {{ groundBombTooltip.sub }}
+                  </div>
+                </div>
+              </foreignObject>
+            </g>
+          </g>
+
           <!-- Boltobserv-style "kite" dots: rounded body with one sharp
                point at NE, rotated so the point aims at the player's
-               view direction. Built-in states: dead (X cross), hurting
-               (red back), firing (white corner burst), flashed-ready
-               for the future. -->
+               view direction. Built-in states: dead (X cross),
+               firing (white corner burst), flashed-ready for the
+               future. -->
           <g v-for="p of playersForRender" :key="p.steamId">
-            <g :transform="`translate(${project(p).x}, ${project(p).y})`">
+            <g
+              :transform="`translate(${project(p).x}, ${project(p).y})`"
+              style="cursor: pointer"
+              @click="toggleFocus(p.steamId)"
+              @mouseenter="hoveredPlayerSid = p.steamId"
+              @mouseleave="hoveredPlayerSid = null"
+            >
+              <!-- Invisible hit-region behind the kite — gives the
+                   group a guaranteed hover surface even where the
+                   visible elements (kite body / arcs / badges) have
+                   gaps. mouseenter/leave live on the parent <g> so
+                   the cursor entering any child counts. -->
+              <circle r="16" fill="transparent" />
+              <!-- Hover tooltip card: same foreignObject pattern as
+                   the ground markers so style + behavior stay
+                   uniform. Rendered last in this group so it paints
+                   on top of nearby kites. -->
+              <foreignObject
+                v-if="hoveredPlayerSid === p.steamId"
+                x="-95"
+                y="-78"
+                width="190"
+                height="74"
+                style="overflow: visible; pointer-events: none"
+              >
+                <div
+                  xmlns="http://www.w3.org/1999/xhtml"
+                  class="font-mono text-[10px] leading-tight px-2 py-1.5 rounded-sm bg-[hsl(var(--background)/0.95)] text-foreground inline-block whitespace-nowrap shadow-lg border"
+                  :style="{
+                    borderColor: colorFor(playerTooltipFor(p.steamId).team),
+                  }"
+                >
+                  <div
+                    class="font-bold truncate max-w-[180px]"
+                    :style="{
+                      color: colorFor(playerTooltipFor(p.steamId).team),
+                    }"
+                  >
+                    {{ playerTooltipFor(p.steamId).name }}
+                  </div>
+                  <div
+                    v-if="playerTooltipFor(p.steamId).status"
+                    class="text-foreground/90"
+                  >
+                    {{ playerTooltipFor(p.steamId).status }}
+                  </div>
+                  <div
+                    v-for="(flag, fi) of playerTooltipFor(p.steamId).bombFlags"
+                    :key="'pt-flag-' + fi"
+                    class="text-[hsl(var(--tac-amber))] font-bold tracking-wider"
+                  >
+                    {{ flag }}
+                  </div>
+                  <div class="text-muted-foreground flex gap-2 mt-0.5">
+                    <span>
+                      K/D/A
+                      <span class="text-foreground"
+                        >{{ playerTooltipFor(p.steamId).k }}/{{
+                          playerTooltipFor(p.steamId).d
+                        }}/{{ playerTooltipFor(p.steamId).a }}</span
+                      >
+                    </span>
+                    <span>·</span>
+                    <span>
+                      KDR
+                      <span class="text-foreground">{{
+                        playerTooltipFor(p.steamId).kdr
+                      }}</span>
+                    </span>
+                    <span>·</span>
+                    <span>
+                      <span class="text-foreground">{{
+                        playerTooltipFor(p.steamId).dmg
+                      }}</span>
+                      DMG
+                    </span>
+                  </div>
+                </div>
+              </foreignObject>
               <!-- Focus marker: soft amber spotlight + static ring +
                    a slow pulse ring expanding outward. The pulse is
                    slow (2.4s) and low-opacity so it reads as a gentle
@@ -2444,32 +3121,6 @@ function openReplayPopout() {
                    number stays upright by being outside the rotated
                    sub-group). -->
               <template v-else>
-                <!-- Wounded indicator: a soft red ring around the
-                     player rendered OUTSIDE the rotated kite so it
-                     stays concentric. The `damages` data we have is
-                     keyed by timestamp not tick, so we can't strobe on
-                     individual hits — this is a slow ambient pulse
-                     that just signals "took damage this round". -->
-                <g v-if="p.hurting" style="pointer-events: none">
-                  <circle
-                    fill="none"
-                    stroke="hsl(0, 90%, 55%)"
-                    stroke-width="1.2"
-                  >
-                    <animate
-                      attributeName="r"
-                      values="14;19;14"
-                      dur="1.4s"
-                      repeatCount="indefinite"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="0.55;0.15;0.55"
-                      dur="1.4s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                </g>
                 <g :transform="`rotate(${45 - p.yaw})`">
                   <!-- Body. Blinded players get their fill desaturated
                        and washed out so they pop visually as "out of
@@ -2496,6 +3147,22 @@ function openReplayPopout() {
                       stroke-width="3"
                       stroke-linecap="round"
                     />
+                    <!-- Armor: a parallel arc OUTSIDE the HP arc
+                         (radius 18 vs 15) so it's always visible
+                         even when HP is full. Bright purple when
+                         helmeted, muted purple when kevlar only. -->
+                    <path
+                      v-if="p.armor != null && p.armor > 0"
+                      d="M -18 0 A 18 18 0 0 0 0 18"
+                      fill="none"
+                      :stroke="
+                        p.helmet ? 'hsl(195, 100%, 70%)' : 'hsl(200, 70%, 55%)'
+                      "
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      :stroke-dasharray="`${(p.armor / 100) * 28.27} 100`"
+                      :stroke-dashoffset="((p.armor - 100) / 100) * 14.14"
+                    />
                     <path
                       d="M -15 0 A 15 15 0 0 0 0 15"
                       fill="none"
@@ -2506,6 +3173,71 @@ function openReplayPopout() {
                       :stroke-dashoffset="((p.health - 100) / 100) * 11.78"
                     />
                   </template>
+                  <!-- C4 carrier badge: sits on the player's back-
+                       right (local SE corner, just past the HP arc's
+                       south end). Because we're INSIDE the rotate
+                       group, it always tracks the player's facing
+                       direction — directly behind them no matter
+                       which way they're looking. Distance from origin
+                       ≈ 18.4 so it clears the r=15 HP arc cleanly.
+                       The inner group counter-rotates back into screen
+                       space so the "C4" text stays upright. -->
+                  <g
+                    v-if="p.hasBomb && showC4"
+                    transform="translate(9, 16)"
+                    style="pointer-events: none"
+                  >
+                    <g :transform="`rotate(${p.yaw - 45})`">
+                      <circle
+                        r="5.5"
+                        fill="hsl(28, 100%, 55%)"
+                        stroke="hsl(0 0% 0% / 0.95)"
+                        stroke-width="1.3"
+                      />
+                      <image
+                        href="/img/equipment/c4.svg"
+                        x="-4"
+                        y="-4"
+                        width="8"
+                        height="8"
+                        preserveAspectRatio="xMidYMid meet"
+                      />
+                    </g>
+                  </g>
+                  <!-- Defuse-kit badge: same back-right placement as
+                       the C4 badge. If the player is carrying both,
+                       the kit slides a touch further out so the two
+                       pips sit side-by-side rather than stacking.
+                       Hidden while they're actively defusing — the
+                       defuse state ring handles that case. -->
+                  <g
+                    v-if="
+                      p.hasDefuser && p.bombAction !== 'defusing' && showDefuser
+                    "
+                    :transform="
+                      p.hasBomb && showC4
+                        ? 'translate(17, 6)'
+                        : 'translate(9, 16)'
+                    "
+                    style="pointer-events: none"
+                  >
+                    <g :transform="`rotate(${p.yaw - 45})`">
+                      <circle
+                        r="5"
+                        fill="hsl(190, 90%, 55%)"
+                        stroke="hsl(0 0% 0% / 0.95)"
+                        stroke-width="1.2"
+                      />
+                      <image
+                        href="/img/equipment/defuser.svg"
+                        x="-3.6"
+                        y="-3.2"
+                        width="7.2"
+                        height="6.4"
+                        preserveAspectRatio="xMidYMid meet"
+                      />
+                    </g>
+                  </g>
                   <!-- Firing: a broadcast-style precision tracer.
                        Kite is rotated so local NE is forward — the
                        muzzle is at (12, -12), bullet line shoots
@@ -2657,12 +3389,22 @@ function openReplayPopout() {
                     preserveAspectRatio="xMidYMid slice"
                     clip-path="url(#replay-avatar-clip)"
                   />
+                  <!-- Avatar team ring: thick solid stroke in team
+                       color, plus a thin dark outline so the ring
+                       reads against bright tiles on the radar. Much
+                       higher contrast than the old 0.6-width hairline
+                       so CT vs T is obvious at a glance. -->
                   <circle
-                    r="12"
+                    r="12.5"
+                    fill="none"
+                    stroke="hsl(0 0% 0% / 0.7)"
+                    stroke-width="3.5"
+                  />
+                  <circle
+                    r="12.5"
                     fill="none"
                     :stroke="colorFor(p.team)"
-                    stroke-width="0.6"
-                    stroke-opacity="0.95"
+                    stroke-width="2.2"
                   />
                 </template>
                 <text
@@ -2687,6 +3429,107 @@ function openReplayPopout() {
                 >
                   {{ slotByPlayer[p.steamId]?.slot ?? "?" }}
                 </text>
+                <!-- Plant / defuse activity: a solid colored disc
+                     ON the player marker (fills the avatar/kite
+                     footprint) plus an outer rotating dashed ring and
+                     an upright label above. The disc reads as the
+                     player being "actively working" the bomb;
+                     animated opacity pulses for urgency without
+                     hiding the player team identity. -->
+                <g
+                  v-if="p.bombAction === 'planting'"
+                  style="pointer-events: none"
+                >
+                  <circle r="14" fill="hsl(40, 100%, 55%)" opacity="0.45">
+                    <animate
+                      attributeName="opacity"
+                      values="0.55;0.25;0.55"
+                      dur="1.1s"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                  <circle
+                    r="20"
+                    fill="none"
+                    stroke="hsl(40, 100%, 55%)"
+                    stroke-width="2.5"
+                    stroke-dasharray="5 3"
+                  >
+                    <animateTransform
+                      attributeName="transform"
+                      type="rotate"
+                      from="0"
+                      to="360"
+                      dur="2.5s"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                  <text
+                    x="0"
+                    y="-25"
+                    text-anchor="middle"
+                    fill="hsl(40, 100%, 70%)"
+                    class="font-mono select-none"
+                    style="
+                      font-size: 7px;
+                      font-weight: 900;
+                      letter-spacing: 0.18em;
+                      paint-order: stroke;
+                      stroke: hsl(0 0% 0% / 0.85);
+                      stroke-width: 2px;
+                      stroke-linejoin: round;
+                    "
+                  >
+                    {{ $t("match.planting") }}
+                  </text>
+                </g>
+                <g
+                  v-else-if="p.bombAction === 'defusing'"
+                  style="pointer-events: none"
+                >
+                  <circle r="14" fill="hsl(190, 95%, 55%)" opacity="0.45">
+                    <animate
+                      attributeName="opacity"
+                      values="0.55;0.25;0.55"
+                      dur="1.1s"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                  <circle
+                    r="20"
+                    fill="none"
+                    stroke="hsl(190, 95%, 60%)"
+                    stroke-width="2.5"
+                    stroke-dasharray="5 3"
+                  >
+                    <animateTransform
+                      attributeName="transform"
+                      type="rotate"
+                      from="360"
+                      to="0"
+                      dur="2.5s"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                  <text
+                    x="0"
+                    y="-25"
+                    text-anchor="middle"
+                    fill="hsl(190, 95%, 70%)"
+                    class="font-mono select-none"
+                    style="
+                      font-size: 7px;
+                      font-weight: 900;
+                      letter-spacing: 0.18em;
+                      paint-order: stroke;
+                      stroke: hsl(0 0% 0% / 0.85);
+                      stroke-width: 2px;
+                      stroke-linejoin: round;
+                    "
+                  >
+                    {{ $t("match.defusing") }}
+                  </text>
+                </g>
               </template>
             </g>
           </g>
@@ -2737,7 +3580,7 @@ function openReplayPopout() {
             <button
               type="button"
               class="px-1.5 py-1 border border-border/60 hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))] transition-colors"
-              title="Previous round"
+              :title="$t('match.replay.prev_round')"
               @click="jumpToRound(-1)"
             >
               <SkipBack class="w-3 h-3" />
@@ -2747,13 +3590,13 @@ function openReplayPopout() {
               class="bg-[hsl(var(--card)/0.9)] border border-border/60 px-1.5 py-0.5 text-[0.65rem] font-mono tabular-nums min-w-[4.5rem]"
             >
               <option v-for="r of rounds" :key="r" :value="r">
-                Round {{ r }}
+                {{ $t("common.round", { number: r }) }}
               </option>
             </select>
             <button
               type="button"
               class="px-1.5 py-1 border border-border/60 hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))] transition-colors"
-              title="Next round"
+              :title="$t('match.replay.next_round')"
               @click="jumpToRound(1)"
             >
               <SkipForward class="w-3 h-3" />
@@ -2764,7 +3607,7 @@ function openReplayPopout() {
             <button
               type="button"
               class="px-1.5 py-1 border border-border/60 hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))] transition-colors"
-              title="Step back"
+              :title="$t('match.replay.step_back')"
               @click="step(-1)"
             >
               <SkipBack class="w-3 h-3" />
@@ -2776,12 +3619,12 @@ function openReplayPopout() {
             >
               <Play v-if="!playing" class="w-3 h-3" />
               <Pause v-else class="w-3 h-3" />
-              {{ playing ? "Pause" : "Play" }}
+              {{ playing ? $t("match.replay.pause") : $t("match.replay.play") }}
             </button>
             <button
               type="button"
               class="px-1.5 py-1 border border-border/60 hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))] transition-colors"
-              title="Step forward"
+              :title="$t('match.replay.step_forward')"
               @click="step(1)"
             >
               <SkipForward class="w-3 h-3" />
@@ -2825,7 +3668,7 @@ function openReplayPopout() {
       >
         <!-- Discoverability hint for the focus-to-follow interaction. -->
         <p class="text-[0.6rem] text-muted-foreground/80 leading-tight px-0.5">
-          Click a player below to follow them on the map.
+          {{ $t("match.replay.follow_hint") }}
         </p>
 
         <!-- Map scoreboard. Pulls lineup_1_score / lineup_2_score off
@@ -2861,12 +3704,12 @@ function openReplayPopout() {
           <div
             class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-[hsl(210,80%,60%)] mb-1"
           >
-            Counter-Terrorists
+            {{ $t("match.replay.counter_terrorists") }}
           </div>
           <Tooltip v-for="m of lineupRows.ct" :key="m.steamId">
             <TooltipTrigger as-child>
               <div
-                class="flex items-center gap-2 py-0.5 text-xs cursor-pointer transition-colors rounded-sm pl-1 -ml-1 border-l-2"
+                class="flex flex-col gap-0.5 py-0.5 text-xs cursor-pointer transition-colors rounded-sm pl-1 -ml-1 border-l-2"
                 :class="[
                   liveStateBySteam.get(m.steamId)?.alive === false
                     ? 'opacity-40'
@@ -2877,60 +3720,168 @@ function openReplayPopout() {
                 ]"
                 @click="toggleFocus(m.steamId)"
               >
-                <!-- Exclusive avatar OR slot indicator — mirrors the map
-                 marker so the roster and the radar always match. -->
-                <img
-                  v-if="showAvatars && m.avatarUrl"
-                  :src="m.avatarUrl"
-                  :alt="m.name"
-                  class="w-5 h-5 rounded-full object-cover shrink-0 border border-[hsl(210,80%,60%/0.6)]"
-                  @error="
-                    ($event.target as HTMLImageElement).style.display = 'none'
-                  "
-                />
-                <span
-                  v-else
-                  class="w-5 h-5 rounded-full inline-flex items-center justify-center font-mono font-bold text-[10px] shrink-0"
-                  :style="{
-                    background: 'hsl(210,80%,60%)',
-                    color: 'hsl(0 0% 98%)',
-                  }"
-                >
-                  {{ m.slot }}
-                </span>
-                <span class="truncate flex-1 min-w-0">{{ m.name }}</span>
-                <template
-                  v-if="
-                    liveStateBySteam.get(m.steamId)?.alive !== false &&
-                    liveStateBySteam.get(m.steamId)?.health != null
-                  "
-                >
+                <div class="flex items-center gap-2">
+                  <!-- Exclusive avatar OR slot indicator — mirrors the map
+                   marker so the roster and the radar always match. -->
+                  <img
+                    v-if="showAvatars && m.avatarUrl"
+                    :src="m.avatarUrl"
+                    :alt="m.name"
+                    class="w-5 h-5 rounded-full object-cover shrink-0 border-2 border-[hsl(210,80%,60%)] ring-1 ring-black/60"
+                    @error="
+                      ($event.target as HTMLImageElement).style.display = 'none'
+                    "
+                  />
                   <span
-                    class="font-mono text-[0.65rem] tabular-nums w-7 text-right text-muted-foreground"
+                    v-else
+                    class="w-5 h-5 rounded-full inline-flex items-center justify-center font-mono font-bold text-[10px] shrink-0"
+                    :style="{
+                      background: 'hsl(210,80%,60%)',
+                      color: 'hsl(0 0% 98%)',
+                    }"
                   >
-                    {{ liveStateBySteam.get(m.steamId)!.health }}
+                    {{ m.slot }}
+                  </span>
+                  <span class="truncate flex-1 min-w-0">{{ m.name }}</span>
+                  <!-- Bomb / defuse-kit pills: tiny inline indicators so
+                       the roster mirrors the radar's carrier/kit state
+                       without needing the user to scan the map. -->
+                  <span
+                    v-if="showC4 && hasBombFor(m.steamId)"
+                    class="inline-flex items-center justify-center w-4 h-4 rounded-sm shrink-0"
+                    style="
+                      background: hsl(28, 100%, 55%);
+                      box-shadow: 0 0 0 1px hsl(0 0% 0% / 0.6);
+                    "
+                    :title="$t('match.replay.has_bomb')"
+                  >
+                    <img src="/img/equipment/c4.svg" alt="C4" class="w-3 h-3" />
                   </span>
                   <span
-                    class="relative inline-block w-12 h-1.5 rounded-sm overflow-hidden bg-[hsl(0_0%_100%/0.12)] shrink-0"
+                    v-if="
+                      showDefuser &&
+                      hasDefuserFor(m.steamId) &&
+                      bombActionFor(m.steamId) !== 'defusing'
+                    "
+                    class="inline-flex items-center justify-center w-4 h-4 rounded-sm shrink-0"
+                    style="
+                      background: hsl(190, 90%, 55%);
+                      box-shadow: 0 0 0 1px hsl(0 0% 0% / 0.6);
+                    "
+                    :title="$t('match.replay.defuse_kit')"
                   >
-                    <span
-                      class="absolute inset-y-0 left-0 transition-all duration-150"
-                      :style="{
-                        width: liveStateBySteam.get(m.steamId)!.health + '%',
-                        background: `hsl(${
-                          (liveStateBySteam.get(m.steamId)!.health! / 100) * 130
-                        }, 85%, 50%)`,
-                      }"
+                    <img
+                      src="/img/equipment/defuser.svg"
+                      alt="Kit"
+                      class="w-3 h-3"
                     />
                   </span>
-                </template>
+                  <!-- Armor pill: only when the player actually has
+                       armor. Bright purple + helmet icon when they
+                       have a helmet, muted purple + kevlar icon when
+                       it's kevlar only. Same color rule as the armor
+                       bar below so the two read as one signal. -->
+                  <span
+                    v-if="(liveStateBySteam.get(m.steamId)?.armor ?? 0) > 0"
+                    class="inline-flex items-center justify-center w-4 h-4 rounded-sm shrink-0"
+                    :style="{
+                      background: liveStateBySteam.get(m.steamId)?.helmet
+                        ? 'hsl(195, 100%, 70%)'
+                        : 'hsl(200, 70%, 55%)',
+                      boxShadow: '0 0 0 1px hsl(0 0% 0% / 0.6)',
+                    }"
+                    :title="
+                      liveStateBySteam.get(m.steamId)?.helmet
+                        ? 'Kevlar + helmet'
+                        : 'Kevlar only'
+                    "
+                  >
+                    <img
+                      v-if="liveStateBySteam.get(m.steamId)?.helmet"
+                      src="/img/equipment/armor_helmet.svg"
+                      alt="Kevlar + helmet"
+                      class="w-3 h-3"
+                    />
+                    <img
+                      v-else
+                      src="/img/equipment/armor.svg"
+                      alt="Kevlar"
+                      class="w-3 h-3"
+                    />
+                  </span>
+                  <template
+                    v-if="
+                      liveStateBySteam.get(m.steamId)?.alive !== false &&
+                      liveStateBySteam.get(m.steamId)?.health != null
+                    "
+                  >
+                    <span
+                      class="font-mono text-[0.65rem] tabular-nums w-7 text-right text-muted-foreground"
+                    >
+                      {{ liveStateBySteam.get(m.steamId)!.health }}
+                    </span>
+                    <span class="inline-flex flex-col gap-px w-12 shrink-0">
+                      <!-- HP track. -->
+                      <span
+                        class="relative h-1 rounded-sm overflow-hidden bg-[hsl(0_0%_100%/0.12)]"
+                      >
+                        <span
+                          class="absolute inset-y-0 left-0 transition-all duration-150"
+                          :style="{
+                            width:
+                              liveStateBySteam.get(m.steamId)!.health + '%',
+                            background: `hsl(${
+                              (liveStateBySteam.get(m.steamId)!.health! / 100) *
+                              130
+                            }, 85%, 50%)`,
+                          }"
+                        />
+                      </span>
+                      <!-- Armor track: separate row so it stays visible
+                           even when HP is full. Purple pops against
+                           the dark UI without competing with CT blue
+                           or T orange. Brighter shade signals helmet
+                           too (matches the kevlar pill). -->
+                      <span
+                        class="relative h-1 rounded-sm overflow-hidden bg-[hsl(0_0%_100%/0.06)]"
+                      >
+                        <span
+                          v-if="
+                            liveStateBySteam.get(m.steamId)?.armor != null &&
+                            liveStateBySteam.get(m.steamId)!.armor! > 0
+                          "
+                          class="absolute inset-y-0 left-0 transition-all duration-150"
+                          :style="{
+                            width: liveStateBySteam.get(m.steamId)!.armor + '%',
+                            background: liveStateBySteam.get(m.steamId)?.helmet
+                              ? 'hsl(195, 100%, 70%)'
+                              : 'hsl(200, 70%, 55%)',
+                          }"
+                        />
+                      </span>
+                    </span>
+                  </template>
+                </div>
+                <div
+                  class="pl-7 font-mono text-[0.6rem] tabular-nums text-muted-foreground/80 flex items-center gap-2"
+                >
+                  <span class="tracking-wider">
+                    {{ statsFor(m.steamId).k }}/{{ statsFor(m.steamId).d }}/{{
+                      statsFor(m.steamId).a
+                    }}
+                  </span>
+                  <span class="opacity-60">·</span>
+                  <span>KDR {{ kdrText(statsFor(m.steamId)) }}</span>
+                  <span class="opacity-60">·</span>
+                  <span>{{ statsFor(m.steamId).dmg }} DMG</span>
+                </div>
               </div>
             </TooltipTrigger>
             <TooltipContent>
               {{
                 focusedPlayerId === m.steamId
-                  ? "Click to stop following"
-                  : `Click to follow ${m.name} on the map`
+                  ? $t("match.replay.follow_stop")
+                  : $t("match.replay.follow_player", { name: m.name })
               }}
             </TooltipContent>
           </Tooltip>
@@ -2939,12 +3890,12 @@ function openReplayPopout() {
           <div
             class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-[hsl(33,94%,58%)] mb-1 mt-2"
           >
-            Terrorists
+            {{ $t("match.replay.terrorists") }}
           </div>
           <Tooltip v-for="m of lineupRows.t" :key="m.steamId">
             <TooltipTrigger as-child>
               <div
-                class="flex items-center gap-2 py-0.5 text-xs cursor-pointer transition-colors rounded-sm pl-1 -ml-1 border-l-2"
+                class="flex flex-col gap-0.5 py-0.5 text-xs cursor-pointer transition-colors rounded-sm pl-1 -ml-1 border-l-2"
                 :class="[
                   liveStateBySteam.get(m.steamId)?.alive === false
                     ? 'opacity-40'
@@ -2955,60 +3906,168 @@ function openReplayPopout() {
                 ]"
                 @click="toggleFocus(m.steamId)"
               >
-                <!-- Exclusive avatar OR slot indicator — mirrors the map
-                 marker so the roster and the radar always match. -->
-                <img
-                  v-if="showAvatars && m.avatarUrl"
-                  :src="m.avatarUrl"
-                  :alt="m.name"
-                  class="w-5 h-5 rounded-full object-cover shrink-0 border border-[hsl(33,94%,58%/0.6)]"
-                  @error="
-                    ($event.target as HTMLImageElement).style.display = 'none'
-                  "
-                />
-                <span
-                  v-else
-                  class="w-5 h-5 rounded-full inline-flex items-center justify-center font-mono font-bold text-[10px] shrink-0"
-                  :style="{
-                    background: 'hsl(33,94%,58%)',
-                    color: 'hsl(0 0% 10%)',
-                  }"
-                >
-                  {{ m.slot }}
-                </span>
-                <span class="truncate flex-1 min-w-0">{{ m.name }}</span>
-                <template
-                  v-if="
-                    liveStateBySteam.get(m.steamId)?.alive !== false &&
-                    liveStateBySteam.get(m.steamId)?.health != null
-                  "
-                >
+                <div class="flex items-center gap-2">
+                  <!-- Exclusive avatar OR slot indicator — mirrors the map
+                   marker so the roster and the radar always match. -->
+                  <img
+                    v-if="showAvatars && m.avatarUrl"
+                    :src="m.avatarUrl"
+                    :alt="m.name"
+                    class="w-5 h-5 rounded-full object-cover shrink-0 border-2 border-[hsl(33,94%,58%)] ring-1 ring-black/60"
+                    @error="
+                      ($event.target as HTMLImageElement).style.display = 'none'
+                    "
+                  />
                   <span
-                    class="font-mono text-[0.65rem] tabular-nums w-7 text-right text-muted-foreground"
+                    v-else
+                    class="w-5 h-5 rounded-full inline-flex items-center justify-center font-mono font-bold text-[10px] shrink-0"
+                    :style="{
+                      background: 'hsl(33,94%,58%)',
+                      color: 'hsl(0 0% 10%)',
+                    }"
                   >
-                    {{ liveStateBySteam.get(m.steamId)!.health }}
+                    {{ m.slot }}
+                  </span>
+                  <span class="truncate flex-1 min-w-0">{{ m.name }}</span>
+                  <!-- Bomb / defuse-kit pills: tiny inline indicators so
+                       the roster mirrors the radar's carrier/kit state
+                       without needing the user to scan the map. -->
+                  <span
+                    v-if="showC4 && hasBombFor(m.steamId)"
+                    class="inline-flex items-center justify-center w-4 h-4 rounded-sm shrink-0"
+                    style="
+                      background: hsl(28, 100%, 55%);
+                      box-shadow: 0 0 0 1px hsl(0 0% 0% / 0.6);
+                    "
+                    :title="$t('match.replay.has_bomb')"
+                  >
+                    <img src="/img/equipment/c4.svg" alt="C4" class="w-3 h-3" />
                   </span>
                   <span
-                    class="relative inline-block w-12 h-1.5 rounded-sm overflow-hidden bg-[hsl(0_0%_100%/0.12)] shrink-0"
+                    v-if="
+                      showDefuser &&
+                      hasDefuserFor(m.steamId) &&
+                      bombActionFor(m.steamId) !== 'defusing'
+                    "
+                    class="inline-flex items-center justify-center w-4 h-4 rounded-sm shrink-0"
+                    style="
+                      background: hsl(190, 90%, 55%);
+                      box-shadow: 0 0 0 1px hsl(0 0% 0% / 0.6);
+                    "
+                    :title="$t('match.replay.defuse_kit')"
                   >
-                    <span
-                      class="absolute inset-y-0 left-0 transition-all duration-150"
-                      :style="{
-                        width: liveStateBySteam.get(m.steamId)!.health + '%',
-                        background: `hsl(${
-                          (liveStateBySteam.get(m.steamId)!.health! / 100) * 130
-                        }, 85%, 50%)`,
-                      }"
+                    <img
+                      src="/img/equipment/defuser.svg"
+                      alt="Kit"
+                      class="w-3 h-3"
                     />
                   </span>
-                </template>
+                  <!-- Armor pill: only when the player actually has
+                       armor. Bright purple + helmet icon when they
+                       have a helmet, muted purple + kevlar icon when
+                       it's kevlar only. Same color rule as the armor
+                       bar below so the two read as one signal. -->
+                  <span
+                    v-if="(liveStateBySteam.get(m.steamId)?.armor ?? 0) > 0"
+                    class="inline-flex items-center justify-center w-4 h-4 rounded-sm shrink-0"
+                    :style="{
+                      background: liveStateBySteam.get(m.steamId)?.helmet
+                        ? 'hsl(195, 100%, 70%)'
+                        : 'hsl(200, 70%, 55%)',
+                      boxShadow: '0 0 0 1px hsl(0 0% 0% / 0.6)',
+                    }"
+                    :title="
+                      liveStateBySteam.get(m.steamId)?.helmet
+                        ? 'Kevlar + helmet'
+                        : 'Kevlar only'
+                    "
+                  >
+                    <img
+                      v-if="liveStateBySteam.get(m.steamId)?.helmet"
+                      src="/img/equipment/armor_helmet.svg"
+                      alt="Kevlar + helmet"
+                      class="w-3 h-3"
+                    />
+                    <img
+                      v-else
+                      src="/img/equipment/armor.svg"
+                      alt="Kevlar"
+                      class="w-3 h-3"
+                    />
+                  </span>
+                  <template
+                    v-if="
+                      liveStateBySteam.get(m.steamId)?.alive !== false &&
+                      liveStateBySteam.get(m.steamId)?.health != null
+                    "
+                  >
+                    <span
+                      class="font-mono text-[0.65rem] tabular-nums w-7 text-right text-muted-foreground"
+                    >
+                      {{ liveStateBySteam.get(m.steamId)!.health }}
+                    </span>
+                    <span class="inline-flex flex-col gap-px w-12 shrink-0">
+                      <!-- HP track. -->
+                      <span
+                        class="relative h-1 rounded-sm overflow-hidden bg-[hsl(0_0%_100%/0.12)]"
+                      >
+                        <span
+                          class="absolute inset-y-0 left-0 transition-all duration-150"
+                          :style="{
+                            width:
+                              liveStateBySteam.get(m.steamId)!.health + '%',
+                            background: `hsl(${
+                              (liveStateBySteam.get(m.steamId)!.health! / 100) *
+                              130
+                            }, 85%, 50%)`,
+                          }"
+                        />
+                      </span>
+                      <!-- Armor track: separate row so it stays visible
+                           even when HP is full. Purple pops against
+                           the dark UI without competing with CT blue
+                           or T orange. Brighter shade signals helmet
+                           too (matches the kevlar pill). -->
+                      <span
+                        class="relative h-1 rounded-sm overflow-hidden bg-[hsl(0_0%_100%/0.06)]"
+                      >
+                        <span
+                          v-if="
+                            liveStateBySteam.get(m.steamId)?.armor != null &&
+                            liveStateBySteam.get(m.steamId)!.armor! > 0
+                          "
+                          class="absolute inset-y-0 left-0 transition-all duration-150"
+                          :style="{
+                            width: liveStateBySteam.get(m.steamId)!.armor + '%',
+                            background: liveStateBySteam.get(m.steamId)?.helmet
+                              ? 'hsl(195, 100%, 70%)'
+                              : 'hsl(200, 70%, 55%)',
+                          }"
+                        />
+                      </span>
+                    </span>
+                  </template>
+                </div>
+                <div
+                  class="pl-7 font-mono text-[0.6rem] tabular-nums text-muted-foreground/80 flex items-center gap-2"
+                >
+                  <span class="tracking-wider">
+                    {{ statsFor(m.steamId).k }}/{{ statsFor(m.steamId).d }}/{{
+                      statsFor(m.steamId).a
+                    }}
+                  </span>
+                  <span class="opacity-60">·</span>
+                  <span>KDR {{ kdrText(statsFor(m.steamId)) }}</span>
+                  <span class="opacity-60">·</span>
+                  <span>{{ statsFor(m.steamId).dmg }} DMG</span>
+                </div>
               </div>
             </TooltipTrigger>
             <TooltipContent>
               {{
                 focusedPlayerId === m.steamId
-                  ? "Click to stop following"
-                  : `Click to follow ${m.name} on the map`
+                  ? $t("match.replay.follow_stop")
+                  : $t("match.replay.follow_player", { name: m.name })
               }}
             </TooltipContent>
           </Tooltip>
@@ -3025,14 +4084,44 @@ function openReplayPopout() {
           <div
             class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
           >
-            Round Kills
+            {{ $t("match.round_kills") }}
           </div>
           <div
             v-for="(k, i) of killsBeforeCursor"
             :key="'kf-' + i"
-            class="font-mono text-[0.7rem] tabular-nums flex items-center gap-1.5 py-0.5"
+            class="font-mono text-[0.65rem] tabular-nums flex items-center gap-1 py-0.5"
           >
-            <span :style="{ color: colorFor(k.killer_team ?? null) }">
+            <!-- Killer block: identity pip (avatar or slot number) +
+                 name, colored to the killer's team. -->
+            <img
+              v-if="
+                showAvatars && k.killer && playerAvatarMap[String(k.killer)]
+              "
+              :src="playerAvatarMap[String(k.killer)]"
+              :alt="playerName(k.killer ?? '')"
+              :title="playerName(k.killer ?? '')"
+              class="w-4 h-4 rounded-full object-cover shrink-0 border ring-1 ring-black/60"
+              :style="{ borderColor: colorFor(k.killer_team ?? null) }"
+              @error="
+                ($event.target as HTMLImageElement).style.display = 'none'
+              "
+            />
+            <span
+              v-else
+              class="w-4 h-4 rounded-full inline-flex items-center justify-center font-mono font-bold text-[9px] shrink-0"
+              :title="playerName(k.killer ?? '')"
+              :style="{
+                background: colorFor(k.killer_team ?? null),
+                color:
+                  k.killer_team === 't' ? 'hsl(0 0% 10%)' : 'hsl(0 0% 98%)',
+              }"
+            >
+              {{ slotByPlayer[String(k.killer ?? "")]?.slot ?? "?" }}
+            </span>
+            <span
+              class="truncate max-w-[5rem]"
+              :style="{ color: colorFor(k.killer_team ?? null) }"
+            >
               {{ playerName(k.killer ?? "") }}
             </span>
             <img
@@ -3040,18 +4129,47 @@ function openReplayPopout() {
               :src="weaponIconPath(k.weapon)"
               :alt="k.weapon"
               :title="k.weapon"
-              class="h-4 w-auto opacity-90"
+              class="h-4 w-auto opacity-90 shrink-0"
               @error="
                 ($event.target as HTMLImageElement).style.display = 'none'
               "
             />
             <Crosshair
               v-if="k.headshot"
-              class="w-3.5 h-3.5 text-[hsl(var(--tac-amber))] drop-shadow-[0_0_4px_hsl(var(--tac-amber)/0.6)]"
+              class="w-3 h-3 text-[hsl(var(--tac-amber))] drop-shadow-[0_0_4px_hsl(var(--tac-amber)/0.6)] shrink-0"
               :stroke-width="2.5"
-              title="Headshot"
+              :title="$t('match.replay.headshot')"
             />
-            <span :style="{ color: colorFor(k.victim_team ?? null) }">
+            <!-- Victim block: same identity pip + name, team color. -->
+            <img
+              v-if="
+                showAvatars && k.victim && playerAvatarMap[String(k.victim)]
+              "
+              :src="playerAvatarMap[String(k.victim)]"
+              :alt="playerName(k.victim ?? '')"
+              :title="playerName(k.victim ?? '')"
+              class="w-4 h-4 rounded-full object-cover shrink-0 border ring-1 ring-black/60"
+              :style="{ borderColor: colorFor(k.victim_team ?? null) }"
+              @error="
+                ($event.target as HTMLImageElement).style.display = 'none'
+              "
+            />
+            <span
+              v-else
+              class="w-4 h-4 rounded-full inline-flex items-center justify-center font-mono font-bold text-[9px] shrink-0"
+              :title="playerName(k.victim ?? '')"
+              :style="{
+                background: colorFor(k.victim_team ?? null),
+                color:
+                  k.victim_team === 't' ? 'hsl(0 0% 10%)' : 'hsl(0 0% 98%)',
+              }"
+            >
+              {{ slotByPlayer[String(k.victim ?? "")]?.slot ?? "?" }}
+            </span>
+            <span
+              class="truncate max-w-[5rem]"
+              :style="{ color: colorFor(k.victim_team ?? null) }"
+            >
               {{ playerName(k.victim ?? "") }}
             </span>
           </div>
@@ -3066,20 +4184,20 @@ function openReplayPopout() {
           <div
             class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
           >
-            Shortcuts
+            {{ $t("match.replay.shortcuts_title") }}
           </div>
           <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
             <span class="inline-flex items-center gap-1">
-              <Kbd>Space</Kbd> play
+              <Kbd>Space</Kbd> {{ $t("match.replay.shortcut_play") }}
             </span>
             <span class="inline-flex items-center gap-1">
-              <Kbd>←</Kbd><Kbd>→</Kbd> step
+              <Kbd>←</Kbd><Kbd>→</Kbd> {{ $t("match.replay.shortcut_step") }}
             </span>
             <span class="inline-flex items-center gap-1">
-              <Kbd>[</Kbd><Kbd>]</Kbd> round
+              <Kbd>[</Kbd><Kbd>]</Kbd> {{ $t("match.replay.shortcut_round") }}
             </span>
             <span class="inline-flex items-center gap-1">
-              <Kbd>1</Kbd>–<Kbd>5</Kbd> speed
+              <Kbd>1</Kbd>–<Kbd>5</Kbd> {{ $t("match.replay.shortcut_speed") }}
             </span>
           </div>
         </div>

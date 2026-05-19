@@ -503,7 +503,7 @@ export default {
                 return !!data.rcon_password;
               },
               {
-                message: "RCON password is required",
+                message: this.$t("validation_extras.rcon_password_required"),
                 path: ["rcon_password"],
               },
             ),

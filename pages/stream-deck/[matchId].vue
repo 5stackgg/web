@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
+
+const { t } = useI18n();
 import { useRoute } from "vue-router";
 import { useToast } from "~/components/ui/toast/use-toast";
 import { Switch } from "~/components/ui/switch";
@@ -110,46 +113,58 @@ onBeforeUnmount(() => {
   streamSubscription?.unsubscribe();
 });
 
-const STATUS_LABELS: Record<string, string> = {
-  launching_steam: "Launching Steam",
-  logging_in: "Logging in",
-  downloading_cs2: "Installing CS2",
-  launching_cs2: "Launching CS2",
-  connecting_to_game: "Connecting to game",
-  starting_capture: "Starting capture",
-  errored: "Errored",
-  live: "Live",
-};
+const STATUS_LABELS = computed<Record<string, string>>(() => ({
+  launching_steam: t("live_stages.launching_steam"),
+  logging_in: t("live_stages.logging_in"),
+  downloading_cs2: t("live_stages.downloading_cs2"),
+  launching_cs2: t("live_stages.launching_cs2"),
+  connecting_to_game: t("stream_deck_status.connecting_to_game_short"),
+  starting_capture: t("stream_deck_status.starting_capture"),
+  errored: t("stream_deck_status.errored"),
+  live: t("stream_deck_status.live_short"),
+}));
 
 // Stage list mirrors run-live.sh + setup-steam.sh report_status emits.
 // `meta` controls non-emission rendering (see StreamSessionProgress).
-const LIVE_STAGES = [
-  { key: "booting", label: "Allocating GPU", meta: "required" as const },
+const LIVE_STAGES = computed(() => [
+  {
+    key: "booting",
+    label: t("live_stages.booting"),
+    meta: "required" as const,
+  },
   {
     key: "downloading_cs2",
-    label: "Installing CS2",
+    label: t("live_stages.downloading_cs2"),
     meta: "conditional" as const,
   },
   {
     key: "launching_steam",
-    label: "Launching Steam",
+    label: t("live_stages.launching_steam"),
     meta: "required" as const,
   },
-  { key: "logging_in", label: "Logging in", meta: "implicit" as const },
-  { key: "launching_cs2", label: "Launching CS2", meta: "required" as const },
+  {
+    key: "logging_in",
+    label: t("live_stages.logging_in"),
+    meta: "implicit" as const,
+  },
+  {
+    key: "launching_cs2",
+    label: t("live_stages.launching_cs2"),
+    meta: "required" as const,
+  },
   {
     key: "connecting_to_game",
-    label: "Connecting to game server",
+    label: t("live_stages.connecting_to_game"),
     meta: "required" as const,
   },
-  { key: "live", label: "Streaming live", meta: "required" as const },
-];
+  { key: "live", label: t("live_stages.live"), meta: "required" as const },
+]);
 function statusBadgeLabel(s: any) {
   if (!s) return "—";
-  if (s.is_live) return "LIVE";
+  if (s.is_live) return t("stream_deck_status.live");
   const v = s?.status as string | undefined;
-  if (!v) return "BOOTING";
-  return (STATUS_LABELS[v] ?? v.replace(/_/g, " ")).toUpperCase();
+  if (!v) return t("stream_deck_status.booting");
+  return (STATUS_LABELS.value[v] ?? v.replace(/_/g, " ")).toUpperCase();
 }
 
 const autodirector = ref(true);
@@ -308,8 +323,8 @@ async function reconnectLive() {
     reconnectLive: [{ match_id: matchId.value }, { success: true }],
   }));
   toast({
-    title: "Reconnecting",
-    description: "Re-issuing the connect to the game server.",
+    title: t("toasts.reconnecting"),
+    description: t("toasts.reconnecting_description"),
   });
 }
 
@@ -342,23 +357,25 @@ function isTypingInForm(target: EventTarget | null) {
 const shortcutsOpen = ref(false);
 const SHORTCUT_GROUPS = computed(() => [
   {
-    title: "Spectate",
+    title: t("shortcut_groups.spectate"),
     items: [
       {
         keys: ["1", "—", "0"],
-        label: `Switch player (slot 1–${slotKeys.value.length})`,
+        label: t("shortcut_groups.switch_player", {
+          count: slotKeys.value.length,
+        }),
       },
-      { keys: ["←"], label: "Previous spec target" },
-      { keys: ["→"], label: "Next spec target" },
-      { keys: ["Space"], label: "Lock / free-roam" },
+      { keys: ["←"], label: t("shortcut_groups.prev_spec") },
+      { keys: ["→"], label: t("shortcut_groups.next_spec") },
+      { keys: ["Space"], label: t("shortcut_groups.lock_free_roam") },
     ],
   },
   {
-    title: "View",
+    title: t("shortcut_groups.view"),
     items: [
-      { keys: ["F"], label: "Toggle fullscreen" },
-      { keys: ["Tab"], label: "Hold to show scoreboard" },
-      { keys: ["?"], label: "Show this help" },
+      { keys: ["F"], label: t("shortcut_groups.toggle_fullscreen") },
+      { keys: ["Tab"], label: t("shortcut_groups.hold_show_scoreboard") },
+      { keys: ["?"], label: t("shortcut_groups.show_help") },
     ],
   },
 ]);
@@ -575,16 +592,20 @@ watch(spectatedSteamId, (sid) => {
           class="inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft class="size-4" />
-          Back to deck
+          {{ $t("stream_deck.back_to_deck") }}
         </NuxtLink>
 
         <div class="h-6 w-px bg-border/60" />
 
         <div class="flex items-center gap-3 min-w-0">
           <h1 class="font-display text-lg font-bold tracking-tight truncate">
-            <span>{{ stream?.match?.lineup_1?.name ?? "Team A" }}</span>
+            <span>{{
+              stream?.match?.lineup_1?.name ?? $t("common.team_a")
+            }}</span>
             <span class="mx-2 text-muted-foreground/60 font-light">vs</span>
-            <span>{{ stream?.match?.lineup_2?.name ?? "Team B" }}</span>
+            <span>{{
+              stream?.match?.lineup_2?.name ?? $t("common.team_b")
+            }}</span>
           </h1>
         </div>
 
@@ -615,7 +636,11 @@ watch(spectatedSteamId, (sid) => {
                 ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
                 : 'border-border/60 bg-card/40 text-muted-foreground hover:text-foreground',
             ]"
-            :title="xrayEnabled ? 'Hide x-ray' : 'Show x-ray'"
+            :title="
+              xrayEnabled
+                ? $t('ui_extras.hide_xray')
+                : $t('ui_extras.show_xray')
+            "
             @click="toggleXray"
           >
             <Scan class="size-3" />
@@ -632,11 +657,11 @@ watch(spectatedSteamId, (sid) => {
               'inline-flex items-center gap-1.5 rounded-md border px-2 h-7 font-mono text-[0.6rem] uppercase tracking-[0.16em] cursor-pointer transition-colors select-none',
               'border-border/60 bg-card/40 text-muted-foreground hover:text-foreground active:border-[hsl(var(--tac-amber)/0.5)] active:bg-[hsl(var(--tac-amber)/0.18)] active:text-[hsl(var(--tac-amber))]',
             ]"
-            title="Hold to show scoreboard"
+            :title="$t('ui.hold_to_show_scoreboard')"
             @mousedown.prevent="startScoreboardHold"
           >
             <Trophy class="size-3" />
-            Scoreboard
+            {{ $t("stream_deck.scoreboard") }}
           </button>
 
           <!-- HUD bundle picker — calls setHudMode → hud-manager
@@ -647,7 +672,7 @@ watch(spectatedSteamId, (sid) => {
           <div
             v-if="isLive()"
             class="inline-flex rounded-md border border-border/60 bg-card/40 p-0.5"
-            title="HUD layout / visibility"
+            :title="$t('replay_extras.hud_layout')"
           >
             <button
               v-for="m in HUD_MODES"
@@ -673,7 +698,9 @@ watch(spectatedSteamId, (sid) => {
                   ? 'bg-red-500/15 text-red-300'
                   : 'text-muted-foreground hover:text-foreground',
               ]"
-              :title="hudVisible ? 'Hide HUD' : 'Show HUD'"
+              :title="
+                hudVisible ? $t('ui_extras.hide_hud') : $t('ui_extras.show_hud')
+              "
               @click="toggleHud"
             >
               <component :is="hudVisible ? Eye : EyeOff" class="size-3" />
@@ -690,10 +717,14 @@ watch(spectatedSteamId, (sid) => {
             <button
               type="button"
               :title="
-                isPageFullscreen ? 'Exit fullscreen (F)' : 'Fullscreen (F)'
+                isPageFullscreen
+                  ? $t('ui_extras.exit_fullscreen_f_key')
+                  : $t('ui_extras.fullscreen_f_key')
               "
               :aria-label="
-                isPageFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'
+                isPageFullscreen
+                  ? $t('ui_extras.exit_fullscreen')
+                  : $t('ui_extras.enter_fullscreen')
               "
               class="inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-foreground/80 hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] transition-colors cursor-pointer"
               @click="togglePageFullscreen"
@@ -709,11 +740,11 @@ watch(spectatedSteamId, (sid) => {
               type="button"
               :disabled="busy"
               class="inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-foreground/80 hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-              title="Re-issue connect (recover from a disconnect)"
+              :title="$t('replay_extras.reissue_connect')"
               @click="reconnectLive"
             >
               <RefreshCw class="size-3.5" />
-              Reconnect
+              {{ $t("stream_deck.reconnect") }}
             </button>
             <div class="w-px bg-border/70" />
             <button
@@ -786,10 +817,10 @@ watch(spectatedSteamId, (sid) => {
     <button
       type="button"
       class="fixed bottom-4 right-4 z-20 inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/80 px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-muted-foreground/80 backdrop-blur-md cursor-pointer transition-all duration-150 hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground hover:scale-105 active:scale-95"
-      title="Show keyboard shortcuts"
+      :title="$t('ui.show_keyboard_shortcuts')"
       @click="shortcutsOpen = true"
     >
-      Shortcuts
+      {{ $t("stream_deck.shortcuts") }}
       <Kbd>?</Kbd>
     </button>
     <ShortcutOverlay

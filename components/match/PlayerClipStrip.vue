@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { Play, Film } from "lucide-vue-next";
+
+const { t } = useI18n();
 
 const props = withDefaults(
   defineProps<{
@@ -39,7 +42,7 @@ const overflow = computed(() =>
       class="mb-1.5 inline-flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
     >
       <Film class="h-3 w-3 text-[hsl(var(--tac-amber))]/80" />
-      Highlights
+      {{ $t("match.player_strip.highlights") }}
       <span class="text-foreground/70">·</span>
       <span class="text-foreground/80">{{ clips.length }}</span>
     </div>
@@ -60,7 +63,7 @@ const overflow = computed(() =>
           'group/clip relative aspect-video shrink-0 overflow-hidden rounded-md border border-border bg-black transition-[border-color,transform,box-shadow] duration-150 hover:-translate-y-px hover:border-[hsl(var(--tac-amber)/0.7)] hover:shadow-[0_0_18px_hsl(var(--tac-amber)/0.18)]',
           vertical ? 'w-full' : 'w-32 sm:w-40',
         ]"
-        :title="clip.title || 'Highlight'"
+        :title="clip.title || t('match.player_strip.default_clip_title')"
         @click.stop="emit('open', clip.id)"
       >
         <img
@@ -106,7 +109,7 @@ const overflow = computed(() =>
           vertical ? 'w-full' : 'w-32 sm:w-40',
         ]"
       >
-        +{{ overflow }} more
+        {{ $t("match.player_strip.overflow_more", { count: overflow }) }}
       </div>
     </TransitionGroup>
   </div>

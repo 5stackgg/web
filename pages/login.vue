@@ -52,10 +52,10 @@ const loginFooterLinkClasses =
               class="translate-y-[-1px] text-[0.6rem] text-[hsl(var(--tac-amber))]"
               >◢</span
             >
-            AUTHORIZE
-            <span class="text-[hsl(var(--muted-foreground)/0.55)]"
-              >/ SECURE ACCESS</span
-            >
+            {{ $t("layouts.top_nav.authorize") }}
+            <span class="text-[hsl(var(--muted-foreground)/0.55)]">{{
+              $t("layouts.top_nav.secure_access")
+            }}</span>
           </span>
           <h1 :class="wordmarkTitleClasses">
             <span
@@ -86,7 +86,7 @@ const loginFooterLinkClasses =
       <button
         type="button"
         @click="signIn"
-        :aria-label="$t ? $t('layouts.top_nav.login') : 'Sign in through Steam'"
+        :aria-label="$t('layouts.top_nav.login_aria')"
         class="group relative border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.35)_100%)] px-[1.1rem] py-[0.85rem] transition-[background-color,border-color,transform] duration-200 hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-[linear-gradient(180deg,hsl(var(--tac-amber)/0.15)_0%,hsl(var(--tac-amber)/0.05)_100%)] active:translate-y-px"
       >
         <span

@@ -3,13 +3,6 @@ import { Button } from "~/components/ui/button";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $ } from "~/generated/zeus";
 
-const PLACEMENT_LABELS: Record<number, string> = {
-  0: "MVP",
-  1: "1st Place",
-  2: "2nd Place",
-  3: "3rd Place",
-};
-
 const PLACEMENT_COLORS: Record<number, string> = {
   0: "hsl(195 85% 60%)",
   1: "hsl(45 95% 60%)",
@@ -24,7 +17,6 @@ export default {
   },
   data() {
     return {
-      placementLabels: PLACEMENT_LABELS,
       placementColors: PLACEMENT_COLORS,
       placements: [0, 1, 2, 3],
       adding: false,
@@ -37,6 +29,14 @@ export default {
     };
   },
   computed: {
+    placementLabels(): Record<number, string> {
+      return {
+        0: this.$t("trophies.mvp"),
+        1: this.$t("trophies.first_place"),
+        2: this.$t("trophies.second_place"),
+        3: this.$t("trophies.third_place"),
+      };
+    },
     isOrganizer(): boolean {
       return !!this.tournament?.is_organizer;
     },
@@ -165,7 +165,7 @@ export default {
             class="translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]"
             >◢</span
           >
-          Manual Awards
+          {{ $t("tournament.trophies_manage.manual_awards") }}
         </div>
         <div
           class="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-muted-foreground/70"
@@ -179,7 +179,7 @@ export default {
         @click="startAdd"
         :disabled="!teams.length"
       >
-        Add Award
+        {{ $t("tournament.trophies_manage.add_award") }}
       </Button>
     </header>
 
@@ -187,7 +187,7 @@ export default {
       v-if="!isOrganizer"
       class="rounded-sm border border-dashed border-border px-4 py-6 text-center font-mono text-[0.7rem] uppercase tracking-[0.2em] text-muted-foreground"
     >
-      ORGANIZER ACCESS REQUIRED
+      {{ $t("tournament.trophies_config.organizer_access_required") }}
     </div>
 
     <template v-else>
@@ -198,7 +198,7 @@ export default {
         <label class="flex flex-col gap-1">
           <span
             class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
-            >Placement</span
+            >{{ $t("trophies_manage_form.placement") }}</span
           >
           <select
             v-model.number="draft.placement"
@@ -212,14 +212,16 @@ export default {
         <label class="flex flex-col gap-1">
           <span
             class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
-            >Team</span
+            >{{ $t("trophies_manage_form.team") }}</span
           >
           <select
             :value="draft.tournament_team_id || ''"
             class="rounded-sm border border-border bg-background px-2 py-1 text-sm"
             @change="onTeamChange(($event.target as HTMLSelectElement).value)"
           >
-            <option value="">Select team…</option>
+            <option value="">
+              {{ $t("ui_extras.select_team_placeholder") }}
+            </option>
             <option v-for="team in teams" :key="team.id" :value="team.id">
               {{ teamNameById[team.id] }}
             </option>
@@ -228,14 +230,16 @@ export default {
         <label class="flex flex-col gap-1">
           <span
             class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
-            >Player</span
+            >{{ $t("trophies_manage_form.player") }}</span
           >
           <select
             v-model="draft.player_steam_id"
             :disabled="!draft.tournament_team_id"
             class="rounded-sm border border-border bg-background px-2 py-1 text-sm disabled:opacity-60"
           >
-            <option :value="null">Select player…</option>
+            <option :value="null">
+              {{ $t("ui_extras.select_player_placeholder") }}
+            </option>
             <option
               v-for="p in rosterOptions"
               :key="p.steam_id"
@@ -263,7 +267,7 @@ export default {
             :disabled="saving"
             @click="cancelAdd"
           >
-            Cancel
+            {{ $t("common.cancel") }}
           </Button>
         </div>
       </div>
@@ -272,7 +276,7 @@ export default {
         v-if="!manualTrophies.length"
         class="rounded-sm border border-dashed border-border bg-background/30 px-4 py-6 text-center font-mono text-[0.65rem] uppercase tracking-[0.22em] text-muted-foreground"
       >
-        NO MANUAL AWARDS
+        {{ $t("tournament.trophies_manage.no_manual_awards") }}
       </div>
 
       <ul v-else class="flex flex-col divide-y divide-border/60">
@@ -301,7 +305,7 @@ export default {
           </span>
           <span class="flex-1"></span>
           <Button variant="outline" size="sm" @click="remove(trophy.id)">
-            Remove
+            {{ $t("tournament.trophies_manage.remove") }}
           </Button>
         </li>
       </ul>

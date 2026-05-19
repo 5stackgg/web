@@ -269,7 +269,7 @@ function runCommand(
           "
         >
           <Shield class="w-3 h-3" />
-          Admin
+          {{ $t("match.admin") }}
         </div>
 
         <span

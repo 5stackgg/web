@@ -272,11 +272,11 @@ function statCell(lp: any, key: "kills" | "deaths" | "assists" | "damage") {
       compact ? 'top-2 left-2' : 'top-2 left-1/2 -translate-x-1/2',
     ]"
     :aria-expanded="open"
-    title="Toggle scoreboard"
+    :title="$t('match.scoreboard')"
     @click="toggle"
   >
     <Trophy class="h-3 w-3" />
-    Scoreboard
+    {{ $t("match.scoreboard") }}
     <ChevronDown
       class="h-3 w-3 transition-transform duration-200"
       :class="open ? 'rotate-180' : ''"
@@ -293,7 +293,7 @@ function statCell(lp: any, key: "kills" | "deaths" | "assists" | "damage") {
           v-if="!hasMaps"
           class="rounded border border-border/60 bg-background/40 px-3 py-3 text-center font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
         >
-          Maps not picked yet
+          {{ $t("match.maps_not_picked") }}
         </div>
         <template v-else-if="currentMap">
           <div
@@ -357,7 +357,9 @@ function statCell(lp: any, key: "kills" | "deaths" | "assists" | "damage") {
                   class="font-mono uppercase tracking-[0.12em] text-muted-foreground/70"
                 >
                   <tr class="border-b border-border/30">
-                    <th class="px-2 py-1 text-left font-normal">Player</th>
+                    <th class="px-2 py-1 text-left font-normal">
+                      {{ $t("common.player") }}
+                    </th>
                     <th class="px-1 py-1 text-center font-normal">K</th>
                     <th class="px-1 py-1 text-center font-normal">D</th>
                     <th class="px-1 py-1 text-center font-normal">A</th>

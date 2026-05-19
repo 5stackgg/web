@@ -148,15 +148,17 @@
               <TableCell>{{ lock.pid }}</TableCell>
               <TableCell class="text-xs">{{ lock.locktype }}</TableCell>
               <TableCell class="text-xs font-mono">{{
-                lock.relation || "N/A"
+                lock.relation || $t("common.na")
               }}</TableCell>
               <TableCell class="text-xs">{{ lock.mode }}</TableCell>
               <TableCell class="text-center">
                 <Badge :variant="lock.granted ? 'default' : 'destructive'">
-                  {{ lock.granted ? "Yes" : "No" }}
+                  {{ lock.granted ? $t("common.yes") : $t("common.no") }}
                 </Badge>
               </TableCell>
-              <TableCell class="text-xs">{{ lock.usename || "N/A" }}</TableCell>
+              <TableCell class="text-xs">{{
+                lock.usename || $t("common.na")
+              }}</TableCell>
               <TableCell class="max-w-md">
                 <div v-if="lock.query" class="flex items-center gap-2">
                   <div

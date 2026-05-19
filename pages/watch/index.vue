@@ -21,7 +21,7 @@ import {
     <TacticalPageHeader>
       <template #description>
         <Tv class="h-3.5 w-3.5" />
-        Live Feed
+        {{ $t("pages.watch.live_feed") }}
       </template>
       <template #title>{{ $t("pages.watch.title") }}</template>
     </TacticalPageHeader>
@@ -35,7 +35,7 @@ import {
     <div>
       <div :class="tacticalSectionLabelClasses">
         <span :class="tacticalSectionTickClasses"></span>
-        LIVE.TOURNAMENTS
+        {{ $t("pages.watch.section_live_tournaments") }}
       </div>
       <div class="space-y-3">
         <TournamentFeatureCard
@@ -51,8 +51,8 @@ import {
 
   <PageTransition :delay="125" class="mt-6">
     <OtherMatches
-      section-label="LIVE.MATCHES"
-      empty-label="STANDBY · NO LIVE MATCHES"
+      :section-label="$t('pages.watch.section_live_matches')"
+      :empty-label="$t('pages.watch.no_live_matches')"
       :is-in-lineup="true"
       :show-pagination="false"
       :use-subscription="true"
@@ -69,14 +69,14 @@ import {
 
   <PageTransition :delay="150" class="mt-6">
     <RecentTournaments
-      section-label="UPCOMING.TOURNAMENTS"
+      :section-label="$t('pages.watch.section_upcoming_tournaments')"
       :statuses="[
         e_tournament_status_enum.RegistrationOpen,
         e_tournament_status_enum.RegistrationClosed,
         e_tournament_status_enum.Setup,
       ]"
       status-variant="registration"
-      status-label="Upcoming"
+      :status-label="$t('pages.watch.upcoming')"
       order-direction="asc"
       horizontal
       hide-when-empty
@@ -86,7 +86,7 @@ import {
 
   <PageTransition :delay="175" class="mt-6">
     <OtherMatches
-      section-label="UPCOMING.MATCHES"
+      :section-label="$t('pages.watch.section_upcoming_matches')"
       :is-in-lineup="true"
       :show-pagination="false"
       :hide-when-empty="true"
@@ -97,12 +97,15 @@ import {
   </PageTransition>
 
   <PageTransition :delay="200" class="mt-6">
-    <RecentHighlights section-label="RECENT.HIGHLIGHTS" horizontal />
+    <RecentHighlights
+      :section-label="$t('pages.watch.section_recent_highlights')"
+      horizontal
+    />
   </PageTransition>
 
   <PageTransition :delay="225" class="mt-6">
     <OtherMatches
-      section-label="RECENT.MATCHES"
+      :section-label="$t('pages.watch.section_recent_matches')"
       see-all-to="/matches"
       :is-in-lineup="true"
       :show-pagination="false"
@@ -115,7 +118,7 @@ import {
 
   <PageTransition :delay="250" class="mt-6">
     <RecentTournaments
-      section-label="RECENT.TOURNAMENTS"
+      :section-label="$t('pages.watch.section_recent_tournaments')"
       :statuses="[e_tournament_status_enum.Finished]"
       status-variant="finished"
       :status-label="$t('common.finished')"

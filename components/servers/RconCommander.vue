@@ -28,7 +28,7 @@ import debounce from "~/utilities/debounce";
     >
       <h4 class="text-foreground font-semibold text-lg flex items-center gap-2">
         <Terminal class="w-5 h-5" />
-        RCON Console
+        {{ $t("rcon.console") }}
       </h4>
       <Badge variant="outline" class="text-xs">
         {{ online ? $t("common.connected") : $t("common.disconnected") }}
@@ -66,7 +66,7 @@ import debounce from "~/utilities/debounce";
               <div
                 class="px-3 py-1.5 text-xs text-muted-foreground bg-muted/30 border-b"
               >
-                Suggestions
+                {{ $t("rcon.suggestions") }}
               </div>
               <ul class="max-h-72 overflow-auto divide-y divide-muted/30">
                 <li

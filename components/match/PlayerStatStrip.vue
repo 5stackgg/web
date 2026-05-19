@@ -29,7 +29,7 @@ defineProps<{
         <span
           class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
         >
-          Kills
+          {{ $t("match.player_strip.kills") }}
         </span>
         <span
           class="text-xl font-bold leading-none tabular-nums text-foreground"
@@ -42,7 +42,7 @@ defineProps<{
         <span
           class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
         >
-          Deaths
+          {{ $t("match.player_strip.deaths") }}
         </span>
         <span
           class="text-xl font-bold leading-none tabular-nums text-foreground"
@@ -55,7 +55,7 @@ defineProps<{
         <span
           class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
         >
-          Assists
+          {{ $t("match.player_strip.assists") }}
         </span>
         <span
           class="text-xl font-bold leading-none tabular-nums text-foreground"
@@ -68,7 +68,7 @@ defineProps<{
         <span
           class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
         >
-          ADR
+          {{ $t("match.player_strip.adr") }}
         </span>
         <span
           class="text-xl font-bold leading-none tabular-nums text-foreground"
@@ -82,7 +82,7 @@ defineProps<{
         <span
           class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
         >
-          HS%
+          {{ $t("match.player_strip.hs_pct") }}
         </span>
         <span
           class="text-xl font-bold leading-none tabular-nums text-foreground"
@@ -96,7 +96,7 @@ defineProps<{
         <span
           class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
         >
-          K/D
+          {{ $t("match.player_strip.kd") }}
         </span>
         <span
           class="text-xl font-bold leading-none tabular-nums text-[hsl(var(--tac-amber))]"

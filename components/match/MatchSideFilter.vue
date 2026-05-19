@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { useMatchSide, type MatchSide } from "~/composables/useMatchSide";
 
 const props = defineProps<{
@@ -6,12 +8,13 @@ const props = defineProps<{
 }>();
 
 const side = useMatchSide();
+const { t } = useI18n();
 
-const options: { value: MatchSide; label: string }[] = [
-  { value: "all", label: "All" },
+const options = computed<{ value: MatchSide; label: string }[]>(() => [
+  { value: "all", label: t("match.side_filter.all") },
   { value: "T", label: "T" },
   { value: "CT", label: "CT" },
-];
+]);
 
 function setSide(value: MatchSide) {
   side.value = value;

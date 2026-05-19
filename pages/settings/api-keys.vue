@@ -306,8 +306,8 @@ export default {
           z.object({
             label: z
               .string()
-              .min(1, (this as any).$t("validation.label_required"))
-              .max(50, (this as any).$t("validation.label_too_long")),
+              .min(1, this.$t("validation.label_required"))
+              .max(50, this.$t("validation.label_too_long")),
           }),
         ),
       }),

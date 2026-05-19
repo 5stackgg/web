@@ -93,7 +93,7 @@ const sortGetters: Record<string, (m: any) => unknown> = {
 };
 </script>
 <template>
-  <Table>
+  <Table class="table-fixed">
     <TableHeader>
       <TableRow>
         <TableHead
@@ -105,7 +105,7 @@ const sortGetters: Record<string, (m: any) => unknown> = {
           sort-key="attempts"
           :active-key="sortKey"
           :direction="sortDir"
-          class="whitespace-nowrap"
+          class="w-[130px] whitespace-nowrap"
           @sort="toggle"
           >{{ $t("match.opening_duels.attempts") }}</SortableTableHead
         >
@@ -113,7 +113,7 @@ const sortGetters: Record<string, (m: any) => unknown> = {
           sort-key="success"
           :active-key="sortKey"
           :direction="sortDir"
-          class="whitespace-nowrap"
+          class="w-[130px] whitespace-nowrap"
           @sort="toggle"
           >{{ $t("match.opening_duels.success") }}</SortableTableHead
         >
@@ -122,7 +122,7 @@ const sortGetters: Record<string, (m: any) => unknown> = {
           sort-key="traded"
           :active-key="sortKey"
           :direction="sortDir"
-          class="whitespace-nowrap"
+          class="w-[130px] whitespace-nowrap"
           @sort="toggle"
           >{{ $t("match.opening_duels.traded") }}</SortableTableHead
         >

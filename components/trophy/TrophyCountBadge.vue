@@ -70,7 +70,7 @@ const hasAny = computed(() => visible.value.length > 0);
     class="inline-flex items-stretch divide-x divide-border/60 overflow-hidden rounded-sm border border-border/70 bg-background/70"
     :class="compact ? 'text-[9px]' : 'text-[10px]'"
     role="group"
-    aria-label="Trophy rack"
+    :aria-label="$t('ui.trophy_rack')"
   >
     <div
       v-for="item in visible"

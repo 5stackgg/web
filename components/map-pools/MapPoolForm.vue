@@ -55,7 +55,7 @@ import { Button } from "~/components/ui/button";
     </FormField>
     <div class="mt-6 flex justify-end">
       <Button type="submit" :disabled="!form.values.map_pool?.length">
-        Save Map Pool
+        {{ $t("map_pool_form.save") }}
       </Button>
     </div>
   </Form>

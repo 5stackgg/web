@@ -9,6 +9,7 @@ import {
   watch,
   type Ref,
 } from "vue";
+import { useI18n } from "vue-i18n";
 import {
   ArrowUpRight,
   Check,
@@ -22,6 +23,8 @@ import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { useClipModal } from "~/composables/useClipModal";
 import { useClipShare } from "~/composables/useClipShare";
 import ClipPlayer from "~/components/clips/ClipPlayer.vue";
+
+const { t } = useI18n();
 
 const props = defineProps<{
   match: any;
@@ -117,16 +120,18 @@ function formatRelativeTime(iso: string | null | undefined): string | null {
   const ts = new Date(iso).getTime();
   if (!Number.isFinite(ts)) return null;
   const diff = Date.now() - ts;
-  if (diff < 0) return "just now";
+  if (diff < 0) return t("time_ago.just_now");
   const minute = 60_000;
   const hour = 60 * minute;
   const day = 24 * hour;
-  if (diff < minute) return "just now";
-  if (diff < hour) return `${Math.floor(diff / minute)}m ago`;
-  if (diff < day) return `${Math.floor(diff / hour)}h ago`;
-  if (diff < 7 * day) return `${Math.floor(diff / day)}d ago`;
-  if (diff < 30 * day) return `${Math.floor(diff / (7 * day))}w ago`;
-  return `${Math.floor(diff / (30 * day))}mo ago`;
+  if (diff < minute) return t("time_ago.just_now");
+  if (diff < hour)
+    return t("time_ago.minutes", { n: Math.floor(diff / minute) });
+  if (diff < day) return t("time_ago.hours", { n: Math.floor(diff / hour) });
+  if (diff < 7 * day) return t("time_ago.days", { n: Math.floor(diff / day) });
+  if (diff < 30 * day)
+    return t("time_ago.weeks", { n: Math.floor(diff / (7 * day)) });
+  return t("time_ago.months", { n: Math.floor(diff / (30 * day)) });
 }
 
 const featuredClip = computed<Clip | null>(() => {
@@ -292,7 +297,7 @@ function clipTeamName(c: Clip): string | null {
     <NuxtImg
       v-if="featuredClipImage"
       :src="featuredClipImage"
-      :alt="featuredClip.title ?? 'Featured highlight'"
+      :alt="featuredClip.title ?? t('clips.featured_highlight')"
       class="absolute inset-0 h-full w-full object-cover opacity-[0.18]"
     />
     <div
@@ -314,7 +319,7 @@ function clipTeamName(c: Clip): string | null {
           <NuxtImg
             v-if="featuredClipImage"
             :src="featuredClipImage"
-            :alt="featuredClip.title ?? 'Featured highlight'"
+            :alt="featuredClip.title ?? t('clips.featured_highlight')"
             class="absolute inset-0 h-full w-full object-contain"
           />
           <div
@@ -328,10 +333,14 @@ function clipTeamName(c: Clip): string | null {
           <button
             type="button"
             class="inline-flex h-7 items-center gap-1.5 rounded-full border border-white/20 bg-black/70 px-2.5 font-mono text-[0.56rem] uppercase tracking-[0.16em] text-white/80 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
-            :title="`Open ${featuredClip.title ?? 'clip'} details`"
+            :title="
+              t('clips.open_details', {
+                title: featuredClip.title ?? t('clips.default_clip'),
+              })
+            "
             @click.stop="openClip(featuredClip.id)"
           >
-            Details
+            {{ t("clips.details") }}
             <ArrowUpRight class="h-3 w-3" />
           </button>
           <button
@@ -343,9 +352,11 @@ function clipTeamName(c: Clip): string | null {
                 : 'border-white/20 text-white/80'
             "
             :title="
-              copiedClipId === featuredClip.id ? 'Link copied!' : 'Share clip'
+              copiedClipId === featuredClip.id
+                ? t('clips.link_copied')
+                : t('clips.share_clip')
             "
-            aria-label="Share clip"
+            :aria-label="t('clips.share_clip')"
             @click.stop="shareClip(featuredClip.id)"
           >
             <Check
@@ -386,13 +397,19 @@ function clipTeamName(c: Clip): string | null {
                     v-if="featuredClip.target_steam_id"
                     :to="`/players/${featuredClip.target_steam_id}`"
                     class="pointer-events-auto text-white transition-colors hover:text-[hsl(var(--tac-amber))]"
-                    :title="`Open ${featuredClip.target?.name ?? 'player'}'s profile`"
+                    :title="
+                      t('clips.open_player_profile', {
+                        name:
+                          featuredClip.target?.name ??
+                          t('clips.default_player'),
+                      })
+                    "
                     @click.stop
                     >{{
-                      featuredClip.target?.name ?? "Match highlight"
+                      featuredClip.target?.name ?? t("clips.match_highlight")
                     }}</NuxtLink
                   ><template v-else>{{
-                    featuredClip.target?.name ?? "Match highlight"
+                    featuredClip.target?.name ?? t("clips.match_highlight")
                   }}</template
                   ><span
                     v-if="featuredPlayer?.teamName"
@@ -404,7 +421,13 @@ function clipTeamName(c: Clip): string | null {
                 <span
                   v-if="(featuredClip.kills_count ?? 0) > 0"
                   class="inline-flex shrink-0 items-center gap-1 rounded border border-[hsl(var(--destructive))] bg-[hsl(var(--destructive)/0.85)] px-1.5 py-0.5 font-mono text-[0.65rem] font-bold text-white tabular-nums shadow-[0_0_10px_hsl(var(--destructive)/0.4)]"
-                  :title="`${featuredClip.kills_count} kill${featuredClip.kills_count === 1 ? '' : 's'} in clip`"
+                  :title="
+                    t(
+                      'clips.kills_in_clip',
+                      { count: featuredClip.kills_count },
+                      featuredClip.kills_count,
+                    )
+                  "
                 >
                   <Crosshair class="h-3 w-3" />
                   {{ featuredClip.kills_count }}K
@@ -420,7 +443,7 @@ function clipTeamName(c: Clip): string | null {
                 <span
                   v-if="featuredClip.round != null"
                   class="shrink-0 font-mono text-[0.54rem] uppercase tracking-[0.18em] text-white/55"
-                  :title="`Round ${featuredClip.round}`"
+                  :title="$t('common.round', { number: featuredClip.round })"
                 >
                   · R{{ featuredClip.round }}
                 </span>
@@ -451,7 +474,7 @@ function clipTeamName(c: Clip): string | null {
             class="inline-flex items-center gap-2 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
           >
             <ListVideo class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
-            Up Next
+            {{ $t("match.up_next") }}
           </span>
           <span
             class="font-mono text-[0.58rem] uppercase tracking-[0.18em] text-muted-foreground tabular-nums"
@@ -483,8 +506,8 @@ function clipTeamName(c: Clip): string | null {
                 :title="
                   c.id === featuredClip.id
                     ? inlinePlaying
-                      ? 'Now playing'
-                      : 'Selected'
+                      ? t('clips.now_playing')
+                      : t('clips.selected')
                     : ''
                 "
               >
@@ -514,7 +537,7 @@ function clipTeamName(c: Clip): string | null {
                     resolveAvatarUrl(c.target?.avatar_url ?? null, apiDomain) ??
                     ''
                   "
-                  :alt="c.target?.name ?? 'Player'"
+                  :alt="c.target?.name ?? t('clips.default_player')"
                   loading="lazy"
                   class="h-full w-full object-cover"
                 />
@@ -535,7 +558,7 @@ function clipTeamName(c: Clip): string | null {
                         : 'text-foreground'
                     "
                     ><!--
-                  -->{{ c.target?.name ?? "Player"
+                  -->{{ c.target?.name ?? t("clips.default_player")
                     }}<span
                       v-if="clipTeamName(c)"
                       class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground/80"
@@ -554,7 +577,7 @@ function clipTeamName(c: Clip): string | null {
                   <span
                     v-if="c.round != null"
                     class="shrink-0 font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground/80"
-                    :title="`Round ${c.round}`"
+                    :title="$t('common.round', { number: c.round })"
                   >
                     · R{{ c.round }}
                   </span>
@@ -574,7 +597,13 @@ function clipTeamName(c: Clip): string | null {
               <span
                 v-if="(c.kills_count ?? 0) > 0"
                 class="inline-flex shrink-0 items-center gap-1 self-stretch rounded-md border border-[hsl(var(--destructive))] bg-[hsl(var(--destructive)/0.85)] px-2 font-mono text-[0.65rem] font-bold text-white tabular-nums"
-                :title="`${c.kills_count} kill${c.kills_count === 1 ? '' : 's'} in clip`"
+                :title="
+                  t(
+                    'clips.kills_in_clip',
+                    { count: c.kills_count },
+                    c.kills_count,
+                  )
+                "
               >
                 <Crosshair class="h-3 w-3" />
                 {{ c.kills_count }}K
@@ -588,8 +617,12 @@ function clipTeamName(c: Clip): string | null {
                   ? 'share-flash bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
                   : 'text-muted-foreground'
               "
-              :title="copiedClipId === c.id ? 'Link copied!' : 'Share clip'"
-              aria-label="Share clip"
+              :title="
+                copiedClipId === c.id
+                  ? t('clips.link_copied')
+                  : t('clips.share_clip')
+              "
+              :aria-label="t('clips.share_clip')"
               @click.stop="shareClip(c.id)"
             >
               <Check v-if="copiedClipId === c.id" class="h-3.5 w-3.5" />

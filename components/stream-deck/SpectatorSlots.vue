@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { Bot } from "lucide-vue-next";
 import {
   effectivePerSideSize,
   keyForSlot,
 } from "~/utilities/streamerSpecSlots";
+
+const { t } = useI18n();
 
 // Pure presentational slot row used by every spec-target surface:
 // DemoPlaybackControls, LiveStreamPlayer (match page), the stream-deck
@@ -131,10 +134,10 @@ const paddedTSlots = computed<PaddedSlot[]>(() =>
 );
 
 function ctTeamLabel(): string {
-  return props.teamCtName || "Counter-Terrorists";
+  return props.teamCtName || t("match.replay.counter_terrorists");
 }
 function tTeamLabel(): string {
-  return props.teamTName || "Terrorists";
+  return props.teamTName || t("match.replay.terrorists");
 }
 
 function slotIsActive(s: SpecSlotData): boolean {

@@ -545,7 +545,7 @@ onMounted(() => {
                   <div
                     class="bg-green-700 text-white rounded-lg px-4 py-2 shadow-md font-bold text-sm border-2 border-green-500"
                   >
-                    ADVANCED
+                    {{ $t("tournament.swiss.advanced") }}
                   </div>
                 </div>
                 <div class="flex flex-col gap-2 min-w-[200px]">
@@ -612,7 +612,7 @@ onMounted(() => {
                   <div
                     class="bg-red-700 text-white rounded-lg px-4 py-2 shadow-md font-bold text-sm border-2 border-red-500"
                   >
-                    ELIMINATED
+                    {{ $t("tournament.swiss.eliminated") }}
                   </div>
                 </div>
                 <div class="flex flex-col gap-2 min-w-[200px]">
@@ -652,7 +652,7 @@ onMounted(() => {
               <div
                 class="bg-gray-800 text-white rounded-lg px-5 py-2.5 shadow-lg font-bold text-sm border border-gray-600"
               >
-                Final Results
+                {{ $t("tournament.swiss.final_results") }}
               </div>
             </div>
 
@@ -666,7 +666,7 @@ onMounted(() => {
                   <div
                     class="bg-green-700 text-white rounded-lg px-4 py-2 shadow-md font-bold text-sm border-2 border-green-500"
                   >
-                    ADVANCED
+                    {{ $t("tournament.swiss.advanced") }}
                   </div>
                 </div>
                 <div class="flex flex-col gap-2 min-w-[200px]">
@@ -702,7 +702,7 @@ onMounted(() => {
                   <div
                     class="bg-red-700 text-white rounded-lg px-4 py-2 shadow-md font-bold text-sm border-2 border-red-500"
                   >
-                    ELIMINATED
+                    {{ $t("tournament.swiss.eliminated") }}
                   </div>
                 </div>
                 <div class="flex flex-col gap-2 min-w-[200px]">

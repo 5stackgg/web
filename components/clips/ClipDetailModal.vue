@@ -7,6 +7,9 @@ import {
   ref,
   watch,
 } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 import {
   Crosshair,
   Download,
@@ -99,7 +102,7 @@ const canDelete = computed(() => isOwner.value || auth.isAdmin);
 // title because the player is already named in the Highlighting card.
 const displayTitle = computed(() => {
   const raw = clip.value?.title?.trim() ?? "";
-  if (!raw) return "Untitled clip";
+  if (!raw) return t("clips.untitled_clip");
   const player = clip.value?.target?.name?.trim();
   if (!player) return raw;
   const escaped = player.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -115,31 +118,33 @@ const saving = ref(false);
 const editError = ref<string | null>(null);
 
 type Visibility = "private" | "unlisted" | "public";
-const VISIBILITY_OPTIONS: Array<{
-  value: Visibility;
-  label: string;
-  icon: any;
-  hint: string;
-}> = [
+const VISIBILITY_OPTIONS = computed<
+  Array<{
+    value: Visibility;
+    label: string;
+    icon: any;
+    hint: string;
+  }>
+>(() => [
   {
     value: "public",
-    label: "Public",
+    label: t("clips.visibility.public"),
     icon: Globe,
-    hint: "Listed in the highlights feed",
+    hint: t("clips.visibility.public_hint"),
   },
   {
     value: "unlisted",
-    label: "Unlisted",
+    label: t("clips.visibility.unlisted"),
     icon: Eye,
-    hint: "Hidden from feeds — anyone with the link can view",
+    hint: t("clips.visibility.unlisted_hint"),
   },
   {
     value: "private",
-    label: "Private",
+    label: t("clips.visibility.private"),
     icon: Lock,
-    hint: "Hidden from feeds — file URL still plays if shared",
+    hint: t("clips.visibility.private_hint"),
   },
-];
+]);
 const canEditVisibility = computed(() => isOwner.value || auth.isAdmin);
 const visPopoverOpen = ref(false);
 const visSaving = ref(false);
@@ -443,7 +448,7 @@ onMounted(() => {
         ]"
       >
         <VisuallyHidden as-child>
-          <DialogTitle>{{ clip?.title || "Clip" }}</DialogTitle>
+          <DialogTitle>{{ clip?.title || $t("common.clip") }}</DialogTitle>
         </VisuallyHidden>
         <VisuallyHidden as-child>
           <DialogDescription> Highlight clip viewer </DialogDescription>
@@ -481,7 +486,7 @@ onMounted(() => {
           <span
             class="font-mono text-[0.62rem] uppercase tracking-[0.24em] text-foreground/80"
           >
-            Highlight
+            {{ $t("clips.detail.default_title") }}
           </span>
 
           <Popover
@@ -497,7 +502,11 @@ onMounted(() => {
                     ? 'text-amber-300 hover:text-amber-200'
                     : 'text-muted-foreground hover:text-foreground'
               "
-              :title="`Visibility: ${clip.visibility}. Click to change.`"
+              :title="
+                $t('ui_extras.visibility_change_hint', {
+                  value: clip.visibility,
+                })
+              "
             >
               <span
                 class="inline-flex h-4 w-4 items-center justify-center rounded-full"
@@ -526,7 +535,7 @@ onMounted(() => {
               <div
                 class="px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
               >
-                Visibility
+                {{ $t("clips.detail.visibility") }}
               </div>
               <button
                 v-for="opt in VISIBILITY_OPTIONS"
@@ -576,7 +585,9 @@ onMounted(() => {
                   ? 'text-amber-300'
                   : 'text-muted-foreground'
             "
-            :title="`Visibility: ${clip.visibility}`"
+            :title="
+              $t('ui_extras.visibility_label', { value: clip.visibility })
+            "
           >
             <Lock v-if="clip.visibility === 'private'" class="h-3 w-3" />
             <Eye v-else-if="clip.visibility === 'unlisted'" class="h-3 w-3" />
@@ -595,7 +606,7 @@ onMounted(() => {
               type="button"
               class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] disabled:cursor-not-allowed disabled:opacity-35"
               :disabled="!previousClip"
-              :title="previousClip?.title ?? 'Previous clip'"
+              :title="previousClip?.title ?? $t('ui_extras.previous_clip')"
               @click="openPreviousClip"
             >
               <ChevronLeft class="h-3.5 w-3.5" />
@@ -604,7 +615,7 @@ onMounted(() => {
               type="button"
               class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] disabled:cursor-not-allowed disabled:opacity-35"
               :disabled="!nextClip"
-              :title="nextClip?.title ?? 'Next clip'"
+              :title="nextClip?.title ?? $t('ui_extras.next_clip')"
               @click="openNextClip"
             >
               <ChevronRight class="h-3.5 w-3.5" />
@@ -617,7 +628,7 @@ onMounted(() => {
             @click="closeClip"
           >
             <X class="h-3 w-3" />
-            <span class="hidden sm:inline">Close</span>
+            <span class="hidden sm:inline">{{ $t("common.close") }}</span>
           </button>
         </div>
 
@@ -642,13 +653,17 @@ onMounted(() => {
           <span
             class="font-mono text-[0.6rem] uppercase tracking-[0.24em] text-destructive"
           >
-            Signal lost
+            {{ $t("clips.detail.signal_lost") }}
           </span>
-          <h2 class="text-lg font-semibold">Clip not found</h2>
+          <h2 class="text-lg font-semibold">
+            {{ $t("clips.detail.clip_not_found") }}
+          </h2>
           <p class="text-sm text-muted-foreground max-w-sm">
-            It may have been deleted, or you don't have permission to view it.
+            {{ $t("clips.detail.clip_not_found_description") }}
           </p>
-          <Button variant="outline" size="sm" @click="closeClip">Close</Button>
+          <Button variant="outline" size="sm" @click="closeClip">{{
+            $t("common.close")
+          }}</Button>
         </div>
 
         <div
@@ -697,7 +712,7 @@ onMounted(() => {
                     v-if="isOwner && !editing"
                     type="button"
                     class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/20 bg-black/55 text-white/85 backdrop-blur-sm transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))] cursor-pointer"
-                    title="Edit title"
+                    :title="$t('ui.edit_title')"
                     @click.stop="startEdit"
                   >
                     <Pencil class="h-3.5 w-3.5" />
@@ -710,8 +725,12 @@ onMounted(() => {
                         ? 'share-flash border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber))] scale-110'
                         : 'border-white/20 text-white/85'
                     "
-                    :title="linkCopied ? 'Link copied!' : 'Share clip'"
-                    aria-label="Share clip"
+                    :title="
+                      linkCopied
+                        ? $t('clips.link_copied')
+                        : $t('clips.share_clip')
+                    "
+                    :aria-label="$t('clips.share_clip')"
                     @click.stop="copyLink"
                   >
                     <Check v-if="linkCopied" class="h-3.5 w-3.5" />
@@ -752,10 +771,10 @@ onMounted(() => {
                             :title="`Open ${clip.target?.name ?? 'player'}'s profile`"
                             @click.stop="closeClip"
                             >{{
-                              clip.target?.name ?? "Match highlight"
+                              clip.target?.name ?? $t("clips.match_highlight")
                             }}</NuxtLink
                           ><template v-else>{{
-                            clip.target?.name ?? "Match highlight"
+                            clip.target?.name ?? $t("clips.match_highlight")
                           }}</template
                           ><span
                             v-if="targetTeamName"
@@ -801,7 +820,7 @@ onMounted(() => {
                 v-if="previousClip"
                 type="button"
                 class="clip-nav-button clip-nav-button--prev opacity-0 transition-opacity duration-200 group-hover/video:opacity-100 focus-visible:opacity-100"
-                :title="previousClip.title ?? 'Previous clip'"
+                :title="previousClip.title ?? $t('ui_extras.previous_clip')"
                 @click="openPreviousClip"
               >
                 <ChevronLeft class="h-5 w-5" />
@@ -810,7 +829,7 @@ onMounted(() => {
                 v-if="nextClip"
                 type="button"
                 class="clip-nav-button clip-nav-button--next opacity-0 transition-opacity duration-200 group-hover/video:opacity-100 focus-visible:opacity-100"
-                :title="nextClip.title ?? 'Next clip'"
+                :title="nextClip.title ?? $t('ui_extras.next_clip')"
                 @click="openNextClip"
               >
                 <ChevronRight class="h-5 w-5" />
@@ -831,12 +850,12 @@ onMounted(() => {
                     for="clip-modal-title"
                     class="text-[0.62rem] font-mono uppercase tracking-[0.18em] text-muted-foreground"
                   >
-                    Title
+                    {{ $t("clips.detail.title_label") }}
                   </Label>
                   <Input
                     id="clip-modal-title"
                     v-model="draftTitle"
-                    placeholder="Untitled clip"
+                    :placeholder="$t('clips.untitled_clip')"
                     maxlength="120"
                     :disabled="saving"
                   />
@@ -851,14 +870,14 @@ onMounted(() => {
                     :disabled="saving"
                     @click="cancelEdit"
                   >
-                    Cancel
+                    {{ $t("common.cancel") }}
                   </Button>
                   <Button size="sm" :disabled="saving" @click="saveEdit">
                     <Loader2
                       v-if="saving"
                       class="h-3.5 w-3.5 mr-1.5 animate-spin"
                     />
-                    Save
+                    {{ $t("common.save") }}
                   </Button>
                 </div>
               </div>
@@ -873,7 +892,7 @@ onMounted(() => {
               >
                 <span class="inline-flex items-center gap-2">
                   <ListVideo class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
-                  Other clips
+                  {{ $t("clips.detail.other_clips") }}
                 </span>
                 <span class="tabular-nums">
                   {{ activeClipIndex + 1 }} / {{ clipQueue.length }}
@@ -922,12 +941,12 @@ onMounted(() => {
                           : 'text-foreground'
                       "
                     >
-                      {{ q.playerName ?? "Clip" }}
+                      {{ q.playerName ?? $t("common.clip") }}
                     </span>
                     <span
                       class="block truncate font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground"
                     >
-                      {{ q.title ?? "Untitled" }}
+                      {{ q.title ?? $t("common.untitled") }}
                     </span>
                   </span>
                   <ChevronRight
@@ -956,7 +975,7 @@ onMounted(() => {
               <span
                 class="mt-1 inline-flex items-center gap-1 self-end font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover/match-link:text-[hsl(var(--tac-amber))]"
               >
-                View match
+                {{ $t("clips.detail.view_match") }}
                 <ArrowUpRight class="h-3 w-3" />
               </span>
             </NuxtLink>
@@ -980,12 +999,16 @@ onMounted(() => {
                 type="button"
                 class="action-tile action-tile--primary group"
                 :class="linkCopied ? 'action-tile--primary-copied' : ''"
-                :aria-label="linkCopied ? 'Link copied' : 'Share clip'"
+                :aria-label="
+                  linkCopied ? $t('toasts.link_copied') : $t('clips.share_clip')
+                "
                 @click.stop="copyLink"
               >
                 <Check v-if="linkCopied" class="h-4 w-4" />
                 <Share2 v-else class="h-4 w-4" />
-                <span>{{ linkCopied ? "Link copied!" : "Share clip" }}</span>
+                <span>{{
+                  linkCopied ? $t("clips.link_copied") : $t("clips.share_clip")
+                }}</span>
               </button>
               <div class="grid grid-cols-2 gap-2">
                 <a
@@ -996,7 +1019,7 @@ onMounted(() => {
                   :class="canDelete ? '' : 'col-span-2'"
                 >
                   <Download class="h-4 w-4" />
-                  <span>Download</span>
+                  <span>{{ $t("common.download") }}</span>
                 </a>
                 <button
                   v-if="canDelete"
@@ -1006,7 +1029,7 @@ onMounted(() => {
                   @click="showDelete = true"
                 >
                   <Trash2 class="h-4 w-4" />
-                  <span>Delete clip</span>
+                  <span>{{ $t("ui_extras.delete_clip") }}</span>
                 </button>
               </div>
             </div>

@@ -813,10 +813,10 @@ export default {
               groups: z.number().default(1),
               stage_type: z.string(),
               min_teams: z.string().refine((val) => !isNaN(parseInt(val)), {
-                message: "min teams must be a number",
+                message: this.$t("validation_extras.min_teams_number"),
               }),
               max_teams: z.string().refine((val) => !isNaN(parseInt(val)), {
-                message: "max teams must be a number",
+                message: this.$t("validation_extras.max_teams_number"),
               }),
               default_best_of: z.string().default("1"),
               third_place_match: z.boolean().default(false),
@@ -837,7 +837,7 @@ export default {
             .refine(
               (data) => parseInt(data.min_teams) <= parseInt(data.max_teams),
               {
-                message: "max teams must be greater than min teams",
+                message: this.$t("validation_extras.max_teams_gt_min"),
                 path: ["min_teams"],
               },
             )
@@ -853,8 +853,7 @@ export default {
                 );
               },
               {
-                message:
-                  "min and max teams must be at least 3 for Round Robin, 4 otherwise",
+                message: this.$t("validation_extras.min_max_teams_min_value"),
                 path: ["min_teams"],
               },
             ),

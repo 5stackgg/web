@@ -63,6 +63,7 @@ export default {
       demoPlayers: [] as any[],
       demoKills: [] as any[],
       demoBombs: [] as any[],
+      demoKitDrops: [] as any[],
       demoRoundTicks: [] as any[],
       tickRate: 64 as number,
       blobLoading: false as boolean,
@@ -90,6 +91,7 @@ export default {
       self.demoPlayers = data.demoPlayers ?? [];
       self.demoKills = data.demoKills ?? [];
       self.demoBombs = data.demoBombs ?? [];
+      self.demoKitDrops = data.demoKitDrops ?? [];
       self.demoRoundTicks = data.demoRoundTicks ?? [];
       self.tickRate = data.tickRate ?? 64;
       self.hydratedFromOpener = true;
@@ -133,6 +135,7 @@ export default {
           self.demoPlayers = blob.players ?? [];
           self.demoKills = blob.kills ?? [];
           self.demoBombs = blob.bombs ?? [];
+          self.demoKitDrops = blob.kit_drops ?? [];
           self.demoRoundTicks = blob.round_ticks ?? [];
           self.tickRate = blob.tick_rate || 64;
         } catch (error) {
@@ -172,13 +175,13 @@ export default {
       v-if="loading"
       class="py-10 text-center font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground"
     >
-      Loading replay…
+      {{ $t("match.replay.loading") }}
     </div>
     <div
       v-else-if="positions !== null && positions.length === 0"
       class="py-10 text-center font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground"
     >
-      No position data — re-parse the demo to populate the replay.
+      {{ $t("match.replay.no_position_data") }}
     </div>
     <ReplayViewer
       v-else-if="positions"
@@ -190,6 +193,8 @@ export default {
       :demo-players="demoPlayers"
       :demo-kills="demoKills"
       :demo-bombs="demoBombs"
+      :demo-kit-drops="demoKitDrops"
+      :is-popout="true"
       :demo-round-ticks="demoRoundTicks"
       :tick-rate="tickRate"
       :map-name="mapName"

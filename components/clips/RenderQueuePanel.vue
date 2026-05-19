@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 import {
   Loader2,
   CircleSlash,
@@ -60,23 +63,45 @@ type Job = {
 
 // Boot stages a batch pod emits, in order. `meta` matches
 // StreamSessionProgress vocabulary (required/conditional/implicit).
-const QUEUE_BOOT_STAGES: Array<{
-  key: string;
-  label: string;
-  meta: "required" | "conditional" | "implicit";
-}> = [
-  { key: "downloading_cs2", label: "Installing CS2", meta: "conditional" },
-  { key: "launching_steam", label: "Launching Steam", meta: "required" },
-  { key: "logging_in", label: "Logging in", meta: "implicit" },
-  { key: "downloading_demo", label: "Downloading demo", meta: "required" },
+const QUEUE_BOOT_STAGES = computed<
+  Array<{
+    key: string;
+    label: string;
+    meta: "required" | "conditional" | "implicit";
+  }>
+>(() => [
   {
-    key: "downloading_workshop_map",
-    label: "Downloading workshop map",
+    key: "downloading_cs2",
+    label: t("live_stages.downloading_cs2"),
     meta: "conditional",
   },
-  { key: "launching_cs2", label: "Loading demo in CS2", meta: "required" },
-  { key: "connecting_to_game", label: "Queuing demo", meta: "implicit" },
-];
+  {
+    key: "launching_steam",
+    label: t("live_stages.launching_steam"),
+    meta: "required",
+  },
+  { key: "logging_in", label: t("live_stages.logging_in"), meta: "implicit" },
+  {
+    key: "downloading_demo",
+    label: t("live_stages.downloading_demo"),
+    meta: "required",
+  },
+  {
+    key: "downloading_workshop_map",
+    label: t("live_stages.downloading_workshop_map"),
+    meta: "conditional",
+  },
+  {
+    key: "launching_cs2",
+    label: t("live_stages.loading_demo_in_cs2"),
+    meta: "required",
+  },
+  {
+    key: "connecting_to_game",
+    label: t("live_stages.queuing_demo"),
+    meta: "implicit",
+  },
+]);
 
 // Cold CS2 install + Steam login fits comfortably in 5 min; older
 // booting ticks mean the broadcast loop died — fall back to the
@@ -271,8 +296,8 @@ function stageStateFor(
   if (!group.bootInfo) return "pending";
   if (group.bootInfo.stage === stage.key) return "current";
   if (group.bootInfo.firedStages.has(stage.key)) return "done";
-  const order = QUEUE_BOOT_STAGES.findIndex((s) => s.key === stage.key);
-  const currOrder = QUEUE_BOOT_STAGES.findIndex(
+  const order = QUEUE_BOOT_STAGES.value.findIndex((s) => s.key === stage.key);
+  const currOrder = QUEUE_BOOT_STAGES.value.findIndex(
     (s) => s.key === group.bootInfo!.stage,
   );
   if (order >= 0 && currOrder >= 0 && order < currOrder) {
@@ -281,9 +306,9 @@ function stageStateFor(
   return "pending";
 }
 
-function visibleBootStages(group: BatchGroup): typeof QUEUE_BOOT_STAGES {
+function visibleBootStages(group: BatchGroup): typeof QUEUE_BOOT_STAGES.value {
   if (!group.bootInfo) return [];
-  return QUEUE_BOOT_STAGES.filter((s) => {
+  return QUEUE_BOOT_STAGES.value.filter((s) => {
     if (s.meta !== "implicit") return true;
     return (
       group.bootInfo!.firedStages.has(s.key) || group.bootInfo!.stage === s.key
@@ -329,17 +354,17 @@ function progressPct(j: Job): number {
 function statusLabel(s: string): string {
   switch (s) {
     case "queued":
-      return "Queued";
+      return t("render_queue_status.queued");
     case "rendering":
-      return "Rendering";
+      return t("render_queue_status.rendering");
     case "uploading":
-      return "Uploading";
+      return t("render_queue_status.uploading");
     case "done":
-      return "Done";
+      return t("render_queue_status.done");
     case "error":
-      return "Error";
+      return t("render_queue_status.error");
     case "cancelled":
-      return "Cancelled";
+      return t("render_queue_status.cancelled");
     default:
       return s;
   }
@@ -471,7 +496,7 @@ const totalQueued = computed(
         <span
           class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
         >
-          In Flight
+          {{ $t("clips.render_queue.in_flight") }}
         </span>
         <span class="font-mono text-sm font-semibold tabular-nums">
           {{ totalInFlight }}
@@ -567,7 +592,11 @@ const totalQueued = computed(
                 <div
                   class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
                 >
-                  <span>{{ g.bootInfo ? "Pod boot" : "Batch progress" }}</span>
+                  <span>{{
+                    g.bootInfo
+                      ? $t("ui_extras.pod_boot")
+                      : $t("ui_extras.batch_progress")
+                  }}</span>
                   <span class="tabular-nums">
                     <template v-if="g.bootInfo && g.bootInfo.progress !== null">
                       {{ Math.round(g.bootInfo.progress * 100) }}%
@@ -610,7 +639,7 @@ const totalQueued = computed(
                 class="h-3 w-3 mr-1 animate-spin"
               />
               <X v-else class="h-3 w-3 mr-1" />
-              Cancel
+              {{ $t("common.cancel") }}
             </Button>
           </div>
         </div>
@@ -727,7 +756,7 @@ const totalQueued = computed(
               >
                 <span class="inline-flex items-center gap-1.5">
                   <Film class="h-3 w-3" />
-                  Render
+                  {{ $t("clips.render_queue.render") }}
                 </span>
                 <span class="tabular-nums">
                   {{
@@ -761,7 +790,7 @@ const totalQueued = computed(
               >
                 <span class="inline-flex items-center gap-1.5">
                   <Upload class="h-3 w-3" />
-                  Upload
+                  {{ $t("clips.render_queue.upload") }}
                 </span>
                 <span class="tabular-nums">
                   {{
@@ -878,7 +907,7 @@ const totalQueued = computed(
         <span
           class="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground/80"
         >
-          Recently Finished
+          {{ $t("clips.render_queue.recently_finished") }}
         </span>
         <span class="text-border">·</span>
         <span

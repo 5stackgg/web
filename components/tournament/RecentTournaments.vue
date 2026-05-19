@@ -217,7 +217,7 @@ const shouldRender = computed(() => {
           to="/tournaments"
           class="inline-flex items-center gap-1 font-mono text-[0.65rem] tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors normal-case"
         >
-          See all
+          {{ $t("tournament.recent.see_all") }}
           <ArrowRight class="h-3 w-3" />
         </NuxtLink>
       </div>
@@ -295,7 +295,7 @@ const shouldRender = computed(() => {
           aria-hidden="true"
           class="inline-block h-1.5 w-1.5 rounded-full bg-muted-foreground/40"
         ></span>
-        {{ emptyLabel || "STANDBY · NO TOURNAMENTS" }}
+        {{ emptyLabel || $t("tournament.recent.standby_no_tournaments") }}
       </div>
       <p
         v-if="emptyDescription"

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 import { CheckCircle2, Loader2, AlertCircle, Download } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import { Progress } from "~/components/ui/progress";
@@ -114,18 +117,18 @@ onBeforeUnmount(() => {
 const statusLabel = computed(() => {
   switch (job.value?.status) {
     case "queued":
-      return "Queued — waiting for a render slot";
+      return t("render_queue_status.queued_waiting");
     case "rendering":
-      return "Rendering on the game-streamer pod";
+      return t("render_queue_status.rendering_on_pod");
     case "uploading":
-      return "Uploading to your library";
+      return t("render_queue_status.uploading_to_library");
     case "done":
-      return "Done";
+      return t("render_queue_status.done");
     case "error":
     case "errored":
-      return "Render failed";
+      return t("render_queue_status.render_failed");
     default:
-      return "Submitting…";
+      return t("render_queue_status.submitting");
   }
 });
 const isDone = computed(() => job.value?.status === "done");
@@ -188,7 +191,7 @@ const phaseStatus = computed<{
             phaseStatus.render === 'pending' && 'bg-muted-foreground/40',
           ]"
         />
-        Render
+        {{ $t("clips.render_progress.render") }}
       </span>
       <span class="h-px flex-1 bg-border/60" />
       <span
@@ -206,7 +209,7 @@ const phaseStatus = computed<{
             phaseStatus.upload === 'pending' && 'bg-muted-foreground/40',
           ]"
         />
-        Upload
+        {{ $t("clips.render_progress.upload") }}
       </span>
     </div>
 
@@ -227,7 +230,7 @@ const phaseStatus = computed<{
         :disabled="cancelling"
         @click="cancel"
       >
-        Cancel render
+        {{ $t("clips.render_progress.cancel_render") }}
       </Button>
       <Button
         v-if="isDone && clip?.download_url"
@@ -246,14 +249,18 @@ const phaseStatus = computed<{
           "
         >
           <Download class="h-4 w-4 mr-2" />
-          Download
+          {{ $t("clips.render_progress.download") }}
         </a>
       </Button>
       <Button v-if="isDone && clip?.id" size="sm" as-child>
-        <NuxtLink :to="`/clips/${clip.id}`">Open clip</NuxtLink>
+        <NuxtLink :to="`/clips/${clip.id}`">{{
+          $t("clips.render_progress.open_clip")
+        }}</NuxtLink>
       </Button>
       <Button v-else-if="isDone" size="sm" as-child>
-        <NuxtLink to="/highlights">Open library</NuxtLink>
+        <NuxtLink to="/highlights">{{
+          $t("clips.render_progress.open_library")
+        }}</NuxtLink>
       </Button>
       <Button
         v-if="isDone || isError"
@@ -261,7 +268,7 @@ const phaseStatus = computed<{
         size="sm"
         @click="$emit('close')"
       >
-        Close
+        {{ $t("clips.render_progress.close") }}
       </Button>
     </div>
   </div>

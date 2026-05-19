@@ -8,7 +8,7 @@ import { e_player_roles_enum } from "~/generated/zeus";
     <PopoverTrigger as-child>
       <Button variant="outline" size="sm" class="h-7 px-2.5 text-xs">
         <span class="capitalize">{{
-          player.role?.replace("_", " ") || "User"
+          player.role?.replace("_", " ") || $t("player_roles.user")
         }}</span>
         <ChevronDownIcon class="ml-1.5 h-3.5 w-3.5 text-muted-foreground" />
       </Button>
@@ -77,18 +77,30 @@ export default {
     },
     roles() {
       return [
-        { value: e_player_roles_enum.user, display: "User" },
-        { value: e_player_roles_enum.verified_user, display: "Verified User" },
-        { value: e_player_roles_enum.streamer, display: "Streamer" },
+        {
+          value: e_player_roles_enum.user,
+          display: this.$t("player_roles.user"),
+        },
+        {
+          value: e_player_roles_enum.verified_user,
+          display: this.$t("player_roles.verified_user"),
+        },
+        {
+          value: e_player_roles_enum.streamer,
+          display: this.$t("player_roles.streamer"),
+        },
         {
           value: e_player_roles_enum.match_organizer,
-          display: "Match Organizer",
+          display: this.$t("player_roles.match_organizer"),
         },
         {
           value: e_player_roles_enum.tournament_organizer,
-          display: "Tournament Organizer",
+          display: this.$t("player_roles.tournament_organizer"),
         },
-        { value: e_player_roles_enum.administrator, display: "Administrator" },
+        {
+          value: e_player_roles_enum.administrator,
+          display: this.$t("player_roles.administrator"),
+        },
       ].filter((role) => {
         return useAuthStore().isRoleAbove(role.value);
       });

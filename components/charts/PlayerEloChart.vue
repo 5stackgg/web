@@ -35,14 +35,94 @@ ChartJS.register({
       const meta = chart.getDatasetMeta(datasetIndex);
       if (!meta || !meta.data) return;
 
-      const eloChanges = dataset.eloChanges || [];
+      const eloChanges: (number | null | undefined)[] =
+        dataset.eloChanges || [];
+      const data: (number | null)[] = dataset.data || [];
 
+      // Build the set of "noteworthy" indices we want to annotate. Labeling
+      // every point is unreadable past ~30 matches (see screenshot of 98+).
+      const candidates = new Set<number>();
+      const nonZero: { index: number; change: number }[] = [];
+      for (let i = 0; i < eloChanges.length; i++) {
+        const c = eloChanges[i];
+        if (typeof c === "number" && c !== 0) {
+          nonZero.push({ index: i, change: c });
+        }
+      }
+      const total = nonZero.length;
+
+      // Tiered budget — split between top gains and top losses.
+      let perSide: number;
+      if (total <= 30) {
+        perSide = Infinity; // label everything
+      } else if (total <= 80) {
+        perSide = 8;
+      } else {
+        perSide = 5;
+      }
+
+      if (perSide === Infinity) {
+        for (const e of nonZero) candidates.add(e.index);
+      } else {
+        const gains = nonZero
+          .filter((e) => e.change > 0)
+          .sort((a, b) => b.change - a.change);
+        const losses = nonZero
+          .filter((e) => e.change < 0)
+          .sort((a, b) => a.change - b.change);
+        gains.slice(0, perSide).forEach((e) => candidates.add(e.index));
+        losses.slice(0, perSide).forEach((e) => candidates.add(e.index));
+
+        // Anchor first/last non-null and peak/trough so endpoints + extremes always show.
+        let firstIdx = -1;
+        let lastIdx = -1;
+        let peakIdx = -1;
+        let troughIdx = -1;
+        let peakVal = -Infinity;
+        let troughVal = Infinity;
+        for (let i = 0; i < data.length; i++) {
+          const v = data[i];
+          if (v === null || v === undefined) continue;
+          if (firstIdx === -1) firstIdx = i;
+          lastIdx = i;
+          if (v > peakVal) {
+            peakVal = v;
+            peakIdx = i;
+          }
+          if (v < troughVal) {
+            troughVal = v;
+            troughIdx = i;
+          }
+        }
+        [firstIdx, lastIdx, peakIdx, troughIdx].forEach((i) => {
+          if (
+            i >= 0 &&
+            typeof eloChanges[i] === "number" &&
+            (eloChanges[i] as number) !== 0
+          ) {
+            candidates.add(i);
+          }
+        });
+      }
+
+      // Collision tracking — even with thinning, adjacent extremes can stack.
+      const drawnRects: { x: number; y: number; w: number; h: number }[] = [];
+      const overlaps = (
+        a: { x: number; y: number; w: number; h: number },
+        b: { x: number; y: number; w: number; h: number },
+      ) =>
+        a.x < b.x + b.w &&
+        a.x + a.w > b.x &&
+        a.y < b.y + b.h &&
+        a.y + a.h > b.y;
+
+      // Walk in chart x-order so collision skipping favors earlier (left) labels.
       meta.data.forEach((point: any, index: number) => {
+        if (!candidates.has(index)) return;
         if (index >= eloChanges.length) return;
 
         const eloChange = eloChanges[index];
-        if (eloChange === null || eloChange === undefined || eloChange === 0)
-          return;
+        if (typeof eloChange !== "number" || eloChange === 0) return;
 
         const x = point.x;
         const y = point.y;
@@ -52,22 +132,28 @@ ChartJS.register({
         const changeText = `${symbol}${Math.abs(eloChange).toLocaleString()}`;
 
         ctx.save();
-
         ctx.font = "bold 12px Arial";
         const textMetrics = ctx.measureText(changeText);
         const textWidth = textMetrics.width;
         const textHeight = 16;
         const padding = 4;
 
-        ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-        ctx.fillRect(
-          x + 10 - padding,
-          y - textHeight / 2 - padding,
-          textWidth + padding * 2,
-          textHeight + padding * 2,
-        );
+        const rect = {
+          x: x + 10 - padding,
+          y: y - textHeight / 2 - padding,
+          w: textWidth + padding * 2,
+          h: textHeight + padding * 2,
+        };
 
-        ctx.font = "bold 12px Arial";
+        if (drawnRects.some((r) => overlaps(r, rect))) {
+          ctx.restore();
+          return;
+        }
+        drawnRects.push(rect);
+
+        ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+        ctx.fillRect(rect.x, rect.y, rect.w, rect.h);
+
         ctx.fillStyle = color;
         ctx.textAlign = "left";
         ctx.textBaseline = "middle";
@@ -299,6 +385,26 @@ export default {
       const labels = this.unifiedTimestamps;
       if (labels.length === 0) return null;
 
+      const focusCount = this.focusSeries?.history?.length ?? 0;
+      // Tiered sizing so dense charts (hundreds of matches) stop turning into
+      // a blob of overlapping dots.
+      let focusRadius: number;
+      let dimRadius: number;
+      if (focusCount <= 30) {
+        focusRadius = 5;
+        dimRadius = 2.5;
+      } else if (focusCount <= 80) {
+        focusRadius = 3.5;
+        dimRadius = 1.75;
+      } else if (focusCount <= 200) {
+        focusRadius = 2.25;
+        dimRadius = 1.25;
+      } else {
+        focusRadius = 1.5;
+        dimRadius = 1;
+      }
+      const tension = focusCount > 80 ? 0.3 : 0.4;
+
       const datasets = this.normalizedSeries.map((series) => {
         const focus = !!series.focus;
 
@@ -338,6 +444,7 @@ export default {
           return typeof entry?.elo_change === "number" ? entry.elo_change : 0;
         });
 
+        const radius = focus ? focusRadius : dimRadius;
         return {
           label: series.label,
           fill: false,
@@ -346,11 +453,11 @@ export default {
           borderDash: focus ? [] : [4, 4],
           pointBackgroundColor: pointColor,
           pointBorderColor: focus ? "#fff" : "rgba(255,255,255,0.4)",
-          pointBorderWidth: focus ? 2.5 : 1.25,
-          pointRadius: focus ? 5 : 2.5,
-          pointHoverRadius: focus ? 7 : 4,
+          pointBorderWidth: Math.max(1, radius * 0.5),
+          pointRadius: radius,
+          pointHoverRadius: Math.max(focus ? 6 : 5, radius + 2),
           pointHoverBorderWidth: focus ? 3 : 1.5,
-          tension: 0.4,
+          tension,
           spanGaps: true,
           data,
           eloChanges,

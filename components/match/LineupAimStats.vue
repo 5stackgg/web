@@ -31,7 +31,7 @@ const { sortKey, sortDir, toggle, sortRows } = useTableSort<string>();
 </script>
 
 <template>
-  <Table>
+  <Table class="table-fixed">
     <TableHeader>
       <TableRow>
         <TableHead

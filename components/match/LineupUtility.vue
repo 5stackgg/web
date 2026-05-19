@@ -89,7 +89,7 @@ const TIER_CONFIG: Record<string, StatTierConfig> = {
 </script>
 
 <template>
-  <Table>
+  <Table class="table-fixed">
     <TableHeader>
       <TableRow>
         <TableHead

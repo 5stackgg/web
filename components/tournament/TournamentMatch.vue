@@ -146,12 +146,12 @@ const canConfirmFinalStep = computed(
 
 const formatImpactLabel = (impact: ResetImpact): string => {
   if (impact.is_source) {
-    return "Source match (winner reset)";
+    return t("tournament_match_impact.source_reset");
   }
   if (impact.will_delete_match) {
-    return "Match will be deleted and recreated";
+    return t("tournament_match_impact.delete_recreate");
   }
-  return "Bracket slot/state will be reset";
+  return t("tournament_match_impact.slot_reset");
 };
 
 const impactSummary = computed(() => ({
@@ -240,8 +240,8 @@ const openResetFlow = async (bracket: Bracket) => {
     resetDialogOpen.value = true;
   } catch (error: any) {
     toast({
-      title: "Unable to preview tournament match reset",
-      description: error?.message || "Please try again.",
+      title: t("toasts.preview_reset_failed"),
+      description: error?.message || t("toasts.please_try_again"),
       variant: "destructive",
     });
   } finally {
@@ -254,7 +254,7 @@ const continueResetFlow = () => {
   const firstError = Object.values(errors)[0];
   if (firstError) {
     toast({
-      title: "Please resolve validation errors",
+      title: t("toasts.resolve_validation_errors"),
       description: firstError,
       variant: "destructive",
     });
@@ -274,8 +274,8 @@ const executeResetFlow = async () => {
   const targetWinnerId = getWinningLineupId(selectedBracket.value);
   if (resetTargetWinner.value !== "clear" && !targetWinnerId) {
     toast({
-      title: "Unable to set selected winner",
-      description: "Selected lineup id is missing for this match.",
+      title: t("toasts.set_winner_failed"),
+      description: t("toasts.set_winner_failed_description"),
       variant: "destructive",
     });
     return;
@@ -303,12 +303,12 @@ const executeResetFlow = async () => {
     resetDialogOpen.value = false;
     resetConfirmDialogOpen.value = false;
     toast({
-      title: "Tournament match reset applied",
+      title: t("toasts.match_reset_applied"),
     });
   } catch (error: any) {
     toast({
-      title: "Unable to reset tournament match",
-      description: error?.message || "Please try again.",
+      title: t("toasts.match_reset_failed"),
+      description: error?.message || t("toasts.please_try_again"),
       variant: "destructive",
     });
   } finally {
@@ -680,7 +680,7 @@ const shouldShowCrossBracketDestination = (
                 class="text-red-300 focus:bg-red-950/50 focus:text-red-200"
                 @click.stop="openResetFlow(bracket)"
               >
-                Reset winner
+                {{ $t("tournament.match.reset_winner") }}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -937,8 +937,7 @@ const shouldShowCrossBracketDestination = (
       <AlertDialogHeader>
         <AlertDialogTitle>Reset tournament match winner?</AlertDialogTitle>
         <AlertDialogDescription>
-          Changing this result can delete downstream matches in the bracket
-          chain.
+          {{ $t("tournament.match.reset_warning") }}
         </AlertDialogDescription>
       </AlertDialogHeader>
 
@@ -1032,7 +1031,7 @@ const shouldShowCrossBracketDestination = (
         >
           <div class="flex items-center gap-2 font-medium">
             <RotateCcw class="h-4 w-4 text-blue-300" />
-            Winner after reset
+            {{ $t("tournament.match.winner_after_reset") }}
           </div>
           <RadioGroup v-model="resetTargetWinner" class="gap-2">
             <div
@@ -1082,7 +1081,7 @@ const shouldShowCrossBracketDestination = (
             class="space-y-3 rounded-md border border-border bg-background/70 p-3"
           >
             <Label class="text-sm font-medium" for="reset-scheduled-at">
-              Scheduled at
+              {{ $t("tournament.match.scheduled_at") }}
             </Label>
             <Input
               id="reset-scheduled-at"
@@ -1127,7 +1126,7 @@ const shouldShowCrossBracketDestination = (
           :disabled="!canContinuePreviewStep"
           @click="continueResetFlow"
         >
-          Continue
+          {{ $t("tournament.match.continue") }}
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>
@@ -1139,11 +1138,11 @@ const shouldShowCrossBracketDestination = (
   >
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>Final confirmation required</AlertDialogTitle>
+        <AlertDialogTitle>{{
+          $t("tournament.match.final_confirmation_required")
+        }}</AlertDialogTitle>
         <AlertDialogDescription>
-          This will reset the selected bracket chain and can remove already
-          played downstream matches. Use this only for tournament admin
-          corrections.
+          {{ $t("tournament.match.reset_chain_warning") }}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <div
@@ -1176,7 +1175,7 @@ const shouldShowCrossBracketDestination = (
           @click="executeResetFlow"
         >
           <Undo2 class="mr-1 h-4 w-4" />
-          Confirm reset
+          {{ $t("tournament.match.confirm_reset") }}
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>

@@ -12,7 +12,7 @@ import {
   <div v-if="hasUpcomingItems">
     <div :class="tacticalSectionLabelClasses">
       <span :class="tacticalSectionTickClasses"></span>
-      Your Schedule
+      {{ $t("common.your_schedule") }}
       <span
         class="rounded-full border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.15)] px-[0.45rem] py-[0.05rem] text-[0.62rem] tracking-[0.08em] text-[hsl(var(--tac-amber))]"
       >
@@ -20,7 +20,7 @@ import {
       </span>
     </div>
     <div :class="tacticalSectionDescriptionClasses">
-      Matches and tournaments you're currently part of.
+      {{ $t("common.your_schedule_description") }}
     </div>
     <div class="flex gap-4 overflow-x-auto pb-1">
       <!-- Matches -->

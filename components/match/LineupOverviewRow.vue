@@ -168,7 +168,7 @@ const DASH = "—";
       :kills="drilldownKillCount"
       @close="drilldownKillCount = null"
     />
-    <TableCell v-if="canDoActions">
+    <TableCell v-if="canDoActions" class="text-right">
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
           <Button variant="secondary" size="icon">

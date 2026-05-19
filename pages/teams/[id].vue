@@ -76,7 +76,7 @@ const teamHeroActionsClasses =
     <header :class="teamHeroClasses">
       <div :class="teamHeroEyebrowClasses">
         <span :class="teamHeroChevronClasses">◢</span>
-        Team Profile
+        {{ $t("team.hero.team_profile") }}
       </div>
 
       <div :class="teamHeroBodyClasses">

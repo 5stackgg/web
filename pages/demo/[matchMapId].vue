@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
+
+const { t } = useI18n();
 import DemoPlayer from "~/components/match/DemoPlayer.vue";
 import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
 import { Kbd } from "~/components/ui/kbd";
@@ -38,38 +41,40 @@ const slotKeys = computed(() => specSlotsForMatchType(store.matchType));
 
 const SHORTCUT_GROUPS = computed(() => [
   {
-    title: "Playback",
+    title: t("shortcut_groups.playback"),
     items: [
-      { keys: ["Space"], label: "Play / pause" },
-      { keys: ["←"], label: "Skip back 15s" },
-      { keys: ["→"], label: "Skip forward 15s" },
-      { keys: ["["], label: "Previous round" },
-      { keys: ["]"], label: "Next round" },
+      { keys: ["Space"], label: t("shortcut_groups.play_pause") },
+      { keys: ["←"], label: t("shortcut_groups.skip_back_15s") },
+      { keys: ["→"], label: t("shortcut_groups.skip_forward_15s") },
+      { keys: ["["], label: t("shortcut_groups.prev_round") },
+      { keys: ["]"], label: t("shortcut_groups.next_round") },
     ],
   },
   {
-    title: "Kills",
+    title: t("shortcut_groups.kills"),
     items: [
-      { keys: ["P"], label: "Previous kill" },
-      { keys: ["N"], label: "Next kill" },
+      { keys: ["P"], label: t("shortcut_groups.prev_kill") },
+      { keys: ["N"], label: t("shortcut_groups.next_kill") },
     ],
   },
   {
-    title: "Spectate",
+    title: t("shortcut_groups.spectate"),
     items: [
       {
         keys: ["1", "—", "0"],
-        label: `Switch player (slot 1–${slotKeys.value.length})`,
+        label: t("shortcut_groups.switch_player", {
+          count: slotKeys.value.length,
+        }),
       },
     ],
   },
   {
-    title: "Quick actions",
+    title: t("shortcut_groups.quick_actions"),
     items: [
-      { keys: ["X"], label: "Toggle x-ray" },
-      { keys: ["H"], label: "Hide / show OpenHud" },
-      { keys: ["R"], label: "Reload demo" },
-      { keys: ["?"], label: "Show this help" },
+      { keys: ["X"], label: t("shortcut_groups.toggle_xray") },
+      { keys: ["H"], label: t("shortcut_groups.hide_show_openhud") },
+      { keys: ["R"], label: t("shortcut_groups.reload_demo") },
+      { keys: ["?"], label: t("shortcut_groups.show_help") },
     ],
   },
 ]);
@@ -180,10 +185,10 @@ const isOrganizer = false;
     <button
       type="button"
       class="absolute right-4 top-4 z-20 inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/80 px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-muted-foreground/80 backdrop-blur-md cursor-pointer transition-all duration-150 hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground hover:scale-105 active:scale-95"
-      title="Show keyboard shortcuts"
+      :title="$t('ui.show_keyboard_shortcuts')"
       @click="shortcutsOpen = true"
     >
-      Shortcuts
+      {{ $t("stream_deck.shortcuts") }}
       <Kbd>?</Kbd>
     </button>
     <ShortcutOverlay

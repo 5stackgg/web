@@ -101,9 +101,9 @@ export default {
                   .replace(/\s*\((Download|Upload)\)$/i, "");
 
                 const dir = isDownload
-                  ? (this as any).$t("common.download")
+                  ? this.$t("common.download")
                   : isUpload
-                    ? (this as any).$t("common.upload")
+                    ? this.$t("common.upload")
                     : "";
 
                 const label = dir ? `${name} (${dir})` : raw;

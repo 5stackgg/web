@@ -184,7 +184,7 @@ const gridItems = computed<GridItem[]>(() => {
           :to="{ name: 'highlights' }"
           class="inline-flex items-center gap-1 font-mono text-[0.65rem] tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors normal-case"
         >
-          See all
+          {{ $t("common.see_all") }}
           <ArrowRight class="h-3 w-3" />
         </NuxtLink>
       </div>
@@ -214,7 +214,7 @@ const gridItems = computed<GridItem[]>(() => {
         :to="{ name: 'highlights' }"
         class="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
       >
-        See all
+        {{ $t("common.see_all") }}
         <ArrowRight class="h-3 w-3" />
       </NuxtLink>
     </div>
@@ -224,7 +224,7 @@ const gridItems = computed<GridItem[]>(() => {
         :to="{ name: 'highlights' }"
         class="inline-flex items-center gap-1 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
       >
-        See all
+        {{ $t("common.see_all") }}
         <ArrowRight class="h-3 w-3" />
       </NuxtLink>
     </div>

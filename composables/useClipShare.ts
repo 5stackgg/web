@@ -1,4 +1,5 @@
 import { onScopeDispose, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import { useToast } from "~/components/ui/toast/use-toast";
 
 // Shared "copy share link" plumbing for clip share buttons. Single
@@ -14,6 +15,7 @@ import { useToast } from "~/components/ui/toast/use-toast";
 // the user actually clicked.
 export function useClipShare() {
   const { toast } = useToast();
+  const { t } = useI18n();
   const copiedClipId = ref<string | null>(null);
   let copiedTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -49,10 +51,10 @@ export function useClipShare() {
     try {
       await navigator.clipboard.writeText(url);
       flashCopied(clipId);
-      toast({ title: "Link copied" });
+      toast({ title: t("toasts.link_copied") });
     } catch {
       toast({
-        title: "Copy failed",
+        title: t("toasts.copy_failed"),
         description: url,
         variant: "destructive",
       });

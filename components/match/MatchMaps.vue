@@ -373,7 +373,7 @@ export default {
         return {
           icon: "play",
           disabled: true,
-          tooltip: gpu.busyReason || "GPU busy",
+          tooltip: gpu.busyReason || this.$t("stream_status.gpu_busy"),
           onClick: null,
         };
       }
@@ -427,10 +427,10 @@ export default {
             ],
           }),
         });
-        toast({ title: "Demo parsed" });
+        toast({ title: this.$t("toasts.demo_parsed") });
       } catch (error) {
         toast({
-          title: "Failed to parse demo",
+          title: this.$t("toasts.demo_parse_failed"),
           description: (error as Error)?.message,
           variant: "destructive",
         });
@@ -464,9 +464,10 @@ export default {
       return `${n.toFixed(n >= 100 || i === 0 ? 0 : 1)} ${units[i]}`;
     },
     formatDemoUploaded(iso) {
-      if (!iso) return "Unknown date";
+      if (!iso) return this.$t("match_extras.unknown_date");
       const d = new Date(iso);
-      if (Number.isNaN(d.getTime())) return "Unknown date";
+      if (Number.isNaN(d.getTime()))
+        return this.$t("match_extras.unknown_date");
       return d.toLocaleString(undefined, {
         year: "numeric",
         month: "short",

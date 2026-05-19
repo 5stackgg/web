@@ -179,7 +179,7 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
           <div :class="tournamentHeroToplineClasses">
             <div :class="tournamentHeroEyebrowClasses">
               <span :class="tournamentHeroChevronClasses">◢</span>
-              Tournament
+              {{ $t("tournament.page.tournament_eyebrow") }}
             </div>
 
             <div :class="tournamentHeroActionsClasses">
@@ -423,7 +423,7 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
                   {{ tournament.description }}
                 </span>
                 <span v-else :class="tournamentHeroDetailsPlaceholderClasses">
-                  View match options
+                  {{ $t("tournament.page.view_match_options") }}
                 </span>
                 <ChevronDown
                   class="h-4 w-4 shrink-0 transition-transform duration-200"
@@ -485,14 +485,14 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
                 value="match-options"
                 :class="tacticalTabsTriggerClasses"
               >
-                Match Options
+                {{ $t("tournament.page.match_options_tab") }}
               </TabsTrigger>
               <TabsTrigger
                 v-if="tournament?.is_organizer"
                 value="organizers"
                 :class="tacticalTabsTriggerClasses"
               >
-                Organizers
+                {{ $t("tournament.page.organizers_tab") }}
               </TabsTrigger>
               <TabsTrigger
                 v-if="tournament?.is_organizer"
@@ -535,11 +535,10 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
               <div :class="myTeamHeaderClasses">
                 <div :class="myTeamLabelClasses">
                   <span :class="tacticalSectionTickClasses"></span>
-                  My Team
+                  {{ $t("tournament.page.my_team") }}
                 </div>
                 <div :class="myTeamHintClasses">
-                  Manage your roster, invites, and readiness for this
-                  tournament.
+                  {{ $t("tournament.page.my_team_hint") }}
                 </div>
               </div>
 
@@ -564,7 +563,7 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
             <div class="min-w-0">
               <div :class="[tacticalSectionLabelClasses, 'mb-[0.85rem]']">
                 <span :class="tacticalSectionTickClasses"></span>
-                Roster
+                {{ $t("tournament.page.roster_section") }}
                 <span :class="tacticalSectionCountClasses">
                   {{ visibleTeams.length }}
                 </span>
@@ -574,7 +573,7 @@ const tournamentAdminBodyClasses = "border-t border-border pt-[0.85rem]";
                 v-if="visibleTeams.length === 0"
                 class="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground"
               >
-                No teams yet.
+                {{ $t("tournament.page.no_teams_yet") }}
               </div>
 
               <div class="space-y-4">

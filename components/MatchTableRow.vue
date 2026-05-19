@@ -154,7 +154,7 @@ import {
               v-if="!compact"
               class="hidden sm:inline normal-case tracking-normal font-normal text-muted-foreground"
             >
-              {{ clipCount === 1 ? "clip" : "clips" }}
+              {{ $t("clips.clip_count", clipCount) }}
             </span>
           </span>
 
@@ -234,7 +234,8 @@ import {
             <template v-if="!compact && match.ended_at">
               <span class="hidden sm:inline">•</span>
               <span class="hidden sm:inline"
-                >Duration: {{ getMatchDuration(match) }}</span
+                >{{ $t("common.duration") }}:
+                {{ getMatchDuration(match) }}</span
               >
             </template>
           </div>
@@ -367,7 +368,7 @@ import {
                 {{ match.lineup_counts.lineup_1_count }}/{{
                   match.max_players_per_lineup
                 }}
-                players
+                {{ $t("common.players") }}
               </span>
             </div>
           </div>
@@ -414,7 +415,7 @@ import {
                 {{ match.lineup_counts.lineup_2_count }}/{{
                   match.max_players_per_lineup
                 }}
-                players
+                {{ $t("common.players") }}
               </span>
             </div>
           </div>
@@ -475,7 +476,7 @@ import {
               class="text-xs uppercase tracking-wide text-muted-foreground"
               :class="compact ? '' : 'hidden lg:block'"
             >
-              Picks
+              {{ $t("match.picks_label") }}
             </div>
             <div class="flex flex-wrap gap-1.5">
               <div
@@ -524,7 +525,7 @@ import {
               <div
                 class="text-xs uppercase tracking-wide text-muted-foreground"
               >
-                Decider
+                {{ $t("match.decider") }}
               </div>
               <div class="flex flex-wrap gap-1.5 justify-center">
                 <div
@@ -574,7 +575,7 @@ import {
               class="text-xs uppercase tracking-wide text-muted-foreground"
               :class="compact ? '' : 'hidden lg:block'"
             >
-              Picks
+              {{ $t("match.picks_label") }}
             </div>
             <div class="flex flex-wrap gap-1.5 justify-end">
               <div
@@ -651,7 +652,7 @@ import {
                     <th
                       class="text-left py-1.5 px-2 sm:py-2 sm:px-3 font-medium"
                     >
-                      Player
+                      {{ $t("common.player") }}
                     </th>
                     <th
                       class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10"
@@ -837,7 +838,7 @@ import {
                     <th
                       class="text-left py-1.5 px-2 sm:py-2 sm:px-3 font-medium"
                     >
-                      Player
+                      {{ $t("common.player") }}
                     </th>
                     <th
                       class="text-center py-1.5 px-1 sm:py-2 sm:px-2 font-medium w-8 sm:w-10"
@@ -1015,7 +1016,7 @@ import {
           @click.stop="openDrawer"
         >
           <ListChecks class="h-3.5 w-3.5" />
-          <span>Quick Overview</span>
+          <span>{{ $t("ui_extras.quick_overview") }}</span>
         </button>
       </div>
     </div>
@@ -1062,7 +1063,7 @@ import {
           >
             <span class="inline-flex items-center gap-1.5">
               <Film class="h-3 w-3 text-[hsl(var(--tac-amber))]/80" />
-              Highlights
+              {{ $t("common.highlights") }}
               <span class="text-foreground/70">·</span>
               <span class="text-foreground/80">
                 {{ filteredPlayerClips.length }}
@@ -1103,7 +1104,7 @@ import {
         @click.stop="openDrawer"
       >
         <ListChecks class="h-3.5 w-3.5" />
-        <span>Quick Overview</span>
+        <span>{{ $t("ui_extras.quick_overview") }}</span>
       </button>
     </div>
 
@@ -1141,12 +1142,12 @@ import {
                 @click="drawerOpen = false"
               >
                 <ExternalLink class="h-3 w-3" />
-                Full page
+                {{ $t("match.full_page") }}
               </NuxtLink>
               <DrawerClose as-child>
                 <button
                   type="button"
-                  aria-label="Close"
+                  :aria-label="$t('common.close')"
                   class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-muted/40 text-foreground/80 transition-colors hover:border-destructive/60 hover:bg-background hover:text-destructive"
                 >
                   <X class="h-3.5 w-3.5" />
@@ -1256,7 +1257,7 @@ import {
                 <div
                   class="text-xs uppercase tracking-wide text-muted-foreground"
                 >
-                  Decider
+                  {{ $t("match.decider") }}
                 </div>
                 <div class="flex flex-wrap gap-1.5 justify-center">
                   <div
@@ -1372,7 +1373,7 @@ import {
             <h4
               class="mb-3 font-mono text-[0.7rem] font-bold uppercase tracking-[0.2em] text-muted-foreground"
             >
-              Players
+              {{ $t("pages.matches.players") }}
             </h4>
             <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <div
@@ -1390,7 +1391,9 @@ import {
                   <table class="w-full min-w-[360px] text-xs">
                     <thead>
                       <tr class="border-b border-border">
-                        <th class="text-left py-2 px-3 font-medium">Player</th>
+                        <th class="text-left py-2 px-3 font-medium">
+                          {{ $t("common.player") }}
+                        </th>
                         <th class="text-center py-2 px-2 font-medium w-10">
                           K
                         </th>
@@ -1494,7 +1497,9 @@ import {
                   <table class="w-full min-w-[360px] text-xs">
                     <thead>
                       <tr class="border-b border-border">
-                        <th class="text-left py-2 px-3 font-medium">Player</th>
+                        <th class="text-left py-2 px-3 font-medium">
+                          {{ $t("common.player") }}
+                        </th>
                         <th class="text-center py-2 px-2 font-medium w-10">
                           K
                         </th>
@@ -1876,7 +1881,7 @@ export default {
     },
     getMatchDuration(match: any): string {
       if (!match.ended_at || !match.started_at) {
-        return "N/A";
+        return this.$t("common.na");
       }
 
       const start = new Date(match.started_at);

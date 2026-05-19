@@ -4268,6 +4268,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_map_demos_avg_order_by:{
 		duration_seconds:"order_by",
+		playback_size:"order_by",
 		size:"order_by",
 		tick_rate:"order_by",
 		total_ticks:"order_by"
@@ -4297,6 +4298,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"uuid_comparison_exp",
 		metadata_parsed_at:"timestamptz_comparison_exp",
 		playback_file:"String_comparison_exp",
+		playback_size:"Int_comparison_exp",
 		playback_url:"String_comparison_exp",
 		players:"jsonb_comparison_exp",
 		round_ticks:"jsonb_comparison_exp",
@@ -4345,6 +4347,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"order_by",
 		metadata_parsed_at:"order_by",
 		playback_file:"order_by",
+		playback_size:"order_by",
 		size:"order_by",
 		tick_rate:"order_by",
 		total_ticks:"order_by",
@@ -4361,6 +4364,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"order_by",
 		metadata_parsed_at:"order_by",
 		playback_file:"order_by",
+		playback_size:"order_by",
 		size:"order_by",
 		tick_rate:"order_by",
 		total_ticks:"order_by",
@@ -4394,6 +4398,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"order_by",
 		metadata_parsed_at:"order_by",
 		playback_file:"order_by",
+		playback_size:"order_by",
 		playback_url:"order_by",
 		players:"order_by",
 		round_ticks:"order_by",
@@ -4425,18 +4430,21 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_map_demos_stddev_order_by:{
 		duration_seconds:"order_by",
+		playback_size:"order_by",
 		size:"order_by",
 		tick_rate:"order_by",
 		total_ticks:"order_by"
 	},
 	match_map_demos_stddev_pop_order_by:{
 		duration_seconds:"order_by",
+		playback_size:"order_by",
 		size:"order_by",
 		tick_rate:"order_by",
 		total_ticks:"order_by"
 	},
 	match_map_demos_stddev_samp_order_by:{
 		duration_seconds:"order_by",
+		playback_size:"order_by",
 		size:"order_by",
 		tick_rate:"order_by",
 		total_ticks:"order_by"
@@ -4458,6 +4466,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_map_demos_sum_order_by:{
 		duration_seconds:"order_by",
+		playback_size:"order_by",
 		size:"order_by",
 		tick_rate:"order_by",
 		total_ticks:"order_by"
@@ -4475,18 +4484,21 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	match_map_demos_var_pop_order_by:{
 		duration_seconds:"order_by",
+		playback_size:"order_by",
 		size:"order_by",
 		tick_rate:"order_by",
 		total_ticks:"order_by"
 	},
 	match_map_demos_var_samp_order_by:{
 		duration_seconds:"order_by",
+		playback_size:"order_by",
 		size:"order_by",
 		tick_rate:"order_by",
 		total_ticks:"order_by"
 	},
 	match_map_demos_variance_order_by:{
 		duration_seconds:"order_by",
+		playback_size:"order_by",
 		size:"order_by",
 		tick_rate:"order_by",
 		total_ticks:"order_by"
@@ -24048,6 +24060,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_id:"uuid",
 		metadata_parsed_at:"timestamptz",
 		playback_file:"String",
+		playback_size:"Int",
 		playback_url:"String",
 		players:"jsonb",
 		round_ticks:"jsonb",
@@ -24075,6 +24088,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_map_demos_avg_fields:{
 		duration_seconds:"Float",
+		playback_size:"Float",
 		size:"Float",
 		tick_rate:"Float",
 		total_ticks:"Float"
@@ -24091,6 +24105,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_id:"uuid",
 		metadata_parsed_at:"timestamptz",
 		playback_file:"String",
+		playback_size:"Int",
 		playback_url:"String",
 		size:"Int",
 		tick_rate:"Float",
@@ -24109,6 +24124,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_id:"uuid",
 		metadata_parsed_at:"timestamptz",
 		playback_file:"String",
+		playback_size:"Int",
 		playback_url:"String",
 		size:"Int",
 		tick_rate:"Float",
@@ -24121,42 +24137,49 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	match_map_demos_stddev_fields:{
 		duration_seconds:"Float",
+		playback_size:"Float",
 		size:"Float",
 		tick_rate:"Float",
 		total_ticks:"Float"
 	},
 	match_map_demos_stddev_pop_fields:{
 		duration_seconds:"Float",
+		playback_size:"Float",
 		size:"Float",
 		tick_rate:"Float",
 		total_ticks:"Float"
 	},
 	match_map_demos_stddev_samp_fields:{
 		duration_seconds:"Float",
+		playback_size:"Float",
 		size:"Float",
 		tick_rate:"Float",
 		total_ticks:"Float"
 	},
 	match_map_demos_sum_fields:{
 		duration_seconds:"Float",
+		playback_size:"Int",
 		size:"Int",
 		tick_rate:"Float",
 		total_ticks:"Int"
 	},
 	match_map_demos_var_pop_fields:{
 		duration_seconds:"Float",
+		playback_size:"Float",
 		size:"Float",
 		tick_rate:"Float",
 		total_ticks:"Float"
 	},
 	match_map_demos_var_samp_fields:{
 		duration_seconds:"Float",
+		playback_size:"Float",
 		size:"Float",
 		tick_rate:"Float",
 		total_ticks:"Float"
 	},
 	match_map_demos_variance_fields:{
 		duration_seconds:"Float",
+		playback_size:"Float",
 		size:"Float",
 		tick_rate:"Float",
 		total_ticks:"Float"

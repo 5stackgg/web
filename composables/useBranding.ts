@@ -1,4 +1,5 @@
 import { computed, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 const lightColorMap: Record<string, string> = {
@@ -99,6 +100,7 @@ const darkColorMap: Record<string, string> = {
 export function useBranding() {
   const store = useApplicationSettingsStore();
   const colorMode = useColorMode();
+  const { t } = useI18n();
 
   const brandName = computed(() => {
     return store.settings.find(
@@ -177,7 +179,7 @@ export function useBranding() {
         (s: { name: string }) => s.name === "public.brand_name",
       );
       if (brandSetting?.value) {
-        document.title = `${brandSetting.value} | Counter-Strike Management System`;
+        document.title = `${brandSetting.value} | ${t("branding.site_title_suffix")}`;
       }
     },
     { immediate: true, deep: true },

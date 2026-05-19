@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { Merge, Waves, MessageCircle, LogOut } from "lucide-vue-next";
 import MatchLobbyExpanded from "~/components/matchmaking-lobby/MatchLobbyExpanded.vue";
 import MatchmakingLobbyAccess from "~/components/matchmaking-lobby/MatchmakingLobbyAccess.vue";
@@ -10,6 +11,7 @@ import { Separator } from "~/components/ui/separator";
 import Empty from "~/components/ui/empty/Empty.vue";
 import { useInvites } from "@/composables/useInvites";
 
+const { t } = useI18n();
 const { hasLobbyInvites } = useInvites();
 </script>
 
@@ -20,7 +22,7 @@ const { hasLobbyInvites } = useInvites();
         class="inline-flex items-center gap-[0.4rem] font-mono text-[0.62rem] font-bold tracking-[0.24em] uppercase text-muted-foreground"
       >
         <span class="w-2 h-[2px] bg-[hsl(var(--tac-amber))]"></span>
-        Lobby
+        {{ $t("layouts.hub.lobby") }}
       </div>
     </div>
     <div class="flex-1 px-3 pt-3 flex flex-col gap-4 overflow-hidden">
@@ -248,7 +250,7 @@ export default {
     matchName(match: any) {
       return (
         match.label ||
-        `${match.lineup_1?.name ?? "TBD"} vs ${match.lineup_2?.name ?? "TBD"}`
+        `${match.lineup_1?.name ?? this.$t("common.tbd")} vs ${match.lineup_2?.name ?? this.$t("common.tbd")}`
       );
     },
     goToMatch(match: any) {
@@ -279,7 +281,7 @@ export default {
         id,
         label:
           match.label ||
-          `${match.lineup_1?.name ?? "TBD"} vs ${match.lineup_2?.name ?? "TBD"}`,
+          `${match.lineup_1?.name ?? this.$t("common.tbd")} vs ${match.lineup_2?.name ?? this.$t("common.tbd")}`,
         instance: "match",
         type: "match",
         lobbyId: match.id,

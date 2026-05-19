@@ -103,7 +103,7 @@ import {
                 <span class="text-xs text-muted-foreground">
                   {{
                     gpuBlocksAction
-                      ? gpuBusyReason || "GPU busy"
+                      ? gpuBusyReason || $t("stream_status.gpu_busy")
                       : $t("match.actions.start_live_direct_hint")
                   }}
                 </span>
@@ -117,7 +117,7 @@ import {
                 <span class="text-xs text-muted-foreground">
                   {{
                     gpuBlocksAction
-                      ? gpuBusyReason || "GPU busy"
+                      ? gpuBusyReason || $t("stream_status.gpu_busy")
                       : canStartLiveTv
                         ? $t("match.actions.start_live_tv_hint")
                         : $t("match.actions.start_live_waiting_tv")
@@ -505,9 +505,11 @@ export default {
     },
     liveStartDisabledReason() {
       if (this.canStartLiveDirect || this.canStartLiveTv) return null;
-      if (this.gpuBlocksAction) return this.gpuBusyReason || "GPU busy";
-      if (!this.match.is_server_online) return "Server is offline";
-      return "Live streaming isn't available for this match right now";
+      if (this.gpuBlocksAction)
+        return this.gpuBusyReason || this.$t("stream_status.gpu_busy");
+      if (!this.match.is_server_online)
+        return this.$t("match.actions.server_offline");
+      return this.$t("match.actions.live_unavailable");
     },
     // TV mode: GOTV/Playcast path. Both `can_stream_tv` and
     // `tv_connection_string` come back null for organizers who are also

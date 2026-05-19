@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 import {
   Play,
   Pause,
@@ -110,10 +113,10 @@ const tSlots = computed(() =>
 // Kill-filter dropdown uses these for the side group labels even
 // after the slot row moved into SpectatorSlots, so they stay here.
 function ctTeamName(): string {
-  return store.gsiTeamCtName || "Counter-Terrorists";
+  return store.gsiTeamCtName || t("match.replay.counter_terrorists");
 }
 function tTeamName(): string {
-  return store.gsiTeamTName || "Terrorists";
+  return store.gsiTeamTName || t("match.replay.terrorists");
 }
 
 // Flash holds until GSI's spec target lands on the slot we pressed,
@@ -433,7 +436,7 @@ function killCountFor(steamId: string) {
 }
 const activeFilterLabel = computed(() => {
   const sid = store.killFilterSteamId;
-  if (!sid) return "All players";
+  if (!sid) return t("match_extras.all_players");
   // Prefer GSI's name (always matches the demo file) over the api
   // lineup name (which can be wrong for cross-loaded demos).
   const gsi = store.specSlots.find((s) => s.steam_id === sid);
@@ -827,7 +830,7 @@ const killMarkers = computed<Marker[]>(() => {
                 <SelectLabel
                   class="text-[0.65rem] uppercase tracking-wider text-muted-foreground"
                 >
-                  Other
+                  {{ $t("clips.create_dialog.other_group") }}
                 </SelectLabel>
                 <SelectItem
                   v-for="p in otherDemoPlayers"
@@ -890,7 +893,12 @@ const killMarkers = computed<Marker[]>(() => {
               </Button>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              {{ store.paused ? "Play" : "Pause" }} <Kbd>Space</Kbd>
+              {{
+                store.paused
+                  ? $t("match.replay.play")
+                  : $t("match.replay.pause")
+              }}
+              <Kbd>Space</Kbd>
             </TooltipContent>
           </Tooltip>
           <Tooltip>
@@ -905,7 +913,7 @@ const killMarkers = computed<Marker[]>(() => {
               </Button>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              Skip forward 15s <Kbd>→</Kbd>
+              {{ $t("replay_extras.skip_forward_15s") }} <Kbd>→</Kbd>
             </TooltipContent>
           </Tooltip>
 
@@ -935,7 +943,7 @@ const killMarkers = computed<Marker[]>(() => {
                 size="icon"
                 class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 hover:border-[hsl(var(--tac-amber)/0.6)] active:scale-95"
                 :disabled="!hasMetadata"
-                title="Auto clip"
+                :title="$t('ui.auto_clip')"
                 @click="openAutoClip"
               >
                 <Sparkles class="h-4 w-4" />
@@ -956,7 +964,7 @@ const killMarkers = computed<Marker[]>(() => {
                     : 'hover:border-[hsl(var(--tac-amber)/0.6)]'
                 "
                 :disabled="!hasMetadata"
-                title="Create clip"
+                :title="$t('ui.create_clip')"
                 @click="toggleClipEditor"
               >
                 <Scissors class="h-4 w-4" />
@@ -975,7 +983,7 @@ const killMarkers = computed<Marker[]>(() => {
                 variant="outline"
                 size="icon"
                 class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95"
-                title="Toggle CS2 demo HUD"
+                :title="$t('replay_extras.toggle_cs2_hud')"
                 @click="toggleDemoUI"
               >
                 <PanelBottom class="h-4 w-4" />
@@ -990,7 +998,7 @@ const killMarkers = computed<Marker[]>(() => {
                 variant="outline"
                 size="icon"
                 class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95"
-                title="Reload demo"
+                :title="$t('ui.reload_demo')"
                 @click="reloadDemo"
               >
                 <RotateCcw class="h-4 w-4" />
@@ -1018,8 +1026,12 @@ const killMarkers = computed<Marker[]>(() => {
               </Button>
             </TooltipTrigger>
             <TooltipContent class="flex items-center gap-2">
-              Auto director
-              {{ store.autodirectorEnabled ? "on" : "off" }}
+              {{ $t("match.auto_director") }}
+              {{
+                store.autodirectorEnabled
+                  ? $t("common.enabled")
+                  : $t("common.disabled")
+              }}
             </TooltipContent>
           </Tooltip>
 
@@ -1093,7 +1105,11 @@ const killMarkers = computed<Marker[]>(() => {
                       ? 'bg-red-500/15 text-red-300'
                       : 'text-muted-foreground hover:text-foreground'
                   "
-                  :title="store.hudVisible ? 'Hide HUD' : 'Show HUD'"
+                  :title="
+                    store.hudVisible
+                      ? $t('ui_extras.hide_hud')
+                      : $t('ui_extras.show_hud')
+                  "
                   @click="toggleHud"
                 >
                   <Eye v-if="store.hudVisible" class="h-4 w-4" />

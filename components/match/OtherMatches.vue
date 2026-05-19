@@ -56,7 +56,7 @@ const paginationFadeTransition = {
           :to="seeAllTo"
           class="inline-flex items-center gap-1 font-mono text-[0.65rem] tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors normal-case"
         >
-          See all
+          {{ $t("common.see_all") }}
           <ArrowRight class="h-3 w-3" />
         </NuxtLink>
       </div>
@@ -138,7 +138,7 @@ const paginationFadeTransition = {
             aria-hidden="true"
             class="inline-block h-1.5 w-1.5 rounded-full bg-muted-foreground/40"
           ></span>
-          {{ emptyLabel || "STANDBY · NO ACTIVITY" }}
+          {{ emptyLabel || $t("common.standby_no_activity") }}
         </div>
         <p
           v-if="emptyDescription"
@@ -335,6 +335,7 @@ export default {
         return this.useSubscription;
       },
       fetchPolicy: "network-only",
+      manual: true,
       result(this: any, { data }: any) {
         this.applyMatchesResult(data);
       },
@@ -365,6 +366,7 @@ export default {
         skip(this: any) {
           return !this.useSubscription;
         },
+        manual: true,
         result(this: any, { data }: any) {
           this.applyMatchesResult(data);
         },

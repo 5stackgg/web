@@ -30,6 +30,8 @@ import {
   ExternalLink,
   Settings2,
   Maximize2,
+  UserPlus,
+  UserCheck,
 } from "lucide-vue-next";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
@@ -652,11 +654,17 @@ const modeTab = useRouteTab({
 const { isMobile } = useSidebar();
 const playerHeroClasses =
   "relative rounded-lg border border-border px-7 py-6 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-[''] max-md:px-4 max-md:py-5";
-const playerHeroEyebrowClasses =
-  "mb-5 inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground";
-const playerHeroChevronClasses =
-  "translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]";
-const playerHeroBodyClasses = "flex flex-wrap items-center gap-7 max-md:gap-4";
+const playerHeroBodyClasses = "flex flex-wrap items-start gap-7 max-md:gap-4";
+const playerHeroInlineRoleChipClasses =
+  "inline-flex items-center gap-1.5 rounded border border-border bg-card/60 px-2 py-[0.25rem] font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground";
+const playerHeroInlineRoleWrapClasses =
+  "inline-flex [&_button]:inline-flex [&_button]:h-auto [&_button]:items-center [&_button]:gap-1.5 [&_button]:rounded [&_button]:border-[hsl(var(--tac-amber)_/_0.4)] [&_button]:bg-[hsl(var(--tac-amber)_/_0.08)] [&_button]:px-2 [&_button]:py-[0.25rem] [&_button]:font-mono [&_button]:text-[0.6rem] [&_button]:font-semibold [&_button]:tracking-[0.14em] [&_button]:text-[hsl(var(--tac-amber))] [&_button]:hover:border-[hsl(var(--tac-amber))] [&_button]:hover:bg-[hsl(var(--tac-amber)_/_0.16)] [&_button>span]:uppercase [&_button>svg]:h-3 [&_button>svg]:w-3 [&_button>svg]:shrink-0";
+const playerHeroNameEditButtonClasses =
+  "inline-flex h-9 w-9 shrink-0 items-center justify-center rounded border border-border bg-card/60 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.1)] hover:text-[hsl(var(--tac-amber))] [&_svg]:h-4 [&_svg]:w-4";
+const playerHeroAddFriendClasses =
+  "group/addfriend relative inline-flex items-center justify-center gap-[0.55rem] overflow-hidden rounded border border-[hsl(var(--tac-amber)_/_0.55)] bg-[hsl(var(--tac-amber)_/_0.12)] px-4 py-2.5 font-sans text-[0.8rem] font-bold uppercase tracking-[0.14em] text-[hsl(var(--tac-amber))] transition-[transform,border-color,background-color,box-shadow] duration-150 hover:-translate-y-px hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.2)] hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.45),0_8px_24px_-8px_hsl(var(--tac-amber)/0.5)] disabled:cursor-not-allowed disabled:opacity-60 max-md:w-full";
+const playerHeroFriendBadgeClasses =
+  "inline-flex items-center justify-center gap-[0.5rem] rounded border border-emerald-500/40 bg-emerald-500/15 px-3 py-2 font-mono text-[0.72rem] font-medium uppercase tracking-[0.16em] text-emerald-400 max-md:w-full";
 const playerHeroAvatarFrameClasses =
   "relative h-[140px] w-[140px] border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] p-1 max-md:h-24 max-md:w-24";
 const playerHeroAvatarClasses = "block h-full w-full object-cover";
@@ -677,15 +685,10 @@ const playerHeroSteamLinkClasses =
   "inline-flex items-center gap-[0.35rem] rounded border border-border bg-card/60 px-[0.55rem] py-[0.2rem] text-[0.7rem] font-medium uppercase tracking-[0.08em] text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.5)] hover:bg-[hsl(var(--tac-amber)_/_0.08)] hover:text-[hsl(var(--tac-amber))]";
 const playerHeroBadgesClasses =
   "mt-[0.15rem] flex flex-wrap items-center gap-2";
-const playerHeroNameEditClasses =
-  "inline-flex opacity-60 transition-opacity duration-150 hover:opacity-100";
-const playerHeroActionsClasses = "mt-1 flex flex-wrap items-center gap-3";
-const playerHeroRoleChipClasses =
-  "inline-flex items-center rounded border border-border bg-card/60 px-[0.55rem] py-[0.25rem] text-[0.7rem] font-medium uppercase tracking-[0.12em] text-muted-foreground capitalize";
 const playerHeroRightActionsClasses =
-  "ml-auto flex shrink-0 items-center justify-center gap-3 self-center max-md:ml-0";
+  "ml-auto flex w-[200px] shrink-0 flex-col items-stretch gap-3 max-md:ml-0 max-md:w-full";
 const playerHeroPlayClasses =
-  "group/play relative isolate inline-flex cursor-pointer items-center overflow-hidden border font-sans text-[0.95rem] font-bold uppercase tracking-[0.18em] no-underline transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px active:translate-y-0 py-[0.85rem] pr-[1.6rem] pl-[1.4rem] text-[hsl(0_0%_8%)] border-[hsl(var(--tac-amber))] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_20px_-6px_hsl(var(--tac-amber)/0.6)] hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_12px_32px_-6px_hsl(var(--tac-amber)/0.8),0_0_24px_hsl(var(--tac-amber)/0.35)]";
+  "group/play relative isolate inline-flex w-full cursor-pointer items-center justify-center overflow-hidden border font-sans text-[0.85rem] font-bold uppercase tracking-[0.18em] no-underline transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px active:translate-y-0 py-[0.7rem] px-4 text-[hsl(0_0%_8%)] border-[hsl(var(--tac-amber))] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_20px_-6px_hsl(var(--tac-amber)/0.6)] hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_12px_32px_-6px_hsl(var(--tac-amber)/0.8),0_0_24px_hsl(var(--tac-amber)/0.35)]";
 const playerHeroPlayInnerClasses =
   "relative z-[1] inline-flex items-center gap-[0.65rem]";
 const playerHeroPlayIconClasses =
@@ -712,11 +715,6 @@ const playerTeamChipShortClasses =
   <div class="flex-grow flex flex-col gap-6" v-if="player">
     <PageTransition>
       <header :class="playerHeroClasses">
-        <div :class="playerHeroEyebrowClasses">
-          <span :class="playerHeroChevronClasses">◢</span>
-          {{ $t("pages.players.detail.player_profile") }}
-        </div>
-
         <div :class="playerHeroBodyClasses">
           <div class="shrink-0">
             <div :class="playerHeroAvatarFrameClasses">
@@ -754,6 +752,16 @@ const playerTeamChipShortClasses =
                   player.name
                 }}</span>
               </h1>
+              <button
+                v-if="canEditPlayer"
+                type="button"
+                :class="playerHeroNameEditButtonClasses"
+                :title="$t('pages.players.detail.edit_player')"
+                @click="editPlayerSheet = true"
+              >
+                <Pencil />
+              </button>
+              <SanctionPlayer v-if="canSanction" :player="player" />
             </div>
 
             <div :class="playerHeroMetaClasses">
@@ -780,7 +788,10 @@ const playerTeamChipShortClasses =
               </a>
             </div>
 
-            <div :class="playerHeroMetaClasses">
+            <div
+              v-if="player.elo || player.steam_id || player.role || canEditRole"
+              :class="playerHeroMetaClasses"
+            >
               <PlayerElo
                 v-if="player.elo"
                 :elo="player.elo"
@@ -791,27 +802,15 @@ const playerTeamChipShortClasses =
                 v-if="player.steam_id"
                 :playerSteamId="player.steam_id"
               />
-            </div>
-
-            <div
-              v-if="player.role || canSanction || canEditPlayer"
-              :class="playerHeroActionsClasses"
-            >
-              <PlayerRoleForm v-if="canEditRole" :player="player" />
-              <span v-else-if="player.role" :class="playerHeroRoleChipClasses">
+              <div v-if="canEditRole" :class="playerHeroInlineRoleWrapClasses">
+                <PlayerRoleForm :player="player" />
+              </div>
+              <span
+                v-else-if="player.role"
+                :class="playerHeroInlineRoleChipClasses"
+              >
                 {{ (player.role || "user").replace("_", " ") }}
               </span>
-              <SanctionPlayer v-if="canSanction" :player="player" />
-              <Button
-                v-if="canEditPlayer"
-                variant="outline"
-                size="icon"
-                class="h-7 w-7 [&_svg]:size-3.5"
-                :title="$t('pages.players.detail.edit_player')"
-                @click="editPlayerSheet = true"
-              >
-                <Pencil />
-              </Button>
             </div>
 
             <div :class="playerHeroBadgesClasses">
@@ -819,9 +818,9 @@ const playerTeamChipShortClasses =
             </div>
           </div>
 
-          <div :class="playerHeroRightActionsClasses">
+          <div v-if="hasRightColumn" :class="playerHeroRightActionsClasses">
             <NuxtLink
-              v-if="me && player.steam_id === me.steam_id"
+              v-if="isSelfProfile"
               to="/play"
               :class="[playerHeroPlayClasses, 'max-md:hidden']"
             >
@@ -834,6 +833,20 @@ const playerTeamChipShortClasses =
                 aria-hidden="true"
               ></span>
             </NuxtLink>
+            <button
+              v-else-if="canAddFriend"
+              type="button"
+              :class="playerHeroAddFriendClasses"
+              :disabled="addFriendPending"
+              @click="addAsFriend"
+            >
+              <UserPlus class="h-4 w-4" />
+              <span>{{ $t("player.status.add_friend") }}</span>
+            </button>
+            <span v-else-if="isFriend" :class="playerHeroFriendBadgeClasses">
+              <UserCheck class="h-3.5 w-3.5" />
+              <span>{{ $t("pages.players.detail.friend") }}</span>
+            </span>
           </div>
         </div>
 
@@ -1943,6 +1956,7 @@ export default {
         };
       }>,
       editPlayerSheet: false,
+      addFriendPending: false,
     };
   },
   computed: {
@@ -2080,6 +2094,25 @@ export default {
         this.player.steam_id === this.me.steam_id
       );
     },
+    isFriend() {
+      if (!this.player) {
+        return false;
+      }
+      return !!useMatchmakingStore().friends.find((friend: any) => {
+        return friend.steam_id == this.player.steam_id;
+      });
+    },
+    canAddFriend() {
+      return !!(
+        this.me &&
+        this.player?.steam_id &&
+        !this.isSelfProfile &&
+        !this.isFriend
+      );
+    },
+    hasRightColumn() {
+      return this.isSelfProfile || this.canAddFriend || this.isFriend;
+    },
     isAdmin() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.administrator);
     },
@@ -2183,6 +2216,22 @@ export default {
     },
   },
   methods: {
+    async addAsFriend() {
+      if (!this.player?.steam_id || this.addFriendPending) return;
+      this.addFriendPending = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: typedGql("mutation")({
+            insert_my_friends_one: [
+              { object: { steam_id: this.player.steam_id } },
+              { steam_id: true },
+            ],
+          }),
+        });
+      } finally {
+        this.addFriendPending = false;
+      }
+    },
     getWeaponImageName(weaponName) {
       if (!weaponName || weaponName === "unknown") return "";
 

@@ -796,6 +796,7 @@
                 "weapon_kills": "Most Used Weapons",
                 "no_weapon_kills": "No weapons recorded",
                 "edit_player": "Edit Player",
+                "friend": "Friend",
                 "name": "Name",
                 "role": "Role",
                 "range_settings": "Range settings",
@@ -2405,7 +2406,8 @@
             "set_server_region": "Set Server Region"
         },
         "picks": {
-            "decider": "Decider"
+            "decider": "Decider",
+            "empty": "No Veto Picks"
         },
         "decider": "Decider",
         "map_veto": {

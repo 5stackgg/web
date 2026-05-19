@@ -10,7 +10,7 @@ import LineupClutches from "~/components/match/LineupClutches.vue";
 import HeadToHead from "~/components/match/HeadToHead.vue";
 import MatchSideFilter from "~/components/match/MatchSideFilter.vue";
 import Replay from "~/components/match/Replay.vue";
-import TableColumnPicker from "~/components/ui/TableColumnPicker.vue";
+import TableColumnPicker from "~/components/common/TableColumnPicker.vue";
 import TeamUtilitySummary from "~/components/match/TeamUtilitySummary.vue";
 import { provideMatchSide } from "~/composables/useMatchSide";
 import {
@@ -46,7 +46,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 import MatchOptionsDisplay from "~/components/match//MatchOptionsDisplay.vue";
 import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import { Cross2Icon } from "@radix-icons/vue";
@@ -198,13 +197,6 @@ provide("commander", commander);
               <SelectItem value="replay" :disabled="disableStats">
                 {{ $t("match.tabs.replay") }}
               </SelectItem>
-              <SelectItem
-                v-if="match.options.map_veto || match.options.region_veto"
-                value="veto"
-                :disabled="match.match_maps.length === 0"
-              >
-                {{ $t("common.map_veto") }}
-              </SelectItem>
               <SelectItem value="settings">
                 {{ $t("match.tabs.settings") }}
               </SelectItem>
@@ -252,13 +244,6 @@ provide("commander", commander);
           <TabsTrigger :disabled="disableStats" value="replay">
             {{ $t("match.tabs.replay") }}
           </TabsTrigger>
-          <TabsTrigger
-            value="veto"
-            :disabled="match.match_maps.length === 0"
-            v-if="match.options.map_veto || match.options.region_veto"
-          >
-            {{ $t("common.map_veto") }}
-          </TabsTrigger>
           <TabsTrigger value="settings">
             {{ $t("match.tabs.settings") }}
           </TabsTrigger>
@@ -283,20 +268,12 @@ provide("commander", commander);
             :columns="overviewColumnsRef"
           />
         </div>
-        <Card class="overflow-x-auto">
-          <CardContent class="py-2">
+        <Card class="overflow-x-auto overscroll-x-none">
+          <CardContent class="p-1 sm:p-2">
             <LineupOverview
               :match="mapScopedMatch"
               :lineup="activeLineup1"
-            ></LineupOverview>
-          </CardContent>
-        </Card>
-
-        <Card class="overflow-x-auto">
-          <CardContent class="py-2">
-            <LineupOverview
-              :match="mapScopedMatch"
-              :lineup="activeLineup2"
+              :combine-with="activeLineup2"
             ></LineupOverview>
           </CardContent>
         </Card>
@@ -335,29 +312,17 @@ provide("commander", commander);
           </div>
 
           <ScrollArea class="max-h-[60vh] overflow-auto">
-            <div class="w-full flex flex-col md:flex-row gap-4">
-              <Card class="w-full md:w-1/2">
-                <CardContent class="py-2">
-                  <LineupOverview
-                    :match="match"
-                    :lineup="match.lineup_1"
-                    :show-stats="false"
-                    @joined="inviteDialog = false"
-                  ></LineupOverview>
-                </CardContent>
-              </Card>
-
-              <Card class="w-full md:w-1/2">
-                <CardContent class="py-2">
-                  <LineupOverview
-                    :match="match"
-                    :lineup="match.lineup_2"
-                    :show-stats="false"
-                    @joined="inviteDialog = false"
-                  ></LineupOverview>
-                </CardContent>
-              </Card>
-            </div>
+            <Card class="overflow-x-auto overscroll-x-none">
+              <CardContent class="p-1 sm:p-2">
+                <LineupOverview
+                  :match="match"
+                  :lineup="match.lineup_1"
+                  :combine-with="match.lineup_2"
+                  :show-stats="false"
+                  @joined="inviteDialog = false"
+                ></LineupOverview>
+              </CardContent>
+            </Card>
           </ScrollArea>
         </DrawerContent>
       </Drawer>
@@ -369,28 +334,19 @@ provide("commander", commander);
       >
         <div
           v-if="showStatsControls"
-          class="flex flex-wrap items-center justify-between gap-2"
+          class="flex flex-wrap items-center justify-end gap-2"
         >
-          <TeamUtilitySummary :lineup="activeLineup1" />
           <TableColumnPicker
             storage-key="match-utility"
             :columns="utilityColumnsRef"
           />
         </div>
-        <Card class="overflow-x-auto">
-          <CardContent class="py-2">
+        <Card class="overflow-x-auto overscroll-x-none">
+          <CardContent class="p-1 sm:p-2">
             <lineup-utility
               :match="mapScopedMatch"
               :lineup="activeLineup1"
-            ></lineup-utility>
-          </CardContent>
-        </Card>
-        <TeamUtilitySummary v-if="showStatsControls" :lineup="activeLineup2" />
-        <Card class="overflow-x-auto">
-          <CardContent class="py-2">
-            <lineup-utility
-              :match="mapScopedMatch"
-              :lineup="activeLineup2"
+              :combine-with="activeLineup2"
             ></lineup-utility>
           </CardContent>
         </Card>
@@ -407,19 +363,12 @@ provide("commander", commander);
             :columns="tradeColumnsRef"
           />
         </div>
-        <Card class="overflow-x-auto">
-          <CardContent class="py-2">
+        <Card class="overflow-x-auto overscroll-x-none">
+          <CardContent class="p-1 sm:p-2">
             <lineup-trade-stats
               :match="mapScopedMatch"
               :lineup="activeLineup1"
-            ></lineup-trade-stats>
-          </CardContent>
-        </Card>
-        <Card class="overflow-x-auto">
-          <CardContent class="py-2">
-            <lineup-trade-stats
-              :match="mapScopedMatch"
-              :lineup="activeLineup2"
+              :combine-with="activeLineup2"
             ></lineup-trade-stats>
           </CardContent>
         </Card>
@@ -433,19 +382,12 @@ provide("commander", commander);
         <div v-if="showStatsControls" class="flex justify-end">
           <TableColumnPicker storage-key="match-aim" :columns="aimColumnsRef" />
         </div>
-        <Card class="overflow-x-auto">
-          <CardContent class="py-2">
+        <Card class="overflow-x-auto overscroll-x-none">
+          <CardContent class="p-1 sm:p-2">
             <lineup-aim-stats
               :match="mapScopedMatch"
               :lineup="activeLineup1"
-            ></lineup-aim-stats>
-          </CardContent>
-        </Card>
-        <Card class="overflow-x-auto">
-          <CardContent class="py-2">
-            <lineup-aim-stats
-              :match="mapScopedMatch"
-              :lineup="activeLineup2"
+              :combine-with="activeLineup2"
             ></lineup-aim-stats>
           </CardContent>
         </Card>
@@ -460,20 +402,12 @@ provide("commander", commander);
             :columns="openingDuelsColumnsRef"
           />
         </div>
-        <Card class="overflow-x-auto">
-          <CardContent class="py-2">
+        <Card class="overflow-x-auto overscroll-x-none">
+          <CardContent class="p-1 sm:p-2">
             <lineup-opening-duels
               :match="match"
               :lineup="match.lineup_1"
-              :selected-map-id="activeMap?.id"
-            ></lineup-opening-duels>
-          </CardContent>
-        </Card>
-        <Card class="overflow-x-auto">
-          <CardContent class="py-2">
-            <lineup-opening-duels
-              :match="match"
-              :lineup="match.lineup_2"
+              :combine-with="match.lineup_2"
               :selected-map-id="activeMap?.id"
             ></lineup-opening-duels>
           </CardContent>
@@ -498,15 +432,6 @@ provide("commander", commander);
     <TabsContent value="replay">
       <div class="max-w-[1500px]">
         <Replay :match="match" :active-map="activeMap" />
-      </div>
-    </TabsContent>
-    <TabsContent value="veto">
-      <div class="grid gap-4 max-w-[1500px]">
-        <Card class="overflow-x-auto">
-          <CardContent class="py-2">
-            <MatchPicksDisplay :match="match" />
-          </CardContent>
-        </Card>
       </div>
     </TabsContent>
     <TabsContent
@@ -1123,13 +1048,6 @@ export default {
         }
 
         tabs.push("head-to-head", "replay");
-      }
-
-      if (
-        (this.match.options.map_veto || this.match.options.region_veto) &&
-        this.match.match_maps.length > 0
-      ) {
-        tabs.push("veto");
       }
 
       tabs.push("settings");

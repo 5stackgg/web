@@ -784,12 +784,11 @@ onMounted(() => {
                           ></span
                         >
                         <span
-                          v-if="(clip.kills_count ?? 0) > 0"
                           class="inline-flex shrink-0 items-center gap-1 rounded border border-[hsl(var(--destructive))] bg-[hsl(var(--destructive)/0.85)] px-1.5 py-0.5 font-mono text-[0.65rem] font-bold text-white tabular-nums shadow-[0_0_10px_hsl(var(--destructive)/0.4)]"
-                          :title="`${clip.kills_count} kill${clip.kills_count === 1 ? '' : 's'} in clip`"
+                          :title="`${clip.kills_count ?? 1} kill${(clip.kills_count ?? 1) === 1 ? '' : 's'} in clip`"
                         >
                           <Crosshair class="h-3 w-3" />
-                          {{ clip.kills_count }}K
+                          {{ clip.kills_count ?? 1 }}K
                         </span>
                       </div>
                       <div class="mt-0.5 flex min-w-0 items-center gap-1.5">

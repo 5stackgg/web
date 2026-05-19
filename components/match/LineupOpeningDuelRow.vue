@@ -2,7 +2,7 @@
   <TableRow :class="['group', rowClass(member)]">
     <TableCell
       :class="[
-        'sticky left-0 z-10 border-r border-border',
+        'w-[110px] md:w-[220px] sticky left-0 z-10 border-r border-border [transform:translateZ(0)]',
         stickyCellClass(member) ||
           'bg-card group-hover:bg-muted shadow-[3px_0_6px_-3px_hsl(0_0%_0%/0.7)]',
       ]"

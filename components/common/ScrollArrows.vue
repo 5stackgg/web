@@ -15,10 +15,7 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <div
-    v-show="canLeft || canRight"
-    class="inline-flex items-center gap-1"
-  >
+  <div v-show="canLeft || canRight" class="inline-flex items-center gap-1">
     <button
       type="button"
       :aria-label="t('ui.scroll.left')"

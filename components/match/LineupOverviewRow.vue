@@ -11,6 +11,11 @@ import {
 } from "~/components/ui/hover-card";
 import { useOverviewColumns } from "~/composables/useMatchTableColumns";
 import { useCurrentUserRow } from "~/composables/useCurrentUserRow";
+import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
+import { MoreVertical, Crown } from "lucide-vue-next";
+import TimezoneFlag from "~/components/TimezoneFlag.vue";
+import PlayerElo from "~/components/PlayerElo.vue";
 
 const { visibility: overviewVis } = useOverviewColumns();
 const { rowClass, stickyCellClass } = useCurrentUserRow();
@@ -22,54 +27,166 @@ const DASH = "—";
     <TableCell
       v-if="!hideMember"
       :class="[
-        'overflow-hidden sticky left-0 z-10 border-r border-border',
+        'w-[110px] md:w-[220px] overflow-hidden sticky left-0 z-10 border-r border-border touch-pan-y [transform:translateZ(0)]',
         stickyCellClass(member) ||
           'bg-card group-hover:bg-muted shadow-[3px_0_6px_-3px_hsl(0_0%_0%/0.7)]',
       ]"
     >
-      <LineupMember :match="match" :member="member">
-        <template v-if="member.player?.steam_id" #avatar-badge>
-          <PlayerMatchClipsButton :steam-id="member.player.steam_id" />
-        </template>
-        <template v-if="memberEloChange" #elo-postfix>
-          <EloChangeBadge :elo-change="memberEloChange" size="xs" />
-        </template>
-      </LineupMember>
+      <DropdownMenu v-if="canDoActions">
+        <DropdownMenuTrigger as-child>
+          <Button
+            variant="ghost"
+            class="absolute left-0 top-1/2 -translate-y-1/2 h-7 w-4 p-0 z-20 text-muted-foreground hover:text-foreground hover:bg-transparent"
+          >
+            <MoreVertical class="h-4 w-3" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" class="w-56">
+          <template v-if="lineup.can_update_lineup">
+            <DropdownMenuItem @click="makeCaptain" :disabled="member.captain">
+              <span>{{ $t("match.overview.promote_captain") }}</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem @click="switchTeams" v-if="canSwitchTeams">
+              <span>{{ $t("match.overview.switch_teams") }}</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator vp />
+
+            <DropdownMenuItem
+              class="text-destructive"
+              @click="removeFromLineup"
+              v-if="lineup.can_update_lineup"
+            >
+              <span>{{ $t("match.overview.remove_from_lineup") }}</span>
+            </DropdownMenuItem>
+          </template>
+
+          <DropdownMenuItem
+            @click="switchTeams"
+            v-if="!lineup.can_update_lineup && canSwitchTeams"
+          >
+            <span>{{ $t("match.overview.switch_teams") }}</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            class="text-destructive"
+            @click="removeFromLineup"
+            v-if="canLeaveLineup"
+          >
+            <span>{{ $t("match.overview.leave_lineup") }}</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <div :class="['min-w-0', canDoActions ? 'pl-3' : '']">
+        <div class="hidden md:block">
+          <LineupMember :match="match" :member="member">
+            <template v-if="member.player?.steam_id" #avatar-badge>
+              <PlayerMatchClipsButton :steam-id="member.player.steam_id" />
+            </template>
+            <template v-if="memberEloChange" #elo-postfix>
+              <EloChangeBadge :elo-change="memberEloChange" size="xs" />
+            </template>
+          </LineupMember>
+        </div>
+        <div class="md:hidden min-w-0">
+          <template v-if="member.player?.steam_id">
+            <div class="flex items-start gap-2 min-w-0">
+              <NuxtLink
+                :to="{
+                  name: 'players-id',
+                  params: { id: member.player.steam_id },
+                }"
+                class="shrink-0"
+              >
+                <div class="relative">
+                  <Avatar shape="square" class="h-9 w-9">
+                    <AvatarImage
+                      v-if="mobileAvatarSrc"
+                      :src="mobileAvatarSrc"
+                      :alt="member.player.name"
+                    />
+                    <AvatarFallback>{{
+                      member.player.name.slice(0, 2)
+                    }}</AvatarFallback>
+                  </Avatar>
+                  <span
+                    v-if="member.captain"
+                    :title="$t('match.player.captain')"
+                    class="absolute -bottom-1 -right-1 inline-flex items-center justify-center h-3.5 w-3.5 rounded-sm bg-[hsl(var(--tac-amber))] text-black ring-1 ring-background shadow z-10"
+                  >
+                    <Crown class="h-2.5 w-2.5" />
+                  </span>
+                </div>
+              </NuxtLink>
+              <div class="flex flex-col min-w-0 leading-tight">
+                <NuxtLink
+                  :to="{
+                    name: 'players-id',
+                    params: { id: member.player.steam_id },
+                  }"
+                  class="truncate text-xs font-medium hover:text-primary"
+                >
+                  {{ member.player.name }}
+                </NuxtLink>
+                <div
+                  class="flex items-center gap-1.5 min-w-0 mt-0.5 text-muted-foreground"
+                >
+                  <TimezoneFlag
+                    v-if="member.player.country"
+                    :country="member.player.country"
+                    class="shrink-0"
+                  />
+                  <PlayerElo :elo="member.player.elo" />
+                </div>
+              </div>
+            </div>
+          </template>
+          <div v-else class="flex items-center gap-2 min-w-0">
+            <NuxtImg
+              src="/img/logos/discord.svg"
+              :alt="$t('alt_text.discord')"
+              class="w-5 h-5 shrink-0"
+            />
+            <span class="truncate text-xs">{{ member.placeholder_name }}</span>
+          </div>
+        </div>
+      </div>
     </TableCell>
     <template v-if="showStats">
-      <TableCell class="text-center">{{
+      <TableCell class="text-center tabular-nums">{{
         hasStats ? sideKills : DASH
       }}</TableCell>
       <TableCell
         v-if="overviewVis.assists !== false"
-        class="hidden md:table-cell text-center"
+        class="text-center tabular-nums"
       >
         {{ hasStats ? sideAssists : DASH }}
       </TableCell>
-      <TableCell class="text-center">{{
+      <TableCell class="text-center tabular-nums">{{
         hasStats ? sideDeaths : DASH
       }}</TableCell>
       <TableCell
         v-if="overviewVis.kd !== false"
-        class="hidden md:table-cell text-center"
+        class="text-center tabular-nums"
       >
         <span :class="kdrColor(kd)">{{ kd }}</span>
       </TableCell>
       <TableCell
         v-if="overviewVis.hs !== false"
-        class="hidden lg:table-cell text-center"
+        class="text-center tabular-nums"
       >
         {{ hs }}
       </TableCell>
       <TableCell
         v-if="overviewVis.survived !== false"
-        class="hidden xl:table-cell text-center"
+        class="text-center tabular-nums"
       >
         {{ survived }}
       </TableCell>
       <TableCell
         v-if="overviewVis.multikills !== false"
-        class="hidden xl:table-cell text-center"
+        class="text-center tabular-nums"
       >
         <HoverCard
           v-if="(totalMultiKills ?? 0) > 0"
@@ -125,20 +242,23 @@ const DASH = "—";
       </TableCell>
       <TableCell
         v-if="overviewVis.hltv !== false"
-        class="hidden md:table-cell text-center tabular-nums"
+        class="text-center tabular-nums"
         :class="hltvTierClass"
       >
         {{ hltvRating ?? DASH }}
       </TableCell>
       <TableCell
         v-if="overviewVis.kast !== false"
-        class="hidden lg:table-cell text-center"
+        class="text-center tabular-nums"
         :class="kastTierClass"
       >
         {{ kast }}
       </TableCell>
-      <TableCell class="hidden table-cell text-center">
-        <div class="flex flex-col items-center leading-tight">
+      <TableCell class="text-center">
+        <span :class="['md:hidden tabular-nums text-xs', adrTierClass]">{{
+          hasStats ? adr : DASH
+        }}</span>
+        <div class="hidden md:flex flex-col items-center leading-tight">
           <span class="tabular-nums">{{ stats?.damage ?? DASH }}</span>
           <span
             v-if="hasStats"
@@ -168,51 +288,6 @@ const DASH = "—";
       :kills="drilldownKillCount"
       @close="drilldownKillCount = null"
     />
-    <TableCell v-if="canDoActions" class="text-right">
-      <DropdownMenu>
-        <DropdownMenuTrigger as-child>
-          <Button variant="secondary" size="icon">
-            <PaginationEllipsis></PaginationEllipsis>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent class="w-56">
-          <template v-if="lineup.can_update_lineup">
-            <DropdownMenuItem @click="makeCaptain" :disabled="member.captain">
-              <span>{{ $t("match.overview.promote_captain") }}</span>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem @click="switchTeams" v-if="canSwitchTeams">
-              <span>{{ $t("match.overview.switch_teams") }}</span>
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator vp />
-
-            <DropdownMenuItem
-              class="text-destructive"
-              @click="removeFromLineup"
-              v-if="lineup.can_update_lineup"
-            >
-              <span>{{ $t("match.overview.remove_from_lineup") }}</span>
-            </DropdownMenuItem>
-          </template>
-
-          <DropdownMenuItem
-            @click="switchTeams"
-            v-if="!lineup.can_update_lineup && canSwitchTeams"
-          >
-            <span>{{ $t("match.overview.switch_teams") }}</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem
-            class="text-destructive"
-            @click="removeFromLineup"
-            v-if="canLeaveLineup"
-          >
-            <span>{{ $t("match.overview.leave_lineup") }}</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </TableCell>
   </TableRow>
 </template>
 
@@ -400,6 +475,14 @@ export default {
   },
   computed: {
     canDoActions() {
+      if (!this.me?.steam_id) return false;
+      const terminal = [
+        e_match_status_enum.Finished,
+        e_match_status_enum.Forfeit,
+        e_match_status_enum.Surrendered,
+        e_match_status_enum.Tie,
+      ];
+      if (terminal.includes(this.match.status)) return false;
       return (
         this.lineup.can_update_lineup ||
         this.canLeaveLineup ||
@@ -407,6 +490,7 @@ export default {
       );
     },
     canLeaveLineup() {
+      if (!this.me?.steam_id) return false;
       return (
         this.match.status === e_match_status_enum.PickingPlayers &&
         this.member.steam_id === this.me.steam_id
@@ -422,11 +506,14 @@ export default {
         return false;
       }
 
+      if (this.lineup.can_update_lineup) return true;
+
+      if (!this.me?.steam_id) return false;
+
       return (
-        this.lineup.can_update_lineup ||
-        (this.match.status === e_match_status_enum.PickingPlayers &&
-          this.member.steam_id === this.me.steam_id &&
-          this.match.options.lobby_access !== e_lobby_access_enum.Private)
+        this.match.status === e_match_status_enum.PickingPlayers &&
+        this.member.steam_id === this.me.steam_id &&
+        this.match.options.lobby_access !== e_lobby_access_enum.Private
       );
     },
     me() {
@@ -671,6 +758,28 @@ export default {
         rounds += match_map.lineup_1_score + match_map.lineup_2_score;
       }
       return rounds;
+    },
+    mobileAvatarSrc() {
+      const steamId = this.member?.player?.steam_id;
+      if (!steamId) return null;
+      const apiDomain = useRuntimeConfig().public.apiDomain;
+      const lineups = [this.match?.lineup_1, this.match?.lineup_2].filter(
+        Boolean,
+      );
+      for (const lineup of lineups) {
+        const inLineup = lineup.lineup_players?.some(
+          (lp: any) => String(lp.steam_id) === String(steamId),
+        );
+        if (!inLineup) continue;
+        const override = buildLineupAvatarOverride(lineup)(steamId);
+        if (override) return resolveAvatarUrl(override, apiDomain);
+      }
+      return resolveAvatarUrl(
+        this.member.player.roster_image_url ||
+          this.member.player.custom_avatar_url ||
+          this.member.player.avatar_url,
+        apiDomain,
+      );
     },
     memberEloChange() {
       const steamId = this.member?.steam_id ?? this.member?.player?.steam_id;

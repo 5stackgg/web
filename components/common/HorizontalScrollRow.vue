@@ -1,11 +1,5 @@
 <script setup lang="ts">
-import {
-  reactive,
-  ref,
-  onMounted,
-  onBeforeUnmount,
-  nextTick,
-} from "vue";
+import { reactive, ref, onMounted, onBeforeUnmount, nextTick } from "vue";
 
 const props = withDefaults(
   defineProps<{
@@ -52,8 +46,7 @@ function updateScrollState() {
   state.canScrollLeft = el.scrollLeft > 4;
   state.canScrollRight = el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
 
-  const distanceToEnd =
-    el.scrollWidth - (el.scrollLeft + el.clientWidth);
+  const distanceToEnd = el.scrollWidth - (el.scrollLeft + el.clientWidth);
   const canActuallyScroll = el.scrollWidth > el.clientWidth + 4;
   const inPrefetchZone =
     canActuallyScroll && distanceToEnd <= effectivePrefetchThreshold();

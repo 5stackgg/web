@@ -48,7 +48,7 @@ function playerAvatarSrc(player: {
         <div
           class="font-mono text-[0.62rem] uppercase tracking-[0.3em] text-muted-foreground/70"
         >
-          ▚ FINAL STANDINGS · PODIUM
+          {{ $t("tournament.final_standings_podium") }}
         </div>
       </header>
 
@@ -273,7 +273,7 @@ function playerAvatarSrc(player: {
                   <div
                     class="col-span-4 text-right font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/60"
                   >
-                    NO DATA
+                    {{ $t("tournament.results_section.no_data") }}
                   </div>
                 </template>
               </div>
@@ -328,7 +328,7 @@ function playerAvatarSrc(player: {
                   box-shadow: 0 0 6px hsl(195 85% 60%);
                 "
               ></span>
-              MOST VALUABLE PLAYER
+              {{ $t("tournament.results_section.mvp") }}
             </div>
             <PlayerDisplay
               v-if="mvp.player"
@@ -457,7 +457,7 @@ function playerAvatarSrc(player: {
             v-if="allMatches.length === 0"
             class="text-center text-muted-foreground py-8"
           >
-            No matches played yet
+            {{ $t("tournament.results_section.no_matches_played") }}
           </div>
         </div>
       </CardContent>

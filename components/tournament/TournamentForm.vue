@@ -220,7 +220,7 @@ export default {
             {
               name: z.string().min(1),
               start: z.date().refine((date) => date > new Date(), {
-                message: (this as any).$t("validation.date_must_be_future"),
+                message: this.$t("validation.date_must_be_future"),
               }),
               description: z.string().nullable().default(null),
               auto_start: z.boolean().default(true),

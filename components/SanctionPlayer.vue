@@ -64,7 +64,7 @@ import { useForm } from "vee-validate";
           </DrawerTitle>
           <DrawerClose>
             <Button variant="link" class="text-lg text-blue-500">
-              Cancel
+              {{ $t("common.cancel") }}
             </Button>
           </DrawerClose>
         </div>

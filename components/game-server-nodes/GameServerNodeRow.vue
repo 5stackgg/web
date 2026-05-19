@@ -501,7 +501,7 @@ const isSectionExpanded = (section: string) => {
             class="text-xs text-amber-500 hover:text-amber-400 font-medium"
             @click="showPortsDialog = true"
           >
-            Set Ports
+            {{ $t("game_server_node.set_ports") }}
           </button>
           <button
             v-else-if="hasPorts"
@@ -958,7 +958,7 @@ const isSectionExpanded = (section: string) => {
                 class="text-left font-medium text-amber-500 hover:text-amber-400"
                 @click="showPortsDialog = true"
               >
-                Set Ports
+                {{ $t("game_server_node.set_ports") }}
               </button>
               <button
                 v-else-if="hasPorts"

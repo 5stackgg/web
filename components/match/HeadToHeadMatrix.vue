@@ -248,7 +248,7 @@ function damageWidth(v: number) {
             "
             class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-[hsl(var(--tac-amber))]"
           >
-            Viewing
+            {{ $t("match.head_to_head_matrix.viewing") }}
           </span>
         </header>
 
@@ -326,7 +326,7 @@ function damageWidth(v: number) {
               <span
                 class="font-mono text-[0.55rem] tracking-[0.25em] uppercase text-muted-foreground"
               >
-                Damage
+                {{ $t("match.head_to_head_matrix.damage") }}
               </span>
               <div class="flex w-full h-1.5 bg-muted/40 mt-1">
                 <div
@@ -402,7 +402,7 @@ function damageWidth(v: number) {
             <div
               class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
             >
-              Your weapons
+              {{ $t("match.head_to_head_matrix.your_weapons") }}
             </div>
             <div class="flex flex-wrap gap-2">
               <template
@@ -448,7 +448,7 @@ function damageWidth(v: number) {
             <div
               class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
             >
-              Their weapons
+              {{ $t("match.head_to_head_matrix.their_weapons") }}
             </div>
             <div class="flex flex-wrap gap-2 md:justify-end">
               <template

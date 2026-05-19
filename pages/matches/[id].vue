@@ -144,7 +144,7 @@ const vsBaseClasses =
               <span
                 class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
               >
-                Lineup 1
+                {{ $t("match.lineup.lineup_1") }}
               </span>
               <div
                 :class="[
@@ -204,7 +204,7 @@ const vsBaseClasses =
               <span
                 class="font-mono text-[0.6rem] tracking-[0.28em] uppercase text-muted-foreground/70"
               >
-                Lineup 2
+                {{ $t("match.lineup.lineup_2") }}
               </span>
               <div
                 :class="[
@@ -249,7 +249,11 @@ const vsBaseClasses =
           class="flex items-center gap-[0.6rem] justify-center flex-wrap mt-4 pt-[0.85rem] border-t border-border font-mono text-[0.72rem] tracking-[0.15em] uppercase text-muted-foreground"
         >
           <span v-if="match.options?.best_of">
-            Best of {{ match.options.best_of }}
+            {{
+              $t("match.options.best_of.option", {
+                count: match.options.best_of,
+              })
+            }}
           </span>
           <span v-if="match.e_region?.description" class="opacity-40">·</span>
           <span v-if="match.e_region?.description">
@@ -654,7 +658,7 @@ export default {
           const mc = useMatchContext();
           const displayText =
             match.label ||
-            `${match.lineup_1?.name ?? "TBD"} vs ${match.lineup_2?.name ?? "TBD"}`;
+            `${match.lineup_1?.name ?? this.$t("common.tbd")} vs ${match.lineup_2?.name ?? this.$t("common.tbd")}`;
           const tournament = match.tournament_brackets?.[0]?.stage?.tournament;
           mc.value = {
             id: match.id,
@@ -672,10 +676,10 @@ export default {
       return useRuntimeConfig().public.apiDomain;
     },
     lineup1Name() {
-      return this.match?.lineup_1?.name || "Lineup 1";
+      return this.match?.lineup_1?.name || this.$t("match.lineup.lineup_1");
     },
     lineup2Name() {
-      return this.match?.lineup_2?.name || "Lineup 2";
+      return this.match?.lineup_2?.name || this.$t("match.lineup.lineup_2");
     },
     lineup1AvatarSrc() {
       const avatarUrl = this.match?.lineup_1?.team?.avatar_url;

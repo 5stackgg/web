@@ -187,7 +187,7 @@ export default {
                   }
                   return value !== undefined;
                 },
-                { message: "team owner is required" },
+                { message: this.$t("validation_extras.team_owner_required") },
               ),
             team_name: z
               .string()
@@ -199,7 +199,7 @@ export default {
                   }
                   return value !== undefined;
                 },
-                { message: "team name is required" },
+                { message: this.$t("validation_extras.team_name_required") },
               ),
             short_name: z
               .string()
@@ -212,7 +212,7 @@ export default {
                   }
                   return value !== undefined && value.length > 0;
                 },
-                { message: "short name is required" },
+                { message: this.$t("validation_extras.short_name_required") },
               ),
             team_id: z
               .string()
@@ -224,7 +224,7 @@ export default {
                   }
                   return value !== undefined;
                 },
-                { message: "team is required" },
+                { message: this.$t("validation_extras.team_required") },
               ),
           }),
         ),

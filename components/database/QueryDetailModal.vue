@@ -4,7 +4,7 @@
       <DialogHeader>
         <DialogTitle>{{ $t("pages.database.query_detail.title") }}</DialogTitle>
         <DialogDescription class="sr-only">
-          Detailed query statistics and execution plan visualization
+          {{ $t("database_extras.modal_description") }}
         </DialogDescription>
       </DialogHeader>
 

@@ -32,7 +32,12 @@ definePageMeta({
             {{ $t("pages.settings.application.demo_settings.used_storage") }}
           </h3>
           <p class="text-2xl font-bold mt-1">
-            {{ formatBytes(match_map_demos_aggregate.aggregate.sum.size) }}~
+            {{
+              formatBytes(
+                (match_map_demos_aggregate.aggregate.sum.size || 0) +
+                  (match_map_demos_aggregate.aggregate.sum.playback_size || 0),
+              )
+            }}~
           </p>
         </div>
       </Card>
@@ -432,6 +437,7 @@ export default {
             aggregate: {
               sum: {
                 size: true,
+                playback_size: true,
               },
             },
           },

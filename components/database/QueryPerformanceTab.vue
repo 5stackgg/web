@@ -141,7 +141,7 @@
                 variant="ghost"
                 size="sm"
               >
-                Details
+                {{ $t("database_extras.details") }}
               </Button>
             </TableCell>
           </TableRow>

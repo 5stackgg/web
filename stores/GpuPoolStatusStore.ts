@@ -1,4 +1,5 @@
 import { ref, computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
@@ -13,6 +14,7 @@ type PoolStatus = {
 };
 
 export const useGpuPoolStatusStore = defineStore("gpu-pool-status", () => {
+  const { t } = useI18n();
   const status = ref<PoolStatus | null>(null);
   const hasLoaded = ref(false);
 
@@ -40,13 +42,13 @@ export const useGpuPoolStatusStore = defineStore("gpu-pool-status", () => {
     const s = status.value;
     if (!s) return null;
     if (s.total_gpu_nodes <= 0) {
-      return "No GPU nodes are currently available";
+      return t("gpu_pool_status.no_nodes");
     }
     if (s.free_gpu_nodes > 0) return null;
-    if (s.live_in_progress) return "GPU busy: a live stream is in progress";
-    if (s.demo_in_progress) return "GPU busy: a demo is being watched";
-    if (s.highlights_in_progress) return "GPU busy: highlights are rendering";
-    return "GPU busy";
+    if (s.live_in_progress) return t("gpu_pool_status.live_busy");
+    if (s.demo_in_progress) return t("gpu_pool_status.demo_busy");
+    if (s.highlights_in_progress) return t("gpu_pool_status.highlights_busy");
+    return t("stream_status.gpu_busy");
   });
 
   function subscribeToPool() {

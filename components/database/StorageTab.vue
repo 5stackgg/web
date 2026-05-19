@@ -18,7 +18,7 @@
               class="justify-between w-full h-10"
             >
               <span v-if="!selectedTable" class="text-muted-foreground">
-                All tables
+                {{ $t("database_extras.all_tables") }}
               </span>
               <span v-else>
                 {{ selectedTable }}
@@ -40,7 +40,7 @@
                     value="__all__"
                     @select="selectedTable = undefined"
                   >
-                    All tables
+                    {{ $t("database_extras.all_tables") }}
                   </CommandItem>
                   <CommandItem
                     v-for="table in availableTables"

@@ -60,9 +60,9 @@ const canManageMatches = computed(
     <TacticalPageHeader>
       <template #description>
         <Swords class="h-3.5 w-3.5" />
-        Match Browser
+        {{ $t("pages.matches.browser") }}
       </template>
-      <template #title>Matches</template>
+      <template #title>{{ $t("pages.matches.title") }}</template>
       <template #actions>
         <button
           v-if="canManageMatches"
@@ -109,7 +109,7 @@ const canManageMatches = computed(
           class="flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground"
         >
           <span :class="tacticalSectionTickClasses" />
-          <span>FILTERS</span>
+          <span>{{ $t("pages.matches.filters") }}</span>
           <span class="text-muted-foreground/30">·</span>
           <span
             :class="
@@ -118,12 +118,16 @@ const canManageMatches = computed(
                 : 'text-muted-foreground/60'
             "
           >
-            {{ activeFilterCount }} ACTIVE
+            {{ activeFilterCount }} {{ $t("pages.matches.active") }}
           </span>
           <span class="text-muted-foreground/30">·</span>
           <span class="text-muted-foreground/80">
             {{ matchesAggregate || 0 }}
-            {{ matchesAggregate === 1 ? "RESULT" : "RESULTS" }}
+            {{
+              matchesAggregate === 1
+                ? $t("pages.matches.result_singular")
+                : $t("pages.matches.result_plural")
+            }}
           </span>
         </div>
         <button
@@ -144,20 +148,24 @@ const canManageMatches = computed(
               <Label
                 class="font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground/80"
               >
-                TEAMS
+                {{ $t("pages.matches.teams") }}
               </Label>
               <span
                 v-if="form.teams.length"
                 class="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
               >
                 · {{ form.teams.length }}
-                {{ form.teams.length === 1 ? "TARGET" : "TARGETS" }}
+                {{
+                  form.teams.length === 1
+                    ? $t("pages.matches.target_singular")
+                    : $t("pages.matches.target_plural")
+                }}
               </span>
               <span
                 v-else
                 class="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-muted-foreground/50"
               >
-                · BY NAME
+                · {{ $t("pages.matches.by_name") }}
               </span>
             </div>
             <button
@@ -169,7 +177,7 @@ const canManageMatches = computed(
               "
               class="inline-flex items-center gap-1 font-mono text-[0.58rem] uppercase tracking-[0.22em] text-muted-foreground transition-colors hover:text-foreground"
             >
-              <X class="h-3 w-3" /> CLEAR
+              <X class="h-3 w-3" /> {{ $t("pages.matches.clear") }}
             </button>
           </div>
           <TeamSearch
@@ -209,7 +217,7 @@ const canManageMatches = computed(
                 type="button"
                 @click="removeTeam(t.id)"
                 class="tac-chip-x"
-                :aria-label="`Remove ${t.name}`"
+                :aria-label="$t('pages.matches.remove_team', { name: t.name })"
               >
                 <X class="h-3 w-3" />
               </button>
@@ -223,20 +231,24 @@ const canManageMatches = computed(
               <Label
                 class="font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground/80"
               >
-                PLAYERS
+                {{ $t("pages.matches.players") }}
               </Label>
               <span
                 v-if="form.players.length"
                 class="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
               >
                 · {{ form.players.length }}
-                {{ form.players.length === 1 ? "OPERATOR" : "OPERATORS" }}
+                {{
+                  form.players.length === 1
+                    ? $t("pages.matches.operator_singular")
+                    : $t("pages.matches.operator_plural")
+                }}
               </span>
               <span
                 v-else
                 class="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-muted-foreground/50"
               >
-                · BY HANDLE
+                · {{ $t("pages.matches.by_handle") }}
               </span>
             </div>
             <button
@@ -248,7 +260,7 @@ const canManageMatches = computed(
               "
               class="inline-flex items-center gap-1 font-mono text-[0.58rem] uppercase tracking-[0.22em] text-muted-foreground transition-colors hover:text-foreground"
             >
-              <X class="h-3 w-3" /> CLEAR
+              <X class="h-3 w-3" /> {{ $t("pages.matches.clear") }}
             </button>
           </div>
           <PlayerSearch
@@ -283,7 +295,9 @@ const canManageMatches = computed(
                 type="button"
                 @click="removePlayer(p.steam_id)"
                 class="tac-chip-x"
-                :aria-label="`Remove ${p.name}`"
+                :aria-label="
+                  $t('pages.matches.remove_player', { name: p.name })
+                "
               >
                 <X class="h-3 w-3" />
               </button>
@@ -296,7 +310,7 @@ const canManageMatches = computed(
             for="status-filter"
             class="font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground/80"
           >
-            STATUS
+            {{ $t("pages.matches.status_label") }}
           </Label>
           <Select
             :model-value="form.statuses"
@@ -322,7 +336,7 @@ const canManageMatches = computed(
             <span
               class="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-muted-foreground/50"
             >
-              PRESETS
+              {{ $t("pages.matches.presets") }}
             </span>
             <button
               type="button"
@@ -334,7 +348,7 @@ const canManageMatches = computed(
                   : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground',
               ]"
             >
-              Upcoming & Live
+              {{ $t("pages.matches.preset_upcoming_live") }}
             </button>
             <button
               type="button"
@@ -346,7 +360,7 @@ const canManageMatches = computed(
                   : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground',
               ]"
             >
-              Finished
+              {{ $t("pages.matches.preset_finished") }}
             </button>
             <button
               v-if="form.statuses.length"
@@ -354,7 +368,7 @@ const canManageMatches = computed(
               @click="clearAllStatuses"
               class="inline-flex items-center gap-1 px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground"
             >
-              <X class="h-3 w-3" /> Clear
+              <X class="h-3 w-3" /> {{ $t("pages.matches.clear_short") }}
             </button>
           </div>
         </div>
@@ -364,7 +378,7 @@ const canManageMatches = computed(
             <Label
               class="font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground/80"
             >
-              WINDOW
+              {{ $t("pages.matches.window") }}
             </Label>
             <span
               class="font-mono text-[0.58rem] uppercase tracking-[0.22em] text-muted-foreground/50"
@@ -376,7 +390,7 @@ const canManageMatches = computed(
             <span
               class="w-8 shrink-0 font-mono text-[0.58rem] uppercase tracking-[0.18em] text-muted-foreground/60"
             >
-              FROM
+              {{ $t("pages.matches.from") }}
             </span>
             <Popover>
               <PopoverTrigger as-child>
@@ -417,7 +431,7 @@ const canManageMatches = computed(
             <span
               class="w-8 shrink-0 font-mono text-[0.58rem] uppercase tracking-[0.18em] text-muted-foreground/60"
             >
-              TO
+              {{ $t("pages.matches.to") }}
             </span>
             <Popover>
               <PopoverTrigger as-child>
@@ -460,7 +474,7 @@ const canManageMatches = computed(
           <Label
             class="font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground/80"
           >
-            OPTIONS
+            {{ $t("pages.matches.options") }}
           </Label>
           <div class="flex flex-col gap-2">
             <div v-if="canManageMatches" class="flex items-center gap-2">
@@ -478,7 +492,7 @@ const canManageMatches = computed(
                 @update:model-value="includeOutOfLineup = !includeOutOfLineup"
               />
               <Label class="text-xs font-medium uppercase tracking-wider">
-                Lineup matches only
+                {{ $t("pages.matches.lineup_only") }}
               </Label>
             </div>
             <Input
@@ -585,7 +599,7 @@ const canManageMatches = computed(
             aria-hidden="true"
             class="inline-block h-1.5 w-1.5 rounded-full bg-muted-foreground/40"
           ></span>
-          STANDBY · NO MATCHES FOUND
+          {{ $t("pages.matches.standby_no_matches") }}
         </div>
         <p class="mt-1.5 text-xs text-muted-foreground/70">
           {{ $t("pages.manage_matches.no_matches") }}

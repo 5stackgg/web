@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import {
   CalendarClock,
   RadioTower,
@@ -9,6 +10,8 @@ import {
 } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
 import TrophyBadge from "~/components/trophy/TrophyBadge.vue";
+
+const { t } = useI18n();
 
 type TournamentStatusVariant = "default" | "finished" | "live" | "registration";
 
@@ -116,7 +119,7 @@ const statusText = computed(() => {
   return (
     props.statusLabel ||
     props.tournament?.e_tournament_status?.description ||
-    "Tournament"
+    t("tournament.compact_card.tournament")
   );
 });
 
@@ -149,9 +152,9 @@ const accentRailClasses = computed(() => {
 });
 
 const timeLabel = computed(() => {
-  if (isLive.value) return "Live";
-  if (isFinished.value) return "Ended";
-  return "Starts";
+  if (isLive.value) return t("tournament.compact_card.live");
+  if (isFinished.value) return t("tournament.compact_card.ended");
+  return t("tournament.compact_card.starts");
 });
 
 const playerRank = computed<number | null>(() => {
@@ -189,7 +192,7 @@ const runnerUps = computed(() => {
   if (podium.value.silver) {
     entries.push({
       placement: 2,
-      label: "2nd",
+      label: t("tournament.compact_card.second"),
       name: podium.value.silver,
       config: trophyConfigFor(2),
     });
@@ -197,7 +200,7 @@ const runnerUps = computed(() => {
   if (podium.value.bronze) {
     entries.push({
       placement: 3,
-      label: "3rd",
+      label: t("tournament.compact_card.third"),
       name: podium.value.bronze,
       config: trophyConfigFor(3),
     });
@@ -230,7 +233,11 @@ const runnerUps = computed(() => {
       <span
         v-if="playerRankLabel"
         class="inline-flex shrink-0 items-center gap-1 rounded border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] px-1.5 py-0.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
-        :title="`Player finished ${playerRankLabel}`"
+        :title="
+          t('tournament.compact_card.player_finished', {
+            rank: playerRankLabel,
+          })
+        "
       >
         {{ playerRankLabel }}
       </span>
@@ -285,7 +292,7 @@ const runnerUps = computed(() => {
           <div
             class="font-mono text-[0.58rem] font-bold uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]/85"
           >
-            Champion
+            {{ $t("tournament.compact_card.champion") }}
           </div>
           <div
             class="mt-0.5 truncate text-base font-bold leading-tight text-[hsl(var(--tac-amber))]"
@@ -341,7 +348,7 @@ const runnerUps = computed(() => {
       <span class="inline-flex items-center gap-1.5">
         <UsersRound class="h-3 w-3" />
         <span class="text-foreground">{{ teamsCount }}</span>
-        Teams
+        {{ $t("tournament.compact_card.teams") }}
       </span>
       <span class="inline-flex items-center gap-1.5">
         <CalendarClock class="h-3 w-3" />

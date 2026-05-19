@@ -152,13 +152,13 @@ async function downloadFullLogs(service: string) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem @click="downloadLogs" class="cursor-pointer">
-              Download visible logs
+              {{ $t("ui.logs.download_visible") }}
             </DropdownMenuItem>
             <DropdownMenuItem
               @click="downloadFullLogs(service)"
               class="cursor-pointer"
             >
-              Download full logs
+              {{ $t("ui.logs.download_full") }}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

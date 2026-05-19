@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import {
   Film,
   Loader2,
@@ -54,6 +55,7 @@ import {
   tacticalFilterPillActiveClasses,
 } from "~/utilities/tacticalClasses";
 
+const { t } = useI18n();
 const clipQueueScope = "highlights-index";
 const { clearClipQueue, setClipQueue } = useClipModal();
 
@@ -87,22 +89,26 @@ const route = useRoute();
 const router = useRouter();
 
 type SincePreset = "all" | "24h" | "7d" | "30d" | "90d";
-const SINCE_OPTIONS: Array<{ value: SincePreset; label: string }> = [
-  { value: "all", label: "All time" },
-  { value: "24h", label: "Last 24 hours" },
-  { value: "7d", label: "Last 7 days" },
-  { value: "30d", label: "Last 30 days" },
-  { value: "90d", label: "Last 90 days" },
-];
+const SINCE_OPTIONS = computed<Array<{ value: SincePreset; label: string }>>(
+  () => [
+    { value: "all", label: t("pages.highlights.since.all") },
+    { value: "24h", label: t("pages.highlights.since.24h") },
+    { value: "7d", label: t("pages.highlights.since.7d") },
+    { value: "30d", label: t("pages.highlights.since.30d") },
+    { value: "90d", label: t("pages.highlights.since.90d") },
+  ],
+);
 
 type KillsPreset = "any" | "2" | "3" | "4" | "5";
-const KILLS_OPTIONS: Array<{ value: KillsPreset; label: string }> = [
-  { value: "any", label: "Any kills" },
-  { value: "2", label: "2+ kills" },
-  { value: "3", label: "3+ kills" },
-  { value: "4", label: "4+ kills" },
-  { value: "5", label: "5 kills" },
-];
+const KILLS_OPTIONS = computed<Array<{ value: KillsPreset; label: string }>>(
+  () => [
+    { value: "any", label: t("pages.highlights.kills.any") },
+    { value: "2", label: t("pages.highlights.kills.2") },
+    { value: "3", label: t("pages.highlights.kills.3") },
+    { value: "4", label: t("pages.highlights.kills.4") },
+    { value: "5", label: t("pages.highlights.kills.5") },
+  ],
+);
 
 const playerFilter = computed<string | null>(() => {
   const v = route.query.player;
@@ -455,9 +461,9 @@ const hasClips = computed(() => groups.value.length > 0);
 
 const totalCountLabel = computed(() => {
   if (effectiveMode.value === "singles") {
-    return totalCount.value === 1 ? "clip" : "clips";
+    return t("pages.highlights.clip_count", totalCount.value);
   }
-  return totalCount.value === 1 ? "match" : "matches";
+  return t("pages.highlights.match_count", totalCount.value);
 });
 
 type GridItem =
@@ -476,21 +482,45 @@ const gridItems = computed<GridItem[]>(() => {
   return items;
 });
 
-const adminFilters: Array<{ value: Filter; label: string; icon?: any }> = [
-  { value: "all", label: "All" },
-  { value: "public", label: "Public", icon: Globe },
-  { value: "unlisted", label: "Unlisted", icon: Eye },
-  { value: "private", label: "Private", icon: Lock },
-];
+const adminFilters = computed<
+  Array<{ value: Filter; label: string; icon?: any }>
+>(() => [
+  { value: "all", label: t("pages.highlights.visibility_filter.all") },
+  {
+    value: "public",
+    label: t("pages.highlights.visibility_filter.public"),
+    icon: Globe,
+  },
+  {
+    value: "unlisted",
+    label: t("pages.highlights.visibility_filter.unlisted"),
+    icon: Eye,
+  },
+  {
+    value: "private",
+    label: t("pages.highlights.visibility_filter.private"),
+    icon: Lock,
+  },
+]);
 
-const viewModeOptions: Array<{
-  value: ViewMode;
-  label: string;
-  icon: any;
-}> = [
-  { value: "matches", label: "Match Clips", icon: Layers },
-  { value: "singles", label: "Singular Clips", icon: Film },
-];
+const viewModeOptions = computed<
+  Array<{
+    value: ViewMode;
+    label: string;
+    icon: any;
+  }>
+>(() => [
+  {
+    value: "matches",
+    label: t("pages.highlights.view_modes.matches"),
+    icon: Layers,
+  },
+  {
+    value: "singles",
+    label: t("pages.highlights.view_modes.singles"),
+    icon: Film,
+  },
+]);
 </script>
 
 <template>
@@ -498,9 +528,9 @@ const viewModeOptions: Array<{
     <TacticalPageHeader>
       <template #description>
         <Film class="h-3.5 w-3.5" />
-        Community Reel
+        {{ $t("pages.highlights.community_reel") }}
       </template>
-      <template #title>Highlights</template>
+      <template #title>{{ $t("pages.highlights.title") }}</template>
       <template #actions>
         <div class="flex items-center gap-3">
           <div
@@ -518,11 +548,16 @@ const viewModeOptions: Array<{
             <SheetTrigger as-child>
               <Button variant="outline" size="sm" class="relative">
                 <ListVideo class="h-3.5 w-3.5 mr-1.5" />
-                Queue
+                {{ $t("pages.highlights.queue") }}
                 <span
                   v-if="pendingClips > 0"
                   class="ml-2 inline-flex items-center gap-1 font-mono text-[0.6rem] font-semibold tabular-nums"
-                  :title="`${activeClips} active · ${queuedClips} queued`"
+                  :title="
+                    $t('pages.highlights.queue_summary', {
+                      active: activeClips,
+                      queued: queuedClips,
+                    })
+                  "
                 >
                   <span
                     class="inline-flex items-center gap-1 rounded-full border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.15)] px-1.5 py-0.5 text-[hsl(var(--tac-amber))]"
@@ -548,11 +583,10 @@ const viewModeOptions: Array<{
               <SheetHeader>
                 <SheetTitle class="flex items-center gap-2">
                   <ListVideo class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
-                  Render Queue
+                  {{ $t("pages.highlights.render_queue") }}
                 </SheetTitle>
                 <SheetDescription>
-                  Active and recently-finished render batches across the
-                  platform.
+                  {{ $t("pages.highlights.render_queue_description") }}
                 </SheetDescription>
               </SheetHeader>
               <div class="mt-6">
@@ -591,24 +625,28 @@ const viewModeOptions: Array<{
           tacticalFilterPillClasses,
           'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.22)]',
         ]"
-        :title="`Clear player filter`"
+        :title="$t('pages.highlights.clear_player_filter')"
         @click="clearPlayer"
       >
         <User class="h-3 w-3" />
         <span class="truncate max-w-[12rem]">
-          {{ playerFilterName ?? "Player" }}
+          {{ playerFilterName ?? $t("clips.default_player") }}
         </span>
         <X class="h-3 w-3 opacity-70" />
       </button>
 
-      <PlayerSearch v-else label="Filter by player" @selected="selectPlayer">
+      <PlayerSearch
+        v-else
+        :label="$t('pages.highlights.filter_by_player')"
+        @selected="selectPlayer"
+      >
         <button
           type="button"
           :class="[tacticalFilterPillClasses]"
-          title="Filter by player"
+          :title="$t('pages.highlights.filter_by_player')"
         >
           <User class="h-3 w-3" />
-          <span>Player</span>
+          <span>{{ $t("clips.default_player") }}</span>
         </button>
       </PlayerSearch>
 
@@ -669,7 +707,7 @@ const viewModeOptions: Array<{
       <div
         class="ml-auto flex items-center rounded-full border border-border/60 bg-muted/30 p-0.5"
         role="group"
-        aria-label="View mode"
+        :aria-label="$t('pages.highlights.view_mode')"
       >
         <button
           v-for="opt in viewModeOptions"
@@ -678,7 +716,7 @@ const viewModeOptions: Array<{
           :disabled="hasActiveFilter && opt.value === 'matches'"
           :title="
             hasActiveFilter && opt.value === 'matches'
-              ? 'Cleared while filtering'
+              ? $t('pages.highlights.view_mode_filter_disabled')
               : undefined
           "
           :class="[
@@ -703,7 +741,7 @@ const viewModeOptions: Array<{
         class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground tabular-nums"
       >
         {{ totalCount }}
-        {{ totalCount === 1 ? "result" : "results" }}
+        {{ $t("pages.highlights.result_count", totalCount) }}
       </span>
     </div>
   </PageTransition>
@@ -725,21 +763,21 @@ const viewModeOptions: Array<{
       <EmptyTitle>
         {{
           playerFilter || sinceFilter !== "all" || killsFilter !== "any"
-            ? "No clips match these filters"
-            : "No clips here yet"
+            ? $t("pages.highlights.empty.no_match_filters")
+            : $t("pages.highlights.empty.no_clips_yet")
         }}
       </EmptyTitle>
       <EmptyDescription>
         <template
           v-if="playerFilter || sinceFilter !== 'all' || killsFilter !== 'any'"
         >
-          Try widening the filters or clearing one.
+          {{ $t("pages.highlights.empty.try_widening") }}
         </template>
         <template v-else-if="isAdmin">
-          Try a different filter — or wait for new clips to render.
+          {{ $t("pages.highlights.empty.try_different_admin") }}
         </template>
         <template v-else>
-          Public clips will appear here as they're rendered. Check back soon.
+          {{ $t("pages.highlights.empty.check_back_soon") }}
         </template>
       </EmptyDescription>
       <div
@@ -753,7 +791,7 @@ const viewModeOptions: Array<{
           @click="clearPlayer"
         >
           <X class="h-3 w-3" />
-          Clear player
+          {{ $t("pages.highlights.empty.clear_player") }}
         </button>
         <button
           v-if="sinceFilter !== 'all'"
@@ -762,7 +800,7 @@ const viewModeOptions: Array<{
           @click="setSince('all')"
         >
           <X class="h-3 w-3" />
-          Clear date
+          {{ $t("pages.highlights.empty.clear_date") }}
         </button>
         <button
           v-if="killsFilter !== 'any'"
@@ -771,7 +809,7 @@ const viewModeOptions: Array<{
           @click="setKills('any')"
         >
           <X class="h-3 w-3" />
-          Clear kills
+          {{ $t("pages.highlights.empty.clear_kills") }}
         </button>
       </div>
     </Empty>

@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { Bomb, Skull, Wrench, Clock } from "lucide-vue-next";
+
+const { t } = useI18n();
 import {
   Tooltip,
   TooltipContent,
@@ -99,17 +102,17 @@ function lineupWonRound(round: Round, isLineup1: boolean) {
 function reasonLabel(reason?: e_winning_reasons_enum | null) {
   switch (reason) {
     case e_winning_reasons_enum.BombExploded:
-      return "Bomb Exploded";
+      return t("round_history.bomb_exploded");
     case e_winning_reasons_enum.BombDefused:
-      return "Bomb Defused";
+      return t("round_history.bomb_defused");
     case e_winning_reasons_enum.TimeRanOut:
-      return "Time Ran Out";
+      return t("round_history.time_ran_out");
     case e_winning_reasons_enum.CTsWin:
-      return "CTs Eliminated Ts";
+      return t("round_history.cts_eliminated_ts");
     case e_winning_reasons_enum.TerroristsWin:
-      return "Ts Eliminated CTs";
+      return t("round_history.ts_eliminated_cts");
     default:
-      return "Unknown";
+      return t("round_history.unknown");
   }
 }
 

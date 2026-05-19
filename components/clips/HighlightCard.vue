@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
 import {
   Film,
   Play,
@@ -31,6 +32,7 @@ const props = defineProps<{
   clip: Clip;
 }>();
 
+const { t } = useI18n();
 const { openClip } = useClipModal();
 const { copiedClipId, shareClip } = useClipShare();
 const auth = useAuthStore();
@@ -72,38 +74,40 @@ function onTitleClick(e: MouseEvent) {
 }
 
 type Visibility = "public" | "unlisted" | "private";
-const VISIBILITY_OPTIONS: Array<{
-  value: Visibility;
-  label: string;
-  icon: any;
-  hint: string;
-}> = [
+const VISIBILITY_OPTIONS = computed<
+  Array<{
+    value: Visibility;
+    label: string;
+    icon: any;
+    hint: string;
+  }>
+>(() => [
   {
     value: "public",
-    label: "Public",
+    label: t("clips.visibility.public"),
     icon: Globe,
-    hint: "Listed in the highlights feed",
+    hint: t("clips.visibility.public_hint"),
   },
   {
     value: "unlisted",
-    label: "Unlisted",
+    label: t("clips.visibility.unlisted"),
     icon: Eye,
-    hint: "Hidden from feeds — anyone with the link can view",
+    hint: t("clips.visibility.unlisted_hint"),
   },
   {
     value: "private",
-    label: "Private",
+    label: t("clips.visibility.private"),
     icon: Lock,
-    hint: "Hidden from feeds — file URL still plays if shared",
+    hint: t("clips.visibility.private_hint"),
   },
-];
+]);
 const saving = ref(false);
 const visPopoverOpen = ref(false);
 
 const currentVisibilityMeta = computed(() => {
   return (
-    VISIBILITY_OPTIONS.find((o) => o.value === props.clip.visibility) ??
-    VISIBILITY_OPTIONS[2]
+    VISIBILITY_OPTIONS.value.find((o) => o.value === props.clip.visibility) ??
+    VISIBILITY_OPTIONS.value[2]
   );
 });
 
@@ -142,7 +146,7 @@ async function setVisibility(v: Visibility) {
           :src="
             clip.thumbnail_download_url ?? clip.match_map?.map?.poster ?? ''
           "
-          :alt="clip.title ?? 'Highlight'"
+          :alt="clip.title ?? $t('clips.detail.default_title')"
           loading="lazy"
           class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
         />
@@ -156,7 +160,11 @@ async function setVisibility(v: Visibility) {
         <button
           type="button"
           class="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/80 via-transparent to-transparent transition-opacity opacity-60 hover:opacity-100 cursor-pointer"
-          :aria-label="`Play ${clip.title ?? 'clip'}`"
+          :aria-label="
+            $t('ui_extras.play_clip', {
+              title: clip.title ?? $t('clips.default_clip'),
+            })
+          "
           @click="onPlayClick"
         >
           <span
@@ -175,8 +183,12 @@ async function setVisibility(v: Visibility) {
                 ? 'share-flash text-[hsl(var(--tac-amber))] scale-110'
                 : 'text-white/90'
             "
-            :title="copiedClipId === clip.id ? 'Link copied!' : 'Share clip'"
-            aria-label="Share clip"
+            :title="
+              copiedClipId === clip.id
+                ? $t('clips.link_copied')
+                : $t('clips.share_clip')
+            "
+            :aria-label="$t('clips.share_clip')"
             @click.stop="shareClip(clip.id)"
           >
             <Check v-if="copiedClipId === clip.id" class="h-3.5 w-3.5" />
@@ -185,8 +197,14 @@ async function setVisibility(v: Visibility) {
           <Popover v-if="isAdmin" v-model:open="visPopoverOpen">
             <PopoverTrigger
               class="inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
-              :aria-label="`Visibility: ${clip.visibility}. Click to change.`"
-              :title="`Visibility: ${clip.visibility}`"
+              :aria-label="
+                $t('ui_extras.visibility_change_hint', {
+                  value: clip.visibility,
+                })
+              "
+              :title="
+                $t('ui_extras.visibility_label', { value: clip.visibility })
+              "
               @click.stop
             >
               <span
@@ -216,7 +234,7 @@ async function setVisibility(v: Visibility) {
               <div
                 class="px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
               >
-                Visibility
+                {{ $t("clips.detail.visibility") }}
               </div>
               <button
                 v-for="opt in VISIBILITY_OPTIONS"
@@ -259,8 +277,12 @@ async function setVisibility(v: Visibility) {
           <span
             v-else
             class="inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm pointer-events-none"
-            :title="`Visibility: ${clip.visibility}`"
-            :aria-label="`Visibility: ${clip.visibility}`"
+            :title="
+              $t('ui_extras.visibility_label', { value: clip.visibility })
+            "
+            :aria-label="
+              $t('ui_extras.visibility_label', { value: clip.visibility })
+            "
           >
             <span
               class="inline-flex h-4 w-4 items-center justify-center rounded-full"
@@ -289,7 +311,7 @@ async function setVisibility(v: Visibility) {
           <span
             v-if="isTournament"
             class="inline-flex h-5 items-center gap-0.5 rounded bg-black/80 px-1.5 font-mono text-[0.62rem] leading-none text-[hsl(var(--tac-amber))] backdrop-blur-sm"
-            title="Tournament match"
+            :title="$t('ui.tournament_match')"
           >
             <Trophy class="h-2.5 w-2.5" />
           </span>
@@ -322,11 +344,11 @@ async function setVisibility(v: Visibility) {
         <NuxtLink
           :to="`/clips/${clip.id}`"
           class="group/link flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-[hsl(var(--tac-amber))] transition-colors"
-          :title="clip.title || 'Open clip'"
+          :title="clip.title || $t('ui_extras.open_clip')"
           @click="onTitleClick"
         >
           <span class="truncate">
-            {{ clip.title || "Untitled clip" }}
+            {{ clip.title || $t("clips.untitled_clip") }}
           </span>
           <ArrowUpRight
             class="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-all group-hover/link:text-[hsl(var(--tac-amber))] group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"

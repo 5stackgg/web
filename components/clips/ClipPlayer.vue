@@ -399,8 +399,8 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
       type="button"
       class="absolute left-1/2 top-1/2 inline-flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/45 bg-white/16 text-white shadow-[0_0_30px_hsl(var(--tac-amber)/0.35)] backdrop-blur-sm transition duration-200 hover:scale-110 group-hover/player:scale-110 group-hover/player:border-[hsl(var(--tac-amber)/0.7)] group-hover/player:bg-white/25"
       :class="controlsVisible ? 'opacity-100' : 'pointer-events-none opacity-0'"
-      :title="playing ? 'Pause' : 'Play'"
-      :aria-label="playing ? 'Pause' : 'Play'"
+      :title="playing ? $t('ui_extras.pause') : $t('ui_extras.play')"
+      :aria-label="playing ? $t('ui_extras.pause') : $t('ui_extras.play')"
       @click.stop="toggle"
     >
       <Pause v-if="playing" class="h-7 w-7 fill-current" />
@@ -425,7 +425,7 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
         <button
           type="button"
           class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
-          :title="muted ? 'Unmute' : 'Mute'"
+          :title="muted ? $t('ui_extras.unmute') : $t('ui_extras.mute')"
           @click.stop="toggleMute"
         >
           <VolumeX v-if="muted" class="h-4 w-4" />
@@ -438,7 +438,7 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
           max="1"
           step="0.01"
           :value="volume"
-          aria-label="Volume"
+          :aria-label="$t('ui.volume')"
           class="vol-slider ml-0 w-0 cursor-pointer transition-all duration-200 group-hover/vol:ml-2 group-hover/vol:w-20 focus-visible:ml-2 focus-visible:w-20"
           @click.stop
           @mousedown.stop
@@ -448,7 +448,11 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
       <button
         type="button"
         class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/20 bg-black/70 text-white/85 backdrop-blur-md transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
-        :title="isFullscreen ? 'Exit fullscreen' : 'Fullscreen'"
+        :title="
+          isFullscreen
+            ? $t('ui_extras.exit_fullscreen')
+            : $t('ui_extras.fullscreen')
+        "
         @click.stop="toggleFullscreen"
       >
         <Minimize v-if="isFullscreen" class="h-4 w-4" />

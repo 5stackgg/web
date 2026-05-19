@@ -34,24 +34,20 @@ import { ArrowUpRight, ExternalLink } from "lucide-vue-next";
         v-if="isGameStreamer && stream.match_id"
         type="button"
         class="w-6 h-6 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center"
-        :title="$t('match.open_popout') || 'Open in popout window'"
+        :title="$t('match.open_popout')"
         @click="openPopoutWindow"
       >
         <ExternalLink class="w-4 h-4" />
-        <span class="sr-only">{{
-          $t("match.open_popout") || "Open in popout window"
-        }}</span>
+        <span class="sr-only">{{ $t("match.open_popout") }}</span>
       </button>
       <NuxtLink
         v-if="stream.match_id"
         :to="`/matches/${stream.match_id}`"
         class="w-6 h-6 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center"
-        :title="$t('match.open_match') || 'Open match'"
+        :title="$t('match.open_match')"
       >
         <ArrowUpRight class="w-4 h-4" />
-        <span class="sr-only">{{
-          $t("match.open_match") || "Open match"
-        }}</span>
+        <span class="sr-only">{{ $t("match.open_match") }}</span>
       </NuxtLink>
       <button
         class="w-6 h-6 rounded-sm opacity-70 hover:opacity-100 transition-opacity bg-background/80 hover:bg-background border border-border flex items-center justify-center"

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import {
@@ -46,6 +47,7 @@ const emit = defineEmits<{
 }>();
 
 const { client } = useApolloClient();
+const { t } = useI18n();
 
 const ranges: { key: RangeKey; label: string; days: number | null }[] = [
   { key: "7d", label: "7D", days: 7 },
@@ -184,7 +186,7 @@ const filteredHistory = computed<EloEntry[]>(() => {
 const chartSeries = computed(() => {
   const groupBy = (m: Mode) => history.value.filter((e) => e.type === m);
 
-  return [
+  const all = [
     {
       key: "Competitive",
       label: "Competitive",
@@ -204,7 +206,14 @@ const chartSeries = computed(() => {
       history: groupBy("Duel"),
       focus: selectedMode.value === "Duel",
     },
-  ].filter((s) => s.history.length > 0);
+  ];
+
+  const visible =
+    selectedMode.value === "all"
+      ? all
+      : all.filter((s) => s.key === selectedMode.value);
+
+  return visible.filter((s) => s.history.length > 0);
 });
 
 const stats = computed(() => {
@@ -276,12 +285,12 @@ const stats = computed(() => {
   };
 });
 
-const modeOptions: { key: Mode; label: string }[] = [
-  { key: "all", label: "All" },
-  { key: "Competitive", label: "Competitive" },
-  { key: "Wingman", label: "Wingman" },
-  { key: "Duel", label: "Duel" },
-];
+const modeOptions = computed<{ key: Mode; label: string }[]>(() => [
+  { key: "all", label: t("pages.leaderboard.match_types.all") },
+  { key: "Competitive", label: t("pages.leaderboard.match_types.competitive") },
+  { key: "Wingman", label: t("pages.leaderboard.match_types.wingman") },
+  { key: "Duel", label: t("pages.leaderboard.match_types.duel") },
+]);
 
 function fmtInt(n: number | null | undefined): string {
   if (n === null || n === undefined || !Number.isFinite(n)) return "—";
@@ -312,14 +321,19 @@ function fmtDate(iso: string | null | undefined): string {
           class="flex items-center gap-2 text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
         >
           <span class="h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"></span>
-          ELO Progression — Granular
+          {{ $t("pages.players.detail.elo_history_dialog.eyebrow") }}
         </div>
         <DialogTitle class="text-2xl font-bold uppercase tracking-[0.04em]">
-          {{ playerName ?? "Player" }} — ELO Detail
+          {{
+            $t("pages.players.detail.elo_history_dialog.title", {
+              name:
+                playerName ??
+                $t("pages.players.detail.elo_history_dialog.default_player"),
+            })
+          }}
         </DialogTitle>
         <DialogDescription class="text-sm text-muted-foreground">
-          Every match plotted at full resolution. The main page bucketed at this
-          range for the trend; here you see each Δ.
+          {{ $t("pages.players.detail.elo_history_dialog.description") }}
         </DialogDescription>
       </DialogHeader>
 
@@ -330,7 +344,7 @@ function fmtDate(iso: string | null | undefined): string {
           <span
             class="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground mr-1"
           >
-            Range
+            {{ $t("pages.players.detail.range") }}
           </span>
           <button
             v-for="r in ranges"
@@ -351,7 +365,7 @@ function fmtDate(iso: string | null | undefined): string {
           <span
             class="font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground mr-1"
           >
-            Mode
+            {{ $t("pages.players.detail.elo_history_dialog.mode") }}
           </span>
           <button
             v-for="m in modeOptions"
@@ -380,7 +394,7 @@ function fmtDate(iso: string | null | undefined): string {
           <div
             class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
           >
-            Current
+            {{ $t("pages.players.detail.elo_history_dialog.current") }}
           </div>
           <div class="mt-1 text-xl font-bold tabular-nums">
             {{ fmtInt(stats.current) }}
@@ -390,7 +404,8 @@ function fmtDate(iso: string | null | undefined): string {
           <div
             class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground inline-flex items-center gap-1"
           >
-            <Crown class="h-3 w-3 text-[hsl(var(--tac-amber))]" /> Peak
+            <Crown class="h-3 w-3 text-[hsl(var(--tac-amber))]" />
+            {{ $t("pages.players.detail.elo_history_dialog.peak") }}
           </div>
           <div
             class="mt-1 text-xl font-bold tabular-nums text-[hsl(var(--tac-amber))]"
@@ -408,7 +423,7 @@ function fmtDate(iso: string | null | undefined): string {
           <div
             class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
           >
-            Lowest
+            {{ $t("pages.players.detail.elo_history_dialog.lowest") }}
           </div>
           <div class="mt-1 text-xl font-bold tabular-nums">
             {{ fmtInt(stats.lowest) }}
@@ -418,7 +433,7 @@ function fmtDate(iso: string | null | undefined): string {
           <div
             class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
           >
-            Matches
+            {{ $t("pages.players.detail.elo_history_dialog.matches") }}
           </div>
           <div class="mt-1 text-xl font-bold tabular-nums">
             {{ stats.total.toLocaleString() }}
@@ -439,7 +454,7 @@ function fmtDate(iso: string | null | undefined): string {
           <div
             class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
           >
-            Win Rate
+            {{ $t("pages.players.detail.elo_history_dialog.win_rate") }}
           </div>
           <div
             class="mt-1 text-xl font-bold tabular-nums"
@@ -450,7 +465,7 @@ function fmtDate(iso: string | null | undefined): string {
           <div
             class="mt-0.5 font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
           >
-            Avg ΔELO:
+            {{ $t("pages.players.detail.elo_history_dialog.avg_delta_elo") }}
             <span
               :class="
                 stats.avgChange > 0
@@ -471,14 +486,16 @@ function fmtDate(iso: string | null | undefined): string {
           v-if="loading && history.length === 0"
           class="h-[360px] flex items-center justify-center text-muted-foreground font-mono text-xs uppercase tracking-[0.18em]"
         >
-          Loading history…
+          {{ $t("pages.players.detail.elo_history_dialog.loading_history") }}
         </div>
         <div
           v-else-if="filteredHistory.length === 0"
           class="h-[360px] flex flex-col items-center justify-center gap-2 text-muted-foreground"
         >
           <span class="font-mono text-xs uppercase tracking-[0.18em]">
-            No matches in selected window
+            {{
+              $t("pages.players.detail.elo_history_dialog.no_matches_window")
+            }}
           </span>
           <button
             v-if="selectedRange !== 'all'"
@@ -486,7 +503,9 @@ function fmtDate(iso: string | null | undefined): string {
             class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] hover:underline"
             @click="selectedRange = 'all'"
           >
-            Expand to all time
+            {{
+              $t("pages.players.detail.elo_history_dialog.expand_to_all_time")
+            }}
           </button>
         </div>
         <div v-else class="h-[360px] sm:h-[420px]">
@@ -505,7 +524,8 @@ function fmtDate(iso: string | null | undefined): string {
           <div
             class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground inline-flex items-center gap-1.5"
           >
-            <TrendingUp class="h-3 w-3 text-green-500" /> Best Single Gain
+            <TrendingUp class="h-3 w-3 text-green-500" />
+            {{ $t("pages.players.detail.elo_history_dialog.best_gain") }}
           </div>
           <div class="mt-1 flex items-baseline gap-3">
             <span class="text-lg font-bold text-green-500 tabular-nums">
@@ -523,7 +543,8 @@ function fmtDate(iso: string | null | undefined): string {
             :to="`/matches/${stats.bestGain.match_id}`"
             class="mt-1 inline-flex items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] hover:underline"
           >
-            View match <ArrowUpRight class="h-3 w-3" />
+            {{ $t("pages.players.detail.elo_history_dialog.view_match") }}
+            <ArrowUpRight class="h-3 w-3" />
           </NuxtLink>
         </div>
         <div
@@ -533,7 +554,8 @@ function fmtDate(iso: string | null | undefined): string {
           <div
             class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground inline-flex items-center gap-1.5"
           >
-            <TrendingDown class="h-3 w-3 text-red-500" /> Worst Single Loss
+            <TrendingDown class="h-3 w-3 text-red-500" />
+            {{ $t("pages.players.detail.elo_history_dialog.worst_loss") }}
           </div>
           <div class="mt-1 flex items-baseline gap-3">
             <span class="text-lg font-bold text-red-500 tabular-nums">
@@ -551,7 +573,8 @@ function fmtDate(iso: string | null | undefined): string {
             :to="`/matches/${stats.worstLoss.match_id}`"
             class="mt-1 inline-flex items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] hover:underline"
           >
-            View match <ArrowUpRight class="h-3 w-3" />
+            {{ $t("pages.players.detail.elo_history_dialog.view_match") }}
+            <ArrowUpRight class="h-3 w-3" />
           </NuxtLink>
         </div>
       </div>

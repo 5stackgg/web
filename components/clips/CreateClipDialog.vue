@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { Film, Loader2, Sparkles, Sword, Crown, Trophy } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
+
+const { t } = useI18n();
 import { Button } from "~/components/ui/button";
 import {
   Dialog,
@@ -44,37 +47,39 @@ const nuxtApp = useNuxtApp();
 type Preset = "knife" | "multikills" | "best_round" | "recap";
 const presetTarget = ref<string | null>(null);
 const presetChoice = ref<Preset>("multikills");
-const PRESETS: Array<{
-  value: Preset;
-  label: string;
-  hint: string;
-  icon: any;
-}> = [
+const PRESETS = computed<
+  Array<{
+    value: Preset;
+    label: string;
+    hint: string;
+    icon: any;
+  }>
+>(() => [
   {
     value: "multikills",
-    label: "Multi-kills",
-    hint: "Every round with 2+ kills, trimmed to the action",
+    label: t("clips.presets.multikills"),
+    hint: t("clips.presets.multikills_hint"),
     icon: Sparkles,
   },
   {
     value: "best_round",
-    label: "Best round",
-    hint: "Single round with the most kills",
+    label: t("clips.presets.best_round"),
+    hint: t("clips.presets.best_round_hint"),
     icon: Trophy,
   },
   {
     value: "knife",
-    label: "Knife kills",
-    hint: "Each knife frag with a 5s lead-in",
+    label: t("clips.presets.knife"),
+    hint: t("clips.presets.knife_hint"),
     icon: Sword,
   },
   {
     value: "recap",
-    label: "Match recap",
-    hint: "Every round the player got at least one kill",
+    label: t("clips.presets.recap"),
+    hint: t("clips.presets.recap_hint"),
     icon: Crown,
   },
-];
+]);
 
 const title = ref("");
 const resolution = ref<"720p" | "1080p">("1080p");
@@ -140,13 +145,17 @@ const tPresetPlayers = computed(() =>
 const otherPresetPlayers = computed(() =>
   presetPlayers.value.filter((p) => p.team !== "CT" && p.team !== "T"),
 );
-const ctTeamLabel = computed(() => store.gsiTeamCtName || "Counter-Terrorists");
-const tTeamLabel = computed(() => store.gsiTeamTName || "Terrorists");
+const ctTeamLabel = computed(
+  () => store.gsiTeamCtName || t("match.replay.counter_terrorists"),
+);
+const tTeamLabel = computed(
+  () => store.gsiTeamTName || t("match.replay.terrorists"),
+);
 
 async function submit() {
   if (submitting.value) return;
   if (!presetTarget.value) {
-    submitError.value = "Pick a player to highlight";
+    submitError.value = t("clips.create_dialog.pick_player_placeholder");
     return;
   }
   submitError.value = null;
@@ -204,11 +213,10 @@ function close(v: boolean) {
       <DialogHeader>
         <DialogTitle class="flex items-center gap-2">
           <Sparkles class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
-          Auto Clip
+          {{ $t("clips.create_dialog.title") }}
         </DialogTitle>
         <DialogDescription>
-          Pick a player and a preset — the server scans the match's parsed
-          kills, builds the segments, and renders an mp4.
+          {{ $t("clips.create_dialog.description") }}
         </DialogDescription>
       </DialogHeader>
 
@@ -221,7 +229,7 @@ function close(v: boolean) {
       <form v-else class="space-y-5" @submit.prevent="submit">
         <div class="space-y-2">
           <Label>
-            Player
+            {{ $t("clips.create_dialog.player") }}
             <span class="text-destructive">*</span>
           </Label>
           <Select
@@ -235,21 +243,22 @@ function close(v: boolean) {
                   : '',
               ]"
             >
-              <SelectValue placeholder="Pick a player to highlight" />
+              <SelectValue
+                :placeholder="$t('clips.create_dialog.pick_player_placeholder')"
+              />
             </SelectTrigger>
             <SelectContent>
               <div
                 v-if="presetPlayers.length === 0"
                 class="px-2 py-3 text-xs text-muted-foreground"
               >
-                No players found yet — wait for the demo to start playing, then
-                try again.
+                {{ $t("clips.create_dialog.no_players_yet") }}
               </div>
               <SelectGroup v-if="ctPresetPlayers.length">
                 <SelectLabel
                   class="text-[0.65rem] uppercase tracking-wider text-blue-300"
                 >
-                  {{ ctTeamLabel }} (CT)
+                  {{ ctTeamLabel }} {{ $t("clips.ct") }}
                 </SelectLabel>
                 <SelectItem
                   v-for="p in ctPresetPlayers"
@@ -263,7 +272,7 @@ function close(v: boolean) {
                 <SelectLabel
                   class="text-[0.65rem] uppercase tracking-wider text-amber-300"
                 >
-                  {{ tTeamLabel }} (T)
+                  {{ tTeamLabel }} {{ $t("clips.t") }}
                 </SelectLabel>
                 <SelectItem
                   v-for="p in tPresetPlayers"
@@ -277,7 +286,7 @@ function close(v: boolean) {
                 <SelectLabel
                   class="text-[0.65rem] uppercase tracking-wider text-muted-foreground"
                 >
-                  Other
+                  {{ $t("clips.create_dialog.other_group") }}
                 </SelectLabel>
                 <SelectItem
                   v-for="p in otherPresetPlayers"
@@ -292,7 +301,7 @@ function close(v: boolean) {
         </div>
 
         <div class="space-y-2">
-          <Label>Preset</Label>
+          <Label>{{ $t("clips.create_dialog.preset") }}</Label>
           <div class="grid grid-cols-2 gap-2">
             <button
               v-for="p in PRESETS"
@@ -318,17 +327,19 @@ function close(v: boolean) {
         </div>
 
         <div class="space-y-2">
-          <Label for="clip-title">Title</Label>
+          <Label for="clip-title">{{
+            $t("clips.create_dialog.title_label")
+          }}</Label>
           <Input
             id="clip-title"
             v-model="title"
-            placeholder="Defaults to preset name"
+            :placeholder="$t('clips.create_dialog.title_placeholder')"
             maxlength="80"
           />
         </div>
 
         <div class="space-y-2">
-          <Label>Resolution</Label>
+          <Label>{{ $t("clips.create_dialog.resolution") }}</Label>
           <Select v-model="resolution">
             <SelectTrigger>
               <SelectValue />
@@ -351,12 +362,12 @@ function close(v: boolean) {
             :disabled="submitting"
             @click="close(false)"
           >
-            Cancel
+            {{ $t("common.cancel") }}
           </Button>
           <Button type="submit" :disabled="!canSubmit || submitting">
             <Loader2 v-if="submitting" class="h-4 w-4 mr-2 animate-spin" />
             <Film v-else class="h-4 w-4 mr-2" />
-            Generate highlights
+            {{ $t("clips.create_dialog.submit") }}
           </Button>
         </DialogFooter>
       </form>

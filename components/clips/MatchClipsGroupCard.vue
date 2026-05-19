@@ -131,7 +131,7 @@ const pillBaseClasses =
         <NuxtImg
           v-if="thumbnailSrc"
           :src="thumbnailSrc"
-          :alt="matchupLabel ?? 'Match highlights'"
+          :alt="matchupLabel ?? $t('ui_extras.match_highlights_alt')"
           class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover/group-card:scale-[1.03]"
         />
         <div
@@ -144,7 +144,7 @@ const pillBaseClasses =
           <span
             v-if="isTournament"
             :class="[pillBaseClasses, 'text-[hsl(var(--tac-amber))]']"
-            title="Tournament match"
+            :title="$t('ui.tournament_match')"
           >
             <Trophy class="h-2.5 w-2.5" />
           </span>
@@ -153,7 +153,9 @@ const pillBaseClasses =
 
         <span
           class="absolute top-2 right-2 inline-flex h-5 items-center gap-1 rounded bg-[hsl(var(--tac-amber)/0.92)] px-1.5 font-mono text-[0.62rem] font-bold leading-none tabular-nums text-[hsl(var(--tac-amber-foreground))] shadow-sm backdrop-blur-sm"
-          :title="`${clips.length} highlights for this match`"
+          :title="
+            $t('ui_extras.match_highlights_for_count', { count: clips.length })
+          "
         >
           <Film class="h-2.5 w-2.5" />
           {{ clips.length }}
@@ -180,7 +182,7 @@ const pillBaseClasses =
              "who won" signal. -->
         <div
           class="group/link flex items-center gap-1.5 text-sm font-medium text-foreground transition-colors"
-          :title="matchupLabel ?? 'Match highlights'"
+          :title="matchupLabel ?? $t('ui_extras.match_highlights_alt')"
         >
           <span class="min-w-0 flex-1 truncate">
             <template v-if="lineup1Name && lineup2Name">
@@ -208,7 +210,9 @@ const pillBaseClasses =
                 {{ lineup2Name }}
               </span>
             </template>
-            <template v-else>Match highlights</template>
+            <template v-else>{{
+              $t("ui_extras.match_highlights_alt")
+            }}</template>
           </span>
           <ArrowUpRight
             class="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-all group-hover/group-card:translate-x-0.5 group-hover/group-card:-translate-y-0.5 group-hover/group-card:text-[hsl(var(--tac-amber))]"

@@ -10,7 +10,7 @@ import ReplayViewer from "~/components/match/ReplayViewer.vue";
       <p
         class="font-mono text-[0.7rem] tracking-[0.2em] uppercase text-muted-foreground"
       >
-        Select a map above to replay
+        {{ $t("match.replay.select_map") }}
       </p>
     </div>
 
@@ -24,15 +24,18 @@ import ReplayViewer from "~/components/match/ReplayViewer.vue";
       <p
         class="font-mono text-[0.65rem] tracking-[0.22em] uppercase text-muted-foreground max-w-sm"
       >
-        Replay positions are large. Click load to fetch them for
-        {{ effectiveMap?.map?.name }}.
+        {{
+          $t("match.replay.positions_large", {
+            map: effectiveMap?.map?.name ?? "",
+          })
+        }}
       </p>
       <button
         type="button"
         class="px-4 py-2 font-mono text-[0.7rem] font-bold tracking-[0.22em] uppercase border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] transition-colors"
         @click="loadBlob"
       >
-        Load Replay
+        {{ $t("match.replay.load") }}
       </button>
     </div>
 
@@ -46,7 +49,7 @@ import ReplayViewer from "~/components/match/ReplayViewer.vue";
       v-else-if="positions !== null && positions.length === 0"
       class="py-8 text-center font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground"
     >
-      No position data — re-parse the demo to populate the replay.
+      {{ $t("match.replay.no_position_data") }}
     </div>
     <ReplayViewer
       v-else-if="positions"
@@ -58,6 +61,7 @@ import ReplayViewer from "~/components/match/ReplayViewer.vue";
       :demo-players="demoPlayers"
       :demo-kills="demoKills"
       :demo-bombs="demoBombs"
+      :demo-kit-drops="demoKitDrops"
       :demo-round-ticks="demoRoundTicks"
       :tick-rate="tickRate"
       :map-name="effectiveMap?.map?.name"
@@ -105,6 +109,7 @@ export default {
       demoPlayers: [] as any[],
       demoKills: [] as any[],
       demoBombs: [] as any[],
+      demoKitDrops: [] as any[],
       demoRoundTicks: [] as any[],
       tickRate: 64 as number,
       loadRequested: false as boolean,
@@ -130,6 +135,7 @@ export default {
       this.demoPlayers = [];
       this.demoKills = [];
       this.demoBombs = [];
+      this.demoKitDrops = [];
       this.demoRoundTicks = [];
     },
     async loadBlob() {
@@ -161,6 +167,7 @@ export default {
         this.demoPlayers = blob.players ?? [];
         this.demoKills = blob.kills ?? [];
         this.demoBombs = blob.bombs ?? [];
+        this.demoKitDrops = blob.kit_drops ?? [];
         this.demoRoundTicks = blob.round_ticks ?? [];
         this.tickRate = blob.tick_rate || 64;
       } catch (error) {

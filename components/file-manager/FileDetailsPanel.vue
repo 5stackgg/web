@@ -111,21 +111,21 @@
           <ContextMenuContent class="w-48">
             <ContextMenuItem @click="handleCloseTab(contextMenuTabPath, false)">
               <X class="mr-2 h-4 w-4" />
-              Close
+              {{ $t("file_manager_extras.close") }}
               <ContextMenuShortcut>⌘W</ContextMenuShortcut>
             </ContextMenuItem>
             <ContextMenuSeparator />
             <ContextMenuItem @click="handleCloseOthers(contextMenuTabPath)">
               <X class="mr-2 h-4 w-4" />
-              Close Others
+              {{ $t("file_manager_extras.close_others") }}
             </ContextMenuItem>
             <ContextMenuItem @click="handleCloseToRight(contextMenuTabPath)">
               <X class="mr-2 h-4 w-4" />
-              Close to Right
+              {{ $t("file_manager_extras.close_to_right") }}
             </ContextMenuItem>
             <ContextMenuItem @click="handleCloseToLeft(contextMenuTabPath)">
               <X class="mr-2 h-4 w-4" />
-              Close to Left
+              {{ $t("file_manager_extras.close_to_left") }}
             </ContextMenuItem>
           </ContextMenuContent>
         </ContextMenu>

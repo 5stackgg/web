@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
 import DemoPlaybackControls from "~/components/match/DemoPlaybackControls.vue";
@@ -11,38 +14,54 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 
 // `meta` controls non-emission rendering — see StreamSessionProgress.vue.
-const DEMO_STAGES = [
-  { key: "booting", label: "Allocating GPU", meta: "required" as const },
+const DEMO_STAGES = computed(() => [
+  {
+    key: "booting",
+    label: t("live_stages.booting"),
+    meta: "required" as const,
+  },
   {
     key: "downloading_cs2",
-    label: "Installing CS2",
+    label: t("live_stages.downloading_cs2"),
     meta: "conditional" as const,
   },
   {
     key: "launching_steam",
-    label: "Launching Steam",
+    label: t("live_stages.launching_steam"),
     meta: "required" as const,
   },
-  { key: "logging_in", label: "Logging in", meta: "implicit" as const },
+  {
+    key: "logging_in",
+    label: t("live_stages.logging_in"),
+    meta: "implicit" as const,
+  },
   {
     key: "downloading_demo",
-    label: "Downloading demo",
+    label: t("live_stages.downloading_demo"),
     meta: "required" as const,
   },
   {
     key: "downloading_workshop_map",
-    label: "Downloading workshop map",
+    label: t("live_stages.downloading_workshop_map"),
     meta: "conditional" as const,
   },
-  { key: "launching_cs2", label: "Launching CS2", meta: "required" as const },
+  {
+    key: "launching_cs2",
+    label: t("live_stages.launching_cs2"),
+    meta: "required" as const,
+  },
   {
     key: "connecting_to_game",
-    label: "Loading demo into CS2",
+    label: t("live_stages.loading_demo_into_cs2"),
     meta: "required" as const,
   },
   // `playing` is intentionally omitted — WHEP mounts at that moment.
-  { key: "live", label: "Demo Loading", meta: "required" as const },
-];
+  {
+    key: "live",
+    label: t("live_stages.demo_loading"),
+    meta: "required" as const,
+  },
+]);
 
 defineProps<{
   matchMapId: string;
@@ -113,10 +132,10 @@ function closeWindow() {
             variant="outline"
             @click="closeWindow"
           >
-            Close
+            {{ $t("common.close") }}
           </Button>
           <Button v-else size="sm" variant="ghost" @click="closeWindow">
-            Cancel
+            {{ $t("common.cancel") }}
           </Button>
         </template>
       </template>

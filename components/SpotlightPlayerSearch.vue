@@ -73,7 +73,24 @@ const debouncedSearch = debounce(async (searchQuery: string) => {
       },
     });
 
-    players.value = (response.hits || []).map(({ document }: any) => document);
+    players.value = (response.hits || []).map(({ document }: any) => ({
+      steam_id: document.steam_id,
+      name: document.name,
+      role: document.role,
+      country: document.country,
+      avatar_url: document.avatar_url,
+      custom_avatar_url: document.custom_avatar_url,
+      roster_image_url: document.roster_image_url,
+      profile_url: document.profile_url,
+      is_banned: document.is_banned,
+      is_muted: document.is_muted,
+      is_gagged: document.is_gagged,
+      elo: {
+        competitive: document.elo_competitive,
+        wingman: document.elo_wingman,
+        duel: document.elo_duel,
+      },
+    }));
   } catch (error) {
     console.error("Error searching players:", error);
     players.value = [];
@@ -179,12 +196,12 @@ const closeOnOverlayClick = (event: MouseEvent) => {
               v-else-if="!players?.length && query"
               class="px-4 py-8 text-center text-muted-foreground text-sm"
             >
-              No players found
+              {{ $t("spotlight_search.no_players_found") }}
             </div>
 
             <div v-else-if="!query" class="px-4 py-8 text-center">
               <div class="text-muted-foreground text-sm">
-                Start typing to search players
+                {{ $t("spotlight_search.start_typing") }}
               </div>
             </div>
 
@@ -199,7 +216,7 @@ const closeOnOverlayClick = (event: MouseEvent) => {
                 @click="selectPlayer(player)"
                 @mouseenter="selectedIndex = index"
               >
-                <PlayerDisplay :player="player" size="md" />
+                <PlayerDisplay :player="player" />
               </div>
             </div>
           </div>

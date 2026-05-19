@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 import {
   Tooltip,
   TooltipContent,
@@ -92,11 +95,11 @@ const damagePercent = computed(() =>
 const typeLabel = computed(() => {
   switch (props.eloChange?.type) {
     case "Competitive":
-      return "COMP";
+      return t("elo_change_badge.comp");
     case "Wingman":
-      return "WINGMAN";
+      return t("elo_change_badge.wingman");
     case "Duel":
-      return "DUEL";
+      return t("elo_change_badge.duel");
     default:
       return null;
   }

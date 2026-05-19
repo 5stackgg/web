@@ -1,5 +1,8 @@
 <script lang="ts" setup>
+import { useI18n } from "vue-i18n";
 import MatchesTable from "~/components/MatchesTable.vue";
+
+const { t } = useI18n();
 import Pagination from "~/components/Pagination.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import RecentTournaments from "~/components/tournament/RecentTournaments.vue";
@@ -580,11 +583,11 @@ const windowedChartSeries = computed(() => {
 const bucketLabel = computed(() => {
   switch (bucketSize.value) {
     case "month":
-      return "Monthly";
+      return t("elo_chart_bucket.monthly");
     case "week":
-      return "Weekly";
+      return t("elo_chart_bucket.weekly");
     default:
-      return "Per match";
+      return t("elo_chart_bucket.per_match");
   }
 });
 
@@ -711,7 +714,7 @@ const playerTeamChipShortClasses =
       <header :class="playerHeroClasses">
         <div :class="playerHeroEyebrowClasses">
           <span :class="playerHeroChevronClasses">◢</span>
-          Player Profile
+          {{ $t("pages.players.detail.player_profile") }}
         </div>
 
         <div :class="playerHeroBodyClasses">
@@ -840,7 +843,7 @@ const playerTeamChipShortClasses =
         >
           <div :class="playerTeamsLabelClasses">
             <span :class="playerTeamsTickClasses"></span>
-            Teams
+            {{ $t("pages.players.detail.teams") }}
             <span :class="playerTeamsCountClasses">{{
               player.teams.length
             }}</span>
@@ -905,7 +908,7 @@ const playerTeamChipShortClasses =
         <span
           class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
         >
-          Range
+          {{ $t("pages.players.detail.range") }}
         </span>
         <div class="flex flex-wrap items-center gap-1.5">
           <button
@@ -933,11 +936,17 @@ const playerTeamChipShortClasses =
           class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground"
         >
           <template v-if="eloHistoryLoading && eloHistory.length === 0">
-            Loading…
+            {{ $t("pages.players.detail.loading_short") }}
           </template>
           <template v-else>
-            {{ windowedStats.total.toLocaleString() }} matches
-            <template v-if="excludeTournaments"> · No tournaments</template>
+            {{
+              $t("pages.players.detail.match_count", {
+                count: windowedStats.total.toLocaleString(),
+              })
+            }}
+            <template v-if="excludeTournaments">
+              · {{ $t("pages.players.detail.no_tournaments_inline") }}</template
+            >
             <template v-if="selectedModeRef !== 'all'">
               · {{ selectedModeRef }}
             </template>
@@ -948,7 +957,7 @@ const playerTeamChipShortClasses =
             v-if="compareLifetime"
             class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
           >
-            vs Lifetime
+            {{ $t("pages.players.detail.vs_lifetime") }}
           </span>
           <Popover v-model:open="settingsOpen">
             <PopoverTrigger as-child>
@@ -967,7 +976,7 @@ const playerTeamChipShortClasses =
                 <div
                   class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
                 >
-                  Custom Range
+                  {{ $t("pages.players.detail.custom_range") }}
                 </div>
                 <div class="flex items-center gap-2">
                   <input
@@ -990,7 +999,7 @@ const playerTeamChipShortClasses =
                   v-if="eloRange === 'custom'"
                   class="text-[0.65rem] text-muted-foreground"
                 >
-                  Custom window active. Choosing a preset clears it.
+                  {{ $t("pages.players.detail.custom_window_active") }}
                 </p>
               </div>
               <label
@@ -1002,9 +1011,13 @@ const playerTeamChipShortClasses =
                   class="mt-0.5"
                 />
                 <div class="flex-1">
-                  <div class="text-sm font-medium">Compare vs lifetime</div>
+                  <div class="text-sm font-medium">
+                    {{ $t("pages.players.detail.compare_vs_lifetime") }}
+                  </div>
                   <div class="text-[0.65rem] text-muted-foreground">
-                    Show lifetime totals alongside the window.
+                    {{
+                      $t("pages.players.detail.compare_vs_lifetime_description")
+                    }}
                   </div>
                 </div>
               </label>
@@ -1017,9 +1030,13 @@ const playerTeamChipShortClasses =
                   class="mt-0.5"
                 />
                 <div class="flex-1">
-                  <div class="text-sm font-medium">Exclude tournaments</div>
+                  <div class="text-sm font-medium">
+                    {{ $t("pages.players.detail.exclude_tournaments") }}
+                  </div>
                   <div class="text-[0.65rem] text-muted-foreground">
-                    Skip tournament matches in stats and chart.
+                    {{
+                      $t("pages.players.detail.exclude_tournaments_description")
+                    }}
                   </div>
                 </div>
               </label>
@@ -1083,7 +1100,7 @@ const playerTeamChipShortClasses =
                     v-if="compareLifetime"
                     class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground text-center"
                   >
-                    Lifetime
+                    {{ $t("pages.players.detail.lifetime_short") }}
                     <span class="text-green-500">{{ selectedWins }}W</span>
                     ·
                     <span class="text-red-500">{{ selectedLosses }}L</span>
@@ -1168,7 +1185,7 @@ const playerTeamChipShortClasses =
                     v-if="compareLifetime && player?.stats"
                     class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground text-center"
                   >
-                    Lifetime K/D
+                    {{ $t("pages.players.detail.lifetime_kd_label") }}
                     <span class="text-foreground">{{ kd }}</span>
                     · {{ player.stats.kills?.toLocaleString() ?? "—" }} K /
                     {{ player.stats.deaths?.toLocaleString() ?? "—" }} D
@@ -1220,7 +1237,7 @@ const playerTeamChipShortClasses =
                   <div
                     class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
                   >
-                    Current ELO
+                    {{ $t("pages.players.detail.current_elo") }}
                   </div>
                   <div
                     class="mt-1 text-3xl font-bold leading-none tabular-nums tracking-tight sm:text-4xl"
@@ -1235,7 +1252,7 @@ const playerTeamChipShortClasses =
                     "
                     class="mt-0.5 font-mono text-[0.5rem] uppercase tracking-[0.18em] text-muted-foreground"
                   >
-                    Lifetime
+                    {{ $t("pages.players.detail.lifetime_short") }}
                     {{
                       fmtRangeStat(
                         player.elo[selectedModeRef.toLowerCase()] ?? null,
@@ -1253,7 +1270,7 @@ const playerTeamChipShortClasses =
                   <div
                     class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
                   >
-                    Peak / Lowest
+                    {{ $t("pages.players.detail.peak_lowest") }}
                   </div>
                   <div class="mt-1 flex items-baseline gap-2.5">
                     <span
@@ -1279,7 +1296,7 @@ const playerTeamChipShortClasses =
                     class="mt-0.5 font-mono text-[0.5rem] uppercase tracking-[0.18em] text-muted-foreground"
                   >
                     <template v-if="windowedStats.peakEntry">
-                      Peak
+                      {{ $t("pages.players.detail.peak") }}
                       {{
                         fmtDateShort(windowedStats.peakEntry.match_created_at)
                       }}
@@ -1294,7 +1311,7 @@ const playerTeamChipShortClasses =
                     "
                     class="mt-0.5 font-mono text-[0.5rem] uppercase tracking-[0.18em] text-muted-foreground"
                   >
-                    Lifetime Peak
+                    {{ $t("pages.players.detail.lifetime_peak") }}
                     {{
                       fmtRangeStat(
                         player.peak_elo[selectedModeRef.toLowerCase()] ?? null,
@@ -1369,7 +1386,7 @@ const playerTeamChipShortClasses =
                         class="relative inline-flex h-2 w-2 rounded-full bg-[hsl(var(--tac-amber))]"
                       ></span>
                     </span>
-                    Acquiring telemetry…
+                    {{ $t("pages.players.detail.acquiring_telemetry") }}
                   </div>
                 </div>
 
@@ -1387,7 +1404,7 @@ const playerTeamChipShortClasses =
                     <span
                       class="font-mono text-[0.65rem] tracking-[0.22em] text-muted-foreground"
                     >
-                      No matches in this window
+                      {{ $t("pages.players.detail.no_matches_in_window") }}
                     </span>
                     <Button
                       variant="outline"
@@ -1395,7 +1412,7 @@ const playerTeamChipShortClasses =
                       class="transition-transform hover:scale-105"
                       @click="setRange('all')"
                     >
-                      Expand to all time
+                      {{ $t("pages.players.detail.expand_to_all_time") }}
                     </Button>
                   </template>
                   <template v-else>
@@ -1548,19 +1565,19 @@ const playerTeamChipShortClasses =
       <div>
         <div :class="tacticalSectionLabelClasses">
           <span :class="tacticalSectionTickClasses"></span>
-          MATCHES
+          {{ $t("pages.players.detail.matches_section") }}
         </div>
         <Empty v-if="playerMatchesTotal === 0" class="min-h-[200px]">
           <EmptyTitle>{{ $t("pages.players.detail.no_matches") }}</EmptyTitle>
           <EmptyDescription>
             <template v-if="eloRange !== 'all' || excludeTournaments">
-              No matches in this window.
+              {{ $t("pages.players.detail.no_matches_in_window_period") }}
               <button
                 type="button"
                 class="ml-1 text-[hsl(var(--tac-amber))] hover:underline"
                 @click="setRange('all')"
               >
-                Expand to all time
+                {{ $t("pages.players.detail.expand_to_all_time") }}
               </button>
             </template>
             <template v-else>

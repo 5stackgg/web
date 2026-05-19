@@ -115,20 +115,20 @@ watch(() => [props.open, props.matchId, props.steamId, props.kills], load, {
     <DialogContent class="max-w-md">
       <DialogHeader>
         <DialogTitle class="font-mono uppercase tracking-wider text-sm">
-          {{ kills }}K rounds — {{ playerName || "Unknown" }}
+          {{ kills }}K rounds — {{ playerName || $t("common.unknown") }}
         </DialogTitle>
       </DialogHeader>
       <div
         v-if="rounds === null"
         class="py-8 text-center text-sm text-muted-foreground"
       >
-        Loading…
+        {{ $t("common.loading") }}
       </div>
       <div
         v-else-if="rounds.length === 0"
         class="py-8 text-center text-sm text-muted-foreground"
       >
-        No {{ kills }}-kill rounds found.
+        {{ $t("match.no_multi_kill_rounds", { count: kills }) }}
       </div>
       <ul v-else class="space-y-2">
         <li
@@ -137,10 +137,10 @@ watch(() => [props.open, props.matchId, props.steamId, props.kills], load, {
           class="flex items-center justify-between border border-border rounded px-3 py-2"
         >
           <span class="font-mono text-xs uppercase tracking-wider">
-            {{ cleanMapName(row.map_name || "Unknown") }}
+            {{ cleanMapName(row.map_name || $t("common.unknown")) }}
           </span>
           <Badge variant="outline" class="font-mono text-xs">
-            Round {{ row.round }}
+            {{ $t("common.round", { number: row.round }) }}
           </Badge>
         </li>
       </ul>

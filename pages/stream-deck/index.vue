@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { reactive, computed, ref, onMounted, onBeforeUnmount } from "vue";
+import { useI18n } from "vue-i18n";
 import { storeToRefs } from "pinia";
 import { useApolloClient } from "@vue/apollo-composable";
+
+const { t } = useI18n();
 import { useStreamerStore } from "~/stores/StreamerStore";
 import { useGpuAvailability } from "~/composables/useGpuAvailability";
 import { useToast } from "~/components/ui/toast/use-toast";
@@ -278,8 +281,8 @@ async function reconnectLive(matchId: string) {
     reconnectLive: [{ match_id: matchId }, { success: true }],
   }));
   toast({
-    title: "Reconnecting",
-    description: "Re-issuing the connect to the game server.",
+    title: t("toasts.reconnecting"),
+    description: t("toasts.reconnecting_description"),
   });
 }
 
@@ -291,24 +294,26 @@ function deckReadiness(m: LiveMatch): DeckReady {
   if (m.status !== "Live") {
     return {
       ready: false,
-      reason: `match is ${m.status.toLowerCase()} — wait for it to go live`,
+      reason: t("stream_deck.match_status_wait", {
+        status: m.status.toLowerCase(),
+      }),
     };
   }
   if (!m.server_id) {
-    return { ready: false, reason: "no server assigned for this match" };
+    return { ready: false, reason: t("stream_deck.no_server_assigned") };
   }
   if (m.is_server_online !== true) {
     return {
       ready: false,
-      reason: "server is offline — waiting for it to come online",
+      reason: t("stream_deck.server_offline_waiting"),
     };
   }
   return { ready: true, reason: null };
 }
 
 function serverLabel(m: LiveMatch): string {
-  if (!m.server_id) return "no server";
-  return m.server_region || "server assigned";
+  if (!m.server_id) return t("stream_deck.no_server");
+  return m.server_region || t("stream_deck.server_assigned");
 }
 
 // Hot-swap: keep the running pod, point it at a different match.
@@ -339,8 +344,8 @@ async function switchTo(toMatchId: string, mode: "live" | "tv" = "live") {
     if (!ready) {
       toast({
         variant: "destructive",
-        title: "Can't switch",
-        description: reason ?? "destination match isn't ready",
+        title: t("toasts.cant_switch"),
+        description: reason ?? t("toasts.destination_not_ready"),
       });
       return;
     }
@@ -363,68 +368,81 @@ async function switchTo(toMatchId: string, mode: "live" | "tv" = "live") {
       },
     });
     toast({
-      title: "Stream switched",
-      description: "Pod reused — feed will repoint in a few seconds.",
+      title: t("toasts.stream_switched"),
+      description: t("toasts.stream_switched_description"),
     });
   } catch (error: any) {
     toast({
       variant: "destructive",
-      title: "Switch failed",
-      description: error?.message ?? "request failed",
+      title: t("toasts.switch_failed"),
+      description: error?.message ?? t("toasts.request_failed"),
     });
   } finally {
     switching.value = null;
   }
 }
 
-const STATUS_LABELS: Record<string, string> = {
-  launching_steam: "Launching Steam",
-  logging_in: "Logging in",
-  downloading_cs2: "Installing CS2",
-  launching_cs2: "Launching CS2",
-  connecting_to_game: "Connecting to game",
-  starting_capture: "Starting capture",
-  errored: "Errored",
-  live: "Live",
-};
+const STATUS_LABELS = computed<Record<string, string>>(() => ({
+  launching_steam: t("live_stages.launching_steam"),
+  logging_in: t("live_stages.logging_in"),
+  downloading_cs2: t("live_stages.downloading_cs2"),
+  launching_cs2: t("live_stages.launching_cs2"),
+  connecting_to_game: t("stream_deck_status.connecting_to_game_short"),
+  starting_capture: t("stream_deck_status.starting_capture"),
+  errored: t("stream_deck_status.errored"),
+  live: t("stream_deck_status.live_short"),
+}));
 
 // Stage list mirrors run-live.sh + setup-steam.sh report_status emits.
 // `meta` controls non-emission rendering (see StreamSessionProgress).
-const LIVE_STAGES = [
-  { key: "booting", label: "Allocating GPU", meta: "required" as const },
+const LIVE_STAGES = computed(() => [
+  {
+    key: "booting",
+    label: t("live_stages.booting"),
+    meta: "required" as const,
+  },
   {
     key: "downloading_cs2",
-    label: "Installing CS2",
+    label: t("live_stages.downloading_cs2"),
     meta: "conditional" as const,
   },
   {
     key: "launching_steam",
-    label: "Launching Steam",
+    label: t("live_stages.launching_steam"),
     meta: "required" as const,
   },
-  { key: "logging_in", label: "Logging in", meta: "implicit" as const },
-  { key: "launching_cs2", label: "Launching CS2", meta: "required" as const },
+  {
+    key: "logging_in",
+    label: t("live_stages.logging_in"),
+    meta: "implicit" as const,
+  },
+  {
+    key: "launching_cs2",
+    label: t("live_stages.launching_cs2"),
+    meta: "required" as const,
+  },
   {
     key: "connecting_to_game",
-    label: "Connecting to game server",
+    label: t("live_stages.connecting_to_game"),
     meta: "required" as const,
   },
-  { key: "live", label: "Streaming live", meta: "required" as const },
-];
+  { key: "live", label: t("live_stages.live"), meta: "required" as const },
+]);
 
 function statusBadgeLabel(stream: any) {
-  if (stream.is_live) return "LIVE";
+  if (stream.is_live) return t("stream_deck_status.live");
   const s = stream?.status as string | undefined;
-  if (!s) return "BOOTING";
-  return (STATUS_LABELS[s] ?? s.replace(/_/g, " ")).toUpperCase();
+  if (!s) return t("stream_deck_status.booting");
+  return (STATUS_LABELS.value[s] ?? s.replace(/_/g, " ")).toUpperCase();
 }
 
 // Tile helpers — keep template terse.
 function matchStatusLabel(m: LiveMatch): string {
-  if (m.status === "Live") return "LIVE";
-  if (m.status === "Veto") return "VETO";
-  if (m.status === "WaitingForServer") return "SPINNING UP";
-  if (m.status === "WaitingForCheckIn") return "CHECK-IN";
+  if (m.status === "Live") return t("stream_deck_status.live");
+  if (m.status === "Veto") return t("stream_deck_status.veto");
+  if (m.status === "WaitingForServer")
+    return t("stream_deck_status.spinning_up");
+  if (m.status === "WaitingForCheckIn") return t("stream_deck_status.check_in");
   return m.status.toUpperCase();
 }
 
@@ -533,7 +551,7 @@ function currentMapName(m: LiveMatch): string | null {
         <p
           class="mt-3 font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground"
         >
-          Off air
+          {{ $t("stream_deck.off_air") }}
         </p>
         <p class="mt-1 text-sm text-muted-foreground/80">
           No active game-streamer broadcast. Pick a live match below to take
@@ -570,7 +588,7 @@ function currentMapName(m: LiveMatch): string | null {
                 <span
                   class="size-1.5 rounded-full bg-destructive shadow-[0_0_8px_hsl(var(--destructive))] animate-ping-slow"
                 />
-                On Air
+                {{ $t("stream_deck.on_air") }}
               </span>
               <span
                 v-else
@@ -582,9 +600,9 @@ function currentMapName(m: LiveMatch): string | null {
                 {{ statusBadgeLabel(stream) }}
               </span>
               <h3 class="text-base font-semibold tracking-tight truncate">
-                {{ stream.match?.lineup_1?.name ?? "Team A" }}
+                {{ stream.match?.lineup_1?.name ?? $t("common.team_a") }}
                 <span class="mx-1 text-muted-foreground/60 font-light">vs</span>
-                {{ stream.match?.lineup_2?.name ?? "Team B" }}
+                {{ stream.match?.lineup_2?.name ?? $t("common.team_b") }}
               </h3>
             </div>
 
@@ -623,7 +641,7 @@ function currentMapName(m: LiveMatch): string | null {
                   @click="openPopout(stream.match_id)"
                 >
                   <ExternalLink class="size-3.5" />
-                  Control
+                  {{ $t("stream_deck.control") }}
                 </button>
 
                 <!-- Popout open: focus + close as paired buttons -->
@@ -634,13 +652,13 @@ function currentMapName(m: LiveMatch): string | null {
                     @click="focusPopout(stream.match_id)"
                   >
                     <PictureInPicture2 class="size-3.5" />
-                    In window
+                    {{ $t("stream_deck.in_window") }}
                   </button>
                   <div class="w-px bg-border/70" />
                   <button
                     type="button"
-                    :aria-label="'Close popout'"
-                    title="Close popout"
+                    :aria-label="$t('ui.close_popout')"
+                    :title="$t('ui.close_popout')"
                     class="inline-flex items-center justify-center px-2.5 py-1.5 text-muted-foreground hover:bg-muted/40 hover:text-foreground transition-colors"
                     @click="closePopout(stream.match_id)"
                   >
@@ -656,11 +674,11 @@ function currentMapName(m: LiveMatch): string | null {
                     ensureState(stream.match_id).busy || !stream.is_live
                   "
                   class="inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-foreground/80 hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  title="Re-issue connect (recover from a disconnect)"
+                  :title="$t('replay_extras.reissue_connect')"
                   @click="reconnectLive(stream.match_id)"
                 >
                   <RefreshCw class="size-3.5" />
-                  Reconnect
+                  {{ $t("stream_deck.reconnect") }}
                 </button>
 
                 <div class="w-px bg-border/70" />
@@ -737,7 +755,7 @@ function currentMapName(m: LiveMatch): string | null {
                     @click="focusPopout(stream.match_id)"
                   >
                     <PictureInPicture2 class="size-3" />
-                    Bring window to front
+                    {{ $t("stream_deck.bring_window_to_front") }}
                   </button>
                 </div>
               </template>
@@ -814,7 +832,7 @@ function currentMapName(m: LiveMatch): string | null {
                   <span
                     class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
                   >
-                    Observer target
+                    {{ $t("stream_deck.observer_target") }}
                   </span>
                   <button
                     type="button"
@@ -857,7 +875,7 @@ function currentMapName(m: LiveMatch): string | null {
             <h2
               class="font-mono text-[0.7rem] font-bold uppercase tracking-[0.28em] text-foreground"
             >
-              Live matches
+              {{ $t("stream_deck.live_matches") }}
             </h2>
             <span
               class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground tabular-nums"
@@ -871,7 +889,7 @@ function currentMapName(m: LiveMatch): string | null {
             class="hidden sm:inline-flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
           >
             <ArrowRightLeft class="size-3" />
-            Click another match to reuse the pod
+            {{ $t("stream_deck.click_another_match") }}
           </span>
         </div>
 
@@ -883,7 +901,7 @@ function currentMapName(m: LiveMatch): string | null {
           <p
             class="font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground"
           >
-            No live matches
+            {{ $t("stream_deck.no_live_matches") }}
           </p>
           <p class="mt-1 text-sm text-muted-foreground/70">
             Tiles will appear here as soon as a match goes Live.
@@ -959,7 +977,7 @@ function currentMapName(m: LiveMatch): string | null {
               >
                 <div class="min-w-0 text-right">
                   <p class="truncate text-sm font-semibold leading-snug">
-                    {{ m.lineup_1?.name ?? "Team A" }}
+                    {{ m.lineup_1?.name ?? $t("common.team_a") }}
                   </p>
                 </div>
 
@@ -998,7 +1016,7 @@ function currentMapName(m: LiveMatch): string | null {
 
                 <div class="min-w-0 text-left">
                   <p class="truncate text-sm font-semibold leading-snug">
-                    {{ m.lineup_2?.name ?? "Team B" }}
+                    {{ m.lineup_2?.name ?? $t("common.team_b") }}
                   </p>
                 </div>
               </div>
@@ -1043,7 +1061,7 @@ function currentMapName(m: LiveMatch): string | null {
                 class="inline-flex w-full items-center justify-center gap-2 rounded-md border border-destructive/55 bg-destructive/12 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-destructive hover:bg-destructive/18 transition-colors"
               >
                 <Dot class="size-4" />
-                Open broadcast controls
+                {{ $t("stream_deck.open_broadcast_controls") }}
               </NuxtLink>
 
               <button
@@ -1074,17 +1092,21 @@ function currentMapName(m: LiveMatch): string | null {
                       : 'group-hover/cta:translate-x-0.5',
                   ]"
                 />
-                <template v-if="switching === m.id">Switching…</template>
+                <template v-if="switching === m.id">{{
+                  $t("stream_deck_extras.switching")
+                }}</template>
                 <template v-else-if="!deckReadiness(m).ready">
                   {{
                     !m.server_id
-                      ? "No server"
+                      ? $t("stream_deck_extras.no_server")
                       : m.status !== "Live"
-                        ? "Not live yet"
-                        : "Server offline"
+                        ? $t("stream_deck_extras.not_live_yet")
+                        : $t("stream_deck_extras.server_offline")
                   }}
                 </template>
-                <template v-else>Switch stream here</template>
+                <template v-else>{{
+                  $t("stream_deck_extras.switch_stream_here")
+                }}</template>
               </button>
 
               <div v-else class="flex gap-1.5">

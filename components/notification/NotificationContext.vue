@@ -78,8 +78,10 @@ export default defineComponent({
     status() {
       if (this.kind === "match" && this.match) return this.match.status;
       if (this.kind === "server" && this.server) {
-        if (this.server.connected === true) return "ONLINE";
-        if (this.server.connected === false) return "OFFLINE";
+        if (this.server.connected === true)
+          return this.$t("notification_context.online");
+        if (this.server.connected === false)
+          return this.$t("notification_context.offline");
         return null;
       }
       if (this.kind === "node" && this.node) return this.node.status ?? null;

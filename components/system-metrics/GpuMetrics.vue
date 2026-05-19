@@ -12,7 +12,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
         <div class="mb-3 flex h-9 items-center justify-between gap-3">
           <h4 class="flex items-center gap-2 text-sm font-semibold">
             <Microchip class="h-4 w-4" />
-            GPU usage
+            {{ $t("system_metrics_extras.gpu_usage") }}
           </h4>
           <div class="text-right text-xl font-semibold tabular-nums">
             {{ latestUtilization }}%
@@ -29,7 +29,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
         <div class="mb-3 flex h-9 items-center justify-between gap-3">
           <h4 class="flex items-center gap-2 text-sm font-semibold">
             <Microchip class="h-4 w-4" />
-            GPU VRAM Usage
+            {{ $t("system_metrics_extras.gpu_vram_usage") }}
           </h4>
           <div class="text-right text-[13px] font-semibold tabular-nums">
             {{ memoryDisplay }}

@@ -43,7 +43,7 @@ const otherOnlineCount = computed(() => {
           class="inline-flex items-center gap-[0.4rem] font-mono text-[0.62rem] font-bold tracking-[0.24em] uppercase text-muted-foreground mb-2"
         >
           <span class="w-2 h-[2px] bg-[hsl(var(--tac-amber))]"></span>
-          Social
+          {{ $t("layouts.hub.social") }}
         </div>
         <TabsList
           variant="underline"

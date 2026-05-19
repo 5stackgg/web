@@ -133,7 +133,7 @@ const showMap = computed(() => {
         <div class="inline-flex items-center gap-3">
           <span class="inline-flex items-center gap-2">
             <span :class="tacticalSectionTickClasses"></span>
-            HIGHLIGHTS
+            {{ $t("common.highlights") }}
             <span
               class="rounded-full border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] px-2 py-0.5 font-mono text-[0.55rem] text-[hsl(var(--tac-amber))] tracking-[0.16em]"
             >
@@ -145,7 +145,7 @@ const showMap = computed(() => {
             :to="{ path: '/highlights', query: { player: String(steamId) } }"
             class="inline-flex items-center gap-1 font-mono text-[0.65rem] tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors normal-case"
           >
-            See all
+            {{ $t("common.see_all") }}
             <ArrowRight class="h-3 w-3" />
           </NuxtLink>
         </div>

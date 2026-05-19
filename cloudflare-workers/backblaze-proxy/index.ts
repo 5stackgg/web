@@ -76,10 +76,9 @@ export default {
     // with its own Access-Control-Allow-Origin — required for credentialed
     // fetches, which can't accept `*`.
     const cache = caches.default;
-    const cacheKey = new Request(
-      `${request.url}#origin=${reqOrigin ?? ""}`,
-      { method: "GET" },
-    );
+    const cacheKey = new Request(`${request.url}#origin=${reqOrigin ?? ""}`, {
+      method: "GET",
+    });
     const skipEdgeCache =
       request.method !== "GET" || request.headers.has("range");
     if (!skipEdgeCache) {

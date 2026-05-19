@@ -417,7 +417,7 @@ export default {
       }
       return (
         match.label ||
-        `${match.lineup_1?.name ?? "TBD"} vs ${match.lineup_2?.name ?? "TBD"}`
+        `${match.lineup_1?.name ?? this.$t("common.tbd")} vs ${match.lineup_2?.name ?? this.$t("common.tbd")}`
       );
     },
     matchStatusText() {

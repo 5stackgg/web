@@ -230,7 +230,7 @@ const trophyTeam = computed(() => {
           class="transition-transform duration-150 group-hover/link:translate-x-[-2px]"
           >▚</span
         >
-        VIEW TOURNAMENT
+        {{ $t("trophies_modal.view_tournament") }}
         <span
           class="transition-transform duration-150 group-hover/link:translate-x-[2px]"
           >◢</span

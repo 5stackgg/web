@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { useNuxtApp } from "#app";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useToast } from "~/components/ui/toast/use-toast";
+
+const { t } = useI18n();
 import {
   AlertDialog,
   AlertDialogAction,
@@ -52,21 +55,21 @@ async function confirm() {
       } as any),
     });
     toast({
-      title: "Clip deleted",
+      title: t("toasts.clip_deleted"),
       description: props.title
-        ? `"${props.title}" was removed.`
-        : "Highlight was removed.",
+        ? t("toasts.clip_removed_named", { title: props.title })
+        : t("toasts.highlight_removed"),
     });
     emit("deleted", id);
     emit("update:modelValue", false);
   } catch (error) {
     console.error("[clip] delete failed:", error);
     toast({
-      title: "Delete failed",
+      title: t("toasts.delete_failed"),
       description:
         (error as any)?.graphQLErrors?.[0]?.message ??
         (error as Error)?.message ??
-        "Could not delete clip. Try again.",
+        t("toasts.could_not_delete_clip"),
       variant: "destructive",
     });
   } finally {
@@ -79,14 +82,17 @@ async function confirm() {
   <AlertDialog :open="open" @update:open="(v) => emit('update:modelValue', v)">
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>Delete this clip?</AlertDialogTitle>
+        <AlertDialogTitle>{{
+          $t("clips.delete_dialog.title")
+        }}</AlertDialogTitle>
         <AlertDialogDescription>
-          The clip is removed from the library and the underlying file is
-          deleted. This cannot be undone.
+          {{ $t("clips.delete_dialog.description") }}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel :disabled="deleting">Cancel</AlertDialogCancel>
+        <AlertDialogCancel :disabled="deleting">{{
+          $t("common.cancel")
+        }}</AlertDialogCancel>
         <!-- Plain button — radix's AlertDialogAction auto-closes
              before the async mutation can run. -->
         <button

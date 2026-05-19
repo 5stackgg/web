@@ -8,6 +8,7 @@ export type ReplayBlob = {
   players: any[];
   kills: any[];
   bombs: any[];
+  kit_drops?: any[];
   positions: any[];
   shots_fired: any[];
   grenade_throws: any[];

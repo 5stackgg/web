@@ -66,7 +66,7 @@ const tradeColumns = computed(() =>
 </script>
 
 <template>
-  <Table>
+  <Table class="table-fixed">
     <TableHeader>
       <TableRow>
         <TableHead

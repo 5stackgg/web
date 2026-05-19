@@ -12,7 +12,12 @@ import { TooltipProvider } from "~/components/ui/tooltip";
 // The default layout supplies the global TooltipProvider; we skip the
 // layout here, so we have to wrap our own — Tooltips inside the
 // replay viewer rely on the radix-vue context to mount.
-definePageMeta({ layout: false });
+//
+// ssr: false because the opener-handoff trick (window.opener.__replayHandoff)
+// is browser-only — under SSR the page can't see the parent window and
+// falls back to a fresh GraphQL + blob fetch, defeating the whole
+// point of the popout reusing already-loaded data.
+definePageMeta({ layout: false, ssr: false });
 
 const route = useRoute();
 const matchMapId = computed(() => String(route.params.matchMapId));

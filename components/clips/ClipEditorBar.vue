@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 import {
   Plus,
   Trash2,
@@ -120,9 +123,9 @@ const demoPlayers = computed<DemoPlayer[]>(() => {
 });
 
 function povNameFor(seg: EditorSegment): string {
-  if (!seg.pov_steam_id) return "Auto";
+  if (!seg.pov_steam_id) return t("clips.editor.auto");
   const p = demoPlayers.value.find((x) => x.steam_id === seg.pov_steam_id);
-  return p?.name ?? "Player";
+  return p?.name ?? t("clips.default_player");
 }
 function povTeamFor(seg: EditorSegment): "CT" | "T" | null {
   if (!seg.pov_steam_id) return null;
@@ -326,7 +329,7 @@ function onRenderClose() {
           <span
             class="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-foreground/80"
           >
-            Clip Editor
+            {{ $t("clips.editor.title") }}
           </span>
         </div>
         <span
@@ -357,7 +360,7 @@ function onRenderClose() {
             @click="splitSelected"
           >
             <Scissors class="h-3.5 w-3.5 mr-1" />
-            Split
+            {{ $t("clips.editor.split") }}
           </Button>
           <Button
             type="button"
@@ -368,7 +371,7 @@ function onRenderClose() {
             @click="deleteSelected"
           >
             <Trash2 class="h-3.5 w-3.5 mr-1" />
-            Delete
+            {{ $t("clips.editor.delete") }}
           </Button>
           <Button
             type="button"
@@ -395,7 +398,7 @@ function onRenderClose() {
             @click="close"
           >
             <X class="h-3.5 w-3.5 mr-1" />
-            Close
+            {{ $t("clips.editor.close") }}
           </Button>
         </div>
       </div>
@@ -407,7 +410,7 @@ function onRenderClose() {
           <span
             class="inline-block h-[2px] w-2.5 bg-[hsl(var(--tac-amber)/0.7)]"
           ></span>
-          Segments
+          {{ $t("clips.editor.segments") }}
           <span class="ml-auto text-muted-foreground/50">
             click + drag empty rail to add range
           </span>
@@ -514,14 +517,14 @@ function onRenderClose() {
                   class="w-full text-left px-2 py-1.5 rounded text-xs hover:bg-muted/50 text-muted-foreground"
                   @click="editor.setSegmentPov(seg.id, null)"
                 >
-                  Auto (current spectator)
+                  {{ $t("clips.editor.auto_current_spectator") }}
                 </button>
                 <div class="border-t border-border/40 my-1"></div>
                 <div
                   v-if="!demoPlayers.length"
                   class="px-2 py-2 text-[0.65rem] text-muted-foreground"
                 >
-                  No players yet — wait for the demo to start.
+                  {{ $t("clips.editor.no_players_yet_demo") }}
                 </div>
                 <button
                   v-for="p in demoPlayers"
@@ -577,12 +580,12 @@ function onRenderClose() {
             for="clip-editor-title"
             class="text-[0.6rem] font-mono uppercase tracking-[0.16em] text-muted-foreground"
           >
-            Title
+            {{ $t("clips.editor.title_label") }}
           </Label>
           <Input
             id="clip-editor-title"
             v-model="title"
-            placeholder="Untitled clip"
+            :placeholder="$t('clips.untitled_clip')"
             class="h-8 text-sm"
             maxlength="80"
           />
@@ -591,7 +594,7 @@ function onRenderClose() {
           <Label
             class="text-[0.6rem] font-mono uppercase tracking-[0.16em] text-muted-foreground"
           >
-            Resolution
+            {{ $t("clips.editor.resolution") }}
           </Label>
           <Select v-model="resolution">
             <SelectTrigger class="h-8 w-[6.5rem] text-xs">
@@ -607,15 +610,19 @@ function onRenderClose() {
           <Label
             class="text-[0.6rem] font-mono uppercase tracking-[0.16em] text-muted-foreground"
           >
-            Destination
+            {{ $t("clips.editor.destination") }}
           </Label>
           <Select v-model="destination">
             <SelectTrigger class="h-8 w-[8rem] text-xs">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="library">Library</SelectItem>
-              <SelectItem value="download">Download</SelectItem>
+              <SelectItem value="library">{{
+                $t("clip_editor_dest.library")
+              }}</SelectItem>
+              <SelectItem value="download">{{
+                $t("clip_editor_dest.download")
+              }}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -627,7 +634,7 @@ function onRenderClose() {
         >
           <Loader2 v-if="submitting" class="h-3.5 w-3.5 mr-1.5 animate-spin" />
           <Film v-else class="h-3.5 w-3.5 mr-1.5" />
-          Render
+          {{ $t("clips.editor.render") }}
         </Button>
       </div>
 

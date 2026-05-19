@@ -190,13 +190,13 @@
             <AlertCircle v-else class="w-4 h-4 text-yellow-500" />
             <span class="text-sm font-medium">
               <template v-if="store.uploadBatch.isUploading">
-                Uploading files...
+                {{ $t("avatar.uploading") }}
               </template>
               <template v-else-if="store.uploadBatch.cancelRequested">
-                Upload cancelled
+                {{ $t("file_manager_extras.upload_cancelled") }}
               </template>
               <template v-else-if="store.uploadBatch.failedFiles.length === 0">
-                Upload complete
+                {{ $t("file_manager_extras.upload_complete") }}
               </template>
               <template v-else>{{
                 $t("file_manager.upload.complete_with_errors")
@@ -322,7 +322,7 @@
             @click="confirmDelete"
             class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
-            Delete
+            {{ $t("common.delete") }}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

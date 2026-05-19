@@ -31,7 +31,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
               class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
             >
               <Activity class="h-3.5 w-3.5" />
-              Live performance timeline
+              {{ $t("system_metrics_extras.live_performance_timeline") }}
             </div>
             <h3 class="text-base font-semibold">
               {{ $t("system_metrics.node_telemetry") }}
@@ -66,7 +66,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                 class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
               >
                 <MemoryStick class="h-3.5 w-3.5" />
-                Memory
+                {{ $t("system_metrics_extras.memory") }}
               </div>
               <div
                 class="mt-2 text-[13px] font-medium tabular-nums leading-snug"
@@ -81,7 +81,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                 class="flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground"
               >
                 <Network class="h-3.5 w-3.5" />
-                Network
+                {{ $t("system_metrics_extras.network") }}
               </div>
               <div class="mt-2 text-lg font-semibold tabular-nums">
                 {{ networkUsageDisplay }}

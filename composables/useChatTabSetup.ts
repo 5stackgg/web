@@ -181,7 +181,7 @@ export function useChatTabSetup() {
           id,
           label:
             match.label ||
-            `${match.lineup_1?.name ?? "TBD"} vs ${match.lineup_2?.name ?? "TBD"}`,
+            `${match.lineup_1?.name ?? t("common.tbd")} vs ${match.lineup_2?.name ?? t("common.tbd")}`,
           instance: "match",
           type: "match",
           lobbyId: match.id,

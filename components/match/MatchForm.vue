@@ -133,7 +133,7 @@ const tacLabelClasses =
             class="inline-flex items-center gap-2 font-mono text-[0.68rem] tracking-[0.24em] uppercase text-muted-foreground mb-[0.85rem]"
           >
             <span :class="tickClasses"></span>
-            Lineups
+            {{ $t("match.lineups") }}
           </div>
 
           <div

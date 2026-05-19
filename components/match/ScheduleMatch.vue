@@ -24,11 +24,10 @@ import { Calendar as CalendarIcon, X } from "lucide-vue-next";
       </div>
       <p class="text-xs text-muted-foreground">
         <template v-if="!form.values.scheduled_at">
-          Start the match now or schedule it for later.
+          {{ $t("match.start_now_or_schedule") }}
         </template>
         <template v-else>
-          Match scheduled for
-          {{ scheduledLabel }}.
+          {{ $t("match.match_scheduled_for", { time: scheduledLabel }) }}
         </template>
       </p>
     </div>
@@ -131,7 +130,7 @@ export default {
             scheduled_at: z
               .string()
               .refine((date) => new Date(date) > new Date(), {
-                message: (this as any).$t("validation.date_must_be_future"),
+                message: this.$t("validation.date_must_be_future"),
               })
               .optional(),
           }),

@@ -44,7 +44,7 @@ import StreamCanvas from "~/components/match/StreamCanvas.vue";
            in on hover once unmuted. -->
       <button
         type="button"
-        :aria-label="isMuted ? 'Unmute' : 'Mute'"
+        :aria-label="isMuted ? $t('ui_extras.unmute') : $t('ui_extras.mute')"
         :class="[
           'absolute bottom-2 right-2 z-10 inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-opacity duration-150 hover:bg-black/80 hover:text-white',
           isMuted

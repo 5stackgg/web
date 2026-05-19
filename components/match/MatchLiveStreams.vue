@@ -135,7 +135,7 @@ import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
                         variant="secondary"
                         class="text-[10px] py-0 px-2"
                       >
-                        {{ $t("streams.live_badge") || "LIVE" }}
+                        {{ $t("streams.live_badge") }}
                       </Badge>
                       <!-- Mode badge — Direct (live) has no GOTV delay,
                            TV honors `tv_delay`. Always shown for the
@@ -160,7 +160,9 @@ import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
                         class="text-[10px] py-0 px-2"
                         :title="stream.error_message ?? ''"
                       >
-                        {{ stream.error_message || "Errored" }}
+                        {{
+                          stream.error_message || $t("stream_status.errored")
+                        }}
                       </Badge>
                       <Badge
                         v-else-if="stream.is_game_streamer && !stream.is_live"

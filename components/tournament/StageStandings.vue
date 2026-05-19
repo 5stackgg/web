@@ -105,7 +105,7 @@ import { ChevronRight } from "lucide-vue-next";
                       v-if="entry.roster.length === 0"
                       class="px-4 py-3 text-center font-mono text-[0.65rem] uppercase tracking-[0.2em] text-muted-foreground"
                     >
-                      NO ROSTER
+                      {{ $t("tournament.standings_section.no_roster") }}
                     </div>
                     <div v-else class="overflow-x-auto">
                       <table class="w-full text-sm">
@@ -209,7 +209,7 @@ import { ChevronRight } from "lucide-vue-next";
                                 colspan="6"
                                 class="px-2 py-2 text-center font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground/60"
                               >
-                                NO DATA
+                                {{ $t("tournament.results_section.no_data") }}
                               </td>
                             </template>
                           </tr>

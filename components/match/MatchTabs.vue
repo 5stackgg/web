@@ -82,7 +82,7 @@ provide("commander", commander);
             <span
               class="font-mono text-[0.6rem] font-bold tracking-[0.28em] uppercase text-[hsl(var(--tac-amber))]"
             >
-              Map Filter Active
+              {{ $t("match.map_filter_active") }}
             </span>
             <div class="map-filter-flip relative min-w-0">
               <Transition name="map-flip" mode="out-in">
@@ -126,12 +126,15 @@ provide("commander", commander);
         {{ $t("match.tabs.mobile_label_map") }}
       </span>
       <Select :model-value="mapSelectValue" @update:model-value="onMapSelect">
-        <SelectTrigger class="w-full" aria-label="Filter stats by map">
+        <SelectTrigger
+          class="w-full"
+          :aria-label="$t('match.tabs.mobile_label_map')"
+        >
           <SelectValue :placeholder="$t('match.all_maps') || 'All Maps'" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="__all__">
-            {{ $t("match.all_maps") || "All Maps" }}
+            {{ $t("match.all_maps") }}
           </SelectItem>
           <SelectItem v-for="m in statsEligibleMaps" :key="m.id" :value="m.id">
             {{ cleanMapName(m.map.name) }}
@@ -478,17 +481,13 @@ provide("commander", commander);
       </div>
     </TabsContent>
     <TabsContent value="clutches">
-      <div class="grid gap-4 max-w-[1500px]">
-        <Card class="overflow-x-auto">
-          <CardContent class="py-2">
-            <lineup-clutches
-              :match="match"
-              :lineup1="match.lineup_1"
-              :lineup2="match.lineup_2"
-              :selected-map-id="activeMap?.id"
-            ></lineup-clutches>
-          </CardContent>
-        </Card>
+      <div class="max-w-[1500px]">
+        <lineup-clutches
+          :match="match"
+          :lineup1="match.lineup_1"
+          :lineup2="match.lineup_2"
+          :selected-map-id="activeMap?.id"
+        ></lineup-clutches>
       </div>
     </TabsContent>
     <TabsContent value="head-to-head">
@@ -646,7 +645,7 @@ provide("commander", commander);
                   <span class="text-muted-foreground">{{
                     $t("match.tabs.type")
                   }}</span>
-                  <span>{{ match.server_type || "TBD" }}</span>
+                  <span>{{ match.server_type || $t("common.tbd") }}</span>
                 </li>
                 <li class="flex items-center justify-between">
                   <span class="text-muted-foreground">{{

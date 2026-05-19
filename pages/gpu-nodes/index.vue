@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed, reactive } from "vue";
+import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
+
+const { t } = useI18n();
 import { Card } from "~/components/ui/card";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -55,12 +58,12 @@ async function stopGpuSession(nodeId: string) {
         stopGpuSession: [{ game_server_node_id: nodeId }, { success: true }],
       }),
     });
-    toast({ title: "GPU session stopped" });
+    toast({ title: t("toasts.gpu_session_stopped") });
   } catch (error: any) {
     toast({
       variant: "destructive",
-      title: "stop gpu session",
-      description: error?.message ?? "request failed",
+      title: t("toasts.stop_gpu_session"),
+      description: error?.message ?? t("toasts.request_failed"),
     });
   } finally {
     busyByNodeId[nodeId] = false;

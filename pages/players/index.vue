@@ -378,7 +378,7 @@ import {
         <span
           class="text-[0.65rem] font-mono tracking-[0.22em] uppercase text-muted-foreground"
         >
-          Active
+          {{ $t("pages.matches.active") }}
         </span>
         <button
           v-for="chip in activeFilterChips"

@@ -26,12 +26,13 @@ defineEmits<{ (e: "close"): void }>();
           <h2
             class="font-mono text-xs uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
           >
-            Keyboard shortcuts
+            {{ $t("match.keyboard_shortcuts") }}
           </h2>
           <p
             class="font-mono text-[0.6rem] uppercase tracking-wider text-muted-foreground"
           >
-            <Kbd>?</Kbd> or <Kbd>Esc</Kbd> to close
+            <Kbd>?</Kbd> {{ $t("common.or") }} <Kbd>Esc</Kbd>
+            {{ $t("shortcut_overlay.to_close") }}
           </p>
         </div>
 

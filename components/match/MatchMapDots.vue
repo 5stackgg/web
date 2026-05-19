@@ -1,5 +1,8 @@
 <script lang="ts" setup>
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 import {
   Tooltip,
   TooltipContent,
@@ -69,18 +72,20 @@ const dots = computed<Dot[]>(() => {
 });
 
 const mapDisplayName = (dot: Dot) =>
-  dot.matchMap?.map?.label || dot.matchMap?.map?.name || `Map ${dot.index + 1}`;
+  dot.matchMap?.map?.label ||
+  dot.matchMap?.map?.name ||
+  t("match.map_number", { count: dot.index + 1 });
 
 const statusLabel = (status: DotStatus) => {
   switch (status) {
     case "completed":
-      return "COMPLETE";
+      return t("map_dots.complete");
     case "current":
-      return "LIVE";
+      return t("map_dots.live");
     case "unused":
-      return "UNPLAYED";
+      return t("map_dots.unplayed");
     default:
-      return "UPCOMING";
+      return t("map_dots.upcoming");
   }
 };
 
@@ -96,7 +101,7 @@ const pickedBy = (matchMap?: MatchMap) => {
   const decider = matchMap.vetos.find(
     (v) => v.type === e_veto_pick_types_enum.Decider,
   );
-  if (decider) return "Decider";
+  if (decider) return t("map_dots.decider");
   const pick = matchMap.vetos.find(
     (v) => v.type === e_veto_pick_types_enum.Pick,
   );
@@ -241,14 +246,14 @@ const monoNum = "font-mono tabular-nums tracking-[0.01em]";
               class="relative grid grid-cols-[1fr_auto_1fr] items-center gap-2 px-2.5 py-2 bg-muted/35 border border-border/70 mb-2"
             >
               <div class="flex flex-col gap-0.5 min-w-0">
-                <span :class="labelClass">TEAM 1</span>
+                <span :class="labelClass">{{ $t("map_dots.team_1") }}</span>
                 <span
                   :class="[
                     monoNum,
                     'font-semibold text-[11px] text-foreground truncate',
                   ]"
                 >
-                  {{ match.lineup_1?.name || "Team 1" }}
+                  {{ match.lineup_1?.name || $t("common.team_1") }}
                 </span>
               </div>
               <div
@@ -262,14 +267,14 @@ const monoNum = "font-mono tabular-nums tracking-[0.01em]";
                 >{{ dot.matchMap.lineup_2_score ?? 0 }}
               </div>
               <div class="flex flex-col gap-0.5 min-w-0 text-right">
-                <span :class="labelClass">TEAM 2</span>
+                <span :class="labelClass">{{ $t("map_dots.team_2") }}</span>
                 <span
                   :class="[
                     monoNum,
                     'font-semibold text-[11px] text-foreground truncate',
                   ]"
                 >
-                  {{ match.lineup_2?.name || "Team 2" }}
+                  {{ match.lineup_2?.name || $t("common.team_2") }}
                 </span>
               </div>
             </section>
@@ -278,7 +283,7 @@ const monoNum = "font-mono tabular-nums tracking-[0.01em]";
               class="relative grid grid-cols-2 gap-px bg-border/60 border border-border/60"
             >
               <div class="flex flex-col gap-0.5 px-2 py-1.5 bg-card/80">
-                <span :class="labelClass">PICK</span>
+                <span :class="labelClass">{{ $t("map_dots.pick") }}</span>
                 <span
                   :class="[
                     monoNum,
@@ -289,7 +294,7 @@ const monoNum = "font-mono tabular-nums tracking-[0.01em]";
                 </span>
               </div>
               <div class="flex flex-col gap-0.5 px-2 py-1.5 bg-card/80">
-                <span :class="labelClass">WINNER</span>
+                <span :class="labelClass">{{ $t("map_dots.winner") }}</span>
                 <span
                   v-if="dot.status === 'completed'"
                   :class="[

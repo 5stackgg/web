@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Skeleton } from "~/components/ui/skeleton";
 import LineupOverview from "~/components/match/LineupOverview.vue";
@@ -6,6 +8,14 @@ import LineupUtility from "~/components/match/LineupUtility.vue";
 import LineupTradeStats from "~/components/match/LineupTradeStats.vue";
 import LineupAimStats from "~/components/match/LineupAimStats.vue";
 import cleanMapName from "~/utilities/cleanMapName";
+
+const { t } = useI18n();
+const tabs = computed(() => [
+  { value: "overview", label: t("match.tabs.overview") },
+  { value: "utility", label: t("match.tabs.utility") },
+  { value: "trades", label: t("match.tabs.trade_stats") },
+  { value: "aim", label: t("match.tabs.aim_stats") },
+]);
 
 const props = defineProps<{
   match: any;
@@ -44,7 +54,7 @@ function toggleMap(mm: any) {
       v-else-if="!focusLineup"
       class="py-3 text-center text-xs text-muted-foreground"
     >
-      Stats unavailable for this match.
+      {{ $t("match.player_details_panel.stats_unavailable") }}
     </div>
 
     <Tabs
@@ -61,12 +71,7 @@ function toggleMap(mm: any) {
           class="inline-flex h-auto items-center gap-1 bg-transparent p-0"
         >
           <TabsTrigger
-            v-for="tab in [
-              { value: 'overview', label: 'Overview' },
-              { value: 'utility', label: 'Utility' },
-              { value: 'trades', label: 'Trades' },
-              { value: 'aim', label: 'Aim' },
-            ]"
+            v-for="tab in tabs"
             :key="tab.value"
             :value="tab.value"
             class="relative z-[1] rounded-md px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors duration-150 hover:text-foreground data-[state=active]:text-[hsl(var(--tac-amber))]"
@@ -82,7 +87,7 @@ function toggleMap(mm: any) {
           <span
             class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
           >
-            Map
+            {{ $t("match.player_details_panel.map_label") }}
           </span>
           <button
             v-if="match.match_maps.length > 1"
@@ -95,7 +100,7 @@ function toggleMap(mm: any) {
             "
             @click.stop="selectMap(null)"
           >
-            All
+            {{ $t("match.player_details_panel.all_maps") }}
           </button>
           <button
             v-for="mm in match.match_maps"
@@ -112,7 +117,7 @@ function toggleMap(mm: any) {
             :disabled="!isMapPlayed(mm) || match.match_maps.length === 1"
             :title="
               !isMapPlayed(mm)
-                ? 'This map was not played'
+                ? t('match.player_details_panel.map_not_played')
                 : cleanMapName(mm.map?.label || mm.map?.name || '')
             "
             @click.stop="toggleMap(mm)"

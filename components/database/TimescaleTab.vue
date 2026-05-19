@@ -150,7 +150,7 @@
                 <TableCell>{{ job.job_id }}</TableCell>
                 <TableCell class="text-xs">{{ job.job_type }}</TableCell>
                 <TableCell class="font-mono text-xs">{{
-                  job.hypertable_name || "N/A"
+                  job.hypertable_name || $t("common.na")
                 }}</TableCell>
                 <TableCell>
                   <Badge

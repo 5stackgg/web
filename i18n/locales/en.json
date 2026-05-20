@@ -476,9 +476,9 @@
                     "playcast_learn_more": "Learn more",
                     "encoding_section": "Encoding",
                     "live_video_codec": "Live Stream Codec",
-                    "live_video_codec_description": "H.264 plays in every browser and is the safe default. H.265 (HEVC) is ~30% smaller at matched quality but only Safari 17+ decodes it over WebRTC — Chrome and Firefox viewers will not be able to watch. Pick H.265 only if your audience is mostly Safari / iOS. Falls back to H.264 automatically if the GPU lacks NVENC HEVC.",
-                    "codec_h265": "H.265 / HEVC (Safari / iOS only)",
-                    "codec_h264": "H.264 (recommended)",
+                    "live_video_codec_description": "H.265 (HEVC) is ~30% smaller at matched quality and the default. Chrome and Firefox viewers fall back to the HLS path which carries HEVC fine; HEVC-over-WebRTC is Safari 17+ only. Switch to H.264 if your audience needs the lowest-latency WebRTC path on every browser. Falls back to H.264 automatically if the GPU lacks NVENC HEVC.",
+                    "codec_h265": "H.265 / HEVC (recommended)",
+                    "codec_h264": "H.264",
                     "updated": "Updated Streaming Settings"
                 },
                 "create_matches_role": "Minimum Role Allowed to Create Matches",

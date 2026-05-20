@@ -961,7 +961,7 @@ onMounted(() => {
             <NuxtLink
               v-if="clip.match_map?.match"
               :to="`/matches/${clip.match_map.match.id}`"
-              class="group/match-link flex flex-col items-stretch !h-auto"
+              class="group/match-link flex flex-col items-stretch !h-auto cursor-pointer"
               @click="closeClip"
             >
               <MatchTableRow
@@ -969,13 +969,13 @@ onMounted(() => {
                 compact
                 always-show
                 hide-overview
-                class="!h-auto pointer-events-none"
+                class="!h-auto pointer-events-none rounded-md border border-transparent transition-all group-hover/match-link:border-[hsl(var(--tac-amber)/0.5)] group-hover/match-link:bg-[hsl(var(--tac-amber)/0.05)] group-hover/match-link:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.25)]"
               />
               <span
                 class="mt-1 inline-flex items-center gap-1 self-end font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover/match-link:text-[hsl(var(--tac-amber))]"
               >
                 {{ $t("clips.detail.view_match") }}
-                <ArrowUpRight class="h-3 w-3" />
+                <ArrowUpRight class="h-3 w-3 transition-transform group-hover/match-link:translate-x-0.5 group-hover/match-link:-translate-y-0.5" />
               </span>
             </NuxtLink>
 

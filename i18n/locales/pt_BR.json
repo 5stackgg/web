@@ -1,6 +1,194 @@
 {
   "pagination": {
-    "items_per_page": "por página"
+    "items_per_page": "por página",
+    "showing_range": "Mostrando {start}-{end} de {total}",
+    "total": "Total: {total}"
+  },
+  "trophies_modal": {
+    "view_tournament": "VER TORNEIO"
+  },
+  "toasts": {
+      "link_copied": "Link copiado",
+      "copy_failed": "Falha ao copiar",
+      "clip_deleted": "Clipe excluído",
+      "delete_failed": "Falha ao excluir",
+      "clip_removed_named": "\"{title}\" foi removido.",
+      "highlight_removed": "Highlight foi removido.",
+      "could_not_delete_clip": "Não foi possível excluir o clipe. Tente novamente.",
+      "demo_parsed": "Demo processada",
+      "demo_parse_failed": "Falha ao processar demo",
+      "reconnecting": "Reconectando",
+      "reconnecting_description": "Reemitindo a conexão com o servidor de jogo.",
+      "cant_switch": "Não é possível alternar",
+      "destination_not_ready": "a partida de destino não está pronta",
+      "stream_switched": "Stream alternado",
+      "stream_switched_description": "Pod reutilizado — o feed será redirecionado em alguns segundos.",
+      "switch_failed": "Falha ao alternar",
+      "gpu_session_stopped": "Sessão de GPU encerrada",
+      "stop_gpu_session": "encerrar sessão de GPU",
+      "request_failed": "requisição falhou",
+      "preview_reset_failed": "Não foi possível visualizar o reset da partida do torneio",
+      "resolve_validation_errors": "Por favor, resolva os erros de validação",
+      "set_winner_failed": "Não foi possível definir o vencedor selecionado",
+      "set_winner_failed_description": "O ID da lineup selecionada está ausente para esta partida.",
+      "match_reset_applied": "Reset da partida do torneio aplicado",
+      "match_reset_failed": "Não foi possível resetar a partida do torneio",
+      "please_try_again": "Por favor, tente novamente."
+  },
+  "shortcut_groups": {
+      "playback": "Reprodução",
+      "kills": "Abates",
+      "spectate": "Assistir",
+      "quick_actions": "Ações rápidas",
+      "view": "Visualizar",
+      "switch_player": "Alternar jogador (slot 1–{count})",
+      "prev_spec": "Alvo anterior de espectador",
+      "next_spec": "Próximo alvo de espectador",
+      "lock_free_roam": "Bloquear / livre-roam",
+      "toggle_fullscreen": "Alternar tela cheia",
+      "hold_show_scoreboard": "Segure para mostrar o placar",
+      "show_help": "Mostrar esta ajuda",
+      "play_pause": "Reproduzir / pausar",
+      "skip_back_15s": "Voltar 15s",
+      "skip_forward_15s": "Avançar 15s",
+      "prev_round": "Round anterior",
+      "next_round": "Próximo round",
+      "prev_kill": "Abate anterior",
+      "next_kill": "Próximo abate",
+      "toggle_xray": "Alternar raio-x",
+      "hide_show_openhud": "Ocultar / mostrar OpenHud",
+      "reload_demo": "Recarregar demo"
+  },
+  "recent_highlights": {
+    "default_title": "Highlights Recentes"
+  },
+  "player_roles": {
+    "user": "Usuário Não Verificado",
+    "verified_user": "Usuário Verificado",
+    "streamer": "Streamer",
+    "match_organizer": "Organizador de Partida",
+    "tournament_organizer": "Organizador de Torneio",
+    "administrator": "Administrador"
+  },
+  "live_stages": {
+    "stream_boot": "Inicialização do stream",
+    "booting": "Alocando GPU",
+    "downloading_cs2": "Instalando CS2",
+    "launching_steam": "Iniciando Steam",
+    "logging_in": "Fazendo login",
+    "launching_cs2": "Iniciando CS2",
+    "connecting_to_game": "Conectando ao servidor de jogo",
+    "live": "Transmitindo ao vivo",
+    "downloading_demo": "Baixando demo",
+    "downloading_workshop_map": "Baixando mapa da workshop",
+    "loading_demo_in_cs2": "Carregando demo no CS2",
+    "queuing_demo": "Enfileirando demo",
+    "loading_demo_into_cs2": "Carregando demo dentro do CS2",
+    "demo_loading": "Carregando demo"
+  },
+  "stream_status": {
+    "errored": "Com erro",
+    "gpu_busy": "GPU ocupada"
+  },
+  "replay_extras": {
+    "open_popout": "Abrir em janela popout",
+    "open_match": "Abrir partida",
+    "hud_layout": "Layout / visibilidade do HUD",
+    "reissue_connect": "Reemitir conexão (recuperar de uma desconexão)",
+    "picture_in_picture": "Picture-in-picture",
+    "fullscreen_key": "Tela cheia (F)",
+    "toggle_cs2_hud": "Alternar HUD da demo do CS2",
+    "match_highlight": "Highlight da partida",
+    "skip_forward_15s": "Avançar 15s"
+  },
+  "map_dots": {
+    "team_1": "EQUIPE 1",
+    "team_2": "EQUIPE 2",
+    "pick": "ESCOLHA",
+    "winner": "VENCEDOR",
+    "complete": "CONCLUÍDO",
+    "live": "AO VIVO",
+    "unplayed": "NÃO JOGADO",
+    "upcoming": "PRÓXIMO",
+    "decider": "Desempate"
+  },
+  "elo_change_badge": {
+    "comp": "COMP",
+    "wingman": "BRAÇO DIREITO",
+    "duel": "X1"
+  },
+  "render_queue_status": {
+    "queued": "Na fila",
+    "rendering": "Renderizando",
+    "uploading": "Enviando",
+    "done": "Concluído",
+    "error": "Erro",
+    "cancelled": "Cancelado",
+    "uploading_to_library": "Enviando para sua biblioteca",
+    "render_failed": "Falha na renderização",
+    "queued_waiting": "Na fila — aguardando um slot de renderização",
+    "rendering_on_pod": "Renderizando no pod de game-streamer",
+    "submitting": "Enviando…"
+  },
+  "match_extras": {
+    "unknown_date": "Data desconhecida",
+    "all_players": "Todos os Jogadores"
+  },
+  "round_history": {
+    "bomb_exploded": "Bomba explodiu",
+    "bomb_defused": "Bomba desarmada",
+    "time_ran_out": "Tempo esgotado",
+    "ts_eliminated_cts": "TRs eliminaram os CTs",
+    "cts_eliminated_ts": "CTs eliminaram os TRs",
+    "unknown": "Desconhecido"
+  },
+  "notification_context": {
+    "online": "ONLINE",
+    "offline": "OFFLINE"
+  },
+  "elo_chart_bucket": {
+    "monthly": "Mensal",
+    "weekly": "Semanal",
+    "per_match": "Por partida"
+  },
+  "tournament_match_impact": {
+    "source_reset": "Partida de origem (reset do vencedor)",
+    "delete_recreate": "A partida será excluída e recriada",
+    "slot_reset": "O slot/estado da tabela será resetado"
+  },
+  "stream_deck_status": {
+    "live": "AO VIVO",
+    "booting": "INICIALIZANDO",
+    "veto": "VETO",
+    "spinning_up": "CARREGANDO",
+    "check_in": "CHECK-IN",
+    "starting_capture": "Iniciando captura",
+    "connecting_to_game_short": "Conectando ao jogo",
+    "live_short": "Ao vivo",
+    "errored": "Com erro"
+  },
+  "gpu_pool_status": {
+    "no_nodes": "Nenhum nó de GPU disponível no momento",
+    "live_busy": "GPU ocupada: uma transmissão ao vivo está em andamento",
+    "demo_busy": "GPU ocupada: uma demo está sendo assistida",
+    "highlights_busy": "GPU ocupada: destaques estão sendo renderizados"
+  },
+  "clip_editor_dest": {
+    "library": "Biblioteca",
+    "download": "Download"
+  },
+  "trophies_manage_form": {
+    "placement": "Colocação",
+    "team": "Equipe",
+    "player": "Jogador",
+    "select_team": "Selecionar equipe…",
+    "select_player": "Selecionar jogador…"
+  },
+  "match_scoreboard": {
+    "player_header": "Jogador"
+  },
+  "shortcut_overlay": {
+    "to_close": "para fechar"
   },
   "trophies": {
     "title": "Prêmios e Títulos",
@@ -78,6 +266,29 @@
       "title": "Torneios",
       "create": "Criar Torneio",
       "open_for_registration": "Inscrições abertas",
+      "section_live": "TORNEIOS.AO_VIVO",
+      "section_registration": "FEED.DE.INSCRIÇÃO",
+      "section_upcoming": "TORNEIOS.PRÓXIMOS",
+      "section_recent": "TORNEIOS.RECENTES",
+      "section_results": "RESULTADOS.FILTRADOS",
+      "no_tournaments_title": "Em espera — Nenhum torneio",
+      "no_tournaments_description": "Nada ao vivo, agendado ou recentemente finalizado.",
+      "filter": {
+          "search_placeholder": "Pesquisar torneios por nome…",
+          "status_all": "Todos",
+          "status_live": "Ao vivo",
+          "status_registration": "Aberto",
+          "status_upcoming": "Próximos",
+          "status_finished": "Finalizados",
+          "date_all": "Todo o período",
+          "date_7d": "Últimos 7 dias",
+          "date_30d": "Últimos 30 dias",
+          "date_90d": "Últimos 90 dias",
+          "date_6m": "Últimos 6 meses",
+          "date_1y": "Último ano",
+          "no_results_title": "Nenhum torneio corresponde",
+          "no_results_description": "Tente limpar os filtros ou ampliar sua pesquisa."
+      },
       "tabs": {
         "upcoming": "Próximos",
         "no_live_title": "Nenhum torneio ao vivo",
@@ -263,7 +474,12 @@
           "playcast": "Playcast",
           "playcast_description": "Habilitar Playcast usando portas da GOTV diretamente. ",
           "playcast_learn_more": "Leia mais",
-          "updated": "Configurações de Transmissão Atualizadas"
+          "encoding_section": "Encodando",
+          "live_video_codec": "Live Stream Codec",
+          "live_video_codec_description": "H.265 (HEVC) é ~30% menor na mesma qualidade e é o padrão. Os espectadores no Chrome e Firefox usam o caminho HLS, que suporta HEVC normalmente; HEVC via WebRTC está disponível apenas no Safari 17+. Troque para H.264 se sua audiência precisar do caminho WebRTC de menor latência em todos os navegadores. Volta automaticamente para H.264 se a GPU não tiver NVENC HEVC.",
+          "codec_h265": "H.265 / HEVC (recomendado)",
+          "codec_h264": "H.264",
+          "updated": "Configurações de streaming atualizadas"
         },
         "create_matches_role": "Cargo mínimo para criar partidas",
         "create_matches_role_description": "Este cargo poderá criar partidas",
@@ -449,6 +665,12 @@
           "clips_max_storage": "Armazenamento Máximo",
           "clips_max_storage_description": "Tamanho máximo de armazenamento para highlights em GB. Os clipes mais antigos são excluídos primeiro quando esse limite é ultrapassado.",
           "highlights_section": "Highlights",
+          "clip_video_codec": "Codec dos Highlights",
+          "clip_video_codec_description": "H.265 (HEVC) gera arquivos ~30% menores na mesma qualidade visual e é decodificado por hardware nos navegadores modernos Chrome, Edge, Safari e iOS. Volta automaticamente para H.264 se a GPU não tiver NVENC HEVC.",
+          "codec_h265": "H.265 / HEVC (recomendado)",
+          "codec_h264": "H.264",
+          "clip_bake_branding": "Incorporar chip do jogador + outro nos highlights*",
+          "clip_bake_branding_description": "*Renderiza a sobreposição do chip do jogador e o outro de marca diretamente no arquivo de highlight. Desative para exportar capturas brutas sem sobreposições.",
           "auto_generate_match_clips": "Gerar automaticamente highlights de partidas",
           "auto_generate_match_clips_description": "Enfileira um highlight de resumo da partida para cada jogador após o término da partida.",
           "auto_clip_default_visibility": "Visibilidade padrão para highlights automáticos",
@@ -483,7 +705,66 @@
     },
     "watch": {
       "title": "Partidas",
-      "upcoming_matches": "Próximas"
+      "upcoming_matches": "Próximas",
+      "live_feed": "Feed Ao Vivo",
+      "section_live_tournaments": "TORNEIOS.AO VIVO",
+      "section_live_matches": "PARTIDAS.AO VIVO",
+      "section_upcoming_tournaments": "TORNEIOS.PRÓXIMOS",
+      "section_upcoming_matches": "PARTIDAS.PRÓXIMAS",
+      "section_recent_matches": "PARTIDAS.RECENTES",
+      "section_recent_tournaments": "TORNEIOS.RECENTES",
+      "section_recent_highlights": "HIGHLIGHTS.RECENTES",
+      "no_live_matches": "STANDBY · NENHUMA PARTIDA AO VIVO",
+      "upcoming": "Próximas"
+    },
+    "highlights": {
+      "title": "Highlights",
+      "community_reel": "Reel da comunidade",
+      "queue": "Fila",
+      "render_queue": "Fila de renderização",
+      "render_queue_description": "Lotes de renderização ativos e recentemente concluídos em toda a plataforma.",
+      "queue_summary": "{active} ativos · {queued} na fila",
+      "clear_player_filter": "Limpar filtro de jogador",
+      "filter_by_player": "Filtrar por jogador",
+      "view_mode": "Modo de visualização",
+      "view_mode_filter_disabled": "Limpo ao filtrar",
+      "result_count": "resultado | resultados",
+      "match_count": "partida | partidas",
+      "clip_count": "clipe | clipes",
+      "since": {
+          "all": "Todo o período",
+          "24h": "Últimas 24 horas",
+          "7d": "Últimos 7 dias",
+          "30d": "Últimos 30 dias",
+          "90d": "Últimos 90 dias"
+      },
+      "kills": {
+          "any": "Qualquer abate",
+          "2": "2+ abates",
+          "3": "3+ abates",
+          "4": "4+ abates",
+          "5": "5 abates"
+      },
+      "view_modes": {
+          "matches": "Clipes de partidas",
+          "singles": "Clipes individuais"
+      },
+      "visibility_filter": {
+          "all": "Todos",
+          "public": "Público",
+          "unlisted": "Não listado",
+          "private": "Privado"
+      },
+      "empty": {
+          "no_match_filters": "Nenhum clipe corresponde a esses filtros",
+          "no_clips_yet": "Nenhum clipe aqui ainda",
+          "try_widening": "Tente ampliar os filtros ou limpar um.",
+          "try_different_admin": "Tente um filtro diferente — ou aguarde novos clipes serem renderizados.",
+          "check_back_soon": "Clipes públicos aparecerão aqui conforme forem renderizados. Volte em breve.",
+          "clear_player": "Limpar jogador",
+          "clear_date": "Limpar data",
+          "clear_kills": "Limpar abates"
+      }
     },
     "regions": {
       "title": "Regiões",
@@ -511,6 +792,7 @@
       "search_country": "Procurar país...",
       "no_country_found": "Nenhum país encontrado.",
       "countries_selected": "países selecionados",
+      "privileges_selected": "privilégios selecionados",
       "elo_range": "Intervalo de ELO",
       "filter_chips": {
         "elo_min": "ELO Mínimo",
@@ -551,6 +833,7 @@
         "weapon_kills": "Armas Mais Utilizadas",
         "no_weapon_kills": "Nenhuma arma registrada",
         "edit_player": "Editar Jogador",
+        "friend": "Amigo",
         "name": "Nome",
         "role": "Função",
         "range_settings": "Configurações de Alcance",
@@ -560,7 +843,51 @@
         "rank": "Rank",
         "global_rank": "Rank Global",
         "top_percent": "Top {percent}%",
-        "rank_of_total": "{rank} de {total}"
+        "rank_of_total": "{rank} de {total}",
+        "player_profile": "Perfil do Jogador",
+        "teams": "Equiopes",
+        "range": "Alcance",
+        "loading_short": "Carregando...",
+        "match_count": "{count} partidas",
+        "no_tournaments_inline": "Sem torneios",
+        "vs_lifetime": "vs Histórico",
+        "custom_range": "Intervalo personalizado",
+        "custom_window_active": "Janela personalizada ativa. Escolher um pré-ajuste limpa esta opção.",
+        "compare_vs_lifetime": "Comparar com o histórico",
+        "compare_vs_lifetime_description": "Mostrar totais do histórico junto com a janela.",
+        "exclude_tournaments": "Excluir torneios",
+        "exclude_tournaments_description": "Ignorar partidas de torneio nas estatísticas e no gráfico.",
+        "lifetime_short": "Histórico",
+        "lifetime_wl": "Histórico {wins}V · {losses}D",
+        "lifetime_kd_label": "Histórico K/D",
+        "current_elo": "ELO atual",
+        "peak_lowest": "Teto / Mínimo",
+        "peak": "Teto",
+        "lifetime_peak": "Teto histórico",
+        "no_matches_in_window": "Nenhuma partida nesta janela",
+        "no_matches_in_window_period": "Nenhuma partida neste período.",
+        "expand_to_all_time": "Expandir para todo o período",
+        "acquiring_telemetry": "Obtendo telemetria…",
+        "matches_section": "PARTIDAS",
+        "elo_history_dialog": {
+            "eyebrow": "Progressão de ELO — Detalhada",
+            "title": "{name} — Detalhe de ELO",
+            "default_player": "Jogador",
+            "description": "Cada partida plotada em resolução completa. A página principal agrupa neste intervalo para mostrar a tendência; aqui você vê cada Δ.",
+            "mode": "Modo",
+            "current": "Atual",
+            "peak": "Teto",
+            "lowest": "Mínimo",
+            "matches": "Partidas",
+            "win_rate": "Taxa de vitórias",
+            "avg_delta_elo": "ΔELO médio:",
+            "loading_history": "Carregando histórico…",
+            "no_matches_window": "Nenhuma partida na janela selecionada",
+            "expand_to_all_time": "Expandir para todo o período",
+            "best_gain": "Maior ganho único",
+            "worst_loss": "Maior perda única",
+            "view_match": "Ver partida"
+        }
       }
     },
     "play": {
@@ -573,8 +900,36 @@
       }
     },
     "matches": {
-      "create": "Criar Partida",
-      "match_updated": "Partida Atualizada",
+      "title": "Partidas",
+      "create": "Criar partida",
+      "match_updated": "Partida atualizada",
+      "browser": "Navegador de partidas",
+      "filters": "FILTROS",
+      "active": "ATIVAS",
+      "result_singular": "RESULTADO",
+      "result_plural": "RESULTADOS",
+      "teams": "EQUIPES",
+      "players": "JOGADORES",
+      "status_label": "STATUS",
+      "window": "JANELA",
+      "from": "DE",
+      "to": "ATÉ",
+      "options": "OPÇÕES",
+      "by_name": "POR NOME",
+      "by_handle": "POR HANDLE",
+      "target_singular": "ALVO",
+      "target_plural": "ALVOS",
+      "operator_singular": "OPERADOR",
+      "operator_plural": "OPERADORES",
+      "presets": "PRÉ-AJUSTES",
+      "preset_upcoming_live": "Próximas & Ao vivo",
+      "preset_finished": "Finalizadas",
+      "clear": "LIMPAR",
+      "clear_short": "Limpar",
+      "lineup_only": "Apenas partidas de lineup",
+      "standby_no_matches": "EM ESPERA · NENHUMA PARTIDA ENCONTRADA",
+      "remove_team": "Remover {name}",
+      "remove_player": "Remover {name}",
       "create_page": {
         "pick_up_game": "Partida Rápida",
         "pick_up_game_description": "Uma partida rápida não exige seleção de equipes.",
@@ -1100,6 +1455,9 @@
       "watch_menu": "Partidas",
       "login": "Login para Jogar",
       "login_mobile": "Login",
+      "login_aria": "Entrar pela Steam",
+      "authorize": "AUTORIZE",
+      "secure_access": "/ ACESSO SEGURO",
       "play": {
         "find_match": "Encontrar uma partida",
         "tournaments": "Torneios",
@@ -1134,6 +1492,11 @@
           }
         }
       }
+    },
+    "hub": {
+      "social": "Social",
+      "notifications": "Notificações",
+      "lobby": "Lobby"
     },
     "lobby_panel": {
       "lobby_invites": "Convites para a Lobby",
@@ -1191,9 +1554,22 @@
     "enabled": "Ativado",
     "all": "Todos",
     "tbd": "A definir",
+    "team_a": "Equipe A",
+    "team_b": "Equipe B",
+    "team_1": "Equipe 1",
+    "team_2": "Equipe 2",
+    "unknown": "Desconhecido",
+    "untitled": "Sem título",
+    "untitled_clip": "Clipe sem título",
+    "na": "N/A",
+    "clip": "Clipe",
+    "vs": "vs",
+    "user": "Usuário",
+    "or": "ou",
     "yes": "Sim",
     "no": "Não",
     "more": "Mais",
+    "columns": "Colunas",
     "none": "Nenhum",
     "failed": "Falhou",
     "disabled": "Desativado",
@@ -1217,6 +1593,13 @@
     "upload": "Enviar",
     "sort_ascending": "Ordenar crescente",
     "sort_descending": "Ordenar decrescente",
+    "see_all": "Ver tudo",
+    "standby_no_activity": "STANDBY · NENHUMA ATIVIDADE",
+    "players": "jogadores",
+    "duration": "Duração",
+    "your_schedule": "Seu Cronograma",
+    "your_schedule_description": "Seu cronograma de partidas e eventos.",
+    "highlights": "HIGHLIGHTS",
     "boolean": {
       "yes": "Sim",
       "no": "Não"
@@ -1263,7 +1646,9 @@
   },
   "spotlight_search": {
     "placeholder": "Procurar jogadores...",
-    "searching": "Procurando..."
+    "searching": "Procurando...",
+    "no_players_found": "Nenhum jogador encontrado",
+    "start_typing": "Comece a digitar para procurar jogadores"
   },
   "file_manager_store": {
     "load_directory_failed": "Falha ao carregar diretório",
@@ -1415,6 +1800,67 @@
     "results_table": {
       "matches": "Partidas"
     },
+    "final_standings_podium": "▚ CLASSIFICAÇÃO FINAL · PÓDIO",
+    "page": {
+      "tournament_eyebrow": "Torneio",
+      "view_match_options": "Ver opções da partida",
+      "match_options_tab": "Opções da partida",
+      "organizers_tab": "Organizadores",
+      "my_team": "Minha equipe",
+      "my_team_hint": "Gerencie sua escalação, convites e prontidão para este torneio.",
+      "roster_section": "Escalação",
+      "no_teams_yet": "Nenhuma equipe ainda."
+    },
+    "feature_card": {
+      "tournament": "Torneio",
+      "teams": "Equipes",
+      "stages": "Fases"
+    },
+    "results_section": {
+      "no_data": "SEM DADOS",
+      "mvp": "DESTAQUE (MVP)",
+      "no_matches_played": "Nenhuma partida jogada ainda"
+    },
+    "swiss": {
+      "advanced": "AVANÇOU",
+      "eliminated": "ELIMINADO",
+      "final_results": "Resultados Finais"
+    },
+    "standings_section": {
+      "no_roster": "SEM ELENCO"
+    },
+    "trophies_config": {
+      "title": "Configuração de Troféu",
+      "organizer_access_required": "ACESSO DO ORGANIZADOR NECESSÁRIO",
+      "award_trophies": "CONCEDER TROFÉUS",
+      "custom": "PERSONALIZADO",
+      "custom_image": "Imagem personalizada",
+      "custom_name": "Nome personalizado",
+      "silhouette": "Silhueta",
+      "reset": "Redefinir",
+      "remove_image_hint": "Remova a imagem para personalizar o nome ou a silhueta"
+    },
+    "trophies_manage": {
+      "manual_awards": "Premiações manuais",
+      "add_award": "Adc. Premiação",
+      "no_manual_awards": "NENHUMA PREMIAÇÃO MANUAL",
+      "remove": "Remover"
+    },
+    "compact_card": {
+      "tournament": "Torneio",
+      "live": "Ao Vivo",
+      "ended": "Encerrado",
+      "starts": "Início",
+      "teams": "Equipes",
+      "champion": "Campeão",
+      "second": "2º",
+      "third": "3º",
+      "player_finished": "Jogador terminou em {rank}"
+    },
+    "recent": {
+      "see_all": "Ver tudo",
+      "standby_no_tournaments": "STANDBY · NENHUM TORNEIO"
+    },
     "paused_banner": "Este torneio está pausado. Nenhuma nova partida será agendada automaticamente.",
     "overview": "Visão Geral",
     "updated": "Torneio Atualizado",
@@ -1526,6 +1972,14 @@
       "past_time_error": "O horário agendado deve estar no futuro"
     },
     "match": {
+      "reset_winner": "Redefinir vencedor",
+      "reset_warning": "Alterar este resultado pode excluir partidas subsequentes no chaveamento",
+      "winner_after_reset": "Vencedor após redefinição",
+      "scheduled_at": "Agendado para",
+      "continue": "Continuar",
+      "reset_chain_warning": "Isso irá redefinir a cadeia selecionada do chaveamento e pode remover partidas já jogadas subsequentes. Use apenas para correções administrativas do torneio.",
+      "final_confirmation_required": "Confirmação final necessária",
+      "confirm_reset": "Confirmar redefinição",
       "team_1": "Equipe 1",
       "team_2": "Equipe 2",
       "round_match": "{prefix} Round {round} Partida {match}",
@@ -1643,7 +2097,8 @@
   "team": {
     "hero": {
       "roster": "Roster",
-      "matches": "Partidas"
+      "matches": "Partidas",
+      "team_profile": "Perfil da Equipe"
     },
     "table": {
       "team": "Equipe"
@@ -1695,6 +2150,7 @@
       "found_teams": "{count} equipes encontradas",
       "placeholder": "Pesquisar equipe...",
       "my_teams_only": "Somente as Minhas Equipes",
+      "tournament_winners": "Vencedores do Torneio",
       "no_teams_found": "Nenhuma equipe encontrada",
       "owner": "Dono",
       "captain": "Capitão",
@@ -1717,7 +2173,33 @@
     }
   },
   "match": {
-    "team_stats_heading": "{name} Estatísticas",
+    "open_popout": "Abrir em janela destacada",
+    "open_match": "Abrir partida",
+    "picks_label": "Escolhas",
+    "full_page": "Página completa",
+    "no_multi_kill_rounds": "Nenhuma rodada com {count} abates encontrada.",
+    "map_filter_active": "Filtro de mapa ativo",
+    "scoreboard": "Placar",
+    "maps_not_picked": "Mapas ainda não escolhidos",
+    "admin": "Admin",
+    "round_kills": "Abates por rodada",
+    "planting": "PLANTANDO",
+    "defusing": "DESARMANDO",
+    "lineups": "Lineups",
+    "tap_to_unmute": "Toque para ativar o som",
+    "auto_director": "Diretor automático",
+    "match_scheduled_for": "Partida agendada para {time}.",
+    "start_now_or_schedule": "Inicie a partida agora ou agende para mais tarde.",
+    "keyboard_shortcuts": "Atalhos de teclado",
+    "up_next": "A Seguir",
+    "head_to_head_matrix": {
+        "viewing": "Visualizando",
+        "damage": "Dano",
+        "your_weapons": "Suas armas",
+        "their_weapons": "Armas deles"
+    },
+    "highlights_button": "Highlights",
+    "team_stats_heading": "Estatísticas de {name}",
     "all_maps": "Todos os Mapas",
     "stream": {
       "watch": "Transmissão Ao Vivo"
@@ -1918,6 +2400,10 @@
       "aim_stats": "Aim",
       "opening_duels": "Duelos de abertura",
       "clutches": "Clutches",
+      "head_to_head": "P v P",
+      "replay": "Replay 2D",
+      "mobile_label_map": "Filto de Mapa",
+      "mobile_label_view": "Ver",
       "settings": "Configurações",
       "streams": "Transmissões ao Vivo",
       "admin": "Admin",
@@ -1946,6 +2432,10 @@
       "set": "Definir Vencedor",
       "select_lineup": "Selecionar escalação"
     },
+    "map_winner": {
+      "set": "Definir Vencedor do Mapa",
+      "select_lineup": "Selecionar Lineup"
+    },
     "region_veto": {
       "ban_label": "Veto",
       "banning": "Vetando",
@@ -1958,13 +2448,22 @@
       "set_server_region": "Definir região do servidor"
     },
     "picks": {
-      "decider": "Mapa decisivo"
+      "decider": "Decisivo",
+      "empty": "Nenhuma escolha de veto",
+      "counter_terrorist": "CT",
+      "terrorist": "TR",
+      "action_pick": "{team} escolheu {map}",
+      "action_ban": "{team} vetou {map}",
+      "action_side": "{team} escolheu {side} em {map}",
+      "action_decider": "{map} foi o decisivo",
+      "side_picked_by": "{team} escolheu {side}",
+      "starts_on": "{team} começa como {side}"
     },
-    "decider": "Mapa decisivo",
+    "decider": "Mapa Decisivo",
     "map_veto": {
-      "is_picking": "Está escolhendo (pickando)",
+      "is_picking": "está Escolhendo (pickando)",
       "organizer_override": "Substituição do Organizador",
-      "pick": "Pick",
+      "pick": "Pick*",
       "confirm": "Confirmar {type}"
     },
     "map_lineup": {
@@ -1976,6 +2475,8 @@
       "short_label": "Status do Servidor"
     },
     "actions": {
+      "server_offline": "Servidor está offline",
+      "live_unavailable": "Live Stream indisponível para esta partida neste momento",
       "call_support": "Chamar Suporte",
       "start_veto": "Iniciar Veto",
       "skip_checkin": "Pular Check In",
@@ -2014,6 +2515,8 @@
       "description": "Tem certeza que deseja deletar esta partida? Esta ação não pode ser desfeita."
     },
     "lineup": {
+      "lineup_1": "Lineup 1",
+      "lineup_2": "Lineup 2",
       "stats": {
         "flashes_thrown": "Flash lançadas",
         "flash_assists": "Assist. com flash",
@@ -2022,11 +2525,19 @@
         "avg_blind_time": "Tempo médio de cegueira",
         "he_damage": "Dano de HE",
         "molotov_damage": "Dano de Molotov",
+        "utility_summary_total": "total",
+        "utility_summary_flashes": "Flashes",
+        "utility_summary_smokes": "Smokes",
+        "utility_summary_hes": "HEs",
+        "utility_summary_molotovs": "Molotovs",
+        "he_team_damage": "Dano de HE (Time)",
+        "unused_utility": "Utilitários não utilizados",
         "seconds": "segundos",
         "trade_kill_opportunities": "Oportunidades de Trade Kill",
         "trade_kill_attempts": "Tentativas de Trade Kill",
         "trade_kill_pct": "% de Trade Kill",
         "traded_death_opportunities": "Oportunidades de Trade Death",
+        "traded_death_attempts": "Tentativas de Trade Death",
         "traded_death_pct": "% de Trade Death",
         "net_trade": "Trade Líquido",
         "accuracy": "Precisão",
@@ -2036,6 +2547,7 @@
         "spotted_acc": "Precisão ao ser Detectado",
         "crosshair_placement": "Posicionamento da Mira",
         "counter_strafing": "Counter-Strafing",
+        "wasted_magazine_pct": "% Desperdício de Munição",
         "spray_accuracy": "Precisão do Spray",
         "accuracy_spotted": "Precisão (Detectado)",
         "calc_header": "Como é calculado",
@@ -2085,6 +2597,11 @@
             "description": "Sua precisão nos segundos disparos em diante de uma rajada — onde o recoil importa mais.",
             "calculation": "Acertos atribuídos a disparos de spray divididos por disparos de spray totais. Um disparo é considerado spray se outro disparo foi feito pelo mesmo jogador nos 250ms anteriores."
           },
+          "wasted_magazine_pct": {
+            "title": "% Munição Desperdiçada",
+            "description": "Com que frequência você recarrega ainda tendo munição no carregador. Quanto menor, melhor — terminar o clipe é mais eficiente.",
+            "calculation": "Munição restante no carregador a cada recarga, dividido por (tiros disparados + munição desperdiçada)."
+          },
           "trade_kill_opportunities": {
             "title": "Oportunidades de Trade Kill",
             "description": "Rodadas em que um companheiro morreu enquanto você estava vivo — ou seja, você tinha chance de trocar.",
@@ -2104,6 +2621,11 @@
             "title": "Oportunidades de Morte Trocada",
             "description": "Suas mortes — cada uma foi uma chance de um companheiro trocar por você.",
             "calculation": "Total de vezes que você foi morto por um inimigo."
+          },
+          "traded_death_attempts": {
+            "title": "Tentativas de Trade Death",
+            "description": "Total de tentativas de trade que sua equipe fez nas suas mortes (um companheiro matando seu assassino dentro de 5s).",
+            "calculation": "Soma de cada abate de companheiro que trocou uma das suas mortes dentro de 5 segundos."
           },
           "traded_death_pct": {
             "title": "% de Mortes Trocadas",
@@ -2138,7 +2660,10 @@
       "leave_lineup": "Sair da Escalação",
       "update_team_name": "Atualizar Nome da Equipe",
       "kd": "K/D",
+      "hltv": "HLTV",
       "hs": "HS%",
+      "kast": "KAST",
+      "survived": "Sobreviveu",
       "team_damage": "Dano à equipe",
       "multi_kill_rounds": "Multikills",
       "mkr": "MKR",
@@ -2151,18 +2676,50 @@
       "total_damage": "Dano Total",
       "substitute": "(substituto)",
       "join": "Entrar",
-      "slot": "Slot {number}"
+      "slot": "Slot {number}",
+      "tooltips": {
+        "hltv": {
+          "title": "HLTV Rating 2.0",
+          "description": "Classificação composta por eliminações/rodada, mortes/rodada, assistências/rodada, ADR e KAST. >1,0 significa acima da média; >1,2 é excelente, <0,85 é ruim."
+        },
+        "kast": {
+          "title": "KAST",
+          "description": "Kill Assist Survive Trade - Percentual de rodadas em que você contribuiu: conseguiu uma eliminação, uma assistência, sobreviveu à rodada ou foi eliminado após morrer. Os profissionais têm uma média de 70 a 80%."
+        },
+        "survived": {
+          "title": "Rounds Sobrevividos",
+          "description": "Rodadas que você terminou vivo (sem aparecer como vítima de nenhuma eliminação). Inclui rodadas vencidas, perdidas e salvas."
+        }
+      }
     },
     "opening_duels": {
       "attempts": "Tentativas",
-      "success": "Sucesso"
+      "success": "Sucesso",
+      "traded": "Trocado",
+      "most_killed": "Mais Abates",
+      "best_weapon": "Melhor Arma",
+      "most_died_to": "Morreu Mais Para"
+    },
+    "head_to_head": {
+      "kills": "Kills",
+      "damage": "Dano",
+      "flashes": "Flashes"
     },
     "clutches": {
       "won": "Venceu",
       "lost": "Perdeu",
+      "saved": "Salvas",
       "against": "Contra",
       "no_clutches": "Nenhum clutch neste round",
-      "vs": "vs {count}"
+      "no_attempts": "Sem tentativas de clutch",
+      "vs": "vs {count}",
+      "vs_short": "1v{count}",
+      "round_short": "Round {number}",
+      "win_rate": "Taxa de Vitória",
+      "total_kills": "Total Kills",
+      "clutches_won": "Clutches Vencidos",
+      "clutches_lost": "Clutches Perdidos",
+      "saves": "Saves"
     },
     "check_in": {
       "checked_in": "Check In Feito",
@@ -2196,7 +2753,68 @@
     },
     "lobby": {
       "access_updated": "Acesso ao lobby da partida atualizado para {access}"
-    }
+    },
+    "replay": {
+      "select_map": "Selecione um mapa acima para reproduzir",
+      "select": "Selecionar",
+      "selected": "Selecionado",
+      "positions_large": "As posições do replay são grandes. Clique em carregar para buscá-las em {map}.",
+      "load": "Carregar replay",
+      "loading": "Carregando replay…",
+      "no_position_data": "Sem dados de posição — reanalise a demo para preencher o replay.",
+      "toggle_to_slots": "Alternar para números de slot",
+      "toggle_to_avatars": "Alternar para avatares dos jogadores",
+      "popout": "Abrir em janela separada",
+      "phase_freeze": "Congelamento",
+      "phase_bomb": "Bomba",
+      "bomb_planted": "Bomba plantada no {site}",
+      "bomb_defused": "Bomba desarmada",
+      "bomb_exploded": "Bomba explodiu",
+      "prev_round": "Rodada anterior",
+      "next_round": "Próxima rodada",
+      "step_back": "Voltar",
+      "step_forward": "Avançar",
+      "play": "Reproduzir",
+      "pause": "Pausar",
+      "headshot": "Headshot",
+      "has_bomb": "Com bomba",
+      "defuse_kit": "Kit de desarme",
+      "follow_hint": "Clique em um jogador abaixo para segui-lo no mapa.",
+      "follow_stop": "Clique para parar de seguir",
+      "follow_player": "Clique para seguir {name} no mapa",
+      "counter_terrorists": "Contra-Terroristas",
+      "terrorists": "Terroristas",
+      "shortcuts_title": "Atalhos",
+      "shortcut_play": "reproduzir",
+      "shortcut_step": "passo",
+      "shortcut_round": "rodada",
+      "shortcut_speed": "velocidade",
+      "overlays": "Sobreposições",
+      "overlay_c4": "Portador da C4",
+      "overlay_defuser": "Kits de desarme",
+      "overlay_ground_bomb": "Bomba dropada / plantada",
+      "overlay_ground_kits": "Kits dropados"
+    },
+    "player_details_panel": {
+      "stats_unavailable": "Estatísticas indisponíveis para esta partida.",
+      "map_label": "Mapa",
+      "all_maps": "Todos",
+      "map_not_played": "Este mapa não foi jogado"
+      },
+      "player_strip": {
+          "highlights": "Highlights",
+          "overflow_more": "+{count} mais",
+          "default_clip_title": "Highlight",
+          "kills": "Kills",
+          "deaths": "Mortes",
+          "assists": "Assistências",
+          "adr": "ADR",
+          "hs_pct": "%HS",
+          "kd": "K/D"
+      },
+      "side_filter": {
+          "all": "Todos"
+      }
   },
   "ui": {
     "tooltips": {
@@ -2217,8 +2835,30 @@
     "logs": {
       "follow": "Seguir Logs",
       "timestamps": "Carimbos de data/hora",
-      "jump_to_live": "Jump to Live"
-    }
+      "jump_to_live": "Jump to Live",
+      "download_visible": "Download de logs visíveis",
+      "download_full": "Download de logs completos"
+    },
+    "scroll": {
+      "left": "Scroll esquerda",
+      "right": "Scroll direita"
+    },
+    "toggle_sidebar": "Alternar barra lateral",
+    "volume": "Volume",
+    "unmute": "Ativar som",
+    "mute": "Silenciar",
+    "edit_title": "Editar título",
+    "tournament_match": "Partida de torneio",
+    "pin_overlay": "Fixar como sobreposição flutuante",
+    "open_new_window": "Abrir em nova janela",
+    "show_keyboard_shortcuts": "Mostrar atalhos de teclado",
+    "hold_to_show_scoreboard": "Segure para mostrar o placar",
+    "close_popout": "Fechar janela destacada",
+    "trophy_rack": "Estante de troféus",
+    "click_to_view_tournament": "Clique para ver o torneio",
+    "auto_clip": "Clipe automático",
+    "create_clip": "Criar clipe",
+    "reload_demo": "Recarregar demo"
   },
   "player": {
     "player": {
@@ -2304,6 +2944,7 @@
     }
   },
   "maps": {
+    "label": "Mapas",
     "veto": {
       "pick": "Pickar Mapa"
     },
@@ -2535,6 +3176,59 @@
   "map_pools": {
     "edit_map": "Editar Mpa"
   },
+  "validation_extras": {
+    "min_teams_number": "mínimo de equipes deve ser um número",
+    "max_teams_number": "máximo de equipes deve ser um número",
+    "max_teams_gt_min": "máximo de equipes deve ser maior que o mínimo",
+    "min_max_teams_min_value": "mínimo e máximo de equipes devem ser pelo menos 3 para Round Robin, 4 nos demais casos",
+    "team_owner_required": "proprietário da equipe é obrigatório",
+    "team_name_required": "nome da equipe é obrigatório",
+    "short_name_required": "nome curto é obrigatório",
+    "team_required": "equipe é obrigatória",
+    "rcon_password_required": "Senha de RCON é obrigatória"
+  },
+  "ui_extras": {
+    "mute": "Silenciar",
+    "unmute": "Ativar som",
+    "play": "Reproduzir",
+    "pause": "Pausar",
+    "fullscreen": "Tela cheia",
+    "exit_fullscreen": "Sair da tela cheia",
+    "fullscreen_f_key": "Tela cheia (F)",
+    "exit_fullscreen_f_key": "Sair da tela cheia (F)",
+    "enter_fullscreen": "Entrar em tela cheia",
+    "picture_in_picture": "Picture-in-picture",
+    "exit_picture_in_picture": "Sair do picture-in-picture",
+    "hide_hud": "Ocultar HUD",
+    "show_hud": "Mostrar HUD",
+    "visibility_label": "Visibilidade: {value}",
+    "visibility_change_hint": "Visibilidade: {value}. Clique para alterar.",
+    "quick_overview": "Visão rápida",
+    "pod_boot": "Inicialização do pod",
+    "batch_progress": "Progresso em lote",
+    "delete_clip": "Excluir clipe",
+    "play_clip": "Reproduzir {title}",
+    "match_highlights_for_count": "{count} highlights desta partida",
+    "match_highlights_alt": "Highlights da partida",
+    "select_team_placeholder": "Selecione a equipe…",
+    "select_player_placeholder": "Selecione o jogador…",
+    "open_clip": "Abrir clipe",
+    "open_highlight": "Abrir highlight",
+    "previous_clip": "Clipe anterior",
+    "next_clip": "Próximo clipe",
+    "hide_xray": "Ocultar raio-x",
+    "show_xray": "Mostrar raio-x"
+    },
+    "stream_deck_extras": {
+        "switching": "Trocando…",
+        "no_server": "Sem servidor",
+        "not_live_yet": "Ainda não está ao vivo",
+        "server_offline": "Servidor offline",
+        "switch_stream_here": "Trocar stream aqui"
+    },
+    "branding": {
+        "site_title_suffix": "Sistema de Gerenciamento de Counter-Strike"
+  },
   "validation": {
     "map_pool_required": "O pool de mapas é necessário",
     "date_must_be_future": "A data deve ser no futuro",
@@ -2591,8 +3285,61 @@
     "title": "Título",
     "stream_title_placeholder": "Título da Transmissão",
     "live_badge": "AO VIVO",
+    "booting_badge": "INICIANDO",
     "mode_live": "Direto",
     "mode_tv": "TV"
+  },
+  "stream_deck": {
+    "match_status_wait": "a partida está {status} — aguarde até ficar ao vivo",
+    "no_server_assigned": "nenhum servidor atribuído para esta partida",
+    "server_offline_waiting": "servidor está offline — aguardando ficar online",
+    "no_server": "sem servidor",
+    "server_assigned": "servidor atribuído",
+    "off_air": "Fora do ar",
+    "on_air": "No ar",
+    "control": "Controle",
+    "in_window": "Na janela",
+    "reconnect": "Reconectar",
+    "bring_window_to_front": "Trazer janela para frente",
+    "observer_target": "Alvo do observador",
+    "live_matches": "Partidas ao vivo",
+    "click_another_match": "Clique em outra partida para reutilizar o pod",
+    "no_live_matches": "Nenhuma partida ao vivo",
+    "open_broadcast_controls": "Abrir controles de transmissão",
+    "back_to_deck": "Voltar ao deck",
+    "scoreboard": "Placar",
+    "shortcuts": "Atalhos"
+  },
+  "system_metrics_extras": {
+    "gpu_usage": "Uso de GPU",
+    "gpu_vram_usage": "Uso de VRAM da GPU",
+    "live_performance_timeline": "Timeline de performance ao vivo",
+    "memory": "Memória",
+    "network": "Rede"
+  },
+  "rcon": {
+    "console": "Console RCON",
+    "suggestions": "Sugestões"
+  },
+  "map_pool_form": {
+    "save": "Salvar Map Pool"
+  },
+  "game_server_node": {
+    "set_ports": "Definir Portas"
+  },
+  "file_manager_extras": {
+    "close": "Fechar",
+    "close_others": "Fechar outros",
+    "close_to_right": "Fechar à direita",
+    "close_to_left": "Fechar à esquerda",
+    "delete": "Excluir",
+    "upload_cancelled": "Upload cancelado",
+    "upload_complete": "Upload concluído"
+  },
+  "database_extras": {
+    "all_tables": "Todas tabelas",
+    "details": "Detalhes",
+    "modal_description": "Estatísticas detalhadas de consultas e visualização do plano de execução.="
   },
   "demo_network_limiter": {
     "network_limit": "Limite de rede (Mbps)",
@@ -2601,5 +3348,109 @@
     "title": "Limitador de Rede para Demos",
     "description": "Configure um limitador de velocidade de rede para o download das demos",
     "updated": "Limitador de Rede atualizado"
+  },
+  "clips": {
+    "editor": {
+      "title": "Editor de clipes",
+      "auto": "Automático",
+      "auto_current_spectator": "Automático (espectador atual)",
+      "no_players_yet_demo": "Nenhum jogador ainda — aguarde a demo iniciar.",
+      "split": "Dividir",
+      "delete": "Excluir",
+      "close": "Fechar",
+      "segments": "Segmentos",
+      "title_label": "Título",
+      "resolution": "Resolução",
+      "destination": "Destino",
+      "render": "Renderizar"
+    },
+    "detail": {
+      "default_title": "Highlight",
+      "visibility": "Visibilidade",
+      "signal_lost": "Sinal perdido",
+      "clip_not_found": "Clipe não encontrado",
+      "clip_not_found_description": "Ele pode ter sido excluído ou você não tem permissão para visualizá-lo.",
+      "title_label": "Título",
+      "cancel": "Cancelar",
+      "other_clips": "Outros clipes",
+      "view_match": "Ver partida"
+      },
+      "render_queue": {
+          "in_flight": "Em andamento",
+          "cancel": "Cancelar",
+          "render": "Renderizar",
+          "upload": "Enviar",
+          "recently_finished": "Finalizado recentemente"
+      },
+      "visibility_section": "Visibilidade",
+      "create_dialog": {
+          "title": "Clipe automático",
+          "description": "Escolha um jogador e um pré-ajuste — o servidor analisa os abates da partida, monta os segmentos e renderiza um mp4.",
+          "player": "Jogador",
+          "pick_player_placeholder": "Escolha um jogador para destacar",
+          "no_players_yet": "Nenhum jogador encontrado ainda — aguarde a demo começar a rodar e tente novamente.",
+          "other_group": "Outros",
+          "preset": "Pré-ajuste",
+          "title_label": "Título",
+          "title_placeholder": "Padrão para o nome do pré-ajuste",
+          "resolution": "Resolução",
+          "submit": "Gerar highlights"
+      },
+      "presets": {
+          "multikills": "Multi-kills",
+          "multikills_hint": "Cada rodada com 2+ abates, cortada para a ação",
+          "best_round": "Melhor rodada",
+          "best_round_hint": "Rodada única com mais abates",
+          "knife": "Abates de faca",
+          "knife_hint": "Cada abate de faca com 5s de introdução",
+          "recap": "Resumo da partida",
+          "recap_hint": "Cada rodada em que o jogador conseguiu pelo menos um abate"
+    },
+    "render_progress": {
+      "render": "Renderizar",
+      "upload": "Enviar",
+      "cancel_render": "Cancelar renderização",
+      "download": "Download",
+      "open_clip": "Abrir clip",
+      "open_library": "Abrir biblioteca",
+      "close": "Fechar"
+    },
+    "ct": "(CT)",
+        "t": "(TR)",
+    "untitled_clip": "Clip sem título",
+    "delete_dialog": {
+      "title": "Excluir este clip?",
+      "description": "O clipe é removido da biblioteca e o arquivo subjacente é excluído. Essa ação é irreversível."
+    },
+    "featured_highlight": "Highlight em destaque",
+    "match_highlight": "Highlight da partida",
+    "default_clip": "clipe",
+    "default_player": "Jogador",
+    "clip_count": "clipe | clipes",
+    "details": "Detalhes",
+    "link_copied": "Link copiado!",
+    "share_clip": "Compartilhar clipe",
+    "open_details": "Abrir detalhes de {title}",
+    "open_player_profile": "Abrir perfil de {name}",
+    "round_short": "Rodada {number}",
+    "kills_in_clip": "{count} abate no clipe | {count} abates no clipe",
+    "now_playing": "Reproduzindo agora",
+    "selected": "Selecionado",
+    "visibility": {
+        "public": "Público",
+        "public_hint": "Listados no feed de highlights",
+        "unlisted": "Não listado",
+        "unlisted_hint": "Oculto dos feeds — qualquer pessoa com o link pode visualizar",
+        "private": "Privado",
+        "private_hint": "Oculto dos feeds — a URL do arquivo ainda reproduz se compartilhada"
+    }
+  },
+  "time_ago": {
+    "just_now": "agora mesmo",
+    "minutes": "{n}m atrás",
+    "hours": "{n}h atrás",
+    "days": "{n}d atrás",
+    "weeks": "{n}sem atrás",
+    "months": "{n}mês atrás"
   }
 }

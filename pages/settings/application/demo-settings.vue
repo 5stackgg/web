@@ -273,6 +273,76 @@ definePageMeta({
             }}
           </h3>
 
+          <FormField v-slot="{ componentField }" name="clip_video_codec">
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.demo_settings.clip_video_codec")
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.demo_settings.clip_video_codec_description",
+                )
+              }}</FormDescription>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="h265">
+                    {{
+                      $t("pages.settings.application.demo_settings.codec_h265")
+                    }}
+                  </SelectItem>
+                  <SelectItem value="h264">
+                    {{
+                      $t("pages.settings.application.demo_settings.codec_h264")
+                    }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField
+            v-slot="{ value, handleChange }"
+            name="clip_bake_branding"
+            type="checkbox"
+            :value="true"
+          >
+            <FormItem>
+              <div
+                class="flex flex-row items-center justify-between cursor-pointer"
+                @click="handleChange(!value)"
+              >
+                <div class="space-y-0.5">
+                  <h4 class="text-base font-medium">
+                    {{
+                      $t(
+                        "pages.settings.application.demo_settings.clip_bake_branding",
+                      )
+                    }}
+                  </h4>
+                  <p class="text-sm text-muted-foreground">
+                    {{
+                      $t(
+                        "pages.settings.application.demo_settings.clip_bake_branding_description",
+                      )
+                    }}
+                  </p>
+                </div>
+                <FormControl>
+                  <Switch
+                    :model-value="value"
+                    @update:model-value="handleChange"
+                  />
+                </FormControl>
+              </div>
+            </FormItem>
+          </FormField>
+
           <FormField
             v-slot="{ value, handleChange }"
             name="auto_generate_match_clips"
@@ -477,6 +547,8 @@ export default {
             default_hud_mode: z
               .enum(["horizontal", "vertical"])
               .default("horizontal"),
+            clip_video_codec: z.enum(["h265", "h264"]).default("h265"),
+            clip_bake_branding: z.boolean().default(true),
           }),
         ),
       }),
@@ -501,10 +573,21 @@ export default {
             continue;
           }
 
-          if (setting.name === "auto_generate_match_clips") {
+          if (
+            setting.name === "auto_generate_match_clips" ||
+            setting.name === "clip_bake_branding"
+          ) {
             this.form.setFieldValue(
               setting.name,
               setting.value === "true" || setting.value === true,
+            );
+            continue;
+          }
+
+          if (setting.name === "clip_video_codec") {
+            this.form.setFieldValue(
+              setting.name,
+              setting.value === "h264" ? "h264" : "h265",
             );
             continue;
           }
@@ -626,6 +709,14 @@ export default {
                 {
                   name: "default_hud_mode",
                   value: this.form.values.default_hud_mode ?? "horizontal",
+                },
+                {
+                  name: "clip_video_codec",
+                  value: this.form.values.clip_video_codec ?? "h265",
+                },
+                {
+                  name: "clip_bake_branding",
+                  value: this.form.values.clip_bake_branding ? "true" : "false",
                 },
               ],
               on_conflict: {

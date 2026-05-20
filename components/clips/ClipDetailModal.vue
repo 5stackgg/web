@@ -975,7 +975,9 @@ onMounted(() => {
                 class="mt-1 inline-flex items-center gap-1 self-end font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground transition-colors group-hover/match-link:text-[hsl(var(--tac-amber))]"
               >
                 {{ $t("clips.detail.view_match") }}
-                <ArrowUpRight class="h-3 w-3 transition-transform group-hover/match-link:translate-x-0.5 group-hover/match-link:-translate-y-0.5" />
+                <ArrowUpRight
+                  class="h-3 w-3 transition-transform group-hover/match-link:translate-x-0.5 group-hover/match-link:-translate-y-0.5"
+                />
               </span>
             </NuxtLink>
 

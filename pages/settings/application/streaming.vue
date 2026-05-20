@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { e_player_roles_enum } from "~/generated/zeus";
 import { Switch } from "@/components/ui/switch";
-import { ExternalLink } from "lucide-vue-next";
+import { ExternalLink, LucideVideo } from "lucide-vue-next";
 import { Card } from "~/components/ui/card";
 
 definePageMeta({
@@ -98,6 +98,44 @@ definePageMeta({
         </div>
       </Card>
 
+      <Card variant="gradient">
+        <div class="p-6 space-y-6">
+          <h3 class="text-lg font-semibold flex items-center gap-2">
+            <LucideVideo class="w-5 h-5 text-primary" />
+            {{ $t("pages.settings.application.streaming.encoding_section") }}
+          </h3>
+
+          <FormField v-slot="{ componentField }" name="live_video_codec">
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.streaming.live_video_codec")
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.streaming.live_video_codec_description",
+                )
+              }}</FormDescription>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="h265">
+                    {{ $t("pages.settings.application.streaming.codec_h265") }}
+                  </SelectItem>
+                  <SelectItem value="h264">
+                    {{ $t("pages.settings.application.streaming.codec_h264") }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </Card>
+
       <Card variant="gradient" class="cursor-pointer" @click="togglePlaycast">
         <div class="flex flex-row items-center justify-between p-4">
           <div class="space-y-0.5">
@@ -164,6 +202,7 @@ export default {
                 .string()
                 .default(e_player_roles_enum.streamer),
             }),
+            live_video_codec: z.enum(["h265", "h264"]).default("h264"),
           }),
         ),
       }),
@@ -174,6 +213,13 @@ export default {
       immediate: true,
       handler(newVal) {
         for (const setting of newVal) {
+          if (setting.name === "live_video_codec") {
+            this.form.setFieldValue(
+              setting.name,
+              setting.value === "h265" ? "h265" : "h264",
+            );
+            continue;
+          }
           this.form.setFieldValue(setting.name, setting.value);
         }
       },
@@ -225,6 +271,10 @@ export default {
                 {
                   name: "public.minimum_role_to_spectate",
                   value: roleToSpectate,
+                },
+                {
+                  name: "live_video_codec",
+                  value: this.form.values.live_video_codec ?? "h264",
                 },
               ],
               on_conflict: {

@@ -7704,6 +7704,11 @@ export const AllTypesProps: Record<string,any> = {
 		setHudMode:{
 			match_id:"uuid"
 		},
+		setMapWinner:{
+			match_id:"uuid",
+			match_map_id:"uuid",
+			winning_lineup_id:"uuid"
+		},
 		setMatchWinner:{
 			match_id:"uuid",
 			winning_lineup_id:"uuid"
@@ -25489,6 +25494,7 @@ export const ReturnTypes: Record<string,any> = {
 		scheduleMatch:"SuccessOutput",
 		setGameNodeSchedulingState:"SuccessOutput",
 		setHudMode:"SuccessOutput",
+		setMapWinner:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",
 		specAutodirector:"SuccessOutput",

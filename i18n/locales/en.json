@@ -2421,6 +2421,10 @@
             "set": "Set Match Winner",
             "select_lineup": "Select Lineup"
         },
+        "map_winner": {
+            "set": "Set Map Winner",
+            "select_lineup": "Select Lineup"
+        },
         "region_veto": {
             "ban_label": "Ban",
             "banning": "is Banning a Region",

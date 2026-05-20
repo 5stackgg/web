@@ -9,7 +9,9 @@ import {
   PlayCircle,
   RefreshCw,
   Loader2,
+  MoreVertical,
 } from "lucide-vue-next";
+import MatchSelectMapWinner from "~/components/match/MatchSelectMapWinner.vue";
 import { toast } from "@/components/ui/toast";
 import { generateMutation } from "~/graphql/graphqlGen";
 import {
@@ -177,6 +179,21 @@ import cleanMapName from "~/utilities/cleanMapName";
             </a>
           </template>
         </template>
+        <DropdownMenu v-if="match.is_organizer">
+          <DropdownMenuTrigger as-child>
+            <Button
+              size="xs"
+              variant="ghost"
+              class="h-6 w-6 p-0 text-white/70 hover:text-white"
+              @click.stop
+            >
+              <MoreVertical class="w-4 h-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" class="w-56" @click.stop>
+            <MatchSelectMapWinner :match="match" :match-map="matchMap" />
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
 

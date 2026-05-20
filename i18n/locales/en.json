@@ -1,6 +1,8 @@
 {
     "pagination": {
-        "items_per_page": "per page"
+        "items_per_page": "per page",
+        "showing_range": "Showing {start}–{end} of {total}",
+        "total": "{total} total"
     },
     "trophies_modal": {
         "view_tournament": "VIEW TOURNAMENT"
@@ -264,6 +266,29 @@
             "title": "Tournaments",
             "create": "Create Tournament",
             "open_for_registration": "Open for Registration",
+            "section_live": "LIVE.TOURNAMENTS",
+            "section_registration": "REGISTRATION.FEED",
+            "section_upcoming": "UPCOMING.TOURNAMENTS",
+            "section_recent": "RECENT.TOURNAMENTS",
+            "section_results": "FILTERED.RESULTS",
+            "no_tournaments_title": "Standby — No Tournaments",
+            "no_tournaments_description": "Nothing live, scheduled, or recently finished.",
+            "filter": {
+                "search_placeholder": "Search tournaments by name…",
+                "status_all": "All",
+                "status_live": "Live",
+                "status_registration": "Open",
+                "status_upcoming": "Upcoming",
+                "status_finished": "Finished",
+                "date_all": "All time",
+                "date_7d": "Last 7 days",
+                "date_30d": "Last 30 days",
+                "date_90d": "Last 90 days",
+                "date_6m": "Last 6 months",
+                "date_1y": "Last year",
+                "no_results_title": "No tournaments match",
+                "no_results_description": "Try clearing filters or widening your search."
+            },
             "tabs": {
                 "upcoming": "Upcoming",
                 "no_live_title": "No Live Tournaments",
@@ -756,6 +781,7 @@
             "search_country": "Search country...",
             "no_country_found": "No country found.",
             "countries_selected": "countries selected",
+            "privileges_selected": "privileges selected",
             "elo_range": "Elo Range",
             "filter_chips": {
                 "elo_min": "Elo Min",
@@ -2113,6 +2139,7 @@
             "found_teams": "{count} teams found",
             "placeholder": "Search for a team...",
             "my_teams_only": "My Teams Only",
+            "tournament_winners": "Tournament Winners",
             "no_teams_found": "No teams found",
             "owner": "Owner",
             "captain": "Captain",
@@ -2813,6 +2840,7 @@
         "hold_to_show_scoreboard": "Hold to show scoreboard",
         "close_popout": "Close popout",
         "trophy_rack": "Trophy rack",
+        "click_to_view_tournament": "Click to view tournament",
         "auto_clip": "Auto clip",
         "create_clip": "Create clip",
         "reload_demo": "Reload demo"

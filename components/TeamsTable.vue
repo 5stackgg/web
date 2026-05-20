@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
+import TrophyBadge from "~/components/trophy/TrophyBadge.vue";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import { Users } from "lucide-vue-next";
 import { resolveRosterImageUrl } from "~/utilities/rosterImage";
 </script>
@@ -69,11 +76,22 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
               </span>
               <span class="text-[hsl(var(--tac-amber))]">avg</span>
             </template>
+            <template v-if="topCountries(team).length">
+              <span class="mx-1 opacity-40">·</span>
+              <span class="flex items-center gap-1">
+                <TimezoneFlag
+                  v-for="country in topCountries(team)"
+                  :key="country"
+                  :country="country"
+                  class="h-3 w-4 shrink-0"
+                />
+              </span>
+            </template>
           </div>
         </div>
       </div>
 
-      <!-- Top 5 starters by ELO -->
+      <!-- Top 5 starters by ELO + recent trophies -->
       <div v-if="topStarters(team).length" class="flex items-center gap-1.5">
         <div class="flex -space-x-1.5">
           <Avatar
@@ -102,17 +120,75 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
           +{{ extraCount(team) }}
         </span>
 
-        <!-- Country flags summary -->
+        <!-- Recent trophies (last 5) -->
         <div
-          v-if="topCountries(team).length"
+          v-if="recentTrophies(team).length"
           class="ml-auto flex items-center gap-1"
         >
-          <TimezoneFlag
-            v-for="country in topCountries(team)"
-            :key="country"
-            :country="country"
-            class="h-3 w-4 shrink-0"
-          />
+          <TooltipProvider
+            v-for="trophy in recentTrophies(team)"
+            :key="trophy.id"
+            :delay-duration="0"
+          >
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <button
+                  type="button"
+                  class="rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
+                  :aria-label="trophyAriaLabel(trophy)"
+                  @click.stop.prevent="goToTournament(trophy.tournament_id)"
+                >
+                  <TrophyBadge
+                    :tournament-id="trophy.tournament_id"
+                    :placement="trophy.placement"
+                    :tournament-name="trophy.tournament?.name"
+                    :tournament-start="trophy.tournament?.start"
+                    :tournament-type="trophy.tournament?.stages?.[0]?.type"
+                    :custom-name="trophy.trophy_config?.custom_name"
+                    :silhouette-override="trophy.trophy_config?.silhouette"
+                    :image-url="trophy.trophy_config?.image_url"
+                    size="xs"
+                    :interactive="false"
+                  />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="top" class="max-w-[16rem]">
+                <div class="flex flex-col gap-0.5">
+                  <div class="font-semibold leading-tight">
+                    {{
+                      trophy.trophy_config?.custom_name ||
+                      trophy.tournament?.name ||
+                      "Tournament"
+                    }}
+                  </div>
+                  <div
+                    class="flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+                  >
+                    <span :style="{ color: placementColor(trophy.placement) }">
+                      {{ placementLabel(trophy.placement) }}
+                    </span>
+                    <span v-if="trophy.tournament?.start" class="opacity-50"
+                      >·</span
+                    >
+                    <span v-if="trophy.tournament?.start">
+                      {{ formatTrophyDate(trophy.tournament.start) }}
+                    </span>
+                  </div>
+                  <div
+                    class="mt-0.5 text-[0.6rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+                  >
+                    {{ $t("ui.click_to_view_tournament") }}
+                  </div>
+                </div>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+          <span
+            v-if="extraTrophies(team) > 0"
+            class="inline-flex items-center justify-center rounded border border-border bg-muted/40 px-1.5 h-7 text-[0.6rem] font-mono tabular-nums text-muted-foreground"
+          >
+            +{{ extraTrophies(team) }}
+          </span>
         </div>
       </div>
 
@@ -140,11 +216,33 @@ interface RosterEntry {
   player?: RosterPlayer | null;
 }
 
+interface TrophyEntry {
+  id: string;
+  placement: number;
+  placement_tier?: string | null;
+  tournament_id: string;
+  tournament?: {
+    id?: string;
+    name?: string | null;
+    start?: string | null;
+    stages?: Array<{ type?: string | null }> | null;
+  } | null;
+  trophy_config?: {
+    custom_name?: string | null;
+    silhouette?: number | null;
+    image_url?: string | null;
+  } | null;
+}
+
 export default {
   props: {
     teams: {
       required: true,
       type: Object,
+    },
+    trophiesByTeamId: {
+      type: Object,
+      default: () => ({}),
     },
   },
   computed: {
@@ -170,6 +268,64 @@ export default {
     },
     rosterCount(team: { roster?: RosterEntry[] }): number {
       return team.roster?.length ?? 0;
+    },
+    teamTrophies(team: { id: string }): TrophyEntry[] {
+      return (
+        (this.trophiesByTeamId as Record<string, TrophyEntry[]>)[team.id] ?? []
+      );
+    },
+    recentTrophies(team: { id: string }): TrophyEntry[] {
+      return [...this.teamTrophies(team)]
+        .sort((a, b) => {
+          const da = a.tournament?.start
+            ? new Date(a.tournament.start).getTime()
+            : 0;
+          const db = b.tournament?.start
+            ? new Date(b.tournament.start).getTime()
+            : 0;
+          return db - da;
+        })
+        .slice(0, 5);
+    },
+    extraTrophies(team: { id: string }): number {
+      return Math.max(0, this.teamTrophies(team).length - 5);
+    },
+    placementLabel(placement: number): string {
+      if (placement === 0) return "MVP";
+      if (placement === 1) return "1st Place";
+      if (placement === 2) return "2nd Place";
+      if (placement === 3) return "3rd Place";
+      return `#${placement}`;
+    },
+    placementColor(placement: number): string {
+      if (placement === 0) return "hsl(195 85% 60%)";
+      if (placement === 1) return "hsl(45 95% 60%)";
+      if (placement === 2) return "hsl(0 0% 78%)";
+      if (placement === 3) return "hsl(28 70% 52%)";
+      return "hsl(var(--muted-foreground))";
+    },
+    formatTrophyDate(iso?: string | null): string {
+      if (!iso) return "";
+      const d = new Date(iso);
+      if (Number.isNaN(d.getTime())) return "";
+      return d
+        .toLocaleDateString(undefined, {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        })
+        .toUpperCase();
+    },
+    trophyAriaLabel(trophy: TrophyEntry): string {
+      const name =
+        trophy.trophy_config?.custom_name ||
+        trophy.tournament?.name ||
+        "tournament";
+      return `${this.placementLabel(trophy.placement)} — ${name}`;
+    },
+    goToTournament(tournamentId?: string | null) {
+      if (!tournamentId) return;
+      this.$router.push(`/tournaments/${tournamentId}`);
     },
     topStarters(team: { roster?: RosterEntry[] }): RosterEntry[] {
       const roster = team.roster ?? [];

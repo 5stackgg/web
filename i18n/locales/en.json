@@ -2714,6 +2714,8 @@
         },
         "replay": {
             "select_map": "Select a map above to replay",
+            "select": "Select",
+            "selected": "Selected",
             "positions_large": "Replay positions are large. Click load to fetch them for {map}.",
             "load": "Load Replay",
             "loading": "Loading replay…",

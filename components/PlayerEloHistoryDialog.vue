@@ -218,6 +218,13 @@ const chartSeries = computed(() => {
 
 const stats = computed(() => {
   const list = filteredHistory.value;
+  // Headline ELO values (current/peak/lowest) anchor to Competitive when
+  // no specific mode is chosen — otherwise the most recent Wingman/Duel
+  // match would flip "Current ELO" away from the player's primary mode.
+  const headlineList =
+    selectedMode.value === "all"
+      ? history.value.filter((e) => e.type === "Competitive")
+      : list;
   if (list.length === 0) {
     return {
       current: null as number | null,
@@ -245,7 +252,7 @@ const stats = computed(() => {
   let worstLoss: EloEntry | null = null;
   let peakEntry: EloEntry | null = null;
 
-  for (const e of list) {
+  for (const e of headlineList) {
     const elo = e.updated_elo ?? e.current_elo ?? null;
     if (elo !== null) {
       if (elo > peak) {
@@ -254,6 +261,9 @@ const stats = computed(() => {
       }
       if (elo < lowest) lowest = elo;
     }
+  }
+
+  for (const e of list) {
     if (e.match_result === "won" || e.match_result === "win") wins++;
     else if (e.match_result === "lost" || e.match_result === "loss") losses++;
     else if (e.match_result === "tied" || e.match_result === "tie") ties++;
@@ -267,7 +277,7 @@ const stats = computed(() => {
     }
   }
 
-  const last = list[list.length - 1];
+  const last = headlineList[headlineList.length - 1];
   const decided = wins + losses;
   return {
     current: last?.updated_elo ?? last?.current_elo ?? null,
@@ -384,23 +394,36 @@ function fmtDate(iso: string | null | undefined): string {
         </div>
       </div>
 
-      <!-- Fixed cell heights — keeps the strip a stable height when
-           optional subtext rows ("Peak Nov 9 2025", "—") toggle in/out
-           between data states, which prevents the dialog from re-centering. -->
+      <!-- Every cell is a 3-row stack (label / value / subtext) with the
+           same min-height. Cells without a real subtext render an &nbsp;
+           placeholder so the value baseline lines up across the whole
+           strip — otherwise Current/Lowest visually float to the top of
+           their cells next to Peak/Matches/Win Rate. -->
       <div
         class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-border/40 border-b border-border/50"
       >
-        <div class="bg-card/60 min-h-[78px] px-4 py-3">
+        <div
+          class="bg-card/60 min-h-[96px] px-4 py-4 flex flex-col justify-center gap-1.5"
+        >
           <div
             class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
           >
             {{ $t("pages.players.detail.elo_history_dialog.current") }}
           </div>
-          <div class="mt-1 text-xl font-bold tabular-nums">
+          <div
+            class="text-2xl sm:text-3xl font-bold leading-none tabular-nums tracking-tight"
+          >
             {{ fmtInt(stats.current) }}
           </div>
+          <div
+            class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            &nbsp;
+          </div>
         </div>
-        <div class="bg-card/60 min-h-[78px] px-4 py-3">
+        <div
+          class="bg-card/60 min-h-[96px] px-4 py-4 flex flex-col justify-center gap-1.5"
+        >
           <div
             class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground inline-flex items-center gap-1"
           >
@@ -408,62 +431,81 @@ function fmtDate(iso: string | null | undefined): string {
             {{ $t("pages.players.detail.elo_history_dialog.peak") }}
           </div>
           <div
-            class="mt-1 text-xl font-bold tabular-nums text-[hsl(var(--tac-amber))]"
+            class="text-2xl sm:text-3xl font-bold leading-none tabular-nums tracking-tight text-[hsl(var(--tac-amber))]"
           >
             {{ fmtInt(stats.peak) }}
           </div>
           <div
-            v-if="stats.peakEntry"
-            class="mt-0.5 font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
+            class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
           >
-            {{ fmtDate(stats.peakEntry.match_created_at) }}
+            <template v-if="stats.peakEntry">{{
+              fmtDate(stats.peakEntry.match_created_at)
+            }}</template>
+            <template v-else>&nbsp;</template>
           </div>
         </div>
-        <div class="bg-card/60 min-h-[78px] px-4 py-3">
+        <div
+          class="bg-card/60 min-h-[96px] px-4 py-4 flex flex-col justify-center gap-1.5"
+        >
           <div
             class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
           >
             {{ $t("pages.players.detail.elo_history_dialog.lowest") }}
           </div>
-          <div class="mt-1 text-xl font-bold tabular-nums">
+          <div
+            class="text-2xl sm:text-3xl font-bold leading-none tabular-nums tracking-tight"
+          >
             {{ fmtInt(stats.lowest) }}
           </div>
+          <div
+            class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            &nbsp;
+          </div>
         </div>
-        <div class="bg-card/60 min-h-[78px] px-4 py-3">
+        <div
+          class="bg-card/60 min-h-[96px] px-4 py-4 flex flex-col justify-center gap-1.5"
+        >
           <div
             class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
           >
             {{ $t("pages.players.detail.elo_history_dialog.matches") }}
           </div>
-          <div class="mt-1 text-xl font-bold tabular-nums">
+          <div
+            class="text-2xl sm:text-3xl font-bold leading-none tabular-nums tracking-tight"
+          >
             {{ stats.total.toLocaleString() }}
           </div>
           <div
-            v-if="stats.total > 0"
-            class="mt-0.5 font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
+            class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
           >
-            <span class="text-green-500">{{ stats.wins }}W</span>
-            ·
-            <span class="text-red-500">{{ stats.losses }}L</span>
-            <template v-if="stats.ties > 0">
-              · <span>{{ stats.ties }}T</span>
+            <template v-if="stats.total > 0">
+              <span class="text-green-500">{{ stats.wins }}W</span>
+              ·
+              <span class="text-red-500">{{ stats.losses }}L</span>
+              <template v-if="stats.ties > 0">
+                · <span>{{ stats.ties }}T</span>
+              </template>
             </template>
+            <template v-else>&nbsp;</template>
           </div>
         </div>
-        <div class="bg-card/60 px-4 py-3 col-span-2 sm:col-span-1">
+        <div
+          class="bg-card/60 min-h-[96px] px-4 py-4 col-span-2 sm:col-span-1 flex flex-col justify-center gap-1.5"
+        >
           <div
             class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
           >
             {{ $t("pages.players.detail.elo_history_dialog.win_rate") }}
           </div>
           <div
-            class="mt-1 text-xl font-bold tabular-nums"
+            class="text-2xl sm:text-3xl font-bold leading-none tabular-nums tracking-tight"
             :class="stats.winPct >= 50 ? 'text-green-500' : 'text-red-500'"
           >
             {{ stats.total > 0 ? stats.winPct.toFixed(1) + "%" : "—" }}
           </div>
           <div
-            class="mt-0.5 font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
+            class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
           >
             {{ $t("pages.players.detail.elo_history_dialog.avg_delta_elo") }}
             <span

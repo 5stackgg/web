@@ -35,6 +35,9 @@ const props = withDefaults(
     emptyDescription?: string;
     // When set, only return tournaments whose roster contains this player.
     playerSteamId?: string | number | null;
+    // Override the "See all" destination. Pass null to hide the link
+    // (useful when this component is rendered on /tournaments itself).
+    seeAllTo?: string | Record<string, any> | null;
   }>(),
   {
     limit: 8,
@@ -49,6 +52,7 @@ const props = withDefaults(
     emptyLabel: "",
     emptyDescription: "",
     playerSteamId: null,
+    seeAllTo: "/tournaments",
   },
 );
 
@@ -214,7 +218,8 @@ const shouldRender = computed(() => {
           {{ sectionLabel }}
         </span>
         <NuxtLink
-          to="/tournaments"
+          v-if="seeAllTo"
+          :to="seeAllTo"
           class="inline-flex items-center gap-1 font-mono text-[0.65rem] tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors normal-case"
         >
           {{ $t("tournament.recent.see_all") }}

@@ -18,6 +18,19 @@ const REGION_LATENCY_PREFIX = "5stack_region_latency_";
 const MAX_LATENCY_KEY = "5stack_max_acceptable_latency";
 const PREFERRED_REGIONS_KEY = "5stack_preferred_regions";
 
+function safeParseLocalStorage<T>(key: string): T | null {
+  const raw = localStorage.getItem(key);
+  if (!raw) {
+    return null;
+  }
+  try {
+    return JSON.parse(raw) as T;
+  } catch {
+    localStorage.removeItem(key);
+    return null;
+  }
+}
+
 export const useMatchmakingStore = defineStore("matchmaking", () => {
   const playersOnline = ref([]);
   const onlinePlayerSteamIds = ref<string[]>([]);
@@ -348,25 +361,18 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     });
   };
 
-  const localStoragePreferredRegions = localStorage.getItem(
-    PREFERRED_REGIONS_KEY,
-  );
-
   const storedRegions = ref<string[]>(
-    localStoragePreferredRegions
-      ? JSON.parse(localStoragePreferredRegions)
-      : [],
+    safeParseLocalStorage<string[]>(PREFERRED_REGIONS_KEY) ?? [],
   );
 
   const latencies = ref(new Map<string, number[]>());
 
   // Load existing latencies from localStorage for each region
   useApplicationSettingsStore().availableRegions.forEach((region) => {
-    const savedLatency = localStorage.getItem(
-      REGION_LATENCY_PREFIX + region.value,
-    );
-    if (savedLatency) {
-      latencies.value.set(region.value, JSON.parse(savedLatency));
+    const key = REGION_LATENCY_PREFIX + region.value;
+    const parsed = safeParseLocalStorage<number[]>(key);
+    if (parsed) {
+      latencies.value.set(region.value, parsed);
     }
   });
 

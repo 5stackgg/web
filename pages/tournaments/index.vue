@@ -1,353 +1,603 @@
+<script setup lang="ts">
+import { computed, ref, watch } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
+import { Calendar, PlusCircle, Search, X } from "lucide-vue-next";
+import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { generateQuery } from "~/graphql/graphqlGen";
+import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
+import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
+import { Input } from "~/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { Skeleton } from "~/components/ui/skeleton";
+import Empty from "~/components/ui/empty/Empty.vue";
+import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
+import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import Pagination from "~/components/Pagination.vue";
+import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
+import TournamentFeatureCard from "~/components/tournament/TournamentFeatureCard.vue";
+import RecentTournaments from "~/components/tournament/RecentTournaments.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import {
+  tacticalCtaButtonClasses,
+  tacticalFilterPillActiveClasses,
+  tacticalFilterPillClasses,
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
+
+const { t } = useI18n();
+const route = useRoute();
+const router = useRouter();
+
+type StatusFilter = "all" | "live" | "registration" | "upcoming" | "finished";
+type SincePreset = "all" | "7d" | "30d" | "90d" | "6m" | "1y";
+
+const statusGroups: Record<
+  Exclude<StatusFilter, "all">,
+  e_tournament_status_enum[]
+> = {
+  live: [e_tournament_status_enum.Live, e_tournament_status_enum.Paused],
+  registration: [e_tournament_status_enum.RegistrationOpen],
+  upcoming: [
+    e_tournament_status_enum.RegistrationClosed,
+    e_tournament_status_enum.Setup,
+  ],
+  finished: [
+    e_tournament_status_enum.Finished,
+    e_tournament_status_enum.Cancelled,
+    e_tournament_status_enum.CancelledMinTeams,
+  ],
+};
+
+const statusVariantFor: Record<
+  Exclude<StatusFilter, "all">,
+  "live" | "registration" | "default" | "finished"
+> = {
+  live: "live",
+  registration: "registration",
+  upcoming: "default",
+  finished: "finished",
+};
+
+const sinceMillis: Record<SincePreset, number> = {
+  all: 0,
+  "7d": 7 * 24 * 60 * 60 * 1000,
+  "30d": 30 * 24 * 60 * 60 * 1000,
+  "90d": 90 * 24 * 60 * 60 * 1000,
+  "6m": 182 * 24 * 60 * 60 * 1000,
+  "1y": 365 * 24 * 60 * 60 * 1000,
+};
+
+const statusFilter = computed<StatusFilter>(() => {
+  const v = route.query.status;
+  if (typeof v === "string" && v in statusGroups) {
+    return v as StatusFilter;
+  }
+  return "all";
+});
+
+const sinceFilter = computed<SincePreset>(() => {
+  const v = route.query.since;
+  if (typeof v === "string" && v in sinceMillis && v !== "all") {
+    return v as SincePreset;
+  }
+  return "all";
+});
+
+const nameQuery = computed<string>(() => {
+  const v = route.query.q;
+  return typeof v === "string" ? v : "";
+});
+
+const page = computed<number>(() => {
+  const v = route.query.page;
+  const n = typeof v === "string" ? parseInt(v, 10) : 1;
+  return Number.isFinite(n) && n > 0 ? n : 1;
+});
+
+const perPage = 10;
+
+const hasActiveFilter = computed(
+  () =>
+    statusFilter.value !== "all" ||
+    sinceFilter.value !== "all" ||
+    nameQuery.value.trim().length > 0,
+);
+
+const searchInput = ref(nameQuery.value);
+watch(nameQuery, (v) => {
+  if (searchInput.value !== v) searchInput.value = v;
+});
+
+let searchDebounce: ReturnType<typeof setTimeout> | null = null;
+function onSearchInput(value: string | number) {
+  searchInput.value = String(value ?? "");
+  if (searchDebounce) clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(commitSearch, 250);
+}
+
+function commitSearch() {
+  const next = { ...route.query } as Record<string, any>;
+  const trimmed = searchInput.value.trim();
+  if (trimmed) next.q = trimmed;
+  else delete next.q;
+  delete next.page;
+  router.replace({ path: route.path, query: next, hash: route.hash });
+}
+
+function clearSearch() {
+  searchInput.value = "";
+  commitSearch();
+}
+
+function setStatus(v: StatusFilter) {
+  const next = { ...route.query } as Record<string, any>;
+  if (v === "all") delete next.status;
+  else next.status = v;
+  delete next.page;
+  router.replace({ path: route.path, query: next, hash: route.hash });
+}
+
+function setSince(v: SincePreset) {
+  const next = { ...route.query } as Record<string, any>;
+  if (v === "all") delete next.since;
+  else next.since = v;
+  delete next.page;
+  router.replace({ path: route.path, query: next, hash: route.hash });
+}
+
+function setPage(p: number) {
+  const next = { ...route.query } as Record<string, any>;
+  if (p <= 1) delete next.page;
+  else next.page = String(p);
+  router.replace({ path: route.path, query: next, hash: route.hash });
+}
+
+function clearAllFilters() {
+  router.replace({ path: route.path, hash: route.hash });
+}
+
+const statusOptions = computed<
+  Array<{ value: StatusFilter; label: string }>
+>(() => [
+  { value: "all", label: t("pages.tournaments.filter.status_all") },
+  { value: "live", label: t("pages.tournaments.filter.status_live") },
+  {
+    value: "registration",
+    label: t("pages.tournaments.filter.status_registration"),
+  },
+  { value: "upcoming", label: t("pages.tournaments.filter.status_upcoming") },
+  { value: "finished", label: t("pages.tournaments.filter.status_finished") },
+]);
+
+const sinceOptions = computed<
+  Array<{ value: SincePreset; label: string }>
+>(() => [
+  { value: "all", label: t("pages.tournaments.filter.date_all") },
+  { value: "7d", label: t("pages.tournaments.filter.date_7d") },
+  { value: "30d", label: t("pages.tournaments.filter.date_30d") },
+  { value: "90d", label: t("pages.tournaments.filter.date_90d") },
+  { value: "6m", label: t("pages.tournaments.filter.date_6m") },
+  { value: "1y", label: t("pages.tournaments.filter.date_1y") },
+]);
+
+// --- Drilldown / filtered list ---
+
+const filteredTournaments = ref<any[]>([]);
+const filteredTotal = ref(0);
+const filteredLoading = ref(false);
+
+function sinceCutoffIso(preset: SincePreset): string | null {
+  const ms = sinceMillis[preset];
+  if (!ms) return null;
+  return new Date(Date.now() - ms).toISOString();
+}
+
+const filterWhere = computed<Record<string, any>>(() => {
+  const where: Record<string, any> = {};
+  if (statusFilter.value !== "all") {
+    where.status = { _in: statusGroups[statusFilter.value] };
+  }
+  const q = nameQuery.value.trim();
+  if (q) {
+    where.name = { _ilike: `%${q}%` };
+  }
+  const cutoff = sinceCutoffIso(sinceFilter.value);
+  if (cutoff) {
+    where.start = { _gte: cutoff };
+  }
+  return where;
+});
+
+const filteredOrder = computed(() => {
+  if (statusFilter.value === "finished") {
+    return [{ start: order_by.desc }];
+  }
+  return [{ start: order_by.asc }];
+});
+
+let filterFetchId = 0;
+async function fetchFiltered() {
+  if (!hasActiveFilter.value) return;
+  const myId = ++filterFetchId;
+  filteredLoading.value = true;
+  try {
+    const { data } = await getGraphqlClient().query({
+      query: generateQuery({
+        tournaments: [
+          {
+            where: $("where", "tournaments_bool_exp!"),
+            order_by: $("order_by", "[tournaments_order_by!]!"),
+            limit: $("limit", "Int!"),
+            offset: $("offset", "Int!"),
+          } as any,
+          simpleTournamentFields,
+        ],
+        tournaments_aggregate: [
+          { where: $("where", "tournaments_bool_exp!") } as any,
+          { aggregate: { count: true } },
+        ],
+      } as any),
+      variables: {
+        where: filterWhere.value,
+        order_by: filteredOrder.value,
+        limit: perPage,
+        offset: (page.value - 1) * perPage,
+      },
+      fetchPolicy: "network-only",
+    });
+    if (myId !== filterFetchId) return;
+    filteredTournaments.value = (data as any)?.tournaments ?? [];
+    filteredTotal.value =
+      (data as any)?.tournaments_aggregate?.aggregate?.count ?? 0;
+  } catch (err) {
+    if (myId === filterFetchId) {
+      console.error("[tournaments] filtered fetch error:", err);
+      filteredTournaments.value = [];
+      filteredTotal.value = 0;
+    }
+  } finally {
+    if (myId === filterFetchId) {
+      filteredLoading.value = false;
+    }
+  }
+}
+
+watch(
+  [hasActiveFilter, statusFilter, sinceFilter, nameQuery, page],
+  () => {
+    if (hasActiveFilter.value) {
+      fetchFiltered();
+    } else {
+      filteredTournaments.value = [];
+      filteredTotal.value = 0;
+    }
+  },
+  { immediate: true },
+);
+
+const drilldownVariant = computed(() => {
+  if (statusFilter.value === "all") return "default" as const;
+  return statusVariantFor[statusFilter.value];
+});
+
+const drilldownLabel = computed(() => {
+  switch (statusFilter.value) {
+    case "live":
+      return t("common.live");
+    case "registration":
+      return t("pages.tournaments.open_for_registration");
+    case "upcoming":
+      return t("pages.tournaments.tabs.upcoming");
+    case "finished":
+      return t("common.finished");
+    default:
+      return undefined;
+  }
+});
+
+const seeAllRegistration = {
+  path: "/tournaments",
+  query: { status: "registration" },
+};
+const seeAllUpcoming = { path: "/tournaments", query: { status: "upcoming" } };
+const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
+</script>
+
 <template>
   <PageTransition>
     <TacticalPageHeader>
       <template #title>{{ $t("pages.tournaments.title") }}</template>
-
-      <template #actions="{ tabs }">
-        <div class="flex items-center gap-2">
-          <NuxtLink
-            v-if="canCreateTournament"
-            to="/tournaments/create"
-            :class="tacticalCtaButtonClasses"
-            :title="$t('pages.tournaments.create')"
-          >
-            <PlusCircle class="w-4 h-4" />
-            <span class="hidden lg:inline">{{
-              $t("pages.tournaments.create")
-            }}</span>
-          </NuxtLink>
-
-          <Tabs v-model="activeTab">
-            <TabsList variant="underline" :class="tabs.listClass">
-              <TabsTrigger value="live" :class="tabs.triggerClass">
-                <span
-                  :class="[tabs.indicatorClass, tabs.indicatorLiveClass]"
-                ></span>
-                {{ $t("common.live") }}
-              </TabsTrigger>
-              <TabsTrigger value="upcoming" :class="tabs.triggerClass">
-                <span
-                  :class="[tabs.indicatorClass, tabs.indicatorUpcomingClass]"
-                ></span>
-                {{ $t("pages.tournaments.tabs.upcoming") }}
-              </TabsTrigger>
-              <TabsTrigger value="finished" :class="tabs.triggerClass">
-                <span
-                  :class="[tabs.indicatorClass, tabs.indicatorFinishedClass]"
-                ></span>
-                {{ $t("common.finished") }}
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
+      <template #actions>
+        <NuxtLink
+          v-if="canCreateTournament"
+          to="/tournaments/create"
+          :class="tacticalCtaButtonClasses"
+          :title="$t('pages.tournaments.create')"
+        >
+          <PlusCircle class="w-4 h-4" />
+          <span class="hidden lg:inline">{{
+            $t("pages.tournaments.create")
+          }}</span>
+        </NuxtLink>
       </template>
     </TacticalPageHeader>
   </PageTransition>
 
-  <PageTransition :delay="100" class="mt-6">
-    <Tabs v-model="activeTab">
-      <TabsContent value="live">
-        <div class="space-y-6">
-          <section
-            v-if="
-              loadingLive ||
-              (liveTournaments && liveTournaments.length > 0) ||
-              !(
-                registrationOpenTournaments &&
-                registrationOpenTournaments.length > 0
-              )
-            "
-            class="space-y-4"
+  <PageTransition :delay="60" class="mt-6">
+    <div class="flex flex-col gap-3">
+      <div class="flex flex-col gap-2 md:flex-row md:items-center">
+        <div class="relative flex-1">
+          <Search
+            class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none"
+          />
+          <Input
+            :model-value="searchInput"
+            @update:model-value="onSearchInput"
+            @keydown.enter.prevent="commitSearch"
+            @blur="commitSearch"
+            :placeholder="$t('pages.tournaments.filter.search_placeholder')"
+            class="h-10 pl-9 pr-10 bg-card/40 backdrop-blur border-border"
+          />
+          <button
+            v-if="searchInput"
+            type="button"
+            @click="clearSearch"
+            class="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+            :aria-label="$t('common.reset_filters')"
           >
-            <div :class="tacticalSectionLabelClasses">
-              <span :class="tacticalSectionTickClasses"></span>
-              TOURNAMENT.FEED
-            </div>
-            <Transition v-bind="fadeTransition" mode="out-in">
-              <Empty v-if="loadingLive" key="loading" class="min-h-[200px]">
-                <div class="space-y-3 w-full max-w-md">
-                  <Skeleton class="h-4 w-3/4 mx-auto" />
-                  <Skeleton class="h-3 w-full" />
-                  <Skeleton class="h-3 w-5/6 mx-auto" />
-                </div>
-              </Empty>
-
-              <div
-                v-else-if="liveTournaments && liveTournaments.length > 0"
-                key="tournaments"
-                class="space-y-4"
-              >
-                <TournamentFeatureCard
-                  v-for="tournament in liveTournaments"
-                  :key="tournament.id"
-                  :tournament="tournament"
-                  status-variant="live"
-                  :status-label="$t('common.live')"
-                />
-              </div>
-
-              <Empty v-else key="empty" class="min-h-[200px]">
-                <EmptyTitle>{{
-                  $t("pages.tournaments.tabs.no_live_title")
-                }}</EmptyTitle>
-                <EmptyDescription>{{
-                  $t("tournament.table.no_tournaments_found")
-                }}</EmptyDescription>
-              </Empty>
-            </Transition>
-          </section>
-
-          <template
-            v-if="
-              registrationOpenTournaments &&
-              registrationOpenTournaments.length > 0
-            "
-          >
-            <Separator v-if="showSeparators" />
-
-            <section class="space-y-4">
-              <div :class="tacticalSectionLabelClasses">
-                <span :class="tacticalSectionTickClasses"></span>
-                REGISTRATION.FEED
-              </div>
-
-              <div class="space-y-4">
-                <TournamentFeatureCard
-                  v-for="tournament in registrationOpenTournaments"
-                  :key="tournament.id"
-                  :tournament="tournament"
-                  status-variant="registration"
-                  :status-label="$t('pages.tournaments.open_for_registration')"
-                />
-              </div>
-            </section>
-          </template>
+            <X class="w-3.5 h-3.5" />
+          </button>
         </div>
-      </TabsContent>
 
-      <TabsContent value="upcoming">
-        <Transition v-bind="fadeTransition" mode="out-in">
-          <Empty v-if="loadingUpcoming" key="loading" class="min-h-[200px]">
-            <div class="space-y-3 w-full max-w-md">
-              <Skeleton class="h-4 w-3/4 mx-auto" />
-              <Skeleton class="h-3 w-full" />
-              <Skeleton class="h-3 w-5/6 mx-auto" />
-            </div>
-          </Empty>
-
-          <div
-            v-else-if="upcomingTournaments && upcomingTournaments.length > 0"
-            key="tournaments"
-            class="space-y-4"
+        <Select
+          :model-value="sinceFilter"
+          @update:model-value="(v) => setSince(v as SincePreset)"
+        >
+          <SelectTrigger
+            class="h-10 w-full gap-2 md:w-[12rem] bg-card/40 backdrop-blur border-border"
+            :class="
+              sinceFilter !== 'all'
+                ? 'border-[hsl(var(--tac-amber)/0.5)] text-[hsl(var(--tac-amber))]'
+                : ''
+            "
           >
-            <div :class="tacticalSectionLabelClasses">
-              <span :class="tacticalSectionTickClasses"></span>
-              TOURNAMENT.FEED
-            </div>
-            <div class="space-y-4">
-              <TournamentFeatureCard
-                v-for="tournament in upcomingTournaments"
-                :key="tournament.id"
-                :tournament="tournament"
-                :status-variant="getTournamentCardVariant(tournament)"
-              />
-            </div>
-          </div>
-
-          <Empty v-else key="empty" class="min-h-[200px]">
-            <EmptyTitle>{{
-              $t("pages.tournaments.tabs.no_upcoming_title")
-            }}</EmptyTitle>
-            <EmptyDescription>{{
-              $t("tournament.table.no_tournaments_found")
-            }}</EmptyDescription>
-          </Empty>
-        </Transition>
-
-        <Teleport defer to="#pagination">
-          <Transition v-bind="paginationFadeTransition">
-            <pagination
-              v-if="
-                !loadingUpcoming &&
-                upcomingTournaments_aggregate &&
-                upcomingTournaments_aggregate.aggregate.count > 0
+            <Calendar
+              class="h-3.5 w-3.5"
+              :class="
+                sinceFilter !== 'all'
+                  ? 'text-[hsl(var(--tac-amber))]'
+                  : 'text-muted-foreground'
               "
-              :page="upcomingPage"
-              :items-per-page="perPage"
-              @page="
-                (_page: number) => {
-                  upcomingPage = _page;
-                }
-              "
-              :total="upcomingTournaments_aggregate?.aggregate?.count"
-            ></pagination>
-          </Transition>
-        </Teleport>
-      </TabsContent>
-
-      <TabsContent value="finished">
-        <Transition v-bind="fadeTransition" mode="out-in">
-          <Empty v-if="loadingFinished" key="loading" class="min-h-[200px]">
-            <div class="space-y-3 w-full max-w-md">
-              <Skeleton class="h-4 w-3/4 mx-auto" />
-              <Skeleton class="h-3 w-full" />
-              <Skeleton class="h-3 w-5/6 mx-auto" />
-            </div>
-          </Empty>
-
-          <div
-            v-else-if="finishedTournaments && finishedTournaments.length > 0"
-            key="tournaments"
-            class="space-y-4"
-          >
-            <TournamentFeatureCard
-              v-for="tournament in finishedTournaments"
-              :key="tournament.id"
-              :tournament="tournament"
-              status-variant="finished"
             />
-          </div>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem
+              v-for="opt in sinceOptions"
+              :key="opt.value"
+              :value="opt.value"
+            >
+              {{ opt.label }}
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
-          <Empty v-else key="empty" class="min-h-[200px]">
-            <EmptyTitle>{{
-              $t("pages.tournaments.tabs.no_finished_title")
-            }}</EmptyTitle>
-            <EmptyDescription>{{
-              $t("pages.tournaments.no_finished")
-            }}</EmptyDescription>
-          </Empty>
-        </Transition>
-
-        <Teleport defer to="#pagination">
-          <Transition v-bind="paginationFadeTransition">
-            <pagination
-              v-if="
-                !loadingFinished &&
-                finishedTournaments_aggregate &&
-                finishedTournaments_aggregate.aggregate.count > 0
-              "
-              :page="finishedPage"
-              :items-per-page="perPage"
-              @page="
-                (_page: number) => {
-                  finishedPage = _page;
-                }
-              "
-              :total="finishedTournaments_aggregate?.aggregate?.count"
-            ></pagination>
-          </Transition>
-        </Teleport>
-      </TabsContent>
-    </Tabs>
+      <div class="flex flex-wrap items-center gap-2">
+        <button
+          v-for="opt in statusOptions"
+          :key="opt.value"
+          type="button"
+          :class="[
+            tacticalFilterPillClasses,
+            statusFilter === opt.value ? tacticalFilterPillActiveClasses : '',
+          ]"
+          @click="setStatus(opt.value)"
+        >
+          {{ opt.label }}
+        </button>
+        <button
+          v-if="hasActiveFilter"
+          type="button"
+          @click="clearAllFilters"
+          class="ml-auto inline-flex items-center gap-1 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <X class="h-3 w-3" />
+          {{ $t("common.reset_filters") }}
+        </button>
+      </div>
+    </div>
   </PageTransition>
 
-  <div id="pagination"></div>
+  <!-- Drilldown / filtered view -->
+  <template v-if="hasActiveFilter">
+    <PageTransition :delay="100" class="mt-6">
+      <div :class="tacticalSectionLabelClasses">
+        <span :class="tacticalSectionTickClasses"></span>
+        {{ $t("pages.tournaments.section_results") }}
+      </div>
+    </PageTransition>
+
+    <PageTransition v-if="filteredLoading" :delay="120" class="mt-3">
+      <div class="space-y-4">
+        <Skeleton v-for="i in 4" :key="i" class="h-40 w-full rounded-md" />
+      </div>
+    </PageTransition>
+
+    <PageTransition
+      v-else-if="filteredTournaments.length > 0"
+      :delay="120"
+      class="mt-3"
+    >
+      <div class="space-y-4">
+        <TournamentFeatureCard
+          v-for="tournament in filteredTournaments"
+          :key="tournament.id"
+          :tournament="tournament"
+          :status-variant="drilldownVariant"
+          :status-label="drilldownLabel"
+        />
+      </div>
+    </PageTransition>
+
+    <PageTransition v-else :delay="120" class="mt-3">
+      <Empty class="min-h-[200px]">
+        <EmptyTitle>{{
+          $t("pages.tournaments.filter.no_results_title")
+        }}</EmptyTitle>
+        <EmptyDescription>{{
+          $t("pages.tournaments.filter.no_results_description")
+        }}</EmptyDescription>
+      </Empty>
+    </PageTransition>
+
+    <Pagination
+      v-if="!filteredLoading && filteredTotal > perPage"
+      class="mt-6"
+      :page="page"
+      :per-page="perPage"
+      :total="filteredTotal"
+      @page="setPage"
+    />
+  </template>
+
+  <!-- Curated section view (no active filters) -->
+  <template v-else>
+    <PageTransition
+      v-if="
+        !loadingLive &&
+        liveTournaments.length === 0 &&
+        registrationOpenTournaments.length === 0
+      "
+      :delay="100"
+      class="mt-6"
+    >
+      <Empty class="min-h-[180px]">
+        <EmptyTitle>{{
+          $t("pages.tournaments.no_tournaments_title")
+        }}</EmptyTitle>
+        <EmptyDescription>{{
+          $t("pages.tournaments.no_tournaments_description")
+        }}</EmptyDescription>
+      </Empty>
+    </PageTransition>
+
+    <PageTransition
+      v-if="liveTournaments.length > 0"
+      :delay="100"
+      class="mt-6"
+    >
+      <section class="space-y-4">
+        <div :class="tacticalSectionLabelClasses">
+          <span :class="tacticalSectionTickClasses"></span>
+          {{ $t("pages.tournaments.section_live") }}
+        </div>
+        <div class="space-y-4">
+          <TournamentFeatureCard
+            v-for="tournament in liveTournaments"
+            :key="tournament.id"
+            :tournament="tournament"
+            status-variant="live"
+            :status-label="$t('common.live')"
+          />
+        </div>
+      </section>
+    </PageTransition>
+
+    <PageTransition
+      v-if="registrationOpenTournaments.length > 0"
+      :delay="125"
+      class="mt-6"
+    >
+      <section class="space-y-4">
+        <div
+          :class="[
+            tacticalSectionLabelClasses,
+            '!flex w-full items-center justify-between',
+          ]"
+        >
+          <span class="inline-flex items-center gap-2">
+            <span :class="tacticalSectionTickClasses"></span>
+            {{ $t("pages.tournaments.section_registration") }}
+          </span>
+          <NuxtLink
+            :to="seeAllRegistration"
+            class="inline-flex items-center gap-1 font-mono text-[0.65rem] tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors normal-case"
+          >
+            {{ $t("tournament.recent.see_all") }}
+          </NuxtLink>
+        </div>
+        <div class="space-y-4">
+          <TournamentFeatureCard
+            v-for="tournament in registrationOpenTournaments"
+            :key="tournament.id"
+            :tournament="tournament"
+            status-variant="registration"
+            :status-label="$t('pages.tournaments.open_for_registration')"
+          />
+        </div>
+      </section>
+    </PageTransition>
+
+    <PageTransition :delay="150" class="mt-6">
+      <RecentTournaments
+        :section-label="$t('pages.tournaments.section_upcoming')"
+        :statuses="[
+          e_tournament_status_enum.RegistrationClosed,
+          e_tournament_status_enum.Setup,
+        ]"
+        status-variant="registration"
+        :status-label="$t('pages.tournaments.tabs.upcoming')"
+        order-direction="asc"
+        hide-when-empty
+        :limit="4"
+        :see-all-to="seeAllUpcoming"
+      />
+    </PageTransition>
+
+    <PageTransition :delay="175" class="mt-6">
+      <RecentTournaments
+        :section-label="$t('pages.tournaments.section_recent')"
+        :statuses="[
+          e_tournament_status_enum.Finished,
+          e_tournament_status_enum.Cancelled,
+          e_tournament_status_enum.CancelledMinTeams,
+        ]"
+        status-variant="finished"
+        :status-label="$t('common.finished')"
+        order-direction="desc"
+        horizontal
+        hide-when-empty
+        :limit="12"
+        :see-all-to="seeAllFinished"
+      />
+    </PageTransition>
+  </template>
 </template>
 
 <script lang="ts">
-import TournamentFeatureCard from "~/components/tournament/TournamentFeatureCard.vue";
-import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Separator } from "~/components/ui/separator";
-import { PlusCircle } from "lucide-vue-next";
-import {
-  tacticalCtaButtonClasses,
-  tacticalSectionLabelClasses,
-  tacticalSectionTickClasses,
-} from "~/utilities/tacticalClasses";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
-import { useSidebar } from "~/components/ui/sidebar/utils";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
-import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import Empty from "~/components/ui/empty/Empty.vue";
-import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
-import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
-import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
-
-const fadeTransition = {
-  enterActiveClass: "transition-opacity duration-200 ease-out",
-  leaveActiveClass: "transition-opacity duration-200 ease-out",
-  enterFromClass: "opacity-0",
-  leaveToClass: "opacity-0",
-};
-
-const paginationFadeTransition = {
-  enterActiveClass: "delay-1000 transition-opacity duration-300 ease-out",
-  leaveActiveClass: "transition-opacity duration-200 ease-out",
-  enterFromClass: "opacity-0",
-  leaveToClass: "opacity-0",
-};
 
 export default {
-  components: {
-    TournamentFeatureCard,
-    TacticalPageHeader,
-    PlusCircle,
-  },
-  setup() {
-    const { isMobile } = useSidebar();
-    const activeTab = useRouteTab({
-      defaultTab: "live",
-      tabs: ["live", "upcoming", "finished"],
-    });
-
-    return {
-      isMobile,
-      tacticalCtaButtonClasses,
-      tacticalSectionLabelClasses,
-      tacticalSectionTickClasses,
-      activeTab,
-    };
-  },
   data() {
     return {
-      perPage: 10,
-      registrationOpenTournaments: [],
-      liveTournaments: [],
-      upcomingPage: 1,
-      finishedPage: 1,
-      upcomingTournaments: [],
-      upcomingTournaments_aggregate: undefined,
-      finishedTournaments: [],
-      finishedTournaments_aggregate: undefined,
+      liveTournaments: [] as any[],
+      registrationOpenTournaments: [] as any[],
       loadingLive: true,
-      loadingUpcoming: true,
-      loadingFinished: true,
-      fadeTransition,
-      paginationFadeTransition,
     };
   },
   apollo: {
     $subscribe: {
-      registrationOpenTournaments: {
-        query: typedGql("subscription")({
-          tournaments: [
-            {
-              where: {
-                status: {
-                  _eq: $("status", "e_tournament_status_enum"),
-                },
-              },
-              order_by: [
-                {},
-                {
-                  start: order_by.asc,
-                },
-              ],
-            },
-            simpleTournamentFields,
-          ],
-        }),
-        variables: function () {
-          return {
-            status: e_tournament_status_enum.RegistrationOpen,
-          };
-        },
-        result: function ({ data }: { data: any }) {
-          this.registrationOpenTournaments = data.tournaments || [];
-        },
-      },
       liveTournaments: {
         query: typedGql("subscription")({
           tournaments: [
@@ -372,185 +622,55 @@ export default {
             status: e_tournament_status_enum.Live,
           };
         },
+        skip(this: any) {
+          const q = this.$route?.query || {};
+          return !!(q.status || q.q || q.since);
+        },
         result: function ({ data }: { data: any }) {
-          this.liveTournaments = data.tournaments || [];
+          this.liveTournaments = data?.tournaments || [];
           this.loadingLive = false;
         },
       },
-      upcomingTournaments: {
+      registrationOpenTournaments: {
         query: typedGql("subscription")({
           tournaments: [
             {
-              limit: $("limit", "Int!"),
-              offset: $("offset", "Int!"),
+              where: {
+                status: {
+                  _eq: $("status", "e_tournament_status_enum"),
+                },
+              },
               order_by: [
                 {},
                 {
                   start: order_by.asc,
                 },
               ],
-              where: {
-                status: {
-                  _in: $("statuses", "[e_tournament_status_enum]"),
-                },
-              },
             },
             simpleTournamentFields,
           ],
         }),
         variables: function () {
           return {
-            limit: this.perPage,
-            offset: (this.upcomingPage - 1) * this.perPage,
-            statuses: [
-              e_tournament_status_enum.RegistrationOpen,
-              e_tournament_status_enum.RegistrationClosed,
-              e_tournament_status_enum.Setup,
-            ],
+            status: e_tournament_status_enum.RegistrationOpen,
           };
         },
-        result: function ({ data }: { data: any }) {
-          this.upcomingTournaments = data.tournaments || [];
-          this.loadingUpcoming = false;
-        },
-      },
-      upcomingTournaments_aggregate: {
-        query: typedGql("subscription")({
-          tournaments_aggregate: [
-            {
-              where: {
-                status: {
-                  _in: $("statuses", "[e_tournament_status_enum]"),
-                },
-              },
-            },
-            {
-              aggregate: {
-                count: true,
-              },
-            },
-          ],
-        }),
-        variables: function () {
-          return {
-            statuses: [
-              e_tournament_status_enum.RegistrationOpen,
-              e_tournament_status_enum.RegistrationClosed,
-              e_tournament_status_enum.Setup,
-            ],
-          };
+        skip(this: any) {
+          const q = this.$route?.query || {};
+          return !!(q.status || q.q || q.since);
         },
         result: function ({ data }: { data: any }) {
-          this.upcomingTournaments_aggregate = data.tournaments_aggregate;
+          this.registrationOpenTournaments = data?.tournaments || [];
         },
       },
-      finishedTournaments: {
-        query: typedGql("subscription")({
-          tournaments: [
-            {
-              limit: $("limit", "Int!"),
-              offset: $("offset", "Int!"),
-              order_by: [
-                {},
-                {
-                  start: order_by.desc,
-                },
-              ],
-              where: {
-                status: {
-                  _in: $("statuses", "[e_tournament_status_enum]"),
-                },
-              },
-            },
-            simpleTournamentFields,
-          ],
-        }),
-        variables: function () {
-          return {
-            limit: this.perPage,
-            offset: (this.finishedPage - 1) * this.perPage,
-            statuses: [
-              e_tournament_status_enum.Finished,
-              e_tournament_status_enum.Cancelled,
-              e_tournament_status_enum.CancelledMinTeams,
-            ],
-          };
-        },
-        result: function ({ data }: { data: any }) {
-          this.finishedTournaments = data.tournaments || [];
-          this.loadingFinished = false;
-        },
-      },
-      finishedTournaments_aggregate: {
-        query: typedGql("subscription")({
-          tournaments_aggregate: [
-            {
-              where: {
-                status: {
-                  _in: $("statuses", "[e_tournament_status_enum]"),
-                },
-              },
-            },
-            {
-              aggregate: {
-                count: true,
-              },
-            },
-          ],
-        }),
-        variables: function () {
-          return {
-            statuses: [
-              e_tournament_status_enum.Finished,
-              e_tournament_status_enum.Cancelled,
-              e_tournament_status_enum.CancelledMinTeams,
-            ],
-          };
-        },
-        result: function ({ data }: { data: any }) {
-          this.finishedTournaments_aggregate = data.tournaments_aggregate;
-        },
-      },
-    },
-  },
-  methods: {
-    getTournamentCardVariant(tournament: any) {
-      const status = (
-        tournament?.e_tournament_status?.description || ""
-      ).toLowerCase();
-
-      if (status.includes("live")) {
-        return "live";
-      }
-
-      if (
-        status.includes("registration open") ||
-        status.includes("open for registration") ||
-        status === "open"
-      ) {
-        return "registration";
-      }
-
-      if (status.includes("finished") || status.includes("cancelled")) {
-        return "finished";
-      }
-
-      return "default";
     },
   },
   computed: {
-    showSeparators() {
-      return useApplicationSettingsStore().showSeparators;
-    },
-    me() {
-      return useAuthStore().me;
-    },
     canCreateTournament() {
       const me = useAuthStore().me;
       if (!me) {
         return false;
       }
-
       return useAuthStore().isRoleAbove(
         useApplicationSettingsStore().tournamentCreateRole,
       );

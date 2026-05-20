@@ -237,7 +237,7 @@ import {
                           class="text-sm"
                         >
                           {{ form.values.roles.length }}
-                          {{ $t("pages.players.countries_selected") }}
+                          {{ $t("pages.players.privileges_selected") }}
                         </span>
                         <span v-else class="text-muted-foreground">
                           {{ $t("pages.players.select_privileges") }}

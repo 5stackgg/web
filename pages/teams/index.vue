@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Search, X, PlusCircle, Users } from "lucide-vue-next";
+import { Search, X, PlusCircle, Users, Trophy } from "lucide-vue-next";
 import { FormItem, FormControl } from "@/components/ui/form";
 import TeamsTable from "~/components/TeamsTable.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
@@ -63,6 +63,27 @@ import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
                   >
                     <X class="w-4 h-4" />
                   </button>
+
+                  <div
+                    class="flex h-9 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150 whitespace-nowrap"
+                    :class="
+                      tournamentWinnersOnly
+                        ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
+                        : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+                    "
+                    @click="toggleTournamentWinners"
+                  >
+                    <Trophy class="h-3.5 w-3.5" />
+                    <span id="teams-tournament-winners-label">
+                      {{ $t("team.search.tournament_winners") }}
+                    </span>
+                    <Switch
+                      v-model="tournamentWinnersOnly"
+                      aria-labelledby="teams-tournament-winners-label"
+                      class="ml-1 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
+                      @click.stop
+                    />
+                  </div>
 
                   <div
                     v-if="me"
@@ -131,6 +152,7 @@ import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
         <teams-table
           v-else
           :teams="showOnlyMyTeams ? myTeams : teams"
+          :trophies-by-team-id="trophiesByTeamId"
         ></teams-table>
       </div>
 
@@ -171,7 +193,9 @@ export default {
       teams: undefined as any,
       teams_aggregate: undefined as any,
       myTeams: undefined as any,
+      teamTrophies: [] as Array<any>,
       showOnlyMyTeams: false,
+      tournamentWinnersOnly: false,
       loading: true,
       form: useForm({
         validationSchema: toTypedSchema(
@@ -186,6 +210,18 @@ export default {
     me() {
       return useAuthStore().me;
     },
+    trophiesByTeamId(): Record<string, any[]> {
+      const map: Record<string, any[]> = {};
+      for (const t of this.teamTrophies) {
+        const teamId = t.tournament_team?.team_id;
+        if (!teamId) continue;
+        (map[teamId] ??= []).push(t);
+      }
+      return map;
+    },
+    winnerTeamIds(): string[] {
+      return Object.keys(this.trophiesByTeamId);
+    },
   },
   watch: {
     "form.values.teamQuery": {
@@ -193,6 +229,9 @@ export default {
       handler() {
         this.page = 1;
       },
+    },
+    tournamentWinnersOnly() {
+      this.page = 1;
     },
   },
   apollo: {
@@ -202,6 +241,14 @@ export default {
         this.loading = false;
       },
       query: function (this: any) {
+        const nameFilter =
+          this.form.values.teamQuery?.length >= 3
+            ? { name: { _ilike: $("teamQuery", "String") } }
+            : {};
+        const championFilter = this.tournamentWinnersOnly
+          ? { id: { _in: $("winnerTeamIds", "[uuid!]!") } }
+          : {};
+        const where = { ...nameFilter, ...championFilter };
         return generateQuery({
           teams: [
             {
@@ -213,15 +260,7 @@ export default {
                   name: order_by.asc,
                 },
               ],
-              ...(this.form.values.teamQuery?.length >= 3
-                ? {
-                    where: {
-                      name: {
-                        _ilike: $("teamQuery", "String"),
-                      },
-                    },
-                  }
-                : {}),
+              ...(Object.keys(where).length ? { where } : {}),
             },
             {
               id: true,
@@ -244,24 +283,25 @@ export default {
           teamQuery: `%${this.form.values.teamQuery}%`,
           limit: this.perPage,
           offset: (this.page - 1) * this.perPage,
+          winnerTeamIds: this.winnerTeamIds,
         };
       },
     },
     teams_aggregate: {
       fetchPolicy: "network-only",
       query: function (this: any) {
+        const nameFilter =
+          this.form.values.teamQuery?.length >= 3
+            ? { name: { _ilike: $("teamQuery", "String") } }
+            : {};
+        const championFilter = this.tournamentWinnersOnly
+          ? { id: { _in: $("winnerTeamIds", "[uuid!]!") } }
+          : {};
+        const where = { ...nameFilter, ...championFilter };
         return generateQuery({
           teams_aggregate: [
             {
-              ...(this.form.values.teamQuery?.length >= 3
-                ? {
-                    where: {
-                      name: {
-                        _ilike: $("teamQuery", "String"),
-                      },
-                    },
-                  }
-                : {}),
+              ...(Object.keys(where).length ? { where } : {}),
             },
             {
               aggregate: {
@@ -274,10 +314,53 @@ export default {
       variables: function (this: any): Record<string, any> {
         return {
           teamQuery: `%${this.form.values.teamQuery}%`,
+          winnerTeamIds: this.winnerTeamIds,
         };
       },
     },
     $subscribe: {
+      teamTrophies: {
+        query: function () {
+          return typedGql("subscription")({
+            tournament_trophies: [
+              {
+                where: {
+                  player_steam_id: { _is_null: true },
+                },
+              },
+              {
+                id: true,
+                placement: true,
+                placement_tier: true,
+                tournament_id: true,
+                tournament: {
+                  id: true,
+                  name: true,
+                  start: true,
+                  stages: [
+                    {
+                      order_by: [{ order: order_by.desc }],
+                      limit: 1,
+                    },
+                    { type: true },
+                  ],
+                },
+                trophy_config: {
+                  custom_name: true,
+                  silhouette: true,
+                  image_url: true,
+                },
+                tournament_team: {
+                  team_id: true,
+                },
+              },
+            ],
+          });
+        },
+        result: function (this: any, { data }: { data: any }) {
+          this.teamTrophies = data.tournament_trophies || [];
+        },
+      },
       myTeams: {
         query: function () {
           return typedGql("subscription")({
@@ -321,6 +404,9 @@ export default {
   methods: {
     toggleShowOnlyMyTeams() {
       this.showOnlyMyTeams = !this.showOnlyMyTeams;
+    },
+    toggleTournamentWinners() {
+      this.tournamentWinnersOnly = !this.tournamentWinnersOnly;
     },
     viewTopTeam() {
       const team = this.teams?.at(0);

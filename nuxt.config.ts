@@ -166,6 +166,9 @@ export default defineNuxtConfig({
       // Do not precache every Nuxt chunk during service-worker install.
       // Runtime caching below stores route assets only after a visited page needs them.
       globPatterns: [],
+      // No precache manifest, so disable the navigate fallback —
+      // otherwise workbox calls createHandlerBoundToURL('/') and throws non-precached-url.
+      navigateFallback: null,
       navigateFallbackDenylist: [
         /^\/auth/,
         /^\/discord-invite/,

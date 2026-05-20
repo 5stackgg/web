@@ -94,27 +94,40 @@ const inactivePageItemClass =
       </PaginationContent>
     </PaginationRoot>
 
-    <div v-if="showPerPageSelector" class="flex items-center gap-2">
-      <Label
-        for="per-page-select"
-        class="text-sm text-muted-foreground whitespace-nowrap"
+    <div class="flex items-center gap-4">
+      <span
+        class="text-xs text-muted-foreground whitespace-nowrap tabular-nums"
       >
-        {{ $t("pagination.items_per_page") }}
-      </Label>
-      <Select
-        :model-value="perPage.toString()"
-        @update:model-value="onPerPageChange"
-      >
-        <SelectTrigger id="per-page-select" class="w-20">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="10">10</SelectItem>
-          <SelectItem value="25">25</SelectItem>
-          <SelectItem value="50">50</SelectItem>
-          <SelectItem value="100">100</SelectItem>
-        </SelectContent>
-      </Select>
+        {{
+          $t("pagination.showing_range", {
+            start: rangeStart,
+            end: rangeEnd,
+            total: total,
+          })
+        }}
+      </span>
+      <div v-if="showPerPageSelector" class="flex items-center gap-2">
+        <Label
+          for="per-page-select"
+          class="text-sm text-muted-foreground whitespace-nowrap"
+        >
+          {{ $t("pagination.items_per_page") }}
+        </Label>
+        <Select
+          :model-value="perPage.toString()"
+          @update:model-value="onPerPageChange"
+        >
+          <SelectTrigger id="per-page-select" class="w-20">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="10">10</SelectItem>
+            <SelectItem value="25">25</SelectItem>
+            <SelectItem value="50">50</SelectItem>
+            <SelectItem value="100">100</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   </div>
 </template>
@@ -167,6 +180,14 @@ export default {
     },
     current() {
       return this.page;
+    },
+    rangeStart() {
+      if (!this.total) return 0;
+      return (this.page - 1) * this.perPage + 1;
+    },
+    rangeEnd() {
+      if (!this.total) return 0;
+      return Math.min(this.page * this.perPage, this.total);
     },
   },
 };

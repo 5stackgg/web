@@ -290,21 +290,8 @@ function clipTeamName(c: Clip): string | null {
 </script>
 
 <template>
-  <section
-    v-if="featuredClip"
-    class="match-reel-stage relative overflow-hidden"
-  >
-    <NuxtImg
-      v-if="featuredClipImage"
-      :src="featuredClipImage"
-      :alt="featuredClip.title ?? t('clips.featured_highlight')"
-      class="absolute inset-0 h-full w-full object-cover opacity-[0.18]"
-    />
-    <div
-      class="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,hsl(var(--tac-amber)/0.18),transparent_36%),linear-gradient(135deg,hsl(var(--background)/0.92)_0%,hsl(var(--card)/0.86)_56%,hsl(var(--background)/0.96)_100%)]"
-    ></div>
-
-    <div class="relative grid gap-4 p-3 sm:p-4 lg:grid-cols-2">
+  <section v-if="featuredClip" class="relative">
+    <div class="relative grid lg:grid-cols-2">
       <ClipPlayer
         ref="inlinePlayerRef"
         :src="featuredClip.download_url"
@@ -640,38 +627,6 @@ function clipTeamName(c: Clip): string | null {
 </template>
 
 <style scoped>
-.match-reel-stage {
-  border: 1px solid hsl(var(--border) / 0.68);
-  border-radius: 0.5rem;
-  background: hsl(var(--card) / 0.32);
-  box-shadow:
-    inset 0 1px 0 hsl(var(--foreground) / 0.07),
-    0 24px 70px -36px hsl(0 0% 0% / 0.86);
-  backdrop-filter: blur(8px);
-}
-
-.match-reel-stage::before {
-  content: "";
-  pointer-events: none;
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(
-      90deg,
-      transparent 0%,
-      hsl(var(--tac-amber) / 0.08) 50%,
-      transparent 100%
-    ),
-    repeating-linear-gradient(
-      90deg,
-      hsl(var(--foreground) / 0.035) 0,
-      hsl(var(--foreground) / 0.035) 1px,
-      transparent 1px,
-      transparent 42px
-    );
-  opacity: 0.5;
-}
-
 .reel-queue ::-webkit-scrollbar {
   width: 7px;
 }

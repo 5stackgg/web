@@ -6367,6 +6367,9 @@ export const AllTypesProps: Record<string,any> = {
 		checkIntoMatch:{
 			match_id:"uuid"
 		},
+		clearClipRenderBatch:{
+			match_map_id:"uuid"
+		},
 		createApiKey:{
 
 		},
@@ -25110,6 +25113,8 @@ export const ReturnTypes: Record<string,any> = {
 		cancelClipRenderBatch:"SuccessOutput",
 		cancelMatch:"SuccessOutput",
 		checkIntoMatch:"SuccessOutput",
+		clearClipRenderBatch:"SuccessOutput",
+		clearFinishedClipRenders:"SuccessOutput",
 		createApiKey:"ApiKeyResponse",
 		createClipFromPreset:"CreateClipRenderOutput",
 		createClipRender:"CreateClipRenderOutput",

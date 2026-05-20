@@ -550,29 +550,10 @@ const viewModeOptions = computed<
                 <ListVideo class="h-3.5 w-3.5 mr-1.5" />
                 {{ $t("pages.highlights.queue") }}
                 <span
-                  v-if="pendingClips > 0"
-                  class="ml-2 inline-flex items-center gap-1 font-mono text-[0.6rem] font-semibold tabular-nums"
-                  :title="
-                    $t('pages.highlights.queue_summary', {
-                      active: activeClips,
-                      queued: queuedClips,
-                    })
-                  "
+                  v-if="queuedClips > 0"
+                  class="ml-2 inline-flex items-center rounded-full border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.15)] px-1.5 py-0.5 font-mono text-[0.6rem] font-semibold tabular-nums text-[hsl(var(--tac-amber))]"
                 >
-                  <span
-                    class="inline-flex items-center gap-1 rounded-full border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.15)] px-1.5 py-0.5 text-[hsl(var(--tac-amber))]"
-                  >
-                    <Loader2
-                      v-if="activeClips > 0"
-                      class="h-2.5 w-2.5 animate-spin"
-                    />
-                    {{ activeClips }}
-                  </span>
-                  <span
-                    class="inline-flex items-center rounded-full border border-border/60 bg-muted/30 px-1.5 py-0.5 text-muted-foreground"
-                  >
-                    {{ queuedClips }}
-                  </span>
+                  {{ queuedClips }}
                 </span>
               </Button>
             </SheetTrigger>

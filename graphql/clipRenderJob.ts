@@ -26,6 +26,10 @@ export const clipRenderJobFields = {
       lineup_2: { name: true },
     },
   },
+  match_map_demo: {
+    id: true,
+    playback_url: true,
+  },
 } as const;
 
 // Tick-addressed so server-side render reproduces the editor's range.

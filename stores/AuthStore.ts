@@ -38,6 +38,7 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
   let managingTournamentsSubscriptionStarted = false;
   let activeStreamingMatchesSubscriptionStarted = false;
   let gpuPoolSubscriptionStarted = false;
+  let renderQueueSubscriptionStarted = false;
 
   useSearchStore();
   useMatchmakingStore();
@@ -109,13 +110,17 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
       !activeStreamingMatchesSubscriptionStarted;
     const shouldStartGpuPool =
       isRoleAbove(e_player_roles_enum.streamer) && !gpuPoolSubscriptionStarted;
+    const shouldStartRenderQueue =
+      isRoleAbove(e_player_roles_enum.administrator) &&
+      !renderQueueSubscriptionStarted;
 
     if (
       !shouldStartBaseSubscriptions &&
       !shouldStartManagingMatches &&
       !shouldStartManagingTournaments &&
       !shouldStartActiveStreamingMatches &&
-      !shouldStartGpuPool
+      !shouldStartGpuPool &&
+      !shouldStartRenderQueue
     ) {
       return;
     }
@@ -149,6 +154,11 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
     if (shouldStartGpuPool) {
       gpuPoolSubscriptionStarted = true;
       useGpuPoolStatusStore().subscribeToPool();
+    }
+
+    if (shouldStartRenderQueue) {
+      renderQueueSubscriptionStarted = true;
+      useRenderQueueStatusStore().subscribeToInFlight();
     }
   }
 

@@ -164,29 +164,29 @@ function clearAllFilters() {
   router.replace({ path: route.path, hash: route.hash });
 }
 
-const statusOptions = computed<
-  Array<{ value: StatusFilter; label: string }>
->(() => [
-  { value: "all", label: t("pages.tournaments.filter.status_all") },
-  { value: "live", label: t("pages.tournaments.filter.status_live") },
-  {
-    value: "registration",
-    label: t("pages.tournaments.filter.status_registration"),
-  },
-  { value: "upcoming", label: t("pages.tournaments.filter.status_upcoming") },
-  { value: "finished", label: t("pages.tournaments.filter.status_finished") },
-]);
+const statusOptions = computed<Array<{ value: StatusFilter; label: string }>>(
+  () => [
+    { value: "all", label: t("pages.tournaments.filter.status_all") },
+    { value: "live", label: t("pages.tournaments.filter.status_live") },
+    {
+      value: "registration",
+      label: t("pages.tournaments.filter.status_registration"),
+    },
+    { value: "upcoming", label: t("pages.tournaments.filter.status_upcoming") },
+    { value: "finished", label: t("pages.tournaments.filter.status_finished") },
+  ],
+);
 
-const sinceOptions = computed<
-  Array<{ value: SincePreset; label: string }>
->(() => [
-  { value: "all", label: t("pages.tournaments.filter.date_all") },
-  { value: "7d", label: t("pages.tournaments.filter.date_7d") },
-  { value: "30d", label: t("pages.tournaments.filter.date_30d") },
-  { value: "90d", label: t("pages.tournaments.filter.date_90d") },
-  { value: "6m", label: t("pages.tournaments.filter.date_6m") },
-  { value: "1y", label: t("pages.tournaments.filter.date_1y") },
-]);
+const sinceOptions = computed<Array<{ value: SincePreset; label: string }>>(
+  () => [
+    { value: "all", label: t("pages.tournaments.filter.date_all") },
+    { value: "7d", label: t("pages.tournaments.filter.date_7d") },
+    { value: "30d", label: t("pages.tournaments.filter.date_30d") },
+    { value: "90d", label: t("pages.tournaments.filter.date_90d") },
+    { value: "6m", label: t("pages.tournaments.filter.date_6m") },
+    { value: "1y", label: t("pages.tournaments.filter.date_1y") },
+  ],
+);
 
 // --- Drilldown / filtered list ---
 
@@ -490,11 +490,7 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
       </Empty>
     </PageTransition>
 
-    <PageTransition
-      v-if="liveTournaments.length > 0"
-      :delay="100"
-      class="mt-6"
-    >
+    <PageTransition v-if="liveTournaments.length > 0" :delay="100" class="mt-6">
       <section class="space-y-4">
         <div :class="tacticalSectionLabelClasses">
           <span :class="tacticalSectionTickClasses"></span>

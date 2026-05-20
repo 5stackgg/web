@@ -167,7 +167,9 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
                     <span :style="{ color: placementColor(trophy.placement) }">
                       {{ placementLabel(trophy.placement) }}
                     </span>
-                    <span v-if="trophy.tournament?.start" class="opacity-50">·</span>
+                    <span v-if="trophy.tournament?.start" class="opacity-50"
+                      >·</span
+                    >
                     <span v-if="trophy.tournament?.start">
                       {{ formatTrophyDate(trophy.tournament.start) }}
                     </span>
@@ -268,13 +270,19 @@ export default {
       return team.roster?.length ?? 0;
     },
     teamTrophies(team: { id: string }): TrophyEntry[] {
-      return (this.trophiesByTeamId as Record<string, TrophyEntry[]>)[team.id] ?? [];
+      return (
+        (this.trophiesByTeamId as Record<string, TrophyEntry[]>)[team.id] ?? []
+      );
     },
     recentTrophies(team: { id: string }): TrophyEntry[] {
       return [...this.teamTrophies(team)]
         .sort((a, b) => {
-          const da = a.tournament?.start ? new Date(a.tournament.start).getTime() : 0;
-          const db = b.tournament?.start ? new Date(b.tournament.start).getTime() : 0;
+          const da = a.tournament?.start
+            ? new Date(a.tournament.start).getTime()
+            : 0;
+          const db = b.tournament?.start
+            ? new Date(b.tournament.start).getTime()
+            : 0;
           return db - da;
         })
         .slice(0, 5);
@@ -309,7 +317,10 @@ export default {
         .toUpperCase();
     },
     trophyAriaLabel(trophy: TrophyEntry): string {
-      const name = trophy.trophy_config?.custom_name || trophy.tournament?.name || "tournament";
+      const name =
+        trophy.trophy_config?.custom_name ||
+        trophy.tournament?.name ||
+        "tournament";
       return `${this.placementLabel(trophy.placement)} — ${name}`;
     },
     goToTournament(tournamentId?: string | null) {

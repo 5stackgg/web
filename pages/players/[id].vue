@@ -370,6 +370,13 @@ const modeFilteredWindowed = computed<WindowedEloEntry[]>(() => {
 
 const windowedStats = computed(() => {
   const list = modeFilteredWindowed.value;
+  // Headline ELO values (current/peak/lowest) anchor to Competitive when
+  // no specific mode is chosen — otherwise the most recent Wingman/Duel
+  // match would flip "Current ELO" away from the player's primary mode.
+  const headlineList =
+    selectedModeRef.value === "all"
+      ? eloHistory.value.filter((e) => e.type === "Competitive")
+      : list;
   if (list.length === 0) {
     return {
       current: null as number | null,
@@ -405,7 +412,7 @@ const windowedStats = computed(() => {
   let worstLoss: WindowedEloEntry | null = null;
   let peakEntry: WindowedEloEntry | null = null;
 
-  for (const e of list) {
+  for (const e of headlineList) {
     const elo = e.updated_elo ?? e.current_elo ?? null;
     if (elo !== null) {
       if (elo > peak) {
@@ -414,6 +421,9 @@ const windowedStats = computed(() => {
       }
       if (elo < lowest) lowest = elo;
     }
+  }
+
+  for (const e of list) {
     if (e.match_result === "won" || e.match_result === "win") wins++;
     else if (e.match_result === "lost" || e.match_result === "loss") losses++;
     else if (e.match_result === "tied" || e.match_result === "tie") ties++;
@@ -431,7 +441,7 @@ const windowedStats = computed(() => {
     assists += e.assists ?? 0;
   }
 
-  const last = list[list.length - 1];
+  const last = headlineList[headlineList.length - 1];
   const current = last?.updated_elo ?? last?.current_elo ?? null;
   const decided = wins + losses;
   const kd = deaths > 0 ? kills / deaths : kills;

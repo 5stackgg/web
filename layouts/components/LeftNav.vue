@@ -20,6 +20,7 @@ import {
   Database,
   Trophy,
   Film,
+  ListVideo,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
@@ -317,6 +318,14 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 >
                   <Film />
                   Highlights
+
+                  <Badge
+                    size="sm"
+                    v-if="isAdmin && renderQueueInFlightCount > 0"
+                    class="ml-auto"
+                  >
+                    {{ renderQueueInFlightCount }}
+                  </Badge>
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -656,6 +665,28 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
+
+            <SidebarMenuItem tooltip="Render Queue">
+              <SidebarMenuButton as-child tooltip="Render Queue">
+                <NuxtLink
+                  :to="{ name: 'system-render-queue' }"
+                  :class="{
+                    'router-link-active': isRouteActive('system-render-queue'),
+                  }"
+                >
+                  <ListVideo />
+                  Render Queue
+
+                  <Badge
+                    size="sm"
+                    v-if="renderQueueInFlightCount > 0"
+                    class="ml-auto"
+                  >
+                    {{ renderQueueInFlightCount }}
+                  </Badge>
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>
 
@@ -898,6 +929,9 @@ export default {
     },
     liveMatchesCount() {
       return useMatchLobbyStore().liveMatchesCount;
+    },
+    renderQueueInFlightCount() {
+      return useRenderQueueStatusStore().inFlightCount;
     },
     activeTournamentsCount() {
       const store = useMatchLobbyStore();

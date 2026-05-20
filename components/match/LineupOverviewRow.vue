@@ -13,9 +13,13 @@ import { useOverviewColumns } from "~/composables/useMatchTableColumns";
 import { useCurrentUserRow } from "~/composables/useCurrentUserRow";
 import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
-import { MoreVertical, Crown } from "lucide-vue-next";
+import { MoreVertical, Crown, Sparkles } from "lucide-vue-next";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
+import RenderHighlightForPlayerDialog from "~/components/match/RenderHighlightForPlayerDialog.vue";
+import { ref } from "vue";
+
+const renderHighlightOpen = ref(false);
 
 const { visibility: overviewVis } = useOverviewColumns();
 const { rowClass, stickyCellClass } = useCurrentUserRow();
@@ -76,8 +80,27 @@ const DASH = "—";
           >
             <span>{{ $t("match.overview.leave_lineup") }}</span>
           </DropdownMenuItem>
+
+          <template v-if="canRequestHighlight">
+            <DropdownMenuSeparator
+              v-if="
+                lineup.can_update_lineup || canLeaveLineup || canSwitchTeams
+              "
+            />
+            <DropdownMenuItem @click="renderHighlightOpen = true">
+              <Sparkles class="h-3.5 w-3.5 mr-2 text-[hsl(var(--tac-amber))]" />
+              <span>Render highlight…</span>
+            </DropdownMenuItem>
+          </template>
         </DropdownMenuContent>
       </DropdownMenu>
+      <RenderHighlightForPlayerDialog
+        v-if="canRequestHighlight && member.player?.steam_id"
+        v-model:open="renderHighlightOpen"
+        :match-maps="mapsWithDemo"
+        :target-steam-id="String(member.player.steam_id)"
+        :target-name="member.player.name ?? null"
+      />
       <div :class="['min-w-0', canDoActions ? 'pl-3' : '']">
         <div class="hidden md:block">
           <LineupMember :match="match" :member="member">
@@ -294,7 +317,12 @@ const DASH = "—";
 <script lang="ts">
 import LineupMember from "~/components/match/LineupMember.vue";
 import { generateMutation } from "~/graphql/graphqlGen";
-import { $, e_lobby_access_enum, e_match_status_enum } from "~/generated/zeus";
+import {
+  $,
+  e_lobby_access_enum,
+  e_match_status_enum,
+  e_player_roles_enum,
+} from "~/generated/zeus";
 import { statTierClass } from "~/utils/statTiers";
 
 export default {
@@ -482,12 +510,44 @@ export default {
         e_match_status_enum.Surrendered,
         e_match_status_enum.Tie,
       ];
-      if (terminal.includes(this.match.status)) return false;
+      if (terminal.includes(this.match.status)) {
+        return this.canRequestHighlight;
+      }
       return (
         this.lineup.can_update_lineup ||
         this.canLeaveLineup ||
         this.canSwitchTeams
       );
+    },
+    mapsWithDemo() {
+      const out: Array<{ id: string; label: string }> = [];
+      for (const mm of this.match?.match_maps ?? []) {
+        const demo = (mm.demos ?? [])[0];
+        if (
+          !demo ||
+          !demo.metadata_parsed_at ||
+          !demo.total_ticks ||
+          Number(demo.total_ticks) <= 0
+        ) {
+          continue;
+        }
+        const label = mm.map?.label ?? mm.map?.name ?? `Map ${out.length + 1}`;
+        out.push({ id: String(mm.id), label });
+      }
+      return out;
+    },
+    canRequestHighlight() {
+      if (!this.me?.steam_id) return false;
+      if (!this.member.player?.steam_id) return false;
+      const role = this.me.role;
+      const allowed =
+        role === e_player_roles_enum.verified_user ||
+        role === e_player_roles_enum.streamer ||
+        role === e_player_roles_enum.match_organizer ||
+        role === e_player_roles_enum.tournament_organizer ||
+        role === e_player_roles_enum.administrator;
+      if (!allowed) return false;
+      return this.mapsWithDemo.length > 0;
     },
     canLeaveLineup() {
       if (!this.me?.steam_id) return false;

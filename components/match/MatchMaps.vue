@@ -123,7 +123,7 @@ import cleanMapName from "~/utilities/cleanMapName";
                 <PlayCircle class="w-4 h-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" class="w-64" @click.stop>
+            <DropdownMenuContent align="end" class="w-64">
               <DropdownMenuLabel class="text-xs">
                 {{ matchMap.demos.length }} demos for this map
               </DropdownMenuLabel>
@@ -190,7 +190,7 @@ import cleanMapName from "~/utilities/cleanMapName";
               <MoreVertical class="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" class="w-56" @click.stop>
+          <DropdownMenuContent align="end" class="w-56">
             <MatchSelectMapWinner :match="match" :match-map="matchMap" />
           </DropdownMenuContent>
         </DropdownMenu>

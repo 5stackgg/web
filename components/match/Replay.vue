@@ -5,51 +5,86 @@ import cleanMapName from "~/utilities/cleanMapName";
 
 <template>
   <div>
-    <!-- Inline map picker — when the match has more than one playable
-         map, surface them all here so the user doesn't have to scroll up
-         to use the match-wide filter just to pick a 2D replay. Picking a
-         map is local to this tab; it does NOT mutate the parent's
-         match-wide map filter. -->
-    <div
-      v-if="selectableMaps.length > 1"
-      class="mb-4 flex flex-wrap gap-2"
-      role="tablist"
-    >
-      <button
-        v-for="m in selectableMaps"
-        :key="m.id"
-        type="button"
-        role="tab"
-        :aria-selected="effectiveMap?.id === m.id"
-        class="group inline-flex items-center gap-2 px-3 py-1.5 border font-mono text-[0.7rem] tracking-[0.18em] uppercase transition-colors"
-        :class="
-          effectiveMap?.id === m.id
-            ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
-            : 'border-border/60 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
-        "
-        @click="selectMap(m.id)"
+    <div v-if="selectableMaps.length > 1" class="mb-4">
+      <p
+        v-if="!effectiveMap"
+        class="mb-2 font-mono text-[0.7rem] tracking-[0.22em] uppercase text-[hsl(var(--tac-amber))]"
       >
-        <span
-          class="inline-block h-1.5 w-1.5 rounded-full"
+        {{ $t("match.replay.select_map") }}
+      </p>
+      <div
+        class="grid gap-3"
+        style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr))"
+        role="tablist"
+      >
+        <button
+          v-for="m in selectableMaps"
+          :key="m.id"
+          type="button"
+          role="tab"
+          :aria-selected="effectiveMap?.id === m.id"
+          class="group relative overflow-hidden border-2 transition-all text-left"
           :class="
             effectiveMap?.id === m.id
-              ? 'bg-[hsl(var(--tac-amber))]'
-              : 'bg-muted-foreground/50'
+              ? 'border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),_0_8px_24px_-8px_hsl(var(--tac-amber)/0.45)]'
+              : 'border-border/60 hover:border-[hsl(var(--tac-amber)/0.7)] hover:-translate-y-0.5'
           "
-        ></span>
-        {{ cleanMapName(m.map.name) }}
-        <span
-          v-if="typeof m.lineup_1_score === 'number'"
-          class="text-muted-foreground/70 tabular-nums"
+          @click="selectMap(m.id)"
         >
-          {{ m.lineup_1_score }}:{{ m.lineup_2_score }}
-        </span>
-      </button>
+          <img
+            :src="`/radars/${m.map.name
+              .toLowerCase()
+              .replace(/_night$/, '')}.png`"
+            :alt="m.map.name"
+            class="aspect-[4/3] w-full object-cover transition-opacity"
+            :class="
+              effectiveMap?.id === m.id
+                ? 'opacity-100'
+                : 'opacity-60 group-hover:opacity-90'
+            "
+            @error="
+              ($event.target as HTMLImageElement).style.visibility = 'hidden'
+            "
+          />
+          <div
+            class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent p-2 flex items-end justify-between gap-2"
+          >
+            <div class="min-w-0">
+              <div
+                class="font-mono text-sm font-bold tracking-[0.18em] uppercase text-white truncate"
+              >
+                {{ cleanMapName(m.map.name) }}
+              </div>
+              <div
+                v-if="typeof m.lineup_1_score === 'number'"
+                class="font-mono text-[0.7rem] tabular-nums text-white/75"
+              >
+                {{ m.lineup_1_score }} : {{ m.lineup_2_score }}
+              </div>
+            </div>
+            <span
+              class="font-mono text-[0.55rem] tracking-[0.2em] uppercase shrink-0 px-1.5 py-0.5 border"
+              :class="
+                effectiveMap?.id === m.id
+                  ? 'border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber))]'
+                  : 'border-white/40 text-white/70 group-hover:text-white group-hover:border-white'
+              "
+            >
+              {{
+                effectiveMap?.id === m.id
+                  ? $t("match.replay.selected")
+                  : $t("match.replay.select")
+              }}
+            </span>
+          </div>
+        </button>
+      </div>
     </div>
 
-    <!-- No selection yet on a multi-map match — the picker above is the
-         entire affordance. Quiet helper line nudges first-time users. -->
-    <div v-if="!effectiveMap" class="py-6 text-center">
+    <div
+      v-if="!effectiveMap && selectableMaps.length <= 1"
+      class="py-6 text-center"
+    >
       <p
         class="font-mono text-[0.7rem] tracking-[0.2em] uppercase text-muted-foreground"
       >
@@ -106,6 +141,7 @@ import cleanMapName from "~/utilities/cleanMapName";
       :demo-bombs="demoBombs"
       :demo-kit-drops="demoKitDrops"
       :demo-round-ticks="demoRoundTicks"
+      :round-inventory="roundInventory"
       :tick-rate="tickRate"
       :map-name="effectiveMap?.map?.name"
     />
@@ -155,6 +191,7 @@ export default {
       demoBombs: [] as any[],
       demoKitDrops: [] as any[],
       demoRoundTicks: [] as any[],
+      roundInventory: [] as any[],
       tickRate: 64 as number,
       loadRequested: false as boolean,
       loading: false as boolean,
@@ -188,6 +225,7 @@ export default {
       this.demoBombs = [];
       this.demoKitDrops = [];
       this.demoRoundTicks = [];
+      this.roundInventory = [];
     },
     async loadBlob() {
       const map = (this as any).effectiveMap;
@@ -220,6 +258,7 @@ export default {
         this.demoBombs = blob.bombs ?? [];
         this.demoKitDrops = blob.kit_drops ?? [];
         this.demoRoundTicks = blob.round_ticks ?? [];
+        this.roundInventory = blob.round_inventory ?? [];
         this.tickRate = blob.tick_rate || 64;
       } catch (error) {
         // eslint-disable-next-line no-console

@@ -19,6 +19,7 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "~/components/ui/popover";
+import ReplayLineupTeam from "~/components/match/ReplayLineupTeam.vue";
 
 type Position = {
   round: number;
@@ -94,6 +95,25 @@ type RoundTick = {
   reason?: number | null;
 };
 
+// Per-player loadout snapshot at freeze-end (one entry per round per
+// player). Drives the equipment row rendered under each player name in
+// the lineup panel.
+type RoundInventoryEntry = {
+  round: number;
+  steam_id: string | null;
+  team: string | null;
+  flash: number;
+  smoke: number;
+  he: number;
+  molotov: number;
+  decoy: number;
+  primary: string | null;
+  secondary: string | null;
+  armor: number;
+  helmet: boolean;
+  kit: boolean;
+};
+
 type TimerPhase = "freeze" | "live" | "bomb" | "ended";
 type TimerState = {
   phase: TimerPhase;
@@ -140,6 +160,7 @@ const props = defineProps<{
   demoBombs?: DemoBomb[];
   demoKitDrops?: DemoKitDrop[];
   demoRoundTicks?: RoundTick[];
+  roundInventory?: RoundInventoryEntry[];
   tickRate?: number;
   mapName?: string | null;
   // True when the viewer is already inside the popout window — we
@@ -172,7 +193,10 @@ onMounted(async () => {
 });
 
 const normalizedMap = computed(() =>
-  (props.mapName || "").trim().toLowerCase(),
+  (props.mapName || "")
+    .trim()
+    .toLowerCase()
+    .replace(/_night$/, ""),
 );
 
 const calibration = computed<RadarMeta | null>(() => {
@@ -303,6 +327,17 @@ const activeRoundTick = computed<RoundTick | null>(() => {
     (props.demoRoundTicks ?? []).find((r) => r.round === activeRound.value) ??
     null
   );
+});
+
+const loadoutBySteam = computed<Map<string, RoundInventoryEntry>>(() => {
+  const out = new Map<string, RoundInventoryEntry>();
+  if (activeRound.value === null) return out;
+  for (const r of props.roundInventory ?? []) {
+    if (r.round !== activeRound.value) continue;
+    if (!r.steam_id) continue;
+    out.set(r.steam_id, r);
+  }
+  return out;
 });
 
 // Bomb events for the active round only (by tick range from round_ticks).
@@ -467,6 +502,19 @@ function skipFreezetime() {
 }
 
 const currentTick = computed(() => ticks.value[tickIndex.value] ?? 0);
+
+const killFeedDisplay = computed(() =>
+  killsBeforeCursor.value.slice().reverse(),
+);
+
+const killFeedEl = ref<HTMLElement | null>(null);
+watch(
+  () => killsBeforeCursor.value.length,
+  () => {
+    const el = killFeedEl.value;
+    if (el) el.scrollTop = 0;
+  },
+);
 const nextTickValue = computed(
   () => ticks.value[Math.min(tickIndex.value + 1, ticks.value.length - 1)] ?? 0,
 );
@@ -1283,7 +1331,9 @@ const layoutRootEl = ref<HTMLElement | null>(null);
 // playbarRowEl is referenced from the in-radar overlay; kept here so
 // ResizeObserver triggers when the overlay's wrap state changes.
 const playbarRowEl = ref<HTMLElement | null>(null);
+const playbarDockEl = ref<HTMLElement | null>(null);
 const radarMaxPx = ref(560);
+const playbarDockHeight = ref(0);
 const LINEUP_COL_WITH_GAP = 244; // 232 min-width + 12 gap
 
 // Detect the height of any persistent bottom chrome the app docks
@@ -1317,22 +1367,15 @@ function recomputeRadarSize() {
   const root = layoutRootEl.value;
   if (!root) return;
   const rootRect = root.getBoundingClientRect();
-  // Controls live inside the radar so there's no external bottom
-  // strip, but we still subtract:
-  //   - a small SAFETY so the radar isn't flush with the viewport edge
-  //   - whatever fixed bottom chrome the app/devtools have docked
-  //     (admin bars, floating stream PiP, etc.)
   const SAFETY = 16;
   const bottomChrome = detectBottomChromeHeight();
-  const availableH = window.innerHeight - rootRect.top - SAFETY - bottomChrome;
+  const dockH = playbarDockEl.value?.offsetHeight ?? 0;
+  playbarDockHeight.value = dockH;
+  const availableH =
+    window.innerHeight - rootRect.top - SAFETY - bottomChrome - dockH;
   const availableW = rootRect.width;
   const lineupVisible = availableW >= 600;
   const reserved = lineupVisible ? LINEUP_COL_WITH_GAP : 0;
-  // No upper cap on radarMaxPx — the SVG uses a 1024×1024 viewBox and
-  // `preserveAspectRatio="xMidYMid meet"`, so it scales cleanly to
-  // whatever size we give the container. Capping at CANVAS used to
-  // strand wasted space in the popout window. Floor at 280 so the
-  // radar stays usable on tight mobile viewports.
   const maxSide = Math.max(280, Math.min(availableH, availableW - reserved));
   radarMaxPx.value = Math.floor(maxSide);
 }
@@ -1577,6 +1620,11 @@ function statsFor(sid: string): PlayerStats {
 function kdrText(s: PlayerStats): string {
   if (s.d === 0) return s.k > 0 ? s.k.toFixed(2) : "0.00";
   return (s.k / s.d).toFixed(2);
+}
+function followLabelFor(focused: boolean, name: string): string {
+  return focused
+    ? t("match.replay.follow_stop")
+    : t("match.replay.follow_player", { name });
 }
 // Per-steamId lookup for the live carrier / defuser / action flags.
 // Backed by interpolatedPlayers so it tracks the playhead and avoids
@@ -1930,930 +1978,1019 @@ function openReplayPopout() {
 
 <template>
   <div class="flex flex-col gap-3">
-    <div ref="layoutRootEl" class="flex gap-3 justify-center">
-      <!-- Radar canvas. Width and height are pinned to a JS-measured
-           value (`radarMaxPx`) computed from actual layout — viewport
-           height minus the wrapper's top offset minus app chrome — so
-           it grows to fill any pane without ever overflowing. No
-           native `resize` handle; sizing is fully driven by JS so the
-           browser's corner-drag affordance would only ever look out
-           of place against the chrome. -->
-      <div
-        class="relative bg-[hsl(var(--card)/0.5)] border border-border overflow-hidden shrink-0"
-        :style="{
-          width: radarMaxPx + 'px',
-          height: radarMaxPx + 'px',
-        }"
-      >
-        <img
-          v-if="radarSrc"
-          :src="radarSrc"
-          class="absolute inset-0 w-full h-full object-cover opacity-90"
-          @error="radarFailed = true"
-        />
-
-        <!-- Top-right HUD cluster: marker-style toggle + pop-out. Both
-             sized 40×40 to read as broadcast-grade action buttons. -->
-        <div class="absolute top-2 right-2 z-20 flex items-center gap-1.5">
-          <Tooltip>
-            <TooltipTrigger as-child>
-              <button
-                type="button"
-                class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
-                @click="showAvatars = !showAvatars"
-              >
-                <Users v-if="showAvatars" class="w-5 h-5" />
-                <Hash v-else class="w-5 h-5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              {{
-                showAvatars
-                  ? $t("match.replay.toggle_to_slots")
-                  : $t("match.replay.toggle_to_avatars")
-              }}
-            </TooltipContent>
-          </Tooltip>
-          <Popover>
-            <PopoverTrigger as-child>
-              <button
-                type="button"
-                class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
-                :title="$t('match.replay.overlays')"
-              >
-                <Settings2 class="w-5 h-5" />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent align="end" class="w-56 p-2 text-xs font-mono">
-              <div
-                class="px-1 py-1 text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
-              >
-                {{ $t("match.replay.overlays") }}
-              </div>
-              <label
-                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
-              >
-                <input
-                  v-model="showC4"
-                  type="checkbox"
-                  class="accent-[hsl(var(--tac-amber))]"
-                />
-                <span>{{ $t("match.replay.overlay_c4") }}</span>
-              </label>
-              <label
-                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
-              >
-                <input
-                  v-model="showDefuser"
-                  type="checkbox"
-                  class="accent-[hsl(var(--tac-amber))]"
-                />
-                <span>{{ $t("match.replay.overlay_defuser") }}</span>
-              </label>
-              <label
-                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
-              >
-                <input
-                  v-model="showGroundBomb"
-                  type="checkbox"
-                  class="accent-[hsl(var(--tac-amber))]"
-                />
-                <span>{{ $t("match.replay.overlay_ground_bomb") }}</span>
-              </label>
-              <label
-                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
-              >
-                <input
-                  v-model="showGroundKits"
-                  type="checkbox"
-                  class="accent-[hsl(var(--tac-amber))]"
-                />
-                <span>{{ $t("match.replay.overlay_ground_kits") }}</span>
-              </label>
-            </PopoverContent>
-          </Popover>
-          <Tooltip v-if="!isPopout">
-            <TooltipTrigger as-child>
-              <button
-                type="button"
-                class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
-                @click="openReplayPopout"
-              >
-                <ExternalLink class="w-5 h-5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>{{ $t("match.replay.popout") }}</TooltipContent>
-          </Tooltip>
-        </div>
-
-        <!-- HUD: round timer + bomb advisory in the top-left of the radar. -->
+    <div ref="layoutRootEl" class="flex gap-3 justify-center items-start">
+      <div class="flex flex-col shrink-0" :style="{ width: radarMaxPx + 'px' }">
         <div
-          class="absolute top-2 left-2 flex flex-col gap-1 pointer-events-none z-10"
+          class="relative bg-[hsl(var(--card)/0.5)] border border-border overflow-hidden"
+          :style="{
+            width: radarMaxPx + 'px',
+            height: radarMaxPx + 'px',
+          }"
         >
-          <div
-            class="px-2.5 py-1 font-mono text-sm font-bold tabular-nums border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
-            :class="
-              timer.phase === 'bomb'
-                ? 'border-[hsl(var(--destructive))] text-[hsl(var(--destructive))]'
-                : timer.phase === 'freeze'
-                  ? 'border-[hsl(var(--muted-foreground)/0.6)] text-muted-foreground'
-                  : 'border-[hsl(var(--tac-amber)/0.6)] text-[hsl(var(--tac-amber))]'
-            "
-          >
-            <span
-              v-if="timer.phase === 'freeze'"
-              class="text-[0.55rem] tracking-[0.25em] uppercase mr-1.5"
-            >
-              {{ $t("match.replay.phase_freeze") }}
-            </span>
-            <span
-              v-else-if="timer.phase === 'bomb'"
-              class="text-[0.55rem] tracking-[0.25em] uppercase mr-1.5"
-            >
-              {{ $t("match.replay.phase_bomb") }}
-            </span>
-            {{ formatMMSS(timer.secondsRemaining) }}
-          </div>
-          <div
-            v-if="timer.phase === 'bomb'"
-            class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--destructive)/0.6)] bg-[hsl(var(--destructive)/0.15)] text-[hsl(var(--destructive))] backdrop-blur-sm"
-          >
-            <span class="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
-            {{
-              $t("match.replay.bomb_planted", {
-                site: bombPlantThisRound?.site ?? "",
-              })
-            }}
-          </div>
-          <div
-            v-else-if="
-              bombDefuseThisRound && bombDefuseThisRound.tick <= currentTick
-            "
-            class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--success)/0.6)] bg-[hsl(var(--success)/0.15)] text-[hsl(var(--success))] backdrop-blur-sm"
-          >
-            <span class="w-1.5 h-1.5 rounded-full bg-current" />
-            {{ $t("match.replay.bomb_defused") }}
-          </div>
-          <div
-            v-else-if="
-              bombExplodeThisRound && bombExplodeThisRound.tick <= currentTick
-            "
-            class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--destructive)/0.8)] bg-[hsl(var(--destructive)/0.25)] text-[hsl(var(--destructive))] backdrop-blur-sm"
-          >
-            {{ $t("match.replay.bomb_exploded") }}
-          </div>
-        </div>
+          <img
+            v-if="radarSrc"
+            :src="radarSrc"
+            class="absolute inset-0 w-full h-full object-cover opacity-90"
+            @error="radarFailed = true"
+          />
 
-        <svg
-          :viewBox="`0 0 ${CANVAS} ${CANVAS}`"
-          class="absolute inset-0 w-full h-full"
-          preserveAspectRatio="xMidYMid meet"
-        >
-          <defs>
-            <!-- Volumetric smoke filter: turbulence-displaced edges that
+          <!-- Top-right HUD cluster: marker-style toggle + pop-out. Both
+             sized 40×40 to read as broadcast-grade action buttons. -->
+          <div class="absolute top-2 right-2 z-20 flex items-center gap-1.5">
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
+                  @click="showAvatars = !showAvatars"
+                >
+                  <Users v-if="showAvatars" class="w-5 h-5" />
+                  <Hash v-else class="w-5 h-5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{
+                  showAvatars
+                    ? $t("match.replay.toggle_to_slots")
+                    : $t("match.replay.toggle_to_avatars")
+                }}
+              </TooltipContent>
+            </Tooltip>
+            <Popover>
+              <PopoverTrigger as-child>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
+                  :title="$t('match.replay.overlays')"
+                >
+                  <Settings2 class="w-5 h-5" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent align="end" class="w-56 p-2 text-xs font-mono">
+                <div
+                  class="px-1 py-1 text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
+                >
+                  {{ $t("match.replay.overlays") }}
+                </div>
+                <label
+                  class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+                >
+                  <input
+                    v-model="showC4"
+                    type="checkbox"
+                    class="accent-[hsl(var(--tac-amber))]"
+                  />
+                  <span>{{ $t("match.replay.overlay_c4") }}</span>
+                </label>
+                <label
+                  class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+                >
+                  <input
+                    v-model="showDefuser"
+                    type="checkbox"
+                    class="accent-[hsl(var(--tac-amber))]"
+                  />
+                  <span>{{ $t("match.replay.overlay_defuser") }}</span>
+                </label>
+                <label
+                  class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+                >
+                  <input
+                    v-model="showGroundBomb"
+                    type="checkbox"
+                    class="accent-[hsl(var(--tac-amber))]"
+                  />
+                  <span>{{ $t("match.replay.overlay_ground_bomb") }}</span>
+                </label>
+                <label
+                  class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+                >
+                  <input
+                    v-model="showGroundKits"
+                    type="checkbox"
+                    class="accent-[hsl(var(--tac-amber))]"
+                  />
+                  <span>{{ $t("match.replay.overlay_ground_kits") }}</span>
+                </label>
+              </PopoverContent>
+            </Popover>
+            <Tooltip v-if="!isPopout">
+              <TooltipTrigger as-child>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
+                  @click="openReplayPopout"
+                >
+                  <ExternalLink class="w-5 h-5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>{{ $t("match.replay.popout") }}</TooltipContent>
+            </Tooltip>
+          </div>
+
+          <!-- HUD: round timer + bomb advisory in the top-left of the radar. -->
+          <div
+            class="absolute top-2 left-2 flex flex-col gap-1 pointer-events-none z-10"
+          >
+            <div
+              class="px-2.5 py-1 font-mono text-sm font-bold tabular-nums border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
+              :class="
+                timer.phase === 'bomb'
+                  ? 'border-[hsl(var(--destructive))] text-[hsl(var(--destructive))]'
+                  : timer.phase === 'freeze'
+                    ? 'border-[hsl(var(--muted-foreground)/0.6)] text-muted-foreground'
+                    : 'border-[hsl(var(--tac-amber)/0.6)] text-[hsl(var(--tac-amber))]'
+              "
+            >
+              <span
+                v-if="timer.phase === 'freeze'"
+                class="text-[0.55rem] tracking-[0.25em] uppercase mr-1.5"
+              >
+                {{ $t("match.replay.phase_freeze") }}
+              </span>
+              <span
+                v-else-if="timer.phase === 'bomb'"
+                class="text-[0.55rem] tracking-[0.25em] uppercase mr-1.5"
+              >
+                {{ $t("match.replay.phase_bomb") }}
+              </span>
+              {{ formatMMSS(timer.secondsRemaining) }}
+            </div>
+            <div
+              v-if="timer.phase === 'bomb'"
+              class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--destructive)/0.6)] bg-[hsl(var(--destructive)/0.15)] text-[hsl(var(--destructive))] backdrop-blur-sm"
+            >
+              <span class="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+              {{
+                $t("match.replay.bomb_planted", {
+                  site: bombPlantThisRound?.site ?? "",
+                })
+              }}
+            </div>
+            <div
+              v-else-if="
+                bombDefuseThisRound && bombDefuseThisRound.tick <= currentTick
+              "
+              class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--success)/0.6)] bg-[hsl(var(--success)/0.15)] text-[hsl(var(--success))] backdrop-blur-sm"
+            >
+              <span class="w-1.5 h-1.5 rounded-full bg-current" />
+              {{ $t("match.replay.bomb_defused") }}
+            </div>
+            <div
+              v-else-if="
+                bombExplodeThisRound && bombExplodeThisRound.tick <= currentTick
+              "
+              class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--destructive)/0.8)] bg-[hsl(var(--destructive)/0.25)] text-[hsl(var(--destructive))] backdrop-blur-sm"
+            >
+              {{ $t("match.replay.bomb_exploded") }}
+            </div>
+          </div>
+
+          <svg
+            :viewBox="`0 0 ${CANVAS} ${CANVAS}`"
+            class="absolute inset-0 w-full h-full"
+            preserveAspectRatio="xMidYMid meet"
+          >
+            <defs>
+              <!-- Volumetric smoke filter: turbulence-displaced edges that
                  slowly evolve. The animated baseFrequency on the
                  feTurbulence creates the "drifting" look. -->
-            <filter
-              id="smoke-displace"
-              x="-30%"
-              y="-30%"
-              width="160%"
-              height="160%"
-            >
-              <feTurbulence
-                type="fractalNoise"
-                baseFrequency="0.014 0.018"
-                numOctaves="2"
-                seed="3"
-                result="noise"
+              <filter
+                id="smoke-displace"
+                x="-30%"
+                y="-30%"
+                width="160%"
+                height="160%"
               >
-                <animate
-                  attributeName="baseFrequency"
-                  values="0.014 0.018;0.022 0.014;0.014 0.018"
-                  dur="14s"
-                  repeatCount="indefinite"
+                <feTurbulence
+                  type="fractalNoise"
+                  baseFrequency="0.014 0.018"
+                  numOctaves="2"
+                  seed="3"
+                  result="noise"
+                >
+                  <animate
+                    attributeName="baseFrequency"
+                    values="0.014 0.018;0.022 0.014;0.014 0.018"
+                    dur="14s"
+                    repeatCount="indefinite"
+                  />
+                </feTurbulence>
+                <feDisplacementMap
+                  in="SourceGraphic"
+                  in2="noise"
+                  scale="14"
+                  xChannelSelector="R"
+                  yChannelSelector="G"
                 />
-              </feTurbulence>
-              <feDisplacementMap
-                in="SourceGraphic"
-                in2="noise"
-                scale="14"
-                xChannelSelector="R"
-                yChannelSelector="G"
-              />
-              <feGaussianBlur stdDeviation="1.2" />
-            </filter>
+                <feGaussianBlur stdDeviation="1.2" />
+              </filter>
 
-            <!-- Soft outer halo for smoke -->
-            <radialGradient id="smoke-grad" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="rgba(245,245,245,0.55)" />
-              <stop offset="55%" stop-color="rgba(210,210,210,0.42)" />
-              <stop offset="100%" stop-color="rgba(180,180,180,0)" />
-            </radialGradient>
+              <!-- Soft outer halo for smoke -->
+              <radialGradient id="smoke-grad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(245,245,245,0.55)" />
+                <stop offset="55%" stop-color="rgba(210,210,210,0.42)" />
+                <stop offset="100%" stop-color="rgba(180,180,180,0)" />
+              </radialGradient>
 
-            <!-- Fire turbulence: faster, more chaotic than smoke. -->
-            <filter
-              id="fire-displace"
-              x="-30%"
-              y="-30%"
-              width="160%"
-              height="160%"
-            >
-              <feTurbulence
-                type="fractalNoise"
-                baseFrequency="0.05 0.08"
-                numOctaves="2"
-                seed="7"
+              <!-- Fire turbulence: faster, more chaotic than smoke. -->
+              <filter
+                id="fire-displace"
+                x="-30%"
+                y="-30%"
+                width="160%"
+                height="160%"
               >
-                <animate
-                  attributeName="baseFrequency"
-                  values="0.05 0.08;0.09 0.05;0.05 0.08"
-                  dur="0.9s"
-                  repeatCount="indefinite"
+                <feTurbulence
+                  type="fractalNoise"
+                  baseFrequency="0.05 0.08"
+                  numOctaves="2"
+                  seed="7"
+                >
+                  <animate
+                    attributeName="baseFrequency"
+                    values="0.05 0.08;0.09 0.05;0.05 0.08"
+                    dur="0.9s"
+                    repeatCount="indefinite"
+                  />
+                </feTurbulence>
+                <feDisplacementMap
+                  in="SourceGraphic"
+                  scale="8"
+                  xChannelSelector="R"
+                  yChannelSelector="G"
                 />
-              </feTurbulence>
-              <feDisplacementMap
-                in="SourceGraphic"
-                scale="8"
-                xChannelSelector="R"
-                yChannelSelector="G"
-              />
-            </filter>
+              </filter>
 
-            <radialGradient id="fire-core" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="rgba(255,250,200,1)" />
-              <stop offset="35%" stop-color="rgba(255,180,40,0.9)" />
-              <stop offset="70%" stop-color="rgba(255,80,0,0.55)" />
-              <stop offset="100%" stop-color="rgba(180,0,0,0)" />
-            </radialGradient>
+              <radialGradient id="fire-core" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(255,250,200,1)" />
+                <stop offset="35%" stop-color="rgba(255,180,40,0.9)" />
+                <stop offset="70%" stop-color="rgba(255,80,0,0.55)" />
+                <stop offset="100%" stop-color="rgba(180,0,0,0)" />
+              </radialGradient>
 
-            <!-- HE shockwave: layered glow for thick, "displaced air" ring. -->
-            <filter id="he-glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="1.2" />
-              <feComponentTransfer>
-                <feFuncA type="linear" slope="1.4" />
-              </feComponentTransfer>
-            </filter>
+              <!-- HE shockwave: layered glow for thick, "displaced air" ring. -->
+              <filter id="he-glow" x="-50%" y="-50%" width="200%" height="200%">
+                <feGaussianBlur stdDeviation="1.2" />
+                <feComponentTransfer>
+                  <feFuncA type="linear" slope="1.4" />
+                </feComponentTransfer>
+              </filter>
 
-            <radialGradient id="flash-core" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="rgba(255,255,255,1)" />
-              <stop offset="40%" stop-color="rgba(240,250,255,0.9)" />
-              <stop offset="100%" stop-color="rgba(190,225,255,0)" />
-            </radialGradient>
+              <radialGradient id="flash-core" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(255,255,255,1)" />
+                <stop offset="40%" stop-color="rgba(240,250,255,0.9)" />
+                <stop offset="100%" stop-color="rgba(190,225,255,0)" />
+              </radialGradient>
 
-            <!-- Blind overlay: a soft white wash applied over blinded
+              <!-- Blind overlay: a soft white wash applied over blinded
                  players. Two gradients for variety + animated rays. -->
-            <radialGradient id="blind-overlay" cx="50%" cy="50%" r="50%">
-              <stop offset="0%" stop-color="rgba(255,255,255,0.95)" />
-              <stop offset="60%" stop-color="rgba(255,255,255,0.55)" />
-              <stop offset="100%" stop-color="rgba(255,255,255,0)" />
-            </radialGradient>
+              <radialGradient id="blind-overlay" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(255,255,255,0.95)" />
+                <stop offset="60%" stop-color="rgba(255,255,255,0.55)" />
+                <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+              </radialGradient>
 
-            <!-- One shared circular clip for all player avatars. Each
+              <!-- One shared circular clip for all player avatars. Each
                  avatar is rendered as a 24×24 image centered at the
                  kite origin then clipped to a r=12 circle so the
                  picture nearly fills the kite — only the NE tip of
                  the body shows through, which is enough to convey
                  facing direction. -->
-            <clipPath id="replay-avatar-clip" clipPathUnits="userSpaceOnUse">
-              <circle cx="0" cy="0" r="12" />
-            </clipPath>
-          </defs>
+              <clipPath id="replay-avatar-clip" clipPathUnits="userSpaceOnUse">
+                <circle cx="0" cy="0" r="12" />
+              </clipPath>
+            </defs>
 
-          <!-- Detonated grenades — animated SVG primitives.
+            <!-- Detonated grenades — animated SVG primitives.
                Smoke = pulsing gray disc with team-tinted ring,
                HE    = exploding starburst that flares then fades,
                Molotov = flickering layered flames,
                Flash = bright burst that decays,
                Decoy = dashed ring. -->
-          <g v-for="(g, i) of detonationsByTick" :key="'grn-' + i">
-            <g
-              :transform="`translate(${project({ x: g.rx, y: g.ry, z: g.rz }).x}, ${project({ x: g.rx, y: g.ry, z: g.rz }).y})`"
-            >
-              <template v-if="g.type === 'Smoke'">
-                <!-- Pseudo-volumetric smoke: a turbulence-displaced
+            <g v-for="(g, i) of detonationsByTick" :key="'grn-' + i">
+              <g
+                :transform="`translate(${project({ x: g.rx, y: g.ry, z: g.rz }).x}, ${project({ x: g.rx, y: g.ry, z: g.rz }).y})`"
+              >
+                <template v-if="g.type === 'Smoke'">
+                  <!-- Pseudo-volumetric smoke: a turbulence-displaced
                      gradient disc that drifts and breathes. Team-tinted
                      thin ring stays sharp so it remains identifiable.
                      The cloud body uses the `smoke-displace` filter to
                      make the silhouette wavy + organic. -->
-                <g filter="url(#smoke-displace)">
-                  <!-- Outer soft halo -->
-                  <circle fill="url(#smoke-grad)">
+                  <g filter="url(#smoke-displace)">
+                    <!-- Outer soft halo -->
+                    <circle fill="url(#smoke-grad)">
+                      <animate
+                        attributeName="r"
+                        values="0;38;34;36;34"
+                        keyTimes="0;0.2;0.55;0.85;1"
+                        dur="2.6s"
+                        fill="freeze"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="0.85;0.95;0.8;0.92;0.8"
+                        dur="4.5s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    <!-- Inner denser core -->
+                    <circle fill="rgba(245, 245, 245, 0.42)">
+                      <animate
+                        attributeName="r"
+                        values="0;22;19;21;19"
+                        keyTimes="0;0.25;0.55;0.85;1"
+                        dur="2.6s"
+                        fill="freeze"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="0.35;0.5;0.32;0.48;0.35"
+                        dur="3.8s"
+                        repeatCount="indefinite"
+                      />
+                      <!-- Subtle drift so the cloud "breathes" -->
+                      <animateTransform
+                        attributeName="transform"
+                        type="translate"
+                        values="0,0;3,-2;-2,3;1,-1;0,0"
+                        dur="6s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    <!-- Inner highlight -->
+                    <circle r="8" fill="rgba(255, 255, 255, 0.35)">
+                      <animate
+                        attributeName="opacity"
+                        values="0.25;0.5;0.3;0.42;0.25"
+                        dur="2.2s"
+                        repeatCount="indefinite"
+                      />
+                      <animateTransform
+                        attributeName="transform"
+                        type="translate"
+                        values="-4,-3;3,2;-2,4;2,-3;-4,-3"
+                        dur="5s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                  </g>
+                  <!-- Sharp team-tinted ring stays OUTSIDE the displace
+                     filter so identification is unambiguous. -->
+                  <circle
+                    fill="none"
+                    :stroke="colorFor(g.thrower_team)"
+                    stroke-width="1.4"
+                    stroke-opacity="0.55"
+                  >
                     <animate
                       attributeName="r"
-                      values="0;38;34;36;34"
+                      values="0;33;32;33;32"
                       keyTimes="0;0.2;0.55;0.85;1"
                       dur="2.6s"
                       fill="freeze"
                     />
-                    <animate
-                      attributeName="opacity"
-                      values="0.85;0.95;0.8;0.92;0.8"
-                      dur="4.5s"
-                      repeatCount="indefinite"
-                    />
                   </circle>
-                  <!-- Inner denser core -->
-                  <circle fill="rgba(245, 245, 245, 0.42)">
-                    <animate
-                      attributeName="r"
-                      values="0;22;19;21;19"
-                      keyTimes="0;0.25;0.55;0.85;1"
-                      dur="2.6s"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="0.35;0.5;0.32;0.48;0.35"
-                      dur="3.8s"
-                      repeatCount="indefinite"
-                    />
-                    <!-- Subtle drift so the cloud "breathes" -->
-                    <animateTransform
-                      attributeName="transform"
-                      type="translate"
-                      values="0,0;3,-2;-2,3;1,-1;0,0"
-                      dur="6s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                  <!-- Inner highlight -->
-                  <circle r="8" fill="rgba(255, 255, 255, 0.35)">
-                    <animate
-                      attributeName="opacity"
-                      values="0.25;0.5;0.3;0.42;0.25"
-                      dur="2.2s"
-                      repeatCount="indefinite"
-                    />
-                    <animateTransform
-                      attributeName="transform"
-                      type="translate"
-                      values="-4,-3;3,2;-2,4;2,-3;-4,-3"
-                      dur="5s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                </g>
-                <!-- Sharp team-tinted ring stays OUTSIDE the displace
-                     filter so identification is unambiguous. -->
-                <circle
-                  fill="none"
-                  :stroke="colorFor(g.thrower_team)"
-                  stroke-width="1.4"
-                  stroke-opacity="0.55"
-                >
-                  <animate
-                    attributeName="r"
-                    values="0;33;32;33;32"
-                    keyTimes="0;0.2;0.55;0.85;1"
-                    dur="2.6s"
-                    fill="freeze"
-                  />
-                </circle>
-              </template>
+                </template>
 
-              <template v-else-if="g.type === 'HE'">
-                <!-- Triple-stacked shockwave rings, each expanding at
+                <template v-else-if="g.type === 'HE'">
+                  <!-- Triple-stacked shockwave rings, each expanding at
                      its own rate to read as "displaced air" sweeping
                      outward. Layered with a heavy glow filter so the
                      blast feels concussive. -->
-                <g filter="url(#he-glow)">
-                  <circle
-                    fill="none"
-                    stroke="hsl(45, 100%, 75%)"
-                    stroke-width="2.5"
+                  <g filter="url(#he-glow)">
+                    <circle
+                      fill="none"
+                      stroke="hsl(45, 100%, 75%)"
+                      stroke-width="2.5"
+                    >
+                      <animate
+                        attributeName="r"
+                        from="2"
+                        to="44"
+                        dur="0.55s"
+                        fill="freeze"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="1;0.85;0"
+                        keyTimes="0;0.4;1"
+                        dur="0.55s"
+                        fill="freeze"
+                      />
+                      <animate
+                        attributeName="stroke-width"
+                        from="3.5"
+                        to="0.5"
+                        dur="0.55s"
+                        fill="freeze"
+                      />
+                    </circle>
+                    <circle
+                      fill="none"
+                      stroke="hsl(28, 100%, 65%)"
+                      stroke-width="2"
+                    >
+                      <animate
+                        attributeName="r"
+                        from="0"
+                        to="34"
+                        dur="0.7s"
+                        begin="0.08s"
+                        fill="freeze"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        from="0.85"
+                        to="0"
+                        dur="0.7s"
+                        begin="0.08s"
+                        fill="freeze"
+                      />
+                    </circle>
+                    <circle
+                      fill="none"
+                      stroke="hsl(0, 80%, 55%)"
+                      stroke-width="1.5"
+                    >
+                      <animate
+                        attributeName="r"
+                        from="0"
+                        to="24"
+                        dur="0.85s"
+                        begin="0.18s"
+                        fill="freeze"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        from="0.7"
+                        to="0"
+                        dur="0.85s"
+                        begin="0.18s"
+                        fill="freeze"
+                      />
+                    </circle>
+                  </g>
+                  <!-- Bright core flash + sharp starburst body -->
+                  <polygon
+                    points="0,-20 4,-5 20,-4 7,3 13,18 0,8 -13,18 -7,3 -20,-4 -4,-5"
+                    fill="hsl(40, 100%, 60%)"
+                    stroke="hsl(55, 100%, 85%)"
+                    stroke-width="1.2"
                   >
-                    <animate
-                      attributeName="r"
-                      from="2"
-                      to="44"
-                      dur="0.55s"
+                    <animateTransform
+                      attributeName="transform"
+                      type="scale"
+                      values="0.2;1.5;1.1;0.95"
+                      keyTimes="0;0.3;0.6;1"
+                      dur="0.6s"
                       fill="freeze"
                     />
                     <animate
                       attributeName="opacity"
-                      values="1;0.85;0"
-                      keyTimes="0;0.4;1"
-                      dur="0.55s"
+                      values="1;1;0.7;0"
+                      keyTimes="0;0.35;0.7;1"
+                      dur="1.1s"
                       fill="freeze"
                     />
-                    <animate
-                      attributeName="stroke-width"
-                      from="3.5"
-                      to="0.5"
-                      dur="0.55s"
-                      fill="freeze"
-                    />
-                  </circle>
-                  <circle
-                    fill="none"
-                    stroke="hsl(28, 100%, 65%)"
-                    stroke-width="2"
-                  >
-                    <animate
-                      attributeName="r"
-                      from="0"
-                      to="34"
-                      dur="0.7s"
-                      begin="0.08s"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      from="0.85"
-                      to="0"
-                      dur="0.7s"
-                      begin="0.08s"
-                      fill="freeze"
-                    />
-                  </circle>
-                  <circle
-                    fill="none"
-                    stroke="hsl(0, 80%, 55%)"
-                    stroke-width="1.5"
-                  >
-                    <animate
-                      attributeName="r"
-                      from="0"
-                      to="24"
-                      dur="0.85s"
-                      begin="0.18s"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      from="0.7"
-                      to="0"
-                      dur="0.85s"
-                      begin="0.18s"
-                      fill="freeze"
-                    />
-                  </circle>
-                </g>
-                <!-- Bright core flash + sharp starburst body -->
-                <polygon
-                  points="0,-20 4,-5 20,-4 7,3 13,18 0,8 -13,18 -7,3 -20,-4 -4,-5"
-                  fill="hsl(40, 100%, 60%)"
-                  stroke="hsl(55, 100%, 85%)"
-                  stroke-width="1.2"
-                >
-                  <animateTransform
-                    attributeName="transform"
-                    type="scale"
-                    values="0.2;1.5;1.1;0.95"
-                    keyTimes="0;0.3;0.6;1"
-                    dur="0.6s"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="1;1;0.7;0"
-                    keyTimes="0;0.35;0.7;1"
-                    dur="1.1s"
-                    fill="freeze"
-                  />
-                </polygon>
-                <!-- Debris spokes — eight short radial lines that
+                  </polygon>
+                  <!-- Debris spokes — eight short radial lines that
                      shoot outward and fade. -->
-                <g
-                  v-for="ang in [0, 45, 90, 135, 180, 225, 270, 315]"
-                  :key="`he-spoke-${ang}`"
-                  :transform="`rotate(${ang})`"
-                >
-                  <line
-                    x1="3"
-                    y1="0"
-                    x2="3"
-                    y2="0"
-                    stroke="hsl(55, 100%, 75%)"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
+                  <g
+                    v-for="ang in [0, 45, 90, 135, 180, 225, 270, 315]"
+                    :key="`he-spoke-${ang}`"
+                    :transform="`rotate(${ang})`"
                   >
+                    <line
+                      x1="3"
+                      y1="0"
+                      x2="3"
+                      y2="0"
+                      stroke="hsl(55, 100%, 75%)"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    >
+                      <animate
+                        attributeName="x2"
+                        from="6"
+                        to="26"
+                        dur="0.45s"
+                        fill="freeze"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="1;0.6;0"
+                        keyTimes="0;0.5;1"
+                        dur="0.5s"
+                        fill="freeze"
+                      />
+                    </line>
+                  </g>
+                  <!-- Hot core that pulses then dies. -->
+                  <circle fill="hsl(55, 100%, 92%)">
                     <animate
-                      attributeName="x2"
-                      from="6"
-                      to="26"
-                      dur="0.45s"
+                      attributeName="r"
+                      values="8;4;0"
+                      keyTimes="0;0.5;1"
+                      dur="0.9s"
                       fill="freeze"
                     />
                     <animate
                       attributeName="opacity"
                       values="1;0.6;0"
                       keyTimes="0;0.5;1"
-                      dur="0.5s"
+                      dur="0.9s"
                       fill="freeze"
                     />
-                  </line>
-                </g>
-                <!-- Hot core that pulses then dies. -->
-                <circle fill="hsl(55, 100%, 92%)">
-                  <animate
-                    attributeName="r"
-                    values="8;4;0"
-                    keyTimes="0;0.5;1"
-                    dur="0.9s"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="1;0.6;0"
-                    keyTimes="0;0.5;1"
-                    dur="0.9s"
-                    fill="freeze"
-                  />
-                </circle>
-              </template>
+                  </circle>
+                </template>
 
-              <template v-else-if="g.type === 'Molotov'">
-                <!-- Fire pool: a radial gradient core wrapped in a
+                <template v-else-if="g.type === 'Molotov'">
+                  <!-- Fire pool: a radial gradient core wrapped in a
                      turbulence-displaced layer so the silhouette
                      constantly flickers as if licked by tongues of
                      flame. Embers float up out of the pool. -->
-                <!-- Outer heat haze (no displace, just a soft glow) -->
-                <circle r="34" fill="rgba(255, 40, 0, 0.14)">
-                  <animate
-                    attributeName="r"
-                    values="6;34;32;34"
-                    keyTimes="0;0.15;0.6;1"
-                    dur="0.9s"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="0.1;0.18;0.12;0.16"
-                    dur="1.4s"
-                    repeatCount="indefinite"
-                  />
-                </circle>
-                <!-- Main fire body with displacement -->
-                <g filter="url(#fire-displace)">
-                  <circle r="22" fill="url(#fire-core)">
+                  <!-- Outer heat haze (no displace, just a soft glow) -->
+                  <circle r="34" fill="rgba(255, 40, 0, 0.14)">
                     <animate
                       attributeName="r"
-                      values="4;24;22;24;22"
-                      keyTimes="0;0.2;0.55;0.85;1"
-                      dur="1s"
+                      values="6;34;32;34"
+                      keyTimes="0;0.15;0.6;1"
+                      dur="0.9s"
                       fill="freeze"
                     />
                     <animate
                       attributeName="opacity"
-                      values="0.85;1;0.85;0.95;0.85"
-                      dur="0.7s"
+                      values="0.1;0.18;0.12;0.16"
+                      dur="1.4s"
                       repeatCount="indefinite"
                     />
                   </circle>
-                  <!-- Inner hot core -->
-                  <circle r="9" fill="rgba(255, 250, 200, 0.95)">
+                  <!-- Main fire body with displacement -->
+                  <g filter="url(#fire-displace)">
+                    <circle r="22" fill="url(#fire-core)">
+                      <animate
+                        attributeName="r"
+                        values="4;24;22;24;22"
+                        keyTimes="0;0.2;0.55;0.85;1"
+                        dur="1s"
+                        fill="freeze"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="0.85;1;0.85;0.95;0.85"
+                        dur="0.7s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    <!-- Inner hot core -->
+                    <circle r="9" fill="rgba(255, 250, 200, 0.95)">
+                      <animate
+                        attributeName="r"
+                        values="5;10;7;9;5"
+                        dur="0.45s"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="0.9;1;0.85;0.95;0.9"
+                        dur="0.45s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                  </g>
+                  <!-- Floating embers: small bright dots that drift up
+                     and fade. Six embers staggered for randomness. -->
+                  <g
+                    v-for="(em, ei) of [
+                      { x: -6, y: 4, d: '1.2s' },
+                      { x: 5, y: 7, d: '1.5s' },
+                      { x: -2, y: -2, d: '1s' },
+                      { x: 8, y: -4, d: '1.7s' },
+                      { x: -9, y: -3, d: '1.3s' },
+                      { x: 3, y: 6, d: '1.4s' },
+                    ]"
+                    :key="`em-${ei}`"
+                  >
+                    <circle
+                      :cx="em.x"
+                      :cy="em.y"
+                      r="1.2"
+                      fill="rgba(255, 230, 140, 0.95)"
+                    >
+                      <animate
+                        attributeName="cy"
+                        :values="`${em.y};${em.y - 18}`"
+                        :dur="em.d"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="0;1;0.8;0"
+                        keyTimes="0;0.2;0.6;1"
+                        :dur="em.d"
+                        repeatCount="indefinite"
+                      />
+                      <animate
+                        attributeName="r"
+                        values="0.8;1.4;0.6"
+                        :dur="em.d"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                  </g>
+                </template>
+
+                <template v-else-if="g.type === 'Flash'">
+                  <!-- Pop: blinding white shockwave expands outward. -->
+                  <circle fill="url(#flash-core)">
                     <animate
                       attributeName="r"
-                      values="5;10;7;9;5"
-                      dur="0.45s"
-                      repeatCount="indefinite"
+                      from="2"
+                      to="44"
+                      dur="0.35s"
+                      fill="freeze"
                     />
                     <animate
                       attributeName="opacity"
-                      values="0.9;1;0.85;0.95;0.9"
-                      dur="0.45s"
-                      repeatCount="indefinite"
+                      values="1;0.8;0"
+                      keyTimes="0;0.35;1"
+                      dur="0.65s"
+                      fill="freeze"
                     />
                   </circle>
-                </g>
-                <!-- Floating embers: small bright dots that drift up
-                     and fade. Six embers staggered for randomness. -->
-                <g
-                  v-for="(em, ei) of [
-                    { x: -6, y: 4, d: '1.2s' },
-                    { x: 5, y: 7, d: '1.5s' },
-                    { x: -2, y: -2, d: '1s' },
-                    { x: 8, y: -4, d: '1.7s' },
-                    { x: -9, y: -3, d: '1.3s' },
-                    { x: 3, y: 6, d: '1.4s' },
-                  ]"
-                  :key="`em-${ei}`"
-                >
+                  <!-- Sharp ring chasing the shockwave -->
                   <circle
-                    :cx="em.x"
-                    :cy="em.y"
-                    r="1.2"
-                    fill="rgba(255, 230, 140, 0.95)"
+                    fill="none"
+                    stroke="rgba(220, 240, 255, 0.95)"
+                    stroke-width="1.5"
                   >
                     <animate
-                      attributeName="cy"
-                      :values="`${em.y};${em.y - 18}`"
-                      :dur="em.d"
-                      repeatCount="indefinite"
+                      attributeName="r"
+                      from="0"
+                      to="30"
+                      dur="0.4s"
+                      fill="freeze"
                     />
                     <animate
                       attributeName="opacity"
-                      values="0;1;0.8;0"
-                      keyTimes="0;0.2;0.6;1"
-                      :dur="em.d"
-                      repeatCount="indefinite"
+                      from="1"
+                      to="0"
+                      dur="0.5s"
+                      fill="freeze"
                     />
                     <animate
-                      attributeName="r"
-                      values="0.8;1.4;0.6"
-                      :dur="em.d"
+                      attributeName="stroke-width"
+                      from="2.5"
+                      to="0.3"
+                      dur="0.5s"
+                      fill="freeze"
+                    />
+                  </circle>
+                  <!-- Sharp star core -->
+                  <polygon
+                    points="0,-18 4,-4 18,0 4,4 0,18 -4,4 -18,0 -4,-4"
+                    fill="rgba(245, 250, 255, 0.98)"
+                  >
+                    <animateTransform
+                      attributeName="transform"
+                      type="scale"
+                      values="0.1;1.4;1.05;0.9"
+                      keyTimes="0;0.3;0.55;1"
+                      dur="0.55s"
+                      fill="freeze"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values="1;0.7;0"
+                      keyTimes="0;0.45;1"
+                      dur="1s"
+                      fill="freeze"
+                    />
+                  </polygon>
+                  <!-- Cyan-tinted secondary star at 22.5° for sharpness. -->
+                  <polygon
+                    points="0,-12 3,-3 12,0 3,3 0,12 -3,3 -12,0 -3,-3"
+                    fill="rgba(180, 220, 255, 0.85)"
+                    transform="rotate(22.5)"
+                  >
+                    <animateTransform
+                      attributeName="transform"
+                      type="scale"
+                      values="0.1;1.2;0.7"
+                      keyTimes="0;0.4;1"
+                      dur="0.6s"
+                      additive="sum"
+                      fill="freeze"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values="0.85;0.5;0"
+                      keyTimes="0;0.4;1"
+                      dur="0.9s"
+                      fill="freeze"
+                    />
+                  </polygon>
+                </template>
+
+                <template v-else-if="g.type === 'Decoy'">
+                  <circle
+                    r="20"
+                    fill="none"
+                    :stroke="colorFor(g.thrower_team)"
+                    stroke-width="2"
+                    stroke-dasharray="3 3"
+                  >
+                    <animate
+                      attributeName="opacity"
+                      values="0.4;0.8;0.4"
+                      dur="0.5s"
+                      repeatCount="indefinite"
+                    />
+                    <animateTransform
+                      attributeName="transform"
+                      type="rotate"
+                      from="0"
+                      to="360"
+                      dur="6s"
                       repeatCount="indefinite"
                     />
                   </circle>
-                </g>
-              </template>
-
-              <template v-else-if="g.type === 'Flash'">
-                <!-- Pop: blinding white shockwave expands outward. -->
-                <circle fill="url(#flash-core)">
-                  <animate
-                    attributeName="r"
-                    from="2"
-                    to="44"
-                    dur="0.35s"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="1;0.8;0"
-                    keyTimes="0;0.35;1"
-                    dur="0.65s"
-                    fill="freeze"
-                  />
-                </circle>
-                <!-- Sharp ring chasing the shockwave -->
-                <circle
-                  fill="none"
-                  stroke="rgba(220, 240, 255, 0.95)"
-                  stroke-width="1.5"
-                >
-                  <animate
-                    attributeName="r"
-                    from="0"
-                    to="30"
-                    dur="0.4s"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    from="1"
-                    to="0"
-                    dur="0.5s"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="stroke-width"
-                    from="2.5"
-                    to="0.3"
-                    dur="0.5s"
-                    fill="freeze"
-                  />
-                </circle>
-                <!-- Sharp star core -->
-                <polygon
-                  points="0,-18 4,-4 18,0 4,4 0,18 -4,4 -18,0 -4,-4"
-                  fill="rgba(245, 250, 255, 0.98)"
-                >
-                  <animateTransform
-                    attributeName="transform"
-                    type="scale"
-                    values="0.1;1.4;1.05;0.9"
-                    keyTimes="0;0.3;0.55;1"
-                    dur="0.55s"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="1;0.7;0"
-                    keyTimes="0;0.45;1"
-                    dur="1s"
-                    fill="freeze"
-                  />
-                </polygon>
-                <!-- Cyan-tinted secondary star at 22.5° for sharpness. -->
-                <polygon
-                  points="0,-12 3,-3 12,0 3,3 0,12 -3,3 -12,0 -3,-3"
-                  fill="rgba(180, 220, 255, 0.85)"
-                  transform="rotate(22.5)"
-                >
-                  <animateTransform
-                    attributeName="transform"
-                    type="scale"
-                    values="0.1;1.2;0.7"
-                    keyTimes="0;0.4;1"
-                    dur="0.6s"
-                    additive="sum"
-                    fill="freeze"
-                  />
-                  <animate
-                    attributeName="opacity"
-                    values="0.85;0.5;0"
-                    keyTimes="0;0.4;1"
-                    dur="0.9s"
-                    fill="freeze"
-                  />
-                </polygon>
-              </template>
-
-              <template v-else-if="g.type === 'Decoy'">
-                <circle
-                  r="20"
-                  fill="none"
-                  :stroke="colorFor(g.thrower_team)"
-                  stroke-width="2"
-                  stroke-dasharray="3 3"
-                >
-                  <animate
-                    attributeName="opacity"
-                    values="0.4;0.8;0.4"
-                    dur="0.5s"
-                    repeatCount="indefinite"
-                  />
-                  <animateTransform
-                    attributeName="transform"
-                    type="rotate"
-                    from="0"
-                    to="360"
-                    dur="6s"
-                    repeatCount="indefinite"
-                  />
-                </circle>
-              </template>
+                </template>
+              </g>
             </g>
-          </g>
 
-          <!-- In-flight grenades: small projectile dot moving along the
+            <!-- In-flight grenades: small projectile dot moving along the
                throw → landing path, with a faint dashed line ahead of
                it showing where it's about to land (the "look-ahead"
                trajectory cue). -->
-          <g v-for="(g, i) of inFlightGrenades" :key="'thr-' + i">
-            <!-- Predicted-path trail from current pos to landing -->
-            <line
-              :x1="project({ x: g.x, y: g.y, z: g.z }).x"
-              :y1="project({ x: g.x, y: g.y, z: g.z }).y"
-              :x2="project({ x: g.toX, y: g.toY, z: g.z }).x"
-              :y2="project({ x: g.toX, y: g.toY, z: g.z }).y"
-              :stroke="colorFor(g.thrower_team)"
-              stroke-width="1"
-              stroke-dasharray="2 3"
-              stroke-opacity="0.45"
-            />
-            <!-- Landing marker (small target ring) -->
-            <circle
-              :cx="project({ x: g.toX, y: g.toY, z: g.z }).x"
-              :cy="project({ x: g.toX, y: g.toY, z: g.z }).y"
-              r="4"
-              fill="none"
-              :stroke="colorFor(g.thrower_team)"
-              stroke-width="1"
-              stroke-opacity="0.5"
-            />
-            <!-- Projectile itself: small filled dot with team ring -->
-            <g
-              :transform="`translate(${project({ x: g.x, y: g.y, z: g.z }).x}, ${project({ x: g.x, y: g.y, z: g.z }).y})`"
-            >
-              <circle r="5" :fill="colorFor(g.thrower_team)" opacity="0.85" />
-              <circle r="2.2" fill="white" opacity="0.95" />
+            <g v-for="(g, i) of inFlightGrenades" :key="'thr-' + i">
+              <!-- Predicted-path trail from current pos to landing -->
+              <line
+                :x1="project({ x: g.x, y: g.y, z: g.z }).x"
+                :y1="project({ x: g.x, y: g.y, z: g.z }).y"
+                :x2="project({ x: g.toX, y: g.toY, z: g.z }).x"
+                :y2="project({ x: g.toX, y: g.toY, z: g.z }).y"
+                :stroke="colorFor(g.thrower_team)"
+                stroke-width="1"
+                stroke-dasharray="2 3"
+                stroke-opacity="0.45"
+              />
+              <!-- Landing marker (small target ring) -->
+              <circle
+                :cx="project({ x: g.toX, y: g.toY, z: g.z }).x"
+                :cy="project({ x: g.toX, y: g.toY, z: g.z }).y"
+                r="4"
+                fill="none"
+                :stroke="colorFor(g.thrower_team)"
+                stroke-width="1"
+                stroke-opacity="0.5"
+              />
+              <!-- Projectile itself: small filled dot with team ring -->
+              <g
+                :transform="`translate(${project({ x: g.x, y: g.y, z: g.z }).x}, ${project({ x: g.x, y: g.y, z: g.z }).y})`"
+              >
+                <circle r="5" :fill="colorFor(g.thrower_team)" opacity="0.85" />
+                <circle r="2.2" fill="white" opacity="0.95" />
+              </g>
             </g>
-          </g>
 
-          <!-- Bomb marker: planted/defused/exploded at the plant site -->
-          <g v-if="bombMarker">
-            <image
-              :href="`/radars/projectiles/bomb-${bombMarker.state}.webp`"
-              :x="project(bombMarker).x - 14"
-              :y="project(bombMarker).y - 14"
-              width="28"
-              height="28"
-            />
-            <circle
-              v-if="bombMarker.state === 'planted'"
-              :cx="project(bombMarker).x"
-              :cy="project(bombMarker).y"
-              r="22"
-              fill="none"
-              stroke="hsl(var(--destructive))"
-              stroke-width="2"
-              opacity="0.55"
-            >
-              <animate
-                attributeName="r"
-                values="18;26;18"
-                dur="1s"
-                repeatCount="indefinite"
+            <!-- Bomb marker: planted/defused/exploded at the plant site -->
+            <g v-if="bombMarker">
+              <image
+                :href="`/radars/projectiles/bomb-${bombMarker.state}.webp`"
+                :x="project(bombMarker).x - 14"
+                :y="project(bombMarker).y - 14"
+                width="28"
+                height="28"
               />
-              <animate
-                attributeName="opacity"
-                values="0.6;0.2;0.6"
-                dur="1s"
-                repeatCount="indefinite"
-              />
-            </circle>
-          </g>
+              <circle
+                v-if="bombMarker.state === 'planted'"
+                :cx="project(bombMarker).x"
+                :cy="project(bombMarker).y"
+                r="22"
+                fill="none"
+                stroke="hsl(var(--destructive))"
+                stroke-width="2"
+                opacity="0.55"
+              >
+                <animate
+                  attributeName="r"
+                  values="18;26;18"
+                  dur="1s"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0.6;0.2;0.6"
+                  dur="1s"
+                  repeatCount="indefinite"
+                />
+              </circle>
+            </g>
 
-          <!-- Death markers persist at the victim's location at the
+            <!-- Death markers persist at the victim's location at the
                kill tick — looked up from the position sample closest
                to the demo kill's tick. -->
-          <g v-for="(k, i) of roundKillsWithLocation" :key="'k-' + i">
-            <g
-              v-if="k.location"
-              :transform="`translate(${project(k.location).x}, ${project(k.location).y})`"
-            >
-              <line
-                x1="-7"
-                y1="-7"
-                x2="7"
-                y2="7"
-                :stroke="colorFor(k.victim_team ?? null)"
-                stroke-width="3"
-                opacity="0.7"
-              />
-              <line
-                x1="-7"
-                y1="7"
-                x2="7"
-                y2="-7"
-                :stroke="colorFor(k.victim_team ?? null)"
-                stroke-width="3"
-                opacity="0.7"
-              />
+            <g v-for="(k, i) of roundKillsWithLocation" :key="'k-' + i">
+              <g
+                v-if="k.location"
+                :transform="`translate(${project(k.location).x}, ${project(k.location).y})`"
+              >
+                <line
+                  x1="-7"
+                  y1="-7"
+                  x2="7"
+                  y2="7"
+                  :stroke="colorFor(k.victim_team ?? null)"
+                  stroke-width="3"
+                  opacity="0.7"
+                />
+                <line
+                  x1="-7"
+                  y1="7"
+                  x2="7"
+                  y2="-7"
+                  :stroke="colorFor(k.victim_team ?? null)"
+                  stroke-width="3"
+                  opacity="0.7"
+                />
+              </g>
             </g>
-          </g>
 
-          <!-- Dropped defuse kits: cyan disc with the defuser icon,
+            <!-- Dropped defuse kits: cyan disc with the defuser icon,
                offset above the actual drop point with a thin leader
                line so it doesn't fight the death X. A larger
                transparent circle is the hover hit-area; Vue tracks
                which marker is hovered so we can draw a clean halo. -->
-          <g
-            v-if="showGroundKits"
-            v-for="(k, i) of groundKitsAt"
-            :key="'kit-' + i"
-          >
-            <g :transform="`translate(${project(k).x}, ${project(k).y})`">
-              <!-- Leader: thin cyan line from the death spot up to
+            <g
+              v-if="showGroundKits"
+              v-for="(k, i) of groundKitsAt"
+              :key="'kit-' + i"
+            >
+              <g :transform="`translate(${project(k).x}, ${project(k).y})`">
+                <!-- Leader: thin cyan line from the death spot up to
                    the icon. -->
-              <line
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="-13"
-                stroke="hsl(190, 90%, 55%)"
-                stroke-width="0.8"
-                stroke-opacity="0.85"
-                stroke-linecap="round"
-                pointer-events="none"
-              />
-              <g transform="translate(0, -16)">
-                <!-- Hover halo: rendered first so it sits behind the
+                <line
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="-13"
+                  stroke="hsl(190, 90%, 55%)"
+                  stroke-width="0.8"
+                  stroke-opacity="0.85"
+                  stroke-linecap="round"
+                  pointer-events="none"
+                />
+                <g transform="translate(0, -16)">
+                  <!-- Hover halo: rendered first so it sits behind the
                      icon. Toggled by the hit-area's mouseenter. -->
-                <circle
-                  v-if="hoveredGroundMarker === 'kit-' + i"
-                  r="11"
-                  fill="hsl(190, 90%, 55%)"
-                  opacity="0.28"
-                  pointer-events="none"
-                />
-                <circle
-                  v-if="hoveredGroundMarker === 'kit-' + i"
-                  r="11"
-                  fill="none"
-                  stroke="hsl(190, 90%, 70%)"
-                  stroke-width="1.5"
-                  pointer-events="none"
-                />
-                <circle
-                  r="6.5"
-                  fill="hsl(190, 90%, 55%)"
-                  stroke="hsl(0 0% 0% / 0.95)"
-                  stroke-width="1.3"
-                  opacity="0.95"
-                  pointer-events="none"
-                />
-                <image
-                  href="/img/equipment/defuser.svg"
-                  x="-4.8"
-                  y="-4.2"
-                  width="9.6"
-                  height="8.4"
-                  preserveAspectRatio="xMidYMid meet"
-                  pointer-events="none"
-                />
-                <!-- Hit-area: transparent r=10 circle that catches the
+                  <circle
+                    v-if="hoveredGroundMarker === 'kit-' + i"
+                    r="11"
+                    fill="hsl(190, 90%, 55%)"
+                    opacity="0.28"
+                    pointer-events="none"
+                  />
+                  <circle
+                    v-if="hoveredGroundMarker === 'kit-' + i"
+                    r="11"
+                    fill="none"
+                    stroke="hsl(190, 90%, 70%)"
+                    stroke-width="1.5"
+                    pointer-events="none"
+                  />
+                  <circle
+                    r="6.5"
+                    fill="hsl(190, 90%, 55%)"
+                    stroke="hsl(0 0% 0% / 0.95)"
+                    stroke-width="1.3"
+                    opacity="0.95"
+                    pointer-events="none"
+                  />
+                  <image
+                    href="/img/equipment/defuser.svg"
+                    x="-4.8"
+                    y="-4.2"
+                    width="9.6"
+                    height="8.4"
+                    preserveAspectRatio="xMidYMid meet"
+                    pointer-events="none"
+                  />
+                  <!-- Hit-area: transparent r=10 circle that catches the
                      hover. Sized generously so coaches scrubbing the
                      map don't have to aim. Native <title> here works
                      because it's the element the cursor actually
                      intersects. -->
-                <circle
-                  r="10"
-                  fill="transparent"
-                  style="cursor: pointer"
-                  @mouseenter="hoveredGroundMarker = 'kit-' + i"
-                  @mouseleave="hoveredGroundMarker = null"
-                />
-                <!-- Tooltip card via foreignObject so we can use HTML +
+                  <circle
+                    r="10"
+                    fill="transparent"
+                    style="cursor: pointer"
+                    @mouseenter="hoveredGroundMarker = 'kit-' + i"
+                    @mouseleave="hoveredGroundMarker = null"
+                  />
+                  <!-- Tooltip card via foreignObject so we can use HTML +
                      Tailwind for styling instead of measuring SVG text.
                      Rendered only on hover and sized generously to fit
                      longer names. -->
+                  <foreignObject
+                    v-if="hoveredGroundMarker === 'kit-' + i"
+                    x="-80"
+                    y="-50"
+                    width="160"
+                    height="40"
+                    style="overflow: visible; pointer-events: none"
+                  >
+                    <div
+                      xmlns="http://www.w3.org/1999/xhtml"
+                      class="font-mono text-[10px] leading-tight px-2 py-1 rounded-sm bg-[hsl(var(--background)/0.95)] border border-[hsl(190,90%,55%)] text-foreground inline-block whitespace-nowrap shadow-lg"
+                    >
+                      <div class="font-bold text-[hsl(190,90%,75%)]">
+                        {{ groundKitTooltip(k).title }}
+                      </div>
+                      <div class="text-muted-foreground">
+                        {{ groundKitTooltip(k).sub }}
+                      </div>
+                    </div>
+                  </foreignObject>
+                </g>
+              </g>
+            </g>
+
+            <!-- Bomb on the ground (or planted at site). Derived from
+               the active round's drop/pickup/plant timeline. A subtle
+               pulsing ring around the planted bomb makes the
+               post-plant site obvious. Hover surfaces the source
+               event (drop / plant) and lights up a halo. -->
+            <g v-if="showGroundBomb && groundBombAt">
+              <g
+                :transform="`translate(${project(groundBombAt).x}, ${project(groundBombAt).y})`"
+              >
+                <circle
+                  v-if="
+                    bombPlantThisRound && currentTick >= bombPlantThisRound.tick
+                  "
+                  r="14"
+                  fill="none"
+                  stroke="hsl(0, 90%, 55%)"
+                  stroke-width="1.5"
+                  opacity="0.45"
+                  pointer-events="none"
+                >
+                  <animate
+                    attributeName="r"
+                    values="12;18;12"
+                    dur="1.6s"
+                    repeatCount="indefinite"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0.55;0.15;0.55"
+                    dur="1.6s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <circle
+                  v-if="hoveredGroundMarker === 'bomb'"
+                  r="12"
+                  fill="hsl(28, 100%, 55%)"
+                  opacity="0.28"
+                  pointer-events="none"
+                />
+                <circle
+                  v-if="hoveredGroundMarker === 'bomb'"
+                  r="12"
+                  fill="none"
+                  stroke="hsl(28, 100%, 70%)"
+                  stroke-width="1.5"
+                  pointer-events="none"
+                />
+                <circle
+                  r="7"
+                  fill="hsl(28, 100%, 55%)"
+                  stroke="hsl(0 0% 0% / 0.95)"
+                  stroke-width="1.4"
+                  pointer-events="none"
+                />
+                <image
+                  href="/img/equipment/c4.svg"
+                  x="-5"
+                  y="-5"
+                  width="10"
+                  height="10"
+                  preserveAspectRatio="xMidYMid meet"
+                  pointer-events="none"
+                />
+                <circle
+                  r="11"
+                  fill="transparent"
+                  style="cursor: pointer"
+                  @mouseenter="hoveredGroundMarker = 'bomb'"
+                  @mouseleave="hoveredGroundMarker = null"
+                />
                 <foreignObject
-                  v-if="hoveredGroundMarker === 'kit-' + i"
+                  v-if="hoveredGroundMarker === 'bomb'"
                   x="-80"
                   y="-50"
                   width="160"
@@ -2862,318 +2999,226 @@ function openReplayPopout() {
                 >
                   <div
                     xmlns="http://www.w3.org/1999/xhtml"
-                    class="font-mono text-[10px] leading-tight px-2 py-1 rounded-sm bg-[hsl(var(--background)/0.95)] border border-[hsl(190,90%,55%)] text-foreground inline-block whitespace-nowrap shadow-lg"
+                    class="font-mono text-[10px] leading-tight px-2 py-1 rounded-sm bg-[hsl(var(--background)/0.95)] border border-[hsl(28,100%,55%)] text-foreground inline-block whitespace-nowrap shadow-lg"
                   >
-                    <div class="font-bold text-[hsl(190,90%,75%)]">
-                      {{ groundKitTooltip(k).title }}
+                    <div class="font-bold text-[hsl(28,100%,75%)]">
+                      {{ groundBombTooltip.title }}
                     </div>
-                    <div class="text-muted-foreground">
-                      {{ groundKitTooltip(k).sub }}
+                    <div
+                      v-if="groundBombTooltip.sub"
+                      class="text-muted-foreground"
+                    >
+                      {{ groundBombTooltip.sub }}
                     </div>
                   </div>
                 </foreignObject>
               </g>
             </g>
-          </g>
 
-          <!-- Bomb on the ground (or planted at site). Derived from
-               the active round's drop/pickup/plant timeline. A subtle
-               pulsing ring around the planted bomb makes the
-               post-plant site obvious. Hover surfaces the source
-               event (drop / plant) and lights up a halo. -->
-          <g v-if="showGroundBomb && groundBombAt">
-            <g
-              :transform="`translate(${project(groundBombAt).x}, ${project(groundBombAt).y})`"
-            >
-              <circle
-                v-if="
-                  bombPlantThisRound && currentTick >= bombPlantThisRound.tick
-                "
-                r="14"
-                fill="none"
-                stroke="hsl(0, 90%, 55%)"
-                stroke-width="1.5"
-                opacity="0.45"
-                pointer-events="none"
-              >
-                <animate
-                  attributeName="r"
-                  values="12;18;12"
-                  dur="1.6s"
-                  repeatCount="indefinite"
-                />
-                <animate
-                  attributeName="opacity"
-                  values="0.55;0.15;0.55"
-                  dur="1.6s"
-                  repeatCount="indefinite"
-                />
-              </circle>
-              <circle
-                v-if="hoveredGroundMarker === 'bomb'"
-                r="12"
-                fill="hsl(28, 100%, 55%)"
-                opacity="0.28"
-                pointer-events="none"
-              />
-              <circle
-                v-if="hoveredGroundMarker === 'bomb'"
-                r="12"
-                fill="none"
-                stroke="hsl(28, 100%, 70%)"
-                stroke-width="1.5"
-                pointer-events="none"
-              />
-              <circle
-                r="7"
-                fill="hsl(28, 100%, 55%)"
-                stroke="hsl(0 0% 0% / 0.95)"
-                stroke-width="1.4"
-                pointer-events="none"
-              />
-              <image
-                href="/img/equipment/c4.svg"
-                x="-5"
-                y="-5"
-                width="10"
-                height="10"
-                preserveAspectRatio="xMidYMid meet"
-                pointer-events="none"
-              />
-              <circle
-                r="11"
-                fill="transparent"
-                style="cursor: pointer"
-                @mouseenter="hoveredGroundMarker = 'bomb'"
-                @mouseleave="hoveredGroundMarker = null"
-              />
-              <foreignObject
-                v-if="hoveredGroundMarker === 'bomb'"
-                x="-80"
-                y="-50"
-                width="160"
-                height="40"
-                style="overflow: visible; pointer-events: none"
-              >
-                <div
-                  xmlns="http://www.w3.org/1999/xhtml"
-                  class="font-mono text-[10px] leading-tight px-2 py-1 rounded-sm bg-[hsl(var(--background)/0.95)] border border-[hsl(28,100%,55%)] text-foreground inline-block whitespace-nowrap shadow-lg"
-                >
-                  <div class="font-bold text-[hsl(28,100%,75%)]">
-                    {{ groundBombTooltip.title }}
-                  </div>
-                  <div
-                    v-if="groundBombTooltip.sub"
-                    class="text-muted-foreground"
-                  >
-                    {{ groundBombTooltip.sub }}
-                  </div>
-                </div>
-              </foreignObject>
-            </g>
-          </g>
-
-          <!-- Boltobserv-style "kite" dots: rounded body with one sharp
+            <!-- Boltobserv-style "kite" dots: rounded body with one sharp
                point at NE, rotated so the point aims at the player's
                view direction. Built-in states: dead (X cross),
                firing (white corner burst), flashed-ready for the
                future. -->
-          <g v-for="p of playersForRender" :key="p.steamId">
-            <g
-              :transform="`translate(${project(p).x}, ${project(p).y})`"
-              style="cursor: pointer"
-              @click="toggleFocus(p.steamId)"
-              @mouseenter="hoveredPlayerSid = p.steamId"
-              @mouseleave="hoveredPlayerSid = null"
-            >
-              <!-- Invisible hit-region behind the kite — gives the
+            <g v-for="p of playersForRender" :key="p.steamId">
+              <g
+                :transform="`translate(${project(p).x}, ${project(p).y})`"
+                style="cursor: pointer"
+                @click="toggleFocus(p.steamId)"
+                @mouseenter="hoveredPlayerSid = p.steamId"
+                @mouseleave="hoveredPlayerSid = null"
+              >
+                <!-- Invisible hit-region behind the kite — gives the
                    group a guaranteed hover surface even where the
                    visible elements (kite body / arcs / badges) have
                    gaps. mouseenter/leave live on the parent <g> so
                    the cursor entering any child counts. -->
-              <circle r="16" fill="transparent" />
-              <!-- Hover tooltip card: same foreignObject pattern as
+                <circle r="16" fill="transparent" />
+                <!-- Hover tooltip card: same foreignObject pattern as
                    the ground markers so style + behavior stay
                    uniform. Rendered last in this group so it paints
                    on top of nearby kites. -->
-              <foreignObject
-                v-if="hoveredPlayerSid === p.steamId"
-                x="-95"
-                y="-78"
-                width="190"
-                height="74"
-                style="overflow: visible; pointer-events: none"
-              >
-                <div
-                  xmlns="http://www.w3.org/1999/xhtml"
-                  class="font-mono text-[10px] leading-tight px-2 py-1.5 rounded-sm bg-[hsl(var(--background)/0.95)] text-foreground inline-block whitespace-nowrap shadow-lg border"
-                  :style="{
-                    borderColor: colorFor(playerTooltipFor(p.steamId).team),
-                  }"
+                <foreignObject
+                  v-if="hoveredPlayerSid === p.steamId"
+                  x="-95"
+                  y="-78"
+                  width="190"
+                  height="74"
+                  style="overflow: visible; pointer-events: none"
                 >
                   <div
-                    class="font-bold truncate max-w-[180px]"
+                    xmlns="http://www.w3.org/1999/xhtml"
+                    class="font-mono text-[10px] leading-tight px-2 py-1.5 rounded-sm bg-[hsl(var(--background)/0.95)] text-foreground inline-block whitespace-nowrap shadow-lg border"
                     :style="{
-                      color: colorFor(playerTooltipFor(p.steamId).team),
+                      borderColor: colorFor(playerTooltipFor(p.steamId).team),
                     }"
                   >
-                    {{ playerTooltipFor(p.steamId).name }}
+                    <div
+                      class="font-bold truncate max-w-[180px]"
+                      :style="{
+                        color: colorFor(playerTooltipFor(p.steamId).team),
+                      }"
+                    >
+                      {{ playerTooltipFor(p.steamId).name }}
+                    </div>
+                    <div
+                      v-if="playerTooltipFor(p.steamId).status"
+                      class="text-foreground/90"
+                    >
+                      {{ playerTooltipFor(p.steamId).status }}
+                    </div>
+                    <div
+                      v-for="(flag, fi) of playerTooltipFor(p.steamId)
+                        .bombFlags"
+                      :key="'pt-flag-' + fi"
+                      class="text-[hsl(var(--tac-amber))] font-bold tracking-wider"
+                    >
+                      {{ flag }}
+                    </div>
+                    <div class="text-muted-foreground flex gap-2 mt-0.5">
+                      <span>
+                        K/D/A
+                        <span class="text-foreground"
+                          >{{ playerTooltipFor(p.steamId).k }}/{{
+                            playerTooltipFor(p.steamId).d
+                          }}/{{ playerTooltipFor(p.steamId).a }}</span
+                        >
+                      </span>
+                      <span>·</span>
+                      <span>
+                        KDR
+                        <span class="text-foreground">{{
+                          playerTooltipFor(p.steamId).kdr
+                        }}</span>
+                      </span>
+                      <span>·</span>
+                      <span>
+                        <span class="text-foreground">{{
+                          playerTooltipFor(p.steamId).dmg
+                        }}</span>
+                        DMG
+                      </span>
+                    </div>
                   </div>
-                  <div
-                    v-if="playerTooltipFor(p.steamId).status"
-                    class="text-foreground/90"
-                  >
-                    {{ playerTooltipFor(p.steamId).status }}
-                  </div>
-                  <div
-                    v-for="(flag, fi) of playerTooltipFor(p.steamId).bombFlags"
-                    :key="'pt-flag-' + fi"
-                    class="text-[hsl(var(--tac-amber))] font-bold tracking-wider"
-                  >
-                    {{ flag }}
-                  </div>
-                  <div class="text-muted-foreground flex gap-2 mt-0.5">
-                    <span>
-                      K/D/A
-                      <span class="text-foreground"
-                        >{{ playerTooltipFor(p.steamId).k }}/{{
-                          playerTooltipFor(p.steamId).d
-                        }}/{{ playerTooltipFor(p.steamId).a }}</span
-                      >
-                    </span>
-                    <span>·</span>
-                    <span>
-                      KDR
-                      <span class="text-foreground">{{
-                        playerTooltipFor(p.steamId).kdr
-                      }}</span>
-                    </span>
-                    <span>·</span>
-                    <span>
-                      <span class="text-foreground">{{
-                        playerTooltipFor(p.steamId).dmg
-                      }}</span>
-                      DMG
-                    </span>
-                  </div>
-                </div>
-              </foreignObject>
-              <!-- Focus marker: soft amber spotlight + static ring +
+                </foreignObject>
+                <!-- Focus marker: soft amber spotlight + static ring +
                    a slow pulse ring expanding outward. The pulse is
                    slow (2.4s) and low-opacity so it reads as a gentle
                    radar ping rather than aggressive flashing. -->
-              <g
-                v-if="focusedPlayerId === p.steamId && p.alive"
-                style="pointer-events: none"
-              >
-                <circle r="18" fill="hsl(var(--tac-amber))" opacity="0.06" />
-                <circle
-                  r="17"
-                  fill="none"
-                  stroke="hsl(var(--tac-amber))"
-                  stroke-width="1"
-                  stroke-opacity="0.45"
-                />
-                <circle
-                  fill="none"
-                  stroke="hsl(var(--tac-amber))"
-                  stroke-width="1"
+                <g
+                  v-if="focusedPlayerId === p.steamId && p.alive"
+                  style="pointer-events: none"
                 >
-                  <animate
-                    attributeName="r"
-                    values="17;28;17"
-                    keyTimes="0;0.7;1"
-                    dur="2.4s"
-                    repeatCount="indefinite"
+                  <circle r="18" fill="hsl(var(--tac-amber))" opacity="0.06" />
+                  <circle
+                    r="17"
+                    fill="none"
+                    stroke="hsl(var(--tac-amber))"
+                    stroke-width="1"
+                    stroke-opacity="0.45"
                   />
-                  <animate
-                    attributeName="opacity"
-                    values="0.55;0;0.55"
-                    keyTimes="0;0.7;1"
-                    dur="2.4s"
-                    repeatCount="indefinite"
-                  />
-                </circle>
-              </g>
-              <!-- Dead: small X mark, no kite, no slot number. -->
-              <template v-if="!p.alive">
-                <g :opacity="0.55">
-                  <line
-                    x1="-7"
-                    y1="-7"
-                    x2="7"
-                    y2="7"
-                    :stroke="colorFor(p.team)"
-                    stroke-width="2.5"
-                  />
-                  <line
-                    x1="-7"
-                    y1="7"
-                    x2="7"
-                    y2="-7"
-                    :stroke="colorFor(p.team)"
-                    stroke-width="2.5"
-                  />
+                  <circle
+                    fill="none"
+                    stroke="hsl(var(--tac-amber))"
+                    stroke-width="1"
+                  >
+                    <animate
+                      attributeName="r"
+                      values="17;28;17"
+                      keyTimes="0;0.7;1"
+                      dur="2.4s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values="0.55;0;0.55"
+                      keyTimes="0;0.7;1"
+                      dur="2.4s"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
                 </g>
-              </template>
+                <!-- Dead: small X mark, no kite, no slot number. -->
+                <template v-if="!p.alive">
+                  <g :opacity="0.55">
+                    <line
+                      x1="-7"
+                      y1="-7"
+                      x2="7"
+                      y2="7"
+                      :stroke="colorFor(p.team)"
+                      stroke-width="2.5"
+                    />
+                    <line
+                      x1="-7"
+                      y1="7"
+                      x2="7"
+                      y2="-7"
+                      :stroke="colorFor(p.team)"
+                      stroke-width="2.5"
+                    />
+                  </g>
+                </template>
 
-              <!-- Alive: rotated kite (group rotation only — slot
+                <!-- Alive: rotated kite (group rotation only — slot
                    number stays upright by being outside the rotated
                    sub-group). -->
-              <template v-else>
-                <g :transform="`rotate(${45 - p.yaw})`">
-                  <!-- Body. Blinded players get their fill desaturated
+                <template v-else>
+                  <g :transform="`rotate(${45 - p.yaw})`">
+                    <!-- Body. Blinded players get their fill desaturated
                        and washed out so they pop visually as "out of
                        the fight" without losing team identity. -->
-                  <path
-                    d="M -12 0 A 12 12 0 0 1 0 -12 L 12 -12 L 12 0 A 12 12 0 0 1 0 12 A 12 12 0 0 1 -12 0 Z"
-                    :fill="colorFor(p.team)"
-                    stroke="hsl(0 0% 0% / 0.4)"
-                    stroke-width="0.5"
-                    :opacity="p.blinded > 0.15 ? 1 - p.blinded * 0.55 : 1"
-                  />
-                  <!-- HP back-bar: a 90° arc on the SW of the kite,
+                    <path
+                      d="M -12 0 A 12 12 0 0 1 0 -12 L 12 -12 L 12 0 A 12 12 0 0 1 0 12 A 12 12 0 0 1 -12 0 Z"
+                      :fill="colorFor(p.team)"
+                      stroke="hsl(0 0% 0% / 0.4)"
+                      stroke-width="0.5"
+                      :opacity="p.blinded > 0.15 ? 1 - p.blinded * 0.55 : 1"
+                    />
+                    <!-- HP back-bar: a 90° arc on the SW of the kite,
                        drawn at radius 15 so it sits ~3px OUTSIDE the
                        kite body — reads as a dedicated health gauge
                        behind the player rather than blending into the
                        body fill. Width scales with HP, colour lerps
                        green → yellow → red. Arc length = π·15/2 ≈
                        23.56; dash centred via offset = L·(p−1)/2. -->
-                  <template v-if="p.health !== null">
-                    <path
-                      d="M -15 0 A 15 15 0 0 0 0 15"
-                      fill="none"
-                      stroke="hsl(0 0% 100% / 0.18)"
-                      stroke-width="3"
-                      stroke-linecap="round"
-                    />
-                    <!-- Armor: a parallel arc OUTSIDE the HP arc
+                    <template v-if="p.health !== null">
+                      <path
+                        d="M -15 0 A 15 15 0 0 0 0 15"
+                        fill="none"
+                        stroke="hsl(0 0% 100% / 0.18)"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                      />
+                      <!-- Armor: a parallel arc OUTSIDE the HP arc
                          (radius 18 vs 15) so it's always visible
                          even when HP is full. Bright purple when
                          helmeted, muted purple when kevlar only. -->
-                    <path
-                      v-if="p.armor != null && p.armor > 0"
-                      d="M -18 0 A 18 18 0 0 0 0 18"
-                      fill="none"
-                      :stroke="
-                        p.helmet ? 'hsl(195, 100%, 70%)' : 'hsl(200, 70%, 55%)'
-                      "
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      :stroke-dasharray="`${(p.armor / 100) * 28.27} 100`"
-                      :stroke-dashoffset="((p.armor - 100) / 100) * 14.14"
-                    />
-                    <path
-                      d="M -15 0 A 15 15 0 0 0 0 15"
-                      fill="none"
-                      :stroke="`hsl(${(p.health / 100) * 130}, 85%, 50%)`"
-                      stroke-width="3"
-                      stroke-linecap="round"
-                      :stroke-dasharray="`${(p.health / 100) * 23.56} 100`"
-                      :stroke-dashoffset="((p.health - 100) / 100) * 11.78"
-                    />
-                  </template>
-                  <!-- C4 carrier badge: sits on the player's back-
+                      <path
+                        v-if="p.armor != null && p.armor > 0"
+                        d="M -18 0 A 18 18 0 0 0 0 18"
+                        fill="none"
+                        :stroke="
+                          p.helmet
+                            ? 'hsl(195, 100%, 70%)'
+                            : 'hsl(200, 70%, 55%)'
+                        "
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        :stroke-dasharray="`${(p.armor / 100) * 28.27} 100`"
+                        :stroke-dashoffset="((p.armor - 100) / 100) * 14.14"
+                      />
+                      <path
+                        d="M -15 0 A 15 15 0 0 0 0 15"
+                        fill="none"
+                        :stroke="`hsl(${(p.health / 100) * 130}, 85%, 50%)`"
+                        stroke-width="3"
+                        stroke-linecap="round"
+                        :stroke-dasharray="`${(p.health / 100) * 23.56} 100`"
+                        :stroke-dashoffset="((p.health - 100) / 100) * 11.78"
+                      />
+                    </template>
+                    <!-- C4 carrier badge: sits on the player's back-
                        right (local SE corner, just past the HP arc's
                        south end). Because we're INSIDE the rotate
                        group, it always tracks the player's facing
@@ -3182,63 +3227,65 @@ function openReplayPopout() {
                        ≈ 18.4 so it clears the r=15 HP arc cleanly.
                        The inner group counter-rotates back into screen
                        space so the "C4" text stays upright. -->
-                  <g
-                    v-if="p.hasBomb && showC4"
-                    transform="translate(9, 16)"
-                    style="pointer-events: none"
-                  >
-                    <g :transform="`rotate(${p.yaw - 45})`">
-                      <circle
-                        r="5.5"
-                        fill="hsl(28, 100%, 55%)"
-                        stroke="hsl(0 0% 0% / 0.95)"
-                        stroke-width="1.3"
-                      />
-                      <image
-                        href="/img/equipment/c4.svg"
-                        x="-4"
-                        y="-4"
-                        width="8"
-                        height="8"
-                        preserveAspectRatio="xMidYMid meet"
-                      />
+                    <g
+                      v-if="p.hasBomb && showC4"
+                      transform="translate(9, 16)"
+                      style="pointer-events: none"
+                    >
+                      <g :transform="`rotate(${p.yaw - 45})`">
+                        <circle
+                          r="5.5"
+                          fill="hsl(28, 100%, 55%)"
+                          stroke="hsl(0 0% 0% / 0.95)"
+                          stroke-width="1.3"
+                        />
+                        <image
+                          href="/img/equipment/c4.svg"
+                          x="-4"
+                          y="-4"
+                          width="8"
+                          height="8"
+                          preserveAspectRatio="xMidYMid meet"
+                        />
+                      </g>
                     </g>
-                  </g>
-                  <!-- Defuse-kit badge: same back-right placement as
+                    <!-- Defuse-kit badge: same back-right placement as
                        the C4 badge. If the player is carrying both,
                        the kit slides a touch further out so the two
                        pips sit side-by-side rather than stacking.
                        Hidden while they're actively defusing — the
                        defuse state ring handles that case. -->
-                  <g
-                    v-if="
-                      p.hasDefuser && p.bombAction !== 'defusing' && showDefuser
-                    "
-                    :transform="
-                      p.hasBomb && showC4
-                        ? 'translate(17, 6)'
-                        : 'translate(9, 16)'
-                    "
-                    style="pointer-events: none"
-                  >
-                    <g :transform="`rotate(${p.yaw - 45})`">
-                      <circle
-                        r="5"
-                        fill="hsl(190, 90%, 55%)"
-                        stroke="hsl(0 0% 0% / 0.95)"
-                        stroke-width="1.2"
-                      />
-                      <image
-                        href="/img/equipment/defuser.svg"
-                        x="-3.6"
-                        y="-3.2"
-                        width="7.2"
-                        height="6.4"
-                        preserveAspectRatio="xMidYMid meet"
-                      />
+                    <g
+                      v-if="
+                        p.hasDefuser &&
+                        p.bombAction !== 'defusing' &&
+                        showDefuser
+                      "
+                      :transform="
+                        p.hasBomb && showC4
+                          ? 'translate(17, 6)'
+                          : 'translate(9, 16)'
+                      "
+                      style="pointer-events: none"
+                    >
+                      <g :transform="`rotate(${p.yaw - 45})`">
+                        <circle
+                          r="5"
+                          fill="hsl(190, 90%, 55%)"
+                          stroke="hsl(0 0% 0% / 0.95)"
+                          stroke-width="1.2"
+                        />
+                        <image
+                          href="/img/equipment/defuser.svg"
+                          x="-3.6"
+                          y="-3.2"
+                          width="7.2"
+                          height="6.4"
+                          preserveAspectRatio="xMidYMid meet"
+                        />
+                      </g>
                     </g>
-                  </g>
-                  <!-- Firing: a broadcast-style precision tracer.
+                    <!-- Firing: a broadcast-style precision tracer.
                        Kite is rotated so local NE is forward — the
                        muzzle is at (12, -12), bullet line shoots
                        outward along (1, -1).
@@ -3246,304 +3293,300 @@ function openReplayPopout() {
                          - faint outer heat-haze cone (soft, slow pulse)
                          - sharp tracer line that "stutters" at fire rate
                          - bright pinpoint muzzle flash dot at the tip. -->
-                  <g v-if="p.firing">
-                    <!-- Heat haze: a soft glow around the muzzle that
+                    <g v-if="p.firing">
+                      <!-- Heat haze: a soft glow around the muzzle that
                          lingers between shots. -->
-                    <circle
-                      cx="13"
-                      cy="-13"
-                      r="7"
-                      fill="rgba(255, 180, 70, 0.28)"
-                    >
-                      <animate
-                        attributeName="r"
-                        values="4;8;5;7;4"
-                        dur="0.2s"
-                        repeatCount="indefinite"
-                      />
-                      <animate
-                        attributeName="opacity"
-                        values="0.4;0.1;0.35;0.15;0.4"
-                        dur="0.2s"
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-                    <!-- Tracer line: thin, sharp, animated so its
+                      <circle
+                        cx="13"
+                        cy="-13"
+                        r="7"
+                        fill="rgba(255, 180, 70, 0.28)"
+                      >
+                        <animate
+                          attributeName="r"
+                          values="4;8;5;7;4"
+                          dur="0.2s"
+                          repeatCount="indefinite"
+                        />
+                        <animate
+                          attributeName="opacity"
+                          values="0.4;0.1;0.35;0.15;0.4"
+                          dur="0.2s"
+                          repeatCount="indefinite"
+                        />
+                      </circle>
+                      <!-- Tracer line: thin, sharp, animated so its
                          length flickers like rapid fire. -->
-                    <line
-                      x1="14"
-                      y1="-14"
-                      x2="34"
-                      y2="-34"
-                      stroke="hsl(48, 100%, 78%)"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                    >
-                      <animate
-                        attributeName="x2"
-                        values="22;38;28;36;22"
-                        dur="0.11s"
-                        repeatCount="indefinite"
-                      />
-                      <animate
-                        attributeName="y2"
-                        values="-22;-38;-28;-36;-22"
-                        dur="0.11s"
-                        repeatCount="indefinite"
-                      />
-                      <animate
-                        attributeName="opacity"
-                        values="1;0.25;0.95;0.4;1"
-                        dur="0.11s"
-                        repeatCount="indefinite"
-                      />
-                    </line>
-                    <!-- Bright muzzle pinpoint at the tip itself. -->
-                    <circle
-                      cx="13"
-                      cy="-13"
-                      r="2.5"
-                      fill="hsl(50, 100%, 92%)"
-                      stroke="hsl(20, 100%, 60%)"
-                      stroke-width="0.7"
-                    >
-                      <animate
-                        attributeName="r"
-                        values="1.6;3.2;2;2.8;1.6"
-                        dur="0.09s"
-                        repeatCount="indefinite"
-                      />
-                      <animate
-                        attributeName="opacity"
-                        values="1;0.55;1;0.65;1"
-                        dur="0.09s"
-                        repeatCount="indefinite"
-                      />
-                    </circle>
+                      <line
+                        x1="14"
+                        y1="-14"
+                        x2="34"
+                        y2="-34"
+                        stroke="hsl(48, 100%, 78%)"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                      >
+                        <animate
+                          attributeName="x2"
+                          values="22;38;28;36;22"
+                          dur="0.11s"
+                          repeatCount="indefinite"
+                        />
+                        <animate
+                          attributeName="y2"
+                          values="-22;-38;-28;-36;-22"
+                          dur="0.11s"
+                          repeatCount="indefinite"
+                        />
+                        <animate
+                          attributeName="opacity"
+                          values="1;0.25;0.95;0.4;1"
+                          dur="0.11s"
+                          repeatCount="indefinite"
+                        />
+                      </line>
+                      <!-- Bright muzzle pinpoint at the tip itself. -->
+                      <circle
+                        cx="13"
+                        cy="-13"
+                        r="2.5"
+                        fill="hsl(50, 100%, 92%)"
+                        stroke="hsl(20, 100%, 60%)"
+                        stroke-width="0.7"
+                      >
+                        <animate
+                          attributeName="r"
+                          values="1.6;3.2;2;2.8;1.6"
+                          dur="0.09s"
+                          repeatCount="indefinite"
+                        />
+                        <animate
+                          attributeName="opacity"
+                          values="1;0.55;1;0.65;1"
+                          dur="0.09s"
+                          repeatCount="indefinite"
+                        />
+                      </circle>
+                    </g>
                   </g>
-                </g>
-                <!-- Blinded overlay: rendered upright (not rotated)
+                  <!-- Blinded overlay: rendered upright (not rotated)
                      because the effect is on the player's vision, not
                      their facing. White wash + spinning rays + bright
                      pinpoint at center. Opacity scales with the blind
                      strength so a partial flash reads as a faint
                      overlay and a direct hit is a near-total whiteout. -->
-                <g
-                  v-if="p.blinded > 0.05"
-                  :opacity="p.blinded"
-                  style="pointer-events: none"
-                >
-                  <!-- Soft halo behind the player -->
-                  <circle r="22" fill="url(#blind-overlay)">
-                    <animate
-                      attributeName="r"
-                      values="20;26;20"
-                      dur="0.9s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                  <!-- Spinning ray cluster -->
-                  <g>
-                    <g
-                      v-for="ang of [0, 60, 120, 180, 240, 300]"
-                      :key="`blr-${ang}`"
-                      :transform="`rotate(${ang})`"
-                    >
-                      <polygon
-                        points="0,-22 1.6,-10 0,-7 -1.6,-10"
-                        fill="rgba(255, 255, 255, 0.9)"
+                  <g
+                    v-if="p.blinded > 0.05"
+                    :opacity="p.blinded"
+                    style="pointer-events: none"
+                  >
+                    <!-- Soft halo behind the player -->
+                    <circle r="22" fill="url(#blind-overlay)">
+                      <animate
+                        attributeName="r"
+                        values="20;26;20"
+                        dur="0.9s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    <!-- Spinning ray cluster -->
+                    <g>
+                      <g
+                        v-for="ang of [0, 60, 120, 180, 240, 300]"
+                        :key="`blr-${ang}`"
+                        :transform="`rotate(${ang})`"
+                      >
+                        <polygon
+                          points="0,-22 1.6,-10 0,-7 -1.6,-10"
+                          fill="rgba(255, 255, 255, 0.9)"
+                        />
+                      </g>
+                      <animateTransform
+                        attributeName="transform"
+                        type="rotate"
+                        from="0"
+                        to="360"
+                        dur="2.2s"
+                        repeatCount="indefinite"
                       />
                     </g>
-                    <animateTransform
-                      attributeName="transform"
-                      type="rotate"
-                      from="0"
-                      to="360"
-                      dur="2.2s"
-                      repeatCount="indefinite"
-                    />
+                    <!-- Bright pinpoint -->
+                    <circle r="3" fill="rgba(255, 255, 255, 1)">
+                      <animate
+                        attributeName="opacity"
+                        values="0.7;1;0.7"
+                        dur="0.45s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
                   </g>
-                  <!-- Bright pinpoint -->
-                  <circle r="3" fill="rgba(255, 255, 255, 1)">
-                    <animate
-                      attributeName="opacity"
-                      values="0.7;1;0.7"
-                      dur="0.45s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                </g>
-                <!-- Slot indicator: avatar or number, always upright in
+                  <!-- Slot indicator: avatar or number, always upright in
                      screen space (rendered OUTSIDE the rotate(45-yaw)
                      group). Avatar mode uses a single shared clipPath
                      to render the Steam image clipped to a circle that
                      nearly fills the kite — sharper presentation than
                      per-player patterns and much less DOM. -->
-                <template v-if="showAvatars && playerAvatarMap[p.steamId]">
-                  <image
-                    :href="playerAvatarMap[p.steamId]"
-                    x="-12"
-                    y="-12"
-                    width="24"
-                    height="24"
-                    preserveAspectRatio="xMidYMid slice"
-                    clip-path="url(#replay-avatar-clip)"
-                  />
-                  <!-- Avatar team ring: thick solid stroke in team
+                  <template v-if="showAvatars && playerAvatarMap[p.steamId]">
+                    <image
+                      :href="playerAvatarMap[p.steamId]"
+                      x="-12"
+                      y="-12"
+                      width="24"
+                      height="24"
+                      preserveAspectRatio="xMidYMid slice"
+                      clip-path="url(#replay-avatar-clip)"
+                    />
+                    <!-- Avatar team ring: thick solid stroke in team
                        color, plus a thin dark outline so the ring
                        reads against bright tiles on the radar. Much
                        higher contrast than the old 0.6-width hairline
                        so CT vs T is obvious at a glance. -->
-                  <circle
-                    r="12.5"
-                    fill="none"
-                    stroke="hsl(0 0% 0% / 0.7)"
-                    stroke-width="3.5"
-                  />
-                  <circle
-                    r="12.5"
-                    fill="none"
-                    :stroke="colorFor(p.team)"
-                    stroke-width="2.2"
-                  />
-                </template>
-                <text
-                  v-else
-                  x="0"
-                  y="4.5"
-                  text-anchor="middle"
-                  class="font-mono pointer-events-none select-none"
-                  :fill="p.team === 't' ? 'hsl(0 0% 8%)' : 'hsl(0 0% 100%)'"
-                  :style="{
-                    fontSize: '13px',
-                    fontWeight: 900,
-                    letterSpacing: '0.02em',
-                    paintOrder: 'stroke',
-                    stroke:
-                      p.team === 't'
-                        ? 'hsl(33, 94%, 35%)'
-                        : 'hsl(210, 80%, 30%)',
-                    strokeWidth: '2.5px',
-                    strokeLinejoin: 'round',
-                  }"
-                >
-                  {{ slotByPlayer[p.steamId]?.slot ?? "?" }}
-                </text>
-                <!-- Plant / defuse activity: a solid colored disc
+                    <circle
+                      r="12.5"
+                      fill="none"
+                      stroke="hsl(0 0% 0% / 0.7)"
+                      stroke-width="3.5"
+                    />
+                    <circle
+                      r="12.5"
+                      fill="none"
+                      :stroke="colorFor(p.team)"
+                      stroke-width="2.2"
+                    />
+                  </template>
+                  <text
+                    v-else
+                    x="0"
+                    y="4.5"
+                    text-anchor="middle"
+                    class="font-mono pointer-events-none select-none"
+                    :fill="p.team === 't' ? 'hsl(0 0% 8%)' : 'hsl(0 0% 100%)'"
+                    :style="{
+                      fontSize: '13px',
+                      fontWeight: 900,
+                      letterSpacing: '0.02em',
+                      paintOrder: 'stroke',
+                      stroke:
+                        p.team === 't'
+                          ? 'hsl(33, 94%, 35%)'
+                          : 'hsl(210, 80%, 30%)',
+                      strokeWidth: '2.5px',
+                      strokeLinejoin: 'round',
+                    }"
+                  >
+                    {{ slotByPlayer[p.steamId]?.slot ?? "?" }}
+                  </text>
+                  <!-- Plant / defuse activity: a solid colored disc
                      ON the player marker (fills the avatar/kite
                      footprint) plus an outer rotating dashed ring and
                      an upright label above. The disc reads as the
                      player being "actively working" the bomb;
                      animated opacity pulses for urgency without
                      hiding the player team identity. -->
-                <g
-                  v-if="p.bombAction === 'planting'"
-                  style="pointer-events: none"
-                >
-                  <circle r="14" fill="hsl(40, 100%, 55%)" opacity="0.45">
-                    <animate
-                      attributeName="opacity"
-                      values="0.55;0.25;0.55"
-                      dur="1.1s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                  <circle
-                    r="20"
-                    fill="none"
-                    stroke="hsl(40, 100%, 55%)"
-                    stroke-width="2.5"
-                    stroke-dasharray="5 3"
+                  <g
+                    v-if="p.bombAction === 'planting'"
+                    style="pointer-events: none"
                   >
-                    <animateTransform
-                      attributeName="transform"
-                      type="rotate"
-                      from="0"
-                      to="360"
-                      dur="2.5s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                  <text
-                    x="0"
-                    y="-25"
-                    text-anchor="middle"
-                    fill="hsl(40, 100%, 70%)"
-                    class="font-mono select-none"
-                    style="
-                      font-size: 7px;
-                      font-weight: 900;
-                      letter-spacing: 0.18em;
-                      paint-order: stroke;
-                      stroke: hsl(0 0% 0% / 0.85);
-                      stroke-width: 2px;
-                      stroke-linejoin: round;
-                    "
+                    <circle r="14" fill="hsl(40, 100%, 55%)" opacity="0.45">
+                      <animate
+                        attributeName="opacity"
+                        values="0.55;0.25;0.55"
+                        dur="1.1s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    <circle
+                      r="20"
+                      fill="none"
+                      stroke="hsl(40, 100%, 55%)"
+                      stroke-width="2.5"
+                      stroke-dasharray="5 3"
+                    >
+                      <animateTransform
+                        attributeName="transform"
+                        type="rotate"
+                        from="0"
+                        to="360"
+                        dur="2.5s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    <text
+                      x="0"
+                      y="-25"
+                      text-anchor="middle"
+                      fill="hsl(40, 100%, 70%)"
+                      class="font-mono select-none"
+                      style="
+                        font-size: 7px;
+                        font-weight: 900;
+                        letter-spacing: 0.18em;
+                        paint-order: stroke;
+                        stroke: hsl(0 0% 0% / 0.85);
+                        stroke-width: 2px;
+                        stroke-linejoin: round;
+                      "
+                    >
+                      {{ $t("match.planting") }}
+                    </text>
+                  </g>
+                  <g
+                    v-else-if="p.bombAction === 'defusing'"
+                    style="pointer-events: none"
                   >
-                    {{ $t("match.planting") }}
-                  </text>
-                </g>
-                <g
-                  v-else-if="p.bombAction === 'defusing'"
-                  style="pointer-events: none"
-                >
-                  <circle r="14" fill="hsl(190, 95%, 55%)" opacity="0.45">
-                    <animate
-                      attributeName="opacity"
-                      values="0.55;0.25;0.55"
-                      dur="1.1s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                  <circle
-                    r="20"
-                    fill="none"
-                    stroke="hsl(190, 95%, 60%)"
-                    stroke-width="2.5"
-                    stroke-dasharray="5 3"
-                  >
-                    <animateTransform
-                      attributeName="transform"
-                      type="rotate"
-                      from="360"
-                      to="0"
-                      dur="2.5s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                  <text
-                    x="0"
-                    y="-25"
-                    text-anchor="middle"
-                    fill="hsl(190, 95%, 70%)"
-                    class="font-mono select-none"
-                    style="
-                      font-size: 7px;
-                      font-weight: 900;
-                      letter-spacing: 0.18em;
-                      paint-order: stroke;
-                      stroke: hsl(0 0% 0% / 0.85);
-                      stroke-width: 2px;
-                      stroke-linejoin: round;
-                    "
-                  >
-                    {{ $t("match.defusing") }}
-                  </text>
-                </g>
-              </template>
+                    <circle r="14" fill="hsl(190, 95%, 55%)" opacity="0.45">
+                      <animate
+                        attributeName="opacity"
+                        values="0.55;0.25;0.55"
+                        dur="1.1s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    <circle
+                      r="20"
+                      fill="none"
+                      stroke="hsl(190, 95%, 60%)"
+                      stroke-width="2.5"
+                      stroke-dasharray="5 3"
+                    >
+                      <animateTransform
+                        attributeName="transform"
+                        type="rotate"
+                        from="360"
+                        to="0"
+                        dur="2.5s"
+                        repeatCount="indefinite"
+                      />
+                    </circle>
+                    <text
+                      x="0"
+                      y="-25"
+                      text-anchor="middle"
+                      fill="hsl(190, 95%, 70%)"
+                      class="font-mono select-none"
+                      style="
+                        font-size: 7px;
+                        font-weight: 900;
+                        letter-spacing: 0.18em;
+                        paint-order: stroke;
+                        stroke: hsl(0 0% 0% / 0.85);
+                        stroke-width: 2px;
+                        stroke-linejoin: round;
+                      "
+                    >
+                      {{ $t("match.defusing") }}
+                    </text>
+                  </g>
+                </template>
+              </g>
             </g>
-          </g>
-        </svg>
+          </svg>
+        </div>
 
-        <!-- Overlay dock: playback controls + scrub bar sit inside the
-             radar at the bottom so they're width-bound to the canvas
-             and resize in lockstep with it. Backdrop-blur keeps the
-             radar visible underneath. -->
         <div
-          class="absolute inset-x-0 bottom-0 z-20 flex flex-col bg-[hsl(var(--background)/0.75)] backdrop-blur-md border-t border-border/70"
+          ref="playbarDockEl"
+          class="flex flex-col bg-[hsl(var(--card)/0.6)] border-x border-b border-border"
         >
-          <!-- Scrub bar across the very top of the dock so it reads as
-               the natural playhead for the radar above. -->
           <div
             ref="playbarRowEl"
             class="flex items-center gap-2 px-3 pt-2 pb-1"
@@ -3664,7 +3707,7 @@ function openReplayPopout() {
            bottom when there's spare vertical space. -->
       <div
         class="hidden md:flex flex-col gap-2 min-w-[220px] overflow-y-auto"
-        :style="{ maxHeight: radarMaxPx + 'px' }"
+        :style="{ height: radarMaxPx + playbarDockHeight + 'px' }"
       >
         <!-- Discoverability hint for the focus-to-follow interaction. -->
         <p class="text-[0.6rem] text-muted-foreground/80 leading-tight px-0.5">
@@ -3700,486 +3743,142 @@ function openReplayPopout() {
             {{ scoreboard.rightName }}
           </span>
         </div>
-        <div>
-          <div
-            class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-[hsl(210,80%,60%)] mb-1"
-          >
-            {{ $t("match.replay.counter_terrorists") }}
-          </div>
-          <Tooltip v-for="m of lineupRows.ct" :key="m.steamId">
-            <TooltipTrigger as-child>
-              <div
-                class="flex flex-col gap-0.5 py-0.5 text-xs cursor-pointer transition-colors rounded-sm pl-1 -ml-1 border-l-2"
-                :class="[
-                  liveStateBySteam.get(m.steamId)?.alive === false
-                    ? 'opacity-40'
-                    : '',
-                  focusedPlayerId === m.steamId
-                    ? 'bg-[hsl(var(--tac-amber)/0.12)] border-[hsl(var(--tac-amber))]'
-                    : 'border-transparent hover:bg-muted/30',
-                ]"
-                @click="toggleFocus(m.steamId)"
-              >
-                <div class="flex items-center gap-2">
-                  <!-- Exclusive avatar OR slot indicator — mirrors the map
-                   marker so the roster and the radar always match. -->
-                  <img
-                    v-if="showAvatars && m.avatarUrl"
-                    :src="m.avatarUrl"
-                    :alt="m.name"
-                    class="w-5 h-5 rounded-full object-cover shrink-0 border-2 border-[hsl(210,80%,60%)] ring-1 ring-black/60"
-                    @error="
-                      ($event.target as HTMLImageElement).style.display = 'none'
-                    "
-                  />
-                  <span
-                    v-else
-                    class="w-5 h-5 rounded-full inline-flex items-center justify-center font-mono font-bold text-[10px] shrink-0"
-                    :style="{
-                      background: 'hsl(210,80%,60%)',
-                      color: 'hsl(0 0% 98%)',
-                    }"
-                  >
-                    {{ m.slot }}
-                  </span>
-                  <span class="truncate flex-1 min-w-0">{{ m.name }}</span>
-                  <!-- Bomb / defuse-kit pills: tiny inline indicators so
-                       the roster mirrors the radar's carrier/kit state
-                       without needing the user to scan the map. -->
-                  <span
-                    v-if="showC4 && hasBombFor(m.steamId)"
-                    class="inline-flex items-center justify-center w-4 h-4 rounded-sm shrink-0"
-                    style="
-                      background: hsl(28, 100%, 55%);
-                      box-shadow: 0 0 0 1px hsl(0 0% 0% / 0.6);
-                    "
-                    :title="$t('match.replay.has_bomb')"
-                  >
-                    <img src="/img/equipment/c4.svg" alt="C4" class="w-3 h-3" />
-                  </span>
-                  <span
-                    v-if="
-                      showDefuser &&
-                      hasDefuserFor(m.steamId) &&
-                      bombActionFor(m.steamId) !== 'defusing'
-                    "
-                    class="inline-flex items-center justify-center w-4 h-4 rounded-sm shrink-0"
-                    style="
-                      background: hsl(190, 90%, 55%);
-                      box-shadow: 0 0 0 1px hsl(0 0% 0% / 0.6);
-                    "
-                    :title="$t('match.replay.defuse_kit')"
-                  >
-                    <img
-                      src="/img/equipment/defuser.svg"
-                      alt="Kit"
-                      class="w-3 h-3"
-                    />
-                  </span>
-                  <!-- Armor pill: only when the player actually has
-                       armor. Bright purple + helmet icon when they
-                       have a helmet, muted purple + kevlar icon when
-                       it's kevlar only. Same color rule as the armor
-                       bar below so the two read as one signal. -->
-                  <span
-                    v-if="(liveStateBySteam.get(m.steamId)?.armor ?? 0) > 0"
-                    class="inline-flex items-center justify-center w-4 h-4 rounded-sm shrink-0"
-                    :style="{
-                      background: liveStateBySteam.get(m.steamId)?.helmet
-                        ? 'hsl(195, 100%, 70%)'
-                        : 'hsl(200, 70%, 55%)',
-                      boxShadow: '0 0 0 1px hsl(0 0% 0% / 0.6)',
-                    }"
-                    :title="
-                      liveStateBySteam.get(m.steamId)?.helmet
-                        ? 'Kevlar + helmet'
-                        : 'Kevlar only'
-                    "
-                  >
-                    <img
-                      v-if="liveStateBySteam.get(m.steamId)?.helmet"
-                      src="/img/equipment/armor_helmet.svg"
-                      alt="Kevlar + helmet"
-                      class="w-3 h-3"
-                    />
-                    <img
-                      v-else
-                      src="/img/equipment/armor.svg"
-                      alt="Kevlar"
-                      class="w-3 h-3"
-                    />
-                  </span>
-                  <template
-                    v-if="
-                      liveStateBySteam.get(m.steamId)?.alive !== false &&
-                      liveStateBySteam.get(m.steamId)?.health != null
-                    "
-                  >
-                    <span
-                      class="font-mono text-[0.65rem] tabular-nums w-7 text-right text-muted-foreground"
-                    >
-                      {{ liveStateBySteam.get(m.steamId)!.health }}
-                    </span>
-                    <span class="inline-flex flex-col gap-px w-12 shrink-0">
-                      <!-- HP track. -->
-                      <span
-                        class="relative h-1 rounded-sm overflow-hidden bg-[hsl(0_0%_100%/0.12)]"
-                      >
-                        <span
-                          class="absolute inset-y-0 left-0 transition-all duration-150"
-                          :style="{
-                            width:
-                              liveStateBySteam.get(m.steamId)!.health + '%',
-                            background: `hsl(${
-                              (liveStateBySteam.get(m.steamId)!.health! / 100) *
-                              130
-                            }, 85%, 50%)`,
-                          }"
-                        />
-                      </span>
-                      <!-- Armor track: separate row so it stays visible
-                           even when HP is full. Purple pops against
-                           the dark UI without competing with CT blue
-                           or T orange. Brighter shade signals helmet
-                           too (matches the kevlar pill). -->
-                      <span
-                        class="relative h-1 rounded-sm overflow-hidden bg-[hsl(0_0%_100%/0.06)]"
-                      >
-                        <span
-                          v-if="
-                            liveStateBySteam.get(m.steamId)?.armor != null &&
-                            liveStateBySteam.get(m.steamId)!.armor! > 0
-                          "
-                          class="absolute inset-y-0 left-0 transition-all duration-150"
-                          :style="{
-                            width: liveStateBySteam.get(m.steamId)!.armor + '%',
-                            background: liveStateBySteam.get(m.steamId)?.helmet
-                              ? 'hsl(195, 100%, 70%)'
-                              : 'hsl(200, 70%, 55%)',
-                          }"
-                        />
-                      </span>
-                    </span>
-                  </template>
-                </div>
-                <div
-                  class="pl-7 font-mono text-[0.6rem] tabular-nums text-muted-foreground/80 flex items-center gap-2"
-                >
-                  <span class="tracking-wider">
-                    {{ statsFor(m.steamId).k }}/{{ statsFor(m.steamId).d }}/{{
-                      statsFor(m.steamId).a
-                    }}
-                  </span>
-                  <span class="opacity-60">·</span>
-                  <span>KDR {{ kdrText(statsFor(m.steamId)) }}</span>
-                  <span class="opacity-60">·</span>
-                  <span>{{ statsFor(m.steamId).dmg }} DMG</span>
-                </div>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              {{
-                focusedPlayerId === m.steamId
-                  ? $t("match.replay.follow_stop")
-                  : $t("match.replay.follow_player", { name: m.name })
-              }}
-            </TooltipContent>
-          </Tooltip>
-        </div>
-        <div>
-          <div
-            class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-[hsl(33,94%,58%)] mb-1 mt-2"
-          >
-            {{ $t("match.replay.terrorists") }}
-          </div>
-          <Tooltip v-for="m of lineupRows.t" :key="m.steamId">
-            <TooltipTrigger as-child>
-              <div
-                class="flex flex-col gap-0.5 py-0.5 text-xs cursor-pointer transition-colors rounded-sm pl-1 -ml-1 border-l-2"
-                :class="[
-                  liveStateBySteam.get(m.steamId)?.alive === false
-                    ? 'opacity-40'
-                    : '',
-                  focusedPlayerId === m.steamId
-                    ? 'bg-[hsl(var(--tac-amber)/0.12)] border-[hsl(var(--tac-amber))]'
-                    : 'border-transparent hover:bg-muted/30',
-                ]"
-                @click="toggleFocus(m.steamId)"
-              >
-                <div class="flex items-center gap-2">
-                  <!-- Exclusive avatar OR slot indicator — mirrors the map
-                   marker so the roster and the radar always match. -->
-                  <img
-                    v-if="showAvatars && m.avatarUrl"
-                    :src="m.avatarUrl"
-                    :alt="m.name"
-                    class="w-5 h-5 rounded-full object-cover shrink-0 border-2 border-[hsl(33,94%,58%)] ring-1 ring-black/60"
-                    @error="
-                      ($event.target as HTMLImageElement).style.display = 'none'
-                    "
-                  />
-                  <span
-                    v-else
-                    class="w-5 h-5 rounded-full inline-flex items-center justify-center font-mono font-bold text-[10px] shrink-0"
-                    :style="{
-                      background: 'hsl(33,94%,58%)',
-                      color: 'hsl(0 0% 10%)',
-                    }"
-                  >
-                    {{ m.slot }}
-                  </span>
-                  <span class="truncate flex-1 min-w-0">{{ m.name }}</span>
-                  <!-- Bomb / defuse-kit pills: tiny inline indicators so
-                       the roster mirrors the radar's carrier/kit state
-                       without needing the user to scan the map. -->
-                  <span
-                    v-if="showC4 && hasBombFor(m.steamId)"
-                    class="inline-flex items-center justify-center w-4 h-4 rounded-sm shrink-0"
-                    style="
-                      background: hsl(28, 100%, 55%);
-                      box-shadow: 0 0 0 1px hsl(0 0% 0% / 0.6);
-                    "
-                    :title="$t('match.replay.has_bomb')"
-                  >
-                    <img src="/img/equipment/c4.svg" alt="C4" class="w-3 h-3" />
-                  </span>
-                  <span
-                    v-if="
-                      showDefuser &&
-                      hasDefuserFor(m.steamId) &&
-                      bombActionFor(m.steamId) !== 'defusing'
-                    "
-                    class="inline-flex items-center justify-center w-4 h-4 rounded-sm shrink-0"
-                    style="
-                      background: hsl(190, 90%, 55%);
-                      box-shadow: 0 0 0 1px hsl(0 0% 0% / 0.6);
-                    "
-                    :title="$t('match.replay.defuse_kit')"
-                  >
-                    <img
-                      src="/img/equipment/defuser.svg"
-                      alt="Kit"
-                      class="w-3 h-3"
-                    />
-                  </span>
-                  <!-- Armor pill: only when the player actually has
-                       armor. Bright purple + helmet icon when they
-                       have a helmet, muted purple + kevlar icon when
-                       it's kevlar only. Same color rule as the armor
-                       bar below so the two read as one signal. -->
-                  <span
-                    v-if="(liveStateBySteam.get(m.steamId)?.armor ?? 0) > 0"
-                    class="inline-flex items-center justify-center w-4 h-4 rounded-sm shrink-0"
-                    :style="{
-                      background: liveStateBySteam.get(m.steamId)?.helmet
-                        ? 'hsl(195, 100%, 70%)'
-                        : 'hsl(200, 70%, 55%)',
-                      boxShadow: '0 0 0 1px hsl(0 0% 0% / 0.6)',
-                    }"
-                    :title="
-                      liveStateBySteam.get(m.steamId)?.helmet
-                        ? 'Kevlar + helmet'
-                        : 'Kevlar only'
-                    "
-                  >
-                    <img
-                      v-if="liveStateBySteam.get(m.steamId)?.helmet"
-                      src="/img/equipment/armor_helmet.svg"
-                      alt="Kevlar + helmet"
-                      class="w-3 h-3"
-                    />
-                    <img
-                      v-else
-                      src="/img/equipment/armor.svg"
-                      alt="Kevlar"
-                      class="w-3 h-3"
-                    />
-                  </span>
-                  <template
-                    v-if="
-                      liveStateBySteam.get(m.steamId)?.alive !== false &&
-                      liveStateBySteam.get(m.steamId)?.health != null
-                    "
-                  >
-                    <span
-                      class="font-mono text-[0.65rem] tabular-nums w-7 text-right text-muted-foreground"
-                    >
-                      {{ liveStateBySteam.get(m.steamId)!.health }}
-                    </span>
-                    <span class="inline-flex flex-col gap-px w-12 shrink-0">
-                      <!-- HP track. -->
-                      <span
-                        class="relative h-1 rounded-sm overflow-hidden bg-[hsl(0_0%_100%/0.12)]"
-                      >
-                        <span
-                          class="absolute inset-y-0 left-0 transition-all duration-150"
-                          :style="{
-                            width:
-                              liveStateBySteam.get(m.steamId)!.health + '%',
-                            background: `hsl(${
-                              (liveStateBySteam.get(m.steamId)!.health! / 100) *
-                              130
-                            }, 85%, 50%)`,
-                          }"
-                        />
-                      </span>
-                      <!-- Armor track: separate row so it stays visible
-                           even when HP is full. Purple pops against
-                           the dark UI without competing with CT blue
-                           or T orange. Brighter shade signals helmet
-                           too (matches the kevlar pill). -->
-                      <span
-                        class="relative h-1 rounded-sm overflow-hidden bg-[hsl(0_0%_100%/0.06)]"
-                      >
-                        <span
-                          v-if="
-                            liveStateBySteam.get(m.steamId)?.armor != null &&
-                            liveStateBySteam.get(m.steamId)!.armor! > 0
-                          "
-                          class="absolute inset-y-0 left-0 transition-all duration-150"
-                          :style="{
-                            width: liveStateBySteam.get(m.steamId)!.armor + '%',
-                            background: liveStateBySteam.get(m.steamId)?.helmet
-                              ? 'hsl(195, 100%, 70%)'
-                              : 'hsl(200, 70%, 55%)',
-                          }"
-                        />
-                      </span>
-                    </span>
-                  </template>
-                </div>
-                <div
-                  class="pl-7 font-mono text-[0.6rem] tabular-nums text-muted-foreground/80 flex items-center gap-2"
-                >
-                  <span class="tracking-wider">
-                    {{ statsFor(m.steamId).k }}/{{ statsFor(m.steamId).d }}/{{
-                      statsFor(m.steamId).a
-                    }}
-                  </span>
-                  <span class="opacity-60">·</span>
-                  <span>KDR {{ kdrText(statsFor(m.steamId)) }}</span>
-                  <span class="opacity-60">·</span>
-                  <span>{{ statsFor(m.steamId).dmg }} DMG</span>
-                </div>
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              {{
-                focusedPlayerId === m.steamId
-                  ? $t("match.replay.follow_stop")
-                  : $t("match.replay.follow_player", { name: m.name })
-              }}
-            </TooltipContent>
-          </Tooltip>
+        <div class="grid grid-cols-2 gap-x-3">
+          <ReplayLineupTeam
+            team="ct"
+            :label="$t('match.replay.counter_terrorists')"
+            :members="lineupRows.ct"
+            :live-state-by-steam="liveStateBySteam"
+            :loadout-by-steam="loadoutBySteam"
+            :focused-player-id="focusedPlayerId"
+            :show-avatars="showAvatars"
+            :show-c4="showC4"
+            :stats-for="statsFor"
+            :has-bomb-for="hasBombFor"
+            :follow-label="followLabelFor"
+            @focus="toggleFocus"
+          />
+          <ReplayLineupTeam
+            team="t"
+            :label="$t('match.replay.terrorists')"
+            :members="lineupRows.t"
+            :live-state-by-steam="liveStateBySteam"
+            :loadout-by-steam="loadoutBySteam"
+            :focused-player-id="focusedPlayerId"
+            :show-avatars="showAvatars"
+            :show-c4="showC4"
+            :stats-for="statsFor"
+            :has-bomb-for="hasBombFor"
+            :follow-label="followLabelFor"
+            @focus="toggleFocus"
+          />
         </div>
 
-        <!-- Kill feed sits under the roster on the right column,
-             building progressively as the cursor passes each kill tick.
-             Each row shows: killer → weapon icon → "HS" badge if
-             headshot → victim. -->
         <div
           v-if="killsBeforeCursor.length > 0"
-          class="mt-3 pt-3 border-t border-border/40 flex flex-col gap-1"
+          class="mt-3 pt-3 border-t border-border/40 flex flex-col gap-1 flex-1 min-h-0"
         >
           <div
-            class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
+            class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground shrink-0"
           >
             {{ $t("match.round_kills") }}
           </div>
           <div
-            v-for="(k, i) of killsBeforeCursor"
-            :key="'kf-' + i"
-            class="font-mono text-[0.65rem] tabular-nums flex items-center gap-1 py-0.5"
+            ref="killFeedEl"
+            class="flex-1 min-h-0 overflow-y-auto flex flex-col gap-1 pr-1"
           >
-            <!-- Killer block: identity pip (avatar or slot number) +
+            <div
+              v-for="(k, i) of killFeedDisplay"
+              :key="'kf-' + i"
+              class="font-mono text-[0.65rem] tabular-nums flex items-center gap-1 py-0.5"
+            >
+              <!-- Killer block: identity pip (avatar or slot number) +
                  name, colored to the killer's team. -->
-            <img
-              v-if="
-                showAvatars && k.killer && playerAvatarMap[String(k.killer)]
-              "
-              :src="playerAvatarMap[String(k.killer)]"
-              :alt="playerName(k.killer ?? '')"
-              :title="playerName(k.killer ?? '')"
-              class="w-4 h-4 rounded-full object-cover shrink-0 border ring-1 ring-black/60"
-              :style="{ borderColor: colorFor(k.killer_team ?? null) }"
-              @error="
-                ($event.target as HTMLImageElement).style.display = 'none'
-              "
-            />
-            <span
-              v-else
-              class="w-4 h-4 rounded-full inline-flex items-center justify-center font-mono font-bold text-[9px] shrink-0"
-              :title="playerName(k.killer ?? '')"
-              :style="{
-                background: colorFor(k.killer_team ?? null),
-                color:
-                  k.killer_team === 't' ? 'hsl(0 0% 10%)' : 'hsl(0 0% 98%)',
-              }"
-            >
-              {{ slotByPlayer[String(k.killer ?? "")]?.slot ?? "?" }}
-            </span>
-            <span
-              class="truncate max-w-[5rem]"
-              :style="{ color: colorFor(k.killer_team ?? null) }"
-            >
-              {{ playerName(k.killer ?? "") }}
-            </span>
-            <img
-              v-if="k.weapon && weaponIconPath(k.weapon)"
-              :src="weaponIconPath(k.weapon)"
-              :alt="k.weapon"
-              :title="k.weapon"
-              class="h-4 w-auto opacity-90 shrink-0"
-              @error="
-                ($event.target as HTMLImageElement).style.display = 'none'
-              "
-            />
-            <Crosshair
-              v-if="k.headshot"
-              class="w-3 h-3 text-[hsl(var(--tac-amber))] drop-shadow-[0_0_4px_hsl(var(--tac-amber)/0.6)] shrink-0"
-              :stroke-width="2.5"
-              :title="$t('match.replay.headshot')"
-            />
-            <!-- Victim block: same identity pip + name, team color. -->
-            <img
-              v-if="
-                showAvatars && k.victim && playerAvatarMap[String(k.victim)]
-              "
-              :src="playerAvatarMap[String(k.victim)]"
-              :alt="playerName(k.victim ?? '')"
-              :title="playerName(k.victim ?? '')"
-              class="w-4 h-4 rounded-full object-cover shrink-0 border ring-1 ring-black/60"
-              :style="{ borderColor: colorFor(k.victim_team ?? null) }"
-              @error="
-                ($event.target as HTMLImageElement).style.display = 'none'
-              "
-            />
-            <span
-              v-else
-              class="w-4 h-4 rounded-full inline-flex items-center justify-center font-mono font-bold text-[9px] shrink-0"
-              :title="playerName(k.victim ?? '')"
-              :style="{
-                background: colorFor(k.victim_team ?? null),
-                color:
-                  k.victim_team === 't' ? 'hsl(0 0% 10%)' : 'hsl(0 0% 98%)',
-              }"
-            >
-              {{ slotByPlayer[String(k.victim ?? "")]?.slot ?? "?" }}
-            </span>
-            <span
-              class="truncate max-w-[5rem]"
-              :style="{ color: colorFor(k.victim_team ?? null) }"
-            >
-              {{ playerName(k.victim ?? "") }}
-            </span>
+              <img
+                v-if="
+                  showAvatars && k.killer && playerAvatarMap[String(k.killer)]
+                "
+                :src="playerAvatarMap[String(k.killer)]"
+                :alt="playerName(k.killer ?? '')"
+                :title="playerName(k.killer ?? '')"
+                class="w-4 h-4 rounded-full object-cover shrink-0 border ring-1 ring-black/60"
+                :style="{ borderColor: colorFor(k.killer_team ?? null) }"
+                @error="
+                  ($event.target as HTMLImageElement).style.display = 'none'
+                "
+              />
+              <span
+                v-else
+                class="w-4 h-4 rounded-full inline-flex items-center justify-center font-mono font-bold text-[9px] shrink-0"
+                :title="playerName(k.killer ?? '')"
+                :style="{
+                  background: colorFor(k.killer_team ?? null),
+                  color:
+                    k.killer_team === 't' ? 'hsl(0 0% 10%)' : 'hsl(0 0% 98%)',
+                }"
+              >
+                {{ slotByPlayer[String(k.killer ?? "")]?.slot ?? "?" }}
+              </span>
+              <span
+                class="truncate max-w-[5rem]"
+                :style="{ color: colorFor(k.killer_team ?? null) }"
+              >
+                {{ playerName(k.killer ?? "") }}
+              </span>
+              <img
+                v-if="k.weapon && weaponIconPath(k.weapon)"
+                :src="weaponIconPath(k.weapon)"
+                :alt="k.weapon"
+                :title="k.weapon"
+                class="h-4 w-auto opacity-90 shrink-0"
+                @error="
+                  ($event.target as HTMLImageElement).style.display = 'none'
+                "
+              />
+              <Crosshair
+                v-if="k.headshot"
+                class="w-3 h-3 text-[hsl(var(--tac-amber))] drop-shadow-[0_0_4px_hsl(var(--tac-amber)/0.6)] shrink-0"
+                :stroke-width="2.5"
+                :title="$t('match.replay.headshot')"
+              />
+              <!-- Victim block: same identity pip + name, team color. -->
+              <img
+                v-if="
+                  showAvatars && k.victim && playerAvatarMap[String(k.victim)]
+                "
+                :src="playerAvatarMap[String(k.victim)]"
+                :alt="playerName(k.victim ?? '')"
+                :title="playerName(k.victim ?? '')"
+                class="w-4 h-4 rounded-full object-cover shrink-0 border ring-1 ring-black/60"
+                :style="{ borderColor: colorFor(k.victim_team ?? null) }"
+                @error="
+                  ($event.target as HTMLImageElement).style.display = 'none'
+                "
+              />
+              <span
+                v-else
+                class="w-4 h-4 rounded-full inline-flex items-center justify-center font-mono font-bold text-[9px] shrink-0"
+                :title="playerName(k.victim ?? '')"
+                :style="{
+                  background: colorFor(k.victim_team ?? null),
+                  color:
+                    k.victim_team === 't' ? 'hsl(0 0% 10%)' : 'hsl(0 0% 98%)',
+                }"
+              >
+                {{ slotByPlayer[String(k.victim ?? "")]?.slot ?? "?" }}
+              </span>
+              <span
+                class="truncate max-w-[5rem]"
+                :style="{ color: colorFor(k.victim_team ?? null) }"
+              >
+                {{ playerName(k.victim ?? "") }}
+              </span>
+            </div>
           </div>
         </div>
 
-        <!-- Keyboard shortcut legend tucked into the bottom of the
-             right column, below the kill feed. Compact, monospace,
-             only shows the four shortcuts the user is likely to use. -->
         <div
-          class="mt-auto pt-3 border-t border-border/40 flex flex-col gap-1 text-[0.6rem] text-muted-foreground"
+          class="mt-auto pt-3 border-t border-border/40 flex flex-col gap-1 text-[0.6rem] text-muted-foreground shrink-0"
         >
           <div
             class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"

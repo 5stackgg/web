@@ -290,12 +290,20 @@ export default {
       immediate: true,
       handler(newVal: Array<{ name: string; value: string | null }>) {
         for (const setting of newVal) {
-          (this.form.setFieldValue as any)(setting.name, setting.value || "");
+          if (setting.value == null || setting.value === "") {
+            continue;
+          }
+          (this.form.setFieldValue as any)(setting.name, setting.value);
         }
       },
     },
   },
   methods: {
+    roleOrDefault(value: unknown): string {
+      return typeof value === "string" && value.length > 0
+        ? value
+        : e_player_roles_enum.user;
+    },
     async togglePlayerNameRegistration() {
       await (this as any).$apollo.mutate({
         mutation: generateMutation({
@@ -322,6 +330,7 @@ export default {
       });
     },
     async updateSettings() {
+      const values = this.form.values as any;
       await (this as any).$apollo.mutate({
         mutation: generateMutation({
           insert_settings: [
@@ -329,17 +338,19 @@ export default {
               objects: [
                 {
                   name: "public.create_matches_role",
-                  value: (this.form.values as any).public.create_matches_role,
+                  value: this.roleOrDefault(values.public?.create_matches_role),
                 },
                 {
                   name: "public.create_tournaments_role",
-                  value: (this.form.values as any).public
-                    .create_tournaments_role,
+                  value: this.roleOrDefault(
+                    values.public?.create_tournaments_role,
+                  ),
                 },
                 {
                   name: "dedicated_servers_min_role_to_connect",
-                  value: (this.form.values as any)
-                    .dedicated_servers_min_role_to_connect,
+                  value: this.roleOrDefault(
+                    values.dedicated_servers_min_role_to_connect,
+                  ),
                 },
               ],
               on_conflict: {

@@ -1,3 +1,19 @@
+export type ReplayRoundInventory = {
+  round: number;
+  steam_id: string | null;
+  team: string | null;
+  flash: number;
+  smoke: number;
+  he: number;
+  molotov: number;
+  decoy: number;
+  primary: string | null;
+  secondary: string | null;
+  armor: number;
+  helmet: boolean;
+  kit: boolean;
+};
+
 export type ReplayBlob = {
   schema_version: number;
   match_map_id: string;
@@ -13,6 +29,7 @@ export type ReplayBlob = {
   shots_fired: any[];
   grenade_throws: any[];
   damages: any[];
+  round_inventory?: ReplayRoundInventory[];
 };
 
 export async function fetchReplayBlob(url: string): Promise<ReplayBlob | null> {

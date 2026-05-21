@@ -7694,8 +7694,14 @@ export const AllTypesProps: Record<string,any> = {
 		requestNameChange:{
 			steam_id:"bigint"
 		},
+		requeueClipRender:{
+			job_id:"uuid"
+		},
 		restartService:{
 
+		},
+		retryClipRenderBatch:{
+			match_map_id:"uuid"
 		},
 		scheduleMatch:{
 			match_id:"uuid",
@@ -13491,6 +13497,7 @@ export const AllTypesProps: Record<string,any> = {
 		roster_image_url:"String_comparison_exp",
 		sanctions:"player_sanctions_bool_exp",
 		sanctions_aggregate:"player_sanctions_aggregate_bool_exp",
+		show_match_ready_modal:"Boolean_comparison_exp",
 		stats:"player_stats_bool_exp",
 		steam_id:"bigint_comparison_exp",
 		team_invites:"team_invites_bool_exp",
@@ -13618,6 +13625,7 @@ export const AllTypesProps: Record<string,any> = {
 		role:"order_by",
 		roster_image_url:"order_by",
 		sanctions_aggregate:"player_sanctions_aggregate_order_by",
+		show_match_ready_modal:"order_by",
 		stats:"player_stats_order_by",
 		steam_id:"order_by",
 		team_invites_aggregate:"team_invites_aggregate_order_by",
@@ -25495,7 +25503,9 @@ export const ReturnTypes: Record<string,any> = {
 		reparseDemo:"SuccessOutput",
 		reparseMatchDemos:"SuccessOutput",
 		requestNameChange:"SuccessOutput",
+		requeueClipRender:"SuccessOutput",
 		restartService:"SuccessOutput",
+		retryClipRenderBatch:"SuccessOutput",
 		scheduleMatch:"SuccessOutput",
 		setGameNodeSchedulingState:"SuccessOutput",
 		setHudMode:"SuccessOutput",
@@ -29067,6 +29077,7 @@ export const ReturnTypes: Record<string,any> = {
 		roster_image_url:"String",
 		sanctions:"player_sanctions",
 		sanctions_aggregate:"player_sanctions_aggregate",
+		show_match_ready_modal:"Boolean",
 		stats:"player_stats",
 		steam_id:"bigint",
 		team_invites:"team_invites",

@@ -18,7 +18,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import InstallPWA from "~/components/InstallPWA.vue";
 import { DiscordLogoIcon } from "@radix-icons/vue";
-import { Settings, LogOut, ChevronsUpDown } from "lucide-vue-next";
+import { Settings, LogOut, ChevronsUpDown, CheckCircle2 } from "lucide-vue-next";
+import { e_match_status_enum } from "~/generated/zeus";
+import { useMatchmakingStore } from "~/stores/MatchmakingStore";
+import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
+import { useMatchReadyModal } from "~/composables/useMatchReadyModal";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
@@ -36,6 +40,30 @@ import { loginLinks } from "~/utilities/loginLinks";
 const { isMobile } = useSidebar();
 const { openLastOrDefaultHub } = useHubState();
 const { brandName, logoUrl } = useBranding();
+const matchmakingStore = useMatchmakingStore();
+const matchLobbyStore = useMatchLobbyStore();
+const { openMatchReadyModal } = useMatchReadyModal();
+const ALERTABLE_MATCH_STATUSES: string[] = [
+  e_match_status_enum.WaitingForCheckIn,
+  e_match_status_enum.Veto,
+  e_match_status_enum.Live,
+];
+const pendingCheckIn = computed(() => {
+  const confirmation = matchmakingStore.joinedMatchmakingQueues?.confirmation;
+  if (!confirmation || confirmation.matchId) return null;
+  return confirmation;
+});
+const activeMatchAlert = computed(() => {
+  if (pendingCheckIn.value) return null;
+  const match = matchLobbyStore.currentMatch as
+    | { id: string; status: string }
+    | undefined;
+  if (!match || !ALERTABLE_MATCH_STATUSES.includes(match.status)) return null;
+  return match;
+});
+const hasPendingAlert = computed(
+  () => !!pendingCheckIn.value || !!activeMatchAlert.value,
+);
 const route = useRoute();
 const authStore = useAuthStore();
 const homePath = computed(() => (authStore.me ? "/me" : "/watch"));
@@ -487,6 +515,30 @@ const loginArrowClasses =
       <template v-if="me">
         <div :class="topNavRightClasses">
           <InstallPWA v-if="!isMobile" :is-menu-item="false" />
+          <button
+            v-if="hasPendingAlert"
+            type="button"
+            class="relative inline-flex h-7 items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] px-2 font-mono text-[0.7rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.15)]"
+            :aria-label="$t('matchmaking.check_in')"
+            @click="openMatchReadyModal()"
+          >
+            <span
+              class="relative flex h-1.5 w-1.5"
+              aria-hidden="true"
+            >
+              <span
+                class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
+              ></span>
+              <span
+                class="relative inline-flex h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))]"
+              ></span>
+            </span>
+            <CheckCircle2 class="h-3.5 w-3.5" />
+            <span class="hidden sm:inline">{{ $t("matchmaking.check_in") }}</span>
+            <span v-if="pendingCheckIn" class="tabular-nums">
+              {{ pendingCheckIn.confirmed }}/{{ pendingCheckIn.players }}
+            </span>
+          </button>
           <MatchLobbies v-if="!isMobile" />
           <Button
             variant="ghost"

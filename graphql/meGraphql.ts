@@ -10,6 +10,7 @@ export const meFields = Selector("players")({
   current_lobby_id: true,
   language: true,
   country: true,
+  show_match_ready_modal: true,
   teams: [
     {},
     {

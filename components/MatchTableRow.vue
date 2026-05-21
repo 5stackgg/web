@@ -5,6 +5,7 @@ import {
   Film,
   GitBranch,
   ListChecks,
+  Radio,
   Trophy,
   UserPlusIcon,
   UsersIcon,
@@ -45,7 +46,12 @@ import {
     v-if="
       alwaysShow || !compact || match.status === e_match_status_enum.Finished
     "
-    class="bg-muted/30 border border-border rounded-lg hover:shadow-lg hover:shadow-primary/10 hover:bg-muted/20 hover:border-primary/30 transition-all duration-300 cursor-pointer group overflow-hidden flex flex-col h-full"
+    :class="[
+      'transition-all duration-300 cursor-pointer group overflow-hidden flex flex-col h-full',
+      embedded
+        ? 'bg-transparent'
+        : 'bg-muted/30 border border-border rounded-lg hover:shadow-lg hover:shadow-primary/10 hover:bg-muted/20 hover:border-primary/30',
+    ]"
     @click="navigateToMatch(match.id, $event)"
   >
     <div
@@ -85,6 +91,7 @@ import {
         >
           <template
             v-if="
+              !hideStreamButton &&
               match.streams?.length > 0 &&
               !match.is_in_lineup &&
               !match.is_coach &&
@@ -99,33 +106,8 @@ import {
               :title="stream.title || stream.link"
               @click.stop="watchStream(stream)"
             >
-              <span
-                class="relative z-[1] inline-flex items-center gap-[0.35rem]"
-              >
-                <span class="relative inline-flex h-1.5 w-1.5 shrink-0">
-                  <span
-                    class="animate-ping absolute inset-0 rounded-full bg-red-300 opacity-75"
-                    aria-hidden="true"
-                  ></span>
-                  <span
-                    class="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-200 shadow-[0_0_5px_1px_hsl(0_100%_85%/0.8)]"
-                  ></span>
-                </span>
-                <span class="text-white">{{ $t("match.stream.watch") }}</span>
-                <component
-                  :is="getStreamPlatformIcon(stream.link)"
-                  class="h-2.5 w-2.5 shrink-0 opacity-80"
-                  v-if="getStreamPlatformIcon(stream.link)"
-                />
-              </span>
-              <span
-                class="absolute inset-0 [background:linear-gradient(90deg,transparent_0%,hsl(0_0%_100%/0.28)_50%,transparent_100%)] -translate-x-full [transition:transform_700ms_cubic-bezier(0.4,0,0.2,1)] pointer-events-none z-0 group-hover/watch:translate-x-full"
-                aria-hidden="true"
-              ></span>
-              <span
-                class="absolute inset-0 pointer-events-none z-0 [background:repeating-linear-gradient(180deg,transparent_0,transparent_2px,hsl(0_0%_100%/0.04)_2px,hsl(0_0%_100%/0.04)_3px)] opacity-60"
-                aria-hidden="true"
-              ></span>
+              <Radio class="h-3 w-3" />
+              <span>{{ $t("match.stream.watch") }}</span>
             </button>
           </template>
           <MatchStatus v-if="!compact" :match="match" />
@@ -182,6 +164,7 @@ import {
           >
             <template
               v-if="
+                !hideStreamButton &&
                 match.streams?.length > 0 &&
                 !match.is_in_lineup &&
                 !match.is_coach &&
@@ -196,33 +179,8 @@ import {
                 :title="stream.title || stream.link"
                 @click.stop="watchStream(stream)"
               >
-                <span
-                  class="relative z-[1] inline-flex items-center gap-[0.35rem]"
-                >
-                  <span class="relative inline-flex h-1.5 w-1.5 shrink-0">
-                    <span
-                      class="animate-ping absolute inset-0 rounded-full bg-red-300 opacity-75"
-                      aria-hidden="true"
-                    ></span>
-                    <span
-                      class="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-200 shadow-[0_0_5px_1px_hsl(0_100%_85%/0.8)]"
-                    ></span>
-                  </span>
-                  <span class="text-white">{{ $t("match.stream.watch") }}</span>
-                  <component
-                    :is="getStreamPlatformIcon(stream.link)"
-                    class="h-2.5 w-2.5 shrink-0 opacity-80"
-                    v-if="getStreamPlatformIcon(stream.link)"
-                  />
-                </span>
-                <span
-                  class="absolute inset-0 [background:linear-gradient(90deg,transparent_0%,hsl(0_0%_100%/0.28)_50%,transparent_100%)] -translate-x-full [transition:transform_700ms_cubic-bezier(0.4,0,0.2,1)] pointer-events-none z-0 group-hover/watch:translate-x-full"
-                  aria-hidden="true"
-                ></span>
-                <span
-                  class="absolute inset-0 pointer-events-none z-0 [background:repeating-linear-gradient(180deg,transparent_0,transparent_2px,hsl(0_0%_100%/0.04)_2px,hsl(0_0%_100%/0.04)_3px)] opacity-60"
-                  aria-hidden="true"
-                ></span>
+                <Radio class="h-3 w-3" />
+                <span>{{ $t("match.stream.watch") }}</span>
               </button>
             </template>
 
@@ -1648,6 +1606,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    embedded: {
+      type: Boolean,
+      default: false,
+    },
+    hideStreamButton: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -1882,7 +1848,10 @@ export default {
         .slice(0, 2);
     },
     getTeamScore(match: any, lineupId: string): string | number {
-      if (match.status !== e_match_status_enum.Finished) {
+      if (
+        match.status !== e_match_status_enum.Finished &&
+        match.status !== e_match_status_enum.Live
+      ) {
         return "";
       }
 
@@ -2038,7 +2007,7 @@ export default {
       return "inline-flex min-w-0 items-center gap-1.5 rounded-md border border-border/70 bg-muted/35 px-2.5 py-1 font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] leading-none text-muted-foreground";
     },
     watchStreamPillClasses(): string {
-      return "group/watch relative inline-flex items-center isolate px-2 py-[3px] font-mono text-[0.6rem] font-bold tracking-[0.14em] uppercase leading-none text-white [background:linear-gradient(180deg,hsl(0_88%_55%)_0%,hsl(0_82%_44%)_55%,hsl(355_78%_36%)_100%)] border border-red-300/40 shadow-[0_0_0_1px_hsl(0_85%_45%/0.55),0_2px_8px_-2px_hsl(0_85%_50%/0.45),inset_0_1px_0_hsl(0_100%_82%/0.4),inset_0_-1px_0_hsl(0_85%_25%/0.55)] [transition:transform_180ms_cubic-bezier(0.4,0,0.2,1),box-shadow_180ms_ease,filter_180ms_ease] cursor-pointer overflow-hidden whitespace-nowrap hover:-translate-y-[1px] hover:[filter:saturate(1.15)] hover:shadow-[0_0_0_1px_hsl(0_90%_55%/0.8),0_0_18px_-2px_hsl(0_90%_60%/0.6),0_6px_14px_-4px_hsl(0_85%_50%/0.6),inset_0_1px_0_hsl(0_100%_88%/0.55),inset_0_-1px_0_hsl(0_85%_25%/0.55)] active:translate-y-0";
+      return "inline-flex items-center gap-1.5 rounded-md border border-[hsl(0_85%_55%/0.55)] bg-[hsl(0_85%_50%/0.10)] px-2 py-1 text-xs font-medium leading-none whitespace-nowrap text-[hsl(0_90%_72%)] transition-colors cursor-pointer hover:border-[hsl(0_85%_55%)] hover:bg-[hsl(0_85%_50%/0.18)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(0_85%_55%/0.6)]";
     },
     maxPlayersPerLineup() {
       return this.match.max_players_per_lineup;

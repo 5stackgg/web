@@ -269,7 +269,7 @@ function statCell(lp: any, key: "kills" | "deaths" | "assists" | "damage") {
     class="absolute z-30 inline-flex items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-black/70 px-2 py-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] backdrop-blur-sm transition-colors cursor-pointer opacity-70 hover:opacity-100"
     :class="[
       open ? 'opacity-100' : '',
-      compact ? 'top-2 left-2' : 'top-2 left-1/2 -translate-x-1/2',
+      compact ? 'top-2 left-8' : 'top-2 left-1/2 -translate-x-1/2',
     ]"
     :aria-expanded="open"
     :title="$t('match.scoreboard')"

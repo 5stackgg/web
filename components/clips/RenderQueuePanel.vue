@@ -87,8 +87,18 @@ const QUEUE_BOOT_STAGES = computed<
     key: string;
     label: string;
     meta: "required" | "conditional" | "implicit";
+    concurrentUntil?: string;
   }>
 >(() => [
+  {
+    key: "downloading_demo",
+    label: t("live_stages.downloading_demo"),
+    meta: "required",
+    // game-streamer.sh kicks the demo curl into the background before
+    // setup-steam runs; run-demo.sh only blocks on the file when it
+    // reaches launching_cs2 — stay "current" until then.
+    concurrentUntil: "launching_cs2",
+  },
   {
     key: "downloading_cs2",
     label: t("live_stages.downloading_cs2"),
@@ -100,11 +110,6 @@ const QUEUE_BOOT_STAGES = computed<
     meta: "required",
   },
   { key: "logging_in", label: t("live_stages.logging_in"), meta: "implicit" },
-  {
-    key: "downloading_demo",
-    label: t("live_stages.downloading_demo"),
-    meta: "required",
-  },
   {
     key: "downloading_workshop_map",
     label: t("live_stages.downloading_workshop_map"),
@@ -391,10 +396,21 @@ function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
 
 function stageStateFor(
   group: BatchGroup,
-  stage: { key: string; meta: "required" | "conditional" | "implicit" },
+  stage: {
+    key: string;
+    meta: "required" | "conditional" | "implicit";
+    concurrentUntil?: string;
+  },
 ): "done" | "current" | "skipped" | "pending" {
   if (!group.bootInfo) return "pending";
   if (group.bootInfo.stage === stage.key) return "current";
+  if (
+    stage.concurrentUntil &&
+    group.bootInfo.firedStages.has(stage.key) &&
+    !group.bootInfo.firedStages.has(stage.concurrentUntil)
+  ) {
+    return "current";
+  }
   if (group.bootInfo.firedStages.has(stage.key)) return "done";
   const order = QUEUE_BOOT_STAGES.value.findIndex((s) => s.key === stage.key);
   const currOrder = QUEUE_BOOT_STAGES.value.findIndex(

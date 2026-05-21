@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import {
   Maximize,
   Minimize,
@@ -323,10 +323,68 @@ if (typeof document !== "undefined") {
   document.addEventListener("webkitfullscreenchange", onFullscreenChange);
 }
 
+// Pause whenever the surface scrolls fully out of view. Keyboard media
+// keys would otherwise resume a hidden video (modal closed mid-playback,
+// scrolled-away inline reel) with no visible feedback — Media Session
+// holds the most-recently-played element until something else takes the
+// slot. Pausing on exit-viewport also ensures the @pause handler fires
+// and our UI state stays in sync.
+let visibilityObserver: IntersectionObserver | null = null;
+function onVisibilityChange(entries: IntersectionObserverEntry[]) {
+  for (const entry of entries) {
+    if (entry.isIntersecting) continue;
+    const v = videoRef.value;
+    if (v && !v.paused) v.pause();
+  }
+}
+function setupVisibilityObserver() {
+  if (typeof IntersectionObserver === "undefined") return;
+  const v = videoRef.value;
+  if (!v) return;
+  visibilityObserver?.disconnect();
+  visibilityObserver = new IntersectionObserver(onVisibilityChange, {
+    threshold: 0,
+  });
+  visibilityObserver.observe(v);
+}
+function teardownVisibilityObserver() {
+  visibilityObserver?.disconnect();
+  visibilityObserver = null;
+}
+
+onMounted(() => {
+  setupVisibilityObserver();
+});
+
+// Re-attach when the underlying <video> element is replaced (clipKey
+// remount).
+watch(
+  () => props.clipKey,
+  () => {
+    void nextTick().then(() => setupVisibilityObserver());
+  },
+);
+
 onBeforeUnmount(() => {
   stopProgressLoop();
   clearControlsTimer();
   if (introOverlayTimer) clearTimeout(introOverlayTimer);
+  teardownVisibilityObserver();
+  // Explicitly tear down playback before the element detaches. A
+  // detached <video> retains its src and remains the Media Session
+  // target, so keyboard play/next-track keys resume an off-DOM clip
+  // (modal close, route change) with no way for the user to see or
+  // stop it.
+  const v = videoRef.value;
+  if (v) {
+    try {
+      v.pause();
+      v.removeAttribute("src");
+      v.load();
+    } catch {
+      // best effort — element is going away anyway
+    }
+  }
   if (typeof document !== "undefined") {
     document.removeEventListener("fullscreenchange", onFullscreenChange);
     document.removeEventListener("webkitfullscreenchange", onFullscreenChange);

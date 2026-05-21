@@ -390,7 +390,9 @@ export default {
         return {
           icon: "play",
           disabled: true,
-          tooltip: gpu.busyReason || this.$t("stream_status.gpu_busy"),
+          tooltip: gpu.busyReasonKey
+            ? this.$t(gpu.busyReasonKey)
+            : this.$t("stream_status.gpu_busy"),
           onClick: null,
         };
       }

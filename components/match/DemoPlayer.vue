@@ -21,6 +21,15 @@ const DEMO_STAGES = computed(() => [
     meta: "required" as const,
   },
   {
+    key: "downloading_demo",
+    label: t("live_stages.downloading_demo"),
+    meta: "required" as const,
+    // Background curl in game-streamer.sh; run-demo.sh only blocks on
+    // the file when it hits launching_cs2, so treat it as in-flight
+    // until then.
+    concurrentUntil: "launching_cs2",
+  },
+  {
     key: "downloading_cs2",
     label: t("live_stages.downloading_cs2"),
     meta: "conditional" as const,
@@ -34,11 +43,6 @@ const DEMO_STAGES = computed(() => [
     key: "logging_in",
     label: t("live_stages.logging_in"),
     meta: "implicit" as const,
-  },
-  {
-    key: "downloading_demo",
-    label: t("live_stages.downloading_demo"),
-    meta: "required" as const,
   },
   {
     key: "downloading_workshop_map",

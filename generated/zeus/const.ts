@@ -7731,6 +7731,9 @@ export const AllTypesProps: Record<string,any> = {
 		specHud:{
 			match_id:"uuid"
 		},
+		specHudSides:{
+			match_id:"uuid"
+		},
 		specJump:{
 			match_id:"uuid"
 		},
@@ -25515,6 +25518,7 @@ export const ReturnTypes: Record<string,any> = {
 		specAutodirector:"SuccessOutput",
 		specClick:"SuccessOutput",
 		specHud:"SuccessOutput",
+		specHudSides:"SuccessOutput",
 		specJump:"SuccessOutput",
 		specPlayer:"SuccessOutput",
 		specScoreboard:"SuccessOutput",

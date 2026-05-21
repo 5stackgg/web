@@ -31,21 +31,22 @@ const DASH = "—";
     <TableCell
       v-if="!hideMember"
       :class="[
-        'w-[110px] md:w-[220px] overflow-hidden sticky left-0 z-10 border-r border-border touch-pan-y [transform:translateZ(0)]',
+        'w-[110px] md:w-[220px] sticky left-0 z-30 border-r border-border touch-pan-y [transform:translateZ(0)]',
         stickyCellClass(member) ||
           'bg-card group-hover:bg-muted shadow-[3px_0_6px_-3px_hsl(0_0%_0%/0.7)]',
       ]"
     >
-      <DropdownMenu v-if="canDoActions">
-        <DropdownMenuTrigger as-child>
-          <Button
-            variant="ghost"
-            class="absolute left-0 top-1/2 -translate-y-1/2 h-7 w-4 p-0 z-20 text-muted-foreground hover:text-foreground hover:bg-transparent"
-          >
-            <MoreVertical class="h-4 w-3" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" class="w-56">
+      <div class="flex items-center gap-1 min-w-0">
+        <DropdownMenu v-if="canDoActions">
+          <DropdownMenuTrigger as-child>
+            <Button
+              variant="ghost"
+              class="shrink-0 h-7 w-5 p-0 rounded text-muted-foreground hover:!text-[hsl(var(--tac-amber))] hover:!bg-[hsl(var(--tac-amber)/0.18)] [box-shadow:inset_0_0_0_1px_transparent] hover:[box-shadow:inset_0_0_0_1px_hsl(var(--tac-amber)/0.4)] transition-colors"
+            >
+              <MoreVertical class="h-4 w-3" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" class="w-56">
           <template v-if="lineup.can_update_lineup">
             <DropdownMenuItem @click="makeCaptain" :disabled="member.captain">
               <span>{{ $t("match.overview.promote_captain") }}</span>
@@ -94,14 +95,7 @@ const DASH = "—";
           </template>
         </DropdownMenuContent>
       </DropdownMenu>
-      <RenderHighlightForPlayerDialog
-        v-if="canRequestHighlight && member.player?.steam_id"
-        v-model:open="renderHighlightOpen"
-        :match-maps="mapsWithDemo"
-        :target-steam-id="String(member.player.steam_id)"
-        :target-name="member.player.name ?? null"
-      />
-      <div :class="['min-w-0', canDoActions ? 'pl-3' : '']">
+      <div class="min-w-0 flex-1">
         <div class="hidden md:block">
           <LineupMember :match="match" :member="member">
             <template v-if="member.player?.steam_id" #avatar-badge>
@@ -175,6 +169,14 @@ const DASH = "—";
           </div>
         </div>
       </div>
+      </div>
+      <RenderHighlightForPlayerDialog
+        v-if="canRequestHighlight && member.player?.steam_id"
+        v-model:open="renderHighlightOpen"
+        :match-maps="mapsWithDemo"
+        :target-steam-id="String(member.player.steam_id)"
+        :target-name="member.player.name ?? null"
+      />
     </TableCell>
     <template v-if="showStats">
       <TableCell class="text-center tabular-nums">{{

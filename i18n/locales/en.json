@@ -33,7 +33,10 @@
         "set_winner_failed_description": "Selected lineup id is missing for this match.",
         "match_reset_applied": "Tournament match reset applied",
         "match_reset_failed": "Unable to reset tournament match",
-        "please_try_again": "Please try again."
+        "please_try_again": "Please try again.",
+        "hevc_missing_title": "Can't play this clip",
+        "hevc_missing_body": "This video is encoded with HEVC (H.265). Your browser can't decode it — install the HEVC Video Extensions on Windows to enable playback:",
+        "hevc_missing_link": "Get the HEVC Video Extensions"
     },
     "shortcut_groups": {
         "playback": "Playback",

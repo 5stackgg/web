@@ -16,7 +16,6 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import {
   ChevronLeft,
   ChevronRight,
-  ArrowUp,
   Square,
   ExternalLink,
   Radio,
@@ -34,8 +33,10 @@ import {
 import gql from "graphql-tag";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { e_match_status_enum } from "~/generated/zeus";
+import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import SpectatorGrid from "~/components/stream-deck/SpectatorGrid.vue";
+import MatchTableRow from "~/components/MatchTableRow.vue";
 import { useStreamerPopout } from "~/composables/useStreamerPopout";
 
 const { status: gpuPoolStatus, hasFreeGpu, busyReason } = useGpuAvailability();
@@ -102,23 +103,20 @@ type LiveMatchMap = {
   id: string;
   lineup_1_score: number;
   lineup_2_score: number;
-  is_current_map?: boolean | null;
   map: { name: string | null } | null;
 };
 
 type LiveMatch = {
   id: string;
   status: string;
-  scheduled_at: string | null;
-  started_at: string | null;
   current_match_map_id: string | null;
   server_id: string | null;
   is_server_online: boolean | null;
   server_region: string | null;
-  options: { type: string | null } | null;
+  match_maps: LiveMatchMap[];
   lineup_1: { id: string; name: string | null } | null;
   lineup_2: { id: string; name: string | null } | null;
-  match_maps: LiveMatchMap[];
+  [key: string]: any;
 };
 
 const liveMatches = ref<LiveMatch[]>([]);
@@ -143,10 +141,7 @@ onMounted(() => {
             } as any,
           },
           {
-            id: true,
-            status: true,
-            scheduled_at: true,
-            started_at: true,
+            ...simpleMatchFields,
             current_match_map_id: true,
             // Computed fields, not the `server` join — guest's filter
             // on `servers` requires connection_string IS NOT NULL,
@@ -154,23 +149,6 @@ onMounted(() => {
             server_id: true,
             is_server_online: true,
             server_region: true,
-            options: { type: true },
-            lineup_1: { id: true, name: true },
-            lineup_2: { id: true, name: true },
-            // Pull match_maps (small list — usually 1–5 rows per Bo)
-            // and pick the live one client-side via
-            // current_match_map_id. Cheaper than re-deriving
-            // is_current_map on the server, which is a computed
-            // function call per row.
-            match_maps: [
-              {},
-              {
-                id: true,
-                lineup_1_score: true,
-                lineup_2_score: true,
-                map: { name: true },
-              },
-            ],
           },
         ],
       }),
@@ -181,7 +159,6 @@ onMounted(() => {
         liveMatchesLoaded.value = true;
       },
       error: (err: any) => {
-        // eslint-disable-next-line no-console
         console.error("[stream-deck] live matches subscription error", err);
       },
     });
@@ -234,13 +211,11 @@ function specClick(matchId: string, button: "left" | "right") {
   }));
 }
 
-function specJump(matchId: string) {
-  return runMutation(matchId, "spec jump", () => ({
-    specJump: [{ match_id: matchId }, { success: true }],
-  }));
-}
-
-function specSlot(matchId: string, slot: number) {
+async function specSlot(matchId: string, slot: number) {
+  const stream = liveStreams.value.find((s) => s.match_id === matchId);
+  if (stream && isAutodirector(stream)) {
+    await setAutodirector(matchId, false);
+  }
   return runMutation(matchId, `spec slot ${slot}`, () => ({
     specSlot: [{ match_id: matchId, slot }, { success: true }],
   }));
@@ -436,20 +411,9 @@ function statusBadgeLabel(stream: any) {
   return (STATUS_LABELS.value[s] ?? s.replace(/_/g, " ")).toUpperCase();
 }
 
-// Tile helpers — keep template terse.
-function matchStatusLabel(m: LiveMatch): string {
-  if (m.status === "Live") return t("stream_deck_status.live");
-  if (m.status === "Veto") return t("stream_deck_status.veto");
-  if (m.status === "WaitingForServer")
-    return t("stream_deck_status.spinning_up");
-  if (m.status === "WaitingForCheckIn") return t("stream_deck_status.check_in");
-  return m.status.toUpperCase();
-}
-
-// Resolve the live map for a tile. Prefers current_match_map_id (set
-// by the server while a map is actively running); falls back to the
-// last map with any non-zero score so a paused/just-finished match
-// still shows the latest scoreline instead of "vs".
+// Resolve the live map for a tile. Prefer current_match_map_id; fall
+// back to the last map with any scored round so a paused/just-finished
+// match still shows the latest scoreline.
 function currentMapFor(m: LiveMatch): LiveMatchMap | null {
   if (!m.match_maps?.length) return null;
   if (m.current_match_map_id) {
@@ -462,7 +426,7 @@ function currentMapFor(m: LiveMatch): LiveMatchMap | null {
   return scored ?? null;
 }
 
-function scoreFor(m: LiveMatch): { l: number; r: number } | null {
+function liveRoundScore(m: LiveMatch): { l: number; r: number } | null {
   const cm = currentMapFor(m);
   if (!cm) return null;
   return { l: cm.lineup_1_score ?? 0, r: cm.lineup_2_score ?? 0 };
@@ -471,6 +435,16 @@ function scoreFor(m: LiveMatch): { l: number; r: number } | null {
 function currentMapName(m: LiveMatch): string | null {
   return currentMapFor(m)?.map?.name ?? null;
 }
+
+function matchStatusLabel(m: LiveMatch): string {
+  if (m.status === "Live") return t("stream_deck_status.live");
+  if (m.status === "Veto") return t("stream_deck_status.veto");
+  if (m.status === "WaitingForServer")
+    return t("stream_deck_status.spinning_up");
+  if (m.status === "WaitingForCheckIn") return t("stream_deck_status.check_in");
+  return m.status.toUpperCase();
+}
+
 </script>
 
 <template>
@@ -776,9 +750,9 @@ function currentMapName(m: LiveMatch): string | null {
                 <span
                   class="mb-1.5 block font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
                 >
-                  Cycle &amp; lock
+                  Cycle
                 </span>
-                <div class="grid grid-cols-3 gap-1.5">
+                <div class="grid grid-cols-2 gap-1.5">
                   <Button
                     variant="secondary"
                     size="sm"
@@ -791,19 +765,6 @@ function currentMapName(m: LiveMatch): string | null {
                   >
                     <ChevronLeft class="size-4" />
                     Prev
-                  </Button>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    :disabled="
-                      !stream.is_live ||
-                      ensureState(stream.match_id).busy ||
-                      isAutodirector(stream)
-                    "
-                    @click="specJump(stream.match_id)"
-                  >
-                    <ArrowUp class="size-4" />
-                    Lock
                   </Button>
                   <Button
                     variant="secondary"
@@ -847,10 +808,9 @@ function currentMapName(m: LiveMatch): string | null {
                   :is-live="!!stream.is_live"
                   :match-type="stream.match?.options?.type"
                   :controls-active="
-                    !!stream.is_live &&
-                    !ensureState(stream.match_id).busy &&
-                    !isAutodirector(stream)
+                    !!stream.is_live && !ensureState(stream.match_id).busy
                   "
+                  :autodirector-on="isAutodirector(stream)"
                   compact
                   @press-slot="
                     (slot: number) => specSlot(stream.match_id, slot)
@@ -916,12 +876,12 @@ function currentMapName(m: LiveMatch): string | null {
             v-for="m in liveMatches"
             :key="m.id"
             :class="[
-              'group relative overflow-hidden rounded-lg border bg-card/35 backdrop-blur-sm transition-all duration-200 flex flex-col',
+              'group relative overflow-hidden rounded-lg border bg-muted/30 transition-all duration-300 flex flex-col',
               activeMatchId === m.id
                 ? 'border-destructive/60 shadow-[0_0_0_1px_hsl(var(--destructive)/0.35),0_0_28px_-4px_hsl(var(--destructive)/0.5)]'
                 : switching === m.id
                   ? 'border-[hsl(var(--tac-amber)/0.7)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.35),0_0_24px_-4px_hsl(var(--tac-amber)/0.55)]'
-                  : 'border-border/70 hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-card/50',
+                  : 'border-border hover:border-primary/30 hover:bg-muted/20 hover:shadow-lg hover:shadow-primary/10',
             ]"
           >
             <!-- Diagonal hatch background on the active tile — quiet
@@ -936,112 +896,121 @@ function currentMapName(m: LiveMatch): string | null {
               }"
             />
 
-            <!-- Top row: status + map -->
-            <div
-              class="relative flex items-center justify-between gap-2 border-b border-border/50 px-3 py-2"
-            >
-              <span
-                :class="[
-                  'inline-flex items-center gap-1.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.22em]',
-                  m.status === 'Live'
-                    ? 'text-destructive'
-                    : 'text-[hsl(var(--tac-amber))]',
-                ]"
+            <template v-if="activeMatchId === m.id">
+              <div
+                class="relative flex items-center justify-between gap-2 border-b border-border/50 px-3 py-2"
               >
                 <span
                   :class="[
-                    'size-1.5 rounded-full',
+                    'inline-flex items-center gap-1.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.22em]',
                     m.status === 'Live'
-                      ? 'bg-destructive shadow-[0_0_6px_hsl(var(--destructive))]'
-                      : 'bg-[hsl(var(--tac-amber))]',
+                      ? 'text-destructive'
+                      : 'text-[hsl(var(--tac-amber))]',
                   ]"
-                />
-                {{ matchStatusLabel(m) }}
-              </span>
-
-              <span
-                v-if="currentMapName(m)"
-                class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground truncate"
-                :title="currentMapName(m)!"
-              >
-                {{ currentMapName(m) }}
-              </span>
-            </div>
-
-            <!-- Middle: lineup names + score. Score is the visual
-                 anchor — tabular nums + big type so the eye lands
-                 there first when scanning tiles. -->
-            <div class="flex flex-1 flex-col justify-center px-4 py-3">
-              <div
-                class="grid grid-cols-[1fr_auto_1fr] items-center gap-3 min-w-0"
-              >
-                <div class="min-w-0 text-right">
-                  <p class="truncate text-sm font-semibold leading-snug">
-                    {{ m.lineup_1?.name ?? $t("common.team_a") }}
-                  </p>
-                </div>
-
-                <div
-                  v-if="scoreFor(m)"
-                  class="flex items-baseline gap-2 font-mono tabular-nums"
                 >
                   <span
                     :class="[
-                      'text-2xl font-bold leading-none',
-                      scoreFor(m)!.l > scoreFor(m)!.r
-                        ? 'text-foreground'
-                        : 'text-muted-foreground/80',
+                      'size-1.5 rounded-full',
+                      m.status === 'Live'
+                        ? 'bg-destructive shadow-[0_0_6px_hsl(var(--destructive))]'
+                        : 'bg-[hsl(var(--tac-amber))]',
                     ]"
-                  >
-                    {{ scoreFor(m)!.l }}
-                  </span>
-                  <span class="text-xs text-muted-foreground/50">·</span>
-                  <span
-                    :class="[
-                      'text-2xl font-bold leading-none',
-                      scoreFor(m)!.r > scoreFor(m)!.l
-                        ? 'text-foreground'
-                        : 'text-muted-foreground/80',
-                    ]"
-                  >
-                    {{ scoreFor(m)!.r }}
-                  </span>
-                </div>
-                <div
-                  v-else
-                  class="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground/60"
+                  />
+                  {{ matchStatusLabel(m) }}
+                </span>
+
+                <span
+                  v-if="currentMapName(m)"
+                  class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground truncate"
+                  :title="currentMapName(m)!"
                 >
-                  vs
-                </div>
-
-                <div class="min-w-0 text-left">
-                  <p class="truncate text-sm font-semibold leading-snug">
-                    {{ m.lineup_2?.name ?? $t("common.team_b") }}
-                  </p>
-                </div>
-              </div>
-
-              <div
-                :class="[
-                  'mt-2 flex items-center justify-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em]',
-                  !m.server_id
-                    ? 'text-destructive/80'
-                    : m.is_server_online
-                      ? 'text-emerald-500/80'
-                      : 'text-[hsl(var(--tac-amber))]/80',
-                ]"
-              >
-                <component
-                  :is="!m.server_id ? ServerOff : Server"
-                  class="size-3 opacity-70"
-                />
-                <span class="truncate max-w-[20ch]">
-                  {{ serverLabel(m) }}
-                  <template v-if="m.server_id && !m.is_server_online">
-                    · offline
-                  </template>
+                  {{ currentMapName(m) }}
                 </span>
               </div>
+
+              <div class="relative flex flex-1 flex-col justify-center px-4 py-3">
+                <div
+                  class="grid grid-cols-[1fr_auto_1fr] items-center gap-3 min-w-0"
+                >
+                  <div class="min-w-0 text-right">
+                    <p class="truncate text-sm font-semibold leading-snug">
+                      {{ m.lineup_1?.name ?? $t("common.team_a") }}
+                    </p>
+                  </div>
+
+                  <div
+                    v-if="liveRoundScore(m)"
+                    class="flex items-baseline gap-2 font-mono tabular-nums"
+                  >
+                    <span
+                      :class="[
+                        'text-2xl font-bold leading-none',
+                        liveRoundScore(m)!.l > liveRoundScore(m)!.r
+                          ? 'text-foreground'
+                          : 'text-muted-foreground/80',
+                      ]"
+                    >
+                      {{ liveRoundScore(m)!.l }}
+                    </span>
+                    <span class="text-xs text-muted-foreground/50">·</span>
+                    <span
+                      :class="[
+                        'text-2xl font-bold leading-none',
+                        liveRoundScore(m)!.r > liveRoundScore(m)!.l
+                          ? 'text-foreground'
+                          : 'text-muted-foreground/80',
+                      ]"
+                    >
+                      {{ liveRoundScore(m)!.r }}
+                    </span>
+                  </div>
+                  <div
+                    v-else
+                    class="font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground/60"
+                  >
+                    vs
+                  </div>
+
+                  <div class="min-w-0 text-left">
+                    <p class="truncate text-sm font-semibold leading-snug">
+                      {{ m.lineup_2?.name ?? $t("common.team_b") }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </template>
+
+            <MatchTableRow
+              v-else
+              :match="m"
+              compact
+              always-show
+              embedded
+              hide-overview
+              hide-stream-button
+              class="relative flex-1"
+            />
+
+            <div
+              :class="[
+                'relative flex items-center justify-center gap-1.5 border-t border-border/50 px-3 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em]',
+                !m.server_id
+                  ? 'text-destructive/80'
+                  : m.is_server_online
+                    ? 'text-emerald-500/80'
+                    : 'text-[hsl(var(--tac-amber))]/80',
+              ]"
+            >
+              <component
+                :is="!m.server_id ? ServerOff : Server"
+                class="size-3 opacity-70"
+              />
+              <span class="truncate max-w-[24ch]">
+                {{ serverLabel(m) }}
+                <template v-if="m.server_id && !m.is_server_online">
+                  · offline
+                </template>
+              </span>
             </div>
 
             <!-- CTA row — what action this tile triggers depends on

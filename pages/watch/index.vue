@@ -8,6 +8,7 @@ import {
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import TournamentFeatureCard from "~/components/tournament/TournamentFeatureCard.vue";
+import LiveStreamFeatureCard from "~/components/match/LiveStreamFeatureCard.vue";
 import RecentTournaments from "~/components/tournament/RecentTournaments.vue";
 import {
   tacticalSectionLabelClasses,
@@ -44,6 +45,26 @@ import {
     </div>
   </PageTransition>
 
+  <PageTransition
+    v-if="streamingMatches && streamingMatches.length > 0"
+    :delay="115"
+    class="mt-6"
+  >
+    <div>
+      <div :class="tacticalSectionLabelClasses">
+        <span :class="tacticalSectionTickClasses"></span>
+        {{ $t("pages.watch.section_streaming_now") }}
+      </div>
+      <div class="space-y-3">
+        <LiveStreamFeatureCard
+          v-for="match in streamingMatches"
+          :key="match.id"
+          :match="match"
+        />
+      </div>
+    </div>
+  </PageTransition>
+
   <PageTransition :delay="125" class="mt-6">
     <OtherMatches
       :section-label="$t('pages.watch.section_live_matches')"
@@ -53,6 +74,7 @@ import {
       :use-subscription="true"
       compact
       :limit="12"
+      :exclude-ids="streamingMatchIds"
       :statuses="[
         e_match_status_enum.Live,
         e_match_status_enum.WaitingForCheckIn,
@@ -129,11 +151,13 @@ import {
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
+import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 
 export default {
   data() {
     return {
       liveTournaments: [] as any[],
+      streamingMatches: [] as any[],
     };
   },
   apollo: {
@@ -166,11 +190,65 @@ export default {
           this.liveTournaments = data?.tournaments || [];
         },
       },
+      // Live matches with at least one stream attached. Lifted into the
+      // featured "Streaming Now" section above so we can show a
+      // thumbnail tile instead of a generic compact row.
+      streamingMatches: {
+        query: typedGql("subscription")({
+          matches: [
+            {
+              where: {
+                status: { _eq: $("status", "e_match_status_enum") },
+                streams: {},
+              },
+              order_by: [{}, { started_at: order_by.desc }],
+              limit: 6,
+            },
+            {
+              ...simpleMatchFields,
+              streams: [
+                { order_by: [{ priority: order_by.asc }] },
+                {
+                  id: true,
+                  link: true,
+                  title: true,
+                  is_game_streamer: true,
+                },
+              ],
+              match_maps: [
+                { order_by: [{ order: order_by.asc }] },
+                {
+                  id: true,
+                  is_current_map: true,
+                  lineup_1_score: true,
+                  lineup_2_score: true,
+                  winning_lineup_id: true,
+                  map: { id: true, name: true, label: true },
+                },
+              ],
+            },
+          ],
+        }),
+        variables: function () {
+          return {
+            status: e_match_status_enum.Live,
+          };
+        },
+        result({ data }: any) {
+          const rows = (data?.matches || []).filter(
+            (m: any) => (m.streams?.length ?? 0) > 0,
+          );
+          this.streamingMatches = rows;
+        },
+      },
     },
   },
   computed: {
     canCreateMatch() {
       return useApplicationSettingsStore().canCreateMatch;
+    },
+    streamingMatchIds(): string[] {
+      return (this.streamingMatches || []).map((m: any) => m.id);
     },
   },
 };

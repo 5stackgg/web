@@ -16,8 +16,18 @@ import {
 //   • required    → mark ✓ silently (must have happened)
 //   • conditional → "skipped" label (warm pod / stock map)
 //   • implicit    → hide entirely (internal sub-step)
+//
+// `concurrentUntil` keeps a stage in the "current" (spinner) state
+// after it's fired, until the named gating stage fires — covers
+// background work (e.g. demo download) that runs in parallel with
+// later stages and only blocks at a known checkpoint.
 type StageMeta = "required" | "conditional" | "implicit";
-type Stage = { key: string; label: string; meta?: StageMeta };
+type Stage = {
+  key: string;
+  label: string;
+  meta?: StageMeta;
+  concurrentUntil?: string;
+};
 
 const props = withDefaults(
   defineProps<{
@@ -73,6 +83,13 @@ function stateOf(index: number): StageState {
   const stage = props.stages[index];
   if (!stage) return "pending";
   if (index === currentIndex.value) return "current";
+  if (
+    stage.concurrentUntil &&
+    firedStatuses.value.has(stage.key) &&
+    !firedStatuses.value.has(stage.concurrentUntil)
+  ) {
+    return "current";
+  }
   if (firedStatuses.value.has(stage.key)) return "done";
   if (currentIndex.value < 0) return "pending";
   if (index < currentIndex.value) {

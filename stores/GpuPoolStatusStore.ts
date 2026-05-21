@@ -1,5 +1,4 @@
 import { ref, computed } from "vue";
-import { useI18n } from "vue-i18n";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
@@ -14,7 +13,6 @@ type PoolStatus = {
 };
 
 export const useGpuPoolStatusStore = defineStore("gpu-pool-status", () => {
-  const { t } = useI18n();
   const status = ref<PoolStatus | null>(null);
   const hasLoaded = ref(false);
 
@@ -38,17 +36,21 @@ export const useGpuPoolStatusStore = defineStore("gpu-pool-status", () => {
     return s.registered_gpu_nodes > 0;
   });
 
-  const busyReason = computed<string | null>(() => {
+  // Return an i18n key (or null). Translation happens at the consumer
+  // via useGpuAvailability — keeping the store free of `useI18n()`
+  // means its setup can't half-initialise when the first caller is an
+  // async callback (apollo `next`, socket events) outside any Vue
+  // setup context, which used to strand consumers with an `undefined`
+  // ref off `storeToRefs(store)`.
+  const busyReasonKey = computed<string | null>(() => {
     const s = status.value;
     if (!s) return null;
-    if (s.total_gpu_nodes <= 0) {
-      return t("gpu_pool_status.no_nodes");
-    }
+    if (s.total_gpu_nodes <= 0) return "gpu_pool_status.no_nodes";
     if (s.free_gpu_nodes > 0) return null;
-    if (s.live_in_progress) return t("gpu_pool_status.live_busy");
-    if (s.demo_in_progress) return t("gpu_pool_status.demo_busy");
-    if (s.highlights_in_progress) return t("gpu_pool_status.highlights_busy");
-    return t("stream_status.gpu_busy");
+    if (s.live_in_progress) return "gpu_pool_status.live_busy";
+    if (s.demo_in_progress) return "gpu_pool_status.demo_busy";
+    if (s.highlights_in_progress) return "gpu_pool_status.highlights_busy";
+    return "stream_status.gpu_busy";
   });
 
   function subscribeToPool() {
@@ -106,7 +108,7 @@ export const useGpuPoolStatusStore = defineStore("gpu-pool-status", () => {
     hasLoaded,
     hasFreeGpu,
     hasRegisteredGpu,
-    busyReason,
+    busyReasonKey,
     subscribeToPool,
     unsubscribe,
   };

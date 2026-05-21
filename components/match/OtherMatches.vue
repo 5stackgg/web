@@ -225,6 +225,13 @@ export default {
       type: Boolean,
       default: false,
     },
+    // Match IDs to omit from the row — used by the watch page to lift
+    // streamed matches into a dedicated featured section above without
+    // showing the same match twice.
+    excludeIds: {
+      type: Array as PropType<string[]>,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -285,6 +292,9 @@ export default {
       return {
         status: { _in: this.statuses },
         ...(this.isInLineup === false ? { is_in_lineup: { _eq: false } } : {}),
+        ...(this.excludeIds && this.excludeIds.length
+          ? { id: { _nin: this.excludeIds } }
+          : {}),
       };
     },
   },

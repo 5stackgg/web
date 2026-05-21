@@ -486,7 +486,7 @@ export default {
     },
     gpuBusyReason() {
       const gpu = useGpuPoolStatusStore();
-      return gpu.busyReason;
+      return gpu.busyReasonKey ? this.$t(gpu.busyReasonKey) : null;
     },
     // Highlight queueing only needs a GPU node to *exist* (offline is OK).
     // hasFreeGpu collapses to false when the GPU is offline too, which is

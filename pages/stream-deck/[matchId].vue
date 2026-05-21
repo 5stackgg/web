@@ -17,6 +17,7 @@ import {
   Minimize2,
   Eye,
   EyeOff,
+  ArrowLeftRight,
   Scan,
   Trophy,
   RefreshCw,
@@ -300,6 +301,12 @@ async function setHudVisible(visible: boolean) {
 
 async function toggleHud() {
   await setHudVisible(!hudVisible.value);
+}
+
+async function toggleHudSides() {
+  await runMutation("swap sides", () => ({
+    specHudSides: [{ match_id: matchId.value }, { success: true }],
+  }));
 }
 
 // Hold-to-show scoreboard. Bypasses runMutation's busy gate on
@@ -706,6 +713,17 @@ watch(spectatedSteamId, (sid) => {
               <component :is="hudVisible ? Eye : EyeOff" class="size-3" />
             </button>
           </div>
+
+          <button
+            v-if="isLive()"
+            type="button"
+            :disabled="busy"
+            class="inline-flex items-center justify-center h-7 w-7 rounded-md border border-border/60 bg-card/40 text-muted-foreground hover:text-foreground cursor-pointer transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+            title="Swap sides (manual override)"
+            @click="toggleHudSides"
+          >
+            <ArrowLeftRight class="size-3" />
+          </button>
 
           <!-- Same segmented tactical bar treatment as the deck card —
                armed Stop inverts to filled red w/ glow + filled icon.

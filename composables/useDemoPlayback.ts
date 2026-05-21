@@ -320,6 +320,7 @@ export function useDemoPlayback() {
       | "xray"
       | "hud"
       | "hud-mode"
+      | "hud-sides"
       | "demoui"
       | "autodirector"
       | "scoreboard",
@@ -537,6 +538,9 @@ export function useDemoPlayback() {
     control("hud-mode", { mode });
     if (!store.hudVisible) setHudVisible(true);
   }
+  function toggleHudSides() {
+    control("hud-sides");
+  }
   // Manual fallback for the cs2 demoui Panorama panel — fires the
   // F11 toggle in cs2. The auto-hide logic on initial-load + reload
   // is best-effort (timing-based); this lets the operator nudge it
@@ -590,6 +594,7 @@ export function useDemoPlayback() {
     setHudVisible,
     toggleHud,
     setHudMode,
+    toggleHudSides,
     toggleDemoUI,
     setAutodirector,
     toggleAutodirector,

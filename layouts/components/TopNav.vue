@@ -25,7 +25,6 @@ import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useMatchReadyModal } from "~/composables/useMatchReadyModal";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { useAuthStore } from "~/stores/AuthStore";
-import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import Logout from "./Logout.vue";
 import MatchLobbies from "./MatchLobbies.vue";
 import SystemStatus from "./SystemStatus.vue";

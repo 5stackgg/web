@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Info } from "lucide-vue-next";
+import { TooltipPortal } from "reka-ui";
 </script>
 
 <template>
@@ -8,14 +9,21 @@ import { Info } from "lucide-vue-next";
     :delay-duration="delayDuration"
   >
     <Tooltip>
-      <TooltipTrigger type="button">
+      <TooltipTrigger v-if="asChild" as-child>
         <slot name="trigger">
           <Info :size="size" v-bind="$attrs"> </Info>
         </slot>
       </TooltipTrigger>
-      <TooltipContent :side="side">
-        <slot></slot>
-      </TooltipContent>
+      <TooltipTrigger v-else type="button">
+        <slot name="trigger">
+          <Info :size="size" v-bind="$attrs"> </Info>
+        </slot>
+      </TooltipTrigger>
+      <TooltipPortal>
+        <TooltipContent :side="side" :align="align" :collision-padding="8">
+          <slot></slot>
+        </TooltipContent>
+      </TooltipPortal>
     </Tooltip>
   </TooltipProvider>
 </template>
@@ -31,6 +39,14 @@ export default {
     side: {
       type: String,
       required: false,
+    },
+    align: {
+      type: String,
+      required: false,
+    },
+    asChild: {
+      type: Boolean,
+      default: false,
     },
     delayDuration: {
       type: Number,

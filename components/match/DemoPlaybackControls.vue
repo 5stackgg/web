@@ -14,6 +14,7 @@ import {
   ChevronsRight,
   Eye,
   EyeOff,
+  ArrowLeftRight,
   RotateCcw,
   Bone,
   PanelBottom,
@@ -81,6 +82,7 @@ const {
   toggleXray,
   toggleHud,
   setHudMode,
+  toggleHudSides,
   toggleDemoUI,
   toggleAutodirector,
   setScoreboard,
@@ -1120,6 +1122,20 @@ const killMarkers = computed<Marker[]>(() => {
             <TooltipContent class="flex items-center gap-2">
               HUD layout / visibility <Kbd>H</Kbd>
             </TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button
+                variant="outline"
+                size="icon"
+                class="h-9 w-9 cursor-pointer transition-all duration-150 hover:scale-110 active:scale-95"
+                @click="toggleHudSides"
+              >
+                <ArrowLeftRight class="h-4 w-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Swap sides (manual override)</TooltipContent>
           </Tooltip>
 
           <span class="w-px h-6 bg-border/60 mx-1" />

@@ -130,16 +130,11 @@ const mmCardPending =
               {{ region }}
             </span>
             <span
-              v-if="matchMakingQueueDetails.totalInQueue > 1"
+              v-if="inQueueStas[matchMakingQueueDetails.type] > 0"
               class="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/30 px-2.5 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
             >
-              {{
-                $t(
-                  "matchmaking.others_searching",
-                  matchMakingQueueDetails.totalInQueue - 1,
-                  { count: matchMakingQueueDetails.totalInQueue - 1 },
-                )
-              }}
+              {{ inQueueStas[matchMakingQueueDetails.type] }}
+              {{ $t("matchmaking.in_queue") }}
             </span>
           </div>
 

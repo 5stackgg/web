@@ -90,7 +90,10 @@ definePageMeta({
                   "pages.settings.application.discord.match_notifications.webhook_description",
                 )
               }}</FormDescription>
-              <Input v-bind="componentField"></Input>
+              <Input
+                v-bind="componentField"
+                :placeholder="form.values.discord_support_webhook || ''"
+              />
               <FormMessage />
             </FormItem>
           </FormField>
@@ -116,20 +119,9 @@ definePageMeta({
           </FormField>
 
           <DiscordMatchNotificationToggles
-            :statuses="MATCH_STATUSES"
+            :statuses="TOGGLE_KEYS"
             :values="statusToggleValues"
             :status-labels="statusLabels"
-            :title="
-              $t(
-                'pages.settings.application.discord.match_notifications.statuses_title',
-              )
-            "
-            :events-title="
-              $t(
-                'pages.settings.application.discord.match_notifications.events_title',
-              )
-            "
-            :map-paused-key="'MapPaused'"
             @toggle="toggleStatus"
             @update="updateStatus"
           />
@@ -216,38 +208,22 @@ import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { z } from "zod";
 import { toast } from "@/components/ui/toast";
 
-const STATUS_LABEL_MAP: Record<e_match_status_enum, string> = {
-  [e_match_status_enum.PickingPlayers]: "Picking Players",
-  [e_match_status_enum.Scheduled]: "Scheduled",
-  [e_match_status_enum.WaitingForCheckIn]: "Waiting for Check-In",
+const STATUS_LABEL_MAP: Record<string, string> = {
   [e_match_status_enum.WaitingForServer]: "Waiting for Server",
-  [e_match_status_enum.Veto]: "Veto",
-  [e_match_status_enum.Live]: "Live",
-  [e_match_status_enum.Finished]: "Finished",
-  [e_match_status_enum.Tie]: "Tie",
-  [e_match_status_enum.Canceled]: "Canceled",
-  [e_match_status_enum.Forfeit]: "Forfeit",
-  [e_match_status_enum.Surrendered]: "Surrendered",
+  MapPaused: "Map Paused",
 };
 
 const MATCH_STATUSES: e_match_status_enum[] = [
-  e_match_status_enum.PickingPlayers,
-  e_match_status_enum.Scheduled,
-  e_match_status_enum.WaitingForCheckIn,
   e_match_status_enum.WaitingForServer,
-  e_match_status_enum.Veto,
-  e_match_status_enum.Live,
-  e_match_status_enum.Finished,
-  e_match_status_enum.Tie,
-  e_match_status_enum.Canceled,
-  e_match_status_enum.Forfeit,
-  e_match_status_enum.Surrendered,
 ];
+
+const TOGGLE_KEYS: string[] = [...MATCH_STATUSES, "MapPaused"];
 
 export default {
   data() {
     return {
       MATCH_STATUSES,
+      TOGGLE_KEYS,
       statusLabels: STATUS_LABEL_MAP,
       form: useForm({
         validationSchema: toTypedSchema(
@@ -258,7 +234,7 @@ export default {
             discord_match_notifications_webhook: z.string().optional(),
             discord_match_notifications_role_id: z.string().optional(),
             ...Object.fromEntries(
-              Object.values(e_match_status_enum).map((s) => [
+              MATCH_STATUSES.map((s) => [
                 `discord_match_notify_${s}`,
                 z.string().optional(),
               ]),
@@ -309,9 +285,7 @@ export default {
         "discord_support_role_id",
         "discord_match_notifications_webhook",
         "discord_match_notifications_role_id",
-        ...Object.values(e_match_status_enum).map(
-          (s) => `discord_match_notify_${s}`,
-        ),
+        ...MATCH_STATUSES.map((s) => `discord_match_notify_${s}`),
         "discord_match_notify_MapPaused",
         "disk_warning_percent",
         "disk_critical_percent",

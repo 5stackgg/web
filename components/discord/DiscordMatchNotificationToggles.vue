@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h4 class="text-base font-medium mb-3">
+    <h4 v-if="title" class="text-base font-medium mb-3">
       {{ title }}
     </h4>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -28,34 +28,6 @@
       </div>
     </div>
   </div>
-
-  <div>
-    <h4 class="text-base font-medium mb-3">
-      {{ eventsTitle }}
-    </h4>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-      <div
-        :class="[
-          'flex items-center justify-between rounded-lg border p-3 cursor-pointer select-none',
-          isOverridden(mapPausedKey) ? 'border-primary bg-primary/10' : '',
-        ]"
-        role="button"
-        tabindex="0"
-        @click="emitToggle(mapPausedKey)"
-        @keydown.enter.prevent="emitToggle(mapPausedKey)"
-        @keydown.space.prevent="emitToggle(mapPausedKey)"
-      >
-        <span class="text-sm font-medium">
-          {{ statusLabels[mapPausedKey] || mapPausedKey }}
-        </span>
-        <Switch
-          @click.stop
-          :model-value="values[mapPausedKey] === true"
-          @update:model-value="emitUpdate(mapPausedKey, $event)"
-        />
-      </div>
-    </div>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -65,9 +37,7 @@ const props = defineProps<{
   statuses: string[];
   values: Record<string, boolean>;
   statusLabels: Record<string, string>;
-  title: string;
-  eventsTitle: string;
-  mapPausedKey?: string;
+  title?: string;
   defaultValues?: Record<string, boolean>;
 }>();
 
@@ -75,8 +45,6 @@ const emit = defineEmits<{
   toggle: [status: string];
   update: [status: string, value: boolean];
 }>();
-
-const mapPausedKey = props.mapPausedKey || "MapPaused";
 
 function emitToggle(status: string) {
   emit("toggle", status);

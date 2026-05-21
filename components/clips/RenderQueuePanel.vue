@@ -19,7 +19,6 @@ import {
   CircleDashed,
   Server,
   ExternalLink,
-  PlaySquare,
   RotateCcw,
   RotateCw,
   ChevronRight,
@@ -575,6 +574,24 @@ function clipDurationLabel(j: Job): string | null {
   return `${segs.length} seg${segs.length === 1 ? "" : "s"}`;
 }
 
+type ClipDetail = { label: string; tone?: "round" | "kills" };
+function clipDetails(j: Job): ClipDetail[] {
+  const out: ClipDetail[] = [];
+  const round = j.spec?.round;
+  if (typeof round === "number" && round > 0) {
+    out.push({ label: `R${round}`, tone: "round" });
+  }
+  const kills = j.spec?.kills_count;
+  if (typeof kills === "number" && kills > 0) {
+    out.push({ label: `${kills}K`, tone: "kills" });
+  }
+  const segs = j.spec?.segments;
+  if (Array.isArray(segs) && segs.length > 1) {
+    out.push({ label: `${segs.length} seg` });
+  }
+  return out;
+}
+
 const retryingBatch = ref<Record<string, boolean>>({});
 async function retryBatch(matchMapId: string, onlyFailed: boolean) {
   const key = `${matchMapId}:${onlyFailed ? "failed" : "all"}`;
@@ -824,18 +841,6 @@ const totalQueued = computed(
                     <Clock class="h-3 w-3" />
                     {{ formatTimeAgo(g.startedAt) }}
                   </span>
-                  <template v-if="g.sample.match_map_demo?.playback_url">
-                    <span class="text-border">·</span>
-                    <a
-                      :href="g.sample.match_map_demo.playback_url"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="inline-flex items-center gap-1 hover:text-foreground transition-colors"
-                    >
-                      <PlaySquare class="h-3 w-3" />
-                      Demo
-                    </a>
-                  </template>
                 </div>
                 <div class="mt-2 space-y-1">
                   <div
@@ -1004,6 +1009,20 @@ const totalQueued = computed(
               <span class="truncate text-sm font-medium">
                 {{ clipTitle(g.activeJob) }}
               </span>
+              <template v-for="d in clipDetails(g.activeJob)" :key="d.label">
+                <span
+                  class="shrink-0 inline-flex items-center rounded-md border px-1.5 py-0.5 font-mono text-[0.58rem] uppercase tracking-[0.14em] tabular-nums"
+                  :class="
+                    d.tone === 'round'
+                      ? 'border-primary/40 bg-primary/10 text-primary'
+                      : d.tone === 'kills'
+                        ? 'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+                        : 'border-border/60 bg-muted/30 text-muted-foreground'
+                  "
+                >
+                  {{ d.label }}
+                </span>
+              </template>
               <span
                 class="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em]"
                 :class="STATUS_TONE[g.activeJob.status]?.pill"
@@ -1120,6 +1139,20 @@ const totalQueued = computed(
               <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-2">
                   <span class="truncate text-sm">{{ clipTitle(j) }}</span>
+                  <template v-for="d in clipDetails(j)" :key="d.label">
+                    <span
+                      class="shrink-0 inline-flex items-center rounded border px-1 py-px font-mono text-[0.55rem] uppercase tracking-[0.1em] tabular-nums leading-none"
+                      :class="
+                        d.tone === 'round'
+                          ? 'border-primary/40 bg-primary/10 text-primary'
+                          : d.tone === 'kills'
+                            ? 'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+                            : 'border-border/60 bg-muted/30 text-muted-foreground'
+                      "
+                    >
+                      {{ d.label }}
+                    </span>
+                  </template>
                   <span
                     v-if="clipDurationLabel(j)"
                     class="shrink-0 font-mono text-[0.6rem] tabular-nums text-muted-foreground/70"
@@ -1149,11 +1182,7 @@ const totalQueued = computed(
                   {{ statusLabel(j.status) }}
                 </template>
               </span>
-              <Tooltip
-                v-if="
-                  isAdmin && (j.status === 'error' || j.status === 'cancelled')
-                "
-              >
+              <Tooltip v-if="isAdmin && TERMINAL.has(j.status)">
                 <TooltipTrigger as-child>
                   <Button
                     size="sm"
@@ -1329,20 +1358,6 @@ const totalQueued = computed(
                 </TooltipTrigger>
                 <TooltipContent>Open match</TooltipContent>
               </Tooltip>
-              <Tooltip v-if="g.sample.match_map_demo?.playback_url">
-                <TooltipTrigger as-child>
-                  <a
-                    :href="g.sample.match_map_demo.playback_url"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="mr-1 inline-flex h-6 w-6 shrink-0 items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
-                    @click.stop
-                  >
-                    <PlaySquare class="h-3 w-3" />
-                  </a>
-                </TooltipTrigger>
-                <TooltipContent>View demo</TooltipContent>
-              </Tooltip>
               <Tooltip
                 v-if="isAdmin && (g.errorCount > 0 || g.cancelledCount > 0)"
               >
@@ -1419,10 +1434,24 @@ const totalQueued = computed(
                 />
                 <div class="min-w-0 flex-1">
                   <div
-                    class="truncate text-[0.72rem] text-muted-foreground"
+                    class="flex items-center gap-1.5 text-[0.72rem] text-muted-foreground"
                     :title="j.error_message ?? clipTitle(j)"
                   >
-                    {{ clipTitle(j) }}
+                    <span class="truncate">{{ clipTitle(j) }}</span>
+                    <template v-for="d in clipDetails(j)" :key="d.label">
+                      <span
+                        class="shrink-0 inline-flex items-center rounded border px-1 py-px font-mono text-[0.52rem] uppercase tracking-[0.1em] tabular-nums leading-none"
+                        :class="
+                          d.tone === 'round'
+                            ? 'border-primary/40 bg-primary/10 text-primary'
+                            : d.tone === 'kills'
+                              ? 'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+                              : 'border-border/60 bg-muted/30 text-muted-foreground/80'
+                        "
+                      >
+                        {{ d.label }}
+                      </span>
+                    </template>
                   </div>
                   <div
                     v-if="j.error_message"

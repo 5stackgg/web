@@ -703,7 +703,11 @@
                 "average_latency": "Latency",
                 "preferred": "Preferred",
                 "max_acceptable_latency": "Maximum Acceptable Latency",
-                "max_latency_description": "If no regions are preferred, matchmaking will only use regions with latency below this value."
+                "max_latency_description": "If no regions are preferred, matchmaking will only use regions with latency below this value.",
+                "show_match_ready_modal": {
+                    "title": "Match Ready Popup",
+                    "description": "Show a popup when a match is ready for you to check in. When disabled, you can still check in from the button in the top nav."
+                }
             }
         },
         "watch": {
@@ -2998,6 +3002,10 @@
         "confirmed": "Confirmed",
         "ready": "Ready",
         "locked_in": "Locked In",
+        "check_in": "Check In",
+        "go_to_match": "Go to Match",
+        "disable_match_ready_modal_hint": "Don't want this popup?",
+        "disable_match_ready_modal_action": "Disable in Matchmaking Settings",
         "invites": "Invites",
         "lobby": {
             "access": "Lobby Access",

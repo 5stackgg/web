@@ -1,12 +1,39 @@
 <script setup lang="ts">
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { Button } from "~/components/ui/button";
+import { Switch } from "~/components/ui/switch";
 import { RefreshCw } from "lucide-vue-next";
 import { Loader2 } from "lucide-vue-next";
 </script>
 
 <template>
   <div class="space-y-4">
+    <div
+      class="flex items-center justify-between gap-4 p-8 border border-border rounded-lg bg-card"
+    >
+      <div class="flex-1">
+        <Label class="text-lg font-semibold">
+          {{ $t("pages.settings.matchmaking.show_match_ready_modal.title") }}
+        </Label>
+        <p class="text-sm text-muted-foreground mt-1">
+          {{
+            $t("pages.settings.matchmaking.show_match_ready_modal.description")
+          }}
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <Loader2
+          v-if="savingShowMatchReadyModal"
+          class="h-4 w-4 animate-spin text-muted-foreground"
+        />
+        <Switch
+          :model-value="showMatchReadyModal"
+          :disabled="savingShowMatchReadyModal || !me"
+          @update:model-value="updateShowMatchReadyModal"
+        />
+      </div>
+    </div>
+
     <div class="flex items-center p-8 border border-border rounded-lg bg-card">
       <div class="flex-1">
         <div class="flex justify-between mb-4">
@@ -127,10 +154,16 @@ import { Loader2 } from "lucide-vue-next";
 </template>
 
 <script lang="ts">
+import { generateMutation } from "~/graphql/graphqlGen";
+import { $ } from "~/generated/zeus";
+import { useAuthStore } from "~/stores/AuthStore";
+import { toast } from "@/components/ui/toast";
+
 export default {
   data() {
     return {
       playerMaxAcceptablelatnecy: 75,
+      savingShowMatchReadyModal: false,
     };
   },
   mounted() {
@@ -140,6 +173,27 @@ export default {
   methods: {
     async refreshLatencies() {
       await useMatchmakingStore().refreshLatencies();
+    },
+    async updateShowMatchReadyModal(value: boolean) {
+      if (!this.me) return;
+      this.savingShowMatchReadyModal = true;
+      try {
+        await this.$apollo.mutate({
+          variables: { show: value },
+          mutation: generateMutation({
+            update_players_by_pk: [
+              {
+                pk_columns: { steam_id: this.me.steam_id },
+                _set: { show_match_ready_modal: $("show", "Boolean!") },
+              },
+              { steam_id: true, show_match_ready_modal: true },
+            ],
+          }),
+        });
+        toast({ title: this.$t("pages.settings.account.update_success") });
+      } finally {
+        this.savingShowMatchReadyModal = false;
+      }
     },
     togglePreferredRegion(region: string) {
       useMatchmakingStore().togglePreferredRegion(region);
@@ -193,6 +247,12 @@ export default {
     },
   },
   computed: {
+    me() {
+      return useAuthStore().me;
+    },
+    showMatchReadyModal(): boolean {
+      return this.me?.show_match_ready_modal !== false;
+    },
     isRefreshing() {
       return useMatchmakingStore().isRefreshing;
     },

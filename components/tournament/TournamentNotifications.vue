@@ -26,10 +26,52 @@
             />
           </div>
         </div>
+
+        <template v-if="isNotificationsEnabled">
+          <div class="space-y-2">
+            <h4 class="text-base font-medium">
+              {{ $t("tournament.notifications.webhook") }}
+            </h4>
+            <Input
+              :model-value="form.discord_webhook ?? ''"
+              :placeholder="
+                effectiveWebhookDefault ||
+                $t('tournament.notifications.webhook_placeholder')
+              "
+              @update:model-value="updateWebhook($event)"
+            />
+          </div>
+
+          <div class="space-y-2">
+            <h4 class="text-base font-medium">
+              {{ $t("tournament.notifications.role_id") }}
+            </h4>
+            <p class="text-sm text-muted-foreground">
+              {{ $t("tournament.notifications.role_id_description") }}
+            </p>
+            <Input
+              :model-value="form.discord_role_id ?? ''"
+              :placeholder="
+                globalRoleId ||
+                $t('tournament.notifications.role_id_placeholder')
+              "
+              @update:model-value="updateRoleId($event)"
+            />
+          </div>
+
+          <DiscordMatchNotificationToggles
+            :statuses="TOGGLE_KEYS"
+            :values="statusToggleValues"
+            :default-values="statusDefaultValues"
+            :status-labels="statusLabels"
+            @toggle="toggleStatus"
+            @update="updateStatusValue"
+          />
+        </template>
       </div>
     </Card>
 
-    <Card v-if="isNotificationsEnabled" variant="gradient">
+    <Card variant="gradient">
       <div class="p-6 space-y-6">
         <div>
           <h4 class="text-base font-medium">
@@ -87,65 +129,6 @@
       </div>
     </Card>
 
-    <Card v-if="isNotificationsEnabled" variant="gradient">
-      <div class="p-6 space-y-6">
-        <div>
-          <h4 class="text-base font-medium">
-            {{ $t("tournament.notifications.webhook") }}
-          </h4>
-        </div>
-        <div class="space-y-2">
-          <div class="flex items-center gap-2">
-            <Input
-              :model-value="form.discord_webhook ?? ''"
-              :placeholder="
-                effectiveWebhookDefault ||
-                $t('tournament.notifications.webhook_placeholder')
-              "
-              @update:model-value="updateWebhook($event)"
-            />
-          </div>
-        </div>
-
-        <div>
-          <h4 class="text-base font-medium">
-            {{ $t("tournament.notifications.role_id") }}
-          </h4>
-          <p class="text-sm text-muted-foreground">
-            {{ $t("tournament.notifications.role_id_description") }}
-          </p>
-        </div>
-        <div class="space-y-2">
-          <div class="flex items-center gap-2">
-            <Input
-              :model-value="form.discord_role_id ?? ''"
-              :placeholder="
-                globalRoleId ||
-                $t('tournament.notifications.role_id_placeholder')
-              "
-              @update:model-value="updateRoleId($event)"
-            />
-          </div>
-        </div>
-      </div>
-    </Card>
-
-    <Card v-if="isNotificationsEnabled" variant="gradient">
-      <div class="p-6 space-y-6">
-        <DiscordMatchNotificationToggles
-          :statuses="MATCH_STATUSES"
-          :values="statusToggleValues"
-          :default-values="statusDefaultValues"
-          :status-labels="statusLabels"
-          :title="$t('tournament.notifications.statuses_title')"
-          :events-title="$t('tournament.notifications.events_title')"
-          :map-paused-key="'MapPaused'"
-          @toggle="toggleStatus"
-          @update="updateStatusValue"
-        />
-      </div>
-    </Card>
-
     <div class="flex justify-start">
       <Button @click="save" :disabled="saving" class="my-3">
         {{ $t("tournament.notifications.save") }}
@@ -166,31 +149,13 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 
 const MATCH_STATUSES: e_match_status_enum[] = [
-  e_match_status_enum.PickingPlayers,
-  e_match_status_enum.Scheduled,
-  e_match_status_enum.WaitingForCheckIn,
   e_match_status_enum.WaitingForServer,
-  e_match_status_enum.Veto,
-  e_match_status_enum.Live,
-  e_match_status_enum.Finished,
-  e_match_status_enum.Tie,
-  e_match_status_enum.Canceled,
-  e_match_status_enum.Forfeit,
-  e_match_status_enum.Surrendered,
 ];
 
+const TOGGLE_KEYS: string[] = [...MATCH_STATUSES, "MapPaused"];
+
 const STATUS_FIELDS = [
-  "discord_notify_PickingPlayers",
-  "discord_notify_Scheduled",
-  "discord_notify_WaitingForCheckIn",
   "discord_notify_WaitingForServer",
-  "discord_notify_Veto",
-  "discord_notify_Live",
-  "discord_notify_Finished",
-  "discord_notify_Tie",
-  "discord_notify_Canceled",
-  "discord_notify_Forfeit",
-  "discord_notify_Surrendered",
   "discord_notify_MapPaused",
 ] as const;
 
@@ -217,6 +182,7 @@ export default {
   data() {
     return {
       MATCH_STATUSES,
+      TOGGLE_KEYS,
       form: this.buildForm({}),
       discordData: null as Record<string, any> | null,
       saving: false,
@@ -239,17 +205,7 @@ export default {
               discord_voice_enabled: true,
               discord_webhook: true,
               discord_role_id: true,
-              discord_notify_PickingPlayers: true,
-              discord_notify_Scheduled: true,
-              discord_notify_WaitingForCheckIn: true,
               discord_notify_WaitingForServer: true,
-              discord_notify_Veto: true,
-              discord_notify_Live: true,
-              discord_notify_Finished: true,
-              discord_notify_Tie: true,
-              discord_notify_Canceled: true,
-              discord_notify_Forfeit: true,
-              discord_notify_Surrendered: true,
               discord_notify_MapPaused: true,
             },
           ],
@@ -399,17 +355,7 @@ export default {
       const BOOLEAN_FIELDS = new Set<string>([
         "discord_notifications_enabled",
         "discord_voice_enabled",
-        "discord_notify_PickingPlayers",
-        "discord_notify_Scheduled",
-        "discord_notify_WaitingForCheckIn",
         "discord_notify_WaitingForServer",
-        "discord_notify_Veto",
-        "discord_notify_Live",
-        "discord_notify_Finished",
-        "discord_notify_Tie",
-        "discord_notify_Canceled",
-        "discord_notify_Forfeit",
-        "discord_notify_Surrendered",
         "discord_notify_MapPaused",
       ]);
       for (const field of DISCORD_FIELDS) {

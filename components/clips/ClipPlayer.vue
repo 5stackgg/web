@@ -8,7 +8,14 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-vue-next";
+import { useI18n } from "vue-i18n";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
+import {
+  browserSupportsHevc,
+  notifyMissingHevcOnce,
+} from "~/utilities/hevcSupport";
+
+const { t } = useI18n();
 
 // Shared video surface for clips — used by the inline highlights reel
 // (featured clip) and the clip detail modal. Encapsulates: custom
@@ -178,6 +185,25 @@ function tickProgress() {
 function startProgressLoop() {
   if (progressRafId !== null) return;
   progressRafId = requestAnimationFrame(tickProgress);
+}
+
+// Browsers surface a missing HEVC decoder as either MEDIA_ERR_SRC_NOT_SUPPORTED
+// or MEDIA_ERR_DECODE on the <video> element. We can't tell a clip's codec
+// before it loads, so we only warn after a failure — and only when the browser
+// itself can't decode H.265 — to avoid noise on H.264 clips that fail for
+// unrelated reasons (network, expired URL, etc).
+function onVideoError(event: Event) {
+  const video = event.target as HTMLVideoElement | null;
+  const code = video?.error?.code;
+  if (code !== MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED && code !== MediaError.MEDIA_ERR_DECODE) {
+    return;
+  }
+  if (browserSupportsHevc()) return;
+  notifyMissingHevcOnce({
+    title: t("toasts.hevc_missing_title"),
+    body: t("toasts.hevc_missing_body"),
+    linkLabel: t("toasts.hevc_missing_link"),
+  });
 }
 
 async function tryPlay(video: HTMLVideoElement) {
@@ -443,6 +469,7 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
         "
         @webkitbeginfullscreen="onVideoWebkitBeginFullscreen"
         @webkitendfullscreen="onVideoWebkitEndFullscreen"
+        @error="onVideoError"
         @click="toggle"
       />
       <slot v-else name="empty" />

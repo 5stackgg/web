@@ -527,16 +527,13 @@ const canCreateMatch = computed(
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="scheduled_at">{{
-              $t("pages.manage_matches.scheduled_at")
-            }}</SelectItem>
-            <SelectItem value="started_at">{{
+            <SelectItem value="effective_at">{{
               $t("pages.manage_matches.started_at")
             }}</SelectItem>
-            <SelectItem value="ended_at">{{
+            <SelectItem v-if="canManageMatches" value="ended_at">{{
               $t("pages.manage_matches.ended_at")
             }}</SelectItem>
-            <SelectItem value="created_at">{{
+            <SelectItem v-if="canManageMatches" value="created_at">{{
               $t("pages.manage_matches.created_at")
             }}</SelectItem>
           </SelectContent>
@@ -720,6 +717,15 @@ export default {
     const saved = loadFiltersFromStorage();
     const fromInit = decomposeIso(saved.dateFrom);
     const toInit = decomposeIso(saved.dateTo);
+    const a = useAuthStore();
+    const canManage =
+      a.isAdmin.value ||
+      a.isMatchOrganizer.value ||
+      a.isTournamentOrganizer.value;
+    const migratedSort =
+      saved.sortField === "scheduled_at" || saved.sortField === "started_at"
+        ? "effective_at"
+        : (saved.sortField ?? "effective_at");
     return {
       fromCalendar: fromInit.calendar,
       fromTime: fromInit.time,
@@ -734,7 +740,10 @@ export default {
       // so guests aren't locked out of organizer-created matches that
       // haven't been added to a lineup yet.
       includeOutOfLineup: saved.includeOutOfLineup ?? true,
-      sortField: saved.sortField ?? "scheduled_at",
+      sortField:
+        !canManage && migratedSort !== "effective_at"
+          ? "effective_at"
+          : migratedSort,
       sortDirection: saved.sortDirection ?? "desc",
       loading: false,
       form: {
@@ -872,7 +881,9 @@ export default {
       return null;
     },
     sortFieldLabel(): string {
-      return (this.sortField || "").replace(/_/g, " ").toUpperCase();
+      const key =
+        this.sortField === "effective_at" ? "started_at" : this.sortField;
+      return (key || "").replace(/_/g, " ").toUpperCase();
     },
     showTimeInputs(): boolean {
       return this.sortField !== "created_at";
@@ -916,29 +927,14 @@ export default {
         where.status = { _in: statuses };
       }
 
-      // Date range applies to whichever timestamp the user is sorting
-      // by — e.g. "ended_at desc + last week" reads naturally.
-      // For scheduled_at, fall back to created_at when scheduled_at is null
-      // so unscheduled matches still surface in the window.
+      // Date range applies to whichever timestamp the user is sorting by.
+      // `effective_at` is a Hasura computed COALESCE(started, scheduled,
+      // created) so range filters cover all three with one comparison.
       if (dateFrom || dateTo) {
         const range: any = {};
         if (dateFrom) range._gte = dateFrom;
         if (dateTo) range._lte = dateTo;
-        if (this.sortField === "scheduled_at") {
-          ands.push({
-            _or: [
-              { scheduled_at: range },
-              {
-                _and: [
-                  { scheduled_at: { _is_null: true } },
-                  { created_at: range },
-                ],
-              },
-            ],
-          });
-        } else {
-          where[this.sortField] = range;
-        }
+        where[this.sortField] = range;
       }
 
       if (this.canManageMatches && this.showOnlyMyMatches) {
@@ -963,12 +959,11 @@ export default {
           ? order_by.desc_nulls_last
           : order_by.asc_nulls_last;
       switch (this.sortField) {
-        case "started_at":
-          return [{ started_at: nullsLast }, { created_at: dir }];
-        case "scheduled_at":
-          // Unscheduled matches fall through to created_at so they still
-          // appear in a sensible spot rather than clustering at top/bottom.
-          return [{ scheduled_at: nullsLast }, { created_at: dir }];
+        case "effective_at":
+          // Computed COALESCE(started_at, scheduled_at, created_at) — gives
+          // a single timeline that interleaves live/finished, upcoming, and
+          // freshly-created matches.
+          return [{ effective_at: dir }];
         case "ended_at":
           return [{ ended_at: nullsLast }, { created_at: dir }];
         case "created_at":
@@ -1092,7 +1087,7 @@ export default {
       this.toTime = "";
       this.showOnlyMyMatches = false;
       this.includeOutOfLineup = true;
-      this.sortField = "scheduled_at";
+      this.sortField = "effective_at";
       this.sortDirection = "desc";
       this.page = 1;
       this.saveFiltersToStorage();

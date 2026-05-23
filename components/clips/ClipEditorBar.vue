@@ -51,6 +51,13 @@ const clipFps = computed<30 | 60>(() => {
   const raw = appSettings.settings.find((s) => s.name === "clip_fps")?.value;
   return raw === "30" ? 30 : 60;
 });
+
+const clipResolutionDefault = computed<"720p" | "1080p">(() => {
+  const raw = appSettings.settings.find(
+    (s) => s.name === "clip_resolution",
+  )?.value;
+  return raw === "720p" ? "720p" : "1080p";
+});
 const { seek } = useDemoPlayback();
 const editor = useClipEditor();
 const nuxtApp = useNuxtApp();
@@ -58,7 +65,10 @@ const { trackJob: trackRenderJob } = useClipRenderActive();
 
 const title = ref("");
 const destination = ref<"library" | "download">("library");
-const resolution = ref<"720p" | "1080p">("1080p");
+const resolution = ref<"720p" | "1080p">(clipResolutionDefault.value);
+watch(clipResolutionDefault, (v) => {
+  resolution.value = v;
+});
 const submitting = ref(false);
 const submitError = ref<string | null>(null);
 const renderingJobId = ref<string | null>(null);

@@ -3086,8 +3086,10 @@
             "section_video_description": "Tune the rendering quality used while CS2 is captured on this node.",
             "preset": {
                 "title": "Quality preset",
-                "description": "Quick-apply a preset, then fine-tune individual fields if needed. Low is the default and matches the competitive baseline.",
-                "low": "Low (default)",
+                "description": "Auto lets CS2 generate the video config on first launch against the node's actual GPU. The Low / Medium / High presets apply explicit overrides on top of that.",
+                "auto": "Auto (default)",
+                "auto_active": "Auto mode — CS2 will generate its own video config on first launch. The fields below are ignored until you pick another preset.",
+                "low": "Low",
                 "medium": "Medium",
                 "high": "High"
             },

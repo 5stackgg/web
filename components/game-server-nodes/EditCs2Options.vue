@@ -61,152 +61,157 @@ import {
               {{ $t(presetLabels[name]) }}
             </Button>
           </div>
+          <p v-if="isAuto" class="text-xs text-muted-foreground border-t pt-2">
+            {{ $t("game_server.cs2_options.preset.auto_active") }}
+          </p>
         </div>
 
-        <FormField v-slot="{ value }" name="resolution">
-          <FormItem class="rounded-lg border p-3">
-            <FormLabel class="text-sm">
-              {{ $t("game_server.cs2_options.video.resolution") }}
-            </FormLabel>
-            <FormDescription class="text-xs">
-              {{ $t("game_server.cs2_options.video.resolution_desc") }}
-            </FormDescription>
-            <FormControl>
-              <Select
-                :model-value="value"
-                @update:model-value="
-                  (v) =>
-                    form.setFieldValue(
-                      'resolution',
-                      (v as string) ?? '1920x1080',
-                    )
-                "
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem
-                      v-for="r of resolutions"
-                      :key="`${r.width}x${r.height}`"
-                      :value="`${r.width}x${r.height}`"
-                    >
-                      {{ r.label }}
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </FormControl>
-          </FormItem>
-        </FormField>
-
-        <div class="rounded-lg border p-3 space-y-2">
-          <div>
-            <div class="text-sm font-medium">
-              {{ $t("game_server.cs2_options.video.aa.label") }}
-            </div>
-            <p class="text-xs text-muted-foreground">
-              {{ $t("game_server.cs2_options.video.aa.description") }}
-            </p>
-          </div>
-          <Select
-            :model-value="antialiasing"
-            @update:model-value="(v) => setAntialiasing(v as string)"
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem
-                  v-for="opt of aaOptions"
-                  :key="opt.value"
-                  :value="opt.value"
+        <fieldset :disabled="isAuto" :class="isAuto ? 'opacity-50' : ''">
+          <FormField v-slot="{ value }" name="resolution">
+            <FormItem class="rounded-lg border p-3">
+              <FormLabel class="text-sm">
+                {{ $t("game_server.cs2_options.video.resolution") }}
+              </FormLabel>
+              <FormDescription class="text-xs">
+                {{ $t("game_server.cs2_options.video.resolution_desc") }}
+              </FormDescription>
+              <FormControl>
+                <Select
+                  :model-value="value"
+                  @update:model-value="
+                    (v) =>
+                      form.setFieldValue(
+                        'resolution',
+                        (v as string) ?? '1920x1080',
+                      )
+                  "
                 >
-                  {{ $t(opt.labelKey) }}
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        v-for="r of resolutions"
+                        :key="`${r.width}x${r.height}`"
+                        :value="`${r.width}x${r.height}`"
+                      >
+                        {{ r.label }}
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          </FormField>
 
-        <FormField
-          v-for="field of booleanVideoFields"
-          v-slot="{ value }"
-          :key="field.key"
-          :name="`video.${field.key}`"
-        >
-          <FormItem
-            class="flex flex-row items-center justify-between gap-4 rounded-lg border p-3"
+          <div class="rounded-lg border p-3 space-y-2">
+            <div>
+              <div class="text-sm font-medium">
+                {{ $t("game_server.cs2_options.video.aa.label") }}
+              </div>
+              <p class="text-xs text-muted-foreground">
+                {{ $t("game_server.cs2_options.video.aa.description") }}
+              </p>
+            </div>
+            <Select
+              :model-value="antialiasing"
+              @update:model-value="(v) => setAntialiasing(v as string)"
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    v-for="opt of aaOptions"
+                    :key="opt.value"
+                    :value="opt.value"
+                  >
+                    {{ $t(opt.labelKey) }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <FormField
+            v-for="field of booleanVideoFields"
+            v-slot="{ value }"
+            :key="field.key"
+            :name="`video.${field.key}`"
           >
-            <div class="space-y-0.5">
+            <FormItem
+              class="flex flex-row items-center justify-between gap-4 rounded-lg border p-3"
+            >
+              <div class="space-y-0.5">
+                <FormLabel class="text-sm">{{ $t(field.labelKey) }}</FormLabel>
+                <FormDescription class="text-xs">
+                  {{ $t(field.descKey) }}
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  :model-value="value === 1"
+                  @update:model-value="
+                    (v) =>
+                      form.setFieldValue(
+                        `video.${field.key}` as never,
+                        (v ? 1 : 0) as never,
+                      )
+                  "
+                />
+              </FormControl>
+            </FormItem>
+          </FormField>
+
+          <FormField
+            v-for="field of enumVideoFields"
+            v-slot="{ value }"
+            :key="field.key"
+            :name="`video.${field.key}`"
+          >
+            <FormItem class="rounded-lg border p-3">
               <FormLabel class="text-sm">{{ $t(field.labelKey) }}</FormLabel>
               <FormDescription class="text-xs">
                 {{ $t(field.descKey) }}
               </FormDescription>
-            </div>
-            <FormControl>
-              <Switch
-                :model-value="value === 1"
-                @update:model-value="
-                  (v) =>
-                    form.setFieldValue(
-                      `video.${field.key}` as never,
-                      (v ? 1 : 0) as never,
-                    )
-                "
-              />
-            </FormControl>
-          </FormItem>
-        </FormField>
-
-        <FormField
-          v-for="field of enumVideoFields"
-          v-slot="{ value }"
-          :key="field.key"
-          :name="`video.${field.key}`"
-        >
-          <FormItem class="rounded-lg border p-3">
-            <FormLabel class="text-sm">{{ $t(field.labelKey) }}</FormLabel>
-            <FormDescription class="text-xs">
-              {{ $t(field.descKey) }}
-            </FormDescription>
-            <FormControl>
-              <Select
-                :model-value="
-                  value !== null && value !== undefined
-                    ? String(value)
-                    : undefined
-                "
-                @update:model-value="
-                  (v) =>
-                    form.setFieldValue(
-                      `video.${field.key}` as never,
-                      (v === null || v === undefined
-                        ? null
-                        : parseInt(v as string, 10)) as never,
-                    )
-                "
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem
-                      v-for="opt of field.options"
-                      :key="opt.value"
-                      :value="String(opt.value)"
-                    >
-                      {{ $t(opt.labelKey) }} ({{ opt.value }})
-                    </SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </FormControl>
-          </FormItem>
-        </FormField>
+              <FormControl>
+                <Select
+                  :model-value="
+                    value !== null && value !== undefined
+                      ? String(value)
+                      : undefined
+                  "
+                  @update:model-value="
+                    (v) =>
+                      form.setFieldValue(
+                        `video.${field.key}` as never,
+                        (v === null || v === undefined
+                          ? null
+                          : parseInt(v as string, 10)) as never,
+                      )
+                  "
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem
+                        v-for="opt of field.options"
+                        :key="opt.value"
+                        :value="String(opt.value)"
+                      >
+                        {{ $t(opt.labelKey) }} ({{ opt.value }})
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+            </FormItem>
+          </FormField>
+        </fieldset>
 
         <div class="flex justify-end gap-2 pt-2">
           <Button type="button" variant="outline" @click="$emit('close')">
@@ -261,10 +266,13 @@ const DEFAULT_RESOLUTION = "1920x1080";
 const resolutionKey = (w?: number | null, h?: number | null) =>
   w && h ? `${w}x${h}` : DEFAULT_RESOLUTION;
 
-// Quality presets — `low` is the streamer default and matches the
-// vendored cs2_video.txt template. Resolution stays orthogonal.
-type PresetName = "low" | "medium" | "high";
-const PRESETS: Record<PresetName, VideoForm> = {
+// Quality presets. `auto` is the new default — empty JSONB so the
+// streamer skips writing cs2_video.txt and CS2's first-launch
+// auto-detect runs against the actual GPU. low/medium/high apply
+// explicit overrides; resolution stays orthogonal.
+type PresetName = "auto" | "low" | "medium" | "high";
+type ExplicitPreset = Exclude<PresetName, "auto">;
+const PRESETS: Record<ExplicitPreset, VideoForm> = {
   low: {
     msaa_samples: 0,
     r_csgo_cmaa_enable: 0,
@@ -300,7 +308,14 @@ const PRESETS: Record<PresetName, VideoForm> = {
   },
 };
 
+const PRESET_NAMES: readonly PresetName[] = [
+  "auto",
+  "low",
+  "medium",
+  "high",
+] as const;
 const PRESET_LABELS: Record<PresetName, string> = {
+  auto: "game_server.cs2_options.preset.auto",
   low: "game_server.cs2_options.preset.low",
   medium: "game_server.cs2_options.preset.medium",
   high: "game_server.cs2_options.preset.high",
@@ -433,7 +448,7 @@ export default {
       enumVideoFields,
       resolutions: RESOLUTIONS,
       aaOptions: AA_OPTIONS,
-      presetNames: Object.keys(PRESETS) as PresetName[],
+      presetNames: PRESET_NAMES,
       presetLabels: PRESET_LABELS,
       form: useForm({
         validationSchema: toTypedSchema(
@@ -449,17 +464,19 @@ export default {
     gameServerNode: {
       immediate: true,
       handler(node) {
-        // Always fall back to the low preset for any key not explicitly
-        // overridden — mirrors what the streamer applies (cs2-options.sh
-        // writes template defaults for missing keys, and the vendored
-        // template carries low-preset values).
+        // Empty JSONB (or no overrides) ⇒ auto mode: every FORM_KEY is
+        // null so `activePreset` returns "auto" and the controls render
+        // disabled. Any stored value snaps the form back to explicit.
         const stored = (node.cs2_video_settings ?? {}) as Record<
           string,
           number | null
         >;
+        const isAuto = Object.keys(stored).length === 0;
         const videoFilled: VideoForm = {};
         for (const k of FORM_KEYS) {
-          videoFilled[k] = stored[`setting.${k}`] ?? PRESETS.low[k] ?? null;
+          videoFilled[k] = isAuto
+            ? null
+            : (stored[`setting.${k}`] ?? PRESETS.low[k] ?? null);
         }
         this.form.setValues({
           resolution: resolutionKey(
@@ -481,9 +498,14 @@ export default {
     },
     // Returns the preset whose values exactly match the current form
     // state, or null if the user has customized away from any preset.
+    // Auto = every FORM_KEY is null/undefined.
     activePreset(): PresetName | null {
       const current = (this.form.values?.video ?? {}) as VideoForm;
-      for (const name of Object.keys(PRESETS) as PresetName[]) {
+      const allNull = FORM_KEYS.every(
+        (k) => current[k] === null || current[k] === undefined,
+      );
+      if (allNull) return "auto";
+      for (const name of Object.keys(PRESETS) as ExplicitPreset[]) {
         const preset = PRESETS[name];
         let match = true;
         for (const k of FORM_KEYS) {
@@ -495,6 +517,9 @@ export default {
         if (match) return name;
       }
       return null;
+    },
+    isAuto(): boolean {
+      return this.activePreset === "auto";
     },
   },
   methods: {
@@ -510,6 +535,12 @@ export default {
     applyPreset(name: PresetName) {
       // Per-key setFieldValue so each <FormField v-slot> rebinds.
       // setFieldValue on the whole `video` object doesn't propagate.
+      if (name === "auto") {
+        for (const k of FORM_KEYS) {
+          this.form.setFieldValue(`video.${k}` as never, null as never);
+        }
+        return;
+      }
       const preset = PRESETS[name];
       for (const [k, v] of Object.entries(preset)) {
         this.form.setFieldValue(`video.${k}` as never, v as never);
@@ -524,23 +555,28 @@ export default {
         video: VideoForm;
       };
 
-      // JSONB columns can't be inlined as GraphQL object literals
-      // (scalar input doesn't allow object syntax). Pass via Zeus's
-      // `$("name", "jsonb")` placeholder + an Apollo `variables` entry.
+      // Auto mode: ship empty JSONB so the streamer skips writing
+      // cs2_video.txt and cs2 auto-detects on first launch.
+      // Otherwise: serialize all set keys with the `setting.` prefix.
+      // (JSONB columns can't be inlined as GraphQL object literals so
+      // we route via Zeus's `$("name", "jsonb")` placeholder + Apollo
+      // `variables`.)
       const cs2_video_settings: Record<string, number> = {};
-      for (const k of FORM_KEYS) {
-        const v = values.video?.[k];
-        if (v !== null && v !== undefined) {
-          cs2_video_settings[`setting.${k}`] = v;
+      if (!this.isAuto) {
+        for (const k of FORM_KEYS) {
+          const v = values.video?.[k];
+          if (v !== null && v !== undefined) {
+            cs2_video_settings[`setting.${k}`] = v;
+          }
         }
-      }
-      const resKey = values.resolution || DEFAULT_RESOLUTION;
-      const match = RESOLUTIONS.find(
-        (r) => `${r.width}x${r.height}` === resKey,
-      );
-      if (match) {
-        cs2_video_settings["setting.defaultres"] = match.width;
-        cs2_video_settings["setting.defaultresheight"] = match.height;
+        const resKey = values.resolution || DEFAULT_RESOLUTION;
+        const match = RESOLUTIONS.find(
+          (r) => `${r.width}x${r.height}` === resKey,
+        );
+        if (match) {
+          cs2_video_settings["setting.defaultres"] = match.width;
+          cs2_video_settings["setting.defaultresheight"] = match.height;
+        }
       }
 
       await this.$apollo.mutate({

@@ -18,7 +18,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import InstallPWA from "~/components/InstallPWA.vue";
 import { DiscordLogoIcon } from "@radix-icons/vue";
-import { Settings, LogOut, ChevronsUpDown, CheckCircle2 } from "lucide-vue-next";
+import {
+  Settings,
+  LogOut,
+  ChevronsUpDown,
+  CheckCircle2,
+} from "lucide-vue-next";
 import { e_match_status_enum } from "~/generated/zeus";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
@@ -521,10 +526,7 @@ const loginArrowClasses =
             :aria-label="$t('matchmaking.check_in')"
             @click="openMatchReadyModal()"
           >
-            <span
-              class="relative flex h-1.5 w-1.5"
-              aria-hidden="true"
-            >
+            <span class="relative flex h-1.5 w-1.5" aria-hidden="true">
               <span
                 class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
               ></span>
@@ -533,7 +535,9 @@ const loginArrowClasses =
               ></span>
             </span>
             <CheckCircle2 class="h-3.5 w-3.5" />
-            <span class="hidden sm:inline">{{ $t("matchmaking.check_in") }}</span>
+            <span class="hidden sm:inline">{{
+              $t("matchmaking.check_in")
+            }}</span>
             <span v-if="pendingCheckIn" class="tabular-nums">
               {{ pendingCheckIn.confirmed }}/{{ pendingCheckIn.players }}
             </span>

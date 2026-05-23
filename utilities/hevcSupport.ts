@@ -3,8 +3,7 @@ import { toast } from "~/components/ui/toast/use-toast";
 
 // Microsoft Store listing for the HEVC Video Extensions. Most Windows
 // Chromium browsers can't decode H.265 clips without this installed.
-const HEVC_PLUGIN_URL =
-  "https://apps.microsoft.com/detail/9nmzlz57r3t7";
+const HEVC_PLUGIN_URL = "https://apps.microsoft.com/detail/9nmzlz57r3t7";
 
 let cachedSupport: boolean | null = null;
 let warnedThisSession = false;
@@ -27,7 +26,9 @@ export function browserSupportsHevc(): boolean {
   }
 
   const ms = (
-    window as unknown as { MediaSource?: { isTypeSupported(t: string): boolean } }
+    window as unknown as {
+      MediaSource?: { isTypeSupported(t: string): boolean };
+    }
   ).MediaSource;
   if (
     ms &&
@@ -60,8 +61,7 @@ export function notifyMissingHevcOnce(strings: {
           href: HEVC_PLUGIN_URL,
           target: "_blank",
           rel: "noopener noreferrer",
-          class:
-            "underline underline-offset-2 font-medium hover:opacity-80",
+          class: "underline underline-offset-2 font-medium hover:opacity-80",
         },
         strings.linkLabel,
       ),

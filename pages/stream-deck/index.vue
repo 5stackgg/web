@@ -444,7 +444,6 @@ function matchStatusLabel(m: LiveMatch): string {
   if (m.status === "WaitingForCheckIn") return t("stream_deck_status.check_in");
   return m.status.toUpperCase();
 }
-
 </script>
 
 <template>
@@ -928,7 +927,9 @@ function matchStatusLabel(m: LiveMatch): string {
                 </span>
               </div>
 
-              <div class="relative flex flex-1 flex-col justify-center px-4 py-3">
+              <div
+                class="relative flex flex-1 flex-col justify-center px-4 py-3"
+              >
                 <div
                   class="grid grid-cols-[1fr_auto_1fr] items-center gap-3 min-w-0"
                 >

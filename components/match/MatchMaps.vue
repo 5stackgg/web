@@ -77,7 +77,7 @@ import cleanMapName from "~/utilities/cleanMapName";
           v-if="matchMap.status !== e_match_status_enum.Scheduled"
           :variant="matchMap.is_current_map ? 'destructive' : 'secondary'"
           class="text-xs px-2 py-0.5 backdrop-blur-sm"
-          >{{ matchMap.status }}</Badge
+          >{{ matchMap.status.replace(/([a-z])([A-Z])/g, "$1 $2") }}</Badge
         >
         <Badge
           v-else-if="isDecider && match.options.best_of > 1"

@@ -331,6 +331,31 @@ definePageMeta({
             </FormItem>
           </FormField>
 
+          <FormField v-slot="{ componentField }" name="clip_resolution">
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.demo_settings.clip_resolution")
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.demo_settings.clip_resolution_description",
+                )
+              }}</FormDescription>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="1080p">1080p</SelectItem>
+                  <SelectItem value="720p">720p</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
           <FormField
             v-slot="{ value, handleChange }"
             name="clip_bake_branding"
@@ -574,6 +599,7 @@ export default {
               .default("horizontal"),
             clip_video_codec: z.enum(["h265", "h264"]).default("h265"),
             clip_fps: z.enum(["30", "60"]).default("60"),
+            clip_resolution: z.enum(["720p", "1080p"]).default("1080p"),
             clip_bake_branding: z.boolean().default(true),
           }),
         ),
@@ -622,6 +648,14 @@ export default {
             this.form.setFieldValue(
               setting.name,
               setting.value === "30" ? "30" : "60",
+            );
+            continue;
+          }
+
+          if (setting.name === "clip_resolution") {
+            this.form.setFieldValue(
+              setting.name,
+              setting.value === "720p" ? "720p" : "1080p",
             );
             continue;
           }
@@ -751,6 +785,10 @@ export default {
                 {
                   name: "clip_fps",
                   value: this.form.values.clip_fps ?? "60",
+                },
+                {
+                  name: "clip_resolution",
+                  value: this.form.values.clip_resolution ?? "1080p",
                 },
                 {
                   name: "clip_bake_branding",

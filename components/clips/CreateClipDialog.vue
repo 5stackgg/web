@@ -51,6 +51,13 @@ const clipFps = computed<30 | 60>(() => {
   return raw === "30" ? 30 : 60;
 });
 
+const clipResolutionDefault = computed<"720p" | "1080p">(() => {
+  const raw = appSettings.settings.find(
+    (s) => s.name === "clip_resolution",
+  )?.value;
+  return raw === "720p" ? "720p" : "1080p";
+});
+
 type Preset = "knife" | "multikills" | "best_round" | "recap";
 const presetTarget = ref<string | null>(null);
 const presetChoice = ref<Preset>("multikills");
@@ -89,7 +96,7 @@ const PRESETS = computed<
 ]);
 
 const title = ref("");
-const resolution = ref<"720p" | "1080p">("1080p");
+const resolution = ref<"720p" | "1080p">(clipResolutionDefault.value);
 const submitting = ref(false);
 const submitError = ref<string | null>(null);
 const renderingJobId = ref<string | null>(null);
@@ -101,7 +108,7 @@ watch(
   (v) => {
     if (!v) return;
     title.value = "";
-    resolution.value = "1080p";
+    resolution.value = clipResolutionDefault.value;
     submitting.value = false;
     submitError.value = null;
     renderingJobId.value = null;

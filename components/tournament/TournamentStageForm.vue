@@ -1018,7 +1018,7 @@ export default {
 
           break;
         case e_tournament_stage_types_enum.RoundRobin:
-          for (let i = 16; i >= 3; i--) {
+          for (let i = 32; i >= 3; i--) {
             options.push({
               value: i.toString(),
               display: i,

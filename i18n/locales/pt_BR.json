@@ -2981,13 +2981,13 @@
   "matchmaking": {
     "match_types": {
       "competitive": {
-        "description": "O clássico modo competitivo de 5 contra 5"
+        "description": "Modo competitivo clássico 5v5. Jogue em equipe, gerencie economia, execute estratégias e suba no ranking."
       },
       "wingman": {
-        "description": "Junte-se a um amigo e dispute partidas 2 contra 2 em ritmo acelerado."
+        "description": "Modo 2v2 em ritmo acelerado em mapas reduzidos. Junte-se a um amigo e dispute partidas 2v2 em ritmo acelerado. Rápido, objetivo e cooperativo. Perfeito para jogar com um amigo."
       },
       "duel": {
-        "description": "Modo de jogo 1 contra 1, perfeito para praticar habilidades individuais"
+        "description": "Modo 1v1 focado em habilidades individuais. Perfeito para treinar mira, posicionamenton reflexos e chamar seu amigo newba pra um X1 pra mostrar que você é fodão."
       }
     },
     "cancel_matchmaking": "Sair da Fila",

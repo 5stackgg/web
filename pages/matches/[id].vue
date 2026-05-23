@@ -700,9 +700,14 @@ export default {
           const match = data.matches_by_pk;
 
           if (!match) {
-            this.match = null;
-            useMatchContext().value = null;
-            navigateTo("/watch");
+            // Only redirect on initial load. If we previously had the match
+            // and it disappeared (e.g., canceled), keep the subscription
+            // alive so we pick it back up if it gets restarted.
+            if (this.match === undefined) {
+              this.match = null;
+              useMatchContext().value = null;
+              navigateTo("/watch");
+            }
             return;
           }
 

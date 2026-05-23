@@ -14,14 +14,12 @@ import { Activity, Cpu, ExternalLink, AlertTriangle } from "lucide-vue-next";
           class="h-2 w-2 rounded-full relative mt-1"
           :class="{
             ['bg-red-600']:
-              gameServerNode.status ===
-              e_game_server_node_statuses_enum.Offline,
+              effectiveStatus === e_game_server_node_statuses_enum.Offline,
             ['bg-green-600']:
-              gameServerNode.status === e_game_server_node_statuses_enum.Online,
+              effectiveStatus === e_game_server_node_statuses_enum.Online,
             ['bg-yellow-600']:
-              gameServerNode.status ===
-                e_game_server_node_statuses_enum.Setup ||
-              gameServerNode.status ===
+              effectiveStatus === e_game_server_node_statuses_enum.Setup ||
+              effectiveStatus ===
                 e_game_server_node_statuses_enum.NotAcceptingNewMatches,
             ['bg-orange-400']: showMaxCPUFrequencyWarning,
           }"
@@ -30,26 +28,20 @@ import { Activity, Cpu, ExternalLink, AlertTriangle } from "lucide-vue-next";
             class="animate-ping absolute left-0 h-2 w-2 rounded-full opacity-75"
             :class="{
               ['bg-red-400']:
-                gameServerNode.status ===
-                e_game_server_node_statuses_enum.Offline,
+                effectiveStatus === e_game_server_node_statuses_enum.Offline,
               ['bg-yellow-400']:
-                gameServerNode.status ===
-                  e_game_server_node_statuses_enum.Setup ||
-                gameServerNode.status ===
+                effectiveStatus === e_game_server_node_statuses_enum.Setup ||
+                effectiveStatus ===
                   e_game_server_node_statuses_enum.NotAcceptingNewMatches,
             }"
-            v-if="
-              gameServerNode.status !== e_game_server_node_statuses_enum.Online
-            "
+            v-if="effectiveStatus !== e_game_server_node_statuses_enum.Online"
           ></span>
         </div>
       </template>
 
       <div class="flex items-center gap-1 font-medium">
         <template
-          v-if="
-            gameServerNode.status === e_game_server_node_statuses_enum.Offline
-          "
+          v-if="effectiveStatus === e_game_server_node_statuses_enum.Offline"
         >
           {{ $t("common.offline") }}
           <template v-if="gameServerNode.offline_at">
@@ -58,21 +50,19 @@ import { Activity, Cpu, ExternalLink, AlertTriangle } from "lucide-vue-next";
         </template>
         <template
           v-else-if="
-            gameServerNode.status === e_game_server_node_statuses_enum.Online
+            effectiveStatus === e_game_server_node_statuses_enum.Online
           "
         >
           {{ $t("common.online") }}
         </template>
         <template
-          v-else-if="
-            gameServerNode.status === e_game_server_node_statuses_enum.Setup
-          "
+          v-else-if="effectiveStatus === e_game_server_node_statuses_enum.Setup"
         >
           {{ $t("pages.game_server_nodes.status.setup") }}
         </template>
         <template
           v-else-if="
-            gameServerNode.status ===
+            effectiveStatus ===
             e_game_server_node_statuses_enum.NotAcceptingNewMatches
           "
         >
@@ -128,6 +118,12 @@ export default {
     },
   },
   computed: {
+    effectiveStatus() {
+      if (this.gameServerNode.offline_at) {
+        return "Offline";
+      }
+      return this.gameServerNode.status;
+    },
     maxFrequency() {
       const freq = this.gameServerNode.cpu_frequency_info?.frequency;
       return freq != null ? Math.round(freq * 100) / 100 : freq;

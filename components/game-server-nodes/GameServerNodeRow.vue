@@ -60,8 +60,10 @@ import {
   HardDrive,
   ChevronDown,
   ChevronUp,
+  Settings2,
 } from "lucide-vue-next";
 import UpdateGameServerLabel from "~/components/game-server-nodes/UpdateGameServerLabel.vue";
+import EditCs2Options from "~/components/game-server-nodes/EditCs2Options.vue";
 import FiveStackToolTip from "../FiveStackToolTip.vue";
 import NodeMetrics from "@/components/system-metrics/NodeMetrics.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
@@ -791,6 +793,15 @@ const isSectionExpanded = (section: string) => {
               <Pencil class="mr-2 h-4 w-4" />
               <span>{{ $t("game_server.edit_label") }}</span>
             </DropdownMenuItem>
+
+            <template v-if="gameServerNode.gpu">
+              <DropdownMenuSeparator />
+              <DropdownMenuItem @click="editCs2OptionsSheet = true">
+                <Settings2 class="mr-2 h-4 w-4" />
+                <span>{{ $t("game_server.edit_cs2_options") }}</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </template>
 
             <DropdownMenuItem
               @click="
@@ -1700,6 +1711,13 @@ const isSectionExpanded = (section: string) => {
     :open="editLabelSheet"
     @close="editLabelSheet = false"
   />
+
+  <EditCs2Options
+    v-if="gameServerNode.gpu"
+    :game-server-node="gameServerNode"
+    :open="editCs2OptionsSheet"
+    @close="editCs2OptionsSheet = false"
+  />
 </template>
 
 <script lang="ts">
@@ -1732,6 +1750,8 @@ interface GameServerNode {
   start_port_range: number;
   end_port_range: number;
   label?: string;
+  gpu?: boolean;
+  cs2_video_settings?: Record<string, unknown> | null;
   supports_low_latency?: boolean;
   supports_cpu_pinning?: boolean;
   cpu_governor_info?: string;
@@ -1762,6 +1782,7 @@ interface ComponentData {
     region: string | undefined;
   };
   editLabelSheet: boolean;
+  editCs2OptionsSheet: boolean;
   pinBuildIdForm: ReturnType<typeof useForm>;
   pinPluginVersionForm: ReturnType<typeof useForm>;
   portForm: ReturnType<typeof useForm>;
@@ -1852,6 +1873,7 @@ export default defineComponent({
         region: undefined,
       },
       editLabelSheet: false,
+      editCs2OptionsSheet: false,
       server_regions: [],
       pinBuildIdForm: useForm({
         validationSchema: toTypedSchema(

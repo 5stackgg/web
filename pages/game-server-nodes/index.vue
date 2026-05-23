@@ -418,6 +418,7 @@ export default {
               update_status: true,
               gpu: true,
               gpu_info: true,
+              cs2_video_settings: true,
               cpu_sockets: true,
               cpu_governor_info: true,
               cpu_frequency_info: true,

@@ -2227,6 +2227,12 @@ export const AllTypesProps: Record<string,any> = {
 		cpu_governor_info:{
 
 		},
+		cs2_launch_options:{
+
+		},
+		cs2_video_settings:{
+
+		},
 		gpu_info:{
 
 		},
@@ -2282,6 +2288,8 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_append_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
+		cs2_launch_options:"jsonb",
+		cs2_video_settings:"jsonb",
 		gpu_info:"jsonb"
 	},
 	game_server_nodes_arr_rel_insert_input:{
@@ -2312,6 +2320,8 @@ export const AllTypesProps: Record<string,any> = {
 		cpu_governor_info:"jsonb_comparison_exp",
 		cpu_sockets:"Int_comparison_exp",
 		cpu_threads_per_core:"Int_comparison_exp",
+		cs2_launch_options:"jsonb_comparison_exp",
+		cs2_video_settings:"jsonb_comparison_exp",
 		csgo_build_id:"Int_comparison_exp",
 		demo_network_limiter:"Int_comparison_exp",
 		disk_available_gb:"Int_comparison_exp",
@@ -2360,6 +2370,8 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_insert_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
+		cs2_launch_options:"jsonb",
+		cs2_video_settings:"jsonb",
 		e_region:"server_regions_obj_rel_insert_input",
 		e_status:"e_game_server_node_statuses_obj_rel_insert_input",
 		gpu_info:"jsonb",
@@ -2429,6 +2441,8 @@ export const AllTypesProps: Record<string,any> = {
 		cpu_governor_info:"order_by",
 		cpu_sockets:"order_by",
 		cpu_threads_per_core:"order_by",
+		cs2_launch_options:"order_by",
+		cs2_video_settings:"order_by",
 		csgo_build_id:"order_by",
 		demo_network_limiter:"order_by",
 		disk_available_gb:"order_by",
@@ -2466,6 +2480,8 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_prepend_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
+		cs2_launch_options:"jsonb",
+		cs2_video_settings:"jsonb",
 		gpu_info:"jsonb"
 	},
 	game_server_nodes_select_column: "enum" as const,
@@ -2474,6 +2490,8 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_set_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
+		cs2_launch_options:"jsonb",
+		cs2_video_settings:"jsonb",
 		gpu_info:"jsonb",
 		lan_ip:"inet",
 		node_ip:"inet",
@@ -2527,6 +2545,8 @@ export const AllTypesProps: Record<string,any> = {
 	game_server_nodes_stream_cursor_value_input:{
 		cpu_frequency_info:"jsonb",
 		cpu_governor_info:"jsonb",
+		cs2_launch_options:"jsonb",
+		cs2_video_settings:"jsonb",
 		gpu_info:"jsonb",
 		lan_ip:"inet",
 		node_ip:"inet",
@@ -23025,6 +23045,8 @@ export const ReturnTypes: Record<string,any> = {
 		cpu_governor_info:"jsonb",
 		cpu_sockets:"Int",
 		cpu_threads_per_core:"Int",
+		cs2_launch_options:"jsonb",
+		cs2_video_settings:"jsonb",
 		csgo_build_id:"Int",
 		demo_network_limiter:"Int",
 		disk_available_gb:"Int",

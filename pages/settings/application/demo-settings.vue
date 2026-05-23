@@ -306,6 +306,31 @@ definePageMeta({
             </FormItem>
           </FormField>
 
+          <FormField v-slot="{ componentField }" name="clip_fps">
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.demo_settings.clip_fps")
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.demo_settings.clip_fps_description",
+                )
+              }}</FormDescription>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="60">60 FPS</SelectItem>
+                  <SelectItem value="30">30 FPS</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
           <FormField
             v-slot="{ value, handleChange }"
             name="clip_bake_branding"
@@ -548,6 +573,7 @@ export default {
               .enum(["horizontal", "vertical"])
               .default("horizontal"),
             clip_video_codec: z.enum(["h265", "h264"]).default("h265"),
+            clip_fps: z.enum(["30", "60"]).default("60"),
             clip_bake_branding: z.boolean().default(true),
           }),
         ),
@@ -588,6 +614,14 @@ export default {
             this.form.setFieldValue(
               setting.name,
               setting.value === "h264" ? "h264" : "h265",
+            );
+            continue;
+          }
+
+          if (setting.name === "clip_fps") {
+            this.form.setFieldValue(
+              setting.name,
+              setting.value === "30" ? "30" : "60",
             );
             continue;
           }
@@ -713,6 +747,10 @@ export default {
                 {
                   name: "clip_video_codec",
                   value: this.form.values.clip_video_codec ?? "h265",
+                },
+                {
+                  name: "clip_fps",
+                  value: this.form.values.clip_fps ?? "60",
                 },
                 {
                   name: "clip_bake_branding",

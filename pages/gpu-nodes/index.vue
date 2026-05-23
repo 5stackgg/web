@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive } from "vue";
+import { computed, reactive, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 
@@ -22,9 +22,11 @@ import {
   Film,
   CheckCircle2,
   Square,
+  Settings2,
 } from "lucide-vue-next";
 import { useGpuAvailability } from "~/composables/useGpuAvailability";
 import { generateMutation } from "~/graphql/graphqlGen";
+import EditCs2Options from "~/components/game-server-nodes/EditCs2Options.vue";
 
 definePageMeta({
   middleware: "admin",
@@ -40,6 +42,7 @@ const { client: apolloClient } = useApolloClient();
 // re-entrancy while the request is in flight.
 const confirmStopByNodeId = reactive<Record<string, boolean>>({});
 const busyByNodeId = reactive<Record<string, boolean>>({});
+const cs2OptionsNode = ref<any | null>(null);
 
 async function stopGpuSession(nodeId: string) {
   if (busyByNodeId[nodeId]) return;
@@ -231,6 +234,16 @@ const summaryTiles = computed(() => {
             >
               {{ $t("pages.gpu_nodes.idle") }}
             </Badge>
+            <Button
+              size="icon"
+              variant="outline"
+              class="h-7 w-7"
+              :title="$t('game_server.edit_cs2_options')"
+              :aria-label="$t('game_server.edit_cs2_options')"
+              @click="cs2OptionsNode = node"
+            >
+              <Settings2 class="w-3.5 h-3.5" />
+            </Button>
           </div>
         </div>
 
@@ -270,6 +283,13 @@ const summaryTiles = computed(() => {
       </Empty>
     </Card>
   </PageTransition>
+
+  <EditCs2Options
+    v-if="cs2OptionsNode"
+    :game-server-node="cs2OptionsNode"
+    :open="cs2OptionsNode !== null"
+    @close="cs2OptionsNode = null"
+  />
 </template>
 
 <script lang="ts">
@@ -366,6 +386,7 @@ export default {
               region: true,
               gpu: true,
               gpu_info: true,
+              cs2_video_settings: true,
               public_ip: true,
               lan_ip: true,
               offline_at: true,

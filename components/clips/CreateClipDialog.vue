@@ -27,6 +27,7 @@ import {
 } from "~/components/ui/select";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useDemoPlaybackStore } from "~/stores/DemoPlaybackStore";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import ClipRenderProgress from "~/components/clips/ClipRenderProgress.vue";
 import { useClipRenderActive } from "~/composables/useClipRenderActive";
 
@@ -42,7 +43,13 @@ const emit = defineEmits<{
 }>();
 
 const store = useDemoPlaybackStore();
+const appSettings = useApplicationSettingsStore();
 const nuxtApp = useNuxtApp();
+
+const clipFps = computed<30 | 60>(() => {
+  const raw = appSettings.settings.find((s) => s.name === "clip_fps")?.value;
+  return raw === "30" ? 30 : 60;
+});
 
 type Preset = "knife" | "multikills" | "best_round" | "recap";
 const presetTarget = ref<string | null>(null);
@@ -179,7 +186,7 @@ async function submit() {
             target_steam_id: presetTarget.value,
             preset: presetChoice.value,
             resolution: resolution.value,
-            fps: 60,
+            fps: clipFps.value,
             title: title.value || undefined,
             target_name: targetName,
           },

@@ -32,6 +32,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { useDemoPlaybackStore } from "~/stores/DemoPlaybackStore";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
 import { useClipEditor, type EditorSegment } from "~/composables/useClipEditor";
 import { useClipRenderActive } from "~/composables/useClipRenderActive";
@@ -44,6 +45,12 @@ const props = defineProps<{
 }>();
 
 const store = useDemoPlaybackStore();
+const appSettings = useApplicationSettingsStore();
+
+const clipFps = computed<30 | 60>(() => {
+  const raw = appSettings.settings.find((s) => s.name === "clip_fps")?.value;
+  return raw === "30" ? 30 : 60;
+});
 const { seek } = useDemoPlayback();
 const editor = useClipEditor();
 const nuxtApp = useNuxtApp();
@@ -277,7 +284,7 @@ async function submit() {
       end_tick: s.end_tick,
       ...(s.pov_steam_id ? { pov_steam_id: s.pov_steam_id } : {}),
     })),
-    output: { format: "mp4", resolution: resolution.value, fps: 60 },
+    output: { format: "mp4", resolution: resolution.value, fps: clipFps.value },
     destination: destination.value,
     title: title.value || undefined,
   };

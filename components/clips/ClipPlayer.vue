@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from "vue";
 import {
   Maximize,
   Minimize,
@@ -195,7 +202,10 @@ function startProgressLoop() {
 function onVideoError(event: Event) {
   const video = event.target as HTMLVideoElement | null;
   const code = video?.error?.code;
-  if (code !== MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED && code !== MediaError.MEDIA_ERR_DECODE) {
+  if (
+    code !== MediaError.MEDIA_ERR_SRC_NOT_SUPPORTED &&
+    code !== MediaError.MEDIA_ERR_DECODE
+  ) {
     return;
   }
   if (browserSupportsHevc()) return;

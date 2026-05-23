@@ -148,9 +148,7 @@ export default {
     },
     statusLabel(): string {
       return (
-        this.match?.e_match_status?.description ||
-        this.match?.status ||
-        ""
+        this.match?.e_match_status?.description || this.match?.status || ""
       );
     },
     matchTitle(): string {

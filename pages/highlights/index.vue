@@ -55,6 +55,10 @@ import {
   tacticalFilterPillActiveClasses,
 } from "~/utilities/tacticalClasses";
 
+definePageMeta({
+  persistQueryKeys: ["player", "since", "kills", "view"],
+});
+
 const { t } = useI18n();
 const clipQueueScope = "highlights-index";
 const { clearClipQueue, setClipQueue } = useClipModal();
@@ -89,47 +93,39 @@ const route = useRoute();
 const router = useRouter();
 
 type SincePreset = "all" | "24h" | "7d" | "30d" | "90d";
+const SINCE_VALUES = ["all", "24h", "7d", "30d", "90d"] as const;
 const SINCE_OPTIONS = computed<Array<{ value: SincePreset; label: string }>>(
-  () => [
-    { value: "all", label: t("pages.highlights.since.all") },
-    { value: "24h", label: t("pages.highlights.since.24h") },
-    { value: "7d", label: t("pages.highlights.since.7d") },
-    { value: "30d", label: t("pages.highlights.since.30d") },
-    { value: "90d", label: t("pages.highlights.since.90d") },
-  ],
+  () =>
+    SINCE_VALUES.map((value) => ({
+      value,
+      label: t(`pages.highlights.since.${value}`),
+    })),
 );
 
 type KillsPreset = "any" | "2" | "3" | "4" | "5";
+const KILLS_VALUES = ["any", "2", "3", "4", "5"] as const;
 const KILLS_OPTIONS = computed<Array<{ value: KillsPreset; label: string }>>(
-  () => [
-    { value: "any", label: t("pages.highlights.kills.any") },
-    { value: "2", label: t("pages.highlights.kills.2") },
-    { value: "3", label: t("pages.highlights.kills.3") },
-    { value: "4", label: t("pages.highlights.kills.4") },
-    { value: "5", label: t("pages.highlights.kills.5") },
-  ],
+  () =>
+    KILLS_VALUES.map((value) => ({
+      value,
+      label: t(`pages.highlights.kills.${value}`),
+    })),
 );
 
 const playerFilter = computed<string | null>(() => {
   const v = route.query.player;
   return typeof v === "string" && v.length > 0 ? v : null;
 });
-const sinceFilter = computed<SincePreset>(() => {
-  const v = route.query.since;
-  if (typeof v === "string") {
-    const match = SINCE_OPTIONS.find((o) => o.value === v);
-    if (match) return match.value;
-  }
-  return "all";
-});
-const killsFilter = computed<KillsPreset>(() => {
-  const v = route.query.kills;
-  if (typeof v === "string") {
-    const match = KILLS_OPTIONS.find((o) => o.value === v);
-    if (match) return match.value;
-  }
-  return "any";
-});
+const sinceFilter = computed<SincePreset>(() =>
+  (SINCE_VALUES as readonly string[]).includes(route.query.since as string)
+    ? (route.query.since as SincePreset)
+    : "all",
+);
+const killsFilter = computed<KillsPreset>(() =>
+  (KILLS_VALUES as readonly string[]).includes(route.query.kills as string)
+    ? (route.query.kills as KillsPreset)
+    : "any",
+);
 const viewMode = computed<ViewMode>(() =>
   route.query.view === "singles" ? "singles" : "matches",
 );
@@ -526,10 +522,6 @@ const viewModeOptions = computed<
 <template>
   <PageTransition>
     <TacticalPageHeader>
-      <template #description>
-        <Film class="h-3.5 w-3.5" />
-        {{ $t("pages.highlights.community_reel") }}
-      </template>
       <template #title>{{ $t("pages.highlights.title") }}</template>
       <template #actions>
         <div class="flex items-center gap-3">

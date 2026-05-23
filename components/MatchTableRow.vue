@@ -268,12 +268,25 @@ import {
           >
             {{ match.lineup_1.name }}
           </h3>
-          <span
-            class="shrink-0 text-2xl font-bold tabular-nums"
-            :class="getScoreColorClasses(match.lineup_1.id)"
-          >
-            {{ getTeamScore(match, match.lineup_1.id) }}
-          </span>
+          <div class="flex shrink-0 items-baseline gap-1.5">
+            <span
+              v-if="showSeriesScore"
+              class="text-2xl font-bold tabular-nums"
+              :class="getScoreColorClasses(match.lineup_1.id)"
+            >
+              {{ getTeamScore(match, match.lineup_1.id) }}
+            </span>
+            <span
+              v-if="showMapRoundScore"
+              class="rounded border border-border/60 bg-background/60 px-1.5 py-0.5 font-mono font-bold leading-none tabular-nums text-foreground/85"
+              :class="showSeriesScore ? 'text-xs' : 'text-xl'"
+              :title="
+                previewMatchMap?.map?.label || previewMatchMap?.map?.name || ''
+              "
+            >
+              {{ previewMatchMap?.lineup_1_score ?? 0 }}
+            </span>
+          </div>
         </div>
         <div class="flex items-center justify-between gap-3">
           <h3
@@ -286,12 +299,25 @@ import {
           >
             {{ match.lineup_2.name }}
           </h3>
-          <span
-            class="shrink-0 text-2xl font-bold tabular-nums"
-            :class="getScoreColorClasses(match.lineup_2.id)"
-          >
-            {{ getTeamScore(match, match.lineup_2.id) }}
-          </span>
+          <div class="flex shrink-0 items-baseline gap-1.5">
+            <span
+              v-if="showSeriesScore"
+              class="text-2xl font-bold tabular-nums"
+              :class="getScoreColorClasses(match.lineup_2.id)"
+            >
+              {{ getTeamScore(match, match.lineup_2.id) }}
+            </span>
+            <span
+              v-if="showMapRoundScore"
+              class="rounded border border-border/60 bg-background/60 px-1.5 py-0.5 font-mono font-bold leading-none tabular-nums text-foreground/85"
+              :class="showSeriesScore ? 'text-xs' : 'text-xl'"
+              :title="
+                previewMatchMap?.map?.label || previewMatchMap?.map?.name || ''
+              "
+            >
+              {{ previewMatchMap?.lineup_2_score ?? 0 }}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -1952,6 +1978,31 @@ export default {
         this.match?.is_tournament_match ||
           this.match?.tournament_brackets?.length,
       );
+    },
+    bestOf(): number {
+      return this.match?.options?.best_of ?? 1;
+    },
+    previewMatchMap(): any | null {
+      const maps = this.match?.match_maps ?? [];
+      if (maps.length === 0) return null;
+      const current = maps.find((mm: any) => mm.is_current_map);
+      if (current) return current;
+      // Fallback: first map without a winner yet, otherwise the last one.
+      return (
+        maps.find((mm: any) => !mm.winning_lineup_id) ?? maps[maps.length - 1]
+      );
+    },
+    showSeriesScore(): boolean {
+      // BO1 live: hide the meaningless 0/1 series score and show round
+      // score in its place. Otherwise (BOX, or non-live BO1) keep the
+      // standard series tally.
+      if (this.bestOf > 1) return true;
+      return this.match?.status !== e_match_status_enum.Live;
+    },
+    showMapRoundScore(): boolean {
+      // Only meaningful while a map is being played.
+      if (this.match?.status !== e_match_status_enum.Live) return false;
+      return Boolean(this.previewMatchMap);
     },
     isStreamableStatus(): boolean {
       return ![

@@ -36,6 +36,7 @@ export const simpleMatchFields = Selector("matches")({
     {
       id: true,
       map: mapFields,
+      is_current_map: true,
       lineup_1_score: true,
       lineup_2_score: true,
       winning_lineup_id: true,

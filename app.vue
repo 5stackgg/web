@@ -34,11 +34,16 @@ function pageKeyWithoutTabQuery(route: {
   path: string;
   query: Record<string, unknown>;
   hash?: string;
+  meta?: { persistQueryKeys?: string[] };
 }) {
   const query = new URLSearchParams();
+  const persisted = new Set([
+    ...TAB_QUERY_KEYS,
+    ...(route.meta?.persistQueryKeys ?? []),
+  ]);
 
   Object.keys(route.query)
-    .filter((key) => !TAB_QUERY_KEYS.has(key))
+    .filter((key) => !persisted.has(key))
     .sort()
     .forEach((key) => {
       const value = route.query[key];

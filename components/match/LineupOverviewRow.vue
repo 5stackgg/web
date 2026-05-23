@@ -47,128 +47,132 @@ const DASH = "—";
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" class="w-56">
-          <template v-if="lineup.can_update_lineup">
-            <DropdownMenuItem @click="makeCaptain" :disabled="member.captain">
-              <span>{{ $t("match.overview.promote_captain") }}</span>
-            </DropdownMenuItem>
+            <template v-if="lineup.can_update_lineup">
+              <DropdownMenuItem @click="makeCaptain" :disabled="member.captain">
+                <span>{{ $t("match.overview.promote_captain") }}</span>
+              </DropdownMenuItem>
 
-            <DropdownMenuItem @click="switchTeams" v-if="canSwitchTeams">
+              <DropdownMenuItem @click="switchTeams" v-if="canSwitchTeams">
+                <span>{{ $t("match.overview.switch_teams") }}</span>
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator vp />
+
+              <DropdownMenuItem
+                class="text-destructive"
+                @click="removeFromLineup"
+                v-if="lineup.can_update_lineup"
+              >
+                <span>{{ $t("match.overview.remove_from_lineup") }}</span>
+              </DropdownMenuItem>
+            </template>
+
+            <DropdownMenuItem
+              @click="switchTeams"
+              v-if="!lineup.can_update_lineup && canSwitchTeams"
+            >
               <span>{{ $t("match.overview.switch_teams") }}</span>
             </DropdownMenuItem>
-
-            <DropdownMenuSeparator vp />
 
             <DropdownMenuItem
               class="text-destructive"
               @click="removeFromLineup"
-              v-if="lineup.can_update_lineup"
+              v-if="canLeaveLineup"
             >
-              <span>{{ $t("match.overview.remove_from_lineup") }}</span>
+              <span>{{ $t("match.overview.leave_lineup") }}</span>
             </DropdownMenuItem>
-          </template>
 
-          <DropdownMenuItem
-            @click="switchTeams"
-            v-if="!lineup.can_update_lineup && canSwitchTeams"
-          >
-            <span>{{ $t("match.overview.switch_teams") }}</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem
-            class="text-destructive"
-            @click="removeFromLineup"
-            v-if="canLeaveLineup"
-          >
-            <span>{{ $t("match.overview.leave_lineup") }}</span>
-          </DropdownMenuItem>
-
-          <template v-if="canRequestHighlight">
-            <DropdownMenuSeparator
-              v-if="
-                lineup.can_update_lineup || canLeaveLineup || canSwitchTeams
-              "
-            />
-            <DropdownMenuItem @click="renderHighlightOpen = true">
-              <Sparkles class="h-3.5 w-3.5 mr-2 text-[hsl(var(--tac-amber))]" />
-              <span>Render highlight…</span>
-            </DropdownMenuItem>
-          </template>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <div class="min-w-0 flex-1">
-        <div class="hidden md:block">
-          <LineupMember :match="match" :member="member">
-            <template v-if="member.player?.steam_id" #avatar-badge>
-              <PlayerMatchClipsButton :steam-id="member.player.steam_id" />
+            <template v-if="canRequestHighlight">
+              <DropdownMenuSeparator
+                v-if="
+                  lineup.can_update_lineup || canLeaveLineup || canSwitchTeams
+                "
+              />
+              <DropdownMenuItem @click="renderHighlightOpen = true">
+                <Sparkles
+                  class="h-3.5 w-3.5 mr-2 text-[hsl(var(--tac-amber))]"
+                />
+                <span>Render highlight…</span>
+              </DropdownMenuItem>
             </template>
-            <template v-if="memberEloChange" #elo-postfix>
-              <EloChangeBadge :elo-change="memberEloChange" size="xs" />
-            </template>
-          </LineupMember>
-        </div>
-        <div class="md:hidden min-w-0">
-          <template v-if="member.player?.steam_id">
-            <div class="flex items-start gap-2 min-w-0">
-              <NuxtLink
-                :to="{
-                  name: 'players-id',
-                  params: { id: member.player.steam_id },
-                }"
-                class="shrink-0"
-              >
-                <div class="relative">
-                  <Avatar shape="square" class="h-9 w-9">
-                    <AvatarImage
-                      v-if="mobileAvatarSrc"
-                      :src="mobileAvatarSrc"
-                      :alt="member.player.name"
-                    />
-                    <AvatarFallback>{{
-                      member.player.name.slice(0, 2)
-                    }}</AvatarFallback>
-                  </Avatar>
-                  <span
-                    v-if="member.captain"
-                    :title="$t('match.player.captain')"
-                    class="absolute -bottom-1 -right-1 inline-flex items-center justify-center h-3.5 w-3.5 rounded-sm bg-[hsl(var(--tac-amber))] text-black ring-1 ring-background shadow z-10"
-                  >
-                    <Crown class="h-2.5 w-2.5" />
-                  </span>
-                </div>
-              </NuxtLink>
-              <div class="flex flex-col min-w-0 leading-tight">
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <div class="min-w-0 flex-1">
+          <div class="hidden md:block">
+            <LineupMember :match="match" :member="member">
+              <template v-if="member.player?.steam_id" #avatar-badge>
+                <PlayerMatchClipsButton :steam-id="member.player.steam_id" />
+              </template>
+              <template v-if="memberEloChange" #elo-postfix>
+                <EloChangeBadge :elo-change="memberEloChange" size="xs" />
+              </template>
+            </LineupMember>
+          </div>
+          <div class="md:hidden min-w-0">
+            <template v-if="member.player?.steam_id">
+              <div class="flex items-start gap-2 min-w-0">
                 <NuxtLink
                   :to="{
                     name: 'players-id',
                     params: { id: member.player.steam_id },
                   }"
-                  class="truncate text-xs font-medium hover:text-primary"
+                  class="shrink-0"
                 >
-                  {{ member.player.name }}
+                  <div class="relative">
+                    <Avatar shape="square" class="h-9 w-9">
+                      <AvatarImage
+                        v-if="mobileAvatarSrc"
+                        :src="mobileAvatarSrc"
+                        :alt="member.player.name"
+                      />
+                      <AvatarFallback>{{
+                        member.player.name.slice(0, 2)
+                      }}</AvatarFallback>
+                    </Avatar>
+                    <span
+                      v-if="member.captain"
+                      :title="$t('match.player.captain')"
+                      class="absolute -bottom-1 -right-1 inline-flex items-center justify-center h-3.5 w-3.5 rounded-sm bg-[hsl(var(--tac-amber))] text-black ring-1 ring-background shadow z-10"
+                    >
+                      <Crown class="h-2.5 w-2.5" />
+                    </span>
+                  </div>
                 </NuxtLink>
-                <div
-                  class="flex items-center gap-1.5 min-w-0 mt-0.5 text-muted-foreground"
-                >
-                  <TimezoneFlag
-                    v-if="member.player.country"
-                    :country="member.player.country"
-                    class="shrink-0"
-                  />
-                  <PlayerElo :elo="member.player.elo" />
+                <div class="flex flex-col min-w-0 leading-tight">
+                  <NuxtLink
+                    :to="{
+                      name: 'players-id',
+                      params: { id: member.player.steam_id },
+                    }"
+                    class="truncate text-xs font-medium hover:text-primary"
+                  >
+                    {{ member.player.name }}
+                  </NuxtLink>
+                  <div
+                    class="flex items-center gap-1.5 min-w-0 mt-0.5 text-muted-foreground"
+                  >
+                    <TimezoneFlag
+                      v-if="member.player.country"
+                      :country="member.player.country"
+                      class="shrink-0"
+                    />
+                    <PlayerElo :elo="member.player.elo" />
+                  </div>
                 </div>
               </div>
+            </template>
+            <div v-else class="flex items-center gap-2 min-w-0">
+              <NuxtImg
+                src="/img/logos/discord.svg"
+                :alt="$t('alt_text.discord')"
+                class="w-5 h-5 shrink-0"
+              />
+              <span class="truncate text-xs">{{
+                member.placeholder_name
+              }}</span>
             </div>
-          </template>
-          <div v-else class="flex items-center gap-2 min-w-0">
-            <NuxtImg
-              src="/img/logos/discord.svg"
-              :alt="$t('alt_text.discord')"
-              class="w-5 h-5 shrink-0"
-            />
-            <span class="truncate text-xs">{{ member.placeholder_name }}</span>
           </div>
         </div>
-      </div>
       </div>
       <RenderHighlightForPlayerDialog
         v-if="canRequestHighlight && member.player?.steam_id"

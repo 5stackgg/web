@@ -12,7 +12,6 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -575,18 +574,28 @@ const loginArrowClasses =
               align="end"
               :side-offset="4"
             >
-              <DropdownMenuLabel class="p-3 font-normal">
-                <PlayerDisplay :player="me" :show-online="false" />
-              </DropdownMenuLabel>
+              <DropdownMenuItem
+                class="cursor-pointer p-3 font-normal transition-colors hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-accent focus:bg-[hsl(var(--tac-amber)/0.08)]"
+                as-child
+              >
+                <NuxtLink
+                  :to="{
+                    name: 'players-id',
+                    params: { id: me.steam_id },
+                  }"
+                >
+                  <PlayerDisplay :player="me" :show-online="false" />
+                </NuxtLink>
+              </DropdownMenuItem>
               <DropdownMenuSeparator class="bg-topnav-border" />
               <DropdownMenuGroup>
                 <DropdownMenuItem
-                  class="flex cursor-pointer gap-2 p-3"
+                  class="flex cursor-pointer gap-2 p-3 transition-colors hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-accent focus:bg-[hsl(var(--tac-amber)/0.08)]"
                   as-child
                 >
                   <NuxtLink
                     :to="{ name: 'settings' }"
-                    class="flex items-center gap-2 transition-colors hover:text-topnav-accent"
+                    class="flex items-center gap-2"
                   >
                     <Settings class="h-4 w-4" />
                     {{ $t("layouts.app_nav.profile.my_account") }}
@@ -595,7 +604,7 @@ const loginArrowClasses =
               </DropdownMenuGroup>
               <DropdownMenuSeparator class="bg-topnav-border" />
               <DropdownMenuItem
-                class="flex cursor-pointer gap-2 p-3 transition-colors hover:text-topnav-accent"
+                class="flex cursor-pointer gap-2 p-3 transition-colors hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-topnav-accent focus:bg-[hsl(var(--tac-amber)/0.08)]"
                 @click="showLogoutModal = true"
               >
                 <LogOut class="h-4 w-4" />

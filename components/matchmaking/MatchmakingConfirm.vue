@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
-import { X } from "lucide-vue-next";
 </script>
 
 <template>
@@ -153,32 +152,7 @@ import { X } from "lucide-vue-next";
             ></span>
             {{ $t("matchmaking.locked_in") }}
           </div>
-
-          <div
-            class="mt-1 flex flex-col items-center gap-0.5 text-center text-xs leading-snug"
-          >
-            <span class="text-muted-foreground">
-              {{ $t("matchmaking.disable_match_ready_modal_hint") }}
-            </span>
-            <NuxtLink
-              to="/settings/matchmaking"
-              class="text-foreground underline underline-offset-4 decoration-muted-foreground/60 transition-colors hover:text-[hsl(var(--tac-amber))] hover:decoration-[hsl(var(--tac-amber))]"
-              @click="dismiss"
-            >
-              {{ $t("matchmaking.disable_match_ready_modal_action") }}
-            </NuxtLink>
-          </div>
         </div>
-
-        <button
-          v-if="manuallyOpened"
-          type="button"
-          class="absolute right-3 top-3 z-20 inline-flex h-6 w-6 items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground"
-          :aria-label="$t('common.close')"
-          @click="dismiss"
-        >
-          <X class="h-4 w-4" />
-        </button>
       </div>
     </AlertDialogContent>
   </AlertDialog>
@@ -186,16 +160,11 @@ import { X } from "lucide-vue-next";
 
 <script lang="ts">
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
-import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchReadyModal } from "~/composables/useMatchReadyModal";
 import socket from "~/web-sockets/Socket";
 import { useSound } from "~/composables/useSound";
 
 export default {
-  setup() {
-    const { manuallyOpened } = useMatchReadyModal();
-    return { manuallyOpened };
-  },
   data() {
     return {
       remainingSeconds: 0,
@@ -210,17 +179,8 @@ export default {
     confirmation() {
       return useMatchmakingStore().joinedMatchmakingQueues?.confirmation;
     },
-    hasPendingConfirmation(): boolean {
+    shouldShow(): boolean {
       return !!this.confirmation && !this.confirmation.matchId;
-    },
-    showMatchReadyModalPref(): boolean {
-      return useAuthStore().me?.show_match_ready_modal !== false;
-    },
-    shouldShow() {
-      if (!this.hasPendingConfirmation) {
-        return false;
-      }
-      return this.showMatchReadyModalPref || this.manuallyOpened;
     },
     formattedCountdown(): string {
       const total = Math.max(0, this.remainingSeconds);
@@ -273,9 +233,6 @@ export default {
       socket.event("matchmaking:confirm", {
         confirmationId: this.confirmation.confirmationId,
       });
-    },
-    dismiss() {
-      useMatchReadyModal().closeMatchReadyModal();
     },
     updateCountdown() {
       if (

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
 import { X } from "lucide-vue-next";
+import { useMatchReadyModal } from "~/composables/useMatchReadyModal";
+
+const { manuallyOpened } = useMatchReadyModal();
 </script>
 
 <template>
@@ -105,10 +108,6 @@ const ALERT_STATUSES: string[] = [
 ];
 
 export default {
-  setup() {
-    const { manuallyOpened } = useMatchReadyModal();
-    return { manuallyOpened };
-  },
   data() {
     return {
       acknowledgedKey: null as string | null,

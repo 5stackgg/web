@@ -76,6 +76,12 @@ export function useClipModal() {
     writeClipUrl(id, "push");
   }
 
+  // Open the modal without touching the URL — for surfaces like the
+  // render queue where users explicitly do NOT want navigation.
+  function showClip(id: string) {
+    activeClipIdState.value = id;
+  }
+
   function closeClip() {
     if (!activeClipId.value) return;
     activeClipIdState.value = null;
@@ -132,6 +138,7 @@ export function useClipModal() {
     setClipQueue,
     clearClipQueue,
     openClip,
+    showClip,
     closeClip,
     openNextClip,
     openPreviousClip,

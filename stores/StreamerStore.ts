@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref, computed, shallowRef } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 import { order_by } from "~/generated/zeus";
@@ -10,7 +10,11 @@ import { generateSubscription } from "~/graphql/graphqlGen";
 // websocket subscription instead of two parallel ones with overlapping
 // queries.
 export const useStreamerStore = defineStore("streamer", () => {
-  const liveStreams = ref<any[]>([]);
+  // shallowRef: subscription payload is replaced wholesale every tick,
+  // we never mutate individual rows in place. Vue's deep reactivity
+  // wrapper on the array + every nested field is wasted work on each
+  // update.
+  const liveStreams = shallowRef<any[]>([]);
   const hasLoaded = ref(false);
   // Count of game-server-nodes that report GPU + are enabled. Drives
   // the "no GPU available" hint on the Stream Deck — game-streamer

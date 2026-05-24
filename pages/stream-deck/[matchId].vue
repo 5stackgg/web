@@ -22,13 +22,14 @@ import {
   Trophy,
   RefreshCw,
 } from "lucide-vue-next";
-import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
+import { generateMutation } from "~/graphql/graphqlGen";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
 import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
 import { Kbd } from "~/components/ui/kbd";
 import { announceFocusWindow } from "~/composables/useStreamerPopout";
 import { useStreamerGsi } from "~/composables/useStreamerGsi";
+import { useStreamerStore } from "~/stores/StreamerStore";
 import {
   specSlotsForMatchType,
   resolveKeyToRealSlot,
@@ -47,72 +48,31 @@ const matchId = computed(() => String(route.params.matchId));
 const { toast } = useToast();
 const { client: apolloClient } = useApolloClient();
 
-const stream = ref<any | null>(null);
-let streamSubscription: { unsubscribe: () => void } | undefined;
-
-onMounted(() => {
-  streamSubscription = apolloClient
-    .subscribe({
-      query: generateSubscription({
-        match_streams: [
-          {
-            where: {
-              is_game_streamer: { _eq: true },
-              match_id: { _eq: matchId.value },
-            },
-            limit: 1,
-          },
-          {
-            id: true,
-            match_id: true,
-            title: true,
-            link: true,
-            is_live: true,
-            status: true,
-            stream_url: true,
-            error_message: true,
-            last_status_at: true,
-            // status_history is jsonb (array of {status, at}); the
-            // stepper renders ✓ only for stages that actually fired
-            // (skipped stages on warm boots stay greyed out).
-            status_history: true as any,
-            autodirector: true,
-            match: {
-              id: true,
-              status: true,
-              options: { type: true },
-              // Slot buttons are populated from GSI (`spec_slots`)
-              // rather than the api lineup, so we only need lineup
-              // names here for the page header.
-              lineup_1: { name: true },
-              lineup_2: { name: true },
-            } as any,
-          },
-        ],
-      }),
-    })
-    .subscribe({
-      next: (result: any) => {
-        stream.value = result?.data?.match_streams?.[0] ?? null;
-        // Sync the local toggle with the persisted DB value so a
-        // caster opening the page sees the actual current state, not
-        // a hardcoded default. Skipped while a mutation is in-flight
-        // to avoid the optimistic toggle flickering back to the
-        // pre-update value before Hasura confirms the write.
-        if (!busy.value && stream.value?.autodirector !== undefined) {
-          autodirector.value = !!stream.value.autodirector;
-        }
-      },
-      error: (err: any) => {
-        // eslint-disable-next-line no-console
-        console.error("[streamer-focus] subscription error", err);
-      },
-    });
+// Reuse the global StreamerStore feed instead of opening a second
+// match_streams subscription for the same matchId. The focus page is
+// gated behind the streamer middleware, so AuthStore has always
+// already kicked off the store subscription by the time we land here
+// — calling subscribeToLiveStreams() is idempotent and acts as a
+// safety net for direct deep-links / cold-start navigations.
+const streamerStore = useStreamerStore();
+streamerStore.subscribeToLiveStreams();
+const stream = computed<any | null>(() => {
+  const list: any[] = streamerStore.liveStreams ?? [];
+  return list.find((s) => s?.match_id === matchId.value) ?? null;
 });
 
-onBeforeUnmount(() => {
-  streamSubscription?.unsubscribe();
-});
+// Mirror the persisted DB autodirector flag into our local toggle so
+// the switch starts in the correct state, but suppress the sync
+// during in-flight mutations to avoid optimistic-flicker bouncebacks.
+watch(
+  () => stream.value?.autodirector,
+  (val) => {
+    if (val === undefined || val === null) return;
+    if (busy.value) return;
+    autodirector.value = !!val;
+  },
+  { immediate: true },
+);
 
 const STATUS_LABELS = computed<Record<string, string>>(() => ({
   launching_steam: t("live_stages.launching_steam"),

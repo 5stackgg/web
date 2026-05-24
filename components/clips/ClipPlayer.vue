@@ -160,8 +160,25 @@ watch(
 );
 
 // Smooth progress polling at ~60fps — `timeupdate` events fire at
-// ~4Hz, which makes the amber bar look jumpy.
+// ~4Hz, which makes the amber bar look jumpy. Parent `@progress`
+// handlers only need ~4Hz (auto-advance threshold checks), so we
+// throttle emits while keeping local bar updates at rAF rate.
+const PROGRESS_EMIT_INTERVAL_MS = 250;
 let progressRafId: number | null = null;
+let lastProgressEmitMs = 0;
+
+function emitProgressSnapshot() {
+  const video = videoRef.value;
+  if (!video || !Number.isFinite(video.duration) || video.duration <= 0) {
+    return;
+  }
+  emit("progress", {
+    progress: progress.value,
+    currentTime: video.currentTime,
+    duration: video.duration,
+  });
+  lastProgressEmitMs = Date.now();
+}
 function stopProgressLoop() {
   if (progressRafId !== null) {
     cancelAnimationFrame(progressRafId);
@@ -175,11 +192,10 @@ function syncProgress() {
     return;
   }
   progress.value = Math.min(1, video.currentTime / video.duration);
-  emit("progress", {
-    progress: progress.value,
-    currentTime: video.currentTime,
-    duration: video.duration,
-  });
+  const now = Date.now();
+  if (now - lastProgressEmitMs >= PROGRESS_EMIT_INTERVAL_MS) {
+    emitProgressSnapshot();
+  }
 }
 function tickProgress() {
   syncProgress();
@@ -459,6 +475,7 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
           playing = false;
           stopProgressLoop();
           progress = 1;
+          emitProgressSnapshot();
           emit('ended');
         "
         @loadedmetadata="syncProgress"
@@ -516,12 +533,17 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
          scales the button — signals "click anywhere to toggle".
          Hidden during the intro overlay AFTER first playback so an
          auto-advance just slides the bottom-left chip in without
-         briefly flashing a giant play/pause button on top. -->
+         briefly flashing a giant play/pause button on top.
+         v-show (not opacity) so the backdrop-blur + translucent fill
+         doesn't keep blurring the area behind the hidden button.
+         An opacity-0 element still applies its backdrop-filter,
+         which produced a visible hazy circle right where the in-game
+         crosshair lands during clip playback. -->
     <button
       v-if="!(showIntroOverlay && hasPlayedOnce)"
+      v-show="controlsVisible"
       type="button"
       class="absolute left-1/2 top-1/2 inline-flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/45 bg-white/16 text-white shadow-[0_0_30px_hsl(var(--tac-amber)/0.35)] backdrop-blur-sm transition duration-200 hover:scale-110 group-hover/player:scale-110 group-hover/player:border-[hsl(var(--tac-amber)/0.7)] group-hover/player:bg-white/25"
-      :class="controlsVisible ? 'opacity-100' : 'pointer-events-none opacity-0'"
       :title="playing ? $t('ui_extras.pause') : $t('ui_extras.play')"
       :aria-label="playing ? $t('ui_extras.pause') : $t('ui_extras.play')"
       @click.stop="toggle"

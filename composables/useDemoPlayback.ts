@@ -14,6 +14,76 @@ import socket from "~/web-sockets/Socket";
 let statePollTimer: ReturnType<typeof setInterval> | null = null;
 let stateSocketHandler: ((data: any) => void) | null = null;
 
+type DemoSpecSlot = {
+  slot: number;
+  steam_id: string;
+  name: string | null;
+  team: "T" | "CT" | null;
+  alive: boolean;
+  health: number;
+};
+
+function demoSlotsEqual(a: DemoSpecSlot[], b: DemoSpecSlot[]): boolean {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i++) {
+    const x = a[i];
+    const y = b[i];
+    if (
+      x.slot !== y.slot ||
+      x.steam_id !== y.steam_id ||
+      x.name !== y.name ||
+      x.team !== y.team ||
+      x.alive !== y.alive ||
+      x.health !== y.health
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function applyDemoGsi(store: ReturnType<typeof useDemoPlaybackStore>, gsi: any) {
+  if (Array.isArray(gsi.spec_slots)) {
+    const next = gsi.spec_slots as DemoSpecSlot[];
+    if (!demoSlotsEqual(store.specSlots, next)) {
+      store.specSlots = next;
+    }
+  }
+  const nextSpectated =
+    typeof gsi.spectated_steam_id === "string"
+      ? gsi.spectated_steam_id
+      : gsi.spectated_steam_id === null
+        ? null
+        : store.spectatedSteamId;
+  if (store.spectatedSteamId !== nextSpectated) {
+    store.spectatedSteamId = nextSpectated;
+  }
+  if (
+    typeof gsi.team_ct_name === "string" &&
+    store.gsiTeamCtName !== gsi.team_ct_name
+  ) {
+    store.gsiTeamCtName = gsi.team_ct_name;
+  }
+  if (
+    typeof gsi.team_t_name === "string" &&
+    store.gsiTeamTName !== gsi.team_t_name
+  ) {
+    store.gsiTeamTName = gsi.team_t_name;
+  }
+  if (
+    typeof gsi.team_ct_score === "number" &&
+    store.gsiTeamCtScore !== gsi.team_ct_score
+  ) {
+    store.gsiTeamCtScore = gsi.team_ct_score;
+  }
+  if (
+    typeof gsi.team_t_score === "number" &&
+    store.gsiTeamTScore !== gsi.team_t_score
+  ) {
+    store.gsiTeamTScore = gsi.team_t_score;
+  }
+}
+
 // Wrapper around the watchDemo / stopWatchDemo / demoControl actions
 // plus the Hasura subscription on match_demo_sessions. The store
 // holds reactive state; this composable is the side-effect bridge.
@@ -33,50 +103,57 @@ export function useDemoPlayback() {
 
   // 1Hz pull of the pod's cached GSI snapshot. The pod doesn't push
   // GSI per-tick (bus pressure), so we poll its in-memory cache.
+  let visibilityHandler: (() => void) | null = null;
+  function tickOnce() {
+    if (!store.matchMapId) return;
+    try {
+      control("state");
+    } catch {
+      // matchMapId may have cleared between guard and call
+    }
+  }
+  function startStatePollTimer() {
+    if (statePollTimer) return;
+    if (typeof document !== "undefined" && document.hidden) return;
+    tickOnce();
+    statePollTimer = setInterval(tickOnce, 1000);
+  }
+  function stopStatePollTimer() {
+    if (statePollTimer) {
+      clearInterval(statePollTimer);
+      statePollTimer = null;
+    }
+  }
   function startStatePoll() {
     stopStatePoll();
     stateSocketHandler = (data: any) => {
       const gsi = data?.state?.gsi;
       if (!gsi) return;
-      if (Array.isArray(gsi.spec_slots)) store.specSlots = gsi.spec_slots;
-      if (typeof gsi.spectated_steam_id === "string") {
-        store.spectatedSteamId = gsi.spectated_steam_id;
-      } else if (gsi.spectated_steam_id === null) {
-        store.spectatedSteamId = null;
-      }
-      if (typeof gsi.team_ct_name === "string") {
-        store.gsiTeamCtName = gsi.team_ct_name;
-      }
-      if (typeof gsi.team_t_name === "string") {
-        store.gsiTeamTName = gsi.team_t_name;
-      }
-      if (typeof gsi.team_ct_score === "number") {
-        store.gsiTeamCtScore = gsi.team_ct_score;
-      }
-      if (typeof gsi.team_t_score === "number") {
-        store.gsiTeamTScore = gsi.team_t_score;
-      }
+      applyDemoGsi(store, gsi);
     };
     socket.on("demo-session:state", stateSocketHandler);
-    const tick = () => {
-      if (!store.matchMapId) return;
-      try {
-        control("state");
-      } catch {
-        // matchMapId may have cleared between guard and call
-      }
-    };
-    tick();
-    statePollTimer = setInterval(tick, 1000);
+    // Pause the 1Hz GSI poll while the demo tab is backgrounded. The
+    // socket handler stays connected so any push the pod chooses to
+    // send still lands; we just stop asking. visibilitychange resumes
+    // immediately so the operator returns to a fresh state.
+    if (typeof document !== "undefined" && !visibilityHandler) {
+      visibilityHandler = () => {
+        if (document.hidden) stopStatePollTimer();
+        else startStatePollTimer();
+      };
+      document.addEventListener("visibilitychange", visibilityHandler);
+    }
+    startStatePollTimer();
   }
   function stopStatePoll() {
-    if (statePollTimer) {
-      clearInterval(statePollTimer);
-      statePollTimer = null;
-    }
+    stopStatePollTimer();
     if (stateSocketHandler) {
       socket.off("demo-session:state", stateSocketHandler);
       stateSocketHandler = null;
+    }
+    if (visibilityHandler && typeof document !== "undefined") {
+      document.removeEventListener("visibilitychange", visibilityHandler);
+      visibilityHandler = null;
     }
   }
 

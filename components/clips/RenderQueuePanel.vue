@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref } from "vue";
+import { computed, onBeforeUnmount, ref, shallowRef } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -22,6 +22,7 @@ import {
   RotateCcw,
   RotateCw,
   ChevronRight,
+  Play,
 } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
@@ -36,8 +37,10 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useClipModal, type ClipQueueItem } from "~/composables/useClipModal";
 
 const authStore = useAuthStore();
+const { showClip, setClipQueue } = useClipModal();
 const isAdmin = computed(() => authStore.isAdmin);
 
 // One card per match_map batch (one pod processes a batch
@@ -141,9 +144,16 @@ const props = withDefaults(
   { compact: false, hideSummary: false },
 );
 
+const emit = defineEmits<{ clipOpen: [] }>();
+
 const nuxtApp = useNuxtApp();
-const inFlightJobs = ref<Job[]>([]);
-const finishedJobs = ref<Job[]>([]);
+// shallowRef: subscription pushes the full job list each tick (admins
+// running heavy batches can see this fire every couple seconds). Job
+// rows are treated as immutable snapshots — local edits go through the
+// fresh array replacement path, never per-field mutation — so deep
+// reactivity on every nested spec / status_history is pure overhead.
+const inFlightJobs = shallowRef<Job[]>([]);
+const finishedJobs = shallowRef<Job[]>([]);
 const jobs = computed<Job[]>(() => [
   ...inFlightJobs.value,
   ...finishedJobs.value,
@@ -590,6 +600,32 @@ function clipDetails(j: Job): ClipDetail[] {
     out.push({ label: `${segs.length} seg` });
   }
   return out;
+}
+
+function clipQueueItemFromJob(j: Job): ClipQueueItem | null {
+  if (!j.clip_id) return null;
+  return {
+    id: j.clip_id,
+    title: typeof j.spec?.title === "string" ? j.spec.title : null,
+    playerName:
+      typeof j.spec?.target_name === "string" ? j.spec.target_name : null,
+    teamName: null,
+    durationMs:
+      typeof j.spec?.duration_ms === "number" ? j.spec.duration_ms : null,
+    thumbnailUrl: null,
+    posterUrl: j.match_map?.map?.poster ?? null,
+  };
+}
+
+function openJobClip(g: BatchGroup, j: Job) {
+  if (j.status !== "done" || !j.clip_id) return;
+  const items = g.jobs
+    .filter((job) => job.status === "done" && job.clip_id)
+    .map(clipQueueItemFromJob)
+    .filter((item): item is ClipQueueItem => item !== null);
+  setClipQueue(items, `render-queue:${g.matchMapId}`);
+  showClip(j.clip_id);
+  emit("clipOpen");
 }
 
 const retryingBatch = ref<Record<string, boolean>>({});
@@ -1200,13 +1236,17 @@ const totalQueued = computed(
                 </TooltipTrigger>
                 <TooltipContent>Re-queue clip</TooltipContent>
               </Tooltip>
-              <NuxtLink
+              <Button
                 v-if="j.status === 'done' && j.clip_id"
-                :to="`/clips/${j.clip_id}`"
-                class="shrink-0 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
+                type="button"
+                variant="ghost"
+                size="sm"
+                class="h-6 shrink-0 gap-1 px-2 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
+                @click.stop.prevent="openJobClip(g, j)"
               >
-                Open →
-              </NuxtLink>
+                <Play class="h-3 w-3" />
+                Preview
+              </Button>
             </div>
             <button
               v-if="g.totalCount > ACTIVE_BATCH_CLIP_THRESHOLD"
@@ -1475,13 +1515,17 @@ const totalQueued = computed(
                   <RotateCcw v-else class="h-3 w-3 mr-1" />
                   Re-queue
                 </Button>
-                <NuxtLink
+                <Button
                   v-if="j.status === 'done' && j.clip_id"
-                  :to="`/clips/${j.clip_id}`"
-                  class="shrink-0 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground transition-colors"
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  class="h-6 shrink-0 gap-1 px-2 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
+                  @click.stop.prevent="openJobClip(g, j)"
                 >
-                  Open →
-                </NuxtLink>
+                  <Play class="h-3 w-3" />
+                  Preview
+                </Button>
               </div>
               <button
                 v-if="g.totalCount > FINISHED_BATCH_CLIP_THRESHOLD"

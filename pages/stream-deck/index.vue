@@ -1,5 +1,12 @@
 <script setup lang="ts">
-import { reactive, computed, ref, onMounted, onBeforeUnmount } from "vue";
+import {
+  reactive,
+  computed,
+  ref,
+  shallowRef,
+  onMounted,
+  onBeforeUnmount,
+} from "vue";
 import { useI18n } from "vue-i18n";
 import { storeToRefs } from "pinia";
 import { useApolloClient } from "@vue/apollo-composable";
@@ -119,7 +126,12 @@ type LiveMatch = {
   [key: string]: any;
 };
 
-const liveMatches = ref<LiveMatch[]>([]);
+// shallowRef: subscription replaces the whole list every push; we never
+// mutate individual rows. A typical instance can have dozens of live /
+// veto / waiting matches each carrying nested lineup + map data, so
+// deep reactivity on every nested field would be a constant tax on
+// every tick.
+const liveMatches = shallowRef<LiveMatch[]>([]);
 const liveMatchesLoaded = ref(false);
 let liveMatchesSub: { unsubscribe: () => void } | undefined;
 
@@ -810,6 +822,7 @@ function matchStatusLabel(m: LiveMatch): string {
                     !!stream.is_live && !ensureState(stream.match_id).busy
                   "
                   :autodirector-on="isAutodirector(stream)"
+                  :gsi-enabled="!isPopoutOpen(stream.match_id)"
                   compact
                   @press-slot="
                     (slot: number) => specSlot(stream.match_id, slot)

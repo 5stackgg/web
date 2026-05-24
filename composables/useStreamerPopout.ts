@@ -22,6 +22,7 @@ const state = reactive<State>({ windows: {}, open: new Set<string>() });
 const CHANNEL_NAME = "streamer-focus";
 let channel: BroadcastChannel | null = null;
 let pollTimer: ReturnType<typeof setInterval> | null = null;
+let visibilityListenerInstalled = false;
 
 function ensureChannel() {
   if (
@@ -39,6 +40,7 @@ function ensureChannel() {
     } else if (data.type === "closed" && typeof data.matchId === "string") {
       state.open.delete(data.matchId);
       delete state.windows[data.matchId];
+      syncPollTimer();
     }
     // "ping" messages are intended for focus windows to respond to —
     // we ignore them on the deck side.
@@ -48,21 +50,44 @@ function ensureChannel() {
   channel.postMessage({ type: "ping" });
 }
 
-function ensurePoll() {
-  if (pollTimer || typeof window === "undefined") return;
-  pollTimer = setInterval(() => {
-    for (const [id, w] of Object.entries(state.windows)) {
-      if (w.closed) {
-        state.open.delete(id);
-        delete state.windows[id];
+// Only spin the 1Hz `window.closed` poll while we actually own a
+// popout AND the deck tab is foregrounded. Previously this woke once
+// per second forever after the first `useStreamerPopout()` call, even
+// on tabs that never opened a popout — small absolute cost, but it
+// piled onto every other timer during playback.
+function syncPollTimer() {
+  if (typeof window === "undefined") return;
+  const wantsPoll =
+    Object.keys(state.windows).length > 0 &&
+    (typeof document === "undefined" || !document.hidden);
+  if (wantsPoll && !pollTimer) {
+    pollTimer = setInterval(() => {
+      let changed = false;
+      for (const [id, w] of Object.entries(state.windows)) {
+        if (w.closed) {
+          state.open.delete(id);
+          delete state.windows[id];
+          changed = true;
+        }
       }
-    }
-  }, 1000);
+      if (changed) syncPollTimer();
+    }, 1000);
+  } else if (!wantsPoll && pollTimer) {
+    clearInterval(pollTimer);
+    pollTimer = null;
+  }
+}
+
+function installVisibilityListener() {
+  if (visibilityListenerInstalled || typeof document === "undefined") return;
+  visibilityListenerInstalled = true;
+  document.addEventListener("visibilitychange", () => syncPollTimer());
 }
 
 export function useStreamerPopout() {
   ensureChannel();
-  ensurePoll();
+  installVisibilityListener();
+  syncPollTimer();
 
   function isOpen(matchId: string) {
     return state.open.has(matchId);
@@ -105,6 +130,7 @@ export function useStreamerPopout() {
     if (win) {
       state.windows[matchId] = win;
       state.open.add(matchId);
+      syncPollTimer();
       // Some browsers (Firefox, certain Chromium versions) ignore the
       // size hints when the requested dimensions match an existing
       // window of the same name — call moveTo/resizeTo as a belt-and-
@@ -134,6 +160,7 @@ export function useStreamerPopout() {
     }
     state.open.delete(matchId);
     delete state.windows[matchId];
+    syncPollTimer();
   }
 
   return {

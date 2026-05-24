@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 
@@ -10,6 +10,7 @@ import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import MatchScoreboardOverlay from "~/components/match/MatchScoreboardOverlay.vue";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useStreamerStore } from "~/stores/StreamerStore";
 import { e_player_roles_enum } from "~/generated/zeus";
 
 const props = defineProps<{
@@ -19,12 +20,40 @@ const props = defineProps<{
 }>();
 
 const { client: apolloClient } = useApolloClient();
+const authStore = useAuthStore();
 
-const stream = ref<any | null>(null);
+// Reuse the global StreamerStore feed when it's already running
+// (streamer-role sessions: AuthStore auto-subscribes; stream-deck
+// pages prime it). Avoids running a second match_streams subscription
+// per matchId when the same data is already streaming into the store.
+const streamerStore = useStreamerStore();
+const sharedStream = computed<any | null>(() => {
+  if (!streamerStore.hasLoaded) return null;
+  const list: any[] = streamerStore.liveStreams ?? [];
+  return list.find((s) => s?.match_id === props.matchId) ?? null;
+});
+
+const localStream = ref<any | null>(null);
+const stream = computed(() => sharedStream.value ?? localStream.value);
 const lastGoodStream = ref<any | null>(null);
 const hasEverBeenLive = ref(false);
 const scoreboardOpen = ref(false);
 let streamSubscription: { unsubscribe: () => void } | undefined;
+// Only run our own subscription when the shared store isn't going to
+// deliver this match — e.g. non-streamer viewers, or before the
+// store has loaded its first snapshot.
+function shouldRunLocalSubscription(): boolean {
+  if (sharedStream.value) return false;
+  if (streamerStore.hasLoaded) {
+    // Store loaded and this match isn't in the list — either it has
+    // no game streamer at all (parent already gates on hasGameStreamer
+    // before mounting us) or the operator hasn't pressed Go Live yet.
+    // Falling back to a local sub keeps the boot-state UI live for
+    // non-streamer viewers who never see the store populate.
+    return !authStore.isRoleAbove(e_player_roles_enum.streamer);
+  }
+  return true;
+}
 
 const LIVE_STAGES = computed(() => [
   {
@@ -60,7 +89,8 @@ const LIVE_STAGES = computed(() => [
   { key: "live", label: t("live_stages.live"), meta: "required" as const },
 ]);
 
-onMounted(() => {
+function ensureLocalSubscription() {
+  if (streamSubscription) return;
   streamSubscription = apolloClient
     .subscribe({
       query: generateSubscription({
@@ -91,19 +121,51 @@ onMounted(() => {
     .subscribe({
       next: (result: any) => {
         const next = result?.data?.match_streams?.[0] ?? null;
-        stream.value = next;
-        if (next) lastGoodStream.value = next;
-        if (next?.is_live) hasEverBeenLive.value = true;
+        localStream.value = next;
       },
       error: (err: any) => {
         // eslint-disable-next-line no-console
         console.error("[live-stream-player] subscription error", err);
       },
     });
+}
+
+function teardownLocalSubscription() {
+  streamSubscription?.unsubscribe();
+  streamSubscription = undefined;
+  localStream.value = null;
+}
+
+onMounted(() => {
+  if (shouldRunLocalSubscription()) ensureLocalSubscription();
 });
 
+// React to store readiness: if the shared feed shows up after we
+// already spun up a local sub, tear ours down. If the store loads
+// without our match (non-streamer viewer), start the local sub.
+watch(
+  () => [streamerStore.hasLoaded, sharedStream.value] as const,
+  () => {
+    if (sharedStream.value) {
+      teardownLocalSubscription();
+    } else if (shouldRunLocalSubscription()) {
+      ensureLocalSubscription();
+    }
+  },
+);
+
+// Latch last-good + ever-live on whichever feed we're using.
+watch(
+  stream,
+  (next) => {
+    if (next) lastGoodStream.value = next;
+    if (next?.is_live) hasEverBeenLive.value = true;
+  },
+  { immediate: true },
+);
+
 onBeforeUnmount(() => {
-  streamSubscription?.unsubscribe();
+  teardownLocalSubscription();
 });
 
 const displayStream = computed(() => stream.value ?? lastGoodStream.value);
@@ -117,7 +179,6 @@ const isLive = computed(() => !!stream.value?.is_live || hasEverBeenLive.value);
 // info — regulars get nothing to look at until the pod is actually
 // publishing. Streamer+ (streamer, match_organizer, tournament_organizer,
 // administrator — see AuthStore.roleOrder) keep the stepper.
-const authStore = useAuthStore();
 const canSeeBoot = computed(() =>
   authStore.isRoleAbove(e_player_roles_enum.streamer),
 );

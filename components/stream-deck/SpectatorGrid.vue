@@ -19,6 +19,10 @@ const props = defineProps<{
   // on non-active slots. Stream-deck index card surfaces it via the
   // `is_game_streamer + autodirector` row state.
   autodirectorOn?: boolean;
+  // When false, skip the GSI poll entirely. The stream-deck index
+  // card passes false while the focus popout is open so we don't
+  // double-poll the same match or re-render a hidden slot grid.
+  gsiEnabled?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -27,6 +31,7 @@ const emit = defineEmits<{
 
 const matchIdRef = computed(() => props.matchId);
 const isLiveRef = computed(() => props.isLive);
+const gsiEnabledRef = computed(() => props.gsiEnabled !== false);
 
 const {
   ctSlots,
@@ -36,7 +41,7 @@ const {
   teamTName,
   teamCtScore,
   teamTScore,
-} = useStreamerGsi(matchIdRef, isLiveRef);
+} = useStreamerGsi(matchIdRef, isLiveRef, 1000, gsiEnabledRef);
 
 // flashKey arrives as a digit string ("1".."9","0") from keyboard
 // handlers; SpectatorSlots wants the slot integer. Empty string and

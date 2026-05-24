@@ -1,4 +1,4 @@
-import { ref, computed } from "vue";
+import { ref, computed, shallowRef, watch } from "vue";
 import { defineStore, acceptHMRUpdate } from "pinia";
 
 // Demo-playback session state, scoped to the current viewer's tab.
@@ -122,8 +122,11 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   // (SIGSTOP) / resumes (SIGCONT) the daemon in the pod via spec-server.
   const autodirectorEnabled = ref<boolean>(true);
 
-  // ~1Hz GSI snapshot from useDemoPlayback's poll loop.
-  const specSlots = ref<
+  // ~1Hz GSI snapshot from useDemoPlayback's poll loop. shallowRef:
+  // the poller swaps the whole array atomically and never mutates
+  // individual slot objects; deep reactivity on every slot's field
+  // is wasted work for a 10-element array updated every second.
+  const specSlots = shallowRef<
     Array<{
       slot: number;
       steam_id: string;
@@ -161,10 +164,18 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   // every rAF frame and snaps when the diff is tiny, so the
   // ~50ms freshness floor is invisible to the user.
   const nowMs = ref<number>(Date.now());
-  if (typeof window !== "undefined") {
-    setInterval(() => {
+  let tickClockTimer: ReturnType<typeof setInterval> | null = null;
+  function startTickClock() {
+    if (tickClockTimer !== null || typeof window === "undefined") return;
+    tickClockTimer = setInterval(() => {
       nowMs.value = Date.now();
     }, 50);
+  }
+  function stopTickClock() {
+    if (tickClockTimer !== null) {
+      clearInterval(tickClockTimer);
+      tickClockTimer = null;
+    }
   }
 
   // Surface a single status string to the UI. Subscription-driven
@@ -189,6 +200,21 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   const isPlaying = computed(() => status.value === "playing");
   const isErrored = computed(
     () => status.value === "errored" || status.value === "error",
+  );
+
+  // Only tick while a demo is actively playing — the 50ms interval
+  // was previously always-on once the store module loaded, which
+  // burned main-thread time on unrelated routes (live deck, etc.).
+  watch(
+    () =>
+      sessionRow.value != null &&
+      status.value === "playing" &&
+      !paused.value,
+    (active) => {
+      if (active) startTickClock();
+      else stopTickClock();
+    },
+    { immediate: true },
   );
 
   function syncFromControl(snapshot: {

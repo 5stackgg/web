@@ -563,7 +563,7 @@ const viewModeOptions = computed<
                 </SheetDescription>
               </SheetHeader>
               <div class="mt-6">
-                <RenderQueuePanel />
+                <RenderQueuePanel @clip-open="queueOpen = false" />
               </div>
             </SheetContent>
           </Sheet>

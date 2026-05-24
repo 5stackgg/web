@@ -53,6 +53,18 @@ type StatusHistoryEntry = {
   boot_progress?: number;
 };
 
+// Subset of the server-side ClipSpec the queue UI actually reads.
+// Kept narrow here so the panel doesn't break if downstream fields
+// rotate; full shape lives in graphql/clipRenderJob.ts (`ClipSpec`).
+type JobSpec = {
+  title?: string;
+  target_name?: string;
+  duration_ms?: number;
+  round?: number;
+  kills_count?: number;
+  segments?: Array<unknown>;
+};
+
 type Job = {
   id: string;
   user_steam_id: string;
@@ -64,7 +76,7 @@ type Job = {
   created_at: string;
   sort_index: number;
   last_status_at: string | null;
-  spec: any;
+  spec: JobSpec | null;
   status_history?: StatusHistoryEntry[] | null;
   user?: { steam_id: string; name: string; avatar_url: string | null } | null;
   match_map?: {
@@ -81,6 +93,8 @@ type Job = {
     playback_url: string | null;
   } | null;
 };
+
+type DoneJob = Job & { clip_id: string };
 
 // Boot stages a batch pod emits, in order. `meta` matches
 // StreamSessionProgress vocabulary (required/conditional/implicit).
@@ -143,8 +157,6 @@ const props = withDefaults(
   }>(),
   { compact: false, hideSummary: false },
 );
-
-const emit = defineEmits<{ clipOpen: [] }>();
 
 const nuxtApp = useNuxtApp();
 // shallowRef: subscription pushes the full job list each tick (admins
@@ -602,16 +614,13 @@ function clipDetails(j: Job): ClipDetail[] {
   return out;
 }
 
-function clipQueueItemFromJob(j: Job): ClipQueueItem | null {
-  if (!j.clip_id) return null;
+function clipQueueItemFromJob(j: DoneJob): ClipQueueItem {
   return {
     id: j.clip_id,
-    title: typeof j.spec?.title === "string" ? j.spec.title : null,
-    playerName:
-      typeof j.spec?.target_name === "string" ? j.spec.target_name : null,
+    title: j.spec?.title ?? null,
+    playerName: j.spec?.target_name ?? null,
     teamName: null,
-    durationMs:
-      typeof j.spec?.duration_ms === "number" ? j.spec.duration_ms : null,
+    durationMs: j.spec?.duration_ms ?? null,
     thumbnailUrl: null,
     posterUrl: j.match_map?.map?.poster ?? null,
   };
@@ -620,12 +629,10 @@ function clipQueueItemFromJob(j: Job): ClipQueueItem | null {
 function openJobClip(g: BatchGroup, j: Job) {
   if (j.status !== "done" || !j.clip_id) return;
   const items = g.jobs
-    .filter((job) => job.status === "done" && job.clip_id)
-    .map(clipQueueItemFromJob)
-    .filter((item): item is ClipQueueItem => item !== null);
+    .filter((job): job is DoneJob => job.status === "done" && !!job.clip_id)
+    .map(clipQueueItemFromJob);
   setClipQueue(items, `render-queue:${g.matchMapId}`);
   showClip(j.clip_id);
-  emit("clipOpen");
 }
 
 const retryingBatch = ref<Record<string, boolean>>({});
@@ -1242,7 +1249,7 @@ const totalQueued = computed(
                 variant="ghost"
                 size="sm"
                 class="h-6 shrink-0 gap-1 px-2 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                @click.stop.prevent="openJobClip(g, j)"
+                @click="openJobClip(g, j)"
               >
                 <Play class="h-3 w-3" />
                 Preview
@@ -1521,7 +1528,7 @@ const totalQueued = computed(
                   variant="ghost"
                   size="sm"
                   class="h-6 shrink-0 gap-1 px-2 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                  @click.stop.prevent="openJobClip(g, j)"
+                  @click="openJobClip(g, j)"
                 >
                   <Play class="h-3 w-3" />
                   Preview

@@ -76,10 +76,16 @@ export function useClipModal() {
     writeClipUrl(id, "push");
   }
 
-  // Open the modal without touching the URL — for surfaces like the
-  // render queue where users explicitly do NOT want navigation.
+  // Open the modal without pushing a history entry. If the URL
+  // already references a clip (e.g. a deep link landed the user
+  // here), keep it in sync so the address bar never lies; otherwise
+  // leave the URL alone — surfaces like the render queue explicitly
+  // don't want navigation.
   function showClip(id: string) {
     activeClipIdState.value = id;
+    if (typeof window === "undefined") return;
+    const current = new URL(window.location.href).searchParams.get("clip");
+    if (current && current !== id) writeClipUrl(id, "replace");
   }
 
   function closeClip() {

@@ -53,8 +53,7 @@ const sharedByMatch = new Map<string, SharedGsi>();
 // per active match — burning request budget on a backgrounded tab serves
 // nobody. Register once per module load and broadcast visibility changes
 // to all active shared pollers.
-let tabVisible =
-  typeof document === "undefined" ? true : !document.hidden;
+let tabVisible = typeof document === "undefined" ? true : !document.hidden;
 let visibilityListenerInstalled = false;
 function installVisibilityListener(
   apolloClient: ApolloClient<NormalizedCacheObject>,
@@ -296,15 +295,11 @@ export function useStreamerGsi(
   const teamCtName = computed(
     () => activeShared.value?.teamCtName.value ?? null,
   );
-  const teamTName = computed(
-    () => activeShared.value?.teamTName.value ?? null,
-  );
+  const teamTName = computed(() => activeShared.value?.teamTName.value ?? null);
   const teamCtScore = computed(
     () => activeShared.value?.teamCtScore.value ?? 0,
   );
-  const teamTScore = computed(
-    () => activeShared.value?.teamTScore.value ?? 0,
-  );
+  const teamTScore = computed(() => activeShared.value?.teamTScore.value ?? 0);
 
   // CT / T groupings come straight from GSI. cs2 maintains the
   // keybinds (spec_player_<N> ↔ observer_slot N), so click target and

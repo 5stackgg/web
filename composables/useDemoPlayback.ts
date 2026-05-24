@@ -42,7 +42,10 @@ function demoSlotsEqual(a: DemoSpecSlot[], b: DemoSpecSlot[]): boolean {
   return true;
 }
 
-function applyDemoGsi(store: ReturnType<typeof useDemoPlaybackStore>, gsi: any) {
+function applyDemoGsi(
+  store: ReturnType<typeof useDemoPlaybackStore>,
+  gsi: any,
+) {
   if (Array.isArray(gsi.spec_slots)) {
     const next = gsi.spec_slots as DemoSpecSlot[];
     if (!demoSlotsEqual(store.specSlots, next)) {

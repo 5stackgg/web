@@ -431,13 +431,13 @@ onMounted(() => {
   <Dialog :open="open" @update:open="onUpdateOpen">
     <DialogPortal>
       <DialogOverlay
-        class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+        class="fixed inset-0 z-[60] bg-black/85 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
       />
       <DialogContent
         :class="[
           'clip-modal-content',
           'fixed inset-0 sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2',
-          'z-50 w-full sm:w-[min(95vw,68rem)] max-h-svh sm:max-h-[92vh] overflow-y-auto',
+          'z-[60] w-full sm:w-[min(95vw,68rem)] max-h-svh sm:max-h-[92vh] overflow-y-auto',
           'flex flex-col',
           'bg-[hsl(var(--background))] sm:rounded-xl',
           'border border-border/60 sm:shadow-[0_30px_80px_-20px_rgba(0,0,0,0.7)]',

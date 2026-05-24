@@ -207,9 +207,7 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   // burned main-thread time on unrelated routes (live deck, etc.).
   watch(
     () =>
-      sessionRow.value != null &&
-      status.value === "playing" &&
-      !paused.value,
+      sessionRow.value != null && status.value === "playing" && !paused.value,
     (active) => {
       if (active) startTickClock();
       else stopTickClock();

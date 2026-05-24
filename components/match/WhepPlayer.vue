@@ -421,9 +421,21 @@ const STALL_MS = 5_000;
 let stallTimer: ReturnType<typeof setInterval> | null = null;
 let lastTime = 0;
 let lastTimeAt = 0;
+let stallWatchActive = false;
 
 function startStallWatch() {
-  stopStallWatch();
+  stallWatchActive = true;
+  if (typeof document !== "undefined" && document.hidden) {
+    // Background tabs throttle setInterval to ~1Hz already, but every
+    // active player still wakes; defer the wakeup entirely until the
+    // tab is visible. visibilitychange handler will arm us.
+    return;
+  }
+  armStallTimer();
+}
+
+function armStallTimer() {
+  stopStallTimer();
   lastTime = videoRef.value?.currentTime ?? 0;
   lastTimeAt = Date.now();
   stallTimer = setInterval(() => {
@@ -451,10 +463,24 @@ function startStallWatch() {
   }, 1_000);
 }
 
-function stopStallWatch() {
+function stopStallTimer() {
   if (stallTimer) {
     clearInterval(stallTimer);
     stallTimer = null;
+  }
+}
+
+function stopStallWatch() {
+  stallWatchActive = false;
+  stopStallTimer();
+}
+
+function onVisibilityChange() {
+  if (!stallWatchActive) return;
+  if (document.hidden) {
+    stopStallTimer();
+  } else if (!stallTimer) {
+    armStallTimer();
   }
 }
 
@@ -465,6 +491,7 @@ onMounted(() => {
   startStallWatch();
   document.addEventListener("fullscreenchange", onFullscreenChange);
   document.addEventListener("webkitfullscreenchange", onFullscreenChange);
+  document.addEventListener("visibilitychange", onVisibilityChange);
   window.addEventListener("keydown", onKeyDown);
 
   if (typeof window !== "undefined" && window.matchMedia) {
@@ -516,6 +543,7 @@ onBeforeUnmount(() => {
   void teardown();
   document.removeEventListener("fullscreenchange", onFullscreenChange);
   document.removeEventListener("webkitfullscreenchange", onFullscreenChange);
+  document.removeEventListener("visibilitychange", onVisibilityChange);
   window.removeEventListener("keydown", onKeyDown);
 
   const video = videoRef.value as IosVideo | null;

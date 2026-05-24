@@ -15,6 +15,72 @@ import en from "javascript-time-ago/locale/en";
 
 TimeAgo.addDefaultLocale(en);
 
+// Shared tickers — every TimeAgo subscribes to the right clock instead
+// of allocating its own setInterval. Match-list / clip-list / chat pages
+// can mount dozens of TimeAgo instances at once; one timer per instance
+// turns into a measurable wake-storm during playback. Two clocks because
+// minute-resolution displays shouldn't wake the page every second.
+type Tick = () => void;
+const minuteSubscribers = new Set<Tick>();
+const secondSubscribers = new Set<Tick>();
+let minuteTimer: ReturnType<typeof setInterval> | null = null;
+let secondTimer: ReturnType<typeof setInterval> | null = null;
+let visibilityListenerInstalled = false;
+
+function fireAll(set: Set<Tick>) {
+  for (const fn of set) {
+    try {
+      fn();
+    } catch {
+      /* one bad ticker shouldn't take the whole list down */
+    }
+  }
+}
+
+function syncTimers() {
+  if (typeof window === "undefined") return;
+  const hidden = typeof document !== "undefined" && document.hidden;
+
+  if (!hidden && minuteSubscribers.size > 0 && !minuteTimer) {
+    minuteTimer = setInterval(() => fireAll(minuteSubscribers), 10_000);
+  } else if ((hidden || minuteSubscribers.size === 0) && minuteTimer) {
+    clearInterval(minuteTimer);
+    minuteTimer = null;
+  }
+
+  if (!hidden && secondSubscribers.size > 0 && !secondTimer) {
+    secondTimer = setInterval(() => fireAll(secondSubscribers), 1_000);
+  } else if ((hidden || secondSubscribers.size === 0) && secondTimer) {
+    clearInterval(secondTimer);
+    secondTimer = null;
+  }
+}
+
+function installVisibilityListener() {
+  if (visibilityListenerInstalled || typeof document === "undefined") return;
+  visibilityListenerInstalled = true;
+  document.addEventListener("visibilitychange", () => {
+    syncTimers();
+    // Run a one-shot resync on the way back so labels aren't stale
+    // for up to a full minute after the tab returns.
+    if (!document.hidden) {
+      fireAll(minuteSubscribers);
+      fireAll(secondSubscribers);
+    }
+  });
+}
+
+function subscribe(seconds: boolean, fn: Tick) {
+  installVisibilityListener();
+  const set = seconds ? secondSubscribers : minuteSubscribers;
+  set.add(fn);
+  syncTimers();
+  return () => {
+    set.delete(fn);
+    syncTimers();
+  };
+}
+
 export default {
   props: {
     date: {
@@ -30,7 +96,7 @@ export default {
   data() {
     return {
       text: "",
-      interval: undefined as NodeJS.Timeout | undefined,
+      unsubscribe: null as null | (() => void),
     };
   },
   watch: {
@@ -40,19 +106,30 @@ export default {
         this.updateText();
       },
     },
+    seconds: {
+      handler() {
+        // Mode swap (seconds <-> minutes) needs the timer rewire — drop
+        // the old subscription and pick up the right tick cadence.
+        this.detach();
+        this.attach();
+      },
+    },
   },
   mounted() {
-    this.interval = setInterval(
-      () => {
-        this.updateText();
-      },
-      this.seconds ? 1000 : 1000 * 10,
-    );
+    this.attach();
   },
   beforeUnmount() {
-    clearInterval(this.interval);
+    this.detach();
   },
   methods: {
+    attach() {
+      if (this.unsubscribe) return;
+      this.unsubscribe = subscribe(this.seconds, () => this.updateText());
+    },
+    detach() {
+      this.unsubscribe?.();
+      this.unsubscribe = null;
+    },
     updateText() {
       const timeAgo = new TimeAgo("en-US");
       const time = new Date(this.date);

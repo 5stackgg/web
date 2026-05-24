@@ -61,7 +61,7 @@ definePageMeta({
 
 const { t } = useI18n();
 const clipQueueScope = "highlights-index";
-const { clearClipQueue, setClipQueue } = useClipModal();
+const { activeClipId, clearClipQueue, setClipQueue } = useClipModal();
 
 type Filter = "all" | "public" | "private" | "unlisted";
 
@@ -80,6 +80,12 @@ const groups = ref<ClipGroup[]>([]);
 const loading = ref(true);
 const visibilityFilter = ref<Filter>("all");
 const queueOpen = ref(false);
+
+// Auto-close the render-queue sheet when any clip modal opens so the
+// modal isn't sandwiched under the sheet's overlay.
+watch(activeClipId, (id) => {
+  if (id && queueOpen.value) queueOpen.value = false;
+});
 
 type ViewMode = "matches" | "singles";
 

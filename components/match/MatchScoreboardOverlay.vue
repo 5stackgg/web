@@ -51,10 +51,14 @@ function onFullscreenChange() {
 const { client: apolloClient } = useApolloClient();
 const match = ref<any | null>(null);
 let matchSubscription: { unsubscribe: () => void } | undefined;
-
-onMounted(() => {
-  document.addEventListener("fullscreenchange", onFullscreenChange);
-  onFullscreenChange();
+// Lazy-subscribe: this query pulls the full match (every lineup
+// player, all per-map stats, all rounds) and most viewers never open
+// the panel. Wait until the user first toggles it open (or in the
+// requireFullscreen flow, enters fullscreen) so the subscription
+// only spins up when the data is actually needed. Once started we
+// keep it alive so repeated open/close doesn't churn the socket.
+function ensureSubscribed() {
+  if (matchSubscription) return;
   matchSubscription = apolloClient
     .subscribe({
       query: generateSubscription({
@@ -156,7 +160,30 @@ onMounted(() => {
         console.error("[match-scoreboard] subscription error", err);
       },
     });
+}
+
+onMounted(() => {
+  document.addEventListener("fullscreenchange", onFullscreenChange);
+  onFullscreenChange();
+  // Non-fullscreen surfaces (StreamGlobal PiP, popout window) render
+  // the toggle pill as soon as we have match data — subscribe on
+  // mount so the pill appears. The inline match-page surface gates
+  // on `requireFullscreen` and only needs data the moment the user
+  // enters fullscreen.
+  if (!props.requireFullscreen) ensureSubscribed();
 });
+
+// requireFullscreen surfaces: spin up the subscription the first
+// time the user enters fullscreen (or, fallback, opens the panel via
+// some external v-model:open toggle).
+watch(
+  [open, isFullscreen],
+  ([isOpen, isFs]) => {
+    if (!props.requireFullscreen) return;
+    if (isOpen || isFs) ensureSubscribed();
+  },
+  { immediate: true },
+);
 
 onBeforeUnmount(() => {
   matchSubscription?.unsubscribe();

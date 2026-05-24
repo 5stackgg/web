@@ -253,6 +253,20 @@ function press(s: PaddedSlot) {
       >
         <button
           v-for="s in paddedCtSlots"
+          v-memo="[
+            s.steam_id,
+            s.name,
+            s.alive,
+            s.health,
+            s.isPlaceholder,
+            s.uiSlot,
+            activeSteamId,
+            flashSlot,
+            controlsActive,
+            autodirectorOn,
+            compact,
+            layout,
+          ]"
           :key="`ct-${s.slot}-${s.steam_id || 'empty'}`"
           type="button"
           :disabled="!controlsActive || s.isPlaceholder"
@@ -465,6 +479,20 @@ function press(s: PaddedSlot) {
       >
         <button
           v-for="s in paddedTSlots"
+          v-memo="[
+            s.steam_id,
+            s.name,
+            s.alive,
+            s.health,
+            s.isPlaceholder,
+            s.uiSlot,
+            activeSteamId,
+            flashSlot,
+            controlsActive,
+            autodirectorOn,
+            compact,
+            layout,
+          ]"
           :key="`t-${s.slot}-${s.steam_id || 'empty'}`"
           type="button"
           :disabled="!controlsActive || s.isPlaceholder"

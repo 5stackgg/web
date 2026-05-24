@@ -179,6 +179,7 @@ const pulseLeft = computed(() =>
 // Skip writes when nothing changed so a paused demo doesn't fire a
 // reactive update every frame.
 function frame() {
+  if (rafHandle === null) return;
   rafHandle = requestAnimationFrame(frame);
   if (!hasMetadata.value || dragging.value) return;
   const target = store.currentTick;
@@ -197,6 +198,47 @@ function frame() {
     seekModel.value = [nextSlider];
   }
 }
+
+function syncVisualTickFromStore() {
+  visualTick.value = store.currentTick;
+  seekModel.value = [store.currentTick];
+}
+
+function startFrameLoop() {
+  if (rafHandle !== null) return;
+  rafHandle = requestAnimationFrame(frame);
+}
+
+function stopFrameLoop() {
+  if (rafHandle !== null) {
+    cancelAnimationFrame(rafHandle);
+    rafHandle = null;
+  }
+}
+
+const shouldAnimateScrubber = computed(
+  () => hasMetadata.value && store.isPlaying && !store.paused,
+);
+
+watch(
+  shouldAnimateScrubber,
+  (active) => {
+    if (active && !dragging.value) startFrameLoop();
+    else {
+      stopFrameLoop();
+      if (hasMetadata.value) syncVisualTickFromStore();
+    }
+  },
+  { immediate: true },
+);
+
+watch(dragging, (isDragging) => {
+  if (isDragging) {
+    stopFrameLoop();
+    return;
+  }
+  if (shouldAnimateScrubber.value) startFrameLoop();
+});
 // Keyboard shortcuts. Mirrors stream-deck plus playback-specific keys.
 function isTypingTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
@@ -313,13 +355,12 @@ function onKeyUp(e: KeyboardEvent) {
 }
 
 onMounted(() => {
-  visualTick.value = store.currentTick;
-  rafHandle = requestAnimationFrame(frame);
+  syncVisualTickFromStore();
   window.addEventListener("keydown", onKeyDown);
   window.addEventListener("keyup", onKeyUp);
 });
 onBeforeUnmount(() => {
-  if (rafHandle !== null) cancelAnimationFrame(rafHandle);
+  stopFrameLoop();
   window.removeEventListener("keydown", onKeyDown);
   window.removeEventListener("keyup", onKeyUp);
   endScoreboardHold();

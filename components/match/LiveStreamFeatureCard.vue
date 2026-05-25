@@ -5,6 +5,7 @@ import TwitchIcon from "~/components/icons/TwitchIcon.vue";
 import YouTubeIcon from "~/components/icons/YouTubeIcon.vue";
 import KickIcon from "~/components/icons/KickIcon.vue";
 import MatchTableRow from "~/components/MatchTableRow.vue";
+import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
 
 type Stream = {
   id: string;
@@ -171,6 +172,10 @@ function onWatchClick(e: Event) {
         class="absolute right-2 top-2 inline-flex items-center rounded-md border border-border/70 bg-black/55 px-1.5 py-[3px] font-mono text-[0.6rem] font-bold uppercase tracking-[0.14em] leading-none text-white/85 backdrop-blur-sm"
       >
         +{{ extraStreamCount }}
+      </div>
+
+      <div class="absolute bottom-2 left-2">
+        <StreamViewerBadge :match-id="match.id" size="md" />
       </div>
 
       <button

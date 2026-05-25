@@ -26,6 +26,7 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
 import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
+import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
 import { Kbd } from "~/components/ui/kbd";
 import { announceFocusWindow } from "~/composables/useStreamerPopout";
 import { useStreamerGsi } from "~/composables/useStreamerGsi";
@@ -756,8 +757,15 @@ watch(spectatedSteamId, (sid) => {
           header-label="Stream boot"
           :disable-fullscreen-shortcut="true"
           :show-boot="true"
-          class="aspect-video w-full overflow-hidden rounded-lg border border-border/70 shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
-        />
+          class="group aspect-video w-full overflow-hidden rounded-lg border border-border/70 shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
+        >
+          <div
+            v-if="isLive()"
+            class="absolute bottom-3 left-12 z-10 pointer-events-none opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-150"
+          >
+            <StreamViewerBadge :match-id="matchId" size="md" />
+          </div>
+        </StreamCanvas>
 
         <div
           v-if="autodirector && isLive()"

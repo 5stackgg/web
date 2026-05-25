@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
-import {
-  Volume2,
-  VolumeX,
-  Maximize2,
-  Minimize2,
-  PictureInPicture,
-} from "lucide-vue-next";
+import { Volume2, VolumeX, Maximize2, Minimize2 } from "lucide-vue-next";
 import { useClipRenderActive } from "~/composables/useClipRenderActive";
 
 const { active: clipRenderActive } = useClipRenderActive();
@@ -137,66 +131,6 @@ function onWebkitEndFullscreen() {
 }
 
 // Picture-in-Picture — only surfaced on mobile for live game streams.
-// Demo/highlights set `enablePip=false` and keep `disablepictureinpicture`
-// on the <video>, which is what Chrome reads when deciding whether to
-// honor a PIP request.
-const isPip = ref(false);
-const showPip = computed(() => {
-  if (!props.enablePip) return false;
-  if (!coarsePointer.value) return false;
-  if (typeof document === "undefined") return false;
-  const doc = document as Document & { pictureInPictureEnabled?: boolean };
-  const video = videoRef.value as IosVideo | null;
-  return !!(
-    doc.pictureInPictureEnabled ||
-    video?.webkitSupportsPresentationMode?.("picture-in-picture")
-  );
-});
-
-async function togglePip() {
-  const video = videoRef.value as IosVideo | null;
-  if (!video) return;
-  const doc = document as Document & {
-    pictureInPictureElement?: Element | null;
-    exitPictureInPicture?: () => Promise<void>;
-  };
-  try {
-    // iOS Safari path: standard requestPictureInPicture is shipped on
-    // iPadOS 14+ but iPhone Safari still routes everything through the
-    // webkit presentation-mode API.
-    if (
-      video.webkitSupportsPresentationMode?.("picture-in-picture") &&
-      typeof video.webkitSetPresentationMode === "function" &&
-      !doc.pictureInPictureEnabled
-    ) {
-      const next =
-        video.webkitPresentationMode === "picture-in-picture"
-          ? "inline"
-          : "picture-in-picture";
-      video.webkitSetPresentationMode(next);
-      return;
-    }
-    if (doc.pictureInPictureElement) {
-      await doc.exitPictureInPicture?.();
-    } else {
-      await video.requestPictureInPicture();
-    }
-  } catch (err) {
-    console.debug("[whep] pip toggle failed:", err);
-  }
-}
-
-function onEnterPip() {
-  isPip.value = true;
-}
-function onLeavePip() {
-  isPip.value = false;
-}
-function onWebkitPresentationModeChanged() {
-  const video = videoRef.value as IosVideo | null;
-  isPip.value = video?.webkitPresentationMode === "picture-in-picture";
-}
-
 function onKeyDown(e: KeyboardEvent) {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
   const target = e.target;
@@ -504,12 +438,6 @@ onMounted(() => {
     // instead of the document fullscreenchange path.
     video.addEventListener("webkitbeginfullscreen", onWebkitBeginFullscreen);
     video.addEventListener("webkitendfullscreen", onWebkitEndFullscreen);
-    video.addEventListener("enterpictureinpicture", onEnterPip);
-    video.addEventListener("leavepictureinpicture", onLeavePip);
-    video.addEventListener(
-      "webkitpresentationmodechanged",
-      onWebkitPresentationModeChanged,
-    );
     video.addEventListener("pause", onInvoluntaryPause);
   }
 });
@@ -550,12 +478,6 @@ onBeforeUnmount(() => {
   if (video) {
     video.removeEventListener("webkitbeginfullscreen", onWebkitBeginFullscreen);
     video.removeEventListener("webkitendfullscreen", onWebkitEndFullscreen);
-    video.removeEventListener("enterpictureinpicture", onEnterPip);
-    video.removeEventListener("leavepictureinpicture", onLeavePip);
-    video.removeEventListener(
-      "webkitpresentationmodechanged",
-      onWebkitPresentationModeChanged,
-    );
     video.removeEventListener("pause", onInvoluntaryPause);
   }
 });
@@ -646,10 +568,7 @@ defineExpose({ connect, teardown });
       </span>
     </button>
 
-    <!-- Audio + fullscreen tray (visible only when audio is on).
-         On coarse pointers (touch) drop the hover-gated opacity so the
-         tray stays reachable — hover is a flaky proxy for "is the
-         viewer engaged" on phones and tablets. -->
+    <!-- Audio tray (right) — visible only when audio is on. -->
     <div
       v-if="status === 'playing' && !useFallback && !isMuted"
       class="absolute bottom-2 right-2 z-10 flex items-center gap-2 transition-opacity duration-150"
@@ -679,43 +598,18 @@ defineExpose({ connect, teardown });
           @input="setVolume(Number(($event.target as HTMLInputElement).value))"
         />
       </div>
-      <button
-        v-if="showPip"
-        type="button"
-        :aria-label="
-          isPip
-            ? $t('ui_extras.exit_picture_in_picture')
-            : $t('ui_extras.picture_in_picture')
-        "
-        :title="$t('replay_extras.picture_in_picture')"
-        class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-150 hover:bg-black/80 hover:text-white hover:scale-110 cursor-pointer"
-        @click="togglePip"
-      >
-        <PictureInPicture class="size-3.5" />
-      </button>
-      <button
-        type="button"
-        :aria-label="
-          isFullscreen
-            ? $t('ui_extras.exit_fullscreen')
-            : $t('ui_extras.fullscreen')
-        "
-        :title="$t('replay_extras.fullscreen_key')"
-        class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-150 hover:bg-black/80 hover:text-white hover:scale-110 cursor-pointer"
-        @click="toggleFullscreen"
-      >
-        <Minimize2 v-if="isFullscreen" class="size-3.5" />
-        <Maximize2 v-else class="size-3.5" />
-      </button>
     </div>
 
-    <!-- Always-available fullscreen + PIP entry, bottom-left while the
-         unmute pill is occupying the bottom-right corner. Touch devices
-         keep these buttons visible (no hover gating). -->
+    <!-- Fullscreen — single left-side button. Hover-gated on desktop;
+         always visible on touch devices. -->
     <div
-      v-if="status === 'playing' && !useFallback && isMuted"
+      v-if="status === 'playing' && !useFallback"
       class="absolute bottom-3 left-3 z-10 flex items-center gap-2 transition-opacity duration-150"
-      :class="coarsePointer ? '' : 'opacity-0 group-hover:opacity-100'"
+      :class="
+        coarsePointer
+          ? ''
+          : 'opacity-0 group-hover:opacity-100 focus-within:opacity-100'
+      "
     >
       <button
         type="button"
@@ -730,20 +624,6 @@ defineExpose({ connect, teardown });
       >
         <Minimize2 v-if="isFullscreen" class="size-3.5" />
         <Maximize2 v-else class="size-3.5" />
-      </button>
-      <button
-        v-if="showPip"
-        type="button"
-        :aria-label="
-          isPip
-            ? $t('ui_extras.exit_picture_in_picture')
-            : $t('ui_extras.picture_in_picture')
-        "
-        :title="$t('replay_extras.picture_in_picture')"
-        class="inline-flex size-7 items-center justify-center rounded-full border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm transition-all duration-150 hover:bg-black/80 hover:text-white hover:scale-110 cursor-pointer"
-        @click="togglePip"
-      >
-        <PictureInPicture class="size-3.5" />
       </button>
     </div>
     <!-- "Rendering clip" chip. Shown over the last-good frame while

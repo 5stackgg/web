@@ -8,6 +8,7 @@ import { ExternalLink, PictureInPicture } from "lucide-vue-next";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import MatchScoreboardOverlay from "~/components/match/MatchScoreboardOverlay.vue";
+import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useStreamerStore } from "~/stores/StreamerStore";
@@ -136,7 +137,12 @@ function teardownLocalSubscription() {
   localStream.value = null;
 }
 
+const coarsePointer = ref(false);
+
 onMounted(() => {
+  if (typeof window !== "undefined" && window.matchMedia) {
+    coarsePointer.value = window.matchMedia("(pointer: coarse)").matches;
+  }
   if (shouldRunLocalSubscription()) ensureLocalSubscription();
 });
 
@@ -237,10 +243,16 @@ function openPopoutWindow() {
       />
 
       <div
-        v-if="isLive && !inGlobal && !inPopout"
-        class="absolute bottom-3 left-3 z-10 flex items-center gap-2 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-150"
+        v-if="isLive && !inPopout"
+        class="absolute bottom-3 left-12 z-10 flex items-center gap-2 transition-opacity duration-150"
+        :class="
+          coarsePointer
+            ? ''
+            : 'opacity-0 group-hover:opacity-100 focus-within:opacity-100'
+        "
       >
         <button
+          v-if="!inGlobal"
           type="button"
           :title="$t('ui.pin_overlay')"
           :aria-label="$t('ui.pin_overlay')"
@@ -250,6 +262,7 @@ function openPopoutWindow() {
           <PictureInPicture class="size-3.5" />
         </button>
         <button
+          v-if="!coarsePointer"
           type="button"
           :title="$t('ui.open_new_window')"
           :aria-label="$t('ui.open_new_window')"
@@ -258,6 +271,7 @@ function openPopoutWindow() {
         >
           <ExternalLink class="size-3.5" />
         </button>
+        <StreamViewerBadge :match-id="matchId" size="md" />
       </div>
     </StreamCanvas>
   </div>

@@ -31,6 +31,7 @@ import Empty from "@/components/ui/empty/Empty.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
+import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
 </script>
 
 <template>
@@ -137,6 +138,10 @@ import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
                       >
                         {{ $t("streams.live_badge") }}
                       </Badge>
+                      <StreamViewerBadge
+                        v-if="stream.is_game_streamer && stream.is_live"
+                        :match-id="match.id"
+                      />
                       <!-- Mode badge — Direct (live) has no GOTV delay,
                            TV honors `tv_delay`. Always shown for the
                            system row so operators can tell the two

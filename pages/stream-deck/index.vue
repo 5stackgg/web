@@ -44,6 +44,7 @@ import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import SpectatorGrid from "~/components/stream-deck/SpectatorGrid.vue";
 import MatchTableRow from "~/components/MatchTableRow.vue";
+import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
 import { useStreamerPopout } from "~/composables/useStreamerPopout";
 
 const { status: gpuPoolStatus, hasFreeGpu, busyReason } = useGpuAvailability();
@@ -584,11 +585,14 @@ function matchStatusLabel(m: LiveMatch): string {
                 />
                 {{ statusBadgeLabel(stream) }}
               </span>
-              <h3 class="text-base font-semibold tracking-tight truncate">
+              <NuxtLink
+                :to="`/matches/${stream.match_id}`"
+                class="text-base font-semibold tracking-tight truncate hover:text-[hsl(var(--tac-amber))] transition-colors"
+              >
                 {{ stream.match?.lineup_1?.name ?? $t("common.team_a") }}
                 <span class="mx-1 text-muted-foreground/60 font-light">vs</span>
                 {{ stream.match?.lineup_2?.name ?? $t("common.team_b") }}
-              </h3>
+              </NuxtLink>
             </div>
 
             <div class="flex items-center gap-3 flex-shrink-0">
@@ -714,7 +718,7 @@ function matchStatusLabel(m: LiveMatch): string {
               :stages="LIVE_STAGES"
               header-label="Stream boot"
               :show-boot="true"
-              class="aspect-video w-full overflow-hidden rounded-md border border-border/60"
+              class="group aspect-video w-full overflow-hidden rounded-md border border-border/60"
             >
               <template
                 v-if="stream.is_live && isPopoutOpen(stream.match_id)"
@@ -744,6 +748,13 @@ function matchStatusLabel(m: LiveMatch): string {
                   </button>
                 </div>
               </template>
+
+              <div
+                v-if="stream.is_live"
+                class="absolute bottom-3 left-12 z-10 pointer-events-none opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-150"
+              >
+                <StreamViewerBadge :match-id="stream.match_id" size="md" />
+              </div>
             </StreamCanvas>
 
             <!-- self-stretch + h-full so the controls column expands to

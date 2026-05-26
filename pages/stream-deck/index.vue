@@ -179,7 +179,111 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   liveMatchesSub?.unsubscribe();
+  renderSummarySub?.unsubscribe();
 });
+
+type RenderSummaryRow = {
+  match_map_id: string;
+  paused: boolean;
+};
+const renderSummaryRows = shallowRef<RenderSummaryRow[]>([]);
+let renderSummarySub: { unsubscribe: () => void } | undefined;
+onMounted(() => {
+  renderSummarySub = apolloClient
+    .subscribe({
+      query: generateSubscription({
+        clip_render_jobs: [
+          {
+            where: {
+              status: { _in: ["queued", "rendering", "uploading"] as any },
+            },
+          },
+          {
+            match_map_id: true,
+            paused: true,
+          },
+        ],
+      }),
+    })
+    .subscribe({
+      next: ({ data }: any) => {
+        renderSummaryRows.value = (data?.clip_render_jobs ?? []) as Array<
+          RenderSummaryRow
+        >;
+      },
+      error: (err: any) => {
+        console.error("[stream-deck] render summary sub:", err);
+      },
+    });
+});
+
+const inFlightRenderCount = computed(() => renderSummaryRows.value.length);
+const pausedRenderCount = computed(
+  () => renderSummaryRows.value.filter((r) => r?.paused).length,
+);
+const hasPausedRenders = computed(() => pausedRenderCount.value > 0);
+const hasInFlightRenders = computed(() => inFlightRenderCount.value > 0);
+const distinctRenderMatchMapIds = computed(() => {
+  const ids = new Set<string>();
+  for (const r of renderSummaryRows.value) {
+    if (r?.match_map_id) ids.add(String(r.match_map_id));
+  }
+  return Array.from(ids);
+});
+
+const PAUSE_CLIP_RENDER_BATCH = gql`
+  mutation PauseClipRenderBatch($match_map_id: uuid!) {
+    pauseClipRenderBatch(match_map_id: $match_map_id) {
+      success
+    }
+  }
+`;
+
+const RESUME_CLIP_RENDER_BATCH = gql`
+  mutation ResumeClipRenderBatch($match_map_id: uuid!) {
+    resumeClipRenderBatch(match_map_id: $match_map_id) {
+      success
+    }
+  }
+`;
+
+async function pauseAllRenders() {
+  for (const matchMapId of distinctRenderMatchMapIds.value) {
+    try {
+      await apolloClient.mutate({
+        mutation: PAUSE_CLIP_RENDER_BATCH,
+        variables: { match_map_id: matchMapId },
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Pause failed",
+        description: error?.message ?? "request failed",
+      });
+      return;
+    }
+  }
+  toast({ title: "Renders will pause after the current highlight" });
+}
+
+async function resumeAllRenders() {
+  for (const matchMapId of distinctRenderMatchMapIds.value) {
+    try {
+      await apolloClient.mutate({
+        mutation: RESUME_CLIP_RENDER_BATCH,
+        variables: { match_map_id: matchMapId },
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Resume failed",
+        description: error?.message ?? "request failed",
+      });
+      return;
+    }
+  }
+  toast({ title: "Resuming highlight renders" });
+}
 
 // Map match_id → active stream row for quick tile lookup. Multiple
 // rows on a single match are not currently produced by the api, but
@@ -516,6 +620,37 @@ function matchStatusLabel(m: LiveMatch): string {
          confuse Vue's animation pass and produce a flicker / empty
          top region during the v-if swap from skeleton → cards. -->
     <div class="mt-6 space-y-8">
+      <div
+        v-if="hasInFlightRenders || hasPausedRenders"
+        class="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border/70 bg-card/40 px-3 py-2 text-xs"
+      >
+        <div class="flex items-center gap-2 font-mono uppercase tracking-[0.18em]">
+          <span class="text-muted-foreground">Highlight renders</span>
+          <span class="tabular-nums text-foreground">
+            {{ pausedRenderCount }}/{{ inFlightRenderCount }} paused
+          </span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            v-if="hasPausedRenders"
+            type="button"
+            class="inline-flex items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] px-3 py-1 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)]"
+            @click="resumeAllRenders"
+          >
+            <Play class="size-3.5" />
+            Resume now
+          </button>
+          <button
+            v-if="hasInFlightRenders && pausedRenderCount === 0"
+            type="button"
+            class="inline-flex items-center gap-1.5 rounded-md border border-border/70 bg-card/40 px-3 py-1 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground hover:bg-muted/30"
+            @click="pauseAllRenders"
+          >
+            <Square class="size-3.5" />
+            Pause all rendering
+          </button>
+        </div>
+      </div>
       <!-- ============ ON-AIR (active stream) ============ -->
       <!-- Empty state — only after the first subscription result so
            we don't briefly flash "Off air" when streams are present. -->

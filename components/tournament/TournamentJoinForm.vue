@@ -88,7 +88,7 @@ import { Card } from "~/components/ui/card";
     </template>
 
     <template v-if="!form.values.new_team">
-      <FormField v-slot="{ handleChange, componentField }" name="team_id">
+      <FormField v-slot="{ handleChange, componentField, meta }" name="team_id">
         <FormItem>
           <TeamSearch
             :label="$t('tournament.team.select')"
@@ -99,25 +99,25 @@ import { Card } from "~/components/ui/card";
             @selected="
               async (team) => {
                 handleChange(String(team.id));
-                await form.validateField('team_id');
+                form.setFieldTouched('team_id', true);
               }
             "
             v-model="componentField.modelValue"
           ></TeamSearch>
-          <FormMessage />
+          <FormMessage v-if="meta.touched" />
         </FormItem>
       </FormField>
     </template>
     <template v-else>
-      <FormField v-slot="{ componentField }" name="team_name">
+      <FormField v-slot="{ componentField, meta }" name="team_name">
         <FormItem>
           <FormLabel>{{ $t("common.team_name") }}</FormLabel>
           <Input v-bind="componentField"></Input>
-          <FormMessage />
+          <FormMessage v-if="meta.touched" />
         </FormItem>
       </FormField>
 
-      <FormField v-slot="{ componentField }" name="short_name">
+      <FormField v-slot="{ componentField, meta }" name="short_name">
         <FormItem>
           <FormLabel>{{ $t("team.form.short_name") }}</FormLabel>
           <Input
@@ -125,8 +125,9 @@ import { Card } from "~/components/ui/card";
             :placeholder="$t('team.form.short_name_placeholder')"
             maxlength="5"
             class="uppercase tracking-[0.15em] font-mono"
+            @input="autoShortName = false"
           ></Input>
-          <FormMessage />
+          <FormMessage v-if="meta.touched" />
         </FormItem>
       </FormField>
     </template>
@@ -168,6 +169,7 @@ export default {
   data() {
     return {
       teamOwner: null,
+      autoShortName: true,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -273,6 +275,7 @@ export default {
       handler(newVal) {
         if (!newVal) {
           this.teamOwner = null;
+          this.autoShortName = true;
           this.form.setFieldValue("owner_steam_id", undefined);
           this.form.setFieldValue("add_self_to_lineup", false);
           return;
@@ -283,6 +286,21 @@ export default {
           ? false
           : this.tournament.can_join;
         this.form.setFieldValue("add_self_to_lineup", shouldAddSelf);
+      },
+    },
+    "form.values.team_name": {
+      handler(newName: string | undefined) {
+        if (!this.autoShortName) {
+          return;
+        }
+        const derived = (newName || "")
+          .split(/\s+/)
+          .filter(Boolean)
+          .map((word) => word[0])
+          .join("")
+          .toUpperCase()
+          .slice(0, 5);
+        this.form.setFieldValue("short_name", derived);
       },
     },
   },
@@ -358,6 +376,7 @@ export default {
       });
 
       this.form.resetForm();
+      this.autoShortName = true;
 
       // Emit close event to close drawer/modal
       this.$emit("close");

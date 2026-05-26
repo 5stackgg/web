@@ -115,10 +115,8 @@ const { height: viewportHeight } = useVisualViewport();
             variant="outline"
             :aria-expanded="open"
             :class="[
-              {
-                'justify-between w-full py-8': selected,
-                'justify-between': !selected,
-              },
+              'justify-between w-full',
+              { 'py-8': selected },
               $props.class,
             ]"
           >

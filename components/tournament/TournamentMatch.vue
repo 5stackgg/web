@@ -1,12 +1,31 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import gql from "graphql-tag";
-import { RotateCcw, TriangleAlert, Undo2 } from "lucide-vue-next";
+import {
+  RotateCcw,
+  TriangleAlert,
+  Undo2,
+  Calendar as CalendarIcon,
+  X,
+} from "lucide-vue-next";
 import { toast } from "@/components/ui/toast";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  CalendarDateTime,
+  type CalendarDate,
+  toZoned,
+  getLocalTimeZone,
+} from "@internationalized/date";
 import TournamentRoundLineup from "~/components/tournament/TournamentRoundLineup.vue";
 import MatchMapDots from "~/components/match/MatchMapDots.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
@@ -72,6 +91,41 @@ const resetLoading = ref(false);
 const resetImpacts = ref<ResetImpact[]>([]);
 const resetTargetWinner = ref<"clear" | "lineup1" | "lineup2">("clear");
 const resetScheduledAt = ref<string>("");
+const resetStartDate = ref<CalendarDate | undefined>(undefined);
+const resetStartTime = ref<string | undefined>(undefined);
+
+watch([resetStartDate, resetStartTime], () => {
+  if (!resetStartDate.value || !resetStartTime.value) {
+    resetScheduledAt.value = "";
+    return;
+  }
+  const [hours, minutes] = resetStartTime.value.split(":").map(Number);
+  const cdt = new CalendarDateTime(
+    resetStartDate.value.year,
+    resetStartDate.value.month,
+    resetStartDate.value.day,
+    hours,
+    minutes,
+  );
+  resetScheduledAt.value = toZoned(cdt, getLocalTimeZone()).toAbsoluteString();
+});
+
+const checkResetDate = ({
+  day,
+  month,
+  year,
+}: {
+  day: number;
+  month: number;
+  year: number;
+}) => {
+  return new Date(year, month - 1, day + 1) < new Date();
+};
+
+const clearResetSchedule = () => {
+  resetStartDate.value = undefined;
+  resetStartTime.value = undefined;
+};
 const previewAcknowledged = ref(false);
 const finalAcknowledged = ref(false);
 const selectedBracket = ref<Bracket | null>(null);
@@ -222,6 +276,8 @@ const openResetFlow = async (bracket: Bracket) => {
   selectedBracket.value = bracket;
   resetTargetWinner.value = "clear";
   resetScheduledAt.value = "";
+  resetStartDate.value = undefined;
+  resetStartTime.value = undefined;
   previewAcknowledged.value = false;
   finalAcknowledged.value = false;
   resetLoading.value = true;
@@ -1080,14 +1136,48 @@ const shouldShowCrossBracketDestination = (
             v-if="resetTargetWinner === 'clear'"
             class="space-y-3 rounded-md border border-border bg-background/70 p-3"
           >
-            <Label class="text-sm font-medium" for="reset-scheduled-at">
+            <Label class="text-sm font-medium">
               {{ $t("tournament.match.scheduled_at") }}
             </Label>
-            <Input
-              id="reset-scheduled-at"
-              v-model="resetScheduledAt"
-              type="datetime-local"
-            />
+            <div class="flex items-center gap-2">
+              <Popover>
+                <PopoverTrigger as-child>
+                  <Button
+                    variant="outline"
+                    class="flex-1 justify-start text-left font-normal"
+                    :class="{ 'text-muted-foreground': !resetStartDate }"
+                  >
+                    <CalendarIcon class="mr-2 h-4 w-4" />
+                    {{ resetStartDate || $t("common.pick_date") }}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent class="w-auto p-0 z-[80]">
+                  <Calendar
+                    :is-date-disabled="checkResetDate"
+                    v-model="resetStartDate"
+                    initial-focus
+                  />
+                </PopoverContent>
+              </Popover>
+
+              <Input
+                type="time"
+                v-model="resetStartTime"
+                style="color-scheme: dark"
+                class="w-[120px]"
+              />
+
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                :disabled="!resetStartDate && !resetStartTime"
+                @click.prevent="clearResetSchedule"
+                :title="$t('match.schedule.reset')"
+              >
+                <X class="h-4 w-4" />
+              </Button>
+            </div>
             <p class="text-xs text-muted-foreground">
               Optional. Set a time if you want this match to remain Scheduled.
             </p>

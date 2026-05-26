@@ -2521,7 +2521,6 @@
             "create_clips": "Create Player Highlights",
             "create_clips_needs_gpu_node": "Register a GPU node to queue highlights (offline is fine — jobs dispatch when it's back online)",
             "live_started": "Live stream starting",
-            "live_started_preempting": "Pausing highlights — live stream will start once the current highlight finishes",
             "live_stopped": "Live stream stopped",
             "live_switched": "Live stream switched to this match",
             "live_busy_elsewhere": "Live stream is already running on another match — switch instead",

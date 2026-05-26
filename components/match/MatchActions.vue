@@ -206,10 +206,7 @@ import {
               {{ resumeRendersBlockedReason }}
             </TooltipContent>
           </Tooltip>
-          <DropdownMenuItem
-            v-else-if="hasPausedRenders"
-            @click="resumeRenders"
-          >
+          <DropdownMenuItem v-else-if="hasPausedRenders" @click="resumeRenders">
             <div class="flex flex-col items-start leading-tight">
               <span>{{ $t("match.actions.resume_renders") }}</span>
               <span class="text-xs text-muted-foreground mt-0.5">
@@ -434,18 +431,13 @@ export default {
       });
     },
     async startLive(mode: "live" | "tv") {
-      const preempting = this.canPreemptHighlights;
       try {
         await this.$apollo.mutate({
           mutation: generateMutation({
             startLive: [{ match_id: this.match.id, mode }, { success: true }],
           }),
         });
-        toast({
-          title: preempting
-            ? this.$t("match.actions.live_started_preempting")
-            : this.$t("match.actions.live_started"),
-        });
+        toast({ title: this.$t("match.actions.live_started") });
       } catch (error: any) {
         toast({
           variant: "destructive",

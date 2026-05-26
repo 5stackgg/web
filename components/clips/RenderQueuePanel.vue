@@ -23,8 +23,10 @@ import {
   RotateCw,
   ChevronRight,
   Play,
+  Pause,
 } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
+import gql from "graphql-tag";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { clipRenderJobFields } from "~/graphql/clipRenderJob";
@@ -37,6 +39,7 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useGpuPoolStatusStore } from "~/stores/GpuPoolStatusStore";
 import { useClipModal, type ClipQueueItem } from "~/composables/useClipModal";
 
 const authStore = useAuthStore();
@@ -70,6 +73,7 @@ type Job = {
   user_steam_id: string;
   match_map_id: string;
   status: string;
+  paused?: boolean | null;
   progress: number | string | null;
   error_message: string | null;
   clip_id: string | null;
@@ -304,8 +308,6 @@ type BatchGroup = {
   // 0..1 across the batch — sum of per-job render fractions / total.
   overallProgress: number;
   isFinished: boolean;
-  // Pod boot state — null once any job has left "queued" or no
-  // recent booting tick exists. Same tick fans out to every job.
   bootInfo: {
     stage: string;
     stageSub: string | null;
@@ -313,6 +315,7 @@ type BatchGroup = {
     at: string;
     firedStages: Set<string>;
   } | null;
+  isPaused: boolean;
 };
 
 function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
@@ -362,9 +365,11 @@ function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
   const inFlightCount = sorted.length - terminalCount;
   const overallProgress = sorted.length === 0 ? 0 : progressSum / sorted.length;
 
+  const isPaused = sorted.some((j) => j.paused === true);
+
   let bootInfo: BatchGroup["bootInfo"] = null;
   const noneStarted = sorted.every((j) => j.status === "queued");
-  if (noneStarted) {
+  if (noneStarted && !isPaused) {
     const firedStages = new Set<string>();
     let latest: { entry: StatusHistoryEntry; at: number } | null = null;
     for (const j of sorted) {
@@ -412,6 +417,7 @@ function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
     overallProgress,
     isFinished: inFlightCount === 0,
     bootInfo,
+    isPaused,
   };
 }
 
@@ -734,6 +740,29 @@ async function cancelBatch(matchMapId: string) {
   }
 }
 
+const resumingBatch = ref<Record<string, boolean>>({});
+const RESUME_CLIP_RENDER_BATCH = gql`
+  mutation ResumeClipRenderBatch($match_map_id: uuid!) {
+    resumeClipRenderBatch(match_map_id: $match_map_id) {
+      success
+    }
+  }
+`;
+async function resumeBatch(matchMapId: string) {
+  if (resumingBatch.value[matchMapId]) return;
+  resumingBatch.value = { ...resumingBatch.value, [matchMapId]: true };
+  try {
+    await nuxtApp.$apollo.defaultClient.mutate({
+      mutation: RESUME_CLIP_RENDER_BATCH,
+      variables: { match_map_id: matchMapId },
+    });
+  } catch (e) {
+    console.error("[render-queue] batch resume failed:", e);
+  } finally {
+    resumingBatch.value = { ...resumingBatch.value, [matchMapId]: false };
+  }
+}
+
 function formatTimeAgo(iso: string | null): string {
   if (!iso) return "";
   const t = new Date(iso).getTime();
@@ -749,15 +778,56 @@ function formatTimeAgo(iso: string | null): string {
 }
 
 const totalInFlight = computed(() => inFlight.value.length);
-const totalActive = computed(
+const totalRendering = computed(
   () =>
     inFlight.value.filter(
       (j) => j.status === "rendering" || j.status === "uploading",
     ).length,
 );
-const totalQueued = computed(
-  () => inFlight.value.filter((j) => j.status === "queued").length,
+const totalPaused = computed(
+  () => inFlight.value.filter((j) => j.paused === true).length,
 );
+const allPaused = computed(
+  () =>
+    inFlight.value.length > 0 && totalPaused.value === inFlight.value.length,
+);
+
+const gpuPool = useGpuPoolStatusStore();
+gpuPool.subscribeToPool();
+
+const resumeBlockedReason = computed<string | null>(() => {
+  const s = gpuPool.status;
+  if (!gpuPool.hasLoaded || !s) return null;
+  if (s.live_in_progress) {
+    return t("clips.render_queue.resume_blocked_live");
+  }
+  return null;
+});
+
+const queueStatus = computed<{
+  key: string;
+  tone: "amber" | "muted" | "danger";
+}>(() => {
+  if (totalRendering.value > 0) {
+    return { key: "rendering", tone: "amber" };
+  }
+  if (allPaused.value) {
+    return { key: "paused", tone: "amber" };
+  }
+  const s = gpuPool.status;
+  if (gpuPool.hasLoaded && s) {
+    if (s.total_gpu_nodes === 0) {
+      return { key: "no_gpu_registered", tone: "danger" };
+    }
+    if (s.free_gpu_nodes === 0) {
+      if (s.live_in_progress) return { key: "blocked_live", tone: "amber" };
+      if (s.demo_in_progress) return { key: "blocked_demo", tone: "amber" };
+      return { key: "no_gpu_free", tone: "amber" };
+    }
+  }
+  if (inFlight.value.length === 0) return { key: "idle", tone: "muted" };
+  return { key: "waiting", tone: "muted" };
+});
 </script>
 
 <template>
@@ -775,28 +845,46 @@ const totalQueued = computed(
       >
         <div class="flex items-center gap-2">
           <ListVideo class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
-          <span
-            class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
-          >
-            {{ $t("clips.render_queue.in_flight") }}
-          </span>
           <span class="font-mono text-sm font-semibold tabular-nums">
             {{ totalInFlight }}
           </span>
+          <span
+            class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            {{ $t("clips.render_queue.queued") }}
+          </span>
         </div>
         <div
-          class="ml-auto flex items-center gap-3 font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground"
+          class="ml-auto flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.16em]"
+          :class="
+            queueStatus.tone === 'danger'
+              ? 'text-destructive'
+              : queueStatus.tone === 'amber'
+                ? 'text-[hsl(var(--tac-amber))]'
+                : 'text-muted-foreground'
+          "
         >
-          <span class="inline-flex items-center gap-1.5">
-            <Loader2
-              class="h-3 w-3 animate-spin text-[hsl(var(--tac-amber))]"
-            />
-            {{ totalActive }} active
-          </span>
-          <span class="text-border">·</span>
-          <span class="inline-flex items-center gap-1.5">
-            <Clock class="h-3 w-3" />
-            {{ totalQueued }} queued
+          <Loader2
+            v-if="queueStatus.key === 'rendering'"
+            class="h-3 w-3 animate-spin"
+          />
+          <Pause v-else-if="queueStatus.key === 'paused'" class="h-3 w-3" />
+          <AlertCircle
+            v-else-if="queueStatus.tone === 'danger'"
+            class="h-3 w-3"
+          />
+          <Clock v-else class="h-3 w-3" />
+          <span>
+            <template v-if="queueStatus.key === 'rendering'">
+              {{
+                $t("clips.render_queue.status_rendering", {
+                  count: totalRendering,
+                })
+              }}
+            </template>
+            <template v-else>
+              {{ $t(`clips.render_queue.status_${queueStatus.key}`) }}
+            </template>
           </span>
         </div>
       </div>
@@ -889,18 +977,33 @@ const totalQueued = computed(
                   <div
                     class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
                   >
-                    <span>{{
-                      g.bootInfo
-                        ? $t("ui_extras.pod_boot")
-                        : $t("ui_extras.batch_progress")
-                    }}</span>
+                    <span
+                      :class="g.isPaused ? 'text-[hsl(var(--tac-amber))]' : ''"
+                    >
+                      <template v-if="g.isPaused">
+                        <Pause class="inline h-3 w-3 mr-1 -mt-0.5" />
+                        {{ $t("ui_extras.batch_paused") }}
+                      </template>
+                      <template v-else-if="g.bootInfo">
+                        {{ $t("ui_extras.pod_boot") }}
+                      </template>
+                      <template v-else>
+                        {{ $t("ui_extras.batch_progress") }}
+                      </template>
+                    </span>
                     <span class="tabular-nums">
                       <template
-                        v-if="g.bootInfo && g.bootInfo.progress !== null"
+                        v-if="
+                          !g.isPaused &&
+                          g.bootInfo &&
+                          g.bootInfo.progress !== null
+                        "
                       >
                         {{ Math.round(g.bootInfo.progress * 100) }}%
                       </template>
-                      <template v-else-if="g.bootInfo">…</template>
+                      <template v-else-if="!g.isPaused && g.bootInfo"
+                        >…</template
+                      >
                       <template v-else>
                         {{ Math.round(g.overallProgress * 100) }}%
                       </template>
@@ -910,7 +1013,7 @@ const totalQueued = computed(
                     class="relative h-1.5 overflow-hidden rounded-full bg-muted/40"
                   >
                     <div
-                      v-if="g.bootInfo"
+                      v-if="!g.isPaused && g.bootInfo"
                       class="h-full rounded-full bg-primary transition-[width] duration-300"
                       :style="{
                         width:
@@ -919,7 +1022,12 @@ const totalQueued = computed(
                     ></div>
                     <div
                       v-else
-                      class="h-full rounded-full bg-[hsl(var(--tac-amber))] transition-[width] duration-300"
+                      class="h-full rounded-full transition-[width] duration-300"
+                      :class="
+                        g.isPaused
+                          ? 'bg-[hsl(var(--tac-amber)/0.5)]'
+                          : 'bg-[hsl(var(--tac-amber))]'
+                      "
                       :style="{
                         width: Math.round(g.overallProgress * 100) + '%',
                       }"
@@ -928,6 +1036,39 @@ const totalQueued = computed(
                 </div>
               </div>
               <div class="flex shrink-0 items-center gap-1.5">
+                <Tooltip v-if="g.isPaused && resumeBlockedReason">
+                  <TooltipTrigger as-child>
+                    <span tabindex="0" class="inline-flex">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        class="h-7 px-2 text-[0.7rem] opacity-60 cursor-not-allowed"
+                        :disabled="true"
+                      >
+                        <Play class="h-3 w-3 mr-1" />
+                        {{ $t("ui_extras.resume") }}
+                      </Button>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    {{ resumeBlockedReason }}
+                  </TooltipContent>
+                </Tooltip>
+                <Button
+                  v-else-if="g.isPaused"
+                  size="sm"
+                  variant="outline"
+                  class="h-7 px-2 text-[0.7rem] hover:border-[hsl(var(--tac-amber))] hover:text-[hsl(var(--tac-amber))]"
+                  :disabled="resumingBatch[g.matchMapId]"
+                  @click="resumeBatch(g.matchMapId)"
+                >
+                  <Loader2
+                    v-if="resumingBatch[g.matchMapId]"
+                    class="h-3 w-3 mr-1 animate-spin"
+                  />
+                  <Play v-else class="h-3 w-3 mr-1" />
+                  {{ $t("ui_extras.resume") }}
+                </Button>
                 <Button
                   v-if="isAdmin && (g.errorCount > 0 || g.cancelledCount > 0)"
                   size="sm"

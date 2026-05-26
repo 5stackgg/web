@@ -292,7 +292,19 @@ export const AllTypesProps: Record<string,any> = {
 		}
 	},
 	clip_render_jobs_aggregate_bool_exp:{
+		bool_and:"clip_render_jobs_aggregate_bool_exp_bool_and",
+		bool_or:"clip_render_jobs_aggregate_bool_exp_bool_or",
 		count:"clip_render_jobs_aggregate_bool_exp_count"
+	},
+	clip_render_jobs_aggregate_bool_exp_bool_and:{
+		arguments:"clip_render_jobs_select_column_clip_render_jobs_aggregate_bool_exp_bool_and_arguments_columns",
+		filter:"clip_render_jobs_bool_exp",
+		predicate:"Boolean_comparison_exp"
+	},
+	clip_render_jobs_aggregate_bool_exp_bool_or:{
+		arguments:"clip_render_jobs_select_column_clip_render_jobs_aggregate_bool_exp_bool_or_arguments_columns",
+		filter:"clip_render_jobs_bool_exp",
+		predicate:"Boolean_comparison_exp"
 	},
 	clip_render_jobs_aggregate_bool_exp_count:{
 		arguments:"clip_render_jobs_select_column",
@@ -347,6 +359,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_demo:"match_map_demos_bool_exp",
 		match_map_demo_id:"uuid_comparison_exp",
 		match_map_id:"uuid_comparison_exp",
+		paused:"Boolean_comparison_exp",
 		progress:"numeric_comparison_exp",
 		session_token:"String_comparison_exp",
 		sort_index:"Int_comparison_exp",
@@ -438,6 +451,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_demo:"match_map_demos_order_by",
 		match_map_demo_id:"order_by",
 		match_map_id:"order_by",
+		paused:"order_by",
 		progress:"order_by",
 		session_token:"order_by",
 		sort_index:"order_by",
@@ -455,6 +469,8 @@ export const AllTypesProps: Record<string,any> = {
 		status_history:"jsonb"
 	},
 	clip_render_jobs_select_column: "enum" as const,
+	clip_render_jobs_select_column_clip_render_jobs_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
+	clip_render_jobs_select_column_clip_render_jobs_aggregate_bool_exp_bool_or_arguments_columns: "enum" as const,
 	clip_render_jobs_set_input:{
 		clip_id:"uuid",
 		created_at:"timestamptz",
@@ -7686,6 +7702,9 @@ export const AllTypesProps: Record<string,any> = {
 		moveServerItem:{
 
 		},
+		pauseClipRenderBatch:{
+			match_map_id:"uuid"
+		},
 		randomizeTeams:{
 			match_id:"uuid"
 		},
@@ -7721,6 +7740,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		restartService:{
 
+		},
+		resumeClipRenderBatch:{
+			match_map_id:"uuid"
 		},
 		retryClipRenderBatch:{
 			match_map_id:"uuid"
@@ -22128,6 +22150,7 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_demo:"match_map_demos",
 		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
+		paused:"Boolean",
 		progress:"numeric",
 		session_token:"String",
 		sort_index:"Int",
@@ -25522,6 +25545,7 @@ export const ReturnTypes: Record<string,any> = {
 		loadFixtures:"SuccessOutput",
 		logout:"SuccessOutput",
 		moveServerItem:"SuccessOutput",
+		pauseClipRenderBatch:"SuccessOutput",
 		randomizeTeams:"SuccessOutput",
 		rebootMatchServer:"SuccessOutput",
 		recalculate_tournament_trophies:"tournament_trophies",
@@ -25535,6 +25559,7 @@ export const ReturnTypes: Record<string,any> = {
 		requestNameChange:"SuccessOutput",
 		requeueClipRender:"SuccessOutput",
 		restartService:"SuccessOutput",
+		resumeClipRenderBatch:"SuccessOutput",
 		retryClipRenderBatch:"SuccessOutput",
 		scheduleMatch:"SuccessOutput",
 		setGameNodeSchedulingState:"SuccessOutput",

@@ -395,6 +395,43 @@ definePageMeta({
 
           <FormField
             v-slot="{ value, handleChange }"
+            name="pause_renders_during_active_match"
+            type="checkbox"
+            :value="true"
+          >
+            <FormItem>
+              <div
+                class="flex flex-row items-center justify-between cursor-pointer"
+                @click="handleChange(!value)"
+              >
+                <div class="space-y-0.5">
+                  <h4 class="text-base font-medium">
+                    {{
+                      $t(
+                        "pages.settings.application.demo_settings.pause_renders_during_active_match",
+                      )
+                    }}
+                  </h4>
+                  <p class="text-sm text-muted-foreground">
+                    {{
+                      $t(
+                        "pages.settings.application.demo_settings.pause_renders_during_active_match_description",
+                      )
+                    }}
+                  </p>
+                </div>
+                <FormControl>
+                  <Switch
+                    :model-value="value"
+                    @update:model-value="handleChange"
+                  />
+                </FormControl>
+              </div>
+            </FormItem>
+          </FormField>
+
+          <FormField
+            v-slot="{ value, handleChange }"
             name="auto_generate_match_clips"
             type="checkbox"
             :value="true"
@@ -601,6 +638,7 @@ export default {
             clip_fps: z.enum(["30", "60"]).default("60"),
             clip_resolution: z.enum(["720p", "1080p"]).default("1080p"),
             clip_bake_branding: z.boolean().default(true),
+            pause_renders_during_active_match: z.boolean().default(false),
           }),
         ),
       }),
@@ -627,7 +665,8 @@ export default {
 
           if (
             setting.name === "auto_generate_match_clips" ||
-            setting.name === "clip_bake_branding"
+            setting.name === "clip_bake_branding" ||
+            setting.name === "pause_renders_during_active_match"
           ) {
             this.form.setFieldValue(
               setting.name,
@@ -793,6 +832,12 @@ export default {
                 {
                   name: "clip_bake_branding",
                   value: this.form.values.clip_bake_branding ? "true" : "false",
+                },
+                {
+                  name: "pause_renders_during_active_match",
+                  value: this.form.values.pause_renders_during_active_match
+                    ? "true"
+                    : "false",
                 },
               ],
               on_conflict: {

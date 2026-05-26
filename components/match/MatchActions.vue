@@ -77,7 +77,15 @@ import {
                Two modes:
                - "live"  — direct game-port observer connect, no GOTV delay
                - "tv"    — GOTV/Playcast, honors tv_delay (default ~115s) -->
-          <DropdownMenuSub v-if="isLive && gameStreamerStatus === 'off'">
+          <DropdownMenuItem
+            v-if="gameStreamerStatus === 'off' && canSwitchHere"
+            :disabled="switching || !match.is_server_online"
+            @click="switchHere"
+          >
+            <Radio class="h-3.5 w-3.5 mr-2 text-muted-foreground" />
+            <span>{{ $t("match.actions.switch_stream_here") }}</span>
+          </DropdownMenuItem>
+          <DropdownMenuSub v-else-if="gameStreamerStatus === 'off'">
             <Tooltip v-if="liveStartDisabledReason">
               <TooltipTrigger as-child>
                 <DropdownMenuSubTrigger disabled>
@@ -91,7 +99,11 @@ import {
             </Tooltip>
             <DropdownMenuSubTrigger v-else>
               <Radio class="h-3.5 w-3.5 mr-2 text-muted-foreground" />
-              <span>{{ $t("match.actions.start_live") }}</span>
+              <span>{{
+                canPreemptHighlights
+                  ? $t("match.actions.pause_highlights_and_start_live")
+                  : $t("match.actions.start_live")
+              }}</span>
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent class="w-64">
               <DropdownMenuItem
@@ -102,9 +114,11 @@ import {
                 <span>{{ $t("match.actions.start_live_direct") }}</span>
                 <span class="text-xs text-muted-foreground">
                   {{
-                    gpuBlocksAction
-                      ? gpuBusyReason || $t("stream_status.gpu_busy")
-                      : $t("match.actions.start_live_direct_hint")
+                    canPreemptHighlights
+                      ? $t("match.actions.start_live_preempt_highlights_hint")
+                      : gpuBlocksAction
+                        ? gpuBusyReason || $t("stream_status.gpu_busy")
+                        : $t("match.actions.start_live_direct_hint")
                   }}
                 </span>
               </DropdownMenuItem>
@@ -116,11 +130,13 @@ import {
                 <span>{{ $t("match.actions.start_live_tv") }}</span>
                 <span class="text-xs text-muted-foreground">
                   {{
-                    gpuBlocksAction
-                      ? gpuBusyReason || $t("stream_status.gpu_busy")
-                      : canStartLiveTv
-                        ? $t("match.actions.start_live_tv_hint")
-                        : $t("match.actions.start_live_waiting_tv")
+                    canPreemptHighlights
+                      ? $t("match.actions.start_live_preempt_highlights_hint")
+                      : gpuBlocksAction
+                        ? gpuBusyReason || $t("stream_status.gpu_busy")
+                        : canStartLiveTv
+                          ? $t("match.actions.start_live_tv_hint")
+                          : $t("match.actions.start_live_waiting_tv")
                   }}
                 </span>
               </DropdownMenuItem>
@@ -131,7 +147,15 @@ import {
             class="text-destructive"
             @click="stopLive"
           >
-            <template v-if="gameStreamerStatus === 'booting'">
+            <template v-if="gameStreamerStatus === 'pending'">
+              <div class="flex flex-col items-start leading-tight">
+                <span>{{ $t("match.actions.cancel_live_pending") }}</span>
+                <span class="text-xs text-muted-foreground mt-0.5">
+                  {{ $t("match.actions.live_pending_hint") }}
+                </span>
+              </div>
+            </template>
+            <template v-else-if="gameStreamerStatus === 'booting'">
               <div class="flex flex-col items-start leading-tight">
                 <span>{{ $t("match.actions.cancel_live_boot") }}</span>
                 <span
@@ -166,6 +190,40 @@ import {
             @click="createClipsForMatch"
           >
             {{ $t("match.actions.create_clips") }}
+          </DropdownMenuItem>
+          <Tooltip v-if="hasPausedRenders && resumeRendersBlockedReason">
+            <TooltipTrigger as-child>
+              <DropdownMenuItem disabled>
+                <div class="flex flex-col items-start leading-tight">
+                  <span>{{ $t("match.actions.resume_renders") }}</span>
+                  <span class="text-xs text-muted-foreground mt-0.5">
+                    {{ resumeRendersBlockedReason }}
+                  </span>
+                </div>
+              </DropdownMenuItem>
+            </TooltipTrigger>
+            <TooltipContent side="left">
+              {{ resumeRendersBlockedReason }}
+            </TooltipContent>
+          </Tooltip>
+          <DropdownMenuItem v-else-if="hasPausedRenders" @click="resumeRenders">
+            <div class="flex flex-col items-start leading-tight">
+              <span>{{ $t("match.actions.resume_renders") }}</span>
+              <span class="text-xs text-muted-foreground mt-0.5">
+                {{ $t("match.actions.resume_renders_hint") }}
+              </span>
+            </div>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            v-else-if="hasInFlightRenders"
+            @click="pauseRenders"
+          >
+            <div class="flex flex-col items-start leading-tight">
+              <span>{{ $t("match.actions.pause_renders") }}</span>
+              <span class="text-xs text-muted-foreground mt-0.5">
+                {{ $t("match.actions.pause_renders_hint") }}
+              </span>
+            </div>
           </DropdownMenuItem>
         </template>
 
@@ -245,11 +303,29 @@ import {
 </template>
 
 <script lang="ts">
-import { generateMutation } from "~/graphql/graphqlGen";
+import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
+import gql from "graphql-tag";
 import { toast } from "@/components/ui/toast";
+
+const PAUSE_CLIP_RENDER_BATCH = gql`
+  mutation PauseClipRenderBatch($match_map_id: uuid!) {
+    pauseClipRenderBatch(match_map_id: $match_map_id) {
+      success
+    }
+  }
+`;
+
+const RESUME_CLIP_RENDER_BATCH = gql`
+  mutation ResumeClipRenderBatch($match_map_id: uuid!) {
+    resumeClipRenderBatch(match_map_id: $match_map_id) {
+      success
+    }
+  }
+`;
 import socket from "~/web-sockets/Socket";
 import { v4 as uuidv4 } from "uuid";
 import { useGpuPoolStatusStore } from "~/stores/GpuPoolStatusStore";
+import { useStreamerStore } from "~/stores/StreamerStore";
 export default {
   props: {
     match: {
@@ -261,6 +337,13 @@ export default {
     return {
       showDeleteDialog: false,
       rconUuid: undefined as string | undefined,
+      switching: false,
+      renderSummary: [] as Array<{
+        match_map_id: string;
+        in_flight: number;
+        paused: number;
+      }>,
+      renderSummarySub: undefined as { unsubscribe: () => void } | undefined,
       // Guards the auto-stop watcher so we don't fire `stopLive` more
       // than once when the match settles into a finished status.
       autoStopFired: false,
@@ -269,11 +352,19 @@ export default {
   created() {
     this.rconUuid = uuidv4();
     socket.on("rcon", this.onRconResponse);
+    this.subscribeRenderSummary();
   },
   beforeUnmount() {
     socket.removeListener("rcon", this.onRconResponse);
+    this.renderSummarySub?.unsubscribe();
   },
   watch: {
+    "match.id"() {
+      this.renderSummarySub?.unsubscribe();
+      this.renderSummarySub = undefined;
+      this.renderSummary = [];
+      this.subscribeRenderSummary();
+    },
     // Match transitioning out of Live (Finished/Forfeit/Tie/Surrendered/
     // Canceled) while the streamer pod is still attached — fire stopLive
     // once so the pod tears down cleanly without an organizer having to
@@ -401,6 +492,116 @@ export default {
         });
       }
     },
+    subscribeRenderSummary() {
+      const mapIds = (this.match?.match_maps ?? [])
+        .map((m: any) => m?.id)
+        .filter((id: any) => !!id);
+      if (mapIds.length === 0) return;
+      const sub = (this as any).$apollo
+        .subscribe({
+          query: generateSubscription({
+            clip_render_jobs: [
+              {
+                where: {
+                  match_map_id: { _in: mapIds },
+                  status: { _in: ["queued", "rendering", "uploading"] },
+                },
+              },
+              {
+                match_map_id: true,
+                status: true,
+                paused: true,
+              },
+            ],
+          }),
+        })
+        .subscribe({
+          next: ({ data }: any) => {
+            const byMap = new Map<
+              string,
+              { match_map_id: string; in_flight: number; paused: number }
+            >();
+            for (const r of (data?.clip_render_jobs ?? []) as Array<{
+              match_map_id: string;
+              paused: boolean;
+            }>) {
+              const id = String(r.match_map_id);
+              const bucket = byMap.get(id) ?? {
+                match_map_id: id,
+                in_flight: 0,
+                paused: 0,
+              };
+              bucket.in_flight += 1;
+              if (r.paused) bucket.paused += 1;
+              byMap.set(id, bucket);
+            }
+            this.renderSummary = Array.from(byMap.values());
+          },
+          error: (error: any) => {
+            console.error("[match-actions] render summary sub:", error);
+          },
+        });
+      this.renderSummarySub = sub;
+    },
+    async switchHere() {
+      if (this.switching) return;
+      const from = this.activeStreamElsewhere?.match_id;
+      if (!from) return;
+      this.switching = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            switchLiveMatch: [
+              {
+                from_match_id: from,
+                to_match_id: this.match.id,
+                mode: "live",
+              },
+              { success: true },
+            ],
+          }),
+        });
+        toast({ title: this.$t("match.actions.live_switched") });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+      } finally {
+        this.switching = false;
+      }
+    },
+    async pauseRenders() {
+      try {
+        await this.$apollo.mutate({
+          mutation: PAUSE_CLIP_RENDER_BATCH,
+          variables: { match_map_id: this.firstInFlightRenderMatchMapId },
+        });
+        toast({ title: this.$t("match.actions.pause_renders_started") });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+      }
+    },
+    async resumeRenders() {
+      try {
+        await this.$apollo.mutate({
+          mutation: RESUME_CLIP_RENDER_BATCH,
+          variables: { match_map_id: this.firstPausedRenderMatchMapId },
+        });
+        toast({ title: this.$t("match.actions.resume_renders_started") });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+      }
+    },
     async createClipsForMatch() {
       try {
         await this.$apollo.mutate({
@@ -467,15 +668,53 @@ export default {
         (m: any) => (m?.demos?.length ?? 0) > 0,
       );
     },
-    // True only when the live-actions block in the dropdown will render
-    // at least one item — otherwise its leading separator becomes an
-    // orphan (visible as a stray divider with no content following).
     hasOrganizerLiveActions() {
-      const startVisible =
-        this.gameStreamerStatus === "off" &&
-        (this.canStartLiveDirect || this.canStartLiveTv);
-      const stopVisible = this.gameStreamerStatus !== "off";
-      return startVisible || stopVisible || this.hasMatchDemos;
+      return this.isLive || this.hasMatchDemos;
+    },
+    activeStreamElsewhere() {
+      const streams = useStreamerStore().liveStreams ?? [];
+      return streams.find(
+        (s: any) =>
+          s?.is_game_streamer &&
+          s.match_id &&
+          s.match_id !== this.match.id &&
+          s.status !== "pending" &&
+          s.status !== "errored",
+      );
+    },
+    canSwitchHere() {
+      return (
+        this.isLive &&
+        !!this.match.is_server_online &&
+        !!this.activeStreamElsewhere
+      );
+    },
+    hasInFlightRenders() {
+      return (this.renderSummary ?? []).some((s) => (s?.in_flight ?? 0) > 0);
+    },
+    hasPausedRenders() {
+      return (this.renderSummary ?? []).some((s) => (s?.paused ?? 0) > 0);
+    },
+    resumeRendersBlockedReason() {
+      const gpu = useGpuPoolStatusStore();
+      if (!gpu.hasLoaded) return null;
+      const s = gpu.status as { live_in_progress?: boolean } | null;
+      if (s?.live_in_progress) {
+        return this.$t("clips.render_queue.resume_blocked_live");
+      }
+      return null;
+    },
+    firstInFlightRenderMatchMapId() {
+      return (
+        (this.renderSummary ?? []).find((s) => (s?.in_flight ?? 0) > 0)
+          ?.match_map_id ?? null
+      );
+    },
+    firstPausedRenderMatchMapId() {
+      return (
+        (this.renderSummary ?? []).find((s) => (s?.paused ?? 0) > 0)
+          ?.match_map_id ?? null
+      );
     },
     // Direct (live) mode: the streamer pod joins the game port as an
     // observer with no GOTV delay. Available the moment the match goes
@@ -487,6 +726,12 @@ export default {
     gpuBusyReason() {
       const gpu = useGpuPoolStatusStore();
       return gpu.busyReasonKey ? this.$t(gpu.busyReasonKey) : null;
+    },
+    canPreemptHighlights() {
+      const gpu = useGpuPoolStatusStore();
+      if (!gpu.hasLoaded) return false;
+      if (gpu.hasFreeGpu) return false;
+      return gpu.busyReasonKey === "gpu_pool_status.highlights_busy";
     },
     // Highlight queueing only needs a GPU node to *exist* (offline is OK).
     // hasFreeGpu collapses to false when the GPU is offline too, which is
@@ -500,11 +745,13 @@ export default {
       return (
         !!this.match.can_stream_live &&
         !!this.match.is_server_online &&
-        !this.gpuBlocksAction
+        (!this.gpuBlocksAction || this.canPreemptHighlights)
       );
     },
     liveStartDisabledReason() {
       if (this.canStartLiveDirect || this.canStartLiveTv) return null;
+      if (this.activeStreamElsewhere)
+        return this.$t("match.actions.live_busy_elsewhere");
       if (this.gpuBlocksAction)
         return this.gpuBusyReason || this.$t("stream_status.gpu_busy");
       if (!this.match.is_server_online)
@@ -521,18 +768,17 @@ export default {
     // accepts the connection.
     canStartLiveTv() {
       return (
-        this.isLive && !!this.match.is_server_online && !this.gpuBlocksAction
+        this.isLive &&
+        !!this.match.is_server_online &&
+        (!this.gpuBlocksAction || this.canPreemptHighlights)
       );
     },
-    // "off"     — no game-streamer row (Start button shown)
-    // "booting" — row exists, is_live = false (Cancel item with the
-    //             current boot step in the label)
-    // "live"    — row exists, is_live = true (Stop button shown)
     gameStreamerStatus() {
       const row = (this.match.streams ?? []).find(
         (s: any) => s.is_game_streamer,
       );
       if (!row) return "off";
+      if (row.status === "pending") return "pending";
       return row.is_live ? "live" : "booting";
     },
     gameStreamerRow() {

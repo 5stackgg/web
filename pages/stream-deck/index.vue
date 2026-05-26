@@ -207,9 +207,8 @@ onMounted(() => {
     })
     .subscribe({
       next: ({ data }: any) => {
-        renderSummaryRows.value = (data?.clip_render_jobs ?? []) as Array<
-          RenderSummaryRow
-        >;
+        renderSummaryRows.value = (data?.clip_render_jobs ??
+          []) as Array<RenderSummaryRow>;
       },
       error: (err: any) => {
         console.error("[stream-deck] render summary sub:", err);
@@ -624,7 +623,9 @@ function matchStatusLabel(m: LiveMatch): string {
         v-if="hasInFlightRenders || hasPausedRenders"
         class="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border/70 bg-card/40 px-3 py-2 text-xs"
       >
-        <div class="flex items-center gap-2 font-mono uppercase tracking-[0.18em]">
+        <div
+          class="flex items-center gap-2 font-mono uppercase tracking-[0.18em]"
+        >
           <span class="text-muted-foreground">Highlight renders</span>
           <span class="tabular-nums text-foreground">
             {{ pausedRenderCount }}/{{ inFlightRenderCount }} paused

@@ -11,6 +11,7 @@ export const clipRenderJobFields = {
   sort_index: true,
   last_status_at: true,
   status_history: true,
+  paused: true,
   spec: true,
   user: {
     steam_id: true,

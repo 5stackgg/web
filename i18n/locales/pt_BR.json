@@ -594,7 +594,7 @@
             "sidebar_primary_foreground": "Primeiro Plano Primário da Barra Lateral",
             "sidebar_ring": "Anel de Foco da Barra Lateral",
             "topnav_background": "Fundo da Navegação Superior",
-            "topnav_foreground": "Primeiro Plano da Navegação Superior",
+            "topnav_foreground": "Fontes doPrimeiro Plano da Navegação Superior",
             "topnav_accent": "Hover da Navegação Superior",
             "topnav_accent_foreground": "Primeiro Plano Hover da Navegação Superior",
             "topnav_border": "Borda da Navegação Superior",
@@ -981,7 +981,7 @@
       },
       "no_nodes_title": "Nenhum Nó de Servidor de Jogo",
       "display_metrics": "Exibir Métricas",
-      "create": "Criar Nó de Servidor de Jogo",
+      "create": "Criar Novo Nó de Servidor 🖧",
       "cs_version_info": "Informações da Versão do CS2:",
       "hide_offline": "Ocultar Nós Offline",
       "only_enabled": "Apenas Nós Ativos",
@@ -1919,7 +1919,7 @@
       "save_error": "Falha ao salvar configurações de notificação",
       "map_paused": "Mapa Pausado",
       "status": {
-        "PickingPlayers": "Aguardando Jogadores",
+        "PickingPlayers": "Escolhendo Jogadores",
         "Scheduled": "Agendado",
         "WaitingForCheckIn": "Aguardando Check-In",
         "WaitingForServer": "Aguardando Servidor",
@@ -2473,8 +2473,8 @@
     },
     "decider": "Mapa Decisivo",
     "map_veto": {
-      "is_picking": "está Escolhendo (pickando)",
-      "organizer_override": "Substituição do Organizador",
+      "is_picking": "está realizando a seguinte ação:",
+      "organizer_override": "Intervenção do Organizador",
       "pick": "Pick*",
       "confirm": "Confirmar {type}"
     },
@@ -3005,7 +3005,7 @@
     "waiting_on_others": "Aguardando os Outros",
     "confirmed": "Confirmado",
     "ready": "Pronto",
-    "locked_in": "Trancado",
+    "locked_in": "Confirmado",
     "check_in": "Check In",
     "go_to_match": "Ir para a Partida",
     "disable_match_ready_modal_hint": "Não quer este popup?",
@@ -3068,7 +3068,7 @@
     "update_csgo": "Atualizar CS:GO",
     "overprovisioned_warning": "Super provisionado",
     "overprovisioned_warning_description": "Você atribuiu a servidores {total_server_count} possíveis, mas seu servidor só pode suportar servidores {max_servers}.",
-    "cpu_model": "Modelo da CPU",
+    "cpu_model": "CPU",
     "cpu_sockets": "Sockets",
     "cpu_cores_per_socket": "Núcleos/Socket da CPU",
     "cpu_threads_per_core": "Threads da CPU",
@@ -3156,7 +3156,7 @@
     "governor_performance_recommended": "O esquema 'performance' é recomendado para um desempenho ideal do servidor.",
     "max_servers": "Máximo de servidores",
     "hardware": "Hardware",
-    "cpu_info_title": "Info da CPU",
+    "cpu_info_title": "Informações do Servidor",
     "cpu_speed": "Frequência",
     "gpu_present": "GPU Disponível",
     "gpu_not_present": "GPU Indisponível",
@@ -3409,12 +3409,12 @@
     "modal_description": "Estatísticas detalhadas de consultas e visualização do plano de execução.="
   },
   "demo_network_limiter": {
-    "network_limit": "Limite de rede (Mbps)",
+    "network_limit": "Limite de banda (Mbps)",
     "unlimited": "Ilimitado",
     "unlimited_short": "Ilimitado",
-    "title": "Limitador de Rede para Demos",
+    "title": "Limitar Banda para Demos",
     "description": "Configure um limitador de velocidade de rede para o download das demos",
-    "updated": "Limitador de Rede atualizado"
+    "updated": "Limitador de Banda atualizado"
   },
   "clips": {
     "editor": {

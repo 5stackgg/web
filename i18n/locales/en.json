@@ -3476,7 +3476,8 @@
             "status_blocked_live": "Waiting — live stream in progress",
             "status_blocked_demo": "Waiting — demo session in progress",
             "status_idle": "Idle",
-            "status_waiting": "Waiting"
+            "status_waiting": "Waiting",
+            "resume_blocked_live": "Can't resume — a live stream is currently using the GPU"
         },
         "visibility_section": "Visibility",
         "create_dialog": {

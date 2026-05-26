@@ -795,6 +795,15 @@ const allPaused = computed(
 const gpuPool = useGpuPoolStatusStore();
 gpuPool.subscribeToPool();
 
+const resumeBlockedReason = computed<string | null>(() => {
+  const s = gpuPool.status;
+  if (!gpuPool.hasLoaded || !s) return null;
+  if (s.live_in_progress) {
+    return t("clips.render_queue.resume_blocked_live");
+  }
+  return null;
+});
+
 const queueStatus = computed<{
   key: string;
   tone: "amber" | "muted" | "danger";
@@ -1027,8 +1036,26 @@ const queueStatus = computed<{
                 </div>
               </div>
               <div class="flex shrink-0 items-center gap-1.5">
+                <Tooltip v-if="g.isPaused && resumeBlockedReason">
+                  <TooltipTrigger as-child>
+                    <span tabindex="0" class="inline-flex">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        class="h-7 px-2 text-[0.7rem] opacity-60 cursor-not-allowed"
+                        :disabled="true"
+                      >
+                        <Play class="h-3 w-3 mr-1" />
+                        {{ $t("ui_extras.resume") }}
+                      </Button>
+                    </span>
+                  </TooltipTrigger>
+                  <TooltipContent side="left">
+                    {{ resumeBlockedReason }}
+                  </TooltipContent>
+                </Tooltip>
                 <Button
-                  v-if="g.isPaused"
+                  v-else-if="g.isPaused"
                   size="sm"
                   variant="outline"
                   class="h-7 px-2 text-[0.7rem] hover:border-[hsl(var(--tac-amber))] hover:text-[hsl(var(--tac-amber))]"

@@ -191,7 +191,25 @@ import {
           >
             {{ $t("match.actions.create_clips") }}
           </DropdownMenuItem>
-          <DropdownMenuItem v-if="hasPausedRenders" @click="resumeRenders">
+          <Tooltip v-if="hasPausedRenders && resumeRendersBlockedReason">
+            <TooltipTrigger as-child>
+              <DropdownMenuItem disabled>
+                <div class="flex flex-col items-start leading-tight">
+                  <span>{{ $t("match.actions.resume_renders") }}</span>
+                  <span class="text-xs text-muted-foreground mt-0.5">
+                    {{ resumeRendersBlockedReason }}
+                  </span>
+                </div>
+              </DropdownMenuItem>
+            </TooltipTrigger>
+            <TooltipContent side="left">
+              {{ resumeRendersBlockedReason }}
+            </TooltipContent>
+          </Tooltip>
+          <DropdownMenuItem
+            v-else-if="hasPausedRenders"
+            @click="resumeRenders"
+          >
             <div class="flex flex-col items-start leading-tight">
               <span>{{ $t("match.actions.resume_renders") }}</span>
               <span class="text-xs text-muted-foreground mt-0.5">
@@ -684,6 +702,15 @@ export default {
     },
     hasPausedRenders() {
       return (this.renderSummary ?? []).some((s) => (s?.paused ?? 0) > 0);
+    },
+    resumeRendersBlockedReason() {
+      const gpu = useGpuPoolStatusStore();
+      if (!gpu.hasLoaded) return null;
+      const s = gpu.status as { live_in_progress?: boolean } | null;
+      if (s?.live_in_progress) {
+        return this.$t("clips.render_queue.resume_blocked_live");
+      }
+      return null;
     },
     firstInFlightRenderMatchMapId() {
       return (

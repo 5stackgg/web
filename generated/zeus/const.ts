@@ -7720,6 +7720,9 @@ export const AllTypesProps: Record<string,any> = {
 		reconnectLive:{
 			match_id:"uuid"
 		},
+		refreshFaceitRank:{
+
+		},
 		registerName:{
 
 		},
@@ -13491,6 +13494,12 @@ export const AllTypesProps: Record<string,any> = {
 		elo:"jsonb_comparison_exp",
 		elo_history:"v_player_elo_bool_exp",
 		elo_history_aggregate:"v_player_elo_aggregate_bool_exp",
+		faceit_elo:"Int_comparison_exp",
+		faceit_nickname:"String_comparison_exp",
+		faceit_player_id:"String_comparison_exp",
+		faceit_skill_level:"Int_comparison_exp",
+		faceit_updated_at:"timestamptz_comparison_exp",
+		faceit_url:"String_comparison_exp",
 		flashed_by_players:"player_flashes_bool_exp",
 		flashed_by_players_aggregate:"player_flashes_aggregate_bool_exp",
 		flashed_players:"player_flashes_bool_exp",
@@ -13582,6 +13591,7 @@ export const AllTypesProps: Record<string,any> = {
 		damage_taken:"player_damages_arr_rel_insert_input",
 		deaths:"player_kills_arr_rel_insert_input",
 		elo_history:"v_player_elo_arr_rel_insert_input",
+		faceit_updated_at:"timestamptz",
 		flashed_by_players:"player_flashes_arr_rel_insert_input",
 		flashed_players:"player_flashes_arr_rel_insert_input",
 		friends:"my_friends_arr_rel_insert_input",
@@ -13636,6 +13646,12 @@ export const AllTypesProps: Record<string,any> = {
 		discord_id:"order_by",
 		elo:"order_by",
 		elo_history_aggregate:"v_player_elo_aggregate_order_by",
+		faceit_elo:"order_by",
+		faceit_nickname:"order_by",
+		faceit_player_id:"order_by",
+		faceit_skill_level:"order_by",
+		faceit_updated_at:"order_by",
+		faceit_url:"order_by",
 		flashed_by_players_aggregate:"player_flashes_aggregate_order_by",
 		flashed_players_aggregate:"player_flashes_aggregate_order_by",
 		friends_aggregate:"my_friends_aggregate_order_by",
@@ -13695,6 +13711,7 @@ export const AllTypesProps: Record<string,any> = {
 	players_select_column: "enum" as const,
 	players_set_input:{
 		created_at:"timestamptz",
+		faceit_updated_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
 		role:"e_player_roles_enum",
 		steam_id:"bigint"
@@ -13705,6 +13722,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	players_stream_cursor_value_input:{
 		created_at:"timestamptz",
+		faceit_updated_at:"timestamptz",
 		last_sign_in_at:"timestamptz",
 		role:"e_player_roles_enum",
 		steam_id:"bigint"
@@ -25551,6 +25569,7 @@ export const ReturnTypes: Record<string,any> = {
 		recalculate_tournament_trophies:"tournament_trophies",
 		reconnectLive:"SuccessOutput",
 		refreshAllPlayers:"SuccessOutput",
+		refreshFaceitRank:"SuccessOutput",
 		registerName:"SuccessOutput",
 		removeFixtures:"SuccessOutput",
 		renameServerItem:"SuccessOutput",
@@ -29080,6 +29099,12 @@ export const ReturnTypes: Record<string,any> = {
 		elo:"jsonb",
 		elo_history:"v_player_elo",
 		elo_history_aggregate:"v_player_elo_aggregate",
+		faceit_elo:"Int",
+		faceit_nickname:"String",
+		faceit_player_id:"String",
+		faceit_skill_level:"Int",
+		faceit_updated_at:"timestamptz",
+		faceit_url:"String",
 		flashed_by_players:"player_flashes",
 		flashed_by_players_aggregate:"player_flashes_aggregate",
 		flashed_players:"player_flashes",
@@ -29175,6 +29200,8 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"players_variance_fields"
 	},
 	players_avg_fields:{
+		faceit_elo:"Float",
+		faceit_skill_level:"Float",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -29193,6 +29220,12 @@ export const ReturnTypes: Record<string,any> = {
 		current_lobby_id:"uuid",
 		custom_avatar_url:"String",
 		discord_id:"String",
+		faceit_elo:"Int",
+		faceit_nickname:"String",
+		faceit_player_id:"String",
+		faceit_skill_level:"Int",
+		faceit_updated_at:"timestamptz",
+		faceit_url:"String",
 		language:"String",
 		last_sign_in_at:"timestamptz",
 		losses:"Int",
@@ -29217,6 +29250,12 @@ export const ReturnTypes: Record<string,any> = {
 		current_lobby_id:"uuid",
 		custom_avatar_url:"String",
 		discord_id:"String",
+		faceit_elo:"Int",
+		faceit_nickname:"String",
+		faceit_player_id:"String",
+		faceit_skill_level:"Int",
+		faceit_updated_at:"timestamptz",
+		faceit_url:"String",
 		language:"String",
 		last_sign_in_at:"timestamptz",
 		losses:"Int",
@@ -29239,6 +29278,8 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"players"
 	},
 	players_stddev_fields:{
+		faceit_elo:"Float",
+		faceit_skill_level:"Float",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -29251,6 +29292,8 @@ export const ReturnTypes: Record<string,any> = {
 		wins_wingman:"Int"
 	},
 	players_stddev_pop_fields:{
+		faceit_elo:"Float",
+		faceit_skill_level:"Float",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -29263,6 +29306,8 @@ export const ReturnTypes: Record<string,any> = {
 		wins_wingman:"Int"
 	},
 	players_stddev_samp_fields:{
+		faceit_elo:"Float",
+		faceit_skill_level:"Float",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -29275,6 +29320,8 @@ export const ReturnTypes: Record<string,any> = {
 		wins_wingman:"Int"
 	},
 	players_sum_fields:{
+		faceit_elo:"Int",
+		faceit_skill_level:"Int",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -29287,6 +29334,8 @@ export const ReturnTypes: Record<string,any> = {
 		wins_wingman:"Int"
 	},
 	players_var_pop_fields:{
+		faceit_elo:"Float",
+		faceit_skill_level:"Float",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -29299,6 +29348,8 @@ export const ReturnTypes: Record<string,any> = {
 		wins_wingman:"Int"
 	},
 	players_var_samp_fields:{
+		faceit_elo:"Float",
+		faceit_skill_level:"Float",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -29311,6 +29362,8 @@ export const ReturnTypes: Record<string,any> = {
 		wins_wingman:"Int"
 	},
 	players_variance_fields:{
+		faceit_elo:"Float",
+		faceit_skill_level:"Float",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",

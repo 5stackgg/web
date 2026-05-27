@@ -14,7 +14,47 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Button } from "~/components/ui/button";
-import { MoreHorizontal, Trash } from "lucide-vue-next";
+import {
+  MoreHorizontal,
+  Trash,
+  Share2,
+  ExternalLink,
+  Rows3,
+  ScrollText,
+  Filter,
+} from "lucide-vue-next";
+import ShareBracketDialog from "~/components/tournament/ShareBracketDialog.vue";
+import { ref } from "vue";
+import { e_tournament_status_enum as StatusEnum } from "~/generated/zeus";
+
+const shareDialogOpen = ref(false);
+const viewMode = ref<"split" | "scroll">("split");
+const hideFinishedRounds = ref(false);
+
+const toggleViewMode = () => {
+  viewMode.value = viewMode.value === "split" ? "scroll" : "split";
+};
+
+const toggleHideFinished = () => {
+  hideFinishedRounds.value = !hideFinishedRounds.value;
+};
+
+const iconToggleClass = (active: boolean) =>
+  [
+    "inline-flex h-9 w-9 items-center justify-center rounded-md border transition-colors",
+    active
+      ? "border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]"
+      : "border-border bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.45)] hover:text-foreground",
+  ].join(" ");
+
+const popoutBracket = (tournamentId: string) => {
+  if (typeof window === "undefined") return;
+  window.open(
+    `${window.location.origin}/embed/tournaments/${tournamentId}/bracket?stage=current`,
+    `tournament-bracket-${tournamentId}`,
+    "width=1280,height=720,menubar=no,toolbar=no,location=no",
+  );
+};
 import {
   AlertDialog,
   AlertDialogAction,
@@ -46,9 +86,10 @@ import {
         default-value="stage-1"
         class="w-full"
       >
-        <TabsList
-          class="flex flex-wrap gap-2 p-0 bg-transparent border-none h-auto w-full justify-start"
-        >
+        <div class="flex flex-wrap items-start gap-2 justify-between mb-2">
+          <TabsList
+            class="flex flex-wrap gap-2 p-0 bg-transparent border-none h-auto flex-1 justify-start"
+          >
           <TabsTrigger
             v-for="stageNumber in maxStageNumber"
             :key="stageNumber"
@@ -142,7 +183,51 @@ import {
               {{ $t("tournament.stage.add_another") }}
             </span>
           </TabsTrigger>
-        </TabsList>
+          </TabsList>
+          <div class="flex gap-1.5 mt-1 items-center">
+            <button
+              type="button"
+              :class="iconToggleClass(viewMode === 'scroll')"
+              @click="toggleViewMode"
+              :title="
+                viewMode === 'scroll'
+                  ? $t('tournament.bracket.view_scroll')
+                  : $t('tournament.bracket.view_split')
+              "
+            >
+              <component
+                :is="viewMode === 'scroll' ? ScrollText : Rows3"
+                class="h-4 w-4"
+              />
+            </button>
+            <button
+              v-if="isTournamentLive"
+              type="button"
+              :class="iconToggleClass(hideFinishedRounds)"
+              @click="toggleHideFinished"
+              :title="$t('tournament.bracket.hide_finished')"
+            >
+              <Filter class="h-4 w-4" />
+            </button>
+            <div class="mx-1 h-6 w-px bg-border"></div>
+            <button
+              type="button"
+              :class="iconToggleClass(false)"
+              @click="popoutBracket(tournament.id)"
+              :title="$t('tournament.bracket.popout_button')"
+            >
+              <ExternalLink class="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              :class="iconToggleClass(false)"
+              @click="shareDialogOpen = true"
+              :title="$t('tournament.bracket.share_button')"
+            >
+              <Share2 class="h-4 w-4" />
+            </button>
+          </div>
+        </div>
 
         <TabsContent
           v-for="stageNumber in maxStageNumber"
@@ -162,6 +247,8 @@ import {
                 :stage="stage"
                 :tournament="tournament"
                 :is-final-stage="stageNumber === maxStageNumber"
+                :view-mode="viewMode"
+                :hide-finished-rounds="hideFinishedRounds"
               ></TournamentStage>
               <Separator
                 v-if="
@@ -196,6 +283,49 @@ import {
 
       <!-- Show stages directly without tabs if single stage and not organizer -->
       <div v-else class="space-y-6">
+        <div class="flex justify-end gap-1.5 items-center">
+          <button
+            type="button"
+            :class="iconToggleClass(viewMode === 'scroll')"
+            @click="toggleViewMode"
+            :title="
+              viewMode === 'scroll'
+                ? $t('tournament.bracket.view_scroll')
+                : $t('tournament.bracket.view_split')
+            "
+          >
+            <component
+              :is="viewMode === 'scroll' ? ScrollText : Rows3"
+              class="h-4 w-4"
+            />
+          </button>
+          <button
+            v-if="isTournamentLive"
+            type="button"
+            :class="iconToggleClass(hideFinishedRounds)"
+            @click="toggleHideFinished"
+            :title="$t('tournament.bracket.hide_finished')"
+          >
+            <Filter class="h-4 w-4" />
+          </button>
+          <div class="mx-1 h-6 w-px bg-border"></div>
+          <button
+            type="button"
+            :class="iconToggleClass(false)"
+            @click="popoutBracket(tournament.id)"
+            :title="$t('tournament.bracket.popout_button')"
+          >
+            <ExternalLink class="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            :class="iconToggleClass(false)"
+            @click="shareDialogOpen = true"
+            :title="$t('tournament.bracket.share_button')"
+          >
+            <Share2 class="h-4 w-4" />
+          </button>
+        </div>
         <div
           v-for="stage of tournament.stages.filter((s: any) => s.order === 1)"
           :key="stage.id"
@@ -205,9 +335,17 @@ import {
             :stage="stage"
             :tournament="tournament"
             :is-final-stage="true"
+            :view-mode="viewMode"
+            :hide-finished-rounds="hideFinishedRounds"
           ></TournamentStage>
         </div>
       </div>
+
+      <ShareBracketDialog
+        :open="shareDialogOpen"
+        :tournament="tournament"
+        @update:open="(v) => (shareDialogOpen = v)"
+      />
 
       <!-- Edit Stage Sheets -->
       <Sheet
@@ -320,6 +458,12 @@ export default {
         this.tournament.is_organizer &&
         this.tournament.status !== e_tournament_status_enum.Live &&
         this.tournament.status !== e_tournament_status_enum.Finished
+      );
+    },
+    isTournamentLive() {
+      return (
+        this.tournament.status === e_tournament_status_enum.Live ||
+        this.tournament.status === e_tournament_status_enum.Paused
       );
     },
   },

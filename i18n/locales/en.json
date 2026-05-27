@@ -1558,7 +1558,6 @@
     },
     "common": {
         "manage_custom_plugins_and_shared_files": "These files are moutned to `csgo` directory when the server is started.",
-        "loading": "Loading…",
         "delete": "Delete",
         "cancel": "Cancel",
         "save": "Save",
@@ -2525,8 +2524,6 @@
             "short_label": "Server Status"
         },
         "actions": {
-            "server_offline": "Server is offline",
-            "live_unavailable": "Live streaming isn't available for this match right now",
             "call_support": "Call for Support",
             "start_veto": "Start Veto",
             "skip_checkin": "Skip Check In",

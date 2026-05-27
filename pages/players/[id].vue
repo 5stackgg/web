@@ -53,6 +53,7 @@ import PlayerHighlights from "~/components/clips/PlayerHighlights.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import PlayerLeaderboardRank from "~/components/PlayerLeaderboardRank.vue";
 import PlayerFaceitRank from "~/components/PlayerFaceitRank.vue";
+import PlayerPremierRank from "~/components/PlayerPremierRank.vue";
 import PlayerEloHistoryDialog from "~/components/PlayerEloHistoryDialog.vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
@@ -105,19 +106,26 @@ const compareLifetime = ref(false);
 const excludeTournaments = ref(false);
 const settingsOpen = ref(false);
 const eloHistory = ref<WindowedEloEntry[]>([]);
+const premierWindowedHistory = ref<WindowedEloEntry[]>([]);
 const eloHistoryLoading = ref(false);
 
 const { client: apolloClient } = useApolloClient();
 const route = useRoute();
 
-const selectedModeRef = computed<"all" | "Competitive" | "Wingman" | "Duel">(
-  () => {
-    const raw = route.query.mode;
-    const v = Array.isArray(raw) ? raw[0] : raw;
-    if (v === "Competitive" || v === "Wingman" || v === "Duel") return v;
-    return "all";
-  },
-);
+const selectedModeRef = computed<
+  "all" | "Competitive" | "Wingman" | "Duel" | "Premier"
+>(() => {
+  const raw = route.query.mode;
+  const v = Array.isArray(raw) ? raw[0] : raw;
+  if (
+    v === "Competitive" ||
+    v === "Wingman" ||
+    v === "Duel" ||
+    v === "Premier"
+  )
+    return v;
+  return "all";
+});
 
 const playerIdRef = computed<string | null>(() => {
   const p = route.params.id;
@@ -204,18 +212,43 @@ const PLAYER_ELO_HISTORY_SUB = gql`
 `;
 
 let eloSubHandle: { unsubscribe: () => void } | null = null;
+let premierSubHandle: { unsubscribe: () => void } | null = null;
 let eloSubGen = 0;
+let premierSubGen = 0;
+
+const PLAYER_PREMIER_HISTORY_SUB = gql`
+  subscription PlayerWindowedPremierHistory(
+    $where: player_premier_rank_history_bool_exp!
+    $limit: Int!
+  ) {
+    player_premier_rank_history(
+      where: $where
+      order_by: { observed_at: asc }
+      limit: $limit
+    ) {
+      rank
+      match_id
+      observed_at
+    }
+  }
+`;
 
 function teardownEloSub() {
   if (eloSubHandle) {
     eloSubHandle.unsubscribe();
     eloSubHandle = null;
   }
+  if (premierSubHandle) {
+    premierSubHandle.unsubscribe();
+    premierSubHandle = null;
+  }
 }
 
 function startEloSub() {
   teardownEloSub();
-  if (!playerIdRef.value) return;
+  if (!playerIdRef.value) {
+    return;
+  }
   eloHistoryLoading.value = true;
   const gen = ++eloSubGen;
   const obs = apolloClient.subscribe({
@@ -224,12 +257,66 @@ function startEloSub() {
   });
   eloSubHandle = obs.subscribe({
     next: ({ data }: any) => {
-      if (gen !== eloSubGen) return;
+      if (gen !== eloSubGen) {
+        return;
+      }
       eloHistory.value = (data?.v_player_elo ?? []) as WindowedEloEntry[];
       eloHistoryLoading.value = false;
     },
     error: () => {
-      if (gen === eloSubGen) eloHistoryLoading.value = false;
+      if (gen === eloSubGen) {
+        eloHistoryLoading.value = false;
+      }
+    },
+  });
+
+  const pGen = ++premierSubGen;
+  const premierWhere: Record<string, any> = {
+    steam_id: { _eq: playerIdRef.value },
+  };
+  if (sinceTimestamp.value) {
+    premierWhere.observed_at = { _gte: sinceTimestamp.value };
+  }
+  if (untilTimestamp.value) {
+    premierWhere.observed_at = {
+      ...(premierWhere.observed_at ?? {}),
+      _lte: untilTimestamp.value,
+    };
+  }
+  const pObs = apolloClient.subscribe({
+    query: PLAYER_PREMIER_HISTORY_SUB,
+    variables: {
+      where: premierWhere,
+      limit: rangeLimit.value,
+    },
+  });
+  premierSubHandle = pObs.subscribe({
+    next: ({ data }: any) => {
+      if (pGen !== premierSubGen) {
+        return;
+      }
+      const rows = (data?.player_premier_rank_history ?? []) as Array<{
+        rank: number;
+        match_id: string | null;
+        observed_at: string;
+      }>;
+      let prev: number | null = null;
+      premierWindowedHistory.value = rows.map((r) => {
+        const change = prev === null ? 0 : r.rank - prev;
+        prev = r.rank;
+        return {
+          current_elo: r.rank,
+          updated_elo: r.rank,
+          elo_change: change,
+          match_created_at: r.observed_at,
+          match_id: r.match_id,
+          match_result: null,
+          type: "Premier",
+          kills: null,
+          deaths: null,
+          assists: null,
+        };
+      });
     },
   });
 }
@@ -389,15 +476,17 @@ watch([playerIdRef, matchesWhere, matchesPage], () => loadMatches(), {
 });
 
 const modeFilteredWindowed = computed<WindowedEloEntry[]>(() => {
-  if (selectedModeRef.value === "all") return eloHistory.value;
+  if (selectedModeRef.value === "Premier") {
+    return premierWindowedHistory.value;
+  }
+  if (selectedModeRef.value === "all") {
+    return eloHistory.value;
+  }
   return eloHistory.value.filter((e) => e.type === selectedModeRef.value);
 });
 
 const windowedStats = computed(() => {
   const list = modeFilteredWindowed.value;
-  // Headline ELO values (current/peak/lowest) anchor to Competitive when
-  // no specific mode is chosen — otherwise the most recent Wingman/Duel
-  // match would flip "Current ELO" away from the player's primary mode.
   const headlineList =
     selectedModeRef.value === "all"
       ? eloHistory.value.filter((e) => e.type === "Competitive")
@@ -591,6 +680,20 @@ function bucketHistory(
 // usually carries the most volume.
 const windowedChartSeries = computed(() => {
   const size = bucketSize.value;
+
+  if (selectedModeRef.value === "Premier") {
+    return premierWindowedHistory.value.length > 0
+      ? [
+          {
+            key: "Premier",
+            label: "Premier",
+            history: bucketHistory(premierWindowedHistory.value, size),
+            focus: true,
+          },
+        ]
+      : [];
+  }
+
   const groupBy = (m: "Competitive" | "Wingman" | "Duel") =>
     bucketHistory(
       eloHistory.value.filter((e) => e.type === m),
@@ -683,7 +786,7 @@ definePageMeta({
 const modeTab = useRouteTab({
   param: "mode",
   defaultTab: "all",
-  tabs: ["all", "Competitive", "Wingman", "Duel"],
+  tabs: ["all", "Competitive", "Wingman", "Duel", "Premier"],
 });
 
 const { isMobile } = useSidebar();
@@ -844,6 +947,11 @@ const playerTeamChipShortClasses =
                 :faceit-url="player.faceit_url"
                 :faceit-nickname="player.faceit_nickname"
               />
+              <PlayerPremierRank
+                v-if="player.steam_id"
+                :premier-rank="player.premier_rank"
+                :premier-rank-updated-at="player.premier_rank_updated_at"
+              />
               <div v-if="canEditRole" :class="playerHeroInlineRoleWrapClasses">
                 <PlayerRoleForm :player="player" />
               </div>
@@ -937,7 +1045,7 @@ const playerTeamChipShortClasses =
 
     <div class="flex flex-col gap-4 md:gap-6" v-if="player && pageContentReady">
       <Tabs v-model="modeTab">
-        <TabsList class="grid grid-cols-4 w-full max-w-md mx-auto">
+        <TabsList class="grid grid-cols-5 w-full max-w-md mx-auto">
           <TabsTrigger value="all">{{
             $t("pages.leaderboard.match_types.all")
           }}</TabsTrigger>
@@ -950,6 +1058,7 @@ const playerTeamChipShortClasses =
           <TabsTrigger value="Duel">{{
             $t("pages.leaderboard.match_types.duel")
           }}</TabsTrigger>
+          <TabsTrigger value="Premier">Premier</TabsTrigger>
         </TabsList>
       </Tabs>
 
@@ -1262,22 +1371,6 @@ const playerTeamChipShortClasses =
             variant="elevated"
             class="relative flex flex-col h-full p-4"
           >
-            <!-- No title bar — the strip's "Current ELO" cell carries
-                 the card's identity. Maximize lives in the top-right
-                 corner as a floating affordance instead. -->
-            <button
-              type="button"
-              class="absolute right-3 top-3 z-10 inline-flex h-7 w-7 items-center justify-center rounded border border-border/60 bg-card/60 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
-              :title="
-                $t(
-                  'pages.players.detail.view_full_elo_history',
-                  'View full ELO history',
-                )
-              "
-              @click="eloDialogOpen = true"
-            >
-              <Maximize2 class="h-3.5 w-3.5" />
-            </button>
             <CardContent class="flex flex-1 flex-col gap-3 p-0">
               <!-- Stats strip — two cells now (Current ELO + Peak/Lowest).
                    Matches/W/L lives in the Win Rate card next door so we
@@ -1285,14 +1378,33 @@ const playerTeamChipShortClasses =
               <div
                 class="grid grid-cols-1 divide-y divide-border/40 overflow-hidden rounded-md border border-border/60 sm:grid-cols-2 sm:divide-x sm:divide-y-0"
               >
-                <!-- Headline metric — Current ELO. Much larger typography
-                     than the supporting Peak / Lowest cell so the user
-                     reads it first; this is "the point" of the chart. -->
                 <div class="relative min-h-[88px] px-4 py-3 pr-12">
                   <div
-                    class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
+                    class="flex items-center justify-between gap-3 font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
                   >
-                    {{ $t("pages.players.detail.current_elo") }}
+                    <span>{{ $t("pages.players.detail.current_elo") }}</span>
+                    <button
+                      v-if="hasEloChartData"
+                      type="button"
+                      class="inline-flex items-center gap-1 normal-case font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
+                      @click="eloDialogOpen = true"
+                      :title="
+                        $t(
+                          'pages.players.detail.view_full_elo_history',
+                          'View full history',
+                        )
+                      "
+                    >
+                      <Maximize2 class="h-3 w-3" />
+                      <span class="hidden sm:inline">
+                        {{
+                          $t(
+                            "pages.players.detail.view_full_elo_history",
+                            "View full history",
+                          )
+                        }}
+                      </span>
+                    </button>
                   </div>
                   <div
                     class="mt-1 text-3xl font-bold leading-none tabular-nums tracking-tight sm:text-4xl"
@@ -1781,6 +1893,8 @@ export default {
               faceit_elo: true,
               faceit_url: true,
               faceit_nickname: true,
+              premier_rank: true,
+              premier_rank_updated_at: true,
               stats: {
                 kills: true,
                 deaths: true,
@@ -1800,6 +1914,17 @@ export default {
                 {
                   with: true,
                   kill_count: true,
+                },
+              ],
+              premier_rank_history: [
+                {
+                  limit: 50,
+                  order_by: [{}, { observed_at: order_by.desc }],
+                },
+                {
+                  rank: true,
+                  match_id: true,
+                  observed_at: true,
                 },
               ],
               __alias: {
@@ -2046,6 +2171,39 @@ export default {
     },
     eloChartSeries() {
       if (!this.player) return [];
+
+      if (this.selectedMode === "Premier") {
+        const raw = (this.player.premier_rank_history || []) as Array<{
+          rank: number;
+          match_id: string | null;
+          observed_at: string;
+        }>;
+        // Chart expects ascending chronological + an elo_change delta;
+        // the subscription returns desc, so reverse and walk.
+        const sorted = [...raw].reverse();
+        let prev: number | null = null;
+        const history = sorted.map((entry) => {
+          const change = prev === null ? 0 : entry.rank - prev;
+          prev = entry.rank;
+          return {
+            current_elo: entry.rank,
+            updated_elo: entry.rank,
+            elo_change: change,
+            match_id: entry.match_id,
+            match_created_at: entry.observed_at,
+            type: "Premier",
+          };
+        });
+        return [
+          {
+            key: "Premier",
+            label: "Premier (CS Rating)",
+            history,
+            focus: true,
+          },
+        ];
+      }
+
       const comp = this.player.competitive_elo_history || [];
       const wing = this.player.wingman_elo_history || [];
       const duel = this.player.duel_elo_history || [];

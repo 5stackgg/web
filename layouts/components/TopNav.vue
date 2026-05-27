@@ -28,6 +28,8 @@ import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useMatchReadyModal } from "~/composables/useMatchReadyModal";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import PlayerPendingImports from "~/components/PlayerPendingImports.vue";
+import { gql } from "@apollo/client/core";
 import { useAuthStore } from "~/stores/AuthStore";
 import Logout from "./Logout.vue";
 import MatchLobbies from "./MatchLobbies.vue";
@@ -69,6 +71,49 @@ const hasPendingAlert = computed(
 );
 const route = useRoute();
 const authStore = useAuthStore();
+
+const pendingMatchImports = ref<
+  Array<{
+    valve_match_id: string;
+    status: string;
+    error?: string | null;
+  }>
+>([]);
+
+const PENDING_IMPORTS_QUERY = gql`
+  query TopNavPendingMatchImports {
+    pending_match_imports {
+      valve_match_id
+      status
+      error
+    }
+  }
+`;
+
+const apolloClient = useApolloClient().client;
+let pendingPollHandle: ReturnType<typeof setInterval> | null = null;
+
+async function refreshPendingImports() {
+  if (!authStore.me?.steam_id) return;
+  try {
+    const { data } = await apolloClient.query({
+      query: PENDING_IMPORTS_QUERY,
+      fetchPolicy: "network-only",
+    });
+    pendingMatchImports.value = data?.pending_match_imports ?? [];
+  } catch {
+    // ignore — the chip just stays at its last value
+  }
+}
+
+onMounted(() => {
+  refreshPendingImports();
+  pendingPollHandle = setInterval(refreshPendingImports, 30 * 1000);
+});
+
+onUnmounted(() => {
+  if (pendingPollHandle) clearInterval(pendingPollHandle);
+});
 const homePath = computed(() => (authStore.me ? "/me" : "/watch"));
 const isHome = computed(() => {
   if (homePath.value === "/me") {
@@ -565,6 +610,10 @@ const loginArrowClasses =
                   :show-flag="false"
                   :show-role="false"
                   size="sm"
+                />
+                <PlayerPendingImports
+                  v-if="pendingMatchImports.length > 0"
+                  :imports="pendingMatchImports"
                 />
                 <ChevronsUpDown class="h-4 w-4" />
               </button>

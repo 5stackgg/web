@@ -52,6 +52,10 @@ const navItems = computed(() => {
       label: $t("pages.settings.account.api_keys"),
     },
     {
+      path: "/settings/match-history",
+      label: "CS2 Match History",
+    },
+    {
       path: "/settings/notifications",
       label: $t("pages.settings.notifications.title"),
     },

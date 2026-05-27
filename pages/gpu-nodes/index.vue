@@ -23,7 +23,31 @@ import {
   CheckCircle2,
   Square,
   Settings2,
+  AlertTriangle,
+  Trash2,
+  Plus,
+  Eraser,
 } from "lucide-vue-next";
+import { Switch } from "~/components/ui/switch";
+import { Input } from "~/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "~/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "~/components/ui/alert-dialog";
 import { useGpuAvailability } from "~/composables/useGpuAvailability";
 import { generateMutation } from "~/graphql/graphqlGen";
 import EditCs2Options from "~/components/game-server-nodes/EditCs2Options.vue";
@@ -43,6 +67,117 @@ const { client: apolloClient } = useApolloClient();
 const confirmStopByNodeId = reactive<Record<string, boolean>>({});
 const busyByNodeId = reactive<Record<string, boolean>>({});
 const cs2OptionsNode = ref<any | null>(null);
+
+const showAddSteamAccount = ref(false);
+const newSteamUsername = ref("");
+const newSteamPassword = ref("");
+const deleteSteamTarget = ref<{ id: string; username: string } | null>(null);
+const clearCacheTarget = ref<{ id: string; label: string } | null>(null);
+
+async function toggleSteamAccountEnabled(
+  account: { id: string },
+  enabled: boolean,
+) {
+  try {
+    await apolloClient.mutate({
+      mutation: generateMutation({
+        update_steam_accounts_by_pk: [
+          { pk_columns: { id: account.id }, _set: { enabled } },
+          { id: true },
+        ],
+      }),
+    });
+  } catch (error: any) {
+    toast({
+      variant: "destructive",
+      title: t("pages.gpu_nodes.steam_pool.toggle_failed"),
+      description: error?.message,
+    });
+  }
+}
+
+function cancelAddSteamAccount() {
+  showAddSteamAccount.value = false;
+  newSteamUsername.value = "";
+  newSteamPassword.value = "";
+}
+
+async function submitAddSteamAccount() {
+  if (!newSteamUsername.value || !newSteamPassword.value) {
+    return;
+  }
+  try {
+    await apolloClient.mutate({
+      mutation: generateMutation({
+        insert_steam_accounts_one: [
+          {
+            object: {
+              username: newSteamUsername.value,
+              password: newSteamPassword.value,
+              enabled: true,
+            },
+          },
+          { id: true },
+        ],
+      }),
+    });
+    toast({ title: t("pages.gpu_nodes.steam_pool.added") });
+    cancelAddSteamAccount();
+  } catch (error: any) {
+    toast({
+      variant: "destructive",
+      title: t("pages.gpu_nodes.steam_pool.add_failed"),
+      description: error?.message,
+    });
+  }
+}
+
+async function confirmDeleteSteamAccount() {
+  const target = deleteSteamTarget.value;
+  if (!target) {
+    return;
+  }
+  deleteSteamTarget.value = null;
+  try {
+    await apolloClient.mutate({
+      mutation: generateMutation({
+        delete_steam_accounts_by_pk: [{ id: target.id }, { id: true }],
+      }),
+    });
+    toast({ title: t("pages.gpu_nodes.steam_pool.deleted") });
+  } catch (error: any) {
+    toast({
+      variant: "destructive",
+      title: t("pages.gpu_nodes.steam_pool.delete_failed"),
+      description: error?.message,
+    });
+  }
+}
+
+async function confirmClearCache() {
+  const target = clearCacheTarget.value;
+  if (!target) {
+    return;
+  }
+  clearCacheTarget.value = null;
+  try {
+    await apolloClient.mutate({
+      mutation: generateMutation({
+        clearGpuNodeSteamCache: [
+          { game_server_node_id: target.id },
+          { success: true },
+        ],
+      }),
+    });
+    toast({ title: t("pages.gpu_nodes.steam_pool.cache_clear_dispatched") });
+  } catch (error: any) {
+    toast({
+      variant: "destructive",
+      title: t("pages.gpu_nodes.steam_pool.cache_clear_failed"),
+      description: error?.message ?? t("toasts.request_failed"),
+    });
+  }
+}
 
 async function stopGpuSession(nodeId: string) {
   if (busyByNodeId[nodeId]) return;
@@ -152,6 +287,86 @@ const summaryTiles = computed(() => {
     </div>
   </PageTransition>
 
+  <PageTransition :delay="150" class="mt-6">
+    <Card variant="gradient" class="p-5 space-y-4">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h3 class="text-lg font-semibold">
+            {{ $t("pages.gpu_nodes.steam_pool.title") }}
+          </h3>
+          <p class="text-sm text-muted-foreground mt-1">
+            {{ $t("pages.gpu_nodes.steam_pool.description") }}
+          </p>
+        </div>
+        <Button @click="showAddSteamAccount = true">
+          <Plus class="w-4 h-4 mr-1" />
+          {{ $t("pages.gpu_nodes.steam_pool.add") }}
+        </Button>
+      </div>
+
+      <div
+        v-if="steamPoolEmpty"
+        class="flex items-start gap-3 rounded-md border border-yellow-700/40 bg-yellow-500/10 px-3 py-2.5 text-sm"
+      >
+        <AlertTriangle class="w-4 h-4 mt-0.5 text-yellow-500 shrink-0" />
+        <div class="text-yellow-200">
+          <div class="font-medium">
+            {{ $t("pages.gpu_nodes.steam_pool.empty_warning_title") }}
+          </div>
+          <div class="text-yellow-200/80 text-xs mt-0.5">
+            {{ $t("pages.gpu_nodes.steam_pool.empty_warning_description") }}
+          </div>
+        </div>
+      </div>
+
+      <div v-if="steamAccounts.length > 0" class="overflow-hidden rounded-md border border-border/40">
+        <table class="w-full text-sm">
+          <thead class="bg-muted/30 text-xs uppercase tracking-wider">
+            <tr>
+              <th class="text-left p-3">
+                {{ $t("pages.gpu_nodes.steam_pool.username") }}
+              </th>
+              <th class="text-left p-3">
+                {{ $t("pages.gpu_nodes.steam_pool.pinned_to") }}
+              </th>
+              <th class="text-center p-3">
+                {{ $t("pages.gpu_nodes.steam_pool.enabled") }}
+              </th>
+              <th class="w-12"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="account in steamAccounts"
+              :key="account.id"
+              class="border-t border-border/40"
+            >
+              <td class="p-3 font-mono">{{ account.username }}</td>
+              <td class="p-3 text-muted-foreground text-xs font-mono">
+                {{ account.last_node_id || "—" }}
+              </td>
+              <td class="p-3 text-center">
+                <Switch
+                  :model-value="account.enabled"
+                  @update:model-value="(v) => toggleSteamAccountEnabled(account, !!v)"
+                />
+              </td>
+              <td class="p-3 text-right">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  @click="deleteSteamTarget = { id: account.id, username: account.username }"
+                >
+                  <Trash2 class="w-4 h-4 text-red-500" />
+                </Button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </Card>
+  </PageTransition>
+
   <PageTransition :delay="200" class="mt-6">
     <div v-if="gpuNodes.length > 0" class="space-y-4">
       <Card
@@ -247,6 +462,47 @@ const summaryTiles = computed(() => {
           </div>
         </div>
 
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <span
+            v-if="steamAccountByNodeId[node.id]"
+            class="inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-card/50 px-2 py-1"
+          >
+            <span class="text-muted-foreground uppercase tracking-wider">
+              {{ $t("pages.gpu_nodes.steam_pool.pinned") }}:
+            </span>
+            <span class="font-mono">
+              {{ steamAccountByNodeId[node.id].username }}
+            </span>
+          </span>
+          <span
+            v-else
+            class="inline-flex items-center gap-1.5 rounded-md border border-yellow-700/40 bg-yellow-500/10 px-2 py-1 text-yellow-300"
+            :title="
+              steamPoolEmpty
+                ? $t('pages.gpu_nodes.steam_pool.empty_warning_description')
+                : $t('pages.gpu_nodes.steam_pool.unassigned_warning_description')
+            "
+          >
+            <AlertTriangle class="w-3.5 h-3.5" />
+            {{
+              steamPoolEmpty
+                ? $t("pages.gpu_nodes.steam_pool.no_accounts_short")
+                : $t("pages.gpu_nodes.steam_pool.unassigned_short")
+            }}
+          </span>
+          <Button
+            v-if="!busyByNode[node.id]"
+            size="sm"
+            variant="outline"
+            class="h-7 px-2 text-xs"
+            :title="$t('pages.gpu_nodes.steam_pool.clear_cache_title')"
+            @click="clearCacheTarget = { id: node.id, label: node.label || node.id }"
+          >
+            <Eraser class="w-3.5 h-3.5 mr-1" />
+            {{ $t("pages.gpu_nodes.steam_pool.clear_cache") }}
+          </Button>
+        </div>
+
         <div
           v-if="node.gpu_info && node.gpu_info.length"
           class="flex flex-wrap gap-2 text-xs"
@@ -290,6 +546,105 @@ const summaryTiles = computed(() => {
     :open="cs2OptionsNode !== null"
     @close="cs2OptionsNode = null"
   />
+
+  <Dialog v-model:open="showAddSteamAccount">
+    <DialogContent>
+      <DialogHeader>
+        <DialogTitle>
+          {{ $t("pages.gpu_nodes.steam_pool.add_title") }}
+        </DialogTitle>
+        <DialogDescription>
+          {{ $t("pages.gpu_nodes.steam_pool.add_description") }}
+        </DialogDescription>
+      </DialogHeader>
+      <div class="space-y-3">
+        <Input
+          v-model="newSteamUsername"
+          :placeholder="$t('pages.gpu_nodes.steam_pool.username')"
+          autocomplete="off"
+        />
+        <Input
+          v-model="newSteamPassword"
+          type="password"
+          :placeholder="$t('pages.gpu_nodes.steam_pool.password')"
+          autocomplete="new-password"
+        />
+      </div>
+      <DialogFooter>
+        <Button variant="ghost" @click="cancelAddSteamAccount">
+          {{ $t("common.cancel") }}
+        </Button>
+        <Button
+          :disabled="!newSteamUsername || !newSteamPassword"
+          @click="submitAddSteamAccount"
+        >
+          {{ $t("common.save") }}
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  </Dialog>
+
+  <AlertDialog
+    :open="!!deleteSteamTarget"
+    @update:open="(open) => !open && (deleteSteamTarget = null)"
+  >
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>
+          {{
+            $t("pages.gpu_nodes.steam_pool.delete_title", {
+              username: deleteSteamTarget?.username ?? "",
+            })
+          }}
+        </AlertDialogTitle>
+        <AlertDialogDescription>
+          {{ $t("pages.gpu_nodes.steam_pool.delete_description") }}
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel @click="deleteSteamTarget = null">
+          {{ $t("common.cancel") }}
+        </AlertDialogCancel>
+        <AlertDialogAction
+          class="bg-red-600 hover:bg-red-700"
+          @click="confirmDeleteSteamAccount"
+        >
+          {{ $t("common.delete") }}
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+
+  <AlertDialog
+    :open="!!clearCacheTarget"
+    @update:open="(open) => !open && (clearCacheTarget = null)"
+  >
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>
+          {{
+            $t("pages.gpu_nodes.steam_pool.clear_cache_title_node", {
+              node: clearCacheTarget?.label ?? "",
+            })
+          }}
+        </AlertDialogTitle>
+        <AlertDialogDescription>
+          {{ $t("pages.gpu_nodes.steam_pool.clear_cache_description") }}
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel @click="clearCacheTarget = null">
+          {{ $t("common.cancel") }}
+        </AlertDialogCancel>
+        <AlertDialogAction
+          class="bg-red-600 hover:bg-red-700"
+          @click="confirmClearCache"
+        >
+          {{ $t("pages.gpu_nodes.steam_pool.clear_cache") }}
+        </AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
 </template>
 
 <script lang="ts">
@@ -313,9 +668,40 @@ export default {
       liveStreams: [] as any[],
       demoSessions: [] as any[],
       renderJobs: [] as any[],
+      steamAccounts: [] as Array<{
+        id: string;
+        username: string;
+        enabled: boolean;
+        last_node_id: string | null;
+      }>,
     };
   },
   computed: {
+    steamPoolEmpty(): boolean {
+      return (
+        this.steamAccounts.filter((a) => a.enabled).length === 0 &&
+        this.gpuNodes.length > 0
+      );
+    },
+    steamAccountByNodeId(): Record<
+      string,
+      { id: string; username: string; enabled: boolean }
+    > {
+      const map: Record<
+        string,
+        { id: string; username: string; enabled: boolean }
+      > = {};
+      for (const a of this.steamAccounts) {
+        if (a.last_node_id) {
+          map[a.last_node_id] = {
+            id: a.id,
+            username: a.username,
+            enabled: a.enabled,
+          };
+        }
+      }
+      return map;
+    },
     busyByNode(): Record<string, BusyEntry> {
       const map: Record<string, BusyEntry> = {};
 
@@ -458,6 +844,22 @@ export default {
         } as any),
         result(this: any, { data }: any) {
           this.demoSessions = data?.match_demo_sessions ?? [];
+        },
+      },
+      steam_accounts: {
+        query: typedGql("subscription")({
+          steam_accounts: [
+            { order_by: [{ created_at: "asc" as any }] },
+            {
+              id: true,
+              username: true,
+              enabled: true,
+              last_node_id: true,
+            },
+          ],
+        } as any),
+        result(this: any, { data }: any) {
+          this.steamAccounts = data?.steam_accounts ?? [];
         },
       },
       clip_render_jobs: {

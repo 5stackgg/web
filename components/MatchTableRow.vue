@@ -22,6 +22,7 @@ import TwitchIcon from "~/components/icons/TwitchIcon.vue";
 import YouTubeIcon from "~/components/icons/YouTubeIcon.vue";
 import KickIcon from "~/components/icons/KickIcon.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
+import MatchSourceBadge from "~/components/MatchSourceBadge.vue";
 import { ref } from "vue";
 import MatchPlayerDetailsPanel from "~/components/match/MatchPlayerDetailsPanel.vue";
 import HighlightCard from "~/components/clips/HighlightCard.vue";
@@ -65,6 +66,8 @@ import {
           <span v-if="!compact" :class="matchTypePillClasses">
             {{ match.options.type }}
           </span>
+
+          <MatchSourceBadge :source="match.source" />
 
           <span v-if="match.options?.best_of" :class="matchTypePillClasses">
             BO{{ match.options.best_of }}
@@ -124,6 +127,8 @@ import {
           <span v-if="!compact" :class="matchTypePillClasses">
             {{ match.options.type }}
           </span>
+
+          <MatchSourceBadge :source="match.source" />
 
           <span v-if="match.options?.best_of" :class="matchTypePillClasses">
             BO{{ match.options.best_of }}

@@ -295,18 +295,26 @@ const vsBaseClasses =
         <div
           class="flex items-center gap-[0.6rem] justify-center flex-wrap mt-4 pt-[0.85rem] border-t border-border font-mono text-[0.72rem] tracking-[0.15em] uppercase text-muted-foreground"
         >
-          <span v-if="match.options?.best_of">
+          <span v-if="isNative && match.options?.best_of">
             {{
               $t("match.options.best_of.option", {
                 count: match.options.best_of,
               })
             }}
           </span>
-          <span v-if="match.e_region?.description" class="opacity-40">·</span>
-          <span v-if="match.e_region?.description">
+          <span
+            v-if="isNative && match.e_region?.description"
+            class="opacity-40"
+            >·</span
+          >
+          <span v-if="isNative && match.e_region?.description">
             {{ match.e_region.description }}
           </span>
-          <span v-if="formattedSchedule" class="opacity-40">·</span>
+          <span
+            v-if="isNative && formattedSchedule"
+            class="opacity-40"
+            >·</span
+          >
           <span v-if="formattedSchedule">
             {{ formattedSchedule }}
           </span>
@@ -526,6 +534,7 @@ export default {
             {
               id: true,
               status: true,
+              source: true,
               invite_code: true,
               e_match_status: {
                 description: true,
@@ -828,8 +837,12 @@ export default {
         return null;
       }
     },
+    isNative() {
+      return !this.match?.source || this.match.source === "5stack";
+    },
     showVetoPicks() {
       if (!this.match) return false;
+      if (this.match.source && this.match.source !== "5stack") return false;
       const hasVeto =
         this.match.options?.map_veto || this.match.options?.region_veto;
       if (!hasVeto) return false;

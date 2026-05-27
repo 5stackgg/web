@@ -3,6 +3,7 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { Ban, MicOff, MessageSquareOff, UserPlus } from "lucide-vue-next";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
+import PlayerPremierRank from "~/components/PlayerPremierRank.vue";
 import { Crown, Shield, BadgeCheck, BadgeIcon, Podcast } from "lucide-vue-next";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
 </script>
@@ -184,7 +185,15 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 {{ player?.role?.replace("_", " ") }}
               </span>
             </FiveStackToolTip>
-            <PlayerElo :elo="player.elo" v-if="showElo" />
+            <PlayerPremierRank
+              v-if="showElo && matchType === 'Premier' && player.premier_rank"
+              :premier-rank="player.premier_rank"
+              :premier-rank-updated-at="player.premier_rank_updated_at"
+            />
+            <PlayerElo
+              v-else-if="showElo"
+              :elo="player.elo"
+            />
             <slot name="elo-postfix"></slot>
             <p
               class="text-muted-foreground text-xs flex items-center gap-1"
@@ -273,6 +282,10 @@ export default {
       default: false,
     },
     avatarOverride: {
+      type: String,
+      default: null,
+    },
+    matchType: {
       type: String,
       default: null,
     },

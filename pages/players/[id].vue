@@ -52,6 +52,7 @@ import AvatarUpload from "~/components/AvatarUpload.vue";
 import PlayerHighlights from "~/components/clips/PlayerHighlights.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import PlayerLeaderboardRank from "~/components/PlayerLeaderboardRank.vue";
+import PlayerFaceitRank from "~/components/PlayerFaceitRank.vue";
 import PlayerEloHistoryDialog from "~/components/PlayerEloHistoryDialog.vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
@@ -240,6 +241,30 @@ watch(
 );
 
 onUnmounted(() => teardownEloSub());
+
+const REFRESH_FACEIT_MUTATION = gql`
+  mutation RefreshFaceitRank($steam_id: String!) {
+    refreshFaceitRank(steam_id: $steam_id) {
+      success
+    }
+  }
+`;
+
+async function triggerFaceitRefresh(steamId: string | null) {
+  if (!steamId) return;
+  try {
+    await apolloClient.mutate({
+      mutation: REFRESH_FACEIT_MUTATION,
+      variables: { steam_id: steamId },
+    });
+  } catch {
+    // Silent — refresh is rate-limited server-side and the chip reads
+    // from the players row, so a failed action just means we'll retry
+    // on the next visit.
+  }
+}
+
+watch(playerIdRef, (id) => triggerFaceitRefresh(id), { immediate: true });
 
 // The range bar drives the matches list + count as well. We pull the
 // player→matches relation with a where clause; the count uses the
@@ -811,6 +836,13 @@ const playerTeamChipShortClasses =
               <PlayerLeaderboardRank
                 v-if="player.steam_id"
                 :playerSteamId="player.steam_id"
+              />
+              <PlayerFaceitRank
+                v-if="player.steam_id"
+                :faceit-skill-level="player.faceit_skill_level"
+                :faceit-elo="player.faceit_elo"
+                :faceit-url="player.faceit_url"
+                :faceit-nickname="player.faceit_nickname"
               />
               <div v-if="canEditRole" :class="playerHeroInlineRoleWrapClasses">
                 <PlayerRoleForm :player="player" />
@@ -1745,6 +1777,10 @@ export default {
               losses_competitive: true,
               losses_wingman: true,
               losses_duel: true,
+              faceit_skill_level: true,
+              faceit_elo: true,
+              faceit_url: true,
+              faceit_nickname: true,
               stats: {
                 kills: true,
                 deaths: true,

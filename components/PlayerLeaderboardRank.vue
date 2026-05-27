@@ -91,8 +91,8 @@ const rankLabel = computed(() =>
 );
 
 const triggerClasses = [
-  "group/rank relative inline-flex items-center gap-1.5 cursor-pointer select-none",
-  "px-[0.55rem] py-[0.2rem] rounded",
+  "group/rank relative inline-flex items-center gap-1.5 cursor-pointer select-none leading-none",
+  "px-[0.55rem] py-[0.25rem] rounded",
   "border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--card)/0.55)]",
   "[backdrop-filter:blur(6px)]",
   "transition-[transform,border-color,box-shadow] duration-150",

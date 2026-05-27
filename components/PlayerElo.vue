@@ -321,8 +321,8 @@ export default {
     triggerClasses(): string {
       if (this.bordered) {
         return [
-          "group/elo relative inline-flex items-center gap-1.5 cursor-pointer select-none",
-          "px-[0.55rem] py-[0.2rem] rounded",
+          "group/elo relative inline-flex items-center gap-1.5 cursor-pointer select-none leading-none",
+          "px-[0.55rem] py-[0.25rem] rounded",
           "border border-[rgb(var(--tier-rgb)/0.4)] bg-[hsl(var(--card)/0.55)]",
           "[backdrop-filter:blur(6px)]",
           "transition-[transform,border-color,box-shadow] duration-150",
@@ -332,7 +332,7 @@ export default {
         ].join(" ");
       }
       return [
-        "group/elo relative inline-flex items-center cursor-pointer select-none",
+        "group/elo relative inline-flex items-center cursor-pointer select-none leading-none",
         "px-0 py-0 bg-transparent border-0",
         "transition-[transform,color] duration-150",
         "hover:-translate-y-px",

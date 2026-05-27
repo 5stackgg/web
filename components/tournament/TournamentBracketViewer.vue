@@ -1,9 +1,17 @@
 <script lang="ts" setup>
-import { ref, watch, onMounted, onUnmounted, nextTick, computed } from "vue";
+import {
+  ref,
+  watch,
+  onMounted,
+  onUnmounted,
+  nextTick,
+  computed,
+  type PropType,
+} from "vue";
 import { useI18n } from "vue-i18n";
 import TournamentMatch from "~/components/tournament/TournamentMatch.vue";
 import BracketScheduleDialog from "~/components/tournament/BracketScheduleDialog.vue";
-import { Maximize, Minimize, ZoomIn, ZoomOut } from "lucide-vue-next";
+import { Maximize, Minimize, ZoomIn, ZoomOut, Scan } from "lucide-vue-next";
 import { getRoundLabel } from "~/utilities/tournamentRoundLabels";
 import type { Bracket } from "~/types/tournament";
 
@@ -41,6 +49,26 @@ const props = defineProps({
     type: String,
     default: null,
   },
+  embed: {
+    type: Boolean,
+    default: false,
+  },
+  fitHeight: {
+    type: [String, Number] as PropType<string | number | null>,
+    default: null,
+  },
+  hideFinishedRounds: {
+    type: Boolean,
+    default: false,
+  },
+  pageScroll: {
+    type: Boolean,
+    default: false,
+  },
+  stickyTopOffset: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const { t } = useI18n();
@@ -48,8 +76,34 @@ const { t } = useI18n();
 const zoomBtnShineClasses =
   "relative overflow-hidden before:content-[''] before:absolute before:top-0 before:-left-full before:w-full before:h-full before:[background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent)] before:transition-[left] before:duration-500 enabled:hover:-translate-y-px enabled:hover:shadow-[0_4px_12px_rgba(0,0,0,0.3)] enabled:active:translate-y-0 enabled:active:shadow-[0_2px_6px_rgba(0,0,0,0.2)] enabled:hover:before:left-full";
 
+const isRoundFinished = (round: any): boolean => {
+  if (!round || !round.length) return false;
+  const brackets = Array.from(
+    { length: round.length },
+    (_, i) => round[i],
+  ).filter(Boolean);
+  if (!brackets.length) return false;
+  return brackets.every((b: any) => {
+    if (b.bye) return true;
+    if (!b.team_1 && !b.team_2) return false;
+    return !!b.match?.winning_lineup_id;
+  });
+};
+
+const displayRounds = computed(() => {
+  if (!props.hideFinishedRounds) return props.rounds;
+  const filtered = new Map<number, any>();
+  for (const [k, v] of props.rounds.entries()) {
+    if (!isRoundFinished(v)) filtered.set(k, v);
+  }
+  // If filtering removes everything, fall back to all rounds so we don't render empty
+  if (filtered.size === 0) return props.rounds;
+  return filtered;
+});
+
 const roundLabels = computed(() => {
   const labels = new Map<number, string>();
+  if (!props.rounds.size) return labels;
   const maxRound = Math.max(...props.rounds.keys());
 
   for (const [roundNumber, round] of props.rounds.entries()) {
@@ -68,27 +122,34 @@ const roundLabels = computed(() => {
 });
 
 const bracketContainer = ref<HTMLElement | null>(null);
-const minimapContainer = ref<HTMLElement | null>(null);
-const viewportIndicator = ref<HTMLElement | null>(null);
-const isDragging = ref(false);
 const isBracketDragging = ref(false);
 const bracketDragStart = ref({ x: 0, y: 0, scrollLeft: 0, scrollTop: 0 });
 
-// For momentum
 let lastPositions: { x: number; y: number; t: number }[] = [];
 let momentumFrame: number | null = null;
 let momentumVelocity = { x: 0, y: 0 };
-const MOMENTUM_DECAY = 0.95; // Deceleration factor
-const MOMENTUM_MIN_VELOCITY = 0.5; // px/frame
+const MOMENTUM_DECAY = 0.95;
+const MOMENTUM_MIN_VELOCITY = 0.5;
 
 const isFullscreen = ref(false);
 const bracketWrapper = ref<HTMLElement | null>(null);
 const bracketContent = ref<HTMLElement | null>(null);
 const bracketContentWrapper = ref<HTMLElement | null>(null);
-const zoomLevel = ref(0.75);
-const MIN_ZOOM = 0.5;
+
+const MIN_ZOOM = 0.25;
 const MAX_ZOOM = 3.0;
+const MAX_FIT_ZOOM = 1.0;
+const MIN_FIT_ZOOM = 0.55;
 const ZOOM_STEP = 0.1;
+
+const autoFit = ref(true);
+const manualZoom = ref(0.75);
+
+const naturalSize = ref({ width: 0, height: 0 });
+const availableSize = ref({ width: 0, height: 0 });
+
+let contentResizeObserver: ResizeObserver | null = null;
+let containerResizeObserver: ResizeObserver | null = null;
 
 const scheduleDialogOpen = ref(false);
 const selectedBracket = ref<Bracket | null>(null);
@@ -98,76 +159,68 @@ const handleScheduleBracket = (bracket: Bracket) => {
   scheduleDialogOpen.value = true;
 };
 
-// Calculate dynamic max height based on number of groups
-const maxHeight = computed(() => {
-  if (props.totalGroups === 1) {
-    return "80vh";
-  } else if (props.totalGroups === 2) {
-    return "40vh";
-  } else if (props.totalGroups === 3) {
-    return "28vh";
-  } else {
-    return "22vh";
+const containerMaxHeight = computed(() => `${availableSize.value.height}px`);
+
+const FIT_PADDING = 8;
+
+const fitZoom = computed(() => {
+  const natW = naturalSize.value.width;
+  const natH = naturalSize.value.height;
+  const ctW = availableSize.value.width - FIT_PADDING * 2;
+  const ctH = availableSize.value.height - FIT_PADDING * 2;
+  if (!natW || !natH) return manualZoom.value;
+  if (props.pageScroll) {
+    if (ctW <= 0) return MAX_FIT_ZOOM;
+    const wScale = ctW / natW;
+    return Math.max(MIN_FIT_ZOOM, Math.min(MAX_FIT_ZOOM, wScale));
   }
+  if (ctH <= 0) return manualZoom.value;
+  const hScale = ctH / natH;
+  if (ctW <= 0)
+    return Math.max(MIN_FIT_ZOOM, Math.min(MAX_FIT_ZOOM, hScale));
+  const wScale = ctW / natW;
+  return Math.max(
+    MIN_FIT_ZOOM,
+    Math.min(MAX_FIT_ZOOM, Math.min(hScale, wScale)),
+  );
 });
 
-const updateMinimap = () => {
-  if (
-    !bracketContainer.value ||
-    !minimapContainer.value ||
-    !viewportIndicator.value
-  )
-    return;
-  const container = bracketContainer.value;
-  const minimap = minimapContainer.value;
-  const indicator = viewportIndicator.value;
-  // Always use unzoomed scrollWidth/scrollHeight for minimap preview
-  const naturalWidth = container.scrollWidth;
-  const naturalHeight = container.scrollHeight;
-  const scaleX = minimap.clientWidth / naturalWidth;
-  const scaleY = minimap.clientHeight / naturalHeight;
-  // For the indicator, just use the visible area
-  const indicatorWidth = container.clientWidth * scaleX;
-  const indicatorHeight = container.clientHeight * scaleY;
-  const indicatorLeft = container.scrollLeft * scaleX;
-  const indicatorTop = container.scrollTop * scaleY;
-  indicator.style.width = `${indicatorWidth}px`;
-  indicator.style.height = `${indicatorHeight}px`;
-  indicator.style.left = `${indicatorLeft}px`;
-  indicator.style.top = `${indicatorTop}px`;
-  // Update minimap preview
-  const previewContainer = minimap.querySelector(".minimap-preview");
-  if (previewContainer) {
-    const columns = container.querySelectorAll(".bracket-column");
-    const previewColumns = previewContainer.querySelectorAll(".minimap-column");
-    columns.forEach((column, i) => {
-      const previewColumn = previewColumns[i] as HTMLElement;
-      if (previewColumn) {
-        const matches = column.querySelectorAll(".tournament-match");
-        const previewMatches = previewColumn.querySelectorAll(".minimap-match");
-        matches.forEach((match, j) => {
-          const previewMatch = previewMatches[j] as HTMLElement;
-          if (previewMatch) {
-            const matchEl = match as HTMLElement;
-            const matchTop = matchEl.offsetTop;
-            const matchHeight = matchEl.offsetHeight;
-            // Use naturalHeight for minimap scaling
-            const relativeTop =
-              (matchTop / naturalHeight) * minimap.clientHeight;
-            const relativeHeight =
-              (matchHeight / naturalHeight) * minimap.clientHeight;
-            previewMatch.style.top = `${relativeTop}px`;
-            previewMatch.style.height = `${relativeHeight}px`;
-          }
-        });
-      }
-    });
-  }
-};
+const effectiveZoom = computed(() =>
+  autoFit.value ? fitZoom.value : manualZoom.value,
+);
 
-const handleScroll = () => {
-  requestAnimationFrame(updateMinimap);
-};
+const scaledContentHeight = computed(
+  () => naturalSize.value.height * effectiveZoom.value,
+);
+const scaledContentWidth = computed(
+  () => naturalSize.value.width * effectiveZoom.value,
+);
+
+const clampedContainerHeight = computed(() => {
+  if (props.pageScroll) {
+    // Let the container size to its natural content; page handles scroll
+    return null;
+  }
+  if (!availableSize.value.height) return 0;
+  if (props.fitHeight != null) {
+    return availableSize.value.height;
+  }
+  if (props.totalGroups > 1 || isFullscreen.value || props.embed) {
+    return availableSize.value.height;
+  }
+  if (!scaledContentHeight.value) return 0;
+  return Math.min(scaledContentHeight.value, availableSize.value.height);
+});
+
+const needsHorizontalScroll = computed(() => {
+  if (props.pageScroll) {
+    return naturalSize.value.width > availableSize.value.width + 1;
+  }
+  return scaledContentWidth.value > availableSize.value.width + 1;
+});
+const needsVerticalScroll = computed(
+  () => scaledContentHeight.value > availableSize.value.height + 1,
+);
 
 const toggleFullscreen = async () => {
   if (!bracketWrapper.value) return;
@@ -190,42 +243,42 @@ const toggleFullscreen = async () => {
 
 const onFullscreenChange = () => {
   isFullscreen.value = !!document.fullscreenElement;
+  nextTick(() => measureSizes());
 };
 
 const redrawLines = () => {
   clearConnectingLines();
-  // Wait for transform to be applied, then redraw
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
       drawConnectingLines();
-      updateMinimap();
     });
   });
 };
 
 const zoomIn = () => {
-  zoomLevel.value = Math.min(MAX_ZOOM, zoomLevel.value + ZOOM_STEP);
-  nextTick(() => {
-    redrawLines();
-  });
+  autoFit.value = false;
+  manualZoom.value = Math.min(
+    MAX_ZOOM,
+    (autoFit.value ? fitZoom.value : manualZoom.value) + ZOOM_STEP,
+  );
+  nextTick(redrawLines);
 };
 
 const zoomOut = () => {
-  zoomLevel.value = Math.max(MIN_ZOOM, zoomLevel.value - ZOOM_STEP);
-  nextTick(() => {
-    redrawLines();
-  });
+  autoFit.value = false;
+  manualZoom.value = Math.max(
+    MIN_ZOOM,
+    (autoFit.value ? fitZoom.value : manualZoom.value) - ZOOM_STEP,
+  );
+  nextTick(redrawLines);
 };
 
 const resetZoom = () => {
-  zoomLevel.value = 0.75;
-  nextTick(() => {
-    redrawLines();
-  });
+  autoFit.value = true;
+  nextTick(redrawLines);
 };
 
 const handleWheel = (e: WheelEvent) => {
-  // Only zoom if Ctrl/Cmd key is held
   if (e.ctrlKey || e.metaKey) {
     e.preventDefault();
     if (e.deltaY < 0) {
@@ -236,65 +289,125 @@ const handleWheel = (e: WheelEvent) => {
   }
 };
 
+const measureSizes = () => {
+  if (typeof window === "undefined") return;
+  if (bracketContent.value) {
+    naturalSize.value = {
+      width: bracketContent.value.offsetWidth,
+      height: bracketContent.value.offsetHeight,
+    };
+  }
+  const vh = window.innerHeight;
+  let height = 0;
+  if (props.fitHeight != null) {
+    const parsed =
+      typeof props.fitHeight === "number"
+        ? props.fitHeight
+        : parseInt(props.fitHeight, 10);
+    height = Number.isFinite(parsed) && parsed > 0 ? parsed : vh;
+  } else if (isFullscreen.value) {
+    height = vh;
+  } else if (props.pageScroll) {
+    height = naturalSize.value.height || vh - 220;
+  } else if (props.embed) {
+    const headerReserve = 60;
+    if (props.totalGroups <= 1) height = vh - headerReserve;
+    else height = (vh - headerReserve) / props.totalGroups;
+  } else if (props.totalGroups === 1) {
+    height = vh - 220;
+  } else if (props.totalGroups === 2) {
+    height = (vh - 240) / 2;
+  } else if (props.totalGroups === 3) {
+    height = (vh - 260) / 3;
+  } else {
+    height = (vh - 280) / 4;
+  }
+  const width = bracketContainer.value?.clientWidth || 0;
+  availableSize.value = { width, height: Math.max(280, height) };
+};
+
 onMounted(() => {
   if (bracketContainer.value) {
-    bracketContainer.value.addEventListener("scroll", handleScroll);
     bracketContainer.value.addEventListener("wheel", handleWheel, {
       passive: false,
     });
-    window.addEventListener("resize", updateMinimap);
-    updateMinimap();
+    window.addEventListener("resize", measureSizes);
   }
   document.addEventListener("fullscreenchange", onFullscreenChange);
+
+  if (bracketContent.value) {
+    contentResizeObserver = new ResizeObserver(() => {
+      measureSizes();
+      redrawLines();
+    });
+    contentResizeObserver.observe(bracketContent.value);
+  }
+  if (bracketContainer.value) {
+    containerResizeObserver = new ResizeObserver(() => {
+      measureSizes();
+    });
+    containerResizeObserver.observe(bracketContainer.value);
+  }
+  nextTick(() => {
+    measureSizes();
+    redrawLines();
+  });
 });
 
 onUnmounted(() => {
   if (bracketContainer.value) {
-    bracketContainer.value.removeEventListener("scroll", handleScroll);
     bracketContainer.value.removeEventListener("wheel", handleWheel);
-    window.removeEventListener("resize", updateMinimap);
+    window.removeEventListener("resize", measureSizes);
   }
-  window.removeEventListener("mousemove", onMinimapPointerMove);
-  window.removeEventListener("touchmove", onMinimapPointerMove);
-  window.removeEventListener("mouseup", onMinimapPointerUp);
-  window.removeEventListener("touchend", onMinimapPointerUp);
   window.removeEventListener("mousemove", onBracketPointerMove);
   window.removeEventListener("touchmove", onBracketPointerMove);
   window.removeEventListener("mouseup", onBracketPointerUp);
   window.removeEventListener("touchend", onBracketPointerUp);
   if (momentumFrame) cancelAnimationFrame(momentumFrame);
   document.removeEventListener("fullscreenchange", onFullscreenChange);
+  contentResizeObserver?.disconnect();
+  containerResizeObserver?.disconnect();
 });
 
 watch(
   () => props.rounds,
   () => {
     nextTick(() => {
-      clearConnectingLines();
-      requestAnimationFrame(() => {
-        drawConnectingLines();
-        updateMinimap();
-      });
+      measureSizes();
+      redrawLines();
     });
   },
   { deep: true, immediate: true },
 );
 
-watch(zoomLevel, () => {
+watch(effectiveZoom, () => {
+  nextTick(redrawLines);
+});
+
+watch(
+  [
+    () => props.embed,
+    () => props.fitHeight,
+    () => props.hideFinishedRounds,
+    () => props.pageScroll,
+    isFullscreen,
+  ],
+  () => {
+    nextTick(() => {
+      measureSizes();
+      redrawLines();
+    });
+  },
+);
+
+watch(displayRounds, () => {
   nextTick(() => {
+    measureSizes();
     redrawLines();
   });
 });
 
 const clearConnectingLines = () => {
-  // Clear SVG from both container and wrapper (in case it's in either location)
-  if (bracketContainer.value) {
-    const container = bracketContainer.value as HTMLElement;
-    const existingSvg = container.querySelector("svg");
-    if (existingSvg) {
-      existingSvg.remove();
-    }
-  }
   if (bracketContentWrapper.value) {
     const wrapper = bracketContentWrapper.value as HTMLElement;
     const existingSvg = wrapper.querySelector("svg");
@@ -309,11 +422,9 @@ const drawConnectingLines = () => {
     return;
   }
 
-  const container = bracketContainer.value as HTMLElement;
   const wrapper = bracketContentWrapper.value as HTMLElement;
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
 
-  // Set SVG dimensions to match the wrapper size (unscaled dimensions)
   const fullWidth = wrapper.scrollWidth;
   const fullHeight = wrapper.scrollHeight;
 
@@ -326,9 +437,7 @@ const drawConnectingLines = () => {
 
   svg.style.pointerEvents = "none";
 
-  // Iterate through all rounds and brackets to draw connecting lines
-  for (const [roundNumber, round] of props.rounds.entries()) {
-    // Convert round to array (it's array-like with length property)
+  for (const [, round] of displayRounds.value.entries()) {
     const brackets = Array.from(
       { length: round.length },
       (_, i) => round[i],
@@ -337,13 +446,11 @@ const drawConnectingLines = () => {
     for (const bracket of brackets) {
       if (!bracket || !bracket.id) continue;
 
-      // Find the source match element by ID (search within wrapper)
       const sourceMatchEl = wrapper.querySelector(
         `#bracket-${bracket.id}`,
       ) as HTMLElement;
       if (!sourceMatchEl) continue;
 
-      // Draw line to parent bracket (winner advances)
       if (bracket.parent_bracket?.id) {
         const targetMatchEl = wrapper.querySelector(
           `#bracket-${bracket.parent_bracket.id}`,
@@ -353,7 +460,6 @@ const drawConnectingLines = () => {
         }
       }
 
-      // Draw line to loser bracket (loser goes to losers bracket)
       if (bracket.loser_bracket?.id) {
         const targetMatchEl = wrapper.querySelector(
           `#bracket-${bracket.loser_bracket.id}`,
@@ -376,15 +482,12 @@ const drawLine = (
 ) => {
   const margins = 12.5;
 
-  // Get positions relative to the wrapper (which has the scale transform)
-  // Since SVG is now in the same coordinate system, offsetLeft/offsetTop work correctly
   const sourceX = sourceEl.offsetLeft + sourceEl.offsetWidth;
   const sourceY = sourceEl.offsetTop + sourceEl.offsetHeight / 2;
 
   const targetX = targetEl.offsetLeft;
   const targetY = targetEl.offsetTop + targetEl.offsetHeight / 2;
 
-  // Adjust Y position based on type (winner goes to top, loser to bottom of target)
   const adjustedSourceY =
     type === "winner" ? sourceY - margins : sourceY + margins;
 
@@ -410,82 +513,13 @@ const drawLine = (
   svg.appendChild(path);
 };
 
-const getMinimapScroll = (clientX: number, clientY: number) => {
-  if (!bracketContainer.value || !minimapContainer.value)
-    return { scrollLeft: 0, scrollTop: 0 };
-  const minimap = minimapContainer.value;
-  const container = bracketContainer.value;
-  const rect = minimap.getBoundingClientRect();
-  // Calculate the position within the minimap
-  const x = clientX - rect.left;
-  const y = clientY - rect.top;
-  // Calculate the scroll positions
-  const scrollLeft =
-    (x / minimap.clientWidth) * container.scrollWidth -
-    container.clientWidth / 2;
-  const scrollTop =
-    (y / minimap.clientHeight) * container.scrollHeight -
-    container.clientHeight / 2;
-  return {
-    scrollLeft: Math.max(
-      0,
-      Math.min(scrollLeft, container.scrollWidth - container.clientWidth),
-    ),
-    scrollTop: Math.max(
-      0,
-      Math.min(scrollTop, container.scrollHeight - container.clientHeight),
-    ),
-  };
-};
-
-const onMinimapPointerDown = (e: MouseEvent | TouchEvent) => {
-  isDragging.value = true;
-  document.body.style.userSelect = "none";
-  moveViewport(e);
-  window.addEventListener("mousemove", onMinimapPointerMove);
-  window.addEventListener("touchmove", onMinimapPointerMove, {
-    passive: false,
-  });
-  window.addEventListener("mouseup", onMinimapPointerUp);
-  window.addEventListener("touchend", onMinimapPointerUp);
-};
-
-const onMinimapPointerMove = (e: MouseEvent | TouchEvent) => {
-  if (!isDragging.value) return;
-  moveViewport(e);
-  if (e.cancelable) e.preventDefault();
-};
-
-const onMinimapPointerUp = () => {
-  isDragging.value = false;
-  document.body.style.userSelect = "";
-  window.removeEventListener("mousemove", onMinimapPointerMove);
-  window.removeEventListener("touchmove", onMinimapPointerMove);
-  window.removeEventListener("mouseup", onMinimapPointerUp);
-  window.removeEventListener("touchend", onMinimapPointerUp);
-};
-
-function moveViewport(e: MouseEvent | TouchEvent) {
-  let clientX: number, clientY: number;
-  if (e instanceof TouchEvent) {
-    clientX = e.touches[0].clientX;
-    clientY = e.touches[0].clientY;
-  } else {
-    clientX = e.clientX;
-    clientY = e.clientY;
-  }
-  const { scrollLeft, scrollTop } = getMinimapScroll(clientX, clientY);
-  if (bracketContainer.value) {
-    bracketContainer.value.scrollLeft = scrollLeft;
-    bracketContainer.value.scrollTop = scrollTop;
-  }
-}
-
 const onBracketPointerDown = (e: MouseEvent | TouchEvent) => {
   if (!bracketContainer.value) return;
+  if (!needsHorizontalScroll.value && !needsVerticalScroll.value) return;
   isBracketDragging.value = true;
   document.body.style.userSelect = "none";
-  let clientX: number, clientY: number;
+  let clientX: number;
+  let clientY: number;
   if (e instanceof TouchEvent) {
     clientX = e.touches[0].clientX;
     clientY = e.touches[0].clientY;
@@ -514,7 +548,8 @@ const onBracketPointerDown = (e: MouseEvent | TouchEvent) => {
 
 const onBracketPointerMove = (e: MouseEvent | TouchEvent) => {
   if (!isBracketDragging.value || !bracketContainer.value) return;
-  let clientX: number, clientY: number;
+  let clientX: number;
+  let clientY: number;
   if (e instanceof TouchEvent) {
     clientX = e.touches[0].clientX;
     clientY = e.touches[0].clientY;
@@ -526,7 +561,6 @@ const onBracketPointerMove = (e: MouseEvent | TouchEvent) => {
   const dy = clientY - bracketDragStart.value.y;
   bracketContainer.value.scrollLeft = bracketDragStart.value.scrollLeft - dx;
   bracketContainer.value.scrollTop = bracketDragStart.value.scrollTop - dy;
-  // Track last positions for velocity
   const now = Date.now();
   lastPositions.push({ x: clientX, y: clientY, t: now });
   if (lastPositions.length > 5) lastPositions.shift();
@@ -540,12 +574,11 @@ const onBracketPointerUp = () => {
   window.removeEventListener("touchmove", onBracketPointerMove);
   window.removeEventListener("mouseup", onBracketPointerUp);
   window.removeEventListener("touchend", onBracketPointerUp);
-  // Calculate velocity for momentum
   if (lastPositions.length >= 2 && bracketContainer.value) {
     const last = lastPositions[lastPositions.length - 1];
     const first = lastPositions[0];
     const dt = last.t - first.t || 1;
-    momentumVelocity.x = ((last.x - first.x) / dt) * -1; // negative because drag direction
+    momentumVelocity.x = ((last.x - first.x) / dt) * -1;
     momentumVelocity.y = ((last.y - first.y) / dt) * -1;
     startMomentum();
   }
@@ -556,9 +589,8 @@ function startMomentum() {
   let { scrollLeft, scrollTop } = bracketContainer.value;
   function step() {
     if (!bracketContainer.value) return;
-    scrollLeft += momentumVelocity.x * 16; // 16ms per frame approx
+    scrollLeft += momentumVelocity.x * 16;
     scrollTop += momentumVelocity.y * 16;
-    // Boundaries
     scrollLeft = Math.max(
       0,
       Math.min(
@@ -592,72 +624,138 @@ function startMomentum() {
 </script>
 
 <template>
-  <div class="relative" ref="bracketWrapper">
+  <div
+    class="relative"
+    :class="isFullscreen ? 'flex h-screen w-screen items-center bg-background' : ''"
+    ref="bracketWrapper"
+  >
     <div
-      class="overflow-auto relative cursor-grab active:cursor-grabbing transition-[max-height] duration-300 ease-in-out"
-      :style="{
-        maxHeight: maxHeight,
-        minHeight: props.totalGroups > 1 ? '200px' : 'auto',
-      }"
+      class="relative"
+      :class="[
+        pageScroll
+          ? ''
+          : needsHorizontalScroll || needsVerticalScroll
+            ? 'cursor-grab active:cursor-grabbing'
+            : '',
+        needsHorizontalScroll ? 'overflow-x-auto' : 'overflow-x-visible',
+        needsVerticalScroll ? 'overflow-y-auto' : 'overflow-y-visible',
+        isFullscreen ? 'mx-auto w-full' : '',
+      ]"
+      :style="
+        pageScroll
+          ? { padding: '8px' }
+          : {
+              maxHeight: containerMaxHeight,
+              height: clampedContainerHeight
+                ? `${clampedContainerHeight}px`
+                : 'auto',
+              padding: '8px',
+              transition:
+                'height 250ms cubic-bezier(0.4, 0, 0.2, 1), max-height 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+            }
+      "
       ref="bracketContainer"
       @mousedown="onBracketPointerDown"
       @touchstart="onBracketPointerDown"
-      :class="{ '!max-h-none !h-screen': isFullscreen }"
     >
       <div
-        class="transition-transform duration-200 ease-out"
-        ref="bracketContentWrapper"
-        :style="{
-          transform: `scale(${zoomLevel})`,
-          transformOrigin: 'top left',
-        }"
+        :style="
+          pageScroll
+            ? {
+                width: 'auto',
+                height: 'auto',
+                opacity: naturalSize.width ? 1 : 0,
+                transition: 'opacity 150ms ease-out',
+              }
+            : {
+                width: scaledContentWidth
+                  ? `${scaledContentWidth}px`
+                  : 'auto',
+                height: scaledContentHeight
+                  ? `${scaledContentHeight}px`
+                  : 'auto',
+                opacity: naturalSize.width ? 1 : 0,
+                transition:
+                  'opacity 150ms ease-out, width 250ms cubic-bezier(0.4, 0, 0.2, 1), height 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+              }
+        "
+        :class="['relative', 'overflow-visible']"
       >
         <div
-          class="grid grid-flow-col auto-cols-max gap-20 min-w-max"
-          ref="bracketContent"
+          ref="bracketContentWrapper"
+          :class="[
+            'origin-top-left',
+            !pageScroll && scaledContentWidth ? 'absolute top-0 left-0' : '',
+          ]"
+          :style="
+            pageScroll
+              ? {}
+              : {
+                  transform: `scale(${effectiveZoom})`,
+                  transformOrigin: 'top left',
+                  transition: 'transform 250ms cubic-bezier(0.4, 0, 0.2, 1)',
+                }
+          "
         >
           <div
-            v-for="round of Array.from(props.rounds.keys())"
-            class="flex flex-col bracket-column"
+            class="grid grid-flow-col auto-cols-max gap-20 min-w-max"
+            ref="bracketContent"
           >
-            <!-- Round Label -->
-            <div class="text-center mb-2">
+            <div
+              v-for="round of Array.from(displayRounds.keys())"
+              :key="round"
+              class="flex flex-col bracket-column"
+            >
               <div
-                class="bg-gray-700 text-white rounded-lg px-4 py-2 shadow-md"
+                class="text-center mb-2"
+                :class="pageScroll ? 'sticky z-20 pt-1 pb-1' : ''"
+                :style="
+                  pageScroll
+                    ? {
+                        top: `${stickyTopOffset}px`,
+                        background:
+                          'linear-gradient(to bottom, hsl(var(--background)) 60%, hsl(var(--background) / 0.85))',
+                      }
+                    : undefined
+                "
               >
-                <span class="font-semibold text-sm">{{
-                  roundLabels.get(round) || `Round ${round}`
-                }}</span>
+                <div
+                  class="bg-gray-700 text-white rounded-lg px-4 py-2 shadow-md"
+                >
+                  <span class="font-semibold text-sm">{{
+                    roundLabels.get(round) || `Round ${round}`
+                  }}</span>
+                </div>
               </div>
-            </div>
 
-            <div class="flex flex-col justify-around flex-1 gap-4">
-              <TournamentMatch
-                :stage="stage"
-                :tournament="tournament"
-                :round="Number(round)"
-                :brackets="props.rounds.get(round) as any[]"
-                @schedule-bracket="handleScheduleBracket"
-              ></TournamentMatch>
+              <div class="flex flex-col justify-around flex-1 gap-4">
+                <TournamentMatch
+                  :stage="stage"
+                  :tournament="tournament"
+                  :round="Number(round)"
+                  :brackets="displayRounds.get(round) as any[]"
+                  @schedule-bracket="handleScheduleBracket"
+                ></TournamentMatch>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Zoom and Fullscreen Controls - Always Visible -->
     <div
+      v-if="!embed"
       class="zoom-controls-container absolute top-0 right-4 z-50 flex flex-col gap-3 opacity-20 hover:opacity-80 transition-opacity duration-300 ease-in-out"
     >
-      <!-- Zoom Controls -->
       <div
+        v-if="!pageScroll"
         class="flex flex-col gap-1.5 bg-gray-800/90 backdrop-blur-md rounded-lg p-2.5 shadow-xl border border-gray-700/50"
       >
         <button
           :class="zoomBtnShineClasses"
           class="bg-gray-700/60 hover:bg-gray-600/80 active:bg-gray-500/90 text-white rounded-md p-2.5 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-700/60 transition-all duration-200 ease-in-out flex items-center justify-center"
           @click="zoomIn"
-          :disabled="zoomLevel >= MAX_ZOOM"
+          :disabled="effectiveZoom >= MAX_ZOOM"
           :title="$t('ui.tooltips.zoom_in_scroll')"
         >
           <ZoomIn class="w-4 h-4" />
@@ -666,22 +764,30 @@ function startMomentum() {
           :class="zoomBtnShineClasses"
           class="bg-gray-700/60 hover:bg-gray-600/80 active:bg-gray-500/90 text-white rounded-md p-2.5 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-700/60 transition-all duration-200 ease-in-out flex items-center justify-center"
           @click="zoomOut"
-          :disabled="zoomLevel <= MIN_ZOOM"
+          :disabled="effectiveZoom <= MIN_ZOOM"
           :title="$t('ui.tooltips.zoom_out_scroll')"
         >
           <ZoomOut class="w-4 h-4" />
         </button>
         <button
-          :class="zoomBtnShineClasses"
-          class="bg-gray-700/60 hover:bg-gray-600/80 active:bg-gray-500/90 text-white rounded-md px-3 py-2 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-gray-700/60 transition-all duration-200 ease-in-out text-xs font-medium min-w-[3rem] flex items-center justify-center"
+          :class="[
+            zoomBtnShineClasses,
+            autoFit
+              ? 'bg-[hsl(var(--tac-amber)/0.25)] text-[hsl(var(--tac-amber))]'
+              : 'bg-gray-700/60 text-white hover:bg-gray-600/80',
+          ]"
+          class="rounded-md p-2.5 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all duration-200 ease-in-out flex items-center justify-center"
+          :title="$t('tournament.bracket.fit_to_view')"
           @click="resetZoom"
-          :disabled="zoomLevel === 0.75"
-          :title="$t('ui.tooltips.reset_zoom')"
         >
-          {{ Math.round(zoomLevel * 100) }}%
+          <Scan class="w-4 h-4" />
         </button>
+        <div
+          class="text-white text-[0.62rem] font-mono text-center opacity-70 tabular-nums"
+        >
+          {{ Math.round(effectiveZoom * 100) }}%
+        </div>
       </div>
-      <!-- Fullscreen Control -->
       <button
         :class="zoomBtnShineClasses"
         class="bg-gray-800/90 backdrop-blur-md hover:bg-gray-700/90 active:bg-gray-600/90 text-white rounded-lg p-2.5 shadow-xl focus:outline-none focus:ring-2 focus:ring-blue-500/50 border border-gray-700/50 transition-all duration-200 ease-in-out flex items-center justify-center"
@@ -697,45 +803,8 @@ function startMomentum() {
       </button>
     </div>
 
-    <!-- Minimap - Only shown when there are more than 4 rounds -->
-    <div class="absolute bottom-0 right-4 z-40" v-if="rounds.size > 4">
-      <!-- Minimap -->
-      <div
-        class="minimap-container cursor-grab w-56 h-40 bg-gray-700/70 rounded-sm overflow-hidden shadow-lg backdrop-blur-sm transition-all duration-200 ease-in-out relative opacity-10 hover:opacity-80"
-        ref="minimapContainer"
-        @mousedown="onMinimapPointerDown"
-        @touchstart="onMinimapPointerDown"
-      >
-        <div
-          class="minimap-preview absolute inset-0 pointer-events-none h-full"
-        >
-          <template
-            v-for="(round, i) in Array.from(props.rounds.keys())"
-            :key="'col-' + i"
-          >
-            <div
-              class="minimap-column absolute top-0 bottom-0 mx-[8px]"
-              :style="{
-                left: `${(i / Array.from(props.rounds.keys()).length) * 100}%`,
-                width: `${100 / Array.from(props.rounds.keys()).length}%`,
-              }"
-            >
-              <div
-                v-for="(_, index) in props.rounds.get(round) || []"
-                class="minimap-match absolute w-full bg-white/40 rounded-sm transition-all duration-100 ease-out shadow-sm min-h-[4px] mb-1"
-              ></div>
-            </div>
-          </template>
-        </div>
-        <!-- Blue viewport indicator rendered last for layering -->
-        <div
-          class="viewport-indicator absolute border-4 rounded-sm border-blue-400 bg-blue-400/5 cursor-pointer shadow-lg transition-all duration-100 ease-out z-[70]"
-          ref="viewportIndicator"
-        ></div>
-      </div>
-    </div>
-
     <BracketScheduleDialog
+      v-if="!embed"
       :open="scheduleDialogOpen"
       :bracket="selectedBracket"
       @update:open="scheduleDialogOpen = $event"

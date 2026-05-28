@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { e_player_roles_enum } from "~/generated/zeus";
 import { Switch } from "@/components/ui/switch";
-import { ExternalLink, LucideVideo } from "lucide-vue-next";
-import { Card } from "~/components/ui/card";
+import { ExternalLink } from "lucide-vue-next";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import SettingsPage from "~/components/settings/SettingsPage.vue";
+import SettingsSection from "~/components/settings/SettingsSection.vue";
 
 definePageMeta({
   layout: "application-settings",
@@ -10,14 +12,13 @@ definePageMeta({
 </script>
 
 <template>
-  <PageTransition :delay="0">
-    <form @submit.prevent="updateSettings" class="grid gap-4">
-      <Card variant="gradient">
-        <div class="p-6 space-y-6">
-          <h3 class="text-lg font-semibold">
-            {{ $t("pages.settings.application.streaming.access_section") }}
-          </h3>
-
+  <SettingsPage>
+    <PageTransition :delay="0">
+      <form @submit.prevent="updateSettings" class="space-y-6">
+        <SettingsSection
+          id="access"
+          :title="$t('pages.settings.application.streaming.access_section')"
+        >
           <FormField
             v-slot="{ componentField }"
             name="public.minimum_role_to_spectate"
@@ -95,16 +96,12 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
-      </Card>
+        </SettingsSection>
 
-      <Card variant="gradient">
-        <div class="p-6 space-y-6">
-          <h3 class="text-lg font-semibold flex items-center gap-2">
-            <LucideVideo class="w-5 h-5 text-primary" />
-            {{ $t("pages.settings.application.streaming.encoding_section") }}
-          </h3>
-
+        <SettingsSection
+          id="encoding"
+          :title="$t('pages.settings.application.streaming.encoding_section')"
+        >
           <FormField v-slot="{ componentField }" name="live_video_codec">
             <FormItem>
               <FormLabel>{{
@@ -133,51 +130,47 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
-      </Card>
+        </SettingsSection>
 
-      <Card variant="gradient" class="cursor-pointer" @click="togglePlaycast">
-        <div class="flex flex-row items-center justify-between p-4">
-          <div class="space-y-0.5">
-            <h4 class="text-base font-medium">
-              {{ $t("pages.settings.application.streaming.playcast") }}
-            </h4>
-            <p class="text-sm text-muted-foreground">
-              {{
-                $t("pages.settings.application.streaming.playcast_description")
-              }}
-            </p>
-            <a
-              href="https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Broadcast"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors mt-1"
-              @click.stop
-            >
-              {{
-                $t("pages.settings.application.streaming.playcast_learn_more")
-              }}
-              <ExternalLink class="w-3.5 h-3.5" />
-            </a>
-          </div>
-          <Switch
-            :model-value="playcastEnabled"
-            @update:model-value="togglePlaycast"
-          />
-        </div>
-      </Card>
-
-      <div class="flex justify-start">
-        <Button
-          type="submit"
-          :disabled="Object.keys(form.errors).length > 0"
-          class="my-3"
+        <SettingsSection
+          id="playcast"
+          :title="$t('pages.settings.application.streaming.playcast')"
+          :description="
+            $t('pages.settings.application.streaming.playcast_description')
+          "
+          clickable-header
+          @header-click="togglePlaycast"
         >
-          {{ $t("common.update") }}
-        </Button>
-      </div>
-    </form>
-  </PageTransition>
+          <template #action>
+            <Switch
+              :model-value="playcastEnabled"
+              @update:model-value="togglePlaycast"
+            />
+          </template>
+
+          <a
+            href="https://developer.valvesoftware.com/wiki/Counter-Strike:_Global_Offensive_Broadcast"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors"
+          >
+            {{ $t("pages.settings.application.streaming.playcast_learn_more") }}
+            <ExternalLink class="w-3.5 h-3.5" />
+          </a>
+        </SettingsSection>
+
+        <div class="flex justify-start">
+          <Button
+            type="submit"
+            :disabled="Object.keys(form.errors).length > 0 || !form.meta.dirty"
+            class="my-3"
+          >
+            {{ $t("common.update") }}
+          </Button>
+        </div>
+      </form>
+    </PageTransition>
+  </SettingsPage>
 </template>
 
 <script lang="ts">
@@ -222,6 +215,7 @@ export default {
           }
           this.form.setFieldValue(setting.name, setting.value);
         }
+        this.form.resetForm({ values: this.form.values });
       },
     },
   },

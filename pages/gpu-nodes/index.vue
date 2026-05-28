@@ -325,18 +325,19 @@ async function stopGpuSession(nodeId: string) {
           <!-- Identity -->
           <div class="gpu-node-id">
             <div class="gpu-node-name">
-              {{ node.label || node.id }}
+              <template v-if="node.gpu_info && node.gpu_info.length">
+                {{ node.gpu_info[0].name }}
+                <span v-if="node.gpu_info[0].memory_mb" class="gpu-node-vram">
+                  {{ Math.round(node.gpu_info[0].memory_mb / 1024) }} GB
+                </span>
+              </template>
+              <template v-else>{{ node.label || node.id }}</template>
               <span class="gpu-node-region">{{
                 node.e_region?.description || node.region || "—"
               }}</span>
             </div>
             <div class="gpu-node-meta">
-              <span v-if="node.gpu_info && node.gpu_info.length">
-                {{ node.gpu_info[0].name }}
-                <template v-if="node.gpu_info[0].memory_mb">
-                  · {{ Math.round(node.gpu_info[0].memory_mb / 1024) }} GB
-                </template>
-              </span>
+              <span class="gpu-node-sub">{{ node.label || node.id }}</span>
               <span v-if="node.public_ip || node.lan_ip" class="gpu-node-ip">
                 {{ node.lan_ip || node.public_ip }}
               </span>
@@ -1024,12 +1025,22 @@ export default {
   padding: 0.1rem 0.35rem;
   flex-shrink: 0;
 }
+.gpu-node-vram {
+  font-family: ui-monospace, monospace;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: hsl(var(--muted-foreground));
+  flex-shrink: 0;
+}
 .gpu-node-meta {
   display: flex;
   gap: 0.6rem;
   margin-top: 0.2rem;
   font-size: 0.72rem;
   color: hsl(var(--muted-foreground));
+}
+.gpu-node-sub {
+  font-family: ui-monospace, monospace;
 }
 .gpu-node-ip {
   font-family: ui-monospace, monospace;

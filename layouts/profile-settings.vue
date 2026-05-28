@@ -53,7 +53,7 @@ const navItems = computed(() => {
     },
     {
       path: "/settings/match-history",
-      label: "CS2 Match History",
+      label: $t("pages.settings.account.external_matches"),
     },
     {
       path: "/settings/notifications",

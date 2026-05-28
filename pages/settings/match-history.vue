@@ -23,6 +23,9 @@ definePageMeta({
 
 const apolloClient = useApolloClient().client;
 const me = computed(() => useAuthStore().me);
+const externalMatchesEnabled = computed(
+  () => useApplicationSettingsStore().externalMatchesEnabled,
+);
 
 const authCode = ref("");
 const shareCode = ref("");
@@ -466,7 +469,7 @@ async function uploadDemo(file: File) {
   <PageTransition :delay="0">
     <div>
       <h3 class="text-base font-semibold uppercase tracking-wide">
-        CS2 Match History
+        External Matches
       </h3>
       <p class="text-sm text-muted-foreground mt-0.5">
         Link your Steam match history so we can automatically import your
@@ -475,7 +478,15 @@ async function uploadDemo(file: File) {
     </div>
   </PageTransition>
 
-  <PageTransition :delay="100">
+  <PageTransition v-if="!externalMatchesEnabled" :delay="100">
+    <div
+      class="max-w-xl rounded-lg border border-border bg-card/50 px-4 py-3 text-sm text-muted-foreground"
+    >
+      {{ $t("pages.settings.application.external_matches.disabled_notice") }}
+    </div>
+  </PageTransition>
+
+  <PageTransition v-if="externalMatchesEnabled" :delay="100">
     <div v-if="!isLinked" class="grid gap-4 max-w-xl">
       <p class="text-sm text-muted-foreground">
         You'll need two codes from Valve:
@@ -617,7 +628,10 @@ async function uploadDemo(file: File) {
     </div>
   </PageTransition>
 
-  <PageTransition v-if="pendingImports.length > 0" :delay="150">
+  <PageTransition
+    v-if="externalMatchesEnabled && pendingImports.length > 0"
+    :delay="150"
+  >
     <div class="grid gap-3 max-w-xl mt-8">
       <div>
         <h3 class="text-base font-semibold uppercase tracking-wide">
@@ -744,7 +758,7 @@ async function uploadDemo(file: File) {
     </div>
   </PageTransition>
 
-  <PageTransition v-if="isAdmin" :delay="200">
+  <PageTransition v-if="externalMatchesEnabled && isAdmin" :delay="200">
     <div class="grid gap-3 max-w-xl mt-8">
       <div>
         <h3 class="text-base font-semibold uppercase tracking-wide">

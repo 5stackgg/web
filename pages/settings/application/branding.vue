@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { Card } from "~/components/ui/card";
+import SettingsPage from "~/components/settings/SettingsPage.vue";
+import SettingsSection from "~/components/settings/SettingsSection.vue";
 
 definePageMeta({
   layout: "application-settings",
@@ -9,22 +10,16 @@ definePageMeta({
 </script>
 
 <template>
-  <PageTransition :delay="0">
-    <div class="space-y-6">
-      <!-- General -->
-      <Card variant="gradient">
-        <div class="p-6 space-y-4">
-          <div class="space-y-1">
-            <h3 class="text-lg font-semibold">
-              {{ $t("pages.settings.application.branding.general") }}
-            </h3>
-            <p class="text-sm text-muted-foreground">
-              {{
-                $t("pages.settings.application.branding.general_description")
-              }}
-            </p>
-          </div>
-
+  <SettingsPage>
+    <PageTransition :delay="0">
+      <div class="space-y-6">
+        <SettingsSection
+          id="general"
+          :title="$t('pages.settings.application.branding.general')"
+          :description="
+            $t('pages.settings.application.branding.general_description')
+          "
+        >
           <div class="space-y-2">
             <label class="text-sm font-medium">{{
               $t("pages.settings.application.branding.brand_name")
@@ -84,7 +79,15 @@ definePageMeta({
               @update:model-value="toggleSeparators"
             />
           </div>
+        </SettingsSection>
 
+        <SettingsSection
+          id="assets"
+          :title="$t('pages.settings.application.branding.assets_section')"
+          :description="
+            $t('pages.settings.application.branding.assets_section_description')
+          "
+        >
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="space-y-2">
               <label class="text-sm font-medium">{{
@@ -180,23 +183,15 @@ definePageMeta({
               </div>
             </div>
           </div>
-        </div>
-      </Card>
+        </SettingsSection>
 
-      <!-- Login Page -->
-      <Card variant="gradient">
-        <div class="p-6 space-y-4">
-          <div class="space-y-1">
-            <h3 class="text-lg font-semibold">
-              {{ $t("pages.settings.application.branding.login_page") }}
-            </h3>
-            <p class="text-sm text-muted-foreground">
-              {{
-                $t("pages.settings.application.branding.login_page_description")
-              }}
-            </p>
-          </div>
-
+        <SettingsSection
+          id="login"
+          :title="$t('pages.settings.application.branding.login_page')"
+          :description="
+            $t('pages.settings.application.branding.login_page_description')
+          "
+        >
           <div
             class="flex flex-row items-center justify-between p-4 rounded-lg border cursor-pointer hover:bg-accent/40 transition-colors"
             @click="toggleLoginFooter()"
@@ -237,25 +232,16 @@ definePageMeta({
               />
             </div>
           </div>
-        </div>
-      </Card>
+        </SettingsSection>
 
-      <!-- Theme Colors -->
-      <Card variant="gradient">
-        <div class="p-6 space-y-4">
-          <div class="flex items-start justify-between gap-4">
-            <div class="space-y-1">
-              <h3 class="text-lg font-semibold">
-                {{ $t("pages.settings.application.branding.theme_colors") }}
-              </h3>
-              <p class="text-sm text-muted-foreground">
-                {{
-                  $t(
-                    "pages.settings.application.branding.theme_colors_description",
-                  )
-                }}
-              </p>
-            </div>
+        <SettingsSection
+          id="theme"
+          :title="$t('pages.settings.application.branding.theme_colors')"
+          :description="
+            $t('pages.settings.application.branding.theme_colors_description')
+          "
+        >
+          <div class="flex justify-end">
             <div class="flex gap-2 shrink-0">
               <Button
                 size="sm"
@@ -303,11 +289,10 @@ definePageMeta({
               </div>
             </div>
           </div>
-        </div>
-      </Card>
+        </SettingsSection>
 
-      <!-- Actions -->
-      <div class="flex gap-2 flex-wrap">
+        <!-- Actions -->
+        <div class="flex gap-2 flex-wrap">
         <Button @click="saveAll" :disabled="saving">
           {{ $t("pages.settings.application.branding.save_branding") }}
         </Button>
@@ -327,9 +312,10 @@ definePageMeta({
           class="hidden"
           @change="importTheme"
         />
+        </div>
       </div>
-    </div>
-  </PageTransition>
+    </PageTransition>
+  </SettingsPage>
 </template>
 
 <script lang="ts">

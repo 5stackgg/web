@@ -1,11 +1,12 @@
 <script lang="ts" setup>
 import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import TournamentBracketViewer from "./TournamentBracketViewer.vue";
+import { useBracketView } from "~/composables/useBracketView";
 import {
   ArrowDownToLine,
   ArrowUpToLine,
-  Maximize2,
-  Minimize2,
+  UnfoldVertical,
+  FoldVertical,
   GripHorizontal,
 } from "lucide-vue-next";
 
@@ -26,7 +27,12 @@ const props = defineProps<{
 const DIVIDER_HEIGHT = 14;
 const MIN_PANEL = 180;
 
-const verticalReserve = computed(() => (props.embed ? 80 : 240));
+const { isFullscreen, bracketScope } = useBracketView();
+
+const verticalReserve = computed(() => {
+  if (isFullscreen.value) return 140;
+  return props.embed ? 80 : 240;
+});
 
 const focused = ref<"wb" | "lb" | null>(null);
 const manualRatio = ref<number | null>(null);
@@ -71,6 +77,24 @@ watch(manualRatio, (value) => {
 });
 
 const hasLB = computed(() => !!props.lowerRounds && props.lowerRounds.size > 0);
+
+watch(
+  [isFullscreen, focused, hasLB],
+  () => {
+    if (!isFullscreen.value) {
+      bracketScope.value = null;
+      return;
+    }
+    if (focused.value === "wb") bracketScope.value = "upper";
+    else if (focused.value === "lb") bracketScope.value = "lower";
+    else bracketScope.value = hasLB.value ? null : "upper";
+  },
+  { immediate: true },
+);
+
+onUnmounted(() => {
+  bracketScope.value = null;
+});
 
 const wbMaxMatches = computed(() => {
   let max = 0;
@@ -195,7 +219,7 @@ const resetRatio = () => {
           "
         >
           <component
-            :is="focused === 'wb' ? Minimize2 : Maximize2"
+            :is="focused === 'wb' ? FoldVertical : UnfoldVertical"
             class="h-3.5 w-3.5"
           />
         </button>
@@ -223,7 +247,7 @@ const resetRatio = () => {
         <span
           class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] transition-colors group-hover:bg-[hsl(var(--tac-amber)/0.2)]"
         >
-          <Minimize2 class="h-3.5 w-3.5" />
+          <UnfoldVertical class="h-3.5 w-3.5" />
         </span>
       </button>
 
@@ -283,7 +307,7 @@ const resetRatio = () => {
       <span
         class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-destructive/40 bg-destructive/10 text-destructive transition-colors group-hover:bg-destructive/20"
       >
-        <Minimize2 class="h-3.5 w-3.5" />
+        <UnfoldVertical class="h-3.5 w-3.5" />
       </span>
     </button>
 
@@ -313,7 +337,7 @@ const resetRatio = () => {
           "
         >
           <component
-            :is="focused === 'lb' ? Minimize2 : Maximize2"
+            :is="focused === 'lb' ? FoldVertical : UnfoldVertical"
             class="h-3.5 w-3.5"
           />
         </button>

@@ -1,16 +1,22 @@
 <script setup lang="ts">
 import { Switch } from "@/components/ui/switch";
-import Card from "~/components/ui/card/Card.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import SettingsPage from "~/components/settings/SettingsPage.vue";
+import SettingsSection from "~/components/settings/SettingsSection.vue";
+
 definePageMeta({
   layout: "application-settings",
 });
 </script>
 
 <template>
-  <PageTransition :delay="0">
-    <form @submit.prevent="updateSettings" class="grid gap-4">
-      <Card variant="gradient">
-        <div class="p-6 space-y-6">
+  <SettingsPage>
+    <PageTransition :delay="0">
+      <form @submit.prevent="updateSettings" class="space-y-6">
+        <SettingsSection
+          id="performance"
+          :title="$t('pages.settings.application.servers.cpu_section')"
+        >
           <div
             class="flex flex-row items-center justify-between cursor-pointer"
             @click="toggleCpuPinning"
@@ -54,15 +60,12 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
-      </Card>
+        </SettingsSection>
 
-      <Card variant="gradient">
-        <div class="p-6 space-y-6">
-          <h3 class="text-lg font-semibold">
-            {{ $t("pages.settings.application.servers.disk_section") }}
-          </h3>
-
+        <SettingsSection
+          id="disk"
+          :title="$t('pages.settings.application.servers.disk_section')"
+        >
           <FormField
             v-slot="{ componentField }"
             name="reserved_disk_space_fresh_gb"
@@ -102,20 +105,20 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
-      </Card>
+        </SettingsSection>
 
-      <div class="flex justify-start">
-        <Button
-          type="submit"
-          :disabled="Object.keys(form.errors).length > 0"
-          class="my-3"
-        >
-          {{ $t("common.update") }}
-        </Button>
-      </div>
-    </form>
-  </PageTransition>
+        <div class="flex justify-start">
+          <Button
+            type="submit"
+            :disabled="Object.keys(form.errors).length > 0 || !form.meta.dirty"
+            class="my-3"
+          >
+            {{ $t("common.update") }}
+          </Button>
+        </div>
+      </form>
+    </PageTransition>
+  </SettingsPage>
 </template>
 
 <script lang="ts">
@@ -153,6 +156,7 @@ export default {
             this.form.setFieldValue(setting.name, parseInt(setting.value));
           }
         }
+        this.form.resetForm({ values: this.form.values });
       },
     },
   },

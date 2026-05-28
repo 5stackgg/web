@@ -13,26 +13,41 @@ definePageMeta({
     <PageTransition :delay="0">
       <form @submit.prevent="updateSettings" class="space-y-6">
         <SettingsSection
-          id="chat"
-          :title="$t('pages.settings.application.chat.title')"
-          :description="$t('pages.settings.application.chat.description')"
+          id="external-matches"
+          :title="$t('pages.settings.application.external_matches.section')"
         >
-          <FormField v-slot="{ componentField }" name="public.chat_message_ttl">
+          <FormField
+            v-slot="{ value, handleChange }"
+            name="external_matches_enabled"
+            type="checkbox"
+            :value="true"
+          >
             <FormItem>
-              <FormLabel>
-                {{ $t("pages.settings.application.chat.chat_message_ttl") }}
-              </FormLabel>
-              <FormDescription>
-                {{
-                  $t(
-                    "pages.settings.application.chat.chat_message_ttl_description",
-                  )
-                }}
-              </FormDescription>
-              <FormControl>
-                <Input v-bind="componentField" type="number" min="0" />
-              </FormControl>
-              <FormMessage />
+              <div
+                class="flex flex-row items-center justify-between cursor-pointer"
+                @click="handleChange(!value)"
+              >
+                <div class="space-y-0.5">
+                  <h4 class="text-base font-medium">
+                    {{
+                      $t("pages.settings.application.external_matches.enabled")
+                    }}
+                  </h4>
+                  <p class="text-sm text-muted-foreground">
+                    {{
+                      $t(
+                        "pages.settings.application.external_matches.enabled_description",
+                      )
+                    }}
+                  </p>
+                </div>
+                <FormControl>
+                  <Switch
+                    :model-value="value"
+                    @update:model-value="handleChange"
+                  />
+                </FormControl>
+              </div>
             </FormItem>
           </FormField>
         </SettingsSection>
@@ -58,7 +73,6 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { z } from "zod";
 import { toast } from "@/components/ui/toast";
-import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 export default {
   data() {
@@ -66,9 +80,7 @@ export default {
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
-            public: z.object({
-              chat_message_ttl: z.number().int().min(0).default(3600),
-            }),
+            external_matches_enabled: z.boolean().default(true),
           }),
         ),
       }),
@@ -77,13 +89,13 @@ export default {
   watch: {
     settings: {
       immediate: true,
-      handler(newVal: Array<{ name: string; value: string | null }>) {
+      handler(newVal) {
         for (const setting of newVal) {
-          if (setting.name === "public.chat_message_ttl") {
-            const parsed = Number(setting.value);
-            if (!Number.isNaN(parsed)) {
-              (this.form.setFieldValue as any)(setting.name, parsed);
-            }
+          if (setting.name === "public.external_matches_enabled") {
+            this.form.setFieldValue(
+              "external_matches_enabled",
+              setting.value !== "false",
+            );
           }
         }
         this.form.resetForm({ values: this.form.values });
@@ -92,16 +104,16 @@ export default {
   },
   methods: {
     async updateSettings() {
-      const ttl = (this.form.values as any).public?.chat_message_ttl ?? 3600;
-
-      await (this as any).$apollo.mutate({
+      await (this.$apollo as any).mutate({
         mutation: generateMutation({
           insert_settings: [
             {
               objects: [
                 {
-                  name: "public.chat_message_ttl",
-                  value: String(ttl),
+                  name: "public.external_matches_enabled",
+                  value: this.form.values.external_matches_enabled
+                    ? "true"
+                    : "false",
                 },
               ],
               on_conflict: {
@@ -117,7 +129,7 @@ export default {
       });
 
       toast({
-        title: this.$t("pages.settings.application.chat.updated"),
+        title: this.$t("pages.settings.application.external_matches.updated"),
       });
     },
   },

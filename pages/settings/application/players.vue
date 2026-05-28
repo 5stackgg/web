@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { Card } from "~/components/ui/card";
+import SettingsPage from "~/components/settings/SettingsPage.vue";
+import SettingsSection from "~/components/settings/SettingsSection.vue";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { useI18n } from "vue-i18n";
@@ -55,27 +56,28 @@ async function doRefreshAllPlayers() {
 </script>
 
 <template>
-  <PageTransition :delay="0">
-    <div>
-      <Card variant="gradient" class="p-6 mb-6">
-        <h3 class="text-lg font-semibold">
-          {{ $t("pages.settings.application.players.refresh_all_title") }}
-        </h3>
-        <p class="text-sm text-muted-foreground mt-1">
-          {{ $t("pages.settings.application.players.refresh_all_description") }}
-        </p>
-        <div class="mt-4">
-          <Button :disabled="refreshing" @click="showRefreshDialog = true">
-            {{
-              refreshing
-                ? $t("pages.settings.application.players.refreshing")
-                : $t("pages.settings.application.players.refresh_button")
-            }}
-          </Button>
-        </div>
-      </Card>
+  <SettingsPage>
+    <PageTransition :delay="0">
+      <div class="space-y-6">
+        <SettingsSection
+          id="refresh"
+          :title="$t('pages.settings.application.players.refresh_all_title')"
+          :description="
+            $t('pages.settings.application.players.refresh_all_description')
+          "
+        >
+          <div>
+            <Button :disabled="refreshing" @click="showRefreshDialog = true">
+              {{
+                refreshing
+                  ? $t("pages.settings.application.players.refreshing")
+                  : $t("pages.settings.application.players.refresh_button")
+              }}
+            </Button>
+          </div>
+        </SettingsSection>
 
-      <AlertDialog v-model:open="showRefreshDialog">
+        <AlertDialog v-model:open="showRefreshDialog">
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
@@ -102,42 +104,32 @@ async function doRefreshAllPlayers() {
         </AlertDialogContent>
       </AlertDialog>
 
-      <form class="grid gap-6" @submit.prevent="updateSettings">
-        <Card
-          variant="gradient"
-          class="cursor-pointer"
-          @click="togglePlayerNameRegistration"
-        >
-          <div class="flex flex-row items-center justify-between p-4">
-            <div class="space-y-0.5">
-              <h4 class="text-base font-medium">
-                {{
-                  $t(
-                    "pages.settings.application.players.force_name_registration",
-                  )
-                }}
-              </h4>
-              <p class="text-sm text-muted-foreground">
-                {{
-                  $t(
-                    "pages.settings.application.players.force_name_registration_description",
-                  )
-                }}
-              </p>
-            </div>
-            <Switch
-              :model-value="playerNameRegistration"
-              @update:model-value="togglePlayerNameRegistration"
-            />
-          </div>
-        </Card>
+        <form class="space-y-6" @submit.prevent="updateSettings">
+          <SettingsSection
+            id="registration"
+            :title="
+              $t('pages.settings.application.players.force_name_registration')
+            "
+            :description="
+              $t(
+                'pages.settings.application.players.force_name_registration_description',
+              )
+            "
+            clickable-header
+            @header-click="togglePlayerNameRegistration"
+          >
+            <template #action>
+              <Switch
+                :model-value="playerNameRegistration"
+                @update:model-value="togglePlayerNameRegistration"
+              />
+            </template>
+          </SettingsSection>
 
-        <Card variant="gradient">
-          <div class="p-6 space-y-6">
-            <h3 class="text-lg font-semibold">
-              {{ $t("pages.settings.application.players.permissions_section") }}
-            </h3>
-
+          <SettingsSection
+            id="permissions"
+            :title="$t('pages.settings.application.players.permissions_section')"
+          >
             <FormField
               v-slot="{ componentField }"
               name="public.create_matches_role"
@@ -235,21 +227,21 @@ async function doRefreshAllPlayers() {
                 <FormMessage />
               </FormItem>
             </FormField>
-          </div>
-        </Card>
+          </SettingsSection>
 
-        <div class="flex justify-start">
-          <Button
-            type="submit"
-            :disabled="Object.keys(form.errors).length > 0"
-            class="my-3"
-          >
-            {{ $t("common.update") }}
-          </Button>
-        </div>
-      </form>
-    </div>
-  </PageTransition>
+          <div class="flex justify-start">
+            <Button
+              type="submit"
+              :disabled="Object.keys(form.errors).length > 0 || !form.meta.dirty"
+              class="my-3"
+            >
+              {{ $t("common.update") }}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </PageTransition>
+  </SettingsPage>
 </template>
 
 <script lang="ts">
@@ -295,6 +287,7 @@ export default {
           }
           (this.form.setFieldValue as any)(setting.name, setting.value);
         }
+        this.form.resetForm({ values: this.form.values });
       },
     },
   },

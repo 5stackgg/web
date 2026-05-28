@@ -6,11 +6,24 @@ type SettingsSideTabItem = {
   label: string;
 };
 
-const props = defineProps<{
+type SettingsSideTabGroup = {
+  label: string;
   items: SettingsSideTabItem[];
+};
+
+const props = defineProps<{
+  /** Grouped tabs with section headers. */
+  groups?: SettingsSideTabGroup[];
+  /** Flat tabs (no headers) — convenience for simple navs. */
+  items?: SettingsSideTabItem[];
   activePath: string;
   ariaLabel?: string;
 }>();
+
+// Normalize to groups; a flat `items` list becomes one header-less group.
+const renderGroups = computed<SettingsSideTabGroup[]>(() =>
+  props.groups ?? [{ label: "", items: props.items ?? [] }],
+);
 
 const navRef = ref<HTMLElement | null>(null);
 const indicatorY = ref(0);
@@ -44,7 +57,7 @@ function updateIndicator() {
 let observer: MutationObserver | null = null;
 
 watch(
-  () => [props.activePath, props.items],
+  () => [props.activePath, renderGroups.value],
   () => nextTick(updateIndicator),
   { deep: true },
 );
@@ -93,26 +106,40 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
       }"
     />
 
-    <Button
-      v-for="item in items"
-      :key="item.path"
-      as-child
-      variant="ghost"
-      class="relative z-[1] h-9 w-full justify-start overflow-hidden rounded-sm px-3 text-left transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
-      :class="
-        item.path === activePath
-          ? 'bg-[hsl(var(--tac-amber)/0.06)] text-foreground'
-          : 'text-muted-foreground'
-      "
+    <div
+      v-for="(group, groupIndex) in renderGroups"
+      :key="group.label || groupIndex"
+      class="flex flex-col gap-1"
+      :class="groupIndex > 0 ? 'mt-4' : ''"
     >
-      <NuxtLink
-        :to="item.path"
-        :aria-current="item.path === activePath ? 'page' : undefined"
-        :data-settings-tab-active="item.path === activePath ? 'true' : 'false'"
+      <p
+        v-if="group.label"
+        class="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/60"
       >
-        <span class="truncate">{{ item.label }}</span>
-      </NuxtLink>
-    </Button>
+        {{ group.label }}
+      </p>
+
+      <Button
+        v-for="item in group.items"
+        :key="item.path"
+        as-child
+        variant="ghost"
+        class="relative z-[1] h-9 w-full justify-start overflow-hidden rounded-sm px-3 text-left transition-colors duration-200 hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-foreground"
+        :class="
+          item.path === activePath
+            ? 'bg-[hsl(var(--tac-amber)/0.06)] text-foreground'
+            : 'text-muted-foreground'
+        "
+      >
+        <NuxtLink
+          :to="item.path"
+          :aria-current="item.path === activePath ? 'page' : undefined"
+          :data-settings-tab-active="item.path === activePath ? 'true' : 'false'"
+        >
+          <span class="truncate">{{ item.label }}</span>
+        </NuxtLink>
+      </Button>
+    </div>
 
     <div v-if="$slots.actions" class="mt-2 border-t border-border/50 pt-2">
       <slot name="actions" />

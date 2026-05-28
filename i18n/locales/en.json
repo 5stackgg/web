@@ -327,11 +327,13 @@
             "search": "Search..."
         },
         "settings": {
+            "on_this_page": "On this page",
             "account": {
                 "title": "Account Settings",
                 "description": "Your Account Details",
                 "my_account": "My Account",
                 "api_keys": "API Keys",
+                "external_matches": "External Matches",
                 "api_keys_management": {
                     "your_api_keys": "Your API Keys",
                     "api_keys_description": "API keys allow you to authenticate with the 5Stack API programmatically.",
@@ -413,7 +415,9 @@
                     "update": "Update Telemetry Settings",
                     "update_success": "Telemetry settings updated successfully",
                     "google_tag_manager_code": "Google Tag Manager Code",
-                    "google_tag_manager_code_description": "Google Tag Manager is a tag management system that allows you to manage and deploy tags on your website."
+                    "google_tag_manager_code_description": "Google Tag Manager is a tag management system that allows you to manage and deploy tags on your website.",
+                    "analytics_section": "Analytics",
+                    "analytics_section_description": "Connect a third-party analytics provider to your platform."
                 },
                 "matchmaking": {
                     "title": "Matchmaking",
@@ -494,6 +498,8 @@
                 "matchmaking_min_role_description": "This role will be able to join matchmaking.",
                 "max_acceptable_latency": "Maximum Acceptable Latency",
                 "max_acceptable_latency_description": "Players above this ping to a server are filtered out when picking the best server for a match.",
+                "lineup_section": "Lineups",
+                "default_models_section": "Player Models",
                 "lineup_add_without_invite": "Minimum Role to Add Players to Lineup Without Invite",
                 "lineup_add_without_invite_description": "This role will be able to add players to match lineups without sending an invite first.",
                 "default_models": "Default Player Models",
@@ -603,7 +609,9 @@
                         "topnav_ring": "Top Nav Focus Ring",
                         "tactical_amber": "Tactical Accent (amber highlights)",
                         "tactical_amber_foreground": "Tactical Accent Foreground"
-                    }
+                    },
+                    "assets_section": "Logo & Favicon",
+                    "assets_section_description": "Upload a custom logo and favicon for your platform."
                 },
                 "fixtures": {
                     "dev_only_notice": "Fixtures are only available in development mode.",
@@ -629,6 +637,7 @@
                 },
                 "servers": {
                     "title": "Server Settings",
+                    "cpu_section": "Performance",
                     "disk_section": "Disk Reservation",
                     "enable_cpu_pinning": "Enable CPU Pinning",
                     "enable_cpu_pinning_description": "Enable CPU pinning on game server nodes for better performance",
@@ -640,9 +649,25 @@
                     "reserved_disk_space_existing_gb_description": "Minimum disk space in GB required when CS2 is already installed on the node. Set to 0 to disable.",
                     "update_cpu_pinning": "CPU Pinning updated"
                 },
+                "highlights": {
+                    "title": "Highlights",
+                    "updated": "Updated highlight settings"
+                },
+                "external_matches": {
+                    "title": "External Matches",
+                    "section": "External Matches",
+                    "enabled": "Allow CS2 match imports",
+                    "enabled_description": "Let players link their Steam match-history auth code to import official CS2 matches, and allow demo uploads. Turn this off to hide the auth-code form and block external imports.",
+                    "updated": "Updated external match settings",
+                    "disabled_notice": "External match importing is currently disabled by your administrator."
+                },
                 "demo_settings": {
-                    "title": "Demos / Highlights",
+                    "title": "Demos",
+                    "total_storage": "Total storage",
                     "demos_section": "Demos",
+                    "storage_section": "Storage & Backend",
+                    "render_output_section": "Render Output",
+                    "clip_storage_section": "Storage & Retention",
                     "min_retention": "Minimum Retention",
                     "max_storage": "Maximum Storage",
                     "cloudflare_worker_url": "Cloudflare Worker URL",
@@ -680,6 +705,8 @@
                     "clip_bake_branding_description": "Renders the player chip overlay and brand outro directly into the highlight file. Disable to ship raw captures without overlays.",
                     "auto_generate_match_clips": "Auto-generate match highlights",
                     "auto_generate_match_clips_description": "Queue a match-recap highlight for each player after their match finishes.",
+                    "auto_generate_match_clips_imported": "Include imported matches",
+                    "auto_generate_match_clips_imported_description": "Also auto-generate highlights for matches imported from outside 5stack (e.g. Valve match history). Off by default so imported matches don't flood the render queue.",
                     "pause_renders_during_active_match": "Pause Highlight Renders During Active Match",
                     "pause_renders_during_active_match_description": "When a match goes Live on a server backed by a GPU node, auto-pause in-flight highlight renders so the game server isn't competing with the render pod for GPU. Renders resume automatically once the match ends.",
                     "auto_clip_default_visibility": "Default visibility for auto-generated highlights",
@@ -690,7 +717,8 @@
                     "default_hud_mode": "Default HUD style",
                     "default_hud_mode_description": "Which JTs Hud Manager layout the game-streamer pod loads at boot for live streams, demo playback, and batch highlights. Streamers can still switch styles per-stream from the player controls.",
                     "hud_mode_horizontal": "Horizontal",
-                    "hud_mode_vertical": "Vertical"
+                    "hud_mode_vertical": "Vertical",
+                    "playback_section": "Playback"
                 },
                 "update_map_pools": {
                     "title": "Automatic Update Map Pools",
@@ -1423,7 +1451,16 @@
             "description": "Settings that effect the application.",
             "select_section": "Select section",
             "branding_nav": "Branding",
-            "fixtures_nav": "Fixtures"
+            "fixtures_nav": "Fixtures",
+            "groups": {
+                "general": "General",
+                "match_setup": "Match Setup",
+                "media": "Recording & Media",
+                "infrastructure": "Infrastructure",
+                "integrations": "Integrations",
+                "theme": "Theme",
+                "developer": "Developer"
+            }
         },
         "system_update": {
             "title": "System Update Available",
@@ -2072,7 +2109,8 @@
             "embed_current_label": "LIVE",
             "embed_winner_label": "Upper Bracket",
             "embed_loser_label": "Lower Bracket",
-            "embed_no_stage": "No active stage."
+            "embed_no_stage": "No active stage.",
+            "zoom_fit": "Fit"
         },
         "match": {
             "reset_winner": "Reset winner",
@@ -2893,8 +2931,8 @@
             "play": "Play",
             "pause": "Pause",
             "headshot": "Headshot",
-        "has_bomb": "Has bomb",
-        "defuse_kit": "Defuse kit",
+            "has_bomb": "Has bomb",
+            "defuse_kit": "Defuse kit",
             "follow_hint": "Click a player below to follow them on the map.",
             "follow_stop": "Click to stop following",
             "follow_player": "Click to follow {name} on the map",

@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 import { Button } from "~/components/ui/button";
+import { Badge } from "~/components/ui/badge";
 import {
   MoreHorizontal,
   Trash,
@@ -22,14 +23,43 @@ import {
   Rows3,
   ScrollText,
   Filter,
+  ZoomIn,
+  ZoomOut,
+  Scan,
+  Maximize,
+  Minimize,
 } from "lucide-vue-next";
 import ShareBracketDialog from "~/components/tournament/ShareBracketDialog.vue";
+import BracketFullscreenBar from "~/components/tournament/BracketFullscreenBar.vue";
 import { ref } from "vue";
 import { e_tournament_status_enum as StatusEnum } from "~/generated/zeus";
+import { useBracketView } from "~/composables/useBracketView";
 
 const shareDialogOpen = ref(false);
 const viewMode = ref<"split" | "scroll">("split");
 const hideFinishedRounds = ref(false);
+
+const {
+  MIN_ZOOM,
+  MAX_ZOOM,
+  autoFit,
+  manualZoom,
+  isFullscreen,
+  fullscreenTarget,
+  groupLabel,
+  bracketScope,
+  zoomIn,
+  zoomOut,
+  resetZoom,
+  toggleFullscreen,
+} = useBracketView();
+
+const bracketViewport = ref<HTMLElement | null>(null);
+
+const handleToggleFullscreen = () => {
+  fullscreenTarget.value = bracketViewport.value;
+  toggleFullscreen();
+};
 
 const toggleViewMode = () => {
   viewMode.value = viewMode.value === "split" ? "scroll" : "split";
@@ -189,6 +219,52 @@ import {
             </TabsTrigger>
           </TabsList>
           <div class="flex gap-1.5 mt-1 items-center">
+            <template v-if="viewMode === 'split'">
+              <button
+                type="button"
+                class="disabled:opacity-40 disabled:cursor-not-allowed"
+                :class="iconToggleClass(false)"
+                @click="zoomOut"
+                :disabled="!autoFit && manualZoom <= MIN_ZOOM"
+                :title="$t('ui.tooltips.zoom_out_scroll')"
+              >
+                <ZoomOut class="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                class="disabled:opacity-40 disabled:cursor-not-allowed"
+                :class="iconToggleClass(false)"
+                @click="zoomIn"
+                :disabled="!autoFit && manualZoom >= MAX_ZOOM"
+                :title="$t('ui.tooltips.zoom_in_scroll')"
+              >
+                <ZoomIn class="h-4 w-4" />
+              </button>
+              <button
+                type="button"
+                :class="iconToggleClass(autoFit)"
+                @click="resetZoom"
+                :title="$t('tournament.bracket.fit_to_view')"
+              >
+                <Scan class="h-4 w-4" />
+              </button>
+              <Badge
+                variant="outline"
+                class="h-9 min-w-[2.5rem] select-none justify-center rounded-md px-2.5 font-mono text-[0.72rem] font-semibold tabular-nums"
+                :class="
+                  autoFit
+                    ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+                    : 'border-border bg-card/40 text-muted-foreground'
+                "
+              >
+                {{
+                  autoFit
+                    ? $t("tournament.bracket.zoom_fit")
+                    : Math.round(manualZoom * 100) + "%"
+                }}
+              </Badge>
+              <div class="mx-1 h-6 w-px bg-border"></div>
+            </template>
             <button
               type="button"
               :class="iconToggleClass(viewMode === 'scroll')"
@@ -216,6 +292,21 @@ import {
             <div class="mx-1 h-6 w-px bg-border"></div>
             <button
               type="button"
+              :class="iconToggleClass(isFullscreen)"
+              @click="handleToggleFullscreen"
+              :title="
+                isFullscreen
+                  ? $t('common.exit_fullscreen')
+                  : $t('common.enter_fullscreen')
+              "
+            >
+              <component
+                :is="isFullscreen ? Minimize : Maximize"
+                class="h-4 w-4"
+              />
+            </button>
+            <button
+              type="button"
               :class="iconToggleClass(false)"
               @click="popoutBracket(tournament.id)"
               :title="$t('tournament.bracket.popout_button')"
@@ -233,7 +324,34 @@ import {
           </div>
         </div>
 
-        <TabsContent
+        <div
+          ref="bracketViewport"
+          :class="
+            isFullscreen
+              ? 'relative h-screen w-screen overflow-auto bg-background'
+              : ''
+          "
+        >
+          <div
+            v-if="isFullscreen"
+            class="pointer-events-none fixed inset-0 z-0 [background-image:repeating-linear-gradient(3deg,transparent_0,transparent_3px,hsl(var(--tac-amber)_/_0.04)_3px,hsl(var(--tac-amber)_/_0.04)_4px)]"
+            aria-hidden="true"
+          ></div>
+
+          <BracketFullscreenBar
+            v-if="isFullscreen"
+            :tournament-name="tournament.name"
+            :stage-number="activeStageNumber"
+            :stage-type="
+              activeStage?.e_tournament_stage_type?.description ||
+              activeStage?.type
+            "
+            :group-label="groupLabel"
+            :bracket-scope="bracketScope"
+          />
+
+          <div :class="isFullscreen ? 'relative z-10 px-6 pb-6' : ''">
+            <TabsContent
           v-for="stageNumber in maxStageNumber"
           :key="stageNumber"
           :value="`stage-${stageNumber}`"
@@ -283,11 +401,69 @@ import {
             </CardContent>
           </Card>
         </TabsContent>
+          </div>
+
+          <button
+            v-if="isFullscreen"
+            type="button"
+            class="fixed bottom-6 right-6 z-30 inline-flex items-center gap-2 rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-background/90 px-4 py-2.5 font-mono text-[0.72rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] shadow-xl backdrop-blur-md transition-colors hover:bg-[hsl(var(--tac-amber)/0.12)]"
+            @click="handleToggleFullscreen"
+          >
+            <Minimize class="h-4 w-4" />
+            {{ $t("common.exit_fullscreen") }}
+          </button>
+        </div>
       </Tabs>
 
       <!-- Show stages directly without tabs if single stage and not organizer -->
       <div v-else class="space-y-6">
         <div class="flex justify-end gap-1.5 items-center">
+          <template v-if="viewMode === 'split'">
+            <button
+              type="button"
+              class="disabled:opacity-40 disabled:cursor-not-allowed"
+              :class="iconToggleClass(false)"
+              @click="zoomOut"
+              :disabled="!autoFit && manualZoom <= MIN_ZOOM"
+              :title="$t('ui.tooltips.zoom_out_scroll')"
+            >
+              <ZoomOut class="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              class="disabled:opacity-40 disabled:cursor-not-allowed"
+              :class="iconToggleClass(false)"
+              @click="zoomIn"
+              :disabled="!autoFit && manualZoom >= MAX_ZOOM"
+              :title="$t('ui.tooltips.zoom_in_scroll')"
+            >
+              <ZoomIn class="h-4 w-4" />
+            </button>
+            <button
+              type="button"
+              :class="iconToggleClass(autoFit)"
+              @click="resetZoom"
+              :title="$t('tournament.bracket.fit_to_view')"
+            >
+              <Scan class="h-4 w-4" />
+            </button>
+            <Badge
+              variant="outline"
+              class="h-9 min-w-[2.5rem] select-none justify-center rounded-md px-2.5 font-mono text-[0.72rem] font-semibold tabular-nums"
+              :class="
+                autoFit
+                  ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+                  : 'border-border bg-card/40 text-muted-foreground'
+              "
+            >
+              {{
+                autoFit
+                  ? $t("tournament.bracket.zoom_fit")
+                  : Math.round(manualZoom * 100) + "%"
+              }}
+            </Badge>
+            <div class="mx-1 h-6 w-px bg-border"></div>
+          </template>
           <button
             type="button"
             :class="iconToggleClass(viewMode === 'scroll')"
@@ -315,6 +491,18 @@ import {
           <div class="mx-1 h-6 w-px bg-border"></div>
           <button
             type="button"
+            :class="iconToggleClass(isFullscreen)"
+            @click="handleToggleFullscreen"
+            :title="
+              isFullscreen
+                ? $t('common.exit_fullscreen')
+                : $t('common.enter_fullscreen')
+            "
+          >
+            <component :is="isFullscreen ? Minimize : Maximize" class="h-4 w-4" />
+          </button>
+          <button
+            type="button"
             :class="iconToggleClass(false)"
             @click="popoutBracket(tournament.id)"
             :title="$t('tournament.bracket.popout_button')"
@@ -331,17 +519,58 @@ import {
           </button>
         </div>
         <div
-          v-for="stage of tournament.stages.filter((s: any) => s.order === 1)"
-          :key="stage.id"
-          class="mb-4"
+          ref="bracketViewport"
+          :class="
+            isFullscreen
+              ? 'relative h-screen w-screen overflow-auto bg-background'
+              : ''
+          "
         >
-          <TournamentStage
-            :stage="stage"
-            :tournament="tournament"
-            :is-final-stage="true"
-            :view-mode="viewMode"
-            :hide-finished-rounds="hideFinishedRounds"
-          ></TournamentStage>
+          <div
+            v-if="isFullscreen"
+            class="pointer-events-none fixed inset-0 z-0 [background-image:repeating-linear-gradient(3deg,transparent_0,transparent_3px,hsl(var(--tac-amber)_/_0.04)_3px,hsl(var(--tac-amber)_/_0.04)_4px)]"
+            aria-hidden="true"
+          ></div>
+
+          <BracketFullscreenBar
+            v-if="isFullscreen"
+            :tournament-name="tournament.name"
+            :stage-number="1"
+            :stage-type="
+              firstStage?.e_tournament_stage_type?.description ||
+              firstStage?.type
+            "
+            :group-label="groupLabel"
+            :bracket-scope="bracketScope"
+          />
+
+          <div :class="isFullscreen ? 'relative z-10 px-6 pb-6' : ''">
+            <div
+              v-for="stage of tournament.stages.filter(
+                (s: any) => s.order === 1,
+              )"
+              :key="stage.id"
+              class="mb-4"
+            >
+              <TournamentStage
+                :stage="stage"
+                :tournament="tournament"
+                :is-final-stage="true"
+                :view-mode="viewMode"
+                :hide-finished-rounds="hideFinishedRounds"
+              ></TournamentStage>
+            </div>
+          </div>
+
+          <button
+            v-if="isFullscreen"
+            type="button"
+            class="fixed bottom-6 right-6 z-30 inline-flex items-center gap-2 rounded-md border border-[hsl(var(--tac-amber)/0.55)] bg-background/90 px-4 py-2.5 font-mono text-[0.72rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] shadow-xl backdrop-blur-md transition-colors hover:bg-[hsl(var(--tac-amber)/0.12)]"
+            @click="handleToggleFullscreen"
+          >
+            <Minimize class="h-4 w-4" />
+            {{ $t("common.exit_fullscreen") }}
+          </button>
         </div>
       </div>
 
@@ -469,6 +698,19 @@ export default {
         this.tournament.status === e_tournament_status_enum.Live ||
         this.tournament.status === e_tournament_status_enum.Paused
       );
+    },
+    activeStageNumber() {
+      const parsed = parseInt(
+        String(this.activeTab).replace("stage-", ""),
+        10,
+      );
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+    },
+    activeStage() {
+      return this.getFirstStageForTab(this.activeStageNumber);
+    },
+    firstStage() {
+      return this.getFirstStageForTab(1);
     },
   },
   methods: {

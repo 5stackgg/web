@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import {
-  LucideDownload,
-  LucideUpload,
-  LucideHardDrive,
-  LucideSparkles,
-} from "lucide-vue-next";
+import { LucideDownload, LucideUpload, LucideHardDrive, LucideDatabase } from "lucide-vue-next";
 import formatBytes from "~/utilities/formatBytes";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Card } from "~/components/ui/card";
+import SettingsPage from "~/components/settings/SettingsPage.vue";
+import SettingsSection from "~/components/settings/SettingsSection.vue";
 
 definePageMeta({
   layout: "application-settings",
@@ -15,99 +12,51 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-    <PageTransition :delay="0">
-      <Card
-        v-if="match_map_demos_aggregate"
-        variant="gradient"
-        class="p-4 flex items-center gap-4 h-full"
-      >
-        <div
-          class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10"
-        >
-          <LucideHardDrive class="w-6 h-6 text-primary" />
-        </div>
-        <div class="flex-1">
-          <h3 class="text-sm font-medium text-muted-foreground">
-            {{ $t("pages.settings.application.demo_settings.used_storage") }}
-          </h3>
-          <p class="text-2xl font-bold mt-1">
-            {{
-              formatBytes(
-                (match_map_demos_aggregate.aggregate.sum.size || 0) +
-                  (match_map_demos_aggregate.aggregate.sum.playback_size || 0),
-              )
-            }}~
-          </p>
-        </div>
-      </Card>
-    </PageTransition>
+  <SettingsPage>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
+      <PageTransition :delay="0">
+        <Card variant="gradient" class="p-4 flex items-center gap-4 h-full">
+          <div
+            class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10"
+          >
+            <LucideDatabase class="w-6 h-6 text-primary" />
+          </div>
+          <div class="flex-1">
+            <h3 class="text-sm font-medium text-muted-foreground">
+              {{ $t("pages.settings.application.demo_settings.total_storage") }}
+            </h3>
+            <p class="text-2xl font-bold mt-1">
+              {{ formatBytes(totalStorageBytes) }}~
+            </p>
+          </div>
+        </Card>
+      </PageTransition>
 
-    <PageTransition :delay="50">
-      <Card
-        v-if="match_clips_aggregate"
-        variant="gradient"
-        class="p-4 flex items-center gap-4 h-full"
-      >
-        <div
-          class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10"
-        >
-          <LucideSparkles class="w-6 h-6 text-primary" />
-        </div>
-        <div class="flex-1">
-          <h3 class="text-sm font-medium text-muted-foreground">
-            {{
-              $t("pages.settings.application.demo_settings.clips_used_storage")
-            }}
-          </h3>
-          <p class="text-2xl font-bold mt-1">
-            {{ formatBytes(match_clips_aggregate.aggregate.sum.size || 0) }}~
-          </p>
-        </div>
-      </Card>
-    </PageTransition>
-  </div>
+      <PageTransition :delay="50">
+        <Card variant="gradient" class="p-4 flex items-center gap-4 h-full">
+          <div
+            class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10"
+          >
+            <LucideHardDrive class="w-6 h-6 text-primary" />
+          </div>
+          <div class="flex-1">
+            <h3 class="text-sm font-medium text-muted-foreground">
+              {{ $t("pages.settings.application.demo_settings.used_storage") }}
+            </h3>
+            <p class="text-2xl font-bold mt-1">
+              {{ formatBytes(demoStorageBytes) }}~
+            </p>
+          </div>
+        </Card>
+      </PageTransition>
+    </div>
 
-  <PageTransition :delay="100">
-    <Card variant="gradient" class="mb-8 p-4 flex flex-col gap-2">
-      <h3 class="text-lg font-semibold">
-        {{ $t("pages.settings.application.demo_settings.test_s3_title") }}
-      </h3>
-      <div>
-        <p class="text-sm text-muted-foreground">
-          {{
-            $t("pages.settings.application.demo_settings.test_s3_description")
-          }}
-        </p>
-      </div>
-      <div class="flex gap-4">
-        <Button
-          class="rounded-full px-6 py-2 font-medium shadow transition hover:bg-primary/90 flex items-center gap-2"
-          @click="testUpload"
+    <PageTransition :delay="200">
+      <form @submit.prevent="updateSettings" class="space-y-6">
+        <SettingsSection
+          id="demos"
+          :title="$t('pages.settings.application.demo_settings.demos_section')"
         >
-          <LucideUpload class="w-4 h-4" />
-          {{ $t("pages.settings.application.demo_settings.test_upload") }}
-        </Button>
-        <Button
-          class="rounded-full px-6 py-2 font-medium shadow transition hover:bg-primary/90 flex items-center gap-2"
-          @click="testDownload"
-        >
-          <LucideDownload class="w-4 h-4" />
-          {{ $t("pages.settings.application.demo_settings.test_download") }}
-        </Button>
-      </div>
-    </Card>
-  </PageTransition>
-
-  <PageTransition :delay="200">
-    <form @submit.prevent="updateSettings" class="grid gap-6">
-      <Card variant="gradient">
-        <div class="p-6 space-y-6">
-          <h3 class="text-lg font-semibold flex items-center gap-2">
-            <LucideHardDrive class="w-5 h-5 text-primary" />
-            {{ $t("pages.settings.application.demo_settings.demos_section") }}
-          </h3>
-
           <FormField v-slot="{ componentField }" name="demo_network_limiter">
             <FormItem>
               <FormLabel>{{
@@ -153,7 +102,58 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
+        </SettingsSection>
 
+        <SettingsSection
+          id="playback"
+          :title="$t('pages.settings.application.demo_settings.playback_section')"
+        >
+          <!-- Default HUD bundle the game-streamer pod loads at boot.
+               Used for live, demo playback, and batch-highlights pods.
+               Streamers can still hot-swap mid-stream from the live /
+               demo player UI; this is just the persistent default. -->
+          <FormField v-slot="{ value, handleChange }" name="default_hud_mode">
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.demo_settings.default_hud_mode")
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.demo_settings.default_hud_mode_description",
+                )
+              }}</FormDescription>
+              <Select :model-value="value" @update:model-value="handleChange">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="horizontal">
+                    {{
+                      $t(
+                        "pages.settings.application.demo_settings.hud_mode_horizontal",
+                      )
+                    }}
+                  </SelectItem>
+                  <SelectItem value="vertical">
+                    {{
+                      $t(
+                        "pages.settings.application.demo_settings.hud_mode_vertical",
+                      )
+                    }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </SettingsSection>
+
+        <SettingsSection
+          id="storage"
+          :title="$t('pages.settings.application.demo_settings.storage_section')"
+        >
           <div class="space-y-2">
             <p class="text-sm text-muted-foreground">
               {{
@@ -195,47 +195,6 @@ definePageMeta({
             </div>
           </div>
 
-          <!-- Default HUD bundle the game-streamer pod loads at boot.
-               Used for live, demo playback, and batch-highlights pods.
-               Streamers can still hot-swap mid-stream from the live /
-               demo player UI; this is just the persistent default. -->
-          <FormField v-slot="{ value, handleChange }" name="default_hud_mode">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.demo_settings.default_hud_mode")
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.demo_settings.default_hud_mode_description",
-                )
-              }}</FormDescription>
-              <Select :model-value="value" @update:model-value="handleChange">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="horizontal">
-                    {{
-                      $t(
-                        "pages.settings.application.demo_settings.hud_mode_horizontal",
-                      )
-                    }}
-                  </SelectItem>
-                  <SelectItem value="vertical">
-                    {{
-                      $t(
-                        "pages.settings.application.demo_settings.hud_mode_vertical",
-                      )
-                    }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
           <FormField v-slot="{ componentField }" name="cloudflare_worker_url">
             <FormItem>
               <FormLabel>{{
@@ -261,319 +220,52 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
-      </Card>
 
-      <Card variant="gradient">
-        <div class="p-6 space-y-6">
-          <h3 class="text-lg font-semibold flex items-center gap-2">
-            <LucideSparkles class="w-5 h-5 text-primary" />
-            {{
-              $t("pages.settings.application.demo_settings.highlights_section")
-            }}
-          </h3>
-
-          <FormField v-slot="{ componentField }" name="clip_video_codec">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.demo_settings.clip_video_codec")
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.demo_settings.clip_video_codec_description",
-                )
-              }}</FormDescription>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="h265">
-                    {{
-                      $t("pages.settings.application.demo_settings.codec_h265")
-                    }}
-                  </SelectItem>
-                  <SelectItem value="h264">
-                    {{
-                      $t("pages.settings.application.demo_settings.codec_h264")
-                    }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
-          <FormField v-slot="{ componentField }" name="clip_fps">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.demo_settings.clip_fps")
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.demo_settings.clip_fps_description",
-                )
-              }}</FormDescription>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="60">60 FPS</SelectItem>
-                  <SelectItem value="30">30 FPS</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
-          <FormField v-slot="{ componentField }" name="clip_resolution">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.demo_settings.clip_resolution")
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.demo_settings.clip_resolution_description",
-                )
-              }}</FormDescription>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="1080p">1080p</SelectItem>
-                  <SelectItem value="720p">720p</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
-          <FormField
-            v-slot="{ value, handleChange }"
-            name="clip_bake_branding"
-            type="checkbox"
-            :value="true"
-          >
-            <FormItem>
-              <div
-                class="flex flex-row items-center justify-between cursor-pointer"
-                @click="handleChange(!value)"
+          <div class="space-y-2">
+            <p class="text-sm text-muted-foreground">
+              {{
+                $t("pages.settings.application.demo_settings.test_s3_description")
+              }}
+            </p>
+            <div class="flex gap-3">
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                class="flex items-center gap-2"
+                @click="testUpload"
               >
-                <div class="space-y-0.5">
-                  <h4 class="text-base font-medium">
-                    {{
-                      $t(
-                        "pages.settings.application.demo_settings.clip_bake_branding",
-                      )
-                    }}
-                  </h4>
-                  <p class="text-sm text-muted-foreground">
-                    {{
-                      $t(
-                        "pages.settings.application.demo_settings.clip_bake_branding_description",
-                      )
-                    }}
-                  </p>
-                </div>
-                <FormControl>
-                  <Switch
-                    :model-value="value"
-                    @update:model-value="handleChange"
-                  />
-                </FormControl>
-              </div>
-            </FormItem>
-          </FormField>
-
-          <FormField
-            v-slot="{ value, handleChange }"
-            name="pause_renders_during_active_match"
-            type="checkbox"
-            :value="true"
-          >
-            <FormItem>
-              <div
-                class="flex flex-row items-center justify-between cursor-pointer"
-                @click="handleChange(!value)"
+                <LucideUpload class="w-4 h-4" />
+                {{ $t("pages.settings.application.demo_settings.test_upload") }}
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                class="flex items-center gap-2"
+                @click="testDownload"
               >
-                <div class="space-y-0.5">
-                  <h4 class="text-base font-medium">
-                    {{
-                      $t(
-                        "pages.settings.application.demo_settings.pause_renders_during_active_match",
-                      )
-                    }}
-                  </h4>
-                  <p class="text-sm text-muted-foreground">
-                    {{
-                      $t(
-                        "pages.settings.application.demo_settings.pause_renders_during_active_match_description",
-                      )
-                    }}
-                  </p>
-                </div>
-                <FormControl>
-                  <Switch
-                    :model-value="value"
-                    @update:model-value="handleChange"
-                  />
-                </FormControl>
-              </div>
-            </FormItem>
-          </FormField>
-
-          <FormField
-            v-slot="{ value, handleChange }"
-            name="auto_generate_match_clips"
-            type="checkbox"
-            :value="true"
-          >
-            <FormItem>
-              <div
-                class="flex flex-row items-center justify-between cursor-pointer"
-                @click="handleChange(!value)"
-              >
-                <div class="space-y-0.5">
-                  <h4 class="text-base font-medium">
-                    {{
-                      $t(
-                        "pages.settings.application.demo_settings.auto_generate_match_clips",
-                      )
-                    }}
-                  </h4>
-                  <p class="text-sm text-muted-foreground">
-                    {{
-                      $t(
-                        "pages.settings.application.demo_settings.auto_generate_match_clips_description",
-                      )
-                    }}
-                  </p>
-                </div>
-                <FormControl>
-                  <Switch
-                    :model-value="value"
-                    @update:model-value="handleChange"
-                  />
-                </FormControl>
-              </div>
-            </FormItem>
-          </FormField>
-
-          <template v-if="form.values.auto_generate_match_clips">
-            <div class="space-y-2">
-              <p class="text-sm text-muted-foreground">
+                <LucideDownload class="w-4 h-4" />
                 {{
-                  $t(
-                    "pages.settings.application.demo_settings.clips_retention_storage_description",
-                  )
+                  $t("pages.settings.application.demo_settings.test_download")
                 }}
-              </p>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FormField
-                  v-slot="{ componentField }"
-                  name="clips_min_retention"
-                >
-                  <FormItem>
-                    <FormLabel>
-                      {{
-                        $t(
-                          "pages.settings.application.demo_settings.clips_min_retention",
-                        )
-                      }}
-                      <span class="text-muted-foreground font-normal"
-                        >(days)</span
-                      >
-                    </FormLabel>
-                    <Input type="number" v-bind="componentField"></Input>
-                    <FormMessage />
-                  </FormItem>
-                </FormField>
-
-                <FormField v-slot="{ componentField }" name="clips_max_storage">
-                  <FormItem>
-                    <FormLabel>
-                      {{
-                        $t(
-                          "pages.settings.application.demo_settings.clips_max_storage",
-                        )
-                      }}
-                      <span class="text-muted-foreground font-normal"
-                        >(GB)</span
-                      >
-                    </FormLabel>
-                    <Input type="number" v-bind="componentField"></Input>
-                    <FormMessage />
-                  </FormItem>
-                </FormField>
-              </div>
+              </Button>
             </div>
+          </div>
+        </SettingsSection>
 
-            <FormField
-              v-slot="{ value, handleChange }"
-              name="auto_clip_default_visibility"
-            >
-              <FormItem>
-                <FormLabel>{{
-                  $t(
-                    "pages.settings.application.demo_settings.auto_clip_default_visibility",
-                  )
-                }}</FormLabel>
-                <Select :model-value="value" @update:model-value="handleChange">
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue
-                        :placeholder="
-                          $t(
-                            'pages.settings.application.demo_settings.visibility_private',
-                          )
-                        "
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="private">{{
-                      $t(
-                        "pages.settings.application.demo_settings.visibility_private",
-                      )
-                    }}</SelectItem>
-                    <SelectItem value="unlisted">{{
-                      $t(
-                        "pages.settings.application.demo_settings.visibility_unlisted",
-                      )
-                    }}</SelectItem>
-                    <SelectItem value="public">{{
-                      $t(
-                        "pages.settings.application.demo_settings.visibility_public",
-                      )
-                    }}</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            </FormField>
-          </template>
+        <div class="flex justify-start">
+          <Button
+            type="submit"
+            :disabled="Object.keys(form.errors).length > 0 || !form.meta.dirty"
+            class="my-3"
+          >
+            {{ $t("common.update") }}
+          </Button>
         </div>
-      </Card>
-
-      <div class="flex justify-start">
-        <Button
-          type="submit"
-          :disabled="Object.keys(form.errors).length > 0"
-          class="my-3"
-        >
-          {{ $t("common.update") }}
-        </Button>
-      </div>
-    </form>
-  </PageTransition>
+      </form>
+    </PageTransition>
+  </SettingsPage>
 </template>
 
 <script lang="ts">
@@ -625,20 +317,9 @@ export default {
             s3_max_storage: z.number().int().min(1).default(10),
             cloudflare_worker_url: z.string().url().optional(),
             demo_network_limiter: z.number().int().optional().nullable(),
-            clips_min_retention: z.number().int().min(1).default(1),
-            clips_max_storage: z.number().int().min(1).default(10),
-            auto_generate_match_clips: z.boolean().default(false),
-            auto_clip_default_visibility: z
-              .enum(["private", "unlisted", "public"])
-              .default("private"),
             default_hud_mode: z
               .enum(["horizontal", "vertical"])
               .default("horizontal"),
-            clip_video_codec: z.enum(["h265", "h264"]).default("h265"),
-            clip_fps: z.enum(["30", "60"]).default("60"),
-            clip_resolution: z.enum(["720p", "1080p"]).default("1080p"),
-            clip_bake_branding: z.boolean().default(true),
-            pause_renders_during_active_match: z.boolean().default(false),
           }),
         ),
       }),
@@ -652,55 +333,12 @@ export default {
           if (
             setting.name === "s3_min_retention" ||
             setting.name === "s3_max_storage" ||
-            setting.name === "demo_network_limiter" ||
-            setting.name === "clips_min_retention" ||
-            setting.name === "clips_max_storage"
+            setting.name === "demo_network_limiter"
           ) {
             if (!setting.value) {
               continue;
             }
             this.form.setFieldValue(setting.name, parseInt(setting.value));
-            continue;
-          }
-
-          if (
-            setting.name === "auto_generate_match_clips" ||
-            setting.name === "clip_bake_branding" ||
-            setting.name === "pause_renders_during_active_match"
-          ) {
-            this.form.setFieldValue(
-              setting.name,
-              setting.value === "true" || setting.value === true,
-            );
-            continue;
-          }
-
-          if (setting.name === "clip_video_codec") {
-            this.form.setFieldValue(
-              setting.name,
-              setting.value === "h264" ? "h264" : "h265",
-            );
-            continue;
-          }
-
-          if (setting.name === "clip_fps") {
-            this.form.setFieldValue(
-              setting.name,
-              setting.value === "30" ? "30" : "60",
-            );
-            continue;
-          }
-
-          if (setting.name === "clip_resolution") {
-            this.form.setFieldValue(
-              setting.name,
-              setting.value === "720p" ? "720p" : "1080p",
-            );
-            continue;
-          }
-
-          if (setting.name === "auto_clip_default_visibility") {
-            this.form.setFieldValue(setting.name, setting.value ?? "private");
             continue;
           }
 
@@ -717,6 +355,7 @@ export default {
 
           this.form.setFieldValue(setting.name, setting.value);
         }
+        this.form.resetForm({ values: this.form.values });
       },
     },
   },
@@ -795,49 +434,8 @@ export default {
                   value: this.form.values.demo_network_limiter?.toString(),
                 },
                 {
-                  name: "clips_min_retention",
-                  value: this.form.values.clips_min_retention?.toString(),
-                },
-                {
-                  name: "clips_max_storage",
-                  value: this.form.values.clips_max_storage?.toString(),
-                },
-                {
-                  name: "auto_generate_match_clips",
-                  value: this.form.values.auto_generate_match_clips
-                    ? "true"
-                    : "false",
-                },
-                {
-                  name: "auto_clip_default_visibility",
-                  value:
-                    this.form.values.auto_clip_default_visibility ?? "private",
-                },
-                {
                   name: "default_hud_mode",
                   value: this.form.values.default_hud_mode ?? "horizontal",
-                },
-                {
-                  name: "clip_video_codec",
-                  value: this.form.values.clip_video_codec ?? "h265",
-                },
-                {
-                  name: "clip_fps",
-                  value: this.form.values.clip_fps ?? "60",
-                },
-                {
-                  name: "clip_resolution",
-                  value: this.form.values.clip_resolution ?? "1080p",
-                },
-                {
-                  name: "clip_bake_branding",
-                  value: this.form.values.clip_bake_branding ? "true" : "false",
-                },
-                {
-                  name: "pause_renders_during_active_match",
-                  value: this.form.values.pause_renders_during_active_match
-                    ? "true"
-                    : "false",
                 },
               ],
               on_conflict: {
@@ -862,6 +460,20 @@ export default {
   computed: {
     settings() {
       return useApplicationSettingsStore().settings;
+    },
+    demoStorageBytes() {
+      // Aggregate sums come back as bigint strings; coerce so "+" adds
+      // instead of concatenating.
+      const sum = (this as any).match_map_demos_aggregate?.aggregate?.sum;
+      return Number(sum?.size || 0) + Number(sum?.playback_size || 0);
+    },
+    clipStorageBytes() {
+      return Number(
+        (this as any).match_clips_aggregate?.aggregate?.sum?.size || 0,
+      );
+    },
+    totalStorageBytes() {
+      return (this as any).demoStorageBytes + (this as any).clipStorageBytes;
     },
   },
 };

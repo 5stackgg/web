@@ -93,6 +93,8 @@ import {
 </template>
 
 <script lang="ts">
+import { useBracketView } from "~/composables/useBracketView";
+
 export default {
   props: {
     stage: {
@@ -124,6 +126,20 @@ export default {
     return {
       activeGroupTab: "group-1",
     };
+  },
+  mounted() {
+    this.syncGroupLabel();
+  },
+  unmounted() {
+    useBracketView().groupLabel.value = null;
+  },
+  watch: {
+    activeGroupTab() {
+      this.syncGroupLabel();
+    },
+    "stage.groups"() {
+      this.syncGroupLabel();
+    },
   },
   computed: {
     effectivePageScroll() {
@@ -172,6 +188,13 @@ export default {
         return groupNumber;
       };
     },
+    activeDivision() {
+      const parsed = parseInt(
+        String(this.activeGroupTab).replace("group-", ""),
+        10,
+      );
+      return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
+    },
     shouldShowStandings() {
       const status = (this.tournament as any)?.status;
       return (
@@ -179,6 +202,13 @@ export default {
         status === e_tournament_status_enum.Paused ||
         status === e_tournament_status_enum.Finished
       );
+    },
+  },
+  methods: {
+    syncGroupLabel() {
+      const groups = (this.stage as any).groups || 1;
+      useBracketView().groupLabel.value =
+        groups > 1 ? String(this.getGroupDisplay(this.activeDivision)) : null;
     },
   },
 };

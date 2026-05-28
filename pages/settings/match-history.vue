@@ -250,6 +250,95 @@ async function clearImport(valveMatchId: string) {
   }
 }
 
+const PENDING_STATUSES = ["Queued", "Parsing", "Failed"] as const;
+type PendingStatus = (typeof PENDING_STATUSES)[number];
+
+const pendingFilters = ref<Set<string>>(new Set());
+const pendingExpanded = ref(false);
+const PENDING_VISIBLE_LIMIT = 25;
+const bulkBusy = ref(false);
+
+const pendingCountsByStatus = computed<Record<string, number>>(() => {
+  const out: Record<string, number> = {};
+  for (const e of pendingImports.value) {
+    out[e.status] = (out[e.status] ?? 0) + 1;
+  }
+  return out;
+});
+
+const filteredPendingImports = computed(() => {
+  if (pendingFilters.value.size === 0) {
+    return pendingImports.value;
+  }
+  return pendingImports.value.filter((e) => pendingFilters.value.has(e.status));
+});
+
+const visiblePendingImports = computed(() => {
+  return pendingExpanded.value
+    ? filteredPendingImports.value
+    : filteredPendingImports.value.slice(0, PENDING_VISIBLE_LIMIT);
+});
+
+const hiddenPendingCount = computed(
+  () =>
+    filteredPendingImports.value.length - visiblePendingImports.value.length,
+);
+
+function togglePendingFilter(status: PendingStatus) {
+  if (pendingFilters.value.has(status)) {
+    pendingFilters.value.delete(status);
+  } else {
+    pendingFilters.value.add(status);
+  }
+  pendingFilters.value = new Set(pendingFilters.value);
+}
+
+async function retryAllFailed() {
+  const failed = pendingImports.value.filter((e) => e.status === "Failed");
+  if (failed.length === 0 || bulkBusy.value) {
+    return;
+  }
+  bulkBusy.value = true;
+  try {
+    for (const entry of failed) {
+      try {
+        await apolloClient.mutate({
+          mutation: RETRY_PENDING_MUTATION,
+          variables: { valve_match_id: entry.valve_match_id },
+        });
+      } catch {
+        // continue with rest
+      }
+    }
+    toast({ title: `Retrying ${failed.length} failed import(s)` });
+  } finally {
+    bulkBusy.value = false;
+  }
+}
+
+async function clearAllFailed() {
+  const failed = pendingImports.value.filter((e) => e.status === "Failed");
+  if (failed.length === 0 || bulkBusy.value) {
+    return;
+  }
+  bulkBusy.value = true;
+  try {
+    for (const entry of failed) {
+      try {
+        await apolloClient.mutate({
+          mutation: CLEAR_PENDING_MUTATION,
+          variables: { valve_match_id: entry.valve_match_id },
+        });
+      } catch {
+        // continue with rest
+      }
+    }
+    toast({ title: `Cleared ${failed.length} failed import(s)` });
+  } finally {
+    bulkBusy.value = false;
+  }
+}
+
 const uploadingDemo = ref(false);
 const uploadProgress = ref(0);
 const uploadedFile = ref<{ name: string; size: number } | null>(null);
@@ -331,7 +420,9 @@ async function uploadDemo(file: File) {
             reject(new Error("Invalid server response"));
           }
         } else {
-          reject(new Error(xhr.responseText || `upload failed (${xhr.status})`));
+          reject(
+            new Error(xhr.responseText || `upload failed (${xhr.status})`),
+          );
         }
       };
       xhr.onerror = () => reject(new Error("Network error"));
@@ -389,9 +480,7 @@ async function uploadDemo(file: File) {
       <p class="text-sm text-muted-foreground">
         You'll need two codes from Valve:
       </p>
-      <ol
-        class="text-sm text-muted-foreground list-decimal pl-5 space-y-1"
-      >
+      <ol class="text-sm text-muted-foreground list-decimal pl-5 space-y-1">
         <li>
           Your
           <a
@@ -399,15 +488,16 @@ async function uploadDemo(file: File) {
             target="_blank"
             rel="noopener noreferrer"
             href="https://help.steampowered.com/en/wizard/HelpWithGameIssue/?appid=730&issueid=128"
-          >Steam Game Authentication Code</a> — on the Steam help page,
-          look under <em>“Access to Your Match History”</em> and click
-          <em>Create Authentication Code</em>. Generated once per Steam
-          account.
+            >Steam Game Authentication Code</a
+          >
+          — on the Steam help page, look under
+          <em>“Access to Your Match History”</em> and click
+          <em>Create Authentication Code</em>. Generated once per Steam account.
         </li>
         <li>
           A recent <strong>Match Share Code</strong> — copy from
-          <em>Watch → Your Matches</em> in CS2 (any match within the last
-          30 days works as a starting point).
+          <em>Watch → Your Matches</em> in CS2 (any match within the last 30
+          days works as a starting point).
         </li>
       </ol>
 
@@ -455,10 +545,7 @@ async function uploadDemo(file: File) {
                   : 'bg-emerald-500/15 text-emerald-400'
               "
             >
-              <AlertCircle
-                v-if="linkQuery?.last_error"
-                class="w-4 h-4"
-              />
+              <AlertCircle v-if="linkQuery?.last_error" class="w-4 h-4" />
               <CheckCircle2 v-else class="w-4 h-4" />
             </span>
             <div class="min-w-0">
@@ -521,9 +608,7 @@ async function uploadDemo(file: File) {
             class="flex items-start justify-between gap-4 px-4 py-2.5"
           >
             <dt class="text-muted-foreground">Last error</dt>
-            <dd
-              class="font-mono text-xs text-destructive break-all text-right"
-            >
+            <dd class="font-mono text-xs text-destructive break-all text-right">
               {{ linkQuery.last_error }}
             </dd>
           </div>
@@ -537,16 +622,60 @@ async function uploadDemo(file: File) {
       <div>
         <h3 class="text-base font-semibold uppercase tracking-wide">
           Pending imports
+          <span class="text-muted-foreground font-normal">
+            ({{ pendingImports.length }})
+          </span>
         </h3>
         <p class="text-sm text-muted-foreground mt-0.5">
-          Matches your linked accounts are waiting on. Demos that fail
-          here are typically older than 30 days and no longer hosted by
-          Valve.
+          Matches your linked accounts are waiting on. Demos that fail here are
+          typically older than 30 days and no longer hosted by Valve.
         </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button
+          v-for="status in PENDING_STATUSES"
+          :key="status"
+          type="button"
+          :disabled="!pendingCountsByStatus[status]"
+          class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.14em] transition-colors disabled:opacity-30"
+          :class="
+            pendingFilters.has(status)
+              ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
+              : 'border-border/60 bg-card/40 text-muted-foreground hover:text-foreground'
+          "
+          @click="togglePendingFilter(status)"
+        >
+          {{ status }}
+          <span class="font-bold">
+            {{ pendingCountsByStatus[status] ?? 0 }}
+          </span>
+        </button>
+        <div
+          v-if="pendingCountsByStatus.Failed > 0"
+          class="ml-auto flex items-center gap-2"
+        >
+          <Button
+            size="sm"
+            variant="ghost"
+            :disabled="bulkBusy"
+            @click="retryAllFailed"
+          >
+            Retry failed
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            :disabled="bulkBusy"
+            class="text-destructive hover:text-destructive"
+            @click="clearAllFailed"
+          >
+            Clear failed
+          </Button>
+        </div>
       </div>
       <ul class="divide-y divide-border/40 rounded border border-border/60">
         <li
-          v-for="entry in pendingImports"
+          v-for="entry in visiblePendingImports"
           :key="entry.valve_match_id"
           class="flex items-center justify-between gap-4 px-3 py-2 text-sm"
         >
@@ -599,6 +728,19 @@ async function uploadDemo(file: File) {
           </div>
         </li>
       </ul>
+      <div
+        v-if="hiddenPendingCount > 0 || pendingExpanded"
+        class="flex justify-center"
+      >
+        <button
+          type="button"
+          class="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
+          @click="pendingExpanded = !pendingExpanded"
+        >
+          <template v-if="pendingExpanded">Show less</template>
+          <template v-else>Show {{ hiddenPendingCount }} more</template>
+        </button>
+      </div>
     </div>
   </PageTransition>
 
@@ -609,8 +751,8 @@ async function uploadDemo(file: File) {
           Upload a demo
         </h3>
         <p class="text-sm text-muted-foreground mt-0.5">
-          Drop in a CS2 <code>.dem</code> file to import the match
-          stats. Works whether or not your match history is linked.
+          Drop in a CS2 <code>.dem</code> file to import the match stats. Works
+          whether or not your match history is linked.
         </p>
       </div>
 
@@ -620,9 +762,7 @@ async function uploadDemo(file: File) {
           isDragging
             ? 'border-primary bg-primary/5'
             : 'border-border hover:border-border/80 hover:bg-accent/30',
-          uploadingDemo
-            ? 'cursor-progress opacity-80'
-            : 'cursor-pointer',
+          uploadingDemo ? 'cursor-progress opacity-80' : 'cursor-pointer',
         ]"
         role="button"
         tabindex="0"
@@ -640,7 +780,9 @@ async function uploadDemo(file: File) {
         />
         <p class="text-sm font-medium mb-1">
           <template v-if="isDragging">Drop to upload</template>
-          <template v-else>Click to choose or drag a <code>.dem</code> file</template>
+          <template v-else
+            >Click to choose or drag a <code>.dem</code> file</template
+          >
         </p>
         <p class="text-xs text-muted-foreground">
           CS2 demo files only · single file

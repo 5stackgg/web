@@ -310,11 +310,7 @@ const vsBaseClasses =
           <span v-if="isNative && match.e_region?.description">
             {{ match.e_region.description }}
           </span>
-          <span
-            v-if="isNative && formattedSchedule"
-            class="opacity-40"
-            >·</span
-          >
+          <span v-if="isNative && formattedSchedule" class="opacity-40">·</span>
           <span v-if="formattedSchedule">
             {{ formattedSchedule }}
           </span>

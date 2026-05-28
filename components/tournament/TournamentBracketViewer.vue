@@ -176,8 +176,7 @@ const fitZoom = computed(() => {
   }
   if (ctH <= 0) return manualZoom.value;
   const hScale = ctH / natH;
-  if (ctW <= 0)
-    return Math.max(MIN_FIT_ZOOM, Math.min(MAX_FIT_ZOOM, hScale));
+  if (ctW <= 0) return Math.max(MIN_FIT_ZOOM, Math.min(MAX_FIT_ZOOM, hScale));
   const wScale = ctW / natW;
   return Math.max(
     MIN_FIT_ZOOM,
@@ -626,7 +625,9 @@ function startMomentum() {
 <template>
   <div
     class="relative"
-    :class="isFullscreen ? 'flex h-screen w-screen items-center bg-background' : ''"
+    :class="
+      isFullscreen ? 'flex h-screen w-screen items-center bg-background' : ''
+    "
     ref="bracketWrapper"
   >
     <div
@@ -668,9 +669,7 @@ function startMomentum() {
                 transition: 'opacity 150ms ease-out',
               }
             : {
-                width: scaledContentWidth
-                  ? `${scaledContentWidth}px`
-                  : 'auto',
+                width: scaledContentWidth ? `${scaledContentWidth}px` : 'auto',
                 height: scaledContentHeight
                   ? `${scaledContentHeight}px`
                   : 'auto',

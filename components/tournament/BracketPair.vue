@@ -31,7 +31,9 @@ const verticalReserve = computed(() => (props.embed ? 80 : 240));
 const focused = ref<"wb" | "lb" | null>(null);
 const manualRatio = ref<number | null>(null);
 
-const viewportHeight = ref(typeof window !== "undefined" ? window.innerHeight : 900);
+const viewportHeight = ref(
+  typeof window !== "undefined" ? window.innerHeight : 900,
+);
 
 const updateViewport = () => {
   if (typeof window !== "undefined") {
@@ -169,75 +171,77 @@ const resetRatio = () => {
   <div class="flex flex-col">
     <!-- Upper bracket section (sticky scope) -->
     <div :class="pageScroll && hasLB ? 'relative' : ''">
-    <!-- Upper bracket header -->
-    <div
-      v-if="hasLB && focused !== 'lb'"
-      class="mb-2 flex items-center justify-between gap-2 rounded-md border-l-2 border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.06)] px-3 py-1.5"
-      :class="pageScroll ? 'sticky top-0 z-30 backdrop-blur-sm' : ''"
-    >
+      <!-- Upper bracket header -->
       <div
-        class="inline-flex items-center gap-2 font-mono text-[0.7rem] font-bold uppercase tracking-[0.24em] text-[hsl(var(--tac-amber))]"
+        v-if="hasLB && focused !== 'lb'"
+        class="mb-2 flex items-center justify-between gap-2 rounded-md border-l-2 border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.06)] px-3 py-1.5"
+        :class="pageScroll ? 'sticky top-0 z-30 backdrop-blur-sm' : ''"
       >
-        <ArrowUpToLine class="h-3.5 w-3.5" />
-        {{ $t("tournament.match.upper_bracket") }}
+        <div
+          class="inline-flex items-center gap-2 font-mono text-[0.7rem] font-bold uppercase tracking-[0.24em] text-[hsl(var(--tac-amber))]"
+        >
+          <ArrowUpToLine class="h-3.5 w-3.5" />
+          {{ $t("tournament.match.upper_bracket") }}
+        </div>
+        <button
+          v-if="!embed && !pageScroll"
+          type="button"
+          class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.2)]"
+          @click="focusWB"
+          :title="
+            focused === 'wb'
+              ? $t('tournament.bracket.restore_split')
+              : $t('tournament.bracket.focus_upper')
+          "
+        >
+          <component
+            :is="focused === 'wb' ? Minimize2 : Maximize2"
+            class="h-3.5 w-3.5"
+          />
+        </button>
       </div>
+
+      <!-- WB collapsed strip (when focused on LB) -->
       <button
-        v-if="!embed && !pageScroll"
+        v-if="hasLB && focused === 'lb'"
         type="button"
-        class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.2)]"
-        @click="focusWB"
-        :title="
-          focused === 'wb'
-            ? $t('tournament.bracket.restore_split')
-            : $t('tournament.bracket.focus_upper')
-        "
+        class="group mb-2 flex h-[44px] w-full items-center justify-between gap-2 rounded-md border-l-2 border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.08)] px-3 transition-colors hover:bg-[hsl(var(--tac-amber)/0.15)]"
+        @click="focused = null"
+        :title="$t('tournament.bracket.expand_button')"
       >
-        <component
-          :is="focused === 'wb' ? Minimize2 : Maximize2"
-          class="h-3.5 w-3.5"
-        />
-      </button>
-    </div>
-
-    <!-- WB collapsed strip (when focused on LB) -->
-    <button
-      v-if="hasLB && focused === 'lb'"
-      type="button"
-      class="group mb-2 flex h-[44px] w-full items-center justify-between gap-2 rounded-md border-l-2 border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.08)] px-3 transition-colors hover:bg-[hsl(var(--tac-amber)/0.15)]"
-      @click="focused = null"
-      :title="$t('tournament.bracket.expand_button')"
-    >
-      <div
-        class="inline-flex items-center gap-2 font-mono text-[0.7rem] font-bold uppercase tracking-[0.24em] text-[hsl(var(--tac-amber))]"
-      >
-        <ArrowUpToLine class="h-3.5 w-3.5" />
-        {{ $t("tournament.match.upper_bracket") }}
-        <span class="font-sans normal-case tracking-normal text-muted-foreground group-hover:text-[hsl(var(--tac-amber))]">
-          · {{ $t("tournament.bracket.click_to_expand") }}
+        <div
+          class="inline-flex items-center gap-2 font-mono text-[0.7rem] font-bold uppercase tracking-[0.24em] text-[hsl(var(--tac-amber))]"
+        >
+          <ArrowUpToLine class="h-3.5 w-3.5" />
+          {{ $t("tournament.match.upper_bracket") }}
+          <span
+            class="font-sans normal-case tracking-normal text-muted-foreground group-hover:text-[hsl(var(--tac-amber))]"
+          >
+            · {{ $t("tournament.bracket.click_to_expand") }}
+          </span>
+        </div>
+        <span
+          class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] transition-colors group-hover:bg-[hsl(var(--tac-amber)/0.2)]"
+        >
+          <Minimize2 class="h-3.5 w-3.5" />
         </span>
-      </div>
-      <span
-        class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] transition-colors group-hover:bg-[hsl(var(--tac-amber)/0.2)]"
-      >
-        <Minimize2 class="h-3.5 w-3.5" />
-      </span>
-    </button>
+      </button>
 
-    <TournamentBracketViewer
-      v-if="focused !== 'lb'"
-      :stage="stage"
-      :tournament="tournament"
-      :rounds="upperRounds"
-      :is-final-stage="isFinalStage"
-      :is-loser-bracket="false"
-      :total-groups="hasLB ? 2 : 1"
-      :stage-type="stageType"
-      :embed="embed"
-      :hide-finished-rounds="hideFinishedRounds"
-      :page-scroll="pageScroll"
-      :fit-height="pageScroll ? null : wbHeight"
-      :sticky-top-offset="hasLB ? 44 : 0"
-    />
+      <TournamentBracketViewer
+        v-if="focused !== 'lb'"
+        :stage="stage"
+        :tournament="tournament"
+        :rounds="upperRounds"
+        :is-final-stage="isFinalStage"
+        :is-loser-bracket="false"
+        :total-groups="hasLB ? 2 : 1"
+        :stage-type="stageType"
+        :embed="embed"
+        :hide-finished-rounds="hideFinishedRounds"
+        :page-scroll="pageScroll"
+        :fit-height="pageScroll ? null : wbHeight"
+        :sticky-top-offset="hasLB ? 44 : 0"
+      />
     </div>
 
     <!-- Divider (only in split mode with both brackets visible) -->
@@ -270,7 +274,9 @@ const resetRatio = () => {
       >
         <ArrowDownToLine class="h-3.5 w-3.5" />
         {{ $t("tournament.match.lower_bracket") }}
-        <span class="font-sans normal-case tracking-normal text-muted-foreground group-hover:text-destructive">
+        <span
+          class="font-sans normal-case tracking-normal text-muted-foreground group-hover:text-destructive"
+        >
           · {{ $t("tournament.bracket.click_to_expand") }}
         </span>
       </div>
@@ -283,51 +289,51 @@ const resetRatio = () => {
 
     <!-- Lower bracket section (sticky scope) -->
     <div :class="pageScroll && hasLB ? 'relative' : ''">
-    <!-- LB header (when LB is visible) -->
-    <div
-      v-if="hasLB && focused !== 'wb'"
-      class="mb-2 flex items-center justify-between gap-2 rounded-md border-l-2 border-destructive bg-destructive/5 px-3 py-1.5"
-      :class="pageScroll ? 'mt-10 sticky top-0 z-30 backdrop-blur-sm' : ''"
-    >
+      <!-- LB header (when LB is visible) -->
       <div
-        class="inline-flex items-center gap-2 font-mono text-[0.7rem] font-bold uppercase tracking-[0.24em] text-destructive"
+        v-if="hasLB && focused !== 'wb'"
+        class="mb-2 flex items-center justify-between gap-2 rounded-md border-l-2 border-destructive bg-destructive/5 px-3 py-1.5"
+        :class="pageScroll ? 'mt-10 sticky top-0 z-30 backdrop-blur-sm' : ''"
       >
-        <ArrowDownToLine class="h-3.5 w-3.5" />
-        {{ $t("tournament.match.lower_bracket") }}
+        <div
+          class="inline-flex items-center gap-2 font-mono text-[0.7rem] font-bold uppercase tracking-[0.24em] text-destructive"
+        >
+          <ArrowDownToLine class="h-3.5 w-3.5" />
+          {{ $t("tournament.match.lower_bracket") }}
+        </div>
+        <button
+          v-if="!embed && !pageScroll"
+          type="button"
+          class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-destructive/40 bg-destructive/10 text-destructive transition-colors hover:bg-destructive/20"
+          @click="focusLB"
+          :title="
+            focused === 'lb'
+              ? $t('tournament.bracket.restore_split')
+              : $t('tournament.bracket.focus_lower')
+          "
+        >
+          <component
+            :is="focused === 'lb' ? Minimize2 : Maximize2"
+            class="h-3.5 w-3.5"
+          />
+        </button>
       </div>
-      <button
-        v-if="!embed && !pageScroll"
-        type="button"
-        class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-destructive/40 bg-destructive/10 text-destructive transition-colors hover:bg-destructive/20"
-        @click="focusLB"
-        :title="
-          focused === 'lb'
-            ? $t('tournament.bracket.restore_split')
-            : $t('tournament.bracket.focus_lower')
-        "
-      >
-        <component
-          :is="focused === 'lb' ? Minimize2 : Maximize2"
-          class="h-3.5 w-3.5"
-        />
-      </button>
-    </div>
 
-    <TournamentBracketViewer
-      v-if="hasLB && focused !== 'wb'"
-      :stage="stage"
-      :tournament="tournament"
-      :rounds="lowerRounds as Map<number, any>"
-      :is-final-stage="isFinalStage"
-      :is-loser-bracket="true"
-      :total-groups="2"
-      :stage-type="stageType"
-      :embed="embed"
-      :hide-finished-rounds="hideFinishedRounds"
-      :page-scroll="pageScroll"
-      :fit-height="pageScroll ? null : lbHeight"
-      :sticky-top-offset="44"
-    />
+      <TournamentBracketViewer
+        v-if="hasLB && focused !== 'wb'"
+        :stage="stage"
+        :tournament="tournament"
+        :rounds="lowerRounds as Map<number, any>"
+        :is-final-stage="isFinalStage"
+        :is-loser-bracket="true"
+        :total-groups="2"
+        :stage-type="stageType"
+        :embed="embed"
+        :hide-finished-rounds="hideFinishedRounds"
+        :page-scroll="pageScroll"
+        :fit-height="pageScroll ? null : lbHeight"
+        :sticky-top-offset="44"
+      />
     </div>
   </div>
 </template>

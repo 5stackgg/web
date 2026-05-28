@@ -43,9 +43,7 @@ const eloInnerClasses =
 const eloClasses =
   "font-mono text-[0.6rem] font-semibold uppercase tabular-nums tracking-[0.14em] text-[hsl(28_95%_55%/0.9)] whitespace-nowrap";
 
-const hasFaceit = computed(
-  () => (props.faceitSkillLevel ?? null) !== null,
-);
+const hasFaceit = computed(() => (props.faceitSkillLevel ?? null) !== null);
 
 const titleText = computed(() => {
   const parts: string[] = ["Faceit"];

@@ -117,12 +117,7 @@ const selectedModeRef = computed<
 >(() => {
   const raw = route.query.mode;
   const v = Array.isArray(raw) ? raw[0] : raw;
-  if (
-    v === "Competitive" ||
-    v === "Wingman" ||
-    v === "Duel" ||
-    v === "Premier"
-  )
+  if (v === "Competitive" || v === "Wingman" || v === "Duel" || v === "Premier")
     return v;
   return "all";
 });

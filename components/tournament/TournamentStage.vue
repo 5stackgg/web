@@ -2,12 +2,7 @@
 import BracketPair from "./BracketPair.vue";
 import SwissBracketViewer from "./SwissBracketViewer.vue";
 import StageStandings from "./StageStandings.vue";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "~/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import {
   e_tournament_stage_types_enum,
   e_tournament_status_enum,

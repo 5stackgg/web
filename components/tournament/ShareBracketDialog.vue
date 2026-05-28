@@ -10,12 +10,7 @@ import {
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "~/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Copy, Check, ExternalLink } from "lucide-vue-next";
 import { toast } from "@/components/ui/toast";
 import { useI18n } from "vue-i18n";
@@ -47,7 +42,10 @@ watch(
   (isOpen) => {
     if (isOpen) {
       const firstStage = orderedStages.value[0];
-      if (firstStage && !orderedStages.value.find((s) => s.order === selectedStageOrder.value)) {
+      if (
+        firstStage &&
+        !orderedStages.value.find((s) => s.order === selectedStageOrder.value)
+      ) {
         selectedStageOrder.value = firstStage.order || 1;
       }
     }
@@ -107,10 +105,7 @@ const openUrl = (url: string) => {
 </script>
 
 <template>
-  <Dialog
-    :open="props.open"
-    @update:open="(v) => emit('update:open', v)"
-  >
+  <Dialog :open="props.open" @update:open="(v) => emit('update:open', v)">
     <DialogContent class="max-w-2xl">
       <DialogHeader>
         <DialogTitle>{{ $t("tournament.bracket.share_title") }}</DialogTitle>
@@ -139,7 +134,11 @@ const openUrl = (url: string) => {
           <div class="space-y-2">
             <Label>{{ $t("tournament.bracket.share_link") }}</Label>
             <div class="flex gap-2">
-              <Input :model-value="currentStageUrl" readonly class="font-mono text-xs" />
+              <Input
+                :model-value="currentStageUrl"
+                readonly
+                class="font-mono text-xs"
+              />
               <Button
                 variant="outline"
                 size="icon"
@@ -170,7 +169,9 @@ const openUrl = (url: string) => {
               <Button
                 variant="outline"
                 size="icon"
-                @click="copyValue(embedSnippet(currentStageUrl), 'current-embed')"
+                @click="
+                  copyValue(embedSnippet(currentStageUrl), 'current-embed')
+                "
               >
                 <Check v-if="copiedKey === 'current-embed'" class="h-4 w-4" />
                 <Copy v-else class="h-4 w-4" />
@@ -204,7 +205,11 @@ const openUrl = (url: string) => {
           <div class="space-y-2">
             <Label>{{ $t("tournament.bracket.share_link") }}</Label>
             <div class="flex gap-2">
-              <Input :model-value="specificStageUrl" readonly class="font-mono text-xs" />
+              <Input
+                :model-value="specificStageUrl"
+                readonly
+                class="font-mono text-xs"
+              />
               <Button
                 variant="outline"
                 size="icon"
@@ -233,7 +238,9 @@ const openUrl = (url: string) => {
               <Button
                 variant="outline"
                 size="icon"
-                @click="copyValue(embedSnippet(specificStageUrl), 'specific-embed')"
+                @click="
+                  copyValue(embedSnippet(specificStageUrl), 'specific-embed')
+                "
               >
                 <Check v-if="copiedKey === 'specific-embed'" class="h-4 w-4" />
                 <Copy v-else class="h-4 w-4" />
@@ -259,7 +266,11 @@ const openUrl = (url: string) => {
           <div class="space-y-2">
             <Label>{{ $t("tournament.bracket.share_link") }}</Label>
             <div class="flex gap-2">
-              <Input :model-value="cycleAllUrl" readonly class="font-mono text-xs" />
+              <Input
+                :model-value="cycleAllUrl"
+                readonly
+                class="font-mono text-xs"
+              />
               <Button
                 variant="outline"
                 size="icon"

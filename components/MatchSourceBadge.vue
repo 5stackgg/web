@@ -3,9 +3,7 @@ const props = defineProps<{
   source?: string | null;
 }>();
 
-const visible = computed(
-  () => !!props.source && props.source !== "5stack",
-);
+const visible = computed(() => !!props.source && props.source !== "5stack");
 
 const labelMap: Record<string, string> = {
   valve: "VALVE",

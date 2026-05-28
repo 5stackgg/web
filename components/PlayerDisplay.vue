@@ -190,10 +190,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               :premier-rank="player.premier_rank"
               :premier-rank-updated-at="player.premier_rank_updated_at"
             />
-            <PlayerElo
-              v-else-if="showElo"
-              :elo="player.elo"
-            />
+            <PlayerElo v-else-if="showElo" :elo="player.elo" />
             <slot name="elo-postfix"></slot>
             <p
               class="text-muted-foreground text-xs flex items-center gap-1"

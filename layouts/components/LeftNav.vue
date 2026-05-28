@@ -590,9 +590,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                           class="flex w-full items-center justify-between gap-2"
                         >
                           <span>
-                            {{
-                              $t("layouts.app_nav.administration.gpu_nodes")
-                            }}
+                            {{ $t("layouts.app_nav.administration.gpu_nodes") }}
                           </span>
                           <AlertTriangle
                             v-if="gpuPoolNeedsAttention"
@@ -905,26 +903,16 @@ export default {
           { where: { gpu: { _eq: true } } as any },
           { id: true },
         ],
-        steam_accounts: [{}, { id: true, enabled: true, last_node_id: true }],
+        steam_accounts: [{}, { id: true }],
       }),
       pollInterval: 60 * 1000,
       update(this: any, data: any) {
         const nodes = (data?.game_server_nodes ?? []) as Array<{ id: string }>;
-        const accounts = (data?.steam_accounts ?? []) as Array<{
-          enabled: boolean;
-          last_node_id: string | null;
-        }>;
-        const enabled = accounts.filter((a) => a.enabled);
-        const pinnedNodeIds = new Set(
-          enabled
-            .map((a) => a.last_node_id)
-            .filter((v): v is string => !!v),
-        );
-        const unassignedNodes = nodes.filter((n) => !pinnedNodeIds.has(n.id));
+        const accounts = (data?.steam_accounts ?? []) as Array<{ id: string }>;
         return {
           nodes: nodes.length,
-          pool: enabled.length,
-          unassigned: unassignedNodes.length,
+          pool: accounts.length,
+          short: nodes.length > 0 && accounts.length < nodes.length,
         };
       },
       skip() {
@@ -956,7 +944,7 @@ export default {
       if (!h || h.nodes === 0) {
         return false;
       }
-      return h.pool === 0 || h.unassigned > 0;
+      return h.pool === 0 || h.short;
     },
     gpuPoolTooltip(): string {
       const h = (this as any).gpuPoolHealth;
@@ -968,11 +956,11 @@ export default {
           "pages.gpu_nodes.steam_pool.empty_warning_title",
         ) as string;
       }
-      if (h.unassigned > 0) {
-        return this.$t(
-          "layouts.app_nav.tooltips.gpu_nodes_unassigned",
-          { count: h.unassigned },
-        ) as string;
+      if (h.short) {
+        return this.$t("pages.gpu_nodes.steam_pool.short_warning_title", {
+          accounts: h.pool,
+          nodes: h.nodes,
+        }) as string;
       }
       return "";
     },

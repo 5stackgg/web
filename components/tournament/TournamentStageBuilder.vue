@@ -90,99 +90,103 @@ import {
           <TabsList
             class="flex flex-wrap gap-2 p-0 bg-transparent border-none h-auto flex-1 justify-start"
           >
-          <TabsTrigger
-            v-for="stageNumber in maxStageNumber"
-            :key="stageNumber"
-            :value="`stage-${stageNumber}`"
-            class="group/stg relative inline-flex items-center gap-2 !pl-[0.85rem] !pr-9 !py-3 min-w-[220px] min-h-[72px] !h-auto !bg-card/45 !border !border-border !rounded-md !text-muted-foreground font-[inherit] tracking-normal normal-case text-left [transition:border-color_180ms_ease,background_180ms_ease,color_180ms_ease] hover:!border-[hsl(var(--tac-amber)/0.35)] hover:!bg-card/70 data-[state=active]:!border-[hsl(var(--tac-amber)/0.55)] data-[state=active]:!bg-[hsl(var(--tac-amber)/0.08)] data-[state=active]:!text-foreground data-[state=active]:!shadow-none"
-          >
-            <div class="flex items-center gap-3 flex-1 min-w-0">
-              <div
-                class="font-mono text-xl font-bold tabular-nums leading-none text-[hsl(var(--tac-amber)/0.4)] group-data-[state=active]/stg:text-[hsl(var(--tac-amber))]"
-              >
-                {{ stageNumber.toString().padStart(2, "0") }}
-              </div>
-              <div class="flex flex-col gap-[0.1rem] min-w-0 text-left">
-                <span
-                  class="font-sans text-[0.85rem] font-semibold tracking-[0.04em] uppercase leading-[1.1]"
-                  >{{
-                    $t("tournament.stage.stage_tab", { stage: stageNumber })
-                  }}</span
+            <TabsTrigger
+              v-for="stageNumber in maxStageNumber"
+              :key="stageNumber"
+              :value="`stage-${stageNumber}`"
+              class="group/stg relative inline-flex items-center gap-2 !pl-[0.85rem] !pr-9 !py-3 min-w-[220px] min-h-[72px] !h-auto !bg-card/45 !border !border-border !rounded-md !text-muted-foreground font-[inherit] tracking-normal normal-case text-left [transition:border-color_180ms_ease,background_180ms_ease,color_180ms_ease] hover:!border-[hsl(var(--tac-amber)/0.35)] hover:!bg-card/70 data-[state=active]:!border-[hsl(var(--tac-amber)/0.55)] data-[state=active]:!bg-[hsl(var(--tac-amber)/0.08)] data-[state=active]:!text-foreground data-[state=active]:!shadow-none"
+            >
+              <div class="flex items-center gap-3 flex-1 min-w-0">
+                <div
+                  class="font-mono text-xl font-bold tabular-nums leading-none text-[hsl(var(--tac-amber)/0.4)] group-data-[state=active]/stg:text-[hsl(var(--tac-amber))]"
                 >
-                <span
-                  v-if="getFirstStageForTab(stageNumber)"
-                  class="text-[0.72rem] text-muted-foreground inline-flex gap-[0.3rem] flex-wrap items-center"
-                >
-                  {{
-                    getFirstStageForTab(stageNumber)?.e_tournament_stage_type
-                      .description
-                  }}
-                  <template v-if="getBestOf(getFirstStageForTab(stageNumber))">
-                    ·
-                    <span
-                      class="font-mono tracking-[0.08em] text-[hsl(var(--tac-amber))]"
+                  {{ stageNumber.toString().padStart(2, "0") }}
+                </div>
+                <div class="flex flex-col gap-[0.1rem] min-w-0 text-left">
+                  <span
+                    class="font-sans text-[0.85rem] font-semibold tracking-[0.04em] uppercase leading-[1.1]"
+                    >{{
+                      $t("tournament.stage.stage_tab", { stage: stageNumber })
+                    }}</span
+                  >
+                  <span
+                    v-if="getFirstStageForTab(stageNumber)"
+                    class="text-[0.72rem] text-muted-foreground inline-flex gap-[0.3rem] flex-wrap items-center"
+                  >
+                    {{
+                      getFirstStageForTab(stageNumber)?.e_tournament_stage_type
+                        .description
+                    }}
+                    <template
+                      v-if="getBestOf(getFirstStageForTab(stageNumber))"
                     >
-                      BO{{ getBestOf(getFirstStageForTab(stageNumber)) }}
-                    </span>
-                  </template>
-                  <template v-if="getFirstStageForTab(stageNumber)?.max_teams">
-                    ·
-                    {{ getFirstStageForTab(stageNumber).max_teams }} teams
-                  </template>
-                </span>
+                      ·
+                      <span
+                        class="font-mono tracking-[0.08em] text-[hsl(var(--tac-amber))]"
+                      >
+                        BO{{ getBestOf(getFirstStageForTab(stageNumber)) }}
+                      </span>
+                    </template>
+                    <template
+                      v-if="getFirstStageForTab(stageNumber)?.max_teams"
+                    >
+                      ·
+                      {{ getFirstStageForTab(stageNumber).max_teams }} teams
+                    </template>
+                  </span>
+                </div>
               </div>
-            </div>
-            <DropdownMenu
-              v-if="canEditStages && getFirstStageForTab(stageNumber)"
-              v-model:open="stageMenus[stageNumber]"
-              @click.stop
-            >
-              <DropdownMenuTrigger as-child @click.stop>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  @click.stop
-                  class="!absolute top-[0.3rem] right-[0.3rem] opacity-55 transition-opacity [transition-duration:160ms] group-hover/stg:opacity-100 group-data-[state=active]/stg:opacity-100 h-7 w-7 shrink-0"
-                >
-                  <MoreHorizontal class="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" class="w-[200px]">
-                <DropdownMenuGroup>
-                  <DropdownMenuItem
-                    @click="
-                      editStageDialogs[stageNumber] = true;
-                      stageMenus[stageNumber] = false;
-                    "
+              <DropdownMenu
+                v-if="canEditStages && getFirstStageForTab(stageNumber)"
+                v-model:open="stageMenus[stageNumber]"
+                @click.stop
+              >
+                <DropdownMenuTrigger as-child @click.stop>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    @click.stop
+                    class="!absolute top-[0.3rem] right-[0.3rem] opacity-55 transition-opacity [transition-duration:160ms] group-hover/stg:opacity-100 group-data-[state=active]/stg:opacity-100 h-7 w-7 shrink-0"
                   >
-                    {{ $t("tournament.stage.edit") }}
-                  </DropdownMenuItem>
+                    <MoreHorizontal class="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" class="w-[200px]">
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem
+                      @click="
+                        editStageDialogs[stageNumber] = true;
+                        stageMenus[stageNumber] = false;
+                      "
+                    >
+                      {{ $t("tournament.stage.edit") }}
+                    </DropdownMenuItem>
 
-                  <DropdownMenuSeparator />
+                    <DropdownMenuSeparator />
 
-                  <DropdownMenuItem
-                    class="text-red-600"
-                    @click="openDeleteDialog(stageNumber)"
-                  >
-                    <Trash class="mr-2 h-4 w-4 inline" />
-                    {{ $t("tournament.stage.delete") }}
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </TabsTrigger>
-          <TabsTrigger
-            value="add-stage"
-            class="inline-flex items-center justify-center gap-2 min-w-[200px] min-h-[72px] !px-4 !py-3 !bg-card/45 !border !border-dashed !border-border !rounded-md !text-muted-foreground font-mono text-[0.72rem] font-bold tracking-[0.18em] uppercase [transition:border-color_180ms_ease,background_180ms_ease,color_180ms_ease] hover:!border-[hsl(var(--tac-amber)/0.5)] hover:!text-[hsl(var(--tac-amber))]"
-            v-if="canEditStages"
-          >
-            <span class="text-base font-normal leading-none mr-[0.35rem]"
-              >+</span
+                    <DropdownMenuItem
+                      class="text-red-600"
+                      @click="openDeleteDialog(stageNumber)"
+                    >
+                      <Trash class="mr-2 h-4 w-4 inline" />
+                      {{ $t("tournament.stage.delete") }}
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TabsTrigger>
+            <TabsTrigger
+              value="add-stage"
+              class="inline-flex items-center justify-center gap-2 min-w-[200px] min-h-[72px] !px-4 !py-3 !bg-card/45 !border !border-dashed !border-border !rounded-md !text-muted-foreground font-mono text-[0.72rem] font-bold tracking-[0.18em] uppercase [transition:border-color_180ms_ease,background_180ms_ease,color_180ms_ease] hover:!border-[hsl(var(--tac-amber)/0.5)] hover:!text-[hsl(var(--tac-amber))]"
+              v-if="canEditStages"
             >
-            <span>
-              {{ $t("tournament.stage.add_another") }}
-            </span>
-          </TabsTrigger>
+              <span class="text-base font-normal leading-none mr-[0.35rem]"
+                >+</span
+              >
+              <span>
+                {{ $t("tournament.stage.add_another") }}
+              </span>
+            </TabsTrigger>
           </TabsList>
           <div class="flex gap-1.5 mt-1 items-center">
             <button

@@ -1702,6 +1702,24 @@ const queueStatus = computed<{
       </div>
     </TooltipProvider>
   </div>
+  <div
+    v-else-if="!loading && !compact"
+    class="rounded-lg border border-border/50 bg-card/40 px-6 py-12 text-center [backdrop-filter:blur(6px)]"
+  >
+    <ListVideo
+      class="mx-auto h-8 w-8 text-muted-foreground/60"
+      aria-hidden="true"
+    />
+    <div
+      class="mt-3 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
+    >
+      Render queue is empty
+    </div>
+    <p class="mt-2 max-w-md mx-auto text-xs text-muted-foreground/80">
+      Highlight render jobs queued from matches will show up here while they
+      boot, render, and upload.
+    </p>
+  </div>
 </template>
 
 <style scoped>

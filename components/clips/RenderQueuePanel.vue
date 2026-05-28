@@ -1278,7 +1278,9 @@ const queueStatus = computed<{
                   v-if="g.activeJob.status === 'uploading'"
                   class="relative h-1.5 overflow-hidden rounded-full bg-primary/20"
                 >
-                  <div class="upload-pulse-bar" />
+                  <div
+                    class="absolute inset-0 w-[30%] rounded-full animate-upload-pulse bg-[linear-gradient(90deg,transparent,hsl(var(--primary))_50%,transparent)]"
+                  />
                 </div>
                 <div
                   v-else
@@ -1722,26 +1724,3 @@ const queueStatus = computed<{
   </div>
 </template>
 
-<style scoped>
-.upload-pulse-bar {
-  position: absolute;
-  inset: 0;
-  width: 30%;
-  border-radius: 9999px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    hsl(var(--primary)) 50%,
-    transparent
-  );
-  animation: upload-pulse 1.4s linear infinite;
-}
-@keyframes upload-pulse {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(400%);
-  }
-}
-</style>

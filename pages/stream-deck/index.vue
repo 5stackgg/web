@@ -1108,23 +1108,3 @@ function matchStatusLabel(m: LiveMatch): string {
     </div>
   </PageTransition>
 </template>
-
-<style scoped>
-/* Slow ping for the ON AIR dot — distinct from animate-ping which
-   is too aggressive for an always-on broadcast badge. Mirrors the
-   game-server-node indicator cadence. */
-@keyframes ping-slow {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.45);
-    opacity: 0.55;
-  }
-}
-.animate-ping-slow {
-  animation: ping-slow 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-</style>

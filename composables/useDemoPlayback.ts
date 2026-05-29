@@ -417,9 +417,7 @@ export function useDemoPlayback() {
     });
   }
 
-  // Operator "Skip shaders" during demo boot — dismisses the Vulkan
-  // shader compile so cs2 starts now (shaders compile on-demand). Rides
-  // the same demo-session control socket as pause/seek.
+  // Operator "Skip shaders" during demo boot (rides the control socket).
   function skipShaders() {
     control("skip-shaders");
   }

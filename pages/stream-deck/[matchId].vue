@@ -309,8 +309,7 @@ async function reconnectLive() {
   });
 }
 
-// Operator skip of the Vulkan shader compile during boot — launches CS2
-// now (shaders compile on-demand → some stutter until warm).
+// Operator skip of the shader compile during boot.
 const skippingShaders = ref(false);
 async function onSkipShaders() {
   if (skippingShaders.value) return;
@@ -908,8 +907,7 @@ watch(spectatedSteamId, (sid) => {
           :show-boot="true"
           class="group aspect-video w-full overflow-hidden rounded-lg border border-border/70 shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
         >
-          <!-- Operator boot stepper with the Skip-shaders control (this
-               page is streamer+ via middleware). -->
+          <!-- Boot stepper with Skip control (page is streamer+). -->
           <template #boot>
             <StreamSessionProgress
               :status="stream?.status ?? 'booting'"

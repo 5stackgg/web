@@ -744,8 +744,7 @@ function matchStatusLabel(m: LiveMatch): string {
               :show-boot="true"
               class="group aspect-video w-full overflow-hidden rounded-md border border-border/60"
             >
-              <!-- Operator boot stepper with inline Skip-shaders (this page
-                   is streamer+ via middleware). -->
+              <!-- Boot stepper with Skip control (page is streamer+). -->
               <template #boot>
                 <StreamSessionProgress
                   :status="stream.status ?? 'booting'"

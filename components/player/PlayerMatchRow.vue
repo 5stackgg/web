@@ -75,9 +75,9 @@ function expandLeave(el: Element, done: () => void) {
     <!-- ===================== WIDE ===================== -->
     <div v-if="!compact" :class="[wideGrid, 'px-3 py-2.5']">
       <!-- OPEN MATCH — explicit jump to the full match page (the row click
-           itself only toggles the inline quick overview). -->
+           itself only toggles the inline quick overview). Always shown so
+           non-finished matches (scheduled/cancelled) remain reachable. -->
       <NuxtLink
-        v-if="isFinished"
         :to="`/matches/${match.id}`"
         class="flex h-9 w-9 items-center justify-center rounded-md border border-border/60 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]"
         :title="$t('match.open_match')"
@@ -85,7 +85,6 @@ function expandLeave(el: Element, done: () => void) {
       >
         <ExternalLink class="h-4 w-4" />
       </NuxtLink>
-      <span v-else />
 
       <!-- DATE -->
       <div class="flex flex-col leading-tight">
@@ -124,17 +123,19 @@ function expandLeave(el: Element, done: () => void) {
         <span v-else class="text-muted-foreground">—</span>
       </div>
 
-      <!-- RESULT + SCORE -->
-      <div class="flex items-center gap-2">
-        <span :class="['shrink-0', resultBadgeClass]">{{ resultLetter }}</span>
-        <span
-          v-if="isFinished"
-          class="font-mono text-sm font-bold tabular-nums"
-        >
-          <span :class="scoreClass">{{ score.player }}</span>
-          <span class="mx-1 text-muted-foreground/60">:</span>
-          <span class="text-muted-foreground/90">{{ score.opponent }}</span>
-        </span>
+      <!-- RESULT + SCORE — finished matches show the W/L/T badge + score;
+           anything else (scheduled/cancelled/live) shows only the status. -->
+      <div class="flex min-w-0 items-center gap-2">
+        <template v-if="isFinished">
+          <span :class="['shrink-0', resultBadgeClass]">{{
+            resultLetter
+          }}</span>
+          <span class="font-mono text-sm font-bold tabular-nums">
+            <span :class="scoreClass">{{ score.player }}</span>
+            <span class="mx-1 text-muted-foreground/60">:</span>
+            <span class="text-muted-foreground/90">{{ score.opponent }}</span>
+          </span>
+        </template>
         <MatchStatus v-else :match="match" />
       </div>
 
@@ -312,15 +313,16 @@ function expandLeave(el: Element, done: () => void) {
     <!-- ===================== COMPACT ===================== -->
     <div v-else class="px-3 py-2.5">
       <div class="flex items-center gap-2">
-        <span :class="['shrink-0', resultBadgeClass]">{{ resultLetter }}</span>
-        <span
-          v-if="isFinished"
-          class="font-mono text-base font-bold leading-none tabular-nums"
-        >
-          <span :class="scoreClass">{{ score.player }}</span>
-          <span class="mx-0.5 text-muted-foreground/60">:</span>
-          <span class="text-muted-foreground/90">{{ score.opponent }}</span>
-        </span>
+        <template v-if="isFinished">
+          <span :class="['shrink-0', resultBadgeClass]">{{
+            resultLetter
+          }}</span>
+          <span class="font-mono text-base font-bold leading-none tabular-nums">
+            <span :class="scoreClass">{{ score.player }}</span>
+            <span class="mx-0.5 text-muted-foreground/60">:</span>
+            <span class="text-muted-foreground/90">{{ score.opponent }}</span>
+          </span>
+        </template>
         <MatchStatus v-else :match="match" />
 
         <div class="ml-auto flex items-center gap-1.5 text-muted-foreground">
@@ -455,6 +457,16 @@ function expandLeave(el: Element, done: () => void) {
           />
           {{ expanded ? $t("common.close") : $t("ui_extras.quick_overview") }}
         </button>
+        <NuxtLink
+          :to="`/matches/${match.id}`"
+          class="inline-flex items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
+          @click.stop
+        >
+          <ExternalLink class="h-3 w-3" />
+          {{ $t("match.open_match") }}
+        </NuxtLink>
+      </div>
+      <div v-else class="mt-2 flex items-center">
         <NuxtLink
           :to="`/matches/${match.id}`"
           class="inline-flex items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"

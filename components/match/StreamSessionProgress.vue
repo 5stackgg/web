@@ -209,7 +209,9 @@ function formatShaderCount(raw: string | null | undefined): string {
         }"
       >
         <div class="flex items-center gap-2.5">
-          <span class="w-4 h-4 inline-flex items-center justify-center shrink-0">
+          <span
+            class="w-4 h-4 inline-flex items-center justify-center shrink-0"
+          >
             <Check v-if="stateOf(index) === 'done'" class="w-3.5 h-3.5" />
             <Loader2
               v-else-if="stateOf(index) === 'current' && status !== 'errored'"

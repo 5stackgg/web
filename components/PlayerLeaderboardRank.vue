@@ -92,7 +92,7 @@ const rankLabel = computed(() =>
 
 const triggerClasses = [
   "group/rank relative inline-flex items-center gap-1.5 cursor-pointer select-none leading-none",
-  "px-[0.55rem] py-[0.25rem] rounded",
+  "h-[26px] px-[0.6rem] rounded",
   "border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--card)/0.55)]",
   "[backdrop-filter:blur(6px)]",
   "transition-[transform,border-color,box-shadow] duration-150",
@@ -102,18 +102,18 @@ const triggerClasses = [
 ].join(" ");
 
 const notchClasses =
-  "h-[6px] w-[6px] rounded-[1px] bg-[hsl(var(--tac-amber))] [box-shadow:0_0_8px_hsl(var(--tac-amber)/0.7)]";
+  "h-[7px] w-[7px] rounded-[1px] bg-[hsl(var(--tac-amber))] [box-shadow:0_0_8px_hsl(var(--tac-amber)/0.7)]";
 
 const labelClasses =
-  "font-mono text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground/85 group-hover/rank:text-[hsl(var(--tac-amber))]";
+  "font-mono text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground/85 group-hover/rank:text-[hsl(var(--tac-amber))]";
 
-const sepClasses = "h-2.5 w-px bg-border/70";
+const sepClasses = "h-3 w-px bg-border/70";
 
 const rankValueClasses =
-  "font-mono text-[0.7rem] font-bold tabular-nums tracking-[0.04em] text-[hsl(var(--tac-amber))] [text-shadow:0_0_10px_hsl(var(--tac-amber)/0.35)]";
+  "font-mono text-[0.75rem] font-bold tabular-nums tracking-[0.04em] text-[hsl(var(--tac-amber))] [text-shadow:0_0_10px_hsl(var(--tac-amber)/0.35)]";
 
 const percentileClasses =
-  "font-mono text-[0.6rem] font-semibold uppercase tabular-nums tracking-[0.14em] text-[hsl(var(--tac-amber)/0.85)]";
+  "font-mono text-[0.62rem] font-semibold uppercase tabular-nums tracking-[0.14em] text-[hsl(var(--tac-amber)/0.85)]";
 </script>
 
 <template>

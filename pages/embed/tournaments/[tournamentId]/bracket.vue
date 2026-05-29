@@ -317,8 +317,7 @@ export default {
     },
     isFinalStage(): boolean {
       if (!this.activeStage || !this.orderedStages.length) return false;
-      const lastOrder =
-        this.orderedStages[this.orderedStages.length - 1].order;
+      const lastOrder = this.orderedStages[this.orderedStages.length - 1].order;
       return this.activeStage.order === lastOrder;
     },
     slideDivision(): string | null {

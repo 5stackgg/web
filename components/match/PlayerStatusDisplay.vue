@@ -24,6 +24,7 @@ const { isMobile } = useSidebar();
     :linkable="linkable"
     :show-elo="true"
     :compact="isMobile"
+    :match-type="match?.options?.type"
   >
     <template v-slot:avatar-corner v-if="member.captain">
       <span

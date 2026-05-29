@@ -2,19 +2,25 @@
 import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
-import { Calendar, PlusCircle, Search, X } from "lucide-vue-next";
+import {
+  Activity,
+  Calendar,
+  Check,
+  ChevronDown,
+  PlusCircle,
+  Search,
+  X,
+} from "lucide-vue-next";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
 import { Input } from "~/components/ui/input";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 import { Skeleton } from "~/components/ui/skeleton";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
@@ -26,11 +32,17 @@ import RecentTournaments from "~/components/tournament/RecentTournaments.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import {
   tacticalCtaButtonClasses,
-  tacticalFilterPillActiveClasses,
-  tacticalFilterPillClasses,
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
+
+// Compact filter-bar trigger buttons — each opens a popover.
+const filterTriggerBase =
+  "inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 font-mono text-[0.64rem] uppercase tracking-[0.14em] leading-none transition-colors duration-150 cursor-pointer";
+const filterTriggerIdle =
+  "border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground";
+const filterTriggerActive =
+  "border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]";
 
 const { t } = useI18n();
 const route = useRoute();
@@ -188,6 +200,16 @@ const sinceOptions = computed<Array<{ value: SincePreset; label: string }>>(
   ],
 );
 
+const currentStatusLabel = computed(
+  () =>
+    statusOptions.value.find((o) => o.value === statusFilter.value)?.label ??
+    "",
+);
+const currentSinceLabel = computed(
+  () =>
+    sinceOptions.value.find((o) => o.value === sinceFilter.value)?.label ?? "",
+);
+
 // --- Drilldown / filtered list ---
 
 const filteredTournaments = ref<any[]>([]);
@@ -332,87 +354,186 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
   </PageTransition>
 
   <PageTransition :delay="60" class="mt-6">
-    <div class="flex flex-col gap-3">
-      <div class="flex flex-col gap-2 md:flex-row md:items-center">
-        <div class="relative flex-1">
-          <Search
-            class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none"
-          />
-          <Input
-            :model-value="searchInput"
-            @update:model-value="onSearchInput"
-            @keydown.enter.prevent="commitSearch"
-            @blur="commitSearch"
-            :placeholder="$t('pages.tournaments.filter.search_placeholder')"
-            class="h-10 pl-9 pr-10 bg-card/40 backdrop-blur border-border"
-          />
-          <button
-            v-if="searchInput"
-            type="button"
-            @click="clearSearch"
-            class="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-            :aria-label="$t('common.reset_filters')"
-          >
-            <X class="w-3.5 h-3.5" />
-          </button>
-        </div>
+    <div
+      class="relative rounded-md border border-border bg-card/40 [backdrop-filter:blur(6px)] px-3 py-2.5 transition-shadow duration-200"
+      :class="
+        hasActiveFilter &&
+        '[box-shadow:0_0_0_1px_hsl(var(--tac-amber)/0.18),0_0_28px_-14px_hsl(var(--tac-amber)/0.5)]'
+      "
+    >
+      <!-- Trigger row — each filter opens a self-contained popover. -->
+      <div class="flex flex-wrap items-center gap-1.5">
+        <span
+          :class="tacticalSectionTickClasses"
+          class="mr-1 hidden shrink-0 sm:inline-block"
+        />
 
-        <Select
-          :model-value="sinceFilter"
-          @update:model-value="(v) => setSince(v as SincePreset)"
-        >
-          <SelectTrigger
-            class="h-10 w-full gap-2 md:w-[12rem] bg-card/40 backdrop-blur border-border"
-            :class="
-              sinceFilter !== 'all'
-                ? 'border-[hsl(var(--tac-amber)/0.5)] text-[hsl(var(--tac-amber))]'
-                : ''
-            "
-          >
-            <Calendar
-              class="h-3.5 w-3.5"
-              :class="
-                sinceFilter !== 'all'
-                  ? 'text-[hsl(var(--tac-amber))]'
-                  : 'text-muted-foreground'
-              "
-            />
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem
+        <!-- Search -->
+        <Popover>
+          <PopoverTrigger as-child>
+            <button
+              type="button"
+              :class="[
+                filterTriggerBase,
+                nameQuery ? filterTriggerActive : filterTriggerIdle,
+              ]"
+            >
+              <Search class="h-3.5 w-3.5" />
+              {{ $t("common.search") }}
+              <ChevronDown class="h-3 w-3 opacity-50" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent align="start" class="w-72 p-2">
+            <div class="relative">
+              <Search
+                class="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60"
+              />
+              <Input
+                :model-value="searchInput"
+                @update:model-value="onSearchInput"
+                @keydown.enter.prevent="commitSearch"
+                :placeholder="$t('pages.tournaments.filter.search_placeholder')"
+                class="h-9 pl-8 pr-8 text-sm"
+              />
+              <button
+                v-if="searchInput"
+                type="button"
+                @click="clearSearch"
+                class="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                :aria-label="$t('common.reset_filters')"
+              >
+                <X class="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        <!-- Status -->
+        <Popover>
+          <PopoverTrigger as-child>
+            <button
+              type="button"
+              :class="[
+                filterTriggerBase,
+                statusFilter !== 'all'
+                  ? filterTriggerActive
+                  : filterTriggerIdle,
+              ]"
+            >
+              <Activity class="h-3.5 w-3.5" />
+              {{ $t("common.status") }}
+              <span
+                v-if="statusFilter !== 'all'"
+                class="font-sans text-[0.6rem] font-bold normal-case tracking-normal text-[hsl(var(--tac-amber))]"
+              >
+                {{ currentStatusLabel }}
+              </span>
+              <ChevronDown class="h-3 w-3 opacity-50" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent align="start" class="w-48 p-1">
+            <button
+              v-for="opt in statusOptions"
+              :key="opt.value"
+              type="button"
+              @click="setStatus(opt.value)"
+              class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
+            >
+              <span>{{ opt.label }}</span>
+              <Check
+                v-if="statusFilter === opt.value"
+                class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+              />
+            </button>
+          </PopoverContent>
+        </Popover>
+
+        <!-- Since -->
+        <Popover>
+          <PopoverTrigger as-child>
+            <button
+              type="button"
+              :class="[
+                filterTriggerBase,
+                sinceFilter !== 'all' ? filterTriggerActive : filterTriggerIdle,
+              ]"
+            >
+              <Calendar class="h-3.5 w-3.5" />
+              {{ $t("common.date") }}
+              <span
+                v-if="sinceFilter !== 'all'"
+                class="font-sans text-[0.6rem] font-bold normal-case tracking-normal text-[hsl(var(--tac-amber))]"
+              >
+                {{ currentSinceLabel }}
+              </span>
+              <ChevronDown class="h-3 w-3 opacity-50" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent align="start" class="w-44 p-1">
+            <button
               v-for="opt in sinceOptions"
               :key="opt.value"
-              :value="opt.value"
+              type="button"
+              @click="setSince(opt.value)"
+              class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
             >
-              {{ opt.label }}
-            </SelectItem>
-          </SelectContent>
-        </Select>
+              <span>{{ opt.label }}</span>
+              <Check
+                v-if="sinceFilter === opt.value"
+                class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+              />
+            </button>
+          </PopoverContent>
+        </Popover>
+
+        <div class="ml-auto flex items-center gap-3 pl-2">
+          <span
+            v-if="hasActiveFilter"
+            class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground/80"
+          >
+            {{ filteredTotal }} {{ $t("common.results") }}
+          </span>
+          <button
+            type="button"
+            :disabled="!hasActiveFilter"
+            @click="clearAllFilters"
+            class="inline-flex items-center gap-1 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:text-muted-foreground"
+          >
+            <X class="h-3 w-3" />
+            {{ $t("common.reset_filters") }}
+          </button>
+        </div>
       </div>
 
-      <div class="flex flex-wrap items-center gap-2">
-        <button
-          v-for="opt in statusOptions"
-          :key="opt.value"
-          type="button"
-          :class="[
-            tacticalFilterPillClasses,
-            statusFilter === opt.value ? tacticalFilterPillActiveClasses : '',
-          ]"
-          @click="setStatus(opt.value)"
-        >
-          {{ opt.label }}
-        </button>
-        <button
-          v-if="hasActiveFilter"
-          type="button"
-          @click="clearAllFilters"
-          class="ml-auto inline-flex items-center gap-1 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground transition-colors hover:text-foreground"
-        >
-          <X class="h-3 w-3" />
-          {{ $t("common.reset_filters") }}
-        </button>
+      <!-- Active filters — removable chips -->
+      <div
+        v-if="hasActiveFilter"
+        class="mt-2.5 flex flex-wrap items-center gap-1.5 border-t border-border/50 pt-2.5"
+      >
+        <span v-if="statusFilter !== 'all'" class="tac-chip">
+          <span class="text-xs text-foreground/90">{{
+            currentStatusLabel
+          }}</span>
+          <button type="button" @click="setStatus('all')" class="tac-chip-x">
+            <X class="h-3 w-3" />
+          </button>
+        </span>
+        <span v-if="sinceFilter !== 'all'" class="tac-chip">
+          <span class="text-xs text-foreground/90">{{
+            currentSinceLabel
+          }}</span>
+          <button type="button" @click="setSince('all')" class="tac-chip-x">
+            <X class="h-3 w-3" />
+          </button>
+        </span>
+        <span v-if="nameQuery" class="tac-chip">
+          <span class="text-xs text-foreground/90 truncate max-w-[180px]">
+            "{{ nameQuery }}"
+          </span>
+          <button type="button" @click="clearSearch" class="tac-chip-x">
+            <X class="h-3 w-3" />
+          </button>
+        </span>
       </div>
     </div>
   </PageTransition>
@@ -674,3 +795,39 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Soft amber chip — no border, fill-only. */
+.tac-chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.45rem 0.2rem 0.55rem;
+  background: hsl(var(--tac-amber) / 0.08);
+  border-radius: 2px;
+  font-feature-settings:
+    "tnum" on,
+    "cv11" on;
+  transition: background 150ms ease;
+}
+.tac-chip:hover {
+  background: hsl(var(--tac-amber) / 0.14);
+}
+.tac-chip-x {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: hsl(var(--tac-amber) / 0.55);
+  margin-left: 0.1rem;
+  border-radius: 2px;
+  padding: 1px;
+  transition:
+    color 150ms ease,
+    background 150ms ease;
+}
+.tac-chip-x:hover {
+  color: hsl(var(--tac-amber));
+  background: hsl(var(--tac-amber) / 0.12);
+}
+</style>

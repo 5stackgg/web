@@ -327,6 +327,7 @@
       "search": "Pesquisar..."
     },
     "settings": {
+      "on_this_page": "Nesta página",
       "account": {
         "title": "Configuração da Conta",
         "description": "Detalhes da sua conta",
@@ -413,7 +414,9 @@
           "update": "Configurações de telemetria atualizadas",
           "update_success": "Configurações de telemetria atualizadas com sucesso",
           "google_tag_manager_code": "Código do Google Tag Manager",
-          "google_tag_manager_code_description": "O código do Google Tag Manager para carregar scripts adicionais de análise."
+          "google_tag_manager_code_description": "O código do Google Tag Manager para carregar scripts adicionais de análise.",
+          "analytics_section": "Análise",
+          "analytics_section_description": "Conecte um provedor de análise de terceiros à sua plataforma."
         },
         "matchmaking": {
           "title": "Matchmaking",
@@ -494,6 +497,8 @@
         "matchmaking_min_role_description": "Esta qualificação mínima permitirá que os jogadores entrem na fila de matchmaking.",
         "max_acceptable_latency": "Máximo Aceitável Latência",
         "max_acceptable_latency_description": "Esta é a latência máxima que um jogador pode ter para participar de uma partida.",
+        "lineup_section": "Escalações",
+        "default_models_section": "Modelos de Jogador",
         "lineup_add_without_invite": "Função mínima necessária para adicionar jogadores à escalação sem convite",
         "lineup_add_without_invite_description": "Essa função permitirá adicionar jogadores às escalações das partidas sem precisar enviar um convite primeiro.",
         "default_models": "Default Player Models",
@@ -603,7 +608,9 @@
             "topnav_ring": "Anel de Foco da Navegação Superior",
             "tactical_amber": "Destaque Tático (realces âmbar)",
             "tactical_amber_foreground": "Primeiro Plano do Destaque Tático"
-          }
+          },
+          "assets_section": "Logo e Favicon",
+          "assets_section_description": "Envie um logo e favicon personalizados para a sua plataforma."
         },
         "fixtures": {
           "dev_only_notice": "Fixtures estão disponíveis apenas em modo de desenvolvimento.",
@@ -629,6 +636,7 @@
         },
         "servers": {
           "title": "Configurações do Servidor",
+          "cpu_section": "Desempenho",
           "disk_section": "Reserva de Disco",
           "enable_cpu_pinning": "Ativar CPU Pinning",
           "enable_cpu_pinning_description": "Ativa o CPU pinning nos nós de servidor de jogo para melhor desempenho.",
@@ -643,6 +651,7 @@
         "demo_settings": {
           "title": "Demos / Highlights",
           "demos_section": "Demos",
+          "storage_section": "Armazenamento e Backend",
           "min_retention": "Retenção mínima",
           "max_storage": "Armazenamento Máximo",
           "cloudflare_worker_url": "URL do trabalhador do Cloudflare",
@@ -690,7 +699,8 @@
           "default_hud_mode": "Modo HUD Padrão",
           "default_hud_mode_description": "Qual layout do JTs Hud Manager o pod do game-streamer carrega na inicialização para transmissões ao vivo, reprodução de demos e destaques em lote? Os streamers ainda podem alternar entre os estilos a cada transmissão nos controles do player.",
           "hud_mode_horizontal": "Horizontal",
-          "hud_mode_vertical": "Vertical"
+          "hud_mode_vertical": "Vertical",
+          "playback_section": "Reprodução"
         },
         "update_map_pools": {
           "title": "Atualizar Automaticamente o Map Pool",
@@ -1369,7 +1379,16 @@
       "description": "Configurações que afetam a aplicação.",
       "select_section": "Selecione uma seção",
       "branding_nav": "Branding",
-      "fixtures_nav": "Fixtures"
+      "fixtures_nav": "Fixtures",
+      "groups": {
+        "general": "Geral",
+        "match_setup": "Configuração de Partida",
+        "media": "Gravação e Mídia",
+        "infrastructure": "Infraestrutura",
+        "integrations": "Integrações",
+        "theme": "Tema",
+        "developer": "Desenvolvedor"
+      }
     },
     "system_update": {
       "title": "Atualização de Sistema Disponível",
@@ -2018,7 +2037,8 @@
       "embed_current_label": "AO VIVO",
       "embed_winner_label": "Chave superior",
       "embed_loser_label": "Chave inferior",
-      "embed_no_stage": "Nenhuma fase ativa."
+      "embed_no_stage": "Nenhuma fase ativa.",
+      "zoom_fit": "Ajustar"
     },
     "match": {
       "reset_winner": "Redefinir vencedor",

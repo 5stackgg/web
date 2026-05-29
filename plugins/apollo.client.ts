@@ -45,6 +45,14 @@ export default defineNuxtPlugin((nuxtApp) => {
         return false;
       },
     },
+    // Embedded object with no id of its own. Different queries select
+    // different subsets of its fields (e.g. matchClipFields omits
+    // lobby_access), so without a merge policy Apollo replaces the whole
+    // object and warns about potential data loss. merge:true shallow-merges
+    // incoming into existing, keeping fields written by earlier queries.
+    match_options: {
+      merge: true,
+    },
     Query: {
       fields: {
         players_by_pk: {
@@ -56,6 +64,17 @@ export default defineNuxtPlugin((nuxtApp) => {
       fields: {
         players_by_pk: {
           merge: mergeObjectFields,
+        },
+        // RenderQueuePanel runs two subscriptions on this same root
+        // field (in-flight + finished) with different where/limit args.
+        // Each drives its own local ref via the next() callback and never
+        // reads the array back from the cache, so the lists clobbering
+        // each other in the cache is harmless — keyArgs:false keeps them
+        // on one storage key and merge:false makes replacement explicit,
+        // silencing the "cache data may be lost" warning.
+        clip_render_jobs: {
+          keyArgs: false,
+          merge: false,
         },
       },
     },

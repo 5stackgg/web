@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { Card } from "~/components/ui/card";
+import SettingsPage from "~/components/settings/SettingsPage.vue";
+import SettingsSection from "~/components/settings/SettingsSection.vue";
 import DiscordMatchNotificationToggles from "~/components/discord/DiscordMatchNotificationToggles.vue";
 definePageMeta({
   layout: "application-settings",
@@ -8,14 +9,13 @@ definePageMeta({
 </script>
 
 <template>
-  <PageTransition :delay="0">
-    <form @submit.prevent="updateSettings" class="grid gap-6">
-      <Card variant="gradient">
-        <div class="p-6 space-y-6">
-          <h3 class="text-lg font-semibold">
-            {{ $t("pages.settings.application.discord.support_section") }}
-          </h3>
-
+  <SettingsPage>
+    <PageTransition :delay="0">
+      <form @submit.prevent="updateSettings" class="space-y-6">
+        <SettingsSection
+          id="support"
+          :title="$t('pages.settings.application.discord.support_section')"
+        >
           <FormField v-slot="{ componentField }" name="discord_invite_link">
             <FormItem>
               <FormLabel>{{
@@ -53,28 +53,19 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
-      </Card>
+        </SettingsSection>
 
-      <Card variant="gradient">
-        <div class="p-6 space-y-6">
-          <div>
-            <h3 class="text-lg font-semibold">
-              {{
-                $t(
-                  "pages.settings.application.discord.match_notifications.title",
-                )
-              }}
-            </h3>
-            <p class="text-sm text-muted-foreground">
-              {{
-                $t(
-                  "pages.settings.application.discord.match_notifications.description",
-                )
-              }}
-            </p>
-          </div>
-
+        <SettingsSection
+          id="match-notifications"
+          :title="
+            $t('pages.settings.application.discord.match_notifications.title')
+          "
+          :description="
+            $t(
+              'pages.settings.application.discord.match_notifications.description',
+            )
+          "
+        >
           <FormField
             v-slot="{ componentField }"
             name="discord_match_notifications_webhook"
@@ -125,28 +116,19 @@ definePageMeta({
             @toggle="toggleStatus"
             @update="updateStatus"
           />
-        </div>
-      </Card>
+        </SettingsSection>
 
-      <Card variant="gradient">
-        <div class="p-6 space-y-6">
-          <div>
-            <h3 class="text-lg font-semibold">
-              {{
-                $t(
-                  "pages.settings.application.discord.server_notifications.title",
-                )
-              }}
-            </h3>
-            <p class="text-sm text-muted-foreground">
-              {{
-                $t(
-                  "pages.settings.application.discord.server_notifications.description",
-                )
-              }}
-            </p>
-          </div>
-
+        <SettingsSection
+          id="server-notifications"
+          :title="
+            $t('pages.settings.application.discord.server_notifications.title')
+          "
+          :description="
+            $t(
+              'pages.settings.application.discord.server_notifications.description',
+            )
+          "
+        >
           <FormField v-slot="{ componentField }" name="disk_warning_percent">
             <FormItem>
               <FormLabel>{{
@@ -180,20 +162,20 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
-      </Card>
+        </SettingsSection>
 
-      <div class="flex justify-start">
-        <Button
-          type="submit"
-          :disabled="Object.keys(form.errors).length > 0"
-          class="my-3"
-        >
-          {{ $t("common.update") }}
-        </Button>
-      </div>
-    </form>
-  </PageTransition>
+        <div class="flex justify-start">
+          <Button
+            type="submit"
+            :disabled="Object.keys(form.errors).length > 0 || !form.meta.dirty"
+            class="my-3"
+          >
+            {{ $t("common.update") }}
+          </Button>
+        </div>
+      </form>
+    </PageTransition>
+  </SettingsPage>
 </template>
 
 <script lang="ts">
@@ -261,6 +243,7 @@ export default {
             this.form.setFieldValue(setting.name, setting.value || "");
           }
         }
+        this.form.resetForm({ values: this.form.values });
       },
     },
   },

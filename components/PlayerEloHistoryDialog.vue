@@ -17,7 +17,7 @@ import PlayerEloChart from "~/components/charts/PlayerEloChart.vue";
 // buckets at wide ranges to surface the trend; this dialog stays raw
 // so every match is visible — that's the trade-off it exists for.
 
-type Mode = "all" | "Competitive" | "Wingman" | "Duel";
+type Mode = "all" | "Competitive" | "Wingman" | "Duel" | "Premier";
 type RangeKey = "7d" | "30d" | "90d" | "1y" | "all";
 
 interface EloEntry {
@@ -60,8 +60,8 @@ const ranges: { key: RangeKey; label: string; days: number | null }[] = [
 const selectedRange = ref<RangeKey>(props.defaultRange ?? "1y");
 const selectedMode = ref<Mode>(props.defaultMode ?? "all");
 const history = ref<EloEntry[]>([]);
+const premierHistory = ref<EloEntry[]>([]);
 const loading = ref(false);
-let subHandle: { unsubscribe: () => void } | null = null;
 let queryGen = 0;
 
 watch(
@@ -77,8 +77,8 @@ watch(
   },
 );
 
-const ELO_HISTORY_SUB = gql`
-  subscription PlayerEloHistoryDrillDown(
+const ELO_HISTORY_QUERY = gql`
+  query PlayerEloHistoryDrillDown(
     $where: v_player_elo_bool_exp!
     $limit: Int!
   ) {
@@ -97,6 +97,23 @@ const ELO_HISTORY_SUB = gql`
       kills
       deaths
       assists
+    }
+  }
+`;
+
+const PREMIER_HISTORY_QUERY = gql`
+  query PlayerPremierRankHistoryDrillDown(
+    $where: player_premier_rank_history_bool_exp!
+    $limit: Int!
+  ) {
+    player_premier_rank_history(
+      where: $where
+      order_by: { observed_at: asc }
+      limit: $limit
+    ) {
+      rank
+      match_id
+      observed_at
     }
   }
 `;
@@ -135,33 +152,71 @@ const whereClause = computed(() => {
   return w;
 });
 
-function teardown() {
-  if (subHandle) {
-    subHandle.unsubscribe();
-    subHandle = null;
+async function fetchHistory() {
+  if (!props.open || !props.playerId) {
+    history.value = [];
+    premierHistory.value = [];
+    return;
   }
-}
-
-function startSubscription() {
-  teardown();
-  if (!props.open || !props.playerId) return;
-  loading.value = true;
   const gen = ++queryGen;
-  const observable = client.subscribe({
-    query: ELO_HISTORY_SUB,
-    variables: { where: whereClause.value, limit: rangeLimit.value },
-  });
-  subHandle = observable.subscribe({
-    next: ({ data }: any) => {
-      if (gen !== queryGen) return;
-      history.value = (data?.v_player_elo ?? []) as EloEntry[];
+  loading.value = true;
+
+  const premierWhere: Record<string, any> = {
+    steam_id: { _eq: props.playerId },
+    // The history table now holds Competitive/Wingman rows too — keep this
+    // drill-down Premier-only.
+    rank_type: { _eq: 11 },
+  };
+  if (sinceTimestamp.value) {
+    premierWhere.observed_at = { _gte: sinceTimestamp.value };
+  }
+
+  try {
+    const [eloRes, premierRes] = await Promise.all([
+      client.query({
+        query: ELO_HISTORY_QUERY,
+        variables: { where: whereClause.value, limit: rangeLimit.value },
+        fetchPolicy: "network-only",
+      }),
+      client.query({
+        query: PREMIER_HISTORY_QUERY,
+        variables: { where: premierWhere, limit: rangeLimit.value },
+        fetchPolicy: "network-only",
+      }),
+    ]);
+    if (gen !== queryGen) {
+      return;
+    }
+    history.value = ((eloRes.data as any)?.v_player_elo ?? []) as EloEntry[];
+
+    const rows = ((premierRes.data as any)?.player_premier_rank_history ??
+      []) as Array<{
+      rank: number;
+      match_id: string | null;
+      observed_at: string;
+    }>;
+    let prev: number | null = null;
+    premierHistory.value = rows.map((r) => {
+      const change = prev === null ? 0 : r.rank - prev;
+      prev = r.rank;
+      return {
+        current_elo: r.rank,
+        updated_elo: r.rank,
+        elo_change: change,
+        match_created_at: r.observed_at,
+        match_id: r.match_id,
+        match_result: null,
+        type: "Premier",
+        kills: null,
+        deaths: null,
+        assists: null,
+      };
+    });
+  } finally {
+    if (gen === queryGen) {
       loading.value = false;
-    },
-    error: () => {
-      if (gen !== queryGen) return;
-      loading.value = false;
-    },
-  });
+    }
+  }
 }
 
 watch(
@@ -172,19 +227,37 @@ watch(
     props.excludeTournaments,
   ],
   () => {
-    if (props.open) startSubscription();
-    else teardown();
+    void fetchHistory();
   },
   { immediate: true },
 );
 
 const filteredHistory = computed<EloEntry[]>(() => {
-  if (selectedMode.value === "all") return history.value;
+  if (selectedMode.value === "Premier") {
+    return premierHistory.value;
+  }
+  if (selectedMode.value === "all") {
+    return history.value;
+  }
   return history.value.filter((e) => e.type === selectedMode.value);
 });
 
 const chartSeries = computed(() => {
-  const groupBy = (m: Mode) => history.value.filter((e) => e.type === m);
+  if (selectedMode.value === "Premier") {
+    return premierHistory.value.length > 0
+      ? [
+          {
+            key: "Premier",
+            label: "Premier",
+            history: premierHistory.value,
+            focus: true,
+          },
+        ]
+      : [];
+  }
+
+  const groupBy = (m: Exclude<Mode, "Premier" | "all">) =>
+    history.value.filter((e) => e.type === m);
 
   const all = [
     {
@@ -218,9 +291,6 @@ const chartSeries = computed(() => {
 
 const stats = computed(() => {
   const list = filteredHistory.value;
-  // Headline ELO values (current/peak/lowest) anchor to Competitive when
-  // no specific mode is chosen — otherwise the most recent Wingman/Duel
-  // match would flip "Current ELO" away from the player's primary mode.
   const headlineList =
     selectedMode.value === "all"
       ? history.value.filter((e) => e.type === "Competitive")
@@ -300,6 +370,7 @@ const modeOptions = computed<{ key: Mode; label: string }[]>(() => [
   { key: "Competitive", label: t("pages.leaderboard.match_types.competitive") },
   { key: "Wingman", label: t("pages.leaderboard.match_types.wingman") },
   { key: "Duel", label: t("pages.leaderboard.match_types.duel") },
+  { key: "Premier", label: "Premier" },
 ]);
 
 function fmtInt(n: number | null | undefined): string {

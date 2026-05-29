@@ -194,6 +194,10 @@ const streamByMatchId = computed(() => {
 
 const activeStream = computed(() => liveStreams.value[0] ?? null);
 const activeMatchId = computed(() => activeStream.value?.match_id ?? null);
+const activeMatchIds = computed(
+  () => new Set(liveStreams.value.map((s: any) => s.match_id).filter(Boolean)),
+);
+const isActiveMatch = (matchId: string) => activeMatchIds.value.has(matchId);
 
 async function runMutation(
   matchId: string,
@@ -1038,70 +1042,22 @@ function matchStatusLabel(m: LiveMatch): string {
               </span>
             </div>
 
-            <!-- CTA row — what action this tile triggers depends on
-                 whether it owns the active stream and whether any pod
-                 is up at all. Keeps the affordance unambiguous:
-                   ON AIR  → "Open controls"
-                   ELSE if pod up → "Switch stream here"
-                   ELSE          → "Start"  (live + tv split)
-            -->
+            <!-- CTA row — every match tile either opens its broadcast
+                 controls (if it's already an active stream) or starts
+                 a new pod. Capacity is pool-gated; multiple streams
+                 can run in parallel. "Switch" lives inside each active
+                 stream's broadcast controls, not as a cross-tile CTA. -->
             <div
               class="relative border-t border-border/50 bg-background/30 px-3 py-2"
             >
-              <!-- Case 1: this tile IS the active stream -->
               <NuxtLink
-                v-if="activeMatchId === m.id"
+                v-if="isActiveMatch(m.id)"
                 :to="`/stream-deck/${m.id}`"
                 class="inline-flex w-full items-center justify-center gap-2 rounded-md border border-destructive/55 bg-destructive/12 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-destructive hover:bg-destructive/18 transition-colors"
               >
                 <Dot class="size-4" />
                 {{ $t("stream_deck.open_broadcast_controls") }}
               </NuxtLink>
-
-              <button
-                v-else-if="activeStream"
-                type="button"
-                :disabled="
-                  !!switching ||
-                  ensureState(m.id).busy ||
-                  !deckReadiness(m).ready
-                "
-                :class="[
-                  'group/cta inline-flex w-full items-center justify-center gap-2 rounded-md border px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed',
-                  switching === m.id
-                    ? 'border-[hsl(var(--tac-amber)/0.7)] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
-                    : 'border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] hover:border-[hsl(var(--tac-amber)/0.75)]',
-                ]"
-                :title="
-                  deckReadiness(m).reason ||
-                  `Reuse the running pod and switch the broadcast to ${m.lineup_1?.name ?? 'Team A'} vs ${m.lineup_2?.name ?? 'Team B'}`
-                "
-                @click="switchTo(m.id, 'live')"
-              >
-                <ArrowRightLeft
-                  :class="[
-                    'size-3.5 transition-transform',
-                    switching === m.id
-                      ? 'animate-pulse'
-                      : 'group-hover/cta:translate-x-0.5',
-                  ]"
-                />
-                <template v-if="switching === m.id">{{
-                  $t("stream_deck_extras.switching")
-                }}</template>
-                <template v-else-if="!deckReadiness(m).ready">
-                  {{
-                    !m.server_id
-                      ? $t("stream_deck_extras.no_server")
-                      : m.status !== "Live"
-                        ? $t("stream_deck_extras.not_live_yet")
-                        : $t("stream_deck_extras.server_offline")
-                  }}
-                </template>
-                <template v-else>{{
-                  $t("stream_deck_extras.switch_stream_here")
-                }}</template>
-              </button>
 
               <div v-else class="flex gap-1.5">
                 <button
@@ -1152,23 +1108,3 @@ function matchStatusLabel(m: LiveMatch): string {
     </div>
   </PageTransition>
 </template>
-
-<style scoped>
-/* Slow ping for the ON AIR dot — distinct from animate-ping which
-   is too aggressive for an always-on broadcast badge. Mirrors the
-   game-server-node indicator cadence. */
-@keyframes ping-slow {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.45);
-    opacity: 0.55;
-  }
-}
-.animate-ping-slow {
-  animation: ping-slow 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-</style>

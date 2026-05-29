@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
-import MatchesTable from "~/components/MatchesTable.vue";
+import PlayerMatchesTable from "~/components/player/PlayerMatchesTable.vue";
 
 const { t } = useI18n();
 import Pagination from "~/components/Pagination.vue";
@@ -15,6 +15,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import LastTenWinsAndLosses from "~/components/charts/LastTenWinsAndLosses.vue";
 import PlayerEloChart from "~/components/charts/PlayerEloChart.vue";
 import formatStatValue from "~/utilities/formatStatValue";
+import cleanMapName from "~/utilities/cleanMapName";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import PlayerChangeName from "~/components/PlayerChangeName.vue";
@@ -53,6 +54,7 @@ import PlayerHighlights from "~/components/clips/PlayerHighlights.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import PlayerLeaderboardRank from "~/components/PlayerLeaderboardRank.vue";
 import PlayerFaceitRank from "~/components/PlayerFaceitRank.vue";
+import PlayerPremierRank from "~/components/PlayerPremierRank.vue";
 import PlayerEloHistoryDialog from "~/components/PlayerEloHistoryDialog.vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
@@ -105,19 +107,36 @@ const compareLifetime = ref(false);
 const excludeTournaments = ref(false);
 const settingsOpen = ref(false);
 const eloHistory = ref<WindowedEloEntry[]>([]);
+const premierWindowedHistory = ref<WindowedEloEntry[]>([]);
+// Raw rows from the rank-history sub, all rank types (Premier 11,
+// Competitive 12, Wingman 7) — feeds the per-match rank badge on the rows.
+const rankHistoryRows = ref<
+  Array<{
+    rank: number;
+    rank_type: number;
+    previous_rank: number | null;
+    match_id: string | null;
+    map_id: string | null;
+    map?: { name: string } | null;
+    observed_at: string;
+  }>
+>([]);
+// Selected map for the per-map Competitive/Wingman skill-group chart.
+const selectedRankMap = ref<string | null>(null);
 const eloHistoryLoading = ref(false);
 
 const { client: apolloClient } = useApolloClient();
 const route = useRoute();
 
-const selectedModeRef = computed<"all" | "Competitive" | "Wingman" | "Duel">(
-  () => {
-    const raw = route.query.mode;
-    const v = Array.isArray(raw) ? raw[0] : raw;
-    if (v === "Competitive" || v === "Wingman" || v === "Duel") return v;
-    return "all";
-  },
-);
+const selectedModeRef = computed<
+  "all" | "Competitive" | "Wingman" | "Duel" | "Premier"
+>(() => {
+  const raw = route.query.mode;
+  const v = Array.isArray(raw) ? raw[0] : raw;
+  if (v === "Competitive" || v === "Wingman" || v === "Duel" || v === "Premier")
+    return v;
+  return "all";
+});
 
 const playerIdRef = computed<string | null>(() => {
   const p = route.params.id;
@@ -204,18 +223,49 @@ const PLAYER_ELO_HISTORY_SUB = gql`
 `;
 
 let eloSubHandle: { unsubscribe: () => void } | null = null;
+let premierSubHandle: { unsubscribe: () => void } | null = null;
 let eloSubGen = 0;
+let premierSubGen = 0;
+
+const PLAYER_PREMIER_HISTORY_SUB = gql`
+  subscription PlayerWindowedPremierHistory(
+    $where: player_premier_rank_history_bool_exp!
+    $limit: Int!
+  ) {
+    player_premier_rank_history(
+      where: $where
+      order_by: { observed_at: asc }
+      limit: $limit
+    ) {
+      rank
+      rank_type
+      previous_rank
+      match_id
+      map_id
+      map {
+        name
+      }
+      observed_at
+    }
+  }
+`;
 
 function teardownEloSub() {
   if (eloSubHandle) {
     eloSubHandle.unsubscribe();
     eloSubHandle = null;
   }
+  if (premierSubHandle) {
+    premierSubHandle.unsubscribe();
+    premierSubHandle = null;
+  }
 }
 
 function startEloSub() {
   teardownEloSub();
-  if (!playerIdRef.value) return;
+  if (!playerIdRef.value) {
+    return;
+  }
   eloHistoryLoading.value = true;
   const gen = ++eloSubGen;
   const obs = apolloClient.subscribe({
@@ -224,12 +274,74 @@ function startEloSub() {
   });
   eloSubHandle = obs.subscribe({
     next: ({ data }: any) => {
-      if (gen !== eloSubGen) return;
+      if (gen !== eloSubGen) {
+        return;
+      }
       eloHistory.value = (data?.v_player_elo ?? []) as WindowedEloEntry[];
       eloHistoryLoading.value = false;
     },
     error: () => {
-      if (gen === eloSubGen) eloHistoryLoading.value = false;
+      if (gen === eloSubGen) {
+        eloHistoryLoading.value = false;
+      }
+    },
+  });
+
+  const pGen = ++premierSubGen;
+  const premierWhere: Record<string, any> = {
+    steam_id: { _eq: playerIdRef.value },
+  };
+  if (sinceTimestamp.value) {
+    premierWhere.observed_at = { _gte: sinceTimestamp.value };
+  }
+  if (untilTimestamp.value) {
+    premierWhere.observed_at = {
+      ...(premierWhere.observed_at ?? {}),
+      _lte: untilTimestamp.value,
+    };
+  }
+  const pObs = apolloClient.subscribe({
+    query: PLAYER_PREMIER_HISTORY_SUB,
+    variables: {
+      where: premierWhere,
+      limit: rangeLimit.value,
+    },
+  });
+  premierSubHandle = pObs.subscribe({
+    next: ({ data }: any) => {
+      if (pGen !== premierSubGen) {
+        return;
+      }
+      const rows = (data?.player_premier_rank_history ?? []) as Array<{
+        rank: number;
+        rank_type: number;
+        previous_rank: number | null;
+        match_id: string | null;
+        map_id: string | null;
+        map?: { name: string } | null;
+        observed_at: string;
+      }>;
+      rankHistoryRows.value = rows;
+      // Premier (rank_type 11) drives the ELO-style chart series.
+      let prev: number | null = null;
+      premierWindowedHistory.value = rows
+        .filter((r) => r.rank_type === 11)
+        .map((r) => {
+          const change = prev === null ? 0 : r.rank - prev;
+          prev = r.rank;
+          return {
+            current_elo: r.rank,
+            updated_elo: r.rank,
+            elo_change: change,
+            match_created_at: r.observed_at,
+            match_id: r.match_id,
+            match_result: null,
+            type: "Premier",
+            kills: null,
+            deaths: null,
+            assists: null,
+          };
+        });
     },
   });
 }
@@ -274,6 +386,19 @@ const matchesPerPage = ref(10);
 const playerMatches = ref<any[]>([]);
 const playerMatchesTotal = ref(0);
 
+// 5stack-hosted matches carry an internal elo; external (Valve/FACEIT)
+// imports don't — so the filter lets players isolate the matches that
+// actually have an elo change. `source === "5stack"` is internal.
+const matchSourceFilter = ref<"all" | "5stack" | "external">("all");
+const matchSourceOptions = computed(
+  () =>
+    [
+      { value: "all", label: t("player_match.source.all") },
+      { value: "5stack", label: t("player_match.source.internal") },
+      { value: "external", label: t("player_match.source.external") },
+    ] as const,
+);
+
 const matchesWhere = computed(() => {
   const w: Record<string, any> = {};
   if (sinceTimestamp.value || untilTimestamp.value) {
@@ -284,7 +409,35 @@ const matchesWhere = computed(() => {
   if (excludeTournaments.value) {
     w.is_tournament_match = { _eq: false };
   }
+  if (matchSourceFilter.value === "5stack") {
+    w.source = { _eq: "5stack" };
+  } else if (matchSourceFilter.value === "external") {
+    w.source = { _neq: "5stack" };
+  }
   return w;
+});
+
+// External Valve matches carry no internal elo, but the demo import records
+// the player's rank per match in player_rank_history — Premier (11) CS Rating,
+// Competitive (12) and Wingman (7) skill groups. Keyed by match id with the
+// stored delta so the rows can render the right badge + change.
+const rankByMatch = computed(() => {
+  const map: Record<
+    string,
+    { rankType: number; rank: number; change: number }
+  > = {};
+  for (const r of rankHistoryRows.value) {
+    if (r.match_id != null) {
+      const rank = Number(r.rank ?? 0);
+      const prev = r.previous_rank == null ? null : Number(r.previous_rank);
+      map[String(r.match_id)] = {
+        rankType: Number(r.rank_type),
+        rank,
+        change: prev == null ? 0 : rank - prev,
+      };
+    }
+  }
+  return map;
 });
 
 // Built with Zeus so we keep the same selector source-of-truth as the
@@ -384,20 +537,128 @@ watch(matchesWhere, () => {
   matchesPage.value = 1;
 });
 
-watch([playerIdRef, matchesWhere, matchesPage], () => loadMatches(), {
-  immediate: true,
+watch(
+  [playerIdRef, matchesWhere, matchesPage, matchesPerPage],
+  () => loadMatches(),
+  {
+    immediate: true,
+  },
+);
+
+// Valve skill-group rank progression for Competitive (12) / Wingman (7),
+// built from the same rank-history rows as Premier. Plots the skill-group
+// index over time (0–18) using the stored per-match delta.
+function buildValveRankWindowed(
+  rankType: number,
+  type: string,
+): WindowedEloEntry[] {
+  // Competitive (7) and Wingman (6) skill groups are per map, so the series
+  // is scoped to the selected map; Premier (11) is global.
+  const perMap = rankType === 6 || rankType === 7;
+  let prev: number | null = null;
+  return rankHistoryRows.value
+    .filter(
+      (r) =>
+        r.rank_type === rankType &&
+        (!perMap || r.map_id === selectedRankMap.value),
+    )
+    .map((r) => {
+      const rank = Number(r.rank ?? 0);
+      const change =
+        r.previous_rank != null
+          ? rank - Number(r.previous_rank)
+          : prev === null
+            ? 0
+            : rank - prev;
+      prev = rank;
+      return {
+        current_elo: rank,
+        updated_elo: rank,
+        elo_change: change,
+        match_created_at: r.observed_at,
+        match_id: r.match_id,
+        match_result: null,
+        type,
+        kills: null,
+        deaths: null,
+        assists: null,
+      } as WindowedEloEntry;
+    });
+}
+// Maps the player has skill-group history for in the active per-map mode,
+// most-played first — drives the map selector chips above the chart.
+const rankMapOptions = computed(() => {
+  const rt =
+    selectedModeRef.value === "Competitive"
+      ? 7
+      : selectedModeRef.value === "Wingman"
+        ? 6
+        : null;
+  if (rt === null) return [] as { mapId: string; name: string; count: number }[];
+  const counts = new Map<string, { mapId: string; name: string; count: number }>();
+  for (const r of rankHistoryRows.value) {
+    if (r.rank_type !== rt || !r.map_id) continue;
+    const entry = counts.get(r.map_id) ?? {
+      mapId: r.map_id,
+      name: r.map?.name ?? r.map_id,
+      count: 0,
+    };
+    entry.count++;
+    counts.set(r.map_id, entry);
+  }
+  return [...counts.values()].sort((a, b) => b.count - a.count);
 });
 
+// Default to the most-played map when entering a per-map mode or when data
+// arrives; keep the current pick if it's still valid.
+watch(
+  rankMapOptions,
+  (opts) => {
+    if (opts.length === 0) {
+      selectedRankMap.value = null;
+      return;
+    }
+    if (
+      !selectedRankMap.value ||
+      !opts.some((o) => o.mapId === selectedRankMap.value)
+    ) {
+      selectedRankMap.value = opts[0].mapId;
+    }
+  },
+  { immediate: true },
+);
+
+const competitiveWindowedHistory = computed(() =>
+  buildValveRankWindowed(7, "Competitive"),
+);
+const wingmanWindowedHistory = computed(() =>
+  buildValveRankWindowed(6, "Wingman"),
+);
+
 const modeFilteredWindowed = computed<WindowedEloEntry[]>(() => {
-  if (selectedModeRef.value === "all") return eloHistory.value;
+  if (selectedModeRef.value === "Premier") {
+    return premierWindowedHistory.value;
+  }
+  // Prefer Valve rank history for Competitive/Wingman; fall back to the
+  // 5stack internal elo for those modes when there are no external matches.
+  if (selectedModeRef.value === "Competitive") {
+    return competitiveWindowedHistory.value.length
+      ? competitiveWindowedHistory.value
+      : eloHistory.value.filter((e) => e.type === "Competitive");
+  }
+  if (selectedModeRef.value === "Wingman") {
+    return wingmanWindowedHistory.value.length
+      ? wingmanWindowedHistory.value
+      : eloHistory.value.filter((e) => e.type === "Wingman");
+  }
+  if (selectedModeRef.value === "all") {
+    return eloHistory.value;
+  }
   return eloHistory.value.filter((e) => e.type === selectedModeRef.value);
 });
 
 const windowedStats = computed(() => {
   const list = modeFilteredWindowed.value;
-  // Headline ELO values (current/peak/lowest) anchor to Competitive when
-  // no specific mode is chosen — otherwise the most recent Wingman/Duel
-  // match would flip "Current ELO" away from the player's primary mode.
   const headlineList =
     selectedModeRef.value === "all"
       ? eloHistory.value.filter((e) => e.type === "Competitive")
@@ -591,6 +852,49 @@ function bucketHistory(
 // usually carries the most volume.
 const windowedChartSeries = computed(() => {
   const size = bucketSize.value;
+
+  if (selectedModeRef.value === "Premier") {
+    return premierWindowedHistory.value.length > 0
+      ? [
+          {
+            key: "Premier",
+            label: "Premier",
+            history: bucketHistory(premierWindowedHistory.value, size),
+            focus: true,
+          },
+        ]
+      : [];
+  }
+
+  // Single Competitive/Wingman tab: show the Valve skill-group progression
+  // when there are external matches; otherwise fall through to 5stack elo.
+  if (
+    selectedModeRef.value === "Competitive" &&
+    competitiveWindowedHistory.value.length > 0
+  ) {
+    return [
+      {
+        key: "Competitive",
+        label: "Competitive",
+        history: bucketHistory(competitiveWindowedHistory.value, size),
+        focus: true,
+      },
+    ];
+  }
+  if (
+    selectedModeRef.value === "Wingman" &&
+    wingmanWindowedHistory.value.length > 0
+  ) {
+    return [
+      {
+        key: "Wingman",
+        label: "Wingman",
+        history: bucketHistory(wingmanWindowedHistory.value, size),
+        focus: true,
+      },
+    ];
+  }
+
   const groupBy = (m: "Competitive" | "Wingman" | "Duel") =>
     bucketHistory(
       eloHistory.value.filter((e) => e.type === m),
@@ -683,7 +987,7 @@ definePageMeta({
 const modeTab = useRouteTab({
   param: "mode",
   defaultTab: "all",
-  tabs: ["all", "Competitive", "Wingman", "Duel"],
+  tabs: ["all", "Competitive", "Wingman", "Duel", "Premier"],
 });
 
 const { isMobile } = useSidebar();
@@ -844,6 +1148,11 @@ const playerTeamChipShortClasses =
                 :faceit-url="player.faceit_url"
                 :faceit-nickname="player.faceit_nickname"
               />
+              <PlayerPremierRank
+                v-if="player.steam_id"
+                :premier-rank="player.premier_rank"
+                :premier-rank-updated-at="player.premier_rank_updated_at"
+              />
               <div v-if="canEditRole" :class="playerHeroInlineRoleWrapClasses">
                 <PlayerRoleForm :player="player" />
               </div>
@@ -937,7 +1246,7 @@ const playerTeamChipShortClasses =
 
     <div class="flex flex-col gap-4 md:gap-6" v-if="player && pageContentReady">
       <Tabs v-model="modeTab">
-        <TabsList class="grid grid-cols-4 w-full max-w-md mx-auto">
+        <TabsList class="grid grid-cols-5 w-full max-w-md mx-auto">
           <TabsTrigger value="all">{{
             $t("pages.leaderboard.match_types.all")
           }}</TabsTrigger>
@@ -950,6 +1259,7 @@ const playerTeamChipShortClasses =
           <TabsTrigger value="Duel">{{
             $t("pages.leaderboard.match_types.duel")
           }}</TabsTrigger>
+          <TabsTrigger value="Premier">Premier</TabsTrigger>
         </TabsList>
       </Tabs>
 
@@ -1262,22 +1572,6 @@ const playerTeamChipShortClasses =
             variant="elevated"
             class="relative flex flex-col h-full p-4"
           >
-            <!-- No title bar — the strip's "Current ELO" cell carries
-                 the card's identity. Maximize lives in the top-right
-                 corner as a floating affordance instead. -->
-            <button
-              type="button"
-              class="absolute right-3 top-3 z-10 inline-flex h-7 w-7 items-center justify-center rounded border border-border/60 bg-card/60 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
-              :title="
-                $t(
-                  'pages.players.detail.view_full_elo_history',
-                  'View full ELO history',
-                )
-              "
-              @click="eloDialogOpen = true"
-            >
-              <Maximize2 class="h-3.5 w-3.5" />
-            </button>
             <CardContent class="flex flex-1 flex-col gap-3 p-0">
               <!-- Stats strip — two cells now (Current ELO + Peak/Lowest).
                    Matches/W/L lives in the Win Rate card next door so we
@@ -1285,14 +1579,33 @@ const playerTeamChipShortClasses =
               <div
                 class="grid grid-cols-1 divide-y divide-border/40 overflow-hidden rounded-md border border-border/60 sm:grid-cols-2 sm:divide-x sm:divide-y-0"
               >
-                <!-- Headline metric — Current ELO. Much larger typography
-                     than the supporting Peak / Lowest cell so the user
-                     reads it first; this is "the point" of the chart. -->
                 <div class="relative min-h-[88px] px-4 py-3 pr-12">
                   <div
-                    class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
+                    class="flex items-center justify-between gap-3 font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
                   >
-                    {{ $t("pages.players.detail.current_elo") }}
+                    <span>{{ $t("pages.players.detail.current_elo") }}</span>
+                    <button
+                      v-if="hasEloChartData"
+                      type="button"
+                      class="inline-flex items-center gap-1 normal-case font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
+                      @click="eloDialogOpen = true"
+                      :title="
+                        $t(
+                          'pages.players.detail.view_full_elo_history',
+                          'View full history',
+                        )
+                      "
+                    >
+                      <Maximize2 class="h-3 w-3" />
+                      <span class="hidden sm:inline">
+                        {{
+                          $t(
+                            "pages.players.detail.view_full_elo_history",
+                            "View full history",
+                          )
+                        }}
+                      </span>
+                    </button>
                   </div>
                   <div
                     class="mt-1 text-3xl font-bold leading-none tabular-nums tracking-tight sm:text-4xl"
@@ -1374,6 +1687,35 @@ const playerTeamChipShortClasses =
                     }}
                   </div>
                 </div>
+              </div>
+
+              <!-- Per-map selector — Competitive/Wingman skill groups are per
+                   map, so the chart plots one map at a time. Most-played map
+                   is selected by default. -->
+              <div
+                v-if="rankMapOptions.length > 0"
+                class="flex flex-wrap items-center gap-1.5"
+              >
+                <span
+                  class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
+                >
+                  {{ $t("player_match.headers.map") }}
+                </span>
+                <button
+                  v-for="m in rankMapOptions"
+                  :key="m.mapId"
+                  type="button"
+                  class="inline-flex items-center gap-1 rounded border px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] transition-colors"
+                  :class="
+                    selectedRankMap === m.mapId
+                      ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
+                      : 'border-border/60 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
+                  "
+                  @click="selectedRankMap = m.mapId"
+                >
+                  {{ cleanMapName(m.name) }}
+                  <span class="tabular-nums opacity-60">×{{ m.count }}</span>
+                </button>
               </div>
 
               <!-- Chart well: fixed height (NOT min-h) so the card never
@@ -1618,9 +1960,27 @@ const playerTeamChipShortClasses =
 
     <PageTransition :delay="500">
       <div>
-        <div :class="tacticalSectionLabelClasses">
-          <span :class="tacticalSectionTickClasses"></span>
-          {{ $t("pages.players.detail.matches_section") }}
+        <div class="mb-1 flex flex-wrap items-center justify-between gap-3">
+          <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+            <span :class="tacticalSectionTickClasses"></span>
+            {{ $t("pages.players.detail.matches_section") }}
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button
+              v-for="opt in matchSourceOptions"
+              :key="opt.value"
+              type="button"
+              class="rounded border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
+              :class="
+                matchSourceFilter === opt.value
+                  ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
+                  : 'border-border/60 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
+              "
+              @click="matchSourceFilter = opt.value"
+            >
+              {{ opt.label }}
+            </button>
+          </div>
         </div>
         <Empty v-if="playerMatchesTotal === 0" class="min-h-[200px]">
           <EmptyTitle>{{ $t("pages.players.detail.no_matches") }}</EmptyTitle>
@@ -1641,12 +2001,18 @@ const playerTeamChipShortClasses =
           </EmptyDescription>
         </Empty>
         <template v-else>
-          <MatchesTable :player="player" :matches="playerMatches" />
+          <PlayerMatchesTable
+            :player="player"
+            :matches="playerMatches"
+            :rank-by-match="rankByMatch"
+          />
           <Pagination
             :page="matchesPage"
             :per-page="matchesPerPage"
             :total="playerMatchesTotal"
+            show-per-page-selector
             @page="(p) => (matchesPage = p)"
+            @update:perPage="(n) => (matchesPerPage = n)"
           />
         </template>
       </div>
@@ -1781,6 +2147,8 @@ export default {
               faceit_elo: true,
               faceit_url: true,
               faceit_nickname: true,
+              premier_rank: true,
+              premier_rank_updated_at: true,
               stats: {
                 kills: true,
                 deaths: true,
@@ -1800,6 +2168,20 @@ export default {
                 {
                   with: true,
                   kill_count: true,
+                },
+              ],
+              premier_rank_history: [
+                {
+                  // Table now holds all rank types — keep this relationship
+                  // Premier-only so the Premier chart stays clean.
+                  where: { rank_type: { _eq: 11 } },
+                  limit: 50,
+                  order_by: [{}, { observed_at: order_by.desc }],
+                },
+                {
+                  rank: true,
+                  match_id: true,
+                  observed_at: true,
                 },
               ],
               __alias: {
@@ -2046,6 +2428,39 @@ export default {
     },
     eloChartSeries() {
       if (!this.player) return [];
+
+      if (this.selectedMode === "Premier") {
+        const raw = (this.player.premier_rank_history || []) as Array<{
+          rank: number;
+          match_id: string | null;
+          observed_at: string;
+        }>;
+        // Chart expects ascending chronological + an elo_change delta;
+        // the subscription returns desc, so reverse and walk.
+        const sorted = [...raw].reverse();
+        let prev: number | null = null;
+        const history = sorted.map((entry) => {
+          const change = prev === null ? 0 : entry.rank - prev;
+          prev = entry.rank;
+          return {
+            current_elo: entry.rank,
+            updated_elo: entry.rank,
+            elo_change: change,
+            match_id: entry.match_id,
+            match_created_at: entry.observed_at,
+            type: "Premier",
+          };
+        });
+        return [
+          {
+            key: "Premier",
+            label: "Premier (CS Rating)",
+            history,
+            focus: true,
+          },
+        ];
+      }
+
       const comp = this.player.competitive_elo_history || [];
       const wing = this.player.wingman_elo_history || [];
       const duel = this.player.duel_elo_history || [];

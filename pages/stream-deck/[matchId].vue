@@ -18,11 +18,18 @@ import {
   Eye,
   EyeOff,
   ArrowLeftRight,
+  ArrowRightLeft,
   Scan,
   Trophy,
   RefreshCw,
 } from "lucide-vue-next";
-import { generateMutation } from "~/graphql/graphqlGen";
+import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
+import gql from "graphql-tag";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
 import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
@@ -294,6 +301,87 @@ async function reconnectLive() {
     title: t("toasts.reconnecting"),
     description: t("toasts.reconnecting_description"),
   });
+}
+
+const otherLiveMatches = ref<
+  Array<{
+    id: string;
+    lineup_1: { name: string | null } | null;
+    lineup_2: { name: string | null } | null;
+  }>
+>([]);
+let liveMatchesSub: { unsubscribe: () => void } | undefined;
+
+onMounted(() => {
+  liveMatchesSub = apolloClient
+    .subscribe({
+      query: generateSubscription({
+        matches: [
+          { where: { status: { _eq: "Live" } } as any },
+          {
+            id: true,
+            lineup_1: { name: true },
+            lineup_2: { name: true },
+          } as any,
+        ],
+      } as any),
+    })
+    .subscribe({
+      next: ({ data }: any) => {
+        otherLiveMatches.value = ((data?.matches ?? []) as Array<any>).filter(
+          (m) => m.id !== matchId.value,
+        );
+      },
+    });
+});
+
+onBeforeUnmount(() => {
+  liveMatchesSub?.unsubscribe();
+});
+
+const SWITCH_LIVE_MATCH_MUTATION = gql`
+  mutation SwitchLiveMatch(
+    $from_match_id: uuid!
+    $to_match_id: uuid!
+    $mode: String!
+  ) {
+    switchLiveMatch(
+      from_match_id: $from_match_id
+      to_match_id: $to_match_id
+      mode: $mode
+    ) {
+      success
+    }
+  }
+`;
+
+const switchOpen = ref(false);
+const switching = ref<string | null>(null);
+async function switchTo(toMatchId: string) {
+  if (switching.value || toMatchId === matchId.value) {
+    return;
+  }
+  switching.value = toMatchId;
+  switchOpen.value = false;
+  try {
+    await apolloClient.mutate({
+      mutation: SWITCH_LIVE_MATCH_MUTATION,
+      variables: {
+        from_match_id: matchId.value,
+        to_match_id: toMatchId,
+        mode: "live",
+      },
+    });
+    await navigateTo(`/stream-deck/${toMatchId}`);
+  } catch (error: any) {
+    toast({
+      variant: "destructive",
+      title: t("toasts.switch_failed"),
+      description: error?.message ?? t("toasts.request_failed"),
+    });
+  } finally {
+    switching.value = null;
+  }
 }
 
 const confirmStop = ref(false);
@@ -725,6 +813,46 @@ watch(spectatedSteamId, (sid) => {
               <RefreshCw class="size-3.5" />
               {{ $t("stream_deck.reconnect") }}
             </button>
+            <template v-if="otherLiveMatches.length > 0">
+              <div class="w-px bg-border/70" />
+              <Popover v-model:open="switchOpen">
+                <PopoverTrigger as-child>
+                  <button
+                    type="button"
+                    :disabled="busy || !!switching"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-foreground/80 hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    :title="$t('stream_deck.switch_to_match')"
+                  >
+                    <ArrowRightLeft class="size-3.5" />
+                    {{ switching ? "…" : $t("stream_deck.switch_short") }}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent align="end" class="w-72 p-1">
+                  <div
+                    class="px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
+                  >
+                    {{ $t("stream_deck.switch_pick_match") }}
+                  </div>
+                  <button
+                    v-for="m in otherLiveMatches"
+                    :key="m.id"
+                    type="button"
+                    class="flex w-full items-center justify-between gap-2 rounded px-2 py-1.5 text-sm text-left hover:bg-muted/50"
+                    :disabled="!!switching"
+                    @click="switchTo(m.id)"
+                  >
+                    <span class="truncate">
+                      {{ m.lineup_1?.name ?? "Team A" }}
+                      <span class="text-muted-foreground"> vs </span>
+                      {{ m.lineup_2?.name ?? "Team B" }}
+                    </span>
+                    <ArrowRightLeft
+                      class="size-3.5 text-muted-foreground shrink-0"
+                    />
+                  </button>
+                </PopoverContent>
+              </Popover>
+            </template>
             <div class="w-px bg-border/70" />
             <button
               type="button"

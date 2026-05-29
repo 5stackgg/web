@@ -1,88 +1,78 @@
 <template>
   <Tabs v-model="activeTab" class="w-full">
-    <TabsList class="grid w-full grid-cols-4 lg:inline-flex lg:w-auto mb-4">
-      <TabsTrigger
-        v-for="config in gameTypeConfigs"
-        :key="config.type"
-        :value="config.type"
-      >
-        {{ formatTypeName(config.type) }}
-      </TabsTrigger>
-    </TabsList>
+    <div
+      class="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
+    >
+      <TabsList class="grid w-full grid-cols-4 lg:inline-flex lg:w-auto">
+        <TabsTrigger
+          v-for="config in gameTypeConfigs"
+          :key="config.type"
+          :value="config.type"
+        >
+          {{ formatTypeName(config.type) }}
+        </TabsTrigger>
+      </TabsList>
+
+      <div v-if="activeConfig" class="flex items-center justify-end gap-2">
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              type="button"
+              variant="outline"
+              class="text-muted-foreground hover:border-destructive/50 hover:text-destructive"
+            >
+              <Trash class="mr-2 h-4 w-4" />
+              {{ $t("game_type_configs.form.revert_to_defaults") }}
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{{
+                $t("game_type_configs.form.revert_confirm.title")
+              }}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {{ $t("game_type_configs.form.revert_confirm.description") }}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
+              <AlertDialogAction
+                @click="revertToDefaults(activeConfig)"
+                variant="destructive"
+              >
+                {{ $t("game_type_configs.form.revert_confirm.confirm") }}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <Button
+          type="button"
+          :disabled="!isActiveDirty"
+          @click="submitForm(activeConfig)"
+        >
+          <Save class="mr-2 h-4 w-4" />
+          {{ $t("common.update") }}
+        </Button>
+      </div>
+    </div>
 
     <TabsContent
       v-for="config in gameTypeConfigs"
       :key="config.type"
       :value="config.type"
-      class="space-y-4 w-full"
+      class="w-full"
     >
-      <Card class="w-full">
-        <CardHeader class="flex flex-row items-center justify-between">
-          <CardTitle>{{
-            $t("game_type_configs.configuration_title", {
-              type: formatTypeName(config.type),
-            })
-          }}</CardTitle>
-          <div class="flex gap-2">
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive" size="sm">
-                  <Trash class="mr-2 h-4 w-4" />
-                  {{ $t("game_type_configs.form.revert_to_defaults") }}
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>{{
-                    $t("game_type_configs.form.revert_confirm.title")
-                  }}</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    {{
-                      $t("game_type_configs.form.revert_confirm.description")
-                    }}
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>{{
-                    $t("common.cancel")
-                  }}</AlertDialogCancel>
-                  <AlertDialogAction
-                    @click="revertToDefaults(config)"
-                    variant="destructive"
-                  >
-                    {{ $t("game_type_configs.form.revert_confirm.confirm") }}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <form @submit.prevent="submitForm(config)" class="space-y-4 w-full">
-            <div class="space-y-2 w-full">
-              <label class="text-sm font-medium">{{
-                $t("game_type_configs.form.cfg")
-              }}</label>
-              <div
-                class="border rounded-md overflow-hidden w-full"
-                style="height: 500px"
-              >
-                <div
-                  :ref="setEditorRef"
-                  :data-type="config.type"
-                  class="w-full h-full"
-                />
-              </div>
-            </div>
-
-            <div class="flex justify-end">
-              <Button type="submit">
-                {{ $t("game_type_configs.form.update") }}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+      <div
+        class="w-full overflow-hidden rounded-lg border border-border/60"
+        style="height: 500px"
+      >
+        <div
+          :ref="setEditorRef"
+          :data-type="config.type"
+          class="w-full h-full"
+        />
+      </div>
     </TabsContent>
   </Tabs>
 </template>
@@ -94,7 +84,7 @@ import { e_game_cfg_types_enum } from "~/generated/zeus";
 import type * as Monaco from "monaco-editor";
 import { computed, markRaw } from "vue";
 import { loadMonaco } from "~/utilities/loadMonaco";
-import { Trash } from "lucide-vue-next";
+import { Trash, Save } from "lucide-vue-next";
 
 interface GameTypeConfig {
   type: string;
@@ -105,10 +95,13 @@ interface GameTypeConfig {
 let monaco: typeof Monaco | null = null;
 const editorsMap = new Map<string, Monaco.editor.IStandaloneCodeEditor>();
 const pendingEditorCreates = new Set<string>();
+// Last-saved cfg per type, used to detect unsaved editor changes (dirty state).
+const baselineMap = new Map<string, string>();
 
 export default {
   components: {
     Trash,
+    Save,
   },
   props: {
     gameTypeConfigs: {
@@ -159,6 +152,7 @@ export default {
     return {
       colorMode: useColorMode(),
       pendingContainers: new Map<string, HTMLElement>(),
+      dirtyTypes: new Set<string>(),
     };
   },
   watch: {
@@ -196,6 +190,16 @@ export default {
           editor.layout();
         }
       });
+    },
+  },
+  computed: {
+    activeConfig(): GameTypeConfig | null {
+      return (
+        this.gameTypeConfigs.find((c) => c.type === this.activeTab) ?? null
+      );
+    },
+    isActiveDirty(): boolean {
+      return !!this.activeTab && this.dirtyTypes.has(this.activeTab);
     },
   },
   beforeUnmount() {
@@ -265,6 +269,14 @@ export default {
         });
 
         editorsMap.set(type, editor);
+        baselineMap.set(type, config.cfg);
+        editor.onDidChangeModelContent(() => {
+          if (editor.getValue() !== baselineMap.get(type)) {
+            this.dirtyTypes.add(type);
+          } else {
+            this.dirtyTypes.delete(type);
+          }
+        });
       } finally {
         pendingEditorCreates.delete(type);
       }
@@ -297,6 +309,9 @@ export default {
             ],
           }),
         });
+
+        baselineMap.set(config.type, cfgValue);
+        this.dirtyTypes.delete(config.type);
 
         toast({
           title: this.$t("game_type_configs.form.success.update"),

@@ -322,7 +322,7 @@ export default {
       if (this.bordered) {
         return [
           "group/elo relative inline-flex items-center gap-1.5 cursor-pointer select-none leading-none",
-          "px-[0.55rem] py-[0.25rem] rounded",
+          "h-[26px] px-[0.6rem] rounded",
           "border border-[rgb(var(--tier-rgb)/0.4)] bg-[hsl(var(--card)/0.55)]",
           "[backdrop-filter:blur(6px)]",
           "transition-[transform,border-color,box-shadow] duration-150",
@@ -340,16 +340,16 @@ export default {
       ].join(" ");
     },
     triggerNotchClasses(): string {
-      return "h-[6px] w-[6px] rounded-[1px] bg-[rgb(var(--tier-rgb))] [box-shadow:0_0_8px_rgb(var(--tier-rgb)/0.7)]";
+      return "h-[7px] w-[7px] rounded-[1px] bg-[rgb(var(--tier-rgb))] [box-shadow:0_0_8px_rgb(var(--tier-rgb)/0.7)]";
     },
     triggerLabelClasses(): string {
-      return "font-mono text-[0.6rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground/85 group-hover/elo:text-[hsl(var(--tac-amber))]";
+      return "font-mono text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-muted-foreground/85 group-hover/elo:text-[hsl(var(--tac-amber))]";
     },
     triggerSeparatorClasses(): string {
-      return "h-2.5 w-px bg-border/70";
+      return "h-3 w-px bg-border/70";
     },
     triggerValueClasses(): string {
-      return "font-mono text-[0.7rem] font-bold tabular-nums tracking-[0.04em] text-[rgb(var(--tier-rgb))] [text-shadow:0_0_10px_rgb(var(--tier-rgb)/0.35)]";
+      return "font-mono text-[0.75rem] font-bold tabular-nums tracking-[0.04em] text-[rgb(var(--tier-rgb))] [text-shadow:0_0_10px_rgb(var(--tier-rgb)/0.35)]";
     },
 
     cardClasses(): string {

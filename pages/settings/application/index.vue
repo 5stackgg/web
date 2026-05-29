@@ -2,7 +2,8 @@
 import { e_player_roles_enum } from "~/generated/zeus";
 import { Switch } from "~/components/ui/switch";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { Card } from "~/components/ui/card";
+import SettingsPage from "~/components/settings/SettingsPage.vue";
+import SettingsSection from "~/components/settings/SettingsSection.vue";
 import { TriangleAlert } from "lucide-vue-next";
 
 definePageMeta({
@@ -11,31 +12,26 @@ definePageMeta({
 </script>
 
 <template>
-  <PageTransition :delay="0">
-    <form @submit.prevent="updateSettings" class="grid gap-6">
-      <Card variant="gradient">
-        <div class="p-6 space-y-6">
-          <div
-            class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 cursor-pointer"
-            @click="toggleMatchmaking()"
-          >
-            <div class="space-y-0.5">
-              <h4 class="text-base font-medium">
-                {{ $t("pages.settings.application.matchmaking.title") }}
-              </h4>
-              <p class="text-sm text-muted-foreground">
-                {{ $t("pages.settings.application.matchmaking.description") }}
-              </p>
-            </div>
+  <SettingsPage>
+    <PageTransition :delay="0">
+      <form @submit.prevent="updateSettings" class="space-y-6">
+        <SettingsSection
+          id="matchmaking"
+          :title="$t('pages.settings.application.matchmaking.title')"
+          :description="
+            $t('pages.settings.application.matchmaking.description')
+          "
+          clickable-header
+          @header-click="toggleMatchmaking"
+        >
+          <template #action>
             <Switch
               :model-value="matchMakingAllowed"
               @update:model-value="toggleMatchmaking"
             />
-          </div>
+          </template>
 
           <template v-if="matchMakingAllowed">
-            <Separator />
-
             <div class="space-y-3">
               <p class="text-sm text-muted-foreground">
                 {{
@@ -59,89 +55,6 @@ definePageMeta({
                     />
                   </div>
                 </template>
-              </div>
-            </div>
-
-            <Separator />
-
-            <div class="space-y-3">
-              <div class="space-y-0.5">
-                <h4 class="text-base font-medium">
-                  {{ $t("pages.settings.application.fivestack_ranks.title") }}
-                </h4>
-                <p class="text-sm text-muted-foreground">
-                  {{
-                    $t("pages.settings.application.fivestack_ranks.description")
-                  }}
-                </p>
-              </div>
-
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div
-                  class="flex flex-row items-center justify-between gap-3 p-3 rounded-lg border cursor-pointer hover:bg-accent/40 transition-colors"
-                  @click="toggleFivestackRanks('matches')"
-                >
-                  <h4 class="text-sm font-medium">
-                    {{
-                      $t("pages.settings.application.fivestack_ranks.matches")
-                    }}
-                  </h4>
-                  <Switch
-                    :model-value="fivestackRanksMatchesEnabled"
-                    @update:model-value="toggleFivestackRanks('matches')"
-                  />
-                </div>
-                <div
-                  class="flex flex-row items-center justify-between gap-3 p-3 rounded-lg border cursor-pointer hover:bg-accent/40 transition-colors"
-                  @click="toggleFivestackRanks('tournaments')"
-                >
-                  <h4 class="text-sm font-medium">
-                    {{
-                      $t(
-                        "pages.settings.application.fivestack_ranks.tournaments",
-                      )
-                    }}
-                  </h4>
-                  <Switch
-                    :model-value="fivestackRanksTournamentsEnabled"
-                    @update:model-value="toggleFivestackRanks('tournaments')"
-                  />
-                </div>
-              </div>
-
-              <div
-                class="flex items-start gap-3 rounded-lg border border-yellow-500/40 bg-yellow-500/10 p-3 text-sm text-yellow-300"
-                role="alert"
-              >
-                <TriangleAlert class="h-4 w-4 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p class="font-medium">
-                    {{
-                      $t(
-                        "pages.settings.application.fivestack_ranks.warning_title",
-                      )
-                    }}
-                  </p>
-                  <p class="text-yellow-300/90 mt-0.5">
-                    {{
-                      $t(
-                        "pages.settings.application.fivestack_ranks.warning_description",
-                      )
-                    }}
-                  </p>
-                  <a
-                    href="https://blog.counter-strike.net/index.php/server_guidelines/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="mt-1 inline-block underline text-yellow-200 hover:text-yellow-100"
-                  >
-                    {{
-                      $t(
-                        "pages.settings.application.fivestack_ranks.warning_link_label",
-                      )
-                    }}
-                  </a>
-                </div>
               </div>
             </div>
 
@@ -243,11 +156,83 @@ definePageMeta({
               </FormField>
             </div>
           </template>
-        </div>
-      </Card>
+        </SettingsSection>
 
-      <Card variant="gradient">
-        <div class="p-6">
+        <SettingsSection
+          v-if="matchMakingAllowed"
+          id="ranks"
+          :title="$t('pages.settings.application.fivestack_ranks.title')"
+          :description="
+            $t('pages.settings.application.fivestack_ranks.description')
+          "
+        >
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div
+              class="flex flex-row items-center justify-between gap-3 p-3 rounded-lg border cursor-pointer hover:bg-accent/40 transition-colors"
+              @click="toggleFivestackRanks('matches')"
+            >
+              <h4 class="text-sm font-medium">
+                {{ $t("pages.settings.application.fivestack_ranks.matches") }}
+              </h4>
+              <Switch
+                :model-value="fivestackRanksMatchesEnabled"
+                @update:model-value="toggleFivestackRanks('matches')"
+              />
+            </div>
+            <div
+              class="flex flex-row items-center justify-between gap-3 p-3 rounded-lg border cursor-pointer hover:bg-accent/40 transition-colors"
+              @click="toggleFivestackRanks('tournaments')"
+            >
+              <h4 class="text-sm font-medium">
+                {{
+                  $t("pages.settings.application.fivestack_ranks.tournaments")
+                }}
+              </h4>
+              <Switch
+                :model-value="fivestackRanksTournamentsEnabled"
+                @update:model-value="toggleFivestackRanks('tournaments')"
+              />
+            </div>
+          </div>
+
+          <div
+            class="flex items-start gap-3 rounded-lg border border-yellow-500/40 bg-yellow-500/10 p-3 text-sm text-yellow-300"
+            role="alert"
+          >
+            <TriangleAlert class="h-4 w-4 mt-0.5 flex-shrink-0" />
+            <div>
+              <p class="font-medium">
+                {{
+                  $t("pages.settings.application.fivestack_ranks.warning_title")
+                }}
+              </p>
+              <p class="text-yellow-300/90 mt-0.5">
+                {{
+                  $t(
+                    "pages.settings.application.fivestack_ranks.warning_description",
+                  )
+                }}
+              </p>
+              <a
+                href="https://blog.counter-strike.net/index.php/server_guidelines/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mt-1 inline-block underline text-yellow-200 hover:text-yellow-100"
+              >
+                {{
+                  $t(
+                    "pages.settings.application.fivestack_ranks.warning_link_label",
+                  )
+                }}
+              </a>
+            </div>
+          </div>
+        </SettingsSection>
+
+        <SettingsSection
+          id="lineup"
+          :title="$t('pages.settings.application.lineup_section')"
+        >
           <FormField
             v-slot="{ componentField }"
             name="public.lineup_add_without_invite"
@@ -279,44 +264,37 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
-      </Card>
+        </SettingsSection>
 
-      <Card variant="gradient">
-        <div class="p-6 space-y-6">
-          <div
-            class="flex flex-row items-center justify-between cursor-pointer"
-            @click="toggleDefaultModels"
-          >
-            <div class="space-y-0.5">
-              <h4 class="text-base font-medium">
-                {{ $t("pages.settings.application.default_models") }}
-              </h4>
-              <p class="text-sm text-muted-foreground">
-                {{
-                  $t("match.options.advanced.default_player_models.description")
-                }}
-              </p>
-            </div>
+        <SettingsSection
+          id="default-models"
+          :title="$t('pages.settings.application.default_models_section')"
+          :description="
+            $t('match.options.advanced.default_player_models.description')
+          "
+          clickable-header
+          @header-click="toggleDefaultModels"
+        >
+          <template #action>
             <Switch
               :model-value="defaultModelsEnabled"
               @update:model-value="toggleDefaultModels"
             />
-          </div>
-        </div>
-      </Card>
+          </template>
+        </SettingsSection>
 
-      <div class="flex justify-start">
-        <Button
-          type="submit"
-          :disabled="Object.keys(form.errors).length > 0"
-          class="my-3"
-        >
-          {{ $t("common.update") }}
-        </Button>
-      </div>
-    </form>
-  </PageTransition>
+        <div class="flex justify-start">
+          <Button
+            type="submit"
+            :disabled="Object.keys(form.errors).length > 0 || !form.meta.dirty"
+            class="my-3"
+          >
+            {{ $t("common.update") }}
+          </Button>
+        </div>
+      </form>
+    </PageTransition>
+  </SettingsPage>
 </template>
 
 <script lang="ts">
@@ -367,6 +345,7 @@ export default {
             (this.form.setFieldValue as any)(setting.name, setting.value || "");
           }
         }
+        this.form.resetForm({ values: this.form.values });
       },
     },
   },

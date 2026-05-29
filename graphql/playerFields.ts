@@ -12,4 +12,6 @@ export const playerFields = Selector("players")({
   is_gagged: true,
   is_muted: true,
   elo: true,
+  premier_rank: true,
+  premier_rank_updated_at: true,
 });

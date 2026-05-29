@@ -215,6 +215,14 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    const externalMatchesEnabled = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.external_matches_enabled",
+        )?.value !== "false"
+      );
+    });
+
     const availableRegions = ref<Region[]>([]);
 
     let latencyCheckInterval: ReturnType<typeof setInterval> | null = null;
@@ -362,6 +370,7 @@ export const useApplicationSettingsStore = defineStore(
       supportsGameServerNodes,
       supportsGameServerVersionPinning,
       playerNameRegistration,
+      externalMatchesEnabled,
       canCreateMatch,
       currentPluginVersion,
       canAddWithoutInvite,

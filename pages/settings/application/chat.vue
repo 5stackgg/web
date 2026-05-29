@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { Card } from "~/components/ui/card";
+import SettingsPage from "~/components/settings/SettingsPage.vue";
+import SettingsSection from "~/components/settings/SettingsSection.vue";
 
 definePageMeta({
   layout: "application-settings",
@@ -8,19 +9,14 @@ definePageMeta({
 </script>
 
 <template>
-  <PageTransition :delay="0">
-    <form @submit.prevent="updateSettings" class="grid gap-6">
-      <Card variant="gradient">
-        <div class="p-6 space-y-6">
-          <div class="space-y-1">
-            <h3 class="text-lg font-semibold">
-              {{ $t("pages.settings.application.chat.title") }}
-            </h3>
-            <p class="text-sm text-muted-foreground">
-              {{ $t("pages.settings.application.chat.description") }}
-            </p>
-          </div>
-
+  <SettingsPage>
+    <PageTransition :delay="0">
+      <form @submit.prevent="updateSettings" class="space-y-6">
+        <SettingsSection
+          id="chat"
+          :title="$t('pages.settings.application.chat.title')"
+          :description="$t('pages.settings.application.chat.description')"
+        >
           <FormField v-slot="{ componentField }" name="public.chat_message_ttl">
             <FormItem>
               <FormLabel>
@@ -39,20 +35,20 @@ definePageMeta({
               <FormMessage />
             </FormItem>
           </FormField>
-        </div>
-      </Card>
+        </SettingsSection>
 
-      <div class="flex justify-start">
-        <Button
-          type="submit"
-          :disabled="Object.keys(form.errors).length > 0"
-          class="my-3"
-        >
-          {{ $t("common.update") }}
-        </Button>
-      </div>
-    </form>
-  </PageTransition>
+        <div class="flex justify-start">
+          <Button
+            type="submit"
+            :disabled="Object.keys(form.errors).length > 0 || !form.meta.dirty"
+            class="my-3"
+          >
+            {{ $t("common.update") }}
+          </Button>
+        </div>
+      </form>
+    </PageTransition>
+  </SettingsPage>
 </template>
 
 <script lang="ts">
@@ -90,6 +86,7 @@ export default {
             }
           }
         }
+        this.form.resetForm({ values: this.form.values });
       },
     },
   },

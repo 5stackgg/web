@@ -21,12 +21,14 @@ import {
   Trophy,
   Film,
   ListVideo,
+  AlertTriangle,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 import { DiscordLogoIcon, GithubLogoIcon } from "@radix-icons/vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import PlayerPendingImports from "~/components/PlayerPendingImports.vue";
 import { Kbd, KbdGroup } from "~/components/ui/kbd";
 import Logout from "./Logout.vue";
 import { useMatchContext } from "~/composables/useMatchContext";
@@ -504,15 +506,28 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                       <SidebarMenuSubItem>
                         <SidebarMenuSubButton
                           as-child
-                          :tooltip="$t('layouts.app_nav.tooltips.gpu_nodes')"
+                          :tooltip="
+                            gpuPoolNeedsAttention
+                              ? gpuPoolTooltip
+                              : $t('layouts.app_nav.tooltips.gpu_nodes')
+                          "
                         >
                           <NuxtLink
                             :to="{ name: 'gpu-nodes' }"
                             :class="{
                               'router-link-active': isRouteActive('gpu-nodes'),
                             }"
+                            class="flex w-full items-center justify-between gap-2"
                           >
-                            {{ $t("layouts.app_nav.administration.gpu_nodes") }}
+                            <span>
+                              {{
+                                $t("layouts.app_nav.administration.gpu_nodes")
+                              }}
+                            </span>
+                            <AlertTriangle
+                              v-if="gpuPoolNeedsAttention"
+                              class="w-3.5 h-3.5 text-yellow-500 shrink-0"
+                            />
                           </NuxtLink>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
@@ -570,8 +585,17 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                         class="flex gap-2 cursor-pointer"
                         as-child
                       >
-                        <NuxtLink :to="{ name: 'gpu-nodes' }">
-                          {{ $t("layouts.app_nav.administration.gpu_nodes") }}
+                        <NuxtLink
+                          :to="{ name: 'gpu-nodes' }"
+                          class="flex w-full items-center justify-between gap-2"
+                        >
+                          <span>
+                            {{ $t("layouts.app_nav.administration.gpu_nodes") }}
+                          </span>
+                          <AlertTriangle
+                            v-if="gpuPoolNeedsAttention"
+                            class="w-3.5 h-3.5 text-yellow-500 shrink-0"
+                          />
                         </NuxtLink>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
@@ -765,6 +789,10 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                     size="xs"
                   />
 
+                  <PlayerPendingImports
+                    v-if="(pendingMatchImports?.length ?? 0) > 0"
+                    :imports="pendingMatchImports"
+                  />
                   <ChevronsUpDownIcon class="ml-auto size-4" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -852,6 +880,47 @@ export default {
         return useRuntimeConfig().public.webDomain !== "5stack.gg";
       },
     },
+    pendingMatchImports: {
+      query: generateQuery({
+        pending_match_imports: {
+          valve_match_id: true,
+          status: true,
+          error: true,
+          map_name: true,
+          match_start_time: true,
+          updated_at: true,
+        },
+      }),
+      pollInterval: 30 * 1000,
+      update(data: any) {
+        return data?.pending_match_imports ?? [];
+      },
+      skip() {
+        return !this.me?.steam_id;
+      },
+    },
+    gpuPoolHealth: {
+      query: generateQuery({
+        game_server_nodes: [
+          { where: { gpu: { _eq: true } } as any },
+          { id: true },
+        ],
+        steam_accounts: [{}, { id: true }],
+      }),
+      pollInterval: 60 * 1000,
+      update(this: any, data: any) {
+        const nodes = (data?.game_server_nodes ?? []) as Array<{ id: string }>;
+        const accounts = (data?.steam_accounts ?? []) as Array<{ id: string }>;
+        return {
+          nodes: nodes.length,
+          pool: accounts.length,
+          short: nodes.length > 0 && accounts.length < nodes.length,
+        };
+      },
+      skip() {
+        return !this.me || this.me.role !== e_player_roles_enum.administrator;
+      },
+    },
   },
   methods: {
     isRouteActive(route: string) {
@@ -871,6 +940,31 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    gpuPoolNeedsAttention() {
+      const h = (this as any).gpuPoolHealth;
+      if (!h || h.nodes === 0) {
+        return false;
+      }
+      return h.pool === 0 || h.short;
+    },
+    gpuPoolTooltip(): string {
+      const h = (this as any).gpuPoolHealth;
+      if (!h) {
+        return "";
+      }
+      if (h.pool === 0) {
+        return this.$t(
+          "pages.gpu_nodes.steam_pool.empty_warning_title",
+        ) as string;
+      }
+      if (h.short) {
+        return this.$t("pages.gpu_nodes.steam_pool.short_warning_title", {
+          accounts: h.pool,
+          nodes: h.nodes,
+        }) as string;
+      }
+      return "";
     },
     customLogoUrl() {
       const store = useApplicationSettingsStore();

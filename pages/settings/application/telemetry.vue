@@ -1,38 +1,44 @@
 <script setup lang="ts">
 import { Switch } from "@/components/ui/switch";
-import Card from "~/components/ui/card/Card.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import SettingsPage from "~/components/settings/SettingsPage.vue";
+import SettingsSection from "~/components/settings/SettingsSection.vue";
+
 definePageMeta({
   layout: "application-settings",
 });
 </script>
 
 <template>
-  <PageTransition :delay="0">
-    <form @submit.prevent="updateTelemetrySettings" class="grid gap-4">
-      <Card variant="gradient">
-        <div class="p-6 space-y-6">
-          <div
-            class="flex flex-row items-center justify-between cursor-pointer"
-            @click="toggleTelemetry"
-          >
-            <div class="space-y-0.5">
-              <h4 class="text-base font-medium">
-                {{ $t("pages.settings.application.telemetry.telemetry") }}
-              </h4>
-              <p class="text-sm text-muted-foreground">
-                {{
-                  $t(
-                    "pages.settings.application.telemetry.telemetry_description",
-                  )
-                }}
-              </p>
-            </div>
+  <SettingsPage>
+    <PageTransition :delay="0">
+      <form @submit.prevent="updateTelemetrySettings" class="space-y-6">
+        <SettingsSection
+          id="telemetry"
+          :title="$t('pages.settings.application.telemetry.title')"
+          :description="
+            $t('pages.settings.application.telemetry.telemetry_description')
+          "
+          clickable-header
+          @header-click="toggleTelemetry"
+        >
+          <template #action>
             <Switch
               :model-value="telemetryEnabled"
               @update:model-value="toggleTelemetry"
             />
-          </div>
+          </template>
+        </SettingsSection>
 
+        <SettingsSection
+          id="analytics"
+          :title="$t('pages.settings.application.telemetry.analytics_section')"
+          :description="
+            $t(
+              'pages.settings.application.telemetry.analytics_section_description',
+            )
+          "
+        >
           <FormField
             v-slot="{ componentField }"
             name="public.google_tagmanager_code"
@@ -46,20 +52,20 @@ definePageMeta({
               <Input v-bind="componentField" placeholder="GTM-XXXXXXX" />
             </FormItem>
           </FormField>
-        </div>
-      </Card>
+        </SettingsSection>
 
-      <div class="flex justify-start">
-        <Button
-          type="submit"
-          :disabled="Object.keys(form.errors).length > 0"
-          class="my-3"
-        >
-          {{ $t("pages.settings.application.telemetry.update") }}
-        </Button>
-      </div>
-    </form>
-  </PageTransition>
+        <div class="flex justify-start">
+          <Button
+            type="submit"
+            :disabled="Object.keys(form.errors).length > 0 || !form.meta.dirty"
+            class="my-3"
+          >
+            {{ $t("common.update") }}
+          </Button>
+        </div>
+      </form>
+    </PageTransition>
+  </SettingsPage>
 </template>
 
 <script lang="ts">
@@ -88,11 +94,13 @@ export default {
     settings: {
       immediate: true,
       handler() {
-        this.form.setValues({
-          public: {
-            google_tagmanager_code: this.settings.find(
-              (setting) => setting.name === "public.google_tagmanager_code",
-            )?.value,
+        this.form.resetForm({
+          values: {
+            public: {
+              google_tagmanager_code: this.settings.find(
+                (setting) => setting.name === "public.google_tagmanager_code",
+              )?.value,
+            },
           },
         });
       },

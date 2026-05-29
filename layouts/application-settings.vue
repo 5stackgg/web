@@ -3,77 +3,23 @@ import { Separator } from "@/components/ui/separator";
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import Default from "~/layouts/default.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsSideTabs from "~/components/settings/SettingsSideTabs.vue";
+import { useSettingsNav } from "~/composables/useSettingsNav";
 
 const showSeparators = computed(
   () => useApplicationSettingsStore().showSeparators,
 );
 
-const isDev = computed(() => {
-  const domain = useRuntimeConfig().public.webDomain;
-  return domain.includes("localhost") || domain.includes(".local");
-});
-
 const { t: $t } = useI18n();
-
-const navItems = computed(() => {
-  const items: { path: string; label: string }[] = [
-    { path: "/settings/application/players", label: $t("pages.players.title") },
-    {
-      path: "/settings/application",
-      label: $t("pages.settings.application.matchmaking.title"),
-    },
-    {
-      path: "/settings/application/chat",
-      label: $t("pages.settings.application.chat.title"),
-    },
-    {
-      path: "/settings/application/streaming",
-      label: $t("pages.settings.application.streaming.title"),
-    },
-    {
-      path: "/settings/application/game-type-configs",
-      label: $t("pages.settings.application.game_type_configs.title"),
-    },
-    {
-      path: "/settings/application/map-pools",
-      label: $t("pages.map_pools.title"),
-    },
-    {
-      path: "/settings/application/demo-settings",
-      label: $t("pages.settings.application.demo_settings.title"),
-    },
-    {
-      path: "/settings/application/servers",
-      label: $t("pages.settings.application.servers.title"),
-    },
-    {
-      path: "/settings/application/discord",
-      label: $t("pages.settings.application.discord.title"),
-    },
-    {
-      path: "/settings/application/telemetry",
-      label: $t("pages.settings.application.telemetry.title"),
-    },
-    {
-      path: "/settings/application/branding",
-      label: $t("layouts.application_settings.branding_nav"),
-    },
-  ];
-  if (isDev.value) {
-    items.push({
-      path: "/settings/application/fixtures",
-      label: $t("layouts.application_settings.fixtures_nav"),
-    });
-  }
-  return items;
-});
+const { groups: navGroups, items: navItems } = useSettingsNav();
 
 const route = useRoute();
 const router = useRouter();
@@ -127,18 +73,21 @@ const selectedPath = computed({
                 />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem
-                  v-for="item in navItems"
-                  :key="item.path"
-                  :value="item.path"
-                >
-                  {{ item.label }}
-                </SelectItem>
+                <SelectGroup v-for="group in navGroups" :key="group.label">
+                  <SelectLabel>{{ group.label }}</SelectLabel>
+                  <SelectItem
+                    v-for="item in group.items"
+                    :key="item.path"
+                    :value="item.path"
+                  >
+                    {{ item.label }}
+                  </SelectItem>
+                </SelectGroup>
               </SelectContent>
             </Select>
           </div>
           <SettingsSideTabs
-            :items="navItems"
+            :groups="navGroups"
             :active-path="resolvedPath"
             :aria-label="$t('ui.tooltips.settings_section')"
           />

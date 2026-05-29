@@ -5,6 +5,7 @@ import { playerFields } from "~/graphql/playerFields";
 export const simpleMatchFields = Selector("matches")({
   id: true,
   status: true,
+  source: true,
   ended_at: true,
   organizer_steam_id: true,
   is_in_lineup: true,

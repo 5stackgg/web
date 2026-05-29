@@ -147,6 +147,14 @@ module.exports = {
           "0%, 100%": { opacity: "0.5" },
           "50%": { opacity: "0.8" },
         },
+        "ping-slow": {
+          "0%, 100%": { transform: "scale(1)", opacity: "1" },
+          "50%": { transform: "scale(1.45)", opacity: "0.55" },
+        },
+        "upload-pulse": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(400%)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -160,6 +168,8 @@ module.exports = {
         "loading-bar": "loading-bar 2s infinite",
         "fade-in": "fade-in 0.3s ease-out",
         "soft-pulse": "soft-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "ping-slow": "ping-slow 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite",
+        "upload-pulse": "upload-pulse 1.4s linear infinite",
       },
       transitionDelay: {
         100: "100ms",

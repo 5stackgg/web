@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import { computed, provide, ref } from "vue";
+import { computed, onUnmounted, provide, ref, watch } from "vue";
 import { useRoute } from "vue-router";
+import { useApolloClient } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 import { useMatchClips } from "~/composables/useMatchClips";
 import MatchTabs from "~/components/match/MatchTabs.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
@@ -30,6 +32,74 @@ const hasMatchClips = computed(() => matchClipsState.clips.value.length > 0);
 provide("matchClips", matchClipsState.clips);
 provide("matchClipsLoading", matchClipsState.loading);
 provide("matchClipsByTarget", matchClipsState.byTarget);
+
+// Per-match Valve ranks for the lineup display — Premier CS Rating and
+// per-map Competitive/Wingman skill groups, keyed by steam_id. Lives in its
+// own lightweight subscription so PlayerDisplay can show each player's rank
+// for this match via inject, without threading it through every layer.
+const matchRanks = ref<
+  Record<
+    string,
+    {
+      rankType: number;
+      rank: number;
+      previousRank: number | null;
+      change: number;
+    }
+  >
+>({});
+provide("matchRanks", matchRanks);
+
+const { client: apolloClient } = useApolloClient();
+const RANK_HISTORY_SUB = gql`
+  subscription MatchRankHistory($matchId: uuid!) {
+    player_premier_rank_history(where: { match_id: { _eq: $matchId } }) {
+      steam_id
+      rank
+      rank_type
+      previous_rank
+    }
+  }
+`;
+let rankSub: { unsubscribe: () => void } | null = null;
+watch(
+  routeMatchId,
+  (id) => {
+    rankSub?.unsubscribe();
+    rankSub = null;
+    matchRanks.value = {};
+    if (!id) return;
+    rankSub = apolloClient
+      .subscribe({ query: RANK_HISTORY_SUB, variables: { matchId: id } })
+      .subscribe({
+        next: ({ data }: any) => {
+          const map: Record<
+            string,
+            {
+              rankType: number;
+              rank: number;
+              previousRank: number | null;
+              change: number;
+            }
+          > = {};
+          for (const r of data?.player_premier_rank_history ?? []) {
+            const rank = Number(r.rank ?? 0);
+            const prev =
+              r.previous_rank == null ? null : Number(r.previous_rank);
+            map[String(r.steam_id)] = {
+              rankType: Number(r.rank_type),
+              rank,
+              previousRank: prev,
+              change: prev == null ? 0 : rank - prev,
+            };
+          }
+          matchRanks.value = map;
+        },
+      });
+  },
+  { immediate: true },
+);
+onUnmounted(() => rankSub?.unsubscribe());
 
 const heroClasses =
   "relative min-w-0 max-w-full px-6 pt-5 pb-6 max-sm:p-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] backdrop-blur-[6px] before:content-[''] before:absolute before:w-[14px] before:h-[14px] before:border-[hsl(var(--tac-amber))] before:border-solid before:top-2 before:left-2 before:border-t-2 before:border-l-2 after:content-[''] after:absolute after:w-[14px] after:h-[14px] after:border-[hsl(var(--tac-amber))] after:border-solid after:bottom-2 after:right-2 after:border-b-2 after:border-r-2";
@@ -295,18 +365,22 @@ const vsBaseClasses =
         <div
           class="flex items-center gap-[0.6rem] justify-center flex-wrap mt-4 pt-[0.85rem] border-t border-border font-mono text-[0.72rem] tracking-[0.15em] uppercase text-muted-foreground"
         >
-          <span v-if="match.options?.best_of">
+          <span v-if="isNative && match.options?.best_of">
             {{
               $t("match.options.best_of.option", {
                 count: match.options.best_of,
               })
             }}
           </span>
-          <span v-if="match.e_region?.description" class="opacity-40">·</span>
-          <span v-if="match.e_region?.description">
+          <span
+            v-if="isNative && match.e_region?.description"
+            class="opacity-40"
+            >·</span
+          >
+          <span v-if="isNative && match.e_region?.description">
             {{ match.e_region.description }}
           </span>
-          <span v-if="formattedSchedule" class="opacity-40">·</span>
+          <span v-if="isNative && formattedSchedule" class="opacity-40">·</span>
           <span v-if="formattedSchedule">
             {{ formattedSchedule }}
           </span>
@@ -526,6 +600,7 @@ export default {
             {
               id: true,
               status: true,
+              source: true,
               invite_code: true,
               e_match_status: {
                 description: true,
@@ -828,8 +903,12 @@ export default {
         return null;
       }
     },
+    isNative() {
+      return !this.match?.source || this.match.source === "5stack";
+    },
     showVetoPicks() {
       if (!this.match) return false;
+      if (this.match.source && this.match.source !== "5stack") return false;
       const hasVeto =
         this.match.options?.map_veto || this.match.options?.region_veto;
       if (!hasVeto) return false;

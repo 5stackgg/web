@@ -25,6 +25,7 @@ const { isMobile } = useSidebar();
     :show-elo="true"
     :compact="isMobile"
     :match-type="match?.options?.type"
+    :external="isExternalMatch"
   >
     <template v-slot:avatar-corner v-if="member.captain">
       <span
@@ -168,6 +169,10 @@ export default {
   computed: {
     e_match_status_enum() {
       return e_match_status_enum;
+    },
+    // Imported from outside 5stack (e.g. Valve / Faceit match history).
+    isExternalMatch() {
+      return !!this.match?.source && this.match.source !== "5stack";
     },
     // Resolve a team-roster portrait for the player based on whichever
     // lineup they sit in for this match. Falls through to player's own

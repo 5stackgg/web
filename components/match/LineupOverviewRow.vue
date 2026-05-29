@@ -156,7 +156,10 @@ const DASH = "—";
                       :country="member.player.country"
                       class="shrink-0"
                     />
-                    <PlayerElo :elo="member.player.elo" />
+                    <PlayerElo
+                      v-if="!isExternalMatch"
+                      :elo="member.player.elo"
+                    />
                   </div>
                 </div>
               </div>
@@ -508,6 +511,10 @@ export default {
     },
   },
   computed: {
+    // Imported from outside 5stack (e.g. Valve / Faceit match history).
+    isExternalMatch() {
+      return !!this.match?.source && this.match.source !== "5stack";
+    },
     canDoActions() {
       if (!this.me?.steam_id) return false;
       const terminal = [

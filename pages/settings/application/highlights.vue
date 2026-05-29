@@ -63,158 +63,152 @@ definePageMeta({
             $t('pages.settings.application.demo_settings.highlights_section')
           "
         >
-          <!-- Toggles grouped as a clean list -->
+          <!-- Toggles persist immediately on change — no Update needed. -->
           <div
             class="rounded-lg border border-border/60 divide-y divide-border/60 px-4"
           >
-            <FormField
-              v-slot="{ value, handleChange }"
-              name="auto_generate_match_clips"
-              type="checkbox"
-              :value="true"
+            <div
+              class="flex flex-row items-center justify-between cursor-pointer py-4"
+              @click="
+                toggleBooleanSetting(
+                  'auto_generate_match_clips',
+                  autoGenerateMatchClips,
+                )
+              "
             >
-              <FormItem>
-                <div
-                  class="flex flex-row items-center justify-between cursor-pointer py-4"
-                  @click="handleChange(!value)"
-                >
-                  <div class="space-y-0.5 pr-4">
-                    <h4 class="text-base font-medium">
-                      {{
-                        $t(
-                          "pages.settings.application.demo_settings.auto_generate_match_clips",
-                        )
-                      }}
-                    </h4>
-                    <p class="text-sm text-muted-foreground">
-                      {{
-                        $t(
-                          "pages.settings.application.demo_settings.auto_generate_match_clips_description",
-                        )
-                      }}
-                    </p>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      :model-value="value"
-                      @update:model-value="handleChange"
-                    />
-                  </FormControl>
-                </div>
-              </FormItem>
-            </FormField>
+              <div class="space-y-0.5 pr-4">
+                <h4 class="text-base font-medium">
+                  {{
+                    $t(
+                      "pages.settings.application.demo_settings.auto_generate_match_clips",
+                    )
+                  }}
+                </h4>
+                <p class="text-sm text-muted-foreground">
+                  {{
+                    $t(
+                      "pages.settings.application.demo_settings.auto_generate_match_clips_description",
+                    )
+                  }}
+                </p>
+              </div>
+              <Switch
+                :model-value="autoGenerateMatchClips"
+                @update:model-value="
+                  toggleBooleanSetting(
+                    'auto_generate_match_clips',
+                    autoGenerateMatchClips,
+                  )
+                "
+                @click.stop
+              />
+            </div>
 
-            <FormField
-              v-if="form.values.auto_generate_match_clips"
-              v-slot="{ value, handleChange }"
-              name="auto_generate_match_clips_imported"
-              type="checkbox"
-              :value="true"
+            <div
+              v-if="autoGenerateMatchClips"
+              class="flex flex-row items-center justify-between cursor-pointer py-4 ml-4 pl-4 border-l-2 border-border/60"
+              @click="
+                toggleBooleanSetting(
+                  'auto_generate_match_clips_imported',
+                  autoGenerateMatchClipsImported,
+                )
+              "
             >
-              <FormItem>
-                <div
-                  class="flex flex-row items-center justify-between cursor-pointer py-4 pl-4"
-                  @click="handleChange(!value)"
-                >
-                  <div class="space-y-0.5 pr-4">
-                    <h4 class="text-base font-medium">
-                      {{
-                        $t(
-                          "pages.settings.application.demo_settings.auto_generate_match_clips_imported",
-                        )
-                      }}
-                    </h4>
-                    <p class="text-sm text-muted-foreground">
-                      {{
-                        $t(
-                          "pages.settings.application.demo_settings.auto_generate_match_clips_imported_description",
-                        )
-                      }}
-                    </p>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      :model-value="value"
-                      @update:model-value="handleChange"
-                    />
-                  </FormControl>
-                </div>
-              </FormItem>
-            </FormField>
+              <div class="space-y-0.5 pr-4">
+                <h4 class="text-base font-medium">
+                  {{
+                    $t(
+                      "pages.settings.application.demo_settings.auto_generate_match_clips_imported",
+                    )
+                  }}
+                </h4>
+                <p class="text-sm text-muted-foreground">
+                  {{
+                    $t(
+                      "pages.settings.application.demo_settings.auto_generate_match_clips_imported_description",
+                    )
+                  }}
+                </p>
+              </div>
+              <Switch
+                :model-value="autoGenerateMatchClipsImported"
+                @update:model-value="
+                  toggleBooleanSetting(
+                    'auto_generate_match_clips_imported',
+                    autoGenerateMatchClipsImported,
+                  )
+                "
+                @click.stop
+              />
+            </div>
 
-            <FormField
-              v-slot="{ value, handleChange }"
-              name="pause_renders_during_active_match"
-              type="checkbox"
-              :value="true"
+            <div
+              class="flex flex-row items-center justify-between cursor-pointer py-4"
+              @click="
+                toggleBooleanSetting(
+                  'pause_renders_during_active_match',
+                  pauseRendersDuringActiveMatch,
+                )
+              "
             >
-              <FormItem>
-                <div
-                  class="flex flex-row items-center justify-between cursor-pointer py-4"
-                  @click="handleChange(!value)"
-                >
-                  <div class="space-y-0.5 pr-4">
-                    <h4 class="text-base font-medium">
-                      {{
-                        $t(
-                          "pages.settings.application.demo_settings.pause_renders_during_active_match",
-                        )
-                      }}
-                    </h4>
-                    <p class="text-sm text-muted-foreground">
-                      {{
-                        $t(
-                          "pages.settings.application.demo_settings.pause_renders_during_active_match_description",
-                        )
-                      }}
-                    </p>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      :model-value="value"
-                      @update:model-value="handleChange"
-                    />
-                  </FormControl>
-                </div>
-              </FormItem>
-            </FormField>
+              <div class="space-y-0.5 pr-4">
+                <h4 class="text-base font-medium">
+                  {{
+                    $t(
+                      "pages.settings.application.demo_settings.pause_renders_during_active_match",
+                    )
+                  }}
+                </h4>
+                <p class="text-sm text-muted-foreground">
+                  {{
+                    $t(
+                      "pages.settings.application.demo_settings.pause_renders_during_active_match_description",
+                    )
+                  }}
+                </p>
+              </div>
+              <Switch
+                :model-value="pauseRendersDuringActiveMatch"
+                @update:model-value="
+                  toggleBooleanSetting(
+                    'pause_renders_during_active_match',
+                    pauseRendersDuringActiveMatch,
+                  )
+                "
+                @click.stop
+              />
+            </div>
 
-            <FormField
-              v-slot="{ value, handleChange }"
-              name="clip_bake_branding"
-              type="checkbox"
-              :value="true"
+            <div
+              class="flex flex-row items-center justify-between cursor-pointer py-4"
+              @click="
+                toggleBooleanSetting('clip_bake_branding', clipBakeBranding)
+              "
             >
-              <FormItem>
-                <div
-                  class="flex flex-row items-center justify-between cursor-pointer py-4"
-                  @click="handleChange(!value)"
-                >
-                  <div class="space-y-0.5 pr-4">
-                    <h4 class="text-base font-medium">
-                      {{
-                        $t(
-                          "pages.settings.application.demo_settings.clip_bake_branding",
-                        )
-                      }}
-                    </h4>
-                    <p class="text-sm text-muted-foreground">
-                      {{
-                        $t(
-                          "pages.settings.application.demo_settings.clip_bake_branding_description",
-                        )
-                      }}
-                    </p>
-                  </div>
-                  <FormControl>
-                    <Switch
-                      :model-value="value"
-                      @update:model-value="handleChange"
-                    />
-                  </FormControl>
-                </div>
-              </FormItem>
-            </FormField>
+              <div class="space-y-0.5 pr-4">
+                <h4 class="text-base font-medium">
+                  {{
+                    $t(
+                      "pages.settings.application.demo_settings.clip_bake_branding",
+                    )
+                  }}
+                </h4>
+                <p class="text-sm text-muted-foreground">
+                  {{
+                    $t(
+                      "pages.settings.application.demo_settings.clip_bake_branding_description",
+                    )
+                  }}
+                </p>
+              </div>
+              <Switch
+                :model-value="clipBakeBranding"
+                @update:model-value="
+                  toggleBooleanSetting('clip_bake_branding', clipBakeBranding)
+                "
+                @click.stop
+              />
+            </div>
           </div>
         </SettingsSection>
 
@@ -309,7 +303,7 @@ definePageMeta({
         </SettingsSection>
 
         <SettingsSection
-          v-if="form.values.auto_generate_match_clips"
+          v-if="autoGenerateMatchClips"
           id="storage"
           :title="
             $t('pages.settings.application.demo_settings.clip_storage_section')
@@ -464,16 +458,12 @@ export default {
           z.object({
             clips_min_retention: z.number().int().min(1).default(1),
             clips_max_storage: z.number().int().min(1).default(10),
-            auto_generate_match_clips: z.boolean().default(false),
-            auto_generate_match_clips_imported: z.boolean().default(false),
             auto_clip_default_visibility: z
               .enum(["private", "unlisted", "public"])
               .default("private"),
             clip_video_codec: z.enum(["h265", "h264"]).default("h265"),
             clip_fps: z.enum(["30", "60"]).default("60"),
             clip_resolution: z.enum(["720p", "1080p"]).default("1080p"),
-            clip_bake_branding: z.boolean().default(true),
-            pause_renders_during_active_match: z.boolean().default(false),
           }),
         ),
       }),
@@ -492,19 +482,6 @@ export default {
               continue;
             }
             this.form.setFieldValue(setting.name, parseInt(setting.value));
-            continue;
-          }
-
-          if (
-            setting.name === "auto_generate_match_clips" ||
-            setting.name === "auto_generate_match_clips_imported" ||
-            setting.name === "clip_bake_branding" ||
-            setting.name === "pause_renders_during_active_match"
-          ) {
-            this.form.setFieldValue(
-              setting.name,
-              setting.value === "true" || setting.value === true,
-            );
             continue;
           }
 
@@ -542,6 +519,37 @@ export default {
     },
   },
   methods: {
+    // Read a boolean setting straight from the store, with a default for when
+    // the row doesn't exist yet.
+    booleanSetting(name: string, fallback: boolean) {
+      const setting = (
+        this.settings as Array<{ name: string; value: any }>
+      ).find((s) => s.name === name);
+      if (!setting || setting.value == null) return fallback;
+      return setting.value === "true" || setting.value === true;
+    },
+    // Persist a toggle immediately — no Update button. Writes the inverse of
+    // the value shown so a double-fire stays idempotent.
+    async toggleBooleanSetting(name: string, current: boolean) {
+      await (this.$apollo as any).mutate({
+        mutation: generateMutation({
+          insert_settings_one: [
+            {
+              object: { name, value: current ? "false" : "true" },
+              on_conflict: {
+                constraint: settings_constraint.settings_pkey,
+                update_columns: [settings_update_column.value],
+              },
+            },
+            { __typename: true },
+          ],
+        }),
+      });
+
+      toast({
+        title: this.$t("pages.settings.application.highlights.updated"),
+      });
+    },
     async updateSettings() {
       await (this.$apollo as any).mutate({
         mutation: generateMutation({
@@ -555,18 +563,6 @@ export default {
                 {
                   name: "clips_max_storage",
                   value: this.form.values.clips_max_storage?.toString(),
-                },
-                {
-                  name: "auto_generate_match_clips",
-                  value: this.form.values.auto_generate_match_clips
-                    ? "true"
-                    : "false",
-                },
-                {
-                  name: "auto_generate_match_clips_imported",
-                  value: this.form.values.auto_generate_match_clips_imported
-                    ? "true"
-                    : "false",
                 },
                 {
                   name: "auto_clip_default_visibility",
@@ -584,16 +580,6 @@ export default {
                 {
                   name: "clip_resolution",
                   value: this.form.values.clip_resolution ?? "1080p",
-                },
-                {
-                  name: "clip_bake_branding",
-                  value: this.form.values.clip_bake_branding ? "true" : "false",
-                },
-                {
-                  name: "pause_renders_during_active_match",
-                  value: this.form.values.pause_renders_during_active_match
-                    ? "true"
-                    : "false",
                 },
               ],
               on_conflict: {
@@ -616,6 +602,18 @@ export default {
   computed: {
     settings() {
       return useApplicationSettingsStore().settings;
+    },
+    autoGenerateMatchClips(): boolean {
+      return this.booleanSetting("auto_generate_match_clips", false);
+    },
+    autoGenerateMatchClipsImported(): boolean {
+      return this.booleanSetting("auto_generate_match_clips_imported", false);
+    },
+    pauseRendersDuringActiveMatch(): boolean {
+      return this.booleanSetting("pause_renders_during_active_match", false);
+    },
+    clipBakeBranding(): boolean {
+      return this.booleanSetting("clip_bake_branding", true);
     },
     demoStorageBytes() {
       // Aggregate sums come back as bigint strings; coerce so "+" adds

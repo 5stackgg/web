@@ -38,6 +38,7 @@ import { useAuthStore } from "~/stores/AuthStore";
 const { setOpenMobile, isMobile } = useSidebar();
 const route = useRoute();
 const authStore = useAuthStore();
+const { pendingImports: pendingMatchImports } = usePendingImports();
 const logoPath = computed(() => (authStore.me ? "/me" : "/watch"));
 const isLogoRouteActive = computed(() => {
   if (logoPath.value === "/me") {
@@ -878,25 +879,6 @@ export default {
         }
 
         return useRuntimeConfig().public.webDomain !== "5stack.gg";
-      },
-    },
-    pendingMatchImports: {
-      query: generateQuery({
-        pending_match_imports: {
-          valve_match_id: true,
-          status: true,
-          error: true,
-          map_name: true,
-          match_start_time: true,
-          updated_at: true,
-        },
-      }),
-      pollInterval: 30 * 1000,
-      update(data: any) {
-        return data?.pending_match_imports ?? [];
-      },
-      skip() {
-        return !this.me?.steam_id;
       },
     },
     gpuPoolHealth: {

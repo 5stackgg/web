@@ -47,8 +47,7 @@ const props = withDefaults(
       progress?: number;
       progress_stage?: string;
     }>;
-    // Operator-only: show a "Skip shaders" affordance while the pod is
-    // still booting (the parent gates this on role + not-yet-live).
+    // Operator-only Skip-shaders affordance (gated by the parent).
     canSkip?: boolean;
     skipping?: boolean;
   }>(),

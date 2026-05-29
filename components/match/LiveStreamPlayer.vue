@@ -83,8 +83,7 @@ const LIVE_STAGES = computed(() => [
     meta: "required" as const,
   },
   {
-    // Only fires when the GLCache is cold and the pod waits out the Vulkan
-    // shader compile (SHADER_PRECACHE). Skipped on a warm cache.
+    // Only fires on a cold shader cache; skipped when warm.
     key: "processing_shaders",
     label: t("live_stages.processing_shaders"),
     meta: "conditional" as const,

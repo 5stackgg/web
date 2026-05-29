@@ -140,10 +140,7 @@ const QUEUE_BOOT_STAGES = computed<
     meta: "required",
   },
   {
-    // Cold-GLCache Vulkan shader compile. Highlights always wait for it
-    // (SHADER_PRECACHE), and it's the usual reason a render sits "queued"
-    // for minutes — surface it as its own progress-tracked step. Skipped
-    // once the cache is warm.
+    // Cold-cache shader compile (why a render sits "queued" for minutes).
     key: "processing_shaders",
     label: t("live_stages.processing_shaders"),
     meta: "conditional",

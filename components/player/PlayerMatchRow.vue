@@ -21,9 +21,9 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
 // same size on every row, keeping the stat columns aligned. The highlight
 // thumbnail gets its own fixed column right before RATING, and the chevron
 // gets its own slim trailing column.
-// OPEN · DATE · RESULT · MAP · CLIP · RATING · K/D/A · K/D · ADR · Δ · VIEW
+// OPEN · DATE · TYPE · RESULT · MAP · CLIP · RATING · K/D/A · K/D · ADR · Δ · VIEW
 const wideGrid =
-  "grid grid-cols-[2.5rem_5rem_6.75rem_minmax(4.5rem,1fr)_3rem_4rem_4.5rem_2.75rem_3.25rem_6rem_2.5rem] items-center gap-x-2";
+  "grid grid-cols-[2.5rem_5rem_6.75rem_6.75rem_minmax(4.5rem,1fr)_3rem_4rem_4.5rem_2.75rem_3.25rem_6rem_2.5rem] items-center gap-x-2";
 
 // Smooth height+fade for the quick-overview panel. JS hooks (css=false) so
 // we can animate to the panel's natural height without hard-coding it.
@@ -97,6 +97,27 @@ function expandLeave(el: Element, done: () => void) {
         >
           {{ timeLabel }}
         </span>
+      </div>
+
+      <!-- TYPE — keep the same mode badge as a 5stack match, and tag
+           external/imported matches with a small source chip (VALVE/FACEIT)
+           so they read as "comp, but from Valve". -->
+      <div class="flex min-w-0 items-center justify-center gap-1">
+        <span
+          v-if="matchTypeLabel"
+          class="inline-block max-w-full truncate rounded border border-border/70 bg-muted/40 px-1.5 py-0.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.12em] text-foreground/75"
+          :title="matchType"
+        >
+          {{ matchTypeLabel }}
+        </span>
+        <span
+          v-if="isExternal"
+          class="inline-flex shrink-0 items-center rounded-sm border border-[hsl(200_95%_55%/0.45)] bg-[hsl(200_95%_55%/0.1)] px-1 py-px font-mono text-[0.45rem] font-bold uppercase tracking-[0.08em] text-[hsl(200_95%_60%)]"
+          :title="`Imported from ${sourceLabel}`"
+        >
+          {{ sourceLabel }}
+        </span>
+        <span v-else-if="!matchTypeLabel" class="text-muted-foreground">—</span>
       </div>
 
       <!-- RESULT + SCORE -->
@@ -214,16 +235,18 @@ function expandLeave(el: Element, done: () => void) {
       <!-- Δ ELO (5stack) / Valve rank (external: Premier rating or skill group) -->
       <div class="flex items-center justify-end">
         <EloChangeBadge v-if="hasElo" :elo-change="eloChange" size="sm" />
-        <!-- Premier: canonical CS2 rating badge + change -->
-        <div
+        <!-- Premier: canonical CS2 rating badge. The change floats as a
+             superscript overlapping the pill's top-right corner so it never
+             steals width from the rating or bumps the row height. -->
+        <span
           v-else-if="rankInfo && isPremierRank"
-          class="flex flex-col items-end gap-0.5 leading-none"
+          class="relative inline-flex items-center leading-none"
           :title="rankTitle"
         >
           <PlayerPremierRank :premier-rank="rankInfo.rank" />
           <span
             v-if="rankInfo.change !== 0"
-            class="inline-flex items-center gap-px font-mono text-[0.6rem] font-bold tabular-nums"
+            class="pointer-events-none absolute -right-1.5 -top-2 inline-flex items-center gap-px font-mono text-[0.5rem] font-bold tabular-nums leading-none [text-shadow:0_1px_2px_hsl(var(--background)),0_0_2px_hsl(var(--background))]"
             :class="rankChangeClass"
           >
             <span aria-hidden="true">{{
@@ -231,7 +254,7 @@ function expandLeave(el: Element, done: () => void) {
             }}</span>
             {{ Math.abs(rankInfo.change).toLocaleString() }}
           </span>
-        </div>
+        </span>
         <!-- Competitive / Wingman: skill group icon + up/down indicator -->
         <span
           v-else-if="rankInfo && rankIcon"
@@ -304,7 +327,7 @@ function expandLeave(el: Element, done: () => void) {
           />
           <TimeAgo
             class="font-mono text-[0.6rem] tracking-[0.04em]"
-            :date="match.created_at"
+            :date="matchDate"
           />
         </div>
       </div>
@@ -807,8 +830,16 @@ export default {
     bestClip(): any | null {
       return this.filteredPlayerClips[0] ?? null;
     },
+    matchDate(): string | null {
+      return (
+        this.match?.started_at ??
+        this.match?.scheduled_at ??
+        this.match?.created_at ??
+        null
+      );
+    },
     dateLabel(): string {
-      const d = new Date(this.match?.created_at);
+      const d = new Date(this.matchDate);
       return d.toLocaleDateString(undefined, {
         weekday: "short",
         day: "numeric",
@@ -816,11 +847,36 @@ export default {
       });
     },
     timeLabel(): string {
-      const d = new Date(this.match?.created_at);
+      const d = new Date(this.matchDate);
       return d.toLocaleTimeString(undefined, {
         hour: "2-digit",
         minute: "2-digit",
       });
+    },
+    matchType(): string | null {
+      return this.match?.options?.type ?? null;
+    },
+    matchTypeLabel(): string {
+      const t = this.matchType;
+      if (!t) return "";
+      const abbr: Record<string, string> = {
+        Competitive: "COMP",
+        Wingman: "WM",
+        Premier: "PREM",
+        Duel: "DUEL",
+        Scrimmage: "SCRIM",
+      };
+      return abbr[t] ?? String(t).toUpperCase();
+    },
+    // Imported from outside 5stack (e.g. Valve / Faceit match history).
+    isExternal(): boolean {
+      return !!this.match?.source && this.match.source !== "5stack";
+    },
+    sourceLabel(): string {
+      const s = this.match?.source;
+      if (!s || s === "5stack") return "";
+      const map: Record<string, string> = { valve: "VALVE", faceit: "FACEIT" };
+      return map[s] ?? String(s).toUpperCase();
     },
     isTournamentMatch(): boolean {
       return Boolean(

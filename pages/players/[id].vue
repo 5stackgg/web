@@ -109,7 +109,7 @@ const settingsOpen = ref(false);
 const eloHistory = ref<WindowedEloEntry[]>([]);
 const premierWindowedHistory = ref<WindowedEloEntry[]>([]);
 // Raw rows from the rank-history sub, all rank types (Premier 11,
-// Competitive 12, Wingman 7) — feeds the per-match rank badge on the rows.
+// Competitive 12, Wingman 6) — feeds the per-match rank badge on the rows.
 const rankHistoryRows = ref<
   Array<{
     rank: number;
@@ -382,7 +382,7 @@ watch(playerIdRef, (id) => triggerFaceitRefresh(id), { immediate: true });
 // player→matches relation with a where clause; the count uses the
 // matches_aggregate on the same relation so list + count stay in sync.
 const matchesPage = ref(1);
-const matchesPerPage = ref(10);
+const matchesPerPage = usePerPage("player-matches");
 const playerMatches = ref<any[]>([]);
 const playerMatchesTotal = ref(0);
 
@@ -456,7 +456,10 @@ const PLAYER_MATCHES_QUERY = generateQuery({
               where: $("matchesWhere", "matches_bool_exp"),
               limit: $("limit", "Int!"),
               offset: $("offset", "Int!"),
-              order_by: [{}, { created_at: order_by.desc }],
+              order_by: [
+                { started_at: order_by.desc_nulls_last },
+                { created_at: order_by.desc },
+              ],
             },
             {
               ...simpleMatchFields,
@@ -545,16 +548,16 @@ watch(
   },
 );
 
-// Valve skill-group rank progression for Competitive (12) / Wingman (7),
+// Valve skill-group rank progression for Competitive (12) / Wingman (6),
 // built from the same rank-history rows as Premier. Plots the skill-group
 // index over time (0–18) using the stored per-match delta.
 function buildValveRankWindowed(
   rankType: number,
   type: string,
 ): WindowedEloEntry[] {
-  // Competitive (7) and Wingman (6) skill groups are per map, so the series
+  // Competitive (12) and Wingman (6) skill groups are per map, so the series
   // is scoped to the selected map; Premier (11) is global.
-  const perMap = rankType === 6 || rankType === 7;
+  const perMap = rankType === 6 || rankType === 12;
   let prev: number | null = null;
   return rankHistoryRows.value
     .filter(
@@ -590,12 +593,16 @@ function buildValveRankWindowed(
 const rankMapOptions = computed(() => {
   const rt =
     selectedModeRef.value === "Competitive"
-      ? 7
+      ? 12
       : selectedModeRef.value === "Wingman"
         ? 6
         : null;
-  if (rt === null) return [] as { mapId: string; name: string; count: number }[];
-  const counts = new Map<string, { mapId: string; name: string; count: number }>();
+  if (rt === null)
+    return [] as { mapId: string; name: string; count: number }[];
+  const counts = new Map<
+    string,
+    { mapId: string; name: string; count: number }
+  >();
   for (const r of rankHistoryRows.value) {
     if (r.rank_type !== rt || !r.map_id) continue;
     const entry = counts.get(r.map_id) ?? {
@@ -629,7 +636,7 @@ watch(
 );
 
 const competitiveWindowedHistory = computed(() =>
-  buildValveRankWindowed(7, "Competitive"),
+  buildValveRankWindowed(12, "Competitive"),
 );
 const wingmanWindowedHistory = computed(() =>
   buildValveRankWindowed(6, "Wingman"),

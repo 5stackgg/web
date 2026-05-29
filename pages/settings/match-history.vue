@@ -34,6 +34,21 @@ const linking = ref(false);
 const unlinking = ref(false);
 const polling = ref(false);
 
+// Linking auto-triggers a server-side poll. Surface that immediately and keep
+// it visible until the first poll lands pending imports, an error, or simply
+// completes (last_polled_at). A fallback timeout guards against a missing
+// signal so we never spin forever.
+const awaitingPoll = ref(false);
+let awaitingPollTimeout: ReturnType<typeof setTimeout> | null = null;
+
+function stopAwaitingPoll() {
+  awaitingPoll.value = false;
+  if (awaitingPollTimeout) {
+    clearTimeout(awaitingPollTimeout);
+    awaitingPollTimeout = null;
+  }
+}
+
 const LINK_SUBSCRIPTION = gql`
   subscription PlayerSteamMatchAuth($steam_id: bigint!) {
     player_steam_match_auth_by_pk(steam_id: $steam_id) {
@@ -158,7 +173,26 @@ watch(
   { immediate: true },
 );
 
-onUnmounted(teardownSubs);
+onUnmounted(() => {
+  teardownSubs();
+  stopAwaitingPoll();
+});
+
+// Clear the "polling…" state once the auto-poll resolves: pending imports
+// arrive, an error surfaces, or the poll completes (last_polled_at is set).
+watch(
+  [
+    () => linkQuery.value?.last_polled_at,
+    () => linkQuery.value?.last_error,
+    () => pendingImports.value.length,
+  ],
+  ([polledAt, lastError, pendingCount]) => {
+    if (!awaitingPoll.value) return;
+    if (polledAt || lastError || (pendingCount as number) > 0) {
+      stopAwaitingPoll();
+    }
+  },
+);
 
 async function submitLink() {
   if (!authCode.value || !shareCode.value) return;
@@ -173,6 +207,10 @@ async function submitLink() {
       toast({ title: "Linked CS2 match history" });
       authCode.value = "";
       shareCode.value = "";
+      // We auto-poll right after linking — reflect it straight away.
+      awaitingPoll.value = true;
+      if (awaitingPollTimeout) clearTimeout(awaitingPollTimeout);
+      awaitingPollTimeout = setTimeout(stopAwaitingPoll, 90_000);
     } else {
       toast({
         title: "Could not link",
@@ -289,6 +327,16 @@ function togglePendingFilter(status: PendingStatus) {
     pendingFilters.value.add(status);
   }
   pendingFilters.value = new Set(pendingFilters.value);
+}
+
+function formatPendingDate(date: string): string {
+  return new Date(date).toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 const uploadingDemo = ref(false);
@@ -523,7 +571,7 @@ async function uploadDemo(file: File) {
               <div class="text-xs text-muted-foreground">
                 Last poll
                 <template v-if="linkQuery?.last_polled_at">
-                  <TimeAgo :date="linkQuery.last_polled_at" />
+                  <TimeAgo :date="linkQuery.last_polled_at" hide-icon />
                 </template>
                 <template v-else>· never</template>
               </div>
@@ -534,14 +582,14 @@ async function uploadDemo(file: File) {
             <Button
               size="sm"
               variant="outline"
-              :disabled="polling"
+              :disabled="polling || awaitingPoll"
               @click="submitPoll"
             >
               <RefreshCw
                 class="w-3.5 h-3.5 mr-1.5"
-                :class="{ 'animate-spin': polling }"
+                :class="{ 'animate-spin': polling || awaitingPoll }"
               />
-              {{ polling ? "Polling…" : "Poll now" }}
+              {{ polling || awaitingPoll ? "Polling…" : "Poll now" }}
             </Button>
             <Button
               size="sm"
@@ -567,7 +615,7 @@ async function uploadDemo(file: File) {
                 v-if="linkQuery?.last_polled_at"
                 class="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground mt-0.5"
               >
-                scanned <TimeAgo :date="linkQuery.last_polled_at" />
+                scanned <TimeAgo :date="linkQuery.last_polled_at" hide-icon />
               </div>
             </dd>
           </div>
@@ -581,6 +629,23 @@ async function uploadDemo(file: File) {
             </dd>
           </div>
         </dl>
+      </div>
+    </div>
+  </PageTransition>
+
+  <PageTransition v-if="externalMatchesEnabled && awaitingPoll" :delay="120">
+    <div
+      class="flex items-start gap-2.5 rounded-lg border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] px-4 py-3 text-sm max-w-xl mt-4"
+    >
+      <Loader2
+        class="w-4 h-4 mt-0.5 shrink-0 animate-spin text-[hsl(var(--tac-amber))]"
+      />
+      <div>
+        <div class="font-medium">Polling your match history…</div>
+        <div class="text-xs text-muted-foreground mt-0.5">
+          Scanning Valve for your recent matches. Pending imports will appear
+          below as we find them.
+        </div>
       </div>
     </div>
   </PageTransition>
@@ -629,17 +694,17 @@ async function uploadDemo(file: File) {
           class="flex items-center justify-between gap-4 px-3 py-2 text-sm"
         >
           <div class="min-w-0">
-            <template v-if="entry.map_name">
-              <div class="font-medium truncate">{{ entry.map_name }}</div>
-              <div
-                v-if="entry.match_start_time"
-                class="font-mono text-[0.7rem] text-muted-foreground"
-              >
-                <TimeAgo :date="entry.match_start_time" />
-              </div>
-            </template>
+            <div v-if="entry.map_name" class="font-medium truncate">
+              {{ entry.map_name }}
+            </div>
             <div
-              v-else
+              v-if="entry.match_start_time"
+              class="font-mono text-[0.7rem] text-muted-foreground"
+            >
+              {{ formatPendingDate(entry.match_start_time) }}
+            </div>
+            <div
+              v-else-if="!entry.map_name"
               class="flex items-center gap-2 text-sm text-muted-foreground"
             >
               <Loader2 class="w-3.5 h-3.5 animate-spin" />

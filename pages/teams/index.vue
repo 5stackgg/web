@@ -188,7 +188,7 @@ export default {
   data() {
     return {
       page: 1,
-      perPage: 10,
+      perPage: usePerPage("teams"),
       // Provide initial shapes so template type inference knows these exist
       teams: undefined as any,
       teams_aggregate: undefined as any,

@@ -2,7 +2,16 @@
 import { computed } from "vue";
 import { Loader2 } from "lucide-vue-next";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
-import TimeAgo from "./TimeAgo.vue";
+
+function formatDate(date: string): string {
+  return new Date(date).toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 const props = defineProps<{
   imports: Array<{
@@ -49,18 +58,23 @@ const badgeClasses = [
           :key="entry.valve_match_id"
           class="flex items-center justify-between gap-3 font-mono"
         >
-          <template v-if="entry.map_name">
-            <span class="truncate">{{ entry.map_name }}</span>
-            <span v-if="entry.match_start_time" class="text-muted-foreground">
-              <TimeAgo :date="entry.match_start_time" />
-            </span>
-          </template>
-          <template v-else>
-            <span class="flex items-center gap-1.5 text-muted-foreground">
-              <Loader2 class="w-3 h-3 animate-spin" />
-              Importing…
-            </span>
-          </template>
+          <span v-if="entry.map_name" class="truncate">{{
+            entry.map_name
+          }}</span>
+          <span
+            v-if="entry.match_start_time"
+            class="text-muted-foreground"
+            :class="{ 'ml-auto': entry.map_name }"
+          >
+            {{ formatDate(entry.match_start_time) }}
+          </span>
+          <span
+            v-else-if="!entry.map_name"
+            class="flex items-center gap-1.5 text-muted-foreground"
+          >
+            <Loader2 class="w-3 h-3 animate-spin" />
+            Importing…
+          </span>
         </li>
       </ul>
     </div>

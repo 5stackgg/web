@@ -3689,6 +3689,7 @@
     "maps_count": "{count} maps",
     "headers": {
       "date": "Date",
+      "type": "Type",
       "result": "Result",
       "map": "Map",
       "rating": "Rating",

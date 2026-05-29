@@ -1,6 +1,7 @@
 // Valve rank types, as emitted by the demo parser (Player.RankType()):
 //   6  = Wingman          (skill group 0–18, wingman*.svg)
-//   7  = Competitive      (skill group 0–18, skillgroup*.svg)
+//   7  = Competitive      (legacy single skill group 0–18, skillgroup*.svg)
+//   12 = Competitive      (current CS2 per-map skill group 0–18)
 //   11 = Premier          (numeric CS Rating, no icon)
 //   10 = unranked/practice (ignored)
 export type CsRankKind = "premier" | "competitive" | "wingman";
@@ -12,6 +13,7 @@ export function csRankKind(
     case 11:
       return "premier";
     case 7:
+    case 12:
       return "competitive";
     case 6:
       return "wingman";

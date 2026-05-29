@@ -187,11 +187,15 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               </span>
             </FiveStackToolTip>
             <!-- Per-match Valve rank (match page): skill group for Competitive
-                 (7) / Wingman (6), CS Rating for Premier (11). Falls back to
-                 the global premier rank / 5stack elo. -->
+                 (7 legacy / 12 current) / Wingman (6), CS Rating for Premier
+                 (11). Falls back to the global premier rank / 5stack elo. -->
             <template v-if="showElo && matchRank">
               <PlayerSkillGroupRank
-                v-if="matchRank.rankType === 6 || matchRank.rankType === 7"
+                v-if="
+                  matchRank.rankType === 6 ||
+                  matchRank.rankType === 7 ||
+                  matchRank.rankType === 12
+                "
                 :kind="matchRank.rankType === 6 ? 'wingman' : 'competitive'"
                 :rank="matchRank.rank"
                 :show-label="false"
@@ -200,7 +204,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 v-else-if="matchRank.rankType === 11"
                 :premier-rank="matchRank.rank"
               />
-              <PlayerElo v-else :elo="player.elo" />
+              <PlayerElo v-else-if="!external" :elo="player.elo" />
             </template>
             <PlayerPremierRank
               v-else-if="
@@ -209,7 +213,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               :premier-rank="player.premier_rank"
               :premier-rank-updated-at="player.premier_rank_updated_at"
             />
-            <PlayerElo v-else-if="showElo" :elo="player.elo" />
+            <PlayerElo v-else-if="showElo && !external" :elo="player.elo" />
             <slot name="elo-postfix"></slot>
             <p
               class="text-muted-foreground text-xs flex items-center gap-1"
@@ -304,6 +308,12 @@ export default {
     matchType: {
       type: String,
       default: null,
+    },
+    // External/imported match (Valve/Faceit history): never show the 5stack
+    // elo rank, even when no per-match CS2 rank is available.
+    external: {
+      type: Boolean,
+      default: false,
     },
   },
   // Per-match Valve ranks (steam_id -> { rankType, rank }) provided by the

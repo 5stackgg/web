@@ -159,6 +159,29 @@ function durationFor(stageKey: string): string {
   if (!next) return "";
   return fmt(new Date(next.at).getTime() - start);
 }
+
+// The shader compile is the one stage with rich progress — once a
+// percentage lands it gets a dedicated bar+count block instead of the
+// cramped inline meta every other stage uses.
+function shaderActive(stageKey: string, index: number): boolean {
+  return (
+    stageKey === "processing_shaders" &&
+    stateOf(index) === "current" &&
+    props.status !== "errored" &&
+    progressFor(stageKey) !== null
+  );
+}
+
+// "(26824 / 731082)" → "26,824 / 731,082". Falls back to the raw
+// string (sans wrapping parens) when it isn't an a/b count.
+function formatShaderCount(raw: string | null | undefined): string {
+  if (!raw) return "";
+  const m = raw.match(/(\d[\d,]*)\s*\/\s*(\d[\d,]*)/);
+  if (!m) return raw.replace(/^\(|\)$/g, "");
+  const done = Number(m[1].replace(/,/g, "")).toLocaleString();
+  const total = Number(m[2].replace(/,/g, "")).toLocaleString();
+  return `${done} / ${total}`;
+}
 </script>
 
 <template>
@@ -174,7 +197,7 @@ function durationFor(stageKey: string): string {
       <li
         v-for="{ stage, index } in visibleStages"
         :key="stage.key"
-        class="flex items-center gap-2.5 text-xs transition-colors"
+        class="text-xs transition-colors"
         :class="{
           'text-muted-foreground/60': stateOf(index) === 'pending',
           'text-muted-foreground/40 line-through decoration-muted-foreground/30':
@@ -186,69 +209,104 @@ function durationFor(stageKey: string): string {
             stateOf(index) === 'current' && status === 'errored',
         }"
       >
-        <span class="w-4 h-4 inline-flex items-center justify-center shrink-0">
-          <Check v-if="stateOf(index) === 'done'" class="w-3.5 h-3.5" />
-          <Loader2
-            v-else-if="stateOf(index) === 'current' && status !== 'errored'"
-            class="w-3.5 h-3.5 animate-spin"
-          />
-          <AlertCircle
-            v-else-if="stateOf(index) === 'current' && status === 'errored'"
-            class="w-3.5 h-3.5"
-          />
-          <Minus
-            v-else-if="stateOf(index) === 'skipped'"
-            class="w-3.5 h-3.5 opacity-50"
-          />
-          <CircleDashed v-else class="w-3.5 h-3.5 opacity-50" />
-        </span>
-        <span class="flex-1">{{ stage.label }}</span>
-        <span
-          v-if="stateOf(index) === 'current' && progressFor(stage.key) !== null"
-          class="font-mono text-[0.65rem] tabular-nums opacity-80"
-        >
-          {{ progressFor(stage.key)!.percent.toFixed(1) }}%<span
-            v-if="progressFor(stage.key)!.stage"
-            class="opacity-60"
+        <div class="flex items-center gap-2.5">
+          <span class="w-4 h-4 inline-flex items-center justify-center shrink-0">
+            <Check v-if="stateOf(index) === 'done'" class="w-3.5 h-3.5" />
+            <Loader2
+              v-else-if="stateOf(index) === 'current' && status !== 'errored'"
+              class="w-3.5 h-3.5 animate-spin"
+            />
+            <AlertCircle
+              v-else-if="stateOf(index) === 'current' && status === 'errored'"
+              class="w-3.5 h-3.5"
+            />
+            <Minus
+              v-else-if="stateOf(index) === 'skipped'"
+              class="w-3.5 h-3.5 opacity-50"
+            />
+            <CircleDashed v-else class="w-3.5 h-3.5 opacity-50" />
+          </span>
+          <span class="flex-1 min-w-0 truncate">{{ stage.label }}</span>
+
+          <!-- Inline meta for every stage except the active shader compile,
+               which moves its numbers into the progress block below so the
+               label never has to wrap. -->
+          <template v-if="!shaderActive(stage.key, index)">
+            <span
+              v-if="
+                stateOf(index) === 'current' && progressFor(stage.key) !== null
+              "
+              class="font-mono text-[0.65rem] tabular-nums opacity-80"
+            >
+              {{ progressFor(stage.key)!.percent.toFixed(1) }}%
+            </span>
+            <span
+              v-if="stateOf(index) === 'current' && elapsedOnCurrent"
+              class="font-mono text-[0.65rem] tabular-nums opacity-70"
+            >
+              {{ elapsedOnCurrent }}
+            </span>
+            <span
+              v-else-if="stateOf(index) === 'done' && durationFor(stage.key)"
+              class="font-mono text-[0.65rem] tabular-nums opacity-60"
+            >
+              {{ durationFor(stage.key) }}
+            </span>
+            <span
+              v-else-if="stateOf(index) === 'skipped'"
+              class="font-mono text-[0.6rem] uppercase tracking-wider opacity-50"
+            >
+              skipped
+            </span>
+          </template>
+
+          <!-- Operator-only skip, pinned to the right of the shader row. -->
+          <button
+            v-if="
+              canSkip &&
+              stage.key === 'processing_shaders' &&
+              stateOf(index) === 'current'
+            "
+            type="button"
+            :disabled="skipping"
+            class="ml-1 inline-flex shrink-0 items-center gap-1 rounded border border-border/60 bg-card/60 px-1.5 py-0.5 font-mono text-[0.6rem] font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:bg-card hover:text-foreground disabled:opacity-50 cursor-pointer"
+            @click.stop="emit('skip')"
           >
-            ({{ progressFor(stage.key)!.stage }})</span
+            <Loader2 v-if="skipping" class="w-2.5 h-2.5 animate-spin" />
+            <FastForward v-else class="w-2.5 h-2.5" />
+            {{ t("live_stages.skip_shaders") }}
+          </button>
+        </div>
+
+        <!-- Shader compile detail: thin progress bar + count and elapsed,
+             aligned under the label (icon width + gap = 1.625rem). -->
+        <div
+          v-if="shaderActive(stage.key, index)"
+          class="mt-1.5 ml-[1.625rem] flex flex-col gap-1"
+        >
+          <div
+            class="h-1 w-full overflow-hidden rounded-full bg-muted-foreground/15"
           >
-        </span>
-        <span
-          v-if="stateOf(index) === 'current' && elapsedOnCurrent"
-          class="font-mono text-[0.65rem] tabular-nums opacity-70"
-        >
-          {{ elapsedOnCurrent }}
-        </span>
-        <span
-          v-else-if="stateOf(index) === 'done' && durationFor(stage.key)"
-          class="font-mono text-[0.65rem] tabular-nums opacity-60"
-        >
-          {{ durationFor(stage.key) }}
-        </span>
-        <span
-          v-else-if="stateOf(index) === 'skipped'"
-          class="font-mono text-[0.6rem] uppercase tracking-wider opacity-50"
-        >
-          skipped
-        </span>
-        <!-- Inline Skip control, right on the shader row while it's the
-             current stage (operator-only — parent passes canSkip). -->
-        <button
-          v-if="
-            canSkip &&
-            stage.key === 'processing_shaders' &&
-            stateOf(index) === 'current'
-          "
-          type="button"
-          :disabled="skipping"
-          class="ml-1 inline-flex items-center gap-1 rounded border border-border/60 bg-card/60 px-1.5 py-0.5 font-mono text-[0.6rem] font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:bg-card hover:text-foreground disabled:opacity-50 cursor-pointer"
-          @click.stop="emit('skip')"
-        >
-          <Loader2 v-if="skipping" class="w-2.5 h-2.5 animate-spin" />
-          <FastForward v-else class="w-2.5 h-2.5" />
-          {{ t("live_stages.skip_shaders") }}
-        </button>
+            <div
+              class="h-full rounded-full bg-[hsl(var(--tac-amber))] transition-[width] duration-500 ease-out"
+              :style="{ width: `${progressFor(stage.key)!.percent}%` }"
+            />
+          </div>
+          <div
+            class="flex items-center justify-between gap-2 font-mono text-[0.6rem] tabular-nums text-muted-foreground"
+          >
+            <span class="truncate">
+              <span class="text-foreground/80"
+                >{{ progressFor(stage.key)!.percent.toFixed(1) }}%</span
+              ><span v-if="progressFor(stage.key)!.stage" class="opacity-60">
+                · {{ formatShaderCount(progressFor(stage.key)!.stage) }}</span
+              >
+            </span>
+            <span v-if="elapsedOnCurrent" class="shrink-0 opacity-70">{{
+              elapsedOnCurrent
+            }}</span>
+          </div>
+        </div>
       </li>
     </ul>
 

@@ -31,6 +31,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
+import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
 import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
 import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
 import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
@@ -120,6 +121,11 @@ const LIVE_STAGES = computed(() => [
     key: "launching_cs2",
     label: t("live_stages.launching_cs2"),
     meta: "required" as const,
+  },
+  {
+    key: "processing_shaders",
+    label: t("live_stages.processing_shaders"),
+    meta: "conditional" as const,
   },
   {
     key: "connecting_to_game",
@@ -301,6 +307,21 @@ async function reconnectLive() {
     title: t("toasts.reconnecting"),
     description: t("toasts.reconnecting_description"),
   });
+}
+
+// Operator skip of the Vulkan shader compile during boot — launches CS2
+// now (shaders compile on-demand → some stutter until warm).
+const skippingShaders = ref(false);
+async function onSkipShaders() {
+  if (skippingShaders.value) return;
+  skippingShaders.value = true;
+  try {
+    await runMutation("skip-shaders", () => ({
+      skipShaders: [{ match_id: matchId.value }, { success: true }],
+    }));
+  } finally {
+    skippingShaders.value = false;
+  }
 }
 
 const otherLiveMatches = ref<
@@ -887,6 +908,22 @@ watch(spectatedSteamId, (sid) => {
           :show-boot="true"
           class="group aspect-video w-full overflow-hidden rounded-lg border border-border/70 shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.05),0_30px_60px_-30px_rgba(0,0,0,0.7)]"
         >
+          <!-- Operator boot stepper with the Skip-shaders control (this
+               page is streamer+ via middleware). -->
+          <template #boot>
+            <StreamSessionProgress
+              :status="stream?.status ?? 'booting'"
+              :error-message="stream?.error_message ?? null"
+              :last-status-at="stream?.last_status_at ?? null"
+              :status-history="stream?.status_history ?? []"
+              :stages="LIVE_STAGES"
+              header-label="Stream boot"
+              :can-skip="true"
+              :skipping="skippingShaders"
+              @skip="onSkipShaders"
+            />
+          </template>
+
           <div
             v-if="isLive()"
             class="absolute bottom-3 left-12 z-10 pointer-events-none opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-150"

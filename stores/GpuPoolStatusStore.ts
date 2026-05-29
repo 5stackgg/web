@@ -6,6 +6,8 @@ import { generateSubscription } from "~/graphql/graphqlGen";
 type PoolStatus = {
   total_gpu_nodes: number;
   free_gpu_nodes: number;
+  free_gpu_nodes_for_batch: number;
+  renders_paused_for_active_match: boolean;
   registered_gpu_nodes: number;
   live_in_progress: boolean;
   demo_in_progress: boolean;
@@ -64,6 +66,8 @@ export const useGpuPoolStatusStore = defineStore("gpu-pool-status", () => {
           {
             total_gpu_nodes: true,
             free_gpu_nodes: true,
+            free_gpu_nodes_for_batch: true,
+            renders_paused_for_active_match: true,
             registered_gpu_nodes: true,
             live_in_progress: true,
             demo_in_progress: true,
@@ -80,6 +84,11 @@ export const useGpuPoolStatusStore = defineStore("gpu-pool-status", () => {
           ? {
               total_gpu_nodes: Number(row.total_gpu_nodes ?? 0),
               free_gpu_nodes: Number(row.free_gpu_nodes ?? 0),
+              free_gpu_nodes_for_batch: Number(
+                row.free_gpu_nodes_for_batch ?? 0,
+              ),
+              renders_paused_for_active_match:
+                !!row.renders_paused_for_active_match,
               registered_gpu_nodes: Number(row.registered_gpu_nodes ?? 0),
               live_in_progress: !!row.live_in_progress,
               demo_in_progress: !!row.demo_in_progress,

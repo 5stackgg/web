@@ -403,7 +403,8 @@ export function useDemoPlayback() {
       | "hud-sides"
       | "demoui"
       | "autodirector"
-      | "scoreboard",
+      | "scoreboard"
+      | "skip-shaders",
     payload: Record<string, unknown> = {},
   ) {
     if (!store.matchMapId) {
@@ -414,6 +415,13 @@ export function useDemoPlayback() {
       action,
       payload,
     });
+  }
+
+  // Operator "Skip shaders" during demo boot — dismisses the Vulkan
+  // shader compile so cs2 starts now (shaders compile on-demand). Rides
+  // the same demo-session control socket as pause/seek.
+  function skipShaders() {
+    control("skip-shaders");
   }
 
   // Optimistic wrappers: update the store immediately so the UI feels
@@ -656,6 +664,7 @@ export function useDemoPlayback() {
     togglePause,
     seek,
     skip,
+    skipShaders,
     setSpeed,
     jumpToRound,
     jumpToNextKill,

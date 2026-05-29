@@ -7878,6 +7878,9 @@ export const AllTypesProps: Record<string,any> = {
 			match_id:"uuid",
 			winning_lineup_id:"uuid"
 		},
+		skipShaders:{
+			match_id:"uuid"
+		},
 		specAutodirector:{
 			match_id:"uuid"
 		},
@@ -20611,19 +20614,23 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"v_gpu_pool_status_bool_exp",
 		demo_in_progress:"Boolean_comparison_exp",
 		free_gpu_nodes:"Int_comparison_exp",
+		free_gpu_nodes_for_batch:"Int_comparison_exp",
 		highlights_in_progress:"Boolean_comparison_exp",
 		id:"Int_comparison_exp",
 		live_in_progress:"Boolean_comparison_exp",
 		registered_gpu_nodes:"Int_comparison_exp",
+		renders_paused_for_active_match:"Boolean_comparison_exp",
 		total_gpu_nodes:"Int_comparison_exp"
 	},
 	v_gpu_pool_status_order_by:{
 		demo_in_progress:"order_by",
 		free_gpu_nodes:"order_by",
+		free_gpu_nodes_for_batch:"order_by",
 		highlights_in_progress:"order_by",
 		id:"order_by",
 		live_in_progress:"order_by",
 		registered_gpu_nodes:"order_by",
+		renders_paused_for_active_match:"order_by",
 		total_gpu_nodes:"order_by"
 	},
 	v_gpu_pool_status_select_column: "enum" as const,
@@ -26620,6 +26627,7 @@ export const ReturnTypes: Record<string,any> = {
 		setMapWinner:"SuccessOutput",
 		setMatchWinner:"SuccessOutput",
 		setupGameServer:"SetupGameServeOutput",
+		skipShaders:"SuccessOutput",
 		specAutodirector:"SuccessOutput",
 		specClick:"SuccessOutput",
 		specHud:"SuccessOutput",
@@ -33011,10 +33019,12 @@ export const ReturnTypes: Record<string,any> = {
 	v_gpu_pool_status:{
 		demo_in_progress:"Boolean",
 		free_gpu_nodes:"Int",
+		free_gpu_nodes_for_batch:"Int",
 		highlights_in_progress:"Boolean",
 		id:"Int",
 		live_in_progress:"Boolean",
 		registered_gpu_nodes:"Int",
+		renders_paused_for_active_match:"Boolean",
 		total_gpu_nodes:"Int"
 	},
 	v_gpu_pool_status_aggregate:{
@@ -33036,60 +33046,70 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	v_gpu_pool_status_avg_fields:{
 		free_gpu_nodes:"Float",
+		free_gpu_nodes_for_batch:"Float",
 		id:"Float",
 		registered_gpu_nodes:"Float",
 		total_gpu_nodes:"Float"
 	},
 	v_gpu_pool_status_max_fields:{
 		free_gpu_nodes:"Int",
+		free_gpu_nodes_for_batch:"Int",
 		id:"Int",
 		registered_gpu_nodes:"Int",
 		total_gpu_nodes:"Int"
 	},
 	v_gpu_pool_status_min_fields:{
 		free_gpu_nodes:"Int",
+		free_gpu_nodes_for_batch:"Int",
 		id:"Int",
 		registered_gpu_nodes:"Int",
 		total_gpu_nodes:"Int"
 	},
 	v_gpu_pool_status_stddev_fields:{
 		free_gpu_nodes:"Float",
+		free_gpu_nodes_for_batch:"Float",
 		id:"Float",
 		registered_gpu_nodes:"Float",
 		total_gpu_nodes:"Float"
 	},
 	v_gpu_pool_status_stddev_pop_fields:{
 		free_gpu_nodes:"Float",
+		free_gpu_nodes_for_batch:"Float",
 		id:"Float",
 		registered_gpu_nodes:"Float",
 		total_gpu_nodes:"Float"
 	},
 	v_gpu_pool_status_stddev_samp_fields:{
 		free_gpu_nodes:"Float",
+		free_gpu_nodes_for_batch:"Float",
 		id:"Float",
 		registered_gpu_nodes:"Float",
 		total_gpu_nodes:"Float"
 	},
 	v_gpu_pool_status_sum_fields:{
 		free_gpu_nodes:"Int",
+		free_gpu_nodes_for_batch:"Int",
 		id:"Int",
 		registered_gpu_nodes:"Int",
 		total_gpu_nodes:"Int"
 	},
 	v_gpu_pool_status_var_pop_fields:{
 		free_gpu_nodes:"Float",
+		free_gpu_nodes_for_batch:"Float",
 		id:"Float",
 		registered_gpu_nodes:"Float",
 		total_gpu_nodes:"Float"
 	},
 	v_gpu_pool_status_var_samp_fields:{
 		free_gpu_nodes:"Float",
+		free_gpu_nodes_for_batch:"Float",
 		id:"Float",
 		registered_gpu_nodes:"Float",
 		total_gpu_nodes:"Float"
 	},
 	v_gpu_pool_status_variance_fields:{
 		free_gpu_nodes:"Float",
+		free_gpu_nodes_for_batch:"Float",
 		id:"Float",
 		registered_gpu_nodes:"Float",
 		total_gpu_nodes:"Float"

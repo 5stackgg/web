@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -55,6 +55,12 @@ const DEMO_STAGES = computed(() => [
     meta: "required" as const,
   },
   {
+    // Cold-cache Vulkan shader compile. Skipped once the cache is warm.
+    key: "processing_shaders",
+    label: t("live_stages.processing_shaders"),
+    meta: "conditional" as const,
+  },
+  {
     key: "connecting_to_game",
     label: t("live_stages.loading_demo_into_cs2"),
     meta: "required" as const,
@@ -72,9 +78,16 @@ defineProps<{
   isOrganizer: boolean;
 }>();
 
-const { store } = useDemoPlayback();
+const { store, skipShaders } = useDemoPlayback();
 const editor = useClipEditor();
 const authStore = useAuthStore();
+
+const skippingShaders = ref(false);
+function onSkipShaders() {
+  if (skippingShaders.value) return;
+  skippingShaders.value = true;
+  skipShaders();
+}
 // Boot pipeline is operator info — gate the stepper to streamer+.
 // (`/stream-deck/*` already has middleware/streamer.ts; the demo page
 // has no middleware, so we gate inline.)
@@ -129,6 +142,9 @@ function closeWindow() {
             :status-history="store.sessionRow?.status_history || []"
             :stages="DEMO_STAGES"
             header-label="Demo session boot"
+            :can-skip="canSeeBoot"
+            :skipping="skippingShaders"
+            @skip="onSkipShaders"
           />
           <Button
             v-if="store.isErrored || store.localStatus === 'error'"

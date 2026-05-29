@@ -4,7 +4,7 @@ import { CalendarIcon } from "lucide-vue-next";
 
 <template>
   <span class="inline-flex items-center gap-2 whitespace-nowrap">
-    <CalendarIcon class="h-4 w-4 shrink-0" v-if="!seconds" />
+    <CalendarIcon class="h-4 w-4 shrink-0" v-if="!seconds && !hideIcon" />
     {{ text }}
   </span>
 </template>
@@ -88,6 +88,11 @@ export default {
       type: [String, Number, Date],
     },
     seconds: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
+    hideIcon: {
       required: false,
       type: Boolean,
       default: false,

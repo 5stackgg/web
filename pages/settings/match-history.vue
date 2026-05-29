@@ -329,6 +329,16 @@ function togglePendingFilter(status: PendingStatus) {
   pendingFilters.value = new Set(pendingFilters.value);
 }
 
+function formatPendingDate(date: string): string {
+  return new Date(date).toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 const uploadingDemo = ref(false);
 const uploadProgress = ref(0);
 const uploadedFile = ref<{ name: string; size: number } | null>(null);
@@ -561,7 +571,7 @@ async function uploadDemo(file: File) {
               <div class="text-xs text-muted-foreground">
                 Last poll
                 <template v-if="linkQuery?.last_polled_at">
-                  <TimeAgo :date="linkQuery.last_polled_at" />
+                  <TimeAgo :date="linkQuery.last_polled_at" hide-icon />
                 </template>
                 <template v-else>· never</template>
               </div>
@@ -605,7 +615,7 @@ async function uploadDemo(file: File) {
                 v-if="linkQuery?.last_polled_at"
                 class="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground mt-0.5"
               >
-                scanned <TimeAgo :date="linkQuery.last_polled_at" />
+                scanned <TimeAgo :date="linkQuery.last_polled_at" hide-icon />
               </div>
             </dd>
           </div>
@@ -691,7 +701,7 @@ async function uploadDemo(file: File) {
               v-if="entry.match_start_time"
               class="font-mono text-[0.7rem] text-muted-foreground"
             >
-              <TimeAgo :date="entry.match_start_time" />
+              {{ formatPendingDate(entry.match_start_time) }}
             </div>
             <div
               v-else-if="!entry.map_name"

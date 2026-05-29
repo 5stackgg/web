@@ -2,7 +2,16 @@
 import { computed } from "vue";
 import { Loader2 } from "lucide-vue-next";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
-import TimeAgo from "./TimeAgo.vue";
+
+function formatDate(date: string): string {
+  return new Date(date).toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 const props = defineProps<{
   imports: Array<{
@@ -57,7 +66,7 @@ const badgeClasses = [
             class="text-muted-foreground"
             :class="{ 'ml-auto': entry.map_name }"
           >
-            <TimeAgo :date="entry.match_start_time" />
+            {{ formatDate(entry.match_start_time) }}
           </span>
           <span
             v-else-if="!entry.map_name"

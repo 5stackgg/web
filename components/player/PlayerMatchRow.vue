@@ -99,25 +99,29 @@ function expandLeave(el: Element, done: () => void) {
         </span>
       </div>
 
-      <!-- TYPE — keep the same mode badge as a 5stack match, and tag
-           external/imported matches with a small source chip (VALVE/FACEIT)
-           so they read as "comp, but from Valve". -->
-      <div class="flex min-w-0 items-center justify-center gap-1">
+      <!-- TYPE — full mode name pill; external/imported matches get the
+           source (VALVE/FACEIT) tucked into the pill's top-right corner as a
+           sub-badge so it reads as "comp, but from Valve" without competing
+           for column width. -->
+      <div class="flex min-w-0 items-center justify-center">
         <span
           v-if="matchTypeLabel"
-          class="inline-block max-w-full truncate rounded border border-border/70 bg-muted/40 px-1.5 py-0.5 font-mono text-[0.55rem] font-bold uppercase tracking-[0.12em] text-foreground/75"
-          :title="matchType"
+          class="relative inline-flex max-w-full items-center rounded border border-border/70 bg-muted/40 px-1.5 py-0.5 font-mono text-[0.58rem] font-semibold uppercase tracking-[0.08em] text-foreground/80"
+          :title="
+            isExternal
+              ? `${matchType} · imported from ${sourceLabel}`
+              : matchType
+          "
         >
-          {{ matchTypeLabel }}
+          <span class="truncate">{{ matchTypeLabel }}</span>
+          <span
+            v-if="isExternal"
+            class="pointer-events-none absolute -right-1.5 -top-1.5 inline-flex items-center rounded-sm border border-[hsl(200_95%_55%/0.5)] bg-[hsl(200_95%_55%/0.18)] px-1 py-px font-mono text-[0.42rem] font-bold uppercase leading-none tracking-[0.06em] text-[hsl(200_95%_72%)] [text-shadow:0_1px_2px_hsl(var(--background)),0_0_2px_hsl(var(--background))]"
+          >
+            {{ sourceLabel }}
+          </span>
         </span>
-        <span
-          v-if="isExternal"
-          class="inline-flex shrink-0 items-center rounded-sm border border-[hsl(200_95%_55%/0.45)] bg-[hsl(200_95%_55%/0.1)] px-1 py-px font-mono text-[0.45rem] font-bold uppercase tracking-[0.08em] text-[hsl(200_95%_60%)]"
-          :title="`Imported from ${sourceLabel}`"
-        >
-          {{ sourceLabel }}
-        </span>
-        <span v-else-if="!matchTypeLabel" class="text-muted-foreground">—</span>
+        <span v-else class="text-muted-foreground">—</span>
       </div>
 
       <!-- RESULT + SCORE -->
@@ -859,14 +863,14 @@ export default {
     matchTypeLabel(): string {
       const t = this.matchType;
       if (!t) return "";
-      const abbr: Record<string, string> = {
-        Competitive: "COMP",
-        Wingman: "WM",
-        Premier: "PREM",
-        Duel: "DUEL",
-        Scrimmage: "SCRIM",
+      const full: Record<string, string> = {
+        Competitive: "Competitive",
+        Wingman: "Wingman",
+        Premier: "Premier",
+        Duel: "Duel",
+        Scrimmage: "Scrimmage",
       };
-      return abbr[t] ?? String(t).toUpperCase();
+      return full[t] ?? String(t);
     },
     // Imported from outside 5stack (e.g. Valve / Faceit match history).
     isExternal(): boolean {

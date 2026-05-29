@@ -73,10 +73,7 @@ const selectedPath = computed({
                 />
               </SelectTrigger>
               <SelectContent>
-                <SelectGroup
-                  v-for="group in navGroups"
-                  :key="group.label"
-                >
+                <SelectGroup v-for="group in navGroups" :key="group.label">
                   <SelectLabel>{{ group.label }}</SelectLabel>
                   <SelectItem
                     v-for="item in group.items"

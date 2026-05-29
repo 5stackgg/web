@@ -26,24 +26,26 @@ const { height: viewportHeight } = useVisualViewport();
         searchTeams();
       "
     >
-      <Button variant="outline" class="justify-between w-full">
-        <div class="flex items-center gap-2 min-w-0">
-          <Avatar v-if="selectedTeam" class="h-5 w-5 rounded shrink-0">
-            <AvatarImage
-              v-if="teamAvatarSrc(selectedTeam)"
-              :src="teamAvatarSrc(selectedTeam)!"
-              :alt="selectedTeam.name"
-            />
-            <AvatarFallback class="rounded text-[10px]">
-              {{ (selectedTeam.short_name || selectedTeam.name).slice(0, 2) }}
-            </AvatarFallback>
-          </Avatar>
-          <span class="truncate">
-            {{ selectedTeam?.name || label }}
-          </span>
-        </div>
-        <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-      </Button>
+      <slot>
+        <Button variant="outline" class="justify-between w-full">
+          <div class="flex items-center gap-2 min-w-0">
+            <Avatar v-if="selectedTeam" class="h-5 w-5 rounded shrink-0">
+              <AvatarImage
+                v-if="teamAvatarSrc(selectedTeam)"
+                :src="teamAvatarSrc(selectedTeam)!"
+                :alt="selectedTeam.name"
+              />
+              <AvatarFallback class="rounded text-[10px]">
+                {{ (selectedTeam.short_name || selectedTeam.name).slice(0, 2) }}
+              </AvatarFallback>
+            </Avatar>
+            <span class="truncate">
+              {{ selectedTeam?.name || label }}
+            </span>
+          </div>
+          <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </slot>
     </div>
     <DrawerContent>
       <DrawerTitle class="sr-only">{{ label }}</DrawerTitle>
@@ -148,29 +150,35 @@ const { height: viewportHeight } = useVisualViewport();
   <!-- Desktop: Popover -->
   <Popover v-else v-model:open="open">
     <PopoverTrigger as-child>
-      <Button
-        @click="searchTeams()"
-        variant="outline"
-        :aria-expanded="open"
-        class="justify-between w-full"
-      >
-        <div class="flex items-center gap-2 min-w-0">
-          <Avatar v-if="selectedTeam" class="h-5 w-5 rounded shrink-0">
-            <AvatarImage
-              v-if="teamAvatarSrc(selectedTeam)"
-              :src="teamAvatarSrc(selectedTeam)!"
-              :alt="selectedTeam.name"
-            />
-            <AvatarFallback class="rounded text-[10px]">
-              {{ (selectedTeam.short_name || selectedTeam.name).slice(0, 2) }}
-            </AvatarFallback>
-          </Avatar>
-          <span class="truncate">
-            {{ selectedTeam?.name || label }}
-          </span>
-        </div>
-        <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-      </Button>
+      <div class="relative">
+        <slot>
+          <Button
+            @click="searchTeams()"
+            variant="outline"
+            :aria-expanded="open"
+            class="justify-between w-full"
+          >
+            <div class="flex items-center gap-2 min-w-0">
+              <Avatar v-if="selectedTeam" class="h-5 w-5 rounded shrink-0">
+                <AvatarImage
+                  v-if="teamAvatarSrc(selectedTeam)"
+                  :src="teamAvatarSrc(selectedTeam)!"
+                  :alt="selectedTeam.name"
+                />
+                <AvatarFallback class="rounded text-[10px]">
+                  {{
+                    (selectedTeam.short_name || selectedTeam.name).slice(0, 2)
+                  }}
+                </AvatarFallback>
+              </Avatar>
+              <span class="truncate">
+                {{ selectedTeam?.name || label }}
+              </span>
+            </div>
+            <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          </Button>
+        </slot>
+      </div>
     </PopoverTrigger>
     <PopoverContent class="p-0 w-[400px]">
       <div class="flex flex-col">

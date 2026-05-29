@@ -18,7 +18,9 @@ definePageMeta({
         <SettingsSection
           id="matchmaking"
           :title="$t('pages.settings.application.matchmaking.title')"
-          :description="$t('pages.settings.application.matchmaking.description')"
+          :description="
+            $t('pages.settings.application.matchmaking.description')
+          "
           clickable-header
           @header-click="toggleMatchmaking"
         >
@@ -160,7 +162,9 @@ definePageMeta({
           v-if="matchMakingAllowed"
           id="ranks"
           :title="$t('pages.settings.application.fivestack_ranks.title')"
-          :description="$t('pages.settings.application.fivestack_ranks.description')"
+          :description="
+            $t('pages.settings.application.fivestack_ranks.description')
+          "
         >
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div

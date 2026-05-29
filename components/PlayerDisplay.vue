@@ -4,6 +4,7 @@ import { Ban, MicOff, MessageSquareOff, UserPlus } from "lucide-vue-next";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import PlayerPremierRank from "~/components/PlayerPremierRank.vue";
+import PlayerSkillGroupRank from "~/components/PlayerSkillGroupRank.vue";
 import { Crown, Shield, BadgeCheck, BadgeIcon, Podcast } from "lucide-vue-next";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
 </script>
@@ -185,8 +186,26 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 {{ player?.role?.replace("_", " ") }}
               </span>
             </FiveStackToolTip>
+            <!-- Per-match Valve rank (match page): skill group for Competitive
+                 (7) / Wingman (6), CS Rating for Premier (11). Falls back to
+                 the global premier rank / 5stack elo. -->
+            <template v-if="showElo && matchRank">
+              <PlayerSkillGroupRank
+                v-if="matchRank.rankType === 6 || matchRank.rankType === 7"
+                :kind="matchRank.rankType === 6 ? 'wingman' : 'competitive'"
+                :rank="matchRank.rank"
+                :show-label="false"
+              />
+              <PlayerPremierRank
+                v-else-if="matchRank.rankType === 11"
+                :premier-rank="matchRank.rank"
+              />
+              <PlayerElo v-else :elo="player.elo" />
+            </template>
             <PlayerPremierRank
-              v-if="showElo && matchType === 'Premier' && player.premier_rank"
+              v-else-if="
+                showElo && matchType === 'Premier' && player.premier_rank
+              "
               :premier-rank="player.premier_rank"
               :premier-rank-updated-at="player.premier_rank_updated_at"
             />
@@ -287,6 +306,11 @@ export default {
       default: null,
     },
   },
+  // Per-match Valve ranks (steam_id -> { rankType, rank }) provided by the
+  // match page; absent everywhere else.
+  inject: {
+    matchRanks: { from: "matchRanks", default: null },
+  },
   methods: {
     async addAsFriend() {
       await this.$apollo.mutate({
@@ -306,6 +330,16 @@ export default {
     },
   },
   computed: {
+    // This player's rank for the current match (when on the match page).
+    // Handles the injected value being a ref or a plain object.
+    matchRank() {
+      const inj: any = this.matchRanks;
+      const map =
+        inj && typeof inj === "object" && "value" in inj ? inj.value : inj;
+      if (!map) return null;
+      const sid = String(this.player?.steam_id ?? "");
+      return sid ? (map[sid] ?? null) : null;
+    },
     me() {
       return useAuthStore().me;
     },

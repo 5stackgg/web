@@ -21,8 +21,8 @@ const props = defineProps<{
 }>();
 
 // Normalize to groups; a flat `items` list becomes one header-less group.
-const renderGroups = computed<SettingsSideTabGroup[]>(() =>
-  props.groups ?? [{ label: "", items: props.items ?? [] }],
+const renderGroups = computed<SettingsSideTabGroup[]>(
+  () => props.groups ?? [{ label: "", items: props.items ?? [] }],
 );
 
 const navRef = ref<HTMLElement | null>(null);
@@ -134,7 +134,9 @@ const showIndicator = computed(() => indicatorHeight.value > 0);
         <NuxtLink
           :to="item.path"
           :aria-current="item.path === activePath ? 'page' : undefined"
-          :data-settings-tab-active="item.path === activePath ? 'true' : 'false'"
+          :data-settings-tab-active="
+            item.path === activePath ? 'true' : 'false'
+          "
         >
           <span class="truncate">{{ item.label }}</span>
         </NuxtLink>

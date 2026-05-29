@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import { Crosshair } from "lucide-vue-next";
-
 const props = defineProps<{
   premierRank: number | null | undefined;
   premierRankUpdatedAt?: string | null;
@@ -75,16 +73,28 @@ const tier = computed<Tier>(() => {
   return TIERS.find((t) => rank >= t.min) ?? TIERS[TIERS.length - 1];
 });
 
-const badgeStyle = computed(() => ({
-  background: `linear-gradient(135deg, ${tier.value.bgFrom} 0%, ${tier.value.bgTo} 100%)`,
-  borderColor: tier.value.border,
-  color: tier.value.text,
-  boxShadow: `0 0 0 1px ${tier.value.border}, 0 6px 14px -8px ${tier.value.bgTo}`,
+// Same boxed pill as ELO / RANK / FACEIT, tinted with the tier color.
+const wrapperClasses = [
+  "inline-flex items-center gap-1.5 select-none leading-none font-sans",
+  "h-[26px] px-[0.6rem] rounded border",
+  "[backdrop-filter:blur(6px)]",
+].join(" ");
+
+const wrapperStyle = computed(() => ({
+  borderColor: `color-mix(in srgb, ${tier.value.bgFrom} 40%, transparent)`,
+  backgroundColor: "hsl(var(--card) / 0.55)",
 }));
 
-const iconStyle = computed(() => ({
-  color: tier.value.text,
-  opacity: 0.85,
+const barStyle = computed(() => ({
+  background: `linear-gradient(135deg, ${tier.value.bgFrom} 0%, ${tier.value.bgTo} 100%)`,
+  boxShadow: `0 0 8px ${tier.value.bgFrom}`,
+}));
+
+const sepClasses = "h-3 w-px bg-border/70 shrink-0";
+
+const numberStyle = computed(() => ({
+  color: tier.value.bgFrom,
+  textShadow: `0 0 10px ${tier.value.bgTo}`,
 }));
 
 const titleText = computed(() => {
@@ -104,15 +114,25 @@ const titleText = computed(() => {
 <template>
   <span
     v-if="hasRank"
-    class="inline-flex select-none items-stretch leading-none [clip-path:polygon(8%_0,100%_0,92%_100%,0_100%)] border font-sans"
-    :style="badgeStyle"
+    :class="wrapperClasses"
+    :style="wrapperStyle"
     :title="titleText"
   >
-    <span
-      class="inline-flex items-center gap-1 px-3 py-[0.3rem] font-bold tabular-nums tracking-[0.02em] text-[0.78rem]"
-    >
-      <Crosshair class="h-3 w-3" :style="iconStyle" aria-hidden="true" />
-      <span>{{ premierRank!.toLocaleString() }}</span>
+    <span class="inline-flex items-center gap-[3px]" aria-hidden="true">
+      <span
+        class="block h-[15px] w-[5px] [transform:skewX(-18deg)] rounded-[1px]"
+        :style="barStyle"
+      ></span>
+      <span
+        class="block h-[15px] w-[5px] [transform:skewX(-18deg)] rounded-[1px]"
+        :style="barStyle"
+      ></span>
     </span>
+    <span :class="sepClasses" aria-hidden="true"></span>
+    <span
+      class="font-mono text-[0.75rem] font-bold tabular-nums tracking-[0.04em]"
+      :style="numberStyle"
+      >{{ premierRank!.toLocaleString() }}</span
+    >
   </span>
 </template>

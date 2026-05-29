@@ -352,55 +352,56 @@ import {
 
           <div :class="isFullscreen ? 'relative z-10 px-6 pb-6' : ''">
             <TabsContent
-          v-for="stageNumber in maxStageNumber"
-          :key="stageNumber"
-          :value="`stage-${stageNumber}`"
-          class="mt-6"
-        >
-          <div class="space-y-6">
-            <div
-              v-for="stage of tournament.stages.filter(
-                (s: any) => s.order === stageNumber,
-              )"
-              :key="stage.id"
-              class="mb-4"
+              v-for="stageNumber in maxStageNumber"
+              :key="stageNumber"
+              :value="`stage-${stageNumber}`"
+              class="mt-6"
             >
-              <TournamentStage
-                :stage="stage"
-                :tournament="tournament"
-                :is-final-stage="stageNumber === maxStageNumber"
-                :view-mode="viewMode"
-                :hide-finished-rounds="hideFinishedRounds"
-              ></TournamentStage>
-              <Separator
-                v-if="
-                  tournament.stages.filter((s: any) => s.order === stageNumber)
-                    .length > 1
-                "
-                class="my-4"
-              ></Separator>
-            </div>
-          </div>
-        </TabsContent>
-        <TabsContent value="add-stage" class="mt-6">
-          <Card
-            class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 p-4 max-w-2xl mx-auto"
-          >
-            <CardHeader>
-              <CardTitle>
-                {{ $t("tournament.stage.add_another") }}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <TournamentStageForm
-                :order="tournament.stages.length + 1"
-                :tournament-id="tournament.id"
-                :tournament="tournament"
-                @updated="handleStageCreated"
-              ></TournamentStageForm>
-            </CardContent>
-          </Card>
-        </TabsContent>
+              <div class="space-y-6">
+                <div
+                  v-for="stage of tournament.stages.filter(
+                    (s: any) => s.order === stageNumber,
+                  )"
+                  :key="stage.id"
+                  class="mb-4"
+                >
+                  <TournamentStage
+                    :stage="stage"
+                    :tournament="tournament"
+                    :is-final-stage="stageNumber === maxStageNumber"
+                    :view-mode="viewMode"
+                    :hide-finished-rounds="hideFinishedRounds"
+                  ></TournamentStage>
+                  <Separator
+                    v-if="
+                      tournament.stages.filter(
+                        (s: any) => s.order === stageNumber,
+                      ).length > 1
+                    "
+                    class="my-4"
+                  ></Separator>
+                </div>
+              </div>
+            </TabsContent>
+            <TabsContent value="add-stage" class="mt-6">
+              <Card
+                class="bg-gradient-to-br from-muted/50 to-muted/30 border-border/50 p-4 max-w-2xl mx-auto"
+              >
+                <CardHeader>
+                  <CardTitle>
+                    {{ $t("tournament.stage.add_another") }}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <TournamentStageForm
+                    :order="tournament.stages.length + 1"
+                    :tournament-id="tournament.id"
+                    :tournament="tournament"
+                    @updated="handleStageCreated"
+                  ></TournamentStageForm>
+                </CardContent>
+              </Card>
+            </TabsContent>
           </div>
 
           <button
@@ -499,7 +500,10 @@ import {
                 : $t('common.enter_fullscreen')
             "
           >
-            <component :is="isFullscreen ? Minimize : Maximize" class="h-4 w-4" />
+            <component
+              :is="isFullscreen ? Minimize : Maximize"
+              class="h-4 w-4"
+            />
           </button>
           <button
             type="button"
@@ -700,10 +704,7 @@ export default {
       );
     },
     activeStageNumber() {
-      const parsed = parseInt(
-        String(this.activeTab).replace("stage-", ""),
-        10,
-      );
+      const parsed = parseInt(String(this.activeTab).replace("stage-", ""), 10);
       return Number.isFinite(parsed) && parsed > 0 ? parsed : 1;
     },
     activeStage() {

@@ -42,7 +42,9 @@ definePageMeta({
           <div class="flex-1">
             <h3 class="text-sm font-medium text-muted-foreground">
               {{
-                $t("pages.settings.application.demo_settings.clips_used_storage")
+                $t(
+                  "pages.settings.application.demo_settings.clips_used_storage",
+                )
               }}
             </h3>
             <p class="text-2xl font-bold mt-1">
@@ -57,7 +59,9 @@ definePageMeta({
       <form @submit.prevent="updateSettings" class="space-y-6">
         <SettingsSection
           id="highlights"
-          :title="$t('pages.settings.application.demo_settings.highlights_section')"
+          :title="
+            $t('pages.settings.application.demo_settings.highlights_section')
+          "
         >
           <!-- Toggles grouped as a clean list -->
           <div
@@ -216,7 +220,9 @@ definePageMeta({
 
         <SettingsSection
           id="render-output"
-          :title="$t('pages.settings.application.demo_settings.render_output_section')"
+          :title="
+            $t('pages.settings.application.demo_settings.render_output_section')
+          "
         >
           <FormField v-slot="{ componentField }" name="clip_video_codec">
             <FormItem>
@@ -305,7 +311,9 @@ definePageMeta({
         <SettingsSection
           v-if="form.values.auto_generate_match_clips"
           id="storage"
-          :title="$t('pages.settings.application.demo_settings.clip_storage_section')"
+          :title="
+            $t('pages.settings.application.demo_settings.clip_storage_section')
+          "
         >
           <FormField
             v-slot="{ value, handleChange }"

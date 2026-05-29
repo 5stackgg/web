@@ -78,31 +78,31 @@ async function doRefreshAllPlayers() {
         </SettingsSection>
 
         <AlertDialog v-model:open="showRefreshDialog">
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {{
-                $t("pages.settings.application.players.refresh_dialog_title")
-              }}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {{
-                $t(
-                  "pages.settings.application.players.refresh_dialog_description",
-                )
-              }}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>
-              {{ $t("common.cancel") }}
-            </AlertDialogCancel>
-            <AlertDialogAction @click="doRefreshAllPlayers">
-              {{ $t("pages.settings.application.players.refresh_button") }}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {{
+                  $t("pages.settings.application.players.refresh_dialog_title")
+                }}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                {{
+                  $t(
+                    "pages.settings.application.players.refresh_dialog_description",
+                  )
+                }}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>
+                {{ $t("common.cancel") }}
+              </AlertDialogCancel>
+              <AlertDialogAction @click="doRefreshAllPlayers">
+                {{ $t("pages.settings.application.players.refresh_button") }}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         <form class="space-y-6" @submit.prevent="updateSettings">
           <SettingsSection
@@ -128,7 +128,9 @@ async function doRefreshAllPlayers() {
 
           <SettingsSection
             id="permissions"
-            :title="$t('pages.settings.application.players.permissions_section')"
+            :title="
+              $t('pages.settings.application.players.permissions_section')
+            "
           >
             <FormField
               v-slot="{ componentField }"
@@ -232,7 +234,9 @@ async function doRefreshAllPlayers() {
           <div class="flex justify-start">
             <Button
               type="submit"
-              :disabled="Object.keys(form.errors).length > 0 || !form.meta.dirty"
+              :disabled="
+                Object.keys(form.errors).length > 0 || !form.meta.dirty
+              "
               class="my-3"
             >
               {{ $t("common.update") }}

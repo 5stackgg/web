@@ -163,6 +163,9 @@ async function fetchHistory() {
 
   const premierWhere: Record<string, any> = {
     steam_id: { _eq: props.playerId },
+    // The history table now holds Competitive/Wingman rows too — keep this
+    // drill-down Premier-only.
+    rank_type: { _eq: 11 },
   };
   if (sinceTimestamp.value) {
     premierWhere.observed_at = { _gte: sinceTimestamp.value };

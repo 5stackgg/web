@@ -13,10 +13,7 @@
         </TabsTrigger>
       </TabsList>
 
-      <div
-        v-if="activeConfig"
-        class="flex items-center justify-end gap-2"
-      >
+      <div v-if="activeConfig" class="flex items-center justify-end gap-2">
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
@@ -70,7 +67,11 @@
         class="w-full overflow-hidden rounded-lg border border-border/60"
         style="height: 500px"
       >
-        <div :ref="setEditorRef" :data-type="config.type" class="w-full h-full" />
+        <div
+          :ref="setEditorRef"
+          :data-type="config.type"
+          class="w-full h-full"
+        />
       </div>
     </TabsContent>
   </Tabs>

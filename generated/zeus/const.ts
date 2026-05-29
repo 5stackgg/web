@@ -6433,9 +6433,6 @@ export const AllTypesProps: Record<string,any> = {
 		clearClipRenderBatch:{
 			match_map_id:"uuid"
 		},
-		clearGpuNodeSteamCache:{
-			game_server_node_id:"uuid"
-		},
 		clearPendingMatchImport:{
 
 		},
@@ -12991,7 +12988,9 @@ export const AllTypesProps: Record<string,any> = {
 		on_conflict:"player_premier_rank_history_on_conflict"
 	},
 	player_premier_rank_history_avg_order_by:{
+		previous_rank:"order_by",
 		rank:"order_by",
+		rank_type:"order_by",
 		steam_id:"order_by"
 	},
 	player_premier_rank_history_bool_exp:{
@@ -12999,11 +12998,14 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"player_premier_rank_history_bool_exp",
 		_or:"player_premier_rank_history_bool_exp",
 		id:"uuid_comparison_exp",
+		map_id:"uuid_comparison_exp",
 		match:"matches_bool_exp",
 		match_id:"uuid_comparison_exp",
 		observed_at:"timestamptz_comparison_exp",
 		player:"players_bool_exp",
+		previous_rank:"Int_comparison_exp",
 		rank:"Int_comparison_exp",
+		rank_type:"Int_comparison_exp",
 		steam_id:"bigint_comparison_exp"
 	},
 	player_premier_rank_history_constraint: "enum" as const,
@@ -13012,6 +13014,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_premier_rank_history_insert_input:{
 		id:"uuid",
+		map_id:"uuid",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
 		observed_at:"timestamptz",
@@ -13020,16 +13023,22 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_premier_rank_history_max_order_by:{
 		id:"order_by",
+		map_id:"order_by",
 		match_id:"order_by",
 		observed_at:"order_by",
+		previous_rank:"order_by",
 		rank:"order_by",
+		rank_type:"order_by",
 		steam_id:"order_by"
 	},
 	player_premier_rank_history_min_order_by:{
 		id:"order_by",
+		map_id:"order_by",
 		match_id:"order_by",
 		observed_at:"order_by",
+		previous_rank:"order_by",
 		rank:"order_by",
+		rank_type:"order_by",
 		steam_id:"order_by"
 	},
 	player_premier_rank_history_on_conflict:{
@@ -13039,11 +13048,14 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_premier_rank_history_order_by:{
 		id:"order_by",
+		map_id:"order_by",
 		match:"matches_order_by",
 		match_id:"order_by",
 		observed_at:"order_by",
 		player:"players_order_by",
+		previous_rank:"order_by",
 		rank:"order_by",
+		rank_type:"order_by",
 		steam_id:"order_by"
 	},
 	player_premier_rank_history_pk_columns_input:{
@@ -13052,20 +13064,27 @@ export const AllTypesProps: Record<string,any> = {
 	player_premier_rank_history_select_column: "enum" as const,
 	player_premier_rank_history_set_input:{
 		id:"uuid",
+		map_id:"uuid",
 		match_id:"uuid",
 		observed_at:"timestamptz",
 		steam_id:"bigint"
 	},
 	player_premier_rank_history_stddev_order_by:{
+		previous_rank:"order_by",
 		rank:"order_by",
+		rank_type:"order_by",
 		steam_id:"order_by"
 	},
 	player_premier_rank_history_stddev_pop_order_by:{
+		previous_rank:"order_by",
 		rank:"order_by",
+		rank_type:"order_by",
 		steam_id:"order_by"
 	},
 	player_premier_rank_history_stddev_samp_order_by:{
+		previous_rank:"order_by",
 		rank:"order_by",
+		rank_type:"order_by",
 		steam_id:"order_by"
 	},
 	player_premier_rank_history_stream_cursor_input:{
@@ -13074,12 +13093,15 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_premier_rank_history_stream_cursor_value_input:{
 		id:"uuid",
+		map_id:"uuid",
 		match_id:"uuid",
 		observed_at:"timestamptz",
 		steam_id:"bigint"
 	},
 	player_premier_rank_history_sum_order_by:{
+		previous_rank:"order_by",
 		rank:"order_by",
+		rank_type:"order_by",
 		steam_id:"order_by"
 	},
 	player_premier_rank_history_update_column: "enum" as const,
@@ -13089,15 +13111,21 @@ export const AllTypesProps: Record<string,any> = {
 		where:"player_premier_rank_history_bool_exp"
 	},
 	player_premier_rank_history_var_pop_order_by:{
+		previous_rank:"order_by",
 		rank:"order_by",
+		rank_type:"order_by",
 		steam_id:"order_by"
 	},
 	player_premier_rank_history_var_samp_order_by:{
+		previous_rank:"order_by",
 		rank:"order_by",
+		rank_type:"order_by",
 		steam_id:"order_by"
 	},
 	player_premier_rank_history_variance_order_by:{
+		previous_rank:"order_by",
 		rank:"order_by",
+		rank_type:"order_by",
 		steam_id:"order_by"
 	},
 	player_sanctions_aggregate_bool_exp:{
@@ -16277,7 +16305,6 @@ export const AllTypesProps: Record<string,any> = {
 		clip_render_jobs:"clip_render_jobs_bool_exp",
 		clip_render_jobs_aggregate:"clip_render_jobs_aggregate_bool_exp",
 		created_at:"timestamptz_comparison_exp",
-		enabled:"Boolean_comparison_exp",
 		id:"uuid_comparison_exp",
 		last_node:"game_server_nodes_bool_exp",
 		last_node_id:"String_comparison_exp",
@@ -16307,7 +16334,6 @@ export const AllTypesProps: Record<string,any> = {
 	steam_accounts_order_by:{
 		clip_render_jobs_aggregate:"clip_render_jobs_aggregate_order_by",
 		created_at:"order_by",
-		enabled:"order_by",
 		id:"order_by",
 		last_node:"game_server_nodes_order_by",
 		last_node_id:"order_by",
@@ -21696,14 +21722,12 @@ export const AllTypesProps: Record<string,any> = {
 		busy_accounts:"Int_comparison_exp",
 		free_accounts:"Int_comparison_exp",
 		id:"Int_comparison_exp",
-		registered_accounts:"Int_comparison_exp",
 		total_accounts:"Int_comparison_exp"
 	},
 	v_steam_account_pool_status_order_by:{
 		busy_accounts:"order_by",
 		free_accounts:"order_by",
 		id:"order_by",
-		registered_accounts:"order_by",
 		total_accounts:"order_by"
 	},
 	v_steam_account_pool_status_select_column: "enum" as const,
@@ -26170,7 +26194,6 @@ export const ReturnTypes: Record<string,any> = {
 		checkIntoMatch:"SuccessOutput",
 		clearClipRenderBatch:"SuccessOutput",
 		clearFinishedClipRenders:"SuccessOutput",
-		clearGpuNodeSteamCache:"SuccessOutput",
 		clearPendingMatchImport:"PendingMatchImportActionOutput",
 		createApiKey:"ApiKeyResponse",
 		createClipFromPreset:"CreateClipRenderOutput",
@@ -29881,11 +29904,14 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	player_premier_rank_history:{
 		id:"uuid",
+		map_id:"uuid",
 		match:"matches",
 		match_id:"uuid",
 		observed_at:"timestamptz",
 		player:"players",
+		previous_rank:"Int",
 		rank:"Int",
+		rank_type:"Int",
 		steam_id:"bigint"
 	},
 	player_premier_rank_history_aggregate:{
@@ -29906,21 +29932,29 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"player_premier_rank_history_variance_fields"
 	},
 	player_premier_rank_history_avg_fields:{
+		previous_rank:"Float",
 		rank:"Float",
+		rank_type:"Float",
 		steam_id:"Float"
 	},
 	player_premier_rank_history_max_fields:{
 		id:"uuid",
+		map_id:"uuid",
 		match_id:"uuid",
 		observed_at:"timestamptz",
+		previous_rank:"Int",
 		rank:"Int",
+		rank_type:"Int",
 		steam_id:"bigint"
 	},
 	player_premier_rank_history_min_fields:{
 		id:"uuid",
+		map_id:"uuid",
 		match_id:"uuid",
 		observed_at:"timestamptz",
+		previous_rank:"Int",
 		rank:"Int",
+		rank_type:"Int",
 		steam_id:"bigint"
 	},
 	player_premier_rank_history_mutation_response:{
@@ -29928,31 +29962,45 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"player_premier_rank_history"
 	},
 	player_premier_rank_history_stddev_fields:{
+		previous_rank:"Float",
 		rank:"Float",
+		rank_type:"Float",
 		steam_id:"Float"
 	},
 	player_premier_rank_history_stddev_pop_fields:{
+		previous_rank:"Float",
 		rank:"Float",
+		rank_type:"Float",
 		steam_id:"Float"
 	},
 	player_premier_rank_history_stddev_samp_fields:{
+		previous_rank:"Float",
 		rank:"Float",
+		rank_type:"Float",
 		steam_id:"Float"
 	},
 	player_premier_rank_history_sum_fields:{
+		previous_rank:"Int",
 		rank:"Int",
+		rank_type:"Int",
 		steam_id:"bigint"
 	},
 	player_premier_rank_history_var_pop_fields:{
+		previous_rank:"Float",
 		rank:"Float",
+		rank_type:"Float",
 		steam_id:"Float"
 	},
 	player_premier_rank_history_var_samp_fields:{
+		previous_rank:"Float",
 		rank:"Float",
+		rank_type:"Float",
 		steam_id:"Float"
 	},
 	player_premier_rank_history_variance_fields:{
+		previous_rank:"Float",
 		rank:"Float",
+		rank_type:"Float",
 		steam_id:"Float"
 	},
 	player_sanctions:{
@@ -31348,7 +31396,6 @@ export const ReturnTypes: Record<string,any> = {
 		clip_render_jobs:"clip_render_jobs",
 		clip_render_jobs_aggregate:"clip_render_jobs_aggregate",
 		created_at:"timestamptz",
-		enabled:"Boolean",
 		id:"uuid",
 		last_node:"game_server_nodes",
 		last_node_id:"String",
@@ -34053,7 +34100,6 @@ export const ReturnTypes: Record<string,any> = {
 		busy_accounts:"Int",
 		free_accounts:"Int",
 		id:"Int",
-		registered_accounts:"Int",
 		total_accounts:"Int"
 	},
 	v_steam_account_pool_status_aggregate:{
@@ -34077,70 +34123,60 @@ export const ReturnTypes: Record<string,any> = {
 		busy_accounts:"Float",
 		free_accounts:"Float",
 		id:"Float",
-		registered_accounts:"Float",
 		total_accounts:"Float"
 	},
 	v_steam_account_pool_status_max_fields:{
 		busy_accounts:"Int",
 		free_accounts:"Int",
 		id:"Int",
-		registered_accounts:"Int",
 		total_accounts:"Int"
 	},
 	v_steam_account_pool_status_min_fields:{
 		busy_accounts:"Int",
 		free_accounts:"Int",
 		id:"Int",
-		registered_accounts:"Int",
 		total_accounts:"Int"
 	},
 	v_steam_account_pool_status_stddev_fields:{
 		busy_accounts:"Float",
 		free_accounts:"Float",
 		id:"Float",
-		registered_accounts:"Float",
 		total_accounts:"Float"
 	},
 	v_steam_account_pool_status_stddev_pop_fields:{
 		busy_accounts:"Float",
 		free_accounts:"Float",
 		id:"Float",
-		registered_accounts:"Float",
 		total_accounts:"Float"
 	},
 	v_steam_account_pool_status_stddev_samp_fields:{
 		busy_accounts:"Float",
 		free_accounts:"Float",
 		id:"Float",
-		registered_accounts:"Float",
 		total_accounts:"Float"
 	},
 	v_steam_account_pool_status_sum_fields:{
 		busy_accounts:"Int",
 		free_accounts:"Int",
 		id:"Int",
-		registered_accounts:"Int",
 		total_accounts:"Int"
 	},
 	v_steam_account_pool_status_var_pop_fields:{
 		busy_accounts:"Float",
 		free_accounts:"Float",
 		id:"Float",
-		registered_accounts:"Float",
 		total_accounts:"Float"
 	},
 	v_steam_account_pool_status_var_samp_fields:{
 		busy_accounts:"Float",
 		free_accounts:"Float",
 		id:"Float",
-		registered_accounts:"Float",
 		total_accounts:"Float"
 	},
 	v_steam_account_pool_status_variance_fields:{
 		busy_accounts:"Float",
 		free_accounts:"Float",
 		id:"Float",
-		registered_accounts:"Float",
 		total_accounts:"Float"
 	},
 	v_team_stage_results:{

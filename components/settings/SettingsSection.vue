@@ -36,11 +36,7 @@ defineEmits<{
               {{ description }}
             </p>
           </div>
-          <div
-            v-if="$slots.action"
-            class="shrink-0 pl-4 pt-0.5"
-            @click.stop
-          >
+          <div v-if="$slots.action" class="shrink-0 pl-4 pt-0.5" @click.stop>
             <slot name="action" />
           </div>
         </div>

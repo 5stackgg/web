@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import MatchesTable from "~/components/MatchesTable.vue";
+import PlayerMatchesTable from "~/components/player/PlayerMatchesTable.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import cleanMapName from "~/utilities/cleanMapName";
 </script>
@@ -149,7 +149,7 @@ import cleanMapName from "~/utilities/cleanMapName";
         </Empty>
       </div>
       <div v-else class="p-2">
-        <MatchesTable :matches="matches" :player="me" compact />
+        <PlayerMatchesTable :matches="matches" :player="me" compact />
       </div>
     </div>
   </div>

@@ -22,7 +22,8 @@ const fullscreenTarget = ref<HTMLElement | null>(null);
 const groupLabel = ref<string | null>(null);
 const bracketScope = ref<"upper" | "lower" | null>(null);
 
-const zoomBase = () => (autoFit.value ? currentFitZoom.value : manualZoom.value);
+const zoomBase = () =>
+  autoFit.value ? currentFitZoom.value : manualZoom.value;
 
 const zoomIn = () => {
   manualZoom.value = Math.min(MAX_ZOOM, zoomBase() + ZOOM_STEP);

@@ -77,6 +77,8 @@ const pendingMatchImports = ref<
     valve_match_id: string;
     status: string;
     error?: string | null;
+    map_name?: string | null;
+    match_start_time?: string | null;
   }>
 >([]);
 
@@ -86,6 +88,8 @@ const PENDING_IMPORTS_QUERY = gql`
       valve_match_id
       status
       error
+      map_name
+      match_start_time
     }
   }
 `;

@@ -13,7 +13,6 @@ import {
   Clock,
   Upload,
   Film,
-  Swords,
   CircleDot,
   Check,
   CircleDashed,
@@ -30,8 +29,8 @@ import gql from "graphql-tag";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { clipRenderJobFields } from "~/graphql/clipRenderJob";
-import { Card } from "~/components/ui/card";
 import { Button } from "~/components/ui/button";
+import RenderQueueBatchRow from "~/components/clips/RenderQueueBatchRow.vue";
 import {
   Tooltip,
   TooltipContent,
@@ -182,6 +181,9 @@ const clearingAllFinished = ref(false);
 const finishedExpanded = ref<Record<string, boolean>>({});
 const inFlightExpanded = ref<Record<string, boolean>>({});
 const finishedJobsExpanded = ref<Record<string, boolean>>({});
+// Active batches render as the same collapsible row as finished ones,
+// but default to expanded so the live clip ladder is visible.
+const activeCollapsed = ref<Record<string, boolean>>({});
 
 // Default covers in-flight batches' just-completed siblings (a single
 // Bo5 batch can have 50 rows; we want a few concurrent batches plus
@@ -197,6 +199,17 @@ function toggleInFlightExpanded(matchMapId: string) {
   inFlightExpanded.value = {
     ...inFlightExpanded.value,
     [matchMapId]: !inFlightExpanded.value[matchMapId],
+  };
+}
+
+function isActiveExpanded(matchMapId: string): boolean {
+  return !activeCollapsed.value[matchMapId];
+}
+
+function toggleActiveExpanded(matchMapId: string) {
+  activeCollapsed.value = {
+    ...activeCollapsed.value,
+    [matchMapId]: !activeCollapsed.value[matchMapId],
   };
 }
 
@@ -353,8 +366,14 @@ function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
   let progressSum = 0;
   for (const j of sorted) {
     if (j.status === "done") {
-      doneCount++;
-      progressSum += 1;
+      // No clip_id means the output is gone — treat it as a failure
+      // so the batch reflects it and offers a re-queue.
+      if (j.clip_id) {
+        doneCount++;
+        progressSum += 1;
+      } else {
+        errorCount++;
+      }
     } else if (j.status === "error") {
       errorCount++;
     } else if (j.status === "cancelled") {
@@ -505,6 +524,17 @@ function progressPct(j: Job): number {
   return Math.round(Math.max(0, Math.min(1, n)) * 100);
 }
 
+// A job the server marked "done" but with no clip_id has no playable
+// output — the upload was lost. Surface it as a failure so it can be
+// re-queued like an error row instead of masquerading as a finished clip.
+function isMissingClip(j: Job): boolean {
+  return j.status === "done" && !j.clip_id;
+}
+
+function effectiveStatus(j: Job): string {
+  return isMissingClip(j) ? "missing" : j.status;
+}
+
 function statusLabel(s: string): string {
   switch (s) {
     case "queued":
@@ -517,6 +547,8 @@ function statusLabel(s: string): string {
       return t("render_queue_status.done");
     case "error":
       return t("render_queue_status.error");
+    case "missing":
+      return t("render_queue_status.missing");
     case "cancelled":
       return t("render_queue_status.cancelled");
     default:
@@ -549,6 +581,11 @@ const STATUS_TONE: Record<
     iconColor: "text-emerald-400",
   },
   error: {
+    dot: "bg-destructive",
+    pill: "border-destructive/40 bg-destructive/10 text-destructive",
+    iconColor: "text-destructive",
+  },
+  missing: {
     dot: "bg-destructive",
     pill: "border-destructive/40 bg-destructive/10 text-destructive",
     iconColor: "text-destructive",
@@ -897,483 +934,457 @@ const queueStatus = computed<{
         </div>
       </div>
 
-      <div v-if="groups.length" class="space-y-3">
-        <Card
+      <TransitionGroup
+        v-if="groups.length"
+        tag="div"
+        name="batch"
+        class="relative space-y-2"
+      >
+        <RenderQueueBatchRow
           v-for="g in groups"
           :key="g.matchMapId"
-          class="overflow-hidden border-border/60"
+          :expanded="isActiveExpanded(g.matchMapId)"
+          :title="
+            matchupLabel(g.sample) ??
+            g.sample.match_map?.map?.label ??
+            g.sample.match_map?.map?.name ??
+            'Unknown match'
+          "
+          avatar-class="border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]"
+          :time="formatTimeAgo(g.startedAt)"
+          :container-class="
+            g.isPaused
+              ? 'border-[hsl(var(--tac-amber)/0.3)]'
+              : 'border-[hsl(var(--tac-amber)/0.4)]'
+          "
+          @toggle="toggleActiveExpanded(g.matchMapId)"
         >
-          <div class="relative">
-            <div
-              v-if="g.sample.match_map?.map?.poster"
-              class="absolute inset-0 -z-0"
+          <template #avatar-icon>
+            <Loader2 v-if="g.activeJob" class="h-3.5 w-3.5 animate-spin" />
+            <Film v-else class="h-3.5 w-3.5" />
+          </template>
+
+          <template #meta>
+            <span
+              v-if="
+                g.sample.match_map?.map?.label || g.sample.match_map?.map?.name
+              "
             >
-              <NuxtImg
-                :src="g.sample.match_map.map.poster"
-                :alt="g.sample.match_map.map.name ?? ''"
-                class="h-full w-full object-cover opacity-25"
-              />
-              <div
-                class="absolute inset-0 bg-gradient-to-r from-card via-card/80 to-card/40"
-              ></div>
-            </div>
-            <div class="relative flex items-start gap-3 p-3 sm:p-4">
-              <div
-                class="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)]"
-              >
-                <Film class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
-              </div>
-              <div class="min-w-0 flex-1">
-                <div class="flex items-center gap-2">
-                  <NuxtLink
-                    v-if="g.sample.match_map?.match?.id"
-                    :to="`/matches/${g.sample.match_map.match.id}`"
-                    class="inline-flex min-w-0 items-center gap-1.5 truncate font-semibold leading-tight hover:text-[hsl(var(--tac-amber))] transition-colors"
-                  >
-                    <Swords
-                      v-if="matchupLabel(g.sample)"
-                      class="h-3.5 w-3.5 shrink-0 text-muted-foreground"
-                    />
-                    <span class="truncate">
-                      {{
-                        matchupLabel(g.sample) ??
-                        g.sample.match_map?.map?.label ??
-                        g.sample.match_map?.map?.name ??
-                        "Unknown match"
-                      }}
-                    </span>
-                    <ExternalLink class="h-3 w-3 shrink-0 opacity-60" />
-                  </NuxtLink>
-                  <span v-else class="truncate font-semibold leading-tight">
-                    {{
-                      g.sample.match_map?.map?.label ??
-                      g.sample.match_map?.map?.name ??
-                      "Unknown match"
-                    }}
-                  </span>
-                </div>
-                <div
-                  class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground"
+              {{ g.sample.match_map.map.label ?? g.sample.match_map.map.name }}
+              ·
+            </span>
+            <span class="tabular-nums">
+              {{ g.terminalCount }}/{{ g.totalCount }} done
+            </span>
+            <span v-if="g.errorCount > 0" class="text-destructive/80">
+              · {{ g.errorCount }} err
+            </span>
+          </template>
+
+          <template #actions>
+            <Tooltip v-if="g.sample.match_map?.match?.id">
+              <TooltipTrigger as-child>
+                <NuxtLink
+                  :to="`/matches/${g.sample.match_map.match.id}`"
+                  class="mr-1 inline-flex h-6 w-6 shrink-0 items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                  @click.stop
                 >
-                  <span
-                    v-if="
-                      g.sample.match_map?.map?.label ||
-                      g.sample.match_map?.map?.name
-                    "
+                  <ExternalLink class="h-3 w-3" />
+                </NuxtLink>
+              </TooltipTrigger>
+              <TooltipContent>Open match</TooltipContent>
+            </Tooltip>
+            <Tooltip v-if="g.isPaused && resumeBlockedReason">
+              <TooltipTrigger as-child>
+                <span tabindex="0" class="mr-1 inline-flex">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    class="h-6 w-6 shrink-0 p-0 opacity-50 cursor-not-allowed"
+                    :disabled="true"
                   >
-                    {{
-                      g.sample.match_map.map.label ??
-                      g.sample.match_map.map.name
-                    }}
-                  </span>
-                  <span v-if="g.sample.match_map?.map" class="text-border"
-                    >·</span
-                  >
-                  <span class="tabular-nums">
-                    {{ g.terminalCount }}/{{ g.totalCount }} done
-                  </span>
-                  <span v-if="g.errorCount > 0" class="text-destructive/80">
-                    · {{ g.errorCount }} err
-                  </span>
-                  <span class="text-border">·</span>
-                  <span class="inline-flex items-center gap-1">
-                    <Clock class="h-3 w-3" />
-                    {{ formatTimeAgo(g.startedAt) }}
-                  </span>
-                </div>
-                <div class="mt-2 space-y-1">
-                  <div
-                    class="flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-                  >
-                    <span
-                      :class="g.isPaused ? 'text-[hsl(var(--tac-amber))]' : ''"
-                    >
-                      <template v-if="g.isPaused">
-                        <Pause class="inline h-3 w-3 mr-1 -mt-0.5" />
-                        {{ $t("ui_extras.batch_paused") }}
-                      </template>
-                      <template v-else-if="g.bootInfo">
-                        {{ $t("ui_extras.pod_boot") }}
-                      </template>
-                      <template v-else>
-                        {{ $t("ui_extras.batch_progress") }}
-                      </template>
-                    </span>
-                    <span class="tabular-nums">
-                      <template
-                        v-if="
-                          !g.isPaused &&
-                          g.bootInfo &&
-                          g.bootInfo.progress !== null
-                        "
-                      >
-                        {{ Math.round(g.bootInfo.progress * 100) }}%
-                      </template>
-                      <template v-else-if="!g.isPaused && g.bootInfo"
-                        >…</template
-                      >
-                      <template v-else>
-                        {{ Math.round(g.overallProgress * 100) }}%
-                      </template>
-                    </span>
-                  </div>
-                  <div
-                    class="relative h-1.5 overflow-hidden rounded-full bg-muted/40"
-                  >
-                    <div
-                      v-if="!g.isPaused && g.bootInfo"
-                      class="h-full rounded-full bg-primary transition-[width] duration-300"
-                      :style="{
-                        width:
-                          Math.round((g.bootInfo.progress ?? 0) * 100) + '%',
-                      }"
-                    ></div>
-                    <div
-                      v-else
-                      class="h-full rounded-full transition-[width] duration-300"
-                      :class="
-                        g.isPaused
-                          ? 'bg-[hsl(var(--tac-amber)/0.5)]'
-                          : 'bg-[hsl(var(--tac-amber))]'
-                      "
-                      :style="{
-                        width: Math.round(g.overallProgress * 100) + '%',
-                      }"
-                    ></div>
-                  </div>
-                </div>
-              </div>
-              <div class="flex shrink-0 items-center gap-1.5">
-                <Tooltip v-if="g.isPaused && resumeBlockedReason">
-                  <TooltipTrigger as-child>
-                    <span tabindex="0" class="inline-flex">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        class="h-7 px-2 text-[0.7rem] opacity-60 cursor-not-allowed"
-                        :disabled="true"
-                      >
-                        <Play class="h-3 w-3 mr-1" />
-                        {{ $t("ui_extras.resume") }}
-                      </Button>
-                    </span>
-                  </TooltipTrigger>
-                  <TooltipContent side="left">
-                    {{ resumeBlockedReason }}
-                  </TooltipContent>
-                </Tooltip>
+                    <Play class="h-3 w-3" />
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent side="left">
+                {{ resumeBlockedReason }}
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip v-else-if="g.isPaused">
+              <TooltipTrigger as-child>
                 <Button
-                  v-else-if="g.isPaused"
                   size="sm"
-                  variant="outline"
-                  class="h-7 px-2 text-[0.7rem] hover:border-[hsl(var(--tac-amber))] hover:text-[hsl(var(--tac-amber))]"
+                  variant="ghost"
+                  class="mr-1 h-6 w-6 shrink-0 p-0 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
                   :disabled="resumingBatch[g.matchMapId]"
-                  @click="resumeBatch(g.matchMapId)"
+                  @click.stop="resumeBatch(g.matchMapId)"
                 >
                   <Loader2
                     v-if="resumingBatch[g.matchMapId]"
-                    class="h-3 w-3 mr-1 animate-spin"
+                    class="h-3 w-3 animate-spin"
                   />
-                  <Play v-else class="h-3 w-3 mr-1" />
-                  {{ $t("ui_extras.resume") }}
+                  <Play v-else class="h-3 w-3" />
                 </Button>
+              </TooltipTrigger>
+              <TooltipContent>{{ $t("ui_extras.resume") }}</TooltipContent>
+            </Tooltip>
+            <Tooltip
+              v-if="isAdmin && (g.errorCount > 0 || g.cancelledCount > 0)"
+            >
+              <TooltipTrigger as-child>
                 <Button
-                  v-if="isAdmin && (g.errorCount > 0 || g.cancelledCount > 0)"
                   size="sm"
-                  variant="outline"
-                  class="h-7 px-2 text-[0.7rem] hover:border-[hsl(var(--tac-amber))] hover:text-[hsl(var(--tac-amber))]"
+                  variant="ghost"
+                  class="mr-1 h-6 w-6 shrink-0 p-0 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
                   :disabled="retryingBatch[`${g.matchMapId}:failed`]"
-                  @click="retryBatch(g.matchMapId, true)"
+                  @click.stop="retryBatch(g.matchMapId, true)"
                 >
                   <Loader2
                     v-if="retryingBatch[`${g.matchMapId}:failed`]"
-                    class="h-3 w-3 mr-1 animate-spin"
+                    class="h-3 w-3 animate-spin"
                   />
-                  <RotateCcw v-else class="h-3 w-3 mr-1" />
-                  Retry failed
+                  <RotateCcw v-else class="h-3 w-3" />
                 </Button>
+              </TooltipTrigger>
+              <TooltipContent>Retry failed</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger as-child>
                 <Button
                   size="sm"
-                  variant="outline"
-                  class="h-7 px-2 text-[0.7rem] hover:border-destructive hover:text-destructive"
+                  variant="ghost"
+                  class="mr-1 h-6 w-6 shrink-0 p-0 text-muted-foreground hover:text-destructive"
                   :disabled="cancellingBatch[g.matchMapId]"
-                  @click="cancelBatch(g.matchMapId)"
+                  @click.stop="cancelBatch(g.matchMapId)"
                 >
                   <Loader2
                     v-if="cancellingBatch[g.matchMapId]"
-                    class="h-3 w-3 mr-1 animate-spin"
+                    class="h-3 w-3 animate-spin"
                   />
-                  <X v-else class="h-3 w-3 mr-1" />
-                  {{ $t("common.cancel") }}
+                  <X v-else class="h-3 w-3" />
                 </Button>
-              </div>
-            </div>
-          </div>
+              </TooltipTrigger>
+              <TooltipContent>{{ $t("common.cancel") }}</TooltipContent>
+            </Tooltip>
+          </template>
 
-          <div
-            v-if="g.bootInfo && !compact"
-            class="border-t border-border/40 px-3 py-3 sm:px-4 bg-primary/[0.03]"
-          >
-            <div class="mb-2 flex items-center gap-2">
-              <span
-                class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-primary/40 bg-primary/10"
+          <template #progress>
+            <div class="px-2.5 pb-2">
+              <div
+                class="mb-1 flex items-center justify-between font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground"
               >
-                <Server class="h-3 w-3 text-primary" />
-              </span>
-              <span class="text-sm font-medium">Render pod booting</span>
-              <span
-                class="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-primary"
-              >
-                <Loader2 class="h-2.5 w-2.5 animate-spin" />
-                {{ g.bootInfo.stage.replace(/_/g, " ") }}
-                <span v-if="g.bootInfo.stageSub" class="opacity-70">
-                  · {{ g.bootInfo.stageSub }}
-                </span>
-              </span>
-            </div>
-            <ul class="flex flex-col gap-1">
-              <li
-                v-for="stage in visibleBootStages(g)"
-                :key="stage.key"
-                class="flex items-center gap-2.5 text-xs"
-                :class="{
-                  'text-muted-foreground/60':
-                    stageStateFor(g, stage) === 'pending',
-                  'text-muted-foreground/40 line-through decoration-muted-foreground/30':
-                    stageStateFor(g, stage) === 'skipped',
-                  'text-foreground': stageStateFor(g, stage) === 'done',
-                  'text-primary font-medium':
-                    stageStateFor(g, stage) === 'current',
-                }"
-              >
-                <span
-                  class="w-4 h-4 inline-flex items-center justify-center shrink-0"
-                >
-                  <Check
-                    v-if="stageStateFor(g, stage) === 'done'"
-                    class="w-3.5 h-3.5"
-                  />
-                  <Loader2
-                    v-else-if="stageStateFor(g, stage) === 'current'"
-                    class="w-3.5 h-3.5 animate-spin"
-                  />
-                  <X
-                    v-else-if="stageStateFor(g, stage) === 'skipped'"
-                    class="w-3.5 h-3.5 opacity-50"
-                  />
-                  <CircleDashed v-else class="w-3.5 h-3.5 opacity-50" />
-                </span>
-                <span class="flex-1">{{ stage.label }}</span>
-                <span
-                  v-if="
-                    stageStateFor(g, stage) === 'current' &&
-                    g.bootInfo.progress !== null
-                  "
-                  class="font-mono text-[0.6rem] tabular-nums opacity-80"
-                >
-                  {{ Math.round(g.bootInfo.progress * 100) }}%
-                </span>
-                <span
-                  v-else-if="stageStateFor(g, stage) === 'skipped'"
-                  class="font-mono text-[0.6rem] uppercase tracking-wider opacity-50"
-                >
-                  skipped
-                </span>
-              </li>
-            </ul>
-          </div>
-
-          <div
-            v-if="!compact"
-            class="border-t border-border/40 bg-muted/10 divide-y divide-border/30"
-          >
-            <div
-              v-for="j in visibleInFlightJobs(g)"
-              :key="j.id"
-              class="px-3 py-2 sm:px-4"
-              :class="{ 'bg-[hsl(var(--tac-amber)/0.04)]': j === g.activeJob }"
-            >
-              <div class="flex items-center gap-3">
-                <component
-                  :is="
-                    j.status === 'rendering' || j.status === 'uploading'
-                      ? Loader2
-                      : j.status === 'queued'
-                        ? Clock
-                        : j.status === 'done'
-                          ? CheckCircle2
-                          : j.status === 'cancelled'
-                            ? CircleSlash
-                            : j.status === 'error'
-                              ? AlertCircle
-                              : CircleDot
-                  "
-                  class="h-3.5 w-3.5 shrink-0"
-                  :class="[
-                    STATUS_TONE[j.status]?.iconColor,
-                    (j.status === 'rendering' || j.status === 'uploading') &&
-                      'animate-spin',
-                  ]"
-                />
-                <div class="min-w-0 flex-1">
-                  <div class="flex items-center gap-2">
-                    <span class="truncate text-sm">{{ clipTitle(j) }}</span>
-                    <template v-for="d in clipDetails(j)" :key="d.label">
-                      <span
-                        class="shrink-0 inline-flex items-center rounded border px-1 py-px font-mono text-[0.55rem] uppercase tracking-[0.1em] tabular-nums leading-none"
-                        :class="
-                          d.tone === 'round'
-                            ? 'border-primary/40 bg-primary/10 text-primary'
-                            : d.tone === 'kills'
-                              ? 'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
-                              : 'border-border/60 bg-muted/30 text-muted-foreground'
-                        "
-                      >
-                        {{ d.label }}
-                      </span>
-                    </template>
-                    <span
-                      v-if="clipDurationLabel(j)"
-                      class="shrink-0 font-mono text-[0.6rem] tabular-nums text-muted-foreground/70"
-                    >
-                      {{ clipDurationLabel(j) }}
-                    </span>
-                  </div>
-                  <div
-                    v-if="j.user?.name || j.spec?.target_name"
-                    class="truncate font-mono text-[0.6rem] uppercase tracking-[0.12em] text-muted-foreground/70"
-                  >
-                    <span v-if="j.spec?.target_name" class="text-foreground/70">
-                      {{ j.spec.target_name }}
-                    </span>
-                    <span v-if="j.spec?.target_name && j.user?.name"> · </span>
-                    <span v-if="j.user?.name">by {{ j.user.name }}</span>
-                  </div>
-                </div>
-                <span
-                  class="shrink-0 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[0.58rem] uppercase tracking-[0.14em]"
-                  :class="STATUS_TONE[j.status]?.pill"
-                >
-                  <template v-if="j === g.activeJob">
-                    {{ statusLabel(j.status) }}
-                    <span class="opacity-60">·</span>
-                    {{ formatTimeAgo(j.last_status_at ?? j.created_at) }}
+                <span :class="g.isPaused ? 'text-[hsl(var(--tac-amber))]' : ''">
+                  <template v-if="g.isPaused">
+                    <Pause class="inline h-3 w-3 mr-1 -mt-0.5" />
+                    {{ $t("ui_extras.batch_paused") }}
+                  </template>
+                  <template v-else-if="g.bootInfo">
+                    {{ $t("ui_extras.pod_boot") }}
                   </template>
                   <template v-else>
-                    {{ statusLabel(j.status) }}
+                    {{ $t("ui_extras.batch_progress") }}
                   </template>
                 </span>
-                <Tooltip v-if="isAdmin && TERMINAL.has(j.status)">
-                  <TooltipTrigger as-child>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      class="h-6 w-6 shrink-0 p-0 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                      :disabled="requeueingJob[j.id]"
-                      @click="requeueJob(j.id)"
-                    >
-                      <Loader2
-                        v-if="requeueingJob[j.id]"
-                        class="h-3 w-3 animate-spin"
-                      />
-                      <RotateCcw v-else class="h-3 w-3" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Re-queue clip</TooltipContent>
-                </Tooltip>
-                <Button
-                  v-if="j.status === 'done' && j.clip_id"
-                  type="button"
-                  variant="ghost"
-                  size="sm"
-                  class="h-6 shrink-0 gap-1 px-2 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                  @click="openJobClip(g, j)"
-                >
-                  <Play class="h-3 w-3" />
-                  Preview
-                </Button>
+                <span class="tabular-nums">
+                  <template
+                    v-if="
+                      !g.isPaused && g.bootInfo && g.bootInfo.progress !== null
+                    "
+                  >
+                    {{ Math.round(g.bootInfo.progress * 100) }}%
+                  </template>
+                  <template v-else-if="!g.isPaused && g.bootInfo">…</template>
+                  <template v-else>
+                    {{ Math.round(g.overallProgress * 100) }}%
+                  </template>
+                </span>
               </div>
-
-              <!-- Active clip: render + upload as two parallel phase bars. -->
               <div
-                v-if="j === g.activeJob"
-                class="mt-2 grid grid-cols-2 gap-3 pl-[1.625rem]"
+                class="relative h-1.5 overflow-hidden rounded-full bg-muted/40"
               >
-                <div class="space-y-1">
-                  <div
-                    class="flex items-center justify-between font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground"
-                  >
-                    <span class="inline-flex items-center gap-1.5">
-                      <Film class="h-3 w-3" />
-                      {{ $t("clips.render_queue.render") }}
-                    </span>
-                    <span class="tabular-nums">
-                      {{
-                        j.status === "rendering" ? progressPct(j) + "%" : "100%"
-                      }}
-                    </span>
-                  </div>
-                  <div
-                    class="relative h-1.5 overflow-hidden rounded-full bg-muted/40"
-                  >
-                    <div
-                      class="h-full rounded-full bg-[hsl(var(--tac-amber))] transition-[width] duration-300"
-                      :style="{
-                        width:
-                          j.status === 'rendering'
-                            ? progressPct(j) + '%'
-                            : '100%',
-                      }"
-                    ></div>
-                  </div>
-                </div>
-                <div class="space-y-1">
-                  <div
-                    class="flex items-center justify-between font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground"
-                  >
-                    <span class="inline-flex items-center gap-1.5">
-                      <Upload class="h-3 w-3" />
-                      {{ $t("clips.render_queue.upload") }}
-                    </span>
-                    <span class="tabular-nums">
-                      {{ j.status === "uploading" ? "…" : "—" }}
-                    </span>
-                  </div>
-                  <div
-                    v-if="j.status === 'uploading'"
-                    class="relative h-1.5 overflow-hidden rounded-full bg-primary/20"
-                  >
-                    <div
-                      class="absolute inset-0 w-[30%] rounded-full animate-upload-pulse bg-[linear-gradient(90deg,transparent,hsl(var(--primary))_50%,transparent)]"
-                    />
-                  </div>
-                  <div v-else class="h-1.5 rounded-full bg-muted/40"></div>
-                </div>
+                <div
+                  v-if="!g.isPaused && g.bootInfo"
+                  class="h-full rounded-full bg-primary transition-[width] duration-300"
+                  :style="{
+                    width: Math.round((g.bootInfo.progress ?? 0) * 100) + '%',
+                  }"
+                ></div>
+                <div
+                  v-else
+                  class="h-full rounded-full transition-[width] duration-300"
+                  :class="
+                    g.isPaused
+                      ? 'bg-[hsl(var(--tac-amber)/0.5)]'
+                      : 'bg-[hsl(var(--tac-amber))]'
+                  "
+                  :style="{ width: Math.round(g.overallProgress * 100) + '%' }"
+                ></div>
               </div>
             </div>
-            <button
-              v-if="g.totalCount > ACTIVE_BATCH_CLIP_THRESHOLD"
-              type="button"
-              class="flex w-full items-center justify-center gap-1.5 px-3 py-2 sm:px-4 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground hover:bg-muted/20 transition-colors"
-              @click="toggleInFlightExpanded(g.matchMapId)"
-            >
-              <template v-if="isInFlightExpanded(g)">Hide clips</template>
-              <template v-else> Show all {{ g.totalCount }} clips </template>
-            </button>
-          </div>
+          </template>
 
-          <div
-            v-else
-            class="border-t border-border/40 px-3 py-2 sm:px-4 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground"
-          >
-            <span v-if="g.activeJob">
-              {{ statusLabel(g.activeJob.status) }} ·
-              {{ clipTitle(g.activeJob) }}
-            </span>
-            <span v-else> {{ g.jobs.length }} queued </span>
-          </div>
-        </Card>
-      </div>
+          <template #body>
+            <div
+              v-if="!compact && g.bootInfo"
+              class="border-t border-border/40 px-3 py-3 sm:px-4 bg-primary/[0.03]"
+            >
+              <div class="mb-2 flex items-center gap-2">
+                <span
+                  class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-primary/40 bg-primary/10"
+                >
+                  <Server class="h-3 w-3 text-primary" />
+                </span>
+                <span class="text-sm font-medium">Render pod booting</span>
+                <span
+                  class="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-primary"
+                >
+                  <Loader2 class="h-2.5 w-2.5 animate-spin" />
+                  {{ g.bootInfo.stage.replace(/_/g, " ") }}
+                  <span v-if="g.bootInfo.stageSub" class="opacity-70">
+                    · {{ g.bootInfo.stageSub }}
+                  </span>
+                </span>
+              </div>
+              <ul class="flex flex-col gap-1">
+                <li
+                  v-for="stage in visibleBootStages(g)"
+                  :key="stage.key"
+                  class="flex items-center gap-2.5 text-xs"
+                  :class="{
+                    'text-muted-foreground/60':
+                      stageStateFor(g, stage) === 'pending',
+                    'text-muted-foreground/40 line-through decoration-muted-foreground/30':
+                      stageStateFor(g, stage) === 'skipped',
+                    'text-foreground': stageStateFor(g, stage) === 'done',
+                    'text-primary font-medium':
+                      stageStateFor(g, stage) === 'current',
+                  }"
+                >
+                  <span
+                    class="w-4 h-4 inline-flex items-center justify-center shrink-0"
+                  >
+                    <Check
+                      v-if="stageStateFor(g, stage) === 'done'"
+                      class="w-3.5 h-3.5"
+                    />
+                    <Loader2
+                      v-else-if="stageStateFor(g, stage) === 'current'"
+                      class="w-3.5 h-3.5 animate-spin"
+                    />
+                    <X
+                      v-else-if="stageStateFor(g, stage) === 'skipped'"
+                      class="w-3.5 h-3.5 opacity-50"
+                    />
+                    <CircleDashed v-else class="w-3.5 h-3.5 opacity-50" />
+                  </span>
+                  <span class="flex-1">{{ stage.label }}</span>
+                  <span
+                    v-if="
+                      stageStateFor(g, stage) === 'current' &&
+                      g.bootInfo.progress !== null
+                    "
+                    class="font-mono text-[0.6rem] tabular-nums opacity-80"
+                  >
+                    {{ Math.round(g.bootInfo.progress * 100) }}%
+                  </span>
+                  <span
+                    v-else-if="stageStateFor(g, stage) === 'skipped'"
+                    class="font-mono text-[0.6rem] uppercase tracking-wider opacity-50"
+                  >
+                    skipped
+                  </span>
+                </li>
+              </ul>
+            </div>
+
+            <div
+              v-if="!compact"
+              class="border-t border-border/40 bg-muted/10 divide-y divide-border/30"
+            >
+              <div
+                v-for="j in visibleInFlightJobs(g)"
+                :key="j.id"
+                class="px-3 py-2 sm:px-4"
+                :class="{
+                  'bg-[hsl(var(--tac-amber)/0.04)]': j === g.activeJob,
+                }"
+              >
+                <div class="flex items-center gap-3">
+                  <component
+                    :is="
+                      j.status === 'rendering' || j.status === 'uploading'
+                        ? Loader2
+                        : j.status === 'queued'
+                          ? Clock
+                          : effectiveStatus(j) === 'done'
+                            ? CheckCircle2
+                            : j.status === 'cancelled'
+                              ? CircleSlash
+                              : effectiveStatus(j) === 'error' ||
+                                  effectiveStatus(j) === 'missing'
+                                ? AlertCircle
+                                : CircleDot
+                    "
+                    class="h-3.5 w-3.5 shrink-0"
+                    :class="[
+                      STATUS_TONE[effectiveStatus(j)]?.iconColor,
+                      (j.status === 'rendering' || j.status === 'uploading') &&
+                        'animate-spin',
+                    ]"
+                  />
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-2">
+                      <span class="truncate text-sm">{{ clipTitle(j) }}</span>
+                      <template v-for="d in clipDetails(j)" :key="d.label">
+                        <span
+                          class="shrink-0 inline-flex items-center rounded border px-1 py-px font-mono text-[0.55rem] uppercase tracking-[0.1em] tabular-nums leading-none"
+                          :class="
+                            d.tone === 'round'
+                              ? 'border-primary/40 bg-primary/10 text-primary'
+                              : d.tone === 'kills'
+                                ? 'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+                                : 'border-border/60 bg-muted/30 text-muted-foreground'
+                          "
+                        >
+                          {{ d.label }}
+                        </span>
+                      </template>
+                      <span
+                        v-if="clipDurationLabel(j)"
+                        class="shrink-0 font-mono text-[0.6rem] tabular-nums text-muted-foreground/70"
+                      >
+                        {{ clipDurationLabel(j) }}
+                      </span>
+                    </div>
+                  </div>
+                  <span
+                    class="shrink-0 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 font-mono text-[0.58rem] uppercase tracking-[0.14em]"
+                    :class="STATUS_TONE[effectiveStatus(j)]?.pill"
+                  >
+                    <template v-if="j === g.activeJob">
+                      {{ statusLabel(effectiveStatus(j)) }}
+                      <span class="opacity-60">·</span>
+                      {{ formatTimeAgo(j.last_status_at ?? j.created_at) }}
+                    </template>
+                    <template v-else>
+                      {{ statusLabel(effectiveStatus(j)) }}
+                    </template>
+                  </span>
+                  <Tooltip v-if="isAdmin && TERMINAL.has(j.status)">
+                    <TooltipTrigger as-child>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        class="h-6 w-6 shrink-0 p-0 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
+                        :disabled="requeueingJob[j.id]"
+                        @click="requeueJob(j.id)"
+                      >
+                        <Loader2
+                          v-if="requeueingJob[j.id]"
+                          class="h-3 w-3 animate-spin"
+                        />
+                        <RotateCcw v-else class="h-3 w-3" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Re-queue clip</TooltipContent>
+                  </Tooltip>
+                  <Button
+                    v-if="j.status === 'done' && j.clip_id"
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    class="h-6 shrink-0 gap-1 px-2 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
+                    @click="openJobClip(g, j)"
+                  >
+                    <Play class="h-3 w-3" />
+                    Preview
+                  </Button>
+                </div>
+
+                <!-- Active clip: render + upload as two parallel phase bars. -->
+                <div
+                  v-if="j === g.activeJob"
+                  class="mt-2 grid grid-cols-2 gap-3 pl-[1.625rem]"
+                >
+                  <div class="space-y-1">
+                    <div
+                      class="flex items-center justify-between font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground"
+                    >
+                      <span class="inline-flex items-center gap-1.5">
+                        <Film class="h-3 w-3" />
+                        {{ $t("clips.render_queue.render") }}
+                      </span>
+                      <span class="tabular-nums">
+                        {{
+                          j.status === "rendering"
+                            ? progressPct(j) + "%"
+                            : "100%"
+                        }}
+                      </span>
+                    </div>
+                    <div
+                      class="relative h-1.5 overflow-hidden rounded-full bg-muted/40"
+                    >
+                      <div
+                        class="h-full rounded-full bg-[hsl(var(--tac-amber))] transition-[width] duration-300"
+                        :style="{
+                          width:
+                            j.status === 'rendering'
+                              ? progressPct(j) + '%'
+                              : '100%',
+                        }"
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="space-y-1">
+                    <div
+                      class="flex items-center justify-between font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground"
+                    >
+                      <span class="inline-flex items-center gap-1.5">
+                        <Upload class="h-3 w-3" />
+                        {{ $t("clips.render_queue.upload") }}
+                      </span>
+                      <span class="tabular-nums">
+                        {{ j.status === "uploading" ? "…" : "—" }}
+                      </span>
+                    </div>
+                    <div
+                      v-if="j.status === 'uploading'"
+                      class="relative h-1.5 overflow-hidden rounded-full bg-primary/20"
+                    >
+                      <div
+                        class="absolute inset-0 w-[30%] rounded-full animate-upload-pulse bg-[linear-gradient(90deg,transparent,hsl(var(--primary))_50%,transparent)]"
+                      />
+                    </div>
+                    <div v-else class="h-1.5 rounded-full bg-muted/40"></div>
+                  </div>
+                </div>
+              </div>
+              <button
+                v-if="g.totalCount > ACTIVE_BATCH_CLIP_THRESHOLD"
+                type="button"
+                class="flex w-full items-center justify-center gap-1.5 px-3 py-2 sm:px-4 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground hover:bg-muted/20 transition-colors"
+                @click="toggleInFlightExpanded(g.matchMapId)"
+              >
+                <template v-if="isInFlightExpanded(g)">Hide clips</template>
+                <template v-else> Show all {{ g.totalCount }} clips </template>
+              </button>
+            </div>
+
+            <div
+              v-if="compact"
+              class="border-t border-border/40 px-3 py-2 sm:px-4 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground"
+            >
+              <span v-if="g.activeJob">
+                {{ statusLabel(g.activeJob.status) }} ·
+                {{ clipTitle(g.activeJob) }}
+              </span>
+              <span v-else> {{ g.jobs.length }} queued </span>
+            </div>
+          </template>
+        </RenderQueueBatchRow>
+      </TransitionGroup>
 
       <div v-if="!compact && recentlyDoneGroups.length" class="space-y-2">
         <div class="flex items-center gap-2">
@@ -1406,89 +1417,59 @@ const queueStatus = computed<{
             Clear all
           </Button>
         </div>
-        <div class="space-y-1">
-          <div
+        <TransitionGroup tag="div" name="batch" class="relative space-y-1">
+          <RenderQueueBatchRow
             v-for="g in recentlyDoneGroups"
             :key="g.matchMapId"
-            class="rounded-md border border-border/40 bg-card/30 [backdrop-filter:blur(6px)]"
+            :expanded="!!finishedExpanded[g.matchMapId]"
+            :title="
+              matchupLabel(g.sample) ??
+              g.sample.match_map?.map?.label ??
+              g.sample.match_map?.map?.name ??
+              'Unknown match'
+            "
+            :avatar-class="
+              g.errorCount > 0
+                ? 'border-destructive/40 bg-destructive/10 text-destructive'
+                : g.cancelledCount > 0
+                  ? 'border-border/60 bg-muted/30 text-muted-foreground'
+                  : 'border-emerald-400/40 bg-emerald-400/10 text-emerald-400'
+            "
+            :time="formatTimeAgo(g.finishedAt)"
+            @toggle="toggleFinishedExpanded(g.matchMapId)"
           >
-            <div class="flex w-full items-center">
-              <button
-                type="button"
-                class="flex flex-1 items-center gap-2.5 px-2.5 py-2 text-left text-xs min-w-0"
-                @click="toggleFinishedExpanded(g.matchMapId)"
+            <template #meta>
+              <span
+                v-if="
+                  g.sample.match_map?.map?.label ||
+                  g.sample.match_map?.map?.name
+                "
               >
-                <span
-                  class="flex h-7 w-7 shrink-0 items-center justify-center rounded-md border"
-                  :class="
-                    g.errorCount > 0
-                      ? 'border-destructive/40 bg-destructive/10 text-destructive'
-                      : g.cancelledCount > 0
-                        ? 'border-border/60 bg-muted/30 text-muted-foreground'
-                        : 'border-emerald-400/40 bg-emerald-400/10 text-emerald-400'
-                  "
-                >
-                  <Film class="h-3.5 w-3.5" />
-                </span>
-                <ChevronRight
-                  class="h-3 w-3 shrink-0 text-muted-foreground transition-transform"
-                  :class="{
-                    'rotate-90': finishedExpanded[g.matchMapId],
-                  }"
-                />
-                <div class="min-w-0 flex-1">
-                  <div class="truncate font-semibold">
-                    <span v-if="matchupLabel(g.sample)">
-                      {{ matchupLabel(g.sample) }}
-                    </span>
-                    <span v-else>
-                      {{
-                        g.sample.match_map?.map?.label ??
-                        g.sample.match_map?.map?.name ??
-                        "Unknown match"
-                      }}
-                    </span>
-                  </div>
-                  <div
-                    class="truncate font-mono text-[0.58rem] uppercase tracking-[0.12em] text-muted-foreground/70"
-                  >
-                    <span
-                      v-if="
-                        g.sample.match_map?.map?.label ||
-                        g.sample.match_map?.map?.name
-                      "
-                    >
-                      {{
-                        g.sample.match_map.map.label ??
-                        g.sample.match_map.map.name
-                      }}
-                      ·
-                    </span>
-                    <span class="tabular-nums"
-                      >{{ g.totalCount }} clip{{
-                        g.totalCount === 1 ? "" : "s"
-                      }}</span
-                    >
-                    <span v-if="g.doneCount > 0" class="text-emerald-400/80">
-                      · {{ g.doneCount }} done
-                    </span>
-                    <span v-if="g.errorCount > 0" class="text-destructive/80">
-                      · {{ g.errorCount }} err
-                    </span>
-                    <span
-                      v-if="g.cancelledCount > 0"
-                      class="text-muted-foreground/70"
-                    >
-                      · {{ g.cancelledCount }} cancelled
-                    </span>
-                  </div>
-                </div>
-                <span
-                  class="shrink-0 font-mono text-[0.58rem] tabular-nums text-muted-foreground/70"
-                >
-                  {{ formatTimeAgo(g.finishedAt) }}
-                </span>
-              </button>
+                {{
+                  g.sample.match_map.map.label ?? g.sample.match_map.map.name
+                }}
+                ·
+              </span>
+              <span class="tabular-nums"
+                >{{ g.totalCount }} clip{{
+                  g.totalCount === 1 ? "" : "s"
+                }}</span
+              >
+              <span v-if="g.doneCount > 0" class="text-emerald-400/80">
+                · {{ g.doneCount }} done
+              </span>
+              <span v-if="g.errorCount > 0" class="text-destructive/80">
+                · {{ g.errorCount }} err
+              </span>
+              <span
+                v-if="g.cancelledCount > 0"
+                class="text-muted-foreground/70"
+              >
+                · {{ g.cancelledCount }} cancelled
+              </span>
+            </template>
+
+            <template #actions>
               <Tooltip v-if="g.sample.match_map?.match?.id">
                 <TooltipTrigger as-child>
                   <NuxtLink
@@ -1561,89 +1542,99 @@ const queueStatus = computed<{
                 </TooltipTrigger>
                 <TooltipContent>Clear batch</TooltipContent>
               </Tooltip>
-            </div>
-            <div
-              v-if="finishedExpanded[g.matchMapId]"
-              class="border-t border-border/30 bg-muted/10 divide-y divide-border/30"
-            >
+            </template>
+
+            <template #body>
               <div
-                v-for="j in visibleFinishedJobs(g)"
-                :key="j.id"
-                class="flex items-center gap-2.5 py-1 pl-9 pr-2.5"
+                class="border-t border-border/30 bg-muted/10 divide-y divide-border/30"
               >
-                <span
-                  class="inline-flex h-1.5 w-1.5 shrink-0 rounded-full"
-                  :class="STATUS_TONE[j.status]?.dot"
-                />
-                <div class="min-w-0 flex-1">
-                  <div
-                    class="flex items-center gap-1.5 text-[0.72rem] text-muted-foreground"
-                    :title="j.error_message ?? clipTitle(j)"
-                  >
-                    <span class="truncate">{{ clipTitle(j) }}</span>
-                    <template v-for="d in clipDetails(j)" :key="d.label">
-                      <span
-                        class="shrink-0 inline-flex items-center rounded border px-1 py-px font-mono text-[0.52rem] uppercase tracking-[0.1em] tabular-nums leading-none"
-                        :class="
-                          d.tone === 'round'
-                            ? 'border-primary/40 bg-primary/10 text-primary'
-                            : d.tone === 'kills'
-                              ? 'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
-                              : 'border-border/60 bg-muted/30 text-muted-foreground/80'
-                        "
-                      >
-                        {{ d.label }}
-                      </span>
-                    </template>
-                  </div>
-                  <div
-                    v-if="j.error_message"
-                    class="truncate font-mono text-[0.55rem] uppercase tracking-[0.12em] text-destructive/80"
-                  >
-                    {{ j.error_message }}
-                  </div>
-                </div>
-                <Button
-                  v-if="isAdmin"
-                  size="sm"
-                  variant="ghost"
-                  class="h-6 px-2 text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                  :disabled="requeueingJob[j.id]"
-                  @click="requeueJob(j.id)"
+                <div
+                  v-for="j in visibleFinishedJobs(g)"
+                  :key="j.id"
+                  class="flex items-center gap-2.5 py-1 pl-9 pr-2.5"
                 >
-                  <Loader2
-                    v-if="requeueingJob[j.id]"
-                    class="h-3 w-3 mr-1 animate-spin"
+                  <span
+                    class="inline-flex h-1.5 w-1.5 shrink-0 rounded-full"
+                    :class="STATUS_TONE[effectiveStatus(j)]?.dot"
                   />
-                  <RotateCcw v-else class="h-3 w-3 mr-1" />
-                  Re-queue
-                </Button>
-                <Button
-                  v-if="j.status === 'done' && j.clip_id"
+                  <div class="min-w-0 flex-1">
+                    <div
+                      class="flex items-center gap-1.5 text-[0.72rem] text-muted-foreground"
+                      :title="j.error_message ?? clipTitle(j)"
+                    >
+                      <span class="truncate">{{ clipTitle(j) }}</span>
+                      <template v-for="d in clipDetails(j)" :key="d.label">
+                        <span
+                          class="shrink-0 inline-flex items-center rounded border px-1 py-px font-mono text-[0.52rem] uppercase tracking-[0.1em] tabular-nums leading-none"
+                          :class="
+                            d.tone === 'round'
+                              ? 'border-primary/40 bg-primary/10 text-primary'
+                              : d.tone === 'kills'
+                                ? 'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+                                : 'border-border/60 bg-muted/30 text-muted-foreground/80'
+                          "
+                        >
+                          {{ d.label }}
+                        </span>
+                      </template>
+                    </div>
+                    <div
+                      v-if="j.error_message"
+                      class="truncate font-mono text-[0.55rem] uppercase tracking-[0.12em] text-destructive/80"
+                    >
+                      {{ j.error_message }}
+                    </div>
+                    <div
+                      v-else-if="isMissingClip(j)"
+                      class="truncate font-mono text-[0.55rem] uppercase tracking-[0.12em] text-destructive/80"
+                    >
+                      {{ statusLabel("missing") }}
+                    </div>
+                  </div>
+                  <Button
+                    v-if="isAdmin"
+                    size="sm"
+                    variant="ghost"
+                    class="h-6 px-2 text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
+                    :disabled="requeueingJob[j.id]"
+                    @click="requeueJob(j.id)"
+                  >
+                    <Loader2
+                      v-if="requeueingJob[j.id]"
+                      class="h-3 w-3 mr-1 animate-spin"
+                    />
+                    <RotateCcw v-else class="h-3 w-3 mr-1" />
+                    Re-queue
+                  </Button>
+                  <Button
+                    v-if="j.status === 'done' && j.clip_id"
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    class="h-6 shrink-0 gap-1 px-2 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
+                    @click="openJobClip(g, j)"
+                  >
+                    <Play class="h-3 w-3" />
+                    Preview
+                  </Button>
+                </div>
+                <button
+                  v-if="g.totalCount > FINISHED_BATCH_CLIP_THRESHOLD"
                   type="button"
-                  variant="ghost"
-                  size="sm"
-                  class="h-6 shrink-0 gap-1 px-2 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                  @click="openJobClip(g, j)"
+                  class="flex w-full items-center justify-center gap-1.5 px-2.5 py-1.5 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground hover:bg-muted/20 transition-colors"
+                  @click="toggleFinishedJobsExpanded(g.matchMapId)"
                 >
-                  <Play class="h-3 w-3" />
-                  Preview
-                </Button>
+                  <template v-if="isFinishedJobsExpanded(g)"
+                    >Show less</template
+                  >
+                  <template v-else>
+                    Show {{ g.totalCount - FINISHED_BATCH_CLIP_THRESHOLD }} more
+                  </template>
+                </button>
               </div>
-              <button
-                v-if="g.totalCount > FINISHED_BATCH_CLIP_THRESHOLD"
-                type="button"
-                class="flex w-full items-center justify-center gap-1.5 px-2.5 py-1.5 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground hover:bg-muted/20 transition-colors"
-                @click="toggleFinishedJobsExpanded(g.matchMapId)"
-              >
-                <template v-if="isFinishedJobsExpanded(g)">Show less</template>
-                <template v-else>
-                  Show {{ g.totalCount - FINISHED_BATCH_CLIP_THRESHOLD }} more
-                </template>
-              </button>
-            </div>
-          </div>
-        </div>
+            </template>
+          </RenderQueueBatchRow>
+        </TransitionGroup>
         <button
           v-if="canLoadMoreFinished"
           type="button"
@@ -1676,4 +1667,3 @@ const queueStatus = computed<{
     </p>
   </div>
 </template>
-

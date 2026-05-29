@@ -26,7 +26,10 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
         path: "/settings/application",
         labelKey: "pages.settings.application.matchmaking.title",
       },
-      { path: "/settings/application/players", labelKey: "pages.players.title" },
+      {
+        path: "/settings/application/players",
+        labelKey: "pages.players.title",
+      },
     ],
   },
   {
@@ -36,7 +39,10 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
         path: "/settings/application/game-type-configs",
         labelKey: "pages.settings.application.game_type_configs.title",
       },
-      { path: "/settings/application/map-pools", labelKey: "pages.map_pools.title" },
+      {
+        path: "/settings/application/map-pools",
+        labelKey: "pages.map_pools.title",
+      },
       {
         path: "/settings/application/external-matches",
         labelKey: "pages.settings.application.external_matches.title",

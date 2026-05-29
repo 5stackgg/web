@@ -293,25 +293,25 @@ definePageMeta({
 
         <!-- Actions -->
         <div class="flex gap-2 flex-wrap">
-        <Button @click="saveAll" :disabled="saving">
-          {{ $t("pages.settings.application.branding.save_branding") }}
-        </Button>
-        <Button variant="destructive" @click="resetAll">
-          {{ $t("pages.settings.application.branding.reset_to_defaults") }}
-        </Button>
-        <Button variant="outline" @click="exportTheme" :disabled="exporting">
-          {{ $t("pages.settings.application.branding.export_theme") }}
-        </Button>
-        <Button variant="outline" @click="$refs.importInput.click()">
-          {{ $t("pages.settings.application.branding.import_theme") }}
-        </Button>
-        <input
-          ref="importInput"
-          type="file"
-          accept=".json"
-          class="hidden"
-          @change="importTheme"
-        />
+          <Button @click="saveAll" :disabled="saving">
+            {{ $t("pages.settings.application.branding.save_branding") }}
+          </Button>
+          <Button variant="destructive" @click="resetAll">
+            {{ $t("pages.settings.application.branding.reset_to_defaults") }}
+          </Button>
+          <Button variant="outline" @click="exportTheme" :disabled="exporting">
+            {{ $t("pages.settings.application.branding.export_theme") }}
+          </Button>
+          <Button variant="outline" @click="$refs.importInput.click()">
+            {{ $t("pages.settings.application.branding.import_theme") }}
+          </Button>
+          <input
+            ref="importInput"
+            type="file"
+            accept=".json"
+            class="hidden"
+            @change="importTheme"
+          />
         </div>
       </div>
     </PageTransition>

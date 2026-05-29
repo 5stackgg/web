@@ -14,6 +14,7 @@ import {
   Unlink,
   CheckCircle2,
   AlertCircle,
+  Loader2,
 } from "lucide-vue-next";
 import { Progress } from "@/components/ui/progress";
 
@@ -86,15 +87,6 @@ const PENDING_IMPORTS_SUBSCRIPTION = gql`
   }
 `;
 
-const RETRY_PENDING_MUTATION = gql`
-  mutation RetryPendingMatchImport($valve_match_id: String!) {
-    retryPendingMatchImport(valve_match_id: $valve_match_id) {
-      success
-      error
-    }
-  }
-`;
-
 const CLEAR_PENDING_MUTATION = gql`
   mutation ClearPendingMatchImport($valve_match_id: String!) {
     clearPendingMatchImport(valve_match_id: $valve_match_id) {
@@ -104,6 +96,7 @@ const CLEAR_PENDING_MUTATION = gql`
 `;
 
 const linkQuery = ref<any>(null);
+const linkLoaded = ref(false);
 const pendingImports = ref<
   Array<{
     valve_match_id: string;
@@ -130,6 +123,7 @@ watch(
   () => me.value?.steam_id,
   (steamId) => {
     teardownSubs();
+    linkLoaded.value = false;
     if (!steamId) return;
 
     linkSubHandle = apolloClient
@@ -140,6 +134,7 @@ watch(
       .subscribe({
         next: ({ data }: any) => {
           linkQuery.value = data?.player_steam_match_auth_by_pk ?? null;
+          linkLoaded.value = true;
         },
       });
 
@@ -147,7 +142,16 @@ watch(
       .subscribe({ query: PENDING_IMPORTS_SUBSCRIPTION })
       .subscribe({
         next: ({ data }: any) => {
-          pendingImports.value = data?.pending_match_imports ?? [];
+          const all = data?.pending_match_imports ?? [];
+          // Failed imports can't be retrieved (demo expired / gone from Valve);
+          // silently drop them from the queue and hide them from the user.
+          for (const entry of all) {
+            if (entry.status === "Failed")
+              autoClearFailed(entry.valve_match_id);
+          }
+          pendingImports.value = all.filter(
+            (entry: any) => entry.status !== "Failed",
+          );
         },
       });
   },
@@ -217,27 +221,19 @@ const isLinked = computed(() => !!linkQuery.value);
 const isAdmin = computed(() => me.value?.role === "administrator");
 
 const busyImportId = ref<string | null>(null);
+const autoClearedIds = new Set<string>();
 
-async function retryImport(valveMatchId: string) {
-  busyImportId.value = valveMatchId;
-  try {
-    const { data } = await apolloClient.mutate({
-      mutation: RETRY_PENDING_MUTATION,
+function autoClearFailed(valveMatchId: string) {
+  if (autoClearedIds.has(valveMatchId)) return;
+  autoClearedIds.add(valveMatchId);
+  apolloClient
+    .mutate({
+      mutation: CLEAR_PENDING_MUTATION,
       variables: { valve_match_id: valveMatchId },
+    })
+    .catch(() => {
+      // best-effort — it's filtered from the UI regardless
     });
-    const result = data?.retryPendingMatchImport;
-    if (result?.success) {
-      toast({ title: "Retrying import" });
-    } else {
-      toast({
-        title: "Retry failed",
-        description: result?.error ?? "Unknown error",
-        variant: "destructive",
-      });
-    }
-  } finally {
-    busyImportId.value = null;
-  }
 }
 
 async function clearImport(valveMatchId: string) {
@@ -253,13 +249,12 @@ async function clearImport(valveMatchId: string) {
   }
 }
 
-const PENDING_STATUSES = ["Queued", "Parsing", "Failed"] as const;
+const PENDING_STATUSES = ["Queued", "Parsing"] as const;
 type PendingStatus = (typeof PENDING_STATUSES)[number];
 
 const pendingFilters = ref<Set<string>>(new Set());
 const pendingExpanded = ref(false);
 const PENDING_VISIBLE_LIMIT = 25;
-const bulkBusy = ref(false);
 
 const pendingCountsByStatus = computed<Record<string, number>>(() => {
   const out: Record<string, number> = {};
@@ -294,52 +289,6 @@ function togglePendingFilter(status: PendingStatus) {
     pendingFilters.value.add(status);
   }
   pendingFilters.value = new Set(pendingFilters.value);
-}
-
-async function retryAllFailed() {
-  const failed = pendingImports.value.filter((e) => e.status === "Failed");
-  if (failed.length === 0 || bulkBusy.value) {
-    return;
-  }
-  bulkBusy.value = true;
-  try {
-    for (const entry of failed) {
-      try {
-        await apolloClient.mutate({
-          mutation: RETRY_PENDING_MUTATION,
-          variables: { valve_match_id: entry.valve_match_id },
-        });
-      } catch {
-        // continue with rest
-      }
-    }
-    toast({ title: `Retrying ${failed.length} failed import(s)` });
-  } finally {
-    bulkBusy.value = false;
-  }
-}
-
-async function clearAllFailed() {
-  const failed = pendingImports.value.filter((e) => e.status === "Failed");
-  if (failed.length === 0 || bulkBusy.value) {
-    return;
-  }
-  bulkBusy.value = true;
-  try {
-    for (const entry of failed) {
-      try {
-        await apolloClient.mutate({
-          mutation: CLEAR_PENDING_MUTATION,
-          variables: { valve_match_id: entry.valve_match_id },
-        });
-      } catch {
-        // continue with rest
-      }
-    }
-    toast({ title: `Cleared ${failed.length} failed import(s)` });
-  } finally {
-    bulkBusy.value = false;
-  }
 }
 
 const uploadingDemo = ref(false);
@@ -487,7 +436,15 @@ async function uploadDemo(file: File) {
   </PageTransition>
 
   <PageTransition v-if="externalMatchesEnabled" :delay="100">
-    <div v-if="!isLinked" class="grid gap-4 max-w-xl">
+    <div
+      v-if="!linkLoaded"
+      class="flex items-center gap-2 text-sm text-muted-foreground max-w-xl"
+    >
+      <Loader2 class="w-4 h-4 animate-spin" />
+      Checking match history link…
+    </div>
+
+    <div v-else-if="!isLinked" class="grid gap-4 max-w-xl">
       <p class="text-sm text-muted-foreground">
         You'll need two codes from Valve:
       </p>
@@ -664,28 +621,6 @@ async function uploadDemo(file: File) {
             {{ pendingCountsByStatus[status] ?? 0 }}
           </span>
         </button>
-        <div
-          v-if="pendingCountsByStatus.Failed > 0"
-          class="ml-auto flex items-center gap-2"
-        >
-          <Button
-            size="sm"
-            variant="ghost"
-            :disabled="bulkBusy"
-            @click="retryAllFailed"
-          >
-            Retry failed
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            :disabled="bulkBusy"
-            class="text-destructive hover:text-destructive"
-            @click="clearAllFailed"
-          >
-            Clear failed
-          </Button>
-        </div>
       </div>
       <ul class="divide-y divide-border/40 rounded border border-border/60">
         <li
@@ -694,21 +629,21 @@ async function uploadDemo(file: File) {
           class="flex items-center justify-between gap-4 px-3 py-2 text-sm"
         >
           <div class="min-w-0">
-            <div class="font-medium truncate">
-              {{ entry.map_name || `match ${entry.valve_match_id}` }}
-            </div>
+            <template v-if="entry.map_name">
+              <div class="font-medium truncate">{{ entry.map_name }}</div>
+              <div
+                v-if="entry.match_start_time"
+                class="font-mono text-[0.7rem] text-muted-foreground"
+              >
+                <TimeAgo :date="entry.match_start_time" />
+              </div>
+            </template>
             <div
-              v-if="entry.match_start_time"
-              class="font-mono text-[0.7rem] text-muted-foreground"
+              v-else
+              class="flex items-center gap-2 text-sm text-muted-foreground"
             >
-              <TimeAgo :date="entry.match_start_time" />
-            </div>
-            <div
-              v-if="entry.error"
-              class="text-xs text-destructive truncate"
-              :title="entry.error"
-            >
-              {{ entry.error }}
+              <Loader2 class="w-3.5 h-3.5 animate-spin" />
+              Importing…
             </div>
           </div>
           <div class="flex items-center gap-3 shrink-0">
@@ -717,20 +652,10 @@ async function uploadDemo(file: File) {
               :class="{
                 'text-muted-foreground': entry.status === 'Queued',
                 'text-[hsl(45_95%_60%)]': entry.status === 'Parsing',
-                'text-destructive': entry.status === 'Failed',
               }"
             >
               {{ entry.status }}
             </span>
-            <Button
-              v-if="entry.status === 'Failed'"
-              size="sm"
-              variant="outline"
-              :disabled="busyImportId === entry.valve_match_id"
-              @click="retryImport(entry.valve_match_id)"
-            >
-              Retry
-            </Button>
             <Button
               size="sm"
               variant="ghost"

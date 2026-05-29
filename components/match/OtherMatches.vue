@@ -232,6 +232,12 @@ export default {
       type: Array as PropType<string[]>,
       default: () => [],
     },
+    // Restrict to a single match source (e.g. "5stack") to exclude
+    // imported external matches (valve, faceit, …).
+    source: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
@@ -292,6 +298,7 @@ export default {
       return {
         status: { _in: this.statuses },
         ...(this.isInLineup === false ? { is_in_lineup: { _eq: false } } : {}),
+        ...(this.source ? { source: { _eq: this.source } } : {}),
         ...(this.excludeIds && this.excludeIds.length
           ? { id: { _nin: this.excludeIds } }
           : {}),

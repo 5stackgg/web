@@ -462,7 +462,6 @@ const getBackgroundColor = (wins: number, losses: number) => {
   if (losses > wins) return "bg-red-800/10";
   return "bg-yellow-800/10";
 };
-
 </script>
 
 <template>

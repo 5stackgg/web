@@ -886,6 +886,8 @@ export default {
           valve_match_id: true,
           status: true,
           error: true,
+          map_name: true,
+          match_start_time: true,
           updated_at: true,
         },
       }),

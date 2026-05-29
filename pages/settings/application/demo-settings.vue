@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { LucideDownload, LucideUpload, LucideHardDrive, LucideDatabase } from "lucide-vue-next";
+import {
+  LucideDownload,
+  LucideUpload,
+  LucideHardDrive,
+  LucideDatabase,
+} from "lucide-vue-next";
 import formatBytes from "~/utilities/formatBytes";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Card } from "~/components/ui/card";
@@ -106,7 +111,9 @@ definePageMeta({
 
         <SettingsSection
           id="playback"
-          :title="$t('pages.settings.application.demo_settings.playback_section')"
+          :title="
+            $t('pages.settings.application.demo_settings.playback_section')
+          "
         >
           <!-- Default HUD bundle the game-streamer pod loads at boot.
                Used for live, demo playback, and batch-highlights pods.
@@ -152,7 +159,9 @@ definePageMeta({
 
         <SettingsSection
           id="storage"
-          :title="$t('pages.settings.application.demo_settings.storage_section')"
+          :title="
+            $t('pages.settings.application.demo_settings.storage_section')
+          "
         >
           <div class="space-y-2">
             <p class="text-sm text-muted-foreground">
@@ -224,7 +233,9 @@ definePageMeta({
           <div class="space-y-2">
             <p class="text-sm text-muted-foreground">
               {{
-                $t("pages.settings.application.demo_settings.test_s3_description")
+                $t(
+                  "pages.settings.application.demo_settings.test_s3_description",
+                )
               }}
             </p>
             <div class="flex gap-3">

@@ -1,13 +1,23 @@
 <script lang="ts" setup>
+import { computed } from "vue";
+import { Loader2 } from "lucide-vue-next";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
+import TimeAgo from "./TimeAgo.vue";
 
-defineProps<{
+const props = defineProps<{
   imports: Array<{
     valve_match_id: string | number;
     status: string;
     error?: string | null;
+    map_name?: string | null;
+    match_start_time?: string | null;
   }>;
 }>();
+
+// Failed imports are dropped silently — we assume they can't be retrieved.
+const visibleImports = computed(() =>
+  props.imports.filter((entry) => entry.status !== "Failed"),
+);
 
 const badgeClasses = [
   "inline-flex items-center justify-center min-w-[1.25rem] h-[1.25rem] px-[0.35rem] rounded-full",
@@ -20,14 +30,14 @@ const badgeClasses = [
 
 <template>
   <FiveStackToolTip
-    v-if="imports.length > 0"
+    v-if="visibleImports.length > 0"
     :as-child="true"
     :delay-duration="100"
     side="bottom"
     align="end"
   >
     <template #trigger>
-      <span :class="badgeClasses">{{ imports.length }}</span>
+      <span :class="badgeClasses">{{ visibleImports.length }}</span>
     </template>
     <div class="text-xs space-y-1 max-w-[260px]">
       <div class="font-semibold uppercase tracking-[0.12em]">
@@ -35,22 +45,22 @@ const badgeClasses = [
       </div>
       <ul class="space-y-0.5">
         <li
-          v-for="entry in imports"
+          v-for="entry in visibleImports"
           :key="entry.valve_match_id"
           class="flex items-center justify-between gap-3 font-mono"
         >
-          <span class="truncate text-muted-foreground">
-            {{ entry.valve_match_id }}
-          </span>
-          <span
-            :class="{
-              'text-muted-foreground': entry.status === 'Queued',
-              'text-[hsl(45_95%_60%)]': entry.status === 'Parsing',
-              'text-destructive': entry.status === 'Failed',
-            }"
-          >
-            {{ entry.status }}
-          </span>
+          <template v-if="entry.map_name">
+            <span class="truncate">{{ entry.map_name }}</span>
+            <span v-if="entry.match_start_time" class="text-muted-foreground">
+              <TimeAgo :date="entry.match_start_time" />
+            </span>
+          </template>
+          <template v-else>
+            <span class="flex items-center gap-1.5 text-muted-foreground">
+              <Loader2 class="w-3 h-3 animate-spin" />
+              Importing…
+            </span>
+          </template>
         </li>
       </ul>
     </div>

@@ -15,6 +15,7 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import LastTenWinsAndLosses from "~/components/charts/LastTenWinsAndLosses.vue";
 import PlayerEloChart from "~/components/charts/PlayerEloChart.vue";
 import formatStatValue from "~/utilities/formatStatValue";
+import cleanMapName from "~/utilities/cleanMapName";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import PlayerChangeName from "~/components/PlayerChangeName.vue";
@@ -115,9 +116,13 @@ const rankHistoryRows = ref<
     rank_type: number;
     previous_rank: number | null;
     match_id: string | null;
+    map_id: string | null;
+    map?: { name: string } | null;
     observed_at: string;
   }>
 >([]);
+// Selected map for the per-map Competitive/Wingman skill-group chart.
+const selectedRankMap = ref<string | null>(null);
 const eloHistoryLoading = ref(false);
 
 const { client: apolloClient } = useApolloClient();
@@ -236,6 +241,10 @@ const PLAYER_PREMIER_HISTORY_SUB = gql`
       rank_type
       previous_rank
       match_id
+      map_id
+      map {
+        name
+      }
       observed_at
     }
   }
@@ -308,6 +317,8 @@ function startEloSub() {
         rank_type: number;
         previous_rank: number | null;
         match_id: string | null;
+        map_id: string | null;
+        map?: { name: string } | null;
         observed_at: string;
       }>;
       rankHistoryRows.value = rows;
@@ -541,9 +552,16 @@ function buildValveRankWindowed(
   rankType: number,
   type: string,
 ): WindowedEloEntry[] {
+  // Competitive (7) and Wingman (6) skill groups are per map, so the series
+  // is scoped to the selected map; Premier (11) is global.
+  const perMap = rankType === 6 || rankType === 7;
   let prev: number | null = null;
   return rankHistoryRows.value
-    .filter((r) => r.rank_type === rankType)
+    .filter(
+      (r) =>
+        r.rank_type === rankType &&
+        (!perMap || r.map_id === selectedRankMap.value),
+    )
     .map((r) => {
       const rank = Number(r.rank ?? 0);
       const change =
@@ -567,11 +585,54 @@ function buildValveRankWindowed(
       } as WindowedEloEntry;
     });
 }
+// Maps the player has skill-group history for in the active per-map mode,
+// most-played first — drives the map selector chips above the chart.
+const rankMapOptions = computed(() => {
+  const rt =
+    selectedModeRef.value === "Competitive"
+      ? 7
+      : selectedModeRef.value === "Wingman"
+        ? 6
+        : null;
+  if (rt === null) return [] as { mapId: string; name: string; count: number }[];
+  const counts = new Map<string, { mapId: string; name: string; count: number }>();
+  for (const r of rankHistoryRows.value) {
+    if (r.rank_type !== rt || !r.map_id) continue;
+    const entry = counts.get(r.map_id) ?? {
+      mapId: r.map_id,
+      name: r.map?.name ?? r.map_id,
+      count: 0,
+    };
+    entry.count++;
+    counts.set(r.map_id, entry);
+  }
+  return [...counts.values()].sort((a, b) => b.count - a.count);
+});
+
+// Default to the most-played map when entering a per-map mode or when data
+// arrives; keep the current pick if it's still valid.
+watch(
+  rankMapOptions,
+  (opts) => {
+    if (opts.length === 0) {
+      selectedRankMap.value = null;
+      return;
+    }
+    if (
+      !selectedRankMap.value ||
+      !opts.some((o) => o.mapId === selectedRankMap.value)
+    ) {
+      selectedRankMap.value = opts[0].mapId;
+    }
+  },
+  { immediate: true },
+);
+
 const competitiveWindowedHistory = computed(() =>
-  buildValveRankWindowed(12, "Competitive"),
+  buildValveRankWindowed(7, "Competitive"),
 );
 const wingmanWindowedHistory = computed(() =>
-  buildValveRankWindowed(7, "Wingman"),
+  buildValveRankWindowed(6, "Wingman"),
 );
 
 const modeFilteredWindowed = computed<WindowedEloEntry[]>(() => {
@@ -1626,6 +1687,35 @@ const playerTeamChipShortClasses =
                     }}
                   </div>
                 </div>
+              </div>
+
+              <!-- Per-map selector — Competitive/Wingman skill groups are per
+                   map, so the chart plots one map at a time. Most-played map
+                   is selected by default. -->
+              <div
+                v-if="rankMapOptions.length > 0"
+                class="flex flex-wrap items-center gap-1.5"
+              >
+                <span
+                  class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
+                >
+                  {{ $t("player_match.headers.map") }}
+                </span>
+                <button
+                  v-for="m in rankMapOptions"
+                  :key="m.mapId"
+                  type="button"
+                  class="inline-flex items-center gap-1 rounded border px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] transition-colors"
+                  :class="
+                    selectedRankMap === m.mapId
+                      ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
+                      : 'border-border/60 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
+                  "
+                  @click="selectedRankMap = m.mapId"
+                >
+                  {{ cleanMapName(m.name) }}
+                  <span class="tabular-nums opacity-60">×{{ m.count }}</span>
+                </button>
               </div>
 
               <!-- Chart well: fixed height (NOT min-h) so the card never

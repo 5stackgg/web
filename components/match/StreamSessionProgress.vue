@@ -6,7 +6,11 @@ import {
   Loader2,
   AlertCircle,
   Minus,
+  FastForward,
 } from "lucide-vue-next";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 // Stepper for a streamer-pod session boot.
 //
@@ -43,12 +47,20 @@ const props = withDefaults(
       progress?: number;
       progress_stage?: string;
     }>;
+    // Operator-only: show a "Skip shaders" affordance while the pod is
+    // still booting (the parent gates this on role + not-yet-live).
+    canSkip?: boolean;
+    skipping?: boolean;
   }>(),
   {
     headerLabel: "Session boot",
     statusHistory: () => [],
+    canSkip: false,
+    skipping: false,
   },
 );
+
+const emit = defineEmits<{ (e: "skip"): void }>();
 
 const firedStatuses = computed(() => {
   const set = new Set<string>(props.statusHistory.map((h) => h.status));
@@ -220,6 +232,23 @@ function durationFor(stageKey: string): string {
         >
           skipped
         </span>
+        <!-- Inline Skip control, right on the shader row while it's the
+             current stage (operator-only — parent passes canSkip). -->
+        <button
+          v-if="
+            canSkip &&
+            stage.key === 'processing_shaders' &&
+            stateOf(index) === 'current'
+          "
+          type="button"
+          :disabled="skipping"
+          class="ml-1 inline-flex items-center gap-1 rounded border border-border/60 bg-card/60 px-1.5 py-0.5 font-mono text-[0.6rem] font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:bg-card hover:text-foreground disabled:opacity-50 cursor-pointer"
+          @click.stop="emit('skip')"
+        >
+          <Loader2 v-if="skipping" class="w-2.5 h-2.5 animate-spin" />
+          <FastForward v-else class="w-2.5 h-2.5" />
+          {{ t("live_stages.skip_shaders") }}
+        </button>
       </li>
     </ul>
 

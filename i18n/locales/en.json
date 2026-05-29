@@ -80,6 +80,8 @@
     "launching_steam": "Launching Steam",
     "logging_in": "Logging in",
     "launching_cs2": "Launching CS2",
+    "processing_shaders": "Processing Vulkan shaders",
+    "skip_shaders": "Skip shaders",
     "connecting_to_game": "Connecting to game server",
     "live": "Streaming live",
     "downloading_demo": "Downloading demo",
@@ -3609,6 +3611,7 @@
       "status_no_gpu_free": "Waiting for free GPU",
       "status_blocked_live": "Waiting — live stream in progress",
       "status_blocked_demo": "Waiting — demo session in progress",
+      "status_paused_active_match": "Renders paused — match live on GPU",
       "status_idle": "Idle",
       "status_waiting": "Waiting",
       "resume_blocked_live": "Can't resume — a live stream is currently using the GPU"

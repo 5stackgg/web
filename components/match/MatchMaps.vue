@@ -160,7 +160,9 @@ import cleanMapName from "~/utilities/cleanMapName";
               size="xs"
               variant="ghost"
               class="h-6 w-6 p-0 text-white/70 hover:text-white"
-              v-if="matchMap.demos_total_size || (matchMap.demos?.length ?? 0) > 0"
+              v-if="
+                matchMap.demos_total_size || (matchMap.demos?.length ?? 0) > 0
+              "
             >
               <Download class="w-3.5 h-3.5" />
             </Button>

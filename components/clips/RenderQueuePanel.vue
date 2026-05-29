@@ -140,6 +140,15 @@ const QUEUE_BOOT_STAGES = computed<
     meta: "required",
   },
   {
+    // Cold-GLCache Vulkan shader compile. Highlights always wait for it
+    // (SHADER_PRECACHE), and it's the usual reason a render sits "queued"
+    // for minutes — surface it as its own progress-tracked step. Skipped
+    // once the cache is warm.
+    key: "processing_shaders",
+    label: t("live_stages.processing_shaders"),
+    meta: "conditional",
+  },
+  {
     key: "connecting_to_game",
     label: t("live_stages.queuing_demo"),
     meta: "implicit",
@@ -864,7 +873,15 @@ const queueStatus = computed<{
     if (s.total_gpu_nodes === 0) {
       return { key: "no_gpu_registered", tone: "danger" };
     }
-    if (s.free_gpu_nodes === 0) {
+    // Only flag a problem when NO GPU can take a batch render. If any node is
+    // batch-claimable (free_gpu_nodes_for_batch > 0), a render can run even
+    // when a match is live on a different node — fall through to idle/waiting.
+    if (s.free_gpu_nodes_for_batch === 0) {
+      // A GPU may be idle yet unclaimable because a live match is running on it
+      // and pause_renders_during_active_match is on.
+      if (s.renders_paused_for_active_match) {
+        return { key: "paused_active_match", tone: "amber" };
+      }
       if (s.live_in_progress) return { key: "blocked_live", tone: "amber" };
       if (s.demo_in_progress) return { key: "blocked_demo", tone: "amber" };
       return { key: "no_gpu_free", tone: "amber" };
@@ -913,7 +930,13 @@ const queueStatus = computed<{
             v-if="queueStatus.key === 'rendering'"
             class="h-3 w-3 animate-spin"
           />
-          <Pause v-else-if="queueStatus.key === 'paused'" class="h-3 w-3" />
+          <Pause
+            v-else-if="
+              queueStatus.key === 'paused' ||
+              queueStatus.key === 'paused_active_match'
+            "
+            class="h-3 w-3"
+          />
           <AlertCircle
             v-else-if="queueStatus.tone === 'danger'"
             class="h-3 w-3"

@@ -42,6 +42,7 @@ import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { e_match_status_enum } from "~/generated/zeus";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
+import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
 import SpectatorGrid from "~/components/stream-deck/SpectatorGrid.vue";
 import MatchTableRow from "~/components/MatchTableRow.vue";
 import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
@@ -278,6 +279,26 @@ async function reconnectLive(matchId: string) {
   });
 }
 
+// Operator skip of the shader compile during boot — per active stream.
+const skippingShaders = ref<Record<string, boolean>>({});
+async function onSkipShaders(matchId: string) {
+  if (skippingShaders.value[matchId]) return;
+  skippingShaders.value = { ...skippingShaders.value, [matchId]: true };
+  try {
+    await runMutation(
+      matchId,
+      "skip-shaders",
+      () =>
+        // Cast until Zeus codegen picks up the new skipShaders action.
+        ({
+          skipShaders: [{ match_id: matchId }, { success: true }],
+        }) as any,
+    );
+  } finally {
+    skippingShaders.value = { ...skippingShaders.value, [matchId]: false };
+  }
+}
+
 type DeckReady = {
   ready: boolean;
   reason: string | null;
@@ -412,6 +433,11 @@ const LIVE_STAGES = computed(() => [
     key: "launching_cs2",
     label: t("live_stages.launching_cs2"),
     meta: "required" as const,
+  },
+  {
+    key: "processing_shaders",
+    label: t("live_stages.processing_shaders"),
+    meta: "conditional" as const,
   },
   {
     key: "connecting_to_game",
@@ -724,6 +750,22 @@ function matchStatusLabel(m: LiveMatch): string {
               :show-boot="true"
               class="group aspect-video w-full overflow-hidden rounded-md border border-border/60"
             >
+              <!-- Operator boot stepper with inline Skip-shaders (this page
+                   is streamer+ via middleware). -->
+              <template #boot>
+                <StreamSessionProgress
+                  :status="stream.status ?? 'booting'"
+                  :error-message="stream.error_message ?? null"
+                  :last-status-at="stream.last_status_at ?? null"
+                  :status-history="stream.status_history ?? []"
+                  :stages="LIVE_STAGES"
+                  header-label="Stream boot"
+                  :can-skip="true"
+                  :skipping="!!skippingShaders[stream.match_id]"
+                  @skip="onSkipShaders(stream.match_id)"
+                />
+              </template>
+
               <template
                 v-if="stream.is_live && isPopoutOpen(stream.match_id)"
                 #video

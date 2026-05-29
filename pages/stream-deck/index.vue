@@ -285,15 +285,9 @@ async function onSkipShaders(matchId: string) {
   if (skippingShaders.value[matchId]) return;
   skippingShaders.value = { ...skippingShaders.value, [matchId]: true };
   try {
-    await runMutation(
-      matchId,
-      "skip-shaders",
-      () =>
-        // Cast until Zeus codegen picks up the new skipShaders action.
-        ({
-          skipShaders: [{ match_id: matchId }, { success: true }],
-        }) as any,
-    );
+    await runMutation(matchId, "skip-shaders", () => ({
+      skipShaders: [{ match_id: matchId }, { success: true }],
+    }));
   } finally {
     skippingShaders.value = { ...skippingShaders.value, [matchId]: false };
   }

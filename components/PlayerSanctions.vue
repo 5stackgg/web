@@ -43,6 +43,12 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Badge } from "~/components/ui/badge";
 import { Separator } from "~/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import Pagination from "~/components/Pagination.vue";
 import { fromDate, toCalendarDate } from "@internationalized/date";
 </script>
@@ -136,24 +142,40 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
                     v-if="canManageSanctions"
                     class="flex gap-2 items-center"
                   >
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      class="h-8 w-8"
-                      @click="openEditDialog(sanction)"
-                      :title="$t('player.sanctions.edit')"
-                    >
-                      <Edit2 class="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      class="h-8 w-8 text-destructive"
-                      @click="removeSanction(sanction)"
-                      :title="$t('player.sanctions.remove')"
-                    >
-                      <Trash2 class="h-4 w-4" />
-                    </Button>
+                    <TooltipProvider :delay-duration="120">
+                      <Tooltip>
+                        <TooltipTrigger as-child>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            class="h-8 w-8"
+                            @click="openEditDialog(sanction)"
+                          >
+                            <Edit2 class="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {{ $t("player.sanctions.edit") }}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <TooltipProvider :delay-duration="120">
+                      <Tooltip>
+                        <TooltipTrigger as-child>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            class="h-8 w-8 text-destructive"
+                            @click="removeSanction(sanction)"
+                          >
+                            <Trash2 class="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {{ $t("player.sanctions.remove") }}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 </div>
                 <p class="text-sm text-muted-foreground">
@@ -206,15 +228,23 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
                     v-if="canManageSanctions"
                     class="flex gap-2 items-center"
                   >
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      class="h-8 w-8 text-destructive"
-                      @click="removeAbandonedMatch(abandonedMatch)"
-                      :title="$t('player.sanctions.remove_abandoned')"
-                    >
-                      <Trash2 class="h-4 w-4" />
-                    </Button>
+                    <TooltipProvider :delay-duration="120">
+                      <Tooltip>
+                        <TooltipTrigger as-child>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            class="h-8 w-8 text-destructive"
+                            @click="removeAbandonedMatch(abandonedMatch)"
+                          >
+                            <Trash2 class="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {{ $t("player.sanctions.remove_abandoned") }}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 </div>
                 <Separator
@@ -275,16 +305,26 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
                 style="color-scheme: dark"
                 class="w-[120px]"
               />
-              <Button
+              <TooltipProvider
                 v-if="editDate || editTime"
-                type="button"
-                variant="ghost"
-                size="icon"
-                @click="clearEditDate"
-                :title="$t('player.sanctions.clear_date')"
+                :delay-duration="120"
               >
-                <Trash2 class="h-4 w-4" />
-              </Button>
+                <Tooltip>
+                  <TooltipTrigger as-child>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      @click="clearEditDate"
+                    >
+                      <Trash2 class="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {{ $t("player.sanctions.clear_date") }}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
         </div>

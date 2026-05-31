@@ -2268,6 +2268,9 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"servers_select_column",
 			order_by:"servers_order_by",
 			where:"servers_bool_exp"
+		},
+		shader_bake_status_history:{
+
 		}
 	},
 	game_server_nodes_aggregate_bool_exp:{
@@ -2313,7 +2316,8 @@ export const AllTypesProps: Record<string,any> = {
 		cpu_governor_info:"jsonb",
 		cs2_launch_options:"jsonb",
 		cs2_video_settings:"jsonb",
-		gpu_info:"jsonb"
+		gpu_info:"jsonb",
+		shader_bake_status_history:"jsonb"
 	},
 	game_server_nodes_arr_rel_insert_input:{
 		data:"game_server_nodes_insert_input",
@@ -2330,6 +2334,7 @@ export const AllTypesProps: Record<string,any> = {
 		disk_used_percent:"order_by",
 		end_port_range:"order_by",
 		pin_build_id:"order_by",
+		shader_bake_progress:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_bool_exp:{
@@ -2368,6 +2373,10 @@ export const AllTypesProps: Record<string,any> = {
 		region:"String_comparison_exp",
 		servers:"servers_bool_exp",
 		servers_aggregate:"servers_aggregate_bool_exp",
+		shader_bake_progress:"numeric_comparison_exp",
+		shader_bake_progress_stage:"String_comparison_exp",
+		shader_bake_status:"String_comparison_exp",
+		shader_bake_status_history:"jsonb_comparison_exp",
 		start_port_range:"Int_comparison_exp",
 		status:"e_game_server_node_statuses_enum_comparison_exp",
 		supports_cpu_pinning:"Boolean_comparison_exp",
@@ -2388,7 +2397,7 @@ export const AllTypesProps: Record<string,any> = {
 
 	},
 	game_server_nodes_inc_input:{
-
+		shader_bake_progress:"numeric"
 	},
 	game_server_nodes_insert_input:{
 		cpu_frequency_info:"jsonb",
@@ -2404,6 +2413,8 @@ export const AllTypesProps: Record<string,any> = {
 		pinned_version:"game_versions_obj_rel_insert_input",
 		public_ip:"inet",
 		servers:"servers_arr_rel_insert_input",
+		shader_bake_progress:"numeric",
+		shader_bake_status_history:"jsonb",
 		status:"e_game_server_node_statuses_enum",
 		version:"game_versions_obj_rel_insert_input"
 	},
@@ -2423,6 +2434,9 @@ export const AllTypesProps: Record<string,any> = {
 		pin_build_id:"order_by",
 		pin_plugin_version:"order_by",
 		region:"order_by",
+		shader_bake_progress:"order_by",
+		shader_bake_progress_stage:"order_by",
+		shader_bake_status:"order_by",
 		start_port_range:"order_by",
 		token:"order_by",
 		update_status:"order_by"
@@ -2443,6 +2457,9 @@ export const AllTypesProps: Record<string,any> = {
 		pin_build_id:"order_by",
 		pin_plugin_version:"order_by",
 		region:"order_by",
+		shader_bake_progress:"order_by",
+		shader_bake_progress_stage:"order_by",
+		shader_bake_status:"order_by",
 		start_port_range:"order_by",
 		token:"order_by",
 		update_status:"order_by"
@@ -2488,6 +2505,10 @@ export const AllTypesProps: Record<string,any> = {
 		public_ip:"order_by",
 		region:"order_by",
 		servers_aggregate:"servers_aggregate_order_by",
+		shader_bake_progress:"order_by",
+		shader_bake_progress_stage:"order_by",
+		shader_bake_status:"order_by",
+		shader_bake_status_history:"order_by",
 		start_port_range:"order_by",
 		status:"order_by",
 		supports_cpu_pinning:"order_by",
@@ -2505,7 +2526,8 @@ export const AllTypesProps: Record<string,any> = {
 		cpu_governor_info:"jsonb",
 		cs2_launch_options:"jsonb",
 		cs2_video_settings:"jsonb",
-		gpu_info:"jsonb"
+		gpu_info:"jsonb",
+		shader_bake_status_history:"jsonb"
 	},
 	game_server_nodes_select_column: "enum" as const,
 	game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
@@ -2520,6 +2542,8 @@ export const AllTypesProps: Record<string,any> = {
 		node_ip:"inet",
 		offline_at:"timestamptz",
 		public_ip:"inet",
+		shader_bake_progress:"numeric",
+		shader_bake_status_history:"jsonb",
 		status:"e_game_server_node_statuses_enum"
 	},
 	game_server_nodes_stddev_order_by:{
@@ -2533,6 +2557,7 @@ export const AllTypesProps: Record<string,any> = {
 		disk_used_percent:"order_by",
 		end_port_range:"order_by",
 		pin_build_id:"order_by",
+		shader_bake_progress:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_stddev_pop_order_by:{
@@ -2546,6 +2571,7 @@ export const AllTypesProps: Record<string,any> = {
 		disk_used_percent:"order_by",
 		end_port_range:"order_by",
 		pin_build_id:"order_by",
+		shader_bake_progress:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_stddev_samp_order_by:{
@@ -2559,6 +2585,7 @@ export const AllTypesProps: Record<string,any> = {
 		disk_used_percent:"order_by",
 		end_port_range:"order_by",
 		pin_build_id:"order_by",
+		shader_bake_progress:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_stream_cursor_input:{
@@ -2575,6 +2602,8 @@ export const AllTypesProps: Record<string,any> = {
 		node_ip:"inet",
 		offline_at:"timestamptz",
 		public_ip:"inet",
+		shader_bake_progress:"numeric",
+		shader_bake_status_history:"jsonb",
 		status:"e_game_server_node_statuses_enum"
 	},
 	game_server_nodes_sum_order_by:{
@@ -2588,6 +2617,7 @@ export const AllTypesProps: Record<string,any> = {
 		disk_used_percent:"order_by",
 		end_port_range:"order_by",
 		pin_build_id:"order_by",
+		shader_bake_progress:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_update_column: "enum" as const,
@@ -2612,6 +2642,7 @@ export const AllTypesProps: Record<string,any> = {
 		disk_used_percent:"order_by",
 		end_port_range:"order_by",
 		pin_build_id:"order_by",
+		shader_bake_progress:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_var_samp_order_by:{
@@ -2625,6 +2656,7 @@ export const AllTypesProps: Record<string,any> = {
 		disk_used_percent:"order_by",
 		end_port_range:"order_by",
 		pin_build_id:"order_by",
+		shader_bake_progress:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_variance_order_by:{
@@ -2638,6 +2670,7 @@ export const AllTypesProps: Record<string,any> = {
 		disk_used_percent:"order_by",
 		end_port_range:"order_by",
 		pin_build_id:"order_by",
+		shader_bake_progress:"order_by",
 		start_port_range:"order_by"
 	},
 	game_versions:{
@@ -6419,8 +6452,14 @@ export const AllTypesProps: Record<string,any> = {
 		approveNameChange:{
 			steam_id:"bigint"
 		},
+		bakeShaders:{
+			game_server_node_id:"uuid"
+		},
 		callForOrganizer:{
 
+		},
+		cancelBakeShaders:{
+			game_server_node_id:"uuid"
 		},
 		cancelClipRender:{
 			job_id:"uuid"
@@ -24116,6 +24155,10 @@ export const ReturnTypes: Record<string,any> = {
 		region:"String",
 		servers:"servers",
 		servers_aggregate:"servers_aggregate",
+		shader_bake_progress:"numeric",
+		shader_bake_progress_stage:"String",
+		shader_bake_status:"String",
+		shader_bake_status_history:"jsonb",
 		start_port_range:"Int",
 		status:"e_game_server_node_statuses_enum",
 		supports_cpu_pinning:"Boolean",
@@ -24154,6 +24197,7 @@ export const ReturnTypes: Record<string,any> = {
 		disk_used_percent:"Float",
 		end_port_range:"Float",
 		pin_build_id:"Float",
+		shader_bake_progress:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
@@ -24174,6 +24218,9 @@ export const ReturnTypes: Record<string,any> = {
 		pin_build_id:"Int",
 		pin_plugin_version:"String",
 		region:"String",
+		shader_bake_progress:"numeric",
+		shader_bake_progress_stage:"String",
+		shader_bake_status:"String",
 		start_port_range:"Int",
 		token:"String",
 		total_server_count:"Int",
@@ -24196,6 +24243,9 @@ export const ReturnTypes: Record<string,any> = {
 		pin_build_id:"Int",
 		pin_plugin_version:"String",
 		region:"String",
+		shader_bake_progress:"numeric",
+		shader_bake_progress_stage:"String",
+		shader_bake_status:"String",
 		start_port_range:"Int",
 		token:"String",
 		total_server_count:"Int",
@@ -24217,6 +24267,7 @@ export const ReturnTypes: Record<string,any> = {
 		disk_used_percent:"Float",
 		end_port_range:"Float",
 		pin_build_id:"Float",
+		shader_bake_progress:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
@@ -24232,6 +24283,7 @@ export const ReturnTypes: Record<string,any> = {
 		disk_used_percent:"Float",
 		end_port_range:"Float",
 		pin_build_id:"Float",
+		shader_bake_progress:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
@@ -24247,6 +24299,7 @@ export const ReturnTypes: Record<string,any> = {
 		disk_used_percent:"Float",
 		end_port_range:"Float",
 		pin_build_id:"Float",
+		shader_bake_progress:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
@@ -24262,6 +24315,7 @@ export const ReturnTypes: Record<string,any> = {
 		disk_used_percent:"Int",
 		end_port_range:"Int",
 		pin_build_id:"Int",
+		shader_bake_progress:"numeric",
 		start_port_range:"Int",
 		total_server_count:"Int"
 	},
@@ -24277,6 +24331,7 @@ export const ReturnTypes: Record<string,any> = {
 		disk_used_percent:"Float",
 		end_port_range:"Float",
 		pin_build_id:"Float",
+		shader_bake_progress:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
@@ -24292,6 +24347,7 @@ export const ReturnTypes: Record<string,any> = {
 		disk_used_percent:"Float",
 		end_port_range:"Float",
 		pin_build_id:"Float",
+		shader_bake_progress:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
@@ -24307,6 +24363,7 @@ export const ReturnTypes: Record<string,any> = {
 		disk_used_percent:"Float",
 		end_port_range:"Float",
 		pin_build_id:"Float",
+		shader_bake_progress:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
@@ -26204,7 +26261,9 @@ export const ReturnTypes: Record<string,any> = {
 		ResetTournamentMatch:"SuccessOutput",
 		acceptInvite:"SuccessOutput",
 		approveNameChange:"SuccessOutput",
+		bakeShaders:"SuccessOutput",
 		callForOrganizer:"SuccessOutput",
+		cancelBakeShaders:"SuccessOutput",
 		cancelClipRender:"SuccessOutput",
 		cancelClipRenderBatch:"SuccessOutput",
 		cancelMatch:"SuccessOutput",

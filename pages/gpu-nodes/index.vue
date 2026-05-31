@@ -19,6 +19,8 @@ import {
   KeyRound,
   ChevronDown,
   Activity,
+  Flame,
+  X,
 } from "lucide-vue-next";
 import { Input } from "~/components/ui/input";
 import { Switch } from "~/components/ui/switch";
@@ -42,6 +44,12 @@ import {
 import { useGpuAvailability } from "~/composables/useGpuAvailability";
 import { generateMutation } from "~/graphql/graphqlGen";
 import EditCs2Options from "~/components/game-server-nodes/EditCs2Options.vue";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 
 definePageMeta({
   middleware: "admin",
@@ -109,6 +117,7 @@ function toggleExpanded(nodeId: string) {
 const confirmStopByNodeId = reactive<Record<string, boolean>>({});
 const busyByNodeId = reactive<Record<string, boolean>>({});
 const cs2OptionsNode = ref<any | null>(null);
+const bakeBusyByNodeId = reactive<Record<string, boolean>>({});
 
 const steamPanelOpen = ref(false);
 const newSteamUsername = ref("");
@@ -155,6 +164,60 @@ async function toggleNodeScheduling(node: any, accepting: boolean) {
 
 function nodeHasPorts(node: any): boolean {
   return Boolean(node?.start_port_range && node?.end_port_range);
+}
+
+function isBaking(node: any): boolean {
+  const status = node?.shader_bake_status;
+  return status !== null && status !== undefined && status !== "done";
+}
+
+async function bakeShaders(node: any) {
+  if (bakeBusyByNodeId[node.id]) {
+    return;
+  }
+  bakeBusyByNodeId[node.id] = true;
+  try {
+    await apolloClient.mutate({
+      mutation: generateMutation({
+        bakeShaders: [{ game_server_node_id: node.id }, { success: true }],
+      }),
+    });
+    toast({ title: t("pages.gpu_nodes.bake.started") });
+  } catch (error: any) {
+    toast({
+      variant: "destructive",
+      title: t("pages.gpu_nodes.bake.failed"),
+      description: error?.message,
+    });
+  } finally {
+    bakeBusyByNodeId[node.id] = false;
+  }
+}
+
+async function cancelBakeShaders(node: any) {
+  if (bakeBusyByNodeId[node.id]) {
+    return;
+  }
+  bakeBusyByNodeId[node.id] = true;
+  try {
+    await apolloClient.mutate({
+      mutation: generateMutation({
+        cancelBakeShaders: [
+          { game_server_node_id: node.id },
+          { success: true },
+        ],
+      }),
+    });
+    toast({ title: t("pages.gpu_nodes.bake.cancelled") });
+  } catch (error: any) {
+    toast({
+      variant: "destructive",
+      title: t("pages.gpu_nodes.bake.cancel_failed"),
+      description: error?.message,
+    });
+  } finally {
+    bakeBusyByNodeId[node.id] = false;
+  }
 }
 
 async function submitAddSteamAccount() {
@@ -368,6 +431,12 @@ async function stopGpuSession(nodeId: string) {
                 busyByNode[node.id].subline
               }}</span>
             </template>
+            <template v-else-if="isBaking(node)">
+              <Flame class="w-3.5 h-3.5 text-[hsl(var(--tac-amber))]" />
+              <span class="gpu-node-task-label">
+                {{ $t("pages.gpu_nodes.bake.baking") }}
+              </span>
+            </template>
             <span v-else-if="!node.enabled" class="gpu-node-task-idle">
               {{ $t("pages.gpu_nodes.disabled") }}
             </span>
@@ -390,48 +459,144 @@ async function stopGpuSession(nodeId: string) {
               {{ confirmStopByNodeId[node.id] ? "Confirm" : "Stop" }}
             </button>
 
-            <label
-              class="gpu-toggle"
-              :title="$t('pages.gpu_nodes.toggle_enabled_help')"
-            >
-              <span>{{ $t("pages.gpu_nodes.enabled") }}</span>
-              <Switch
-                :model-value="node.enabled"
-                @update:model-value="(v) => toggleNodeEnabled(node, !!v)"
-              />
-            </label>
+            <TooltipProvider :delay-duration="120">
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <label class="gpu-toggle">
+                    <span>{{ $t("pages.gpu_nodes.enabled") }}</span>
+                    <Switch
+                      :model-value="node.enabled"
+                      @update:model-value="(v) => toggleNodeEnabled(node, !!v)"
+                    />
+                  </label>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {{ $t("pages.gpu_nodes.toggle_enabled_help") }}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
-            <label
-              v-if="nodeHasPorts(node)"
-              class="gpu-toggle"
-              :title="$t('pages.gpu_nodes.toggle_scheduling_help')"
-            >
-              <span>{{ $t("pages.gpu_nodes.accepting_matches") }}</span>
-              <Switch
-                :model-value="node.status === 'Online'"
-                :disabled="!node.enabled"
-                @update:model-value="(v) => toggleNodeScheduling(node, !!v)"
-              />
-            </label>
+            <TooltipProvider v-if="nodeHasPorts(node)" :delay-duration="120">
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <label class="gpu-toggle">
+                    <span>{{ $t("pages.gpu_nodes.accepting_matches") }}</span>
+                    <Switch
+                      :model-value="node.status === 'Online'"
+                      :disabled="!node.enabled"
+                      @update:model-value="
+                        (v) => toggleNodeScheduling(node, !!v)
+                      "
+                    />
+                  </label>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {{ $t("pages.gpu_nodes.toggle_scheduling_help") }}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
 
-            <button
-              type="button"
-              class="gpu-icon-btn"
-              :title="$t('game_server.edit_cs2_options')"
-              @click="cs2OptionsNode = node"
-            >
-              <Settings2 class="w-3.5 h-3.5" />
-            </button>
-            <button
-              type="button"
-              class="gpu-metrics-toggle"
-              :data-open="expandedNodeIds[node.id]"
-              @click="toggleExpanded(node.id)"
-            >
-              <Activity class="w-3.5 h-3.5" />
-              <span>{{ $t("pages.gpu_nodes.metrics") }}</span>
-              <ChevronDown class="w-3 h-3 gpu-metrics-chevron" />
-            </button>
+            <TooltipProvider :delay-duration="120">
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <button
+                    type="button"
+                    class="gpu-icon-btn"
+                    @click="cs2OptionsNode = node"
+                  >
+                    <Settings2 class="w-3.5 h-3.5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {{ $t("game_server.edit_cs2_options") }}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <TooltipProvider v-if="!isBaking(node)" :delay-duration="120">
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <button
+                    type="button"
+                    class="gpu-icon-btn"
+                    :disabled="bakeBusyByNodeId[node.id]"
+                    @click="bakeShaders(node)"
+                  >
+                    <Flame class="w-3.5 h-3.5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {{ $t("pages.gpu_nodes.bake.help") }}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <TooltipProvider v-else :delay-duration="120">
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <button
+                    type="button"
+                    class="gpu-icon-btn gpu-icon-btn-danger"
+                    :disabled="bakeBusyByNodeId[node.id]"
+                    @click="cancelBakeShaders(node)"
+                  >
+                    <X class="w-3.5 h-3.5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {{ $t("pages.gpu_nodes.bake.cancel_help") }}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <TooltipProvider :delay-duration="120">
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <button
+                    type="button"
+                    class="gpu-metrics-toggle"
+                    :data-open="expandedNodeIds[node.id]"
+                    @click="toggleExpanded(node.id)"
+                  >
+                    <Activity class="w-3.5 h-3.5" />
+                    <ChevronDown class="w-3 h-3 gpu-metrics-chevron" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {{ $t("pages.gpu_nodes.metrics") }}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        </div>
+
+        <!-- Shader bake progress (only while baking) -->
+        <div v-if="isBaking(node)" class="gpu-bake-progress">
+          <div class="gpu-bake-progress-head">
+            <span class="gpu-bake-progress-label">
+              <Flame class="w-3 h-3" />
+              {{ $t("pages.gpu_nodes.bake.baking") }}
+            </span>
+            <span class="gpu-bake-progress-value">
+              <template v-if="node.shader_bake_progress != null">
+                {{ node.shader_bake_progress.toFixed(1) }}%
+              </template>
+              <span
+                v-if="node.shader_bake_progress_stage"
+                class="gpu-bake-progress-stage"
+                >· {{ node.shader_bake_progress_stage }}</span
+              >
+            </span>
+          </div>
+          <div class="gpu-bake-progress-track">
+            <div
+              class="gpu-bake-progress-fill"
+              :class="{ 'is-indeterminate': node.shader_bake_progress == null }"
+              :style="
+                node.shader_bake_progress != null
+                  ? { width: `${node.shader_bake_progress}%` }
+                  : undefined
+              "
+            />
           </div>
         </div>
 
@@ -689,6 +854,9 @@ export default {
               offline_at: true,
               start_port_range: true,
               end_port_range: true,
+              shader_bake_status: true,
+              shader_bake_progress: true,
+              shader_bake_progress_stage: true,
               e_region: { description: true },
               e_status: { description: true },
             },
@@ -1181,6 +1349,65 @@ export default {
   margin-top: 0.9rem;
   padding-top: 0.9rem;
   border-top: 1px solid hsl(var(--border) / 0.4);
+}
+
+.gpu-bake-progress {
+  margin-top: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid hsl(var(--tac-amber) / 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.gpu-bake-progress-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.gpu-bake-progress-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: hsl(var(--tac-amber));
+}
+.gpu-bake-progress-value {
+  font-family: ui-monospace, monospace;
+  font-size: 0.7rem;
+  font-variant-numeric: tabular-nums;
+  color: hsl(var(--foreground) / 0.85);
+}
+.gpu-bake-progress-stage {
+  color: hsl(var(--muted-foreground));
+}
+.gpu-bake-progress-track {
+  height: 4px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: hsl(var(--muted-foreground) / 0.15);
+}
+.gpu-bake-progress-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: hsl(var(--tac-amber));
+  transition: width 0.5s ease-out;
+}
+.gpu-bake-progress-fill.is-indeterminate {
+  width: 35%;
+  animation: gpu-bake-indeterminate 1.2s ease-in-out infinite;
+}
+@keyframes gpu-bake-indeterminate {
+  0% {
+    margin-left: -35%;
+  }
+  100% {
+    margin-left: 100%;
+  }
 }
 
 /* ===== Empty state ===== */

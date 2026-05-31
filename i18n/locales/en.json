@@ -1027,6 +1027,15 @@
       "toggle_scheduling_help": "When off, the node keeps running existing matches but won't accept new ones.",
       "toggle_enabled_failed": "Failed to toggle node enabled state",
       "toggle_scheduling_failed": "Failed to toggle scheduling state",
+      "bake": {
+        "help": "Pre-bake this node's Vulkan shader cache so the first match starts warm.",
+        "cancel_help": "Cancel the running shader pre-bake.",
+        "started": "Shader bake started",
+        "failed": "Failed to start shader bake",
+        "cancelled": "Shader bake cancelled",
+        "cancel_failed": "Failed to cancel shader bake",
+        "baking": "Baking shaders"
+      },
       "table": {
         "node": "Node",
         "region": "Region",

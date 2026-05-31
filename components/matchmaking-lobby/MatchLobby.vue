@@ -8,8 +8,19 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 
 <template>
   <div
-    class="flex items-center justify-between gap-2 bg-background rounded-full px-2 py-1 border border-gray-700 h-12"
+    class="relative flex items-center justify-between gap-2 bg-background rounded-full px-2 py-1 border border-gray-700 h-12"
   >
+    <span
+      class="pointer-events-none absolute -top-1 -left-1 z-[60] flex h-4 min-w-[1rem] items-center justify-center rounded-full border border-background bg-[hsl(var(--tac-amber))] px-1 text-[0.6rem] font-bold leading-none text-black tabular-nums shadow"
+      :title="
+        pendingCount > 0
+          ? `${$t('matchmaking.lobby.member_count', { count: memberCount })} · ${$t('matchmaking.lobby.pending_count', { count: pendingCount })}`
+          : $t('matchmaking.lobby.member_count', { count: memberCount })
+      "
+    >
+      {{ memberCount }}
+    </span>
+
     <MatchmakingLobbyAccess :lobby="lobby" v-if="isCaptain" />
 
     <div class="flex items-center -space-x-2">
@@ -120,6 +131,16 @@ export default {
         return this.me.steam_id === player.steam_id;
       });
       return me?.captain;
+    },
+    memberCount() {
+      return (this.lobby?.players ?? []).filter(
+        (player: any) => player.status !== "Invited",
+      ).length;
+    },
+    pendingCount() {
+      return (this.lobby?.players ?? []).filter(
+        (player: any) => player.status === "Invited",
+      ).length;
     },
   },
   methods: {

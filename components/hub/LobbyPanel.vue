@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-import { Merge, Waves, MessageCircle, LogOut } from "lucide-vue-next";
+import {
+  Merge,
+  Waves,
+  MessageCircle,
+  LogOut,
+  Swords,
+  Plus,
+} from "lucide-vue-next";
 import MatchLobbyExpanded from "~/components/matchmaking-lobby/MatchLobbyExpanded.vue";
 import MatchmakingLobbyAccess from "~/components/matchmaking-lobby/MatchmakingLobbyAccess.vue";
 import LobbyInvites from "~/components/matchmaking-lobby/LobbyInvites.vue";
@@ -71,6 +78,44 @@ const { hasLobbyInvites } = useInvites();
             </div>
 
             <MatchLobbyExpanded :lobby="currentLobby" />
+
+            <!-- What's next: jump into matchmaking or a custom match -->
+            <div
+              v-if="matchmakingAllowed || canCreateMatch"
+              class="flex flex-col gap-2 rounded-lg border border-border bg-muted/30 p-3"
+            >
+              <div class="flex flex-col gap-0.5">
+                <span
+                  class="text-[0.68rem] font-semibold tracking-[0.12em] uppercase text-muted-foreground"
+                >
+                  {{ $t("layouts.lobby_panel.next_step_title") }}
+                </span>
+                <p class="text-[11px] text-muted-foreground">
+                  {{ $t("layouts.lobby_panel.next_step_description") }}
+                </p>
+              </div>
+              <div class="flex flex-col gap-2 sm:flex-row">
+                <Button
+                  v-if="matchmakingAllowed"
+                  size="sm"
+                  class="flex-1 gap-1.5"
+                  @click="goToPlay"
+                >
+                  <Swords class="h-3.5 w-3.5" />
+                  {{ $t("layouts.lobby_panel.find_match") }}
+                </Button>
+                <Button
+                  v-if="canCreateMatch"
+                  size="sm"
+                  :variant="matchmakingAllowed ? 'outline' : 'default'"
+                  class="flex-1 gap-1.5"
+                  @click="goToCreateMatch"
+                >
+                  <Plus class="h-3.5 w-3.5" />
+                  {{ $t("layouts.lobby_panel.create_custom_match") }}
+                </Button>
+              </div>
+            </div>
           </div>
         </template>
 
@@ -245,8 +290,20 @@ export default {
     hasDiscordLinked() {
       return useAuthStore().hasDiscordLinked;
     },
+    matchmakingAllowed() {
+      return useApplicationSettingsStore().matchmakingAllowed;
+    },
+    canCreateMatch() {
+      return useApplicationSettingsStore().canCreateMatch;
+    },
   },
   methods: {
+    goToPlay() {
+      this.$router.push({ name: "play" });
+    },
+    goToCreateMatch() {
+      this.$router.push({ name: "matches-create" });
+    },
     matchName(match: any) {
       return (
         match.label ||

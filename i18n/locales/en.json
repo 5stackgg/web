@@ -1624,7 +1624,11 @@
       "create_lobby_button": "Create Lobby",
       "voice_discord": "Voice & Discord",
       "discord_linked": "Discord Linked",
-      "link_discord": "Link Discord"
+      "link_discord": "Link Discord",
+      "next_step_title": "Ready to play?",
+      "next_step_description": "Your squad is set. Jump into matchmaking or spin up a custom match.",
+      "find_match": "Find a Match",
+      "create_custom_match": "Create Custom Match"
     },
     "chat_panel": {
       "default_title": "Chat",
@@ -3176,7 +3180,9 @@
       "access_description": "Controls who can join the lobby. Open allows anyone to join, Friends allows only friends to join, and Invite allows only players you invite to join.",
       "leave": "Leave Lobby",
       "invite_player": "Invite Player to Lobby",
-      "access_updated": "Lobby access updated to {access}"
+      "access_updated": "Lobby access updated to {access}",
+      "member_count": "{count} in lobby",
+      "pending_count": "{count} pending"
     },
     "friends": {
       "title": "Friends",

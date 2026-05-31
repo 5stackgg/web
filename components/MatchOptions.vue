@@ -47,7 +47,7 @@ import { Card } from "~/components/ui/card";
                   class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full"
                 >
                   <div
-                    v-for="type in e_match_types"
+                    v-for="type in selectableMatchTypes"
                     :key="type.value"
                     class="flex items-center space-x-2 p-8 cursor-pointer"
                     :class="{ 'cursor-not-allowed opacity-60': isLocked }"
@@ -1289,6 +1289,12 @@ export default {
     },
   },
   computed: {
+    selectableMatchTypes(): { value: string; description: string }[] {
+      return (this.e_match_types || []).filter(
+        (type: { value: string }) =>
+          type.value !== e_match_types_enum.Premier,
+      );
+    },
     isLocked(): boolean {
       return (
         !!this.match &&

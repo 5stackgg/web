@@ -461,8 +461,10 @@ export default {
       value: e_match_types_enum;
       description: string;
     }[] {
-      return this.e_match_types.filter((type) =>
-        this.isMatchmakingTypeEnabled(type.value.toLowerCase()),
+      return this.e_match_types.filter(
+        (type) =>
+          type.value !== e_match_types_enum.Premier &&
+          this.isMatchmakingTypeEnabled(type.value.toLowerCase()),
       );
     },
     isInQueue(): boolean {

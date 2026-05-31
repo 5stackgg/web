@@ -319,7 +319,7 @@ import {
                         lineupPlayer.placeholder_name ||
                         `drawer-${lineup.side}-${index}`
                       "
-                      class="border-b border-border/50 last:border-b-0"
+                      class="border-b border-border/50 transition-colors last:border-b-0 hover:bg-[hsl(var(--tac-amber)/0.08)]"
                       :class="{
                         'bg-primary/10 border-l-2 border-l-primary':
                           player &&
@@ -337,6 +337,8 @@ import {
                             )
                           "
                           size="sm"
+                          linkable
+                          @click="$emit('update:open', false)"
                         />
                       </td>
                       <td class="text-center py-2 px-2 tabular-nums">

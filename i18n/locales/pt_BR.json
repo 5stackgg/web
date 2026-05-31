@@ -1027,6 +1027,15 @@
       "toggle_scheduling_help": "Quando desativado, o nó continua executando partidas existentes, mas não aceitará novas.",
       "toggle_enabled_failed": "Falha ao alternar estado de ativação do nó",
       "toggle_scheduling_failed": "Falha ao alternar estado de agendamento",
+      "bake": {
+        "help": "Pré-compilar o cache de shaders Vulkan deste nó para que a primeira partida inicie aquecida.",
+        "cancel_help": "Cancelar a pré-compilação de shaders em execução.",
+        "started": "Compilação de shaders iniciada",
+        "failed": "Falha ao iniciar compilação de shaders",
+        "cancelled": "Compilação de shaders cancelada",
+        "cancel_failed": "Falha ao cancelar compilação de shaders",
+        "baking": "Compilando shaders"
+      },
       "table": {
         "node": "Nó",
         "region": "Região",
@@ -1615,7 +1624,11 @@
       "create_lobby_button": "Criar Lobby",
       "voice_discord": "Voz & Discord",
       "discord_linked": "Discord Vinculado",
-      "link_discord": "Vincular Discord"
+      "link_discord": "Vincular Discord",
+      "next_step_title": "Pronto para jogar?",
+      "next_step_description": "Seu lineup está definida. Entre no matchmaking ou inicie uma partida personalizada.",
+      "find_match": "Encontrar partida",
+      "create_custom_match": "Criar partida personalizada"
     },
     "chat_panel": {
       "default_title": "Chat",
@@ -3167,7 +3180,9 @@
       "access_description": "Controla quem pode entrar na lobby. Abrir permite que qualquer pessoa se junte, Amigos permite que apenas amigos se juntem, e Convidar apenas jogadores que você convidou para se juntar.",
       "leave": "Sair da Lobby",
       "invite_player": "Convidar Jogador para a Lobby",
-      "access_updated": "Acesso ao lobby atualizado para {access}"
+      "access_updated": "Acesso ao lobby atualizado para {access}",
+      "member_count": "{count} em lobby",
+      "pending_count": "{count} pendente"
     },
     "friends": {
       "title": "Amigos",

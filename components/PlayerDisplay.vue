@@ -19,7 +19,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
     exact-active-class="player-display-active"
     class="grid min-h-12"
     :class="{
-      'cursor-pointer': linkable,
+      'cursor-pointer group/playerlink': linkable,
       'gap-2': !compact,
       'gap-1.5': compact,
       'grid-cols-[52px_1fr]':
@@ -104,7 +104,11 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               />
               <div
                 v-if="showName"
-                :class="{ 'truncate max-w-[80px] sm:max-w-none': compact }"
+                :class="{
+                  'truncate max-w-[80px] sm:max-w-none': compact,
+                  'transition-colors group-hover/playerlink:text-[hsl(var(--tac-amber))]':
+                    linkable,
+                }"
               >
                 {{ player.name }}
               </div>

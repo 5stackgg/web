@@ -1034,7 +1034,19 @@
         "failed": "Failed to start shader bake",
         "cancelled": "Shader bake cancelled",
         "cancel_failed": "Failed to cancel shader bake",
-        "baking": "Baking shaders"
+        "baking": "Baking shaders",
+        "stages": {
+          "initializing": "Initializing",
+          "downloading_cs2": "Downloading CS2",
+          "launching_cs2": "Launching CS2",
+          "processing_shaders": "Processing shaders",
+          "errored": "Bake failed"
+        },
+        "steps": {
+          "download": "Download",
+          "launch": "Launch",
+          "shaders": "Shaders"
+        }
       },
       "table": {
         "node": "Node",

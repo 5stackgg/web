@@ -1,4 +1,5 @@
 import { useDemoPlaybackStore } from "~/stores/DemoPlaybackStore";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import {
   generateMutation,
   generateQuery,
@@ -318,11 +319,43 @@ export function useDemoPlayback() {
     return demo;
   }
 
-  async function start(matchMapId: string, demoId?: string | null) {
+  async function start(
+    matchMapId: string,
+    demoId?: string | null,
+    opts?: { attach?: boolean },
+  ) {
     store.reset();
-    store.matchMapId = matchMapId;
     store.localStatus = "starting";
+    // The pod boots the configured default_hud_mode (api resolveHudMode), so
+    // seed the player's active-layout state to match — otherwise reset()'s
+    // "horizontal" default mislabels a vertical pod until the operator swaps.
+    store.hudMode = useApplicationSettingsStore().defaultHudMode;
     try {
+      if (opts?.attach) {
+        // DEV: bind to the standing gs-demo-dev pod. attachDemo takes no ids —
+        // the api derives them and returns the real match_map_id (zeus types lag
+        // until codegen — cast the op map).
+        const { data } = await $apollo.defaultClient.mutate({
+          mutation: generateMutation({
+            attachDemo: {
+              success: true,
+              session_id: true,
+              stream_url: true,
+              match_map_id: true,
+            },
+          } as any),
+        });
+        const out = (data as any)?.attachDemo;
+        if (!out?.success || !out.session_id || !out.match_map_id) {
+          throw new Error("attachDemo returned no session");
+        }
+        store.matchMapId = out.match_map_id;
+        await loadMetadata(out.match_map_id, null);
+        subscribeToSession(out.session_id);
+        return;
+      }
+
+      store.matchMapId = matchMapId;
       // Order matters: watchDemo's first call kicks off the parse
       // (DemoMetadataService.ensureParsed) and waits for it. Loading
       // metadata BEFORE watchDemo fetches the row from BEFORE the
@@ -330,8 +363,6 @@ export function useDemoPlayback() {
       // After watchDemo returns, the row has the freshly-written
       // event data — that's when we read it.
       const { data } = await $apollo.defaultClient.mutate({
-        // Generated Zeus types lag the new Hasura actions until codegen
-        // runs — cast the operation map until the types catch up.
         mutation: generateMutation({
           watchDemo: [
             {
@@ -572,18 +603,13 @@ export function useDemoPlayback() {
     control("slot", { slot });
   }
 
-  // End-of-demo cs2 drops back to the menu — reload re-fires playdemo
-  // so the operator doesn't have to tear the pod down + restart. We
-  // also reset the operator-toggled cvars (xray off, HUD visible) so
-  // the reloaded demo starts from a clean default state. cs2 keeps
-  // client cvars across `playdemo` calls, so we have to actively
-  // toggle them back if they're not already at defaults.
+  // End-of-demo reload re-fires playdemo. Restore the demo defaults (x-ray on,
+  // HUD visible) since cs2 keeps client cvars across playdemo calls.
   function reloadDemo() {
-    if (store.xrayEnabled) {
-      // F12 is bound to `toggle spec_show_xray 0 1`; fire once to
-      // flip the cvar off, then sync local state.
-      control("xray", { enabled: false });
-      store.xrayEnabled = false;
+    if (!store.xrayEnabled) {
+      // /spec/xray toggles spec_show_xray; fire once to flip it back on.
+      control("xray", { enabled: true });
+      store.xrayEnabled = true;
     }
     if (!store.hudVisible) {
       // /spec/hud takes an absolute visible flag (windowmap /
@@ -595,8 +621,7 @@ export function useDemoPlayback() {
     store.syncFromControl({ tick: 0, paused: false });
     control("reload");
   }
-  // X-ray (player wallhack outlines). Default off; stored locally so
-  // repeated clicks toggle without an api round-trip.
+  // X-ray (player wallhack outlines). Default on for demo playback.
   function setXray(enabled: boolean) {
     store.xrayEnabled = enabled;
     control("xray", { enabled });

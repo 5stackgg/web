@@ -33,8 +33,21 @@ const demoId = computed(() => {
   const v = route.query.demoId;
   return typeof v === "string" && v ? v : null;
 });
+// Dev-only: /demo/dev (or ?attach=1) binds to the standing gs-demo-dev pod
+// instead of booting a Job. The api derives the real ids, so the route param is
+// a sentinel and store.matchMapId holds the resolved id after start().
+const attach = computed(() => {
+  const v = route.query.attach;
+  return (
+    matchMapId.value === "dev" || v === "1" || v === "true" || v === ""
+  );
+});
 const authStore = useAuthStore();
 const { store, start, stop } = useDemoPlayback();
+
+// In attach mode the route param ("dev") isn't a real id — the resolved one
+// lives in the store after start(). Use it for the WS watch + player binding.
+const effectiveMatchMapId = computed(() => store.matchMapId || matchMapId.value);
 
 const shortcutsOpen = ref(false);
 const slotKeys = computed(() => specSlotsForMatchType(store.matchType));
@@ -127,7 +140,10 @@ const WATCH_INTERVAL_MS = 10_000;
 let watchHandle: ReturnType<typeof setInterval> | null = null;
 
 function announceWatch() {
-  socket.event("demo-session:watch", { match_map_id: matchMapId.value });
+  // Use the resolved id (store) so /demo/dev watches the real session, not the
+  // "dev" sentinel. No-op until start() has resolved it.
+  if (!store.matchMapId) return;
+  socket.event("demo-session:watch", { match_map_id: store.matchMapId });
 }
 
 onMounted(async () => {
@@ -137,7 +153,7 @@ onMounted(async () => {
   }
 
   try {
-    await start(matchMapId.value, demoId.value);
+    await start(matchMapId.value, demoId.value, { attach: attach.value });
   } catch {
     // store.errorMessage is populated; UI renders the error state.
     return;
@@ -162,8 +178,11 @@ onBeforeUnmount(() => {
   }
   // SPA-internal navigation away from the popup (rare — the URL bar
   // case) still needs the explicit stop. The WS close handler covers
-  // window-close.
-  void stop();
+  // window-close. In attach mode we DON'T stop: the standing dev pod
+  // outlives the popup, and the api reaper reclaims the attach row.
+  if (!attach.value) {
+    void stop();
+  }
 });
 
 // `is_organizer` from the parent route isn't available here. The
@@ -174,7 +193,7 @@ const isOrganizer = false;
 <template>
   <div class="relative h-screen w-screen bg-black flex flex-col">
     <DemoPlayer
-      :match-map-id="matchMapId"
+      :match-map-id="effectiveMatchMapId"
       :is-organizer="isOrganizer"
       class="flex-1"
     />

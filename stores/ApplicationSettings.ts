@@ -223,6 +223,16 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    // HUD layout the game-streamer pod boots (and the demo player should show
+    // as active). Legacy "default" folds into "horizontal"; anything but
+    // "vertical" is horizontal. Mirrors the api's resolveHudMode default.
+    const defaultHudMode = computed<"horizontal" | "vertical">(() => {
+      const v = settings.value?.find(
+        (setting) => setting.name === "default_hud_mode",
+      )?.value;
+      return v === "vertical" ? "vertical" : "horizontal";
+    });
+
     const availableRegions = ref<Region[]>([]);
 
     let latencyCheckInterval: ReturnType<typeof setInterval> | null = null;
@@ -371,6 +381,7 @@ export const useApplicationSettingsStore = defineStore(
       supportsGameServerVersionPinning,
       playerNameRegistration,
       externalMatchesEnabled,
+      defaultHudMode,
       canCreateMatch,
       currentPluginVersion,
       canAddWithoutInvite,

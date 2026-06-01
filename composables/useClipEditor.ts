@@ -177,9 +177,15 @@ export function useClipEditor() {
     seek(head.start_tick);
     play();
     previewWatcherStop = watch(
-      () => store.currentTick,
-      (tick) => {
+      () => [store.currentTick, store.paused] as const,
+      ([tick, paused]) => {
         if (!previewing.value) return;
+        // Operator paused from the transport bar (or anywhere else) —
+        // treat it as ending the preview so the two stay in sync.
+        if (paused) {
+          stopPreview();
+          return;
+        }
         const segs = sortedSegments.value;
         const cur = segs[previewSegmentIndex.value];
         if (!cur) {
@@ -190,7 +196,7 @@ export function useClipEditor() {
           const nextIndex = previewSegmentIndex.value + 1;
           const next = segs[nextIndex];
           if (!next) {
-            pause();
+            // stopPreview() pauses the demo on the way out.
             stopPreview();
             return;
           }
@@ -208,12 +214,20 @@ export function useClipEditor() {
   }
 
   function stopPreview() {
+    const wasPreviewing = previewing.value;
     previewing.value = false;
     previewSegmentIndex.value = -1;
     if (previewWatcherStop) {
       previewWatcherStop();
       previewWatcherStop = null;
     }
+    // Stopping a preview should leave the demo paused — whether the
+    // operator hit "Stop", the preview ran to its end, or they paused
+    // from the transport bar below. Stop the watcher first (above) so
+    // this pause() can't re-enter through the paused watch. Guard on
+    // paused so we don't fire a redundant pause when already paused
+    // (e.g. the user is the one who paused us).
+    if (wasPreviewing && !store.paused) pause();
   }
 
   return {

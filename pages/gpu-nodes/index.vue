@@ -23,7 +23,9 @@ import {
   Check,
   AlertTriangle,
   X,
+  ScrollText,
 } from "lucide-vue-next";
+import ServiceLogs from "~/components/ServiceLogs.vue";
 import { Input } from "~/components/ui/input";
 import { Switch } from "~/components/ui/switch";
 import {
@@ -49,7 +51,6 @@ import EditCs2Options from "~/components/game-server-nodes/EditCs2Options.vue";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 
@@ -110,6 +111,12 @@ const poolSteamAccountsTone = computed(() => {
 const expandedNodeIds = reactive<Record<string, boolean>>({});
 function toggleExpanded(nodeId: string) {
   expandedNodeIds[nodeId] = !expandedNodeIds[nodeId];
+}
+
+// Shader-bake job logs (live + recent), via the shared ServiceLogs viewer.
+const bakeLogsByNodeId = reactive<Record<string, boolean>>({});
+function toggleBakeLogs(nodeId: string) {
+  bakeLogsByNodeId[nodeId] = !bakeLogsByNodeId[nodeId];
 }
 
 // Two-stage confirm so a stray click can't kill an operator's live
@@ -194,12 +201,15 @@ function bakeStageLabel(node: any): string {
   }
 }
 
-// The three visible stages, in order. launching_cs2 shares the "launch"
-// step; everything before downloading_cs2 sits at index -1 (all pending).
+// Visible stages. launching_cs2 is folded into the shaders step (it's too
+// brief to render on its own) — the status still exists server-side.
 const BAKE_STEPS = [
   { key: "download", labelKey: "download", statuses: ["downloading_cs2"] },
-  { key: "launch", labelKey: "launch", statuses: ["launching_cs2"] },
-  { key: "shaders", labelKey: "shaders", statuses: ["processing_shaders"] },
+  {
+    key: "shaders",
+    labelKey: "shaders",
+    statuses: ["launching_cs2", "processing_shaders"],
+  },
 ] as const;
 
 function bakeStepIndex(node: any): number {
@@ -233,8 +243,18 @@ function bakeSegFill(node: any, index: number): number | null {
   if (state === "pending") {
     return 0;
   }
-  const p = node?.shader_bake_progress;
+  const p = bakeProgress(node);
   return p == null ? null : Math.max(0, Math.min(100, p));
+}
+
+// Hasura serializes numeric as a string ("65.62") — coerce before use.
+function bakeProgress(node: any): number | null {
+  const raw = node?.shader_bake_progress;
+  if (raw == null) {
+    return null;
+  }
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : null;
 }
 
 async function bakeShaders(node: any) {
@@ -497,16 +517,27 @@ async function stopGpuSession(nodeId: string) {
                 busyByNode[node.id].subline
               }}</span>
             </template>
-            <template v-else-if="isBaking(node)">
-              <AlertTriangle
-                v-if="bakeErrored(node)"
-                class="w-3.5 h-3.5 text-[hsl(var(--destructive))]"
-              />
-              <Flame v-else class="w-3.5 h-3.5 text-[hsl(var(--tac-amber))]" />
-              <span class="gpu-node-task-label">
-                {{ bakeStageLabel(node) }}
-              </span>
-            </template>
+            <Tooltip v-else-if="isBaking(node)">
+              <TooltipTrigger as-child>
+                <span class="gpu-node-task-flag">
+                  <AlertTriangle
+                    v-if="bakeErrored(node)"
+                    class="w-3.5 h-3.5 text-[hsl(var(--destructive))]"
+                  />
+                  <Flame
+                    v-else
+                    class="w-3.5 h-3.5 text-[hsl(var(--tac-amber))]"
+                  />
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{
+                  bakeErrored(node)
+                    ? $t("pages.gpu_nodes.bake.stages.errored")
+                    : $t("pages.gpu_nodes.bake.in_progress")
+                }}
+              </TooltipContent>
+            </Tooltip>
             <span v-else-if="!node.enabled" class="gpu-node-task-idle">
               {{ $t("pages.gpu_nodes.disabled") }}
             </span>
@@ -529,113 +560,115 @@ async function stopGpuSession(nodeId: string) {
               {{ confirmStopByNodeId[node.id] ? "Confirm" : "Stop" }}
             </button>
 
-            <TooltipProvider :delay-duration="120">
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <label class="gpu-toggle">
-                    <span>{{ $t("pages.gpu_nodes.enabled") }}</span>
-                    <Switch
-                      :model-value="node.enabled"
-                      @update:model-value="(v) => toggleNodeEnabled(node, !!v)"
-                    />
-                  </label>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {{ $t("pages.gpu_nodes.toggle_enabled_help") }}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <label class="gpu-toggle">
+                  <span>{{ $t("pages.gpu_nodes.enabled") }}</span>
+                  <Switch
+                    :model-value="node.enabled"
+                    @update:model-value="(v) => toggleNodeEnabled(node, !!v)"
+                  />
+                </label>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ $t("pages.gpu_nodes.toggle_enabled_help") }}
+              </TooltipContent>
+            </Tooltip>
 
-            <TooltipProvider v-if="nodeHasPorts(node)" :delay-duration="120">
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <label class="gpu-toggle">
-                    <span>{{ $t("pages.gpu_nodes.accepting_matches") }}</span>
-                    <Switch
-                      :model-value="node.status === 'Online'"
-                      :disabled="!node.enabled"
-                      @update:model-value="
-                        (v) => toggleNodeScheduling(node, !!v)
-                      "
-                    />
-                  </label>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {{ $t("pages.gpu_nodes.toggle_scheduling_help") }}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip v-if="nodeHasPorts(node)">
+              <TooltipTrigger as-child>
+                <label class="gpu-toggle">
+                  <span>{{ $t("pages.gpu_nodes.accepting_matches") }}</span>
+                  <Switch
+                    :model-value="node.status === 'Online'"
+                    :disabled="!node.enabled"
+                    @update:model-value="(v) => toggleNodeScheduling(node, !!v)"
+                  />
+                </label>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ $t("pages.gpu_nodes.toggle_scheduling_help") }}
+              </TooltipContent>
+            </Tooltip>
 
-            <TooltipProvider :delay-duration="120">
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <button
-                    type="button"
-                    class="gpu-icon-btn"
-                    @click="cs2OptionsNode = node"
-                  >
-                    <Settings2 class="w-3.5 h-3.5" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {{ $t("game_server.edit_cs2_options") }}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <button
+                  type="button"
+                  class="gpu-icon-btn"
+                  @click="cs2OptionsNode = node"
+                >
+                  <Settings2 class="w-3.5 h-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ $t("game_server.edit_cs2_options") }}
+              </TooltipContent>
+            </Tooltip>
 
-            <TooltipProvider v-if="!isBaking(node)" :delay-duration="120">
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <button
-                    type="button"
-                    class="gpu-icon-btn"
-                    :disabled="bakeBusyByNodeId[node.id]"
-                    @click="bakeShaders(node)"
-                  >
-                    <Flame class="w-3.5 h-3.5" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {{ $t("pages.gpu_nodes.bake.help") }}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip v-if="!isBaking(node)">
+              <TooltipTrigger as-child>
+                <button
+                  type="button"
+                  class="gpu-icon-btn"
+                  :disabled="bakeBusyByNodeId[node.id]"
+                  @click="bakeShaders(node)"
+                >
+                  <Flame class="w-3.5 h-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ $t("pages.gpu_nodes.bake.help") }}
+              </TooltipContent>
+            </Tooltip>
 
-            <TooltipProvider v-else :delay-duration="120">
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <button
-                    type="button"
-                    class="gpu-icon-btn gpu-icon-btn-danger"
-                    :disabled="bakeBusyByNodeId[node.id]"
-                    @click="cancelBakeShaders(node)"
-                  >
-                    <X class="w-3.5 h-3.5" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {{ $t("pages.gpu_nodes.bake.cancel_help") }}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider :delay-duration="120">
-              <Tooltip>
-                <TooltipTrigger as-child>
-                  <button
-                    type="button"
-                    class="gpu-metrics-toggle"
-                    :data-open="expandedNodeIds[node.id]"
-                    @click="toggleExpanded(node.id)"
-                  >
-                    <Activity class="w-3.5 h-3.5" />
-                    <ChevronDown class="w-3 h-3 gpu-metrics-chevron" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  {{ $t("pages.gpu_nodes.metrics") }}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip v-else>
+              <TooltipTrigger as-child>
+                <button
+                  type="button"
+                  class="gpu-icon-btn gpu-icon-btn-danger"
+                  :disabled="bakeBusyByNodeId[node.id]"
+                  @click="cancelBakeShaders(node)"
+                >
+                  <X class="w-3.5 h-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ $t("pages.gpu_nodes.bake.cancel_help") }}
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <button
+                  type="button"
+                  class="gpu-icon-btn"
+                  :data-open="bakeLogsByNodeId[node.id]"
+                  @click="toggleBakeLogs(node.id)"
+                >
+                  <ScrollText class="w-3.5 h-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ $t("pages.gpu_nodes.bake.logs_help") }}
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <button
+                  type="button"
+                  class="gpu-metrics-toggle"
+                  :data-open="expandedNodeIds[node.id]"
+                  @click="toggleExpanded(node.id)"
+                >
+                  <Activity class="w-3.5 h-3.5" />
+                  <ChevronDown class="w-3 h-3 gpu-metrics-chevron" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ $t("pages.gpu_nodes.metrics") }}
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
 
@@ -645,26 +678,18 @@ async function stopGpuSession(nodeId: string) {
           class="gpu-bake"
           :class="{ 'is-errored': bakeErrored(node) }"
         >
-          <!-- Status readout -->
-          <div class="gpu-bake-head">
+          <!-- Header only when no stage is active (lead-in / error) — the
+               active step label already names the running stage otherwise. -->
+          <div
+            v-if="bakeErrored(node) || bakeStepIndex(node) < 0"
+            class="gpu-bake-head"
+          >
             <span class="gpu-bake-stage">
               <AlertTriangle
                 v-if="bakeErrored(node)"
                 class="w-3.5 h-3.5 gpu-bake-icon"
               />
-              <Flame v-else class="w-3.5 h-3.5 gpu-bake-icon" />
               {{ bakeStageLabel(node) }}
-            </span>
-            <span class="gpu-bake-readout">
-              <span
-                v-if="node.shader_bake_progress_stage"
-                class="gpu-bake-sub"
-                >{{ node.shader_bake_progress_stage }}</span
-              >
-              <span v-if="node.shader_bake_progress != null" class="gpu-bake-pct">
-                {{ node.shader_bake_progress.toFixed(1)
-                }}<i class="gpu-bake-pct-unit">%</i>
-              </span>
             </span>
           </div>
 
@@ -672,11 +697,7 @@ async function stopGpuSession(nodeId: string) {
           <div
             class="gpu-bake-pipe"
             role="progressbar"
-            :aria-valuenow="
-              node.shader_bake_progress != null
-                ? Math.round(node.shader_bake_progress)
-                : undefined
-            "
+            :aria-valuenow="bakeProgress(node) ?? undefined"
             aria-valuemin="0"
             aria-valuemax="100"
           >
@@ -699,6 +720,14 @@ async function stopGpuSession(nodeId: string) {
                   <span v-else class="gpu-bake-seg-idx">{{ i + 1 }}</span>
                 </span>
                 {{ $t(`pages.gpu_nodes.bake.steps.${step.labelKey}`) }}
+                <span
+                  v-if="
+                    bakeStepState(node, i) === 'active' &&
+                    bakeProgress(node) != null
+                  "
+                  class="gpu-bake-seg-pct"
+                  >{{ bakeProgress(node)?.toFixed(1) }}%</span
+                >
               </span>
               <span class="gpu-bake-seg-track">
                 <span
@@ -713,6 +742,19 @@ async function stopGpuSession(nodeId: string) {
               </span>
             </div>
           </div>
+        </div>
+
+        <!-- Shader-bake job logs (toggle) -->
+        <div
+          v-if="bakeLogsByNodeId[node.id]"
+          class="flex h-72 flex-col overflow-hidden rounded border border-border/60 bg-background/40"
+        >
+          <ServiceLogs
+            class="min-h-0 flex-1"
+            :service="`shader-bake:${node.id}`"
+            :compact="true"
+            :disable-retry="!isBaking(node)"
+          />
         </div>
 
         <!-- Inline live bars (always visible) -->
@@ -1337,6 +1379,10 @@ export default {
   flex: 0 1 auto;
   min-width: 0;
 }
+.gpu-node-task-flag {
+  display: inline-flex;
+  align-items: center;
+}
 .gpu-node-task-label {
   font-family: ui-monospace, monospace;
   font-size: 0.6rem;
@@ -1515,14 +1561,14 @@ export default {
 
 .gpu-bake-head {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
 }
 .gpu-bake-stage {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   font-family: ui-monospace, monospace;
   font-size: 0.66rem;
   font-weight: 600;
@@ -1533,42 +1579,11 @@ export default {
 .gpu-bake-icon {
   filter: drop-shadow(0 0 5px hsl(var(--bake-accent) / 0.55));
 }
-.gpu-bake-readout {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.6rem;
-}
-.gpu-bake-sub {
-  font-family: ui-monospace, monospace;
-  font-size: 0.56rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: hsl(var(--muted-foreground));
-  padding: 0.1rem 0.4rem;
-  border: 1px solid hsl(var(--border) / 0.7);
-  border-radius: 0.25rem;
-  white-space: nowrap;
-}
-.gpu-bake-pct {
-  font-family: ui-monospace, monospace;
-  font-size: 0.95rem;
-  font-weight: 600;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  color: hsl(var(--foreground));
-  text-shadow: 0 0 12px hsl(var(--bake-accent) / 0.35);
-}
-.gpu-bake-pct-unit {
-  font-size: 0.6rem;
-  font-style: normal;
-  margin-left: 0.08em;
-  color: hsl(var(--bake-accent));
-}
 
 /* Segmented pipeline — each stage is one segment of the bar. */
 .gpu-bake-pipe {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 0.5rem;
 }
 .gpu-bake-seg {
@@ -1578,7 +1593,7 @@ export default {
   min-width: 0;
 }
 .gpu-bake-seg-head {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 0.35rem;
   font-family: ui-monospace, monospace;
@@ -1588,6 +1603,13 @@ export default {
   white-space: nowrap;
   color: hsl(var(--muted-foreground) / 0.55);
   transition: color 0.3s ease;
+}
+.gpu-bake-seg-pct {
+  margin-left: auto;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: hsl(var(--bake-accent));
 }
 .gpu-bake-seg-marker {
   position: relative;

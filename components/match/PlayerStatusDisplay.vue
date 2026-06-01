@@ -49,7 +49,7 @@ const { isMobile } = useSidebar();
     </template>
 
     <template v-slot:status v-if="showStatus">
-      <FiveStackToolTip side="top" as-child :delay-duration="300">
+      <FiveStackToolTip side="top" as-child>
         <template #trigger>
           <span
             class="absolute -top-1 h-2 w-2 z-30 cursor-default"

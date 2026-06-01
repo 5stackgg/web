@@ -23,6 +23,7 @@ import {
   ChevronRight,
   Play,
   Pause,
+  ScrollText,
 } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
 import gql from "graphql-tag";
@@ -31,6 +32,7 @@ import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { clipRenderJobFields } from "~/graphql/clipRenderJob";
 import { Button } from "~/components/ui/button";
 import RenderQueueBatchRow from "~/components/clips/RenderQueueBatchRow.vue";
+import ServiceLogs from "~/components/ServiceLogs.vue";
 import {
   Tooltip,
   TooltipContent,
@@ -75,6 +77,7 @@ type Job = {
   paused?: boolean | null;
   progress: number | string | null;
   error_message: string | null;
+  k8s_job_name?: string | null;
   clip_id: string | null;
   created_at: string;
   sort_index: number;
@@ -190,6 +193,25 @@ const finishedJobsExpanded = ref<Record<string, boolean>>({});
 // Active batches render as the same collapsible row as finished ones,
 // but default to expanded so the live clip ladder is visible.
 const activeCollapsed = ref<Record<string, boolean>>({});
+
+// Per-job inline logs pane (admin), reusing the match-page ServiceLogs viewer.
+const logsExpanded = ref<Record<string, boolean>>({});
+function jobLogService(j: Job): string | null {
+  const name = j.k8s_job_name;
+  if (!name || name === "pending" || name === "dev-attach") {
+    return null;
+  }
+  return name;
+}
+function toggleJobLogs(j: Job) {
+  if (!jobLogService(j)) {
+    return;
+  }
+  logsExpanded.value = {
+    ...logsExpanded.value,
+    [j.id]: !logsExpanded.value[j.id],
+  };
+}
 
 // Default covers in-flight batches' just-completed siblings (a single
 // Bo5 batch can have 50 rows; we want a few concurrent batches plus
@@ -952,7 +974,7 @@ const queueStatus = computed<{
     "
     class="space-y-5"
   >
-    <TooltipProvider :delay-duration="200" :disable-hoverable-content="true">
+    <TooltipProvider :disable-hoverable-content="true">
       <div
         v-if="!compact && !hideSummary && groups.length > 0"
         class="flex flex-wrap items-center gap-3 rounded-lg border border-border/50 bg-card/40 px-3 py-2 [backdrop-filter:blur(6px)]"
@@ -1378,17 +1400,51 @@ const queueStatus = computed<{
                     </TooltipTrigger>
                     <TooltipContent>Re-queue clip</TooltipContent>
                   </Tooltip>
-                  <Button
-                    v-if="j.status === 'done' && j.clip_id"
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    class="h-6 shrink-0 gap-1 px-2 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                    @click="openJobClip(g, j)"
-                  >
-                    <Play class="h-3 w-3" />
-                    Preview
-                  </Button>
+                  <Tooltip v-if="j.status === 'done' && j.clip_id">
+                    <TooltipTrigger as-child>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        class="h-6 w-6 shrink-0 p-0 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
+                        @click="openJobClip(g, j)"
+                      >
+                        <Play class="h-3 w-3" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Preview clip</TooltipContent>
+                  </Tooltip>
+                  <Tooltip v-if="isAdmin && jobLogService(j)">
+                    <TooltipTrigger as-child>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        class="h-6 w-6 shrink-0 p-0"
+                        :class="
+                          logsExpanded[j.id]
+                            ? 'text-[hsl(var(--tac-amber))]'
+                            : 'text-muted-foreground hover:text-[hsl(var(--tac-amber))]'
+                        "
+                        @click="toggleJobLogs(j)"
+                      >
+                        <ScrollText class="h-3 w-3" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>View render job logs</TooltipContent>
+                  </Tooltip>
+                </div>
+
+                <div
+                  v-if="isAdmin && logsExpanded[j.id] && jobLogService(j)"
+                  class="mt-2 ml-[1.625rem] flex h-72 flex-col overflow-hidden rounded border border-border/60 bg-background/40"
+                >
+                  <ServiceLogs
+                    class="min-h-0 flex-1"
+                    :service="jobLogService(j)!"
+                    :compact="true"
+                    :disable-retry="TERMINAL.has(j.status)"
+                  />
                 </div>
 
                 <!-- Active clip: render + upload as two parallel phase bars. -->
@@ -1637,11 +1693,8 @@ const queueStatus = computed<{
               <div
                 class="border-t border-border/30 bg-muted/10 divide-y divide-border/30"
               >
-                <div
-                  v-for="j in visibleFinishedJobs(g)"
-                  :key="j.id"
-                  class="flex items-center gap-2.5 py-1 pl-9 pr-2.5"
-                >
+                <div v-for="j in visibleFinishedJobs(g)" :key="j.id">
+                 <div class="flex items-center gap-2.5 py-1 pl-9 pr-2.5">
                   <span
                     class="inline-flex h-1.5 w-1.5 shrink-0 rounded-full"
                     :class="STATUS_TONE[effectiveStatus(j)]?.dot"
@@ -1680,32 +1733,69 @@ const queueStatus = computed<{
                       {{ statusLabel("missing") }}
                     </div>
                   </div>
-                  <Button
-                    v-if="isAdmin"
-                    size="sm"
-                    variant="ghost"
-                    class="h-6 px-2 text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                    :disabled="requeueingJob[j.id]"
-                    @click="requeueJob(j.id)"
-                  >
-                    <Loader2
-                      v-if="requeueingJob[j.id]"
-                      class="h-3 w-3 mr-1 animate-spin"
-                    />
-                    <RotateCcw v-else class="h-3 w-3 mr-1" />
-                    Re-queue
-                  </Button>
-                  <Button
-                    v-if="j.status === 'done' && j.clip_id"
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    class="h-6 shrink-0 gap-1 px-2 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                    @click="openJobClip(g, j)"
-                  >
-                    <Play class="h-3 w-3" />
-                    Preview
-                  </Button>
+                  <Tooltip v-if="isAdmin">
+                    <TooltipTrigger as-child>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        class="h-6 w-6 shrink-0 p-0 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
+                        :disabled="requeueingJob[j.id]"
+                        @click="requeueJob(j.id)"
+                      >
+                        <Loader2
+                          v-if="requeueingJob[j.id]"
+                          class="h-3 w-3 animate-spin"
+                        />
+                        <RotateCcw v-else class="h-3 w-3" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Re-queue clip</TooltipContent>
+                  </Tooltip>
+                  <Tooltip v-if="j.status === 'done' && j.clip_id">
+                    <TooltipTrigger as-child>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        class="h-6 w-6 shrink-0 p-0 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
+                        @click="openJobClip(g, j)"
+                      >
+                        <Play class="h-3 w-3" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>Preview clip</TooltipContent>
+                  </Tooltip>
+                  <Tooltip v-if="isAdmin && jobLogService(j)">
+                    <TooltipTrigger as-child>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        class="h-6 w-6 shrink-0 p-0"
+                        :class="
+                          logsExpanded[j.id]
+                            ? 'text-[hsl(var(--tac-amber))]'
+                            : 'text-muted-foreground hover:text-[hsl(var(--tac-amber))]'
+                        "
+                        @click="toggleJobLogs(j)"
+                      >
+                        <ScrollText class="h-3 w-3" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>View render job logs</TooltipContent>
+                  </Tooltip>
+                 </div>
+                 <div
+                   v-if="isAdmin && logsExpanded[j.id] && jobLogService(j)"
+                   class="mb-1 ml-9 mr-2.5 flex h-72 flex-col overflow-hidden rounded border border-border/60 bg-background/40"
+                 >
+                   <ServiceLogs
+                     class="min-h-0 flex-1"
+                     :service="jobLogService(j)!"
+                     :compact="true"
+                     :disable-retry="TERMINAL.has(j.status)"
+                   />
+                 </div>
                 </div>
                 <button
                   v-if="g.totalCount > FINISHED_BATCH_CLIP_THRESHOLD"

@@ -41,7 +41,6 @@ const badgeClasses = [
   <FiveStackToolTip
     v-if="visibleImports.length > 0"
     :as-child="true"
-    :delay-duration="100"
     side="bottom"
     align="end"
   >

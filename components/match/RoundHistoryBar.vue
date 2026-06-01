@@ -233,7 +233,7 @@ function winnerName(round: Round) {
               </span>
             </div>
 
-            <Tooltip :delay-duration="400">
+            <Tooltip>
               <TooltipTrigger as-child>
                 <div
                   class="flex flex-col items-center gap-[6px] cursor-help group"

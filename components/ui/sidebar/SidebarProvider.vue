@@ -93,7 +93,7 @@ defineSlots<{
 </script>
 
 <template>
-  <TooltipProvider :delay-duration="200" :skip-delay-duration="300" :disable-hoverable-content="true">
+  <TooltipProvider :skip-delay-duration="300" :disable-hoverable-content="true">
     <div
       :style="{
         '--sidebar-width': SIDEBAR_WIDTH,

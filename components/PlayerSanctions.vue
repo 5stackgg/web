@@ -142,7 +142,7 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
                     v-if="canManageSanctions"
                     class="flex gap-2 items-center"
                   >
-                    <TooltipProvider :delay-duration="120">
+                    <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger as-child>
                           <Button
@@ -159,7 +159,7 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                    <TooltipProvider :delay-duration="120">
+                    <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger as-child>
                           <Button
@@ -228,7 +228,7 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
                     v-if="canManageSanctions"
                     class="flex gap-2 items-center"
                   >
-                    <TooltipProvider :delay-duration="120">
+                    <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger as-child>
                           <Button
@@ -307,7 +307,6 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
               />
               <TooltipProvider
                 v-if="editDate || editTime"
-                :delay-duration="120"
               >
                 <Tooltip>
                   <TooltipTrigger as-child>

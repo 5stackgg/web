@@ -602,7 +602,7 @@ const killMarkers = computed<Marker[]>(() => {
   <div
     class="flex flex-col gap-3 px-5 py-4 bg-card/95 backdrop-blur-sm border-t border-border/60"
   >
-    <TooltipProvider :delay-duration="200">
+    <TooltipProvider>
       <Transition name="reload-prompt">
         <div
           v-if="showReloadPrompt"

@@ -6,6 +6,7 @@ export const clipRenderJobFields = {
   status: true,
   progress: true,
   error_message: true,
+  k8s_job_name: true,
   clip_id: true,
   created_at: true,
   sort_index: true,

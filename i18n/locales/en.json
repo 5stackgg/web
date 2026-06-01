@@ -77,6 +77,11 @@
     "stream_boot": "Stream boot",
     "booting": "Allocating GPU",
     "downloading_cs2": "Installing CS2",
+    "install_phase": {
+      "downloading": "Downloading",
+      "verifying": "Verifying",
+      "finalizing": "Finalizing"
+    },
     "launching_steam": "Launching Steam",
     "logging_in": "Logging in",
     "launching_cs2": "Launching CS2",
@@ -1030,11 +1035,25 @@
       "bake": {
         "help": "Pre-bake this node's Vulkan shader cache so the first match starts warm.",
         "cancel_help": "Cancel the running shader pre-bake.",
+        "logs_help": "View the shader pre-bake job logs.",
         "started": "Shader bake started",
         "failed": "Failed to start shader bake",
         "cancelled": "Shader bake cancelled",
         "cancel_failed": "Failed to cancel shader bake",
-        "baking": "Baking shaders"
+        "baking": "Baking shaders",
+        "in_progress": "Pre-bake in progress",
+        "stages": {
+          "initializing": "Initializing",
+          "downloading_cs2": "Downloading CS2",
+          "launching_cs2": "Launching CS2",
+          "processing_shaders": "Processing shaders",
+          "errored": "Bake failed"
+        },
+        "steps": {
+          "download": "Downloading CS2",
+          "launch": "Launching CS2",
+          "shaders": "Rendering Shaders"
+        }
       },
       "table": {
         "node": "Node",

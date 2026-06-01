@@ -118,7 +118,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                   <SelectItem value="name">NAME</SelectItem>
                 </SelectContent>
               </Select>
-              <FiveStackToolTip :delay-duration="300">
+              <FiveStackToolTip>
                 <template #trigger>
                   <button
                     class="grid h-6 w-6 place-items-center border border-border text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.12)]"
@@ -235,7 +235,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                   </div>
                 </div>
 
-                <FiveStackToolTip :delay-duration="300">
+                <FiveStackToolTip>
                   <template #trigger>
                     <button
                       class="grid h-9 w-9 place-items-center border transition-colors"
@@ -383,7 +383,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                   </div>
                 </div>
 
-                <FiveStackToolTip :delay-duration="300">
+                <FiveStackToolTip>
                   <template #trigger>
                     <button
                       class="grid h-8 w-8 place-items-center border transition-colors"
@@ -505,7 +505,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                   <SelectItem value="name">NAME</SelectItem>
                 </SelectContent>
               </Select>
-              <FiveStackToolTip :delay-duration="300">
+              <FiveStackToolTip>
                 <template #trigger>
                   <button
                     class="grid h-6 w-6 place-items-center border border-border text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.12)]"
@@ -586,7 +586,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                 </div>
 
                 <div class="flex flex-shrink-0 items-start gap-1">
-                  <FiveStackToolTip :delay-duration="300">
+                  <FiveStackToolTip>
                     <template #trigger>
                       <button
                         class="grid h-8 w-8 place-items-center border transition-colors"
@@ -608,7 +608,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                       }}
                     </span>
                   </FiveStackToolTip>
-                  <FiveStackToolTip :delay-duration="300">
+                  <FiveStackToolTip>
                     <template #trigger>
                       <button
                         class="grid h-8 w-8 place-items-center border border-border bg-background/60 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"

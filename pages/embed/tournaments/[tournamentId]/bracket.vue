@@ -5,7 +5,6 @@ definePageMeta({ layout: false });
 
 <template>
   <TooltipProvider
-    :delay-duration="200"
     :skip-delay-duration="300"
     :disable-hoverable-content="true"
   >

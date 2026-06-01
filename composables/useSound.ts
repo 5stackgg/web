@@ -1,7 +1,7 @@
 import { computed, readonly, ref } from "vue";
-import { e_match_status_enum } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
+import { shouldAutoMuteChatSound } from "~/utilities/chatSoundAutoMute";
 
 const isEnabled = ref(true);
 const volume = ref(0.7);
@@ -13,28 +13,13 @@ export const useSound = () => {
       return false;
     }
 
-    const steamId = useAuthStore().me?.steam_id;
-    if (!steamId) {
-      return false;
-    }
-
     const matchLobbyStore = useMatchLobbyStore();
-    const myMatches = (matchLobbyStore.myMatches as unknown as any[]) || [];
 
-    return myMatches.some((match) => {
-      if (
-        !match?.is_in_lineup ||
-        match.status !== e_match_status_enum.Live
-      ) {
-        return false;
-      }
-
-      const player = matchLobbyStore.lobbyChat[`match:${match.id}`]?.get(
-        String(steamId),
-      ) as { inGame?: boolean } | undefined;
-
-      return player?.inGame === true;
-    });
+    return shouldAutoMuteChatSound(
+      useAuthStore().me?.steam_id,
+      (matchLobbyStore.myMatches as unknown as any[]) || [],
+      matchLobbyStore.lobbyChat,
+    );
   });
 
   const loadSettings = () => {

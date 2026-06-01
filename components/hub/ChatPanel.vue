@@ -9,6 +9,8 @@ import {
   Shield,
   MessageSquare,
   ExternalLink,
+  Volume2,
+  VolumeX,
 } from "lucide-vue-next";
 import { useRouter } from "#app";
 import ChatLobby from "~/components/chat/ChatLobby.vue";
@@ -17,6 +19,7 @@ import TooltipProvider from "~/components/ui/tooltip/TooltipProvider.vue";
 import TooltipTrigger from "~/components/ui/tooltip/TooltipTrigger.vue";
 import TooltipContent from "~/components/ui/tooltip/TooltipContent.vue";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
+import { useSound } from "~/composables/useSound";
 
 const props = defineProps<{
   isSidebarOpen: boolean;
@@ -30,6 +33,11 @@ const { tabs, unreadCounts, setActiveTab, resetUnread, incrementUnread } =
   useChatTabs();
 
 const matchLobbyStore = useMatchLobbyStore();
+const {
+  isEnabled: chatSoundEnabled,
+  isAutoMutedForInGame: chatSoundAutoMutedForInGame,
+  updateSettings: updateSoundSettings,
+} = useSound();
 const isMobile = useMediaQuery("(max-width: 768px)");
 
 const activeChatId = ref<string | null>(null);
@@ -63,6 +71,18 @@ const activeParticipantsCount = computed(() => {
     | undefined;
   if (!map) return 0;
   return map.size;
+});
+
+const chatSoundActive = computed(
+  () => chatSoundEnabled.value && !chatSoundAutoMutedForInGame.value,
+);
+
+const chatSoundToggleLabel = computed(() => {
+  if (chatSoundAutoMutedForInGame.value) {
+    return t("ui_extras.auto_muted_in_game", "Auto-muted while in game");
+  }
+
+  return chatSoundEnabled.value ? t("ui_extras.mute") : t("ui_extras.unmute");
 });
 
 const activeParticipants = computed<
@@ -224,6 +244,10 @@ function handlePopOut() {
   ].join(",");
   window.open(route.href, "_blank", features);
 }
+
+function toggleChatSound() {
+  updateSoundSettings(!chatSoundEnabled.value);
+}
 </script>
 
 <template>
@@ -351,6 +375,25 @@ function handlePopOut() {
           </div>
           <div class="flex items-center gap-1.5">
             <TooltipProvider :delay-duration="150">
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <button
+                    type="button"
+                    class="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-card/50 text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                    :aria-label="chatSoundToggleLabel"
+                    @click="toggleChatSound"
+                  >
+                    <Volume2 v-if="chatSoundActive" class="w-3.5 h-3.5" />
+                    <VolumeX v-else class="w-3.5 h-3.5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="bottom"
+                  class="bg-zinc-900 text-zinc-50 border border-zinc-800 shadow-lg rounded-md px-3 py-1.5 text-[11px]"
+                >
+                  {{ chatSoundToggleLabel }}
+                </TooltipContent>
+              </Tooltip>
               <Tooltip>
                 <TooltipTrigger as-child>
                   <button

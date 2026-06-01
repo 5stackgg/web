@@ -1,11 +1,48 @@
-import { ref } from "vue";
+import { computed, readonly, ref } from "vue";
+import { e_match_status_enum } from "~/generated/zeus";
+import { useAuthStore } from "~/stores/AuthStore";
+import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
+
+const isEnabled = ref(true);
+const volume = ref(0.7);
+let settingsLoaded = false;
 
 export const useSound = () => {
-  const isEnabled = ref(true);
-  const volume = ref(0.7);
+  const isAutoMutedForInGame = computed(() => {
+    if (!import.meta.client) {
+      return false;
+    }
+
+    const steamId = useAuthStore().me?.steam_id;
+    if (!steamId) {
+      return false;
+    }
+
+    const matchLobbyStore = useMatchLobbyStore();
+    const myMatches = (matchLobbyStore.myMatches as unknown as any[]) || [];
+
+    return myMatches.some((match) => {
+      if (
+        !match?.is_in_lineup ||
+        match.status !== e_match_status_enum.Live
+      ) {
+        return false;
+      }
+
+      const player = matchLobbyStore.lobbyChat[`match:${match.id}`]?.get(
+        String(steamId),
+      ) as { inGame?: boolean } | undefined;
+
+      return player?.inGame === true;
+    });
+  });
 
   const loadSettings = () => {
     if (!import.meta.client) {
+      return;
+    }
+
+    if (settingsLoaded) {
       return;
     }
 
@@ -18,6 +55,8 @@ export const useSound = () => {
     if (savedVolume !== null) {
       volume.value = parseFloat(savedVolume);
     }
+
+    settingsLoaded = true;
   };
 
   const saveSettings = () => {
@@ -65,10 +104,18 @@ export const useSound = () => {
   };
 
   const playNotificationSound = () => {
+    if (!import.meta.client || !isEnabled.value || isAutoMutedForInGame.value) {
+      return;
+    }
+
     generateBeepSound(800, 200);
 
     // Add a second beep for a more distinctive notification
     setTimeout(() => {
+      if (!isEnabled.value || isAutoMutedForInGame.value) {
+        return;
+      }
+
       generateBeepSound(600, 150);
     }, 100);
   };
@@ -432,5 +479,6 @@ export const useSound = () => {
     playCountdownSound,
     volume: readonly(volume),
     isEnabled: readonly(isEnabled),
+    isAutoMutedForInGame: readonly(isAutoMutedForInGame),
   };
 };

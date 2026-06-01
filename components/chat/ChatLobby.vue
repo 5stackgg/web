@@ -4,10 +4,16 @@ import ChatMessages from "~/components/chat/ChatMessages.vue";
 import ChatInput from "~/components/chat/ChatInput.vue";
 import ChatMatchHeader from "~/components/chat/ChatMatchHeader.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
+import { Volume2, VolumeX } from "lucide-vue-next";
+
+defineOptions({
+  inheritAttrs: false,
+});
 </script>
 
 <template>
-  <Teleport to="#global-chat-container" v-if="global" defer>
+  <div>
+    <Teleport to="#global-chat-container" v-if="global" defer>
     <div
       v-bind="$attrs"
       class="fixed bottom-4 bg-background border rounded-lg shadow-lg z-50 transition-all duration-300 ease-in-out flex flex-col w-96"
@@ -77,6 +83,16 @@ import Empty from "~/components/ui/empty/Empty.vue";
             {{ participantsCount }} in chat
           </button>
         </div>
+        <button
+          type="button"
+          class="inline-flex h-6 w-6 items-center justify-center rounded border border-border/50 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          :aria-label="chatSoundToggleLabel"
+          :title="chatSoundToggleLabel"
+          @click.stop="toggleChatSound"
+        >
+          <Volume2 v-if="chatSoundActive" class="h-3.5 w-3.5" />
+          <VolumeX v-else class="h-3.5 w-3.5" />
+        </button>
       </div>
       <div
         v-if="showParticipants"
@@ -165,8 +181,8 @@ import Empty from "~/components/ui/empty/Empty.vue";
         />
       </div>
     </div>
-  </Teleport>
-  <div v-else v-bind="$attrs" :class="embeddedContainerClasses">
+    </Teleport>
+    <div v-else v-bind="$attrs" :class="embeddedContainerClasses">
     <ChatMatchHeader
       v-if="isGlobalContext && hideParticipantsSummary && matchInfo"
       :match="matchInfo"
@@ -188,6 +204,16 @@ import Empty from "~/components/ui/empty/Empty.vue";
           {{ participantsCount }} in chat
         </button>
       </div>
+      <button
+        type="button"
+        class="inline-flex h-7 w-7 items-center justify-center rounded border border-border/50 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        :aria-label="chatSoundToggleLabel"
+        :title="chatSoundToggleLabel"
+        @click.stop="toggleChatSound"
+      >
+        <Volume2 v-if="chatSoundActive" class="h-3.5 w-3.5" />
+        <VolumeX v-else class="h-3.5 w-3.5" />
+      </button>
       <NuxtLink
         v-if="isGlobalContext && matchInfo"
         :to="`/matches/${(matchInfo as any).id}`"
@@ -280,6 +306,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
         @send-message="handleSendMessage"
       />
     </div>
+    </div>
   </div>
 </template>
 
@@ -293,7 +320,12 @@ import { useSound } from "~/composables/useSound";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 
 const { rightSidebarOpen } = useRightSidebar();
-const { playNotificationSound } = useSound();
+const {
+  isEnabled: chatSoundState,
+  isAutoMutedForInGame: chatSoundAutoMutedForInGame,
+  playNotificationSound: playChatNotificationSound,
+  updateSettings: updateSoundSettings,
+} = useSound();
 
 interface ChatMessagesRef {
   scrollToBottom: (force?: boolean) => void;
@@ -396,6 +428,24 @@ export default {
     },
     participantsCount() {
       return this.participants.length;
+    },
+    chatSoundEnabled() {
+      return chatSoundState.value;
+    },
+    chatSoundActive() {
+      return chatSoundState.value && !chatSoundAutoMutedForInGame.value;
+    },
+    chatSoundToggleLabel() {
+      if (chatSoundAutoMutedForInGame.value) {
+        return this.$t(
+          "ui_extras.auto_muted_in_game",
+          "Auto-muted while in game",
+        );
+      }
+
+      return chatSoundState.value
+        ? this.$t("ui_extras.mute")
+        : this.$t("ui_extras.unmute");
     },
     matchInfo() {
       if (this.type !== "match") {
@@ -510,6 +560,9 @@ export default {
         direction: "outbound",
       });
     },
+    toggleChatSound() {
+      updateSoundSettings(!chatSoundState.value);
+    },
     handleBottomStateChange(atBottom: boolean) {
       this.isAtBottom = atBottom;
     },
@@ -583,7 +636,7 @@ export default {
               this.lastReadMessageCount = this.messages.length;
             }
             if (this.playNotificationSound && !isOwnMessage) {
-              playNotificationSound();
+              playChatNotificationSound();
             }
 
             this.$emit("message-received", {

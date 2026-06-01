@@ -32,7 +32,7 @@ const { sortKey, sortDir, toggle, sortRows } = useTableSort<string>();
 
 <template>
   <Table
-    class="min-w-full w-max [&_td]:whitespace-nowrap [&_th]:px-2 [&_td]:px-2"
+    class="min-w-full w-max [&_td]:whitespace-nowrap [&_th]:px-2 [&_td]:px-2 [&_th.sticky+th]:!pl-5 [&_td.sticky+td]:!pl-5"
   >
     <template v-for="(lp, lpIdx) of lineupsToRender" :key="lp.id">
       <TableHeader

@@ -171,7 +171,7 @@ import {
 
 <template>
   <Table
-    class="min-w-full w-max [&_td]:whitespace-nowrap [&_th]:px-2 [&_td]:px-2"
+    class="min-w-full w-max [&_td]:whitespace-nowrap [&_th]:px-2 [&_td]:px-2 [&_th.sticky+th]:!pl-5 [&_td.sticky+td]:!pl-5"
   >
     <template v-for="(lp, lpIdx) of lineupsToRender" :key="lp.id">
       <TableHeader
@@ -263,7 +263,7 @@ import {
               :active-key="sortKey"
               :direction="sortDir"
               :disabled="sortDisabled"
-              class="text-center whitespace-nowrap"
+              class="whitespace-nowrap"
               @sort="toggle"
             >
               <span class="xl:hidden">K</span>
@@ -277,7 +277,7 @@ import {
               :active-key="sortKey"
               :direction="sortDir"
               :disabled="sortDisabled"
-              class="text-center whitespace-nowrap"
+              class="whitespace-nowrap"
               @sort="toggle"
             >
               <span class="xl:hidden">A</span>
@@ -290,7 +290,7 @@ import {
               :active-key="sortKey"
               :direction="sortDir"
               :disabled="sortDisabled"
-              class="text-center whitespace-nowrap"
+              class="whitespace-nowrap"
               @sort="toggle"
             >
               <span class="xl:hidden">D</span>
@@ -304,7 +304,7 @@ import {
               :active-key="sortKey"
               :direction="sortDir"
               :disabled="sortDisabled"
-              class="text-center whitespace-nowrap"
+              class="whitespace-nowrap"
               @sort="toggle"
               >{{ $t("match.overview.kd") }}</SortableTableHead
             >
@@ -314,7 +314,7 @@ import {
               :active-key="sortKey"
               :direction="sortDir"
               :disabled="sortDisabled"
-              class="text-center whitespace-nowrap"
+              class="whitespace-nowrap"
               @sort="toggle"
               >{{ $t("match.overview.hs") }}</SortableTableHead
             >
@@ -324,7 +324,7 @@ import {
               :active-key="sortKey"
               :direction="sortDir"
               :disabled="sortDisabled"
-              class="text-center whitespace-nowrap"
+              class="whitespace-nowrap"
               @sort="toggle"
             >
               <Tooltip>
@@ -351,7 +351,7 @@ import {
               :active-key="sortKey"
               :direction="sortDir"
               :disabled="sortDisabled"
-              class="text-center whitespace-nowrap"
+              class="whitespace-nowrap"
               @sort="toggle"
             >
               <span class="hidden 2xl:inline">
@@ -365,7 +365,7 @@ import {
               :active-key="sortKey"
               :direction="sortDir"
               :disabled="sortDisabled"
-              class="text-center whitespace-nowrap"
+              class="whitespace-nowrap"
               @sort="toggle"
             >
               <Tooltip>
@@ -392,7 +392,7 @@ import {
               :active-key="sortKey"
               :direction="sortDir"
               :disabled="sortDisabled"
-              class="text-center whitespace-nowrap"
+              class="whitespace-nowrap"
               @sort="toggle"
             >
               <Tooltip>
@@ -418,7 +418,7 @@ import {
               :active-key="sortKey"
               :direction="sortDir"
               :disabled="sortDisabled"
-              class="text-center whitespace-nowrap"
+              class="whitespace-nowrap"
               @sort="toggle"
             >
               <span class="md:hidden">ADR</span>
@@ -432,7 +432,7 @@ import {
               :active-key="sortKey"
               :direction="sortDir"
               :disabled="sortDisabled"
-              class="text-center whitespace-nowrap"
+              class="whitespace-nowrap"
               @sort="toggle"
               >{{ $t("match.overview.team_damage") }}</SortableTableHead
             >
@@ -442,7 +442,7 @@ import {
               :active-key="sortKey"
               :direction="sortDir"
               :disabled="sortDisabled"
-              class="text-center whitespace-nowrap"
+              class="whitespace-nowrap"
               @sort="toggle"
               >{{ $t("match.overview.knifes") }}</SortableTableHead
             >
@@ -452,7 +452,7 @@ import {
               :active-key="sortKey"
               :direction="sortDir"
               :disabled="sortDisabled"
-              class="text-center whitespace-nowrap"
+              class="whitespace-nowrap"
               @sort="toggle"
               >{{ $t("match.overview.zeus") }}</SortableTableHead
             >

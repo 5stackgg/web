@@ -336,6 +336,10 @@ type BatchGroup = {
     progress: number | null;
     at: string;
     firedStages: Set<string>;
+    // First `at` (epoch ms) each boot stage fired — drives the
+    // per-step duration / live-elapsed readout, mirroring
+    // StreamSessionProgress on the stream deck.
+    stageFirstAt: Map<string, number>;
   } | null;
   isPaused: boolean;
 };
@@ -403,17 +407,25 @@ function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
   const noneStarted = sorted.every((j) => j.status === "queued");
   if (noneStarted && !isPaused) {
     const firedStages = new Set<string>();
+    const stageFirstAt = new Map<string, number>();
     let latest: { entry: StatusHistoryEntry; at: number } | null = null;
     for (const j of sorted) {
       const history = j.status_history;
       if (!Array.isArray(history)) continue;
       for (const e of history) {
         if (e?.status !== "booting") continue;
+        const t = Date.parse(e.at);
         // boot_stage is "downloading_cs2:Validating" — strip sub-stage.
         if (typeof e.boot_stage === "string" && e.boot_stage) {
-          firedStages.add(e.boot_stage.split(":")[0]);
+          const key = e.boot_stage.split(":")[0];
+          firedStages.add(key);
+          // Earliest emit across the batch's jobs — the pod boots once,
+          // but each queued job carries its own booting history.
+          if (Number.isFinite(t)) {
+            const prev = stageFirstAt.get(key);
+            if (prev === undefined || t < prev) stageFirstAt.set(key, t);
+          }
         }
-        const t = Date.parse(e.at);
         if (!Number.isFinite(t)) continue;
         if (!latest || t > latest.at) latest = { entry: e, at: t };
       }
@@ -430,6 +442,7 @@ function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
             : null,
         at: latest.entry.at,
         firedStages,
+        stageFirstAt,
       };
     }
   }
@@ -812,6 +825,48 @@ async function resumeBatch(matchMapId: string) {
   } finally {
     resumingBatch.value = { ...resumingBatch.value, [matchMapId]: false };
   }
+}
+
+// 1s ticker so the current boot stage's elapsed time advances live,
+// matching StreamSessionProgress on the stream deck.
+const now = ref(Date.now());
+const ticker = setInterval(() => {
+  now.value = Date.now();
+}, 1000);
+onBeforeUnmount(() => clearInterval(ticker));
+
+function bootFmt(ms: number): string {
+  if (!Number.isFinite(ms) || ms < 0) return "";
+  const seconds = Math.floor(ms / 1000);
+  if (seconds < 60) return `${seconds}s`;
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}m ${s.toString().padStart(2, "0")}s`;
+}
+
+// Wall time a completed boot stage took = gap until the next stage
+// that actually fired (some stages skip, so walk forward in order).
+function bootStageDuration(group: BatchGroup, stageKey: string): string {
+  const info = group.bootInfo;
+  if (!info) return "";
+  const start = info.stageFirstAt.get(stageKey);
+  if (start === undefined) return "";
+  const order = QUEUE_BOOT_STAGES.value;
+  const idx = order.findIndex((s) => s.key === stageKey);
+  if (idx < 0) return "";
+  for (let i = idx + 1; i < order.length; i++) {
+    const at = info.stageFirstAt.get(order[i].key);
+    if (at !== undefined) return bootFmt(at - start);
+  }
+  return "";
+}
+
+function bootStageElapsed(group: BatchGroup, stageKey: string): string {
+  const info = group.bootInfo;
+  if (!info) return "";
+  const start = info.stageFirstAt.get(stageKey);
+  if (start === undefined) return "";
+  return bootFmt(now.value - start);
 }
 
 function formatTimeAgo(iso: string | null): string {
@@ -1199,14 +1254,28 @@ const queueStatus = computed<{
                     <CircleDashed v-else class="w-3.5 h-3.5 opacity-50" />
                   </span>
                   <span class="flex-1">{{ stage.label }}</span>
+                  <template v-if="stageStateFor(g, stage) === 'current'">
+                    <span
+                      v-if="g.bootInfo.progress !== null"
+                      class="font-mono text-[0.6rem] tabular-nums opacity-80"
+                    >
+                      {{ Math.round(g.bootInfo.progress * 100) }}%
+                    </span>
+                    <span
+                      v-if="bootStageElapsed(g, stage.key)"
+                      class="font-mono text-[0.6rem] tabular-nums opacity-70"
+                    >
+                      {{ bootStageElapsed(g, stage.key) }}
+                    </span>
+                  </template>
                   <span
-                    v-if="
-                      stageStateFor(g, stage) === 'current' &&
-                      g.bootInfo.progress !== null
+                    v-else-if="
+                      stageStateFor(g, stage) === 'done' &&
+                      bootStageDuration(g, stage.key)
                     "
-                    class="font-mono text-[0.6rem] tabular-nums opacity-80"
+                    class="font-mono text-[0.6rem] tabular-nums opacity-60"
                   >
-                    {{ Math.round(g.bootInfo.progress * 100) }}%
+                    {{ bootStageDuration(g, stage.key) }}
                   </span>
                   <span
                     v-else-if="stageStateFor(g, stage) === 'skipped'"

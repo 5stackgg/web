@@ -418,6 +418,9 @@ export default {
               update_status: true,
               gpu: true,
               gpu_info: true,
+              gpu_streaming_enabled: true,
+              gpu_demos_enabled: true,
+              gpu_rendering_enabled: true,
               cs2_video_settings: true,
               cpu_sockets: true,
               cpu_governor_info: true,
@@ -436,7 +439,7 @@ export default {
               demo_network_limiter: true,
               disk_available_gb: true,
               disk_used_percent: true,
-            },
+            } as any,
           ],
         }),
         variables(this: any): {

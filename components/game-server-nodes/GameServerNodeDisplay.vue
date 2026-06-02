@@ -6,96 +6,99 @@ import { Activity, Cpu, ExternalLink, AlertTriangle } from "lucide-vue-next";
 </script>
 
 <template>
-  <div class="flex gap-3 items-start">
-    <!-- Status indicator with tooltip -->
-    <FiveStackToolTip>
-      <template #trigger>
-        <div
-          class="h-2 w-2 rounded-full relative mt-1"
-          :class="{
-            ['bg-red-600']:
-              effectiveStatus === e_game_server_node_statuses_enum.Offline,
-            ['bg-green-600']:
-              effectiveStatus === e_game_server_node_statuses_enum.Online,
-            ['bg-yellow-600']:
-              effectiveStatus === e_game_server_node_statuses_enum.Setup ||
-              effectiveStatus ===
-                e_game_server_node_statuses_enum.NotAcceptingNewMatches,
-            ['bg-orange-400']: showMaxCPUFrequencyWarning,
-          }"
-        >
-          <span
-            class="animate-ping absolute left-0 h-2 w-2 rounded-full opacity-75"
-            :class="{
-              ['bg-red-400']:
-                effectiveStatus === e_game_server_node_statuses_enum.Offline,
-              ['bg-yellow-400']:
-                effectiveStatus === e_game_server_node_statuses_enum.Setup ||
-                effectiveStatus ===
-                  e_game_server_node_statuses_enum.NotAcceptingNewMatches,
-            }"
-            v-if="effectiveStatus !== e_game_server_node_statuses_enum.Online"
-          ></span>
-        </div>
-      </template>
-
-      <div class="flex items-center gap-1 font-medium">
-        <template
-          v-if="effectiveStatus === e_game_server_node_statuses_enum.Offline"
-        >
-          {{ $t("common.offline") }}
-          <template v-if="gameServerNode.offline_at">
-            <TimeAgo :date="gameServerNode.offline_at" />
+  <div class="flex flex-col gap-2">
+    <!-- Node Label and ID -->
+    <div class="flex flex-col">
+      <div class="font-medium text-sm flex items-center gap-2">
+        <!-- Status indicator with tooltip -->
+        <FiveStackToolTip>
+          <template #trigger>
+            <div
+              class="h-2 w-2 rounded-full relative shrink-0"
+              :class="{
+                ['bg-red-600']:
+                  effectiveStatus === e_game_server_node_statuses_enum.Offline,
+                ['bg-green-600']:
+                  effectiveStatus === e_game_server_node_statuses_enum.Online,
+                ['bg-yellow-600']:
+                  effectiveStatus === e_game_server_node_statuses_enum.Setup ||
+                  effectiveStatus ===
+                    e_game_server_node_statuses_enum.NotAcceptingNewMatches,
+                ['bg-orange-400']: showMaxCPUFrequencyWarning,
+              }"
+            >
+              <span
+                class="animate-ping absolute left-0 h-2 w-2 rounded-full opacity-75"
+                :class="{
+                  ['bg-red-400']:
+                    effectiveStatus ===
+                    e_game_server_node_statuses_enum.Offline,
+                  ['bg-yellow-400']:
+                    effectiveStatus === e_game_server_node_statuses_enum.Setup ||
+                    effectiveStatus ===
+                      e_game_server_node_statuses_enum.NotAcceptingNewMatches,
+                }"
+                v-if="
+                  effectiveStatus !== e_game_server_node_statuses_enum.Online
+                "
+              ></span>
+            </div>
           </template>
-        </template>
-        <template
-          v-else-if="
-            effectiveStatus === e_game_server_node_statuses_enum.Online
-          "
-        >
-          {{ $t("common.online") }}
-        </template>
-        <template
-          v-else-if="effectiveStatus === e_game_server_node_statuses_enum.Setup"
-        >
-          {{ $t("pages.game_server_nodes.status.setup") }}
-        </template>
-        <template
-          v-else-if="
-            effectiveStatus ===
-            e_game_server_node_statuses_enum.NotAcceptingNewMatches
-          "
-        >
-          {{ $t("pages.game_server_nodes.status.not_accepting") }}
-        </template>
+
+          <div class="flex items-center gap-1 font-medium">
+            <template
+              v-if="effectiveStatus === e_game_server_node_statuses_enum.Offline"
+            >
+              {{ $t("common.offline") }}
+              <template v-if="gameServerNode.offline_at">
+                <TimeAgo :date="gameServerNode.offline_at" />
+              </template>
+            </template>
+            <template
+              v-else-if="
+                effectiveStatus === e_game_server_node_statuses_enum.Online
+              "
+            >
+              {{ $t("common.online") }}
+            </template>
+            <template
+              v-else-if="
+                effectiveStatus === e_game_server_node_statuses_enum.Setup
+              "
+            >
+              {{ $t("pages.game_server_nodes.status.setup") }}
+            </template>
+            <template
+              v-else-if="
+                effectiveStatus ===
+                e_game_server_node_statuses_enum.NotAcceptingNewMatches
+              "
+            >
+              {{ $t("pages.game_server_nodes.status.not_accepting") }}
+            </template>
+          </div>
+        </FiveStackToolTip>
+
+        <span>{{ gameServerNode.label || gameServerNode.id }}</span>
       </div>
-    </FiveStackToolTip>
 
-    <div class="flex flex-col gap-2">
-      <!-- Node Label and ID -->
-      <div class="flex flex-col">
-        <div class="font-medium text-sm">
-          {{ gameServerNode.label || gameServerNode.id }}
-        </div>
-
-        <div
-          class="text-muted-foreground text-xs"
-          v-if="gameServerNode.lan_ip && gameServerNode.public_ip"
+      <div
+        class="text-muted-foreground text-xs"
+        v-if="gameServerNode.lan_ip && gameServerNode.public_ip"
+      >
+        <a
+          :href="`http://${gameServerNode.lan_ip}:8080`"
+          target="_blank"
+          class="hover:underline"
         >
-          <a
-            :href="`http://${gameServerNode.lan_ip}:8080`"
-            target="_blank"
-            class="hover:underline"
-          >
-            {{ gameServerNode.lan_ip }}
-          </a>
-          {{ gameServerNode.lan_ip && gameServerNode.public_ip ? "/" : "" }}
-          {{ gameServerNode.public_ip }}
-        </div>
+          {{ gameServerNode.lan_ip }}
+        </a>
+        {{ gameServerNode.lan_ip && gameServerNode.public_ip ? "/" : "" }}
+        {{ gameServerNode.public_ip }}
+      </div>
 
-        <div class="text-muted-foreground text-xs" v-if="gameServerNode.label">
-          {{ gameServerNode.id }}
-        </div>
+      <div class="text-muted-foreground text-xs" v-if="gameServerNode.label">
+        {{ gameServerNode.id }}
       </div>
     </div>
   </div>

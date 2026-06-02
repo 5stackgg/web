@@ -299,40 +299,51 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     }
   });
 
-  const createLobby = async () => {
-    const { data } = await getGraphqlClient().mutate({
-      mutation: typedGql("mutation")({
-        insert_lobbies_one: [
-          {
-            object: {},
-          },
-          {
-            id: true,
-          },
-        ],
-      }),
-    });
-    const newLobbyId = data.insert_lobbies_one.id;
+  const creatingLobby = ref(false);
 
-    if ((currentLobby.value as any)?.id !== newLobbyId) {
-      await new Promise<void>((resolve) => {
-        let stop: (() => void) | undefined;
-        const timeout = setTimeout(() => {
-          stop?.();
-          resolve();
-        }, 5000);
-        stop = watch(currentLobby, (lobby: any) => {
-          if (lobby?.id === newLobbyId) {
-            clearTimeout(timeout);
+  const createLobby = async () => {
+    if (creatingLobby.value) {
+      return;
+    }
+    creatingLobby.value = true;
+
+    try {
+      const { data } = await getGraphqlClient().mutate({
+        mutation: typedGql("mutation")({
+          insert_lobbies_one: [
+            {
+              object: {},
+            },
+            {
+              id: true,
+            },
+          ],
+        }),
+      });
+      const newLobbyId = data.insert_lobbies_one.id;
+
+      if ((currentLobby.value as any)?.id !== newLobbyId) {
+        await new Promise<void>((resolve) => {
+          let stop: (() => void) | undefined;
+          const timeout = setTimeout(() => {
             stop?.();
             resolve();
-          }
+          }, 5000);
+          stop = watch(currentLobby, (lobby: any) => {
+            if (lobby?.id === newLobbyId) {
+              clearTimeout(timeout);
+              stop?.();
+              resolve();
+            }
+          });
         });
-      });
-    }
+      }
 
-    setActiveHub("lobby");
-    return newLobbyId;
+      setActiveHub("lobby");
+      return newLobbyId;
+    } finally {
+      creatingLobby.value = false;
+    }
   };
 
   const inviteToLobby = async (steam_id: string) => {
@@ -580,6 +591,7 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
     lobbyInvites,
 
     createLobby,
+    creatingLobby,
     inviteToLobby,
     viewingMatchId,
   };

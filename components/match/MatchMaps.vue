@@ -8,9 +8,9 @@ import {
   ChevronLeft,
   PlayCircle,
   RefreshCw,
-  Loader2,
   MoreVertical,
 } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import MatchSelectMapWinner from "~/components/match/MatchSelectMapWinner.vue";
 import { toast } from "@/components/ui/toast";
 import { generateMutation } from "~/graphql/graphqlGen";
@@ -85,6 +85,25 @@ import cleanMapName from "~/utilities/cleanMapName";
           class="text-xs px-2 py-0.5 backdrop-blur-sm"
           >{{ $t("match.decider") }}</Badge
         >
+        <template v-if="hasDemo && hasDemoMetadata">
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button
+                size="xs"
+                variant="ghost"
+                class="h-6 w-6 p-0 text-white/70 hover:text-white"
+                @click.stop="openReplay2d()"
+              >
+                <span
+                  class="flex h-4 w-4 items-center justify-center rounded-full border border-current font-mono text-[8px] font-black leading-none"
+                >
+                  2D
+                </span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{{ $t("match.replay.open") }}</TooltipContent>
+          </Tooltip>
+        </template>
         <template v-if="hasDemo && canWatchDemo">
           <Tooltip v-if="!showDemoDropdown">
             <TooltipTrigger as-child>
@@ -98,9 +117,9 @@ import cleanMapName from "~/utilities/cleanMapName";
                     demoButtonState.onClick && demoButtonState.onClick()
                   "
                 >
-                  <Loader2
+                  <Spinner
                     v-if="demoButtonState.icon === 'loading'"
-                    class="w-4 h-4 animate-spin"
+                    class="w-4 h-4"
                   />
                   <RefreshCw
                     v-else-if="demoButtonState.icon === 'parse'"
@@ -469,6 +488,16 @@ export default {
         ? `demo-${this.matchMap.id}-${demoId}`
         : `demo-${this.matchMap.id}`;
       const popup = window.open(url, name, features);
+      if (popup) {
+        popup.focus();
+      }
+    },
+    openReplay2d() {
+      const popup = window.open(
+        `/match-replay-popout/${this.matchMap.id}`,
+        `replay-popout-${this.matchMap.id}`,
+        "popup=yes,width=1100,height=900,resizable=yes,scrollbars=yes",
+      );
       if (popup) {
         popup.focus();
       }

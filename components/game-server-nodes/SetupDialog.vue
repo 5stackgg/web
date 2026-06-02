@@ -2,7 +2,8 @@
 import { Button } from "~/components/ui/button";
 import ClipBoard from "~/components/ClipBoard.vue";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
-import { Info, Loader2, Check } from "lucide-vue-next";
+import { Info, Check } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import {
   Dialog,
   DialogContent,
@@ -47,7 +48,7 @@ import {
         <div class="space-y-2">
           <!-- Waiting for connection -->
           <Alert v-if="createdNode.status === 'Setup'" variant="default">
-            <Loader2 class="h-4 w-4 animate-spin" />
+            <Spinner class="h-4 w-4" />
             <AlertTitle>{{
               $t("pages.game_server_nodes.setup_dialog.waiting_title")
             }}</AlertTitle>

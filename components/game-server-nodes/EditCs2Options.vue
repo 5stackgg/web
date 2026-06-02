@@ -217,7 +217,7 @@ import {
           <Button type="button" variant="outline" @click="$emit('close')">
             {{ $t("common.cancel") }}
           </Button>
-          <Button type="submit">
+          <Button type="submit" :loading="submitting">
             {{ $t("game_server.cs2_options.save") }}
           </Button>
         </div>
@@ -450,6 +450,7 @@ export default {
       aaOptions: AA_OPTIONS,
       presetNames: PRESET_NAMES,
       presetLabels: PRESET_LABELS,
+      submitting: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -547,53 +548,62 @@ export default {
       }
     },
     async save() {
+      if (this.submitting) {
+        return;
+      }
+
       const { valid } = await this.form.validate();
       if (!valid) return;
 
-      const values = this.form.values as {
-        resolution: string;
-        video: VideoForm;
-      };
+      this.submitting = true;
+      try {
+        const values = this.form.values as {
+          resolution: string;
+          video: VideoForm;
+        };
 
-      // Auto mode: ship empty JSONB so the streamer skips writing
-      // cs2_video.txt and cs2 auto-detects on first launch.
-      // Otherwise: serialize all set keys with the `setting.` prefix.
-      // (JSONB columns can't be inlined as GraphQL object literals so
-      // we route via Zeus's `$("name", "jsonb")` placeholder + Apollo
-      // `variables`.)
-      const cs2_video_settings: Record<string, number> = {};
-      if (!this.isAuto) {
-        for (const k of FORM_KEYS) {
-          const v = values.video?.[k];
-          if (v !== null && v !== undefined) {
-            cs2_video_settings[`setting.${k}`] = v;
+        // Auto mode: ship empty JSONB so the streamer skips writing
+        // cs2_video.txt and cs2 auto-detects on first launch.
+        // Otherwise: serialize all set keys with the `setting.` prefix.
+        // (JSONB columns can't be inlined as GraphQL object literals so
+        // we route via Zeus's `$("name", "jsonb")` placeholder + Apollo
+        // `variables`.)
+        const cs2_video_settings: Record<string, number> = {};
+        if (!this.isAuto) {
+          for (const k of FORM_KEYS) {
+            const v = values.video?.[k];
+            if (v !== null && v !== undefined) {
+              cs2_video_settings[`setting.${k}`] = v;
+            }
+          }
+          const resKey = values.resolution || DEFAULT_RESOLUTION;
+          const match = RESOLUTIONS.find(
+            (r) => `${r.width}x${r.height}` === resKey,
+          );
+          if (match) {
+            cs2_video_settings["setting.defaultres"] = match.width;
+            cs2_video_settings["setting.defaultresheight"] = match.height;
           }
         }
-        const resKey = values.resolution || DEFAULT_RESOLUTION;
-        const match = RESOLUTIONS.find(
-          (r) => `${r.width}x${r.height}` === resKey,
-        );
-        if (match) {
-          cs2_video_settings["setting.defaultres"] = match.width;
-          cs2_video_settings["setting.defaultresheight"] = match.height;
-        }
+
+        await this.$apollo.mutate({
+          variables: { cs2_video_settings },
+          mutation: generateMutation({
+            update_game_server_nodes_by_pk: [
+              {
+                pk_columns: { id: this.gameServerNode.id },
+                _set: { cs2_video_settings: $("cs2_video_settings", "jsonb") },
+              },
+              { __typename: true },
+            ],
+          }),
+        });
+
+        toast({ title: this.$t("game_server.toast.cs2_options_updated") });
+        this.$emit("close");
+      } finally {
+        this.submitting = false;
       }
-
-      await this.$apollo.mutate({
-        variables: { cs2_video_settings },
-        mutation: generateMutation({
-          update_game_server_nodes_by_pk: [
-            {
-              pk_columns: { id: this.gameServerNode.id },
-              _set: { cs2_video_settings: $("cs2_video_settings", "jsonb") },
-            },
-            { __typename: true },
-          ],
-        }),
-      });
-
-      toast({ title: this.$t("game_server.toast.cs2_options_updated") });
-      this.$emit("close");
     },
   },
 };

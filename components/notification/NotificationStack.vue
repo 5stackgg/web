@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, onBeforeUnmount } from "vue";
 import { Check, ChevronDown, ChevronUp, Layers, Trash2 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
@@ -84,6 +84,52 @@ const expandedWrapperClass = computed(() =>
 
 const isOpen = ref(false);
 
+const deletingTop = ref(false);
+const dismissingAll = ref(false);
+const deletingAll = ref(false);
+let topTimer: ReturnType<typeof setTimeout> | undefined;
+let dismissAllTimer: ReturnType<typeof setTimeout> | undefined;
+let deleteAllTimer: ReturnType<typeof setTimeout> | undefined;
+
+function onDeleteTop() {
+  if (deletingTop.value) {
+    return;
+  }
+  deletingTop.value = true;
+  emit("delete", top.value.id);
+  topTimer = setTimeout(() => {
+    deletingTop.value = false;
+  }, 6000);
+}
+
+function onDismissAll() {
+  if (dismissingAll.value) {
+    return;
+  }
+  dismissingAll.value = true;
+  emit("dismissAll", unreadIds.value);
+  dismissAllTimer = setTimeout(() => {
+    dismissingAll.value = false;
+  }, 6000);
+}
+
+function onDeleteAll() {
+  if (deletingAll.value) {
+    return;
+  }
+  deletingAll.value = true;
+  emit("deleteAll", deletableIds.value);
+  deleteAllTimer = setTimeout(() => {
+    deletingAll.value = false;
+  }, 6000);
+}
+
+onBeforeUnmount(() => {
+  clearTimeout(topTimer);
+  clearTimeout(dismissAllTimer);
+  clearTimeout(deleteAllTimer);
+});
+
 function handleTopClick(event: MouseEvent) {
   const el = event.target as HTMLElement | null;
   if (el?.closest("a, button")) return;
@@ -138,7 +184,8 @@ function handleTopClick(event: MouseEvent) {
             size="icon"
             variant="ghost"
             class="h-6 w-6"
-            @click.stop="emit('delete', top.id)"
+            :loading="deletingTop"
+            @click.stop="onDeleteTop"
           >
             <Trash2 class="h-3.5 w-3.5" />
             <span class="sr-only">{{ $t("common.delete") }}</span>
@@ -216,7 +263,8 @@ function handleTopClick(event: MouseEvent) {
               v-if="unreadIds.length > 0"
               size="sm"
               variant="outline"
-              @click="emit('dismissAll', unreadIds)"
+              :loading="dismissingAll"
+              @click="onDismissAll"
             >
               {{ $t("layouts.notifications.dismiss_all") }}
             </Button>
@@ -225,7 +273,8 @@ function handleTopClick(event: MouseEvent) {
               size="sm"
               variant="outline"
               class="bg-destructive text-white"
-              @click="emit('deleteAll', deletableIds)"
+              :loading="deletingAll"
+              @click="onDeleteAll"
             >
               {{ $t("common.delete") }}
             </Button>

@@ -3,11 +3,20 @@
     <button
       v-if="!isCheckedIn"
       type="button"
-      :class="[tacticalCtaButtonClasses, 'w-full']"
+      :class="[tacticalCtaButtonClasses, 'w-full disabled:cursor-default']"
+      :disabled="loading"
       @click="checkIn"
     >
-      <CheckCircle2 class="w-4 h-4" />
-      <span>{{ $t("match.check_in.check_in") }}</span>
+      <span
+        v-if="loading"
+        class="absolute inset-0 flex items-center justify-center"
+      >
+        <Spinner />
+      </span>
+      <CheckCircle2 class="w-4 h-4" :class="{ invisible: loading }" />
+      <span :class="{ invisible: loading }">{{
+        $t("match.check_in.check_in")
+      }}</span>
     </button>
     <div v-else class="flex items-center gap-3">
       <Badge variant="secondary" class="shrink-0 whitespace-nowrap">
@@ -30,9 +39,11 @@ import { CheckCircle2 } from "lucide-vue-next";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { e_check_in_settings_enum } from "~/generated/zeus";
 import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
+import { Spinner } from "~/components/ui/spinner";
+import { useMinLoading } from "~/composables/useMinLoading";
 
 export default {
-  components: { CheckCircle2 },
+  components: { CheckCircle2, Spinner },
   props: {
     match: {
       type: Object,
@@ -40,7 +51,7 @@ export default {
     },
   },
   setup() {
-    return { tacticalCtaButtonClasses };
+    return { tacticalCtaButtonClasses, ...useMinLoading() };
   },
   computed: {
     me() {
@@ -84,18 +95,20 @@ export default {
   },
   methods: {
     async checkIn() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          checkIntoMatch: [
-            {
-              match_id: this.match.id,
-            },
-            {
-              success: true,
-            },
-          ],
+      await this.run(() =>
+        this.$apollo.mutate({
+          mutation: generateMutation({
+            checkIntoMatch: [
+              {
+                match_id: this.match.id,
+              },
+              {
+                success: true,
+              },
+            ],
+          }),
         }),
-      });
+      );
     },
   },
 };

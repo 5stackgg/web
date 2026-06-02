@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from "vue";
-import { Loader2 } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
 
 function formatDate(date: string): string {
@@ -71,7 +71,7 @@ const badgeClasses = [
             v-else-if="!entry.map_name"
             class="flex items-center gap-1.5 text-muted-foreground"
           >
-            <Loader2 class="w-3 h-3 animate-spin" />
+            <Spinner class="w-3 h-3" />
             Importing…
           </span>
         </li>

@@ -69,6 +69,7 @@
     "user": "User",
     "verified_user": "Verified User",
     "streamer": "Streamer",
+    "moderator": "Moderator",
     "match_organizer": "Match Organizer",
     "tournament_organizer": "Tournament Organizer",
     "administrator": "Administrator"
@@ -450,22 +451,31 @@
         },
         "discord": {
           "title": "Discord / Notifications",
-          "support_section": "Support & Invites",
+          "support_section": "Defaults",
+          "support_section_description": "The default Discord webhook and role used for support and invite notifications, plus your Discord invite link. Every other Discord notification below falls back to these when it doesn't have its own webhook or role set.",
           "invite_link": "Discord Invite Link",
-          "webhook": "Discord Webhook",
+          "webhook": "Default Discord Webhook",
           "webhook_description": "We use this discord webhook to send notifications that require action from a player. Ex. match issues, bugs, etc.",
-          "support_role": "Discord Support Role ID",
+          "support_role": "Default Role ID",
           "support_role_description": "These roles will be pinged when used for support actions. You can add multiple Role IDs separated by commas. Get a Role ID from Discord by enabling developer mode, then right-clicking the role and selecting Copy ID.",
           "updated": "Updated Discord Settings",
           "match_notifications": {
             "title": "Match Status Notifications",
             "description": "Configure Discord notifications for match status changes. These settings control both panel and Discord notifications.",
             "webhook": "Match Notifications Webhook URL",
-            "webhook_description": "Dedicated webhook for match status notifications. Falls back to the support webhook if not set.",
+            "webhook_description": "Dedicated webhook for match status notifications. Falls back to the default webhook if not set.",
             "role_id": "Match Notifications Role ID",
             "role_id_description": "These roles will be mentioned in match status notifications. You can add multiple Role IDs separated by commas.",
             "statuses_title": "Notify on Status Changes",
             "events_title": "Notify on Match Events"
+          },
+          "gamedata_notifications": {
+            "title": "Gamedata Validation Notifications",
+            "description": "Configure where CS2 gamedata signature validation results are posted.",
+            "webhook": "Gamedata Notifications Webhook URL",
+            "webhook_description": "Dedicated webhook for gamedata validation results. Falls back to the default webhook if not set.",
+            "role_id": "Gamedata Notifications Role ID",
+            "role_id_description": "These roles will be mentioned in gamedata validation notifications. You can add multiple Role IDs separated by commas. Falls back to the default role if not set."
           },
           "server_notifications": {
             "title": "Server Notifications",
@@ -942,6 +952,10 @@
     },
     "play": {
       "title": "Play",
+      "not_party_leader": {
+        "title": "You're not the party leader",
+        "description": "Your party leader needs to join the matchmaking queue, create a custom match, or join another match below."
+      },
       "open_matches": {
         "description": "Matches that are open lobbies for anyone to join."
       },
@@ -1151,6 +1165,10 @@
         "show_config": "Show Config",
         "config_location": "This config should be placed in:",
         "files": "Files",
+        "player_management": "Player Management",
+        "no_players": "No players currently on this server",
+        "sanctions_wip_title": "Work in progress",
+        "sanctions_wip": "Kicks work today. Live mute/gag enforcement on public servers is a work in progress — a new 5Stack public server plugin is coming soon, and mutes/gags will apply automatically once it ships.",
         "status": {
           "disconnected": "Server is disconnected",
           "no_rcon": "Server is connected but RCON is not available",
@@ -1169,7 +1187,8 @@
       "players": "Players",
       "no_servers_title": "No Servers Available",
       "no_public_servers": "No public servers available at the moment.",
-      "lan_servers_title": "LAN Servers"
+      "lan_servers_title": "LAN Servers",
+      "manage": "Manage"
     },
     "map_pools": {
       "title": "Map Pools",
@@ -1897,6 +1916,7 @@
     "user": "User",
     "verified_user": "Verified User",
     "streamer": "Streamer",
+    "moderator": "Moderator",
     "match_organizer": "Match Organizer",
     "tournament_organizer": "Tournament Organizer",
     "administrator": "Administrator"
@@ -2957,6 +2977,7 @@
       "selected": "Selected",
       "positions_large": "Replay positions are large. Click load to fetch them for {map}.",
       "load": "Load Replay",
+      "open": "Open 2D Replay",
       "loading": "Loading replay…",
       "no_position_data": "No position data — re-parse the demo to populate the replay.",
       "toggle_to_slots": "Switch to slot numbers",
@@ -3061,6 +3082,15 @@
     "player": {
       "steam_id": "Steam ID",
       "steam": "Steam"
+    },
+    "kick": {
+      "button": "Kick",
+      "title": "Kick {name}",
+      "description": "Removes the player from the server. They can rejoin unless banned. Optionally provide a reason shown to the player.",
+      "reason_label": "Reason",
+      "reason_placeholder": "Optional reason...",
+      "confirm": "Kick Player",
+      "kicked": "Kicked {name}"
     },
     "sanction": {
       "button": "Sanction Player",
@@ -3237,6 +3267,7 @@
     "game_server_versions": "Game Server Versions",
     "cs_build": "CS Build",
     "update_cs": "Update CS2",
+    "validate_gamedata": "Validate Gamedata",
     "note_label": "Note:",
     "one_cpu_core": "1 CPU core",
     "unpin_build_id": "Use Latest Version",
@@ -3330,6 +3361,7 @@
     "toast": {
       "cs_updating": "CS2 is being updated on the node",
       "csgo_installing": "CS:GO is being installed on the node",
+      "validating_gamedata": "Validating gamedata signatures on the node",
       "ports_updated": "Node Ports Updated",
       "label_updated": "Node Label Updated",
       "cs2_options_updated": "Video settings updated",

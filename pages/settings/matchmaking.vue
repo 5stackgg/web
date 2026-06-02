@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import MatchmakingSettings from "~/components/matchmaking/MatchmakingSettings.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-definePageMeta({
-  layout: "profile-settings",
-});
 </script>
 
 <template>

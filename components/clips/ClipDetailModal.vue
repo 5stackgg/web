@@ -13,7 +13,6 @@ const { t } = useI18n();
 import {
   Crosshair,
   Download,
-  Loader2,
   Trash2,
   Share2,
   Check,
@@ -62,6 +61,7 @@ import {
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { useClipModal } from "~/composables/useClipModal";
 import { useClipShare } from "~/composables/useClipShare";
+import { Spinner } from "~/components/ui/spinner";
 
 const apiDomain = computed(() => useRuntimeConfig().public.apiDomain as string);
 
@@ -518,7 +518,7 @@ onMounted(() => {
                       : 'bg-white/5'
                 "
               >
-                <Loader2 v-if="visSaving" class="h-3 w-3 animate-spin" />
+                <Spinner v-if="visSaving" class="h-3 w-3" />
                 <Lock
                   v-else-if="clip.visibility === 'private'"
                   class="h-3 w-3"
@@ -691,7 +691,7 @@ onMounted(() => {
                   <div
                     class="absolute inset-0 flex items-center justify-center text-muted-foreground"
                   >
-                    <Loader2 class="h-6 w-6 animate-spin" />
+                    <Spinner class="h-6 w-6" />
                     <span
                       class="ml-3 text-sm font-mono uppercase tracking-[0.18em]"
                     >
@@ -872,10 +872,7 @@ onMounted(() => {
                     {{ $t("common.cancel") }}
                   </Button>
                   <Button size="sm" :disabled="saving" @click="saveEdit">
-                    <Loader2
-                      v-if="saving"
-                      class="h-3.5 w-3.5 mr-1.5 animate-spin"
-                    />
+                    <Spinner v-if="saving" class="h-3.5 w-3.5 mr-1.5" />
                     {{ $t("common.save") }}
                   </Button>
                 </div>

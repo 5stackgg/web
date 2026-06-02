@@ -65,6 +65,7 @@ export default {
       demoBombs: [] as any[],
       demoKitDrops: [] as any[],
       demoRoundTicks: [] as any[],
+      roundInventory: [] as any[],
       tickRate: 64 as number,
       blobLoading: false as boolean,
       blobLoaded: false as boolean,
@@ -93,6 +94,7 @@ export default {
       self.demoBombs = data.demoBombs ?? [];
       self.demoKitDrops = data.demoKitDrops ?? [];
       self.demoRoundTicks = data.demoRoundTicks ?? [];
+      self.roundInventory = data.roundInventory ?? [];
       self.tickRate = data.tickRate ?? 64;
       self.hydratedFromOpener = true;
       self.blobLoaded = true;
@@ -137,6 +139,7 @@ export default {
           self.demoBombs = blob.bombs ?? [];
           self.demoKitDrops = blob.kit_drops ?? [];
           self.demoRoundTicks = blob.round_ticks ?? [];
+          self.roundInventory = blob.round_inventory ?? [];
           self.tickRate = blob.tick_rate || 64;
         } catch (error) {
           // eslint-disable-next-line no-console
@@ -196,6 +199,7 @@ export default {
       :demo-kit-drops="demoKitDrops"
       :is-popout="true"
       :demo-round-ticks="demoRoundTicks"
+      :round-inventory="roundInventory"
       :tick-rate="tickRate"
       :map-name="mapName"
     />

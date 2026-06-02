@@ -6,6 +6,7 @@ import { useApolloClient } from "@vue/apollo-composable";
 
 const { t } = useI18n();
 import { Button } from "~/components/ui/button";
+import { Spinner } from "~/components/ui/spinner";
 import { useToast } from "~/components/ui/toast/use-toast";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
@@ -116,8 +117,33 @@ function toggleExpanded(nodeId: string) {
 
 // Shader-bake job logs (live + recent), via the shared ServiceLogs viewer.
 const bakeLogsByNodeId = reactive<Record<string, boolean>>({});
+const bakeLogsLoadingByNodeId = reactive<Record<string, boolean>>({});
+const bakeLogsTimers: Record<string, ReturnType<typeof setTimeout>> = {};
 function toggleBakeLogs(nodeId: string) {
-  bakeLogsByNodeId[nodeId] = !bakeLogsByNodeId[nodeId];
+  const open = !bakeLogsByNodeId[nodeId];
+  bakeLogsByNodeId[nodeId] = open;
+
+  if (bakeLogsTimers[nodeId]) {
+    clearTimeout(bakeLogsTimers[nodeId]);
+    delete bakeLogsTimers[nodeId];
+  }
+
+  if (open) {
+    bakeLogsLoadingByNodeId[nodeId] = true;
+    bakeLogsTimers[nodeId] = setTimeout(() => {
+      bakeLogsLoadingByNodeId[nodeId] = false;
+      delete bakeLogsTimers[nodeId];
+    }, 8000);
+  } else {
+    bakeLogsLoadingByNodeId[nodeId] = false;
+  }
+}
+function onBakeLogsReady(nodeId: string) {
+  bakeLogsLoadingByNodeId[nodeId] = false;
+  if (bakeLogsTimers[nodeId]) {
+    clearTimeout(bakeLogsTimers[nodeId]);
+    delete bakeLogsTimers[nodeId];
+  }
 }
 
 // Two-stage confirm so a stray click can't kill an operator's live
@@ -622,7 +648,8 @@ async function stopGpuSession(nodeId: string) {
                   :disabled="bakeBusyByNodeId[node.id]"
                   @click="bakeShaders(node)"
                 >
-                  <Flame class="w-3.5 h-3.5" />
+                  <Spinner v-if="bakeBusyByNodeId[node.id]" />
+                  <Flame v-else class="w-3.5 h-3.5" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
@@ -638,7 +665,8 @@ async function stopGpuSession(nodeId: string) {
                   :disabled="bakeBusyByNodeId[node.id]"
                   @click="cancelBakeShaders(node)"
                 >
-                  <X class="w-3.5 h-3.5" />
+                  <Spinner v-if="bakeBusyByNodeId[node.id]" />
+                  <X v-else class="w-3.5 h-3.5" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
@@ -653,7 +681,8 @@ async function stopGpuSession(nodeId: string) {
                   :data-open="bakeLogsByNodeId[node.id]"
                   @click="toggleBakeLogs(node.id)"
                 >
-                  <ScrollText class="w-3.5 h-3.5" />
+                  <Spinner v-if="bakeLogsLoadingByNodeId[node.id]" />
+                  <ScrollText v-else class="w-3.5 h-3.5" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
@@ -779,6 +808,7 @@ async function stopGpuSession(nodeId: string) {
             :service="`shader-bake:${node.id}`"
             :compact="true"
             :disable-retry="!isBaking(node)"
+            @has-logs="onBakeLogsReady(node.id)"
           />
         </div>
 

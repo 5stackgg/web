@@ -18,6 +18,7 @@ type AuthStoreSetup = {
   isUser: ComputedRef<boolean>;
   isVerifiedUser: ComputedRef<boolean>;
   isStreamer: ComputedRef<boolean>;
+  isModerator: ComputedRef<boolean>;
   isMatchOrganizer: ComputedRef<boolean>;
   isTournamentOrganizer: ComputedRef<boolean>;
   isAdmin: ComputedRef<boolean>;
@@ -49,6 +50,7 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
     e_player_roles_enum.user,
     e_player_roles_enum.verified_user,
     e_player_roles_enum.streamer,
+    e_player_roles_enum.moderator,
     e_player_roles_enum.match_organizer,
     e_player_roles_enum.tournament_organizer,
     e_player_roles_enum.administrator,
@@ -258,6 +260,10 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
     () => me.value?.role === e_player_roles_enum.streamer,
   );
 
+  const isModerator = computed(
+    () => me.value?.role === e_player_roles_enum.moderator,
+  );
+
   const isAdmin = computed(
     () => me.value?.role === e_player_roles_enum.administrator,
   );
@@ -276,6 +282,7 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
     isUser,
     isVerifiedUser,
     isStreamer,
+    isModerator,
     isMatchOrganizer,
     isTournamentOrganizer,
     isAdmin,

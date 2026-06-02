@@ -380,7 +380,11 @@ const showConnectPassword = ref(false);
       </FormItem>
     </FormField>
 
-    <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
+    <Button
+      type="submit"
+      :disabled="Object.keys(form.errors).length > 0"
+      :loading="submitting"
+    >
       <template v-if="server">{{ $t("server.form.update") }}</template>
       <template v-else>{{ $t("server.form.create") }}</template>
     </Button>
@@ -456,6 +460,7 @@ export default {
   },
   data() {
     return {
+      submitting: false,
       gameServerNodes: [],
       form: useForm({
         validationSchema: toTypedSchema(
@@ -610,92 +615,104 @@ export default {
   },
   methods: {
     async updateCreateServer() {
-      const { valid } = await this.form.validate();
-
-      if (!valid) {
+      if (this.submitLock) {
         return;
       }
+      this.submitLock = true;
+      try {
+        const { valid } = await this.form.validate();
 
-      if (this.server) {
-        const formValues = { ...this.form.values };
-        if (
-          !formValues.game_server_node_id ||
-          formValues.game_server_node_id === "none"
-        ) {
-          formValues.game_server_node_id = null;
+        if (!valid) {
+          return;
         }
 
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            update_servers_by_pk: [
-              {
-                pk_columns: {
-                  id: this.server.id,
+        this.submitting = true;
+        if (this.server) {
+          const formValues = { ...this.form.values };
+          if (
+            !formValues.game_server_node_id ||
+            formValues.game_server_node_id === "none"
+          ) {
+            formValues.game_server_node_id = null;
+          }
+
+          await this.$apollo.mutate({
+            mutation: generateMutation({
+              update_servers_by_pk: [
+                {
+                  pk_columns: {
+                    id: this.server.id,
+                  },
+                  _set: {
+                    type: formValues.type,
+                    label: formValues.label,
+                    game: formValues.game || "cs2",
+                    rcon_password: formValues.rcon_password,
+                    connect_password: formValues.connect_password,
+                    max_players: formValues.max_players,
+                    ...(!this.server.game_server_node_id
+                      ? {
+                          host: formValues.host,
+                          port: formValues.port,
+                          tv_port: formValues.tv_port,
+                          region: formValues.region,
+                        }
+                      : {}),
+                  },
                 },
-                _set: {
+                {
+                  __typename: true,
+                },
+              ],
+            }),
+          });
+          this.$emit("updated");
+          return;
+        }
+
+        const formValues = this.form.values;
+
+        const { data } = await this.$apollo.mutate({
+          mutation: generateMutation({
+            insert_servers_one: [
+              {
+                object: {
+                  enabled: true,
                   type: formValues.type,
                   label: formValues.label,
                   game: formValues.game || "cs2",
+                  region: formValues.use_game_server_node
+                    ? ""
+                    : formValues.region,
+                  game_server_node_id: formValues.use_game_server_node
+                    ? formValues.game_server_node_id
+                    : null,
+                  host: formValues.use_game_server_node
+                    ? "127.0.0.1"
+                    : formValues.host,
+                  port: formValues.use_game_server_node
+                    ? 27015
+                    : formValues.port,
+                  tv_port: formValues.use_game_server_node
+                    ? 27020
+                    : formValues.tv_port,
                   rcon_password: formValues.rcon_password,
                   connect_password: formValues.connect_password,
                   max_players: formValues.max_players,
-                  ...(!this.server.game_server_node_id
-                    ? {
-                        host: formValues.host,
-                        port: formValues.port,
-                        tv_port: formValues.tv_port,
-                        region: formValues.region,
-                      }
-                    : {}),
                 },
               },
               {
-                __typename: true,
+                id: true,
               },
             ],
           }),
         });
-        this.$emit("updated");
-        return;
+
+        this.$router.push(`/dedicated-servers/${data.insert_servers_one.id}`);
+      } finally {
+        this.submitLock = false;
+        this.submitting = false;
       }
-
-      const formValues = this.form.values;
-
-      const { data } = await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_servers_one: [
-            {
-              object: {
-                enabled: true,
-                type: formValues.type,
-                label: formValues.label,
-                game: formValues.game || "cs2",
-                region: formValues.use_game_server_node
-                  ? ""
-                  : formValues.region,
-                game_server_node_id: formValues.use_game_server_node
-                  ? formValues.game_server_node_id
-                  : null,
-                host: formValues.use_game_server_node
-                  ? "127.0.0.1"
-                  : formValues.host,
-                port: formValues.use_game_server_node ? 27015 : formValues.port,
-                tv_port: formValues.use_game_server_node
-                  ? 27020
-                  : formValues.tv_port,
-                rcon_password: formValues.rcon_password,
-                connect_password: formValues.connect_password,
-                max_players: formValues.max_players,
-              },
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
-
-      this.$router.push(`/dedicated-servers/${data.insert_servers_one.id}`);
     },
   },
 };

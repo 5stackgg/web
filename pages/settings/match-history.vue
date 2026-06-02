@@ -14,13 +14,20 @@ import {
   Unlink,
   CheckCircle2,
   AlertCircle,
-  Loader2,
 } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import { Progress } from "@/components/ui/progress";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "~/components/ui/alert-dialog";
 
-definePageMeta({
-  layout: "profile-settings",
-});
 
 const apolloClient = useApolloClient().client;
 const me = computed(() => useAuthStore().me);
@@ -33,6 +40,7 @@ const shareCode = ref("");
 const linking = ref(false);
 const unlinking = ref(false);
 const polling = ref(false);
+const showUnlinkConfirm = ref(false);
 
 // Linking auto-triggers a server-side poll. Surface that immediately and keep
 // it visible until the first poll lands pending imports, an error, or simply
@@ -228,6 +236,7 @@ async function submitUnlink() {
   try {
     await apolloClient.mutate({ mutation: UNLINK_MUTATION });
     toast({ title: "Unlinked CS2 match history" });
+    showUnlinkConfirm.value = false;
   } finally {
     unlinking.value = false;
   }
@@ -488,7 +497,7 @@ async function uploadDemo(file: File) {
       v-if="!linkLoaded"
       class="flex items-center gap-2 text-sm text-muted-foreground max-w-xl"
     >
-      <Loader2 class="w-4 h-4 animate-spin" />
+      <Spinner class="w-4 h-4" />
       Checking match history link…
     </div>
 
@@ -579,28 +588,38 @@ async function uploadDemo(file: File) {
           </div>
 
           <div class="flex items-center gap-1.5 shrink-0">
-            <Button
-              size="sm"
-              variant="outline"
-              :disabled="polling || awaitingPoll"
-              @click="submitPoll"
-            >
-              <RefreshCw
-                class="w-3.5 h-3.5 mr-1.5"
-                :class="{ 'animate-spin': polling || awaitingPoll }"
-              />
+            <FiveStackToolTip side="bottom">
+              <template #trigger>
+                <Button
+                  size="icon"
+                  variant="outline"
+                  class="h-8 w-8 transition-shadow"
+                  :class="{ 'poll-active': polling || awaitingPoll }"
+                  :disabled="polling || awaitingPoll"
+                  @click="submitPoll"
+                >
+                  <RefreshCw
+                    class="w-3.5 h-3.5"
+                    :class="{ 'poll-spin': polling || awaitingPoll }"
+                  />
+                </Button>
+              </template>
               {{ polling || awaitingPoll ? "Polling…" : "Poll now" }}
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              class="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-              :disabled="unlinking"
-              @click="submitUnlink"
-            >
-              <Unlink class="w-3.5 h-3.5 mr-1.5" />
+            </FiveStackToolTip>
+            <FiveStackToolTip side="bottom">
+              <template #trigger>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  class="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                  :disabled="unlinking"
+                  @click="showUnlinkConfirm = true"
+                >
+                  <Unlink class="w-3.5 h-3.5" />
+                </Button>
+              </template>
               {{ unlinking ? "Unlinking…" : "Unlink" }}
-            </Button>
+            </FiveStackToolTip>
           </div>
         </div>
 
@@ -633,12 +652,37 @@ async function uploadDemo(file: File) {
     </div>
   </PageTransition>
 
+  <AlertDialog v-model:open="showUnlinkConfirm">
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>Unlink match history?</AlertDialogTitle>
+        <AlertDialogDescription>
+          We'll stop importing your official CS2 matches and Premier rank. You
+          can re-link anytime with your Steam auth and share codes.
+        </AlertDialogDescription>
+      </AlertDialogHeader>
+      <AlertDialogFooter>
+        <AlertDialogCancel :disabled="unlinking">Cancel</AlertDialogCancel>
+        <!-- Plain button — radix's AlertDialogAction auto-closes
+             before the async mutation can run. -->
+        <button
+          type="button"
+          :disabled="unlinking"
+          class="inline-flex h-10 items-center justify-center rounded-md bg-destructive px-4 text-sm font-medium text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
+          @click="submitUnlink"
+        >
+          {{ unlinking ? "Unlinking…" : "Unlink" }}
+        </button>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+
   <PageTransition v-if="externalMatchesEnabled && awaitingPoll" :delay="120">
     <div
       class="flex items-start gap-2.5 rounded-lg border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] px-4 py-3 text-sm max-w-xl mt-4"
     >
-      <Loader2
-        class="w-4 h-4 mt-0.5 shrink-0 animate-spin text-[hsl(var(--tac-amber))]"
+      <Spinner
+        class="w-4 h-4 mt-0.5 shrink-0 text-[hsl(var(--tac-amber))]"
       />
       <div>
         <div class="font-medium">Polling your match history…</div>
@@ -707,7 +751,7 @@ async function uploadDemo(file: File) {
               v-else-if="!entry.map_name"
               class="flex items-center gap-2 text-sm text-muted-foreground"
             >
-              <Loader2 class="w-3.5 h-3.5 animate-spin" />
+              <Spinner class="w-3.5 h-3.5" />
               Importing…
             </div>
           </div>
@@ -872,3 +916,33 @@ async function uploadDemo(file: File) {
     </div>
   </PageTransition>
 </template>
+
+<style scoped>
+/* Polling: a deliberate "scanning" rotation with eased cadence rather than a
+   flat linear spin, plus a soft amber glow that ties into the tactical theme. */
+.poll-active {
+  border-color: hsl(var(--tac-amber) / 0.55);
+  color: hsl(var(--tac-amber));
+  box-shadow:
+    inset 0 0 0 1px hsl(var(--tac-amber) / 0.18),
+    0 0 14px -3px hsl(var(--tac-amber) / 0.65);
+}
+
+.poll-spin {
+  animation: poll-spin 1.5s cubic-bezier(0.66, 0, 0.34, 1) infinite;
+  transform-origin: center;
+}
+
+@keyframes poll-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .poll-spin {
+    animation-duration: 2.4s;
+    animation-timing-function: linear;
+  }
+}
+</style>

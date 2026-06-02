@@ -34,6 +34,10 @@ function isPublicRoute(path: string): boolean {
     return true;
   }
 
+  if (path.startsWith("/match-replay-popout")) {
+    return true;
+  }
+
   if (path.startsWith("/embed/")) {
     return true;
   }

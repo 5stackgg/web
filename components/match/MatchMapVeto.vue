@@ -2,6 +2,7 @@
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Check } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import MapDisplay from "~/components/MapDisplay.vue";
 import MapSelector from "~/components/match/MapSelector.vue";
 import { Separator } from "~/components/ui/separator";
@@ -77,9 +78,13 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
                 'opacity-30 scale-90':
                   form.values.side && form.values.side !== sideOption.value,
                 'hover:scale-110':
-                  !form.values.side || form.values.side !== sideOption.value,
+                  !submitting &&
+                  (!form.values.side ||
+                    form.values.side !== sideOption.value),
+                'pointer-events-none':
+                  submitting && form.values.side !== sideOption.value,
               }"
-              @click="form.setFieldValue('side', sideOption.value)"
+              @click="!submitting && form.setFieldValue('side', sideOption.value)"
             >
               <NuxtImg
                 :src="sideOption.img"
@@ -104,10 +109,11 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
                 <div
                   v-if="form.values.side === sideOption.value"
                   class="absolute inset-0 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-[3px]"
-                  @click.stop="vetoPick"
+                  @click.stop="!submitting && vetoPick()"
                 >
                   <div class="flex flex-col items-center gap-0.5">
-                    <Check class="w-5 h-5 text-green-400" />
+                    <Spinner v-if="submitting" class="text-green-400" />
+                    <Check v-else class="w-5 h-5 text-green-400" />
                     <span class="text-[10px] font-semibold text-white">{{
                       $t("common.confirm")
                     }}</span>
@@ -135,10 +141,11 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
         :model-value="form.values.map_id"
         :map-pool="mapPool"
         :picks="picks"
+        :loading="submitting"
         :confirm-label="$t('match.map_veto.confirm', { type: pickType })"
         @update:modelValue="
           (mapId) => {
-            if (pickType !== e_veto_pick_types_enum.Side) {
+            if (pickType !== e_veto_pick_types_enum.Side && !submitting) {
               form.setFieldValue('map_id', mapId);
               vetoPick();
             }
@@ -180,6 +187,7 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
 import { useSound } from "~/composables/useSound";
+import { toast } from "@/components/ui/toast";
 
 export default {
   props: {
@@ -241,6 +249,7 @@ export default {
   data() {
     return {
       override: false,
+      submitting: false,
       picks: undefined,
       form: useForm({
         validationSchema: toTypedSchema(
@@ -295,49 +304,80 @@ export default {
       handler(currentPicks, oldPicks) {
         if (oldPicks && currentPicks.length > oldPicks.length) {
           this.playTickSound();
+          this.finishSubmitting();
         }
       },
     },
   },
+  beforeUnmount() {
+    if (this.submitTimeout) {
+      clearTimeout(this.submitTimeout);
+    }
+  },
   methods: {
+    finishSubmitting() {
+      if (this.submitTimeout) {
+        clearTimeout(this.submitTimeout);
+        this.submitTimeout = undefined;
+      }
+      this.submitting = false;
+      this.form.resetForm();
+    },
     async vetoPick() {
+      if (this.submitting) {
+        return;
+      }
+
       let { map_id, side } = this.form.values;
 
       if (this.pickType === e_veto_pick_types_enum.Side) {
         map_id = this.previousMap.id;
       }
 
-      await this.$apollo.mutate({
-        variables: {
-          map_id,
-          type: this.pickType,
-          ...(side
-            ? {
-                side,
-              }
-            : {}),
-          match_id: this.$route.params.id,
-          match_lineup_id: this.match.map_veto_picking_lineup_id,
-        },
-        mutation: generateMutation({
-          insert_match_map_veto_picks_one: [
-            {
-              object: {
-                map_id: $("map_id", "uuid!"),
-                side: $("side", "String"),
-                type: $("type", "e_veto_pick_types_enum!"),
-                match_id: $("match_id", "uuid!"),
-                match_lineup_id: $("match_lineup_id", "uuid!"),
-              },
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
+      this.submitting = true;
 
-      this.form.resetForm();
+      try {
+        await this.$apollo.mutate({
+          variables: {
+            map_id,
+            type: this.pickType,
+            ...(side
+              ? {
+                  side,
+                }
+              : {}),
+            match_id: this.$route.params.id,
+            match_lineup_id: this.match.map_veto_picking_lineup_id,
+          },
+          mutation: generateMutation({
+            insert_match_map_veto_picks_one: [
+              {
+                object: {
+                  map_id: $("map_id", "uuid!"),
+                  side: $("side", "String"),
+                  type: $("type", "e_veto_pick_types_enum!"),
+                  match_id: $("match_id", "uuid!"),
+                  match_lineup_id: $("match_lineup_id", "uuid!"),
+                },
+              },
+              {
+                id: true,
+              },
+            ],
+          }),
+        });
+
+        this.submitTimeout = setTimeout(() => {
+          this.finishSubmitting();
+        }, 8000);
+      } catch (error: any) {
+        this.submitting = false;
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+      }
     },
   },
   computed: {

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
-import { Film, Loader2, Sparkles, Sword, Crown, Trophy } from "lucide-vue-next";
+import { Film, Sparkles, Sword, Crown, Trophy } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import { useNuxtApp } from "#app";
 
 const { t } = useI18n();
@@ -379,7 +380,7 @@ function close(v: boolean) {
             {{ $t("common.cancel") }}
           </Button>
           <Button type="submit" :disabled="!canSubmit || submitting">
-            <Loader2 v-if="submitting" class="h-4 w-4 mr-2 animate-spin" />
+            <Spinner v-if="submitting" class="h-4 w-4 mr-2" />
             <Film v-else class="h-4 w-4 mr-2" />
             {{ $t("clips.create_dialog.submit") }}
           </Button>

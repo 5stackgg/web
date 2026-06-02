@@ -54,7 +54,11 @@ import { Button } from "~/components/ui/button";
       </FormItem>
     </FormField>
     <div class="mt-6 flex justify-end">
-      <Button type="submit" :disabled="!form.values.map_pool?.length">
+      <Button
+        type="submit"
+        :loading="submitting"
+        :disabled="!form.values.map_pool?.length"
+      >
         {{ $t("map_pool_form.save") }}
       </Button>
     </div>
@@ -87,6 +91,7 @@ export default {
   },
   data() {
     return {
+      submitting: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -119,55 +124,65 @@ export default {
       this.form.setFieldValue("map_pool", pool);
     },
     async saveMapPool() {
-      await this.$apollo.mutate({
-        variables: {
-          map_pool: this.form.values.map_pool,
-        },
-        mutation: generateMutation({
-          delete__map_pool: [
-            {
-              where: {
-                map_pool_id: {
-                  _eq: this.pool.id,
-                },
-                map_id: {
-                  _nin: this.form.values.map_pool,
+      if (this.submitLock) {
+        return;
+      }
+      this.submitLock = true;
+      try {
+        this.submitting = true;
+        await this.$apollo.mutate({
+          variables: {
+            map_pool: this.form.values.map_pool,
+          },
+          mutation: generateMutation({
+            delete__map_pool: [
+              {
+                where: {
+                  map_pool_id: {
+                    _eq: this.pool.id,
+                  },
+                  map_id: {
+                    _nin: this.form.values.map_pool,
+                  },
                 },
               },
-            },
-            {
-              affected_rows: true,
-            },
-          ],
-        }),
-      });
-
-      await this.$apollo.mutate({
-        variables: {
-          map_pool: this.form.values.map_pool,
-        },
-        mutation: generateMutation({
-          insert__map_pool: [
-            {
-              objects: this.form.values.map_pool.map((mapId) => ({
-                map_pool_id: this.pool.id,
-                map_id: mapId,
-              })),
-              on_conflict: {
-                constraint: "map_pool_pkey",
-                update_columns: [],
+              {
+                affected_rows: true,
               },
-            },
-            {
-              affected_rows: true,
-            },
-          ],
-        }),
-      });
+            ],
+          }),
+        });
 
-      toast({
-        title: this.$t("pages.map_pool.save_success"),
-      });
+        await this.$apollo.mutate({
+          variables: {
+            map_pool: this.form.values.map_pool,
+          },
+          mutation: generateMutation({
+            insert__map_pool: [
+              {
+                objects: this.form.values.map_pool.map((mapId) => ({
+                  map_pool_id: this.pool.id,
+                  map_id: mapId,
+                })),
+                on_conflict: {
+                  constraint: "map_pool_pkey",
+                  update_columns: [],
+                },
+              },
+              {
+                affected_rows: true,
+              },
+            ],
+          }),
+        });
+
+        toast({
+          title: this.$t("pages.map_pool.save_success"),
+        });
+      } finally {
+        this.submitLock = false;
+        this.submitting = false;
+      }
     },
   },
   computed: {

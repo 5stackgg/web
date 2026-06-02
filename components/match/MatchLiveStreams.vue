@@ -258,7 +258,7 @@ import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
                             >
                               {{ $t("common.cancel") }}
                             </Button>
-                            <Button type="submit">
+                            <Button type="submit" :loading="submitting">
                               {{ $t("streams.update") }}
                             </Button>
                           </DialogFooter>
@@ -364,7 +364,7 @@ import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
               >
                 {{ $t("common.cancel") }}
               </Button>
-              <Button type="submit">
+              <Button type="submit" :loading="submitting">
                 {{ $t("streams.add") }}
               </Button>
             </DialogFooter>
@@ -402,6 +402,7 @@ export default {
       rowRefs: [],
       isAddStreamModalOpen: false,
       isEditStreamModalOpen: {},
+      submitting: false,
       currentEditingId: null,
       lastMovedStreamId: null,
       lastMovedNewIndex: null,
@@ -466,12 +467,17 @@ export default {
       return base;
     },
     async addStream() {
+      if (this.submitting) {
+        return;
+      }
+
       const { valid } = await this.form.validate();
 
       if (!valid) {
         return;
       }
 
+      this.submitting = true;
       try {
         await this.$apollo.mutate({
           mutation: generateMutation({
@@ -509,12 +515,21 @@ export default {
           description: this.$t("streams.add_error"),
           variant: "destructive",
         });
+      } finally {
+        this.submitting = false;
       }
     },
     async updateStream(streamId) {
-      const { valid } = await this.form.validate();
-      if (!valid) return;
+      if (this.submitting) {
+        return;
+      }
 
+      const { valid } = await this.form.validate();
+      if (!valid) {
+        return;
+      }
+
+      this.submitting = true;
       try {
         // Find the original stream to get the current values if not changed
         const originalStream =
@@ -557,6 +572,8 @@ export default {
           description: this.$t("streams.update_error"),
           variant: "destructive",
         });
+      } finally {
+        this.submitting = false;
       }
     },
     async deleteStream(streamId) {

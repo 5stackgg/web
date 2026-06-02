@@ -26,10 +26,24 @@ function persistOpen(value: boolean) {
   }
 }
 
+function setPinned(value: boolean) {
+  isPinned.value = value;
+  if (typeof window === "undefined") return;
+  if (value) {
+    window.localStorage.setItem(SIDEBAR_PIN_STORAGE_KEY, "1");
+  } else {
+    window.localStorage.removeItem(SIDEBAR_PIN_STORAGE_KEY);
+  }
+}
+
 export function useRightSidebar() {
   const setRightSidebarOpen = (value: boolean) => {
     rightSidebarOpen.value = value;
     persistOpen(value);
+    // Explicitly closing also unpins, so hover-to-peek resumes afterwards.
+    if (!value && isPinned.value) {
+      setPinned(false);
+    }
   };
 
   const toggleRightSidebar = () => {
@@ -51,15 +65,7 @@ export function useRightSidebar() {
   }
 
   function togglePin() {
-    isPinned.value = !isPinned.value;
-
-    if (typeof window !== "undefined") {
-      if (isPinned.value) {
-        window.localStorage.setItem(SIDEBAR_PIN_STORAGE_KEY, "1");
-      } else {
-        window.localStorage.removeItem(SIDEBAR_PIN_STORAGE_KEY);
-      }
-    }
+    setPinned(!isPinned.value);
   }
 
   return {

@@ -1,12 +1,33 @@
-import { ref } from "vue";
+import { computed, readonly, ref } from "vue";
+import { useAuthStore } from "~/stores/AuthStore";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
+import { shouldAutoMuteChatSound } from "~/utilities/chatSoundAutoMute";
+
+const isEnabled = ref(true);
+const volume = ref(0.7);
+let settingsLoaded = false;
 
 export const useSound = () => {
-  const isEnabled = ref(true);
-  const volume = ref(0.7);
+  const isAutoMutedForInGame = computed(() => {
+    if (!import.meta.client) {
+      return false;
+    }
+
+    const matchLobbyStore = useMatchLobbyStore();
+
+    return shouldAutoMuteChatSound(
+      useAuthStore().me?.steam_id,
+      (matchLobbyStore.myMatches as unknown as any[]) || [],
+      matchLobbyStore.lobbyChat,
+    );
+  });
 
   const loadSettings = () => {
     if (!import.meta.client) {
+      return;
+    }
+
+    if (settingsLoaded) {
       return;
     }
 
@@ -19,6 +40,8 @@ export const useSound = () => {
     if (savedVolume !== null) {
       volume.value = parseFloat(savedVolume);
     }
+
+    settingsLoaded = true;
   };
 
   const saveSettings = () => {
@@ -31,12 +54,7 @@ export const useSound = () => {
   };
 
   const isInGame = () => {
-    if (!import.meta.client) return false;
-    try {
-      return useMatchLobbyStore().currentUserInGame;
-    } catch {
-      return false;
-    }
+    return isAutoMutedForInGame.value;
   };
 
   const generateBeepSound = (
@@ -75,7 +93,7 @@ export const useSound = () => {
   };
 
   const playNotificationSound = () => {
-    if (isInGame()) {
+    if (!import.meta.client || !isEnabled.value || isInGame()) {
       return;
     }
 
@@ -83,6 +101,10 @@ export const useSound = () => {
 
     // Add a second beep for a more distinctive notification
     setTimeout(() => {
+      if (!isEnabled.value || isAutoMutedForInGame.value) {
+        return;
+      }
+
       generateBeepSound(600, 150);
     }, 100);
   };
@@ -446,5 +468,6 @@ export const useSound = () => {
     playCountdownSound,
     volume: readonly(volume),
     isEnabled: readonly(isEnabled),
+    isAutoMutedForInGame: readonly(isAutoMutedForInGame),
   };
 };

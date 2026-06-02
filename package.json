@@ -11,6 +11,7 @@
     "postinstall": "nuxt prepare",
     "codegen": "bash -c '. ./.env && zeus https://$NUXT_PUBLIC_API_DOMAIN/v1/graphql ./generated --ts --td --header=x-hasura-admin-secret:$HASURA_GRAPHQL_ADMIN_SECRET && ./scripts/patch-zeus-codegen.sh'",
     "check-translations": "node scripts/check-translations.js",
+    "test:unit": "vitest run",
     "wrangler": "wrangler --config cloudflare-workers/backblaze-proxy/wrangler.toml"
   },
   "devDependencies": {
@@ -31,6 +32,7 @@
     "shadcn-nuxt": "^2.1.0",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.8.3",
+    "vitest": "3.2.4",
     "vue": "^3.5.34",
     "vue-router": "^4.5.1",
     "workbox-core": "^7.3.0",

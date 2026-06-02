@@ -5,7 +5,14 @@ import SteamIcon from "~/components/icons/SteamIcon.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import PlayerPremierRank from "~/components/PlayerPremierRank.vue";
 import PlayerSkillGroupRank from "~/components/PlayerSkillGroupRank.vue";
-import { Crown, Shield, BadgeCheck, BadgeIcon, Podcast } from "lucide-vue-next";
+import {
+  Crown,
+  Shield,
+  ShieldHalf,
+  BadgeCheck,
+  BadgeIcon,
+  Podcast,
+} from "lucide-vue-next";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
 </script>
 <template>
@@ -175,6 +182,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 </template>
                 <template v-if="isStreamer">
                   <Podcast class="w-3 h-3 mr-1 text-green-500" />
+                </template>
+                <template v-if="isModerator">
+                  <ShieldHalf class="w-3 h-3 mr-1 text-blue-500" />
                 </template>
                 <template v-if="isMatchOrganizer">
                   <Shield class="w-3 h-3 mr-1 text-yellow-500" />
@@ -405,6 +415,9 @@ export default {
     },
     isStreamer() {
       return this.player?.role === e_player_roles_enum.streamer;
+    },
+    isModerator() {
+      return this.player?.role === e_player_roles_enum.moderator;
     },
     isMatchOrganizer() {
       return this.player?.role === e_player_roles_enum.match_organizer;

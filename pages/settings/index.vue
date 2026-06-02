@@ -222,7 +222,7 @@ definePageMeta({
       </FormField>
 
       <div class="flex justify-start">
-        <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
+        <Button type="submit" :loading="submitting" :disabled="Object.keys(form.errors).length > 0">
           {{ $t("pages.settings.account.update") }}
         </Button>
       </div>
@@ -245,6 +245,7 @@ export default {
       open: false,
       countries: getAllCountries(),
       isLanguagePopoverOpen: false,
+      submitting: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -272,37 +273,46 @@ export default {
   },
   methods: {
     async updateMe() {
+      if (this.submitting) {
+        return;
+      }
+
       const { valid } = await this.form.validate();
 
       if (!valid) {
         return;
       }
 
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_players_by_pk: [
-            {
-              pk_columns: {
-                steam_id: this.me.steam_id,
+      this.submitting = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            update_players_by_pk: [
+              {
+                pk_columns: {
+                  steam_id: this.me.steam_id,
+                },
+                _set: {
+                  ...(useAuthStore().isAdmin
+                    ? { avatar_url: this.form.values.avatar_url }
+                    : {}),
+                  country: this.form.values.country,
+                  language: this.form.values.language,
+                },
               },
-              _set: {
-                ...(useAuthStore().isAdmin
-                  ? { avatar_url: this.form.values.avatar_url }
-                  : {}),
-                country: this.form.values.country,
-                language: this.form.values.language,
+              {
+                __typename: true,
               },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
+            ],
+          }),
+        });
 
-      toast({
-        title: this.$t("pages.settings.account.update_success"),
-      });
+        toast({
+          title: this.$t("pages.settings.account.update_success"),
+        });
+      } finally {
+        this.submitting = false;
+      }
     },
   },
   computed: {

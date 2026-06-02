@@ -30,15 +30,32 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
-import { ref } from "vue";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
+import { ref, computed } from "vue";
 import ServerForm from "~/components/servers/ServerForm.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
+import ServerPlayerManagement from "~/components/servers/ServerPlayerManagement.vue";
 import { Eye, EyeOff } from "lucide-vue-next";
 import Clipboard from "~/components/ClipBoard.vue";
 import ServerStatus from "~/components/servers/ServerStatus.vue";
 import QuickServerConnect from "~/components/match/QuickServerConnect.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import { useAuthStore } from "~/stores/AuthStore";
+import { e_player_roles_enum } from "~/generated/zeus";
+
+definePageMeta({ middleware: "moderator" });
+
+const authStore = useAuthStore();
+const isManager = computed(() =>
+  authStore.isRoleAbove(e_player_roles_enum.match_organizer),
+);
+const isAdmin = computed(() => authStore.isAdmin);
 
 const serverMenu = ref(false);
 </script>
@@ -63,7 +80,7 @@ const serverMenu = ref(false);
                 </div>
               </div>
 
-              <div class="flex items-center space-x-2">
+              <div v-if="isManager" class="flex items-center space-x-2">
                 <Switch
                   @click="toggleServerEnabled"
                   :model-value="server.enabled"
@@ -79,7 +96,7 @@ const serverMenu = ref(false);
 
       <template #description>
         <div
-          v-if="server && server.type === 'Ranked'"
+          v-if="server && server.type === 'Ranked' && isAdmin"
           class="bg-muted rounded-md p-4 my-4"
         >
           <div class="flex flex-col space-y-2">
@@ -125,53 +142,60 @@ const serverMenu = ref(false);
       </template>
 
       <template #actions>
-        <div class="flex items-center gap-2">
-          <Button
-            v-if="server?.game_server_node_id"
-            variant="outline"
-            @click="$router.push(`/dedicated-servers/${server.id}/files`)"
-          >
-            <FolderOpen class="mr-2 h-4 w-4" />
-            {{ $t("pages.dedicated_servers.detail.files") }}
-          </Button>
-          <DropdownMenu v-model:open="serverMenu">
-            <DropdownMenuTrigger as-child>
-              <Button variant="outline" size="icon">
-                <MoreHorizontal />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" class="w-[200px]">
-              <DropdownMenuGroup>
-                <DropdownMenuItem @click="editServerSheet = true">
-                  {{ $t("common.actions.edit") }}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  v-if="server?.game_server_node_id"
-                  @click="$router.push(`/dedicated-servers/${server.id}/files`)"
-                >
-                  <FolderOpen class="mr-2 h-4 w-4 inline" />
+        <div v-if="server" class="flex flex-wrap items-center gap-2">
+          <QuickServerConnect :server="server" />
+
+          <template v-if="isManager">
+            <TooltipProvider v-if="server?.game_server_node_id">
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    @click="$router.push(`/dedicated-servers/${server.id}/files`)"
+                  >
+                    <FolderOpen class="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
                   {{ $t("pages.dedicated_servers.detail.files") }}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  class="text-red-600"
-                  @click="deleteServerAlertDialog = true"
-                >
-                  <Trash class="mr-2 h-4 w-4 inline" />
-                  {{ $t("common.delete") }}
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+
+            <DropdownMenu v-model:open="serverMenu">
+              <DropdownMenuTrigger as-child>
+                <Button variant="outline" size="icon">
+                  <MoreHorizontal />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" class="w-[200px]">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem @click="editServerSheet = true">
+                    {{ $t("common.actions.edit") }}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    class="text-red-600"
+                    @click="deleteServerAlertDialog = true"
+                  >
+                    <Trash class="mr-2 h-4 w-4 inline" />
+                    {{ $t("common.delete") }}
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </template>
         </div>
       </template>
     </PageHeading>
   </PageTransition>
 
-  <PageTransition :delay="100" class="mt-6">
-    <div v-if="server">
-      <QuickServerConnect :server="server" />
-    </div>
+  <PageTransition :delay="150" class="mt-6">
+    <ServerPlayerManagement
+      v-if="server"
+      :server-id="$route.params.id as string"
+    />
   </PageTransition>
 
   <PageTransition :delay="200" class="mt-6">
@@ -182,7 +206,7 @@ const serverMenu = ref(false);
     <ServiceLogs
       :service="`dedicated-server-${$route.params.id}`"
       :compact="true"
-      v-if="server?.game_server_node_id"
+      v-if="isManager && server?.game_server_node_id"
     />
   </PageTransition>
 
@@ -225,10 +249,38 @@ const serverMenu = ref(false);
 
 <script lang="ts">
 import { $ } from "~/generated/zeus";
-import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
+import {
+  generateMutation,
+  generateQuery,
+  generateSubscription,
+} from "~/graphql/graphqlGen";
+import { useAuthStore } from "~/stores/AuthStore";
 
 export default {
   apollo: {
+    apiPassword: {
+      query: generateQuery({
+        servers_by_pk: [
+          {
+            id: $("serverId", "uuid!"),
+          },
+          {
+            api_password: true,
+          },
+        ],
+      }),
+      variables: function () {
+        return {
+          serverId: this.$route.params.id,
+        };
+      },
+      skip: function () {
+        return !useAuthStore().isAdmin;
+      },
+      update: function (data: any) {
+        return data.servers_by_pk?.api_password;
+      },
+    },
     $subscribe: {
       server: {
         query: generateSubscription({
@@ -247,14 +299,12 @@ export default {
               tv_port: true,
               enabled: true,
               connected: true,
-              api_password: true,
               plugin_version: true,
               rcon_status: true,
               game_server_node_id: true,
               connection_link: true,
               connection_string: true,
               offline_at: true,
-              connect_password: true,
               max_players: true,
             },
           ],
@@ -273,6 +323,7 @@ export default {
   data() {
     return {
       server: undefined,
+      apiPassword: undefined,
       showConfig: false,
       editServerSheet: false,
       deleteServerAlertDialog: false,
@@ -283,11 +334,11 @@ export default {
       return `
 {
   "WS_DOMAIN": "wss://${useRuntimeConfig().public.wsDomain}",
-  "API_DOMAIN": "https://${useRuntimeConfig().public.apiDomain}", 
+  "API_DOMAIN": "https://${useRuntimeConfig().public.apiDomain}",
   "RELAY_DOMAIN": "https://${useRuntimeConfig().public.relayDomain}",
   "DEMOS_DOMAIN": "https://${useRuntimeConfig().public.demosDomain}",
   "SERVER_ID": "${this.server.id}",
-  "SERVER_API_PASSWORD": "${this.server.api_password}"
+  "SERVER_API_PASSWORD": "${this.apiPassword}"
 }
 `;
     },

@@ -4,7 +4,6 @@ import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import {
   Film,
-  Loader2,
   Lock,
   Eye,
   Globe,

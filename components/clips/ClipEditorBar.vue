@@ -10,7 +10,6 @@ import {
   Play,
   Square,
   X,
-  Loader2,
   Film,
   Users,
   ChevronDown,
@@ -39,6 +38,7 @@ import { useClipRenderActive } from "~/composables/useClipRenderActive";
 import { generateMutation } from "~/graphql/graphqlGen";
 import type { ClipSpec } from "~/graphql/clipRenderJob";
 import ClipRenderProgress from "~/components/clips/ClipRenderProgress.vue";
+import { Spinner } from "~/components/ui/spinner";
 
 const props = defineProps<{
   matchMapId: string;
@@ -668,7 +668,7 @@ function onRenderClose() {
           :disabled="!editor.isValid.value || submitting"
           @click="submit"
         >
-          <Loader2 v-if="submitting" class="h-3.5 w-3.5 mr-1.5 animate-spin" />
+          <Spinner v-if="submitting" class="h-3.5 w-3.5 mr-1.5" />
           <Film v-else class="h-3.5 w-3.5 mr-1.5" />
           {{ $t("clips.editor.render") }}
         </Button>

@@ -49,6 +49,7 @@ export async function fetchReplayBlob(url: string): Promise<ReplayBlob | null> {
 export function normalizeBlobGrenades(grenades: any[]): any[] {
   return (grenades ?? []).map((g) => ({
     ...g,
+    grenade_id: g.grenade_id == null ? null : Number(g.grenade_id),
     x: g.x == null ? 0 : Number(g.x),
     y: g.y == null ? 0 : Number(g.y),
     z: g.z == null ? 0 : Number(g.z),

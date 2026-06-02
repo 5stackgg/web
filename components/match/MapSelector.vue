@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Check } from "lucide-vue-next";
 import MapDisplay from "~/components/MapDisplay.vue";
+import { Spinner } from "~/components/ui/spinner";
 import {
   vetoTileClasses,
   vetoTileHoverClasses,
@@ -21,10 +22,11 @@ import {
             vetoTileClasses,
             selectedMap?.id === map.id
               ? vetoTileActiveClasses
-              : vetoTileHoverClasses,
+              : !loading && vetoTileHoverClasses,
             !availableMaps.includes(map) && vetoTileDisabledClasses,
+            loading && selectedMap?.id !== map.id && vetoTileDisabledClasses,
           ]"
-          @click="selectMap(map)"
+          @click="!loading && selectMap(map)"
         >
           <MapDisplay :map="map" class="h-full w-full" />
           <Transition
@@ -38,10 +40,11 @@ import {
             <div
               v-if="selectedMap?.id === map.id && availableMaps.includes(map)"
               :class="vetoTileConfirmOverlayClasses"
-              @click.stop="confirmMap"
+              @click.stop="!loading && confirmMap()"
             >
               <div :class="vetoTileConfirmPillClasses">
-                <Check class="w-4 h-4" />
+                <Spinner v-if="loading" />
+                <Check v-else class="w-4 h-4" />
                 <span>{{ confirmLabel || $t("common.confirm") }}</span>
               </div>
             </div>
@@ -72,6 +75,10 @@ export default {
     picks: {
       type: Array,
       required: false,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {

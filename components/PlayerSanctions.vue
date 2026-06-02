@@ -329,7 +329,7 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
           <Button variant="outline" @click="editDialogOpen = false">
             {{ $t("common.cancel") }}
           </Button>
-          <Button @click="updateSanctionEndTime">
+          <Button :loading="updatingSanction" @click="updateSanctionEndTime">
             {{ $t("common.save") }}
           </Button>
         </DialogFooter>
@@ -406,12 +406,18 @@ import { $, e_player_roles_enum, order_by } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { useAuthStore } from "~/stores/AuthStore";
+import gql from "graphql-tag";
 
 export default {
   props: {
     playerId: {
       type: String,
       required: true,
+    },
+    serverId: {
+      type: String,
+      required: false,
+      default: undefined,
     },
   },
   data() {
@@ -429,6 +435,9 @@ export default {
       abandonedMatchesPage: 1,
       itemsPerPage: 20,
       sheetOpen: false,
+      removingSanction: false,
+      removingAbandonedMatch: false,
+      updatingSanction: false,
     };
   },
   apollo: {
@@ -504,7 +513,7 @@ export default {
       }).length;
     },
     canManageSanctions() {
-      return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
+      return useAuthStore().isRoleAbove(e_player_roles_enum.moderator);
     },
     editDateDisplay() {
       if (!this.editDate) return "";
@@ -561,7 +570,13 @@ export default {
       // This method can be used for validation if needed
     },
     async updateSanctionEndTime() {
-      if (!this.editingSanction) return;
+      if (this.updatingSanction) {
+        return;
+      }
+      if (!this.editingSanction) {
+        return;
+      }
+      this.updatingSanction = true;
 
       let remove_sanction_date: Date | null = null;
 
@@ -614,6 +629,8 @@ export default {
           title: this.$t("player.sanctions.update_failed"),
           variant: "destructive",
         });
+      } finally {
+        this.updatingSanction = false;
       }
     },
     removeSanction(sanction: any) {
@@ -621,21 +638,37 @@ export default {
       this.showDeleteDialog = true;
     },
     async confirmRemoveSanction() {
-      if (!this.sanctionToDelete) return;
+      if (this.removingSanction) {
+        return;
+      }
+      if (!this.sanctionToDelete) {
+        return;
+      }
+      this.removingSanction = true;
 
       try {
         await (this as any).$apollo.mutate({
-          mutation: generateMutation({
-            delete_player_sanctions_by_pk: [
-              {
-                id: this.sanctionToDelete.id,
-                created_at: this.sanctionToDelete.created_at,
-              },
-              {
-                id: true,
-              },
-            ],
-          }),
+          mutation: gql`
+            mutation UnsanctionServerPlayer(
+              $serverId: String
+              $steam_id: String!
+              $type: String!
+            ) {
+              unsanctionServerPlayer(
+                serverId: $serverId
+                steam_id: $steam_id
+                type: $type
+              ) {
+                enforced
+                message
+              }
+            }
+          `,
+          variables: {
+            serverId: this.serverId ?? null,
+            steam_id: this.playerId,
+            type: this.sanctionToDelete.type,
+          },
         });
 
         toast({
@@ -649,6 +682,8 @@ export default {
           title: this.$t("player.sanctions.remove_failed"),
           variant: "destructive",
         });
+      } finally {
+        this.removingSanction = false;
       }
     },
     removeAbandonedMatch(abandonedMatch: any) {
@@ -656,7 +691,13 @@ export default {
       this.showDeleteAbandonedDialog = true;
     },
     async confirmRemoveAbandonedMatch() {
-      if (!this.abandonedMatchToDelete) return;
+      if (this.removingAbandonedMatch) {
+        return;
+      }
+      if (!this.abandonedMatchToDelete) {
+        return;
+      }
+      this.removingAbandonedMatch = true;
 
       try {
         await (this as any).$apollo.mutate({
@@ -683,6 +724,8 @@ export default {
           title: this.$t("player.sanctions.abandoned_remove_failed"),
           variant: "destructive",
         });
+      } finally {
+        this.removingAbandonedMatch = false;
       }
     },
   },

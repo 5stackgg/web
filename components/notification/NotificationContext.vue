@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Swords, Server, HardDrive, Loader2 } from "lucide-vue-next";
+import { Swords, Server, HardDrive } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 
@@ -25,7 +26,7 @@ const NODE_STATUS_TONE: Record<string, string> = {
 };
 
 export default defineComponent({
-  components: { Swords, Server, HardDrive, Loader2 },
+  components: { Swords, Server, HardDrive, Spinner },
   props: {
     type: { type: String, required: true },
     entityId: { type: String, required: true },
@@ -188,7 +189,7 @@ export default defineComponent({
     v-if="loading"
     class="flex items-center gap-2 text-xs px-2 py-1 rounded border border-border bg-background/40 text-muted-foreground"
   >
-    <Loader2 class="h-3 w-3 animate-spin" />
+    <Spinner class="h-3 w-3" />
     <span class="italic">Loading status…</span>
   </div>
   <div

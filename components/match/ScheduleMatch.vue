@@ -82,7 +82,7 @@ import { Calendar as CalendarIcon, X } from "lucide-vue-next";
 
               <!-- Schedule Button Row -->
               <div class="flex items-center gap-2">
-                <Button type="submit" size="sm" class="w-full">
+                <Button type="submit" size="sm" class="w-full" :loading="submitting">
                   <span v-if="!form.values.scheduled_at">
                     {{ $t("match.schedule.start_match") }}
                   </span>
@@ -124,6 +124,7 @@ export default {
     return {
       startDate: undefined,
       startTime: undefined,
+      submitting: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -185,24 +186,34 @@ export default {
       });
     },
     async scheduleMatch() {
+      if (this.submitting) {
+        return;
+      }
+
       const { valid } = await this.form.validate();
 
       if (!valid) {
         return;
       }
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          scheduleMatch: [
-            {
-              match_id: this.match.id,
-              time: this.form.values.scheduled_at,
-            },
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
+
+      this.submitting = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            scheduleMatch: [
+              {
+                match_id: this.match.id,
+                time: this.form.values.scheduled_at,
+              },
+              {
+                success: true,
+              },
+            ],
+          }),
+        });
+      } finally {
+        this.submitting = false;
+      }
     },
     async resetSchedule() {
       this.form.setValues({

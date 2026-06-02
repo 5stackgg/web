@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { toast } from "@/components/ui/toast";
-import { Upload, Trash2, Loader2, X } from "lucide-vue-next";
+import { Upload, Trash2, X } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import RosterImageEditor from "@/components/RosterImageEditor.vue";
 
 interface BulkTeam {
@@ -238,7 +239,7 @@ async function remove() {
           :disabled="isUploading || isRemoving"
           @click.prevent.stop="remove"
         >
-          <Loader2 v-if="isRemoving" class="h-3 w-3 animate-spin" />
+          <Spinner v-if="isRemoving" class="h-3 w-3" />
           <X v-else class="h-3 w-3" />
         </button>
       </div>
@@ -258,9 +259,9 @@ async function remove() {
           {{ useEditor ? $t("avatar.roster_hint") : $t("avatar.hint") }}
         </div>
       </div>
-      <Loader2
+      <Spinner
         v-if="isUploading"
-        class="w-5 h-5 animate-spin text-[hsl(var(--tac-amber))]"
+        class="w-5 h-5 text-[hsl(var(--tac-amber))]"
       />
     </div>
 
@@ -271,7 +272,7 @@ async function remove() {
         :disabled="isUploading || isRemoving"
         @click.prevent.stop="remove"
       >
-        <Loader2 v-if="isRemoving" class="w-3.5 h-3.5 animate-spin" />
+        <Spinner v-if="isRemoving" class="w-3.5 h-3.5" />
         <Trash2 v-else class="w-3.5 h-3.5" />
         <span>{{ $t(removeKey) }}</span>
       </button>
@@ -292,7 +293,7 @@ async function remove() {
       :disabled="isUploading || isRemoving"
       @click.prevent="triggerPicker"
     >
-      <Loader2 v-if="isUploading" class="w-4 h-4 animate-spin" />
+      <Spinner v-if="isUploading" class="w-4 h-4" />
       <Upload v-else class="w-4 h-4" />
       <span>{{ hasCustom ? $t(changeKey) : $t(uploadKey) }}</span>
     </button>
@@ -303,7 +304,7 @@ async function remove() {
       :disabled="isUploading || isRemoving"
       @click.prevent="remove"
     >
-      <Loader2 v-if="isRemoving" class="w-4 h-4 animate-spin" />
+      <Spinner v-if="isRemoving" class="w-4 h-4" />
       <Trash2 v-else class="w-4 h-4" />
       <span>{{ $t(removeKey) }}</span>
     </button>

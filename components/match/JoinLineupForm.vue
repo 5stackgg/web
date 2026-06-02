@@ -26,7 +26,7 @@ import { generateMutation } from "~/graphql/graphqlGen";
         <FormMessage />
       </FormItem>
     </FormField>
-    <Button variant="outline" class="flex gap-4">
+    <Button variant="outline" class="flex gap-4" :disabled="joining">
       <UserPlusIcon class="h-4 w-4" />
       {{ $t("match.overview.join") }}
     </Button>
@@ -37,6 +37,7 @@ import { generateMutation } from "~/graphql/graphqlGen";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
+import { toast } from "@/components/ui/toast";
 
 export default {
   props: {
@@ -51,6 +52,7 @@ export default {
   },
   data() {
     return {
+      joining: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -73,20 +75,37 @@ export default {
   },
   methods: {
     async joinLineup() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          joinLineup: [
-            {
-              match_id: this.match.id,
-              lineup_id: this.lineup.id,
-              code: this.form.values.code || this.$route.query.invite || "",
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
+      if (this.joining) {
+        return;
+      }
+
+      this.joining = true;
+
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            joinLineup: [
+              {
+                match_id: this.match.id,
+                lineup_id: this.lineup.id,
+                code: this.form.values.code || this.$route.query.invite || "",
+              },
+              {
+                __typename: true,
+              },
+            ],
+          }),
+        });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+        return;
+      } finally {
+        this.joining = false;
+      }
 
       this.$emit("joined");
 

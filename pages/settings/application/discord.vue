@@ -15,17 +15,10 @@ definePageMeta({
         <SettingsSection
           id="support"
           :title="$t('pages.settings.application.discord.support_section')"
+          :description="
+            $t('pages.settings.application.discord.support_section_description')
+          "
         >
-          <FormField v-slot="{ componentField }" name="discord_invite_link">
-            <FormItem>
-              <FormLabel>{{
-                $t("pages.settings.application.discord.invite_link")
-              }}</FormLabel>
-              <Input v-bind="componentField"></Input>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-
           <FormField v-slot="{ componentField }" name="discord_support_webhook">
             <FormItem>
               <FormLabel>{{
@@ -49,6 +42,16 @@ definePageMeta({
                   "pages.settings.application.discord.support_role_description",
                 )
               }}</FormDescription>
+              <Input v-bind="componentField"></Input>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField v-slot="{ componentField }" name="discord_invite_link">
+            <FormItem>
+              <FormLabel>{{
+                $t("pages.settings.application.discord.invite_link")
+              }}</FormLabel>
               <Input v-bind="componentField"></Input>
               <FormMessage />
             </FormItem>
@@ -104,7 +107,10 @@ definePageMeta({
                   "pages.settings.application.discord.match_notifications.role_id_description",
                 )
               }}</FormDescription>
-              <Input v-bind="componentField"></Input>
+              <Input
+                v-bind="componentField"
+                :placeholder="form.values.discord_support_role_id || ''"
+              />
               <FormMessage />
             </FormItem>
           </FormField>
@@ -116,6 +122,64 @@ definePageMeta({
             @toggle="toggleStatus"
             @update="updateStatus"
           />
+        </SettingsSection>
+
+        <SettingsSection
+          id="gamedata-notifications"
+          :title="
+            $t('pages.settings.application.discord.gamedata_notifications.title')
+          "
+          :description="
+            $t(
+              'pages.settings.application.discord.gamedata_notifications.description',
+            )
+          "
+        >
+          <FormField
+            v-slot="{ componentField }"
+            name="discord_gamedata_notifications_webhook"
+          >
+            <FormItem>
+              <FormLabel>{{
+                $t(
+                  "pages.settings.application.discord.gamedata_notifications.webhook",
+                )
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.discord.gamedata_notifications.webhook_description",
+                )
+              }}</FormDescription>
+              <Input
+                v-bind="componentField"
+                :placeholder="form.values.discord_support_webhook || ''"
+              />
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField
+            v-slot="{ componentField }"
+            name="discord_gamedata_notifications_role_id"
+          >
+            <FormItem>
+              <FormLabel>{{
+                $t(
+                  "pages.settings.application.discord.gamedata_notifications.role_id",
+                )
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.discord.gamedata_notifications.role_id_description",
+                )
+              }}</FormDescription>
+              <Input
+                v-bind="componentField"
+                :placeholder="form.values.discord_support_role_id || ''"
+              />
+              <FormMessage />
+            </FormItem>
+          </FormField>
         </SettingsSection>
 
         <SettingsSection
@@ -167,6 +231,7 @@ definePageMeta({
         <div class="flex justify-start">
           <Button
             type="submit"
+            :loading="submitting"
             :disabled="Object.keys(form.errors).length > 0 || !form.meta.dirty"
             class="my-3"
           >
@@ -204,6 +269,7 @@ const TOGGLE_KEYS: string[] = [...MATCH_STATUSES, "MapPaused"];
 export default {
   data() {
     return {
+      submitting: false,
       MATCH_STATUSES,
       TOGGLE_KEYS,
       statusLabels: STATUS_LABEL_MAP,
@@ -215,6 +281,8 @@ export default {
             discord_support_role_id: z.string().optional(),
             discord_match_notifications_webhook: z.string().optional(),
             discord_match_notifications_role_id: z.string().optional(),
+            discord_gamedata_notifications_webhook: z.string().optional(),
+            discord_gamedata_notifications_role_id: z.string().optional(),
             ...Object.fromEntries(
               MATCH_STATUSES.map((s) => [
                 `discord_match_notify_${s}`,
@@ -262,44 +330,56 @@ export default {
       );
     },
     async updateSettings() {
-      const fields = [
-        "discord_invite_link",
-        "discord_support_webhook",
-        "discord_support_role_id",
-        "discord_match_notifications_webhook",
-        "discord_match_notifications_role_id",
-        ...MATCH_STATUSES.map((s) => `discord_match_notify_${s}`),
-        "discord_match_notify_MapPaused",
-        "disk_warning_percent",
-        "disk_critical_percent",
-      ];
+      if (this.submitting) {
+        return;
+      }
+      this.submitting = true;
+      try {
+        const fields = [
+          "discord_invite_link",
+          "discord_support_webhook",
+          "discord_support_role_id",
+          "discord_match_notifications_webhook",
+          "discord_match_notifications_role_id",
+          "discord_gamedata_notifications_webhook",
+          "discord_gamedata_notifications_role_id",
+          ...MATCH_STATUSES.map((s) => `discord_match_notify_${s}`),
+          "discord_match_notify_MapPaused",
+          "disk_warning_percent",
+          "disk_critical_percent",
+        ];
 
-      const objects = fields.map((name) => ({
-        name,
-        value:
-          this.form.values[name] != null ? String(this.form.values[name]) : "",
-      }));
+        const objects = fields.map((name) => ({
+          name,
+          value:
+            this.form.values[name] != null
+              ? String(this.form.values[name])
+              : "",
+        }));
 
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_settings: [
-            {
-              objects,
-              on_conflict: {
-                constraint: settings_constraint.settings_pkey,
-                update_columns: [settings_update_column.value],
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            insert_settings: [
+              {
+                objects,
+                on_conflict: {
+                  constraint: settings_constraint.settings_pkey,
+                  update_columns: [settings_update_column.value],
+                },
               },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
+              {
+                __typename: true,
+              },
+            ],
+          }),
+        });
 
-      toast({
-        title: this.$t("pages.settings.application.discord.updated"),
-      });
+        toast({
+          title: this.$t("pages.settings.application.discord.updated"),
+        });
+      } finally {
+        this.submitting = false;
+      }
     },
   },
   computed: {

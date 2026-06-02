@@ -379,6 +379,9 @@ export default {
     return {
       removeMemberDialog: false,
       rosterImageDialog: false,
+      settingCaptain: false,
+      removingMember: false,
+      removingInvite: false,
     };
   },
   computed: {
@@ -465,34 +468,50 @@ export default {
       });
     },
     async removeMember() {
-      this.removeMemberDialog = false;
-      await (this as any).$apollo.mutate({
-        mutation: generateMutation({
-          delete_team_roster_by_pk: [
-            {
-              team_id: this.member.team_id,
-              player_steam_id: this.member.player.steam_id,
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
+      if (this.removingMember) {
+        return;
+      }
+      this.removingMember = true;
+      try {
+        this.removeMemberDialog = false;
+        await (this as any).$apollo.mutate({
+          mutation: generateMutation({
+            delete_team_roster_by_pk: [
+              {
+                team_id: this.member.team_id,
+                player_steam_id: this.member.player.steam_id,
+              },
+              {
+                __typename: true,
+              },
+            ],
+          }),
+        });
+      } finally {
+        this.removingMember = false;
+      }
     },
     async removeInvite() {
-      await (this as any).$apollo.mutate({
-        mutation: generateMutation({
-          delete_team_invites_by_pk: [
-            {
-              id: this.member.id,
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
+      if (this.removingInvite) {
+        return;
+      }
+      this.removingInvite = true;
+      try {
+        await (this as any).$apollo.mutate({
+          mutation: generateMutation({
+            delete_team_invites_by_pk: [
+              {
+                id: this.member.id,
+              },
+              {
+                id: true,
+              },
+            ],
+          }),
+        });
+      } finally {
+        this.removingInvite = false;
+      }
     },
     async publishRole(roleValue: string) {
       await (this as any).$apollo.mutate({
@@ -535,23 +554,31 @@ export default {
       });
     },
     async setCaptain() {
-      await (this as any).$apollo.mutate({
-        mutation: generateMutation({
-          update_teams_by_pk: [
-            {
-              pk_columns: {
-                id: this.member.team_id,
+      if (this.settingCaptain) {
+        return;
+      }
+      this.settingCaptain = true;
+      try {
+        await (this as any).$apollo.mutate({
+          mutation: generateMutation({
+            update_teams_by_pk: [
+              {
+                pk_columns: {
+                  id: this.member.team_id,
+                },
+                _set: {
+                  captain_steam_id: this.member.player.steam_id,
+                } as any,
               },
-              _set: {
-                captain_steam_id: this.member.player.steam_id,
-              } as any,
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
+              {
+                id: true,
+              },
+            ],
+          }),
+        });
+      } finally {
+        this.settingCaptain = false;
+      }
     },
   },
 };

@@ -9,7 +9,6 @@ import LineupOpeningDuels from "~/components/match/LineupOpeningDuels.vue";
 import LineupClutches from "~/components/match/LineupClutches.vue";
 import HeadToHead from "~/components/match/HeadToHead.vue";
 import MatchSideFilter from "~/components/match/MatchSideFilter.vue";
-import Replay from "~/components/match/Replay.vue";
 import TableColumnPicker from "~/components/common/TableColumnPicker.vue";
 import TeamUtilitySummary from "~/components/match/TeamUtilitySummary.vue";
 import { provideMatchSide } from "~/composables/useMatchSide";
@@ -194,9 +193,6 @@ provide("commander", commander);
               <SelectItem value="head-to-head" :disabled="disableStats">
                 {{ $t("match.tabs.head_to_head") }}
               </SelectItem>
-              <SelectItem value="replay" :disabled="disableStats">
-                {{ $t("match.tabs.replay") }}
-              </SelectItem>
               <SelectItem value="settings">
                 {{ $t("match.tabs.settings") }}
               </SelectItem>
@@ -240,9 +236,6 @@ provide("commander", commander);
           </TabsTrigger>
           <TabsTrigger :disabled="disableStats" value="head-to-head">
             {{ $t("match.tabs.head_to_head") }}
-          </TabsTrigger>
-          <TabsTrigger :disabled="disableStats" value="replay">
-            {{ $t("match.tabs.replay") }}
           </TabsTrigger>
           <TabsTrigger value="settings">
             {{ $t("match.tabs.settings") }}
@@ -427,11 +420,6 @@ provide("commander", commander);
     <TabsContent value="head-to-head">
       <div class="max-w-[1500px]">
         <HeadToHead :match="match" />
-      </div>
-    </TabsContent>
-    <TabsContent value="replay">
-      <div class="max-w-[1500px]">
-        <Replay :match="match" :active-map="activeMap" />
       </div>
     </TabsContent>
     <TabsContent
@@ -1047,7 +1035,7 @@ export default {
           tabs.push("clutches");
         }
 
-        tabs.push("head-to-head", "replay");
+        tabs.push("head-to-head");
       }
 
       tabs.push("settings");

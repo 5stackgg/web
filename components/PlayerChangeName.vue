@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { Loader2 } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 </script>
 
 <template>
@@ -19,9 +19,10 @@ import { Loader2 } from "lucide-vue-next";
     <Button
       type="submit"
       size="sm"
+      :loading="saving"
       :disabled="saving || !isValid || name === player.name"
     >
-      <Loader2 v-if="saving" class="mr-1 h-4 w-4 animate-spin" />
+      <Spinner v-if="saving" class="mr-1 h-4 w-4" />
       {{ $t("common.save") }}
     </Button>
   </form>

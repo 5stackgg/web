@@ -138,7 +138,11 @@ import MatchOptions from "~/components/MatchOptions.vue";
 
     <div class="grid grid-cols-1 md:grid-cols-2">
       <div class="grid gap-4">
-        <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
+        <Button
+          type="submit"
+          :disabled="Object.keys(form.errors).length > 0"
+          :loading="submitting"
+        >
           <template v-if="tournament">{{
             $t("tournament.form.update")
           }}</template>
@@ -210,6 +214,7 @@ export default {
   },
   data() {
     return {
+      submitting: false,
       startDate: undefined,
       startTime: undefined,
       form: useForm({
@@ -311,121 +316,132 @@ export default {
       });
     },
     async updateCreateTournament() {
-      const { valid } = await this.form.validate();
-
-      if (!valid) {
+      if (this.submitLock) {
         return;
       }
+      this.submitLock = true;
 
-      const form = this.form.values;
+      try {
+        const { valid } = await this.form.validate();
 
-      if (this.tournament) {
-        await this.$apollo.mutate({
-          variables: {
-            name: this.form.values.name,
-            start: this.form.values.start,
-            description: this.form.values.description,
-            auto_start: this.form.values.auto_start,
-          },
-          mutation: generateMutation({
-            update_tournaments_by_pk: [
-              {
-                pk_columns: {
-                  id: this.tournament.id,
-                },
-                _set: {
-                  name: $("name", "String!"),
-                  start: $("start", "timestamptz!"),
-                  description: $("description", "String"),
-                  auto_start: $("auto_start", "Boolean!"),
-                },
-              },
-              {
-                __typename: true,
-              },
-            ],
-          }),
-        });
+        if (!valid) {
+          return;
+        }
 
-        let mapPoolId = form.map_pool_id;
+        this.submitting = true;
+        const form = this.form.values;
 
-        if (form.custom_map_pool) {
-          const { data } = await this.$apollo.mutate({
+        if (this.tournament) {
+          await this.$apollo.mutate({
             variables: {
-              map_pool: {
-                type: e_map_pool_types_enum.Custom,
-                maps: {
-                  data: this.form.values.map_pool.map((map_id) => {
-                    return {
-                      id: map_id,
-                    };
-                  }),
-                },
-              },
+              name: this.form.values.name,
+              start: this.form.values.start,
+              description: this.form.values.description,
+              auto_start: this.form.values.auto_start,
             },
             mutation: generateMutation({
-              insert_map_pools_one: [
+              update_tournaments_by_pk: [
                 {
-                  object: $("map_pool", "map_pools_insert_input!"),
+                  pk_columns: {
+                    id: this.tournament.id,
+                  },
+                  _set: {
+                    name: $("name", "String!"),
+                    start: $("start", "timestamptz!"),
+                    description: $("description", "String"),
+                    auto_start: $("auto_start", "Boolean!"),
+                  },
                 },
                 {
-                  id: true,
+                  __typename: true,
                 },
               ],
             }),
           });
-          mapPoolId = data.insert_map_pools_one.id;
+
+          let mapPoolId = form.map_pool_id;
+
+          if (form.custom_map_pool) {
+            const { data } = await this.$apollo.mutate({
+              variables: {
+                map_pool: {
+                  type: e_map_pool_types_enum.Custom,
+                  maps: {
+                    data: this.form.values.map_pool.map((map_id) => {
+                      return {
+                        id: map_id,
+                      };
+                    }),
+                  },
+                },
+              },
+              mutation: generateMutation({
+                insert_map_pools_one: [
+                  {
+                    object: $("map_pool", "map_pools_insert_input!"),
+                  },
+                  {
+                    id: true,
+                  },
+                ],
+              }),
+            });
+            mapPoolId = data.insert_map_pools_one.id;
+          }
+
+          await this.$apollo.mutate({
+            variables: {
+              id: this.tournament.options.id,
+              ...setupOptionsVariables(form, { mapPoolId }),
+            },
+            mutation: generateMutation({
+              update_match_options_by_pk: [
+                {
+                  pk_columns: {
+                    id: $("id", "uuid!"),
+                  },
+                  _set: setupOptionsSetMutation(!!mapPoolId),
+                },
+                {
+                  __typename: true,
+                },
+              ],
+            }),
+          });
+
+          toast({
+            title: this.$t("tournament.updated") as string,
+          });
+          return;
         }
 
-        await this.$apollo.mutate({
-          variables: {
-            id: this.tournament.options.id,
-            ...setupOptionsVariables(form, { mapPoolId }),
-          },
+        const { data } = await this.$apollo.mutate({
+          variables: setupOptionsVariables(form),
           mutation: generateMutation({
-            update_match_options_by_pk: [
+            insert_tournaments_one: [
               {
-                pk_columns: {
-                  id: $("id", "uuid!"),
+                object: {
+                  name: this.form.values.name,
+                  start: this.form.values.start,
+                  description: this.form.values.description,
+                  auto_start: this.form.values.auto_start,
+                  options: {
+                    data: setupOptionsSetMutation(!!form.map_pool_id),
+                  },
                 },
-                _set: setupOptionsSetMutation(!!mapPoolId),
               },
               {
-                __typename: true,
+                id: true,
               },
             ],
           }),
         });
 
-        toast({
-          title: this.$t("tournament.updated") as string,
-        });
-        return;
+        this.$router.push(`/tournaments/${data.insert_tournaments_one.id}`);
+      } finally {
+        this.submitLock = false;
+        this.submitting = false;
       }
-
-      const { data } = await this.$apollo.mutate({
-        variables: setupOptionsVariables(form),
-        mutation: generateMutation({
-          insert_tournaments_one: [
-            {
-              object: {
-                name: this.form.values.name,
-                start: this.form.values.start,
-                description: this.form.values.description,
-                auto_start: this.form.values.auto_start,
-                options: {
-                  data: setupOptionsSetMutation(!!form.map_pool_id),
-                },
-              },
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
-
-      this.$router.push(`/tournaments/${data.insert_tournaments_one.id}`);
     },
   },
 };

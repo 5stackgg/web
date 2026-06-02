@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-import {
-  Merge,
-  Waves,
-  MessageCircle,
-  LogOut,
-  Swords,
-  Plus,
-} from "lucide-vue-next";
+import { Merge, Waves, MessageCircle, LogOut } from "lucide-vue-next";
 import MatchLobbyExpanded from "~/components/matchmaking-lobby/MatchLobbyExpanded.vue";
 import MatchmakingLobbyAccess from "~/components/matchmaking-lobby/MatchmakingLobbyAccess.vue";
 import LobbyInvites from "~/components/matchmaking-lobby/LobbyInvites.vue";
@@ -63,7 +56,7 @@ const { hasLobbyInvites } = useInvites();
                   {{ $t("layouts.lobby_panel.squad_description") }}
                 </p>
               </div>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 md:hidden">
                 <MatchmakingLobbyAccess :lobby="currentLobby" />
                 <Button
                   size="icon"
@@ -78,44 +71,6 @@ const { hasLobbyInvites } = useInvites();
             </div>
 
             <MatchLobbyExpanded :lobby="currentLobby" />
-
-            <!-- What's next: jump into matchmaking or a custom match -->
-            <div
-              v-if="matchmakingAllowed || canCreateMatch"
-              class="flex flex-col gap-2 rounded-lg border border-border bg-muted/30 p-3"
-            >
-              <div class="flex flex-col gap-0.5">
-                <span
-                  class="text-[0.68rem] font-semibold tracking-[0.12em] uppercase text-muted-foreground"
-                >
-                  {{ $t("layouts.lobby_panel.next_step_title") }}
-                </span>
-                <p class="text-[11px] text-muted-foreground">
-                  {{ $t("layouts.lobby_panel.next_step_description") }}
-                </p>
-              </div>
-              <div class="flex flex-col gap-2 sm:flex-row">
-                <Button
-                  v-if="matchmakingAllowed"
-                  size="sm"
-                  class="flex-1 gap-1.5"
-                  @click="goToPlay"
-                >
-                  <Swords class="h-3.5 w-3.5" />
-                  {{ $t("layouts.lobby_panel.find_match") }}
-                </Button>
-                <Button
-                  v-if="canCreateMatch"
-                  size="sm"
-                  :variant="matchmakingAllowed ? 'outline' : 'default'"
-                  class="flex-1 gap-1.5"
-                  @click="goToCreateMatch"
-                >
-                  <Plus class="h-3.5 w-3.5" />
-                  {{ $t("layouts.lobby_panel.create_custom_match") }}
-                </Button>
-              </div>
-            </div>
           </div>
         </template>
 
@@ -125,26 +80,21 @@ const { hasLobbyInvites } = useInvites();
             <p class="text-sm text-muted-foreground text-center max-w-xs">
               {{ $t("layouts.lobby_panel.create_lobby_description") }}
             </p>
-            <Button
-              @click="createLobby"
-              size="default"
-              class="relative group overflow-hidden rounded-full bg-transparent px-7 py-2 text-white shadow-lg hover:shadow-md transition-all duration-300 focus-visible:outline-none border border-zinc-700/80"
+            <div
+              class="inline-flex rounded-full p-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-lg transition-shadow duration-300 hover:shadow-md"
             >
-              <span
-                class="absolute inset-0 rounded-full p-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
+              <Button
+                @click="createLobby"
+                :loading="creatingLobby"
+                size="default"
+                class="rounded-full border-0 bg-zinc-950/95 px-7 py-2 text-white transition-colors duration-300 hover:bg-zinc-900/95"
               >
-                <span class="block h-full w-full bg-zinc-950/95 rounded-full" />
-              </span>
-              <span
-                class="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              />
-              <div class="relative flex items-center gap-2 z-10">
                 <Merge class="h-5 w-5" />
                 <span class="font-semibold">
                   {{ $t("layouts.lobby_panel.create_lobby_button") }}
                 </span>
-              </div>
-            </Button>
+              </Button>
+            </div>
           </Empty>
         </template>
       </div>
@@ -290,20 +240,11 @@ export default {
     hasDiscordLinked() {
       return useAuthStore().hasDiscordLinked;
     },
-    matchmakingAllowed() {
-      return useApplicationSettingsStore().matchmakingAllowed;
-    },
-    canCreateMatch() {
-      return useApplicationSettingsStore().canCreateMatch;
+    creatingLobby() {
+      return useMatchmakingStore().creatingLobby;
     },
   },
   methods: {
-    goToPlay() {
-      this.$router.push({ name: "play" });
-    },
-    goToCreateMatch() {
-      this.$router.push({ name: "matches-create" });
-    },
     matchName(match: any) {
       return (
         match.label ||
@@ -347,7 +288,7 @@ export default {
       setActiveTab(id);
     },
     createLobby() {
-      useMatchmakingStore().createLobby();
+      return useMatchmakingStore().createLobby();
     },
     async leaveCurrentLobby() {
       const lobby = this.currentLobby as any;

@@ -16,8 +16,8 @@ import {
   UserMinus,
   UserPlus,
   Pencil,
-  Loader2,
 } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -165,10 +165,11 @@ import { toast } from "~/components/ui/toast";
                       type="submit"
                       size="sm"
                       :disabled="!canSaveIdentity"
+                      :loading="savingIdentity"
                     >
-                      <Loader2
+                      <Spinner
                         v-if="savingIdentity"
-                        class="mr-1 h-4 w-4 animate-spin"
+                        class="mr-1 h-4 w-4"
                       />
                       {{ $t("common.save") }}
                     </Button>

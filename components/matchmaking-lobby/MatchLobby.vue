@@ -94,13 +94,15 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
           class="relative group transition-transform hover:scale-110 hover:z-10 ml-auto"
           :style="{ zIndex: lobby?.players.length + 2 }"
         >
-          <div
-            class="w-8 h-8 rounded-full p-0.5 bg-red-800 border border-red-600 flex items-center justify-center cursor-pointer hover:bg-red-700 transition-colors duration-200"
+          <Button
+            size="icon-sm"
+            variant="destructive"
+            class="rounded-full"
             @click="removeFromLobby(lobby.id, me?.steam_id)"
             :title="$t('matchmaking.lobby.leave')"
           >
-            <LogOut class="h-3 w-3 text-white" />
-          </div>
+            <LogOut class="h-3 w-3" />
+          </Button>
         </div>
       </slot>
     </div>
@@ -120,6 +122,7 @@ export default {
   data() {
     return {
       playerSearchOpen: false,
+      removingFromLobby: false,
     };
   },
   computed: {
@@ -151,19 +154,27 @@ export default {
       await useMatchmakingStore().inviteToLobby(steam_id);
     },
     async removeFromLobby(lobby_id: string, steam_id: string) {
-      this.$apollo.mutate({
-        mutation: generateMutation({
-          delete_lobby_players_by_pk: [
-            {
-              lobby_id,
-              steam_id,
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
+      if (this.removingFromLobby) {
+        return;
+      }
+      this.removingFromLobby = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            delete_lobby_players_by_pk: [
+              {
+                lobby_id,
+                steam_id,
+              },
+              {
+                __typename: true,
+              },
+            ],
+          }),
+        });
+      } finally {
+        this.removingFromLobby = false;
+      }
     },
   },
 };

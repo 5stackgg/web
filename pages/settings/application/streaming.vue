@@ -162,6 +162,7 @@ definePageMeta({
         <div class="flex justify-start">
           <Button
             type="submit"
+            :loading="submitting"
             :disabled="Object.keys(form.errors).length > 0 || !form.meta.dirty"
             class="my-3"
           >
@@ -184,6 +185,7 @@ import { toast } from "@/components/ui/toast";
 export default {
   data() {
     return {
+      submitting: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -246,46 +248,54 @@ export default {
       });
     },
     async updateSettings() {
-      const roleToStream =
-        this.form.values.public?.minimum_role_to_stream ??
-        e_player_roles_enum.verified_user;
-      const roleToSpectate =
-        this.form.values.public?.minimum_role_to_spectate ??
-        e_player_roles_enum.streamer;
+      if (this.submitting) {
+        return;
+      }
+      this.submitting = true;
+      try {
+        const roleToStream =
+          this.form.values.public?.minimum_role_to_stream ??
+          e_player_roles_enum.verified_user;
+        const roleToSpectate =
+          this.form.values.public?.minimum_role_to_spectate ??
+          e_player_roles_enum.streamer;
 
-      await (this as any).$apollo.mutate({
-        mutation: generateMutation({
-          insert_settings: [
-            {
-              objects: [
-                {
-                  name: "public.minimum_role_to_stream",
-                  value: roleToStream,
+        await (this as any).$apollo.mutate({
+          mutation: generateMutation({
+            insert_settings: [
+              {
+                objects: [
+                  {
+                    name: "public.minimum_role_to_stream",
+                    value: roleToStream,
+                  },
+                  {
+                    name: "public.minimum_role_to_spectate",
+                    value: roleToSpectate,
+                  },
+                  {
+                    name: "live_video_codec",
+                    value: this.form.values.live_video_codec ?? "h265",
+                  },
+                ],
+                on_conflict: {
+                  constraint: settings_constraint.settings_pkey,
+                  update_columns: [settings_update_column.value],
                 },
-                {
-                  name: "public.minimum_role_to_spectate",
-                  value: roleToSpectate,
-                },
-                {
-                  name: "live_video_codec",
-                  value: this.form.values.live_video_codec ?? "h265",
-                },
-              ],
-              on_conflict: {
-                constraint: settings_constraint.settings_pkey,
-                update_columns: [settings_update_column.value],
               },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
+              {
+                __typename: true,
+              },
+            ],
+          }),
+        });
 
-      toast({
-        title: this.$t("pages.settings.application.streaming.updated"),
-      });
+        toast({
+          title: this.$t("pages.settings.application.streaming.updated"),
+        });
+      } finally {
+        this.submitting = false;
+      }
     },
   },
   computed: {

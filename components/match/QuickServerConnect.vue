@@ -1,11 +1,10 @@
 <script lang="ts">
-import { Loader, ExternalLink, Copy } from "lucide-vue-next";
+import { ExternalLink, Copy } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import ClipBoard from "~/components/ClipBoard.vue";
 
 export default {
   components: {
-    Loader,
     ExternalLink,
     Copy,
     ClipBoard,
@@ -41,12 +40,9 @@ export default {
       v-if="server.connection_link"
       @click="handleClick"
     >
-      <Button variant="outline" class="min-w-32" :disabled="isLoading">
-        <template v-if="!isLoading">
-          <ExternalLink class="w-4 h-4 mr-1" />
-          {{ $t("server.join_server") }}
-        </template>
-        <Loader v-else class="w-4 h-4 animate-spin" />
+      <Button variant="outline" class="min-w-32" :loading="isLoading">
+        <ExternalLink class="w-4 h-4 mr-1" />
+        {{ $t("server.join_server") }}
       </Button>
     </a>
   </div>

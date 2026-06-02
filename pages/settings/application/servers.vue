@@ -110,6 +110,7 @@ definePageMeta({
         <div class="flex justify-start">
           <Button
             type="submit"
+            :loading="submitting"
             :disabled="Object.keys(form.errors).length > 0 || !form.meta.dirty"
             class="my-3"
           >
@@ -132,6 +133,7 @@ import { z } from "zod";
 export default {
   data() {
     return {
+      submitting: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -162,41 +164,50 @@ export default {
   },
   methods: {
     async updateSettings() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_settings: [
-            {
-              objects: [
-                {
-                  name: "number_of_cpus_per_server",
-                  value: this.form.values.number_of_cpus_per_server?.toString(),
+      if (this.submitting) {
+        return;
+      }
+      this.submitting = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            insert_settings: [
+              {
+                objects: [
+                  {
+                    name: "number_of_cpus_per_server",
+                    value:
+                      this.form.values.number_of_cpus_per_server?.toString(),
+                  },
+                  {
+                    name: "reserved_disk_space_fresh_gb",
+                    value:
+                      this.form.values.reserved_disk_space_fresh_gb?.toString(),
+                  },
+                  {
+                    name: "reserved_disk_space_existing_gb",
+                    value:
+                      this.form.values.reserved_disk_space_existing_gb?.toString(),
+                  },
+                ],
+                on_conflict: {
+                  constraint: settings_constraint.settings_pkey,
+                  update_columns: [settings_update_column.value],
                 },
-                {
-                  name: "reserved_disk_space_fresh_gb",
-                  value:
-                    this.form.values.reserved_disk_space_fresh_gb?.toString(),
-                },
-                {
-                  name: "reserved_disk_space_existing_gb",
-                  value:
-                    this.form.values.reserved_disk_space_existing_gb?.toString(),
-                },
-              ],
-              on_conflict: {
-                constraint: settings_constraint.settings_pkey,
-                update_columns: [settings_update_column.value],
               },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
+              {
+                __typename: true,
+              },
+            ],
+          }),
+        });
 
-      toast({
-        title: this.$t("common.update"),
-      });
+        toast({
+          title: this.$t("common.update"),
+        });
+      } finally {
+        this.submitting = false;
+      }
     },
     async toggleCpuPinning() {
       await this.$apollo.mutate({

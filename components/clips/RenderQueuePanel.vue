@@ -43,6 +43,7 @@ import {
 import { useAuthStore } from "~/stores/AuthStore";
 import { useGpuPoolStatusStore } from "~/stores/GpuPoolStatusStore";
 import { useClipModal, type ClipQueueItem } from "~/composables/useClipModal";
+import { Spinner } from "~/components/ui/spinner";
 
 const authStore = useAuthStore();
 const { showClip, setClipQueue } = useClipModal();
@@ -1001,10 +1002,7 @@ const queueStatus = computed<{
                 : 'text-muted-foreground'
           "
         >
-          <Loader2
-            v-if="queueStatus.key === 'rendering'"
-            class="h-3 w-3 animate-spin"
-          />
+          <Spinner v-if="queueStatus.key === 'rendering'" class="h-3 w-3" />
           <Pause
             v-else-if="
               queueStatus.key === 'paused' ||
@@ -1058,7 +1056,7 @@ const queueStatus = computed<{
           @toggle="toggleActiveExpanded(g.matchMapId)"
         >
           <template #avatar-icon>
-            <Loader2 v-if="g.activeJob" class="h-3.5 w-3.5 animate-spin" />
+            <Spinner v-if="g.activeJob" class="h-3.5 w-3.5" />
             <Film v-else class="h-3.5 w-3.5" />
           </template>
 
@@ -1118,10 +1116,7 @@ const queueStatus = computed<{
                   :disabled="resumingBatch[g.matchMapId]"
                   @click.stop="resumeBatch(g.matchMapId)"
                 >
-                  <Loader2
-                    v-if="resumingBatch[g.matchMapId]"
-                    class="h-3 w-3 animate-spin"
-                  />
+                  <Spinner v-if="resumingBatch[g.matchMapId]" class="h-3 w-3" />
                   <Play v-else class="h-3 w-3" />
                 </Button>
               </TooltipTrigger>
@@ -1138,9 +1133,9 @@ const queueStatus = computed<{
                   :disabled="retryingBatch[`${g.matchMapId}:failed`]"
                   @click.stop="retryBatch(g.matchMapId, true)"
                 >
-                  <Loader2
+                  <Spinner
                     v-if="retryingBatch[`${g.matchMapId}:failed`]"
-                    class="h-3 w-3 animate-spin"
+                    class="h-3 w-3"
                   />
                   <RotateCcw v-else class="h-3 w-3" />
                 </Button>
@@ -1156,9 +1151,9 @@ const queueStatus = computed<{
                   :disabled="cancellingBatch[g.matchMapId]"
                   @click.stop="cancelBatch(g.matchMapId)"
                 >
-                  <Loader2
+                  <Spinner
                     v-if="cancellingBatch[g.matchMapId]"
-                    class="h-3 w-3 animate-spin"
+                    class="h-3 w-3"
                   />
                   <X v-else class="h-3 w-3" />
                 </Button>
@@ -1237,7 +1232,7 @@ const queueStatus = computed<{
                 <span
                   class="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-primary"
                 >
-                  <Loader2 class="h-2.5 w-2.5 animate-spin" />
+                  <Spinner class="h-2.5 w-2.5" />
                   {{ g.bootInfo.stage.replace(/_/g, " ") }}
                   <span v-if="g.bootInfo.stageSub" class="opacity-70">
                     · {{ g.bootInfo.stageSub }}
@@ -1266,9 +1261,9 @@ const queueStatus = computed<{
                       v-if="stageStateFor(g, stage) === 'done'"
                       class="w-3.5 h-3.5"
                     />
-                    <Loader2
+                    <Spinner
                       v-else-if="stageStateFor(g, stage) === 'current'"
-                      class="w-3.5 h-3.5 animate-spin"
+                      class="w-3.5 h-3.5"
                     />
                     <X
                       v-else-if="stageStateFor(g, stage) === 'skipped'"
@@ -1398,10 +1393,7 @@ const queueStatus = computed<{
                         :disabled="requeueingJob[j.id]"
                         @click="requeueJob(j.id)"
                       >
-                        <Loader2
-                          v-if="requeueingJob[j.id]"
-                          class="h-3 w-3 animate-spin"
-                        />
+                        <Spinner v-if="requeueingJob[j.id]" class="h-3 w-3" />
                         <RotateCcw v-else class="h-3 w-3" />
                       </Button>
                     </TooltipTrigger>
@@ -1561,10 +1553,7 @@ const queueStatus = computed<{
             :disabled="clearingAllFinished"
             @click="clearAllFinished"
           >
-            <Loader2
-              v-if="clearingAllFinished"
-              class="h-3 w-3 mr-1 animate-spin"
-            />
+            <Spinner v-if="clearingAllFinished" class="h-3 w-3 mr-1" />
             <X v-else class="h-3 w-3 mr-1" />
             Clear all
           </Button>
@@ -1645,9 +1634,9 @@ const queueStatus = computed<{
                     :disabled="retryingBatch[`${g.matchMapId}:failed`]"
                     @click.stop="retryBatch(g.matchMapId, true)"
                   >
-                    <Loader2
+                    <Spinner
                       v-if="retryingBatch[`${g.matchMapId}:failed`]"
-                      class="h-3 w-3 animate-spin"
+                      class="h-3 w-3"
                     />
                     <RotateCcw v-else class="h-3 w-3" />
                   </Button>
@@ -1665,9 +1654,9 @@ const queueStatus = computed<{
                     :disabled="retryingBatch[`${g.matchMapId}:all`]"
                     @click.stop="retryBatch(g.matchMapId, false)"
                   >
-                    <Loader2
+                    <Spinner
                       v-if="retryingBatch[`${g.matchMapId}:all`]"
-                      class="h-3 w-3 animate-spin"
+                      class="h-3 w-3"
                     />
                     <RotateCw v-else class="h-3 w-3" />
                   </Button>
@@ -1685,9 +1674,9 @@ const queueStatus = computed<{
                     :disabled="clearingBatch[g.matchMapId]"
                     @click.stop="clearBatch(g.matchMapId)"
                   >
-                    <Loader2
+                    <Spinner
                       v-if="clearingBatch[g.matchMapId]"
-                      class="h-3 w-3 animate-spin"
+                      class="h-3 w-3"
                     />
                     <X v-else class="h-3 w-3" />
                   </Button>
@@ -1749,10 +1738,7 @@ const queueStatus = computed<{
                           :disabled="requeueingJob[j.id]"
                           @click="requeueJob(j.id)"
                         >
-                          <Loader2
-                            v-if="requeueingJob[j.id]"
-                            class="h-3 w-3 animate-spin"
-                          />
+                          <Spinner v-if="requeueingJob[j.id]" class="h-3 w-3" />
                           <RotateCcw v-else class="h-3 w-3" />
                         </Button>
                       </TooltipTrigger>
@@ -1828,7 +1814,7 @@ const queueStatus = computed<{
           :disabled="finishedLoading"
           @click="loadMoreFinished"
         >
-          <Loader2 v-if="finishedLoading" class="h-3 w-3 animate-spin" />
+          <Spinner v-if="finishedLoading" class="h-3 w-3" />
           Load more
         </button>
       </div>

@@ -2936,6 +2936,7 @@
       "selected": "Selecionado",
       "positions_large": "As posições do replay são grandes. Clique em carregar para buscá-las em {map}.",
       "load": "Carregar replay",
+      "open": "Abrir Replay 2D",
       "loading": "Carregando replay…",
       "no_position_data": "Sem dados de posição — reanalise a demo para preencher o replay.",
       "toggle_to_slots": "Alternar para números de slot",

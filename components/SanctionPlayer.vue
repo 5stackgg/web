@@ -8,11 +8,18 @@ import {
   DrawerDescription,
 } from "~/components/ui/drawer";
 import { Button } from "~/components/ui/button";
-import { MicOff, MessageSquareOff, BellOff, Ban } from "lucide-vue-next";
+import {
+  MicOff,
+  MessageSquareOff,
+  BellOff,
+  Ban,
+  TriangleAlert,
+} from "lucide-vue-next";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { z } from "zod";
 import { useForm } from "vee-validate";
+import gql from "graphql-tag";
 </script>
 
 <template>
@@ -76,6 +83,15 @@ import { useForm } from "vee-validate";
           <component :is="sanctions[sanctionType].icon" class="h-4 w-4" />
           {{ sanctions[sanctionType].description }}
         </DrawerDescription>
+
+        <div
+          v-if="serverId && sanctionType && sanctionType !== 'ban'"
+          class="flex gap-2 items-start text-sm text-yellow-500"
+        >
+          <TriangleAlert class="mt-0.5 h-4 w-4 shrink-0" />
+          {{ $t("pages.dedicated_servers.detail.sanctions_wip") }}
+        </div>
+
         <Separator class="my-2" />
       </DrawerHeader>
 
@@ -119,7 +135,7 @@ import { useForm } from "vee-validate";
           </FormItem>
         </FormField>
 
-        <Button class="capitalize" type="submit">
+        <Button class="capitalize" type="submit" :loading="submitting">
           {{ $t("player.sanction.typed_player", { type: sanctionType }) }}
         </Button>
       </form>
@@ -129,7 +145,6 @@ import { useForm } from "vee-validate";
 
 <script lang="ts">
 import { toast } from "@/components/ui/toast";
-import { generateMutation } from "~/graphql/graphqlGen";
 
 export default {
   props: {
@@ -137,9 +152,16 @@ export default {
       required: true,
       type: Object,
     },
+    serverId: {
+      required: false,
+      type: String,
+      default: undefined,
+    },
   },
+  emits: ["sanctioned"],
   data() {
     return {
+      submitting: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -205,42 +227,58 @@ export default {
   },
   methods: {
     async sanctionPlayer() {
+      if (this.submitting) {
+        return;
+      }
+
       if (!this.sanctionType) {
         return;
       }
 
-      let remove_sanction_date: Date | null = null;
+      this.submitting = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: gql`
+            mutation SanctionServerPlayer(
+              $serverId: String
+              $steam_id: String!
+              $type: String!
+              $reason: String
+              $duration: Float
+            ) {
+              sanctionServerPlayer(
+                serverId: $serverId
+                steam_id: $steam_id
+                type: $type
+                reason: $reason
+                duration: $duration
+              ) {
+                id
+                enforced
+                message
+              }
+            }
+          `,
+          variables: {
+            serverId: this.serverId ?? null,
+            steam_id: this.player.steam_id,
+            type: this.sanctionType,
+            reason: this.form.values.reason,
+            duration: this.form.values.duration
+              ? parseInt(this.form.values.duration)
+              : 0,
+          },
+        });
 
-      const currentDate = new Date();
-      if (this.form.values.duration && this.form.values.duration !== "0") {
-        remove_sanction_date = new Date(
-          currentDate.getTime() + parseInt(this.form.values.duration),
-        );
+        toast({
+          title: `${this.sanctionType}ed ${this.player.name}`,
+        });
+
+        this.sanctioningPlayer = false;
+        this.$emit("sanctioned");
+      } finally {
+        this.submitting = false;
       }
-
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_player_sanctions_one: [
-            {
-              object: {
-                type: this.sanctionType,
-                player_steam_id: this.player.steam_id,
-                reason: this.form.values.reason,
-                remove_sanction_date,
-              },
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
-
-      toast({
-        title: `${this.sanctionType}ed ${this.player.name}`,
-      });
-
-      this.sanctioningPlayer = false;
     },
   },
 };

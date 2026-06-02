@@ -213,7 +213,8 @@ const tacLabelClasses =
     <div class="mt-8 flex justify-center">
       <button
         type="submit"
-        class="group/submit relative isolate inline-flex items-center px-12 py-4 font-bold text-base tracking-[0.22em] uppercase text-[hsl(0_0%_8%)] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] border border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_8px_24px_-6px_hsl(var(--tac-amber)/0.6)] [transition:transform_200ms_cubic-bezier(0.4,0,0.2,1),box-shadow_200ms_ease] cursor-pointer overflow-hidden hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_14px_36px_-6px_hsl(var(--tac-amber)/0.8),0_0_28px_hsl(var(--tac-amber)/0.35)] active:translate-y-0"
+        :disabled="submitting"
+        class="group/submit relative isolate inline-flex items-center px-12 py-4 font-bold text-base tracking-[0.22em] uppercase text-[hsl(0_0%_8%)] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] border border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_8px_24px_-6px_hsl(var(--tac-amber)/0.6)] [transition:transform_200ms_cubic-bezier(0.4,0,0.2,1),box-shadow_200ms_ease] cursor-pointer overflow-hidden hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_14px_36px_-6px_hsl(var(--tac-amber)/0.8),0_0_28px_hsl(var(--tac-amber)/0.35)] active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
       >
         <span class="relative z-[1] inline-flex items-center gap-3">
           <PlayIcon
@@ -265,6 +266,7 @@ export default {
   },
   data() {
     return {
+      submitting: false,
       form: useForm({
         keepValuesOnUnmount: true,
         validationSchema: toTypedSchema(
@@ -356,92 +358,43 @@ export default {
       }
     },
     async updateMatch() {
+      if (this.submitting) {
+        return;
+      }
+
+      this.submitting = true;
+
       const { valid } = await this.form.validate();
 
       if (!valid) {
+        this.submitting = false;
         return;
       }
 
-      if (!this.match) {
-        this.createMatch();
-        return;
-      }
+      try {
+        if (!this.match) {
+          await this.createMatch();
+          return;
+        }
 
-      const form = this.form.values;
+        const form = this.form.values;
 
-      const matchLineup1 = this.match.lineup_1;
-      const matchLineup2 = this.match.lineup_2;
+        const matchLineup1 = this.match.lineup_1;
+        const matchLineup2 = this.match.lineup_2;
 
-      if (
-        (form.team_1 === null && matchLineup1.team_1 !== undefined) ||
-        form.team_1 != matchLineup1.team_id
-      ) {
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            update_match_lineups_by_pk: [
-              {
-                pk_columns: {
-                  id: matchLineup1.id,
-                },
-                _set: {
-                  team_id: form.team_1,
-                },
-              },
-              {
-                id: true,
-              },
-            ],
-          }),
-        });
-      }
-
-      if (
-        (form.team_2 === null && matchLineup2.team_2 !== undefined) ||
-        form.team_2 != matchLineup2.team_id
-      ) {
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            update_match_lineups_by_pk: [
-              {
-                pk_columns: {
-                  id: matchLineup2.id,
-                },
-                _set: {
-                  team_id: form.team_2,
-                },
-              },
-              {
-                id: true,
-              },
-            ],
-          }),
-        });
-      }
-
-      let mapPoolId = form.map_pool_id;
-
-      if (
-        this.match.options.map_pool.type === e_map_pool_types_enum.Custom &&
-        !form.custom_map_pool
-      ) {
-        mapPoolId = form.map_pool_id;
-      }
-
-      if (form.custom_map_pool) {
-        if (!mapPoolId) {
-          const { data } = await this.$apollo.mutate({
+        if (
+          (form.team_1 === null && matchLineup1.team_1 !== undefined) ||
+          form.team_1 != matchLineup1.team_id
+        ) {
+          await this.$apollo.mutate({
             mutation: generateMutation({
-              insert_map_pools_one: [
+              update_match_lineups_by_pk: [
                 {
-                  object: {
-                    type: e_map_pool_types_enum.Custom,
-                    maps: {
-                      data: form?.map_pool?.map((map_id) => {
-                        return {
-                          id: map_id,
-                        };
-                      }),
-                    },
+                  pk_columns: {
+                    id: matchLineup1.id,
+                  },
+                  _set: {
+                    team_id: form.team_1,
                   },
                 },
                 {
@@ -450,68 +403,134 @@ export default {
               ],
             }),
           });
-          mapPoolId = data.insert_map_pools_one.id;
-        } else {
+        }
+
+        if (
+          (form.team_2 === null && matchLineup2.team_2 !== undefined) ||
+          form.team_2 != matchLineup2.team_id
+        ) {
           await this.$apollo.mutate({
             mutation: generateMutation({
-              delete__map_pool: [
+              update_match_lineups_by_pk: [
                 {
-                  where: {
-                    map_pool_id: {
-                      _eq: mapPoolId,
-                    },
+                  pk_columns: {
+                    id: matchLineup2.id,
+                  },
+                  _set: {
+                    team_id: form.team_2,
                   },
                 },
                 {
-                  affected_rows: true,
-                },
-              ],
-            }),
-          });
-
-          await this.$apollo.mutate({
-            mutation: generateMutation({
-              insert__map_pool: [
-                {
-                  objects: form?.map_pool?.map((map_id) => {
-                    return {
-                      map_id: map_id,
-                      map_pool_id: mapPoolId,
-                    };
-                  }),
-                },
-                {
-                  affected_rows: true,
+                  id: true,
                 },
               ],
             }),
           });
         }
-      }
 
-      await this.$apollo.mutate({
-        variables: setupOptionsVariables(form, {
-          mapPoolId: mapPoolId,
-          matchOptionsId: this.match.options.id,
-        }),
-        mutation: generateMutation({
-          update_match_options_by_pk: [
-            {
-              pk_columns: {
-                id: $("id", "uuid!"),
+        let mapPoolId = form.map_pool_id;
+
+        if (
+          this.match.options.map_pool.type === e_map_pool_types_enum.Custom &&
+          !form.custom_map_pool
+        ) {
+          mapPoolId = form.map_pool_id;
+        }
+
+        if (form.custom_map_pool) {
+          if (!mapPoolId) {
+            const { data } = await this.$apollo.mutate({
+              mutation: generateMutation({
+                insert_map_pools_one: [
+                  {
+                    object: {
+                      type: e_map_pool_types_enum.Custom,
+                      maps: {
+                        data: form?.map_pool?.map((map_id) => {
+                          return {
+                            id: map_id,
+                          };
+                        }),
+                      },
+                    },
+                  },
+                  {
+                    id: true,
+                  },
+                ],
+              }),
+            });
+            mapPoolId = data.insert_map_pools_one.id;
+          } else {
+            await this.$apollo.mutate({
+              mutation: generateMutation({
+                delete__map_pool: [
+                  {
+                    where: {
+                      map_pool_id: {
+                        _eq: mapPoolId,
+                      },
+                    },
+                  },
+                  {
+                    affected_rows: true,
+                  },
+                ],
+              }),
+            });
+
+            await this.$apollo.mutate({
+              mutation: generateMutation({
+                insert__map_pool: [
+                  {
+                    objects: form?.map_pool?.map((map_id) => {
+                      return {
+                        map_id: map_id,
+                        map_pool_id: mapPoolId,
+                      };
+                    }),
+                  },
+                  {
+                    affected_rows: true,
+                  },
+                ],
+              }),
+            });
+          }
+        }
+
+        await this.$apollo.mutate({
+          variables: setupOptionsVariables(form, {
+            mapPoolId: mapPoolId,
+            matchOptionsId: this.match.options.id,
+          }),
+          mutation: generateMutation({
+            update_match_options_by_pk: [
+              {
+                pk_columns: {
+                  id: $("id", "uuid!"),
+                },
+                _set: setupOptionsSetMutation(!!mapPoolId),
               },
-              _set: setupOptionsSetMutation(!!mapPoolId),
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
+              {
+                id: true,
+              },
+            ],
+          }),
+        });
 
-      toast({
-        title: this.$t("pages.matches.match_updated"),
-      });
+        toast({
+          title: this.$t("pages.matches.match_updated"),
+        });
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+      } finally {
+        this.submitting = false;
+      }
     },
     async createMatch() {
       const form = this.form.values;

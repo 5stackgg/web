@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ChevronDown, Merge } from "lucide-vue-next";
+import { ChevronDown, Merge, Play } from "lucide-vue-next";
 import MatchLobbySelector from "./MatchLobbySelector.vue";
 import MatchLobby from "~/components/matchmaking-lobby/MatchLobby.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
@@ -50,12 +50,39 @@ const isElevatedUser = computed(() =>
   </div>
 
   <template v-if="currentLobby">
-    <MatchLobby :lobby="currentLobby" />
+    <div class="flex items-center">
+      <Transition
+        enter-active-class="transition-all duration-300 ease-out"
+        leave-active-class="transition-all duration-200 ease-in"
+        enter-from-class="opacity-0 scale-50 -translate-x-2"
+        enter-to-class="opacity-100 scale-100 translate-x-0"
+        leave-from-class="opacity-100 scale-100 translate-x-0"
+        leave-to-class="opacity-0 scale-50 -translate-x-2"
+      >
+        <NuxtLink
+          v-if="showPlayButton"
+          to="/play"
+          :title="$t('layouts.lobby_panel.find_match')"
+          class="group/play relative isolate mr-2 inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-[hsl(var(--tac-amber))] text-[hsl(0_0%_8%)] no-underline [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_20px_-6px_hsl(var(--tac-amber)/0.6)] transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_12px_32px_-6px_hsl(var(--tac-amber)/0.8),0_0_24px_hsl(var(--tac-amber)/0.35)] active:translate-y-0"
+        >
+          <Play
+            class="relative z-[1] h-4 w-4 fill-current transition-transform duration-300 group-hover/play:scale-110"
+          />
+          <span
+            class="pointer-events-none absolute inset-0 z-0 -translate-x-full bg-[linear-gradient(90deg,transparent_0%,hsl(0_0%_100%_/_0.4)_50%,transparent_100%)] transition-transform duration-500 group-hover/play:translate-x-full"
+            aria-hidden="true"
+          ></span>
+        </NuxtLink>
+      </Transition>
+
+      <MatchLobby :lobby="currentLobby" />
+    </div>
   </template>
 
   <template v-else>
     <Button
       @click="createLobby"
+      :loading="creatingLobby"
       size="default"
       class="relative group h-12 overflow-hidden rounded bg-transparent px-5 text-white shadow-lg hover:shadow transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
     >
@@ -174,6 +201,30 @@ export default {
     currentLobby() {
       return useMatchmakingStore().currentLobby;
     },
+    creatingLobby() {
+      return useMatchmakingStore().creatingLobby;
+    },
+    isLobbyLeader() {
+      const lobby = this.currentLobby as any;
+      const me = lobby?.players?.find((p: any) => {
+        return p.player.steam_id === this.me?.steam_id;
+      });
+      return !!me?.captain;
+    },
+    showPlayButton() {
+      return (
+        this.isLobbyLeader &&
+        (this.matchmakingAllowed || this.canCreateMatch) &&
+        this.$route.name !== "play" &&
+        this.myMatches.length === 0
+      );
+    },
+    matchmakingAllowed() {
+      return useApplicationSettingsStore().matchmakingAllowed;
+    },
+    canCreateMatch() {
+      return useApplicationSettingsStore().canCreateMatch;
+    },
     currentMatch() {
       if (!this.matchId) {
       }
@@ -229,7 +280,7 @@ export default {
       setActiveTab(id);
     },
     createLobby() {
-      useMatchmakingStore().createLobby();
+      return useMatchmakingStore().createLobby();
     },
   },
 };

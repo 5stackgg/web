@@ -9,10 +9,6 @@ import {
   CardTitle,
   CardDescription,
 } from "~/components/ui/card";
-
-definePageMeta({
-  layout: "profile-settings",
-});
 </script>
 
 <template>
@@ -146,7 +142,7 @@ definePageMeta({
             <Button type="button" variant="outline" @click="closeAddDialog">
               {{ $t("common.cancel") }}
             </Button>
-            <Button type="submit">
+            <Button type="submit" :loading="submitting">
               {{
                 $t("pages.settings.account.api_keys_management.create_api_key")
               }}
@@ -311,6 +307,7 @@ export default {
           }),
         ),
       }),
+      submitting: false,
       showAddDialog: false,
       showDeleteDialog: false,
       showingNewApiKey: false,
@@ -346,12 +343,17 @@ export default {
       this.apiKeyToDelete = null;
     },
     async addApiKey() {
+      if (this.submitting) {
+        return;
+      }
+
       const { valid } = await this.form.validate();
 
       if (!valid) {
         return;
       }
 
+      this.submitting = true;
       try {
         const { data } = await this.$apollo.mutate({
           variables: {
@@ -383,6 +385,8 @@ export default {
           ),
           variant: "destructive",
         });
+      } finally {
+        this.submitting = false;
       }
     },
     async deleteApiKey() {

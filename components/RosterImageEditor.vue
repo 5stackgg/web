@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Loader2, RotateCcw, Sparkles, Upload, Info } from "lucide-vue-next";
+import { RotateCcw, Sparkles, Upload, Info } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import { toast } from "@/components/ui/toast";
 import Cropper from "cropperjs";
 import "cropperjs/dist/cropper.css";
@@ -284,7 +285,7 @@ const noticeKey = computed(() =>
           v-if="removingBg"
           class="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-background/70 backdrop-blur-sm"
         >
-          <Loader2 class="h-6 w-6 animate-spin text-[hsl(var(--tac-amber))]" />
+          <Spinner class="h-6 w-6 text-[hsl(var(--tac-amber))]" />
           <div
             class="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground"
           >
@@ -358,7 +359,7 @@ const noticeKey = computed(() =>
           :disabled="removingBg || uploading || !displaySrc"
           @click="removeBackground"
         >
-          <Loader2 v-if="removingBg" class="h-4 w-4 mr-1 animate-spin" />
+          <Spinner v-if="removingBg" class="h-4 w-4 mr-1" />
           <Sparkles v-else class="h-4 w-4 mr-1" />
           {{ $t("avatar.roster_editor.remove_bg") }}
         </Button>
@@ -367,7 +368,7 @@ const noticeKey = computed(() =>
           :disabled="removingBg || uploading || !displaySrc"
           @click="save"
         >
-          <Loader2 v-if="uploading" class="h-4 w-4 mr-1 animate-spin" />
+          <Spinner v-if="uploading" class="h-4 w-4 mr-1" />
           <Upload v-else class="h-4 w-4 mr-1" />
           {{ $t("common.save") }}
         </Button>

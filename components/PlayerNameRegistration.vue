@@ -40,7 +40,7 @@ import { AlertCircle } from "lucide-vue-next";
           </FormItem>
         </FormField>
 
-        <Button type="submit">{{
+        <Button type="submit" :loading="submitting">{{
           $t("player.registration.confirm_button")
         }}</Button>
       </form>
@@ -60,6 +60,7 @@ import { $ } from "~/generated/zeus";
 export default {
   data() {
     return {
+      submitting: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -96,33 +97,42 @@ export default {
   },
   methods: {
     async confirmName() {
+      if (this.submitting) {
+        return;
+      }
+
       const { valid } = await this.form.validate();
 
       if (!valid) {
         return;
       }
 
-      const form = this.form.values;
+      this.submitting = true;
+      try {
+        const form = this.form.values;
 
-      await this.$apollo.mutate({
-        variables: {
-          name: form.player_name,
-        },
-        mutation: generateMutation({
-          registerName: [
-            {
-              name: $("name", "String!"),
-            },
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
+        await this.$apollo.mutate({
+          variables: {
+            name: form.player_name,
+          },
+          mutation: generateMutation({
+            registerName: [
+              {
+                name: $("name", "String!"),
+              },
+              {
+                success: true,
+              },
+            ],
+          }),
+        });
 
-      toast({
-        title: this.$t("player.registration.success"),
-      });
+        toast({
+          title: this.$t("player.registration.success"),
+        });
+      } finally {
+        this.submitting = false;
+      }
     },
   },
 };

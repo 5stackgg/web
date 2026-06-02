@@ -349,13 +349,41 @@ function cancelRetries() {
   }
 }
 
-// When the SRT publisher drops, RTCPeerConnection stays "connected"
-// but currentTime stops advancing. Poll and force a reconnect on stall.
-const STALL_MS = 5_000;
+// Detect a genuinely-frozen VIDEO and reconnect. Keyed off the inbound video
+// track's framesDecoded — NOT currentTime or total bytes, because the AUDIO
+// track keeps both of those advancing even when the picture is frozen (so the
+// old check thought a stuck stream was healthy and never recovered). framesDecoded
+// also rises through a cs2 seek (the held-frame keeps decoding dup frames), so it
+// won't false-fire on seeks. We never act while the tab is hidden — the browser
+// legitimately stops decoding video for an occluded/background tab; we recover on
+// visibilitychange instead.
+const STALL_MS = 4_000;
 let stallTimer: ReturnType<typeof setInterval> | null = null;
-let lastTime = 0;
-let lastTimeAt = 0;
+let lastFrames = -1;
+let lastFramesAt = 0;
 let stallWatchActive = false;
+
+// Inbound video framesDecoded, or null if unavailable.
+async function videoFramesDecoded(): Promise<number | null> {
+  if (!pc) return null;
+  try {
+    const stats = await pc.getStats();
+    let frames = -1;
+    stats.forEach((r: any) => {
+      if (
+        r.type === "inbound-rtp" &&
+        (r.kind === "video" || r.mediaType === "video")
+      ) {
+        frames =
+          (frames < 0 ? 0 : frames) +
+          (r.framesDecoded ?? r.framesReceived ?? 0);
+      }
+    });
+    return frames < 0 ? null : frames;
+  } catch {
+    return null;
+  }
+}
 
 function startStallWatch() {
   stallWatchActive = true;
@@ -370,28 +398,38 @@ function startStallWatch() {
 
 function armStallTimer() {
   stopStallTimer();
-  lastTime = videoRef.value?.currentTime ?? 0;
-  lastTimeAt = Date.now();
-  stallTimer = setInterval(() => {
+  lastFrames = -1;
+  lastFramesAt = Date.now();
+  stallTimer = setInterval(async () => {
     const el = videoRef.value;
     if (!el || status.value !== "playing" || cancelled || useFallback.value) {
       return;
     }
     if (clipRenderActive.value) {
-      // Reset so the timer doesn't fire the moment the render ends.
-      lastTime = el.currentTime;
-      lastTimeAt = Date.now();
+      lastFrames = -1; // re-baseline so we don't fire when the render ends
+      lastFramesAt = Date.now();
       return;
     }
-    const now = el.currentTime;
-    if (now !== lastTime) {
-      lastTime = now;
-      lastTimeAt = Date.now();
+    // Don't fight a hidden/occluded tab: the browser legitimately stops decoding
+    // video then (audio keeps playing), and reconnecting wouldn't render anyway.
+    // onVisibilityChange handles recovery when the tab comes back.
+    if (typeof document !== "undefined" && document.hidden) {
+      lastFrames = -1;
       return;
     }
-    if (Date.now() - lastTimeAt < STALL_MS) return;
-    console.debug("[whep] stalled — forcing reconnect");
-    lastTimeAt = Date.now();
+    const frames = await videoFramesDecoded();
+    if (frames === null) return; // can't measure — leave it alone
+    if (lastFrames < 0 || frames > lastFrames) {
+      lastFrames = frames;
+      lastFramesAt = Date.now();
+      return;
+    }
+    if (Date.now() - lastFramesAt < STALL_MS) return;
+    // Video frames flat for STALL_MS while visible+playing => genuinely frozen
+    // (decoder stuck, or publisher dead). Audio may still be flowing; reconnect.
+    console.debug("[whep] video frozen — forcing reconnect");
+    lastFrames = -1;
+    lastFramesAt = Date.now();
     retryDelay = INITIAL_RETRY_DELAY_MS;
     void teardown().then(() => connect());
   }, 1_000);
@@ -413,9 +451,46 @@ function onVisibilityChange() {
   if (!stallWatchActive) return;
   if (document.hidden) {
     stopStallTimer();
-  } else if (!stallTimer) {
-    armStallTimer();
+    return;
   }
+  // Became visible again. Backgrounded tabs are throttled — a pending reconnect
+  // timer can be stuck ~a minute out, and the muted video element is often paused
+  // — so the stream looks dead until a manual refresh. Recover proactively:
+  // resume the video, and if we're not cleanly connected+playing, drop the
+  // (throttled) pending retry and reconnect now. NOT cancelRetries() — that sets
+  // `cancelled` and would kill reconnection for good.
+  void tryPlay();
+  const connected = !!pc && pc.connectionState === "connected";
+  if (!cancelled && (!connected || status.value !== "playing")) {
+    if (retryHandle) {
+      clearTimeout(retryHandle);
+      retryHandle = null;
+    }
+    retryDelay = INITIAL_RETRY_DELAY_MS;
+    void connect();
+  } else {
+    // Connected + playing, but the video may have frozen while occluded (audio
+    // kept flowing). Chrome usually resumes decoding on visible; if it doesn't,
+    // catch it fast instead of waiting out the 4s watchdog: snapshot frames now
+    // and reconnect if they haven't advanced ~1.2s later.
+    void (async () => {
+      const before = await videoFramesDecoded();
+      if (before === null) return;
+      setTimeout(async () => {
+        if (cancelled || document.hidden) return;
+        if (!pc || pc.connectionState !== "connected") return;
+        const after = await videoFramesDecoded();
+        if (after !== null && after <= before) {
+          console.debug(
+            "[whep] video still frozen after refocus — reconnecting",
+          );
+          retryDelay = INITIAL_RETRY_DELAY_MS;
+          void teardown().then(() => connect());
+        }
+      }, 1_200);
+    })();
+  }
+  if (!stallTimer) armStallTimer();
 }
 
 // Wait for mount so videoRef is bound — `immediate: true` fires
@@ -640,7 +715,7 @@ defineExpose({ connect, teardown });
       <span
         class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
       >
-        Rendering clip<span class="whep-dots" />
+        Rendering clip
       </span>
     </div>
 
@@ -673,57 +748,34 @@ defineExpose({ connect, teardown });
         "
       />
 
-      <!-- Sweeping scanline — the signature loading motif. Hidden on
-           error so the frame settles. -->
-      <div
-        v-if="status === 'connecting'"
-        class="whep-scanline absolute inset-x-0 h-px bg-[linear-gradient(to_right,transparent_0%,hsl(var(--tac-amber))_50%,transparent_100%)] shadow-[0_0_10px_hsl(var(--tac-amber)/0.7)]"
-      />
-
-      <!-- Center stack: radar ring + status label -->
+      <!-- Center stack: spinner + status label -->
       <div
         class="absolute inset-0 flex flex-col items-center justify-center gap-3"
       >
-        <!-- Connecting: layered radar — outer pulsing ring, inner
-             spinning arc, dot core. -->
-        <div v-if="status === 'connecting'" class="relative size-16">
-          <span
-            class="absolute inset-0 rounded-full border border-[hsl(var(--tac-amber)/0.35)] whep-radar-ping"
-          />
-          <span
-            class="absolute inset-2 rounded-full border border-[hsl(var(--tac-amber)/0.2)]"
-          />
-          <span
-            class="absolute inset-0 rounded-full border-2 border-transparent border-t-[hsl(var(--tac-amber))] animate-spin"
-            style="animation-duration: 1.4s"
-          />
-          <span
-            class="absolute left-1/2 top-1/2 size-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_10px_hsl(var(--tac-amber))]"
-          />
-        </div>
+        <!-- Connecting: a single clean spinner (no rings/dots). -->
+        <div
+          v-if="status === 'connecting'"
+          class="size-12 rounded-full border-2 border-transparent border-t-[hsl(var(--tac-amber))] animate-spin"
+          style="animation-duration: 1.4s"
+        />
 
-        <!-- Error: filled red square w/ slow blink instead of motion -->
+        <!-- Error: blinking marker. -->
         <div
           v-else-if="status === 'error'"
           class="size-3 bg-destructive shadow-[0_0_12px_hsl(var(--destructive)/0.8)] animate-pulse"
         />
 
-        <!-- Idle: simple dim dot -->
-        <div v-else class="size-2 rounded-full bg-muted-foreground/40" />
-
-        <!-- Status label. The trailing dots animate via CSS so the
-             text reads "Acquiring signal..." with a live cadence. -->
         <p
           v-if="status === 'connecting'"
           class="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
         >
-          Acquiring signal<span class="whep-dots" />
+          Acquiring signal
         </p>
         <p
           v-else-if="status === 'error' && isRetrying"
           class="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
         >
-          Acquiring signal<span class="whep-dots" />
+          Acquiring signal
         </p>
         <p
           v-else-if="status === 'error'"
@@ -741,18 +793,6 @@ defineExpose({ connect, teardown });
         >
           Idle
         </p>
-      </div>
-
-      <!-- Indeterminate progress bar at the bottom edge — caps the
-           scanline motion so the eye has a second indicator that
-           something is in flight. Connecting only. -->
-      <div
-        v-if="status === 'connecting'"
-        class="absolute inset-x-0 bottom-0 h-0.5 overflow-hidden bg-[hsl(var(--tac-amber)/0.15)]"
-      >
-        <div
-          class="whep-progress absolute inset-y-0 w-1/3 bg-[linear-gradient(to_right,transparent,hsl(var(--tac-amber)),transparent)]"
-        />
       </div>
     </div>
   </div>
@@ -775,81 +815,6 @@ video::-internal-media-controls-overlay-cast-button {
   appearance: none !important;
   opacity: 0 !important;
   pointer-events: none !important;
-}
-
-/* Scanline that sweeps top → bottom of the player while we're
-   connecting. Easing favors a slow body and quick fade at the edges
-   so the eye locks onto the middle of the sweep. */
-@keyframes whep-scanline-sweep {
-  0% {
-    top: 0;
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    top: 100%;
-    opacity: 0;
-  }
-}
-.whep-scanline {
-  animation: whep-scanline-sweep 2.4s linear infinite;
-}
-
-/* Outer radar ring that fades + scales like a sonar ping. */
-@keyframes whep-radar-ping {
-  0% {
-    transform: scale(0.7);
-    opacity: 0.9;
-  }
-  100% {
-    transform: scale(1.4);
-    opacity: 0;
-  }
-}
-.whep-radar-ping {
-  animation: whep-radar-ping 1.6s cubic-bezier(0.25, 0.65, 0.45, 1) infinite;
-}
-
-/* Cycling "..." after the status label. Width animates so the dots
-   appear one by one, then reset. steps() keeps it discrete instead of
-   sliding. */
-.whep-dots {
-  display: inline-block;
-  overflow: hidden;
-  vertical-align: bottom;
-  width: 0;
-  animation: whep-dots 1.5s steps(4, end) infinite;
-}
-.whep-dots::before {
-  content: "...";
-}
-@keyframes whep-dots {
-  0% {
-    width: 0;
-  }
-  100% {
-    width: 1.4em;
-  }
-}
-
-/* Indeterminate bar at the bottom — slides a soft amber gradient
-   from off-left to off-right to suggest "in progress, no known
-   total". */
-@keyframes whep-progress-slide {
-  0% {
-    transform: translateX(-100%);
-  }
-  100% {
-    transform: translateX(400%);
-  }
-}
-.whep-progress {
-  animation: whep-progress-slide 1.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 
 /* Volume slider — minimal styling, sized small so it tucks beside
@@ -888,19 +853,5 @@ video::-internal-media-controls-overlay-cast-button {
   border-radius: 9999px;
   background: white;
   border: 2px solid rgba(0, 0, 0, 0.6);
-}
-
-/* Respect reduced-motion preferences — drop the live motion but
-   keep the static frame so the loader is still legible. */
-@media (prefers-reduced-motion: reduce) {
-  .whep-scanline,
-  .whep-radar-ping,
-  .whep-dots,
-  .whep-progress {
-    animation: none;
-  }
-  .whep-dots {
-    width: 1.4em;
-  }
 }
 </style>

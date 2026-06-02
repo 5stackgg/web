@@ -3,7 +3,8 @@ import { computed, onBeforeUnmount, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
-import { CheckCircle2, Loader2, AlertCircle, Download } from "lucide-vue-next";
+import { CheckCircle2, AlertCircle, Download } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import { Button } from "~/components/ui/button";
 import { Progress } from "~/components/ui/progress";
 import { useNuxtApp } from "#app";
@@ -168,7 +169,7 @@ const phaseStatus = computed<{
     <div class="flex items-center gap-3">
       <CheckCircle2 v-if="isDone" class="h-5 w-5 text-emerald-400" />
       <AlertCircle v-else-if="isError" class="h-5 w-5 text-destructive" />
-      <Loader2 v-else class="h-5 w-5 animate-spin text-muted-foreground" />
+      <Spinner v-else class="h-5 w-5 text-muted-foreground" />
       <span class="text-sm">{{ statusLabel }}</span>
     </div>
 

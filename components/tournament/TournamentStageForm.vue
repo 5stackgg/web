@@ -720,7 +720,11 @@ import { $ } from "~/generated/zeus";
       </CollapsibleContent>
     </Collapsible>
 
-    <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
+    <Button
+      type="submit"
+      :disabled="Object.keys(form.errors).length > 0"
+      :loading="submitting"
+    >
       <template v-if="stage">{{ $t("tournament.stage.update") }}</template>
       <template v-else>{{ $t("tournament.stage.create") }}</template>
     </Button>
@@ -798,6 +802,7 @@ export default {
   },
   data() {
     return {
+      submitting: false,
       showAdvancedSettings: false,
       select_single_region: null as string | null,
       roundBestOf: {} as Record<string, string>,
@@ -1355,164 +1360,175 @@ export default {
       return { round_best_of: roundBestOf };
     },
     async updateCreateStage() {
-      const { valid } = await this.form.validate();
-
-      if (!valid) {
+      if (this.submitLock) {
         return;
       }
+      this.submitLock = true;
+      try {
+        const { valid } = await this.form.validate();
 
-      const form = this.form.values;
-      const customAdvancedSettings = this.hasAdvancedSettingsChanged();
-      const settings = this.buildSettings();
+        if (!valid) {
+          return;
+        }
 
-      if (this.stage) {
-        // Handle match options for advanced settings
+        this.submitting = true;
+        const form = this.form.values;
+        const customAdvancedSettings = this.hasAdvancedSettingsChanged();
+        const settings = this.buildSettings();
+
+        if (this.stage) {
+          // Handle match options for advanced settings
+          let matchOptionsId: string | null = null;
+
+          if (this.stage.options?.id) {
+            if (customAdvancedSettings) {
+              matchOptionsId = await this.updateMatchOptions(
+                this.stage.options.id,
+                form,
+              );
+            } else {
+              // Remove stage-level match_options (matches tournament defaults)
+              await (this as any).$apollo.mutate({
+                mutation: generateMutation({
+                  update_tournament_stages_by_pk: [
+                    {
+                      pk_columns: {
+                        id: this.stage.id,
+                      },
+                      _set: {
+                        match_options_id: null,
+                      },
+                    },
+                    {
+                      __typename: true,
+                    },
+                  ],
+                }),
+              });
+              await this.deleteMatchOptions(this.stage.options.id);
+              matchOptionsId = null;
+            }
+          } else {
+            if (customAdvancedSettings) {
+              matchOptionsId = await this.createMatchOptions(form);
+            }
+          }
+
+          // Update stage
+          const updateSet: any = {
+            order: this.order,
+            groups: this.form.values.groups,
+            type: this.form.values.stage_type,
+            min_teams: this.form.values.min_teams,
+            max_teams: this.form.values.max_teams,
+            default_best_of: parseInt(this.form.values.default_best_of),
+            third_place_match: this.form.values.third_place_match || false,
+            settings: $("settings", "jsonb"),
+            decider_best_of: this.form.values.third_place_match
+              ? parseInt(
+                  this.form.values.decider_best_of ||
+                    this.form.values.default_best_of,
+                )
+              : null,
+          };
+
+          if (matchOptionsId !== null) {
+            updateSet.match_options_id = matchOptionsId;
+          } else {
+            updateSet.match_options_id = null;
+          }
+
+          await (this as any).$apollo.mutate({
+            variables: {
+              settings: settings,
+            },
+            mutation: generateMutation({
+              update_tournament_stages_by_pk: [
+                {
+                  pk_columns: {
+                    id: this.stage.id,
+                  },
+                  _set: updateSet,
+                },
+                {
+                  __typename: true,
+                },
+              ],
+            }),
+          });
+
+          this.$emit("updated");
+          return;
+        }
+
+        // Create new stage
         let matchOptionsId: string | null = null;
 
-        if (this.stage.options?.id) {
-          if (customAdvancedSettings) {
-            matchOptionsId = await this.updateMatchOptions(
-              this.stage.options.id,
-              form,
-            );
-          } else {
-            // Remove stage-level match_options (matches tournament defaults)
-            await (this as any).$apollo.mutate({
-              mutation: generateMutation({
-                update_tournament_stages_by_pk: [
-                  {
-                    pk_columns: {
-                      id: this.stage.id,
-                    },
-                    _set: {
-                      match_options_id: null,
-                    },
-                  },
-                  {
-                    __typename: true,
-                  },
-                ],
-              }),
-            });
-            await this.deleteMatchOptions(this.stage.options.id);
-            matchOptionsId = null;
-          }
-        } else {
-          if (customAdvancedSettings) {
-            matchOptionsId = await this.createMatchOptions(form);
-          }
-        }
-
-        // Update stage
-        const updateSet: any = {
-          order: this.order,
-          groups: this.form.values.groups,
-          type: this.form.values.stage_type,
-          min_teams: this.form.values.min_teams,
-          max_teams: this.form.values.max_teams,
-          default_best_of: parseInt(this.form.values.default_best_of),
-          third_place_match: this.form.values.third_place_match || false,
-          settings: $("settings", "jsonb"),
-          decider_best_of: this.form.values.third_place_match
-            ? parseInt(
-                this.form.values.decider_best_of ||
-                  this.form.values.default_best_of,
-              )
-            : null,
-        };
-
-        if (matchOptionsId !== null) {
-          updateSet.match_options_id = matchOptionsId;
-        } else {
-          updateSet.match_options_id = null;
-        }
-
-        await (this as any).$apollo.mutate({
+        const { data: stageData } = await (this as any).$apollo.mutate({
           variables: {
             settings: settings,
           },
           mutation: generateMutation({
-            update_tournament_stages_by_pk: [
+            insert_tournament_stages_one: [
               {
-                pk_columns: {
-                  id: this.stage.id,
+                object: {
+                  order: this.order,
+                  groups: this.form.values.groups,
+                  type: this.form.values.stage_type,
+                  min_teams: this.form.values.min_teams,
+                  max_teams: this.form.values.max_teams,
+                  default_best_of: parseInt(this.form.values.default_best_of),
+                  third_place_match:
+                    this.form.values.third_place_match || false,
+                  decider_best_of: this.form.values.third_place_match
+                    ? parseInt(
+                        this.form.values.decider_best_of ||
+                          this.form.values.default_best_of,
+                      )
+                    : null,
+                  settings: $("settings", "jsonb"),
+                  tournament_id:
+                    (this as any).$route.params.tournamentId ||
+                    (this as any).$route.params.id,
                 },
-                _set: updateSet,
               },
               {
-                __typename: true,
+                id: true,
               },
             ],
           }),
         });
 
-        this.$emit("updated");
-        return;
-      }
+        const stageId = stageData.insert_tournament_stages_one.id;
 
-      // Create new stage
-      let matchOptionsId: string | null = null;
+        // Create match options if advanced settings differ from tournament defaults
+        if (customAdvancedSettings) {
+          matchOptionsId = await this.createMatchOptions(form);
 
-      const { data: stageData } = await (this as any).$apollo.mutate({
-        variables: {
-          settings: settings,
-        },
-        mutation: generateMutation({
-          insert_tournament_stages_one: [
-            {
-              object: {
-                order: this.order,
-                groups: this.form.values.groups,
-                type: this.form.values.stage_type,
-                min_teams: this.form.values.min_teams,
-                max_teams: this.form.values.max_teams,
-                default_best_of: parseInt(this.form.values.default_best_of),
-                third_place_match: this.form.values.third_place_match || false,
-                decider_best_of: this.form.values.third_place_match
-                  ? parseInt(
-                      this.form.values.decider_best_of ||
-                        this.form.values.default_best_of,
-                    )
-                  : null,
-                settings: $("settings", "jsonb"),
-                tournament_id:
-                  (this as any).$route.params.tournamentId ||
-                  (this as any).$route.params.id,
-              },
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
-
-      const stageId = stageData.insert_tournament_stages_one.id;
-
-      // Create match options if advanced settings differ from tournament defaults
-      if (customAdvancedSettings) {
-        matchOptionsId = await this.createMatchOptions(form);
-
-        await (this as any).$apollo.mutate({
-          mutation: generateMutation({
-            update_tournament_stages_by_pk: [
-              {
-                pk_columns: {
-                  id: stageId,
+          await (this as any).$apollo.mutate({
+            mutation: generateMutation({
+              update_tournament_stages_by_pk: [
+                {
+                  pk_columns: {
+                    id: stageId,
+                  },
+                  _set: {
+                    match_options_id: matchOptionsId,
+                  } as any,
                 },
-                _set: {
-                  match_options_id: matchOptionsId,
-                } as any,
-              },
-              {
-                __typename: true,
-              },
-            ],
-          }),
-        });
-      }
+                {
+                  __typename: true,
+                },
+              ],
+            }),
+          });
+        }
 
-      this.$emit("updated", this.order);
+        this.$emit("updated", this.order);
+      } finally {
+        this.submitLock = false;
+        this.submitting = false;
+      }
     },
   },
 };

@@ -56,7 +56,7 @@ const { hasLobbyInvites } = useInvites();
                   {{ $t("layouts.lobby_panel.squad_description") }}
                 </p>
               </div>
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 md:hidden">
                 <MatchmakingLobbyAccess :lobby="currentLobby" />
                 <Button
                   size="icon"
@@ -80,26 +80,21 @@ const { hasLobbyInvites } = useInvites();
             <p class="text-sm text-muted-foreground text-center max-w-xs">
               {{ $t("layouts.lobby_panel.create_lobby_description") }}
             </p>
-            <Button
-              @click="createLobby"
-              size="default"
-              class="relative group overflow-hidden rounded-full bg-transparent px-7 py-2 text-white shadow-lg hover:shadow-md transition-all duration-300 focus-visible:outline-none border border-zinc-700/80"
+            <div
+              class="inline-flex rounded-full p-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-lg transition-shadow duration-300 hover:shadow-md"
             >
-              <span
-                class="absolute inset-0 rounded-full p-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
+              <Button
+                @click="createLobby"
+                :loading="creatingLobby"
+                size="default"
+                class="rounded-full border-0 bg-zinc-950/95 px-7 py-2 text-white transition-colors duration-300 hover:bg-zinc-900/95"
               >
-                <span class="block h-full w-full bg-zinc-950/95 rounded-full" />
-              </span>
-              <span
-                class="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-              />
-              <div class="relative flex items-center gap-2 z-10">
                 <Merge class="h-5 w-5" />
                 <span class="font-semibold">
                   {{ $t("layouts.lobby_panel.create_lobby_button") }}
                 </span>
-              </div>
-            </Button>
+              </Button>
+            </div>
           </Empty>
         </template>
       </div>
@@ -245,6 +240,9 @@ export default {
     hasDiscordLinked() {
       return useAuthStore().hasDiscordLinked;
     },
+    creatingLobby() {
+      return useMatchmakingStore().creatingLobby;
+    },
   },
   methods: {
     matchName(match: any) {
@@ -290,7 +288,7 @@ export default {
       setActiveTab(id);
     },
     createLobby() {
-      useMatchmakingStore().createLobby();
+      return useMatchmakingStore().createLobby();
     },
     async leaveCurrentLobby() {
       const lobby = this.currentLobby as any;

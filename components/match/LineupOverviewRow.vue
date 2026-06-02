@@ -186,40 +186,25 @@ const DASH = "—";
       />
     </TableCell>
     <template v-if="showStats">
-      <TableCell class="text-center tabular-nums">{{
+      <TableCell class="tabular-nums">{{
         hasStats ? sideKills : DASH
       }}</TableCell>
-      <TableCell
-        v-if="overviewVis.assists !== false"
-        class="text-center tabular-nums"
-      >
+      <TableCell v-if="overviewVis.assists !== false" class="tabular-nums">
         {{ hasStats ? sideAssists : DASH }}
       </TableCell>
-      <TableCell class="text-center tabular-nums">{{
+      <TableCell class="tabular-nums">{{
         hasStats ? sideDeaths : DASH
       }}</TableCell>
-      <TableCell
-        v-if="overviewVis.kd !== false"
-        class="text-center tabular-nums"
-      >
+      <TableCell v-if="overviewVis.kd !== false" class="tabular-nums">
         <span :class="kdrColor(kd)">{{ kd }}</span>
       </TableCell>
-      <TableCell
-        v-if="overviewVis.hs !== false"
-        class="text-center tabular-nums"
-      >
+      <TableCell v-if="overviewVis.hs !== false" class="tabular-nums">
         {{ hs }}
       </TableCell>
-      <TableCell
-        v-if="overviewVis.survived !== false"
-        class="text-center tabular-nums"
-      >
+      <TableCell v-if="overviewVis.survived !== false" class="tabular-nums">
         {{ survived }}
       </TableCell>
-      <TableCell
-        v-if="overviewVis.multikills !== false"
-        class="text-center tabular-nums"
-      >
+      <TableCell v-if="overviewVis.multikills !== false" class="tabular-nums">
         <HoverCard
           v-if="(totalMultiKills ?? 0) > 0"
           :open-delay="100"
@@ -274,23 +259,23 @@ const DASH = "—";
       </TableCell>
       <TableCell
         v-if="overviewVis.hltv !== false"
-        class="text-center tabular-nums"
+        class="tabular-nums"
         :class="hltvTierClass"
       >
         {{ hltvRating ?? DASH }}
       </TableCell>
       <TableCell
         v-if="overviewVis.kast !== false"
-        class="text-center tabular-nums"
+        class="tabular-nums"
         :class="kastTierClass"
       >
         {{ kast }}
       </TableCell>
-      <TableCell class="text-center">
+      <TableCell>
         <span :class="['md:hidden tabular-nums text-xs', adrTierClass]">{{
           hasStats ? adr : DASH
         }}</span>
-        <div class="hidden md:flex flex-col items-center leading-tight">
+        <div class="hidden md:flex flex-col items-start leading-tight">
           <span class="tabular-nums">{{ stats?.damage ?? DASH }}</span>
           <span
             v-if="hasStats"
@@ -301,13 +286,13 @@ const DASH = "—";
           </span>
         </div>
       </TableCell>
-      <TableCell v-if="overviewVis.team_damage" class="text-center">
+      <TableCell v-if="overviewVis.team_damage">
         {{ stats?.team_damage ?? DASH }}
       </TableCell>
-      <TableCell v-if="overviewVis.knife_kills" class="text-center">
+      <TableCell v-if="overviewVis.knife_kills">
         {{ stats?.knife_kills ?? DASH }}
       </TableCell>
-      <TableCell v-if="overviewVis.zeus_kills" class="text-center">
+      <TableCell v-if="overviewVis.zeus_kills">
         {{ stats?.zeus_kills ?? DASH }}
       </TableCell>
     </template>

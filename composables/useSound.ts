@@ -53,6 +53,10 @@ export const useSound = () => {
     localStorage.setItem("chat-sound-volume", volume.value.toString());
   };
 
+  const isInGame = () => {
+    return isAutoMutedForInGame.value;
+  };
+
   const generateBeepSound = (
     frequency: number = 800,
     duration: number = 200,
@@ -89,7 +93,7 @@ export const useSound = () => {
   };
 
   const playNotificationSound = () => {
-    if (!import.meta.client || !isEnabled.value || isAutoMutedForInGame.value) {
+    if (!import.meta.client || !isEnabled.value || isInGame()) {
       return;
     }
 
@@ -106,7 +110,7 @@ export const useSound = () => {
   };
 
   const playMatchFoundSound = () => {
-    if (!import.meta.client || !isEnabled.value) {
+    if (!import.meta.client || !isEnabled.value || isInGame()) {
       return;
     }
 
@@ -288,7 +292,7 @@ export const useSound = () => {
   };
 
   const playTickSound = () => {
-    if (!import.meta.client || !isEnabled.value) {
+    if (!import.meta.client || !isEnabled.value || isInGame()) {
       return;
     }
 
@@ -352,7 +356,7 @@ export const useSound = () => {
   };
 
   const playCountdownSound = () => {
-    if (!import.meta.client || !isEnabled.value) {
+    if (!import.meta.client || !isEnabled.value || isInGame()) {
       return;
     }
 

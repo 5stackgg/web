@@ -138,7 +138,7 @@ import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
       </FormItem>
     </FormField>
     <div class="flex justify-between items-center">
-      <Button type="submit">{{
+      <Button type="submit" :loading="submitting">{{
         map
           ? $t("pages.map_pools.form.update_map")
           : $t("pages.map_pools.form.create_map")
@@ -184,6 +184,7 @@ export default {
     return {
       verifiredMapName: false,
       isLoading: false,
+      submitting: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -254,39 +255,77 @@ export default {
       );
     },
     async submitForm() {
-      const values = this.form.values;
-
-      // Verify workshop map if provided
-      if (values.workshop_map_id) {
-        const map = await this.getWorkshopMap(values.workshop_map_id);
-
-        if (!map) {
-          toast({
-            title: this.$t("pages.map_pools.form.error.invalid_workshop"),
-            variant: "destructive",
-          });
-          return;
-        }
+      if (this.submitLock) {
+        return;
       }
-
+      this.submitLock = true;
       try {
-        if (this.map) {
-          await this.$apollo.mutate({
-            mutation: generateMutation({
-              update_maps: [
-                {
-                  _set: {
-                    name: values.name,
-                    label: values.label,
-                    workshop_map_id: values.workshop_map_id,
-                    poster: values.poster,
-                    patch: values.patch,
-                  },
-                  where: {
-                    id: {
-                      _eq: this.map.id,
+        this.submitting = true;
+        const values = this.form.values;
+
+        // Verify workshop map if provided
+        if (values.workshop_map_id) {
+          const map = await this.getWorkshopMap(values.workshop_map_id);
+
+          if (!map) {
+            toast({
+              title: this.$t("pages.map_pools.form.error.invalid_workshop"),
+              variant: "destructive",
+            });
+            return;
+          }
+        }
+
+        try {
+          if (this.map) {
+            await this.$apollo.mutate({
+              mutation: generateMutation({
+                update_maps: [
+                  {
+                    _set: {
+                      name: values.name,
+                      label: values.label,
+                      workshop_map_id: values.workshop_map_id,
+                      poster: values.poster,
+                      patch: values.patch,
+                    },
+                    where: {
+                      id: {
+                        _eq: this.map.id,
+                      },
                     },
                   },
+                  {
+                    affected_rows: true,
+                  },
+                ],
+              }),
+            });
+
+            toast({
+              title: this.$t("pages.map_pools.form.success.update"),
+            });
+
+            this.$emit("updated");
+            return;
+          }
+
+          await this.$apollo.mutate({
+            mutation: generateMutation({
+              insert_maps: [
+                {
+                  objects: [
+                    {
+                      name: values.name,
+                      label: values.label,
+                      workshop_map_id: values.workshop_map_id,
+                      poster: values.poster,
+                      patch: values.patch,
+                      type: e_match_types_enum.Competitive,
+                      enabled: false,
+                      active_pool: false,
+                    },
+                  ],
                 },
                 {
                   affected_rows: true,
@@ -296,47 +335,19 @@ export default {
           });
 
           toast({
-            title: this.$t("pages.map_pools.form.success.update"),
+            title: this.$t("pages.map_pools.form.success.create"),
           });
-
-          this.$emit("updated");
-          return;
+        } catch (error) {
+          toast({
+            title: this.map
+              ? this.$t("pages.map_pools.form.error.update")
+              : this.$t("pages.map_pools.form.error.create"),
+            variant: "destructive",
+          });
         }
-
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            insert_maps: [
-              {
-                objects: [
-                  {
-                    name: values.name,
-                    label: values.label,
-                    workshop_map_id: values.workshop_map_id,
-                    poster: values.poster,
-                    patch: values.patch,
-                    type: e_match_types_enum.Competitive,
-                    enabled: false,
-                    active_pool: false,
-                  },
-                ],
-              },
-              {
-                affected_rows: true,
-              },
-            ],
-          }),
-        });
-
-        toast({
-          title: this.$t("pages.map_pools.form.success.create"),
-        });
-      } catch (error) {
-        toast({
-          title: this.map
-            ? this.$t("pages.map_pools.form.error.update")
-            : this.$t("pages.map_pools.form.error.create"),
-          variant: "destructive",
-        });
+      } finally {
+        this.submitLock = false;
+        this.submitting = false;
       }
     },
     async deleteMap() {

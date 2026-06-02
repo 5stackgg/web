@@ -133,7 +133,7 @@ const chipClipSm = "";
 </script>
 
 <template>
-  <TooltipProvider v-if="hasData && eloChange" :delay-duration="120">
+  <TooltipProvider v-if="hasData && eloChange">
     <Tooltip>
       <TooltipTrigger as-child>
         <button

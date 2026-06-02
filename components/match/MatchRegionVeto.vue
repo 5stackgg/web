@@ -2,6 +2,7 @@
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
 import { Check } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import { FormControl } from "~/components/ui/form";
 import { Separator } from "~/components/ui/separator";
 import {
@@ -75,14 +76,19 @@ import {
             class="relative w-[180px]"
           >
             <div
-              @click="isPicking && form.setFieldValue('region', region.value)"
+              @click="
+                isPicking && !submitting && form.setFieldValue('region', region.value)
+              "
               class="h-[180px]"
               :class="[
                 vetoTileClasses,
                 form.values.region === region.value
                   ? vetoTileActiveClasses
-                  : isPicking && vetoTileHoverClasses,
+                  : isPicking && !submitting && vetoTileHoverClasses,
                 !availableRegions.includes(region.value) &&
+                  vetoTileDisabledClasses,
+                submitting &&
+                  form.values.region !== region.value &&
                   vetoTileDisabledClasses,
                 !isPicking && 'cursor-default',
               ]"
@@ -123,10 +129,11 @@ import {
                 <div
                   v-if="form.values.region === region.value"
                   :class="vetoTileConfirmOverlayClasses"
-                  @click.stop="vetoPick"
+                  @click.stop="!submitting && vetoPick()"
                 >
                   <div :class="vetoTileConfirmPillClasses">
-                    <Check class="w-4 h-4" />
+                    <Spinner v-if="submitting" />
+                    <Check v-else class="w-4 h-4" />
                     <span>{{ $t("match.region_veto.confirm_ban") }}</span>
                   </div>
                 </div>
@@ -182,7 +189,7 @@ import {
 
               <Button
                 type="submit"
-                :disabled="Object.keys(form.errors).length > 0"
+                :disabled="Object.keys(form.errors).length > 0 || submitting"
               >
                 {{ $t("match.region_veto.set_server_region") }}
               </Button>
@@ -209,6 +216,7 @@ import {
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { useSound } from "~/composables/useSound";
+import { toast } from "@/components/ui/toast";
 
 export default {
   props: {
@@ -264,14 +272,21 @@ export default {
       handler(currentPicks, oldPicks) {
         if (oldPicks && currentPicks.length > oldPicks.length) {
           this.playTickSound();
+          this.finishSubmitting();
         }
       },
     },
+  },
+  beforeUnmount() {
+    if (this.submitTimeout) {
+      clearTimeout(this.submitTimeout);
+    }
   },
   data() {
     return {
       picks: [],
       override: false,
+      submitting: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -352,60 +367,101 @@ export default {
     },
   },
   methods: {
-    async setRegion() {
-      let { region } = this.form.values;
-
-      await this.$apollo.mutate({
-        variables: {
-          region,
-        },
-        mutation: generateMutation({
-          update_matches_by_pk: [
-            {
-              pk_columns: {
-                id: this.$route.params.id,
-              },
-              _set: {
-                region: $("region", "String!"),
-              },
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
-
+    finishSubmitting() {
+      if (this.submitTimeout) {
+        clearTimeout(this.submitTimeout);
+        this.submitTimeout = undefined;
+      }
+      this.submitting = false;
       this.form.resetForm();
     },
-    async vetoPick() {
+    async setRegion() {
+      if (this.submitting) {
+        return;
+      }
+
       let { region } = this.form.values;
 
-      await this.$apollo.mutate({
-        variables: {
-          region,
-          type: e_veto_pick_types_enum.Ban,
-          match_id: this.$route.params.id,
-          match_lineup_id: this.match.region_veto_picking_lineup_id,
-        },
-        mutation: generateMutation({
-          insert_match_region_veto_picks_one: [
-            {
-              object: {
-                region: $("region", "String!"),
-                type: $("type", "e_veto_pick_types_enum!"),
-                match_id: $("match_id", "uuid!"),
-                match_lineup_id: $("match_lineup_id", "uuid!"),
-              },
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
+      this.submitting = true;
 
-      this.form.resetForm();
+      try {
+        await this.$apollo.mutate({
+          variables: {
+            region,
+          },
+          mutation: generateMutation({
+            update_matches_by_pk: [
+              {
+                pk_columns: {
+                  id: this.$route.params.id,
+                },
+                _set: {
+                  region: $("region", "String!"),
+                },
+              },
+              {
+                id: true,
+              },
+            ],
+          }),
+        });
+
+        this.form.resetForm();
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+      } finally {
+        this.submitting = false;
+      }
+    },
+    async vetoPick() {
+      if (this.submitting) {
+        return;
+      }
+
+      let { region } = this.form.values;
+
+      this.submitting = true;
+
+      try {
+        await this.$apollo.mutate({
+          variables: {
+            region,
+            type: e_veto_pick_types_enum.Ban,
+            match_id: this.$route.params.id,
+            match_lineup_id: this.match.region_veto_picking_lineup_id,
+          },
+          mutation: generateMutation({
+            insert_match_region_veto_picks_one: [
+              {
+                object: {
+                  region: $("region", "String!"),
+                  type: $("type", "e_veto_pick_types_enum!"),
+                  match_id: $("match_id", "uuid!"),
+                  match_lineup_id: $("match_lineup_id", "uuid!"),
+                },
+              },
+              {
+                id: true,
+              },
+            ],
+          }),
+        });
+
+        this.submitTimeout = setTimeout(() => {
+          this.finishSubmitting();
+        }, 8000);
+      } catch (error: any) {
+        this.submitting = false;
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
+      }
     },
   },
 };

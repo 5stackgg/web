@@ -104,7 +104,9 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
   // Toggled UI state for quick actions. Local-only — the api fires
   // the corresponding console command immediately, no subscription
   // round-trip required.
-  const xrayEnabled = ref<boolean>(false);
+  // X-ray (player outlines through walls) defaults ON — the demo autoexec sets
+  // spec_show_xray 1 for live spectating.
+  const xrayEnabled = ref<boolean>(true);
   const hudVisible = ref<boolean>(true);
   // Which JTs Hud Manager variant is currently loaded in the streamer
   // pod's Electron overlay. Initial value mirrors the pod's HUD_MODE
@@ -263,7 +265,7 @@ export const useDemoPlaybackStore = defineStore("demoPlayback", () => {
     rosters.value = { lineup1: [], lineup2: [] };
     killFilterSteamId.value = null;
     killFilterMode.value = "killer";
-    xrayEnabled.value = false;
+    xrayEnabled.value = true;
     hudVisible.value = true;
     hudMode.value = "horizontal";
     autodirectorEnabled.value = true;

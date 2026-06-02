@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Loader2 } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import cleanMapName from "~/utilities/cleanMapName";
 </script>
 
@@ -8,7 +8,7 @@ import cleanMapName from "~/utilities/cleanMapName";
     v-if="loading"
     class="flex w-full items-center justify-center gap-2 py-6 text-muted-foreground"
   >
-    <Loader2 class="w-4 h-4 animate-spin" />
+    <Spinner class="w-4 h-4" />
     <span class="text-xs uppercase tracking-[0.18em] font-mono">{{
       $t("common.loading")
     }}</span>

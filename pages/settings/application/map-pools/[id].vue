@@ -3,10 +3,6 @@ import MapPoolForm from "~/components/map-pools/MapPoolForm.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Card } from "~/components/ui/card";
 import { CardHeader, CardContent, CardTitle } from "~/components/ui/card";
-
-definePageMeta({
-  layout: "application-settings",
-});
 </script>
 
 <template>

@@ -25,9 +25,6 @@ import {
   TableRow,
 } from "~/components/ui/table";
 
-definePageMeta({
-  layout: "application-settings",
-});
 
 const { isMobile } = useSidebar();
 </script>

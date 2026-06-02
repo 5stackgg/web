@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { Settings2 } from "lucide-vue-next";
+import { Settings2, Users } from "lucide-vue-next";
 import MyUpcoming from "~/components/MyUpcoming.vue";
 import Matchmaking from "~/components/matchmaking/Matchmaking.vue";
 import MatchmakingSettings from "~/components/matchmaking/MatchmakingSettings.vue";
@@ -28,7 +28,7 @@ const settingsOpen = ref(false);
   <PageTransition>
     <TacticalPageHeader>
       <template #title>{{ $t("pages.play.title") }}</template>
-      <template v-if="matchmakingAllowed" #actions>
+      <template v-if="matchmakingAllowed && !inLobbyNotLeader" #actions>
         <Popover v-model:open="settingsOpen">
           <PopoverTrigger as-child>
             <Button
@@ -64,7 +64,7 @@ const settingsOpen = ref(false);
   </PageTransition>
 
   <PageTransition
-    v-if="matchmakingAllowed || canCreateMatch"
+    v-if="(matchmakingAllowed || canCreateMatch) && !inLobbyNotLeader"
     :delay="50"
     class="mt-6"
   >
@@ -75,6 +75,24 @@ const settingsOpen = ref(false);
       <template v-else-if="canCreateMatch">
         <CustomMatch />
       </template>
+    </div>
+  </PageTransition>
+
+  <PageTransition
+    v-if="inLobbyNotLeader && (matchmakingAllowed || canCreateMatch)"
+    :delay="50"
+    class="mt-6"
+  >
+    <div
+      class="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border bg-card/30 px-6 py-12 text-center"
+    >
+      <Users class="h-8 w-8 text-muted-foreground/50" />
+      <p class="text-sm font-semibold text-foreground">
+        {{ $t("pages.play.not_party_leader.title") }}
+      </p>
+      <p class="max-w-md text-xs text-muted-foreground">
+        {{ $t("pages.play.not_party_leader.description") }}
+      </p>
     </div>
   </PageTransition>
 
@@ -191,6 +209,22 @@ export default {
     },
     canCreateMatch() {
       return useApplicationSettingsStore().canCreateMatch;
+    },
+    currentLobby() {
+      return useMatchmakingStore().currentLobby;
+    },
+    isPartyLeader() {
+      const lobby = this.currentLobby as any;
+      if (!lobby) {
+        return true;
+      }
+      const me = lobby.players?.find((p: any) => {
+        return p.player.steam_id === this.me?.steam_id;
+      });
+      return !!me?.captain;
+    },
+    inLobbyNotLeader() {
+      return !!this.currentLobby && !this.isPartyLeader;
     },
   },
 };

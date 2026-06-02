@@ -17,9 +17,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-definePageMeta({
-  layout: "application-settings",
-});
 
 const { t } = useI18n();
 const showRefreshDialog = ref(false);
@@ -234,6 +231,7 @@ async function doRefreshAllPlayers() {
           <div class="flex justify-start">
             <Button
               type="submit"
+              :loading="submitting"
               :disabled="
                 Object.keys(form.errors).length > 0 || !form.meta.dirty
               "
@@ -263,6 +261,7 @@ import { toast } from "@/components/ui/toast";
 export default {
   data() {
     return {
+      submitting: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -327,44 +326,54 @@ export default {
       });
     },
     async updateSettings() {
-      const values = this.form.values as any;
-      await (this as any).$apollo.mutate({
-        mutation: generateMutation({
-          insert_settings: [
-            {
-              objects: [
-                {
-                  name: "public.create_matches_role",
-                  value: this.roleOrDefault(values.public?.create_matches_role),
+      if (this.submitting) {
+        return;
+      }
+      this.submitting = true;
+      try {
+        const values = this.form.values as any;
+        await (this as any).$apollo.mutate({
+          mutation: generateMutation({
+            insert_settings: [
+              {
+                objects: [
+                  {
+                    name: "public.create_matches_role",
+                    value: this.roleOrDefault(
+                      values.public?.create_matches_role,
+                    ),
+                  },
+                  {
+                    name: "public.create_tournaments_role",
+                    value: this.roleOrDefault(
+                      values.public?.create_tournaments_role,
+                    ),
+                  },
+                  {
+                    name: "dedicated_servers_min_role_to_connect",
+                    value: this.roleOrDefault(
+                      values.dedicated_servers_min_role_to_connect,
+                    ),
+                  },
+                ],
+                on_conflict: {
+                  constraint: settings_constraint.settings_pkey,
+                  update_columns: [settings_update_column.value],
                 },
-                {
-                  name: "public.create_tournaments_role",
-                  value: this.roleOrDefault(
-                    values.public?.create_tournaments_role,
-                  ),
-                },
-                {
-                  name: "dedicated_servers_min_role_to_connect",
-                  value: this.roleOrDefault(
-                    values.dedicated_servers_min_role_to_connect,
-                  ),
-                },
-              ],
-              on_conflict: {
-                constraint: settings_constraint.settings_pkey,
-                update_columns: [settings_update_column.value],
               },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
+              {
+                __typename: true,
+              },
+            ],
+          }),
+        });
 
-      toast({
-        title: this.$t("pages.settings.application.update_success") as string,
-      });
+        toast({
+          title: this.$t("pages.settings.application.update_success") as string,
+        });
+      } finally {
+        this.submitting = false;
+      }
     },
   },
   computed: {

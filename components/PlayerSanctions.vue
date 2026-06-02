@@ -43,6 +43,12 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Badge } from "~/components/ui/badge";
 import { Separator } from "~/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 import Pagination from "~/components/Pagination.vue";
 import { fromDate, toCalendarDate } from "@internationalized/date";
 </script>
@@ -136,24 +142,40 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
                     v-if="canManageSanctions"
                     class="flex gap-2 items-center"
                   >
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      class="h-8 w-8"
-                      @click="openEditDialog(sanction)"
-                      :title="$t('player.sanctions.edit')"
-                    >
-                      <Edit2 class="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      class="h-8 w-8 text-destructive"
-                      @click="removeSanction(sanction)"
-                      :title="$t('player.sanctions.remove')"
-                    >
-                      <Trash2 class="h-4 w-4" />
-                    </Button>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger as-child>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            class="h-8 w-8"
+                            @click="openEditDialog(sanction)"
+                          >
+                            <Edit2 class="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {{ $t("player.sanctions.edit") }}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger as-child>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            class="h-8 w-8 text-destructive"
+                            @click="removeSanction(sanction)"
+                          >
+                            <Trash2 class="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {{ $t("player.sanctions.remove") }}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 </div>
                 <p class="text-sm text-muted-foreground">
@@ -206,15 +228,23 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
                     v-if="canManageSanctions"
                     class="flex gap-2 items-center"
                   >
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      class="h-8 w-8 text-destructive"
-                      @click="removeAbandonedMatch(abandonedMatch)"
-                      :title="$t('player.sanctions.remove_abandoned')"
-                    >
-                      <Trash2 class="h-4 w-4" />
-                    </Button>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger as-child>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            class="h-8 w-8 text-destructive"
+                            @click="removeAbandonedMatch(abandonedMatch)"
+                          >
+                            <Trash2 class="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          {{ $t("player.sanctions.remove_abandoned") }}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 </div>
                 <Separator
@@ -275,16 +305,23 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
                 style="color-scheme: dark"
                 class="w-[120px]"
               />
-              <Button
-                v-if="editDate || editTime"
-                type="button"
-                variant="ghost"
-                size="icon"
-                @click="clearEditDate"
-                :title="$t('player.sanctions.clear_date')"
-              >
-                <Trash2 class="h-4 w-4" />
-              </Button>
+              <TooltipProvider v-if="editDate || editTime">
+                <Tooltip>
+                  <TooltipTrigger as-child>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      @click="clearEditDate"
+                    >
+                      <Trash2 class="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {{ $t("player.sanctions.clear_date") }}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
         </div>
@@ -292,7 +329,7 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
           <Button variant="outline" @click="editDialogOpen = false">
             {{ $t("common.cancel") }}
           </Button>
-          <Button @click="updateSanctionEndTime">
+          <Button :loading="updatingSanction" @click="updateSanctionEndTime">
             {{ $t("common.save") }}
           </Button>
         </DialogFooter>
@@ -369,12 +406,18 @@ import { $, e_player_roles_enum, order_by } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { toast } from "@/components/ui/toast";
 import { useAuthStore } from "~/stores/AuthStore";
+import gql from "graphql-tag";
 
 export default {
   props: {
     playerId: {
       type: String,
       required: true,
+    },
+    serverId: {
+      type: String,
+      required: false,
+      default: undefined,
     },
   },
   data() {
@@ -392,6 +435,9 @@ export default {
       abandonedMatchesPage: 1,
       itemsPerPage: 20,
       sheetOpen: false,
+      removingSanction: false,
+      removingAbandonedMatch: false,
+      updatingSanction: false,
     };
   },
   apollo: {
@@ -467,7 +513,7 @@ export default {
       }).length;
     },
     canManageSanctions() {
-      return useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
+      return useAuthStore().isRoleAbove(e_player_roles_enum.moderator);
     },
     editDateDisplay() {
       if (!this.editDate) return "";
@@ -524,7 +570,13 @@ export default {
       // This method can be used for validation if needed
     },
     async updateSanctionEndTime() {
-      if (!this.editingSanction) return;
+      if (this.updatingSanction) {
+        return;
+      }
+      if (!this.editingSanction) {
+        return;
+      }
+      this.updatingSanction = true;
 
       let remove_sanction_date: Date | null = null;
 
@@ -577,6 +629,8 @@ export default {
           title: this.$t("player.sanctions.update_failed"),
           variant: "destructive",
         });
+      } finally {
+        this.updatingSanction = false;
       }
     },
     removeSanction(sanction: any) {
@@ -584,21 +638,37 @@ export default {
       this.showDeleteDialog = true;
     },
     async confirmRemoveSanction() {
-      if (!this.sanctionToDelete) return;
+      if (this.removingSanction) {
+        return;
+      }
+      if (!this.sanctionToDelete) {
+        return;
+      }
+      this.removingSanction = true;
 
       try {
         await (this as any).$apollo.mutate({
-          mutation: generateMutation({
-            delete_player_sanctions_by_pk: [
-              {
-                id: this.sanctionToDelete.id,
-                created_at: this.sanctionToDelete.created_at,
-              },
-              {
-                id: true,
-              },
-            ],
-          }),
+          mutation: gql`
+            mutation UnsanctionServerPlayer(
+              $serverId: String
+              $steam_id: String!
+              $type: String!
+            ) {
+              unsanctionServerPlayer(
+                serverId: $serverId
+                steam_id: $steam_id
+                type: $type
+              ) {
+                enforced
+                message
+              }
+            }
+          `,
+          variables: {
+            serverId: this.serverId ?? null,
+            steam_id: this.playerId,
+            type: this.sanctionToDelete.type,
+          },
         });
 
         toast({
@@ -612,6 +682,8 @@ export default {
           title: this.$t("player.sanctions.remove_failed"),
           variant: "destructive",
         });
+      } finally {
+        this.removingSanction = false;
       }
     },
     removeAbandonedMatch(abandonedMatch: any) {
@@ -619,7 +691,13 @@ export default {
       this.showDeleteAbandonedDialog = true;
     },
     async confirmRemoveAbandonedMatch() {
-      if (!this.abandonedMatchToDelete) return;
+      if (this.removingAbandonedMatch) {
+        return;
+      }
+      if (!this.abandonedMatchToDelete) {
+        return;
+      }
+      this.removingAbandonedMatch = true;
 
       try {
         await (this as any).$apollo.mutate({
@@ -646,6 +724,8 @@ export default {
           title: this.$t("player.sanctions.abandoned_remove_failed"),
           variant: "destructive",
         });
+      } finally {
+        this.removingAbandonedMatch = false;
       }
     },
   },

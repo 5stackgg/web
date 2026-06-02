@@ -2268,6 +2268,9 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"servers_select_column",
 			order_by:"servers_order_by",
 			where:"servers_bool_exp"
+		},
+		shader_bake_status_history:{
+
 		}
 	},
 	game_server_nodes_aggregate_bool_exp:{
@@ -2313,7 +2316,8 @@ export const AllTypesProps: Record<string,any> = {
 		cpu_governor_info:"jsonb",
 		cs2_launch_options:"jsonb",
 		cs2_video_settings:"jsonb",
-		gpu_info:"jsonb"
+		gpu_info:"jsonb",
+		shader_bake_status_history:"jsonb"
 	},
 	game_server_nodes_arr_rel_insert_input:{
 		data:"game_server_nodes_insert_input",
@@ -2330,6 +2334,7 @@ export const AllTypesProps: Record<string,any> = {
 		disk_used_percent:"order_by",
 		end_port_range:"order_by",
 		pin_build_id:"order_by",
+		shader_bake_progress:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_bool_exp:{
@@ -2368,6 +2373,10 @@ export const AllTypesProps: Record<string,any> = {
 		region:"String_comparison_exp",
 		servers:"servers_bool_exp",
 		servers_aggregate:"servers_aggregate_bool_exp",
+		shader_bake_progress:"numeric_comparison_exp",
+		shader_bake_progress_stage:"String_comparison_exp",
+		shader_bake_status:"String_comparison_exp",
+		shader_bake_status_history:"jsonb_comparison_exp",
 		start_port_range:"Int_comparison_exp",
 		status:"e_game_server_node_statuses_enum_comparison_exp",
 		supports_cpu_pinning:"Boolean_comparison_exp",
@@ -2388,7 +2397,7 @@ export const AllTypesProps: Record<string,any> = {
 
 	},
 	game_server_nodes_inc_input:{
-
+		shader_bake_progress:"numeric"
 	},
 	game_server_nodes_insert_input:{
 		cpu_frequency_info:"jsonb",
@@ -2404,6 +2413,8 @@ export const AllTypesProps: Record<string,any> = {
 		pinned_version:"game_versions_obj_rel_insert_input",
 		public_ip:"inet",
 		servers:"servers_arr_rel_insert_input",
+		shader_bake_progress:"numeric",
+		shader_bake_status_history:"jsonb",
 		status:"e_game_server_node_statuses_enum",
 		version:"game_versions_obj_rel_insert_input"
 	},
@@ -2423,6 +2434,9 @@ export const AllTypesProps: Record<string,any> = {
 		pin_build_id:"order_by",
 		pin_plugin_version:"order_by",
 		region:"order_by",
+		shader_bake_progress:"order_by",
+		shader_bake_progress_stage:"order_by",
+		shader_bake_status:"order_by",
 		start_port_range:"order_by",
 		token:"order_by",
 		update_status:"order_by"
@@ -2443,6 +2457,9 @@ export const AllTypesProps: Record<string,any> = {
 		pin_build_id:"order_by",
 		pin_plugin_version:"order_by",
 		region:"order_by",
+		shader_bake_progress:"order_by",
+		shader_bake_progress_stage:"order_by",
+		shader_bake_status:"order_by",
 		start_port_range:"order_by",
 		token:"order_by",
 		update_status:"order_by"
@@ -2488,6 +2505,10 @@ export const AllTypesProps: Record<string,any> = {
 		public_ip:"order_by",
 		region:"order_by",
 		servers_aggregate:"servers_aggregate_order_by",
+		shader_bake_progress:"order_by",
+		shader_bake_progress_stage:"order_by",
+		shader_bake_status:"order_by",
+		shader_bake_status_history:"order_by",
 		start_port_range:"order_by",
 		status:"order_by",
 		supports_cpu_pinning:"order_by",
@@ -2505,7 +2526,8 @@ export const AllTypesProps: Record<string,any> = {
 		cpu_governor_info:"jsonb",
 		cs2_launch_options:"jsonb",
 		cs2_video_settings:"jsonb",
-		gpu_info:"jsonb"
+		gpu_info:"jsonb",
+		shader_bake_status_history:"jsonb"
 	},
 	game_server_nodes_select_column: "enum" as const,
 	game_server_nodes_select_column_game_server_nodes_aggregate_bool_exp_bool_and_arguments_columns: "enum" as const,
@@ -2520,6 +2542,8 @@ export const AllTypesProps: Record<string,any> = {
 		node_ip:"inet",
 		offline_at:"timestamptz",
 		public_ip:"inet",
+		shader_bake_progress:"numeric",
+		shader_bake_status_history:"jsonb",
 		status:"e_game_server_node_statuses_enum"
 	},
 	game_server_nodes_stddev_order_by:{
@@ -2533,6 +2557,7 @@ export const AllTypesProps: Record<string,any> = {
 		disk_used_percent:"order_by",
 		end_port_range:"order_by",
 		pin_build_id:"order_by",
+		shader_bake_progress:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_stddev_pop_order_by:{
@@ -2546,6 +2571,7 @@ export const AllTypesProps: Record<string,any> = {
 		disk_used_percent:"order_by",
 		end_port_range:"order_by",
 		pin_build_id:"order_by",
+		shader_bake_progress:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_stddev_samp_order_by:{
@@ -2559,6 +2585,7 @@ export const AllTypesProps: Record<string,any> = {
 		disk_used_percent:"order_by",
 		end_port_range:"order_by",
 		pin_build_id:"order_by",
+		shader_bake_progress:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_stream_cursor_input:{
@@ -2575,6 +2602,8 @@ export const AllTypesProps: Record<string,any> = {
 		node_ip:"inet",
 		offline_at:"timestamptz",
 		public_ip:"inet",
+		shader_bake_progress:"numeric",
+		shader_bake_status_history:"jsonb",
 		status:"e_game_server_node_statuses_enum"
 	},
 	game_server_nodes_sum_order_by:{
@@ -2588,6 +2617,7 @@ export const AllTypesProps: Record<string,any> = {
 		disk_used_percent:"order_by",
 		end_port_range:"order_by",
 		pin_build_id:"order_by",
+		shader_bake_progress:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_update_column: "enum" as const,
@@ -2612,6 +2642,7 @@ export const AllTypesProps: Record<string,any> = {
 		disk_used_percent:"order_by",
 		end_port_range:"order_by",
 		pin_build_id:"order_by",
+		shader_bake_progress:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_var_samp_order_by:{
@@ -2625,6 +2656,7 @@ export const AllTypesProps: Record<string,any> = {
 		disk_used_percent:"order_by",
 		end_port_range:"order_by",
 		pin_build_id:"order_by",
+		shader_bake_progress:"order_by",
 		start_port_range:"order_by"
 	},
 	game_server_nodes_variance_order_by:{
@@ -2638,6 +2670,7 @@ export const AllTypesProps: Record<string,any> = {
 		disk_used_percent:"order_by",
 		end_port_range:"order_by",
 		pin_build_id:"order_by",
+		shader_bake_progress:"order_by",
 		start_port_range:"order_by"
 	},
 	game_versions:{
@@ -2729,6 +2762,96 @@ export const AllTypesProps: Record<string,any> = {
 		_prepend:"game_versions_prepend_input",
 		_set:"game_versions_set_input",
 		where:"game_versions_bool_exp"
+	},
+	gamedata_signature_validations:{
+		results:{
+
+		}
+	},
+	gamedata_signature_validations_aggregate_fields:{
+		count:{
+			columns:"gamedata_signature_validations_select_column"
+		}
+	},
+	gamedata_signature_validations_append_input:{
+		results:"jsonb"
+	},
+	gamedata_signature_validations_bool_exp:{
+		_and:"gamedata_signature_validations_bool_exp",
+		_not:"gamedata_signature_validations_bool_exp",
+		_or:"gamedata_signature_validations_bool_exp",
+		branch:"String_comparison_exp",
+		build_id:"Int_comparison_exp",
+		game_version:"game_versions_bool_exp",
+		id:"uuid_comparison_exp",
+		results:"jsonb_comparison_exp",
+		status:"String_comparison_exp",
+		validated_at:"timestamptz_comparison_exp"
+	},
+	gamedata_signature_validations_constraint: "enum" as const,
+	gamedata_signature_validations_delete_at_path_input:{
+
+	},
+	gamedata_signature_validations_delete_elem_input:{
+
+	},
+	gamedata_signature_validations_delete_key_input:{
+
+	},
+	gamedata_signature_validations_inc_input:{
+
+	},
+	gamedata_signature_validations_insert_input:{
+		game_version:"game_versions_obj_rel_insert_input",
+		id:"uuid",
+		results:"jsonb",
+		validated_at:"timestamptz"
+	},
+	gamedata_signature_validations_on_conflict:{
+		constraint:"gamedata_signature_validations_constraint",
+		update_columns:"gamedata_signature_validations_update_column",
+		where:"gamedata_signature_validations_bool_exp"
+	},
+	gamedata_signature_validations_order_by:{
+		branch:"order_by",
+		build_id:"order_by",
+		game_version:"game_versions_order_by",
+		id:"order_by",
+		results:"order_by",
+		status:"order_by",
+		validated_at:"order_by"
+	},
+	gamedata_signature_validations_pk_columns_input:{
+		id:"uuid"
+	},
+	gamedata_signature_validations_prepend_input:{
+		results:"jsonb"
+	},
+	gamedata_signature_validations_select_column: "enum" as const,
+	gamedata_signature_validations_set_input:{
+		id:"uuid",
+		results:"jsonb",
+		validated_at:"timestamptz"
+	},
+	gamedata_signature_validations_stream_cursor_input:{
+		initial_value:"gamedata_signature_validations_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	gamedata_signature_validations_stream_cursor_value_input:{
+		id:"uuid",
+		results:"jsonb",
+		validated_at:"timestamptz"
+	},
+	gamedata_signature_validations_update_column: "enum" as const,
+	gamedata_signature_validations_updates:{
+		_append:"gamedata_signature_validations_append_input",
+		_delete_at_path:"gamedata_signature_validations_delete_at_path_input",
+		_delete_elem:"gamedata_signature_validations_delete_elem_input",
+		_delete_key:"gamedata_signature_validations_delete_key_input",
+		_inc:"gamedata_signature_validations_inc_input",
+		_prepend:"gamedata_signature_validations_prepend_input",
+		_set:"gamedata_signature_validations_set_input",
+		where:"gamedata_signature_validations_bool_exp"
 	},
 	get_leaderboard_args:{
 
@@ -3587,7 +3710,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_demo:"match_map_demos_bool_exp",
 		match_map_demo_id:"uuid_comparison_exp",
 		match_map_id:"uuid_comparison_exp",
-		session_token:"String_comparison_exp",
 		status:"String_comparison_exp",
 		status_history:"jsonb_comparison_exp",
 		steam_account_id:"uuid_comparison_exp",
@@ -3636,7 +3758,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"order_by",
 		match_map_demo_id:"order_by",
 		match_map_id:"order_by",
-		session_token:"order_by",
 		status:"order_by",
 		steam_account_id:"order_by",
 		stream_url:"order_by",
@@ -3653,7 +3774,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"order_by",
 		match_map_demo_id:"order_by",
 		match_map_id:"order_by",
-		session_token:"order_by",
 		status:"order_by",
 		steam_account_id:"order_by",
 		stream_url:"order_by",
@@ -3679,7 +3799,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_demo:"match_map_demos_order_by",
 		match_map_demo_id:"order_by",
 		match_map_id:"order_by",
-		session_token:"order_by",
 		status:"order_by",
 		status_history:"order_by",
 		steam_account_id:"order_by",
@@ -6419,8 +6538,14 @@ export const AllTypesProps: Record<string,any> = {
 		approveNameChange:{
 			steam_id:"bigint"
 		},
+		bakeShaders:{
+			game_server_node_id:"uuid"
+		},
 		callForOrganizer:{
 
+		},
+		cancelBakeShaders:{
+			game_server_node_id:"uuid"
 		},
 		cancelClipRender:{
 			job_id:"uuid"
@@ -6672,6 +6797,12 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_game_versions_by_pk:{
 
+		},
+		delete_gamedata_signature_validations:{
+			where:"gamedata_signature_validations_bool_exp"
+		},
+		delete_gamedata_signature_validations_by_pk:{
+			id:"uuid"
 		},
 		delete_leaderboard_entries:{
 			where:"leaderboard_entries_bool_exp"
@@ -7326,6 +7457,14 @@ export const AllTypesProps: Record<string,any> = {
 			object:"game_versions_insert_input",
 			on_conflict:"game_versions_on_conflict"
 		},
+		insert_gamedata_signature_validations:{
+			objects:"gamedata_signature_validations_insert_input",
+			on_conflict:"gamedata_signature_validations_on_conflict"
+		},
+		insert_gamedata_signature_validations_one:{
+			object:"gamedata_signature_validations_insert_input",
+			on_conflict:"gamedata_signature_validations_on_conflict"
+		},
 		insert_leaderboard_entries:{
 			objects:"leaderboard_entries_insert_input"
 		},
@@ -7799,6 +7938,9 @@ export const AllTypesProps: Record<string,any> = {
 		joinLineup:{
 
 		},
+		kickServerPlayer:{
+
+		},
 		leaveLineup:{
 
 		},
@@ -7857,6 +7999,9 @@ export const AllTypesProps: Record<string,any> = {
 			match_map_id:"uuid"
 		},
 		retryPendingMatchImport:{
+
+		},
+		sanctionServerPlayer:{
 
 		},
 		scheduleMatch:{
@@ -7933,6 +8078,9 @@ export const AllTypesProps: Record<string,any> = {
 		switchLiveMatch:{
 			from_match_id:"uuid",
 			to_match_id:"uuid"
+		},
+		unsanctionServerPlayer:{
+
 		},
 		updateClip:{
 			clip_id:"uuid"
@@ -8357,6 +8505,29 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_game_versions_many:{
 			updates:"game_versions_updates"
+		},
+		update_gamedata_signature_validations:{
+			_append:"gamedata_signature_validations_append_input",
+			_delete_at_path:"gamedata_signature_validations_delete_at_path_input",
+			_delete_elem:"gamedata_signature_validations_delete_elem_input",
+			_delete_key:"gamedata_signature_validations_delete_key_input",
+			_inc:"gamedata_signature_validations_inc_input",
+			_prepend:"gamedata_signature_validations_prepend_input",
+			_set:"gamedata_signature_validations_set_input",
+			where:"gamedata_signature_validations_bool_exp"
+		},
+		update_gamedata_signature_validations_by_pk:{
+			_append:"gamedata_signature_validations_append_input",
+			_delete_at_path:"gamedata_signature_validations_delete_at_path_input",
+			_delete_elem:"gamedata_signature_validations_delete_elem_input",
+			_delete_key:"gamedata_signature_validations_delete_key_input",
+			_inc:"gamedata_signature_validations_inc_input",
+			_prepend:"gamedata_signature_validations_prepend_input",
+			_set:"gamedata_signature_validations_set_input",
+			pk_columns:"gamedata_signature_validations_pk_columns_input"
+		},
+		update_gamedata_signature_validations_many:{
+			updates:"gamedata_signature_validations_updates"
 		},
 		update_leaderboard_entries:{
 			_inc:"leaderboard_entries_inc_input",
@@ -9146,6 +9317,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_v_pool_maps_many:{
 			updates:"v_pool_maps_updates"
+		},
+		validateGamedata:{
+			game_server_node_id:"uuid"
 		},
 		watchDemo:{
 			match_map_demo_id:"uuid",
@@ -14904,6 +15078,22 @@ export const AllTypesProps: Record<string,any> = {
 		game_versions_by_pk:{
 
 		},
+		gamedata_signature_validations:{
+			distinct_on:"gamedata_signature_validations_select_column",
+			order_by:"gamedata_signature_validations_order_by",
+			where:"gamedata_signature_validations_bool_exp"
+		},
+		gamedata_signature_validations_aggregate:{
+			distinct_on:"gamedata_signature_validations_select_column",
+			order_by:"gamedata_signature_validations_order_by",
+			where:"gamedata_signature_validations_bool_exp"
+		},
+		gamedata_signature_validations_by_pk:{
+			id:"uuid"
+		},
+		getDedicatedServerPlayers:{
+
+		},
 		getIndexIOStats:{
 
 		},
@@ -16956,6 +17146,23 @@ export const AllTypesProps: Record<string,any> = {
 		game_versions_stream:{
 			cursor:"game_versions_stream_cursor_input",
 			where:"game_versions_bool_exp"
+		},
+		gamedata_signature_validations:{
+			distinct_on:"gamedata_signature_validations_select_column",
+			order_by:"gamedata_signature_validations_order_by",
+			where:"gamedata_signature_validations_bool_exp"
+		},
+		gamedata_signature_validations_aggregate:{
+			distinct_on:"gamedata_signature_validations_select_column",
+			order_by:"gamedata_signature_validations_order_by",
+			where:"gamedata_signature_validations_bool_exp"
+		},
+		gamedata_signature_validations_by_pk:{
+			id:"uuid"
+		},
+		gamedata_signature_validations_stream:{
+			cursor:"gamedata_signature_validations_stream_cursor_input",
+			where:"gamedata_signature_validations_bool_exp"
 		},
 		get_leaderboard:{
 			args:"get_leaderboard_args",
@@ -22804,6 +23011,10 @@ export const ReturnTypes: Record<string,any> = {
 		table_size:"Int",
 		tablename:"String"
 	},
+	KickResult:{
+		kicked:"Boolean",
+		message:"String"
+	},
 	LiveSpecGsi:{
 		map_name:"String",
 		map_phase:"String",
@@ -22905,6 +23116,15 @@ export const ReturnTypes: Record<string,any> = {
 		total_exec_time:"Float",
 		total_rows:"Int"
 	},
+	SanctionResult:{
+		enforced:"Boolean",
+		id:"String",
+		message:"String"
+	},
+	ServerPlayer:{
+		name:"String",
+		steam_id:"String"
+	},
 	SetupGameServeOutput:{
 		gameServerId:"String",
 		link:"String"
@@ -22999,6 +23219,7 @@ export const ReturnTypes: Record<string,any> = {
 		will_delete_match:"Boolean"
 	},
 	WatchDemoOutput:{
+		match_map_id:"String",
 		session_id:"String",
 		stream_url:"String",
 		success:"Boolean"
@@ -24116,6 +24337,10 @@ export const ReturnTypes: Record<string,any> = {
 		region:"String",
 		servers:"servers",
 		servers_aggregate:"servers_aggregate",
+		shader_bake_progress:"numeric",
+		shader_bake_progress_stage:"String",
+		shader_bake_status:"String",
+		shader_bake_status_history:"jsonb",
 		start_port_range:"Int",
 		status:"e_game_server_node_statuses_enum",
 		supports_cpu_pinning:"Boolean",
@@ -24154,6 +24379,7 @@ export const ReturnTypes: Record<string,any> = {
 		disk_used_percent:"Float",
 		end_port_range:"Float",
 		pin_build_id:"Float",
+		shader_bake_progress:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
@@ -24174,6 +24400,9 @@ export const ReturnTypes: Record<string,any> = {
 		pin_build_id:"Int",
 		pin_plugin_version:"String",
 		region:"String",
+		shader_bake_progress:"numeric",
+		shader_bake_progress_stage:"String",
+		shader_bake_status:"String",
 		start_port_range:"Int",
 		token:"String",
 		total_server_count:"Int",
@@ -24196,6 +24425,9 @@ export const ReturnTypes: Record<string,any> = {
 		pin_build_id:"Int",
 		pin_plugin_version:"String",
 		region:"String",
+		shader_bake_progress:"numeric",
+		shader_bake_progress_stage:"String",
+		shader_bake_status:"String",
 		start_port_range:"Int",
 		token:"String",
 		total_server_count:"Int",
@@ -24217,6 +24449,7 @@ export const ReturnTypes: Record<string,any> = {
 		disk_used_percent:"Float",
 		end_port_range:"Float",
 		pin_build_id:"Float",
+		shader_bake_progress:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
@@ -24232,6 +24465,7 @@ export const ReturnTypes: Record<string,any> = {
 		disk_used_percent:"Float",
 		end_port_range:"Float",
 		pin_build_id:"Float",
+		shader_bake_progress:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
@@ -24247,6 +24481,7 @@ export const ReturnTypes: Record<string,any> = {
 		disk_used_percent:"Float",
 		end_port_range:"Float",
 		pin_build_id:"Float",
+		shader_bake_progress:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
@@ -24262,6 +24497,7 @@ export const ReturnTypes: Record<string,any> = {
 		disk_used_percent:"Int",
 		end_port_range:"Int",
 		pin_build_id:"Int",
+		shader_bake_progress:"numeric",
 		start_port_range:"Int",
 		total_server_count:"Int"
 	},
@@ -24277,6 +24513,7 @@ export const ReturnTypes: Record<string,any> = {
 		disk_used_percent:"Float",
 		end_port_range:"Float",
 		pin_build_id:"Float",
+		shader_bake_progress:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
@@ -24292,6 +24529,7 @@ export const ReturnTypes: Record<string,any> = {
 		disk_used_percent:"Float",
 		end_port_range:"Float",
 		pin_build_id:"Float",
+		shader_bake_progress:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
@@ -24307,6 +24545,7 @@ export const ReturnTypes: Record<string,any> = {
 		disk_used_percent:"Float",
 		end_port_range:"Float",
 		pin_build_id:"Float",
+		shader_bake_progress:"Float",
 		start_port_range:"Float",
 		total_server_count:"Int"
 	},
@@ -24374,6 +24613,74 @@ export const ReturnTypes: Record<string,any> = {
 		build_id:"Float"
 	},
 	game_versions_variance_fields:{
+		build_id:"Float"
+	},
+	gamedata_signature_validations:{
+		branch:"String",
+		build_id:"Int",
+		game_version:"game_versions",
+		id:"uuid",
+		results:"jsonb",
+		status:"String",
+		validated_at:"timestamptz"
+	},
+	gamedata_signature_validations_aggregate:{
+		aggregate:"gamedata_signature_validations_aggregate_fields",
+		nodes:"gamedata_signature_validations"
+	},
+	gamedata_signature_validations_aggregate_fields:{
+		avg:"gamedata_signature_validations_avg_fields",
+		count:"Int",
+		max:"gamedata_signature_validations_max_fields",
+		min:"gamedata_signature_validations_min_fields",
+		stddev:"gamedata_signature_validations_stddev_fields",
+		stddev_pop:"gamedata_signature_validations_stddev_pop_fields",
+		stddev_samp:"gamedata_signature_validations_stddev_samp_fields",
+		sum:"gamedata_signature_validations_sum_fields",
+		var_pop:"gamedata_signature_validations_var_pop_fields",
+		var_samp:"gamedata_signature_validations_var_samp_fields",
+		variance:"gamedata_signature_validations_variance_fields"
+	},
+	gamedata_signature_validations_avg_fields:{
+		build_id:"Float"
+	},
+	gamedata_signature_validations_max_fields:{
+		branch:"String",
+		build_id:"Int",
+		id:"uuid",
+		status:"String",
+		validated_at:"timestamptz"
+	},
+	gamedata_signature_validations_min_fields:{
+		branch:"String",
+		build_id:"Int",
+		id:"uuid",
+		status:"String",
+		validated_at:"timestamptz"
+	},
+	gamedata_signature_validations_mutation_response:{
+		affected_rows:"Int",
+		returning:"gamedata_signature_validations"
+	},
+	gamedata_signature_validations_stddev_fields:{
+		build_id:"Float"
+	},
+	gamedata_signature_validations_stddev_pop_fields:{
+		build_id:"Float"
+	},
+	gamedata_signature_validations_stddev_samp_fields:{
+		build_id:"Float"
+	},
+	gamedata_signature_validations_sum_fields:{
+		build_id:"Int"
+	},
+	gamedata_signature_validations_var_pop_fields:{
+		build_id:"Float"
+	},
+	gamedata_signature_validations_var_samp_fields:{
+		build_id:"Float"
+	},
+	gamedata_signature_validations_variance_fields:{
 		build_id:"Float"
 	},
 	inet: `scalar.inet` as const,
@@ -24812,7 +25119,6 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_demo:"match_map_demos",
 		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
-		session_token:"String",
 		status:"String",
 		status_history:"jsonb",
 		steam_account_id:"uuid",
@@ -24851,7 +25157,6 @@ export const ReturnTypes: Record<string,any> = {
 		match_id:"uuid",
 		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
-		session_token:"String",
 		status:"String",
 		steam_account_id:"uuid",
 		stream_url:"String",
@@ -24868,7 +25173,6 @@ export const ReturnTypes: Record<string,any> = {
 		match_id:"uuid",
 		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
-		session_token:"String",
 		status:"String",
 		steam_account_id:"uuid",
 		stream_url:"String",
@@ -26204,7 +26508,10 @@ export const ReturnTypes: Record<string,any> = {
 		ResetTournamentMatch:"SuccessOutput",
 		acceptInvite:"SuccessOutput",
 		approveNameChange:"SuccessOutput",
+		attachDemo:"WatchDemoOutput",
+		bakeShaders:"SuccessOutput",
 		callForOrganizer:"SuccessOutput",
+		cancelBakeShaders:"SuccessOutput",
 		cancelClipRender:"SuccessOutput",
 		cancelClipRenderBatch:"SuccessOutput",
 		cancelMatch:"SuccessOutput",
@@ -26289,6 +26596,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_game_server_nodes_by_pk:"game_server_nodes",
 		delete_game_versions:"game_versions_mutation_response",
 		delete_game_versions_by_pk:"game_versions",
+		delete_gamedata_signature_validations:"gamedata_signature_validations_mutation_response",
+		delete_gamedata_signature_validations_by_pk:"gamedata_signature_validations",
 		delete_leaderboard_entries:"leaderboard_entries_mutation_response",
 		delete_lobbies:"lobbies_mutation_response",
 		delete_lobbies_by_pk:"lobbies",
@@ -26476,6 +26785,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_game_server_nodes_one:"game_server_nodes",
 		insert_game_versions:"game_versions_mutation_response",
 		insert_game_versions_one:"game_versions",
+		insert_gamedata_signature_validations:"gamedata_signature_validations_mutation_response",
+		insert_gamedata_signature_validations_one:"gamedata_signature_validations",
 		insert_leaderboard_entries:"leaderboard_entries_mutation_response",
 		insert_leaderboard_entries_one:"leaderboard_entries",
 		insert_lobbies:"lobbies_mutation_response",
@@ -26597,6 +26908,7 @@ export const ReturnTypes: Record<string,any> = {
 		insert_v_pool_maps:"v_pool_maps_mutation_response",
 		insert_v_pool_maps_one:"v_pool_maps",
 		joinLineup:"SuccessOutput",
+		kickServerPlayer:"KickResult",
 		leaveLineup:"SuccessOutput",
 		linkSteamMatchHistory:"SteamMatchHistoryLinkOutput",
 		loadFixtures:"SuccessOutput",
@@ -26621,6 +26933,7 @@ export const ReturnTypes: Record<string,any> = {
 		resumeClipRenderBatch:"SuccessOutput",
 		retryClipRenderBatch:"SuccessOutput",
 		retryPendingMatchImport:"PendingMatchImportActionOutput",
+		sanctionServerPlayer:"SanctionResult",
 		scheduleMatch:"SuccessOutput",
 		setGameNodeSchedulingState:"SuccessOutput",
 		setHudMode:"SuccessOutput",
@@ -26649,6 +26962,7 @@ export const ReturnTypes: Record<string,any> = {
 		testUpload:"TestUploadResponse",
 		unlinkDiscord:"SuccessOutput",
 		unlinkSteamMatchHistory:"SuccessOutput",
+		unsanctionServerPlayer:"SanctionResult",
 		updateClip:"SuccessOutput",
 		updateCs:"SuccessOutput",
 		updateServices:"SuccessOutput",
@@ -26754,6 +27068,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_game_versions:"game_versions_mutation_response",
 		update_game_versions_by_pk:"game_versions",
 		update_game_versions_many:"game_versions_mutation_response",
+		update_gamedata_signature_validations:"gamedata_signature_validations_mutation_response",
+		update_gamedata_signature_validations_by_pk:"gamedata_signature_validations",
+		update_gamedata_signature_validations_many:"gamedata_signature_validations_mutation_response",
 		update_leaderboard_entries:"leaderboard_entries_mutation_response",
 		update_leaderboard_entries_many:"leaderboard_entries_mutation_response",
 		update_lobbies:"lobbies_mutation_response",
@@ -26929,6 +27246,7 @@ export const ReturnTypes: Record<string,any> = {
 		update_v_match_captains_many:"v_match_captains_mutation_response",
 		update_v_pool_maps:"v_pool_maps_mutation_response",
 		update_v_pool_maps_many:"v_pool_maps_mutation_response",
+		validateGamedata:"SuccessOutput",
 		watchDemo:"WatchDemoOutput",
 		writeServerFile:"SuccessOutput"
 	},
@@ -30940,12 +31258,16 @@ export const ReturnTypes: Record<string,any> = {
 		game_versions:"game_versions",
 		game_versions_aggregate:"game_versions_aggregate",
 		game_versions_by_pk:"game_versions",
+		gamedata_signature_validations:"gamedata_signature_validations",
+		gamedata_signature_validations_aggregate:"gamedata_signature_validations_aggregate",
+		gamedata_signature_validations_by_pk:"gamedata_signature_validations",
 		getActiveConnections:"ActiveConnection",
 		getActiveQueries:"ActiveQuery",
 		getConnectionStats:"ConnectionStats",
 		getCurrentLocks:"LockInfo",
 		getDatabaseStats:"DatabaseStats",
 		getDedicatedServerInfo:"DedicatedSeverInfo",
+		getDedicatedServerPlayers:"ServerPlayer",
 		getIndexIOStats:"IndexIOStat",
 		getIndexStats:"IndexStat",
 		getNodeStats:"NodeStats",
@@ -31592,6 +31914,10 @@ export const ReturnTypes: Record<string,any> = {
 		game_versions_aggregate:"game_versions_aggregate",
 		game_versions_by_pk:"game_versions",
 		game_versions_stream:"game_versions",
+		gamedata_signature_validations:"gamedata_signature_validations",
+		gamedata_signature_validations_aggregate:"gamedata_signature_validations_aggregate",
+		gamedata_signature_validations_by_pk:"gamedata_signature_validations",
+		gamedata_signature_validations_stream:"gamedata_signature_validations",
 		get_leaderboard:"leaderboard_entries",
 		get_leaderboard_aggregate:"leaderboard_entries_aggregate",
 		get_player_leaderboard_rank:"player_leaderboard_rank",

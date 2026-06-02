@@ -39,7 +39,7 @@ import { e_match_status_enum } from "~/generated/zeus";
           class="flex w-full flex-col items-center justify-center gap-2 rounded-md bg-background/40 p-3 text-center text-muted-foreground"
         >
           <div class="flex items-center justify-center gap-3">
-            <Loader class="w-4 h-4 animate-spin-smooth shrink-0" />
+            <Spinner class="shrink-0" />
             <span class="text-sm font-medium tracking-wide">{{
               $t("match.server.booting")
             }}</span>
@@ -78,7 +78,7 @@ import { e_match_status_enum } from "~/generated/zeus";
               class="flex w-full flex-col items-center justify-center gap-2 rounded-md bg-background/40 p-3 text-center text-muted-foreground"
             >
               <div class="flex items-center justify-center gap-3">
-                <Loader class="w-4 h-4 animate-spin-smooth shrink-0" />
+                <Spinner class="shrink-0" />
                 <span class="text-sm font-medium tracking-wide">{{
                   $t("match.server.booting")
                 }}</span>
@@ -114,12 +114,8 @@ import { e_match_status_enum } from "~/generated/zeus";
             </div>
           </ClipBoard>
           <template v-if="match.connection_link">
-            <a
-              :href="match.connection_link"
-              class="flex items-center justify-center gap-2 rounded-md p-3 w-full transition-colors bg-background hover:bg-background/50"
-              @click="handleClick"
-            >
-              <template v-if="!isLoading">
+            <a :href="match.connection_link" class="w-full" @click="handleClick">
+              <Button variant="outline" class="w-full" :loading="isLoading">
                 <div class="relative flex items-center" v-if="isInLineup">
                   <span
                     class="absolute w-2 h-2 rounded-full animate-ping"
@@ -132,8 +128,7 @@ import { e_match_status_enum } from "~/generated/zeus";
                 </div>
                 <span>{{ $t("match.server.join_server") }}</span>
                 <ExternalLink class="w-4 h-4" />
-              </template>
-              <Loader v-else class="w-6 h-6 animate-spin" />
+              </Button>
             </a>
           </template>
         </div>
@@ -143,13 +138,16 @@ import { e_match_status_enum } from "~/generated/zeus";
 </template>
 
 <script lang="ts">
-import { Loader, ExternalLink, Copy, Tv, AlertTriangle } from "lucide-vue-next";
+import { ExternalLink, Copy, Tv, AlertTriangle } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
+import { Button } from "~/components/ui/button";
 import ClipBoard from "~/components/ClipBoard.vue";
 import { e_player_roles_enum } from "~/generated/zeus";
 
 export default {
   components: {
-    Loader,
+    Spinner,
+    Button,
     ExternalLink,
     Copy,
     Tv,

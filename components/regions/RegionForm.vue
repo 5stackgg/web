@@ -26,7 +26,11 @@ import { FormControl, FormField, FormItem } from "~/components/ui/form";
       </FormItem>
     </FormField>
 
-    <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
+    <Button
+      type="submit"
+      :loading="submitting"
+      :disabled="Object.keys(form.errors).length > 0"
+    >
       <template v-if="region">{{ $t("region.form.update") }}</template>
       <template v-else>{{ $t("region.form.create") }}</template>
     </Button>
@@ -49,6 +53,7 @@ export default {
   },
   data() {
     return {
+      submitting: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -78,21 +83,43 @@ export default {
   },
   methods: {
     async updateCreateRegion() {
-      const { valid } = await this.form.validate();
-
-      if (!valid) {
+      if (this.submitLock) {
         return;
       }
+      this.submitLock = true;
+      try {
+        const { valid } = await this.form.validate();
 
-      if (this.region) {
+        if (!valid) {
+          return;
+        }
+
+        this.submitting = true;
+        if (this.region) {
+          await this.$apollo.mutate({
+            mutation: generateMutation({
+              update_server_regions_by_pk: [
+                {
+                  pk_columns: {
+                    value: this.region.value,
+                  },
+                  _set: this.form.values,
+                },
+                {
+                  __typename: true,
+                },
+              ],
+            }),
+          });
+          this.$emit("updated");
+          return;
+        }
+
         await this.$apollo.mutate({
           mutation: generateMutation({
-            update_server_regions_by_pk: [
+            insert_server_regions_one: [
               {
-                pk_columns: {
-                  value: this.region.value,
-                },
-                _set: this.form.values,
+                object: this.form.values,
               },
               {
                 __typename: true,
@@ -100,24 +127,12 @@ export default {
             ],
           }),
         });
+
         this.$emit("updated");
-        return;
+      } finally {
+        this.submitLock = false;
+        this.submitting = false;
       }
-
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_server_regions_one: [
-            {
-              object: this.form.values,
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-
-      this.$emit("updated");
     },
   },
 };

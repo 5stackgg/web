@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { Calendar as CalendarIcon } from "lucide-vue-next";
+import { Calendar as CalendarIcon, PlayIcon } from "lucide-vue-next";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Popover,
   PopoverContent,
@@ -136,15 +137,32 @@ import MatchOptions from "~/components/MatchOptions.vue";
       </template>
     </MatchOptions>
 
-    <div class="grid grid-cols-1 md:grid-cols-2">
-      <div class="grid gap-4">
-        <Button type="submit" :disabled="Object.keys(form.errors).length > 0">
-          <template v-if="tournament">{{
-            $t("tournament.form.update")
-          }}</template>
-          <template v-else>{{ $t("tournament.form.create") }}</template>
-        </Button>
-      </div>
+    <div class="mt-8 flex justify-center pb-24">
+      <button
+        type="submit"
+        :disabled="submitting || Object.keys(form.errors).length > 0"
+        class="group/submit relative isolate inline-flex items-center px-12 py-4 font-bold text-base tracking-[0.22em] uppercase text-[hsl(0_0%_8%)] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] border border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_8px_24px_-6px_hsl(var(--tac-amber)/0.6)] [transition:transform_200ms_cubic-bezier(0.4,0,0.2,1),box-shadow_200ms_ease] cursor-pointer overflow-hidden hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_14px_36px_-6px_hsl(var(--tac-amber)/0.8),0_0_28px_hsl(var(--tac-amber)/0.35)] active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+      >
+        <span class="relative z-[1] inline-flex items-center gap-3">
+          <Spinner v-if="submitting" class="w-5 h-5" />
+          <PlayIcon
+            v-else
+            class="w-5 h-5 fill-current [transition:transform_300ms_cubic-bezier(0.4,0,0.2,1)] group-hover/submit:translate-x-0.5 group-hover/submit:scale-[1.08]"
+          />
+          <span>
+            <template v-if="tournament">
+              {{ $t("tournament.form.update") }}
+            </template>
+            <template v-else>
+              {{ $t("tournament.form.create") }}
+            </template>
+          </span>
+        </span>
+        <span
+          class="absolute inset-0 [background:linear-gradient(90deg,transparent_0%,hsl(0_0%_100%/0.35)_50%,transparent_100%)] -translate-x-full [transition:transform_700ms_cubic-bezier(0.4,0,0.2,1)] pointer-events-none z-0 group-hover/submit:translate-x-full"
+          aria-hidden="true"
+        ></span>
+      </button>
     </div>
   </form>
 </template>
@@ -210,6 +228,7 @@ export default {
   },
   data() {
     return {
+      submitting: false,
       startDate: undefined,
       startTime: undefined,
       form: useForm({
@@ -311,121 +330,137 @@ export default {
       });
     },
     async updateCreateTournament() {
-      const { valid } = await this.form.validate();
-
-      if (!valid) {
+      if (this.submitLock) {
         return;
       }
+      this.submitLock = true;
 
-      const form = this.form.values;
+      let redirecting = false;
 
-      if (this.tournament) {
-        await this.$apollo.mutate({
-          variables: {
-            name: this.form.values.name,
-            start: this.form.values.start,
-            description: this.form.values.description,
-            auto_start: this.form.values.auto_start,
-          },
-          mutation: generateMutation({
-            update_tournaments_by_pk: [
-              {
-                pk_columns: {
-                  id: this.tournament.id,
-                },
-                _set: {
-                  name: $("name", "String!"),
-                  start: $("start", "timestamptz!"),
-                  description: $("description", "String"),
-                  auto_start: $("auto_start", "Boolean!"),
-                },
-              },
-              {
-                __typename: true,
-              },
-            ],
-          }),
-        });
+      try {
+        const { valid } = await this.form.validate();
 
-        let mapPoolId = form.map_pool_id;
+        if (!valid) {
+          return;
+        }
 
-        if (form.custom_map_pool) {
-          const { data } = await this.$apollo.mutate({
+        this.submitting = true;
+        const form = this.form.values;
+
+        if (this.tournament) {
+          await this.$apollo.mutate({
             variables: {
-              map_pool: {
-                type: e_map_pool_types_enum.Custom,
-                maps: {
-                  data: this.form.values.map_pool.map((map_id) => {
-                    return {
-                      id: map_id,
-                    };
-                  }),
-                },
-              },
+              name: this.form.values.name,
+              start: this.form.values.start,
+              description: this.form.values.description,
+              auto_start: this.form.values.auto_start,
             },
             mutation: generateMutation({
-              insert_map_pools_one: [
+              update_tournaments_by_pk: [
                 {
-                  object: $("map_pool", "map_pools_insert_input!"),
+                  pk_columns: {
+                    id: this.tournament.id,
+                  },
+                  _set: {
+                    name: $("name", "String!"),
+                    start: $("start", "timestamptz!"),
+                    description: $("description", "String"),
+                    auto_start: $("auto_start", "Boolean!"),
+                  },
                 },
                 {
-                  id: true,
+                  __typename: true,
                 },
               ],
             }),
           });
-          mapPoolId = data.insert_map_pools_one.id;
+
+          let mapPoolId = form.map_pool_id;
+
+          if (form.custom_map_pool) {
+            const { data } = await this.$apollo.mutate({
+              variables: {
+                map_pool: {
+                  type: e_map_pool_types_enum.Custom,
+                  maps: {
+                    data: this.form.values.map_pool.map((map_id) => {
+                      return {
+                        id: map_id,
+                      };
+                    }),
+                  },
+                },
+              },
+              mutation: generateMutation({
+                insert_map_pools_one: [
+                  {
+                    object: $("map_pool", "map_pools_insert_input!"),
+                  },
+                  {
+                    id: true,
+                  },
+                ],
+              }),
+            });
+            mapPoolId = data.insert_map_pools_one.id;
+          }
+
+          await this.$apollo.mutate({
+            variables: {
+              id: this.tournament.options.id,
+              ...setupOptionsVariables(form, { mapPoolId }),
+            },
+            mutation: generateMutation({
+              update_match_options_by_pk: [
+                {
+                  pk_columns: {
+                    id: $("id", "uuid!"),
+                  },
+                  _set: setupOptionsSetMutation(!!mapPoolId),
+                },
+                {
+                  __typename: true,
+                },
+              ],
+            }),
+          });
+
+          toast({
+            title: this.$t("tournament.updated") as string,
+          });
+          return;
         }
 
-        await this.$apollo.mutate({
-          variables: {
-            id: this.tournament.options.id,
-            ...setupOptionsVariables(form, { mapPoolId }),
-          },
+        const { data } = await this.$apollo.mutate({
+          variables: setupOptionsVariables(form),
           mutation: generateMutation({
-            update_match_options_by_pk: [
+            insert_tournaments_one: [
               {
-                pk_columns: {
-                  id: $("id", "uuid!"),
+                object: {
+                  name: this.form.values.name,
+                  start: this.form.values.start,
+                  description: this.form.values.description,
+                  auto_start: this.form.values.auto_start,
+                  options: {
+                    data: setupOptionsSetMutation(!!form.map_pool_id),
+                  },
                 },
-                _set: setupOptionsSetMutation(!!mapPoolId),
               },
               {
-                __typename: true,
+                id: true,
               },
             ],
           }),
         });
 
-        toast({
-          title: this.$t("tournament.updated") as string,
-        });
-        return;
+        redirecting = true;
+        await this.$router.push(`/tournaments/${data.insert_tournaments_one.id}`);
+      } finally {
+        if (!redirecting) {
+          this.submitLock = false;
+          this.submitting = false;
+        }
       }
-
-      const { data } = await this.$apollo.mutate({
-        variables: setupOptionsVariables(form),
-        mutation: generateMutation({
-          insert_tournaments_one: [
-            {
-              object: {
-                name: this.form.values.name,
-                start: this.form.values.start,
-                description: this.form.values.description,
-                auto_start: this.form.values.auto_start,
-                options: {
-                  data: setupOptionsSetMutation(!!form.map_pool_id),
-                },
-              },
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
-
-      this.$router.push(`/tournaments/${data.insert_tournaments_one.id}`);
     },
   },
 };

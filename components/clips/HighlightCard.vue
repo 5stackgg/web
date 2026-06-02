@@ -9,10 +9,10 @@ import {
   Globe,
   Trophy,
   ArrowUpRight,
-  Loader2,
   Check,
   Share2,
 } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import { useNuxtApp } from "#app";
 import { Card, CardContent } from "~/components/ui/card";
 import {
@@ -217,7 +217,7 @@ async function setVisibility(v: Visibility) {
                       : 'bg-white/10 text-white/80'
                 "
               >
-                <Loader2 v-if="saving" class="h-3 w-3 animate-spin" />
+                <Spinner v-if="saving" class="h-3 w-3" />
                 <component
                   v-else
                   :is="currentVisibilityMeta.icon"

@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Settings2 } from "lucide-vue-next";
 import { AnimatedCard } from "@/components/ui/animated-card";
 import cleanMapName from "~/utilities/cleanMapName";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
@@ -13,6 +15,13 @@ import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
+import { computed } from "vue";
+import { useAuthStore } from "~/stores/AuthStore";
+import { e_player_roles_enum } from "~/generated/zeus";
+
+const canManage = computed(() =>
+  useAuthStore().isRoleAbove(e_player_roles_enum.moderator),
+);
 </script>
 
 <template>
@@ -156,10 +165,28 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
                 </div>
 
                 <!-- Zone C: CTA Footer -->
-                <div
-                  class="px-4 pb-4 pt-2 [&>div]:w-full [&_a]:w-full [&_button]:w-full"
-                >
-                  <QuickServerConnect :server="server" />
+                <div class="px-4 pb-4 pt-3">
+                  <div class="flex items-center gap-2">
+                    <div
+                      class="flex-1 [&>div]:w-full [&_a]:flex-1 [&_a_button]:w-full"
+                    >
+                      <QuickServerConnect :server="server" />
+                    </div>
+                    <Button
+                      v-if="canManage"
+                      as-child
+                      variant="outline"
+                      size="icon"
+                      :title="$t('pages.public_servers.manage')"
+                    >
+                      <NuxtLink
+                        :to="`/dedicated-servers/${server.id}`"
+                        :aria-label="$t('pages.public_servers.manage')"
+                      >
+                        <Settings2 class="h-4 w-4" />
+                      </NuxtLink>
+                    </Button>
+                  </div>
                 </div>
               </AnimatedCard>
             </div>
@@ -250,10 +277,28 @@ import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
           </div>
 
           <!-- Zone C: CTA Footer -->
-          <div
-            class="px-4 pb-4 pt-2 [&>div]:w-full [&_a]:w-full [&_button]:w-full"
-          >
-            <QuickServerConnect :server="server" />
+          <div class="px-4 pb-4 pt-3">
+            <div class="flex items-center gap-2">
+              <div
+                class="flex-1 [&>div]:w-full [&_a]:flex-1 [&_a_button]:w-full"
+              >
+                <QuickServerConnect :server="server" />
+              </div>
+              <Button
+                v-if="canManage"
+                as-child
+                variant="outline"
+                size="icon"
+                :title="$t('pages.public_servers.manage')"
+              >
+                <NuxtLink
+                  :to="`/dedicated-servers/${server.id}`"
+                  :aria-label="$t('pages.public_servers.manage')"
+                >
+                  <Settings2 class="h-4 w-4" />
+                </NuxtLink>
+              </Button>
+            </div>
           </div>
         </AnimatedCard>
       </div>

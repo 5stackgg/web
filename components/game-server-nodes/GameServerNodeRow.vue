@@ -61,6 +61,7 @@ import {
   ChevronDown,
   ChevronUp,
   Settings2,
+  ShieldCheck,
 } from "lucide-vue-next";
 import UpdateGameServerLabel from "~/components/game-server-nodes/UpdateGameServerLabel.vue";
 import EditCs2Options from "~/components/game-server-nodes/EditCs2Options.vue";
@@ -787,6 +788,18 @@ const isSectionExpanded = (section: string) => {
               </template>
             </DropdownMenuItem>
 
+            <DropdownMenuItem
+              v-if="isTestInstance && gameServerNode.build_id"
+              :disabled="
+                gameServerNode.status !==
+                e_game_server_node_statuses_enum.Online
+              "
+              @click="validateGamedata"
+            >
+              <ShieldCheck class="mr-2 h-4 w-4" />
+              <span>{{ $t("game_server.validate_gamedata") }}</span>
+            </DropdownMenuItem>
+
             <DropdownMenuSeparator />
 
             <DropdownMenuItem @click="editLabelSheet = true">
@@ -1039,6 +1052,18 @@ const isSectionExpanded = (section: string) => {
                   <Plus class="mr-2 h-4 w-4" />
                   {{ $t("game_server.install_csgo") }}
                 </template>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem
+                v-if="isTestInstance && gameServerNode.build_id"
+                :disabled="
+                  gameServerNode.status !==
+                  e_game_server_node_statuses_enum.Online
+                "
+                @click="validateGamedata"
+              >
+                <ShieldCheck class="mr-2 h-4 w-4" />
+                <span>{{ $t("game_server.validate_gamedata") }}</span>
               </DropdownMenuItem>
 
               <DropdownMenuSeparator />
@@ -1787,6 +1812,8 @@ interface ComponentData {
   pinPluginVersionForm: ReturnType<typeof useForm>;
   portForm: ReturnType<typeof useForm>;
   server_regions: ServerRegion[];
+  removingNode: boolean;
+  togglingScheduling: boolean;
 }
 
 export default defineComponent({
@@ -1875,6 +1902,8 @@ export default defineComponent({
       editLabelSheet: false,
       editCs2OptionsSheet: false,
       server_regions: [],
+      removingNode: false,
+      togglingScheduling: false,
       pinBuildIdForm: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -2015,6 +2044,19 @@ export default defineComponent({
       this.showLogs = true;
       toast({ title: this.$t("game_server.toast.csgo_installing") });
     },
+    async validateGamedata() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          validateGamedata: [
+            {
+              game_server_node_id: this.gameServerNode.id,
+            },
+            { success: true },
+          ],
+        }),
+      });
+      toast({ title: this.$t("game_server.toast.validating_gamedata") });
+    },
     async pinBuildId(buildId: string | null) {
       await this.$apollo.mutate({
         mutation: generateMutation({
@@ -2070,18 +2112,26 @@ export default defineComponent({
       });
     },
     async removeGameNodeServer() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          delete_game_server_nodes_by_pk: [
-            {
-              id: this.gameServerNode.id,
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
+      if (this.removingNode) {
+        return;
+      }
+      this.removingNode = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            delete_game_server_nodes_by_pk: [
+              {
+                id: this.gameServerNode.id,
+              },
+              {
+                __typename: true,
+              },
+            ],
+          }),
+        });
+      } finally {
+        this.removingNode = false;
+      }
     },
     async updateServerPorts() {
       const { start_port_range, end_port_range } = this.portForm.values;
@@ -2202,25 +2252,33 @@ export default defineComponent({
       });
     },
     async toggleGameServerNodeScheduling() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          setGameNodeSchedulingState: [
-            {
-              game_server_node_id: this.gameServerNode.id,
-              enabled:
-                this.gameServerNode.status ===
-                e_game_server_node_statuses_enum.NotAcceptingNewMatches,
-            },
-            {
-              success: true,
-            },
-          ],
-        }),
-      });
+      if (this.togglingScheduling) {
+        return;
+      }
+      this.togglingScheduling = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            setGameNodeSchedulingState: [
+              {
+                game_server_node_id: this.gameServerNode.id,
+                enabled:
+                  this.gameServerNode.status ===
+                  e_game_server_node_statuses_enum.NotAcceptingNewMatches,
+              },
+              {
+                success: true,
+              },
+            ],
+          }),
+        });
 
-      toast({
-        title: this.$t("game_server.toast.scheduling_updated"),
-      });
+        toast({
+          title: this.$t("game_server.toast.scheduling_updated"),
+        });
+      } finally {
+        this.togglingScheduling = false;
+      }
     },
     toggleLogs() {
       this.showLogs = !this.showLogs;
@@ -2253,6 +2311,9 @@ export default defineComponent({
     shouldShowMetrics() {
       // Force show metrics if parent displayMetrics is true, otherwise use local state
       return this.displayMetrics || this.showNodeMetrics;
+    },
+    isTestInstance() {
+      return useRuntimeConfig().public.webDomain === "5stack.gg";
     },
     currentGameVersion() {
       return this.gameVersions.find((version) => {

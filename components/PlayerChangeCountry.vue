@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { Check, ChevronsUpDown, Loader2 } from "lucide-vue-next";
+import { Check, ChevronsUpDown } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 </script>
 
@@ -63,7 +64,7 @@ import TimezoneFlag from "~/components/TimezoneFlag.vue";
         </Command>
       </PopoverContent>
     </Popover>
-    <Loader2 v-if="saving" class="h-4 w-4 animate-spin text-muted-foreground" />
+    <Spinner v-if="saving" class="h-4 w-4 text-muted-foreground" />
   </div>
 </template>
 

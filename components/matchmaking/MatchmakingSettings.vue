@@ -3,7 +3,7 @@ import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 import { Button } from "~/components/ui/button";
 import { Switch } from "~/components/ui/switch";
 import { RefreshCw } from "lucide-vue-next";
-import { Loader2 } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 </script>
 
 <template>
@@ -22,9 +22,9 @@ import { Loader2 } from "lucide-vue-next";
         </p>
       </div>
       <div class="flex items-center gap-2">
-        <Loader2
+        <Spinner
           v-if="savingShowMatchReadyModal"
-          class="h-4 w-4 animate-spin text-muted-foreground"
+          class="h-4 w-4 text-muted-foreground"
         />
         <Switch
           :model-value="showMatchReadyModal"
@@ -71,7 +71,7 @@ import { Loader2 } from "lucide-vue-next";
           @click="refreshLatencies"
           :disabled="isRefreshing"
         >
-          <Loader2 v-if="isRefreshing" class="h-4 w-4 mr-2 animate-spin" />
+          <Spinner v-if="isRefreshing" class="h-4 w-4 mr-2" />
           <RefreshCw v-else class="h-4 w-4 mr-2" />
           {{ $t("common.refresh") }}
         </Button>

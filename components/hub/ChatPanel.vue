@@ -276,7 +276,7 @@ function toggleChatSound() {
           }"
         />
 
-        <TooltipProvider :delay-duration="150">
+        <TooltipProvider>
           <template v-for="tab in orderedTabs" :key="tab.id">
             <Tooltip>
               <TooltipTrigger as-child>
@@ -374,7 +374,7 @@ function toggleChatSound() {
             </div>
           </div>
           <div class="flex items-center gap-1.5">
-            <TooltipProvider :delay-duration="150">
+            <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger as-child>
                   <button

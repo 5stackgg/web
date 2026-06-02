@@ -10,7 +10,6 @@ import {
   Play,
   Square,
   X,
-  Loader2,
   Film,
   Users,
   ChevronDown,
@@ -39,6 +38,7 @@ import { useClipRenderActive } from "~/composables/useClipRenderActive";
 import { generateMutation } from "~/graphql/graphqlGen";
 import type { ClipSpec } from "~/graphql/clipRenderJob";
 import ClipRenderProgress from "~/components/clips/ClipRenderProgress.vue";
+import { Spinner } from "~/components/ui/spinner";
 
 const props = defineProps<{
   matchMapId: string;
@@ -58,13 +58,13 @@ const clipResolutionDefault = computed<"720p" | "1080p">(() => {
   )?.value;
   return raw === "720p" ? "720p" : "1080p";
 });
-const { seek } = useDemoPlayback();
+const { seek, setHudVisible } = useDemoPlayback();
 const editor = useClipEditor();
 const nuxtApp = useNuxtApp();
-const { trackJob: trackRenderJob } = useClipRenderActive();
+const { active: renderActive, trackJob: trackRenderJob } =
+  useClipRenderActive();
 
 const title = ref("");
-const destination = ref<"library" | "download">("library");
 const resolution = ref<"720p" | "1080p">(clipResolutionDefault.value);
 watch(clipResolutionDefault, (v) => {
   resolution.value = v;
@@ -73,6 +73,23 @@ const submitting = ref(false);
 const submitError = ref<string | null>(null);
 const renderingJobId = ref<string | null>(null);
 watch(renderingJobId, (id) => trackRenderJob(id));
+
+// The inline render captures the pod's live frames, so the JT HUD
+// overlay would otherwise be baked into the clip. Hide it for the
+// duration of the render and restore it once the job reaches a
+// terminal status (renderActive flips false). Only restore if we were
+// the ones who hid it, so we don't fight an operator who had the HUD
+// off already.
+const hudHiddenForRender = ref(false);
+function restoreHudAfterRender() {
+  if (hudHiddenForRender.value) {
+    setHudVisible(true);
+    hudHiddenForRender.value = false;
+  }
+}
+watch(renderActive, (active) => {
+  if (!active) restoreHudAfterRender();
+});
 
 const max = computed(() => Math.max(1, store.totalTicks || 0));
 const playheadPct = computed(
@@ -295,9 +312,15 @@ async function submit() {
       ...(s.pov_steam_id ? { pov_steam_id: s.pov_steam_id } : {}),
     })),
     output: { format: "mp4", resolution: resolution.value, fps: clipFps.value },
-    destination: destination.value,
+    destination: "library",
     title: title.value || undefined,
   };
+  // Hide the JT HUD before the pod starts capturing; restored when the
+  // job finishes (watch on renderActive) or if submission fails below.
+  if (store.hudVisible) {
+    setHudVisible(false);
+    hudHiddenForRender.value = true;
+  }
   try {
     const { data } = await nuxtApp.$apollo.defaultClient.mutate({
       mutation: generateMutation({
@@ -314,6 +337,7 @@ async function submit() {
       (e as any)?.graphQLErrors?.[0]?.message ??
       (e as Error)?.message ??
       "Failed to submit clip";
+    restoreHudAfterRender();
   } finally {
     submitting.value = false;
   }
@@ -341,82 +365,97 @@ function onRenderClose() {
 
     <div v-else class="space-y-3">
       <div class="flex items-center gap-3 flex-wrap">
-        <div class="flex items-center gap-2">
-          <Film class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
+        <div class="flex items-center gap-2.5">
           <span
-            class="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-foreground/80"
+            class="inline-flex h-6 w-6 items-center justify-center rounded-[4px] border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)]"
+          >
+            <Film class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
+          </span>
+          <span
+            class="font-mono text-[0.7rem] uppercase tracking-[0.22em] text-foreground/90"
           >
             {{ $t("clips.editor.title") }}
           </span>
         </div>
-        <span
-          class="font-mono text-[0.65rem] tabular-nums text-muted-foreground"
-        >
-          {{ editor.segments.value.length }}
-          {{ editor.segments.value.length === 1 ? "segment" : "segments" }}
-          · {{ formatSeconds(ticksToSeconds(editor.totalSelectedTicks.value)) }}
-        </span>
 
-        <div class="ml-auto flex items-center gap-1.5">
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            class="h-7 text-xs"
-            @click="addAtPlayhead"
+        <!-- Stat readout: segment count + total duration as discrete
+             fields, duration promoted to amber as the focal number. -->
+        <div
+          class="flex items-center gap-2 font-mono text-[0.62rem] tabular-nums text-muted-foreground"
+        >
+          <span>
+            {{ editor.segments.value.length }}
+            {{ editor.segments.value.length === 1 ? "segment" : "segments" }}
+          </span>
+          <span class="h-3 w-px bg-border/60" />
+          <span class="text-[hsl(var(--tac-amber)/0.85)]">
+            {{ formatSeconds(ticksToSeconds(editor.totalSelectedTicks.value)) }}
+          </span>
+        </div>
+
+        <div class="ml-auto flex items-center gap-2">
+          <!-- Segment edit ops — one connected control instead of three
+               free-floating buttons. -->
+          <div
+            class="inline-flex items-center rounded-md border border-border/60 bg-card/40 p-0.5"
           >
-            <Plus class="h-3.5 w-3.5 mr-1" />
-            Add
-          </Button>
-          <Button
+            <button
+              type="button"
+              class="inline-flex h-6 items-center gap-1 rounded-[3px] px-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors cursor-pointer hover:bg-[hsl(var(--tac-amber)/0.1)] hover:text-[hsl(var(--tac-amber))]"
+              @click="addAtPlayhead"
+            >
+              <Plus class="h-3.5 w-3.5" />
+              Add
+            </button>
+            <span class="h-4 w-px bg-border/50" />
+            <button
+              type="button"
+              :disabled="!editor.selectedId.value"
+              class="inline-flex h-6 items-center gap-1 rounded-[3px] px-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors cursor-pointer hover:bg-muted/50 hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
+              @click="splitSelected"
+            >
+              <Scissors class="h-3.5 w-3.5" />
+              {{ $t("clips.editor.split") }}
+            </button>
+            <span class="h-4 w-px bg-border/50" />
+            <button
+              type="button"
+              :disabled="!editor.selectedId.value"
+              class="inline-flex h-6 items-center gap-1 rounded-[3px] px-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground transition-colors cursor-pointer hover:bg-destructive/10 hover:text-destructive disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-muted-foreground"
+              @click="deleteSelected"
+            >
+              <Trash2 class="h-3.5 w-3.5" />
+              {{ $t("clips.editor.delete") }}
+            </button>
+          </div>
+
+          <span class="h-5 w-px bg-border/60" />
+
+          <!-- Preview / Stop — set apart as the playback control. -->
+          <button
             type="button"
-            size="sm"
-            variant="outline"
-            class="h-7 text-xs"
-            :disabled="!editor.selectedId.value"
-            @click="splitSelected"
-          >
-            <Scissors class="h-3.5 w-3.5 mr-1" />
-            {{ $t("clips.editor.split") }}
-          </Button>
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            class="h-7 text-xs"
-            :disabled="!editor.selectedId.value"
-            @click="deleteSelected"
-          >
-            <Trash2 class="h-3.5 w-3.5 mr-1" />
-            {{ $t("clips.editor.delete") }}
-          </Button>
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            class="h-7 text-xs"
             :disabled="!editor.isValid.value"
+            class="inline-flex h-7 items-center gap-1.5 rounded-md border px-2.5 font-mono text-[0.62rem] uppercase tracking-[0.14em] transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
             :class="
               editor.previewing.value
-                ? 'border-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber))]'
-                : ''
+                ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+                : 'border-border/60 text-foreground/90 hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-[hsl(var(--tac-amber))]'
             "
             @click="togglePreview"
           >
-            <Square v-if="editor.previewing.value" class="h-3.5 w-3.5 mr-1" />
-            <Play v-else class="h-3.5 w-3.5 mr-1" />
+            <Square v-if="editor.previewing.value" class="h-3.5 w-3.5" />
+            <Play v-else class="h-3.5 w-3.5" />
             {{ editor.previewing.value ? "Stop" : "Preview" }}
-          </Button>
-          <Button
+          </button>
+
+          <button
             type="button"
-            size="sm"
-            variant="ghost"
-            class="h-7 text-xs"
+            class="inline-flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground/70 transition-colors cursor-pointer hover:bg-muted/50 hover:text-foreground"
+            :title="$t('clips.editor.close')"
             @click="close"
           >
-            <X class="h-3.5 w-3.5 mr-1" />
-            {{ $t("clips.editor.close") }}
-          </Button>
+            <X class="h-4 w-4" />
+          </button>
         </div>
       </div>
 
@@ -590,7 +629,7 @@ function onRenderClose() {
       </div>
 
       <div
-        class="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto_auto] gap-2 items-end"
+        class="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] gap-2 items-end"
       >
         <div class="space-y-1">
           <Label
@@ -623,33 +662,13 @@ function onRenderClose() {
             </SelectContent>
           </Select>
         </div>
-        <div class="space-y-1">
-          <Label
-            class="text-[0.6rem] font-mono uppercase tracking-[0.16em] text-muted-foreground"
-          >
-            {{ $t("clips.editor.destination") }}
-          </Label>
-          <Select v-model="destination">
-            <SelectTrigger class="h-8 w-[8rem] text-xs">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="library">{{
-                $t("clip_editor_dest.library")
-              }}</SelectItem>
-              <SelectItem value="download">{{
-                $t("clip_editor_dest.download")
-              }}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
         <Button
           type="button"
           class="h-8 self-end"
           :disabled="!editor.isValid.value || submitting"
           @click="submit"
         >
-          <Loader2 v-if="submitting" class="h-3.5 w-3.5 mr-1.5 animate-spin" />
+          <Spinner v-if="submitting" class="h-3.5 w-3.5 mr-1.5" />
           <Film v-else class="h-3.5 w-3.5 mr-1.5" />
           {{ $t("clips.editor.render") }}
         </Button>

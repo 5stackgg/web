@@ -5,7 +5,14 @@ import SteamIcon from "~/components/icons/SteamIcon.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import PlayerPremierRank from "~/components/PlayerPremierRank.vue";
 import PlayerSkillGroupRank from "~/components/PlayerSkillGroupRank.vue";
-import { Crown, Shield, BadgeCheck, BadgeIcon, Podcast } from "lucide-vue-next";
+import {
+  Crown,
+  Shield,
+  ShieldHalf,
+  BadgeCheck,
+  BadgeIcon,
+  Podcast,
+} from "lucide-vue-next";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
 </script>
 <template>
@@ -19,7 +26,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
     exact-active-class="player-display-active"
     class="grid min-h-12"
     :class="{
-      'cursor-pointer': linkable,
+      'cursor-pointer group/playerlink': linkable,
       'gap-2': !compact,
       'gap-1.5': compact,
       'grid-cols-[52px_1fr]':
@@ -104,7 +111,11 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               />
               <div
                 v-if="showName"
-                :class="{ 'truncate max-w-[80px] sm:max-w-none': compact }"
+                :class="{
+                  'truncate max-w-[80px] sm:max-w-none': compact,
+                  'transition-colors group-hover/playerlink:text-[hsl(var(--tac-amber))]':
+                    linkable,
+                }"
               >
                 {{ player.name }}
               </div>
@@ -171,6 +182,9 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 </template>
                 <template v-if="isStreamer">
                   <Podcast class="w-3 h-3 mr-1 text-green-500" />
+                </template>
+                <template v-if="isModerator">
+                  <ShieldHalf class="w-3 h-3 mr-1 text-blue-500" />
                 </template>
                 <template v-if="isMatchOrganizer">
                   <Shield class="w-3 h-3 mr-1 text-yellow-500" />
@@ -401,6 +415,9 @@ export default {
     },
     isStreamer() {
       return this.player?.role === e_player_roles_enum.streamer;
+    },
+    isModerator() {
+      return this.player?.role === e_player_roles_enum.moderator;
     },
     isMatchOrganizer() {
       return this.player?.role === e_player_roles_enum.match_organizer;

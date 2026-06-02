@@ -107,6 +107,8 @@ import debounce from "~/utilities/debounce";
             <ButtonGroup>
               <Button
                 :disabled="!online"
+                :loading="sending"
+                :min-loading-ms="0"
                 type="submit"
                 size="sm"
                 variant="secondary"
@@ -296,6 +298,7 @@ export default {
       logStates: [] as boolean[],
       uuid: undefined as string | undefined,
       rconListener: undefined as any,
+      sending: false,
       history: [] as string[],
       historyIndex: -1 as number, // -1 means not navigating history
       historyTemp: "" as string, // buffer of current input before history navigation
@@ -450,6 +453,16 @@ export default {
       this.showSuggestions = false;
       this.sendCommand();
     },
+    flashSending() {
+      this.sending = true;
+      if (this.sendTimer) {
+        clearTimeout(this.sendTimer);
+      }
+      this.sendTimer = setTimeout(() => {
+        this.sending = false;
+        this.sendTimer = undefined;
+      }, 1000);
+    },
     sendCommand() {
       this.suggestions = [];
       this.showSuggestions = false;
@@ -465,6 +478,8 @@ export default {
         serverId: this.serverId,
         command: command,
       });
+
+      this.flashSending();
 
       // track history
       this.history.push(command);
@@ -612,6 +627,9 @@ export default {
   },
   beforeUnmount() {
     this.rconListener?.stop();
+    if (this.sendTimer) {
+      clearTimeout(this.sendTimer);
+    }
   },
 };
 </script>

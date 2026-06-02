@@ -34,7 +34,7 @@ import { loadMonaco } from "~/utilities/loadMonaco";
     </FormField>
 
     <div class="flex justify-between items-center">
-      <Button type="submit">{{
+      <Button type="submit" :loading="submitting">{{
         gameTypeConfig
           ? $t("game_type_configs.form.update")
           : $t("game_type_configs.form.create")
@@ -95,6 +95,7 @@ export default {
     return {
       verifiredMapName: false,
       isLoading: false,
+      submitting: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -154,45 +155,55 @@ export default {
       return this.editorInstance?.getValue() || "";
     },
     async submitForm() {
-      const cfgValue = this.getEditorValue();
-
+      if (this.submitLock) {
+        return;
+      }
+      this.submitLock = true;
       try {
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            insert_match_type_cfgs: [
-              {
-                objects: [
-                  {
-                    type: this.gameTypeConfig.type,
-                    cfg: cfgValue,
+        this.submitting = true;
+        const cfgValue = this.getEditorValue();
+
+        try {
+          await this.$apollo.mutate({
+            mutation: generateMutation({
+              insert_match_type_cfgs: [
+                {
+                  objects: [
+                    {
+                      type: this.gameTypeConfig.type,
+                      cfg: cfgValue,
+                    },
+                  ],
+                  on_conflict: {
+                    constraint: "match_type_cfgs_pkey",
+                    update_columns: ["cfg"],
                   },
-                ],
-                on_conflict: {
-                  constraint: "match_type_cfgs_pkey",
-                  update_columns: ["cfg"],
                 },
-              },
-              {
-                affected_rows: true,
-              },
-            ],
-          }),
-        });
+                {
+                  affected_rows: true,
+                },
+              ],
+            }),
+          });
 
-        toast({
-          title: this.gameTypeConfig
-            ? this.$t("game_type_configs.form.success.update")
-            : this.$t("game_type_configs.form.success.create"),
-        });
+          toast({
+            title: this.gameTypeConfig
+              ? this.$t("game_type_configs.form.success.update")
+              : this.$t("game_type_configs.form.success.create"),
+          });
 
-        this.$emit(this.gameTypeConfig ? "updated" : "created");
-      } catch (error) {
-        toast({
-          title: this.gameTypeConfig
-            ? this.$t("game_type_configs.form.error.update")
-            : this.$t("game_type_configs.form.error.create"),
-          variant: "destructive",
-        });
+          this.$emit(this.gameTypeConfig ? "updated" : "created");
+        } catch (error) {
+          toast({
+            title: this.gameTypeConfig
+              ? this.$t("game_type_configs.form.error.update")
+              : this.$t("game_type_configs.form.error.create"),
+            variant: "destructive",
+          });
+        }
+      } finally {
+        this.submitLock = false;
+        this.submitting = false;
       }
     },
     async revertToDefaults() {

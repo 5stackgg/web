@@ -3,10 +3,6 @@ import PageHeading from "~/components/PageHeading.vue";
 import GameTypeConfigTabs from "~/components/game-type-configs/GameTypeConfigTabs.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Card } from "~/components/ui/card";
-
-definePageMeta({
-  layout: "application-settings",
-});
 </script>
 
 <template>

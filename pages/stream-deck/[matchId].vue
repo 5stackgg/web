@@ -6,6 +6,7 @@ import { useApolloClient } from "@vue/apollo-composable";
 const { t } = useI18n();
 import { useRoute } from "vue-router";
 import { useToast } from "~/components/ui/toast/use-toast";
+import { Spinner } from "~/components/ui/spinner";
 import { Switch } from "~/components/ui/switch";
 import { Label } from "~/components/ui/label";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -32,6 +33,7 @@ import {
 } from "~/components/ui/popover";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
+import DesktopSnapshot from "~/components/match/DesktopSnapshot.vue";
 import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
 import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
 import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
@@ -144,6 +146,7 @@ function statusBadgeLabel(s: any) {
 
 const autodirector = ref(true);
 const busy = ref(false);
+const busyAction = ref<string | undefined>(undefined);
 
 async function runMutation(
   label: string,
@@ -151,6 +154,7 @@ async function runMutation(
 ) {
   if (busy.value) return;
   busy.value = true;
+  busyAction.value = label;
   try {
     await apolloClient.mutate({ mutation: generateMutation(build()) });
   } catch (error: any) {
@@ -161,6 +165,7 @@ async function runMutation(
     });
   } finally {
     busy.value = false;
+    busyAction.value = undefined;
   }
 }
 
@@ -830,7 +835,8 @@ watch(spectatedSteamId, (sid) => {
               :title="$t('replay_extras.reissue_connect')"
               @click="reconnectLive"
             >
-              <RefreshCw class="size-3.5" />
+              <Spinner v-if="busy && busyAction === 'reconnect'" />
+              <RefreshCw v-else class="size-3.5" />
               {{ $t("stream_deck.reconnect") }}
             </button>
             <template v-if="otherLiveMatches.length > 0">
@@ -885,7 +891,9 @@ watch(spectatedSteamId, (sid) => {
               ]"
               @click="stopLive"
             >
+              <Spinner v-if="busy && busyAction === 'stop live'" />
               <Square
+                v-else
                 :class="['size-3.5', confirmStop ? 'fill-current' : '']"
               />
               {{ confirmStop ? "Confirm" : "Stop" }}
@@ -919,6 +927,11 @@ watch(spectatedSteamId, (sid) => {
               :can-skip="true"
               :skipping="skippingShaders"
               @skip="onSkipShaders"
+            />
+            <DesktopSnapshot
+              kind="live"
+              :id="matchId"
+              class="mt-4 w-full max-w-md overflow-hidden rounded-md border border-border/50"
             />
           </template>
 

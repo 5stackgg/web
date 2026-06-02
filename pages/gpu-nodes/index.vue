@@ -6,6 +6,7 @@ import { useApolloClient } from "@vue/apollo-composable";
 
 const { t } = useI18n();
 import { Button } from "~/components/ui/button";
+import { Spinner } from "~/components/ui/spinner";
 import { useToast } from "~/components/ui/toast/use-toast";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
@@ -19,7 +20,14 @@ import {
   KeyRound,
   ChevronDown,
   Activity,
+  Flame,
+  Check,
+  AlertTriangle,
+  X,
+  ScrollText,
 } from "lucide-vue-next";
+import ServiceLogs from "~/components/ServiceLogs.vue";
+import DesktopSnapshot from "~/components/match/DesktopSnapshot.vue";
 import { Input } from "~/components/ui/input";
 import { Switch } from "~/components/ui/switch";
 import {
@@ -42,6 +50,11 @@ import {
 import { useGpuAvailability } from "~/composables/useGpuAvailability";
 import { generateMutation } from "~/graphql/graphqlGen";
 import EditCs2Options from "~/components/game-server-nodes/EditCs2Options.vue";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "~/components/ui/tooltip";
 
 definePageMeta({
   middleware: "admin",
@@ -102,6 +115,37 @@ function toggleExpanded(nodeId: string) {
   expandedNodeIds[nodeId] = !expandedNodeIds[nodeId];
 }
 
+// Shader-bake job logs (live + recent), via the shared ServiceLogs viewer.
+const bakeLogsByNodeId = reactive<Record<string, boolean>>({});
+const bakeLogsLoadingByNodeId = reactive<Record<string, boolean>>({});
+const bakeLogsTimers: Record<string, ReturnType<typeof setTimeout>> = {};
+function toggleBakeLogs(nodeId: string) {
+  const open = !bakeLogsByNodeId[nodeId];
+  bakeLogsByNodeId[nodeId] = open;
+
+  if (bakeLogsTimers[nodeId]) {
+    clearTimeout(bakeLogsTimers[nodeId]);
+    delete bakeLogsTimers[nodeId];
+  }
+
+  if (open) {
+    bakeLogsLoadingByNodeId[nodeId] = true;
+    bakeLogsTimers[nodeId] = setTimeout(() => {
+      bakeLogsLoadingByNodeId[nodeId] = false;
+      delete bakeLogsTimers[nodeId];
+    }, 8000);
+  } else {
+    bakeLogsLoadingByNodeId[nodeId] = false;
+  }
+}
+function onBakeLogsReady(nodeId: string) {
+  bakeLogsLoadingByNodeId[nodeId] = false;
+  if (bakeLogsTimers[nodeId]) {
+    clearTimeout(bakeLogsTimers[nodeId]);
+    delete bakeLogsTimers[nodeId];
+  }
+}
+
 // Two-stage confirm so a stray click can't kill an operator's live
 // match — first click flips the button into "Confirm Stop" for 5s,
 // the second actually fires the mutation. `busyByNodeId` blocks
@@ -109,6 +153,7 @@ function toggleExpanded(nodeId: string) {
 const confirmStopByNodeId = reactive<Record<string, boolean>>({});
 const busyByNodeId = reactive<Record<string, boolean>>({});
 const cs2OptionsNode = ref<any | null>(null);
+const bakeBusyByNodeId = reactive<Record<string, boolean>>({});
 
 const steamPanelOpen = ref(false);
 const newSteamUsername = ref("");
@@ -155,6 +200,141 @@ async function toggleNodeScheduling(node: any, accepting: boolean) {
 
 function nodeHasPorts(node: any): boolean {
   return Boolean(node?.start_port_range && node?.end_port_range);
+}
+
+function isBaking(node: any): boolean {
+  const status = node?.shader_bake_status;
+  return status !== null && status !== undefined && status !== "done";
+}
+
+function isOffline(node: any): boolean {
+  return node?.status === "Offline";
+}
+
+function bakeErrored(node: any): boolean {
+  return node?.shader_bake_status === "errored";
+}
+
+// Friendly label for the current bake status. Anything before the first
+// real stage (e.g. the api's "Initializing") falls through to initializing.
+function bakeStageLabel(node: any): string {
+  switch (node?.shader_bake_status) {
+    case "downloading_cs2":
+      return t("pages.gpu_nodes.bake.stages.downloading_cs2");
+    case "launching_cs2":
+      return t("pages.gpu_nodes.bake.stages.launching_cs2");
+    case "processing_shaders":
+      return t("pages.gpu_nodes.bake.stages.processing_shaders");
+    case "errored":
+      return t("pages.gpu_nodes.bake.stages.errored");
+    default:
+      return t("pages.gpu_nodes.bake.stages.initializing");
+  }
+}
+
+// Visible stages. launching_cs2 is folded into the shaders step (it's too
+// brief to render on its own) — the status still exists server-side.
+const BAKE_STEPS = [
+  { key: "download", labelKey: "download", statuses: ["downloading_cs2"] },
+  {
+    key: "shaders",
+    labelKey: "shaders",
+    statuses: ["launching_cs2", "processing_shaders"],
+  },
+] as const;
+
+function bakeStepIndex(node: any): number {
+  const status = node?.shader_bake_status;
+  return BAKE_STEPS.findIndex((step) =>
+    (step.statuses as readonly string[]).includes(status),
+  );
+}
+
+function bakeStepState(
+  node: any,
+  index: number,
+): "done" | "active" | "pending" {
+  const current = bakeStepIndex(node);
+  if (current < 0) {
+    return "pending";
+  }
+  if (index < current) {
+    return "done";
+  }
+  return index === current ? "active" : "pending";
+}
+
+// Per-segment fill 0..100; null on the active segment means indeterminate
+// (no live % yet) so the track runs a scanning shimmer instead.
+function bakeSegFill(node: any, index: number): number | null {
+  const state = bakeStepState(node, index);
+  if (state === "done") {
+    return 100;
+  }
+  if (state === "pending") {
+    return 0;
+  }
+  const p = bakeProgress(node);
+  return p == null ? null : Math.max(0, Math.min(100, p));
+}
+
+// Hasura serializes numeric as a string ("65.62") — coerce before use.
+function bakeProgress(node: any): number | null {
+  const raw = node?.shader_bake_progress;
+  if (raw == null) {
+    return null;
+  }
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : null;
+}
+
+async function bakeShaders(node: any) {
+  if (bakeBusyByNodeId[node.id]) {
+    return;
+  }
+  bakeBusyByNodeId[node.id] = true;
+  try {
+    await apolloClient.mutate({
+      mutation: generateMutation({
+        bakeShaders: [{ game_server_node_id: node.id }, { success: true }],
+      }),
+    });
+    toast({ title: t("pages.gpu_nodes.bake.started") });
+  } catch (error: any) {
+    toast({
+      variant: "destructive",
+      title: t("pages.gpu_nodes.bake.failed"),
+      description: error?.message,
+    });
+  } finally {
+    bakeBusyByNodeId[node.id] = false;
+  }
+}
+
+async function cancelBakeShaders(node: any) {
+  if (bakeBusyByNodeId[node.id]) {
+    return;
+  }
+  bakeBusyByNodeId[node.id] = true;
+  try {
+    await apolloClient.mutate({
+      mutation: generateMutation({
+        cancelBakeShaders: [
+          { game_server_node_id: node.id },
+          { success: true },
+        ],
+      }),
+    });
+    toast({ title: t("pages.gpu_nodes.bake.cancelled") });
+  } catch (error: any) {
+    toast({
+      variant: "destructive",
+      title: t("pages.gpu_nodes.bake.cancel_failed"),
+      description: error?.message,
+    });
+  } finally {
+    bakeBusyByNodeId[node.id] = false;
+  }
 }
 
 async function submitAddSteamAccount() {
@@ -368,6 +548,27 @@ async function stopGpuSession(nodeId: string) {
                 busyByNode[node.id].subline
               }}</span>
             </template>
+            <Tooltip v-else-if="isBaking(node)">
+              <TooltipTrigger as-child>
+                <span class="gpu-node-task-flag">
+                  <AlertTriangle
+                    v-if="bakeErrored(node)"
+                    class="w-3.5 h-3.5 text-[hsl(var(--destructive))]"
+                  />
+                  <Flame
+                    v-else
+                    class="w-3.5 h-3.5 text-[hsl(var(--tac-amber))]"
+                  />
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{
+                  bakeErrored(node)
+                    ? $t("pages.gpu_nodes.bake.stages.errored")
+                    : $t("pages.gpu_nodes.bake.in_progress")
+                }}
+              </TooltipContent>
+            </Tooltip>
             <span v-else-if="!node.enabled" class="gpu-node-task-idle">
               {{ $t("pages.gpu_nodes.disabled") }}
             </span>
@@ -377,7 +578,10 @@ async function stopGpuSession(nodeId: string) {
           </div>
 
           <!-- Controls -->
-          <div class="gpu-node-ctrls">
+          <div
+            class="gpu-node-ctrls"
+            :class="{ 'gpu-node-ctrls-offline': isOffline(node) }"
+          >
             <button
               v-if="busyByNode[node.id]"
               type="button"
@@ -390,49 +594,222 @@ async function stopGpuSession(nodeId: string) {
               {{ confirmStopByNodeId[node.id] ? "Confirm" : "Stop" }}
             </button>
 
-            <label
-              class="gpu-toggle"
-              :title="$t('pages.gpu_nodes.toggle_enabled_help')"
-            >
-              <span>{{ $t("pages.gpu_nodes.enabled") }}</span>
-              <Switch
-                :model-value="node.enabled"
-                @update:model-value="(v) => toggleNodeEnabled(node, !!v)"
-              />
-            </label>
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <label class="gpu-toggle">
+                  <span>{{ $t("pages.gpu_nodes.enabled") }}</span>
+                  <Switch
+                    :model-value="node.enabled"
+                    @update:model-value="(v) => toggleNodeEnabled(node, !!v)"
+                  />
+                </label>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ $t("pages.gpu_nodes.toggle_enabled_help") }}
+              </TooltipContent>
+            </Tooltip>
 
-            <label
-              v-if="nodeHasPorts(node)"
-              class="gpu-toggle"
-              :title="$t('pages.gpu_nodes.toggle_scheduling_help')"
-            >
-              <span>{{ $t("pages.gpu_nodes.accepting_matches") }}</span>
-              <Switch
-                :model-value="node.status === 'Online'"
-                :disabled="!node.enabled"
-                @update:model-value="(v) => toggleNodeScheduling(node, !!v)"
-              />
-            </label>
+            <Tooltip v-if="nodeHasPorts(node)">
+              <TooltipTrigger as-child>
+                <label class="gpu-toggle">
+                  <span>{{ $t("pages.gpu_nodes.accepting_matches") }}</span>
+                  <Switch
+                    :model-value="node.status === 'Online'"
+                    :disabled="!node.enabled"
+                    @update:model-value="(v) => toggleNodeScheduling(node, !!v)"
+                  />
+                </label>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ $t("pages.gpu_nodes.toggle_scheduling_help") }}
+              </TooltipContent>
+            </Tooltip>
 
-            <button
-              type="button"
-              class="gpu-icon-btn"
-              :title="$t('game_server.edit_cs2_options')"
-              @click="cs2OptionsNode = node"
-            >
-              <Settings2 class="w-3.5 h-3.5" />
-            </button>
-            <button
-              type="button"
-              class="gpu-metrics-toggle"
-              :data-open="expandedNodeIds[node.id]"
-              @click="toggleExpanded(node.id)"
-            >
-              <Activity class="w-3.5 h-3.5" />
-              <span>{{ $t("pages.gpu_nodes.metrics") }}</span>
-              <ChevronDown class="w-3 h-3 gpu-metrics-chevron" />
-            </button>
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <button
+                  type="button"
+                  class="gpu-icon-btn"
+                  @click="cs2OptionsNode = node"
+                >
+                  <Settings2 class="w-3.5 h-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ $t("game_server.edit_cs2_options") }}
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip v-if="!isBaking(node)">
+              <TooltipTrigger as-child>
+                <button
+                  type="button"
+                  class="gpu-icon-btn"
+                  :disabled="bakeBusyByNodeId[node.id]"
+                  @click="bakeShaders(node)"
+                >
+                  <Spinner v-if="bakeBusyByNodeId[node.id]" />
+                  <Flame v-else class="w-3.5 h-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ $t("pages.gpu_nodes.bake.help") }}
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip v-else>
+              <TooltipTrigger as-child>
+                <button
+                  type="button"
+                  class="gpu-icon-btn gpu-icon-btn-danger"
+                  :disabled="bakeBusyByNodeId[node.id]"
+                  @click="cancelBakeShaders(node)"
+                >
+                  <Spinner v-if="bakeBusyByNodeId[node.id]" />
+                  <X v-else class="w-3.5 h-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ $t("pages.gpu_nodes.bake.cancel_help") }}
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <button
+                  type="button"
+                  class="gpu-icon-btn"
+                  :data-open="bakeLogsByNodeId[node.id]"
+                  @click="toggleBakeLogs(node.id)"
+                >
+                  <Spinner v-if="bakeLogsLoadingByNodeId[node.id]" />
+                  <ScrollText v-else class="w-3.5 h-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ $t("pages.gpu_nodes.bake.logs_help") }}
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger as-child>
+                <button
+                  type="button"
+                  class="gpu-metrics-toggle"
+                  :data-open="expandedNodeIds[node.id]"
+                  @click="toggleExpanded(node.id)"
+                >
+                  <Activity class="w-3.5 h-3.5" />
+                  <ChevronDown class="w-3 h-3 gpu-metrics-chevron" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {{ $t("pages.gpu_nodes.metrics") }}
+              </TooltipContent>
+            </Tooltip>
           </div>
+        </div>
+
+        <div v-if="busyByNode[node.id]" class="gpu-bake-preview">
+          <DesktopSnapshot
+            :kind="busyByNode[node.id].snapshotKind"
+            :id="busyByNode[node.id].snapshotId"
+            :force-empty="busyByNode[node.id].rendering"
+            :empty-label="
+              busyByNode[node.id].kind === 'highlights'
+                ? $t('match.stream.rendering_highlights')
+                : ''
+            "
+          />
+        </div>
+
+        <!-- Shader bake pipeline (only while baking) -->
+        <div
+          v-if="isBaking(node)"
+          class="gpu-bake"
+          :class="{ 'is-errored': bakeErrored(node) }"
+        >
+          <!-- Header only when no stage is active (lead-in / error) — the
+               active step label already names the running stage otherwise. -->
+          <div
+            v-if="bakeErrored(node) || bakeStepIndex(node) < 0"
+            class="gpu-bake-head"
+          >
+            <span class="gpu-bake-stage">
+              <AlertTriangle
+                v-if="bakeErrored(node)"
+                class="w-3.5 h-3.5 gpu-bake-icon"
+              />
+              {{ bakeStageLabel(node) }}
+            </span>
+          </div>
+
+          <!-- Segmented pipeline: the three stages ARE the bar -->
+          <div
+            class="gpu-bake-pipe"
+            role="progressbar"
+            :aria-valuenow="bakeProgress(node) ?? undefined"
+            aria-valuemin="0"
+            aria-valuemax="100"
+          >
+            <div
+              v-for="(step, i) in BAKE_STEPS"
+              :key="step.key"
+              class="gpu-bake-seg"
+              :data-state="bakeStepState(node, i)"
+            >
+              <span class="gpu-bake-seg-head">
+                <span class="gpu-bake-seg-marker">
+                  <Check
+                    v-if="bakeStepState(node, i) === 'done'"
+                    class="w-2.5 h-2.5"
+                  />
+                  <span
+                    v-else-if="bakeStepState(node, i) === 'active'"
+                    class="gpu-bake-seg-live"
+                  />
+                  <span v-else class="gpu-bake-seg-idx">{{ i + 1 }}</span>
+                </span>
+                {{ $t(`pages.gpu_nodes.bake.steps.${step.labelKey}`) }}
+                <span
+                  v-if="
+                    bakeStepState(node, i) === 'active' &&
+                    bakeProgress(node) != null
+                  "
+                  class="gpu-bake-seg-pct"
+                  >{{ bakeProgress(node)?.toFixed(1) }}%</span
+                >
+              </span>
+              <span class="gpu-bake-seg-track">
+                <span
+                  class="gpu-bake-seg-fill"
+                  :class="{ 'is-indeterminate': bakeSegFill(node, i) == null }"
+                  :style="
+                    bakeSegFill(node, i) != null
+                      ? { width: `${bakeSegFill(node, i)}%` }
+                      : undefined
+                  "
+                />
+              </span>
+            </div>
+          </div>
+
+          <div class="gpu-bake-preview">
+            <DesktopSnapshot kind="bake" :id="node.id" />
+          </div>
+        </div>
+
+        <!-- Shader-bake job logs (toggle) -->
+        <div
+          v-if="bakeLogsByNodeId[node.id]"
+          class="flex h-72 flex-col overflow-hidden rounded border border-border/60 bg-background/40"
+        >
+          <ServiceLogs
+            class="min-h-0 flex-1"
+            :service="`shader-bake:${node.id}`"
+            :compact="true"
+            :disable-retry="!isBaking(node)"
+            @has-logs="onBakeLogsReady(node.id)"
+          />
         </div>
 
         <!-- Inline live bars (always visible) -->
@@ -594,6 +971,9 @@ type BusyEntry = {
   who: string;
   subline: string;
   matchId?: string;
+  snapshotKind: "live" | "demo" | "bake" | "clips";
+  snapshotId: string;
+  rendering?: boolean;
   icon: any;
 };
 
@@ -630,6 +1010,8 @@ export default {
           who: matchupOf(stream.match) || "Live match",
           subline: matchupOf(stream.match) || "Live match",
           matchId: stream.match_id,
+          snapshotKind: "live",
+          snapshotId: stream.match_id,
           icon: Radio,
         };
       }
@@ -644,6 +1026,8 @@ export default {
           who: watcher,
           subline: matchupOf(session.match) || "Demo playback",
           matchId: session.match_id,
+          snapshotKind: "demo",
+          snapshotId: session.id,
           icon: PlayCircle,
         };
       }
@@ -659,6 +1043,9 @@ export default {
           who,
           subline: matchupOf(job.match_map?.match) || "Highlight render",
           matchId: job.match_map?.match?.id,
+          snapshotKind: "clips",
+          snapshotId: job.id,
+          rendering: job.status === "rendering" || job.status === "uploading",
           icon: Film,
         };
       }
@@ -689,6 +1076,9 @@ export default {
               offline_at: true,
               start_port_range: true,
               end_port_range: true,
+              shader_bake_status: true,
+              shader_bake_progress: true,
+              shader_bake_progress_stage: true,
               e_region: { description: true },
               e_status: { description: true },
             },
@@ -1054,6 +1444,10 @@ export default {
   flex: 0 1 auto;
   min-width: 0;
 }
+.gpu-node-task-flag {
+  display: inline-flex;
+  align-items: center;
+}
 .gpu-node-task-label {
   font-family: ui-monospace, monospace;
   font-size: 0.6rem;
@@ -1084,6 +1478,10 @@ export default {
   align-items: center;
   gap: 0.5rem;
   margin-left: auto;
+}
+.gpu-node-ctrls-offline {
+  pointer-events: none;
+  opacity: 0.4;
 }
 .gpu-toggle {
   display: inline-flex;
@@ -1181,6 +1579,243 @@ export default {
   margin-top: 0.9rem;
   padding-top: 0.9rem;
   border-top: 1px solid hsl(var(--border) / 0.4);
+}
+
+/* ===== Shader bake pipeline ===== */
+.gpu-bake {
+  --bake-accent: var(--tac-amber);
+  position: relative;
+  margin-top: 0.9rem;
+  padding: 0.85rem 0.95rem 0.95rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  border: 1px solid hsl(var(--bake-accent) / 0.22);
+  border-radius: 0.5rem;
+  background:
+    radial-gradient(
+      120% 140% at 0% 0%,
+      hsl(var(--bake-accent) / 0.07),
+      transparent 55%
+    ),
+    hsl(var(--background) / 0.4);
+  overflow: hidden;
+}
+/* Tactical corner tick (echoes the page header brackets). */
+.gpu-bake::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  border-top: 1px solid hsl(var(--bake-accent) / 0.7);
+  border-left: 1px solid hsl(var(--bake-accent) / 0.7);
+  border-top-left-radius: 0.5rem;
+}
+/* Hairline runner along the top edge. */
+.gpu-bake::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 14px;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    hsl(var(--bake-accent) / 0.55),
+    transparent 70%
+  );
+}
+
+.gpu-bake-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.gpu-bake-stage {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.66rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: hsl(var(--bake-accent));
+}
+.gpu-bake-icon {
+  filter: drop-shadow(0 0 5px hsl(var(--bake-accent) / 0.55));
+}
+
+/* Segmented pipeline — each stage is one segment of the bar. */
+.gpu-bake-pipe {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+.gpu-bake-preview {
+  margin-top: 0.75rem;
+  max-width: 22rem;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  border: 1px solid hsl(var(--border) / 0.6);
+}
+.gpu-bake-seg {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+.gpu-bake-seg-head {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  color: hsl(var(--muted-foreground) / 0.55);
+  transition: color 0.3s ease;
+}
+.gpu-bake-seg-pct {
+  margin-left: auto;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  color: hsl(var(--bake-accent));
+}
+.gpu-bake-seg-marker {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 0.9rem;
+  height: 0.9rem;
+  flex: none;
+  border-radius: 0.2rem;
+  border: 1px solid hsl(var(--muted-foreground) / 0.35);
+  color: hsl(var(--bake-accent-foreground, 0 0% 10%));
+  font-size: 0.5rem;
+  font-variant-numeric: tabular-nums;
+  transition:
+    border-color 0.3s ease,
+    background 0.3s ease;
+}
+.gpu-bake-seg-idx {
+  color: hsl(var(--muted-foreground) / 0.7);
+}
+.gpu-bake-seg-live {
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 9999px;
+  background: hsl(var(--bake-accent));
+}
+/* Allowed ping indicator (not a pulse on the label body). */
+.gpu-bake-seg-live::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 9999px;
+  background: hsl(var(--bake-accent));
+  animation: gpu-bake-ping 1.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes gpu-bake-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  75%,
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+.gpu-bake-seg-track {
+  position: relative;
+  height: 5px;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: hsl(var(--muted-foreground) / 0.13);
+}
+.gpu-bake-seg-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  height: 100%;
+  width: 0;
+  border-radius: 9999px;
+  background: hsl(var(--bake-accent));
+  transition: width 0.5s ease-out;
+}
+/* Scanning sheen on the live segment. */
+.gpu-bake-seg[data-state="active"] .gpu-bake-seg-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(0 0% 100% / 0.55),
+    transparent
+  );
+  animation: gpu-bake-scan 1.5s ease-in-out infinite;
+}
+@keyframes gpu-bake-scan {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+.gpu-bake-seg-fill.is-indeterminate {
+  width: 42%;
+  animation: gpu-bake-indeterminate 1.3s ease-in-out infinite;
+}
+@keyframes gpu-bake-indeterminate {
+  0% {
+    transform: translateX(-110%);
+  }
+  100% {
+    transform: translateX(240%);
+  }
+}
+
+/* Per-state styling */
+.gpu-bake-seg[data-state="done"] .gpu-bake-seg-head {
+  color: hsl(var(--foreground) / 0.62);
+}
+.gpu-bake-seg[data-state="done"] .gpu-bake-seg-marker {
+  border-color: hsl(var(--bake-accent));
+  background: hsl(var(--bake-accent));
+}
+.gpu-bake-seg[data-state="active"] .gpu-bake-seg-head {
+  color: hsl(var(--bake-accent));
+}
+.gpu-bake-seg[data-state="active"] .gpu-bake-seg-marker {
+  border-color: hsl(var(--bake-accent));
+}
+.gpu-bake-seg[data-state="active"] .gpu-bake-seg-track {
+  box-shadow: 0 0 0 1px hsl(var(--bake-accent) / 0.25);
+}
+.gpu-bake-seg[data-state="active"] .gpu-bake-seg-fill {
+  box-shadow: 0 0 10px hsl(var(--bake-accent) / 0.6);
+}
+
+/* Errored bake — swing the whole panel to destructive. */
+.gpu-bake.is-errored {
+  --bake-accent: var(--destructive);
+}
+.gpu-bake.is-errored .gpu-bake-seg-live,
+.gpu-bake.is-errored .gpu-bake-seg-live::after {
+  animation: none;
 }
 
 /* ===== Empty state ===== */

@@ -21,6 +21,8 @@ import { CornerDownLeft } from "lucide-vue-next";
             <Button
               type="submit"
               size="sm"
+              :loading="sending"
+              :min-loading-ms="0"
               class="transition-all duration-200 hover:scale-105"
             >
               <CornerDownLeft class="size-3.5" />
@@ -45,7 +47,13 @@ import { CornerDownLeft } from "lucide-vue-next";
               v-bind="componentField"
               class="resize-none border-0 p-3 shadow-none focus-visible:ring-0"
             />
-            <Button type="submit" size="sm" class="ml-auto gap-1.5">
+            <Button
+              type="submit"
+              size="sm"
+              :loading="sending"
+              :min-loading-ms="0"
+              class="ml-auto gap-1.5"
+            >
               <CornerDownLeft class="size-3.5" />
             </Button>
           </div>
@@ -72,6 +80,7 @@ export default {
   emits: ["sendMessage"],
   data() {
     return {
+      sending: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -81,12 +90,27 @@ export default {
       }),
     };
   },
+  beforeUnmount() {
+    if (this.sendTimer) {
+      clearTimeout(this.sendTimer);
+    }
+  },
   methods: {
     focus() {
       this.$nextTick(() => {
         const el = (this.$refs.inputRef as any)?.$el;
         if (el) el.focus();
       });
+    },
+    flashSending() {
+      this.sending = true;
+      if (this.sendTimer) {
+        clearTimeout(this.sendTimer);
+      }
+      this.sendTimer = setTimeout(() => {
+        this.sending = false;
+        this.sendTimer = undefined;
+      }, 1000);
     },
     sendMessage() {
       const { message } = this.form.values;
@@ -95,6 +119,7 @@ export default {
       }
       this.$emit("sendMessage", message);
       this.form.resetForm();
+      this.flashSending();
     },
   },
 };

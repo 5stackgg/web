@@ -1,12 +1,16 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { Swords, Server, HardDrive, Loader2 } from "lucide-vue-next";
+import { Swords, Server, HardDrive } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 
 const MATCH_TYPES = ["MatchStatusChange", "MatchSupport"];
 const SERVER_TYPES = ["DedicatedServerStatus", "DedicatedServerRconStatus"];
 const NODE_TYPES = ["GameNodeStatus"];
+
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const MATCH_STATUS_TONE: Record<string, string> = {
   Live: "bg-red-500/20 text-red-300 border-red-500/30",
@@ -25,7 +29,7 @@ const NODE_STATUS_TONE: Record<string, string> = {
 };
 
 export default defineComponent({
-  components: { Swords, Server, HardDrive, Loader2 },
+  components: { Swords, Server, HardDrive, Spinner },
   props: {
     type: { type: String, required: true },
     entityId: { type: String, required: true },
@@ -42,11 +46,17 @@ export default defineComponent({
   },
   computed: {
     loading() {
-      if (!this.kind) return false;
+      if (!this.kind || !this.hasValidEntity) return false;
       if (this.kind === "match") return !this.matchLoaded;
       if (this.kind === "server") return !this.serverLoaded;
       if (this.kind === "node") return !this.nodeLoaded;
       return false;
+    },
+    hasValidEntity() {
+      // match/server are keyed by uuid; node ids are plain strings. Sentinel
+      // entity_ids (e.g. "plugin_version") must not trigger a *_by_pk lookup.
+      if (this.kind === "node") return !!this.entityId;
+      return UUID_RE.test(this.entityId ?? "");
     },
     kind() {
       if (MATCH_TYPES.includes(this.type)) return "match";
@@ -112,7 +122,7 @@ export default defineComponent({
     $subscribe: {
       match: {
         skip: function (this: any) {
-          return this.kind !== "match" || !this.entityId;
+          return this.kind !== "match" || !this.hasValidEntity;
         },
         query: typedGql("subscription")({
           matches_by_pk: [
@@ -135,7 +145,7 @@ export default defineComponent({
       },
       server: {
         skip: function (this: any) {
-          return this.kind !== "server" || !this.entityId;
+          return this.kind !== "server" || !this.hasValidEntity;
         },
         query: typedGql("subscription")({
           servers_by_pk: [
@@ -188,7 +198,7 @@ export default defineComponent({
     v-if="loading"
     class="flex items-center gap-2 text-xs px-2 py-1 rounded border border-border bg-background/40 text-muted-foreground"
   >
-    <Loader2 class="h-3 w-3 animate-spin" />
+    <Spinner class="h-3 w-3" />
     <span class="italic">Loading status…</span>
   </div>
   <div

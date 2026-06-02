@@ -3,11 +3,11 @@ import { computed, onBeforeUnmount, ref } from "vue";
 import {
   Check,
   CircleDashed,
-  Loader2,
   AlertCircle,
   Minus,
   FastForward,
 } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -159,16 +159,31 @@ function durationFor(stageKey: string): string {
   return fmt(new Date(next.at).getTime() - start);
 }
 
-// The shader compile is the one stage with rich progress — once a
-// percentage lands it gets a dedicated bar+count block instead of the
-// cramped inline meta every other stage uses.
-function shaderActive(stageKey: string, index: number): boolean {
+// Stages with rich progress get a dedicated bar+detail block instead of
+// the cramped inline meta: the shader compile and the CS2 install (whose
+// % belongs to alternating download/verify phases).
+function detailActive(stageKey: string, index: number): boolean {
   return (
-    stageKey === "processing_shaders" &&
+    (stageKey === "processing_shaders" || stageKey === "downloading_cs2") &&
     stateOf(index) === "current" &&
     props.status !== "errored" &&
     progressFor(stageKey) !== null
   );
+}
+
+// steamcmd's `validate` interleaves downloading and verifying, each with
+// its own 0→100% — surface which phase the % belongs to so a reset reads
+// as a phase change, not the bar going backwards.
+function formatInstallPhase(raw: string | null | undefined): string {
+  if (!raw) return "";
+  const s = raw.toLowerCase();
+  if (s.includes("verif") || s.includes("valid"))
+    return t("live_stages.install_phase.verifying");
+  if (s.includes("commit") || s.includes("final"))
+    return t("live_stages.install_phase.finalizing");
+  if (s.includes("download") || s.includes("alloc"))
+    return t("live_stages.install_phase.downloading");
+  return raw;
 }
 
 // "(26824 / 731082)" → "26,824 / 731,082". Falls back to the raw
@@ -213,9 +228,9 @@ function formatShaderCount(raw: string | null | undefined): string {
             class="w-4 h-4 inline-flex items-center justify-center shrink-0"
           >
             <Check v-if="stateOf(index) === 'done'" class="w-3.5 h-3.5" />
-            <Loader2
+            <Spinner
               v-else-if="stateOf(index) === 'current' && status !== 'errored'"
-              class="w-3.5 h-3.5 animate-spin"
+              class="w-3.5 h-3.5"
             />
             <AlertCircle
               v-else-if="stateOf(index) === 'current' && status === 'errored'"
@@ -232,7 +247,7 @@ function formatShaderCount(raw: string | null | undefined): string {
           <!-- Inline meta for every stage except the active shader compile,
                which moves its numbers into the progress block below so the
                label never has to wrap. -->
-          <template v-if="!shaderActive(stage.key, index)">
+          <template v-if="!detailActive(stage.key, index)">
             <span
               v-if="
                 stateOf(index) === 'current' && progressFor(stage.key) !== null
@@ -273,16 +288,16 @@ function formatShaderCount(raw: string | null | undefined): string {
             class="ml-1 inline-flex shrink-0 items-center gap-1 rounded border border-border/60 bg-card/60 px-1.5 py-0.5 font-mono text-[0.6rem] font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:bg-card hover:text-foreground disabled:opacity-50 cursor-pointer"
             @click.stop="emit('skip')"
           >
-            <Loader2 v-if="skipping" class="w-2.5 h-2.5 animate-spin" />
+            <Spinner v-if="skipping" class="w-2.5 h-2.5" />
             <FastForward v-else class="w-2.5 h-2.5" />
             {{ t("live_stages.skip_shaders") }}
           </button>
         </div>
 
-        <!-- Shader compile detail: thin progress bar + count and elapsed,
-             aligned under the label (icon width + gap = 1.625rem). -->
+        <!-- Rich detail (shader compile / CS2 install): thin progress bar +
+             phase|count and elapsed, aligned under the label. -->
         <div
-          v-if="shaderActive(stage.key, index)"
+          v-if="detailActive(stage.key, index)"
           class="mt-1.5 ml-[1.625rem] flex flex-col gap-1"
         >
           <div
@@ -296,7 +311,19 @@ function formatShaderCount(raw: string | null | undefined): string {
           <div
             class="flex items-center justify-between gap-2 font-mono text-[0.6rem] tabular-nums text-muted-foreground"
           >
-            <span class="truncate">
+            <span v-if="stage.key === 'downloading_cs2'" class="truncate">
+              <span
+                v-if="formatInstallPhase(progressFor(stage.key)!.stage)"
+                class="text-foreground/80"
+                >{{
+                  formatInstallPhase(progressFor(stage.key)!.stage)
+                }}
+                · </span
+              ><span class="text-foreground/80"
+                >{{ progressFor(stage.key)!.percent.toFixed(1) }}%</span
+              >
+            </span>
+            <span v-else class="truncate">
               <span class="text-foreground/80"
                 >{{ progressFor(stage.key)!.percent.toFixed(1) }}%</span
               ><span v-if="progressFor(stage.key)!.stage" class="opacity-60">

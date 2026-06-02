@@ -42,6 +42,7 @@ type Position = {
 type Grenade = {
   round: number;
   tick: number;
+  grenade_id: number | null;
   thrower_steam_id: string | null;
   thrower_team: string | null;
   type: "Flash" | "HE" | "Smoke" | "Molotov" | "Decoy";
@@ -838,21 +839,67 @@ function isProjectedInside(p: { x: number; y: number; z?: number }): boolean {
 // throw is the longest reasonable trajectory).
 const MAX_FLIGHT_DIST = 2500;
 
-// Match by type + round + tick proximity only. Source 2 demos drop
-// thrower_steam_id on the detonate event for some grenade types
-// (mollies always; sometimes flash), but the throw event reliably
-// has it — strict steam_id matching threw most pairs out.
+const grenadePairs = computed(() => {
+  const throwToDet = new Map<Grenade, Grenade>();
+  const detToThrow = new Map<Grenade, Grenade>();
+  const byRound = new Map<number, Grenade[]>();
+  for (const g of props.grenades ?? []) {
+    if (!byRound.has(g.round)) byRound.set(g.round, []);
+    byRound.get(g.round)!.push(g);
+  }
+
+  for (const grenades of byRound.values()) {
+    const throws = grenades.filter((g) => g.phase === "thrown");
+    const detonations = grenades.filter((g) => g.phase === "detonated");
+    const claimed = new Set<Grenade>();
+
+    const detById = new Map<number, Grenade>();
+    for (const d of detonations) {
+      if (d.grenade_id != null) detById.set(d.grenade_id, d);
+    }
+    for (const t of throws) {
+      if (t.grenade_id == null) continue;
+      const d = detById.get(t.grenade_id);
+      if (!d || claimed.has(d)) continue;
+      throwToDet.set(t, d);
+      detToThrow.set(d, t);
+      claimed.add(d);
+    }
+
+    const leftoverThrows = throws
+      .filter((t) => !throwToDet.has(t))
+      .sort((a, b) => a.tick - b.tick);
+    for (const t of leftoverThrows) {
+      let best: Grenade | null = null;
+      let bestScore = Infinity;
+      for (const d of detonations) {
+        if (claimed.has(d) || d.type !== t.type || d.tick < t.tick) continue;
+        const dx = d.x - t.x;
+        const dy = d.y - t.y;
+        if (dx * dx + dy * dy > MAX_FLIGHT_DIST * MAX_FLIGHT_DIST) continue;
+        const sameThrower =
+          t.thrower_steam_id != null &&
+          d.thrower_steam_id != null &&
+          t.thrower_steam_id === d.thrower_steam_id;
+        const score = d.tick - t.tick - (sameThrower ? 1e6 : 0);
+        if (score < bestScore) {
+          bestScore = score;
+          best = d;
+        }
+      }
+      if (best) {
+        throwToDet.set(t, best);
+        detToThrow.set(best, t);
+        claimed.add(best);
+      }
+    }
+  }
+
+  return { throwToDet, detToThrow };
+});
+
 function nearestThrow(g: Grenade): Grenade | null {
-  const throws = props.grenades?.filter(
-    (t) =>
-      t.phase === "thrown" &&
-      t.round === g.round &&
-      t.type === g.type &&
-      t.tick <= g.tick,
-  );
-  if (!throws || throws.length === 0) return null;
-  // Closest preceding throw.
-  return throws.reduce((a, b) => (a.tick > b.tick ? a : b));
+  return grenadePairs.value.detToThrow.get(g) ?? null;
 }
 
 // Prefer the detonation position (where the smoke actually landed).
@@ -876,12 +923,11 @@ function resolveGrenadePosition(
 }
 
 // Grenade lifetimes (in ticks @ 64 tps — close enough at 128 too).
-// Smoke clouds last ~18s, mollies ~7s, HE/Flash are instants.
 const GRENADE_LIFETIME_TICKS: Record<Grenade["type"], number> = {
   Smoke: 18 * 64,
   Molotov: 7 * 64,
-  HE: 1 * 64,
-  Flash: 1 * 64,
+  HE: 2 * 64,
+  Flash: 2.5 * 64,
   Decoy: 15 * 64,
 };
 
@@ -891,8 +937,18 @@ type ResolvedGrenade = Grenade & {
   rz: number;
 };
 
+// Sub-sample-smoothed tick. tickIndex steps once every SAMPLE_SEC (0.25s)
+// so a tick-only animation feels like 4fps. Blending with `fractional`
+// (the rAF-driven [0,1) progress toward the next sample) gives a real-
+// numbered tick that updates at display rate.
+const smoothCurrentTick = computed(() => {
+  const t0 = currentTick.value;
+  const t1 = nextTickValue.value;
+  return t0 + (t1 - t0) * fractional.value;
+});
+
 const detonationsByTick = computed<ResolvedGrenade[]>(() => {
-  const t = currentTick.value;
+  const t = smoothCurrentTick.value;
   if (!t) return [];
   const out: ResolvedGrenade[] = [];
   for (const g of roundGrenades.value) {
@@ -912,16 +968,6 @@ const detonationsByTick = computed<ResolvedGrenade[]>(() => {
     out.push(r);
   }
   return out;
-});
-
-// Sub-sample-smoothed tick. tickIndex steps once every SAMPLE_SEC (0.25s)
-// so a tick-only animation feels like 4fps. Blending with `fractional`
-// (the rAF-driven [0,1) progress toward the next sample) gives a real-
-// numbered tick that updates at display rate.
-const smoothCurrentTick = computed(() => {
-  const t0 = currentTick.value;
-  const t1 = nextTickValue.value;
-  return t0 + (t1 - t0) * fractional.value;
 });
 
 // In-flight grenades: between throw tick and detonation tick we
@@ -945,18 +991,10 @@ const inFlightGrenades = computed<InFlightGrenade[]>(() => {
   const t = smoothCurrentTick.value;
   if (!t) return [];
   const throws = roundGrenades.value.filter((g) => g.phase === "thrown");
-  const detonations = roundGrenades.value.filter(
-    (g) => g.phase === "detonated",
-  );
   const out: InFlightGrenade[] = [];
   for (const thr of throws) {
     if (thr.tick > t) continue;
-    // Loose match: same type/round, detonation tick after throw. Strict
-    // steam_id match drops too many pairs since Source 2 nulls thrower
-    // on some detonate events.
-    const det = detonations.find(
-      (d) => d.type === thr.type && d.round === thr.round && d.tick >= thr.tick,
-    );
+    const det = grenadePairs.value.throwToDet.get(thr);
     if (!det) continue;
     if (det.tick <= t) continue; // already detonated → handled by detonationsByTick
     const landing = resolveGrenadePosition(det);
@@ -1938,6 +1976,17 @@ function weaponIconPath(w: string | undefined | null): string {
   return `/img/equipment/${slug}.svg`;
 }
 
+const GRENADE_ICONS: Record<Grenade["type"], string> = {
+  Flash: "/img/equipment/flashbang.svg",
+  Smoke: "/img/equipment/smokegrenade.svg",
+  HE: "/img/equipment/hegrenade.svg",
+  Molotov: "/img/equipment/molotov.svg",
+  Decoy: "/img/equipment/decoy.svg",
+};
+function grenadeIconPath(type: Grenade["type"]): string {
+  return GRENADE_ICONS[type] ?? "";
+}
+
 // "Pop out" the replay into a free-floating window. Opens a new route
 // (pages/match-replay-popout/[matchMapId].vue) that mounts a fresh
 // ReplayViewer. To avoid re-querying everything we already have loaded
@@ -2355,103 +2404,115 @@ function openReplayPopout() {
                 </template>
 
                 <template v-else-if="g.type === 'HE'">
-                  <!-- Triple-stacked shockwave rings, each expanding at
-                     its own rate to read as "displaced air" sweeping
-                     outward. Layered with a heavy glow filter so the
-                     blast feels concussive. -->
                   <g filter="url(#he-glow)">
+                    <circle fill="hsl(38, 100%, 58%)">
+                      <animate
+                        attributeName="r"
+                        values="4;38;30"
+                        keyTimes="0;0.22;1"
+                        dur="1.3s"
+                        fill="freeze"
+                      />
+                      <animate
+                        attributeName="opacity"
+                        values="1;0.95;0.6;0"
+                        keyTimes="0;0.3;0.6;1"
+                        dur="1.3s"
+                        fill="freeze"
+                      />
+                    </circle>
                     <circle
                       fill="none"
                       stroke="hsl(45, 100%, 75%)"
-                      stroke-width="2.5"
+                      stroke-width="3"
                     >
                       <animate
                         attributeName="r"
                         from="2"
-                        to="44"
-                        dur="0.55s"
+                        to="64"
+                        dur="1s"
                         fill="freeze"
                       />
                       <animate
                         attributeName="opacity"
                         values="1;0.85;0"
                         keyTimes="0;0.4;1"
-                        dur="0.55s"
+                        dur="1s"
                         fill="freeze"
                       />
                       <animate
                         attributeName="stroke-width"
-                        from="3.5"
+                        from="4.5"
                         to="0.5"
-                        dur="0.55s"
+                        dur="1s"
                         fill="freeze"
                       />
                     </circle>
                     <circle
                       fill="none"
                       stroke="hsl(28, 100%, 65%)"
-                      stroke-width="2"
+                      stroke-width="2.5"
                     >
                       <animate
                         attributeName="r"
                         from="0"
-                        to="34"
-                        dur="0.7s"
-                        begin="0.08s"
+                        to="50"
+                        dur="1.2s"
+                        begin="0.12s"
                         fill="freeze"
                       />
                       <animate
                         attributeName="opacity"
                         from="0.85"
                         to="0"
-                        dur="0.7s"
-                        begin="0.08s"
+                        dur="1.2s"
+                        begin="0.12s"
                         fill="freeze"
                       />
                     </circle>
                     <circle
                       fill="none"
                       stroke="hsl(0, 80%, 55%)"
-                      stroke-width="1.5"
+                      stroke-width="1.8"
                     >
                       <animate
                         attributeName="r"
                         from="0"
-                        to="24"
-                        dur="0.85s"
-                        begin="0.18s"
+                        to="36"
+                        dur="1.4s"
+                        begin="0.24s"
                         fill="freeze"
                       />
                       <animate
                         attributeName="opacity"
                         from="0.7"
                         to="0"
-                        dur="0.85s"
-                        begin="0.18s"
+                        dur="1.4s"
+                        begin="0.24s"
                         fill="freeze"
                       />
                     </circle>
                   </g>
                   <!-- Bright core flash + sharp starburst body -->
                   <polygon
-                    points="0,-20 4,-5 20,-4 7,3 13,18 0,8 -13,18 -7,3 -20,-4 -4,-5"
+                    points="0,-26 5,-6 26,-5 9,4 17,23 0,10 -17,23 -9,4 -26,-5 -5,-6"
                     fill="hsl(40, 100%, 60%)"
                     stroke="hsl(55, 100%, 85%)"
-                    stroke-width="1.2"
+                    stroke-width="1.4"
                   >
                     <animateTransform
                       attributeName="transform"
                       type="scale"
-                      values="0.2;1.5;1.1;0.95"
+                      values="0.2;1.6;1.15;1"
                       keyTimes="0;0.3;0.6;1"
-                      dur="0.6s"
+                      dur="0.9s"
                       fill="freeze"
                     />
                     <animate
                       attributeName="opacity"
                       values="1;1;0.7;0"
                       keyTimes="0;0.35;0.7;1"
-                      dur="1.1s"
+                      dur="1.6s"
                       fill="freeze"
                     />
                   </polygon>
@@ -2474,15 +2535,15 @@ function openReplayPopout() {
                       <animate
                         attributeName="x2"
                         from="6"
-                        to="26"
-                        dur="0.45s"
+                        to="36"
+                        dur="0.75s"
                         fill="freeze"
                       />
                       <animate
                         attributeName="opacity"
                         values="1;0.6;0"
                         keyTimes="0;0.5;1"
-                        dur="0.5s"
+                        dur="0.85s"
                         fill="freeze"
                       />
                     </line>
@@ -2491,16 +2552,32 @@ function openReplayPopout() {
                   <circle fill="hsl(55, 100%, 92%)">
                     <animate
                       attributeName="r"
-                      values="8;4;0"
+                      values="10;5;0"
                       keyTimes="0;0.5;1"
-                      dur="0.9s"
+                      dur="1.2s"
                       fill="freeze"
                     />
                     <animate
                       attributeName="opacity"
                       values="1;0.6;0"
                       keyTimes="0;0.5;1"
-                      dur="0.9s"
+                      dur="1.2s"
+                      fill="freeze"
+                    />
+                  </circle>
+                  <circle fill="rgba(48, 30, 20, 0.3)">
+                    <animate
+                      attributeName="r"
+                      values="14;28;32"
+                      keyTimes="0;0.5;1"
+                      dur="2s"
+                      fill="freeze"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values="0;0.3;0.22;0"
+                      keyTimes="0;0.25;0.6;1"
+                      dur="2s"
                       fill="freeze"
                     />
                   </circle>
@@ -2607,16 +2684,32 @@ function openReplayPopout() {
                   <circle fill="url(#flash-core)">
                     <animate
                       attributeName="r"
-                      from="2"
-                      to="44"
-                      dur="0.35s"
+                      values="2;46;52;48"
+                      keyTimes="0;0.12;0.5;1"
+                      dur="2.3s"
                       fill="freeze"
                     />
                     <animate
                       attributeName="opacity"
-                      values="1;0.8;0"
-                      keyTimes="0;0.35;1"
-                      dur="0.65s"
+                      values="1;1;0.85;0.4;0"
+                      keyTimes="0;0.25;0.5;0.8;1"
+                      dur="2.3s"
+                      fill="freeze"
+                    />
+                  </circle>
+                  <circle fill="rgba(255, 255, 255, 0.92)">
+                    <animate
+                      attributeName="r"
+                      from="2"
+                      to="30"
+                      dur="0.16s"
+                      fill="freeze"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values="0.95;0.95;0.45;0"
+                      keyTimes="0;0.45;0.75;1"
+                      dur="2.1s"
                       fill="freeze"
                     />
                   </circle>
@@ -2624,63 +2717,63 @@ function openReplayPopout() {
                   <circle
                     fill="none"
                     stroke="rgba(220, 240, 255, 0.95)"
-                    stroke-width="1.5"
+                    stroke-width="1.8"
                   >
                     <animate
                       attributeName="r"
                       from="0"
-                      to="30"
-                      dur="0.4s"
+                      to="40"
+                      dur="0.6s"
                       fill="freeze"
                     />
                     <animate
                       attributeName="opacity"
                       from="1"
                       to="0"
-                      dur="0.5s"
+                      dur="0.8s"
                       fill="freeze"
                     />
                     <animate
                       attributeName="stroke-width"
-                      from="2.5"
+                      from="3"
                       to="0.3"
-                      dur="0.5s"
+                      dur="0.8s"
                       fill="freeze"
                     />
                   </circle>
                   <!-- Sharp star core -->
                   <polygon
-                    points="0,-18 4,-4 18,0 4,4 0,18 -4,4 -18,0 -4,-4"
+                    points="0,-22 5,-5 22,0 5,5 0,22 -5,5 -22,0 -5,-5"
                     fill="rgba(245, 250, 255, 0.98)"
                   >
                     <animateTransform
                       attributeName="transform"
                       type="scale"
-                      values="0.1;1.4;1.05;0.9"
-                      keyTimes="0;0.3;0.55;1"
-                      dur="0.55s"
+                      values="0.1;1.5;1.1;0.95"
+                      keyTimes="0;0.25;0.5;1"
+                      dur="0.9s"
                       fill="freeze"
                     />
                     <animate
                       attributeName="opacity"
-                      values="1;0.7;0"
-                      keyTimes="0;0.45;1"
-                      dur="1s"
+                      values="1;0.9;0.5;0"
+                      keyTimes="0;0.4;0.7;1"
+                      dur="1.9s"
                       fill="freeze"
                     />
                   </polygon>
                   <!-- Cyan-tinted secondary star at 22.5° for sharpness. -->
                   <polygon
-                    points="0,-12 3,-3 12,0 3,3 0,12 -3,3 -12,0 -3,-3"
+                    points="0,-14 3,-3 14,0 3,3 0,14 -3,3 -14,0 -3,-3"
                     fill="rgba(180, 220, 255, 0.85)"
                     transform="rotate(22.5)"
                   >
                     <animateTransform
                       attributeName="transform"
                       type="scale"
-                      values="0.1;1.2;0.7"
+                      values="0.1;1.3;0.85"
                       keyTimes="0;0.4;1"
-                      dur="0.6s"
+                      dur="1s"
                       additive="sum"
                       fill="freeze"
                     />
@@ -2688,7 +2781,7 @@ function openReplayPopout() {
                       attributeName="opacity"
                       values="0.85;0.5;0"
                       keyTimes="0;0.4;1"
-                      dur="0.9s"
+                      dur="1.6s"
                       fill="freeze"
                     />
                   </polygon>
@@ -2747,12 +2840,16 @@ function openReplayPopout() {
                 stroke-width="1"
                 stroke-opacity="0.5"
               />
-              <!-- Projectile itself: small filled dot with team ring -->
               <g
                 :transform="`translate(${project({ x: g.x, y: g.y, z: g.z }).x}, ${project({ x: g.x, y: g.y, z: g.z }).y})`"
               >
-                <circle r="5" :fill="colorFor(g.thrower_team)" opacity="0.85" />
-                <circle r="2.2" fill="white" opacity="0.95" />
+                <image
+                  :href="grenadeIconPath(g.type)"
+                  x="-7"
+                  y="-7"
+                  width="14"
+                  height="14"
+                />
               </g>
             </g>
 

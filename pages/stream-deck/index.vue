@@ -39,6 +39,7 @@ import {
 } from "lucide-vue-next";
 import gql from "graphql-tag";
 import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
+import { Spinner } from "~/components/ui/spinner";
 import { e_match_status_enum } from "~/generated/zeus";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
@@ -73,6 +74,8 @@ const { client: apolloClient } = useApolloClient();
 // toggle without bespoke broadcast logic.
 type MatchControlState = {
   busy: boolean;
+  mode?: "live" | "tv";
+  action?: string;
 };
 const controlState = reactive<Record<string, MatchControlState>>({});
 
@@ -208,6 +211,7 @@ async function runMutation(
   const state = ensureState(matchId);
   if (state.busy) return;
   state.busy = true;
+  state.action = label;
   try {
     await apolloClient.mutate({
       mutation: generateMutation(build()),
@@ -220,6 +224,7 @@ async function runMutation(
     });
   } finally {
     state.busy = false;
+    state.action = undefined;
   }
 }
 
@@ -264,9 +269,18 @@ async function setAutodirector(matchId: string, enabled: boolean) {
 }
 
 async function startLive(matchId: string, mode: "live" | "tv") {
-  await runMutation(matchId, "start live", () => ({
-    startLive: [{ match_id: matchId, mode }, { success: true }],
-  }));
+  const state = ensureState(matchId);
+  if (state.busy) {
+    return;
+  }
+  state.mode = mode;
+  try {
+    await runMutation(matchId, "start live", () => ({
+      startLive: [{ match_id: matchId, mode }, { success: true }],
+    }));
+  } finally {
+    state.mode = undefined;
+  }
 }
 
 async function reconnectLive(matchId: string) {
@@ -690,7 +704,13 @@ function matchStatusLabel(m: LiveMatch): string {
                   :title="$t('replay_extras.reissue_connect')"
                   @click="reconnectLive(stream.match_id)"
                 >
-                  <RefreshCw class="size-3.5" />
+                  <Spinner
+                    v-if="
+                      ensureState(stream.match_id).busy &&
+                      ensureState(stream.match_id).action === 'reconnect'
+                    "
+                  />
+                  <RefreshCw v-else class="size-3.5" />
                   {{ $t("stream_deck.reconnect") }}
                 </button>
 
@@ -711,7 +731,14 @@ function matchStatusLabel(m: LiveMatch): string {
                   ]"
                   @click="stopLive(stream.match_id)"
                 >
+                  <Spinner
+                    v-if="
+                      ensureState(stream.match_id).busy &&
+                      ensureState(stream.match_id).action === 'stop live'
+                    "
+                  />
                   <Square
+                    v-else
                     :class="[
                       'size-3.5',
                       confirmStop[stream.match_id] ? 'fill-current' : '',
@@ -1112,7 +1139,10 @@ function matchStatusLabel(m: LiveMatch): string {
                   "
                   @click="startLive(m.id, 'live')"
                 >
-                  <Play class="size-3.5" />
+                  <Spinner
+                    v-if="ensureState(m.id).busy && ensureState(m.id).mode === 'live'"
+                  />
+                  <Play v-else class="size-3.5" />
                   Live
                 </button>
                 <button
@@ -1132,7 +1162,10 @@ function matchStatusLabel(m: LiveMatch): string {
                   "
                   @click="startLive(m.id, 'tv')"
                 >
-                  <Tv class="size-3.5" />
+                  <Spinner
+                    v-if="ensureState(m.id).busy && ensureState(m.id).mode === 'tv'"
+                  />
+                  <Tv v-else class="size-3.5" />
                   TV
                 </button>
               </div>

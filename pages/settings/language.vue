@@ -15,9 +15,6 @@ import {
 } from "@/components/ui/popover";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 
-definePageMeta({
-  layout: "profile-settings",
-});
 
 const showSeparators = computed(
   () => useApplicationSettingsStore().showSeparators,

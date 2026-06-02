@@ -176,9 +176,9 @@
       <div class="p-3 space-y-2">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <Loader2
+            <Spinner
               v-if="store.uploadBatch.isUploading"
-              class="w-4 h-4 animate-spin text-primary"
+              class="w-4 h-4 text-primary"
             />
             <CheckCircle
               v-else-if="
@@ -276,7 +276,7 @@
             >
               <div class="flex items-center justify-between text-xs">
                 <div class="flex items-center gap-1.5 truncate flex-1 min-w-0">
-                  <Loader2 class="w-3 h-3 animate-spin text-primary shrink-0" />
+                  <Spinner class="w-3 h-3 text-primary shrink-0" />
                   <span class="truncate">{{ filename }}</span>
                 </div>
                 <span class="text-muted-foreground ml-2 shrink-0"
@@ -366,12 +366,12 @@ import {
   RefreshCcw,
   Folder,
   File as FileIcon,
-  Loader2,
   CheckCircle,
   AlertCircle,
   X,
   ChevronDown,
 } from "lucide-vue-next";
+import { Spinner } from "~/components/ui/spinner";
 import { Progress } from "@/components/ui/progress";
 import { Input } from "@/components/ui/input";
 import {

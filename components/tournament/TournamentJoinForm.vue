@@ -134,6 +134,7 @@ import { Card } from "~/components/ui/card";
 
     <Button
       type="submit"
+      :loading="submitting"
       :disabled="
         (!form.values.new_team && !form.values.team_id) ||
         (form.values.new_team && !form.values.team_name) ||
@@ -168,6 +169,7 @@ export default {
   },
   data() {
     return {
+      submitting: false,
       teamOwner: null,
       autoShortName: true,
       form: useForm({
@@ -310,76 +312,88 @@ export default {
       this.form.setFieldValue("owner_steam_id", player.steam_id);
     },
     async joinTournament() {
-      const { valid } = await this.form.validate();
-
-      if (!valid) {
+      if (this.submitLock) {
         return;
       }
+      this.submitLock = true;
+      try {
+        const { valid } = await this.form.validate();
 
-      let teamName = this.form.values.team_name;
-      let shortName = this.form.values.short_name;
+        if (!valid) {
+          return;
+        }
 
-      let addPlayerSteamId = null;
-      if (
-        !this.form.values.team_id &&
-        this.form.values.add_self_to_lineup &&
-        !this.form.values.owner_steam_id
-      ) {
-        addPlayerSteamId = this.me.steam_id;
-      } else if (this.form.values.owner_steam_id) {
-        addPlayerSteamId = this.form.values.owner_steam_id;
-      }
+        this.submitting = true;
+        let teamName = this.form.values.team_name;
+        let shortName = this.form.values.short_name;
 
-      // For a new tournament-only team, the captain is the player being added.
-      // For an existing team, leave it unset so the trigger picks the team's
-      // captain/owner — the organizer adding the team isn't necessarily on its roster.
-      const captainSteamId = this.form.values.new_team
-        ? addPlayerSteamId || this.me.steam_id
-        : null;
+        let addPlayerSteamId = null;
+        if (
+          !this.form.values.team_id &&
+          this.form.values.add_self_to_lineup &&
+          !this.form.values.owner_steam_id
+        ) {
+          addPlayerSteamId = this.me.steam_id;
+        } else if (this.form.values.owner_steam_id) {
+          addPlayerSteamId = this.form.values.owner_steam_id;
+        }
 
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_tournament_teams_one: [
-            {
-              object: {
-                tournament_id: this.$route.params.tournamentId,
-                name: teamName,
-                short_name: this.form.values.new_team ? shortName : null,
-                ...(this.tournament.is_organizer && addPlayerSteamId
-                  ? { owner_steam_id: addPlayerSteamId }
-                  : {}),
-                ...(captainSteamId ? { captain_steam_id: captainSteamId } : {}),
-                team_id: this.form.values.new_team
-                  ? null
-                  : this.form.values.team_id,
-                roster: {
-                  data: addPlayerSteamId
-                    ? [
-                        {
-                          player_steam_id: addPlayerSteamId,
-                          tournament_id: this.$route.params.tournamentId,
-                        },
-                      ]
-                    : [],
+        // For a new tournament-only team, the captain is the player being added.
+        // For an existing team, leave it unset so the trigger picks the team's
+        // captain/owner — the organizer adding the team isn't necessarily on its roster.
+        const captainSteamId = this.form.values.new_team
+          ? addPlayerSteamId || this.me.steam_id
+          : null;
+
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            insert_tournament_teams_one: [
+              {
+                object: {
+                  tournament_id: this.$route.params.tournamentId,
+                  name: teamName,
+                  short_name: this.form.values.new_team ? shortName : null,
+                  ...(this.tournament.is_organizer && addPlayerSteamId
+                    ? { owner_steam_id: addPlayerSteamId }
+                    : {}),
+                  ...(captainSteamId
+                    ? { captain_steam_id: captainSteamId }
+                    : {}),
+                  team_id: this.form.values.new_team
+                    ? null
+                    : this.form.values.team_id,
+                  roster: {
+                    data: addPlayerSteamId
+                      ? [
+                          {
+                            player_steam_id: addPlayerSteamId,
+                            tournament_id: this.$route.params.tournamentId,
+                          },
+                        ]
+                      : [],
+                  },
                 },
               },
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
+              {
+                id: true,
+              },
+            ],
+          }),
+        });
 
-      toast({
-        title: this.$t("tournament.join.title"),
-      });
+        toast({
+          title: this.$t("tournament.join.title"),
+        });
 
-      this.form.resetForm();
-      this.autoShortName = true;
+        this.form.resetForm();
+        this.autoShortName = true;
 
-      // Emit close event to close drawer/modal
-      this.$emit("close");
+        // Emit close event to close drawer/modal
+        this.$emit("close");
+      } finally {
+        this.submitLock = false;
+        this.submitting = false;
+      }
     },
   },
 };

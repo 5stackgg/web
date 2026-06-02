@@ -8,8 +8,19 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 
 <template>
   <div
-    class="flex items-center justify-between gap-2 bg-background rounded-full px-2 py-1 border border-gray-700 h-12"
+    class="relative flex items-center justify-between gap-2 bg-background rounded-full px-2 py-1 border border-gray-700 h-12"
   >
+    <span
+      class="pointer-events-none absolute -top-1 -left-1 z-[60] flex h-4 min-w-[1rem] items-center justify-center rounded-full border border-background bg-[hsl(var(--tac-amber))] px-1 text-[0.6rem] font-bold leading-none text-black tabular-nums shadow"
+      :title="
+        pendingCount > 0
+          ? `${$t('matchmaking.lobby.member_count', { count: memberCount })} · ${$t('matchmaking.lobby.pending_count', { count: pendingCount })}`
+          : $t('matchmaking.lobby.member_count', { count: memberCount })
+      "
+    >
+      {{ memberCount }}
+    </span>
+
     <MatchmakingLobbyAccess :lobby="lobby" v-if="isCaptain" />
 
     <div class="flex items-center -space-x-2">
@@ -83,13 +94,15 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
           class="relative group transition-transform hover:scale-110 hover:z-10 ml-auto"
           :style="{ zIndex: lobby?.players.length + 2 }"
         >
-          <div
-            class="w-8 h-8 rounded-full p-0.5 bg-red-800 border border-red-600 flex items-center justify-center cursor-pointer hover:bg-red-700 transition-colors duration-200"
+          <Button
+            size="icon-sm"
+            variant="destructive"
+            class="rounded-full"
             @click="removeFromLobby(lobby.id, me?.steam_id)"
             :title="$t('matchmaking.lobby.leave')"
           >
-            <LogOut class="h-3 w-3 text-white" />
-          </div>
+            <LogOut class="h-3 w-3" />
+          </Button>
         </div>
       </slot>
     </div>
@@ -109,6 +122,7 @@ export default {
   data() {
     return {
       playerSearchOpen: false,
+      removingFromLobby: false,
     };
   },
   computed: {
@@ -121,6 +135,16 @@ export default {
       });
       return me?.captain;
     },
+    memberCount() {
+      return (this.lobby?.players ?? []).filter(
+        (player: any) => player.status !== "Invited",
+      ).length;
+    },
+    pendingCount() {
+      return (this.lobby?.players ?? []).filter(
+        (player: any) => player.status === "Invited",
+      ).length;
+    },
   },
   methods: {
     openPlayerSearch() {
@@ -130,19 +154,27 @@ export default {
       await useMatchmakingStore().inviteToLobby(steam_id);
     },
     async removeFromLobby(lobby_id: string, steam_id: string) {
-      this.$apollo.mutate({
-        mutation: generateMutation({
-          delete_lobby_players_by_pk: [
-            {
-              lobby_id,
-              steam_id,
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
+      if (this.removingFromLobby) {
+        return;
+      }
+      this.removingFromLobby = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            delete_lobby_players_by_pk: [
+              {
+                lobby_id,
+                steam_id,
+              },
+              {
+                __typename: true,
+              },
+            ],
+          }),
+        });
+      } finally {
+        this.removingFromLobby = false;
+      }
     },
   },
 };

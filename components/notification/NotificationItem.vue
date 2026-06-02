@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { Trash2 } from "lucide-vue-next";
+import { computed, ref, onBeforeUnmount } from "vue";
+import { Trash2, Check } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import TimeAgo from "~/components/TimeAgo.vue";
 import NotificationContext from "~/components/notification/NotificationContext.vue";
@@ -52,6 +52,56 @@ const wrapperClass = computed(() =>
     ? "mb-4 p-4 rounded-lg shadow-md relative"
     : "mb-3 p-3 rounded-md border border-border bg-card/40 relative",
 );
+
+const deleting = ref(false);
+const dismissed = ref(false);
+const actioningIndex = ref<number | null>(null);
+let deleteTimer: ReturnType<typeof setTimeout> | undefined;
+let dismissTimer: ReturnType<typeof setTimeout> | undefined;
+let actionTimer: ReturnType<typeof setTimeout> | undefined;
+
+function onDelete() {
+  if (deleting.value) {
+    return;
+  }
+  deleting.value = true;
+  emit("delete", props.notification.id);
+  deleteTimer = setTimeout(() => {
+    deleting.value = false;
+  }, 6000);
+}
+
+function onDismiss() {
+  if (dismissed.value) {
+    return;
+  }
+  dismissed.value = true;
+  emit("dismiss", props.notification.id);
+  dismissTimer = setTimeout(() => {
+    dismissed.value = false;
+  }, 1200);
+}
+
+function onAction(
+  notification: NotificationItemProps["notification"],
+  action: NotificationAction,
+  index: number,
+) {
+  if (actioningIndex.value !== null) {
+    return;
+  }
+  actioningIndex.value = index;
+  emit("action", notification, action);
+  actionTimer = setTimeout(() => {
+    actioningIndex.value = null;
+  }, 6000);
+}
+
+onBeforeUnmount(() => {
+  clearTimeout(deleteTimer);
+  clearTimeout(dismissTimer);
+  clearTimeout(actionTimer);
+});
 </script>
 
 <template>
@@ -60,7 +110,8 @@ const wrapperClass = computed(() =>
       v-if="notification.deletable !== false"
       size="icon"
       variant="ghost"
-      @click="emit('delete', notification.id)"
+      :loading="deleting"
+      @click="onDelete"
       class="absolute top-2 right-2"
     >
       <Trash2 class="h-4 w-4" />
@@ -125,7 +176,8 @@ const wrapperClass = computed(() =>
           <Button
             size="sm"
             variant="outline"
-            @click="emit('action', notification, action)"
+            :loading="actioningIndex === index"
+            @click="onAction(notification, action, index)"
             :key="index"
             v-for="(action, index) of notification.actions"
           >
@@ -137,10 +189,17 @@ const wrapperClass = computed(() =>
         <Button
           size="sm"
           variant="outline"
-          @click="emit('dismiss', notification.id)"
-          v-if="!notification.is_read && notification.deletable !== false"
+          :disabled="dismissed"
+          @click="onDismiss"
+          v-if="
+            dismissed ||
+            (!notification.is_read && notification.deletable !== false)
+          "
         >
-          {{ $t("layouts.notifications.dismiss") }}
+          <Check v-if="dismissed" class="h-4 w-4 text-green-500" />
+          <template v-else>
+            {{ $t("layouts.notifications.dismiss") }}
+          </template>
         </Button>
       </template>
     </div>

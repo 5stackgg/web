@@ -96,6 +96,7 @@ const submitClasses =
     <Button
       type="submit"
       :disabled="Object.keys(form.errors).length > 0"
+      :loading="submitting"
       :class="submitClasses"
     >
       {{ team ? $t("team.form.update") : $t("team.form.create") }}
@@ -120,6 +121,7 @@ export default {
   },
   data() {
     return {
+      submitting: false,
       owner: undefined,
       form: useForm({
         validationSchema: toTypedSchema(
@@ -157,53 +159,63 @@ export default {
   },
   methods: {
     async updateCreateTeam() {
-      const { valid } = await this.form.validate();
-
-      if (!valid) {
+      if (this.submitLock) {
         return;
       }
+      this.submitLock = true;
+      try {
+        const { valid } = await this.form.validate();
 
-      if (this.team) {
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            update_teams_by_pk: [
-              {
-                pk_columns: {
-                  id: this.team.id,
+        if (!valid) {
+          return;
+        }
+
+        this.submitting = true;
+        if (this.team) {
+          await this.$apollo.mutate({
+            mutation: generateMutation({
+              update_teams_by_pk: [
+                {
+                  pk_columns: {
+                    id: this.team.id,
+                  },
+                  _set: {
+                    name: this.form.values.team_name,
+                    short_name: this.form.values.short_name,
+                    owner_steam_id: this.form.values.owner_steam_id,
+                  },
                 },
-                _set: {
+                {
+                  __typename: true,
+                },
+              ],
+            }),
+          });
+          this.$emit("updated");
+          return;
+        }
+
+        const { data } = await this.$apollo.mutate({
+          mutation: generateMutation({
+            insert_teams_one: [
+              {
+                object: {
                   name: this.form.values.team_name,
                   short_name: this.form.values.short_name,
-                  owner_steam_id: this.form.values.owner_steam_id,
                 },
               },
               {
-                __typename: true,
+                id: true,
               },
             ],
           }),
         });
-        this.$emit("updated");
-        return;
+
+        this.$router.push(`/teams/${data.insert_teams_one.id}`);
+      } finally {
+        this.submitLock = false;
+        this.submitting = false;
       }
-
-      const { data } = await this.$apollo.mutate({
-        mutation: generateMutation({
-          insert_teams_one: [
-            {
-              object: {
-                name: this.form.values.team_name,
-                short_name: this.form.values.short_name,
-              },
-            },
-            {
-              id: true,
-            },
-          ],
-        }),
-      });
-
-      this.$router.push(`/teams/${data.insert_teams_one.id}`);
     },
   },
 };

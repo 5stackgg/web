@@ -1586,15 +1586,17 @@ const playerTeamChipShortClasses =
               <div
                 class="grid grid-cols-1 divide-y divide-border/40 overflow-hidden rounded-md border border-border/60 sm:grid-cols-2 sm:divide-x sm:divide-y-0"
               >
-                <div class="relative min-h-[88px] px-4 py-3 pr-12">
+                <div class="relative min-h-[88px] px-4 py-3">
                   <div
                     class="flex items-center justify-between gap-3 font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
                   >
-                    <span>{{ $t("pages.players.detail.current_elo") }}</span>
+                    <span class="truncate">{{
+                      $t("pages.players.detail.current_elo")
+                    }}</span>
                     <button
                       v-if="hasEloChartData"
                       type="button"
-                      class="inline-flex items-center gap-1 normal-case font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
+                      class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap normal-case font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
                       @click="eloDialogOpen = true"
                       :title="
                         $t(
@@ -2552,7 +2554,7 @@ export default {
       }
       return (
         this.player.steam_id !== this.me.steam_id &&
-        useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer)
+        useAuthStore().isRoleAbove(e_player_roles_enum.moderator)
       );
     },
     isSelfProfile() {

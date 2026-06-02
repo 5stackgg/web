@@ -81,7 +81,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
         enter-from-class="opacity-0 max-h-0 py-0 my-0"
         leave-to-class="opacity-0 max-h-0 py-0 my-0"
       >
-        <SidebarHeader v-if="isMobile || !isPWA || !sideBarOpen">
+        <SidebarHeader v-if="!isMobile && (!isPWA || !sideBarOpen)">
           <NuxtLink
             :to="logoPath"
             class="flex min-w-0 items-center overflow-hidden transition-[gap,padding] duration-200 ease-linear [&.router-link-active]:!bg-transparent [&.router-link-exact-active]:!bg-transparent"

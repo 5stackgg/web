@@ -80,6 +80,8 @@
     "launching_steam": "Iniciando Steam",
     "logging_in": "Fazendo login",
     "launching_cs2": "Iniciando CS2",
+    "processing_shaders": "Processando Vulkan shaders",
+    "skip_shaders": "Pular shaders",
     "connecting_to_game": "Conectando ao servidor de jogo",
     "live": "Transmitindo ao vivo",
     "downloading_demo": "Baixando demo",
@@ -126,6 +128,7 @@
     "uploading": "Enviando",
     "done": "Concluído",
     "error": "Erro",
+    "missing": "Faltando",
     "cancelled": "Cancelado",
     "uploading_to_library": "Enviando para sua biblioteca",
     "render_failed": "Falha na renderização",
@@ -333,6 +336,7 @@
         "description": "Detalhes da sua conta",
         "my_account": "Minha Conta",
         "api_keys": "Chaves API",
+        "external_matches": "Partidas Externas",
         "api_keys_management": {
           "your_api_keys": "Suas chaves de API",
           "api_keys_description": "Chaves de API permitem que você autentique com a API 5Stack programaticamente.",
@@ -441,18 +445,19 @@
         },
         "discord": {
           "title": "Discord",
-          "support_section": "Suporte & Convites",
+          "support_section": "Padrões",
+          "support_section_description": "O webhook e o cargo padrão do Discord usados para notificações de suporte e convites, além do seu link de convite do Discord. Todas as outras notificações do Discord abaixo recorrem a estes quando não têm um webhook ou cargo próprio definido.",
           "invite_link": "Link de convite do Discord",
-          "webhook": "Webhook do Discord",
+          "webhook": "Webhook padrão do Discord",
           "webhook_description": "Usamos este webhook do Discord para enviar notificações que requerem ação de um jogador. Ex: problemas de partida, bugs, etc.",
-          "support_role": "ID do cargo de suporte do Discord",
+          "support_role": "ID de cargo padrão",
           "support_role_description": "Este cargo será mencionado quando usado para ações de suporte. Você pode obter o ID do cargo do aplicativo Discord ativando o modo desenvolvedor e clicando com o botão direito para copiar o ID.",
           "updated": "Configurações do Discord Atualizadas",
           "match_notifications": {
             "title": "Notificações de Status das Partidas",
             "description": "Configure notificações do Discord para mudanças no status das partidas. Essas opções controlam tanto as notificações no painel quanto no Discord.",
             "webhook": "URL do Webhook de Notificações de Partida",
-            "webhook_description": "Webhook dedicado para notificações de status das partidas. Se não for definido, será usado o webhook de suporte.",
+            "webhook_description": "Webhook dedicado para notificações de status das partidas. Se não for definido, será usado o webhook padrão.",
             "role_id": "ID de Cargo para Notificações de Partida",
             "role_id_description": "Esses cargos serão mencionados nas notificações de status das partidas. É possível adicionar múltiplos IDs separados por vírgulas.",
             "statuses_title": "Notificar Mudanças de Status",
@@ -648,10 +653,25 @@
           "reserved_disk_space_existing_gb_description": "Espaço mínimo em disco (GB) exigido quando o CS2 já está instalado no nó. Defina como 0 para desativar.",
           "update_cpu_pinning": "CPU Pinning atualizado"
         },
+        "highlights": {
+          "title": "Highlights",
+          "updated": "Configurações de highlights atualizadas"
+        },
+        "external_matches": {
+          "title": "Partidas Externas",
+          "section": "Partidas Externas",
+          "enabled": "Permitir importação de partidas de CS2",
+          "enabled_description": "Permitir que os jogadores vinculem seu código de autenticação do histórico de partidas da Steam para importar partidas oficiais do CS2 e enviar demos. Desative para ocultar o formulário de código de autenticação e bloquear importações externas.",
+          "updated": "Configurações de partidas externas atualizadas",
+          "disabled_notice": "A importação de partidas externas está atualmente desativada pelo seu administrador."
+        },
         "demo_settings": {
           "title": "Demos / Highlights",
+          "total_storage": "Total de Armazenamento",
           "demos_section": "Demos",
-          "storage_section": "Armazenamento e Backend",
+          "storage_section": "Armazenamento & Backend",
+          "render_output_section": "Saída de Renderização",
+          "clip_storage_section": "Retenção & Armazenamento",
           "min_retention": "Retenção mínima",
           "max_storage": "Armazenamento Máximo",
           "cloudflare_worker_url": "URL do trabalhador do Cloudflare",
@@ -689,6 +709,8 @@
           "clip_bake_branding_description": "*Renderiza a sobreposição do chip do jogador e o outro de marca diretamente no arquivo de highlight. Desative para exportar capturas brutas sem sobreposições.",
           "auto_generate_match_clips": "Gerar automaticamente highlights de partidas",
           "auto_generate_match_clips_description": "Enfileira um highlight de resumo da partida para cada jogador após o término da partida.",
+          "auto_generate_match_clips_imported": "Incluir partidas importadas",
+          "auto_generate_match_clips_imported_description": "Também gera automaticamente highlights para partidas importadas de fora do 5stack (por exemplo, histórico de partidas da Valve). Desativado por padrão para que as partidas importadas não sobrecarreguem a fila de renderização.",
           "pause_renders_during_active_match": "Pausar renders de highlights durante partida ativa",
           "pause_renders_during_active_match_description": "Quando uma partida entra ao vivo em um servidor suportado por um nó de GPU, os renders de highlights em andamento são pausados automaticamente para que o servidor do jogo não concorra com o pod de renderização pelo uso da GPU. Os renders são retomados automaticamente assim que a partida termina.",
           "auto_clip_default_visibility": "Visibilidade padrão para highlights automáticos",
@@ -951,6 +973,7 @@
       "clear": "LIMPAR",
       "clear_short": "Limpar",
       "lineup_only": "Apenas partidas de lineup",
+      "include_external": "Incluir partidas externas",
       "standby_no_matches": "EM ESPERA · NENHUMA PARTIDA ENCONTRADA",
       "remove_team": "Remover {name}",
       "remove_player": "Remover {name}",
@@ -971,17 +994,80 @@
     "gpu_nodes": {
       "title": "Nós com GPU",
       "description": "Nós de servidor de jogo com suporte a GPU que hospedam transmissões ao vivo, reprodução de demos e renderização de highlights. Cada GPU executa no máximo um consumidor por vez.",
-      "idle": "Ocioso",
+      "cmdbar_sub": "Espectador ao vivo · reprodução de demo · renderização de highlights",
+      "metrics": "Métricas",
+      "ops_label": "Operações ao vivo",
+      "mission": {
+        "operational": "Operacional",
+        "degraded": "Degradado",
+        "offline": "Offline",
+        "subline": "Pool de renderização GPU"
+      },
+      "meter": {
+        "compute": "GPUs",
+        "compute_foot": "Nós de GPU livres",
+        "logins": "Logins da Steam",
+        "logins_foot": "Gerenciar pool →",
+        "tasking": "Tarefas",
+        "tasking_foot": "Jobs ativos"
+      },
+      "stat": {
+        "available": "Disponível",
+        "running": "Em execução"
+      },
+      "flag": {
+        "live": "Ao vivo",
+        "demo": "Demo",
+        "render": "Render"
+      },
+      "idle": "Inativo",
+      "disabled": "Desativado",
+      "enabled": "Ativado",
+      "accepting_matches": "Aceitando partidas",
+      "toggle_enabled_help": "Quando desativado, o nó fica totalmente inativo — sem trabalho de GPU e sem agendamento de partidas.",
+      "toggle_scheduling_help": "Quando desativado, o nó continua executando partidas existentes, mas não aceitará novas.",
+      "toggle_enabled_failed": "Falha ao alternar estado de ativação do nó",
+      "toggle_scheduling_failed": "Falha ao alternar estado de agendamento",
+      "bake": {
+        "help": "Pré-compilar o cache de shaders Vulkan deste nó para que a primeira partida inicie aquecida.",
+        "cancel_help": "Cancelar a pré-compilação de shaders em execução.",
+        "started": "Compilação de shaders iniciada",
+        "failed": "Falha ao iniciar compilação de shaders",
+        "cancelled": "Compilação de shaders cancelada",
+        "cancel_failed": "Falha ao cancelar compilação de shaders",
+        "baking": "Compilando shaders"
+      },
       "table": {
         "node": "Nó",
         "region": "Região",
         "gpu_devices": "Dispositivos GPU",
         "status": "Status",
-        "busy_with": "Em uso por"
+        "busy_with": "Ocupado com"
       },
       "empty": {
-        "title": "Nenhum Nó com GPU",
+        "title": "Nenhum nó de GPU",
         "description": "Nenhum nó de servidor de jogo foi registrado com GPU. Ative o suporte a GPU em um nó para disponibilizá-lo para streaming e renderização."
+      },
+      "steam_pool": {
+        "title": "Contas Steam",
+        "description": "Pool usado por nós de GPU para renderização, reprodução de demos e espectador ao vivo. Cada pod em execução consome uma conta, portanto o pool precisa ter pelo menos tantas contas quanto nós de GPU para garantir paralelismo total.",
+        "manage": "Gerenciar",
+        "manage_button": "Contas Steam",
+        "accounts_label": "Pool",
+        "add": "Adicionar conta",
+        "add_title": "Adicionar conta Steam",
+        "add_description": "A conta deve ter o Steam Guard desativado. Nome de usuário e senha são armazenados como estão e injetados nos pods de renderização.",
+        "username": "Nome de usuário",
+        "password": "Senha",
+        "empty": "Nenhuma conta Steam ainda.",
+        "empty_warning_title": "Nós de GPU estão registrados, mas o pool de contas Steam está vazio — renders de highlights e espectador ao vivo falharão até que você adicione pelo menos uma conta.",
+        "short_warning_title": "Apenas {accounts} conta(s) Steam para {nodes} nó(s) de GPU — alguns renders ficarão em fila aguardando uma conta.",
+        "added": "Conta Steam adicionada",
+        "add_failed": "Falha ao adicionar conta",
+        "deleted": "Conta Steam excluída",
+        "delete_failed": "Falha ao excluir conta",
+        "delete_title": "Excluir {username}?",
+        "delete_description": "Qualquer pod em execução usando esta conta mantém suas credenciais e finaliza normalmente. A conta será removida do pool e não estará disponível para jobs futuros."
       }
     },
     "game_server_nodes": {
@@ -1539,7 +1625,11 @@
       "create_lobby_button": "Criar Lobby",
       "voice_discord": "Voz & Discord",
       "discord_linked": "Discord Vinculado",
-      "link_discord": "Vincular Discord"
+      "link_discord": "Vincular Discord",
+      "next_step_title": "Pronto para jogar?",
+      "next_step_description": "Seu lineup está definida. Entre no matchmaking ou inicie uma partida personalizada.",
+      "find_match": "Encontrar partida",
+      "create_custom_match": "Criar partida personalizada"
     },
     "chat_panel": {
       "default_title": "Chat",
@@ -1660,6 +1750,10 @@
     "status": "Status",
     "region": "Região",
     "filters": "Filtros",
+    "options": "Opções",
+    "search": "Pesquisa",
+    "date": "Data",
+    "results": "resultados",
     "reset_filters": "Redefinir Filtros",
     "player": "Jogador",
     "plugin_version": "Versão do Plugin",
@@ -2246,6 +2340,7 @@
     "open_match": "Abrir partida",
     "picks_label": "Escolhas",
     "full_page": "Página completa",
+    "match_overview": "Visão Geral da Partida",
     "no_multi_kill_rounds": "Nenhuma rodada com {count} abates encontrada.",
     "map_filter_active": "Filtro de mapa ativo",
     "scoreboard": "Placar",
@@ -2552,8 +2647,8 @@
       "canceled": "Partida Cancelada",
       "deleted": "Partida Deletada",
       "requested_organizer": "Organizador Solicitado",
-      "pause": "Pausar Partida",
-      "resume": "Partida Retomada",
+      "pause": "⏸ Pausar Partida",
+      "resume": "⏯ Despausar Partida",
       "match_paused": "Partida Pausada",
       "match_resumed": "Partida Retomada",
       "start_live": "Iniciar Live Stream",
@@ -2842,6 +2937,7 @@
       "selected": "Selecionado",
       "positions_large": "As posições do replay são grandes. Clique em carregar para buscá-las em {map}.",
       "load": "Carregar replay",
+      "open": "Abrir Replay 2D",
       "loading": "Carregando replay…",
       "no_position_data": "Sem dados de posição — reanalise a demo para preencher o replay.",
       "toggle_to_slots": "Alternar para números de slot",
@@ -3086,7 +3182,9 @@
       "access_description": "Controla quem pode entrar na lobby. Abrir permite que qualquer pessoa se junte, Amigos permite que apenas amigos se juntem, e Convidar apenas jogadores que você convidou para se juntar.",
       "leave": "Sair da Lobby",
       "invite_player": "Convidar Jogador para a Lobby",
-      "access_updated": "Acesso ao lobby atualizado para {access}"
+      "access_updated": "Acesso ao lobby atualizado para {access}",
+      "member_count": "{count} em lobby",
+      "pending_count": "{count} pendente"
     },
     "friends": {
       "title": "Amigos",
@@ -3439,6 +3537,9 @@
     "control": "Controle",
     "in_window": "Na janela",
     "reconnect": "Reconectar",
+    "switch_short": "Trocar",
+    "switch_to_match": "Redirecione este pod para outra partida ao vivo",
+    "switch_pick_match": "Trocar transmissão para...",
     "bring_window_to_front": "Trazer janela para frente",
     "observer_target": "Alvo do observador",
     "live_matches": "Partidas ao vivo",
@@ -3527,6 +3628,7 @@
       "status_no_gpu_free": "Aguardando GPU livre",
       "status_blocked_live": "Aguardando — transmissão ao vivo em andamento",
       "status_blocked_demo": "Aguardando — sessão de demo em andamento",
+      "status_paused_active_match": "Renderizadores pausados — partida ativa na GPU",
       "status_idle": "Inativo",
       "status_waiting": "Aguardando",
       "resume_blocked_live": "Não é possível retomar — uma transmissão ao vivo está usando a GPU"
@@ -3601,5 +3703,26 @@
     "days": "{n}d atrás",
     "weeks": "{n}sem atrás",
     "months": "{n}mês atrás"
+  },
+  "player_match": {
+    "tournament": "Torneio",
+    "maps_count": "{count} mapas",
+    "headers": {
+      "date": "Data",
+      "type": "Tipo",
+      "result": "Resultado",
+      "map": "Mapa",
+      "rating": "Avaliação",
+      "elo": "Elo"
+    },
+    "source": {
+      "all": "Todos",
+      "internal": "5Stack",
+      "external": "Externo"
+    },
+    "view_short": "Ver",
+    "premier": "Premier",
+    "competitive": "Competitivo",
+    "wingman": "Braço Direito"
   }
 }

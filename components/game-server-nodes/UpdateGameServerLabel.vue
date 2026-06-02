@@ -63,7 +63,7 @@ import {
                   <FormMessage />
                 </FormItem>
               </FormField>
-              <Button type="submit" class="w-full">{{
+              <Button type="submit" class="w-full" :loading="submitting">{{
                 $t("game_server.update_label")
               }}</Button>
             </form>
@@ -95,6 +95,7 @@ export default {
   data() {
     return {
       editLabelSheet: false,
+      submitting: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -116,36 +117,45 @@ export default {
   },
   methods: {
     async updateLabel() {
+      if (this.submitting) {
+        return;
+      }
+
       const { valid } = await this.form.validate();
 
       if (!valid) {
         return;
       }
 
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_game_server_nodes_by_pk: [
-            {
-              pk_columns: {
-                id: this.gameServerNode.id,
+      this.submitting = true;
+      try {
+        await this.$apollo.mutate({
+          mutation: generateMutation({
+            update_game_server_nodes_by_pk: [
+              {
+                pk_columns: {
+                  id: this.gameServerNode.id,
+                },
+                _set: {
+                  label: this.form.values.label,
+                },
               },
-              _set: {
-                label: this.form.values.label,
+              {
+                __typename: true,
               },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
+            ],
+          }),
+        });
 
-      this.editLabelSheet = false;
-      toast({
-        title: this.$t("game_server.toast.label_updated"),
-      });
+        this.editLabelSheet = false;
+        toast({
+          title: this.$t("game_server.toast.label_updated"),
+        });
 
-      this.$emit("close");
+        this.$emit("close");
+      } finally {
+        this.submitting = false;
+      }
     },
   },
 };

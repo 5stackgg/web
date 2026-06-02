@@ -12,6 +12,7 @@ export function useRoles() {
       display: t("roles.verified_user"),
     },
     { value: e_player_roles_enum.streamer, display: t("roles.streamer") },
+    { value: e_player_roles_enum.moderator, display: t("roles.moderator") },
     {
       value: e_player_roles_enum.match_organizer,
       display: t("roles.match_organizer"),

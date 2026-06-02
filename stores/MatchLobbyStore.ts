@@ -460,6 +460,15 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
     currentMatch: computed(() => {
       return myMatches.value.at(0);
     }),
+    currentUserInGame: computed(() => {
+      const steamId = useAuthStore().me?.steam_id;
+      if (!steamId) return false;
+      return Object.values(lobbyChat.value).some(
+        (lobby) =>
+          (lobby.get(steamId) as { inGame?: boolean } | undefined)?.inGame ===
+          true,
+      );
+    }),
     add,
     set,
     remove,

@@ -13,7 +13,7 @@ definePageMeta({
     <PageTransition :delay="0">
       <form @submit.prevent="updateSettings" class="space-y-6">
         <SettingsSection
-          id="support"
+          id="defaults"
           :title="$t('pages.settings.application.discord.support_section')"
           :description="
             $t('pages.settings.application.discord.support_section_description')

@@ -451,19 +451,19 @@
         },
         "discord": {
           "title": "Discord / Notifications",
-          "support_section": "Support & Invites",
-          "support_section_description": "The Discord webhook and role used for support and invite notifications. These are also the fallback for every other Discord notification below when a dedicated webhook or role isn't set.",
+          "support_section": "Defaults",
+          "support_section_description": "The default Discord webhook and role used for support and invite notifications, plus your Discord invite link. Every other Discord notification below falls back to these when it doesn't have its own webhook or role set.",
           "invite_link": "Discord Invite Link",
-          "webhook": "Discord Webhook",
+          "webhook": "Default Discord Webhook",
           "webhook_description": "We use this discord webhook to send notifications that require action from a player. Ex. match issues, bugs, etc.",
-          "support_role": "Discord Support Role ID",
+          "support_role": "Default Role ID",
           "support_role_description": "These roles will be pinged when used for support actions. You can add multiple Role IDs separated by commas. Get a Role ID from Discord by enabling developer mode, then right-clicking the role and selecting Copy ID.",
           "updated": "Updated Discord Settings",
           "match_notifications": {
             "title": "Match Status Notifications",
             "description": "Configure Discord notifications for match status changes. These settings control both panel and Discord notifications.",
             "webhook": "Match Notifications Webhook URL",
-            "webhook_description": "Dedicated webhook for match status notifications. Falls back to the support webhook if not set.",
+            "webhook_description": "Dedicated webhook for match status notifications. Falls back to the default webhook if not set.",
             "role_id": "Match Notifications Role ID",
             "role_id_description": "These roles will be mentioned in match status notifications. You can add multiple Role IDs separated by commas.",
             "statuses_title": "Notify on Status Changes",
@@ -473,9 +473,9 @@
             "title": "Gamedata Validation Notifications",
             "description": "Configure where CS2 gamedata signature validation results are posted.",
             "webhook": "Gamedata Notifications Webhook URL",
-            "webhook_description": "Dedicated webhook for gamedata validation results. Falls back to the support webhook if not set.",
+            "webhook_description": "Dedicated webhook for gamedata validation results. Falls back to the default webhook if not set.",
             "role_id": "Gamedata Notifications Role ID",
-            "role_id_description": "These roles will be mentioned in gamedata validation notifications. You can add multiple Role IDs separated by commas. Falls back to the support role if not set."
+            "role_id_description": "These roles will be mentioned in gamedata validation notifications. You can add multiple Role IDs separated by commas. Falls back to the default role if not set."
           },
           "server_notifications": {
             "title": "Server Notifications",

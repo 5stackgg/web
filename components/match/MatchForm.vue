@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Info,
   Swords,
@@ -217,7 +218,9 @@ const tacLabelClasses =
         class="group/submit relative isolate inline-flex items-center px-12 py-4 font-bold text-base tracking-[0.22em] uppercase text-[hsl(0_0%_8%)] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] border border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_8px_24px_-6px_hsl(var(--tac-amber)/0.6)] [transition:transform_200ms_cubic-bezier(0.4,0,0.2,1),box-shadow_200ms_ease] cursor-pointer overflow-hidden hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_14px_36px_-6px_hsl(var(--tac-amber)/0.8),0_0_28px_hsl(var(--tac-amber)/0.35)] active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
       >
         <span class="relative z-[1] inline-flex items-center gap-3">
+          <Spinner v-if="submitting" class="w-5 h-5" />
           <PlayIcon
+            v-else
             class="w-5 h-5 fill-current [transition:transform_300ms_cubic-bezier(0.4,0,0.2,1)] group-hover/submit:translate-x-0.5 group-hover/submit:scale-[1.08]"
           />
           <span>
@@ -371,9 +374,12 @@ export default {
         return;
       }
 
+      let redirecting = false;
+
       try {
         if (!this.match) {
           await this.createMatch();
+          redirecting = true;
           return;
         }
 
@@ -529,7 +535,9 @@ export default {
           description: error?.message,
         });
       } finally {
-        this.submitting = false;
+        if (!redirecting) {
+          this.submitting = false;
+        }
       }
     },
     async createMatch() {

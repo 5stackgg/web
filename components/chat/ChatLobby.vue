@@ -12,8 +12,7 @@ defineOptions({
 </script>
 
 <template>
-  <div>
-    <Teleport to="#global-chat-container" v-if="global" defer>
+  <Teleport to="#global-chat-container" v-if="global" defer>
     <div
       v-bind="$attrs"
       class="fixed bottom-4 bg-background border rounded-lg shadow-lg z-50 transition-all duration-300 ease-in-out flex flex-col w-96"
@@ -181,8 +180,8 @@ defineOptions({
         />
       </div>
     </div>
-    </Teleport>
-    <div v-else v-bind="$attrs" :class="embeddedContainerClasses">
+  </Teleport>
+  <div v-else v-bind="$attrs" :class="embeddedContainerClasses">
     <ChatMatchHeader
       v-if="isGlobalContext && hideParticipantsSummary && matchInfo"
       :match="matchInfo"
@@ -305,7 +304,6 @@ defineOptions({
         variant="embedded"
         @send-message="handleSendMessage"
       />
-    </div>
     </div>
   </div>
 </template>

@@ -3399,6 +3399,9 @@
     "start_the_conversation": "Say something to start the conversation.",
     "jump_to_new": "Jump to new",
     "new_messages": "New messages",
+    "participants": "Chat participants",
+    "show_participants": "Show chat participants",
+    "hide_participants": "Hide chat participants",
     "organizers": {
       "title": "Organizer Chat",
       "no_access": "You do not have access to this page.",

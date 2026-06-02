@@ -72,14 +72,20 @@ import Empty from "~/components/ui/empty/Empty.vue";
           <button
             type="button"
             class="underline-offset-2 hover:underline"
+            aria-haspopup="dialog"
+            :aria-expanded="showParticipants ? 'true' : 'false'"
+            :aria-label="participantsToggleLabel"
             @click.stop="showParticipants = !showParticipants"
           >
-            {{ participantsCount }} in chat
+            {{ participantsSummaryLabel }}
           </button>
         </div>
       </div>
       <div
         v-if="showParticipants"
+        role="dialog"
+        aria-modal="false"
+        :aria-label="participantsPopupLabel"
         class="absolute z-50 top-11 left-2 right-2 rounded-md border bg-popover text-popover-foreground shadow-md p-3 text-xs max-h-52 overflow-y-auto"
       >
         <div
@@ -88,7 +94,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
         >
           {{ $t("chat.no_participants", "No one else is in this chat yet.") }}
         </div>
-        <ul v-else class="space-y-1.5">
+        <ul v-else class="space-y-1.5" role="list">
           <li
             v-for="user in participants"
             :key="(user as any).steam_id"
@@ -183,9 +189,12 @@ import Empty from "~/components/ui/empty/Empty.vue";
         <button
           type="button"
           class="underline-offset-2 hover:underline"
+          aria-haspopup="dialog"
+          :aria-expanded="showParticipants ? 'true' : 'false'"
+          :aria-label="participantsToggleLabel"
           @click.stop="showParticipants = !showParticipants"
         >
-          {{ participantsCount }} in chat
+          {{ participantsSummaryLabel }}
         </button>
       </div>
       <NuxtLink
@@ -198,6 +207,9 @@ import Empty from "~/components/ui/empty/Empty.vue";
     </div>
     <div
       v-if="showParticipants"
+      role="dialog"
+      aria-modal="false"
+      :aria-label="participantsPopupLabel"
       class="absolute z-20 top-10 right-4 left-4 rounded-md border bg-popover text-popover-foreground shadow-md p-3 text-xs max-h-52 overflow-y-auto"
     >
       <div
@@ -206,7 +218,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
       >
         {{ $t("chat.no_participants", "No one else is in this chat yet.") }}
       </div>
-      <ul v-else class="space-y-1.5">
+      <ul v-else class="space-y-1.5" role="list">
         <li
           v-for="user in participants"
           :key="(user as any).steam_id"
@@ -396,6 +408,19 @@ export default {
     },
     participantsCount() {
       return this.participants.length;
+    },
+    participantsSummaryLabel() {
+      return this.$t("layouts.chat_panel.participants_in_chat", {
+        count: this.participantsCount,
+      });
+    },
+    participantsPopupLabel() {
+      return this.$t("chat.participants", "Chat participants");
+    },
+    participantsToggleLabel() {
+      return this.showParticipants
+        ? this.$t("chat.hide_participants", "Hide chat participants")
+        : this.$t("chat.show_participants", "Show chat participants");
     },
     matchInfo() {
       if (this.type !== "match") {

@@ -20,7 +20,7 @@ import { e_match_status_enum } from "~/generated/zeus";
       >
         <ClipBoard
           :data="match.tv_connection_string"
-          class="grow shrink-0 p-3 rounded-md h-12 w-12"
+          class="grow shrink-0 p-3 rounded-md h-12 w-12 connect-action"
         >
           <div class="flex items-center justify-center gap-2">
             <Tv class="w-4 h-4" />

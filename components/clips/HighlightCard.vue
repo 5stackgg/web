@@ -5,7 +5,6 @@ import {
   Film,
   Play,
   Lock,
-  Eye,
   Globe,
   Trophy,
   ArrowUpRight,
@@ -73,7 +72,7 @@ function onTitleClick(e: MouseEvent) {
   openClip(props.clip.id);
 }
 
-type Visibility = "public" | "unlisted" | "private";
+type Visibility = "public" | "private";
 const VISIBILITY_OPTIONS = computed<
   Array<{
     value: Visibility;
@@ -87,12 +86,6 @@ const VISIBILITY_OPTIONS = computed<
     label: t("clips.visibility.public"),
     icon: Globe,
     hint: t("clips.visibility.public_hint"),
-  },
-  {
-    value: "unlisted",
-    label: t("clips.visibility.unlisted"),
-    icon: Eye,
-    hint: t("clips.visibility.unlisted_hint"),
   },
   {
     value: "private",
@@ -226,9 +219,7 @@ async function setVisibility(v: Visibility) {
                 :class="
                   visibility === 'public'
                     ? 'bg-emerald-400/20 text-emerald-300'
-                    : visibility === 'unlisted'
-                      ? 'bg-amber-400/20 text-amber-300'
-                      : 'bg-white/10 text-white/80'
+                    : 'bg-white/10 text-white/80'
                 "
               >
                 <Spinner v-if="saving" class="h-3 w-3" />
@@ -264,9 +255,7 @@ async function setVisibility(v: Visibility) {
                   :class="
                     opt.value === 'public'
                       ? 'bg-emerald-400/15 text-emerald-300'
-                      : opt.value === 'unlisted'
-                        ? 'bg-amber-400/15 text-amber-300'
-                        : 'bg-muted/40 text-muted-foreground'
+                      : 'bg-muted/40 text-muted-foreground'
                   "
                 >
                   <component :is="opt.icon" class="h-3 w-3" />
@@ -303,9 +292,7 @@ async function setVisibility(v: Visibility) {
               :class="
                 visibility === 'public'
                   ? 'bg-emerald-400/20 text-emerald-300'
-                  : visibility === 'unlisted'
-                    ? 'bg-amber-400/20 text-amber-300'
-                    : 'bg-white/10 text-white/80'
+                  : 'bg-white/10 text-white/80'
               "
             >
               <component :is="currentVisibilityMeta.icon" class="h-3 w-3" />

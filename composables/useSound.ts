@@ -1,12 +1,29 @@
-import { ref } from "vue";
+import { computed, readonly, ref } from "vue";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 
+const isEnabled = ref(true);
+const volume = ref(0.7);
+let settingsLoaded = false;
+
 export const useSound = () => {
-  const isEnabled = ref(true);
-  const volume = ref(0.7);
+  const isAutoMutedForInGame = computed(() => {
+    if (!import.meta.client) {
+      return false;
+    }
+
+    try {
+      return useMatchLobbyStore().currentUserInGame;
+    } catch {
+      return false;
+    }
+  });
 
   const loadSettings = () => {
     if (!import.meta.client) {
+      return;
+    }
+
+    if (settingsLoaded) {
       return;
     }
 

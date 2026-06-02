@@ -716,7 +716,6 @@
           "auto_clip_default_visibility": "Visibilidade padrão para highlights automáticos",
           "auto_clip_default_visibility_description": "Visibilidade inicial para novos highlights gerados automaticamente.",
           "visibility_private": "Privado",
-          "visibility_unlisted": "Não listado",
           "visibility_public": "Público",
           "default_hud_mode": "Modo HUD Padrão",
           "default_hud_mode_description": "Qual layout do JTs Hud Manager o pod do game-streamer carrega na inicialização para transmissões ao vivo, reprodução de demos e destaques em lote? Os streamers ainda podem alternar entre os estilos a cada transmissão nos controles do player.",
@@ -798,7 +797,6 @@
       "visibility_filter": {
         "all": "Todos",
         "public": "Público",
-        "unlisted": "Não listado",
         "private": "Privado"
       },
       "empty": {
@@ -3690,8 +3688,6 @@
     "visibility": {
       "public": "Público",
       "public_hint": "Listados no feed de highlights",
-      "unlisted": "Não listado",
-      "unlisted_hint": "Oculto dos feeds — qualquer pessoa com o link pode visualizar",
       "private": "Privado",
       "private_hint": "Oculto dos feeds — a URL do arquivo ainda reproduz se compartilhada"
     }

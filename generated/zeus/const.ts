@@ -981,6 +981,72 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"e_map_pool_types_set_input",
 		where:"e_map_pool_types_bool_exp"
 	},
+	e_match_clip_visibility:{
+		match_clips:{
+			distinct_on:"match_clips_select_column",
+			order_by:"match_clips_order_by",
+			where:"match_clips_bool_exp"
+		},
+		match_clips_aggregate:{
+			distinct_on:"match_clips_select_column",
+			order_by:"match_clips_order_by",
+			where:"match_clips_bool_exp"
+		}
+	},
+	e_match_clip_visibility_aggregate_fields:{
+		count:{
+			columns:"e_match_clip_visibility_select_column"
+		}
+	},
+	e_match_clip_visibility_bool_exp:{
+		_and:"e_match_clip_visibility_bool_exp",
+		_not:"e_match_clip_visibility_bool_exp",
+		_or:"e_match_clip_visibility_bool_exp",
+		description:"String_comparison_exp",
+		match_clips:"match_clips_bool_exp",
+		match_clips_aggregate:"match_clips_aggregate_bool_exp",
+		value:"String_comparison_exp"
+	},
+	e_match_clip_visibility_constraint: "enum" as const,
+	e_match_clip_visibility_enum: "enum" as const,
+	e_match_clip_visibility_enum_comparison_exp:{
+		_eq:"e_match_clip_visibility_enum",
+		_in:"e_match_clip_visibility_enum",
+		_neq:"e_match_clip_visibility_enum",
+		_nin:"e_match_clip_visibility_enum"
+	},
+	e_match_clip_visibility_insert_input:{
+		match_clips:"match_clips_arr_rel_insert_input"
+	},
+	e_match_clip_visibility_on_conflict:{
+		constraint:"e_match_clip_visibility_constraint",
+		update_columns:"e_match_clip_visibility_update_column",
+		where:"e_match_clip_visibility_bool_exp"
+	},
+	e_match_clip_visibility_order_by:{
+		description:"order_by",
+		match_clips_aggregate:"match_clips_aggregate_order_by",
+		value:"order_by"
+	},
+	e_match_clip_visibility_pk_columns_input:{
+
+	},
+	e_match_clip_visibility_select_column: "enum" as const,
+	e_match_clip_visibility_set_input:{
+
+	},
+	e_match_clip_visibility_stream_cursor_input:{
+		initial_value:"e_match_clip_visibility_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_match_clip_visibility_stream_cursor_value_input:{
+
+	},
+	e_match_clip_visibility_update_column: "enum" as const,
+	e_match_clip_visibility_updates:{
+		_set:"e_match_clip_visibility_set_input",
+		where:"e_match_clip_visibility_bool_exp"
+	},
 	e_match_map_status:{
 		match_maps:{
 			distinct_on:"match_maps_select_column",
@@ -3483,7 +3549,7 @@ export const AllTypesProps: Record<string,any> = {
 		title:"String_comparison_exp",
 		user:"players_bool_exp",
 		user_steam_id:"bigint_comparison_exp",
-		visibility:"String_comparison_exp"
+		visibility:"e_match_clip_visibility_enum_comparison_exp"
 	},
 	match_clips_constraint: "enum" as const,
 	match_clips_inc_input:{
@@ -3503,7 +3569,8 @@ export const AllTypesProps: Record<string,any> = {
 		target:"players_obj_rel_insert_input",
 		target_steam_id:"bigint",
 		user:"players_obj_rel_insert_input",
-		user_steam_id:"bigint"
+		user_steam_id:"bigint",
+		visibility:"e_match_clip_visibility_enum"
 	},
 	match_clips_max_order_by:{
 		created_at:"order_by",
@@ -3518,8 +3585,7 @@ export const AllTypesProps: Record<string,any> = {
 		target_steam_id:"order_by",
 		thumbnail_url:"order_by",
 		title:"order_by",
-		user_steam_id:"order_by",
-		visibility:"order_by"
+		user_steam_id:"order_by"
 	},
 	match_clips_min_order_by:{
 		created_at:"order_by",
@@ -3534,8 +3600,7 @@ export const AllTypesProps: Record<string,any> = {
 		target_steam_id:"order_by",
 		thumbnail_url:"order_by",
 		title:"order_by",
-		user_steam_id:"order_by",
-		visibility:"order_by"
+		user_steam_id:"order_by"
 	},
 	match_clips_obj_rel_insert_input:{
 		data:"match_clips_insert_input",
@@ -3580,7 +3645,8 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"uuid",
 		size:"bigint",
 		target_steam_id:"bigint",
-		user_steam_id:"bigint"
+		user_steam_id:"bigint",
+		visibility:"e_match_clip_visibility_enum"
 	},
 	match_clips_stddev_order_by:{
 		duration_ms:"order_by",
@@ -3617,7 +3683,8 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"uuid",
 		size:"bigint",
 		target_steam_id:"bigint",
-		user_steam_id:"bigint"
+		user_steam_id:"bigint",
+		visibility:"e_match_clip_visibility_enum"
 	},
 	match_clips_sum_order_by:{
 		duration_ms:"order_by",
@@ -6671,6 +6738,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_e_map_pool_types_by_pk:{
 
 		},
+		delete_e_match_clip_visibility:{
+			where:"e_match_clip_visibility_bool_exp"
+		},
+		delete_e_match_clip_visibility_by_pk:{
+
+		},
 		delete_e_match_map_status:{
 			where:"e_match_map_status_bool_exp"
 		},
@@ -7286,6 +7359,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_e_map_pool_types_one:{
 			object:"e_map_pool_types_insert_input",
 			on_conflict:"e_map_pool_types_on_conflict"
+		},
+		insert_e_match_clip_visibility:{
+			objects:"e_match_clip_visibility_insert_input",
+			on_conflict:"e_match_clip_visibility_on_conflict"
+		},
+		insert_e_match_clip_visibility_one:{
+			object:"e_match_clip_visibility_insert_input",
+			on_conflict:"e_match_clip_visibility_on_conflict"
 		},
 		insert_e_match_map_status:{
 			objects:"e_match_map_status_insert_input",
@@ -8243,6 +8324,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_e_map_pool_types_many:{
 			updates:"e_map_pool_types_updates"
+		},
+		update_e_match_clip_visibility:{
+			_set:"e_match_clip_visibility_set_input",
+			where:"e_match_clip_visibility_bool_exp"
+		},
+		update_e_match_clip_visibility_by_pk:{
+			_set:"e_match_clip_visibility_set_input",
+			pk_columns:"e_match_clip_visibility_pk_columns_input"
+		},
+		update_e_match_clip_visibility_many:{
+			updates:"e_match_clip_visibility_updates"
 		},
 		update_e_match_map_status:{
 			_set:"e_match_map_status_set_input",
@@ -14797,6 +14889,19 @@ export const AllTypesProps: Record<string,any> = {
 		e_map_pool_types_by_pk:{
 
 		},
+		e_match_clip_visibility:{
+			distinct_on:"e_match_clip_visibility_select_column",
+			order_by:"e_match_clip_visibility_order_by",
+			where:"e_match_clip_visibility_bool_exp"
+		},
+		e_match_clip_visibility_aggregate:{
+			distinct_on:"e_match_clip_visibility_select_column",
+			order_by:"e_match_clip_visibility_order_by",
+			where:"e_match_clip_visibility_bool_exp"
+		},
+		e_match_clip_visibility_by_pk:{
+
+		},
 		e_match_map_status:{
 			distinct_on:"e_match_map_status_select_column",
 			order_by:"e_match_map_status_order_by",
@@ -16777,6 +16882,23 @@ export const AllTypesProps: Record<string,any> = {
 		e_map_pool_types_stream:{
 			cursor:"e_map_pool_types_stream_cursor_input",
 			where:"e_map_pool_types_bool_exp"
+		},
+		e_match_clip_visibility:{
+			distinct_on:"e_match_clip_visibility_select_column",
+			order_by:"e_match_clip_visibility_order_by",
+			where:"e_match_clip_visibility_bool_exp"
+		},
+		e_match_clip_visibility_aggregate:{
+			distinct_on:"e_match_clip_visibility_select_column",
+			order_by:"e_match_clip_visibility_order_by",
+			where:"e_match_clip_visibility_bool_exp"
+		},
+		e_match_clip_visibility_by_pk:{
+
+		},
+		e_match_clip_visibility_stream:{
+			cursor:"e_match_clip_visibility_stream_cursor_input",
+			where:"e_match_clip_visibility_bool_exp"
 		},
 		e_match_map_status:{
 			distinct_on:"e_match_map_status_select_column",
@@ -23741,6 +23863,33 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"e_map_pool_types"
 	},
+	e_match_clip_visibility:{
+		description:"String",
+		match_clips:"match_clips",
+		match_clips_aggregate:"match_clips_aggregate",
+		value:"String"
+	},
+	e_match_clip_visibility_aggregate:{
+		aggregate:"e_match_clip_visibility_aggregate_fields",
+		nodes:"e_match_clip_visibility"
+	},
+	e_match_clip_visibility_aggregate_fields:{
+		count:"Int",
+		max:"e_match_clip_visibility_max_fields",
+		min:"e_match_clip_visibility_min_fields"
+	},
+	e_match_clip_visibility_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_match_clip_visibility_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_match_clip_visibility_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_match_clip_visibility"
+	},
 	e_match_map_status:{
 		description:"String",
 		match_maps:"match_maps",
@@ -24990,7 +25139,7 @@ export const ReturnTypes: Record<string,any> = {
 		title:"String",
 		user:"players",
 		user_steam_id:"bigint",
-		visibility:"String"
+		visibility:"e_match_clip_visibility_enum"
 	},
 	match_clips_aggregate:{
 		aggregate:"match_clips_aggregate_fields",
@@ -25032,8 +25181,7 @@ export const ReturnTypes: Record<string,any> = {
 		thumbnail_download_url:"String",
 		thumbnail_url:"String",
 		title:"String",
-		user_steam_id:"bigint",
-		visibility:"String"
+		user_steam_id:"bigint"
 	},
 	match_clips_min_fields:{
 		created_at:"timestamptz",
@@ -25050,8 +25198,7 @@ export const ReturnTypes: Record<string,any> = {
 		thumbnail_download_url:"String",
 		thumbnail_url:"String",
 		title:"String",
-		user_steam_id:"bigint",
-		visibility:"String"
+		user_steam_id:"bigint"
 	},
 	match_clips_mutation_response:{
 		affected_rows:"Int",
@@ -26561,6 +26708,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_lobby_player_status_by_pk:"e_lobby_player_status",
 		delete_e_map_pool_types:"e_map_pool_types_mutation_response",
 		delete_e_map_pool_types_by_pk:"e_map_pool_types",
+		delete_e_match_clip_visibility:"e_match_clip_visibility_mutation_response",
+		delete_e_match_clip_visibility_by_pk:"e_match_clip_visibility",
 		delete_e_match_map_status:"e_match_map_status_mutation_response",
 		delete_e_match_map_status_by_pk:"e_match_map_status",
 		delete_e_match_mode:"e_match_mode_mutation_response",
@@ -26750,6 +26899,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_lobby_player_status_one:"e_lobby_player_status",
 		insert_e_map_pool_types:"e_map_pool_types_mutation_response",
 		insert_e_map_pool_types_one:"e_map_pool_types",
+		insert_e_match_clip_visibility:"e_match_clip_visibility_mutation_response",
+		insert_e_match_clip_visibility_one:"e_match_clip_visibility",
 		insert_e_match_map_status:"e_match_map_status_mutation_response",
 		insert_e_match_map_status_one:"e_match_map_status",
 		insert_e_match_mode:"e_match_mode_mutation_response",
@@ -27011,6 +27162,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_map_pool_types:"e_map_pool_types_mutation_response",
 		update_e_map_pool_types_by_pk:"e_map_pool_types",
 		update_e_map_pool_types_many:"e_map_pool_types_mutation_response",
+		update_e_match_clip_visibility:"e_match_clip_visibility_mutation_response",
+		update_e_match_clip_visibility_by_pk:"e_match_clip_visibility",
+		update_e_match_clip_visibility_many:"e_match_clip_visibility_mutation_response",
 		update_e_match_map_status:"e_match_map_status_mutation_response",
 		update_e_match_map_status_by_pk:"e_match_map_status",
 		update_e_match_map_status_many:"e_match_map_status_mutation_response",
@@ -31201,6 +31355,9 @@ export const ReturnTypes: Record<string,any> = {
 		e_map_pool_types:"e_map_pool_types",
 		e_map_pool_types_aggregate:"e_map_pool_types_aggregate",
 		e_map_pool_types_by_pk:"e_map_pool_types",
+		e_match_clip_visibility:"e_match_clip_visibility",
+		e_match_clip_visibility_aggregate:"e_match_clip_visibility_aggregate",
+		e_match_clip_visibility_by_pk:"e_match_clip_visibility",
 		e_match_map_status:"e_match_map_status",
 		e_match_map_status_aggregate:"e_match_map_status_aggregate",
 		e_match_map_status_by_pk:"e_match_map_status",
@@ -31835,6 +31992,10 @@ export const ReturnTypes: Record<string,any> = {
 		e_map_pool_types_aggregate:"e_map_pool_types_aggregate",
 		e_map_pool_types_by_pk:"e_map_pool_types",
 		e_map_pool_types_stream:"e_map_pool_types",
+		e_match_clip_visibility:"e_match_clip_visibility",
+		e_match_clip_visibility_aggregate:"e_match_clip_visibility_aggregate",
+		e_match_clip_visibility_by_pk:"e_match_clip_visibility",
+		e_match_clip_visibility_stream:"e_match_clip_visibility",
 		e_match_map_status:"e_match_map_status",
 		e_match_map_status_aggregate:"e_match_map_status_aggregate",
 		e_match_map_status_by_pk:"e_match_map_status",

@@ -10,10 +10,6 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Card } from "~/components/ui/card";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
-
-definePageMeta({
-  layout: "application-settings",
-});
 </script>
 
 <template>

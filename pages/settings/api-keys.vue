@@ -9,10 +9,6 @@ import {
   CardTitle,
   CardDescription,
 } from "~/components/ui/card";
-
-definePageMeta({
-  layout: "profile-settings",
-});
 </script>
 
 <template>

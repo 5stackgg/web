@@ -28,9 +28,6 @@ import {
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 
-definePageMeta({
-  layout: "profile-settings",
-});
 
 const apolloClient = useApolloClient().client;
 const me = computed(() => useAuthStore().me);

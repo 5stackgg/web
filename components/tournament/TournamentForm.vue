@@ -137,7 +137,7 @@ import MatchOptions from "~/components/MatchOptions.vue";
       </template>
     </MatchOptions>
 
-    <div class="mt-8 flex justify-center">
+    <div class="mt-8 flex justify-center pb-24">
       <button
         type="submit"
         :disabled="submitting || Object.keys(form.errors).length > 0"
@@ -453,8 +453,8 @@ export default {
           }),
         });
 
-        this.$router.push(`/tournaments/${data.insert_tournaments_one.id}`);
         redirecting = true;
+        await this.$router.push(`/tournaments/${data.insert_tournaments_one.id}`);
       } finally {
         if (!redirecting) {
           this.submitLock = false;

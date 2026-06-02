@@ -3,9 +3,6 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
 import DiscordMatchNotificationToggles from "~/components/discord/DiscordMatchNotificationToggles.vue";
-definePageMeta({
-  layout: "application-settings",
-});
 </script>
 
 <template>

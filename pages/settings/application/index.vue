@@ -5,10 +5,6 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
 import { TriangleAlert } from "lucide-vue-next";
-
-definePageMeta({
-  layout: "application-settings",
-});
 </script>
 
 <template>

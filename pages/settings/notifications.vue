@@ -7,9 +7,6 @@ import { Input } from "@/components/ui/input";
 import { Volume2, VolumeX } from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 
-definePageMeta({
-  layout: "profile-settings",
-});
 
 const {
   isEnabled,

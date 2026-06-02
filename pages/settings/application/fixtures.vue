@@ -16,9 +16,6 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-definePageMeta({
-  layout: "application-settings",
-});
 
 const { t } = useI18n();
 const config = useRuntimeConfig();

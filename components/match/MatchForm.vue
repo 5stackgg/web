@@ -211,7 +211,7 @@ const tacLabelClasses =
       </template>
     </MatchOptions>
 
-    <div class="mt-8 flex justify-center">
+    <div class="mt-8 flex justify-center pb-24">
       <button
         type="submit"
         :disabled="submitting"
@@ -579,7 +579,7 @@ export default {
         }),
       });
 
-      this.$router.push(`/matches/${data.insert_matches_one.id}`);
+      await this.$router.push(`/matches/${data.insert_matches_one.id}`);
     },
   },
 };

@@ -46,10 +46,6 @@ const handleLocaleChange = (
 ) => {
   setLocale(newLocale);
 };
-
-definePageMeta({
-  layout: "profile-settings",
-});
 </script>
 
 <template>

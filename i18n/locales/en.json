@@ -1046,6 +1046,19 @@
       "toggle_scheduling_help": "When off, the node keeps running existing matches but won't accept new ones.",
       "toggle_enabled_failed": "Failed to toggle node enabled state",
       "toggle_scheduling_failed": "Failed to toggle scheduling state",
+      "toggle_workload_failed": "Failed to toggle GPU workload availability",
+      "control": {
+        "title": "Node Control"
+      },
+      "workload": {
+        "section": "GPU Workloads",
+        "streaming": "Live Streaming",
+        "streaming_desc": "Live spectator streams",
+        "demos": "Demo Playback",
+        "demos_desc": "On-demand demo replay",
+        "rendering": "Rendering",
+        "rendering_desc": "Highlight & clip renders"
+      },
       "bake": {
         "help": "Pre-bake this node's Vulkan shader cache so the first match starts warm.",
         "cancel_help": "Cancel the running shader pre-bake.",

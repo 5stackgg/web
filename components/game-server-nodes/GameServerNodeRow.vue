@@ -40,6 +40,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { PaginationEllipsis } from "~/components/ui/pagination";
 import GameServerNodeDisplay from "~/components/game-server-nodes/GameServerNodeDisplay.vue";
+import NodeControlMenu from "~/components/game-server-nodes/NodeControlMenu.vue";
 import { e_game_server_node_statuses_enum } from "~/generated/zeus";
 import {
   ExternalLink,
@@ -50,10 +51,6 @@ import {
   CircleFadingArrowUp,
   AlertCircle,
   Plus,
-  Power,
-  PowerOff,
-  CalendarX,
-  CalendarCheck,
   FolderOpen,
   Pin,
   Cpu,
@@ -93,11 +90,18 @@ const isSectionExpanded = (section: string) => {
     :class="!gameServerNode.enabled ? 'bg-muted/40 opacity-60' : ''"
   >
     <TableCell>
-      <GameServerNodeDisplay
-        :game-server-node="gameServerNode"
-        :max-servers="maxServers"
-        :cpu-pinning-enabled="cpuPinningEnabled"
-      ></GameServerNodeDisplay>
+      <div class="flex items-center gap-2">
+        <NodeControlMenu
+          :node="gameServerNode"
+          align="start"
+          class="shrink-0"
+        />
+        <GameServerNodeDisplay
+          :game-server-node="gameServerNode"
+          :max-servers="maxServers"
+          :cpu-pinning-enabled="cpuPinningEnabled"
+        ></GameServerNodeDisplay>
+      </div>
     </TableCell>
     <TableCell class="hidden xl:table-cell">
       <div class="flex flex-col gap-2">
@@ -871,40 +875,6 @@ const isSectionExpanded = (section: string) => {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuGroup>
-              <DropdownMenuItem @click="toggleEnabled">
-                <template v-if="gameServerNode.enabled">
-                  <PowerOff class="mr-2 h-4 w-4" />
-                  <span>{{ $t("game_server.disable_node") }}</span>
-                </template>
-                <template v-else>
-                  <Power class="mr-2 h-4 w-4" />
-                  <span>{{ $t("game_server.enable_node") }}</span>
-                </template>
-              </DropdownMenuItem>
-
-              <DropdownMenuItem
-                v-if="gameServerNode.enabled"
-                @click="toggleGameServerNodeScheduling"
-              >
-                <template
-                  v-if="
-                    gameServerNode.status ===
-                    e_game_server_node_statuses_enum.NotAcceptingNewMatches
-                  "
-                >
-                  <CalendarCheck class="mr-2 h-4 w-4" />
-                  {{ $t("game_server.enable_scheduling") }}
-                </template>
-                <template v-else>
-                  <CalendarX class="mr-2 h-4 w-4" />
-                  {{ $t("game_server.disable_scheduling") }}
-                </template>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-
-            <DropdownMenuSeparator />
-
             <DropdownMenuItem
               @click="removeGameNodeServer"
               class="text-red-500"
@@ -927,12 +897,19 @@ const isSectionExpanded = (section: string) => {
       >
         <!-- Card Header -->
         <div class="flex items-start gap-3">
-          <div class="flex-1 min-w-0">
-            <GameServerNodeDisplay
-              :game-server-node="gameServerNode"
-              :max-servers="maxServers"
-              :cpu-pinning-enabled="cpuPinningEnabled"
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <NodeControlMenu
+              :node="gameServerNode"
+              align="start"
+              class="shrink-0"
             />
+            <div class="min-w-0">
+              <GameServerNodeDisplay
+                :game-server-node="gameServerNode"
+                :max-servers="maxServers"
+                :cpu-pinning-enabled="cpuPinningEnabled"
+              />
+            </div>
           </div>
 
           <!-- Right Column with Region, Max Servers, and Ports -->
@@ -1125,40 +1102,6 @@ const isSectionExpanded = (section: string) => {
                   <span>{{ $t("game_server.edit_ports") }}</span>
                 </div>
               </DropdownMenuItem>
-
-              <DropdownMenuSeparator />
-
-              <DropdownMenuGroup>
-                <DropdownMenuItem @click="toggleEnabled">
-                  <template v-if="gameServerNode.enabled">
-                    <PowerOff class="mr-2 h-4 w-4" />
-                    <span>{{ $t("game_server.disable_node") }}</span>
-                  </template>
-                  <template v-else>
-                    <Power class="mr-2 h-4 w-4" />
-                    <span>{{ $t("game_server.enable_node") }}</span>
-                  </template>
-                </DropdownMenuItem>
-
-                <DropdownMenuItem
-                  v-if="gameServerNode.enabled"
-                  @click="toggleGameServerNodeScheduling"
-                >
-                  <template
-                    v-if="
-                      gameServerNode.status ===
-                      e_game_server_node_statuses_enum.NotAcceptingNewMatches
-                    "
-                  >
-                    <CalendarCheck class="mr-2 h-4 w-4" />
-                    {{ $t("game_server.enable_scheduling") }}
-                  </template>
-                  <template v-else>
-                    <CalendarX class="mr-2 h-4 w-4" />
-                    {{ $t("game_server.disable_scheduling") }}
-                  </template>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
 
               <DropdownMenuSeparator />
 
@@ -1776,6 +1719,9 @@ interface GameServerNode {
   end_port_range: number;
   label?: string;
   gpu?: boolean;
+  gpu_streaming_enabled?: boolean;
+  gpu_demos_enabled?: boolean;
+  gpu_rendering_enabled?: boolean;
   cs2_video_settings?: Record<string, unknown> | null;
   supports_low_latency?: boolean;
   supports_cpu_pinning?: boolean;
@@ -1813,7 +1759,6 @@ interface ComponentData {
   portForm: ReturnType<typeof useForm>;
   server_regions: ServerRegion[];
   removingNode: boolean;
-  togglingScheduling: boolean;
 }
 
 export default defineComponent({
@@ -1903,7 +1848,6 @@ export default defineComponent({
       editCs2OptionsSheet: false,
       server_regions: [],
       removingNode: false,
-      togglingScheduling: false,
       pinBuildIdForm: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -2231,54 +2175,6 @@ export default defineComponent({
       toast({
         title: this.$t("demo_network_limiter.updated"),
       });
-    },
-    async toggleEnabled() {
-      await this.$apollo.mutate({
-        mutation: generateMutation({
-          update_game_server_nodes_by_pk: [
-            {
-              pk_columns: {
-                id: this.gameServerNode.id,
-              },
-              _set: {
-                enabled: !this.gameServerNode.enabled,
-              },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-    },
-    async toggleGameServerNodeScheduling() {
-      if (this.togglingScheduling) {
-        return;
-      }
-      this.togglingScheduling = true;
-      try {
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            setGameNodeSchedulingState: [
-              {
-                game_server_node_id: this.gameServerNode.id,
-                enabled:
-                  this.gameServerNode.status ===
-                  e_game_server_node_statuses_enum.NotAcceptingNewMatches,
-              },
-              {
-                success: true,
-              },
-            ],
-          }),
-        });
-
-        toast({
-          title: this.$t("game_server.toast.scheduling_updated"),
-        });
-      } finally {
-        this.togglingScheduling = false;
-      }
     },
     toggleLogs() {
       this.showLogs = !this.showLogs;

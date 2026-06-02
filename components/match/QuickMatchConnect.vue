@@ -100,7 +100,7 @@ import { e_match_status_enum } from "~/generated/zeus";
         >
           <ClipBoard
             :data="match.connection_string"
-            class="shrink-0 p-3 h-12 w-12"
+            class="shrink-0 p-3 h-12 w-12 connect-action"
             :class="{
               grow: !match.connection_link,
             }"
@@ -115,7 +115,11 @@ import { e_match_status_enum } from "~/generated/zeus";
           </ClipBoard>
           <template v-if="match.connection_link">
             <a :href="match.connection_link" class="w-full" @click="handleClick">
-              <Button variant="outline" class="w-full" :loading="isLoading">
+              <Button
+                variant="outline"
+                class="w-full h-12 connect-action"
+                :loading="isLoading"
+              >
                 <div class="relative flex items-center" v-if="isInLineup">
                   <span
                     class="absolute w-2 h-2 rounded-full animate-ping"

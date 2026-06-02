@@ -29,7 +29,7 @@ import {
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import DesktopSnapshot from "~/components/match/DesktopSnapshot.vue";
 import { Input } from "~/components/ui/input";
-import { Switch } from "~/components/ui/switch";
+import NodeControlMenu from "~/components/game-server-nodes/NodeControlMenu.vue";
 import {
   Sheet,
   SheetContent,
@@ -159,48 +159,6 @@ const steamPanelOpen = ref(false);
 const newSteamUsername = ref("");
 const newSteamPassword = ref("");
 const deleteSteamTarget = ref<{ id: string; username: string } | null>(null);
-
-async function toggleNodeEnabled(node: any, enabled: boolean) {
-  try {
-    await apolloClient.mutate({
-      mutation: generateMutation({
-        update_game_server_nodes_by_pk: [
-          { pk_columns: { id: node.id }, _set: { enabled } },
-          { id: true },
-        ],
-      }),
-    });
-  } catch (error: any) {
-    toast({
-      variant: "destructive",
-      title: t("pages.gpu_nodes.toggle_enabled_failed"),
-      description: error?.message,
-    });
-  }
-}
-
-async function toggleNodeScheduling(node: any, accepting: boolean) {
-  try {
-    await apolloClient.mutate({
-      mutation: generateMutation({
-        setGameNodeSchedulingState: [
-          { game_server_node_id: node.id, enabled: accepting },
-          { success: true },
-        ],
-      }),
-    });
-  } catch (error: any) {
-    toast({
-      variant: "destructive",
-      title: t("pages.gpu_nodes.toggle_scheduling_failed"),
-      description: error?.message,
-    });
-  }
-}
-
-function nodeHasPorts(node: any): boolean {
-  return Boolean(node?.start_port_range && node?.end_port_range);
-}
 
 function isBaking(node: any): boolean {
   const status = node?.shader_bake_status;
@@ -484,27 +442,38 @@ async function stopGpuSession(nodeId: string) {
 
         <!-- Row: status + identity + controls -->
         <div class="gpu-node-row">
-          <!-- LED -->
-          <span
-            class="gpu-led"
-            :data-tone="
-              !node.enabled
-                ? 'offline'
-                : busyByNode[node.id]
-                  ? 'operational'
-                  : node.status === 'Online'
-                    ? 'idle'
-                    : 'degraded'
-            "
-            aria-hidden="true"
-          >
-            <span class="gpu-led-ping"></span>
-            <span class="gpu-led-core"></span>
-          </span>
+          <!-- Node control menu -->
+          <NodeControlMenu :node="node" align="start" />
 
           <!-- Identity -->
           <div class="gpu-node-id">
             <div class="gpu-node-name">
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <span
+                    class="gpu-led gpu-led-status"
+                    :data-tone="
+                      !node.enabled
+                        ? 'offline'
+                        : busyByNode[node.id]
+                          ? 'operational'
+                          : node.status === 'Online'
+                            ? 'idle'
+                            : 'degraded'
+                    "
+                  >
+                    <span class="gpu-led-ping"></span>
+                    <span class="gpu-led-core"></span>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {{
+                    !node.enabled
+                      ? $t("pages.gpu_nodes.disabled")
+                      : node.e_status?.description || node.status
+                  }}
+                </TooltipContent>
+              </Tooltip>
               <template v-if="node.gpu_info && node.gpu_info.length">
                 {{ node.gpu_info[0].name }}
                 <span v-if="node.gpu_info[0].memory_mb" class="gpu-node-vram">
@@ -593,37 +562,6 @@ async function stopGpuSession(nodeId: string) {
               <Square class="w-3.5 h-3.5" />
               {{ confirmStopByNodeId[node.id] ? "Confirm" : "Stop" }}
             </button>
-
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <label class="gpu-toggle">
-                  <span>{{ $t("pages.gpu_nodes.enabled") }}</span>
-                  <Switch
-                    :model-value="node.enabled"
-                    @update:model-value="(v) => toggleNodeEnabled(node, !!v)"
-                  />
-                </label>
-              </TooltipTrigger>
-              <TooltipContent>
-                {{ $t("pages.gpu_nodes.toggle_enabled_help") }}
-              </TooltipContent>
-            </Tooltip>
-
-            <Tooltip v-if="nodeHasPorts(node)">
-              <TooltipTrigger as-child>
-                <label class="gpu-toggle">
-                  <span>{{ $t("pages.gpu_nodes.accepting_matches") }}</span>
-                  <Switch
-                    :model-value="node.status === 'Online'"
-                    :disabled="!node.enabled"
-                    @update:model-value="(v) => toggleNodeScheduling(node, !!v)"
-                  />
-                </label>
-              </TooltipTrigger>
-              <TooltipContent>
-                {{ $t("pages.gpu_nodes.toggle_scheduling_help") }}
-              </TooltipContent>
-            </Tooltip>
 
             <Tooltip>
               <TooltipTrigger as-child>
@@ -1070,6 +1008,9 @@ export default {
               region: true,
               gpu: true,
               gpu_info: true,
+              gpu_streaming_enabled: true,
+              gpu_demos_enabled: true,
+              gpu_rendering_enabled: true,
               cs2_video_settings: true,
               public_ip: true,
               lan_ip: true,
@@ -1081,7 +1022,7 @@ export default {
               shader_bake_progress_stage: true,
               e_region: { description: true },
               e_status: { description: true },
-            },
+            } as any,
           ],
         }),
         result(this: any, { data }: any) {
@@ -1333,8 +1274,8 @@ export default {
   animation: gpu-ping 2.6s ease-in-out infinite;
 }
 .gpu-led[data-tone="idle"] .gpu-led-core {
-  background: hsl(var(--t-idle));
-  box-shadow: 0 0 10px hsl(var(--t-idle) / 0.7);
+  background: hsl(var(--t-ok));
+  box-shadow: 0 0 10px hsl(var(--t-ok) / 0.7);
 }
 .gpu-led[data-tone="degraded"] .gpu-led-core,
 .gpu-led[data-tone="warn"] .gpu-led-core {
@@ -1483,22 +1424,12 @@ export default {
   pointer-events: none;
   opacity: 0.4;
 }
-.gpu-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.3rem 0.55rem;
-  border: 1px solid hsl(var(--border) / 0.6);
-  border-radius: 0.4rem;
-  background: hsl(var(--card) / 0.4);
+.gpu-led-status {
   cursor: pointer;
+  transition: transform 0.15s;
 }
-.gpu-toggle span {
-  font-family: ui-monospace, monospace;
-  font-size: 0.55rem;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: hsl(var(--muted-foreground));
+.gpu-led-status:hover {
+  transform: scale(1.25);
 }
 .gpu-icon-btn {
   display: inline-flex;

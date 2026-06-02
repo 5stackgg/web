@@ -38,16 +38,16 @@ const demoId = computed(() => {
 // a sentinel and store.matchMapId holds the resolved id after start().
 const attach = computed(() => {
   const v = route.query.attach;
-  return (
-    matchMapId.value === "dev" || v === "1" || v === "true" || v === ""
-  );
+  return matchMapId.value === "dev" || v === "1" || v === "true" || v === "";
 });
 const authStore = useAuthStore();
 const { store, start, stop } = useDemoPlayback();
 
 // In attach mode the route param ("dev") isn't a real id — the resolved one
 // lives in the store after start(). Use it for the WS watch + player binding.
-const effectiveMatchMapId = computed(() => store.matchMapId || matchMapId.value);
+const effectiveMatchMapId = computed(
+  () => store.matchMapId || matchMapId.value,
+);
 
 const shortcutsOpen = ref(false);
 const slotKeys = computed(() => specSlotsForMatchType(store.matchType));

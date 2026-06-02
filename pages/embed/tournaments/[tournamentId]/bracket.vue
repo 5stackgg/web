@@ -4,10 +4,7 @@ definePageMeta({ layout: false });
 </script>
 
 <template>
-  <TooltipProvider
-    :skip-delay-duration="300"
-    :disable-hoverable-content="true"
-  >
+  <TooltipProvider :skip-delay-duration="300" :disable-hoverable-content="true">
     <div class="flex h-screen w-screen flex-col overflow-hidden bg-background">
       <header
         v-if="tournament"

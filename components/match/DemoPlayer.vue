@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
+import DesktopSnapshot from "~/components/match/DesktopSnapshot.vue";
 import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
 import DemoPlaybackControls from "~/components/match/DemoPlaybackControls.vue";
 import ClipEditorBar from "~/components/clips/ClipEditorBar.vue";
@@ -145,6 +146,12 @@ function closeWindow() {
             :can-skip="canSeeBoot"
             :skipping="skippingShaders"
             @skip="onSkipShaders"
+          />
+          <DesktopSnapshot
+            v-if="store.sessionRow?.id"
+            kind="demo"
+            :id="store.sessionRow.id"
+            class="w-full max-w-md overflow-hidden rounded-md border border-border/50"
           />
           <Button
             v-if="store.isErrored || store.localStatus === 'error'"

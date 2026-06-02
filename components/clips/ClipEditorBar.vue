@@ -389,9 +389,7 @@ function onRenderClose() {
           </span>
           <span class="h-3 w-px bg-border/60" />
           <span class="text-[hsl(var(--tac-amber)/0.85)]">
-            {{
-              formatSeconds(ticksToSeconds(editor.totalSelectedTicks.value))
-            }}
+            {{ formatSeconds(ticksToSeconds(editor.totalSelectedTicks.value)) }}
           </span>
         </div>
 

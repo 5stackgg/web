@@ -26,6 +26,7 @@ import {
   ScrollText,
 } from "lucide-vue-next";
 import ServiceLogs from "~/components/ServiceLogs.vue";
+import DesktopSnapshot from "~/components/match/DesktopSnapshot.vue";
 import { Input } from "~/components/ui/input";
 import { Switch } from "~/components/ui/switch";
 import {
@@ -178,6 +179,10 @@ function nodeHasPorts(node: any): boolean {
 function isBaking(node: any): boolean {
   const status = node?.shader_bake_status;
   return status !== null && status !== undefined && status !== "done";
+}
+
+function isOffline(node: any): boolean {
+  return node?.status === "Offline";
 }
 
 function bakeErrored(node: any): boolean {
@@ -547,7 +552,10 @@ async function stopGpuSession(nodeId: string) {
           </div>
 
           <!-- Controls -->
-          <div class="gpu-node-ctrls">
+          <div
+            class="gpu-node-ctrls"
+            :class="{ 'gpu-node-ctrls-offline': isOffline(node) }"
+          >
             <button
               v-if="busyByNode[node.id]"
               type="button"
@@ -672,6 +680,19 @@ async function stopGpuSession(nodeId: string) {
           </div>
         </div>
 
+        <div v-if="busyByNode[node.id]" class="gpu-bake-preview">
+          <DesktopSnapshot
+            :kind="busyByNode[node.id].snapshotKind"
+            :id="busyByNode[node.id].snapshotId"
+            :force-empty="busyByNode[node.id].rendering"
+            :empty-label="
+              busyByNode[node.id].kind === 'highlights'
+                ? $t('match.stream.rendering_highlights')
+                : ''
+            "
+          />
+        </div>
+
         <!-- Shader bake pipeline (only while baking) -->
         <div
           v-if="isBaking(node)"
@@ -741,6 +762,10 @@ async function stopGpuSession(nodeId: string) {
                 />
               </span>
             </div>
+          </div>
+
+          <div class="gpu-bake-preview">
+            <DesktopSnapshot kind="bake" :id="node.id" />
           </div>
         </div>
 
@@ -916,6 +941,9 @@ type BusyEntry = {
   who: string;
   subline: string;
   matchId?: string;
+  snapshotKind: "live" | "demo" | "bake" | "clips";
+  snapshotId: string;
+  rendering?: boolean;
   icon: any;
 };
 
@@ -952,6 +980,8 @@ export default {
           who: matchupOf(stream.match) || "Live match",
           subline: matchupOf(stream.match) || "Live match",
           matchId: stream.match_id,
+          snapshotKind: "live",
+          snapshotId: stream.match_id,
           icon: Radio,
         };
       }
@@ -966,6 +996,8 @@ export default {
           who: watcher,
           subline: matchupOf(session.match) || "Demo playback",
           matchId: session.match_id,
+          snapshotKind: "demo",
+          snapshotId: session.id,
           icon: PlayCircle,
         };
       }
@@ -981,6 +1013,9 @@ export default {
           who,
           subline: matchupOf(job.match_map?.match) || "Highlight render",
           matchId: job.match_map?.match?.id,
+          snapshotKind: "clips",
+          snapshotId: job.id,
+          rendering: job.status === "rendering" || job.status === "uploading",
           icon: Film,
         };
       }
@@ -1414,6 +1449,10 @@ export default {
   gap: 0.5rem;
   margin-left: auto;
 }
+.gpu-node-ctrls-offline {
+  pointer-events: none;
+  opacity: 0.4;
+}
 .gpu-toggle {
   display: inline-flex;
   align-items: center;
@@ -1585,6 +1624,13 @@ export default {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 0.5rem;
+}
+.gpu-bake-preview {
+  margin-top: 0.75rem;
+  max-width: 22rem;
+  border-radius: 0.375rem;
+  overflow: hidden;
+  border: 1px solid hsl(var(--border) / 0.6);
 }
 .gpu-bake-seg {
   display: flex;

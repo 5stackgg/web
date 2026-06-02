@@ -531,7 +531,7 @@ onMounted(() => {
               </span>
               {{ clip.visibility }}
             </PopoverTrigger>
-            <PopoverContent class="w-64 p-1" align="end">
+            <PopoverContent class="z-[70] w-64 p-1" align="end">
               <div
                 class="px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
               >

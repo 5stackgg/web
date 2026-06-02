@@ -9,6 +9,9 @@ const MATCH_TYPES = ["MatchStatusChange", "MatchSupport"];
 const SERVER_TYPES = ["DedicatedServerStatus", "DedicatedServerRconStatus"];
 const NODE_TYPES = ["GameNodeStatus"];
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 const MATCH_STATUS_TONE: Record<string, string> = {
   Live: "bg-red-500/20 text-red-300 border-red-500/30",
   Finished: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
@@ -43,11 +46,17 @@ export default defineComponent({
   },
   computed: {
     loading() {
-      if (!this.kind) return false;
+      if (!this.kind || !this.hasValidEntity) return false;
       if (this.kind === "match") return !this.matchLoaded;
       if (this.kind === "server") return !this.serverLoaded;
       if (this.kind === "node") return !this.nodeLoaded;
       return false;
+    },
+    hasValidEntity() {
+      // match/server are keyed by uuid; node ids are plain strings. Sentinel
+      // entity_ids (e.g. "plugin_version") must not trigger a *_by_pk lookup.
+      if (this.kind === "node") return !!this.entityId;
+      return UUID_RE.test(this.entityId ?? "");
     },
     kind() {
       if (MATCH_TYPES.includes(this.type)) return "match";
@@ -113,7 +122,7 @@ export default defineComponent({
     $subscribe: {
       match: {
         skip: function (this: any) {
-          return this.kind !== "match" || !this.entityId;
+          return this.kind !== "match" || !this.hasValidEntity;
         },
         query: typedGql("subscription")({
           matches_by_pk: [
@@ -136,7 +145,7 @@ export default defineComponent({
       },
       server: {
         skip: function (this: any) {
-          return this.kind !== "server" || !this.entityId;
+          return this.kind !== "server" || !this.hasValidEntity;
         },
         query: typedGql("subscription")({
           servers_by_pk: [

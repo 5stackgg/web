@@ -333,11 +333,6 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
                       "pages.settings.application.demo_settings.visibility_private",
                     )
                   }}</SelectItem>
-                  <SelectItem value="unlisted">{{
-                    $t(
-                      "pages.settings.application.demo_settings.visibility_unlisted",
-                    )
-                  }}</SelectItem>
                   <SelectItem value="public">{{
                     $t(
                       "pages.settings.application.demo_settings.visibility_public",
@@ -455,7 +450,7 @@ export default {
             clips_min_retention: z.number().int().min(1).default(1),
             clips_max_storage: z.number().int().min(1).default(10),
             auto_clip_default_visibility: z
-              .enum(["private", "unlisted", "public"])
+              .enum(["private", "public"])
               .default("private"),
             clip_video_codec: z.enum(["h265", "h264"]).default("h265"),
             clip_fps: z.enum(["30", "60"]).default("60"),

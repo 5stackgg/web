@@ -730,7 +730,6 @@
           "auto_clip_default_visibility": "Default visibility for auto-generated highlights",
           "auto_clip_default_visibility_description": "Starting visibility for new auto-generated highlights.",
           "visibility_private": "Private",
-          "visibility_unlisted": "Unlisted",
           "visibility_public": "Public",
           "default_hud_mode": "Default HUD style",
           "default_hud_mode_description": "Which JTs Hud Manager layout the game-streamer pod loads at boot for live streams, demo playback, and batch highlights. Streamers can still switch styles per-stream from the player controls.",
@@ -812,7 +811,6 @@
       "visibility_filter": {
         "all": "All",
         "public": "Public",
-        "unlisted": "Unlisted",
         "private": "Private"
       },
       "empty": {
@@ -3754,8 +3752,6 @@
     "visibility": {
       "public": "Public",
       "public_hint": "Listed in the highlights feed",
-      "unlisted": "Unlisted",
-      "unlisted_hint": "Hidden from feeds — anyone with the link can view",
       "private": "Private",
       "private_hint": "Hidden from feeds — file URL still plays if shared"
     }

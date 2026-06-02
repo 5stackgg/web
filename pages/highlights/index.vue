@@ -5,7 +5,6 @@ import { useI18n } from "vue-i18n";
 import {
   Film,
   Lock,
-  Eye,
   Globe,
   Clapperboard,
   ListVideo,
@@ -62,7 +61,7 @@ const { t } = useI18n();
 const clipQueueScope = "highlights-index";
 const { activeClipId, clearClipQueue, setClipQueue } = useClipModal();
 
-type Filter = "all" | "public" | "private" | "unlisted";
+type Filter = "all" | "public" | "private";
 
 const auth = useAuthStore();
 const isAdmin = computed(() => auth.isAdmin);
@@ -491,11 +490,6 @@ const adminFilters = computed<
     value: "public",
     label: t("pages.highlights.visibility_filter.public"),
     icon: Globe,
-  },
-  {
-    value: "unlisted",
-    label: t("pages.highlights.visibility_filter.unlisted"),
-    icon: Eye,
   },
   {
     value: "private",

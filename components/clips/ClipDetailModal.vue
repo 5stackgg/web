@@ -17,7 +17,6 @@ import {
   Share2,
   Check,
   Pencil,
-  Eye,
   Lock,
   Globe,
   X,
@@ -117,7 +116,7 @@ const draftTitle = ref("");
 const saving = ref(false);
 const editError = ref<string | null>(null);
 
-type Visibility = "private" | "unlisted" | "public";
+type Visibility = "private" | "public";
 const VISIBILITY_OPTIONS = computed<
   Array<{
     value: Visibility;
@@ -131,12 +130,6 @@ const VISIBILITY_OPTIONS = computed<
     label: t("clips.visibility.public"),
     icon: Globe,
     hint: t("clips.visibility.public_hint"),
-  },
-  {
-    value: "unlisted",
-    label: t("clips.visibility.unlisted"),
-    icon: Eye,
-    hint: t("clips.visibility.unlisted_hint"),
   },
   {
     value: "private",
@@ -503,9 +496,7 @@ onMounted(() => {
               :class="
                 clip.visibility === 'public'
                   ? 'text-emerald-300 hover:text-emerald-200'
-                  : clip.visibility === 'unlisted'
-                    ? 'text-amber-300 hover:text-amber-200'
-                    : 'text-muted-foreground hover:text-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
               "
               :title="
                 $t('ui_extras.visibility_change_hint', {
@@ -518,18 +509,12 @@ onMounted(() => {
                 :class="
                   clip.visibility === 'public'
                     ? 'bg-emerald-400/15'
-                    : clip.visibility === 'unlisted'
-                      ? 'bg-amber-400/15'
-                      : 'bg-white/5'
+                    : 'bg-white/5'
                 "
               >
                 <Spinner v-if="visSaving" class="h-3 w-3" />
                 <Lock
                   v-else-if="clip.visibility === 'private'"
-                  class="h-3 w-3"
-                />
-                <Eye
-                  v-else-if="clip.visibility === 'unlisted'"
                   class="h-3 w-3"
                 />
                 <Globe v-else class="h-3 w-3" />
@@ -556,9 +541,7 @@ onMounted(() => {
                   :class="
                     opt.value === 'public'
                       ? 'bg-emerald-400/15 text-emerald-300'
-                      : opt.value === 'unlisted'
-                        ? 'bg-amber-400/15 text-amber-300'
-                        : 'bg-muted/40 text-muted-foreground'
+                      : 'bg-muted/40 text-muted-foreground'
                   "
                 >
                   <component :is="opt.icon" class="h-3 w-3" />
@@ -586,16 +569,13 @@ onMounted(() => {
             :class="
               clip.visibility === 'public'
                 ? 'text-emerald-300'
-                : clip.visibility === 'unlisted'
-                  ? 'text-amber-300'
-                  : 'text-muted-foreground'
+                : 'text-muted-foreground'
             "
             :title="
               $t('ui_extras.visibility_label', { value: clip.visibility })
             "
           >
             <Lock v-if="clip.visibility === 'private'" class="h-3 w-3" />
-            <Eye v-else-if="clip.visibility === 'unlisted'" class="h-3 w-3" />
             <Globe v-else class="h-3 w-3" />
             {{ clip.visibility }}
           </span>

@@ -96,7 +96,7 @@ import NotificationStack from "~/components/notification/NotificationStack.vue";
         size="sm"
         variant="outline"
         @click="dismissAllNotifications"
-        class="w-full"
+        class="flex-1"
       >
         {{ $t("layouts.notifications.dismiss_all") }}
       </Button>
@@ -104,7 +104,7 @@ import NotificationStack from "~/components/notification/NotificationStack.vue";
         size="sm"
         variant="outline"
         @click="deleteAllReadNotifications"
-        class="w-full bg-destructive text-white"
+        class="flex-1 text-destructive hover:bg-destructive hover:text-white"
       >
         {{ $t("layouts.notifications.delete_all_read") }}
       </Button>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   Film,
@@ -104,15 +104,28 @@ const VISIBILITY_OPTIONS = computed<
 const saving = ref(false);
 const visPopoverOpen = ref(false);
 
+// The highlights/match lists load clips with a network-only query, so the
+// updateClip mutation (which returns only { success }) never refreshes this
+// card's prop. Track the displayed visibility locally, sync it when the prop
+// changes, and set it on a successful toggle so the chip reflects the new
+// state immediately instead of only after a page refresh.
+const visibility = ref<Visibility>(props.clip.visibility as Visibility);
+watch(
+  () => props.clip.visibility,
+  (v) => {
+    visibility.value = v as Visibility;
+  },
+);
+
 const currentVisibilityMeta = computed(() => {
   return (
-    VISIBILITY_OPTIONS.value.find((o) => o.value === props.clip.visibility) ??
+    VISIBILITY_OPTIONS.value.find((o) => o.value === visibility.value) ??
     VISIBILITY_OPTIONS.value[2]
   );
 });
 
 async function setVisibility(v: Visibility) {
-  if (saving.value || props.clip.visibility === v) {
+  if (saving.value || visibility.value === v) {
     visPopoverOpen.value = false;
     return;
   }
@@ -126,6 +139,7 @@ async function setVisibility(v: Visibility) {
         ],
       } as any),
     });
+    visibility.value = v;
     visPopoverOpen.value = false;
   } catch (e) {
     console.error("[highlight-card] visibility toggle failed:", e);
@@ -199,20 +213,20 @@ async function setVisibility(v: Visibility) {
               class="inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm transition-colors hover:bg-black/90 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
               :aria-label="
                 $t('ui_extras.visibility_change_hint', {
-                  value: clip.visibility,
+                  value: visibility,
                 })
               "
               :title="
-                $t('ui_extras.visibility_label', { value: clip.visibility })
+                $t('ui_extras.visibility_label', { value: visibility })
               "
               @click.stop
             >
               <span
                 class="inline-flex h-4 w-4 items-center justify-center rounded-full"
                 :class="
-                  clip.visibility === 'public'
+                  visibility === 'public'
                     ? 'bg-emerald-400/20 text-emerald-300'
-                    : clip.visibility === 'unlisted'
+                    : visibility === 'unlisted'
                       ? 'bg-amber-400/20 text-amber-300'
                       : 'bg-white/10 text-white/80'
                 "
@@ -241,7 +255,7 @@ async function setVisibility(v: Visibility) {
                 :key="opt.value"
                 type="button"
                 class="w-full text-left flex items-start gap-2 rounded px-2 py-1.5 text-xs hover:bg-muted/60 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
-                :class="clip.visibility === opt.value ? 'bg-muted/40' : ''"
+                :class="visibility === opt.value ? 'bg-muted/40' : ''"
                 :disabled="saving"
                 @click="setVisibility(opt.value)"
               >
@@ -261,7 +275,7 @@ async function setVisibility(v: Visibility) {
                   <span class="flex items-center gap-1.5 font-medium">
                     {{ opt.label }}
                     <Check
-                      v-if="clip.visibility === opt.value"
+                      v-if="visibility === opt.value"
                       class="h-3 w-3 text-[hsl(var(--tac-amber))]"
                     />
                   </span>
@@ -278,18 +292,18 @@ async function setVisibility(v: Visibility) {
             v-else
             class="inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm pointer-events-none"
             :title="
-              $t('ui_extras.visibility_label', { value: clip.visibility })
+              $t('ui_extras.visibility_label', { value: visibility })
             "
             :aria-label="
-              $t('ui_extras.visibility_label', { value: clip.visibility })
+              $t('ui_extras.visibility_label', { value: visibility })
             "
           >
             <span
               class="inline-flex h-4 w-4 items-center justify-center rounded-full"
               :class="
-                clip.visibility === 'public'
+                visibility === 'public'
                   ? 'bg-emerald-400/20 text-emerald-300'
-                  : clip.visibility === 'unlisted'
+                  : visibility === 'unlisted'
                     ? 'bg-amber-400/20 text-amber-300'
                     : 'bg-white/10 text-white/80'
               "

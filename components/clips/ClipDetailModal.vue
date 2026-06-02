@@ -163,6 +163,11 @@ async function setVisibility(v: Visibility) {
         ],
       } as any),
     });
+    // The match_clips subscription does not always echo this change back
+    // promptly, so reflect it locally to keep the chip in sync.
+    if (clip.value) {
+      clip.value = { ...clip.value, visibility: v };
+    }
     visPopoverOpen.value = false;
   } catch (e) {
     console.error("[clip-modal] visibility toggle failed:", e);
@@ -531,7 +536,7 @@ onMounted(() => {
               </span>
               {{ clip.visibility }}
             </PopoverTrigger>
-            <PopoverContent class="w-64 p-1" align="end">
+            <PopoverContent class="z-[70] w-64 p-1" align="end">
               <div
                 class="px-2 py-1.5 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
               >

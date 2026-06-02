@@ -163,6 +163,11 @@ async function setVisibility(v: Visibility) {
         ],
       } as any),
     });
+    // The match_clips subscription does not always echo this change back
+    // promptly, so reflect it locally to keep the chip in sync.
+    if (clip.value) {
+      clip.value = { ...clip.value, visibility: v };
+    }
     visPopoverOpen.value = false;
   } catch (e) {
     console.error("[clip-modal] visibility toggle failed:", e);

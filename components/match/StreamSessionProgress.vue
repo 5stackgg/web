@@ -315,7 +315,10 @@ function formatShaderCount(raw: string | null | undefined): string {
               <span
                 v-if="formatInstallPhase(progressFor(stage.key)!.stage)"
                 class="text-foreground/80"
-                >{{ formatInstallPhase(progressFor(stage.key)!.stage) }} · </span
+                >{{
+                  formatInstallPhase(progressFor(stage.key)!.stage)
+                }}
+                · </span
               ><span class="text-foreground/80"
                 >{{ progressFor(stage.key)!.percent.toFixed(1) }}%</span
               >

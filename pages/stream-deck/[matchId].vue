@@ -32,6 +32,7 @@ import {
 } from "~/components/ui/popover";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
 import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
+import DesktopSnapshot from "~/components/match/DesktopSnapshot.vue";
 import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
 import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
 import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
@@ -919,6 +920,11 @@ watch(spectatedSteamId, (sid) => {
               :can-skip="true"
               :skipping="skippingShaders"
               @skip="onSkipShaders"
+            />
+            <DesktopSnapshot
+              kind="live"
+              :id="matchId"
+              class="mt-4 w-full max-w-md overflow-hidden rounded-md border border-border/50"
             />
           </template>
 

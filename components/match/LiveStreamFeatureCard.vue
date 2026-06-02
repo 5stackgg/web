@@ -6,6 +6,7 @@ import YouTubeIcon from "~/components/icons/YouTubeIcon.vue";
 import KickIcon from "~/components/icons/KickIcon.vue";
 import MatchTableRow from "~/components/MatchTableRow.vue";
 import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
+import DesktopSnapshot from "~/components/match/DesktopSnapshot.vue";
 
 type Stream = {
   id: string;
@@ -142,8 +143,14 @@ function onWatchClick(e: Event) {
     <div
       class="relative h-full w-full overflow-hidden bg-background/60 sm:border-r sm:border-border"
     >
+      <DesktopSnapshot
+        v-if="parsed?.platform === 'internal'"
+        kind="live"
+        :id="match.id"
+        :alt="primaryStream?.title || ''"
+      />
       <img
-        v-if="thumbnailUrl && !thumbFailed"
+        v-else-if="thumbnailUrl && !thumbFailed"
         :src="thumbnailUrl"
         :alt="primaryStream?.title || ''"
         loading="lazy"

@@ -2384,7 +2384,9 @@
     "team_stats_heading": "{name} Stats",
     "all_maps": "All Maps",
     "stream": {
-      "watch": "Live Stream"
+      "watch": "Live Stream",
+      "no_preview": "No preview yet",
+      "rendering_highlights": "Rendering Highlights"
     },
     "elo_details": {
       "title": "Elo Change Details",

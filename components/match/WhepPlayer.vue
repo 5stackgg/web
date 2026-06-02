@@ -375,7 +375,8 @@ async function videoFramesDecoded(): Promise<number | null> {
         (r.kind === "video" || r.mediaType === "video")
       ) {
         frames =
-          (frames < 0 ? 0 : frames) + (r.framesDecoded ?? r.framesReceived ?? 0);
+          (frames < 0 ? 0 : frames) +
+          (r.framesDecoded ?? r.framesReceived ?? 0);
       }
     });
     return frames < 0 ? null : frames;
@@ -480,7 +481,9 @@ function onVisibilityChange() {
         if (!pc || pc.connectionState !== "connected") return;
         const after = await videoFramesDecoded();
         if (after !== null && after <= before) {
-          console.debug("[whep] video still frozen after refocus — reconnecting");
+          console.debug(
+            "[whep] video still frozen after refocus — reconnecting",
+          );
           retryDelay = INITIAL_RETRY_DELAY_MS;
           void teardown().then(() => connect());
         }
@@ -791,7 +794,6 @@ defineExpose({ connect, teardown });
           Idle
         </p>
       </div>
-
     </div>
   </div>
 </template>

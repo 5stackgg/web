@@ -189,37 +189,22 @@ const DASH = "—";
       <TableCell class="tabular-nums">{{
         hasStats ? sideKills : DASH
       }}</TableCell>
-      <TableCell
-        v-if="overviewVis.assists !== false"
-        class="tabular-nums"
-      >
+      <TableCell v-if="overviewVis.assists !== false" class="tabular-nums">
         {{ hasStats ? sideAssists : DASH }}
       </TableCell>
       <TableCell class="tabular-nums">{{
         hasStats ? sideDeaths : DASH
       }}</TableCell>
-      <TableCell
-        v-if="overviewVis.kd !== false"
-        class="tabular-nums"
-      >
+      <TableCell v-if="overviewVis.kd !== false" class="tabular-nums">
         <span :class="kdrColor(kd)">{{ kd }}</span>
       </TableCell>
-      <TableCell
-        v-if="overviewVis.hs !== false"
-        class="tabular-nums"
-      >
+      <TableCell v-if="overviewVis.hs !== false" class="tabular-nums">
         {{ hs }}
       </TableCell>
-      <TableCell
-        v-if="overviewVis.survived !== false"
-        class="tabular-nums"
-      >
+      <TableCell v-if="overviewVis.survived !== false" class="tabular-nums">
         {{ survived }}
       </TableCell>
-      <TableCell
-        v-if="overviewVis.multikills !== false"
-        class="tabular-nums"
-      >
+      <TableCell v-if="overviewVis.multikills !== false" class="tabular-nums">
         <HoverCard
           v-if="(totalMultiKills ?? 0) > 0"
           :open-delay="100"

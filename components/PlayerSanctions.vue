@@ -305,9 +305,7 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
                 style="color-scheme: dark"
                 class="w-[120px]"
               />
-              <TooltipProvider
-                v-if="editDate || editTime"
-              >
+              <TooltipProvider v-if="editDate || editTime">
                 <Tooltip>
                   <TooltipTrigger as-child>
                     <Button

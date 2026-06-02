@@ -33,6 +33,7 @@ import { clipRenderJobFields } from "~/graphql/clipRenderJob";
 import { Button } from "~/components/ui/button";
 import RenderQueueBatchRow from "~/components/clips/RenderQueueBatchRow.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
+import DesktopSnapshot from "~/components/match/DesktopSnapshot.vue";
 import {
   Tooltip,
   TooltipContent,
@@ -1307,6 +1308,12 @@ const queueStatus = computed<{
                   </span>
                 </li>
               </ul>
+              <div
+                v-if="g.sample"
+                class="mt-3 max-w-sm overflow-hidden rounded-md border border-border/50"
+              >
+                <DesktopSnapshot kind="clips" :id="g.sample.id" />
+              </div>
             </div>
 
             <div
@@ -1694,108 +1701,108 @@ const queueStatus = computed<{
                 class="border-t border-border/30 bg-muted/10 divide-y divide-border/30"
               >
                 <div v-for="j in visibleFinishedJobs(g)" :key="j.id">
-                 <div class="flex items-center gap-2.5 py-1 pl-9 pr-2.5">
-                  <span
-                    class="inline-flex h-1.5 w-1.5 shrink-0 rounded-full"
-                    :class="STATUS_TONE[effectiveStatus(j)]?.dot"
-                  />
-                  <div class="min-w-0 flex-1">
-                    <div
-                      class="flex items-center gap-1.5 text-[0.72rem] text-muted-foreground"
-                      :title="j.error_message ?? clipTitle(j)"
-                    >
-                      <span class="truncate">{{ clipTitle(j) }}</span>
-                      <template v-for="d in clipDetails(j)" :key="d.label">
-                        <span
-                          class="shrink-0 inline-flex items-center rounded border px-1 py-px font-mono text-[0.52rem] uppercase tracking-[0.1em] tabular-nums leading-none"
-                          :class="
-                            d.tone === 'round'
-                              ? 'border-primary/40 bg-primary/10 text-primary'
-                              : d.tone === 'kills'
-                                ? 'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
-                                : 'border-border/60 bg-muted/30 text-muted-foreground/80'
-                          "
+                  <div class="flex items-center gap-2.5 py-1 pl-9 pr-2.5">
+                    <span
+                      class="inline-flex h-1.5 w-1.5 shrink-0 rounded-full"
+                      :class="STATUS_TONE[effectiveStatus(j)]?.dot"
+                    />
+                    <div class="min-w-0 flex-1">
+                      <div
+                        class="flex items-center gap-1.5 text-[0.72rem] text-muted-foreground"
+                        :title="j.error_message ?? clipTitle(j)"
+                      >
+                        <span class="truncate">{{ clipTitle(j) }}</span>
+                        <template v-for="d in clipDetails(j)" :key="d.label">
+                          <span
+                            class="shrink-0 inline-flex items-center rounded border px-1 py-px font-mono text-[0.52rem] uppercase tracking-[0.1em] tabular-nums leading-none"
+                            :class="
+                              d.tone === 'round'
+                                ? 'border-primary/40 bg-primary/10 text-primary'
+                                : d.tone === 'kills'
+                                  ? 'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+                                  : 'border-border/60 bg-muted/30 text-muted-foreground/80'
+                            "
+                          >
+                            {{ d.label }}
+                          </span>
+                        </template>
+                      </div>
+                      <div
+                        v-if="j.error_message"
+                        class="truncate font-mono text-[0.55rem] uppercase tracking-[0.12em] text-destructive/80"
+                      >
+                        {{ j.error_message }}
+                      </div>
+                      <div
+                        v-else-if="isMissingClip(j)"
+                        class="truncate font-mono text-[0.55rem] uppercase tracking-[0.12em] text-destructive/80"
+                      >
+                        {{ statusLabel("missing") }}
+                      </div>
+                    </div>
+                    <Tooltip v-if="isAdmin">
+                      <TooltipTrigger as-child>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          class="h-6 w-6 shrink-0 p-0 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
+                          :disabled="requeueingJob[j.id]"
+                          @click="requeueJob(j.id)"
                         >
-                          {{ d.label }}
-                        </span>
-                      </template>
-                    </div>
-                    <div
-                      v-if="j.error_message"
-                      class="truncate font-mono text-[0.55rem] uppercase tracking-[0.12em] text-destructive/80"
-                    >
-                      {{ j.error_message }}
-                    </div>
-                    <div
-                      v-else-if="isMissingClip(j)"
-                      class="truncate font-mono text-[0.55rem] uppercase tracking-[0.12em] text-destructive/80"
-                    >
-                      {{ statusLabel("missing") }}
-                    </div>
+                          <Loader2
+                            v-if="requeueingJob[j.id]"
+                            class="h-3 w-3 animate-spin"
+                          />
+                          <RotateCcw v-else class="h-3 w-3" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Re-queue clip</TooltipContent>
+                    </Tooltip>
+                    <Tooltip v-if="j.status === 'done' && j.clip_id">
+                      <TooltipTrigger as-child>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          class="h-6 w-6 shrink-0 p-0 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
+                          @click="openJobClip(g, j)"
+                        >
+                          <Play class="h-3 w-3" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>Preview clip</TooltipContent>
+                    </Tooltip>
+                    <Tooltip v-if="isAdmin && jobLogService(j)">
+                      <TooltipTrigger as-child>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          class="h-6 w-6 shrink-0 p-0"
+                          :class="
+                            logsExpanded[j.id]
+                              ? 'text-[hsl(var(--tac-amber))]'
+                              : 'text-muted-foreground hover:text-[hsl(var(--tac-amber))]'
+                          "
+                          @click="toggleJobLogs(j)"
+                        >
+                          <ScrollText class="h-3 w-3" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>View render job logs</TooltipContent>
+                    </Tooltip>
                   </div>
-                  <Tooltip v-if="isAdmin">
-                    <TooltipTrigger as-child>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        class="h-6 w-6 shrink-0 p-0 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                        :disabled="requeueingJob[j.id]"
-                        @click="requeueJob(j.id)"
-                      >
-                        <Loader2
-                          v-if="requeueingJob[j.id]"
-                          class="h-3 w-3 animate-spin"
-                        />
-                        <RotateCcw v-else class="h-3 w-3" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Re-queue clip</TooltipContent>
-                  </Tooltip>
-                  <Tooltip v-if="j.status === 'done' && j.clip_id">
-                    <TooltipTrigger as-child>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        class="h-6 w-6 shrink-0 p-0 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                        @click="openJobClip(g, j)"
-                      >
-                        <Play class="h-3 w-3" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Preview clip</TooltipContent>
-                  </Tooltip>
-                  <Tooltip v-if="isAdmin && jobLogService(j)">
-                    <TooltipTrigger as-child>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        class="h-6 w-6 shrink-0 p-0"
-                        :class="
-                          logsExpanded[j.id]
-                            ? 'text-[hsl(var(--tac-amber))]'
-                            : 'text-muted-foreground hover:text-[hsl(var(--tac-amber))]'
-                        "
-                        @click="toggleJobLogs(j)"
-                      >
-                        <ScrollText class="h-3 w-3" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>View render job logs</TooltipContent>
-                  </Tooltip>
-                 </div>
-                 <div
-                   v-if="isAdmin && logsExpanded[j.id] && jobLogService(j)"
-                   class="mb-1 ml-9 mr-2.5 flex h-72 flex-col overflow-hidden rounded border border-border/60 bg-background/40"
-                 >
-                   <ServiceLogs
-                     class="min-h-0 flex-1"
-                     :service="jobLogService(j)!"
-                     :compact="true"
-                     :disable-retry="TERMINAL.has(j.status)"
-                   />
-                 </div>
+                  <div
+                    v-if="isAdmin && logsExpanded[j.id] && jobLogService(j)"
+                    class="mb-1 ml-9 mr-2.5 flex h-72 flex-col overflow-hidden rounded border border-border/60 bg-background/40"
+                  >
+                    <ServiceLogs
+                      class="min-h-0 flex-1"
+                      :service="jobLogService(j)!"
+                      :compact="true"
+                      :disable-retry="TERMINAL.has(j.status)"
+                    />
+                  </div>
                 </div>
                 <button
                   v-if="g.totalCount > FINISHED_BATCH_CLIP_THRESHOLD"

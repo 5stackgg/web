@@ -1291,8 +1291,7 @@ export default {
   computed: {
     selectableMatchTypes(): { value: string; description: string }[] {
       return (this.e_match_types || []).filter(
-        (type: { value: string }) =>
-          type.value !== e_match_types_enum.Premier,
+        (type: { value: string }) => type.value !== e_match_types_enum.Premier,
       );
     },
     isLocked(): boolean {

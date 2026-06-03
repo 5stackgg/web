@@ -579,8 +579,8 @@ export default {
     },
     stats() {
       const arr =
-        this.member?.player?.match_map_stats ??
         this.member?.player?.match_stats ??
+        this.member?.player?.match_map_stats ??
         null;
       return Array.isArray(arr) && arr.length > 0 ? arr[0] : null;
     },

@@ -21,7 +21,7 @@ const { sortKey, sortDir, toggle, sortRows } = useTableSort<string>(
 
 function statFor(member: any) {
   const arr =
-    member?.player?.match_map_stats ?? member?.player?.match_stats ?? null;
+    member?.player?.match_stats ?? member?.player?.match_map_stats ?? null;
   return Array.isArray(arr) && arr.length > 0 ? arr[0] : null;
 }
 

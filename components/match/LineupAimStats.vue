@@ -254,7 +254,7 @@ export default {
     },
     statsFor(member: any) {
       const arr =
-        member?.player?.match_map_stats ?? member?.player?.match_stats ?? null;
+        member?.player?.match_stats ?? member?.player?.match_map_stats ?? null;
       return Array.isArray(arr) && arr.length > 0 ? arr[0] : null;
     },
     // Per stat: null only if the player has no stats row for this match.

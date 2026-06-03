@@ -407,12 +407,13 @@ export default {
         };
       }
       const gpu = useGpuPoolStatusStore();
-      if (gpu.hasLoaded && !gpu.hasFreeGpu) {
+      const demo = gpu.getAvailability("demo");
+      if (gpu.hasLoaded && !demo.hasFree) {
         return {
           icon: "play",
           disabled: true,
-          tooltip: gpu.busyReasonKey
-            ? this.$t(gpu.busyReasonKey)
+          tooltip: demo.busyReasonKey
+            ? this.$t(demo.busyReasonKey)
             : this.$t("stream_status.gpu_busy"),
           onClick: null,
         };

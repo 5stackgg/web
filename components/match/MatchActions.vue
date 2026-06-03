@@ -765,17 +765,19 @@ export default {
     // Live and the server is up — `can_stream_live` is the SQL truth.
     gpuBlocksAction() {
       const gpu = useGpuPoolStatusStore();
-      return gpu.hasLoaded && !gpu.hasFreeGpu;
+      return gpu.hasLoaded && !gpu.getAvailability("streaming").hasFree;
     },
     gpuBusyReason() {
       const gpu = useGpuPoolStatusStore();
-      return gpu.busyReasonKey ? this.$t(gpu.busyReasonKey) : null;
+      const key = gpu.getAvailability("streaming").busyReasonKey;
+      return key ? this.$t(key) : null;
     },
     canPreemptHighlights() {
       const gpu = useGpuPoolStatusStore();
       if (!gpu.hasLoaded) return false;
-      if (gpu.hasFreeGpu) return false;
-      return gpu.busyReasonKey === "gpu_pool_status.highlights_busy";
+      const streaming = gpu.getAvailability("streaming");
+      if (streaming.hasFree) return false;
+      return streaming.busyReasonKey === "gpu_pool_status.highlights_busy";
     },
     // Highlight queueing only needs a GPU node to *exist* (offline is OK).
     // hasFreeGpu collapses to false when the GPU is offline too, which is

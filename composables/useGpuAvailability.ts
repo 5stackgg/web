@@ -1,9 +1,12 @@
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useI18n } from "vue-i18n";
-import { useGpuPoolStatusStore } from "~/stores/GpuPoolStatusStore";
+import {
+  useGpuPoolStatusStore,
+  type GpuWorkload,
+} from "~/stores/GpuPoolStatusStore";
 
-export function useGpuAvailability() {
+export function useGpuAvailability(workload?: GpuWorkload) {
   const store = useGpuPoolStatusStore();
   const { status, hasFreeGpu, busyReasonKey, hasLoaded } = storeToRefs(store);
   // `useI18n()` runs in the calling component's setup context, where
@@ -11,8 +14,26 @@ export function useGpuAvailability() {
   // itself stays i18n-free so its setup can't be half-initialised when
   // the first caller is an async callback outside a Vue setup.
   const { t } = useI18n();
-  const busyReason = computed(() =>
-    busyReasonKey.value ? t(busyReasonKey.value) : null,
+
+  // When a workload is given, gate on that workload's own toggle/counts so
+  // e.g. the watch-demo button isn't blocked by the streaming toggle.
+  const availability = computed(() =>
+    workload ? store.getAvailability(workload) : null,
   );
-  return { status, hasFreeGpu, busyReason, hasLoaded };
+  const resolvedHasFreeGpu = computed(() =>
+    workload ? availability.value!.hasFree : hasFreeGpu.value,
+  );
+  const resolvedBusyReasonKey = computed(() =>
+    workload ? availability.value!.busyReasonKey : busyReasonKey.value,
+  );
+  const busyReason = computed(() =>
+    resolvedBusyReasonKey.value ? t(resolvedBusyReasonKey.value) : null,
+  );
+
+  return {
+    status,
+    hasFreeGpu: resolvedHasFreeGpu,
+    busyReason,
+    hasLoaded,
+  };
 }

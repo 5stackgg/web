@@ -288,6 +288,15 @@ async function toggleHudSides() {
   }));
 }
 
+// Rebuilds the overlay against the current layout so mid-match edits
+// (a swapped player image, renamed team) repaint without flipping
+// modes. busyAction "refresh hud" drives the button's spinner.
+async function refreshHud() {
+  await runMutation("refresh hud", () => ({
+    refreshLiveHud: [{ match_id: matchId.value }, { success: true }],
+  }));
+}
+
 // Hold-to-show scoreboard. Bypasses runMutation's busy gate on
 // purpose — the gate silently drops queued calls, which would leave
 // the scoreboard stuck on if the user releases the button before the
@@ -797,6 +806,18 @@ watch(spectatedSteamId, (sid) => {
             @click="toggleHudSides"
           >
             <ArrowLeftRight class="size-3" />
+          </button>
+
+          <button
+            v-if="isLive()"
+            type="button"
+            :disabled="busy"
+            class="inline-flex items-center justify-center h-7 w-7 rounded-md border border-border/60 bg-card/40 text-muted-foreground hover:text-foreground cursor-pointer transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+            title="Refresh HUD (reload player images)"
+            @click="refreshHud"
+          >
+            <Spinner v-if="busy && busyAction === 'refresh hud'" />
+            <RefreshCw v-else class="size-3" />
           </button>
 
           <!-- Same segmented tactical bar treatment as the deck card —

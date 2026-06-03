@@ -1,5 +1,19 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { weaponBasename, weaponIconFallback } from "~/utilities/weaponIcon";
+
+// Canonical icon first; if it 404s, retry the legacy strip-all path for old,
+// already-parsed demos before hiding.
+function onWeaponIconError(e: Event, weapon: string | null | undefined) {
+  const img = e.target as HTMLImageElement;
+  const fb = weaponIconFallback(weapon);
+  if (fb && !img.dataset.fb && !img.src.endsWith(fb)) {
+    img.dataset.fb = "1";
+    img.src = fb;
+  } else {
+    img.style.display = "none";
+  }
+}
 
 type RosterEntry = {
   steamId: string;
@@ -47,61 +61,6 @@ const props = defineProps<{
 
 defineEmits<{ (e: "focus"): void }>();
 
-function weaponIcon(weapon: string | null | undefined): string | null {
-  if (!weapon) return null;
-  const k = weapon.toLowerCase().replace(/[^a-z0-9]/g, "");
-  const map: Record<string, string> = {
-    ak47: "ak47",
-    m4a4: "m4a1",
-    m4a1: "m4a1_silencer",
-    famas: "famas",
-    galilar: "galilar",
-    galil: "galilar",
-    aug: "aug",
-    sg553: "sg556",
-    sg556: "sg556",
-    ssg08: "ssg08",
-    awp: "awp",
-    scar20: "scar20",
-    g3sg1: "g3sg1",
-    mac10: "mac10",
-    mp9: "mp9",
-    mp7: "mp7",
-    mp5sd: "mp5sd",
-    mp5: "mp5sd",
-    ump45: "ump45",
-    ump: "ump45",
-    p90: "p90",
-    pp19bizon: "bizon",
-    bizon: "bizon",
-    nova: "nova",
-    xm1014: "xm1014",
-    sawedoff: "sawedoff",
-    mag7: "mag7",
-    m249: "m249",
-    negev: "negev",
-    glock18: "glock",
-    glock: "glock",
-    usps: "usp_silencer",
-    p2000: "hkp2000",
-    hkp2000: "hkp2000",
-    p250: "p250",
-    fiveseven: "fiveseven",
-    cz75auto: "cz75a",
-    cz75: "cz75a",
-    tec9: "tec9",
-    dualberettas: "elite",
-    elite: "elite",
-    deserteagle: "deagle",
-    deagle: "deagle",
-    revolver: "revolver",
-    r8revolver: "revolver",
-    zeus: "taser",
-    taser: "taser",
-  };
-  return map[k] ?? null;
-}
-
 type GrenadeSlot = {
   key: "flash" | "smoke" | "he" | "molotov" | "decoy";
   baseIcon: string;
@@ -140,8 +99,12 @@ const armor = computed(() =>
   typeof props.live?.armor === "number" ? props.live!.armor! : 0,
 );
 
-const primaryIcon = computed(() => weaponIcon(props.loadout?.primary));
-const secondaryIcon = computed(() => weaponIcon(props.loadout?.secondary));
+const primaryIcon = computed(
+  () => weaponBasename(props.loadout?.primary) || null,
+);
+const secondaryIcon = computed(
+  () => weaponBasename(props.loadout?.secondary) || null,
+);
 </script>
 
 <template>
@@ -306,6 +269,7 @@ const secondaryIcon = computed(() => weaponIcon(props.loadout?.secondary));
             :alt="loadout.primary ?? ''"
             :title="loadout.primary ?? ''"
             class="h-5 w-auto max-w-[48px] opacity-95"
+            @error="onWeaponIconError($event, loadout.primary)"
           />
           <img
             v-if="secondaryIcon"
@@ -313,6 +277,7 @@ const secondaryIcon = computed(() => weaponIcon(props.loadout?.secondary));
             :alt="loadout.secondary ?? ''"
             :title="loadout.secondary ?? ''"
             class="h-4 w-auto max-w-[28px] opacity-85"
+            @error="onWeaponIconError($event, loadout.secondary)"
           />
         </div>
 

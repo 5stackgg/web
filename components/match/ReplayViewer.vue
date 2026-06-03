@@ -1,6 +1,20 @@
 <script lang="ts" setup>
 import { computed, ref, watch, onMounted, onUnmounted } from "vue";
 import { useI18n } from "vue-i18n";
+import { weaponIconPath, weaponIconFallback } from "~/utilities/weaponIcon";
+
+// Canonical icon first (5Stack/new demos); if it 404s, retry the legacy
+// strip-all path for old, already-parsed demos before hiding.
+function onWeaponIconError(e: Event, weapon: string | null | undefined) {
+  const img = e.target as HTMLImageElement;
+  const fb = weaponIconFallback(weapon);
+  if (fb && !img.dataset.fb && !img.src.endsWith(fb)) {
+    img.dataset.fb = "1";
+    img.src = fb;
+  } else {
+    img.style.display = "none";
+  }
+}
 import {
   Play,
   Pause,
@@ -1921,60 +1935,6 @@ const liveStateBySteam = computed(() => {
   }
   return m;
 });
-
-// Map a demo weapon name (e.g. "AK-47", "Desert Eagle", "Glock-18") to
-// the equipment SVG filename. demoinfocs strings don't line up cleanly
-// with the icon set — explicit aliases cover the common mismatches,
-// and the fallback strips non-alphanumerics and lowercases.
-const WEAPON_ICON_ALIASES: Record<string, string> = {
-  // pistols
-  "desert eagle": "deagle",
-  "glock-18": "glock",
-  "usp-s": "usp_silencer",
-  p2000: "p2000",
-  "dual berettas": "elite",
-  "five-seven": "fiveseven",
-  "cz75-auto": "cz75a",
-  "tec-9": "tec9",
-  "r8 revolver": "revolver",
-  // rifles
-  m4a4: "m4a1",
-  "m4a1-s": "m4a1_silencer",
-  "galil ar": "galilar",
-  "sg 553": "sg556",
-  "ssg 08": "ssg08",
-  "scar-20": "scar20",
-  // smgs
-  "pp-bizon": "bizon",
-  "mac-10": "mac10",
-  "mp5-sd": "mp5sd",
-  "ump-45": "ump45",
-  // heavy
-  "sawed-off": "sawedoff",
-  "mag-7": "mag7",
-  // grenades
-  "he grenade": "hegrenade",
-  "smoke grenade": "smokegrenade",
-  "incendiary grenade": "incgrenade",
-  molotov: "molotov",
-  // other
-  "zeus x27": "taser",
-  bomb: "c4",
-  world: "",
-};
-function weaponIconPath(w: string | undefined | null): string {
-  if (!w) return "";
-  const lower = w.toLowerCase().trim();
-  if (lower.includes("knife") || lower === "bayonet") {
-    return "/img/equipment/knife.svg";
-  }
-  const aliased = WEAPON_ICON_ALIASES[lower];
-  if (aliased === "") return "";
-  if (aliased) return `/img/equipment/${aliased}.svg`;
-  const slug = lower.replace(/[^a-z0-9]/g, "");
-  if (!slug) return "";
-  return `/img/equipment/${slug}.svg`;
-}
 
 const GRENADE_ICONS: Record<Grenade["type"], string> = {
   Flash: "/img/equipment/flashbang.svg",
@@ -3928,9 +3888,7 @@ function openReplayPopout() {
                 :alt="k.weapon"
                 :title="k.weapon"
                 class="h-4 w-auto opacity-90 shrink-0"
-                @error="
-                  ($event.target as HTMLImageElement).style.display = 'none'
-                "
+                @error="onWeaponIconError($event, k.weapon)"
               />
               <Crosshair
                 v-if="k.headshot"

@@ -43,22 +43,37 @@ function toggleMap(mm: any) {
 </script>
 
 <template>
-  <div>
-    <div v-if="loading" class="space-y-2 py-2">
-      <Skeleton class="h-6 w-32" />
-      <Skeleton class="h-4 w-full" />
-      <Skeleton class="h-4 w-5/6" />
-    </div>
-
-    <div
-      v-else-if="!focusLineup"
-      class="py-3 text-center text-xs text-muted-foreground"
+  <!-- min-height reserves the loaded panel's typical footprint so the
+       skeleton→data swap doesn't grow the row and shove the trailing
+       "match overview" button down. Cross-fade (out-in) the states so the
+       real stats fade in rather than popping. -->
+  <div class="relative min-h-[8.5rem]">
+    <Transition
+      mode="out-in"
+      enter-active-class="transition-opacity duration-200 ease-out"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition-opacity duration-100 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
     >
-      {{ $t("match.player_details_panel.stats_unavailable") }}
-    </div>
+      <div v-if="loading" key="loading" class="space-y-2 py-2">
+        <Skeleton class="h-6 w-40" />
+        <Skeleton class="h-16 w-full" />
+        <Skeleton class="h-4 w-5/6" />
+      </div>
 
-    <Tabs
-      v-else
+      <div
+        v-else-if="!focusLineup"
+        key="empty"
+        class="py-3 text-center text-xs text-muted-foreground"
+      >
+        {{ $t("match.player_details_panel.stats_unavailable") }}
+      </div>
+
+      <Tabs
+        v-else
+        key="content"
       :model-value="activeTab"
       @update:model-value="(v) => emit('update:active-tab', v as string)"
     >
@@ -159,6 +174,7 @@ function toggleMap(mm: any) {
           :hide-member="true"
         />
       </TabsContent>
-    </Tabs>
+      </Tabs>
+    </Transition>
   </div>
 </template>

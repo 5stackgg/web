@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import formatStatValue from "~/utilities/formatStatValue";
-import { kdrColor } from "~/utilities/kdrColor";
+import AnimatedStat from "~/components/AnimatedStat.vue";
+import StatChevron from "~/components/StatChevron.vue";
+import { KD_TIER, HLTV_TIER, KAST_TIER, ADR_TIER } from "~/utils/statTiers";
 import EloChangeBadge from "~/components/EloChangeBadge.vue";
 import PlayerMatchClipsButton from "~/components/match/PlayerMatchClipsButton.vue";
 import MultiKillDrilldown from "~/components/match/MultiKillDrilldown.vue";
@@ -47,7 +49,7 @@ const DASH = "—";
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" class="w-56">
-            <template v-if="lineup.can_update_lineup">
+            <template v-if="canManageLineup">
               <DropdownMenuItem @click="makeCaptain" :disabled="member.captain">
                 <span>{{ $t("match.overview.promote_captain") }}</span>
               </DropdownMenuItem>
@@ -61,7 +63,7 @@ const DASH = "—";
               <DropdownMenuItem
                 class="text-destructive"
                 @click="removeFromLineup"
-                v-if="lineup.can_update_lineup"
+                v-if="canManageLineup"
               >
                 <span>{{ $t("match.overview.remove_from_lineup") }}</span>
               </DropdownMenuItem>
@@ -69,7 +71,7 @@ const DASH = "—";
 
             <DropdownMenuItem
               @click="switchTeams"
-              v-if="!lineup.can_update_lineup && canSwitchTeams"
+              v-if="!canManageLineup && canSwitchTeams"
             >
               <span>{{ $t("match.overview.switch_teams") }}</span>
             </DropdownMenuItem>
@@ -84,9 +86,7 @@ const DASH = "—";
 
             <template v-if="canRequestHighlight">
               <DropdownMenuSeparator
-                v-if="
-                  lineup.can_update_lineup || canLeaveLineup || canSwitchTeams
-                "
+                v-if="canManageLineup || canLeaveLineup || canSwitchTeams"
               />
               <DropdownMenuItem @click="renderHighlightOpen = true">
                 <Sparkles
@@ -186,23 +186,26 @@ const DASH = "—";
       />
     </TableCell>
     <template v-if="showStats">
-      <TableCell class="tabular-nums">{{
-        hasStats ? sideKills : DASH
-      }}</TableCell>
-      <TableCell v-if="overviewVis.assists !== false" class="tabular-nums">
-        {{ hasStats ? sideAssists : DASH }}
+      <TableCell class="tabular-nums">
+        <AnimatedStat :value="hasStats ? sideKills : DASH" />
       </TableCell>
-      <TableCell class="tabular-nums">{{
-        hasStats ? sideDeaths : DASH
-      }}</TableCell>
+      <TableCell v-if="overviewVis.assists !== false" class="tabular-nums">
+        <AnimatedStat :value="hasStats ? sideAssists : DASH" />
+      </TableCell>
+      <TableCell class="tabular-nums">
+        <AnimatedStat :value="hasStats ? sideDeaths : DASH" />
+      </TableCell>
       <TableCell v-if="overviewVis.kd !== false" class="tabular-nums">
-        <span :class="kdrColor(kd)">{{ kd }}</span>
+        <span class="inline-flex items-center gap-0.5">
+          <AnimatedStat :value="kd" />
+          <StatChevron :cfg="KD_TIER" :value="kdNum" />
+        </span>
       </TableCell>
       <TableCell v-if="overviewVis.hs !== false" class="tabular-nums">
-        {{ hs }}
+        <AnimatedStat :value="hs" />
       </TableCell>
       <TableCell v-if="overviewVis.survived !== false" class="tabular-nums">
-        {{ survived }}
+        <AnimatedStat :value="survived" />
       </TableCell>
       <TableCell v-if="overviewVis.multikills !== false" class="tabular-nums">
         <HoverCard
@@ -215,7 +218,7 @@ const DASH = "—";
               type="button"
               class="font-mono tabular-nums underline decoration-dotted decoration-muted-foreground/40 underline-offset-[3px] hover:decoration-[hsl(var(--tac-amber))] hover:text-[hsl(var(--tac-amber))] transition-colors"
             >
-              {{ totalMultiKills }}
+              <AnimatedStat :value="totalMultiKills" />
             </button>
           </HoverCardTrigger>
           <HoverCardContent
@@ -249,51 +252,55 @@ const DASH = "—";
                   {{ row.n }}K
                 </span>
                 <span class="font-mono text-[0.95rem] font-bold tabular-nums">
-                  {{ row.count }}
+                  <AnimatedStat :value="row.count" />
                 </span>
               </button>
             </div>
           </HoverCardContent>
         </HoverCard>
-        <template v-else>{{ totalMultiKills ?? DASH }}</template>
+        <template v-else
+          ><AnimatedStat :value="totalMultiKills ?? DASH"
+        /></template>
       </TableCell>
-      <TableCell
-        v-if="overviewVis.hltv !== false"
-        class="tabular-nums"
-        :class="hltvTierClass"
-      >
-        {{ hltvRating ?? DASH }}
+      <TableCell v-if="overviewVis.hltv !== false" class="tabular-nums">
+        <span class="inline-flex items-center gap-0.5">
+          <AnimatedStat :value="hltvRating ?? DASH" />
+          <StatChevron :cfg="HLTV_TIER" :value="hltvNum" />
+        </span>
       </TableCell>
-      <TableCell
-        v-if="overviewVis.kast !== false"
-        class="tabular-nums"
-        :class="kastTierClass"
-      >
-        {{ kast }}
+      <TableCell v-if="overviewVis.kast !== false" class="tabular-nums">
+        <span class="inline-flex items-center gap-0.5">
+          <AnimatedStat :value="kast" />
+          <StatChevron :cfg="KAST_TIER" :value="kastPct" />
+        </span>
       </TableCell>
       <TableCell>
-        <span :class="['md:hidden tabular-nums text-xs', adrTierClass]">{{
-          hasStats ? adr : DASH
-        }}</span>
+        <span class="md:hidden tabular-nums text-xs inline-flex items-center gap-0.5">
+          <AnimatedStat :value="hasStats ? adr : DASH" />
+          <StatChevron :cfg="ADR_TIER" :value="adrNum" />
+        </span>
         <div class="hidden md:flex flex-col items-start leading-tight">
-          <span class="tabular-nums">{{ stats?.damage ?? DASH }}</span>
+          <span class="tabular-nums"
+            ><AnimatedStat :value="stats?.damage ?? DASH"
+          /></span>
           <span
             v-if="hasStats"
-            class="font-mono text-[0.6rem] tracking-[0.18em] uppercase text-muted-foreground"
+            class="font-mono text-[0.6rem] tracking-[0.18em] uppercase text-muted-foreground inline-flex items-center gap-0.5"
           >
-            <span :class="adrTierClass">{{ adr }}</span>
+            <AnimatedStat :value="adr" />
+            <StatChevron :cfg="ADR_TIER" :value="adrNum" />
             <span class="ml-1">ADR</span>
           </span>
         </div>
       </TableCell>
       <TableCell v-if="overviewVis.team_damage">
-        {{ stats?.team_damage ?? DASH }}
+        <AnimatedStat :value="stats?.team_damage ?? DASH" />
       </TableCell>
       <TableCell v-if="overviewVis.knife_kills">
-        {{ stats?.knife_kills ?? DASH }}
+        <AnimatedStat :value="stats?.knife_kills ?? DASH" />
       </TableCell>
       <TableCell v-if="overviewVis.zeus_kills">
-        {{ stats?.zeus_kills ?? DASH }}
+        <AnimatedStat :value="stats?.zeus_kills ?? DASH" />
       </TableCell>
     </template>
     <MultiKillDrilldown
@@ -317,7 +324,6 @@ import {
   e_match_status_enum,
   e_player_roles_enum,
 } from "~/generated/zeus";
-import { statTierClass } from "~/utils/statTiers";
 
 export default {
   components: {
@@ -500,21 +506,27 @@ export default {
     isExternalMatch() {
       return !!this.match?.source && this.match.source !== "5stack";
     },
+    // Roster management (promote captain, switch teams, remove player) is only
+    // valid before the match goes live — once it's Live or terminal the lineup
+    // is locked, so these actions disappear (and with them the row's action
+    // column, which keeps the table from jerking when switching stat lenses).
+    canManageLineup() {
+      if (!this.lineup.can_update_lineup) return false;
+      return [
+        e_match_status_enum.PickingPlayers,
+        e_match_status_enum.WaitingForCheckIn,
+        e_match_status_enum.Scheduled,
+        e_match_status_enum.Veto,
+        e_match_status_enum.WaitingForServer,
+      ].includes(this.match.status);
+    },
     canDoActions() {
       if (!this.me?.steam_id) return false;
-      const terminal = [
-        e_match_status_enum.Finished,
-        e_match_status_enum.Forfeit,
-        e_match_status_enum.Surrendered,
-        e_match_status_enum.Tie,
-      ];
-      if (terminal.includes(this.match.status)) {
-        return this.canRequestHighlight;
-      }
       return (
-        this.lineup.can_update_lineup ||
+        this.canManageLineup ||
         this.canLeaveLineup ||
-        this.canSwitchTeams
+        this.canSwitchTeams ||
+        this.canRequestHighlight
       );
     },
     mapsWithDemo() {
@@ -564,7 +576,7 @@ export default {
         return false;
       }
 
-      if (this.lineup.can_update_lineup) return true;
+      if (this.canManageLineup) return true;
 
       if (!this.me?.steam_id) return false;
 
@@ -587,75 +599,33 @@ export default {
     hasStats() {
       return !!this.stats;
     },
-    // Per-side stats: when filter is non-"all", compute from round-level
-    // events in the subscription (round.kills / round.assists + the
-    // round's lineup_X_side enum). This bypasses the SQL aggregate
-    // columns (kills_t / kills_ct …) which would otherwise return 0
-    // until recompute_player_match_map_stats is re-run on every map.
-    // Damage isn't in the subscription at round level so it falls back
-    // to the SQL column (damage_t / damage_ct), which is also 0 until
-    // recompute runs — acceptable trade-off vs widening the query.
-    perSideAgg() {
-      const steamId = String(this.member?.steam_id ?? "");
-      const side = this.matchSide;
-      const isLineup1 = this.lineup?.id === this.match?.lineup_1_id;
-      // CS2 enum stores "CT" + "TERRORIST" (not "T"). Normalize.
-      const sideMatches = (roundSide: string | null | undefined) => {
-        if (side === "CT") return roundSide === "CT";
-        if (side === "T") return roundSide === "TERRORIST" || roundSide === "T";
-        return true;
-      };
-      let kills = 0;
-      let deaths = 0;
-      let assists = 0;
-      let hsKills = 0;
-      let rounds = 0;
-      const maps = this.match?.match_maps ?? [];
-      for (const map of maps) {
-        for (const round of map.rounds ?? []) {
-          if (round.round === 0) continue;
-          const playerSide = isLineup1
-            ? round.lineup_1_side
-            : round.lineup_2_side;
-          if (!sideMatches(playerSide)) continue;
-          rounds++;
-          for (const k of round.kills ?? []) {
-            const attackerId = String(k.player?.steam_id ?? "");
-            const victimId = String(k.attacked_player?.steam_id ?? "");
-            if (attackerId === steamId && victimId && victimId !== steamId) {
-              kills++;
-              if (k.headshot) hsKills++;
-            }
-            if (victimId === steamId && attackerId !== steamId) {
-              deaths++;
-            }
-          }
-          for (const a of round.assists ?? []) {
-            if (String(a.attacker_steam_id ?? "") === steamId) assists++;
-          }
-        }
-      }
-      return { kills, deaths, assists, hsKills, rounds };
-    },
+    // Per-side stats read straight from the SQL aggregate columns
+    // (kills_t/kills_ct, deaths_t/ct, …) on player_match_(map_)stats. The
+    // backend recompute now normalizes the side token (normalize_side) so
+    // these are correct for live matches too — no client-side round walking.
     sideKills() {
       if (!this.hasStats) return 0;
-      if (this.matchSide === "all") return this.stats.kills ?? 0;
-      return this.perSideAgg.kills;
+      if (this.matchSide === "T") return this.stats.kills_t ?? 0;
+      if (this.matchSide === "CT") return this.stats.kills_ct ?? 0;
+      return this.stats.kills ?? 0;
     },
     sideDeaths() {
       if (!this.hasStats) return 0;
-      if (this.matchSide === "all") return this.stats.deaths ?? 0;
-      return this.perSideAgg.deaths;
+      if (this.matchSide === "T") return this.stats.deaths_t ?? 0;
+      if (this.matchSide === "CT") return this.stats.deaths_ct ?? 0;
+      return this.stats.deaths ?? 0;
     },
     sideAssists() {
       if (!this.hasStats) return 0;
-      if (this.matchSide === "all") return this.stats.assists ?? 0;
-      return this.perSideAgg.assists;
+      if (this.matchSide === "T") return this.stats.assists_t ?? 0;
+      if (this.matchSide === "CT") return this.stats.assists_ct ?? 0;
+      return this.stats.assists ?? 0;
     },
     sideHsKills() {
       if (!this.hasStats) return 0;
-      if (this.matchSide === "all") return this.stats.hs_kills ?? 0;
-      return this.perSideAgg.hsKills;
+      if (this.matchSide === "T") return this.stats.hs_kills_t ?? 0;
+      if (this.matchSide === "CT") return this.stats.hs_kills_ct ?? 0;
+      return this.stats.hs_kills ?? 0;
     },
     sideDamage() {
       if (!this.hasStats) return 0;
@@ -665,8 +635,9 @@ export default {
     },
     sideRounds() {
       if (!this.hasStats) return this.totalRounds;
-      if (this.matchSide === "all") return this.totalRounds;
-      return this.perSideAgg.rounds;
+      if (this.matchSide === "T") return this.stats.rounds_t ?? 0;
+      if (this.matchSide === "CT") return this.stats.rounds_ct ?? 0;
+      return this.totalRounds;
     },
     kd() {
       if (!this.hasStats) return "—";
@@ -674,6 +645,13 @@ export default {
       const deaths = this.sideDeaths;
       if (deaths === 0) return kills;
       return formatStatValue(kills / deaths);
+    },
+    kdNum() {
+      if (!this.hasStats) return null;
+      const kills = this.sideKills;
+      const deaths = this.sideDeaths;
+      if (deaths === 0) return kills;
+      return kills / deaths;
     },
     hs() {
       if (!this.hasStats) return "—";
@@ -687,11 +665,8 @@ export default {
       if (!rounds) return 0;
       return formatStatValue(this.sideDamage / rounds);
     },
-    adrTierClass() {
-      return statTierClass(
-        { dir: "high", cuts: [90, 70, 50] },
-        Number(this.adr) || null,
-      );
+    adrNum() {
+      return this.hasStats ? Number(this.adr) || null : null;
     },
     perRoundParticipation() {
       const steamId = String(this.member.steam_id);
@@ -748,11 +723,10 @@ export default {
       if (totalRounds === 0) return "—";
       return Math.round((participated / totalRounds) * 100) + "%";
     },
-    kastTierClass() {
+    kastPct() {
       const { totalRounds, participated } = this.perRoundParticipation;
-      if (totalRounds === 0) return "";
-      const pct = (participated / totalRounds) * 100;
-      return statTierClass({ dir: "high", cuts: [80, 70, 60] }, pct);
+      if (totalRounds === 0) return null;
+      return (participated / totalRounds) * 100;
     },
     survived() {
       const { totalRounds, survived } = this.perRoundParticipation;
@@ -784,10 +758,9 @@ export default {
         0.1587;
       return rating.toFixed(2);
     },
-    hltvTierClass() {
-      if (this.hltvRating === null) return "";
-      const value = parseFloat(this.hltvRating);
-      return statTierClass({ dir: "high", cuts: [1.2, 1.0, 0.85] }, value);
+    hltvNum() {
+      if (this.hltvRating === null) return null;
+      return parseFloat(this.hltvRating);
     },
     twoKills() {
       return this.stats?.two_kill_rounds ?? "—";

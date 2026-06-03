@@ -62,6 +62,10 @@ export default {
       });
     }
 
+    if (request.method === "PUT") {
+      return handleUpload(request, env, reqOrigin);
+    }
+
     if (!["GET", "HEAD"].includes(request.method)) {
       return new Response(null, {
         status: 405,
@@ -173,6 +177,85 @@ export default {
   },
 };
 
+const UPLOAD_PREFIX = "demo-uploads/";
+
+async function handleUpload(
+  request: Request,
+  env: {
+    S3_ACCESS_KEY: string;
+    S3_SECRET: string;
+    BUCKET_NAME: string;
+    S3_ENDPOINT: string;
+  },
+  reqOrigin: string | null,
+): Promise<Response> {
+  const url = new URL(request.url);
+  const key = url.pathname.replace(/^\/+/, "");
+  const partNumber = url.searchParams.get("partNumber");
+  const uploadId = url.searchParams.get("uploadId");
+
+  if (!key.startsWith(UPLOAD_PREFIX) || !partNumber || !uploadId) {
+    return new Response("forbidden", {
+      status: 403,
+      headers: corsHeaders(reqOrigin),
+    });
+  }
+  if (
+    !env.BUCKET_NAME ||
+    !env.S3_ENDPOINT ||
+    !env.S3_ACCESS_KEY ||
+    !env.S3_SECRET
+  ) {
+    return new Response("Worker misconfigured", {
+      status: 500,
+      headers: corsHeaders(reqOrigin),
+    });
+  }
+
+  const target = `https://${env.BUCKET_NAME}.${env.S3_ENDPOINT}/${key}?partNumber=${encodeURIComponent(
+    partNumber,
+  )}&uploadId=${encodeURIComponent(uploadId)}`;
+
+  const signed = await new AwsClient({
+    accessKeyId: env.S3_ACCESS_KEY,
+    secretAccessKey: env.S3_SECRET,
+    service: "s3",
+  }).sign(target, {
+    method: "PUT",
+    headers: { "x-amz-content-sha256": "UNSIGNED-PAYLOAD" },
+  });
+
+  const headers = new Headers(signed.headers);
+  const contentLength = request.headers.get("content-length");
+  if (contentLength) {
+    headers.set("content-length", contentLength);
+  }
+
+  const upstream = await fetch(target, {
+    method: "PUT",
+    headers,
+    body: request.body,
+  });
+
+  const responseHeaders = new Headers(corsHeaders(reqOrigin));
+  const etag = upstream.headers.get("etag");
+  if (etag) {
+    responseHeaders.set("ETag", etag);
+  }
+
+  if (upstream.ok) {
+    return new Response(null, {
+      status: upstream.status,
+      headers: responseHeaders,
+    });
+  }
+  return new Response(await upstream.text(), {
+    status: upstream.status,
+    statusText: upstream.statusText,
+    headers: responseHeaders,
+  });
+}
+
 function corsHeaders(reqOrigin: string | null): Record<string, string> {
   // Reflect the request's Origin so credentialed fetches (which can't
   // accept Allow-Origin: *) work. Non-CORS requests (no Origin header)
@@ -182,8 +265,8 @@ function corsHeaders(reqOrigin: string | null): Record<string, string> {
   const allowOrigin = reqOrigin ?? "*";
   const headers: Record<string, string> = {
     "Access-Control-Allow-Origin": allowOrigin,
-    "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
-    "Access-Control-Allow-Headers": "Range, If-Range, Content-Type",
+    "Access-Control-Allow-Methods": "GET, HEAD, PUT, OPTIONS",
+    "Access-Control-Allow-Headers": "Range, If-Range, Content-Type, Content-Length",
     "Access-Control-Expose-Headers":
       "Accept-Ranges, Content-Length, Content-Range, Content-Type, ETag, Last-Modified",
     Vary: "Origin",

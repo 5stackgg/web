@@ -2,6 +2,8 @@
 import { computed } from "vue";
 import LineupMember from "~/components/match/LineupMember.vue";
 import SortableTableHead from "~/components/common/SortableTableHead.vue";
+import AnimatedStat from "~/components/AnimatedStat.vue";
+import StatChevron from "~/components/StatChevron.vue";
 import { useTableSort } from "~/composables/useTableSort";
 import { useAimColumns } from "~/composables/useMatchTableColumns";
 import { useCurrentUserRow } from "~/composables/useCurrentUserRow";
@@ -114,82 +116,116 @@ const { sortKey, sortDir, toggle, sortRows } = useTableSort<string>();
           >
             <lineup-member :member="member" :lineup_id="lp.id"></lineup-member>
           </TableCell>
-          <TableCell :class="tierClass('accuracy', accuracyPct(member))">
-            <template v-if="accuracyPct(member) !== null">
-              {{ accuracyPct(member) }}%
-            </template>
-            <template v-else>—</template>
+          <TableCell>
+            <span class="inline-flex items-center gap-0.5">
+              <AnimatedStat
+                :value="
+                  accuracyPct(member) !== null ? accuracyPct(member) + '%' : '—'
+                "
+              />
+              <StatChevron :level="tierLevel('accuracy', accuracyPct(member))" />
+            </span>
           </TableCell>
-          <TableCell
-            v-if="aimVis.accuracy_spotted !== false"
-            :class="tierClass('accuracy_spotted', accuracySpottedPct(member))"
-          >
-            <template v-if="accuracySpottedPct(member) !== null">
-              {{ accuracySpottedPct(member) }}%
-            </template>
-            <template v-else>—</template>
+          <TableCell v-if="aimVis.accuracy_spotted !== false">
+            <span class="inline-flex items-center gap-0.5">
+              <AnimatedStat
+                :value="
+                  accuracySpottedPct(member) !== null
+                    ? accuracySpottedPct(member) + '%'
+                    : '—'
+                "
+              />
+              <StatChevron
+                :level="
+                  tierLevel('accuracy_spotted', accuracySpottedPct(member))
+                "
+              />
+            </span>
           </TableCell>
-          <TableCell
-            v-if="aimVis.head_accuracy !== false"
-            :class="tierClass('head_accuracy', headAccuracyPct(member))"
-          >
-            <template v-if="headAccuracyPct(member) !== null">
-              {{ headAccuracyPct(member) }}%
-            </template>
-            <template v-else>—</template>
+          <TableCell v-if="aimVis.head_accuracy !== false">
+            <span class="inline-flex items-center gap-0.5">
+              <AnimatedStat
+                :value="
+                  headAccuracyPct(member) !== null
+                    ? headAccuracyPct(member) + '%'
+                    : '—'
+                "
+              />
+              <StatChevron
+                :level="tierLevel('head_accuracy', headAccuracyPct(member))"
+              />
+            </span>
           </TableCell>
           <TableCell v-if="aimVis.hs_kill_pct !== false">
-            <template v-if="hsKillPct(member) !== null">
-              {{ hsKillPct(member) }}%
-            </template>
-            <template v-else>—</template>
+            <AnimatedStat
+              :value="
+                hsKillPct(member) !== null ? hsKillPct(member) + '%' : '—'
+              "
+            />
           </TableCell>
-          <TableCell
-            v-if="aimVis.spray_accuracy !== false"
-            :class="tierClass('spray_accuracy', sprayAccuracyPct(member))"
-          >
-            <template v-if="sprayAccuracyPct(member) !== null">
-              {{ sprayAccuracyPct(member) }}%
-            </template>
-            <template v-else>—</template>
+          <TableCell v-if="aimVis.spray_accuracy !== false">
+            <span class="inline-flex items-center gap-0.5">
+              <AnimatedStat
+                :value="
+                  sprayAccuracyPct(member) !== null
+                    ? sprayAccuracyPct(member) + '%'
+                    : '—'
+                "
+              />
+              <StatChevron
+                :level="tierLevel('spray_accuracy', sprayAccuracyPct(member))"
+              />
+            </span>
           </TableCell>
-          <TableCell
-            v-if="aimVis.time_to_damage !== false"
-            :class="tierClass('time_to_damage', ttdMs(member))"
-          >
-            <template v-if="ttdMs(member) !== null"
-              >{{ ttdMs(member) }} ms</template
-            >
-            <template v-else>—</template>
+          <TableCell v-if="aimVis.time_to_damage !== false">
+            <span class="inline-flex items-center gap-0.5">
+              <AnimatedStat
+                :value="ttdMs(member) !== null ? ttdMs(member) + ' ms' : '—'"
+              />
+              <StatChevron :level="tierLevel('time_to_damage', ttdMs(member))" />
+            </span>
           </TableCell>
-          <TableCell
-            v-if="aimVis.spotted_acc !== false"
-            :class="tierClass('spotted_acc', spottedAcc(member))"
-          >
-            <template v-if="spottedAcc(member) !== null">
-              {{ spottedAcc(member) }}%
-            </template>
-            <template v-else>—</template>
+          <TableCell v-if="aimVis.spotted_acc !== false">
+            <span class="inline-flex items-center gap-0.5">
+              <AnimatedStat
+                :value="
+                  spottedAcc(member) !== null ? spottedAcc(member) + '%' : '—'
+                "
+              />
+              <StatChevron
+                :level="tierLevel('spotted_acc', spottedAcc(member))"
+              />
+            </span>
           </TableCell>
-          <TableCell
-            v-if="aimVis.crosshair_placement !== false"
-            :class="
-              tierClass('crosshair_placement', crosshairPlacement(member))
-            "
-          >
-            <template v-if="crosshairPlacement(member) !== null">
-              {{ crosshairPlacement(member) }}°
-            </template>
-            <template v-else>—</template>
+          <TableCell v-if="aimVis.crosshair_placement !== false">
+            <span class="inline-flex items-center gap-0.5">
+              <AnimatedStat
+                :value="
+                  crosshairPlacement(member) !== null
+                    ? crosshairPlacement(member) + '°'
+                    : '—'
+                "
+              />
+              <StatChevron
+                :level="
+                  tierLevel('crosshair_placement', crosshairPlacement(member))
+                "
+              />
+            </span>
           </TableCell>
-          <TableCell
-            v-if="aimVis.counter_strafing !== false"
-            :class="tierClass('counter_strafing', counterStrafePct(member))"
-          >
-            <template v-if="counterStrafePct(member) !== null">
-              {{ counterStrafePct(member) }}%
-            </template>
-            <template v-else>—</template>
+          <TableCell v-if="aimVis.counter_strafing !== false">
+            <span class="inline-flex items-center gap-0.5">
+              <AnimatedStat
+                :value="
+                  counterStrafePct(member) !== null
+                    ? counterStrafePct(member) + '%'
+                    : '—'
+                "
+              />
+              <StatChevron
+                :level="tierLevel('counter_strafing', counterStrafePct(member))"
+              />
+            </span>
           </TableCell>
         </TableRow>
       </TableBody>
@@ -209,17 +245,21 @@ function pct(num: number | null, den: number | null): number | null {
   return Math.round((num / den) * 100);
 }
 
-import { statTierClass, type StatTierConfig } from "~/utils/statTiers";
+import {
+  statLevelFor,
+  type StatLevel,
+  type StatTierConfig,
+} from "~/utils/statTiers";
 
 const TIER_CONFIG: Record<string, StatTierConfig> = {
-  accuracy: { dir: "high", cuts: [21, 16, 13] },
-  accuracy_spotted: { dir: "high", cuts: [21, 16, 13] },
-  head_accuracy: { dir: "high", cuts: [30, 17, 10] },
-  spray_accuracy: { dir: "high", cuts: [46, 28, 18] },
-  time_to_damage: { dir: "low", cuts: [600, 680, 770] },
-  spotted_acc: { dir: "high", cuts: [37, 29, 25] },
-  crosshair_placement: { dir: "low", cuts: [8, 13, 16] },
-  counter_strafing: { dir: "high", cuts: [88, 74, 71] },
+  accuracy: { dir: "high", cuts: [24, 19, 15, 12] },
+  accuracy_spotted: { dir: "high", cuts: [24, 19, 15, 12] },
+  head_accuracy: { dir: "high", cuts: [35, 25, 15, 9] },
+  spray_accuracy: { dir: "high", cuts: [50, 40, 25, 16] },
+  time_to_damage: { dir: "low", cuts: [560, 620, 700, 800] },
+  spotted_acc: { dir: "high", cuts: [40, 34, 27, 23] },
+  crosshair_placement: { dir: "low", cuts: [6, 9, 13, 17] },
+  counter_strafing: { dir: "high", cuts: [90, 82, 73, 68] },
 };
 
 export default {
@@ -249,8 +289,8 @@ export default {
     },
   },
   methods: {
-    tierClass(stat: string, value: number | null): string {
-      return statTierClass(TIER_CONFIG[stat], value);
+    tierLevel(stat: string, value: number | null): StatLevel | null {
+      return statLevelFor(TIER_CONFIG[stat], value);
     },
     statsFor(member: any) {
       const arr =

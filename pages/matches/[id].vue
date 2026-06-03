@@ -5,6 +5,7 @@ import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import { useMatchClips } from "~/composables/useMatchClips";
 import MatchTabs from "~/components/match/MatchTabs.vue";
+import AnimatedStat from "~/components/AnimatedStat.vue";
 import MatchMaps from "~/components/match/MatchMaps.vue";
 import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
@@ -27,6 +28,18 @@ const activeStatsMap = ref<null | { id: string; map: { name: string } }>(null);
 // One subscription shared by MatchTabs (Clips) + lineup row indicators.
 const route = useRoute();
 const routeMatchId = computed(() => String(route.params.id));
+
+// Reserve scroll height when switching tabs / maps so a shorter tab can't yank
+// the page up (same treatment as the player page).
+const {
+  minHeight: scrollFloorMinHeight,
+  rootEl: pageRootEl,
+  capture: captureScrollFloor,
+} = useScrollFloor();
+watch(
+  () => [route.query.tab, activeStatsMap.value?.id],
+  () => captureScrollFloor(),
+);
 const matchClipsState = useMatchClips(routeMatchId);
 const hasMatchClips = computed(() => matchClipsState.clips.value.length > 0);
 provide("matchClips", matchClipsState.clips);
@@ -102,7 +115,7 @@ watch(
 onUnmounted(() => rankSub?.unsubscribe());
 
 const heroClasses =
-  "relative min-w-0 max-w-full px-6 pt-5 pb-6 max-sm:p-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.55)_0%,hsl(var(--card)/0.25)_100%)] backdrop-blur-[6px] before:content-[''] before:absolute before:w-[14px] before:h-[14px] before:border-[hsl(var(--tac-amber))] before:border-solid before:top-2 before:left-2 before:border-t-2 before:border-l-2 after:content-[''] after:absolute after:w-[14px] after:h-[14px] after:border-[hsl(var(--tac-amber))] after:border-solid after:bottom-2 after:right-2 after:border-b-2 after:border-r-2";
+  "relative min-w-0 max-w-full px-6 pt-5 pb-6 max-sm:p-4 border border-border [background:linear-gradient(180deg,hsl(var(--card)/0.2)_0%,hsl(var(--card)/0.04)_100%)] before:content-[''] before:absolute before:w-[14px] before:h-[14px] before:border-[hsl(var(--tac-amber))] before:border-solid before:top-2 before:left-2 before:border-t-2 before:border-l-2 after:content-[''] after:absolute after:w-[14px] after:h-[14px] after:border-[hsl(var(--tac-amber))] after:border-solid after:bottom-2 after:right-2 after:border-b-2 after:border-r-2";
 
 const statusBaseClasses =
   "inline-flex items-center gap-2 px-[0.7rem] py-[0.3rem] font-mono text-[0.68rem] font-bold tracking-[0.2em] uppercase border rounded";
@@ -138,7 +151,14 @@ const vsBaseClasses =
 </script>
 
 <template>
-  <div v-if="match" class="flex flex-col gap-4 md:gap-6">
+  <div
+    v-if="match"
+    ref="pageRootEl"
+    class="flex flex-col gap-4 md:gap-6 w-full max-w-[1600px] mx-auto"
+    :style="
+      scrollFloorMinHeight ? { minHeight: scrollFloorMinHeight + 'px' } : {}
+    "
+  >
     <PageTransition>
       <header :class="heroClasses">
         <div class="flex items-center gap-3 flex-wrap mb-5 max-sm:mb-[0.85rem]">
@@ -271,7 +291,7 @@ const vsBaseClasses =
                     '!text-[hsl(var(--tac-amber))] [text-shadow:0_0_18px_hsl(var(--tac-amber)/0.35)]',
                 ]"
               >
-                {{ mapScores.l1 }}
+                <AnimatedStat :value="mapScores.l1" />
               </span>
               <span :class="vsBaseClasses">VS</span>
               <span
@@ -281,7 +301,7 @@ const vsBaseClasses =
                     '!text-[hsl(var(--tac-amber))] [text-shadow:0_0_18px_hsl(var(--tac-amber)/0.35)]',
                 ]"
               >
-                {{ mapScores.l2 }}
+                <AnimatedStat :value="mapScores.l2" />
               </span>
             </div>
             <span v-else :class="[vsBaseClasses, 'text-base px-4 py-[0.6rem]']"
@@ -703,11 +723,12 @@ export default {
                     {
                       lineup_1_score: true,
                       lineup_2_score: true,
+                      lineup_1_money: true,
+                      lineup_2_money: true,
                       lineup_1_side: true,
                       lineup_2_side: true,
                       winning_side: true,
                       winning_reason: true,
-                      has_backup_file: true,
                       round: true,
                       kills: [
                         {

@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import AnimatedStat from "~/components/AnimatedStat.vue";
+import StatChevron from "~/components/StatChevron.vue";
+import type { StatLevel } from "~/utils/statTiers";
+
 defineProps<{
   value: string | number;
   label: string;
   percentage: number; // 0–100
   strokeColor?: string;
+  // Quality of this stat, rendered as a chevron inside the ring.
+  level?: StatLevel | null;
 }>();
 
 const radius = 54;
@@ -29,7 +35,7 @@ const circumference = 2 * Math.PI * radius;
           cx="60"
           cy="60"
           :r="radius"
-          :stroke="strokeColor || 'hsl(var(--primary))'"
+          :stroke="strokeColor || '#fff'"
           stroke-width="10"
           fill="none"
           stroke-linecap="round"
@@ -38,15 +44,19 @@ const circumference = 2 * Math.PI * radius;
             circumference -
             (Math.min(Math.max(percentage, 0), 100) / 100) * circumference
           "
-          class="transition-all duration-500"
+          class="transition-[stroke-dashoffset] duration-500 ease-out"
         />
       </svg>
 
       <!-- center content -->
       <div class="absolute inset-0 flex flex-col items-center justify-center">
-        <span class="text-lg sm:text-xl font-bold leading-none">
-          {{ value }}
-        </span>
+        <div class="flex items-center gap-1">
+          <AnimatedStat
+            :value="value"
+            class="text-lg sm:text-xl font-bold leading-none"
+          />
+          <StatChevron v-if="level" :level="level" class="h-3.5 w-3.5" />
+        </div>
         <span
           class="text-[8px] sm:text-[10px] uppercase tracking-wide text-muted-foreground"
         >

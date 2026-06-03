@@ -34,6 +34,7 @@ import {
   PopoverContent,
 } from "~/components/ui/popover";
 import ReplayLineupTeam from "~/components/match/ReplayLineupTeam.vue";
+import RoundSelector from "~/components/match/RoundSelector.vue";
 
 type Position = {
   round: number;
@@ -517,6 +518,71 @@ function skipFreezetime() {
 }
 
 const currentTick = computed(() => ticks.value[tickIndex.value] ?? 0);
+
+// Event markers laid over the scrubber for the active round — kills
+// (colored by victim side) and grenade throws (colored by type), so the
+// timeline reads like a real demo player's action track. progressPct is
+// linear in tick, so positioning by (tick - first)/(last - first) lines
+// the marks up exactly with the playhead.
+const SCRUB_KILL_CT = "rgb(56,189,248)";
+const SCRUB_KILL_T = "rgb(251,191,36)";
+const SCRUB_KILL_NEUTRAL = "rgb(248,113,113)";
+const SCRUB_NADE_COLORS: Record<string, string> = {
+  HE: "rgb(239,68,68)",
+  Molotov: "rgb(249,115,22)",
+  Smoke: "rgb(148,163,184)",
+  Flash: "rgb(250,204,21)",
+  Decoy: "rgb(34,211,238)",
+};
+const scrubberMarkers = computed<
+  Array<{ left: number; lane: "kill" | "nade"; color: string; title: string }>
+>(() => {
+  const range = tickRange.value;
+  const span = range.max - range.min;
+  const round = activeRound.value;
+  if (span <= 0 || round === null) {
+    return [];
+  }
+  const out: Array<{
+    left: number;
+    lane: "kill" | "nade";
+    color: string;
+    title: string;
+  }> = [];
+  for (const k of killsByRound.value.get(round) ?? []) {
+    const left = ((k.tick - range.min) / span) * 100;
+    if (left < -1 || left > 101) {
+      continue;
+    }
+    out.push({
+      left: Math.max(0, Math.min(100, left)),
+      lane: "kill",
+      color:
+        k.victim_team === "ct"
+          ? SCRUB_KILL_CT
+          : k.victim_team === "t"
+            ? SCRUB_KILL_T
+            : SCRUB_KILL_NEUTRAL,
+      title: k.weapon ? `Kill (${k.weapon})` : "Kill",
+    });
+  }
+  for (const g of grenadesByRound.value.get(round) ?? []) {
+    if (g.phase !== "thrown") {
+      continue;
+    }
+    const left = ((g.tick - range.min) / span) * 100;
+    if (left < -1 || left > 101) {
+      continue;
+    }
+    out.push({
+      left: Math.max(0, Math.min(100, left)),
+      lane: "nade",
+      color: SCRUB_NADE_COLORS[g.type] ?? "rgb(148,163,184)",
+      title: g.type,
+    });
+  }
+  return out;
+});
 
 const killFeedDisplay = computed(() =>
   killsBeforeCursor.value.slice().reverse(),
@@ -1858,6 +1924,50 @@ const sideByRound = computed(() => {
   }
   return out;
 });
+
+const roundStripEntries = computed(() => {
+  const winnerByRound = new Map<number, string | null>();
+  for (const rt of props.demoRoundTicks ?? []) {
+    if (typeof rt.round === "number") {
+      winnerByRound.set(rt.round, rt.winner ?? null);
+    }
+  }
+  return rounds.value.map((round) => {
+    const w = winnerByRound.get(round);
+    const winnerSide: "CT" | "T" | null =
+      w === "ct" ? "CT" : w === "t" ? "T" : null;
+    return { round, winnerSide };
+  });
+});
+
+// Halftime divider: track a reference player's side across rounds; the
+// swap is the first round where it flips from round one's assignment.
+const roundStripHalftime = computed<number | null>(() => {
+  const rs = rounds.value;
+  if (rs.length < 2) {
+    return null;
+  }
+  const sbr = sideByRound.value;
+  const firstSides = sbr.get(rs[0]);
+  if (!firstSides || !firstSides.size) {
+    return null;
+  }
+  const refSid = [...firstSides.keys()][0];
+  const refSide = firstSides.get(refSid);
+  for (let i = 1; i < rs.length; i++) {
+    const s = sbr.get(rs[i])?.get(refSid);
+    if (s && refSide && s !== refSide) {
+      return i;
+    }
+  }
+  return null;
+});
+
+function selectStripRound(round: number | null) {
+  if (round != null) {
+    activeRound.value = round;
+  }
+}
 
 const liveScore = computed<{ lineup_1: number; lineup_2: number }>(() => {
   const cur = activeRound.value;
@@ -3645,13 +3755,35 @@ function openReplayPopout() {
           class="flex flex-col bg-[hsl(var(--card)/0.6)] border-x border-b border-border"
         >
           <div
+            v-if="roundStripEntries.length"
+            class="px-3 pt-2 pb-1 border-b border-border/40"
+          >
+            <RoundSelector
+              :rounds="roundStripEntries"
+              :model-value="activeRound"
+              :halftime-index="roundStripHalftime"
+              @update:model-value="selectStripRound"
+            />
+          </div>
+          <div
             ref="playbarRowEl"
             class="flex items-center gap-2 px-3 pt-2 pb-1"
           >
             <div
-              class="relative flex-1 min-w-[6rem] h-3 group cursor-pointer select-none"
+              class="relative flex-1 min-w-[6rem] h-6 group cursor-pointer select-none"
               @pointerdown="onScrubStart"
             >
+              <!-- Kill markers above the rail. -->
+              <div class="absolute inset-x-0 top-0 h-2 pointer-events-none">
+                <span
+                  v-for="(m, i) in scrubberMarkers"
+                  v-show="m.lane === 'kill'"
+                  :key="'k' + i"
+                  class="absolute bottom-0 w-[2px] h-2 -translate-x-1/2 rounded-sm"
+                  :style="{ left: m.left + '%', backgroundColor: m.color }"
+                  :title="m.title"
+                />
+              </div>
               <div
                 class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-1.5 bg-[hsl(var(--border))] rounded-sm overflow-hidden"
               >
@@ -3660,8 +3792,19 @@ function openReplayPopout() {
                   :style="{ width: progressPct + '%' }"
                 />
               </div>
+              <!-- Grenade markers below the rail. -->
+              <div class="absolute inset-x-0 bottom-0 h-2 pointer-events-none">
+                <span
+                  v-for="(m, i) in scrubberMarkers"
+                  v-show="m.lane === 'nade'"
+                  :key="'n' + i"
+                  class="absolute top-0 w-[2px] h-2 -translate-x-1/2 rounded-sm"
+                  :style="{ left: m.left + '%', backgroundColor: m.color }"
+                  :title="m.title"
+                />
+              </div>
               <div
-                class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_0_2px_hsl(var(--background)),0_0_10px_hsl(var(--tac-amber)/0.6)] transition-[left] duration-100 ease-linear pointer-events-none"
+                class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_0_2px_hsl(var(--background)),0_0_10px_hsl(var(--tac-amber)/0.6)] transition-[left] duration-100 ease-linear pointer-events-none z-10"
                 :style="{ left: progressPct + '%' }"
               />
             </div>
@@ -3677,33 +3820,6 @@ function openReplayPopout() {
           <div
             class="flex items-center gap-1.5 px-3 pb-2 pt-1 flex-wrap text-[0.65rem]"
           >
-            <button
-              type="button"
-              class="px-1.5 py-1 border border-border/60 hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))] transition-colors"
-              :title="$t('match.replay.prev_round')"
-              @click="jumpToRound(-1)"
-            >
-              <SkipBack class="w-3 h-3" />
-            </button>
-            <select
-              v-model.number="activeRound"
-              class="bg-[hsl(var(--card)/0.9)] border border-border/60 px-1.5 py-0.5 text-[0.65rem] font-mono tabular-nums min-w-[4.5rem]"
-            >
-              <option v-for="r of rounds" :key="r" :value="r">
-                {{ $t("common.round", { number: r }) }}
-              </option>
-            </select>
-            <button
-              type="button"
-              class="px-1.5 py-1 border border-border/60 hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))] transition-colors"
-              :title="$t('match.replay.next_round')"
-              @click="jumpToRound(1)"
-            >
-              <SkipForward class="w-3 h-3" />
-            </button>
-
-            <div class="w-px h-5 bg-border mx-1" />
-
             <button
               type="button"
               class="px-1.5 py-1 border border-border/60 hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))] transition-colors"

@@ -102,6 +102,51 @@ const CATEGORY_CONFIG: Record<
     },
     sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
   },
+  best_rating: {
+    columns: {
+      value: "pages.leaderboard.col.rating",
+      secondary_value: "pages.leaderboard.col.adr",
+      tertiary_value: "pages.leaderboard.col.rounds",
+      matches_played: "pages.leaderboard.columns.matches",
+    },
+    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
+  },
+  best_adr: {
+    columns: {
+      value: "pages.leaderboard.col.adr",
+      secondary_value: "pages.leaderboard.col.rating",
+      tertiary_value: "pages.leaderboard.col.rounds",
+      matches_played: "pages.leaderboard.columns.matches",
+    },
+    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
+  },
+  best_kpr: {
+    columns: {
+      value: "pages.leaderboard.col.kpr",
+      secondary_value: "pages.leaderboard.col.dpr",
+      tertiary_value: "pages.leaderboard.col.rounds",
+      matches_played: "pages.leaderboard.columns.matches",
+    },
+    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
+  },
+  best_kast: {
+    columns: {
+      value: "pages.leaderboard.col.kast",
+      secondary_value: "pages.leaderboard.col.rating",
+      tertiary_value: "pages.leaderboard.col.rounds",
+      matches_played: "pages.leaderboard.columns.matches",
+    },
+    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
+  },
+  best_udr: {
+    columns: {
+      value: "pages.leaderboard.col.udr",
+      secondary_value: "pages.leaderboard.col.util_damage",
+      tertiary_value: "pages.leaderboard.col.rounds",
+      matches_played: "pages.leaderboard.columns.matches",
+    },
+    sortable: ["value", "secondary_value", "tertiary_value", "matches_played"],
+  },
 };
 
 const TIER_COLORS: Record<string, string> = {
@@ -117,6 +162,7 @@ const LEADERBOARD_QUERY = gql`
     $window_days: Int!
     $match_type: String
     $exclude_tournaments: Boolean!
+    $role: String
     $limit: Int
     $offset: Int
     $order_by: [leaderboard_entries_order_by!]
@@ -127,6 +173,7 @@ const LEADERBOARD_QUERY = gql`
         _window_days: $window_days
         _match_type: $match_type
         _exclude_tournaments: $exclude_tournaments
+        _role: $role
       }
       limit: $limit
       offset: $offset
@@ -147,6 +194,7 @@ const LEADERBOARD_QUERY = gql`
         _window_days: $window_days
         _match_type: $match_type
         _exclude_tournaments: $exclude_tournaments
+        _role: $role
       }
     ) {
       aggregate {
@@ -192,6 +240,15 @@ const category = useRouteTab({
 
 const WINDOW_OPTIONS = ["0", "7", "30"] as const;
 const MATCH_TYPE_OPTIONS = ["all", "Competitive", "Wingman", "Duel"] as const;
+const ROLE_OPTIONS = ["all", "Sniper", "Entry", "Support", "Rifler"] as const;
+// Categories backed by per-map stats — the only ones the role view can scope.
+const ROLE_CATEGORIES = new Set([
+  "best_rating",
+  "best_adr",
+  "best_kpr",
+  "best_kast",
+  "best_udr",
+]);
 
 function readQueryParam<T extends string>(
   key: string,
@@ -211,6 +268,8 @@ const matchType = ref<string>(
   readQueryParam("type", MATCH_TYPE_OPTIONS, "Competitive"),
 );
 const excludeTournaments = ref(false);
+const roleFilter = ref<string>(readQueryParam("role", ROLE_OPTIONS, "all"));
+const supportsRole = computed(() => ROLE_CATEGORIES.has(category.value));
 const entries = ref<LeaderboardEntry[]>([]);
 const total = ref(0);
 const page = ref(1);
@@ -229,6 +288,11 @@ let fetchGeneration = 0;
 
 const categories = [
   { value: "elo" },
+  { value: "best_rating" },
+  { value: "best_adr" },
+  { value: "best_kpr" },
+  { value: "best_kast" },
+  { value: "best_udr" },
   { value: "best_kdr" },
   { value: "best_win_rate" },
   { value: "highest_hs_pct" },
@@ -269,6 +333,10 @@ const queryVariables = computed(() => ({
   window_days: parseInt(windowDays.value),
   match_type: matchType.value === "all" ? null : matchType.value,
   exclude_tournaments: Boolean(excludeTournaments.value),
+  role:
+    supportsRole.value && roleFilter.value !== "all"
+      ? roleFilter.value
+      : null,
   limit: perPage.value,
   offset: offset.value,
   order_by: orderBy.value,
@@ -414,9 +482,16 @@ function formatValue(value: number): string {
     case "elo":
       return Math.round(value).toLocaleString();
     case "best_kdr":
+    case "best_kpr":
       return value.toFixed(2);
+    case "best_rating":
+      return value.toFixed(2);
+    case "best_adr":
+    case "best_udr":
+      return value.toFixed(1);
     case "best_win_rate":
     case "highest_hs_pct":
+    case "best_kast":
       return value.toFixed(1) + "%";
     case "trophies":
       return Math.round(value).toLocaleString();
@@ -431,7 +506,17 @@ function formatSecondary(value: number | null): string {
     const rounded = Math.round(value);
     return (rounded >= 0 ? "+" : "") + rounded.toLocaleString();
   }
-  return Math.round(value).toLocaleString();
+  switch (category.value) {
+    case "best_rating":
+      return value.toFixed(1); // secondary = ADR
+    case "best_kast":
+    case "best_adr":
+      return value.toFixed(2); // secondary = rating
+    case "best_kpr":
+      return value.toFixed(2); // secondary = DPR
+    default:
+      return Math.round(value).toLocaleString();
+  }
 }
 
 function formatTertiary(value: number | null): string {
@@ -458,6 +543,7 @@ watch(category, () => {
 watch(windowDays, onFilterChange);
 watch(matchType, onFilterChange);
 watch(excludeTournaments, onFilterChange);
+watch(roleFilter, onFilterChange);
 watch(highlightedSteamId, (sid) => {
   // A different player was deep-linked — re-resolve their page.
   if (sid && sid !== pageAlignedForSteamId) {
@@ -574,6 +660,17 @@ onMounted(() => {
           <SelectItem value="Duel">{{
             $t("pages.leaderboard.match_types.duel")
           }}</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Select v-if="supportsRole" v-model="roleFilter">
+        <SelectTrigger class="h-9 w-[160px]">
+          <SelectValue :placeholder="$t('pages.leaderboard.roles.all')" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem v-for="opt of ROLE_OPTIONS" :key="opt" :value="opt">
+            {{ $t(`pages.leaderboard.roles.${opt}`) }}
+          </SelectItem>
         </SelectContent>
       </Select>
 

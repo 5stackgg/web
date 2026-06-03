@@ -216,10 +216,11 @@ export const useApplicationSettingsStore = defineStore(
     });
 
     const externalMatchesEnabled = computed(() => {
+      // Default OFF — an admin must explicitly enable external/CS2 imports.
       return (
         settings.value?.find(
           (setting) => setting.name === "public.external_matches_enabled",
-        )?.value !== "false"
+        )?.value === "true"
       );
     });
 

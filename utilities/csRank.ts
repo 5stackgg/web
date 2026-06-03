@@ -34,3 +34,35 @@ export function csRankIcon(
   const prefix = kind === "wingman" ? "wingman" : "skillgroup";
   return `/img/skillgroups/${prefix}${r}.svg`;
 }
+
+const SKILL_GROUP_NAMES: Record<number, string> = {
+  0: "Unranked",
+  1: "Silver I",
+  2: "Silver II",
+  3: "Silver III",
+  4: "Silver IV",
+  5: "Silver Elite",
+  6: "Silver Elite Master",
+  7: "Gold Nova I",
+  8: "Gold Nova II",
+  9: "Gold Nova III",
+  10: "Gold Nova Master",
+  11: "Master Guardian I",
+  12: "Master Guardian II",
+  13: "Master Guardian Elite",
+  14: "Distinguished Master Guardian",
+  15: "Legendary Eagle",
+  16: "Legendary Eagle Master",
+  17: "Supreme Master First Class",
+  18: "The Global Elite",
+};
+
+export function csRankName(
+  rankType: number | null | undefined,
+  rank: number | null | undefined,
+): string | null {
+  const kind = csRankKind(rankType);
+  if (kind === "premier" || kind === null) return null;
+  const r = Math.max(0, Math.min(18, Math.round(Number(rank) || 0)));
+  return SKILL_GROUP_NAMES[r] ?? null;
+}

@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { ref, computed, provide, onMounted, onBeforeUnmount } from "vue";
+import { useSubscription } from "@vue/apollo-composable";
 import EventEmitter from "eventemitter3";
+import { matchBackupRoundsSubscription } from "~/graphql/matchBackupRoundsGraphql";
 import { ChevronUp, GripHorizontal, Shield } from "lucide-vue-next";
 import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
@@ -191,8 +193,16 @@ const canShowLogs = computed(
     ].includes(props.match.status),
 );
 
+// match_map_rounds is gated to finished maps (anti-cheat), so the restorable
+// rounds come from the dedicated v_match_map_backup_rounds view instead.
+const { result: backupRoundsResult } = useSubscription(
+  matchBackupRoundsSubscription,
+  () => ({ matchMapId: currentMap.value?.id }),
+  () => ({ enabled: !!currentMap.value?.id }),
+);
+
 const restorableRounds = computed(() =>
-  (currentMap.value?.rounds ?? []).filter(
+  ((backupRoundsResult.value as any)?.v_match_map_backup_rounds ?? []).filter(
     (r: any) => r.has_backup_file && r.round > 0,
   ),
 );

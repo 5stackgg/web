@@ -72,6 +72,8 @@ const CANON: Record<string, string> = {
   zeusx27: "taser",
   c4: "c4",
   bomb: "c4",
+  plantedc4: "planted_c4",
+  weaponc4: "c4",
   // grenades
   hegrenade: "hegrenade",
   molotov: "molotov",

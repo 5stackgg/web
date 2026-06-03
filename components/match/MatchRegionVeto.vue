@@ -145,7 +145,7 @@ import {
       <Separator></Separator>
     </template>
     <template v-else-if="canSelectRegion && !match.region">
-      <Card class="sm:col-span-4">
+      <Card class="sm:col-span-4 bg-card/20">
         <CardHeader class="pb-3">
           <CardContent>
             <form @submit.prevent="setRegion">

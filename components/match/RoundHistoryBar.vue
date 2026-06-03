@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { Bomb, Skull, Wrench, Clock } from "lucide-vue-next";
+import { Skull, Clock } from "lucide-vue-next";
 
 const { t } = useI18n();
 import {
@@ -17,6 +17,10 @@ type Round = {
   winning_reason?: e_winning_reasons_enum | null;
   lineup_1_side?: e_sides_enum | null;
   lineup_2_side?: e_sides_enum | null;
+  kills?: Array<{
+    player?: { steam_id?: string | number | null } | null;
+    attacked_player?: { steam_id?: string | number | null } | null;
+  }> | null;
 };
 
 const props = defineProps<{
@@ -25,6 +29,19 @@ const props = defineProps<{
   compact?: boolean;
   seamless?: boolean;
 }>();
+
+// Players-per-side for this match type (5v5, 2v2 wingman, 1v1, …). Drives how
+// many survival tally bars each side gets. Prefer the match's configured cap,
+// then fall back to the larger actual roster, then a sane 5.
+const teamSize = computed(() => {
+  const configured = Number(props.match?.max_players_per_lineup) || 0;
+  if (configured > 0) {
+    return configured;
+  }
+  const l1 = props.match?.lineup_1?.lineup_players?.length ?? 0;
+  const l2 = props.match?.lineup_2?.lineup_players?.length ?? 0;
+  return Math.max(l1, l2, 5);
+});
 
 const chronologicalRounds = computed<Round[]>(() => {
   const rounds: Round[] = props.matchMap?.rounds ?? [];
@@ -52,12 +69,108 @@ const currentSides = computed(() => {
   };
 });
 
+const lineupBySteamId = computed(() => {
+  const map = new Map<string, 1 | 2>();
+  for (const member of props.match?.lineup_1?.lineup_players ?? []) {
+    const sid = String(member.steam_id ?? member.player?.steam_id ?? "");
+    if (sid) {
+      map.set(sid, 1);
+    }
+  }
+  for (const member of props.match?.lineup_2?.lineup_players ?? []) {
+    const sid = String(member.steam_id ?? member.player?.steam_id ?? "");
+    if (sid) {
+      map.set(sid, 2);
+    }
+  }
+  return map;
+});
+
+// Survivors at round end, derived from the kill events (each distinct victim
+// died once). Graceful: rounds without kill data report has=false and the
+// strip falls back to its plain win/loss view.
+const survivorsByRound = computed(() => {
+  const out = new Map<number, { alive1: number; alive2: number; has: boolean }>();
+  for (const round of chronologicalRounds.value) {
+    const size = teamSize.value;
+    const kills = round.kills;
+    if (!Array.isArray(kills) || kills.length === 0) {
+      out.set(round.round, { alive1: size, alive2: size, has: false });
+      continue;
+    }
+    const deadByTeam = { 1: new Set<string>(), 2: new Set<string>() };
+    for (const kill of kills) {
+      const victim = String(kill.attacked_player?.steam_id ?? "");
+      if (!victim) {
+        continue;
+      }
+      const team = lineupBySteamId.value.get(victim);
+      if (team) {
+        deadByTeam[team].add(victim);
+      }
+    }
+    out.set(round.round, {
+      alive1: Math.max(0, size - deadByTeam[1].size),
+      alive2: Math.max(0, size - deadByTeam[2].size),
+      has: true,
+    });
+  }
+  return out;
+});
+
+function survivorsFor(round: Round) {
+  return (
+    survivorsByRound.value.get(round.round) ?? {
+      alive1: teamSize.value,
+      alive2: teamSize.value,
+      has: false,
+    }
+  );
+}
+
+function aliveFor(round: Round, isLineup1: boolean) {
+  const s = survivorsFor(round);
+  return isLineup1 ? s.alive1 : s.alive2;
+}
+
+// One horizontal "survivor" line per player slot. Alive players glow in their
+// side color; dead players fade out so the stack reads as remaining headcount.
+function survivorLineClass(
+  index: number,
+  alive: number,
+  side?: e_sides_enum | null,
+  fromBottom = false,
+) {
+  const isAlive = fromBottom
+    ? index >= teamSize.value - alive
+    : index < alive;
+  if (!isAlive) {
+    return "bg-muted-foreground/15";
+  }
+  if (side === e_sides_enum.CT) {
+    return "bg-sky-400 shadow-[0_0_3px_hsl(199_89%_60%_/_0.7)]";
+  }
+  if (side === e_sides_enum.TERRORIST) {
+    return "bg-amber-400 shadow-[0_0_3px_hsl(43_96%_56%_/_0.7)]";
+  }
+  return "bg-muted-foreground";
+}
+
+// "won 3v1" — winner's survivors vs loser's, at round end.
+function manAdvantageLabel(round: Round): string | null {
+  const s = survivorsFor(round);
+  if (!s.has) {
+    return null;
+  }
+  const lineup1Won =
+    round.lineup_1_side && round.winning_side === round.lineup_1_side;
+  const winnerAlive = lineup1Won ? s.alive1 : s.alive2;
+  const loserAlive = lineup1Won ? s.alive2 : s.alive1;
+  return `${winnerAlive}v${loserAlive}`;
+}
+
 function iconFor(reason?: e_winning_reasons_enum | null) {
   switch (reason) {
-    case e_winning_reasons_enum.BombExploded:
-      return Bomb;
-    case e_winning_reasons_enum.BombDefused:
-      return Wrench;
     case e_winning_reasons_enum.TimeRanOut:
       return Clock;
     case e_winning_reasons_enum.CTsWin:
@@ -65,6 +178,19 @@ function iconFor(reason?: e_winning_reasons_enum | null) {
       return Skull;
     default:
       return Skull;
+  }
+}
+
+// Bomb outcomes use the in-game equipment artwork instead of a lucide glyph.
+// Rendered via CSS mask + bg-current so they still inherit the side color.
+function reasonSvg(reason?: e_winning_reasons_enum | null) {
+  switch (reason) {
+    case e_winning_reasons_enum.BombExploded:
+      return "/img/equipment/explosion.svg";
+    case e_winning_reasons_enum.BombDefused:
+      return "/img/equipment/defuser.svg";
+    default:
+      return null;
   }
 }
 
@@ -138,21 +264,6 @@ function winnerName(round: Round) {
       seamless ? '' : compact ? 'p-1.5' : 'p-2.5',
     ]"
   >
-    <div
-      :class="[
-        'flex items-center justify-between mb-3 uppercase tracking-[0.2em] text-muted-foreground',
-        compact ? 'text-[9px]' : 'text-[10px]',
-      ]"
-    >
-      <span class="flex items-center gap-1.5">
-        <span class="inline-block w-1 h-1 rounded-full bg-primary/70" />
-        {{ $t("match.round_history") }}
-      </span>
-      <span class="font-mono tabular-nums text-muted-foreground/60">
-        {{ chronologicalRounds.length }}
-      </span>
-    </div>
-
     <div class="relative flex items-stretch gap-4 py-1">
       <div
         class="pointer-events-none absolute inset-x-0 top-1/2 h-px bg-border/60 -translate-y-1/2"
@@ -163,6 +274,16 @@ function winnerName(round: Round) {
           compact ? 'w-[3.75rem]' : 'w-[5rem]',
         ]"
       >
+        <div :class="['flex items-center', compact ? 'h-5' : 'h-6']">
+          <span
+            :class="[
+              'uppercase tracking-wider text-muted-foreground/50 truncate leading-none',
+              compact ? 'text-[8px]' : 'text-[9px]',
+            ]"
+          >
+            {{ $t("round_history.survivors") }}
+          </span>
+        </div>
         <div
           :class="['flex items-center gap-1.5', compact ? 'h-[18px]' : 'h-6']"
         >
@@ -213,6 +334,16 @@ function winnerName(round: Round) {
             {{ match.lineup_2.name }}
           </span>
         </div>
+        <div :class="['flex items-center', compact ? 'h-5' : 'h-6']">
+          <span
+            :class="[
+              'uppercase tracking-wider text-muted-foreground/50 truncate leading-none',
+              compact ? 'text-[8px]' : 'text-[9px]',
+            ]"
+          >
+            {{ $t("round_history.survivors") }}
+          </span>
+        </div>
       </div>
 
       <div class="relative min-w-0 overflow-x-auto round-history__scroll pb-2">
@@ -240,20 +371,57 @@ function winnerName(round: Round) {
                 >
                   <div
                     :class="[
+                      'flex flex-col justify-center gap-[2px] w-full',
+                      compact ? 'h-5' : 'h-6',
+                    ]"
+                  >
+                    <template v-if="survivorsFor(round).has">
+                      <span
+                        v-for="i in teamSize"
+                        :key="i"
+                        :class="[
+                          'w-full rounded-full',
+                          compact ? 'h-[2.5px]' : 'h-[3px]',
+                          survivorLineClass(
+                            i - 1,
+                            aliveFor(round, true),
+                            round.lineup_1_side,
+                            true,
+                          ),
+                        ]"
+                      />
+                    </template>
+                  </div>
+                  <div
+                    :class="[
                       'flex items-center justify-center rounded-[3px] transition-transform group-hover:scale-110',
                       compact ? 'w-[18px] h-[18px]' : 'w-6 h-6',
                       cellClass(round, true),
                     ]"
                   >
-                    <component
-                      v-if="lineupWonRound(round, true)"
-                      :is="iconFor(round.winning_reason)"
-                      :class="[
-                        sideTextClass(round.winning_side),
-                        compact ? 'w-3 h-3' : 'w-3.5 h-3.5',
-                      ]"
-                      :stroke-width="2.25"
-                    />
+                    <template v-if="lineupWonRound(round, true)">
+                      <span
+                        v-if="reasonSvg(round.winning_reason)"
+                        :class="[
+                          'reason-mask inline-block bg-current',
+                          sideTextClass(round.winning_side),
+                          compact ? 'w-3 h-3' : 'w-3.5 h-3.5',
+                        ]"
+                        :style="{
+                          maskImage: `url(${reasonSvg(round.winning_reason)})`,
+                          WebkitMaskImage: `url(${reasonSvg(round.winning_reason)})`,
+                        }"
+                      />
+                      <component
+                        v-else
+                        :is="iconFor(round.winning_reason)"
+                        :class="[
+                          sideTextClass(round.winning_side),
+                          compact ? 'w-3 h-3' : 'w-3.5 h-3.5',
+                        ]"
+                        :stroke-width="2.25"
+                      />
+                    </template>
                   </div>
                   <span
                     :class="[
@@ -272,15 +440,51 @@ function winnerName(round: Round) {
                       cellClass(round, false),
                     ]"
                   >
-                    <component
-                      v-if="lineupWonRound(round, false)"
-                      :is="iconFor(round.winning_reason)"
-                      :class="[
-                        sideTextClass(round.winning_side),
-                        compact ? 'w-3 h-3' : 'w-3.5 h-3.5',
-                      ]"
-                      :stroke-width="2.25"
-                    />
+                    <template v-if="lineupWonRound(round, false)">
+                      <span
+                        v-if="reasonSvg(round.winning_reason)"
+                        :class="[
+                          'reason-mask inline-block bg-current',
+                          sideTextClass(round.winning_side),
+                          compact ? 'w-3 h-3' : 'w-3.5 h-3.5',
+                        ]"
+                        :style="{
+                          maskImage: `url(${reasonSvg(round.winning_reason)})`,
+                          WebkitMaskImage: `url(${reasonSvg(round.winning_reason)})`,
+                        }"
+                      />
+                      <component
+                        v-else
+                        :is="iconFor(round.winning_reason)"
+                        :class="[
+                          sideTextClass(round.winning_side),
+                          compact ? 'w-3 h-3' : 'w-3.5 h-3.5',
+                        ]"
+                        :stroke-width="2.25"
+                      />
+                    </template>
+                  </div>
+                  <div
+                    :class="[
+                      'flex flex-col justify-center gap-[2px] w-full',
+                      compact ? 'h-5' : 'h-6',
+                    ]"
+                  >
+                    <template v-if="survivorsFor(round).has">
+                      <span
+                        v-for="i in teamSize"
+                        :key="i"
+                        :class="[
+                          'w-full rounded-full',
+                          compact ? 'h-[2.5px]' : 'h-[3px]',
+                          survivorLineClass(
+                            i - 1,
+                            aliveFor(round, false),
+                            round.lineup_2_side,
+                          ),
+                        ]"
+                      />
+                    </template>
                   </div>
                 </div>
               </TooltipTrigger>
@@ -302,6 +506,12 @@ function winnerName(round: Round) {
                   <span class="text-zinc-400">
                     {{ reasonLabel(round.winning_reason) }}
                   </span>
+                  <span
+                    v-if="manAdvantageLabel(round)"
+                    class="text-zinc-500 text-[10px]"
+                  >
+                    {{ $t("round_history.won_man", { state: manAdvantageLabel(round) }) }}
+                  </span>
                 </div>
               </TooltipContent>
             </Tooltip>
@@ -313,6 +523,15 @@ function winnerName(round: Round) {
 </template>
 
 <style scoped>
+.reason-mask {
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
+}
+
 .round-history::before {
   content: "";
   position: absolute;

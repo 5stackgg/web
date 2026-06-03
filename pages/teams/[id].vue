@@ -36,6 +36,9 @@ import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AvatarUpload from "~/components/AvatarUpload.vue";
 import TrophyCase from "~/components/trophy/TrophyCase.vue";
+import TeamCareerStats from "~/components/team/TeamCareerStats.vue";
+import TeamVetoStats from "~/components/team/TeamVetoStats.vue";
+import TeamVetoSimulator from "~/components/team/TeamVetoSimulator.vue";
 
 const teamMenu = ref(false);
 const teamHeroClasses =
@@ -214,6 +217,12 @@ const teamHeroActionsClasses =
         <MatchesTable :matches="teamMatches" :show-all-matches="true" />
       </div>
     </PageTransition>
+  </div>
+
+  <div v-if="team" class="mt-6 space-y-6">
+    <TeamCareerStats :team-id="$route.params.id" />
+    <TeamVetoStats :team-id="$route.params.id" />
+    <TeamVetoSimulator :team-id="$route.params.id" />
   </div>
 
   <Sheet

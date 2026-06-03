@@ -11,6 +11,7 @@ import {
   Filler,
 } from "chart.js";
 import { Line } from "vue-chartjs";
+import { csRankName } from "~/utilities/csRank";
 
 ChartJS.register(
   CategoryScale,
@@ -216,12 +217,18 @@ ChartJS.register({
 </script>
 
 <template>
-  <Line
-    :data="chartData"
-    :options="chartOptions"
-    v-if="chartData"
-    @chart:render="onChartRender"
-  />
+  <div
+    class="h-full w-full origin-center transition-transform duration-200 ease-in-out"
+    :class="collapsed ? 'scale-y-0' : 'scale-y-100'"
+  >
+    <Line
+      :key="chartKey"
+      :data="chartData"
+      :options="chartOptions"
+      v-if="chartData"
+      @chart:render="onChartRender"
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -239,6 +246,9 @@ interface EloSeries {
   label: string;
   history: EloHistoryEntry[];
   focus?: boolean;
+  // Fixed line color (e.g. the cyan comparison overlay) — bypasses the
+  // elo-tier coloring.
+  color?: string;
 }
 
 export default {
@@ -268,6 +278,46 @@ export default {
       required: false,
       default: null,
     },
+    // When true, an async refetch is in flight (e.g. a source flip). We hold
+    // the currently-displayed data through it rather than flashing to empty,
+    // and only wink-swap once the real new data arrives.
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  data() {
+    return {
+      // Buffered copy of the incoming data. We only swap it to the new props
+      // while the chart is collapsed (winked out + invisible), so switching
+      // maps/modes never shows the line morphing across rescaled axes.
+      displayedSeries: this.series as EloSeries[] | null,
+      displayedEloHistory: this.eloHistory as EloHistoryEntry[] | null,
+      collapsed: false,
+      suppressDraw: false,
+    };
+  },
+  watch: {
+    series: {
+      handler() {
+        this.maybeSwap();
+      },
+      deep: true,
+    },
+    eloHistory: {
+      handler() {
+        this.maybeSwap();
+      },
+      deep: true,
+    },
+    loading(isLoading: boolean) {
+      // Fetch finished and the real result is genuinely empty — commit it now
+      // (wink out to the empty state) instead of holding stale data forever.
+      if (!isLoading && !this.hasIncomingData() && this.hasDisplayedData()) {
+        this.wink();
+      }
+    },
   },
   computed: {
     skillGroupKind(): "wingman" | "competitive" | null {
@@ -296,15 +346,17 @@ export default {
       return { min, max };
     },
     normalizedSeries(): EloSeries[] {
-      if (this.series && this.series.length) {
-        return this.series.filter((s) => s.history && s.history.length > 0);
+      if (this.displayedSeries && this.displayedSeries.length) {
+        return this.displayedSeries.filter(
+          (s) => s.history && s.history.length > 0,
+        );
       }
-      if (this.eloHistory && this.eloHistory.length) {
+      if (this.displayedEloHistory && this.displayedEloHistory.length) {
         return [
           {
             key: "elo",
             label: this.$t("pages.leaderboard.categories.elo"),
-            history: this.eloHistory,
+            history: this.displayedEloHistory,
             focus: true,
           },
         ];
@@ -337,6 +389,9 @@ export default {
       return {
         responsive: true,
         maintainAspectRatio: false,
+        animation: this.suppressDraw
+          ? (false as const)
+          : { duration: 750, easing: "easeInOutQuart" as const },
         interaction: {
           mode: "nearest" as const,
           axis: "xy" as const,
@@ -355,7 +410,7 @@ export default {
             boxPadding: 6,
             usePointStyle: false,
             backgroundColor: "rgba(20, 22, 28, 0.96)",
-            borderColor: "hsl(36, 100%, 50%)",
+            borderColor: "#fbbf24",
             borderWidth: 1,
             titleColor: "rgba(255, 255, 255, 0.9)",
             titleFont: {
@@ -402,6 +457,13 @@ export default {
               label: (item: any) => {
                 const ds = item.dataset;
                 const mode = (ds?.label || "").toUpperCase();
+                if (sg) {
+                  const rank = item.parsed?.y;
+                  const name =
+                    csRankName(self.rankType, rank) ??
+                    (typeof rank === "number" ? String(rank) : "—");
+                  return `${mode}   ${name}`;
+                }
                 const elo =
                   typeof item.parsed?.y === "number"
                     ? item.parsed.y.toLocaleString()
@@ -429,10 +491,10 @@ export default {
           y: {
             position: "left" as const,
             beginAtZero: false,
-            grid: { display: false },
+            grid: { color: "rgba(255,255,255,0.05)" },
             ...(sg && sgRange ? { min: sgRange.min, max: sgRange.max } : {}),
             ticks: {
-              color: "rgba(255, 255, 255, 0.7)",
+              color: "rgba(255, 255, 255, 0.6)",
               font: { size: 11 },
               padding: 8,
               ...(sg ? { stepSize: 1, maxTicksLimit: 10 } : {}),
@@ -444,7 +506,7 @@ export default {
           x: {
             grid: { display: false },
             ticks: {
-              color: "rgba(255, 255, 255, 0.7)",
+              color: "rgba(255, 255, 255, 0.6)",
               font: { size: 11 },
               padding: 8,
               autoSkip: true,
@@ -471,6 +533,15 @@ export default {
         },
       };
     },
+    // Remount the chart whenever the series composition or x-axis length
+    // changes (e.g. a compare player's data arrives async on reload) so points
+    // re-align to the unified timestamps instead of sticking to stale slots.
+    chartKey(): string {
+      const series = this.normalizedSeries ?? [];
+      return `${series.length}:${this.unifiedTimestamps.length}:${series
+        .map((s: any) => s.history?.length ?? 0)
+        .join(",")}`;
+    },
     chartData() {
       const labels = this.unifiedTimestamps;
       if (labels.length === 0) return null;
@@ -481,17 +552,17 @@ export default {
       let focusRadius: number;
       let dimRadius: number;
       if (focusCount <= 30) {
-        focusRadius = 5;
-        dimRadius = 2.5;
+        focusRadius = 3;
+        dimRadius = 1.5;
       } else if (focusCount <= 80) {
-        focusRadius = 3.5;
-        dimRadius = 1.75;
-      } else if (focusCount <= 200) {
         focusRadius = 2.25;
         dimRadius = 1.25;
-      } else {
+      } else if (focusCount <= 200) {
         focusRadius = 1.5;
         dimRadius = 1;
+      } else {
+        focusRadius = 1;
+        dimRadius = 0.75;
       }
       const tension = focusCount > 80 ? 0.3 : 0.4;
 
@@ -504,22 +575,18 @@ export default {
           if (entry.match_created_at) byTs.set(entry.match_created_at, entry);
         }
 
-        const lastEntry =
-          [...series.history]
-            .sort(
-              (a, b) =>
-                new Date(a.match_created_at).getTime() -
-                new Date(b.match_created_at).getTime(),
-            )
-            .pop() ?? null;
-
-        const baseColor = this.getEloColor(
-          (lastEntry?.updated_elo as number | undefined) ??
-            (lastEntry?.current_elo as number | undefined) ??
-            0,
-        );
-        const lineColor = focus ? baseColor : this.hex2rgba(baseColor, 0.32);
-        const pointColor = focus ? baseColor : this.hex2rgba(baseColor, 0.4);
+        // Single-series chart: focus line is white; a pinned comparison series
+        // keeps its explicit (sky-blue) color; extra non-focus series dim out.
+        const lineColor = series.color
+          ? series.color
+          : focus
+            ? "#fff"
+            : "rgba(255,255,255,0.3)";
+        const pointColor = series.color
+          ? series.color
+          : focus
+            ? "#fff"
+            : "rgba(255,255,255,0.4)";
 
         const data = labels.map((ts) => {
           const entry = byTs.get(ts);
@@ -574,23 +641,59 @@ export default {
     });
   },
   methods: {
+    hasIncomingData(): boolean {
+      return Boolean(
+        this.series?.some((s) => s.history && s.history.length > 0) ||
+          (this.eloHistory && this.eloHistory.length > 0),
+      );
+    },
+    hasDisplayedData(): boolean {
+      return Boolean(
+        this.displayedSeries?.some((s) => s.history && s.history.length > 0) ||
+          (this.displayedEloHistory && this.displayedEloHistory.length > 0),
+      );
+    },
+    commit() {
+      this.displayedSeries = this.series;
+      this.displayedEloHistory = this.eloHistory;
+    },
+    maybeSwap() {
+      // First population (or recovering from empty): no wink, just animate in.
+      if (!this.hasDisplayedData()) {
+        this.commit();
+        return;
+      }
+      // Transient empty while a refetch is in flight (e.g. a source flip):
+      // keep showing the old data — the `loading` watcher commits the result.
+      if (!this.hasIncomingData() && this.loading) {
+        return;
+      }
+      // Already mid-wink; the pending swap will pick up the latest props.
+      if (this.collapsed) {
+        return;
+      }
+      this.wink();
+    },
+    // Wink the current chart out, swap in the new data while it's collapsed
+    // (invisible + draw suppressed so it can't morph), then wink it back in.
+    // `suppressDraw` stays on once a wink happens: from then on the scaleY wink
+    // is the only transition, so re-enabling chart.js animation (which would
+    // replay an "draw-in" after the wink and read as the line slowly rendering)
+    // is never needed.
+    wink() {
+      this.collapsed = true;
+      this.suppressDraw = true;
+      window.setTimeout(() => {
+        this.commit();
+        window.setTimeout(() => {
+          this.collapsed = false;
+        }, 40);
+      }, 240);
+    },
     onChartRender(chart: any) {
       if (chart) {
         (chart as any).$vueComponent = this;
       }
-    },
-    hex2rgba(hex: string, alpha: number = 1): string {
-      const [r, g, b] = hex.match(/\w\w/g)!.map((x: string) => parseInt(x, 16));
-      return `rgba(${r},${g},${b},${alpha})`;
-    },
-    getEloColor(elo: number): string {
-      if (elo >= 22000) return "#EB4B4B";
-      if (elo >= 17000) return "#D22CE6";
-      if (elo >= 13000) return "#FED700";
-      if (elo >= 10000) return "#8846FF";
-      if (elo >= 7500) return "#4B69FF";
-      if (elo >= 6000) return "#5E98D7";
-      return "#B1C3D9";
     },
   },
 };

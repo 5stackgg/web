@@ -7251,6 +7251,9 @@ export const AllTypesProps: Record<string,any> = {
 		delete_v_match_captains:{
 			where:"v_match_captains_bool_exp"
 		},
+		delete_v_match_map_backup_rounds:{
+			where:"v_match_map_backup_rounds_bool_exp"
+		},
 		delete_v_pool_maps:{
 			where:"v_pool_maps_bool_exp"
 		},
@@ -8015,6 +8018,12 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		insert_v_match_captains_one:{
 			object:"v_match_captains_insert_input"
+		},
+		insert_v_match_map_backup_rounds:{
+			objects:"v_match_map_backup_rounds_insert_input"
+		},
+		insert_v_match_map_backup_rounds_one:{
+			object:"v_match_map_backup_rounds_insert_input"
 		},
 		insert_v_pool_maps:{
 			objects:"v_pool_maps_insert_input"
@@ -9411,6 +9420,14 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_v_match_captains_many:{
 			updates:"v_match_captains_updates"
+		},
+		update_v_match_map_backup_rounds:{
+			_inc:"v_match_map_backup_rounds_inc_input",
+			_set:"v_match_map_backup_rounds_set_input",
+			where:"v_match_map_backup_rounds_bool_exp"
+		},
+		update_v_match_map_backup_rounds_many:{
+			updates:"v_match_map_backup_rounds_updates"
 		},
 		update_v_pool_maps:{
 			_set:"v_pool_maps_set_input",
@@ -16060,6 +16077,46 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"v_match_captains_order_by",
 			where:"v_match_captains_bool_exp"
 		},
+		v_match_lineup_buy_types:{
+			distinct_on:"v_match_lineup_buy_types_select_column",
+			order_by:"v_match_lineup_buy_types_order_by",
+			where:"v_match_lineup_buy_types_bool_exp"
+		},
+		v_match_lineup_buy_types_aggregate:{
+			distinct_on:"v_match_lineup_buy_types_select_column",
+			order_by:"v_match_lineup_buy_types_order_by",
+			where:"v_match_lineup_buy_types_bool_exp"
+		},
+		v_match_lineup_map_stats:{
+			distinct_on:"v_match_lineup_map_stats_select_column",
+			order_by:"v_match_lineup_map_stats_order_by",
+			where:"v_match_lineup_map_stats_bool_exp"
+		},
+		v_match_lineup_map_stats_aggregate:{
+			distinct_on:"v_match_lineup_map_stats_select_column",
+			order_by:"v_match_lineup_map_stats_order_by",
+			where:"v_match_lineup_map_stats_bool_exp"
+		},
+		v_match_map_backup_rounds:{
+			distinct_on:"v_match_map_backup_rounds_select_column",
+			order_by:"v_match_map_backup_rounds_order_by",
+			where:"v_match_map_backup_rounds_bool_exp"
+		},
+		v_match_map_backup_rounds_aggregate:{
+			distinct_on:"v_match_map_backup_rounds_select_column",
+			order_by:"v_match_map_backup_rounds_order_by",
+			where:"v_match_map_backup_rounds_bool_exp"
+		},
+		v_match_player_buy_types:{
+			distinct_on:"v_match_player_buy_types_select_column",
+			order_by:"v_match_player_buy_types_order_by",
+			where:"v_match_player_buy_types_bool_exp"
+		},
+		v_match_player_buy_types_aggregate:{
+			distinct_on:"v_match_player_buy_types_select_column",
+			order_by:"v_match_player_buy_types_order_by",
+			where:"v_match_player_buy_types_bool_exp"
+		},
 		v_player_arch_nemesis:{
 			distinct_on:"v_player_arch_nemesis_select_column",
 			order_by:"v_player_arch_nemesis_order_by",
@@ -16130,6 +16187,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"v_player_match_map_hltv_order_by",
 			where:"v_player_match_map_hltv_bool_exp"
 		},
+		v_player_match_map_roles:{
+			distinct_on:"v_player_match_map_roles_select_column",
+			order_by:"v_player_match_map_roles_order_by",
+			where:"v_player_match_map_roles_bool_exp"
+		},
+		v_player_match_map_roles_aggregate:{
+			distinct_on:"v_player_match_map_roles_select_column",
+			order_by:"v_player_match_map_roles_order_by",
+			where:"v_player_match_map_roles_bool_exp"
+		},
 		v_player_match_performance:{
 			distinct_on:"v_player_match_performance_select_column",
 			order_by:"v_player_match_performance_order_by",
@@ -16140,6 +16207,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"v_player_match_performance_order_by",
 			where:"v_player_match_performance_bool_exp"
 		},
+		v_player_match_rating:{
+			distinct_on:"v_player_match_rating_select_column",
+			order_by:"v_player_match_rating_order_by",
+			where:"v_player_match_rating_bool_exp"
+		},
+		v_player_match_rating_aggregate:{
+			distinct_on:"v_player_match_rating_select_column",
+			order_by:"v_player_match_rating_order_by",
+			where:"v_player_match_rating_bool_exp"
+		},
 		v_player_multi_kills:{
 			distinct_on:"v_player_multi_kills_select_column",
 			order_by:"v_player_multi_kills_order_by",
@@ -16149,6 +16226,16 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"v_player_multi_kills_select_column",
 			order_by:"v_player_multi_kills_order_by",
 			where:"v_player_multi_kills_bool_exp"
+		},
+		v_player_weapon_damage:{
+			distinct_on:"v_player_weapon_damage_select_column",
+			order_by:"v_player_weapon_damage_order_by",
+			where:"v_player_weapon_damage_bool_exp"
+		},
+		v_player_weapon_damage_aggregate:{
+			distinct_on:"v_player_weapon_damage_select_column",
+			order_by:"v_player_weapon_damage_order_by",
+			where:"v_player_weapon_damage_bool_exp"
 		},
 		v_player_weapon_kills:{
 			distinct_on:"v_player_weapon_kills_select_column",
@@ -18384,6 +18471,62 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"v_match_captains_stream_cursor_input",
 			where:"v_match_captains_bool_exp"
 		},
+		v_match_lineup_buy_types:{
+			distinct_on:"v_match_lineup_buy_types_select_column",
+			order_by:"v_match_lineup_buy_types_order_by",
+			where:"v_match_lineup_buy_types_bool_exp"
+		},
+		v_match_lineup_buy_types_aggregate:{
+			distinct_on:"v_match_lineup_buy_types_select_column",
+			order_by:"v_match_lineup_buy_types_order_by",
+			where:"v_match_lineup_buy_types_bool_exp"
+		},
+		v_match_lineup_buy_types_stream:{
+			cursor:"v_match_lineup_buy_types_stream_cursor_input",
+			where:"v_match_lineup_buy_types_bool_exp"
+		},
+		v_match_lineup_map_stats:{
+			distinct_on:"v_match_lineup_map_stats_select_column",
+			order_by:"v_match_lineup_map_stats_order_by",
+			where:"v_match_lineup_map_stats_bool_exp"
+		},
+		v_match_lineup_map_stats_aggregate:{
+			distinct_on:"v_match_lineup_map_stats_select_column",
+			order_by:"v_match_lineup_map_stats_order_by",
+			where:"v_match_lineup_map_stats_bool_exp"
+		},
+		v_match_lineup_map_stats_stream:{
+			cursor:"v_match_lineup_map_stats_stream_cursor_input",
+			where:"v_match_lineup_map_stats_bool_exp"
+		},
+		v_match_map_backup_rounds:{
+			distinct_on:"v_match_map_backup_rounds_select_column",
+			order_by:"v_match_map_backup_rounds_order_by",
+			where:"v_match_map_backup_rounds_bool_exp"
+		},
+		v_match_map_backup_rounds_aggregate:{
+			distinct_on:"v_match_map_backup_rounds_select_column",
+			order_by:"v_match_map_backup_rounds_order_by",
+			where:"v_match_map_backup_rounds_bool_exp"
+		},
+		v_match_map_backup_rounds_stream:{
+			cursor:"v_match_map_backup_rounds_stream_cursor_input",
+			where:"v_match_map_backup_rounds_bool_exp"
+		},
+		v_match_player_buy_types:{
+			distinct_on:"v_match_player_buy_types_select_column",
+			order_by:"v_match_player_buy_types_order_by",
+			where:"v_match_player_buy_types_bool_exp"
+		},
+		v_match_player_buy_types_aggregate:{
+			distinct_on:"v_match_player_buy_types_select_column",
+			order_by:"v_match_player_buy_types_order_by",
+			where:"v_match_player_buy_types_bool_exp"
+		},
+		v_match_player_buy_types_stream:{
+			cursor:"v_match_player_buy_types_stream_cursor_input",
+			where:"v_match_player_buy_types_bool_exp"
+		},
 		v_player_arch_nemesis:{
 			distinct_on:"v_player_arch_nemesis_select_column",
 			order_by:"v_player_arch_nemesis_order_by",
@@ -18482,6 +18625,20 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"v_player_match_map_hltv_stream_cursor_input",
 			where:"v_player_match_map_hltv_bool_exp"
 		},
+		v_player_match_map_roles:{
+			distinct_on:"v_player_match_map_roles_select_column",
+			order_by:"v_player_match_map_roles_order_by",
+			where:"v_player_match_map_roles_bool_exp"
+		},
+		v_player_match_map_roles_aggregate:{
+			distinct_on:"v_player_match_map_roles_select_column",
+			order_by:"v_player_match_map_roles_order_by",
+			where:"v_player_match_map_roles_bool_exp"
+		},
+		v_player_match_map_roles_stream:{
+			cursor:"v_player_match_map_roles_stream_cursor_input",
+			where:"v_player_match_map_roles_bool_exp"
+		},
 		v_player_match_performance:{
 			distinct_on:"v_player_match_performance_select_column",
 			order_by:"v_player_match_performance_order_by",
@@ -18496,6 +18653,20 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"v_player_match_performance_stream_cursor_input",
 			where:"v_player_match_performance_bool_exp"
 		},
+		v_player_match_rating:{
+			distinct_on:"v_player_match_rating_select_column",
+			order_by:"v_player_match_rating_order_by",
+			where:"v_player_match_rating_bool_exp"
+		},
+		v_player_match_rating_aggregate:{
+			distinct_on:"v_player_match_rating_select_column",
+			order_by:"v_player_match_rating_order_by",
+			where:"v_player_match_rating_bool_exp"
+		},
+		v_player_match_rating_stream:{
+			cursor:"v_player_match_rating_stream_cursor_input",
+			where:"v_player_match_rating_bool_exp"
+		},
 		v_player_multi_kills:{
 			distinct_on:"v_player_multi_kills_select_column",
 			order_by:"v_player_multi_kills_order_by",
@@ -18509,6 +18680,20 @@ export const AllTypesProps: Record<string,any> = {
 		v_player_multi_kills_stream:{
 			cursor:"v_player_multi_kills_stream_cursor_input",
 			where:"v_player_multi_kills_bool_exp"
+		},
+		v_player_weapon_damage:{
+			distinct_on:"v_player_weapon_damage_select_column",
+			order_by:"v_player_weapon_damage_order_by",
+			where:"v_player_weapon_damage_bool_exp"
+		},
+		v_player_weapon_damage_aggregate:{
+			distinct_on:"v_player_weapon_damage_select_column",
+			order_by:"v_player_weapon_damage_order_by",
+			where:"v_player_weapon_damage_bool_exp"
+		},
+		v_player_weapon_damage_stream:{
+			cursor:"v_player_weapon_damage_stream_cursor_input",
+			where:"v_player_weapon_damage_bool_exp"
 		},
 		v_player_weapon_kills:{
 			distinct_on:"v_player_weapon_kills_select_column",
@@ -21098,6 +21283,201 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"v_match_captains_set_input",
 		where:"v_match_captains_bool_exp"
 	},
+	v_match_lineup_buy_types_aggregate_fields:{
+		count:{
+			columns:"v_match_lineup_buy_types_select_column"
+		}
+	},
+	v_match_lineup_buy_types_bool_exp:{
+		_and:"v_match_lineup_buy_types_bool_exp",
+		_not:"v_match_lineup_buy_types_bool_exp",
+		_or:"v_match_lineup_buy_types_bool_exp",
+		match:"matches_bool_exp",
+		match_id:"uuid_comparison_exp",
+		match_lineup:"match_lineups_bool_exp",
+		match_lineup_id:"uuid_comparison_exp",
+		match_map:"match_maps_bool_exp",
+		match_map_id:"uuid_comparison_exp",
+		matchup:"String_comparison_exp",
+		rounds:"Int_comparison_exp",
+		side:"String_comparison_exp",
+		wins:"Int_comparison_exp"
+	},
+	v_match_lineup_buy_types_order_by:{
+		match:"matches_order_by",
+		match_id:"order_by",
+		match_lineup:"match_lineups_order_by",
+		match_lineup_id:"order_by",
+		match_map:"match_maps_order_by",
+		match_map_id:"order_by",
+		matchup:"order_by",
+		rounds:"order_by",
+		side:"order_by",
+		wins:"order_by"
+	},
+	v_match_lineup_buy_types_select_column: "enum" as const,
+	v_match_lineup_buy_types_stream_cursor_input:{
+		initial_value:"v_match_lineup_buy_types_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_match_lineup_buy_types_stream_cursor_value_input:{
+		match_id:"uuid",
+		match_lineup_id:"uuid",
+		match_map_id:"uuid"
+	},
+	v_match_lineup_map_stats_aggregate_fields:{
+		count:{
+			columns:"v_match_lineup_map_stats_select_column"
+		}
+	},
+	v_match_lineup_map_stats_bool_exp:{
+		_and:"v_match_lineup_map_stats_bool_exp",
+		_not:"v_match_lineup_map_stats_bool_exp",
+		_or:"v_match_lineup_map_stats_bool_exp",
+		man_adv_rounds:"Int_comparison_exp",
+		man_adv_wins:"Int_comparison_exp",
+		man_dis_rounds:"Int_comparison_exp",
+		man_dis_wins:"Int_comparison_exp",
+		match:"matches_bool_exp",
+		match_id:"uuid_comparison_exp",
+		match_lineup:"match_lineups_bool_exp",
+		match_lineup_id:"uuid_comparison_exp",
+		match_map:"match_maps_bool_exp",
+		match_map_id:"uuid_comparison_exp",
+		opening_attempts:"Int_comparison_exp",
+		opening_wins:"Int_comparison_exp",
+		pistol_rounds:"Int_comparison_exp",
+		pistol_wins:"Int_comparison_exp",
+		round_wins:"Int_comparison_exp",
+		rounds:"Int_comparison_exp",
+		side:"String_comparison_exp",
+		won_buy_eco:"Int_comparison_exp",
+		won_buy_force:"Int_comparison_exp",
+		won_buy_full:"Int_comparison_exp",
+		won_buy_pistol:"Int_comparison_exp"
+	},
+	v_match_lineup_map_stats_order_by:{
+		man_adv_rounds:"order_by",
+		man_adv_wins:"order_by",
+		man_dis_rounds:"order_by",
+		man_dis_wins:"order_by",
+		match:"matches_order_by",
+		match_id:"order_by",
+		match_lineup:"match_lineups_order_by",
+		match_lineup_id:"order_by",
+		match_map:"match_maps_order_by",
+		match_map_id:"order_by",
+		opening_attempts:"order_by",
+		opening_wins:"order_by",
+		pistol_rounds:"order_by",
+		pistol_wins:"order_by",
+		round_wins:"order_by",
+		rounds:"order_by",
+		side:"order_by",
+		won_buy_eco:"order_by",
+		won_buy_force:"order_by",
+		won_buy_full:"order_by",
+		won_buy_pistol:"order_by"
+	},
+	v_match_lineup_map_stats_select_column: "enum" as const,
+	v_match_lineup_map_stats_stream_cursor_input:{
+		initial_value:"v_match_lineup_map_stats_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_match_lineup_map_stats_stream_cursor_value_input:{
+		match_id:"uuid",
+		match_lineup_id:"uuid",
+		match_map_id:"uuid"
+	},
+	v_match_map_backup_rounds_aggregate_fields:{
+		count:{
+			columns:"v_match_map_backup_rounds_select_column"
+		}
+	},
+	v_match_map_backup_rounds_bool_exp:{
+		_and:"v_match_map_backup_rounds_bool_exp",
+		_not:"v_match_map_backup_rounds_bool_exp",
+		_or:"v_match_map_backup_rounds_bool_exp",
+		has_backup_file:"Boolean_comparison_exp",
+		match_map_id:"uuid_comparison_exp",
+		round:"Int_comparison_exp"
+	},
+	v_match_map_backup_rounds_inc_input:{
+
+	},
+	v_match_map_backup_rounds_insert_input:{
+		match_map_id:"uuid"
+	},
+	v_match_map_backup_rounds_order_by:{
+		has_backup_file:"order_by",
+		match_map_id:"order_by",
+		round:"order_by"
+	},
+	v_match_map_backup_rounds_select_column: "enum" as const,
+	v_match_map_backup_rounds_set_input:{
+		match_map_id:"uuid"
+	},
+	v_match_map_backup_rounds_stream_cursor_input:{
+		initial_value:"v_match_map_backup_rounds_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_match_map_backup_rounds_stream_cursor_value_input:{
+		match_map_id:"uuid"
+	},
+	v_match_map_backup_rounds_updates:{
+		_inc:"v_match_map_backup_rounds_inc_input",
+		_set:"v_match_map_backup_rounds_set_input",
+		where:"v_match_map_backup_rounds_bool_exp"
+	},
+	v_match_player_buy_types_aggregate_fields:{
+		count:{
+			columns:"v_match_player_buy_types_select_column"
+		}
+	},
+	v_match_player_buy_types_bool_exp:{
+		_and:"v_match_player_buy_types_bool_exp",
+		_not:"v_match_player_buy_types_bool_exp",
+		_or:"v_match_player_buy_types_bool_exp",
+		deaths:"Int_comparison_exp",
+		kills:"Int_comparison_exp",
+		match:"matches_bool_exp",
+		match_id:"uuid_comparison_exp",
+		match_lineup:"match_lineups_bool_exp",
+		match_lineup_id:"uuid_comparison_exp",
+		match_map:"match_maps_bool_exp",
+		match_map_id:"uuid_comparison_exp",
+		matchup:"String_comparison_exp",
+		player:"players_bool_exp",
+		rounds:"Int_comparison_exp",
+		side:"String_comparison_exp",
+		steam_id:"bigint_comparison_exp"
+	},
+	v_match_player_buy_types_order_by:{
+		deaths:"order_by",
+		kills:"order_by",
+		match:"matches_order_by",
+		match_id:"order_by",
+		match_lineup:"match_lineups_order_by",
+		match_lineup_id:"order_by",
+		match_map:"match_maps_order_by",
+		match_map_id:"order_by",
+		matchup:"order_by",
+		player:"players_order_by",
+		rounds:"order_by",
+		side:"order_by",
+		steam_id:"order_by"
+	},
+	v_match_player_buy_types_select_column: "enum" as const,
+	v_match_player_buy_types_stream_cursor_input:{
+		initial_value:"v_match_player_buy_types_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_match_player_buy_types_stream_cursor_value_input:{
+		match_id:"uuid",
+		match_lineup_id:"uuid",
+		match_map_id:"uuid",
+		steam_id:"bigint"
+	},
 	v_player_arch_nemesis_aggregate_fields:{
 		count:{
 			columns:"v_player_arch_nemesis_select_column"
@@ -21905,6 +22285,93 @@ export const AllTypesProps: Record<string,any> = {
 		rounds_played:"order_by",
 		steam_id:"order_by"
 	},
+	v_player_match_map_roles_aggregate_fields:{
+		count:{
+			columns:"v_player_match_map_roles_select_column"
+		}
+	},
+	v_player_match_map_roles_bool_exp:{
+		_and:"v_player_match_map_roles_bool_exp",
+		_not:"v_player_match_map_roles_bool_exp",
+		_or:"v_player_match_map_roles_bool_exp",
+		adr:"numeric_comparison_exp",
+		awp_kills:"Int_comparison_exp",
+		awp_share:"numeric_comparison_exp",
+		deaths:"Int_comparison_exp",
+		dpr:"numeric_comparison_exp",
+		entry_rate:"numeric_comparison_exp",
+		flash_assists:"Int_comparison_exp",
+		hltv_rating:"numeric_comparison_exp",
+		kast_pct:"numeric_comparison_exp",
+		kills:"Int_comparison_exp",
+		kpr:"numeric_comparison_exp",
+		lineup_id:"uuid_comparison_exp",
+		match:"matches_bool_exp",
+		match_id:"uuid_comparison_exp",
+		match_map:"match_maps_bool_exp",
+		match_map_id:"uuid_comparison_exp",
+		open_deaths:"Int_comparison_exp",
+		open_kills:"Int_comparison_exp",
+		opening_attempts:"Int_comparison_exp",
+		player:"players_bool_exp",
+		role:"String_comparison_exp",
+		rounds:"Int_comparison_exp",
+		steam_id:"bigint_comparison_exp",
+		support_idx:"numeric_comparison_exp",
+		total_kills:"Int_comparison_exp",
+		trade_kill_successes:"Int_comparison_exp",
+		traded_death_successes:"Int_comparison_exp",
+		util_damage:"Int_comparison_exp"
+	},
+	v_player_match_map_roles_order_by:{
+		adr:"order_by",
+		awp_kills:"order_by",
+		awp_share:"order_by",
+		deaths:"order_by",
+		dpr:"order_by",
+		entry_rate:"order_by",
+		flash_assists:"order_by",
+		hltv_rating:"order_by",
+		kast_pct:"order_by",
+		kills:"order_by",
+		kpr:"order_by",
+		lineup_id:"order_by",
+		match:"matches_order_by",
+		match_id:"order_by",
+		match_map:"match_maps_order_by",
+		match_map_id:"order_by",
+		open_deaths:"order_by",
+		open_kills:"order_by",
+		opening_attempts:"order_by",
+		player:"players_order_by",
+		role:"order_by",
+		rounds:"order_by",
+		steam_id:"order_by",
+		support_idx:"order_by",
+		total_kills:"order_by",
+		trade_kill_successes:"order_by",
+		traded_death_successes:"order_by",
+		util_damage:"order_by"
+	},
+	v_player_match_map_roles_select_column: "enum" as const,
+	v_player_match_map_roles_stream_cursor_input:{
+		initial_value:"v_player_match_map_roles_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_player_match_map_roles_stream_cursor_value_input:{
+		adr:"numeric",
+		awp_share:"numeric",
+		dpr:"numeric",
+		entry_rate:"numeric",
+		hltv_rating:"numeric",
+		kast_pct:"numeric",
+		kpr:"numeric",
+		lineup_id:"uuid",
+		match_id:"uuid",
+		match_map_id:"uuid",
+		steam_id:"bigint",
+		support_idx:"numeric"
+	},
 	v_player_match_performance_aggregate_fields:{
 		count:{
 			columns:"v_player_match_performance_select_column"
@@ -21917,6 +22384,8 @@ export const AllTypesProps: Record<string,any> = {
 		assists:"Int_comparison_exp",
 		deaths:"Int_comparison_exp",
 		kills:"Int_comparison_exp",
+		map:"maps_bool_exp",
+		map_id:"uuid_comparison_exp",
 		match:"matches_bool_exp",
 		match_created_at:"timestamptz_comparison_exp",
 		match_id:"uuid_comparison_exp",
@@ -21929,6 +22398,8 @@ export const AllTypesProps: Record<string,any> = {
 		assists:"order_by",
 		deaths:"order_by",
 		kills:"order_by",
+		map:"maps_order_by",
+		map_id:"order_by",
 		match:"matches_order_by",
 		match_created_at:"order_by",
 		match_id:"order_by",
@@ -21943,9 +22414,56 @@ export const AllTypesProps: Record<string,any> = {
 		ordering:"cursor_ordering"
 	},
 	v_player_match_performance_stream_cursor_value_input:{
+		map_id:"uuid",
 		match_created_at:"timestamptz",
 		match_id:"uuid",
 		player_steam_id:"bigint"
+	},
+	v_player_match_rating_aggregate_fields:{
+		count:{
+			columns:"v_player_match_rating_select_column"
+		}
+	},
+	v_player_match_rating_bool_exp:{
+		_and:"v_player_match_rating_bool_exp",
+		_not:"v_player_match_rating_bool_exp",
+		_or:"v_player_match_rating_bool_exp",
+		adr:"numeric_comparison_exp",
+		dpr:"numeric_comparison_exp",
+		hltv_rating:"numeric_comparison_exp",
+		kast_pct:"numeric_comparison_exp",
+		kpr:"numeric_comparison_exp",
+		match:"matches_bool_exp",
+		match_id:"uuid_comparison_exp",
+		player:"players_bool_exp",
+		rounds_played:"Int_comparison_exp",
+		steam_id:"bigint_comparison_exp"
+	},
+	v_player_match_rating_order_by:{
+		adr:"order_by",
+		dpr:"order_by",
+		hltv_rating:"order_by",
+		kast_pct:"order_by",
+		kpr:"order_by",
+		match:"matches_order_by",
+		match_id:"order_by",
+		player:"players_order_by",
+		rounds_played:"order_by",
+		steam_id:"order_by"
+	},
+	v_player_match_rating_select_column: "enum" as const,
+	v_player_match_rating_stream_cursor_input:{
+		initial_value:"v_player_match_rating_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_player_match_rating_stream_cursor_value_input:{
+		adr:"numeric",
+		dpr:"numeric",
+		hltv_rating:"numeric",
+		kast_pct:"numeric",
+		kpr:"numeric",
+		match_id:"uuid",
+		steam_id:"bigint"
 	},
 	v_player_multi_kills_aggregate_bool_exp:{
 		count:"v_player_multi_kills_aggregate_bool_exp_count"
@@ -22058,6 +22576,40 @@ export const AllTypesProps: Record<string,any> = {
 		kills:"order_by",
 		round:"order_by"
 	},
+	v_player_weapon_damage_aggregate_fields:{
+		count:{
+			columns:"v_player_weapon_damage_select_column"
+		}
+	},
+	v_player_weapon_damage_bool_exp:{
+		_and:"v_player_weapon_damage_bool_exp",
+		_not:"v_player_weapon_damage_bool_exp",
+		_or:"v_player_weapon_damage_bool_exp",
+		damage:"bigint_comparison_exp",
+		hits:"bigint_comparison_exp",
+		player_steam_id:"bigint_comparison_exp",
+		source:"String_comparison_exp",
+		type:"String_comparison_exp",
+		with:"String_comparison_exp"
+	},
+	v_player_weapon_damage_order_by:{
+		damage:"order_by",
+		hits:"order_by",
+		player_steam_id:"order_by",
+		source:"order_by",
+		type:"order_by",
+		with:"order_by"
+	},
+	v_player_weapon_damage_select_column: "enum" as const,
+	v_player_weapon_damage_stream_cursor_input:{
+		initial_value:"v_player_weapon_damage_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_player_weapon_damage_stream_cursor_value_input:{
+		damage:"bigint",
+		hits:"bigint",
+		player_steam_id:"bigint"
+	},
 	v_player_weapon_kills_aggregate_fields:{
 		count:{
 			columns:"v_player_weapon_kills_select_column"
@@ -22069,6 +22621,7 @@ export const AllTypesProps: Record<string,any> = {
 		_or:"v_player_weapon_kills_bool_exp",
 		kill_count:"bigint_comparison_exp",
 		player_steam_id:"bigint_comparison_exp",
+		rounds:"bigint_comparison_exp",
 		source:"String_comparison_exp",
 		type:"String_comparison_exp",
 		with:"String_comparison_exp"
@@ -22076,6 +22629,7 @@ export const AllTypesProps: Record<string,any> = {
 	v_player_weapon_kills_order_by:{
 		kill_count:"order_by",
 		player_steam_id:"order_by",
+		rounds:"order_by",
 		source:"order_by",
 		type:"order_by",
 		with:"order_by"
@@ -22087,7 +22641,8 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	v_player_weapon_kills_stream_cursor_value_input:{
 		kill_count:"bigint",
-		player_steam_id:"bigint"
+		player_steam_id:"bigint",
+		rounds:"bigint"
 	},
 	v_pool_maps_aggregate_bool_exp:{
 		bool_and:"v_pool_maps_aggregate_bool_exp_bool_and",
@@ -27004,6 +27559,7 @@ export const ReturnTypes: Record<string,any> = {
 		delete_tournaments:"tournaments_mutation_response",
 		delete_tournaments_by_pk:"tournaments",
 		delete_v_match_captains:"v_match_captains_mutation_response",
+		delete_v_match_map_backup_rounds:"v_match_map_backup_rounds_mutation_response",
 		delete_v_pool_maps:"v_pool_maps_mutation_response",
 		denyInvite:"SuccessOutput",
 		forfeitMatch:"SuccessOutput",
@@ -27199,6 +27755,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_tournaments_one:"tournaments",
 		insert_v_match_captains:"v_match_captains_mutation_response",
 		insert_v_match_captains_one:"v_match_captains",
+		insert_v_match_map_backup_rounds:"v_match_map_backup_rounds_mutation_response",
+		insert_v_match_map_backup_rounds_one:"v_match_map_backup_rounds",
 		insert_v_pool_maps:"v_pool_maps_mutation_response",
 		insert_v_pool_maps_one:"v_pool_maps",
 		joinLineup:"SuccessOutput",
@@ -27542,6 +28100,8 @@ export const ReturnTypes: Record<string,any> = {
 		update_tournaments_many:"tournaments_mutation_response",
 		update_v_match_captains:"v_match_captains_mutation_response",
 		update_v_match_captains_many:"v_match_captains_mutation_response",
+		update_v_match_map_backup_rounds:"v_match_map_backup_rounds_mutation_response",
+		update_v_match_map_backup_rounds_many:"v_match_map_backup_rounds_mutation_response",
 		update_v_pool_maps:"v_pool_maps_mutation_response",
 		update_v_pool_maps_many:"v_pool_maps_mutation_response",
 		validateGamedata:"SuccessOutput",
@@ -31765,6 +32325,14 @@ export const ReturnTypes: Record<string,any> = {
 		v_gpu_pool_status_aggregate:"v_gpu_pool_status_aggregate",
 		v_match_captains:"v_match_captains",
 		v_match_captains_aggregate:"v_match_captains_aggregate",
+		v_match_lineup_buy_types:"v_match_lineup_buy_types",
+		v_match_lineup_buy_types_aggregate:"v_match_lineup_buy_types_aggregate",
+		v_match_lineup_map_stats:"v_match_lineup_map_stats",
+		v_match_lineup_map_stats_aggregate:"v_match_lineup_map_stats_aggregate",
+		v_match_map_backup_rounds:"v_match_map_backup_rounds",
+		v_match_map_backup_rounds_aggregate:"v_match_map_backup_rounds_aggregate",
+		v_match_player_buy_types:"v_match_player_buy_types",
+		v_match_player_buy_types_aggregate:"v_match_player_buy_types_aggregate",
 		v_player_arch_nemesis:"v_player_arch_nemesis",
 		v_player_arch_nemesis_aggregate:"v_player_arch_nemesis_aggregate",
 		v_player_damage:"v_player_damage",
@@ -31779,10 +32347,16 @@ export const ReturnTypes: Record<string,any> = {
 		v_player_match_head_to_head_aggregate:"v_player_match_head_to_head_aggregate",
 		v_player_match_map_hltv:"v_player_match_map_hltv",
 		v_player_match_map_hltv_aggregate:"v_player_match_map_hltv_aggregate",
+		v_player_match_map_roles:"v_player_match_map_roles",
+		v_player_match_map_roles_aggregate:"v_player_match_map_roles_aggregate",
 		v_player_match_performance:"v_player_match_performance",
 		v_player_match_performance_aggregate:"v_player_match_performance_aggregate",
+		v_player_match_rating:"v_player_match_rating",
+		v_player_match_rating_aggregate:"v_player_match_rating_aggregate",
 		v_player_multi_kills:"v_player_multi_kills",
 		v_player_multi_kills_aggregate:"v_player_multi_kills_aggregate",
+		v_player_weapon_damage:"v_player_weapon_damage",
+		v_player_weapon_damage_aggregate:"v_player_weapon_damage_aggregate",
 		v_player_weapon_kills:"v_player_weapon_kills",
 		v_player_weapon_kills_aggregate:"v_player_weapon_kills_aggregate",
 		v_pool_maps:"v_pool_maps",
@@ -32469,6 +33043,18 @@ export const ReturnTypes: Record<string,any> = {
 		v_match_captains:"v_match_captains",
 		v_match_captains_aggregate:"v_match_captains_aggregate",
 		v_match_captains_stream:"v_match_captains",
+		v_match_lineup_buy_types:"v_match_lineup_buy_types",
+		v_match_lineup_buy_types_aggregate:"v_match_lineup_buy_types_aggregate",
+		v_match_lineup_buy_types_stream:"v_match_lineup_buy_types",
+		v_match_lineup_map_stats:"v_match_lineup_map_stats",
+		v_match_lineup_map_stats_aggregate:"v_match_lineup_map_stats_aggregate",
+		v_match_lineup_map_stats_stream:"v_match_lineup_map_stats",
+		v_match_map_backup_rounds:"v_match_map_backup_rounds",
+		v_match_map_backup_rounds_aggregate:"v_match_map_backup_rounds_aggregate",
+		v_match_map_backup_rounds_stream:"v_match_map_backup_rounds",
+		v_match_player_buy_types:"v_match_player_buy_types",
+		v_match_player_buy_types_aggregate:"v_match_player_buy_types_aggregate",
+		v_match_player_buy_types_stream:"v_match_player_buy_types",
 		v_player_arch_nemesis:"v_player_arch_nemesis",
 		v_player_arch_nemesis_aggregate:"v_player_arch_nemesis_aggregate",
 		v_player_arch_nemesis_stream:"v_player_arch_nemesis",
@@ -32490,12 +33076,21 @@ export const ReturnTypes: Record<string,any> = {
 		v_player_match_map_hltv:"v_player_match_map_hltv",
 		v_player_match_map_hltv_aggregate:"v_player_match_map_hltv_aggregate",
 		v_player_match_map_hltv_stream:"v_player_match_map_hltv",
+		v_player_match_map_roles:"v_player_match_map_roles",
+		v_player_match_map_roles_aggregate:"v_player_match_map_roles_aggregate",
+		v_player_match_map_roles_stream:"v_player_match_map_roles",
 		v_player_match_performance:"v_player_match_performance",
 		v_player_match_performance_aggregate:"v_player_match_performance_aggregate",
 		v_player_match_performance_stream:"v_player_match_performance",
+		v_player_match_rating:"v_player_match_rating",
+		v_player_match_rating_aggregate:"v_player_match_rating_aggregate",
+		v_player_match_rating_stream:"v_player_match_rating",
 		v_player_multi_kills:"v_player_multi_kills",
 		v_player_multi_kills_aggregate:"v_player_multi_kills_aggregate",
 		v_player_multi_kills_stream:"v_player_multi_kills",
+		v_player_weapon_damage:"v_player_weapon_damage",
+		v_player_weapon_damage_aggregate:"v_player_weapon_damage_aggregate",
+		v_player_weapon_damage_stream:"v_player_weapon_damage",
 		v_player_weapon_kills:"v_player_weapon_kills",
 		v_player_weapon_kills_aggregate:"v_player_weapon_kills_aggregate",
 		v_player_weapon_kills_stream:"v_player_weapon_kills",
@@ -33879,6 +34474,453 @@ export const ReturnTypes: Record<string,any> = {
 	v_match_captains_variance_fields:{
 		steam_id:"Float"
 	},
+	v_match_lineup_buy_types:{
+		match:"matches",
+		match_id:"uuid",
+		match_lineup:"match_lineups",
+		match_lineup_id:"uuid",
+		match_map:"match_maps",
+		match_map_id:"uuid",
+		matchup:"String",
+		rounds:"Int",
+		side:"String",
+		wins:"Int"
+	},
+	v_match_lineup_buy_types_aggregate:{
+		aggregate:"v_match_lineup_buy_types_aggregate_fields",
+		nodes:"v_match_lineup_buy_types"
+	},
+	v_match_lineup_buy_types_aggregate_fields:{
+		avg:"v_match_lineup_buy_types_avg_fields",
+		count:"Int",
+		max:"v_match_lineup_buy_types_max_fields",
+		min:"v_match_lineup_buy_types_min_fields",
+		stddev:"v_match_lineup_buy_types_stddev_fields",
+		stddev_pop:"v_match_lineup_buy_types_stddev_pop_fields",
+		stddev_samp:"v_match_lineup_buy_types_stddev_samp_fields",
+		sum:"v_match_lineup_buy_types_sum_fields",
+		var_pop:"v_match_lineup_buy_types_var_pop_fields",
+		var_samp:"v_match_lineup_buy_types_var_samp_fields",
+		variance:"v_match_lineup_buy_types_variance_fields"
+	},
+	v_match_lineup_buy_types_avg_fields:{
+		rounds:"Float",
+		wins:"Float"
+	},
+	v_match_lineup_buy_types_max_fields:{
+		match_id:"uuid",
+		match_lineup_id:"uuid",
+		match_map_id:"uuid",
+		matchup:"String",
+		rounds:"Int",
+		side:"String",
+		wins:"Int"
+	},
+	v_match_lineup_buy_types_min_fields:{
+		match_id:"uuid",
+		match_lineup_id:"uuid",
+		match_map_id:"uuid",
+		matchup:"String",
+		rounds:"Int",
+		side:"String",
+		wins:"Int"
+	},
+	v_match_lineup_buy_types_stddev_fields:{
+		rounds:"Float",
+		wins:"Float"
+	},
+	v_match_lineup_buy_types_stddev_pop_fields:{
+		rounds:"Float",
+		wins:"Float"
+	},
+	v_match_lineup_buy_types_stddev_samp_fields:{
+		rounds:"Float",
+		wins:"Float"
+	},
+	v_match_lineup_buy_types_sum_fields:{
+		rounds:"Int",
+		wins:"Int"
+	},
+	v_match_lineup_buy_types_var_pop_fields:{
+		rounds:"Float",
+		wins:"Float"
+	},
+	v_match_lineup_buy_types_var_samp_fields:{
+		rounds:"Float",
+		wins:"Float"
+	},
+	v_match_lineup_buy_types_variance_fields:{
+		rounds:"Float",
+		wins:"Float"
+	},
+	v_match_lineup_map_stats:{
+		man_adv_rounds:"Int",
+		man_adv_wins:"Int",
+		man_dis_rounds:"Int",
+		man_dis_wins:"Int",
+		match:"matches",
+		match_id:"uuid",
+		match_lineup:"match_lineups",
+		match_lineup_id:"uuid",
+		match_map:"match_maps",
+		match_map_id:"uuid",
+		opening_attempts:"Int",
+		opening_wins:"Int",
+		pistol_rounds:"Int",
+		pistol_wins:"Int",
+		round_wins:"Int",
+		rounds:"Int",
+		side:"String",
+		won_buy_eco:"Int",
+		won_buy_force:"Int",
+		won_buy_full:"Int",
+		won_buy_pistol:"Int"
+	},
+	v_match_lineup_map_stats_aggregate:{
+		aggregate:"v_match_lineup_map_stats_aggregate_fields",
+		nodes:"v_match_lineup_map_stats"
+	},
+	v_match_lineup_map_stats_aggregate_fields:{
+		avg:"v_match_lineup_map_stats_avg_fields",
+		count:"Int",
+		max:"v_match_lineup_map_stats_max_fields",
+		min:"v_match_lineup_map_stats_min_fields",
+		stddev:"v_match_lineup_map_stats_stddev_fields",
+		stddev_pop:"v_match_lineup_map_stats_stddev_pop_fields",
+		stddev_samp:"v_match_lineup_map_stats_stddev_samp_fields",
+		sum:"v_match_lineup_map_stats_sum_fields",
+		var_pop:"v_match_lineup_map_stats_var_pop_fields",
+		var_samp:"v_match_lineup_map_stats_var_samp_fields",
+		variance:"v_match_lineup_map_stats_variance_fields"
+	},
+	v_match_lineup_map_stats_avg_fields:{
+		man_adv_rounds:"Float",
+		man_adv_wins:"Float",
+		man_dis_rounds:"Float",
+		man_dis_wins:"Float",
+		opening_attempts:"Float",
+		opening_wins:"Float",
+		pistol_rounds:"Float",
+		pistol_wins:"Float",
+		round_wins:"Float",
+		rounds:"Float",
+		won_buy_eco:"Float",
+		won_buy_force:"Float",
+		won_buy_full:"Float",
+		won_buy_pistol:"Float"
+	},
+	v_match_lineup_map_stats_max_fields:{
+		man_adv_rounds:"Int",
+		man_adv_wins:"Int",
+		man_dis_rounds:"Int",
+		man_dis_wins:"Int",
+		match_id:"uuid",
+		match_lineup_id:"uuid",
+		match_map_id:"uuid",
+		opening_attempts:"Int",
+		opening_wins:"Int",
+		pistol_rounds:"Int",
+		pistol_wins:"Int",
+		round_wins:"Int",
+		rounds:"Int",
+		side:"String",
+		won_buy_eco:"Int",
+		won_buy_force:"Int",
+		won_buy_full:"Int",
+		won_buy_pistol:"Int"
+	},
+	v_match_lineup_map_stats_min_fields:{
+		man_adv_rounds:"Int",
+		man_adv_wins:"Int",
+		man_dis_rounds:"Int",
+		man_dis_wins:"Int",
+		match_id:"uuid",
+		match_lineup_id:"uuid",
+		match_map_id:"uuid",
+		opening_attempts:"Int",
+		opening_wins:"Int",
+		pistol_rounds:"Int",
+		pistol_wins:"Int",
+		round_wins:"Int",
+		rounds:"Int",
+		side:"String",
+		won_buy_eco:"Int",
+		won_buy_force:"Int",
+		won_buy_full:"Int",
+		won_buy_pistol:"Int"
+	},
+	v_match_lineup_map_stats_stddev_fields:{
+		man_adv_rounds:"Float",
+		man_adv_wins:"Float",
+		man_dis_rounds:"Float",
+		man_dis_wins:"Float",
+		opening_attempts:"Float",
+		opening_wins:"Float",
+		pistol_rounds:"Float",
+		pistol_wins:"Float",
+		round_wins:"Float",
+		rounds:"Float",
+		won_buy_eco:"Float",
+		won_buy_force:"Float",
+		won_buy_full:"Float",
+		won_buy_pistol:"Float"
+	},
+	v_match_lineup_map_stats_stddev_pop_fields:{
+		man_adv_rounds:"Float",
+		man_adv_wins:"Float",
+		man_dis_rounds:"Float",
+		man_dis_wins:"Float",
+		opening_attempts:"Float",
+		opening_wins:"Float",
+		pistol_rounds:"Float",
+		pistol_wins:"Float",
+		round_wins:"Float",
+		rounds:"Float",
+		won_buy_eco:"Float",
+		won_buy_force:"Float",
+		won_buy_full:"Float",
+		won_buy_pistol:"Float"
+	},
+	v_match_lineup_map_stats_stddev_samp_fields:{
+		man_adv_rounds:"Float",
+		man_adv_wins:"Float",
+		man_dis_rounds:"Float",
+		man_dis_wins:"Float",
+		opening_attempts:"Float",
+		opening_wins:"Float",
+		pistol_rounds:"Float",
+		pistol_wins:"Float",
+		round_wins:"Float",
+		rounds:"Float",
+		won_buy_eco:"Float",
+		won_buy_force:"Float",
+		won_buy_full:"Float",
+		won_buy_pistol:"Float"
+	},
+	v_match_lineup_map_stats_sum_fields:{
+		man_adv_rounds:"Int",
+		man_adv_wins:"Int",
+		man_dis_rounds:"Int",
+		man_dis_wins:"Int",
+		opening_attempts:"Int",
+		opening_wins:"Int",
+		pistol_rounds:"Int",
+		pistol_wins:"Int",
+		round_wins:"Int",
+		rounds:"Int",
+		won_buy_eco:"Int",
+		won_buy_force:"Int",
+		won_buy_full:"Int",
+		won_buy_pistol:"Int"
+	},
+	v_match_lineup_map_stats_var_pop_fields:{
+		man_adv_rounds:"Float",
+		man_adv_wins:"Float",
+		man_dis_rounds:"Float",
+		man_dis_wins:"Float",
+		opening_attempts:"Float",
+		opening_wins:"Float",
+		pistol_rounds:"Float",
+		pistol_wins:"Float",
+		round_wins:"Float",
+		rounds:"Float",
+		won_buy_eco:"Float",
+		won_buy_force:"Float",
+		won_buy_full:"Float",
+		won_buy_pistol:"Float"
+	},
+	v_match_lineup_map_stats_var_samp_fields:{
+		man_adv_rounds:"Float",
+		man_adv_wins:"Float",
+		man_dis_rounds:"Float",
+		man_dis_wins:"Float",
+		opening_attempts:"Float",
+		opening_wins:"Float",
+		pistol_rounds:"Float",
+		pistol_wins:"Float",
+		round_wins:"Float",
+		rounds:"Float",
+		won_buy_eco:"Float",
+		won_buy_force:"Float",
+		won_buy_full:"Float",
+		won_buy_pistol:"Float"
+	},
+	v_match_lineup_map_stats_variance_fields:{
+		man_adv_rounds:"Float",
+		man_adv_wins:"Float",
+		man_dis_rounds:"Float",
+		man_dis_wins:"Float",
+		opening_attempts:"Float",
+		opening_wins:"Float",
+		pistol_rounds:"Float",
+		pistol_wins:"Float",
+		round_wins:"Float",
+		rounds:"Float",
+		won_buy_eco:"Float",
+		won_buy_force:"Float",
+		won_buy_full:"Float",
+		won_buy_pistol:"Float"
+	},
+	v_match_map_backup_rounds:{
+		has_backup_file:"Boolean",
+		match_map_id:"uuid",
+		round:"Int"
+	},
+	v_match_map_backup_rounds_aggregate:{
+		aggregate:"v_match_map_backup_rounds_aggregate_fields",
+		nodes:"v_match_map_backup_rounds"
+	},
+	v_match_map_backup_rounds_aggregate_fields:{
+		avg:"v_match_map_backup_rounds_avg_fields",
+		count:"Int",
+		max:"v_match_map_backup_rounds_max_fields",
+		min:"v_match_map_backup_rounds_min_fields",
+		stddev:"v_match_map_backup_rounds_stddev_fields",
+		stddev_pop:"v_match_map_backup_rounds_stddev_pop_fields",
+		stddev_samp:"v_match_map_backup_rounds_stddev_samp_fields",
+		sum:"v_match_map_backup_rounds_sum_fields",
+		var_pop:"v_match_map_backup_rounds_var_pop_fields",
+		var_samp:"v_match_map_backup_rounds_var_samp_fields",
+		variance:"v_match_map_backup_rounds_variance_fields"
+	},
+	v_match_map_backup_rounds_avg_fields:{
+		round:"Float"
+	},
+	v_match_map_backup_rounds_max_fields:{
+		match_map_id:"uuid",
+		round:"Int"
+	},
+	v_match_map_backup_rounds_min_fields:{
+		match_map_id:"uuid",
+		round:"Int"
+	},
+	v_match_map_backup_rounds_mutation_response:{
+		affected_rows:"Int",
+		returning:"v_match_map_backup_rounds"
+	},
+	v_match_map_backup_rounds_stddev_fields:{
+		round:"Float"
+	},
+	v_match_map_backup_rounds_stddev_pop_fields:{
+		round:"Float"
+	},
+	v_match_map_backup_rounds_stddev_samp_fields:{
+		round:"Float"
+	},
+	v_match_map_backup_rounds_sum_fields:{
+		round:"Int"
+	},
+	v_match_map_backup_rounds_var_pop_fields:{
+		round:"Float"
+	},
+	v_match_map_backup_rounds_var_samp_fields:{
+		round:"Float"
+	},
+	v_match_map_backup_rounds_variance_fields:{
+		round:"Float"
+	},
+	v_match_player_buy_types:{
+		deaths:"Int",
+		kills:"Int",
+		match:"matches",
+		match_id:"uuid",
+		match_lineup:"match_lineups",
+		match_lineup_id:"uuid",
+		match_map:"match_maps",
+		match_map_id:"uuid",
+		matchup:"String",
+		player:"players",
+		rounds:"Int",
+		side:"String",
+		steam_id:"bigint"
+	},
+	v_match_player_buy_types_aggregate:{
+		aggregate:"v_match_player_buy_types_aggregate_fields",
+		nodes:"v_match_player_buy_types"
+	},
+	v_match_player_buy_types_aggregate_fields:{
+		avg:"v_match_player_buy_types_avg_fields",
+		count:"Int",
+		max:"v_match_player_buy_types_max_fields",
+		min:"v_match_player_buy_types_min_fields",
+		stddev:"v_match_player_buy_types_stddev_fields",
+		stddev_pop:"v_match_player_buy_types_stddev_pop_fields",
+		stddev_samp:"v_match_player_buy_types_stddev_samp_fields",
+		sum:"v_match_player_buy_types_sum_fields",
+		var_pop:"v_match_player_buy_types_var_pop_fields",
+		var_samp:"v_match_player_buy_types_var_samp_fields",
+		variance:"v_match_player_buy_types_variance_fields"
+	},
+	v_match_player_buy_types_avg_fields:{
+		deaths:"Float",
+		kills:"Float",
+		rounds:"Float",
+		steam_id:"Float"
+	},
+	v_match_player_buy_types_max_fields:{
+		deaths:"Int",
+		kills:"Int",
+		match_id:"uuid",
+		match_lineup_id:"uuid",
+		match_map_id:"uuid",
+		matchup:"String",
+		rounds:"Int",
+		side:"String",
+		steam_id:"bigint"
+	},
+	v_match_player_buy_types_min_fields:{
+		deaths:"Int",
+		kills:"Int",
+		match_id:"uuid",
+		match_lineup_id:"uuid",
+		match_map_id:"uuid",
+		matchup:"String",
+		rounds:"Int",
+		side:"String",
+		steam_id:"bigint"
+	},
+	v_match_player_buy_types_stddev_fields:{
+		deaths:"Float",
+		kills:"Float",
+		rounds:"Float",
+		steam_id:"Float"
+	},
+	v_match_player_buy_types_stddev_pop_fields:{
+		deaths:"Float",
+		kills:"Float",
+		rounds:"Float",
+		steam_id:"Float"
+	},
+	v_match_player_buy_types_stddev_samp_fields:{
+		deaths:"Float",
+		kills:"Float",
+		rounds:"Float",
+		steam_id:"Float"
+	},
+	v_match_player_buy_types_sum_fields:{
+		deaths:"Int",
+		kills:"Int",
+		rounds:"Int",
+		steam_id:"bigint"
+	},
+	v_match_player_buy_types_var_pop_fields:{
+		deaths:"Float",
+		kills:"Float",
+		rounds:"Float",
+		steam_id:"Float"
+	},
+	v_match_player_buy_types_var_samp_fields:{
+		deaths:"Float",
+		kills:"Float",
+		rounds:"Float",
+		steam_id:"Float"
+	},
+	v_match_player_buy_types_variance_fields:{
+		deaths:"Float",
+		kills:"Float",
+		rounds:"Float",
+		steam_id:"Float"
+	},
 	v_player_arch_nemesis:{
 		attacker_id:"bigint",
 		kill_count:"bigint",
@@ -34703,10 +35745,297 @@ export const ReturnTypes: Record<string,any> = {
 		rounds_played:"Float",
 		steam_id:"Float"
 	},
+	v_player_match_map_roles:{
+		adr:"numeric",
+		awp_kills:"Int",
+		awp_share:"numeric",
+		deaths:"Int",
+		dpr:"numeric",
+		entry_rate:"numeric",
+		flash_assists:"Int",
+		hltv_rating:"numeric",
+		kast_pct:"numeric",
+		kills:"Int",
+		kpr:"numeric",
+		lineup_id:"uuid",
+		match:"matches",
+		match_id:"uuid",
+		match_map:"match_maps",
+		match_map_id:"uuid",
+		open_deaths:"Int",
+		open_kills:"Int",
+		opening_attempts:"Int",
+		player:"players",
+		role:"String",
+		rounds:"Int",
+		steam_id:"bigint",
+		support_idx:"numeric",
+		total_kills:"Int",
+		trade_kill_successes:"Int",
+		traded_death_successes:"Int",
+		util_damage:"Int"
+	},
+	v_player_match_map_roles_aggregate:{
+		aggregate:"v_player_match_map_roles_aggregate_fields",
+		nodes:"v_player_match_map_roles"
+	},
+	v_player_match_map_roles_aggregate_fields:{
+		avg:"v_player_match_map_roles_avg_fields",
+		count:"Int",
+		max:"v_player_match_map_roles_max_fields",
+		min:"v_player_match_map_roles_min_fields",
+		stddev:"v_player_match_map_roles_stddev_fields",
+		stddev_pop:"v_player_match_map_roles_stddev_pop_fields",
+		stddev_samp:"v_player_match_map_roles_stddev_samp_fields",
+		sum:"v_player_match_map_roles_sum_fields",
+		var_pop:"v_player_match_map_roles_var_pop_fields",
+		var_samp:"v_player_match_map_roles_var_samp_fields",
+		variance:"v_player_match_map_roles_variance_fields"
+	},
+	v_player_match_map_roles_avg_fields:{
+		adr:"Float",
+		awp_kills:"Float",
+		awp_share:"Float",
+		deaths:"Float",
+		dpr:"Float",
+		entry_rate:"Float",
+		flash_assists:"Float",
+		hltv_rating:"Float",
+		kast_pct:"Float",
+		kills:"Float",
+		kpr:"Float",
+		open_deaths:"Float",
+		open_kills:"Float",
+		opening_attempts:"Float",
+		rounds:"Float",
+		steam_id:"Float",
+		support_idx:"Float",
+		total_kills:"Float",
+		trade_kill_successes:"Float",
+		traded_death_successes:"Float",
+		util_damage:"Float"
+	},
+	v_player_match_map_roles_max_fields:{
+		adr:"numeric",
+		awp_kills:"Int",
+		awp_share:"numeric",
+		deaths:"Int",
+		dpr:"numeric",
+		entry_rate:"numeric",
+		flash_assists:"Int",
+		hltv_rating:"numeric",
+		kast_pct:"numeric",
+		kills:"Int",
+		kpr:"numeric",
+		lineup_id:"uuid",
+		match_id:"uuid",
+		match_map_id:"uuid",
+		open_deaths:"Int",
+		open_kills:"Int",
+		opening_attempts:"Int",
+		role:"String",
+		rounds:"Int",
+		steam_id:"bigint",
+		support_idx:"numeric",
+		total_kills:"Int",
+		trade_kill_successes:"Int",
+		traded_death_successes:"Int",
+		util_damage:"Int"
+	},
+	v_player_match_map_roles_min_fields:{
+		adr:"numeric",
+		awp_kills:"Int",
+		awp_share:"numeric",
+		deaths:"Int",
+		dpr:"numeric",
+		entry_rate:"numeric",
+		flash_assists:"Int",
+		hltv_rating:"numeric",
+		kast_pct:"numeric",
+		kills:"Int",
+		kpr:"numeric",
+		lineup_id:"uuid",
+		match_id:"uuid",
+		match_map_id:"uuid",
+		open_deaths:"Int",
+		open_kills:"Int",
+		opening_attempts:"Int",
+		role:"String",
+		rounds:"Int",
+		steam_id:"bigint",
+		support_idx:"numeric",
+		total_kills:"Int",
+		trade_kill_successes:"Int",
+		traded_death_successes:"Int",
+		util_damage:"Int"
+	},
+	v_player_match_map_roles_stddev_fields:{
+		adr:"Float",
+		awp_kills:"Float",
+		awp_share:"Float",
+		deaths:"Float",
+		dpr:"Float",
+		entry_rate:"Float",
+		flash_assists:"Float",
+		hltv_rating:"Float",
+		kast_pct:"Float",
+		kills:"Float",
+		kpr:"Float",
+		open_deaths:"Float",
+		open_kills:"Float",
+		opening_attempts:"Float",
+		rounds:"Float",
+		steam_id:"Float",
+		support_idx:"Float",
+		total_kills:"Float",
+		trade_kill_successes:"Float",
+		traded_death_successes:"Float",
+		util_damage:"Float"
+	},
+	v_player_match_map_roles_stddev_pop_fields:{
+		adr:"Float",
+		awp_kills:"Float",
+		awp_share:"Float",
+		deaths:"Float",
+		dpr:"Float",
+		entry_rate:"Float",
+		flash_assists:"Float",
+		hltv_rating:"Float",
+		kast_pct:"Float",
+		kills:"Float",
+		kpr:"Float",
+		open_deaths:"Float",
+		open_kills:"Float",
+		opening_attempts:"Float",
+		rounds:"Float",
+		steam_id:"Float",
+		support_idx:"Float",
+		total_kills:"Float",
+		trade_kill_successes:"Float",
+		traded_death_successes:"Float",
+		util_damage:"Float"
+	},
+	v_player_match_map_roles_stddev_samp_fields:{
+		adr:"Float",
+		awp_kills:"Float",
+		awp_share:"Float",
+		deaths:"Float",
+		dpr:"Float",
+		entry_rate:"Float",
+		flash_assists:"Float",
+		hltv_rating:"Float",
+		kast_pct:"Float",
+		kills:"Float",
+		kpr:"Float",
+		open_deaths:"Float",
+		open_kills:"Float",
+		opening_attempts:"Float",
+		rounds:"Float",
+		steam_id:"Float",
+		support_idx:"Float",
+		total_kills:"Float",
+		trade_kill_successes:"Float",
+		traded_death_successes:"Float",
+		util_damage:"Float"
+	},
+	v_player_match_map_roles_sum_fields:{
+		adr:"numeric",
+		awp_kills:"Int",
+		awp_share:"numeric",
+		deaths:"Int",
+		dpr:"numeric",
+		entry_rate:"numeric",
+		flash_assists:"Int",
+		hltv_rating:"numeric",
+		kast_pct:"numeric",
+		kills:"Int",
+		kpr:"numeric",
+		open_deaths:"Int",
+		open_kills:"Int",
+		opening_attempts:"Int",
+		rounds:"Int",
+		steam_id:"bigint",
+		support_idx:"numeric",
+		total_kills:"Int",
+		trade_kill_successes:"Int",
+		traded_death_successes:"Int",
+		util_damage:"Int"
+	},
+	v_player_match_map_roles_var_pop_fields:{
+		adr:"Float",
+		awp_kills:"Float",
+		awp_share:"Float",
+		deaths:"Float",
+		dpr:"Float",
+		entry_rate:"Float",
+		flash_assists:"Float",
+		hltv_rating:"Float",
+		kast_pct:"Float",
+		kills:"Float",
+		kpr:"Float",
+		open_deaths:"Float",
+		open_kills:"Float",
+		opening_attempts:"Float",
+		rounds:"Float",
+		steam_id:"Float",
+		support_idx:"Float",
+		total_kills:"Float",
+		trade_kill_successes:"Float",
+		traded_death_successes:"Float",
+		util_damage:"Float"
+	},
+	v_player_match_map_roles_var_samp_fields:{
+		adr:"Float",
+		awp_kills:"Float",
+		awp_share:"Float",
+		deaths:"Float",
+		dpr:"Float",
+		entry_rate:"Float",
+		flash_assists:"Float",
+		hltv_rating:"Float",
+		kast_pct:"Float",
+		kills:"Float",
+		kpr:"Float",
+		open_deaths:"Float",
+		open_kills:"Float",
+		opening_attempts:"Float",
+		rounds:"Float",
+		steam_id:"Float",
+		support_idx:"Float",
+		total_kills:"Float",
+		trade_kill_successes:"Float",
+		traded_death_successes:"Float",
+		util_damage:"Float"
+	},
+	v_player_match_map_roles_variance_fields:{
+		adr:"Float",
+		awp_kills:"Float",
+		awp_share:"Float",
+		deaths:"Float",
+		dpr:"Float",
+		entry_rate:"Float",
+		flash_assists:"Float",
+		hltv_rating:"Float",
+		kast_pct:"Float",
+		kills:"Float",
+		kpr:"Float",
+		open_deaths:"Float",
+		open_kills:"Float",
+		opening_attempts:"Float",
+		rounds:"Float",
+		steam_id:"Float",
+		support_idx:"Float",
+		total_kills:"Float",
+		trade_kill_successes:"Float",
+		traded_death_successes:"Float",
+		util_damage:"Float"
+	},
 	v_player_match_performance:{
 		assists:"Int",
 		deaths:"Int",
 		kills:"Int",
+		map:"maps",
+		map_id:"uuid",
 		match:"matches",
 		match_created_at:"timestamptz",
 		match_id:"uuid",
@@ -34742,6 +36071,7 @@ export const ReturnTypes: Record<string,any> = {
 		assists:"Int",
 		deaths:"Int",
 		kills:"Int",
+		map_id:"uuid",
 		match_created_at:"timestamptz",
 		match_id:"uuid",
 		match_result:"String",
@@ -34753,6 +36083,7 @@ export const ReturnTypes: Record<string,any> = {
 		assists:"Int",
 		deaths:"Int",
 		kills:"Int",
+		map_id:"uuid",
 		match_created_at:"timestamptz",
 		match_id:"uuid",
 		match_result:"String",
@@ -34801,6 +36132,127 @@ export const ReturnTypes: Record<string,any> = {
 		deaths:"Float",
 		kills:"Float",
 		player_steam_id:"Float"
+	},
+	v_player_match_rating:{
+		adr:"numeric",
+		dpr:"numeric",
+		hltv_rating:"numeric",
+		kast_pct:"numeric",
+		kpr:"numeric",
+		match:"matches",
+		match_id:"uuid",
+		player:"players",
+		rounds_played:"Int",
+		steam_id:"bigint"
+	},
+	v_player_match_rating_aggregate:{
+		aggregate:"v_player_match_rating_aggregate_fields",
+		nodes:"v_player_match_rating"
+	},
+	v_player_match_rating_aggregate_fields:{
+		avg:"v_player_match_rating_avg_fields",
+		count:"Int",
+		max:"v_player_match_rating_max_fields",
+		min:"v_player_match_rating_min_fields",
+		stddev:"v_player_match_rating_stddev_fields",
+		stddev_pop:"v_player_match_rating_stddev_pop_fields",
+		stddev_samp:"v_player_match_rating_stddev_samp_fields",
+		sum:"v_player_match_rating_sum_fields",
+		var_pop:"v_player_match_rating_var_pop_fields",
+		var_samp:"v_player_match_rating_var_samp_fields",
+		variance:"v_player_match_rating_variance_fields"
+	},
+	v_player_match_rating_avg_fields:{
+		adr:"Float",
+		dpr:"Float",
+		hltv_rating:"Float",
+		kast_pct:"Float",
+		kpr:"Float",
+		rounds_played:"Float",
+		steam_id:"Float"
+	},
+	v_player_match_rating_max_fields:{
+		adr:"numeric",
+		dpr:"numeric",
+		hltv_rating:"numeric",
+		kast_pct:"numeric",
+		kpr:"numeric",
+		match_id:"uuid",
+		rounds_played:"Int",
+		steam_id:"bigint"
+	},
+	v_player_match_rating_min_fields:{
+		adr:"numeric",
+		dpr:"numeric",
+		hltv_rating:"numeric",
+		kast_pct:"numeric",
+		kpr:"numeric",
+		match_id:"uuid",
+		rounds_played:"Int",
+		steam_id:"bigint"
+	},
+	v_player_match_rating_stddev_fields:{
+		adr:"Float",
+		dpr:"Float",
+		hltv_rating:"Float",
+		kast_pct:"Float",
+		kpr:"Float",
+		rounds_played:"Float",
+		steam_id:"Float"
+	},
+	v_player_match_rating_stddev_pop_fields:{
+		adr:"Float",
+		dpr:"Float",
+		hltv_rating:"Float",
+		kast_pct:"Float",
+		kpr:"Float",
+		rounds_played:"Float",
+		steam_id:"Float"
+	},
+	v_player_match_rating_stddev_samp_fields:{
+		adr:"Float",
+		dpr:"Float",
+		hltv_rating:"Float",
+		kast_pct:"Float",
+		kpr:"Float",
+		rounds_played:"Float",
+		steam_id:"Float"
+	},
+	v_player_match_rating_sum_fields:{
+		adr:"numeric",
+		dpr:"numeric",
+		hltv_rating:"numeric",
+		kast_pct:"numeric",
+		kpr:"numeric",
+		rounds_played:"Int",
+		steam_id:"bigint"
+	},
+	v_player_match_rating_var_pop_fields:{
+		adr:"Float",
+		dpr:"Float",
+		hltv_rating:"Float",
+		kast_pct:"Float",
+		kpr:"Float",
+		rounds_played:"Float",
+		steam_id:"Float"
+	},
+	v_player_match_rating_var_samp_fields:{
+		adr:"Float",
+		dpr:"Float",
+		hltv_rating:"Float",
+		kast_pct:"Float",
+		kpr:"Float",
+		rounds_played:"Float",
+		steam_id:"Float"
+	},
+	v_player_match_rating_variance_fields:{
+		adr:"Float",
+		dpr:"Float",
+		hltv_rating:"Float",
+		kast_pct:"Float",
+		kpr:"Float",
+		rounds_played:"Float",
+		steam_id:"Float"
 	},
 	v_player_multi_kills:{
 		attacker_steam_id:"bigint",
@@ -34877,9 +36329,91 @@ export const ReturnTypes: Record<string,any> = {
 		kills:"Float",
 		round:"Float"
 	},
+	v_player_weapon_damage:{
+		damage:"bigint",
+		hits:"bigint",
+		player_steam_id:"bigint",
+		source:"String",
+		type:"String",
+		with:"String"
+	},
+	v_player_weapon_damage_aggregate:{
+		aggregate:"v_player_weapon_damage_aggregate_fields",
+		nodes:"v_player_weapon_damage"
+	},
+	v_player_weapon_damage_aggregate_fields:{
+		avg:"v_player_weapon_damage_avg_fields",
+		count:"Int",
+		max:"v_player_weapon_damage_max_fields",
+		min:"v_player_weapon_damage_min_fields",
+		stddev:"v_player_weapon_damage_stddev_fields",
+		stddev_pop:"v_player_weapon_damage_stddev_pop_fields",
+		stddev_samp:"v_player_weapon_damage_stddev_samp_fields",
+		sum:"v_player_weapon_damage_sum_fields",
+		var_pop:"v_player_weapon_damage_var_pop_fields",
+		var_samp:"v_player_weapon_damage_var_samp_fields",
+		variance:"v_player_weapon_damage_variance_fields"
+	},
+	v_player_weapon_damage_avg_fields:{
+		damage:"Float",
+		hits:"Float",
+		player_steam_id:"Float"
+	},
+	v_player_weapon_damage_max_fields:{
+		damage:"bigint",
+		hits:"bigint",
+		player_steam_id:"bigint",
+		source:"String",
+		type:"String",
+		with:"String"
+	},
+	v_player_weapon_damage_min_fields:{
+		damage:"bigint",
+		hits:"bigint",
+		player_steam_id:"bigint",
+		source:"String",
+		type:"String",
+		with:"String"
+	},
+	v_player_weapon_damage_stddev_fields:{
+		damage:"Float",
+		hits:"Float",
+		player_steam_id:"Float"
+	},
+	v_player_weapon_damage_stddev_pop_fields:{
+		damage:"Float",
+		hits:"Float",
+		player_steam_id:"Float"
+	},
+	v_player_weapon_damage_stddev_samp_fields:{
+		damage:"Float",
+		hits:"Float",
+		player_steam_id:"Float"
+	},
+	v_player_weapon_damage_sum_fields:{
+		damage:"bigint",
+		hits:"bigint",
+		player_steam_id:"bigint"
+	},
+	v_player_weapon_damage_var_pop_fields:{
+		damage:"Float",
+		hits:"Float",
+		player_steam_id:"Float"
+	},
+	v_player_weapon_damage_var_samp_fields:{
+		damage:"Float",
+		hits:"Float",
+		player_steam_id:"Float"
+	},
+	v_player_weapon_damage_variance_fields:{
+		damage:"Float",
+		hits:"Float",
+		player_steam_id:"Float"
+	},
 	v_player_weapon_kills:{
 		kill_count:"bigint",
 		player_steam_id:"bigint",
+		rounds:"bigint",
 		source:"String",
 		type:"String",
 		with:"String"
@@ -34903,11 +36437,13 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	v_player_weapon_kills_avg_fields:{
 		kill_count:"Float",
-		player_steam_id:"Float"
+		player_steam_id:"Float",
+		rounds:"Float"
 	},
 	v_player_weapon_kills_max_fields:{
 		kill_count:"bigint",
 		player_steam_id:"bigint",
+		rounds:"bigint",
 		source:"String",
 		type:"String",
 		with:"String"
@@ -34915,37 +36451,45 @@ export const ReturnTypes: Record<string,any> = {
 	v_player_weapon_kills_min_fields:{
 		kill_count:"bigint",
 		player_steam_id:"bigint",
+		rounds:"bigint",
 		source:"String",
 		type:"String",
 		with:"String"
 	},
 	v_player_weapon_kills_stddev_fields:{
 		kill_count:"Float",
-		player_steam_id:"Float"
+		player_steam_id:"Float",
+		rounds:"Float"
 	},
 	v_player_weapon_kills_stddev_pop_fields:{
 		kill_count:"Float",
-		player_steam_id:"Float"
+		player_steam_id:"Float",
+		rounds:"Float"
 	},
 	v_player_weapon_kills_stddev_samp_fields:{
 		kill_count:"Float",
-		player_steam_id:"Float"
+		player_steam_id:"Float",
+		rounds:"Float"
 	},
 	v_player_weapon_kills_sum_fields:{
 		kill_count:"bigint",
-		player_steam_id:"bigint"
+		player_steam_id:"bigint",
+		rounds:"bigint"
 	},
 	v_player_weapon_kills_var_pop_fields:{
 		kill_count:"Float",
-		player_steam_id:"Float"
+		player_steam_id:"Float",
+		rounds:"Float"
 	},
 	v_player_weapon_kills_var_samp_fields:{
 		kill_count:"Float",
-		player_steam_id:"Float"
+		player_steam_id:"Float",
+		rounds:"Float"
 	},
 	v_player_weapon_kills_variance_fields:{
 		kill_count:"Float",
-		player_steam_id:"Float"
+		player_steam_id:"Float",
+		rounds:"Float"
 	},
 	v_pool_maps:{
 		active_pool:"Boolean",

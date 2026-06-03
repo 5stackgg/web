@@ -13,6 +13,8 @@ defineProps<{
     string,
     { rankType: number; rank: number; change: number }
   > | null;
+  // match_id -> canonical HLTV rating (backend), overrides the row's estimate.
+  ratingByMatch?: Map<string, number> | null;
 }>();
 
 // Below md the dense table can't fit its tracks — fall back to the
@@ -21,7 +23,7 @@ const isMobile = useMediaQuery("(max-width: 767px)");
 
 // MUST stay in sync with `wideGrid` in PlayerMatchRow.vue.
 const wideGrid =
-  "grid grid-cols-[2.5rem_5rem_6.75rem_6.75rem_minmax(4.5rem,1fr)_3rem_4rem_4.5rem_2.75rem_3.25rem_6rem_2.5rem] items-center gap-x-2";
+  "grid grid-cols-[2.5rem_5rem_6.75rem_8.5rem_minmax(4.5rem,1fr)_3rem_4rem_4.5rem_2.75rem_3.25rem_6rem_2.5rem] items-center gap-x-2";
 </script>
 
 <template>
@@ -40,6 +42,7 @@ const wideGrid =
         :match="match"
         :player="player"
         :rank-by-match="rankByMatch"
+        :canonical-rating="ratingByMatch?.get(String(match.id)) ?? null"
         compact
         :style="{ animationDelay: `${index * 40}ms` }"
         class="animate-in fade-in slide-in-from-bottom-2"
@@ -78,6 +81,7 @@ const wideGrid =
             :match="match"
             :player="player"
             :rank-by-match="rankByMatch"
+        :canonical-rating="ratingByMatch?.get(String(match.id)) ?? null"
             :style="{ animationDelay: `${index * 40}ms` }"
             class="animate-in fade-in slide-in-from-bottom-2"
           />

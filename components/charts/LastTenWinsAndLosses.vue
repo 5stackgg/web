@@ -36,7 +36,17 @@ export default {
       required: false,
     },
     match_type: {
-      type: String as () => "Competitive" | "Wingman" | "Duel" | null,
+      type: String as () =>
+        "Competitive" | "Wingman" | "Duel" | "Premier" | null,
+      required: false,
+      default: null,
+    },
+    // Active time window (ISO strings) — keeps the radar in sync with the
+    // page range bar so it shows the same window as the other graphs.
+    // Match source scope: "5stack", "external" (everything but 5stack), or
+    // null for all sources.
+    source: {
+      type: String as () => "5stack" | "external" | null,
       required: false,
       default: null,
     },
@@ -46,21 +56,13 @@ export default {
       query: generateQuery({
         v_player_map_wins: [
           {
-            where: {
-              steam_id: {
-                _eq: $("steam_id", "bigint"),
-              },
-              match: {
-                options: {
-                  type: {
-                    _in: $("match_types", "[e_match_types_enum!]"),
-                  },
-                },
-              },
-            },
+            where: $("where", "v_player_map_wins_bool_exp"),
+            order_by: [{ started_at: "desc" }],
           },
           {
             steam_id: true,
+            match_id: true,
+            started_at: true,
             map: {
               name: true,
               label: true,
@@ -69,33 +71,20 @@ export default {
         ],
       }),
       variables() {
-        return {
-          steam_id: this.steam_id || this.me?.steam_id,
-          match_types: this.match_type
-            ? [this.match_type]
-            : ["Competitive", "Wingman", "Duel"],
-        };
+        return { where: this.mapStatsWhere };
       },
     },
     v_player_map_losses: {
       query: generateQuery({
         v_player_map_losses: [
           {
-            where: {
-              steam_id: {
-                _eq: $("steam_id", "bigint"),
-              },
-              match: {
-                options: {
-                  type: {
-                    _in: $("match_types", "[e_match_types_enum!]"),
-                  },
-                },
-              },
-            },
+            where: $("where", "v_player_map_losses_bool_exp"),
+            order_by: [{ started_at: "desc" }],
           },
           {
             steam_id: true,
+            match_id: true,
+            started_at: true,
             map: {
               name: true,
               label: true,
@@ -104,12 +93,7 @@ export default {
         ],
       }),
       variables() {
-        return {
-          steam_id: this.steam_id || this.me?.steam_id,
-          match_types: this.match_type
-            ? [this.match_type]
-            : ["Competitive", "Wingman", "Duel"],
-        };
+        return { where: this.mapStatsWhere };
       },
     },
     maps: {
@@ -144,6 +128,29 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    // Shared where for the win/loss views — scoped to the player, the active
+    // mode (match type) and source. The radar is always the player's last 10
+    // matches (most recent), independent of the page time range.
+    mapStatsWhere() {
+      const match: Record<string, any> = {
+        options: {
+          type: {
+            _in: this.match_type
+              ? [this.match_type]
+              : ["Competitive", "Wingman", "Duel"],
+          },
+        },
+      };
+      if (this.source === "5stack") {
+        match.source = { _eq: "5stack" };
+      } else if (this.source === "external") {
+        match.source = { _neq: "5stack" };
+      }
+      return {
+        steam_id: { _eq: this.steam_id || this.me?.steam_id },
+        match,
+      };
     },
     options() {
       let maxValue = 5;
@@ -223,31 +230,45 @@ export default {
         return;
       }
 
-      const wins: Map<string, number> = new Map();
-      const losses: Map<string, number> = new Map();
+      // Combine both result sets, keep only the 10 most recent matches, then
+      // tally wins/losses per map across those matches.
+      type Row = {
+        key: string;
+        startedAt: string;
+        mapName: string;
+        result: "win" | "loss";
+      };
+      const rows: Row[] = [];
+      const collect = (list: any[], result: "win" | "loss") => {
+        for (const r of list) {
+          if (!r.map) continue;
+          rows.push({
+            key: r.match_id ?? r.started_at,
+            startedAt: r.started_at,
+            mapName: cleanMapName(r.map.label || r.map.name),
+            result,
+          });
+        }
+      };
+      collect(this.v_player_map_wins, "win");
+      collect(this.v_player_map_losses, "loss");
+      rows.sort(
+        (a, b) =>
+          new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime(),
+      );
 
-      for (const win of this.v_player_map_wins) {
-        if (!win.map) {
-          continue;
-        }
-        const mapName = cleanMapName(win.map.label || win.map.name);
-        if (wins.has(mapName)) {
-          wins.set(mapName, wins.get(mapName)! + 1);
-          continue;
-        }
-        wins.set(mapName, 1);
+      const recentMatches = new Set<string>();
+      for (const r of rows) {
+        if (recentMatches.size >= 10 && !recentMatches.has(r.key)) continue;
+        recentMatches.add(r.key);
       }
 
-      for (const loss of this.v_player_map_losses) {
-        if (!loss.map) {
-          continue;
-        }
-        const mapName = cleanMapName(loss.map.label || loss.map.name);
-        if (losses.has(mapName)) {
-          losses.set(mapName, losses.get(mapName)! + 1);
-          continue;
-        }
-        losses.set(mapName, 1);
+      const wins: Map<string, number> = new Map();
+      const losses: Map<string, number> = new Map();
+      for (const r of rows) {
+        if (!recentMatches.has(r.key)) continue;
+        const bucket = r.result === "win" ? wins : losses;
+        bucket.set(r.mapName, (bucket.get(r.mapName) || 0) + 1);
       }
 
       const allMaps = new Set<string>();

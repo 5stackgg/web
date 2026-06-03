@@ -163,6 +163,56 @@ ChartJS.register({
     });
   },
 });
+
+// Skill-group (Valve Competitive/Wingman) ranks are discrete 0–18 art, not a
+// number — so for those charts we hide the numeric y ticks and draw the rank
+// badge at each integer gridline instead.
+const rankImgCache: Record<string, HTMLImageElement> = {};
+function rankBadgeImg(
+  src: string,
+  onReady: () => void,
+): HTMLImageElement | null {
+  let img = rankImgCache[src];
+  if (!img) {
+    img = new Image();
+    img.onload = onReady;
+    img.src = src;
+    rankImgCache[src] = img;
+  }
+  return img.complete && img.naturalWidth > 0 ? img : null;
+}
+
+ChartJS.register({
+  id: "rankBadgeAxis",
+  afterDraw: (chart: any) => {
+    const kind = chart.options?.plugins?.rankBadgeAxis?.kind as
+      | "wingman"
+      | "competitive"
+      | null
+      | undefined;
+    if (!kind) return;
+    const yScale = chart.scales?.y;
+    if (!yScale || !chart.chartArea) return;
+    const ctx = chart.ctx;
+    const prefix = kind === "wingman" ? "wingman" : "skillgroup";
+    const h = 20;
+    for (const tick of yScale.ticks || []) {
+      const rank = tick.value;
+      if (!Number.isInteger(rank) || rank < 0 || rank > 18) continue;
+      const img = rankBadgeImg(`/img/skillgroups/${prefix}${rank}.svg`, () =>
+        chart.draw(),
+      );
+      if (!img) continue;
+      const ratio = img.naturalWidth / img.naturalHeight || 2.2;
+      const w = h * ratio;
+      const y = yScale.getPixelForValue(rank);
+      ctx.save();
+      ctx.globalAlpha = 0.95;
+      ctx.drawImage(img, chart.chartArea.left - w - 8, y - h / 2, w, h);
+      ctx.restore();
+    }
+  },
+});
 </script>
 
 <template>
@@ -210,8 +260,41 @@ export default {
       required: false,
       default: null,
     },
+    // Valve rank type when plotting a skill group (6 = Wingman, 7/12 =
+    // Competitive). When set, the y-axis becomes the discrete 0–18 rank ladder
+    // with badges instead of numbers, and the line is stepped.
+    rankType: {
+      type: Number as () => number | null,
+      required: false,
+      default: null,
+    },
   },
   computed: {
+    skillGroupKind(): "wingman" | "competitive" | null {
+      const rt = Number(this.rankType);
+      if (rt === 6) return "wingman";
+      if (rt === 7 || rt === 12) return "competitive";
+      return null;
+    },
+    // Padded integer y-range for skill-group charts so a flat rank still shows
+    // a gridline above/below it (clamped to the 0–18 ladder).
+    skillGroupRange(): { min: number; max: number } | null {
+      if (!this.skillGroupKind) return null;
+      const vals: number[] = [];
+      for (const s of this.normalizedSeries) {
+        for (const e of s.history) {
+          const v = (e.updated_elo ?? e.current_elo) as number | null;
+          if (typeof v === "number") vals.push(v);
+        }
+      }
+      const lo = vals.length ? Math.min(...vals) : 0;
+      const hi = vals.length ? Math.max(...vals) : 1;
+      let min = Math.max(0, Math.floor(lo) - 1);
+      let max = Math.min(18, Math.ceil(hi) + 1);
+      if (max - min < 2) max = Math.min(18, min + 2);
+      if (max - min < 2) min = Math.max(0, max - 2);
+      return { min, max };
+    },
     normalizedSeries(): EloSeries[] {
       if (this.series && this.series.length) {
         return this.series.filter((s) => s.history && s.history.length > 0);
@@ -249,6 +332,8 @@ export default {
     },
     chartOptions() {
       const self = this;
+      const sg = this.skillGroupKind;
+      const sgRange = this.skillGroupRange;
       return {
         responsive: true,
         maintainAspectRatio: false,
@@ -258,6 +343,7 @@ export default {
           intersect: false,
         },
         plugins: {
+          rankBadgeAxis: { kind: sg },
           legend: {
             display: false,
           },
@@ -344,11 +430,15 @@ export default {
             position: "left" as const,
             beginAtZero: false,
             grid: { display: false },
+            ...(sg && sgRange ? { min: sgRange.min, max: sgRange.max } : {}),
             ticks: {
               color: "rgba(255, 255, 255, 0.7)",
               font: { size: 11 },
               padding: 8,
-              callback: (value: any) => value.toLocaleString(),
+              ...(sg ? { stepSize: 1, maxTicksLimit: 10 } : {}),
+              // Hide the numeric labels for skill groups — the rankBadgeAxis
+              // plugin draws the rank badge at each integer tick instead.
+              callback: (value: any) => (sg ? "" : value.toLocaleString()),
             },
           },
           x: {
@@ -377,7 +467,7 @@ export default {
           },
         },
         layout: {
-          padding: { right: 60, top: 10, bottom: 10, left: 10 },
+          padding: { right: 60, top: 10, bottom: 10, left: sg ? 60 : 10 },
         },
       };
     },
@@ -457,7 +547,8 @@ export default {
           pointRadius: radius,
           pointHoverRadius: Math.max(focus ? 6 : 5, radius + 2),
           pointHoverBorderWidth: focus ? 3 : 1.5,
-          tension,
+          tension: this.skillGroupKind ? 0 : tension,
+          stepped: this.skillGroupKind ? ("after" as const) : false,
           spanGaps: true,
           data,
           eloChanges,

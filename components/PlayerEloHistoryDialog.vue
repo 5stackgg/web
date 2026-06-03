@@ -33,6 +33,8 @@ interface EloEntry {
   assists: number | null;
 }
 
+type StatSource = "5stack" | "external";
+
 const props = defineProps<{
   open: boolean;
   playerId: string | number | null;
@@ -40,7 +42,14 @@ const props = defineProps<{
   defaultMode?: Mode;
   defaultRange?: RangeKey;
   excludeTournaments?: boolean;
+  // Mirrors the profile's stat source so the drill-down shows the same world
+  // (5Stack ELO vs External rank) instead of blending them.
+  source?: StatSource;
 }>();
+
+const sourceRef = computed<StatSource>(() =>
+  props.source === "external" ? "external" : "5stack",
+);
 
 const emit = defineEmits<{
   "update:open": [value: boolean];
@@ -61,6 +70,18 @@ const selectedRange = ref<RangeKey>(props.defaultRange ?? "1y");
 const selectedMode = ref<Mode>(props.defaultMode ?? "all");
 const history = ref<EloEntry[]>([]);
 const premierHistory = ref<EloEntry[]>([]);
+const rankHistoryRows = ref<
+  Array<{
+    rank: number;
+    rank_type: number;
+    previous_rank: number | null;
+    match_id: string | null;
+    observed_at: string;
+  }>
+>([]);
+const performanceRows = ref<Array<{ type: string; match_result: string | null }>>(
+  [],
+);
 const loading = ref(false);
 let queryGen = 0;
 
@@ -101,8 +122,8 @@ const ELO_HISTORY_QUERY = gql`
   }
 `;
 
-const PREMIER_HISTORY_QUERY = gql`
-  query PlayerPremierRankHistoryDrillDown(
+const RANK_HISTORY_QUERY = gql`
+  query PlayerRankHistoryDrillDown(
     $where: player_premier_rank_history_bool_exp!
     $limit: Int!
   ) {
@@ -112,8 +133,23 @@ const PREMIER_HISTORY_QUERY = gql`
       limit: $limit
     ) {
       rank
+      rank_type
+      previous_rank
       match_id
       observed_at
+    }
+  }
+`;
+
+// External win/loss for the stats strip — rank history carries no result.
+const PERFORMANCE_QUERY = gql`
+  query PlayerPerformanceDrillDown(
+    $where: v_player_match_performance_bool_exp!
+    $limit: Int!
+  ) {
+    v_player_match_performance(where: $where, limit: $limit) {
+      type
+      match_result
     }
   }
 `;
@@ -156,48 +192,102 @@ async function fetchHistory() {
   if (!props.open || !props.playerId) {
     history.value = [];
     premierHistory.value = [];
+    rankHistoryRows.value = [];
+    performanceRows.value = [];
     return;
   }
   const gen = ++queryGen;
   loading.value = true;
 
-  const premierWhere: Record<string, any> = {
-    steam_id: { _eq: props.playerId },
-    // The history table now holds Competitive/Wingman rows too — keep this
-    // drill-down Premier-only.
-    rank_type: { _eq: 11 },
-  };
-  if (sinceTimestamp.value) {
-    premierWhere.observed_at = { _gte: sinceTimestamp.value };
-  }
-
   try {
-    const [eloRes, premierRes] = await Promise.all([
-      client.query({
+    if (sourceRef.value === "5stack") {
+      // 5Stack ELO only.
+      const eloRes = await client.query({
         query: ELO_HISTORY_QUERY,
         variables: { where: whereClause.value, limit: rangeLimit.value },
         fetchPolicy: "network-only",
-      }),
-      client.query({
-        query: PREMIER_HISTORY_QUERY,
-        variables: { where: premierWhere, limit: rangeLimit.value },
-        fetchPolicy: "network-only",
-      }),
-    ]);
-    if (gen !== queryGen) {
-      return;
+      });
+      if (gen !== queryGen) return;
+      history.value = ((eloRes.data as any)?.v_player_elo ?? []) as EloEntry[];
+      premierHistory.value = [];
+      rankHistoryRows.value = [];
+      performanceRows.value = [];
+    } else {
+      // External: Valve rank history (all rank types) + performance for W/L.
+      const rankWhere: Record<string, any> = {
+        steam_id: { _eq: props.playerId },
+      };
+      if (sinceTimestamp.value) {
+        rankWhere.observed_at = { _gte: sinceTimestamp.value };
+      }
+      const perfWhere: Record<string, any> = {
+        player_steam_id: { _eq: props.playerId },
+        source: { _neq: "5stack" },
+      };
+      if (sinceTimestamp.value) {
+        perfWhere.match_created_at = { _gte: sinceTimestamp.value };
+      }
+      if (props.excludeTournaments) {
+        perfWhere.match = { is_tournament_match: { _eq: false } };
+      }
+      const [rankRes, perfRes] = await Promise.all([
+        client.query({
+          query: RANK_HISTORY_QUERY,
+          variables: { where: rankWhere, limit: rangeLimit.value },
+          fetchPolicy: "network-only",
+        }),
+        client.query({
+          query: PERFORMANCE_QUERY,
+          variables: { where: perfWhere, limit: rangeLimit.value },
+          fetchPolicy: "network-only",
+        }),
+      ]);
+      if (gen !== queryGen) return;
+      history.value = [];
+      rankHistoryRows.value = ((rankRes.data as any)
+        ?.player_premier_rank_history ?? []) as typeof rankHistoryRows.value;
+      performanceRows.value = ((perfRes.data as any)
+        ?.v_player_match_performance ?? []) as typeof performanceRows.value;
+      // Premier (rank_type 11) series.
+      let prev: number | null = null;
+      premierHistory.value = rankHistoryRows.value
+        .filter((r) => r.rank_type === 11)
+        .map((r) => {
+          const change = prev === null ? 0 : r.rank - prev;
+          prev = r.rank;
+          return {
+            current_elo: r.rank,
+            updated_elo: r.rank,
+            elo_change: change,
+            match_created_at: r.observed_at,
+            match_id: r.match_id,
+            match_result: null,
+            type: "Premier",
+            kills: null,
+            deaths: null,
+            assists: null,
+          };
+        });
     }
-    history.value = ((eloRes.data as any)?.v_player_elo ?? []) as EloEntry[];
+  } finally {
+    if (gen === queryGen) {
+      loading.value = false;
+    }
+  }
+}
 
-    const rows = ((premierRes.data as any)?.player_premier_rank_history ??
-      []) as Array<{
-      rank: number;
-      match_id: string | null;
-      observed_at: string;
-    }>;
-    let prev: number | null = null;
-    premierHistory.value = rows.map((r) => {
-      const change = prev === null ? 0 : r.rank - prev;
+// Competitive (12) / Wingman (6) Valve skill-group series from rank history.
+function buildRankSeries(rankType: number, type: string): EloEntry[] {
+  let prev: number | null = null;
+  return rankHistoryRows.value
+    .filter((r) => r.rank_type === rankType)
+    .map((r) => {
+      const change =
+        r.previous_rank != null
+          ? r.rank - Number(r.previous_rank)
+          : prev === null
+            ? 0
+            : r.rank - prev;
       prev = r.rank;
       return {
         current_elo: r.rank,
@@ -206,18 +296,15 @@ async function fetchHistory() {
         match_created_at: r.observed_at,
         match_id: r.match_id,
         match_result: null,
-        type: "Premier",
+        type,
         kills: null,
         deaths: null,
         assists: null,
-      };
+      } as EloEntry;
     });
-  } finally {
-    if (gen === queryGen) {
-      loading.value = false;
-    }
-  }
 }
+const competitiveRank = computed(() => buildRankSeries(12, "Competitive"));
+const wingmanRank = computed(() => buildRankSeries(6, "Wingman"));
 
 watch(
   () => [
@@ -225,6 +312,7 @@ watch(
     props.playerId,
     selectedRange.value,
     props.excludeTournaments,
+    sourceRef.value,
   ],
   () => {
     void fetchHistory();
@@ -232,8 +320,18 @@ watch(
   { immediate: true },
 );
 
+// Keep the selected mode valid for the active source.
+watch(sourceRef, () => {
+  const valid = modeOptions.value.map((m) => m.key);
+  if (!valid.includes(selectedMode.value)) {
+    selectedMode.value = sourceRef.value === "external" ? "Premier" : "all";
+  }
+});
+
 const filteredHistory = computed<EloEntry[]>(() => {
-  if (selectedMode.value === "Premier") {
+  if (sourceRef.value === "external") {
+    if (selectedMode.value === "Competitive") return competitiveRank.value;
+    if (selectedMode.value === "Wingman") return wingmanRank.value;
     return premierHistory.value;
   }
   if (selectedMode.value === "all") {
@@ -242,14 +340,26 @@ const filteredHistory = computed<EloEntry[]>(() => {
   return history.value.filter((e) => e.type === selectedMode.value);
 });
 
+// Valve rank type for the chart's skill-group ladder (badges + integer steps).
+const chartRankType = computed<number | null>(() =>
+  sourceRef.value === "external" &&
+  (selectedMode.value === "Competitive" || selectedMode.value === "Wingman")
+    ? selectedMode.value === "Wingman"
+      ? 6
+      : 12
+    : null,
+);
+
 const chartSeries = computed(() => {
-  if (selectedMode.value === "Premier") {
-    return premierHistory.value.length > 0
+  // External: one rank series for the active mode (Premier / Comp / Wingman).
+  if (sourceRef.value === "external") {
+    const s = filteredHistory.value;
+    return s.length > 0
       ? [
           {
-            key: "Premier",
-            label: "Premier",
-            history: premierHistory.value,
+            key: selectedMode.value,
+            label: selectedMode.value,
+            history: s,
             focus: true,
           },
         ]
@@ -292,10 +402,18 @@ const chartSeries = computed(() => {
 const stats = computed(() => {
   const list = filteredHistory.value;
   const headlineList =
-    selectedMode.value === "all"
+    sourceRef.value === "5stack" && selectedMode.value === "all"
       ? history.value.filter((e) => e.type === "Competitive")
       : list;
-  if (list.length === 0) {
+  // Win/loss source: 5Stack reads it off the ELO entries; External has no
+  // result on rank rows, so it comes from the performance query (by mode).
+  const perfList: { match_result: string | null }[] =
+    sourceRef.value === "external"
+      ? selectedMode.value === "Competitive" || selectedMode.value === "Wingman"
+        ? performanceRows.value.filter((p) => p.type === selectedMode.value)
+        : performanceRows.value
+      : list;
+  if (list.length === 0 && perfList.length === 0) {
     return {
       current: null as number | null,
       peak: null as number | null,
@@ -333,10 +451,13 @@ const stats = computed(() => {
     }
   }
 
-  for (const e of list) {
+  for (const e of perfList) {
     if (e.match_result === "won" || e.match_result === "win") wins++;
     else if (e.match_result === "lost" || e.match_result === "loss") losses++;
     else if (e.match_result === "tied" || e.match_result === "tie") ties++;
+  }
+
+  for (const e of list) {
     if (typeof e.elo_change === "number") {
       changeSum += e.elo_change;
       changeCount++;
@@ -365,13 +486,26 @@ const stats = computed(() => {
   };
 });
 
-const modeOptions = computed<{ key: Mode; label: string }[]>(() => [
-  { key: "all", label: t("pages.leaderboard.match_types.all") },
-  { key: "Competitive", label: t("pages.leaderboard.match_types.competitive") },
-  { key: "Wingman", label: t("pages.leaderboard.match_types.wingman") },
-  { key: "Duel", label: t("pages.leaderboard.match_types.duel") },
-  { key: "Premier", label: "Premier" },
-]);
+const modeOptions = computed<{ key: Mode; label: string }[]>(() =>
+  sourceRef.value === "external"
+    ? [
+        { key: "Premier", label: "Premier" },
+        {
+          key: "Competitive",
+          label: t("pages.leaderboard.match_types.competitive"),
+        },
+        { key: "Wingman", label: t("pages.leaderboard.match_types.wingman") },
+      ]
+    : [
+        { key: "all", label: t("pages.leaderboard.match_types.all") },
+        {
+          key: "Competitive",
+          label: t("pages.leaderboard.match_types.competitive"),
+        },
+        { key: "Wingman", label: t("pages.leaderboard.match_types.wingman") },
+        { key: "Duel", label: t("pages.leaderboard.match_types.duel") },
+      ],
+);
 
 function fmtInt(n: number | null | undefined): string {
   if (n === null || n === undefined || !Number.isFinite(n)) return "—";
@@ -622,7 +756,7 @@ function fmtDate(iso: string | null | undefined): string {
           </button>
         </div>
         <div v-else class="h-[360px] sm:h-[420px]">
-          <PlayerEloChart :series="chartSeries" />
+          <PlayerEloChart :series="chartSeries" :rank-type="chartRankType" />
         </div>
       </div>
 

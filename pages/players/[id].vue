@@ -7,7 +7,6 @@ import Pagination from "~/components/Pagination.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import RecentTournaments from "~/components/tournament/RecentTournaments.vue";
 import TrophyCase from "~/components/trophy/TrophyCase.vue";
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import { e_player_roles_enum } from "~/generated/zeus";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -16,6 +15,8 @@ import LastTenWinsAndLosses from "~/components/charts/LastTenWinsAndLosses.vue";
 import PlayerEloChart from "~/components/charts/PlayerEloChart.vue";
 import formatStatValue from "~/utilities/formatStatValue";
 import cleanMapName from "~/utilities/cleanMapName";
+import { resolveWeapon } from "~/utilities/weaponIcon";
+import { csRankIcon } from "~/utilities/csRank";
 import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
 import PlayerChangeName from "~/components/PlayerChangeName.vue";
@@ -33,6 +34,8 @@ import {
   Maximize2,
   UserPlus,
   UserCheck,
+  RefreshCw,
+  Calendar as CalendarIcon,
 } from "lucide-vue-next";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
@@ -68,6 +71,15 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import { Checkbox } from "~/components/ui/checkbox";
+import { Calendar } from "~/components/ui/calendar";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+import { parseDate, type DateValue } from "@internationalized/date";
 
 // The global range chip bar (7D/30D/…/ALL/custom) feeds a single
 // v_player_elo subscription scoped to this player. Mode filtering happens
@@ -103,10 +115,35 @@ const eloRange = ref<RangeKey>("all");
 const eloDialogOpen = ref(false);
 const customFrom = ref<string>("");
 const customTo = ref<string>("");
-const compareLifetime = ref(false);
+
+// Calendar (DateValue) adapters over the YYYY-MM-DD string state, so the
+// custom range uses the real date picker instead of native date inputs.
+const customFromValue = computed<DateValue | undefined>({
+  get: () => (customFrom.value ? parseDate(customFrom.value) : undefined),
+  set: (v) => {
+    customFrom.value = v ? v.toString() : "";
+    applyCustomRange();
+  },
+});
+const customToValue = computed<DateValue | undefined>({
+  get: () => (customTo.value ? parseDate(customTo.value) : undefined),
+  set: (v) => {
+    customTo.value = v ? v.toString() : "";
+    applyCustomRange();
+  },
+});
+// Which custom-range date the inline calendar is editing (one at a time, so
+// the calendar lives inside the settings popover without nesting popovers).
+const activeDateField = ref<"from" | "to" | null>(null);
 const excludeTournaments = ref(false);
 const settingsOpen = ref(false);
 const eloHistory = ref<WindowedEloEntry[]>([]);
+// Per-match gameplay performance (kills/deaths/assists + win/loss) for the
+// active source, from v_player_match_performance — feeds the Win Rate / K-D
+// card for BOTH 5Stack and External (v_player_elo is 5Stack-only).
+const performanceHistory = ref<WindowedEloEntry[]>([]);
+// Per-source weapon kill counts from v_player_weapon_kills (lifetime).
+const weaponKills = ref<{ with: string; kill_count: number }[]>([]);
 const premierWindowedHistory = ref<WindowedEloEntry[]>([]);
 // Raw rows from the rank-history sub, all rank types (Premier 11,
 // Competitive 12, Wingman 6) — feeds the per-match rank badge on the rows.
@@ -127,16 +164,111 @@ const eloHistoryLoading = ref(false);
 
 const { client: apolloClient } = useApolloClient();
 const route = useRoute();
+const router = useRouter();
+
+// Stat source — 5Stack internal ELO vs everything external (Valve / FACEIT
+// imports). These mean drastically different things (a 5Stack-computed ELO vs
+// a Valve skill group / CS Rating) so the page never blends the rating chart;
+// the source also scopes win-rate, K/D, weapons and the map radar to matches
+// from that source. "external" = every match where matches.source != '5stack'.
+type StatSource = "5stack" | "external";
+
+const sourceRef = computed<StatSource>(() => {
+  const raw = route.query.source;
+  const v = Array.isArray(raw) ? raw[0] : raw;
+  return v === "external" ? "external" : "5stack";
+});
+
+const sourceOptions: { value: StatSource; label: string }[] = [
+  { value: "5stack", label: "5Stack" },
+  { value: "external", label: "External" },
+];
+
+// Mode chips are source-dependent: 5Stack tracks Competitive/Wingman/Duel
+// ELO (plus an "all" overlay); External tracks Premier (CS Rating) and the
+// per-map Competitive/Wingman skill groups from imported Valve demos.
+const modeOptions = computed<{ value: string; label: string }[]>(() =>
+  sourceRef.value === "external"
+    ? [
+        { value: "Premier", label: "Premier" },
+        {
+          value: "Competitive",
+          label: t("pages.leaderboard.match_types.competitive"),
+        },
+        { value: "Wingman", label: t("pages.leaderboard.match_types.wingman") },
+      ]
+    : [
+        { value: "all", label: t("pages.leaderboard.match_types.all") },
+        {
+          value: "Competitive",
+          label: t("pages.leaderboard.match_types.competitive"),
+        },
+        { value: "Wingman", label: t("pages.leaderboard.match_types.wingman") },
+        { value: "Duel", label: t("pages.leaderboard.match_types.duel") },
+      ],
+);
 
 const selectedModeRef = computed<
   "all" | "Competitive" | "Wingman" | "Duel" | "Premier"
 >(() => {
   const raw = route.query.mode;
   const v = Array.isArray(raw) ? raw[0] : raw;
-  if (v === "Competitive" || v === "Wingman" || v === "Duel" || v === "Premier")
-    return v;
-  return "all";
+  const valid = modeOptions.value.map((o) => o.value);
+  if (typeof v === "string" && valid.includes(v)) {
+    return v as "all" | "Competitive" | "Wingman" | "Duel" | "Premier";
+  }
+  return sourceRef.value === "external" ? "Premier" : "all";
 });
+
+function setMode(m: string) {
+  router.replace({ query: { ...route.query, mode: m } });
+}
+
+function setSource(s: StatSource) {
+  const validModes =
+    s === "external"
+      ? ["Premier", "Competitive", "Wingman"]
+      : ["all", "Competitive", "Wingman", "Duel"];
+  const query: Record<string, any> = { ...route.query, source: s };
+  // Carry Competitive/Wingman across the toggle; otherwise drop to the
+  // source's default so we never land on a mode that source can't show.
+  if (!validModes.includes(selectedModeRef.value)) {
+    query.mode = s === "external" ? "Premier" : "all";
+  }
+  router.replace({ query });
+}
+
+// The active mode IS a match_options.type value: 5Stack uses
+// Competitive/Wingman/Duel, External uses Premier/Competitive/Wingman (the
+// import sets match_options.type to exactly these). Every gameplay stat
+// (win-rate, K/D, weapons, map radar) filters by this. "all" = no filter
+// (only offered for 5Stack).
+const statTypeFilter = computed<string | null>(() =>
+  selectedModeRef.value === "all" ? null : selectedModeRef.value,
+);
+
+// External Competitive (rank_type 12) / Wingman (6) are Valve skill groups
+// (0–18) — render the proper rank badge instead of a bare number. Premier is
+// a numeric CS Rating and 5Stack is ELO, so both stay as numbers.
+const isSkillGroupMode = computed(
+  () =>
+    sourceRef.value === "external" &&
+    (selectedModeRef.value === "Competitive" ||
+      selectedModeRef.value === "Wingman"),
+);
+function rankBadge(value: number | null | undefined): string | null {
+  if (value === null || value === undefined) return null;
+  return csRankIcon(selectedModeRef.value === "Wingman" ? 6 : 12, value);
+}
+// Valve rank type for the chart's y-axis ladder (badges + integer steps);
+// null for ELO / Premier (numeric).
+const chartRankType = computed<number | null>(() =>
+  isSkillGroupMode.value
+    ? selectedModeRef.value === "Wingman"
+      ? 6
+      : 12
+    : null,
+);
 
 const playerIdRef = computed<string | null>(() => {
   const p = route.params.id;
@@ -163,22 +295,6 @@ const untilTimestamp = computed<string | null>(() => {
   return null;
 });
 
-const rangeLimit = computed(() => {
-  switch (eloRange.value) {
-    case "7d":
-      return 500;
-    case "30d":
-      return 1500;
-    case "90d":
-      return 3000;
-    case "1y":
-      return 6000;
-    case "custom":
-      return 6000;
-    default:
-      return 10000;
-  }
-});
 
 // Built dynamically so the `match: { is_tournament_match: ... }` filter is
 // only added when the setting is on — avoids Hasura forcing a join when
@@ -198,16 +314,50 @@ const whereClause = computed(() => {
   return w;
 });
 
-const PLAYER_ELO_HISTORY_SUB = gql`
-  subscription PlayerWindowedEloHistory(
-    $where: v_player_elo_bool_exp!
-    $limit: Int!
-  ) {
-    v_player_elo(
-      where: $where
-      order_by: { match_created_at: asc }
-      limit: $limit
-    ) {
+// matches.source comparison for the active source: 5Stack is exact, External
+// is "anything that isn't 5Stack" (Valve, FACEIT, …).
+const sourceComparison = computed(() =>
+  sourceRef.value === "5stack" ? { _eq: "5stack" } : { _neq: "5stack" },
+);
+
+// Where for v_player_match_performance — scoped to the player, the active
+// source, the time window and (optionally) non-tournament matches.
+const performanceWhere = computed(() => {
+  const w: Record<string, any> = {
+    player_steam_id: { _eq: playerIdRef.value },
+    source: sourceComparison.value,
+  };
+  if (sinceTimestamp.value || untilTimestamp.value) {
+    w.match_created_at = {};
+    if (sinceTimestamp.value) w.match_created_at._gte = sinceTimestamp.value;
+    if (untilTimestamp.value) w.match_created_at._lte = untilTimestamp.value;
+  }
+  if (excludeTournaments.value) {
+    w.match = { is_tournament_match: { _eq: false } };
+  }
+  return w;
+});
+
+// Weapons are lifetime within the active source + mode (type). "all" (5Stack)
+// spans every type.
+const weaponWhere = computed(() => {
+  const w: Record<string, any> = {
+    player_steam_id: { _eq: playerIdRef.value },
+    source: sourceComparison.value,
+  };
+  if (statTypeFilter.value) {
+    w.type = { _eq: statTypeFilter.value };
+  }
+  return w;
+});
+
+// Stats are one-shot queries (network-only), not subscriptions — live stat
+// updates aren't worth a persistent socket. They re-run when the filters
+// change, and the Refresh button re-runs them on demand. A per-loader
+// generation guard drops stale responses when filters change mid-flight.
+const PLAYER_ELO_HISTORY_QUERY = gql`
+  query PlayerWindowedEloHistory($where: v_player_elo_bool_exp!) {
+    v_player_elo(where: $where, order_by: { match_created_at: asc }) {
       current_elo
       updated_elo
       elo_change
@@ -222,20 +372,13 @@ const PLAYER_ELO_HISTORY_SUB = gql`
   }
 `;
 
-let eloSubHandle: { unsubscribe: () => void } | null = null;
-let premierSubHandle: { unsubscribe: () => void } | null = null;
-let eloSubGen = 0;
-let premierSubGen = 0;
-
-const PLAYER_PREMIER_HISTORY_SUB = gql`
-  subscription PlayerWindowedPremierHistory(
+const PLAYER_PREMIER_HISTORY_QUERY = gql`
+  query PlayerWindowedPremierHistory(
     $where: player_premier_rank_history_bool_exp!
-    $limit: Int!
   ) {
     player_premier_rank_history(
       where: $where
       order_by: { observed_at: asc }
-      limit: $limit
     ) {
       rank
       rank_type
@@ -250,44 +393,38 @@ const PLAYER_PREMIER_HISTORY_SUB = gql`
   }
 `;
 
-function teardownEloSub() {
-  if (eloSubHandle) {
-    eloSubHandle.unsubscribe();
-    eloSubHandle = null;
-  }
-  if (premierSubHandle) {
-    premierSubHandle.unsubscribe();
-    premierSubHandle = null;
-  }
-}
+let eloLoadGen = 0;
+let premierLoadGen = 0;
 
-function startEloSub() {
-  teardownEloSub();
+async function loadEloHistory() {
   if (!playerIdRef.value) {
+    eloHistory.value = [];
     return;
   }
   eloHistoryLoading.value = true;
-  const gen = ++eloSubGen;
-  const obs = apolloClient.subscribe({
-    query: PLAYER_ELO_HISTORY_SUB,
-    variables: { where: whereClause.value, limit: rangeLimit.value },
-  });
-  eloSubHandle = obs.subscribe({
-    next: ({ data }: any) => {
-      if (gen !== eloSubGen) {
-        return;
-      }
-      eloHistory.value = (data?.v_player_elo ?? []) as WindowedEloEntry[];
-      eloHistoryLoading.value = false;
-    },
-    error: () => {
-      if (gen === eloSubGen) {
-        eloHistoryLoading.value = false;
-      }
-    },
-  });
+  const gen = ++eloLoadGen;
+  try {
+    const { data } = await apolloClient.query({
+      query: PLAYER_ELO_HISTORY_QUERY,
+      variables: { where: whereClause.value },
+      fetchPolicy: "network-only",
+    });
+    if (gen !== eloLoadGen) return;
+    eloHistory.value = ((data as any)?.v_player_elo ?? []) as WindowedEloEntry[];
+  } catch {
+    if (gen === eloLoadGen) eloHistory.value = [];
+  } finally {
+    if (gen === eloLoadGen) eloHistoryLoading.value = false;
+  }
+}
 
-  const pGen = ++premierSubGen;
+async function loadPremierHistory() {
+  if (!playerIdRef.value) {
+    rankHistoryRows.value = [];
+    premierWindowedHistory.value = [];
+    return;
+  }
+  const gen = ++premierLoadGen;
   const premierWhere: Record<string, any> = {
     steam_id: { _eq: playerIdRef.value },
   };
@@ -300,59 +437,176 @@ function startEloSub() {
       _lte: untilTimestamp.value,
     };
   }
-  const pObs = apolloClient.subscribe({
-    query: PLAYER_PREMIER_HISTORY_SUB,
-    variables: {
-      where: premierWhere,
-      limit: rangeLimit.value,
-    },
-  });
-  premierSubHandle = pObs.subscribe({
-    next: ({ data }: any) => {
-      if (pGen !== premierSubGen) {
-        return;
-      }
-      const rows = (data?.player_premier_rank_history ?? []) as Array<{
-        rank: number;
-        rank_type: number;
-        previous_rank: number | null;
-        match_id: string | null;
-        map_id: string | null;
-        map?: { name: string } | null;
-        observed_at: string;
-      }>;
-      rankHistoryRows.value = rows;
-      // Premier (rank_type 11) drives the ELO-style chart series.
-      let prev: number | null = null;
-      premierWindowedHistory.value = rows
-        .filter((r) => r.rank_type === 11)
-        .map((r) => {
-          const change = prev === null ? 0 : r.rank - prev;
-          prev = r.rank;
-          return {
-            current_elo: r.rank,
-            updated_elo: r.rank,
-            elo_change: change,
-            match_created_at: r.observed_at,
-            match_id: r.match_id,
-            match_result: null,
-            type: "Premier",
-            kills: null,
-            deaths: null,
-            assists: null,
-          };
-        });
-    },
-  });
+  try {
+    const { data } = await apolloClient.query({
+      query: PLAYER_PREMIER_HISTORY_QUERY,
+      variables: { where: premierWhere },
+      fetchPolicy: "network-only",
+    });
+    if (gen !== premierLoadGen) return;
+    const rows = ((data as any)?.player_premier_rank_history ?? []) as Array<{
+      rank: number;
+      rank_type: number;
+      previous_rank: number | null;
+      match_id: string | null;
+      map_id: string | null;
+      map?: { name: string } | null;
+      observed_at: string;
+    }>;
+    rankHistoryRows.value = rows;
+    // Premier (rank_type 11) drives the ELO-style chart series.
+    let prev: number | null = null;
+    premierWindowedHistory.value = rows
+      .filter((r) => r.rank_type === 11)
+      .map((r) => {
+        const change = prev === null ? 0 : r.rank - prev;
+        prev = r.rank;
+        return {
+          current_elo: r.rank,
+          updated_elo: r.rank,
+          elo_change: change,
+          match_created_at: r.observed_at,
+          match_id: r.match_id,
+          match_result: null,
+          type: "Premier",
+          kills: null,
+          deaths: null,
+          assists: null,
+        };
+      });
+  } catch {
+    if (gen === premierLoadGen) {
+      rankHistoryRows.value = [];
+      premierWindowedHistory.value = [];
+    }
+  }
 }
 
 watch(
-  [playerIdRef, sinceTimestamp, untilTimestamp, excludeTournaments, rangeLimit],
-  () => startEloSub(),
+  [playerIdRef, sinceTimestamp, untilTimestamp, excludeTournaments],
+  () => {
+    loadEloHistory();
+    loadPremierHistory();
+  },
   { immediate: true },
 );
 
-onUnmounted(() => teardownEloSub());
+// Per-match performance (win/loss + K/D) and per-source weapon kills — also
+// one-shot queries, re-run when the player / source / window changes.
+const PLAYER_PERFORMANCE_QUERY = gql`
+  query PlayerPerformance($where: v_player_match_performance_bool_exp!) {
+    v_player_match_performance(
+      where: $where
+      order_by: { match_created_at: asc }
+    ) {
+      match_created_at
+      type
+      kills
+      deaths
+      assists
+      match_result
+    }
+  }
+`;
+
+const PLAYER_WEAPON_KILLS_QUERY = gql`
+  query PlayerWeaponKills($where: v_player_weapon_kills_bool_exp!) {
+    v_player_weapon_kills(
+      where: $where
+      order_by: { kill_count: desc }
+      limit: 30
+    ) {
+      with
+      kill_count
+    }
+  }
+`;
+
+let perfLoadGen = 0;
+let weaponLoadGen = 0;
+
+async function loadPerformance() {
+  if (!playerIdRef.value) {
+    performanceHistory.value = [];
+    return;
+  }
+  const gen = ++perfLoadGen;
+  try {
+    const { data } = await apolloClient.query({
+      query: PLAYER_PERFORMANCE_QUERY,
+      variables: { where: performanceWhere.value },
+      fetchPolicy: "network-only",
+    });
+    if (gen !== perfLoadGen) return;
+    performanceHistory.value = ((data as any)?.v_player_match_performance ??
+      []) as WindowedEloEntry[];
+  } catch {
+    if (gen === perfLoadGen) performanceHistory.value = [];
+  }
+}
+
+async function loadWeapons() {
+  if (!playerIdRef.value) {
+    weaponKills.value = [];
+    return;
+  }
+  const gen = ++weaponLoadGen;
+  try {
+    const { data } = await apolloClient.query({
+      query: PLAYER_WEAPON_KILLS_QUERY,
+      variables: { where: weaponWhere.value },
+      fetchPolicy: "network-only",
+    });
+    if (gen !== weaponLoadGen) return;
+    weaponKills.value = ((data as any)?.v_player_weapon_kills ?? []) as {
+      with: string;
+      kill_count: number;
+    }[];
+  } catch {
+    if (gen === weaponLoadGen) weaponKills.value = [];
+  }
+}
+
+watch([playerIdRef, performanceWhere], () => loadPerformance(), {
+  immediate: true,
+});
+watch([playerIdRef, weaponWhere], () => loadWeapons(), { immediate: true });
+
+// Manual refresh — re-pull every stat query for the active filters.
+const statsRefreshing = ref(false);
+async function refreshStats() {
+  if (statsRefreshing.value) return;
+  statsRefreshing.value = true;
+  try {
+    await Promise.all([
+      loadEloHistory(),
+      loadPremierHistory(),
+      loadPerformance(),
+      loadWeapons(),
+    ]);
+  } finally {
+    statsRefreshing.value = false;
+  }
+}
+
+// Merge duplicate weapon spellings into one canonical row with a resolved
+// icon, then take the real top 5. (Pre-migration data may still carry mixed
+// spellings; the merge keeps the display correct regardless.)
+const topWeapons = computed(() => {
+  const merged = new Map<
+    string,
+    { key: string; icon: string; label: string; kill_count: number }
+  >();
+  for (const w of weaponKills.value) {
+    const r = resolveWeapon(w.with);
+    const entry = merged.get(r.key) ?? { ...r, kill_count: 0 };
+    entry.kill_count += Number(w.kill_count) || 0;
+    merged.set(r.key, entry);
+  }
+  return [...merged.values()]
+    .sort((a, b) => b.kill_count - a.kill_count)
+    .slice(0, 5);
+});
 
 const REFRESH_FACEIT_MUTATION = gql`
   mutation RefreshFaceitRank($steam_id: String!) {
@@ -389,15 +643,60 @@ const playerMatchesTotal = ref(0);
 // 5stack-hosted matches carry an internal elo; external (Valve/FACEIT)
 // imports don't — so the filter lets players isolate the matches that
 // actually have an elo change. `source === "5stack"` is internal.
-const matchSourceFilter = ref<"all" | "5stack" | "external">("all");
+// The matches list has its own source + mode filter that DEFAULTS to the top
+// filter and snaps back to it whenever the top changes — but the buttons below
+// can override it, including an "all" source and an "all" mode.
+const matchesSourceFilter = ref<"all" | "5stack" | "external">(sourceRef.value);
+const matchesModeFilter = ref<string>(selectedModeRef.value);
+
+watch([sourceRef, selectedModeRef], ([s, m]) => {
+  matchesSourceFilter.value = s;
+  matchesModeFilter.value = m;
+});
+
 const matchSourceOptions = computed(
   () =>
     [
       { value: "all", label: t("player_match.source.all") },
-      { value: "5stack", label: t("player_match.source.internal") },
+      { value: "5stack", label: "5Stack" },
       { value: "external", label: t("player_match.source.external") },
     ] as const,
 );
+
+// Mode sub-filter, scoped to the matches source (none when source is "all").
+const matchesModeOptions = computed<{ value: string; label: string }[]>(() => {
+  if (matchesSourceFilter.value === "5stack") {
+    return [
+      { value: "all", label: t("pages.leaderboard.match_types.all") },
+      {
+        value: "Competitive",
+        label: t("pages.leaderboard.match_types.competitive"),
+      },
+      { value: "Wingman", label: t("pages.leaderboard.match_types.wingman") },
+      { value: "Duel", label: t("pages.leaderboard.match_types.duel") },
+    ];
+  }
+  if (matchesSourceFilter.value === "external") {
+    return [
+      { value: "all", label: t("pages.leaderboard.match_types.all") },
+      { value: "Premier", label: "Premier" },
+      {
+        value: "Competitive",
+        label: t("pages.leaderboard.match_types.competitive"),
+      },
+      { value: "Wingman", label: t("pages.leaderboard.match_types.wingman") },
+    ];
+  }
+  return [];
+});
+
+// Drop an override mode that the (possibly newly-overridden) source can't show.
+watch(matchesSourceFilter, () => {
+  const valid = matchesModeOptions.value.map((o) => o.value);
+  if (!valid.includes(matchesModeFilter.value)) {
+    matchesModeFilter.value = "all";
+  }
+});
 
 const matchesWhere = computed(() => {
   const w: Record<string, any> = {};
@@ -409,10 +708,12 @@ const matchesWhere = computed(() => {
   if (excludeTournaments.value) {
     w.is_tournament_match = { _eq: false };
   }
-  if (matchSourceFilter.value === "5stack") {
-    w.source = { _eq: "5stack" };
-  } else if (matchSourceFilter.value === "external") {
-    w.source = { _neq: "5stack" };
+  const ms = matchesSourceFilter.value;
+  if (ms === "5stack") w.source = { _eq: "5stack" };
+  else if (ms === "external") w.source = { _neq: "5stack" };
+  const mode = matchesModeFilter.value;
+  if (ms !== "all" && mode && mode !== "all") {
+    w.options = { type: { _eq: mode } };
   }
   return w;
 });
@@ -592,11 +893,13 @@ function buildValveRankWindowed(
 // most-played first — drives the map selector chips above the chart.
 const rankMapOptions = computed(() => {
   const rt =
-    selectedModeRef.value === "Competitive"
-      ? 12
-      : selectedModeRef.value === "Wingman"
-        ? 6
-        : null;
+    sourceRef.value !== "external"
+      ? null
+      : selectedModeRef.value === "Competitive"
+        ? 12
+        : selectedModeRef.value === "Wingman"
+          ? 6
+          : null;
   if (rt === null)
     return [] as { mapId: string; name: string; count: number }[];
   const counts = new Map<
@@ -643,21 +946,16 @@ const wingmanWindowedHistory = computed(() =>
 );
 
 const modeFilteredWindowed = computed<WindowedEloEntry[]>(() => {
-  if (selectedModeRef.value === "Premier") {
-    return premierWindowedHistory.value;
+  // Valve source = external rank history only (no 5Stack ELO fallback).
+  if (sourceRef.value === "external") {
+    if (selectedModeRef.value === "Premier") return premierWindowedHistory.value;
+    if (selectedModeRef.value === "Competitive")
+      return competitiveWindowedHistory.value;
+    if (selectedModeRef.value === "Wingman")
+      return wingmanWindowedHistory.value;
+    return [];
   }
-  // Prefer Valve rank history for Competitive/Wingman; fall back to the
-  // 5stack internal elo for those modes when there are no external matches.
-  if (selectedModeRef.value === "Competitive") {
-    return competitiveWindowedHistory.value.length
-      ? competitiveWindowedHistory.value
-      : eloHistory.value.filter((e) => e.type === "Competitive");
-  }
-  if (selectedModeRef.value === "Wingman") {
-    return wingmanWindowedHistory.value.length
-      ? wingmanWindowedHistory.value
-      : eloHistory.value.filter((e) => e.type === "Wingman");
-  }
+  // 5Stack source = internal ELO only (no Valve rank fallback).
   if (selectedModeRef.value === "all") {
     return eloHistory.value;
   }
@@ -670,7 +968,13 @@ const windowedStats = computed(() => {
     selectedModeRef.value === "all"
       ? eloHistory.value.filter((e) => e.type === "Competitive")
       : list;
-  if (list.length === 0) {
+  // Win Rate / K-D from v_player_match_performance, scoped to the active
+  // source + mode (= match type) + window. Every mode chip maps to a real
+  // match_options.type, so the same filter works for 5Stack and External.
+  const perfList = statTypeFilter.value
+    ? performanceHistory.value.filter((e) => e.type === statTypeFilter.value)
+    : performanceHistory.value;
+  if (list.length === 0 && perfList.length === 0) {
     return {
       current: null as number | null,
       peak: null as number | null,
@@ -681,6 +985,7 @@ const windowedStats = computed(() => {
       ties: 0,
       winPct: 0,
       avgChange: 0,
+      netChange: 0,
       kills: 0,
       deaths: 0,
       assists: 0,
@@ -716,7 +1021,7 @@ const windowedStats = computed(() => {
     }
   }
 
-  for (const e of list) {
+  for (const e of perfList) {
     if (e.match_result === "won" || e.match_result === "win") wins++;
     else if (e.match_result === "lost" || e.match_result === "loss") losses++;
     else if (e.match_result === "tied" || e.match_result === "tie") ties++;
@@ -744,12 +1049,13 @@ const windowedStats = computed(() => {
     current,
     peak: peak === -Infinity ? null : peak,
     lowest: lowest === Infinity ? null : lowest,
-    total: list.length,
+    total: perfList.length,
     wins,
     losses,
     ties,
     winPct: decided > 0 ? (wins / decided) * 100 : 0,
     avgChange: changeCount > 0 ? changeSum / changeCount : 0,
+    netChange: changeSum,
     kills,
     deaths,
     assists,
@@ -860,48 +1166,29 @@ function bucketHistory(
 const windowedChartSeries = computed(() => {
   const size = bucketSize.value;
 
-  if (selectedModeRef.value === "Premier") {
-    return premierWindowedHistory.value.length > 0
+  // Valve source: a single rank series for the active mode. No 5Stack ELO
+  // fallback — an empty Valve mode renders the empty state, not 5Stack data.
+  if (sourceRef.value === "external") {
+    const valveSeries =
+      selectedModeRef.value === "Competitive"
+        ? competitiveWindowedHistory.value
+        : selectedModeRef.value === "Wingman"
+          ? wingmanWindowedHistory.value
+          : premierWindowedHistory.value;
+    return valveSeries.length > 0
       ? [
           {
-            key: "Premier",
-            label: "Premier",
-            history: bucketHistory(premierWindowedHistory.value, size),
+            key: selectedModeRef.value,
+            label: selectedModeRef.value,
+            history: bucketHistory(valveSeries, size),
             focus: true,
           },
         ]
       : [];
   }
 
-  // Single Competitive/Wingman tab: show the Valve skill-group progression
-  // when there are external matches; otherwise fall through to 5stack elo.
-  if (
-    selectedModeRef.value === "Competitive" &&
-    competitiveWindowedHistory.value.length > 0
-  ) {
-    return [
-      {
-        key: "Competitive",
-        label: "Competitive",
-        history: bucketHistory(competitiveWindowedHistory.value, size),
-        focus: true,
-      },
-    ];
-  }
-  if (
-    selectedModeRef.value === "Wingman" &&
-    wingmanWindowedHistory.value.length > 0
-  ) {
-    return [
-      {
-        key: "Wingman",
-        label: "Wingman",
-        history: bucketHistory(wingmanWindowedHistory.value, size),
-        focus: true,
-      },
-    ];
-  }
-
+  // 5Stack source: internal ELO by type. "all" overlays the three modes
+  // with Competitive focused; a single mode shows just that line.
   const groupBy = (m: "Competitive" | "Wingman" | "Duel") =>
     bucketHistory(
       eloHistory.value.filter((e) => e.type === m),
@@ -989,12 +1276,10 @@ function fmtDateShort(iso: string | null | undefined): string {
 
 definePageMeta({
   alias: ["/me/:id"],
-});
-
-const modeTab = useRouteTab({
-  param: "mode",
-  defaultTab: "all",
-  tabs: ["all", "Competitive", "Wingman", "Duel", "Premier"],
+  // Keep the stat-source toggle out of the NuxtPage key (like `mode`) so
+  // flipping 5Stack/Valve updates state in place instead of remounting the
+  // whole page. `mode` is already excluded globally in app.vue.
+  persistQueryKeys: ["source"],
 });
 
 const { isMobile } = useSidebar();
@@ -1252,37 +1537,89 @@ const playerTeamChipShortClasses =
     </PageTransition>
 
     <div class="flex flex-col gap-4 md:gap-6" v-if="player && pageContentReady">
-      <Tabs v-model="modeTab">
-        <TabsList class="grid grid-cols-5 w-full max-w-md mx-auto">
-          <TabsTrigger value="all">{{
-            $t("pages.leaderboard.match_types.all")
-          }}</TabsTrigger>
-          <TabsTrigger value="Competitive">{{
-            $t("pages.leaderboard.match_types.competitive")
-          }}</TabsTrigger>
-          <TabsTrigger value="Wingman">{{
-            $t("pages.leaderboard.match_types.wingman")
-          }}</TabsTrigger>
-          <TabsTrigger value="Duel">{{
-            $t("pages.leaderboard.match_types.duel")
-          }}</TabsTrigger>
-          <TabsTrigger value="Premier">Premier</TabsTrigger>
-        </TabsList>
-      </Tabs>
-
-      <!-- Global time-range bar — drives the stats strip inside the ELO
-           History card and the windowed values in the Win Rate / K/D card.
-           Cog opens a popover with custom range, lifetime compare, and
-           tournament filtering. -->
+      <!-- Unified control bar — stat source (5Stack internal ELO vs Valve
+           external rank), source-dependent mode chips, time range, match
+           count + settings. One bar so every graph below reads the same
+           filter and the two rating worlds never blend. -->
       <div
-        class="flex flex-wrap items-center gap-3 rounded-lg border border-border/60 bg-card/40 px-3 py-2.5 [backdrop-filter:blur(6px)]"
+        class="flex flex-wrap items-center gap-x-4 gap-y-3 rounded-lg border border-border/60 bg-card/40 px-3 py-2.5 [backdrop-filter:blur(6px)]"
       >
+        <!-- Source toggle -->
+        <div class="flex items-center gap-2">
+          <span
+            class="hidden font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground sm:inline"
+          >
+            {{ $t("pages.players.detail.source", "Source") }}
+          </span>
+          <div
+            class="inline-flex items-center rounded-md border border-border/60 bg-background/40 p-0.5"
+          >
+            <button
+              v-for="s in sourceOptions"
+              :key="s.value"
+              type="button"
+              class="rounded px-2.5 py-1 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors"
+              :class="
+                sourceRef === s.value
+                  ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
+                  : 'text-muted-foreground hover:text-foreground'
+              "
+              @click="setSource(s.value)"
+            >
+              {{ s.label }}
+            </button>
+          </div>
+        </div>
+
         <span
-          class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-        >
-          {{ $t("pages.players.detail.range") }}
-        </span>
+          class="hidden h-5 w-px bg-border/60 sm:block"
+          aria-hidden="true"
+        ></span>
+
+        <!-- Mode chips (depend on the active source) -->
         <div class="flex flex-wrap items-center gap-1.5">
+          <button
+            v-for="m in modeOptions"
+            :key="m.value"
+            type="button"
+            class="rounded border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
+            :class="
+              selectedModeRef === m.value
+                ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
+                : 'border-border/60 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
+            "
+            @click="setMode(m.value)"
+          >
+            {{ m.label }}
+          </button>
+        </div>
+
+        <!-- Match count -->
+        <span
+          class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground"
+        >
+          <template v-if="eloHistoryLoading && eloHistory.length === 0">
+            {{ $t("pages.players.detail.loading_short") }}
+          </template>
+          <template v-else>
+            {{
+              $t("pages.players.detail.match_count", {
+                count: windowedStats.total.toLocaleString(),
+              })
+            }}
+            <template v-if="excludeTournaments">
+              · {{ $t("pages.players.detail.no_tournaments_inline") }}</template
+            >
+          </template>
+        </span>
+
+        <!-- Right cluster: time range + refresh + settings -->
+        <div class="ml-auto flex flex-wrap items-center gap-1.5">
+          <span
+            class="hidden font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground sm:inline"
+          >
+            {{ $t("pages.players.detail.range") }}
+          </span>
           <button
             v-for="r in presetRanges"
             :key="r.key"
@@ -1303,34 +1640,19 @@ const playerTeamChipShortClasses =
           >
             {{ activeRangeLabel }}
           </span>
-        </div>
-        <span
-          class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground"
-        >
-          <template v-if="eloHistoryLoading && eloHistory.length === 0">
-            {{ $t("pages.players.detail.loading_short") }}
-          </template>
-          <template v-else>
-            {{
-              $t("pages.players.detail.match_count", {
-                count: windowedStats.total.toLocaleString(),
-              })
-            }}
-            <template v-if="excludeTournaments">
-              · {{ $t("pages.players.detail.no_tournaments_inline") }}</template
-            >
-            <template v-if="selectedModeRef !== 'all'">
-              · {{ selectedModeRef }}
-            </template>
-          </template>
-        </span>
-        <div class="ml-auto flex items-center gap-2">
           <span
-            v-if="compareLifetime"
-            class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
+            class="mx-1 hidden h-5 w-px bg-border/60 sm:block"
+            aria-hidden="true"
+          ></span>
+          <button
+            type="button"
+            class="inline-flex h-8 w-8 items-center justify-center rounded border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))] disabled:opacity-50"
+            :disabled="statsRefreshing"
+            :title="$t('pages.players.detail.refresh_stats', 'Refresh stats')"
+            @click="refreshStats"
           >
-            {{ $t("pages.players.detail.vs_lifetime") }}
-          </span>
+            <RefreshCw :class="['h-4 w-4', statsRefreshing && 'animate-spin']" />
+          </button>
           <Popover v-model:open="settingsOpen">
             <PopoverTrigger as-child>
               <button
@@ -1351,22 +1673,52 @@ const playerTeamChipShortClasses =
                   {{ $t("pages.players.detail.custom_range") }}
                 </div>
                 <div class="flex items-center gap-2">
-                  <input
-                    v-model="customFrom"
-                    type="date"
-                    class="flex-1 rounded border border-border bg-background px-2 py-1 text-xs"
-                    :max="customTo || undefined"
-                    @change="applyCustomRange"
-                  />
+                  <button
+                    type="button"
+                    class="flex flex-1 items-center justify-between gap-2 rounded border bg-background px-2 py-1.5 text-xs transition-colors"
+                    :class="
+                      activeDateField === 'from'
+                        ? 'border-[hsl(var(--tac-amber))]'
+                        : 'border-border hover:border-[hsl(var(--tac-amber)/0.5)]'
+                    "
+                    @click="
+                      activeDateField = activeDateField === 'from' ? null : 'from'
+                    "
+                  >
+                    <span :class="customFrom ? '' : 'text-muted-foreground'">{{
+                      customFrom || $t("pages.players.detail.start_date", "Start")
+                    }}</span>
+                    <CalendarIcon class="h-3.5 w-3.5 text-muted-foreground" />
+                  </button>
                   <span class="text-muted-foreground text-xs">→</span>
-                  <input
-                    v-model="customTo"
-                    type="date"
-                    class="flex-1 rounded border border-border bg-background px-2 py-1 text-xs"
-                    :min="customFrom || undefined"
-                    @change="applyCustomRange"
-                  />
+                  <button
+                    type="button"
+                    class="flex flex-1 items-center justify-between gap-2 rounded border bg-background px-2 py-1.5 text-xs transition-colors"
+                    :class="
+                      activeDateField === 'to'
+                        ? 'border-[hsl(var(--tac-amber))]'
+                        : 'border-border hover:border-[hsl(var(--tac-amber)/0.5)]'
+                    "
+                    @click="
+                      activeDateField = activeDateField === 'to' ? null : 'to'
+                    "
+                  >
+                    <span :class="customTo ? '' : 'text-muted-foreground'">{{
+                      customTo || $t("pages.players.detail.end_date", "End")
+                    }}</span>
+                    <CalendarIcon class="h-3.5 w-3.5 text-muted-foreground" />
+                  </button>
                 </div>
+                <Calendar
+                  v-if="activeDateField === 'from'"
+                  v-model="customFromValue"
+                  class="rounded-md border border-border"
+                />
+                <Calendar
+                  v-else-if="activeDateField === 'to'"
+                  v-model="customToValue"
+                  class="rounded-md border border-border"
+                />
                 <p
                   v-if="eloRange === 'custom'"
                   class="text-[0.65rem] text-muted-foreground"
@@ -1374,25 +1726,6 @@ const playerTeamChipShortClasses =
                   {{ $t("pages.players.detail.custom_window_active") }}
                 </p>
               </div>
-              <label
-                class="flex items-start gap-2 cursor-pointer rounded p-1 -mx-1 hover:bg-muted/40"
-              >
-                <Checkbox
-                  :model-value="compareLifetime"
-                  @update:model-value="(v) => (compareLifetime = !!v)"
-                  class="mt-0.5"
-                />
-                <div class="flex-1">
-                  <div class="text-sm font-medium">
-                    {{ $t("pages.players.detail.compare_vs_lifetime") }}
-                  </div>
-                  <div class="text-[0.65rem] text-muted-foreground">
-                    {{
-                      $t("pages.players.detail.compare_vs_lifetime_description")
-                    }}
-                  </div>
-                </div>
-              </label>
               <label
                 class="flex items-start gap-2 cursor-pointer rounded p-1 -mx-1 hover:bg-muted/40"
               >
@@ -1424,8 +1757,9 @@ const playerTeamChipShortClasses =
           <AnimatedCard variant="elevated" class="flex flex-col h-full p-4">
             <CardContent class="flex-1 p-4">
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 h-full">
-                <!-- Win Rate Column — driven by the windowed v_player_elo
-                     subscription so it reflects the active time range. -->
+                <!-- Win Rate Column — driven by 5Stack match data for the
+                     active gameplay mode + range. Stays Win Rate / K-D for
+                     both sources (Valve rank has no W/L or K/D). -->
                 <div class="flex flex-col items-center justify-center gap-4">
                   <span
                     class="text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70"
@@ -1467,15 +1801,6 @@ const playerTeamChipShortClasses =
                         >{{ $t("common.stats.losses") }}</span
                       >
                     </div>
-                  </div>
-                  <div
-                    v-if="compareLifetime"
-                    class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground text-center"
-                  >
-                    {{ $t("pages.players.detail.lifetime_short") }}
-                    <span class="text-green-500">{{ selectedWins }}W</span>
-                    ·
-                    <span class="text-red-500">{{ selectedLosses }}L</span>
                   </div>
                 </div>
 
@@ -1553,15 +1878,6 @@ const playerTeamChipShortClasses =
                       </span>
                     </div>
                   </div>
-                  <div
-                    v-if="compareLifetime && player?.stats"
-                    class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground text-center"
-                  >
-                    {{ $t("pages.players.detail.lifetime_kd_label") }}
-                    <span class="text-foreground">{{ kd }}</span>
-                    · {{ player.stats.kills?.toLocaleString() ?? "—" }} K /
-                    {{ player.stats.deaths?.toLocaleString() ?? "—" }} D
-                  </div>
                 </div>
               </div>
             </CardContent>
@@ -1591,10 +1907,14 @@ const playerTeamChipShortClasses =
                     class="flex items-center justify-between gap-3 font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
                   >
                     <span class="truncate">{{
-                      $t("pages.players.detail.current_elo")
+                      sourceRef === "external"
+                        ? selectedModeRef === "Premier"
+                          ? $t("pages.players.detail.current_rating", "Current Rating")
+                          : $t("pages.players.detail.current_rank", "Current Rank")
+                        : $t("pages.players.detail.current_elo")
                     }}</span>
                     <button
-                      v-if="hasEloChartData"
+                      v-if="hasWindowedEloData"
                       type="button"
                       class="inline-flex shrink-0 items-center gap-1 whitespace-nowrap normal-case font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
                       @click="eloDialogOpen = true"
@@ -1616,25 +1936,20 @@ const playerTeamChipShortClasses =
                       </span>
                     </button>
                   </div>
-                  <div
-                    class="mt-1 text-3xl font-bold leading-none tabular-nums tracking-tight sm:text-4xl"
-                  >
-                    {{ fmtRangeStat(windowedStats.current) }}
-                  </div>
-                  <div
-                    v-if="
-                      compareLifetime &&
-                      player?.elo &&
-                      selectedModeRef !== 'all'
-                    "
-                    class="mt-0.5 font-mono text-[0.5rem] uppercase tracking-[0.18em] text-muted-foreground"
-                  >
-                    {{ $t("pages.players.detail.lifetime_short") }}
-                    {{
-                      fmtRangeStat(
-                        player.elo[selectedModeRef.toLowerCase()] ?? null,
-                      )
-                    }}
+                  <div class="mt-1 flex items-center gap-2">
+                    <img
+                      v-if="isSkillGroupMode && rankBadge(windowedStats.current)"
+                      :src="rankBadge(windowedStats.current)!"
+                      :alt="fmtRangeStat(windowedStats.current)"
+                      :title="fmtRangeStat(windowedStats.current)"
+                      class="h-10 w-auto sm:h-12"
+                    />
+                    <span
+                      v-else
+                      class="text-3xl font-bold leading-none tabular-nums tracking-tight sm:text-4xl"
+                    >
+                      {{ fmtRangeStat(windowedStats.current) }}
+                    </span>
                   </div>
                 </div>
 
@@ -1649,22 +1964,46 @@ const playerTeamChipShortClasses =
                   >
                     {{ $t("pages.players.detail.peak_lowest") }}
                   </div>
-                  <div class="mt-1 flex items-baseline gap-2.5">
-                    <span
-                      class="text-xl font-bold tabular-nums text-[hsl(var(--tac-amber))] [text-shadow:0_0_18px_hsl(var(--tac-amber)/0.35)]"
+                  <div class="mt-1 flex items-center gap-2.5">
+                    <template
+                      v-if="isSkillGroupMode && rankBadge(windowedStats.peak)"
                     >
-                      {{ fmtRangeStat(windowedStats.peak) }}
-                    </span>
-                    <span
-                      class="font-mono text-[hsl(var(--tac-amber)/0.35)]"
-                      aria-hidden="true"
-                      >/</span
-                    >
-                    <span
-                      class="text-base font-semibold tabular-nums text-muted-foreground/80"
-                    >
-                      {{ fmtRangeStat(windowedStats.lowest) }}
-                    </span>
+                      <img
+                        :src="rankBadge(windowedStats.peak)!"
+                        :alt="fmtRangeStat(windowedStats.peak)"
+                        :title="fmtRangeStat(windowedStats.peak)"
+                        class="h-7 w-auto [filter:drop-shadow(0_0_10px_hsl(var(--tac-amber)/0.45))]"
+                      />
+                      <span
+                        class="font-mono text-[hsl(var(--tac-amber)/0.35)]"
+                        aria-hidden="true"
+                        >/</span
+                      >
+                      <img
+                        v-if="rankBadge(windowedStats.lowest)"
+                        :src="rankBadge(windowedStats.lowest)!"
+                        :alt="fmtRangeStat(windowedStats.lowest)"
+                        :title="fmtRangeStat(windowedStats.lowest)"
+                        class="h-6 w-auto opacity-80"
+                      />
+                    </template>
+                    <template v-else>
+                      <span
+                        class="text-xl font-bold tabular-nums text-[hsl(var(--tac-amber))] [text-shadow:0_0_18px_hsl(var(--tac-amber)/0.35)]"
+                      >
+                        {{ fmtRangeStat(windowedStats.peak) }}
+                      </span>
+                      <span
+                        class="font-mono text-[hsl(var(--tac-amber)/0.35)]"
+                        aria-hidden="true"
+                        >/</span
+                      >
+                      <span
+                        class="text-base font-semibold tabular-nums text-muted-foreground/80"
+                      >
+                        {{ fmtRangeStat(windowedStats.lowest) }}
+                      </span>
+                    </template>
                   </div>
                   <!-- Date row is ALWAYS rendered (placeholder when no
                        peakEntry yet) so the cell height never changes
@@ -1680,51 +2019,7 @@ const playerTeamChipShortClasses =
                     </template>
                     <template v-else>&nbsp;</template>
                   </div>
-                  <div
-                    v-if="
-                      compareLifetime &&
-                      player?.peak_elo &&
-                      selectedModeRef !== 'all'
-                    "
-                    class="mt-0.5 font-mono text-[0.5rem] uppercase tracking-[0.18em] text-muted-foreground"
-                  >
-                    {{ $t("pages.players.detail.lifetime_peak") }}
-                    {{
-                      fmtRangeStat(
-                        player.peak_elo[selectedModeRef.toLowerCase()] ?? null,
-                      )
-                    }}
-                  </div>
                 </div>
-              </div>
-
-              <!-- Per-map selector — Competitive/Wingman skill groups are per
-                   map, so the chart plots one map at a time. Most-played map
-                   is selected by default. -->
-              <div
-                v-if="rankMapOptions.length > 0"
-                class="flex flex-wrap items-center gap-1.5"
-              >
-                <span
-                  class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
-                >
-                  {{ $t("player_match.headers.map") }}
-                </span>
-                <button
-                  v-for="m in rankMapOptions"
-                  :key="m.mapId"
-                  type="button"
-                  class="inline-flex items-center gap-1 rounded border px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] transition-colors"
-                  :class="
-                    selectedRankMap === m.mapId
-                      ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
-                      : 'border-border/60 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
-                  "
-                  @click="selectedRankMap = m.mapId"
-                >
-                  {{ cleanMapName(m.name) }}
-                  <span class="tabular-nums opacity-60">×{{ m.count }}</span>
-                </button>
               </div>
 
               <!-- Chart well: fixed height (NOT min-h) so the card never
@@ -1734,6 +2029,40 @@ const playerTeamChipShortClasses =
               <div
                 class="relative h-[260px] sm:h-[300px] overflow-hidden rounded-md border border-border/40"
               >
+                <!-- Per-map selector — Competitive/Wingman skill groups are per
+                     map, and there can be many. A dropdown (sorted most-played
+                     first) overlaid in the well's top-right so it never adds a
+                     row that shifts layout (Premier / 5Stack have no maps). -->
+                <div
+                  v-if="rankMapOptions.length > 0"
+                  class="absolute right-2 top-2 z-10"
+                >
+                  <Select
+                    :model-value="selectedRankMap ?? undefined"
+                    @update:model-value="(v) => (selectedRankMap = v as string)"
+                  >
+                    <SelectTrigger
+                      class="h-7 w-[150px] gap-1 border-border/60 bg-card/80 px-2 font-mono text-[0.62rem] uppercase tracking-[0.12em] backdrop-blur-sm"
+                    >
+                      <SelectValue
+                        :placeholder="$t('player_match.headers.map')"
+                      />
+                    </SelectTrigger>
+                    <SelectContent class="max-h-[300px]">
+                      <SelectItem
+                        v-for="m in rankMapOptions"
+                        :key="m.mapId"
+                        :value="m.mapId"
+                        class="font-mono text-[0.7rem] uppercase tracking-[0.1em]"
+                      >
+                        {{ cleanMapName(m.name) }}
+                        <span class="ml-1 tabular-nums opacity-60"
+                          >×{{ m.count }}</span
+                        >
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <!-- Registration ticks on the inner frame -->
                 <span
                   class="pointer-events-none absolute -top-px left-3 h-1.5 w-1.5 border-l border-t border-[hsl(var(--tac-amber)/0.45)]"
@@ -1800,6 +2129,7 @@ const playerTeamChipShortClasses =
                   v-else-if="hasWindowedEloData"
                   class="relative h-full"
                   :series="windowedChartSeries"
+                  :rank-type="chartRankType"
                 />
 
                 <div
@@ -1825,9 +2155,20 @@ const playerTeamChipShortClasses =
                     <span
                       class="font-mono text-[0.65rem] tracking-[0.22em] text-muted-foreground"
                     >
-                      {{ $t("pages.players.detail.no_elo_history") }}
+                      {{
+                        sourceRef === "external"
+                          ? $t(
+                              "pages.players.detail.no_rank_history",
+                              "No rank history imported",
+                            )
+                          : $t("pages.players.detail.no_elo_history")
+                      }}
                     </span>
-                    <NuxtLink v-if="me" to="/play" class="mt-2">
+                    <NuxtLink
+                      v-if="me && sourceRef === '5stack'"
+                      to="/play"
+                      class="mt-2"
+                    >
                       <Button
                         variant="outline"
                         size="sm"
@@ -1857,17 +2198,20 @@ const playerTeamChipShortClasses =
                 {{ $t("pages.players.detail.recent_wins_and_losses") }}
               </CardTitle>
               <div
-                class="text-center text-[9px] uppercase tracking-[0.18em] opacity-0 select-none"
-                aria-hidden="true"
+                class="text-center text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70"
               >
-                .
+                {{ $t("pages.players.detail.last_n_matches", "Last 10")
+                }}<template v-if="statTypeFilter">
+                  · {{ statTypeFilter }}</template
+                >
               </div>
             </CardHeader>
             <CardContent class="flex flex-col h-full">
               <LastTenWinsAndLosses
                 class="max-h-[250px] sm:max-h-[300px] md:max-h-[375px] w-full flex-grow"
                 :steam_id="playerId"
-                :match_type="selectedMode === 'all' ? null : selectedMode"
+                :match_type="statTypeFilter"
+                :source="sourceRef"
               />
             </CardContent>
           </AnimatedCard>
@@ -1883,19 +2227,16 @@ const playerTeamChipShortClasses =
                 {{ $t("pages.players.detail.weapon_kills") }}
               </CardTitle>
               <div
-                class="text-center text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70 transition-opacity duration-150"
-                :class="selectedMode !== 'all' ? 'opacity-100' : 'opacity-0'"
-                aria-hidden="true"
+                class="text-center text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70"
               >
-                {{ $t("pages.players.detail.global_stats", "Global stats") }}
+                {{ $t("pages.players.detail.weapons_lifetime", "Lifetime") }} ·
+                {{ sourceRef === "external" ? "External" : "5Stack"
+                }}<template v-if="statTypeFilter"> · {{ statTypeFilter }}</template>
               </div>
             </CardHeader>
             <CardContent class="flex flex-col h-full">
               <div
-                v-if="
-                  !player?.kills_by_weapons ||
-                  player.kills_by_weapons.length === 0
-                "
+                v-if="topWeapons.length === 0"
                 class="text-center py-8 flex-grow flex items-center justify-center"
               >
                 <p class="text-sm md:text-base text-muted-foreground">
@@ -1906,27 +2247,23 @@ const playerTeamChipShortClasses =
                 <table class="w-full border-90">
                   <tbody>
                     <tr
-                      v-for="(weapon, index) in player.kills_by_weapons"
-                      :key="index"
+                      v-for="(weapon, index) in topWeapons"
+                      :key="weapon.key"
                       :style="{ animationDelay: `${index * 50}ms` }"
                       class="border-b border-border/30 hover:bg-muted/50 hover:scale-[1.02] transition-all duration-200 animate-in fade-in slide-in-from-bottom-2 group/row"
                     >
                       <td class="p-3 flex items-center gap-3">
-                        <template
-                          v-if="weapon.with && weapon.with !== 'unknown'"
-                        >
-                          <div class="relative">
-                            <img
-                              :src="`/img/equipment/${getWeaponImageName(weapon.with)}.svg`"
-                              :alt="weapon.with"
-                              class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 group-hover/row:scale-110 transition-transform duration-300"
-                              @error="handleImageError"
-                              :title="weapon.with"
-                            />
-                          </div>
-                        </template>
+                        <div v-if="weapon.icon" class="relative">
+                          <img
+                            :src="weapon.icon"
+                            :alt="weapon.label"
+                            class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 group-hover/row:scale-110 transition-transform duration-300"
+                            @error="handleImageError"
+                            :title="weapon.label"
+                          />
+                        </div>
                         <span v-else class="font-medium">{{
-                          weapon.with
+                          weapon.label
                         }}</span>
                       </td>
                       <td class="p-3 text-right">
@@ -1974,21 +2311,47 @@ const playerTeamChipShortClasses =
             <span :class="tacticalSectionTickClasses"></span>
             {{ $t("pages.players.detail.matches_section") }}
           </div>
-          <div class="flex items-center gap-1.5">
-            <button
-              v-for="opt in matchSourceOptions"
-              :key="opt.value"
-              type="button"
-              class="rounded border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
-              :class="
-                matchSourceFilter === opt.value
-                  ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
-                  : 'border-border/60 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
-              "
-              @click="matchSourceFilter = opt.value"
+          <div class="flex flex-wrap items-center gap-x-2 gap-y-1.5">
+            <div class="flex items-center gap-1.5">
+              <button
+                v-for="opt in matchSourceOptions"
+                :key="opt.value"
+                type="button"
+                class="rounded border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
+                :class="
+                  matchesSourceFilter === opt.value
+                    ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
+                    : 'border-border/60 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
+                "
+                @click="matchesSourceFilter = opt.value"
+              >
+                {{ opt.label }}
+              </button>
+            </div>
+            <span
+              v-if="matchesModeOptions.length"
+              class="hidden h-4 w-px bg-border/60 sm:block"
+              aria-hidden="true"
+            ></span>
+            <div
+              v-if="matchesModeOptions.length"
+              class="flex flex-wrap items-center gap-1.5"
             >
-              {{ opt.label }}
-            </button>
+              <button
+                v-for="opt in matchesModeOptions"
+                :key="opt.value"
+                type="button"
+                class="rounded border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
+                :class="
+                  matchesModeFilter === opt.value
+                    ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
+                    : 'border-border/60 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
+                "
+                @click="matchesModeFilter = opt.value"
+              >
+                {{ opt.label }}
+              </button>
+            </div>
           </div>
         </div>
         <Empty v-if="playerMatchesTotal === 0" class="min-h-[200px]">
@@ -2036,6 +2399,7 @@ const playerTeamChipShortClasses =
     :default-mode="selectedModeRef"
     :default-range="eloRange === 'custom' ? '1y' : eloRange"
     :exclude-tournaments="excludeTournaments"
+    :source="sourceRef"
     @update:open="(o) => (eloDialogOpen = o)"
   />
 
@@ -2116,7 +2480,7 @@ const playerTeamChipShortClasses =
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { e_match_types_enum, e_team_roles_enum } from "~/generated/zeus";
+import { e_team_roles_enum } from "~/generated/zeus";
 import { playerFields } from "~/graphql/playerFields";
 import { matchOptionsFields } from "~/graphql/matchOptionsFields";
 import { trophyFields } from "~/graphql/trophyFields";
@@ -2163,100 +2527,6 @@ export default {
                 deaths: true,
                 assists: true,
                 headshot_percentage: true,
-              },
-              kills_by_weapons: [
-                {
-                  order_by: [
-                    {},
-                    {
-                      kill_count: order_by.desc,
-                    },
-                  ],
-                  limit: 5,
-                },
-                {
-                  with: true,
-                  kill_count: true,
-                },
-              ],
-              premier_rank_history: [
-                {
-                  // Table now holds all rank types — keep this relationship
-                  // Premier-only so the Premier chart stays clean.
-                  where: { rank_type: { _eq: 11 } },
-                  limit: 50,
-                  order_by: [{}, { observed_at: order_by.desc }],
-                },
-                {
-                  rank: true,
-                  match_id: true,
-                  observed_at: true,
-                },
-              ],
-              __alias: {
-                competitive_elo_history: {
-                  elo_history: [
-                    {
-                      limit: 10,
-                      // Note: no `match: { winning_lineup_id: ... }` filter —
-                      // player_elo rows are only generated for matches with a
-                      // winning lineup (see generate_player_elo_for_match), so
-                      // the filter is redundant and crossing the `match`
-                      // relationship would cascade the matches permission
-                      // filter into the subquery for no benefit.
-                      where: {
-                        type: {
-                          _eq: e_match_types_enum.Competitive,
-                        },
-                      },
-                      order_by: [
-                        {},
-                        {
-                          match_created_at: order_by.desc,
-                        },
-                      ],
-                    },
-                    eloFields,
-                  ],
-                },
-                wingman_elo_history: {
-                  elo_history: [
-                    {
-                      limit: 10,
-                      where: {
-                        type: {
-                          _eq: e_match_types_enum.Wingman,
-                        },
-                      },
-                      order_by: [
-                        {},
-                        {
-                          match_created_at: order_by.desc,
-                        },
-                      ],
-                    },
-                    eloFields,
-                  ],
-                },
-                duel_elo_history: {
-                  elo_history: [
-                    {
-                      limit: 10,
-                      where: {
-                        type: {
-                          _eq: e_match_types_enum.Duel,
-                        },
-                      },
-                      order_by: [
-                        {},
-                        {
-                          match_created_at: order_by.desc,
-                        },
-                      ],
-                    },
-                    eloFields,
-                  ],
-                },
               },
             },
           ],
@@ -2400,133 +2670,6 @@ export default {
     pageContentReady(): boolean {
       if (this.pageContentTimedOut) return true;
       return this.playerTrophies !== undefined && this.highlightsResolved;
-    },
-    selectedMode() {
-      const raw = this.$route.query.mode;
-      const value = Array.isArray(raw) ? raw[0] : raw;
-      if (value === "Competitive" || value === "Wingman" || value === "Duel") {
-        return value;
-      }
-      return "all";
-    },
-    selectedWins() {
-      if (!this.player) return 0;
-      switch (this.selectedMode) {
-        case "Competitive":
-          return this.player.wins_competitive || 0;
-        case "Wingman":
-          return this.player.wins_wingman || 0;
-        case "Duel":
-          return this.player.wins_duel || 0;
-        default:
-          return this.player.wins || 0;
-      }
-    },
-    selectedLosses() {
-      if (!this.player) return 0;
-      switch (this.selectedMode) {
-        case "Competitive":
-          return this.player.losses_competitive || 0;
-        case "Wingman":
-          return this.player.losses_wingman || 0;
-        case "Duel":
-          return this.player.losses_duel || 0;
-        default:
-          return this.player.losses || 0;
-      }
-    },
-    eloChartSeries() {
-      if (!this.player) return [];
-
-      if (this.selectedMode === "Premier") {
-        const raw = (this.player.premier_rank_history || []) as Array<{
-          rank: number;
-          match_id: string | null;
-          observed_at: string;
-        }>;
-        // Chart expects ascending chronological + an elo_change delta;
-        // the subscription returns desc, so reverse and walk.
-        const sorted = [...raw].reverse();
-        let prev: number | null = null;
-        const history = sorted.map((entry) => {
-          const change = prev === null ? 0 : entry.rank - prev;
-          prev = entry.rank;
-          return {
-            current_elo: entry.rank,
-            updated_elo: entry.rank,
-            elo_change: change,
-            match_id: entry.match_id,
-            match_created_at: entry.observed_at,
-            type: "Premier",
-          };
-        });
-        return [
-          {
-            key: "Premier",
-            label: "Premier (CS Rating)",
-            history,
-            focus: true,
-          },
-        ];
-      }
-
-      const comp = this.player.competitive_elo_history || [];
-      const wing = this.player.wingman_elo_history || [];
-      const duel = this.player.duel_elo_history || [];
-
-      const compSeries = {
-        key: "Competitive",
-        label: this.$t("pages.leaderboard.match_types.competitive"),
-        history: comp,
-      };
-      const wingSeries = {
-        key: "Wingman",
-        label: this.$t("pages.leaderboard.match_types.wingman"),
-        history: wing,
-      };
-      const duelSeries = {
-        key: "Duel",
-        label: this.$t("pages.leaderboard.match_types.duel"),
-        history: duel,
-      };
-
-      switch (this.selectedMode) {
-        case "Competitive":
-          return [{ ...compSeries, focus: true }];
-        case "Wingman":
-          return [{ ...wingSeries, focus: true }];
-        case "Duel":
-          return [{ ...duelSeries, focus: true }];
-        default:
-          return [
-            { ...compSeries, focus: true },
-            { ...wingSeries, focus: false },
-            { ...duelSeries, focus: false },
-          ].filter((s) => s.history.length > 0);
-      }
-    },
-    hasEloChartData() {
-      return this.eloChartSeries.some((s) => s.history.length > 0);
-    },
-    winPercentage() {
-      const total = this.selectedWins + this.selectedLosses;
-      if (!this.player) {
-        return 0;
-      }
-      return total > 0 ? (this.selectedWins / total) * 100 : 0;
-    },
-
-    kdPercentage() {
-      if (
-        !this.player?.stats ||
-        !this.player.stats.kills ||
-        !this.player.stats.deaths
-      ) {
-        return 0;
-      }
-
-      const kdRatio = this.player.stats.kills / this.player.stats.deaths;
-      return Math.min((kdRatio / 2) * 100, 100);
     },
     playerId() {
       return this.$route.params.id || this.me?.steam_id || null;
@@ -2701,13 +2844,6 @@ export default {
       } finally {
         this.addFriendPending = false;
       }
-    },
-    getWeaponImageName(weaponName) {
-      if (!weaponName || weaponName === "unknown") return "";
-
-      const overrideMappings = {};
-
-      return overrideMappings[weaponName] || weaponName;
     },
     handleImageError(event) {
       const img = event.target;

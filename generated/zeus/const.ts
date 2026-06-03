@@ -8058,6 +8058,9 @@ export const AllTypesProps: Record<string,any> = {
 		refreshFaceitRank:{
 
 		},
+		refreshLiveHud:{
+			match_id:"uuid"
+		},
 		registerName:{
 
 		},
@@ -27213,6 +27216,7 @@ export const ReturnTypes: Record<string,any> = {
 		reconnectLive:"SuccessOutput",
 		refreshAllPlayers:"SuccessOutput",
 		refreshFaceitRank:"SuccessOutput",
+		refreshLiveHud:"SuccessOutput",
 		registerName:"SuccessOutput",
 		removeFixtures:"SuccessOutput",
 		renameServerItem:"SuccessOutput",

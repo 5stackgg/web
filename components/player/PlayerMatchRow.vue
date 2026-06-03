@@ -24,38 +24,6 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
 // OPEN · DATE · TYPE · RESULT · MAP · CLIP · RATING · K/D/A · K/D · ADR · Δ · VIEW
 const wideGrid =
   "grid grid-cols-[2.5rem_5rem_6.75rem_6.75rem_minmax(4.5rem,1fr)_3rem_4rem_4.5rem_2.75rem_3.25rem_6rem_2.5rem] items-center gap-x-2";
-
-// Smooth height+fade for the quick-overview panel. JS hooks (css=false) so
-// we can animate to the panel's natural height without hard-coding it.
-function expandEnter(el: Element, done: () => void) {
-  const e = el as HTMLElement;
-  e.style.overflow = "hidden";
-  e.style.height = "0";
-  e.style.opacity = "0";
-  void e.offsetHeight;
-  e.style.transition = "height 280ms ease, opacity 220ms ease";
-  e.style.height = `${e.scrollHeight}px`;
-  e.style.opacity = "1";
-  setTimeout(done, 290);
-}
-function expandAfterEnter(el: Element) {
-  const e = el as HTMLElement;
-  e.style.height = "";
-  e.style.overflow = "";
-  e.style.opacity = "";
-  e.style.transition = "";
-}
-function expandLeave(el: Element, done: () => void) {
-  const e = el as HTMLElement;
-  e.style.overflow = "hidden";
-  e.style.height = `${e.scrollHeight}px`;
-  e.style.opacity = "1";
-  void e.offsetHeight;
-  e.style.transition = "height 230ms ease, opacity 180ms ease";
-  e.style.height = "0";
-  e.style.opacity = "0";
-  setTimeout(done, 240);
-}
 </script>
 
 <template>
@@ -479,40 +447,50 @@ function expandLeave(el: Element, done: () => void) {
     </div>
 
     <!-- ===================== EXPANDED DETAIL ===================== -->
+    <!-- grid-template-rows 0fr↔1fr expand/collapse: 1fr always resolves to
+         the panel's *current* natural height, so when the loading skeleton
+         swaps for the full table mid-animation the height re-targets smoothly
+         (no jump) and only the clip box animates — far less layout thrash than
+         animating raw height. The inner overflow-hidden lets the 0fr row
+         collapse to zero (grid items otherwise keep min-height:auto). -->
     <Transition
-      :css="false"
-      @enter="expandEnter"
-      @after-enter="expandAfterEnter"
-      @leave="expandLeave"
+      enter-active-class="grid transition-all duration-300 ease-out"
+      enter-from-class="grid-rows-[0fr] opacity-0"
+      enter-to-class="grid-rows-[1fr] opacity-100"
+      leave-active-class="grid transition-all duration-200 ease-in"
+      leave-from-class="grid-rows-[1fr] opacity-100"
+      leave-to-class="grid-rows-[0fr] opacity-0"
     >
-      <div
-        v-if="expanded && isFinished"
-        class="border-t border-border bg-card/40 px-3 py-3 space-y-3"
-        :class="compact ? '' : 'sm:px-4'"
-        @click.stop
-      >
-        <MatchPlayerDetailsPanel
-          :match="panelMatch"
-          :focus-lineup="focusPlayerLineupDetailed"
-          :loading="detailsStatsLoading"
-          :active-tab="detailsTab"
-          :selected-map-id="selectedMapId"
-          @update:active-tab="(v) => (detailsTab = v)"
-          @update:selected-map-id="(v) => (selectedMapId = v)"
-        />
-
-        <!-- View details — opens the picks/deciders + team stat-table drawer
-           (same overview MatchTableRow uses). The inline panel above is the
-           player-focused readout; this is the full match breakdown. -->
-        <div class="flex">
-          <button
-            type="button"
-            class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-border bg-muted/40 px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-background hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
-            @click.stop="drawerOpen = true"
+      <div v-if="expanded && isFinished" class="grid" @click.stop>
+        <div class="overflow-hidden">
+          <div
+            class="border-t border-border bg-card/40 px-3 py-3 space-y-3"
+            :class="compact ? '' : 'sm:px-4'"
           >
-            <ListChecks class="h-3.5 w-3.5" />
-            <span>{{ $t("match.match_overview") }}</span>
-          </button>
+            <MatchPlayerDetailsPanel
+              :match="panelMatch"
+              :focus-lineup="focusPlayerLineupDetailed"
+              :loading="detailsStatsLoading"
+              :active-tab="detailsTab"
+              :selected-map-id="selectedMapId"
+              @update:active-tab="(v) => (detailsTab = v)"
+              @update:selected-map-id="(v) => (selectedMapId = v)"
+            />
+
+            <!-- View details — opens the picks/deciders + team stat-table drawer
+               (same overview MatchTableRow uses). The inline panel above is the
+               player-focused readout; this is the full match breakdown. -->
+            <div class="flex">
+              <button
+                type="button"
+                class="inline-flex flex-1 items-center justify-center gap-1.5 rounded-md border border-border bg-muted/40 px-3 py-1.5 text-xs font-medium text-foreground/80 transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:bg-background hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber)/0.6)]"
+                @click.stop="drawerOpen = true"
+              >
+                <ListChecks class="h-3.5 w-3.5" />
+                <span>{{ $t("match.match_overview") }}</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </Transition>
@@ -553,6 +531,8 @@ export default {
       drawerOpen: false,
       detailsStats: null as any | null,
       detailsStatsLoading: false,
+      collapsedStats: null as any | null,
+      collapsedStatsLoading: false,
       detailsTab: "overview",
       selectedMapId: null as string | null,
       playerClips: [] as any[],
@@ -560,13 +540,14 @@ export default {
     };
   },
   mounted() {
-    // Eager-load the player's match stats + clips for finished matches so
-    // the collapsed row can show real K/D/A · K/D · ADR · rating and a
-    // highlight thumbnail without waiting for an expand. Mirrors the
-    // behaviour the shared MatchTableRow used on this page previously.
+    // Eager-load only the focus player's *aggregate* stats + clips so the
+    // collapsed row can show real K/D/A · K/D · ADR · rating and a highlight
+    // thumbnail. The heavy round-level + per-map + all-players query is
+    // deferred to first expand (getDetailedStats) — eager-loading it for
+    // every row saturated the main thread and made the page feel laggy.
     if (this.isFinished && this.playerSteamId) {
-      if (!this.detailsStats && !this.detailsStatsLoading) {
-        this.getDetailedStats().catch(() => {});
+      if (!this.collapsedStats && !this.collapsedStatsLoading) {
+        this.getCollapsedStats().catch(() => {});
       }
       if (this.playerClips.length === 0 && !this.playerClipsLoading) {
         this.getPlayerClips().catch(() => {});
@@ -750,9 +731,13 @@ export default {
     // even for matches that never produced an elo_changes row (unranked).
     focusStatRow(): any | null {
       const sid = this.playerSteamId;
-      if (!sid || !this.detailsStats) return null;
+      // Prefer the heavy detailed fetch (once expanded) but fall back to the
+      // lightweight aggregate fetched on mount so the collapsed row's numbers
+      // are exact even for matches with no elo_changes row (unranked).
+      const source = this.detailsStats ?? this.collapsedStats;
+      if (!sid || !source) return null;
       for (const key of ["lineup_1", "lineup_2"]) {
-        const lineup = (this.detailsStats as any)?.[key];
+        const lineup = (source as any)?.[key];
         const lp = (lineup?.lineup_players || []).find(
           (lp: any) => String(lp.player?.steam_id ?? lp.steam_id ?? "") === sid,
         );
@@ -969,6 +954,57 @@ export default {
         if (this.playerClips.length === 0 && !this.playerClipsLoading) {
           this.getPlayerClips().catch(() => {});
         }
+      }
+    },
+    // Lightweight collapsed-row fetch: just the focus player's aggregate
+    // match_stats (no other players, no per-map rows, no round-level events).
+    // Finished matches are immutable, so cache-first avoids refetching on
+    // pagination / remount.
+    async getCollapsedStats() {
+      const sid = this.playerSteamId;
+      if (!sid || !this.match?.id) return;
+      this.collapsedStatsLoading = true;
+      try {
+        const focusLineupLite = {
+          lineup_players: [
+            { where: { steam_id: { _eq: $("playerId", "bigint!") } } },
+            {
+              steam_id: true,
+              player: {
+                steam_id: true,
+                match_stats: [
+                  {
+                    where: { match_id: { _eq: $("matchId", "uuid!") } },
+                    limit: 1,
+                  },
+                  {
+                    kills: true,
+                    deaths: true,
+                    assists: true,
+                    damage: true,
+                    rounds_played: true,
+                  },
+                ],
+              },
+            },
+          ],
+        };
+        const { data } = await this.$apollo.query({
+          fetchPolicy: "cache-first",
+          variables: { matchId: this.match.id, playerId: sid },
+          query: generateQuery({
+            matches_by_pk: [
+              { id: this.match.id },
+              {
+                lineup_1: [{}, focusLineupLite],
+                lineup_2: [{}, focusLineupLite],
+              },
+            ],
+          } as any),
+        });
+        this.collapsedStats = (data as any)?.matches_by_pk ?? null;
+      } finally {
+        this.collapsedStatsLoading = false;
       }
     },
     async getDetailedStats() {

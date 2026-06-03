@@ -49,7 +49,11 @@ import MatchTableRow from "~/components/MatchTableRow.vue";
 import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
 import { useStreamerPopout } from "~/composables/useStreamerPopout";
 
-const { status: gpuPoolStatus, hasFreeGpu, busyReason } = useGpuAvailability();
+const {
+  status: gpuPoolStatus,
+  hasFreeGpu,
+  busyReason,
+} = useGpuAvailability("streaming");
 const gpuTotal = computed(() => gpuPoolStatus.value?.total_gpu_nodes ?? 0);
 const gpuFree = computed(() => gpuPoolStatus.value?.free_gpu_nodes ?? 0);
 const gpuPoolReady = computed(() => gpuPoolStatus.value !== null);

@@ -12,6 +12,18 @@ type PoolStatus = {
   live_in_progress: boolean;
   demo_in_progress: boolean;
   highlights_in_progress: boolean;
+  streaming_total_gpu_nodes: number;
+  streaming_free_gpu_nodes: number;
+  demo_total_gpu_nodes: number;
+  demo_free_gpu_nodes: number;
+  rendering_total_gpu_nodes: number;
+};
+
+export type GpuWorkload = "streaming" | "demo" | "rendering";
+
+export type GpuAvailability = {
+  hasFree: boolean;
+  busyReasonKey: string | null;
 };
 
 export const useGpuPoolStatusStore = defineStore("gpu-pool-status", () => {
@@ -55,6 +67,48 @@ export const useGpuPoolStatusStore = defineStore("gpu-pool-status", () => {
     return "stream_status.gpu_busy";
   });
 
+  // Per-workload availability. Each GPU workload (live streaming / demo
+  // playback / rendering) has its own toggle, so the watch-demo button must
+  // not be gated by the streaming toggle and vice versa. `rendering` uses the
+  // batch free count, which already accounts for renders paused by an active
+  // match.
+  function getAvailability(workload: GpuWorkload): GpuAvailability {
+    const s = status.value;
+    if (!s) return { hasFree: true, busyReasonKey: null };
+
+    const total =
+      workload === "streaming"
+        ? s.streaming_total_gpu_nodes
+        : workload === "demo"
+          ? s.demo_total_gpu_nodes
+          : s.rendering_total_gpu_nodes;
+    const free =
+      workload === "streaming"
+        ? s.streaming_free_gpu_nodes
+        : workload === "demo"
+          ? s.demo_free_gpu_nodes
+          : s.free_gpu_nodes_for_batch;
+
+    if (total <= 0) {
+      // A GPU exists but this workload is turned off everywhere vs. no GPU
+      // registered at all — distinct messages so the user knows which knob.
+      const busyReasonKey =
+        s.registered_gpu_nodes > 0
+          ? `gpu_pool_status.${workload}_disabled`
+          : "gpu_pool_status.no_nodes";
+      return { hasFree: false, busyReasonKey };
+    }
+    if (free > 0) return { hasFree: true, busyReasonKey: null };
+
+    let busyReasonKey: string;
+    if (s.live_in_progress) busyReasonKey = "gpu_pool_status.live_busy";
+    else if (s.demo_in_progress) busyReasonKey = "gpu_pool_status.demo_busy";
+    else if (s.highlights_in_progress)
+      busyReasonKey = "gpu_pool_status.highlights_busy";
+    else busyReasonKey = "stream_status.gpu_busy";
+    return { hasFree: false, busyReasonKey };
+  }
+
   function subscribeToPool() {
     if (subscriptionStarted) return;
     subscriptionStarted = true;
@@ -72,6 +126,11 @@ export const useGpuPoolStatusStore = defineStore("gpu-pool-status", () => {
             live_in_progress: true,
             demo_in_progress: true,
             highlights_in_progress: true,
+            streaming_total_gpu_nodes: true,
+            streaming_free_gpu_nodes: true,
+            demo_total_gpu_nodes: true,
+            demo_free_gpu_nodes: true,
+            rendering_total_gpu_nodes: true,
           },
         ],
       } as any),
@@ -93,6 +152,17 @@ export const useGpuPoolStatusStore = defineStore("gpu-pool-status", () => {
               live_in_progress: !!row.live_in_progress,
               demo_in_progress: !!row.demo_in_progress,
               highlights_in_progress: !!row.highlights_in_progress,
+              streaming_total_gpu_nodes: Number(
+                row.streaming_total_gpu_nodes ?? 0,
+              ),
+              streaming_free_gpu_nodes: Number(
+                row.streaming_free_gpu_nodes ?? 0,
+              ),
+              demo_total_gpu_nodes: Number(row.demo_total_gpu_nodes ?? 0),
+              demo_free_gpu_nodes: Number(row.demo_free_gpu_nodes ?? 0),
+              rendering_total_gpu_nodes: Number(
+                row.rendering_total_gpu_nodes ?? 0,
+              ),
             }
           : null;
         hasLoaded.value = true;
@@ -118,6 +188,7 @@ export const useGpuPoolStatusStore = defineStore("gpu-pool-status", () => {
     hasFreeGpu,
     hasRegisteredGpu,
     busyReasonKey,
+    getAvailability,
     subscribeToPool,
     unsubscribe,
   };

@@ -183,7 +183,10 @@
     "no_nodes": "No GPU nodes are currently available",
     "live_busy": "GPU busy: a live stream is in progress",
     "demo_busy": "GPU busy: a demo is being watched",
-    "highlights_busy": "GPU busy: highlights are rendering"
+    "highlights_busy": "GPU busy: highlights are rendering",
+    "streaming_disabled": "Live streaming is disabled on all GPU nodes",
+    "demo_disabled": "Demo playback is disabled on all GPU nodes",
+    "rendering_disabled": "Rendering is disabled on all GPU nodes"
   },
   "clip_editor_dest": {
     "library": "Library",

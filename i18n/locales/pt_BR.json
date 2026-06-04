@@ -2969,7 +2969,11 @@
       "overlay_c4": "Portador da C4",
       "overlay_defuser": "Kits de desarme",
       "overlay_ground_bomb": "Bomba dropada / plantada",
-      "overlay_ground_kits": "Kits dropados"
+      "overlay_ground_kits": "Kits dropados",
+      "pathing": "Rotas",
+      "pathing_off": "Rotas desativadas",
+      "pathing_progress": "Rotas ate o tick atual",
+      "pathing_round": "Rotas da rodada completa"
     },
     "player_details_panel": {
       "stats_unavailable": "Estatísticas indisponíveis para esta partida.",

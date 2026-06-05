@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, onBeforeUnmount, ref, watch, watchEffect } from "vue";
 import { ArrowRight } from "lucide-vue-next";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateSubscription } from "~/graphql/graphqlGen";
@@ -7,6 +7,7 @@ import { matchClipFields } from "~/graphql/matchClip";
 import HighlightCard from "~/components/clips/HighlightCard.vue";
 import HorizontalScrollRow from "~/components/common/HorizontalScrollRow.vue";
 import ScrollArrows from "~/components/common/ScrollArrows.vue";
+import { useClipModal, type ClipQueueItem } from "~/composables/useClipModal";
 import type { Clip } from "~/types/clip";
 import {
   tacticalSectionLabelClasses,
@@ -92,7 +93,33 @@ watch(
   },
   { immediate: true },
 );
-onBeforeUnmount(() => activeSub?.unsubscribe());
+// Feed the modal's playlist so opening one of this player's highlights lets
+// you page through the rest (next/prev, auto-advance, queue list). Scoped to
+// the player so we only clear our own queue on unmount.
+const { setClipQueue, clearClipQueue } = useClipModal();
+const clipQueueScope = computed(
+  () => `player-highlights:${String(props.steamId)}`,
+);
+function clipQueueItem(c: Clip): ClipQueueItem {
+  return {
+    id: c.id,
+    title: c.title,
+    playerName: c.target?.name ?? null,
+    teamName: null,
+    durationMs: c.duration_ms,
+    thumbnailUrl: c.thumbnail_download_url,
+    posterUrl: c.match_map?.map?.poster ?? null,
+  };
+}
+watchEffect(() => {
+  if (clips.value.length === 0) return;
+  setClipQueue(clips.value.map(clipQueueItem), clipQueueScope.value);
+});
+
+onBeforeUnmount(() => {
+  activeSub?.unsubscribe();
+  clearClipQueue(clipQueueScope.value);
+});
 
 function loadMore() {
   if (reachedEnd.value || inFlight.value) return;

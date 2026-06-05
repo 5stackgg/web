@@ -281,5 +281,6 @@ function stageElapsed(stageKey: string): string {
         skipped
       </span>
     </li>
-  </ul>
+    </ul>
+  </div>
 </template>

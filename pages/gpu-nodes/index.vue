@@ -663,23 +663,25 @@ async function stopGpuSession(nodeId: string) {
           </div>
         </div>
 
-        <RenderPodBootStages
-          v-if="busyByNode[node.id]?.statusHistory"
-          :histories="[busyByNode[node.id].statusHistory]"
-          class="gpu-pod-boot"
-        />
-
-        <div v-if="busyByNode[node.id]" class="gpu-bake-preview">
-          <DesktopSnapshot
-            :kind="busyByNode[node.id].snapshotKind"
-            :id="busyByNode[node.id].snapshotId"
-            :force-empty="busyByNode[node.id].rendering"
-            :empty-label="
-              busyByNode[node.id].kind === 'highlights'
-                ? $t('match.stream.rendering_highlights')
-                : ''
-            "
+        <div v-if="busyByNode[node.id]" class="gpu-pod-activity">
+          <RenderPodBootStages
+            v-if="busyByNode[node.id].statusHistory"
+            :histories="[busyByNode[node.id].statusHistory]"
+            class="gpu-pod-boot"
           />
+
+          <div class="gpu-bake-preview gpu-pod-preview">
+            <DesktopSnapshot
+              :kind="busyByNode[node.id].snapshotKind"
+              :id="busyByNode[node.id].snapshotId"
+              :force-empty="busyByNode[node.id].rendering"
+              :empty-label="
+                busyByNode[node.id].kind === 'highlights'
+                  ? $t('match.stream.rendering_highlights')
+                  : ''
+              "
+            />
+          </div>
         </div>
 
         <!-- Shader bake pipeline (only while baking) -->
@@ -1464,12 +1466,28 @@ export default {
   text-overflow: ellipsis;
   max-width: 220px;
 }
+.gpu-pod-activity {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
 .gpu-pod-boot {
-  margin: 0.25rem 0 0.75rem;
+  flex: 1 1 18rem;
+  min-width: 0;
   padding: 0.75rem;
   border: 1px solid hsl(var(--border) / 0.5);
   border-radius: 0.5rem;
   background: hsl(var(--primary) / 0.03);
+}
+/* Snapshot sits on the right beside the boot checklist; the compound
+   selector outranks the later .gpu-bake-preview rule so its top margin
+   resets (the flex parent owns the spacing). */
+.gpu-pod-activity .gpu-pod-preview {
+  flex: 0 1 22rem;
+  min-width: 0;
+  margin-top: 0;
 }
 .gpu-node-task-state {
   display: inline-flex;

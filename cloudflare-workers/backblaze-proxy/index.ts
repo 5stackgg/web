@@ -54,7 +54,10 @@ function countClipPlay(
   if (!/^clips\/.+\.mp4$/.test(key)) {
     return;
   }
-  if (url.searchParams.get("dl") === "1" || url.searchParams.get("download") === "1") {
+  if (
+    url.searchParams.get("dl") === "1" ||
+    url.searchParams.get("download") === "1"
+  ) {
     return;
   }
   const range = request.headers.get("range");
@@ -107,6 +110,13 @@ export default {
       });
     }
 
+    const url = new URL(request.url);
+    const key = resolveKey(url);
+
+    if (key) {
+      countClipPlay(request, url, key, env, ctx);
+    }
+
     // Edge-cache short-circuit: serve repeat hits without re-running SigV4
     // or making a B2 subrequest. Range requests fall through so the existing
     // cf.cacheEverything path handles slicing from the cached full object.
@@ -124,8 +134,6 @@ export default {
       if (cached) return cached;
     }
 
-    const url = new URL(request.url);
-    const key = resolveKey(url);
     if (!key) {
       return new Response("No file provided", { status: 400 });
     }
@@ -142,8 +150,6 @@ export default {
         { status: 500 },
       );
     }
-
-    countClipPlay(request, url, key, env, ctx);
 
     const signedRequest = await new AwsClient({
       accessKeyId: env.S3_ACCESS_KEY,

@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { computed, watch } from "vue";
+import { computed, watch, ref, onUnmounted } from "vue";
+import { useApolloClient } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 import { useI18n } from "vue-i18n";
 import {
   Chart as ChartJS,
@@ -207,20 +209,46 @@ function aggregateStats(entry: any) {
   };
 }
 
-const hasRoundEvents = computed(() => {
-  const maps = props.match?.match_maps ?? [];
-  return maps.some(
-    (m: any) => Array.isArray(m.rounds) && m.rounds.some((r: any) => Array.isArray(r.kills)),
-  );
-});
-
-function filteredMatchMaps() {
-  const maps = props.match?.match_maps ?? [];
-  if (!props.selectedMapId) {
-    return maps;
+// Opening-duel records from the backend view (per match_map/player/side),
+// keyed by match for both radar players. Replaces client round-walking.
+const { client: apolloClient } = useApolloClient();
+const openingRows = ref<any[]>([]);
+const OPENING_SUB = gql`
+  subscription RadarOpeningDuels($matchId: uuid!) {
+    v_match_player_opening_duels(where: { match_id: { _eq: $matchId } }) {
+      match_map_id
+      steam_id
+      wins
+      deaths
+    }
   }
-  return maps.filter((m: any) => m.id === props.selectedMapId);
-}
+`;
+let openingSub: { unsubscribe: () => void } | null = null;
+watch(
+  () => props.match?.id,
+  (id) => {
+    openingSub?.unsubscribe();
+    openingSub = null;
+    openingRows.value = [];
+    if (!id) {
+      return;
+    }
+    openingSub = apolloClient
+      .subscribe({ query: OPENING_SUB, variables: { matchId: id } })
+      .subscribe({
+        next: ({ data }: any) => {
+          openingRows.value = data?.v_match_player_opening_duels ?? [];
+        },
+        error: () => {
+          openingRows.value = [];
+        },
+      });
+  },
+  { immediate: true },
+);
+onUnmounted(() => openingSub?.unsubscribe());
+
+const hasOpeningData = computed(() => openingRows.value.length > 0);
 
 // Rounds-weighted KAST from the canonical hltv view (player.match_map_hltv),
 // no round-walking.
@@ -237,27 +265,19 @@ function kastPctFor(steamId: string | null): number | null {
   return rounds > 0 ? weighted / rounds : null;
 }
 
-function openingFromRounds(steamId: string) {
+function openingFor(steamId: string) {
+  const sid = String(steamId);
   let success = 0;
   let deaths = 0;
-  for (const match_map of filteredMatchMaps()) {
-    const rounds = match_map?.rounds;
-    if (!Array.isArray(rounds)) {
+  for (const r of openingRows.value) {
+    if (String(r.steam_id) !== sid) {
       continue;
     }
-    for (const round of rounds) {
-      const firstKill = (round.kills || []).find(
-        (k: any) => k.player && k.player.steam_id !== k.attacked_player?.steam_id,
-      );
-      if (!firstKill) {
-        continue;
-      }
-      if (String(firstKill.player?.steam_id) === steamId) {
-        success++;
-      } else if (String(firstKill.attacked_player?.steam_id) === steamId) {
-        deaths++;
-      }
+    if (props.selectedMapId && r.match_map_id !== props.selectedMapId) {
+      continue;
     }
+    success += r.wins ?? 0;
+    deaths += r.deaths ?? 0;
   }
   return { success, deaths };
 }
@@ -287,8 +307,8 @@ function metricsFor(steamId: string | null) {
 
   let opening: number | null = null;
   let openingAttempts: number | null = null;
-  if (hasRoundEvents.value) {
-    const od = openingFromRounds(steamId!);
+  if (hasOpeningData.value) {
+    const od = openingFor(steamId!);
     openingAttempts = od.success + od.deaths;
     if (od.deaths > 0) {
       opening = od.success / od.deaths;

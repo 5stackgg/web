@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed, watch } from "vue";
+import { computed, watch, ref, onUnmounted } from "vue";
+import { useApolloClient } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
@@ -27,6 +29,45 @@ const selectedA = defineModel<string | null>("selectedA", { default: null });
 const selectedB = defineModel<string | null>("selectedB", { default: null });
 
 const apiDomain = useRuntimeConfig().public.apiDomain;
+
+// Kill-pair weapon data from the backend (v_match_kill_pairs) — replaces
+// scanning every round's kills for the per-matchup weapon breakdown.
+const { client: apolloClient } = useApolloClient();
+const killPairRows = ref<any[]>([]);
+const KILL_PAIRS_SUB = gql`
+  subscription H2HKillPairs($matchId: uuid!) {
+    v_match_kill_pairs(where: { match_id: { _eq: $matchId } }) {
+      killer_steam_id
+      victim_steam_id
+      weapon
+      kills
+    }
+  }
+`;
+let killPairsSub: { unsubscribe: () => void } | null = null;
+watch(
+  () => props.match?.id,
+  (id) => {
+    killPairsSub?.unsubscribe();
+    killPairsSub = null;
+    killPairRows.value = [];
+    if (!id) {
+      return;
+    }
+    killPairsSub = apolloClient
+      .subscribe({ query: KILL_PAIRS_SUB, variables: { matchId: id } })
+      .subscribe({
+        next: ({ data }: any) => {
+          killPairRows.value = data?.v_match_kill_pairs ?? [];
+        },
+        error: () => {
+          killPairRows.value = [];
+        },
+      });
+  },
+  { immediate: true },
+);
+onUnmounted(() => killPairsSub?.unsubscribe());
 
 const lineup1 = computed(() => props.match.lineup_1);
 const lineup2 = computed(() => props.match.lineup_2);
@@ -124,7 +165,7 @@ const bOnA = computed(() =>
     : undefined,
 );
 
-// Weapon breakdown — computed from round.kills (already in subscription)
+// Weapon breakdown — from the backend kill-pairs view (v_match_kill_pairs)
 type WeaponBucket =
   | "rifles"
   | "pistols"
@@ -180,16 +221,12 @@ function weaponBreakdownBetween(attacker: string, victim: string) {
     shotgun: 0,
     other: 0,
   };
-  for (const map of props.match.match_maps ?? []) {
-    for (const round of map.rounds ?? []) {
-      for (const k of round.kills ?? []) {
-        if (
-          String(k.player?.steam_id) === String(attacker) &&
-          String(k.attacked_player?.steam_id) === String(victim)
-        ) {
-          counts[bucketOf(k.with)]++;
-        }
-      }
+  for (const r of killPairRows.value) {
+    if (
+      String(r.killer_steam_id) === String(attacker) &&
+      String(r.victim_steam_id) === String(victim)
+    ) {
+      counts[bucketOf(r.weapon)] += r.kills ?? 0;
     }
   }
   return counts;

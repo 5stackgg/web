@@ -26,54 +26,23 @@ function statFor(member: any) {
   return Array.isArray(arr) && arr.length > 0 ? arr[0] : null;
 }
 
-// Per-row KAST/Survived/HLTV computation duplicates LineupOverviewRow's
-// logic (since the row component computes them lazily and isn't easy to
-// query from the parent for sorting). Match is read off the v-for scope
-// via a closure passed into sortGetters at template time.
-function kastFor(match: any, member: any): { kast: number; survived: number } {
-  let total = 0;
-  let participated = 0;
-  let survived = 0;
-  const steamId = String(member?.steam_id);
-  const maps = match?.match_maps ?? [];
-  for (const map of maps) {
-    const rounds = map?.rounds;
-    if (!Array.isArray(rounds)) continue;
-    for (const round of rounds) {
-      if (round.round === 0) continue;
-      total++;
-      const kills = round.kills || [];
-      const assists = round.assists || [];
-      const myDeath = kills.find(
-        (k: any) => String(k.attacked_player?.steam_id) === steamId,
-      );
-      const gotKill = kills.some(
-        (k: any) =>
-          String(k.player?.steam_id) === steamId &&
-          String(k.attacked_player?.steam_id) !== steamId,
-      );
-      const gotAssist = assists.some(
-        (a: any) => String(a.attacker_steam_id) === steamId,
-      );
-      const didSurvive = !myDeath;
-      if (didSurvive) survived++;
-      let traded = false;
-      if (myDeath) {
-        const killerId = String(myDeath.player?.steam_id || "");
-        if (killerId) {
-          const idx = kills.indexOf(myDeath);
-          traded = kills.some(
-            (k: any, i: number) =>
-              i > idx &&
-              String(k.attacked_player?.steam_id) === killerId &&
-              String(k.player?.steam_id) !== steamId,
-          );
-        }
-      }
-      if (gotKill || gotAssist || didSurvive || traded) participated++;
-    }
+// Per-row KAST/Survived for sorting, mirroring LineupOverviewRow: KAST is the
+// rounds-weighted kast_pct from the player.match_map_hltv view (returned as a
+// 0-1 fraction); survived = rounds_played - deaths. No round-walking.
+function kastFor(_match: any, member: any): { kast: number; survived: number } {
+  const rows = member?.player?.match_map_hltv ?? [];
+  let weighted = 0;
+  let hltvRounds = 0;
+  for (const r of rows) {
+    const rp = r.rounds_played ?? 0;
+    weighted += (r.kast_pct ?? 0) * rp;
+    hltvRounds += rp;
   }
-  return { kast: total ? participated / total : 0, survived };
+  const kast = hltvRounds > 0 ? weighted / hltvRounds / 100 : 0;
+  const s = statFor(member);
+  const rp = s?.rounds_played ?? 0;
+  const survived = rp > 0 ? Math.max(0, rp - (s?.deaths ?? 0)) : 0;
+  return { kast, survived };
 }
 
 function totalRoundsFor(match: any): number {

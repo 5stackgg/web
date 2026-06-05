@@ -28,9 +28,6 @@ import {
   Crosshair,
   Settings2,
   Keyboard,
-  ZoomIn,
-  ZoomOut,
-  Maximize,
   PanelRightClose,
   PanelRightOpen,
 } from "lucide-vue-next";
@@ -1395,7 +1392,6 @@ onUnmounted(() => window.removeEventListener("keydown", onKeyDown));
 // the focus rather than stacking.
 const focusedPlayerId = ref<string | null>(null);
 function toggleFocus(sid: string) {
-  if (suppressFocusClick) return;
   focusedPlayerId.value = focusedPlayerId.value === sid ? null : sid;
 }
 
@@ -1458,11 +1454,9 @@ const layoutRootEl = ref<HTMLElement | null>(null);
 // ResizeObserver triggers when the overlay's wrap state changes.
 const playbarRowEl = ref<HTMLElement | null>(null);
 const playbarDockEl = ref<HTMLElement | null>(null);
-// Map square side = the FULL usable width (the radar fills the width and is
-// vertically centered/cropped so zooming feels native). `stageHeightPx` is
-// the visible viewport height the map is clipped to.
+// Map square side, fit to the smaller of available width/height so the
+// whole map stays within the window bounds (no cropping).
 const radarMaxPx = ref(560);
-const stageHeightPx = ref(560);
 
 // Floating scoreboard: shown by default, toggleable. When visible it
 // reserves horizontal room on the right so the map shrinks instead of
@@ -1509,127 +1503,18 @@ function recomputeRadarSize() {
   const dockH = playbarDockEl.value?.offsetHeight ?? 0;
   const availableH =
     window.innerHeight - rootRect.top - SAFETY - bottomChrome - dockH;
-  // The map fills the FULL usable width (minus the scoreboard reserve when
-  // shown). It's a square, so it's vertically centered and clipped to the
-  // visible height — pan/zoom reveals the rest. The transport bar is docked
-  // below, so its height is excluded from the visible stage.
+  // Fit the whole (square) map inside the window: bounded by BOTH the
+  // available width (minus the scoreboard reserve) and height, so nothing
+  // is cropped. The docked transport bar's height is already excluded from
+  // availableH. Centers in the remaining left region.
   const availableW = rootRect.width - scoreboardReserve.value;
-  radarMaxPx.value = Math.floor(Math.max(280, availableW));
-  stageHeightPx.value = Math.floor(Math.max(200, availableH));
-  clampPan();
+  radarMaxPx.value = Math.floor(Math.max(280, Math.min(availableH, availableW)));
 }
 
 // Re-fit the map when the scoreboard is toggled so it grows/shrinks to
 // match the freed/reserved width.
 watch(showScoreboard, () => recomputeRadarSize());
 
-// --- Map zoom + pan ---------------------------------------------------
-// CSS transform applied identically to the radar image + svg overlay so
-// they scale together. Pan is in container px; clamped so you can't drag
-// the content off the viewport.
-const zoom = ref(1);
-const panX = ref(0);
-const panY = ref(0);
-const ZOOM_MIN = 1;
-const ZOOM_MAX = 6;
-const panDragging = ref(false);
-// Set true for one tick after a real drag so the trailing click doesn't
-// toggle player focus.
-let suppressFocusClick = false;
-
-// The radar/svg are square (side = radarMaxPx = full width) positioned at
-// the top of the viewport; centerY shifts them to vertical-centre within
-// the (shorter) visible height, then pan + zoom apply. transform-origin is
-// the element's own centre, so the cursor-anchored zoom maths below holds.
-const zoomTransform = computed(() => {
-  const centerY = (stageHeightPx.value - radarMaxPx.value) / 2;
-  return `translate(${panX.value}px, ${centerY + panY.value}px) scale(${zoom.value})`;
-});
-
-// Pannable whenever the (scaled) square overflows the visible box on either
-// axis — true vertically even at 1× on wide viewports.
-const canPan = computed(
-  () => zoom.value > 1 || radarMaxPx.value > stageHeightPx.value,
-);
-
-function clampPan() {
-  const side = radarMaxPx.value * Math.max(zoom.value, 1);
-  const maxX = Math.max(0, (side - radarMaxPx.value) / 2);
-  const maxY = Math.max(0, (side - stageHeightPx.value) / 2);
-  panX.value = Math.min(maxX, Math.max(-maxX, panX.value));
-  panY.value = Math.min(maxY, Math.max(-maxY, panY.value));
-}
-
-// originX/originY are offsets (px) from the map centre to keep visually
-// stationary while zooming (cursor-anchored zoom).
-function setZoom(next: number, originX = 0, originY = 0) {
-  const z0 = zoom.value;
-  const z1 = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, next));
-  if (z1 === z0) return;
-  const r = z1 / z0;
-  panX.value = originX * (1 - r) + r * panX.value;
-  panY.value = originY * (1 - r) + r * panY.value;
-  zoom.value = z1;
-  if (z1 === ZOOM_MIN) {
-    panX.value = 0;
-    panY.value = 0;
-  }
-  clampPan();
-}
-
-function zoomIn() {
-  setZoom(zoom.value * 1.3);
-}
-function zoomOut() {
-  setZoom(zoom.value / 1.3);
-}
-function resetZoom() {
-  zoom.value = 1;
-  panX.value = 0;
-  panY.value = 0;
-}
-
-function onMapWheel(e: WheelEvent) {
-  e.preventDefault();
-  const el = e.currentTarget as HTMLElement;
-  const rect = el.getBoundingClientRect();
-  const ox = e.clientX - rect.left - rect.width / 2;
-  const oy = e.clientY - rect.top - rect.height / 2;
-  setZoom(zoom.value * (e.deltaY < 0 ? 1.15 : 1 / 1.15), ox, oy);
-}
-
-function onMapPointerDown(e: PointerEvent) {
-  if (!canPan.value) return;
-  const startX = e.clientX;
-  const startY = e.clientY;
-  const baseX = panX.value;
-  const baseY = panY.value;
-  let moved = false;
-  panDragging.value = true;
-  // Window-level listeners (not pointer capture) so dragging off the map
-  // still tracks AND a plain click still reaches the player dots.
-  const onMove = (ev: PointerEvent) => {
-    const dx = ev.clientX - startX;
-    const dy = ev.clientY - startY;
-    if (Math.abs(dx) + Math.abs(dy) > 3) moved = true;
-    panX.value = baseX + dx;
-    panY.value = baseY + dy;
-    clampPan();
-  };
-  const onUp = () => {
-    window.removeEventListener("pointermove", onMove);
-    window.removeEventListener("pointerup", onUp);
-    window.removeEventListener("pointercancel", onUp);
-    if (moved) {
-      suppressFocusClick = true;
-      setTimeout(() => (suppressFocusClick = false), 0);
-    }
-    panDragging.value = false;
-  };
-  window.addEventListener("pointermove", onMove);
-  window.addEventListener("pointerup", onUp);
-  window.addEventListener("pointercancel", onUp);
-}
 
 let radarRO: ResizeObserver | null = null;
 onMounted(() => {
@@ -2255,40 +2140,32 @@ function openReplayPopout() {
 </script>
 
 <template>
-  <div class="flex flex-col gap-3">
+  <div class="flex flex-col gap-3 flex-1 min-h-0">
     <div
       ref="layoutRootEl"
-      class="relative w-full overflow-hidden"
-      :style="{ height: stageHeightPx + 'px' }"
+      class="relative w-full flex-1 min-h-0 overflow-hidden"
     >
-      <!-- Map square, centered in the full-width stage. Rosters, kill
-           feed, and the transport bar all float at the stage edges /
-           bottom (Skybox-style) so the map is free to fill the height. -->
+      <!-- Map square, fit + centered in the stage. The scoreboard floats at
+           the right edge; the transport bar is docked below and pinned to
+           the bottom by this flex-1 stage. -->
       <div
-        class="absolute inset-y-0 -translate-x-1/2 z-0 overflow-hidden transition-[width,left] duration-300 ease-out"
-        :class="canPan ? (panDragging ? 'cursor-grabbing' : 'cursor-grab') : ''"
+        class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 z-0 overflow-hidden transition-[width,height,left] duration-300 ease-out"
         :style="{
           width: radarMaxPx + 'px',
+          height: radarMaxPx + 'px',
           left: `calc(50% - ${scoreboardReserve / 2}px)`,
         }"
-        @wheel="onMapWheel"
-        @pointerdown="onMapPointerDown"
       >
           <img
             v-if="radarSrc"
             :src="radarSrc"
-            class="absolute top-0 left-0 w-full aspect-square object-cover opacity-90"
-            :style="{ transform: zoomTransform, transformOrigin: 'center' }"
+            class="absolute inset-0 w-full h-full object-cover opacity-90"
             @error="radarFailed = true"
           />
 
           <!-- Top-right HUD cluster: marker-style toggle + pop-out. Both
-             sized 40×40 to read as broadcast-grade action buttons.
-             pointerdown.stop so tapping a control never starts a map pan. -->
-          <div
-            class="absolute top-2 right-2 z-20 flex items-center gap-1.5"
-            @pointerdown.stop
-          >
+             sized 40×40 to read as broadcast-grade action buttons. -->
+          <div class="absolute top-2 right-2 z-20 flex items-center gap-1.5">
             <Tooltip>
               <TooltipTrigger as-child>
                 <button
@@ -2457,58 +2334,9 @@ function openReplayPopout() {
             </div>
           </div>
 
-          <!-- Map zoom controls (lower-left, away from the scoreboard).
-               pointerdown.stop so tapping a button doesn't start a pan drag.
-               Scroll-to-zoom + drag-to-pan also work directly on the map. -->
-          <div
-            class="absolute bottom-2 left-2 z-20 flex flex-col gap-1.5"
-            @pointerdown.stop
-          >
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <button
-                  type="button"
-                  class="inline-flex items-center justify-center w-9 h-9 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm disabled:opacity-40 disabled:cursor-not-allowed"
-                  :disabled="zoom >= ZOOM_MAX"
-                  @click="zoomIn"
-                >
-                  <ZoomIn class="w-4 h-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>{{ $t("match.replay.zoom_in") }}</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <button
-                  type="button"
-                  class="inline-flex items-center justify-center w-9 h-9 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm disabled:opacity-40 disabled:cursor-not-allowed"
-                  :disabled="zoom <= ZOOM_MIN"
-                  @click="zoomOut"
-                >
-                  <ZoomOut class="w-4 h-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>{{ $t("match.replay.zoom_out") }}</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <button
-                  type="button"
-                  class="inline-flex items-center justify-center w-9 h-9 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm disabled:opacity-40 disabled:cursor-not-allowed"
-                  :disabled="zoom === 1 && panX === 0 && panY === 0"
-                  @click="resetZoom"
-                >
-                  <Maximize class="w-4 h-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>{{ $t("match.replay.zoom_reset") }}</TooltipContent>
-            </Tooltip>
-          </div>
-
           <svg
             :viewBox="`0 0 ${CANVAS} ${CANVAS}`"
-            class="absolute top-0 left-0 w-full aspect-square"
-            :style="{ transform: zoomTransform, transformOrigin: 'center' }"
+            class="absolute inset-0 w-full h-full"
             preserveAspectRatio="xMidYMid meet"
           >
             <defs>

@@ -39,9 +39,10 @@ const ringColor = computed(() =>
 );
 
 // Floor the opacity so even a bottom-of-scale value stays legible against the
-// background ring rather than vanishing entirely.
+// background ring rather than vanishing entirely. Capped well under full so a
+// great stat reads as a calm ring, not an in-your-face one.
 const ringOpacity = computed(() =>
-  hasScore.value ? 0.35 + 0.65 * t.value : 1,
+  hasScore.value ? 0.25 + 0.45 * t.value : 1,
 );
 
 const dashOffset = computed(

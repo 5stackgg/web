@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ref, watch, nextTick } from "vue";
+import { ref, computed, watch, nextTick } from "vue";
+import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 
 type RoundEntry = {
   round: number;
@@ -14,12 +15,14 @@ const props = withDefaults(
     allowAll?: boolean;
     allLabel?: string;
     halftimeIndex?: number | null;
+    nav?: boolean;
   }>(),
   {
     modelValue: null,
     allowAll: false,
     allLabel: "ALL",
     halftimeIndex: null,
+    nav: false,
   },
 );
 
@@ -32,6 +35,32 @@ const scroller = ref<HTMLElement | null>(null);
 function select(round: number | null) {
   emit("update:modelValue", round);
 }
+
+// Prev/next sequence — leads with the "All" (null) option when enabled so
+// arrowing past round 1 lands back on the aggregate view.
+const navSequence = computed<(number | null)[]>(() => {
+  const list = props.rounds.map((r) => r.round);
+  return props.allowAll ? [null, ...list] : list;
+});
+
+function step(delta: number) {
+  const seq = navSequence.value;
+  if (!seq.length) {
+    return;
+  }
+  const idx = seq.indexOf(props.modelValue ?? (props.allowAll ? null : seq[0]));
+  const next = Math.max(
+    0,
+    Math.min(seq.length - 1, (idx === -1 ? 0 : idx) + delta),
+  );
+  emit("update:modelValue", seq[next]);
+}
+
+const canPrev = computed(() => navSequence.value.indexOf(props.modelValue) > 0);
+const canNext = computed(() => {
+  const idx = navSequence.value.indexOf(props.modelValue);
+  return idx >= 0 && idx < navSequence.value.length - 1;
+});
 
 function isActive(round: number): boolean {
   return props.modelValue === round;
@@ -64,6 +93,7 @@ watch(
 
 <template>
   <div class="flex items-stretch gap-1.5 select-none">
+    <!-- Pinned "All" pill, always the leading control outside the scroller. -->
     <button
       v-if="allowAll"
       type="button"
@@ -81,6 +111,17 @@ watch(
       >
         {{ allLabel }}
       </span>
+    </button>
+
+    <!-- Fixed prev arrow pinned to the left edge of the strip. -->
+    <button
+      v-if="nav"
+      type="button"
+      class="shrink-0 self-start mt-1 flex h-7 w-8 items-center justify-center rounded-sm border border-border/60 bg-card/60 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))] disabled:pointer-events-none disabled:opacity-30"
+      :disabled="!canPrev"
+      @click="step(-1)"
+    >
+      <ChevronLeft class="h-4 w-4" />
     </button>
 
     <div
@@ -122,6 +163,17 @@ watch(
         </template>
       </div>
     </div>
+
+    <!-- Fixed next arrow pinned to the right edge of the strip. -->
+    <button
+      v-if="nav"
+      type="button"
+      class="shrink-0 self-start mt-1 flex h-7 w-8 items-center justify-center rounded-sm border border-border/60 bg-card/60 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))] disabled:pointer-events-none disabled:opacity-30"
+      :disabled="!canNext"
+      @click="step(1)"
+    >
+      <ChevronRight class="h-4 w-4" />
+    </button>
   </div>
 </template>
 

@@ -31,6 +31,8 @@ import {
   PanelRightClose,
   PanelRightOpen,
   Route,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-vue-next";
 import { Kbd } from "~/components/ui/kbd";
 import {
@@ -1380,6 +1382,13 @@ function jumpToRound(delta: number) {
   const next = Math.max(0, Math.min(rounds.value.length - 1, idx + delta));
   activeRound.value = rounds.value[next] ?? null;
 }
+const canPrevRound = computed(
+  () => rounds.value.indexOf(activeRound.value ?? rounds.value[0]) > 0,
+);
+const canNextRound = computed(() => {
+  const idx = rounds.value.indexOf(activeRound.value ?? rounds.value[0]);
+  return idx >= 0 && idx < rounds.value.length - 1;
+});
 function jumpToNextKill() {
   const t = currentTick.value;
   // Map kill timestamps to nearest tick via the player's positions —
@@ -4191,14 +4200,33 @@ function openReplayPopout() {
       >
           <div
             v-if="roundStripEntries.length"
-            class="px-3 pt-2 pb-1 border-b border-border/40"
+            class="flex items-center gap-1.5 px-3 pt-2 pb-1 border-b border-border/40"
           >
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-7 h-7 shrink-0 border border-border/60 rounded-sm text-muted-foreground hover:text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber)/0.7)] transition-colors disabled:opacity-30 disabled:pointer-events-none"
+              :title="$t('match.replay.prev_round')"
+              :disabled="!canPrevRound"
+              @click="jumpToRound(-1)"
+            >
+              <ChevronLeft class="w-4 h-4" />
+            </button>
             <RoundSelector
+              class="min-w-0 flex-1"
               :rounds="roundStripEntries"
               :model-value="activeRound"
               :halftime-index="roundStripHalftime"
               @update:model-value="selectStripRound"
             />
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-7 h-7 shrink-0 border border-border/60 rounded-sm text-muted-foreground hover:text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber)/0.7)] transition-colors disabled:opacity-30 disabled:pointer-events-none"
+              :title="$t('match.replay.next_round')"
+              :disabled="!canNextRound"
+              @click="jumpToRound(1)"
+            >
+              <ChevronRight class="w-4 h-4" />
+            </button>
           </div>
           <!-- YouTube-style transport: play/step on the left, then a tall
                scrubber that carries the round's kill + grenade event track,

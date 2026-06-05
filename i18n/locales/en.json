@@ -43,6 +43,38 @@
     "kda": {
       "label": "K / D / A",
       "description": "Average Kills / Deaths / Assists per match."
+    },
+    "k": {
+      "label": "Kills",
+      "description": "Total kills."
+    },
+    "a": {
+      "label": "Assists",
+      "description": "Total assists — you damaged or flashed an enemy a teammate then killed."
+    },
+    "d": {
+      "label": "Deaths",
+      "description": "Total deaths."
+    },
+    "kd": {
+      "label": "K/D",
+      "description": "Kill/Death ratio — kills divided by deaths. Above 1.0 means more kills than deaths."
+    },
+    "mkr": {
+      "label": "Multi-Kill Rounds",
+      "description": "Rounds in which you got two or more kills."
+    },
+    "cl": {
+      "label": "Clutch %",
+      "description": "Share of clutch situations (last player alive, 1vX) that you won."
+    },
+    "cast": {
+      "label": "CAST",
+      "description": "Clutch attempts — the number of clutch (1vX) situations you were put in."
+    },
+    "awp": {
+      "label": "AWP",
+      "description": "AWP usage / sniper role signal — how much a player relies on the AWP."
     }
   },
   "pagination": {
@@ -1112,7 +1144,7 @@
           "col_map": "Map",
           "col_played": "Played",
           "col_win": "Win%",
-          "col_rating": "Rating",
+          "col_rating": "HLTV Rating",
           "col_adr": "ADR",
           "col_kd": "K/D",
           "col_udr": "UDR",
@@ -1131,7 +1163,7 @@
           "kpr": "KPR",
           "rounds": "Rounds",
           "rounds_tooltip": "Rounds with a kill using this weapon (we can't see rounds a weapon was only held)",
-          "rating": "Rating",
+          "rating": "HLTV Rating",
           "rating_tooltip": "Approximate rating from KPR + ADR + impact (no per-weapon deaths/KAST, so it's directional)",
           "economy": "Economy",
           "economy_tooltip": "Weapon rating adjusted for buy cost — frags with cheaper weapons rate higher (~1.0 = on par for the price)",
@@ -2594,7 +2626,7 @@
       "player": "Player",
       "maps": "Maps",
       "rounds": "Rounds",
-      "rating": "Rating",
+      "rating": "HLTV Rating",
       "kpr": "KPR",
       "dpr": "DPR",
       "kd": "K/D",
@@ -2909,7 +2941,7 @@
       "kills": "Kills",
       "deaths": "Deaths",
       "kd": "K/D",
-      "rating": "Rating",
+      "rating": "HLTV Rating",
       "you": "Your team",
       "opponent": "Opponent",
       "breakdown_label": "Player breakdown by matchup",
@@ -2941,18 +2973,18 @@
       "metric": "Metric",
       "no_data": "No stats available for the selected players.",
       "axes": {
-        "rating": "Rating",
+        "rating": "HLTV Rating",
         "kast": "KAST",
         "adr": "ADR",
         "kpr": "KPR",
         "opening": "Opening K/D",
         "opening_attempts": "Opening Attempts",
-        "trade_kills": "Trade Kills/Rd",
+        "trade_kills": "Trade Kills/Round",
         "kd": "K/D",
-        "traded": "Traded Deaths/Rd",
+        "traded": "Traded Deaths/Round",
         "dpr": "DPR",
         "udr": "UDR",
-        "flash_assists": "Flash Assists/Rd"
+        "flash_assists": "Flash Assists/Round"
       }
     },
     "team_stats": {
@@ -3032,7 +3064,8 @@
       "filter_player": "Player",
       "filter_type": "Type",
       "filter_team": "Team",
-      "filter_window": "Window"
+      "filter_window": "Window",
+      "open_2d_playback": "Open 2D Playback"
     },
     "roles": {
       "title": "Detected Roles",
@@ -4256,7 +4289,7 @@
       "type": "Type",
       "result": "Result",
       "map": "Map",
-      "rating": "Rating",
+      "rating": "HLTV Rating",
       "elo": "Elo"
     },
     "source": {

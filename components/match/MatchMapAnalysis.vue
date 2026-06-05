@@ -28,6 +28,7 @@ import {
 import { matchHeatmapQuery } from "~/graphql/matchHeatmapGraphql";
 import { matchMovementMapQuery } from "~/graphql/matchMovementPathsGraphql";
 import RoundSelector from "~/components/match/RoundSelector.vue";
+import { ExternalLink } from "lucide-vue-next";
 
 type MapSplit = {
   bounds: { top: number; bottom: number };
@@ -191,6 +192,30 @@ const activeMatchMap = computed<any | null>(() => {
 const showMapSelector = computed(
   () => matchMaps.value.length > 1 && !props.selectedMapId,
 );
+
+// The 2D replay lives in its own popout window (same launcher MatchMaps uses);
+// from the analysis view we just point the operator at it for the active map.
+// Gated on parsed demo metadata, since the replay needs position ticks.
+const canOpen2dPlayback = computed(() =>
+  (activeMatchMap.value?.demos ?? []).some(
+    (d: any) => !!d.metadata_parsed_at && !!d.total_ticks,
+  ),
+);
+
+function open2dPlayback() {
+  const mapId = activeMatchMap.value?.id;
+  if (!mapId) {
+    return;
+  }
+  const popup = window.open(
+    `/match-replay-popout/${mapId}`,
+    `replay-popout-${mapId}`,
+    "popup=yes,width=1100,height=900,resizable=yes,scrollbars=yes",
+  );
+  if (popup) {
+    popup.focus();
+  }
+}
 
 const normalizedMap = computed(() =>
   (activeMatchMap.value?.map?.name || "")
@@ -1022,23 +1047,39 @@ const modePills = computed<{ key: "heatmap" | "movement"; label: string }[]>(
             </span>
           </div>
 
-          <div
-            class="inline-flex items-stretch overflow-hidden rounded-md border border-border bg-card/50"
-          >
-            <button
-              v-for="pill of modePills"
-              :key="pill.key"
-              type="button"
-              class="inline-flex items-center border-r border-border/60 px-3 py-1.5 text-xs tracking-[0.06em] transition-colors last:border-r-0"
-              :class="
-                mode === pill.key
-                  ? 'bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'
-                  : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground'
-              "
-              @click="mode = pill.key"
+          <div class="flex items-center gap-3">
+            <div
+              v-if="canOpen2dPlayback"
+              class="inline-flex items-stretch overflow-hidden rounded-md border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)]"
             >
-              {{ pill.label }}
-            </button>
+              <button
+                type="button"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs tracking-[0.06em] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.2)]"
+                @click="open2dPlayback"
+              >
+                <ExternalLink class="h-3.5 w-3.5" />
+                {{ $t("match.map_analysis.open_2d_playback") }}
+              </button>
+            </div>
+
+            <div
+              class="inline-flex items-stretch overflow-hidden rounded-md border border-border bg-card/50"
+            >
+              <button
+                v-for="pill of modePills"
+                :key="pill.key"
+                type="button"
+                class="inline-flex items-center border-r border-border/60 px-3 py-1.5 text-xs tracking-[0.06em] transition-colors last:border-r-0"
+                :class="
+                  mode === pill.key
+                    ? 'bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'
+                    : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground'
+                "
+                @click="mode = pill.key"
+              >
+                {{ pill.label }}
+              </button>
+            </div>
           </div>
         </div>
 

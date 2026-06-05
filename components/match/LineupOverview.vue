@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import LineupOverviewRow from "~/components/match/LineupOverviewRow.vue";
 import SortableTableHead from "~/components/common/SortableTableHead.vue";
+import StatLabel from "~/components/common/StatLabel.vue";
 import { useTableSort } from "~/composables/useTableSort";
 import { useMatchSide } from "~/composables/useMatchSide";
 
@@ -306,8 +307,8 @@ import {
               :disabled="sortDisabled"
               class="whitespace-nowrap"
               @sort="toggle"
-              >{{ $t("match.overview.kd") }}</SortableTableHead
-            >
+              ><StatLabel stat="kd" :label="$t('match.overview.kd')"
+            /></SortableTableHead>
             <SortableTableHead
               v-if="overviewVis.hs !== false"
               sort-key="hs"
@@ -354,10 +355,14 @@ import {
               class="whitespace-nowrap"
               @sort="toggle"
             >
-              <span class="hidden 2xl:inline">
-                {{ $t("match.overview.multi_kill_rounds") }}
-              </span>
-              <span class="2xl:hidden"> {{ $t("match.overview.mkr") }} </span>
+              <StatLabel stat="mkr">
+                <span class="hidden 2xl:inline">
+                  {{ $t("match.overview.multi_kill_rounds") }}
+                </span>
+                <span class="2xl:hidden">
+                  {{ $t("match.overview.mkr") }}
+                </span>
+              </StatLabel>
             </SortableTableHead>
             <SortableTableHead
               v-if="overviewVis.hltv !== false"
@@ -421,10 +426,12 @@ import {
               class="whitespace-nowrap"
               @sort="toggle"
             >
-              <span class="md:hidden">ADR</span>
-              <span class="hidden md:inline">{{
-                $t("match.overview.total_damage")
-              }}</span>
+              <StatLabel stat="adr">
+                <span class="md:hidden">ADR</span>
+                <span class="hidden md:inline">{{
+                  $t("match.overview.total_damage")
+                }}</span>
+              </StatLabel>
             </SortableTableHead>
             <SortableTableHead
               v-if="overviewVis.team_damage"

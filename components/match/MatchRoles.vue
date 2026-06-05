@@ -3,6 +3,7 @@ import { ref, computed, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 import { Card, CardContent } from "~/components/ui/card";
+import StatLabel from "~/components/common/StatLabel.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { matchRolesQuery } from "~/graphql/playerMatchMapRolesGraphql";
 import {
@@ -268,7 +269,7 @@ function bar(value: number, max: number): number {
                   <div
                     class="flex items-baseline justify-between gap-1 text-[0.58rem] uppercase tracking-[0.08em] text-muted-foreground"
                   >
-                    <span>{{ sig.label }}</span>
+                    <span><StatLabel :stat="sig.key" :label="sig.label" /></span>
                     <span class="tabular-nums text-foreground/80">
                       {{ sig.value }}
                     </span>

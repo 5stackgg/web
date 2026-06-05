@@ -3,6 +3,7 @@ import { computed, ref, watch, onUnmounted } from "vue";
 import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import AnimatedStat from "~/components/AnimatedStat.vue";
+import StatLabel from "~/components/common/StatLabel.vue";
 import { useMatchSide } from "~/composables/useMatchSide";
 import {
   tacticalSectionLabelClasses,
@@ -497,7 +498,10 @@ const sideComparison = computed(() => {
               <span
                 class="text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground whitespace-nowrap"
               >
-                {{ $t(`match.team_stats.kpi.${row.key}`) }}
+                <StatLabel
+                  :stat="row.key"
+                  :label="$t(`match.team_stats.kpi.${row.key}`)"
+                />
               </span>
               <div
                 class="flex w-full h-2 rounded-sm overflow-hidden bg-muted/30"

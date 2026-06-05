@@ -26,6 +26,7 @@ import {
   Hash,
   Crosshair,
   Settings2,
+  Keyboard,
 } from "lucide-vue-next";
 import { Kbd } from "~/components/ui/kbd";
 import {
@@ -1451,8 +1452,6 @@ const layoutRootEl = ref<HTMLElement | null>(null);
 const playbarRowEl = ref<HTMLElement | null>(null);
 const playbarDockEl = ref<HTMLElement | null>(null);
 const radarMaxPx = ref(560);
-const playbarDockHeight = ref(0);
-const LINEUP_COL_WITH_GAP = 244; // 232 min-width + 12 gap
 
 // Detect the height of any persistent bottom chrome the app docks
 // below the page slot. The biggest known case is `#main-bottom-dock`
@@ -1487,14 +1486,13 @@ function recomputeRadarSize() {
   const rootRect = root.getBoundingClientRect();
   const SAFETY = 16;
   const bottomChrome = detectBottomChromeHeight();
-  const dockH = playbarDockEl.value?.offsetHeight ?? 0;
-  playbarDockHeight.value = dockH;
   const availableH =
-    window.innerHeight - rootRect.top - SAFETY - bottomChrome - dockH;
+    window.innerHeight - rootRect.top - SAFETY - bottomChrome;
   const availableW = rootRect.width;
-  const lineupVisible = availableW >= 600;
-  const reserved = lineupVisible ? LINEUP_COL_WITH_GAP : 0;
-  const maxSide = Math.max(280, Math.min(availableH, availableW - reserved));
+  // Rosters, kill feed, and the transport bar all float over the map, so
+  // the radar is free to grow to the full available box rather than
+  // reserving a side column or a bottom dock.
+  const maxSide = Math.max(280, Math.min(availableH, availableW));
   radarMaxPx.value = Math.floor(maxSide);
 }
 
@@ -2023,6 +2021,30 @@ const scoreboard = computed(() => {
   };
 });
 
+// Per-side score for the active round. scoreboard credits lineup_1 /
+// lineup_2 (fixed teams); the floating roster cards are keyed by side
+// (ct/t), which swaps at halftime — so map each lineup's score onto the
+// side that lineup is actually playing this round. Falls back to
+// lineup_1 = ct when we can't resolve membership (imported demos).
+const sideScores = computed<{ ct: number; t: number }>(() => {
+  const sb = scoreboard.value;
+  const round = activeRound.value;
+  const sides = round === null ? null : sideByRound.value.get(round);
+  const lbs = lineupBySteam.value;
+  let ctLineup: "1" | "2" | null = null;
+  if (sides) {
+    for (const [sid, side] of sides) {
+      const lu = lbs.get(sid);
+      if (lu) {
+        ctLineup = side === "ct" ? lu : lu === "1" ? "2" : "1";
+        break;
+      }
+    }
+  }
+  if (ctLineup === "2") return { ct: sb.rightScore, t: sb.leftScore };
+  return { ct: sb.leftScore, t: sb.rightScore };
+});
+
 // steam_id → live { health, armor, alive } for the lineup panel so we
 // can render HP + armor bars next to each name (Boltobserv/HLTV-style).
 const liveStateBySteam = computed(() => {
@@ -2097,15 +2119,18 @@ function openReplayPopout() {
 
 <template>
   <div class="flex flex-col gap-3">
-    <div ref="layoutRootEl" class="flex gap-3 justify-center items-start">
-      <div class="flex flex-col shrink-0" :style="{ width: radarMaxPx + 'px' }">
-        <div
-          class="relative bg-[hsl(var(--card)/0.5)] border border-border overflow-hidden"
-          :style="{
-            width: radarMaxPx + 'px',
-            height: radarMaxPx + 'px',
-          }"
-        >
+    <div
+      ref="layoutRootEl"
+      class="relative w-full overflow-hidden"
+      :style="{ height: radarMaxPx + 'px' }"
+    >
+      <!-- Map square, centered in the full-width stage. Rosters, kill
+           feed, and the transport bar all float at the stage edges /
+           bottom (Skybox-style) so the map is free to fill the height. -->
+      <div
+        class="absolute inset-y-0 left-1/2 -translate-x-1/2 z-0 bg-[hsl(var(--card)/0.5)] border border-border overflow-hidden"
+        :style="{ width: radarMaxPx + 'px' }"
+      >
           <img
             v-if="radarSrc"
             :src="radarSrc"
@@ -3750,9 +3775,170 @@ function openReplayPopout() {
           </svg>
         </div>
 
+        <!-- Floating rosters: Skybox-style, stacked at the stage's
+             top-right edge so the map can use the full width. Each card
+             carries its current-round side score. Wrapper is
+             pointer-events-none so gaps don't swallow map interactions;
+             cards re-enable pointer events for click-to-follow. -->
+        <div
+          class="absolute top-14 right-2 z-20 hidden md:flex flex-col gap-1.5 w-[210px] max-h-[calc(100%-13rem)] pointer-events-none"
+        >
+            <div
+              class="pointer-events-auto px-2 py-1.5 border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
+              :style="{ borderColor: 'hsl(210 80% 60% / 0.45)' }"
+            >
+              <ReplayLineupTeam
+                team="ct"
+                :label="$t('match.replay.counter_terrorists')"
+                :score="sideScores.ct"
+                :members="lineupRows.ct"
+                :live-state-by-steam="liveStateBySteam"
+                :loadout-by-steam="loadoutBySteam"
+                :focused-player-id="focusedPlayerId"
+                :show-avatars="showAvatars"
+                :show-c4="showC4"
+                :stats-for="statsFor"
+                :has-bomb-for="hasBombFor"
+                :follow-label="followLabelFor"
+                @focus="toggleFocus"
+              />
+            </div>
+            <div
+              class="pointer-events-auto px-2 py-1.5 border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
+              :style="{ borderColor: 'hsl(33 94% 58% / 0.45)' }"
+            >
+              <ReplayLineupTeam
+                team="t"
+                :label="$t('match.replay.terrorists')"
+                :score="sideScores.t"
+                :members="lineupRows.t"
+                :live-state-by-steam="liveStateBySteam"
+                :loadout-by-steam="loadoutBySteam"
+                :focused-player-id="focusedPlayerId"
+                :show-avatars="showAvatars"
+                :show-c4="showC4"
+                :stats-for="statsFor"
+                :has-bomb-for="hasBombFor"
+                :follow-label="followLabelFor"
+                @focus="toggleFocus"
+              />
+            </div>
+            <p
+              class="pointer-events-none text-[0.55rem] leading-tight text-muted-foreground/70 px-0.5"
+            >
+              {{ $t("match.replay.follow_hint") }}
+            </p>
+          </div>
+
+          <!-- Floating kill feed: compact round log at the stage's left
+               edge, below the timer and clear of the bottom transport. -->
+          <div
+            v-if="killsBeforeCursor.length > 0"
+            class="absolute top-16 left-2 z-20 hidden md:flex flex-col gap-1 w-[200px] max-h-[calc(100%-13rem)] px-2 py-1.5 border border-border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
+          >
+            <div
+              class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground shrink-0"
+            >
+              {{ $t("match.round_kills") }}
+            </div>
+            <div
+              ref="killFeedEl"
+              class="flex-1 min-h-0 overflow-y-auto flex flex-col gap-1 pr-1"
+            >
+              <div
+                v-for="(k, i) of killFeedDisplay"
+                :key="'kf-' + i"
+                class="font-mono text-[0.65rem] tabular-nums flex items-center gap-1 py-0.5"
+              >
+                <!-- Killer block: identity pip (avatar or slot number) +
+                   name, colored to the killer's team. -->
+                <img
+                  v-if="
+                    showAvatars && k.killer && playerAvatarMap[String(k.killer)]
+                  "
+                  :src="playerAvatarMap[String(k.killer)]"
+                  :alt="playerName(k.killer ?? '')"
+                  :title="playerName(k.killer ?? '')"
+                  class="w-4 h-4 rounded-full object-cover shrink-0 border ring-1 ring-black/60"
+                  :style="{ borderColor: colorFor(k.killer_team ?? null) }"
+                  @error="
+                    ($event.target as HTMLImageElement).style.display = 'none'
+                  "
+                />
+                <span
+                  v-else
+                  class="w-4 h-4 rounded-full inline-flex items-center justify-center font-mono font-bold text-[9px] shrink-0"
+                  :title="playerName(k.killer ?? '')"
+                  :style="{
+                    background: colorFor(k.killer_team ?? null),
+                    color:
+                      k.killer_team === 't' ? 'hsl(0 0% 10%)' : 'hsl(0 0% 98%)',
+                  }"
+                >
+                  {{ slotByPlayer[String(k.killer ?? "")]?.slot ?? "?" }}
+                </span>
+                <span
+                  class="truncate max-w-[5rem]"
+                  :style="{ color: colorFor(k.killer_team ?? null) }"
+                >
+                  {{ playerName(k.killer ?? "") }}
+                </span>
+                <img
+                  v-if="k.weapon && weaponIconPath(k.weapon)"
+                  :src="weaponIconPath(k.weapon)"
+                  :alt="k.weapon"
+                  :title="k.weapon"
+                  class="h-4 w-auto opacity-90 shrink-0"
+                  @error="onWeaponIconError($event, k.weapon)"
+                />
+                <Crosshair
+                  v-if="k.headshot"
+                  class="w-3 h-3 text-[hsl(var(--tac-amber))] drop-shadow-[0_0_4px_hsl(var(--tac-amber)/0.6)] shrink-0"
+                  :stroke-width="2.5"
+                  :title="$t('match.replay.headshot')"
+                />
+                <!-- Victim block: same identity pip + name, team color. -->
+                <img
+                  v-if="
+                    showAvatars && k.victim && playerAvatarMap[String(k.victim)]
+                  "
+                  :src="playerAvatarMap[String(k.victim)]"
+                  :alt="playerName(k.victim ?? '')"
+                  :title="playerName(k.victim ?? '')"
+                  class="w-4 h-4 rounded-full object-cover shrink-0 border ring-1 ring-black/60"
+                  :style="{ borderColor: colorFor(k.victim_team ?? null) }"
+                  @error="
+                    ($event.target as HTMLImageElement).style.display = 'none'
+                  "
+                />
+                <span
+                  v-else
+                  class="w-4 h-4 rounded-full inline-flex items-center justify-center font-mono font-bold text-[9px] shrink-0"
+                  :title="playerName(k.victim ?? '')"
+                  :style="{
+                    background: colorFor(k.victim_team ?? null),
+                    color:
+                      k.victim_team === 't' ? 'hsl(0 0% 10%)' : 'hsl(0 0% 98%)',
+                  }"
+                >
+                  {{ slotByPlayer[String(k.victim ?? "")]?.slot ?? "?" }}
+                </span>
+                <span
+                  class="truncate max-w-[5rem]"
+                  :style="{ color: colorFor(k.victim_team ?? null) }"
+                >
+                  {{ playerName(k.victim ?? "") }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+        <!-- Floating transport bar: round strip + YouTube-style controls,
+             docked over the bottom of the map (Skybox-style) so the map is
+             free to fill the height above it. -->
         <div
           ref="playbarDockEl"
-          class="flex flex-col bg-[hsl(var(--card)/0.6)] border-x border-b border-border"
+          class="absolute bottom-3 inset-x-3 z-30 flex flex-col rounded-md border border-border bg-[hsl(var(--card)/0.9)] backdrop-blur-md shadow-lg overflow-hidden"
         >
           <div
             v-if="roundStripEntries.length"
@@ -3765,27 +3951,62 @@ function openReplayPopout() {
               @update:model-value="selectStripRound"
             />
           </div>
+          <!-- YouTube-style transport: play/step on the left, then a tall
+               scrubber that carries the round's kill + grenade event track,
+               time readout, speed, and a shortcuts popover. -->
           <div
             ref="playbarRowEl"
-            class="flex items-center gap-2 px-3 pt-2 pb-1"
+            class="flex items-center gap-3 px-3 py-2.5"
           >
+            <!-- Left transport cluster -->
+            <div class="flex items-center gap-1 shrink-0">
+              <button
+                type="button"
+                class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.28)] transition-colors"
+                :title="
+                  playing ? $t('match.replay.pause') : $t('match.replay.play')
+                "
+                @click="toggle()"
+              >
+                <Play v-if="!playing" class="w-5 h-5" />
+                <Pause v-else class="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                class="inline-flex items-center justify-center w-8 h-10 text-muted-foreground hover:text-[hsl(var(--tac-amber))] transition-colors"
+                :title="$t('match.replay.step_back')"
+                @click="step(-1)"
+              >
+                <SkipBack class="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                class="inline-flex items-center justify-center w-8 h-10 text-muted-foreground hover:text-[hsl(var(--tac-amber))] transition-colors"
+                :title="$t('match.replay.step_forward')"
+                @click="step(1)"
+              >
+                <SkipForward class="w-4 h-4" />
+              </button>
+            </div>
+
+            <!-- Scrubber -->
             <div
-              class="relative flex-1 min-w-[6rem] h-6 group cursor-pointer select-none"
+              class="relative flex-1 min-w-[6rem] h-8 group cursor-pointer select-none"
               @pointerdown="onScrubStart"
             >
               <!-- Kill markers above the rail. -->
-              <div class="absolute inset-x-0 top-0 h-2 pointer-events-none">
+              <div class="absolute inset-x-0 top-0 h-3 pointer-events-none">
                 <span
                   v-for="(m, i) in scrubberMarkers"
                   v-show="m.lane === 'kill'"
                   :key="'k' + i"
-                  class="absolute bottom-0 w-[2px] h-2 -translate-x-1/2 rounded-sm"
+                  class="absolute bottom-0 w-[2px] h-3 -translate-x-1/2 rounded-sm"
                   :style="{ left: m.left + '%', backgroundColor: m.color }"
                   :title="m.title"
                 />
               </div>
               <div
-                class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-1.5 bg-[hsl(var(--border))] rounded-sm overflow-hidden"
+                class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2.5 bg-[hsl(var(--border))] rounded-full overflow-hidden group-hover:h-3 transition-[height] duration-100"
               >
                 <div
                   class="absolute inset-y-0 left-0 bg-[hsl(var(--tac-amber))] transition-[width] duration-100 ease-linear"
@@ -3793,68 +4014,41 @@ function openReplayPopout() {
                 />
               </div>
               <!-- Grenade markers below the rail. -->
-              <div class="absolute inset-x-0 bottom-0 h-2 pointer-events-none">
+              <div class="absolute inset-x-0 bottom-0 h-3 pointer-events-none">
                 <span
                   v-for="(m, i) in scrubberMarkers"
                   v-show="m.lane === 'nade'"
                   :key="'n' + i"
-                  class="absolute top-0 w-[2px] h-2 -translate-x-1/2 rounded-sm"
+                  class="absolute top-0 w-[2px] h-3 -translate-x-1/2 rounded-sm"
                   :style="{ left: m.left + '%', backgroundColor: m.color }"
                   :title="m.title"
                 />
               </div>
               <div
-                class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_0_2px_hsl(var(--background)),0_0_10px_hsl(var(--tac-amber)/0.6)] transition-[left] duration-100 ease-linear pointer-events-none z-10"
+                class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_0_2px_hsl(var(--background)),0_0_10px_hsl(var(--tac-amber)/0.6)] transition-[left] duration-100 ease-linear pointer-events-none z-10 group-hover:scale-110"
                 :style="{ left: progressPct + '%' }"
               />
             </div>
+
+            <!-- Time readout -->
             <span
-              class="font-mono text-[0.6rem] tabular-nums text-muted-foreground min-w-[7ch] text-right"
+              class="font-mono text-xs tabular-nums text-muted-foreground shrink-0"
             >
-              {{ tickIndex + 1 }} / {{ ticks.length }}
+              {{ formatMMSS(tickIndex * 0.25) }}
+              <span class="text-muted-foreground/50">/</span>
+              {{ formatMMSS(Math.max(0, ticks.length - 1) * 0.25) }}
             </span>
-          </div>
 
-          <!-- Controls row below the scrubber. Compact + wraps if the
-               radar is narrow; ml-auto pushes the popout to the edge. -->
-          <div
-            class="flex items-center gap-1.5 px-3 pb-2 pt-1 flex-wrap text-[0.65rem]"
-          >
-            <button
-              type="button"
-              class="px-1.5 py-1 border border-border/60 hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))] transition-colors"
-              :title="$t('match.replay.step_back')"
-              @click="step(-1)"
-            >
-              <SkipBack class="w-3 h-3" />
-            </button>
-            <button
-              type="button"
-              class="px-2.5 py-1 border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.25)] transition-colors font-mono text-[0.6rem] font-bold tracking-[0.2em] uppercase inline-flex items-center gap-1"
-              @click="toggle()"
-            >
-              <Play v-if="!playing" class="w-3 h-3" />
-              <Pause v-else class="w-3 h-3" />
-              {{ playing ? $t("match.replay.pause") : $t("match.replay.play") }}
-            </button>
-            <button
-              type="button"
-              class="px-1.5 py-1 border border-border/60 hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))] transition-colors"
-              :title="$t('match.replay.step_forward')"
-              @click="step(1)"
-            >
-              <SkipForward class="w-3 h-3" />
-            </button>
+            <div class="w-px h-6 bg-border shrink-0" />
 
-            <div class="w-px h-5 bg-border mx-1" />
-
-            <div class="inline-flex items-center gap-0.5">
-              <Gauge class="w-3 h-3 text-muted-foreground mr-1" />
+            <!-- Speed -->
+            <div class="inline-flex items-center gap-0.5 shrink-0">
+              <Gauge class="w-3.5 h-3.5 text-muted-foreground mr-1" />
               <button
                 v-for="s of SPEEDS"
                 :key="s"
                 type="button"
-                class="px-1.5 py-0.5 font-mono text-[0.6rem] font-bold tabular-nums transition-colors border"
+                class="px-1.5 py-0.5 font-mono text-[0.65rem] font-bold tabular-nums transition-colors border rounded-sm"
                 :class="
                   speed === s
                     ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'
@@ -3865,213 +4059,48 @@ function openReplayPopout() {
                 {{ s }}x
               </button>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Roster panel: generic CT/T labels keyed off each player's
-           starting side from positions data — avoids guessing which
-           lineup is on which side, which goes wrong on imported demos
-           and after half-time swaps. Each row shows a live HP bar
-           sourced from the per-tick interpolated player state.
-           Bounded by the radar's height so a long kill feed scrolls
-           inside the column rather than pushing the page below the
-           fold. `mt-auto` on the shortcuts block pins them to the
-           bottom when there's spare vertical space. -->
-      <div
-        class="hidden md:flex flex-col gap-2 min-w-[220px] overflow-y-auto"
-        :style="{ height: radarMaxPx + playbarDockHeight + 'px' }"
-      >
-        <!-- Discoverability hint for the focus-to-follow interaction. -->
-        <p class="text-[0.6rem] text-muted-foreground/80 leading-tight px-0.5">
-          {{ $t("match.replay.follow_hint") }}
-        </p>
-
-        <!-- Map scoreboard. Pulls lineup_1_score / lineup_2_score off
-             the active match_map. Lineup names come from the match
-             prop; falls back to generic team-side labels otherwise. -->
-        <div
-          v-if="scoreboard"
-          class="flex items-center gap-2 px-2 py-1.5 border border-border bg-[hsl(var(--card)/0.6)] font-mono"
-        >
-          <span
-            class="text-[0.6rem] tracking-[0.18em] uppercase truncate flex-1 min-w-0 text-right"
-          >
-            {{ scoreboard.leftName }}
-          </span>
-          <span
-            class="text-base font-bold tabular-nums px-1 text-[hsl(210,80%,60%)]"
-          >
-            {{ scoreboard.leftScore }}
-          </span>
-          <span class="text-muted-foreground text-xs">·</span>
-          <span
-            class="text-base font-bold tabular-nums px-1 text-[hsl(33,94%,58%)]"
-          >
-            {{ scoreboard.rightScore }}
-          </span>
-          <span
-            class="text-[0.6rem] tracking-[0.18em] uppercase truncate flex-1 min-w-0"
-          >
-            {{ scoreboard.rightName }}
-          </span>
-        </div>
-        <div class="grid grid-cols-2 gap-x-3">
-          <ReplayLineupTeam
-            team="ct"
-            :label="$t('match.replay.counter_terrorists')"
-            :members="lineupRows.ct"
-            :live-state-by-steam="liveStateBySteam"
-            :loadout-by-steam="loadoutBySteam"
-            :focused-player-id="focusedPlayerId"
-            :show-avatars="showAvatars"
-            :show-c4="showC4"
-            :stats-for="statsFor"
-            :has-bomb-for="hasBombFor"
-            :follow-label="followLabelFor"
-            @focus="toggleFocus"
-          />
-          <ReplayLineupTeam
-            team="t"
-            :label="$t('match.replay.terrorists')"
-            :members="lineupRows.t"
-            :live-state-by-steam="liveStateBySteam"
-            :loadout-by-steam="loadoutBySteam"
-            :focused-player-id="focusedPlayerId"
-            :show-avatars="showAvatars"
-            :show-c4="showC4"
-            :stats-for="statsFor"
-            :has-bomb-for="hasBombFor"
-            :follow-label="followLabelFor"
-            @focus="toggleFocus"
-          />
-        </div>
-
-        <div
-          v-if="killsBeforeCursor.length > 0"
-          class="mt-3 pt-3 border-t border-border/40 flex flex-col gap-1 flex-1 min-h-0"
-        >
-          <div
-            class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground shrink-0"
-          >
-            {{ $t("match.round_kills") }}
-          </div>
-          <div
-            ref="killFeedEl"
-            class="flex-1 min-h-0 overflow-y-auto flex flex-col gap-1 pr-1"
-          >
-            <div
-              v-for="(k, i) of killFeedDisplay"
-              :key="'kf-' + i"
-              class="font-mono text-[0.65rem] tabular-nums flex items-center gap-1 py-0.5"
-            >
-              <!-- Killer block: identity pip (avatar or slot number) +
-                 name, colored to the killer's team. -->
-              <img
-                v-if="
-                  showAvatars && k.killer && playerAvatarMap[String(k.killer)]
-                "
-                :src="playerAvatarMap[String(k.killer)]"
-                :alt="playerName(k.killer ?? '')"
-                :title="playerName(k.killer ?? '')"
-                class="w-4 h-4 rounded-full object-cover shrink-0 border ring-1 ring-black/60"
-                :style="{ borderColor: colorFor(k.killer_team ?? null) }"
-                @error="
-                  ($event.target as HTMLImageElement).style.display = 'none'
-                "
-              />
-              <span
-                v-else
-                class="w-4 h-4 rounded-full inline-flex items-center justify-center font-mono font-bold text-[9px] shrink-0"
-                :title="playerName(k.killer ?? '')"
-                :style="{
-                  background: colorFor(k.killer_team ?? null),
-                  color:
-                    k.killer_team === 't' ? 'hsl(0 0% 10%)' : 'hsl(0 0% 98%)',
-                }"
+            <!-- Keyboard shortcuts -->
+            <Popover>
+              <PopoverTrigger as-child>
+                <button
+                  type="button"
+                  class="inline-flex items-center justify-center w-8 h-8 text-muted-foreground hover:text-[hsl(var(--tac-amber))] transition-colors shrink-0"
+                  :title="$t('match.replay.shortcuts_title')"
+                >
+                  <Keyboard class="w-4 h-4" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent
+                align="end"
+                class="w-auto p-3 text-[0.65rem] text-muted-foreground"
               >
-                {{ slotByPlayer[String(k.killer ?? "")]?.slot ?? "?" }}
-              </span>
-              <span
-                class="truncate max-w-[5rem]"
-                :style="{ color: colorFor(k.killer_team ?? null) }"
-              >
-                {{ playerName(k.killer ?? "") }}
-              </span>
-              <img
-                v-if="k.weapon && weaponIconPath(k.weapon)"
-                :src="weaponIconPath(k.weapon)"
-                :alt="k.weapon"
-                :title="k.weapon"
-                class="h-4 w-auto opacity-90 shrink-0"
-                @error="onWeaponIconError($event, k.weapon)"
-              />
-              <Crosshair
-                v-if="k.headshot"
-                class="w-3 h-3 text-[hsl(var(--tac-amber))] drop-shadow-[0_0_4px_hsl(var(--tac-amber)/0.6)] shrink-0"
-                :stroke-width="2.5"
-                :title="$t('match.replay.headshot')"
-              />
-              <!-- Victim block: same identity pip + name, team color. -->
-              <img
-                v-if="
-                  showAvatars && k.victim && playerAvatarMap[String(k.victim)]
-                "
-                :src="playerAvatarMap[String(k.victim)]"
-                :alt="playerName(k.victim ?? '')"
-                :title="playerName(k.victim ?? '')"
-                class="w-4 h-4 rounded-full object-cover shrink-0 border ring-1 ring-black/60"
-                :style="{ borderColor: colorFor(k.victim_team ?? null) }"
-                @error="
-                  ($event.target as HTMLImageElement).style.display = 'none'
-                "
-              />
-              <span
-                v-else
-                class="w-4 h-4 rounded-full inline-flex items-center justify-center font-mono font-bold text-[9px] shrink-0"
-                :title="playerName(k.victim ?? '')"
-                :style="{
-                  background: colorFor(k.victim_team ?? null),
-                  color:
-                    k.victim_team === 't' ? 'hsl(0 0% 10%)' : 'hsl(0 0% 98%)',
-                }"
-              >
-                {{ slotByPlayer[String(k.victim ?? "")]?.slot ?? "?" }}
-              </span>
-              <span
-                class="truncate max-w-[5rem]"
-                :style="{ color: colorFor(k.victim_team ?? null) }"
-              >
-                {{ playerName(k.victim ?? "") }}
-              </span>
-            </div>
+                <div
+                  class="font-mono text-[0.55rem] tracking-[0.22em] uppercase mb-2"
+                >
+                  {{ $t("match.replay.shortcuts_title") }}
+                </div>
+                <div class="flex flex-col gap-1.5">
+                  <span class="inline-flex items-center gap-1.5">
+                    <Kbd>Space</Kbd> {{ $t("match.replay.shortcut_play") }}
+                  </span>
+                  <span class="inline-flex items-center gap-1.5">
+                    <Kbd>←</Kbd><Kbd>→</Kbd>
+                    {{ $t("match.replay.shortcut_step") }}
+                  </span>
+                  <span class="inline-flex items-center gap-1.5">
+                    <Kbd>[</Kbd><Kbd>]</Kbd>
+                    {{ $t("match.replay.shortcut_round") }}
+                  </span>
+                  <span class="inline-flex items-center gap-1.5">
+                    <Kbd>1</Kbd>–<Kbd>5</Kbd>
+                    {{ $t("match.replay.shortcut_speed") }}
+                  </span>
+                </div>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
-
-        <div
-          class="mt-auto pt-3 border-t border-border/40 flex flex-col gap-1 text-[0.6rem] text-muted-foreground shrink-0"
-        >
-          <div
-            class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
-          >
-            {{ $t("match.replay.shortcuts_title") }}
-          </div>
-          <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span class="inline-flex items-center gap-1">
-              <Kbd>Space</Kbd> {{ $t("match.replay.shortcut_play") }}
-            </span>
-            <span class="inline-flex items-center gap-1">
-              <Kbd>←</Kbd><Kbd>→</Kbd> {{ $t("match.replay.shortcut_step") }}
-            </span>
-            <span class="inline-flex items-center gap-1">
-              <Kbd>[</Kbd><Kbd>]</Kbd> {{ $t("match.replay.shortcut_round") }}
-            </span>
-            <span class="inline-flex items-center gap-1">
-              <Kbd>1</Kbd>–<Kbd>5</Kbd> {{ $t("match.replay.shortcut_speed") }}
-            </span>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>

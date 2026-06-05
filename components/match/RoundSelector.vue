@@ -77,7 +77,7 @@ watch(
       v-if="allowAll"
       type="button"
       data-round="all"
-      class="group flex shrink-0 flex-col items-center gap-1.5 py-1 cursor-pointer"
+      class="group shrink-0 self-start py-1 cursor-pointer"
       @click="select(null)"
     >
       <span
@@ -90,12 +90,11 @@ watch(
       >
         {{ allLabel }}
       </span>
-      <span class="h-[3px] w-full rounded-full bg-muted-foreground/25" />
     </button>
 
     <button
       type="button"
-      class="shrink-0 flex items-center justify-center w-7 rounded-sm border border-border/60 bg-card/60 text-muted-foreground transition-colors hover:text-foreground hover:border-border cursor-pointer"
+      class="shrink-0 self-start my-1 flex h-7 w-7 items-center justify-center rounded-sm border border-border/60 bg-card/60 text-muted-foreground transition-colors hover:text-foreground hover:border-border cursor-pointer"
       @click="scrollByCells(-1)"
     >
       <ChevronLeft class="h-4 w-4" />
@@ -143,7 +142,7 @@ watch(
 
     <button
       type="button"
-      class="shrink-0 flex items-center justify-center w-7 rounded-sm border border-border/60 bg-card/60 text-muted-foreground transition-colors hover:text-foreground hover:border-border cursor-pointer"
+      class="shrink-0 self-start my-1 flex h-7 w-7 items-center justify-center rounded-sm border border-border/60 bg-card/60 text-muted-foreground transition-colors hover:text-foreground hover:border-border cursor-pointer"
       @click="scrollByCells(1)"
     >
       <ChevronRight class="h-4 w-4" />

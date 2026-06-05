@@ -30,6 +30,7 @@ import {
   tacticalSectionDescriptionClasses,
 } from "~/utilities/tacticalClasses";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+import StatLabel from "~/components/common/StatLabel.vue";
 import { Skeleton } from "~/components/ui/skeleton";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 
@@ -508,7 +509,7 @@ const hasData = computed(() => playerMaps.value.length > 0);
             <TableBody>
               <TableRow v-for="axis of activeAxes" :key="axis.key">
                 <TableCell class="text-left text-muted-foreground whitespace-nowrap">
-                  {{ axis.label }}
+                  <StatLabel :stat="axis.key" :label="axis.label" />
                 </TableCell>
                 <TableCell
                   class="text-right font-mono tabular-nums"

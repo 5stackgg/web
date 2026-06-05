@@ -8,6 +8,7 @@ import {
 } from "~/graphql/playerWeaponStatsGraphql";
 import { usePlayerComparison } from "~/composables/usePlayerComparison";
 import SortableTableHead from "~/components/common/SortableTableHead.vue";
+import StatLabel from "~/components/common/StatLabel.vue";
 import { useTableSort } from "~/composables/useTableSort";
 import {
   Table,
@@ -23,6 +24,8 @@ import AnimatedStat from "~/components/AnimatedStat.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
+import TableSkeleton from "~/components/player/stats/TableSkeleton.vue";
 import { resolveWeapon } from "~/utilities/weaponIcon";
 import {
   tacticalSectionLabelClasses,
@@ -345,35 +348,28 @@ function onIconError(event: Event) {
       {{ $t("pages.players.detail.weapons_table.section") }}
     </div>
 
-    <div
-      v-if="loading && !hasData"
-      class="flex min-h-[200px] items-center justify-center rounded-lg border border-border/60 bg-card/30"
-    >
-      <div
-        class="inline-flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground"
+    <FadeSwap>
+      <TableSkeleton
+        v-if="loading && !hasData"
+        key="skeleton"
+        :rows="10"
+        :cols="hasExtra ? 7 : 3"
+      />
+
+      <Empty
+        v-else-if="!hasData"
+        key="empty"
+        class="min-h-[200px] border border-border/60"
       >
-        <span class="relative flex h-2 w-2">
-          <span
-            class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
-          ></span>
-          <span
-            class="relative inline-flex h-2 w-2 rounded-full bg-[hsl(var(--tac-amber))]"
-          ></span>
-        </span>
-        {{ $t("pages.players.detail.weapons_table.loading") }}
-      </div>
-    </div>
+        <EmptyTitle>{{
+          $t("pages.players.detail.weapons_table.empty_title")
+        }}</EmptyTitle>
+        <EmptyDescription>
+          {{ $t("pages.players.detail.weapons_table.empty_description") }}
+        </EmptyDescription>
+      </Empty>
 
-    <Empty v-else-if="!hasData" class="min-h-[200px] border border-border/60">
-      <EmptyTitle>{{
-        $t("pages.players.detail.weapons_table.empty_title")
-      }}</EmptyTitle>
-      <EmptyDescription>
-        {{ $t("pages.players.detail.weapons_table.empty_description") }}
-      </EmptyDescription>
-    </Empty>
-
-    <div v-else>
+      <div v-else key="content">
       <AnimatedCard variant="elevated" class="flex flex-col p-4">
         <CardContent class="p-0">
           <Table
@@ -409,10 +405,10 @@ function onIconError(event: Event) {
                   class="text-right"
                   :title="$t('pages.players.detail.weapons_table.rating_tooltip')"
                   @sort="toggle"
-                  >{{
-                    $t("pages.players.detail.weapons_table.rating")
-                  }}</SortableTableHead
-                >
+                  ><StatLabel
+                    stat="hltv"
+                    :label="$t('pages.players.detail.weapons_table.rating')"
+                /></SortableTableHead>
                 <SortableTableHead
                   v-if="hasExtra"
                   sort-key="adr"
@@ -420,10 +416,10 @@ function onIconError(event: Event) {
                   :direction="sortDir"
                   class="text-right"
                   @sort="toggle"
-                  >{{
-                    $t("pages.players.detail.weapons_table.adr")
-                  }}</SortableTableHead
-                >
+                  ><StatLabel
+                    stat="adr"
+                    :label="$t('pages.players.detail.weapons_table.adr')"
+                /></SortableTableHead>
                 <SortableTableHead
                   v-if="hasExtra"
                   sort-key="economy"
@@ -443,10 +439,10 @@ function onIconError(event: Event) {
                   :direction="sortDir"
                   class="text-right"
                   @sort="toggle"
-                  >{{
-                    $t("pages.players.detail.weapons_table.kpr")
-                  }}</SortableTableHead
-                >
+                  ><StatLabel
+                    stat="kpr"
+                    :label="$t('pages.players.detail.weapons_table.kpr')"
+                /></SortableTableHead>
                 <SortableTableHead
                   v-if="hasExtra"
                   sort-key="rounds"
@@ -524,6 +520,7 @@ function onIconError(event: Event) {
           </Table>
         </CardContent>
       </AnimatedCard>
-    </div>
+      </div>
+    </FadeSwap>
   </div>
 </template>

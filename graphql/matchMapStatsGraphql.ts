@@ -88,6 +88,19 @@ export const matchMapStats = Selector("match_lineups")({
             rounds_ct: true,
           },
         ],
+        match_map_hltv: [
+          {
+            where: {
+              match_id: { _eq: $("matchId", "uuid!") },
+              match_map_id: { _eq: $("matchMapId", "uuid!") },
+            },
+            limit: 1,
+          },
+          {
+            kast_pct: true,
+            rounds_played: true,
+          },
+        ],
       },
     },
   ],

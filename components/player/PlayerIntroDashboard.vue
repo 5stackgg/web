@@ -31,6 +31,8 @@ import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import { Skeleton } from "~/components/ui/skeleton";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import cleanMapName from "~/utilities/cleanMapName";
 import {
   tacticalSectionLabelClasses,
@@ -1050,35 +1052,62 @@ function tooltipAfter(index: number | undefined): string[] {
       </div>
     </div>
 
-    <div
-      v-if="loading && !hasData"
-      class="flex min-h-[200px] items-center justify-center rounded-lg border border-border/60 bg-card/30"
-    >
+    <FadeSwap>
       <div
-        class="inline-flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground"
+        v-if="loading && !hasData"
+        key="skeleton"
+        class="flex flex-col gap-4 md:gap-6"
       >
-        <span class="relative flex h-2 w-2">
-          <span
-            class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
-          ></span>
-          <span
-            class="relative inline-flex h-2 w-2 rounded-full bg-[hsl(var(--tac-amber))]"
-          ></span>
-        </span>
-        {{ $t("pages.players.detail.intro.loading") }}
+        <div class="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-5">
+          <div
+            v-for="i in 5"
+            :key="i"
+            class="flex flex-col gap-2 rounded-lg border border-border/60 bg-card/40 p-4"
+          >
+            <Skeleton class="h-2.5 w-16" />
+            <Skeleton class="h-7 w-20" />
+            <Skeleton class="h-2 w-12" />
+            <Skeleton class="mt-2 h-9 w-full" />
+          </div>
+        </div>
+        <div
+          class="grid grid-cols-1 items-stretch gap-4 md:gap-6 lg:grid-cols-3"
+        >
+          <div
+            class="flex flex-col gap-4 rounded-lg border border-border/60 bg-card/40 p-3"
+          >
+            <div class="flex items-center justify-around gap-4">
+              <Skeleton
+                v-for="i in 3"
+                :key="i"
+                class="h-24 w-24 rounded-full"
+              />
+            </div>
+            <Skeleton class="mx-auto aspect-square w-full max-w-[320px] rounded-lg" />
+          </div>
+          <div
+            class="flex flex-col gap-3 rounded-lg border border-border/60 bg-card/40 p-4 lg:col-span-2"
+          >
+            <Skeleton class="h-8 w-48" />
+            <Skeleton class="h-[360px] w-full flex-1" />
+          </div>
+        </div>
       </div>
-    </div>
 
-    <Empty v-else-if="!hasData" class="min-h-[200px] border border-border/60">
-      <EmptyTitle>{{
-        $t("pages.players.detail.intro.empty_title")
-      }}</EmptyTitle>
-      <EmptyDescription>
-        {{ $t("pages.players.detail.intro.empty_description") }}
-      </EmptyDescription>
-    </Empty>
+      <Empty
+        v-else-if="!hasData"
+        key="empty"
+        class="min-h-[200px] border border-border/60"
+      >
+        <EmptyTitle>{{
+          $t("pages.players.detail.intro.empty_title")
+        }}</EmptyTitle>
+        <EmptyDescription>
+          {{ $t("pages.players.detail.intro.empty_description") }}
+        </EmptyDescription>
+      </Empty>
 
-    <div v-else class="flex flex-col gap-4 md:gap-6">
+      <div v-else key="content" class="flex flex-col gap-4 md:gap-6">
       <div class="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-5">
         <AnimatedCard
           v-for="card in metricCards"
@@ -1160,36 +1189,22 @@ function tooltipAfter(index: number | undefined): string[] {
                 </div>
               </div>
             </FiveStackToolTip>
-            <FiveStackToolTip as-child side="top" :delay-duration="120">
-              <template #trigger>
-                <div class="flex cursor-help flex-col items-center">
-                  <RadialStat
-                    :value="fmtPct(aggregate.hsPct)"
-                    :label="$t('pages.players.detail.intro.hs_pct')"
-                    :percentage="aggregate.hsPct ?? 0"
-                    :level="statLevelFromRange(aggregate.hsPct ?? 0, 55, 25)"
-                  />
-                  <div
-                    v-if="hasCompare && compareAggregate.hsPct !== null"
-                    class="mt-1 font-mono text-[0.6rem]"
-                    style="color: #38bdf8"
-                  >
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{ fmtPct(compareAggregate.hsPct) }}
-                  </div>
-                </div>
-              </template>
-              <div class="max-w-[220px] space-y-0.5">
-                <div
-                  class="font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-foreground"
-                >
-                  {{ statTitle("hs") }}
-                </div>
-                <div class="text-xs leading-snug text-muted-foreground">
-                  {{ statDesc("hs") }}
-                </div>
+            <div class="flex flex-col items-center">
+              <RadialStat
+                :value="fmtPct(aggregate.hsPct)"
+                :label="$t('pages.players.detail.intro.hs_pct')"
+                :percentage="aggregate.hsPct ?? 0"
+                :level="statLevelFromRange(aggregate.hsPct ?? 0, 55, 25)"
+              />
+              <div
+                v-if="hasCompare && compareAggregate.hsPct !== null"
+                class="mt-1 font-mono text-[0.6rem]"
+                style="color: #38bdf8"
+              >
+                {{ $t("pages.players.detail.compare.vs") }}
+                {{ fmtPct(compareAggregate.hsPct) }}
               </div>
-            </FiveStackToolTip>
+            </div>
           </div>
 
           <AnimatedCard variant="elevated" class="flex flex-col p-3">
@@ -1236,6 +1251,7 @@ function tooltipAfter(index: number | undefined): string[] {
           </CardContent>
         </AnimatedCard>
       </div>
-    </div>
+      </div>
+    </FadeSwap>
   </div>
 </template>

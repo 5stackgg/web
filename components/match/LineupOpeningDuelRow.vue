@@ -131,6 +131,21 @@ export default {
       type: String as () => string | null,
       default: null,
     },
+    // Backend opening-duel record for this player (map + side filtered).
+    opening: {
+      type: Object as () => {
+        attempts: number;
+        success: number;
+        deaths: number;
+        tradedDeaths: number;
+      },
+      required: true,
+    },
+    // Lineup's total rounds (map + side filtered) — attempt% denominator.
+    lineupRounds: {
+      type: Number,
+      default: 0,
+    },
   },
   computed: {
     filteredMatchMaps() {
@@ -154,64 +169,17 @@ export default {
         return true;
       };
     },
-    totalRounds() {
-      let rounds = 0;
-      for (const m of this.filteredMatchMaps) {
-        for (const round of m.rounds || []) {
-          if (round.round === 0) continue;
-          if (!this.roundOnSide(round)) continue;
-          rounds++;
-        }
-      }
-      return rounds;
-    },
-    duelStats() {
-      let attempts = 0;
-      let success = 0;
-      let deaths = 0;
-      let tradedDeaths = 0;
-      const steamId = String(this.member.steam_id);
-
-      for (const match_map of this.filteredMatchMaps) {
-        for (const round of match_map.rounds) {
-          if (!this.roundOnSide(round)) continue;
-          const firstKill = round.kills.find(
-            (k: any) =>
-              k.player && k.player.steam_id !== k.attacked_player.steam_id,
-          );
-          if (!firstKill) continue;
-
-          const isKiller = String(firstKill.player?.steam_id) === steamId;
-          const isVictim =
-            String(firstKill.attacked_player?.steam_id) === steamId;
-          if (!isKiller && !isVictim) continue;
-
-          attempts++;
-          if (isKiller) success++;
-          if (isVictim) {
-            deaths++;
-            const traderKill = round.kills.find(
-              (k: any) =>
-                k.player &&
-                String(k.attacked_player?.steam_id) ===
-                  String(firstKill.player?.steam_id) &&
-                String(k.player?.steam_id) !==
-                  String(firstKill.attacked_player?.steam_id),
-            );
-            if (traderKill) tradedDeaths++;
-          }
-        }
-      }
-      return { attempts, success, deaths, tradedDeaths };
+    totalRounds(): number {
+      return this.lineupRounds;
     },
     attempts(): number {
-      return this.duelStats.attempts;
+      return this.opening.attempts;
     },
     success(): number {
-      return this.duelStats.success;
+      return this.opening.success;
     },
     traded(): number {
-      return this.duelStats.tradedDeaths;
+      return this.opening.tradedDeaths;
     },
     attemptsPct(): number {
       if (this.totalRounds === 0) return 0;
@@ -222,8 +190,8 @@ export default {
       return Math.round((this.success / this.attempts) * 100);
     },
     tradedPct(): number {
-      if (this.duelStats.deaths === 0) return 0;
-      return Math.round((this.traded / this.duelStats.deaths) * 100);
+      if (this.opening.deaths === 0) return 0;
+      return Math.round((this.traded / this.opening.deaths) * 100);
     },
     attemptsLevel(): StatLevel | null {
       if (this.totalRounds === 0) return null;
@@ -240,7 +208,7 @@ export default {
       );
     },
     tradedLevel(): StatLevel | null {
-      if (this.duelStats.deaths === 0) return null;
+      if (this.opening.deaths === 0) return null;
       return statLevelFor(
         { dir: "high", cuts: [40, 25, 15, 5] },
         this.tradedPct,

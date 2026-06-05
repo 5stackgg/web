@@ -28,7 +28,7 @@ const text = computed(() => props.label ?? title.value ?? props.stat);
   <FiveStackToolTip v-if="hasEntry" as-child :side="side" :delay-duration="120">
     <template #trigger>
       <span
-        class="cursor-help underline decoration-dotted decoration-muted-foreground/40 underline-offset-[3px]"
+        class="cursor-help underline decoration-dotted decoration-muted-foreground/70 underline-offset-[3px] transition-colors hover:decoration-foreground"
       >
         <slot>{{ text }}</slot>
       </span>

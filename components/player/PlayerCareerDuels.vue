@@ -6,6 +6,7 @@ import { playerCareerCombatQuery } from "~/graphql/playerCareerCombatGraphql";
 import { usePlayerComparison } from "~/composables/usePlayerComparison";
 import { useTableSort } from "~/composables/useTableSort";
 import SortableTableHead from "~/components/common/SortableTableHead.vue";
+import StatLabel from "~/components/common/StatLabel.vue";
 import RadialStat from "~/components/charts/RadialStat.vue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import {
@@ -511,7 +512,10 @@ const tableRows = computed(() => {
           <div
             class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
           >
-            {{ $t("pages.players.detail.career_duels.kd_label") }}
+            <StatLabel
+              stat="kd"
+              :label="$t('pages.players.detail.career_duels.kd_label')"
+            />
           </div>
           <div class="font-mono text-2xl font-bold inline-flex items-center gap-1">
             <AnimatedStat :value="fmt(overallKd)" />
@@ -593,7 +597,10 @@ const tableRows = computed(() => {
                   class="text-right"
                   @sort="toggle"
                 >
-                  {{ $t("pages.players.detail.career_duels.col_kd") }}
+                  <StatLabel
+                    stat="kd"
+                    :label="$t('pages.players.detail.career_duels.col_kd')"
+                  />
                 </SortableTableHead>
                 <SortableTableHead
                   sort-key="traded"

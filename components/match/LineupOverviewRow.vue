@@ -668,71 +668,30 @@ export default {
     adrNum() {
       return this.hasStats ? Number(this.adr) || null : null;
     },
-    perRoundParticipation() {
-      const steamId = String(this.member.steam_id);
-      let totalRounds = 0;
-      let participated = 0;
-      let survived = 0;
-
-      const maps = this.match?.match_maps ?? [];
-      for (const match_map of maps) {
-        const rounds = match_map?.rounds;
-        if (!Array.isArray(rounds)) continue;
-        for (const round of rounds) {
-          if (round.round === 0) continue;
-          totalRounds++;
-
-          const kills = round.kills || [];
-          const assists = round.assists || [];
-
-          const myDeath = kills.find(
-            (k: any) => String(k.attacked_player?.steam_id) === steamId,
-          );
-
-          const gotKill = kills.some(
-            (k: any) =>
-              String(k.player?.steam_id) === steamId &&
-              String(k.attacked_player?.steam_id) !== steamId,
-          );
-          const gotAssist = assists.some(
-            (a: any) => String(a.attacker_steam_id) === steamId,
-          );
-          const didSurvive = !myDeath;
-          if (didSurvive) survived++;
-
-          let traded = false;
-          if (myDeath) {
-            const killerSteamId = String(myDeath.player?.steam_id || "");
-            if (killerSteamId) {
-              traded = kills.some(
-                (k: any, idx: number) =>
-                  idx > kills.indexOf(myDeath) &&
-                  String(k.attacked_player?.steam_id) === killerSteamId &&
-                  String(k.player?.steam_id) !== steamId,
-              );
-            }
-          }
-
-          if (gotKill || gotAssist || didSurvive || traded) participated++;
-        }
+    // Rounds-weighted KAST from the canonical v_player_match_map_hltv view
+    // (per map), exposed via the player.match_map_hltv relationship — no
+    // round-walking on the client.
+    kastPct() {
+      const rows = this.member?.player?.match_map_hltv ?? [];
+      let weighted = 0;
+      let rounds = 0;
+      for (const row of rows) {
+        const rp = row.rounds_played ?? 0;
+        weighted += (row.kast_pct ?? 0) * rp;
+        rounds += rp;
       }
-      return { totalRounds, participated, survived };
+      return rounds > 0 ? weighted / rounds : null;
     },
     kast() {
-      const { totalRounds, participated } = this.perRoundParticipation;
-      if (totalRounds === 0) return "—";
-      return Math.round((participated / totalRounds) * 100) + "%";
-    },
-    kastPct() {
-      const { totalRounds, participated } = this.perRoundParticipation;
-      if (totalRounds === 0) return null;
-      return (participated / totalRounds) * 100;
+      return this.kastPct === null ? "—" : Math.round(this.kastPct) + "%";
     },
     survived() {
-      const { totalRounds, survived } = this.perRoundParticipation;
-      if (totalRounds === 0) return "—";
-      const pct = Math.round((survived / totalRounds) * 100);
-      return `${survived} (${pct}%)`;
+      if (!this.hasStats) return "—";
+      const rounds = this.stats.rounds_played ?? 0;
+      if (!rounds) return "—";
+      const surv = rounds - (this.stats.deaths ?? 0);
+      const pct = Math.round((surv / rounds) * 100);
+      return `${surv} (${pct}%)`;
     },
     hltvRating() {
       if (!this.hasStats) return null;
@@ -746,8 +705,7 @@ export default {
       const dpr = d / rounds;
       const apr = a / rounds;
       const adr = dmg / rounds;
-      const { totalRounds, participated } = this.perRoundParticipation;
-      const kastPct = totalRounds > 0 ? (participated / totalRounds) * 100 : 0;
+      const kastPct = this.kastPct ?? 0;
       const impact = 2.13 * kpr + 0.42 * apr - 0.41;
       const rating =
         0.0073 * kastPct +

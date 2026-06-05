@@ -43,6 +43,7 @@ type Stats = { k: number; d: number; a: number; dmg: number };
 const props = defineProps<{
   team: "ct" | "t";
   label: string;
+  score?: number | null;
   members: RosterEntry[];
   liveStateBySteam: Map<string, LiveState>;
   loadoutBySteam: Map<string, Loadout>;
@@ -67,10 +68,18 @@ const teamHsl = TEAM_HSL[props.team];
 <template>
   <div>
     <div
-      class="font-mono text-[0.55rem] tracking-[0.22em] uppercase mb-1"
+      class="flex items-center justify-between gap-2 font-mono mb-1"
       :style="{ color: `hsl(${teamHsl})` }"
     >
-      {{ label }}
+      <span class="text-[0.55rem] tracking-[0.22em] uppercase truncate">
+        {{ label }}
+      </span>
+      <span
+        v-if="score != null"
+        class="text-sm font-bold tabular-nums leading-none"
+      >
+        {{ score }}
+      </span>
     </div>
     <Tooltip v-for="m of members" :key="m.steamId">
       <TooltipTrigger as-child>

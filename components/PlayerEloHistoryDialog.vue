@@ -23,6 +23,8 @@ import {
 } from "~/components/ui/select";
 import cleanMapName from "~/utilities/cleanMapName";
 import { csRankIcon } from "~/utilities/csRank";
+import { Skeleton } from "~/components/ui/skeleton";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 
 // Drill-down view for a player's ELO history. The page-level chart
 // buckets at wide ranges to surface the trend; this dialog stays raw
@@ -975,39 +977,43 @@ function rankIcon(rank: number | null | undefined): string | null {
             </SelectContent>
           </Select>
         </div>
-        <div
-          v-if="loading && !hasLoadedOnce"
-          class="h-[360px] flex items-center justify-center text-muted-foreground font-mono text-xs uppercase tracking-[0.18em]"
-        >
-          {{ $t("pages.players.detail.elo_history_dialog.loading_history") }}
-        </div>
-        <div
-          v-else-if="!loading && filteredHistory.length === 0"
-          class="h-[360px] flex flex-col items-center justify-center gap-2 text-muted-foreground"
-        >
-          <span class="font-mono text-xs uppercase tracking-[0.18em]">
-            {{
-              $t("pages.players.detail.elo_history_dialog.no_matches_window")
-            }}
-          </span>
-          <button
-            v-if="selectedRange !== 'all'"
-            type="button"
-            class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] hover:underline"
-            @click="selectedRange = 'all'"
+        <FadeSwap>
+          <div
+            v-if="loading && !hasLoadedOnce"
+            key="skeleton"
+            class="h-[360px] sm:h-[420px]"
           >
-            {{
-              $t("pages.players.detail.elo_history_dialog.expand_to_all_time")
-            }}
-          </button>
-        </div>
-        <div v-else class="h-[360px] sm:h-[420px]">
-          <PlayerEloChart
-            :series="chartSeries"
-            :rank-type="chartRankType"
-            :loading="loading"
-          />
-        </div>
+            <Skeleton class="h-full w-full rounded-lg" />
+          </div>
+          <div
+            v-else-if="!loading && filteredHistory.length === 0"
+            key="empty"
+            class="h-[360px] flex flex-col items-center justify-center gap-2 text-muted-foreground"
+          >
+            <span class="font-mono text-xs uppercase tracking-[0.18em]">
+              {{
+                $t("pages.players.detail.elo_history_dialog.no_matches_window")
+              }}
+            </span>
+            <button
+              v-if="selectedRange !== 'all'"
+              type="button"
+              class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] hover:underline"
+              @click="selectedRange = 'all'"
+            >
+              {{
+                $t("pages.players.detail.elo_history_dialog.expand_to_all_time")
+              }}
+            </button>
+          </div>
+          <div v-else key="content" class="h-[360px] sm:h-[420px]">
+            <PlayerEloChart
+              :series="chartSeries"
+              :rank-type="chartRankType"
+              :loading="loading"
+            />
+          </div>
+        </FadeSwap>
       </div>
 
       <div

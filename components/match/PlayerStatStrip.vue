@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import StatLabel from "~/components/common/StatLabel.vue";
 defineProps<{
   stats: {
     name?: string;
@@ -68,7 +69,7 @@ defineProps<{
         <span
           class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
         >
-          {{ $t("match.player_strip.adr") }}
+          <StatLabel stat="adr">{{ $t("match.player_strip.adr") }}</StatLabel>
         </span>
         <span
           class="text-xl font-bold leading-none tabular-nums text-foreground"
@@ -96,7 +97,7 @@ defineProps<{
         <span
           class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
         >
-          {{ $t("match.player_strip.kd") }}
+          <StatLabel stat="kd">{{ $t("match.player_strip.kd") }}</StatLabel>
         </span>
         <span
           class="text-xl font-bold leading-none tabular-nums text-[hsl(var(--tac-amber))]"

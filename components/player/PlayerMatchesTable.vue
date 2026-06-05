@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PlayerMatchRow from "~/components/player/PlayerMatchRow.vue";
+import StatLabel from "~/components/common/StatLabel.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import { useMediaQuery } from "@vueuse/core";
 
@@ -66,10 +67,14 @@ const wideGrid =
           <span>{{ $t("player_match.headers.result") }}</span>
           <span>{{ $t("player_match.headers.map") }}</span>
           <span />
-          <span>{{ $t("player_match.headers.rating") }}</span>
+          <span
+            ><StatLabel
+              stat="hltv"
+              :label="$t('player_match.headers.rating')"
+          /></span>
           <span>K / D / A</span>
-          <span>K/D</span>
-          <span>ADR</span>
+          <span><StatLabel stat="kd" label="K/D" /></span>
+          <span><StatLabel stat="adr" label="ADR" /></span>
           <span class="text-right">{{ $t("player_match.headers.elo") }}</span>
           <span />
         </div>

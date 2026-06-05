@@ -29,6 +29,7 @@ import {
   TableRow,
 } from "~/components/ui/table";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import StatLabel from "~/components/common/StatLabel.vue";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -221,51 +222,19 @@ function filteredMatchMaps() {
   return maps.filter((m: any) => m.id === props.selectedMapId);
 }
 
-function kastFromRounds(steamId: string) {
-  let totalRounds = 0;
-  let participated = 0;
-  for (const match_map of filteredMatchMaps()) {
-    const rounds = match_map?.rounds;
-    if (!Array.isArray(rounds)) {
-      continue;
-    }
-    for (const round of rounds) {
-      if (round.round === 0) {
-        continue;
-      }
-      totalRounds++;
-      const kills = round.kills || [];
-      const assists = round.assists || [];
-      const myDeath = kills.find(
-        (k: any) => String(k.attacked_player?.steam_id) === steamId,
-      );
-      const gotKill = kills.some(
-        (k: any) =>
-          String(k.player?.steam_id) === steamId &&
-          String(k.attacked_player?.steam_id) !== steamId,
-      );
-      const gotAssist = assists.some(
-        (a: any) => String(a.attacker_steam_id) === steamId,
-      );
-      const didSurvive = !myDeath;
-      let traded = false;
-      if (myDeath) {
-        const killerSteamId = String(myDeath.player?.steam_id || "");
-        if (killerSteamId) {
-          traded = kills.some(
-            (k: any, idx: number) =>
-              idx > kills.indexOf(myDeath) &&
-              String(k.attacked_player?.steam_id) === killerSteamId &&
-              String(k.player?.steam_id) !== steamId,
-          );
-        }
-      }
-      if (gotKill || gotAssist || didSurvive || traded) {
-        participated++;
-      }
-    }
+// Rounds-weighted KAST from the canonical hltv view (player.match_map_hltv),
+// no round-walking.
+function kastPctFor(steamId: string | null): number | null {
+  const entry = entryFor(steamId);
+  const rows = entry?.member?.player?.match_map_hltv ?? [];
+  let weighted = 0;
+  let rounds = 0;
+  for (const row of rows) {
+    const rp = row.rounds_played ?? 0;
+    weighted += (row.kast_pct ?? 0) * rp;
+    rounds += rp;
   }
-  return { totalRounds, participated };
+  return rounds > 0 ? weighted / rounds : null;
 }
 
 function openingFromRounds(steamId: string) {
@@ -305,13 +274,7 @@ function metricsFor(steamId: string | null) {
   const apr = stats.assists / rounds;
   const adr = stats.damage / rounds;
 
-  let kastPct: number | null = null;
-  if (hasRoundEvents.value) {
-    const { totalRounds, participated } = kastFromRounds(steamId!);
-    if (totalRounds > 0) {
-      kastPct = (participated / totalRounds) * 100;
-    }
-  }
+  const kastPct = kastPctFor(steamId);
 
   const impact = 2.13 * kpr + 0.42 * apr - 0.41;
   const rating =
@@ -618,7 +581,7 @@ function betterSide(axis: AxisDef): "a" | "b" | null {
             <TableBody>
               <TableRow v-for="axis of activeAxes" :key="axis.key">
                 <TableCell class="text-left text-muted-foreground whitespace-nowrap">
-                  {{ axis.label }}
+                  <StatLabel :stat="axis.key" :label="axis.label" />
                 </TableCell>
                 <TableCell
                   class="text-right font-mono tabular-nums"

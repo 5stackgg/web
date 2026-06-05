@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { computed } from "vue";
+import { computed, ref, watch, onUnmounted } from "vue";
+import { useApolloClient } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 import LineupOpeningDuelRow from "~/components/match/LineupOpeningDuelRow.vue";
 import SortableTableHead from "~/components/common/SortableTableHead.vue";
 import { useTableSort } from "~/composables/useTableSort";
@@ -22,75 +24,135 @@ const lineupsToRender = computed(() =>
   props.combineWith ? [props.lineup, props.combineWith] : [props.lineup],
 );
 
-const filteredMatchMaps = computed(() => {
-  if (!props.selectedMapId) return props.match.match_maps;
-  return props.match.match_maps.filter(
-    (m: any) => m.id === props.selectedMapId,
-  );
-});
-
-// match_map_rounds.lineup_X_side comes from e_sides_enum which stores
-// "CT" and "TERRORIST" (NOT "T"). The filter chip uses "T"/"CT" for
-// UI clarity, so normalize here.
-function sideMatches(roundSide: string | null | undefined): boolean {
-  if (side.value === "all") return true;
-  if (side.value === "CT") return roundSide === "CT";
-  if (side.value === "T") return roundSide === "TERRORIST" || roundSide === "T";
-  return true;
-}
-
-function roundOnSide(round: any, lp: any): boolean {
-  if (side.value === "all") return true;
-  const isL1 = lp.id === props.match.lineup_1_id;
-  const playerSide = isL1 ? round.lineup_1_side : round.lineup_2_side;
-  return sideMatches(playerSide);
-}
-
-function duelStatsFor(member: any, lp: any) {
-  let attempts = 0;
-  let success = 0;
-  let deaths = 0;
-  let tradedDeaths = 0;
-  const steamId = String(member.steam_id);
-  for (const match_map of filteredMatchMaps.value) {
-    for (const round of match_map.rounds) {
-      if (!roundOnSide(round, lp)) continue;
-      const firstKill = round.kills.find(
-        (k: any) =>
-          k.player && k.player.steam_id !== k.attacked_player.steam_id,
-      );
-      if (!firstKill) continue;
-      const isKiller = String(firstKill.player?.steam_id) === steamId;
-      const isVictim = String(firstKill.attacked_player?.steam_id) === steamId;
-      if (!isKiller && !isVictim) continue;
-      attempts++;
-      if (isKiller) success++;
-      if (isVictim) {
-        deaths++;
-        const traderKill = round.kills.find(
-          (k: any) =>
-            k.player &&
-            String(k.attacked_player?.steam_id) ===
-              String(firstKill.player?.steam_id) &&
-            String(k.player?.steam_id) !==
-              String(firstKill.attacked_player?.steam_id),
-        );
-        if (traderKill) tradedDeaths++;
-      }
+// Opening-duel aggregates from the backend: per-player records +
+// v_match_lineup_map_stats for the lineup's total side rounds (attempt%
+// denominator). No round scanning on the client.
+const { client: apolloClient } = useApolloClient();
+const duelRows = ref<any[]>([]);
+const lineupRoundRows = ref<any[]>([]);
+const OPENING_SUB = gql`
+  subscription MatchOpeningDuels($matchId: uuid!) {
+    v_match_player_opening_duels(where: { match_id: { _eq: $matchId } }) {
+      match_map_id
+      match_lineup_id
+      steam_id
+      side
+      attempts
+      wins
+      deaths
+      traded_deaths
     }
   }
-  return { attempts, success, deaths, tradedDeaths };
+`;
+const LINEUP_ROUNDS_SUB = gql`
+  subscription MatchLineupRounds($matchId: uuid!) {
+    v_match_lineup_map_stats(where: { match_id: { _eq: $matchId } }) {
+      match_map_id
+      match_lineup_id
+      side
+      rounds
+    }
+  }
+`;
+let duelSub: { unsubscribe: () => void } | null = null;
+let roundsSub: { unsubscribe: () => void } | null = null;
+watch(
+  () => props.match?.id,
+  (id) => {
+    duelSub?.unsubscribe();
+    roundsSub?.unsubscribe();
+    duelSub = null;
+    roundsSub = null;
+    duelRows.value = [];
+    lineupRoundRows.value = [];
+    if (!id) {
+      return;
+    }
+    duelSub = apolloClient
+      .subscribe({ query: OPENING_SUB, variables: { matchId: id } })
+      .subscribe({
+        next: ({ data }: any) => {
+          duelRows.value = data?.v_match_player_opening_duels ?? [];
+        },
+        error: () => {
+          duelRows.value = [];
+        },
+      });
+    roundsSub = apolloClient
+      .subscribe({ query: LINEUP_ROUNDS_SUB, variables: { matchId: id } })
+      .subscribe({
+        next: ({ data }: any) => {
+          lineupRoundRows.value = data?.v_match_lineup_map_stats ?? [];
+        },
+        error: () => {
+          lineupRoundRows.value = [];
+        },
+      });
+  },
+  { immediate: true },
+);
+onUnmounted(() => {
+  duelSub?.unsubscribe();
+  roundsSub?.unsubscribe();
+});
+
+function sideToken(): "t" | "ct" | null {
+  if (side.value === "CT") return "ct";
+  if (side.value === "T") return "t";
+  return null;
+}
+function rowPasses(r: any): boolean {
+  if (props.selectedMapId && r.match_map_id !== props.selectedMapId) {
+    return false;
+  }
+  const token = sideToken();
+  return !token || r.side === token;
+}
+
+// Per-player opening record (map + side filter applied).
+function openingFor(lineupId: string, steamId: string | number) {
+  const sid = String(steamId);
+  let attempts = 0;
+  let wins = 0;
+  let deaths = 0;
+  let tradedDeaths = 0;
+  for (const r of duelRows.value) {
+    if (
+      String(r.match_lineup_id) !== String(lineupId) ||
+      String(r.steam_id) !== sid ||
+      !rowPasses(r)
+    ) {
+      continue;
+    }
+    attempts += r.attempts ?? 0;
+    wins += r.wins ?? 0;
+    deaths += r.deaths ?? 0;
+    tradedDeaths += r.traded_deaths ?? 0;
+  }
+  return { attempts, success: wins, deaths, tradedDeaths };
+}
+
+// Lineup's total rounds (map + side filter applied) — attempt% denominator.
+function lineupRoundsFor(lineupId: string): number {
+  let rounds = 0;
+  for (const r of lineupRoundRows.value) {
+    if (String(r.match_lineup_id) !== String(lineupId) || !rowPasses(r)) {
+      continue;
+    }
+    rounds += r.rounds ?? 0;
+  }
+  return rounds;
 }
 
 function sortGettersFor(lp: any): Record<string, (m: any) => unknown> {
   return {
-    attempts: (m) => duelStatsFor(m, lp).attempts,
+    attempts: (m) => openingFor(lp.id, m.steam_id).attempts,
     success: (m) => {
-      const s = duelStatsFor(m, lp);
+      const s = openingFor(lp.id, m.steam_id);
       return s.attempts === 0 ? -1 : s.success / s.attempts;
     },
     traded: (m) => {
-      const s = duelStatsFor(m, lp);
+      const s = openingFor(lp.id, m.steam_id);
       return s.deaths === 0 ? -1 : s.tradedDeaths / s.deaths;
     },
   };
@@ -161,6 +223,8 @@ function sortGettersFor(lp: any): Record<string, (m: any) => unknown> {
           :lineup="lp"
           :match="match"
           :selected-map-id="selectedMapId"
+          :opening="openingFor(lp.id, member.steam_id)"
+          :lineup-rounds="lineupRoundsFor(lp.id)"
           v-for="member of sortRows(lp.lineup_players, sortGettersFor(lp))"
         ></lineup-opening-duel-row>
       </TableBody>

@@ -22,10 +22,10 @@ routes = [
   { pattern = "demo-dl.5stack.gg/clips*", zone_name = "5stack.gg" },
 ]
 
-# Secrets (S3_ACCESS_KEY, S3_SECRET, UPLOAD_TOKEN_SECRET):
+# Secrets (S3_ACCESS_KEY, S3_SECRET):
 #   dev:  put them in .dev.vars (gitignored)
-#   prod: `wrangler secret put S3_ACCESS_KEY` (and S3_SECRET, UPLOAD_TOKEN_SECRET)
+#   prod: `wrangler secret put S3_ACCESS_KEY` and S3_SECRET
 #
-# UPLOAD_TOKEN_SECRET must match the API's UPLOAD_TOKEN_SECRET env var — it's
-# the shared key for authorizing demo multipart part uploads (PUT). Without it
-# the worker rejects all uploads with 500.
+# S3_SECRET doubles as the key the worker uses to verify demo upload tokens
+# (PUT) minted by the API — the API shares the same B2 credential, so no
+# separate upload secret is needed.

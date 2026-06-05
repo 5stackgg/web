@@ -50,7 +50,6 @@ export default {
       BUCKET_NAME: string;
       S3_ENDPOINT: string;
       ALLOWED_HEADERS?: string;
-      UPLOAD_TOKEN_SECRET?: string;
     },
     ctx: ExecutionContext,
   ) {
@@ -190,7 +189,6 @@ async function handleUpload(
     S3_SECRET: string;
     BUCKET_NAME: string;
     S3_ENDPOINT: string;
-    UPLOAD_TOKEN_SECRET?: string;
   },
   reqOrigin: string | null,
 ): Promise<Response> {
@@ -210,8 +208,7 @@ async function handleUpload(
     !env.BUCKET_NAME ||
     !env.S3_ENDPOINT ||
     !env.S3_ACCESS_KEY ||
-    !env.S3_SECRET ||
-    !env.UPLOAD_TOKEN_SECRET
+    !env.S3_SECRET
   ) {
     return new Response("Worker misconfigured", {
       status: 500,
@@ -220,10 +217,10 @@ async function handleUpload(
   }
 
   // Authorize the part write: the API mints this token (HMAC over key+uploadId
-  // with the shared UPLOAD_TOKEN_SECRET) only for authenticated admins. Without
-  // this check the worker would sign arbitrary writes for anyone with a valid
+  // keyed on the shared S3_SECRET) only for authenticated admins. Without this
+  // check the worker would sign arbitrary writes for anyone with a valid
   // uploadId.
-  if (!(await verifyUploadToken(env.UPLOAD_TOKEN_SECRET, token, key, uploadId))) {
+  if (!(await verifyUploadToken(env.S3_SECRET, token, key, uploadId))) {
     return new Response("forbidden", {
       status: 403,
       headers: corsHeaders(reqOrigin),

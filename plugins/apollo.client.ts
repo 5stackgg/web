@@ -3,7 +3,7 @@ import { RetryLink } from "@apollo/client/link/retry";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
-import { provideApolloClient } from "@vue/apollo-composable";
+import { DefaultApolloClient, provideApolloClient } from "@vue/apollo-composable";
 import { createHttpLink, from, split } from "@apollo/client/core";
 import type { ApolloClient } from "@apollo/client/core";
 import type {
@@ -135,6 +135,13 @@ export default defineNuxtPlugin((nuxtApp) => {
     },
   };
 
+  // Provide the client both ways: `provideApolloClient` sets the module
+  // global that @vue/apollo-composable falls back to in async callbacks
+  // (outside a setup/injection context), while the app-level inject makes
+  // every in-setup useApolloClient/useQuery/useSubscription resolve via
+  // Vue injection — which survives HMR resets of the composable's global
+  // (the source of "Apollo client with id default not found").
+  nuxtApp.vueApp.provide(DefaultApolloClient, $apollo.defaultClient);
   provideApolloClient($apollo.defaultClient);
 
   nuxtApp.hook("apollo:error", (error) => {

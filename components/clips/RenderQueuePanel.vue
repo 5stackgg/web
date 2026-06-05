@@ -1229,17 +1229,9 @@ const queueStatus = computed<{
                   <Server class="h-3 w-3 text-primary" />
                 </span>
                 <span class="text-sm font-medium">Render pod booting</span>
-                <span
-                  class="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-primary"
-                >
-                  <Spinner class="h-2.5 w-2.5" />
-                  {{ g.bootInfo.stage.replace(/_/g, " ") }}
-                  <span v-if="g.bootInfo.stageSub" class="opacity-70">
-                    · {{ g.bootInfo.stageSub }}
-                  </span>
-                </span>
               </div>
-              <ul class="flex flex-col gap-1">
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-start">
+                <ul class="flex flex-1 flex-col gap-1">
                 <li
                   v-for="stage in visibleBootStages(g)"
                   :key="stage.key"
@@ -1274,6 +1266,12 @@ const queueStatus = computed<{
                   <span class="flex-1">{{ stage.label }}</span>
                   <template v-if="stageStateFor(g, stage) === 'current'">
                     <span
+                      v-if="g.bootInfo.stageSub"
+                      class="font-mono text-[0.6rem] tabular-nums opacity-60"
+                    >
+                      {{ g.bootInfo.stageSub }}
+                    </span>
+                    <span
                       v-if="g.bootInfo.progress !== null"
                       class="font-mono text-[0.6rem] tabular-nums opacity-80"
                     >
@@ -1302,12 +1300,13 @@ const queueStatus = computed<{
                     skipped
                   </span>
                 </li>
-              </ul>
-              <div
-                v-if="g.sample"
-                class="mt-3 max-w-sm overflow-hidden rounded-md border border-border/50"
-              >
-                <DesktopSnapshot kind="clips" :id="g.sample.id" />
+                </ul>
+                <div
+                  v-if="g.sample"
+                  class="w-full shrink-0 overflow-hidden rounded-md border border-border/50 sm:w-64 lg:w-80"
+                >
+                  <DesktopSnapshot kind="clips" :id="g.sample.id" />
+                </div>
               </div>
             </div>
 

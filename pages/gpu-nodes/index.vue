@@ -2,7 +2,7 @@
 import { computed, onMounted, onUnmounted, reactive, ref } from "vue";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { useI18n } from "vue-i18n";
-import { useApolloClient } from "@vue/apollo-composable";
+import { useNuxtApp } from "#app";
 
 const { t } = useI18n();
 import { Button } from "~/components/ui/button";
@@ -28,6 +28,7 @@ import {
 } from "lucide-vue-next";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import DesktopSnapshot from "~/components/match/DesktopSnapshot.vue";
+import RenderPodBootStages from "~/components/clips/RenderPodBootStages.vue";
 import { Input } from "~/components/ui/input";
 import NodeControlMenu from "~/components/game-server-nodes/NodeControlMenu.vue";
 import {
@@ -62,7 +63,7 @@ definePageMeta({
 
 const { status: poolStatus } = useGpuAvailability();
 const { toast } = useToast();
-const { client: apolloClient } = useApolloClient();
+const apolloClient = useNuxtApp().$apollo.defaultClient;
 
 const steamPoolCount = ref(0);
 let steamPoolSub: { unsubscribe: () => void } | undefined;
@@ -244,6 +245,14 @@ function bakeProgress(node: any): number | null {
   }
   const n = Number(raw);
   return Number.isFinite(n) ? n : null;
+}
+
+// Raw "compiled / total" pipeline count from the streamer, shown next to
+// the percent so the absolute shader count is visible (game-streamer
+// shader-cache.sh emits this as progress_stage).
+function bakeProgressStage(node: any): string | null {
+  const raw = node?.shader_bake_progress_stage;
+  return typeof raw === "string" && raw.length > 0 ? raw : null;
 }
 
 async function bakeShaders(node: any) {
@@ -516,6 +525,13 @@ async function stopGpuSession(nodeId: string) {
               <span v-else class="gpu-node-task-sub">{{
                 busyByNode[node.id].subline
               }}</span>
+              <span
+                v-if="busyByNode[node.id].progress"
+                class="gpu-node-task-state"
+              >
+                <Spinner class="w-2.5 h-2.5" />
+                {{ busyByNode[node.id].progress }}
+              </span>
             </template>
             <Tooltip v-else-if="isBaking(node)">
               <TooltipTrigger as-child>
@@ -647,6 +663,12 @@ async function stopGpuSession(nodeId: string) {
           </div>
         </div>
 
+        <RenderPodBootStages
+          v-if="busyByNode[node.id]?.statusHistory"
+          :histories="[busyByNode[node.id].statusHistory]"
+          class="gpu-pod-boot"
+        />
+
         <div v-if="busyByNode[node.id]" class="gpu-bake-preview">
           <DesktopSnapshot
             :kind="busyByNode[node.id].snapshotKind"
@@ -714,7 +736,11 @@ async function stopGpuSession(nodeId: string) {
                     bakeProgress(node) != null
                   "
                   class="gpu-bake-seg-pct"
-                  >{{ bakeProgress(node)?.toFixed(1) }}%</span
+                  >{{ bakeProgress(node)?.toFixed(1) }}%<span
+                    v-if="step.key === 'shaders' && bakeProgressStage(node)"
+                    class="gpu-bake-seg-count"
+                    >({{ bakeProgressStage(node) }})</span
+                  ></span
                 >
               </span>
               <span class="gpu-bake-seg-track">
@@ -912,6 +938,13 @@ type BusyEntry = {
   snapshotKind: "live" | "demo" | "bake" | "clips";
   snapshotId: string;
   rendering?: boolean;
+  // One-line state for the active (post-boot) phase only — "Rendering 42%"
+  // / "Uploading". Boot progress is shown by the full RenderPodBootStages
+  // checklist instead.
+  progress?: string | null;
+  // Raw status_history of the current item, fed to RenderPodBootStages so
+  // any booting pod (render / live / demo) shows the same boot checklist.
+  statusHistory?: any[];
   icon: any;
 };
 
@@ -950,6 +983,7 @@ export default {
           matchId: stream.match_id,
           snapshotKind: "live",
           snapshotId: stream.match_id,
+          statusHistory: stream.is_live ? undefined : stream.status_history,
           icon: Radio,
         };
       }
@@ -966,6 +1000,8 @@ export default {
           matchId: session.match_id,
           snapshotKind: "demo",
           snapshotId: session.id,
+          statusHistory:
+            session.status === "playing" ? undefined : session.status_history,
           icon: PlayCircle,
         };
       }
@@ -984,11 +1020,31 @@ export default {
           snapshotKind: "clips",
           snapshotId: job.id,
           rendering: job.status === "rendering" || job.status === "uploading",
+          progress: this.renderJobState(job),
+          statusHistory:
+            job.status === "queued" ? job.status_history : undefined,
           icon: Film,
         };
       }
 
       return map;
+    },
+  },
+  methods: {
+    // Compact header chip for the active (post-boot) render phase only —
+    // "Rendering 42%" / "Uploading". The booting phase is shown in full by
+    // the RenderPodBootStages checklist, so nothing is returned there.
+    renderJobState(this: any, job: any): string | null {
+      if (job.status === "rendering") {
+        const n = Number(job.progress);
+        return Number.isFinite(n)
+          ? `${this.$t("render_queue_status.rendering")} ${Math.round(n * 100)}%`
+          : this.$t("render_queue_status.rendering");
+      }
+      if (job.status === "uploading") {
+        return this.$t("render_queue_status.uploading");
+      }
+      return null;
     },
   },
   apollo: {
@@ -1047,6 +1103,7 @@ export default {
               id: true,
               match_id: true,
               status: true,
+              status_history: true,
               mode: true,
               is_live: true,
               game_server_node_id: true,
@@ -1075,6 +1132,7 @@ export default {
               id: true,
               match_id: true,
               status: true,
+              status_history: true,
               game_server_node_id: true,
               created_at: true,
               watcher: { steam_id: true, name: true },
@@ -1117,6 +1175,8 @@ export default {
             {
               id: true,
               status: true,
+              progress: true,
+              status_history: true,
               game_server_node_id: true,
               user_steam_id: true,
               user: { steam_id: true, name: true },
@@ -1404,6 +1464,30 @@ export default {
   text-overflow: ellipsis;
   max-width: 220px;
 }
+.gpu-pod-boot {
+  margin: 0.25rem 0 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid hsl(var(--border) / 0.5);
+  border-radius: 0.5rem;
+  background: hsl(var(--primary) / 0.03);
+}
+.gpu-node-task-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+  padding: 0.05rem 0.4rem;
+  border: 1px solid hsl(var(--tac-amber) / 0.4);
+  border-radius: 9999px;
+  background: hsl(var(--tac-amber) / 0.12);
+  font-family: ui-monospace, monospace;
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: hsl(var(--tac-amber));
+}
 .gpu-node-task-idle {
   font-family: ui-monospace, monospace;
   font-size: 0.6rem;
@@ -1617,6 +1701,12 @@ export default {
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
   color: hsl(var(--bake-accent));
+}
+.gpu-bake-seg-count {
+  margin-left: 0.4em;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: hsl(var(--muted-foreground));
 }
 .gpu-bake-seg-marker {
   position: relative;

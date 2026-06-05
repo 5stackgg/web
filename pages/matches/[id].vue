@@ -505,7 +505,7 @@ const vsBaseClasses =
               </div>
             </div>
             <div
-              v-if="showVetoPicks"
+              v-show="showVetoPicks && vetoPickCount !== 0"
               class="rounded-xl border border-border/40 bg-card/40 px-1.5 py-1.5"
             >
               <div
@@ -513,7 +513,11 @@ const vsBaseClasses =
               >
                 {{ $t("common.map_veto") }}
               </div>
-              <MatchPicksDisplay :match="match" />
+              <MatchPicksDisplay
+                v-if="showVetoPicks"
+                :match="match"
+                @update:count="vetoPickCount = $event"
+              />
             </div>
           </div>
         </PageTransition>
@@ -599,6 +603,7 @@ export default {
   data() {
     return {
       match: undefined,
+      vetoPickCount: undefined,
     };
   },
   apollo: {

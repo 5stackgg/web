@@ -134,6 +134,7 @@ export default {
       required: true,
     },
   },
+  emits: ["update:count"],
   apollo: {
     match_map_veto_picks: {
       variables() {
@@ -182,6 +183,10 @@ export default {
       }),
       result({ data }: { data: any }) {
         this.picks = data?.match_map_veto_picks ?? [];
+        this.$emit(
+          "update:count",
+          this.picks.filter((p: any) => p.type !== "Side").length,
+        );
       },
     },
   },

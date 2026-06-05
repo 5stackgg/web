@@ -2163,177 +2163,6 @@ function openReplayPopout() {
             @error="radarFailed = true"
           />
 
-          <!-- Top-right HUD cluster: marker-style toggle + pop-out. Both
-             sized 40×40 to read as broadcast-grade action buttons. -->
-          <div class="absolute top-2 right-2 z-20 flex items-center gap-1.5">
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <button
-                  type="button"
-                  class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
-                  @click="showScoreboard = !showScoreboard"
-                >
-                  <PanelRightClose v-if="showScoreboard" class="w-5 h-5" />
-                  <PanelRightOpen v-else class="w-5 h-5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {{
-                  showScoreboard
-                    ? $t("match.replay.hide_scoreboard")
-                    : $t("match.replay.show_scoreboard")
-                }}
-              </TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger as-child>
-                <button
-                  type="button"
-                  class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
-                  @click="showAvatars = !showAvatars"
-                >
-                  <Users v-if="showAvatars" class="w-5 h-5" />
-                  <Hash v-else class="w-5 h-5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                {{
-                  showAvatars
-                    ? $t("match.replay.toggle_to_slots")
-                    : $t("match.replay.toggle_to_avatars")
-                }}
-              </TooltipContent>
-            </Tooltip>
-            <Popover>
-              <PopoverTrigger as-child>
-                <button
-                  type="button"
-                  class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
-                  :title="$t('match.replay.overlays')"
-                >
-                  <Settings2 class="w-5 h-5" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent align="end" class="w-56 p-2 text-xs font-mono">
-                <div
-                  class="px-1 py-1 text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
-                >
-                  {{ $t("match.replay.overlays") }}
-                </div>
-                <label
-                  class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
-                >
-                  <input
-                    v-model="showC4"
-                    type="checkbox"
-                    class="accent-[hsl(var(--tac-amber))]"
-                  />
-                  <span>{{ $t("match.replay.overlay_c4") }}</span>
-                </label>
-                <label
-                  class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
-                >
-                  <input
-                    v-model="showDefuser"
-                    type="checkbox"
-                    class="accent-[hsl(var(--tac-amber))]"
-                  />
-                  <span>{{ $t("match.replay.overlay_defuser") }}</span>
-                </label>
-                <label
-                  class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
-                >
-                  <input
-                    v-model="showGroundBomb"
-                    type="checkbox"
-                    class="accent-[hsl(var(--tac-amber))]"
-                  />
-                  <span>{{ $t("match.replay.overlay_ground_bomb") }}</span>
-                </label>
-                <label
-                  class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
-                >
-                  <input
-                    v-model="showGroundKits"
-                    type="checkbox"
-                    class="accent-[hsl(var(--tac-amber))]"
-                  />
-                  <span>{{ $t("match.replay.overlay_ground_kits") }}</span>
-                </label>
-              </PopoverContent>
-            </Popover>
-            <Tooltip v-if="!isPopout">
-              <TooltipTrigger as-child>
-                <button
-                  type="button"
-                  class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
-                  @click="openReplayPopout"
-                >
-                  <ExternalLink class="w-5 h-5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>{{ $t("match.replay.popout") }}</TooltipContent>
-            </Tooltip>
-          </div>
-
-          <!-- HUD: round timer + bomb advisory in the top-left of the radar. -->
-          <div
-            class="absolute top-2 left-2 flex flex-col gap-1 pointer-events-none z-10"
-          >
-            <div
-              class="px-2.5 py-1 font-mono text-sm font-bold tabular-nums border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
-              :class="
-                timer.phase === 'bomb'
-                  ? 'border-[hsl(var(--destructive))] text-[hsl(var(--destructive))]'
-                  : timer.phase === 'freeze'
-                    ? 'border-[hsl(var(--muted-foreground)/0.6)] text-muted-foreground'
-                    : 'border-[hsl(var(--tac-amber)/0.6)] text-[hsl(var(--tac-amber))]'
-              "
-            >
-              <span
-                v-if="timer.phase === 'freeze'"
-                class="text-[0.55rem] tracking-[0.25em] uppercase mr-1.5"
-              >
-                {{ $t("match.replay.phase_freeze") }}
-              </span>
-              <span
-                v-else-if="timer.phase === 'bomb'"
-                class="text-[0.55rem] tracking-[0.25em] uppercase mr-1.5"
-              >
-                {{ $t("match.replay.phase_bomb") }}
-              </span>
-              {{ formatMMSS(timer.secondsRemaining) }}
-            </div>
-            <div
-              v-if="timer.phase === 'bomb'"
-              class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--destructive)/0.6)] bg-[hsl(var(--destructive)/0.15)] text-[hsl(var(--destructive))] backdrop-blur-sm"
-            >
-              <span class="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
-              {{
-                $t("match.replay.bomb_planted", {
-                  site: bombPlantThisRound?.site ?? "",
-                })
-              }}
-            </div>
-            <div
-              v-else-if="
-                bombDefuseThisRound && bombDefuseThisRound.tick <= currentTick
-              "
-              class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--success)/0.6)] bg-[hsl(var(--success)/0.15)] text-[hsl(var(--success))] backdrop-blur-sm"
-            >
-              <span class="w-1.5 h-1.5 rounded-full bg-current" />
-              {{ $t("match.replay.bomb_defused") }}
-            </div>
-            <div
-              v-else-if="
-                bombExplodeThisRound && bombExplodeThisRound.tick <= currentTick
-              "
-              class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--destructive)/0.8)] bg-[hsl(var(--destructive)/0.25)] text-[hsl(var(--destructive))] backdrop-blur-sm"
-            >
-              {{ $t("match.replay.bomb_exploded") }}
-            </div>
-          </div>
-
           <svg
             :viewBox="`0 0 ${CANVAS} ${CANVAS}`"
             class="absolute inset-0 w-full h-full"
@@ -3821,6 +3650,180 @@ function openReplayPopout() {
               </g>
             </g>
           </svg>
+        </div>
+
+        <!-- Round timer (top-left) + HUD controls (top-right) are
+             anchored to the STAGE edges, not the centered map, so they
+             hug the viewport corners and the map reads wider. -->
+        <!-- Top-right HUD cluster: marker-style toggle + pop-out. Both
+           sized 40×40 to read as broadcast-grade action buttons. -->
+        <div class="absolute top-2 right-2 z-20 flex items-center gap-1.5">
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <button
+                type="button"
+                class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
+                @click="showScoreboard = !showScoreboard"
+              >
+                <PanelRightClose v-if="showScoreboard" class="w-5 h-5" />
+                <PanelRightOpen v-else class="w-5 h-5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {{
+                showScoreboard
+                  ? $t("match.replay.hide_scoreboard")
+                  : $t("match.replay.show_scoreboard")
+              }}
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <button
+                type="button"
+                class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
+                @click="showAvatars = !showAvatars"
+              >
+                <Users v-if="showAvatars" class="w-5 h-5" />
+                <Hash v-else class="w-5 h-5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {{
+                showAvatars
+                  ? $t("match.replay.toggle_to_slots")
+                  : $t("match.replay.toggle_to_avatars")
+              }}
+            </TooltipContent>
+          </Tooltip>
+          <Popover>
+            <PopoverTrigger as-child>
+              <button
+                type="button"
+                class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
+                :title="$t('match.replay.overlays')"
+              >
+                <Settings2 class="w-5 h-5" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent align="end" class="w-56 p-2 text-xs font-mono">
+              <div
+                class="px-1 py-1 text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
+              >
+                {{ $t("match.replay.overlays") }}
+              </div>
+              <label
+                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+              >
+                <input
+                  v-model="showC4"
+                  type="checkbox"
+                  class="accent-[hsl(var(--tac-amber))]"
+                />
+                <span>{{ $t("match.replay.overlay_c4") }}</span>
+              </label>
+              <label
+                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+              >
+                <input
+                  v-model="showDefuser"
+                  type="checkbox"
+                  class="accent-[hsl(var(--tac-amber))]"
+                />
+                <span>{{ $t("match.replay.overlay_defuser") }}</span>
+              </label>
+              <label
+                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+              >
+                <input
+                  v-model="showGroundBomb"
+                  type="checkbox"
+                  class="accent-[hsl(var(--tac-amber))]"
+                />
+                <span>{{ $t("match.replay.overlay_ground_bomb") }}</span>
+              </label>
+              <label
+                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+              >
+                <input
+                  v-model="showGroundKits"
+                  type="checkbox"
+                  class="accent-[hsl(var(--tac-amber))]"
+                />
+                <span>{{ $t("match.replay.overlay_ground_kits") }}</span>
+              </label>
+            </PopoverContent>
+          </Popover>
+          <Tooltip v-if="!isPopout">
+            <TooltipTrigger as-child>
+              <button
+                type="button"
+                class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
+                @click="openReplayPopout"
+              >
+                <ExternalLink class="w-5 h-5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>{{ $t("match.replay.popout") }}</TooltipContent>
+          </Tooltip>
+        </div>
+
+        <!-- HUD: round timer + bomb advisory in the top-left of the radar. -->
+        <div
+          class="absolute top-2 left-2 flex flex-col gap-1 pointer-events-none z-10"
+        >
+          <div
+            class="px-2.5 py-1 font-mono text-sm font-bold tabular-nums border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
+            :class="
+              timer.phase === 'bomb'
+                ? 'border-[hsl(var(--destructive))] text-[hsl(var(--destructive))]'
+                : timer.phase === 'freeze'
+                  ? 'border-[hsl(var(--muted-foreground)/0.6)] text-muted-foreground'
+                  : 'border-[hsl(var(--tac-amber)/0.6)] text-[hsl(var(--tac-amber))]'
+            "
+          >
+            <span
+              v-if="timer.phase === 'freeze'"
+              class="text-[0.55rem] tracking-[0.25em] uppercase mr-1.5"
+            >
+              {{ $t("match.replay.phase_freeze") }}
+            </span>
+            <span
+              v-else-if="timer.phase === 'bomb'"
+              class="text-[0.55rem] tracking-[0.25em] uppercase mr-1.5"
+            >
+              {{ $t("match.replay.phase_bomb") }}
+            </span>
+            {{ formatMMSS(timer.secondsRemaining) }}
+          </div>
+          <div
+            v-if="timer.phase === 'bomb'"
+            class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--destructive)/0.6)] bg-[hsl(var(--destructive)/0.15)] text-[hsl(var(--destructive))] backdrop-blur-sm"
+          >
+            <span class="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+            {{
+              $t("match.replay.bomb_planted", {
+                site: bombPlantThisRound?.site ?? "",
+              })
+            }}
+          </div>
+          <div
+            v-else-if="
+              bombDefuseThisRound && bombDefuseThisRound.tick <= currentTick
+            "
+            class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--success)/0.6)] bg-[hsl(var(--success)/0.15)] text-[hsl(var(--success))] backdrop-blur-sm"
+          >
+            <span class="w-1.5 h-1.5 rounded-full bg-current" />
+            {{ $t("match.replay.bomb_defused") }}
+          </div>
+          <div
+            v-else-if="
+              bombExplodeThisRound && bombExplodeThisRound.tick <= currentTick
+            "
+            class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--destructive)/0.8)] bg-[hsl(var(--destructive)/0.25)] text-[hsl(var(--destructive))] backdrop-blur-sm"
+          >
+            {{ $t("match.replay.bomb_exploded") }}
+          </div>
         </div>
 
         <!-- Floating scoreboard: the ONLY floating element. Stacked at the

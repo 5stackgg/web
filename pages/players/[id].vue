@@ -72,8 +72,7 @@ import { useApolloClient } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
-import { playerMatchHltvQuery } from "~/graphql/playerMatchHltvGraphql";
-import { playerMatchAggStatsQuery } from "~/graphql/playerMatchAggStatsGraphql";
+import { playerMatchSummaryQuery } from "~/graphql/playerMatchAggStatsGraphql";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { eloFields } from "~/graphql/eloFields";
 import {
@@ -1028,68 +1027,51 @@ async function loadMatches() {
     playerMatches.value = (list.data as any)?.playerWithMatches?.matches ?? [];
     playerMatchesTotal.value =
       (count.data as any)?.playerMatchesCount?.matches?.length ?? 0;
-    void loadMatchRatings();
-    void loadMatchStats();
+    void loadMatchEnrichment();
   } catch {
     // swallow — page is subscription-driven elsewhere; matches table
     // simply shows whatever last succeeded.
   }
 }
 
-// Canonical per-match HLTV rating (rounds-weighted, KAST-inclusive) for the
-// matches table — keyed by match id. The row's own client formula omits KAST,
-// so we override it with the backend value when available.
-async function loadMatchRatings() {
-  const ids = playerMatches.value
-    .map((m: any) => String(m?.id ?? ""))
-    .filter(Boolean);
-  if (!playerIdRef.value || !ids.length) {
-    ratingByMatch.value = new Map();
-    return;
-  }
-  try {
-    const { data } = await apolloClient.query({
-      query: playerMatchHltvQuery,
-      variables: { steamId: playerIdRef.value, matchIds: ids },
-      fetchPolicy: "network-only",
-    });
-    const map = new Map<string, number>();
-    for (const row of (data as any)?.v_player_match_rating ?? []) {
-      if (row.match_id != null && row.hltv_rating != null) {
-        map.set(String(row.match_id), Number(row.hltv_rating));
-      }
-    }
-    ratingByMatch.value = map;
-  } catch {
-    ratingByMatch.value = new Map();
-  }
-}
-
-// Batched per-match aggregate stats for the focus player across the visible
-// page — one query instead of a matches_by_pk per collapsed row.
-async function loadMatchStats() {
+// Enrich the visible page of matches in one request: the focus player's
+// aggregate stats (powers the collapsed rows, replacing a per-row
+// matches_by_pk) plus the canonical KAST-inclusive HLTV rating (the row's own
+// formula omits KAST). Both views are keyed (steam_id, match_id) and indexed,
+// so this is a single batched round-trip rather than one query per row.
+async function loadMatchEnrichment() {
   const ids = playerMatches.value
     .map((m: any) => String(m?.id ?? ""))
     .filter(Boolean);
   if (!playerIdRef.value || !ids.length) {
     statsByMatch.value = new Map();
+    ratingByMatch.value = new Map();
     return;
   }
   try {
     const { data } = await apolloClient.query({
-      query: playerMatchAggStatsQuery,
+      query: playerMatchSummaryQuery,
       variables: { steamId: playerIdRef.value, matchIds: ids },
       fetchPolicy: "network-only",
     });
-    const map = new Map<string, any>();
+    const stats = new Map<string, any>();
     for (const row of (data as any)?.player_match_stats_v ?? []) {
       if (row.match_id != null) {
-        map.set(String(row.match_id), row);
+        stats.set(String(row.match_id), row);
       }
     }
-    statsByMatch.value = map;
+    statsByMatch.value = stats;
+
+    const ratings = new Map<string, number>();
+    for (const row of (data as any)?.v_player_match_rating ?? []) {
+      if (row.match_id != null && row.hltv_rating != null) {
+        ratings.set(String(row.match_id), Number(row.hltv_rating));
+      }
+    }
+    ratingByMatch.value = ratings;
   } catch {
     statsByMatch.value = new Map();
+    ratingByMatch.value = new Map();
   }
 }
 

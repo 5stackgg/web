@@ -1089,6 +1089,38 @@ watch(
   },
 );
 
+// Has this player EVER played a match (any source, ignoring the filter bar)?
+// null while loading. Drives the brand-new-player empty state — distinct from
+// "no matches in the active window", which the filters can produce on a player
+// with plenty of history. Reuses the lightweight ids-only count query.
+const playerHasAnyMatches = ref<boolean | null>(null);
+let anyMatchesGen = 0;
+async function loadAnyMatches() {
+  if (!playerIdRef.value) {
+    playerHasAnyMatches.value = null;
+    return;
+  }
+  const gen = ++anyMatchesGen;
+  try {
+    const { data } = await apolloClient.query({
+      query: PLAYER_MATCHES_COUNT_QUERY,
+      variables: { playerId: playerIdRef.value, matchesWhere: {} },
+      fetchPolicy: "network-only",
+    });
+    if (gen !== anyMatchesGen) return;
+    playerHasAnyMatches.value =
+      ((data as any)?.playerMatchesCount?.matches?.length ?? 0) > 0;
+  } catch {
+    if (gen === anyMatchesGen) playerHasAnyMatches.value = null;
+  }
+}
+watch(playerIdRef, () => loadAnyMatches(), { immediate: true });
+
+// Brand-new player with nothing to show anywhere — collapse the whole stats /
+// tabs / matches block into a single clean empty state instead of a stack of
+// empty panels.
+const noCareerData = computed(() => playerHasAnyMatches.value === false);
+
 // Top ELO panel data — always the full 5Stack ELO history, independent of the
 // source/mode filter (that only drives the tabs + the ELO tab).
 const modeFilteredWindowed = computed<WindowedEloEntry[]>(
@@ -1798,7 +1830,7 @@ const playerTeamChipShortClasses =
                   v-else
                   class="relative flex h-full flex-col items-center justify-center gap-2 px-6 text-center uppercase text-muted-foreground"
                 >
-                  <template v-if="eloRange !== 'all'">
+                  <template v-if="eloRange !== 'all' && !noCareerData">
                     <span
                       class="font-mono text-[0.65rem] tracking-[0.22em] text-muted-foreground"
                     >
@@ -1887,7 +1919,46 @@ const playerTeamChipShortClasses =
       />
     </PageTransition>
 
-    <div class="flex flex-col gap-4 md:gap-6" v-if="player && pageContentReady">
+    <PageTransition v-if="player && pageContentReady && noCareerData">
+      <Empty
+        class="flex-none gap-3 border border-border/60 bg-card/30 p-6 md:p-8"
+      >
+        <EmptyTitle>{{ $t("pages.players.detail.no_matches") }}</EmptyTitle>
+        <EmptyDescription>
+          <template v-if="eloRange !== 'all' || excludeTournaments">
+            {{ $t("pages.players.detail.no_matches_in_window_period") }}
+          </template>
+          <template v-else>
+            {{
+              isSelfProfile
+                ? $t("pages.players.detail.no_matches_self_description")
+                : $t("pages.players.detail.no_matches_description")
+            }}
+          </template>
+        </EmptyDescription>
+        <Button
+          v-if="eloRange !== 'all' || excludeTournaments"
+          variant="outline"
+          @click="
+            setRange('all');
+            excludeTournaments = false;
+          "
+        >
+          {{ $t("pages.players.detail.expand_to_all_time") }}
+        </Button>
+        <NuxtLink v-else-if="isSelfProfile" to="/play">
+          <Button class="gap-2">
+            <PlayIcon class="h-4 w-4 fill-current" />
+            {{ $t("pages.players.detail.play_a_match") }}
+          </Button>
+        </NuxtLink>
+      </Empty>
+    </PageTransition>
+
+    <div
+      class="flex flex-col gap-4 md:gap-6"
+      v-if="player && pageContentReady && !noCareerData"
+    >
       <Tabs v-model="statsTab" class="w-full">
         <div ref="statsTabsEl" class="overflow-x-auto scroll-mt-4">
           <TabsList

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, watch, onMounted } from "vue";
+import { ref, computed, watch, onMounted, onUnmounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 import {
@@ -1013,6 +1013,44 @@ const modePills = computed<{ key: "heatmap" | "movement"; label: string }[]>(
     { key: "movement", label: t("match.map_analysis.mode_movement") },
   ],
 );
+
+// ← / → step through rounds (mirrors the 2D replay's round nav, but the
+// analysis view has no tick scrubber so the arrows are free to drive rounds).
+// The sequence leads with the "All rounds" (null) option so arrowing left from
+// round 1 lands back on the aggregate view.
+function stepRound(delta: number) {
+  const rounds = availableRounds.value;
+  if (!rounds.length) {
+    return;
+  }
+  const seq: (number | null)[] = [null, ...rounds];
+  const idx = seq.indexOf(selectedRound.value);
+  const next = Math.max(0, Math.min(seq.length - 1, (idx === -1 ? 0 : idx) + delta));
+  selectedRound.value = seq[next];
+}
+
+function onKeyDown(e: KeyboardEvent) {
+  const el = e.target as HTMLElement | null;
+  if (
+    el &&
+    (el.tagName === "INPUT" ||
+      el.tagName === "TEXTAREA" ||
+      el.tagName === "SELECT" ||
+      el.isContentEditable)
+  ) {
+    return;
+  }
+  if (e.key === "ArrowLeft") {
+    e.preventDefault();
+    stepRound(-1);
+  } else if (e.key === "ArrowRight") {
+    e.preventDefault();
+    stepRound(1);
+  }
+}
+
+onMounted(() => window.addEventListener("keydown", onKeyDown));
+onUnmounted(() => window.removeEventListener("keydown", onKeyDown));
 </script>
 
 <template>
@@ -1346,6 +1384,7 @@ const modePills = computed<{ key: "heatmap" | "movement"; label: string }[]>(
               :rounds="roundSelectorEntries"
               :halftime-index="roundHalftimeIndex"
               allow-all
+              nav
               :all-label="$t('match.heatmaps.all_rounds')"
               class="w-full max-w-[760px] mx-auto"
             />

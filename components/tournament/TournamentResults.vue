@@ -10,6 +10,7 @@ import {
   HoverCardTrigger,
 } from "~/components/ui/hover-card";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
+import { kdColor } from "~/utils/statTiers";
 
 const apiDomain = useRuntimeConfig().public.apiDomain;
 
@@ -255,10 +256,7 @@ function playerAvatarSrc(player: {
                     <span
                       class="font-mono font-bold tabular-nums"
                       :style="{
-                        color:
-                          playerStatFor(p.steam_id).kdr >= 1
-                            ? 'hsl(142, 71%, 55%)'
-                            : 'hsl(0, 84%, 65%)',
+                        color: kdColor(playerStatFor(p.steam_id).kdr),
                       }"
                     >
                       {{ playerStatFor(p.steam_id).kdr.toFixed(2) }}
@@ -389,8 +387,7 @@ function playerAvatarSrc(player: {
             <span
               class="font-mono text-base font-bold tabular-nums"
               :style="{
-                color:
-                  mvpStats.kdr >= 1 ? 'hsl(142, 71%, 55%)' : 'hsl(0, 84%, 65%)',
+                color: kdColor(mvpStats.kdr),
               }"
             >
               {{ mvpStats.kdr.toFixed(2) }}

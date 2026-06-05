@@ -14,6 +14,7 @@ import MatchSourceBadge from "~/components/MatchSourceBadge.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
 import MatchPlayerDetailsPanel from "~/components/match/MatchPlayerDetailsPanel.vue";
 import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
+import { kdColor, hltvColor } from "~/utils/statTiers";
 
 // Shared grid track template — MUST stay in sync with the header row in
 // PlayerMatchesTable.vue so columns line up across every row. Every track
@@ -23,7 +24,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
 // gets its own slim trailing column.
 // OPEN · DATE · TYPE · RESULT · MAP · CLIP · RATING · K/D/A · K/D · ADR · Δ · VIEW
 const wideGrid =
-  "grid grid-cols-[2.5rem_5rem_6.75rem_6.75rem_minmax(4.5rem,1fr)_3rem_4rem_4.5rem_2.75rem_3.25rem_6rem_2.5rem] items-center gap-x-2";
+  "grid grid-cols-[2.5rem_5rem_6.75rem_8.5rem_minmax(4.5rem,1fr)_3rem_4rem_4.5rem_2.75rem_3.25rem_6rem_2.5rem] items-center gap-x-2";
 </script>
 
 <template>
@@ -95,9 +96,6 @@ const wideGrid =
            anything else (scheduled/cancelled/live) shows only the status. -->
       <div class="flex min-w-0 items-center gap-2">
         <template v-if="isFinished">
-          <span :class="['shrink-0', resultBadgeClass]">{{
-            resultLetter
-          }}</span>
           <span class="font-mono text-sm font-bold tabular-nums">
             <span :class="scoreClass">{{ score.player }}</span>
             <span class="mx-1 text-muted-foreground/60">:</span>
@@ -155,25 +153,13 @@ const wideGrid =
       <span v-else />
 
       <!-- RATING (HLTV) -->
-      <div
+      <span
         v-if="isFinished && rating !== null"
-        class="flex flex-col items-start gap-1"
+        class="font-mono text-sm font-bold tabular-nums inline-flex items-center gap-0.5"
+        :style="{ color: hltvColor(rating) }"
       >
-        <span
-          :class="['font-mono text-sm font-bold tabular-nums', ratingTextClass]"
-        >
-          {{ rating.toFixed(2) }}
-        </span>
-        <span
-          class="relative h-[3px] w-12 overflow-hidden rounded-full bg-muted/60"
-        >
-          <span
-            class="absolute inset-y-0 left-0 rounded-full"
-            :class="ratingBarClass"
-            :style="{ width: ratingBarWidth }"
-          />
-        </span>
-      </div>
+        {{ rating.toFixed(2) }}
+      </span>
       <span v-else class="text-muted-foreground">—</span>
 
       <!-- K / D / A -->
@@ -190,7 +176,8 @@ const wideGrid =
       <!-- K/D -->
       <span
         v-if="isFinished && kd !== null"
-        :class="['font-mono text-xs font-semibold tabular-nums', kdClass]"
+        class="font-mono text-xs font-semibold tabular-nums inline-flex items-center gap-0.5"
+        :style="{ color: kdColor(kd) }"
       >
         {{ kd.toFixed(2) }}
       </span>
@@ -282,9 +269,6 @@ const wideGrid =
     <div v-else class="px-3 py-2.5">
       <div class="flex items-center gap-2">
         <template v-if="isFinished">
-          <span :class="['shrink-0', resultBadgeClass]">{{
-            resultLetter
-          }}</span>
           <span class="font-mono text-base font-bold leading-none tabular-nums">
             <span :class="scoreClass">{{ score.player }}</span>
             <span class="mx-0.5 text-muted-foreground/60">:</span>
@@ -355,9 +339,11 @@ const wideGrid =
           >{{ stats.assists }}
         </span>
         <span class="text-muted-foreground/40">·</span>
-        <span :class="kdClass">
+        <span class="inline-flex items-center gap-0.5">
           <span class="text-muted-foreground/60">K/D</span>
-          {{ kd !== null ? kd.toFixed(2) : "—" }}
+          <span :style="kd !== null ? { color: kdColor(kd) } : undefined">{{
+            kd !== null ? kd.toFixed(2) : "—"
+          }}</span>
         </span>
         <span class="text-muted-foreground/40">·</span>
         <span class="text-foreground/75">
@@ -365,9 +351,11 @@ const wideGrid =
           {{ adr !== null ? adr.toFixed(0) : "—" }}
         </span>
         <span v-if="rating !== null" class="text-muted-foreground/40">·</span>
-        <span v-if="rating !== null" :class="ratingTextClass">
+        <span v-if="rating !== null" class="inline-flex items-center gap-0.5">
           <span class="text-muted-foreground/60">RTG</span>
-          {{ rating.toFixed(2) }}
+          <span :style="{ color: hltvColor(rating) }">{{
+            rating.toFixed(2)
+          }}</span>
         </span>
         <EloChangeBadge
           v-if="hasElo"
@@ -511,7 +499,6 @@ import { matchClipFields } from "~/graphql/matchClip";
 import { $, order_by } from "~/generated/zeus";
 import { useClipModal } from "~/composables/useClipModal";
 import cleanMapName from "~/utilities/cleanMapName";
-import { kdrColor } from "~/utilities/kdrColor";
 import { csRankIcon, csRankKind } from "~/utilities/csRank";
 
 export default {
@@ -524,6 +511,12 @@ export default {
     // internal elo. Lets the ELO column show the CS Rating (Premier) or skill
     // group icon (Competitive/Wingman) + change instead.
     rankByMatch: { type: Object, required: false, default: null },
+    // Canonical per-match HLTV rating from the backend; overrides the local
+    // estimate below (which can't include KAST at this level).
+    canonicalRating: { type: Number, required: false, default: null },
+    // Focus player's aggregate stats for this match, batched by the parent
+    // page. Powers the collapsed row without a per-row matches_by_pk query.
+    collapsedAgg: { type: Object, required: false, default: null },
   },
   data() {
     return {
@@ -531,8 +524,6 @@ export default {
       drawerOpen: false,
       detailsStats: null as any | null,
       detailsStatsLoading: false,
-      collapsedStats: null as any | null,
-      collapsedStatsLoading: false,
       detailsTab: "overview",
       selectedMapId: null as string | null,
       playerClips: [] as any[],
@@ -540,15 +531,12 @@ export default {
     };
   },
   mounted() {
-    // Eager-load only the focus player's *aggregate* stats + clips so the
-    // collapsed row can show real K/D/A · K/D · ADR · rating and a highlight
-    // thumbnail. The heavy round-level + per-map + all-players query is
-    // deferred to first expand (getDetailedStats) — eager-loading it for
-    // every row saturated the main thread and made the page feel laggy.
-    if (this.isFinished && this.playerSteamId) {
-      if (!this.collapsedStats && !this.collapsedStatsLoading) {
-        this.getCollapsedStats().catch(() => {});
-      }
+    // Collapsed-row aggregate stats now arrive batched via the `collapsedAgg`
+    // prop (parent fetches them for the whole page in one query). Only the
+    // highlight thumbnail still needs a fetch, and only for matches that
+    // actually have public clips — the heavy round-level + per-map + all-players
+    // query stays deferred to first expand (getDetailedStats).
+    if (this.isFinished && this.playerSteamId && this.hasPublicClips) {
       if (this.playerClips.length === 0 && !this.playerClipsLoading) {
         this.getPlayerClips().catch(() => {});
       }
@@ -557,6 +545,13 @@ export default {
   computed: {
     isFinished(): boolean {
       return this.match?.status === e_match_status_enum.Finished;
+    },
+    // Whether any map in this match has public clips — gates the clip fetch so
+    // clip-less matches (the majority) make zero clip requests.
+    hasPublicClips(): boolean {
+      return (this.match?.match_maps || []).some(
+        (mm: any) => (mm?.public_clips_count ?? 0) > 0,
+      );
     },
     // The match prop comes from simpleMatchFields, whose match_maps carry
     // no per-round data — so the Overview tab's KAST/Survived columns can't
@@ -653,23 +648,6 @@ export default {
       if (!winner) return "tied";
       return winner === mine ? "won" : "lost";
     },
-    resultLetter(): string {
-      if (this.result === "won") return "W";
-      if (this.result === "lost") return "L";
-      if (this.result === "tied") return "T";
-      return "—";
-    },
-    resultBadgeClass(): string {
-      const base =
-        "inline-flex h-6 w-6 items-center justify-center rounded font-sans text-xs font-bold leading-none";
-      if (this.result === "won")
-        return `${base} border border-[hsl(142_71%_55%/0.45)] bg-[hsl(142_71%_40%/0.15)] text-[hsl(142_71%_60%)]`;
-      if (this.result === "lost")
-        return `${base} border border-[hsl(0_84%_66%/0.45)] bg-[hsl(0_84%_50%/0.15)] text-[hsl(0_84%_66%)]`;
-      if (this.result === "tied")
-        return `${base} border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]`;
-      return `${base} border border-border bg-muted/40 text-muted-foreground`;
-    },
     scoreClass(): string {
       if (this.result === "won") return "text-[hsl(142_71%_60%)]";
       if (this.result === "lost") return "text-[hsl(0_84%_66%)]";
@@ -731,22 +709,24 @@ export default {
     // even for matches that never produced an elo_changes row (unranked).
     focusStatRow(): any | null {
       const sid = this.playerSteamId;
-      // Prefer the heavy detailed fetch (once expanded) but fall back to the
-      // lightweight aggregate fetched on mount so the collapsed row's numbers
-      // are exact even for matches with no elo_changes row (unranked).
-      const source = this.detailsStats ?? this.collapsedStats;
-      if (!sid || !source) return null;
-      for (const key of ["lineup_1", "lineup_2"]) {
-        const lineup = (source as any)?.[key];
-        const lp = (lineup?.lineup_players || []).find(
-          (lp: any) => String(lp.player?.steam_id ?? lp.steam_id ?? "") === sid,
-        );
-        if (lp) {
-          const arr = lp.player?.match_stats;
-          return Array.isArray(arr) && arr.length > 0 ? arr[0] : null;
+      // Once expanded, prefer the heavy detailed fetch (per-map rows). Until
+      // then use the page-batched aggregate (collapsedAgg) — same flat shape
+      // (kills/deaths/assists/damage/rounds_played), no per-row query.
+      const source = this.detailsStats;
+      if (sid && source) {
+        for (const key of ["lineup_1", "lineup_2"]) {
+          const lineup = (source as any)?.[key];
+          const lp = (lineup?.lineup_players || []).find(
+            (lp: any) =>
+              String(lp.player?.steam_id ?? lp.steam_id ?? "") === sid,
+          );
+          if (lp) {
+            const arr = lp.player?.match_stats;
+            return Array.isArray(arr) && arr.length > 0 ? arr[0] : null;
+          }
         }
       }
-      return null;
+      return this.collapsedAgg ?? null;
     },
     playerStats(): {
       kills: number;
@@ -785,9 +765,6 @@ export default {
       if (!s) return null;
       return s.deaths > 0 ? s.kills / s.deaths : s.kills;
     },
-    kdClass(): string {
-      return this.kd !== null ? kdrColor(this.kd) : "";
-    },
     adr(): number | null {
       const ps = this.playerStats;
       if (ps && ps.rounds > 0) return ps.damage / ps.rounds;
@@ -799,6 +776,9 @@ export default {
     // so the column agrees with the expanded Overview's HLTV cell. KAST is
     // omitted (no per-round data at this level) exactly as that view does.
     rating(): number | null {
+      if (this.canonicalRating != null) {
+        return this.canonicalRating;
+      }
       const ps = this.playerStats;
       if (!ps || ps.rounds <= 0) return null;
       const kpr = ps.kills / ps.rounds;
@@ -809,24 +789,6 @@ export default {
       return (
         0.3591 * kpr - 0.5329 * dpr + 0.2372 * impact + 0.0032 * adr + 0.1587
       );
-    },
-    ratingTextClass(): string {
-      if (this.rating === null) return "text-muted-foreground";
-      if (this.rating > 1.05) return "text-[hsl(142_71%_60%)]";
-      if (this.rating < 0.95) return "text-[hsl(0_84%_66%)]";
-      return "text-foreground";
-    },
-    ratingBarClass(): string {
-      if (this.rating === null) return "bg-muted";
-      if (this.rating > 1.05) return "bg-[hsl(142_71%_50%)]";
-      if (this.rating < 0.95) return "bg-[hsl(0_84%_60%)]";
-      return "bg-muted-foreground";
-    },
-    ratingBarWidth(): string {
-      if (this.rating === null) return "0%";
-      // Map 0..2.0 → 0..100% so ~1.0 sits mid-bar.
-      const pct = (this.rating / 2) * 100;
-      return `${Math.max(4, Math.min(100, pct))}%`;
     },
     bestClip(): any | null {
       return this.filteredPlayerClips[0] ?? null;
@@ -951,60 +913,13 @@ export default {
         if (!this.detailsStats && !this.detailsStatsLoading) {
           this.getDetailedStats().catch(() => {});
         }
-        if (this.playerClips.length === 0 && !this.playerClipsLoading) {
+        if (
+          this.hasPublicClips &&
+          this.playerClips.length === 0 &&
+          !this.playerClipsLoading
+        ) {
           this.getPlayerClips().catch(() => {});
         }
-      }
-    },
-    // Lightweight collapsed-row fetch: just the focus player's aggregate
-    // match_stats (no other players, no per-map rows, no round-level events).
-    // Finished matches are immutable, so cache-first avoids refetching on
-    // pagination / remount.
-    async getCollapsedStats() {
-      const sid = this.playerSteamId;
-      if (!sid || !this.match?.id) return;
-      this.collapsedStatsLoading = true;
-      try {
-        const focusLineupLite = {
-          lineup_players: [
-            { where: { steam_id: { _eq: $("playerId", "bigint!") } } },
-            {
-              steam_id: true,
-              player: {
-                steam_id: true,
-                match_stats: [
-                  {
-                    where: { match_id: { _eq: $("matchId", "uuid!") } },
-                    limit: 1,
-                  },
-                  {
-                    kills: true,
-                    deaths: true,
-                    assists: true,
-                    damage: true,
-                    rounds_played: true,
-                  },
-                ],
-              },
-            },
-          ],
-        };
-        const { data } = await this.$apollo.query({
-          fetchPolicy: "cache-first",
-          variables: { matchId: this.match.id, playerId: sid },
-          query: generateQuery({
-            matches_by_pk: [
-              { id: this.match.id },
-              {
-                lineup_1: [{}, focusLineupLite],
-                lineup_2: [{}, focusLineupLite],
-              },
-            ],
-          } as any),
-        });
-        this.collapsedStats = (data as any)?.matches_by_pk ?? null;
-      } finally {
-        this.collapsedStatsLoading = false;
       }
     },
     async getDetailedStats() {

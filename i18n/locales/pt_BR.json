@@ -2940,6 +2940,8 @@
       "no_position_data": "Sem dados de posição — reanalise a demo para preencher o replay.",
       "toggle_to_slots": "Alternar para números de slot",
       "toggle_to_avatars": "Alternar para avatares dos jogadores",
+      "hide_scoreboard": "Ocultar placar",
+      "show_scoreboard": "Mostrar placar",
       "popout": "Abrir em janela separada",
       "phase_freeze": "Congelamento",
       "phase_bomb": "Bomba",

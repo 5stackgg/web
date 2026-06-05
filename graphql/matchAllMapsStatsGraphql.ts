@@ -163,6 +163,18 @@ export const matchAllMapsStats = Selector("match_lineups")({
             rounds_played: true,
           },
         ],
+        // Per-map KAST from the canonical hltv view; rounds-weighted on the
+        // client for the all-maps figure.
+        match_map_hltv: [
+          {
+            where: { match_id: { _eq: $("matchId", "uuid!") } },
+          },
+          {
+            match_map_id: true,
+            kast_pct: true,
+            rounds_played: true,
+          },
+        ],
       },
     },
   ],

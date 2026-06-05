@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
+import AnimatedStat from "~/components/AnimatedStat.vue";
 
 const apiDomain = useRuntimeConfig().public.apiDomain;
 
@@ -72,7 +73,7 @@ const outcomeClass = (outcome: ClutchOutcome) => {
 
 <template>
   <section
-    class="relative border border-border bg-[hsl(var(--card)/0.6)] backdrop-blur-sm"
+    class="relative border border-border bg-[hsl(var(--card)/0.2)]"
   >
     <header class="px-4 py-3 border-b border-border">
       <div
@@ -80,7 +81,8 @@ const outcomeClass = (outcome: ClutchOutcome) => {
       >
         <span class="truncate text-foreground/90">{{ lineup.name }}</span>
         <span class="shrink-0">
-          {{ totals.won }} / {{ totals.total }}
+          <AnimatedStat :value="totals.won" /> /
+          <AnimatedStat :value="totals.total" />
           {{ $t("match.clutches.clutches_won") }}
         </span>
       </div>
@@ -89,7 +91,7 @@ const outcomeClass = (outcome: ClutchOutcome) => {
         class="flex items-center gap-2 font-mono text-[0.75rem] font-bold tabular-nums"
       >
         <span class="text-[hsl(var(--success))] w-[2.5rem] text-left">
-          {{ totals.winPct }}%
+          <AnimatedStat :value="totals.winPct + '%'" />
         </span>
         <div
           class="flex-1 h-[6px] border border-border bg-muted/40 overflow-hidden flex"
@@ -104,7 +106,7 @@ const outcomeClass = (outcome: ClutchOutcome) => {
           />
         </div>
         <span class="text-destructive w-[2.5rem] text-right">
-          {{ totals.lostPct }}%
+          <AnimatedStat :value="totals.lostPct + '%'" />
         </span>
       </div>
 
@@ -112,24 +114,28 @@ const outcomeClass = (outcome: ClutchOutcome) => {
         class="mt-2 flex items-center gap-4 font-mono text-[0.6rem] tracking-[0.18em] uppercase text-muted-foreground"
       >
         <span>
-          <span class="text-[hsl(var(--success))] font-bold">{{
-            totals.won
-          }}</span>
+          <span class="text-[hsl(var(--success))] font-bold"
+            ><AnimatedStat :value="totals.won"
+          /></span>
           {{ $t("match.clutches.won") }}
         </span>
         <span>
-          <span class="text-destructive font-bold">{{ totals.lost }}</span>
+          <span class="text-destructive font-bold"
+            ><AnimatedStat :value="totals.lost"
+          /></span>
           {{ $t("match.clutches.lost") }}
         </span>
         <span>
-          <span class="text-[hsl(var(--tac-amber))] font-bold">{{
-            totals.saved
-          }}</span>
+          <span class="text-[hsl(var(--tac-amber))] font-bold"
+            ><AnimatedStat :value="totals.saved"
+          /></span>
           {{ $t("match.clutches.saves") }}
         </span>
         <span class="ml-auto">
           {{ $t("match.clutches.total_kills") }}:
-          <span class="text-foreground font-bold">{{ totals.totalKills }}</span>
+          <span class="text-foreground font-bold"
+            ><AnimatedStat :value="totals.totalKills"
+          /></span>
         </span>
       </div>
     </header>

@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import LineupMember from "~/components/match/LineupMember.vue";
 import SortableTableHead from "~/components/common/SortableTableHead.vue";
+import AnimatedStat from "~/components/AnimatedStat.vue";
 import { useTableSort } from "~/composables/useTableSort";
 import { useTradeColumns } from "~/composables/useMatchTableColumns";
 import { useCurrentUserRow } from "~/composables/useCurrentUserRow";
@@ -150,41 +151,57 @@ const tradeColumns = computed(() =>
             <lineup-member :member="member" :lineup_id="lp.id"></lineup-member>
           </TableCell>
           <TableCell>
-            {{ statsFor(member)?.trade_kill_opportunities ?? "—" }}
+            <AnimatedStat
+              :value="statsFor(member)?.trade_kill_opportunities ?? '—'"
+            />
           </TableCell>
           <TableCell v-if="tradeVis.trade_kill_attempts !== false">
-            {{ statsFor(member)?.trade_kill_attempts ?? "—" }}
+            <AnimatedStat
+              :value="statsFor(member)?.trade_kill_attempts ?? '—'"
+            />
           </TableCell>
           <TableCell v-if="tradeVis.trade_kill_pct !== false">
-            <template v-if="tradeKillPct(member) !== null">
-              {{ tradeKillPct(member) }}%
-            </template>
-            <template v-else>—</template>
+            <AnimatedStat
+              :value="
+                tradeKillPct(member) !== null
+                  ? tradeKillPct(member) + '%'
+                  : '—'
+              "
+            />
           </TableCell>
           <TableCell v-if="tradeVis.traded_death_opportunities !== false">
-            {{ statsFor(member)?.traded_death_opportunities ?? "—" }}
+            <AnimatedStat
+              :value="statsFor(member)?.traded_death_opportunities ?? '—'"
+            />
           </TableCell>
           <TableCell v-if="tradeVis.traded_death_attempts !== false">
-            {{ statsFor(member)?.traded_death_attempts ?? "—" }}
+            <AnimatedStat
+              :value="statsFor(member)?.traded_death_attempts ?? '—'"
+            />
           </TableCell>
           <TableCell v-if="tradeVis.traded_death_pct !== false">
-            <template v-if="tradedDeathPct(member) !== null">
-              {{ tradedDeathPct(member) }}%
-            </template>
-            <template v-else>—</template>
+            <AnimatedStat
+              :value="
+                tradedDeathPct(member) !== null
+                  ? tradedDeathPct(member) + '%'
+                  : '—'
+              "
+            />
           </TableCell>
           <TableCell v-if="tradeVis.net_trade !== false">
-            <template v-if="netTrade(member) !== null">
-              <span
-                :class="{
-                  'text-success': (netTrade(member) ?? 0) > 0,
-                  'text-destructive': (netTrade(member) ?? 0) < 0,
-                }"
-              >
-                {{ (netTrade(member) ?? 0) > 0 ? "+" : ""
-                }}{{ netTrade(member) }}
-              </span>
-            </template>
+            <span
+              v-if="netTrade(member) !== null"
+              :class="{
+                'text-success': (netTrade(member) ?? 0) > 0,
+                'text-destructive': (netTrade(member) ?? 0) < 0,
+              }"
+            >
+              <AnimatedStat
+                :value="
+                  ((netTrade(member) ?? 0) > 0 ? '+' : '') + netTrade(member)
+                "
+              />
+            </span>
             <template v-else>—</template>
           </TableCell>
         </TableRow>

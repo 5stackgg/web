@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref, computed, provide, onMounted, onBeforeUnmount } from "vue";
 import EventEmitter from "eventemitter3";
+import { useMatchBackupRounds } from "~/composables/useMatchBackupRounds";
 import { ChevronUp, GripHorizontal, Shield } from "lucide-vue-next";
 import MatchServerRebootControl from "~/components/match/MatchServerRebootControl.vue";
 import RconCommander from "~/components/servers/RconCommander.vue";
@@ -191,10 +192,15 @@ const canShowLogs = computed(
     ].includes(props.match.status),
 );
 
+// match_map_rounds is gated to finished maps (anti-cheat), so the restorable
+// rounds come from the dedicated v_match_map_backup_rounds view instead. Shared
+// subscription so this and MatchTabs don't open two identical websockets.
+const { backupRounds } = useMatchBackupRounds(
+  computed(() => currentMap.value?.id),
+);
+
 const restorableRounds = computed(() =>
-  (currentMap.value?.rounds ?? []).filter(
-    (r: any) => r.has_backup_file && r.round > 0,
-  ),
+  backupRounds.value.filter((r: any) => r.has_backup_file && r.round > 0),
 );
 
 function runCommand(

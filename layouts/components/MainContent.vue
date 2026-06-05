@@ -30,7 +30,7 @@ const containContentValue = computed(() => containContent?.value ?? true);
       <SidebarInset
         class="flex flex-col min-h-0 h-[var(--sidebar-height)] !bg-transparent overflow-hidden"
       >
-        <div class="flex-1 overflow-auto">
+        <div class="flex-1 overflow-auto [scrollbar-gutter:stable]">
           <div
             class="mx-auto p-1 sm:p-4 w-full self-center"
             :class="{

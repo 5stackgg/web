@@ -1,5 +1,15 @@
 <script lang="ts" setup>
 import HeadToHeadMatrix from "~/components/match/HeadToHeadMatrix.vue";
+
+// All props are declared here (not in the Options block below) — mixing a
+// setup prop macro with an Options `props` block clobbers the latter, which
+// left `this.match` undefined in the apollo variables().
+defineProps<{ match: any }>();
+
+// Mirror the matrix's picked players up to the tab so the radar comparison
+// below can follow the same matchup.
+const selectedA = defineModel<string | null>("selectedA", { default: null });
+const selectedB = defineModel<string | null>("selectedB", { default: null });
 </script>
 
 <template>
@@ -10,7 +20,13 @@ import HeadToHeadMatrix from "~/components/match/HeadToHeadMatrix.vue";
     >
       {{ $t("common.loading") }}…
     </div>
-    <HeadToHeadMatrix v-else :match="match" :pairs="pairs || []" />
+    <HeadToHeadMatrix
+      v-else
+      :match="match"
+      :pairs="pairs || []"
+      v-model:selected-a="selectedA"
+      v-model:selected-b="selectedB"
+    />
   </div>
 </template>
 
@@ -18,12 +34,6 @@ import HeadToHeadMatrix from "~/components/match/HeadToHeadMatrix.vue";
 import { headToHeadQuery } from "~/graphql/headToHeadGraphql";
 
 export default {
-  props: {
-    match: {
-      required: true,
-      type: Object,
-    },
-  },
   data() {
     return {
       pairs: null as null | any[],

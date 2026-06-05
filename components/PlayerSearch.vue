@@ -23,8 +23,9 @@ const { height: viewportHeight } = useVisualViewport();
         <Button
           variant="outline"
           :class="[
+            'w-full [&>span:last-child]:w-full [&>span:last-child]:justify-between',
             {
-              'justify-between w-full py-8': selected,
+              'justify-between py-8': selected,
               'justify-between': !selected,
             },
             $props.class,
@@ -115,7 +116,7 @@ const { height: viewportHeight } = useVisualViewport();
             variant="outline"
             :aria-expanded="open"
             :class="[
-              'justify-between w-full',
+              'justify-between w-full [&>span:last-child]:w-full [&>span:last-child]:justify-between',
               { 'py-8': selected },
               $props.class,
             ]"

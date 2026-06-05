@@ -6,7 +6,7 @@ import { order_by } from "~/generated/zeus";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import MatchLineupScoreDisplay from "~/components/match/MatchLineupScoreDisplay.vue";
 import formatStatValue from "~/utilities/formatStatValue";
-import { kdrColor } from "~/utilities/kdrColor";
+import { kdColor } from "~/utils/statTiers";
 
 // Drop-in scoreboard pulldown for any player surface (WHEP, Twitch,
 // YouTube, Kick, iframe). Renders a small floating toggle pill at the
@@ -421,13 +421,16 @@ function statCell(lp: any, key: "kills" | "deaths" | "assists" | "damage") {
                     <td class="px-1 py-0.5 text-center tabular-nums">
                       {{ statCell(lp, "assists") }}
                     </td>
-                    <td
-                      class="px-1 py-0.5 text-center tabular-nums"
-                      :class="
-                        statsForCurrentMap(lp) ? kdrColor(playerKDNum(lp)) : ''
-                      "
-                    >
-                      {{ playerKDLabel(lp) }}
+                    <td class="px-1 py-0.5 text-center tabular-nums">
+                      <span
+                        :style="
+                          statsForCurrentMap(lp)
+                            ? { color: kdColor(playerKDNum(lp)) }
+                            : undefined
+                        "
+                      >
+                        {{ playerKDLabel(lp) }}
+                      </span>
                     </td>
                     <td class="px-1 py-0.5 text-center tabular-nums">
                       {{ playerHS(lp) }}

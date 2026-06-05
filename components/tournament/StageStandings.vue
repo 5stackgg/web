@@ -9,6 +9,7 @@ import {
 } from "~/components/ui/table";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { ChevronRight } from "lucide-vue-next";
+import { kdColor } from "~/utils/statTiers";
 </script>
 
 <template>
@@ -173,11 +174,9 @@ import { ChevronRight } from "lucide-vue-next";
                               <td
                                 class="px-2 py-2 text-center font-mono tabular-nums font-bold"
                                 :style="{
-                                  color:
-                                    playerStatFor(member.player.steam_id).kdr >=
-                                    1
-                                      ? 'hsl(142, 71%, 55%)'
-                                      : 'hsl(0, 84%, 65%)',
+                                  color: kdColor(
+                                    playerStatFor(member.player.steam_id).kdr,
+                                  ),
                                 }"
                               >
                                 {{

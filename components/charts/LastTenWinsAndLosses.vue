@@ -36,8 +36,7 @@ export default {
       required: false,
     },
     match_type: {
-      type: String as () =>
-        "Competitive" | "Wingman" | "Duel" | "Premier" | null,
+      type: [String, Array] as () => string | string[] | null,
       required: false,
       default: null,
     },
@@ -137,7 +136,9 @@ export default {
         options: {
           type: {
             _in: this.match_type
-              ? [this.match_type]
+              ? Array.isArray(this.match_type)
+                ? this.match_type
+                : [this.match_type]
               : ["Competitive", "Wingman", "Duel"],
           },
         },

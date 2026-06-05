@@ -451,7 +451,7 @@ function clipTeamName(c: Clip): string | null {
       </ClipPlayer>
 
       <aside
-        class="reel-queue relative flex min-h-0 max-h-80 flex-col overflow-hidden rounded-md border border-border/60 bg-card/35 [backdrop-filter:blur(8px)] lg:aspect-video lg:max-h-none"
+        class="reel-queue relative flex min-h-0 max-h-80 flex-col overflow-hidden rounded-md border border-border/60 bg-card/20 lg:aspect-video lg:max-h-none"
       >
         <div
           class="flex items-center justify-between gap-3 border-b border-border/50 px-3 py-2.5"

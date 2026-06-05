@@ -34,7 +34,8 @@ import { e_player_roles_enum } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import PlayerRoleForm from "~/components/PlayerRoleForm.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
-import { kdrColor } from "~/utilities/kdrColor";
+import StatChevron from "~/components/StatChevron.vue";
+import { KD_TIER } from "~/utils/statTiers";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import { getAllCountries } from "countries-and-timezones";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -491,9 +492,15 @@ import {
               </TableCell>
               <TableCell>{{ player.wins ?? 0 }}</TableCell>
               <TableCell>{{ player.losses ?? 0 }}</TableCell>
-              <TableCell :class="kdrColor(calculateKDR(player))">{{
-                calculateKDR(player)
-              }}</TableCell>
+              <TableCell>
+                <span class="inline-flex items-center gap-0.5">
+                  {{ calculateKDR(player) }}
+                  <StatChevron
+                    :cfg="KD_TIER"
+                    :value="Number(calculateKDR(player))"
+                  />
+                </span>
+              </TableCell>
               <TableCell>
                 <PlayerElo
                   :elo="{

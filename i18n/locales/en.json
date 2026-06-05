@@ -1,4 +1,82 @@
 {
+  "stat_glossary": {
+    "hltv": {
+      "label": "HLTV Rating",
+      "description": "HLTV 2.0 overall performance rating combining kills, deaths, KAST, damage and impact. ~1.0 is average."
+    },
+    "rating": {
+      "label": "HLTV Rating",
+      "description": "HLTV 2.0 overall performance rating combining kills, deaths, KAST, damage and impact. ~1.0 is average."
+    },
+    "adr": {
+      "label": "ADR",
+      "description": "Average Damage per Round — how much damage you deal each round."
+    },
+    "kpr": {
+      "label": "KPR",
+      "description": "Kills Per Round."
+    },
+    "dpr": {
+      "label": "DPR",
+      "description": "Deaths Per Round."
+    },
+    "kast": {
+      "label": "KAST",
+      "description": "Percentage of rounds where you got a Kill, Assist, Survived, or were Traded."
+    },
+    "udr": {
+      "label": "UDR",
+      "description": "Utility Damage per Round — grenade (HE + molotov) damage each round."
+    },
+    "hs": {
+      "label": "Headshot %",
+      "description": "Share of your kills that were headshots."
+    },
+    "far": {
+      "label": "FAR",
+      "description": "First-Action Rating — performance in opening (first kill of the round) duels."
+    },
+    "elo": {
+      "label": "ELO",
+      "description": "5Stack matchmaking skill rating — rises and falls with wins and losses."
+    },
+    "kda": {
+      "label": "K / D / A",
+      "description": "Average Kills / Deaths / Assists per match."
+    },
+    "k": {
+      "label": "Kills",
+      "description": "Total kills."
+    },
+    "a": {
+      "label": "Assists",
+      "description": "Total assists — you damaged or flashed an enemy a teammate then killed."
+    },
+    "d": {
+      "label": "Deaths",
+      "description": "Total deaths."
+    },
+    "kd": {
+      "label": "K/D",
+      "description": "Kill/Death ratio — kills divided by deaths. Above 1.0 means more kills than deaths."
+    },
+    "mkr": {
+      "label": "Multi-Kill Rounds",
+      "description": "Rounds in which you got two or more kills."
+    },
+    "cl": {
+      "label": "Clutch %",
+      "description": "Share of clutch situations (last player alive, 1vX) that you won."
+    },
+    "cast": {
+      "label": "CAST",
+      "description": "Clutch attempts — the number of clutch (1vX) situations you were put in."
+    },
+    "awp": {
+      "label": "AWP",
+      "description": "AWP usage / sniper role signal — how much a player relies on the AWP."
+    }
+  },
   "pagination": {
     "items_per_page": "per page",
     "showing_range": "Showing {start}–{end} of {total}",
@@ -152,7 +230,15 @@
     "time_ran_out": "Time Ran Out",
     "ts_eliminated_cts": "Ts Eliminated CTs",
     "cts_eliminated_ts": "CTs Eliminated Ts",
+    "won_man": "Closed out {state}",
+    "survivors": "Survivors",
     "unknown": "Unknown"
+  },
+  "role_radar": {
+    "all": "All",
+    "radar_title": "Role Matchup",
+    "radar_description": "Filter by the role this player was in. Pin a comparison player to overlay them.",
+    "no_data": "Not enough recent matches to chart."
   },
   "notification_context": {
     "online": "ONLINE",
@@ -336,7 +422,52 @@
       "create": "Create Team",
       "no_teams_title": "No Teams Found",
       "no_teams": "No teams found.",
-      "search": "Search..."
+      "search": "Search...",
+      "vetos": {
+        "section": "Map Preference & Veto Tendencies",
+        "description": "How this team approaches the map veto, and how each map performs once it reaches the server.",
+        "loading": "Loading veto history…",
+        "empty_title": "No veto history",
+        "empty_description": "This team has not completed any matches with recorded map vetos yet.",
+        "most_banned": "Most Banned",
+        "most_picked": "Most Picked",
+        "comfort_map": "Comfort Map",
+        "comfort_hint": "Needs {n}+ played",
+        "bans_short": "bans",
+        "picks_short": "picks",
+        "played_short": "played",
+        "col_map": "Map",
+        "col_played": "Played",
+        "col_win": "Win%",
+        "col_banned": "Banned",
+        "col_picked": "Picked",
+        "col_first_ban": "1st Ban",
+        "col_first_pick": "1st Pick",
+        "col_decider": "Decider",
+        "based_on": "Based on {n} veto records"
+      },
+      "veto_sim": {
+        "section": "Veto Simulation",
+        "description": "Estimate the likely veto outcome and map win chances against a chosen opponent, based on both teams' veto history.",
+        "opponent": "Opponent",
+        "select_opponent": "Select opponent team",
+        "format": "Format",
+        "estimate_notice": "Estimate only — derived from historical veto tendencies, not a guaranteed outcome.",
+        "loading": "Loading opponent veto history…",
+        "no_self_title": "No veto history for this team",
+        "no_self_description": "Simulation needs this team to have recorded map vetos first.",
+        "pick_opponent_title": "Choose an opponent",
+        "pick_opponent_description": "Select an opponent team to simulate the map veto.",
+        "no_opp_title": "No veto history for opponent",
+        "no_opp_description": "The selected opponent has no recorded map vetos to simulate against.",
+        "confidence_self": "This team: {n} records",
+        "confidence_opp": "Opponent: {n} records",
+        "col_map": "Map",
+        "col_ban": "Ban Likelihood",
+        "col_pick": "Pick Likelihood",
+        "col_play": "Play Likelihood",
+        "col_predicted_win": "Predicted Win%"
+      }
     },
     "settings": {
       "on_this_page": "On this page",
@@ -880,6 +1011,35 @@
         "no_players": "No players found"
       },
       "detail": {
+        "all_short": "All",
+        "settings_changed": "Custom settings active",
+        "source_all_unavailable_elo": "\"All\" isn't available on the ELO tab — showing 5Stack ELO only.",
+        "external_warning": {
+          "title": "No match history linked",
+          "description": "Link your Steam match-history auth code to import your Premier, Competitive and Wingman matches.",
+          "cta": "Set up"
+        },
+        "tabs": {
+          "performance": "Performance",
+          "elo": "ELO",
+          "maps": "Maps",
+          "arsenal": "Arsenal",
+          "combat": "Combat"
+        },
+        "roles": {
+          "title": "Preferred Roles",
+          "description": "Auto-detected from AWP usage, opening-duel involvement, and utility output across recent matches.",
+          "no_data": "Not enough recent matches to detect a role.",
+          "primary": "Primary",
+          "secondary": "Secondary",
+          "rifler_detail": "balanced rifler",
+          "maps_count": "{count} maps",
+          "signals": {
+            "awp": "AWP",
+            "entry": "opens/rd",
+            "support": "util idx"
+          }
+        },
         "kd": "KD",
         "recent_wins_and_losses": "Recent Wins and Losses",
         "elo_history": "ELO History",
@@ -939,6 +1099,120 @@
         "expand_to_all_time": "Expand to all time",
         "acquiring_telemetry": "Acquiring telemetry…",
         "matches_section": "MATCHES",
+        "intro": {
+          "section": "Performance Intro",
+          "last_n": "Last {n} matches",
+          "loading": "Acquiring telemetry",
+          "empty_title": "No parsed matches",
+          "empty_description": "Detailed performance stats appear here once this player has finished and parsed matches.",
+          "adr": "ADR",
+          "kd": "K/D",
+          "kpr": "KPR",
+          "dpr": "DPR",
+          "win_rate": "Win Rate",
+          "hs_pct": "HS%",
+          "rating_title": "HLTV Rating Trend",
+          "recent_title": "Recent Performance",
+          "series": {
+            "hltv": "HLTV",
+            "adr": "ADR",
+            "kd": "K/D",
+            "kpr": "KPR",
+            "udr": "UDR",
+            "kast": "KAST"
+          },
+          "tooltip": {
+            "won": "WON",
+            "lost": "LOST",
+            "tied": "TIED"
+          }
+        },
+        "maps": {
+          "section": "MAPS",
+          "description": "Career performance broken down by map, with terrorist and counter-terrorist side splits.",
+          "loading": "Loading map performance…",
+          "empty_title": "No map data yet",
+          "empty_description": "Once this player finishes matches, per-map performance will appear here.",
+          "played_short": "PLD",
+          "rating_label": "HLTV Rating",
+          "win_rate": "Win Rate",
+          "both": "BOTH",
+          "t_side": "T",
+          "ct_side": "CT",
+          "adr_short": "ADR",
+          "table_section": "ALL MAPS",
+          "col_map": "Map",
+          "col_played": "Played",
+          "col_win": "Win%",
+          "col_rating": "HLTV Rating",
+          "col_adr": "ADR",
+          "col_kd": "K/D",
+          "col_udr": "UDR",
+          "col_avg_kda": "Avg K/D/A"
+        },
+        "weapons_table": {
+          "section": "Weapons",
+          "lifetime": "Lifetime",
+          "loading": "Loading weapons",
+          "empty_title": "No weapon data",
+          "empty_description": "This player has no recorded weapon kills yet.",
+          "weapon": "Weapon",
+          "kills": "Kills",
+          "usage": "Most Used %",
+          "adr": "ADR",
+          "kpr": "KPR",
+          "rounds": "Rounds",
+          "rounds_tooltip": "Rounds with a kill using this weapon (we can't see rounds a weapon was only held)",
+          "rating": "HLTV Rating",
+          "rating_tooltip": "Approximate rating from KPR + ADR + impact (no per-weapon deaths/KAST, so it's directional)",
+          "economy": "Economy",
+          "economy_tooltip": "Weapon rating adjusted for buy cost — frags with cheaper weapons rate higher (~1.0 = on par for the price)",
+          "top_title": "Top Weapons"
+        },
+        "career_duels": {
+          "section": "Opening Duels",
+          "description": "First-kill-of-round outcomes across the last {count} maps.",
+          "loading": "Loading opening duels…",
+          "empty_title": "No opening duels",
+          "empty_description": "This player has no recorded opening duels in their recent matches.",
+          "win_label": "Open Win",
+          "attempts_label": "Opening Attempts",
+          "kills_short": "K",
+          "deaths_short": "D",
+          "kd_label": "Opening K/D",
+          "traded_label": "Traded When Opened",
+          "table_section": "By Map",
+          "col_map": "Map",
+          "col_attempts": "Attempts",
+          "col_win": "Win %",
+          "col_kd": "K/D",
+          "col_traded": "Traded %"
+        },
+        "career_clutches": {
+          "section": "Clutches",
+          "description": "1vX clutch situations across the last {count} maps.",
+          "loading": "Loading clutches…",
+          "empty_title": "No clutches",
+          "empty_description": "This player has no recorded clutch situations in their recent matches.",
+          "win_label": "Clutch Win",
+          "attempts_label": "Attempts",
+          "won_label": "Won",
+          "table_section": "Clutches by Situation",
+          "col_situation": "Situation",
+          "col_attempts": "Attempts",
+          "col_won": "Won",
+          "col_win": "Win %"
+        },
+        "compare": {
+          "toggle": "Compare",
+          "label": "Compare vs",
+          "select_label": "Compare player",
+          "description": "Overlays this player's numbers across every stats tab.",
+          "active": "Comparison active",
+          "vs": "vs",
+          "legend_a": "This player",
+          "legend_b": "Comparison"
+        },
         "elo_history_dialog": {
           "eyebrow": "ELO Progression — Granular",
           "title": "{name} — ELO Detail",
@@ -1292,6 +1566,11 @@
       "no_results": "No leaderboard data available for the selected filters.",
       "categories": {
         "elo": "ELO",
+        "best_rating": "HLTV Rating",
+        "best_adr": "ADR",
+        "best_kpr": "KPR",
+        "best_kast": "KAST",
+        "best_udr": "UDR",
         "best_kdr": "KDR",
         "best_win_rate": "Win Rate",
         "highest_hs_pct": "HS%",
@@ -1307,6 +1586,13 @@
         "competitive": "Competitive",
         "wingman": "Wingman",
         "duel": "Duel"
+      },
+      "roles": {
+        "all": "All Roles",
+        "Sniper": "Sniper",
+        "Entry": "Entry",
+        "Support": "Support",
+        "Rifler": "Rifler"
       },
       "columns": {
         "rank": "#",
@@ -1327,7 +1613,15 @@
         "silver": "Silver",
         "bronze": "Bronze",
         "mvp": "MVP",
-        "total_trophies": "Total"
+        "total_trophies": "Total",
+        "rating": "HLTV Rating",
+        "adr": "ADR",
+        "kpr": "KPR",
+        "dpr": "DPR",
+        "kast": "KAST",
+        "udr": "UDR",
+        "util_damage": "Util Dmg",
+        "rounds": "Rounds"
       },
       "exclude_tournaments": "Exclude Tournaments"
     },
@@ -1728,6 +2022,7 @@
   "common": {
     "manage_custom_plugins_and_shared_files": "These files are moutned to `csgo` directory when the server is started.",
     "delete": "Delete",
+    "clear": "Clear",
     "cancel": "Cancel",
     "save": "Save",
     "reset": "Reset",
@@ -2319,6 +2614,25 @@
     }
   },
   "team": {
+    "career": {
+      "title": "Team Performance",
+      "description": "Lifetime per-player aggregates across every match this team has played.",
+      "empty_title": "No stats yet",
+      "empty_description": "This team has no completed matches with recorded stats.",
+      "matches": "Matches",
+      "maps_played": "Maps",
+      "map_win_pct": "Map Win %",
+      "team_rating": "Avg HLTV Rating",
+      "player": "Player",
+      "maps": "Maps",
+      "rounds": "Rounds",
+      "rating": "HLTV Rating",
+      "kpr": "KPR",
+      "dpr": "DPR",
+      "kd": "K/D",
+      "adr": "ADR",
+      "kast": "KAST"
+    },
     "hero": {
       "roster": "Roster",
       "matches": "Matches",
@@ -2620,14 +2934,205 @@
       },
       "assign_slot": "Assign Slot"
     },
+    "buy_types": {
+      "section_title": "Buy Type Breakdown",
+      "rounds": "rounds",
+      "win": "win",
+      "kills": "Kills",
+      "deaths": "Deaths",
+      "kd": "K/D",
+      "rating": "HLTV Rating",
+      "you": "Your team",
+      "opponent": "Opponent",
+      "breakdown_label": "Player breakdown by matchup",
+      "win_axis": "Win %",
+      "no_data": "No buy-type data available",
+      "matchups": {
+        "pistol_v_pistol": "Pistol v Pistol",
+        "full_v_full": "Full v Full",
+        "full_v_eco": "Full v Eco",
+        "full_v_force": "Full v Force",
+        "eco_v_full": "Eco v Full",
+        "force_v_full": "Force v Full"
+      },
+      "sections": {
+        "even": "Even Buys",
+        "even_sub": "Both teams on equal footing",
+        "advantage": "Buy Advantage",
+        "advantage_sub": "Win % when out-buying the enemy",
+        "upsets": "Eco / Force Upsets",
+        "upsets_sub": "Win % when out-bought"
+      }
+    },
+    "radar": {
+      "title": "Player Matchup",
+      "player_a": "Player A",
+      "player_b": "Player B",
+      "select_player": "Select player",
+      "vs": "vs",
+      "metric": "Metric",
+      "no_data": "No stats available for the selected players.",
+      "axes": {
+        "rating": "HLTV Rating",
+        "kast": "KAST",
+        "adr": "ADR",
+        "kpr": "KPR",
+        "opening": "Opening K/D",
+        "opening_attempts": "Opening Attempts",
+        "trade_kills": "Trade Kills/Round",
+        "kd": "K/D",
+        "traded": "Traded Deaths/Round",
+        "dpr": "DPR",
+        "udr": "UDR",
+        "flash_assists": "Flash Assists/Round"
+      }
+    },
+    "team_stats": {
+      "overview_title": "Team Overview",
+      "sides_title": "Sides Breakdown",
+      "players_title": "Player Performance",
+      "team_average": "Team Average",
+      "no_data": {
+        "title": "No round data",
+        "description": "Team stats are available once round-by-round data has been recorded for this match."
+      },
+      "kpi": {
+        "round_win": "Round Win %",
+        "pistol_win": "Pistol Win %",
+        "opening_win": "Opening Win %",
+        "trade": "Trade %",
+        "man_advantage": "5v5 Win %",
+        "man_disadvantage": "4v5 Win %",
+        "udr": "UDR",
+        "flash_assists_pr": "Flash Assists / Round"
+      },
+      "side": {
+        "ct": "CT Side",
+        "t": "T Side",
+        "no_rounds": "No rounds on this side"
+      },
+      "buy": {
+        "pistol": "Pistol",
+        "eco": "Eco",
+        "force": "Force",
+        "full": "Full"
+      },
+      "buy_mix": "Buy Mix",
+      "rounds_won": "rounds won",
+      "col": {
+        "hltv": "HLTV",
+        "kpr": "KPR",
+        "kd": "K/D",
+        "dpr": "DPR",
+        "adr": "ADR",
+        "kast": "KAST",
+        "udr": "UDR",
+        "far": "FAR"
+      }
+    },
+    "heatmaps": {
+      "title": "Heatmaps",
+      "select_map": "Select map",
+      "kills": "Kills",
+      "deaths": "Deaths",
+      "utility": "Utility",
+      "util_damage": "Util Damage",
+      "render_heat": "Heat",
+      "render_dots": "Dots",
+      "trajectories": "Trajectories",
+      "all_players": "All players",
+      "all_rounds": "All rounds",
+      "round": "Round {round}",
+      "plotted": "{count} positions plotted",
+      "no_radar_title": "No radar available",
+      "no_radar_description": "There is no radar image or calibration data for this map.",
+      "utility_types": {
+        "HighExplosive": "HE",
+        "Molotov": "Molotov",
+        "Smoke": "Smoke",
+        "Flash": "Flash",
+        "Decoy": "Decoy"
+      }
+    },
+    "map_analysis": {
+      "title": "Map Analysis",
+      "mode_heatmap": "Heatmap",
+      "mode_movement": "Paths",
+      "filter_stat": "Stat",
+      "filter_render": "Render",
+      "filter_side": "Side",
+      "filter_player": "Player",
+      "filter_type": "Type",
+      "filter_team": "Team",
+      "filter_window": "Window",
+      "open_2d_playback": "Open 2D Playback"
+    },
+    "roles": {
+      "title": "Detected Roles",
+      "description": "Auto-detected from each player's AWP usage, opening-duel involvement, and utility output this match.",
+      "no_data": "Not enough data to detect roles for this match.",
+      "names": {
+        "sniper": "Sniper",
+        "entry": "Entry",
+        "support": "Support",
+        "lurker": "Lurker",
+        "rifler": "Rifler"
+      },
+      "signals": {
+        "awp": "Sniper",
+        "entry": "Entry",
+        "support": "Util"
+      }
+    },
+    "economy": {
+      "section": "Round Economy",
+      "description": "Each team's start-of-round money across the map.",
+      "select_map": "Select map",
+      "empty_title": "No economy data",
+      "empty_description": "Per-round money isn't available for this map yet.",
+      "round_won_by": "Round won by {team}",
+      "no_winner": "No winner",
+      "team_1": "Team 1",
+      "team_2": "Team 2"
+    },
+    "movement": {
+      "title": "First Seconds Movement",
+      "select_map": "Select map",
+      "loading": "Loading playback data",
+      "all_players": "All players",
+      "all_rounds": "All rounds",
+      "round": "Round {round}",
+      "seconds": "{count}s",
+      "side_both": "Both",
+      "side_ct": "CT",
+      "side_t": "T",
+      "team_all": "Both Teams",
+      "team_1": "Team 1",
+      "team_2": "Team 2",
+      "summary": "{rounds} rounds, {paths} paths",
+      "sampled": "Paths sampled to keep rendering fast",
+      "no_radar_title": "No radar available",
+      "no_radar_description": "This map has no radar image or calibration data, so movement paths cannot be drawn."
+    },
     "tabs": {
       "overview": "Overview",
+      "scoreboard": "Scoreboard",
+      "general": "General",
+      "more": "More",
+      "team_stats": "Team Stats",
+      "economy": "Economy",
       "utility": "Utility",
       "trade_stats": "Trades",
       "aim_stats": "Aim",
       "opening_duels": "Opening Duels",
+      "buy_types": "Buy Types",
       "clutches": "Clutches",
       "head_to_head": "Head to Head",
+      "radar": "Radar",
+      "roles": "Roles",
+      "heatmaps": "Heatmaps",
+      "movement": "Movement",
+      "map_analysis": "Map Analysis",
       "replay": "2D Replay",
       "mobile_label_map": "Map Filter",
       "mobile_label_view": "View",
@@ -3005,6 +3510,8 @@
       "no_position_data": "No position data — re-parse the demo to populate the replay.",
       "toggle_to_slots": "Switch to slot numbers",
       "toggle_to_avatars": "Switch to player avatars",
+      "hide_scoreboard": "Hide scoreboard",
+      "show_scoreboard": "Show scoreboard",
       "popout": "Pop out into a separate window",
       "phase_freeze": "Freeze",
       "phase_bomb": "Bomb",
@@ -3784,7 +4291,7 @@
       "type": "Type",
       "result": "Result",
       "map": "Map",
-      "rating": "Rating",
+      "rating": "HLTV Rating",
       "elo": "Elo"
     },
     "source": {

@@ -46,6 +46,7 @@ import {
 } from "~/components/ui/tooltip";
 import { useDemoPlayback } from "~/composables/useDemoPlayback";
 import { useClipEditor } from "~/composables/useClipEditor";
+import RoundSelector from "~/components/match/RoundSelector.vue";
 import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
 import { resolveKeyToRealSlot } from "~/utilities/streamerSpecSlots";
 
@@ -487,22 +488,27 @@ const activeFilterLabel = computed(() => {
   return `${name} (${killCountFor(sid)})`;
 });
 
-// Cumulative round score running L-R across roundTicks. The parser
-// records `winner` as "ct" / "t" / "" — we don't know which lineup
-// played which side first, so the score is just team1-vs-team2 in
-// the order rounds were played. Falls back to no score when the
-// parser hasn't filled `winner` yet.
-const roundScores = computed(() => {
-  const out = new Map<number, { ct: number; t: number }>();
-  let ct = 0;
-  let t = 0;
+// Round strip: numbered cells with a win-colored underline (CT blue / T
+// amber), matching the radar round selector. Active cell tracks the
+// round the playhead currently sits in.
+const playbackRounds = computed<
+  Array<{ round: number; winnerSide: "CT" | "T" | null }>
+>(() =>
+  store.roundTicks.map((r) => ({
+    round: r.round,
+    winnerSide: r.winner === "ct" ? "CT" : r.winner === "t" ? "T" : null,
+  })),
+);
+const currentRound = computed<number | null>(() => {
+  const tick = visualTick.value;
   for (const r of store.roundTicks) {
-    if (r.winner === "ct") ct++;
-    else if (r.winner === "t") t++;
-    out.set(r.round, { ct, t });
+    if (tick >= r.start_tick && tick <= r.end_tick) return r.round;
   }
-  return out;
+  return null;
 });
+function onRoundSelect(round: number | null) {
+  if (round != null) jumpToRound(round);
+}
 
 // End-of-demo detection. Once visualTick crosses the last round's
 // end + a small epsilon, surface a "Reload?" prompt — cs2 has
@@ -625,36 +631,13 @@ const killMarkers = computed<Marker[]>(() => {
         </div>
       </Transition>
 
-      <div
+      <RoundSelector
         v-if="store.roundTicks.length"
-        class="flex flex-wrap gap-1.5 max-h-20 pt-1 overflow-y-auto"
-      >
-        <button
-          v-for="r in store.roundTicks"
-          :key="r.round"
-          type="button"
-          class="flex items-center gap-1 px-2.5 py-1 rounded text-xs font-mono uppercase tracking-wider border cursor-pointer transition-all duration-150 hover:bg-primary/10 hover:border-primary hover:-translate-y-0.5 hover:shadow-sm active:translate-y-0 active:scale-95"
-          :class="{
-            'border-blue-500/60 text-blue-200': r.winner === 'ct',
-            'border-amber-500/60 text-amber-200': r.winner === 't',
-            'border-border/60': !r.winner,
-          }"
-          :title="`Jump to round ${r.round}${
-            roundScores.get(r.round)
-              ? ` (${roundScores.get(r.round)!.ct}–${roundScores.get(r.round)!.t})`
-              : ''
-          }`"
-          @click="jumpToRound(r.round)"
-        >
-          <span>R{{ r.round }}</span>
-          <span
-            v-if="roundScores.get(r.round)"
-            class="text-[0.6rem] tracking-normal text-muted-foreground"
-          >
-            {{ roundScores.get(r.round)!.ct }}–{{ roundScores.get(r.round)!.t }}
-          </span>
-        </button>
-      </div>
+        :rounds="playbackRounds"
+        :model-value="currentRound"
+        class="pt-1"
+        @update:model-value="onRoundSelect"
+      />
 
       <div v-if="hasMetadata" class="flex items-center gap-4">
         <span

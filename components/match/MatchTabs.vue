@@ -6,8 +6,14 @@ import LineupUtility from "~/components/match/LineupUtility.vue";
 import LineupTradeStats from "~/components/match/LineupTradeStats.vue";
 import LineupAimStats from "~/components/match/LineupAimStats.vue";
 import LineupOpeningDuels from "~/components/match/LineupOpeningDuels.vue";
+import LineupBuyTypes from "~/components/match/LineupBuyTypes.vue";
 import LineupClutches from "~/components/match/LineupClutches.vue";
+import LineupRadarComparison from "~/components/match/LineupRadarComparison.vue";
+import MatchTeamStats from "~/components/match/MatchTeamStats.vue";
+import MatchMapAnalysis from "~/components/match/MatchMapAnalysis.vue";
+import MatchEconomyTimeline from "~/components/match/MatchEconomyTimeline.vue";
 import HeadToHead from "~/components/match/HeadToHead.vue";
+import MatchRoles from "~/components/match/MatchRoles.vue";
 import MatchSideFilter from "~/components/match/MatchSideFilter.vue";
 import TableColumnPicker from "~/components/common/TableColumnPicker.vue";
 import TeamUtilitySummary from "~/components/match/TeamUtilitySummary.vue";
@@ -22,13 +28,18 @@ import {
 
 provideMatchSide("all");
 
+// Head to Head selection (lineup_1 player / lineup_2 player) shared between
+// the matrix picker and the radar comparison so one matchup drives both.
+const h2hSelectedA = ref<string | null>(null);
+const h2hSelectedB = ref<string | null>(null);
+
 const { columnsRef: overviewColumnsRef } = useOverviewColumns();
 const { columnsRef: utilityColumnsRef } = useUtilityColumns();
 const { columnsRef: aimColumnsRef } = useAimColumns();
 const { columnsRef: tradeColumnsRef } = useTradeColumns();
 const { columnsRef: openingDuelsColumnsRef } = useOpeningDuelsColumns();
 import RconCommander from "~/components/servers/RconCommander.vue";
-import { provide } from "vue";
+import { provide, ref } from "vue";
 import EventEmitter from "eventemitter3";
 import { Button } from "~/components/ui/button";
 import {
@@ -56,6 +67,13 @@ import MatchForm from "~/components/match/MatchForm.vue";
 import MatchLiveStreams from "~/components/match/MatchLiveStreams.vue";
 import PlayerInvites from "~/components/match/PlayerInvites.vue";
 import cleanMapName from "~/utilities/cleanMapName";
+import { MoreVertical } from "lucide-vue-next";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "~/components/ui/dropdown-menu";
 
 const commander = new EventEmitter();
 provide("commander", commander);
@@ -165,34 +183,32 @@ provide("commander", commander);
               class="w-full"
               :aria-label="$t('ui.tooltips.match_section')"
             >
-              <SelectValue :placeholder="$t('match.tabs.overview')" />
+              <SelectValue :placeholder="$t('match.tabs.scoreboard')" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="overview">
-                {{ $t("match.tabs.overview") }}
+              <SelectItem value="scoreboard">
+                {{ $t("match.tabs.scoreboard") }}
               </SelectItem>
-              <SelectItem value="utility" :disabled="disableStats">
-                {{ $t("match.tabs.utility") }}
-              </SelectItem>
-              <SelectItem value="trade-stats" :disabled="disableStats">
-                {{ $t("match.tabs.trade_stats") }}
-              </SelectItem>
-              <SelectItem value="aim-stats" :disabled="disableStats">
-                {{ $t("match.tabs.aim_stats") }}
-              </SelectItem>
-              <SelectItem value="opening-duels" :disabled="disableStats">
-                {{ $t("match.tabs.opening_duels") }}
-              </SelectItem>
-              <SelectItem
-                v-if="match.options.type !== e_match_types_enum.Duel"
-                value="clutches"
-                :disabled="disableStats"
-              >
-                {{ $t("match.tabs.clutches") }}
-              </SelectItem>
-              <SelectItem value="head-to-head" :disabled="disableStats">
-                {{ $t("match.tabs.head_to_head") }}
-              </SelectItem>
+              <template v-if="!disableStats">
+                <SelectItem value="economy">
+                  {{ $t("match.tabs.economy") }}
+                </SelectItem>
+                <SelectItem
+                  v-if="match.options.type !== e_match_types_enum.Duel"
+                  value="clutches"
+                >
+                  {{ $t("match.tabs.clutches") }}
+                </SelectItem>
+                <SelectItem value="head-to-head">
+                  {{ $t("match.tabs.head_to_head") }}
+                </SelectItem>
+                <SelectItem value="roles">
+                  {{ $t("match.tabs.roles") }}
+                </SelectItem>
+                <SelectItem value="map-analysis">
+                  {{ $t("match.tabs.map_analysis") }}
+                </SelectItem>
+              </template>
               <SelectItem value="settings">
                 {{ $t("match.tabs.settings") }}
               </SelectItem>
@@ -212,79 +228,215 @@ provide("commander", commander);
     >
       <div class="min-w-0 flex-1 overflow-x-auto match-tabs__scroll">
         <TabsList variant="underline" class="h-auto flex-nowrap">
-          <TabsTrigger value="overview">
-            {{ $t("match.tabs.overview") }}
+          <TabsTrigger value="scoreboard">
+            {{ $t("match.tabs.scoreboard") }}
           </TabsTrigger>
-          <TabsTrigger :disabled="disableStats" value="utility">
-            {{ $t("match.tabs.utility") }}
-          </TabsTrigger>
-          <TabsTrigger :disabled="disableStats" value="trade-stats">
-            {{ $t("match.tabs.trade_stats") }}
-          </TabsTrigger>
-          <TabsTrigger :disabled="disableStats" value="aim-stats">
-            {{ $t("match.tabs.aim_stats") }}
-          </TabsTrigger>
-          <TabsTrigger :disabled="disableStats" value="opening-duels">
-            {{ $t("match.tabs.opening_duels") }}
-          </TabsTrigger>
-          <TabsTrigger
-            :disabled="disableStats"
-            value="clutches"
-            v-if="match.options.type !== e_match_types_enum.Duel"
-          >
-            {{ $t("match.tabs.clutches") }}
-          </TabsTrigger>
-          <TabsTrigger :disabled="disableStats" value="head-to-head">
-            {{ $t("match.tabs.head_to_head") }}
-          </TabsTrigger>
-          <TabsTrigger value="settings">
-            {{ $t("match.tabs.settings") }}
-          </TabsTrigger>
-          <TabsTrigger value="streams" :disabled="!canConfigureStreams">
-            {{ $t("match.tabs.streams") }}
-          </TabsTrigger>
-          <TabsTrigger value="server" v-if="canViewAdmin">
-            {{ $t("match.tabs.admin") }}
-          </TabsTrigger>
+          <template v-if="!disableStats">
+            <TabsTrigger value="economy">
+              {{ $t("match.tabs.economy") }}
+            </TabsTrigger>
+            <TabsTrigger
+              value="clutches"
+              v-if="match.options.type !== e_match_types_enum.Duel"
+            >
+              {{ $t("match.tabs.clutches") }}
+            </TabsTrigger>
+            <TabsTrigger value="head-to-head">
+              {{ $t("match.tabs.head_to_head") }}
+            </TabsTrigger>
+            <TabsTrigger value="roles">
+              {{ $t("match.tabs.roles") }}
+            </TabsTrigger>
+            <TabsTrigger value="map-analysis">
+              {{ $t("match.tabs.map_analysis") }}
+            </TabsTrigger>
+          </template>
         </TabsList>
       </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button
+            variant="ghost"
+            size="sm"
+            class="shrink-0 inline-flex items-center gap-2 font-mono text-[0.7rem] tracking-[0.15em] uppercase leading-none"
+            :class="
+              isOpsTabActive
+                ? 'border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+                : ''
+            "
+          >
+            <MoreVertical class="w-4 h-4 shrink-0" />
+            <span class="leading-none">{{ $t("match.tabs.more") }}</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem @click="activeTab = 'settings'">
+            {{ $t("match.tabs.settings") }}
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            :disabled="!canConfigureStreams"
+            @click="canConfigureStreams && (activeTab = 'streams')"
+          >
+            {{ $t("match.tabs.streams") }}
+          </DropdownMenuItem>
+          <DropdownMenuItem v-if="canViewAdmin" @click="activeTab = 'server'">
+            {{ $t("match.tabs.admin") }}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
-    <TabsContent value="overview">
+    <TabsContent value="scoreboard">
       <div
-        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
-        :class="{ 'opacity-60': activeMap && !mapStats }"
+        v-if="!disableStats"
+        class="mb-4 flex flex-wrap items-center justify-between gap-3"
       >
-        <div v-if="showStatsControls" class="flex justify-end gap-2">
-          <MatchSideFilter />
+        <div
+          class="inline-flex flex-wrap items-center gap-0.5 rounded-md border border-border/60 bg-background/40 p-0.5"
+        >
+          <button
+            v-for="l in scoreboardLenses"
+            :key="l.value"
+            type="button"
+            class="rounded px-2.5 py-1 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors"
+            :class="
+              scoreboardLens === l.value
+                ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
+                : 'text-muted-foreground hover:text-foreground'
+            "
+            @click="scoreboardLens = l.value"
+          >
+            {{ $t(l.labelKey) }}
+          </button>
+        </div>
+        <div
+          v-if="showStatsControls"
+          class="flex flex-wrap items-center justify-end gap-2"
+        >
+          <MatchSideFilter
+            v-if="['general', 'opening'].includes(effectiveScoreboardLens)"
+          />
           <TableColumnPicker
+            v-if="effectiveScoreboardLens === 'general'"
             storage-key="match-overview"
             :columns="overviewColumnsRef"
           />
+          <TableColumnPicker
+            v-else-if="effectiveScoreboardLens === 'aim'"
+            storage-key="match-aim"
+            :columns="aimColumnsRef"
+          />
+          <TableColumnPicker
+            v-else-if="effectiveScoreboardLens === 'trades'"
+            storage-key="match-trade"
+            :columns="tradeColumnsRef"
+          />
+          <TableColumnPicker
+            v-else-if="effectiveScoreboardLens === 'utility'"
+            storage-key="match-utility"
+            :columns="utilityColumnsRef"
+          />
+          <TableColumnPicker
+            v-else-if="effectiveScoreboardLens === 'opening'"
+            storage-key="match-opening-duels"
+            :columns="openingDuelsColumnsRef"
+          />
         </div>
-        <Card class="overflow-x-auto overscroll-x-none">
+      </div>
+
+      <template v-if="effectiveScoreboardLens === 'general'">
+        <div
+          class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
+          :class="{ 'opacity-60': activeMap && !mapStats }"
+        >
+          <Card class="overflow-x-auto overscroll-x-none bg-card/20">
+            <CardContent class="p-1 sm:p-2">
+              <LineupOverview
+                :match="mapScopedMatch"
+                :lineup="activeLineup1"
+                :combine-with="activeLineup2"
+              ></LineupOverview>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div
+          v-if="canAdjustLineups"
+          class="flex flex-wrap gap-2 mt-3 md:gap-3 md:justify-end container mx-auto px-4"
+        >
+          <Button variant="outline" class="px-4" @click="randomizeTeams">
+            {{ $t("match.tabs.randomize_teams") }}
+          </Button>
+          <Button variant="outline" class="px-4" @click="swapLineups">
+            {{ $t("match.tabs.swap_lineups") }}
+          </Button>
+        </div>
+
+        <PlayerInvites v-if="me" class="mt-4" />
+      </template>
+
+      <div
+        v-else-if="effectiveScoreboardLens === 'utility'"
+        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
+        :class="{ 'opacity-60': activeMap && !mapStats }"
+      >
+        <Card class="overflow-x-auto overscroll-x-none bg-card/20">
           <CardContent class="p-1 sm:p-2">
-            <LineupOverview
+            <lineup-utility
               :match="mapScopedMatch"
               :lineup="activeLineup1"
               :combine-with="activeLineup2"
-            ></LineupOverview>
+            ></lineup-utility>
           </CardContent>
         </Card>
       </div>
 
       <div
-        v-if="canAdjustLineups"
-        class="flex flex-wrap gap-2 mt-3 md:gap-3 md:justify-end container mx-auto px-4"
+        v-else-if="effectiveScoreboardLens === 'trades'"
+        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
+        :class="{ 'opacity-60': activeMap && !mapStats }"
       >
-        <Button variant="outline" class="px-4" @click="randomizeTeams">
-          {{ $t("match.tabs.randomize_teams") }}
-        </Button>
-        <Button variant="outline" class="px-4" @click="swapLineups">
-          {{ $t("match.tabs.swap_lineups") }}
-        </Button>
+        <Card class="overflow-x-auto overscroll-x-none bg-card/20">
+          <CardContent class="p-1 sm:p-2">
+            <lineup-trade-stats
+              :match="mapScopedMatch"
+              :lineup="activeLineup1"
+              :combine-with="activeLineup2"
+            ></lineup-trade-stats>
+          </CardContent>
+        </Card>
       </div>
 
-      <PlayerInvites v-if="me" class="mt-4" />
+      <div
+        v-else-if="effectiveScoreboardLens === 'aim'"
+        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
+        :class="{ 'opacity-60': activeMap && !mapStats }"
+      >
+        <Card class="overflow-x-auto overscroll-x-none bg-card/20">
+          <CardContent class="p-1 sm:p-2">
+            <lineup-aim-stats
+              :match="mapScopedMatch"
+              :lineup="activeLineup1"
+              :combine-with="activeLineup2"
+            ></lineup-aim-stats>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div
+        v-else-if="effectiveScoreboardLens === 'opening'"
+        class="grid gap-4 max-w-[1500px]"
+      >
+        <Card class="overflow-x-auto overscroll-x-none bg-card/20">
+          <CardContent class="p-1 sm:p-2">
+            <lineup-opening-duels
+              :match="match"
+              :lineup="match.lineup_1"
+              :combine-with="match.lineup_2"
+              :selected-map-id="activeMap?.id"
+            ></lineup-opening-duels>
+          </CardContent>
+        </Card>
+      </div>
 
       <Drawer :open="inviteDialog">
         <DrawerContent class="p-4">
@@ -305,7 +457,7 @@ provide("commander", commander);
           </div>
 
           <ScrollArea class="max-h-[60vh] overflow-auto">
-            <Card class="overflow-x-auto overscroll-x-none">
+            <Card class="overflow-x-auto overscroll-x-none bg-card/20">
               <CardContent class="p-1 sm:p-2">
                 <LineupOverview
                   :match="match"
@@ -320,95 +472,41 @@ provide("commander", commander);
         </DrawerContent>
       </Drawer>
     </TabsContent>
-    <TabsContent value="utility">
-      <div
-        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
-        :class="{ 'opacity-60': activeMap && !mapStats }"
-      >
-        <div
-          v-if="showStatsControls"
-          class="flex flex-wrap items-center justify-end gap-2"
-        >
-          <TableColumnPicker
-            storage-key="match-utility"
-            :columns="utilityColumnsRef"
-          />
-        </div>
-        <Card class="overflow-x-auto overscroll-x-none">
-          <CardContent class="p-1 sm:p-2">
-            <lineup-utility
-              :match="mapScopedMatch"
-              :lineup="activeLineup1"
-              :combine-with="activeLineup2"
-            ></lineup-utility>
-          </CardContent>
-        </Card>
-      </div>
-    </TabsContent>
-    <TabsContent value="trade-stats">
-      <div
-        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
-        :class="{ 'opacity-60': activeMap && !mapStats }"
-      >
-        <div v-if="showStatsControls" class="flex justify-end">
-          <TableColumnPicker
-            storage-key="match-trade"
-            :columns="tradeColumnsRef"
-          />
-        </div>
-        <Card class="overflow-x-auto overscroll-x-none">
-          <CardContent class="p-1 sm:p-2">
-            <lineup-trade-stats
-              :match="mapScopedMatch"
-              :lineup="activeLineup1"
-              :combine-with="activeLineup2"
-            ></lineup-trade-stats>
-          </CardContent>
-        </Card>
-      </div>
-    </TabsContent>
-    <TabsContent value="aim-stats">
-      <div
-        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
-        :class="{ 'opacity-60': activeMap && !mapStats }"
-      >
-        <div v-if="showStatsControls" class="flex justify-end">
-          <TableColumnPicker storage-key="match-aim" :columns="aimColumnsRef" />
-        </div>
-        <Card class="overflow-x-auto overscroll-x-none">
-          <CardContent class="p-1 sm:p-2">
-            <lineup-aim-stats
-              :match="mapScopedMatch"
-              :lineup="activeLineup1"
-              :combine-with="activeLineup2"
-            ></lineup-aim-stats>
-          </CardContent>
-        </Card>
-      </div>
-    </TabsContent>
-    <TabsContent value="opening-duels">
+    <TabsContent value="economy">
       <div class="grid gap-4 max-w-[1500px]">
         <div v-if="showStatsControls" class="flex justify-end gap-2">
           <MatchSideFilter />
-          <TableColumnPicker
-            storage-key="match-opening-duels"
-            :columns="openingDuelsColumnsRef"
-          />
         </div>
-        <Card class="overflow-x-auto overscroll-x-none">
-          <CardContent class="p-1 sm:p-2">
-            <lineup-opening-duels
-              :match="match"
-              :lineup="match.lineup_1"
-              :combine-with="match.lineup_2"
-              :selected-map-id="activeMap?.id"
-            ></lineup-opening-duels>
-          </CardContent>
-        </Card>
+        <MatchEconomyTimeline :match="match" :selected-map-id="activeMap?.id" />
+        <MatchTeamStats
+          :match="mapScopedMatch"
+          :lineup="activeLineup1"
+          :combine-with="activeLineup2"
+          :selected-map-id="activeMap?.id"
+        />
+        <div class="grid gap-3 mt-2">
+          <div class="flex items-center gap-2">
+            <span class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]" />
+            <span
+              class="font-sans text-sm font-semibold uppercase tracking-[0.14em]"
+            >
+              {{ $t("match.buy_types.section_title") }}
+            </span>
+          </div>
+          <lineup-buy-types
+            :match="match"
+            :lineup="match.lineup_1"
+            :combine-with="match.lineup_2"
+            :selected-map-id="activeMap?.id"
+          ></lineup-buy-types>
+        </div>
       </div>
     </TabsContent>
     <TabsContent value="clutches">
       <div class="max-w-[1500px]">
+        <div v-if="showStatsControls" class="flex justify-end gap-2 mb-4">
+          <MatchSideFilter />
+        </div>
         <lineup-clutches
           :match="match"
           :lineup1="match.lineup_1"
@@ -418,8 +516,42 @@ provide("commander", commander);
       </div>
     </TabsContent>
     <TabsContent value="head-to-head">
-      <div class="max-w-[1500px]">
-        <HeadToHead :match="match" />
+      <div
+        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
+        :class="{ 'opacity-60': activeMap && !mapStats }"
+      >
+        <HeadToHead
+          :match="match"
+          v-model:selected-a="h2hSelectedA"
+          v-model:selected-b="h2hSelectedB"
+        />
+        <LineupRadarComparison
+          :match="mapScopedMatch"
+          :lineup="activeLineup1"
+          :combine-with="activeLineup2"
+          :selected-map-id="activeMap?.id"
+          :hide-selectors="true"
+          v-model:selected-a="h2hSelectedA"
+          v-model:selected-b="h2hSelectedB"
+        />
+      </div>
+    </TabsContent>
+    <TabsContent value="roles">
+      <div
+        class="grid gap-4 max-w-[1500px] transition-opacity duration-200"
+        :class="{ 'opacity-60': activeMap && !mapStats }"
+      >
+        <MatchRoles
+          :match="mapScopedMatch"
+          :lineup="activeLineup1"
+          :combine-with="activeLineup2"
+          :selected-map-id="activeMap?.id"
+        />
+      </div>
+    </TabsContent>
+    <TabsContent value="map-analysis">
+      <div class="grid gap-4 max-w-[1500px]">
+        <MatchMapAnalysis :match="match" :selected-map-id="activeMap?.id" />
       </div>
     </TabsContent>
     <TabsContent
@@ -477,7 +609,7 @@ provide("commander", commander);
 
         <form
           @submit.prevent="send('restore_round', form.values.round)"
-          v-if="currentMap?.rounds.length > 0"
+          v-if="backupRounds.length > 0"
         >
           <FormField v-slot="{ componentField }" name="round">
             <FormItem>
@@ -497,9 +629,10 @@ provide("commander", commander);
                 </FormControl>
                 <SelectContent>
                   <SelectGroup>
-                    <template v-for="round of currentMap.rounds">
+                    <template v-for="round of backupRounds">
                       <SelectItem
                         v-if="round.has_backup_file && round.round > 0"
+                        :key="round.round"
                         :value="round.round.toString()"
                       >
                         {{
@@ -539,7 +672,7 @@ provide("commander", commander);
       />
     </TabsContent>
     <TabsContent value="settings" class="flex flex-col gap-4 max-w-[1500px]">
-      <Card>
+      <Card class="bg-card/20">
         <CardContent class="py-4">
           <MatchOptionsDisplay
             :options="match.options"
@@ -651,6 +784,7 @@ import {
 } from "~/graphql/graphqlGen";
 import { matchMapStats } from "~/graphql/matchMapStatsGraphql";
 import { matchAllMapsStats } from "~/graphql/matchAllMapsStatsGraphql";
+import { trackMatchBackupRounds } from "~/composables/useMatchBackupRounds";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
@@ -733,7 +867,8 @@ export default {
   },
   data() {
     return {
-      activeTab: "overview",
+      activeTab: "scoreboard",
+      scoreboardLens: "general",
       inviteDialog: false,
       mapStats: null as null | { lineup_1: any; lineup_2: any },
       mapStatsLoading: false,
@@ -794,15 +929,15 @@ export default {
         if (map) {
           void this.fetchMapStats();
           const statsTabs = [
-            "overview",
-            "utility",
-            "trade-stats",
-            "aim-stats",
-            "opening-duels",
+            "scoreboard",
+            "economy",
             "clutches",
+            "head-to-head",
+            "roles",
+            "map-analysis",
           ];
           if (!prev && !statsTabs.includes(this.activeTab)) {
-            this.activeTab = "overview";
+            this.activeTab = "scoreboard";
           }
         } else {
           this.mapStats = null;
@@ -830,7 +965,7 @@ export default {
         return;
       }
 
-      void replaceRouteTab(this.$router, this.$route, newTab, "overview");
+      void replaceRouteTab(this.$router, this.$route, newTab, "scoreboard");
     },
     "$route.query.tab": {
       immediate: true,
@@ -859,6 +994,21 @@ export default {
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    scoreboardLenses() {
+      return [
+        { value: "general", labelKey: "match.tabs.general" },
+        { value: "aim", labelKey: "match.tabs.aim_stats" },
+        { value: "trades", labelKey: "match.tabs.trade_stats" },
+        { value: "utility", labelKey: "match.tabs.utility" },
+        { value: "opening", labelKey: "match.tabs.opening_duels" },
+      ];
+    },
+    effectiveScoreboardLens() {
+      return this.disableStats ? "general" : this.scoreboardLens;
+    },
+    isOpsTabActive() {
+      return ["settings", "streams", "server"].includes(this.activeTab);
     },
     mapScopedMatch() {
       if (!this.activeMap) return this.match;
@@ -926,12 +1076,27 @@ export default {
       );
     },
     disableStats() {
-      return [
-        e_match_status_enum.PickingPlayers,
-        e_match_status_enum.Scheduled,
-        e_match_status_enum.Veto,
-        e_match_status_enum.WaitingForCheckIn,
-      ].includes(this.match.status);
+      if (
+        [
+          e_match_status_enum.PickingPlayers,
+          e_match_status_enum.Scheduled,
+          e_match_status_enum.Veto,
+          e_match_status_enum.WaitingForCheckIn,
+        ].includes(this.match.status)
+      ) {
+        return true;
+      }
+      // The detail tabs read per-event/economy data that's hidden (anti-cheat)
+      // until a map is finished — so until at least one map is over there's
+      // nothing to show; only Overview/Settings/Streams/Admin remain. Per-map,
+      // so a finished map in a live Bo3 already unlocks them.
+      const hasFinishedMap = (this.match.match_maps ?? []).some((m: any) =>
+        [
+          e_match_map_status_enum.Finished,
+          e_match_map_status_enum.Surrendered,
+        ].includes(m.status),
+      );
+      return !hasFinishedMap;
     },
     showMatchSettingsForm() {
       return ![
@@ -955,6 +1120,9 @@ export default {
       return this.match.match_maps.find((match_map) => {
         return match_map.is_current_map;
       });
+    },
+    backupRounds() {
+      return this.backupRoundsTracker?.rounds.value ?? [];
     },
     availableCommands() {
       const commands = [];
@@ -1026,16 +1194,16 @@ export default {
       return true;
     },
     availableMatchTabs() {
-      const tabs = ["overview"];
+      const tabs = ["scoreboard"];
 
       if (!this.disableStats) {
-        tabs.push("utility", "trade-stats", "aim-stats", "opening-duels");
+        tabs.push("economy");
 
         if (this.match.options.type !== e_match_types_enum.Duel) {
           tabs.push("clutches");
         }
 
-        tabs.push("head-to-head");
+        tabs.push("head-to-head", "roles", "map-analysis");
       }
 
       tabs.push("settings");
@@ -1050,6 +1218,16 @@ export default {
 
       return tabs;
     },
+  },
+  created() {
+    // Shared with MatchAdminBottomBar so we don't open two identical
+    // v_match_map_backup_rounds websockets for the same current map.
+    this.backupRoundsTracker = trackMatchBackupRounds(
+      () => this.currentMap?.id,
+    );
+  },
+  beforeUnmount() {
+    this.backupRoundsTracker?.stop();
   },
   methods: {
     onMapSelect(value: string) {
@@ -1111,10 +1289,32 @@ export default {
       }
     },
     syncActiveTabFromRoute() {
+      // Legacy URLs pointed at the per-view tabs now folded into Scoreboard —
+      // map them to the matching lens so old bookmarks don't dead-end.
+      const legacyLensMap: Record<string, string> = {
+        overview: "general",
+        utility: "utility",
+        "aim-stats": "aim",
+        "trade-stats": "trades",
+        "opening-duels": "opening",
+      };
+      const rawTab = this.$route.query.tab;
+      if (typeof rawTab === "string" && rawTab in legacyLensMap) {
+        this.scoreboardLens = legacyLensMap[rawTab];
+        this.activeTab = "scoreboard";
+        void replaceRouteTab(
+          this.$router,
+          this.$route,
+          "scoreboard",
+          "scoreboard",
+        );
+        return;
+      }
+
       const activeTab = getRouteTabValue(
         this.$route,
         this.availableMatchTabs,
-        "overview",
+        "scoreboard",
       );
 
       if (this.activeTab !== activeTab) {
@@ -1125,7 +1325,7 @@ export default {
         this.$router,
         this.$route,
         this.availableMatchTabs,
-        "overview",
+        "scoreboard",
       );
     },
     confirmCommand(

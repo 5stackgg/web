@@ -400,63 +400,108 @@ function clearUpload() {
   uploadProgress.value = 0;
 }
 
+function putChunk(
+  url: string,
+  chunk: Blob,
+  onProgress: (loaded: number) => void,
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("PUT", url);
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) {
+        onProgress(e.loaded);
+      }
+    };
+    xhr.onload = () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve();
+      } else {
+        reject(new Error(`chunk upload failed (${xhr.status})`));
+      }
+    };
+    xhr.onerror = () => reject(new Error("Network error during upload"));
+    xhr.send(chunk);
+  });
+}
+
 async function uploadDemo(file: File) {
   uploadingDemo.value = true;
   uploadProgress.value = 0;
   uploadedFile.value = { name: file.name, size: file.size };
   uploadResult.value = null;
-  try {
-    const form = new FormData();
-    form.append("demo", file);
 
-    const data = await new Promise<{
-      match_id: string | null;
-      skipped?: string;
-    }>((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", `https://${apiDomain}/steam-match-history/upload`);
-      xhr.withCredentials = true;
-      xhr.upload.onprogress = (e) => {
-        if (e.lengthComputable) {
-          uploadProgress.value = Math.round((e.loaded / e.total) * 100);
-        }
-      };
-      xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          try {
-            resolve(JSON.parse(xhr.responseText));
-          } catch (e) {
-            reject(new Error("Invalid server response"));
-          }
-        } else {
-          reject(
-            new Error(xhr.responseText || `upload failed (${xhr.status})`),
-          );
-        }
-      };
-      xhr.onerror = () => reject(new Error("Network error"));
-      xhr.send(form);
-    });
+  let uploadId: string | null = null;
+  let key: string | null = null;
+
+  try {
+    const magic = [0x50, 0x42, 0x44, 0x45, 0x4d, 0x53, 0x32, 0x00];
+    const header = new Uint8Array(await file.slice(0, magic.length).arrayBuffer());
+    if (header.length < magic.length || !magic.every((b, i) => header[i] === b)) {
+      throw new Error("Not a valid CS2 demo (.dem) file");
+    }
+
+    const initiate = await fetch(
+      `https://${apiDomain}/steam-match-history/upload/initiate`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ fileName: file.name, fileSize: file.size }),
+      },
+    );
+    if (!initiate.ok) {
+      throw new Error(
+        (await initiate.text()) || `could not start upload (${initiate.status})`,
+      );
+    }
+    const session = (await initiate.json()) as {
+      uploadId: string;
+      key: string;
+      chunkSize: number;
+      parts: Array<{ partNumber: number; url: string }>;
+    };
+    uploadId = session.uploadId;
+    key = session.key;
+
+    let uploadedBytes = 0;
+    for (const part of session.parts) {
+      const start = (part.partNumber - 1) * session.chunkSize;
+      const chunk = file.slice(start, start + session.chunkSize);
+      await putChunk(part.url, chunk, (loaded) => {
+        uploadProgress.value = Math.round(
+          ((uploadedBytes + loaded) / file.size) * 100,
+        );
+      });
+      uploadedBytes += chunk.size;
+    }
 
     uploadProgress.value = 100;
 
-    if (data.match_id) {
-      uploadResult.value = {
-        status: "success",
-        message: `Imported as match ${data.match_id}`,
-      };
-      toast({ title: "Demo imported", description: data.match_id });
-    } else {
-      uploadResult.value = {
-        status: "error",
-        message: data.skipped ?? "Could not import demo",
-      };
-      toast({
-        title: "Skipped",
-        description: data.skipped ?? "Could not import demo",
-        variant: "destructive",
-      });
+    const complete = await fetch(
+      `https://${apiDomain}/steam-match-history/upload/complete`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uploadId, key, fileName: file.name }),
+      },
+    );
+    if (!complete.ok) {
+      throw new Error(
+        (await complete.text()) || `import failed (${complete.status})`,
+      );
     }
+    await complete.json();
+
+    uploadResult.value = {
+      status: "success",
+      message: "Uploaded — importing now. Your match will appear shortly.",
+    };
+    toast({
+      title: "Demo uploaded",
+      description: "Importing now — your match will appear shortly.",
+    });
   } catch (err) {
     const message = (err as Error).message;
     uploadResult.value = { status: "error", message };
@@ -465,6 +510,14 @@ async function uploadDemo(file: File) {
       description: message,
       variant: "destructive",
     });
+    if (uploadId && key) {
+      void fetch(`https://${apiDomain}/steam-match-history/upload/abort`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uploadId, key }),
+      }).catch(() => {});
+    }
   } finally {
     uploadingDemo.value = false;
   }
@@ -879,7 +932,7 @@ async function uploadDemo(file: File) {
             <div class="text-xs text-muted-foreground font-mono">
               {{ formatBytes(uploadedFile.size) }}
               <template v-if="uploadingDemo">
-                · {{ uploadProgress < 100 ? "Uploading…" : "Parsing…" }}
+                · {{ uploadProgress < 100 ? "Uploading…" : "Finishing…" }}
               </template>
             </div>
           </div>

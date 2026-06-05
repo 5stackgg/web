@@ -6034,6 +6034,16 @@ export const AllTypesProps: Record<string,any> = {
 		where:"match_type_cfgs_bool_exp"
 	},
 	matches:{
+		clutches:{
+			distinct_on:"v_match_clutches_select_column",
+			order_by:"v_match_clutches_order_by",
+			where:"v_match_clutches_bool_exp"
+		},
+		clutches_aggregate:{
+			distinct_on:"v_match_clutches_select_column",
+			order_by:"v_match_clutches_order_by",
+			where:"v_match_clutches_bool_exp"
+		},
 		demos:{
 			distinct_on:"match_map_demos_select_column",
 			order_by:"match_map_demos_order_by",
@@ -6086,6 +6096,16 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"match_maps_select_column",
 			order_by:"match_maps_order_by",
 			where:"match_maps_bool_exp"
+		},
+		opening_duels:{
+			distinct_on:"v_match_player_opening_duels_select_column",
+			order_by:"v_match_player_opening_duels_order_by",
+			where:"v_match_player_opening_duels_bool_exp"
+		},
+		opening_duels_aggregate:{
+			distinct_on:"v_match_player_opening_duels_select_column",
+			order_by:"v_match_player_opening_duels_order_by",
+			where:"v_match_player_opening_duels_bool_exp"
 		},
 		player_assists:{
 			distinct_on:"player_assists_select_column",
@@ -6239,6 +6259,8 @@ export const AllTypesProps: Record<string,any> = {
 		can_stream_live:"Boolean_comparison_exp",
 		can_stream_tv:"Boolean_comparison_exp",
 		cancels_at:"timestamptz_comparison_exp",
+		clutches:"v_match_clutches_bool_exp",
+		clutches_aggregate:"v_match_clutches_aggregate_bool_exp",
 		connection_link:"String_comparison_exp",
 		connection_string:"String_comparison_exp",
 		created_at:"timestamptz_comparison_exp",
@@ -6279,6 +6301,8 @@ export const AllTypesProps: Record<string,any> = {
 		match_options_id:"uuid_comparison_exp",
 		max_players_per_lineup:"Int_comparison_exp",
 		min_players_per_lineup:"Int_comparison_exp",
+		opening_duels:"v_match_player_opening_duels_bool_exp",
+		opening_duels_aggregate:"v_match_player_opening_duels_aggregate_bool_exp",
 		options:"match_options_bool_exp",
 		organizer:"players_bool_exp",
 		organizer_steam_id:"bigint_comparison_exp",
@@ -6326,6 +6350,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	matches_insert_input:{
 		cancels_at:"timestamptz",
+		clutches:"v_match_clutches_arr_rel_insert_input",
 		created_at:"timestamptz",
 		demos:"match_map_demos_arr_rel_insert_input",
 		e_match_status:"e_match_status_obj_rel_insert_input",
@@ -6341,6 +6366,7 @@ export const AllTypesProps: Record<string,any> = {
 		map_veto_picks:"match_map_veto_picks_arr_rel_insert_input",
 		match_maps:"match_maps_arr_rel_insert_input",
 		match_options_id:"uuid",
+		opening_duels:"v_match_player_opening_duels_arr_rel_insert_input",
 		options:"match_options_obj_rel_insert_input",
 		organizer:"players_obj_rel_insert_input",
 		organizer_steam_id:"bigint",
@@ -6421,6 +6447,7 @@ export const AllTypesProps: Record<string,any> = {
 		can_stream_live:"order_by",
 		can_stream_tv:"order_by",
 		cancels_at:"order_by",
+		clutches_aggregate:"v_match_clutches_aggregate_order_by",
 		connection_link:"order_by",
 		connection_string:"order_by",
 		created_at:"order_by",
@@ -6456,6 +6483,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_options_id:"order_by",
 		max_players_per_lineup:"order_by",
 		min_players_per_lineup:"order_by",
+		opening_duels_aggregate:"v_match_player_opening_duels_aggregate_order_by",
 		options:"match_options_order_by",
 		organizer:"players_order_by",
 		organizer_steam_id:"order_by",
@@ -16087,6 +16115,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"v_match_clutches_order_by",
 			where:"v_match_clutches_bool_exp"
 		},
+		v_match_kill_pairs:{
+			distinct_on:"v_match_kill_pairs_select_column",
+			order_by:"v_match_kill_pairs_order_by",
+			where:"v_match_kill_pairs_bool_exp"
+		},
+		v_match_kill_pairs_aggregate:{
+			distinct_on:"v_match_kill_pairs_select_column",
+			order_by:"v_match_kill_pairs_order_by",
+			where:"v_match_kill_pairs_bool_exp"
+		},
 		v_match_lineup_buy_types:{
 			distinct_on:"v_match_lineup_buy_types_select_column",
 			order_by:"v_match_lineup_buy_types_order_by",
@@ -18504,6 +18542,20 @@ export const AllTypesProps: Record<string,any> = {
 		v_match_clutches_stream:{
 			cursor:"v_match_clutches_stream_cursor_input",
 			where:"v_match_clutches_bool_exp"
+		},
+		v_match_kill_pairs:{
+			distinct_on:"v_match_kill_pairs_select_column",
+			order_by:"v_match_kill_pairs_order_by",
+			where:"v_match_kill_pairs_bool_exp"
+		},
+		v_match_kill_pairs_aggregate:{
+			distinct_on:"v_match_kill_pairs_select_column",
+			order_by:"v_match_kill_pairs_order_by",
+			where:"v_match_kill_pairs_bool_exp"
+		},
+		v_match_kill_pairs_stream:{
+			cursor:"v_match_kill_pairs_stream_cursor_input",
+			where:"v_match_kill_pairs_bool_exp"
 		},
 		v_match_lineup_buy_types:{
 			distinct_on:"v_match_lineup_buy_types_select_column",
@@ -21331,10 +21383,40 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"v_match_captains_set_input",
 		where:"v_match_captains_bool_exp"
 	},
+	v_match_clutches_aggregate_bool_exp:{
+		count:"v_match_clutches_aggregate_bool_exp_count"
+	},
+	v_match_clutches_aggregate_bool_exp_count:{
+		arguments:"v_match_clutches_select_column",
+		filter:"v_match_clutches_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
 	v_match_clutches_aggregate_fields:{
 		count:{
 			columns:"v_match_clutches_select_column"
 		}
+	},
+	v_match_clutches_aggregate_order_by:{
+		avg:"v_match_clutches_avg_order_by",
+		count:"order_by",
+		max:"v_match_clutches_max_order_by",
+		min:"v_match_clutches_min_order_by",
+		stddev:"v_match_clutches_stddev_order_by",
+		stddev_pop:"v_match_clutches_stddev_pop_order_by",
+		stddev_samp:"v_match_clutches_stddev_samp_order_by",
+		sum:"v_match_clutches_sum_order_by",
+		var_pop:"v_match_clutches_var_pop_order_by",
+		var_samp:"v_match_clutches_var_samp_order_by",
+		variance:"v_match_clutches_variance_order_by"
+	},
+	v_match_clutches_arr_rel_insert_input:{
+		data:"v_match_clutches_insert_input"
+	},
+	v_match_clutches_avg_order_by:{
+		against_count:"order_by",
+		clutcher_steam_id:"order_by",
+		kills_in_clutch:"order_by",
+		round:"order_by"
 	},
 	v_match_clutches_bool_exp:{
 		_and:"v_match_clutches_bool_exp",
@@ -21354,6 +21436,38 @@ export const AllTypesProps: Record<string,any> = {
 		round:"Int_comparison_exp",
 		side:"String_comparison_exp"
 	},
+	v_match_clutches_insert_input:{
+		clutcher:"players_obj_rel_insert_input",
+		clutcher_steam_id:"bigint",
+		match:"matches_obj_rel_insert_input",
+		match_id:"uuid",
+		match_lineup:"match_lineups_obj_rel_insert_input",
+		match_lineup_id:"uuid",
+		match_map:"match_maps_obj_rel_insert_input",
+		match_map_id:"uuid"
+	},
+	v_match_clutches_max_order_by:{
+		against_count:"order_by",
+		clutcher_steam_id:"order_by",
+		kills_in_clutch:"order_by",
+		match_id:"order_by",
+		match_lineup_id:"order_by",
+		match_map_id:"order_by",
+		outcome:"order_by",
+		round:"order_by",
+		side:"order_by"
+	},
+	v_match_clutches_min_order_by:{
+		against_count:"order_by",
+		clutcher_steam_id:"order_by",
+		kills_in_clutch:"order_by",
+		match_id:"order_by",
+		match_lineup_id:"order_by",
+		match_map_id:"order_by",
+		outcome:"order_by",
+		round:"order_by",
+		side:"order_by"
+	},
 	v_match_clutches_order_by:{
 		against_count:"order_by",
 		clutcher:"players_order_by",
@@ -21370,6 +21484,24 @@ export const AllTypesProps: Record<string,any> = {
 		side:"order_by"
 	},
 	v_match_clutches_select_column: "enum" as const,
+	v_match_clutches_stddev_order_by:{
+		against_count:"order_by",
+		clutcher_steam_id:"order_by",
+		kills_in_clutch:"order_by",
+		round:"order_by"
+	},
+	v_match_clutches_stddev_pop_order_by:{
+		against_count:"order_by",
+		clutcher_steam_id:"order_by",
+		kills_in_clutch:"order_by",
+		round:"order_by"
+	},
+	v_match_clutches_stddev_samp_order_by:{
+		against_count:"order_by",
+		clutcher_steam_id:"order_by",
+		kills_in_clutch:"order_by",
+		round:"order_by"
+	},
 	v_match_clutches_stream_cursor_input:{
 		initial_value:"v_match_clutches_stream_cursor_value_input",
 		ordering:"cursor_ordering"
@@ -21379,6 +21511,73 @@ export const AllTypesProps: Record<string,any> = {
 		match_id:"uuid",
 		match_lineup_id:"uuid",
 		match_map_id:"uuid"
+	},
+	v_match_clutches_sum_order_by:{
+		against_count:"order_by",
+		clutcher_steam_id:"order_by",
+		kills_in_clutch:"order_by",
+		round:"order_by"
+	},
+	v_match_clutches_var_pop_order_by:{
+		against_count:"order_by",
+		clutcher_steam_id:"order_by",
+		kills_in_clutch:"order_by",
+		round:"order_by"
+	},
+	v_match_clutches_var_samp_order_by:{
+		against_count:"order_by",
+		clutcher_steam_id:"order_by",
+		kills_in_clutch:"order_by",
+		round:"order_by"
+	},
+	v_match_clutches_variance_order_by:{
+		against_count:"order_by",
+		clutcher_steam_id:"order_by",
+		kills_in_clutch:"order_by",
+		round:"order_by"
+	},
+	v_match_kill_pairs_aggregate_fields:{
+		count:{
+			columns:"v_match_kill_pairs_select_column"
+		}
+	},
+	v_match_kill_pairs_bool_exp:{
+		_and:"v_match_kill_pairs_bool_exp",
+		_not:"v_match_kill_pairs_bool_exp",
+		_or:"v_match_kill_pairs_bool_exp",
+		killer_side:"String_comparison_exp",
+		killer_steam_id:"bigint_comparison_exp",
+		kills:"Int_comparison_exp",
+		match:"matches_bool_exp",
+		match_id:"uuid_comparison_exp",
+		match_map:"match_maps_bool_exp",
+		match_map_id:"uuid_comparison_exp",
+		victim_side:"String_comparison_exp",
+		victim_steam_id:"bigint_comparison_exp",
+		weapon:"String_comparison_exp"
+	},
+	v_match_kill_pairs_order_by:{
+		killer_side:"order_by",
+		killer_steam_id:"order_by",
+		kills:"order_by",
+		match:"matches_order_by",
+		match_id:"order_by",
+		match_map:"match_maps_order_by",
+		match_map_id:"order_by",
+		victim_side:"order_by",
+		victim_steam_id:"order_by",
+		weapon:"order_by"
+	},
+	v_match_kill_pairs_select_column: "enum" as const,
+	v_match_kill_pairs_stream_cursor_input:{
+		initial_value:"v_match_kill_pairs_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	v_match_kill_pairs_stream_cursor_value_input:{
+		killer_steam_id:"bigint",
+		match_id:"uuid",
+		match_map_id:"uuid",
+		victim_steam_id:"bigint"
 	},
 	v_match_lineup_buy_types_aggregate_fields:{
 		count:{
@@ -21575,10 +21774,41 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"uuid",
 		steam_id:"bigint"
 	},
+	v_match_player_opening_duels_aggregate_bool_exp:{
+		count:"v_match_player_opening_duels_aggregate_bool_exp_count"
+	},
+	v_match_player_opening_duels_aggregate_bool_exp_count:{
+		arguments:"v_match_player_opening_duels_select_column",
+		filter:"v_match_player_opening_duels_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
 	v_match_player_opening_duels_aggregate_fields:{
 		count:{
 			columns:"v_match_player_opening_duels_select_column"
 		}
+	},
+	v_match_player_opening_duels_aggregate_order_by:{
+		avg:"v_match_player_opening_duels_avg_order_by",
+		count:"order_by",
+		max:"v_match_player_opening_duels_max_order_by",
+		min:"v_match_player_opening_duels_min_order_by",
+		stddev:"v_match_player_opening_duels_stddev_order_by",
+		stddev_pop:"v_match_player_opening_duels_stddev_pop_order_by",
+		stddev_samp:"v_match_player_opening_duels_stddev_samp_order_by",
+		sum:"v_match_player_opening_duels_sum_order_by",
+		var_pop:"v_match_player_opening_duels_var_pop_order_by",
+		var_samp:"v_match_player_opening_duels_var_samp_order_by",
+		variance:"v_match_player_opening_duels_variance_order_by"
+	},
+	v_match_player_opening_duels_arr_rel_insert_input:{
+		data:"v_match_player_opening_duels_insert_input"
+	},
+	v_match_player_opening_duels_avg_order_by:{
+		attempts:"order_by",
+		deaths:"order_by",
+		steam_id:"order_by",
+		traded_deaths:"order_by",
+		wins:"order_by"
 	},
 	v_match_player_opening_duels_bool_exp:{
 		_and:"v_match_player_opening_duels_bool_exp",
@@ -21598,6 +21828,38 @@ export const AllTypesProps: Record<string,any> = {
 		traded_deaths:"Int_comparison_exp",
 		wins:"Int_comparison_exp"
 	},
+	v_match_player_opening_duels_insert_input:{
+		match:"matches_obj_rel_insert_input",
+		match_id:"uuid",
+		match_lineup:"match_lineups_obj_rel_insert_input",
+		match_lineup_id:"uuid",
+		match_map:"match_maps_obj_rel_insert_input",
+		match_map_id:"uuid",
+		player:"players_obj_rel_insert_input",
+		steam_id:"bigint"
+	},
+	v_match_player_opening_duels_max_order_by:{
+		attempts:"order_by",
+		deaths:"order_by",
+		match_id:"order_by",
+		match_lineup_id:"order_by",
+		match_map_id:"order_by",
+		side:"order_by",
+		steam_id:"order_by",
+		traded_deaths:"order_by",
+		wins:"order_by"
+	},
+	v_match_player_opening_duels_min_order_by:{
+		attempts:"order_by",
+		deaths:"order_by",
+		match_id:"order_by",
+		match_lineup_id:"order_by",
+		match_map_id:"order_by",
+		side:"order_by",
+		steam_id:"order_by",
+		traded_deaths:"order_by",
+		wins:"order_by"
+	},
 	v_match_player_opening_duels_order_by:{
 		attempts:"order_by",
 		deaths:"order_by",
@@ -21614,6 +21876,27 @@ export const AllTypesProps: Record<string,any> = {
 		wins:"order_by"
 	},
 	v_match_player_opening_duels_select_column: "enum" as const,
+	v_match_player_opening_duels_stddev_order_by:{
+		attempts:"order_by",
+		deaths:"order_by",
+		steam_id:"order_by",
+		traded_deaths:"order_by",
+		wins:"order_by"
+	},
+	v_match_player_opening_duels_stddev_pop_order_by:{
+		attempts:"order_by",
+		deaths:"order_by",
+		steam_id:"order_by",
+		traded_deaths:"order_by",
+		wins:"order_by"
+	},
+	v_match_player_opening_duels_stddev_samp_order_by:{
+		attempts:"order_by",
+		deaths:"order_by",
+		steam_id:"order_by",
+		traded_deaths:"order_by",
+		wins:"order_by"
+	},
 	v_match_player_opening_duels_stream_cursor_input:{
 		initial_value:"v_match_player_opening_duels_stream_cursor_value_input",
 		ordering:"cursor_ordering"
@@ -21623,6 +21906,34 @@ export const AllTypesProps: Record<string,any> = {
 		match_lineup_id:"uuid",
 		match_map_id:"uuid",
 		steam_id:"bigint"
+	},
+	v_match_player_opening_duels_sum_order_by:{
+		attempts:"order_by",
+		deaths:"order_by",
+		steam_id:"order_by",
+		traded_deaths:"order_by",
+		wins:"order_by"
+	},
+	v_match_player_opening_duels_var_pop_order_by:{
+		attempts:"order_by",
+		deaths:"order_by",
+		steam_id:"order_by",
+		traded_deaths:"order_by",
+		wins:"order_by"
+	},
+	v_match_player_opening_duels_var_samp_order_by:{
+		attempts:"order_by",
+		deaths:"order_by",
+		steam_id:"order_by",
+		traded_deaths:"order_by",
+		wins:"order_by"
+	},
+	v_match_player_opening_duels_variance_order_by:{
+		attempts:"order_by",
+		deaths:"order_by",
+		steam_id:"order_by",
+		traded_deaths:"order_by",
+		wins:"order_by"
 	},
 	v_player_arch_nemesis_aggregate_fields:{
 		count:{
@@ -27261,6 +27572,8 @@ export const ReturnTypes: Record<string,any> = {
 		can_stream_live:"Boolean",
 		can_stream_tv:"Boolean",
 		cancels_at:"timestamptz",
+		clutches:"v_match_clutches",
+		clutches_aggregate:"v_match_clutches_aggregate",
 		connection_link:"String",
 		connection_string:"String",
 		created_at:"timestamptz",
@@ -27301,6 +27614,8 @@ export const ReturnTypes: Record<string,any> = {
 		match_options_id:"uuid",
 		max_players_per_lineup:"Int",
 		min_players_per_lineup:"Int",
+		opening_duels:"v_match_player_opening_duels",
+		opening_duels_aggregate:"v_match_player_opening_duels_aggregate",
 		options:"match_options",
 		organizer:"players",
 		organizer_steam_id:"bigint",
@@ -32473,6 +32788,8 @@ export const ReturnTypes: Record<string,any> = {
 		v_match_captains_aggregate:"v_match_captains_aggregate",
 		v_match_clutches:"v_match_clutches",
 		v_match_clutches_aggregate:"v_match_clutches_aggregate",
+		v_match_kill_pairs:"v_match_kill_pairs",
+		v_match_kill_pairs_aggregate:"v_match_kill_pairs_aggregate",
 		v_match_lineup_buy_types:"v_match_lineup_buy_types",
 		v_match_lineup_buy_types_aggregate:"v_match_lineup_buy_types_aggregate",
 		v_match_lineup_map_stats:"v_match_lineup_map_stats",
@@ -33196,6 +33513,9 @@ export const ReturnTypes: Record<string,any> = {
 		v_match_clutches:"v_match_clutches",
 		v_match_clutches_aggregate:"v_match_clutches_aggregate",
 		v_match_clutches_stream:"v_match_clutches",
+		v_match_kill_pairs:"v_match_kill_pairs",
+		v_match_kill_pairs_aggregate:"v_match_kill_pairs_aggregate",
+		v_match_kill_pairs_stream:"v_match_kill_pairs",
 		v_match_lineup_buy_types:"v_match_lineup_buy_types",
 		v_match_lineup_buy_types_aggregate:"v_match_lineup_buy_types_aggregate",
 		v_match_lineup_buy_types_stream:"v_match_lineup_buy_types",
@@ -34731,6 +35051,95 @@ export const ReturnTypes: Record<string,any> = {
 		clutcher_steam_id:"Float",
 		kills_in_clutch:"Float",
 		round:"Float"
+	},
+	v_match_kill_pairs:{
+		killer_side:"String",
+		killer_steam_id:"bigint",
+		kills:"Int",
+		match:"matches",
+		match_id:"uuid",
+		match_map:"match_maps",
+		match_map_id:"uuid",
+		victim_side:"String",
+		victim_steam_id:"bigint",
+		weapon:"String"
+	},
+	v_match_kill_pairs_aggregate:{
+		aggregate:"v_match_kill_pairs_aggregate_fields",
+		nodes:"v_match_kill_pairs"
+	},
+	v_match_kill_pairs_aggregate_fields:{
+		avg:"v_match_kill_pairs_avg_fields",
+		count:"Int",
+		max:"v_match_kill_pairs_max_fields",
+		min:"v_match_kill_pairs_min_fields",
+		stddev:"v_match_kill_pairs_stddev_fields",
+		stddev_pop:"v_match_kill_pairs_stddev_pop_fields",
+		stddev_samp:"v_match_kill_pairs_stddev_samp_fields",
+		sum:"v_match_kill_pairs_sum_fields",
+		var_pop:"v_match_kill_pairs_var_pop_fields",
+		var_samp:"v_match_kill_pairs_var_samp_fields",
+		variance:"v_match_kill_pairs_variance_fields"
+	},
+	v_match_kill_pairs_avg_fields:{
+		killer_steam_id:"Float",
+		kills:"Float",
+		victim_steam_id:"Float"
+	},
+	v_match_kill_pairs_max_fields:{
+		killer_side:"String",
+		killer_steam_id:"bigint",
+		kills:"Int",
+		match_id:"uuid",
+		match_map_id:"uuid",
+		victim_side:"String",
+		victim_steam_id:"bigint",
+		weapon:"String"
+	},
+	v_match_kill_pairs_min_fields:{
+		killer_side:"String",
+		killer_steam_id:"bigint",
+		kills:"Int",
+		match_id:"uuid",
+		match_map_id:"uuid",
+		victim_side:"String",
+		victim_steam_id:"bigint",
+		weapon:"String"
+	},
+	v_match_kill_pairs_stddev_fields:{
+		killer_steam_id:"Float",
+		kills:"Float",
+		victim_steam_id:"Float"
+	},
+	v_match_kill_pairs_stddev_pop_fields:{
+		killer_steam_id:"Float",
+		kills:"Float",
+		victim_steam_id:"Float"
+	},
+	v_match_kill_pairs_stddev_samp_fields:{
+		killer_steam_id:"Float",
+		kills:"Float",
+		victim_steam_id:"Float"
+	},
+	v_match_kill_pairs_sum_fields:{
+		killer_steam_id:"bigint",
+		kills:"Int",
+		victim_steam_id:"bigint"
+	},
+	v_match_kill_pairs_var_pop_fields:{
+		killer_steam_id:"Float",
+		kills:"Float",
+		victim_steam_id:"Float"
+	},
+	v_match_kill_pairs_var_samp_fields:{
+		killer_steam_id:"Float",
+		kills:"Float",
+		victim_steam_id:"Float"
+	},
+	v_match_kill_pairs_variance_fields:{
+		killer_steam_id:"Float",
+		kills:"Float",
+		victim_steam_id:"Float"
 	},
 	v_match_lineup_buy_types:{
 		match:"matches",

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { computed, ref, watch, nextTick } from "vue";
-import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 
 type RoundEntry = {
   round: number;
@@ -48,14 +47,6 @@ function underlineClass(side?: "CT" | "T" | null): string {
   return "bg-muted-foreground/25";
 }
 
-function scrollByCells(dir: -1 | 1) {
-  const el = scroller.value;
-  if (!el) {
-    return;
-  }
-  el.scrollBy({ left: dir * Math.round(el.clientWidth * 0.7), behavior: "smooth" });
-}
-
 watch(
   () => props.modelValue,
   async (round) => {
@@ -90,14 +81,6 @@ watch(
       >
         {{ allLabel }}
       </span>
-    </button>
-
-    <button
-      type="button"
-      class="shrink-0 self-start my-1 flex h-7 w-7 items-center justify-center rounded-sm border border-border/60 bg-card/60 text-muted-foreground transition-colors hover:text-foreground hover:border-border cursor-pointer"
-      @click="scrollByCells(-1)"
-    >
-      <ChevronLeft class="h-4 w-4" />
     </button>
 
     <div
@@ -139,14 +122,6 @@ watch(
         </template>
       </div>
     </div>
-
-    <button
-      type="button"
-      class="shrink-0 self-start my-1 flex h-7 w-7 items-center justify-center rounded-sm border border-border/60 bg-card/60 text-muted-foreground transition-colors hover:text-foreground hover:border-border cursor-pointer"
-      @click="scrollByCells(1)"
-    >
-      <ChevronRight class="h-4 w-4" />
-    </button>
   </div>
 </template>
 

@@ -73,7 +73,7 @@ interface RawClutch {
 
 interface RawMatchMap {
   id: string;
-  rounds_aggregate: { aggregate: { count: number } | null } | null;
+  rounds: Array<{ round: number }>;
 }
 
 interface RawMatch {
@@ -148,7 +148,7 @@ function buildBuckets(matchList: RawMatch[]): ClutchBucket[] {
       if (processed >= WINDOW_MAPS) {
         break;
       }
-      if ((mm.rounds_aggregate?.aggregate?.count ?? 0) === 0) {
+      if ((mm.rounds?.length ?? 0) === 0) {
         continue;
       }
       processed++;

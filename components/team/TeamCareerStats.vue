@@ -410,7 +410,9 @@ function kd(p: PlayerAgg): number {
                     {{ p.dpr.toFixed(2) }}
                   </TableCell>
                   <TableCell class="text-right tabular-nums">
-                    {{ kd(p).toFixed(2) }}
+                    <span :style="{ color: kdColor(kd(p)) }">{{
+                      kd(p).toFixed(2)
+                    }}</span>
                   </TableCell>
                   <TableCell class="text-right tabular-nums">
                     {{ p.adr.toFixed(1) }}

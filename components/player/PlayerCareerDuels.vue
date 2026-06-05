@@ -82,7 +82,7 @@ interface RawMatchMap {
   id: string;
   winning_lineup_id: string | null;
   map: { id: string; name: string; label: string | null } | null;
-  rounds_aggregate: { aggregate: { count: number } | null } | null;
+  rounds: Array<{ round: number }>;
 }
 
 interface RawMatch {
@@ -170,7 +170,7 @@ function buildMapAggregates(matchList: RawMatch[]): MapDuelAggregate[] {
       if (processed >= WINDOW_MAPS) {
         break;
       }
-      if (!mm.map || (mm.rounds_aggregate?.aggregate?.count ?? 0) === 0) {
+      if (!mm.map || (mm.rounds?.length ?? 0) === 0) {
         continue;
       }
       processed++;

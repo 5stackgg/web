@@ -27,10 +27,8 @@ export const playerCareerCombatQuery = gql`
             name
             label
           }
-          rounds_aggregate {
-            aggregate {
-              count
-            }
+          rounds(limit: 1) {
+            round
           }
         }
         clutches(where: { clutcher_steam_id: { _eq: $steamId } }) {

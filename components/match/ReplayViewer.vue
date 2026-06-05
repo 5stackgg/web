@@ -2,6 +2,7 @@
 import { computed, ref, watch, onMounted, onUnmounted } from "vue";
 import { useI18n } from "vue-i18n";
 import { weaponIconPath, weaponIconFallback } from "~/utilities/weaponIcon";
+import { kdColor } from "~/utils/statTiers";
 
 // Canonical icon first (5Stack/new demos); if it 404s, retry the legacy
 // strip-all path for old, already-parsed demos before hiding.
@@ -1932,6 +1933,7 @@ type PlayerTooltip = {
   d: number;
   a: number;
   kdr: string;
+  kdrNum: number;
   dmg: number;
 };
 function playerTooltipFor(sid: string): PlayerTooltip {
@@ -1972,6 +1974,7 @@ function playerTooltipFor(sid: string): PlayerTooltip {
     d: s.d,
     a: s.a,
     kdr: kdrText(s),
+    kdrNum: s.d > 0 ? s.k / s.d : s.k,
     dmg: s.dmg,
   };
 }
@@ -2244,7 +2247,7 @@ function openReplayPopout() {
            feed, and the transport bar all float at the stage edges /
            bottom (Skybox-style) so the map is free to fill the height. -->
       <div
-        class="absolute inset-y-0 -translate-x-1/2 z-0 bg-[hsl(var(--card)/0.5)] border border-border overflow-hidden"
+        class="absolute inset-y-0 -translate-x-1/2 z-0 overflow-hidden transition-[width,left] duration-300 ease-out"
         :class="zoom > 1 ? (panDragging ? 'cursor-grabbing' : 'cursor-grab') : ''"
         :style="{
           width: radarMaxPx + 'px',
@@ -3474,9 +3477,13 @@ function openReplayPopout() {
                       <span>·</span>
                       <span>
                         KDR
-                        <span class="text-foreground">{{
-                          playerTooltipFor(p.steamId).kdr
-                        }}</span>
+                        <span
+                          class="text-foreground"
+                          :style="{
+                            color: kdColor(playerTooltipFor(p.steamId).kdrNum),
+                          }"
+                          >{{ playerTooltipFor(p.steamId).kdr }}</span
+                        >
                       </span>
                       <span>·</span>
                       <span>
@@ -3975,10 +3982,11 @@ function openReplayPopout() {
              action. Holds both side rosters + the round kill feed. Wrapper
              is pointer-events-none so gaps don't swallow map interactions;
              cards re-enable pointer events for click-to-follow. -->
-        <div
-          v-show="showScoreboard"
-          class="absolute top-14 right-2 bottom-3 z-20 hidden md:flex flex-col gap-1.5 w-[400px] pointer-events-none"
-        >
+        <Transition name="scoreboard">
+          <div
+            v-show="showScoreboard"
+            class="absolute top-14 right-2 bottom-3 z-20 hidden md:flex flex-col gap-1.5 w-[400px] pointer-events-none"
+          >
             <div
               class="pointer-events-auto px-2 py-1.5 border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
               :style="{ borderColor: 'hsl(210 80% 60% / 0.45)' }"
@@ -4129,7 +4137,8 @@ function openReplayPopout() {
               </div>
             </div>
           </div>
-        </div>
+          </div>
+        </Transition>
       </div>
 
       <!-- Docked transport bar below the map (full width). Only the
@@ -4301,3 +4310,18 @@ function openReplayPopout() {
         </div>
   </div>
 </template>
+
+<style scoped>
+/* Scoreboard show/hide: slide in from the right edge + fade. */
+.scoreboard-enter-active,
+.scoreboard-leave-active {
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+.scoreboard-enter-from,
+.scoreboard-leave-to {
+  opacity: 0;
+  transform: translateX(16px);
+}
+</style>

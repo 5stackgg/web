@@ -30,6 +30,7 @@ import {
   Keyboard,
   PanelRightClose,
   PanelRightOpen,
+  Route,
 } from "lucide-vue-next";
 import { Kbd } from "~/components/ui/kbd";
 import {
@@ -139,6 +140,7 @@ type TimerState = {
   phase: TimerPhase;
   secondsRemaining: number;
 };
+type PathingMode = "off" | "progress" | "round";
 
 type Shot = {
   round: number;
@@ -1177,6 +1179,98 @@ function project(p: { x: number; y: number; z?: number }) {
   return projectRaw(p);
 }
 
+const PATH_MIN_SCREEN_DIST = 4;
+const PATH_MAX_WORLD_JUMP = 1800;
+const PATH_MAX_TICK_GAP_SEC = 2.5;
+
+type RadarPathSegment = {
+  key: string;
+  team: string | null;
+  d: string;
+  focused: boolean;
+};
+
+function pathSegmentToD(points: Array<{ x: number; y: number }>): string {
+  return points
+    .map((p, i) => `${i === 0 ? "M" : "L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`)
+    .join(" ");
+}
+
+const playerPathSegments = computed<RadarPathSegment[]>(() => {
+  if (pathingMode.value === "off") return [];
+  const cursor =
+    pathingMode.value === "progress" ? smoothCurrentTick.value : Infinity;
+  const maxTickGap = Math.max(
+    1,
+    Math.round((props.tickRate || 64) * PATH_MAX_TICK_GAP_SEC),
+  );
+  const out: RadarPathSegment[] = [];
+
+  for (const [sid, samples] of positionsByPlayer.value) {
+    const focused = focusedPlayerId.value === sid;
+    let team: string | null = null;
+    let segment: Array<{ x: number; y: number }> = [];
+    let lastSample: Position | null = null;
+    let lastPoint: { x: number; y: number } | null = null;
+    let segmentIdx = 0;
+
+    const flush = () => {
+      if (segment.length < 2) {
+        segment = [];
+        lastPoint = null;
+        return;
+      }
+      out.push({
+        key: `${sid}-${segmentIdx++}`,
+        team,
+        d: pathSegmentToD(segment),
+        focused,
+      });
+      segment = [];
+      lastPoint = null;
+    };
+
+    for (const sample of samples) {
+      if (sample.tick > cursor) break;
+      if (!sample.alive) {
+        flush();
+        lastSample = null;
+        continue;
+      }
+      team ??= sample.attacker_team;
+      if (lastSample) {
+        const dx = sample.x - lastSample.x;
+        const dy = sample.y - lastSample.y;
+        const jump = dx * dx + dy * dy;
+        if (
+          sample.tick - lastSample.tick > maxTickGap ||
+          jump > PATH_MAX_WORLD_JUMP * PATH_MAX_WORLD_JUMP
+        ) {
+          flush();
+        }
+      }
+
+      const point = project(sample);
+      if (
+        lastPoint &&
+        segment.length > 1 &&
+        (point.x - lastPoint.x) * (point.x - lastPoint.x) +
+          (point.y - lastPoint.y) * (point.y - lastPoint.y) <
+          PATH_MIN_SCREEN_DIST * PATH_MIN_SCREEN_DIST
+      ) {
+        lastSample = sample;
+        continue;
+      }
+      segment.push(point);
+      lastPoint = point;
+      lastSample = sample;
+    }
+    flush();
+  }
+
+  return out;
+});
+
 let rafHandle: number | null = null;
 let lastFrameTs = 0;
 
@@ -1448,6 +1542,13 @@ const showC4 = persistedBool("5s.replay.show_c4", true);
 const showDefuser = persistedBool("5s.replay.show_defuser", true);
 const showGroundBomb = persistedBool("5s.replay.show_ground_bomb", true);
 const showGroundKits = persistedBool("5s.replay.show_ground_kits", true);
+// Pathing always starts off — it's a heavy overlay, not a sticky preference.
+const pathingMode = ref<PathingMode>("off");
+// The Route button is a simple on/off for the live-tracing "progress" mode;
+// the popover radios are how you reach the full-round path explicitly.
+function togglePathing() {
+  pathingMode.value = pathingMode.value === "off" ? "progress" : "off";
+}
 
 const layoutRootEl = ref<HTMLElement | null>(null);
 // playbarRowEl is referenced from the in-radar overlay; kept here so
@@ -2278,6 +2379,30 @@ function openReplayPopout() {
                 <circle cx="0" cy="0" r="12" />
               </clipPath>
             </defs>
+
+            <g
+              v-if="playerPathSegments.length"
+              class="pointer-events-none"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <g v-for="path of playerPathSegments" :key="path.key">
+                <path
+                  :d="path.d"
+                  stroke="rgba(0,0,0,0.55)"
+                  :stroke-width="path.focused ? 8 : 5.5"
+                  stroke-opacity="0.42"
+                />
+                <path
+                  :d="path.d"
+                  :stroke="colorFor(path.team)"
+                  :stroke-width="path.focused ? 4.2 : 2.4"
+                  :stroke-opacity="path.focused ? 0.9 : 0.5"
+                  :stroke-dasharray="path.focused ? 'none' : '10 8'"
+                />
+              </g>
+            </g>
 
             <!-- Detonated grenades — animated SVG primitives.
                Smoke = pulsing gray disc with team-tinted ring,
@@ -3696,6 +3821,31 @@ function openReplayPopout() {
               }}
             </TooltipContent>
           </Tooltip>
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <button
+                type="button"
+                class="inline-flex items-center justify-center w-10 h-10 border bg-[hsl(var(--card)/0.85)] transition-colors backdrop-blur-sm"
+                :class="
+                  pathingMode === 'off'
+                    ? 'border-[hsl(var(--tac-amber)/0.35)] text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))]'
+                    : 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
+                "
+                @click="togglePathing"
+              >
+                <Route class="w-5 h-5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {{
+                pathingMode === "off"
+                  ? t("match.replay.pathing_off")
+                  : pathingMode === "progress"
+                    ? t("match.replay.pathing_progress")
+                    : t("match.replay.pathing_round")
+              }}
+            </TooltipContent>
+          </Tooltip>
           <Popover>
             <PopoverTrigger as-child>
               <button
@@ -3751,6 +3901,44 @@ function openReplayPopout() {
                   class="accent-[hsl(var(--tac-amber))]"
                 />
                 <span>{{ $t("match.replay.overlay_ground_kits") }}</span>
+              </label>
+              <div
+                class="mt-2 px-1 py-1 text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground border-t border-border/60 pt-2"
+              >
+                {{ t("match.replay.pathing") }}
+              </div>
+              <label
+                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+              >
+                <input
+                  v-model="pathingMode"
+                  type="radio"
+                  value="off"
+                  class="accent-[hsl(var(--tac-amber))]"
+                />
+                <span>{{ t("match.replay.pathing_off") }}</span>
+              </label>
+              <label
+                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+              >
+                <input
+                  v-model="pathingMode"
+                  type="radio"
+                  value="progress"
+                  class="accent-[hsl(var(--tac-amber))]"
+                />
+                <span>{{ t("match.replay.pathing_progress") }}</span>
+              </label>
+              <label
+                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+              >
+                <input
+                  v-model="pathingMode"
+                  type="radio"
+                  value="round"
+                  class="accent-[hsl(var(--tac-amber))]"
+                />
+                <span>{{ t("match.replay.pathing_round") }}</span>
               </label>
             </PopoverContent>
           </Popover>

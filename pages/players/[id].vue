@@ -1433,7 +1433,7 @@ definePageMeta({
 
 const { isMobile } = useSidebar();
 const playerHeroClasses =
-  "relative flex min-w-0 flex-col rounded-lg border border-border px-6 py-5 [background:repeating-linear-gradient(0deg,hsl(var(--foreground)_/_0.03)_0px,hsl(var(--foreground)_/_0.03)_1px,transparent_1px,transparent_5px),radial-gradient(120%_140%_at_0%_0%,hsl(var(--tac-amber)_/_0.06)_0%,transparent_45%),linear-gradient(180deg,hsl(var(--card)_/_0.5)_0%,hsl(var(--card)_/_0.2)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:z-[1] before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:z-[1] after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-[''] max-md:px-4 max-md:py-5";
+  "relative flex min-w-0 flex-col rounded-lg border border-border px-6 py-5 [background:radial-gradient(120%_140%_at_0%_0%,hsl(var(--tac-amber)_/_0.06)_0%,transparent_45%),linear-gradient(180deg,hsl(var(--card)_/_0.5)_0%,hsl(var(--card)_/_0.2)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:z-[1] before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:z-[1] after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-[''] max-md:px-4 max-md:py-5";
 const playerHeroBodyClasses =
   "flex flex-wrap items-center gap-5 max-md:items-start max-md:gap-4";
 const playerHeroInlineRoleChipClasses =
@@ -1473,7 +1473,7 @@ const playerHeroMetaDividerClasses = "h-3 w-px shrink-0 bg-border/70";
 const playerHeroIdentClasses = "inline-flex min-w-0 items-center gap-2";
 const playerHeroSteamIdClasses = "min-w-0 truncate tracking-[0.05em]";
 const playerHeroSteamLinkClasses =
-  "inline-flex shrink-0 items-center gap-1.5 uppercase tracking-[0.12em] text-muted-foreground transition-colors duration-150 hover:text-[hsl(var(--tac-amber))]";
+  "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded border border-border bg-card/60 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.1)] hover:text-[hsl(var(--tac-amber))]";
 const playerHeroRightActionsClasses =
   "mt-auto flex flex-col items-stretch gap-3 pt-6";
 const playerHeroPlayClasses =

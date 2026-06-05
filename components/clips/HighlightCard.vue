@@ -10,6 +10,7 @@ import {
   ArrowUpRight,
   Check,
   Share2,
+  Crosshair,
 } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import { useNuxtApp } from "#app";
@@ -321,6 +322,14 @@ async function setVisibility(v: Visibility) {
             class="inline-flex h-5 items-center gap-0.5 rounded bg-black/80 px-1.5 font-mono text-[0.62rem] leading-none tabular-nums text-white backdrop-blur-sm"
           >
             {{ formatDuration(clip.duration_ms) }}
+          </span>
+          <span
+            v-if="clip.kills_count"
+            class="inline-flex h-5 items-center gap-1 rounded bg-black/80 px-1.5 font-mono text-[0.62rem] font-bold leading-none tabular-nums text-[hsl(var(--tac-amber))] backdrop-blur-sm"
+            :title="$t('clips.kills_in_clip', { count: clip.kills_count })"
+          >
+            <Crosshair class="h-2.5 w-2.5" />
+            {{ clip.kills_count }}
           </span>
         </div>
 

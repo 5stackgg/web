@@ -117,7 +117,7 @@ defineExpose({
        forward when the user reaches either scroll edge. -->
   <div
     ref="scrollRef"
-    class="flex snap-x gap-3 overflow-x-auto overscroll-x-contain px-px pb-2 pt-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+    class="flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-px pb-2 pt-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
   >
     <slot />
   </div>

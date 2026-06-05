@@ -24,7 +24,7 @@ import { kdColor, hltvColor } from "~/utils/statTiers";
 // gets its own slim trailing column.
 // OPEN · DATE · TYPE · RESULT · MAP · CLIP · RATING · K/D/A · K/D · ADR · Δ · VIEW
 const wideGrid =
-  "grid grid-cols-[2.5rem_5rem_6.75rem_8.5rem_minmax(4.5rem,1fr)_3rem_4rem_4.5rem_2.75rem_3.25rem_6rem_2.5rem] items-center gap-x-2";
+  "grid grid-cols-[2.5rem_5rem_6.75rem_8.5rem_minmax(4.5rem,1fr)_3rem_6rem_4.5rem_2.75rem_3.25rem_6rem_2.5rem] items-center gap-x-2";
 </script>
 
 <template>
@@ -93,16 +93,38 @@ const wideGrid =
       </div>
 
       <!-- RESULT + SCORE — finished matches show the W/L/T badge + score;
-           anything else (scheduled/cancelled/live) shows only the status. -->
-      <div class="flex min-w-0 items-center gap-2">
-        <template v-if="isFinished">
-          <span class="font-mono text-sm font-bold tabular-nums">
-            <span :class="scoreClass">{{ score.player }}</span>
-            <span class="mx-1 text-muted-foreground/60">:</span>
-            <span class="text-muted-foreground/90">{{ score.opponent }}</span>
-          </span>
-        </template>
+           anything else (scheduled/cancelled/live) shows only the status. The
+           opponent TEAM (real teams only — never pugs) tucks under the score. -->
+      <div class="flex min-w-0 flex-col justify-center gap-0.5">
+        <span
+          v-if="isFinished"
+          class="font-mono text-sm font-bold leading-none tabular-nums"
+        >
+          <span :class="scoreClass">{{ score.player }}</span>
+          <span class="mx-1 text-muted-foreground/60">:</span>
+          <span class="text-muted-foreground/90">{{ score.opponent }}</span>
+        </span>
         <MatchStatus v-else :match="match" />
+        <span
+          v-if="opponentTeam"
+          class="flex min-w-0 items-center gap-1"
+          :title="`vs ${opponentTeam.name}`"
+        >
+          <span
+            class="font-mono text-[0.5rem] uppercase tracking-[0.1em] text-muted-foreground/50"
+            >vs</span
+          >
+          <img
+            v-if="opponentTeam.avatarSrc"
+            :src="opponentTeam.avatarSrc"
+            alt=""
+            class="h-3 w-3 shrink-0 rounded-sm object-cover"
+            @error="($event.target as HTMLImageElement).style.display = 'none'"
+          />
+          <span class="min-w-0 truncate text-[0.6rem] text-foreground/75">{{
+            opponentTeam.name
+          }}</span>
+        </span>
       </div>
 
       <!-- MAP -->
@@ -152,15 +174,17 @@ const wideGrid =
       </button>
       <span v-else />
 
-      <!-- RATING (HLTV) -->
+      <!-- RATING (HLTV) — the headline per-match number, so it runs a touch
+           larger than the other stats and is centered in its column to sit
+           evenly between the clip thumbnail and the K/D/A block. -->
       <span
         v-if="isFinished && rating !== null"
-        class="font-mono text-sm font-bold tabular-nums inline-flex items-center gap-0.5"
+        class="font-mono text-base font-bold tabular-nums inline-flex items-center justify-center gap-0.5"
         :style="{ color: hltvColor(rating) }"
       >
         {{ rating.toFixed(2) }}
       </span>
-      <span v-else class="text-muted-foreground">—</span>
+      <span v-else class="text-center text-muted-foreground">—</span>
 
       <!-- K / D / A -->
       <div
@@ -326,6 +350,28 @@ const wideGrid =
             :date="matchDate"
           />
         </div>
+      </div>
+
+      <!-- Opponent TEAM — real teams only (pugs render nothing here). -->
+      <div
+        v-if="opponentTeam"
+        class="mt-1.5 flex min-w-0 items-center gap-1.5"
+        :title="`vs ${opponentTeam.name}`"
+      >
+        <span
+          class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground/50"
+          >vs</span
+        >
+        <img
+          v-if="opponentTeam.avatarSrc"
+          :src="opponentTeam.avatarSrc"
+          alt=""
+          class="h-4 w-4 shrink-0 rounded-sm object-cover"
+          @error="($event.target as HTMLImageElement).style.display = 'none'"
+        />
+        <span class="min-w-0 truncate text-xs font-medium text-foreground/85">{{
+          opponentTeam.name
+        }}</span>
       </div>
 
       <div class="mt-2 flex items-center gap-2">
@@ -654,6 +700,37 @@ export default {
       const after = this.rankInfo.rank;
       const before = after - this.rankInfo.change;
       return `${label}: ${before.toLocaleString()} → ${after.toLocaleString()}`;
+    },
+    apiDomain(): string {
+      return useRuntimeConfig().public.apiDomain as string;
+    },
+    // The lineup the focus player is NOT on. Mirrors the score's orientation
+    // (player defaults to lineup_1) when their lineup can't be resolved.
+    opponentLineup(): any | null {
+      const mine = this.playerLineupId;
+      const l1 = this.match?.lineup_1 ?? null;
+      const l2 = this.match?.lineup_2 ?? null;
+      if (mine && this.match?.lineup_2_id === mine) return l1;
+      return l2;
+    },
+    // Only a REAL team (team_id set) is worth surfacing — pug lineups carry an
+    // auto-generated name and no team, so this stays null for them and the
+    // opponent UI simply doesn't render (zero space cost in the common case).
+    opponentTeam(): {
+      name: string;
+      shortName: string | null;
+      avatarSrc: string | null;
+    } | null {
+      const lu = this.opponentLineup;
+      if (!lu || lu.team_id == null) return null;
+      const name = lu.team?.name || lu.name || null;
+      if (!name) return null;
+      const url = lu.team?.avatar_url;
+      return {
+        name,
+        shortName: lu.team?.short_name || null,
+        avatarSrc: url ? `https://${this.apiDomain}/${url}` : null,
+      };
     },
     playerLineupId(): string | null {
       const sid = this.playerSteamId;

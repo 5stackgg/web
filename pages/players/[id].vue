@@ -43,7 +43,6 @@ import {
   Maximize2,
   UserPlus,
   UserCheck,
-  RefreshCw,
   Calendar as CalendarIcon,
 } from "lucide-vue-next";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
@@ -819,23 +818,6 @@ watch([playerIdRef, performanceWhere], () => loadPerformance(), {
   immediate: true,
 });
 watch([playerIdRef, weaponWhere], () => loadWeapons(), { immediate: true });
-
-// Manual refresh — re-pull every stat query for the active filters.
-const statsRefreshing = ref(false);
-async function refreshStats() {
-  if (statsRefreshing.value) return;
-  statsRefreshing.value = true;
-  try {
-    await Promise.all([
-      loadEloHistory(),
-      loadPremierHistory(),
-      loadPerformance(),
-      loadWeapons(),
-    ]);
-  } finally {
-    statsRefreshing.value = false;
-  }
-}
 
 // Merge duplicate weapon spellings into one canonical row with a resolved
 // icon, then take the real top 5. (Pre-migration data may still carry mixed
@@ -1998,27 +1980,58 @@ const playerTeamChipShortClasses =
       v-if="player && pageContentReady && !noCareerData"
     >
       <Tabs v-model="statsTab" class="w-full">
-        <div ref="statsTabsEl" class="overflow-x-auto scroll-mt-4">
-          <TabsList
-            variant="underline"
-            class="h-auto flex-nowrap justify-start mb-3"
-          >
-            <TabsTrigger value="performance">
-              {{ $t("pages.players.detail.tabs.performance") }}
-            </TabsTrigger>
-            <TabsTrigger value="elo">
-              {{ $t("pages.players.detail.tabs.elo") }}
-            </TabsTrigger>
-            <TabsTrigger value="maps">
-              {{ $t("pages.players.detail.tabs.maps") }}
-            </TabsTrigger>
-            <TabsTrigger value="arsenal">
-              {{ $t("pages.players.detail.tabs.arsenal") }}
-            </TabsTrigger>
-            <TabsTrigger value="combat">
-              {{ $t("pages.players.detail.tabs.combat") }}
-            </TabsTrigger>
-          </TabsList>
+        <div ref="statsTabsEl" class="scroll-mt-4">
+          <!-- Mobile: the underline strip overflows on phones, so collapse the
+               sections into a dropdown. Desktop keeps the underline tabs. -->
+          <div class="mb-3 md:hidden">
+            <Select v-model="statsTab">
+              <SelectTrigger
+                class="w-full"
+                :aria-label="$t('pages.players.detail.section', 'Section')"
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="performance">
+                  {{ $t("pages.players.detail.tabs.performance") }}
+                </SelectItem>
+                <SelectItem value="elo">
+                  {{ $t("pages.players.detail.tabs.elo") }}
+                </SelectItem>
+                <SelectItem value="maps">
+                  {{ $t("pages.players.detail.tabs.maps") }}
+                </SelectItem>
+                <SelectItem value="arsenal">
+                  {{ $t("pages.players.detail.tabs.arsenal") }}
+                </SelectItem>
+                <SelectItem value="combat">
+                  {{ $t("pages.players.detail.tabs.combat") }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div class="hidden overflow-x-auto md:block">
+            <TabsList
+              variant="underline"
+              class="h-auto flex-nowrap justify-start mb-3"
+            >
+              <TabsTrigger value="performance">
+                {{ $t("pages.players.detail.tabs.performance") }}
+              </TabsTrigger>
+              <TabsTrigger value="elo">
+                {{ $t("pages.players.detail.tabs.elo") }}
+              </TabsTrigger>
+              <TabsTrigger value="maps">
+                {{ $t("pages.players.detail.tabs.maps") }}
+              </TabsTrigger>
+              <TabsTrigger value="arsenal">
+                {{ $t("pages.players.detail.tabs.arsenal") }}
+              </TabsTrigger>
+              <TabsTrigger value="combat">
+                {{ $t("pages.players.detail.tabs.combat") }}
+              </TabsTrigger>
+            </TabsList>
+          </div>
         </div>
 
       <!-- Unified control bar — stat source (5Stack internal ELO vs Valve
@@ -2026,21 +2039,21 @@ const playerTeamChipShortClasses =
            count + settings. One bar so every graph below reads the same
            filter and the two rating worlds never blend. -->
       <div
-        class="mb-5 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-lg border border-border/60 bg-card/40 px-3 py-2.5 [backdrop-filter:blur(6px)]"
+        class="mb-5 flex flex-col gap-3 rounded-lg border border-border/60 bg-card/40 px-3 py-2.5 [backdrop-filter:blur(6px)] md:flex-row md:flex-wrap md:items-center md:gap-x-4 md:gap-y-3"
       >
         <!-- Source toggle — only when external imports are enabled (otherwise
              5Stack is the only world, so the toggle is noise). -->
         <div
           v-if="appSettings.externalMatchesEnabled"
-          class="flex items-center gap-2"
+          class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2"
         >
           <span
-            class="hidden font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground sm:inline"
+            class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
           >
             {{ $t("pages.players.detail.source", "Source") }}
           </span>
           <div
-            class="inline-flex items-center rounded-md border border-border/60 bg-background/40 p-0.5"
+            class="flex w-full items-center rounded-md border border-border/60 bg-background/40 p-0.5 md:inline-flex md:w-auto"
           >
             <button
               v-for="s in sourceOptions"
@@ -2052,7 +2065,7 @@ const playerTeamChipShortClasses =
                   ? $t('pages.players.detail.source_all_unavailable_elo')
                   : undefined
               "
-              class="rounded px-2.5 py-1 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+              class="flex-1 rounded px-2.5 py-1 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors disabled:cursor-not-allowed disabled:opacity-40 md:flex-none"
               :class="
                 displaySource === s.value
                   ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
@@ -2067,17 +2080,25 @@ const playerTeamChipShortClasses =
 
         <span
           v-if="appSettings.externalMatchesEnabled"
-          class="hidden h-5 w-px bg-border/60 sm:block"
+          class="hidden h-5 w-px bg-border/60 md:block"
           aria-hidden="true"
         ></span>
 
         <!-- Mode chips (depend on the active source) -->
-        <div class="flex flex-wrap items-center gap-1.5">
+        <div class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2">
+          <span
+            class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground md:hidden"
+          >
+            {{ $t("pages.players.detail.mode", "Mode") }}
+          </span>
+          <div
+            class="flex flex-nowrap items-center gap-1.5 overflow-x-auto md:flex-wrap md:overflow-visible"
+          >
           <button
             v-for="m in modeOptions"
             :key="m.value"
             type="button"
-            class="rounded border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
+            class="shrink-0 rounded border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
             :class="
               selectedModeRef === m.value
                 ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
@@ -2087,20 +2108,28 @@ const playerTeamChipShortClasses =
           >
             {{ m.label }}
           </button>
+          </div>
         </div>
 
-        <!-- Right cluster: time range + refresh + settings -->
-        <div class="ml-auto flex flex-wrap items-center gap-1.5">
+        <!-- Right cluster: time range + refresh + settings. On mobile this
+             becomes a labeled row (range + actions) with the chips on a
+             horizontal-scroll line below; inline on desktop. -->
+        <div
+          class="grid grid-cols-[1fr_auto] items-center gap-x-2 gap-y-2 md:ml-auto md:flex md:flex-wrap md:items-center md:gap-1.5"
+        >
           <span
-            class="hidden font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground sm:inline"
+            class="col-start-1 row-start-1 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
           >
             {{ $t("pages.players.detail.range") }}
           </span>
+          <div
+            class="col-start-1 row-start-2 flex min-w-0 flex-nowrap items-center gap-1.5 overflow-x-auto md:flex-wrap md:overflow-visible"
+          >
           <button
             v-for="r in presetRanges"
             :key="r.key"
             type="button"
-            class="rounded border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
+            class="shrink-0 rounded border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
             :class="
               eloRange === r.key
                 ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
@@ -2112,23 +2141,18 @@ const playerTeamChipShortClasses =
           </button>
           <span
             v-if="eloRange === 'custom'"
-            class="rounded border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+            class="shrink-0 rounded border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
           >
             {{ activeRangeLabel }}
           </span>
+          </div>
+          <div
+            class="col-start-2 row-start-2 flex items-center justify-self-end gap-1.5 md:contents"
+          >
           <span
-            class="mx-1 hidden h-5 w-px bg-border/60 sm:block"
+            class="mx-1 hidden h-5 w-px bg-border/60 md:block"
             aria-hidden="true"
           ></span>
-          <button
-            type="button"
-            class="inline-flex h-8 w-8 items-center justify-center rounded border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))] disabled:opacity-50"
-            :disabled="statsRefreshing"
-            :title="$t('pages.players.detail.refresh_stats', 'Refresh stats')"
-            @click="refreshStats"
-          >
-            <RefreshCw :class="['h-4 w-4', statsRefreshing && 'animate-spin']" />
-          </button>
           <Popover v-model:open="settingsOpen">
             <PopoverTrigger as-child>
               <button
@@ -2272,6 +2296,7 @@ const playerTeamChipShortClasses =
               </div>
             </PopoverContent>
           </Popover>
+          </div>
         </div>
       </div>
 

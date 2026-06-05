@@ -1086,6 +1086,8 @@
         "current_rank": "Current Rank",
         "current_rating": "Current Rating",
         "source": "Source",
+        "mode": "Mode",
+        "section": "Section",
         "weapons_lifetime": "Lifetime",
         "refresh_stats": "Refresh stats",
         "last_n_matches": "Last 10",

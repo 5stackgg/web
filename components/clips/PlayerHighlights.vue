@@ -165,7 +165,7 @@ const showMap = computed(() => {
         <div
           v-for="c in clips"
           :key="c.id"
-          class="w-[18rem] shrink-0 snap-start"
+          class="w-[85vw] shrink-0 snap-start sm:w-72"
         >
           <HighlightCard :clip="c" :show-map="showMap" />
         </div>

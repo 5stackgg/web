@@ -1602,7 +1602,6 @@ const playerTeamChipShortClasses =
                   :title="$t('ui.tooltips.view_steam_profile')"
                 >
                   <SteamIcon class="h-3.5 w-3.5 fill-current" />
-                  <span>Steam</span>
                 </a>
               </template>
 

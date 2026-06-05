@@ -233,7 +233,7 @@ const gridItems = computed<GridItem[]>(() => {
       <Skeleton
         v-for="i in 4"
         :key="i"
-        class="aspect-video w-64 shrink-0 rounded-lg"
+        class="aspect-video w-[85vw] shrink-0 rounded-lg sm:w-72"
       />
     </HorizontalScrollRow>
 
@@ -259,13 +259,13 @@ const gridItems = computed<GridItem[]>(() => {
           :key="`group-${item.matchId}`"
           :match-id="item.matchId"
           :clips="item.clips"
-          class="w-64 shrink-0 snap-start"
+          class="w-[85vw] shrink-0 snap-start sm:w-72"
         />
         <HighlightCard
           v-else
           :key="`single-${item.clip.id}`"
           :clip="item.clip"
-          class="w-64 shrink-0 snap-start"
+          class="w-[85vw] shrink-0 snap-start sm:w-72"
         />
       </template>
     </HorizontalScrollRow>

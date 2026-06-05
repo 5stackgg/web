@@ -1,12 +1,29 @@
 <script setup lang="ts">
-import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { X } from "lucide-vue-next";
 </script>
 
 <template>
-  <AlertDialog :open="!!shouldShow">
+  <AlertDialog :open="!!shouldShow" @update:open="handleOpenChange">
     <AlertDialogContent
       class="!max-w-md !gap-0 overflow-visible !border-0 !bg-transparent !p-0 !shadow-none"
+      @keydown.esc.stop.prevent="dismiss"
     >
+      <AlertDialogTitle class="sr-only">
+        {{ $t("matchmaking.match_found") }}
+      </AlertDialogTitle>
+      <AlertDialogDescription class="sr-only">
+        {{
+          confirmation?.isReady
+            ? $t("matchmaking.waiting_on_others")
+            : $t("matchmaking.waiting_for_players")
+        }}
+      </AlertDialogDescription>
       <div
         class="relative overflow-hidden rounded-lg border border-border px-6 py-8 [backdrop-filter:blur(10px)] [background:linear-gradient(180deg,hsl(var(--card)/0.95)_0%,hsl(var(--card)/0.85)_100%)]"
         :class="
@@ -153,6 +170,15 @@ import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog";
             {{ $t("matchmaking.locked_in") }}
           </div>
         </div>
+
+        <button
+          type="button"
+          class="absolute right-3 top-3 z-20 inline-flex h-6 w-6 items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground"
+          :aria-label="$t('common.close')"
+          @click="dismiss"
+        >
+          <X class="h-4 w-4" />
+        </button>
       </div>
     </AlertDialogContent>
   </AlertDialog>
@@ -163,11 +189,13 @@ import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useMatchReadyModal } from "~/composables/useMatchReadyModal";
 import socket from "~/web-sockets/Socket";
 import { useSound } from "~/composables/useSound";
+import { useAuthStore } from "~/stores/AuthStore";
 
 export default {
   data() {
     return {
       remainingSeconds: 0,
+      dismissedConfirmationId: undefined as string | undefined,
       routedConfirmedId: undefined as string | undefined,
       countdownInterval: undefined as NodeJS.Timeout | undefined,
       playCountdownSound: useSound().playCountdownSound,
@@ -179,8 +207,25 @@ export default {
     confirmation() {
       return useMatchmakingStore().joinedMatchmakingQueues?.confirmation;
     },
+    showPref(): boolean {
+      return useAuthStore().me?.show_match_ready_modal !== false;
+    },
+    manuallyOpened(): boolean {
+      return useMatchReadyModal().manuallyOpened.value;
+    },
     shouldShow(): boolean {
-      return !!this.confirmation && !this.confirmation.matchId;
+      if (!this.confirmation || this.confirmation.matchId) {
+        return false;
+      }
+
+      if (
+        this.dismissedConfirmationId === this.confirmation.confirmationId &&
+        !this.manuallyOpened
+      ) {
+        return false;
+      }
+
+      return this.showPref || this.manuallyOpened;
     },
     formattedCountdown(): string {
       const total = Math.max(0, this.remainingSeconds);
@@ -207,7 +252,9 @@ export default {
           if (this.countdownInterval) {
             clearInterval(this.countdownInterval);
           }
-          this.playMatchFoundSound();
+          if (this.shouldShow) {
+            this.playMatchFoundSound();
+          }
           this.updateCountdown();
           this.countdownInterval = setInterval(this.updateCountdown, 1000);
         }
@@ -224,8 +271,22 @@ export default {
         }
       },
     },
+    shouldShow(show) {
+      if (show) {
+        this.updateCountdown();
+      }
+    },
   },
   methods: {
+    dismiss() {
+      this.dismissedConfirmationId = this.confirmation?.confirmationId;
+      useMatchReadyModal().closeMatchReadyModal();
+    },
+    handleOpenChange(open: boolean) {
+      if (!open) {
+        this.dismiss();
+      }
+    },
     ready() {
       if (!this.confirmation) {
         return;
@@ -235,6 +296,10 @@ export default {
       });
     },
     updateCountdown() {
+      if (!this.shouldShow) {
+        return;
+      }
+
       if (
         this.confirmation?.expiresAt &&
         this.confirmation.confirmed !== this.confirmation.players

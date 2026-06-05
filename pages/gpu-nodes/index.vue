@@ -27,7 +27,7 @@ import {
   ScrollText,
 } from "lucide-vue-next";
 import ServiceLogs from "~/components/ServiceLogs.vue";
-import DesktopSnapshot from "~/components/match/DesktopSnapshot.vue";
+import SnapshotQuickView from "~/components/match/SnapshotQuickView.vue";
 import RenderPodBootStages from "~/components/clips/RenderPodBootStages.vue";
 import { Input } from "~/components/ui/input";
 import NodeControlMenu from "~/components/game-server-nodes/NodeControlMenu.vue";
@@ -671,7 +671,7 @@ async function stopGpuSession(nodeId: string) {
           />
 
           <div class="gpu-bake-preview gpu-pod-preview">
-            <DesktopSnapshot
+            <SnapshotQuickView
               :kind="busyByNode[node.id].snapshotKind"
               :id="busyByNode[node.id].snapshotId"
               :force-empty="busyByNode[node.id].rendering"
@@ -760,7 +760,7 @@ async function stopGpuSession(nodeId: string) {
           </div>
 
           <div class="gpu-bake-preview">
-            <DesktopSnapshot kind="bake" :id="node.id" />
+            <SnapshotQuickView kind="bake" :id="node.id" />
           </div>
         </div>
 

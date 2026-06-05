@@ -13,15 +13,9 @@ defineOptions({ inheritAttrs: false });
 
 // One or more status_history arrays (one per job/session). A render batch
 // passes every job's history; a single live/demo/render pod passes one.
-const props = withDefaults(
-  defineProps<{
-    histories: Array<Array<any> | null | undefined>;
-    // Older than this since the latest boot tick → the broadcast loop
-    // likely died; hide the checklist rather than show a frozen one.
-    recencyMs?: number;
-  }>(),
-  { recencyMs: 5 * 60 * 1000 },
-);
+const props = defineProps<{
+  histories: Array<Array<any> | null | undefined>;
+}>();
 
 // Shared CS2 boot flow, identical ordering/labels to the render queue.
 // `meta` controls skipped-vs-done for stages that don't always fire.
@@ -77,9 +71,14 @@ const KNOWN = computed(() => new Set(BOOT_STAGES.value.map((s) => s.key)));
 // Normalize a single history entry across both wire formats:
 //  - render jobs:  { status:"booting", boot_stage:"stage:sub", boot_progress:0..1 }
 //  - live/demo:    { status:"<stage>", progress:0..100, progress_stage:"sub" }
-function normEntry(
-  e: any,
-): { stage: string; sub: string | null; progress: number | null; at: number } | null {
+// `at` is the stage's first-seen time — the API keeps it stable across
+// within-stage progress ticks, so it doubles as the stage start.
+function normEntry(e: any): {
+  stage: string;
+  sub: string | null;
+  progress: number | null;
+  at: number;
+} | null {
   if (!e) return null;
   const at = Date.parse(e.at);
   if (!Number.isFinite(at)) return null;
@@ -138,13 +137,13 @@ const bootInfo = computed<BootInfo | null>(() => {
       if (!e || !KNOWN.value.has(e.stage)) continue;
       firedStages.add(e.stage);
       const prev = stageFirstAt.get(e.stage);
+      // Stage start = earliest `at`; current stage = latest `at`.
       if (prev === undefined || e.at < prev) stageFirstAt.set(e.stage, e.at);
       if (!latest || e.at > latest.at) latest = e;
     }
   }
 
   if (!latest) return null;
-  if (now.value - latest.at >= props.recencyMs) return null;
   return {
     stage: latest.stage,
     stageSub: latest.sub,

@@ -2744,7 +2744,8 @@
     "stream": {
       "watch": "Live Stream",
       "no_preview": "No preview yet",
-      "rendering_highlights": "Rendering Highlights"
+      "rendering_highlights": "Rendering Highlights",
+      "expand_preview": "Expand preview"
     },
     "elo_details": {
       "title": "Elo Change Details",

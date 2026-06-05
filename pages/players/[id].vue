@@ -1925,28 +1925,13 @@ const playerTeamChipShortClasses =
       >
         <EmptyTitle>{{ $t("pages.players.detail.no_matches") }}</EmptyTitle>
         <EmptyDescription>
-          <template v-if="eloRange !== 'all' || excludeTournaments">
-            {{ $t("pages.players.detail.no_matches_in_window_period") }}
-          </template>
-          <template v-else>
-            {{
-              isSelfProfile
-                ? $t("pages.players.detail.no_matches_self_description")
-                : $t("pages.players.detail.no_matches_description")
-            }}
-          </template>
+          {{
+            isSelfProfile
+              ? $t("pages.players.detail.no_matches_self_description")
+              : $t("pages.players.detail.no_matches_description")
+          }}
         </EmptyDescription>
-        <Button
-          v-if="eloRange !== 'all' || excludeTournaments"
-          variant="outline"
-          @click="
-            setRange('all');
-            excludeTournaments = false;
-          "
-        >
-          {{ $t("pages.players.detail.expand_to_all_time") }}
-        </Button>
-        <NuxtLink v-else-if="isSelfProfile" to="/play">
+        <NuxtLink v-if="isSelfProfile" to="/play">
           <Button class="gap-2">
             <PlayIcon class="h-4 w-4 fill-current" />
             {{ $t("pages.players.detail.play_a_match") }}

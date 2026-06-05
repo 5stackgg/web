@@ -15,6 +15,7 @@ export type ClipLineupPlayerRef = {
 export type ClipLineupRef = {
   id: string;
   name: string;
+  team_id?: string | null;
   team?: {
     name: string | null;
     avatar_url: string | null;
@@ -67,6 +68,7 @@ export type Clip = {
   thumbnail_download_url: string | null;
   kills_count: number | null;
   round: number | null;
+  views_count?: number | null;
   visibility: string;
   created_at: string;
   user?: ClipPlayerRef | null;

@@ -62,7 +62,19 @@ function updateScrollState() {
 function scrollByDirection(direction: "left" | "right") {
   const el = scrollRef.value;
   if (!el) return;
-  const amount = el.clientWidth * 0.85;
+  // Scroll by a whole number of cards so the row always lands on a snap
+  // point instead of leaving a sliver of the next card visible (which
+  // looks broken on mobile where only ~1 card fits at a time).
+  let amount = el.clientWidth * 0.85;
+  const firstChild = el.children[0] as HTMLElement | undefined;
+  if (firstChild) {
+    const gap = 12; // gap-3
+    const pitch = firstChild.offsetWidth + gap;
+    if (pitch > 0) {
+      const perPage = Math.max(1, Math.floor(el.clientWidth / pitch));
+      amount = perPage * pitch;
+    }
+  }
   el.scrollBy({
     left: direction === "right" ? amount : -amount,
     behavior: "smooth",
@@ -105,7 +117,7 @@ defineExpose({
        forward when the user reaches either scroll edge. -->
   <div
     ref="scrollRef"
-    class="flex snap-x gap-3 overflow-x-auto overscroll-x-contain px-px pb-2 pt-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+    class="flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-px pb-2 pt-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
   >
     <slot />
   </div>

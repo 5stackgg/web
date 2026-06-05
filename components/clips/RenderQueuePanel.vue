@@ -33,7 +33,7 @@ import { clipRenderJobFields } from "~/graphql/clipRenderJob";
 import { Button } from "~/components/ui/button";
 import RenderQueueBatchRow from "~/components/clips/RenderQueueBatchRow.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
-import DesktopSnapshot from "~/components/match/DesktopSnapshot.vue";
+import SnapshotQuickView from "~/components/match/SnapshotQuickView.vue";
 import {
   Tooltip,
   TooltipContent,
@@ -438,8 +438,10 @@ function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
       if (!Array.isArray(history)) continue;
       for (const e of history) {
         if (e?.status !== "booting") continue;
+        // `at` is the stage's first-seen time — the API keeps it stable
+        // across within-stage progress ticks, so it's the stage start and
+        // elapsed doesn't reset. boot_stage is "downloading_cs2:Validating".
         const t = Date.parse(e.at);
-        // boot_stage is "downloading_cs2:Validating" — strip sub-stage.
         if (typeof e.boot_stage === "string" && e.boot_stage) {
           const key = e.boot_stage.split(":")[0];
           firedStages.add(key);
@@ -454,7 +456,14 @@ function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
         if (!latest || t > latest.at) latest = { entry: e, at: t };
       }
     }
-    if (latest && Date.now() - latest.at < BOOT_RECENCY_MS) {
+    // Staleness uses the row's last_status_at (bumped every tick), not the
+    // history `at` (now frozen at stage start) — else a long shader compile
+    // would look dead and the boot UI would vanish mid-stage.
+    const freshestActivity = sorted.reduce((acc, j) => {
+      const ts = Date.parse(j.last_status_at ?? j.created_at);
+      return Number.isFinite(ts) && ts > acc ? ts : acc;
+    }, 0);
+    if (latest && Date.now() - freshestActivity < BOOT_RECENCY_MS) {
       const raw = latest.entry.boot_stage ?? "";
       const [stage, stageSub = null] = raw.split(":");
       bootInfo = {
@@ -1229,17 +1238,9 @@ const queueStatus = computed<{
                   <Server class="h-3 w-3 text-primary" />
                 </span>
                 <span class="text-sm font-medium">Render pod booting</span>
-                <span
-                  class="ml-auto inline-flex shrink-0 items-center gap-1 rounded-full border border-primary/40 bg-primary/10 px-2 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-primary"
-                >
-                  <Spinner class="h-2.5 w-2.5" />
-                  {{ g.bootInfo.stage.replace(/_/g, " ") }}
-                  <span v-if="g.bootInfo.stageSub" class="opacity-70">
-                    · {{ g.bootInfo.stageSub }}
-                  </span>
-                </span>
               </div>
-              <ul class="flex flex-col gap-1">
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-start">
+                <ul class="flex flex-1 flex-col gap-1">
                 <li
                   v-for="stage in visibleBootStages(g)"
                   :key="stage.key"
@@ -1274,6 +1275,12 @@ const queueStatus = computed<{
                   <span class="flex-1">{{ stage.label }}</span>
                   <template v-if="stageStateFor(g, stage) === 'current'">
                     <span
+                      v-if="g.bootInfo.stageSub"
+                      class="font-mono text-[0.6rem] tabular-nums opacity-60"
+                    >
+                      {{ g.bootInfo.stageSub }}
+                    </span>
+                    <span
                       v-if="g.bootInfo.progress !== null"
                       class="font-mono text-[0.6rem] tabular-nums opacity-80"
                     >
@@ -1302,12 +1309,13 @@ const queueStatus = computed<{
                     skipped
                   </span>
                 </li>
-              </ul>
-              <div
-                v-if="g.sample"
-                class="mt-3 max-w-sm overflow-hidden rounded-md border border-border/50"
-              >
-                <DesktopSnapshot kind="clips" :id="g.sample.id" />
+                </ul>
+                <div
+                  v-if="g.sample"
+                  class="w-full shrink-0 overflow-hidden rounded-md border border-border/50 sm:w-64 lg:w-80"
+                >
+                  <SnapshotQuickView kind="clips" :id="g.sample.id" />
+                </div>
               </div>
             </div>
 

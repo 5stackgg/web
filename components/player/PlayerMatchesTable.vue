@@ -27,7 +27,7 @@ const isMobile = useMediaQuery("(max-width: 767px)");
 
 // MUST stay in sync with `wideGrid` in PlayerMatchRow.vue.
 const wideGrid =
-  "grid grid-cols-[2.5rem_5rem_6.75rem_8.5rem_minmax(4.5rem,1fr)_3rem_4rem_4.5rem_2.75rem_3.25rem_6rem_2.5rem] items-center gap-x-2";
+  "grid grid-cols-[2.5rem_5rem_6.75rem_8.5rem_minmax(4.5rem,1fr)_3rem_6rem_4.5rem_2.75rem_3.25rem_6rem_2.5rem] items-center gap-x-2";
 </script>
 
 <template>
@@ -58,7 +58,7 @@ const wideGrid =
          scroll guard so every row's MAP (1fr) column resolves identically
          and the columns stay aligned no matter the surrounding width. -->
     <div v-else class="overflow-x-auto">
-      <div class="min-w-[56.5rem]">
+      <div class="min-w-[58.5rem]">
         <div
           :class="[
             wideGrid,
@@ -71,7 +71,7 @@ const wideGrid =
           <span>{{ $t("player_match.headers.result") }}</span>
           <span>{{ $t("player_match.headers.map") }}</span>
           <span />
-          <span
+          <span class="text-center"
             ><StatLabel
               stat="hltv"
               :label="$t('player_match.headers.rating')"

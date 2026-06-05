@@ -78,9 +78,21 @@ const ticker = setInterval(() => {
 }, 1000);
 onBeforeUnmount(() => clearInterval(ticker));
 
+// Start of the current stage — its history `at` (kept stable across progress
+// ticks by the API) so the live ticker measures the whole stage, not the gap
+// since the last tick. Falls back to the row's lastStatusAt.
+const currentStartedAt = computed(() => {
+  const hist = props.statusHistory;
+  for (let i = hist.length - 1; i >= 0; i--) {
+    if (hist[i].status !== props.status) continue;
+    return hist[i].at ?? props.lastStatusAt ?? null;
+  }
+  return props.lastStatusAt ?? null;
+});
+
 const elapsedOnCurrent = computed(() => {
-  if (!props.lastStatusAt) return null;
-  const ms = now.value - new Date(props.lastStatusAt).getTime();
+  if (!currentStartedAt.value) return null;
+  const ms = now.value - new Date(currentStartedAt.value).getTime();
   if (ms < 0 || !Number.isFinite(ms)) return null;
   const seconds = Math.floor(ms / 1000);
   if (seconds < 60) return `${seconds}s`;

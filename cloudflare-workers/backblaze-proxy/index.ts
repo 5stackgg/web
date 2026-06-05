@@ -41,6 +41,39 @@ function resolveKey(url: URL): string | null {
   return fromPath ? decodeURIComponent(fromPath) : null;
 }
 
+function countClipPlay(
+  request: Request,
+  url: URL,
+  key: string,
+  env: { S3_SECRET: string; API_URL?: string },
+  ctx: ExecutionContext,
+) {
+  if (!env.API_URL || request.method !== "GET") {
+    return;
+  }
+  if (!/^clips\/.+\.mp4$/.test(key)) {
+    return;
+  }
+  if (url.searchParams.get("dl") === "1" || url.searchParams.get("download") === "1") {
+    return;
+  }
+  const range = request.headers.get("range");
+  if (range && !/^bytes=0-/.test(range.trim())) {
+    return;
+  }
+
+  ctx.waitUntil(
+    fetch(`${env.API_URL.replace(/\/+$/, "")}/clip-views/play`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${env.S3_SECRET}`,
+      },
+      body: JSON.stringify({ file: key }),
+    }).catch(() => {}),
+  );
+}
+
 export default {
   async fetch(
     request: Request,
@@ -50,6 +83,7 @@ export default {
       BUCKET_NAME: string;
       S3_ENDPOINT: string;
       ALLOWED_HEADERS?: string;
+      API_URL?: string;
     },
     ctx: ExecutionContext,
   ) {
@@ -108,6 +142,8 @@ export default {
         { status: 500 },
       );
     }
+
+    countClipPlay(request, url, key, env, ctx);
 
     const signedRequest = await new AwsClient({
       accessKeyId: env.S3_ACCESS_KEY,

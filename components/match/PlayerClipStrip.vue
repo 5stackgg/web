@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { Play, Film } from "lucide-vue-next";
+import { Play, Film, Eye } from "lucide-vue-next";
 
 const { t } = useI18n();
 
@@ -90,6 +90,12 @@ const overflow = computed(() =>
           class="absolute bottom-1.5 right-1.5 rounded-sm bg-black/80 px-1.5 py-0.5 font-mono text-[0.6rem] font-bold leading-none text-[hsl(var(--tac-amber))] backdrop-blur-sm"
         >
           {{ clip.kills_count }}K
+        </span>
+        <span
+          class="absolute top-1.5 left-1.5 inline-flex items-center gap-1 rounded-sm bg-black/80 px-1.5 py-0.5 font-mono text-[0.6rem] font-bold leading-none text-white/90 backdrop-blur-sm"
+        >
+          <Eye class="h-2.5 w-2.5" />
+          {{ clip.views_count ?? 0 }}
         </span>
         <span
           v-if="clip.title"

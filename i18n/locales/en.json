@@ -1086,6 +1086,8 @@
         "current_rank": "Current Rank",
         "current_rating": "Current Rating",
         "source": "Source",
+        "mode": "Mode",
+        "section": "Section",
         "weapons_lifetime": "Lifetime",
         "refresh_stats": "Refresh stats",
         "last_n_matches": "Last 10",
@@ -2744,7 +2746,8 @@
     "stream": {
       "watch": "Live Stream",
       "no_preview": "No preview yet",
-      "rendering_highlights": "Rendering Highlights"
+      "rendering_highlights": "Rendering Highlights",
+      "expand_preview": "Expand preview"
     },
     "elo_details": {
       "title": "Elo Change Details",
@@ -4271,6 +4274,7 @@
     "open_player_profile": "Open {name}'s profile",
     "round_short": "Round {number}",
     "kills_in_clip": "{count} kill in clip | {count} kills in clip",
+    "plays_count": "{count} play | {count} plays",
     "now_playing": "Now playing",
     "selected": "Selected",
     "visibility": {

@@ -163,6 +163,29 @@ function onLeftNavTouchEnd(e: TouchEvent) {
 
             <Separator v-if="showSeparators" class="mx-4 w-auto" />
 
+            <SidebarMenuItem
+              v-if="isMobile && me && !isPWA"
+              :tooltip="$t('layouts.app_nav.navigation.dashboard')"
+            >
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.navigation.dashboard')"
+              >
+                <NuxtLink
+                  to="/me"
+                  :class="{
+                    'router-link-active':
+                      $route.path === '/me' ||
+                      ($route.path.startsWith('/players/') &&
+                        $route.params.id === me?.steam_id),
+                  }"
+                >
+                  <LineChart />
+                  {{ $t("layouts.app_nav.navigation.dashboard") }}
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
             <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.play')">
               <SidebarMenuButton
                 as-child

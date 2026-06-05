@@ -24,7 +24,7 @@ import { kdColor, hltvColor } from "~/utils/statTiers";
 // gets its own slim trailing column.
 // OPEN · DATE · TYPE · RESULT · MAP · CLIP · RATING · K/D/A · K/D · ADR · Δ · VIEW
 const wideGrid =
-  "grid grid-cols-[2.5rem_5rem_6.75rem_8.5rem_minmax(4.5rem,1fr)_3rem_4rem_4.5rem_2.75rem_3.25rem_6rem_2.5rem] items-center gap-x-2";
+  "grid grid-cols-[2.5rem_5rem_6.75rem_8.5rem_minmax(4.5rem,1fr)_3rem_6rem_4.5rem_2.75rem_3.25rem_6rem_2.5rem] items-center gap-x-2";
 </script>
 
 <template>
@@ -39,7 +39,7 @@ const wideGrid =
           ? 'cursor-pointer hover:bg-muted/30 hover:border-[hsl(var(--tac-amber)/0.35)]'
           : ''),
     ]"
-    @click="isFinished && toggleExpanded($event)"
+    @click="onRowClick($event)"
   >
     <!-- ===================== WIDE ===================== -->
     <div v-if="!compact" :class="[wideGrid, 'px-3 py-2.5']">
@@ -93,16 +93,38 @@ const wideGrid =
       </div>
 
       <!-- RESULT + SCORE — finished matches show the W/L/T badge + score;
-           anything else (scheduled/cancelled/live) shows only the status. -->
-      <div class="flex min-w-0 items-center gap-2">
-        <template v-if="isFinished">
-          <span class="font-mono text-sm font-bold tabular-nums">
-            <span :class="scoreClass">{{ score.player }}</span>
-            <span class="mx-1 text-muted-foreground/60">:</span>
-            <span class="text-muted-foreground/90">{{ score.opponent }}</span>
-          </span>
-        </template>
+           anything else (scheduled/cancelled/live) shows only the status. The
+           opponent TEAM (real teams only — never pugs) tucks under the score. -->
+      <div class="flex min-w-0 flex-col justify-center gap-0.5">
+        <span
+          v-if="isFinished"
+          class="font-mono text-sm font-bold leading-none tabular-nums"
+        >
+          <span :class="scoreClass">{{ score.player }}</span>
+          <span class="mx-1 text-muted-foreground/60">:</span>
+          <span class="text-muted-foreground/90">{{ score.opponent }}</span>
+        </span>
         <MatchStatus v-else :match="match" />
+        <span
+          v-if="opponentTeam"
+          class="flex min-w-0 items-center gap-1"
+          :title="`vs ${opponentTeam.name}`"
+        >
+          <span
+            class="font-mono text-[0.5rem] uppercase tracking-[0.1em] text-muted-foreground/50"
+            >vs</span
+          >
+          <img
+            v-if="opponentTeam.avatarSrc"
+            :src="opponentTeam.avatarSrc"
+            alt=""
+            class="h-3 w-3 shrink-0 rounded-sm object-cover"
+            @error="($event.target as HTMLImageElement).style.display = 'none'"
+          />
+          <span class="min-w-0 truncate text-[0.6rem] text-foreground/75">{{
+            opponentTeam.name
+          }}</span>
+        </span>
       </div>
 
       <!-- MAP -->
@@ -152,15 +174,17 @@ const wideGrid =
       </button>
       <span v-else />
 
-      <!-- RATING (HLTV) -->
+      <!-- RATING (HLTV) — the headline per-match number, so it runs a touch
+           larger than the other stats and is centered in its column to sit
+           evenly between the clip thumbnail and the K/D/A block. -->
       <span
         v-if="isFinished && rating !== null"
-        class="font-mono text-sm font-bold tabular-nums inline-flex items-center gap-0.5"
+        class="font-mono text-base font-bold tabular-nums inline-flex items-center justify-center gap-0.5"
         :style="{ color: hltvColor(rating) }"
       >
         {{ rating.toFixed(2) }}
       </span>
-      <span v-else class="text-muted-foreground">—</span>
+      <span v-else class="text-center text-muted-foreground">—</span>
 
       <!-- K / D / A -->
       <div
@@ -274,6 +298,44 @@ const wideGrid =
             <span class="mx-0.5 text-muted-foreground/60">:</span>
             <span class="text-muted-foreground/90">{{ score.opponent }}</span>
           </span>
+          <!-- ELO Δ / Valve rank, paired with the score as the match outcome. -->
+          <EloChangeBadge v-if="hasElo" :elo-change="eloChange" size="xs" />
+          <span
+            v-else-if="rankInfo && isPremierRank"
+            class="inline-flex items-center gap-1.5"
+            :title="rankTitle"
+          >
+            <PlayerPremierRank :premier-rank="rankInfo.rank" />
+            <span
+              v-if="rankInfo.change !== 0"
+              class="inline-flex items-center gap-px font-mono text-[0.6rem] font-bold tabular-nums"
+              :class="rankChangeClass"
+            >
+              <span aria-hidden="true">{{
+                rankInfo.change > 0 ? "▲" : "▼"
+              }}</span>
+              {{ Math.abs(rankInfo.change).toLocaleString() }}
+            </span>
+          </span>
+          <span
+            v-else-if="rankInfo && rankIcon"
+            class="inline-flex items-center gap-1"
+            :title="rankTitle"
+          >
+            <PlayerSkillGroupRank
+              :kind="rankInfo.rankType === 6 ? 'wingman' : 'competitive'"
+              :rank="rankInfo.rank"
+              :show-label="false"
+            />
+            <span
+              v-if="rankInfo.change !== 0"
+              class="font-mono text-[0.6rem] font-bold"
+              :class="rankChangeClass"
+              aria-hidden="true"
+            >
+              {{ rankInfo.change > 0 ? "▲" : "▼" }}
+            </span>
+          </span>
         </template>
         <MatchStatus v-else :match="match" />
 
@@ -290,21 +352,43 @@ const wideGrid =
         </div>
       </div>
 
-      <div class="mt-1.5 flex items-center gap-1.5">
+      <!-- Opponent TEAM — real teams only (pugs render nothing here). -->
+      <div
+        v-if="opponentTeam"
+        class="mt-1.5 flex min-w-0 items-center gap-1.5"
+        :title="`vs ${opponentTeam.name}`"
+      >
+        <span
+          class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground/50"
+          >vs</span
+        >
+        <img
+          v-if="opponentTeam.avatarSrc"
+          :src="opponentTeam.avatarSrc"
+          alt=""
+          class="h-4 w-4 shrink-0 rounded-sm object-cover"
+          @error="($event.target as HTMLImageElement).style.display = 'none'"
+        />
+        <span class="min-w-0 truncate text-xs font-medium text-foreground/85">{{
+          opponentTeam.name
+        }}</span>
+      </div>
+
+      <div class="mt-2 flex items-center gap-2">
         <img
           v-if="mapInfo.patch"
           :src="mapInfo.patch"
           :alt="mapInfo.name"
-          class="h-4 w-4 shrink-0"
+          class="h-6 w-6 shrink-0"
           @error="($event.target as HTMLImageElement).style.display = 'none'"
         />
-        <span class="min-w-0 truncate text-[0.7rem] text-foreground/80">
+        <span class="min-w-0 truncate text-sm font-medium text-foreground/85">
           {{ mapInfo.label }}
         </span>
         <button
           v-if="bestClip"
           type="button"
-          class="group/clip relative ml-auto h-6 w-10 shrink-0 overflow-hidden rounded border border-border/70 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)]"
+          class="group/clip relative ml-auto h-9 w-16 shrink-0 overflow-hidden rounded border border-border/70 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)]"
           :title="bestClip.title || $t('common.highlights')"
           @click.stop="openBestClip"
         >
@@ -317,7 +401,7 @@ const wideGrid =
           <span
             class="absolute inset-0 flex items-center justify-center bg-black/40 transition-colors group-hover/clip:bg-black/15"
           >
-            <Play class="h-2.5 w-2.5 fill-white text-white" />
+            <Play class="h-3.5 w-3.5 fill-white text-white" />
           </span>
           <span
             v-if="playerClips.length > 1"
@@ -328,107 +412,102 @@ const wideGrid =
         </button>
       </div>
 
+      <!-- Performance readout — a divided gauge strip so the per-match stats
+           read at a glance instead of as a muted sentence. Labels sit small
+           above bold, tone-colored values (RTG/K-D inherit the app ramp). -->
       <div
         v-if="isFinished && stats"
-        class="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 font-mono text-[0.65rem] tabular-nums"
+        class="mt-2.5 grid grid-cols-4 gap-px overflow-hidden rounded-md border border-border/50 bg-border/40"
       >
-        <span class="text-foreground/85">
-          {{ stats.kills }}<span class="mx-px text-muted-foreground/50">/</span
-          >{{ stats.deaths
-          }}<span class="mx-px text-muted-foreground/50">/</span
-          >{{ stats.assists }}
-        </span>
-        <span class="text-muted-foreground/40">·</span>
-        <span class="inline-flex items-center gap-0.5">
-          <span class="text-muted-foreground/60">K/D</span>
-          <span :style="kd !== null ? { color: kdColor(kd) } : undefined">{{
-            kd !== null ? kd.toFixed(2) : "—"
-          }}</span>
-        </span>
-        <span class="text-muted-foreground/40">·</span>
-        <span class="text-foreground/75">
-          <span class="text-muted-foreground/60">ADR</span>
-          {{ adr !== null ? adr.toFixed(0) : "—" }}
-        </span>
-        <span v-if="rating !== null" class="text-muted-foreground/40">·</span>
-        <span v-if="rating !== null" class="inline-flex items-center gap-0.5">
-          <span class="text-muted-foreground/60">RTG</span>
-          <span :style="{ color: hltvColor(rating) }">{{
-            rating.toFixed(2)
-          }}</span>
-        </span>
-        <EloChangeBadge
-          v-if="hasElo"
-          :elo-change="eloChange"
-          size="xs"
-          class="ml-auto"
-        />
-        <span
-          v-else-if="rankInfo && isPremierRank"
-          class="ml-auto inline-flex items-center gap-1.5"
-          :title="rankTitle"
+        <div
+          class="flex flex-col items-center justify-center gap-0.5 bg-card/60 py-1.5"
         >
-          <PlayerPremierRank :premier-rank="rankInfo.rank" />
           <span
-            v-if="rankInfo.change !== 0"
-            class="inline-flex items-center gap-px font-bold"
-            :class="rankChangeClass"
+            class="font-mono text-[0.5rem] uppercase tracking-[0.14em] text-muted-foreground/60"
+            >RTG</span
           >
-            <span aria-hidden="true">{{
-              rankInfo.change > 0 ? "▲" : "▼"
-            }}</span>
-            {{ Math.abs(rankInfo.change).toLocaleString() }}
-          </span>
-        </span>
-        <span
-          v-else-if="rankInfo && rankIcon"
-          class="ml-auto inline-flex items-center gap-1"
-          :title="rankTitle"
+          <span
+            class="font-mono text-sm font-bold tabular-nums"
+            :style="rating !== null ? { color: hltvColor(rating) } : undefined"
+            >{{ rating !== null ? rating.toFixed(2) : "—" }}</span
+          >
+        </div>
+        <div
+          class="flex flex-col items-center justify-center gap-0.5 bg-card/60 py-1.5"
         >
-          <PlayerSkillGroupRank
-            :kind="rankInfo.rankType === 6 ? 'wingman' : 'competitive'"
-            :rank="rankInfo.rank"
-            :show-label="false"
-          />
           <span
-            v-if="rankInfo.change !== 0"
-            class="font-bold"
-            :class="rankChangeClass"
-            aria-hidden="true"
+            class="font-mono text-[0.5rem] uppercase tracking-[0.14em] text-muted-foreground/60"
+            >K/D/A</span
           >
-            {{ rankInfo.change > 0 ? "▲" : "▼" }}
-          </span>
-        </span>
+          <span
+            class="font-mono text-[0.8rem] font-semibold tabular-nums text-foreground/90"
+            >{{ stats.kills
+            }}<span class="text-muted-foreground/40">/</span>{{ stats.deaths
+            }}<span class="text-muted-foreground/40">/</span>{{
+              stats.assists
+            }}</span
+          >
+        </div>
+        <div
+          class="flex flex-col items-center justify-center gap-0.5 bg-card/60 py-1.5"
+        >
+          <span
+            class="font-mono text-[0.5rem] uppercase tracking-[0.14em] text-muted-foreground/60"
+            >K/D</span
+          >
+          <span
+            class="font-mono text-sm font-bold tabular-nums"
+            :style="kd !== null ? { color: kdColor(kd) } : undefined"
+            >{{ kd !== null ? kd.toFixed(2) : "—" }}</span
+          >
+        </div>
+        <div
+          class="flex flex-col items-center justify-center gap-0.5 bg-card/60 py-1.5"
+        >
+          <span
+            class="font-mono text-[0.5rem] uppercase tracking-[0.14em] text-muted-foreground/60"
+            >ADR</span
+          >
+          <span
+            class="font-mono text-sm font-bold tabular-nums text-foreground/85"
+            >{{ adr !== null ? adr.toFixed(0) : "—" }}</span
+          >
+        </div>
       </div>
 
-      <div v-if="isFinished" class="mt-2 flex items-center gap-3">
+      <div v-if="isFinished" class="mt-2.5 grid grid-cols-2 gap-2">
         <button
           type="button"
-          class="inline-flex items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
+          class="inline-flex items-center justify-center gap-1.5 rounded-md border px-3 py-2 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] transition-colors"
+          :class="
+            expanded
+              ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))]'
+              : 'border-border/60 bg-muted/30 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]'
+          "
           @click.stop="toggleExpanded()"
         >
           <ChevronDown
-            class="h-3 w-3 transition-transform duration-200"
-            :class="{ 'rotate-180 text-[hsl(var(--tac-amber))]': expanded }"
+            class="h-3.5 w-3.5 transition-transform duration-200"
+            :class="{ 'rotate-180': expanded }"
           />
           {{ expanded ? $t("common.close") : $t("ui_extras.quick_overview") }}
         </button>
         <NuxtLink
           :to="`/matches/${match.id}`"
-          class="inline-flex items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
+          class="inline-flex items-center justify-center gap-1.5 rounded-md border border-border/60 bg-muted/30 px-3 py-2 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]"
           @click.stop
         >
-          <ExternalLink class="h-3 w-3" />
+          <ExternalLink class="h-3.5 w-3.5" />
           {{ $t("match.open_match") }}
         </NuxtLink>
       </div>
-      <div v-else class="mt-2 flex items-center">
+      <div v-else class="mt-2.5">
         <NuxtLink
           :to="`/matches/${match.id}`"
-          class="inline-flex items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
+          class="inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-border/60 bg-muted/30 px-3 py-2 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-[hsl(var(--tac-amber)/0.08)] hover:text-[hsl(var(--tac-amber))]"
           @click.stop
         >
-          <ExternalLink class="h-3 w-3" />
+          <ExternalLink class="h-3.5 w-3.5" />
           {{ $t("match.open_match") }}
         </NuxtLink>
       </div>
@@ -621,6 +700,37 @@ export default {
       const after = this.rankInfo.rank;
       const before = after - this.rankInfo.change;
       return `${label}: ${before.toLocaleString()} → ${after.toLocaleString()}`;
+    },
+    apiDomain(): string {
+      return useRuntimeConfig().public.apiDomain as string;
+    },
+    // The lineup the focus player is NOT on. Mirrors the score's orientation
+    // (player defaults to lineup_1) when their lineup can't be resolved.
+    opponentLineup(): any | null {
+      const mine = this.playerLineupId;
+      const l1 = this.match?.lineup_1 ?? null;
+      const l2 = this.match?.lineup_2 ?? null;
+      if (mine && this.match?.lineup_2_id === mine) return l1;
+      return l2;
+    },
+    // Only a REAL team (team_id set) is worth surfacing — pug lineups carry an
+    // auto-generated name and no team, so this stays null for them and the
+    // opponent UI simply doesn't render (zero space cost in the common case).
+    opponentTeam(): {
+      name: string;
+      shortName: string | null;
+      avatarSrc: string | null;
+    } | null {
+      const lu = this.opponentLineup;
+      if (!lu || lu.team_id == null) return null;
+      const name = lu.team?.name || lu.name || null;
+      if (!name) return null;
+      const url = lu.team?.avatar_url;
+      return {
+        name,
+        shortName: lu.team?.short_name || null,
+        avatarSrc: url ? `https://${this.apiDomain}/${url}` : null,
+      };
     },
     playerLineupId(): string | null {
       const sid = this.playerSteamId;
@@ -902,6 +1012,21 @@ export default {
     },
   },
   methods: {
+    // Row click: on mobile (compact) jump straight to the match page; on the
+    // wide table it toggles the inline quick overview. The dedicated QUICK
+    // OVERVIEW / OPEN MATCH buttons (which @click.stop) still work either way.
+    onRowClick(event: MouseEvent) {
+      if (!this.isFinished) return;
+      if (event) {
+        const el = event.target as HTMLElement | null;
+        if (el?.closest("a,button")) return;
+      }
+      if (this.compact) {
+        navigateTo(`/matches/${this.match.id}`);
+        return;
+      }
+      this.toggleExpanded(event);
+    },
     toggleExpanded(event?: MouseEvent) {
       // Ignore clicks that originated on an interactive child (badge, links).
       if (event) {

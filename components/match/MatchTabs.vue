@@ -288,16 +288,37 @@ provide("commander", commander);
     <TabsContent value="scoreboard">
       <div
         v-if="!disableStats"
-        class="mb-4 flex flex-wrap items-center justify-between gap-3"
+        class="mb-4 flex flex-col gap-2 lg:flex-row lg:flex-wrap lg:items-center lg:justify-between lg:gap-3"
       >
+        <!-- Mobile / tablet: compact stat-category dropdown -->
+        <div class="lg:hidden">
+          <Select v-model="scoreboardLens">
+            <SelectTrigger
+              class="w-full"
+              :aria-label="$t('ui.tooltips.match_section')"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem
+                v-for="l in scoreboardLenses"
+                :key="l.value"
+                :value="l.value"
+              >
+                {{ $t(l.labelKey) }}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <!-- Desktop: stat-category button pill -->
         <div
-          class="inline-flex flex-wrap items-center gap-0.5 rounded-md border border-border/60 bg-background/40 p-0.5"
+          class="hidden items-center gap-0.5 rounded-md border border-border/60 bg-background/40 p-0.5 lg:inline-flex"
         >
           <button
             v-for="l in scoreboardLenses"
             :key="l.value"
             type="button"
-            class="rounded px-2.5 py-1 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors"
+            class="shrink-0 rounded px-2.5 py-1 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors"
             :class="
               scoreboardLens === l.value
                 ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
@@ -310,7 +331,7 @@ provide("commander", commander);
         </div>
         <div
           v-if="showStatsControls"
-          class="flex flex-wrap items-center justify-end gap-2"
+          class="flex items-center gap-2 lg:justify-end"
         >
           <MatchSideFilter
             v-if="['general', 'opening'].includes(effectiveScoreboardLens)"

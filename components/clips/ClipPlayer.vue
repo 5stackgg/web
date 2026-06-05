@@ -232,6 +232,54 @@ function onVideoError(event: Event) {
   });
 }
 
+// During a clip crossfade the outgoing <video> lingers a beat while it
+// fades out. Its media events (pause/volumechange) would otherwise stomp
+// the incoming clip's state, so every handler ignores events from any
+// element that isn't the current `videoRef`.
+function isCurrentVideo(e: Event) {
+  return e.target === videoRef.value;
+}
+function onVideoEnded(e: Event) {
+  if (!isCurrentVideo(e)) return;
+  playing.value = false;
+  stopProgressLoop();
+  progress.value = 1;
+  emitProgressSnapshot();
+  emit("ended");
+}
+function onVideoPause(e: Event) {
+  if (!isCurrentVideo(e)) return;
+  playing.value = false;
+  stopProgressLoop();
+  emit("pause");
+}
+function onVideoPlay(e: Event) {
+  if (!isCurrentVideo(e)) return;
+  playing.value = true;
+  hasPlayedOnce.value = true;
+  startProgressLoop();
+  emit("play");
+}
+function onVideoVolumeChange(e: Event) {
+  if (!isCurrentVideo(e)) return;
+  const v = e.target as HTMLVideoElement;
+  muted.value = v.muted;
+  volume.value = v.volume;
+}
+// Pause + mute the outgoing clip the instant its crossfade starts so two
+// clips never play audio over each other mid-swap. The guards above drop
+// the events this fires, since `videoRef` already points at the incoming
+// element by now.
+function onClipLeave(el: Element) {
+  const v = el as HTMLVideoElement;
+  try {
+    v.pause();
+    v.muted = true;
+  } catch {
+    // element is detaching — nothing to do
+  }
+}
+
 async function tryPlay(video: HTMLVideoElement) {
   video.muted = muted.value;
   try {
@@ -461,45 +509,32 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
     @touchstart="bumpControls"
   >
     <template #video>
-      <video
-        v-if="src"
-        :key="clipKey ?? src"
-        ref="videoRef"
-        :src="src"
-        :poster="poster ?? undefined"
-        class="absolute inset-0 h-full w-full cursor-pointer object-contain"
-        :muted="muted"
-        playsinline
-        preload="auto"
-        @ended="
-          playing = false;
-          stopProgressLoop();
-          progress = 1;
-          emitProgressSnapshot();
-          emit('ended');
-        "
-        @loadedmetadata="syncProgress"
-        @pause="
-          playing = false;
-          stopProgressLoop();
-          emit('pause');
-        "
-        @play="
-          playing = true;
-          hasPlayedOnce = true;
-          startProgressLoop();
-          emit('play');
-        "
-        @volumechange="
-          muted = ($event.target as HTMLVideoElement).muted;
-          volume = ($event.target as HTMLVideoElement).volume;
-        "
-        @webkitbeginfullscreen="onVideoWebkitBeginFullscreen"
-        @webkitendfullscreen="onVideoWebkitEndFullscreen"
-        @error="onVideoError"
-        @click="toggle"
-      />
-      <slot v-else name="empty" />
+      <!-- Crossfade clip swaps so next/prev and auto-advance don't hard-cut.
+           Keyed on clipKey, so it only fires on clip changes — fullscreen
+           toggles don't remount the video and stay instant. -->
+      <Transition name="clip-swap" @leave="onClipLeave">
+        <video
+          v-if="src"
+          :key="clipKey ?? src"
+          ref="videoRef"
+          :src="src"
+          :poster="poster ?? undefined"
+          class="absolute inset-0 h-full w-full cursor-pointer object-contain"
+          :muted="muted"
+          playsinline
+          preload="auto"
+          @ended="onVideoEnded"
+          @loadedmetadata="syncProgress"
+          @pause="onVideoPause"
+          @play="onVideoPlay"
+          @volumechange="onVideoVolumeChange"
+          @webkitbeginfullscreen="onVideoWebkitBeginFullscreen"
+          @webkitendfullscreen="onVideoWebkitEndFullscreen"
+          @error="onVideoError"
+          @click="toggle"
+        />
+      </Transition>
+      <slot v-if="!src" name="empty" />
     </template>
 
     <!-- Top fade — gives top-tray chrome contrast against bright clips. -->
@@ -617,6 +652,18 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
 </template>
 
 <style scoped>
+/* Clip-swap crossfade. Both <video>s are absolutely positioned (inset-0),
+   so the outgoing and incoming frames overlap and dissolve instead of
+   hard-cutting. Scoped to clip changes only — never runs on fullscreen. */
+.clip-swap-enter-active,
+.clip-swap-leave-active {
+  transition: opacity 220ms ease;
+}
+.clip-swap-enter-from,
+.clip-swap-leave-to {
+  opacity: 0;
+}
+
 .vol-slider {
   appearance: none;
   height: 0.25rem;

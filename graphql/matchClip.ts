@@ -1,6 +1,7 @@
 const clipLineupWithPlayersFields = {
   id: true,
   name: true,
+  team_id: true,
   team: {
     name: true,
     avatar_url: true,
@@ -60,8 +61,8 @@ export const matchClipFields = {
       is_tournament_match: true,
       lineup_1_id: true,
       lineup_2_id: true,
-      lineup_1: { id: true, name: true },
-      lineup_2: { id: true, name: true },
+      lineup_1: { id: true, name: true, team_id: true },
+      lineup_2: { id: true, name: true, team_id: true },
       options: {
         best_of: true,
         mr: true,

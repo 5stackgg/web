@@ -11,10 +11,13 @@ import {
   Check,
   Share2,
   Crosshair,
+  Clock,
 } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import { useNuxtApp } from "#app";
 import { Card, CardContent } from "~/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import {
   Popover,
   PopoverContent,
@@ -30,6 +33,9 @@ import { generateMutation } from "~/graphql/graphqlGen";
 
 const props = defineProps<{
   clip: Clip;
+  // On the player page we already know whose clips these are, so the
+  // featured-player footer is redundant — fall back to the clip title.
+  hidePlayer?: boolean;
 }>();
 
 const { t } = useI18n();
@@ -54,14 +60,16 @@ function formatDuration(ms: number | null): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-const matchupLabel = computed(() => {
-  const a = props.clip.match_map?.match?.lineup_1?.name;
-  const b = props.clip.match_map?.match?.lineup_2?.name;
-  if (a && b) return `${a} vs ${b}`;
-  return (
-    props.clip.match_map?.map?.label ?? props.clip.match_map?.map?.name ?? null
-  );
-});
+// A single clip is identified by the player it features (the highlight's
+// subject). The map + date live on the thumbnail; the footer is just the
+// player display.
+const featuredPlayer = computed(() => props.clip.target ?? null);
+const apiDomain = computed(
+  () => useRuntimeConfig().public.apiDomain as string | undefined,
+);
+const playerAvatarSrc = computed(() =>
+  resolveAvatarUrl(featuredPlayer.value?.avatar_url ?? null, apiDomain.value),
+);
 
 const isTournament = computed(
   () => props.clip.match_map?.match?.is_tournament_match === true,
@@ -144,9 +152,9 @@ async function setVisibility(v: Visibility) {
 </script>
 
 <template>
-  <div class="block h-full">
+  <div class="block">
     <Card
-      class="flex h-full flex-col overflow-hidden transition-all hover:border-foreground/30"
+      class="flex flex-col overflow-hidden transition-all hover:border-foreground/30"
     >
       <div class="relative aspect-video w-full overflow-hidden bg-black group">
         <NuxtImg
@@ -210,9 +218,7 @@ async function setVisibility(v: Visibility) {
                   value: visibility,
                 })
               "
-              :title="
-                $t('ui_extras.visibility_label', { value: visibility })
-              "
+              :title="$t('ui_extras.visibility_label', { value: visibility })"
               @click.stop
             >
               <span
@@ -278,30 +284,6 @@ async function setVisibility(v: Visibility) {
               </button>
             </PopoverContent>
           </Popover>
-          <span
-            v-else
-            class="inline-flex h-7 items-center gap-1 rounded-full bg-black/75 pl-1.5 pr-2 text-white/90 backdrop-blur-sm pointer-events-none"
-            :title="
-              $t('ui_extras.visibility_label', { value: visibility })
-            "
-            :aria-label="
-              $t('ui_extras.visibility_label', { value: visibility })
-            "
-          >
-            <span
-              class="inline-flex h-4 w-4 items-center justify-center rounded-full"
-              :class="
-                visibility === 'public'
-                  ? 'bg-emerald-400/20 text-emerald-300'
-                  : 'bg-white/10 text-white/80'
-              "
-            >
-              <component :is="currentVisibilityMeta.icon" class="h-3 w-3" />
-            </span>
-            <span class="font-mono text-[0.58rem] uppercase tracking-[0.14em]">
-              {{ currentVisibilityMeta.label }}
-            </span>
-          </span>
         </div>
 
         <!-- Top-left badges share the same h-5 / px-1.5 / text-[0.62rem]
@@ -333,12 +315,15 @@ async function setVisibility(v: Visibility) {
           </span>
         </div>
 
+        <!-- Frame footer: map name anchored left, timestamp on the opposite
+             side so the bottom half is free for the player display. -->
         <div
-          v-if="clip.match_map?.map?.name"
-          class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent px-2 pb-1.5 pt-4"
+          v-if="clip.match_map?.map?.name || clip.created_at"
+          class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 bg-gradient-to-t from-black/85 via-black/55 to-transparent px-2 pb-1.5 pt-4"
         >
           <div
-            class="truncate font-sans text-sm font-bold uppercase leading-tight text-white/70 drop-shadow-md"
+            v-if="clip.match_map?.map?.name"
+            class="min-w-0 truncate font-sans text-sm font-bold uppercase leading-tight text-white/70 drop-shadow-md"
             :title="
               clip.match_map.map.label || cleanMapName(clip.match_map.map.name)
             "
@@ -347,41 +332,59 @@ async function setVisibility(v: Visibility) {
               clip.match_map.map.label || cleanMapName(clip.match_map.map.name)
             }}
           </div>
+          <span
+            v-if="clip.created_at"
+            class="ml-auto flex shrink-0 items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.08em] text-white/55 drop-shadow-md"
+          >
+            <Clock class="h-3 w-3" />
+            <TimeAgo :date="clip.created_at" hide-icon />
+          </span>
         </div>
       </div>
 
-      <CardContent class="flex flex-1 flex-col gap-1 p-3">
+      <CardContent class="p-0 sm:p-0">
+        <!-- Player display: the highlight's featured player. Falls back to the
+             clip title when the clip isn't tied to a single player, or when
+             the player is already implied by context (player page). -->
         <NuxtLink
+          v-if="featuredPlayer?.steam_id && !hidePlayer"
+          :to="{ name: 'players-id', params: { id: featuredPlayer.steam_id } }"
+          class="group/link flex items-center gap-2 px-2.5 py-2"
+          :title="featuredPlayer.name"
+        >
+          <Avatar shape="square" class="h-7 w-7 shrink-0 text-[0.6rem]">
+            <AvatarImage
+              v-if="playerAvatarSrc"
+              :src="playerAvatarSrc"
+              :alt="featuredPlayer.name"
+            />
+            <AvatarFallback>{{
+              featuredPlayer.name.slice(0, 2)
+            }}</AvatarFallback>
+          </Avatar>
+          <span
+            class="min-w-0 flex-1 truncate text-sm font-semibold text-foreground transition-colors group-hover/link:text-[hsl(var(--tac-amber))]"
+          >
+            {{ featuredPlayer.name }}
+          </span>
+          <ArrowUpRight
+            class="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 transition-all group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 group-hover/link:text-[hsl(var(--tac-amber))]"
+          />
+        </NuxtLink>
+        <NuxtLink
+          v-else
           :to="`/clips/${clip.id}`"
-          class="group/link flex items-center gap-1.5 text-sm font-medium text-foreground hover:text-[hsl(var(--tac-amber))] transition-colors"
+          class="group/link flex items-center gap-1.5 px-2.5 py-2 text-sm font-semibold text-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
           :title="clip.title || $t('ui_extras.open_clip')"
           @click="onTitleClick"
         >
-          <span class="truncate">
+          <span class="min-w-0 flex-1 truncate">
             {{ clip.title || $t("clips.untitled_clip") }}
           </span>
           <ArrowUpRight
-            class="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-all group-hover/link:text-[hsl(var(--tac-amber))] group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
+            class="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 transition-all group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 group-hover/link:text-[hsl(var(--tac-amber))]"
           />
         </NuxtLink>
-        <div
-          class="mt-auto flex items-end justify-between gap-2 text-xs text-muted-foreground"
-        >
-          <span class="min-w-0 flex-1">
-            <span
-              v-if="matchupLabel"
-              class="block truncate font-semibold text-foreground/85"
-              :title="matchupLabel"
-            >
-              {{ matchupLabel }}
-            </span>
-          </span>
-          <TimeAgo
-            v-if="clip.created_at"
-            :date="clip.created_at"
-            class="shrink-0 text-[0.65rem] text-muted-foreground/70"
-          />
-        </div>
       </CardContent>
     </Card>
   </div>

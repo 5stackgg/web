@@ -719,9 +719,7 @@ const viewModeOptions = computed<
   </PageTransition>
 
   <PageTransition v-if="loading" :delay="80" class="mt-6">
-    <div
-      class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-    >
+    <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
       <Skeleton
         v-for="i in 8"
         :key="i"
@@ -788,9 +786,7 @@ const viewModeOptions = computed<
   </PageTransition>
 
   <PageTransition v-else :delay="80" class="mt-6">
-    <div
-      class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-    >
+    <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
       <template v-for="item in gridItems">
         <MatchClipsGroupCard
           v-if="item.kind === 'group'"

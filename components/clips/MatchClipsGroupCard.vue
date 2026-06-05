@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Trophy, Film, ArrowUpRight } from "lucide-vue-next";
+import { Trophy, Film, ArrowUpRight, Clock } from "lucide-vue-next";
 import { Card, CardContent } from "~/components/ui/card";
 import TimeAgo from "~/components/TimeAgo.vue";
 import cleanMapName from "~/utilities/cleanMapName";
@@ -78,34 +78,6 @@ const perMapDisplay = computed(() => {
   }));
 });
 
-const mapNamesLabel = computed(() => {
-  const seen = new Set<string>();
-  const out: string[] = [];
-  for (const c of props.clips) {
-    const m = c.match_map?.map;
-    if (!m) continue;
-    const label = m.label || (m.name ? cleanMapName(m.name) : null);
-    if (label && !seen.has(label)) {
-      seen.add(label);
-      out.push(label);
-    }
-  }
-  return out;
-});
-
-const featuredTargets = computed(() => {
-  const seen = new Set<string>();
-  const out: string[] = [];
-  for (const c of props.clips) {
-    const name = c.target?.name;
-    if (name && !seen.has(name)) {
-      seen.add(name);
-      out.push(name);
-    }
-  }
-  return out;
-});
-
 // Prefer the first clip's thumbnail (real action shot) over the map poster.
 const thumbnailSrc = computed(() => {
   for (const c of props.clips) {
@@ -123,9 +95,9 @@ const pillBaseClasses =
 </script>
 
 <template>
-  <NuxtLink :to="`/matches/${matchId}`" class="block h-full group/group-card">
+  <NuxtLink :to="`/matches/${matchId}`" class="block group/group-card">
     <Card
-      class="flex h-full flex-col overflow-hidden transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.5)]"
+      class="flex flex-col overflow-hidden transition-all duration-200 hover:border-[hsl(var(--tac-amber)/0.5)]"
     >
       <div class="relative aspect-video w-full overflow-hidden bg-black">
         <NuxtImg
@@ -161,29 +133,40 @@ const pillBaseClasses =
           {{ clips.length }}
         </span>
 
-        <!-- Map list on the preview image. Single row, dot-separated,
-             truncated when there are too many. -->
+        <!-- Frame footer: maps anchored left, timestamp on the opposite side
+             so the bottom half is free for the matchup. -->
         <div
-          v-if="perMapDisplay.length > 0"
-          class="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/55 to-transparent px-2 pb-1.5 pt-4"
+          v-if="perMapDisplay.length > 0 || leadCreatedAt"
+          class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 bg-gradient-to-t from-black/85 via-black/55 to-transparent px-2 pb-1.5 pt-4"
         >
           <div
-            class="truncate font-sans text-sm font-bold uppercase leading-tight text-white/70 drop-shadow-md"
+            v-if="perMapDisplay.length > 0"
+            class="min-w-0 truncate font-sans text-sm font-bold uppercase leading-tight text-white/70 drop-shadow-md"
             :title="perMapDisplay.map((mm) => mm.name).join(' · ')"
           >
             {{ perMapDisplay.map((mm) => mm.name).join(" · ") }}
           </div>
+          <span
+            v-if="leadCreatedAt"
+            class="ml-auto flex shrink-0 items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.08em] text-white/55 drop-shadow-md"
+          >
+            <Clock class="h-3 w-3" />
+            <TimeAgo :date="leadCreatedAt" hide-icon />
+          </span>
         </div>
       </div>
 
-      <CardContent class="flex flex-1 flex-col gap-1 p-3">
-        <!-- Title with winning side highlighted in amber. Tight space
-             means no scoreboard pill, so colored team names carry the
-             "who won" signal. -->
+      <CardContent class="p-0 sm:p-0">
+        <!-- Matchup: lineup names with the winning side in amber. Works for
+             team-vs-team, team-vs-pug, and pug-vs-pug alike. -->
         <div
-          class="group/link flex items-center gap-1.5 text-sm font-medium text-foreground transition-colors"
+          class="group/link flex items-center gap-2 px-2.5 py-2 text-sm font-semibold leading-snug text-foreground"
           :title="matchupLabel ?? $t('ui_extras.match_highlights_alt')"
         >
+          <span
+            class="h-3 w-[2px] shrink-0 rounded-full bg-[hsl(var(--tac-amber))]"
+            aria-hidden="true"
+          ></span>
           <span class="min-w-0 flex-1 truncate">
             <template v-if="lineup1Name && lineup2Name">
               <span
@@ -194,10 +177,9 @@ const pillBaseClasses =
                       ? 'text-muted-foreground'
                       : ''
                 "
+                >{{ lineup1Name }}</span
               >
-                {{ lineup1Name }}
-              </span>
-              <span class="mx-1 text-muted-foreground/60">vs</span>
+              <span class="mx-1 text-muted-foreground/50">vs</span>
               <span
                 :class="
                   winningSide === '2'
@@ -206,35 +188,15 @@ const pillBaseClasses =
                       ? 'text-muted-foreground'
                       : ''
                 "
+                >{{ lineup2Name }}</span
               >
-                {{ lineup2Name }}
-              </span>
             </template>
             <template v-else>{{
               $t("ui_extras.match_highlights_alt")
             }}</template>
           </span>
           <ArrowUpRight
-            class="h-3.5 w-3.5 shrink-0 text-muted-foreground/60 transition-all group-hover/group-card:translate-x-0.5 group-hover/group-card:-translate-y-0.5 group-hover/group-card:text-[hsl(var(--tac-amber))]"
-          />
-        </div>
-
-        <div
-          class="mt-auto flex items-end justify-between gap-2 text-xs text-muted-foreground"
-        >
-          <span class="min-w-0 flex-1">
-            <span
-              v-if="featuredTargets.length"
-              class="block truncate font-semibold text-foreground/85"
-              :title="featuredTargets.join(' · ')"
-            >
-              {{ featuredTargets.join(" · ") }}
-            </span>
-          </span>
-          <TimeAgo
-            v-if="leadCreatedAt"
-            :date="leadCreatedAt"
-            class="shrink-0 text-[0.65rem] text-muted-foreground/70"
+            class="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 transition-all group-hover/group-card:-translate-y-0.5 group-hover/group-card:translate-x-0.5 group-hover/group-card:text-[hsl(var(--tac-amber))]"
           />
         </div>
       </CardContent>

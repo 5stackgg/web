@@ -105,15 +105,6 @@ const hasClips = computed(() => clips.value.length > 0);
 const showSeeAll = computed(
   () => clips.value.length >= SEE_ALL_THRESHOLD || !reachedEnd.value,
 );
-const showMap = computed(() => {
-  const seen = new Set<string>();
-  for (const c of clips.value) {
-    const name = c.match_map?.map?.name;
-    if (name) seen.add(name);
-    if (seen.size > 1) return true;
-  }
-  return false;
-});
 </script>
 
 <template>
@@ -162,12 +153,8 @@ const showMap = computed(() => {
       </div>
 
       <HorizontalScrollRow ref="scrollRef" @approaching-end="loadMore">
-        <div
-          v-for="c in clips"
-          :key="c.id"
-          class="w-96 shrink-0 snap-start"
-        >
-          <HighlightCard :clip="c" :show-map="showMap" />
+        <div v-for="c in clips" :key="c.id" class="w-96 shrink-0 snap-start">
+          <HighlightCard :clip="c" hide-player />
         </div>
       </HorizontalScrollRow>
     </div>

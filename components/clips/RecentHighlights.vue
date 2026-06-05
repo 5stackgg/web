@@ -239,7 +239,7 @@ const gridItems = computed<GridItem[]>(() => {
 
     <div
       v-else-if="loading"
-      class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+      class="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
     >
       <Skeleton
         v-for="i in 4"
@@ -270,7 +270,7 @@ const gridItems = computed<GridItem[]>(() => {
       </template>
     </HorizontalScrollRow>
 
-    <div v-else class="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+    <div v-else class="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
       <template v-for="item in gridItems">
         <MatchClipsGroupCard
           v-if="item.kind === 'group'"

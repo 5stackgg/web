@@ -514,6 +514,9 @@ export default {
     // Canonical per-match HLTV rating from the backend; overrides the local
     // estimate below (which can't include KAST at this level).
     canonicalRating: { type: Number, required: false, default: null },
+    // Focus player's aggregate stats for this match, batched by the parent
+    // page. Powers the collapsed row without a per-row matches_by_pk query.
+    collapsedAgg: { type: Object, required: false, default: null },
   },
   data() {
     return {
@@ -521,8 +524,6 @@ export default {
       drawerOpen: false,
       detailsStats: null as any | null,
       detailsStatsLoading: false,
-      collapsedStats: null as any | null,
-      collapsedStatsLoading: false,
       detailsTab: "overview",
       selectedMapId: null as string | null,
       playerClips: [] as any[],
@@ -530,15 +531,12 @@ export default {
     };
   },
   mounted() {
-    // Eager-load only the focus player's *aggregate* stats + clips so the
-    // collapsed row can show real K/D/A · K/D · ADR · rating and a highlight
-    // thumbnail. The heavy round-level + per-map + all-players query is
-    // deferred to first expand (getDetailedStats) — eager-loading it for
-    // every row saturated the main thread and made the page feel laggy.
-    if (this.isFinished && this.playerSteamId) {
-      if (!this.collapsedStats && !this.collapsedStatsLoading) {
-        this.getCollapsedStats().catch(() => {});
-      }
+    // Collapsed-row aggregate stats now arrive batched via the `collapsedAgg`
+    // prop (parent fetches them for the whole page in one query). Only the
+    // highlight thumbnail still needs a fetch, and only for matches that
+    // actually have public clips — the heavy round-level + per-map + all-players
+    // query stays deferred to first expand (getDetailedStats).
+    if (this.isFinished && this.playerSteamId && this.hasPublicClips) {
       if (this.playerClips.length === 0 && !this.playerClipsLoading) {
         this.getPlayerClips().catch(() => {});
       }
@@ -547,6 +545,13 @@ export default {
   computed: {
     isFinished(): boolean {
       return this.match?.status === e_match_status_enum.Finished;
+    },
+    // Whether any map in this match has public clips — gates the clip fetch so
+    // clip-less matches (the majority) make zero clip requests.
+    hasPublicClips(): boolean {
+      return (this.match?.match_maps || []).some(
+        (mm: any) => (mm?.public_clips_count ?? 0) > 0,
+      );
     },
     // The match prop comes from simpleMatchFields, whose match_maps carry
     // no per-round data — so the Overview tab's KAST/Survived columns can't
@@ -704,22 +709,24 @@ export default {
     // even for matches that never produced an elo_changes row (unranked).
     focusStatRow(): any | null {
       const sid = this.playerSteamId;
-      // Prefer the heavy detailed fetch (once expanded) but fall back to the
-      // lightweight aggregate fetched on mount so the collapsed row's numbers
-      // are exact even for matches with no elo_changes row (unranked).
-      const source = this.detailsStats ?? this.collapsedStats;
-      if (!sid || !source) return null;
-      for (const key of ["lineup_1", "lineup_2"]) {
-        const lineup = (source as any)?.[key];
-        const lp = (lineup?.lineup_players || []).find(
-          (lp: any) => String(lp.player?.steam_id ?? lp.steam_id ?? "") === sid,
-        );
-        if (lp) {
-          const arr = lp.player?.match_stats;
-          return Array.isArray(arr) && arr.length > 0 ? arr[0] : null;
+      // Once expanded, prefer the heavy detailed fetch (per-map rows). Until
+      // then use the page-batched aggregate (collapsedAgg) — same flat shape
+      // (kills/deaths/assists/damage/rounds_played), no per-row query.
+      const source = this.detailsStats;
+      if (sid && source) {
+        for (const key of ["lineup_1", "lineup_2"]) {
+          const lineup = (source as any)?.[key];
+          const lp = (lineup?.lineup_players || []).find(
+            (lp: any) =>
+              String(lp.player?.steam_id ?? lp.steam_id ?? "") === sid,
+          );
+          if (lp) {
+            const arr = lp.player?.match_stats;
+            return Array.isArray(arr) && arr.length > 0 ? arr[0] : null;
+          }
         }
       }
-      return null;
+      return this.collapsedAgg ?? null;
     },
     playerStats(): {
       kills: number;
@@ -906,60 +913,13 @@ export default {
         if (!this.detailsStats && !this.detailsStatsLoading) {
           this.getDetailedStats().catch(() => {});
         }
-        if (this.playerClips.length === 0 && !this.playerClipsLoading) {
+        if (
+          this.hasPublicClips &&
+          this.playerClips.length === 0 &&
+          !this.playerClipsLoading
+        ) {
           this.getPlayerClips().catch(() => {});
         }
-      }
-    },
-    // Lightweight collapsed-row fetch: just the focus player's aggregate
-    // match_stats (no other players, no per-map rows, no round-level events).
-    // Finished matches are immutable, so cache-first avoids refetching on
-    // pagination / remount.
-    async getCollapsedStats() {
-      const sid = this.playerSteamId;
-      if (!sid || !this.match?.id) return;
-      this.collapsedStatsLoading = true;
-      try {
-        const focusLineupLite = {
-          lineup_players: [
-            { where: { steam_id: { _eq: $("playerId", "bigint!") } } },
-            {
-              steam_id: true,
-              player: {
-                steam_id: true,
-                match_stats: [
-                  {
-                    where: { match_id: { _eq: $("matchId", "uuid!") } },
-                    limit: 1,
-                  },
-                  {
-                    kills: true,
-                    deaths: true,
-                    assists: true,
-                    damage: true,
-                    rounds_played: true,
-                  },
-                ],
-              },
-            },
-          ],
-        };
-        const { data } = await this.$apollo.query({
-          fetchPolicy: "cache-first",
-          variables: { matchId: this.match.id, playerId: sid },
-          query: generateQuery({
-            matches_by_pk: [
-              { id: this.match.id },
-              {
-                lineup_1: [{}, focusLineupLite],
-                lineup_2: [{}, focusLineupLite],
-              },
-            ],
-          } as any),
-        });
-        this.collapsedStats = (data as any)?.matches_by_pk ?? null;
-      } finally {
-        this.collapsedStatsLoading = false;
       }
     },
     async getDetailedStats() {

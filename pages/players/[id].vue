@@ -73,6 +73,7 @@ import gql from "graphql-tag";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { playerMatchHltvQuery } from "~/graphql/playerMatchHltvGraphql";
+import { playerMatchAggStatsQuery } from "~/graphql/playerMatchAggStatsGraphql";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { eloFields } from "~/graphql/eloFields";
 import {
@@ -890,6 +891,9 @@ const matchesPerPage = usePerPage("player-matches");
 const playerMatches = ref<any[]>([]);
 const playerMatchesTotal = ref(0);
 const ratingByMatch = ref<Map<string, number>>(new Map());
+// match_id -> focus player's aggregate stats, batched for the whole page so the
+// collapsed rows don't each fire a matches_by_pk query.
+const statsByMatch = ref<Map<string, any>>(new Map());
 
 // The matches list shares the one filter bar (source + mode + range) with the
 // stats above — no separate controls; changing the top filter updates both.
@@ -1025,6 +1029,7 @@ async function loadMatches() {
     playerMatchesTotal.value =
       (count.data as any)?.playerMatchesCount?.matches?.length ?? 0;
     void loadMatchRatings();
+    void loadMatchStats();
   } catch {
     // swallow — page is subscription-driven elsewhere; matches table
     // simply shows whatever last succeeded.
@@ -1057,6 +1062,34 @@ async function loadMatchRatings() {
     ratingByMatch.value = map;
   } catch {
     ratingByMatch.value = new Map();
+  }
+}
+
+// Batched per-match aggregate stats for the focus player across the visible
+// page — one query instead of a matches_by_pk per collapsed row.
+async function loadMatchStats() {
+  const ids = playerMatches.value
+    .map((m: any) => String(m?.id ?? ""))
+    .filter(Boolean);
+  if (!playerIdRef.value || !ids.length) {
+    statsByMatch.value = new Map();
+    return;
+  }
+  try {
+    const { data } = await apolloClient.query({
+      query: playerMatchAggStatsQuery,
+      variables: { steamId: playerIdRef.value, matchIds: ids },
+      fetchPolicy: "network-only",
+    });
+    const map = new Map<string, any>();
+    for (const row of (data as any)?.player_match_stats_v ?? []) {
+      if (row.match_id != null) {
+        map.set(String(row.match_id), row);
+      }
+    }
+    statsByMatch.value = map;
+  } catch {
+    statsByMatch.value = new Map();
   }
 }
 
@@ -2351,6 +2384,7 @@ const playerTeamChipShortClasses =
             :matches="playerMatches"
             :rank-by-match="rankByMatch"
             :rating-by-match="ratingByMatch"
+            :stats-by-match="statsByMatch"
           />
           <Pagination
             :page="matchesPage"

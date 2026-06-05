@@ -3522,7 +3522,8 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
-		user_steam_id:"order_by"
+		user_steam_id:"order_by",
+		views_count:"order_by"
 	},
 	match_clips_bool_exp:{
 		_and:"match_clips_bool_exp",
@@ -3549,6 +3550,7 @@ export const AllTypesProps: Record<string,any> = {
 		title:"String_comparison_exp",
 		user:"players_bool_exp",
 		user_steam_id:"bigint_comparison_exp",
+		views_count:"Int_comparison_exp",
 		visibility:"e_match_clip_visibility_enum_comparison_exp"
 	},
 	match_clips_constraint: "enum" as const,
@@ -3585,7 +3587,8 @@ export const AllTypesProps: Record<string,any> = {
 		target_steam_id:"order_by",
 		thumbnail_url:"order_by",
 		title:"order_by",
-		user_steam_id:"order_by"
+		user_steam_id:"order_by",
+		views_count:"order_by"
 	},
 	match_clips_min_order_by:{
 		created_at:"order_by",
@@ -3600,7 +3603,8 @@ export const AllTypesProps: Record<string,any> = {
 		target_steam_id:"order_by",
 		thumbnail_url:"order_by",
 		title:"order_by",
-		user_steam_id:"order_by"
+		user_steam_id:"order_by",
+		views_count:"order_by"
 	},
 	match_clips_obj_rel_insert_input:{
 		data:"match_clips_insert_input",
@@ -3632,6 +3636,7 @@ export const AllTypesProps: Record<string,any> = {
 		title:"order_by",
 		user:"players_order_by",
 		user_steam_id:"order_by",
+		views_count:"order_by",
 		visibility:"order_by"
 	},
 	match_clips_pk_columns_input:{
@@ -3654,7 +3659,8 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
-		user_steam_id:"order_by"
+		user_steam_id:"order_by",
+		views_count:"order_by"
 	},
 	match_clips_stddev_pop_order_by:{
 		duration_ms:"order_by",
@@ -3662,7 +3668,8 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
-		user_steam_id:"order_by"
+		user_steam_id:"order_by",
+		views_count:"order_by"
 	},
 	match_clips_stddev_samp_order_by:{
 		duration_ms:"order_by",
@@ -3670,7 +3677,8 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
-		user_steam_id:"order_by"
+		user_steam_id:"order_by",
+		views_count:"order_by"
 	},
 	match_clips_stream_cursor_input:{
 		initial_value:"match_clips_stream_cursor_value_input",
@@ -3692,7 +3700,8 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
-		user_steam_id:"order_by"
+		user_steam_id:"order_by",
+		views_count:"order_by"
 	},
 	match_clips_update_column: "enum" as const,
 	match_clips_updates:{
@@ -3706,7 +3715,8 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
-		user_steam_id:"order_by"
+		user_steam_id:"order_by",
+		views_count:"order_by"
 	},
 	match_clips_var_samp_order_by:{
 		duration_ms:"order_by",
@@ -3714,7 +3724,8 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
-		user_steam_id:"order_by"
+		user_steam_id:"order_by",
+		views_count:"order_by"
 	},
 	match_clips_variance_order_by:{
 		duration_ms:"order_by",
@@ -3722,7 +3733,8 @@ export const AllTypesProps: Record<string,any> = {
 		round:"order_by",
 		size:"order_by",
 		target_steam_id:"order_by",
-		user_steam_id:"order_by"
+		user_steam_id:"order_by",
+		views_count:"order_by"
 	},
 	match_demo_sessions:{
 		status_history:{
@@ -26285,6 +26297,7 @@ export const ReturnTypes: Record<string,any> = {
 		title:"String",
 		user:"players",
 		user_steam_id:"bigint",
+		views_count:"Int",
 		visibility:"e_match_clip_visibility_enum"
 	},
 	match_clips_aggregate:{
@@ -26310,7 +26323,8 @@ export const ReturnTypes: Record<string,any> = {
 		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
-		user_steam_id:"Float"
+		user_steam_id:"Float",
+		views_count:"Float"
 	},
 	match_clips_max_fields:{
 		created_at:"timestamptz",
@@ -26327,7 +26341,8 @@ export const ReturnTypes: Record<string,any> = {
 		thumbnail_download_url:"String",
 		thumbnail_url:"String",
 		title:"String",
-		user_steam_id:"bigint"
+		user_steam_id:"bigint",
+		views_count:"Int"
 	},
 	match_clips_min_fields:{
 		created_at:"timestamptz",
@@ -26344,7 +26359,8 @@ export const ReturnTypes: Record<string,any> = {
 		thumbnail_download_url:"String",
 		thumbnail_url:"String",
 		title:"String",
-		user_steam_id:"bigint"
+		user_steam_id:"bigint",
+		views_count:"Int"
 	},
 	match_clips_mutation_response:{
 		affected_rows:"Int",
@@ -26356,7 +26372,8 @@ export const ReturnTypes: Record<string,any> = {
 		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
-		user_steam_id:"Float"
+		user_steam_id:"Float",
+		views_count:"Float"
 	},
 	match_clips_stddev_pop_fields:{
 		duration_ms:"Float",
@@ -26364,7 +26381,8 @@ export const ReturnTypes: Record<string,any> = {
 		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
-		user_steam_id:"Float"
+		user_steam_id:"Float",
+		views_count:"Float"
 	},
 	match_clips_stddev_samp_fields:{
 		duration_ms:"Float",
@@ -26372,7 +26390,8 @@ export const ReturnTypes: Record<string,any> = {
 		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
-		user_steam_id:"Float"
+		user_steam_id:"Float",
+		views_count:"Float"
 	},
 	match_clips_sum_fields:{
 		duration_ms:"Int",
@@ -26380,7 +26399,8 @@ export const ReturnTypes: Record<string,any> = {
 		round:"Int",
 		size:"bigint",
 		target_steam_id:"bigint",
-		user_steam_id:"bigint"
+		user_steam_id:"bigint",
+		views_count:"Int"
 	},
 	match_clips_var_pop_fields:{
 		duration_ms:"Float",
@@ -26388,7 +26408,8 @@ export const ReturnTypes: Record<string,any> = {
 		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
-		user_steam_id:"Float"
+		user_steam_id:"Float",
+		views_count:"Float"
 	},
 	match_clips_var_samp_fields:{
 		duration_ms:"Float",
@@ -26396,7 +26417,8 @@ export const ReturnTypes: Record<string,any> = {
 		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
-		user_steam_id:"Float"
+		user_steam_id:"Float",
+		views_count:"Float"
 	},
 	match_clips_variance_fields:{
 		duration_ms:"Float",
@@ -26404,7 +26426,8 @@ export const ReturnTypes: Record<string,any> = {
 		round:"Float",
 		size:"Float",
 		target_steam_id:"Float",
-		user_steam_id:"Float"
+		user_steam_id:"Float",
+		views_count:"Float"
 	},
 	match_demo_sessions:{
 		created_at:"timestamptz",

@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import {
   Film,
   Play,
+  Eye,
   Lock,
   Globe,
   Trophy,
@@ -184,6 +185,19 @@ async function setVisibility(v: Visibility) {
         </button>
 
         <div class="absolute top-2 right-2 flex items-center gap-1">
+          <span
+            class="inline-flex h-7 items-center gap-1 rounded-full bg-black/75 px-2.5 font-mono text-[0.7rem] font-medium leading-none tabular-nums text-white/90 backdrop-blur-sm"
+            :title="
+              $t(
+                'clips.plays_count',
+                { count: clip.views_count ?? 0 },
+                clip.views_count ?? 0,
+              )
+            "
+          >
+            <Eye class="h-3.5 w-3.5" />
+            {{ clip.views_count ?? 0 }}
+          </span>
           <button
             type="button"
             class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-black/75 backdrop-blur-sm transition-all duration-200 hover:bg-black/90 hover:text-[hsl(var(--tac-amber))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"

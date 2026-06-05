@@ -26,6 +26,7 @@ import {
   ListVideo,
   Film,
   ArrowUpRight,
+  Eye,
 } from "lucide-vue-next";
 import { useNuxtApp } from "#app";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -258,6 +259,17 @@ onBeforeUnmount(() => {
 });
 
 const open = computed(() => !!props.clipId);
+// True from the instant you hit next/prev until the new clip's data lands.
+// The subscription round-trip has no visual of its own and we keep the
+// previous clip on screen, so without this the press feels like nothing
+// happened. Drives a spinner over the still-visible clip as instant ack.
+const switching = computed(
+  () =>
+    open.value &&
+    !!clip.value &&
+    !!props.clipId &&
+    props.clipId !== clip.value.id,
+);
 const hasQueueNav = computed(
   () => clipQueue.value.length > 1 && activeClipIndex.value >= 0,
 );
@@ -693,6 +705,19 @@ onMounted(() => {
                   </h2>
                 </template>
                 <template #top-right>
+                  <span
+                    class="inline-flex h-7 shrink-0 items-center gap-1 rounded-full border border-white/20 bg-black/55 px-2.5 font-mono text-[0.7rem] font-medium leading-none tabular-nums text-white/85 backdrop-blur-sm"
+                    :title="
+                      t(
+                        'clips.plays_count',
+                        { count: clip.views_count ?? 0 },
+                        clip.views_count ?? 0,
+                      )
+                    "
+                  >
+                    <Eye class="h-3.5 w-3.5" />
+                    {{ clip.views_count ?? 0 }}
+                  </span>
                   <button
                     v-if="isOwner && !editing"
                     type="button"
@@ -818,6 +843,22 @@ onMounted(() => {
               >
                 <ChevronRight class="h-5 w-5" />
               </button>
+
+              <!-- Instant "loading next clip" feedback while the new clip's
+                   data is in flight, over the still-visible previous clip. -->
+              <Transition
+                enter-active-class="transition-opacity duration-150"
+                enter-from-class="opacity-0"
+                leave-active-class="transition-opacity duration-200"
+                leave-to-class="opacity-0"
+              >
+                <div
+                  v-if="switching"
+                  class="pointer-events-none absolute inset-0 z-[6] flex items-center justify-center rounded-md bg-black/35 backdrop-blur-[1px]"
+                >
+                  <Spinner class="h-9 w-9 text-[hsl(var(--tac-amber))]" />
+                </div>
+              </Transition>
             </div>
 
             <div

@@ -68,6 +68,7 @@ export type Clip = {
   thumbnail_download_url: string | null;
   kills_count: number | null;
   round: number | null;
+  views_count?: number | null;
   visibility: string;
   created_at: string;
   user?: ClipPlayerRef | null;

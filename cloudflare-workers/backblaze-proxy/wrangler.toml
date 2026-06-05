@@ -16,6 +16,10 @@ enabled = true
 [vars]
 BUCKET_NAME = "5stack"
 S3_ENDPOINT = "s3.us-east-005.backblazeb2.com"
+# Base URL of the 5stack API. When set, the worker beacons clip playback
+# starts to {API_URL}/clip-views/play so the API can count clip views.
+# Leave unset to disable view counting.
+API_URL = "https://api.5stack.gg"
 
 routes = [
   { pattern = "demo-dl.5stack.gg/demo*",  zone_name = "5stack.gg" },

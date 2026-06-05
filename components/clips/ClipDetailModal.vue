@@ -31,7 +31,11 @@ import {
 import { useNuxtApp } from "#app";
 import { useAuthStore } from "~/stores/AuthStore";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
-import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
+import {
+  generateMutation,
+  generateQuery,
+  generateSubscription,
+} from "~/graphql/graphqlGen";
 import { matchClipFieldsWithLineups } from "~/graphql/matchClip";
 import type { Clip } from "~/types/clip";
 import { Button } from "~/components/ui/button";
@@ -199,10 +203,22 @@ function formatBytes(b: number | null): string | null {
   return `${gb.toFixed(2)} GB`;
 }
 
+// Full data for the upcoming clip, fetched while the current one is near
+// its end (see prefetchNextClip). Lets a switch render instantly instead
+// of waiting on the subscription round-trip; its video is warmed in a
+// hidden <video> preloader (see preloadSrc).
+const prefetchedClip = ref<Clip | null>(null);
+const prefetchingId = ref<string | null>(null);
+
 let activeSub: { unsubscribe: () => void } | null = null;
 function subscribe(id: string) {
   activeSub?.unsubscribe();
   notFound.value = false;
+  // If we prefetched this clip near the previous one's end, show it
+  // immediately — no spinner, and its video is already warm in the cache.
+  if (prefetchedClip.value?.id === id) {
+    clip.value = prefetchedClip.value;
+  }
   // Keep the previous clip visible while switching so the layout
   // doesn't collapse into the skeleton state every time the queue
   // advances; only the initial open shows the full loader.
@@ -241,6 +257,8 @@ watch(
       editing.value = false;
       fileSizeBytes.value = null;
       lastSizeUrl = null;
+      prefetchedClip.value = null;
+      prefetchingId.value = null;
     }
   },
   { immediate: true },
@@ -379,6 +397,49 @@ const targetLineup = computed(() => {
   );
 });
 const targetTeamName = computed(() => targetLineup.value?.name ?? null);
+// Begin warming the next clip this far from the end. The data query is
+// quick; the head start mostly lets the hidden <video> buffer the file so
+// playback is instant on switch.
+const PRELOAD_REMAINING_S = 6;
+
+// Hidden preloader src — the prefetched next clip's video, but only while
+// it's genuinely the *next* clip (not the one already on screen).
+const preloadSrc = computed(() => {
+  const p = prefetchedClip.value;
+  if (!p?.download_url) return null;
+  if (clip.value && p.id === clip.value.id) return null;
+  return p.download_url;
+});
+
+// Pull the full next clip (incl. download_url + lineups) ahead of time so
+// switching to it is instant. Idempotent per id; safe to call every tick.
+async function prefetchNextClip() {
+  const next = nextClip.value;
+  if (!next) return;
+  if (prefetchedClip.value?.id === next.id || prefetchingId.value === next.id) {
+    return;
+  }
+  prefetchingId.value = next.id;
+  try {
+    const { data } = await getGraphqlClient().query({
+      query: generateQuery({
+        match_clips: [
+          { where: { id: { _eq: next.id } }, limit: 1 } as any,
+          matchClipFieldsWithLineups,
+        ],
+      } as any),
+      fetchPolicy: "network-only",
+    });
+    const row = (data as any)?.match_clips?.[0] ?? null;
+    // Guard against the queue having moved on while the query was in flight.
+    if (row && nextClip.value?.id === row.id) prefetchedClip.value = row;
+  } catch {
+    // best-effort — a missed prefetch just falls back to the live fetch
+  } finally {
+    if (prefetchingId.value === next.id) prefetchingId.value = null;
+  }
+}
+
 function onModalProgress({
   currentTime,
   duration,
@@ -389,6 +450,9 @@ function onModalProgress({
 }) {
   if (!Number.isFinite(duration) || duration <= 0) return;
   const remaining = duration - currentTime;
+  if (nextClip.value && remaining <= PRELOAD_REMAINING_S) {
+    void prefetchNextClip();
+  }
   if (nextClip.value && remaining <= 0.35 && !modalAutoAdvanced.value) {
     modalAutoAdvanced.value = true;
     openNextClip();
@@ -859,6 +923,22 @@ onMounted(() => {
                   <Spinner class="h-9 w-9 text-[hsl(var(--tac-amber))]" />
                 </div>
               </Transition>
+
+              <!-- Hidden preloader: warms the next clip's video near the end
+                   of the current one so the switch plays instantly. Rendered
+                   (not display:none) and offscreen so browsers honor the
+                   preload hint. -->
+              <video
+                v-if="preloadSrc"
+                :key="preloadSrc"
+                :src="preloadSrc"
+                preload="auto"
+                muted
+                playsinline
+                tabindex="-1"
+                aria-hidden="true"
+                class="pointer-events-none absolute h-px w-px opacity-0"
+              />
             </div>
 
             <div

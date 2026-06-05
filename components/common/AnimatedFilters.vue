@@ -22,7 +22,11 @@ const btns = ref<Record<string, HTMLElement | null>>({});
 const indicator = ref({ left: 0, top: 0, width: 0, height: 0, ready: false });
 
 function setBtn(el: Element | null, key: string) {
-  btns.value[key] = (el as HTMLElement) ?? null;
+  if (el) {
+    btns.value[key] = el as HTMLElement;
+  } else {
+    delete btns.value[key];
+  }
 }
 
 function updateIndicator() {

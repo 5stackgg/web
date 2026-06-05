@@ -10,6 +10,7 @@ export function useScrollFloor() {
   const minHeight = ref(0);
   const rootEl = ref<HTMLElement | null>(null);
   let scroller: HTMLElement | null = null;
+  let listening = false;
   let floor = 0;
   let raf = 0;
 
@@ -37,6 +38,14 @@ export function useScrollFloor() {
     return scroller.scrollTop + scroller.clientHeight - rootTopInScroller;
   }
 
+  function attachListener() {
+    if (!scroller || listening) {
+      return;
+    }
+    scroller.addEventListener("scroll", onScroll, { passive: true });
+    listening = true;
+  }
+
   // Call right before a change that may shrink content.
   function capture() {
     if (!rootEl.value) {
@@ -44,6 +53,7 @@ export function useScrollFloor() {
     }
     if (!scroller) {
       scroller = findScroller(rootEl.value);
+      attachListener();
     }
     if (!scroller) {
       return;
@@ -68,11 +78,12 @@ export function useScrollFloor() {
 
   onMounted(() => {
     scroller = findScroller(rootEl.value);
-    scroller?.addEventListener("scroll", onScroll, { passive: true });
+    attachListener();
   });
 
   onBeforeUnmount(() => {
     scroller?.removeEventListener("scroll", onScroll);
+    listening = false;
     if (raf) cancelAnimationFrame(raf);
   });
 

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onBeforeUnmount } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 import {
@@ -471,6 +471,7 @@ const {
     rawStats: (data?.playerIntroStats ?? []) as RawStats[],
     hltvRows: (data?.playerIntroHltv ?? []) as any[],
   }),
+  () => [props.source, props.matchType, props.limit, props.since],
 );
 
 const comparePoints = computed<MatchPoint[]>(() => {
@@ -768,22 +769,37 @@ const activeSeries = ref<string[]>(["hltv"]);
 // touch `recentCollapsed`, so they still animate smoothly in place.
 const suppressRecentAnim = ref(false);
 const recentCollapsed = ref(false);
+let seriesTimers: ReturnType<typeof setTimeout>[] = [];
+function clearSeriesTimers() {
+  for (const id of seriesTimers) {
+    clearTimeout(id);
+  }
+  seriesTimers = [];
+}
 function toggleSeries(key: string) {
   if (activeSeries.value[0] === key) {
     return;
   }
+  clearSeriesTimers();
   suppressRecentAnim.value = true;
   recentCollapsed.value = true; // wink out
-  setTimeout(() => {
-    activeSeries.value = [key]; // swap data while collapsed + invisible
+  seriesTimers.push(
     setTimeout(() => {
-      recentCollapsed.value = false; // wink the new chart back in
-    }, 40);
-    setTimeout(() => {
-      suppressRecentAnim.value = false;
-    }, 400);
-  }, 240);
+      activeSeries.value = [key]; // swap data while collapsed + invisible
+      seriesTimers.push(
+        setTimeout(() => {
+          recentCollapsed.value = false; // wink the new chart back in
+        }, 40),
+      );
+      seriesTimers.push(
+        setTimeout(() => {
+          suppressRecentAnim.value = false;
+        }, 400),
+      );
+    }, 240),
+  );
 }
+onBeforeUnmount(clearSeriesTimers);
 
 // When a data reload SHRINKS the series (e.g. range L30 → 7D), chart.js removes
 // points and rescales the axis — it reads as a jarring full redraw. Suppress

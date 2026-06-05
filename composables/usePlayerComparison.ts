@@ -13,6 +13,9 @@ export function usePlayerComparison<T = any>(
   query: DocumentNode,
   buildVariables: (steamId: string) => Record<string, unknown>,
   extract: (data: any) => T,
+  // Optional getter of the parent's filter values (source/matchType/since/limit)
+  // so the overlay re-fetches when filters change, not just when the target does.
+  deps?: () => unknown[],
 ) {
   const { client: apolloClient } = useApolloClient();
   // The selected opponent is shared across every tab (set once by the page's
@@ -55,7 +58,11 @@ export function usePlayerComparison<T = any>(
     }
   }
 
-  watch(compareTarget, () => load(), { immediate: true });
+  watch(
+    () => [compareTarget.value?.steam_id, ...(deps ? deps() : [])],
+    () => load(),
+    { immediate: true },
+  );
 
   return {
     enabled,

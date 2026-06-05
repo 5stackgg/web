@@ -9,7 +9,7 @@ import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
-import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
+import { Card, CardContent, CardHeader } from "~/components/ui/card";
 import {
   Empty,
   EmptyTitle,
@@ -199,19 +199,6 @@ function statFor(member: any) {
   return Array.isArray(arr) && arr.length > 0 ? arr[0] : null;
 }
 
-function roundsForMember(stat: any): number {
-  if (!stat) {
-    return 0;
-  }
-  if (side.value === "CT") {
-    return stat.rounds_ct ?? 0;
-  }
-  if (side.value === "T") {
-    return stat.rounds_t ?? 0;
-  }
-  return stat.rounds_played ?? 0;
-}
-
 function tradeOpportunities(lp: any): number {
   let opps = 0;
   for (const member of lp.lineup_players || []) {
@@ -245,7 +232,8 @@ function teamUdr(lp: any): number {
       continue;
     }
     dmg += (s.he_damage ?? 0) + (s.molotov_damage ?? 0);
-    rounds = Math.max(rounds, roundsForMember(s));
+    // UDR isn't side-split, so divide by whole-match rounds even when a side filter is active
+    rounds = Math.max(rounds, s.rounds_played ?? 0);
   }
   if (rounds === 0) {
     return 0;
@@ -262,7 +250,8 @@ function teamFlashPerRound(lp: any): number {
       continue;
     }
     fa += s.flash_assists ?? 0;
-    rounds = Math.max(rounds, roundsForMember(s));
+    // flash assists aren't side-split, so divide by whole-match rounds even when a side filter is active
+    rounds = Math.max(rounds, s.rounds_played ?? 0);
   }
   if (rounds === 0) {
     return 0;

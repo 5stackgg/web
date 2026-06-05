@@ -665,10 +665,17 @@ export default {
     adrNum() {
       return this.hasStats ? Number(this.adr) || null : null;
     },
+    // True when a CT/T side filter is active. KAST is NOT side-split in the
+    // backend, so several derived stats can't be side-scoped while filtered.
+    sideFiltered() {
+      return this.matchSide === "T" || this.matchSide === "CT";
+    },
     // Rounds-weighted KAST from the canonical v_player_match_map_hltv view
     // (per map), exposed via the player.match_map_hltv relationship — no
-    // round-walking on the client.
+    // round-walking on the client. KAST is not side-split in the backend, so
+    // while a side filter is active we have no honest value to show.
     kastPct() {
+      if (this.sideFiltered) return null;
       const rows = this.member?.player?.match_map_hltv ?? [];
       let weighted = 0;
       let rounds = 0;
@@ -684,14 +691,23 @@ export default {
     },
     survived() {
       if (!this.hasStats) return "—";
-      const rounds = this.stats.rounds_played ?? 0;
+      const rounds = this.sideFiltered
+        ? this.sideRounds
+        : (this.stats.rounds_played ?? 0);
       if (!rounds) return "—";
-      const surv = rounds - (this.stats.deaths ?? 0);
+      const deaths = this.sideFiltered
+        ? this.sideDeaths
+        : (this.stats.deaths ?? 0);
+      const surv = rounds - deaths;
       const pct = Math.round((surv / rounds) * 100);
       return `${surv} (${pct}%)`;
     },
     hltvRating() {
       if (!this.hasStats) return null;
+      // HLTV rating needs KAST, which isn't side-split in the backend. Rather
+      // than emit a rating deflated by the missing ~0.5 KAST term, show "—"
+      // while a side filter is active (consistent with kastPct).
+      if (this.sideFiltered) return null;
       const rounds = this.stats.rounds_played ?? this.totalRounds;
       if (!rounds) return null;
       const k = this.stats.kills ?? 0;

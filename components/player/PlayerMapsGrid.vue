@@ -130,6 +130,10 @@ interface RawMapStat {
         id: string;
         lineup_players: Array<{ steam_id: string | number }>;
       } | null;
+      lineup_2: {
+        id: string;
+        lineup_players: Array<{ steam_id: string | number }>;
+      } | null;
     } | null;
   } | null;
 }
@@ -275,9 +279,33 @@ function adrFor(split: SideSplit): number | null {
   return split.damage / split.rounds;
 }
 
+// Resolve the viewed player's lineup id for a map by matching their steam_id
+// against both lineups' (steam_id-filtered) players — mirrors PlayerMatchRow's
+// playerLineupId. Falls back to null when neither lineup carries the player.
+function lineupForPlayer(
+  match: NonNullable<NonNullable<RawMapStat["match_map"]>["match"]>,
+  steamId: string,
+): string | null {
+  const sid = String(steamId);
+  const onL1 = match.lineup_1?.lineup_players?.some(
+    (lp) => String(lp.steam_id ?? "") === sid,
+  );
+  if (onL1) {
+    return match.lineup_1_id;
+  }
+  const onL2 = match.lineup_2?.lineup_players?.some(
+    (lp) => String(lp.steam_id ?? "") === sid,
+  );
+  if (onL2) {
+    return match.lineup_2_id;
+  }
+  return null;
+}
+
 function buildAggregates(
   source: RawMapStat[],
   hltvMap: Map<string, HltvEntry>,
+  steamId: string,
 ): MapAggregate[] {
   const byMap = new Map<string, MapAggregate>();
   const seenMatchMaps = new Map<string, Set<string>>();
@@ -319,10 +347,9 @@ function buildAggregates(
         agg.kastRounds += hltv.rounds;
       }
       const match = mm.match;
-      const onLineup1 = (match?.lineup_1?.lineup_players?.length ?? 0) > 0;
-      const playerLineupId = onLineup1
-        ? (match?.lineup_1_id ?? null)
-        : (match?.lineup_2_id ?? null);
+      const playerLineupId = match
+        ? lineupForPlayer(match, steamId)
+        : null;
       if (
         mm.winning_lineup_id &&
         playerLineupId &&
@@ -385,7 +412,7 @@ function buildAggregates(
 }
 
 const aggregates = computed<MapAggregate[]>(() =>
-  buildAggregates(rows.value, hltvByMatchMap.value),
+  buildAggregates(rows.value, hltvByMatchMap.value, props.steamId),
 );
 
 const hasMaps = computed(() => aggregates.value.length > 0);
@@ -399,12 +426,14 @@ const {
   (steamId) => ({ steamId, statsWhere: buildStatsWhere() }),
   (data: any) =>
     (data?.players_by_pk?.match_map_stats ?? []) as RawMapStat[],
+  () => [props.source, props.matchType, props.since],
 );
 
 const { compareData: compareHltvData } = usePlayerComparison(
   playerMapHltvQuery,
   (steamId) => ({ steamId, where: buildMatchWhere() }),
   (data: any) => (data?.v_player_match_map_hltv ?? []) as any[],
+  () => [props.source, props.matchType, props.since],
 );
 
 const compareHltvByMatchMap = computed(() =>
@@ -419,6 +448,7 @@ const compareByMap = computed(() => {
   for (const agg of buildAggregates(
     compareData.value,
     compareHltvByMatchMap.value,
+    String(comparePlayer.value.steam_id),
   )) {
     map.set(agg.mapId, agg);
   }

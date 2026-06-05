@@ -9,7 +9,7 @@ export const teamVetoStatsQuery = generateQuery({
           team_id: { _eq: $("teamId", "uuid!") },
         },
       },
-      order_by: [{ created_at: order_by.asc_nulls_last }],
+      order_by: [{ created_at: order_by.asc_nulls_last }, { id: order_by.asc }],
     },
     {
       id: true,

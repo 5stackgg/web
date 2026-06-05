@@ -784,7 +784,7 @@ import {
 } from "~/graphql/graphqlGen";
 import { matchMapStats } from "~/graphql/matchMapStatsGraphql";
 import { matchAllMapsStats } from "~/graphql/matchAllMapsStatsGraphql";
-import { matchBackupRoundsSubscription } from "~/graphql/matchBackupRoundsGraphql";
+import { trackMatchBackupRounds } from "~/composables/useMatchBackupRounds";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import * as z from "zod";
@@ -873,7 +873,6 @@ export default {
       mapStats: null as null | { lineup_1: any; lineup_2: any },
       mapStatsLoading: false,
       allMapsStats: null as null | { lineup_1: any; lineup_2: any },
-      backupRounds: [] as Array<{ round: number; has_backup_file: boolean }>,
       hasLogs: false,
       showConfirmDialog: false,
       pendingCommand: null as
@@ -892,18 +891,6 @@ export default {
   },
   apollo: {
     $subscribe: {
-      backupRounds: {
-        variables() {
-          return { matchMapId: this.currentMap?.id };
-        },
-        skip() {
-          return !this.currentMap?.id;
-        },
-        query: matchBackupRoundsSubscription,
-        result({ data }: any) {
-          this.backupRounds = data?.v_match_map_backup_rounds ?? [];
-        },
-      },
       allMapsStats: {
         variables() {
           return {
@@ -1134,6 +1121,9 @@ export default {
         return match_map.is_current_map;
       });
     },
+    backupRounds() {
+      return this.backupRoundsTracker?.rounds.value ?? [];
+    },
     availableCommands() {
       const commands = [];
 
@@ -1228,6 +1218,16 @@ export default {
 
       return tabs;
     },
+  },
+  created() {
+    // Shared with MatchAdminBottomBar so we don't open two identical
+    // v_match_map_backup_rounds websockets for the same current map.
+    this.backupRoundsTracker = trackMatchBackupRounds(
+      () => this.currentMap?.id,
+    );
+  },
+  beforeUnmount() {
+    this.backupRoundsTracker?.stop();
   },
   methods: {
     onMapSelect(value: string) {

@@ -145,12 +145,17 @@ const memberB = computed(
     ) ?? null,
 );
 
+// Pre-index pairs by "attacker:victim" so lookups are O(1) instead of a scan.
+const pairIndex = computed(() => {
+  const map = new Map<string, Pair>();
+  for (const p of props.pairs) {
+    map.set(`${String(p.attacker_steam_id)}:${String(p.attacked_steam_id)}`, p);
+  }
+  return map;
+});
+
 function lookupPair(attacker: string, victim: string): Pair | undefined {
-  return props.pairs.find(
-    (p) =>
-      String(p.attacker_steam_id) === String(attacker) &&
-      String(p.attacked_steam_id) === String(victim),
-  );
+  return pairIndex.value.get(`${String(attacker)}:${String(victim)}`);
 }
 
 // A→B and B→A stats for the single selected matchup.
@@ -212,6 +217,22 @@ function bucketOf(weapon: string | null | undefined): WeaponBucket {
   if (!weapon) return "other";
   return WEAPON_BUCKETS[weapon.toLowerCase()] ?? "other";
 }
+// Pre-group kill-pair rows by "killer:victim" so the breakdown is a single
+// map lookup instead of a full scan per direction.
+const killPairsByMatchup = computed(() => {
+  const map = new Map<string, any[]>();
+  for (const r of killPairRows.value) {
+    const key = `${String(r.killer_steam_id)}:${String(r.victim_steam_id)}`;
+    const arr = map.get(key);
+    if (arr) {
+      arr.push(r);
+    } else {
+      map.set(key, [r]);
+    }
+  }
+  return map;
+});
+
 function weaponBreakdownBetween(attacker: string, victim: string) {
   const counts: Record<WeaponBucket, number> = {
     rifles: 0,
@@ -221,13 +242,10 @@ function weaponBreakdownBetween(attacker: string, victim: string) {
     shotgun: 0,
     other: 0,
   };
-  for (const r of killPairRows.value) {
-    if (
-      String(r.killer_steam_id) === String(attacker) &&
-      String(r.victim_steam_id) === String(victim)
-    ) {
-      counts[bucketOf(r.weapon)] += r.kills ?? 0;
-    }
+  for (const r of killPairsByMatchup.value.get(
+    `${String(attacker)}:${String(victim)}`,
+  ) ?? []) {
+    counts[bucketOf(r.weapon)] += r.kills ?? 0;
   }
   return counts;
 }

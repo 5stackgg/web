@@ -449,12 +449,20 @@ const buyGlowPlugin = {
         ? Math.abs(x.getPixelForValue(1) - x.getPixelForValue(0))
         : area.right - area.left;
 
-    // Ease the glow's x toward the selected group, redrawing until it settles.
+    // Ease the glow's x toward the selected group, re-rendering until it
+    // settles. Schedule via update('none') on the next frame rather than
+    // calling draw() synchronously inside this draw hook (re-entrant).
     const state = chart._buyGlow || (chart._buyGlow = { x: target });
     const diff = target - state.x;
     if (Math.abs(diff) > 0.5) {
       state.x += diff * 0.2;
-      requestAnimationFrame(() => chart.ctx && chart.draw());
+      if (!state.pending) {
+        state.pending = true;
+        requestAnimationFrame(() => {
+          state.pending = false;
+          if (chart.ctx) chart.update("none");
+        });
+      }
     } else {
       state.x = target;
     }

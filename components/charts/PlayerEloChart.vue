@@ -296,6 +296,7 @@ export default {
       displayedEloHistory: this.eloHistory as EloHistoryEntry[] | null,
       collapsed: false,
       suppressDraw: false,
+      winkTimers: [] as ReturnType<typeof setTimeout>[],
     };
   },
   watch: {
@@ -640,6 +641,12 @@ export default {
       }
     });
   },
+  beforeUnmount() {
+    for (const id of this.winkTimers) {
+      clearTimeout(id);
+    }
+    this.winkTimers = [];
+  },
   methods: {
     hasIncomingData(): boolean {
       return Boolean(
@@ -683,12 +690,16 @@ export default {
     wink() {
       this.collapsed = true;
       this.suppressDraw = true;
-      window.setTimeout(() => {
-        this.commit();
+      this.winkTimers.push(
         window.setTimeout(() => {
-          this.collapsed = false;
-        }, 40);
-      }, 240);
+          this.commit();
+          this.winkTimers.push(
+            window.setTimeout(() => {
+              this.collapsed = false;
+            }, 40),
+          );
+        }, 240),
+      );
     },
     onChartRender(chart: any) {
       if (chart) {

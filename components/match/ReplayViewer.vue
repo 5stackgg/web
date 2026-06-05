@@ -3800,7 +3800,12 @@ function openReplayPopout() {
             v-if="timer.phase === 'bomb'"
             class="inline-flex items-center gap-1.5 px-2 py-0.5 font-mono text-[0.55rem] tracking-[0.2em] uppercase border border-[hsl(var(--destructive)/0.6)] bg-[hsl(var(--destructive)/0.15)] text-[hsl(var(--destructive))] backdrop-blur-sm"
           >
-            <span class="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+            <span class="relative inline-flex h-1.5 w-1.5">
+              <span
+                class="absolute inline-flex h-full w-full rounded-full bg-current animate-ping"
+              />
+              <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-current" />
+            </span>
             {{
               $t("match.replay.bomb_planted", {
                 site: bombPlantThisRound?.site ?? "",

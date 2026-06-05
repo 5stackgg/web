@@ -55,6 +55,18 @@ export const playerMapStatsQuery = generateQuery({
                   },
                 ],
               },
+              lineup_2: {
+                id: true,
+                lineup_players: [
+                  {
+                    where: { steam_id: { _eq: $("steamId", "bigint!") } },
+                    limit: 1,
+                  },
+                  {
+                    steam_id: true,
+                  },
+                ],
+              },
             },
           },
         },

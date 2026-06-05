@@ -284,6 +284,7 @@ const { comparePlayer, compareData } = usePlayerComparison(
     limit: props.limit ?? WINDOW_MAPS,
   }),
   (data: any) => (data?.players_by_pk?.matches ?? []) as RawMatch[],
+  () => [props.source, props.matchType, props.limit, props.since],
 );
 const compareTotals = computed(() =>
   computeDuelTotals(compareData.value ?? []),

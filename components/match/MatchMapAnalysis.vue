@@ -135,7 +135,6 @@ const positions = ref<Position[]>([]);
 const roundTicks = ref<RoundTick[]>([]);
 const grenades = ref<any[]>([]);
 const tickRate = ref(64);
-const capped = ref(false);
 
 // Throw→detonation trajectory lines (heatmap mode). Opt-in: loads the playback
 // blob (the throw origin lives there, not in the DB) only when toggled on.
@@ -798,10 +797,9 @@ const roundWindows = computed(() => {
   return out;
 });
 
-const allPaths = computed<Path[]>(() => {
-  capped.value = false;
+const allPathsResult = computed<{ paths: Path[]; capped: boolean }>(() => {
   if (!calibration.value || !roundWindows.value.size) {
-    return [];
+    return { paths: [], capped: false };
   }
   const grouped = new Map<string, Position[]>();
   for (const p of positions.value) {
@@ -830,9 +828,10 @@ const allPaths = computed<Path[]>(() => {
     total += arr.length;
   }
   let stride = 1;
+  let capped = false;
   if (total > MAX_POINTS) {
     stride = Math.ceil(total / MAX_POINTS);
-    capped.value = true;
+    capped = true;
   }
 
   const out: Path[] = [];
@@ -859,8 +858,11 @@ const allPaths = computed<Path[]>(() => {
       points,
     });
   }
-  return out;
+  return { paths: out, capped };
 });
+
+const allPaths = computed<Path[]>(() => allPathsResult.value.paths);
+const capped = computed<boolean>(() => allPathsResult.value.capped);
 
 function passesPathFilters(path: Path): boolean {
   if (sideFilter.value !== "both" && path.side !== sideFilter.value) {
@@ -1403,7 +1405,7 @@ const modePills = computed<{ key: "heatmap" | "movement"; label: string }[]>(
                       <g v-if="renderStyle === 'heat'" filter="url(#heatblur)">
                         <circle
                           v-for="(dot, index) of visibleDots"
-                          :key="index"
+                          :key="`${dot.category}:${dot.round}:${dot.steamId}:${index}`"
                           :cx="dot.x"
                           :cy="dot.y"
                           :r="heatRadius(dot)"
@@ -1415,7 +1417,7 @@ const modePills = computed<{ key: "heatmap" | "movement"; label: string }[]>(
                       <g v-else>
                         <circle
                           v-for="(dot, index) of visibleDots"
-                          :key="index"
+                          :key="`${dot.category}:${dot.round}:${dot.steamId}:${index}`"
                           :cx="dot.x"
                           :cy="dot.y"
                           r="6"

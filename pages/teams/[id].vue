@@ -220,9 +220,9 @@ const teamHeroActionsClasses =
   </div>
 
   <div v-if="team" class="mt-6 space-y-6">
-    <TeamCareerStats :team-id="$route.params.id" />
-    <TeamVetoStats :team-id="$route.params.id" />
-    <TeamVetoSimulator :team-id="$route.params.id" />
+    <TeamCareerStats :team-id="String($route.params.id)" />
+    <TeamVetoStats :team-id="String($route.params.id)" />
+    <TeamVetoSimulator :team-id="String($route.params.id)" />
   </div>
 
   <Sheet

@@ -5,13 +5,6 @@ import { useApolloClient } from "@vue/apollo-composable";
 import { teamVetoStatsQuery } from "~/graphql/teamVetoStatsGraphql";
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
-import {
   Table,
   TableHeader,
   TableRow,
@@ -81,13 +74,6 @@ const WIN_BLEND_SELF = 0.65;
 const WIN_BLEND_OPP_INVERSE = 0.35;
 const NEUTRAL_WIN = 50;
 
-const bestOfOptions = [
-  { value: "1", label: "BO1" },
-  { value: "3", label: "BO3" },
-  { value: "5", label: "BO5" },
-];
-
-const bestOf = ref("3");
 const opponentId = ref<string>("");
 
 const loading = ref(false);
@@ -326,27 +312,6 @@ function onOpponentSelected(team: { id: string }) {
           @selected="onOpponentSelected"
         />
       </div>
-      <div class="flex flex-col gap-1.5">
-        <span
-          class="font-mono text-[0.6rem] uppercase tracking-[0.18em] text-muted-foreground"
-        >
-          {{ $t("pages.teams.veto_sim.format") }}
-        </span>
-        <Select v-model="bestOf">
-          <SelectTrigger class="w-[120px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem
-              v-for="opt of bestOfOptions"
-              :key="opt.value"
-              :value="opt.value"
-            >
-              {{ opt.label }}
-            </SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
     </div>
 
     <div
@@ -402,7 +367,6 @@ function onOpponentSelected(team: { id: string }) {
         <span>
           {{ $t("pages.teams.veto_sim.confidence_opp", { n: oppBuilt.records }) }}
         </span>
-        <span>BO{{ bestOf }}</span>
       </div>
 
       <div

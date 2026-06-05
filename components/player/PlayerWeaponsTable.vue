@@ -282,6 +282,7 @@ const { comparePlayer, compareData } = usePlayerComparison(
   playerWeaponStatsQuery,
   (steamId) => ({ where: buildWhere(steamId) }),
   (data: any) => (data?.v_player_weapon_kills ?? []) as RawWeaponKill[],
+  () => [props.source, props.matchType],
 );
 const compareWeapon = computed(() => {
   const byKey = new Map<string, { kills: number; usage: number }>();

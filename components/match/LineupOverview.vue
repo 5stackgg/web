@@ -27,8 +27,9 @@ function statFor(member: any) {
 }
 
 // Per-row KAST/Survived for sorting, mirroring LineupOverviewRow: KAST is the
-// rounds-weighted kast_pct from the player.match_map_hltv view (returned as a
-// 0-1 fraction); survived = rounds_played - deaths. No round-walking.
+// rounds-weighted kast_pct from the player.match_map_hltv view (0-100 scale, to
+// match LineupOverviewRow.kastPct); survived = rounds_played - deaths. No
+// round-walking.
 function kastFor(_match: any, member: any): { kast: number; survived: number } {
   const rows = member?.player?.match_map_hltv ?? [];
   let weighted = 0;
@@ -38,7 +39,7 @@ function kastFor(_match: any, member: any): { kast: number; survived: number } {
     weighted += (r.kast_pct ?? 0) * rp;
     hltvRounds += rp;
   }
-  const kast = hltvRounds > 0 ? weighted / hltvRounds / 100 : 0;
+  const kast = hltvRounds > 0 ? weighted / hltvRounds : 0;
   const s = statFor(member);
   const rp = s?.rounds_played ?? 0;
   const survived = rp > 0 ? Math.max(0, rp - (s?.deaths ?? 0)) : 0;
@@ -65,7 +66,7 @@ function hltvFor(match: any, member: any): number {
   const { kast } = kastFor(match, member);
   const impact = 2.13 * kpr + 0.42 * apr - 0.41;
   return (
-    0.0073 * (kast * 100) +
+    0.0073 * kast +
     0.3591 * kpr -
     0.5329 * dpr +
     0.2372 * impact +

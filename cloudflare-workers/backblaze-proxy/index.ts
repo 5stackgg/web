@@ -50,6 +50,7 @@ export default {
       BUCKET_NAME: string;
       S3_ENDPOINT: string;
       ALLOWED_HEADERS?: string;
+      UPLOAD_TOKEN_SECRET?: string;
     },
     ctx: ExecutionContext,
   ) {
@@ -178,6 +179,9 @@ export default {
 };
 
 const UPLOAD_PREFIX = "demo-uploads/";
+// B2 multipart part ceiling we accept; the API chunks at 64MiB so anything
+// larger is a malformed/abusive request.
+const MAX_PART_BYTES = 64 * 1024 * 1024;
 
 async function handleUpload(
   request: Request,
@@ -186,6 +190,7 @@ async function handleUpload(
     S3_SECRET: string;
     BUCKET_NAME: string;
     S3_ENDPOINT: string;
+    UPLOAD_TOKEN_SECRET?: string;
   },
   reqOrigin: string | null,
 ): Promise<Response> {
@@ -193,8 +198,9 @@ async function handleUpload(
   const key = url.pathname.replace(/^\/+/, "");
   const partNumber = url.searchParams.get("partNumber");
   const uploadId = url.searchParams.get("uploadId");
+  const token = url.searchParams.get("token");
 
-  if (!key.startsWith(UPLOAD_PREFIX) || !partNumber || !uploadId) {
+  if (!key.startsWith(UPLOAD_PREFIX) || !partNumber || !uploadId || !token) {
     return new Response("forbidden", {
       status: 403,
       headers: corsHeaders(reqOrigin),
@@ -204,10 +210,36 @@ async function handleUpload(
     !env.BUCKET_NAME ||
     !env.S3_ENDPOINT ||
     !env.S3_ACCESS_KEY ||
-    !env.S3_SECRET
+    !env.S3_SECRET ||
+    !env.UPLOAD_TOKEN_SECRET
   ) {
     return new Response("Worker misconfigured", {
       status: 500,
+      headers: corsHeaders(reqOrigin),
+    });
+  }
+
+  // Authorize the part write: the API mints this token (HMAC over key+uploadId
+  // with the shared UPLOAD_TOKEN_SECRET) only for authenticated admins. Without
+  // this check the worker would sign arbitrary writes for anyone with a valid
+  // uploadId.
+  if (!(await verifyUploadToken(env.UPLOAD_TOKEN_SECRET, token, key, uploadId))) {
+    return new Response("forbidden", {
+      status: 403,
+      headers: corsHeaders(reqOrigin),
+    });
+  }
+
+  // The streamed body needs an explicit, bounded Content-Length — we forward
+  // the client's value but never trust it blindly.
+  const contentLengthRaw = request.headers.get("content-length");
+  if (
+    !contentLengthRaw ||
+    !/^\d+$/.test(contentLengthRaw) ||
+    Number(contentLengthRaw) > MAX_PART_BYTES
+  ) {
+    return new Response("invalid content-length", {
+      status: 413,
       headers: corsHeaders(reqOrigin),
     });
   }
@@ -226,10 +258,7 @@ async function handleUpload(
   });
 
   const headers = new Headers(signed.headers);
-  const contentLength = request.headers.get("content-length");
-  if (contentLength) {
-    headers.set("content-length", contentLength);
-  }
+  headers.set("content-length", contentLengthRaw);
 
   const upstream = await fetch(target, {
     method: "PUT",
@@ -254,6 +283,68 @@ async function handleUpload(
     statusText: upstream.statusText,
     headers: responseHeaders,
   });
+}
+
+function base64urlToBytes(value: string): Uint8Array {
+  const b64 = value.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = b64.padEnd(Math.ceil(b64.length / 4) * 4, "=");
+  const binary = atob(padded);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytes;
+}
+
+// Verifies the API-minted token: HMAC-SHA256 over the `payload` segment, then
+// confirms the payload is bound to this exact key+uploadId and not expired.
+// crypto.subtle.verify is constant-time, avoiding signature-timing leaks.
+async function verifyUploadToken(
+  secret: string,
+  token: string,
+  key: string,
+  uploadId: string,
+): Promise<boolean> {
+  const dot = token.lastIndexOf(".");
+  if (dot <= 0) return false;
+  const message = token.slice(0, dot);
+  const signature = token.slice(dot + 1);
+
+  let signatureBytes: Uint8Array;
+  let payloadBytes: Uint8Array;
+  try {
+    signatureBytes = base64urlToBytes(signature);
+    payloadBytes = base64urlToBytes(message);
+  } catch {
+    return false;
+  }
+
+  const cryptoKey = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["verify"],
+  );
+  const valid = await crypto.subtle.verify(
+    "HMAC",
+    cryptoKey,
+    signatureBytes,
+    new TextEncoder().encode(message),
+  );
+  if (!valid) return false;
+
+  let payload: { k?: unknown; u?: unknown; exp?: unknown };
+  try {
+    payload = JSON.parse(new TextDecoder().decode(payloadBytes));
+  } catch {
+    return false;
+  }
+  if (payload.k !== key || payload.u !== uploadId) return false;
+  if (typeof payload.exp !== "number" || payload.exp * 1000 < Date.now()) {
+    return false;
+  }
+  return true;
 }
 
 function corsHeaders(reqOrigin: string | null): Record<string, string> {

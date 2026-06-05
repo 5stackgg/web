@@ -397,6 +397,13 @@ function onPerPageChange(value: number) {
 async function alignPageToHighlightedPlayer(): Promise<boolean> {
   const sid = highlightedSteamId.value;
   if (!sid || pageAlignedForSteamId === sid) return true;
+  // The rank lookup can't scope by role, so for a role-filtered category it
+  // would resolve the player's role-less rank and snap to the wrong page.
+  // Skip the snap entirely while a role filter is active.
+  if (supportsRole.value && roleFilter.value !== "all") {
+    pageAlignedForSteamId = sid;
+    return true;
+  }
   try {
     const { data } = await apolloClient.query({
       query: PLAYER_RANK_QUERY,
@@ -538,6 +545,11 @@ function trophyTierColor(
 watch(category, () => {
   sortBy.value = null;
   sortDir.value = "desc";
+  // Clear a stale role when moving to a category that has no role view, so it
+  // doesn't silently reapply on return to a role category.
+  if (!supportsRole.value && roleFilter.value !== "all") {
+    roleFilter.value = "all";
+  }
   onFilterChange();
 });
 watch(windowDays, onFilterChange);

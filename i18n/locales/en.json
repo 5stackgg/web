@@ -3541,7 +3541,11 @@
       "overlay_c4": "C4 carrier",
       "overlay_defuser": "Defuse kits",
       "overlay_ground_bomb": "Dropped / planted bomb",
-      "overlay_ground_kits": "Dropped kits"
+      "overlay_ground_kits": "Dropped kits",
+      "pathing": "Pathing",
+      "pathing_off": "Pathing off",
+      "pathing_progress": "Pathing to current tick",
+      "pathing_round": "Full round pathing"
     },
     "player_details_panel": {
       "stats_unavailable": "Stats unavailable for this match.",

@@ -1336,8 +1336,18 @@ const modePills = computed<{ key: "heatmap" | "movement"; label: string }[]>(
             </template>
           </aside>
 
-          <!-- RIGHT: persistent map (overlay crossfades on mode switch) + rounds -->
+          <!-- RIGHT: rounds + persistent map (overlay crossfades on mode switch) -->
           <div class="flex min-w-0 flex-col gap-3">
+            <RoundSelector
+              v-if="roundSelectorEntries.length"
+              v-model="selectedRound"
+              :rounds="roundSelectorEntries"
+              :halftime-index="roundHalftimeIndex"
+              allow-all
+              :all-label="$t('match.heatmaps.all_rounds')"
+              class="w-full max-w-[760px] mx-auto"
+            />
+
             <div class="w-full max-w-[760px] mx-auto">
               <div
                 class="relative w-full aspect-square overflow-hidden rounded-md border border-border"
@@ -1468,16 +1478,6 @@ const modePills = computed<{ key: "heatmap" | "movement"; label: string }[]>(
                 </div>
               </div>
             </div>
-
-            <RoundSelector
-              v-if="roundSelectorEntries.length"
-              v-model="selectedRound"
-              :rounds="roundSelectorEntries"
-              :halftime-index="roundHalftimeIndex"
-              allow-all
-              :all-label="$t('match.heatmaps.all_rounds')"
-              class="w-full max-w-[760px] mx-auto"
-            />
           </div>
         </div>
       </div>

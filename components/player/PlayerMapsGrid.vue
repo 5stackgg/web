@@ -29,7 +29,13 @@ import {
   tacticalSectionDescriptionClasses,
 } from "~/utilities/tacticalClasses";
 import StatChevron from "~/components/StatChevron.vue";
-import { statLevelFor, type StatTierConfig } from "~/utils/statTiers";
+import {
+  statLevelFor,
+  statScore,
+  hltvColor,
+  kdColor,
+  type StatTierConfig,
+} from "~/utils/statTiers";
 import cleanMapName from "~/utilities/cleanMapName";
 
 type SideKey = "all" | "T" | "CT";
@@ -694,9 +700,7 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
             <RadialStat
               :value="fmt(ratingFor(agg.all))"
               :label="$t('pages.players.detail.maps.rating_label')"
-              :percentage="
-                Math.min(((ratingFor(agg.all) ?? 0) / 2) * 100, 100)
-              "
+              :score="statScore(ratingFor(agg.all), 1.2, 0.85)"
               :level="statLevelFor(ratingTier, ratingFor(agg.all))"
             />
             <div class="flex-1 space-y-1.5">
@@ -769,7 +773,10 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
               <div
                 class="font-mono text-sm font-bold inline-flex items-center gap-0.5"
               >
-                <AnimatedStat :value="fmt(ratingFor(agg.all))" />
+                <AnimatedStat
+                  :value="fmt(ratingFor(agg.all))"
+                  :style="{ color: hltvColor(ratingFor(agg.all)) }"
+                />
                 <StatChevron :cfg="ratingTier" :value="ratingFor(agg.all)" />
               </div>
               <div
@@ -800,7 +807,10 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
               <div
                 class="font-mono text-sm font-bold inline-flex items-center gap-0.5"
               >
-                <AnimatedStat :value="fmt(ratingFor(agg.t))" />
+                <AnimatedStat
+                  :value="fmt(ratingFor(agg.t))"
+                  :style="{ color: hltvColor(ratingFor(agg.t)) }"
+                />
                 <StatChevron :cfg="ratingTier" :value="ratingFor(agg.t)" />
               </div>
               <div class="font-mono text-[0.6rem] text-muted-foreground">
@@ -817,7 +827,10 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
               <div
                 class="font-mono text-sm font-bold inline-flex items-center gap-0.5"
               >
-                <AnimatedStat :value="fmt(ratingFor(agg.ct))" />
+                <AnimatedStat
+                  :value="fmt(ratingFor(agg.ct))"
+                  :style="{ color: hltvColor(ratingFor(agg.ct)) }"
+                />
                 <StatChevron :cfg="ratingTier" :value="ratingFor(agg.ct)" />
               </div>
               <div class="font-mono text-[0.6rem] text-muted-foreground">
@@ -963,6 +976,9 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
                   <span class="inline-flex items-center gap-0.5">
                     <AnimatedStat
                       :value="fmt(ratingFor(splitForSide(agg, tableSide)))"
+                      :style="{
+                        color: hltvColor(ratingFor(splitForSide(agg, tableSide))),
+                      }"
                     />
                     <StatChevron
                       :cfg="ratingTier"
@@ -995,6 +1011,9 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
                   <span class="inline-flex items-center gap-0.5">
                     <AnimatedStat
                       :value="fmt(kdFor(splitForSide(agg, tableSide)))"
+                      :style="{
+                        color: kdColor(kdFor(splitForSide(agg, tableSide))),
+                      }"
                     />
                     <StatChevron
                       :cfg="kdTier"

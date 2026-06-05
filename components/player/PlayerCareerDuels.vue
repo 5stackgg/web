@@ -26,7 +26,12 @@ import {
   tacticalSectionDescriptionClasses,
 } from "~/utilities/tacticalClasses";
 import StatChevron from "~/components/StatChevron.vue";
-import { statLevelFor, type StatTierConfig } from "~/utils/statTiers";
+import {
+  statLevelFor,
+  statScore,
+  kdColor,
+  type StatTierConfig,
+} from "~/utils/statTiers";
 import cleanMapName from "~/utilities/cleanMapName";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import StatGridTableSkeleton from "~/components/player/stats/StatGridTableSkeleton.vue";
@@ -65,41 +70,25 @@ function buildMatchesWhere() {
   return where;
 }
 
-interface RawKill {
-  with: string | null;
-  headshot: boolean | null;
-  player: { steam_id: string | number } | null;
-  attacked_player: { steam_id: string | number } | null;
-}
-
-interface RawRound {
-  round: number;
-  lineup_1_side: string | null;
-  lineup_2_side: string | null;
-  winning_side: string | null;
-  kills: RawKill[];
+interface RawOpeningDuel {
+  match_map_id: string;
+  attempts: number;
+  wins: number;
+  deaths: number;
+  traded_deaths: number;
 }
 
 interface RawMatchMap {
   id: string;
   winning_lineup_id: string | null;
   map: { id: string; name: string; label: string | null } | null;
-  rounds: RawRound[];
+  rounds_aggregate: { aggregate: { count: number } | null } | null;
 }
 
 interface RawMatch {
   id: string;
-  lineup_1_id: string | null;
-  lineup_2_id: string | null;
-  lineup_1: {
-    id: string;
-    lineup_players: Array<{ steam_id: string | number }>;
-  } | null;
-  lineup_2: {
-    id: string;
-    lineup_players: Array<{ steam_id: string | number }>;
-  } | null;
   match_maps: RawMatchMap[];
+  opening_duels: RawOpeningDuel[];
 }
 
 const loading = ref(true);
@@ -156,47 +145,43 @@ interface MapDuelAggregate {
   tradedDeaths: number;
 }
 
-function playerSideInRound(match: RawMatch, round: RawRound): string | null {
-  const onLineup1 = (match.lineup_1?.lineup_players ?? []).some(
-    (p) => String(p.steam_id) === props.steamId,
-  );
-  if (onLineup1) {
-    return round.lineup_1_side;
-  }
-  return round.lineup_2_side;
-}
-
-function buildMapAggregates(
-  matchList: RawMatch[],
-  steamId: string,
-): MapDuelAggregate[] {
+// Opening-duel rows come pre-aggregated per (match_map, side) from the backend
+// (match.opening_duels, already filtered to this player). We window to the last
+// N played maps and roll them up by CS map (summing both sides).
+function buildMapAggregates(matchList: RawMatch[]): MapDuelAggregate[] {
   const byMap = new Map<string, MapDuelAggregate>();
   let processed = 0;
 
   for (const match of matchList) {
-    const onLineup1 = (match.lineup_1?.lineup_players ?? []).some(
-      (p) => String(p.steam_id) === steamId,
-    );
-    const onLineup2 = (match.lineup_2?.lineup_players ?? []).some(
-      (p) => String(p.steam_id) === steamId,
-    );
-    if (!onLineup1 && !onLineup2) {
-      continue;
+    const openByMap = new Map<string, RawOpeningDuel>();
+    for (const od of match.opening_duels ?? []) {
+      const existing = openByMap.get(od.match_map_id);
+      if (existing) {
+        existing.attempts += od.attempts;
+        existing.wins += od.wins;
+        existing.deaths += od.deaths;
+        existing.traded_deaths += od.traded_deaths;
+      } else {
+        openByMap.set(od.match_map_id, { ...od });
+      }
     }
 
     for (const mm of match.match_maps) {
       if (processed >= WINDOW_MAPS) {
         break;
       }
-      if (!mm.map || mm.rounds.length === 0) {
+      if (!mm.map || (mm.rounds_aggregate?.aggregate?.count ?? 0) === 0) {
         continue;
       }
       processed++;
-      const mapId = mm.map.id;
-      let agg = byMap.get(mapId);
+      const od = openByMap.get(mm.id);
+      if (!od || od.attempts === 0) {
+        continue;
+      }
+      let agg = byMap.get(mm.map.id);
       if (!agg) {
         agg = {
-          mapId,
+          mapId: mm.map.id,
           name: mm.map.name,
           label: mm.map.label,
           attempts: 0,
@@ -204,44 +189,15 @@ function buildMapAggregates(
           openDeaths: 0,
           tradedDeaths: 0,
         };
-        byMap.set(mapId, agg);
+        byMap.set(mm.map.id, agg);
       }
-
-      for (const round of mm.rounds) {
-        const firstKill = round.kills.find(
-          (k) =>
-            k.player &&
-            k.attacked_player &&
-            String(k.player.steam_id) !== String(k.attacked_player.steam_id),
-        );
-        if (!firstKill) {
-          continue;
-        }
-        const isKiller = String(firstKill.player?.steam_id) === steamId;
-        const isVictim =
-          String(firstKill.attacked_player?.steam_id) === steamId;
-        if (!isKiller && !isVictim) {
-          continue;
-        }
-        agg.attempts++;
-        if (isKiller) {
-          agg.openKills++;
-        }
-        if (isVictim) {
-          agg.openDeaths++;
-          const traderKill = round.kills.find(
-            (k) =>
-              k.player &&
-              String(k.attacked_player?.steam_id) ===
-                String(firstKill.player?.steam_id) &&
-              String(k.player?.steam_id) !==
-                String(firstKill.attacked_player?.steam_id),
-          );
-          if (traderKill) {
-            agg.tradedDeaths++;
-          }
-        }
-      }
+      agg.attempts += od.attempts;
+      agg.openKills += od.wins;
+      agg.openDeaths += od.deaths;
+      agg.tradedDeaths += od.traded_deaths;
+    }
+    if (processed >= WINDOW_MAPS) {
+      break;
     }
   }
 
@@ -251,7 +207,7 @@ function buildMapAggregates(
 }
 
 const mapAggregates = computed<MapDuelAggregate[]>(() =>
-  buildMapAggregates(matches.value, props.steamId),
+  buildMapAggregates(matches.value),
 );
 
 const totals = computed(() => {
@@ -306,52 +262,16 @@ const overallTradedPct = computed(() =>
 
 // Opening-duel totals for an arbitrary player over their own matches — used for
 // the comparison overlay (same logic as mapAggregates, just not bucketed).
-function computeDuelTotals(matchList: RawMatch[], steamId: string) {
+function computeDuelTotals(matchList: RawMatch[]) {
   let attempts = 0;
   let openKills = 0;
   let openDeaths = 0;
   let tradedDeaths = 0;
-  let processed = 0;
-  for (const match of matchList) {
-    const on1 = (match.lineup_1?.lineup_players ?? []).some(
-      (p) => String(p.steam_id) === steamId,
-    );
-    const on2 = (match.lineup_2?.lineup_players ?? []).some(
-      (p) => String(p.steam_id) === steamId,
-    );
-    if (!on1 && !on2) continue;
-    for (const mm of match.match_maps) {
-      if (processed >= WINDOW_MAPS) break;
-      if (!mm.map || mm.rounds.length === 0) continue;
-      processed++;
-      for (const round of mm.rounds) {
-        const firstKill = round.kills.find(
-          (k) =>
-            k.player &&
-            k.attacked_player &&
-            String(k.player.steam_id) !== String(k.attacked_player.steam_id),
-        );
-        if (!firstKill) continue;
-        const isKiller = String(firstKill.player?.steam_id) === steamId;
-        const isVictim =
-          String(firstKill.attacked_player?.steam_id) === steamId;
-        if (!isKiller && !isVictim) continue;
-        attempts++;
-        if (isKiller) openKills++;
-        if (isVictim) {
-          openDeaths++;
-          const traderKill = round.kills.find(
-            (k) =>
-              k.player &&
-              String(k.attacked_player?.steam_id) ===
-                String(firstKill.player?.steam_id) &&
-              String(k.player?.steam_id) !==
-                String(firstKill.attacked_player?.steam_id),
-          );
-          if (traderKill) tradedDeaths++;
-        }
-      }
-    }
+  for (const agg of buildMapAggregates(matchList)) {
+    attempts += agg.attempts;
+    openKills += agg.openKills;
+    openDeaths += agg.openDeaths;
+    tradedDeaths += agg.tradedDeaths;
   }
   return { attempts, openKills, openDeaths, tradedDeaths };
 }
@@ -366,10 +286,7 @@ const { comparePlayer, compareData } = usePlayerComparison(
   (data: any) => (data?.players_by_pk?.matches ?? []) as RawMatch[],
 );
 const compareTotals = computed(() =>
-  computeDuelTotals(
-    compareData.value ?? [],
-    String(comparePlayer.value?.steam_id ?? ""),
-  ),
+  computeDuelTotals(compareData.value ?? []),
 );
 const hasCompare = computed(
   () => !!comparePlayer.value && compareTotals.value.attempts > 0,
@@ -386,10 +303,7 @@ const compareTradedPct = computed(() =>
 const compareByMap = computed(() => {
   const m = new Map<string, MapDuelAggregate>();
   if (!hasCompare.value) return m;
-  for (const agg of buildMapAggregates(
-    compareData.value ?? [],
-    String(comparePlayer.value?.steam_id ?? ""),
-  )) {
+  for (const agg of buildMapAggregates(compareData.value ?? [])) {
     m.set(agg.mapId, agg);
   }
   return m;
@@ -466,7 +380,7 @@ const tableRows = computed(() => {
           <RadialStat
             :value="fmtPct(overallWinPct)"
             :label="$t('pages.players.detail.career_duels.win_label')"
-            :percentage="overallWinPct ?? 0"
+            :score="statScore(overallWinPct, 58, 42)"
             :level="statLevelFor(winTier, overallWinPct)"
           />
           <div
@@ -518,7 +432,10 @@ const tableRows = computed(() => {
             />
           </div>
           <div class="font-mono text-2xl font-bold inline-flex items-center gap-1">
-            <AnimatedStat :value="fmt(overallKd)" />
+            <AnimatedStat
+              :value="fmt(overallKd)"
+              :style="{ color: kdColor(overallKd) }"
+            />
             <StatChevron :cfg="kdTier" :value="overallKd" />
           </div>
           <div
@@ -659,6 +576,9 @@ const tableRows = computed(() => {
                   <span class="inline-flex items-center gap-0.5">
                     <AnimatedStat
                       :value="fmt(kdOf(agg.openKills, agg.openDeaths))"
+                      :style="{
+                        color: kdColor(kdOf(agg.openKills, agg.openDeaths)),
+                      }"
                     />
                     <StatChevron
                       :cfg="kdTier"

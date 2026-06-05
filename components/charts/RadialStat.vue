@@ -1,12 +1,19 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import StatChevron from "~/components/StatChevron.vue";
-import type { StatLevel } from "~/utils/statTiers";
+import { toneColor, type StatLevel } from "~/utils/statTiers";
 
-defineProps<{
+const props = defineProps<{
   value: string | number;
   label: string;
-  percentage: number; // 0–100
+  // Raw fill 0–100. Used only when `score` is not supplied.
+  percentage?: number;
+  // 0..1 quality on this stat's own scale. When given it drives the ring's
+  // color (red→amber→green), its opacity (faint when bad → solid when good),
+  // and its arc length — so a mediocre stat reads as a short, dim, reddish arc
+  // instead of a loud full white ring.
+  score?: number | null;
   strokeColor?: string;
   // Quality of this stat, rendered as a chevron inside the ring.
   level?: StatLevel | null;
@@ -14,6 +21,32 @@ defineProps<{
 
 const radius = 54;
 const circumference = 2 * Math.PI * radius;
+
+const hasScore = computed(() => props.score !== null && props.score !== undefined);
+const t = computed(() =>
+  hasScore.value ? Math.min(Math.max(props.score as number, 0), 1) : 0,
+);
+
+// Arc length follows the quality scale when scored, else the raw percentage.
+const fillPct = computed(() =>
+  hasScore.value
+    ? t.value * 100
+    : Math.min(Math.max(props.percentage ?? 0, 0), 100),
+);
+
+const ringColor = computed(() =>
+  hasScore.value ? toneColor(t.value) : props.strokeColor || "#fff",
+);
+
+// Floor the opacity so even a bottom-of-scale value stays legible against the
+// background ring rather than vanishing entirely.
+const ringOpacity = computed(() =>
+  hasScore.value ? 0.35 + 0.65 * t.value : 1,
+);
+
+const dashOffset = computed(
+  () => circumference - (fillPct.value / 100) * circumference,
+);
 </script>
 
 <template>
@@ -35,16 +68,14 @@ const circumference = 2 * Math.PI * radius;
           cx="60"
           cy="60"
           :r="radius"
-          :stroke="strokeColor || '#fff'"
+          :stroke="ringColor"
+          :stroke-opacity="ringOpacity"
           stroke-width="10"
           fill="none"
           stroke-linecap="round"
           :stroke-dasharray="circumference"
-          :stroke-dashoffset="
-            circumference -
-            (Math.min(Math.max(percentage, 0), 100) / 100) * circumference
-          "
-          class="transition-[stroke-dashoffset] duration-500 ease-out"
+          :stroke-dashoffset="dashOffset"
+          class="transition-[stroke-dashoffset,stroke,stroke-opacity] duration-500 ease-out"
         />
       </svg>
 

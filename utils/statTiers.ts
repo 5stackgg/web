@@ -81,3 +81,43 @@ export const KD_TIER: StatTierConfig = { dir: "high", cuts: [1.3, 1.1, 0.95, 0.8
 export const HLTV_TIER: StatTierConfig = { dir: "high", cuts: [1.2, 1.05, 0.95, 0.85] };
 export const KAST_TIER: StatTierConfig = { dir: "high", cuts: [80, 72, 64, 58] };
 export const ADR_TIER: StatTierConfig = { dir: "high", cuts: [90, 75, 60, 50] };
+
+// Continuous 0..1 quality score for a value inside a good/bad range.
+// 1 at (or beyond) `good`, 0 at (or beyond) `bad`. For "lower is better"
+// stats pass good < bad. Returns null when the value isn't a finite number.
+export function statScore(
+  value: number | null | undefined,
+  good: number,
+  bad: number,
+): number | null {
+  if (value === null || value === undefined || !Number.isFinite(value)) {
+    return null;
+  }
+  if (good === bad) return 0.5;
+  const t = (value - bad) / (good - bad);
+  return Math.max(0, Math.min(1, t));
+}
+
+// Red -> amber -> green ramp for a 0..1 score. Two linear hue segments so the
+// midpoint reads a true amber (not a muddy chartreuse). Used by the radial
+// rings (color + opacity + arc) and the HLTV / K-D value tint.
+export function toneColor(score: number): string {
+  const x = Math.max(0, Math.min(1, score));
+  const hue = x < 0.5 ? x * 2 * 48 : 48 + (x - 0.5) * 2 * 94; // 0 red -> 48 amber -> 142 green
+  return `hsl(${Math.round(hue)} 72% 52%)`;
+}
+
+// Quality ranges for the two stats people wanted the full-text color back on.
+export const KD_RANGE = { good: 1.3, bad: 0.8 };
+export const HLTV_RANGE = { good: 1.2, bad: 0.85 };
+
+// Convenience tints — return a CSS color string, or undefined when the value
+// isn't usable (so callers can spread into :style without tinting bad data).
+export function kdColor(value: number | null | undefined): string | undefined {
+  const s = statScore(value, KD_RANGE.good, KD_RANGE.bad);
+  return s === null ? undefined : toneColor(s);
+}
+export function hltvColor(value: number | null | undefined): string | undefined {
+  const s = statScore(value, HLTV_RANGE.good, HLTV_RANGE.bad);
+  return s === null ? undefined : toneColor(s);
+}

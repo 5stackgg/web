@@ -2,7 +2,14 @@
 import formatStatValue from "~/utilities/formatStatValue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import StatChevron from "~/components/StatChevron.vue";
-import { KD_TIER, HLTV_TIER, KAST_TIER, ADR_TIER } from "~/utils/statTiers";
+import {
+  KD_TIER,
+  HLTV_TIER,
+  KAST_TIER,
+  ADR_TIER,
+  kdColor,
+  hltvColor,
+} from "~/utils/statTiers";
 import EloChangeBadge from "~/components/EloChangeBadge.vue";
 import PlayerMatchClipsButton from "~/components/match/PlayerMatchClipsButton.vue";
 import MultiKillDrilldown from "~/components/match/MultiKillDrilldown.vue";
@@ -197,7 +204,7 @@ const DASH = "—";
       </TableCell>
       <TableCell v-if="overviewVis.kd !== false" class="tabular-nums">
         <span class="inline-flex items-center gap-0.5">
-          <AnimatedStat :value="kd" />
+          <AnimatedStat :value="kd" :style="{ color: kdColor(kdNum) }" />
           <StatChevron :cfg="KD_TIER" :value="kdNum" />
         </span>
       </TableCell>
@@ -264,7 +271,10 @@ const DASH = "—";
       </TableCell>
       <TableCell v-if="overviewVis.hltv !== false" class="tabular-nums">
         <span class="inline-flex items-center gap-0.5">
-          <AnimatedStat :value="hltvRating ?? DASH" />
+          <AnimatedStat
+            :value="hltvRating ?? DASH"
+            :style="{ color: hltvColor(hltvNum) }"
+          />
           <StatChevron :cfg="HLTV_TIER" :value="hltvNum" />
         </span>
       </TableCell>

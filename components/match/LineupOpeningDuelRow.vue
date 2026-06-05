@@ -146,29 +146,18 @@ export default {
       type: Number,
       default: 0,
     },
+    // Kill-matchup breakdown for this player (map + side filtered) from the
+    // backend kill-pairs view: victims/killers by steam_id, weapons by name.
+    killBreakdown: {
+      type: Object as () => {
+        victims: Record<string, number>;
+        killers: Record<string, number>;
+        weapons: Record<string, number>;
+      },
+      required: true,
+    },
   },
   computed: {
-    filteredMatchMaps() {
-      if (!this.selectedMapId) return this.match.match_maps;
-      return this.match.match_maps.filter(
-        (match_map: any) => match_map.id === this.selectedMapId,
-      );
-    },
-    isPlayerOnLineup1() {
-      return this.lineup.id === this.match.lineup_1_id;
-    },
-    roundOnSide() {
-      return (round: any) => {
-        if (this.side === "all") return true;
-        const playerSide = this.isPlayerOnLineup1
-          ? round.lineup_1_side
-          : round.lineup_2_side;
-        if (this.side === "CT") return playerSide === "CT";
-        if (this.side === "T")
-          return playerSide === "TERRORIST" || playerSide === "T";
-        return true;
-      };
-    },
     totalRounds(): number {
       return this.lineupRounds;
     },
@@ -213,30 +202,6 @@ export default {
         { dir: "high", cuts: [40, 25, 15, 5] },
         this.tradedPct,
       );
-    },
-    killBreakdown() {
-      const steamId = String(this.member.steam_id);
-      const victims: Record<string, number> = {};
-      const killers: Record<string, number> = {};
-      const weapons: Record<string, number> = {};
-
-      for (const match_map of this.filteredMatchMaps) {
-        for (const round of match_map.rounds) {
-          if (!this.roundOnSide(round)) continue;
-          for (const k of round.kills || []) {
-            const attackerId = String(k.player?.steam_id || "");
-            const victimId = String(k.attacked_player?.steam_id || "");
-            if (attackerId === steamId && victimId && victimId !== steamId) {
-              victims[victimId] = (victims[victimId] ?? 0) + 1;
-              if (k.with) weapons[k.with] = (weapons[k.with] ?? 0) + 1;
-            }
-            if (victimId === steamId && attackerId && attackerId !== steamId) {
-              killers[attackerId] = (killers[attackerId] ?? 0) + 1;
-            }
-          }
-        }
-      }
-      return { victims, killers, weapons };
     },
     playersByIds() {
       const map: Record<string, any> = {};

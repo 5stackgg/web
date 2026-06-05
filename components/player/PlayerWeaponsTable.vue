@@ -31,6 +31,7 @@ import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
+import { hltvColor } from "~/utils/statTiers";
 
 const props = defineProps<{
   steamId: string;
@@ -489,7 +490,10 @@ function onIconError(event: Event) {
                   v-if="hasExtra"
                   class="text-right font-mono text-xs tabular-nums text-muted-foreground"
                 >
-                  <AnimatedStat :value="fmt2(row.rating)" />
+                  <AnimatedStat
+                    :value="fmt2(row.rating)"
+                    :style="{ color: hltvColor(row.rating) }"
+                  />
                 </TableCell>
                 <TableCell
                   v-if="hasExtra"

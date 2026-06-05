@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import StatLabel from "~/components/common/StatLabel.vue";
+import { kdColor } from "~/utils/statTiers";
 defineProps<{
   stats: {
     name?: string;
@@ -101,6 +102,7 @@ defineProps<{
         </span>
         <span
           class="text-xl font-bold leading-none tabular-nums text-[hsl(var(--tac-amber))]"
+          :style="{ color: kdColor(Number(stats.kd)) }"
         >
           {{ stats.kd }}
         </span>

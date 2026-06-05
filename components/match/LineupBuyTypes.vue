@@ -17,7 +17,7 @@ import AnimatedStat from "~/components/AnimatedStat.vue";
 import StatChevron from "~/components/StatChevron.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { useMatchSide } from "~/composables/useMatchSide";
-import { HLTV_TIER } from "~/utils/statTiers";
+import { HLTV_TIER, hltvColor } from "~/utils/statTiers";
 import cleanMapName from "~/utilities/cleanMapName";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
@@ -660,6 +660,7 @@ const expandedRows = computed(() =>
                   <AnimatedStat
                     :value="fmtRating(entry.rating)"
                     class="w-10 text-right"
+                    :style="{ color: hltvColor(entry.rating) }"
                   />
                   <StatChevron :cfg="HLTV_TIER" :value="entry.rating" />
                 </span>

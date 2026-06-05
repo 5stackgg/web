@@ -27,7 +27,7 @@ import {
   tacticalSectionDescriptionClasses,
 } from "~/utilities/tacticalClasses";
 import StatChevron from "~/components/StatChevron.vue";
-import { type StatTierConfig } from "~/utils/statTiers";
+import { hltvColor, kdColor, type StatTierConfig } from "~/utils/statTiers";
 
 const props = defineProps<{
   teamId: string;
@@ -395,7 +395,10 @@ function kd(p: PlayerAgg): number {
                     {{ p.rounds }}
                   </TableCell>
                   <TableCell class="text-right font-bold tabular-nums">
-                    <span class="inline-flex items-center gap-0.5">
+                    <span
+                      class="inline-flex items-center gap-0.5"
+                      :style="{ color: hltvColor(p.rating) }"
+                    >
                       {{ p.rating.toFixed(2) }}
                       <StatChevron :cfg="RATING_TIER" :value="p.rating" />
                     </span>

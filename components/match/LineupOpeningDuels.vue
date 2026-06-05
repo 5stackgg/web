@@ -30,6 +30,7 @@ const lineupsToRender = computed(() =>
 const { client: apolloClient } = useApolloClient();
 const duelRows = ref<any[]>([]);
 const lineupRoundRows = ref<any[]>([]);
+const killPairRows = ref<any[]>([]);
 const OPENING_SUB = gql`
   subscription MatchOpeningDuels($matchId: uuid!) {
     v_match_player_opening_duels(where: { match_id: { _eq: $matchId } }) {
@@ -54,17 +55,34 @@ const LINEUP_ROUNDS_SUB = gql`
     }
   }
 `;
+const KILL_PAIRS_SUB = gql`
+  subscription MatchKillPairs($matchId: uuid!) {
+    v_match_kill_pairs(where: { match_id: { _eq: $matchId } }) {
+      match_map_id
+      killer_steam_id
+      victim_steam_id
+      weapon
+      killer_side
+      victim_side
+      kills
+    }
+  }
+`;
 let duelSub: { unsubscribe: () => void } | null = null;
 let roundsSub: { unsubscribe: () => void } | null = null;
+let killPairsSub: { unsubscribe: () => void } | null = null;
 watch(
   () => props.match?.id,
   (id) => {
     duelSub?.unsubscribe();
     roundsSub?.unsubscribe();
+    killPairsSub?.unsubscribe();
     duelSub = null;
     roundsSub = null;
+    killPairsSub = null;
     duelRows.value = [];
     lineupRoundRows.value = [];
+    killPairRows.value = [];
     if (!id) {
       return;
     }
@@ -88,13 +106,50 @@ watch(
           lineupRoundRows.value = [];
         },
       });
+    killPairsSub = apolloClient
+      .subscribe({ query: KILL_PAIRS_SUB, variables: { matchId: id } })
+      .subscribe({
+        next: ({ data }: any) => {
+          killPairRows.value = data?.v_match_kill_pairs ?? [];
+        },
+        error: () => {
+          killPairRows.value = [];
+        },
+      });
   },
   { immediate: true },
 );
 onUnmounted(() => {
   duelSub?.unsubscribe();
   roundsSub?.unsubscribe();
+  killPairsSub?.unsubscribe();
 });
+
+// Kill-matchup breakdown for a player (map + side filter applied), where side
+// is taken from the end the player sits on (killer_side for their kills,
+// victim_side for their deaths). Mirrors the old client killBreakdown shape.
+function killBreakdownFor(steamId: string | number) {
+  const sid = String(steamId);
+  const token = sideToken();
+  const victims: Record<string, number> = {};
+  const killers: Record<string, number> = {};
+  const weapons: Record<string, number> = {};
+  for (const r of killPairRows.value) {
+    if (props.selectedMapId && r.match_map_id !== props.selectedMapId) {
+      continue;
+    }
+    if (String(r.killer_steam_id) === sid && (!token || r.killer_side === token)) {
+      const v = String(r.victim_steam_id);
+      victims[v] = (victims[v] ?? 0) + (r.kills ?? 0);
+      if (r.weapon) weapons[r.weapon] = (weapons[r.weapon] ?? 0) + (r.kills ?? 0);
+    }
+    if (String(r.victim_steam_id) === sid && (!token || r.victim_side === token)) {
+      const k = String(r.killer_steam_id);
+      killers[k] = (killers[k] ?? 0) + (r.kills ?? 0);
+    }
+  }
+  return { victims, killers, weapons };
+}
 
 function sideToken(): "t" | "ct" | null {
   if (side.value === "CT") return "ct";
@@ -225,6 +280,7 @@ function sortGettersFor(lp: any): Record<string, (m: any) => unknown> {
           :selected-map-id="selectedMapId"
           :opening="openingFor(lp.id, member.steam_id)"
           :lineup-rounds="lineupRoundsFor(lp.id)"
+          :kill-breakdown="killBreakdownFor(member.steam_id)"
           v-for="member of sortRows(lp.lineup_players, sortGettersFor(lp))"
         ></lineup-opening-duel-row>
       </TableBody>

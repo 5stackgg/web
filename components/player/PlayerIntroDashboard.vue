@@ -20,7 +20,7 @@ import StatLabel from "~/components/common/StatLabel.vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 import StatChevron from "~/components/StatChevron.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
-import { statLevelFromRange } from "~/utils/statTiers";
+import { statLevelFromRange, statScore, kdColor } from "~/utils/statTiers";
 import LastTenWinsAndLosses from "~/components/charts/LastTenWinsAndLosses.vue";
 import {
   CardContent,
@@ -605,6 +605,7 @@ const metricCards = computed(() => [
     key: "kd",
     label: t("pages.players.detail.intro.kd"),
     value: fmt(aggregate.value.kd, 2),
+    valueColor: kdColor(aggregate.value.kd),
     compareValue: hasCompare.value ? fmt(compareAggregate.value.kd, 2) : null,
     subtext: `${aggregate.value.kills}K · ${aggregate.value.deaths}D · ${aggregate.value.assists}A`,
     series: points.value.map((p) =>
@@ -1124,6 +1125,7 @@ function tooltipAfter(index: number | undefined): string[] {
             <AnimatedStat
               :value="card.value"
               class="font-sans text-3xl font-bold leading-none"
+              :style="card.valueColor ? { color: card.valueColor } : undefined"
             />
             <StatChevron :level="card.level" class="h-5 w-5" />
           </div>
@@ -1165,7 +1167,7 @@ function tooltipAfter(index: number | undefined): string[] {
                   <RadialStat
                     :value="fmtPct(aggregate.kast)"
                     :label="$t('pages.players.detail.intro.series.kast')"
-                    :percentage="aggregate.kast"
+                    :score="statScore(aggregate.kast, 80, 55)"
                     :level="statLevelFromRange(aggregate.kast, 75, 55)"
                   />
                   <div
@@ -1193,7 +1195,7 @@ function tooltipAfter(index: number | undefined): string[] {
               <RadialStat
                 :value="fmtPct(aggregate.hsPct)"
                 :label="$t('pages.players.detail.intro.hs_pct')"
-                :percentage="aggregate.hsPct ?? 0"
+                :score="statScore(aggregate.hsPct, 55, 15)"
                 :level="statLevelFromRange(aggregate.hsPct ?? 0, 55, 25)"
               />
               <div

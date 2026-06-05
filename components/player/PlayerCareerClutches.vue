@@ -23,7 +23,11 @@ import {
   tacticalSectionDescriptionClasses,
 } from "~/utilities/tacticalClasses";
 import StatChevron from "~/components/StatChevron.vue";
-import { statLevelFor, type StatTierConfig } from "~/utils/statTiers";
+import {
+  statLevelFor,
+  statScore,
+  type StatTierConfig,
+} from "~/utils/statTiers";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import StatGridTableSkeleton from "~/components/player/stats/StatGridTableSkeleton.vue";
 
@@ -293,7 +297,7 @@ function fmtPct(value: number | null): string {
           <RadialStat
             :value="fmtPct(overallWinPct)"
             :label="$t('pages.players.detail.career_clutches.win_label')"
-            :percentage="overallWinPct ?? 0"
+            :score="statScore(overallWinPct, 50, 15)"
             :level="statLevelFor(winTier, overallWinPct)"
           />
           <div

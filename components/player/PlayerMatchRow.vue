@@ -15,7 +15,7 @@ import MatchStatus from "~/components/match/MatchStatus.vue";
 import MatchPlayerDetailsPanel from "~/components/match/MatchPlayerDetailsPanel.vue";
 import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
 import StatChevron from "~/components/StatChevron.vue";
-import { KD_TIER, HLTV_TIER } from "~/utils/statTiers";
+import { KD_TIER, HLTV_TIER, kdColor, hltvColor } from "~/utils/statTiers";
 
 // Shared grid track template — MUST stay in sync with the header row in
 // PlayerMatchesTable.vue so columns line up across every row. Every track
@@ -157,6 +157,7 @@ const wideGrid =
       <span
         v-if="isFinished && rating !== null"
         class="font-mono text-sm font-bold tabular-nums inline-flex items-center gap-0.5"
+        :style="{ color: hltvColor(rating) }"
       >
         {{ rating.toFixed(2) }}
         <StatChevron :cfg="HLTV_TIER" :value="rating" />
@@ -178,6 +179,7 @@ const wideGrid =
       <span
         v-if="isFinished && kd !== null"
         class="font-mono text-xs font-semibold tabular-nums inline-flex items-center gap-0.5"
+        :style="{ color: kdColor(kd) }"
       >
         {{ kd.toFixed(2) }}
         <StatChevron :cfg="KD_TIER" :value="kd" />
@@ -342,7 +344,9 @@ const wideGrid =
         <span class="text-muted-foreground/40">·</span>
         <span class="inline-flex items-center gap-0.5">
           <span class="text-muted-foreground/60">K/D</span>
-          {{ kd !== null ? kd.toFixed(2) : "—" }}
+          <span :style="kd !== null ? { color: kdColor(kd) } : undefined">{{
+            kd !== null ? kd.toFixed(2) : "—"
+          }}</span>
           <StatChevron v-if="kd !== null" :cfg="KD_TIER" :value="kd" />
         </span>
         <span class="text-muted-foreground/40">·</span>
@@ -353,7 +357,9 @@ const wideGrid =
         <span v-if="rating !== null" class="text-muted-foreground/40">·</span>
         <span v-if="rating !== null" class="inline-flex items-center gap-0.5">
           <span class="text-muted-foreground/60">RTG</span>
-          {{ rating.toFixed(2) }}
+          <span :style="{ color: hltvColor(rating) }">{{
+            rating.toFixed(2)
+          }}</span>
           <StatChevron :cfg="HLTV_TIER" :value="rating" />
         </span>
         <EloChangeBadge

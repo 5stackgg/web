@@ -14,8 +14,7 @@ import MatchSourceBadge from "~/components/MatchSourceBadge.vue";
 import MatchStatus from "~/components/match/MatchStatus.vue";
 import MatchPlayerDetailsPanel from "~/components/match/MatchPlayerDetailsPanel.vue";
 import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
-import StatChevron from "~/components/StatChevron.vue";
-import { KD_TIER, HLTV_TIER, kdColor, hltvColor } from "~/utils/statTiers";
+import { kdColor, hltvColor } from "~/utils/statTiers";
 
 // Shared grid track template — MUST stay in sync with the header row in
 // PlayerMatchesTable.vue so columns line up across every row. Every track
@@ -160,7 +159,6 @@ const wideGrid =
         :style="{ color: hltvColor(rating) }"
       >
         {{ rating.toFixed(2) }}
-        <StatChevron :cfg="HLTV_TIER" :value="rating" />
       </span>
       <span v-else class="text-muted-foreground">—</span>
 
@@ -182,7 +180,6 @@ const wideGrid =
         :style="{ color: kdColor(kd) }"
       >
         {{ kd.toFixed(2) }}
-        <StatChevron :cfg="KD_TIER" :value="kd" />
       </span>
       <span v-else class="text-muted-foreground">—</span>
 
@@ -347,7 +344,6 @@ const wideGrid =
           <span :style="kd !== null ? { color: kdColor(kd) } : undefined">{{
             kd !== null ? kd.toFixed(2) : "—"
           }}</span>
-          <StatChevron v-if="kd !== null" :cfg="KD_TIER" :value="kd" />
         </span>
         <span class="text-muted-foreground/40">·</span>
         <span class="text-foreground/75">
@@ -360,7 +356,6 @@ const wideGrid =
           <span :style="{ color: hltvColor(rating) }">{{
             rating.toFixed(2)
           }}</span>
-          <StatChevron :cfg="HLTV_TIER" :value="rating" />
         </span>
         <EloChangeBadge
           v-if="hasElo"

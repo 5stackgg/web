@@ -318,9 +318,10 @@ function buildPoints(
       0.0032 * adr +
       0.1587;
 
-    const hits = s.hits ?? 0;
-    const hsHits = s.headshot_hits ?? 0;
-    const hsPct = hits > 0 ? (hsHits / hits) * 100 : null;
+    // HS% = headshot kills / kills (conventional CS definition, matches the
+    // leaderboard) — not headshot *hits* / hits, which is far lower.
+    const hsKills = s.hs_kills ?? 0;
+    const hsPct = kills > 0 ? (hsKills / kills) * 100 : null;
 
     const mine = lineupForPlayer(match, steamId);
     let resultStr: "won" | "lost" | "tied" | null = null;
@@ -1127,7 +1128,11 @@ function tooltipAfter(index: number | undefined): string[] {
               class="font-sans text-3xl font-bold leading-none"
               :style="card.valueColor ? { color: card.valueColor } : undefined"
             />
-            <StatChevron :level="card.level" class="h-5 w-5" />
+            <StatChevron
+              v-if="!card.valueColor"
+              :level="card.level"
+              class="h-5 w-5"
+            />
           </div>
           <AnimatedStat
             v-if="card.subtext"
@@ -1195,7 +1200,7 @@ function tooltipAfter(index: number | undefined): string[] {
               <RadialStat
                 :value="fmtPct(aggregate.hsPct)"
                 :label="$t('pages.players.detail.intro.hs_pct')"
-                :score="statScore(aggregate.hsPct, 55, 15)"
+                :score="statScore(aggregate.hsPct, 55, 5)"
                 :level="statLevelFromRange(aggregate.hsPct ?? 0, 55, 25)"
               />
               <div

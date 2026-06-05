@@ -14,10 +14,9 @@ import {
 import { Bar } from "vue-chartjs";
 import LineupMember from "~/components/match/LineupMember.vue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
-import StatChevron from "~/components/StatChevron.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { useMatchSide } from "~/composables/useMatchSide";
-import { HLTV_TIER, hltvColor } from "~/utils/statTiers";
+import { hltvColor } from "~/utils/statTiers";
 import cleanMapName from "~/utilities/cleanMapName";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
@@ -656,13 +655,12 @@ const expandedRows = computed(() =>
                     :value="entry.deaths"
                   />
                 </span>
-                <span class="font-bold inline-flex items-center gap-0.5">
+                <span class="font-bold">
                   <AnimatedStat
                     :value="fmtRating(entry.rating)"
                     class="w-10 text-right"
                     :style="{ color: hltvColor(entry.rating) }"
                   />
-                  <StatChevron :cfg="HLTV_TIER" :value="entry.rating" />
                 </span>
               </div>
             </div>

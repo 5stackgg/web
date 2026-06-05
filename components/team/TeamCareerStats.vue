@@ -26,8 +26,7 @@ import {
   tacticalSectionTickClasses,
   tacticalSectionDescriptionClasses,
 } from "~/utilities/tacticalClasses";
-import StatChevron from "~/components/StatChevron.vue";
-import { hltvColor, kdColor, type StatTierConfig } from "~/utils/statTiers";
+import { hltvColor, kdColor } from "~/utils/statTiers";
 
 const props = defineProps<{
   teamId: string;
@@ -47,8 +46,6 @@ interface PlayerAgg {
   dpr: number;
   kast: number;
 }
-
-const RATING_TIER: StatTierConfig = { dir: "high", cuts: [1.15, 1.05, 0.95, 0.88] };
 
 const loading = ref(true);
 const players = ref<PlayerAgg[]>([]);
@@ -395,12 +392,8 @@ function kd(p: PlayerAgg): number {
                     {{ p.rounds }}
                   </TableCell>
                   <TableCell class="text-right font-bold tabular-nums">
-                    <span
-                      class="inline-flex items-center gap-0.5"
-                      :style="{ color: hltvColor(p.rating) }"
-                    >
+                    <span :style="{ color: hltvColor(p.rating) }">
                       {{ p.rating.toFixed(2) }}
-                      <StatChevron :cfg="RATING_TIER" :value="p.rating" />
                     </span>
                   </TableCell>
                   <TableCell class="text-right tabular-nums">

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, watch, nextTick } from "vue";
+import { ref, watch, nextTick } from "vue";
 
 type RoundEntry = {
   round: number;

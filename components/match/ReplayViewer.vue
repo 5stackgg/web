@@ -1458,7 +1458,11 @@ const layoutRootEl = ref<HTMLElement | null>(null);
 // ResizeObserver triggers when the overlay's wrap state changes.
 const playbarRowEl = ref<HTMLElement | null>(null);
 const playbarDockEl = ref<HTMLElement | null>(null);
+// Map square side = the FULL usable width (the radar fills the width and is
+// vertically centered/cropped so zooming feels native). `stageHeightPx` is
+// the visible viewport height the map is clipped to.
 const radarMaxPx = ref(560);
+const stageHeightPx = ref(560);
 
 // Floating scoreboard: shown by default, toggleable. When visible it
 // reserves horizontal room on the right so the map shrinks instead of
@@ -1505,12 +1509,13 @@ function recomputeRadarSize() {
   const dockH = playbarDockEl.value?.offsetHeight ?? 0;
   const availableH =
     window.innerHeight - rootRect.top - SAFETY - bottomChrome - dockH;
-  // Reserve room for the floating scoreboard when it's shown so the map
-  // shrinks rather than sitting under it; the transport bar is docked, so
-  // also subtract its height. Map centers in the remaining left region.
+  // The map fills the FULL usable width (minus the scoreboard reserve when
+  // shown). It's a square, so it's vertically centered and clipped to the
+  // visible height — pan/zoom reveals the rest. The transport bar is docked
+  // below, so its height is excluded from the visible stage.
   const availableW = rootRect.width - scoreboardReserve.value;
-  const maxSide = Math.max(280, Math.min(availableH, availableW));
-  radarMaxPx.value = Math.floor(maxSide);
+  radarMaxPx.value = Math.floor(Math.max(280, availableW));
+  stageHeightPx.value = Math.floor(Math.max(200, availableH));
   clampPan();
 }
 
@@ -1532,14 +1537,27 @@ const panDragging = ref(false);
 // toggle player focus.
 let suppressFocusClick = false;
 
-const zoomTransform = computed(
-  () => `translate(${panX.value}px, ${panY.value}px) scale(${zoom.value})`,
+// The radar/svg are square (side = radarMaxPx = full width) positioned at
+// the top of the viewport; centerY shifts them to vertical-centre within
+// the (shorter) visible height, then pan + zoom apply. transform-origin is
+// the element's own centre, so the cursor-anchored zoom maths below holds.
+const zoomTransform = computed(() => {
+  const centerY = (stageHeightPx.value - radarMaxPx.value) / 2;
+  return `translate(${panX.value}px, ${centerY + panY.value}px) scale(${zoom.value})`;
+});
+
+// Pannable whenever the (scaled) square overflows the visible box on either
+// axis — true vertically even at 1× on wide viewports.
+const canPan = computed(
+  () => zoom.value > 1 || radarMaxPx.value > stageHeightPx.value,
 );
 
 function clampPan() {
-  const max = (Math.max(zoom.value, 1) - 1) * (radarMaxPx.value / 2);
-  panX.value = Math.min(max, Math.max(-max, panX.value));
-  panY.value = Math.min(max, Math.max(-max, panY.value));
+  const side = radarMaxPx.value * Math.max(zoom.value, 1);
+  const maxX = Math.max(0, (side - radarMaxPx.value) / 2);
+  const maxY = Math.max(0, (side - stageHeightPx.value) / 2);
+  panX.value = Math.min(maxX, Math.max(-maxX, panX.value));
+  panY.value = Math.min(maxY, Math.max(-maxY, panY.value));
 }
 
 // originX/originY are offsets (px) from the map centre to keep visually
@@ -1581,7 +1599,7 @@ function onMapWheel(e: WheelEvent) {
 }
 
 function onMapPointerDown(e: PointerEvent) {
-  if (zoom.value <= 1) return;
+  if (!canPan.value) return;
   const startX = e.clientX;
   const startY = e.clientY;
   const baseX = panX.value;
@@ -2241,14 +2259,14 @@ function openReplayPopout() {
     <div
       ref="layoutRootEl"
       class="relative w-full overflow-hidden"
-      :style="{ height: radarMaxPx + 'px' }"
+      :style="{ height: stageHeightPx + 'px' }"
     >
       <!-- Map square, centered in the full-width stage. Rosters, kill
            feed, and the transport bar all float at the stage edges /
            bottom (Skybox-style) so the map is free to fill the height. -->
       <div
         class="absolute inset-y-0 -translate-x-1/2 z-0 overflow-hidden transition-[width,left] duration-300 ease-out"
-        :class="zoom > 1 ? (panDragging ? 'cursor-grabbing' : 'cursor-grab') : ''"
+        :class="canPan ? (panDragging ? 'cursor-grabbing' : 'cursor-grab') : ''"
         :style="{
           width: radarMaxPx + 'px',
           left: `calc(50% - ${scoreboardReserve / 2}px)`,
@@ -2259,7 +2277,7 @@ function openReplayPopout() {
           <img
             v-if="radarSrc"
             :src="radarSrc"
-            class="absolute inset-0 w-full h-full object-cover opacity-90"
+            class="absolute top-0 left-0 w-full aspect-square object-cover opacity-90"
             :style="{ transform: zoomTransform, transformOrigin: 'center' }"
             @error="radarFailed = true"
           />
@@ -2439,11 +2457,11 @@ function openReplayPopout() {
             </div>
           </div>
 
-          <!-- Map zoom controls. pointerdown.stop so tapping a button
-               doesn't start a pan drag. Scroll-to-zoom + drag-to-pan also
-               work directly on the map. -->
+          <!-- Map zoom controls (lower-left, away from the scoreboard).
+               pointerdown.stop so tapping a button doesn't start a pan drag.
+               Scroll-to-zoom + drag-to-pan also work directly on the map. -->
           <div
-            class="absolute bottom-2 right-2 z-20 flex flex-col gap-1.5"
+            class="absolute bottom-2 left-2 z-20 flex flex-col gap-1.5"
             @pointerdown.stop
           >
             <Tooltip>
@@ -2489,7 +2507,7 @@ function openReplayPopout() {
 
           <svg
             :viewBox="`0 0 ${CANVAS} ${CANVAS}`"
-            class="absolute inset-0 w-full h-full"
+            class="absolute top-0 left-0 w-full aspect-square"
             :style="{ transform: zoomTransform, transformOrigin: 'center' }"
             preserveAspectRatio="xMidYMid meet"
           >

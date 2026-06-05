@@ -310,7 +310,6 @@ const compareByMap = computed(() => {
 });
 
 const winTier: StatTierConfig = { dir: "high", cuts: [58, 52, 47, 42] };
-const kdTier: StatTierConfig = { dir: "high", cuts: [1.3, 1.1, 0.95, 0.85] };
 const tradedTier: StatTierConfig = { dir: "high", cuts: [28, 22, 15, 8] };
 
 function fmt(value: number | null, digits = 2): string {
@@ -436,7 +435,6 @@ const tableRows = computed(() => {
               :value="fmt(overallKd)"
               :style="{ color: kdColor(overallKd) }"
             />
-            <StatChevron :cfg="kdTier" :value="overallKd" />
           </div>
           <div
             v-if="hasCompare"
@@ -573,18 +571,12 @@ const tableRows = computed(() => {
                   </div>
                 </TableCell>
                 <TableCell class="text-right font-mono font-bold">
-                  <span class="inline-flex items-center gap-0.5">
-                    <AnimatedStat
-                      :value="fmt(kdOf(agg.openKills, agg.openDeaths))"
-                      :style="{
-                        color: kdColor(kdOf(agg.openKills, agg.openDeaths)),
-                      }"
-                    />
-                    <StatChevron
-                      :cfg="kdTier"
-                      :value="kdOf(agg.openKills, agg.openDeaths)"
-                    />
-                  </span>
+                  <AnimatedStat
+                    :value="fmt(kdOf(agg.openKills, agg.openDeaths))"
+                    :style="{
+                      color: kdColor(kdOf(agg.openKills, agg.openDeaths)),
+                    }"
+                  />
                   <div
                     v-if="hasCompare && compareByMap.get(agg.mapId)"
                     class="text-[0.6rem] font-normal"

@@ -501,7 +501,6 @@ function kdFor(split: SideSplit): number | null {
 
 const ratingTier: StatTierConfig = { dir: "high", cuts: [1.2, 1.05, 0.95, 0.85] };
 const winTier: StatTierConfig = { dir: "high", cuts: [60, 53, 47, 40] };
-const kdTier: StatTierConfig = { dir: "high", cuts: [1.3, 1.1, 0.95, 0.85] };
 
 function fmt(value: number | null, digits = 2): string {
   if (value === null || Number.isNaN(value)) {
@@ -777,7 +776,6 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
                   :value="fmt(ratingFor(agg.all))"
                   :style="{ color: hltvColor(ratingFor(agg.all)) }"
                 />
-                <StatChevron :cfg="ratingTier" :value="ratingFor(agg.all)" />
               </div>
               <div
                 v-if="hasCompare"
@@ -811,7 +809,6 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
                   :value="fmt(ratingFor(agg.t))"
                   :style="{ color: hltvColor(ratingFor(agg.t)) }"
                 />
-                <StatChevron :cfg="ratingTier" :value="ratingFor(agg.t)" />
               </div>
               <div class="font-mono text-[0.6rem] text-muted-foreground">
                 {{ fmt(adrFor(agg.t), 0) }}
@@ -831,7 +828,6 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
                   :value="fmt(ratingFor(agg.ct))"
                   :style="{ color: hltvColor(ratingFor(agg.ct)) }"
                 />
-                <StatChevron :cfg="ratingTier" :value="ratingFor(agg.ct)" />
               </div>
               <div class="font-mono text-[0.6rem] text-muted-foreground">
                 {{ fmt(adrFor(agg.ct), 0) }}
@@ -973,18 +969,12 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
                   </span>
                 </TableCell>
                 <TableCell class="text-right font-mono font-bold">
-                  <span class="inline-flex items-center gap-0.5">
-                    <AnimatedStat
-                      :value="fmt(ratingFor(splitForSide(agg, tableSide)))"
-                      :style="{
-                        color: hltvColor(ratingFor(splitForSide(agg, tableSide))),
-                      }"
-                    />
-                    <StatChevron
-                      :cfg="ratingTier"
-                      :value="ratingFor(splitForSide(agg, tableSide))"
-                    />
-                  </span>
+                  <AnimatedStat
+                    :value="fmt(ratingFor(splitForSide(agg, tableSide)))"
+                    :style="{
+                      color: hltvColor(ratingFor(splitForSide(agg, tableSide))),
+                    }"
+                  />
                   <span
                     v-if="hasCompare"
                     class="font-normal"
@@ -1008,18 +998,12 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
                   </span>
                 </TableCell>
                 <TableCell class="text-right font-mono">
-                  <span class="inline-flex items-center gap-0.5">
-                    <AnimatedStat
-                      :value="fmt(kdFor(splitForSide(agg, tableSide)))"
-                      :style="{
-                        color: kdColor(kdFor(splitForSide(agg, tableSide))),
-                      }"
-                    />
-                    <StatChevron
-                      :cfg="kdTier"
-                      :value="kdFor(splitForSide(agg, tableSide))"
-                    />
-                  </span>
+                  <AnimatedStat
+                    :value="fmt(kdFor(splitForSide(agg, tableSide)))"
+                    :style="{
+                      color: kdColor(kdFor(splitForSide(agg, tableSide))),
+                    }"
+                  />
                   <span
                     v-if="hasCompare"
                     class="font-normal"

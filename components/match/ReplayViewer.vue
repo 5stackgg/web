@@ -1486,12 +1486,13 @@ function recomputeRadarSize() {
   const rootRect = root.getBoundingClientRect();
   const SAFETY = 16;
   const bottomChrome = detectBottomChromeHeight();
+  const dockH = playbarDockEl.value?.offsetHeight ?? 0;
   const availableH =
-    window.innerHeight - rootRect.top - SAFETY - bottomChrome;
+    window.innerHeight - rootRect.top - SAFETY - bottomChrome - dockH;
   const availableW = rootRect.width;
-  // Rosters, kill feed, and the transport bar all float over the map, so
-  // the radar is free to grow to the full available box rather than
-  // reserving a side column or a bottom dock.
+  // Only the scoreboard floats (right-side dead space); the transport bar
+  // is docked below, so subtract its height. The map fills the rest of the
+  // full-width stage and centers horizontally.
   const maxSide = Math.max(280, Math.min(availableH, availableW));
   radarMaxPx.value = Math.floor(maxSide);
 }
@@ -3775,13 +3776,13 @@ function openReplayPopout() {
           </svg>
         </div>
 
-        <!-- Floating rosters: Skybox-style, stacked at the stage's
-             top-right edge so the map can use the full width. Each card
-             carries its current-round side score. Wrapper is
-             pointer-events-none so gaps don't swallow map interactions;
+        <!-- Floating scoreboard: the ONLY floating element. Stacked at the
+             stage's right edge (dead space) so it never overlays the map
+             action. Holds both side rosters + the round kill feed. Wrapper
+             is pointer-events-none so gaps don't swallow map interactions;
              cards re-enable pointer events for click-to-follow. -->
         <div
-          class="absolute top-14 right-2 z-20 hidden md:flex flex-col gap-1.5 w-[210px] max-h-[calc(100%-13rem)] pointer-events-none"
+          class="absolute top-14 right-2 bottom-3 z-20 hidden md:flex flex-col gap-1.5 w-[400px] pointer-events-none"
         >
             <div
               class="pointer-events-auto px-2 py-1.5 border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
@@ -3828,14 +3829,15 @@ function openReplayPopout() {
             >
               {{ $t("match.replay.follow_hint") }}
             </p>
-          </div>
 
-          <!-- Floating kill feed: compact round log at the stage's left
-               edge, below the timer and clear of the bottom transport. -->
-          <div
-            v-if="killsBeforeCursor.length > 0"
-            class="absolute top-16 left-2 z-20 hidden md:flex flex-col gap-1 w-[200px] max-h-[calc(100%-13rem)] px-2 py-1.5 border border-border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
-          >
+            <!-- Round kill feed, tucked under the rosters so it floats WITH
+                 the scoreboard (right-side dead space) — no overlay on the
+                 action, and nothing else floats. flex-1 fills the space
+                 beneath the rosters and scrolls internally. -->
+            <div
+              v-if="killsBeforeCursor.length > 0"
+              class="pointer-events-auto flex-1 min-h-0 flex flex-col gap-1 px-2 py-1.5 border border-border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
+            >
             <div
               class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground shrink-0"
             >
@@ -3932,14 +3934,15 @@ function openReplayPopout() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
-        <!-- Floating transport bar: round strip + YouTube-style controls,
-             docked over the bottom of the map (Skybox-style) so the map is
-             free to fill the height above it. -->
-        <div
-          ref="playbarDockEl"
-          class="absolute bottom-3 inset-x-3 z-30 flex flex-col rounded-md border border-border bg-[hsl(var(--card)/0.9)] backdrop-blur-md shadow-lg overflow-hidden"
-        >
+      <!-- Docked transport bar below the map (full width). Only the
+           scoreboard floats, so nothing overlays the map action. -->
+      <div
+        ref="playbarDockEl"
+        class="flex flex-col bg-[hsl(var(--card)/0.6)] border border-border rounded-md overflow-hidden"
+      >
           <div
             v-if="roundStripEntries.length"
             class="px-3 pt-2 pb-1 border-b border-border/40"
@@ -4101,6 +4104,5 @@ function openReplayPopout() {
             </Popover>
           </div>
         </div>
-    </div>
   </div>
 </template>

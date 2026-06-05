@@ -61,36 +61,21 @@ function buildMatchesWhere() {
   return where;
 }
 
-interface RawKill {
-  player: { steam_id: string | number } | null;
-  attacked_player: { steam_id: string | number } | null;
-}
-
-interface RawRound {
-  round: number;
-  lineup_1_side: string | null;
-  lineup_2_side: string | null;
-  winning_side: string | null;
-  kills: RawKill[];
+interface RawClutch {
+  match_map_id: string;
+  against_count: number;
+  outcome: "won" | "lost" | "saved";
 }
 
 interface RawMatchMap {
   id: string;
-  rounds: RawRound[];
-}
-
-interface RawLineup {
-  id: string;
-  lineup_players: Array<{ steam_id: string | number }>;
+  rounds_aggregate: { aggregate: { count: number } | null } | null;
 }
 
 interface RawMatch {
   id: string;
-  lineup_1_id: string | null;
-  lineup_2_id: string | null;
-  lineup_1: RawLineup | null;
-  lineup_2: RawLineup | null;
   match_maps: RawMatchMap[];
+  clutches: RawClutch[];
 }
 
 const loading = ref(true);
@@ -137,125 +122,49 @@ watch(
   { immediate: true },
 );
 
-interface ClutchResult {
-  againstCount: number;
-  won: boolean;
-}
-
-function detectClutch(
-  match: RawMatch,
-  round: RawRound,
-  steamId: string,
-): ClutchResult | null {
-  const l1Ids = new Set(
-    (match.lineup_1?.lineup_players ?? []).map((p) => String(p.steam_id)),
-  );
-  const l2Ids = new Set(
-    (match.lineup_2?.lineup_players ?? []).map((p) => String(p.steam_id)),
-  );
-  if (!l1Ids.has(steamId) && !l2Ids.has(steamId)) {
-    return null;
-  }
-
-  const alive: [Set<string>, Set<string>] = [
-    new Set(l1Ids),
-    new Set(l2Ids),
-  ];
-
-  let clutchStarted = false;
-  let clutcherTeam: 0 | 1 | null = null;
-  let clutcherSteamId: string | null = null;
-  let againstCount = 0;
-  let killedAllOpponents = false;
-
-  for (const kill of round.kills) {
-    if (!kill.attacked_player) {
-      continue;
-    }
-    const victimSteamId = String(kill.attacked_player.steam_id);
-
-    if (alive[0].has(victimSteamId)) {
-      alive[0].delete(victimSteamId);
-    } else if (alive[1].has(victimSteamId)) {
-      alive[1].delete(victimSteamId);
-    }
-
-    if (
-      !clutchStarted &&
-      (alive[0].size === 1 || alive[1].size === 1) &&
-      alive[0].size > 0 &&
-      alive[1].size > 0
-    ) {
-      clutchStarted = true;
-      clutcherTeam = alive[0].size === 1 ? 0 : 1;
-      clutcherSteamId = [...alive[clutcherTeam]][0];
-      againstCount = alive[1 - clutcherTeam].size;
-    }
-
-    if (clutchStarted && clutcherTeam !== null) {
-      if (alive[1 - clutcherTeam].size === 0) {
-        killedAllOpponents = true;
-        break;
-      }
-      if (alive[clutcherTeam].size === 0) {
-        break;
-      }
-    }
-  }
-
-  if (!clutchStarted || !clutcherSteamId || clutcherTeam === null) {
-    return null;
-  }
-  if (clutcherSteamId !== steamId) {
-    return null;
-  }
-
-  const clutcherSide =
-    clutcherTeam === 0 ? round.lineup_1_side : round.lineup_2_side;
-  const clutcherTeamWonRound = round.winning_side === clutcherSide;
-
-  return {
-    againstCount,
-    won: killedAllOpponents || clutcherTeamWonRound,
-  };
-}
-
 interface ClutchBucket {
   against: number;
   attempts: number;
   won: number;
 }
 
-function buildBuckets(matchList: RawMatch[], steamId: string): ClutchBucket[] {
+// Clutches come pre-detected and pre-filtered to the player from the backend
+// (match.clutches). We only window to the last N played maps and bucket by the
+// number of opponents; a clutch counts as won if it was won or saved.
+function buildBuckets(matchList: RawMatch[]): ClutchBucket[] {
   const map = new Map<number, ClutchBucket>();
   for (let x = 1; x <= 5; x++) {
     map.set(x, { against: x, attempts: 0, won: 0 });
   }
 
+  const windowedMapIds = new Set<string>();
   let processed = 0;
   for (const match of matchList) {
     for (const mm of match.match_maps) {
       if (processed >= WINDOW_MAPS) {
         break;
       }
-      if (mm.rounds.length === 0) {
+      if ((mm.rounds_aggregate?.aggregate?.count ?? 0) === 0) {
         continue;
       }
       processed++;
-      for (const round of mm.rounds) {
-        if (round.round === 0) {
-          continue;
-        }
-        const result = detectClutch(match, round, steamId);
-        if (!result) {
-          continue;
-        }
-        const x = Math.min(Math.max(result.againstCount, 1), 5);
-        const bucket = map.get(x)!;
-        bucket.attempts++;
-        if (result.won) {
-          bucket.won++;
-        }
+      windowedMapIds.add(mm.id);
+    }
+    if (processed >= WINDOW_MAPS) {
+      break;
+    }
+  }
+
+  for (const match of matchList) {
+    for (const c of match.clutches ?? []) {
+      if (!windowedMapIds.has(c.match_map_id)) {
+        continue;
+      }
+      const x = Math.min(Math.max(c.against_count, 1), 5);
+      const bucket = map.get(x)!;
+      bucket.attempts++;
+      if (c.outcome === "won" || c.outcome === "saved") {
+        bucket.won++;
       }
     }
   }
@@ -263,9 +172,7 @@ function buildBuckets(matchList: RawMatch[], steamId: string): ClutchBucket[] {
   return [...map.values()];
 }
 
-const buckets = computed<ClutchBucket[]>(() =>
-  buildBuckets(matches.value, props.steamId),
-);
+const buckets = computed<ClutchBucket[]>(() => buildBuckets(matches.value));
 
 const totals = computed(() => {
   let attempts = 0;
@@ -297,23 +204,12 @@ const winTier: StatTierConfig = { dir: "high", cuts: [50, 38, 25, 15] };
 
 // Overall clutch totals for an arbitrary player over their own matches — drives
 // the comparison overlay.
-function computeClutchTotals(matchList: RawMatch[], steamId: string) {
+function computeClutchTotals(matchList: RawMatch[]) {
   let attempts = 0;
   let won = 0;
-  let processed = 0;
-  for (const match of matchList) {
-    for (const mm of match.match_maps) {
-      if (processed >= WINDOW_MAPS) break;
-      if (mm.rounds.length === 0) continue;
-      processed++;
-      for (const round of mm.rounds) {
-        if (round.round === 0) continue;
-        const result = detectClutch(match, round, steamId);
-        if (!result) continue;
-        attempts++;
-        if (result.won) won++;
-      }
-    }
+  for (const b of buildBuckets(matchList)) {
+    attempts += b.attempts;
+    won += b.won;
   }
   return { attempts, won };
 }
@@ -328,10 +224,7 @@ const { comparePlayer, compareData } = usePlayerComparison(
   (data: any) => (data?.players_by_pk?.matches ?? []) as RawMatch[],
 );
 const compareTotals = computed(() =>
-  computeClutchTotals(
-    compareData.value ?? [],
-    String(comparePlayer.value?.steam_id ?? ""),
-  ),
+  computeClutchTotals(compareData.value ?? []),
 );
 const hasCompare = computed(
   () => !!comparePlayer.value && compareTotals.value.attempts > 0,
@@ -344,10 +237,7 @@ const compareWinPct = computed<number | null>(() =>
 const compareBucketsByAgainst = computed(() => {
   const m = new Map<number, ClutchBucket>();
   if (!hasCompare.value) return m;
-  for (const b of buildBuckets(
-    compareData.value ?? [],
-    String(comparePlayer.value?.steam_id ?? ""),
-  )) {
+  for (const b of buildBuckets(compareData.value ?? [])) {
     m.set(b.against, b);
   }
   return m;

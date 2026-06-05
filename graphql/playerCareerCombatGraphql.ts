@@ -1,84 +1,51 @@
-import { $, order_by } from "~/generated/zeus";
-import { generateQuery } from "~/graphql/graphqlGen";
+import gql from "graphql-tag";
 
-export const playerCareerCombatQuery = generateQuery({
-  players_by_pk: [
-    { steam_id: $("steamId", "bigint!") },
-    {
-      steam_id: true,
-      matches: [
-        {
-          where: $("matchesWhere", "matches_bool_exp!"),
-          limit: $("limit", "Int!"),
-          order_by: [
-            { started_at: order_by.desc_nulls_last },
-            { created_at: order_by.desc },
-          ],
-        },
-        {
-          id: true,
-          lineup_1_id: true,
-          lineup_2_id: true,
-          lineup_1: {
-            id: true,
-            lineup_players: [
-              {},
-              {
-                steam_id: true,
-              },
-            ],
-          },
-          lineup_2: {
-            id: true,
-            lineup_players: [
-              {},
-              {
-                steam_id: true,
-              },
-            ],
-          },
-          match_maps: [
-            {
-              order_by: [{ order: order_by.asc }],
-            },
-            {
-              id: true,
-              winning_lineup_id: true,
-              map: {
-                id: true,
-                name: true,
-                label: true,
-              },
-              rounds: [
-                {
-                  order_by: [{ round: order_by.asc }],
-                },
-                {
-                  round: true,
-                  lineup_1_side: true,
-                  lineup_2_side: true,
-                  winning_side: true,
-                  kills: [
-                    {
-                      order_by: [{ time: order_by.asc }],
-                    },
-                    {
-                      with: true,
-                      headshot: true,
-                      player: {
-                        steam_id: true,
-                      },
-                      attacked_player: {
-                        steam_id: true,
-                      },
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ],
-});
+// Career opening-duels + clutches for the player's most recent matches. The
+// per-round detection now lives in the backend views (v_match_player_opening_
+// duels, v_match_clutches), nested here scoped to this player; we only keep a
+// rounds count per map so the client can window to the last N *played* maps.
+// Raw gql (not Zeus) so it works without regenerating types for the new views.
+export const playerCareerCombatQuery = gql`
+  query PlayerCareerCombat(
+    $steamId: bigint!
+    $matchesWhere: matches_bool_exp!
+    $limit: Int!
+  ) {
+    players_by_pk(steam_id: $steamId) {
+      steam_id
+      matches(
+        where: $matchesWhere
+        limit: $limit
+        order_by: [{ started_at: desc_nulls_last }, { created_at: desc }]
+      ) {
+        id
+        match_maps(order_by: { order: asc }) {
+          id
+          winning_lineup_id
+          map {
+            id
+            name
+            label
+          }
+          rounds_aggregate {
+            aggregate {
+              count
+            }
+          }
+        }
+        clutches(where: { clutcher_steam_id: { _eq: $steamId } }) {
+          match_map_id
+          against_count
+          outcome
+        }
+        opening_duels(where: { steam_id: { _eq: $steamId } }) {
+          match_map_id
+          attempts
+          wins
+          deaths
+          traded_deaths
+        }
+      }
+    }
+  }
+`;

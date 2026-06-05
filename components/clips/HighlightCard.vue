@@ -7,7 +7,6 @@ import {
   Lock,
   Globe,
   Trophy,
-  ArrowUpRight,
   Check,
   Share2,
   Crosshair,
@@ -15,7 +14,7 @@ import {
 } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import { useNuxtApp } from "#app";
-import { Card, CardContent } from "~/components/ui/card";
+import { Card } from "~/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import {
@@ -74,12 +73,6 @@ const playerAvatarSrc = computed(() =>
 const isTournament = computed(
   () => props.clip.match_map?.match?.is_tournament_match === true,
 );
-
-function onTitleClick(e: MouseEvent) {
-  if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
-  e.preventDefault();
-  openClip(props.clip.id);
-}
 
 type Visibility = "public" | "private";
 const VISIBILITY_OPTIONS = computed<
@@ -286,44 +279,37 @@ async function setVisibility(v: Visibility) {
           </Popover>
         </div>
 
-        <!-- Top-left badges share the same h-5 / px-1.5 / text-[0.62rem]
-           pill chrome so the trophy doesn't look like a smaller skinny
-           sibling of the score. -->
+        <!-- Top-left stack: badge row, then the map name directly beneath the
+             kill/duration count. -->
         <div
-          class="absolute top-2 left-2 flex items-center gap-1 pointer-events-none"
+          class="pointer-events-none absolute top-2 left-2 flex max-w-[75%] flex-col items-start gap-1.5"
         >
-          <span
-            v-if="isTournament"
-            class="inline-flex h-5 items-center gap-0.5 rounded bg-black/80 px-1.5 font-mono text-[0.62rem] leading-none text-[hsl(var(--tac-amber))] backdrop-blur-sm"
-            :title="$t('ui.tournament_match')"
-          >
-            <Trophy class="h-2.5 w-2.5" />
-          </span>
-          <span
-            v-if="clip.duration_ms != null"
-            class="inline-flex h-5 items-center gap-0.5 rounded bg-black/80 px-1.5 font-mono text-[0.62rem] leading-none tabular-nums text-white backdrop-blur-sm"
-          >
-            {{ formatDuration(clip.duration_ms) }}
-          </span>
-          <span
-            v-if="clip.kills_count"
-            class="inline-flex h-5 items-center gap-1 rounded bg-black/80 px-1.5 font-mono text-[0.62rem] font-bold leading-none tabular-nums text-[hsl(var(--tac-amber))] backdrop-blur-sm"
-            :title="$t('clips.kills_in_clip', { count: clip.kills_count })"
-          >
-            <Crosshair class="h-2.5 w-2.5" />
-            {{ clip.kills_count }}
-          </span>
-        </div>
-
-        <!-- Frame footer: map name anchored left, timestamp on the opposite
-             side so the bottom half is free for the player display. -->
-        <div
-          v-if="clip.match_map?.map?.name || clip.created_at"
-          class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 bg-gradient-to-t from-black/85 via-black/55 to-transparent px-2 pb-1.5 pt-4"
-        >
+          <div class="flex items-center gap-1">
+            <span
+              v-if="isTournament"
+              class="inline-flex h-5 items-center gap-0.5 rounded bg-black/80 px-1.5 font-mono text-[0.62rem] leading-none text-[hsl(var(--tac-amber))] backdrop-blur-sm"
+              :title="$t('ui.tournament_match')"
+            >
+              <Trophy class="h-2.5 w-2.5" />
+            </span>
+            <span
+              v-if="clip.duration_ms != null"
+              class="inline-flex h-5 items-center gap-0.5 rounded bg-black/80 px-1.5 font-mono text-[0.62rem] leading-none tabular-nums text-white backdrop-blur-sm"
+            >
+              {{ formatDuration(clip.duration_ms) }}
+            </span>
+            <span
+              v-if="clip.kills_count"
+              class="inline-flex h-5 items-center gap-1 rounded bg-black/80 px-1.5 font-mono text-[0.62rem] font-bold leading-none tabular-nums text-[hsl(var(--tac-amber))] backdrop-blur-sm"
+              :title="$t('clips.kills_in_clip', { count: clip.kills_count })"
+            >
+              <Crosshair class="h-2.5 w-2.5" />
+              {{ clip.kills_count }}
+            </span>
+          </div>
           <div
             v-if="clip.match_map?.map?.name"
-            class="min-w-0 truncate font-sans text-sm font-bold uppercase leading-tight text-white/70 drop-shadow-md"
+            class="max-w-full truncate font-sans text-sm font-bold uppercase leading-tight text-white/90 drop-shadow-[0_1px_3px_rgba(0,0,0,0.95)]"
             :title="
               clip.match_map.map.label || cleanMapName(clip.match_map.map.name)
             "
@@ -332,6 +318,44 @@ async function setVisibility(v: Visibility) {
               clip.match_map.map.label || cleanMapName(clip.match_map.map.name)
             }}
           </div>
+        </div>
+
+        <!-- Frame footer: featured player anchored bottom-left (where the map
+             used to sit), timestamp on the opposite side. On the player page
+             the player is implied, so only the date shows. -->
+        <div
+          v-if="(featuredPlayer?.steam_id && !hidePlayer) || clip.created_at"
+          class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 bg-gradient-to-t from-black/85 via-black/55 to-transparent px-2 pb-1.5 pt-6"
+        >
+          <NuxtLink
+            v-if="featuredPlayer?.steam_id && !hidePlayer"
+            :to="{
+              name: 'players-id',
+              params: { id: featuredPlayer.steam_id },
+            }"
+            class="group/player pointer-events-auto relative z-10 flex min-w-0 items-center gap-1.5"
+            :title="featuredPlayer.name"
+            @click.stop
+          >
+            <Avatar
+              shape="square"
+              class="h-6 w-6 shrink-0 text-[0.55rem] ring-1 ring-white/20"
+            >
+              <AvatarImage
+                v-if="playerAvatarSrc"
+                :src="playerAvatarSrc"
+                :alt="featuredPlayer.name"
+              />
+              <AvatarFallback>{{
+                featuredPlayer.name.slice(0, 2)
+              }}</AvatarFallback>
+            </Avatar>
+            <span
+              class="min-w-0 truncate text-sm font-semibold text-white drop-shadow-md transition-colors group-hover/player:text-[hsl(var(--tac-amber))]"
+            >
+              {{ featuredPlayer.name }}
+            </span>
+          </NuxtLink>
           <span
             v-if="clip.created_at"
             class="ml-auto flex shrink-0 items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.08em] text-white/55 drop-shadow-md"
@@ -341,51 +365,6 @@ async function setVisibility(v: Visibility) {
           </span>
         </div>
       </div>
-
-      <CardContent class="p-0 sm:p-0">
-        <!-- Player display: the highlight's featured player. Falls back to the
-             clip title when the clip isn't tied to a single player, or when
-             the player is already implied by context (player page). -->
-        <NuxtLink
-          v-if="featuredPlayer?.steam_id && !hidePlayer"
-          :to="{ name: 'players-id', params: { id: featuredPlayer.steam_id } }"
-          class="group/link flex items-center gap-2 px-2.5 py-2"
-          :title="featuredPlayer.name"
-        >
-          <Avatar shape="square" class="h-7 w-7 shrink-0 text-[0.6rem]">
-            <AvatarImage
-              v-if="playerAvatarSrc"
-              :src="playerAvatarSrc"
-              :alt="featuredPlayer.name"
-            />
-            <AvatarFallback>{{
-              featuredPlayer.name.slice(0, 2)
-            }}</AvatarFallback>
-          </Avatar>
-          <span
-            class="min-w-0 flex-1 truncate text-sm font-semibold text-foreground transition-colors group-hover/link:text-[hsl(var(--tac-amber))]"
-          >
-            {{ featuredPlayer.name }}
-          </span>
-          <ArrowUpRight
-            class="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 transition-all group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 group-hover/link:text-[hsl(var(--tac-amber))]"
-          />
-        </NuxtLink>
-        <NuxtLink
-          v-else
-          :to="`/clips/${clip.id}`"
-          class="group/link flex items-center gap-1.5 px-2.5 py-2 text-sm font-semibold text-foreground transition-colors hover:text-[hsl(var(--tac-amber))]"
-          :title="clip.title || $t('ui_extras.open_clip')"
-          @click="onTitleClick"
-        >
-          <span class="min-w-0 flex-1 truncate">
-            {{ clip.title || $t("clips.untitled_clip") }}
-          </span>
-          <ArrowUpRight
-            class="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 transition-all group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5 group-hover/link:text-[hsl(var(--tac-amber))]"
-          />
-        </NuxtLink>
-      </CardContent>
     </Card>
   </div>
 </template>

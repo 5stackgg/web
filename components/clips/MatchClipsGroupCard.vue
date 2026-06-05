@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { Trophy, Film, ArrowUpRight, Clock } from "lucide-vue-next";
-import { Card, CardContent } from "~/components/ui/card";
+import { Trophy, Film, Clock } from "lucide-vue-next";
+import { Card } from "~/components/ui/card";
 import TimeAgo from "~/components/TimeAgo.vue";
 import cleanMapName from "~/utilities/cleanMapName";
 import type { Clip } from "~/types/clip";
@@ -123,29 +123,65 @@ const pillBaseClasses =
           <span v-if="bestOf" :class="pillBaseClasses">BO{{ bestOf }}</span>
         </div>
 
-        <span
-          class="absolute top-2 right-2 inline-flex h-5 items-center gap-1 rounded bg-[hsl(var(--tac-amber)/0.92)] px-1.5 font-mono text-[0.62rem] font-bold leading-none tabular-nums text-[hsl(var(--tac-amber-foreground))] shadow-sm backdrop-blur-sm"
-          :title="
-            $t('ui_extras.match_highlights_for_count', { count: clips.length })
-          "
-        >
-          <Film class="h-2.5 w-2.5" />
-          {{ clips.length }}
-        </span>
-
-        <!-- Frame footer: maps anchored left, timestamp on the opposite side
-             so the bottom half is free for the matchup. -->
+        <!-- Top-right stack: clip count, then the map name(s) directly beneath
+             the count. -->
         <div
-          v-if="perMapDisplay.length > 0 || leadCreatedAt"
-          class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 bg-gradient-to-t from-black/85 via-black/55 to-transparent px-2 pb-1.5 pt-4"
+          class="pointer-events-none absolute top-2 right-2 flex max-w-[75%] flex-col items-end gap-1.5"
         >
+          <span
+            class="inline-flex h-5 items-center gap-1 rounded bg-[hsl(var(--tac-amber)/0.92)] px-1.5 font-mono text-[0.62rem] font-bold leading-none tabular-nums text-[hsl(var(--tac-amber-foreground))] shadow-sm backdrop-blur-sm"
+            :title="
+              $t('ui_extras.match_highlights_for_count', {
+                count: clips.length,
+              })
+            "
+          >
+            <Film class="h-2.5 w-2.5" />
+            {{ clips.length }}
+          </span>
           <div
             v-if="perMapDisplay.length > 0"
-            class="min-w-0 truncate font-sans text-sm font-bold uppercase leading-tight text-white/70 drop-shadow-md"
+            class="max-w-full truncate text-right font-sans text-sm font-bold uppercase leading-tight text-white/90 drop-shadow-[0_1px_3px_rgba(0,0,0,0.95)]"
             :title="perMapDisplay.map((mm) => mm.name).join(' · ')"
           >
             {{ perMapDisplay.map((mm) => mm.name).join(" · ") }}
           </div>
+        </div>
+
+        <!-- Frame footer: matchup anchored bottom-left (where the maps used to
+             sit), timestamp on the opposite side. Covers team-vs-team,
+             team-vs-pug, and pug-vs-pug alike. -->
+        <div
+          v-if="(lineup1Name && lineup2Name) || leadCreatedAt"
+          class="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 bg-gradient-to-t from-black/85 via-black/55 to-transparent px-2 pb-1.5 pt-6"
+        >
+          <span
+            v-if="lineup1Name && lineup2Name"
+            class="min-w-0 truncate text-sm font-semibold leading-tight text-white drop-shadow-md"
+            :title="matchupLabel ?? $t('ui_extras.match_highlights_alt')"
+          >
+            <span
+              :class="
+                winningSide === '1'
+                  ? 'font-bold text-[hsl(var(--tac-amber))]'
+                  : winningSide === '2'
+                    ? 'text-white/60'
+                    : ''
+              "
+              >{{ lineup1Name }}</span
+            >
+            <span class="mx-1 text-white/50">vs</span>
+            <span
+              :class="
+                winningSide === '2'
+                  ? 'font-bold text-[hsl(var(--tac-amber))]'
+                  : winningSide === '1'
+                    ? 'text-white/60'
+                    : ''
+              "
+              >{{ lineup2Name }}</span
+            >
+          </span>
           <span
             v-if="leadCreatedAt"
             class="ml-auto flex shrink-0 items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.08em] text-white/55 drop-shadow-md"
@@ -155,51 +191,6 @@ const pillBaseClasses =
           </span>
         </div>
       </div>
-
-      <CardContent class="p-0 sm:p-0">
-        <!-- Matchup: lineup names with the winning side in amber. Works for
-             team-vs-team, team-vs-pug, and pug-vs-pug alike. -->
-        <div
-          class="group/link flex items-center gap-2 px-2.5 py-2 text-sm font-semibold leading-snug text-foreground"
-          :title="matchupLabel ?? $t('ui_extras.match_highlights_alt')"
-        >
-          <span
-            class="h-3 w-[2px] shrink-0 rounded-full bg-[hsl(var(--tac-amber))]"
-            aria-hidden="true"
-          ></span>
-          <span class="min-w-0 flex-1 truncate">
-            <template v-if="lineup1Name && lineup2Name">
-              <span
-                :class="
-                  winningSide === '1'
-                    ? 'font-bold text-[hsl(var(--tac-amber))]'
-                    : winningSide === '2'
-                      ? 'text-muted-foreground'
-                      : ''
-                "
-                >{{ lineup1Name }}</span
-              >
-              <span class="mx-1 text-muted-foreground/50">vs</span>
-              <span
-                :class="
-                  winningSide === '2'
-                    ? 'font-bold text-[hsl(var(--tac-amber))]'
-                    : winningSide === '1'
-                      ? 'text-muted-foreground'
-                      : ''
-                "
-                >{{ lineup2Name }}</span
-              >
-            </template>
-            <template v-else>{{
-              $t("ui_extras.match_highlights_alt")
-            }}</template>
-          </span>
-          <ArrowUpRight
-            class="h-3.5 w-3.5 shrink-0 text-muted-foreground/50 transition-all group-hover/group-card:-translate-y-0.5 group-hover/group-card:translate-x-0.5 group-hover/group-card:text-[hsl(var(--tac-amber))]"
-          />
-        </div>
-      </CardContent>
     </Card>
   </NuxtLink>
 </template>

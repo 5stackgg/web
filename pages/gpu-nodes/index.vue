@@ -40,7 +40,6 @@ import {
 } from "~/components/ui/sheet";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -941,12 +940,15 @@ async function stopGpuSession(nodeId: string) {
         <AlertDialogCancel @click="deleteSteamTarget = null">
           {{ $t("common.cancel") }}
         </AlertDialogCancel>
-        <AlertDialogAction
-          class="bg-red-600 hover:bg-red-700"
+        <!-- Plain button — reka-ui's AlertDialogAction auto-closes (nulling
+             deleteSteamTarget) before the async handler reads it. -->
+        <button
+          type="button"
+          class="inline-flex h-10 items-center justify-center rounded-md bg-red-600 px-4 text-sm font-medium text-white hover:bg-red-700 cursor-pointer"
           @click="confirmDeleteSteamAccount"
         >
           {{ $t("common.delete") }}
-        </AlertDialogAction>
+        </button>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

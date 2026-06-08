@@ -366,7 +366,6 @@ export const AllTypesProps: Record<string,any> = {
 		spec:"jsonb_comparison_exp",
 		status:"String_comparison_exp",
 		status_history:"jsonb_comparison_exp",
-		steam_account_id:"uuid_comparison_exp",
 		user:"players_bool_exp",
 		user_steam_id:"bigint_comparison_exp"
 	},
@@ -398,7 +397,6 @@ export const AllTypesProps: Record<string,any> = {
 		progress:"numeric",
 		spec:"jsonb",
 		status_history:"jsonb",
-		steam_account_id:"uuid",
 		user:"players_obj_rel_insert_input",
 		user_steam_id:"bigint"
 	},
@@ -416,7 +414,6 @@ export const AllTypesProps: Record<string,any> = {
 		session_token:"order_by",
 		sort_index:"order_by",
 		status:"order_by",
-		steam_account_id:"order_by",
 		user_steam_id:"order_by"
 	},
 	clip_render_jobs_min_order_by:{
@@ -433,7 +430,6 @@ export const AllTypesProps: Record<string,any> = {
 		session_token:"order_by",
 		sort_index:"order_by",
 		status:"order_by",
-		steam_account_id:"order_by",
 		user_steam_id:"order_by"
 	},
 	clip_render_jobs_on_conflict:{
@@ -462,7 +458,6 @@ export const AllTypesProps: Record<string,any> = {
 		spec:"order_by",
 		status:"order_by",
 		status_history:"order_by",
-		steam_account_id:"order_by",
 		user:"players_order_by",
 		user_steam_id:"order_by"
 	},
@@ -486,7 +481,6 @@ export const AllTypesProps: Record<string,any> = {
 		progress:"numeric",
 		spec:"jsonb",
 		status_history:"jsonb",
-		steam_account_id:"uuid",
 		user_steam_id:"bigint"
 	},
 	clip_render_jobs_stddev_order_by:{
@@ -518,7 +512,6 @@ export const AllTypesProps: Record<string,any> = {
 		progress:"numeric",
 		spec:"jsonb",
 		status_history:"jsonb",
-		steam_account_id:"uuid",
 		user_steam_id:"bigint"
 	},
 	clip_render_jobs_sum_order_by:{
@@ -3797,7 +3790,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"uuid_comparison_exp",
 		status:"String_comparison_exp",
 		status_history:"jsonb_comparison_exp",
-		steam_account_id:"uuid_comparison_exp",
 		stream_url:"String_comparison_exp",
 		watcher:"players_bool_exp",
 		watcher_steam_id:"bigint_comparison_exp"
@@ -3828,7 +3820,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		status_history:"jsonb",
-		steam_account_id:"uuid",
 		watcher:"players_obj_rel_insert_input",
 		watcher_steam_id:"bigint"
 	},
@@ -3844,7 +3835,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_demo_id:"order_by",
 		match_map_id:"order_by",
 		status:"order_by",
-		steam_account_id:"order_by",
 		stream_url:"order_by",
 		watcher_steam_id:"order_by"
 	},
@@ -3860,7 +3850,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_demo_id:"order_by",
 		match_map_id:"order_by",
 		status:"order_by",
-		steam_account_id:"order_by",
 		stream_url:"order_by",
 		watcher_steam_id:"order_by"
 	},
@@ -3886,7 +3875,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_id:"order_by",
 		status:"order_by",
 		status_history:"order_by",
-		steam_account_id:"order_by",
 		stream_url:"order_by",
 		watcher:"players_order_by",
 		watcher_steam_id:"order_by"
@@ -3907,7 +3895,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		status_history:"jsonb",
-		steam_account_id:"uuid",
 		watcher_steam_id:"bigint"
 	},
 	match_demo_sessions_stddev_order_by:{
@@ -3932,7 +3919,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		status_history:"jsonb",
-		steam_account_id:"uuid",
 		watcher_steam_id:"bigint"
 	},
 	match_demo_sessions_sum_order_by:{
@@ -5860,7 +5846,6 @@ export const AllTypesProps: Record<string,any> = {
 		priority:"Int_comparison_exp",
 		status:"String_comparison_exp",
 		status_history:"jsonb_comparison_exp",
-		steam_account_id:"uuid_comparison_exp",
 		stream_url:"String_comparison_exp",
 		title:"String_comparison_exp"
 	},
@@ -5883,8 +5868,7 @@ export const AllTypesProps: Record<string,any> = {
 		last_status_at:"timestamptz",
 		match:"matches_obj_rel_insert_input",
 		match_id:"uuid",
-		status_history:"jsonb",
-		steam_account_id:"uuid"
+		status_history:"jsonb"
 	},
 	match_streams_max_order_by:{
 		error_message:"order_by",
@@ -5897,7 +5881,6 @@ export const AllTypesProps: Record<string,any> = {
 		mode:"order_by",
 		priority:"order_by",
 		status:"order_by",
-		steam_account_id:"order_by",
 		stream_url:"order_by",
 		title:"order_by"
 	},
@@ -5912,7 +5895,6 @@ export const AllTypesProps: Record<string,any> = {
 		mode:"order_by",
 		priority:"order_by",
 		status:"order_by",
-		steam_account_id:"order_by",
 		stream_url:"order_by",
 		title:"order_by"
 	},
@@ -5938,7 +5920,6 @@ export const AllTypesProps: Record<string,any> = {
 		priority:"order_by",
 		status:"order_by",
 		status_history:"order_by",
-		steam_account_id:"order_by",
 		stream_url:"order_by",
 		title:"order_by"
 	},
@@ -5955,8 +5936,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		last_status_at:"timestamptz",
 		match_id:"uuid",
-		status_history:"jsonb",
-		steam_account_id:"uuid"
+		status_history:"jsonb"
 	},
 	match_streams_stddev_order_by:{
 		priority:"order_by"
@@ -5975,8 +5955,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid",
 		last_status_at:"timestamptz",
 		match_id:"uuid",
-		status_history:"jsonb",
-		steam_account_id:"uuid"
+		status_history:"jsonb"
 	},
 	match_streams_sum_order_by:{
 		priority:"order_by"
@@ -7207,6 +7186,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_settings_by_pk:{
 
 		},
+		delete_steam_account_claims:{
+			where:"steam_account_claims_bool_exp"
+		},
+		delete_steam_account_claims_by_pk:{
+			id:"uuid"
+		},
 		delete_steam_accounts:{
 			where:"steam_accounts_bool_exp"
 		},
@@ -7948,6 +7933,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_settings_one:{
 			object:"settings_insert_input",
 			on_conflict:"settings_on_conflict"
+		},
+		insert_steam_account_claims:{
+			objects:"steam_account_claims_insert_input",
+			on_conflict:"steam_account_claims_on_conflict"
+		},
+		insert_steam_account_claims_one:{
+			object:"steam_account_claims_insert_input",
+			on_conflict:"steam_account_claims_on_conflict"
 		},
 		insert_steam_accounts:{
 			objects:"steam_accounts_insert_input",
@@ -9275,6 +9268,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_settings_many:{
 			updates:"settings_updates"
+		},
+		update_steam_account_claims:{
+			_set:"steam_account_claims_set_input",
+			where:"steam_account_claims_bool_exp"
+		},
+		update_steam_account_claims_by_pk:{
+			_set:"steam_account_claims_set_input",
+			pk_columns:"steam_account_claims_pk_columns_input"
+		},
+		update_steam_account_claims_many:{
+			updates:"steam_account_claims_updates"
 		},
 		update_steam_accounts:{
 			_set:"steam_accounts_set_input",
@@ -15925,6 +15929,19 @@ export const AllTypesProps: Record<string,any> = {
 		settings_by_pk:{
 
 		},
+		steam_account_claims:{
+			distinct_on:"steam_account_claims_select_column",
+			order_by:"steam_account_claims_order_by",
+			where:"steam_account_claims_bool_exp"
+		},
+		steam_account_claims_aggregate:{
+			distinct_on:"steam_account_claims_select_column",
+			order_by:"steam_account_claims_order_by",
+			where:"steam_account_claims_bool_exp"
+		},
+		steam_account_claims_by_pk:{
+			id:"uuid"
+		},
 		steam_accounts:{
 			distinct_on:"steam_accounts_select_column",
 			order_by:"steam_accounts_order_by",
@@ -16752,36 +16769,113 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"settings_set_input",
 		where:"settings_bool_exp"
 	},
+	steam_account_claims_aggregate_bool_exp:{
+		count:"steam_account_claims_aggregate_bool_exp_count"
+	},
+	steam_account_claims_aggregate_bool_exp_count:{
+		arguments:"steam_account_claims_select_column",
+		filter:"steam_account_claims_bool_exp",
+		predicate:"Int_comparison_exp"
+	},
+	steam_account_claims_aggregate_fields:{
+		count:{
+			columns:"steam_account_claims_select_column"
+		}
+	},
+	steam_account_claims_aggregate_order_by:{
+		count:"order_by",
+		max:"steam_account_claims_max_order_by",
+		min:"steam_account_claims_min_order_by"
+	},
+	steam_account_claims_arr_rel_insert_input:{
+		data:"steam_account_claims_insert_input",
+		on_conflict:"steam_account_claims_on_conflict"
+	},
+	steam_account_claims_bool_exp:{
+		_and:"steam_account_claims_bool_exp",
+		_not:"steam_account_claims_bool_exp",
+		_or:"steam_account_claims_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		id:"uuid_comparison_exp",
+		k8s_job_name:"String_comparison_exp",
+		node:"game_server_nodes_bool_exp",
+		node_id:"String_comparison_exp",
+		purpose:"String_comparison_exp",
+		steam_account:"steam_accounts_bool_exp",
+		steam_account_id:"uuid_comparison_exp"
+	},
+	steam_account_claims_constraint: "enum" as const,
+	steam_account_claims_insert_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		node:"game_server_nodes_obj_rel_insert_input",
+		steam_account:"steam_accounts_obj_rel_insert_input",
+		steam_account_id:"uuid"
+	},
+	steam_account_claims_max_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		k8s_job_name:"order_by",
+		node_id:"order_by",
+		purpose:"order_by",
+		steam_account_id:"order_by"
+	},
+	steam_account_claims_min_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		k8s_job_name:"order_by",
+		node_id:"order_by",
+		purpose:"order_by",
+		steam_account_id:"order_by"
+	},
+	steam_account_claims_on_conflict:{
+		constraint:"steam_account_claims_constraint",
+		update_columns:"steam_account_claims_update_column",
+		where:"steam_account_claims_bool_exp"
+	},
+	steam_account_claims_order_by:{
+		created_at:"order_by",
+		id:"order_by",
+		k8s_job_name:"order_by",
+		node:"game_server_nodes_order_by",
+		node_id:"order_by",
+		purpose:"order_by",
+		steam_account:"steam_accounts_order_by",
+		steam_account_id:"order_by"
+	},
+	steam_account_claims_pk_columns_input:{
+		id:"uuid"
+	},
+	steam_account_claims_select_column: "enum" as const,
+	steam_account_claims_set_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		steam_account_id:"uuid"
+	},
+	steam_account_claims_stream_cursor_input:{
+		initial_value:"steam_account_claims_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	steam_account_claims_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		id:"uuid",
+		steam_account_id:"uuid"
+	},
+	steam_account_claims_update_column: "enum" as const,
+	steam_account_claims_updates:{
+		_set:"steam_account_claims_set_input",
+		where:"steam_account_claims_bool_exp"
+	},
 	steam_accounts:{
-		clip_render_jobs:{
-			distinct_on:"clip_render_jobs_select_column",
-			order_by:"clip_render_jobs_order_by",
-			where:"clip_render_jobs_bool_exp"
+		claims:{
+			distinct_on:"steam_account_claims_select_column",
+			order_by:"steam_account_claims_order_by",
+			where:"steam_account_claims_bool_exp"
 		},
-		clip_render_jobs_aggregate:{
-			distinct_on:"clip_render_jobs_select_column",
-			order_by:"clip_render_jobs_order_by",
-			where:"clip_render_jobs_bool_exp"
-		},
-		match_demo_sessions:{
-			distinct_on:"match_demo_sessions_select_column",
-			order_by:"match_demo_sessions_order_by",
-			where:"match_demo_sessions_bool_exp"
-		},
-		match_demo_sessions_aggregate:{
-			distinct_on:"match_demo_sessions_select_column",
-			order_by:"match_demo_sessions_order_by",
-			where:"match_demo_sessions_bool_exp"
-		},
-		match_streams:{
-			distinct_on:"match_streams_select_column",
-			order_by:"match_streams_order_by",
-			where:"match_streams_bool_exp"
-		},
-		match_streams_aggregate:{
-			distinct_on:"match_streams_select_column",
-			order_by:"match_streams_order_by",
-			where:"match_streams_bool_exp"
+		claims_aggregate:{
+			distinct_on:"steam_account_claims_select_column",
+			order_by:"steam_account_claims_order_by",
+			where:"steam_account_claims_bool_exp"
 		}
 	},
 	steam_accounts_aggregate_fields:{
@@ -16793,29 +16887,27 @@ export const AllTypesProps: Record<string,any> = {
 		_and:"steam_accounts_bool_exp",
 		_not:"steam_accounts_bool_exp",
 		_or:"steam_accounts_bool_exp",
-		clip_render_jobs:"clip_render_jobs_bool_exp",
-		clip_render_jobs_aggregate:"clip_render_jobs_aggregate_bool_exp",
+		claims:"steam_account_claims_bool_exp",
+		claims_aggregate:"steam_account_claims_aggregate_bool_exp",
 		created_at:"timestamptz_comparison_exp",
 		id:"uuid_comparison_exp",
 		last_node:"game_server_nodes_bool_exp",
 		last_node_id:"String_comparison_exp",
-		match_demo_sessions:"match_demo_sessions_bool_exp",
-		match_demo_sessions_aggregate:"match_demo_sessions_aggregate_bool_exp",
-		match_streams:"match_streams_bool_exp",
-		match_streams_aggregate:"match_streams_aggregate_bool_exp",
 		password:"String_comparison_exp",
 		updated_at:"timestamptz_comparison_exp",
 		username:"String_comparison_exp"
 	},
 	steam_accounts_constraint: "enum" as const,
 	steam_accounts_insert_input:{
-		clip_render_jobs:"clip_render_jobs_arr_rel_insert_input",
+		claims:"steam_account_claims_arr_rel_insert_input",
 		created_at:"timestamptz",
 		id:"uuid",
 		last_node:"game_server_nodes_obj_rel_insert_input",
-		match_demo_sessions:"match_demo_sessions_arr_rel_insert_input",
-		match_streams:"match_streams_arr_rel_insert_input",
 		updated_at:"timestamptz"
+	},
+	steam_accounts_obj_rel_insert_input:{
+		data:"steam_accounts_insert_input",
+		on_conflict:"steam_accounts_on_conflict"
 	},
 	steam_accounts_on_conflict:{
 		constraint:"steam_accounts_constraint",
@@ -16823,13 +16915,11 @@ export const AllTypesProps: Record<string,any> = {
 		where:"steam_accounts_bool_exp"
 	},
 	steam_accounts_order_by:{
-		clip_render_jobs_aggregate:"clip_render_jobs_aggregate_order_by",
+		claims_aggregate:"steam_account_claims_aggregate_order_by",
 		created_at:"order_by",
 		id:"order_by",
 		last_node:"game_server_nodes_order_by",
 		last_node_id:"order_by",
-		match_demo_sessions_aggregate:"match_demo_sessions_aggregate_order_by",
-		match_streams_aggregate:"match_streams_aggregate_order_by",
 		password:"order_by",
 		updated_at:"order_by",
 		username:"order_by"
@@ -18288,6 +18378,23 @@ export const AllTypesProps: Record<string,any> = {
 		settings_stream:{
 			cursor:"settings_stream_cursor_input",
 			where:"settings_bool_exp"
+		},
+		steam_account_claims:{
+			distinct_on:"steam_account_claims_select_column",
+			order_by:"steam_account_claims_order_by",
+			where:"steam_account_claims_bool_exp"
+		},
+		steam_account_claims_aggregate:{
+			distinct_on:"steam_account_claims_select_column",
+			order_by:"steam_account_claims_order_by",
+			where:"steam_account_claims_bool_exp"
+		},
+		steam_account_claims_by_pk:{
+			id:"uuid"
+		},
+		steam_account_claims_stream:{
+			cursor:"steam_account_claims_stream_cursor_input",
+			where:"steam_account_claims_bool_exp"
 		},
 		steam_accounts:{
 			distinct_on:"steam_accounts_select_column",
@@ -24684,7 +24791,6 @@ export const ReturnTypes: Record<string,any> = {
 		spec:"jsonb",
 		status:"String",
 		status_history:"jsonb",
-		steam_account_id:"uuid",
 		user:"players",
 		user_steam_id:"bigint"
 	},
@@ -24724,7 +24830,6 @@ export const ReturnTypes: Record<string,any> = {
 		session_token:"String",
 		sort_index:"Int",
 		status:"String",
-		steam_account_id:"uuid",
 		user_steam_id:"bigint"
 	},
 	clip_render_jobs_min_fields:{
@@ -24741,7 +24846,6 @@ export const ReturnTypes: Record<string,any> = {
 		session_token:"String",
 		sort_index:"Int",
 		status:"String",
-		steam_account_id:"uuid",
 		user_steam_id:"bigint"
 	},
 	clip_render_jobs_mutation_response:{
@@ -26446,7 +26550,6 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_id:"uuid",
 		status:"String",
 		status_history:"jsonb",
-		steam_account_id:"uuid",
 		stream_url:"String",
 		watcher:"players",
 		watcher_steam_id:"bigint"
@@ -26483,7 +26586,6 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		status:"String",
-		steam_account_id:"uuid",
 		stream_url:"String",
 		watcher_steam_id:"bigint"
 	},
@@ -26499,7 +26601,6 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_demo_id:"uuid",
 		match_map_id:"uuid",
 		status:"String",
-		steam_account_id:"uuid",
 		stream_url:"String",
 		watcher_steam_id:"bigint"
 	},
@@ -27483,7 +27584,6 @@ export const ReturnTypes: Record<string,any> = {
 		priority:"Int",
 		status:"String",
 		status_history:"jsonb",
-		steam_account_id:"uuid",
 		stream_url:"String",
 		title:"String"
 	},
@@ -27518,7 +27618,6 @@ export const ReturnTypes: Record<string,any> = {
 		mode:"String",
 		priority:"Int",
 		status:"String",
-		steam_account_id:"uuid",
 		stream_url:"String",
 		title:"String"
 	},
@@ -27533,7 +27632,6 @@ export const ReturnTypes: Record<string,any> = {
 		mode:"String",
 		priority:"Int",
 		status:"String",
-		steam_account_id:"uuid",
 		stream_url:"String",
 		title:"String"
 	},
@@ -28016,6 +28114,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_servers_by_pk:"servers",
 		delete_settings:"settings_mutation_response",
 		delete_settings_by_pk:"settings",
+		delete_steam_account_claims:"steam_account_claims_mutation_response",
+		delete_steam_account_claims_by_pk:"steam_account_claims",
 		delete_steam_accounts:"steam_accounts_mutation_response",
 		delete_steam_accounts_by_pk:"steam_accounts",
 		delete_team_invites:"team_invites_mutation_response",
@@ -28211,6 +28311,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_servers_one:"servers",
 		insert_settings:"settings_mutation_response",
 		insert_settings_one:"settings",
+		insert_steam_account_claims:"steam_account_claims_mutation_response",
+		insert_steam_account_claims_one:"steam_account_claims",
 		insert_steam_accounts:"steam_accounts_mutation_response",
 		insert_steam_accounts_one:"steam_accounts",
 		insert_team_invites:"team_invites_mutation_response",
@@ -28543,6 +28645,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_settings:"settings_mutation_response",
 		update_settings_by_pk:"settings",
 		update_settings_many:"settings_mutation_response",
+		update_steam_account_claims:"steam_account_claims_mutation_response",
+		update_steam_account_claims_by_pk:"steam_account_claims",
+		update_steam_account_claims_many:"steam_account_claims_mutation_response",
 		update_steam_accounts:"steam_accounts_mutation_response",
 		update_steam_accounts_by_pk:"steam_accounts",
 		update_steam_accounts_many:"steam_accounts_mutation_response",
@@ -32765,6 +32870,9 @@ export const ReturnTypes: Record<string,any> = {
 		settings:"settings",
 		settings_aggregate:"settings_aggregate",
 		settings_by_pk:"settings",
+		steam_account_claims:"steam_account_claims",
+		steam_account_claims_aggregate:"steam_account_claims_aggregate",
+		steam_account_claims_by_pk:"steam_account_claims",
 		steam_accounts:"steam_accounts",
 		steam_accounts_aggregate:"steam_accounts_aggregate",
 		steam_accounts_by_pk:"steam_accounts",
@@ -33102,17 +33210,52 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"settings"
 	},
+	steam_account_claims:{
+		created_at:"timestamptz",
+		id:"uuid",
+		k8s_job_name:"String",
+		node:"game_server_nodes",
+		node_id:"String",
+		purpose:"String",
+		steam_account:"steam_accounts",
+		steam_account_id:"uuid"
+	},
+	steam_account_claims_aggregate:{
+		aggregate:"steam_account_claims_aggregate_fields",
+		nodes:"steam_account_claims"
+	},
+	steam_account_claims_aggregate_fields:{
+		count:"Int",
+		max:"steam_account_claims_max_fields",
+		min:"steam_account_claims_min_fields"
+	},
+	steam_account_claims_max_fields:{
+		created_at:"timestamptz",
+		id:"uuid",
+		k8s_job_name:"String",
+		node_id:"String",
+		purpose:"String",
+		steam_account_id:"uuid"
+	},
+	steam_account_claims_min_fields:{
+		created_at:"timestamptz",
+		id:"uuid",
+		k8s_job_name:"String",
+		node_id:"String",
+		purpose:"String",
+		steam_account_id:"uuid"
+	},
+	steam_account_claims_mutation_response:{
+		affected_rows:"Int",
+		returning:"steam_account_claims"
+	},
 	steam_accounts:{
-		clip_render_jobs:"clip_render_jobs",
-		clip_render_jobs_aggregate:"clip_render_jobs_aggregate",
+		claims:"steam_account_claims",
+		claims_aggregate:"steam_account_claims_aggregate",
 		created_at:"timestamptz",
 		id:"uuid",
 		last_node:"game_server_nodes",
 		last_node_id:"String",
-		match_demo_sessions:"match_demo_sessions",
-		match_demo_sessions_aggregate:"match_demo_sessions_aggregate",
-		match_streams:"match_streams",
-		match_streams_aggregate:"match_streams_aggregate",
 		password:"String",
 		updated_at:"timestamptz",
 		username:"String"
@@ -33475,6 +33618,10 @@ export const ReturnTypes: Record<string,any> = {
 		settings_aggregate:"settings_aggregate",
 		settings_by_pk:"settings",
 		settings_stream:"settings",
+		steam_account_claims:"steam_account_claims",
+		steam_account_claims_aggregate:"steam_account_claims_aggregate",
+		steam_account_claims_by_pk:"steam_account_claims",
+		steam_account_claims_stream:"steam_account_claims",
 		steam_accounts:"steam_accounts",
 		steam_accounts_aggregate:"steam_accounts_aggregate",
 		steam_accounts_by_pk:"steam_accounts",

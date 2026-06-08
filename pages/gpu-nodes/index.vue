@@ -871,7 +871,32 @@ async function stopGpuSession(nodeId: string) {
                   :key="account.id"
                   class="border-b border-border/30 last:border-b-0"
                 >
-                  <td class="p-2 font-mono">{{ account.username }}</td>
+                  <td class="p-2 font-mono">
+                    <div>{{ account.username }}</div>
+                    <div
+                      v-if="steamAccountClaim(account)"
+                      class="mt-0.5 flex items-center gap-1 text-[10px] font-sans uppercase tracking-wider text-amber-500"
+                    >
+                      <Activity class="w-3 h-3" />
+                      <span>{{
+                        steamClaimPurposeLabel(
+                          steamAccountClaim(account).purpose,
+                        )
+                      }}</span>
+                      <span
+                        v-if="steamAccountClaim(account).node_id"
+                        class="text-muted-foreground normal-case"
+                      >
+                        · {{ steamAccountClaim(account).node_id }}
+                      </span>
+                    </div>
+                    <div
+                      v-else
+                      class="mt-0.5 text-[10px] font-sans uppercase tracking-wider text-muted-foreground"
+                    >
+                      {{ $t("pages.gpu_nodes.steam_pool.idle") }}
+                    </div>
+                  </td>
                   <td class="p-2 text-right w-10">
                     <Button
                       size="sm"
@@ -962,6 +987,12 @@ export default {
         id: string;
         username: string;
         last_node_id: string | null;
+        claims?: Array<{
+          purpose: string;
+          node_id: string | null;
+          k8s_job_name: string;
+          created_at: string;
+        }>;
       }>,
     };
   },
@@ -1047,6 +1078,14 @@ export default {
         return this.$t("render_queue_status.uploading");
       }
       return null;
+    },
+    steamAccountClaim(this: any, account: any) {
+      return account?.claims?.[0] ?? null;
+    },
+    steamClaimPurposeLabel(this: any, purpose: string): string {
+      const key = `pages.gpu_nodes.steam_pool.purpose.${purpose}`;
+      const label = this.$t(key);
+      return label === key ? purpose : label;
     },
   },
   apollo: {
@@ -1158,6 +1197,15 @@ export default {
               id: true,
               username: true,
               last_node_id: true,
+              claims: [
+                {},
+                {
+                  purpose: true,
+                  node_id: true,
+                  k8s_job_name: true,
+                  created_at: true,
+                },
+              ],
             },
           ],
         } as any),

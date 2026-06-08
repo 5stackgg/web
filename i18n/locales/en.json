@@ -1399,7 +1399,14 @@
         "deleted": "Steam account deleted",
         "delete_failed": "Failed to delete account",
         "delete_title": "Delete {username}?",
-        "delete_description": "Any running pod using this account keeps its credentials and finishes normally. The account will be removed from the pool and not available for future jobs."
+        "delete_description": "Any running pod using this account keeps its credentials and finishes normally. The account will be removed from the pool and not available for future jobs.",
+        "idle": "Idle",
+        "purpose": {
+          "live": "Live Stream",
+          "demo": "Demo Playback",
+          "highlights": "Highlights",
+          "bake": "Shader Bake"
+        }
       }
     },
     "game_server_nodes": {

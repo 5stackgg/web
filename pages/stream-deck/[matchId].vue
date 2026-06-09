@@ -32,7 +32,7 @@ import {
   PopoverTrigger,
 } from "~/components/ui/popover";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
-import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
+import BootSequence from "~/components/match/BootSequence.vue";
 import DesktopSnapshot from "~/components/match/DesktopSnapshot.vue";
 import ShortcutOverlay from "~/components/match/ShortcutOverlay.vue";
 import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
@@ -96,46 +96,6 @@ const STATUS_LABELS = computed<Record<string, string>>(() => ({
   live: t("stream_deck_status.live_short"),
 }));
 
-// Stage list mirrors run-live.sh + setup-steam.sh report_status emits.
-// `meta` controls non-emission rendering (see StreamSessionProgress).
-const LIVE_STAGES = computed(() => [
-  {
-    key: "booting",
-    label: t("live_stages.booting"),
-    meta: "required" as const,
-  },
-  {
-    key: "downloading_cs2",
-    label: t("live_stages.downloading_cs2"),
-    meta: "conditional" as const,
-  },
-  {
-    key: "launching_steam",
-    label: t("live_stages.launching_steam"),
-    meta: "required" as const,
-  },
-  {
-    key: "logging_in",
-    label: t("live_stages.logging_in"),
-    meta: "implicit" as const,
-  },
-  {
-    key: "launching_cs2",
-    label: t("live_stages.launching_cs2"),
-    meta: "required" as const,
-  },
-  {
-    key: "processing_shaders",
-    label: t("live_stages.processing_shaders"),
-    meta: "conditional" as const,
-  },
-  {
-    key: "connecting_to_game",
-    label: t("live_stages.connecting_to_game"),
-    meta: "required" as const,
-  },
-  { key: "live", label: t("live_stages.live"), meta: "required" as const },
-]);
 function statusBadgeLabel(s: any) {
   if (!s) return "—";
   if (s.is_live) return t("stream_deck_status.live");
@@ -930,7 +890,7 @@ watch(spectatedSteamId, (sid) => {
         <StreamCanvas
           :stream="stream"
           :is-live="isLiveRef"
-          :stages="LIVE_STAGES"
+          mode="live"
           header-label="Stream boot"
           :disable-fullscreen-shortcut="true"
           :show-boot="true"
@@ -938,12 +898,12 @@ watch(spectatedSteamId, (sid) => {
         >
           <!-- Boot stepper with Skip control (page is streamer+). -->
           <template #boot>
-            <StreamSessionProgress
+            <BootSequence
+              mode="live"
               :status="stream?.status ?? 'booting'"
               :error-message="stream?.error_message ?? null"
               :last-status-at="stream?.last_status_at ?? null"
-              :status-history="stream?.status_history ?? []"
-              :stages="LIVE_STAGES"
+              :histories="[stream?.status_history ?? []]"
               header-label="Stream boot"
               :can-skip="true"
               :skipping="skippingShaders"

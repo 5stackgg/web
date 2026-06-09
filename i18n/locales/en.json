@@ -154,6 +154,7 @@
   },
   "live_stages": {
     "stream_boot": "Stream boot",
+    "initializing": "Initializing",
     "booting": "Allocating GPU",
     "downloading_cs2": "Installing CS2",
     "install_phase": {
@@ -1298,6 +1299,7 @@
     },
     "gpu_nodes": {
       "title": "GPU Nodes",
+      "gpu_unknown": "GPU",
       "description": "GPU-capable game server nodes that host live streams, demo playback, and highlight renders. Each GPU runs at most one consumer at a time.",
       "cmdbar_sub": "Live spectating · demo playback · highlight rendering",
       "metrics": "Metrics",

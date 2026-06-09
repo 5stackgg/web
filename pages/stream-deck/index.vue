@@ -43,7 +43,7 @@ import { Spinner } from "~/components/ui/spinner";
 import { e_match_status_enum } from "~/generated/zeus";
 import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
-import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
+import BootSequence from "~/components/match/BootSequence.vue";
 import SpectatorGrid from "~/components/stream-deck/SpectatorGrid.vue";
 import MatchTableRow from "~/components/MatchTableRow.vue";
 import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
@@ -418,47 +418,6 @@ const STATUS_LABELS = computed<Record<string, string>>(() => ({
   live: t("stream_deck_status.live_short"),
 }));
 
-// Stage list mirrors run-live.sh + setup-steam.sh report_status emits.
-// `meta` controls non-emission rendering (see StreamSessionProgress).
-const LIVE_STAGES = computed(() => [
-  {
-    key: "booting",
-    label: t("live_stages.booting"),
-    meta: "required" as const,
-  },
-  {
-    key: "downloading_cs2",
-    label: t("live_stages.downloading_cs2"),
-    meta: "conditional" as const,
-  },
-  {
-    key: "launching_steam",
-    label: t("live_stages.launching_steam"),
-    meta: "required" as const,
-  },
-  {
-    key: "logging_in",
-    label: t("live_stages.logging_in"),
-    meta: "implicit" as const,
-  },
-  {
-    key: "launching_cs2",
-    label: t("live_stages.launching_cs2"),
-    meta: "required" as const,
-  },
-  {
-    key: "processing_shaders",
-    label: t("live_stages.processing_shaders"),
-    meta: "conditional" as const,
-  },
-  {
-    key: "connecting_to_game",
-    label: t("live_stages.connecting_to_game"),
-    meta: "required" as const,
-  },
-  { key: "live", label: t("live_stages.live"), meta: "required" as const },
-]);
-
 function statusBadgeLabel(stream: any) {
   if (stream.is_live) return t("stream_deck_status.live");
   const s = stream?.status as string | undefined;
@@ -770,19 +729,19 @@ function matchStatusLabel(m: LiveMatch): string {
             <StreamCanvas
               :stream="stream"
               :is-live="!!stream.is_live"
-              :stages="LIVE_STAGES"
+              mode="live"
               header-label="Stream boot"
               :show-boot="true"
               class="group aspect-video w-full overflow-hidden rounded-md border border-border/60"
             >
               <!-- Boot stepper with Skip control (page is streamer+). -->
               <template #boot>
-                <StreamSessionProgress
+                <BootSequence
+                  mode="live"
                   :status="stream.status ?? 'booting'"
                   :error-message="stream.error_message ?? null"
                   :last-status-at="stream.last_status_at ?? null"
-                  :status-history="stream.status_history ?? []"
-                  :stages="LIVE_STAGES"
+                  :histories="[stream.status_history ?? []]"
                   header-label="Stream boot"
                   :can-skip="true"
                   :skipping="!!skippingShaders[stream.match_id]"

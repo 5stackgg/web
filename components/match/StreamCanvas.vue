@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import WhepPlayer from "~/components/match/WhepPlayer.vue";
-import StreamSessionProgress from "~/components/match/StreamSessionProgress.vue";
-
-type Stage = { key: string; label: string; meta?: string };
+import BootSequence from "~/components/match/BootSequence.vue";
+import type { BootMode } from "~/composables/useBootStages";
 
 const props = withDefaults(
   defineProps<{
@@ -11,7 +10,7 @@ const props = withDefaults(
     whepUrl?: string | null;
     fallbackUrl?: string | null;
     isLive?: boolean | null;
-    stages?: Stage[];
+    mode?: BootMode;
     headerLabel?: string;
     status?: string | null;
     errorMessage?: string | null;
@@ -23,7 +22,7 @@ const props = withDefaults(
   }>(),
   {
     isLive: null,
-    stages: () => [],
+    mode: "live",
     showBoot: false,
     enablePip: false,
   },
@@ -126,12 +125,12 @@ defineExpose({ rootEl });
           :last-status-at="effectiveLastStatusAt"
           :status-history="effectiveHistory"
         >
-          <StreamSessionProgress
+          <BootSequence
+            :mode="mode"
             :status="effectiveStatus"
             :error-message="effectiveError"
             :last-status-at="effectiveLastStatusAt"
-            :status-history="effectiveHistory"
-            :stages="stages"
+            :histories="[effectiveHistory]"
             :header-label="headerLabel"
           />
         </slot>

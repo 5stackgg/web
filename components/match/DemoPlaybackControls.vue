@@ -25,6 +25,7 @@ import {
   Trophy,
 } from "lucide-vue-next";
 import { useAuthStore } from "~/stores/AuthStore";
+import { e_player_roles_enum } from "~/generated/zeus";
 import CreateClipDialog from "~/components/clips/CreateClipDialog.vue";
 import { Button } from "~/components/ui/button";
 import { Kbd } from "~/components/ui/kbd";
@@ -50,9 +51,12 @@ import RoundSelector from "~/components/match/RoundSelector.vue";
 import SpectatorSlots from "~/components/stream-deck/SpectatorSlots.vue";
 import { resolveKeyToRealSlot } from "~/utilities/streamerSpecSlots";
 
-// API gates clip creation at verified_user; we only check "logged in"
-// on the client so any logged-in viewer sees the button.
-const canCreateClip = computed(() => !!useAuthStore().me?.steam_id);
+// API gates clip creation at streamer; mirror that on the client so a
+// non-streamer viewer (e.g. a plain-user organizer watching their own demo)
+// doesn't see a button the action would reject.
+const canCreateClip = computed(() =>
+  useAuthStore().isRoleAbove(e_player_roles_enum.streamer),
+);
 const showCreateClipDialog = ref(false);
 const dialogInitialMode = ref<"manual" | "auto">("auto");
 const editor = useClipEditor();

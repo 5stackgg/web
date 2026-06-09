@@ -21,12 +21,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { generateMutation } from "~/graphql/graphqlGen";
-import ClipRenderProgress from "~/components/clips/ClipRenderProgress.vue";
-import { useClipRenderActive } from "~/composables/useClipRenderActive";
+import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
+import { useToast } from "~/components/ui/toast/use-toast";
 
 const { t } = useI18n();
 const nuxtApp = useNuxtApp();
+const { toast } = useToast();
 
 type MapWithDemo = {
   id: string;
@@ -45,14 +45,23 @@ const emit = defineEmits<{
   (e: "update:open", v: boolean): void;
 }>();
 
+type Availability = {
+  has_demo: boolean;
+  knife: boolean;
+  multikills: boolean;
+  best_round: boolean;
+  recap: boolean;
+};
+
+const PRESET_ORDER: Preset[] = ["multikills", "best_round", "knife", "recap"];
+
 const selectedMatchMapId = ref<string | null>(null);
 const presetChoice = ref<Preset>("multikills");
 const resolution = ref<"720p" | "1080p">("1080p");
 const submitting = ref(false);
 const submitError = ref<string | null>(null);
-const renderingJobId = ref<string | null>(null);
-const { trackJob: trackRenderJob } = useClipRenderActive();
-watch(renderingJobId, (id) => trackRenderJob(id));
+const availability = ref<Availability | null>(null);
+const loadingAvailability = ref(false);
 
 watch(
   () => props.open,
@@ -60,11 +69,93 @@ watch(
     if (!v) return;
     submitting.value = false;
     submitError.value = null;
-    renderingJobId.value = null;
     presetChoice.value = "multikills";
     resolution.value = "1080p";
+    availability.value = null;
     selectedMatchMapId.value = props.matchMaps[0]?.id ?? null;
   },
+);
+
+watch(
+  [() => props.open, selectedMatchMapId, () => props.targetSteamId],
+  () => {
+    if (!props.open) return;
+    void loadAvailability();
+  },
+  { immediate: true },
+);
+
+async function loadAvailability() {
+  const matchMapId = selectedMatchMapId.value;
+  if (!matchMapId) {
+    availability.value = null;
+    return;
+  }
+  loadingAvailability.value = true;
+  availability.value = null;
+  try {
+    const { data } = await nuxtApp.$apollo.defaultClient.query({
+      fetchPolicy: "network-only",
+      query: generateQuery({
+        getHighlightPresetAvailability: [
+          {
+            match_map_id: matchMapId,
+            target_steam_id: props.targetSteamId,
+          },
+          {
+            has_demo: true,
+            knife: true,
+            multikills: true,
+            best_round: true,
+            recap: true,
+          },
+        ],
+      } as any),
+    });
+    if (selectedMatchMapId.value !== matchMapId) return;
+    availability.value =
+      (data as any)?.getHighlightPresetAvailability ?? null;
+    ensureValidPreset();
+  } catch {
+    if (selectedMatchMapId.value === matchMapId) {
+      availability.value = null;
+    }
+  } finally {
+    if (selectedMatchMapId.value === matchMapId) {
+      loadingAvailability.value = false;
+    }
+  }
+}
+
+function isPresetAvailable(p: Preset): boolean {
+  if (!availability.value) return true;
+  return availability.value[p] === true;
+}
+
+function presetUnavailableHint(p: Preset): string {
+  switch (p) {
+    case "knife":
+      return "No knife kills on this map";
+    case "multikills":
+      return "No multi-kill rounds on this map";
+    default:
+      return "No kills on this map";
+  }
+}
+
+function ensureValidPreset() {
+  if (isPresetAvailable(presetChoice.value)) return;
+  const next = PRESET_ORDER.find((p) => isPresetAvailable(p));
+  if (next) presetChoice.value = next;
+}
+
+const noPresetsAvailable = computed(
+  () =>
+    !!availability.value &&
+    !availability.value.knife &&
+    !availability.value.multikills &&
+    !availability.value.best_round &&
+    !availability.value.recap,
 );
 
 const PRESETS = computed<
@@ -97,17 +188,22 @@ const PRESETS = computed<
 ]);
 
 const canSubmit = computed(
-  () => !!selectedMatchMapId.value && !submitting.value,
+  () =>
+    !!selectedMatchMapId.value &&
+    !submitting.value &&
+    !loadingAvailability.value &&
+    !noPresetsAvailable.value &&
+    isPresetAvailable(presetChoice.value),
 );
 
 async function submit() {
-  if (submitting.value || !selectedMatchMapId.value) return;
+  if (!canSubmit.value || !selectedMatchMapId.value) return;
   submitting.value = true;
   submitError.value = null;
   try {
     const { data } = await nuxtApp.$apollo.defaultClient.mutate({
       mutation: generateMutation({
-        createClipFromPreset: [
+        queueClipFromPreset: [
           {
             match_map_id: selectedMatchMapId.value,
             target_steam_id: props.targetSteamId,
@@ -120,11 +216,17 @@ async function submit() {
         ],
       } as any),
     });
-    const out = (data as any)?.createClipFromPreset;
+    const out = (data as any)?.queueClipFromPreset;
     if (!out?.success || !out?.job_id) {
-      throw new Error("createClipFromPreset returned no job");
+      throw new Error("queueClipFromPreset returned no job");
     }
-    renderingJobId.value = out.job_id;
+    toast({
+      title: "Highlight queued",
+      description: props.targetName
+        ? `${props.targetName}'s highlight will render once a slot is free — find it in Highlights when it's done.`
+        : "Your highlight will render once a slot is free — find it in Highlights when it's done.",
+    });
+    close(false);
   } catch (e) {
     submitError.value =
       (e as any)?.graphQLErrors?.[0]?.message ??
@@ -156,13 +258,7 @@ function close(v: boolean) {
         </DialogDescription>
       </DialogHeader>
 
-      <ClipRenderProgress
-        v-if="renderingJobId"
-        :job-id="renderingJobId"
-        @close="close(false)"
-      />
-
-      <form v-else class="space-y-5" @submit.prevent="submit">
+      <form class="space-y-5" @submit.prevent="submit">
         <div class="space-y-2">
           <Label>Map</Label>
           <Select
@@ -183,29 +279,54 @@ function close(v: boolean) {
         </div>
 
         <div class="space-y-2">
-          <Label>{{ $t("clips.create_dialog.preset") }}</Label>
+          <Label class="flex items-center gap-2">
+            {{ $t("clips.create_dialog.preset") }}
+            <Spinner
+              v-if="loadingAvailability"
+              class="h-3 w-3 text-muted-foreground"
+            />
+          </Label>
           <div class="grid grid-cols-2 gap-2">
             <button
               v-for="p in PRESETS"
               :key="p.value"
               type="button"
+              :disabled="!isPresetAvailable(p.value)"
+              :title="
+                isPresetAvailable(p.value)
+                  ? undefined
+                  : presetUnavailableHint(p.value)
+              "
               :class="[
                 'flex items-start gap-2 rounded-md border p-3 text-left transition-all duration-150',
-                presetChoice === p.value
-                  ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.1)]'
-                  : 'border-border/60 bg-card/40 hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-muted/40',
+                !isPresetAvailable(p.value)
+                  ? 'border-border/40 bg-card/20 opacity-40 cursor-not-allowed'
+                  : presetChoice === p.value
+                    ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.1)]'
+                    : 'border-border/60 bg-card/40 hover:border-[hsl(var(--tac-amber)/0.5)] hover:bg-muted/40',
               ]"
-              @click="presetChoice = p.value"
+              @click="isPresetAvailable(p.value) && (presetChoice = p.value)"
             >
               <component :is="p.icon" class="h-4 w-4 mt-0.5 shrink-0" />
               <span class="flex flex-col gap-0.5 min-w-0">
                 <span class="text-sm font-medium">{{ p.label }}</span>
                 <span class="text-[0.7rem] text-muted-foreground leading-snug">
-                  {{ p.hint }}
+                  {{
+                    isPresetAvailable(p.value)
+                      ? p.hint
+                      : presetUnavailableHint(p.value)
+                  }}
                 </span>
               </span>
             </button>
           </div>
+          <p
+            v-if="noPresetsAvailable"
+            class="text-xs text-muted-foreground"
+          >
+            No highlight-worthy moments for
+            {{ targetName ?? "this player" }} on this map.
+          </p>
         </div>
 
         <div class="space-y-2">

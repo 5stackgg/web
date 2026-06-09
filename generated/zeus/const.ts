@@ -8082,6 +8082,9 @@ export const AllTypesProps: Record<string,any> = {
 		pauseClipRenderBatch:{
 			match_map_id:"uuid"
 		},
+		queueClipFromPreset:{
+			match_map_id:"uuid"
+		},
 		randomizeTeams:{
 			match_id:"uuid"
 		},
@@ -15268,6 +15271,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		getDedicatedServerPlayers:{
 
+		},
+		getHighlightPresetAvailability:{
+			match_map_id:"uuid"
 		},
 		getIndexIOStats:{
 
@@ -24382,6 +24388,13 @@ export const ReturnTypes: Record<string,any> = {
 		devices:"GpuDeviceStat",
 		time:"timestamp"
 	},
+	HighlightPresetAvailability:{
+		best_round:"Boolean",
+		has_demo:"Boolean",
+		knife:"Boolean",
+		multikills:"Boolean",
+		recap:"Boolean"
+	},
 	HypertableInfo:{
 		compression_enabled:"Boolean",
 		hypertable_name:"String",
@@ -28354,6 +28367,7 @@ export const ReturnTypes: Record<string,any> = {
 		moveServerItem:"SuccessOutput",
 		pauseClipRenderBatch:"SuccessOutput",
 		pollSteamMatchHistory:"SteamMatchHistoryPollOutput",
+		queueClipFromPreset:"CreateClipRenderOutput",
 		randomizeTeams:"SuccessOutput",
 		rebootMatchServer:"SuccessOutput",
 		recalculate_tournament_trophies:"tournament_trophies",
@@ -32718,6 +32732,7 @@ export const ReturnTypes: Record<string,any> = {
 		getDatabaseStats:"DatabaseStats",
 		getDedicatedServerInfo:"DedicatedSeverInfo",
 		getDedicatedServerPlayers:"ServerPlayer",
+		getHighlightPresetAvailability:"HighlightPresetAvailability",
 		getIndexIOStats:"IndexIOStat",
 		getIndexStats:"IndexStat",
 		getNodeStats:"NodeStats",

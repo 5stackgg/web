@@ -14,8 +14,6 @@ import {
   Upload,
   Film,
   CircleDot,
-  Check,
-  CircleDashed,
   Server,
   ExternalLink,
   RotateCcw,
@@ -32,6 +30,7 @@ import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { clipRenderJobFields } from "~/graphql/clipRenderJob";
 import { Button } from "~/components/ui/button";
 import RenderQueueBatchRow from "~/components/clips/RenderQueueBatchRow.vue";
+import BootSequence from "~/components/match/BootSequence.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import SnapshotQuickView from "~/components/match/SnapshotQuickView.vue";
 import {
@@ -103,59 +102,6 @@ type Job = {
 };
 
 type DoneJob = Job & { clip_id: string };
-
-// Boot stages a batch pod emits, in order. `meta` matches
-// StreamSessionProgress vocabulary (required/conditional/implicit).
-const QUEUE_BOOT_STAGES = computed<
-  Array<{
-    key: string;
-    label: string;
-    meta: "required" | "conditional" | "implicit";
-    concurrentUntil?: string;
-  }>
->(() => [
-  {
-    key: "downloading_demo",
-    label: t("live_stages.downloading_demo"),
-    meta: "required",
-    // game-streamer.sh kicks the demo curl into the background before
-    // setup-steam runs; run-demo.sh only blocks on the file when it
-    // reaches launching_cs2 — stay "current" until then.
-    concurrentUntil: "launching_cs2",
-  },
-  {
-    key: "downloading_cs2",
-    label: t("live_stages.downloading_cs2"),
-    meta: "conditional",
-  },
-  {
-    key: "launching_steam",
-    label: t("live_stages.launching_steam"),
-    meta: "required",
-  },
-  { key: "logging_in", label: t("live_stages.logging_in"), meta: "implicit" },
-  {
-    key: "downloading_workshop_map",
-    label: t("live_stages.downloading_workshop_map"),
-    meta: "conditional",
-  },
-  {
-    key: "launching_cs2",
-    label: t("live_stages.loading_demo_in_cs2"),
-    meta: "required",
-  },
-  {
-    // Cold-cache shader compile (why a render sits "queued" for minutes).
-    key: "processing_shaders",
-    label: t("live_stages.processing_shaders"),
-    meta: "conditional",
-  },
-  {
-    key: "connecting_to_game",
-    label: t("live_stages.queuing_demo"),
-    meta: "implicit",
-  },
-]);
 
 // Cold CS2 install + Steam login fits comfortably in 5 min; older
 // booting ticks mean the broadcast loop died — fall back to the
@@ -360,9 +306,6 @@ type BatchGroup = {
     progress: number | null;
     at: string;
     firedStages: Set<string>;
-    // First `at` (epoch ms) each boot stage fired — drives the
-    // per-step duration / live-elapsed readout, mirroring
-    // StreamSessionProgress on the stream deck.
     stageFirstAt: Map<string, number>;
   } | null;
   isPaused: boolean;
@@ -498,44 +441,6 @@ function buildBatchGroup(matchMapId: string, list: Job[]): BatchGroup {
     bootInfo,
     isPaused,
   };
-}
-
-function stageStateFor(
-  group: BatchGroup,
-  stage: {
-    key: string;
-    meta: "required" | "conditional" | "implicit";
-    concurrentUntil?: string;
-  },
-): "done" | "current" | "skipped" | "pending" {
-  if (!group.bootInfo) return "pending";
-  if (group.bootInfo.stage === stage.key) return "current";
-  if (
-    stage.concurrentUntil &&
-    group.bootInfo.firedStages.has(stage.key) &&
-    !group.bootInfo.firedStages.has(stage.concurrentUntil)
-  ) {
-    return "current";
-  }
-  if (group.bootInfo.firedStages.has(stage.key)) return "done";
-  const order = QUEUE_BOOT_STAGES.value.findIndex((s) => s.key === stage.key);
-  const currOrder = QUEUE_BOOT_STAGES.value.findIndex(
-    (s) => s.key === group.bootInfo!.stage,
-  );
-  if (order >= 0 && currOrder >= 0 && order < currOrder) {
-    return stage.meta === "conditional" ? "skipped" : "done";
-  }
-  return "pending";
-}
-
-function visibleBootStages(group: BatchGroup): typeof QUEUE_BOOT_STAGES.value {
-  if (!group.bootInfo) return [];
-  return QUEUE_BOOT_STAGES.value.filter((s) => {
-    if (s.meta !== "implicit") return true;
-    return (
-      group.bootInfo!.firedStages.has(s.key) || group.bootInfo!.stage === s.key
-    );
-  });
 }
 
 const allGroups = computed<BatchGroup[]>(() => {
@@ -858,48 +763,6 @@ async function resumeBatch(matchMapId: string) {
   } finally {
     resumingBatch.value = { ...resumingBatch.value, [matchMapId]: false };
   }
-}
-
-// 1s ticker so the current boot stage's elapsed time advances live,
-// matching StreamSessionProgress on the stream deck.
-const now = ref(Date.now());
-const ticker = setInterval(() => {
-  now.value = Date.now();
-}, 1000);
-onBeforeUnmount(() => clearInterval(ticker));
-
-function bootFmt(ms: number): string {
-  if (!Number.isFinite(ms) || ms < 0) return "";
-  const seconds = Math.floor(ms / 1000);
-  if (seconds < 60) return `${seconds}s`;
-  const m = Math.floor(seconds / 60);
-  const s = seconds % 60;
-  return `${m}m ${s.toString().padStart(2, "0")}s`;
-}
-
-// Wall time a completed boot stage took = gap until the next stage
-// that actually fired (some stages skip, so walk forward in order).
-function bootStageDuration(group: BatchGroup, stageKey: string): string {
-  const info = group.bootInfo;
-  if (!info) return "";
-  const start = info.stageFirstAt.get(stageKey);
-  if (start === undefined) return "";
-  const order = QUEUE_BOOT_STAGES.value;
-  const idx = order.findIndex((s) => s.key === stageKey);
-  if (idx < 0) return "";
-  for (let i = idx + 1; i < order.length; i++) {
-    const at = info.stageFirstAt.get(order[i].key);
-    if (at !== undefined) return bootFmt(at - start);
-  }
-  return "";
-}
-
-function bootStageElapsed(group: BatchGroup, stageKey: string): string {
-  const info = group.bootInfo;
-  if (!info) return "";
-  const start = info.stageFirstAt.get(stageKey);
-  if (start === undefined) return "";
-  return bootFmt(now.value - start);
 }
 
 function formatTimeAgo(iso: string | null): string {
@@ -1240,76 +1103,12 @@ const queueStatus = computed<{
                 <span class="text-sm font-medium">Render pod booting</span>
               </div>
               <div class="flex flex-col gap-3 sm:flex-row sm:items-start">
-                <ul class="flex flex-1 flex-col gap-1">
-                <li
-                  v-for="stage in visibleBootStages(g)"
-                  :key="stage.key"
-                  class="flex items-center gap-2.5 text-xs"
-                  :class="{
-                    'text-muted-foreground/60':
-                      stageStateFor(g, stage) === 'pending',
-                    'text-muted-foreground/40 line-through decoration-muted-foreground/30':
-                      stageStateFor(g, stage) === 'skipped',
-                    'text-foreground': stageStateFor(g, stage) === 'done',
-                    'text-primary font-medium':
-                      stageStateFor(g, stage) === 'current',
-                  }"
-                >
-                  <span
-                    class="w-4 h-4 inline-flex items-center justify-center shrink-0"
-                  >
-                    <Check
-                      v-if="stageStateFor(g, stage) === 'done'"
-                      class="w-3.5 h-3.5"
-                    />
-                    <Spinner
-                      v-else-if="stageStateFor(g, stage) === 'current'"
-                      class="w-3.5 h-3.5"
-                    />
-                    <X
-                      v-else-if="stageStateFor(g, stage) === 'skipped'"
-                      class="w-3.5 h-3.5 opacity-50"
-                    />
-                    <CircleDashed v-else class="w-3.5 h-3.5 opacity-50" />
-                  </span>
-                  <span class="flex-1">{{ stage.label }}</span>
-                  <template v-if="stageStateFor(g, stage) === 'current'">
-                    <span
-                      v-if="g.bootInfo.stageSub"
-                      class="font-mono text-[0.6rem] tabular-nums opacity-60"
-                    >
-                      {{ g.bootInfo.stageSub }}
-                    </span>
-                    <span
-                      v-if="g.bootInfo.progress !== null"
-                      class="font-mono text-[0.6rem] tabular-nums opacity-80"
-                    >
-                      {{ Math.round(g.bootInfo.progress * 100) }}%
-                    </span>
-                    <span
-                      v-if="bootStageElapsed(g, stage.key)"
-                      class="font-mono text-[0.6rem] tabular-nums opacity-70"
-                    >
-                      {{ bootStageElapsed(g, stage.key) }}
-                    </span>
-                  </template>
-                  <span
-                    v-else-if="
-                      stageStateFor(g, stage) === 'done' &&
-                      bootStageDuration(g, stage.key)
-                    "
-                    class="font-mono text-[0.6rem] tabular-nums opacity-60"
-                  >
-                    {{ bootStageDuration(g, stage.key) }}
-                  </span>
-                  <span
-                    v-else-if="stageStateFor(g, stage) === 'skipped'"
-                    class="font-mono text-[0.6rem] uppercase tracking-wider opacity-50"
-                  >
-                    skipped
-                  </span>
-                </li>
-                </ul>
+                <BootSequence
+                  mode="highlights"
+                  :histories="g.jobs.map((j) => j.status_history)"
+                  :card="false"
+                  class="flex-1"
+                />
                 <div
                   v-if="g.sample"
                   class="w-full shrink-0 overflow-hidden rounded-md border border-border/50 sm:w-64 lg:w-80"

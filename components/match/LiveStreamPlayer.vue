@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
-import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
-
-const { t } = useI18n();
 import { ExternalLink, PictureInPicture } from "lucide-vue-next";
 import { generateSubscription } from "~/graphql/graphqlGen";
 import StreamCanvas from "~/components/match/StreamCanvas.vue";
@@ -55,46 +52,6 @@ function shouldRunLocalSubscription(): boolean {
   }
   return true;
 }
-
-const LIVE_STAGES = computed(() => [
-  {
-    key: "booting",
-    label: t("live_stages.booting"),
-    meta: "required" as const,
-  },
-  {
-    key: "downloading_cs2",
-    label: t("live_stages.downloading_cs2"),
-    meta: "conditional" as const,
-  },
-  {
-    key: "launching_steam",
-    label: t("live_stages.launching_steam"),
-    meta: "required" as const,
-  },
-  {
-    key: "logging_in",
-    label: t("live_stages.logging_in"),
-    meta: "implicit" as const,
-  },
-  {
-    key: "launching_cs2",
-    label: t("live_stages.launching_cs2"),
-    meta: "required" as const,
-  },
-  {
-    // Only fires on a cold shader cache; skipped when warm.
-    key: "processing_shaders",
-    label: t("live_stages.processing_shaders"),
-    meta: "conditional" as const,
-  },
-  {
-    key: "connecting_to_game",
-    label: t("live_stages.connecting_to_game"),
-    meta: "required" as const,
-  },
-  { key: "live", label: t("live_stages.live"), meta: "required" as const },
-]);
 
 function ensureLocalSubscription() {
   if (streamSubscription) return;
@@ -234,7 +191,7 @@ function openPopoutWindow() {
     <StreamCanvas
       :stream="displayStream"
       :is-live="isLive"
-      :stages="LIVE_STAGES"
+      mode="live"
       :header-label="$t('live_stages.stream_boot')"
       :show-boot="true"
       :enable-pip="true"

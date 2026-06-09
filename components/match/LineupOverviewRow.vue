@@ -546,14 +546,7 @@ export default {
     canRequestHighlight() {
       if (!this.me?.steam_id) return false;
       if (!this.member.player?.steam_id) return false;
-      const role = this.me.role;
-      const allowed =
-        role === e_player_roles_enum.verified_user ||
-        role === e_player_roles_enum.streamer ||
-        role === e_player_roles_enum.match_organizer ||
-        role === e_player_roles_enum.tournament_organizer ||
-        role === e_player_roles_enum.administrator;
-      if (!allowed) return false;
+      if (this.me.role !== e_player_roles_enum.administrator) return false;
       return this.mapsWithDemo.length > 0;
     },
     canLeaveLineup() {

@@ -175,7 +175,7 @@ import {
               {{ $t("match.actions.stop_live") }}
             </template>
           </DropdownMenuItem>
-          <Tooltip v-if="hasMatchDemos && !hasRegisteredGpu">
+          <Tooltip v-if="canCreateClips && !hasRegisteredGpu">
             <TooltipTrigger as-child>
               <DropdownMenuItem disabled>
                 {{ $t("match.actions.create_clips") }}
@@ -186,7 +186,7 @@ import {
             </TooltipContent>
           </Tooltip>
           <DropdownMenuItem
-            v-else-if="hasMatchDemos"
+            v-else-if="canCreateClips"
             @click="createClipsForMatch"
           >
             {{ $t("match.actions.create_clips") }}
@@ -882,6 +882,12 @@ export default {
     // only meaningful once at least one demo has been uploaded somewhere in
     // the match — otherwise the action handler throws "no demos for this match".
     canReparseDemos() {
+      return (
+        this.hasMatchDemos &&
+        useAuthStore().isRoleAbove(e_player_roles_enum.administrator)
+      );
+    },
+    canCreateClips() {
       return (
         this.hasMatchDemos &&
         useAuthStore().isRoleAbove(e_player_roles_enum.administrator)

@@ -1,4 +1,82 @@
 {
+  "stat_glossary": {
+    "hltv": {
+      "label": "HLTV Rating",
+      "description": "HLTV 2.0 — avaliação geral de desempenho combinando abates, mortes, KAST, dano e impacto. ~1.0 é a média."
+    },
+    "rating": {
+      "label": "HLTV Rating",
+      "description": "HLTV 2.0 — avaliação geral de desempenho combinando abates, mortes, KAST, dano e impacto. ~1.0 é a média."
+    },
+    "adr": {
+      "label": "ADR",
+      "description": "Dano médio por rodada — quanto dano você causa em cada rodada."
+    },
+    "kpr": {
+      "label": "KPR",
+      "description": "Abates por rodada."
+    },
+    "dpr": {
+      "label": "DPR",
+      "description": "Mortes por rodada."
+    },
+    "kast": {
+      "label": "KAST",
+      "description": "Percentual de rodadas em que você conseguiu um Abate, Assistência, Sobreviveu ou foi Trocado."
+    },
+    "udr": {
+      "label": "UDR",
+      "description": "Dano utilitário por rodada — dano de granadas (HE + molotov) em cada rodada."
+    },
+    "hs": {
+      "label": "Headshot %",
+      "description": "Proporção dos seus abates que foram headshots."
+    },
+    "far": {
+      "label": "FAR",
+      "description": "First-Action Rating — desempenho em duelos de abertura (primeiro abate da rodada)."
+    },
+    "elo": {
+      "label": "ELO",
+      "description": "Pontuação de habilidade no matchmaking do 5Stack — sobe e desce conforme vitórias e derrotas."
+    },
+    "kda": {
+      "label": "K / D / A",
+      "description": "Média de Abates / Mortes / Assistências por partida."
+    },
+    "k": {
+      "label": "Abates",
+      "description": "Total de abates."
+    },
+    "a": {
+      "label": "Assistências",
+      "description": "Total de assistências — você causou dano ou cegou um inimigo que foi morto por um companheiro."
+    },
+    "d": {
+      "label": "Mortes",
+      "description": "Total de mortes."
+    },
+    "kd": {
+      "label": "K/D",
+      "description": "Taxa de Abates/Mortes — abates divididos por mortes. Acima de 1.0 significa mais abates do que mortes."
+    },
+    "mkr": {
+      "label": "Rodadas Multi-Kill",
+      "description": "Rodadas em que você conseguiu dois ou mais abates."
+    },
+    "cl": {
+      "label": "Clutch %",
+      "description": "Proporção de situações de clutch (último jogador vivo, 1vX) que você venceu."
+    },
+    "cast": {
+      "label": "CAST",
+      "description": "Tentativas de clutch — número de situações de clutch (1vX) em que você esteve."
+    },
+    "awp": {
+      "label": "AWP",
+      "description": "Uso da AWP / sinal de função de sniper — quanto o jogador depende da AWP."
+    }
+  },
   "pagination": {
     "items_per_page": "por página",
     "showing_range": "Mostrando {start}-{end} de {total}",
@@ -69,14 +147,21 @@
     "user": "Usuário Não Verificado",
     "verified_user": "Usuário Verificado",
     "streamer": "Streamer",
+    "moderator": "Moderador",
     "match_organizer": "Organizador de Partida",
     "tournament_organizer": "Organizador de Torneio",
     "administrator": "Administrador"
   },
   "live_stages": {
     "stream_boot": "Inicialização do stream",
+    "initializing": "Inicializando",
     "booting": "Alocando GPU",
     "downloading_cs2": "Instalando CS2",
+    "install_phase": {
+      "downloading": "Baixando",
+      "verifying": "Verificando",
+      "finalizing": "Finalizando"
+    },
     "launching_steam": "Iniciando Steam",
     "logging_in": "Fazendo login",
     "launching_cs2": "Iniciando CS2",
@@ -146,7 +231,15 @@
     "time_ran_out": "Tempo esgotado",
     "ts_eliminated_cts": "TRs eliminaram os CTs",
     "cts_eliminated_ts": "CTs eliminaram os TRs",
+    "won_man": "Fechou {state}",
+    "survivors": "Sobreviventes",
     "unknown": "Desconhecido"
+  },
+  "role_radar": {
+    "all": "Todos",
+    "radar_title": "Confronto por função",
+    "radar_description": "Filtre pela função em que este jogador atuou. Fixe um jogador de comparação para sobrepor os dados.",
+    "no_data": "Não há partidas recentes suficientes para gerar gráfico."
   },
   "notification_context": {
     "online": "ONLINE",
@@ -177,7 +270,10 @@
     "no_nodes": "Nenhum nó de GPU disponível no momento",
     "live_busy": "GPU ocupada: uma transmissão ao vivo está em andamento",
     "demo_busy": "GPU ocupada: uma demo está sendo assistida",
-    "highlights_busy": "GPU ocupada: destaques estão sendo renderizados"
+    "highlights_busy": "GPU ocupada: destaques estão sendo renderizados",
+    "streaming_disabled": "Transmissão ao vivo está desativada em todos os nós de GPU",
+    "demo_disabled": "Reprodução de demos está desativada em todos os nós de GPU",
+    "rendering_disabled": "Renderização está desativada em todos os nós de GPU"
   },
   "clip_editor_dest": {
     "library": "Biblioteca",
@@ -324,10 +420,55 @@
     },
     "teams": {
       "title": "Equipes",
-      "create": "Criar Equipe",
-      "no_teams_title": "Nenhuma Equipe encontrada",
+      "create": "Criar equipe",
+      "no_teams_title": "Nenhuma equipe encontrada",
       "no_teams": "Nenhuma equipe encontrada.",
-      "search": "Pesquisar..."
+      "search": "Pesquisar...",
+      "vetos": {
+        "section": "Preferência de mapas e tendências de veto",
+        "description": "Como esta equipe aborda o veto de mapas e como cada mapa se desempenha quando chega ao servidor.",
+        "loading": "Carregando histórico de vetos…",
+        "empty_title": "Nenhum histórico de vetos",
+        "empty_description": "Esta equipe ainda não completou nenhuma partida com vetos de mapas registrados.",
+        "most_banned": "Mais vetado",
+        "most_picked": "Mais escolhido",
+        "comfort_map": "Mapa de conforto",
+        "comfort_hint": "Necessário {n}+ jogados",
+        "bans_short": "vetos",
+        "picks_short": "escolhas",
+        "played_short": "jogados",
+        "col_map": "Mapa",
+        "col_played": "Jogados",
+        "col_win": "Vitórias%",
+        "col_banned": "Vetado",
+        "col_picked": "Escolhido",
+        "col_first_ban": "1º Veto",
+        "col_first_pick": "1ª Escolha",
+        "col_decider": "Decisivo/tie-break",
+        "based_on": "Baseado em {n} registros de veto"
+      },
+      "veto_sim": {
+        "section": "Simulação de veto",
+        "description": "Estime o provável resultado do veto e as chances de vitória em mapas contra um adversário escolhido, com base no histórico de vetos de ambas as equipes.",
+        "opponent": "Adversário",
+        "select_opponent": "Selecionar equipe adversária",
+        "format": "Formato",
+        "estimate_notice": "Estimativa apenas — derivada de tendências históricas de veto, não um resultado garantido.",
+        "loading": "Carregando histórico de vetos do adversário…",
+        "no_self_title": "Nenhum histórico de vetos para esta equipe",
+        "no_self_description": "A simulação requer que esta equipe tenha vetos de mapas registrados primeiro.",
+        "pick_opponent_title": "Escolha um adversário",
+        "pick_opponent_description": "Selecione uma equipe adversária para simular o veto de mapas.",
+        "no_opp_title": "Nenhum histórico de vetos para o adversário",
+        "no_opp_description": "O adversário selecionado não possui vetos de mapas registrados para simulação.",
+        "confidence_self": "Esta equipe: {n} registros",
+        "confidence_opp": "Adversário: {n} registros",
+        "col_map": "Mapa",
+        "col_ban": "Probabilidade de veto",
+        "col_pick": "Probabilidade de escolha",
+        "col_play": "Probabilidade de jogo",
+        "col_predicted_win": "Vitória prevista%"
+      }
     },
     "settings": {
       "on_this_page": "Nesta página",
@@ -462,6 +603,14 @@
             "role_id_description": "Esses cargos serão mencionados nas notificações de status das partidas. É possível adicionar múltiplos IDs separados por vírgulas.",
             "statuses_title": "Notificar Mudanças de Status",
             "events_title": "Notificar Eventos da Partida"
+          },
+          "gamedata_notifications": {
+            "title": "Notificações de validação de gamedata",
+            "description": "Configure onde os resultados da validação de assinatura de gamedata do CS2 serão publicados.",
+            "webhook": "URL do Webhook de notificações de gamedata",
+            "webhook_description": "Webhook dedicado para resultados de validação de gamedata. Se não definido, será usado o webhook padrão.",
+            "role_id": "ID de função para notificações de gamedata",
+            "role_id_description": "Essas funções serão mencionadas nas notificações de validação de gamedata. Você pode adicionar múltiplos IDs de função separados por vírgulas. Se não definido, será usada a função padrão."
           },
           "server_notifications": {
             "title": "Notificações do Servidor",
@@ -863,6 +1012,35 @@
         "no_players": "Nenhum jogador encontrado"
       },
       "detail": {
+        "all_short": "Todos",
+        "settings_changed": "Configurações personalizadas ativas",
+        "source_all_unavailable_elo": "\"Todos\" não está disponível na aba ELO — mostrando apenas o ELO do 5Stack.",
+        "external_warning": {
+          "title": "Nenhum histórico de partidas vinculado",
+          "description": "Vincule seu código de autenticação do histórico de partidas da Steam para importar suas partidas Premier, Competitivas e Wingman.",
+          "cta": "Configurar"
+        },
+        "tabs": {
+          "performance": "Desempenho",
+          "elo": "ELO",
+          "maps": "Mapas",
+          "arsenal": "Arsenal",
+          "combat": "Combate"
+        },
+        "roles": {
+          "title": "Funções preferidas",
+          "description": "Detectadas automaticamente a partir do uso da AWP, envolvimento em duelos de abertura e uso de utilitários nas partidas recentes.",
+          "no_data": "Não há partidas recentes suficientes para detectar uma função.",
+          "primary": "Primária",
+          "secondary": "Secundária",
+          "rifler_detail": "rifler equilibrado",
+          "maps_count": "{count} mapas",
+          "signals": {
+            "awp": "AWP",
+            "entry": "entry/rd",
+            "support": "índice util"
+          }
+        },
         "kd": "K/D",
         "recent_wins_and_losses": "Vitórias e Derrotas Recentes",
         "elo_history": "Histórico do ELO",
@@ -872,6 +1050,7 @@
         "tournaments": "Campeonatos",
         "no_matches": "Ainda sem partidas",
         "no_matches_description": "O histórico de partidas irá aparecer após jogar algumas partidas.",
+        "no_matches_self_description": "Entre em uma partida — suas estatísticas, ELO e histórico de partidas começarão a ser preenchidos aqui.",
         "no_tournaments": "Nenhum campeonato encontrado para este jogador.",
         "no_tournaments_description": "Torneios que este jogador participou aparecerão aqui.",
         "weapon_kills": "Armas Mais Utilizadas",
@@ -905,6 +1084,17 @@
         "lifetime_wl": "Histórico {wins}V · {losses}D",
         "lifetime_kd_label": "Histórico K/D",
         "current_elo": "ELO atual",
+        "current_rank": "Rank atual",
+        "current_rating": "Avaliação atual",
+        "source": "Fonte",
+        "mode": "Modo",
+        "section": "Seção",
+        "weapons_lifetime": "Total",
+        "refresh_stats": "Atualizar estatísticas",
+        "last_n_matches": "Últimas 10",
+        "start_date": "Início",
+        "end_date": "Fim",
+        "no_rank_history": "Nenhum histórico de rank importado",
         "peak_lowest": "Teto / Mínimo",
         "peak": "Teto",
         "lifetime_peak": "Teto histórico",
@@ -913,6 +1103,120 @@
         "expand_to_all_time": "Expandir para todo o período",
         "acquiring_telemetry": "Obtendo telemetria…",
         "matches_section": "PARTIDAS",
+        "intro": {
+          "section": "Introdução de desempenho",
+          "last_n": "Últimas {n} partidas",
+          "loading": "Coletando telemetria",
+          "empty_title": "Nenhuma partida processada",
+          "empty_description": "As estatísticas detalhadas de desempenho aparecerão aqui quando este jogador concluir e processar partidas.",
+          "adr": "ADR",
+          "kd": "K/D",
+          "kpr": "KPR",
+          "dpr": "DPR",
+          "win_rate": "Taxa de vitórias",
+          "hs_pct": "HS%",
+          "rating_title": "Tendência de HLTV Rating",
+          "recent_title": "Desempenho recente",
+          "series": {
+            "hltv": "HLTV",
+            "adr": "ADR",
+            "kd": "K/D",
+            "kpr": "KPR",
+            "udr": "UDR",
+            "kast": "KAST"
+          },
+          "tooltip": {
+            "won": "VENCEU",
+            "lost": "PERDEU",
+            "tied": "EMPATOU"
+          }
+        },
+        "maps": {
+          "section": "MAPAS",
+          "description": "Desempenho de carreira detalhado por mapa, com divisão entre lados terrorista e contra-terrorista.",
+          "loading": "Carregando desempenho por mapa…",
+          "empty_title": "Nenhum dado de mapa ainda",
+          "empty_description": "Assim que este jogador concluir partidas, o desempenho por mapa aparecerá aqui.",
+          "played_short": "JOG",
+          "rating_label": "HLTV Rating",
+          "win_rate": "Taxa de vitórias",
+          "both": "AMBOS",
+          "t_side": "T",
+          "ct_side": "CT",
+          "adr_short": "ADR",
+          "table_section": "TODOS OS MAPAS",
+          "col_map": "Mapa",
+          "col_played": "Jogadas",
+          "col_win": "Vitórias%",
+          "col_rating": "HLTV Rating",
+          "col_adr": "ADR",
+          "col_kd": "K/D",
+          "col_udr": "UDR",
+          "col_avg_kda": "Média K/D/A"
+        },
+        "weapons_table": {
+          "section": "Armas",
+          "lifetime": "Tempo de uso",
+          "loading": "Carregando armas",
+          "empty_title": "Nenhum dado de armas",
+          "empty_description": "Este jogador ainda não possui abates registrados com armas.",
+          "weapon": "Arma",
+          "kills": "Abates",
+          "usage": "Mais usada %",
+          "adr": "ADR",
+          "kpr": "KPR",
+          "rounds": "Rodadas",
+          "rounds_tooltip": "Rodadas com abate usando esta arma (não é possível ver rodadas em que a arma apenas foi segurada)",
+          "rating": "HLTV Rating",
+          "rating_tooltip": "Avaliação aproximada baseada em KPR + ADR + impacto (sem mortes/KAST por arma, apenas direcional)",
+          "economy": "Economia",
+          "economy_tooltip": "Avaliação da arma ajustada pelo custo de compra — abates com armas mais baratas têm maior peso (~1.0 = equivalente ao preço)",
+          "top_title": "Armas principais"
+        },
+        "career_duels": {
+          "section": "Duelos de abertura",
+          "description": "Resultados do primeiro abate da rodada ao longo dos últimos {count} mapas.",
+          "loading": "Carregando duelos de abertura…",
+          "empty_title": "Nenhum duelo de abertura",
+          "empty_description": "Este jogador não possui duelos de abertura registrados em suas partidas recentes.",
+          "win_label": "Vitória na abertura",
+          "attempts_label": "Tentativas de abertura",
+          "kills_short": "A",
+          "deaths_short": "M",
+          "kd_label": "K/D de abertura",
+          "traded_label": "Trocado na abertura",
+          "table_section": "Por mapa",
+          "col_map": "Mapa",
+          "col_attempts": "Tentativas",
+          "col_win": "Vitórias %",
+          "col_kd": "K/D",
+          "col_traded": "Trocas %"
+        },
+        "career_clutches": {
+          "section": "Clutches",
+          "description": "Situações de clutch 1vX ao longo dos últimos {count} mapas.",
+          "loading": "Carregando clutches…",
+          "empty_title": "Nenhum clutch",
+          "empty_description": "Este jogador não possui situações de clutch registradas em suas partidas recentes.",
+          "win_label": "Vitória em clutch",
+          "attempts_label": "Tentativas",
+          "won_label": "Venceu",
+          "table_section": "Clutches por situação",
+          "col_situation": "Situação",
+          "col_attempts": "Tentativas",
+          "col_won": "Vitórias",
+          "col_win": "Vitórias %"
+        },
+        "compare": {
+          "toggle": "Comparar",
+          "label": "Comparar com",
+          "select_label": "Selecionar jogador",
+          "description": "Sobrepõe os números deste jogador em todas as abas de estatísticas.",
+          "active": "Comparação ativa",
+          "vs": "vs",
+          "legend_a": "Este jogador",
+          "legend_b": "Comparação"
+        },
         "elo_history_dialog": {
           "eyebrow": "Progressão de ELO — Detalhada",
           "title": "{name} — Detalhe de ELO",
@@ -936,6 +1240,10 @@
     },
     "play": {
       "title": "Jogar",
+      "not_party_leader": {
+        "title": "Você não é o líder do grupo",
+        "description": "Seu líder deve entrar na fila do matchmaking, criar uma partida persoinalizada ou entrar em alguma partida abaixo."
+      },
       "open_matches": {
         "description": "Partidas com lobbys abertos que qualquer um pode entrar."
       },
@@ -991,6 +1299,7 @@
     },
     "gpu_nodes": {
       "title": "Nós com GPU",
+      "gpu_unknown": "GPU desconhecida",
       "description": "Nós de servidor de jogo com suporte a GPU que hospedam transmissões ao vivo, reprodução de demos e renderização de highlights. Cada GPU executa no máximo um consumidor por vez.",
       "cmdbar_sub": "Espectador ao vivo · reprodução de demo · renderização de highlights",
       "metrics": "Métricas",
@@ -1026,14 +1335,41 @@
       "toggle_scheduling_help": "Quando desativado, o nó continua executando partidas existentes, mas não aceitará novas.",
       "toggle_enabled_failed": "Falha ao alternar estado de ativação do nó",
       "toggle_scheduling_failed": "Falha ao alternar estado de agendamento",
+      "toggle_workload_failed": "Falha ao alternar disponibilidade de workload de GPU",
+      "control": {
+        "title": "Controle do nó"
+      },
+      "workload": {
+        "section": "Workloads de GPU",
+        "streaming": "Transmissão ao vivo",
+        "streaming_desc": "Streams de espectador ao vivo",
+        "demos": "Reprodução de demos",
+        "demos_desc": "Replay de demos sob demanda",
+        "rendering": "Renderização",
+        "rendering_desc": "Renderização de highlights e clipes"
+      },
       "bake": {
         "help": "Pré-compilar o cache de shaders Vulkan deste nó para que a primeira partida inicie aquecida.",
         "cancel_help": "Cancelar a pré-compilação de shaders em execução.",
+        "logs_help": "Veja os registros da tarefa de pré-renderização do shader.",
         "started": "Compilação de shaders iniciada",
         "failed": "Falha ao iniciar compilação de shaders",
         "cancelled": "Compilação de shaders cancelada",
         "cancel_failed": "Falha ao cancelar compilação de shaders",
-        "baking": "Compilando shaders"
+        "baking": "Compilando shaders",
+        "in_progress": "Pré-compilação em andamento",
+        "stages": {
+          "initializing": "Inicializando",
+          "downloading_cs2": "Baixando CS2",
+          "launching_cs2": "Iniciando CS2",
+          "processing_shaders": "Processando shaders",
+          "errored": "Falha na compilação"
+        },
+        "steps": {
+          "download": "Baixando CS2",
+          "launch": "Iniciando CS2",
+          "shaders": "Renderizando shaders"
+        }
       },
       "table": {
         "node": "Nó",
@@ -1065,7 +1401,14 @@
         "deleted": "Conta Steam excluída",
         "delete_failed": "Falha ao excluir conta",
         "delete_title": "Excluir {username}?",
-        "delete_description": "Qualquer pod em execução usando esta conta mantém suas credenciais e finaliza normalmente. A conta será removida do pool e não estará disponível para jobs futuros."
+        "delete_description": "Qualquer pod em execução usando esta conta mantém suas credenciais e finaliza normalmente. A conta será removida do pool e não estará disponível para jobs futuros.",
+        "idle": "Ocioso",
+        "purpose": {
+          "live": "Live Stream",
+          "demo": "Playback de demo",
+          "highlights": "Highlights",
+          "bake": "Compilação de Shaders"
+        }
       }
     },
     "game_server_nodes": {
@@ -1131,6 +1474,10 @@
         "show_config": "Mostrar Configuração",
         "config_location": "Esta configuração deve estar localizada em:",
         "files": "Arquivos",
+        "player_management": "Gerenciamento de Jogadores",
+        "no_players": "Nenhum jogador atualmente neste servidor",
+        "sanctions_wip_title": "Em desenvolvimento",
+        "sanctions_wip": "Expulsões já funcionam hoje. A aplicação de mudo/gag ao vivo em servidores públicos está em desenvolvimento — um novo plugin público do 5Stack está chegando em breve, e os mutes/gags serão aplicados automaticamente assim que for lançado.",
         "status": {
           "disconnected": "O servidor está desconectado",
           "no_rcon": "O servidor está conectado, mas o RCON não está disponível",
@@ -1149,7 +1496,8 @@
       "players": "Jogadores",
       "no_servers_title": "Nenhum servidor disponível",
       "no_public_servers": "Nenhum servidor de warmup disponível no momento.",
-      "lan_servers_title": "Servidores da LAN"
+      "lan_servers_title": "Servidores da LAN",
+      "manage": "Gerenciar"
     },
     "map_pools": {
       "title": "Pool de Mapas",
@@ -1230,6 +1578,11 @@
       "no_results": "Sem resultados para os filtros selecionados.",
       "categories": {
         "elo": "ELO",
+        "best_rating": "HLTV Rating",
+        "best_adr": "ADR",
+        "best_kpr": "KPR",
+        "best_kast": "KAST",
+        "best_udr": "UDR",
         "best_kdr": "KDR",
         "best_win_rate": "Taxa de Vitória",
         "highest_hs_pct": "% HS",
@@ -1245,6 +1598,13 @@
         "competitive": "Competitivo",
         "wingman": "Braço Direito",
         "duel": "X1"
+      },
+      "roles": {
+        "all": "Todos",
+        "Sniper": "Awper",
+        "Entry": "Entry",
+        "Support": "Suporte",
+        "Rifler": "Rifler"
       },
       "columns": {
         "rank": "#",
@@ -1265,7 +1625,15 @@
         "silver": "Prata",
         "bronze": "Bronze",
         "mvp": "MVP",
-        "total_trophies": "Total"
+        "total_trophies": "Total",
+        "rating": "HLTV Rating",
+        "adr": "ADR",
+        "kpr": "KPR",
+        "dpr": "DPR",
+        "kast": "KAST",
+        "udr": "UDR",
+        "util_damage": "Dano de Util",
+        "rounds": "Rodadas"
       },
       "exclude_tournaments": "Excluir Torneios"
     },
@@ -1666,6 +2034,7 @@
   "common": {
     "manage_custom_plugins_and_shared_files": "Esses arquivos são montados no diretório `csgo` quando o servidor é iniciado.",
     "delete": "Excluir",
+    "clear": "Limpar",
     "cancel": "Cancelar",
     "save": "Salvar",
     "reset": "Reset",
@@ -1877,6 +2246,7 @@
     "user": "Usuário",
     "verified_user": "Usuário Verificado",
     "streamer": "Streamer",
+    "moderator": "Moderador",
     "match_organizer": "Organizador de Partidas",
     "tournament_organizer": "Organizador de Torneios",
     "administrator": "Administrador"
@@ -2256,8 +2626,27 @@
     }
   },
   "team": {
+    "career": {
+      "title": "Desempenho da Equipe",
+      "description": "Agregados por jogador ao longo de todas as partidas que esta equipe disputou.",
+      "empty_title": "Nenhuma estatística ainda",
+      "empty_description": "Esta equipe não possui partidas concluídas com estatísticas registradas.",
+      "matches": "Partidas",
+      "maps_played": "Mapas",
+      "map_win_pct": "Vitórias por mapa %",
+      "team_rating": "Média HLTV Rating",
+      "player": "Jogador",
+      "maps": "Mapas",
+      "rounds": "Rodadas",
+      "rating": "HLTV Rating",
+      "kpr": "KPR",
+      "dpr": "DPR",
+      "kd": "K/D",
+      "adr": "ADR",
+      "kast": "KAST"
+    },
     "hero": {
-      "roster": "Roster",
+      "roster": "Jogadores",
       "matches": "Partidas",
       "team_profile": "Perfil da Equipe"
     },
@@ -2364,7 +2753,10 @@
     "team_stats_heading": "Estatísticas de {name}",
     "all_maps": "Todos os Mapas",
     "stream": {
-      "watch": "Transmissão Ao Vivo"
+      "watch": "Transmissão Ao Vivo",
+      "no_preview": "Sem preview ainda",
+      "rendering_highlights": "Renderizando Highlights",
+      "expand_preview": "Expandir o Preview"
     },
     "elo_details": {
       "title": "Detalhes das Evoluções do ELO",
@@ -2555,14 +2947,205 @@
       },
       "assign_slot": "Atribuir slot"
     },
+    "buy_types": {
+      "section_title": "Análise por Economia",
+      "rounds": "rodadas",
+      "win": "vitórias",
+      "kills": "Abates",
+      "deaths": "Mortes",
+      "kd": "K/D",
+      "rating": "HLTV Rating",
+      "you": "Sua equipe",
+      "opponent": "Oponente",
+      "breakdown_label": "Detalhamento de jogadores por confronto",
+      "win_axis": "Vitórias %",
+      "no_data": "Nenhum dado disponível por tipo de compra",
+      "matchups": {
+        "pistol_v_pistol": "Pistol vs Pistol",
+        "full_v_full": "Full vs Full",
+        "full_v_eco": "Full vs Eco",
+        "full_v_force": "Full vs Forçado",
+        "eco_v_full": "Eco vs Full",
+        "force_v_full": "Force vs Full"
+      },
+      "sections": {
+        "even": "Compras iguais",
+        "even_sub": "Ambas as equipes em condições iguais",
+        "advantage": "Vantagem de compra",
+        "advantage_sub": "Taxa de vitórias quando se compra melhor que o inimigo",
+        "upsets": "Upsets de Eco / Forçado",
+        "upsets_sub": "% de vitórias em compra pior"
+      }
+    },
+    "radar": {
+      "title": "Confronto de Jogadores",
+      "player_a": "Jogador A",
+      "player_b": "Jogador B",
+      "select_player": "Selecionar jogador",
+      "vs": "vs",
+      "metric": "Métrica",
+      "no_data": "Nenhuma estatística disponível para os jogadores selecionados.",
+      "axes": {
+        "rating": "HLTV Rating",
+        "kast": "KAST",
+        "adr": "ADR",
+        "kpr": "KPR",
+        "opening": "K/D de abertura",
+        "opening_attempts": "Tentativas de abertura",
+        "trade_kills": "Abates trocados/rodada",
+        "kd": "K/D",
+        "traded": "Mortes trocadas/rodada",
+        "dpr": "DPR",
+        "udr": "UDR",
+        "flash_assists": "Assistências de flash/rodada"
+      }
+    },
+    "team_stats": {
+      "overview_title": "Visão Geral da Equipe",
+      "sides_title": "Análise por lados",
+      "players_title": "Desempenho dos jogadores",
+      "team_average": "Média da equipe",
+      "no_data": {
+        "title": "Nenhum dado de rodadas",
+        "description": "As estatísticas da equipe estarão disponíveis quando os dados por rodada forem registrados nesta partida."
+      },
+      "kpi": {
+        "round_win": "Vitórias por rodada %",
+        "pistol_win": "Vitórias de pistol %",
+        "opening_win": "Vitórias de abertura %",
+        "trade": "Trade %",
+        "man_advantage": "Vitórias 5v5 %",
+        "man_disadvantage": "Vitórias 4v5 %",
+        "udr": "UDR",
+        "flash_assists_pr": "Flash Assist / Round"
+      },
+      "side": {
+        "ct": "Lado CT",
+        "t": "Lado TR",
+        "no_rounds": "Nenhuma rodada neste lado"
+      },
+      "buy": {
+        "pistol": "Pistol",
+        "eco": "Eco",
+        "force": "Forçado",
+        "full": "Full"
+      },
+      "buy_mix": "Mix de Compras",
+      "rounds_won": "rodadas vencidas",
+      "col": {
+        "hltv": "HLTV",
+        "kpr": "KPR",
+        "kd": "K/D",
+        "dpr": "DPR",
+        "adr": "ADR",
+        "kast": "KAST",
+        "udr": "UDR",
+        "far": "FAR"
+      }
+    },
+    "heatmaps": {
+      "title": "Mapas de calor",
+      "select_map": "Selecionar mapa",
+      "kills": "Abates",
+      "deaths": "Mortes",
+      "utility": "Utilits",
+      "util_damage": "Dano de utilitários",
+      "render_heat": "Calor",
+      "render_dots": "Pontos",
+      "trajectories": "Trajetórias",
+      "all_players": "Todos os jogadores",
+      "all_rounds": "Todas as rodadas",
+      "round": "Rodada {round}",
+      "plotted": "{count} posições plotadas",
+      "no_radar_title": "Nenhum radar disponível",
+      "no_radar_description": "Não há imagem de radar ou dados de calibração para este mapa.",
+      "utility_types": {
+        "HighExplosive": "HE",
+        "Molotov": "Molotov",
+        "Smoke": "Smoke",
+        "Flash": "Flash",
+        "Decoy": "Decoy"
+      }
+    },
+    "map_analysis": {
+      "title": "Análise de mapa",
+      "mode_heatmap": "Mapa de calor",
+      "mode_movement": "Caminhos",
+      "filter_stat": "Estatística",
+      "filter_render": "Renderização",
+      "filter_side": "Lado",
+      "filter_player": "Jogador",
+      "filter_type": "Tipo",
+      "filter_team": "Equipe",
+      "filter_window": "Janela",
+      "open_2d_playback": "Abrir reprodução 2D"
+    },
+    "roles": {
+      "title": "Funções detectadas",
+      "description": "Detectadas automaticamente a partir do uso da AWP, envolvimento em duelos de abertura e uso de utilitários nesta partida.",
+      "no_data": "Não há dados suficientes para detectar funções nesta partida.",
+      "names": {
+        "sniper": "Awper",
+        "entry": "Entry",
+        "support": "Suporte",
+        "lurker": "Lurker",
+        "rifler": "Rifler"
+      },
+      "signals": {
+        "awp": "Awper",
+        "entry": "Entry",
+        "support": "Util"
+      }
+    },
+    "economy": {
+      "section": "Economia por rodada",
+      "description": "Dinheiro inicial de cada equipe em cada rodada do mapa.",
+      "select_map": "Selecionar mapa",
+      "empty_title": "Nenhum dado de economia",
+      "empty_description": "Os dados de dinheiro por rodada ainda não estão disponíveis para este mapa.",
+      "round_won_by": "Rodada vencida por {team}",
+      "no_winner": "Sem vencedor",
+      "team_1": "Equipe 1",
+      "team_2": "Equipe 2"
+    },
+    "movement": {
+      "title": "Movimento nos primeiros segundos",
+      "select_map": "Selecionar mapa",
+      "loading": "Carregando dados de reprodução",
+      "all_players": "Todos os jogadores",
+      "all_rounds": "Todas as rodadas",
+      "round": "Rodada {round}",
+      "seconds": "{count}s",
+      "side_both": "Ambos",
+      "side_ct": "CT",
+      "side_t": "TR",
+      "team_all": "Ambas as equipes",
+      "team_1": "Equipe 1",
+      "team_2": "Equipe 2",
+      "summary": "{rounds} rodadas, {paths} caminhos",
+      "sampled": "Caminhos amostrados para manter a renderização rápida",
+      "no_radar_title": "Nenhum radar disponível",
+      "no_radar_description": "Este mapa não possui imagem de radar ou dados de calibração, portanto os caminhos de movimento não podem ser desenhados."
+    },
     "tabs": {
       "overview": "Visão geral",
+      "scoreboard": "Placar",
+      "general": "Geral",
+      "more": "Mais",
+      "team_stats": "Estatísticas da equipe",
+      "economy": "Economia",
       "utility": "Utilitários",
-      "trade_stats": "Trades",
-      "aim_stats": "Aim",
-      "opening_duels": "Duelos de abertura",
+      "trade_stats": "Trocas",
+      "aim_stats": "Mira",
+      "opening_duels": "Duelos de Abertura",
+      "buy_types": "Tipos de compra",
       "clutches": "Clutches",
-      "head_to_head": "P v P",
+      "head_to_head": "Confronto Direto",
+      "radar": "Radar",
+      "roles": "Funções",
+      "heatmaps": "Mapas de calor",
+      "movement": "Movimento",
+      "map_analysis": "Análise de mapa",
       "replay": "Replay 2D",
       "mobile_label_map": "Filto de Mapa",
       "mobile_label_view": "Ver",
@@ -3047,6 +3630,15 @@
       "steam_id": "Steam ID",
       "steam": "Steam"
     },
+    "kick": {
+      "button": "Kickar",
+      "title": "Kickar {name}",
+      "description": "Remove o jogador do servidor. Ele pode retornar, a menos que esteja banido. Opcionalmente, forneça um motivo que será mostrado ao jogador.",
+      "reason_label": "Motivo",
+      "reason_placeholder": "Motivo opcional...",
+      "confirm": "Kickar jogador",
+      "kicked": "{name} foi kickado"
+    },
     "sanction": {
       "button": "Sancionar Jogador",
       "typed_player": "{type} Jogador",
@@ -3222,6 +3814,7 @@
     "game_server_versions": "Versão do Servidor de Jogo",
     "cs_build": "CS Build",
     "update_cs": "Atualizar CS2",
+    "validate_gamedata": "Validar gamedata",
     "note_label": "Nota:",
     "one_cpu_core": "1 núcleo da CPU",
     "unpin_build_id": "Usar Última Versão",
@@ -3315,6 +3908,7 @@
     "toast": {
       "cs_updating": "Atualizando CS2",
       "csgo_installing": "CS:GO está sendo instalado neste nó",
+      "validating_gamedata": "Validando assinaturas do gamedata no nó",
       "ports_updated": "Portas Atualizadas",
       "label_updated": "Rótulo Atualizado",
       "cs2_options_updated": "Configurações de vídeo atualizadas",
@@ -3689,6 +4283,7 @@
     "open_player_profile": "Abrir perfil de {name}",
     "round_short": "Rodada {number}",
     "kills_in_clip": "{count} abate no clipe | {count} abates no clipe",
+    "plays_count": "{count} jogador | {count} jogadores",
     "now_playing": "Reproduzindo agora",
     "selected": "Selecionado",
     "visibility": {

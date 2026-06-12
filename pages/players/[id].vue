@@ -2321,7 +2321,7 @@ const playerTeamChipShortClasses =
           </div>
           <div class="flex items-center gap-2">
             <NuxtLink
-              to="/settings/match-history"
+              to="/settings/external-matches"
               class="inline-flex items-center gap-1.5 rounded-md border border-[hsl(var(--warning)/0.6)] bg-[hsl(var(--warning)/0.16)] px-3 py-1.5 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-warning transition-colors hover:bg-[hsl(var(--warning)/0.26)]"
             >
               {{ $t("pages.players.detail.external_warning.cta") }}

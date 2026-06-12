@@ -452,7 +452,7 @@ export default {
             auto_clip_default_visibility: z
               .enum(["private", "public"])
               .default("private"),
-            clip_video_codec: z.enum(["h265", "h264"]).default("h265"),
+            clip_video_codec: z.enum(["h265", "h264"]).default("h264"),
             clip_fps: z.enum(["30", "60"]).default("60"),
             clip_resolution: z.enum(["720p", "1080p"]).default("1080p"),
           }),
@@ -479,7 +479,7 @@ export default {
           if (setting.name === "clip_video_codec") {
             this.form.setFieldValue(
               setting.name,
-              setting.value === "h264" ? "h264" : "h265",
+              setting.value === "h265" ? "h265" : "h264",
             );
             continue;
           }
@@ -562,7 +562,7 @@ export default {
                 },
                 {
                   name: "clip_video_codec",
-                  value: this.form.values.clip_video_codec ?? "h265",
+                  value: this.form.values.clip_video_codec ?? "h264",
                 },
                 {
                   name: "clip_fps",

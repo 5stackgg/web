@@ -193,7 +193,7 @@ export default {
                 .string()
                 .default(e_player_roles_enum.streamer),
             }),
-            live_video_codec: z.enum(["h265", "h264"]).default("h265"),
+            live_video_codec: z.enum(["h265", "h264"]).default("h264"),
           }),
         ),
       }),
@@ -207,7 +207,7 @@ export default {
           if (setting.name === "live_video_codec") {
             this.form.setFieldValue(
               setting.name,
-              setting.value === "h264" ? "h264" : "h265",
+              setting.value === "h265" ? "h265" : "h264",
             );
             continue;
           }
@@ -271,7 +271,7 @@ export default {
                   },
                   {
                     name: "live_video_codec",
-                    value: this.form.values.live_video_codec ?? "h265",
+                    value: this.form.values.live_video_codec ?? "h264",
                   },
                 ],
                 on_conflict: {

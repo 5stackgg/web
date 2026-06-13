@@ -11551,6 +11551,8 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		util_on_death_count:"order_by",
+		util_on_death_sum:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -11625,6 +11627,8 @@ export const AllTypesProps: Record<string,any> = {
 		two_kill_rounds:"Int_comparison_exp",
 		unused_utility_value:"Int_comparison_exp",
 		updated_at:"timestamptz_comparison_exp",
+		util_on_death_count:"Int_comparison_exp",
+		util_on_death_sum:"Int_comparison_exp",
 		wasted_magazine_shots:"Int_comparison_exp",
 		zeus_kills:"Int_comparison_exp"
 	},
@@ -11712,6 +11716,8 @@ export const AllTypesProps: Record<string,any> = {
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
 		updated_at:"order_by",
+		util_on_death_count:"order_by",
+		util_on_death_sum:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -11780,6 +11786,8 @@ export const AllTypesProps: Record<string,any> = {
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
 		updated_at:"order_by",
+		util_on_death_count:"order_by",
+		util_on_death_sum:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -11856,6 +11864,8 @@ export const AllTypesProps: Record<string,any> = {
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
 		updated_at:"order_by",
+		util_on_death_count:"order_by",
+		util_on_death_sum:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -11935,6 +11945,8 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		util_on_death_count:"order_by",
+		util_on_death_sum:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -12000,6 +12012,8 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		util_on_death_count:"order_by",
+		util_on_death_sum:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -12065,6 +12079,8 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		util_on_death_count:"order_by",
+		util_on_death_sum:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -12143,6 +12159,8 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		util_on_death_count:"order_by",
+		util_on_death_sum:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -12214,6 +12232,8 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		util_on_death_count:"order_by",
+		util_on_death_sum:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -12279,6 +12299,8 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		util_on_death_count:"order_by",
+		util_on_death_sum:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -12344,6 +12366,8 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		util_on_death_count:"order_by",
+		util_on_death_sum:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -12435,6 +12459,7 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		utility_on_death:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -12501,6 +12526,7 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"Int_comparison_exp",
 		two_kill_rounds:"Int_comparison_exp",
 		unused_utility_value:"Int_comparison_exp",
+		utility_on_death:"numeric_comparison_exp",
 		wasted_magazine_shots:"Int_comparison_exp",
 		zeus_kills:"Int_comparison_exp"
 	},
@@ -12509,7 +12535,8 @@ export const AllTypesProps: Record<string,any> = {
 		avg_flash_duration:"numeric",
 		avg_time_to_damage_s:"numeric",
 		match_id:"uuid",
-		steam_id:"bigint"
+		steam_id:"bigint",
+		utility_on_death:"numeric"
 	},
 	player_match_stats_v_max_order_by:{
 		assists:"order_by",
@@ -12571,6 +12598,7 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		utility_on_death:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -12634,6 +12662,7 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		utility_on_death:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -12697,6 +12726,7 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		utility_on_death:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -12760,6 +12790,7 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		utility_on_death:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -12822,6 +12853,7 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		utility_on_death:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -12884,6 +12916,7 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		utility_on_death:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -12896,7 +12929,8 @@ export const AllTypesProps: Record<string,any> = {
 		avg_flash_duration:"numeric",
 		avg_time_to_damage_s:"numeric",
 		match_id:"uuid",
-		steam_id:"bigint"
+		steam_id:"bigint",
+		utility_on_death:"numeric"
 	},
 	player_match_stats_v_sum_order_by:{
 		assists:"order_by",
@@ -12957,6 +12991,7 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		utility_on_death:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -13019,6 +13054,7 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		utility_on_death:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -13081,6 +13117,7 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		utility_on_death:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -13143,6 +13180,7 @@ export const AllTypesProps: Record<string,any> = {
 		traded_death_successes:"order_by",
 		two_kill_rounds:"order_by",
 		unused_utility_value:"order_by",
+		utility_on_death:"order_by",
 		wasted_magazine_shots:"order_by",
 		zeus_kills:"order_by"
 	},
@@ -30236,6 +30274,8 @@ export const ReturnTypes: Record<string,any> = {
 		two_kill_rounds:"Int",
 		unused_utility_value:"Int",
 		updated_at:"timestamptz",
+		util_on_death_count:"Int",
+		util_on_death_sum:"Int",
 		wasted_magazine_shots:"Int",
 		zeus_kills:"Int"
 	},
@@ -30318,6 +30358,8 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Float",
 		two_kill_rounds:"Float",
 		unused_utility_value:"Float",
+		util_on_death_count:"Float",
+		util_on_death_sum:"Float",
 		wasted_magazine_shots:"Float",
 		zeus_kills:"Float"
 	},
@@ -30386,6 +30428,8 @@ export const ReturnTypes: Record<string,any> = {
 		two_kill_rounds:"Int",
 		unused_utility_value:"Int",
 		updated_at:"timestamptz",
+		util_on_death_count:"Int",
+		util_on_death_sum:"Int",
 		wasted_magazine_shots:"Int",
 		zeus_kills:"Int"
 	},
@@ -30454,6 +30498,8 @@ export const ReturnTypes: Record<string,any> = {
 		two_kill_rounds:"Int",
 		unused_utility_value:"Int",
 		updated_at:"timestamptz",
+		util_on_death_count:"Int",
+		util_on_death_sum:"Int",
 		wasted_magazine_shots:"Int",
 		zeus_kills:"Int"
 	},
@@ -30523,6 +30569,8 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Float",
 		two_kill_rounds:"Float",
 		unused_utility_value:"Float",
+		util_on_death_count:"Float",
+		util_on_death_sum:"Float",
 		wasted_magazine_shots:"Float",
 		zeus_kills:"Float"
 	},
@@ -30588,6 +30636,8 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Float",
 		two_kill_rounds:"Float",
 		unused_utility_value:"Float",
+		util_on_death_count:"Float",
+		util_on_death_sum:"Float",
 		wasted_magazine_shots:"Float",
 		zeus_kills:"Float"
 	},
@@ -30653,6 +30703,8 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Float",
 		two_kill_rounds:"Float",
 		unused_utility_value:"Float",
+		util_on_death_count:"Float",
+		util_on_death_sum:"Float",
 		wasted_magazine_shots:"Float",
 		zeus_kills:"Float"
 	},
@@ -30718,6 +30770,8 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Int",
 		two_kill_rounds:"Int",
 		unused_utility_value:"Int",
+		util_on_death_count:"Int",
+		util_on_death_sum:"Int",
 		wasted_magazine_shots:"Int",
 		zeus_kills:"Int"
 	},
@@ -30783,6 +30837,8 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Float",
 		two_kill_rounds:"Float",
 		unused_utility_value:"Float",
+		util_on_death_count:"Float",
+		util_on_death_sum:"Float",
 		wasted_magazine_shots:"Float",
 		zeus_kills:"Float"
 	},
@@ -30848,6 +30904,8 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Float",
 		two_kill_rounds:"Float",
 		unused_utility_value:"Float",
+		util_on_death_count:"Float",
+		util_on_death_sum:"Float",
 		wasted_magazine_shots:"Float",
 		zeus_kills:"Float"
 	},
@@ -30913,6 +30971,8 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Float",
 		two_kill_rounds:"Float",
 		unused_utility_value:"Float",
+		util_on_death_count:"Float",
+		util_on_death_sum:"Float",
 		wasted_magazine_shots:"Float",
 		zeus_kills:"Float"
 	},
@@ -30976,6 +31036,7 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Int",
 		two_kill_rounds:"Int",
 		unused_utility_value:"Int",
+		utility_on_death:"numeric",
 		wasted_magazine_shots:"Int",
 		zeus_kills:"Int"
 	},
@@ -31055,6 +31116,7 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Float",
 		two_kill_rounds:"Float",
 		unused_utility_value:"Float",
+		utility_on_death:"Float",
 		wasted_magazine_shots:"Float",
 		zeus_kills:"Float"
 	},
@@ -31118,6 +31180,7 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Int",
 		two_kill_rounds:"Int",
 		unused_utility_value:"Int",
+		utility_on_death:"numeric",
 		wasted_magazine_shots:"Int",
 		zeus_kills:"Int"
 	},
@@ -31181,6 +31244,7 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Int",
 		two_kill_rounds:"Int",
 		unused_utility_value:"Int",
+		utility_on_death:"numeric",
 		wasted_magazine_shots:"Int",
 		zeus_kills:"Int"
 	},
@@ -31243,6 +31307,7 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Float",
 		two_kill_rounds:"Float",
 		unused_utility_value:"Float",
+		utility_on_death:"Float",
 		wasted_magazine_shots:"Float",
 		zeus_kills:"Float"
 	},
@@ -31305,6 +31370,7 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Float",
 		two_kill_rounds:"Float",
 		unused_utility_value:"Float",
+		utility_on_death:"Float",
 		wasted_magazine_shots:"Float",
 		zeus_kills:"Float"
 	},
@@ -31367,6 +31433,7 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Float",
 		two_kill_rounds:"Float",
 		unused_utility_value:"Float",
+		utility_on_death:"Float",
 		wasted_magazine_shots:"Float",
 		zeus_kills:"Float"
 	},
@@ -31429,6 +31496,7 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Int",
 		two_kill_rounds:"Int",
 		unused_utility_value:"Int",
+		utility_on_death:"numeric",
 		wasted_magazine_shots:"Int",
 		zeus_kills:"Int"
 	},
@@ -31491,6 +31559,7 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Float",
 		two_kill_rounds:"Float",
 		unused_utility_value:"Float",
+		utility_on_death:"Float",
 		wasted_magazine_shots:"Float",
 		zeus_kills:"Float"
 	},
@@ -31553,6 +31622,7 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Float",
 		two_kill_rounds:"Float",
 		unused_utility_value:"Float",
+		utility_on_death:"Float",
 		wasted_magazine_shots:"Float",
 		zeus_kills:"Float"
 	},
@@ -31615,6 +31685,7 @@ export const ReturnTypes: Record<string,any> = {
 		traded_death_successes:"Float",
 		two_kill_rounds:"Float",
 		unused_utility_value:"Float",
+		utility_on_death:"Float",
 		wasted_magazine_shots:"Float",
 		zeus_kills:"Float"
 	},

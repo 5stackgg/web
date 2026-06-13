@@ -39,6 +39,10 @@ export function useUtilityColumns() {
   const { t } = useI18n();
   const columns = computed<ColumnDef[]>(() => [
     { key: "flash_assists", label: t("match.lineup.stats.flash_assists") },
+    {
+      key: "enemies_flashed_total",
+      label: t("match.lineup.stats.enemies_flashed_total"),
+    },
     { key: "enemies_flashed", label: t("match.lineup.stats.enemies_flashed") },
     { key: "team_flashed", label: t("match.lineup.stats.team_flashed") },
     { key: "avg_blind_time", label: t("match.lineup.stats.avg_blind_time") },

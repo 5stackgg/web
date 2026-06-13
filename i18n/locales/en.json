@@ -3278,7 +3278,8 @@
       "stats": {
         "flashes_thrown": "Flashes Thrown",
         "flash_assists": "Flash Assists",
-        "enemies_flashed": "Enemies Flashed",
+        "enemies_flashed_total": "Enemies Flashed",
+        "enemies_flashed": "Enemies / Flash",
         "team_flashed": "Team Flashed",
         "avg_blind_time": "Avg blind time",
         "he_damage": "HE Damage",

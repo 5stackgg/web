@@ -27,6 +27,7 @@ const sortGetters: Record<string, (m: any) => unknown> = {
     if (!s?.flashes_thrown) return -1;
     return (s.flash_assists ?? 0) / s.flashes_thrown;
   },
+  enemies_flashed_total: (m) => pickStats(m)?.enemies_flashed ?? -1,
   enemies_flashed: (m) => {
     const s = pickStats(m);
     if (!s?.flashes_thrown) return -1;
@@ -113,6 +114,7 @@ const TIER_CONFIG: Record<string, StatTierConfig> = {
             v-for="col of [
               'flashes_thrown',
               'flash_assists',
+              'enemies_flashed_total',
               'enemies_flashed',
               'team_flashed',
               'avg_blind_time',
@@ -167,6 +169,9 @@ const TIER_CONFIG: Record<string, StatTierConfig> = {
                 :value="flashAssistPct(member)"
               />
             </span>
+          </TableCell>
+          <TableCell v-if="utilityVis.enemies_flashed_total !== false">
+            <AnimatedStat :value="statsFor(member)?.enemies_flashed ?? '—'" />
           </TableCell>
           <TableCell v-if="utilityVis.enemies_flashed !== false">
             <span class="inline-flex items-center gap-0.5">

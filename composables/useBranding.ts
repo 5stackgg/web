@@ -1,5 +1,4 @@
 import { computed, watch } from "vue";
-import { useI18n } from "vue-i18n";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
 
 const lightColorMap: Record<string, string> = {
@@ -100,7 +99,6 @@ const darkColorMap: Record<string, string> = {
 export function useBranding() {
   const store = useApplicationSettingsStore();
   const colorMode = useColorMode();
-  const { t } = useI18n();
 
   const brandName = computed(() => {
     return store.settings.find(
@@ -160,26 +158,15 @@ export function useBranding() {
         (s: { name: string }) => s.name === "public.favicon_url",
       );
       if (faviconSetting?.value) {
-        const link = document.querySelector(
+        let link = document.querySelector(
           "link[rel='icon']",
-        ) as HTMLLinkElement;
-        if (link) {
-          link.href = `https://${useRuntimeConfig().public.apiDomain}/branding/favicon`;
+        ) as HTMLLinkElement | null;
+        if (!link) {
+          link = document.createElement("link");
+          link.rel = "icon";
+          document.head.appendChild(link);
         }
-      }
-    },
-    { immediate: true, deep: true },
-  );
-
-  // Update document title when brand name changes
-  watch(
-    () => store.settings,
-    () => {
-      const brandSetting = store.settings.find(
-        (s: { name: string }) => s.name === "public.brand_name",
-      );
-      if (brandSetting?.value) {
-        document.title = `${brandSetting.value} | ${t("branding.site_title_suffix")}`;
+        link.href = `https://${useRuntimeConfig().public.apiDomain}/branding/favicon?v=${encodeURIComponent(faviconSetting.value)}`;
       }
     },
     { immediate: true, deep: true },

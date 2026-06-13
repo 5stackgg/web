@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, defineAsyncComponent } from "vue";
+import { useI18n } from "vue-i18n";
 import { polyfillCountryFlagEmojis } from "country-flag-emoji-polyfill";
 import { useBranding } from "~/composables/useBranding";
 import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
@@ -20,7 +21,19 @@ const StreamGlobal = defineAsyncComponent(
 
 polyfillCountryFlagEmojis();
 
-useBranding();
+const { brandName } = useBranding();
+const { t } = useI18n();
+
+useHead({
+  title: () => brandName.value || "5Stack",
+  titleTemplate: (pageTitle?: string) => {
+    const base = brandName.value || "5Stack";
+    if (pageTitle && pageTitle !== base) {
+      return `${pageTitle} | ${base}`;
+    }
+    return `${base} | ${t("branding.site_title_suffix")}`;
+  },
+});
 
 const authStore = useAuthStore();
 const applicationSettingsStore = useApplicationSettingsStore();

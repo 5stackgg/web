@@ -1,5 +1,25 @@
 {
   "stat_glossary": {
+    "enemies_flashed_per": {
+      "label": "Enemies / Flash",
+      "description": "Average number of enemies blinded per flash thrown — higher means more effective flashes."
+    },
+    "opening_attempts_pct": {
+      "label": "Attempt Rate",
+      "description": "Share of rounds where this player took the opening duel (first engagement of the round)."
+    },
+    "opening_success_pct": {
+      "label": "Win Rate",
+      "description": "Share of opening duels this player won."
+    },
+    "opening_traded_pct": {
+      "label": "Traded Rate",
+      "description": "Share of opening deaths that were traded back by a teammate."
+    },
+    "survived_pct": {
+      "label": "Survival Rate",
+      "description": "Share of rounds this player survived (lived to the end of the round)."
+    },
     "hltv": {
       "label": "HLTV Rating",
       "description": "HLTV 2.0 overall performance rating combining kills, deaths, KAST, damage and impact. ~1.0 is average."
@@ -3278,8 +3298,7 @@
       "stats": {
         "flashes_thrown": "Flashes Thrown",
         "flash_assists": "Flash Assists",
-        "enemies_flashed_total": "Enemies Flashed",
-        "enemies_flashed": "Enemies / Flash",
+        "enemies_flashed": "Enemies Flashed",
         "team_flashed": "Team Flashed",
         "avg_blind_time": "Avg blind time",
         "he_damage": "HE Damage",

@@ -2,6 +2,7 @@
 import formatStatValue from "~/utilities/formatStatValue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import StatChevron from "~/components/StatChevron.vue";
+import StatLabel from "~/components/common/StatLabel.vue";
 import { KAST_TIER, ADR_TIER, kdColor, hltvColor } from "~/utils/statTiers";
 import EloChangeBadge from "~/components/EloChangeBadge.vue";
 import PlayerMatchClipsButton from "~/components/match/PlayerMatchClipsButton.vue";
@@ -202,7 +203,19 @@ const DASH = "—";
         <AnimatedStat :value="hs" />
       </TableCell>
       <TableCell v-if="overviewVis.survived !== false" class="tabular-nums">
-        <AnimatedStat :value="survived" />
+        <span class="inline-flex items-baseline gap-1">
+          <template v-if="survivedPct !== null">
+            <span class="tabular-nums"
+              ><AnimatedStat :value="survivedCount"
+            /></span>
+            <span class="tabular-nums text-xs text-muted-foreground leading-none"
+              >(<StatLabel stat="survived_pct"
+                ><AnimatedStat :value="survivedPct + '%'" /></StatLabel
+              >)</span
+            >
+          </template>
+          <template v-else>{{ DASH }}</template>
+        </span>
       </TableCell>
       <TableCell v-if="overviewVis.multikills !== false" class="tabular-nums">
         <HoverCard
@@ -682,7 +695,7 @@ export default {
     kast() {
       return this.kastPct === null ? "—" : Math.round(this.kastPct) + "%";
     },
-    survived() {
+    survivedCount() {
       if (!this.hasStats) return "—";
       const rounds = this.sideFiltered
         ? this.sideRounds
@@ -691,9 +704,19 @@ export default {
       const deaths = this.sideFiltered
         ? this.sideDeaths
         : (this.stats.deaths ?? 0);
+      return rounds - deaths;
+    },
+    survivedPct() {
+      if (!this.hasStats) return null;
+      const rounds = this.sideFiltered
+        ? this.sideRounds
+        : (this.stats.rounds_played ?? 0);
+      if (!rounds) return null;
+      const deaths = this.sideFiltered
+        ? this.sideDeaths
+        : (this.stats.deaths ?? 0);
       const surv = rounds - deaths;
-      const pct = Math.round((surv / rounds) * 100);
-      return `${surv} (${pct}%)`;
+      return Math.round((surv / rounds) * 100);
     },
     hltvRating() {
       if (!this.hasStats) return null;

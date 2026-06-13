@@ -130,10 +130,20 @@ const mmCardPending =
               {{ region }}
             </span>
             <span
-              v-if="inQueueStas[matchMakingQueueDetails.type] > 0"
+              v-if="
+                distinctInQueue(
+                  matchMakingQueueDetails.type,
+                  matchMakingQueueDetails.regions,
+                ) > 0
+              "
               class="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/30 px-2.5 py-0.5 font-mono text-[0.65rem] uppercase tracking-[0.18em] text-muted-foreground"
             >
-              {{ inQueueStas[matchMakingQueueDetails.type] }}
+              {{
+                distinctInQueue(
+                  matchMakingQueueDetails.type,
+                  matchMakingQueueDetails.regions,
+                )
+              }}
               {{ $t("matchmaking.in_queue") }}
             </span>
           </div>
@@ -197,10 +207,20 @@ const mmCardPending =
             <Badge
               variant="secondary"
               class="absolute top-2 right-2 px-2 py-0.5 text-[0.65rem] tracking-[0.12em] uppercase transition-opacity duration-200"
-              v-if="inQueueStas[type.value] > 0"
+              v-if="
+                distinctInQueue(
+                  type.value,
+                  preferredRegions.map((region) => region.value),
+                ) > 0
+              "
               :class="{ 'opacity-0': pendingMatchType === type.value }"
             >
-              {{ inQueueStas[type.value] || 0 }}
+              {{
+                distinctInQueue(
+                  type.value,
+                  preferredRegions.map((region) => region.value),
+                )
+              }}
               {{ $t("matchmaking.in_queue") }}
             </Badge>
 
@@ -403,6 +423,22 @@ export default {
     isMatchmakingTypeEnabled(matchType: string): boolean {
       return useApplicationSettingsStore().isMatchmakingTypeEnabled(matchType);
     },
+    distinctInQueue(
+      type: e_match_types_enum,
+      regionValues: string[],
+    ): number {
+      const lobbyIndexes = new Set<number>();
+      for (const regionValue of regionValues) {
+        const indexes = this.regionStats[regionValue]?.[type];
+        if (!indexes) {
+          continue;
+        }
+        for (const index of indexes) {
+          lobbyIndexes.add(index);
+        }
+      }
+      return lobbyIndexes.size;
+    },
     getRegionlatencyResult(region: string):
       | {
           isLan: boolean;
@@ -480,29 +516,6 @@ export default {
     },
     regionStats() {
       return useMatchmakingStore().regionStats;
-    },
-    inQueueStas() {
-      const inQueue = {
-        [e_match_types_enum.Duel]: 0,
-        [e_match_types_enum.Wingman]: 0,
-        [e_match_types_enum.Competitive]: 0,
-      };
-      const regions = this.preferredRegions as Region[];
-      for (let i = 0; i < regions.length; i++) {
-        const region: Region = regions[i];
-        const regionStats = this.regionStats[region.value];
-        if (!regionStats) {
-          continue;
-        }
-        inQueue[e_match_types_enum.Duel] +=
-          regionStats[e_match_types_enum.Duel] || 0;
-        inQueue[e_match_types_enum.Wingman] +=
-          regionStats[e_match_types_enum.Wingman] || 0;
-        inQueue[e_match_types_enum.Competitive] +=
-          regionStats[e_match_types_enum.Competitive] || 0;
-      }
-
-      return inQueue;
     },
     matchMakingQueueDetails(): QueueDetails | undefined {
       return useMatchmakingStore().joinedMatchmakingQueues.details;

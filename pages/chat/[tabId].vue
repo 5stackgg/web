@@ -53,7 +53,7 @@ const currentTab = computed<ChatTab | null>(() => {
 const hasTab = computed(() => currentTab.value !== null);
 
 const windowTitle = computed(
-  () => `5stack - ${currentTab.value?.label ?? t("chat_page.fallback_title")}`,
+  () => currentTab.value?.label ?? t("chat_page.fallback_title"),
 );
 
 const tabTypeLabel = computed(() => {

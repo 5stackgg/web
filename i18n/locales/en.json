@@ -3322,7 +3322,7 @@
         "head_accuracy": "Head Accuracy",
         "hs_kill_pct": "HS Kill %",
         "time_to_damage": "Time to Damage",
-        "spotted_acc": "Spotted Acc",
+        "spotted_acc": "Spot Conversion",
         "crosshair_placement": "Cross. Placement",
         "counter_strafing": "Counter-Strafing",
         "wasted_magazine_pct": "Wasted Mag %",
@@ -3356,9 +3356,9 @@
             "calculation": "Per engagement, time from the rising-edge spot to the first damage on that enemy. Averaged across all engagements; capped at 3s."
           },
           "spotted_acc": {
-            "title": "Spotted Accuracy",
-            "description": "How often you convert sightings into damage — measures engagement aggression, not aim.",
-            "calculation": "Spots that led to damage on the same enemy this round, divided by total spots."
+            "title": "Spot Conversion",
+            "description": "Of the enemies you spotted, how many you then dealt damage to — an engagement/aggression measure, not aim. (Contrast with Accuracy (Spotted), which is your bullet hit-rate while shooting a visible enemy.)",
+            "calculation": "Enemies you spotted and then damaged that round, divided by the total enemies you spotted."
           },
           "crosshair_placement": {
             "title": "Crosshair Placement",

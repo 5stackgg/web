@@ -10,22 +10,37 @@
       <lineup-member :member="member" :lineup_id="lineup.id"></lineup-member>
     </TableCell>
     <TableCell>
-      <span class="tabular-nums"><AnimatedStat :value="attempts" /></span>
-      <span class="text-muted-foreground"> · </span>
-      <span class="tabular-nums"><AnimatedStat :value="attemptsPct + '%'" /></span>
-      <StatChevron :level="attemptsLevel" class="ml-0.5" />
+      <span class="inline-flex items-baseline gap-1">
+        <span class="tabular-nums"><AnimatedStat :value="attempts" /></span>
+        <span class="tabular-nums text-xs text-muted-foreground leading-none"
+          >(<StatLabel stat="opening_attempts_pct"
+            ><AnimatedStat :value="attemptsPct + '%'" /></StatLabel
+          >)</span
+        >
+        <StatChevron :level="attemptsLevel" class="self-center ml-0.5" />
+      </span>
     </TableCell>
     <TableCell>
-      <span class="tabular-nums"><AnimatedStat :value="success" /></span>
-      <span class="text-muted-foreground"> · </span>
-      <span class="tabular-nums"><AnimatedStat :value="successPct + '%'" /></span>
-      <StatChevron :level="successLevel" class="ml-0.5" />
+      <span class="inline-flex items-baseline gap-1">
+        <span class="tabular-nums"><AnimatedStat :value="success" /></span>
+        <span class="tabular-nums text-xs text-muted-foreground leading-none"
+          >(<StatLabel stat="opening_success_pct"
+            ><AnimatedStat :value="successPct + '%'" /></StatLabel
+          >)</span
+        >
+        <StatChevron :level="successLevel" class="self-center ml-0.5" />
+      </span>
     </TableCell>
     <TableCell v-if="duelsVis.traded !== false">
-      <span class="tabular-nums"><AnimatedStat :value="traded" /></span>
-      <span class="text-muted-foreground"> · </span>
-      <span class="tabular-nums"><AnimatedStat :value="tradedPct + '%'" /></span>
-      <StatChevron :level="tradedLevel" class="ml-0.5" />
+      <span class="inline-flex items-baseline gap-1">
+        <span class="tabular-nums"><AnimatedStat :value="traded" /></span>
+        <span class="tabular-nums text-xs text-muted-foreground leading-none"
+          >(<StatLabel stat="opening_traded_pct"
+            ><AnimatedStat :value="tradedPct + '%'" /></StatLabel
+          >)</span
+        >
+        <StatChevron :level="tradedLevel" class="self-center ml-0.5" />
+      </span>
     </TableCell>
     <TableCell
       v-if="duelsVis.most_killed !== false"
@@ -101,6 +116,7 @@ import LineupMember from "~/components/match/LineupMember.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
 import StatChevron from "~/components/StatChevron.vue";
+import StatLabel from "~/components/common/StatLabel.vue";
 import { statLevelFor, type StatLevel } from "~/utils/statTiers";
 import { resolveWeapon } from "~/utilities/weaponIcon";
 import { useMatchSide } from "~/composables/useMatchSide";
@@ -108,7 +124,13 @@ import { useOpeningDuelsColumns } from "~/composables/useMatchTableColumns";
 import { useCurrentUserRow } from "~/composables/useCurrentUserRow";
 
 export default {
-  components: { LineupMember, PlayerDisplay, AnimatedStat, StatChevron },
+  components: {
+    LineupMember,
+    PlayerDisplay,
+    AnimatedStat,
+    StatChevron,
+    StatLabel,
+  },
   setup() {
     const { visibility: duelsVis } = useOpeningDuelsColumns();
     const { rowClass, stickyCellClass } = useCurrentUserRow();

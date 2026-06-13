@@ -63,8 +63,9 @@ const sortGetters: Record<string, (m: any) => unknown> = {
   // Lower is better; invert so default desc puts elite (least wasted) first.
   unused_utility: (m) => {
     const s = pickStats(m);
-    if (s?.utility_on_death == null) return -1;
-    return -Number(s.utility_on_death);
+    if (s?.utility_on_death != null) return -Number(s.utility_on_death);
+    if (!s?.util_on_death_count) return -1;
+    return -((s.util_on_death_sum ?? 0) / s.util_on_death_count);
   },
   // Lower is better; invert so desc puts the most disciplined first.
   wasted_magazine_pct: (m) => {
@@ -388,7 +389,12 @@ export default {
     unusedUtility(member: any): number | null {
       const s = this.statsFor(member);
       if (!s) return null;
-      return toNumber(s.utility_on_death) ?? 0;
+      const value = toNumber(s.utility_on_death);
+      if (value !== null) return value;
+      const sum = toNumber(s.util_on_death_sum);
+      const count = toNumber(s.util_on_death_count);
+      if (sum !== null && count) return Math.round((sum / count) * 10) / 10;
+      return 0;
     },
     wastedMagazinePct(member: any): number | null {
       const s = this.statsFor(member);

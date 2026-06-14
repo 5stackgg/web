@@ -49,6 +49,10 @@ const props = withDefaults(
     flashSlot?: number | null;
     controlsActive?: boolean;
     layout?: "grid" | "inline";
+    // Grid-only: float CT and T onto a single row at opposite edges of
+    // the container instead of stacking T under CT. Reclaims vertical
+    // headroom on the demo playback surface where the video sits above.
+    split?: boolean;
     compact?: boolean;
     matchType?: string | null;
     // When true the row reads as "AI piloting" — non-active slots get
@@ -66,6 +70,7 @@ const props = withDefaults(
     flashSlot: null,
     controlsActive: true,
     layout: "grid",
+    split: false,
     compact: false,
     matchType: null,
     autodirectorOn: false,
@@ -214,7 +219,9 @@ function press(s: PaddedSlot) {
 <template>
   <div
     :class="[
-      'space-y-2',
+      split && layout !== 'inline'
+        ? 'flex flex-row items-start justify-between gap-6'
+        : 'space-y-2',
       autodirectorOn
         ? 'rounded-md border-t border-dashed border-[hsl(var(--tac-amber)/0.5)] pt-2 transition-[border-color] duration-300'
         : '',
@@ -446,15 +453,25 @@ function press(s: PaddedSlot) {
     </div>
 
     <!-- ============== T side ============== -->
-    <div :class="layout === 'inline' ? 'flex items-center gap-3' : ''">
+    <div
+      :class="
+        layout === 'inline'
+          ? 'flex items-center gap-3'
+          : split
+            ? 'flex flex-col items-end'
+            : ''
+      "
+    >
       <div
         :class="[
           'flex items-center gap-2',
           layout === 'inline'
             ? 'min-w-[8rem]'
-            : compact
-              ? 'mb-1 mt-1.5'
-              : 'mb-1.5 mt-3',
+            : split
+              ? 'mb-1.5 flex-row-reverse'
+              : compact
+                ? 'mb-1 mt-1.5'
+                : 'mb-1.5 mt-3',
         ]"
       >
         <span

@@ -28,6 +28,11 @@ export type ReplayBlob = {
   positions: any[];
   shots_fired: any[];
   grenade_throws: any[];
+  // Per-grenade bounce flight path (schema v4+). gid links to grenade_throws.
+  grenade_trajectories?: Array<{
+    gid: number;
+    pts: Array<{ t: number; x: number; y: number; z: number }>;
+  }>;
   damages: any[];
   round_inventory?: ReplayRoundInventory[];
 };

@@ -38,6 +38,10 @@ function isPublicRoute(path: string): boolean {
     return true;
   }
 
+  if (path.startsWith("/match-3d-replay")) {
+    return true;
+  }
+
   if (path.startsWith("/embed/")) {
     return true;
   }

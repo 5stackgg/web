@@ -103,6 +103,23 @@ import cleanMapName from "~/utilities/cleanMapName";
             </TooltipTrigger>
             <TooltipContent>{{ $t("match.replay.open") }}</TooltipContent>
           </Tooltip>
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <Button
+                size="xs"
+                variant="ghost"
+                class="h-6 w-6 p-0 text-[#38e1ff]/80 hover:text-[#38e1ff]"
+                @click.stop="openReplay3d()"
+              >
+                <span
+                  class="flex h-4 w-4 items-center justify-center rounded-full border border-current font-mono text-[8px] font-black leading-none"
+                >
+                  3D
+                </span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{{ $t("match.replay.open_3d") }}</TooltipContent>
+          </Tooltip>
         </template>
         <template v-if="hasDemo && canWatchDemo">
           <Tooltip v-if="!showDemoDropdown">
@@ -498,6 +515,20 @@ export default {
         `/match-replay-popout/${this.matchMap.id}`,
         `replay-popout-${this.matchMap.id}`,
         "popup=yes,width=1100,height=900,resizable=yes,scrollbars=yes",
+      );
+      if (popup) {
+        popup.focus();
+      }
+    },
+    openReplay3d() {
+      const w = Math.min(1760, screen.availWidth);
+      const h = Math.min(1040, screen.availHeight);
+      const left = Math.max(0, (screen.availWidth - w) / 2);
+      const top = Math.max(0, (screen.availHeight - h) / 2);
+      const popup = window.open(
+        `/match-3d-replay/${this.matchMap.id}`,
+        `replay-3d-${this.matchMap.id}`,
+        `popup=yes,width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`,
       );
       if (popup) {
         popup.focus();

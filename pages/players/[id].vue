@@ -22,6 +22,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import PlayerEloChart from "~/components/charts/PlayerEloChart.vue";
 import AnimatedStat from "~/components/AnimatedStat.vue";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import formatStatValue from "~/utilities/formatStatValue";
 import { resolveWeapon } from "~/utilities/weaponIcon";
 import { csRankIcon } from "~/utilities/csRank";
@@ -114,16 +115,19 @@ const presetRanges: {
   days: number | null;
   matches?: number | null;
 }[] = [
-  { key: "l30", label: "L30", days: null, matches: 30 },
-  { key: "7d", label: "7D", days: 7 },
-  { key: "30d", label: "30D", days: 30 },
-  { key: "90d", label: "90D", days: 90 },
-  { key: "1y", label: "1Y", days: 365 },
+  {
+    key: "l30",
+    label: t("pages.players.detail.range_l30"),
+    days: null,
+    matches: 30,
+  },
+  { key: "7d", label: t("pages.players.detail.range_7d"), days: 7 },
+  { key: "90d", label: t("pages.players.detail.range_90d"), days: 90 },
 ];
 
-const statsTab = ref<
-  "performance" | "elo" | "maps" | "arsenal" | "combat"
->("performance");
+const statsTab = ref<"performance" | "elo" | "maps" | "arsenal" | "combat">(
+  "performance",
+);
 const statsTabsEl = ref<HTMLElement | null>(null);
 
 // Warn (once, dismissible) when viewing your own External stats without a
@@ -189,6 +193,7 @@ const performanceHistory = ref<WindowedEloEntry[]>([]);
 // Per-source weapon kill counts from v_player_weapon_kills (lifetime).
 const weaponKills = ref<{ with: string; kill_count: number }[]>([]);
 const premierWindowedHistory = ref<WindowedEloEntry[]>([]);
+const faceitWindowedHistory = ref<WindowedEloEntry[]>([]);
 // Raw rows from the rank-history sub, all rank types (Premier 11,
 // Competitive 12, Wingman 6) — feeds the per-match rank badge on the rows.
 const rankHistoryRows = ref<
@@ -229,7 +234,7 @@ watch(statsTab, (t) => {
 });
 
 // Persist the time range (incl. custom from/to) in the URL.
-const VALID_RANGES = ["l30", "7d", "30d", "90d", "1y", "custom"];
+const VALID_RANGES = ["l30", "7d", "90d", "custom"];
 if (
   typeof route.query.range === "string" &&
   VALID_RANGES.includes(route.query.range)
@@ -278,10 +283,10 @@ const sourceOptions = computed<{ value: StatSource; label: string }[]>(() =>
   appSettings.externalMatchesEnabled
     ? [
         { value: "all", label: t("pages.players.detail.all_short") },
-        { value: "5stack", label: "5Stack" },
-        { value: "external", label: "External" },
+        { value: "5stack", label: t("player_match.source.internal") },
+        { value: "external", label: t("player_match.source.external") },
       ]
-    : [{ value: "5stack", label: "5Stack" }],
+    : [{ value: "5stack", label: t("player_match.source.internal") }],
 );
 
 // The ELO tab can't blend worlds (5Stack ELO vs Valve rank), so "All" is not a
@@ -293,34 +298,83 @@ const displaySource = computed<StatSource>(() =>
   eloTabActive.value && sourceRef.value === "all" ? "5stack" : sourceRef.value,
 );
 
-// Mode chips are source-dependent: 5Stack tracks Competitive/Wingman/Duel
-// ELO (plus an "all" overlay); External tracks Premier (CS Rating) and the
-// per-map Competitive/Wingman skill groups from imported Valve demos.
-const modeOptions = computed<{ value: string; label: string }[]>(() =>
-  sourceRef.value === "external"
-    ? [
-        { value: "all", label: t("pages.players.detail.all_short") },
+type StatProvider = "all" | "valve" | "faceit";
+const providerRef = computed<StatProvider>(() => {
+  if (sourceRef.value !== "external") {
+    return "all";
+  }
+  const raw = route.query.provider;
+  const v = Array.isArray(raw) ? raw[0] : raw;
+  if (v === "valve" || v === "faceit") {
+    return v;
+  }
+  return "all";
+});
+
+const providerOptions: { value: StatProvider; label: string }[] = [
+  { value: "all", label: t("pages.players.detail.all_short") },
+  { value: "valve", label: "Valve" },
+  { value: "faceit", label: "Faceit" },
+];
+
+function setProvider(p: StatProvider) {
+  router.replace({ query: { ...route.query, provider: p, mode: "all" } });
+}
+
+const effectiveSource = computed<string>(() => {
+  if (sourceRef.value === "external" && providerRef.value !== "all") {
+    return providerRef.value;
+  }
+  return sourceRef.value;
+});
+
+const COMPETITIVE_OPT = computed(() => ({
+  value: "Competitive",
+  label: t("pages.leaderboard.match_types.competitive"),
+}));
+const WINGMAN_OPT = computed(() => ({
+  value: "Wingman",
+  label: t("pages.leaderboard.match_types.wingman"),
+}));
+const ALL_OPT = computed(() => ({
+  value: "all",
+  label: t("pages.players.detail.all_short"),
+}));
+const modeOptions = computed<{ value: string; label: string }[]>(() => {
+  if (sourceRef.value !== "external") {
+    return [
+      ALL_OPT.value,
+      COMPETITIVE_OPT.value,
+      WINGMAN_OPT.value,
+      { value: "Duel", label: t("pages.leaderboard.match_types.duel") },
+    ];
+  }
+  switch (providerRef.value) {
+    case "valve":
+      return [
+        ALL_OPT.value,
         { value: "Premier", label: "Premier" },
-        {
-          value: "Competitive",
-          label: t("pages.leaderboard.match_types.competitive"),
-        },
-        { value: "Wingman", label: t("pages.leaderboard.match_types.wingman") },
-      ]
-    : [
-        { value: "all", label: t("pages.players.detail.all_short") },
-        {
-          value: "Competitive",
-          label: t("pages.leaderboard.match_types.competitive"),
-        },
-        { value: "Wingman", label: t("pages.leaderboard.match_types.wingman") },
-        { value: "Duel", label: t("pages.leaderboard.match_types.duel") },
-      ],
-);
+        COMPETITIVE_OPT.value,
+        WINGMAN_OPT.value,
+      ];
+    case "faceit":
+      return [];
+    default:
+      return [
+        ALL_OPT.value,
+        { value: "Premier", label: "Premier" },
+        COMPETITIVE_OPT.value,
+        WINGMAN_OPT.value,
+      ];
+  }
+});
 
 const selectedModeRef = computed<
   "all" | "Competitive" | "Wingman" | "Duel" | "Premier"
 >(() => {
+  if (providerRef.value === "faceit") {
+    return "all";
+  }
   const raw = route.query.mode;
   const v = Array.isArray(raw) ? raw[0] : raw;
   const valid = modeOptions.value.map((o) => o.value);
@@ -333,6 +387,37 @@ const selectedModeRef = computed<
 function setMode(m: string) {
   router.replace({ query: { ...route.query, mode: m } });
 }
+
+const sourceFilterOptions = computed(() =>
+  sourceOptions.value.map((s) => ({
+    key: s.value,
+    label: s.label,
+    disabled: sourceDisabled(s.value),
+    desc: sourceDisabled(s.value)
+      ? t("pages.players.detail.source_all_unavailable_elo")
+      : undefined,
+  })),
+);
+const sourceModel = computed<string>({
+  get: () => displaySource.value,
+  set: (v) => onSourceClick(v as StatSource),
+});
+
+const providerFilterOptions = computed(() =>
+  providerOptions.map((p) => ({ key: p.value, label: p.label })),
+);
+const providerModel = computed<string>({
+  get: () => providerRef.value,
+  set: (v) => setProvider(v as StatProvider),
+});
+
+const modeFilterOptions = computed(() =>
+  modeOptions.value.map((m) => ({ key: m.value, label: m.label })),
+);
+const modeModel = computed<string>({
+  get: () => selectedModeRef.value,
+  set: (v) => setMode(v),
+});
 
 function setSource(s: StatSource) {
   const validModes =
@@ -530,13 +615,13 @@ const untilTimestamp = computed<string | null>(() => {
 // for date ranges; tabs apply whichever is non-null.
 const statsScope = computed(() => ({
   source: sourceRef.value,
+  provider: providerRef.value,
   matchType: statTypeFilter.value,
   limit: statsMatchLimit.value,
   since: sinceTimestamp.value,
   until: untilTimestamp.value,
 }));
 provide("playerStatsScope", statsScope);
-
 
 // Built dynamically so the `match: { is_tournament_match: ... }` filter is
 // only added when the setting is on — avoids Hasura forcing a join when
@@ -555,13 +640,22 @@ const whereClause = computed(() => {
 
 // matches.source comparison for the active source: 5Stack is exact, External
 // is "anything that isn't 5Stack" (Valve, FACEIT, …).
-const sourceComparison = computed(() =>
-  sourceRef.value === "all"
-    ? null
-    : sourceRef.value === "5stack"
-      ? { _eq: "5stack" }
-      : { _neq: "5stack" },
-);
+const sourceComparison = computed(() => {
+  if (sourceRef.value === "all") {
+    return null;
+  }
+  if (sourceRef.value === "5stack") {
+    return { _eq: "5stack" };
+  }
+  switch (providerRef.value) {
+    case "valve":
+      return { _eq: "valve" };
+    case "faceit":
+      return { _eq: "faceit" };
+    default:
+      return { _neq: "5stack" };
+  }
+});
 
 // Where for v_player_match_performance — scoped to the player, the active
 // source, the time window and (optionally) non-tournament matches.
@@ -623,10 +717,7 @@ const PLAYER_PREMIER_HISTORY_QUERY = gql`
   query PlayerWindowedPremierHistory(
     $where: player_premier_rank_history_bool_exp!
   ) {
-    player_premier_rank_history(
-      where: $where
-      order_by: { observed_at: asc }
-    ) {
+    player_premier_rank_history(where: $where, order_by: { observed_at: asc }) {
       rank
       rank_type
       previous_rank
@@ -640,8 +731,22 @@ const PLAYER_PREMIER_HISTORY_QUERY = gql`
   }
 `;
 
+const PLAYER_FACEIT_HISTORY_QUERY = gql`
+  query PlayerWindowedFaceitHistory(
+    $where: player_faceit_rank_history_bool_exp!
+  ) {
+    player_faceit_rank_history(where: $where, order_by: { observed_at: asc }) {
+      elo
+      previous_rank
+      match_id
+      observed_at
+    }
+  }
+`;
+
 let eloLoadGen = 0;
 let premierLoadGen = 0;
+let faceitLoadGen = 0;
 
 async function loadEloHistory() {
   if (!playerIdRef.value) {
@@ -657,7 +762,8 @@ async function loadEloHistory() {
       fetchPolicy: "network-only",
     });
     if (gen !== eloLoadGen) return;
-    eloHistory.value = ((data as any)?.v_player_elo ?? []) as WindowedEloEntry[];
+    eloHistory.value = ((data as any)?.v_player_elo ??
+      []) as WindowedEloEntry[];
   } catch {
     if (gen === eloLoadGen) eloHistory.value = [];
   } finally {
@@ -729,11 +835,60 @@ async function loadPremierHistory() {
   }
 }
 
+async function loadFaceitHistory() {
+  if (!playerIdRef.value) {
+    faceitWindowedHistory.value = [];
+    return;
+  }
+  const gen = ++faceitLoadGen;
+  const faceitWhere: Record<string, any> = {
+    steam_id: { _eq: playerIdRef.value },
+  };
+  if (sinceTimestamp.value) {
+    faceitWhere.observed_at = { _gte: sinceTimestamp.value };
+  }
+  if (untilTimestamp.value) {
+    faceitWhere.observed_at = {
+      ...(faceitWhere.observed_at ?? {}),
+      _lte: untilTimestamp.value,
+    };
+  }
+  try {
+    const { data } = await apolloClient.query({
+      query: PLAYER_FACEIT_HISTORY_QUERY,
+      variables: { where: faceitWhere },
+      fetchPolicy: "network-only",
+    });
+    if (gen !== faceitLoadGen) return;
+    const rows = ((data as any)?.player_faceit_rank_history ?? []) as Array<{
+      elo: number;
+      previous_rank: number | null;
+      match_id: string | null;
+      observed_at: string;
+    }>;
+    faceitWindowedHistory.value = rows.map((r) => ({
+      current_elo: r.elo,
+      updated_elo: r.elo,
+      elo_change: r.previous_rank == null ? 0 : r.elo - r.previous_rank,
+      match_created_at: r.observed_at,
+      match_id: r.match_id,
+      match_result: null,
+      type: "Faceit",
+      kills: null,
+      deaths: null,
+      assists: null,
+    }));
+  } catch {
+    if (gen === faceitLoadGen) faceitWindowedHistory.value = [];
+  }
+}
+
 watch(
   [playerIdRef, sinceTimestamp, untilTimestamp, excludeTournaments],
   () => {
     loadEloHistory();
     loadPremierHistory();
+    loadFaceitHistory();
   },
   { immediate: true },
 );
@@ -888,9 +1043,8 @@ const matchesWhere = computed(() => {
   if (excludeTournaments.value) {
     w.is_tournament_match = { _eq: false };
   }
-  if (sourceRef.value !== "all") {
-    w.source =
-      sourceRef.value === "external" ? { _neq: "5stack" } : { _eq: "5stack" };
+  if (sourceComparison.value) {
+    w.source = sourceComparison.value;
   }
   if (statTypeFilter.value) {
     w.options = { type: { _in: statTypeFilter.value } };
@@ -1428,7 +1582,7 @@ definePageMeta({
   // Keep these filter params out of the NuxtPage key (like `mode`/`tab`) so
   // changing them updates state in place instead of remounting + refetching
   // the whole page. `mode`/`tab` are excluded globally in app.vue.
-  persistQueryKeys: ["source", "range", "from", "to", "compare"],
+  persistQueryKeys: ["source", "provider", "range", "from", "to", "compare"],
 });
 
 const { isMobile } = useSidebar();
@@ -1510,433 +1664,435 @@ const playerTeamChipShortClasses =
     v-if="player"
   >
     <div class="grid min-w-0 items-stretch gap-4 lg:grid-cols-2 lg:gap-6">
-    <PageTransition>
-      <header :class="playerHeroClasses">
-        <div :class="playerHeroBodyClasses">
-          <div class="shrink-0">
-            <div :class="playerHeroAvatarFrameClasses">
-              <img
-                v-if="playerAvatarSrc"
-                :src="playerAvatarSrc"
-                :alt="player.name"
-                :class="playerHeroAvatarClasses"
-              />
-              <div v-else :class="playerHeroAvatarPlaceholderClasses">
-                {{ (player.name || "?").charAt(0).toUpperCase() }}
-              </div>
-              <div
-                :class="[
-                  playerHeroAvatarCornerClasses,
-                  '-left-[2px] -top-[2px] border-l-2 border-t-2',
-                ]"
-              ></div>
-              <div
-                :class="[
-                  playerHeroAvatarCornerClasses,
-                  '-bottom-[2px] -right-[2px] border-b-2 border-r-2',
-                ]"
-              ></div>
-            </div>
-          </div>
-
-          <div :class="playerHeroIdentityClasses">
-            <div class="flex items-center justify-between gap-3">
-              <div
-                class="inline-flex items-center gap-2 font-mono text-[0.58rem] uppercase tracking-[0.28em] text-[hsl(var(--tac-amber))]"
-              >
-                <span
-                  class="h-[2px] w-[14px] bg-[hsl(var(--tac-amber))]"
-                ></span>
-                {{ $t("pages.players.detail.player_profile") }}
-              </div>
-              <div
-                v-if="canEditPlayer || canSanction"
-                :class="playerHeroActionsClasses"
-              >
-                <button
-                  v-if="canEditPlayer"
-                  type="button"
-                  :class="playerHeroNameEditButtonClasses"
-                  :title="$t('pages.players.detail.edit_player')"
-                  @click="editPlayerSheet = true"
-                >
-                  <Pencil />
-                </button>
-                <SanctionPlayer v-if="canSanction" :player="player" />
-              </div>
-            </div>
-
-            <h1 :class="[playerHeroNameClasses, playerHeroNameSizeClasses]">
-              <span
-                v-if="showNameGhost"
-                :class="playerHeroNameGhostClasses"
-                aria-hidden="true"
-              >
-                {{ player.name }}
-              </span>
-              <span :class="playerHeroNameMainClasses">{{ player.name }}</span>
-            </h1>
-
-            <div :class="playerHeroMetaStripClasses">
-              <span :class="playerHeroIdentClasses">
-                <TimezoneFlag
-                  v-if="player.country"
-                  :country="player.country"
-                  class="h-auto w-[1.2rem] shrink-0"
+      <PageTransition>
+        <header :class="playerHeroClasses">
+          <div :class="playerHeroBodyClasses">
+            <div class="shrink-0">
+              <div :class="playerHeroAvatarFrameClasses">
+                <img
+                  v-if="playerAvatarSrc"
+                  :src="playerAvatarSrc"
+                  :alt="player.name"
+                  :class="playerHeroAvatarClasses"
                 />
-                <span :class="playerHeroSteamIdClasses">{{
-                  player.steam_id
-                }}</span>
-              </span>
-
-              <template v-if="player.profile_url">
-                <span
-                  :class="playerHeroMetaDividerClasses"
-                  aria-hidden="true"
-                ></span>
-                <a
-                  :href="player.profile_url"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  :class="playerHeroSteamLinkClasses"
-                  :title="$t('ui.tooltips.view_steam_profile')"
-                >
-                  <SteamIcon class="h-3.5 w-3.5 fill-current" />
-                </a>
-              </template>
-
-              <template v-if="canEditRole || player.role">
-                <span
-                  :class="playerHeroMetaDividerClasses"
-                  aria-hidden="true"
-                ></span>
-                <div v-if="canEditRole" :class="playerHeroInlineRoleWrapClasses">
-                  <PlayerRoleForm :player="player" />
+                <div v-else :class="playerHeroAvatarPlaceholderClasses">
+                  {{ (player.name || "?").charAt(0).toUpperCase() }}
                 </div>
-                <span v-else :class="playerHeroInlineRoleChipClasses">
-                  {{ (player.role || "user").replace("_", " ") }}
-                </span>
-              </template>
-
-              <PlayerSanctions v-if="playerId" :playerId="playerId" />
+                <div
+                  :class="[
+                    playerHeroAvatarCornerClasses,
+                    '-left-[2px] -top-[2px] border-l-2 border-t-2',
+                  ]"
+                ></div>
+                <div
+                  :class="[
+                    playerHeroAvatarCornerClasses,
+                    '-bottom-[2px] -right-[2px] border-b-2 border-r-2',
+                  ]"
+                ></div>
+              </div>
             </div>
-          </div>
 
-        </div>
-
-        <div
-          v-if="player?.teams && player.teams.length > 0"
-          :class="playerHeroTeamsClasses"
-        >
-          <div :class="playerTeamsLabelClasses">
-            <span :class="playerTeamsTickClasses"></span>
-            {{ $t("pages.players.detail.teams") }}
-            <span :class="playerTeamsCountClasses">{{
-              player.teams.length
-            }}</span>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <NuxtLink
-              v-for="team in player.teams"
-              :key="team.id"
-              :to="`/teams/${team.id}`"
-              :class="playerTeamChipClasses"
-            >
-              <span :class="playerTeamChipDotClasses"></span>
-              <span :class="playerTeamChipNameClasses">{{ team.name }}</span>
-              <span v-if="team.short_name" :class="playerTeamChipShortClasses">
-                {{ team.short_name }}
-              </span>
-            </NuxtLink>
-          </div>
-        </div>
-
-        <div v-if="hasRightColumn" :class="playerHeroRightActionsClasses">
-          <NuxtLink
-            v-if="isSelfProfile"
-            to="/play"
-            :class="[playerHeroPlayClasses, 'max-md:hidden']"
-          >
-            <span :class="playerHeroPlayInnerClasses">
-              <PlayIcon :class="playerHeroPlayIconClasses" />
-              <span>{{ $t("pages.players.detail.play_a_match") }}</span>
-            </span>
-            <span :class="playerHeroPlayGlowClasses" aria-hidden="true"></span>
-          </NuxtLink>
-          <button
-            v-else-if="canAddFriend"
-            type="button"
-            :class="playerHeroAddFriendClasses"
-            :disabled="addFriendPending"
-            @click="addAsFriend"
-          >
-            <UserPlus class="h-4 w-4" />
-            <span>{{ $t("player.status.add_friend") }}</span>
-          </button>
-          <span v-else-if="isFriend" :class="playerHeroFriendBadgeClasses">
-            <UserCheck class="h-3.5 w-3.5" />
-            <span>{{ $t("pages.players.detail.friend") }}</span>
-          </span>
-        </div>
-      </header>
-    </PageTransition>
-
-        <PageTransition :delay="150">
-          <AnimatedCard
-            variant="elevated"
-            class="relative flex flex-col h-full p-2.5"
-          >
-            <CardContent class="flex flex-1 flex-col gap-2 p-0 sm:p-0">
-              <!-- Stats strip — two cells now (Current ELO + Peak/Lowest).
-                   Matches/W/L lives in the Win Rate card next door so we
-                   don't repeat it here. Peak gets a vertical amber rail. -->
-              <div
-                class="grid grid-cols-1 divide-y divide-border/40 overflow-hidden rounded-md border border-border/60 sm:grid-cols-2 sm:divide-x sm:divide-y-0"
-              >
-                <div class="relative min-h-[64px] px-3 py-2.5">
-                  <div
-                    class="flex items-center justify-between gap-3 font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
-                  >
-                    <span class="truncate">{{
-                      $t("pages.players.detail.current_elo")
-                    }}</span>
-                  </div>
-                  <div class="mt-1 flex items-center gap-2">
-                    <img
-                      v-if="isSkillGroupMode && rankBadge(windowedStats.current)"
-                      :src="rankBadge(windowedStats.current)!"
-                      :alt="fmtRangeStat(windowedStats.current)"
-                      :title="fmtRangeStat(windowedStats.current)"
-                      class="h-10 w-auto sm:h-12"
-                    />
-                    <AnimatedStat
-                      v-else
-                      :value="fmtRangeStat(windowedStats.current)"
-                      class="text-3xl font-bold leading-none tabular-nums tracking-tight sm:text-4xl"
-                    />
-                  </div>
-                </div>
-
-                <div class="relative min-h-[64px] px-3 py-2.5 sm:pl-4">
-                  <!-- Amber rail anchoring the headline metric -->
+            <div :class="playerHeroIdentityClasses">
+              <div class="flex items-center justify-between gap-3">
+                <div
+                  class="inline-flex items-center gap-2 font-mono text-[0.58rem] uppercase tracking-[0.28em] text-[hsl(var(--tac-amber))]"
+                >
                   <span
-                    class="pointer-events-none absolute left-0 top-3 bottom-3 hidden w-[2px] bg-[hsl(var(--tac-amber))] sm:block"
+                    class="h-[2px] w-[14px] bg-[hsl(var(--tac-amber))]"
+                  ></span>
+                  {{ $t("pages.players.detail.player_profile") }}
+                </div>
+                <div
+                  v-if="canEditPlayer || canSanction"
+                  :class="playerHeroActionsClasses"
+                >
+                  <button
+                    v-if="canEditPlayer"
+                    type="button"
+                    :class="playerHeroNameEditButtonClasses"
+                    :title="$t('pages.players.detail.edit_player')"
+                    @click="editPlayerSheet = true"
+                  >
+                    <Pencil />
+                  </button>
+                  <SanctionPlayer v-if="canSanction" :player="player" />
+                </div>
+              </div>
+
+              <h1 :class="[playerHeroNameClasses, playerHeroNameSizeClasses]">
+                <span
+                  v-if="showNameGhost"
+                  :class="playerHeroNameGhostClasses"
+                  aria-hidden="true"
+                >
+                  {{ player.name }}
+                </span>
+                <span :class="playerHeroNameMainClasses">{{
+                  player.name
+                }}</span>
+              </h1>
+
+              <div :class="playerHeroMetaStripClasses">
+                <span :class="playerHeroIdentClasses">
+                  <TimezoneFlag
+                    v-if="player.country"
+                    :country="player.country"
+                    class="h-auto w-[1.2rem] shrink-0"
+                  />
+                  <span :class="playerHeroSteamIdClasses">{{
+                    player.steam_id
+                  }}</span>
+                </span>
+
+                <template v-if="player.profile_url">
+                  <span
+                    :class="playerHeroMetaDividerClasses"
+                    aria-hidden="true"
+                  ></span>
+                  <a
+                    :href="player.profile_url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    :class="playerHeroSteamLinkClasses"
+                    :title="$t('ui.tooltips.view_steam_profile')"
+                  >
+                    <SteamIcon class="h-3.5 w-3.5 fill-current" />
+                  </a>
+                </template>
+
+                <template v-if="canEditRole || player.role">
+                  <span
+                    :class="playerHeroMetaDividerClasses"
                     aria-hidden="true"
                   ></span>
                   <div
-                    class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
+                    v-if="canEditRole"
+                    :class="playerHeroInlineRoleWrapClasses"
                   >
-                    {{ $t("pages.players.detail.peak_lowest") }}
+                    <PlayerRoleForm :player="player" />
                   </div>
-                  <div class="mt-1 flex items-center gap-2.5">
-                    <template
-                      v-if="isSkillGroupMode && rankBadge(windowedStats.peak)"
-                    >
-                      <img
-                        :src="rankBadge(windowedStats.peak)!"
-                        :alt="fmtRangeStat(windowedStats.peak)"
-                        :title="fmtRangeStat(windowedStats.peak)"
-                        class="h-7 w-auto [filter:drop-shadow(0_0_10px_hsl(var(--tac-amber)/0.45))]"
-                      />
-                      <span
-                        class="font-mono text-[hsl(var(--tac-amber)/0.35)]"
-                        aria-hidden="true"
-                        >/</span
-                      >
-                      <img
-                        v-if="rankBadge(windowedStats.lowest)"
-                        :src="rankBadge(windowedStats.lowest)!"
-                        :alt="fmtRangeStat(windowedStats.lowest)"
-                        :title="fmtRangeStat(windowedStats.lowest)"
-                        class="h-6 w-auto opacity-80"
-                      />
-                    </template>
-                    <template v-else>
-                      <AnimatedStat
-                        :value="fmtRangeStat(windowedStats.peak)"
-                        class="text-xl font-bold tabular-nums text-[hsl(var(--tac-amber))] [text-shadow:0_0_18px_hsl(var(--tac-amber)/0.35)]"
-                      />
-                      <span
-                        class="font-mono text-[hsl(var(--tac-amber)/0.35)]"
-                        aria-hidden="true"
-                        >/</span
-                      >
-                      <AnimatedStat
-                        :value="fmtRangeStat(windowedStats.lowest)"
-                        class="text-base font-semibold tabular-nums text-muted-foreground/80"
-                      />
-                    </template>
-                  </div>
-                  <!-- Date row is ALWAYS rendered (placeholder when no
-                       peakEntry yet) so the cell height never changes
-                       between empty/loaded states. -->
-                  <div
-                    class="mt-0.5 font-mono text-[0.5rem] uppercase tracking-[0.18em] text-muted-foreground"
-                  >
-                    <template v-if="windowedStats.peakEntry">
-                      {{ $t("pages.players.detail.peak") }}
-                      {{
-                        fmtDateShort(windowedStats.peakEntry.match_created_at)
-                      }}
-                    </template>
-                    <template v-else>&nbsp;</template>
-                  </div>
+                  <span v-else :class="playerHeroInlineRoleChipClasses">
+                    {{ (player.role || "user").replace("_", " ") }}
+                  </span>
+                </template>
+
+                <PlayerSanctions v-if="playerId" :playerId="playerId" />
+              </div>
+            </div>
+          </div>
+
+          <div
+            v-if="player?.teams && player.teams.length > 0"
+            :class="playerHeroTeamsClasses"
+          >
+            <div :class="playerTeamsLabelClasses">
+              <span :class="playerTeamsTickClasses"></span>
+              {{ $t("pages.players.detail.teams") }}
+              <span :class="playerTeamsCountClasses">{{
+                player.teams.length
+              }}</span>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              <NuxtLink
+                v-for="team in player.teams"
+                :key="team.id"
+                :to="`/teams/${team.id}`"
+                :class="playerTeamChipClasses"
+              >
+                <span :class="playerTeamChipDotClasses"></span>
+                <span :class="playerTeamChipNameClasses">{{ team.name }}</span>
+                <span
+                  v-if="team.short_name"
+                  :class="playerTeamChipShortClasses"
+                >
+                  {{ team.short_name }}
+                </span>
+              </NuxtLink>
+            </div>
+          </div>
+
+          <div v-if="hasRightColumn" :class="playerHeroRightActionsClasses">
+            <NuxtLink
+              v-if="isSelfProfile"
+              to="/play"
+              :class="[playerHeroPlayClasses, 'max-md:hidden']"
+            >
+              <span :class="playerHeroPlayInnerClasses">
+                <PlayIcon :class="playerHeroPlayIconClasses" />
+                <span>{{ $t("pages.players.detail.play_a_match") }}</span>
+              </span>
+              <span
+                :class="playerHeroPlayGlowClasses"
+                aria-hidden="true"
+              ></span>
+            </NuxtLink>
+            <button
+              v-else-if="canAddFriend"
+              type="button"
+              :class="playerHeroAddFriendClasses"
+              :disabled="addFriendPending"
+              @click="addAsFriend"
+            >
+              <UserPlus class="h-4 w-4" />
+              <span>{{ $t("player.status.add_friend") }}</span>
+            </button>
+            <span v-else-if="isFriend" :class="playerHeroFriendBadgeClasses">
+              <UserCheck class="h-3.5 w-3.5" />
+              <span>{{ $t("pages.players.detail.friend") }}</span>
+            </span>
+          </div>
+        </header>
+      </PageTransition>
+
+      <PageTransition :delay="150">
+        <AnimatedCard
+          variant="elevated"
+          class="relative flex flex-col h-full p-2.5"
+        >
+          <CardContent class="flex flex-1 flex-col gap-2 p-0 sm:p-0">
+            <!-- Stats strip — two cells now (Current ELO + Peak/Lowest).
+                   Matches/W/L lives in the Win Rate card next door so we
+                   don't repeat it here. Peak gets a vertical amber rail. -->
+            <div
+              class="grid grid-cols-1 divide-y divide-border/40 overflow-hidden rounded-md border border-border/60 sm:grid-cols-2 sm:divide-x sm:divide-y-0"
+            >
+              <div class="relative min-h-[64px] px-3 py-2.5">
+                <div
+                  class="flex items-center justify-between gap-3 font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
+                >
+                  <span class="truncate">{{
+                    $t("pages.players.detail.current_elo")
+                  }}</span>
+                </div>
+                <div class="mt-1 flex items-center gap-2">
+                  <img
+                    v-if="isSkillGroupMode && rankBadge(windowedStats.current)"
+                    :src="rankBadge(windowedStats.current)!"
+                    :alt="fmtRangeStat(windowedStats.current)"
+                    :title="fmtRangeStat(windowedStats.current)"
+                    class="h-10 w-auto sm:h-12"
+                  />
+                  <AnimatedStat
+                    v-else
+                    :value="fmtRangeStat(windowedStats.current)"
+                    class="text-3xl font-bold leading-none tabular-nums tracking-tight sm:text-4xl"
+                  />
                 </div>
               </div>
 
-              <!-- Chart well: fixed height (NOT min-h) so the card never
+              <div class="relative min-h-[64px] px-3 py-2.5 sm:pl-4">
+                <!-- Amber rail anchoring the headline metric -->
+                <span
+                  class="pointer-events-none absolute left-0 top-3 bottom-3 hidden w-[2px] bg-[hsl(var(--tac-amber))] sm:block"
+                  aria-hidden="true"
+                ></span>
+                <div
+                  class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
+                >
+                  {{ $t("pages.players.detail.peak_lowest") }}
+                </div>
+                <div class="mt-1 flex items-center gap-2.5">
+                  <template
+                    v-if="isSkillGroupMode && rankBadge(windowedStats.peak)"
+                  >
+                    <img
+                      :src="rankBadge(windowedStats.peak)!"
+                      :alt="fmtRangeStat(windowedStats.peak)"
+                      :title="fmtRangeStat(windowedStats.peak)"
+                      class="h-7 w-auto [filter:drop-shadow(0_0_10px_hsl(var(--tac-amber)/0.45))]"
+                    />
+                    <span
+                      class="font-mono text-[hsl(var(--tac-amber)/0.35)]"
+                      aria-hidden="true"
+                      >/</span
+                    >
+                    <img
+                      v-if="rankBadge(windowedStats.lowest)"
+                      :src="rankBadge(windowedStats.lowest)!"
+                      :alt="fmtRangeStat(windowedStats.lowest)"
+                      :title="fmtRangeStat(windowedStats.lowest)"
+                      class="h-6 w-auto opacity-80"
+                    />
+                  </template>
+                  <template v-else>
+                    <AnimatedStat
+                      :value="fmtRangeStat(windowedStats.peak)"
+                      class="text-xl font-bold tabular-nums text-[hsl(var(--tac-amber))] [text-shadow:0_0_18px_hsl(var(--tac-amber)/0.35)]"
+                    />
+                    <span
+                      class="font-mono text-[hsl(var(--tac-amber)/0.35)]"
+                      aria-hidden="true"
+                      >/</span
+                    >
+                    <AnimatedStat
+                      :value="fmtRangeStat(windowedStats.lowest)"
+                      class="text-base font-semibold tabular-nums text-muted-foreground/80"
+                    />
+                  </template>
+                </div>
+                <!-- Date row is ALWAYS rendered (placeholder when no
+                       peakEntry yet) so the cell height never changes
+                       between empty/loaded states. -->
+                <div
+                  class="mt-0.5 font-mono text-[0.5rem] uppercase tracking-[0.18em] text-muted-foreground"
+                >
+                  <template v-if="windowedStats.peakEntry">
+                    {{ $t("pages.players.detail.peak") }}
+                    {{ fmtDateShort(windowedStats.peakEntry.match_created_at) }}
+                  </template>
+                  <template v-else>&nbsp;</template>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chart well: fixed height (NOT min-h) so the card never
                    grows when data arrives or when the empty/loading state
                    swaps for the chart. Frame + grid stay constant; the
                    contents inside just swap. -->
-              <div
-                class="relative min-h-[150px] flex-1 overflow-hidden rounded-md border border-border/40"
-              >
-                <!-- Registration ticks on the inner frame -->
-                <span
-                  class="pointer-events-none absolute -top-px left-3 h-1.5 w-1.5 border-l border-t border-[hsl(var(--tac-amber)/0.45)]"
-                  aria-hidden="true"
-                ></span>
-                <span
-                  class="pointer-events-none absolute -top-px right-3 h-1.5 w-1.5 border-r border-t border-[hsl(var(--tac-amber)/0.45)]"
-                  aria-hidden="true"
-                ></span>
-                <span
-                  class="pointer-events-none absolute -bottom-px left-3 h-1.5 w-1.5 border-l border-b border-[hsl(var(--tac-amber)/0.45)]"
-                  aria-hidden="true"
-                ></span>
-                <span
-                  class="pointer-events-none absolute -bottom-px right-3 h-1.5 w-1.5 border-r border-b border-[hsl(var(--tac-amber)/0.45)]"
-                  aria-hidden="true"
-                ></span>
-                <!-- Faint coordinate grid: keeps the surface visually
+            <div
+              class="relative min-h-[150px] flex-1 overflow-hidden rounded-md border border-border/40"
+            >
+              <!-- Registration ticks on the inner frame -->
+              <span
+                class="pointer-events-none absolute -top-px left-3 h-1.5 w-1.5 border-l border-t border-[hsl(var(--tac-amber)/0.45)]"
+                aria-hidden="true"
+              ></span>
+              <span
+                class="pointer-events-none absolute -top-px right-3 h-1.5 w-1.5 border-r border-t border-[hsl(var(--tac-amber)/0.45)]"
+                aria-hidden="true"
+              ></span>
+              <span
+                class="pointer-events-none absolute -bottom-px left-3 h-1.5 w-1.5 border-l border-b border-[hsl(var(--tac-amber)/0.45)]"
+                aria-hidden="true"
+              ></span>
+              <span
+                class="pointer-events-none absolute -bottom-px right-3 h-1.5 w-1.5 border-r border-b border-[hsl(var(--tac-amber)/0.45)]"
+                aria-hidden="true"
+              ></span>
+              <!-- Faint coordinate grid: keeps the surface visually
                      populated when only a few datapoints exist. -->
-                <div
-                  class="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(0deg,hsl(var(--foreground))_1px,transparent_1px),linear-gradient(90deg,hsl(var(--foreground))_1px,transparent_1px)] [background-size:48px_48px]"
-                  aria-hidden="true"
-                ></div>
+              <div
+                class="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(0deg,hsl(var(--foreground))_1px,transparent_1px),linear-gradient(90deg,hsl(var(--foreground))_1px,transparent_1px)] [background-size:48px_48px]"
+                aria-hidden="true"
+              ></div>
 
-                <!-- Loading: own state distinct from "truly empty" so we
+              <!-- Loading: own state distinct from "truly empty" so we
                      don't briefly show "Play a match" while the
                      subscription is just warming up. Pure decoration —
                      animate-ping on the indicator dot only. -->
-                <div
-                  v-if="eloHistoryLoading && !hasWindowedEloData"
-                  class="elo-skeleton relative flex h-full flex-col items-center justify-center gap-3 px-6"
-                  aria-busy="true"
-                >
-                  <!-- Skeleton plot lines — three faint horizontal
+              <div
+                v-if="eloHistoryLoading && !hasWindowedEloData"
+                class="elo-skeleton relative flex h-full flex-col items-center justify-center gap-3 px-6"
+                aria-busy="true"
+              >
+                <!-- Skeleton plot lines — three faint horizontal
                        bars hinting at the chart's grid axes. -->
-                  <div
-                    class="pointer-events-none absolute inset-x-8 top-[28%] h-px bg-[hsl(var(--foreground)/0.08)]"
-                    aria-hidden="true"
-                  ></div>
-                  <div
-                    class="pointer-events-none absolute inset-x-8 top-1/2 h-px bg-[hsl(var(--foreground)/0.12)]"
-                    aria-hidden="true"
-                  ></div>
-                  <div
-                    class="pointer-events-none absolute inset-x-8 bottom-[28%] h-px bg-[hsl(var(--foreground)/0.08)]"
-                    aria-hidden="true"
-                  ></div>
-                  <div
-                    class="inline-flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground"
-                  >
-                    <span class="relative flex h-2 w-2">
-                      <span
-                        class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
-                      ></span>
-                      <span
-                        class="relative inline-flex h-2 w-2 rounded-full bg-[hsl(var(--tac-amber))]"
-                      ></span>
-                    </span>
-                    {{ $t("pages.players.detail.acquiring_telemetry") }}
-                  </div>
-                </div>
-
-                <PlayerEloChart
-                  v-else-if="hasWindowedEloData"
-                  class="relative h-full"
-                  :series="windowedChartSeries"
-                  :rank-type="chartRankType"
-                  :loading="eloHistoryLoading"
-                />
-
                 <div
-                  v-else
-                  class="relative flex h-full flex-col items-center justify-center gap-2 px-6 text-center uppercase text-muted-foreground"
+                  class="pointer-events-none absolute inset-x-8 top-[28%] h-px bg-[hsl(var(--foreground)/0.08)]"
+                  aria-hidden="true"
+                ></div>
+                <div
+                  class="pointer-events-none absolute inset-x-8 top-1/2 h-px bg-[hsl(var(--foreground)/0.12)]"
+                  aria-hidden="true"
+                ></div>
+                <div
+                  class="pointer-events-none absolute inset-x-8 bottom-[28%] h-px bg-[hsl(var(--foreground)/0.08)]"
+                  aria-hidden="true"
+                ></div>
+                <div
+                  class="inline-flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-muted-foreground"
                 >
-                  <template v-if="eloRange !== 'all' && !noCareerData">
+                  <span class="relative flex h-2 w-2">
                     <span
-                      class="font-mono text-[0.65rem] tracking-[0.22em] text-muted-foreground"
-                    >
-                      {{ $t("pages.players.detail.no_matches_in_window") }}
-                    </span>
+                      class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[hsl(var(--tac-amber))] opacity-75"
+                    ></span>
+                    <span
+                      class="relative inline-flex h-2 w-2 rounded-full bg-[hsl(var(--tac-amber))]"
+                    ></span>
+                  </span>
+                  {{ $t("pages.players.detail.acquiring_telemetry") }}
+                </div>
+              </div>
+
+              <PlayerEloChart
+                v-else-if="hasWindowedEloData"
+                class="relative h-full"
+                :series="windowedChartSeries"
+                :rank-type="chartRankType"
+                :loading="eloHistoryLoading"
+              />
+
+              <div
+                v-else
+                class="relative flex h-full flex-col items-center justify-center gap-2 px-6 text-center uppercase text-muted-foreground"
+              >
+                <template v-if="eloRange !== 'all' && !noCareerData">
+                  <span
+                    class="font-mono text-[0.65rem] tracking-[0.22em] text-muted-foreground"
+                  >
+                    {{ $t("pages.players.detail.no_matches_in_window") }}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    class="transition-transform hover:scale-105"
+                    @click="setRange('all')"
+                  >
+                    {{ $t("pages.players.detail.expand_to_all_time") }}
+                  </Button>
+                </template>
+                <template v-else>
+                  <span
+                    class="font-mono text-[0.65rem] tracking-[0.22em] text-muted-foreground"
+                  >
+                    {{ $t("pages.players.detail.no_elo_history") }}
+                  </span>
+                  <NuxtLink v-if="me" to="/play" class="mt-2">
                     <Button
                       variant="outline"
                       size="sm"
                       class="transition-transform hover:scale-105"
-                      @click="setRange('all')"
+                      >{{ $t("pages.players.detail.play_a_match") }}</Button
                     >
-                      {{ $t("pages.players.detail.expand_to_all_time") }}
-                    </Button>
-                  </template>
-                  <template v-else>
-                    <span
-                      class="font-mono text-[0.65rem] tracking-[0.22em] text-muted-foreground"
-                    >
-                      {{ $t("pages.players.detail.no_elo_history") }}
-                    </span>
-                    <NuxtLink
-                      v-if="me"
-                      to="/play"
-                      class="mt-2"
-                    >
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        class="transition-transform hover:scale-105"
-                        >{{ $t("pages.players.detail.play_a_match") }}</Button
-                      >
-                    </NuxtLink>
-                  </template>
-                </div>
+                  </NuxtLink>
+                </template>
               </div>
+            </div>
+            <div class="mt-1 flex flex-wrap items-center justify-between gap-2">
               <div
-                class="mt-1 flex flex-wrap items-center justify-between gap-2"
+                v-if="player.steam_id"
+                class="flex flex-wrap items-center gap-2"
               >
-                <div
-                  v-if="player.steam_id"
-                  class="flex flex-wrap items-center gap-2"
-                >
-                  <PlayerLeaderboardRank :playerSteamId="player.steam_id" />
-                  <PlayerFaceitRank
-                    :faceit-skill-level="player.faceit_skill_level"
-                    :faceit-elo="player.faceit_elo"
-                    :faceit-url="player.faceit_url"
-                    :faceit-nickname="player.faceit_nickname"
-                  />
-                  <PlayerPremierRank
-                    :premier-rank="player.premier_rank"
-                    :premier-rank-updated-at="player.premier_rank_updated_at"
-                  />
-                </div>
-                <button
-                  type="button"
-                  class="inline-flex h-[26px] flex-1 items-center justify-center gap-1.5 rounded border border-border/60 bg-card/40 px-3 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)_/_0.5)] hover:bg-[hsl(var(--tac-amber)_/_0.08)] hover:text-[hsl(var(--tac-amber))]"
-                  @click="openEloTab"
-                >
-                  <Maximize2 class="h-3 w-3" />
-                  {{
-                    $t(
-                      "pages.players.detail.view_full_elo_history",
-                      "View full history",
-                    )
-                  }}
-                </button>
+                <PlayerLeaderboardRank :playerSteamId="player.steam_id" />
+                <PlayerFaceitRank
+                  :faceit-skill-level="player.faceit_skill_level"
+                  :faceit-elo="player.faceit_elo"
+                  :faceit-url="player.faceit_url"
+                  :faceit-nickname="player.faceit_nickname"
+                />
+                <PlayerPremierRank
+                  :premier-rank="player.premier_rank"
+                  :premier-rank-updated-at="player.premier_rank_updated_at"
+                />
               </div>
-            </CardContent>
-          </AnimatedCard>
-        </PageTransition>
+              <button
+                type="button"
+                class="inline-flex h-[26px] flex-1 items-center justify-center gap-1.5 rounded border border-border/60 bg-card/40 px-3 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)_/_0.5)] hover:bg-[hsl(var(--tac-amber)_/_0.08)] hover:text-[hsl(var(--tac-amber))]"
+                @click="openEloTab"
+              >
+                <Maximize2 class="h-3 w-3" />
+                {{
+                  $t(
+                    "pages.players.detail.view_full_elo_history",
+                    "View full history",
+                  )
+                }}
+              </button>
+            </div>
+          </CardContent>
+        </AnimatedCard>
+      </PageTransition>
     </div>
 
     <PageTransition
@@ -2033,271 +2189,284 @@ const playerTeamChipShortClasses =
           </div>
         </div>
 
-      <!-- Unified control bar — stat source (5Stack internal ELO vs Valve
+        <!-- Unified control bar — stat source (5Stack internal ELO vs Valve
            external rank), source-dependent mode chips, time range, match
            count + settings. One bar so every graph below reads the same
            filter and the two rating worlds never blend. -->
-      <div
-        class="mb-5 flex flex-col gap-3 rounded-lg border border-border/60 bg-card/40 px-3 py-2.5 [backdrop-filter:blur(6px)] md:flex-row md:flex-wrap md:items-center md:gap-x-4 md:gap-y-3"
-      >
-        <!-- Source toggle — only when external imports are enabled (otherwise
+        <div
+          class="mb-5 flex flex-col gap-3 rounded-lg border border-border/60 bg-card/40 px-3 py-2.5 [backdrop-filter:blur(6px)] md:flex-row md:flex-wrap md:items-center md:gap-x-4 md:gap-y-3"
+        >
+          <!-- Source toggle — only when external imports are enabled (otherwise
              5Stack is the only world, so the toggle is noise). -->
-        <div
-          v-if="appSettings.externalMatchesEnabled"
-          class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2"
-        >
-          <span
-            class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-          >
-            {{ $t("pages.players.detail.source", "Source") }}
-          </span>
           <div
-            class="flex w-full items-center rounded-md border border-border/60 bg-background/40 p-0.5 md:inline-flex md:w-auto"
+            v-if="appSettings.externalMatchesEnabled"
+            class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2"
           >
-            <button
-              v-for="s in sourceOptions"
-              :key="s.value"
-              type="button"
-              :disabled="sourceDisabled(s.value)"
-              :title="
-                sourceDisabled(s.value)
-                  ? $t('pages.players.detail.source_all_unavailable_elo')
-                  : undefined
-              "
-              class="flex-1 rounded px-2.5 py-1 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] transition-colors disabled:cursor-not-allowed disabled:opacity-40 md:flex-none"
-              :class="
-                displaySource === s.value
-                  ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
-                  : 'text-muted-foreground hover:text-foreground'
-              "
-              @click="!sourceDisabled(s.value) && onSourceClick(s.value)"
+            <span
+              class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
             >
-              {{ s.label }}
-            </button>
+              {{ $t("pages.players.detail.source", "Source") }}
+            </span>
+            <AnimatedFilters
+              v-model="sourceModel"
+              square
+              :options="sourceFilterOptions"
+            />
           </div>
-        </div>
 
-        <span
-          v-if="appSettings.externalMatchesEnabled"
-          class="hidden h-5 w-px bg-border/60 md:block"
-          aria-hidden="true"
-        ></span>
-
-        <!-- Mode chips (depend on the active source) -->
-        <div class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2">
           <span
-            class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground md:hidden"
-          >
-            {{ $t("pages.players.detail.mode", "Mode") }}
-          </span>
-          <div
-            class="flex flex-nowrap items-center gap-1.5 overflow-x-auto md:flex-wrap md:overflow-visible"
-          >
-          <button
-            v-for="m in modeOptions"
-            :key="m.value"
-            type="button"
-            class="shrink-0 rounded border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
-            :class="
-              selectedModeRef === m.value
-                ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
-                : 'border-border/60 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
-            "
-            @click="setMode(m.value)"
-          >
-            {{ m.label }}
-          </button>
-          </div>
-        </div>
-
-        <!-- Right cluster: time range + refresh + settings. On mobile this
-             becomes a labeled row (range + actions) with the chips on a
-             horizontal-scroll line below; inline on desktop. -->
-        <div
-          class="grid grid-cols-[1fr_auto] items-center gap-x-2 gap-y-2 md:ml-auto md:flex md:flex-wrap md:items-center md:gap-1.5"
-        >
-          <span
-            class="col-start-1 row-start-1 font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-          >
-            {{ $t("pages.players.detail.range") }}
-          </span>
-          <div
-            class="col-start-1 row-start-2 flex min-w-0 flex-nowrap items-center gap-1.5 overflow-x-auto md:flex-wrap md:overflow-visible"
-          >
-          <button
-            v-for="r in presetRanges"
-            :key="r.key"
-            type="button"
-            class="shrink-0 rounded border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
-            :class="
-              eloRange === r.key
-                ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
-                : 'border-border/60 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
-            "
-            @click="setRange(r.key)"
-          >
-            {{ r.label }}
-          </button>
-          <span
-            v-if="eloRange === 'custom'"
-            class="shrink-0 rounded border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
-          >
-            {{ activeRangeLabel }}
-          </span>
-          </div>
-          <div
-            class="col-start-2 row-start-2 flex items-center justify-self-end gap-1.5 md:contents"
-          >
-          <span
-            class="mx-1 hidden h-5 w-px bg-border/60 md:block"
+            v-if="appSettings.externalMatchesEnabled"
+            class="hidden h-5 w-px bg-border/60 md:block"
             aria-hidden="true"
           ></span>
-          <Popover v-model:open="settingsOpen">
-            <PopoverTrigger as-child>
+
+          <div
+            v-if="
+              appSettings.externalMatchesEnabled && sourceRef === 'external'
+            "
+            class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2"
+          >
+            <span
+              class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
+            >
+              {{ $t("pages.players.detail.provider", "Provider") }}
+            </span>
+            <AnimatedFilters
+              v-model="providerModel"
+              square
+              :options="providerFilterOptions"
+            />
+          </div>
+
+          <span
+            v-if="
+              appSettings.externalMatchesEnabled &&
+              sourceRef === 'external' &&
+              modeOptions.length
+            "
+            class="hidden h-5 w-px bg-border/60 md:block"
+            aria-hidden="true"
+          ></span>
+
+          <!-- Mode chips (depend on the active source) -->
+          <div
+            v-if="modeOptions.length"
+            class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2"
+          >
+            <span
+              class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground md:hidden"
+            >
+              {{ $t("pages.players.detail.mode", "Mode") }}
+            </span>
+            <AnimatedFilters
+              v-model="modeModel"
+              square
+              :options="modeFilterOptions"
+            />
+          </div>
+
+          <!-- Right cluster: time range + refresh + settings. On mobile this
+             becomes a labeled row (range + actions) with the chips on a
+             horizontal-scroll line below; inline on desktop. -->
+          <div
+            class="grid grid-cols-[1fr_auto] items-center gap-x-2 gap-y-2 md:ml-auto md:flex md:flex-wrap md:items-center md:gap-1.5"
+          >
+            <div
+              class="col-start-1 row-start-1 flex min-w-0 flex-nowrap items-center gap-1.5 overflow-x-auto md:flex-wrap md:overflow-visible"
+            >
               <button
+                v-for="r in presetRanges"
+                :key="r.key"
                 type="button"
-                class="relative inline-flex h-8 w-8 items-center justify-center rounded border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
-                :title="
-                  $t('pages.players.detail.range_settings', 'Range settings')
+                class="shrink-0 rounded border px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] transition-colors"
+                :class="
+                  eloRange === r.key
+                    ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] text-[hsl(var(--tac-amber))]'
+                    : 'border-border/60 bg-card/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground'
                 "
+                @click="setRange(r.key)"
               >
-                <Settings2 class="h-4 w-4" />
-                <span
-                  v-if="settingsChanged"
-                  class="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full border border-background bg-[hsl(var(--tac-amber))]"
-                  :title="$t('pages.players.detail.settings_changed')"
-                ></span>
+                {{ r.label }}
               </button>
-            </PopoverTrigger>
-            <PopoverContent align="end" class="w-80 space-y-4">
-              <div class="space-y-2">
-                <div
-                  class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-                >
-                  {{ $t("pages.players.detail.custom_range") }}
-                </div>
-                <div class="flex items-center gap-2">
-                  <button
-                    type="button"
-                    class="flex flex-1 items-center justify-between gap-2 rounded border bg-background px-2 py-1.5 text-xs transition-colors"
-                    :class="
-                      activeDateField === 'from'
-                        ? 'border-[hsl(var(--tac-amber))]'
-                        : 'border-border hover:border-[hsl(var(--tac-amber)/0.5)]'
-                    "
-                    @click="
-                      activeDateField = activeDateField === 'from' ? null : 'from'
-                    "
-                  >
-                    <span :class="customFrom ? '' : 'text-muted-foreground'">{{
-                      customFrom || $t("pages.players.detail.start_date", "Start")
-                    }}</span>
-                    <CalendarIcon class="h-3.5 w-3.5 text-muted-foreground" />
-                  </button>
-                  <span class="text-muted-foreground text-xs">→</span>
-                  <button
-                    type="button"
-                    class="flex flex-1 items-center justify-between gap-2 rounded border bg-background px-2 py-1.5 text-xs transition-colors"
-                    :class="
-                      activeDateField === 'to'
-                        ? 'border-[hsl(var(--tac-amber))]'
-                        : 'border-border hover:border-[hsl(var(--tac-amber)/0.5)]'
-                    "
-                    @click="
-                      activeDateField = activeDateField === 'to' ? null : 'to'
-                    "
-                  >
-                    <span :class="customTo ? '' : 'text-muted-foreground'">{{
-                      customTo || $t("pages.players.detail.end_date", "End")
-                    }}</span>
-                    <CalendarIcon class="h-3.5 w-3.5 text-muted-foreground" />
-                  </button>
-                </div>
-                <Calendar
-                  v-if="activeDateField === 'from'"
-                  v-model="customFromValue"
-                  class="rounded-md border border-border"
-                />
-                <Calendar
-                  v-else-if="activeDateField === 'to'"
-                  v-model="customToValue"
-                  class="rounded-md border border-border"
-                />
-                <div
-                  v-if="eloRange === 'custom' || customFrom || customTo"
-                  class="flex items-center justify-between gap-2"
-                >
-                  <p class="text-[0.65rem] text-muted-foreground">
-                    {{ $t("pages.players.detail.custom_window_active") }}
-                  </p>
-                  <button
-                    type="button"
-                    class="shrink-0 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground underline hover:text-foreground"
-                    @click="clearCustomRange"
-                  >
-                    {{ $t("common.clear") }}
-                  </button>
-                </div>
-              </div>
-              <label
-                class="flex items-start gap-2 cursor-pointer rounded p-1 -mx-1 hover:bg-muted/40"
+              <span
+                v-if="eloRange === 'custom'"
+                class="shrink-0 rounded border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.16)] px-2.5 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
               >
-                <Checkbox
-                  :model-value="excludeTournaments"
-                  @update:model-value="(v) => (excludeTournaments = !!v)"
-                  class="mt-0.5"
-                />
-                <div class="flex-1">
-                  <div class="text-sm font-medium">
-                    {{ $t("pages.players.detail.exclude_tournaments") }}
+                {{ activeRangeLabel }}
+              </span>
+            </div>
+            <div
+              class="col-start-2 row-start-1 flex items-center justify-self-end gap-1.5 md:contents"
+            >
+              <span
+                class="mx-1 hidden h-5 w-px bg-border/60 md:block"
+                aria-hidden="true"
+              ></span>
+              <Popover v-model:open="settingsOpen">
+                <PopoverTrigger as-child>
+                  <button
+                    type="button"
+                    class="relative inline-flex h-8 w-8 items-center justify-center rounded border border-border/60 bg-card/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.55)] hover:text-[hsl(var(--tac-amber))]"
+                    :title="
+                      $t(
+                        'pages.players.detail.range_settings',
+                        'Range settings',
+                      )
+                    "
+                  >
+                    <Settings2 class="h-4 w-4" />
+                    <span
+                      v-if="settingsChanged"
+                      class="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full border border-background bg-[hsl(var(--tac-amber))]"
+                      :title="$t('pages.players.detail.settings_changed')"
+                    ></span>
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent align="end" class="w-80 space-y-4">
+                  <div class="space-y-2">
+                    <div
+                      class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
+                    >
+                      {{ $t("pages.players.detail.custom_range") }}
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <button
+                        type="button"
+                        class="flex flex-1 items-center justify-between gap-2 rounded border bg-background px-2 py-1.5 text-xs transition-colors"
+                        :class="
+                          activeDateField === 'from'
+                            ? 'border-[hsl(var(--tac-amber))]'
+                            : 'border-border hover:border-[hsl(var(--tac-amber)/0.5)]'
+                        "
+                        @click="
+                          activeDateField =
+                            activeDateField === 'from' ? null : 'from'
+                        "
+                      >
+                        <span
+                          :class="customFrom ? '' : 'text-muted-foreground'"
+                          >{{
+                            customFrom ||
+                            $t("pages.players.detail.start_date", "Start")
+                          }}</span
+                        >
+                        <CalendarIcon
+                          class="h-3.5 w-3.5 text-muted-foreground"
+                        />
+                      </button>
+                      <span class="text-muted-foreground text-xs">→</span>
+                      <button
+                        type="button"
+                        class="flex flex-1 items-center justify-between gap-2 rounded border bg-background px-2 py-1.5 text-xs transition-colors"
+                        :class="
+                          activeDateField === 'to'
+                            ? 'border-[hsl(var(--tac-amber))]'
+                            : 'border-border hover:border-[hsl(var(--tac-amber)/0.5)]'
+                        "
+                        @click="
+                          activeDateField =
+                            activeDateField === 'to' ? null : 'to'
+                        "
+                      >
+                        <span
+                          :class="customTo ? '' : 'text-muted-foreground'"
+                          >{{
+                            customTo ||
+                            $t("pages.players.detail.end_date", "End")
+                          }}</span
+                        >
+                        <CalendarIcon
+                          class="h-3.5 w-3.5 text-muted-foreground"
+                        />
+                      </button>
+                    </div>
+                    <Calendar
+                      v-if="activeDateField === 'from'"
+                      v-model="customFromValue"
+                      class="rounded-md border border-border"
+                    />
+                    <Calendar
+                      v-else-if="activeDateField === 'to'"
+                      v-model="customToValue"
+                      class="rounded-md border border-border"
+                    />
+                    <div
+                      v-if="eloRange === 'custom' || customFrom || customTo"
+                      class="flex items-center justify-between gap-2"
+                    >
+                      <p class="text-[0.65rem] text-muted-foreground">
+                        {{ $t("pages.players.detail.custom_window_active") }}
+                      </p>
+                      <button
+                        type="button"
+                        class="shrink-0 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground underline hover:text-foreground"
+                        @click="clearCustomRange"
+                      >
+                        {{ $t("common.clear") }}
+                      </button>
+                    </div>
                   </div>
-                  <div class="text-[0.65rem] text-muted-foreground">
-                    {{
-                      $t("pages.players.detail.exclude_tournaments_description")
-                    }}
-                  </div>
-                </div>
-              </label>
+                  <label
+                    class="flex items-start gap-2 cursor-pointer rounded p-1 -mx-1 hover:bg-muted/40"
+                  >
+                    <Checkbox
+                      :model-value="excludeTournaments"
+                      @update:model-value="(v) => (excludeTournaments = !!v)"
+                      class="mt-0.5"
+                    />
+                    <div class="flex-1">
+                      <div class="text-sm font-medium">
+                        {{ $t("pages.players.detail.exclude_tournaments") }}
+                      </div>
+                      <div class="text-[0.65rem] text-muted-foreground">
+                        {{
+                          $t(
+                            "pages.players.detail.exclude_tournaments_description",
+                          )
+                        }}
+                      </div>
+                    </div>
+                  </label>
 
-              <Separator />
+                  <Separator />
 
-              <div class="space-y-2">
-                <div
-                  class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
-                >
-                  {{ $t("pages.players.detail.compare.label") }}
-                </div>
-                <!-- The trigger's container (div.relative) isn't full-width on
+                  <div class="space-y-2">
+                    <div
+                      class="font-mono text-[0.6rem] uppercase tracking-[0.22em] text-muted-foreground"
+                    >
+                      {{ $t("pages.players.detail.compare.label") }}
+                    </div>
+                    <!-- The trigger's container (div.relative) isn't full-width on
                      its own, so force it (and the button) to fill — otherwise
                      the chevron sits next to the label instead of flush-right. -->
-                <div class="w-full [&_.relative]:w-full [&_button]:w-full">
-                  <PlayerSearch
-                    class="w-full justify-between"
-                    :label="$t('pages.players.detail.compare.select_label')"
-                    :exclude="[playerId]"
-                    :selected="compareTarget"
-                    @selected="onCompareSelected"
-                  />
-                </div>
-                <div class="flex items-center justify-between gap-2">
-                  <p class="text-[0.65rem] text-muted-foreground">
-                    {{ $t("pages.players.detail.compare.description") }}
-                  </p>
-                  <button
-                    v-if="compareTarget"
-                    type="button"
-                    class="shrink-0 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground underline hover:text-foreground"
-                    @click="clearCompareTarget"
-                  >
-                    {{ $t("common.clear") }}
-                  </button>
-                </div>
-              </div>
-            </PopoverContent>
-          </Popover>
+                    <div class="w-full [&_.relative]:w-full [&_button]:w-full">
+                      <PlayerSearch
+                        class="w-full justify-between"
+                        :label="$t('pages.players.detail.compare.select_label')"
+                        :exclude="[playerId]"
+                        :selected="compareTarget"
+                        @selected="onCompareSelected"
+                      />
+                    </div>
+                    <div class="flex items-center justify-between gap-2">
+                      <p class="text-[0.65rem] text-muted-foreground">
+                        {{ $t("pages.players.detail.compare.description") }}
+                      </p>
+                      <button
+                        v-if="compareTarget"
+                        type="button"
+                        class="shrink-0 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground underline hover:text-foreground"
+                        @click="clearCompareTarget"
+                      >
+                        {{ $t("common.clear") }}
+                      </button>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
         </div>
-      </div>
 
         <div
           v-if="
@@ -2342,7 +2511,7 @@ const playerTeamChipShortClasses =
             <PlayerIntroDashboard
               :steam-id="playerId"
               :match-type="statTypeFilter"
-              :source="sourceRef"
+              :source="effectiveSource"
               :limit="statsMatchLimit"
               :since="sinceTimestamp"
             />
@@ -2361,6 +2530,7 @@ const playerTeamChipShortClasses =
               "
               :exclude-tournaments="excludeTournaments"
               :source="sourceRef"
+              :provider="providerRef"
             />
           </PageTransition>
         </TabsContent>
@@ -2370,7 +2540,7 @@ const playerTeamChipShortClasses =
             <PlayerMapsGrid
               :steam-id="playerId"
               :match-type="statTypeFilter"
-              :source="sourceRef"
+              :source="effectiveSource"
               :since="sinceTimestamp"
             />
           </PageTransition>
@@ -2381,7 +2551,7 @@ const playerTeamChipShortClasses =
             <PlayerWeaponsTable
               :steam-id="playerId"
               :match-type="statTypeFilter"
-              :source="sourceRef"
+              :source="effectiveSource"
             />
           </PageTransition>
         </TabsContent>
@@ -2391,7 +2561,7 @@ const playerTeamChipShortClasses =
             <PlayerPreferredRoles
               :steam-id="playerId"
               :match-type="statTypeFilter"
-              :source="sourceRef"
+              :source="effectiveSource"
               :limit="statsMatchLimit"
               :since="sinceTimestamp"
             />
@@ -2402,7 +2572,7 @@ const playerTeamChipShortClasses =
               :steam-id="playerId"
               :name="player?.name ?? null"
               :match-type="statTypeFilter"
-              :source="sourceRef"
+              :source="effectiveSource"
               :limit="statsMatchLimit"
               :since="sinceTimestamp"
             />
@@ -2412,7 +2582,7 @@ const playerTeamChipShortClasses =
             <PlayerCareerDuels
               :steam-id="playerId"
               :match-type="statTypeFilter"
-              :source="sourceRef"
+              :source="effectiveSource"
               :limit="statsMatchLimit"
               :since="sinceTimestamp"
             />
@@ -2422,7 +2592,7 @@ const playerTeamChipShortClasses =
             <PlayerCareerClutches
               :steam-id="playerId"
               :match-type="statTypeFilter"
-              :source="sourceRef"
+              :source="effectiveSource"
               :limit="statsMatchLimit"
               :since="sinceTimestamp"
             />
@@ -2435,86 +2605,85 @@ const playerTeamChipShortClasses =
       <PageTransition v-if="playerId">
         <RecentTournaments
           section-label="TOURNAMENTS"
-              :statuses="[
-                e_tournament_status_enum.Finished,
-                e_tournament_status_enum.Live,
-                e_tournament_status_enum.RegistrationOpen,
-                e_tournament_status_enum.RegistrationClosed,
-                e_tournament_status_enum.Setup,
-              ]"
-              status-variant="finished"
-              order-direction="desc"
-              horizontal
-              hide-when-empty
-              :player-steam-id="playerId"
-              :limit="8"
-            />
-          </PageTransition>
-    <PageTransition :delay="500">
-      <div>
-        <div class="mb-1 flex flex-wrap items-center justify-between gap-3">
-          <div :class="[tacticalSectionLabelClasses, 'mb-0']">
-            <span :class="tacticalSectionTickClasses"></span>
-            {{ $t("pages.players.detail.matches_section") }}
-          </div>
-          <div
-            class="flex items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
-          >
-            <span class="text-[hsl(var(--tac-amber))]">{{
-              sourceRef === "external"
-                ? "External"
-                : sourceRef === "all"
+          :statuses="[
+            e_tournament_status_enum.Finished,
+            e_tournament_status_enum.Live,
+            e_tournament_status_enum.RegistrationOpen,
+            e_tournament_status_enum.RegistrationClosed,
+            e_tournament_status_enum.Setup,
+          ]"
+          status-variant="finished"
+          order-direction="desc"
+          horizontal
+          hide-when-empty
+          :player-steam-id="playerId"
+          :limit="8"
+        />
+      </PageTransition>
+      <PageTransition :delay="500">
+        <div>
+          <div class="mb-1 flex flex-wrap items-center justify-between gap-3">
+            <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+              <span :class="tacticalSectionTickClasses"></span>
+              {{ $t("pages.players.detail.matches_section") }}
+            </div>
+            <div
+              class="flex items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-muted-foreground"
+            >
+              <span class="text-[hsl(var(--tac-amber))]">{{
+                sourceRef === "external"
+                  ? "External"
+                  : sourceRef === "all"
+                    ? $t("pages.players.detail.all_short")
+                    : "5Stack"
+              }}</span>
+              <span class="opacity-40">·</span>
+              <span>{{
+                selectedModeRef === "all"
                   ? $t("pages.players.detail.all_short")
-                  : "5Stack"
-            }}</span>
-            <span class="opacity-40">·</span>
-            <span>{{
-              selectedModeRef === "all"
-                ? $t("pages.players.detail.all_short")
-                : selectedModeRef
-            }}</span>
+                  : selectedModeRef
+              }}</span>
+            </div>
           </div>
+          <Empty v-if="playerMatchesTotal === 0" class="min-h-[200px]">
+            <EmptyTitle>{{ $t("pages.players.detail.no_matches") }}</EmptyTitle>
+            <EmptyDescription>
+              <template v-if="eloRange !== 'all' || excludeTournaments">
+                {{ $t("pages.players.detail.no_matches_in_window_period") }}
+                <button
+                  type="button"
+                  class="ml-1 text-[hsl(var(--tac-amber))] hover:underline"
+                  @click="setRange('all')"
+                >
+                  {{ $t("pages.players.detail.expand_to_all_time") }}
+                </button>
+              </template>
+              <template v-else>
+                {{ $t("pages.players.detail.no_matches_description") }}
+              </template>
+            </EmptyDescription>
+          </Empty>
+          <template v-else>
+            <PlayerMatchesTable
+              :player="player"
+              :matches="playerMatches"
+              :rank-by-match="rankByMatch"
+              :rating-by-match="ratingByMatch"
+              :stats-by-match="statsByMatch"
+            />
+            <Pagination
+              :page="matchesPage"
+              :per-page="matchesPerPage"
+              :total="playerMatchesTotal"
+              show-per-page-selector
+              @page="(p) => (matchesPage = p)"
+              @update:perPage="(n) => (matchesPerPage = n)"
+            />
+          </template>
         </div>
-        <Empty v-if="playerMatchesTotal === 0" class="min-h-[200px]">
-          <EmptyTitle>{{ $t("pages.players.detail.no_matches") }}</EmptyTitle>
-          <EmptyDescription>
-            <template v-if="eloRange !== 'all' || excludeTournaments">
-              {{ $t("pages.players.detail.no_matches_in_window_period") }}
-              <button
-                type="button"
-                class="ml-1 text-[hsl(var(--tac-amber))] hover:underline"
-                @click="setRange('all')"
-              >
-                {{ $t("pages.players.detail.expand_to_all_time") }}
-              </button>
-            </template>
-            <template v-else>
-              {{ $t("pages.players.detail.no_matches_description") }}
-            </template>
-          </EmptyDescription>
-        </Empty>
-        <template v-else>
-          <PlayerMatchesTable
-            :player="player"
-            :matches="playerMatches"
-            :rank-by-match="rankByMatch"
-            :rating-by-match="ratingByMatch"
-            :stats-by-match="statsByMatch"
-          />
-          <Pagination
-            :page="matchesPage"
-            :per-page="matchesPerPage"
-            :total="playerMatchesTotal"
-            show-per-page-selector
-            @page="(p) => (matchesPage = p)"
-            @update:perPage="(n) => (matchesPerPage = n)"
-          />
-        </template>
-      </div>
-    </PageTransition>
+      </PageTransition>
     </div>
   </div>
-
 
   <Sheet
     v-if="player"

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import {
   CalendarClock,
   GitBranch,
@@ -25,6 +26,8 @@ const props = withDefaults(
     statusVariant: "default",
   },
 );
+
+const { t } = useI18n();
 
 const tournamentPath = computed(() => `/tournaments/${props.tournament.id}`);
 
@@ -68,7 +71,7 @@ const statusText = computed(() => {
   return (
     props.statusLabel ||
     props.tournament?.e_tournament_status?.description ||
-    "Tournament"
+    t("tournament.feature_card.default_label")
   );
 });
 

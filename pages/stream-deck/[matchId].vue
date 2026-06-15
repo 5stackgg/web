@@ -652,7 +652,9 @@ watch(spectatedSteamId, (sid) => {
             <span>{{
               stream?.match?.lineup_1?.name ?? $t("common.team_a")
             }}</span>
-            <span class="mx-2 text-muted-foreground/60 font-light">vs</span>
+            <span class="mx-2 text-muted-foreground/60 font-light">{{
+              $t("common.vs")
+            }}</span>
             <span>{{
               stream?.match?.lineup_2?.name ?? $t("common.team_b")
             }}</span>
@@ -665,7 +667,7 @@ watch(spectatedSteamId, (sid) => {
               for="autodirector-focus"
               class="text-[0.7rem] uppercase tracking-[0.16em] text-muted-foreground"
             >
-              Auto-director
+              {{ $t("stream_deck.auto_director") }}
             </Label>
             <Switch
               id="autodirector-focus"
@@ -762,7 +764,7 @@ watch(spectatedSteamId, (sid) => {
             type="button"
             :disabled="busy"
             class="inline-flex items-center justify-center h-7 w-7 rounded-md border border-border/60 bg-card/40 text-muted-foreground hover:text-foreground cursor-pointer transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-            title="Swap sides (manual override)"
+            :title="$t('stream_deck.swap_sides')"
             @click="toggleHudSides"
           >
             <ArrowLeftRight class="size-3" />
@@ -773,7 +775,7 @@ watch(spectatedSteamId, (sid) => {
             type="button"
             :disabled="busy"
             class="inline-flex items-center justify-center h-7 w-7 rounded-md border border-border/60 bg-card/40 text-muted-foreground hover:text-foreground cursor-pointer transition-colors disabled:cursor-not-allowed disabled:opacity-50"
-            title="Refresh HUD (reload player images)"
+            :title="$t('stream_deck.refresh_hud')"
             @click="refreshHud"
           >
             <Spinner v-if="busy && busyAction === 'refresh hud'" />
@@ -806,7 +808,11 @@ watch(spectatedSteamId, (sid) => {
                 :is="isPageFullscreen ? Minimize2 : Maximize2"
                 class="size-3.5"
               />
-              {{ isPageFullscreen ? "Exit" : "Full" }}
+              {{
+                isPageFullscreen
+                  ? $t("stream_deck.exit")
+                  : $t("stream_deck.full")
+              }}
             </button>
             <div class="w-px bg-border/70" />
             <button
@@ -849,9 +855,11 @@ watch(spectatedSteamId, (sid) => {
                     @click="switchTo(m.id)"
                   >
                     <span class="truncate">
-                      {{ m.lineup_1?.name ?? "Team A" }}
-                      <span class="text-muted-foreground"> vs </span>
-                      {{ m.lineup_2?.name ?? "Team B" }}
+                      {{ m.lineup_1?.name ?? $t("common.team_a") }}
+                      <span class="text-muted-foreground">
+                        {{ $t("common.vs") }}
+                      </span>
+                      {{ m.lineup_2?.name ?? $t("common.team_b") }}
                     </span>
                     <ArrowRightLeft
                       class="size-3.5 text-muted-foreground shrink-0"
@@ -877,7 +885,7 @@ watch(spectatedSteamId, (sid) => {
                 v-else
                 :class="['size-3.5', confirmStop ? 'fill-current' : '']"
               />
-              {{ confirmStop ? "Confirm" : "Stop" }}
+              {{ confirmStop ? $t("common.confirm") : $t("stream_deck.stop") }}
             </button>
           </div>
         </div>

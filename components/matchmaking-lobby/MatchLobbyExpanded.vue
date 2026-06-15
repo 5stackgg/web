@@ -69,8 +69,7 @@ import { Badge } from "~/components/ui/badge";
         v-else
         class="flex items-center justify-center py-6 text-[12px] text-zinc-500"
       >
-        Waiting for players to join your lobby. Use the Invite button above to
-        add friends.
+        {{ $t("matchmaking.lobby.waiting_for_players") }}
       </div>
 
       <!-- Large invite button below members -->

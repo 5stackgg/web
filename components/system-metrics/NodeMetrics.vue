@@ -143,7 +143,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                   <div
                     class="text-[11px] uppercase tracking-wide text-muted-foreground"
                   >
-                    current
+                    {{ $t("system_metrics.current") }}
                   </div>
                 </div>
               </div>
@@ -176,7 +176,11 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                   <div
                     class="text-[11px] uppercase tracking-wide text-muted-foreground"
                   >
-                    {{ latestMemoryUsage }}% used
+                    {{
+                      $t("system_metrics.percent_used", {
+                        percent: latestMemoryUsage,
+                      })
+                    }}
                   </div>
                 </div>
               </div>
@@ -209,7 +213,7 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                   <div
                     class="text-[11px] uppercase tracking-wide text-muted-foreground"
                   >
-                    current
+                    {{ $t("system_metrics.current") }}
                   </div>
                 </div>
               </div>
@@ -242,7 +246,11 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
                   <div
                     class="text-[11px] uppercase tracking-wide text-muted-foreground"
                   >
-                    {{ latestDiskUsage }}% used
+                    {{
+                      $t("system_metrics.percent_used", {
+                        percent: latestDiskUsage,
+                      })
+                    }}
                   </div>
                 </div>
               </div>

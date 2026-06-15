@@ -4,7 +4,7 @@
     class="mb-2 flex items-center gap-2 border-l-2 border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.06)] px-2 py-1 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
   >
     <span class="text-[hsl(var(--tac-amber))]">◢</span>
-    <span>tail // since</span>
+    <span>{{ $t("pod_logs.tail_since") }}</span>
     <span class="normal-case tracking-normal text-foreground">
       {{ oldestLogTime.toLocaleString() }}
     </span>

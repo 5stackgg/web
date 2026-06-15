@@ -113,8 +113,7 @@ async function loadAvailability() {
       } as any),
     });
     if (selectedMatchMapId.value !== matchMapId) return;
-    availability.value =
-      (data as any)?.getHighlightPresetAvailability ?? null;
+    availability.value = (data as any)?.getHighlightPresetAvailability ?? null;
     ensureValidPreset();
   } catch {
     if (selectedMatchMapId.value === matchMapId) {
@@ -248,19 +247,19 @@ function close(v: boolean) {
       <DialogHeader>
         <DialogTitle class="flex items-center gap-2">
           <Sparkles class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
-          Render highlight
+          {{ $t("clips.render_dialog.title") }}
           <span v-if="targetName" class="text-muted-foreground">
             · {{ targetName }}
           </span>
         </DialogTitle>
         <DialogDescription>
-          Queue a one-click highlight from a demo on this match.
+          {{ $t("clips.render_dialog.description") }}
         </DialogDescription>
       </DialogHeader>
 
       <form class="space-y-5" @submit.prevent="submit">
         <div class="space-y-2">
-          <Label>Map</Label>
+          <Label>{{ $t("clips.render_dialog.map") }}</Label>
           <Select
             :model-value="selectedMatchMapId ?? ''"
             @update:model-value="
@@ -268,7 +267,7 @@ function close(v: boolean) {
             "
           >
             <SelectTrigger>
-              <SelectValue placeholder="Pick a map" />
+              <SelectValue :placeholder="$t('clips.render_dialog.pick_map')" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem v-for="mm in matchMaps" :key="mm.id" :value="mm.id">
@@ -320,12 +319,12 @@ function close(v: boolean) {
               </span>
             </button>
           </div>
-          <p
-            v-if="noPresetsAvailable"
-            class="text-xs text-muted-foreground"
-          >
-            No highlight-worthy moments for
-            {{ targetName ?? "this player" }} on this map.
+          <p v-if="noPresetsAvailable" class="text-xs text-muted-foreground">
+            {{
+              $t("clips.render_dialog.no_moments", {
+                target: targetName ?? $t("clips.render_dialog.this_player"),
+              })
+            }}
           </p>
         </div>
 
@@ -358,7 +357,7 @@ function close(v: boolean) {
           <Button type="submit" :disabled="!canSubmit">
             <Spinner v-if="submitting" class="h-4 w-4 mr-2" />
             <Film v-else class="h-4 w-4 mr-2" />
-            Queue render
+            {{ $t("clips.render_dialog.queue_render") }}
           </Button>
         </DialogFooter>
       </form>

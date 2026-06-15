@@ -242,7 +242,7 @@ const loginArrowClasses =
                   <div class="min-w-[160px] flex-1">
                     <div :class="navGroupLabelClasses">
                       <span :class="navGroupLabelTickClasses"></span>
-                      OPERATIONS
+                      {{ $t("layouts.top_nav.play.operations") }}
                     </div>
                     <ul class="flex flex-col gap-1">
                       <li>
@@ -299,7 +299,7 @@ const loginArrowClasses =
                       <span class="text-[0.55rem] text-[hsl(var(--tac-amber))]"
                         >◢</span
                       >
-                      PRIMARY
+                      {{ $t("layouts.top_nav.play.hero.primary") }}
                     </div>
                     <div :class="heroTitleClasses">
                       {{ $t("layouts.top_nav.play.hero.title") }}
@@ -323,7 +323,7 @@ const loginArrowClasses =
                   <div class="min-w-[160px] flex-1">
                     <div :class="navGroupLabelClasses">
                       <span :class="navGroupLabelTickClasses"></span>
-                      ROSTER
+                      {{ $t("layouts.top_nav.community.roster") }}
                     </div>
                     <ul class="flex flex-col gap-1">
                       <li class="block md:hidden">
@@ -439,10 +439,18 @@ const loginArrowClasses =
                             <span :class="navItemChevronClasses">◢</span>
                             <span :class="navItemContentClasses">
                               <span :class="navItemLabelClasses">
-                                Highlights
+                                {{
+                                  $t(
+                                    "layouts.top_nav.community.highlights.title",
+                                  )
+                                }}
                               </span>
                               <span :class="navItemSubClasses">
-                                Public clips from across the platform.
+                                {{
+                                  $t(
+                                    "layouts.top_nav.community.highlights.subtitle",
+                                  )
+                                }}
                               </span>
                             </span>
                           </NuxtLink>

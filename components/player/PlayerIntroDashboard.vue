@@ -22,11 +22,7 @@ import StatChevron from "~/components/StatChevron.vue";
 import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { statLevelFromRange, statScore, kdColor } from "~/utils/statTiers";
 import LastTenWinsAndLosses from "~/components/charts/LastTenWinsAndLosses.vue";
-import {
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
+import { CardContent, CardHeader, CardTitle } from "~/components/ui/card";
 import AnimatedCard from "~/components/ui/animated-card/AnimatedCard.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
@@ -63,7 +59,9 @@ const props = defineProps<{
 const { t, te } = useI18n();
 
 function statTitle(key: string): string {
-  return te(`stat_glossary.${key}.label`) ? t(`stat_glossary.${key}.label`) : "";
+  return te(`stat_glossary.${key}.label`)
+    ? t(`stat_glossary.${key}.label`)
+    : "";
 }
 function statDesc(key: string): string {
   return te(`stat_glossary.${key}.description`)
@@ -77,7 +75,13 @@ function buildMatchesWhere() {
   };
   if (props.source && props.source !== "all") {
     where.source =
-      props.source === "external" ? { _neq: "5stack" } : { _eq: "5stack" };
+      props.source === "5stack"
+        ? { _eq: "5stack" }
+        : props.source === "external"
+          ? { _neq: "5stack" }
+          : props.source === "unknown"
+            ? { _nin: ["5stack", "valve", "faceit"] }
+            : { _eq: props.source };
   }
   if (props.matchType) {
     where.options = {
@@ -190,10 +194,9 @@ async function load() {
     if (gen !== loadGen) {
       return;
     }
-    matchesMeta.value =
-      ((data as any)?.playerIntroMatches?.matches ?? []) as MatchMeta[];
-    rawStats.value =
-      ((data as any)?.playerIntroStats ?? []) as RawStats[];
+    matchesMeta.value = ((data as any)?.playerIntroMatches?.matches ??
+      []) as MatchMeta[];
+    rawStats.value = ((data as any)?.playerIntroStats ?? []) as RawStats[];
     hltvRows.value = ((data as any)?.playerIntroHltv ?? []) as any[];
   } catch {
     if (gen === loadGen) {
@@ -349,8 +352,8 @@ function buildPoints(
 
     const opponentName =
       mine === match.lineup_1_id
-        ? match.lineup_2?.name ?? "—"
-        : match.lineup_1?.name ?? "—";
+        ? (match.lineup_2?.name ?? "—")
+        : (match.lineup_1?.name ?? "—");
 
     const firstMap = match.match_maps[0]?.map?.name ?? null;
     const mapName = firstMap ? cleanMapName(firstMap) : "—";
@@ -932,8 +935,7 @@ const ratingOptions = computed(() => ({
     legend: { display: false },
     tooltip: {
       ...lineTooltipBase,
-      filter: (item: any) =>
-        item.datasetIndex === 0 || item.dataset?.isCompare,
+      filter: (item: any) => item.datasetIndex === 0 || item.dataset?.isCompare,
       callbacks: {
         title: (items: any[]) => tooltipTitle(items?.[0]?.dataIndex),
         label: (item: any) => {
@@ -1065,7 +1067,9 @@ function tooltipAfter(index: number | undefined): string[] {
           class="font-mono text-[0.62rem] tracking-[0.18em] text-muted-foreground/70"
         >
           ·
-          {{ $t("pages.players.detail.intro.last_n", { n: aggregate.matches }) }}
+          {{
+            $t("pages.players.detail.intro.last_n", { n: aggregate.matches })
+          }}
         </span>
       </div>
     </div>
@@ -1101,7 +1105,9 @@ function tooltipAfter(index: number | undefined): string[] {
                 class="h-24 w-24 rounded-full"
               />
             </div>
-            <Skeleton class="mx-auto aspect-square w-full max-w-[320px] rounded-lg" />
+            <Skeleton
+              class="mx-auto aspect-square w-full max-w-[320px] rounded-lg"
+            />
           </div>
           <div
             class="flex flex-col gap-3 rounded-lg border border-border/60 bg-card/40 p-4 lg:col-span-2"
@@ -1126,154 +1132,158 @@ function tooltipAfter(index: number | undefined): string[] {
       </Empty>
 
       <div v-else key="content" class="flex flex-col gap-4 md:gap-6">
-      <div class="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-5">
-        <AnimatedCard
-          v-for="card in metricCards"
-          :key="card.key"
-          variant="elevated"
-          class="flex flex-col gap-1.5 p-4"
-        >
-          <div
-            class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
+        <div class="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-5">
+          <AnimatedCard
+            v-for="card in metricCards"
+            :key="card.key"
+            variant="elevated"
+            class="flex flex-col gap-1.5 p-4"
           >
-            <StatLabel :stat="card.key" :label="card.label" />
-          </div>
-          <div class="flex items-center gap-1.5">
-            <AnimatedStat
-              :value="card.value"
-              class="font-sans text-3xl font-bold leading-none"
-              :style="card.valueColor ? { color: card.valueColor } : undefined"
-            />
-            <StatChevron
-              v-if="!card.valueColor"
-              :level="card.level"
-              class="h-5 w-5"
-            />
-          </div>
-          <AnimatedStat
-            v-if="card.subtext"
-            :value="card.subtext"
-            class="font-mono text-[0.6rem] tracking-[0.06em] text-muted-foreground/80"
-          />
-          <div
-            v-if="card.compareValue !== null"
-            class="font-mono text-[0.62rem] tracking-[0.1em]"
-            style="color: #38bdf8"
-          >
-            {{ card.value }} {{ $t("pages.players.detail.compare.vs") }}
-            {{ card.compareValue }}
-          </div>
-          <div class="mt-auto h-9 pt-1">
-            <Line
-              :data="sparkData(card.series, card.compareSeries)"
-              :options="sparkOptions"
-            />
-          </div>
-        </AnimatedCard>
-      </div>
-
-      <div class="grid grid-cols-1 items-stretch gap-4 md:gap-6 lg:grid-cols-3">
-        <div class="flex flex-col gap-4">
-          <div
-            class="flex items-center justify-around gap-4 rounded-lg border border-border/60 bg-card/30 p-3"
-          >
-            <FiveStackToolTip
-              v-if="aggregate.kast !== null"
-              as-child
-              side="top"
-              :delay-duration="120"
+            <div
+              class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
             >
-              <template #trigger>
-                <div class="flex cursor-help flex-col items-center">
-                  <RadialStat
-                    :value="fmtPct(aggregate.kast)"
-                    :label="$t('pages.players.detail.intro.series.kast')"
-                    :score="statScore(aggregate.kast, 80, 55)"
-                    :level="statLevelFromRange(aggregate.kast, 75, 55)"
-                  />
-                  <div
-                    v-if="hasCompare && compareAggregate.kast !== null"
-                    class="mt-1 font-mono text-[0.6rem]"
-                    style="color: #38bdf8"
-                  >
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{ fmtPct(compareAggregate.kast) }}
-                  </div>
-                </div>
-              </template>
-              <div class="max-w-[220px] space-y-0.5">
-                <div
-                  class="font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-foreground"
-                >
-                  {{ statTitle("kast") }}
-                </div>
-                <div class="text-xs leading-snug text-muted-foreground">
-                  {{ statDesc("kast") }}
-                </div>
-              </div>
-            </FiveStackToolTip>
-            <div class="flex flex-col items-center">
-              <RadialStat
-                :value="fmtPct(aggregate.hsPct)"
-                :label="$t('pages.players.detail.intro.hs_pct')"
-                :score="statScore(aggregate.hsPct, 55, 5)"
-                :level="statLevelFromRange(aggregate.hsPct ?? 0, 55, 25)"
-              />
-              <div
-                v-if="hasCompare && compareAggregate.hsPct !== null"
-                class="mt-1 font-mono text-[0.6rem]"
-                style="color: #38bdf8"
-              >
-                {{ $t("pages.players.detail.compare.vs") }}
-                {{ fmtPct(compareAggregate.hsPct) }}
-              </div>
+              <StatLabel :stat="card.key" :label="card.label" />
             </div>
-          </div>
-
-          <AnimatedCard variant="elevated" class="flex flex-col p-3">
-            <CardHeader class="flex flex-col gap-0.5 p-0 pb-1">
-              <CardTitle
-                class="font-mono text-[0.72rem] uppercase tracking-[0.2em] text-muted-foreground"
-              >
-                {{ $t("pages.players.detail.recent_wins_and_losses") }}
-              </CardTitle>
-              <span
-                class="text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70"
-              >
-                {{ $t("pages.players.detail.last_n_matches", "Last 10") }}
-              </span>
-            </CardHeader>
-            <CardContent class="p-0 sm:p-0">
-              <LastTenWinsAndLosses
-                class="mx-auto aspect-square w-full max-w-[320px]"
-                :steam_id="steamId"
-                :match_type="matchType ?? null"
-                :source="source ?? null"
+            <div class="flex items-center gap-1.5">
+              <AnimatedStat
+                :value="card.value"
+                class="font-sans text-3xl font-bold leading-none"
+                :style="
+                  card.valueColor ? { color: card.valueColor } : undefined
+                "
               />
-            </CardContent>
+              <StatChevron
+                v-if="!card.valueColor"
+                :level="card.level"
+                class="h-5 w-5"
+              />
+            </div>
+            <AnimatedStat
+              v-if="card.subtext"
+              :value="card.subtext"
+              class="font-mono text-[0.6rem] tracking-[0.06em] text-muted-foreground/80"
+            />
+            <div
+              v-if="card.compareValue !== null"
+              class="font-mono text-[0.62rem] tracking-[0.1em]"
+              style="color: #38bdf8"
+            >
+              {{ card.value }} {{ $t("pages.players.detail.compare.vs") }}
+              {{ card.compareValue }}
+            </div>
+            <div class="mt-auto h-9 pt-1">
+              <Line
+                :data="sparkData(card.series, card.compareSeries)"
+                :options="sparkOptions"
+              />
+            </div>
           </AnimatedCard>
         </div>
 
-        <AnimatedCard
-          variant="elevated"
-          class="flex flex-col px-4 pb-4 pt-2.5 lg:col-span-2"
+        <div
+          class="grid grid-cols-1 items-stretch gap-4 md:gap-6 lg:grid-cols-3"
         >
-          <CardHeader class="flex flex-col gap-2 p-0 pb-2 sm:p-0 sm:pb-2">
-            <AnimatedFilters
-              v-model="activeSeriesKey"
-              :options="seriesFilterOptions"
-            />
-          </CardHeader>
-          <CardContent class="flex flex-1 flex-col p-0 sm:p-0">
+          <div class="flex flex-col gap-4">
             <div
-              class="min-h-[360px] flex-1 origin-center transition-transform duration-200 ease-in-out"
-              :class="recentCollapsed ? 'scale-y-0' : 'scale-y-100'"
+              class="flex items-center justify-around gap-4 rounded-lg border border-border/60 bg-card/30 p-3"
             >
-              <Line :data="recentChartData" :options="recentOptions" />
+              <FiveStackToolTip
+                v-if="aggregate.kast !== null"
+                as-child
+                side="top"
+                :delay-duration="120"
+              >
+                <template #trigger>
+                  <div class="flex cursor-help flex-col items-center">
+                    <RadialStat
+                      :value="fmtPct(aggregate.kast)"
+                      :label="$t('pages.players.detail.intro.series.kast')"
+                      :score="statScore(aggregate.kast, 80, 55)"
+                      :level="statLevelFromRange(aggregate.kast, 75, 55)"
+                    />
+                    <div
+                      v-if="hasCompare && compareAggregate.kast !== null"
+                      class="mt-1 font-mono text-[0.6rem]"
+                      style="color: #38bdf8"
+                    >
+                      {{ $t("pages.players.detail.compare.vs") }}
+                      {{ fmtPct(compareAggregate.kast) }}
+                    </div>
+                  </div>
+                </template>
+                <div class="max-w-[220px] space-y-0.5">
+                  <div
+                    class="font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] text-foreground"
+                  >
+                    {{ statTitle("kast") }}
+                  </div>
+                  <div class="text-xs leading-snug text-muted-foreground">
+                    {{ statDesc("kast") }}
+                  </div>
+                </div>
+              </FiveStackToolTip>
+              <div class="flex flex-col items-center">
+                <RadialStat
+                  :value="fmtPct(aggregate.hsPct)"
+                  :label="$t('pages.players.detail.intro.hs_pct')"
+                  :score="statScore(aggregate.hsPct, 55, 5)"
+                  :level="statLevelFromRange(aggregate.hsPct ?? 0, 55, 25)"
+                />
+                <div
+                  v-if="hasCompare && compareAggregate.hsPct !== null"
+                  class="mt-1 font-mono text-[0.6rem]"
+                  style="color: #38bdf8"
+                >
+                  {{ $t("pages.players.detail.compare.vs") }}
+                  {{ fmtPct(compareAggregate.hsPct) }}
+                </div>
+              </div>
             </div>
-          </CardContent>
-        </AnimatedCard>
-      </div>
+
+            <AnimatedCard variant="elevated" class="flex flex-col p-3">
+              <CardHeader class="flex flex-col gap-0.5 p-0 pb-1">
+                <CardTitle
+                  class="font-mono text-[0.72rem] uppercase tracking-[0.2em] text-muted-foreground"
+                >
+                  {{ $t("pages.players.detail.recent_wins_and_losses") }}
+                </CardTitle>
+                <span
+                  class="text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70"
+                >
+                  {{ $t("pages.players.detail.last_n_matches", "Last 10") }}
+                </span>
+              </CardHeader>
+              <CardContent class="p-0 sm:p-0">
+                <LastTenWinsAndLosses
+                  class="mx-auto aspect-square w-full max-w-[320px]"
+                  :steam_id="steamId"
+                  :match_type="matchType ?? null"
+                  :source="source ?? null"
+                />
+              </CardContent>
+            </AnimatedCard>
+          </div>
+
+          <AnimatedCard
+            variant="elevated"
+            class="flex flex-col px-4 pb-4 pt-2.5 lg:col-span-2"
+          >
+            <CardHeader class="flex flex-col gap-2 p-0 pb-2 sm:p-0 sm:pb-2">
+              <AnimatedFilters
+                v-model="activeSeriesKey"
+                :options="seriesFilterOptions"
+              />
+            </CardHeader>
+            <CardContent class="flex flex-1 flex-col p-0 sm:p-0">
+              <div
+                class="min-h-[360px] flex-1 origin-center transition-transform duration-200 ease-in-out"
+                :class="recentCollapsed ? 'scale-y-0' : 'scale-y-100'"
+              >
+                <Line :data="recentChartData" :options="recentOptions" />
+              </div>
+            </CardContent>
+          </AnimatedCard>
+        </div>
       </div>
     </FadeSwap>
   </div>

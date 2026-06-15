@@ -334,8 +334,13 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem tooltip="Highlights">
-              <SidebarMenuButton as-child tooltip="Highlights">
+            <SidebarMenuItem
+              :tooltip="$t('layouts.app_nav.navigation.highlights')"
+            >
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.navigation.highlights')"
+              >
                 <NuxtLink
                   :to="{ name: 'highlights' }"
                   :class="{
@@ -343,7 +348,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   }"
                 >
                   <Film />
-                  Highlights
+                  {{ $t("layouts.app_nav.navigation.highlights") }}
 
                   <Badge
                     size="sm"
@@ -398,8 +403,13 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
-            <SidebarMenuItem tooltip="Stream Deck">
-              <SidebarMenuButton as-child tooltip="Stream Deck">
+            <SidebarMenuItem
+              :tooltip="$t('layouts.app_nav.administration.stream_deck')"
+            >
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.administration.stream_deck')"
+              >
                 <NuxtLink
                   :to="{ name: 'stream-deck' }"
                   :class="{
@@ -407,7 +417,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   }"
                 >
                   <Camera />
-                  Stream Deck
+                  {{ $t("layouts.app_nav.administration.stream_deck") }}
                   <Badge size="sm" v-if="activeStreamingMatchesCount > 0">
                     {{ activeStreamingMatchesCount }}
                   </Badge>
@@ -714,8 +724,13 @@ function onLeftNavTouchEnd(e: TouchEvent) {
               </SidebarMenuButton>
             </SidebarMenuItem>
 
-            <SidebarMenuItem tooltip="Render Queue">
-              <SidebarMenuButton as-child tooltip="Render Queue">
+            <SidebarMenuItem
+              :tooltip="$t('layouts.app_nav.system.render_queue')"
+            >
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.system.render_queue')"
+              >
                 <NuxtLink
                   :to="{ name: 'system-render-queue' }"
                   :class="{
@@ -723,7 +738,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   }"
                 >
                   <ListVideo />
-                  Render Queue
+                  {{ $t("layouts.app_nav.system.render_queue") }}
 
                   <Badge
                     size="sm"

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/toast";
@@ -28,7 +29,7 @@ import {
   AlertDialogTitle,
 } from "~/components/ui/alert-dialog";
 
-
+const { t } = useI18n();
 const apolloClient = useApolloClient().client;
 const me = computed(() => useAuthStore().me);
 const externalMatchesEnabled = computed(
@@ -212,7 +213,7 @@ async function submitLink() {
     });
     const result = data?.linkSteamMatchHistory;
     if (result?.success) {
-      toast({ title: "Linked CS2 match history" });
+      toast({ title: t("pages.settings.external_matches.toast_linked") });
       authCode.value = "";
       shareCode.value = "";
       // We auto-poll right after linking — reflect it straight away.
@@ -221,8 +222,9 @@ async function submitLink() {
       awaitingPollTimeout = setTimeout(stopAwaitingPoll, 90_000);
     } else {
       toast({
-        title: "Could not link",
-        description: result?.error ?? "Unknown error",
+        title: t("pages.settings.external_matches.toast_could_not_link"),
+        description:
+          result?.error ?? t("pages.settings.external_matches.unknown_error"),
         variant: "destructive",
       });
     }
@@ -235,7 +237,7 @@ async function submitUnlink() {
   unlinking.value = true;
   try {
     await apolloClient.mutate({ mutation: UNLINK_MUTATION });
-    toast({ title: "Unlinked CS2 match history" });
+    toast({ title: t("pages.settings.external_matches.toast_unlinked") });
     showUnlinkConfirm.value = false;
   } finally {
     unlinking.value = false;
@@ -249,13 +251,16 @@ async function submitPoll() {
     const result = data?.pollSteamMatchHistory;
     if (result?.success) {
       toast({
-        title: "Polled match history",
-        description: `Collected ${result.collected} new share codes`,
+        title: t("pages.settings.external_matches.toast_polled"),
+        description: t("pages.settings.external_matches.toast_collected", {
+          count: result.collected,
+        }),
       });
     } else {
       toast({
-        title: "Poll failed",
-        description: result?.error ?? "Unknown error",
+        title: t("pages.settings.external_matches.toast_poll_failed"),
+        description:
+          result?.error ?? t("pages.settings.external_matches.unknown_error"),
         variant: "destructive",
       });
     }
@@ -290,7 +295,7 @@ async function clearImport(valveMatchId: string) {
       mutation: CLEAR_PENDING_MUTATION,
       variables: { valve_match_id: valveMatchId },
     });
-    toast({ title: "Cleared pending import" });
+    toast({ title: t("pages.settings.external_matches.toast_cleared_import") });
   } finally {
     busyImportId.value = null;
   }
@@ -385,8 +390,8 @@ function handleDrop(event: DragEvent) {
   if (!file) return;
   if (!file.name.toLowerCase().endsWith(".dem")) {
     toast({
-      title: "Wrong file type",
-      description: "Please drop a CS2 .dem file.",
+      title: t("pages.settings.external_matches.toast_wrong_file_type"),
+      description: t("pages.settings.external_matches.toast_drop_dem_file"),
       variant: "destructive",
     });
     return;
@@ -436,9 +441,14 @@ async function uploadDemo(file: File) {
 
   try {
     const magic = [0x50, 0x42, 0x44, 0x45, 0x4d, 0x53, 0x32, 0x00];
-    const header = new Uint8Array(await file.slice(0, magic.length).arrayBuffer());
-    if (header.length < magic.length || !magic.every((b, i) => header[i] === b)) {
-      throw new Error("Not a valid CS2 demo (.dem) file");
+    const header = new Uint8Array(
+      await file.slice(0, magic.length).arrayBuffer(),
+    );
+    if (
+      header.length < magic.length ||
+      !magic.every((b, i) => header[i] === b)
+    ) {
+      throw new Error(t("pages.settings.external_matches.error_invalid_demo"));
     }
 
     const initiate = await fetch(
@@ -452,7 +462,8 @@ async function uploadDemo(file: File) {
     );
     if (!initiate.ok) {
       throw new Error(
-        (await initiate.text()) || `could not start upload (${initiate.status})`,
+        (await initiate.text()) ||
+          `could not start upload (${initiate.status})`,
       );
     }
     const session = (await initiate.json()) as {
@@ -496,17 +507,19 @@ async function uploadDemo(file: File) {
 
     uploadResult.value = {
       status: "success",
-      message: "Uploaded — importing now. Your match will appear shortly.",
+      message: t("pages.settings.external_matches.upload_success_message"),
     };
     toast({
-      title: "Demo uploaded",
-      description: "Importing now — your match will appear shortly.",
+      title: t("pages.settings.external_matches.toast_demo_uploaded"),
+      description: t(
+        "pages.settings.external_matches.toast_demo_uploaded_description",
+      ),
     });
   } catch (err) {
     const message = (err as Error).message;
     uploadResult.value = { status: "error", message };
     toast({
-      title: "Upload failed",
+      title: t("pages.settings.external_matches.toast_upload_failed"),
       description: message,
       variant: "destructive",
     });
@@ -528,11 +541,10 @@ async function uploadDemo(file: File) {
   <PageTransition :delay="0">
     <div>
       <h3 class="text-base font-semibold uppercase tracking-wide">
-        External Matches
+        {{ $t("pages.settings.external_matches.heading") }}
       </h3>
       <p class="text-sm text-muted-foreground mt-0.5">
-        Link your Steam match history so we can automatically import your
-        official CS2 matches and Premier rank.
+        {{ $t("pages.settings.external_matches.heading_description") }}
       </p>
     </div>
   </PageTransition>
@@ -551,36 +563,48 @@ async function uploadDemo(file: File) {
       class="flex items-center gap-2 text-sm text-muted-foreground max-w-xl"
     >
       <Spinner class="w-4 h-4" />
-      Checking match history link…
+      {{ $t("pages.settings.external_matches.checking_link") }}
     </div>
 
     <div v-else-if="!isLinked" class="grid gap-4 max-w-xl">
       <p class="text-sm text-muted-foreground">
-        You'll need two codes from Valve:
+        {{ $t("pages.settings.external_matches.need_two_codes") }}
       </p>
       <ol class="text-sm text-muted-foreground list-decimal pl-5 space-y-1">
         <li>
-          Your
+          {{ $t("pages.settings.external_matches.step_auth_prefix") }}
           <a
             class="underline"
             target="_blank"
             rel="noopener noreferrer"
             href="https://help.steampowered.com/en/wizard/HelpWithGameIssue/?appid=730&issueid=128"
-            >Steam Game Authentication Code</a
+            >{{ $t("pages.settings.external_matches.steam_auth_code") }}</a
           >
-          — on the Steam help page, look under
-          <em>“Access to Your Match History”</em> and click
-          <em>Create Authentication Code</em>. Generated once per Steam account.
+          {{ $t("pages.settings.external_matches.step_auth_mid") }}
+          <em>{{
+            $t("pages.settings.external_matches.access_match_history")
+          }}</em>
+          {{ $t("pages.settings.external_matches.step_auth_and_click") }}
+          <em>{{ $t("pages.settings.external_matches.create_auth_code") }}</em
+          >. {{ $t("pages.settings.external_matches.generated_once") }}
         </li>
         <li>
-          A recent <strong>Match Share Code</strong> — copy from
-          <em>Watch → Your Matches</em> in CS2 (any match within the last 30
-          days works as a starting point).
+          {{ $t("pages.settings.external_matches.step_share_prefix") }}
+          <strong>{{
+            $t("pages.settings.external_matches.match_share_code")
+          }}</strong>
+          {{ $t("pages.settings.external_matches.step_share_copy") }}
+          <em>{{
+            $t("pages.settings.external_matches.watch_your_matches")
+          }}</em>
+          {{ $t("pages.settings.external_matches.step_share_within_30") }}
         </li>
       </ol>
 
       <div class="space-y-2">
-        <label class="text-sm font-medium">Auth code</label>
+        <label class="text-sm font-medium">{{
+          $t("pages.settings.external_matches.auth_code")
+        }}</label>
         <Input
           v-model="authCode"
           placeholder="XXXX-XXXXX-XXXX"
@@ -590,7 +614,9 @@ async function uploadDemo(file: File) {
       </div>
 
       <div class="space-y-2">
-        <label class="text-sm font-medium">Share code</label>
+        <label class="text-sm font-medium">{{
+          $t("pages.settings.external_matches.share_code")
+        }}</label>
         <Input
           v-model="shareCode"
           placeholder="CSGO-XXXXX-XXXXX-XXXXX-XXXXX-XXXXX"
@@ -604,7 +630,11 @@ async function uploadDemo(file: File) {
           :disabled="!authCode || !shareCode || linking"
           @click="submitLink"
         >
-          {{ linking ? "Linking…" : "Link match history" }}
+          {{
+            linking
+              ? $t("pages.settings.external_matches.linking")
+              : $t("pages.settings.external_matches.link_match_history")
+          }}
         </Button>
       </div>
     </div>
@@ -628,14 +658,20 @@ async function uploadDemo(file: File) {
             </span>
             <div class="min-w-0">
               <div class="text-sm font-medium leading-tight">
-                {{ linkQuery?.last_error ? "Linked · errors" : "Linked" }}
+                {{
+                  linkQuery?.last_error
+                    ? $t("pages.settings.external_matches.linked_errors")
+                    : $t("pages.settings.external_matches.linked")
+                }}
               </div>
               <div class="text-xs text-muted-foreground">
-                Last poll
+                {{ $t("pages.settings.external_matches.last_poll") }}
                 <template v-if="linkQuery?.last_polled_at">
                   <TimeAgo :date="linkQuery.last_polled_at" hide-icon />
                 </template>
-                <template v-else>· never</template>
+                <template v-else
+                  >· {{ $t("pages.settings.external_matches.never") }}</template
+                >
               </div>
             </div>
           </div>
@@ -657,7 +693,11 @@ async function uploadDemo(file: File) {
                   />
                 </Button>
               </template>
-              {{ polling || awaitingPoll ? "Polling…" : "Poll now" }}
+              {{
+                polling || awaitingPoll
+                  ? $t("pages.settings.external_matches.polling")
+                  : $t("pages.settings.external_matches.poll_now")
+              }}
             </FiveStackToolTip>
             <FiveStackToolTip side="bottom">
               <template #trigger>
@@ -671,14 +711,20 @@ async function uploadDemo(file: File) {
                   <Unlink class="w-3.5 h-3.5" />
                 </Button>
               </template>
-              {{ unlinking ? "Unlinking…" : "Unlink" }}
+              {{
+                unlinking
+                  ? $t("pages.settings.external_matches.unlinking")
+                  : $t("pages.settings.external_matches.unlink")
+              }}
             </FiveStackToolTip>
           </div>
         </div>
 
         <dl class="divide-y divide-border/60 text-sm">
           <div class="flex items-start justify-between gap-4 px-4 py-2.5">
-            <dt class="text-muted-foreground">Most recent share code</dt>
+            <dt class="text-muted-foreground">
+              {{ $t("pages.settings.external_matches.most_recent_share_code") }}
+            </dt>
             <dd class="text-right">
               <div class="font-mono text-xs break-all">
                 {{ linkQuery?.last_known_share_code || "—" }}
@@ -687,7 +733,8 @@ async function uploadDemo(file: File) {
                 v-if="linkQuery?.last_polled_at"
                 class="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground mt-0.5"
               >
-                scanned <TimeAgo :date="linkQuery.last_polled_at" hide-icon />
+                {{ $t("pages.settings.external_matches.scanned") }}
+                <TimeAgo :date="linkQuery.last_polled_at" hide-icon />
               </div>
             </dd>
           </div>
@@ -695,7 +742,9 @@ async function uploadDemo(file: File) {
             v-if="linkQuery?.last_error"
             class="flex items-start justify-between gap-4 px-4 py-2.5"
           >
-            <dt class="text-muted-foreground">Last error</dt>
+            <dt class="text-muted-foreground">
+              {{ $t("pages.settings.external_matches.last_error") }}
+            </dt>
             <dd class="font-mono text-xs text-destructive break-all text-right">
               {{ linkQuery.last_error }}
             </dd>
@@ -708,14 +757,17 @@ async function uploadDemo(file: File) {
   <AlertDialog v-model:open="showUnlinkConfirm">
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>Unlink match history?</AlertDialogTitle>
+        <AlertDialogTitle>{{
+          $t("pages.settings.external_matches.unlink_confirm_title")
+        }}</AlertDialogTitle>
         <AlertDialogDescription>
-          We'll stop importing your official CS2 matches and Premier rank. You
-          can re-link anytime with your Steam auth and share codes.
+          {{ $t("pages.settings.external_matches.unlink_confirm_description") }}
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
-        <AlertDialogCancel :disabled="unlinking">Cancel</AlertDialogCancel>
+        <AlertDialogCancel :disabled="unlinking">{{
+          $t("common.cancel")
+        }}</AlertDialogCancel>
         <!-- Plain button — radix's AlertDialogAction auto-closes
              before the async mutation can run. -->
         <button
@@ -724,7 +776,11 @@ async function uploadDemo(file: File) {
           class="inline-flex h-10 items-center justify-center rounded-md bg-destructive px-4 text-sm font-medium text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
           @click="submitUnlink"
         >
-          {{ unlinking ? "Unlinking…" : "Unlink" }}
+          {{
+            unlinking
+              ? $t("pages.settings.external_matches.unlinking")
+              : $t("pages.settings.external_matches.unlink")
+          }}
         </button>
       </AlertDialogFooter>
     </AlertDialogContent>
@@ -734,14 +790,13 @@ async function uploadDemo(file: File) {
     <div
       class="flex items-start gap-2.5 rounded-lg border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] px-4 py-3 text-sm max-w-xl mt-4"
     >
-      <Spinner
-        class="w-4 h-4 mt-0.5 shrink-0 text-[hsl(var(--tac-amber))]"
-      />
+      <Spinner class="w-4 h-4 mt-0.5 shrink-0 text-[hsl(var(--tac-amber))]" />
       <div>
-        <div class="font-medium">Polling your match history…</div>
+        <div class="font-medium">
+          {{ $t("pages.settings.external_matches.polling_banner_title") }}
+        </div>
         <div class="text-xs text-muted-foreground mt-0.5">
-          Scanning Valve for your recent matches. Pending imports will appear
-          below as we find them.
+          {{ $t("pages.settings.external_matches.polling_banner_description") }}
         </div>
       </div>
     </div>
@@ -754,14 +809,15 @@ async function uploadDemo(file: File) {
     <div class="grid gap-3 max-w-xl mt-8">
       <div>
         <h3 class="text-base font-semibold uppercase tracking-wide">
-          Pending imports
+          {{ $t("pages.settings.external_matches.pending_imports") }}
           <span class="text-muted-foreground font-normal">
             ({{ pendingImports.length }})
           </span>
         </h3>
         <p class="text-sm text-muted-foreground mt-0.5">
-          Matches your linked accounts are waiting on. Demos that fail here are
-          typically older than 30 days and no longer hosted by Valve.
+          {{
+            $t("pages.settings.external_matches.pending_imports_description")
+          }}
         </p>
       </div>
       <div class="flex flex-wrap items-center gap-2">
@@ -805,7 +861,7 @@ async function uploadDemo(file: File) {
               class="flex items-center gap-2 text-sm text-muted-foreground"
             >
               <Spinner class="w-3.5 h-3.5" />
-              Importing…
+              {{ $t("pages.settings.external_matches.importing") }}
             </div>
           </div>
           <div class="flex items-center gap-3 shrink-0">
@@ -824,7 +880,7 @@ async function uploadDemo(file: File) {
               :disabled="busyImportId === entry.valve_match_id"
               @click="clearImport(entry.valve_match_id)"
             >
-              Clear
+              {{ $t("common.clear") }}
             </Button>
           </div>
         </li>
@@ -838,8 +894,14 @@ async function uploadDemo(file: File) {
           class="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-muted-foreground hover:text-foreground"
           @click="pendingExpanded = !pendingExpanded"
         >
-          <template v-if="pendingExpanded">Show less</template>
-          <template v-else>Show {{ hiddenPendingCount }} more</template>
+          <template v-if="pendingExpanded">{{
+            $t("pages.settings.external_matches.show_less")
+          }}</template>
+          <template v-else>{{
+            $t("pages.settings.external_matches.show_more", {
+              count: hiddenPendingCount,
+            })
+          }}</template>
         </button>
       </div>
     </div>
@@ -849,11 +911,10 @@ async function uploadDemo(file: File) {
     <div class="grid gap-3 max-w-xl mt-8">
       <div>
         <h3 class="text-base font-semibold uppercase tracking-wide">
-          Upload a demo
+          {{ $t("pages.settings.external_matches.upload_demo") }}
         </h3>
         <p class="text-sm text-muted-foreground mt-0.5">
-          Drop in a CS2 <code>.dem</code> file to import the match stats. Works
-          whether or not your match history is linked.
+          {{ $t("pages.settings.external_matches.upload_demo_description") }}
         </p>
       </div>
 
@@ -880,13 +941,15 @@ async function uploadDemo(file: File) {
           :class="isDragging ? 'text-primary' : 'text-muted-foreground'"
         />
         <p class="text-sm font-medium mb-1">
-          <template v-if="isDragging">Drop to upload</template>
-          <template v-else
-            >Click to choose or drag a <code>.dem</code> file</template
-          >
+          <template v-if="isDragging">{{
+            $t("pages.settings.external_matches.drop_to_upload")
+          }}</template>
+          <template v-else>{{
+            $t("pages.settings.external_matches.click_to_choose")
+          }}</template>
         </p>
         <p class="text-xs text-muted-foreground">
-          CS2 demo files only · single file
+          {{ $t("pages.settings.external_matches.demo_files_only") }}
         </p>
       </div>
 
@@ -932,7 +995,12 @@ async function uploadDemo(file: File) {
             <div class="text-xs text-muted-foreground font-mono">
               {{ formatBytes(uploadedFile.size) }}
               <template v-if="uploadingDemo">
-                · {{ uploadProgress < 100 ? "Uploading…" : "Finishing…" }}
+                ·
+                {{
+                  uploadProgress < 100
+                    ? $t("pages.settings.external_matches.uploading")
+                    : $t("pages.settings.external_matches.finishing")
+                }}
               </template>
             </div>
           </div>

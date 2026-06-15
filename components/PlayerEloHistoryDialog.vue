@@ -58,11 +58,17 @@ const props = defineProps<{
   // Mirrors the profile's stat source so the drill-down shows the same world
   // (5Stack ELO vs External rank) instead of blending them.
   source?: StatSource;
+  provider?: string;
 }>();
 
 const sourceRef = computed<StatSource>(() =>
   props.source === "external" ? "external" : "5stack",
 );
+
+const isFaceit = computed(
+  () => sourceRef.value === "external" && props.provider === "faceit",
+);
+const faceitHistory = ref<EloEntry[]>([]);
 
 const emit = defineEmits<{
   "update:open": [value: boolean];
@@ -72,11 +78,11 @@ const { client } = useApolloClient();
 const { t } = useI18n();
 
 const ranges: { key: RangeKey; label: string; days: number | null }[] = [
-  { key: "7d", label: "7D", days: 7 },
-  { key: "30d", label: "30D", days: 30 },
-  { key: "90d", label: "90D", days: 90 },
-  { key: "1y", label: "1Y", days: 365 },
-  { key: "all", label: "ALL", days: null },
+  { key: "7d", label: t("pages.players.detail.range_7d"), days: 7 },
+  { key: "30d", label: t("pages.players.detail.range_30d"), days: 30 },
+  { key: "90d", label: t("pages.players.detail.range_90d"), days: 90 },
+  { key: "1y", label: t("pages.players.detail.range_1y"), days: 365 },
+  { key: "all", label: t("pages.players.detail.range_all"), days: null },
 ];
 
 const selectedRange = ref<RangeKey>(props.defaultRange ?? "1y");
@@ -169,6 +175,24 @@ const RANK_HISTORY_QUERY = gql`
   }
 `;
 
+const FACEIT_RANK_HISTORY_QUERY = gql`
+  query PlayerFaceitRankHistoryDrillDown(
+    $where: player_faceit_rank_history_bool_exp!
+    $limit: Int!
+  ) {
+    player_faceit_rank_history(
+      where: $where
+      order_by: { observed_at: asc }
+      limit: $limit
+    ) {
+      elo
+      previous_rank
+      match_id
+      observed_at
+    }
+  }
+`;
+
 // External win/loss for the stats strip — rank history carries no result.
 const PERFORMANCE_QUERY = gql`
   query PlayerPerformanceDrillDown(
@@ -252,7 +276,10 @@ async function fetchHistory() {
       }
       const perfWhere: Record<string, any> = {
         player_steam_id: { _eq: props.playerId },
-        source: { _neq: "5stack" },
+        source:
+          props.provider === "valve" || props.provider === "faceit"
+            ? { _eq: props.provider }
+            : { _neq: "5stack" },
       };
       if (sinceTimestamp.value) {
         perfWhere.match_created_at = { _gte: sinceTimestamp.value };
@@ -260,6 +287,48 @@ async function fetchHistory() {
       if (props.excludeTournaments) {
         perfWhere.match = { is_tournament_match: { _eq: false } };
       }
+
+      if (isFaceit.value) {
+        const [faceitRes, perfRes] = await Promise.all([
+          client.query({
+            query: FACEIT_RANK_HISTORY_QUERY,
+            variables: { where: rankWhere, limit: rangeLimit.value },
+            fetchPolicy: "network-only",
+          }),
+          client.query({
+            query: PERFORMANCE_QUERY,
+            variables: { where: perfWhere, limit: rangeLimit.value },
+            fetchPolicy: "network-only",
+          }),
+        ]);
+        if (gen !== queryGen) return;
+        history.value = [];
+        rankHistoryRows.value = [];
+        premierHistory.value = [];
+        performanceRows.value = ((perfRes.data as any)
+          ?.v_player_match_performance ?? []) as typeof performanceRows.value;
+        const rows = ((faceitRes.data as any)?.player_faceit_rank_history ??
+          []) as Array<{
+          elo: number;
+          previous_rank: number | null;
+          match_id: string | null;
+          observed_at: string;
+        }>;
+        faceitHistory.value = rows.map((r) => ({
+          current_elo: r.elo,
+          updated_elo: r.elo,
+          elo_change: r.previous_rank == null ? 0 : r.elo - r.previous_rank,
+          match_created_at: r.observed_at,
+          match_id: r.match_id,
+          match_result: null,
+          type: "Faceit",
+          kills: null,
+          deaths: null,
+          assists: null,
+        }));
+        return;
+      }
+
       const [rankRes, perfRes] = await Promise.all([
         client.query({
           query: RANK_HISTORY_QUERY,
@@ -274,6 +343,7 @@ async function fetchHistory() {
       ]);
       if (gen !== queryGen) return;
       history.value = [];
+      faceitHistory.value = [];
       rankHistoryRows.value = ((rankRes.data as any)
         ?.player_premier_rank_history ?? []) as typeof rankHistoryRows.value;
       performanceRows.value = ((perfRes.data as any)
@@ -444,6 +514,7 @@ const compareEntries = computed<EloEntry[]>(() => {
 // are tracked per map — that combination drives the badge cells + map selector.
 const isPerMapMode = computed(
   () =>
+    !isFaceit.value &&
     sourceRef.value === "external" &&
     (selectedMode.value === "Competitive" || selectedMode.value === "Wingman"),
 );
@@ -509,6 +580,7 @@ watch(
     selectedRange.value,
     props.excludeTournaments,
     sourceRef.value,
+    props.provider,
   ],
   () => {
     void fetchHistory();
@@ -524,6 +596,7 @@ watch(
     selectedRange.value,
     props.excludeTournaments,
     sourceRef.value,
+    props.provider,
   ],
   () => {
     void loadCompare();
@@ -531,15 +604,35 @@ watch(
   { immediate: true },
 );
 
-// Keep the selected mode valid for the active source.
-watch(sourceRef, () => {
-  const valid = modeOptions.value.map((m) => m.key);
-  if (!valid.includes(selectedMode.value)) {
-    selectedMode.value = sourceRef.value === "external" ? "Premier" : "all";
-  }
-});
+// Keep the selected mode valid for the active source. External charts default
+// to Valve Premier — it's the most recognizable series, so it's the clearest
+// thing to land on when a player has every rank type. Runs immediately so the
+// default applies on open, not just when the source later changes.
+watch(
+  [sourceRef, () => props.provider],
+  () => {
+    if (isFaceit.value) {
+      selectedMode.value = "Competitive";
+    } else if (sourceRef.value === "external") {
+      const externalModes: Mode[] = ["Premier", "Competitive", "Wingman"];
+      if (!externalModes.includes(selectedMode.value)) {
+        selectedMode.value = "Premier";
+      }
+    } else if (
+      !(["all", "Competitive", "Wingman", "Duel"] as Mode[]).includes(
+        selectedMode.value,
+      )
+    ) {
+      selectedMode.value = "all";
+    }
+  },
+  { immediate: true },
+);
 
 const filteredHistory = computed<EloEntry[]>(() => {
+  if (isFaceit.value) {
+    return faceitHistory.value;
+  }
   if (sourceRef.value === "external") {
     if (selectedMode.value === "Competitive") return competitiveRank.value;
     if (selectedMode.value === "Wingman") return wingmanRank.value;
@@ -553,6 +646,7 @@ const filteredHistory = computed<EloEntry[]>(() => {
 
 // Valve rank type for the chart's skill-group ladder (badges + integer steps).
 const chartRankType = computed<number | null>(() =>
+  !isFaceit.value &&
   sourceRef.value === "external" &&
   (selectedMode.value === "Competitive" || selectedMode.value === "Wingman")
     ? selectedMode.value === "Wingman"
@@ -779,307 +873,307 @@ function rankIcon(rank: number | null | undefined): string | null {
   <div
     class="overflow-hidden rounded-lg border border-border/60 bg-card/30 [backdrop-filter:blur(6px)]"
   >
-      <!-- Every cell is a 3-row stack (label / value / subtext) with the
+    <!-- Every cell is a 3-row stack (label / value / subtext) with the
            same min-height. Cells without a real subtext render an &nbsp;
            placeholder so the value baseline lines up across the whole
            strip — otherwise Current/Lowest visually float to the top of
            their cells next to Peak/Matches/Win Rate. -->
+    <div
+      class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-border/40 border-b border-border/50"
+    >
       <div
-        class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-border/40 border-b border-border/50"
+        class="bg-card/60 min-h-[96px] px-4 py-4 flex flex-col justify-center gap-1.5"
       >
         <div
-          class="bg-card/60 min-h-[96px] px-4 py-4 flex flex-col justify-center gap-1.5"
+          class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
         >
-          <div
-            class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
-          >
-            {{ $t("pages.players.detail.elo_history_dialog.current") }}
-          </div>
-          <template v-if="isPerMapMode">
-            <img
-              v-if="rankIcon(stats.current)"
-              :src="rankIcon(stats.current)!"
-              class="h-11 w-auto"
-              :alt="skillGroupKind"
-            />
-            <span
-              v-else
-              class="text-2xl sm:text-3xl font-bold leading-none text-muted-foreground"
-              >—</span
-            >
-          </template>
-          <AnimatedStat
+          {{ $t("pages.players.detail.elo_history_dialog.current") }}
+        </div>
+        <template v-if="isPerMapMode">
+          <img
+            v-if="rankIcon(stats.current)"
+            :src="rankIcon(stats.current)!"
+            class="h-11 w-auto"
+            :alt="skillGroupKind"
+          />
+          <span
             v-else
-            :value="fmtInt(stats.current)"
-            class="text-2xl sm:text-3xl font-bold leading-none tabular-nums tracking-tight"
-          />
-          <div
-            class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
+            class="text-2xl sm:text-3xl font-bold leading-none text-muted-foreground"
+            >—</span
           >
-            &nbsp;
-          </div>
-        </div>
+        </template>
+        <AnimatedStat
+          v-else
+          :value="fmtInt(stats.current)"
+          class="text-2xl sm:text-3xl font-bold leading-none tabular-nums tracking-tight"
+        />
         <div
-          class="bg-card/60 min-h-[96px] px-4 py-4 flex flex-col justify-center gap-1.5"
+          class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
         >
-          <div
-            class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground inline-flex items-center gap-1"
-          >
-            <Crown class="h-3 w-3 text-[hsl(var(--tac-amber))]" />
-            {{ $t("pages.players.detail.elo_history_dialog.peak") }}
-          </div>
-          <template v-if="isPerMapMode">
-            <img
-              v-if="rankIcon(stats.peak)"
-              :src="rankIcon(stats.peak)!"
-              class="h-11 w-auto"
-              :alt="skillGroupKind"
-            />
-            <span
-              v-else
-              class="text-2xl sm:text-3xl font-bold leading-none text-muted-foreground"
-              >—</span
-            >
-          </template>
-          <AnimatedStat
-            v-else
-            :value="fmtInt(stats.peak)"
-            class="text-2xl sm:text-3xl font-bold leading-none tabular-nums tracking-tight text-[hsl(var(--tac-amber))]"
-          />
-          <div
-            class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
-          >
-            <template v-if="stats.peakEntry">{{
-              fmtDate(stats.peakEntry.match_created_at)
-            }}</template>
-            <template v-else>&nbsp;</template>
-          </div>
-        </div>
-        <div
-          class="bg-card/60 min-h-[96px] px-4 py-4 flex flex-col justify-center gap-1.5"
-        >
-          <div
-            class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
-          >
-            {{ $t("pages.players.detail.elo_history_dialog.lowest") }}
-          </div>
-          <template v-if="isPerMapMode">
-            <img
-              v-if="rankIcon(stats.lowest)"
-              :src="rankIcon(stats.lowest)!"
-              class="h-11 w-auto"
-              :alt="skillGroupKind"
-            />
-            <span
-              v-else
-              class="text-2xl sm:text-3xl font-bold leading-none text-muted-foreground"
-              >—</span
-            >
-          </template>
-          <AnimatedStat
-            v-else
-            :value="fmtInt(stats.lowest)"
-            class="text-2xl sm:text-3xl font-bold leading-none tabular-nums tracking-tight"
-          />
-          <div
-            class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
-          >
-            &nbsp;
-          </div>
-        </div>
-        <div
-          class="bg-card/60 min-h-[96px] px-4 py-4 flex flex-col justify-center gap-1.5"
-        >
-          <div
-            class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
-          >
-            {{ $t("pages.players.detail.elo_history_dialog.matches") }}
-          </div>
-          <AnimatedStat
-            :value="stats.total.toLocaleString()"
-            class="text-2xl sm:text-3xl font-bold leading-none tabular-nums tracking-tight"
-          />
-          <div
-            class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
-          >
-            <template v-if="stats.total > 0">
-              <span class="text-green-500">{{ stats.wins }}W</span>
-              ·
-              <span class="text-red-500">{{ stats.losses }}L</span>
-              <template v-if="stats.ties > 0">
-                · <span>{{ stats.ties }}T</span>
-              </template>
-            </template>
-            <template v-else>&nbsp;</template>
-          </div>
-        </div>
-        <div
-          class="bg-card/60 min-h-[96px] px-4 py-4 col-span-2 sm:col-span-1 flex flex-col justify-center gap-1.5"
-        >
-          <div
-            class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
-          >
-            {{ $t("pages.players.detail.elo_history_dialog.win_rate") }}
-          </div>
-          <AnimatedStat
-            :value="stats.total > 0 ? stats.winPct.toFixed(1) + '%' : '—'"
-            class="text-2xl sm:text-3xl font-bold leading-none tabular-nums tracking-tight"
-            :class="stats.winPct >= 50 ? 'text-green-500' : 'text-red-500'"
-          />
-          <div
-            class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
-          >
-            <template v-if="!isPerMapMode">
-              {{ $t("pages.players.detail.elo_history_dialog.avg_delta_elo") }}
-              <span
-                :class="
-                  stats.avgChange > 0
-                    ? 'text-green-500'
-                    : stats.avgChange < 0
-                      ? 'text-red-500'
-                      : 'text-muted-foreground'
-                "
-              >
-                {{ fmtSigned(stats.avgChange) }}
-              </span>
-            </template>
-            <template v-else>&nbsp;</template>
-          </div>
+          &nbsp;
         </div>
       </div>
+      <div
+        class="bg-card/60 min-h-[96px] px-4 py-4 flex flex-col justify-center gap-1.5"
+      >
+        <div
+          class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground inline-flex items-center gap-1"
+        >
+          <Crown class="h-3 w-3 text-[hsl(var(--tac-amber))]" />
+          {{ $t("pages.players.detail.elo_history_dialog.peak") }}
+        </div>
+        <template v-if="isPerMapMode">
+          <img
+            v-if="rankIcon(stats.peak)"
+            :src="rankIcon(stats.peak)!"
+            class="h-11 w-auto"
+            :alt="skillGroupKind"
+          />
+          <span
+            v-else
+            class="text-2xl sm:text-3xl font-bold leading-none text-muted-foreground"
+            >—</span
+          >
+        </template>
+        <AnimatedStat
+          v-else
+          :value="fmtInt(stats.peak)"
+          class="text-2xl sm:text-3xl font-bold leading-none tabular-nums tracking-tight text-[hsl(var(--tac-amber))]"
+        />
+        <div
+          class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
+        >
+          <template v-if="stats.peakEntry">{{
+            fmtDate(stats.peakEntry.match_created_at)
+          }}</template>
+          <template v-else>&nbsp;</template>
+        </div>
+      </div>
+      <div
+        class="bg-card/60 min-h-[96px] px-4 py-4 flex flex-col justify-center gap-1.5"
+      >
+        <div
+          class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
+        >
+          {{ $t("pages.players.detail.elo_history_dialog.lowest") }}
+        </div>
+        <template v-if="isPerMapMode">
+          <img
+            v-if="rankIcon(stats.lowest)"
+            :src="rankIcon(stats.lowest)!"
+            class="h-11 w-auto"
+            :alt="skillGroupKind"
+          />
+          <span
+            v-else
+            class="text-2xl sm:text-3xl font-bold leading-none text-muted-foreground"
+            >—</span
+          >
+        </template>
+        <AnimatedStat
+          v-else
+          :value="fmtInt(stats.lowest)"
+          class="text-2xl sm:text-3xl font-bold leading-none tabular-nums tracking-tight"
+        />
+        <div
+          class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
+        >
+          &nbsp;
+        </div>
+      </div>
+      <div
+        class="bg-card/60 min-h-[96px] px-4 py-4 flex flex-col justify-center gap-1.5"
+      >
+        <div
+          class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
+        >
+          {{ $t("pages.players.detail.elo_history_dialog.matches") }}
+        </div>
+        <AnimatedStat
+          :value="stats.total.toLocaleString()"
+          class="text-2xl sm:text-3xl font-bold leading-none tabular-nums tracking-tight"
+        />
+        <div
+          class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
+        >
+          <template v-if="stats.total > 0">
+            <span class="text-green-500">{{ stats.wins }}W</span>
+            ·
+            <span class="text-red-500">{{ stats.losses }}L</span>
+            <template v-if="stats.ties > 0">
+              · <span>{{ stats.ties }}T</span>
+            </template>
+          </template>
+          <template v-else>&nbsp;</template>
+        </div>
+      </div>
+      <div
+        class="bg-card/60 min-h-[96px] px-4 py-4 col-span-2 sm:col-span-1 flex flex-col justify-center gap-1.5"
+      >
+        <div
+          class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
+        >
+          {{ $t("pages.players.detail.elo_history_dialog.win_rate") }}
+        </div>
+        <AnimatedStat
+          :value="stats.total > 0 ? stats.winPct.toFixed(1) + '%' : '—'"
+          class="text-2xl sm:text-3xl font-bold leading-none tabular-nums tracking-tight"
+          :class="stats.winPct >= 50 ? 'text-green-500' : 'text-red-500'"
+        />
+        <div
+          class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
+        >
+          <template v-if="!isPerMapMode">
+            {{ $t("pages.players.detail.elo_history_dialog.avg_delta_elo") }}
+            <span
+              :class="
+                stats.avgChange > 0
+                  ? 'text-green-500'
+                  : stats.avgChange < 0
+                    ? 'text-red-500'
+                    : 'text-muted-foreground'
+              "
+            >
+              {{ fmtSigned(stats.avgChange) }}
+            </span>
+          </template>
+          <template v-else>&nbsp;</template>
+        </div>
+      </div>
+    </div>
 
-      <div class="px-4 sm:px-6 pt-5">
-        <!-- Competitive/Wingman skill groups are per map; this scopes the
+    <div class="px-4 sm:px-6 pt-5">
+      <!-- Competitive/Wingman skill groups are per map; this scopes the
              badge cells + chart to one map (most-played first). -->
-        <div
-          v-if="isPerMapMode && mapOptions.length > 0"
-          class="mb-3 flex justify-end"
-        >
-          <Select
-            :model-value="selectedMapId ?? undefined"
-            @update:model-value="(v) => (selectedMapId = v as string)"
-          >
-            <SelectTrigger
-              class="h-7 w-[160px] gap-1 border-border/60 bg-card/80 px-2 font-mono text-[0.62rem] uppercase tracking-[0.12em] backdrop-blur-sm"
-            >
-              <SelectValue :placeholder="$t('player_match.headers.map')" />
-            </SelectTrigger>
-            <SelectContent class="max-h-[300px]">
-              <SelectItem
-                v-for="m in mapOptions"
-                :key="m.mapId"
-                :value="m.mapId"
-                class="font-mono text-[0.7rem] uppercase tracking-[0.1em]"
-              >
-                {{ cleanMapName(m.name) }}
-                <span class="ml-1 tabular-nums opacity-60">×{{ m.count }}</span>
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <FadeSwap>
-          <div
-            v-if="loading && !hasLoadedOnce"
-            key="skeleton"
-            class="h-[360px] sm:h-[420px]"
-          >
-            <Skeleton class="h-full w-full rounded-lg" />
-          </div>
-          <div
-            v-else-if="!loading && filteredHistory.length === 0"
-            key="empty"
-            class="h-[360px] flex flex-col items-center justify-center gap-2 text-muted-foreground"
-          >
-            <span class="font-mono text-xs uppercase tracking-[0.18em]">
-              {{
-                $t("pages.players.detail.elo_history_dialog.no_matches_window")
-              }}
-            </span>
-            <button
-              v-if="selectedRange !== 'all'"
-              type="button"
-              class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] hover:underline"
-              @click="selectedRange = 'all'"
-            >
-              {{
-                $t("pages.players.detail.elo_history_dialog.expand_to_all_time")
-              }}
-            </button>
-          </div>
-          <div v-else key="content" class="h-[360px] sm:h-[420px]">
-            <PlayerEloChart
-              :series="chartSeries"
-              :rank-type="chartRankType"
-              :loading="loading"
-            />
-          </div>
-        </FadeSwap>
-      </div>
-
       <div
-        v-if="showExtremes && (stats.bestGain || stats.worstLoss)"
-        class="px-4 sm:px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-3 border-t border-border/50 mt-3"
+        v-if="isPerMapMode && mapOptions.length > 0"
+        class="mb-3 flex justify-end"
+      >
+        <Select
+          :model-value="selectedMapId ?? undefined"
+          @update:model-value="(v) => (selectedMapId = v as string)"
+        >
+          <SelectTrigger
+            class="h-7 w-[160px] gap-1 border-border/60 bg-card/80 px-2 font-mono text-[0.62rem] uppercase tracking-[0.12em] backdrop-blur-sm"
+          >
+            <SelectValue :placeholder="$t('player_match.headers.map')" />
+          </SelectTrigger>
+          <SelectContent class="max-h-[300px]">
+            <SelectItem
+              v-for="m in mapOptions"
+              :key="m.mapId"
+              :value="m.mapId"
+              class="font-mono text-[0.7rem] uppercase tracking-[0.1em]"
+            >
+              {{ cleanMapName(m.name) }}
+              <span class="ml-1 tabular-nums opacity-60">×{{ m.count }}</span>
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <FadeSwap>
+        <div
+          v-if="loading && !hasLoadedOnce"
+          key="skeleton"
+          class="h-[360px] sm:h-[420px]"
+        >
+          <Skeleton class="h-full w-full rounded-lg" />
+        </div>
+        <div
+          v-else-if="!loading && filteredHistory.length === 0"
+          key="empty"
+          class="h-[360px] flex flex-col items-center justify-center gap-2 text-muted-foreground"
+        >
+          <span class="font-mono text-xs uppercase tracking-[0.18em]">
+            {{
+              $t("pages.players.detail.elo_history_dialog.no_matches_window")
+            }}
+          </span>
+          <button
+            v-if="selectedRange !== 'all'"
+            type="button"
+            class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] hover:underline"
+            @click="selectedRange = 'all'"
+          >
+            {{
+              $t("pages.players.detail.elo_history_dialog.expand_to_all_time")
+            }}
+          </button>
+        </div>
+        <div v-else key="content" class="h-[360px] sm:h-[420px]">
+          <PlayerEloChart
+            :series="chartSeries"
+            :rank-type="chartRankType"
+            :loading="loading"
+          />
+        </div>
+      </FadeSwap>
+    </div>
+
+    <div
+      v-if="showExtremes && (stats.bestGain || stats.worstLoss)"
+      class="px-4 sm:px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-3 border-t border-border/50 mt-3"
+    >
+      <div
+        v-if="stats.bestGain"
+        class="rounded-md border border-green-500/30 bg-green-500/5 px-4 py-3"
       >
         <div
-          v-if="stats.bestGain"
-          class="rounded-md border border-green-500/30 bg-green-500/5 px-4 py-3"
+          class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground inline-flex items-center gap-1.5"
         >
-          <div
-            class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground inline-flex items-center gap-1.5"
-          >
-            <TrendingUp class="h-3 w-3 text-green-500" />
-            {{ $t("pages.players.detail.elo_history_dialog.best_gain") }}
-          </div>
-          <div class="mt-1 flex items-baseline gap-3">
-            <span class="text-lg font-bold text-green-500 tabular-nums">
-              {{ fmtSigned(stats.bestGain.elo_change) }}
-            </span>
-            <span
-              class="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground"
-            >
-              {{ stats.bestGain.type }} ·
-              {{ fmtDate(stats.bestGain.match_created_at) }}
-            </span>
-          </div>
-          <NuxtLink
-            v-if="stats.bestGain.match_id"
-            :to="`/matches/${stats.bestGain.match_id}`"
-            class="mt-1 inline-flex items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] hover:underline"
-          >
-            {{ $t("pages.players.detail.elo_history_dialog.view_match") }}
-            <ArrowUpRight class="h-3 w-3" />
-          </NuxtLink>
+          <TrendingUp class="h-3 w-3 text-green-500" />
+          {{ $t("pages.players.detail.elo_history_dialog.best_gain") }}
         </div>
-        <div
-          v-if="stats.worstLoss"
-          class="rounded-md border border-red-500/30 bg-red-500/5 px-4 py-3"
+        <div class="mt-1 flex items-baseline gap-3">
+          <span class="text-lg font-bold text-green-500 tabular-nums">
+            {{ fmtSigned(stats.bestGain.elo_change) }}
+          </span>
+          <span
+            class="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground"
+          >
+            {{ stats.bestGain.type }} ·
+            {{ fmtDate(stats.bestGain.match_created_at) }}
+          </span>
+        </div>
+        <NuxtLink
+          v-if="stats.bestGain.match_id"
+          :to="`/matches/${stats.bestGain.match_id}`"
+          class="mt-1 inline-flex items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] hover:underline"
         >
-          <div
-            class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground inline-flex items-center gap-1.5"
-          >
-            <TrendingDown class="h-3 w-3 text-red-500" />
-            {{ $t("pages.players.detail.elo_history_dialog.worst_loss") }}
-          </div>
-          <div class="mt-1 flex items-baseline gap-3">
-            <span class="text-lg font-bold text-red-500 tabular-nums">
-              {{ fmtSigned(stats.worstLoss.elo_change) }}
-            </span>
-            <span
-              class="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground"
-            >
-              {{ stats.worstLoss.type }} ·
-              {{ fmtDate(stats.worstLoss.match_created_at) }}
-            </span>
-          </div>
-          <NuxtLink
-            v-if="stats.worstLoss.match_id"
-            :to="`/matches/${stats.worstLoss.match_id}`"
-            class="mt-1 inline-flex items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] hover:underline"
-          >
-            {{ $t("pages.players.detail.elo_history_dialog.view_match") }}
-            <ArrowUpRight class="h-3 w-3" />
-          </NuxtLink>
-        </div>
+          {{ $t("pages.players.detail.elo_history_dialog.view_match") }}
+          <ArrowUpRight class="h-3 w-3" />
+        </NuxtLink>
       </div>
+      <div
+        v-if="stats.worstLoss"
+        class="rounded-md border border-red-500/30 bg-red-500/5 px-4 py-3"
+      >
+        <div
+          class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground inline-flex items-center gap-1.5"
+        >
+          <TrendingDown class="h-3 w-3 text-red-500" />
+          {{ $t("pages.players.detail.elo_history_dialog.worst_loss") }}
+        </div>
+        <div class="mt-1 flex items-baseline gap-3">
+          <span class="text-lg font-bold text-red-500 tabular-nums">
+            {{ fmtSigned(stats.worstLoss.elo_change) }}
+          </span>
+          <span
+            class="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-muted-foreground"
+          >
+            {{ stats.worstLoss.type }} ·
+            {{ fmtDate(stats.worstLoss.match_created_at) }}
+          </span>
+        </div>
+        <NuxtLink
+          v-if="stats.worstLoss.match_id"
+          :to="`/matches/${stats.worstLoss.match_id}`"
+          class="mt-1 inline-flex items-center gap-1 font-mono text-[0.6rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] hover:underline"
+        >
+          {{ $t("pages.players.detail.elo_history_dialog.view_match") }}
+          <ArrowUpRight class="h-3 w-3" />
+        </NuxtLink>
+      </div>
+    </div>
   </div>
 </template>

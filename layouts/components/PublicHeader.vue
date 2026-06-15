@@ -80,7 +80,7 @@ const metricValueClasses =
             TACTICAL.OPS
             <span
               class="hidden text-[hsl(var(--muted-foreground)/0.55)] sm:inline"
-              >// SECURE CHANNEL</span
+              >// {{ $t("layouts.public_header.secure_channel") }}</span
             >
           </span>
           <span
@@ -119,9 +119,9 @@ const metricValueClasses =
           ></span>
           <span :class="[metricKeyClasses, 'hidden sm:inline']">STATUS</span>
           <span :class="[metricSepClasses, 'hidden sm:inline']">/</span>
-          <span :class="[metricValueClasses, 'text-[hsl(142_71%_55%)]']"
-            >ONLINE</span
-          >
+          <span :class="[metricValueClasses, 'text-[hsl(142_71%_55%)]']">{{
+            $t("notification_context.online")
+          }}</span>
         </div>
 
         <a

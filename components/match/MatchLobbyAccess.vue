@@ -56,7 +56,7 @@ import ClipBoard from "~/components/ClipBoard.vue";
           }"
         >
           <component :is="getIcon(access)" class="h-4 w-4 mr-2" />
-          {{ access }}
+          {{ accessLabel(access) }}
         </Button>
       </div>
     </PopoverContent>
@@ -114,6 +114,9 @@ export default {
       });
 
       this.popoverOpen = false;
+    },
+    accessLabel(access: e_lobby_access_enum) {
+      return this.$t(`match_access.${String(access).toLowerCase()}`);
     },
     getIcon(access: e_lobby_access_enum) {
       switch (access) {

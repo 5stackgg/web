@@ -12,7 +12,7 @@ definePageMeta({
   <div class="relative space-y-6">
     <PageTransition>
       <TacticalPageHeader>
-        <template #title>Render Queue</template>
+        <template #title>{{ $t("pages.highlights.render_queue") }}</template>
       </TacticalPageHeader>
     </PageTransition>
 

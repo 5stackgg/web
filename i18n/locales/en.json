@@ -263,7 +263,8 @@
   },
   "notification_context": {
     "online": "ONLINE",
-    "offline": "OFFLINE"
+    "offline": "OFFLINE",
+    "loading_status": "Loading status…"
   },
   "elo_chart_bucket": {
     "monthly": "Monthly",
@@ -832,7 +833,18 @@
           "enabled": "Allow CS2 match imports",
           "enabled_description": "Let players link their Steam match-history auth code to import official CS2 matches, and allow demo uploads. Turn this off to hide the auth-code form and block external imports.",
           "updated": "Updated external match settings",
-          "disabled_notice": "External match importing is currently disabled by your administrator."
+          "disabled_notice": "External match importing is currently disabled by your administrator.",
+          "faceit_enabled": "Import Faceit Matches",
+          "faceit_enabled_description": "Off by default. Poll linked players' Faceit match history (last 30 days) and import their matches. Requires External Matches enabled and a Faceit API key — demo download also needs Downloads API access.",
+          "faceit_setup_guide": "Setup guide",
+          "faceit_downloads_api_link": "Apply for Downloads API access",
+          "faceit_test": "Test Faceit Integration",
+          "faceit_test_description": "Verify the Faceit API key works and whether it can download demos.",
+          "faceit_test_button": "Test",
+          "faceit_testing": "Testing…",
+          "faceit_data_api": "Data API",
+          "faceit_downloads_api": "Downloads API",
+          "faceit_test_failed": "Faceit test failed"
         },
         "demo_settings": {
           "title": "Demos",
@@ -843,6 +855,8 @@
           "clip_storage_section": "Storage & Retention",
           "min_retention": "Minimum Retention",
           "max_storage": "Maximum Storage",
+          "unit_days": "(days)",
+          "unit_gb": "(GB)",
           "cloudflare_worker_url": "Cloudflare Worker URL",
           "retention_storage_description": "Demos are kept at least the minimum retention period. Once total storage exceeds the maximum, the oldest demos past their retention are deleted first.",
           "max_storage_description": "The maximum storage size for the demo files in GB.",
@@ -890,7 +904,40 @@
           "default_hud_mode_description": "Which JTs Hud Manager layout the game-streamer pod loads at boot for live streams, demo playback, and batch highlights. Streamers can still switch styles per-stream from the player controls.",
           "hud_mode_horizontal": "Horizontal",
           "hud_mode_vertical": "Vertical",
-          "playback_section": "Playback"
+          "playback_section": "Playback",
+          "orphaned_section": "Storage Maintenance",
+          "orphaned_description": "Find files in S3 that are no longer referenced in the database and reclaim the space.",
+          "orphaned_open_button": "Scan Orphaned Uploads",
+          "orphaned_title": "Orphaned Uploads",
+          "orphaned_dialog_description": "Scans the bucket for demo, playback and highlight objects with no matching database row, and corrects the tracked storage sizes. Runs in the background — you can close this dialog and check back.",
+          "orphaned_scan_now": "Scan Now",
+          "orphaned_rescan": "Re-scan",
+          "orphaned_scanning": "Scanning… this can take a while. You can safely close this and check back later.",
+          "orphaned_no_results": "No scan has been run yet.",
+          "orphaned_last_scanned": "Last scanned",
+          "orphaned_total_size": "Total size",
+          "orphaned_tracked": "Tracked",
+          "orphaned_orphaned": "Orphaned",
+          "orphaned_other": "Other",
+          "orphaned_largest": "Largest orphaned objects",
+          "orphaned_more": "…and {count} more not shown",
+          "orphaned_delete_all": "Delete All Orphaned",
+          "orphaned_delete_confirm": "Permanently delete {count} orphaned object(s) ({size})? This cannot be undone.",
+          "orphaned_deleted": "Deleted {count} object(s), freed {size}",
+          "orphaned_scan_started": "Scan started — this can take a while depending on how many objects you have. You'll get a notification when it's done, so you can close this.",
+          "orphaned_none_found": "No orphaned objects found.",
+          "orphaned_tooltip": "Find demo, playback and highlight files in S3 that are no longer referenced in the database, and reclaim the space. Runs in the background.",
+          "orphaned_complete_title": "Orphaned uploads scan complete",
+          "orphaned_complete_found": "Found {count} orphaned object(s) — {size}",
+          "orphaned_complete_none": "No orphaned uploads found",
+          "orphaned_view_results": "View results",
+          "orphaned_demos": "Demos",
+          "orphaned_highlights": "Highlights",
+          "orphaned_breakdown": "Tracked breakdown",
+          "orphaned_scanning_short": "Scanning…",
+          "orphaned_demos_count": "{count} demos",
+          "orphaned_highlights_count": "{count} highlights",
+          "orphaned_object_count": "{count} files"
         },
         "update_map_pools": {
           "title": "Automatic Update Map Pools",
@@ -914,6 +961,70 @@
           "title": "Match Ready Popup",
           "description": "Show a popup when a match is ready for you to check in. When disabled, you can still check in from the button in the top nav."
         }
+      },
+      "external_matches": {
+        "heading": "External Matches",
+        "heading_description": "Link your Steam match history so we can automatically import your official CS2 matches and Premier rank.",
+        "checking_link": "Checking match history link…",
+        "need_two_codes": "You'll need two codes from Valve:",
+        "step_auth_prefix": "Your",
+        "steam_auth_code": "Steam Game Authentication Code",
+        "step_auth_mid": "— on the Steam help page, look under",
+        "access_match_history": "“Access to Your Match History”",
+        "step_auth_and_click": "and click",
+        "create_auth_code": "Create Authentication Code",
+        "generated_once": "Generated once per Steam account.",
+        "step_share_prefix": "A recent",
+        "match_share_code": "Match Share Code",
+        "step_share_copy": "— copy from",
+        "watch_your_matches": "Watch → Your Matches",
+        "step_share_within_30": "in CS2 (any match within the last 30 days works as a starting point).",
+        "auth_code": "Auth code",
+        "share_code": "Share code",
+        "linking": "Linking…",
+        "link_match_history": "Link match history",
+        "toast_linked": "Linked CS2 match history",
+        "toast_could_not_link": "Could not link",
+        "toast_unlinked": "Unlinked CS2 match history",
+        "toast_polled": "Polled match history",
+        "toast_collected": "Collected {count} new share codes",
+        "toast_poll_failed": "Poll failed",
+        "toast_cleared_import": "Cleared pending import",
+        "unknown_error": "Unknown error",
+        "linked_errors": "Linked · errors",
+        "linked": "Linked",
+        "last_poll": "Last poll",
+        "never": "never",
+        "polling": "Polling…",
+        "poll_now": "Poll now",
+        "unlinking": "Unlinking…",
+        "unlink": "Unlink",
+        "most_recent_share_code": "Most recent share code",
+        "scanned": "scanned",
+        "last_error": "Last error",
+        "unlink_confirm_title": "Unlink match history?",
+        "unlink_confirm_description": "We'll stop importing your official CS2 matches and Premier rank. You can re-link anytime with your Steam auth and share codes.",
+        "polling_banner_title": "Polling your match history…",
+        "polling_banner_description": "Scanning Valve for your recent matches. Pending imports will appear below as we find them.",
+        "pending_imports": "Pending imports",
+        "pending_imports_description": "Matches your linked accounts are waiting on. Demos that fail here are typically older than 30 days and no longer hosted by Valve.",
+        "importing": "Importing…",
+        "show_less": "Show less",
+        "show_more": "Show {count} more",
+        "upload_demo": "Upload a demo",
+        "upload_demo_description": "Drop in a CS2 .dem file to import the match stats. Works whether or not your match history is linked.",
+        "drop_to_upload": "Drop to upload",
+        "click_to_choose": "Click to choose or drag a .dem file",
+        "demo_files_only": "CS2 demo files only · single file",
+        "uploading": "Uploading…",
+        "finishing": "Finishing…",
+        "toast_wrong_file_type": "Wrong file type",
+        "toast_drop_dem_file": "Please drop a CS2 .dem file.",
+        "error_invalid_demo": "Not a valid CS2 demo (.dem) file",
+        "upload_success_message": "Uploaded — importing now. Your match will appear shortly.",
+        "toast_demo_uploaded": "Demo uploaded",
+        "toast_demo_uploaded_description": "Importing now — your match will appear shortly.",
+        "toast_upload_failed": "Upload failed"
       }
     },
     "watch": {
@@ -953,15 +1064,19 @@
         "90d": "Last 90 days"
       },
       "kills": {
-        "any": "Any kills",
         "2": "2+ kills",
         "3": "3+ kills",
         "4": "4+ kills",
-        "5": "5 kills"
+        "5": "5 kills",
+        "any": "Any kills"
       },
       "view_modes": {
         "matches": "Match Clips",
         "singles": "Singular Clips"
+      },
+      "sort": {
+        "recent": "Most recent",
+        "views": "Most viewed"
       },
       "visibility_filter": {
         "all": "All",
@@ -1107,8 +1222,15 @@
         "current_rank": "Current Rank",
         "current_rating": "Current Rating",
         "source": "Source",
+        "provider": "Provider",
         "mode": "Mode",
         "section": "Section",
+        "range_l30": "L30",
+        "range_7d": "7D",
+        "range_30d": "30D",
+        "range_90d": "90D",
+        "range_1y": "1Y",
+        "range_all": "ALL",
         "weapons_lifetime": "Lifetime",
         "refresh_stats": "Refresh stats",
         "last_n_matches": "Last 10",
@@ -1429,7 +1551,8 @@
           "highlights": "Highlights",
           "bake": "Shader Bake"
         }
-      }
+      },
+      "stop": "Stop"
     },
     "game_server_nodes": {
       "title": "Game Server Nodes",
@@ -1469,7 +1592,10 @@
         "cpu_governor": "CPU Governor"
       },
       "build_id": "Build ID: {id}",
-      "last_updated": "Last Updated: {date}"
+      "last_updated": "Last Updated: {date}",
+      "max_label": "Max:",
+      "ports_label": "Ports:",
+      "cpu_hardware": "CPU & Hardware"
     },
     "dedicated_servers": {
       "title": "Dedicated Servers",
@@ -1617,7 +1743,8 @@
         "all": "All Types",
         "competitive": "Competitive",
         "wingman": "Wingman",
-        "duel": "Duel"
+        "duel": "Duel",
+        "scrimmage": "Scrimmage"
       },
       "roles": {
         "all": "All Roles",
@@ -1844,7 +1971,8 @@
     "account_settings": {
       "title": "Account Settings",
       "description": "Manage your account settings and preferences",
-      "select_section": "Select section"
+      "select_section": "Select section",
+      "label": "Settings"
     },
     "application_settings": {
       "title": "Application Settings",
@@ -1893,7 +2021,8 @@
         "players": "Players",
         "teams": "Teams",
         "leaderboard": "Leaderboard",
-        "search": "Search"
+        "search": "Search",
+        "highlights": "Highlights"
       },
       "community": {
         "title": "Community"
@@ -1907,13 +2036,15 @@
         "gpu_nodes": "GPU Nodes",
         "app_settings": "App Settings",
         "manage_matches": "Manage Matches",
-        "manage_tournaments": "Manage Tournaments"
+        "manage_tournaments": "Manage Tournaments",
+        "stream_deck": "Stream Deck"
       },
       "system": {
         "title": "System",
         "logs": "Logs",
         "database": "Database",
-        "metrics": "Metrics"
+        "metrics": "Metrics",
+        "render_queue": "Render Queue"
       },
       "profile": {
         "my_account": "My Settings",
@@ -1969,8 +2100,10 @@
         "public_servers": "Public Servers",
         "hero": {
           "title": "Play & Compete",
-          "subtitle": "Join matches, tournaments."
-        }
+          "subtitle": "Join matches, tournaments.",
+          "primary": "PRIMARY"
+        },
+        "operations": "OPERATIONS"
       },
       "community": {
         "watch": {
@@ -1995,6 +2128,11 @@
             "title": "Join our Discord",
             "subtitle": "Chat, support, and announcements"
           }
+        },
+        "roster": "ROSTER",
+        "highlights": {
+          "title": "Highlights",
+          "subtitle": "Public clips from across the platform."
         }
       }
     },
@@ -2033,6 +2171,9 @@
       "no_maps": "Maps will appear here as you play.",
       "no_recent_matches_title": "No recent matches",
       "no_recent_matches_description": "Once you play some games, they will appear here."
+    },
+    "public_header": {
+      "secure_channel": "SECURE CHANNEL"
     }
   },
   "alt_text": {
@@ -2329,7 +2470,8 @@
     "feature_card": {
       "tournament": "Tournament",
       "teams": "Teams",
-      "stages": "Stages"
+      "stages": "Stages",
+      "default_label": "Tournament"
     },
     "results_section": {
       "no_data": "NO DATA",
@@ -2446,7 +2588,8 @@
       "type": "Type",
       "teams_joined": "Teams Joined",
       "starts": "Starts",
-      "no_tournaments_found": "No tournaments found"
+      "no_tournaments_found": "No tournaments found",
+      "maps_label": "Maps:"
     },
     "stage": {
       "title": "Stage",
@@ -2478,7 +2621,8 @@
       "third_place_match": "Enable 3rd Place Match",
       "third_place_match_description": "Create a 3rd place match between the two semifinal losers.",
       "decider_best_of": "3rd Place Decider",
-      "advanced_settings": "Advanced Stage Settings"
+      "advanced_settings": "Advanced Stage Settings",
+      "teams_count": "{count} teams"
     },
     "bracket": {
       "schedule_title": "Schedule Match",
@@ -2557,7 +2701,20 @@
       "wb_round_compact": "WB R{round}",
       "lb_round_match_compact": "LB R{round}M{match}",
       "lb_round_compact": "LB R{round}",
-      "third_place_decider": "3rd Place Decider"
+      "third_place_decider": "3rd Place Decider",
+      "reset_title": "Reset tournament match winner?",
+      "affected_chain_preview": "Affected match chain preview:",
+      "delete_recreate": "Delete & recreate",
+      "reset_only": "Reset only",
+      "no_affected_chain": "No affected bracket chain was returned.",
+      "no_winner_reset": "No winner (reset to setup)",
+      "winner_cleared_hint": "The winner will be cleared. Add a time to keep this match Scheduled, or leave it empty to move it to Waiting for Check-In.",
+      "winner_reassigned_hint": "The winner will be reassigned to the lineup you select.",
+      "scheduled_optional_hint": "Optional. Set a time if you want this match to remain Scheduled.",
+      "remove_downstream_ack": "I understand this can remove already played downstream matches.",
+      "review_chain_hint": "Review the affected chain above before continuing.",
+      "irreversible_action": "Irreversible action",
+      "confirm_reset_chain_ack": "I confirm I want to reset this tournament match chain."
     },
     "round_labels": {
       "round": "Round {number}",
@@ -2671,7 +2828,8 @@
       "team_profile": "Team Profile"
     },
     "table": {
-      "team": "Team"
+      "team": "Team",
+      "no_roster": "No roster yet."
     },
     "invite": {
       "team_title": "Team Invite",
@@ -2767,7 +2925,9 @@
       "viewing": "Viewing",
       "damage": "Damage",
       "your_weapons": "Your weapons",
-      "their_weapons": "Their weapons"
+      "their_weapons": "Their weapons",
+      "flashes_on_them": "Flashes on them",
+      "flashes_on_you": "Flashes on you"
     },
     "highlights_button": "Highlights",
     "team_stats_heading": "{name} Stats",
@@ -2776,7 +2936,12 @@
       "watch": "Live Stream",
       "no_preview": "No preview yet",
       "rendering_highlights": "Rendering Highlights",
-      "expand_preview": "Expand preview"
+      "expand_preview": "Expand preview",
+      "watching": "{count} watching",
+      "rendering_clip": "Rendering clip",
+      "acquiring_signal": "Acquiring signal",
+      "signal_lost": "Signal lost",
+      "idle": "Idle"
     },
     "elo_details": {
       "title": "Elo Change Details",
@@ -3437,6 +3602,7 @@
       "switch_teams": "Switch Teams",
       "remove_from_lineup": "Remove from Lineup",
       "leave_lineup": "Leave Lineup",
+      "render_highlight": "Render highlight…",
       "update_team_name": "Update Team Name",
       "kd": "K/D",
       "hltv": "HLTV",
@@ -3582,7 +3748,61 @@
       "overlay_buy_section": "Buy-round overlay",
       "overlay_buy_window": "Window: {sec}s since freezetime",
       "overlay_buy_rounds": "Rounds",
-      "overlay_buy_explainer": "{count} full-buy rounds · first {sec}s after freeze"
+      "overlay_buy_explainer": "{count} full-buy rounds · first {sec}s after freeze",
+      "loading_map": "loading map…",
+      "chrome": {
+        "view_2d": "2D top-down radar view",
+        "view_3d": "3D map view",
+        "cam_orbit": "ORBIT",
+        "cam_orbit_tip": "Orbit camera — left-drag look, right-drag orbit, scroll zoom, WASD fly",
+        "cam_top": "TOP",
+        "cam_top_tip": "Top-down camera",
+        "cam_chase": "CHASE",
+        "cam_chase_tip": "Chase the followed player",
+        "roof": "ROOF",
+        "roof_tip": "Roof cut — middle is auto (roofs off, action visible). Up = reveal more, down = cut more, max = full map.",
+        "play_by_play": "PLAY BY PLAY",
+        "play_by_play_tip": "Show the round's play-by-play event log",
+        "utility_heatmap": "UTILITY HEATMAP",
+        "utility_heatmap_tip": "Utility landing heatmap for the round",
+        "pbp_header": "PLAY BY PLAY · RD {round}",
+        "clear_count": "clear {count}",
+        "no_events": "no events yet",
+        "alive_count": "{count} alive",
+        "showing_avatars": "Showing avatars — click for numbers",
+        "showing_numbers": "Showing numbers — click for avatars",
+        "trace_tip": "Player movement trace (dotted path)",
+        "deaths_tip": "Death (kill-location) markers",
+        "util_summary": "UTIL SUMMARY",
+        "util_summary_tip": "Utility Summary — stack multiple buy rounds on one shared clock to compare each team's utility setups, timings and positions",
+        "round_remove": "Round {n} — click to remove from the summary",
+        "round_add": "Round {n} — click to add to the summary",
+        "round_jump": "Jump to round {n}",
+        "clear_highlighted_util": "Clear highlighted utility",
+        "hide_util": "Hide {type} utility",
+        "show_util": "Show {type} utility",
+        "util_thrown_by": "{type} · thrown by {name}",
+        "utility": "Utility",
+        "click_to_clear": " — click to clear",
+        "click_to_highlight": " — click to highlight",
+        "pause": "Pause",
+        "play": "Play",
+        "window": "WINDOW",
+        "team": "TEAM",
+        "all": "ALL",
+        "team_1": "Team 1",
+        "team_2": "Team 2",
+        "kb_play_pause": "play / pause",
+        "kb_step_frame": "step frame",
+        "kb_prev_next_round": "prev / next round",
+        "kb_speed": "speed",
+        "kb_3d_camera": "3D camera",
+        "kb_look": "look / follow-orbit",
+        "kb_orbit": "orbit",
+        "kb_zoom": "zoom",
+        "kb_fly": "fly",
+        "kb_up_down": "up / down"
+      }
     },
     "player_details_panel": {
       "stats_unavailable": "Stats unavailable for this match.",
@@ -3603,6 +3823,20 @@
     },
     "side_filter": {
       "all": "All"
+    },
+    "source_badge": {
+      "imported_external": "Imported from an external source — not a 5stack match"
+    },
+    "form": {
+      "lobby_access": "Lobby Access"
+    },
+    "scoreboard_overlay": {
+      "final": "Final",
+      "live": "Live"
+    },
+    "admin_bar": {
+      "rcon_unavailable": "RCON unavailable",
+      "not_controllable": "Match is not in a controllable state."
     }
   },
   "ui": {
@@ -3739,6 +3973,10 @@
       "name_label": "Name",
       "success": "Changed Players Name",
       "request_success": "Requested Name Change"
+    },
+    "pending_imports": {
+      "title": "Pending CS2 imports",
+      "importing": "Importing…"
     }
   },
   "maps": {
@@ -3785,6 +4023,11 @@
     "in_queue_label": "In Queue",
     "searching": "Searching",
     "elapsed": "Elapsed",
+    "queue_wait": {
+      "zero": "0 seconds",
+      "seconds": "{count} seconds",
+      "minutes_seconds": "{minutes}m {seconds}s"
+    },
     "others_searching": "{count} other searching | {count} others searching",
     "match_found": "Match Found",
     "waiting_for_players": "Waiting for Players",
@@ -3804,7 +4047,8 @@
       "invite_player": "Invite Player to Lobby",
       "access_updated": "Lobby access updated to {access}",
       "member_count": "{count} in lobby",
-      "pending_count": "{count} pending"
+      "pending_count": "{count} pending",
+      "waiting_for_players": "Waiting for players to join your lobby. Use the Invite button above to add friends."
     },
     "friends": {
       "title": "Friends",
@@ -3953,13 +4197,18 @@
     "gpu_description": "This node has a graphics card available for server workloads",
     "disk_usage": "Disk Usage",
     "disk_used": "Used",
-    "disk_available": "Available"
+    "disk_available": "Available",
+    "disk_label": "Disk:"
   },
   "system_metrics": {
     "no_metrics_available": "No Metrics Available",
     "node_telemetry": "Node telemetry",
     "loading_metrics": "Loading metrics data...",
-    "no_metrics_description": "No metrics data available for this node yet. Metrics will appear once the node starts reporting data."
+    "no_metrics_description": "No metrics data available for this node yet. Metrics will appear once the node starts reporting data.",
+    "aggregate": "aggregate",
+    "rx_tx": "rx + tx",
+    "current": "current",
+    "percent_used": "{percent}% used"
   },
   "chat": {
     "lobby_chat": "Lobby Chat",
@@ -3974,7 +4223,8 @@
       "title": "Organizer Chat",
       "no_access": "You do not have access to this page.",
       "sidebar_hint": "Chat is available in the right sidebar under the Chats tab."
-    }
+    },
+    "in_chat": "in chat"
   },
   "charts": {
     "usage": "Usage",
@@ -4022,7 +4272,8 @@
       "refresh_match": "Refresh Match",
       "metamod_info": "Metamod Info",
       "css_info": "CSS Info",
-      "command_placeholder": "Enter command..."
+      "command_placeholder": "Enter command...",
+      "send": "Send"
     }
   },
   "components": {
@@ -4170,7 +4421,30 @@
     "open_broadcast_controls": "Open broadcast controls",
     "back_to_deck": "Back to deck",
     "scoreboard": "Scoreboard",
-    "shortcuts": "Shortcuts"
+    "shortcuts": "Shortcuts",
+    "spectator": {
+      "slot": "Slot {slot}",
+      "slot_waiting": "Slot {slot} · waiting for player…",
+      "take_manual_control": "Click to take manual control"
+    },
+    "page_title": "Stream Deck",
+    "capacity": "Capacity",
+    "full": "Full",
+    "off_air_description": "No active game-streamer broadcast. Pick a live match below to take over a GPU and start streaming.",
+    "auto_director": "Auto-director",
+    "stop": "Stop",
+    "playing_in_popout": "Playing in pop-out",
+    "preview_paused": "Preview is paused here so the focus window owns the stream.",
+    "cycle": "Cycle",
+    "prev": "Prev",
+    "next": "Next",
+    "use_keyboard": "Use keyboard",
+    "match_count": "{count} match | {count} matches",
+    "tiles_hint": "Tiles will appear here as soon as a match goes Live.",
+    "offline": "offline",
+    "exit": "Exit",
+    "swap_sides": "Swap sides (manual override)",
+    "refresh_hud": "Refresh HUD (reload player images)"
   },
   "system_metrics_extras": {
     "gpu_usage": "GPU usage",
@@ -4224,7 +4498,12 @@
       "title_label": "Title",
       "resolution": "Resolution",
       "destination": "Destination",
-      "render": "Render"
+      "render": "Render",
+      "add": "Add",
+      "stop": "Stop",
+      "preview": "Preview",
+      "drag_rail_hint": "click + drag empty rail to add range",
+      "pov_hint": "click chip to switch the spectated player"
     },
     "detail": {
       "default_title": "Highlight",
@@ -4235,7 +4514,10 @@
       "title_label": "Title",
       "cancel": "Cancel",
       "other_clips": "Other clips",
-      "view_match": "View match"
+      "view_match": "View match",
+      "highlight_clip_viewer": "Highlight clip viewer",
+      "render_finalizing": "Render finalizing…",
+      "just_now": "just now"
     },
     "render_queue": {
       "in_flight": "In Flight",
@@ -4253,7 +4535,31 @@
       "status_paused_active_match": "Renders paused — match live on GPU",
       "status_idle": "Idle",
       "status_waiting": "Waiting",
-      "resume_blocked_live": "Can't resume — a live stream is currently using the GPU"
+      "resume_blocked_live": "Can't resume — a live stream is currently using the GPU",
+      "unknown_match": "Unknown match",
+      "open_match": "Open match",
+      "retry_failed": "Retry failed",
+      "render_pod_booting": "Render pod booting",
+      "requeue_clip": "Re-queue clip",
+      "preview_clip": "Preview clip",
+      "view_logs": "View render job logs",
+      "hide_clips": "Hide clips",
+      "show_all_clips": "Show all {count} clips",
+      "clear_all": "Clear all",
+      "clear_batch": "Clear batch",
+      "show_less": "Show less",
+      "show_more": "Show {count} more",
+      "load_more": "Load more",
+      "empty_title": "Render queue is empty",
+      "empty_description": "Highlight render jobs queued from matches will show up here while they boot, render, and upload.",
+      "done_count": "{done}/{total} done",
+      "err_count": "{count} err",
+      "queued_count": "{count} queued",
+      "clip_count": "{count} clips",
+      "done_only_count": "{count} done",
+      "cancelled_count": "{count} cancelled",
+      "retry_failed_count": "Retry failed ({count})",
+      "retry_all_clips": "Retry all {count} clips"
     },
     "visibility_section": "Visibility",
     "create_dialog": {
@@ -4293,7 +4599,9 @@
     "untitled_clip": "Untitled clip",
     "delete_dialog": {
       "title": "Delete this clip?",
-      "description": "The clip is removed from the library and the underlying file is deleted. This cannot be undone."
+      "description": "The clip is removed from the library and the underlying file is deleted. This cannot be undone.",
+      "deleting": "Deleting…",
+      "delete": "Delete"
     },
     "featured_highlight": "Featured highlight",
     "match_highlight": "Match highlight",
@@ -4315,6 +4623,16 @@
       "public_hint": "Listed in the highlights feed",
       "private": "Private",
       "private_hint": "Hidden from feeds — file URL still plays if shared"
+    },
+    "no_highlights_from_map": "No highlights from this map.",
+    "render_dialog": {
+      "title": "Render highlight",
+      "description": "Queue a one-click highlight from a demo on this match.",
+      "map": "Map",
+      "pick_map": "Pick a map",
+      "no_moments": "No highlight-worthy moments for {target} on this map.",
+      "this_player": "this player",
+      "queue_render": "Queue render"
     }
   },
   "time_ago": {
@@ -4345,5 +4663,27 @@
     "premier": "Premier",
     "competitive": "Competitive",
     "wingman": "Wingman"
+  },
+  "breadcrumbs": {
+    "dashboard": "dashboard"
+  },
+  "pod_logs": {
+    "tail_since": "tail // since"
+  },
+  "elo_change": {
+    "win": "WIN",
+    "loss": "LOSS",
+    "maps": "MAPS",
+    "damage": "DAMAGE",
+    "score": "SCORE",
+    "impact": "IMPACT"
+  },
+  "stat": {
+    "level": {
+      "best": "Best",
+      "above_average": "Above average",
+      "below_average": "Below average",
+      "poor": "Poor"
+    }
   }
 }

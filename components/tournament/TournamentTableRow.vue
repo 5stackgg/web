@@ -79,7 +79,7 @@ import { Badge } from "~/components/ui/badge";
             <span
               class="text-xs text-muted-foreground uppercase tracking-wide shrink-0"
             >
-              Maps:
+              {{ $t("tournament.table.maps_label") }}
             </span>
             <div class="flex flex-wrap gap-2">
               <MiniMapDisplay

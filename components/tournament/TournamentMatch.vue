@@ -991,21 +991,27 @@ const shouldShowCrossBracketDestination = (
   >
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>Reset tournament match winner?</AlertDialogTitle>
+        <AlertDialogTitle>{{
+          $t("tournament.match.reset_title")
+        }}</AlertDialogTitle>
         <AlertDialogDescription>
           {{ $t("tournament.match.reset_warning") }}
         </AlertDialogDescription>
       </AlertDialogHeader>
 
       <div class="space-y-3 text-sm">
-        <div class="font-medium">Affected match chain preview:</div>
+        <div class="font-medium">
+          {{ $t("tournament.match.affected_chain_preview") }}
+        </div>
         <div
           class="grid grid-cols-1 gap-2 rounded-lg border border-border/80 bg-muted/20 p-2 text-xs md:grid-cols-2"
         >
           <div
             class="rounded border border-border/80 bg-background/70 px-2 py-1"
           >
-            <div class="text-muted-foreground">Delete & recreate</div>
+            <div class="text-muted-foreground">
+              {{ $t("tournament.match.delete_recreate") }}
+            </div>
             <div class="font-semibold text-foreground">
               {{ impactSummary.deleteAndRecreate }}
             </div>
@@ -1013,7 +1019,9 @@ const shouldShowCrossBracketDestination = (
           <div
             class="rounded border border-border/80 bg-background/70 px-2 py-1"
           >
-            <div class="text-muted-foreground">Reset only</div>
+            <div class="text-muted-foreground">
+              {{ $t("tournament.match.reset_only") }}
+            </div>
             <div class="font-semibold text-foreground">
               {{ impactSummary.resetOnly }}
             </div>
@@ -1021,7 +1029,7 @@ const shouldShowCrossBracketDestination = (
         </div>
 
         <div v-if="orderedImpacts.length === 0" class="text-muted-foreground">
-          No affected bracket chain was returned.
+          {{ $t("tournament.match.no_affected_chain") }}
         </div>
         <ul
           v-else
@@ -1096,7 +1104,7 @@ const shouldShowCrossBracketDestination = (
             >
               <RadioGroupItem id="reset-winner-clear" value="clear" />
               <Label class="cursor-pointer text-sm" for="reset-winner-clear">
-                No winner (reset to setup)
+                {{ $t("tournament.match.no_winner_reset") }}
               </Label>
             </div>
             <div
@@ -1127,8 +1135,8 @@ const shouldShowCrossBracketDestination = (
           <div class="text-xs text-muted-foreground">
             {{
               resetTargetWinner === "clear"
-                ? "The winner will be cleared. Add a time to keep this match Scheduled, or leave it empty to move it to Waiting for Check-In."
-                : "The winner will be reassigned to the lineup you select."
+                ? $t("tournament.match.winner_cleared_hint")
+                : $t("tournament.match.winner_reassigned_hint")
             }}
           </div>
 
@@ -1179,7 +1187,7 @@ const shouldShowCrossBracketDestination = (
               </Button>
             </div>
             <p class="text-xs text-muted-foreground">
-              Optional. Set a time if you want this match to remain Scheduled.
+              {{ $t("tournament.match.scheduled_optional_hint") }}
             </p>
           </div>
         </div>
@@ -1198,10 +1206,10 @@ const shouldShowCrossBracketDestination = (
             />
             <div class="space-y-1">
               <div class="cursor-pointer text-sm font-medium text-amber-100">
-                I understand this can remove already played downstream matches.
+                {{ $t("tournament.match.remove_downstream_ack") }}
               </div>
               <div class="text-xs text-amber-200/80">
-                Review the affected chain above before continuing.
+                {{ $t("tournament.match.review_chain_hint") }}
               </div>
             </div>
           </div>
@@ -1241,7 +1249,9 @@ const shouldShowCrossBracketDestination = (
       >
         <div class="mb-2 flex items-center gap-2 text-red-100">
           <TriangleAlert class="h-4 w-4" />
-          <span class="text-sm font-medium">Irreversible action</span>
+          <span class="text-sm font-medium">{{
+            $t("tournament.match.irreversible_action")
+          }}</span>
         </div>
         <div class="flex items-start gap-2 text-sm">
           <input
@@ -1252,7 +1262,7 @@ const shouldShowCrossBracketDestination = (
             @click.stop
           />
           <span class="cursor-pointer leading-5 text-red-100">
-            I confirm I want to reset this tournament match chain.
+            {{ $t("tournament.match.confirm_reset_chain_ack") }}
           </span>
         </div>
       </div>

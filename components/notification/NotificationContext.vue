@@ -199,7 +199,7 @@ export default defineComponent({
     class="flex items-center gap-2 text-xs px-2 py-1 rounded border border-border bg-background/40 text-muted-foreground"
   >
     <Spinner class="h-3 w-3" />
-    <span class="italic">Loading status…</span>
+    <span class="italic">{{ $t("notification_context.loading_status") }}</span>
   </div>
   <div
     v-else-if="primaryText"

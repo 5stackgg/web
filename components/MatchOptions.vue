@@ -1291,7 +1291,9 @@ export default {
   computed: {
     selectableMatchTypes(): { value: string; description: string }[] {
       return (this.e_match_types || []).filter(
-        (type: { value: string }) => type.value !== e_match_types_enum.Premier,
+        (type: { value: string }) =>
+          type.value !== e_match_types_enum.Premier &&
+          type.value !== e_match_types_enum.Faceit,
       );
     },
     isLocked(): boolean {
@@ -1309,7 +1311,7 @@ export default {
       return [1, 3, 5].map((rounds) => {
         return {
           value: rounds.toString(),
-          display: `Best of ${rounds}`,
+          display: this.$t("match.options.best_of.option", { count: rounds }),
         };
       });
     },

@@ -114,7 +114,7 @@ import debounce from "~/utilities/debounce";
                 variant="secondary"
                 class="h-8 px-4"
               >
-                Send
+                {{ $t("server.rcon.send") }}
               </Button>
               <DropdownMenu>
                 <DropdownMenuTrigger as-child>

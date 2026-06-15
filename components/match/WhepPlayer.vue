@@ -715,7 +715,7 @@ defineExpose({ connect, teardown });
       <span
         class="font-mono text-[0.65rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
       >
-        Rendering clip
+        {{ $t("match.stream.rendering_clip") }}
       </span>
     </div>
 
@@ -769,19 +769,20 @@ defineExpose({ connect, teardown });
           v-if="status === 'connecting'"
           class="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
         >
-          Acquiring signal
+          {{ $t("match.stream.acquiring_signal") }}
         </p>
         <p
           v-else-if="status === 'error' && isRetrying"
           class="font-mono text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
         >
-          Acquiring signal
+          {{ $t("match.stream.acquiring_signal") }}
         </p>
         <p
           v-else-if="status === 'error'"
           class="max-w-[80%] text-center font-mono text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-destructive"
         >
-          Signal lost<span
+          {{ $t("match.stream.signal_lost")
+          }}<span
             class="block normal-case font-sans tracking-normal text-[0.65rem] mt-1 text-destructive/80"
           >
             {{ errorMessage }}
@@ -791,7 +792,7 @@ defineExpose({ connect, teardown });
           v-else
           class="font-mono text-[0.65rem] uppercase tracking-[0.22em] text-muted-foreground/70"
         >
-          Idle
+          {{ $t("match.stream.idle") }}
         </p>
       </div>
     </div>

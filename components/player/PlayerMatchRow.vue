@@ -441,11 +441,9 @@ const wideGrid =
           >
           <span
             class="font-mono text-[0.8rem] font-semibold tabular-nums text-foreground/90"
-            >{{ stats.kills
-            }}<span class="text-muted-foreground/40">/</span>{{ stats.deaths
-            }}<span class="text-muted-foreground/40">/</span>{{
-              stats.assists
-            }}</span
+            >{{ stats.kills }}<span class="text-muted-foreground/40">/</span
+            >{{ stats.deaths }}<span class="text-muted-foreground/40">/</span
+            >{{ stats.assists }}</span
           >
         </div>
         <div
@@ -933,11 +931,12 @@ export default {
       const t = this.matchType;
       if (!t) return "";
       const full: Record<string, string> = {
-        Competitive: "Competitive",
-        Wingman: "Wingman",
+        Competitive: this.$t("pages.leaderboard.match_types.competitive"),
+        Wingman: this.$t("pages.leaderboard.match_types.wingman"),
         Premier: "Premier",
-        Duel: "Duel",
-        Scrimmage: "Scrimmage",
+        Faceit: "Faceit",
+        Duel: this.$t("pages.leaderboard.match_types.duel"),
+        Scrimmage: this.$t("pages.leaderboard.match_types.scrimmage"),
       };
       return full[t] ?? String(t);
     },

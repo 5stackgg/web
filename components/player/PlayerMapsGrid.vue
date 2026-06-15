@@ -51,7 +51,13 @@ function buildStatsWhere() {
   const match: Record<string, any> = {};
   if (props.source && props.source !== "all") {
     match.source =
-      props.source === "external" ? { _neq: "5stack" } : { _eq: "5stack" };
+      props.source === "5stack"
+        ? { _eq: "5stack" }
+        : props.source === "external"
+          ? { _neq: "5stack" }
+          : props.source === "unknown"
+            ? { _nin: ["5stack", "valve", "faceit"] }
+            : { _eq: props.source };
   }
   if (props.matchType) {
     match.options = {
@@ -74,7 +80,13 @@ function buildMatchWhere() {
   const match: Record<string, any> = {};
   if (props.source && props.source !== "all") {
     match.source =
-      props.source === "external" ? { _neq: "5stack" } : { _eq: "5stack" };
+      props.source === "5stack"
+        ? { _eq: "5stack" }
+        : props.source === "external"
+          ? { _neq: "5stack" }
+          : props.source === "unknown"
+            ? { _nin: ["5stack", "valve", "faceit"] }
+            : { _eq: props.source };
   }
   if (props.matchType) {
     match.options = {
@@ -240,11 +252,9 @@ async function load() {
   }
 }
 
-watch(
-  () => [props.steamId, props.source, props.matchType, props.since],
-  load,
-  { immediate: true },
-);
+watch(() => [props.steamId, props.source, props.matchType, props.since], load, {
+  immediate: true,
+});
 
 function emptySplit(): SideSplit {
   return { rounds: 0, kills: 0, deaths: 0, assists: 0, damage: 0, kast: 0 };
@@ -347,9 +357,7 @@ function buildAggregates(
         agg.kastRounds += hltv.rounds;
       }
       const match = mm.match;
-      const playerLineupId = match
-        ? lineupForPlayer(match, steamId)
-        : null;
+      const playerLineupId = match ? lineupForPlayer(match, steamId) : null;
       if (
         mm.winning_lineup_id &&
         playerLineupId &&
@@ -424,8 +432,7 @@ const {
 } = usePlayerComparison(
   playerMapStatsQuery,
   (steamId) => ({ steamId, statsWhere: buildStatsWhere() }),
-  (data: any) =>
-    (data?.players_by_pk?.match_map_stats ?? []) as RawMapStat[],
+  (data: any) => (data?.players_by_pk?.match_map_stats ?? []) as RawMapStat[],
   () => [props.source, props.matchType, props.since],
 );
 
@@ -529,7 +536,10 @@ function kdFor(split: SideSplit): number | null {
   return split.kills / split.deaths;
 }
 
-const ratingTier: StatTierConfig = { dir: "high", cuts: [1.2, 1.05, 0.95, 0.85] };
+const ratingTier: StatTierConfig = {
+  dir: "high",
+  cuts: [1.2, 1.05, 0.95, 0.85],
+};
 const winTier: StatTierConfig = { dir: "high", cuts: [60, 53, 47, 40] };
 
 function fmt(value: number | null, digits = 2): string {
@@ -691,381 +701,386 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
       </Empty>
 
       <div v-else key="content">
-      <div
-        :key="gridKey"
-        class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-      >
         <div
-          v-for="(agg, index) of aggregates"
-          :key="agg.mapId"
-          class="relative overflow-hidden rounded-lg border border-border/60 bg-card/60 animate-in fade-in fill-mode-both duration-500"
-          :style="{ animationDelay: index * 30 + 'ms' }"
+          :key="gridKey"
+          class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
         >
-          <div class="relative h-24 w-full overflow-hidden">
-            <NuxtImg
-              v-if="agg.poster"
-              :src="agg.poster"
-              class="h-full w-full object-cover"
-              sizes="400px"
-            />
-            <div
-              class="absolute inset-0 bg-gradient-to-t from-card via-card/70 to-transparent"
-            ></div>
-            <div class="absolute bottom-2 left-3 right-3 flex items-end justify-between">
-              <span
-                class="font-sans text-base font-bold uppercase tracking-[0.08em] text-white drop-shadow"
-              >
-                {{ agg.label || cleanMapName(agg.name) }}
-              </span>
-              <span
-                class="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-white/80"
-              >
-                {{ agg.played }} {{ $t("pages.players.detail.maps.played_short") }}
-              </span>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3 px-3 py-3">
-            <RadialStat
-              :value="fmt(ratingFor(agg.all))"
-              :label="$t('pages.players.detail.maps.rating_label')"
-              :score="statScore(ratingFor(agg.all), 1.2, 0.85)"
-              :level="statLevelFor(ratingTier, ratingFor(agg.all))"
-            />
-            <div class="flex-1 space-y-1.5">
-              <div class="flex items-baseline justify-between">
-                <span
-                  class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-                >
-                  {{ $t("pages.players.detail.maps.win_rate") }}
-                </span>
-                <span
-                  class="font-mono text-sm font-bold inline-flex items-center gap-0.5"
-                >
-                  <AnimatedStat :value="fmtPct(winPct(agg))" />
-                  <StatChevron :cfg="winTier" :value="winPct(agg)" />
-                  <span
-                    v-if="hasCompare"
-                    class="font-normal"
-                    style="color: #38bdf8"
-                  >
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{ fmtPct(compareWin(agg.mapId)) }}
-                  </span>
-                </span>
-              </div>
-
-              <svg
-                class="h-[22px] w-full"
-                viewBox="0 0 72 22"
-                preserveAspectRatio="none"
-              >
-                <polyline
-                  :points="
-                    sparklinePoints(
-                      agg.ratings,
-                      sparklineScale(agg.mapId, agg.ratings),
-                    )
-                  "
-                  fill="none"
-                  stroke="#fff"
-                  stroke-width="1.5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <polyline
-                  v-if="hasCompare && compareRatings(agg.mapId).length > 1"
-                  :points="
-                    sparklinePoints(
-                      compareRatings(agg.mapId),
-                      sparklineScale(agg.mapId, agg.ratings),
-                    )
-                  "
-                  fill="none"
-                  stroke="#38bdf8"
-                  stroke-width="1.5"
-                  stroke-dasharray="2 2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-3 border-t border-border/50 text-center">
-            <div class="px-1 py-2">
-              <div
-                class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground"
-              >
-                {{ $t("pages.players.detail.maps.both") }}
-              </div>
-              <div
-                class="font-mono text-sm font-bold inline-flex items-center gap-0.5"
-              >
-                <AnimatedStat
-                  :value="fmt(ratingFor(agg.all))"
-                  :style="{ color: hltvColor(ratingFor(agg.all)) }"
-                />
-              </div>
-              <div
-                v-if="hasCompare"
-                class="font-mono text-[0.6rem]"
-                style="color: #38bdf8"
-              >
-                {{ $t("pages.players.detail.compare.vs") }}
-                {{
-                  fmt(
-                    compareByMap.get(agg.mapId)
-                      ? ratingFor(compareByMap.get(agg.mapId)!.all)
-                      : null,
-                  )
-                }}
-              </div>
-              <div class="font-mono text-[0.6rem] text-muted-foreground">
-                {{ fmt(adrFor(agg.all), 0) }}
-                {{ $t("pages.players.detail.maps.adr_short") }}
-              </div>
-            </div>
-            <div class="border-l border-border/50 px-1 py-2">
-              <div
-                class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-[hsl(var(--tac-amber))]"
-              >
-                {{ $t("pages.players.detail.maps.t_side") }}
-              </div>
-              <div
-                class="font-mono text-sm font-bold inline-flex items-center gap-0.5"
-              >
-                <AnimatedStat
-                  :value="fmt(ratingFor(agg.t))"
-                  :style="{ color: hltvColor(ratingFor(agg.t)) }"
-                />
-              </div>
-              <div class="font-mono text-[0.6rem] text-muted-foreground">
-                {{ fmt(adrFor(agg.t), 0) }}
-                {{ $t("pages.players.detail.maps.adr_short") }}
-              </div>
-            </div>
-            <div class="border-l border-border/50 px-1 py-2">
-              <div
-                class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-[hsl(199,89%,60%)]"
-              >
-                {{ $t("pages.players.detail.maps.ct_side") }}
-              </div>
-              <div
-                class="font-mono text-sm font-bold inline-flex items-center gap-0.5"
-              >
-                <AnimatedStat
-                  :value="fmt(ratingFor(agg.ct))"
-                  :style="{ color: hltvColor(ratingFor(agg.ct)) }"
-                />
-              </div>
-              <div class="font-mono text-[0.6rem] text-muted-foreground">
-                {{ fmt(adrFor(agg.ct), 0) }}
-                {{ $t("pages.players.detail.maps.adr_short") }}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-6">
-        <div class="mb-2 flex flex-wrap items-center justify-between gap-3">
-          <div :class="[tacticalSectionLabelClasses, 'mb-0']">
-            <span :class="tacticalSectionTickClasses"></span>
-            {{ $t("pages.players.detail.maps.table_section") }}
-          </div>
           <div
-            class="inline-flex items-stretch overflow-hidden rounded-sm border border-border bg-[hsl(var(--card)/0.5)]"
+            v-for="(agg, index) of aggregates"
+            :key="agg.mapId"
+            class="relative overflow-hidden rounded-lg border border-border/60 bg-card/60 animate-in fade-in fill-mode-both duration-500"
+            :style="{ animationDelay: index * 30 + 'ms' }"
           >
-            <button
-              v-for="opt of sideOptions"
-              :key="opt.value"
-              type="button"
-              class="px-2.5 font-mono text-[0.65rem] font-bold uppercase tracking-[0.2em] transition-colors"
-              :class="
-                tableSide === opt.value
-                  ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
-                  : 'text-muted-foreground hover:text-foreground'
-              "
-              @click="tableSide = opt.value"
-            >
-              {{ opt.label }}
-            </button>
-          </div>
-        </div>
-
-        <div
-          class="overflow-x-auto rounded-lg border border-border/60 bg-card/40 [backdrop-filter:blur(6px)]"
-        >
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <SortableTableHead
-                  sort-key="name"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  @sort="toggle"
+            <div class="relative h-24 w-full overflow-hidden">
+              <NuxtImg
+                v-if="agg.poster"
+                :src="agg.poster"
+                class="h-full w-full object-cover"
+                sizes="400px"
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-card via-card/70 to-transparent"
+              ></div>
+              <div
+                class="absolute bottom-2 left-3 right-3 flex items-end justify-between"
+              >
+                <span
+                  class="font-sans text-base font-bold uppercase tracking-[0.08em] text-white drop-shadow"
                 >
-                  {{ $t("pages.players.detail.maps.col_map") }}
-                </SortableTableHead>
-                <SortableTableHead
-                  sort-key="played"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-right"
-                  @sort="toggle"
-                >
-                  {{ $t("pages.players.detail.maps.col_played") }}
-                </SortableTableHead>
-                <SortableTableHead
-                  sort-key="win"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-right"
-                  @sort="toggle"
-                >
-                  {{ $t("pages.players.detail.maps.col_win") }}
-                </SortableTableHead>
-                <SortableTableHead
-                  sort-key="rating"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-right"
-                  @sort="toggle"
-                >
-                  <StatLabel
-                    stat="hltv"
-                    :label="$t('pages.players.detail.maps.col_rating')"
-                  />
-                </SortableTableHead>
-                <SortableTableHead
-                  sort-key="adr"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-right"
-                  @sort="toggle"
-                >
-                  <StatLabel
-                    stat="adr"
-                    :label="$t('pages.players.detail.maps.col_adr')"
-                  />
-                </SortableTableHead>
-                <SortableTableHead
-                  sort-key="kd"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-right"
-                  @sort="toggle"
-                >
-                  {{ $t("pages.players.detail.maps.col_kd") }}
-                </SortableTableHead>
-                <SortableTableHead
-                  sort-key="udr"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-right"
-                  @sort="toggle"
-                >
-                  <StatLabel
-                    stat="udr"
-                    :label="$t('pages.players.detail.maps.col_udr')"
-                  />
-                </SortableTableHead>
-                <TableHead class="text-right">
-                  {{ $t("pages.players.detail.maps.col_avg_kda") }}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow v-for="agg of tableRows" :key="agg.mapId">
-                <TableCell class="font-medium">
                   {{ agg.label || cleanMapName(agg.name) }}
-                </TableCell>
-                <TableCell class="text-right font-mono">
-                  <AnimatedStat :value="agg.played" />
-                </TableCell>
-                <TableCell class="text-right font-mono font-bold">
-                  <span class="inline-flex items-center gap-0.5">
+                </span>
+                <span
+                  class="font-mono text-[0.65rem] uppercase tracking-[0.16em] text-white/80"
+                >
+                  {{ agg.played }}
+                  {{ $t("pages.players.detail.maps.played_short") }}
+                </span>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 px-3 py-3">
+              <RadialStat
+                :value="fmt(ratingFor(agg.all))"
+                :label="$t('pages.players.detail.maps.rating_label')"
+                :score="statScore(ratingFor(agg.all), 1.2, 0.85)"
+                :level="statLevelFor(ratingTier, ratingFor(agg.all))"
+              />
+              <div class="flex-1 space-y-1.5">
+                <div class="flex items-baseline justify-between">
+                  <span
+                    class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+                  >
+                    {{ $t("pages.players.detail.maps.win_rate") }}
+                  </span>
+                  <span
+                    class="font-mono text-sm font-bold inline-flex items-center gap-0.5"
+                  >
                     <AnimatedStat :value="fmtPct(winPct(agg))" />
                     <StatChevron :cfg="winTier" :value="winPct(agg)" />
+                    <span
+                      v-if="hasCompare"
+                      class="font-normal"
+                      style="color: #38bdf8"
+                    >
+                      {{ $t("pages.players.detail.compare.vs") }}
+                      {{ fmtPct(compareWin(agg.mapId)) }}
+                    </span>
                   </span>
-                  <span
-                    v-if="hasCompare"
-                    class="font-normal"
-                    style="color: #38bdf8"
-                  >
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{ fmtPct(compareWin(agg.mapId)) }}
-                  </span>
-                </TableCell>
-                <TableCell class="text-right font-mono font-bold">
-                  <AnimatedStat
-                    :value="fmt(ratingFor(splitForSide(agg, tableSide)))"
-                    :style="{
-                      color: hltvColor(ratingFor(splitForSide(agg, tableSide))),
-                    }"
+                </div>
+
+                <svg
+                  class="h-[22px] w-full"
+                  viewBox="0 0 72 22"
+                  preserveAspectRatio="none"
+                >
+                  <polyline
+                    :points="
+                      sparklinePoints(
+                        agg.ratings,
+                        sparklineScale(agg.mapId, agg.ratings),
+                      )
+                    "
+                    fill="none"
+                    stroke="#fff"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                   />
-                  <span
-                    v-if="hasCompare"
-                    class="font-normal"
-                    style="color: #38bdf8"
-                  >
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{ fmt(compareRating(agg.mapId)) }}
-                  </span>
-                </TableCell>
-                <TableCell class="text-right font-mono">
-                  <AnimatedStat
-                    :value="fmt(adrFor(splitForSide(agg, tableSide)), 0)"
+                  <polyline
+                    v-if="hasCompare && compareRatings(agg.mapId).length > 1"
+                    :points="
+                      sparklinePoints(
+                        compareRatings(agg.mapId),
+                        sparklineScale(agg.mapId, agg.ratings),
+                      )
+                    "
+                    fill="none"
+                    stroke="#38bdf8"
+                    stroke-width="1.5"
+                    stroke-dasharray="2 2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                   />
-                  <span
-                    v-if="hasCompare"
-                    class="font-normal"
-                    style="color: #38bdf8"
-                  >
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{ fmt(compareAdr(agg.mapId), 0) }}
-                  </span>
-                </TableCell>
-                <TableCell class="text-right font-mono">
+                </svg>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-3 border-t border-border/50 text-center">
+              <div class="px-1 py-2">
+                <div
+                  class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-muted-foreground"
+                >
+                  {{ $t("pages.players.detail.maps.both") }}
+                </div>
+                <div
+                  class="font-mono text-sm font-bold inline-flex items-center gap-0.5"
+                >
                   <AnimatedStat
-                    :value="fmt(kdFor(splitForSide(agg, tableSide)))"
-                    :style="{
-                      color: kdColor(kdFor(splitForSide(agg, tableSide))),
-                    }"
+                    :value="fmt(ratingFor(agg.all))"
+                    :style="{ color: hltvColor(ratingFor(agg.all)) }"
                   />
-                  <span
-                    v-if="hasCompare"
-                    class="font-normal"
-                    style="color: #38bdf8"
-                  >
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{ fmt(compareKd(agg.mapId)) }}
-                  </span>
-                </TableCell>
-                <TableCell class="text-right font-mono">
-                  <AnimatedStat :value="fmt(udrFor(agg), 0)" />
-                  <span
-                    v-if="hasCompare"
-                    class="font-normal"
-                    style="color: #38bdf8"
-                  >
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{ fmt(compareUdr(agg.mapId), 0) }}
-                  </span>
-                </TableCell>
-                <TableCell class="text-right font-mono text-muted-foreground">
-                  <div><AnimatedStat :value="avgKda(agg, tableSide)" /></div>
-                  <div v-if="hasCompare" style="color: #38bdf8">
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{ compareKda(agg.mapId) ?? "—" }}
-                  </div>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+                </div>
+                <div
+                  v-if="hasCompare"
+                  class="font-mono text-[0.6rem]"
+                  style="color: #38bdf8"
+                >
+                  {{ $t("pages.players.detail.compare.vs") }}
+                  {{
+                    fmt(
+                      compareByMap.get(agg.mapId)
+                        ? ratingFor(compareByMap.get(agg.mapId)!.all)
+                        : null,
+                    )
+                  }}
+                </div>
+                <div class="font-mono text-[0.6rem] text-muted-foreground">
+                  {{ fmt(adrFor(agg.all), 0) }}
+                  {{ $t("pages.players.detail.maps.adr_short") }}
+                </div>
+              </div>
+              <div class="border-l border-border/50 px-1 py-2">
+                <div
+                  class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-[hsl(var(--tac-amber))]"
+                >
+                  {{ $t("pages.players.detail.maps.t_side") }}
+                </div>
+                <div
+                  class="font-mono text-sm font-bold inline-flex items-center gap-0.5"
+                >
+                  <AnimatedStat
+                    :value="fmt(ratingFor(agg.t))"
+                    :style="{ color: hltvColor(ratingFor(agg.t)) }"
+                  />
+                </div>
+                <div class="font-mono text-[0.6rem] text-muted-foreground">
+                  {{ fmt(adrFor(agg.t), 0) }}
+                  {{ $t("pages.players.detail.maps.adr_short") }}
+                </div>
+              </div>
+              <div class="border-l border-border/50 px-1 py-2">
+                <div
+                  class="font-mono text-[0.55rem] uppercase tracking-[0.16em] text-[hsl(199,89%,60%)]"
+                >
+                  {{ $t("pages.players.detail.maps.ct_side") }}
+                </div>
+                <div
+                  class="font-mono text-sm font-bold inline-flex items-center gap-0.5"
+                >
+                  <AnimatedStat
+                    :value="fmt(ratingFor(agg.ct))"
+                    :style="{ color: hltvColor(ratingFor(agg.ct)) }"
+                  />
+                </div>
+                <div class="font-mono text-[0.6rem] text-muted-foreground">
+                  {{ fmt(adrFor(agg.ct), 0) }}
+                  {{ $t("pages.players.detail.maps.adr_short") }}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+
+        <div class="mt-6">
+          <div class="mb-2 flex flex-wrap items-center justify-between gap-3">
+            <div :class="[tacticalSectionLabelClasses, 'mb-0']">
+              <span :class="tacticalSectionTickClasses"></span>
+              {{ $t("pages.players.detail.maps.table_section") }}
+            </div>
+            <div
+              class="inline-flex items-stretch overflow-hidden rounded-sm border border-border bg-[hsl(var(--card)/0.5)]"
+            >
+              <button
+                v-for="opt of sideOptions"
+                :key="opt.value"
+                type="button"
+                class="px-2.5 font-mono text-[0.65rem] font-bold uppercase tracking-[0.2em] transition-colors"
+                :class="
+                  tableSide === opt.value
+                    ? 'bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
+                    : 'text-muted-foreground hover:text-foreground'
+                "
+                @click="tableSide = opt.value"
+              >
+                {{ opt.label }}
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="overflow-x-auto rounded-lg border border-border/60 bg-card/40 [backdrop-filter:blur(6px)]"
+          >
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <SortableTableHead
+                    sort-key="name"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    @sort="toggle"
+                  >
+                    {{ $t("pages.players.detail.maps.col_map") }}
+                  </SortableTableHead>
+                  <SortableTableHead
+                    sort-key="played"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-right"
+                    @sort="toggle"
+                  >
+                    {{ $t("pages.players.detail.maps.col_played") }}
+                  </SortableTableHead>
+                  <SortableTableHead
+                    sort-key="win"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-right"
+                    @sort="toggle"
+                  >
+                    {{ $t("pages.players.detail.maps.col_win") }}
+                  </SortableTableHead>
+                  <SortableTableHead
+                    sort-key="rating"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-right"
+                    @sort="toggle"
+                  >
+                    <StatLabel
+                      stat="hltv"
+                      :label="$t('pages.players.detail.maps.col_rating')"
+                    />
+                  </SortableTableHead>
+                  <SortableTableHead
+                    sort-key="adr"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-right"
+                    @sort="toggle"
+                  >
+                    <StatLabel
+                      stat="adr"
+                      :label="$t('pages.players.detail.maps.col_adr')"
+                    />
+                  </SortableTableHead>
+                  <SortableTableHead
+                    sort-key="kd"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-right"
+                    @sort="toggle"
+                  >
+                    {{ $t("pages.players.detail.maps.col_kd") }}
+                  </SortableTableHead>
+                  <SortableTableHead
+                    sort-key="udr"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-right"
+                    @sort="toggle"
+                  >
+                    <StatLabel
+                      stat="udr"
+                      :label="$t('pages.players.detail.maps.col_udr')"
+                    />
+                  </SortableTableHead>
+                  <TableHead class="text-right">
+                    {{ $t("pages.players.detail.maps.col_avg_kda") }}
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow v-for="agg of tableRows" :key="agg.mapId">
+                  <TableCell class="font-medium">
+                    {{ agg.label || cleanMapName(agg.name) }}
+                  </TableCell>
+                  <TableCell class="text-right font-mono">
+                    <AnimatedStat :value="agg.played" />
+                  </TableCell>
+                  <TableCell class="text-right font-mono font-bold">
+                    <span class="inline-flex items-center gap-0.5">
+                      <AnimatedStat :value="fmtPct(winPct(agg))" />
+                      <StatChevron :cfg="winTier" :value="winPct(agg)" />
+                    </span>
+                    <span
+                      v-if="hasCompare"
+                      class="font-normal"
+                      style="color: #38bdf8"
+                    >
+                      {{ $t("pages.players.detail.compare.vs") }}
+                      {{ fmtPct(compareWin(agg.mapId)) }}
+                    </span>
+                  </TableCell>
+                  <TableCell class="text-right font-mono font-bold">
+                    <AnimatedStat
+                      :value="fmt(ratingFor(splitForSide(agg, tableSide)))"
+                      :style="{
+                        color: hltvColor(
+                          ratingFor(splitForSide(agg, tableSide)),
+                        ),
+                      }"
+                    />
+                    <span
+                      v-if="hasCompare"
+                      class="font-normal"
+                      style="color: #38bdf8"
+                    >
+                      {{ $t("pages.players.detail.compare.vs") }}
+                      {{ fmt(compareRating(agg.mapId)) }}
+                    </span>
+                  </TableCell>
+                  <TableCell class="text-right font-mono">
+                    <AnimatedStat
+                      :value="fmt(adrFor(splitForSide(agg, tableSide)), 0)"
+                    />
+                    <span
+                      v-if="hasCompare"
+                      class="font-normal"
+                      style="color: #38bdf8"
+                    >
+                      {{ $t("pages.players.detail.compare.vs") }}
+                      {{ fmt(compareAdr(agg.mapId), 0) }}
+                    </span>
+                  </TableCell>
+                  <TableCell class="text-right font-mono">
+                    <AnimatedStat
+                      :value="fmt(kdFor(splitForSide(agg, tableSide)))"
+                      :style="{
+                        color: kdColor(kdFor(splitForSide(agg, tableSide))),
+                      }"
+                    />
+                    <span
+                      v-if="hasCompare"
+                      class="font-normal"
+                      style="color: #38bdf8"
+                    >
+                      {{ $t("pages.players.detail.compare.vs") }}
+                      {{ fmt(compareKd(agg.mapId)) }}
+                    </span>
+                  </TableCell>
+                  <TableCell class="text-right font-mono">
+                    <AnimatedStat :value="fmt(udrFor(agg), 0)" />
+                    <span
+                      v-if="hasCompare"
+                      class="font-normal"
+                      style="color: #38bdf8"
+                    >
+                      {{ $t("pages.players.detail.compare.vs") }}
+                      {{ fmt(compareUdr(agg.mapId), 0) }}
+                    </span>
+                  </TableCell>
+                  <TableCell class="text-right font-mono text-muted-foreground">
+                    <div><AnimatedStat :value="avgKda(agg, tableSide)" /></div>
+                    <div v-if="hasCompare" style="color: #38bdf8">
+                      {{ $t("pages.players.detail.compare.vs") }}
+                      {{ compareKda(agg.mapId) ?? "—" }}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
+        </div>
       </div>
     </FadeSwap>
   </div>

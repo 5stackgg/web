@@ -1,7 +1,10 @@
 <script lang="ts" setup>
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { Spinner } from "~/components/ui/spinner";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
+
+const { t } = useI18n();
 
 function formatDate(date: string): string {
   return new Date(date).toLocaleString(undefined, {
@@ -49,7 +52,7 @@ const badgeClasses = [
     </template>
     <div class="text-xs space-y-1 max-w-[260px]">
       <div class="font-semibold uppercase tracking-[0.12em]">
-        Pending CS2 imports
+        {{ t("player.pending_imports.title") }}
       </div>
       <ul class="space-y-0.5">
         <li
@@ -72,7 +75,7 @@ const badgeClasses = [
             class="flex items-center gap-1.5 text-muted-foreground"
           >
             <Spinner class="w-3 h-3" />
-            Importing…
+            {{ t("player.pending_imports.importing") }}
           </span>
         </li>
       </ul>

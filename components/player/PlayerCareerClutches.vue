@@ -48,7 +48,13 @@ function buildMatchesWhere() {
   const where: Record<string, any> = { status: { _eq: "Finished" } };
   if (props.source && props.source !== "all") {
     where.source =
-      props.source === "external" ? { _neq: "5stack" } : { _eq: "5stack" };
+      props.source === "5stack"
+        ? { _eq: "5stack" }
+        : props.source === "external"
+          ? { _neq: "5stack" }
+          : props.source === "unknown"
+            ? { _nin: ["5stack", "valve", "faceit"] }
+            : { _eq: props.source };
   }
   if (props.matchType) {
     where.options = {
@@ -121,7 +127,13 @@ async function load() {
 }
 
 watch(
-  () => [props.steamId, props.source, props.matchType, props.limit, props.since],
+  () => [
+    props.steamId,
+    props.source,
+    props.matchType,
+    props.limit,
+    props.since,
+  ],
   load,
   { immediate: true },
 );
@@ -289,142 +301,161 @@ function fmtPct(value: number | null): string {
       </Empty>
 
       <div v-else key="content">
-      <div
-        class="grid grid-cols-1 gap-3 sm:grid-cols-3 items-stretch"
-      >
-        <div
-          class="flex flex-col items-center justify-center gap-1 rounded-lg border border-border/60 bg-card/40 py-3 [backdrop-filter:blur(6px)]"
-        >
-          <RadialStat
-            :value="fmtPct(overallWinPct)"
-            :label="$t('pages.players.detail.career_clutches.win_label')"
-            :score="statScore(overallWinPct, 50, 15)"
-            :level="statLevelFor(winTier, overallWinPct)"
-          />
+        <div class="grid grid-cols-1 gap-3 sm:grid-cols-3 items-stretch">
           <div
-            v-if="hasCompare"
-            class="font-mono text-[0.6rem]"
-            style="color: #38bdf8"
+            class="flex flex-col items-center justify-center gap-1 rounded-lg border border-border/60 bg-card/40 py-3 [backdrop-filter:blur(6px)]"
           >
-            {{ $t("pages.players.detail.compare.vs") }}
-            {{ fmtPct(compareWinPct) }}
+            <RadialStat
+              :value="fmtPct(overallWinPct)"
+              :label="$t('pages.players.detail.career_clutches.win_label')"
+              :score="statScore(overallWinPct, 50, 15)"
+              :level="statLevelFor(winTier, overallWinPct)"
+            />
+            <div
+              v-if="hasCompare"
+              class="font-mono text-[0.6rem]"
+              style="color: #38bdf8"
+            >
+              {{ $t("pages.players.detail.compare.vs") }}
+              {{ fmtPct(compareWinPct) }}
+            </div>
+          </div>
+
+          <div
+            class="flex flex-col justify-center rounded-lg border border-border/60 bg-card/40 px-4 py-3 [backdrop-filter:blur(6px)]"
+          >
+            <div
+              class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+            >
+              {{ $t("pages.players.detail.career_clutches.attempts_label") }}
+            </div>
+            <div class="font-mono text-2xl font-bold">
+              <AnimatedStat :value="totals.attempts" />
+            </div>
+            <div
+              v-if="hasCompare"
+              class="font-mono text-[0.6rem]"
+              style="color: #38bdf8"
+            >
+              {{ $t("pages.players.detail.compare.vs") }}
+              {{ compareTotals.attempts }}
+            </div>
+          </div>
+
+          <div
+            class="flex flex-col justify-center rounded-lg border border-border/60 bg-card/40 px-4 py-3 [backdrop-filter:blur(6px)]"
+          >
+            <div
+              class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+            >
+              {{ $t("pages.players.detail.career_clutches.won_label") }}
+            </div>
+            <div class="font-mono text-2xl font-bold">
+              <AnimatedStat :value="totals.won" />
+            </div>
+            <div
+              v-if="hasCompare"
+              class="font-mono text-[0.6rem]"
+              style="color: #38bdf8"
+            >
+              {{ $t("pages.players.detail.compare.vs") }}
+              {{ compareTotals.won }}
+            </div>
           </div>
         </div>
 
-        <div
-          class="flex flex-col justify-center rounded-lg border border-border/60 bg-card/40 px-4 py-3 [backdrop-filter:blur(6px)]"
-        >
-          <div
-            class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-          >
-            {{ $t("pages.players.detail.career_clutches.attempts_label") }}
-          </div>
-          <div class="font-mono text-2xl font-bold">
-            <AnimatedStat :value="totals.attempts" />
+        <div class="mt-6">
+          <div :class="[tacticalSectionLabelClasses, 'mb-2']">
+            <span :class="tacticalSectionTickClasses"></span>
+            {{ $t("pages.players.detail.career_clutches.table_section") }}
           </div>
           <div
-            v-if="hasCompare"
-            class="font-mono text-[0.6rem]"
-            style="color: #38bdf8"
+            class="overflow-x-auto rounded-lg border border-border/60 bg-card/40 [backdrop-filter:blur(6px)]"
           >
-            {{ $t("pages.players.detail.compare.vs") }}
-            {{ compareTotals.attempts }}
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>
+                    {{
+                      $t("pages.players.detail.career_clutches.col_situation")
+                    }}
+                  </TableHead>
+                  <TableHead class="text-right">
+                    {{
+                      $t("pages.players.detail.career_clutches.col_attempts")
+                    }}
+                  </TableHead>
+                  <TableHead class="text-right">
+                    {{ $t("pages.players.detail.career_clutches.col_won") }}
+                  </TableHead>
+                  <TableHead class="text-right">
+                    {{ $t("pages.players.detail.career_clutches.col_win") }}
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow v-for="bucket of buckets" :key="bucket.against">
+                  <TableCell class="font-mono font-medium">
+                    1v{{ bucket.against }}
+                  </TableCell>
+                  <TableCell class="text-right font-mono">
+                    <AnimatedStat :value="bucket.attempts" />
+                    <div
+                      v-if="
+                        hasCompare &&
+                        compareBucketsByAgainst.get(bucket.against)
+                      "
+                      class="text-[0.6rem]"
+                      style="color: #38bdf8"
+                    >
+                      {{ $t("pages.players.detail.compare.vs") }}
+                      {{
+                        compareBucketsByAgainst.get(bucket.against)!.attempts
+                      }}
+                    </div>
+                  </TableCell>
+                  <TableCell class="text-right font-mono">
+                    <AnimatedStat :value="bucket.won" />
+                    <div
+                      v-if="
+                        hasCompare &&
+                        compareBucketsByAgainst.get(bucket.against)
+                      "
+                      class="text-[0.6rem]"
+                      style="color: #38bdf8"
+                    >
+                      {{ $t("pages.players.detail.compare.vs") }}
+                      {{ compareBucketsByAgainst.get(bucket.against)!.won }}
+                    </div>
+                  </TableCell>
+                  <TableCell class="text-right font-mono font-bold">
+                    <span class="inline-flex items-center gap-0.5">
+                      <AnimatedStat :value="fmtPct(winPctOf(bucket))" />
+                      <StatChevron :cfg="winTier" :value="winPctOf(bucket)" />
+                    </span>
+                    <div
+                      v-if="
+                        hasCompare &&
+                        compareBucketsByAgainst.get(bucket.against)
+                      "
+                      class="text-[0.6rem] font-normal"
+                      style="color: #38bdf8"
+                    >
+                      {{ $t("pages.players.detail.compare.vs") }}
+                      {{
+                        fmtPct(
+                          winPctOf(
+                            compareBucketsByAgainst.get(bucket.against)!,
+                          ),
+                        )
+                      }}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </div>
         </div>
-
-        <div
-          class="flex flex-col justify-center rounded-lg border border-border/60 bg-card/40 px-4 py-3 [backdrop-filter:blur(6px)]"
-        >
-          <div
-            class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-          >
-            {{ $t("pages.players.detail.career_clutches.won_label") }}
-          </div>
-          <div class="font-mono text-2xl font-bold">
-            <AnimatedStat :value="totals.won" />
-          </div>
-          <div
-            v-if="hasCompare"
-            class="font-mono text-[0.6rem]"
-            style="color: #38bdf8"
-          >
-            {{ $t("pages.players.detail.compare.vs") }}
-            {{ compareTotals.won }}
-          </div>
-        </div>
-      </div>
-
-      <div class="mt-6">
-        <div :class="[tacticalSectionLabelClasses, 'mb-2']">
-          <span :class="tacticalSectionTickClasses"></span>
-          {{ $t("pages.players.detail.career_clutches.table_section") }}
-        </div>
-        <div
-          class="overflow-x-auto rounded-lg border border-border/60 bg-card/40 [backdrop-filter:blur(6px)]"
-        >
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>
-                  {{ $t("pages.players.detail.career_clutches.col_situation") }}
-                </TableHead>
-                <TableHead class="text-right">
-                  {{ $t("pages.players.detail.career_clutches.col_attempts") }}
-                </TableHead>
-                <TableHead class="text-right">
-                  {{ $t("pages.players.detail.career_clutches.col_won") }}
-                </TableHead>
-                <TableHead class="text-right">
-                  {{ $t("pages.players.detail.career_clutches.col_win") }}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow v-for="bucket of buckets" :key="bucket.against">
-                <TableCell class="font-mono font-medium">
-                  1v{{ bucket.against }}
-                </TableCell>
-                <TableCell class="text-right font-mono">
-                  <AnimatedStat :value="bucket.attempts" />
-                  <div
-                    v-if="hasCompare && compareBucketsByAgainst.get(bucket.against)"
-                    class="text-[0.6rem]"
-                    style="color: #38bdf8"
-                  >
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{ compareBucketsByAgainst.get(bucket.against)!.attempts }}
-                  </div>
-                </TableCell>
-                <TableCell class="text-right font-mono">
-                  <AnimatedStat :value="bucket.won" />
-                  <div
-                    v-if="hasCompare && compareBucketsByAgainst.get(bucket.against)"
-                    class="text-[0.6rem]"
-                    style="color: #38bdf8"
-                  >
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{ compareBucketsByAgainst.get(bucket.against)!.won }}
-                  </div>
-                </TableCell>
-                <TableCell class="text-right font-mono font-bold">
-                  <span class="inline-flex items-center gap-0.5">
-                    <AnimatedStat :value="fmtPct(winPctOf(bucket))" />
-                    <StatChevron :cfg="winTier" :value="winPctOf(bucket)" />
-                  </span>
-                  <div
-                    v-if="hasCompare && compareBucketsByAgainst.get(bucket.against)"
-                    class="text-[0.6rem] font-normal"
-                    style="color: #38bdf8"
-                  >
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{ fmtPct(winPctOf(compareBucketsByAgainst.get(bucket.against)!)) }}
-                  </div>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
-      </div>
       </div>
     </FadeSwap>
   </div>

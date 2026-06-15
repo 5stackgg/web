@@ -53,7 +53,13 @@ function buildMatchesWhere() {
   const where: Record<string, any> = { status: { _eq: "Finished" } };
   if (props.source && props.source !== "all") {
     where.source =
-      props.source === "external" ? { _neq: "5stack" } : { _eq: "5stack" };
+      props.source === "5stack"
+        ? { _eq: "5stack" }
+        : props.source === "external"
+          ? { _neq: "5stack" }
+          : props.source === "unknown"
+            ? { _nin: ["5stack", "valve", "faceit"] }
+            : { _eq: props.source };
   }
   if (props.matchType) {
     where.options = {
@@ -130,7 +136,13 @@ async function load() {
 }
 
 watch(
-  () => [props.steamId, props.source, props.matchType, props.limit, props.since],
+  () => [
+    props.steamId,
+    props.source,
+    props.matchType,
+    props.limit,
+    props.since,
+  ],
   load,
   { immediate: true },
 );
@@ -327,8 +339,7 @@ function fmtPct(value: number | null): string {
   return Math.round(value) + "%";
 }
 
-const { sortKey, sortDir, toggle, sortRows } =
-  useTableSort<string>("attempts");
+const { sortKey, sortDir, toggle, sortRows } = useTableSort<string>("attempts");
 
 const tableRows = computed(() => {
   const getters: Record<string, (a: MapDuelAggregate) => unknown> = {
@@ -350,7 +361,9 @@ const tableRows = computed(() => {
     </div>
     <div :class="tacticalSectionDescriptionClasses">
       {{
-        $t("pages.players.detail.career_duels.description", { count: WINDOW_MAPS })
+        $t("pages.players.detail.career_duels.description", {
+          count: WINDOW_MAPS,
+        })
       }}
     </div>
 
@@ -371,262 +384,266 @@ const tableRows = computed(() => {
       </Empty>
 
       <div v-else key="content">
-      <div
-        class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 items-stretch"
-      >
         <div
-          class="flex flex-col items-center justify-center gap-1 rounded-lg border border-border/60 bg-card/40 py-3 [backdrop-filter:blur(6px)]"
-        >
-          <RadialStat
-            :value="fmtPct(overallWinPct)"
-            :label="$t('pages.players.detail.career_duels.win_label')"
-            :score="statScore(overallWinPct, 58, 42)"
-            :level="statLevelFor(winTier, overallWinPct)"
-          />
-          <div
-            v-if="hasCompare"
-            class="font-mono text-[0.6rem]"
-            style="color: #38bdf8"
-          >
-            {{ $t("pages.players.detail.compare.vs") }}
-            {{ fmtPct(compareWinPct) }}
-          </div>
-        </div>
-
-        <div
-          class="flex flex-col justify-center rounded-lg border border-border/60 bg-card/40 px-4 py-3 [backdrop-filter:blur(6px)]"
+          class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 items-stretch"
         >
           <div
-            class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+            class="flex flex-col items-center justify-center gap-1 rounded-lg border border-border/60 bg-card/40 py-3 [backdrop-filter:blur(6px)]"
           >
-            {{ $t("pages.players.detail.career_duels.attempts_label") }}
-          </div>
-          <div class="font-mono text-2xl font-bold">
-            <AnimatedStat :value="totals.attempts" />
-          </div>
-          <div class="font-mono text-[0.65rem] text-muted-foreground">
-            {{ totals.openKills }}
-            {{ $t("pages.players.detail.career_duels.kills_short") }} /
-            {{ totals.openDeaths }}
-            {{ $t("pages.players.detail.career_duels.deaths_short") }}
-          </div>
-          <div
-            v-if="hasCompare"
-            class="font-mono text-[0.6rem]"
-            style="color: #38bdf8"
-          >
-            {{ $t("pages.players.detail.compare.vs") }}
-            {{ compareTotals.attempts }}
-          </div>
-        </div>
-
-        <div
-          class="flex flex-col justify-center rounded-lg border border-border/60 bg-card/40 px-4 py-3 [backdrop-filter:blur(6px)]"
-        >
-          <div
-            class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-          >
-            <StatLabel
-              stat="kd"
-              :label="$t('pages.players.detail.career_duels.kd_label')"
+            <RadialStat
+              :value="fmtPct(overallWinPct)"
+              :label="$t('pages.players.detail.career_duels.win_label')"
+              :score="statScore(overallWinPct, 58, 42)"
+              :level="statLevelFor(winTier, overallWinPct)"
             />
+            <div
+              v-if="hasCompare"
+              class="font-mono text-[0.6rem]"
+              style="color: #38bdf8"
+            >
+              {{ $t("pages.players.detail.compare.vs") }}
+              {{ fmtPct(compareWinPct) }}
+            </div>
           </div>
-          <div class="font-mono text-2xl font-bold inline-flex items-center gap-1">
-            <AnimatedStat
-              :value="fmt(overallKd)"
-              :style="{ color: kdColor(overallKd) }"
-            />
-          </div>
+
           <div
-            v-if="hasCompare"
-            class="font-mono text-[0.6rem]"
-            style="color: #38bdf8"
+            class="flex flex-col justify-center rounded-lg border border-border/60 bg-card/40 px-4 py-3 [backdrop-filter:blur(6px)]"
           >
-            {{ $t("pages.players.detail.compare.vs") }} {{ fmt(compareKd) }}
+            <div
+              class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+            >
+              {{ $t("pages.players.detail.career_duels.attempts_label") }}
+            </div>
+            <div class="font-mono text-2xl font-bold">
+              <AnimatedStat :value="totals.attempts" />
+            </div>
+            <div class="font-mono text-[0.65rem] text-muted-foreground">
+              {{ totals.openKills }}
+              {{ $t("pages.players.detail.career_duels.kills_short") }} /
+              {{ totals.openDeaths }}
+              {{ $t("pages.players.detail.career_duels.deaths_short") }}
+            </div>
+            <div
+              v-if="hasCompare"
+              class="font-mono text-[0.6rem]"
+              style="color: #38bdf8"
+            >
+              {{ $t("pages.players.detail.compare.vs") }}
+              {{ compareTotals.attempts }}
+            </div>
+          </div>
+
+          <div
+            class="flex flex-col justify-center rounded-lg border border-border/60 bg-card/40 px-4 py-3 [backdrop-filter:blur(6px)]"
+          >
+            <div
+              class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+            >
+              <StatLabel
+                stat="kd"
+                :label="$t('pages.players.detail.career_duels.kd_label')"
+              />
+            </div>
+            <div
+              class="font-mono text-2xl font-bold inline-flex items-center gap-1"
+            >
+              <AnimatedStat
+                :value="fmt(overallKd)"
+                :style="{ color: kdColor(overallKd) }"
+              />
+            </div>
+            <div
+              v-if="hasCompare"
+              class="font-mono text-[0.6rem]"
+              style="color: #38bdf8"
+            >
+              {{ $t("pages.players.detail.compare.vs") }} {{ fmt(compareKd) }}
+            </div>
+          </div>
+
+          <div
+            class="flex flex-col justify-center rounded-lg border border-border/60 bg-card/40 px-4 py-3 [backdrop-filter:blur(6px)]"
+          >
+            <div
+              class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+            >
+              {{ $t("pages.players.detail.career_duels.traded_label") }}
+            </div>
+            <div
+              class="font-mono text-2xl font-bold inline-flex items-center gap-1"
+            >
+              <AnimatedStat :value="fmtPct(overallTradedPct)" />
+              <StatChevron :cfg="tradedTier" :value="overallTradedPct" />
+            </div>
+            <div
+              v-if="hasCompare"
+              class="font-mono text-[0.6rem]"
+              style="color: #38bdf8"
+            >
+              {{ $t("pages.players.detail.compare.vs") }}
+              {{ fmtPct(compareTradedPct) }}
+            </div>
           </div>
         </div>
 
-        <div
-          class="flex flex-col justify-center rounded-lg border border-border/60 bg-card/40 px-4 py-3 [backdrop-filter:blur(6px)]"
-        >
-          <div
-            class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
-          >
-            {{ $t("pages.players.detail.career_duels.traded_label") }}
-          </div>
-          <div class="font-mono text-2xl font-bold inline-flex items-center gap-1">
-            <AnimatedStat :value="fmtPct(overallTradedPct)" />
-            <StatChevron :cfg="tradedTier" :value="overallTradedPct" />
+        <div class="mt-6">
+          <div :class="[tacticalSectionLabelClasses, 'mb-2']">
+            <span :class="tacticalSectionTickClasses"></span>
+            {{ $t("pages.players.detail.career_duels.table_section") }}
           </div>
           <div
-            v-if="hasCompare"
-            class="font-mono text-[0.6rem]"
-            style="color: #38bdf8"
+            class="overflow-x-auto rounded-lg border border-border/60 bg-card/40 [backdrop-filter:blur(6px)]"
           >
-            {{ $t("pages.players.detail.compare.vs") }}
-            {{ fmtPct(compareTradedPct) }}
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <SortableTableHead
+                    sort-key="name"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    @sort="toggle"
+                  >
+                    {{ $t("pages.players.detail.career_duels.col_map") }}
+                  </SortableTableHead>
+                  <SortableTableHead
+                    sort-key="attempts"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-right"
+                    @sort="toggle"
+                  >
+                    {{ $t("pages.players.detail.career_duels.col_attempts") }}
+                  </SortableTableHead>
+                  <SortableTableHead
+                    sort-key="win"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-right"
+                    @sort="toggle"
+                  >
+                    {{ $t("pages.players.detail.career_duels.col_win") }}
+                  </SortableTableHead>
+                  <SortableTableHead
+                    sort-key="kd"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-right"
+                    @sort="toggle"
+                  >
+                    <StatLabel
+                      stat="kd"
+                      :label="$t('pages.players.detail.career_duels.col_kd')"
+                    />
+                  </SortableTableHead>
+                  <SortableTableHead
+                    sort-key="traded"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-right"
+                    @sort="toggle"
+                  >
+                    {{ $t("pages.players.detail.career_duels.col_traded") }}
+                  </SortableTableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow v-for="agg of tableRows" :key="agg.mapId">
+                  <TableCell class="font-medium">
+                    {{ agg.label || cleanMapName(agg.name) }}
+                  </TableCell>
+                  <TableCell class="text-right font-mono">
+                    <AnimatedStat :value="agg.attempts" />
+                    <div
+                      v-if="hasCompare && compareByMap.get(agg.mapId)"
+                      class="text-[0.6rem]"
+                      style="color: #38bdf8"
+                    >
+                      {{ $t("pages.players.detail.compare.vs") }}
+                      {{ compareByMap.get(agg.mapId)!.attempts }}
+                    </div>
+                  </TableCell>
+                  <TableCell class="text-right font-mono font-bold">
+                    <span class="inline-flex items-center gap-0.5">
+                      <AnimatedStat
+                        :value="fmtPct(winPctOf(agg.openKills, agg.attempts))"
+                      />
+                      <StatChevron
+                        :cfg="winTier"
+                        :value="winPctOf(agg.openKills, agg.attempts)"
+                      />
+                    </span>
+                    <div
+                      v-if="hasCompare && compareByMap.get(agg.mapId)"
+                      class="text-[0.6rem] font-normal"
+                      style="color: #38bdf8"
+                    >
+                      {{ $t("pages.players.detail.compare.vs") }}
+                      {{
+                        fmtPct(
+                          winPctOf(
+                            compareByMap.get(agg.mapId)!.openKills,
+                            compareByMap.get(agg.mapId)!.attempts,
+                          ),
+                        )
+                      }}
+                    </div>
+                  </TableCell>
+                  <TableCell class="text-right font-mono font-bold">
+                    <AnimatedStat
+                      :value="fmt(kdOf(agg.openKills, agg.openDeaths))"
+                      :style="{
+                        color: kdColor(kdOf(agg.openKills, agg.openDeaths)),
+                      }"
+                    />
+                    <div
+                      v-if="hasCompare && compareByMap.get(agg.mapId)"
+                      class="text-[0.6rem] font-normal"
+                      style="color: #38bdf8"
+                    >
+                      {{ $t("pages.players.detail.compare.vs") }}
+                      {{
+                        fmt(
+                          kdOf(
+                            compareByMap.get(agg.mapId)!.openKills,
+                            compareByMap.get(agg.mapId)!.openDeaths,
+                          ),
+                        )
+                      }}
+                    </div>
+                  </TableCell>
+                  <TableCell class="text-right font-mono">
+                    <span class="inline-flex items-center gap-0.5">
+                      <AnimatedStat
+                        :value="
+                          fmtPct(tradedPctOf(agg.tradedDeaths, agg.openDeaths))
+                        "
+                      />
+                      <StatChevron
+                        :cfg="tradedTier"
+                        :value="tradedPctOf(agg.tradedDeaths, agg.openDeaths)"
+                      />
+                    </span>
+                    <div
+                      v-if="hasCompare && compareByMap.get(agg.mapId)"
+                      class="text-[0.6rem]"
+                      style="color: #38bdf8"
+                    >
+                      {{ $t("pages.players.detail.compare.vs") }}
+                      {{
+                        fmtPct(
+                          tradedPctOf(
+                            compareByMap.get(agg.mapId)!.tradedDeaths,
+                            compareByMap.get(agg.mapId)!.openDeaths,
+                          ),
+                        )
+                      }}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
           </div>
         </div>
-      </div>
-
-      <div class="mt-6">
-        <div :class="[tacticalSectionLabelClasses, 'mb-2']">
-          <span :class="tacticalSectionTickClasses"></span>
-          {{ $t("pages.players.detail.career_duels.table_section") }}
-        </div>
-        <div
-          class="overflow-x-auto rounded-lg border border-border/60 bg-card/40 [backdrop-filter:blur(6px)]"
-        >
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <SortableTableHead
-                  sort-key="name"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  @sort="toggle"
-                >
-                  {{ $t("pages.players.detail.career_duels.col_map") }}
-                </SortableTableHead>
-                <SortableTableHead
-                  sort-key="attempts"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-right"
-                  @sort="toggle"
-                >
-                  {{ $t("pages.players.detail.career_duels.col_attempts") }}
-                </SortableTableHead>
-                <SortableTableHead
-                  sort-key="win"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-right"
-                  @sort="toggle"
-                >
-                  {{ $t("pages.players.detail.career_duels.col_win") }}
-                </SortableTableHead>
-                <SortableTableHead
-                  sort-key="kd"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-right"
-                  @sort="toggle"
-                >
-                  <StatLabel
-                    stat="kd"
-                    :label="$t('pages.players.detail.career_duels.col_kd')"
-                  />
-                </SortableTableHead>
-                <SortableTableHead
-                  sort-key="traded"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-right"
-                  @sort="toggle"
-                >
-                  {{ $t("pages.players.detail.career_duels.col_traded") }}
-                </SortableTableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow v-for="agg of tableRows" :key="agg.mapId">
-                <TableCell class="font-medium">
-                  {{ agg.label || cleanMapName(agg.name) }}
-                </TableCell>
-                <TableCell class="text-right font-mono">
-                  <AnimatedStat :value="agg.attempts" />
-                  <div
-                    v-if="hasCompare && compareByMap.get(agg.mapId)"
-                    class="text-[0.6rem]"
-                    style="color: #38bdf8"
-                  >
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{ compareByMap.get(agg.mapId)!.attempts }}
-                  </div>
-                </TableCell>
-                <TableCell class="text-right font-mono font-bold">
-                  <span class="inline-flex items-center gap-0.5">
-                    <AnimatedStat
-                      :value="fmtPct(winPctOf(agg.openKills, agg.attempts))"
-                    />
-                    <StatChevron
-                      :cfg="winTier"
-                      :value="winPctOf(agg.openKills, agg.attempts)"
-                    />
-                  </span>
-                  <div
-                    v-if="hasCompare && compareByMap.get(agg.mapId)"
-                    class="text-[0.6rem] font-normal"
-                    style="color: #38bdf8"
-                  >
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{
-                      fmtPct(
-                        winPctOf(
-                          compareByMap.get(agg.mapId)!.openKills,
-                          compareByMap.get(agg.mapId)!.attempts,
-                        ),
-                      )
-                    }}
-                  </div>
-                </TableCell>
-                <TableCell class="text-right font-mono font-bold">
-                  <AnimatedStat
-                    :value="fmt(kdOf(agg.openKills, agg.openDeaths))"
-                    :style="{
-                      color: kdColor(kdOf(agg.openKills, agg.openDeaths)),
-                    }"
-                  />
-                  <div
-                    v-if="hasCompare && compareByMap.get(agg.mapId)"
-                    class="text-[0.6rem] font-normal"
-                    style="color: #38bdf8"
-                  >
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{
-                      fmt(
-                        kdOf(
-                          compareByMap.get(agg.mapId)!.openKills,
-                          compareByMap.get(agg.mapId)!.openDeaths,
-                        ),
-                      )
-                    }}
-                  </div>
-                </TableCell>
-                <TableCell class="text-right font-mono">
-                  <span class="inline-flex items-center gap-0.5">
-                    <AnimatedStat
-                      :value="
-                        fmtPct(tradedPctOf(agg.tradedDeaths, agg.openDeaths))
-                      "
-                    />
-                    <StatChevron
-                      :cfg="tradedTier"
-                      :value="tradedPctOf(agg.tradedDeaths, agg.openDeaths)"
-                    />
-                  </span>
-                  <div
-                    v-if="hasCompare && compareByMap.get(agg.mapId)"
-                    class="text-[0.6rem]"
-                    style="color: #38bdf8"
-                  >
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{
-                      fmtPct(
-                        tradedPctOf(
-                          compareByMap.get(agg.mapId)!.tradedDeaths,
-                          compareByMap.get(agg.mapId)!.openDeaths,
-                        ),
-                      )
-                    }}
-                  </div>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
-      </div>
       </div>
     </FadeSwap>
   </div>

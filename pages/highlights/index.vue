@@ -13,6 +13,7 @@ import {
   User,
   X,
   Layers,
+  ArrowUpDown,
 } from "lucide-vue-next";
 import { useAuthStore } from "~/stores/AuthStore";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
@@ -54,7 +55,7 @@ import {
 } from "~/utilities/tacticalClasses";
 
 definePageMeta({
-  persistQueryKeys: ["player", "since", "kills", "view"],
+  persistQueryKeys: ["player", "since", "kills", "view", "sort"],
 });
 
 const { t } = useI18n();
@@ -133,6 +134,27 @@ const killsFilter = computed<KillsPreset>(() =>
 const viewMode = computed<ViewMode>(() =>
   route.query.view === "singles" ? "singles" : "matches",
 );
+
+type SortPreset = "recent" | "views";
+const SORT_VALUES = ["recent", "views"] as const;
+const SORT_OPTIONS = computed<Array<{ value: SortPreset; label: string }>>(() =>
+  SORT_VALUES.map((value) => ({
+    value,
+    label: t(`pages.highlights.sort.${value}`),
+  })),
+);
+const sortFilter = computed<SortPreset>(() =>
+  (SORT_VALUES as readonly string[]).includes(route.query.sort as string)
+    ? (route.query.sort as SortPreset)
+    : "recent",
+);
+
+function setSort(v: SortPreset) {
+  const next = { ...route.query } as Record<string, any>;
+  if (v === "recent") delete next.sort;
+  else next.sort = v;
+  router.replace({ path: route.path, query: next, hash: route.hash });
+}
 
 function setViewMode(v: ViewMode) {
   const next = { ...route.query } as Record<string, any>;
@@ -284,7 +306,10 @@ async function fetchData() {
           match_clips: [
             {
               where: filterIsEmpty ? {} : filter,
-              order_by: [{ created_at: order_by.desc }],
+              order_by:
+                sortFilter.value === "views"
+                  ? [{ views_count: order_by.desc }]
+                  : [{ created_at: order_by.desc }],
               limit: perPage,
               offset: (page.value - 1) * perPage,
             } as any,
@@ -334,8 +359,14 @@ async function fetchData() {
         ],
       } as any),
       variables: {
-        groups_order_by: [{ [orderColumn]: order_by.desc }],
-        clips_order_by: [{ created_at: order_by.desc }],
+        groups_order_by:
+          sortFilter.value === "views"
+            ? [{ match_clips_aggregate: { sum: { views_count: order_by.desc } } }]
+            : [{ [orderColumn]: order_by.desc }],
+        clips_order_by:
+          sortFilter.value === "views"
+            ? [{ views_count: order_by.desc }]
+            : [{ created_at: order_by.desc }],
       },
       fetchPolicy: "network-only",
     });
@@ -414,7 +445,15 @@ fetchData();
 fetchAggregate();
 
 watch(
-  [playerFilter, sinceFilter, killsFilter, isAdmin, visibilityFilter, viewMode],
+  [
+    playerFilter,
+    sinceFilter,
+    killsFilter,
+    isAdmin,
+    visibilityFilter,
+    viewMode,
+    sortFilter,
+  ],
   () => {
     if (page.value !== 1) {
       page.value = 1;
@@ -668,6 +707,39 @@ const viewModeOptions = computed<
         <SelectContent>
           <SelectItem
             v-for="opt in KILLS_OPTIONS"
+            :key="opt.value"
+            :value="opt.value"
+          >
+            {{ opt.label }}
+          </SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Select
+        :model-value="sortFilter"
+        @update:model-value="(v) => setSort(v as SortPreset)"
+      >
+        <SelectTrigger
+          class="h-8 w-auto min-w-[10rem] gap-2 rounded-full border-border/60 bg-muted/30 px-3 text-xs"
+          :class="
+            sortFilter !== 'recent'
+              ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]'
+              : ''
+          "
+        >
+          <ArrowUpDown
+            class="h-3.5 w-3.5"
+            :class="
+              sortFilter !== 'recent'
+                ? 'text-[hsl(var(--tac-amber))]'
+                : 'text-muted-foreground'
+            "
+          />
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem
+            v-for="opt in SORT_OPTIONS"
             :key="opt.value"
             :value="opt.value"
           >

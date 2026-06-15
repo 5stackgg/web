@@ -39,7 +39,13 @@ function buildMatchesWhere() {
   const where: Record<string, any> = { status: { _eq: "Finished" } };
   if (props.source && props.source !== "all") {
     where.source =
-      props.source === "external" ? { _neq: "5stack" } : { _eq: "5stack" };
+      props.source === "5stack"
+        ? { _eq: "5stack" }
+        : props.source === "external"
+          ? { _neq: "5stack" }
+          : props.source === "unknown"
+            ? { _nin: ["5stack", "valve", "faceit"] }
+            : { _eq: props.source };
   }
   if (props.matchType) {
     where.options = {
@@ -91,7 +97,13 @@ async function load() {
 }
 
 watch(
-  () => [props.steamId, props.source, props.matchType, props.limit, props.since],
+  () => [
+    props.steamId,
+    props.source,
+    props.matchType,
+    props.limit,
+    props.since,
+  ],
   load,
   { immediate: true },
 );
@@ -136,12 +148,12 @@ function roleLabel(role: CombatRole): string {
   <Card class="bg-card/20">
     <CardContent class="p-3 sm:p-4">
       <FadeSwap class="flex flex-col gap-3">
-        <div v-if="loading" key="skeleton" class="flex flex-wrap items-center gap-3">
-          <Skeleton
-            v-for="i in 2"
-            :key="i"
-            class="h-9 w-40 rounded-md"
-          />
+        <div
+          v-if="loading"
+          key="skeleton"
+          class="flex flex-wrap items-center gap-3"
+        >
+          <Skeleton v-for="i in 2" :key="i" class="h-9 w-40 rounded-md" />
         </div>
 
         <div

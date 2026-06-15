@@ -423,10 +423,7 @@ async function stopGpuSession(nodeId: string) {
               {{
                 node.gpu_info?.[0]?.name || $t("pages.gpu_nodes.gpu_unknown")
               }}
-              <span
-                v-if="node.gpu_info?.[0]?.memory_mb"
-                class="gpu-node-vram"
-              >
+              <span v-if="node.gpu_info?.[0]?.memory_mb" class="gpu-node-vram">
                 {{ Math.round(node.gpu_info[0].memory_mb / 1024) }} GB
               </span>
               <span class="gpu-node-region">{{
@@ -515,7 +512,11 @@ async function stopGpuSession(nodeId: string) {
               @click="stopGpuSession(node.id)"
             >
               <Square class="w-3.5 h-3.5" />
-              {{ confirmStopByNodeId[node.id] ? "Confirm" : "Stop" }}
+              {{
+                confirmStopByNodeId[node.id]
+                  ? $t("common.confirm")
+                  : $t("pages.gpu_nodes.stop")
+              }}
             </button>
 
             <Tooltip>

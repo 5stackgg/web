@@ -19,6 +19,7 @@ import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import { MoreVertical, Crown, Sparkles } from "lucide-vue-next";
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
+import PlayerFaceitRank from "~/components/PlayerFaceitRank.vue";
 import RenderHighlightForPlayerDialog from "~/components/match/RenderHighlightForPlayerDialog.vue";
 import { ref } from "vue";
 
@@ -93,7 +94,7 @@ const DASH = "—";
                 <Sparkles
                   class="h-3.5 w-3.5 mr-2 text-[hsl(var(--tac-amber))]"
                 />
-                <span>Render highlight…</span>
+                <span>{{ $t("match.overview.render_highlight") }}</span>
               </DropdownMenuItem>
             </template>
           </DropdownMenuContent>
@@ -161,6 +162,16 @@ const DASH = "—";
                       v-if="!isExternalMatch"
                       :elo="member.player.elo"
                     />
+                    <PlayerFaceitRank
+                      v-else-if="
+                        isFaceitMatch &&
+                        (faceitSkillLevel(member) || faceitElo(member))
+                      "
+                      :faceit-skill-level="faceitSkillLevel(member)"
+                      :faceit-elo="faceitElo(member)"
+                      :faceit-url="member.player.faceit_url"
+                      :faceit-nickname="member.player.faceit_nickname"
+                    />
                   </div>
                 </div>
               </div>
@@ -208,7 +219,8 @@ const DASH = "—";
             <span class="tabular-nums"
               ><AnimatedStat :value="survivedCount"
             /></span>
-            <span class="tabular-nums text-xs text-muted-foreground leading-none"
+            <span
+              class="tabular-nums text-xs text-muted-foreground leading-none"
               >(<StatLabel stat="survived_pct"
                 ><AnimatedStat :value="survivedPct + '%'" /></StatLabel
               >)</span
@@ -285,7 +297,9 @@ const DASH = "—";
         </span>
       </TableCell>
       <TableCell>
-        <span class="md:hidden tabular-nums text-xs inline-flex items-center gap-0.5">
+        <span
+          class="md:hidden tabular-nums text-xs inline-flex items-center gap-0.5"
+        >
           <AnimatedStat :value="hasStats ? adr : DASH" />
           <StatChevron :cfg="ADR_TIER" :value="adrNum" />
         </span>
@@ -371,6 +385,20 @@ export default {
     },
   },
   methods: {
+    faceitSkillLevel(member: any): number | null {
+      return (
+        member?.player?.faceit_rank_history?.[0]?.skill_level ??
+        member?.player?.faceit_skill_level ??
+        null
+      );
+    },
+    faceitElo(member: any): number | null {
+      return (
+        member?.player?.faceit_rank_history?.[0]?.elo ??
+        member?.player?.faceit_elo ??
+        null
+      );
+    },
     hasMultiKillsToShow(kills: number): boolean {
       if (!this.stats) return false;
       const key = (
@@ -515,6 +543,9 @@ export default {
     // Imported from outside 5stack (e.g. Valve / Faceit match history).
     isExternalMatch() {
       return !!this.match?.source && this.match.source !== "5stack";
+    },
+    isFaceitMatch() {
+      return this.match?.source === "faceit";
     },
     // Roster management (promote captain, switch teams, remove player) is only
     // valid before the match goes live — once it's Live or terminal the lineup

@@ -101,7 +101,11 @@ async function confirm() {
           class="inline-flex h-10 items-center justify-center rounded-md bg-destructive px-4 text-sm font-medium text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
           @click="confirm"
         >
-          {{ deleting ? "Deleting…" : "Delete" }}
+          {{
+            deleting
+              ? $t("clips.delete_dialog.deleting")
+              : $t("clips.delete_dialog.delete")
+          }}
         </button>
       </AlertDialogFooter>
     </AlertDialogContent>

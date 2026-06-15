@@ -161,7 +161,11 @@ import {
                       v-if="getFirstStageForTab(stageNumber)?.max_teams"
                     >
                       ·
-                      {{ getFirstStageForTab(stageNumber).max_teams }} teams
+                      {{
+                        $t("tournament.stage.teams_count", {
+                          count: getFirstStageForTab(stageNumber).max_teams,
+                        })
+                      }}
                     </template>
                   </span>
                 </div>

@@ -45,13 +45,17 @@ function buildWhere(steamId: string = props.steamId) {
   };
   if (props.source && props.source !== "all") {
     where.source =
-      props.source === "external" ? { _neq: "5stack" } : { _eq: "5stack" };
+      props.source === "5stack"
+        ? { _eq: "5stack" }
+        : props.source === "external"
+          ? { _neq: "5stack" }
+          : props.source === "unknown"
+            ? { _nin: ["5stack", "valve", "faceit"] }
+            : { _eq: props.source };
   }
   if (props.matchType) {
     where.type = {
-      _in: Array.isArray(props.matchType)
-        ? props.matchType
-        : [props.matchType],
+      _in: Array.isArray(props.matchType) ? props.matchType : [props.matchType],
     };
   }
   return where;
@@ -203,11 +207,9 @@ async function load() {
   }
 }
 
-watch(
-  () => [props.steamId, props.source, props.matchType],
-  load,
-  { immediate: true },
-);
+watch(() => [props.steamId, props.source, props.matchType], load, {
+  immediate: true,
+});
 
 const EXCLUDED_WEAPONS = new Set(["world", "planted_c4"]);
 
@@ -372,159 +374,163 @@ function onIconError(event: Event) {
       </Empty>
 
       <div v-else key="content">
-      <AnimatedCard variant="elevated" class="flex flex-col p-4">
-        <CardContent class="p-0">
-          <Table
-            class="[&_th]:px-3 [&_td]:px-3 [&_th]:whitespace-nowrap"
-          >
-            <TableHeader class="[&_th]:h-10 bg-muted/20">
-              <TableRow>
-                <SortableTableHead
-                  sort-key="weapon"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-left"
-                  @sort="toggle"
-                  >{{
-                    $t("pages.players.detail.weapons_table.weapon")
-                  }}</SortableTableHead
-                >
-                <SortableTableHead
-                  sort-key="kills"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-right"
-                  @sort="toggle"
-                  >{{
-                    $t("pages.players.detail.weapons_table.kills")
-                  }}</SortableTableHead
-                >
-                <SortableTableHead
-                  v-if="hasExtra"
-                  sort-key="rating"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-right"
-                  :title="$t('pages.players.detail.weapons_table.rating_tooltip')"
-                  @sort="toggle"
-                  ><StatLabel
-                    stat="hltv"
-                    :label="$t('pages.players.detail.weapons_table.rating')"
-                /></SortableTableHead>
-                <SortableTableHead
-                  v-if="hasExtra"
-                  sort-key="adr"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-right"
-                  @sort="toggle"
-                  ><StatLabel
-                    stat="adr"
-                    :label="$t('pages.players.detail.weapons_table.adr')"
-                /></SortableTableHead>
-                <SortableTableHead
-                  v-if="hasExtra"
-                  sort-key="economy"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-right"
-                  :title="$t('pages.players.detail.weapons_table.economy_tooltip')"
-                  @sort="toggle"
-                  >{{
-                    $t("pages.players.detail.weapons_table.economy")
-                  }}</SortableTableHead
-                >
-                <SortableTableHead
-                  v-if="hasExtra"
-                  sort-key="kpr"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-right"
-                  @sort="toggle"
-                  ><StatLabel
-                    stat="kpr"
-                    :label="$t('pages.players.detail.weapons_table.kpr')"
-                /></SortableTableHead>
-                <SortableTableHead
-                  v-if="hasExtra"
-                  sort-key="rounds"
-                  :active-key="sortKey"
-                  :direction="sortDir"
-                  class="text-right"
-                  :title="$t('pages.players.detail.weapons_table.rounds_tooltip')"
-                  @sort="toggle"
-                  >{{
-                    $t("pages.players.detail.weapons_table.rounds")
-                  }}</SortableTableHead
-                >
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow
-                v-for="row in sortedRows"
-                :key="row.key"
-                class="hover:bg-muted/40 transition-colors"
-              >
-                <TableCell class="text-left">
-                  <img
-                    v-if="row.icon"
-                    :src="row.icon"
-                    :alt="row.label"
-                    :title="row.label"
-                    class="h-8 w-10 object-contain"
-                    @error="onIconError"
-                  />
-                  <span v-else class="font-medium">{{ row.label }}</span>
-                </TableCell>
-                <TableCell class="text-right font-bold tabular-nums">
-                  <AnimatedStat :value="row.kills" />
-                  <div
-                    v-if="hasCompare"
-                    class="text-[0.6rem] font-normal"
-                    style="color: #38bdf8"
+        <AnimatedCard variant="elevated" class="flex flex-col p-4">
+          <CardContent class="p-0">
+            <Table class="[&_th]:px-3 [&_td]:px-3 [&_th]:whitespace-nowrap">
+              <TableHeader class="[&_th]:h-10 bg-muted/20">
+                <TableRow>
+                  <SortableTableHead
+                    sort-key="weapon"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-left"
+                    @sort="toggle"
+                    >{{
+                      $t("pages.players.detail.weapons_table.weapon")
+                    }}</SortableTableHead
                   >
-                    {{ $t("pages.players.detail.compare.vs") }}
-                    {{ compareWeapon.get(row.key)?.kills ?? 0 }}
-                  </div>
-                </TableCell>
-                <TableCell
-                  v-if="hasExtra"
-                  class="text-right font-mono text-xs tabular-nums text-muted-foreground"
+                  <SortableTableHead
+                    sort-key="kills"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-right"
+                    @sort="toggle"
+                    >{{
+                      $t("pages.players.detail.weapons_table.kills")
+                    }}</SortableTableHead
+                  >
+                  <SortableTableHead
+                    v-if="hasExtra"
+                    sort-key="rating"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-right"
+                    :title="
+                      $t('pages.players.detail.weapons_table.rating_tooltip')
+                    "
+                    @sort="toggle"
+                    ><StatLabel
+                      stat="hltv"
+                      :label="$t('pages.players.detail.weapons_table.rating')"
+                  /></SortableTableHead>
+                  <SortableTableHead
+                    v-if="hasExtra"
+                    sort-key="adr"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-right"
+                    @sort="toggle"
+                    ><StatLabel
+                      stat="adr"
+                      :label="$t('pages.players.detail.weapons_table.adr')"
+                  /></SortableTableHead>
+                  <SortableTableHead
+                    v-if="hasExtra"
+                    sort-key="economy"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-right"
+                    :title="
+                      $t('pages.players.detail.weapons_table.economy_tooltip')
+                    "
+                    @sort="toggle"
+                    >{{
+                      $t("pages.players.detail.weapons_table.economy")
+                    }}</SortableTableHead
+                  >
+                  <SortableTableHead
+                    v-if="hasExtra"
+                    sort-key="kpr"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-right"
+                    @sort="toggle"
+                    ><StatLabel
+                      stat="kpr"
+                      :label="$t('pages.players.detail.weapons_table.kpr')"
+                  /></SortableTableHead>
+                  <SortableTableHead
+                    v-if="hasExtra"
+                    sort-key="rounds"
+                    :active-key="sortKey"
+                    :direction="sortDir"
+                    class="text-right"
+                    :title="
+                      $t('pages.players.detail.weapons_table.rounds_tooltip')
+                    "
+                    @sort="toggle"
+                    >{{
+                      $t("pages.players.detail.weapons_table.rounds")
+                    }}</SortableTableHead
+                  >
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow
+                  v-for="row in sortedRows"
+                  :key="row.key"
+                  class="hover:bg-muted/40 transition-colors"
                 >
-                  <AnimatedStat
-                    :value="fmt2(row.rating)"
-                    :style="{ color: hltvColor(row.rating) }"
-                  />
-                </TableCell>
-                <TableCell
-                  v-if="hasExtra"
-                  class="text-right font-mono text-xs tabular-nums text-muted-foreground"
-                >
-                  <AnimatedStat :value="fmt1(row.adr)" />
-                </TableCell>
-                <TableCell
-                  v-if="hasExtra"
-                  class="text-right font-mono text-xs tabular-nums text-muted-foreground"
-                >
-                  <AnimatedStat :value="fmt2(row.economy)" />
-                </TableCell>
-                <TableCell
-                  v-if="hasExtra"
-                  class="text-right font-mono text-xs tabular-nums text-muted-foreground"
-                >
-                  <AnimatedStat :value="fmt2(row.kpr)" />
-                </TableCell>
-                <TableCell
-                  v-if="hasExtra"
-                  class="text-right font-mono text-xs tabular-nums text-muted-foreground"
-                >
-                  <AnimatedStat :value="fmtInt(row.rounds)" />
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </CardContent>
-      </AnimatedCard>
+                  <TableCell class="text-left">
+                    <img
+                      v-if="row.icon"
+                      :src="row.icon"
+                      :alt="row.label"
+                      :title="row.label"
+                      class="h-8 w-10 object-contain"
+                      @error="onIconError"
+                    />
+                    <span v-else class="font-medium">{{ row.label }}</span>
+                  </TableCell>
+                  <TableCell class="text-right font-bold tabular-nums">
+                    <AnimatedStat :value="row.kills" />
+                    <div
+                      v-if="hasCompare"
+                      class="text-[0.6rem] font-normal"
+                      style="color: #38bdf8"
+                    >
+                      {{ $t("pages.players.detail.compare.vs") }}
+                      {{ compareWeapon.get(row.key)?.kills ?? 0 }}
+                    </div>
+                  </TableCell>
+                  <TableCell
+                    v-if="hasExtra"
+                    class="text-right font-mono text-xs tabular-nums text-muted-foreground"
+                  >
+                    <AnimatedStat
+                      :value="fmt2(row.rating)"
+                      :style="{ color: hltvColor(row.rating) }"
+                    />
+                  </TableCell>
+                  <TableCell
+                    v-if="hasExtra"
+                    class="text-right font-mono text-xs tabular-nums text-muted-foreground"
+                  >
+                    <AnimatedStat :value="fmt1(row.adr)" />
+                  </TableCell>
+                  <TableCell
+                    v-if="hasExtra"
+                    class="text-right font-mono text-xs tabular-nums text-muted-foreground"
+                  >
+                    <AnimatedStat :value="fmt2(row.economy)" />
+                  </TableCell>
+                  <TableCell
+                    v-if="hasExtra"
+                    class="text-right font-mono text-xs tabular-nums text-muted-foreground"
+                  >
+                    <AnimatedStat :value="fmt2(row.kpr)" />
+                  </TableCell>
+                  <TableCell
+                    v-if="hasExtra"
+                    class="text-right font-mono text-xs tabular-nums text-muted-foreground"
+                  >
+                    <AnimatedStat :value="fmtInt(row.rounds)" />
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </CardContent>
+        </AnimatedCard>
       </div>
     </FadeSwap>
   </div>

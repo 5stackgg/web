@@ -748,7 +748,11 @@ const isSectionExpanded = (section: string) => {
               />
             </Button>
           </template>
-          {{ shouldShowMetrics ? "Hide Metrics" : "Show Metrics" }}
+          {{
+            shouldShowMetrics
+              ? $t("common.hide_metrics")
+              : $t("common.show_metrics")
+          }}
         </FiveStackToolTip>
 
         <DropdownMenu>
@@ -939,7 +943,7 @@ const isSectionExpanded = (section: string) => {
             <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
               <!-- Max Servers -->
               <div class="text-right text-muted-foreground whitespace-nowrap">
-                Max:
+                {{ $t("pages.game_server_nodes.max_label") }}
               </div>
               <div class="font-medium text-foreground">
                 {{
@@ -951,7 +955,7 @@ const isSectionExpanded = (section: string) => {
 
               <!-- Ports -->
               <div class="text-right text-muted-foreground whitespace-nowrap">
-                Ports:
+                {{ $t("pages.game_server_nodes.ports_label") }}
               </div>
               <button
                 v-if="gameServerNode.enabled && !hasPorts"
@@ -1148,7 +1152,9 @@ const isSectionExpanded = (section: string) => {
             >
               <div class="flex items-center gap-2">
                 <Cpu class="h-4 w-4" />
-                <span class="font-medium text-sm">CPU & Hardware</span>
+                <span class="font-medium text-sm">{{
+                  $t("pages.game_server_nodes.cpu_hardware")
+                }}</span>
               </div>
               <ChevronDown
                 class="h-4 w-4 transition-transform"
@@ -1267,7 +1273,7 @@ const isSectionExpanded = (section: string) => {
                   <div class="flex items-center gap-1">
                     <HardDrive class="h-3 w-3" :class="diskColorClass" />
                     <span class="text-muted-foreground"
-                      >Disk:
+                      >{{ $t("game_server.disk_label") }}
                       {{ gameServerNode.disk_used_percent ?? "-" }}%</span
                     >
                   </div>

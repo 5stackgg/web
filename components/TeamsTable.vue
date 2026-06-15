@@ -193,7 +193,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
       </div>
 
       <div v-else class="text-xs text-muted-foreground italic">
-        No roster yet.
+        {{ $t("team.table.no_roster") }}
       </div>
     </NuxtLink>
   </div>

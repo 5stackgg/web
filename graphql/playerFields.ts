@@ -14,4 +14,8 @@ export const playerFields = Selector("players")({
   elo: true,
   premier_rank: true,
   premier_rank_updated_at: true,
+  faceit_skill_level: true,
+  faceit_elo: true,
+  faceit_url: true,
+  faceit_nickname: true,
 });

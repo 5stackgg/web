@@ -97,13 +97,15 @@ import { Cpu, MemoryStick, HardDrive, Network } from "lucide-vue-next";
             <Network class="h-3.5 w-3.5 shrink-0" />
             {{ $t("pages.system_metrics.network_short") }}
           </span>
-          <span class="truncate">aggregate</span>
+          <span class="truncate">{{ $t("system_metrics.aggregate") }}</span>
         </div>
         <div class="mt-3 flex items-end justify-between gap-3">
           <div class="text-lg font-semibold tabular-nums">
             {{ networkUsageDisplay }}
           </div>
-          <div class="text-[11px] text-muted-foreground">rx + tx</div>
+          <div class="text-[11px] text-muted-foreground">
+            {{ $t("system_metrics.rx_tx") }}
+          </div>
         </div>
         <div class="mt-3 h-1.5 rounded-full bg-muted overflow-hidden">
           <div

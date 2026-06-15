@@ -1,55 +1,20 @@
 <script setup lang="ts">
-import { LucideSparkles, LucideDatabase } from "lucide-vue-next";
-import formatBytes from "~/utilities/formatBytes";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-import { Card } from "~/components/ui/card";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
+import OrphanedUploadsButton from "~/components/settings/OrphanedUploadsButton.vue";
+import StorageBreakdown from "~/components/settings/StorageBreakdown.vue";
 </script>
 
 <template>
   <SettingsPage>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-stretch">
-      <PageTransition :delay="0">
-        <Card variant="gradient" class="p-4 flex items-center gap-4 h-full">
-          <div
-            class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10"
-          >
-            <LucideDatabase class="w-6 h-6 text-primary" />
-          </div>
-          <div class="flex-1">
-            <h3 class="text-sm font-medium text-muted-foreground">
-              {{ $t("pages.settings.application.demo_settings.total_storage") }}
-            </h3>
-            <p class="text-2xl font-bold mt-1">
-              {{ formatBytes(totalStorageBytes) }}~
-            </p>
-          </div>
-        </Card>
-      </PageTransition>
-
-      <PageTransition :delay="50">
-        <Card variant="gradient" class="p-4 flex items-center gap-4 h-full">
-          <div
-            class="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10"
-          >
-            <LucideSparkles class="w-6 h-6 text-primary" />
-          </div>
-          <div class="flex-1">
-            <h3 class="text-sm font-medium text-muted-foreground">
-              {{
-                $t(
-                  "pages.settings.application.demo_settings.clips_used_storage",
-                )
-              }}
-            </h3>
-            <p class="text-2xl font-bold mt-1">
-              {{ formatBytes(clipStorageBytes) }}~
-            </p>
-          </div>
-        </Card>
-      </PageTransition>
-    </div>
+    <PageTransition :delay="0">
+      <StorageBreakdown>
+        <template #action>
+          <OrphanedUploadsButton />
+        </template>
+      </StorageBreakdown>
+    </PageTransition>
 
     <PageTransition :delay="100">
       <form @submit.prevent="updateSettings" class="space-y-6">
@@ -361,9 +326,9 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
                         "pages.settings.application.demo_settings.clips_min_retention",
                       )
                     }}
-                    <span class="text-muted-foreground font-normal"
-                      >(days)</span
-                    >
+                    <span class="text-muted-foreground font-normal">{{
+                      $t("pages.settings.application.demo_settings.unit_days")
+                    }}</span>
                   </FormLabel>
                   <Input type="number" v-bind="componentField"></Input>
                   <FormMessage />
@@ -378,7 +343,9 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
                         "pages.settings.application.demo_settings.clips_max_storage",
                       )
                     }}
-                    <span class="text-muted-foreground font-normal">(GB)</span>
+                    <span class="text-muted-foreground font-normal">{{
+                      $t("pages.settings.application.demo_settings.unit_gb")
+                    }}</span>
                   </FormLabel>
                   <Input type="number" v-bind="componentField"></Input>
                   <FormMessage />
@@ -404,44 +371,13 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
 
 <script lang="ts">
 import { settings_constraint, settings_update_column } from "~/generated/zeus";
-import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
+import { generateMutation } from "~/graphql/graphqlGen";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { z } from "zod";
 import { toast } from "@/components/ui/toast";
 
 export default {
-  apollo: {
-    match_clips_aggregate: {
-      query: generateQuery({
-        match_clips_aggregate: [
-          {},
-          {
-            aggregate: {
-              sum: {
-                size: true,
-              },
-            },
-          },
-        ],
-      }),
-    },
-    match_map_demos_aggregate: {
-      query: generateQuery({
-        match_map_demos_aggregate: [
-          {},
-          {
-            aggregate: {
-              sum: {
-                size: true,
-                playback_size: true,
-              },
-            },
-          },
-        ],
-      }),
-    },
-  },
   data() {
     return {
       form: useForm({
@@ -605,20 +541,6 @@ export default {
     },
     clipBakeBranding(): boolean {
       return this.booleanSetting("clip_bake_branding", true);
-    },
-    demoStorageBytes() {
-      // Aggregate sums come back as bigint strings; coerce so "+" adds
-      // instead of concatenating.
-      const sum = (this as any).match_map_demos_aggregate?.aggregate?.sum;
-      return Number(sum?.size || 0) + Number(sum?.playback_size || 0);
-    },
-    clipStorageBytes() {
-      return Number(
-        (this as any).match_clips_aggregate?.aggregate?.sum?.size || 0,
-      );
-    },
-    totalStorageBytes() {
-      return (this as any).demoStorageBytes + (this as any).clipStorageBytes;
     },
   },
 };

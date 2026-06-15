@@ -104,7 +104,7 @@ const wideGrid =
           <span class="mx-1 text-muted-foreground/60">:</span>
           <span class="text-muted-foreground/90">{{ score.opponent }}</span>
         </span>
-        <MatchStatus v-else :match="match" />
+        <MatchStatus v-else :match="match" class="self-start" />
         <span
           v-if="opponentTeam"
           class="flex min-w-0 items-center gap-1"

@@ -156,7 +156,7 @@ export default defineNuxtConfig({
       // the URL is immutable/cache-forever. Override with NUXT_PUBLIC_MAP_MESH_CDN
       // to swap to cdn.5stack.gg (R2) later — no code change needed.
       mapMeshCdn:
-        "https://cdn.jsdelivr.net/gh/5stackgg/replay-map-meshes@17595823",
+        "https://cdn.jsdelivr.net/gh/5stackgg/replay-map-meshes@17595823-1",
     },
   },
 

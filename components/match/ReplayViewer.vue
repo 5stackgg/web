@@ -4897,9 +4897,11 @@ watch(overlayMode, (on) => {
              action. Holds both side rosters + the round kill feed. Wrapper
              is pointer-events-none so gaps don't swallow map interactions;
              cards re-enable pointer events for click-to-follow. -->
+        <!-- Old floating scoreboard — replaced by ReplayChrome's scoreboard.
+             Disabled (its Tooltip needs ReplayChrome's TooltipProvider). -->
         <Transition name="scoreboard">
           <div
-            v-show="showScoreboard && !overlayMode"
+            v-if="false"
             class="absolute top-14 right-2 bottom-3 z-20 hidden md:flex flex-col gap-1.5 w-[400px] pointer-events-none"
           >
             <div

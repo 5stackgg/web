@@ -82,15 +82,39 @@ This is the closest to a drop-in replacement for the awpy pack.
    hull is far smaller and is what we want.
 4. Right-click ▸ **Export** as **glTF (.glb)**. Enable only meshes (no
    textures/materials) to keep it tiny.
-5. Convert the glb's triangles to our `.tri` format with a small Node script:
-   load the glb (`GLTFLoader`), walk each mesh's non-indexed `position`
-   attribute (expand indices if indexed), and write the float32 triangles
-   (9 per tri) to `<map>.tri`. Keep coordinates in **raw source units** — do NOT
-   apply the meters scale; the viewer expects source units.
+5. Convert the glb to `.tri` with `scripts/glb-to-tri.mjs`:
+   ```bash
+   node scripts/glb-to-tri.mjs ~/Downloads/de_cache_world_physics_physics.glb ~/meshes/de_cache.tri
+   ```
+   It reads only POSITIONs (textures ignored) and writes float32 triangles.
 
-> Tip: the render mesh (`world.vmdl_c`) is the ~100 MB textured geometry — avoid
-> it. Always prefer the **physics/collision** mesh. If you must use the render
-> mesh, decimate it heavily first (Blender Decimate, or `gltf-transform simplify`).
+> **Coordinate gotcha:** VRF bakes a `0.0254` inch→meter scale **and** a
+> Z-up→Y-up axis remap into every node's transform, purely for glTF viewers. The
+> underlying accessor data is already in **CS2 source units / source frame**, so
+> `glb-to-tri.mjs` deliberately emits the mesh-*local* positions and **skips the
+> node transforms**. Result bbox should read in the thousands (e.g. cache z
+> `1524..3331`), not tens — if you see tens, the meters transform leaked in.
+
+> **Tip:** export the `*_world_physics_physics.glb` (physics hull), never the
+> textured render mesh (`world.vmdl_c`, ~100 MB+). The GUI also embeds surface
+> textures into the glb (cache came out 175 MB) — we discard all of it, so the
+> final `.tri` is tiny (cache: 58 MB raw tris → 12.5 MB decimated → 1.6 MB wire).
+
+### More automated than the GUI
+
+The GUI is manual and dumps textures you don't need. Two scriptable alternatives:
+
+- **[cs2-phys-extractor](https://github.com/itzlaith/cs2-phys-extractor)** —
+  reads the VPK and writes `.tri` directly. No GUI, no glb, no conversion. Best
+  for batching the remaining maps; pipe straight into `--from --publish`.
+- **VRF CLI** (`Source2Viewer-CLI`, the headless ValveResourceFormat tool) —
+  export just the physics vmdl with materials off:
+  ```bash
+  Source2Viewer-CLI --input pak01_dir.vpk \
+    -f maps/de_cache/world_physics.vmdl_c \
+    --gltf_export_materials false -o out/
+  ```
+  then run `glb-to-tri.mjs` on the result.
 
 ### Option C — `cs2-map-parser` (vphys → triangles)
 
@@ -127,16 +151,34 @@ and are served over a CDN so every install fetches them once.
 
 ### Publish flow (new map or new awpy build)
 
-The script does build → decimate → commit → tag → push in one command:
+The script does build → decimate → commit → tag → push in one command. `--from`
+accepts ready `.tri` **or** Source 2 Viewer `.glb` exports (auto-converted,
+textures discarded); `--from-all` processes every file in the folder.
 
 ```bash
 # new awpy build: rebuild everything, tag = build id
 AWPY_BUILD_ID=<new> node scripts/fetch-map-meshes.mjs --all --publish
 
-# add one self-generated map to the current build (new tag — URLs are immutable)
-node scripts/fetch-map-meshes.mjs --from ~/my-meshes de_cache --publish --tag 17595823-1
+# batch ALL your Source 2 Viewer exports in one folder → one tag
+node scripts/fetch-map-meshes.mjs --from ~/cs_exports --from-all --publish --tag 17595823-2
+
+# a single map
+node scripts/fetch-map-meshes.mjs --from ~/cs_exports de_cache --publish --tag 17595823-2
 ```
 
 Then bump the tag in `mapMeshCdn` (`nuxt.config.ts`) or via
 `NUXT_PUBLIC_MAP_MESH_CDN`. The immutable URL = instant cache bust, no asset
 redeploy. The publisher refuses to reuse an existing tag for this reason.
+
+### Recommended end-to-end for "regenerate everything"
+
+1. In **Source 2 Viewer**, export each map's `world_physics.vmdl_c` as glTF
+   (`.glb`) into one folder (e.g. `~/cs_exports/`). Materials don't matter — we
+   only read positions — so the `*_world_physics_physics.glb` is what's used.
+   (Or script it with the VRF CLI / `cs2-phys-extractor`; see above.)
+2. One command converts every glb → source-unit `.tri`, decimates oversized ones,
+   commits + tags + pushes them all:
+   ```bash
+   node scripts/fetch-map-meshes.mjs --from ~/cs_exports --from-all --publish --tag <new>
+   ```
+3. Bump `mapMeshCdn` to `<new>`. Done — every map updated in one shot.

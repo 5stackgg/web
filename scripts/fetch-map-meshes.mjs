@@ -11,8 +11,9 @@
 // Sources:
 //   - awpy's published collision data (https://awpycs.com/<build>/tris.zip).
 //     No CS2 install required. Equivalent to `pip install awpy && awpy get tris`.
-//   - your own generated .tri files via --from <dir> (for maps awpy doesn't ship;
-//     generate from VPKs per docs/3d-replay-map-meshes.md).
+//   - your own files via --from <dir>: ready .tri OR Source 2 Viewer .glb exports
+//     (auto-converted to source-unit .tri, textures discarded). For maps awpy
+//     doesn't ship — see docs/3d-replay-map-meshes.md.
 //
 // Maps over MESH_MAX_MB (default 30) are auto-decimated to fit (grid-snap +
 // dedup of triangles) rather than dropped, so active-duty maps like inferno /
@@ -28,9 +29,10 @@
 //   node scripts/fetch-map-meshes.mjs                      # build default pool → .cache/meshes
 //   node scripts/fetch-map-meshes.mjs de_mirage de_nuke    # specific maps
 //   node scripts/fetch-map-meshes.mjs --all                # every map in the awpy pack
-//   node scripts/fetch-map-meshes.mjs --from ~/gen de_cache # include a self-generated mesh
+//   node scripts/fetch-map-meshes.mjs --from ~/exports de_cache  # one .glb/.tri from a dir
+//   node scripts/fetch-map-meshes.mjs --from ~/exports --from-all # EVERY .glb/.tri in a dir
 //   node scripts/fetch-map-meshes.mjs --all --publish      # build + push + tag to the meshes repo
-//   node scripts/fetch-map-meshes.mjs --from ~/gen de_cache --publish --tag 17595823-1
+//   node scripts/fetch-map-meshes.mjs --from ~/exports --from-all --publish --tag 17595823-2
 //
 //   MESH_MAX_MB=60          allow bigger meshes (less decimation)
 //   MESH_NO_DECIMATE=1      skip oversized meshes instead of shrinking
@@ -49,6 +51,7 @@ import {
 } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve } from "node:path";
+import { glbToTri, mapNameFromGlb } from "./glb-to-tri.mjs";
 
 const BUILD_ID = process.env.AWPY_BUILD_ID || "17595823";
 const ZIP_URL = `https://awpycs.com/${BUILD_ID}/tris.zip`;
@@ -64,6 +67,7 @@ const valOf = (f) => {
   return i >= 0 ? argv[i + 1] : undefined;
 };
 const all = has("--all");
+const fromAll = has("--from-all"); // process every .glb/.tri in --from dir
 const publish = has("--publish");
 const fromDir = valOf("--from") ? resolve(valOf("--from")) : null;
 const tag = valOf("--tag") || BUILD_ID;
@@ -157,11 +161,37 @@ function ensureZip() {
   zipMembers = [...listing.matchAll(/(\S+\.tri)\s*$/gm)].map((m) => m[1]);
 }
 
-// Resolve a map's raw .tri buffer: prefer --from dir, else the awpy zip.
+// Find a map's source file in --from: a ready .tri, or any .glb whose name maps
+// to it (e.g. <map>.glb, <map>_world_physics_physics.glb).
+function fromFileFor(name) {
+  if (!fromDir || !existsSync(fromDir)) return null;
+  const tri = join(fromDir, `${name}.tri`);
+  if (existsSync(tri)) return tri;
+  // Among glbs mapping to this name, prefer the physics hull, then the largest
+  // (the textured render stub is tiny; the collision export is big).
+  const glbs = readdirSync(fromDir)
+    .filter((f) => f.toLowerCase().endsWith(".glb") && mapNameFromGlb(f) === name)
+    .map((f) => ({ f, p: join(fromDir, f), size: statSync(join(fromDir, f)).size }))
+    .sort(
+      (a, b) =>
+        Number(/physics/i.test(b.f)) - Number(/physics/i.test(a.f)) || b.size - a.size,
+    );
+  return glbs.length ? glbs[0].p : null;
+}
+
+// Resolve a map's raw triangle buffer: prefer --from (.tri or .glb), else awpy.
 function rawBufFor(name) {
-  if (fromDir) {
-    const p = join(fromDir, `${name}.tri`);
-    if (existsSync(p)) return readFileSync(p);
+  const src = fromFileFor(name);
+  if (src) {
+    if (src.toLowerCase().endsWith(".glb")) {
+      const { buf, count, skipped, bbox } = glbToTri(src);
+      const big = Math.max(...bbox.max.map(Math.abs)) >= 500;
+      console.log(
+        `    ${name}: glb → ${count.toLocaleString()} tris (dropped ${skipped.toLocaleString()} clip/sky)${big ? "" : " ⚠ bbox tiny (meters?)"}`,
+      );
+      return buf;
+    }
+    return readFileSync(src);
   }
   ensureZip();
   if (!zipMembers.includes(`${name}.tri`)) return null;
@@ -172,7 +202,20 @@ function rawBufFor(name) {
 
 // ── build the requested set ───────────────────────────────────────────────────
 let wanted;
-if (all) {
+if (fromAll) {
+  if (!fromDir) {
+    console.error("--from-all requires --from <dir>");
+    process.exit(1);
+  }
+  // every .glb/.tri in the from dir, deduped to map names
+  wanted = [
+    ...new Set(
+      readdirSync(fromDir)
+        .filter((f) => /\.(glb|tri)$/i.test(f))
+        .map((f) => (f.toLowerCase().endsWith(".glb") ? mapNameFromGlb(f) : f.replace(/\.tri$/i, ""))),
+    ),
+  ].sort();
+} else if (all) {
   ensureZip();
   wanted = zipMembers.map((m) => m.replace(/\.tri$/, ""));
 } else if (maps.length) {

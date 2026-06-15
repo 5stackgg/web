@@ -26,6 +26,7 @@ type Row = {
   bomb: boolean;
   kit: boolean;
   avatarUrl: string | null;
+  blinded?: number; // 0..1 flash blind strength at the cursor
 };
 type PbpEvent = {
   time: string;
@@ -84,6 +85,10 @@ const props = defineProps<{
   overlayRounds?: number[];
   overlayWindow?: number;
   onOverlayWindow?: (n: number) => void;
+  overlayTeam?: "all" | "1" | "2";
+  onOverlayTeam?: (t: "all" | "1" | "2") => void;
+  team1Name?: string;
+  team2Name?: string;
   // scoreboard-side toggles
   showAvatars?: boolean;
   traceOn?: boolean;
@@ -126,6 +131,15 @@ const sideHex = (s: number) => (s === 0 ? props.ctHex || "#57cdff" : props.tHex 
 const utilIcon = (ty: string) => UTIL_ICON[ty.toLowerCase()] || "";
 const legendCol = (ty: string) => UTIL_LEGEND[ty] || "#9fb0c0";
 const selIncludes = (gi: number | undefined) => gi != null && props.selectedGi.includes(gi);
+// Stable per-event key so the TransitionGroup only animates genuinely new rows.
+// IMPORTANT: no array index — kills must keep the same key as the list grows,
+// or they re-animate on every new event (utility was stable via its gid).
+const pbpKey = (e: PbpEvent) =>
+  e.util != null
+    ? `u${e.gi}`
+    : e.bomb
+      ? `b${e.time}-${e.bomb}`
+      : `k${e.time}-${e.killer}-${e.victim}-${e.weapon}`;
 const SPEEDS = [0.5, 1, 2, 4, 8];
 
 // Cluster utility throws that land at (nearly) the same point on the timeline
@@ -185,22 +199,24 @@ const utilClusters = computed(() => {
         </div>
         <div v-if="roundSummary" class="bp-pbp-sum">{{ roundSummary }}</div>
         <div v-if="!pbp.length" class="bp-pbp-empty">no events yet</div>
-        <div v-for="(e, i) in pbp" :key="i" class="bp-pbp-row" :class="{ util: e.util != null, hl: selIncludes(e.gi) }" @click="e.util != null && onPbpUtil && e.gi != null && onPbpUtil(e.gi)">
-          <span class="tt">{{ e.time }}</span>
-          <template v-if="e.bomb"><span class="bomb">💣 {{ e.bomb }}</span></template>
-          <template v-else-if="e.util != null">
-            <img :src="utilIcon(e.util)" class="wi util-i" />
-            <span class="nm" :style="{ color: e.tc }">{{ e.thrower }}</span>
-            <span class="utl">{{ e.util }}</span>
-            <span class="pin" v-if="selIncludes(e.gi)">●</span>
-          </template>
-          <template v-else>
-            <span class="nm" :style="{ color: e.kc }">{{ e.killer }}</span>
-            <img v-if="weaponIconPath(e.weapon)" :src="weaponIconPath(e.weapon)!" class="wi" />
-            <span v-if="e.hs" class="hs">⊕</span>
-            <span class="nm" :style="{ color: e.vc }">{{ e.victim }}</span>
-          </template>
-        </div>
+        <TransitionGroup name="pbp" tag="div" class="bp-pbp-list">
+          <div v-for="e in pbp" :key="pbpKey(e)" class="bp-pbp-row" :class="{ util: e.util != null, hl: selIncludes(e.gi) }" @click="e.util != null && onPbpUtil && e.gi != null && onPbpUtil(e.gi)">
+            <span class="tt">{{ e.time }}</span>
+            <template v-if="e.bomb"><span class="bomb">💣 {{ e.bomb }}</span></template>
+            <template v-else-if="e.util != null">
+              <img :src="utilIcon(e.util)" class="wi util-i" />
+              <span class="nm" :style="{ color: e.tc }">{{ e.thrower }}</span>
+              <span class="utl">{{ e.util }}</span>
+              <span class="pin" v-if="selIncludes(e.gi)">●</span>
+            </template>
+            <template v-else>
+              <span class="nm" :style="{ color: e.kc }">{{ e.killer }}</span>
+              <img v-if="weaponIconPath(e.weapon)" :src="weaponIconPath(e.weapon)!" class="wi" />
+              <span v-if="e.hs" class="hs">⊕</span>
+              <span class="nm" :style="{ color: e.vc }">{{ e.victim }}</span>
+            </template>
+          </div>
+        </TransitionGroup>
       </div>
     </div>
 
@@ -213,6 +229,8 @@ const utilClusters = computed(() => {
           <span class="th-score" :style="{ color: sideHex(team.side) }">{{ team.score }}</span>
         </div>
         <div v-for="r in team.rows" :key="r.idx" class="bp-prow" :class="{ dead: !r.alive, foll: followName === r.name }" @click="onFollowRow(r.sid)">
+          <!-- flash-blind indicator (eye), parked to the LEFT of the whole row -->
+          <svg v-if="(r.blinded || 0) > 0.12" class="prow-flash" :style="{ opacity: 0.45 + (r.blinded || 0) * 0.55 }" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" /><circle cx="12" cy="12" r="3" /></svg>
           <span class="accent-bar" :style="{ background: sideHex(r.side) }"></span>
           <div class="prow-top">
             <img v-if="showAvatars !== false && r.avatarUrl" :src="r.avatarUrl" class="av" />
@@ -227,8 +245,11 @@ const utilClusters = computed(() => {
           </div>
           <div class="prow-gear">
             <img :src="r.armor > 0 && r.helmet ? '/img/equipment/armor_helmet.svg' : '/img/equipment/kevlar.svg'" class="eq shield" :class="{ off: r.armor <= 0 }" />
-            <img v-if="weaponIconPath(r.weapon)" :src="weaponIconPath(r.weapon)!" class="eq gun" />
-            <span v-else-if="r.weapon" class="gun-x">{{ r.weapon }}</span>
+            <!-- weapon swaps fade/scale in when the player changes guns -->
+            <Transition name="wpn" mode="out-in">
+              <img v-if="weaponIconPath(r.weapon)" :key="r.weapon" :src="weaponIconPath(r.weapon)!" class="eq gun" />
+              <span v-else-if="r.weapon" :key="r.weapon + '-x'" class="gun-x">{{ r.weapon }}</span>
+            </Transition>
             <span class="util">
               <img v-for="(u, ui) in r.nades" :key="ui" :src="UTIL_ICON[u.toLowerCase()]" class="eq nade" :title="u" />
             </span>
@@ -297,6 +318,15 @@ const utilClusters = computed(() => {
           </Tooltip>
         </div>
         <div class="bp-filters">
+          <!-- highlighted-utility clear sits on the LEFT of the filter group, which
+               is right-anchored — so it grows leftward and never shifts the UTIL
+               icons (or the seek bar) when it appears/disappears. -->
+          <Tooltip v-if="selectedGi.length">
+            <TooltipTrigger as-child>
+              <button class="hl-clear" @click="onClearSel && onClearSel()">✕ {{ selectedGi.length }}</button>
+            </TooltipTrigger>
+            <TooltipContent>Clear highlighted utility</TooltipContent>
+          </Tooltip>
           <span class="flbl">UTIL</span>
           <Tooltip v-for="ty in UTIL_TYPES" :key="ty">
             <TooltipTrigger as-child>
@@ -316,17 +346,19 @@ const utilClusters = computed(() => {
           </TooltipTrigger>
           <TooltipContent>{{ playing ? "Pause" : "Play" }} (Space)</TooltipContent>
         </Tooltip>
-        <Tooltip v-if="selectedGi.length">
-          <TooltipTrigger as-child>
-            <button class="hl-clear" @click="onClearSel && onClearSel()">✕ {{ selectedGi.length }}</button>
-          </TooltipTrigger>
-          <TooltipContent>Clear highlighted utility</TooltipContent>
-        </Tooltip>
         <!-- buy-overlay window length, next to the play button -->
         <div v-if="overlay" class="bp-buywin">
-          <span class="lbl">WIN</span>
-          <input type="range" min="10" max="115" step="5" :value="overlayWindow" @input="(e:any)=>onOverlayWindow && onOverlayWindow(+e.target.value)" />
-          <span class="val">{{ overlayWindow }}s</span>
+          <div class="bw-row">
+            <span class="lbl">WINDOW</span>
+            <input type="range" min="10" max="115" step="5" :value="overlayWindow" @input="(e:any)=>onOverlayWindow && onOverlayWindow(+e.target.value)" />
+            <span class="val">{{ overlayWindow }}s</span>
+          </div>
+          <div class="bw-row bw-team">
+            <span class="lbl">TEAM</span>
+            <button :class="{ on: (overlayTeam || 'all') === 'all' }" @click="onOverlayTeam && onOverlayTeam('all')">ALL</button>
+            <button class="tname" :class="{ on: overlayTeam === '1' }" :title="team1Name || 'Team 1'" @click="onOverlayTeam && onOverlayTeam('1')">{{ team1Name || 'Team 1' }}</button>
+            <button class="tname" :class="{ on: overlayTeam === '2' }" :title="team2Name || 'Team 2'" @click="onOverlayTeam && onOverlayTeam('2')">{{ team2Name || 'Team 2' }}</button>
+          </div>
         </div>
         <div class="seek-wrap">
           <!-- utility lane: same-second throws STACK vertically up the tall bar
@@ -345,7 +377,7 @@ const utilClusters = computed(() => {
                     <img :src="m.icon" />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent>{{ (m as any).name || "Utility" }} — {{ (m as any).type || "util" }}{{ selIncludes(m.gi) ? " (selected — click to clear)" : " (click to highlight)" }}</TooltipContent>
+                <TooltipContent>{{ (m as any).type || "Utility" }} · thrown by {{ (m as any).name || "?" }}{{ selIncludes(m.gi) ? " — click to clear" : " — click to highlight" }}</TooltipContent>
               </Tooltip>
             </div>
           </div>
@@ -399,18 +431,24 @@ const utilClusters = computed(() => {
 .bp-kf { display: flex; align-items: center; gap: 7px; background: var(--panel); border-left: 2px solid var(--accent); padding: 3px 9px; border-radius: 4px; font-size: 12px; }
 .bp-kf .nm { font-weight: 600; } .bp-kf .wi { height: 15px; filter: brightness(0) invert(1); opacity: 0.95; } .bp-kf .wn { color: #9fb6cc; font-size: 11px; } .bp-kf .hs { color: #ffd24d; font-weight: 700; }
 .bp-pbp { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 7px 8px; max-height: 42vh; overflow-y: auto; }
-.bp-pbp-h { font-size: 10px; letter-spacing: 2px; color: #7f8fa0; margin-bottom: 3px; display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.bp-pbp-h { font-size: 10px; letter-spacing: 2px; color: #7f8fa0; margin-bottom: 5px; padding: 0 8px; display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 24px; }
 .pbp-clear { background: color-mix(in srgb, var(--accent) 16%, transparent); border: 1px solid var(--accent); color: var(--accent); font-family: inherit; font-size: 9px; letter-spacing: 1px; padding: 2px 7px; border-radius: 4px; cursor: pointer; text-transform: uppercase; }
 .bp-pbp-sum { font-size: 11px; color: #cfe0f2; margin-bottom: 7px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
 .bp-pbp-empty { font-size: 11px; color: #56606e; font-style: italic; }
-.bp-pbp-row { display: flex; align-items: center; gap: 6px; font-size: 12px; padding: 2px 0; border-top: 1px solid var(--line); }
+.bp-pbp-row { display: flex; align-items: center; gap: 6px; font-size: 12px; padding: 3px 8px; border-top: 1px solid var(--line); }
 .bp-pbp-row:first-of-type { border-top: 0; }
+/* premium feel: new play-by-play rows slide + fade in, others ease into place */
+.pbp-enter-active { transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.pbp-leave-active { transition: opacity 0.18s ease; position: absolute; }
+.pbp-enter-from { opacity: 0; transform: translateX(-14px); }
+.pbp-leave-to { opacity: 0; }
+.pbp-move { transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .bp-pbp-row .tt { font-size: 10px; color: #6b7785; min-width: 26px; font-variant-numeric: tabular-nums; }
 .bp-pbp-row .nm { font-weight: 600; } .bp-pbp-row .wi { height: 14px; filter: brightness(0) invert(1); opacity: 0.95; } .bp-pbp-row .hs { color: #ffd24d; } .bp-pbp-row .bomb { color: #ff8a5a; font-size: 11px; }
 .bp-pbp-row.util { cursor: pointer; }
 .bp-pbp-row.util:hover { background: rgba(255,255,255,0.05); border-radius: 4px; }
 .bp-pbp-row.util.hl { background: color-mix(in srgb, var(--accent) 18%, transparent); border-radius: 4px; }
-.bp-pbp-row .util-i { height: 15px; opacity: 0.95; filter: brightness(0) invert(1); } .bp-pbp-row .utl { font-size: 10px; color: #8a98a8; text-transform: uppercase; letter-spacing: 0.5px; } .bp-pbp-row .pin { color: var(--accent); margin-left: auto; font-size: 9px; }
+.bp-pbp-row .util-i { width: 18px; height: 16px; object-fit: contain; flex-shrink: 0; opacity: 0.95; filter: brightness(0) invert(1); } .bp-pbp-row .utl { font-size: 10px; color: #8a98a8; text-transform: uppercase; letter-spacing: 0.5px; } .bp-pbp-row .pin { color: var(--accent); margin-left: auto; font-size: 9px; }
 /* scoreboard */
 .bp-score-panel { position: absolute; top: 14px; right: 14px; z-index: 10; width: 256px; display: flex; flex-direction: column; gap: 9px; }
 .bp-team { background: var(--panel); border: 1px solid var(--line); border-radius: 7px; padding: 6px; }
@@ -423,6 +461,7 @@ const utilClusters = computed(() => {
 .bp-prow.foll { background: color-mix(in srgb, var(--accent) 14%, transparent); }
 .bp-prow.dead { opacity: 0.42; }
 .bp-prow .accent-bar { position: absolute; left: 0; top: 4px; bottom: 4px; width: 2.5px; border-radius: 2px; }
+.bp-prow .prow-flash { position: absolute; left: -26px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: #fff; filter: drop-shadow(0 0 5px rgba(255,255,255,0.9)); pointer-events: none; }
 .prow-top { display: flex; align-items: center; gap: 6px; }
 .prow-top .av { width: 16px; height: 16px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
 .prow-top .eye { color: var(--accent); flex-shrink: 0; }
@@ -433,9 +472,9 @@ const utilClusters = computed(() => {
 .prow-top .dmg { font-size: 10px; color: #6b7785; font-variant-numeric: tabular-nums; min-width: 22px; text-align: right; }
 .prow-bars { display: flex; flex-direction: column; gap: 2px; margin-top: 3px; }
 .hpw { height: 5px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
-.hpb { height: 100%; border-radius: 2px; }
+.hpb { height: 100%; border-radius: 2px; transition: width 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.28s ease; }
 .armw { height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; overflow: hidden; }
-.armb { height: 100%; border-radius: 2px; }
+.armb { height: 100%; border-radius: 2px; transition: width 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.28s ease; }
 .prow-gear { display: flex; align-items: center; gap: 5px; margin-top: 5px; min-height: 18px; }
 .eq { height: 17px; width: auto; filter: brightness(2.6); opacity: 1; }
 .eq.gun { height: 20px; }
@@ -443,6 +482,9 @@ const utilClusters = computed(() => {
 .eq.kit { filter: invert(58%) sepia(80%) saturate(700%) hue-rotate(150deg); }
 .eq.c4 { filter: invert(40%) sepia(90%) saturate(2000%) hue-rotate(330deg); }
 .gun-x { font-size: 10px; color: #8a98a8; }
+.wpn-enter-active, .wpn-leave-active { transition: opacity 0.16s ease, transform 0.16s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.wpn-enter-from { opacity: 0; transform: translateX(6px) scale(0.85); }
+.wpn-leave-to { opacity: 0; transform: translateX(-6px) scale(0.85); }
 .eq.shield { height: 16px; }
 .eq.shield.off { opacity: 0.25; }
 .prow-gear .util { display: flex; gap: 3px; margin-left: auto; }
@@ -505,11 +547,17 @@ const utilClusters = computed(() => {
 .bp-transport button:hover { border-color: var(--accent); }
 .bp-transport .play { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent); background: color-mix(in srgb, var(--accent) 12%, rgba(255,255,255,0.04)); border-radius: 50%; }
 .bp-transport .play:hover { background: color-mix(in srgb, var(--accent) 22%, transparent); border-color: var(--accent); box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 45%, transparent); }
-.bp-transport .hl-clear { font-size: 10px; font-weight: 700; color: var(--accent); border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); border-radius: 4px; padding: 5px 8px; }
-.bp-buywin { display: flex; align-items: center; gap: 6px; padding: 4px 8px; border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 4px; flex-shrink: 0; }
-.bp-buywin .lbl { font-size: 9px; letter-spacing: 1px; color: var(--accent); }
+.hl-clear { font-size: 10px; font-weight: 700; color: var(--accent); border: 1px solid var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); border-radius: 4px; padding: 4px 8px; cursor: pointer; font-family: inherit; flex-shrink: 0; }
+.hl-clear:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 22%, transparent); }
+.bp-buywin { display: flex; flex-direction: column; justify-content: center; gap: 3px; padding: 4px 8px; border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); border-radius: 4px; flex-shrink: 0; }
+.bp-buywin .bw-row { display: flex; align-items: center; gap: 6px; }
+.bp-buywin .lbl { font-size: 9px; letter-spacing: 1px; color: var(--accent); min-width: 44px; }
 .bp-buywin input { width: 80px; accent-color: var(--accent); }
 .bp-buywin .val { font-size: 10px; font-variant-numeric: tabular-nums; color: var(--accent); min-width: 26px; }
+.bp-buywin .bw-team button { font-family: inherit; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--line); background: rgba(255,255,255,0.05); color: #9fb0c0; cursor: pointer; }
+.bp-buywin .bw-team button.tname { max-width: 74px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bp-buywin .bw-team button:hover { border-color: var(--accent); color: #f0f6fc; }
+.bp-buywin .bw-team button.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 18%, transparent); color: #fff; }
 /* "audio-editor" seek: a tall track that FILLS the wrap (so everything in the
    transport row vertically centers against it), translucent played-tint, util
    icons stacked over the track, kill/bomb dashes, and a vertical playhead. */
@@ -522,7 +570,9 @@ const utilClusters = computed(() => {
 .seek-wrap .seek::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 4px; height: 56px; border-radius: 2px; background: #fff; box-shadow: 0 0 0 1px rgba(8,10,14,0.9), 0 0 10px color-mix(in srgb, var(--accent) 80%, transparent); cursor: pointer; }
 .seek-wrap .seek::-moz-range-thumb { width: 4px; height: 56px; border-radius: 2px; background: #fff; border: none; cursor: pointer; }
 /* utility lane overlays the track; clusters STACK their icons vertically */
-.seek-wrap .util-lane { position: absolute; left: 0; right: 0; top: 4px; bottom: 4px; pointer-events: none; z-index: 5; }
+/* above the seek slider (z-index 6) so the icons are clickable; the lane itself
+   is pointer-events:none so gaps still scrub the bar. */
+.seek-wrap .util-lane { position: absolute; left: 0; right: 0; top: 4px; bottom: 4px; pointer-events: none; z-index: 7; }
 .util-cluster { position: absolute; bottom: 3px; }
 .mk-util-icon { position: absolute; bottom: 0; left: 0; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; transform: translateX(-50%); border: 1px solid rgba(255,255,255,0.14); background: rgba(14,18,24,0.92); border-radius: 5px; cursor: pointer; pointer-events: auto; transition: border-color 0.1s, box-shadow 0.1s; padding: 0; }
 .mk-util-icon img { width: auto; height: 15px; max-width: 16px; object-fit: contain; }
@@ -535,7 +585,6 @@ const utilClusters = computed(() => {
 .seek-wrap .mk.mk-bomb { background: #ff5a4d; width: 3px; box-shadow: 0 0 5px #ff5a4d; }
 .bp-transport .tl { font-size: 14px; font-weight: 600; color: #c4d2df; font-variant-numeric: tabular-nums; min-width: 96px; text-align: center; letter-spacing: 0.5px; }
 .spd { min-width: 62px; height: 44px; font-weight: 600; }
-.bp-buywin { height: 44px; }
 /* keyboard help — full-height end button */
 .bp-help { position: relative; display: flex; align-items: center; justify-content: center; width: 40px; height: 44px; color: #9fb0c0; border: 1px solid var(--line); border-radius: 4px; cursor: help; background: rgba(255,255,255,0.05); }
 .bp-help:hover, .bp-help:focus { border-color: var(--accent); color: #f0f6fc; outline: none; }

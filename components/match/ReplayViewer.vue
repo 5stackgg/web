@@ -534,6 +534,20 @@ const roundKillsWithLocation = computed(() => {
     });
 });
 
+// Death markers for the 3D scene (team-coloured X at victim positions up to the
+// cursor). Empty when the deaths toggle is off.
+const deaths3d = computed(() => {
+  if (!showDeaths.value) return [];
+  return roundKillsWithLocation.value
+    .filter((k) => k.location)
+    .map((k) => ({
+      x: k.location!.x,
+      y: k.location!.y,
+      z: k.location!.z,
+      team: (k.victim_team as string | null) ?? null,
+    }));
+});
+
 const ticks = computed(() => {
   const set = new Set<number>();
   for (const p of roundPositions.value) set.add(p.tick);
@@ -1137,6 +1151,7 @@ const detonationsByTick = computed<ResolvedGrenade[]>(() => {
       const t = fe + elapsedTicks;
       for (const g of grenadesByRound.value.get(round) ?? []) {
         if (g.phase !== "detonated" || g.tick > t) continue;
+        if (overlayTeam.value !== "all" && lineupBySteam.value.get(String(g.thrower_steam_id ?? "")) !== overlayTeam.value) continue;
         const lifetime = GRENADE_LIFETIME_TICKS[g.type] ?? 64;
         if (t - g.tick > lifetime) continue;
         const r = resolveDetonation(g, 1 - (t - g.tick) / lifetime);
@@ -1162,11 +1177,11 @@ const detonationsByTick = computed<ResolvedGrenade[]>(() => {
 // All detonations of the active round (not just the currently-live ones) —
 // drives the 3D utility heatmap. Resolved to real landing positions.
 const roundDetonations = computed(() => {
-  const out: Array<{ rx: number; ry: number; rz: number; type: string }> = [];
+  const out: Array<{ rx: number; ry: number; rz: number; type: string; gid: number | null }> = [];
   for (const g of roundGrenades.value) {
     if (g.phase !== "detonated") continue;
     const r = resolveDetonation(g, 1);
-    if (r) out.push({ rx: r.rx, ry: r.ry, rz: r.rz, type: r.type });
+    if (r) out.push({ rx: r.rx, ry: r.ry, rz: r.rz, type: r.type, gid: (g as any).gid ?? null });
   }
   return out;
 });
@@ -1231,6 +1246,7 @@ const inFlightGrenades = computed<InFlightGrenade[]>(() => {
       const t = fe + elapsedTicks;
       for (const thr of grenadesByRound.value.get(round) ?? []) {
         if (thr.phase !== "thrown") continue;
+        if (overlayTeam.value !== "all" && lineupBySteam.value.get(String(thr.thrower_steam_id ?? "")) !== overlayTeam.value) continue;
         const g = resolveInFlight(thr, t);
         if (g) out.push(g);
       }
@@ -1752,6 +1768,9 @@ function togglePathing() {
 // clock so you can study utility + CT/T setups across all buys at once.
 const overlayMode = ref(false);
 const overlayWindowSec = ref(30); // slider 10..115
+// util-summary team filter: show all / only team 1 / only team 2 (persistent
+// team membership, NOT side — sides swap at halftime across stacked rounds).
+const overlayTeam = ref<"all" | "1" | "2">("all");
 const overlaySelectedRounds = ref<Set<number>>(new Set());
 const overlayElapsedSec = ref(0); // shared clock, 0..overlayWindowSec
 
@@ -1797,6 +1816,11 @@ watch(overlayMode, (on) => {
   }
 });
 
+// switching the util-summary team filter (or back to ALL) restarts the shared clock
+watch(overlayTeam, () => {
+  overlayElapsedSec.value = 0;
+});
+
 function toggleOverlayRound(round: number) {
   const next = new Set(overlaySelectedRounds.value);
   if (next.has(round)) next.delete(round);
@@ -1829,7 +1853,7 @@ const positionsByRoundPlayer = computed(() => {
 function sampleAt(
   samples: Position[],
   tick: number,
-): { x: number; y: number; yaw: number; alive: boolean } | null {
+): { x: number; y: number; z: number; yaw: number; alive: boolean } | null {
   if (!samples.length) return null;
   let a: Position | null = null;
   let b: Position | null = null;
@@ -1842,13 +1866,14 @@ function sampleAt(
   }
   if (!a) return null;
   if (!b) {
-    return { x: a.x, y: a.y, yaw: a.yaw ?? 0, alive: a.alive };
+    return { x: a.x, y: a.y, z: a.z ?? 0, yaw: a.yaw ?? 0, alive: a.alive };
   }
   const span = Math.max(1, b.tick - a.tick);
   const k = Math.min(1, Math.max(0, (tick - a.tick) / span));
   return {
     x: a.x + (b.x - a.x) * k,
     y: a.y + (b.y - a.y) * k,
+    z: (a.z ?? 0) + ((b.z ?? 0) - (a.z ?? 0)) * k,
     yaw: lerpAngle(a.yaw ?? 0, b.yaw ?? a.yaw ?? 0, k),
     alive: a.alive,
   };
@@ -1870,6 +1895,7 @@ const overlayActors = computed<
     if (fe == null) continue;
     const absTick = fe + elapsedTicks;
     for (const [sid, samples] of pm) {
+      if (overlayTeam.value !== "all" && lineupBySteam.value.get(sid) !== overlayTeam.value) continue;
       const s = sampleAt(samples, absTick);
       if (!s || !s.alive) continue;
       const proj = project({ x: s.x, y: s.y });
@@ -1895,7 +1921,8 @@ const overlayActors3d = computed(() => {
     const fe = freezeEndByRound.value.get(round);
     if (fe == null || !overlaySelectedRounds.value.has(round)) continue;
     const absTick = fe + elapsedTicks;
-    for (const [, samples] of pm) {
+    for (const [sid, samples] of pm) {
+      if (overlayTeam.value !== "all" && lineupBySteam.value.get(sid) !== overlayTeam.value) continue;
       const s = sampleAt(samples, absTick);
       if (!s || !s.alive) continue;
       out.push({ x: s.x, y: s.y, z: s.z, team: samples[0].attacker_team });
@@ -2795,9 +2822,17 @@ function nadeArray(lo: RoundInventoryEntry | undefined): string[] {
   for (let i = 0; i < (lo.decoy ?? 0); i++) out.push("decoy");
   return out;
 }
+// Per-player blind strength (0..1) at the cursor, keyed by steam id.
+const blindedBySteam = computed(() => {
+  const m = new Map<string, number>();
+  for (const p of interpolatedPlayers.value) m.set(p.steamId, p.blinded);
+  return m;
+});
+
 function buildChromeRows(rows: RosterEntry[], side: number) {
   const live = liveStateBySteam.value;
   const load = loadoutBySteam.value;
+  const blind = blindedBySteam.value;
   return rows.map((r, n) => {
     const st = statsFor(r.steamId);
     const ls = live.get(r.steamId);
@@ -2808,6 +2843,7 @@ function buildChromeRows(rows: RosterEntry[], side: number) {
       name: r.name,
       side,
       alive: ls?.alive ?? false,
+      blinded: (ls?.alive && blind.get(r.steamId)) || 0,
       hp: ls?.alive ? (ls?.health ?? 0) : 0,
       armor: ls?.armor ?? 0,
       helmet: ls?.helmet ?? false,
@@ -3726,7 +3762,7 @@ watch(overlayMode, (on) => {
 
             <!-- 2D utility heatmap: all of the round's detonations as discs,
                colored by type (HEAT toggle, shared with 3D). -->
-            <g v-if="heatOn" class="pointer-events-none">
+            <g v-if="heatOn">
               <circle
                 v-for="(g, hi) of roundDetonations"
                 v-show="utilTypeFilter[g.type]"
@@ -3735,7 +3771,11 @@ watch(overlayMode, (on) => {
                 :cy="project({ x: g.rx, y: g.ry, z: g.rz }).y"
                 r="16"
                 :fill="SCRUB_NADE_COLORS[g.type] || 'rgb(148,163,184)'"
-                fill-opacity="0.4"
+                :fill-opacity="g.gid != null && selectedGi.includes(g.gid) ? 0.85 : 0.4"
+                :stroke="g.gid != null && selectedGi.includes(g.gid) ? '#fff' : 'none'"
+                stroke-width="2"
+                :style="{ cursor: g.gid != null ? 'pointer' : 'default' }"
+                @click="g.gid != null && toggleUtilSel(g.gid)"
               />
             </g>
 
@@ -4590,6 +4630,7 @@ watch(overlayMode, (on) => {
           :grenade-trajectories="grenadeTrajectories || []"
           :heat-points="roundDetonations"
           :bomb="bombMarker"
+          :deaths="deaths3d"
           :focused="focusedPlayerId"
           :cam-mode="camMode"
           :heat-on="heatOn"
@@ -4598,6 +4639,7 @@ watch(overlayMode, (on) => {
           :type-filter="utilTypeFilter"
           :selected-gids="selectedGi"
           :round-utilities="roundUtilities"
+          :overlay="overlayMode"
           :overlay-actors="overlayActors3d"
           @select-util="toggleUtilSel"
         />
@@ -4651,6 +4693,10 @@ watch(overlayMode, (on) => {
           :overlay-rounds="overlayRoundsArr"
           :overlay-window="overlayWindowSec"
           :on-overlay-window="(n) => (overlayWindowSec = n)"
+          :overlay-team="overlayTeam"
+          :on-overlay-team="(t) => (overlayTeam = t)"
+          :team1-name="scoreboard.leftName"
+          :team2-name="scoreboard.rightName"
           :show-avatars="showAvatars"
           :trace-on="pathingMode !== 'off'"
           :show-deaths="showDeaths"

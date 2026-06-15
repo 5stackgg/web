@@ -94,16 +94,48 @@ interface AxisDef {
 const axisDefs: AxisDef[] = [
   { key: "rating", label: t("match.radar.axes.rating"), max: 2.0, decimals: 2 },
   { key: "adr", label: t("match.radar.axes.adr"), max: 120, decimals: 1 },
-  { key: "opening_attempts", label: t("match.radar.axes.opening_attempts"), max: 50, decimals: 1 },
-  { key: "opening", label: t("match.radar.axes.opening"), max: 2.0, decimals: 2 },
+  {
+    key: "opening_attempts",
+    label: t("match.radar.axes.opening_attempts"),
+    max: 50,
+    decimals: 1,
+  },
+  {
+    key: "opening",
+    label: t("match.radar.axes.opening"),
+    max: 2.0,
+    decimals: 2,
+  },
   { key: "kpr", label: t("match.radar.axes.kpr"), max: 1.2, decimals: 2 },
-  { key: "trade_kills", label: t("match.radar.axes.trade_kills"), max: 0.3, decimals: 2 },
+  {
+    key: "trade_kills",
+    label: t("match.radar.axes.trade_kills"),
+    max: 0.3,
+    decimals: 2,
+  },
   { key: "kd", label: t("match.radar.axes.kd"), max: 2.0, decimals: 2 },
   { key: "traded", label: t("match.radar.axes.traded"), max: 0.4, decimals: 2 },
-  { key: "dpr", label: t("match.radar.axes.dpr"), max: 1.0, inverted: true, decimals: 2 },
+  {
+    key: "dpr",
+    label: t("match.radar.axes.dpr"),
+    max: 1.0,
+    inverted: true,
+    decimals: 2,
+  },
   { key: "udr", label: t("match.radar.axes.udr"), max: 15, decimals: 1 },
-  { key: "flash_assists", label: t("match.radar.axes.flash_assists"), max: 0.3, decimals: 2 },
-  { key: "kast", label: t("match.radar.axes.kast"), max: 100, decimals: 0, format: (v) => `${Math.round(v)}%` },
+  {
+    key: "flash_assists",
+    label: t("match.radar.axes.flash_assists"),
+    max: 0.3,
+    decimals: 2,
+  },
+  {
+    key: "kast",
+    label: t("match.radar.axes.kast"),
+    max: 100,
+    decimals: 0,
+    format: (v) => `${Math.round(v)}%`,
+  },
 ];
 
 const ROLE_ORDER: CombatRole[] = ["sniper", "entry", "support", "rifler"];
@@ -117,7 +149,13 @@ function buildMatchesWhere() {
   const where: Record<string, any> = { status: { _eq: "Finished" } };
   if (props.source && props.source !== "all") {
     where.source =
-      props.source === "external" ? { _neq: "5stack" } : { _eq: "5stack" };
+      props.source === "5stack"
+        ? { _eq: "5stack" }
+        : props.source === "external"
+          ? { _neq: "5stack" }
+          : props.source === "unknown"
+            ? { _nin: ["5stack", "valve", "faceit"] }
+            : { _eq: props.source };
   }
   if (props.matchType) {
     where.options = {
@@ -288,7 +326,11 @@ const roleCounts = computed(() => {
 });
 
 const rolePills = computed(() => [
-  { key: "all" as RoleKey, label: t("role_radar.all"), count: playerMaps.value.length },
+  {
+    key: "all" as RoleKey,
+    label: t("role_radar.all"),
+    count: playerMaps.value.length,
+  },
   ...ROLE_ORDER.map((role) => ({
     key: role as RoleKey,
     label: t(`match.roles.names.${role}`),
@@ -462,80 +504,84 @@ const hasData = computed(() => playerMaps.value.length > 0);
         </div>
 
         <FadeSwap>
-        <div v-if="loading" key="skeleton" class="grid gap-4 lg:grid-cols-2">
-          <div class="flex h-[360px] items-center justify-center sm:h-[440px]">
-            <Skeleton class="aspect-square h-[280px] rounded-full sm:h-[340px]" />
-          </div>
-          <div class="flex flex-col gap-2 self-center">
-            <Skeleton class="h-10 w-full" />
-            <Skeleton
-              v-for="i in 6"
-              :key="i"
-              class="h-9 w-full"
-            />
-          </div>
-        </div>
-
-        <div
-          v-else-if="!hasData || !chartData"
-          key="empty"
-          class="rounded-md border border-dashed border-border p-10 text-center text-sm text-muted-foreground"
-        >
-          {{ $t("role_radar.no_data") }}
-        </div>
-
-        <div v-else key="content" class="grid gap-4 lg:grid-cols-2">
-          <div class="relative h-[360px] sm:h-[440px]">
-            <Radar :data="chartData" :options="chartOptions" />
+          <div v-if="loading" key="skeleton" class="grid gap-4 lg:grid-cols-2">
+            <div
+              class="flex h-[360px] items-center justify-center sm:h-[440px]"
+            >
+              <Skeleton
+                class="aspect-square h-[280px] rounded-full sm:h-[340px]"
+              />
+            </div>
+            <div class="flex flex-col gap-2 self-center">
+              <Skeleton class="h-10 w-full" />
+              <Skeleton v-for="i in 6" :key="i" class="h-9 w-full" />
+            </div>
           </div>
 
-          <Table class="min-w-full self-center [&_td]:px-2 [&_th]:px-2">
-            <TableHeader class="[&_th]:h-10 bg-muted/20">
-              <TableRow>
-                <TableHead class="text-left">
-                  {{ $t("match.radar.metric") }}
-                </TableHead>
-                <TableHead class="text-right whitespace-nowrap text-amber-400">
-                  {{ playerName }}
-                </TableHead>
-                <TableHead
-                  v-if="metricsB"
-                  class="text-right whitespace-nowrap text-sky-400"
-                >
-                  {{ compareName || $t("match.radar.player_b") }}
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow v-for="axis of activeAxes" :key="axis.key">
-                <TableCell class="text-left text-muted-foreground whitespace-nowrap">
-                  <StatLabel :stat="axis.key" :label="axis.label" />
-                </TableCell>
-                <TableCell
-                  class="text-right font-mono tabular-nums"
-                  :class="
-                    betterSide(axis) === 'a'
-                      ? 'font-bold text-amber-400'
-                      : 'text-foreground'
-                  "
-                >
-                  {{ displayValue(axis, metricsA?.[axis.key]) }}
-                </TableCell>
-                <TableCell
-                  v-if="metricsB"
-                  class="text-right font-mono tabular-nums"
-                  :class="
-                    betterSide(axis) === 'b'
-                      ? 'font-bold text-sky-400'
-                      : 'text-foreground'
-                  "
-                >
-                  {{ displayValue(axis, metricsB?.[axis.key]) }}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div>
+          <div
+            v-else-if="!hasData || !chartData"
+            key="empty"
+            class="rounded-md border border-dashed border-border p-10 text-center text-sm text-muted-foreground"
+          >
+            {{ $t("role_radar.no_data") }}
+          </div>
+
+          <div v-else key="content" class="grid gap-4 lg:grid-cols-2">
+            <div class="relative h-[360px] sm:h-[440px]">
+              <Radar :data="chartData" :options="chartOptions" />
+            </div>
+
+            <Table class="min-w-full self-center [&_td]:px-2 [&_th]:px-2">
+              <TableHeader class="[&_th]:h-10 bg-muted/20">
+                <TableRow>
+                  <TableHead class="text-left">
+                    {{ $t("match.radar.metric") }}
+                  </TableHead>
+                  <TableHead
+                    class="text-right whitespace-nowrap text-amber-400"
+                  >
+                    {{ playerName }}
+                  </TableHead>
+                  <TableHead
+                    v-if="metricsB"
+                    class="text-right whitespace-nowrap text-sky-400"
+                  >
+                    {{ compareName || $t("match.radar.player_b") }}
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <TableRow v-for="axis of activeAxes" :key="axis.key">
+                  <TableCell
+                    class="text-left text-muted-foreground whitespace-nowrap"
+                  >
+                    <StatLabel :stat="axis.key" :label="axis.label" />
+                  </TableCell>
+                  <TableCell
+                    class="text-right font-mono tabular-nums"
+                    :class="
+                      betterSide(axis) === 'a'
+                        ? 'font-bold text-amber-400'
+                        : 'text-foreground'
+                    "
+                  >
+                    {{ displayValue(axis, metricsA?.[axis.key]) }}
+                  </TableCell>
+                  <TableCell
+                    v-if="metricsB"
+                    class="text-right font-mono tabular-nums"
+                    :class="
+                      betterSide(axis) === 'b'
+                        ? 'font-bold text-sky-400'
+                        : 'text-foreground'
+                    "
+                  >
+                    {{ displayValue(axis, metricsB?.[axis.key]) }}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
         </FadeSwap>
       </div>
     </CardContent>

@@ -35,6 +35,20 @@ export const matchLineupStats = Selector("match_lineups")({
       placeholder_name: true,
       player: {
         ...playerFields,
+        faceit_rank_history: [
+          {
+            where: {
+              match_id: {
+                _eq: $("matchId", "uuid!"),
+              },
+            },
+            limit: 1,
+          },
+          {
+            skill_level: true,
+            elo: true,
+          },
+        ],
         kills_aggregate: [
           {
             where: {

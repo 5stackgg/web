@@ -500,6 +500,7 @@ export default {
       return this.e_match_types.filter(
         (type) =>
           type.value !== e_match_types_enum.Premier &&
+          type.value !== e_match_types_enum.Faceit &&
           this.isMatchmakingTypeEnabled(type.value.toLowerCase()),
       );
     },

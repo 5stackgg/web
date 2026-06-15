@@ -936,6 +936,7 @@ export default {
         Competitive: "Competitive",
         Wingman: "Wingman",
         Premier: "Premier",
+        Faceit: "Faceit",
         Duel: "Duel",
         Scrimmage: "Scrimmage",
       };

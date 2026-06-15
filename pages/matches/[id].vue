@@ -11,6 +11,7 @@ import MatchAdminBottomBar from "~/components/match/MatchAdminBottomBar.vue";
 import MatchInfo from "~/components/match/MatchInfo.vue";
 import MatchHighlightsReel from "~/components/match/MatchHighlightsReel.vue";
 import MatchActions from "~/components/match/MatchActions.vue";
+import MatchSourceBadge from "~/components/MatchSourceBadge.vue";
 import MatchRegionVeto from "~/components/match/MatchRegionVeto.vue";
 import { e_match_status_enum } from "~/generated/zeus";
 import MatchMapVeto from "~/components/match/MatchMapVeto.vue";
@@ -203,6 +204,16 @@ const vsBaseClasses =
               <span>{{ $t("match.auto_canceling") }}</span>
               <TimeAgo :date="match.cancels_at" />
             </span>
+            <span
+              v-if="match.options?.type"
+              class="inline-flex items-center px-[0.55rem] py-[0.25rem] font-mono text-[0.62rem] font-bold uppercase tracking-[0.14em] leading-none rounded border border-border/70 bg-muted/35 text-muted-foreground"
+            >
+              {{ match.options.type }}
+            </span>
+            <MatchSourceBadge
+              v-if="match.source !== 'faceit'"
+              :source="match.source"
+            />
             <MatchActions :match="match" />
           </div>
         </div>

@@ -1,5 +1,12 @@
 <script lang="ts" setup>
-import { ref, watch, nextTick, onMounted, onBeforeUnmount } from "vue";
+import {
+  ref,
+  watch,
+  nextTick,
+  onMounted,
+  onBeforeUnmount,
+  computed,
+} from "vue";
 import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 
 type FilterOption = {
@@ -13,9 +20,30 @@ type FilterOption = {
 
 const props = defineProps<{
   options: FilterOption[];
+  square?: boolean;
 }>();
 
 const model = defineModel<string>();
+
+const containerShape = computed(() =>
+  props.square ? "rounded-md" : "rounded-full",
+);
+const indicatorShape = computed(() =>
+  props.square ? "rounded" : "rounded-full",
+);
+const buttonShape = computed(() =>
+  props.square
+    ? "rounded px-2.5 py-1 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em]"
+    : "rounded-full px-3 py-1.5 text-xs tracking-[0.06em]",
+);
+function buttonState(opt: FilterOption) {
+  if (opt.disabled) {
+    return "cursor-not-allowed text-muted-foreground/40";
+  }
+  return model.value === opt.key
+    ? "font-bold text-black"
+    : "text-muted-foreground hover:text-foreground";
+}
 
 const containerRef = ref<HTMLElement | null>(null);
 const btns = ref<Record<string, HTMLElement | null>>({});
@@ -63,12 +91,13 @@ watch(
 <template>
   <div
     ref="containerRef"
-    class="relative inline-flex w-fit max-w-full flex-wrap gap-1 self-start rounded-full border border-border bg-muted/30 p-1"
+    class="relative inline-flex w-fit max-w-full flex-wrap gap-1 self-start border border-border bg-muted/30 p-1"
+    :class="containerShape"
   >
     <!-- sliding active highlight -->
     <span
-      class="pointer-events-none absolute rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_12px_-2px_hsl(var(--tac-amber)/0.6)] transition-all duration-300 ease-out"
-      :class="indicator.ready ? 'opacity-100' : 'opacity-0'"
+      class="pointer-events-none absolute bg-[hsl(var(--tac-amber))] shadow-[0_0_12px_-2px_hsl(var(--tac-amber)/0.6)] transition-all duration-300 ease-out"
+      :class="[indicatorShape, indicator.ready ? 'opacity-100' : 'opacity-0']"
       :style="{
         left: `${indicator.left}px`,
         top: `${indicator.top}px`,
@@ -88,14 +117,8 @@ watch(
             :ref="(el) => setBtn(el as Element | null, opt.key)"
             type="button"
             :disabled="opt.disabled"
-            class="relative z-10 rounded-full px-3 py-1.5 text-xs tracking-[0.06em] transition-colors duration-200"
-            :class="
-              opt.disabled
-                ? 'cursor-not-allowed text-muted-foreground/40'
-                : model === opt.key
-                  ? 'font-bold text-black'
-                  : 'text-muted-foreground hover:text-foreground'
-            "
+            class="relative z-10 transition-colors duration-200"
+            :class="[buttonShape, buttonState(opt)]"
             @click="!opt.disabled && (model = opt.key)"
           >
             {{ opt.label }}
@@ -111,7 +134,10 @@ watch(
           >
             {{ opt.title }}
           </div>
-          <div v-if="opt.desc" class="text-xs leading-snug text-muted-foreground">
+          <div
+            v-if="opt.desc"
+            class="text-xs leading-snug text-muted-foreground"
+          >
             {{ opt.desc }}
           </div>
         </div>
@@ -121,14 +147,8 @@ watch(
         :ref="(el) => setBtn(el as Element | null, opt.key)"
         type="button"
         :disabled="opt.disabled"
-        class="relative z-10 rounded-full px-3 py-1.5 text-xs tracking-[0.06em] transition-colors duration-200"
-        :class="
-          opt.disabled
-            ? 'cursor-not-allowed text-muted-foreground/40'
-            : model === opt.key
-              ? 'font-bold text-black'
-              : 'text-muted-foreground hover:text-foreground'
-        "
+        class="relative z-10 transition-colors duration-200"
+        :class="[buttonShape, buttonState(opt)]"
         @click="!opt.disabled && (model = opt.key)"
       >
         {{ opt.label }}

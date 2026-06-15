@@ -272,11 +272,12 @@ const radarSrc = computed(() => {
   return `/radars/${normalizedMap.value}.png`;
 });
 
-// Lightweight collision mesh (awpy .tri) for 3D-lite. Staged by
-// scripts/fetch-map-meshes.mjs; the 3D renderer falls back to the flat radar
-// plane when this 404s (map not staged).
+// Lightweight collision mesh (awpy .tri) for 3D-lite, served from the CDN
+// (config.public.mapMeshCdn, build-tag pinned + Brotli'd). The 3D renderer
+// falls back to the flat radar plane when this 404s (map not yet generated).
+const meshCdn = useRuntimeConfig().public.mapMeshCdn;
 const mapMeshUrl = computed(() =>
-  normalizedMap.value ? `/replay-assets/tris/${normalizedMap.value}.tri` : null,
+  normalizedMap.value ? `${meshCdn}/${normalizedMap.value}.tri` : null,
 );
 
 const dedupedPositions = computed(() => {

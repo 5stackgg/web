@@ -280,6 +280,18 @@ const mapMeshUrl = computed(() =>
   normalizedMap.value ? `${meshCdn}/${normalizedMap.value}.tri` : null,
 );
 
+// Auto-detect the playable ceiling for the 3D roof-cut. Players never stand above
+// the real ceiling, so the ~99th percentile of player heights (+ head clearance)
+// is a reliable "cut roofs but keep all the action" height. Source-z units; the
+// 3D viewer anchors the ROOF slider's midpoint here so it just works by default.
+const autoCeilingZ = computed<number | null>(() => {
+  const zs: number[] = [];
+  for (const p of props.positions) if (p.z != null) zs.push(p.z);
+  if (zs.length < 20) return null;
+  zs.sort((a, b) => a - b);
+  return zs[Math.floor(zs.length * 0.99)] - 90; // below standing head — cuts walls lower
+});
+
 const dedupedPositions = computed(() => {
   const seen = new Set<string>();
   const out: Position[] = [];
@@ -2757,6 +2769,9 @@ function openReplayPopout() {
 // ONE identical chrome. Only the map underneath differs.
 // ===================================================================
 const camMode = ref<"orbit" | "top" | "follow">("orbit");
+// 3D roof cut (0..100). 50 = auto-detected playable ceiling (default), 0 = floor,
+// 100 = full map. Anchored to autoCeilingZ in the 3D viewer.
+const ceilingCut = ref(50);
 const heatOn = ref(false);
 const showPbpPanel = ref(true);
 const selectedGi = ref<number[]>([]);
@@ -4578,6 +4593,8 @@ watch(overlayMode, (on) => {
           :focused="focusedPlayerId"
           :cam-mode="camMode"
           :heat-on="heatOn"
+          :ceiling="ceilingCut"
+          :auto-ceiling-z="autoCeilingZ"
           :type-filter="utilTypeFilter"
           :selected-gids="selectedGi"
           :round-utilities="roundUtilities"
@@ -4614,6 +4631,8 @@ watch(overlayMode, (on) => {
           :cam-mode="camMode"
           :show-pbp="showPbpPanel"
           :heat-on="heatOn"
+          :ceiling="ceilingCut"
+          :on-ceiling="(v) => (ceilingCut = v)"
           :follow-name="chromeFollowName"
           :ct-hex="CT_HEX"
           :t-hex="T_HEX"

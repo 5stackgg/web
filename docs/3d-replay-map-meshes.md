@@ -47,29 +47,10 @@ de_whistle cs_italy cs_office ar_baggage ar_pool_day ar_shoots`.
 
 ---
 
-## Fallback: generate the meshes yourself (Source 2 Viewer / VRF)
+## Fallback: generate the meshes yourself (Source 2 Viewer)
 
 If awpy stops publishing packs, or a brand-new map isn't covered yet, generate
-the `.tri` directly from the game's VPKs. You need **CS2 installed**.
-
-### Option A — `cs2-phys-extractor` (simplest, outputs `.tri` directly)
-
-[cs2-phys-extractor](https://github.com/itzlaith/cs2-phys-extractor) reads each
-map's `world_physics.vmdl_c` and exports the collision mesh as `.tri` (the exact
-format we use) or `.vphys`:
-
-1. Install it (see its README) and point it at your CS2 install.
-2. Export **`.tri`** for the map(s) you need.
-3. Confirm the output is source units (open in a hex/JS check: 9 floats/triangle).
-4. Drop the `.tri` in a folder and feed it to the publisher, which decimates +
-   publishes it the same as awpy maps:
-   ```bash
-   node scripts/fetch-map-meshes.mjs --from ~/my-meshes de_cache --publish --tag <build>-1
-   ```
-
-This is the closest to a drop-in replacement for the awpy pack.
-
-### Option B — Source 2 Viewer (ValveResourceFormat) → glTF → `.tri`
+the `.tri` from the game's VPKs with Source 2 Viewer. You need **CS2 installed**.
 
 [Source 2 Viewer / ValveResourceFormat](https://github.com/ValveResourceFormat/ValveResourceFormat)
 (also at https://s2v.app) browses VPKs and exports Source 2 assets to glTF 2.0.
@@ -80,15 +61,23 @@ This is the closest to a drop-in replacement for the awpy pack.
 3. Find the **physics / collision** resource — `world_physics.vmdl_c`
    (the physics hull), **not** the textured render `world.vmdl_c`. The collision
    hull is far smaller and is what we want.
-4. Right-click ▸ **Export** as **glTF (.glb)**. Enable only meshes (no
-   textures/materials) to keep it tiny.
-5. Convert the glb to `.tri` with `scripts/glb-to-tri.mjs`:
+4. Right-click ▸ **Export** as **glTF (.glb)**. (Textures don't matter — the
+   converter only reads positions — so the `*_world_physics_physics.glb` is what
+   gets used.)
+5. Convert + publish via the pipeline (`glb-to-tri.mjs` is called automatically by
+   the publisher; or run it standalone):
    ```bash
-   node scripts/glb-to-tri.mjs ~/Downloads/de_cache_world_physics_physics.glb ~/meshes/de_cache.tri
+   # one map
+   node scripts/fetch-map-meshes.mjs --from ~/cs_exports de_cache --publish --tag <build>-1
+   # or just convert to .tri
+   node scripts/glb-to-tri.mjs ~/cs_exports/de_cache_world_physics_physics.glb ~/meshes/de_cache.tri
    ```
-   It reads only POSITIONs (textures ignored) and writes float32 triangles.
 
-> **Coordinate gotcha:** VRF bakes a `0.0254` inch→meter scale **and** a
+The converter reads only POSITIONs, drops clip/sky brushes by material name, and
+removes isolated "standalone walls" (thin/tall/vertical sheets that aren't
+connected to anything — see `dropStandaloneWalls` in `glb-to-tri.mjs`).
+
+> **Coordinate gotcha:** the glb export bakes a `0.0254` inch→meter scale **and** a
 > Z-up→Y-up axis remap into every node's transform, purely for glTF viewers. The
 > underlying accessor data is already in **CS2 source units / source frame**, so
 > `glb-to-tri.mjs` deliberately emits the mesh-*local* positions and **skips the
@@ -96,31 +85,9 @@ This is the closest to a drop-in replacement for the awpy pack.
 > `1524..3331`), not tens — if you see tens, the meters transform leaked in.
 
 > **Tip:** export the `*_world_physics_physics.glb` (physics hull), never the
-> textured render mesh (`world.vmdl_c`, ~100 MB+). The GUI also embeds surface
+> textured render mesh (`world.vmdl_c`, ~100 MB+). The export also embeds surface
 > textures into the glb (cache came out 175 MB) — we discard all of it, so the
 > final `.tri` is tiny (cache: 58 MB raw tris → 12.5 MB decimated → 1.6 MB wire).
-
-### More automated than the GUI
-
-The GUI is manual and dumps textures you don't need. Two scriptable alternatives:
-
-- **[cs2-phys-extractor](https://github.com/itzlaith/cs2-phys-extractor)** —
-  reads the VPK and writes `.tri` directly. No GUI, no glb, no conversion. Best
-  for batching the remaining maps; pipe straight into `--from --publish`.
-- **VRF CLI** (`Source2Viewer-CLI`, the headless ValveResourceFormat tool) —
-  export just the physics vmdl with materials off:
-  ```bash
-  Source2Viewer-CLI --input pak01_dir.vpk \
-    -f maps/de_cache/world_physics.vmdl_c \
-    --gltf_export_materials false -o out/
-  ```
-  then run `glb-to-tri.mjs` on the result.
-
-### Option C — `cs2-map-parser` (vphys → triangles)
-
-[cs2-map-parser](https://github.com/atomicbool/cs2-map-parser) converts extracted
-`vphys` files to triangle lists (Möller–Trumbore-friendly) — handy if you already
-have `vphys` and just need triangles to write as `.tri`.
 
 ---
 
@@ -175,7 +142,6 @@ redeploy. The publisher refuses to reuse an existing tag for this reason.
 1. In **Source 2 Viewer**, export each map's `world_physics.vmdl_c` as glTF
    (`.glb`) into one folder (e.g. `~/cs_exports/`). Materials don't matter — we
    only read positions — so the `*_world_physics_physics.glb` is what's used.
-   (Or script it with the VRF CLI / `cs2-phys-extractor`; see above.)
 2. One command converts every glb → source-unit `.tri`, decimates oversized ones,
    commits + tags + pushes them all:
    ```bash

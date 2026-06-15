@@ -73,6 +73,9 @@ const props = defineProps<{
   camMode?: string;
   showPbp?: boolean;
   heatOn?: boolean;
+  // ceiling cut (3D): 0..100, 100 = full map / no cut
+  ceiling?: number;
+  onCeiling?: (v: number) => void;
   followName?: string | null;
   ctHex?: string;
   tHex?: string;
@@ -163,6 +166,12 @@ const utilClusters = computed(() => {
             <Tooltip><TooltipTrigger as-child><button :class="{ on: camMode === 'orbit' }" @click="onMode && onMode('orbit')">ORBIT</button></TooltipTrigger><TooltipContent>Orbit camera — left-drag look, right-drag orbit, scroll zoom, WASD fly</TooltipContent></Tooltip>
             <Tooltip><TooltipTrigger as-child><button :class="{ on: camMode === 'top' }" @click="onMode && onMode('top')">TOP</button></TooltipTrigger><TooltipContent>Top-down camera</TooltipContent></Tooltip>
             <Tooltip v-if="followName"><TooltipTrigger as-child><button :class="{ on: camMode === 'follow' }" @click="onMode && onMode('follow')">CHASE</button></TooltipTrigger><TooltipContent>Chase the followed player</TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger as-child>
+              <label class="bp-ceil" :class="{ on: (ceiling ?? 50) < 100 }">
+                <span>ROOF</span>
+                <input type="range" min="0" max="100" step="1" :value="ceiling ?? 50" @input="onCeiling && onCeiling(Number(($event.target as HTMLInputElement).value))" />
+              </label>
+            </TooltipTrigger><TooltipContent>Roof cut — middle is auto (roofs off, action visible). Up = reveal more, down = cut more, max = full map.</TooltipContent></Tooltip>
           </template>
           <!-- PLAYS + HEAT work in both 2D and 3D -->
           <Tooltip><TooltipTrigger as-child><button :class="{ on: showPbp }" @click="onTogglePbp && onTogglePbp()">PLAY BY PLAY</button></TooltipTrigger><TooltipContent>Show the round's play-by-play event log</TooltipContent></Tooltip>
@@ -453,6 +462,13 @@ const utilClusters = computed(() => {
 .bp-cam button { flex: 1 1 0; min-width: 0; background: var(--panel); border: 1px solid var(--line); color: #9fb0c0; font-family: inherit; font-size: 10px; letter-spacing: 1px; padding: 6px 4px; border-radius: 4px; cursor: pointer; backdrop-filter: blur(6px); }
 .bp-cam button:hover { border-color: var(--accent); color: #f0f6fc; }
 .bp-cam button.on { background: color-mix(in srgb, var(--accent) 16%, transparent); border-color: var(--accent); color: #fff; }
+.bp-ceil { display: inline-flex; align-items: center; gap: 6px; flex: 0 0 auto; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 5px 8px; cursor: pointer; backdrop-filter: blur(6px); }
+.bp-ceil span { font-size: 10px; letter-spacing: 1px; color: #9fb0c0; }
+.bp-ceil.on { border-color: var(--accent); }
+.bp-ceil.on span { color: #fff; }
+.bp-ceil input[type="range"] { -webkit-appearance: none; appearance: none; width: 64px; height: 3px; border-radius: 3px; background: var(--line); outline: none; cursor: pointer; }
+.bp-ceil input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 11px; height: 11px; border-radius: 50%; background: var(--accent); border: none; }
+.bp-ceil input[type="range"]::-moz-range-thumb { width: 11px; height: 11px; border-radius: 50%; background: var(--accent); border: none; }
 .bp-foll { font-size: 11px; letter-spacing: 1px; color: var(--t); padding: 2px 8px; background: var(--panel); border: 1px solid color-mix(in srgb, var(--t) 40%, transparent); border-radius: 4px; align-self: flex-start; }
 /* transport */
 .bp-bar { position: absolute; left: 0; right: 0; bottom: 0; z-index: 10; display: flex; flex-direction: column; gap: 7px; padding: 9px 14px 10px; background: linear-gradient(0deg, rgba(8,10,14,0.96), rgba(8,10,14,0)); }

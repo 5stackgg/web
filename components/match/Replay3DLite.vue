@@ -45,6 +45,11 @@ const props = defineProps<{
   camMode?: "orbit" | "top" | "follow";
   heatOn?: boolean;
   typeFilter?: Record<string, boolean>;
+  // Roof cut slider: 0..100. 50 = the auto-detected playable ceiling
+  // (autoCeilingZ), 0 = floor, 100 = full map. Drag up to reveal more, down to
+  // cut more. Source-z height of the auto ceiling comes from ReplayViewer.
+  ceiling?: number;
+  autoCeilingZ?: number | null;
   // Real per-grenade bounce path (blob v4+); keyed by grenade_id.
   grenadeTrajectories?: Array<{ gid: number; pts: Array<{ t: number; x: number; y: number; z: number }> }>;
   // Buy-round overlay actors (raw coords) — when present, stacked players from
@@ -70,6 +75,7 @@ const emit = defineEmits<{ (e: "select-util", gid: number): void }>();
 
 const canvas = ref<HTMLCanvasElement | null>(null);
 const status = ref("");
+const loading = ref(false); // mesh fetch in progress → show centered loader
 const followSid = ref<string | null>(null);
 const camModeOf = () => props.camMode ?? "orbit";
 const heatOnOf = () => props.heatOn ?? false;
@@ -90,6 +96,17 @@ onMounted(() => {
   const el = canvas.value!;
   const renderer = new THREE.WebGLRenderer({ canvas: el, antialias: true, alpha: true });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.localClippingEnabled = true;
+
+  // Ceiling cut: a horizontal plane that hides map geometry above a height,
+  // driven by the chrome's ceiling slider (props.ceiling, 0..100). 100 = off.
+  // Only the map material uses it — players/utility are never clipped.
+  const ceilingPlane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 1e9);
+  let clipY = 1e9;
+  let meshMinY = 0, meshMaxY = 0, meshLoaded = false; // world-Y span of the mesh
+  // Geometry whose lowest point is above (auto ceiling + this) is dropped at load
+  // — kills sky buildings / super-tall boundary walls while keeping real rooms.
+  const CEIL_CULL_MARGIN = 256;
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(55, 1, 1, 100000);
@@ -246,27 +263,50 @@ onMounted(() => {
   // ----- ground -----
   let mapSpan = meshMode ? 6000 : C;
   if (meshMode) {
-    status.value = "loading map mesh…";
+    status.value = "loading map…";
+    loading.value = true;
     fetch(props.mapMeshUrl!)
       .then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.arrayBuffer(); })
       .then((buf) => {
-        const pos = new Float32Array(buf, 0, Math.floor(buf.byteLength / 4 / 9) * 9);
+        const raw = new Float32Array(buf, 0, Math.floor(buf.byteLength / 4 / 9) * 9);
+        // Cull geometry that sits ENTIRELY above the playable ceiling: roofs,
+        // ceilings, sky buildings, and the super-tall boundary/exterior walls
+        // that shoot up toward the skybox. Players never reach above
+        // autoCeilingZ, so anything wholly above it isn't part of play. (z is the
+        // 3rd float of each vertex; source-z = height.) A generous margin keeps
+        // real in-play structures; the live ROOF slider trims the rest.
+        const cullZ = props.autoCeilingZ != null ? props.autoCeilingZ + CEIL_CULL_MARGIN : Infinity;
+        let pos = raw;
+        if (isFinite(cullZ)) {
+          // height cull: drop triangles wholly above the playable ceiling
+          // (roofs/ceilings/sky). Standalone boundary walls are removed offline
+          // in the .tri itself (glb-to-tri dropStandaloneWalls).
+          const out = new Float32Array(raw.length);
+          let n = 0;
+          for (let t = 0; t < raw.length; t += 9) {
+            if (Math.min(raw[t + 2], raw[t + 5], raw[t + 8]) > cullZ) continue;
+            out.set(raw.subarray(t, t + 9), n); n += 9;
+          }
+          pos = out.slice(0, n);
+        }
         const geo = new THREE.BufferGeometry();
         geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
         geo.computeVertexNormals();
         geo.computeBoundingBox();
         // flatShading keeps the nice faceted shading the user likes; the
         // wireframe overlay (polygon lines) was distracting → removed.
-        const mat = new THREE.MeshStandardMaterial({ color: 0x2c333f, roughness: 0.95, metalness: 0, side: THREE.DoubleSide, flatShading: true });
+        const mat = new THREE.MeshStandardMaterial({ color: 0x2c333f, roughness: 0.95, metalness: 0, side: THREE.DoubleSide, flatShading: true, clippingPlanes: [ceilingPlane] });
         const mesh = new THREE.Mesh(geo, mat); mesh.rotation.x = -Math.PI / 2; scene.add(mesh);
         const bb = geo.boundingBox!;
         const cx = (bb.min.x + bb.max.x) / 2, cy = (bb.min.y + bb.max.y) / 2, cz = (bb.min.z + bb.max.z) / 2;
         mapSpan = Math.max(bb.max.x - bb.min.x, bb.max.y - bb.min.y);
+        // world Y = source z (mesh is rotated -π/2 about X); used by the ceiling slider
+        meshMinY = bb.min.z; meshMaxY = bb.max.z; meshLoaded = true;
         controls.target.set(cx, cz, -cy);
         camera.position.set(cx, cz + mapSpan * 0.85, -cy + mapSpan * 0.85);
-        status.value = "";
+        status.value = ""; loading.value = false;
       })
-      .catch((e) => { status.value = `mesh unavailable (${e.message}) — radar fallback`; buildRadar(); });
+      .catch((e) => { status.value = `mesh unavailable (${e.message}) — radar fallback`; loading.value = false; buildRadar(); });
   } else buildRadar();
 
   function buildRadar() {
@@ -649,6 +689,23 @@ onMounted(() => {
     applyFly(dt);
     const following = (camModeOf() === "follow" || !!followSid.value) && !followSuppressed;
     if (following && camToken) { camToken.grp.getWorldPosition(tgt); tgt.y += PH * 0.5; const delta = tgt.clone().sub(controls.target).multiplyScalar(0.18); controls.target.add(delta); camera.position.add(delta); }
+    // roof cut: slider midpoint (50) sits at the auto-detected playable ceiling,
+    // so it just works by default; 0 = floor, 100 = full map.
+    if (meshMode && meshLoaded) {
+      const v = props.ceiling ?? 50;
+      // auto ceiling in world-Y (= source z), clamped into the mesh span; fall
+      // back to ~25% up the map when player heights weren't available.
+      const autoY = Math.min(
+        meshMaxY,
+        Math.max(meshMinY, props.autoCeilingZ ?? meshMinY + (meshMaxY - meshMinY) * 0.25),
+      );
+      let targetClip;
+      if (v >= 100) targetClip = 1e9; // full map, no cut
+      else if (v >= 50) targetClip = autoY + ((meshMaxY - autoY) * (v - 50)) / 50;
+      else targetClip = meshMinY + ((autoY - meshMinY) * v) / 50;
+      clipY += (targetClip - clipY) * (Math.abs(targetClip - clipY) > 1e6 ? 1 : 0.2);
+      ceilingPlane.constant = clipY;
+    }
     // grenade tumble (in-flight 3D models)
     for (const nm of projs) { if (nm.grp.visible) { nm.grp.rotation.x += dt * 7; nm.grp.rotation.z += dt * 4.5; } }
     // smoke drift + fire flicker
@@ -685,12 +742,30 @@ onBeforeUnmount(() => cleanup?.());
        camera dock) lives in the shared ReplayChrome overlay. -->
   <div class="absolute inset-0">
     <canvas ref="canvas" class="absolute inset-0 w-full h-full block" />
+    <!-- Centered loader while the map mesh downloads (multi-MB .tri) so it's
+         obviously working, not broken. -->
+    <Transition name="meshload">
+      <div
+        v-if="loading"
+        class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[hsl(var(--background)/0.55)] backdrop-blur-[2px] pointer-events-none"
+      >
+        <div class="h-8 w-8 rounded-full border-2 border-white/15 border-t-[hsl(var(--tac-amber))] animate-spin" />
+        <span class="text-[0.65rem] font-mono uppercase tracking-[0.2em] text-white/75">loading map…</span>
+      </div>
+    </Transition>
     <div
-      v-if="status"
+      v-if="status && !loading"
       class="absolute bottom-2 left-1/2 -translate-x-1/2 px-2 py-1 text-[0.6rem] font-mono uppercase tracking-wider bg-black/60 text-white/80 pointer-events-none"
     >
       {{ status }}
     </div>
   </div>
 </template>
+
+<style scoped>
+.meshload-enter-active,
+.meshload-leave-active { transition: opacity 0.25s ease; }
+.meshload-enter-from,
+.meshload-leave-to { opacity: 0; }
+</style>
 

@@ -41,8 +41,85 @@ export function mapNameFromGlb(file) {
 // physics_group_* / physics_passbullets_* / physics_window_* and pass through.
 const SKIP_MATERIAL = /clip|sky|nodraw|invisible|trigger|occluder|\bhint\b/i;
 
+// Remove "standalone walls": isolated, thin, tall, vertical sheets of geometry
+// that aren't connected to anything (no floor/roof) — the boundary/blocker walls
+// that exist for gameplay but just occlude the 3D view. We weld vertices, find
+// connected components (union-find), and drop components that are a thin tall
+// vertical slab on their own. Interior walls welded to floors stay (they're part
+// of the big connected mesh, not thin). Operates on a flat [x,y,z,...] tri list.
+function dropStandaloneWalls(tris, opts = {}) {
+  const THIN = opts.thin ?? 72; // max thickness (source units) to count as a sheet
+  const TALL = opts.tall ?? 160; // min height to count as a wall
+  const VERT = opts.vert ?? 0.8; // min fraction of near-vertical faces
+  const WELD = 2; // vertex weld grid
+  const n = tris.length / 9;
+  if (n < 3) return { tris, dropped: 0, walls: 0 };
+
+  // weld vertices → ids
+  const vid = new Map();
+  const tv = new Int32Array(n * 3);
+  let next = 0;
+  for (let i = 0; i < n; i++) {
+    const o = i * 9;
+    for (let v = 0; v < 3; v++) {
+      const k =
+        Math.round(tris[o + v * 3] / WELD) + "," +
+        Math.round(tris[o + v * 3 + 1] / WELD) + "," +
+        Math.round(tris[o + v * 3 + 2] / WELD);
+      let id = vid.get(k);
+      if (id === undefined) { id = next++; vid.set(k, id); }
+      tv[i * 3 + v] = id;
+    }
+  }
+  // union-find
+  const parent = new Int32Array(next);
+  for (let i = 0; i < next; i++) parent[i] = i;
+  const find = (a) => { while (parent[a] !== a) { parent[a] = parent[parent[a]]; a = parent[a]; } return a; };
+  for (let i = 0; i < n; i++) {
+    const a = find(tv[i * 3]), b = find(tv[i * 3 + 1]), c = find(tv[i * 3 + 2]);
+    if (a !== b) parent[b] = a;
+    if (find(c) !== a) parent[find(c)] = a;
+  }
+  // per-component bbox + vertical-face fraction
+  const comp = new Map();
+  for (let i = 0; i < n; i++) {
+    const r = find(tv[i * 3]);
+    let s = comp.get(r);
+    if (!s) { s = { x0: 1e9, x1: -1e9, y0: 1e9, y1: -1e9, z0: 1e9, z1: -1e9, n: 0, vert: 0 }; comp.set(r, s); }
+    const o = i * 9;
+    for (let v = 0; v < 3; v++) {
+      const x = tris[o + v * 3], y = tris[o + v * 3 + 1], z = tris[o + v * 3 + 2];
+      if (x < s.x0) s.x0 = x; if (x > s.x1) s.x1 = x;
+      if (y < s.y0) s.y0 = y; if (y > s.y1) s.y1 = y;
+      if (z < s.z0) s.z0 = z; if (z > s.z1) s.z1 = z;
+    }
+    s.n++;
+    const ux = tris[o + 3] - tris[o], uy = tris[o + 4] - tris[o + 1], uz = tris[o + 5] - tris[o + 2];
+    const vx = tris[o + 6] - tris[o], vy = tris[o + 7] - tris[o + 1], vz = tris[o + 8] - tris[o + 2];
+    const nx = uy * vz - uz * vy, ny = uz * vx - ux * vz, nz = ux * vy - uy * vx;
+    const L = Math.hypot(nx, ny, nz) || 1;
+    if (Math.abs(nz / L) < 0.3) s.vert++; // near-vertical face
+  }
+  // flag standalone-wall components
+  const drop = new Set();
+  for (const [r, s] of comp) {
+    const thin = Math.min(s.x1 - s.x0, s.y1 - s.y0);
+    const dz = s.z1 - s.z0;
+    if (thin <= THIN && dz >= TALL && s.vert / s.n >= VERT) drop.add(r);
+  }
+  if (!drop.size) return { tris, dropped: 0, walls: 0 };
+  const out = [];
+  let dropped = 0;
+  for (let i = 0; i < n; i++) {
+    if (drop.has(find(tv[i * 3]))) { dropped++; continue; }
+    const o = i * 9;
+    for (let k = 0; k < 9; k++) out.push(tris[o + k]);
+  }
+  return { tris: out, dropped, walls: drop.size };
+}
+
 // Parse a .glb and return { tris: Float32 buffer of source-unit triangles, count, bbox }.
-export function glbToTri(inPath, { skipClips = true } = {}) {
+export function glbToTri(inPath, { skipClips = true, dropWalls = true } = {}) {
   const buf = readFileSync(inPath);
   const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
   const total = dv.getUint32(8, true);
@@ -102,18 +179,27 @@ export function glbToTri(inPath, { skipClips = true } = {}) {
     }
   }
 
+  // drop isolated thin/tall/vertical "standalone walls"
+  let walls = 0, wallTris = 0, kept = tris;
+  if (dropWalls) {
+    const r = dropStandaloneWalls(tris);
+    kept = r.tris; walls = r.walls; wallTris = r.dropped;
+  }
+
   const mn = [Infinity, Infinity, Infinity];
   const mx = [-Infinity, -Infinity, -Infinity];
-  for (let i = 0; i < tris.length; i += 3)
+  for (let i = 0; i < kept.length; i += 3)
     for (let c = 0; c < 3; c++) {
-      mn[c] = Math.min(mn[c], tris[i + c]);
-      mx[c] = Math.max(mx[c], tris[i + c]);
+      mn[c] = Math.min(mn[c], kept[i + c]);
+      mx[c] = Math.max(mx[c], kept[i + c]);
     }
   return {
-    buf: Buffer.from(new Float32Array(tris).buffer),
-    count: tris.length / 9,
+    buf: Buffer.from(new Float32Array(kept).buffer),
+    count: kept.length / 9,
     skipped,
     skippedMats: [...skippedMats],
+    walls,
+    wallTris,
     bbox: { min: mn, max: mx },
   };
 }
@@ -126,11 +212,13 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
     process.exit(1);
   }
   const outPath = process.argv[3] || `${mapNameFromGlb(inPath)}.tri`;
-  const { buf, count, skipped, skippedMats, bbox } = glbToTri(inPath);
+  const { buf, count, skipped, skippedMats, walls, wallTris, bbox } = glbToTri(inPath);
   writeFileSync(outPath, buf);
   console.log(`✓ ${basename(outPath)}: ${count.toLocaleString()} triangles, ${(buf.length / 1e6).toFixed(1)} MB`);
   if (skipped)
     console.log(`  dropped ${skipped.toLocaleString()} clip/sky triangles (${skippedMats.length} materials)`);
+  if (walls)
+    console.log(`  dropped ${walls} standalone wall(s) (${wallTris.toLocaleString()} triangles)`);
   console.log(`  bbox min ${bbox.min.map((v) => v.toFixed(0))}  max ${bbox.max.map((v) => v.toFixed(0))} (source units)`);
   if (Math.max(...bbox.max.map(Math.abs)) < 500)
     console.warn("  ⚠ bbox looks tiny (meters?) — expected thousands. Check the export.");

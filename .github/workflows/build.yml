@@ -84,5 +84,4 @@ jobs:
         with:
           package-name: web
           package-type: container
-          min-versions-to-keep: 9
-          ignore-versions: '^buildcache-*'
+          delete-only-untagged-versions: 'true'

@@ -28,7 +28,7 @@ type Player = {
 };
 type Detonation = { rx: number; ry: number; rz: number; type: string; life?: number; grenade_id?: number | null; thrower_team?: string | null };
 type InFlight = { key: string; gid?: number | null; type: string; fromX: number; fromY: number; toX: number; toY: number; x: number; y: number; z: number; progress: number };
-type HeatPoint = { rx: number; ry: number; rz: number; type: string };
+type HeatPoint = { rx: number; ry: number; rz: number; type: string; gid?: number | null };
 
 const props = defineProps<{
   players: Player[];
@@ -37,6 +37,8 @@ const props = defineProps<{
   inFlight?: InFlight[];
   heatPoints?: HeatPoint[];
   bomb?: { x: number; y: number; z?: number } | null;
+  // death locations up to the cursor (team-coloured X on the floor)
+  deaths?: Array<{ x: number; y: number; z: number; team: string | null }>;
   // steam_id of the player ReplayViewer has focused — drives 3D camera follow,
   // so "click a player" follows in BOTH 2D and 3D (one shared behaviour).
   focused?: string | null;
@@ -52,6 +54,10 @@ const props = defineProps<{
   autoCeilingZ?: number | null;
   // Real per-grenade bounce path (blob v4+); keyed by grenade_id.
   grenadeTrajectories?: Array<{ gid: number; pts: Array<{ t: number; x: number; y: number; z: number }> }>;
+  // True while the util-summary overlay is active. Drives token hiding directly
+  // (not inferred from overlayActors.length) so the regular player models never
+  // flash when the stacked-actor list is momentarily empty (e.g. clock reset).
+  overlay?: boolean;
   // Buy-round overlay actors (raw coords) — when present, stacked players from
   // the selected rounds are shown as dots and the normal tokens are hidden.
   overlayActors?: Array<{ x: number; y: number; z: number; team: string | null }>;
@@ -160,14 +166,20 @@ onMounted(() => {
     const rect = el.getBoundingClientRect();
     const ndc = new THREE.Vector2(((e.clientX - rect.left) / rect.width) * 2 - 1, -((e.clientY - rect.top) / rect.height) * 2 + 1);
     raycaster.setFromCamera(ndc, camera);
-    const cand = arcs.filter((a) => a.visible);
+    // clickable: in-flight trajectory tubes + heatmap landing discs (both carry gid)
+    const cand = [...arcs.filter((a) => a.visible), ...heat.filter((h) => h.visible)];
     const hits = raycaster.intersectObjects(cand, false);
     const gid = hits[0]?.object.userData?.gid;
     if (gid != null) emit("select-util", gid);
   }
   el.addEventListener("contextmenu", (e) => e.preventDefault());
-  el.addEventListener("pointerdown", (e) => { if (e.button === 0) { rl = true; rlx = e.clientX; rly = e.clientY; downX = e.clientX; downY = e.clientY; } });
+  el.style.cursor = "grab";
+  el.addEventListener("pointerdown", (e) => {
+    el.style.cursor = "none"; // hide cursor while dragging/looking around
+    if (e.button === 0) { rl = true; rlx = e.clientX; rly = e.clientY; downX = e.clientX; downY = e.clientY; }
+  });
   addEventListener("pointerup", (e) => {
+    el.style.cursor = "grab";
     if (e.button !== 0) return;
     rl = false;
     if (Math.hypot(e.clientX - downX, e.clientY - downY) < 5) pickUtilLine(e); // click, not drag
@@ -220,20 +232,29 @@ onMounted(() => {
       (a.tagName === "INPUT" || a.tagName === "SELECT" || a.tagName === "TEXTAREA" || a.isContentEditable)
     );
   };
+  // Re-sync modifiers from the event's authoritative flags on EVERY key event, so
+  // a missed Shift/Ctrl keyup self-corrects on the next keystroke (fixes "stuck"
+  // up/down). A window blur also clears everything (alt-tab mid-keypress).
   const onKeyDown = (e: KeyboardEvent) => {
     if (isTyping()) return;
-    if (e.key === "Shift") { keys.shift = true; return; }
-    if (e.key === "Control") { keys.ctrl = true; return; }
+    keys.shift = e.shiftKey;
+    keys.ctrl = e.ctrlKey;
+    if (e.key === "Shift" || e.key === "Control") return;
     const k = e.key.toLowerCase();
     if (FLY_KEYS.includes(k)) keys[k] = true;
   };
   const onKeyUp = (e: KeyboardEvent) => {
-    if (e.key === "Shift") { keys.shift = false; return; }
-    if (e.key === "Control") { keys.ctrl = false; return; }
+    keys.shift = e.shiftKey;
+    keys.ctrl = e.ctrlKey;
+    if (e.key === "Shift" || e.key === "Control") return;
     keys[e.key.toLowerCase()] = false;
   };
+  const clearKeys = () => { for (const k of Object.keys(keys)) keys[k] = false; };
+  const onVis = () => { if (document.hidden) clearKeys(); };
   addEventListener("keydown", onKeyDown);
   addEventListener("keyup", onKeyUp);
+  addEventListener("blur", clearKeys);
+  document.addEventListener("visibilitychange", onVis);
   const _fwd = new THREE.Vector3();
   const _right = new THREE.Vector3();
   const _up = new THREE.Vector3(0, 1, 0);
@@ -336,7 +357,7 @@ onMounted(() => {
     const cv = document.createElement("canvas"); cv.width = 256; cv.height = 64;
     const tex = new THREE.CanvasTexture(cv); tex.anisotropy = 4;
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
-    sp.scale.set(PH * 1.9, PH * 0.48, 1); sp.position.y = PH * 1.55; sp.renderOrder = 1002;
+    sp.scale.set(PH * 1.85, PH * 0.46, 1); sp.position.y = PH * 1.66; sp.renderOrder = 1002;
     let last = "";
     return { sprite: sp, redraw(text: string) {
       if (text === last) return; last = text; const x = cv.getContext("2d")!; x.clearRect(0, 0, 256, 64);
@@ -345,56 +366,120 @@ onMounted(() => {
     } };
   }
   function makeHp() {
-    const cv = document.createElement("canvas"); cv.width = 220; cv.height = 40; const ctx = cv.getContext("2d")!;
+    const W = 256, H = 52;
+    const cv = document.createElement("canvas"); cv.width = W; cv.height = H; const ctx = cv.getContext("2d")!;
     const tex = new THREE.CanvasTexture(cv); tex.anisotropy = 4;
     const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
-    sp.scale.set(PH * 1.6, PH * 0.29, 1); sp.position.y = PH * 1.32; sp.renderOrder = 1001;
+    sp.scale.set(PH * 1.75, PH * 0.355, 1); sp.position.y = PH * 1.36; sp.renderOrder = 1001;
     let lh = -2, la = -2;
+    // Two clearly-separate bars (scoreboard look): a prominent GREEN health bar
+    // and a thinner BLUE armor bar beneath it, with a gap so they never merge.
     return { sprite: sp, redraw(hp: number, armor = 0, helmet = false) {
       if (lh >= 0 && Math.abs(hp - lh) < 1.2 && Math.abs(armor - la) < 1.2) return; lh = hp; la = armor;
-      ctx.clearRect(0, 0, 220, 40);
-      ctx.fillStyle = "rgba(4,6,9,0.72)"; (ctx as any).roundRect(2, 4, 216, 12, 6); ctx.fill();
-      const w = Math.max(0, Math.min(1, hp / 100)) * 210; ctx.fillStyle = hp > 60 ? "#48d96e" : hp > 30 ? "#e8c545" : "#e85046"; (ctx as any).roundRect(5, 7, Math.max(2, w), 6, 3); ctx.fill();
-      if (armor > 0) { ctx.fillStyle = "rgba(4,6,9,0.72)"; (ctx as any).roundRect(2, 22, 216, 9, 4); ctx.fill(); const aw = Math.max(0, Math.min(1, armor / 100)) * 210; ctx.fillStyle = helmet ? "#7cd4ff" : "#4a90d6"; (ctx as any).roundRect(5, 24, Math.max(2, aw), 5, 2); ctx.fill(); }
+      ctx.clearRect(0, 0, W, H);
+      const bar = (x: number, y: number, w: number, h: number, r: number, col: string) => {
+        ctx.beginPath(); (ctx as any).roundRect(x, y, w, h, r); ctx.fillStyle = col; ctx.fill();
+      };
+      // health (prominent, top)
+      bar(4, 6, 248, 18, 9, "rgba(4,6,9,0.8)");
+      const hw = Math.max(0, Math.min(1, hp / 100)) * 240;
+      bar(8, 10, Math.max(3, hw), 10, 5, hp > 50 ? "#46d36a" : hp > 20 ? "#e6c344" : "#e0503e");
+      // armor (thinner, bottom, clear gap)
+      bar(4, 30, 248, 12, 6, "rgba(4,6,9,0.8)");
+      const aw = Math.max(0, Math.min(1, armor / 100)) * 240;
+      if (armor > 0) bar(8, 33, Math.max(3, aw), 6, 3, helmet ? "#7cd4ff" : "#4a90d6");
       tex.needsUpdate = true;
     } };
   }
-  // shared dark material for legs/visor (constant colour)
-  const tokenDark = new THREE.MeshStandardMaterial({ color: 0x23272f, roughness: 0.7, metalness: 0.05, depthTest: false });
+  const WHITE = new THREE.Color(0xffffff);
+  // shared eye icon (white), shown above a blinded player
+  const flashIconTex = (() => {
+    const cv = document.createElement("canvas"); cv.width = 64; cv.height = 64;
+    const x = cv.getContext("2d")!;
+    x.strokeStyle = "#fff"; x.fillStyle = "#fff"; x.lineWidth = 5; x.lineCap = "round"; x.lineJoin = "round";
+    // almond eye outline
+    x.beginPath(); x.moveTo(8, 32); x.quadraticCurveTo(32, 12, 56, 32); x.quadraticCurveTo(32, 52, 8, 32); x.closePath(); x.stroke();
+    // pupil
+    x.beginPath(); x.arc(32, 32, 8, 0, Math.PI * 2); x.fill();
+    const tex = new THREE.CanvasTexture(cv); tex.anisotropy = 4; return tex;
+  })();
+  // shared low-poly figure + rifle geometries (reused across all tokens). The
+  // Sleek directional "pin": a glossy team-tinted teardrop marker (rounded top,
+  // pointed bottom) standing on the position ring; aim direction is read from the
+  // sharp floor wedge in front. No body parts. Built via a lathed teardrop
+  // profile so it stays smooth + light.
+  const pinProfile = [
+    new THREE.Vector2(0.02, PH * 1.12),
+    new THREE.Vector2(PR * 0.5, PH * 1.0),
+    new THREE.Vector2(PR * 0.82, PH * 0.86),
+    new THREE.Vector2(PR * 0.92, PH * 0.66),
+    new THREE.Vector2(PR * 0.82, PH * 0.46),
+    new THREE.Vector2(PR * 0.58, PH * 0.27),
+    new THREE.Vector2(PR * 0.3, PH * 0.12),
+    new THREE.Vector2(0.02, PH * 0.02),
+  ];
+  const geoPin = new THREE.LatheGeometry(pinProfile, 22);
+  const geoRing = new THREE.RingGeometry(RING, RING * 1.22, 28);
+  // sharp forward-pointing aim wedge on the floor (the direction cue; shares ringMat)
+  const geoAim = new THREE.BufferGeometry();
+  geoAim.setAttribute("position", new THREE.BufferAttribute(new Float32Array([
+    -RING * 0.5, 0, RING * 1.0,
+    RING * 0.5, 0, RING * 1.0,
+    0, 0, RING * 2.7,
+  ]), 3));
+  geoAim.computeVertexNormals();
   function buildToken() {
     const grp = new THREE.Group();
-    // Low-poly operator figure (legs + tapered torso + head + facing visor).
-    // depthTest:false so players are ALWAYS visible through walls/geometry.
-    const mat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.55, metalness: 0.08, depthTest: false });
-    const legs = new THREE.Mesh(new THREE.CylinderGeometry(PR * 0.5, PR * 0.42, PH * 0.42, 10), tokenDark); legs.position.y = PH * 0.21; legs.renderOrder = 990; grp.add(legs);
-    const torso = new THREE.Mesh(new THREE.CylinderGeometry(PR * 0.92, PR * 0.62, PH * 0.42, 14), mat); torso.position.y = PH * 0.6; torso.renderOrder = 990; grp.add(torso);
-    const head = new THREE.Mesh(new THREE.SphereGeometry(PR * 0.5, 16, 12), mat); head.position.y = PH * 0.9; head.renderOrder = 990; grp.add(head);
-    // facing visor — a small wedge at the front of the head
-    const visor = new THREE.Mesh(new THREE.ConeGeometry(PR * 0.26, PR * 0.6, 8), tokenDark); visor.rotation.x = Math.PI / 2; visor.position.set(0, PH * 0.9, PR * 0.5); visor.renderOrder = 990; grp.add(visor);
+    // glossy team-tinted body; depthTest:false so it's visible through geometry.
+    const mat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.25, metalness: 0.4, depthTest: false });
     const ringMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.9, side: THREE.DoubleSide, depthTest: false });
-    const ring = new THREE.Mesh(new THREE.RingGeometry(RING, RING * 1.22, 24), ringMat); ring.rotation.x = -Math.PI / 2; ring.position.y = 2; ring.renderOrder = 989; grp.add(ring);
+
+    const pin = new THREE.Mesh(geoPin, mat); pin.renderOrder = 991; grp.add(pin);
+    // floor aim wedge (team colour) + position ring
+    const aim = new THREE.Mesh(geoAim, ringMat); aim.position.y = 1.5; aim.renderOrder = 989; grp.add(aim);
+    const ring = new THREE.Mesh(geoRing, ringMat); ring.rotation.x = -Math.PI / 2; ring.position.y = 2; ring.renderOrder = 989; grp.add(ring);
     const np = makeNameplate(); grp.add(np.sprite);
     const hp = makeHp(); grp.add(hp.sprite);
-    const wpn = new THREE.Sprite(new THREE.SpriteMaterial({ depthTest: false, transparent: true })); wpn.scale.set(PH * 0.95, PH * 0.47, 1); wpn.position.y = PH * 1.78; wpn.renderOrder = 1002; wpn.visible = false; grp.add(wpn);
+    const wpn = new THREE.Sprite(new THREE.SpriteMaterial({ depthTest: false, transparent: true })); wpn.scale.set(PH * 0.95, PH * 0.47, 1); wpn.position.y = PH * 1.96; wpn.renderOrder = 1002; wpn.visible = false; grp.add(wpn);
+    // flashbang icon shown above the head while blinded
+    const flash = new THREE.Sprite(new THREE.SpriteMaterial({ map: flashIconTex, depthTest: false, transparent: true })); flash.scale.set(PR * 1.5, PR * 1.5, 1); flash.position.set(PR * 0.9, PH * 1.12, 0); flash.renderOrder = 1003; flash.visible = false; grp.add(flash);
     grp.visible = false; scene.add(grp);
-    return { grp, mat, ringMat, np, hp, wpn };
+    return { grp, mat, ringMat, np, hp, wpn, flash };
   }
   const tokens = Array.from({ length: 12 }, buildToken);
 
   // ===== thrower "ghosts" + highlighted utility paths =====
   function makeGhost() {
     const grp = new THREE.Group();
-    const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.32, depthTest: false });
-    const body = new THREE.Mesh(new THREE.CapsuleGeometry(PR, PH * 0.55, 4, 10), mat); body.position.y = PH * 0.5; body.renderOrder = 991; grp.add(body);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.8, side: THREE.DoubleSide, depthTest: false });
-    const ring = new THREE.Mesh(new THREE.RingGeometry(RING, RING * 1.3, 24), ringMat); ring.rotation.x = -Math.PI / 2; ring.position.y = 2; ring.renderOrder = 991; grp.add(ring);
-    const np = makeNameplate(); grp.add(np.sprite);
+    // ghost = a smaller, translucent version of the player pin at the throw origin
+    const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4, depthTest: false });
+    const body = new THREE.Mesh(geoPin, mat); body.scale.setScalar(0.65); body.renderOrder = 991; grp.add(body);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.7, side: THREE.DoubleSide, depthTest: false });
+    const ring = new THREE.Mesh(new THREE.RingGeometry(RING * 0.7, RING * 0.88, 24), ringMat); ring.rotation.x = -Math.PI / 2; ring.position.y = 2; ring.renderOrder = 991; grp.add(ring);
+    const np = makeNameplate(); np.sprite.position.y = PH * 1.05; np.sprite.scale.multiplyScalar(0.8); grp.add(np.sprite);
     grp.visible = false; scene.add(grp);
     return { grp, mat, ringMat, np };
   }
   const ghosts = Array.from({ length: 32 }, makeGhost);
   // buy-overlay player dots (stacked rounds)
   const overlayDots = Array.from({ length: 80 }, () => { const m = new THREE.Mesh(new THREE.SphereGeometry(PR * 0.85, 8, 6), new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.85, depthTest: false })); m.visible = false; m.renderOrder = 988; scene.add(m); return m; });
+
+  // followed-player highlight: a bright pulsing halo ring under the chased player
+  const followHalo = new THREE.Mesh(
+    new THREE.RingGeometry(RING * 1.35, RING * 1.72, 36),
+    new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.7, side: THREE.DoubleSide, depthTest: false }),
+  );
+  followHalo.rotation.x = -Math.PI / 2; followHalo.renderOrder = 989; followHalo.visible = false; scene.add(followHalo);
+
+  // death markers: team-coloured X on the floor (sprite, always camera-facing)
+  function makeXTex() {
+    const cv = document.createElement("canvas"); cv.width = 64; cv.height = 64; const c = cv.getContext("2d")!;
+    c.strokeStyle = "#fff"; c.lineWidth = 9; c.lineCap = "round";
+    c.beginPath(); c.moveTo(16, 16); c.lineTo(48, 48); c.moveTo(48, 16); c.lineTo(16, 48); c.stroke();
+    const t = new THREE.CanvasTexture(cv); t.anisotropy = 4; return t;
+  }
+  const xTex = makeXTex();
+  const deathMarks = Array.from({ length: 48 }, () => { const m = new THREE.Sprite(new THREE.SpriteMaterial({ map: xTex, transparent: true, opacity: 0.85, depthTest: false })); m.scale.set(PR * 1.5, PR * 1.5, 1); m.visible = false; m.renderOrder = 987; scene.add(m); return m; });
   const selArcs = Array.from({ length: 32 }, () => { const m = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xffffff, emissiveIntensity: 0.7, roughness: 0.4, metalness: 0.1, transparent: true, opacity: 0.8, depthTest: false, side: THREE.DoubleSide })); m.frustumCulled = false; m.visible = false; m.renderOrder = 999; scene.add(m); return m; });
 
   // ===== utility effects (volumetric — ported from Replay3D) =====
@@ -522,13 +607,18 @@ onMounted(() => {
     if (!meshMode && !floorSet) { let m = Infinity; for (const p of ps) if (p.alive && p.z < m) m = p.z; if (m !== Infinity) { floorRef = m; floorSet = true; } }
     let followTok: { grp: THREE.Group } | null = null;
     const ov = props.overlayActors || [];
-    const inOverlay = ov.length > 0;
+    const inOverlay = !!props.overlay; // real overlay mode — never infer from ov.length
     for (let i = 0; i < tokens.length; i++) {
       const tk = tokens[i]; const p = ps[i];
       if (inOverlay || !p || !p.alive) { tk.grp.visible = false; continue; }
       tk.grp.visible = true; wpos(p, _v); tk.grp.position.copy(_v);
       const a = (p.yaw * Math.PI) / 180; tk.grp.rotation.y = Math.atan2(Math.cos(a), -Math.sin(a));
       const col = TEAM(p.team); tk.mat.color.setHex(col); tk.ringMat.color.setHex(col);
+      // blinded: wash the body toward white + raise the flash icon over the head
+      const bl = (p as any).blinded ?? 0;
+      if (bl > 0.05) tk.mat.color.lerp(WHITE, Math.min(0.85, bl * 0.9));
+      tk.flash.visible = bl > 0.12;
+      if (tk.flash.visible) (tk.flash.material as THREE.SpriteMaterial).opacity = Math.min(1, 0.35 + bl);
       const nm = names[p.steamId] || ""; tk.np.redraw(nm);
       tk.hp.redraw(p.health ?? 100, p.armor ?? 0, p.helmet === true);
       const wt = p.activeWeapon ? weaponTex(p.activeWeapon) : null;
@@ -547,6 +637,17 @@ onMounted(() => {
       }
     }
     for (let k = di; k < overlayDots.length; k++) overlayDots[k].visible = false;
+
+    // death markers (team-coloured X on the floor)
+    let dmi = 0;
+    if (!inOverlay) {
+      for (const d of props.deaths || []) {
+        if (dmi >= deathMarks.length) break;
+        const m = deathMarks[dmi++]; wpos(d, _v); m.visible = true; m.position.copy(_v).setY(_v.y + 6);
+        (m.material as THREE.SpriteMaterial).color.setHex(TEAM(d.team));
+      }
+    }
+    for (let k = dmi; k < deathMarks.length; k++) deathMarks[k].visible = false;
 
     // detonations (volumetric smoke / fire / pops + depleting rings).
     // When utilities are selected, ONLY show the selected ones' effects.
@@ -616,7 +717,7 @@ onMounted(() => {
 
     // heat discs
     let hi = 0;
-    if (heatOnOf()) { for (const g of props.heatPoints || []) { if (!typeOn(g.type) || hi >= heat.length) continue; const m = heat[hi++]; wpos({ x: g.rx, y: g.ry, z: g.rz }, _v); m.visible = true; m.position.copy(_v).setY(_v.y + 3); (m.material as THREE.MeshBasicMaterial).color.setHex(NADE_COL[g.type] ?? 0xffffff); (m.material as THREE.MeshBasicMaterial).opacity = 0.5; } }
+    if (heatOnOf()) { for (const g of props.heatPoints || []) { if (!typeOn(g.type) || hi >= heat.length) continue; const m = heat[hi++]; wpos({ x: g.rx, y: g.ry, z: g.rz }, _v); m.visible = true; m.position.copy(_v).setY(_v.y + 3); (m.material as THREE.MeshBasicMaterial).color.setHex(NADE_COL[g.type] ?? 0xffffff); (m.material as THREE.MeshBasicMaterial).opacity = 0.5; m.userData.gid = g.gid ?? null; } }
     for (let k = hi; k < heat.length; k++) heat[k].visible = false;
 
     // bomb
@@ -693,6 +794,15 @@ onMounted(() => {
     applyFly(dt);
     const following = (camModeOf() === "follow" || !!followSid.value) && !followSuppressed;
     if (following && camToken) { camToken.grp.getWorldPosition(tgt); tgt.y += PH * 0.5; const delta = tgt.clone().sub(controls.target).multiplyScalar(0.18); controls.target.add(delta); camera.position.add(delta); }
+    // followed-player highlight: a bright pulsing halo under the chased player
+    if (camToken) {
+      camToken.grp.getWorldPosition(_v);
+      followHalo.visible = true;
+      followHalo.position.set(_v.x, _v.y + 2.5, _v.z);
+      const s = 1 + 0.1 * Math.sin(tsec * 4.5);
+      followHalo.scale.set(s, s, 1);
+      (followHalo.material as THREE.MeshBasicMaterial).opacity = 0.45 + 0.35 * (0.5 + 0.5 * Math.sin(tsec * 4.5));
+    } else followHalo.visible = false;
     // roof cut: slider midpoint (50) sits at the auto-detected playable ceiling,
     // so it just works by default; 0 = floor, 100 = full map.
     if (meshMode && meshLoaded) {
@@ -719,13 +829,13 @@ onMounted(() => {
   };
   raf = requestAnimationFrame(loop); apply();
 
-  cleanup = () => { cancelAnimationFrame(raf); ro.disconnect(); controls.dispose(); renderer.dispose(); removeEventListener("keydown", onKeyDown); removeEventListener("keyup", onKeyUp); };
+  cleanup = () => { cancelAnimationFrame(raf); ro.disconnect(); controls.dispose(); renderer.dispose(); removeEventListener("keydown", onKeyDown); removeEventListener("keyup", onKeyUp); removeEventListener("blur", clearKeys); document.removeEventListener("visibilitychange", onVis); };
 });
 
 // Shallow watch — the source computeds return fresh array refs on change, so
 // identity comparison is enough. Deep-watching these (large in overlay mode)
 // was a major perf drain.
-watch(() => [props.players, props.grenades, props.inFlight, props.bomb, props.heatPoints, props.grenadeTrajectories, props.selectedGids, props.roundUtilities, props.overlayActors], () => apply?.());
+watch(() => [props.players, props.grenades, props.inFlight, props.bomb, props.heatPoints, props.grenadeTrajectories, props.selectedGids, props.roundUtilities, props.overlay, props.overlayActors, props.deaths], () => apply?.());
 watch(() => [props.heatOn, props.typeFilter], () => apply?.(), { deep: true });
 
 // Follow + camera mode are driven by the shared chrome (props).

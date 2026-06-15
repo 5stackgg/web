@@ -9,7 +9,7 @@
             :to="{ name: 'play' }"
             class="inline-flex h-7 items-center rounded-md px-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors [&.router-link-active]:bg-transparent [&.router-link-exact-active]:bg-transparent"
           >
-            dashboard
+            {{ $t("breadcrumbs.dashboard") }}
           </NuxtLink>
         </BreadcrumbLink>
       </BreadcrumbItem>

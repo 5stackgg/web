@@ -63,7 +63,9 @@ const clipPct = computed(() => (total.value ? 100 - demoPct.value : 0));
         <div
           class="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground"
         >
-          {{ $t("pages.settings.application.demo_settings.orphaned_breakdown") }}
+          {{
+            $t("pages.settings.application.demo_settings.orphaned_breakdown")
+          }}
         </div>
         <div class="text-2xl font-bold tabular-nums">
           {{ formatBytes(total) }}<span class="text-muted-foreground">~</span>
@@ -95,9 +97,12 @@ const clipPct = computed(() => (total.value ? 100 - demoPct.value : 0));
           </span>
           <span class="text-xs text-muted-foreground tabular-nums">
             {{
-              $t("pages.settings.application.demo_settings.orphaned_demos_count", {
-                count: demoCount,
-              })
+              $t(
+                "pages.settings.application.demo_settings.orphaned_demos_count",
+                {
+                  count: demoCount,
+                },
+              )
             }}
           </span>
         </div>

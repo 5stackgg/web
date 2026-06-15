@@ -1311,7 +1311,7 @@ export default {
       return [1, 3, 5].map((rounds) => {
         return {
           value: rounds.toString(),
-          display: `Best of ${rounds}`,
+          display: this.$t("match.options.best_of.option", { count: rounds }),
         };
       });
     },

@@ -525,17 +525,17 @@ function damageWidth(v: number) {
         class="grid grid-cols-2 gap-3 pt-3 border-t border-border/50 font-mono text-[0.65rem]"
       >
         <div class="flex items-center justify-between">
-          <span class="tracking-[0.22em] uppercase text-muted-foreground"
-            >Flashes on them</span
-          >
+          <span class="tracking-[0.22em] uppercase text-muted-foreground">{{
+            $t("match.head_to_head_matrix.flashes_on_them")
+          }}</span>
           <span class="tabular-nums text-amber-400 font-bold">{{
             aOnB?.flash_count || ""
           }}</span>
         </div>
         <div class="flex items-center justify-between">
-          <span class="tracking-[0.22em] uppercase text-muted-foreground"
-            >Flashes on you</span
-          >
+          <span class="tracking-[0.22em] uppercase text-muted-foreground">{{
+            $t("match.head_to_head_matrix.flashes_on_you")
+          }}</span>
           <span class="tabular-nums text-sky-400 font-bold">{{
             bOnA?.flash_count || ""
           }}</span>

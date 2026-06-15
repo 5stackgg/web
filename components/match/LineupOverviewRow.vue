@@ -94,7 +94,7 @@ const DASH = "—";
                 <Sparkles
                   class="h-3.5 w-3.5 mr-2 text-[hsl(var(--tac-amber))]"
                 />
-                <span>Render highlight…</span>
+                <span>{{ $t("match.overview.render_highlight") }}</span>
               </DropdownMenuItem>
             </template>
           </DropdownMenuContent>

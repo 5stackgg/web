@@ -304,10 +304,10 @@ function press(s: PaddedSlot) {
           ]"
           :title="
             s.isPlaceholder
-              ? `Slot ${s.slot} · waiting for player…`
+              ? t('stream_deck.spectator.slot_waiting', { slot: s.slot })
               : autodirectorOn
-                ? 'Click to take manual control'
-                : (s.name ?? `Slot ${s.slot}`)
+                ? t('stream_deck.spectator.take_manual_control')
+                : (s.name ?? t('stream_deck.spectator.slot', { slot: s.slot }))
           "
           @click="press(s)"
         >
@@ -540,10 +540,10 @@ function press(s: PaddedSlot) {
           ]"
           :title="
             s.isPlaceholder
-              ? `Slot ${s.slot} · waiting for player…`
+              ? t('stream_deck.spectator.slot_waiting', { slot: s.slot })
               : autodirectorOn
-                ? 'Click to take manual control'
-                : (s.name ?? `Slot ${s.slot}`)
+                ? t('stream_deck.spectator.take_manual_control')
+                : (s.name ?? t('stream_deck.spectator.slot', { slot: s.slot }))
           "
           @click="press(s)"
         >

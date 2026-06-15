@@ -213,9 +213,15 @@ export default {
     formatTypeName(type: string): string {
       const names: Record<string, string> = {
         [e_game_cfg_types_enum.Lan]: "LAN",
-        [e_game_cfg_types_enum.Competitive]: "Competitive",
-        [e_game_cfg_types_enum.Wingman]: "Wingman",
-        [e_game_cfg_types_enum.Duel]: "Duel",
+        [e_game_cfg_types_enum.Competitive]: this.$t(
+          "pages.leaderboard.match_types.competitive",
+        ),
+        [e_game_cfg_types_enum.Wingman]: this.$t(
+          "pages.leaderboard.match_types.wingman",
+        ),
+        [e_game_cfg_types_enum.Duel]: this.$t(
+          "pages.leaderboard.match_types.duel",
+        ),
       };
       return names[type] || type;
     },

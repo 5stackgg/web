@@ -37,7 +37,7 @@ const iconClasses = computed(() =>
   <span
     class="inline-flex items-center rounded border border-white/20 bg-black/60 font-medium text-white backdrop-blur-sm"
     :class="sizeClasses"
-    :title="`${count ?? 0} watching`"
+    :title="$t('match.stream.watching', { count: count ?? 0 })"
   >
     <Eye :class="iconClasses" />
     {{ formatted }}

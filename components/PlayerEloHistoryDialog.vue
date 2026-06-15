@@ -78,11 +78,11 @@ const { client } = useApolloClient();
 const { t } = useI18n();
 
 const ranges: { key: RangeKey; label: string; days: number | null }[] = [
-  { key: "7d", label: "7D", days: 7 },
-  { key: "30d", label: "30D", days: 30 },
-  { key: "90d", label: "90D", days: 90 },
-  { key: "1y", label: "1Y", days: 365 },
-  { key: "all", label: "ALL", days: null },
+  { key: "7d", label: t("pages.players.detail.range_7d"), days: 7 },
+  { key: "30d", label: t("pages.players.detail.range_30d"), days: 30 },
+  { key: "90d", label: t("pages.players.detail.range_90d"), days: 90 },
+  { key: "1y", label: t("pages.players.detail.range_1y"), days: 365 },
+  { key: "all", label: t("pages.players.detail.range_all"), days: null },
 ];
 
 const selectedRange = ref<RangeKey>(props.defaultRange ?? "1y");

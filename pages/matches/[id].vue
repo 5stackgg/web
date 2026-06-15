@@ -304,7 +304,9 @@ const vsBaseClasses =
               >
                 <AnimatedStat :value="mapScores.l1" />
               </span>
-              <span :class="vsBaseClasses">VS</span>
+              <span :class="[vsBaseClasses, 'uppercase']">{{
+                $t("common.vs")
+              }}</span>
               <span
                 :class="[
                   scoreClasses,
@@ -315,8 +317,10 @@ const vsBaseClasses =
                 <AnimatedStat :value="mapScores.l2" />
               </span>
             </div>
-            <span v-else :class="[vsBaseClasses, 'text-base px-4 py-[0.6rem]']"
-              >VS</span
+            <span
+              v-else
+              :class="[vsBaseClasses, 'text-base px-4 py-[0.6rem] uppercase']"
+              >{{ $t("common.vs") }}</span
             >
           </div>
 

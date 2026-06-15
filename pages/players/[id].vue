@@ -115,9 +115,14 @@ const presetRanges: {
   days: number | null;
   matches?: number | null;
 }[] = [
-  { key: "l30", label: "L30", days: null, matches: 30 },
-  { key: "7d", label: "7D", days: 7 },
-  { key: "90d", label: "90D", days: 90 },
+  {
+    key: "l30",
+    label: t("pages.players.detail.range_l30"),
+    days: null,
+    matches: 30,
+  },
+  { key: "7d", label: t("pages.players.detail.range_7d"), days: 7 },
+  { key: "90d", label: t("pages.players.detail.range_90d"), days: 90 },
 ];
 
 const statsTab = ref<"performance" | "elo" | "maps" | "arsenal" | "combat">(
@@ -278,10 +283,10 @@ const sourceOptions = computed<{ value: StatSource; label: string }[]>(() =>
   appSettings.externalMatchesEnabled
     ? [
         { value: "all", label: t("pages.players.detail.all_short") },
-        { value: "5stack", label: "5Stack" },
-        { value: "external", label: "External" },
+        { value: "5stack", label: t("player_match.source.internal") },
+        { value: "external", label: t("player_match.source.external") },
       ]
-    : [{ value: "5stack", label: "5Stack" }],
+    : [{ value: "5stack", label: t("player_match.source.internal") }],
 );
 
 // The ELO tab can't blend worlds (5Stack ELO vs Valve rank), so "All" is not a

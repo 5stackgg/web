@@ -331,7 +331,11 @@ function statCell(lp: any, key: "kills" | "deaths" | "assists" | "damage") {
                 <span
                   class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-[hsl(var(--tac-amber))]"
                 >
-                  {{ currentMap.winning_lineup_id ? "Final" : "Live" }}
+                  {{
+                    currentMap.winning_lineup_id
+                      ? $t("match.scoreboard_overlay.final")
+                      : $t("match.scoreboard_overlay.live")
+                  }}
                 </span>
                 <span class="truncate text-sm font-semibold">{{
                   match.lineup_1.name

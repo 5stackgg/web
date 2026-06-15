@@ -28,7 +28,7 @@ import { Merge, Minimize2 } from "lucide-vue-next";
         class="inline-flex h-2 w-2 rounded-full"
         :class="participantsCount > 0 ? 'bg-emerald-400' : 'bg-zinc-500/60'"
       />
-      {{ participantsCount }} in chat
+      {{ participantsCount }} {{ $t("chat.in_chat") }}
     </div>
     <Minimize2
       v-if="showMinimizeButton"

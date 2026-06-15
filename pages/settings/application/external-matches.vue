@@ -135,7 +135,9 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
             >
               {{ testResult.dataApi.ok ? "✓" : "✗" }}
               {{
-                $t("pages.settings.application.external_matches.faceit_data_api")
+                $t(
+                  "pages.settings.application.external_matches.faceit_data_api",
+                )
               }}
               — {{ testResult.dataApi.detail }}
             </div>

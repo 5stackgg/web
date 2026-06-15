@@ -74,7 +74,7 @@ import Empty from "~/components/ui/empty/Empty.vue";
             class="underline-offset-2 hover:underline"
             @click.stop="showParticipants = !showParticipants"
           >
-            {{ participantsCount }} in chat
+            {{ participantsCount }} {{ $t("chat.in_chat") }}
           </button>
         </div>
       </div>

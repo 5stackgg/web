@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
+
 const props = defineProps<{
   source?: string | null;
 }>();
@@ -24,7 +28,7 @@ const classes =
   <span
     v-if="visible"
     :class="classes"
-    title="Imported from an external source — not a 5stack match"
+    :title="t('match.source_badge.imported_external')"
   >
     {{ label }}
   </span>

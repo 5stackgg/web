@@ -117,7 +117,7 @@ async function unlinkDiscord() {
       <span
         class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"
       ></span>
-      Settings
+      {{ $t("layouts.account_settings.label") }}
     </div>
     <h2 class="text-xl font-bold tracking-tight">
       {{ $t("layouts.account_settings.title") }}

@@ -141,9 +141,9 @@ import StorageBreakdown from "~/components/settings/StorageBreakdown.vue";
                         "pages.settings.application.demo_settings.min_retention",
                       )
                     }}
-                    <span class="text-muted-foreground font-normal"
-                      >(days)</span
-                    >
+                    <span class="text-muted-foreground font-normal">{{
+                      $t("pages.settings.application.demo_settings.unit_days")
+                    }}</span>
                   </FormLabel>
                   <Input type="number" v-bind="componentField"></Input>
                   <FormMessage />
@@ -156,7 +156,9 @@ import StorageBreakdown from "~/components/settings/StorageBreakdown.vue";
                     {{
                       $t("pages.settings.application.demo_settings.max_storage")
                     }}
-                    <span class="text-muted-foreground font-normal">(GB)</span>
+                    <span class="text-muted-foreground font-normal">{{
+                      $t("pages.settings.application.demo_settings.unit_gb")
+                    }}</span>
                   </FormLabel>
                   <Input type="number" v-bind="componentField"></Input>
                   <FormMessage />

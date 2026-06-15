@@ -423,10 +423,7 @@ export default {
     isMatchmakingTypeEnabled(matchType: string): boolean {
       return useApplicationSettingsStore().isMatchmakingTypeEnabled(matchType);
     },
-    distinctInQueue(
-      type: e_match_types_enum,
-      regionValues: string[],
-    ): number {
+    distinctInQueue(type: e_match_types_enum, regionValues: string[]): number {
       const lobbyIndexes = new Set<number>();
       for (const regionValue of regionValues) {
         const indexes = this.regionStats[regionValue]?.[type];
@@ -531,7 +528,8 @@ export default {
       return useAuthStore().me;
     },
     queueWaitTime(): string {
-      if (!this.matchMakingQueueDetails?.joinedAt) return "0 seconds";
+      if (!this.matchMakingQueueDetails?.joinedAt)
+        return this.$t("matchmaking.queue_wait.zero");
 
       const joinedAt = new Date(this.matchMakingQueueDetails.joinedAt);
       const now = new Date();
@@ -540,12 +538,17 @@ export default {
       );
 
       if (diffInSeconds < 60) {
-        return `${diffInSeconds} seconds`;
+        return this.$t("matchmaking.queue_wait.seconds", {
+          count: diffInSeconds,
+        });
       }
 
       const minutes = Math.floor(diffInSeconds / 60);
       const seconds = diffInSeconds % 60;
-      return `${minutes}m ${seconds}s`;
+      return this.$t("matchmaking.queue_wait.minutes_seconds", {
+        minutes,
+        seconds,
+      });
     },
   },
 };

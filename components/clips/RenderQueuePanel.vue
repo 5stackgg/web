@@ -916,7 +916,7 @@ const queueStatus = computed<{
             matchupLabel(g.sample) ??
             g.sample.match_map?.map?.label ??
             g.sample.match_map?.map?.name ??
-            'Unknown match'
+            $t('clips.render_queue.unknown_match')
           "
           avatar-class="border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]"
           :time="formatTimeAgo(g.startedAt)"
@@ -942,10 +942,16 @@ const queueStatus = computed<{
               ·
             </span>
             <span class="tabular-nums">
-              {{ g.terminalCount }}/{{ g.totalCount }} done
+              {{
+                $t("clips.render_queue.done_count", {
+                  done: g.terminalCount,
+                  total: g.totalCount,
+                })
+              }}
             </span>
             <span v-if="g.errorCount > 0" class="text-destructive/80">
-              · {{ g.errorCount }} err
+              ·
+              {{ $t("clips.render_queue.err_count", { count: g.errorCount }) }}
             </span>
           </template>
 
@@ -960,7 +966,9 @@ const queueStatus = computed<{
                   <ExternalLink class="h-3 w-3" />
                 </NuxtLink>
               </TooltipTrigger>
-              <TooltipContent>Open match</TooltipContent>
+              <TooltipContent>{{
+                $t("clips.render_queue.open_match")
+              }}</TooltipContent>
             </Tooltip>
             <Tooltip v-if="g.isPaused && resumeBlockedReason">
               <TooltipTrigger as-child>
@@ -1012,7 +1020,9 @@ const queueStatus = computed<{
                   <RotateCcw v-else class="h-3 w-3" />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Retry failed</TooltipContent>
+              <TooltipContent>{{
+                $t("clips.render_queue.retry_failed")
+              }}</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger as-child>
@@ -1100,7 +1110,9 @@ const queueStatus = computed<{
                 >
                   <Server class="h-3 w-3 text-primary" />
                 </span>
-                <span class="text-sm font-medium">Render pod booting</span>
+                <span class="text-sm font-medium">{{
+                  $t("clips.render_queue.render_pod_booting")
+                }}</span>
               </div>
               <div class="flex flex-col gap-3 sm:flex-row sm:items-start">
                 <BootSequence
@@ -1204,7 +1216,9 @@ const queueStatus = computed<{
                         <RotateCcw v-else class="h-3 w-3" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Re-queue clip</TooltipContent>
+                    <TooltipContent>{{
+                      $t("clips.render_queue.requeue_clip")
+                    }}</TooltipContent>
                   </Tooltip>
                   <Tooltip v-if="j.status === 'done' && j.clip_id">
                     <TooltipTrigger as-child>
@@ -1218,7 +1232,9 @@ const queueStatus = computed<{
                         <Play class="h-3 w-3" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>Preview clip</TooltipContent>
+                    <TooltipContent>{{
+                      $t("clips.render_queue.preview_clip")
+                    }}</TooltipContent>
                   </Tooltip>
                   <Tooltip v-if="isAdmin && jobLogService(j)">
                     <TooltipTrigger as-child>
@@ -1237,7 +1253,9 @@ const queueStatus = computed<{
                         <ScrollText class="h-3 w-3" />
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent>View render job logs</TooltipContent>
+                    <TooltipContent>{{
+                      $t("clips.render_queue.view_logs")
+                    }}</TooltipContent>
                   </Tooltip>
                 </div>
 
@@ -1318,8 +1336,16 @@ const queueStatus = computed<{
                 class="flex w-full items-center justify-center gap-1.5 px-3 py-2 sm:px-4 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground hover:bg-muted/20 transition-colors"
                 @click="toggleInFlightExpanded(g.matchMapId)"
               >
-                <template v-if="isInFlightExpanded(g)">Hide clips</template>
-                <template v-else> Show all {{ g.totalCount }} clips </template>
+                <template v-if="isInFlightExpanded(g)">{{
+                  $t("clips.render_queue.hide_clips")
+                }}</template>
+                <template v-else>
+                  {{
+                    $t("clips.render_queue.show_all_clips", {
+                      count: g.totalCount,
+                    })
+                  }}
+                </template>
               </button>
             </div>
 
@@ -1331,7 +1357,13 @@ const queueStatus = computed<{
                 {{ statusLabel(g.activeJob.status) }} ·
                 {{ clipTitle(g.activeJob) }}
               </span>
-              <span v-else> {{ g.jobs.length }} queued </span>
+              <span v-else>
+                {{
+                  $t("clips.render_queue.queued_count", {
+                    count: g.jobs.length,
+                  })
+                }}
+              </span>
             </div>
           </template>
         </RenderQueueBatchRow>
@@ -1348,8 +1380,10 @@ const queueStatus = computed<{
           <span
             class="font-mono text-[0.6rem] tabular-nums text-muted-foreground/70"
           >
-            {{ finishedJobs.length }} clip{{
-              finishedJobs.length === 1 ? "" : "s"
+            {{
+              $t("clips.render_queue.clip_count", {
+                count: finishedJobs.length,
+              })
             }}
           </span>
           <Button
@@ -1362,7 +1396,7 @@ const queueStatus = computed<{
           >
             <Spinner v-if="clearingAllFinished" class="h-3 w-3 mr-1" />
             <X v-else class="h-3 w-3 mr-1" />
-            Clear all
+            {{ $t("clips.render_queue.clear_all") }}
           </Button>
         </div>
         <TransitionGroup tag="div" name="batch" class="relative space-y-1">
@@ -1374,7 +1408,7 @@ const queueStatus = computed<{
               matchupLabel(g.sample) ??
               g.sample.match_map?.map?.label ??
               g.sample.match_map?.map?.name ??
-              'Unknown match'
+              $t('clips.render_queue.unknown_match')
             "
             :avatar-class="
               g.errorCount > 0
@@ -1398,22 +1432,33 @@ const queueStatus = computed<{
                 }}
                 ·
               </span>
-              <span class="tabular-nums"
-                >{{ g.totalCount }} clip{{
-                  g.totalCount === 1 ? "" : "s"
-                }}</span
-              >
+              <span class="tabular-nums">{{
+                $t("clips.render_queue.clip_count", { count: g.totalCount })
+              }}</span>
               <span v-if="g.doneCount > 0" class="text-emerald-400/80">
-                · {{ g.doneCount }} done
+                ·
+                {{
+                  $t("clips.render_queue.done_only_count", {
+                    count: g.doneCount,
+                  })
+                }}
               </span>
               <span v-if="g.errorCount > 0" class="text-destructive/80">
-                · {{ g.errorCount }} err
+                ·
+                {{
+                  $t("clips.render_queue.err_count", { count: g.errorCount })
+                }}
               </span>
               <span
                 v-if="g.cancelledCount > 0"
                 class="text-muted-foreground/70"
               >
-                · {{ g.cancelledCount }} cancelled
+                ·
+                {{
+                  $t("clips.render_queue.cancelled_count", {
+                    count: g.cancelledCount,
+                  })
+                }}
               </span>
             </template>
 
@@ -1428,7 +1473,9 @@ const queueStatus = computed<{
                     <ExternalLink class="h-3 w-3" />
                   </NuxtLink>
                 </TooltipTrigger>
-                <TooltipContent>Open match</TooltipContent>
+                <TooltipContent>{{
+                  $t("clips.render_queue.open_match")
+                }}</TooltipContent>
               </Tooltip>
               <Tooltip
                 v-if="isAdmin && (g.errorCount > 0 || g.cancelledCount > 0)"
@@ -1449,7 +1496,11 @@ const queueStatus = computed<{
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  Retry failed ({{ g.errorCount + g.cancelledCount }})
+                  {{
+                    $t("clips.render_queue.retry_failed_count", {
+                      count: g.errorCount + g.cancelledCount,
+                    })
+                  }}
                 </TooltipContent>
               </Tooltip>
               <Tooltip v-if="isAdmin">
@@ -1469,7 +1520,11 @@ const queueStatus = computed<{
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  Retry all {{ g.totalCount }} clips
+                  {{
+                    $t("clips.render_queue.retry_all_clips", {
+                      count: g.totalCount,
+                    })
+                  }}
                 </TooltipContent>
               </Tooltip>
               <Tooltip v-if="isAdmin">
@@ -1488,7 +1543,9 @@ const queueStatus = computed<{
                     <X v-else class="h-3 w-3" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>Clear batch</TooltipContent>
+                <TooltipContent>{{
+                  $t("clips.render_queue.clear_batch")
+                }}</TooltipContent>
               </Tooltip>
             </template>
 
@@ -1549,7 +1606,9 @@ const queueStatus = computed<{
                           <RotateCcw v-else class="h-3 w-3" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Re-queue clip</TooltipContent>
+                      <TooltipContent>{{
+                        $t("clips.render_queue.requeue_clip")
+                      }}</TooltipContent>
                     </Tooltip>
                     <Tooltip v-if="j.status === 'done' && j.clip_id">
                       <TooltipTrigger as-child>
@@ -1563,7 +1622,9 @@ const queueStatus = computed<{
                           <Play class="h-3 w-3" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Preview clip</TooltipContent>
+                      <TooltipContent>{{
+                        $t("clips.render_queue.preview_clip")
+                      }}</TooltipContent>
                     </Tooltip>
                     <Tooltip v-if="isAdmin && jobLogService(j)">
                       <TooltipTrigger as-child>
@@ -1582,7 +1643,9 @@ const queueStatus = computed<{
                           <ScrollText class="h-3 w-3" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>View render job logs</TooltipContent>
+                      <TooltipContent>{{
+                        $t("clips.render_queue.view_logs")
+                      }}</TooltipContent>
                     </Tooltip>
                   </div>
                   <div
@@ -1603,11 +1666,15 @@ const queueStatus = computed<{
                   class="flex w-full items-center justify-center gap-1.5 px-2.5 py-1.5 font-mono text-[0.58rem] uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground hover:bg-muted/20 transition-colors"
                   @click="toggleFinishedJobsExpanded(g.matchMapId)"
                 >
-                  <template v-if="isFinishedJobsExpanded(g)"
-                    >Show less</template
-                  >
+                  <template v-if="isFinishedJobsExpanded(g)">{{
+                    $t("clips.render_queue.show_less")
+                  }}</template>
                   <template v-else>
-                    Show {{ g.totalCount - FINISHED_BATCH_CLIP_THRESHOLD }} more
+                    {{
+                      $t("clips.render_queue.show_more", {
+                        count: g.totalCount - FINISHED_BATCH_CLIP_THRESHOLD,
+                      })
+                    }}
                   </template>
                 </button>
               </div>
@@ -1622,7 +1689,7 @@ const queueStatus = computed<{
           @click="loadMoreFinished"
         >
           <Spinner v-if="finishedLoading" class="h-3 w-3" />
-          Load more
+          {{ $t("clips.render_queue.load_more") }}
         </button>
       </div>
     </TooltipProvider>
@@ -1638,11 +1705,10 @@ const queueStatus = computed<{
     <div
       class="mt-3 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
     >
-      Render queue is empty
+      {{ $t("clips.render_queue.empty_title") }}
     </div>
     <p class="mt-2 max-w-md mx-auto text-xs text-muted-foreground/80">
-      Highlight render jobs queued from matches will show up here while they
-      boot, render, and upload.
+      {{ $t("clips.render_queue.empty_description") }}
     </p>
   </div>
 </template>

@@ -1078,7 +1078,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
           key="no-clips"
           class="text-[0.65rem] text-muted-foreground"
         >
-          No highlights from this map.
+          {{ $t("clips.no_highlights_from_map") }}
         </p>
       </Transition>
       <!-- Quick Overview + Open match buttons — anchor the bottom of the

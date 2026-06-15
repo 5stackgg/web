@@ -234,7 +234,7 @@ const chipClipSm = "";
                     : 'text-[hsl(0_84%_66%)] bg-[hsl(0_84%_50%/0.12)]',
                 ]"
               >
-                {{ isWin ? "WIN" : "LOSS" }}
+                {{ isWin ? $t("elo_change.win") : $t("elo_change.loss") }}
               </span>
             </span>
           </header>
@@ -323,7 +323,7 @@ const chipClipSm = "";
               <span
                 class="text-[8.5px] tracking-[0.22em] uppercase text-[hsl(var(--tac-amber)/0.85)] font-semibold"
               >
-                MAPS
+                {{ $t("elo_change.maps") }}
               </span>
               <span :class="[monoNum, 'font-bold text-[15px] text-foreground']">
                 {{ eloChange.map_wins
@@ -394,7 +394,7 @@ const chipClipSm = "";
               </span>
             </div>
             <div class="flex flex-col gap-0.5 px-2 py-1.5 bg-card/80">
-              <span :class="labelClass">DAMAGE</span>
+              <span :class="labelClass">{{ $t("elo_change.damage") }}</span>
               <span
                 :class="[monoNum, 'font-semibold text-[12px] text-foreground']"
               >
@@ -407,7 +407,7 @@ const chipClipSm = "";
               </span>
             </div>
             <div class="flex flex-col gap-0.5 px-2 py-1.5 bg-card/80">
-              <span :class="labelClass">SCORE</span>
+              <span :class="labelClass">{{ $t("elo_change.score") }}</span>
               <span
                 :class="[monoNum, 'font-semibold text-[12px] text-foreground']"
               >
@@ -420,7 +420,7 @@ const chipClipSm = "";
               </span>
             </div>
             <div class="flex flex-col gap-0.5 px-2 py-1.5 bg-card/80">
-              <span :class="labelClass">IMPACT</span>
+              <span :class="labelClass">{{ $t("elo_change.impact") }}</span>
               <span
                 :class="[
                   monoNum,

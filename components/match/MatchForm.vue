@@ -67,7 +67,9 @@ const tacLabelClasses =
           >
             <div class="flex items-center gap-[0.65rem] flex-wrap">
               <span :class="tickClasses"></span>
-              <FormLabel :class="tacLabelClasses"> Lobby Access </FormLabel>
+              <FormLabel :class="tacLabelClasses">
+                {{ $t("match.form.lobby_access") }}
+              </FormLabel>
               <span class="ml-auto text-[0.78rem] text-muted-foreground">
                 {{ activeLobbyAccessDescription(value) }}
               </span>

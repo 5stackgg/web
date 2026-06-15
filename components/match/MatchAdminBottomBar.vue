@@ -403,9 +403,11 @@ function runCommand(
               v-else
               class="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed border-border p-6 text-center h-full"
             >
-              <h3 class="font-semibold">RCON unavailable</h3>
+              <h3 class="font-semibold">
+                {{ $t("match.admin_bar.rcon_unavailable") }}
+              </h3>
               <p class="text-sm text-muted-foreground">
-                Match is not in a controllable state.
+                {{ $t("match.admin_bar.not_controllable") }}
               </p>
             </div>
           </div>

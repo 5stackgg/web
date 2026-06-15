@@ -363,11 +363,11 @@ function formatRelativeTime(iso: string | null | undefined): string | null {
   const ts = new Date(iso).getTime();
   if (!Number.isFinite(ts)) return null;
   const diff = Date.now() - ts;
-  if (diff < 0) return "just now";
+  if (diff < 0) return t("clips.detail.just_now");
   const minute = 60_000;
   const hour = 60 * minute;
   const day = 24 * hour;
-  if (diff < minute) return "just now";
+  if (diff < minute) return t("clips.detail.just_now");
   if (diff < hour) return `${Math.floor(diff / minute)}m ago`;
   if (diff < day) return `${Math.floor(diff / hour)}h ago`;
   if (diff < 7 * day) return `${Math.floor(diff / day)}d ago`;
@@ -525,7 +525,9 @@ onMounted(() => {
           <DialogTitle>{{ clip?.title || $t("common.clip") }}</DialogTitle>
         </VisuallyHidden>
         <VisuallyHidden as-child>
-          <DialogDescription> Highlight clip viewer </DialogDescription>
+          <DialogDescription>{{
+            $t("clips.detail.highlight_clip_viewer")
+          }}</DialogDescription>
         </VisuallyHidden>
 
         <span
@@ -756,7 +758,7 @@ onMounted(() => {
                     <span
                       class="ml-3 text-sm font-mono uppercase tracking-[0.18em]"
                     >
-                      Render finalizing…
+                      {{ $t("clips.detail.render_finalizing") }}
                     </span>
                   </div>
                 </template>

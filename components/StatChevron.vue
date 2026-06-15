@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import {
   ChevronsUp,
   ChevronUp,
   ChevronDown,
   ChevronsDown,
 } from "lucide-vue-next";
+
+const { t } = useI18n();
 import {
   LEVEL_CLASS,
   statLevelFor,
@@ -59,13 +62,13 @@ const colorClass = computed(() => {
 const label = computed(() => {
   switch (resolvedLevel.value) {
     case 2:
-      return "Best";
+      return t("stat.level.best");
     case 1:
-      return "Above average";
+      return t("stat.level.above_average");
     case -1:
-      return "Below average";
+      return t("stat.level.below_average");
     case -2:
-      return "Poor";
+      return t("stat.level.poor");
     default:
       return "";
   }
@@ -76,7 +79,11 @@ const label = computed(() => {
   <component
     :is="icon"
     v-if="icon"
-    :class="['inline-block align-middle h-3.5 w-3.5 shrink-0', colorClass, props.class]"
+    :class="[
+      'inline-block align-middle h-3.5 w-3.5 shrink-0',
+      colorClass,
+      props.class,
+    ]"
     :aria-label="label"
     role="img"
   />

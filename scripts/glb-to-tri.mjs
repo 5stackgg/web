@@ -108,18 +108,23 @@ function dropStandaloneWalls(tris, opts = {}) {
     if (thin <= THIN && dz >= TALL && s.vert / s.n >= VERT) drop.add(r);
   }
   if (!drop.size) return { tris, dropped: 0, walls: 0 };
-  const out = [];
-  let dropped = 0;
+  // preallocate the kept buffer (avoid a multi-million-element Array.push)
+  let keep = 0;
+  for (let i = 0; i < n; i++) if (!drop.has(find(tv[i * 3]))) keep++;
+  const out = new Float32Array(keep * 9);
+  let w = 0;
   for (let i = 0; i < n; i++) {
-    if (drop.has(find(tv[i * 3]))) { dropped++; continue; }
+    if (drop.has(find(tv[i * 3]))) continue;
     const o = i * 9;
-    for (let k = 0; k < 9; k++) out.push(tris[o + k]);
+    for (let k = 0; k < 9; k++) out[w++] = tris[o + k];
   }
-  return { tris: out, dropped, walls: drop.size };
+  return { tris: out, dropped: n - keep, walls: drop.size };
 }
 
 // Parse a .glb and return { tris: Float32 buffer of source-unit triangles, count, bbox }.
-export function glbToTri(inPath, { skipClips = true, dropWalls = true } = {}) {
+export function glbToTri(inPath, opts = {}) {
+  const skipClips = opts.skipClips ?? true;
+  const dropWalls = opts.dropWalls ?? process.env.MESH_KEEP_WALLS !== "1";
   const buf = readFileSync(inPath);
   const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
   const total = dv.getUint32(8, true);
@@ -179,10 +184,16 @@ export function glbToTri(inPath, { skipClips = true, dropWalls = true } = {}) {
     }
   }
 
-  // drop isolated thin/tall/vertical "standalone walls"
+  // drop isolated thin/tall/vertical "standalone walls". Thresholds are tunable
+  // per run via WALL_THIN / WALL_TALL / WALL_VERT env vars.
   let walls = 0, wallTris = 0, kept = tris;
   if (dropWalls) {
-    const r = dropStandaloneWalls(tris);
+    const num = (v) => (v != null && v !== "" ? Number(v) : undefined);
+    const r = dropStandaloneWalls(tris, {
+      thin: num(process.env.WALL_THIN),
+      tall: num(process.env.WALL_TALL),
+      vert: num(process.env.WALL_VERT),
+    });
     kept = r.tris; walls = r.walls; wallTris = r.dropped;
   }
 

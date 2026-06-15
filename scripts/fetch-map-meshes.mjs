@@ -302,15 +302,21 @@ ${present.map((f) => `- ${f}`).join("\n")}
 
 const git = (...a) => execFileSync("git", ["-C", cloneDir, ...a], { stdio: "inherit" });
 git("add", "-A");
-git(
-  "-c",
-  "user.name=5stack-bot",
-  "-c",
-  "user.email=bot@5stack.gg",
-  "commit",
-  "-m",
-  `Publish meshes (build ${BUILD_ID}, tag ${tag}): ${built.join(", ")}`,
-);
+// Re-publishing identical content under a new tag leaves nothing staged; `commit`
+// would exit non-zero and abort before the tag is created. Only commit if dirty,
+// then tag the (existing or new) HEAD either way.
+const dirty = execFileSync("git", ["-C", cloneDir, "status", "--porcelain"]).toString().trim();
+if (dirty) {
+  git(
+    "-c", "user.name=5stack-bot",
+    "-c", "user.email=bot@5stack.gg",
+    "commit",
+    "-m",
+    `Publish meshes (build ${BUILD_ID}, tag ${tag}): ${built.join(", ")}`,
+  );
+} else {
+  console.log("  • no file changes — tagging existing HEAD");
+}
 git("tag", tag);
 git("push", "origin", "HEAD");
 git("push", "origin", tag);

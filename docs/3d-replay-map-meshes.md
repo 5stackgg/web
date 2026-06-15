@@ -75,7 +75,9 @@ the `.tri` from the game's VPKs with Source 2 Viewer. You need **CS2 installed**
 
 The converter reads only POSITIONs, drops clip/sky brushes by material name, and
 removes isolated "standalone walls" (thin/tall/vertical sheets that aren't
-connected to anything — see `dropStandaloneWalls` in `glb-to-tri.mjs`).
+connected to anything — see `dropStandaloneWalls` in `glb-to-tri.mjs`). Tune per
+run with env vars: `WALL_THIN` / `WALL_TALL` / `WALL_VERT` (thresholds), or
+`MESH_KEEP_WALLS=1` to disable wall removal entirely.
 
 > **Coordinate gotcha:** the glb export bakes a `0.0254` inch→meter scale **and** a
 > Z-up→Y-up axis remap into every node's transform, purely for glTF viewers. The

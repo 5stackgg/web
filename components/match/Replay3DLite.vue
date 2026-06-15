@@ -268,6 +268,10 @@ onMounted(() => {
     fetch(props.mapMeshUrl!)
       .then((r) => { if (!r.ok) throw new Error(String(r.status)); return r.arrayBuffer(); })
       .then((buf) => {
+        // sanity cap: our decimated meshes are well under this; guards against a
+        // malformed/oversized file allocating a huge BufferGeometry and OOMing.
+        const MAX_MESH_BYTES = 96 * 1024 * 1024;
+        if (buf.byteLength > MAX_MESH_BYTES) throw new Error("mesh too large");
         const raw = new Float32Array(buf, 0, Math.floor(buf.byteLength / 4 / 9) * 9);
         // Cull geometry that sits ENTIRELY above the playable ceiling: roofs,
         // ceilings, sky buildings, and the super-tall boundary/exterior walls

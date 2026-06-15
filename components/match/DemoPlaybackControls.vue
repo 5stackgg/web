@@ -540,7 +540,7 @@ type Marker = {
   headshot?: boolean;
 };
 function jumpToKill(tick: number) {
-  const lead = Math.round(5 * store.tickRate);
+  const lead = Math.round(10 * store.tickRate);
   const target = Math.max(0, tick - lead);
   pulseAt(target);
   seek(target);
@@ -736,6 +736,7 @@ const killMarkers = computed<Marker[]>(() => {
       <SpectatorSlots
         v-if="store.isPlaying || ctSlots.length || tSlots.length"
         layout="grid"
+        split
         :ct-slots="ctSlots"
         :t-slots="tSlots"
         :team-ct-name="store.gsiTeamCtName"

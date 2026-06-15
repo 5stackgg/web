@@ -126,8 +126,20 @@ function startDrag(e: MouseEvent) {
 }
 
 onMounted(() => {
-  mounted.value = true;
   panelHeight.value = Math.round(window.innerHeight * 0.45);
+  // Only enable the teleport once its target is actually in the DOM.
+  // On a fresh load the layout's #main-bottom-dock can mount a frame
+  // after this component, and flipping `mounted` while the target is
+  // missing makes Vue move the teleport into a null node
+  // (moveTeleport -> insertBefore on null).
+  const enableTeleport = () => {
+    if (document.getElementById("main-bottom-dock")) {
+      mounted.value = true;
+    } else {
+      requestAnimationFrame(enableTeleport);
+    }
+  };
+  enableTeleport();
 });
 
 onBeforeUnmount(() => {

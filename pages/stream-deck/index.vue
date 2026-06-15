@@ -90,6 +90,14 @@ function ensureState(matchId: string): MatchControlState {
   return controlState[matchId];
 }
 
+// Read-only variant for templates. ensureState() WRITES controlState, which is
+// illegal during render (mutating a tracked dep mid-render → redundant render
+// passes, and it ran 6-8×/tile). Reading controlState[id] still tracks the key,
+// so a later ensureState() create from an action still triggers an update.
+function cs(matchId: string): MatchControlState {
+  return controlState[matchId] ?? { busy: false };
+}
+
 // Read the persisted autodirector flag off the streams row. Defaults
 // to true to match the cs2 autoexec, which is what the pod actually
 // runs with on first launch.
@@ -176,7 +184,17 @@ onMounted(() => {
     })
     .subscribe({
       next: ({ data }: any) => {
-        liveMatches.value = (data?.matches ?? []) as LiveMatch[];
+        // Hasura pushes the WHOLE list on any field change to any match. Reuse the
+        // previous object ref for rows whose content is unchanged, so the keyed
+        // v-for skips re-rendering their (heavy) MatchTableRow tile — only the
+        // match that actually changed gets a new ref and re-renders. The
+        // per-match JSON compare is trivial next to re-rendering dozens of tiles.
+        const incoming = (data?.matches ?? []) as LiveMatch[];
+        const prevById = new Map(liveMatches.value.map((m) => [m.id, m]));
+        liveMatches.value = incoming.map((m) => {
+          const prev = prevById.get(m.id);
+          return prev && JSON.stringify(prev) === JSON.stringify(m) ? prev : m;
+        });
         liveMatchesLoaded.value = true;
       },
       error: (err: any) => {
@@ -434,10 +452,12 @@ function currentMapFor(m: LiveMatch): LiveMatchMap | null {
     const found = m.match_maps.find((mm) => mm.id === m.current_match_map_id);
     if (found) return found;
   }
-  const scored = [...m.match_maps]
-    .reverse()
-    .find((mm) => (mm.lineup_1_score ?? 0) + (mm.lineup_2_score ?? 0) > 0);
-  return scored ?? null;
+  // Last scored map — iterate backwards in place (no array copy/reverse alloc).
+  for (let i = m.match_maps.length - 1; i >= 0; i--) {
+    const mm = m.match_maps[i];
+    if ((mm.lineup_1_score ?? 0) + (mm.lineup_2_score ?? 0) > 0) return mm;
+  }
+  return null;
 }
 
 function liveRoundScore(m: LiveMatch): { l: number; r: number } | null {
@@ -608,7 +628,7 @@ function matchStatusLabel(m: LiveMatch): string {
                   :id="`autodirector-${stream.id}`"
                   :model-value="isAutodirector(stream)"
                   :disabled="
-                    !stream.is_live || ensureState(stream.match_id).busy
+                    !stream.is_live || cs(stream.match_id).busy
                   "
                   @update:model-value="
                     (v: boolean) => setAutodirector(stream.match_id, v)
@@ -661,7 +681,7 @@ function matchStatusLabel(m: LiveMatch): string {
                 <button
                   type="button"
                   :disabled="
-                    ensureState(stream.match_id).busy || !stream.is_live
+                    cs(stream.match_id).busy || !stream.is_live
                   "
                   class="inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] text-foreground/80 hover:bg-[hsl(var(--tac-amber)/0.12)] hover:text-[hsl(var(--tac-amber))] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   :title="$t('replay_extras.reissue_connect')"
@@ -669,8 +689,8 @@ function matchStatusLabel(m: LiveMatch): string {
                 >
                   <Spinner
                     v-if="
-                      ensureState(stream.match_id).busy &&
-                      ensureState(stream.match_id).action === 'reconnect'
+                      cs(stream.match_id).busy &&
+                      cs(stream.match_id).action === 'reconnect'
                     "
                   />
                   <RefreshCw v-else class="size-3.5" />
@@ -685,7 +705,7 @@ function matchStatusLabel(m: LiveMatch): string {
                    label does. -->
                 <button
                   type="button"
-                  :disabled="ensureState(stream.match_id).busy"
+                  :disabled="cs(stream.match_id).busy"
                   :class="[
                     'inline-flex items-center gap-1.5 px-3 py-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.16em] transition-colors disabled:opacity-50 disabled:cursor-not-allowed',
                     confirmStop[stream.match_id]
@@ -696,8 +716,8 @@ function matchStatusLabel(m: LiveMatch): string {
                 >
                   <Spinner
                     v-if="
-                      ensureState(stream.match_id).busy &&
-                      ensureState(stream.match_id).action === 'stop live'
+                      cs(stream.match_id).busy &&
+                      cs(stream.match_id).action === 'stop live'
                     "
                   />
                   <Square
@@ -809,7 +829,7 @@ function matchStatusLabel(m: LiveMatch): string {
                     size="sm"
                     :disabled="
                       !stream.is_live ||
-                      ensureState(stream.match_id).busy ||
+                      cs(stream.match_id).busy ||
                       isAutodirector(stream)
                     "
                     @click="specClick(stream.match_id, 'right')"
@@ -822,7 +842,7 @@ function matchStatusLabel(m: LiveMatch): string {
                     size="sm"
                     :disabled="
                       !stream.is_live ||
-                      ensureState(stream.match_id).busy ||
+                      cs(stream.match_id).busy ||
                       isAutodirector(stream)
                     "
                     @click="specClick(stream.match_id, 'left')"
@@ -859,7 +879,7 @@ function matchStatusLabel(m: LiveMatch): string {
                   :is-live="!!stream.is_live"
                   :match-type="stream.match?.options?.type"
                   :controls-active="
-                    !!stream.is_live && !ensureState(stream.match_id).busy
+                    !!stream.is_live && !cs(stream.match_id).busy
                   "
                   :autodirector-on="isAutodirector(stream)"
                   :gsi-enabled="!isPopoutOpen(stream.match_id)"
@@ -1088,7 +1108,7 @@ function matchStatusLabel(m: LiveMatch): string {
                 <button
                   type="button"
                   :disabled="
-                    ensureState(m.id).busy ||
+                    cs(m.id).busy ||
                     !hasFreeGpu ||
                     gpuTotal === 0 ||
                     !deckReadiness(m).ready
@@ -1103,7 +1123,7 @@ function matchStatusLabel(m: LiveMatch): string {
                   @click="startLive(m.id, 'live')"
                 >
                   <Spinner
-                    v-if="ensureState(m.id).busy && ensureState(m.id).mode === 'live'"
+                    v-if="cs(m.id).busy && cs(m.id).mode === 'live'"
                   />
                   <Play v-else class="size-3.5" />
                   Live
@@ -1111,7 +1131,7 @@ function matchStatusLabel(m: LiveMatch): string {
                 <button
                   type="button"
                   :disabled="
-                    ensureState(m.id).busy ||
+                    cs(m.id).busy ||
                     !hasFreeGpu ||
                     gpuTotal === 0 ||
                     !deckReadiness(m).ready
@@ -1126,7 +1146,7 @@ function matchStatusLabel(m: LiveMatch): string {
                   @click="startLive(m.id, 'tv')"
                 >
                   <Spinner
-                    v-if="ensureState(m.id).busy && ensureState(m.id).mode === 'tv'"
+                    v-if="cs(m.id).busy && cs(m.id).mode === 'tv'"
                   />
                   <Tv v-else class="size-3.5" />
                   TV

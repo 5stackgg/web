@@ -3098,7 +3098,8 @@
       "filter_type": "Type",
       "filter_team": "Team",
       "filter_window": "Window",
-      "open_2d_playback": "Open 2D Playback"
+      "open_2d_playback": "Open 2D Playback",
+      "open_3d_playback": "Open 3D Replay"
     },
     "roles": {
       "title": "Detected Roles",
@@ -3539,6 +3540,7 @@
       "positions_large": "Replay positions are large. Click load to fetch them for {map}.",
       "load": "Load Replay",
       "open": "Open 2D Replay",
+      "open_3d": "Open 3D Replay",
       "loading": "Loading replay…",
       "no_position_data": "No position data — re-parse the demo to populate the replay.",
       "toggle_to_slots": "Switch to slot numbers",
@@ -3575,10 +3577,12 @@
       "overlay_defuser": "Defuse kits",
       "overlay_ground_bomb": "Dropped / planted bomb",
       "overlay_ground_kits": "Dropped kits",
-      "pathing": "Pathing",
       "pathing_off": "Pathing off",
       "pathing_progress": "Pathing to current tick",
-      "pathing_round": "Full round pathing"
+      "overlay_buy_section": "Buy-round overlay",
+      "overlay_buy_window": "Window: {sec}s since freezetime",
+      "overlay_buy_rounds": "Rounds",
+      "overlay_buy_explainer": "{count} full-buy rounds · first {sec}s after freeze"
     },
     "player_details_panel": {
       "stats_unavailable": "Stats unavailable for this match.",

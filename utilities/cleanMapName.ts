@@ -1,6 +1,6 @@
 export default function cleanMapName(name: string) {
   return name
-    .replace("de_", "")
+    .replace(/^(de_|cs_)/, "")
     .replaceAll("_", " ")
     .replace(
       /\w\S*/g,

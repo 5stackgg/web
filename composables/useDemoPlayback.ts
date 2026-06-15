@@ -511,46 +511,80 @@ export function useDemoPlayback() {
   // bombs, rounds — pass the array plus an "anticipation" lead-in
   // (in seconds). Anchors `lead` seconds before the event so the
   // operator sees the buildup rather than landing on the kill itself.
-  // Kills/bombs default to 5s — a kill happens fast and you want the
-  // approach + engagement, not the body hitting the floor. Rounds
-  // jump to the start tick exactly (no lead) since the round_start
-  // tick already includes freezetime.
-  const KILL_LEAD_SECS = 5;
+  // Kills/bombs anchor before the event so you see the approach +
+  // engagement, not the body hitting the floor. Kills use a 10s lead:
+  // a seek lands cs2 a beat behind while it catches up, so the extra
+  // runway means the actual kill isn't already past by the time the
+  // demo settles. Rounds jump to the start tick exactly (no lead)
+  // since the round_start tick already includes freezetime.
+  const KILL_LEAD_SECS = 10;
   const BOMB_LEAD_SECS = 5;
   const ROUND_LEAD_SECS = 0;
   function leadTicks(secs: number) {
     return Math.round(secs * store.tickRate);
   }
-  function jumpToNextEvent(events: Array<{ tick: number }>, leadSecs: number) {
+  // Per-event-type anchor: the true tick of the event we last stepped
+  // to. Stepping keys off this rather than the live playhead so
+  // repeated next/prev keep advancing even when the anchored seek
+  // clamps to 0 near match start. An early kill anchors at
+  // `kill.tick - lead`, which clamps to 0 → currentTick reads ~0 →
+  // every press would otherwise re-select that same first kill. The
+  // anchor remembers which event we're on regardless of where the
+  // clamped playhead sits.
+  const navAnchors: Record<string, number | null> = {
+    kill: null,
+    bomb: null,
+    round: null,
+  };
+  function stepEvent(
+    key: string,
+    events: Array<{ tick: number }>,
+    leadSecs: number,
+    dir: 1 | -1,
+  ) {
     if (!events.length) return;
-    const cur = store.currentTick;
     const lead = leadTicks(leadSecs);
-    // Look ahead past the upcoming lead window: if we don't, "next
-    // kill" right after a jump that already anchored on this kill
-    // would just re-target the same one.
-    const cursor = cur + lead;
-    const next = events.find((e) => e.tick > cursor);
-    if (next) seek(Math.max(0, next.tick - lead));
-  }
-  function jumpToPrevEvent(events: Array<{ tick: number }>, leadSecs: number) {
-    if (!events.length) return;
-    // "Prev" means the most recent event whose anchor is before
-    // (currentTick - small grace). Without the grace, hammering
-    // "prev" right after a jump re-targets the same event.
-    const cur = store.currentTick - 5 * store.tickRate;
-    const lead = leadTicks(leadSecs);
-    let last = null as { tick: number } | null;
-    for (const e of events) {
-      if (e.tick < cur) last = e;
-      else break;
+    const playhead = store.currentTick;
+    const anchor = navAnchors[key];
+    // Still parked where our last jump left it (playhead ≈ anchor -
+    // lead, possibly clamped to 0) → keep stepping from the event
+    // itself. Otherwise the user scrubbed/played away, so reset and
+    // step from the live playhead.
+    const anchored =
+      anchor != null &&
+      Math.abs(playhead - Math.max(0, anchor - lead)) <=
+        Math.max(lead, leadTicks(2));
+    if (!anchored) navAnchors[key] = null;
+    // Reference tick to step away from: the event we're parked on, or
+    // the on-screen position. For "next" when free we skip the event
+    // currently in view (~lead ahead of the playhead).
+    const ref = anchored
+      ? (anchor as number)
+      : dir > 0
+        ? playhead + lead
+        : playhead;
+    const sorted = events.slice().sort((a, b) => a.tick - b.tick);
+    let target: { tick: number } | null = null;
+    if (dir > 0) {
+      target = sorted.find((e) => e.tick > ref) ?? null;
+    } else {
+      for (const e of sorted) {
+        if (e.tick < ref) target = e;
+        else break;
+      }
     }
-    if (last) seek(Math.max(0, last.tick - lead));
+    if (!target) return;
+    navAnchors[key] = target.tick;
+    seek(Math.max(0, target.tick - lead));
   }
   // The kill nav respects the active player filter so the operator
   // can pick e.g. "Slowking" from the dropdown and step through only
-  // their kills. Falls back to the full list when no filter is set.
+  // their kills. With no explicit dropdown filter it follows whoever
+  // is currently being spectated, so "next kill" jumps to the next
+  // kill of the player on screen. Falls back to the full list only
+  // when nothing is selected and no one is spectated.
   function filteredKills() {
-    const filter = store.killFilterSteamId;
+    const filter = store.killFilterSteamId ?? store.spectatedSteamId;
     if (!filter) return store.kills;
     return store.kills.filter((k) =>
       store.killFilterMode === "victim"
@@ -559,10 +593,10 @@ export function useDemoPlayback() {
     );
   }
   function jumpToNextKill() {
-    jumpToNextEvent(filteredKills(), KILL_LEAD_SECS);
+    stepEvent("kill", filteredKills(), KILL_LEAD_SECS, 1);
   }
   function jumpToPrevKill() {
-    jumpToPrevEvent(filteredKills(), KILL_LEAD_SECS);
+    stepEvent("kill", filteredKills(), KILL_LEAD_SECS, -1);
   }
   function setKillFilter(steamId: string | null) {
     store.killFilterSteamId = steamId;
@@ -574,21 +608,25 @@ export function useDemoPlayback() {
     setKillFilterMode(store.killFilterMode === "killer" ? "victim" : "killer");
   }
   function jumpToNextBomb() {
-    jumpToNextEvent(store.bombs, BOMB_LEAD_SECS);
+    stepEvent("bomb", store.bombs, BOMB_LEAD_SECS, 1);
   }
   function jumpToPrevBomb() {
-    jumpToPrevEvent(store.bombs, BOMB_LEAD_SECS);
+    stepEvent("bomb", store.bombs, BOMB_LEAD_SECS, -1);
   }
   function jumpToNextRound() {
-    jumpToNextEvent(
+    stepEvent(
+      "round",
       store.roundTicks.map((r) => ({ tick: r.start_tick })),
       ROUND_LEAD_SECS,
+      1,
     );
   }
   function jumpToPrevRound() {
-    jumpToPrevEvent(
+    stepEvent(
+      "round",
       store.roundTicks.map((r) => ({ tick: r.start_tick })),
       ROUND_LEAD_SECS,
+      -1,
     );
   }
 

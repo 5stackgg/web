@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ExternalLink } from "lucide-vue-next";
+import { ExternalLink, Box } from "lucide-vue-next";
 import cleanMapName from "~/utilities/cleanMapName";
 </script>
 
@@ -94,7 +94,7 @@ import cleanMapName from "~/utilities/cleanMapName";
 
     <div
       v-else-if="effectiveMap"
-      class="py-10 flex flex-col items-center gap-4 text-center"
+      class="py-10 flex flex-wrap items-center justify-center gap-4 text-center"
     >
       <button
         type="button"
@@ -103,6 +103,14 @@ import cleanMapName from "~/utilities/cleanMapName";
       >
         <ExternalLink class="h-4 w-4" />
         {{ $t("match.replay.open") }}
+      </button>
+      <button
+        type="button"
+        class="inline-flex items-center gap-2 px-5 py-2.5 font-mono text-[0.72rem] font-bold tracking-[0.22em] uppercase border border-[#38e1ff] bg-[#38e1ff]/10 text-[#38e1ff] hover:bg-[#38e1ff]/20 transition-colors"
+        @click="openPopout3d(effectiveMap.id)"
+      >
+        <Box class="h-4 w-4" />
+        {{ $t("match.replay.open_3d") }}
       </button>
     </div>
   </div>
@@ -137,6 +145,18 @@ export default {
         `/match-replay-popout/${matchMapId}`,
         `replay-popout-${matchMapId}`,
         "popup=yes,width=1100,height=900,resizable=yes,scrollbars=yes",
+      );
+    },
+    openPopout3d(matchMapId: string) {
+      if (typeof window === "undefined" || !matchMapId) return;
+      const w = Math.min(1760, screen.availWidth);
+      const h = Math.min(1040, screen.availHeight);
+      const left = Math.max(0, (screen.availWidth - w) / 2);
+      const top = Math.max(0, (screen.availHeight - h) / 2);
+      window.open(
+        `/match-3d-replay/${matchMapId}`,
+        `replay-3d-${matchMapId}`,
+        `popup=yes,width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`,
       );
     },
   },

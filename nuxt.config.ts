@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { fileURLToPath } from "node:url";
 
 const sw = process.env.SW === "true";
 
@@ -11,6 +12,13 @@ const url = `https://5stack.gg`;
 
 export default defineNuxtConfig({
   ssr: false,
+
+  // Pin the shadcn `cn` helper to a real committed module. shadcn-nuxt
+  // otherwise aliases @/lib/utils to a virtual template that Vite can drop
+  // during dep re-optimization → runtime "cn is not a function".
+  alias: {
+    "@/lib/utils": fileURLToPath(new URL("./lib/utils.ts", import.meta.url)),
+  },
 
   app: {
     head: {
@@ -144,6 +152,11 @@ export default defineNuxtConfig({
       webDomain: "",
       demosDomain: "",
       relayDomain: "",
+      // CDN base for 3D-replay collision meshes (.tri). Pin the awpy build tag so
+      // the URL is immutable/cache-forever. Override with NUXT_PUBLIC_MAP_MESH_CDN
+      // to swap to cdn.5stack.gg (R2) later — no code change needed.
+      mapMeshCdn:
+        "https://cdn.jsdelivr.net/gh/5stackgg/replay-map-meshes@17595823-4",
     },
   },
 

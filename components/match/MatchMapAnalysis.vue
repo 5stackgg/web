@@ -28,7 +28,6 @@ import {
 import { matchHeatmapQuery } from "~/graphql/matchHeatmapGraphql";
 import { matchMovementMapQuery } from "~/graphql/matchMovementPathsGraphql";
 import RoundSelector from "~/components/match/RoundSelector.vue";
-import { ExternalLink } from "lucide-vue-next";
 
 type MapSplit = {
   bounds: { top: number; bottom: number };
@@ -210,6 +209,25 @@ function open2dPlayback() {
     `/match-replay-popout/${mapId}`,
     `replay-popout-${mapId}`,
     "popup=yes,width=1100,height=900,resizable=yes,scrollbars=yes",
+  );
+  if (popup) {
+    popup.focus();
+  }
+}
+
+function open3dPlayback() {
+  const mapId = activeMatchMap.value?.id;
+  if (!mapId) {
+    return;
+  }
+  const w = Math.min(1760, screen.availWidth);
+  const h = Math.min(1040, screen.availHeight);
+  const left = Math.max(0, (screen.availWidth - w) / 2);
+  const top = Math.max(0, (screen.availHeight - h) / 2);
+  const popup = window.open(
+    `/match-3d-replay/${mapId}`,
+    `replay-3d-${mapId}`,
+    `popup=yes,width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`,
   );
   if (popup) {
     popup.focus();
@@ -1090,15 +1108,29 @@ onUnmounted(() => window.removeEventListener("keydown", onKeyDown));
           <div class="flex items-center gap-3">
             <div
               v-if="canOpen2dPlayback"
-              class="inline-flex items-stretch overflow-hidden rounded-md border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)]"
+              class="inline-flex items-stretch overflow-hidden rounded-md border border-border bg-card/50"
             >
               <button
                 type="button"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs tracking-[0.06em] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.2)]"
+                :title="$t('match.map_analysis.open_2d_playback')"
+                class="inline-flex items-center justify-center border-r border-border/60 px-2.5 py-1.5 text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.15)]"
                 @click="open2dPlayback"
               >
-                <ExternalLink class="h-3.5 w-3.5" />
-                {{ $t("match.map_analysis.open_2d_playback") }}
+                <span
+                  class="flex h-5 w-5 items-center justify-center rounded-full border border-current font-mono text-[9px] font-black leading-none"
+                  >2D</span
+                >
+              </button>
+              <button
+                type="button"
+                :title="$t('match.map_analysis.open_3d_playback')"
+                class="inline-flex items-center justify-center px-2.5 py-1.5 text-[#38e1ff] transition-colors hover:bg-[#38e1ff]/15"
+                @click="open3dPlayback"
+              >
+                <span
+                  class="flex h-5 w-5 items-center justify-center rounded-full border border-current font-mono text-[9px] font-black leading-none"
+                  >3D</span
+                >
               </button>
             </div>
 

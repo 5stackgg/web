@@ -34,3 +34,5 @@ logs
 !.yarn/versions
 
 .auth
+# Local 3D replay assets (large glb + per-match data; load via CDN later)
+public/replay-assets/

@@ -35,6 +35,7 @@ import {
   tacticalSectionDescriptionClasses,
 } from "~/utilities/tacticalClasses";
 import cleanMapName from "~/utilities/cleanMapName";
+import { ECO_MAX, FULL_MIN, moneyOf } from "~/utilities/buyType";
 
 ChartJS.register(
   CategoryScale,
@@ -49,8 +50,6 @@ ChartJS.register(
 
 const AMBER = "#fbbf24";
 const CYAN = "#38bdf8";
-const ECO_MAX = 5000;
-const FULL_MIN = 20000;
 
 const props = defineProps<{
   match: any;
@@ -122,14 +121,6 @@ const rounds = computed<RoundEntry[]>(() => {
     .filter((r) => r.round > 0)
     .sort((a, b) => a.round - b.round);
 });
-
-function moneyOf(value: number | string | null | undefined): number | null {
-  if (value === null || value === undefined || value === "") {
-    return null;
-  }
-  const n = typeof value === "number" ? value : Number(value);
-  return Number.isFinite(n) ? n : null;
-}
 
 const hasData = computed(() => {
   return rounds.value.some(

@@ -15,10 +15,12 @@
 //     (auto-converted to source-unit .tri, textures discarded). For maps awpy
 //     doesn't ship — see docs/3d-replay-map-meshes.md.
 //
-// Maps over MESH_MAX_MB (default 30) are auto-decimated to fit (grid-snap +
-// dedup of triangles) rather than dropped, so active-duty maps like inferno /
-// train / ancient still come through. Set MESH_NO_DECIMATE=1 to skip oversized
-// meshes instead, or raise MESH_MAX_MB to keep them at full detail.
+// Maps over MESH_MAX_MB (default 18, under jsDelivr's ~20 MiB per-file limit) are
+// auto-decimated to fit (grid-snap + dedup of triangles) rather than dropped, so
+// active-duty maps like inferno / train / ancient still come through. Set
+// MESH_NO_DECIMATE=1 to skip oversized meshes instead. Do NOT raise MESH_MAX_MB
+// past ~19 for published meshes: jsDelivr 403s bigger files (not 404), so the 3D
+// viewer silently falls back to the flat radar.
 //
 // The app loads meshes from a CDN (runtimeConfig.public.mapMeshCdn), NOT from
 // this repo. --publish pushes the built meshes to the meshes repo + tags them so
@@ -34,7 +36,7 @@
 //   node scripts/fetch-map-meshes.mjs --all --publish      # build + push + tag to the meshes repo
 //   node scripts/fetch-map-meshes.mjs --from ~/exports --from-all --publish --tag 17595823-2
 //
-//   MESH_MAX_MB=60          allow bigger meshes (less decimation)
+//   MESH_MAX_MB=16          smaller meshes (more decimation); keep < ~19 for jsDelivr
 //   MESH_NO_DECIMATE=1      skip oversized meshes instead of shrinking
 //   AWPY_BUILD_ID=<id>      awpy data build (default 17595823); also the default tag
 //   MESH_REPO=<owner/repo>  meshes repo (default 5stackgg/replay-map-meshes)
@@ -55,7 +57,10 @@ import { glbToTri, mapNameFromGlb } from "./glb-to-tri.mjs";
 
 const BUILD_ID = process.env.AWPY_BUILD_ID || "17595823";
 const ZIP_URL = `https://awpycs.com/${BUILD_ID}/tris.zip`;
-const MAX_MB = Number(process.env.MESH_MAX_MB || "30"); // target size; bigger meshes get decimated to fit
+// Target on-disk size. MUST stay under jsDelivr's ~20 MiB per-file serving limit:
+// files over it 403 (NOT 404), so the 3D viewer silently falls back to the flat
+// radar and MeshAvailability lists them as "missing". 18 leaves headroom.
+const MAX_MB = Number(process.env.MESH_MAX_MB || "18"); // bigger meshes get decimated to fit
 const NO_DECIMATE = process.env.MESH_NO_DECIMATE === "1";
 const REPO = process.env.MESH_REPO || "5stackgg/replay-map-meshes";
 

@@ -291,6 +291,14 @@ const mapMeshUrl = computed(() =>
   normalizedMap.value ? `${meshCdn}/${normalizedMap.value}.tri` : null,
 );
 
+// Per-map ceiling boost (source-z units) added to the auto-detected ceiling for
+// tall/multi-level maps where the 99th-pct player height sits well below the real
+// playable top. Overpass (B site, bridge, heaven) gets chopped too low otherwise.
+// This raises BOTH the load-time cull and the ROOF slider midpoint together.
+const CEILING_BOOST: Record<string, number> = {
+  de_overpass: 512,
+};
+
 // Auto-detect the playable ceiling for the 3D roof-cut. Players never stand above
 // the real ceiling, so the ~99th percentile of player heights (+ head clearance)
 // is a reliable "cut roofs but keep all the action" height. Source-z units; the
@@ -300,7 +308,8 @@ const autoCeilingZ = computed<number | null>(() => {
   for (const p of props.positions) if (p.z != null) zs.push(p.z);
   if (zs.length < 20) return null;
   zs.sort((a, b) => a - b);
-  return zs[Math.floor(zs.length * 0.99)] - 90; // below standing head — cuts walls lower
+  const base = zs[Math.floor(zs.length * 0.99)] - 90; // below standing head — cuts walls lower
+  return base + (CEILING_BOOST[normalizedMap.value] ?? 0);
 });
 
 const dedupedPositions = computed(() => {

@@ -6398,6 +6398,7 @@ export const AllTypesProps: Record<string,any> = {
 	matches_max_order_by:{
 		cancels_at:"order_by",
 		created_at:"order_by",
+		effective_at:"order_by",
 		ended_at:"order_by",
 		external_id:"order_by",
 		id:"order_by",
@@ -6418,6 +6419,7 @@ export const AllTypesProps: Record<string,any> = {
 	matches_min_order_by:{
 		cancels_at:"order_by",
 		created_at:"order_by",
+		effective_at:"order_by",
 		ended_at:"order_by",
 		external_id:"order_by",
 		id:"order_by",
@@ -6557,6 +6559,7 @@ export const AllTypesProps: Record<string,any> = {
 	matches_stream_cursor_value_input:{
 		cancels_at:"timestamptz",
 		created_at:"timestamptz",
+		effective_at:"timestamptz",
 		ended_at:"timestamptz",
 		id:"uuid",
 		lineup_1_id:"uuid",
@@ -7310,6 +7313,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		delete_v_match_map_backup_rounds:{
 			where:"v_match_map_backup_rounds_bool_exp"
+		},
+		delete_v_player_match_map_hltv:{
+			where:"v_player_match_map_hltv_bool_exp"
 		},
 		delete_v_pool_maps:{
 			where:"v_pool_maps_bool_exp"
@@ -8105,6 +8111,12 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		insert_v_match_map_backup_rounds_one:{
 			object:"v_match_map_backup_rounds_insert_input"
+		},
+		insert_v_player_match_map_hltv:{
+			objects:"v_player_match_map_hltv_insert_input"
+		},
+		insert_v_player_match_map_hltv_one:{
+			object:"v_player_match_map_hltv_insert_input"
 		},
 		insert_v_pool_maps:{
 			objects:"v_pool_maps_insert_input"
@@ -9549,6 +9561,14 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_v_match_map_backup_rounds_many:{
 			updates:"v_match_map_backup_rounds_updates"
+		},
+		update_v_player_match_map_hltv:{
+			_inc:"v_player_match_map_hltv_inc_input",
+			_set:"v_player_match_map_hltv_set_input",
+			where:"v_player_match_map_hltv_bool_exp"
+		},
+		update_v_player_match_map_hltv_many:{
+			updates:"v_player_match_map_hltv_updates"
 		},
 		update_v_pool_maps:{
 			_set:"v_pool_maps_set_input",
@@ -12033,6 +12053,8 @@ export const AllTypesProps: Record<string,any> = {
 		hs_kills:"order_by",
 		hs_kills_ct:"order_by",
 		hs_kills_t:"order_by",
+		kast_rounds:"order_by",
+		kast_total_rounds:"order_by",
 		kills:"order_by",
 		kills_ct:"order_by",
 		kills_t:"order_by",
@@ -12107,6 +12129,8 @@ export const AllTypesProps: Record<string,any> = {
 		hs_kills:"Int_comparison_exp",
 		hs_kills_ct:"Int_comparison_exp",
 		hs_kills_t:"Int_comparison_exp",
+		kast_rounds:"Int_comparison_exp",
+		kast_total_rounds:"Int_comparison_exp",
 		kills:"Int_comparison_exp",
 		kills_ct:"Int_comparison_exp",
 		kills_t:"Int_comparison_exp",
@@ -12203,6 +12227,8 @@ export const AllTypesProps: Record<string,any> = {
 		hs_kills:"order_by",
 		hs_kills_ct:"order_by",
 		hs_kills_t:"order_by",
+		kast_rounds:"order_by",
+		kast_total_rounds:"order_by",
 		kills:"order_by",
 		kills_ct:"order_by",
 		kills_t:"order_by",
@@ -12277,6 +12303,8 @@ export const AllTypesProps: Record<string,any> = {
 		hs_kills:"order_by",
 		hs_kills_ct:"order_by",
 		hs_kills_t:"order_by",
+		kast_rounds:"order_by",
+		kast_total_rounds:"order_by",
 		kills:"order_by",
 		kills_ct:"order_by",
 		kills_t:"order_by",
@@ -12356,6 +12384,8 @@ export const AllTypesProps: Record<string,any> = {
 		hs_kills:"order_by",
 		hs_kills_ct:"order_by",
 		hs_kills_t:"order_by",
+		kast_rounds:"order_by",
+		kast_total_rounds:"order_by",
 		kills:"order_by",
 		kills_ct:"order_by",
 		kills_t:"order_by",
@@ -12447,6 +12477,8 @@ export const AllTypesProps: Record<string,any> = {
 		hs_kills:"order_by",
 		hs_kills_ct:"order_by",
 		hs_kills_t:"order_by",
+		kast_rounds:"order_by",
+		kast_total_rounds:"order_by",
 		kills:"order_by",
 		kills_ct:"order_by",
 		kills_t:"order_by",
@@ -12518,6 +12550,8 @@ export const AllTypesProps: Record<string,any> = {
 		hs_kills:"order_by",
 		hs_kills_ct:"order_by",
 		hs_kills_t:"order_by",
+		kast_rounds:"order_by",
+		kast_total_rounds:"order_by",
 		kills:"order_by",
 		kills_ct:"order_by",
 		kills_t:"order_by",
@@ -12589,6 +12623,8 @@ export const AllTypesProps: Record<string,any> = {
 		hs_kills:"order_by",
 		hs_kills_ct:"order_by",
 		hs_kills_t:"order_by",
+		kast_rounds:"order_by",
+		kast_total_rounds:"order_by",
 		kills:"order_by",
 		kills_ct:"order_by",
 		kills_t:"order_by",
@@ -12673,6 +12709,8 @@ export const AllTypesProps: Record<string,any> = {
 		hs_kills:"order_by",
 		hs_kills_ct:"order_by",
 		hs_kills_t:"order_by",
+		kast_rounds:"order_by",
+		kast_total_rounds:"order_by",
 		kills:"order_by",
 		kills_ct:"order_by",
 		kills_t:"order_by",
@@ -12750,6 +12788,8 @@ export const AllTypesProps: Record<string,any> = {
 		hs_kills:"order_by",
 		hs_kills_ct:"order_by",
 		hs_kills_t:"order_by",
+		kast_rounds:"order_by",
+		kast_total_rounds:"order_by",
 		kills:"order_by",
 		kills_ct:"order_by",
 		kills_t:"order_by",
@@ -12821,6 +12861,8 @@ export const AllTypesProps: Record<string,any> = {
 		hs_kills:"order_by",
 		hs_kills_ct:"order_by",
 		hs_kills_t:"order_by",
+		kast_rounds:"order_by",
+		kast_total_rounds:"order_by",
 		kills:"order_by",
 		kills_ct:"order_by",
 		kills_t:"order_by",
@@ -12892,6 +12934,8 @@ export const AllTypesProps: Record<string,any> = {
 		hs_kills:"order_by",
 		hs_kills_ct:"order_by",
 		hs_kills_t:"order_by",
+		kast_rounds:"order_by",
+		kast_total_rounds:"order_by",
 		kills:"order_by",
 		kills_ct:"order_by",
 		kills_t:"order_by",
@@ -23895,6 +23939,15 @@ export const AllTypesProps: Record<string,any> = {
 		rounds_played:"Int_comparison_exp",
 		steam_id:"bigint_comparison_exp"
 	},
+	v_player_match_map_hltv_inc_input:{
+		adr:"numeric",
+		apr:"numeric",
+		dpr:"numeric",
+		hltv_rating:"numeric",
+		kast_pct:"numeric",
+		kpr:"numeric",
+		steam_id:"bigint"
+	},
 	v_player_match_map_hltv_insert_input:{
 		adr:"numeric",
 		apr:"numeric",
@@ -23949,6 +24002,17 @@ export const AllTypesProps: Record<string,any> = {
 		steam_id:"order_by"
 	},
 	v_player_match_map_hltv_select_column: "enum" as const,
+	v_player_match_map_hltv_set_input:{
+		adr:"numeric",
+		apr:"numeric",
+		dpr:"numeric",
+		hltv_rating:"numeric",
+		kast_pct:"numeric",
+		kpr:"numeric",
+		match_id:"uuid",
+		match_map_id:"uuid",
+		steam_id:"bigint"
+	},
 	v_player_match_map_hltv_stddev_order_by:{
 		adr:"order_by",
 		apr:"order_by",
@@ -24003,6 +24067,11 @@ export const AllTypesProps: Record<string,any> = {
 		kpr:"order_by",
 		rounds_played:"order_by",
 		steam_id:"order_by"
+	},
+	v_player_match_map_hltv_updates:{
+		_inc:"v_player_match_map_hltv_inc_input",
+		_set:"v_player_match_map_hltv_set_input",
+		where:"v_player_match_map_hltv_bool_exp"
 	},
 	v_player_match_map_hltv_var_pop_order_by:{
 		adr:"order_by",
@@ -29386,6 +29455,7 @@ export const ReturnTypes: Record<string,any> = {
 		delete_tournaments_by_pk:"tournaments",
 		delete_v_match_captains:"v_match_captains_mutation_response",
 		delete_v_match_map_backup_rounds:"v_match_map_backup_rounds_mutation_response",
+		delete_v_player_match_map_hltv:"v_player_match_map_hltv_mutation_response",
 		delete_v_pool_maps:"v_pool_maps_mutation_response",
 		denyInvite:"SuccessOutput",
 		forfeitMatch:"SuccessOutput",
@@ -29589,6 +29659,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_v_match_captains_one:"v_match_captains",
 		insert_v_match_map_backup_rounds:"v_match_map_backup_rounds_mutation_response",
 		insert_v_match_map_backup_rounds_one:"v_match_map_backup_rounds",
+		insert_v_player_match_map_hltv:"v_player_match_map_hltv_mutation_response",
+		insert_v_player_match_map_hltv_one:"v_player_match_map_hltv",
 		insert_v_pool_maps:"v_pool_maps_mutation_response",
 		insert_v_pool_maps_one:"v_pool_maps",
 		joinLineup:"SuccessOutput",
@@ -29949,6 +30021,8 @@ export const ReturnTypes: Record<string,any> = {
 		update_v_match_captains_many:"v_match_captains_mutation_response",
 		update_v_match_map_backup_rounds:"v_match_map_backup_rounds_mutation_response",
 		update_v_match_map_backup_rounds_many:"v_match_map_backup_rounds_mutation_response",
+		update_v_player_match_map_hltv:"v_player_match_map_hltv_mutation_response",
+		update_v_player_match_map_hltv_many:"v_player_match_map_hltv_mutation_response",
 		update_v_pool_maps:"v_pool_maps_mutation_response",
 		update_v_pool_maps_many:"v_pool_maps_mutation_response",
 		validateGamedata:"SuccessOutput",
@@ -31934,6 +32008,8 @@ export const ReturnTypes: Record<string,any> = {
 		hs_kills:"Int",
 		hs_kills_ct:"Int",
 		hs_kills_t:"Int",
+		kast_rounds:"Int",
+		kast_total_rounds:"Int",
 		kills:"Int",
 		kills_ct:"Int",
 		kills_t:"Int",
@@ -32028,6 +32104,8 @@ export const ReturnTypes: Record<string,any> = {
 		hs_kills:"Float",
 		hs_kills_ct:"Float",
 		hs_kills_t:"Float",
+		kast_rounds:"Float",
+		kast_total_rounds:"Float",
 		kills:"Float",
 		kills_ct:"Float",
 		kills_t:"Float",
@@ -32099,6 +32177,8 @@ export const ReturnTypes: Record<string,any> = {
 		hs_kills:"Int",
 		hs_kills_ct:"Int",
 		hs_kills_t:"Int",
+		kast_rounds:"Int",
+		kast_total_rounds:"Int",
 		kills:"Int",
 		kills_ct:"Int",
 		kills_t:"Int",
@@ -32173,6 +32253,8 @@ export const ReturnTypes: Record<string,any> = {
 		hs_kills:"Int",
 		hs_kills_ct:"Int",
 		hs_kills_t:"Int",
+		kast_rounds:"Int",
+		kast_total_rounds:"Int",
 		kills:"Int",
 		kills_ct:"Int",
 		kills_t:"Int",
@@ -32251,6 +32333,8 @@ export const ReturnTypes: Record<string,any> = {
 		hs_kills:"Float",
 		hs_kills_ct:"Float",
 		hs_kills_t:"Float",
+		kast_rounds:"Float",
+		kast_total_rounds:"Float",
 		kills:"Float",
 		kills_ct:"Float",
 		kills_t:"Float",
@@ -32322,6 +32406,8 @@ export const ReturnTypes: Record<string,any> = {
 		hs_kills:"Float",
 		hs_kills_ct:"Float",
 		hs_kills_t:"Float",
+		kast_rounds:"Float",
+		kast_total_rounds:"Float",
 		kills:"Float",
 		kills_ct:"Float",
 		kills_t:"Float",
@@ -32393,6 +32479,8 @@ export const ReturnTypes: Record<string,any> = {
 		hs_kills:"Float",
 		hs_kills_ct:"Float",
 		hs_kills_t:"Float",
+		kast_rounds:"Float",
+		kast_total_rounds:"Float",
 		kills:"Float",
 		kills_ct:"Float",
 		kills_t:"Float",
@@ -32464,6 +32552,8 @@ export const ReturnTypes: Record<string,any> = {
 		hs_kills:"Int",
 		hs_kills_ct:"Int",
 		hs_kills_t:"Int",
+		kast_rounds:"Int",
+		kast_total_rounds:"Int",
 		kills:"Int",
 		kills_ct:"Int",
 		kills_t:"Int",
@@ -32535,6 +32625,8 @@ export const ReturnTypes: Record<string,any> = {
 		hs_kills:"Float",
 		hs_kills_ct:"Float",
 		hs_kills_t:"Float",
+		kast_rounds:"Float",
+		kast_total_rounds:"Float",
 		kills:"Float",
 		kills_ct:"Float",
 		kills_t:"Float",
@@ -32606,6 +32698,8 @@ export const ReturnTypes: Record<string,any> = {
 		hs_kills:"Float",
 		hs_kills_ct:"Float",
 		hs_kills_t:"Float",
+		kast_rounds:"Float",
+		kast_total_rounds:"Float",
 		kills:"Float",
 		kills_ct:"Float",
 		kills_t:"Float",
@@ -32677,6 +32771,8 @@ export const ReturnTypes: Record<string,any> = {
 		hs_kills:"Float",
 		hs_kills_ct:"Float",
 		hs_kills_t:"Float",
+		kast_rounds:"Float",
+		kast_total_rounds:"Float",
 		kills:"Float",
 		kills_ct:"Float",
 		kills_t:"Float",
@@ -39179,6 +39275,10 @@ export const ReturnTypes: Record<string,any> = {
 		match_map_id:"uuid",
 		rounds_played:"Int",
 		steam_id:"bigint"
+	},
+	v_player_match_map_hltv_mutation_response:{
+		affected_rows:"Int",
+		returning:"v_player_match_map_hltv"
 	},
 	v_player_match_map_hltv_stddev_fields:{
 		adr:"Float",

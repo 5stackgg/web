@@ -27,19 +27,27 @@ install needed:
 node scripts/fetch-map-meshes.mjs            # default Valve pool (+ cs_office)
 node scripts/fetch-map-meshes.mjs --all      # every map in the pack
 node scripts/fetch-map-meshes.mjs de_mirage  # specific map(s)
-MESH_MAX_MB=60 node scripts/fetch-map-meshes.mjs    # allow bigger meshes at full detail
+MESH_MAX_MB=16 node scripts/fetch-map-meshes.mjs    # smaller meshes (more decimation)
 MESH_NO_DECIMATE=1 node scripts/fetch-map-meshes.mjs # skip oversized instead of shrinking
 ```
+
+> **⚠ jsDelivr 20 MiB limit (read this).** The CDN refuses to serve any single
+> file over ~20 MiB — it returns **403, not 404**. A 403 means the 3D viewer
+> silently falls back to the flat radar *and* `MeshAvailability` lists the map as
+> "missing", even though the `.tri` is committed and tagged. That's why the cap
+> defaults to **18** (decimal MB on disk). Do **not** raise `MESH_MAX_MB` past ~19
+> for anything you intend to publish. Verify a published tag with
+> `curl -sI <cdn>/<map>.tri` — expect `200`, never `403`.
 
 It downloads `https://awpycs.com/<build>/tris.zip` and writes the requested maps
 to `.cache/meshes/`. Add `--publish` to push + tag them to the CDN (see Hosting).
 Bump `AWPY_BUILD_ID` when awpy ships data for a newer CS2 patch.
 
-**Auto-decimation:** maps over `MESH_MAX_MB` (default 30) are *not* dropped — the
-script snaps their vertices to a grid and dedups degenerate/duplicate triangles
-until they fit, so big active-duty maps still come through (e.g. inferno
-97→~19 MB, train 55→~14 MB, ancient 35→~12 MB). This is the same idea as the
-"weld + simplify" step below, just built in and pure-JS.
+**Auto-decimation:** maps over `MESH_MAX_MB` (default 18, under the jsDelivr limit
+above) are *not* dropped — the script snaps their vertices to a grid and dedups
+degenerate/duplicate triangles until they fit, so big active-duty maps still come
+through (e.g. anubis 24→~12 MB, overpass 49→~9 MB, train 55→~13 MB). This is the
+same idea as the "weld + simplify" step below, just built in and pure-JS.
 
 Maps in the pack today: `de_ancient de_anubis de_basalt de_dust2 de_edin
 de_inferno de_mirage de_nuke de_overpass de_palais de_train de_vertigo

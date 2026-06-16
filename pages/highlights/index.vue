@@ -266,8 +266,12 @@ const hasActiveFilter = computed(
     (isAdmin.value && visibilityFilter.value !== "all"),
 );
 
+const forceSingles = computed(
+  () => hasActiveFilter.value || sortFilter.value === "views",
+);
+
 const effectiveMode = computed<ViewMode>(() =>
-  hasActiveFilter.value ? "singles" : viewMode.value,
+  forceSingles.value ? "singles" : viewMode.value,
 );
 
 const innerClipFilter = computed<Record<string, any>>(() => {
@@ -757,9 +761,9 @@ const viewModeOptions = computed<
           v-for="opt in viewModeOptions"
           :key="opt.value"
           type="button"
-          :disabled="hasActiveFilter && opt.value === 'matches'"
+          :disabled="forceSingles && opt.value === 'matches'"
           :title="
-            hasActiveFilter && opt.value === 'matches'
+            forceSingles && opt.value === 'matches'
               ? $t('pages.highlights.view_mode_filter_disabled')
               : undefined
           "
@@ -768,7 +772,7 @@ const viewModeOptions = computed<
             effectiveMode === opt.value
               ? 'bg-background text-foreground shadow-sm'
               : 'text-muted-foreground hover:text-foreground',
-            hasActiveFilter && opt.value === 'matches'
+            forceSingles && opt.value === 'matches'
               ? 'cursor-not-allowed opacity-40 hover:text-muted-foreground'
               : '',
           ]"

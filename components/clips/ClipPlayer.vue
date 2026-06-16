@@ -522,7 +522,7 @@ defineExpose({ play, pause, toggle, videoEl: videoRef, isFullscreen });
           class="absolute inset-0 h-full w-full cursor-pointer object-contain"
           :muted="muted"
           playsinline
-          preload="auto"
+          preload="none"
           @ended="onVideoEnded"
           @loadedmetadata="syncProgress"
           @pause="onVideoPause"

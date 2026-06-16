@@ -28,6 +28,87 @@ function filterHeaders(headers: Headers, env: { ALLOWED_HEADERS?: string }) {
   );
 }
 
+const VIEW_FRACTION = 0.5;
+const SINGLE_SHOT_BYTES = 3 * 1024 * 1024;
+const BOT_UA =
+  /bot|crawl|spider|facebookexternalhit|slack|discord|telegram|whatsapp|preview|unfurl|embed|scrape|metainspector|skype|vkshare|redditbot|pinterest|googlebot|bingbot/i;
+
+function clientRangeStart(range: string | null): number | null {
+  if (!range) {
+    return null;
+  }
+  const match = /^bytes=(\d+)-/.exec(range.trim());
+  return match ? parseInt(match[1], 10) : null;
+}
+
+function streamedEnough(range: string | null, size: number): boolean {
+  if (!Number.isFinite(size) || size <= 0) {
+    return false;
+  }
+  const start = clientRangeStart(range);
+  if (start !== null && start >= size * VIEW_FRACTION) {
+    return true;
+  }
+  const fullFetch = !range || /^bytes=0-\s*$/.test(range.trim());
+  return fullFetch && size <= SINGLE_SHOT_BYTES;
+}
+
+async function viewerKey(request: Request): Promise<string> {
+  const ip = request.headers.get("cf-connecting-ip") ?? "";
+  const ua = request.headers.get("user-agent") ?? "";
+  const digest = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(`${ip}\n${ua}`),
+  );
+  return Array.from(new Uint8Array(digest).slice(0, 16))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function maybeCountView(
+  request: Request,
+  url: URL,
+  key: string | null,
+  size: number,
+  env: { S3_SECRET: string; API_URL?: string },
+  ctx: ExecutionContext,
+) {
+  if (!env.API_URL || request.method !== "GET" || !key) {
+    return;
+  }
+  if (!/^clips\/.+\.mp4$/.test(key)) {
+    return;
+  }
+  if (
+    url.searchParams.get("dl") === "1" ||
+    url.searchParams.get("download") === "1" ||
+    url.searchParams.get("noview") === "1"
+  ) {
+    return;
+  }
+  if (BOT_UA.test(request.headers.get("user-agent") ?? "")) {
+    return;
+  }
+  if (!streamedEnough(request.headers.get("range"), size)) {
+    return;
+  }
+
+  ctx.waitUntil(
+    viewerKey(request)
+      .then((clientKey) =>
+        fetch(`${env.API_URL!.replace(/\/+$/, "")}/clip-views/play`, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            authorization: `Bearer ${env.S3_SECRET}`,
+          },
+          body: JSON.stringify({ file: key, clientKey }),
+        }),
+      )
+      .catch(() => {}),
+  );
+}
+
 // Path-style (/clips/<user>/<uuid>.mp4) or query-style (?file=<key>).
 function resolveKey(url: URL): string | null {
   const fromQuery = url.searchParams.get("file");
@@ -39,42 +120,6 @@ function resolveKey(url: URL): string | null {
   }
   const fromPath = url.pathname.replace(/^\/+/, "");
   return fromPath ? decodeURIComponent(fromPath) : null;
-}
-
-function countClipPlay(
-  request: Request,
-  url: URL,
-  key: string,
-  env: { S3_SECRET: string; API_URL?: string },
-  ctx: ExecutionContext,
-) {
-  if (!env.API_URL || request.method !== "GET") {
-    return;
-  }
-  if (!/^clips\/.+\.mp4$/.test(key)) {
-    return;
-  }
-  if (
-    url.searchParams.get("dl") === "1" ||
-    url.searchParams.get("download") === "1"
-  ) {
-    return;
-  }
-  const range = request.headers.get("range");
-  if (range && !/^bytes=0-/.test(range.trim())) {
-    return;
-  }
-
-  ctx.waitUntil(
-    fetch(`${env.API_URL.replace(/\/+$/, "")}/clip-views/play`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${env.S3_SECRET}`,
-      },
-      body: JSON.stringify({ file: key }),
-    }).catch(() => {}),
-  );
 }
 
 export default {
@@ -113,10 +158,6 @@ export default {
     const url = new URL(request.url);
     const key = resolveKey(url);
 
-    if (key) {
-      countClipPlay(request, url, key, env, ctx);
-    }
-
     // Edge-cache short-circuit: serve repeat hits without re-running SigV4
     // or making a B2 subrequest. Range requests fall through so the existing
     // cf.cacheEverything path handles slicing from the cached full object.
@@ -131,7 +172,17 @@ export default {
       request.method !== "GET" || request.headers.has("range");
     if (!skipEdgeCache) {
       const cached = await cache.match(cacheKey);
-      if (cached) return cached;
+      if (cached) {
+        maybeCountView(
+          request,
+          url,
+          key,
+          Number(cached.headers.get("content-length")),
+          env,
+          ctx,
+        );
+        return cached;
+      }
     }
 
     if (!key) {
@@ -210,6 +261,17 @@ export default {
       status: upstream.status,
       statusText: upstream.statusText,
     });
+
+    if (response.ok) {
+      maybeCountView(
+        request,
+        url,
+        key,
+        Number(upstream.headers.get("content-length")),
+        env,
+        ctx,
+      );
+    }
 
     if (!skipEdgeCache && response.status === 200) {
       ctx.waitUntil(cache.put(cacheKey, response.clone()));

@@ -1,37 +1,39 @@
 <script setup lang="ts">
 import Pagination from "@/components/Pagination.vue";
-import PageHeading from "~/components/PageHeading.vue";
+import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
+import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 import { Pencil, Trash, PlusCircle, Info } from "lucide-vue-next";
 import RegionForm from "~/components/regions/RegionForm.vue";
 import FivestackTooltip from "~/components/FiveStackToolTip.vue";
-import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Card } from "~/components/ui/card";
-
-const { isMobile } = useSidebar();
 </script>
 
 <template>
   <PageTransition :delay="0">
-    <PageHeading>
+    <TacticalPageHeader>
       <template #title>{{ $t("pages.regions.title") }}</template>
 
-      <template #description>
-        {{ $t("pages.regions.description") }}
-      </template>
-
       <template #actions>
-        <Button
+        <button
+          type="button"
+          :class="[tacticalCtaButtonClasses, 'max-md:px-2.5 max-md:py-2']"
+          :title="$t('pages.regions.create')"
           @click="regionDialogOpen = true"
-          :size="isMobile ? 'default' : 'lg'"
         >
           <PlusCircle class="w-4 h-4" />
-          <span class="hidden md:inline ml-2">{{
+          <span class="hidden md:inline">{{
             $t("pages.regions.create")
           }}</span>
-        </Button>
+        </button>
       </template>
-    </PageHeading>
+    </TacticalPageHeader>
+  </PageTransition>
+
+  <PageTransition :delay="60" class="mt-4">
+    <p class="text-sm text-muted-foreground">
+      {{ $t("pages.regions.description") }}
+    </p>
   </PageTransition>
 
   <PageTransition :delay="100" class="mt-6">

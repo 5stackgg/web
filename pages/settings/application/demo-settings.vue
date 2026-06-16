@@ -4,7 +4,9 @@ import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
 import OrphanedUploadsButton from "~/components/settings/OrphanedUploadsButton.vue";
+import ReparseAllDemosButton from "~/components/settings/ReparseAllDemosButton.vue";
 import StorageBreakdown from "~/components/settings/StorageBreakdown.vue";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 </script>
 
 <template>
@@ -12,64 +14,16 @@ import StorageBreakdown from "~/components/settings/StorageBreakdown.vue";
     <PageTransition :delay="0">
       <StorageBreakdown>
         <template #action>
-          <OrphanedUploadsButton />
+          <div class="flex flex-wrap items-center justify-end gap-2">
+            <ReparseAllDemosButton />
+            <OrphanedUploadsButton />
+          </div>
         </template>
       </StorageBreakdown>
     </PageTransition>
 
     <PageTransition :delay="200">
       <form @submit.prevent="updateSettings" class="space-y-6">
-        <SettingsSection
-          id="demos"
-          :title="$t('pages.settings.application.demo_settings.demos_section')"
-        >
-          <FormField v-slot="{ componentField }" name="demo_network_limiter">
-            <FormItem>
-              <FormLabel>{{
-                $t(
-                  "pages.settings.application.demo_settings.demo_network_limiter",
-                )
-              }}</FormLabel>
-              <FormDescription>{{
-                $t(
-                  "pages.settings.application.demo_settings.demo_network_limiter_description",
-                )
-              }}</FormDescription>
-              <Select v-bind="componentField">
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue
-                      :placeholder="$t('demo_network_limiter.network_limit')"
-                    />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem :value="null">
-                      {{ $t("demo_network_limiter.unlimited") }}
-                    </SelectItem>
-                    <SelectItem :value="0">0 Mbps</SelectItem>
-                    <SelectItem :value="1">1 Mbps</SelectItem>
-                    <SelectItem :value="2">2 Mbps</SelectItem>
-                    <SelectItem :value="5">5 Mbps</SelectItem>
-                    <SelectItem :value="10">10 Mbps</SelectItem>
-                    <SelectItem :value="20">20 Mbps</SelectItem>
-                    <SelectItem :value="50">50 Mbps</SelectItem>
-                    <SelectItem :value="100">100 Mbps</SelectItem>
-                    <SelectItem :value="200">200 Mbps</SelectItem>
-                    <SelectItem :value="500">500 Mbps</SelectItem>
-                    <SelectItem :value="1000">1000 Mbps</SelectItem>
-                    <SelectItem :value="2000">2000 Mbps</SelectItem>
-                    <SelectItem :value="5000">5000 Mbps</SelectItem>
-                    <SelectItem :value="10000">10000 Mbps</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          </FormField>
-        </SettingsSection>
-
         <SettingsSection
           id="playback"
           :title="
@@ -167,6 +121,52 @@ import StorageBreakdown from "~/components/settings/StorageBreakdown.vue";
             </div>
           </div>
 
+          <FormField v-slot="{ componentField }" name="demo_network_limiter">
+            <FormItem>
+              <FormLabel>{{
+                $t(
+                  "pages.settings.application.demo_settings.demo_network_limiter",
+                )
+              }}</FormLabel>
+              <FormDescription>{{
+                $t(
+                  "pages.settings.application.demo_settings.demo_network_limiter_description",
+                )
+              }}</FormDescription>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      :placeholder="$t('demo_network_limiter.network_limit')"
+                    />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem :value="null">
+                      {{ $t("demo_network_limiter.unlimited") }}
+                    </SelectItem>
+                    <SelectItem :value="0">0 Mbps</SelectItem>
+                    <SelectItem :value="1">1 Mbps</SelectItem>
+                    <SelectItem :value="2">2 Mbps</SelectItem>
+                    <SelectItem :value="5">5 Mbps</SelectItem>
+                    <SelectItem :value="10">10 Mbps</SelectItem>
+                    <SelectItem :value="20">20 Mbps</SelectItem>
+                    <SelectItem :value="50">50 Mbps</SelectItem>
+                    <SelectItem :value="100">100 Mbps</SelectItem>
+                    <SelectItem :value="200">200 Mbps</SelectItem>
+                    <SelectItem :value="500">500 Mbps</SelectItem>
+                    <SelectItem :value="1000">1000 Mbps</SelectItem>
+                    <SelectItem :value="2000">2000 Mbps</SelectItem>
+                    <SelectItem :value="5000">5000 Mbps</SelectItem>
+                    <SelectItem :value="10000">10000 Mbps</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
           <FormField v-slot="{ componentField }" name="cloudflare_worker_url">
             <FormItem>
               <FormLabel>{{
@@ -228,15 +228,7 @@ import StorageBreakdown from "~/components/settings/StorageBreakdown.vue";
           </div>
         </SettingsSection>
 
-        <div class="flex justify-start">
-          <Button
-            type="submit"
-            :disabled="Object.keys(form.errors).length > 0 || !form.meta.dirty"
-            class="my-3"
-          >
-            {{ $t("common.update") }}
-          </Button>
-        </div>
+        <SettingsSaveBar :form="form" @save="updateSettings" />
       </form>
     </PageTransition>
   </SettingsPage>

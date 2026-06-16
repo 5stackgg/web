@@ -62,6 +62,17 @@ export function useAimColumns() {
       key: "accuracy_spotted",
       label: t("match.lineup.stats.accuracy_spotted"),
     },
+    { key: "rifle_accuracy", label: t("match.lineup.stats.rifle_accuracy") },
+    {
+      key: "pistol_accuracy",
+      label: t("match.lineup.stats.pistol_accuracy"),
+      defaultVisible: false,
+    },
+    {
+      key: "sniper_accuracy",
+      label: t("match.lineup.stats.sniper_accuracy"),
+      defaultVisible: false,
+    },
     { key: "head_accuracy", label: t("match.lineup.stats.head_accuracy") },
     { key: "hs_kill_pct", label: t("match.lineup.stats.hs_kill_pct") },
     { key: "spray_accuracy", label: t("match.lineup.stats.spray_accuracy") },
@@ -75,6 +86,11 @@ export function useAimColumns() {
       key: "counter_strafing",
       label: t("match.lineup.stats.counter_strafing"),
     },
+    {
+      key: "first_bullet_accuracy",
+      label: t("match.lineup.stats.first_bullet_accuracy"),
+    },
+    { key: "tracking", label: t("match.lineup.stats.tracking") },
   ]);
   const state = useTableColumns("match-aim", columns.value);
   return { ...state, columnsRef: columns };

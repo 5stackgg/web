@@ -2,7 +2,10 @@
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { LucideRefreshCw } from "lucide-vue-next";
 import { toast } from "@/components/ui/toast";
 import { useI18n } from "vue-i18n";
 import { generateMutation } from "~/graphql/graphqlGen";
@@ -63,15 +66,24 @@ async function doRefreshAllPlayers() {
             $t('pages.settings.application.players.refresh_all_description')
           "
         >
-          <div>
-            <Button :disabled="refreshing" @click="showRefreshDialog = true">
+          <template #action>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              :disabled="refreshing"
+              class="flex items-center gap-2"
+              @click="showRefreshDialog = true"
+            >
+              <Spinner v-if="refreshing" class="h-4 w-4" />
+              <LucideRefreshCw v-else class="h-4 w-4" />
               {{
                 refreshing
                   ? $t("pages.settings.application.players.refreshing")
                   : $t("pages.settings.application.players.refresh_button")
               }}
             </Button>
-          </div>
+          </template>
         </SettingsSection>
 
         <AlertDialog v-model:open="showRefreshDialog">
@@ -228,18 +240,11 @@ async function doRefreshAllPlayers() {
             </FormField>
           </SettingsSection>
 
-          <div class="flex justify-start">
-            <Button
-              type="submit"
-              :loading="submitting"
-              :disabled="
-                Object.keys(form.errors).length > 0 || !form.meta.dirty
-              "
-              class="my-3"
-            >
-              {{ $t("common.update") }}
-            </Button>
-          </div>
+          <SettingsSaveBar
+            :form="form"
+            :submitting="submitting"
+            @save="updateSettings"
+          />
         </form>
       </div>
     </PageTransition>

@@ -341,7 +341,7 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
         <NuxtLink
           v-if="canCreateTournament"
           to="/tournaments/create"
-          :class="tacticalCtaButtonClasses"
+          :class="[tacticalCtaButtonClasses, 'max-lg:px-2.5 max-lg:py-2']"
           :title="$t('pages.tournaments.create')"
         >
           <PlusCircle class="w-4 h-4" />

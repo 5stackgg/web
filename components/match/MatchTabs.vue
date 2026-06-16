@@ -67,7 +67,7 @@ import MatchForm from "~/components/match/MatchForm.vue";
 import MatchLiveStreams from "~/components/match/MatchLiveStreams.vue";
 import PlayerInvites from "~/components/match/PlayerInvites.vue";
 import cleanMapName from "~/utilities/cleanMapName";
-import { MoreVertical } from "lucide-vue-next";
+import { MoreVertical, AlertTriangle, ExternalLink } from "lucide-vue-next";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -333,6 +333,17 @@ provide("commander", commander);
           v-if="showStatsControls"
           class="flex items-center gap-2 lg:justify-end"
         >
+          <Tooltip v-if="effectiveScoreboardLens === 'aim' && aimEstimated">
+            <TooltipTrigger
+              class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] font-mono text-[0.6rem] font-bold tracking-[0.18em] uppercase text-[hsl(var(--tac-amber))]"
+            >
+              <AlertTriangle class="w-3 h-3" />
+              {{ $t("match.lineup.stats.estimated") }}
+            </TooltipTrigger>
+            <TooltipContent class="max-w-xs">
+              {{ $t("match.lineup.stats.estimated_tooltip") }}
+            </TooltipContent>
+          </Tooltip>
           <MatchSideFilter
             v-if="['general', 'opening'].includes(effectiveScoreboardLens)"
           />
@@ -507,7 +518,9 @@ provide("commander", commander);
         />
         <div class="grid gap-3 mt-2">
           <div class="flex items-center gap-2">
-            <span class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]" />
+            <span
+              class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]"
+            />
             <span
               class="font-sans text-sm font-semibold uppercase tracking-[0.14em]"
             >
@@ -739,6 +752,19 @@ provide("commander", commander);
     <TabsContent value="streams" class="max-w-[1500px]">
       <MatchLiveStreams :match="match" />
     </TabsContent>
+    <div
+      v-if="!disableStats && !isOpsTabActive"
+      class="mt-0.5 flex justify-end max-w-[1500px]"
+    >
+      <button
+        type="button"
+        class="flex shrink-0 items-center gap-1 whitespace-nowrap text-xs text-muted-foreground underline decoration-dotted underline-offset-4 transition-colors hover:text-foreground"
+        @click="openStatsGuide"
+      >
+        {{ $t("glossary.guide_link") }}
+        <ExternalLink class="h-3 w-3" />
+      </button>
+    </div>
   </Tabs>
 </template>
 
@@ -1071,6 +1097,20 @@ export default {
         (m: any) => m.status !== e_match_status_enum.Scheduled,
       );
     },
+    // True when the aim stats in view come from a map whose demo could not be
+    // line-of-sight validated (no collision mesh) — drives the "Estimated"
+    // badge. Only flags an explicit false; null (not yet reparsed) is left
+    // unflagged to avoid noise.
+    aimEstimated() {
+      const relevant = this.activeMap
+        ? (this.match.match_maps ?? []).filter(
+            (m: any) => m.id === this.activeMap!.id,
+          )
+        : this.statsEligibleMaps;
+      return relevant.some((m: any) =>
+        (m.demos ?? []).some((d: any) => d.geometry_validated === false),
+      );
+    },
     showStatsControls() {
       return !this.disableStats;
     },
@@ -1251,6 +1291,13 @@ export default {
     this.backupRoundsTracker?.stop();
   },
   methods: {
+    openStatsGuide() {
+      window.open(
+        "/stats-guide",
+        "5stack-stats-guide",
+        "popup,width=900,height=850",
+      );
+    },
     onMapSelect(value: string) {
       if (!value || value === "__all__") {
         this.$emit("clear-active-map");

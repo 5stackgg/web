@@ -7,6 +7,8 @@ import PlayerWeaponsTable from "~/components/player/PlayerWeaponsTable.vue";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import PlayerPreferredRoles from "~/components/player/PlayerPreferredRoles.vue";
 import PlayerRoleRadar from "~/components/player/PlayerRoleRadar.vue";
+import PlayerPerformanceRating from "~/components/player/PlayerPerformanceRating.vue";
+import PlayerConsistencyChart from "~/components/player/PlayerConsistencyChart.vue";
 import PlayerCareerDuels from "~/components/player/PlayerCareerDuels.vue";
 import PlayerCareerClutches from "~/components/player/PlayerCareerClutches.vue";
 
@@ -125,9 +127,9 @@ const presetRanges: {
   { key: "90d", label: t("pages.players.detail.range_90d"), days: 90 },
 ];
 
-const statsTab = ref<"performance" | "elo" | "maps" | "arsenal" | "combat">(
-  "performance",
-);
+const statsTab = ref<
+  "performance" | "breakdown" | "elo" | "maps" | "arsenal" | "combat"
+>("performance");
 const statsTabsEl = ref<HTMLElement | null>(null);
 
 // Warn (once, dismissible) when viewing your own External stats without a
@@ -159,6 +161,14 @@ const statsMatchLimit = computed<number | null>(() => {
 });
 const customFrom = ref<string>("");
 const customTo = ref<string>("");
+
+function openStatsGuide() {
+  window.open(
+    "/stats-guide",
+    "5stack-stats-guide",
+    "popup,width=900,height=850",
+  );
+}
 
 // Calendar (DateValue) adapters over the YYYY-MM-DD string state, so the
 // custom range uses the real date picker instead of native date inputs.
@@ -216,6 +226,7 @@ const router = useRouter();
 // Persist the active stats tab in the URL so it survives refresh / sharing.
 const VALID_STATS_TABS = [
   "performance",
+  "breakdown",
   "elo",
   "maps",
   "arsenal",
@@ -2150,6 +2161,9 @@ const playerTeamChipShortClasses =
                 <SelectItem value="performance">
                   {{ $t("pages.players.detail.tabs.performance") }}
                 </SelectItem>
+                <SelectItem value="breakdown">
+                  {{ $t("pages.players.detail.tabs.breakdown") }}
+                </SelectItem>
                 <SelectItem value="elo">
                   {{ $t("pages.players.detail.tabs.elo") }}
                 </SelectItem>
@@ -2165,27 +2179,40 @@ const playerTeamChipShortClasses =
               </SelectContent>
             </Select>
           </div>
-          <div class="hidden overflow-x-auto md:block">
-            <TabsList
-              variant="underline"
-              class="h-auto flex-nowrap justify-start mb-3"
+          <div class="mb-3 hidden items-center justify-between gap-3 md:flex">
+            <div class="overflow-x-auto">
+              <TabsList
+                variant="underline"
+                class="h-auto flex-nowrap justify-start"
+              >
+                <TabsTrigger value="performance">
+                  {{ $t("pages.players.detail.tabs.performance") }}
+                </TabsTrigger>
+                <TabsTrigger value="breakdown">
+                  {{ $t("pages.players.detail.tabs.breakdown") }}
+                </TabsTrigger>
+                <TabsTrigger value="elo">
+                  {{ $t("pages.players.detail.tabs.elo") }}
+                </TabsTrigger>
+                <TabsTrigger value="maps">
+                  {{ $t("pages.players.detail.tabs.maps") }}
+                </TabsTrigger>
+                <TabsTrigger value="arsenal">
+                  {{ $t("pages.players.detail.tabs.arsenal") }}
+                </TabsTrigger>
+                <TabsTrigger value="combat">
+                  {{ $t("pages.players.detail.tabs.combat") }}
+                </TabsTrigger>
+              </TabsList>
+            </div>
+            <button
+              type="button"
+              class="flex shrink-0 items-center gap-1 whitespace-nowrap text-xs text-muted-foreground underline decoration-dotted underline-offset-4 transition-colors hover:text-foreground"
+              @click="openStatsGuide"
             >
-              <TabsTrigger value="performance">
-                {{ $t("pages.players.detail.tabs.performance") }}
-              </TabsTrigger>
-              <TabsTrigger value="elo">
-                {{ $t("pages.players.detail.tabs.elo") }}
-              </TabsTrigger>
-              <TabsTrigger value="maps">
-                {{ $t("pages.players.detail.tabs.maps") }}
-              </TabsTrigger>
-              <TabsTrigger value="arsenal">
-                {{ $t("pages.players.detail.tabs.arsenal") }}
-              </TabsTrigger>
-              <TabsTrigger value="combat">
-                {{ $t("pages.players.detail.tabs.combat") }}
-              </TabsTrigger>
-            </TabsList>
+              {{ $t("glossary.guide_link") }}
+              <ExternalLink class="h-3 w-3" />
+            </button>
           </div>
         </div>
 
@@ -2515,6 +2542,23 @@ const playerTeamChipShortClasses =
               :limit="statsMatchLimit"
               :since="sinceTimestamp"
             />
+          </PageTransition>
+        </TabsContent>
+
+        <TabsContent value="breakdown" class="mt-0">
+          <PageTransition v-if="playerId">
+            <div class="flex flex-col gap-4 md:gap-6">
+              <PlayerPerformanceRating
+                :steam-id="playerId"
+                :source="effectiveSource"
+                :limit="statsMatchLimit"
+              />
+              <PlayerConsistencyChart
+                :steam-id="playerId"
+                :source="effectiveSource"
+                :limit="statsMatchLimit"
+              />
+            </div>
           </PageTransition>
         </TabsContent>
 

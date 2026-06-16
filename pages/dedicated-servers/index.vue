@@ -8,10 +8,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Pagination from "@/components/Pagination.vue";
-import PageHeading from "~/components/PageHeading.vue";
+import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
+import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 import { PlusCircle } from "lucide-vue-next";
 import ServerStatus from "~/components/servers/ServerStatus.vue";
-import { useSidebar } from "~/components/ui/sidebar/utils";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { Card } from "~/components/ui/card";
 import Empty from "~/components/ui/empty/Empty.vue";
@@ -19,7 +19,6 @@ import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import Skeleton from "~/components/ui/skeleton/Skeleton.vue";
 
-const { isMobile } = useSidebar();
 const fadeTransition = {
   enterActiveClass: "transition-opacity duration-200 ease-out",
   leaveActiveClass: "transition-opacity duration-200 ease-out",
@@ -30,27 +29,35 @@ const fadeTransition = {
 
 <template>
   <PageTransition>
-    <PageHeading>
-      <template #title> {{ $t("pages.dedicated_servers.title") }} </template>
-
-      <template #description>
-        {{ $t("pages.dedicated_servers.description") }}
-        <a href="https://github.com/5stackgg/game-server"
-          >https://github.com/5stackgg/game-server</a
-        >.
-      </template>
+    <TacticalPageHeader>
+      <template #title>{{ $t("pages.dedicated_servers.title") }}</template>
 
       <template #actions>
-        <NuxtLink :to="{ name: 'dedicated-servers-create' }">
-          <Button :size="isMobile ? 'default' : 'lg'">
-            <PlusCircle class="w-4 h-4" />
-            <span class="hidden md:inline ml-2">{{
-              $t("pages.dedicated_servers.create.title")
-            }}</span>
-          </Button>
+        <NuxtLink
+          :to="{ name: 'dedicated-servers-create' }"
+          :class="[tacticalCtaButtonClasses, 'max-md:px-2.5 max-md:py-2']"
+          :title="$t('pages.dedicated_servers.create.title')"
+        >
+          <PlusCircle class="w-4 h-4" />
+          <span class="hidden md:inline">{{
+            $t("pages.dedicated_servers.create.title")
+          }}</span>
         </NuxtLink>
       </template>
-    </PageHeading>
+    </TacticalPageHeader>
+  </PageTransition>
+
+  <PageTransition :delay="60" class="mt-4">
+    <p class="text-sm text-muted-foreground">
+      {{ $t("pages.dedicated_servers.description") }}
+      <a
+        href="https://docs.5stack.gg/servers/dedicated-servers/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-[hsl(var(--tac-amber))] hover:underline"
+        >{{ $t("pages.dedicated_servers.docs_link") }}</a
+      >
+    </p>
   </PageTransition>
 
   <PageTransition :delay="100" class="mt-6">

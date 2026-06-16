@@ -6,8 +6,10 @@ import cleanMapName from "~/utilities/cleanMapName";
 
 <template>
   <div class="flex flex-col h-full">
-    <div class="px-3 pt-3 pb-3 flex-shrink-0 border-b border-border">
-      <div class="flex items-center justify-between gap-2">
+    <div class="px-3 pt-3 flex-shrink-0">
+      <div
+        class="flex items-center justify-between gap-2 -mx-3 px-3 pb-3 border-b border-border"
+      >
         <div
           class="inline-flex items-center gap-[0.4rem] font-mono text-[0.62rem] font-bold tracking-[0.24em] uppercase text-muted-foreground"
         >
@@ -28,7 +30,7 @@ import cleanMapName from "~/utilities/cleanMapName";
 
       <div
         v-if="summaryStats.total > 0"
-        class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs"
+        class="mt-3 -mx-3 px-3 pb-3 border-b border-border grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs"
       >
         <!-- Performance (Record + Win Rate) -->
         <div

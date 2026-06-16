@@ -70,8 +70,16 @@ const canManage = computed(() =>
             $t("pages.public_servers.no_servers_title")
           }}</EmptyTitle>
           <EmptyDescription>{{
-            $t("pages.public_servers.no_public_servers")
+            canManage
+              ? $t("pages.public_servers.no_public_servers_admin")
+              : $t("pages.public_servers.no_public_servers")
           }}</EmptyDescription>
+          <Button v-if="canManage" as-child>
+            <NuxtLink to="/dedicated-servers/create">
+              <Settings2 class="h-4 w-4" />
+              {{ $t("pages.public_servers.setup_public_server") }}
+            </NuxtLink>
+          </Button>
         </Empty>
 
         <!-- Server cards -->

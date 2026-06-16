@@ -1,5 +1,720 @@
 {
+  "glossary": {
+    "title": "How Our Stats Work",
+    "intro": "We don't hide our math. Every stat on the site is explained below — what it means and exactly how we work it out. Think something is wrong, or know a better way to measure it? We'd genuinely love to hear it.",
+    "github_cta": "Suggest an improvement on GitHub",
+    "calc_label": "How it's calculated",
+    "legend": {
+      "title": "Notation",
+      "note": "Brackets narrow a stat to a subset — e.g. H (rifle) = rifle hits, S (spotted) = shots while an enemy was visible. Per-round rates (KPR, DPR, APR, ADR, KAST) reuse these letters over R."
+    },
+    "scores": {
+      "title": "Reading the 0–100 ratings",
+      "body": "Aim, Positioning, Utility and the per-stat ratings are scored out of 100 — but it's a percentile, not a percentage. 50 is an average player; 90 means you're better than ~90% of players; 20 means most players do better. This can surprise you: almost everyone counter-strafes, and the typical player does it ~81% of the time — so counter-strafing 80% of the time actually lands around 22 (just below average), even though 80% sounds high. The rating tells you where you stand versus everyone else; the raw rate is still in the match stat tables."
+    },
+    "performance": {
+      "title": "Performance ratings (Aim / Positioning / Utility)",
+      "body": "We take the underlying stats for each area, score each one as a percentile against every other player (using players with at least 30 rounds), then average them into a single 0–100 rating per area. Aim grows richer over time: stats like crosshair placement and time-to-damage fold in as more demos are parsed."
+    },
+    "consistency": {
+      "title": "Consistency",
+      "body": "Each match gets one overall score — your Aim, Positioning and Utility for that match, combined. The chart plots it over your recent matches, and the consistency number reflects how little it swings: a flatter line scores higher."
+    },
+    "focus": {
+      "title": "Focus areas",
+      "body": "Your three lowest-scoring underlying stats — the spots with the most room to grow — each with a short tip. They update as you play."
+    },
+    "geometry": {
+      "title": "Line of sight & the 3D model",
+      "body": "On maps we have a collision mesh for, we load the map's 3D geometry and ray-cast between players to confirm a real line of sight. So 'spotted', crosshair placement, time-to-damage and engagement stats only count when you could actually see the enemy — not through smoke or a wall. On maps without a mesh we fall back to the game's spotted flag and label those stats 'Estimated'."
+    },
+    "sections": {
+      "aim": "Aim stats",
+      "impact": "Impact & trade stats",
+      "utility": "Utility & flash stats",
+      "economy": "Economy & buy stats",
+      "clutches": "Clutch stats",
+      "roles": "Roles",
+      "elo": "ELO & rating",
+      "head_to_head": "Head-to-head stats",
+      "arsenal": "Arsenal (per weapon)"
+    },
+    "guide_link": "Stats Guide",
+    "scale_worse": "Subpar",
+    "scale_better": "Elite",
+    "scale_legend": "— rough scale of what subpar to elite looks like for each stat",
+    "scale_hint": "Rough subpar → elite scale (estimated, not from your data yet)",
+    "mesh_help": "Uses the map's 3D collision mesh. We ray-cast a line of sight between the two players, so only real sightlines count — spots through smoke, walls or thin gaps are filtered out. Needs the map geometry to be available; falls back to the raw engine data when it isn't.",
+    "mesh_legend": "marks a stat validated against the map's 3D collision mesh (line-of-sight checked)",
+    "mesh_coverage_title": "Map mesh coverage",
+    "mesh_coverage_note": "Mesh-validated stats (marked above) only get their line-of-sight check on maps we have a collision mesh for. Official maps without a mesh fall back to the raw engine spotted flag. Workshop maps are not listed here.",
+    "mesh_coverage_loading": "Checking which maps have a mesh…",
+    "mesh_have": "Mesh available ({count})",
+    "mesh_missing": "No mesh yet ({count})",
+    "mesh_missing_none": "Every official map has a mesh.",
+    "var_help": {
+      "k": "Kills",
+      "d": "Deaths",
+      "a": "Assists",
+      "r": "Rounds played",
+      "h": "Hits — bullets that hit an enemy",
+      "s": "Shots fired",
+      "dmg": "Damage dealt",
+      "e": "Distinct enemies",
+      "t": "Time",
+      "theta": "Angle from your aim to the enemy",
+      "sv": "Survived — you lived to the end of the round",
+      "tr": "Traded — your death was avenged by a teammate",
+      "kpr": "Kills per round",
+      "dpr": "Deaths per round",
+      "apr": "Assists per round",
+      "adr": "Damage per round",
+      "kast": "Kill / Assist / Survive / Trade %",
+      "i": "Impact — the sub-formula shown below",
+      "kda": "Kills / Deaths / Assists",
+      "n": "a count — the number used in this expression",
+      "spotted": "only while the enemy was visible to you",
+      "rifle": "rifles only — AK, M4 and similar",
+      "pistol": "pistols only",
+      "sniper": "the AWP and scoped rifles",
+      "head": "headshots only",
+      "first_sight": "the first moment the mesh confirms you could see the enemy",
+      "first_shot": "the first bullet of an engagement",
+      "spray": "the bullets after the first in a burst",
+      "stopped": "fired while standing still — you counter-strafed first",
+      "eligible": "shots where counter-strafing was possible",
+      "on_target": "time your crosshair was on the enemy",
+      "engaged": "the full time you were in the fight",
+      "damaged": "enemies you actually dealt damage to",
+      "traded": "your death was avenged by a teammate moments later",
+      "trade_chance": "deaths where a teammate was positioned to trade",
+      "util": "grenade damage — HE and molotov",
+      "he": "a high-explosive (HE) grenade",
+      "awp": "the AWP specifically"
+    },
+    "formulas": {
+      "accuracy": {
+        "num": "H",
+        "den": "S"
+      },
+      "accuracy_spotted": {
+        "num": "H (spotted)",
+        "den": "S (spotted)"
+      },
+      "rifle_accuracy": {
+        "num": "H (rifle)",
+        "den": "S (rifle)"
+      },
+      "pistol_accuracy": {
+        "num": "H (pistol)",
+        "den": "S (pistol)"
+      },
+      "sniper_accuracy": {
+        "num": "H (sniper)",
+        "den": "S (sniper)"
+      },
+      "head_accuracy": {
+        "num": "H (head)",
+        "den": "H",
+        "note": "AWP excluded"
+      },
+      "hs_kill_pct": {
+        "num": "K (head)",
+        "den": "K"
+      },
+      "first_bullet_accuracy": {
+        "num": "H (first shot)",
+        "den": "S (first shot)"
+      },
+      "spray_accuracy": {
+        "num": "H (spray)",
+        "den": "S (spray)"
+      },
+      "time_to_damage": {
+        "expr": "avg(t from first sight to first damage)",
+        "note": "milliseconds; capped to 0.2–3s"
+      },
+      "crosshair_placement": {
+        "expr": "avg(θ at first sight)",
+        "note": "degrees; lower is better"
+      },
+      "counter_strafing": {
+        "num": "S (stopped)",
+        "den": "S (eligible)",
+        "note": "rifle shots at a spotted enemy"
+      },
+      "tracking": {
+        "num": "t (on target)",
+        "den": "t (engaged)"
+      },
+      "spotted_acc": {
+        "num": "E (damaged)",
+        "den": "E (spotted)"
+      },
+      "hltv": {
+        "expr": "0.0073·KAST + 0.3591·KPR − 0.5329·DPR + 0.2372·I + 0.0032·ADR + 0.1587",
+        "note": "I (impact) = 2.13·KPR + 0.42·APR − 0.41"
+      },
+      "kast": {
+        "num": "R (K / A / SV / TR)",
+        "den": "R"
+      },
+      "adr": {
+        "num": "DMG",
+        "den": "R"
+      },
+      "kd": {
+        "num": "K",
+        "den": "D"
+      },
+      "kpr": {
+        "num": "K",
+        "den": "R"
+      },
+      "dpr": {
+        "num": "D",
+        "den": "R"
+      },
+      "mkr": {
+        "expr": "count(rounds with K ≥ 2)"
+      },
+      "survived_pct": {
+        "num": "R − D",
+        "den": "R"
+      },
+      "trade_kills": {
+        "expr": "count(kills that avenge a teammate ≤ 5s)"
+      },
+      "traded": {
+        "num": "D (traded)",
+        "den": "D (trade chance)"
+      },
+      "opening": {
+        "num": "opening duels won",
+        "den": "opening duels"
+      },
+      "opening_attempts": {
+        "num": "opening duels",
+        "den": "R"
+      },
+      "flash_assists": {
+        "expr": "count(assists set up by your flash)"
+      },
+      "flash_blind": {
+        "num": "enemy blind time",
+        "den": "R"
+      },
+      "util_efficiency": {
+        "num": "DMG (util)",
+        "den": "nades thrown"
+      },
+      "enemies_flashed_per": {
+        "num": "enemies blinded",
+        "den": "flashes thrown"
+      },
+      "udr": {
+        "num": "DMG (util)",
+        "den": "R"
+      },
+      "trade_kill_pct": {
+        "num": "trade kills",
+        "den": "trade chances"
+      },
+      "he_damage": {
+        "expr": "DMG (HE, to enemies)"
+      },
+      "molotov_damage": {
+        "expr": "DMG (molotov, to enemies)"
+      },
+      "he_team_damage": {
+        "expr": "DMG (HE, to teammates)"
+      },
+      "enemies_flashed": {
+        "expr": "count(enemies blinded > 1s)"
+      },
+      "team_flashed": {
+        "expr": "count(teammates blinded > 1s)"
+      },
+      "avg_flash_duration": {
+        "num": "enemy blind time",
+        "den": "enemy flashes"
+      },
+      "unused_utility": {
+        "expr": "total nade $ still on you when you die"
+      },
+      "wasted_magazine_pct": {
+        "num": "bullets left at reload",
+        "den": "S"
+      },
+      "elo": {
+        "expr": "skill rating, updated every match"
+      },
+      "elo_change": {
+        "expr": "Kf × (result − expected) × performance × series",
+        "note": "Kf (K-factor) = 500; series scales by map differential in a Bo-N"
+      },
+      "elo_impact": {
+        "expr": "your KDA vs the team + damage share → 0.8–1.2",
+        "note": "on a loss it's inverted so strong performers lose less"
+      },
+      "buy_pistol": {
+        "expr": "round 1 or 13"
+      },
+      "buy_eco": {
+        "expr": "team $ < $5,000"
+      },
+      "buy_force": {
+        "expr": "$5,000 ≤ team $ ≤ $20,000"
+      },
+      "buy_full": {
+        "expr": "team $ > $20,000"
+      },
+      "buy_win_rate": {
+        "num": "rounds won (buy type)",
+        "den": "rounds (buy type)"
+      },
+      "man_advantage": {
+        "num": "rounds won (won opening duel)",
+        "den": "rounds (won opening duel)"
+      },
+      "man_disadvantage": {
+        "num": "rounds won (lost opening duel)",
+        "den": "rounds (lost opening duel)"
+      },
+      "clutch": {
+        "expr": "last alive vs N enemies (N ≥ 1)"
+      },
+      "clutch_won": {
+        "expr": "1vN → 1v0 (all enemies down)"
+      },
+      "clutch_saved": {
+        "expr": "round won while you survived"
+      },
+      "clutch_lost": {
+        "expr": "you died, round lost"
+      },
+      "clutch_win_rate": {
+        "num": "clutches won",
+        "den": "won + lost + saved"
+      },
+      "clutch_against": {
+        "expr": "enemies alive when the clutch began"
+      },
+      "kills_in_clutch": {
+        "expr": "count(kills during a 1vN)"
+      },
+      "role_sniper": {
+        "expr": "main AWPer — K(awp) ≥ 5 and ≥ 20% of K"
+      },
+      "role_entry": {
+        "expr": "most opening duels (AWPer aside)"
+      },
+      "role_support": {
+        "expr": "top utility score (AWPer & entry aside)"
+      },
+      "role_rifler": {
+        "expr": "default — none of the above"
+      },
+      "awp_share": {
+        "num": "K (awp)",
+        "den": "K"
+      },
+      "entry_rate": {
+        "num": "opening duels",
+        "den": "R"
+      },
+      "support_idx": {
+        "expr": "(flash assists + DMG (util) ÷ 100 + flashes × 0.3) ÷ R"
+      },
+      "net_trade": {
+        "expr": "trade kills − untraded deaths"
+      },
+      "trade_kill_opportunities": {
+        "expr": "count(teammate deaths near you)"
+      },
+      "trade_kill_attempts": {
+        "expr": "count(trade chances you shot at)"
+      },
+      "traded_death_opportunities": {
+        "expr": "count(D with a teammate able to trade)"
+      },
+      "traded_death_attempts": {
+        "expr": "count(D a teammate shot to avenge)"
+      },
+      "traded_death_pct": {
+        "num": "D (traded)",
+        "den": "D (trade chance)"
+      },
+      "total_damage": {
+        "expr": "total DMG (to enemies)"
+      },
+      "team_damage": {
+        "expr": "total DMG (to teammates)"
+      },
+      "knife_kills": {
+        "expr": "count(K with knife)"
+      },
+      "zeus_kills": {
+        "expr": "count(K with zeus)"
+      },
+      "multi_kill_breakdown": {
+        "expr": "count(rounds with exactly N K), N = 2–5"
+      },
+      "flashes_thrown": {
+        "expr": "count(flashes thrown)"
+      },
+      "smokes_thrown": {
+        "expr": "count(smokes thrown)"
+      },
+      "round_win_pct": {
+        "num": "R won",
+        "den": "R"
+      },
+      "pistol_win_pct": {
+        "num": "pistol R won",
+        "den": "pistol R"
+      },
+      "opening_win_pct": {
+        "num": "opening duels won (team)",
+        "den": "opening duels (team)"
+      },
+      "team_trade_pct": {
+        "num": "team trades won",
+        "den": "team trade chances"
+      },
+      "buy_matchup": {
+        "expr": "R won (your buy vs theirs) ÷ R (matchup) × 100"
+      },
+      "h2h_kills": {
+        "expr": "count(your K on this enemy)"
+      },
+      "h2h_damage": {
+        "expr": "total DMG to this enemy"
+      },
+      "h2h_flashes": {
+        "expr": "count(your flashes that blind this enemy)"
+      },
+      "h2h_weapon_class": {
+        "expr": "your K on this enemy, by weapon class"
+      },
+      "weapon_usage_pct": {
+        "num": "K (weapon)",
+        "den": "K"
+      },
+      "weapon_rating": {
+        "expr": "blend of KPR, ADR & impact per weapon",
+        "note": "approx — no per-weapon D / KAST"
+      },
+      "weapon_economy": {
+        "expr": "weapon rating × (baseline $ ÷ weapon $)",
+        "note": "≈ 1.0 = on par for its price"
+      },
+      "consistency": {
+        "expr": "100 − match-to-match swing in overall rating"
+      }
+    }
+  },
   "stat_glossary": {
+    "aim": {
+      "label": "Aim",
+      "description": "Your shooting — accuracy, headshots, and how quickly/cleanly you hit visible enemies. Scored 0–100 as the average percentile of those aim stats vs all players (50 = average)."
+    },
+    "positioning": {
+      "label": "Positioning",
+      "description": "Where you fight — surviving rounds, dying near teammates so you get traded, and contributing every round (KAST). Scored 0–100 as the average percentile of those stats vs all players (50 = average)."
+    },
+    "utility": {
+      "label": "Utility",
+      "description": "Grenade impact — flash assists, how much you blind enemies, and HE/molotov damage per nade. Scored 0–100 as the average percentile vs all players. Provisional: utility doesn't yet cleanly separate skill on our data."
+    },
+    "consistency": {
+      "label": "Consistency",
+      "description": "Each match gets one overall score (Aim, Positioning and Utility combined). Consistency reflects how little that score swings match to match — less swing is better."
+    },
+    "accuracy": {
+      "label": "Accuracy",
+      "description": "Bullets that hit an enemy, out of every bullet you fired."
+    },
+    "accuracy_spotted": {
+      "label": "Spotted Accuracy",
+      "description": "Your hit rate while an enemy was actually visible — spam through smoke or walls doesn't count."
+    },
+    "crosshair_placement": {
+      "label": "Crosshair Placement",
+      "description": "How close your crosshair already is to the enemy when they appear. A smaller angle means less to move before firing."
+    },
+    "time_to_damage": {
+      "label": "Time to Damage",
+      "description": "How fast you deal damage after first seeing an enemy — a proxy for reaction speed."
+    },
+    "counter_strafing": {
+      "label": "Counter-Strafing",
+      "description": "How often you fully stop moving before firing. Shots while moving are wildly inaccurate."
+    },
+    "first_bullet": {
+      "label": "First Bullet",
+      "description": "How often your opening shot of a duel hits — the shot that decides most fights."
+    },
+    "tracking": {
+      "label": "Tracking",
+      "description": "While engaging a visible enemy, how much of the time your crosshair stays on them."
+    },
+    "flash_assists": {
+      "label": "Flash Assists",
+      "description": "Kills your flash set up — you blinded an enemy and a teammate killed them shortly after."
+    },
+    "flash_blind": {
+      "label": "Flash Effectiveness",
+      "description": "How much enemy blindness your flashes actually cause — rewards pop-flashes, not flashes thrown over heads."
+    },
+    "util_efficiency": {
+      "label": "Utility Damage",
+      "description": "Damage dealt per HE/molotov you throw — rewards landing nades, not just buying them."
+    },
+    "trade_kills": {
+      "label": "Trade Kills",
+      "description": "Kills where you avenged a teammate who had just died (within a few seconds)."
+    },
+    "traded": {
+      "label": "Traded Deaths",
+      "description": "How often, when you die, a teammate trades the kill back right after — a sign of fighting near your team."
+    },
+    "opening": {
+      "label": "Opening Duels",
+      "description": "Your win rate in the first duel of the round — first kill versus first death."
+    },
+    "opening_attempts": {
+      "label": "Opening Attempts",
+      "description": "How often you take the round's first duel."
+    },
+    "buy_pistol": {
+      "label": "Pistol Round",
+      "description": "The first round of each half — everyone starts with only a pistol and limited cash."
+    },
+    "buy_eco": {
+      "label": "Eco",
+      "description": "An 'eco' round: the team deliberately saves, buying little or nothing (under $5,000 total)."
+    },
+    "buy_force": {
+      "label": "Force Buy",
+      "description": "A force / half buy: the team spends most of its money but can't afford a full setup ($5,000–$20,000)."
+    },
+    "buy_full": {
+      "label": "Full Buy",
+      "description": "A full buy: rifles, armour and utility for the whole team (over $20,000)."
+    },
+    "buy_win_rate": {
+      "label": "Buy Win %",
+      "description": "How often the team wins rounds on a given buy type — useful for spotting weak eco or anti-eco rounds."
+    },
+    "man_advantage": {
+      "label": "Man Advantage %",
+      "description": "How often you win the round after winning the opening duel — closing out the rounds you start ahead in."
+    },
+    "man_disadvantage": {
+      "label": "Man Disadvantage %",
+      "description": "How often you still win the round after losing the opening duel — clawing back rounds you start behind in."
+    },
+    "net_trade": {
+      "label": "Net Trade",
+      "description": "Your trade kills minus your own deaths that a teammate failed to trade back — positive means you trade more than you cost the team."
+    },
+    "trade_kill_opportunities": {
+      "label": "Trade Kill Opps",
+      "description": "How often a teammate died near you, giving you a chance to trade the killer."
+    },
+    "trade_kill_attempts": {
+      "label": "Trade Kill Attempts",
+      "description": "Of those chances, how often you actually shot at the killer."
+    },
+    "traded_death_opportunities": {
+      "label": "Traded Death Opps",
+      "description": "Your deaths where a teammate was positioned to trade you back."
+    },
+    "traded_death_attempts": {
+      "label": "Traded Death Attempts",
+      "description": "Of those, how often a teammate actually shot at your killer."
+    },
+    "traded_death_pct": {
+      "label": "Traded Death %",
+      "description": "Share of your deaths that a teammate traded back — the same idea as Traded Deaths, shown as its own column."
+    },
+    "total_damage": {
+      "label": "Total Damage",
+      "description": "Total damage you dealt to enemies across the map (ADR is this per round)."
+    },
+    "team_damage": {
+      "label": "Team Damage",
+      "description": "Damage you dealt to teammates (friendly fire) — lower is better."
+    },
+    "knife_kills": {
+      "label": "Knife Kills",
+      "description": "Kills with the knife."
+    },
+    "zeus_kills": {
+      "label": "Zeus Kills",
+      "description": "Kills with the Zeus x27 taser."
+    },
+    "multi_kill_breakdown": {
+      "label": "Multi-Kill Rounds (2K–5K)",
+      "description": "How many rounds you got exactly 2, 3, 4 or 5 kills in — the breakdown behind Multi-Kill Rounds."
+    },
+    "flashes_thrown": {
+      "label": "Flashes Thrown",
+      "description": "How many flashbangs you threw, effective or not."
+    },
+    "smokes_thrown": {
+      "label": "Smokes Thrown",
+      "description": "How many smoke grenades you threw."
+    },
+    "round_win_pct": {
+      "label": "Round Win %",
+      "description": "Share of rounds the team won."
+    },
+    "pistol_win_pct": {
+      "label": "Pistol Win %",
+      "description": "Win rate on pistol rounds — the first round of each half."
+    },
+    "opening_win_pct": {
+      "label": "Opening Win % (team)",
+      "description": "Team win rate in the round's first duel."
+    },
+    "team_trade_pct": {
+      "label": "Trade % (team)",
+      "description": "How often the team converts its trade chances into trade kills."
+    },
+    "buy_matchup": {
+      "label": "Buy Matchup Win %",
+      "description": "Round win rate for each buy-type matchup (e.g. full-buy vs eco), not just your own buy type."
+    },
+    "h2h_kills": {
+      "label": "H2H Kills",
+      "description": "Kills you got on a specific opponent in this match."
+    },
+    "h2h_damage": {
+      "label": "H2H Damage",
+      "description": "Damage you dealt to a specific opponent in this match."
+    },
+    "h2h_flashes": {
+      "label": "H2H Flashes",
+      "description": "How many times your flashes blinded a specific opponent."
+    },
+    "h2h_weapon_class": {
+      "label": "H2H by Weapon",
+      "description": "Your kills on an opponent grouped by weapon class — rifle, pistol, sniper, and so on."
+    },
+    "weapon_usage_pct": {
+      "label": "Most Used %",
+      "description": "Share of all your kills that came with this weapon."
+    },
+    "weapon_rating": {
+      "label": "Weapon Rating",
+      "description": "Approximate HLTV-style rating for a single weapon from its KPR, ADR and impact — directional, since there are no per-weapon deaths or KAST."
+    },
+    "weapon_economy": {
+      "label": "Weapon Economy",
+      "description": "A weapon's rating adjusted for its buy cost — about 1.0 means it performs on par for the price, higher means great value."
+    },
+    "trade_kill_pct": {
+      "label": "Trade Kill %",
+      "description": "Share of your trade chances you convert — when a teammate dies near you, how often you get the avenging kill."
+    },
+    "he_damage": {
+      "label": "HE Damage",
+      "description": "Damage your HE grenades deal to enemies."
+    },
+    "molotov_damage": {
+      "label": "Molotov Damage",
+      "description": "Damage your molotovs and incendiaries deal to enemies."
+    },
+    "he_team_damage": {
+      "label": "HE Team Damage",
+      "description": "Damage your HE grenades deal to teammates — lower is better."
+    },
+    "enemies_flashed": {
+      "label": "Enemies Flashed",
+      "description": "Number of enemies your flashes blinded for a meaningful amount of time (over one second)."
+    },
+    "team_flashed": {
+      "label": "Teammates Flashed",
+      "description": "Number of teammates your flashes blinded — lower is better."
+    },
+    "avg_flash_duration": {
+      "label": "Avg Flash Duration",
+      "description": "Average time an enemy stays blinded per flash that hits — longer pop-flashes score higher."
+    },
+    "unused_utility": {
+      "label": "Unused Utility",
+      "description": "The dollar value of grenades you were still holding when you died — utility you bought but never used."
+    },
+    "wasted_magazine_pct": {
+      "label": "Wasted Mag %",
+      "description": "Share of your magazine left unfired when you reload — high values mean reloading too early."
+    },
+    "elo_change": {
+      "label": "ELO Change",
+      "description": "How much your ELO moved after a match — scaled by the result, your performance and the series length."
+    },
+    "elo_impact": {
+      "label": "ELO Impact",
+      "description": "A 0.8–1.2 multiplier on your ELO change from how you performed relative to your team (KDA and damage share)."
+    },
+    "clutch": {
+      "label": "Clutch",
+      "description": "A 1vN situation — you're the last player alive on your team against one or more standing enemies."
+    },
+    "clutch_against": {
+      "label": "Against (N)",
+      "description": "How many enemies were alive when your clutch began — the N in 1vN."
+    },
+    "clutch_won": {
+      "label": "Clutch Won",
+      "description": "You won the clutch by eliminating every remaining enemy yourself."
+    },
+    "clutch_saved": {
+      "label": "Clutch Saved",
+      "description": "Your team won the round while you were still alive, without you having to kill everyone."
+    },
+    "clutch_lost": {
+      "label": "Clutch Lost",
+      "description": "You died before the round was won."
+    },
+    "clutch_win_rate": {
+      "label": "Clutch Win %",
+      "description": "Share of your clutches that ended in a win (saves and losses count in the denominator)."
+    },
+    "kills_in_clutch": {
+      "label": "Clutch Kills",
+      "description": "Kills you made while in a clutch situation."
+    },
+    "role_sniper": {
+      "label": "Sniper (role)",
+      "description": "The team's primary AWPer on the map — at least 5 AWP kills and 20%+ of their kills with the AWP."
+    },
+    "role_entry": {
+      "label": "Entry (role)",
+      "description": "The player who takes the round's first duel most often (the AWPer aside)."
+    },
+    "role_support": {
+      "label": "Support (role)",
+      "description": "The player contributing the most utility value (the AWPer and entry aside)."
+    },
+    "role_rifler": {
+      "label": "Rifler (role)",
+      "description": "The default role — a rifler who isn't the AWPer, entry, or main support."
+    },
+    "awp_share": {
+      "label": "AWP Share",
+      "description": "The share of your kills that came with the AWP or scoped rifle — drives the Sniper role."
+    },
+    "entry_rate": {
+      "label": "Entry Rate",
+      "description": "How often you take the round's first duel — drives the Entry role."
+    },
+    "support_idx": {
+      "label": "Support Index",
+      "description": "A utility score combining flash assists, grenade damage and flashes thrown, per round — drives the Support role."
+    },
     "enemies_flashed_per": {
       "label": "Enemies / Flash",
       "description": "Average number of enemies blinded per flash thrown — higher means more effective flashes."
@@ -724,6 +1439,8 @@
           "dark_mode": "Dark Mode",
           "save_branding": "Save Branding",
           "reset_to_defaults": "Reset to Defaults",
+          "reset_confirm_title": "Reset branding to defaults?",
+          "reset_confirm_description": "This clears your brand name, colors, login footer, and uploaded logo/favicon, restoring the default 5Stack theme. This cannot be undone.",
           "export_theme": "Export Theme",
           "import_theme": "Import Theme",
           "upload_failed": "Upload failed",
@@ -907,6 +1624,22 @@
           "playback_section": "Playback",
           "orphaned_section": "Storage Maintenance",
           "orphaned_description": "Find files in S3 that are no longer referenced in the database and reclaim the space.",
+          "reparse_section": "Reparse Demos",
+          "reparse_warning_title": "This reparses every demo — it can take a very long time.",
+          "reparse_warning_body": "Demos are reprocessed one at a time, which can run for hours or days depending on how many you have. Only do this if you know what you're doing, or after a major update changes how demos are parsed. New stats from updates are reparsed automatically as matches are viewed — this is only to force everything at once.",
+          "reparse_button": "Reparse All Demos",
+          "reparse_running": "Reparsing demos…",
+          "reparse_failed_count": "{count} failed",
+          "reparse_cancel": "Cancel",
+          "reparse_last_run": "Last run: {completed} / {total} processed, {failed} failed.",
+          "reparse_confirm_title": "Reparse every demo?",
+          "reparse_confirm_body": "This queues a background job that reparses all demos one at a time and can take a very long time. It's not recommended unless you know what you're doing or a major update changed demo parsing. You can cancel it at any point.",
+          "reparse_confirm_action": "Start Reparse",
+          "reparse_started": "Reparse started — it runs in the background, one demo at a time. You can close this page.",
+          "reparse_cancel_requested": "Cancel requested — stopping after the current demo.",
+          "reparse_complete_title": "Demo reparse complete",
+          "reparse_canceled_title": "Demo reparse canceled",
+          "reparse_complete_desc": "{completed} / {total} processed, {failed} failed.",
           "orphaned_open_button": "Scan Orphaned Uploads",
           "orphaned_title": "Orphaned Uploads",
           "orphaned_dialog_description": "Scans the bucket for demo, playback and highlight objects with no matching database row, and corrects the tracked storage sizes. Runs in the background — you can close this dialog and check back.",
@@ -1157,6 +1890,7 @@
         },
         "tabs": {
           "performance": "Performance",
+          "breakdown": "Breakdown",
           "elo": "ELO",
           "maps": "Maps",
           "arsenal": "Arsenal",
@@ -1599,7 +2333,8 @@
     },
     "dedicated_servers": {
       "title": "Dedicated Servers",
-      "description": "You can set up a dedicated server that will always run the game server mod",
+      "description": "Dedicated servers stay connected to 5Stack and are automatically used to host matches, tournaments, and public play.",
+      "docs_link": "View setup guide",
       "no_servers_title": "No Dedicated Servers",
       "no_servers": "No dedicated servers found.",
       "create": {
@@ -1642,6 +2377,8 @@
       "players": "Players",
       "no_servers_title": "No Servers Available",
       "no_public_servers": "No public servers available at the moment.",
+      "no_public_servers_admin": "Set up a public server from the Dedicated Servers page to make it available here.",
+      "setup_public_server": "Set Up a Public Server",
       "lan_servers_title": "LAN Servers",
       "manage": "Manage"
     },
@@ -2201,6 +2938,14 @@
     "reset": "Reset",
     "copy": "Copy",
     "update": "Update",
+    "discard": "Discard",
+    "save_changes": "Save changes",
+    "save_bar": {
+      "unsaved_changes": "Unsaved changes",
+      "review_and_save": "Review your edits, then save",
+      "has_errors": "Invalid settings",
+      "resolve_errors": "Fix the highlighted fields to save"
+    },
     "error": "Error",
     "enabled": "Enabled",
     "all": "All",
@@ -3485,12 +4230,19 @@
         "traded_death_pct": "Traded Death %",
         "net_trade": "Net Trade",
         "accuracy": "Accuracy",
+        "estimated": "Estimated",
+        "estimated_tooltip": "This map has no collision mesh, so line-of-sight couldn't be validated — spotted, crosshair, time-to-damage and engagement stats here are estimated.",
+        "rifle_accuracy": "Rifle Accuracy",
+        "pistol_accuracy": "Pistol Accuracy",
+        "sniper_accuracy": "Sniper Accuracy",
         "head_accuracy": "Head Accuracy",
         "hs_kill_pct": "HS Kill %",
         "time_to_damage": "Time to Damage",
         "spotted_acc": "Spot Conversion",
-        "crosshair_placement": "Cross. Placement",
+        "crosshair_placement": "Crosshair Placement",
         "counter_strafing": "Counter-Strafing",
+        "first_bullet_accuracy": "First Bullet Accuracy",
+        "tracking": "Tracking",
         "wasted_magazine_pct": "Wasted Mag %",
         "spray_accuracy": "Spray Accuracy",
         "accuracy_spotted": "Accuracy (Spotted)",
@@ -3498,8 +4250,23 @@
         "tooltips": {
           "accuracy": {
             "title": "Accuracy (All Shots)",
-            "description": "Out of the total bullets you fired, how many hit an enemy.",
-            "calculation": "All hits divided by all shots."
+            "description": "Out of the total bullets you fired, how many hit an enemy. Volume-dependent — snipers and pistol players fire rarely and hit a high fraction, so this number flatters them. Compare the per-weapon accuracies instead.",
+            "calculation": "All hits divided by all shots, across every weapon."
+          },
+          "rifle_accuracy": {
+            "title": "Rifle Accuracy",
+            "description": "Accuracy with rifles only (AK, M4, AUG, Galil, FAMAS, SG). The fairest aim comparison — rifle vs rifle — since it isn't inflated by low-fire-rate weapons.",
+            "calculation": "Rifle hits divided by rifle shots. Shown only with at least 5 rifle shots."
+          },
+          "pistol_accuracy": {
+            "title": "Pistol Accuracy",
+            "description": "Accuracy with pistols only (Glock, USP, P250, Deagle, Five-Seven, Tec-9, CZ, Dualies, Revolver).",
+            "calculation": "Pistol hits divided by pistol shots. Shown only with at least 5 pistol shots."
+          },
+          "sniper_accuracy": {
+            "title": "Sniper Accuracy",
+            "description": "Accuracy with scoped rifles (AWP, SSG, SCAR-20, G3SG1). Naturally high — these are low-volume, one-shot weapons — so judge AWPers against each other.",
+            "calculation": "Sniper hits divided by sniper shots. Shown only with at least 5 sniper shots."
           },
           "accuracy_spotted": {
             "title": "Accuracy (Enemy Spotted)",
@@ -3535,6 +4302,16 @@
             "title": "Counter-Strafing",
             "description": "How often you stopped before firing with a rifle. Only counts rifle shots at an enemy in vision; excludes movement while fully crouched.",
             "calculation": "Rifle shots at a spotted enemy where speed was under 34% of the weapon's max, divided by all rifle shots at spotted enemies (not crouched)."
+          },
+          "first_bullet_accuracy": {
+            "title": "First Bullet Accuracy",
+            "description": "How often your opening shot of an engagement connects — the shot that decides most duels. Higher is better.",
+            "calculation": "First shots that dealt damage divided by first shots fired, across every engagement (one per enemy you opened up on)."
+          },
+          "tracking": {
+            "title": "Tracking (Time on Target)",
+            "description": "While engaging a live enemy, how much of the time your crosshair stayed on them. Higher is better.",
+            "calculation": "Frames where your view stayed within ~5° of the enemy, divided by all frames of the engagement window."
           },
           "spray_accuracy": {
             "title": "Spray Accuracy",
@@ -3884,6 +4661,91 @@
     "reload_demo": "Reload demo"
   },
   "player": {
+    "performance": {
+      "title": "Performance",
+      "description": "Each area is scored out of 100 as your percentile vs every other player — 50 is an average player, higher is better. Hover any label to see what it measures.",
+      "how_calculated": "How is this calculated?",
+      "all_matches": "Rating reflects your recent matches",
+      "recent": "Recent",
+      "you": "You",
+      "compare": "Comparison",
+      "goal": "Goal",
+      "my_rating": "My Rating",
+      "focus_areas": "Focus Areas",
+      "provisional": "Provisional",
+      "not_enough_data": "Not enough games yet to rate this player — play more to unlock your performance breakdown.",
+      "low_sample": "Few rated players in your rank band right now, so the Goal is an early estimate.",
+      "categories": {
+        "aim": "Aim",
+        "positioning": "Positioning",
+        "utility": "Utility"
+      },
+      "consistency": {
+        "title": "Consistency",
+        "description": "Each match gets one overall score (your Aim, Positioning and Utility for that match, combined). This tracks it over your recent matches — a flatter line means more consistent play.",
+        "overall": "Overall",
+        "not_enough": "Play a few more matches to see your form trend.",
+        "rock_solid": "Rock Solid",
+        "steady": "Steady",
+        "streaky": "Streaky"
+      },
+      "tiers": {
+        "subpar": "Subpar",
+        "average": "Average",
+        "good": "Good",
+        "elite": "Elite"
+      },
+      "metrics": {
+        "accuracy_score": {
+          "label": "Accuracy",
+          "coach": "Fewer, more deliberate shots land more often than spraying — slow down and commit to each shot."
+        },
+        "hs_score": {
+          "label": "Headshots",
+          "coach": "Keep your crosshair at head level as you hold and clear angles so your first shot is a headshot."
+        },
+        "spotted_score": {
+          "label": "Spotted Accuracy",
+          "coach": "Your hit-rate when an enemy is actually visible — pre-aim the spots enemies appear from."
+        },
+        "crosshair_score": {
+          "label": "Crosshair Placement",
+          "coach": "Hold head-level pre-aim spots so you barely have to move to land the shot."
+        },
+        "ttd_score": {
+          "label": "Reaction",
+          "coach": "Hold tighter angles — the less screen an enemy can appear in, the faster you react and fire."
+        },
+        "counter_strafe_score": {
+          "label": "Counter-Strafing",
+          "coach": "Tap the opposite key to stop dead before firing — shots while moving are wildly inaccurate."
+        },
+        "survival_score": {
+          "label": "Survival",
+          "coach": "Trade your life for value — avoid dry-peeking and over-extending away from your team."
+        },
+        "traded_score": {
+          "label": "Trade Positioning",
+          "coach": "Fight near teammates so when you die it gets traded, instead of dying for free."
+        },
+        "kast_score": {
+          "label": "Round Impact",
+          "coach": "Do something every round — a kill, assist, survive, or get traded. Empty rounds hurt your team."
+        },
+        "flash_assists_score": {
+          "label": "Flash Assists",
+          "coach": "Pop-flash for teammates pushing an angle, not just for yourself."
+        },
+        "blind_score": {
+          "label": "Flash Effectiveness",
+          "coach": "Throw flashes that actually blind enemies right before a peek — not over their heads."
+        },
+        "util_eff_score": {
+          "label": "Utility Damage",
+          "coach": "Learn a few HE / molotov line-ups for common spots to get real damage out of each nade."
+        }
+      }
+    },
     "player": {
       "steam_id": "Steam ID",
       "steam": "Steam"

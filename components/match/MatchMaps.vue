@@ -86,12 +86,12 @@ import cleanMapName from "~/utilities/cleanMapName";
           >{{ $t("match.decider") }}</Badge
         >
         <template v-if="hasDemo && hasDemoMetadata">
-          <Tooltip>
+          <Tooltip v-if="mapHasRadar">
             <TooltipTrigger as-child>
               <Button
                 size="xs"
                 variant="ghost"
-                class="h-6 w-6 p-0 text-white/70 hover:text-white"
+                class="hidden h-6 w-6 p-0 text-white/70 hover:text-white sm:inline-flex"
                 @click.stop="openReplay2d()"
               >
                 <span
@@ -103,12 +103,12 @@ import cleanMapName from "~/utilities/cleanMapName";
             </TooltipTrigger>
             <TooltipContent>{{ $t("match.replay.open") }}</TooltipContent>
           </Tooltip>
-          <Tooltip>
+          <Tooltip v-if="mapHasMesh">
             <TooltipTrigger as-child>
               <Button
                 size="xs"
                 variant="ghost"
-                class="h-6 w-6 p-0 text-[#38e1ff]/80 hover:text-[#38e1ff]"
+                class="hidden h-6 w-6 p-0 text-[#38e1ff]/80 hover:text-[#38e1ff] sm:inline-flex"
                 @click.stop="openReplay3d()"
               >
                 <span
@@ -333,6 +333,7 @@ import {
 } from "~/generated/zeus";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useGpuPoolStatusStore } from "~/stores/GpuPoolStatusStore";
+import { hasMeshForMap, hasRadarForMap } from "~/utilities/mapAssets";
 
 export default {
   emits: ["open-stats"],
@@ -353,7 +354,24 @@ export default {
   data() {
     return {
       isParsingDemo: false,
+      mapHasMesh: true,
+      mapHasRadar: true,
     };
+  },
+  mounted() {
+    const name = this.matchMap?.map?.name;
+    if (!name) {
+      return;
+    }
+    void hasRadarForMap(name).then((v) => {
+      this.mapHasRadar = v;
+    });
+    void hasMeshForMap(
+      useRuntimeConfig().public.mapMeshCdn as string,
+      name,
+    ).then((v) => {
+      this.mapHasMesh = v;
+    });
   },
   computed: {
     canOpenStats() {

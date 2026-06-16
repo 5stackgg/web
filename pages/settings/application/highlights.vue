@@ -4,6 +4,7 @@ import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
 import OrphanedUploadsButton from "~/components/settings/OrphanedUploadsButton.vue";
 import StorageBreakdown from "~/components/settings/StorageBreakdown.vue";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 </script>
 
 <template>
@@ -355,15 +356,7 @@ import StorageBreakdown from "~/components/settings/StorageBreakdown.vue";
           </div>
         </SettingsSection>
 
-        <div class="flex justify-start">
-          <Button
-            type="submit"
-            :disabled="Object.keys(form.errors).length > 0 || !form.meta.dirty"
-            class="my-3"
-          >
-            {{ $t("common.update") }}
-          </Button>
-        </div>
+        <SettingsSaveBar :form="form" @save="updateSettings" />
       </form>
     </PageTransition>
   </SettingsPage>

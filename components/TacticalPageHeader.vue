@@ -36,7 +36,7 @@ const tacticalTabs = {
     ></span>
 
     <div
-      class="flex flex-wrap items-end justify-between gap-6 max-sm:items-start"
+      class="flex items-end justify-between gap-4 sm:gap-6 max-sm:items-center"
     >
       <div class="flex min-w-0 flex-col gap-[0.35rem]">
         <span
@@ -69,7 +69,7 @@ const tacticalTabs = {
 
       <div
         v-if="$slots.actions"
-        class="ml-auto flex shrink-0 items-center gap-3 max-sm:w-full max-sm:justify-start"
+        class="ml-auto flex shrink-0 items-center gap-3"
       >
         <slot name="actions" :tabs="tacticalTabs"></slot>
       </div>

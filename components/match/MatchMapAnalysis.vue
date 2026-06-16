@@ -15,6 +15,7 @@ import { Empty, EmptyTitle, EmptyDescription } from "~/components/ui/empty";
 import MatchSideFilter from "~/components/match/MatchSideFilter.vue";
 import { useMatchSide } from "~/composables/useMatchSide";
 import cleanMapName from "~/utilities/cleanMapName";
+import { hasMeshForMap } from "~/utilities/mapAssets";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -255,6 +256,29 @@ const radarSrc = computed(() => {
   return `/radars/${normalizedMap.value}.png`;
 });
 
+const has2dRadar = computed(() =>
+  calibrations.value === null ? true : !!calibration.value,
+);
+
+const has3dMesh = ref(true);
+watch(
+  () => activeMatchMap.value?.map?.name,
+  async (name) => {
+    if (!import.meta.client) {
+      return;
+    }
+    if (!name) {
+      has3dMesh.value = false;
+      return;
+    }
+    has3dMesh.value = await hasMeshForMap(
+      useRuntimeConfig().public.mapMeshCdn as string,
+      name,
+    );
+  },
+  { immediate: true },
+);
+
 onMounted(async () => {
   try {
     const res = await fetch("/radars/metadata.json");
@@ -367,7 +391,10 @@ function parseCoords(
   }
   // Kill coords come space-delimited ("1868 -260 261"); utility coords
   // come comma-delimited ("1408.61,990.33,153.35"). Accept either.
-  const parts = value.trim().split(/[\s,]+/).map(Number);
+  const parts = value
+    .trim()
+    .split(/[\s,]+/)
+    .map(Number);
   if (parts.length < 2 || parts.some((n) => Number.isNaN(n))) {
     return null;
   }
@@ -984,7 +1011,11 @@ const availableRounds = computed<number[]>(() => {
   }
   const mapId = activeMatchMap.value?.id;
   for (const u of rawUtility.value) {
-    if (u.match_map_id === mapId && typeof u.round === "number" && u.round > 0) {
+    if (
+      u.match_map_id === mapId &&
+      typeof u.round === "number" &&
+      u.round > 0
+    ) {
       rounds.add(u.round);
     }
   }
@@ -1043,7 +1074,10 @@ function stepRound(delta: number) {
   }
   const seq: (number | null)[] = [null, ...rounds];
   const idx = seq.indexOf(selectedRound.value);
-  const next = Math.max(0, Math.min(seq.length - 1, (idx === -1 ? 0 : idx) + delta));
+  const next = Math.max(
+    0,
+    Math.min(seq.length - 1, (idx === -1 ? 0 : idx) + delta),
+  );
   selectedRound.value = seq[next];
 }
 
@@ -1107,13 +1141,15 @@ onUnmounted(() => window.removeEventListener("keydown", onKeyDown));
 
           <div class="flex items-center gap-3">
             <div
-              v-if="canOpen2dPlayback"
-              class="inline-flex items-stretch overflow-hidden rounded-md border border-border bg-card/50"
+              v-if="canOpen2dPlayback && (has2dRadar || has3dMesh)"
+              class="hidden items-stretch overflow-hidden rounded-md border border-border bg-card/50 sm:inline-flex"
             >
               <button
+                v-if="has2dRadar"
                 type="button"
                 :title="$t('match.map_analysis.open_2d_playback')"
-                class="inline-flex items-center justify-center border-r border-border/60 px-2.5 py-1.5 text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.15)]"
+                class="inline-flex items-center justify-center px-2.5 py-1.5 text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.15)]"
+                :class="has3dMesh ? 'border-r border-border/60' : ''"
                 @click="open2dPlayback"
               >
                 <span
@@ -1122,6 +1158,7 @@ onUnmounted(() => window.removeEventListener("keydown", onKeyDown));
                 >
               </button>
               <button
+                v-if="has3dMesh"
                 type="button"
                 :title="$t('match.map_analysis.open_3d_playback')"
                 class="inline-flex items-center justify-center px-2.5 py-1.5 text-[#38e1ff] transition-colors hover:bg-[#38e1ff]/15"
@@ -1531,7 +1568,9 @@ onUnmounted(() => window.removeEventListener("keydown", onKeyDown));
                 >
                   <template v-if="mode === 'heatmap'">
                     {{
-                      $t("match.heatmaps.plotted", { count: visibleDots.length })
+                      $t("match.heatmaps.plotted", {
+                        count: visibleDots.length,
+                      })
                     }}
                   </template>
                   <template v-else-if="blobLoading">

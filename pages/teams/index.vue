@@ -26,7 +26,7 @@ import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
         <NuxtLink
           v-if="me"
           :to="{ name: 'teams-create' }"
-          :class="tacticalCtaButtonClasses"
+          :class="[tacticalCtaButtonClasses, 'max-md:px-2.5 max-md:py-2']"
         >
           <PlusCircle class="w-4 h-4" />
           <span class="hidden md:inline">{{ $t("pages.teams.create") }}</span>
@@ -38,7 +38,7 @@ import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
   <!-- Filters -->
   <PageTransition :delay="100" class="mt-6">
     <div>
-      <form @submit.prevent="viewTopTeam">
+      <form @submit.prevent="viewTopTeam" class="space-y-3">
         <FormField v-slot="{ componentField }" name="teamQuery">
           <FormItem>
             <FormControl>
@@ -54,7 +54,7 @@ import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
                   v-bind="componentField"
                 />
 
-                <InputGroupAddon align="inline-end" class="gap-3 pr-2">
+                <InputGroupAddon align="inline-end" class="pr-2">
                   <button
                     v-if="form.values.teamQuery"
                     type="button"
@@ -63,54 +63,56 @@ import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
                   >
                     <X class="w-4 h-4" />
                   </button>
-
-                  <div
-                    class="flex h-9 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150 whitespace-nowrap"
-                    :class="
-                      tournamentWinnersOnly
-                        ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
-                        : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-                    "
-                    @click="toggleTournamentWinners"
-                  >
-                    <Trophy class="h-3.5 w-3.5" />
-                    <span id="teams-tournament-winners-label">
-                      {{ $t("team.search.tournament_winners") }}
-                    </span>
-                    <Switch
-                      v-model="tournamentWinnersOnly"
-                      aria-labelledby="teams-tournament-winners-label"
-                      class="ml-1 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
-                      @click.stop
-                    />
-                  </div>
-
-                  <div
-                    v-if="me"
-                    class="flex h-9 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150 whitespace-nowrap"
-                    :class="
-                      showOnlyMyTeams
-                        ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
-                        : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
-                    "
-                    @click="toggleShowOnlyMyTeams"
-                  >
-                    <Users class="h-3.5 w-3.5" />
-                    <span id="teams-my-teams-only-label">
-                      {{ $t("team.search.my_teams_only") }}
-                    </span>
-                    <Switch
-                      v-model="showOnlyMyTeams"
-                      aria-labelledby="teams-my-teams-only-label"
-                      class="ml-1 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
-                      @click.stop
-                    />
-                  </div>
                 </InputGroupAddon>
               </InputGroup>
             </FormControl>
           </FormItem>
         </FormField>
+
+        <div class="flex flex-wrap gap-2">
+          <div
+            class="flex h-9 min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150 sm:flex-none"
+            :class="
+              tournamentWinnersOnly
+                ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
+                : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+            "
+            @click="toggleTournamentWinners"
+          >
+            <Trophy class="h-3.5 w-3.5 shrink-0" />
+            <span id="teams-tournament-winners-label" class="truncate">
+              {{ $t("team.search.tournament_winners") }}
+            </span>
+            <Switch
+              v-model="tournamentWinnersOnly"
+              aria-labelledby="teams-tournament-winners-label"
+              class="ml-auto shrink-0 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
+              @click.stop
+            />
+          </div>
+
+          <div
+            v-if="me"
+            class="flex h-9 min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150 sm:flex-none"
+            :class="
+              showOnlyMyTeams
+                ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
+                : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+            "
+            @click="toggleShowOnlyMyTeams"
+          >
+            <Users class="h-3.5 w-3.5 shrink-0" />
+            <span id="teams-my-teams-only-label" class="truncate">
+              {{ $t("team.search.my_teams_only") }}
+            </span>
+            <Switch
+              v-model="showOnlyMyTeams"
+              aria-labelledby="teams-my-teams-only-label"
+              class="ml-auto shrink-0 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
+              @click.stop
+            />
+          </div>
+        </div>
       </form>
     </div>
   </PageTransition>

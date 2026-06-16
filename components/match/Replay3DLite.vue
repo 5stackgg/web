@@ -20,12 +20,28 @@ type Player = {
   y: number;
   z: number;
   yaw: number;
+  pitch?: number;
   health?: number | null;
   armor?: number | null;
   helmet?: boolean;
   activeWeapon?: string | null;
   hasBomb?: boolean;
   hasDefuser?: boolean;
+};
+
+// One firing tracer: muzzle (e*) → end point (t*) in source coords, the
+// end being the victim on a hit or an extended ray on a miss. Colored by
+// outcome, faded by recency. Built in ReplayViewer (owns the tick).
+type Tracer = {
+  ex: number;
+  ey: number;
+  ez: number;
+  tx: number;
+  ty: number;
+  tz: number;
+  team: string | null;
+  travel: number; // 0..1 how far the bullet has flown from muzzle to target
+  fade: number; // 0..1 brightness (fades out over the tracer's life)
 };
 type Detonation = {
   rx: number;
@@ -59,6 +75,7 @@ type HeatPoint = {
 
 const props = defineProps<{
   players: Player[];
+  tracers?: Tracer[];
   names?: Record<string, string>;
   grenades?: Detonation[];
   inFlight?: InFlight[];
@@ -854,6 +871,28 @@ onMounted(() => {
     scene.add(m);
     return m;
   });
+  // Firing tracers: a pool of 2-point lines reused each frame. Drawn over
+  // geometry (depthTest off) so a shot through a wall still reads.
+  const tracerLines = Array.from({ length: 48 }, () => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute(
+      "position",
+      new THREE.BufferAttribute(new Float32Array(6), 3),
+    );
+    const ln = new THREE.Line(
+      g,
+      new THREE.LineBasicMaterial({
+        transparent: true,
+        opacity: 1,
+        depthTest: false,
+      }),
+    );
+    ln.visible = false;
+    ln.frustumCulled = false;
+    ln.renderOrder = 990;
+    scene.add(ln);
+    return ln;
+  });
   const selArcs = Array.from({ length: 32 }, () => {
     const m = new THREE.Mesh(
       new THREE.BufferGeometry(),
@@ -1301,6 +1340,56 @@ onMounted(() => {
     }
     for (let k = dmi; k < deathMarks.length; k++) deathMarks[k].visible = false;
 
+    // firing tracers — a short bright streak travelling muzzle → target,
+    // colored by the shooter's team (live gunfire, not static lines).
+    const STREAK_LEN = 280; // source units of visible streak behind the bullet
+    let tri = 0;
+    if (!inOverlay) {
+      for (const tr of props.tracers || []) {
+        if (tri >= tracerLines.length) break;
+        const ln = tracerLines[tri++];
+        const arr = ln.geometry.attributes.position.array as Float32Array;
+        const pdx = tr.tx - tr.ex;
+        const pdy = tr.ty - tr.ey;
+        const pdz = tr.tz - tr.ez;
+        const pathLen = Math.hypot(pdx, pdy, pdz) || 1;
+        const headT = tr.travel;
+        const tailT = Math.max(0, headT - STREAK_LEN / pathLen);
+        // tail point (source coords) → scene
+        wpos(
+          {
+            x: tr.ex + pdx * tailT,
+            y: tr.ey + pdy * tailT,
+            z: tr.ez + pdz * tailT,
+          },
+          _v,
+        );
+        arr[0] = _v.x;
+        arr[1] = _v.y;
+        arr[2] = _v.z;
+        // head (bullet) point → scene
+        wpos(
+          {
+            x: tr.ex + pdx * headT,
+            y: tr.ey + pdy * headT,
+            z: tr.ez + pdz * headT,
+          },
+          _v,
+        );
+        arr[3] = _v.x;
+        arr[4] = _v.y;
+        arr[5] = _v.z;
+        ln.geometry.attributes.position.needsUpdate = true;
+        ln.geometry.computeBoundingSphere();
+        const mat = ln.material as THREE.LineBasicMaterial;
+        mat.color.setHex(TEAM(tr.team));
+        mat.opacity = Math.min(0.95, tr.fade * 1.2);
+        ln.visible = true;
+      }
+    }
+    for (let k = tri; k < tracerLines.length; k++)
+      tracerLines[k].visible = false;
+
     // detonations (volumetric smoke / fire / pops + depleting rings).
     // When utilities are selected, ONLY show the selected ones' effects.
     const selSet = new Set(props.selectedGids || []);
@@ -1648,6 +1737,7 @@ onMounted(() => {
 watch(
   () => [
     props.players,
+    props.tracers,
     props.grenades,
     props.inFlight,
     props.bomb,

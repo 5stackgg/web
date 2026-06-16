@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import PageHeading from "~/components/PageHeading.vue";
+import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import {
   Activity,
   ArrowUpIcon,
@@ -58,15 +58,13 @@ function optionRowClass(active: boolean) {
 
 <template>
   <PageTransition :delay="0">
-    <PageHeading>
+    <TacticalPageHeader>
       <template #title>{{ $t("pages.manage_tournaments.title") }}</template>
-      <template #description>{{
-        $t("pages.manage_tournaments.description")
-      }}</template>
       <template v-if="canCreateTournament" #actions>
         <button
           type="button"
-          :class="tacticalCtaButtonClasses"
+          :class="[tacticalCtaButtonClasses, 'max-md:px-2.5 max-md:py-2']"
+          :title="$t('pages.tournaments.create')"
           @click="navigateTo('/tournaments/create')"
         >
           <PlusCircle class="w-4 h-4" />
@@ -75,7 +73,13 @@ function optionRowClass(active: boolean) {
           }}</span>
         </button>
       </template>
-    </PageHeading>
+    </TacticalPageHeader>
+  </PageTransition>
+
+  <PageTransition :delay="60" class="mt-4">
+    <p class="text-sm text-muted-foreground">
+      {{ $t("pages.manage_tournaments.description") }}
+    </p>
   </PageTransition>
 
   <Separator v-if="showSeparators" class="my-4" />

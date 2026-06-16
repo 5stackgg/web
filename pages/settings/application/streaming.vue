@@ -5,6 +5,7 @@ import { ExternalLink } from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 </script>
 
 <template>
@@ -155,16 +156,11 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
           </a>
         </SettingsSection>
 
-        <div class="flex justify-start">
-          <Button
-            type="submit"
-            :loading="submitting"
-            :disabled="Object.keys(form.errors).length > 0 || !form.meta.dirty"
-            class="my-3"
-          >
-            {{ $t("common.update") }}
-          </Button>
-        </div>
+        <SettingsSaveBar
+          :form="form"
+          :submitting="submitting"
+          @save="updateSettings"
+        />
       </form>
     </PageTransition>
   </SettingsPage>

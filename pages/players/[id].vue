@@ -1044,6 +1044,33 @@ const statsByMatch = ref<Map<string, any>>(new Map());
 
 // The matches list shares the one filter bar (source + mode + range) with the
 // stats above — no separate controls; changing the top filter updates both.
+// Scope a matches filter to "this player was in the match". Membership lives in
+// the where (not a relationship root) so the list queries matches as a table:
+// Hasura applies native permissions and orders by the indexed effective_at,
+// paginating before expanding nested objects. (The old players->matches
+// function relationship expanded every match first, then limited.)
+function scopeToPlayer(filters: Record<string, any>) {
+  return {
+    _and: [
+      filters,
+      {
+        _or: [
+          {
+            lineup_1: {
+              lineup_players: { steam_id: { _eq: playerIdRef.value } },
+            },
+          },
+          {
+            lineup_2: {
+              lineup_players: { steam_id: { _eq: playerIdRef.value } },
+            },
+          },
+        ],
+      },
+    ],
+  };
+}
+
 const matchesWhere = computed(() => {
   const w: Record<string, any> = {};
   if (sinceTimestamp.value || untilTimestamp.value) {
@@ -1060,7 +1087,7 @@ const matchesWhere = computed(() => {
   if (statTypeFilter.value) {
     w.options = { type: { _in: statTypeFilter.value } };
   }
-  return w;
+  return scopeToPlayer(w);
 });
 
 // External Valve matches carry no internal elo, but the demo import records
@@ -1091,57 +1118,36 @@ const rankByMatch = computed(() => {
 // `where` is hoisted to a variable so Apollo can normalize cache keys
 // across filter changes.
 const PLAYER_MATCHES_QUERY = generateQuery({
-  __alias: {
-    playerWithMatches: {
-      players_by_pk: [
-        { steam_id: $("playerId", "bigint!") },
-        {
-          steam_id: true,
-          matches: [
-            {
-              where: $("matchesWhere", "matches_bool_exp"),
-              limit: $("limit", "Int!"),
-              offset: $("offset", "Int!"),
-              order_by: [
-                { effective_at: order_by.desc_nulls_last },
-                { created_at: order_by.desc },
-              ],
-            },
-            {
-              ...simpleMatchFields,
-              elo_changes: [
-                {
-                  where: {
-                    player_steam_id: { _eq: $("playerId", "bigint!") },
-                  },
-                },
-                eloFields,
-              ],
-            },
-          ],
-        },
+  matches: [
+    {
+      where: $("matchesWhere", "matches_bool_exp"),
+      limit: $("limit", "Int!"),
+      offset: $("offset", "Int!"),
+      order_by: [
+        { effective_at: order_by.desc_nulls_last },
+        { created_at: order_by.desc },
       ],
     },
-  },
+    {
+      ...simpleMatchFields,
+      elo_changes: [
+        {
+          where: {
+            player_steam_id: { _eq: $("playerId", "bigint!") },
+          },
+        },
+        eloFields,
+      ],
+    },
+  ],
 });
 
-// Count query is intentionally minimal — just IDs — since Hasura's
-// players->matches relationship doesn't expose an aggregate.
+// Count via matches_aggregate now that the list queries matches as a table.
 const PLAYER_MATCHES_COUNT_QUERY = generateQuery({
-  __alias: {
-    playerMatchesCount: {
-      players_by_pk: [
-        { steam_id: $("playerId", "bigint!") },
-        {
-          steam_id: true,
-          matches: [
-            { where: $("matchesWhere", "matches_bool_exp") },
-            { id: true },
-          ],
-        },
-      ],
-    },
-  },
+  matches_aggregate: [
+    { where: $("matchesWhere", "matches_bool_exp") },
+    { aggregate: { count: true } },
+  ],
 });
 
 async function loadMatches() {
@@ -1165,15 +1171,14 @@ async function loadMatches() {
       apolloClient.query({
         query: PLAYER_MATCHES_COUNT_QUERY,
         variables: {
-          playerId: playerIdRef.value,
           matchesWhere: matchesWhere.value,
         },
         fetchPolicy: "network-only",
       }),
     ]);
-    playerMatches.value = (list.data as any)?.playerWithMatches?.matches ?? [];
+    playerMatches.value = (list.data as any)?.matches ?? [];
     playerMatchesTotal.value =
-      (count.data as any)?.playerMatchesCount?.matches?.length ?? 0;
+      (count.data as any)?.matches_aggregate?.aggregate?.count ?? 0;
     void loadMatchEnrichment();
   } catch {
     // swallow — page is subscription-driven elsewhere; matches table
@@ -1248,13 +1253,13 @@ async function loadAnyMatches() {
     return;
   }
   const gen = ++anyMatchesGen;
-  const countFor = async (matchesWhere: Record<string, any>) => {
+  const countFor = async (filters: Record<string, any>) => {
     const { data } = await apolloClient.query({
       query: PLAYER_MATCHES_COUNT_QUERY,
-      variables: { playerId: playerIdRef.value, matchesWhere },
+      variables: { matchesWhere: scopeToPlayer(filters) },
       fetchPolicy: "network-only",
     });
-    return ((data as any)?.playerMatchesCount?.matches?.length ?? 0) as number;
+    return ((data as any)?.matches_aggregate?.aggregate?.count ?? 0) as number;
   };
   try {
     // When external imports are on we also need the 5Stack-only count so we can

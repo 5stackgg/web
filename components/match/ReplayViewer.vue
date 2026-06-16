@@ -63,6 +63,7 @@ type Position = {
   y: number;
   z: number;
   yaw: number | null;
+  pitch?: number | null;
   health: number | null;
   armor?: number | null;
   helmet?: boolean;
@@ -174,6 +175,16 @@ type Shot = {
   attacker_steam_id: string;
   attacker_team: string | null;
   with: string | null;
+  // Exact firing geometry + outcome (schema v5+). Drives the 3D tracer.
+  yaw?: number | null;
+  pitch?: number | null;
+  eye_x?: number | null;
+  eye_y?: number | null;
+  eye_z?: number | null;
+  result?: "hit" | "headshot" | null;
+  impact_x?: number | null;
+  impact_y?: number | null;
+  impact_z?: number | null;
 };
 
 type Damage = {
@@ -622,7 +633,14 @@ const NADE_SCRUB_ICON: Record<string, string> = {
   Decoy: "/img/equipment/decoy.svg",
 };
 const scrubberMarkers = computed<
-  Array<{ left: number; lane: "kill" | "nade"; color: string; title: string; icon?: string; gid?: number }>
+  Array<{
+    left: number;
+    lane: "kill" | "nade";
+    color: string;
+    title: string;
+    icon?: string;
+    gid?: number;
+  }>
 >(() => {
   const range = tickRange.value;
   const span = range.max - range.min;
@@ -871,6 +889,7 @@ const interpolatedPlayers = computed(() => {
     y: number;
     z: number;
     yaw: number;
+    pitch: number;
     firing: boolean;
     blinded: number;
     // null when the loaded demo predates the health column — skip
@@ -913,6 +932,10 @@ const interpolatedPlayers = computed(() => {
     const yawA = cur.yaw ?? 0;
     const yawB = next.yaw ?? yawA;
     const yaw = lerpAngle(yawA, yawB, k);
+    // Pitch is a bounded [-90,90] angle (no wraparound) — plain lerp.
+    const pitchA = cur.pitch ?? 0;
+    const pitchB = next.pitch ?? pitchA;
+    const pitch = pitchA + (pitchB - pitchA) * k;
 
     const x = cur.x + (next.x - cur.x) * k;
     const y = cur.y + (next.y - cur.y) * k;
@@ -944,6 +967,7 @@ const interpolatedPlayers = computed(() => {
       y,
       z: cur.z + (next.z - cur.z) * k,
       yaw,
+      pitch,
       firing,
       blinded,
       health,
@@ -956,6 +980,86 @@ const interpolatedPlayers = computed(() => {
     });
   }
   return result;
+});
+
+// Firing tracers for the 3D view. A shot carries its exact muzzle origin
+// (eye_*) + view angles + outcome from the parser; we draw a brief line
+// from the muzzle along the real shot direction, ending on the victim for
+// hits. ReplayViewer owns currentTick so it filters the recent shots here;
+// Replay3DLite just renders the resulting segments in scene space.
+const activeRoundShots = computed<Shot[]>(() => {
+  if (activeRound.value === null) return [];
+  const byPlayer = shotsByRoundPlayer.value.get(activeRound.value);
+  if (!byPlayer) return [];
+  const out: Shot[] = [];
+  for (const arr of byPlayer.values()) out.push(...arr);
+  return out;
+});
+
+const TRACER_TICKS = 16; // how long a tracer lingers (~0.25s @ 64-tick)
+const TRACER_TRAVEL_TICKS = 5; // bullet reaches the target in ~0.08s (zippy)
+const TRACER_MISS_LEN = 1400; // source units a miss bullet flies before vanishing
+// A tracer is now an animated bullet: a short streak travelling from the
+// shooter's muzzle to where the shot landed, colored by the shooter's team.
+// We emit the muzzle (e*) + endpoint (t*) + team + travel/fade so the 3D
+// renderer can lerp the streak along the path each frame.
+const tracersNow = computed(() => {
+  if (viewMode.value !== "3d") return [];
+  const t0 = currentTick.value;
+  const out: Array<{
+    ex: number;
+    ey: number;
+    ez: number;
+    tx: number;
+    ty: number;
+    tz: number;
+    team: string | null;
+    travel: number;
+    fade: number;
+  }> = [];
+  for (const s of activeRoundShots.value) {
+    if (s.eye_x == null || s.eye_y == null || s.eye_z == null) continue;
+    const age = t0 - s.tick;
+    if (age < 0 || age > TRACER_TICKS) continue;
+    const travel = Math.min(1, age / TRACER_TRAVEL_TICKS);
+    const fade = 1 - age / TRACER_TICKS;
+    let tx: number;
+    let ty: number;
+    let tz: number;
+    if (
+      s.result &&
+      s.impact_x != null &&
+      s.impact_y != null &&
+      s.impact_z != null
+    ) {
+      // Hit: the bullet lands on the victim.
+      tx = s.impact_x;
+      ty = s.impact_y;
+      tz = s.impact_z;
+    } else if (s.yaw != null) {
+      // Miss: fly a bounded distance along the shot line, then vanish.
+      const yr = (s.yaw * Math.PI) / 180;
+      const pr = ((s.pitch ?? 0) * Math.PI) / 180;
+      const c = Math.cos(pr);
+      tx = s.eye_x + c * Math.cos(yr) * TRACER_MISS_LEN;
+      ty = s.eye_y + c * Math.sin(yr) * TRACER_MISS_LEN;
+      tz = s.eye_z - Math.sin(pr) * TRACER_MISS_LEN;
+    } else {
+      continue;
+    }
+    out.push({
+      ex: s.eye_x,
+      ey: s.eye_y,
+      ez: s.eye_z,
+      tx,
+      ty,
+      tz,
+      team: s.attacker_team ?? null,
+      travel,
+      fade,
+    });
+  }
+  return out;
 });
 
 // Render order: the hovered + focused players (if any) are moved to
@@ -1151,7 +1255,12 @@ const detonationsByTick = computed<ResolvedGrenade[]>(() => {
       const t = fe + elapsedTicks;
       for (const g of grenadesByRound.value.get(round) ?? []) {
         if (g.phase !== "detonated" || g.tick > t) continue;
-        if (overlayTeam.value !== "all" && lineupBySteam.value.get(String(g.thrower_steam_id ?? "")) !== overlayTeam.value) continue;
+        if (
+          overlayTeam.value !== "all" &&
+          lineupBySteam.value.get(String(g.thrower_steam_id ?? "")) !==
+            overlayTeam.value
+        )
+          continue;
         const lifetime = GRENADE_LIFETIME_TICKS[g.type] ?? 64;
         if (t - g.tick > lifetime) continue;
         const r = resolveDetonation(g, 1 - (t - g.tick) / lifetime);
@@ -1177,11 +1286,24 @@ const detonationsByTick = computed<ResolvedGrenade[]>(() => {
 // All detonations of the active round (not just the currently-live ones) —
 // drives the 3D utility heatmap. Resolved to real landing positions.
 const roundDetonations = computed(() => {
-  const out: Array<{ rx: number; ry: number; rz: number; type: string; gid: number | null }> = [];
+  const out: Array<{
+    rx: number;
+    ry: number;
+    rz: number;
+    type: string;
+    gid: number | null;
+  }> = [];
   for (const g of roundGrenades.value) {
     if (g.phase !== "detonated") continue;
     const r = resolveDetonation(g, 1);
-    if (r) out.push({ rx: r.rx, ry: r.ry, rz: r.rz, type: r.type, gid: (g as any).gid ?? null });
+    if (r)
+      out.push({
+        rx: r.rx,
+        ry: r.ry,
+        rz: r.rz,
+        type: r.type,
+        gid: (g as any).gid ?? null,
+      });
   }
   return out;
 });
@@ -1246,7 +1368,12 @@ const inFlightGrenades = computed<InFlightGrenade[]>(() => {
       const t = fe + elapsedTicks;
       for (const thr of grenadesByRound.value.get(round) ?? []) {
         if (thr.phase !== "thrown") continue;
-        if (overlayTeam.value !== "all" && lineupBySteam.value.get(String(thr.thrower_steam_id ?? "")) !== overlayTeam.value) continue;
+        if (
+          overlayTeam.value !== "all" &&
+          lineupBySteam.value.get(String(thr.thrower_steam_id ?? "")) !==
+            overlayTeam.value
+        )
+          continue;
         const g = resolveInFlight(thr, t);
         if (g) out.push(g);
       }
@@ -1500,7 +1627,10 @@ function step(delta: number) {
     const STEP_SEC = 0.25;
     overlayElapsedSec.value = Math.max(
       0,
-      Math.min(overlayWindowSec.value, overlayElapsedSec.value + delta * STEP_SEC),
+      Math.min(
+        overlayWindowSec.value,
+        overlayElapsedSec.value + delta * STEP_SEC,
+      ),
     );
     return;
   }
@@ -1644,7 +1774,10 @@ function onKeyDown(e: KeyboardEvent) {
   // Other shortcuts skip while any input/select is focused.
   if (
     t &&
-    (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || t.isContentEditable)
+    (tag === "INPUT" ||
+      tag === "TEXTAREA" ||
+      tag === "SELECT" ||
+      t.isContentEditable)
   ) {
     return;
   }
@@ -1895,7 +2028,11 @@ const overlayActors = computed<
     if (fe == null) continue;
     const absTick = fe + elapsedTicks;
     for (const [sid, samples] of pm) {
-      if (overlayTeam.value !== "all" && lineupBySteam.value.get(sid) !== overlayTeam.value) continue;
+      if (
+        overlayTeam.value !== "all" &&
+        lineupBySteam.value.get(sid) !== overlayTeam.value
+      )
+        continue;
       const s = sampleAt(samples, absTick);
       if (!s || !s.alive) continue;
       const proj = project({ x: s.x, y: s.y });
@@ -1916,13 +2053,18 @@ const overlayActors3d = computed(() => {
   if (!overlayMode.value) return [];
   const tr = props.tickRate || 64;
   const elapsedTicks = overlayElapsedSec.value * tr;
-  const out: Array<{ x: number; y: number; z: number; team: string | null }> = [];
+  const out: Array<{ x: number; y: number; z: number; team: string | null }> =
+    [];
   for (const [round, pm] of positionsByRoundPlayer.value) {
     const fe = freezeEndByRound.value.get(round);
     if (fe == null || !overlaySelectedRounds.value.has(round)) continue;
     const absTick = fe + elapsedTicks;
     for (const [sid, samples] of pm) {
-      if (overlayTeam.value !== "all" && lineupBySteam.value.get(sid) !== overlayTeam.value) continue;
+      if (
+        overlayTeam.value !== "all" &&
+        lineupBySteam.value.get(sid) !== overlayTeam.value
+      )
+        continue;
       const s = sampleAt(samples, absTick);
       if (!s || !s.alive) continue;
       out.push({ x: s.x, y: s.y, z: s.z, team: samples[0].attacker_team });
@@ -1992,13 +2134,14 @@ function recomputeRadarSize() {
   // is cropped. The docked transport bar's height is already excluded from
   // availableH. Centers in the remaining left region.
   const availableW = rootRect.width - scoreboardReserve.value;
-  radarMaxPx.value = Math.floor(Math.max(280, Math.min(availableH, availableW)));
+  radarMaxPx.value = Math.floor(
+    Math.max(280, Math.min(availableH, availableW)),
+  );
 }
 
 // Re-fit the map when the scoreboard is toggled so it grows/shrinks to
 // match the freed/reserved width.
 watch(showScoreboard, () => recomputeRadarSize());
-
 
 let radarRO: ResizeObserver | null = null;
 onMounted(() => {
@@ -2669,23 +2812,62 @@ const pbp3d = computed(() => {
   const fe = rt?.freeze_end_tick ?? rt?.start_tick ?? 0;
   const rate = props.tickRate || 64;
   const names = playerNameMap.value;
-  const evts: Array<{ t: number; kind: string; a?: string; b?: string; w?: string; hs?: boolean; team?: string | null; gid?: number | null }> = [];
+  const evts: Array<{
+    t: number;
+    kind: string;
+    a?: string;
+    b?: string;
+    w?: string;
+    hs?: boolean;
+    team?: string | null;
+    gid?: number | null;
+  }> = [];
   for (const k of killsByRound.value.get(activeRound.value ?? -1) ?? []) {
     if (k.tick > cursor) continue;
-    evts.push({ t: k.tick, kind: "kill", a: names[String(k.killer ?? "")] ?? "", b: names[String(k.victim ?? "")] ?? "", w: k.weapon ?? "", hs: !!k.headshot, team: k.killer_team ?? null });
+    evts.push({
+      t: k.tick,
+      kind: "kill",
+      a: names[String(k.killer ?? "")] ?? "",
+      b: names[String(k.victim ?? "")] ?? "",
+      w: k.weapon ?? "",
+      hs: !!k.headshot,
+      team: k.killer_team ?? null,
+    });
   }
   for (const g of roundGrenades.value) {
     if (g.phase !== "thrown" || g.tick > cursor) continue;
-    evts.push({ t: g.tick, kind: "util", a: names[String(g.thrower_steam_id ?? "")] ?? "", w: g.type, team: g.thrower_team ?? null, gid: g.grenade_id ?? null });
+    evts.push({
+      t: g.tick,
+      kind: "util",
+      a: names[String(g.thrower_steam_id ?? "")] ?? "",
+      w: g.type,
+      team: g.thrower_team ?? null,
+      gid: g.grenade_id ?? null,
+    });
   }
   for (const b of activeRoundBombs.value) {
     if (b.tick > cursor) continue;
-    if (b.type === "planted") evts.push({ t: b.tick, kind: "bomb", a: names[String(b.player ?? "")] ?? "", w: "planted" });
-    else if (b.type === "defused") evts.push({ t: b.tick, kind: "bomb", a: names[String(b.player ?? "")] ?? "", w: "defused" });
+    if (b.type === "planted")
+      evts.push({
+        t: b.tick,
+        kind: "bomb",
+        a: names[String(b.player ?? "")] ?? "",
+        w: "planted",
+      });
+    else if (b.type === "defused")
+      evts.push({
+        t: b.tick,
+        kind: "bomb",
+        a: names[String(b.player ?? "")] ?? "",
+        w: "defused",
+      });
   }
   // Whole round, newest first — the PBP panel is scrollable.
   evts.sort((x, y) => y.t - x.t);
-  return evts.map((e) => ({ ...e, sec: Math.max(0, Math.round((e.t - fe) / rate)) }));
+  return evts.map((e) => ({
+    ...e,
+    sec: Math.max(0, Math.round((e.t - fe) / rate)),
+  }));
 });
 
 // Every utility thrown this round (for ghosts / line highlight / heatmap),
@@ -2698,8 +2880,12 @@ const roundUtilities = computed(() => {
     type: string;
     team: string | null;
     name: string;
-    ox: number; oy: number; oz: number;
-    dx: number | null; dy: number | null; dz: number | null;
+    ox: number;
+    oy: number;
+    oz: number;
+    dx: number | null;
+    dy: number | null;
+    dz: number | null;
   }> = [];
   for (const g of roundGrenades.value) {
     if (g.phase !== "thrown") continue;
@@ -2710,8 +2896,12 @@ const roundUtilities = computed(() => {
       type: g.type,
       team: g.thrower_team ?? null,
       name: names[String(g.thrower_steam_id ?? "")] ?? "",
-      ox: g.x, oy: g.y, oz: g.z,
-      dx: land?.x ?? null, dy: land?.y ?? null, dz: land?.z ?? null,
+      ox: g.x,
+      oy: g.y,
+      oz: g.z,
+      dx: land?.x ?? null,
+      dy: land?.y ?? null,
+      dz: land?.z ?? null,
     });
   }
   return out;
@@ -2873,7 +3063,7 @@ const chromeHud = computed(() => {
   return {
     ct: ss.ct,
     t: ss.t,
-    round: activeRoundTick.value?.round ?? (activeRound.value ?? 0),
+    round: activeRoundTick.value?.round ?? activeRound.value ?? 0,
     clock: formatMMSS(tm.secondsRemaining),
     bomb: tm.phase === "bomb" ? `C4 ${tm.secondsRemaining}s` : "",
     bombClass: tm.phase === "bomb" ? "bomb" : tm.phase === "freeze" ? "ct" : "",
@@ -2902,7 +3092,13 @@ const chromePbp = computed(() =>
         vc: "#9fb0c0",
       };
     if (e.kind === "util")
-      return { time: `${e.sec}s`, util: e.w, thrower: e.a, tc: colorFor(e.team ?? null), gi: e.gid ?? undefined };
+      return {
+        time: `${e.sec}s`,
+        util: e.w,
+        thrower: e.a,
+        tc: colorFor(e.team ?? null),
+        gi: e.gid ?? undefined,
+      };
     return { time: `${e.sec}s`, bomb: e.w };
   }),
 );
@@ -2915,7 +3111,8 @@ const chromeRounds = computed(() =>
 );
 const chromeUtilMarkers = computed(() => {
   const nameByGid = new Map<number, string>();
-  for (const u of roundUtilities.value) if (u.gid != null) nameByGid.set(u.gid, u.name);
+  for (const u of roundUtilities.value)
+    if (u.gid != null) nameByGid.set(u.gid, u.name);
   return scrubberMarkers.value
     .filter((m) => m.lane === "nade" && m.icon)
     .map((m) => ({
@@ -2964,12 +3161,18 @@ const chromeFollowName = computed(
 function chromeSeek(frac: number) {
   pause();
   if (overlayMode.value) {
-    overlayElapsedSec.value = Math.max(0, Math.min(overlayWindowSec.value, frac * overlayWindowSec.value));
+    overlayElapsedSec.value = Math.max(
+      0,
+      Math.min(overlayWindowSec.value, frac * overlayWindowSec.value),
+    );
     return;
   }
   tickIndex.value = Math.max(
     0,
-    Math.min(ticks.value.length - 1, Math.round(frac * (ticks.value.length - 1))),
+    Math.min(
+      ticks.value.length - 1,
+      Math.round(frac * (ticks.value.length - 1)),
+    ),
   );
   fractional.value = 0;
 }
@@ -2985,7 +3188,9 @@ function chromeSelectRound(rn: number) {
 function chromeMode(m: string) {
   camMode.value = m as "orbit" | "top" | "follow";
 }
-const overlayRoundsArr = computed(() => Array.from(overlaySelectedRounds.value));
+const overlayRoundsArr = computed(() =>
+  Array.from(overlaySelectedRounds.value),
+);
 // Default-select the full-buy rounds the moment overlay is enabled; the user
 // can then toggle any round tab in/out.
 watch(overlayMode, (on) => {
@@ -3015,134 +3220,134 @@ watch(overlayMode, (on) => {
           left: `calc(50% - ${scoreboardReserve / 2}px)`,
         }"
       >
-          <img
-            v-if="radarSrc"
-            v-show="viewMode === '2d'"
-            :src="radarSrc"
-            class="absolute inset-0 w-full h-full object-cover opacity-90"
-            @error="radarFailed = true"
-          />
+        <img
+          v-if="radarSrc"
+          v-show="viewMode === '2d'"
+          :src="radarSrc"
+          class="absolute inset-0 w-full h-full object-cover opacity-90"
+          @error="radarFailed = true"
+        />
 
-          <svg
-            v-show="viewMode === '2d'"
-            :viewBox="`0 0 ${CANVAS} ${CANVAS}`"
-            class="absolute inset-0 w-full h-full"
-            preserveAspectRatio="xMidYMid meet"
-          >
-            <defs>
-              <!-- Volumetric smoke filter: turbulence-displaced edges that
+        <svg
+          v-show="viewMode === '2d'"
+          :viewBox="`0 0 ${CANVAS} ${CANVAS}`"
+          class="absolute inset-0 w-full h-full"
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <defs>
+            <!-- Volumetric smoke filter: turbulence-displaced edges that
                  slowly evolve. The animated baseFrequency on the
                  feTurbulence creates the "drifting" look. -->
-              <filter
-                id="smoke-displace"
-                x="-30%"
-                y="-30%"
-                width="160%"
-                height="160%"
+            <filter
+              id="smoke-displace"
+              x="-30%"
+              y="-30%"
+              width="160%"
+              height="160%"
+            >
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.014 0.018"
+                numOctaves="2"
+                seed="3"
+                result="noise"
               >
-                <feTurbulence
-                  type="fractalNoise"
-                  baseFrequency="0.014 0.018"
-                  numOctaves="2"
-                  seed="3"
-                  result="noise"
-                >
-                  <animate
-                    attributeName="baseFrequency"
-                    values="0.014 0.018;0.022 0.014;0.014 0.018"
-                    dur="14s"
-                    repeatCount="indefinite"
-                  />
-                </feTurbulence>
-                <feDisplacementMap
-                  in="SourceGraphic"
-                  in2="noise"
-                  scale="14"
-                  xChannelSelector="R"
-                  yChannelSelector="G"
+                <animate
+                  attributeName="baseFrequency"
+                  values="0.014 0.018;0.022 0.014;0.014 0.018"
+                  dur="14s"
+                  repeatCount="indefinite"
                 />
-                <feGaussianBlur stdDeviation="1.2" />
-              </filter>
+              </feTurbulence>
+              <feDisplacementMap
+                in="SourceGraphic"
+                in2="noise"
+                scale="14"
+                xChannelSelector="R"
+                yChannelSelector="G"
+              />
+              <feGaussianBlur stdDeviation="1.2" />
+            </filter>
 
-              <!-- Soft outer halo for smoke -->
-              <radialGradient id="smoke-grad" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="rgba(245,245,245,0.55)" />
-                <stop offset="55%" stop-color="rgba(210,210,210,0.42)" />
-                <stop offset="100%" stop-color="rgba(180,180,180,0)" />
-              </radialGradient>
+            <!-- Soft outer halo for smoke -->
+            <radialGradient id="smoke-grad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="rgba(245,245,245,0.55)" />
+              <stop offset="55%" stop-color="rgba(210,210,210,0.42)" />
+              <stop offset="100%" stop-color="rgba(180,180,180,0)" />
+            </radialGradient>
 
-              <!-- Fire turbulence: faster, more chaotic than smoke. -->
-              <filter
-                id="fire-displace"
-                x="-30%"
-                y="-30%"
-                width="160%"
-                height="160%"
+            <!-- Fire turbulence: faster, more chaotic than smoke. -->
+            <filter
+              id="fire-displace"
+              x="-30%"
+              y="-30%"
+              width="160%"
+              height="160%"
+            >
+              <feTurbulence
+                type="fractalNoise"
+                baseFrequency="0.05 0.08"
+                numOctaves="2"
+                seed="7"
               >
-                <feTurbulence
-                  type="fractalNoise"
-                  baseFrequency="0.05 0.08"
-                  numOctaves="2"
-                  seed="7"
-                >
-                  <animate
-                    attributeName="baseFrequency"
-                    values="0.05 0.08;0.09 0.05;0.05 0.08"
-                    dur="0.9s"
-                    repeatCount="indefinite"
-                  />
-                </feTurbulence>
-                <feDisplacementMap
-                  in="SourceGraphic"
-                  scale="8"
-                  xChannelSelector="R"
-                  yChannelSelector="G"
+                <animate
+                  attributeName="baseFrequency"
+                  values="0.05 0.08;0.09 0.05;0.05 0.08"
+                  dur="0.9s"
+                  repeatCount="indefinite"
                 />
-              </filter>
+              </feTurbulence>
+              <feDisplacementMap
+                in="SourceGraphic"
+                scale="8"
+                xChannelSelector="R"
+                yChannelSelector="G"
+              />
+            </filter>
 
-              <radialGradient id="fire-core" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="rgba(255,250,200,1)" />
-                <stop offset="35%" stop-color="rgba(255,180,40,0.9)" />
-                <stop offset="70%" stop-color="rgba(255,80,0,0.55)" />
-                <stop offset="100%" stop-color="rgba(180,0,0,0)" />
-              </radialGradient>
+            <radialGradient id="fire-core" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="rgba(255,250,200,1)" />
+              <stop offset="35%" stop-color="rgba(255,180,40,0.9)" />
+              <stop offset="70%" stop-color="rgba(255,80,0,0.55)" />
+              <stop offset="100%" stop-color="rgba(180,0,0,0)" />
+            </radialGradient>
 
-              <!-- HE shockwave: layered glow for thick, "displaced air" ring. -->
-              <filter id="he-glow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="1.2" />
-                <feComponentTransfer>
-                  <feFuncA type="linear" slope="1.4" />
-                </feComponentTransfer>
-              </filter>
+            <!-- HE shockwave: layered glow for thick, "displaced air" ring. -->
+            <filter id="he-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="1.2" />
+              <feComponentTransfer>
+                <feFuncA type="linear" slope="1.4" />
+              </feComponentTransfer>
+            </filter>
 
-              <radialGradient id="flash-core" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="rgba(255,255,255,1)" />
-                <stop offset="40%" stop-color="rgba(240,250,255,0.9)" />
-                <stop offset="100%" stop-color="rgba(190,225,255,0)" />
-              </radialGradient>
+            <radialGradient id="flash-core" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="rgba(255,255,255,1)" />
+              <stop offset="40%" stop-color="rgba(240,250,255,0.9)" />
+              <stop offset="100%" stop-color="rgba(190,225,255,0)" />
+            </radialGradient>
 
-              <!-- Blind overlay: a soft white wash applied over blinded
+            <!-- Blind overlay: a soft white wash applied over blinded
                  players. Two gradients for variety + animated rays. -->
-              <radialGradient id="blind-overlay" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="rgba(255,255,255,0.95)" />
-                <stop offset="60%" stop-color="rgba(255,255,255,0.55)" />
-                <stop offset="100%" stop-color="rgba(255,255,255,0)" />
-              </radialGradient>
+            <radialGradient id="blind-overlay" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="rgba(255,255,255,0.95)" />
+              <stop offset="60%" stop-color="rgba(255,255,255,0.55)" />
+              <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+            </radialGradient>
 
-              <!-- One shared circular clip for all player avatars. Each
+            <!-- One shared circular clip for all player avatars. Each
                  avatar is rendered as a 24×24 image centered at the
                  kite origin then clipped to a r=12 circle so the
                  picture nearly fills the kite — only the NE tip of
                  the body shows through, which is enough to convey
                  facing direction. -->
-              <clipPath id="replay-avatar-clip" clipPathUnits="userSpaceOnUse">
-                <circle cx="0" cy="0" r="12" />
-              </clipPath>
-            </defs>
+            <clipPath id="replay-avatar-clip" clipPathUnits="userSpaceOnUse">
+              <circle cx="0" cy="0" r="12" />
+            </clipPath>
+          </defs>
 
-            <!-- Single-round actors (players, grenades, kills, bomb). Hidden
+          <!-- Single-round actors (players, grenades, kills, bomb). Hidden
                  wholesale while the buy-round overlay is stacking rounds. -->
-            <g v-if="!overlayMode">
+          <g v-if="!overlayMode">
             <g
               v-if="playerPathSegments.length"
               class="pointer-events-none"
@@ -3166,9 +3371,9 @@ watch(overlayMode, (on) => {
                 />
               </g>
             </g>
-            </g>
+          </g>
 
-            <!-- Detonated grenades — animated SVG primitives. Rendered in
+          <!-- Detonated grenades — animated SVG primitives. Rendered in
                BOTH single-round and buy-round-overlay modes (the data
                source switches; the markup is identical).
                Smoke = pulsing gray disc with team-tinted ring,
@@ -3176,556 +3381,554 @@ watch(overlayMode, (on) => {
                Molotov = flickering layered flames,
                Flash = bright burst that decays,
                Decoy = dashed ring. -->
+          <g
+            v-for="g of detonationsByTick"
+            :key="'grn-' + g.round + '-' + (g.grenade_id ?? g.tick)"
+          >
             <g
-              v-for="g of detonationsByTick"
-              :key="'grn-' + g.round + '-' + (g.grenade_id ?? g.tick)"
+              :transform="`translate(${project({ x: g.rx, y: g.ry, z: g.rz }).x}, ${project({ x: g.rx, y: g.ry, z: g.rz }).y})`"
             >
-              <g
-                :transform="`translate(${project({ x: g.rx, y: g.ry, z: g.rz }).x}, ${project({ x: g.rx, y: g.ry, z: g.rz }).y})`"
-              >
-                <template v-if="g.type === 'Smoke'">
-                  <!-- Filled footprint disc shows the area the smoke covers. -->
-                  <circle r="34" fill="rgba(200,210,222,0.16)" />
-                  <!-- Volumetric smoke: a cluster of overlapping soft puffs
+              <template v-if="g.type === 'Smoke'">
+                <!-- Filled footprint disc shows the area the smoke covers. -->
+                <circle r="34" fill="rgba(200,210,222,0.16)" />
+                <!-- Volumetric smoke: a cluster of overlapping soft puffs
                      that billow out on deploy and drift, under the
                      turbulence-displace filter so the silhouette stays
                      organic. Reads like a real CS smoke, not one disc. -->
-                  <g filter="url(#smoke-displace)">
-                    <circle
-                      v-for="(puff, pi) in SMOKE_PUFFS"
-                      :key="'sp-' + pi"
-                      :cx="puff.dx"
-                      :cy="puff.dy"
-                      fill="url(#smoke-grad)"
-                      opacity="0.9"
-                    >
-                      <animate
-                        attributeName="r"
-                        :values="`0;${puff.r * 1.1};${puff.r};${puff.r * 1.05};${puff.r}`"
-                        keyTimes="0;0.35;0.6;0.85;1"
-                        :begin="`${puff.d}s`"
-                        dur="1.6s"
-                        fill="freeze"
-                      />
-                      <animateTransform
-                        attributeName="transform"
-                        type="translate"
-                        :values="
-                          pi % 2 === 0
-                            ? '0,0;2,-2;-1,2;0,0'
-                            : '0,0;-2,1;1,-2;0,0'
-                        "
-                        dur="6s"
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-                  </g>
-                  <!-- Sharp team-tinted ring stays OUTSIDE the displace
-                     filter so identification is unambiguous. -->
+                <g filter="url(#smoke-displace)">
                   <circle
-                    r="34"
-                    fill="none"
-                    :stroke="colorFor(g.thrower_team)"
-                    stroke-width="1.4"
-                    stroke-opacity="0.5"
-                  />
-                </template>
-
-                <template v-else-if="g.type === 'HE'">
-                  <g filter="url(#he-glow)">
-                    <circle fill="hsl(38, 100%, 58%)">
-                      <animate
-                        attributeName="r"
-                        values="4;38;30"
-                        keyTimes="0;0.22;1"
-                        dur="1.3s"
-                        fill="freeze"
-                      />
-                      <animate
-                        attributeName="opacity"
-                        values="1;0.95;0.6;0"
-                        keyTimes="0;0.3;0.6;1"
-                        dur="1.3s"
-                        fill="freeze"
-                      />
-                    </circle>
-                    <circle
-                      fill="none"
-                      stroke="hsl(45, 100%, 75%)"
-                      stroke-width="3"
-                    >
-                      <animate
-                        attributeName="r"
-                        from="2"
-                        to="64"
-                        dur="1s"
-                        fill="freeze"
-                      />
-                      <animate
-                        attributeName="opacity"
-                        values="1;0.85;0"
-                        keyTimes="0;0.4;1"
-                        dur="1s"
-                        fill="freeze"
-                      />
-                      <animate
-                        attributeName="stroke-width"
-                        from="4.5"
-                        to="0.5"
-                        dur="1s"
-                        fill="freeze"
-                      />
-                    </circle>
-                    <circle
-                      fill="none"
-                      stroke="hsl(28, 100%, 65%)"
-                      stroke-width="2.5"
-                    >
-                      <animate
-                        attributeName="r"
-                        from="0"
-                        to="50"
-                        dur="1.2s"
-                        begin="0.12s"
-                        fill="freeze"
-                      />
-                      <animate
-                        attributeName="opacity"
-                        from="0.85"
-                        to="0"
-                        dur="1.2s"
-                        begin="0.12s"
-                        fill="freeze"
-                      />
-                    </circle>
-                    <circle
-                      fill="none"
-                      stroke="hsl(0, 80%, 55%)"
-                      stroke-width="1.8"
-                    >
-                      <animate
-                        attributeName="r"
-                        from="0"
-                        to="36"
-                        dur="1.4s"
-                        begin="0.24s"
-                        fill="freeze"
-                      />
-                      <animate
-                        attributeName="opacity"
-                        from="0.7"
-                        to="0"
-                        dur="1.4s"
-                        begin="0.24s"
-                        fill="freeze"
-                      />
-                    </circle>
-                  </g>
-                  <!-- Bright core flash + sharp starburst body -->
-                  <polygon
-                    points="0,-26 5,-6 26,-5 9,4 17,23 0,10 -17,23 -9,4 -26,-5 -5,-6"
-                    fill="hsl(40, 100%, 60%)"
-                    stroke="hsl(55, 100%, 85%)"
-                    stroke-width="1.4"
+                    v-for="(puff, pi) in SMOKE_PUFFS"
+                    :key="'sp-' + pi"
+                    :cx="puff.dx"
+                    :cy="puff.dy"
+                    fill="url(#smoke-grad)"
+                    opacity="0.9"
                   >
+                    <animate
+                      attributeName="r"
+                      :values="`0;${puff.r * 1.1};${puff.r};${puff.r * 1.05};${puff.r}`"
+                      keyTimes="0;0.35;0.6;0.85;1"
+                      :begin="`${puff.d}s`"
+                      dur="1.6s"
+                      fill="freeze"
+                    />
                     <animateTransform
                       attributeName="transform"
-                      type="scale"
-                      values="0.2;1.6;1.15;1"
-                      keyTimes="0;0.3;0.6;1"
-                      dur="0.9s"
+                      type="translate"
+                      :values="
+                        pi % 2 === 0 ? '0,0;2,-2;-1,2;0,0' : '0,0;-2,1;1,-2;0,0'
+                      "
+                      dur="6s"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                </g>
+                <!-- Sharp team-tinted ring stays OUTSIDE the displace
+                     filter so identification is unambiguous. -->
+                <circle
+                  r="34"
+                  fill="none"
+                  :stroke="colorFor(g.thrower_team)"
+                  stroke-width="1.4"
+                  stroke-opacity="0.5"
+                />
+              </template>
+
+              <template v-else-if="g.type === 'HE'">
+                <g filter="url(#he-glow)">
+                  <circle fill="hsl(38, 100%, 58%)">
+                    <animate
+                      attributeName="r"
+                      values="4;38;30"
+                      keyTimes="0;0.22;1"
+                      dur="1.3s"
                       fill="freeze"
                     />
                     <animate
                       attributeName="opacity"
-                      values="1;1;0.7;0"
-                      keyTimes="0;0.35;0.7;1"
-                      dur="1.6s"
+                      values="1;0.95;0.6;0"
+                      keyTimes="0;0.3;0.6;1"
+                      dur="1.3s"
                       fill="freeze"
                     />
-                  </polygon>
-                  <!-- Debris spokes — eight short radial lines that
-                     shoot outward and fade. -->
-                  <g
-                    v-for="ang in [0, 45, 90, 135, 180, 225, 270, 315]"
-                    :key="`he-spoke-${ang}`"
-                    :transform="`rotate(${ang})`"
+                  </circle>
+                  <circle
+                    fill="none"
+                    stroke="hsl(45, 100%, 75%)"
+                    stroke-width="3"
                   >
-                    <line
-                      x1="3"
-                      y1="0"
-                      x2="3"
-                      y2="0"
-                      stroke="hsl(55, 100%, 75%)"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                    >
-                      <animate
-                        attributeName="x2"
-                        from="6"
-                        to="36"
-                        dur="0.75s"
-                        fill="freeze"
-                      />
-                      <animate
-                        attributeName="opacity"
-                        values="1;0.6;0"
-                        keyTimes="0;0.5;1"
-                        dur="0.85s"
-                        fill="freeze"
-                      />
-                    </line>
-                  </g>
-                  <!-- Hot core that pulses then dies. -->
-                  <circle fill="hsl(55, 100%, 92%)">
                     <animate
                       attributeName="r"
-                      values="10;5;0"
-                      keyTimes="0;0.5;1"
+                      from="2"
+                      to="64"
+                      dur="1s"
+                      fill="freeze"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values="1;0.85;0"
+                      keyTimes="0;0.4;1"
+                      dur="1s"
+                      fill="freeze"
+                    />
+                    <animate
+                      attributeName="stroke-width"
+                      from="4.5"
+                      to="0.5"
+                      dur="1s"
+                      fill="freeze"
+                    />
+                  </circle>
+                  <circle
+                    fill="none"
+                    stroke="hsl(28, 100%, 65%)"
+                    stroke-width="2.5"
+                  >
+                    <animate
+                      attributeName="r"
+                      from="0"
+                      to="50"
                       dur="1.2s"
+                      begin="0.12s"
+                      fill="freeze"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      from="0.85"
+                      to="0"
+                      dur="1.2s"
+                      begin="0.12s"
+                      fill="freeze"
+                    />
+                  </circle>
+                  <circle
+                    fill="none"
+                    stroke="hsl(0, 80%, 55%)"
+                    stroke-width="1.8"
+                  >
+                    <animate
+                      attributeName="r"
+                      from="0"
+                      to="36"
+                      dur="1.4s"
+                      begin="0.24s"
+                      fill="freeze"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      from="0.7"
+                      to="0"
+                      dur="1.4s"
+                      begin="0.24s"
+                      fill="freeze"
+                    />
+                  </circle>
+                </g>
+                <!-- Bright core flash + sharp starburst body -->
+                <polygon
+                  points="0,-26 5,-6 26,-5 9,4 17,23 0,10 -17,23 -9,4 -26,-5 -5,-6"
+                  fill="hsl(40, 100%, 60%)"
+                  stroke="hsl(55, 100%, 85%)"
+                  stroke-width="1.4"
+                >
+                  <animateTransform
+                    attributeName="transform"
+                    type="scale"
+                    values="0.2;1.6;1.15;1"
+                    keyTimes="0;0.3;0.6;1"
+                    dur="0.9s"
+                    fill="freeze"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="1;1;0.7;0"
+                    keyTimes="0;0.35;0.7;1"
+                    dur="1.6s"
+                    fill="freeze"
+                  />
+                </polygon>
+                <!-- Debris spokes — eight short radial lines that
+                     shoot outward and fade. -->
+                <g
+                  v-for="ang in [0, 45, 90, 135, 180, 225, 270, 315]"
+                  :key="`he-spoke-${ang}`"
+                  :transform="`rotate(${ang})`"
+                >
+                  <line
+                    x1="3"
+                    y1="0"
+                    x2="3"
+                    y2="0"
+                    stroke="hsl(55, 100%, 75%)"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  >
+                    <animate
+                      attributeName="x2"
+                      from="6"
+                      to="36"
+                      dur="0.75s"
                       fill="freeze"
                     />
                     <animate
                       attributeName="opacity"
                       values="1;0.6;0"
                       keyTimes="0;0.5;1"
-                      dur="1.2s"
+                      dur="0.85s"
                       fill="freeze"
                     />
-                  </circle>
-                  <circle fill="rgba(48, 30, 20, 0.3)">
-                    <animate
-                      attributeName="r"
-                      values="14;28;32"
-                      keyTimes="0;0.5;1"
-                      dur="2s"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="0;0.3;0.22;0"
-                      keyTimes="0;0.25;0.6;1"
-                      dur="2s"
-                      fill="freeze"
-                    />
-                  </circle>
-                </template>
+                  </line>
+                </g>
+                <!-- Hot core that pulses then dies. -->
+                <circle fill="hsl(55, 100%, 92%)">
+                  <animate
+                    attributeName="r"
+                    values="10;5;0"
+                    keyTimes="0;0.5;1"
+                    dur="1.2s"
+                    fill="freeze"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="1;0.6;0"
+                    keyTimes="0;0.5;1"
+                    dur="1.2s"
+                    fill="freeze"
+                  />
+                </circle>
+                <circle fill="rgba(48, 30, 20, 0.3)">
+                  <animate
+                    attributeName="r"
+                    values="14;28;32"
+                    keyTimes="0;0.5;1"
+                    dur="2s"
+                    fill="freeze"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0;0.3;0.22;0"
+                    keyTimes="0;0.25;0.6;1"
+                    dur="2s"
+                    fill="freeze"
+                  />
+                </circle>
+              </template>
 
-                <template v-else-if="g.type === 'Molotov'">
-                  <!-- Fire pool: a radial gradient core wrapped in a
+              <template v-else-if="g.type === 'Molotov'">
+                <!-- Fire pool: a radial gradient core wrapped in a
                      turbulence-displaced layer so the silhouette
                      constantly flickers as if licked by tongues of
                      flame. Embers float up out of the pool. -->
-                  <!-- Outer heat haze (no displace, just a soft glow) -->
-                  <circle r="34" fill="rgba(255, 40, 0, 0.14)">
-                    <animate
-                      attributeName="r"
-                      values="6;34;32;34"
-                      keyTimes="0;0.15;0.6;1"
-                      dur="0.9s"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="0.1;0.18;0.12;0.16"
-                      dur="1.4s"
-                      repeatCount="indefinite"
-                    />
-                  </circle>
-                  <!-- Filled burning-area disc under the flames. -->
-                  <circle r="30" fill="rgba(255,120,40,0.18)" />
-                  <!-- Main fire body: a scatter of flame cells across the
+                <!-- Outer heat haze (no displace, just a soft glow) -->
+                <circle r="34" fill="rgba(255, 40, 0, 0.14)">
+                  <animate
+                    attributeName="r"
+                    values="6;34;32;34"
+                    keyTimes="0;0.15;0.6;1"
+                    dur="0.9s"
+                    fill="freeze"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0.1;0.18;0.12;0.16"
+                    dur="1.4s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+                <!-- Filled burning-area disc under the flames. -->
+                <circle r="30" fill="rgba(255,120,40,0.18)" />
+                <!-- Main fire body: a scatter of flame cells across the
                      burn footprint (spreading fire, not one disc), each
                      flickering under the displace filter. -->
-                  <g filter="url(#fire-displace)">
-                    <circle
-                      v-for="(cell, ci) in FIRE_CELLS"
-                      :key="'fc-' + ci"
-                      :cx="cell.dx"
-                      :cy="cell.dy"
-                      fill="url(#fire-core)"
-                    >
-                      <animate
-                        attributeName="r"
-                        :values="`0;${cell.r * 1.2};${cell.r};${cell.r * 1.1};${cell.r}`"
-                        keyTimes="0;0.3;0.6;0.85;1"
-                        :begin="`${cell.d}s`"
-                        dur="0.9s"
-                        fill="freeze"
-                      />
-                      <animate
-                        attributeName="opacity"
-                        values="0.8;1;0.8;0.95;0.8"
-                        dur="0.6s"
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-                    <!-- Inner hot core -->
-                    <circle r="9" fill="rgba(255, 250, 200, 0.95)">
-                      <animate
-                        attributeName="r"
-                        values="5;10;7;9;5"
-                        dur="0.45s"
-                        repeatCount="indefinite"
-                      />
-                      <animate
-                        attributeName="opacity"
-                        values="0.9;1;0.85;0.95;0.9"
-                        dur="0.45s"
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-                  </g>
-                  <!-- Floating embers: small bright dots that drift up
-                     and fade. Six embers staggered for randomness. -->
-                  <g
-                    v-for="(em, ei) of [
-                      { x: -6, y: 4, d: '1.2s' },
-                      { x: 5, y: 7, d: '1.5s' },
-                      { x: -2, y: -2, d: '1s' },
-                      { x: 8, y: -4, d: '1.7s' },
-                      { x: -9, y: -3, d: '1.3s' },
-                      { x: 3, y: 6, d: '1.4s' },
-                    ]"
-                    :key="`em-${ei}`"
-                  >
-                    <circle
-                      :cx="em.x"
-                      :cy="em.y"
-                      r="1.2"
-                      fill="rgba(255, 230, 140, 0.95)"
-                    >
-                      <animate
-                        attributeName="cy"
-                        :values="`${em.y};${em.y - 18}`"
-                        :dur="em.d"
-                        repeatCount="indefinite"
-                      />
-                      <animate
-                        attributeName="opacity"
-                        values="0;1;0.8;0"
-                        keyTimes="0;0.2;0.6;1"
-                        :dur="em.d"
-                        repeatCount="indefinite"
-                      />
-                      <animate
-                        attributeName="r"
-                        values="0.8;1.4;0.6"
-                        :dur="em.d"
-                        repeatCount="indefinite"
-                      />
-                    </circle>
-                  </g>
-                </template>
-
-                <template v-else-if="g.type === 'Flash'">
-                  <!-- Pop: blinding white shockwave expands outward. -->
-                  <circle fill="url(#flash-core)">
-                    <animate
-                      attributeName="r"
-                      values="2;46;52;48"
-                      keyTimes="0;0.12;0.5;1"
-                      dur="2.3s"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="1;1;0.85;0.4;0"
-                      keyTimes="0;0.25;0.5;0.8;1"
-                      dur="2.3s"
-                      fill="freeze"
-                    />
-                  </circle>
-                  <circle fill="rgba(255, 255, 255, 0.92)">
-                    <animate
-                      attributeName="r"
-                      from="2"
-                      to="30"
-                      dur="0.16s"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="0.95;0.95;0.45;0"
-                      keyTimes="0;0.45;0.75;1"
-                      dur="2.1s"
-                      fill="freeze"
-                    />
-                  </circle>
-                  <!-- Sharp ring chasing the shockwave -->
+                <g filter="url(#fire-displace)">
                   <circle
-                    fill="none"
-                    stroke="rgba(220, 240, 255, 0.95)"
-                    stroke-width="1.8"
+                    v-for="(cell, ci) in FIRE_CELLS"
+                    :key="'fc-' + ci"
+                    :cx="cell.dx"
+                    :cy="cell.dy"
+                    fill="url(#fire-core)"
                   >
                     <animate
                       attributeName="r"
-                      from="0"
-                      to="40"
-                      dur="0.6s"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      from="1"
-                      to="0"
-                      dur="0.8s"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="stroke-width"
-                      from="3"
-                      to="0.3"
-                      dur="0.8s"
-                      fill="freeze"
-                    />
-                  </circle>
-                  <!-- Sharp star core -->
-                  <polygon
-                    points="0,-22 5,-5 22,0 5,5 0,22 -5,5 -22,0 -5,-5"
-                    fill="rgba(245, 250, 255, 0.98)"
-                  >
-                    <animateTransform
-                      attributeName="transform"
-                      type="scale"
-                      values="0.1;1.5;1.1;0.95"
-                      keyTimes="0;0.25;0.5;1"
+                      :values="`0;${cell.r * 1.2};${cell.r};${cell.r * 1.1};${cell.r}`"
+                      keyTimes="0;0.3;0.6;0.85;1"
+                      :begin="`${cell.d}s`"
                       dur="0.9s"
                       fill="freeze"
                     />
                     <animate
                       attributeName="opacity"
-                      values="1;0.9;0.5;0"
-                      keyTimes="0;0.4;0.7;1"
-                      dur="1.9s"
-                      fill="freeze"
-                    />
-                  </polygon>
-                  <!-- Cyan-tinted secondary star at 22.5° for sharpness. -->
-                  <polygon
-                    points="0,-14 3,-3 14,0 3,3 0,14 -3,3 -14,0 -3,-3"
-                    fill="rgba(180, 220, 255, 0.85)"
-                    transform="rotate(22.5)"
-                  >
-                    <animateTransform
-                      attributeName="transform"
-                      type="scale"
-                      values="0.1;1.3;0.85"
-                      keyTimes="0;0.4;1"
-                      dur="1s"
-                      additive="sum"
-                      fill="freeze"
-                    />
-                    <animate
-                      attributeName="opacity"
-                      values="0.85;0.5;0"
-                      keyTimes="0;0.4;1"
-                      dur="1.6s"
-                      fill="freeze"
-                    />
-                  </polygon>
-                </template>
-
-                <template v-else-if="g.type === 'Decoy'">
-                  <circle
-                    r="20"
-                    fill="none"
-                    :stroke="colorFor(g.thrower_team)"
-                    stroke-width="2"
-                    stroke-dasharray="3 3"
-                  >
-                    <animate
-                      attributeName="opacity"
-                      values="0.4;0.8;0.4"
-                      dur="0.5s"
-                      repeatCount="indefinite"
-                    />
-                    <animateTransform
-                      attributeName="transform"
-                      type="rotate"
-                      from="0"
-                      to="360"
-                      dur="6s"
+                      values="0.8;1;0.8;0.95;0.8"
+                      dur="0.6s"
                       repeatCount="indefinite"
                     />
                   </circle>
-                </template>
+                  <!-- Inner hot core -->
+                  <circle r="9" fill="rgba(255, 250, 200, 0.95)">
+                    <animate
+                      attributeName="r"
+                      values="5;10;7;9;5"
+                      dur="0.45s"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values="0.9;1;0.85;0.95;0.9"
+                      dur="0.45s"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                </g>
+                <!-- Floating embers: small bright dots that drift up
+                     and fade. Six embers staggered for randomness. -->
+                <g
+                  v-for="(em, ei) of [
+                    { x: -6, y: 4, d: '1.2s' },
+                    { x: 5, y: 7, d: '1.5s' },
+                    { x: -2, y: -2, d: '1s' },
+                    { x: 8, y: -4, d: '1.7s' },
+                    { x: -9, y: -3, d: '1.3s' },
+                    { x: 3, y: 6, d: '1.4s' },
+                  ]"
+                  :key="`em-${ei}`"
+                >
+                  <circle
+                    :cx="em.x"
+                    :cy="em.y"
+                    r="1.2"
+                    fill="rgba(255, 230, 140, 0.95)"
+                  >
+                    <animate
+                      attributeName="cy"
+                      :values="`${em.y};${em.y - 18}`"
+                      :dur="em.d"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="opacity"
+                      values="0;1;0.8;0"
+                      keyTimes="0;0.2;0.6;1"
+                      :dur="em.d"
+                      repeatCount="indefinite"
+                    />
+                    <animate
+                      attributeName="r"
+                      values="0.8;1.4;0.6"
+                      :dur="em.d"
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                </g>
+              </template>
 
-                <!-- Lifetime ring: a track + a depleting arc (top-start,
+              <template v-else-if="g.type === 'Flash'">
+                <!-- Pop: blinding white shockwave expands outward. -->
+                <circle fill="url(#flash-core)">
+                  <animate
+                    attributeName="r"
+                    values="2;46;52;48"
+                    keyTimes="0;0.12;0.5;1"
+                    dur="2.3s"
+                    fill="freeze"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="1;1;0.85;0.4;0"
+                    keyTimes="0;0.25;0.5;0.8;1"
+                    dur="2.3s"
+                    fill="freeze"
+                  />
+                </circle>
+                <circle fill="rgba(255, 255, 255, 0.92)">
+                  <animate
+                    attributeName="r"
+                    from="2"
+                    to="30"
+                    dur="0.16s"
+                    fill="freeze"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0.95;0.95;0.45;0"
+                    keyTimes="0;0.45;0.75;1"
+                    dur="2.1s"
+                    fill="freeze"
+                  />
+                </circle>
+                <!-- Sharp ring chasing the shockwave -->
+                <circle
+                  fill="none"
+                  stroke="rgba(220, 240, 255, 0.95)"
+                  stroke-width="1.8"
+                >
+                  <animate
+                    attributeName="r"
+                    from="0"
+                    to="40"
+                    dur="0.6s"
+                    fill="freeze"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    from="1"
+                    to="0"
+                    dur="0.8s"
+                    fill="freeze"
+                  />
+                  <animate
+                    attributeName="stroke-width"
+                    from="3"
+                    to="0.3"
+                    dur="0.8s"
+                    fill="freeze"
+                  />
+                </circle>
+                <!-- Sharp star core -->
+                <polygon
+                  points="0,-22 5,-5 22,0 5,5 0,22 -5,5 -22,0 -5,-5"
+                  fill="rgba(245, 250, 255, 0.98)"
+                >
+                  <animateTransform
+                    attributeName="transform"
+                    type="scale"
+                    values="0.1;1.5;1.1;0.95"
+                    keyTimes="0;0.25;0.5;1"
+                    dur="0.9s"
+                    fill="freeze"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="1;0.9;0.5;0"
+                    keyTimes="0;0.4;0.7;1"
+                    dur="1.9s"
+                    fill="freeze"
+                  />
+                </polygon>
+                <!-- Cyan-tinted secondary star at 22.5° for sharpness. -->
+                <polygon
+                  points="0,-14 3,-3 14,0 3,3 0,14 -3,3 -14,0 -3,-3"
+                  fill="rgba(180, 220, 255, 0.85)"
+                  transform="rotate(22.5)"
+                >
+                  <animateTransform
+                    attributeName="transform"
+                    type="scale"
+                    values="0.1;1.3;0.85"
+                    keyTimes="0;0.4;1"
+                    dur="1s"
+                    additive="sum"
+                    fill="freeze"
+                  />
+                  <animate
+                    attributeName="opacity"
+                    values="0.85;0.5;0"
+                    keyTimes="0;0.4;1"
+                    dur="1.6s"
+                    fill="freeze"
+                  />
+                </polygon>
+              </template>
+
+              <template v-else-if="g.type === 'Decoy'">
+                <circle
+                  r="20"
+                  fill="none"
+                  :stroke="colorFor(g.thrower_team)"
+                  stroke-width="2"
+                  stroke-dasharray="3 3"
+                >
+                  <animate
+                    attributeName="opacity"
+                    values="0.4;0.8;0.4"
+                    dur="0.5s"
+                    repeatCount="indefinite"
+                  />
+                  <animateTransform
+                    attributeName="transform"
+                    type="rotate"
+                    from="0"
+                    to="360"
+                    dur="6s"
+                    repeatCount="indefinite"
+                  />
+                </circle>
+              </template>
+
+              <!-- Lifetime ring: a track + a depleting arc (top-start,
                    clockwise) so you can read how long a timed grenade has
                    left at a glance. pathLength=1 makes the dash a direct
                    fraction of the remaining life. -->
-                <g
-                  v-if="
-                    g.type === 'Smoke' ||
-                    g.type === 'Molotov' ||
-                    g.type === 'Decoy'
-                  "
-                  transform="rotate(-90)"
-                  style="pointer-events: none"
-                >
-                  <circle
-                    :r="grenadeRingRadius(g.type)"
-                    fill="none"
-                    stroke="hsl(0 0% 0% / 0.35)"
-                    stroke-width="2"
-                  />
-                  <circle
-                    :r="grenadeRingRadius(g.type)"
-                    fill="none"
-                    :stroke="colorFor(g.thrower_team)"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    pathLength="1"
-                    :stroke-dasharray="`${g.life} 1`"
-                    stroke-opacity="0.9"
-                  />
-                </g>
-              </g>
-            </g>
-
-            <!-- In-flight grenades: small projectile dot moving along the
-               throw → landing path, with a faint dashed line ahead of
-               it showing where it's about to land (the "look-ahead"
-               trajectory cue). -->
-            <g v-for="g of inFlightGrenades" :key="'thr-' + g.key">
-              <!-- Predicted-path trail from current pos to landing -->
-              <line
-                :x1="project({ x: g.x, y: g.y, z: g.z }).x"
-                :y1="project({ x: g.x, y: g.y, z: g.z }).y"
-                :x2="project({ x: g.toX, y: g.toY, z: g.z }).x"
-                :y2="project({ x: g.toX, y: g.toY, z: g.z }).y"
-                :stroke="colorFor(g.thrower_team)"
-                stroke-width="1"
-                stroke-dasharray="2 3"
-                stroke-opacity="0.45"
-              />
-              <!-- Landing marker (small target ring) -->
-              <circle
-                :cx="project({ x: g.toX, y: g.toY, z: g.z }).x"
-                :cy="project({ x: g.toX, y: g.toY, z: g.z }).y"
-                r="4"
-                fill="none"
-                :stroke="colorFor(g.thrower_team)"
-                stroke-width="1"
-                stroke-opacity="0.5"
-              />
               <g
-                :transform="`translate(${project({ x: g.x, y: g.y, z: g.z }).x}, ${project({ x: g.x, y: g.y, z: g.z }).y})`"
+                v-if="
+                  g.type === 'Smoke' ||
+                  g.type === 'Molotov' ||
+                  g.type === 'Decoy'
+                "
+                transform="rotate(-90)"
+                style="pointer-events: none"
               >
-                <image
-                  :href="grenadeIconPath(g.type)"
-                  x="-7"
-                  y="-7"
-                  width="14"
-                  height="14"
+                <circle
+                  :r="grenadeRingRadius(g.type)"
+                  fill="none"
+                  stroke="hsl(0 0% 0% / 0.35)"
+                  stroke-width="2"
+                />
+                <circle
+                  :r="grenadeRingRadius(g.type)"
+                  fill="none"
+                  :stroke="colorFor(g.thrower_team)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  pathLength="1"
+                  :stroke-dasharray="`${g.life} 1`"
+                  stroke-opacity="0.9"
                 />
               </g>
             </g>
+          </g>
 
-            <!-- Single-round-only ground actors (bomb, deaths, players).
+          <!-- In-flight grenades: small projectile dot moving along the
+               throw → landing path, with a faint dashed line ahead of
+               it showing where it's about to land (the "look-ahead"
+               trajectory cue). -->
+          <g v-for="g of inFlightGrenades" :key="'thr-' + g.key">
+            <!-- Predicted-path trail from current pos to landing -->
+            <line
+              :x1="project({ x: g.x, y: g.y, z: g.z }).x"
+              :y1="project({ x: g.x, y: g.y, z: g.z }).y"
+              :x2="project({ x: g.toX, y: g.toY, z: g.z }).x"
+              :y2="project({ x: g.toX, y: g.toY, z: g.z }).y"
+              :stroke="colorFor(g.thrower_team)"
+              stroke-width="1"
+              stroke-dasharray="2 3"
+              stroke-opacity="0.45"
+            />
+            <!-- Landing marker (small target ring) -->
+            <circle
+              :cx="project({ x: g.toX, y: g.toY, z: g.z }).x"
+              :cy="project({ x: g.toX, y: g.toY, z: g.z }).y"
+              r="4"
+              fill="none"
+              :stroke="colorFor(g.thrower_team)"
+              stroke-width="1"
+              stroke-opacity="0.5"
+            />
+            <g
+              :transform="`translate(${project({ x: g.x, y: g.y, z: g.z }).x}, ${project({ x: g.x, y: g.y, z: g.z }).y})`"
+            >
+              <image
+                :href="grenadeIconPath(g.type)"
+                x="-7"
+                y="-7"
+                width="14"
+                height="14"
+              />
+            </g>
+          </g>
+
+          <!-- Single-round-only ground actors (bomb, deaths, players).
                  Hidden while the buy-round overlay stacks rounds. -->
-            <g v-if="!overlayMode">
+          <g v-if="!overlayMode">
             <!-- Bomb marker: planted/defused/exploded at the plant site -->
             <g v-if="bombMarker">
               <image
@@ -3771,8 +3974,12 @@ watch(overlayMode, (on) => {
                 :cy="project({ x: g.rx, y: g.ry, z: g.rz }).y"
                 r="16"
                 :fill="SCRUB_NADE_COLORS[g.type] || 'rgb(148,163,184)'"
-                :fill-opacity="g.gid != null && selectedGi.includes(g.gid) ? 0.85 : 0.4"
-                :stroke="g.gid != null && selectedGi.includes(g.gid) ? '#fff' : 'none'"
+                :fill-opacity="
+                  g.gid != null && selectedGi.includes(g.gid) ? 0.85 : 0.4
+                "
+                :stroke="
+                  g.gid != null && selectedGi.includes(g.gid) ? '#fff' : 'none'
+                "
                 stroke-width="2"
                 :style="{ cursor: g.gid != null ? 'pointer' : 'default' }"
                 @click="g.gid != null && toggleUtilSel(g.gid)"
@@ -3782,7 +3989,11 @@ watch(overlayMode, (on) => {
             <!-- Death markers persist at the victim's location at the
                kill tick — looked up from the position sample closest
                to the demo kill's tick. -->
-            <g v-for="(k, i) of roundKillsWithLocation" v-show="showDeaths" :key="'k-' + i">
+            <g
+              v-for="(k, i) of roundKillsWithLocation"
+              v-show="showDeaths"
+              :key="'k-' + i"
+            >
               <g
                 v-if="k.location"
                 :transform="`translate(${project(k.location).x}, ${project(k.location).y})`"
@@ -4589,33 +4800,33 @@ watch(overlayMode, (on) => {
                 </template>
               </g>
             </g>
-            </g>
+          </g>
 
-            <!-- Buy-round overlay players: simple team-colored dots, one
+          <!-- Buy-round overlay players: simple team-colored dots, one
                  per live player per selected round. With many rounds stacked
                  the full token is too much — dots keep movement legible.
                  Utility is drawn by the shared detonation/in-flight markup
                  above (real throws). -->
-            <g v-if="overlayMode" class="pointer-events-none">
-              <circle
-                v-for="a of overlayActors"
-                :key="a.key"
-                :cx="a.x"
-                :cy="a.y"
-                r="4"
-                :fill="colorFor(a.team)"
-                fill-opacity="0.85"
-                stroke="hsl(0 0% 0% / 0.5)"
-                stroke-width="0.75"
-              />
-            </g>
-          </svg>
-        </div>
+          <g v-if="overlayMode" class="pointer-events-none">
+            <circle
+              v-for="a of overlayActors"
+              :key="a.key"
+              :cx="a.x"
+              :cy="a.y"
+              r="4"
+              :fill="colorFor(a.team)"
+              fill-opacity="0.85"
+              stroke="hsl(0 0% 0% / 0.5)"
+              stroke-width="0.75"
+            />
+          </g>
+        </svg>
+      </div>
 
-        <!-- 3D viewer fills the whole stage (not the centered square) so it
+      <!-- 3D viewer fills the whole stage (not the centered square) so it
              reads full-height; ReplayViewer's scoreboard / playbar / HUD float
              over it at higher z. -->
-        <Transition name="mapfade">
+      <Transition name="mapfade">
         <Replay3DLite
           v-if="viewMode === '3d' && radarSrc && calibration"
           class="z-[1]"
@@ -4623,6 +4834,7 @@ watch(overlayMode, (on) => {
           :radar-src="radarSrc"
           :resolution="calibration.resolution"
           :players="playersForRender"
+          :tracers="tracersNow"
           :names="playerNameMap"
           :project="project"
           :grenades="detonationsByTick"
@@ -4643,281 +4855,297 @@ watch(overlayMode, (on) => {
           :overlay-actors="overlayActors3d"
           @select-util="toggleUtilSel"
         />
-        </Transition>
+      </Transition>
 
-        <!-- Unified chrome (Replay3D look) — shown over BOTH 2D and 3D so the
+      <!-- Unified chrome (Replay3D look) — shown over BOTH 2D and 3D so the
              player is identical; only the map underneath differs. -->
-        <ReplayChrome
-          class="z-[20]"
-          :hud="chromeHud"
-          :team-a="chromeTeamA"
-          :team-b="chromeTeamB"
-          :side-a="0"
-          :alive-a="chromeAliveA"
-          :alive-b="chromeAliveB"
-          :feed="chromeFeed"
-          :pbp="chromePbp"
-          :rounds="chromeRounds"
-          :active-round-u-i="activeRound ?? 0"
-          :util-markers="chromeUtilMarkers"
-          :tick-markers="chromeTickMarkers"
-          :type-filter="utilTypeFilter"
-          :selected-gi="selectedGi"
-          :playing="playing"
-          :speed="speed"
-          :seek-frac="chromeSeekFrac"
-          :time-label="chromeTimeLabel"
-          :view="viewMode"
-          :overlay="overlayMode"
-          :show3d="viewMode === '3d'"
-          :cam-mode="camMode"
-          :show-pbp="showPbpPanel"
-          :heat-on="heatOn"
-          :ceiling="ceilingCut"
-          :on-ceiling="(v) => (ceilingCut = v)"
-          :follow-name="chromeFollowName"
-          :ct-hex="CT_HEX"
-          :t-hex="T_HEX"
-          :on-play="toggle"
-          :on-seek="chromeSeek"
-          :on-speed="chromeSpeed"
-          :on-select-round="chromeSelectRound"
-          :on-follow-row="toggleFocus"
-          :on-toggle-type="(ty) => (utilTypeFilter[ty] = !utilTypeFilter[ty])"
-          :on-toggle-pbp="() => (showPbpPanel = !showPbpPanel)"
-          :on-toggle-heat="() => (heatOn = !heatOn)"
-          :on-mode="chromeMode"
-          :on-view="(v) => (viewMode = v)"
-          :on-pbp-util="toggleUtilSel"
-          :on-clear-sel="() => (selectedGi = [])"
-          :overlay-rounds="overlayRoundsArr"
-          :overlay-window="overlayWindowSec"
-          :on-overlay-window="(n) => (overlayWindowSec = n)"
-          :overlay-team="overlayTeam"
-          :on-overlay-team="(t) => (overlayTeam = t)"
-          :team1-name="scoreboard.leftName"
-          :team2-name="scoreboard.rightName"
-          :show-avatars="showAvatars"
-          :trace-on="pathingMode !== 'off'"
-          :show-deaths="showDeaths"
-          :on-toggle-overlay="() => (overlayMode = !overlayMode)"
-          :on-toggle-overlay-round="toggleOverlayRound"
-          :on-toggle-avatars="() => (showAvatars = !showAvatars)"
-          :on-toggle-trace="togglePathing"
-          :on-toggle-deaths="() => (showDeaths = !showDeaths)"
-        />
+      <ReplayChrome
+        class="z-[20]"
+        :hud="chromeHud"
+        :team-a="chromeTeamA"
+        :team-b="chromeTeamB"
+        :side-a="0"
+        :alive-a="chromeAliveA"
+        :alive-b="chromeAliveB"
+        :feed="chromeFeed"
+        :pbp="chromePbp"
+        :rounds="chromeRounds"
+        :active-round-u-i="activeRound ?? 0"
+        :util-markers="chromeUtilMarkers"
+        :tick-markers="chromeTickMarkers"
+        :type-filter="utilTypeFilter"
+        :selected-gi="selectedGi"
+        :playing="playing"
+        :speed="speed"
+        :seek-frac="chromeSeekFrac"
+        :time-label="chromeTimeLabel"
+        :view="viewMode"
+        :overlay="overlayMode"
+        :show3d="viewMode === '3d'"
+        :cam-mode="camMode"
+        :show-pbp="showPbpPanel"
+        :heat-on="heatOn"
+        :ceiling="ceilingCut"
+        :on-ceiling="(v) => (ceilingCut = v)"
+        :follow-name="chromeFollowName"
+        :ct-hex="CT_HEX"
+        :t-hex="T_HEX"
+        :on-play="toggle"
+        :on-seek="chromeSeek"
+        :on-speed="chromeSpeed"
+        :on-select-round="chromeSelectRound"
+        :on-follow-row="toggleFocus"
+        :on-toggle-type="(ty) => (utilTypeFilter[ty] = !utilTypeFilter[ty])"
+        :on-toggle-pbp="() => (showPbpPanel = !showPbpPanel)"
+        :on-toggle-heat="() => (heatOn = !heatOn)"
+        :on-mode="chromeMode"
+        :on-view="(v) => (viewMode = v)"
+        :on-pbp-util="toggleUtilSel"
+        :on-clear-sel="() => (selectedGi = [])"
+        :overlay-rounds="overlayRoundsArr"
+        :overlay-window="overlayWindowSec"
+        :on-overlay-window="(n) => (overlayWindowSec = n)"
+        :overlay-team="overlayTeam"
+        :on-overlay-team="(t) => (overlayTeam = t)"
+        :team1-name="scoreboard.leftName"
+        :team2-name="scoreboard.rightName"
+        :show-avatars="showAvatars"
+        :trace-on="pathingMode !== 'off'"
+        :show-deaths="showDeaths"
+        :on-toggle-overlay="() => (overlayMode = !overlayMode)"
+        :on-toggle-overlay-round="toggleOverlayRound"
+        :on-toggle-avatars="() => (showAvatars = !showAvatars)"
+        :on-toggle-trace="togglePathing"
+        :on-toggle-deaths="() => (showDeaths = !showDeaths)"
+      />
 
-        <!-- Round timer (top-left) + HUD controls (top-right) are
+      <!-- Round timer (top-left) + HUD controls (top-right) are
              anchored to the STAGE edges, not the centered map, so they
              hug the viewport corners and the map reads wider. -->
-        <!-- Top-right HUD cluster: marker-style toggle + pop-out. Both
+      <!-- Top-right HUD cluster: marker-style toggle + pop-out. Both
            sized 40×40 to read as broadcast-grade action buttons. -->
-        <div v-if="false" class="absolute top-2 right-2 z-20 flex items-center gap-1.5">
-          <Tooltip v-if="radarSrc">
-            <TooltipTrigger as-child>
-              <button
-                type="button"
-                class="inline-flex items-center justify-center w-10 h-10 border transition-colors backdrop-blur-sm"
-                :class="
-                  viewMode === '3d'
-                    ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
-                    : 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)]'
-                "
-                @click="viewMode = viewMode === '3d' ? '2d' : '3d'"
-              >
-                <Box class="w-5 h-5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>{{ viewMode === "3d" ? "2D" : "3D" }}</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger as-child>
-              <button
-                type="button"
-                class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
-                @click="showScoreboard = !showScoreboard"
-              >
-                <PanelRightClose v-if="showScoreboard" class="w-5 h-5" />
-                <PanelRightOpen v-else class="w-5 h-5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              {{
-                showScoreboard
-                  ? $t("match.replay.hide_scoreboard")
-                  : $t("match.replay.show_scoreboard")
-              }}
-            </TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger as-child>
-              <button
-                type="button"
-                class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
-                @click="showAvatars = !showAvatars"
-              >
-                <Users v-if="showAvatars" class="w-5 h-5" />
-                <Hash v-else class="w-5 h-5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              {{
-                showAvatars
-                  ? $t("match.replay.toggle_to_slots")
-                  : $t("match.replay.toggle_to_avatars")
-              }}
-            </TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger as-child>
-              <button
-                type="button"
-                class="inline-flex items-center justify-center w-10 h-10 border bg-[hsl(var(--card)/0.85)] transition-colors backdrop-blur-sm"
-                :class="
-                  pathingMode === 'off'
-                    ? 'border-[hsl(var(--tac-amber)/0.35)] text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))]'
-                    : 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
-                "
-                @click="togglePathing"
-              >
-                <Route class="w-5 h-5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              {{
-                pathingMode === "off"
-                  ? t("match.replay.pathing_off")
-                  : t("match.replay.pathing_progress")
-              }}
-            </TooltipContent>
-          </Tooltip>
-          <Popover>
-            <PopoverTrigger as-child>
-              <button
-                type="button"
-                class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
-                :title="$t('match.replay.overlays')"
-              >
-                <Settings2 class="w-5 h-5" />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent align="end" class="w-56 p-2 text-xs font-mono">
-              <div
-                class="px-1 py-1 text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
-              >
-                {{ $t("match.replay.overlays") }}
-              </div>
-              <label
-                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
-              >
-                <input
-                  v-model="showC4"
-                  type="checkbox"
-                  class="accent-[hsl(var(--tac-amber))]"
-                />
-                <span>{{ $t("match.replay.overlay_c4") }}</span>
-              </label>
-              <label
-                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
-              >
-                <input
-                  v-model="showDefuser"
-                  type="checkbox"
-                  class="accent-[hsl(var(--tac-amber))]"
-                />
-                <span>{{ $t("match.replay.overlay_defuser") }}</span>
-              </label>
-              <label
-                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
-              >
-                <input
-                  v-model="showGroundBomb"
-                  type="checkbox"
-                  class="accent-[hsl(var(--tac-amber))]"
-                />
-                <span>{{ $t("match.replay.overlay_ground_bomb") }}</span>
-              </label>
-              <label
-                class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
-              >
-                <input
-                  v-model="showGroundKits"
-                  type="checkbox"
-                  class="accent-[hsl(var(--tac-amber))]"
-                />
-                <span>{{ $t("match.replay.overlay_ground_kits") }}</span>
-              </label>
-            </PopoverContent>
-          </Popover>
-          <Tooltip v-if="!isPopout">
-            <TooltipTrigger as-child>
-              <button
-                type="button"
-                class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
-                @click="openReplayPopout"
-              >
-                <ExternalLink class="w-5 h-5" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>{{ $t("match.replay.popout") }}</TooltipContent>
-          </Tooltip>
-        </div>
-
-        <!-- Old top-left timer HUD — replaced by ReplayChrome's center HUD. -->
-        <div
-          v-if="false"
-          class="absolute top-2 left-2 flex flex-col gap-1 pointer-events-none z-10"
-        >
-          <template v-if="overlayMode">
-            <div
-              class="inline-flex items-center gap-2 px-2.5 py-1 border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
+      <div
+        v-if="false"
+        class="absolute top-2 right-2 z-20 flex items-center gap-1.5"
+      >
+        <Tooltip v-if="radarSrc">
+          <TooltipTrigger as-child>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-10 h-10 border transition-colors backdrop-blur-sm"
+              :class="
+                viewMode === '3d'
+                  ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
+                  : 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)]'
+              "
+              @click="viewMode = viewMode === '3d' ? '2d' : '3d'"
             >
-              <Layers class="w-3.5 h-3.5 text-[hsl(var(--tac-amber))] shrink-0" />
-              <span
-                class="font-mono text-[0.5rem] tracking-[0.22em] uppercase text-[hsl(var(--tac-amber)/0.8)]"
-              >
-                {{ t("match.replay.overlay_buy_section") }}
-              </span>
-              <span
-                class="font-mono text-sm font-bold tabular-nums text-[hsl(var(--tac-amber))]"
-              >
-                +{{ formatMMSS(overlayElapsedSec) }}
-                <span class="text-[hsl(var(--tac-amber)/0.5)]">/</span>
-                {{ formatMMSS(overlayWindowSec) }}
-              </span>
+              <Box class="w-5 h-5" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>{{ viewMode === "3d" ? "2D" : "3D" }}</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger as-child>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
+              @click="showScoreboard = !showScoreboard"
+            >
+              <PanelRightClose v-if="showScoreboard" class="w-5 h-5" />
+              <PanelRightOpen v-else class="w-5 h-5" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {{
+              showScoreboard
+                ? $t("match.replay.hide_scoreboard")
+                : $t("match.replay.show_scoreboard")
+            }}
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger as-child>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
+              @click="showAvatars = !showAvatars"
+            >
+              <Users v-if="showAvatars" class="w-5 h-5" />
+              <Hash v-else class="w-5 h-5" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {{
+              showAvatars
+                ? $t("match.replay.toggle_to_slots")
+                : $t("match.replay.toggle_to_avatars")
+            }}
+          </TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger as-child>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-10 h-10 border bg-[hsl(var(--card)/0.85)] transition-colors backdrop-blur-sm"
+              :class="
+                pathingMode === 'off'
+                  ? 'border-[hsl(var(--tac-amber)/0.35)] text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.7)] hover:text-[hsl(var(--tac-amber))]'
+                  : 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
+              "
+              @click="togglePathing"
+            >
+              <Route class="w-5 h-5" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>
+            {{
+              pathingMode === "off"
+                ? t("match.replay.pathing_off")
+                : t("match.replay.pathing_progress")
+            }}
+          </TooltipContent>
+        </Tooltip>
+        <Popover>
+          <PopoverTrigger as-child>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
+              :title="$t('match.replay.overlays')"
+            >
+              <Settings2 class="w-5 h-5" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent align="end" class="w-56 p-2 text-xs font-mono">
+            <div
+              class="px-1 py-1 text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground"
+            >
+              {{ $t("match.replay.overlays") }}
             </div>
-            <div class="px-1 font-mono text-[0.6rem] text-muted-foreground">
-              {{
-                t("match.replay.overlay_buy_explainer", {
-                  sec: overlayWindowSec,
-                  count: overlaySelectedRounds.size,
-                })
-              }}
-            </div>
-          </template>
-          <template v-else>
+            <label
+              class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+            >
+              <input
+                v-model="showC4"
+                type="checkbox"
+                class="accent-[hsl(var(--tac-amber))]"
+              />
+              <span>{{ $t("match.replay.overlay_c4") }}</span>
+            </label>
+            <label
+              class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+            >
+              <input
+                v-model="showDefuser"
+                type="checkbox"
+                class="accent-[hsl(var(--tac-amber))]"
+              />
+              <span>{{ $t("match.replay.overlay_defuser") }}</span>
+            </label>
+            <label
+              class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+            >
+              <input
+                v-model="showGroundBomb"
+                type="checkbox"
+                class="accent-[hsl(var(--tac-amber))]"
+              />
+              <span>{{ $t("match.replay.overlay_ground_bomb") }}</span>
+            </label>
+            <label
+              class="flex items-center gap-2 px-2 py-1.5 rounded-sm hover:bg-muted/40 cursor-pointer"
+            >
+              <input
+                v-model="showGroundKits"
+                type="checkbox"
+                class="accent-[hsl(var(--tac-amber))]"
+              />
+              <span>{{ $t("match.replay.overlay_ground_kits") }}</span>
+            </label>
+          </PopoverContent>
+        </Popover>
+        <Tooltip v-if="!isPopout">
+          <TooltipTrigger as-child>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--card)/0.85)] text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)] transition-colors backdrop-blur-sm"
+              @click="openReplayPopout"
+            >
+              <ExternalLink class="w-5 h-5" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>{{ $t("match.replay.popout") }}</TooltipContent>
+        </Tooltip>
+      </div>
+
+      <!-- Old top-left timer HUD — replaced by ReplayChrome's center HUD. -->
+      <div
+        v-if="false"
+        class="absolute top-2 left-2 flex flex-col gap-1 pointer-events-none z-10"
+      >
+        <template v-if="overlayMode">
+          <div
+            class="inline-flex items-center gap-2 px-2.5 py-1 border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
+          >
+            <Layers class="w-3.5 h-3.5 text-[hsl(var(--tac-amber))] shrink-0" />
+            <span
+              class="font-mono text-[0.5rem] tracking-[0.22em] uppercase text-[hsl(var(--tac-amber)/0.8)]"
+            >
+              {{ t("match.replay.overlay_buy_section") }}
+            </span>
+            <span
+              class="font-mono text-sm font-bold tabular-nums text-[hsl(var(--tac-amber))]"
+            >
+              +{{ formatMMSS(overlayElapsedSec) }}
+              <span class="text-[hsl(var(--tac-amber)/0.5)]">/</span>
+              {{ formatMMSS(overlayWindowSec) }}
+            </span>
+          </div>
+          <div class="px-1 font-mono text-[0.6rem] text-muted-foreground">
+            {{
+              t("match.replay.overlay_buy_explainer", {
+                sec: overlayWindowSec,
+                count: overlaySelectedRounds.size,
+              })
+            }}
+          </div>
+        </template>
+        <template v-else>
           <!-- stacked score + RD + time box (mirrors the 3D viewer's HUD) -->
           <div
             class="inline-flex flex-col items-center gap-0.5 px-3 py-1.5 border border-[hsl(var(--tac-amber)/0.45)] bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
           >
             <div class="font-mono text-lg font-bold tabular-nums leading-none">
-              <span :style="{ color: colorFor('ct') }">{{ sideScores.ct }}</span>
+              <span :style="{ color: colorFor('ct') }">{{
+                sideScores.ct
+              }}</span>
               <span class="text-muted-foreground/50 mx-1.5">:</span>
               <span :style="{ color: colorFor('t') }">{{ sideScores.t }}</span>
             </div>
             <div
               class="font-mono text-[0.62rem] tabular-nums leading-none flex items-center gap-1.5"
               :class="
-                timer.phase === 'bomb' ? 'text-[hsl(var(--destructive))]' : 'text-muted-foreground'
+                timer.phase === 'bomb'
+                  ? 'text-[hsl(var(--destructive))]'
+                  : 'text-muted-foreground'
               "
             >
               <span
                 v-if="activeRound != null"
                 class="tracking-[0.18em] text-[hsl(var(--tac-amber)/0.85)]"
-              >RD {{ activeRound }}</span>
+                >RD {{ activeRound }}</span
+              >
               <span class="opacity-40">·</span>
-              <span v-if="timer.phase === 'freeze'" class="tracking-[0.18em] uppercase">{{ $t("match.replay.phase_freeze") }}</span>
-              <span v-else-if="timer.phase === 'bomb'" class="tracking-[0.18em] uppercase">{{ $t("match.replay.phase_bomb") }}</span>
+              <span
+                v-if="timer.phase === 'freeze'"
+                class="tracking-[0.18em] uppercase"
+                >{{ $t("match.replay.phase_freeze") }}</span
+              >
+              <span
+                v-else-if="timer.phase === 'bomb'"
+                class="tracking-[0.18em] uppercase"
+                >{{ $t("match.replay.phase_bomb") }}</span
+              >
               <span>{{ formatMMSS(timer.secondsRemaining) }}</span>
             </div>
           </div>
@@ -4929,7 +5157,9 @@ watch(overlayMode, (on) => {
               <span
                 class="absolute inline-flex h-full w-full rounded-full bg-current animate-ping"
               />
-              <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-current" />
+              <span
+                class="relative inline-flex h-1.5 w-1.5 rounded-full bg-current"
+              />
             </span>
             {{
               $t("match.replay.bomb_planted", {
@@ -4954,75 +5184,75 @@ watch(overlayMode, (on) => {
           >
             {{ $t("match.replay.bomb_exploded") }}
           </div>
-          </template>
-        </div>
+        </template>
+      </div>
 
-        <!-- Floating scoreboard: the ONLY floating element. Stacked at the
+      <!-- Floating scoreboard: the ONLY floating element. Stacked at the
              stage's right edge (dead space) so it never overlays the map
              action. Holds both side rosters + the round kill feed. Wrapper
              is pointer-events-none so gaps don't swallow map interactions;
              cards re-enable pointer events for click-to-follow. -->
-        <!-- Old floating scoreboard — replaced by ReplayChrome's scoreboard.
+      <!-- Old floating scoreboard — replaced by ReplayChrome's scoreboard.
              Disabled (its Tooltip needs ReplayChrome's TooltipProvider). -->
-        <Transition name="scoreboard">
+      <Transition name="scoreboard">
+        <div
+          v-if="false"
+          class="absolute top-14 right-2 bottom-3 z-20 hidden md:flex flex-col gap-1.5 w-[400px] pointer-events-none"
+        >
           <div
-            v-if="false"
-            class="absolute top-14 right-2 bottom-3 z-20 hidden md:flex flex-col gap-1.5 w-[400px] pointer-events-none"
+            class="pointer-events-auto px-2 py-1.5 border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
+            :style="{ borderColor: 'hsl(210 80% 60% / 0.45)' }"
           >
-            <div
-              class="pointer-events-auto px-2 py-1.5 border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
-              :style="{ borderColor: 'hsl(210 80% 60% / 0.45)' }"
-            >
-              <ReplayLineupTeam
-                team="ct"
-                :label="$t('match.replay.counter_terrorists')"
-                :score="sideScores.ct"
-                :members="lineupRows.ct"
-                :live-state-by-steam="liveStateBySteam"
-                :loadout-by-steam="loadoutBySteam"
-                :focused-player-id="focusedPlayerId"
-                :show-avatars="showAvatars"
-                :show-c4="showC4"
-                :stats-for="statsFor"
-                :has-bomb-for="hasBombFor"
-                :follow-label="followLabelFor"
-                @focus="toggleFocus"
-              />
-            </div>
-            <div
-              class="pointer-events-auto px-2 py-1.5 border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
-              :style="{ borderColor: 'hsl(33 94% 58% / 0.45)' }"
-            >
-              <ReplayLineupTeam
-                team="t"
-                :label="$t('match.replay.terrorists')"
-                :score="sideScores.t"
-                :members="lineupRows.t"
-                :live-state-by-steam="liveStateBySteam"
-                :loadout-by-steam="loadoutBySteam"
-                :focused-player-id="focusedPlayerId"
-                :show-avatars="showAvatars"
-                :show-c4="showC4"
-                :stats-for="statsFor"
-                :has-bomb-for="hasBombFor"
-                :follow-label="followLabelFor"
-                @focus="toggleFocus"
-              />
-            </div>
-            <p
-              class="pointer-events-none text-[0.55rem] leading-tight text-muted-foreground/70 px-0.5"
-            >
-              {{ $t("match.replay.follow_hint") }}
-            </p>
+            <ReplayLineupTeam
+              team="ct"
+              :label="$t('match.replay.counter_terrorists')"
+              :score="sideScores.ct"
+              :members="lineupRows.ct"
+              :live-state-by-steam="liveStateBySteam"
+              :loadout-by-steam="loadoutBySteam"
+              :focused-player-id="focusedPlayerId"
+              :show-avatars="showAvatars"
+              :show-c4="showC4"
+              :stats-for="statsFor"
+              :has-bomb-for="hasBombFor"
+              :follow-label="followLabelFor"
+              @focus="toggleFocus"
+            />
+          </div>
+          <div
+            class="pointer-events-auto px-2 py-1.5 border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
+            :style="{ borderColor: 'hsl(33 94% 58% / 0.45)' }"
+          >
+            <ReplayLineupTeam
+              team="t"
+              :label="$t('match.replay.terrorists')"
+              :score="sideScores.t"
+              :members="lineupRows.t"
+              :live-state-by-steam="liveStateBySteam"
+              :loadout-by-steam="loadoutBySteam"
+              :focused-player-id="focusedPlayerId"
+              :show-avatars="showAvatars"
+              :show-c4="showC4"
+              :stats-for="statsFor"
+              :has-bomb-for="hasBombFor"
+              :follow-label="followLabelFor"
+              @focus="toggleFocus"
+            />
+          </div>
+          <p
+            class="pointer-events-none text-[0.55rem] leading-tight text-muted-foreground/70 px-0.5"
+          >
+            {{ $t("match.replay.follow_hint") }}
+          </p>
 
-            <!-- Round kill feed, tucked under the rosters so it floats WITH
+          <!-- Round kill feed, tucked under the rosters so it floats WITH
                  the scoreboard (right-side dead space) — no overlay on the
                  action, and nothing else floats. flex-1 fills the space
                  beneath the rosters and scrolls internally. -->
-            <div
-              v-if="killsBeforeCursor.length > 0"
-              class="pointer-events-auto flex-1 min-h-0 flex flex-col gap-1 px-2 py-1.5 border border-border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
-            >
+          <div
+            v-if="killsBeforeCursor.length > 0"
+            class="pointer-events-auto flex-1 min-h-0 flex flex-col gap-1 px-2 py-1.5 border border-border bg-[hsl(var(--card)/0.85)] backdrop-blur-sm"
+          >
             <div
               class="font-mono text-[0.55rem] tracking-[0.22em] uppercase text-muted-foreground shrink-0"
             >
@@ -5119,276 +5349,273 @@ watch(overlayMode, (on) => {
               </div>
             </div>
           </div>
-          </div>
-        </Transition>
-      </div>
+        </div>
+      </Transition>
+    </div>
 
-      <!-- Old docked transport — replaced by ReplayChrome's bottom transport. -->
-      <div
-        v-if="false"
-        ref="playbarDockEl"
-        class="flex flex-col bg-[hsl(var(--card)/0.6)] border border-border rounded-md overflow-hidden"
-      >
-          <!-- Round row. In overlay mode the per-round nav is replaced by
+    <!-- Old docked transport — replaced by ReplayChrome's bottom transport. -->
+    <div
+      v-if="false"
+      ref="playbarDockEl"
+      class="flex flex-col bg-[hsl(var(--card)/0.6)] border border-border rounded-md overflow-hidden"
+    >
+      <!-- Round row. In overlay mode the per-round nav is replaced by
                the overlay's window slider + full-buy round chips; the
                overlay toggle is an icon pinned at the end either way. -->
-          <div
-            v-if="roundStripEntries.length || overlayAvailable"
-            class="flex flex-wrap items-center gap-1.5 px-3 pt-2 pb-1 border-b transition-colors"
-            :class="
-              overlayMode
-                ? 'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)]'
-                : 'border-border/40'
-            "
+      <div
+        v-if="roundStripEntries.length || overlayAvailable"
+        class="flex flex-wrap items-center gap-1.5 px-3 pt-2 pb-1 border-b transition-colors"
+        :class="
+          overlayMode
+            ? 'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)]'
+            : 'border-border/40'
+        "
+      >
+        <template v-if="!overlayMode">
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-7 h-7 shrink-0 border border-border/60 rounded-sm text-muted-foreground hover:text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber)/0.7)] transition-colors disabled:opacity-30 disabled:pointer-events-none"
+            :title="$t('match.replay.prev_round')"
+            :disabled="!canPrevRound"
+            @click="jumpToRound(-1)"
           >
-            <template v-if="!overlayMode">
-              <button
-                type="button"
-                class="inline-flex items-center justify-center w-7 h-7 shrink-0 border border-border/60 rounded-sm text-muted-foreground hover:text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber)/0.7)] transition-colors disabled:opacity-30 disabled:pointer-events-none"
-                :title="$t('match.replay.prev_round')"
-                :disabled="!canPrevRound"
-                @click="jumpToRound(-1)"
-              >
-                <ChevronLeft class="w-4 h-4" />
-              </button>
-              <RoundSelector
-                class="min-w-0 flex-1"
-                :rounds="roundStripEntries"
-                :model-value="activeRound"
-                :halftime-index="roundStripHalftime"
-                @update:model-value="selectStripRound"
-              />
-              <button
-                type="button"
-                class="inline-flex items-center justify-center w-7 h-7 shrink-0 border border-border/60 rounded-sm text-muted-foreground hover:text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber)/0.7)] transition-colors disabled:opacity-30 disabled:pointer-events-none"
-                :title="$t('match.replay.next_round')"
-                :disabled="!canNextRound"
-                @click="jumpToRound(1)"
-              >
-                <ChevronRight class="w-4 h-4" />
-              </button>
-            </template>
-            <template v-else>
-              <div class="flex items-center gap-2 min-w-[9rem] flex-1">
-                <input
-                  v-model.number="overlayWindowSec"
-                  type="range"
-                  min="10"
-                  max="115"
-                  step="5"
-                  class="flex-1 accent-[hsl(var(--tac-amber))]"
-                  :title="
-                    t('match.replay.overlay_buy_window', { sec: overlayWindowSec })
-                  "
-                />
-                <span
-                  class="font-mono text-xs tabular-nums text-[hsl(var(--tac-amber))] shrink-0 w-9"
-                >
-                  {{ overlayWindowSec }}s
-                </span>
-              </div>
-              <div class="flex flex-wrap items-center gap-1">
-                <button
-                  v-for="rn in fullBuyRounds"
-                  :key="rn"
-                  type="button"
-                  class="inline-flex items-center justify-center min-w-6 h-6 px-1.5 border text-[0.65rem] tabular-nums transition-colors"
-                  :class="
-                    overlaySelectedRounds.has(rn)
-                      ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
-                      : 'border-border/60 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.7)]'
-                  "
-                  @click="toggleOverlayRound(rn)"
-                >
-                  {{ rn }}
-                </button>
-              </div>
-            </template>
-            <!-- Overlay toggle: icon-only, pinned at the end of the row. -->
-            <button
-              v-if="overlayAvailable"
-              type="button"
-              class="inline-flex items-center justify-center w-7 h-7 shrink-0 border rounded-sm transition-colors ml-auto"
-              :class="
-                overlayMode
-                  ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
-                  : 'border-border/60 text-muted-foreground hover:text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber)/0.7)]'
+            <ChevronLeft class="w-4 h-4" />
+          </button>
+          <RoundSelector
+            class="min-w-0 flex-1"
+            :rounds="roundStripEntries"
+            :model-value="activeRound"
+            :halftime-index="roundStripHalftime"
+            @update:model-value="selectStripRound"
+          />
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-7 h-7 shrink-0 border border-border/60 rounded-sm text-muted-foreground hover:text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber)/0.7)] transition-colors disabled:opacity-30 disabled:pointer-events-none"
+            :title="$t('match.replay.next_round')"
+            :disabled="!canNextRound"
+            @click="jumpToRound(1)"
+          >
+            <ChevronRight class="w-4 h-4" />
+          </button>
+        </template>
+        <template v-else>
+          <div class="flex items-center gap-2 min-w-[9rem] flex-1">
+            <input
+              v-model.number="overlayWindowSec"
+              type="range"
+              min="10"
+              max="115"
+              step="5"
+              class="flex-1 accent-[hsl(var(--tac-amber))]"
+              :title="
+                t('match.replay.overlay_buy_window', { sec: overlayWindowSec })
               "
-              :title="t('match.replay.overlay_buy_section')"
-              :aria-pressed="overlayMode"
-              @click="overlayMode = !overlayMode"
+            />
+            <span
+              class="font-mono text-xs tabular-nums text-[hsl(var(--tac-amber))] shrink-0 w-9"
             >
-              <Layers class="w-4 h-4" />
+              {{ overlayWindowSec }}s
+            </span>
+          </div>
+          <div class="flex flex-wrap items-center gap-1">
+            <button
+              v-for="rn in fullBuyRounds"
+              :key="rn"
+              type="button"
+              class="inline-flex items-center justify-center min-w-6 h-6 px-1.5 border text-[0.65rem] tabular-nums transition-colors"
+              :class="
+                overlaySelectedRounds.has(rn)
+                  ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
+                  : 'border-border/60 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.7)]'
+              "
+              @click="toggleOverlayRound(rn)"
+            >
+              {{ rn }}
             </button>
           </div>
-          <!-- YouTube-style transport: play/step on the left, then a tall
+        </template>
+        <!-- Overlay toggle: icon-only, pinned at the end of the row. -->
+        <button
+          v-if="overlayAvailable"
+          type="button"
+          class="inline-flex items-center justify-center w-7 h-7 shrink-0 border rounded-sm transition-colors ml-auto"
+          :class="
+            overlayMode
+              ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.18)] text-[hsl(var(--tac-amber))]'
+              : 'border-border/60 text-muted-foreground hover:text-[hsl(var(--tac-amber))] hover:border-[hsl(var(--tac-amber)/0.7)]'
+          "
+          :title="t('match.replay.overlay_buy_section')"
+          :aria-pressed="overlayMode"
+          @click="overlayMode = !overlayMode"
+        >
+          <Layers class="w-4 h-4" />
+        </button>
+      </div>
+      <!-- YouTube-style transport: play/step on the left, then a tall
                scrubber that carries the round's kill + grenade event track,
                time readout, speed, and a shortcuts popover. -->
-          <div
-            ref="playbarRowEl"
-            class="flex items-center gap-3 px-3 py-2.5"
+      <div ref="playbarRowEl" class="flex items-center gap-3 px-3 py-2.5">
+        <!-- Left transport cluster -->
+        <div class="flex items-center gap-1 shrink-0">
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.28)] transition-colors"
+            :title="
+              playing ? $t('match.replay.pause') : $t('match.replay.play')
+            "
+            @click="toggle()"
           >
-            <!-- Left transport cluster -->
-            <div class="flex items-center gap-1 shrink-0">
-              <button
-                type="button"
-                class="inline-flex items-center justify-center w-10 h-10 border border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.28)] transition-colors"
-                :title="
-                  playing ? $t('match.replay.pause') : $t('match.replay.play')
-                "
-                @click="toggle()"
-              >
-                <Play v-if="!playing" class="w-5 h-5" />
-                <Pause v-else class="w-5 h-5" />
-              </button>
-              <button
-                type="button"
-                class="inline-flex items-center justify-center w-8 h-10 text-muted-foreground hover:text-[hsl(var(--tac-amber))] transition-colors"
-                :title="$t('match.replay.step_back')"
-                @click="step(-1)"
-              >
-                <SkipBack class="w-4 h-4" />
-              </button>
-              <button
-                type="button"
-                class="inline-flex items-center justify-center w-8 h-10 text-muted-foreground hover:text-[hsl(var(--tac-amber))] transition-colors"
-                :title="$t('match.replay.step_forward')"
-                @click="step(1)"
-              >
-                <SkipForward class="w-4 h-4" />
-              </button>
-            </div>
-
-            <!-- Scrubber -->
-            <div
-              class="relative flex-1 min-w-[6rem] h-8 group cursor-pointer select-none"
-              @pointerdown="onScrubStart"
-            >
-              <!-- Kill markers above the rail. -->
-              <div
-                v-if="!overlayMode"
-                class="absolute inset-x-0 top-0 h-3 pointer-events-none"
-              >
-                <span
-                  v-for="(m, i) in scrubberMarkers"
-                  v-show="m.lane === 'kill'"
-                  :key="'k' + i"
-                  class="absolute bottom-0 w-[2px] h-3 -translate-x-1/2 rounded-sm"
-                  :style="{ left: m.left + '%', backgroundColor: m.color }"
-                  :title="m.title"
-                />
-              </div>
-              <div
-                class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2.5 bg-[hsl(var(--border))] rounded-full overflow-hidden group-hover:h-3 transition-[height] duration-100"
-              >
-                <div
-                  class="absolute inset-y-0 left-0 bg-[hsl(var(--tac-amber))] transition-[width] duration-100 ease-linear"
-                  :style="{
-                    width: (overlayMode ? overlayProgressPct : progressPct) + '%',
-                  }"
-                />
-              </div>
-              <!-- Grenade ICONS below the rail (Replay3D-style util lane). -->
-              <div
-                v-if="!overlayMode"
-                class="absolute inset-x-0 -bottom-1 h-4 pointer-events-none"
-              >
-                <img
-                  v-for="(m, i) in scrubberMarkers"
-                  v-show="m.lane === 'nade' && m.icon"
-                  :key="'n' + i"
-                  :src="m.icon"
-                  class="absolute top-0 h-4 w-4 -translate-x-1/2 object-contain"
-                  :style="{ left: m.left + '%', filter: 'brightness(0) invert(1)' }"
-                  :title="m.title"
-                />
-              </div>
-              <div
-                class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_0_2px_hsl(var(--background)),0_0_10px_hsl(var(--tac-amber)/0.6)] transition-[left] duration-100 ease-linear pointer-events-none z-10 group-hover:scale-110"
-                :style="{
-                  left: (overlayMode ? overlayProgressPct : progressPct) + '%',
-                }"
-              />
-            </div>
-
-            <!-- Time readout -->
-            <span
-              class="font-mono text-xs tabular-nums text-muted-foreground shrink-0"
-            >
-              <template v-if="overlayMode">
-                {{ formatMMSS(overlayElapsedSec) }}
-                <span class="text-muted-foreground/50">/</span>
-                {{ formatMMSS(overlayWindowSec) }}
-              </template>
-              <template v-else>
-                {{ formatMMSS(tickIndex * 0.25) }}
-                <span class="text-muted-foreground/50">/</span>
-                {{ formatMMSS(Math.max(0, ticks.length - 1) * 0.25) }}
-              </template>
-            </span>
-
-            <div class="w-px h-6 bg-border shrink-0" />
-
-            <!-- Speed -->
-            <div class="inline-flex items-center gap-0.5 shrink-0">
-              <Gauge class="w-3.5 h-3.5 text-muted-foreground mr-1" />
-              <button
-                v-for="s of SPEEDS"
-                :key="s"
-                type="button"
-                class="px-1.5 py-0.5 font-mono text-[0.65rem] font-bold tabular-nums transition-colors border rounded-sm"
-                :class="
-                  speed === s
-                    ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'
-                    : 'border-transparent text-muted-foreground hover:text-foreground'
-                "
-                @click="speed = s"
-              >
-                {{ s }}x
-              </button>
-            </div>
-
-            <!-- Keyboard shortcuts -->
-            <Popover>
-              <PopoverTrigger as-child>
-                <button
-                  type="button"
-                  class="inline-flex items-center justify-center w-8 h-8 text-muted-foreground hover:text-[hsl(var(--tac-amber))] transition-colors shrink-0"
-                  :title="$t('match.replay.shortcuts_title')"
-                >
-                  <Keyboard class="w-4 h-4" />
-                </button>
-              </PopoverTrigger>
-              <PopoverContent
-                align="end"
-                class="w-auto p-3 text-[0.65rem] text-muted-foreground"
-              >
-                <div
-                  class="font-mono text-[0.55rem] tracking-[0.22em] uppercase mb-2"
-                >
-                  {{ $t("match.replay.shortcuts_title") }}
-                </div>
-                <div class="flex flex-col gap-1.5">
-                  <span class="inline-flex items-center gap-1.5">
-                    <Kbd>Space</Kbd> {{ $t("match.replay.shortcut_play") }}
-                  </span>
-                  <span class="inline-flex items-center gap-1.5">
-                    <Kbd>←</Kbd><Kbd>→</Kbd>
-                    {{ $t("match.replay.shortcut_step") }}
-                  </span>
-                  <span class="inline-flex items-center gap-1.5">
-                    <Kbd>[</Kbd><Kbd>]</Kbd>
-                    {{ $t("match.replay.shortcut_round") }}
-                  </span>
-                  <span class="inline-flex items-center gap-1.5">
-                    <Kbd>1</Kbd>–<Kbd>5</Kbd>
-                    {{ $t("match.replay.shortcut_speed") }}
-                  </span>
-                </div>
-              </PopoverContent>
-            </Popover>
-          </div>
+            <Play v-if="!playing" class="w-5 h-5" />
+            <Pause v-else class="w-5 h-5" />
+          </button>
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-8 h-10 text-muted-foreground hover:text-[hsl(var(--tac-amber))] transition-colors"
+            :title="$t('match.replay.step_back')"
+            @click="step(-1)"
+          >
+            <SkipBack class="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            class="inline-flex items-center justify-center w-8 h-10 text-muted-foreground hover:text-[hsl(var(--tac-amber))] transition-colors"
+            :title="$t('match.replay.step_forward')"
+            @click="step(1)"
+          >
+            <SkipForward class="w-4 h-4" />
+          </button>
         </div>
+
+        <!-- Scrubber -->
+        <div
+          class="relative flex-1 min-w-[6rem] h-8 group cursor-pointer select-none"
+          @pointerdown="onScrubStart"
+        >
+          <!-- Kill markers above the rail. -->
+          <div
+            v-if="!overlayMode"
+            class="absolute inset-x-0 top-0 h-3 pointer-events-none"
+          >
+            <span
+              v-for="(m, i) in scrubberMarkers"
+              v-show="m.lane === 'kill'"
+              :key="'k' + i"
+              class="absolute bottom-0 w-[2px] h-3 -translate-x-1/2 rounded-sm"
+              :style="{ left: m.left + '%', backgroundColor: m.color }"
+              :title="m.title"
+            />
+          </div>
+          <div
+            class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2.5 bg-[hsl(var(--border))] rounded-full overflow-hidden group-hover:h-3 transition-[height] duration-100"
+          >
+            <div
+              class="absolute inset-y-0 left-0 bg-[hsl(var(--tac-amber))] transition-[width] duration-100 ease-linear"
+              :style="{
+                width: (overlayMode ? overlayProgressPct : progressPct) + '%',
+              }"
+            />
+          </div>
+          <!-- Grenade ICONS below the rail (Replay3D-style util lane). -->
+          <div
+            v-if="!overlayMode"
+            class="absolute inset-x-0 -bottom-1 h-4 pointer-events-none"
+          >
+            <img
+              v-for="(m, i) in scrubberMarkers"
+              v-show="m.lane === 'nade' && m.icon"
+              :key="'n' + i"
+              :src="m.icon"
+              class="absolute top-0 h-4 w-4 -translate-x-1/2 object-contain"
+              :style="{ left: m.left + '%', filter: 'brightness(0) invert(1)' }"
+              :title="m.title"
+            />
+          </div>
+          <div
+            class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-[hsl(var(--tac-amber))] shadow-[0_0_0_2px_hsl(var(--background)),0_0_10px_hsl(var(--tac-amber)/0.6)] transition-[left] duration-100 ease-linear pointer-events-none z-10 group-hover:scale-110"
+            :style="{
+              left: (overlayMode ? overlayProgressPct : progressPct) + '%',
+            }"
+          />
+        </div>
+
+        <!-- Time readout -->
+        <span
+          class="font-mono text-xs tabular-nums text-muted-foreground shrink-0"
+        >
+          <template v-if="overlayMode">
+            {{ formatMMSS(overlayElapsedSec) }}
+            <span class="text-muted-foreground/50">/</span>
+            {{ formatMMSS(overlayWindowSec) }}
+          </template>
+          <template v-else>
+            {{ formatMMSS(tickIndex * 0.25) }}
+            <span class="text-muted-foreground/50">/</span>
+            {{ formatMMSS(Math.max(0, ticks.length - 1) * 0.25) }}
+          </template>
+        </span>
+
+        <div class="w-px h-6 bg-border shrink-0" />
+
+        <!-- Speed -->
+        <div class="inline-flex items-center gap-0.5 shrink-0">
+          <Gauge class="w-3.5 h-3.5 text-muted-foreground mr-1" />
+          <button
+            v-for="s of SPEEDS"
+            :key="s"
+            type="button"
+            class="px-1.5 py-0.5 font-mono text-[0.65rem] font-bold tabular-nums transition-colors border rounded-sm"
+            :class="
+              speed === s
+                ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))]'
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            "
+            @click="speed = s"
+          >
+            {{ s }}x
+          </button>
+        </div>
+
+        <!-- Keyboard shortcuts -->
+        <Popover>
+          <PopoverTrigger as-child>
+            <button
+              type="button"
+              class="inline-flex items-center justify-center w-8 h-8 text-muted-foreground hover:text-[hsl(var(--tac-amber))] transition-colors shrink-0"
+              :title="$t('match.replay.shortcuts_title')"
+            >
+              <Keyboard class="w-4 h-4" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent
+            align="end"
+            class="w-auto p-3 text-[0.65rem] text-muted-foreground"
+          >
+            <div
+              class="font-mono text-[0.55rem] tracking-[0.22em] uppercase mb-2"
+            >
+              {{ $t("match.replay.shortcuts_title") }}
+            </div>
+            <div class="flex flex-col gap-1.5">
+              <span class="inline-flex items-center gap-1.5">
+                <Kbd>Space</Kbd> {{ $t("match.replay.shortcut_play") }}
+              </span>
+              <span class="inline-flex items-center gap-1.5">
+                <Kbd>←</Kbd><Kbd>→</Kbd>
+                {{ $t("match.replay.shortcut_step") }}
+              </span>
+              <span class="inline-flex items-center gap-1.5">
+                <Kbd>[</Kbd><Kbd>]</Kbd>
+                {{ $t("match.replay.shortcut_round") }}
+              </span>
+              <span class="inline-flex items-center gap-1.5">
+                <Kbd>1</Kbd>–<Kbd>5</Kbd>
+                {{ $t("match.replay.shortcut_speed") }}
+              </span>
+            </div>
+          </PopoverContent>
+        </Popover>
+      </div>
+    </div>
   </div>
 </template>
 

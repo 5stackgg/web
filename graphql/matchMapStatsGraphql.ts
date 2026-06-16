@@ -73,6 +73,10 @@ export const matchMapStats = Selector("match_lineups")({
             shots_at_spotted: true,
             spray_shots: true,
             spray_hits: true,
+            first_bullet_shots: true,
+            first_bullet_hits: true,
+            on_target_frames: true,
+            total_engagement_frames: true,
             rounds_played: true,
             kills_t: true,
             kills_ct: true,
@@ -86,6 +90,23 @@ export const matchMapStats = Selector("match_lineups")({
             damage_ct: true,
             rounds_t: true,
             rounds_ct: true,
+          },
+        ],
+        aim_weapon_stats: [
+          {
+            where: {
+              match_id: { _eq: $("matchId", "uuid!") },
+              match_map_id: { _eq: $("matchMapId", "uuid!") },
+            },
+          },
+          {
+            weapon_class: true,
+            shots: true,
+            hits: true,
+            shots_spotted: true,
+            hits_spotted: true,
+            first_bullet_shots: true,
+            first_bullet_hits: true,
           },
         ],
         match_map_hltv: [

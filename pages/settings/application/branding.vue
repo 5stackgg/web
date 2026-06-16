@@ -1,7 +1,25 @@
 <script setup lang="ts">
+import {
+  LucideSun,
+  LucideMoon,
+  LucideUpload,
+  LucideX,
+} from "lucide-vue-next";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 definePageMeta({
   middleware: "admin",
@@ -19,6 +37,64 @@ definePageMeta({
             $t('pages.settings.application.branding.general_description')
           "
         >
+          <template #action>
+            <div class="flex flex-wrap items-center justify-end gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                @click="exportTheme"
+                :disabled="exporting"
+              >
+                {{ $t("pages.settings.application.branding.export_theme") }}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                @click="$refs.importInput.click()"
+              >
+                {{ $t("pages.settings.application.branding.import_theme") }}
+              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger as-child>
+                  <Button size="sm" variant="destructive">
+                    {{
+                      $t("pages.settings.application.branding.reset_to_defaults")
+                    }}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>{{
+                      $t(
+                        "pages.settings.application.branding.reset_confirm_title",
+                      )
+                    }}</AlertDialogTitle>
+                    <AlertDialogDescription>{{
+                      $t(
+                        "pages.settings.application.branding.reset_confirm_description",
+                      )
+                    }}</AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>{{
+                      $t("common.cancel")
+                    }}</AlertDialogCancel>
+                    <AlertDialogAction variant="destructive" @click="resetAll">{{
+                      $t("pages.settings.application.branding.reset_to_defaults")
+                    }}</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              <input
+                ref="importInput"
+                type="file"
+                accept=".json"
+                class="hidden"
+                @change="importTheme"
+              />
+            </div>
+          </template>
+
           <div class="space-y-2">
             <label class="text-sm font-medium">{{
               $t("pages.settings.application.branding.brand_name")
@@ -95,34 +171,40 @@ definePageMeta({
               <p class="text-sm text-muted-foreground">
                 {{ $t("pages.settings.application.branding.logo_description") }}
               </p>
-              <div class="flex items-center gap-4">
+              <div
+                role="button"
+                tabindex="0"
+                :aria-label="$t('pages.settings.application.branding.upload_logo')"
+                class="group relative flex h-36 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-dashed border-border bg-muted/20 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-accent/30"
+                @click="$refs.logoInput.click()"
+                @keydown.enter.prevent="$refs.logoInput.click()"
+                @keydown.space.prevent="$refs.logoInput.click()"
+              >
+                <img
+                  v-if="logoPreview"
+                  :src="logoPreview"
+                  class="max-h-24 max-w-[80%] object-contain"
+                />
+                <NuxtImg
+                  v-else
+                  src="/favicon/64.png"
+                  class="max-h-24 max-w-[80%] object-contain opacity-90"
+                />
                 <div
-                  class="w-16 h-16 rounded flex items-center justify-center overflow-hidden bg-muted shrink-0"
+                  class="absolute inset-0 flex items-center justify-center gap-2 bg-background/70 text-sm font-medium opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100"
                 >
-                  <img
-                    v-if="logoPreview"
-                    :src="logoPreview"
-                    class="max-w-full max-h-full object-contain"
-                  />
-                  <NuxtImg
-                    v-else
-                    src="/favicon/64.png"
-                    class="max-w-full max-h-full"
-                  />
+                  <LucideUpload class="h-4 w-4" />
+                  {{ $t("pages.settings.application.branding.upload_logo") }}
                 </div>
-                <div class="flex gap-2 flex-wrap">
-                  <Button size="sm" @click="$refs.logoInput.click()">
-                    {{ $t("pages.settings.application.branding.upload_logo") }}
-                  </Button>
-                  <Button
-                    v-if="logoPreview"
-                    size="sm"
-                    variant="outline"
-                    @click="removeLogo"
-                  >
-                    {{ $t("pages.settings.application.branding.remove") }}
-                  </Button>
-                </div>
+                <button
+                  v-if="logoPreview"
+                  type="button"
+                  :aria-label="$t('pages.settings.application.branding.remove')"
+                  class="absolute right-2 top-2 z-10 rounded-full border bg-background/80 p-1 text-muted-foreground opacity-0 transition-opacity hover:border-destructive/50 hover:text-destructive group-hover:opacity-100"
+                  @click.stop="removeLogo"
+                >
+                  <LucideX class="h-3.5 w-3.5" />
+                </button>
                 <input
                   ref="logoInput"
                   type="file"
@@ -142,36 +224,42 @@ definePageMeta({
                   $t("pages.settings.application.branding.favicon_description")
                 }}
               </p>
-              <div class="flex items-center gap-4">
+              <div
+                role="button"
+                tabindex="0"
+                :aria-label="
+                  $t('pages.settings.application.branding.upload_favicon')
+                "
+                class="group relative flex h-36 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-dashed border-border bg-muted/20 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-accent/30"
+                @click="$refs.faviconInput.click()"
+                @keydown.enter.prevent="$refs.faviconInput.click()"
+                @keydown.space.prevent="$refs.faviconInput.click()"
+              >
+                <img
+                  v-if="faviconPreview"
+                  :src="faviconPreview"
+                  class="max-h-24 max-w-[80%] object-contain"
+                />
+                <NuxtImg
+                  v-else
+                  src="/favicon/64.png"
+                  class="max-h-24 max-w-[80%] object-contain opacity-90"
+                />
                 <div
-                  class="w-16 h-16 rounded flex items-center justify-center overflow-hidden bg-muted shrink-0"
+                  class="absolute inset-0 flex items-center justify-center gap-2 bg-background/70 text-sm font-medium opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100"
                 >
-                  <img
-                    v-if="faviconPreview"
-                    :src="faviconPreview"
-                    class="max-w-full max-h-full object-contain"
-                  />
-                  <NuxtImg
-                    v-else
-                    src="/favicon/64.png"
-                    class="max-w-full max-h-full"
-                  />
+                  <LucideUpload class="h-4 w-4" />
+                  {{ $t("pages.settings.application.branding.upload_favicon") }}
                 </div>
-                <div class="flex gap-2 flex-wrap">
-                  <Button size="sm" @click="$refs.faviconInput.click()">
-                    {{
-                      $t("pages.settings.application.branding.upload_favicon")
-                    }}
-                  </Button>
-                  <Button
-                    v-if="faviconPreview"
-                    size="sm"
-                    variant="outline"
-                    @click="removeFavicon"
-                  >
-                    {{ $t("pages.settings.application.branding.remove") }}
-                  </Button>
-                </div>
+                <button
+                  v-if="faviconPreview"
+                  type="button"
+                  :aria-label="$t('pages.settings.application.branding.remove')"
+                  class="absolute right-2 top-2 z-10 rounded-full border bg-background/80 p-1 text-muted-foreground opacity-0 transition-opacity hover:border-destructive/50 hover:text-destructive group-hover:opacity-100"
+                  @click.stop="removeFavicon"
+                >
+                  <LucideX class="h-3.5 w-3.5" />
+                </button>
                 <input
                   ref="faviconInput"
                   type="file"
@@ -240,24 +328,55 @@ definePageMeta({
             $t('pages.settings.application.branding.theme_colors_description')
           "
         >
-          <div class="flex justify-end">
-            <div class="flex gap-2 shrink-0">
-              <Button
-                size="sm"
-                :variant="colorMode === 'light' ? 'default' : 'outline'"
-                @click="colorMode = 'light'"
+          <template #action>
+            <div class="flex items-center gap-3">
+              <span class="text-sm font-medium">
+                {{
+                  colorMode === "dark"
+                    ? $t("pages.settings.application.branding.dark_mode")
+                    : $t("pages.settings.application.branding.light_mode")
+                }}
+              </span>
+              <button
+                type="button"
+                role="switch"
+                :aria-checked="colorMode === 'dark'"
+                :aria-label="
+                  colorMode === 'dark'
+                    ? $t('pages.settings.application.branding.dark_mode')
+                    : $t('pages.settings.application.branding.light_mode')
+                "
+                class="relative inline-flex h-8 w-16 shrink-0 cursor-pointer items-center rounded-full border transition-colors duration-300"
+                :class="
+                  colorMode === 'dark'
+                    ? 'border-slate-600 bg-gradient-to-r from-slate-800 to-indigo-950'
+                    : 'border-amber-300/70 bg-gradient-to-r from-sky-300 to-amber-200'
+                "
+                @click="colorMode = colorMode === 'dark' ? 'light' : 'dark'"
               >
-                {{ $t("pages.settings.application.branding.light_mode") }}
-              </Button>
-              <Button
-                size="sm"
-                :variant="colorMode === 'dark' ? 'default' : 'outline'"
-                @click="colorMode = 'dark'"
-              >
-                {{ $t("pages.settings.application.branding.dark_mode") }}
-              </Button>
+                <LucideSun
+                  class="pointer-events-none absolute left-2 h-3.5 w-3.5 text-amber-400 transition-opacity"
+                  :class="colorMode === 'dark' ? 'opacity-70' : 'opacity-0'"
+                />
+                <LucideMoon
+                  class="pointer-events-none absolute right-2 h-3.5 w-3.5 text-slate-200 transition-opacity"
+                  :class="colorMode === 'dark' ? 'opacity-0' : 'opacity-70'"
+                />
+                <span
+                  class="pointer-events-none absolute flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-md transition-transform duration-300"
+                  :class="
+                    colorMode === 'dark' ? 'translate-x-9' : 'translate-x-1'
+                  "
+                >
+                  <LucideMoon
+                    v-if="colorMode === 'dark'"
+                    class="h-3.5 w-3.5 text-indigo-600"
+                  />
+                  <LucideSun v-else class="h-3.5 w-3.5 text-amber-500" />
+                </span>
+              </button>
             </div>
-          </div>
+          </template>
 
           <div
             v-for="section in currentColorSections"
@@ -290,28 +409,12 @@ definePageMeta({
           </div>
         </SettingsSection>
 
-        <!-- Actions -->
-        <div class="flex gap-2 flex-wrap">
-          <Button @click="saveAll" :disabled="saving">
-            {{ $t("pages.settings.application.branding.save_branding") }}
-          </Button>
-          <Button variant="destructive" @click="resetAll">
-            {{ $t("pages.settings.application.branding.reset_to_defaults") }}
-          </Button>
-          <Button variant="outline" @click="exportTheme" :disabled="exporting">
-            {{ $t("pages.settings.application.branding.export_theme") }}
-          </Button>
-          <Button variant="outline" @click="$refs.importInput.click()">
-            {{ $t("pages.settings.application.branding.import_theme") }}
-          </Button>
-          <input
-            ref="importInput"
-            type="file"
-            accept=".json"
-            class="hidden"
-            @change="importTheme"
-          />
-        </div>
+        <SettingsSaveBar
+          :dirty="brandingDirty"
+          :submitting="saving"
+          @save="saveAll"
+          @discard="discardBranding"
+        />
       </div>
     </PageTransition>
   </SettingsPage>
@@ -820,6 +923,7 @@ export default {
       colorMode: "dark" as "light" | "dark",
       saving: false,
       exporting: false,
+      baseline: null as string | null,
     };
   },
   computed: {
@@ -862,6 +966,18 @@ export default {
     currentColorSections(): ColorSection[] {
       return this.colorMode === "dark" ? darkColorSections : lightColorSections;
     },
+    brandingSnapshot(): string {
+      return JSON.stringify({
+        brandName: this.brandName,
+        borderRadius: this.borderRadius,
+        loginFooterText: this.loginFooterText,
+        loginFooterUrl: this.loginFooterUrl,
+        colors: { ...this.colorValues },
+      });
+    },
+    brandingDirty(): boolean {
+      return this.baseline !== null && this.brandingSnapshot !== this.baseline;
+    },
   },
   watch: {
     settings: {
@@ -898,6 +1014,12 @@ export default {
             this.colorValues[setting.name] = setting.value;
           }
         }
+
+        // Baseline the loaded values so the floating save bar only appears
+        // once the admin actually edits something (and clears after a save).
+        this.$nextTick(() => {
+          this.baseline = this.brandingSnapshot;
+        });
       },
     },
   },
@@ -1044,6 +1166,17 @@ export default {
     onColorChange(key: string, event: Event) {
       const hex = (event.target as HTMLInputElement).value;
       this.colorValues[key] = this.hexToHsl(hex);
+    },
+    discardBranding() {
+      if (this.baseline === null) {
+        return;
+      }
+      const snapshot = JSON.parse(this.baseline);
+      this.brandName = snapshot.brandName;
+      this.borderRadius = snapshot.borderRadius;
+      this.loginFooterText = snapshot.loginFooterText;
+      this.loginFooterUrl = snapshot.loginFooterUrl;
+      this.colorValues = { ...snapshot.colors };
     },
     async saveAll() {
       this.saving = true;

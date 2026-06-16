@@ -38,9 +38,9 @@ const otherOnlineCount = computed(() => {
 <template>
   <div class="flex flex-col h-full overflow-hidden">
     <Tabs v-model="activeTab" class="flex flex-col h-full min-h-0">
-      <div class="px-3 pt-3 pb-2 flex-shrink-0">
+      <div class="px-3 pt-3 pb-3 flex-shrink-0">
         <div
-          class="inline-flex items-center gap-[0.4rem] font-mono text-[0.62rem] font-bold tracking-[0.24em] uppercase text-muted-foreground mb-2"
+          class="flex items-center gap-[0.4rem] font-mono text-[0.62rem] font-bold tracking-[0.24em] uppercase text-muted-foreground -mx-3 px-3 pb-3 mb-3 border-b border-border"
         >
           <span class="w-2 h-[2px] bg-[hsl(var(--tac-amber))]"></span>
           {{ $t("layouts.hub.social") }}

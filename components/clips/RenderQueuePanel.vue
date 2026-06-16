@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, shallowRef } from "vue";
+import { computed, onBeforeUnmount, ref, shallowRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -30,6 +30,7 @@ import { generateMutation, generateSubscription } from "~/graphql/graphqlGen";
 import { clipRenderJobFields } from "~/graphql/clipRenderJob";
 import { Button } from "~/components/ui/button";
 import RenderQueueBatchRow from "~/components/clips/RenderQueueBatchRow.vue";
+import Pagination from "~/components/Pagination.vue";
 import BootSequence from "~/components/match/BootSequence.vue";
 import ServiceLogs from "~/components/ServiceLogs.vue";
 import SnapshotQuickView from "~/components/match/SnapshotQuickView.vue";
@@ -470,6 +471,34 @@ const recentlyDoneGroups = computed(() =>
 const canLoadMoreFinished = computed(
   () => finishedJobs.value.length >= finishedLimit.value,
 );
+
+// Paginate the finished batches client-side over the loaded window.
+// When the user reaches the last page and the server still has older
+// rows, pull the next chunk (bumps finishedLimit) transparently.
+const FINISHED_BATCHES_PER_PAGE = 10;
+const finishedPage = ref(1);
+const finishedPageCount = computed(() =>
+  Math.max(
+    1,
+    Math.ceil(recentlyDoneGroups.value.length / FINISHED_BATCHES_PER_PAGE),
+  ),
+);
+watch(finishedPageCount, (n) => {
+  if (finishedPage.value > n) finishedPage.value = n;
+});
+const pagedRecentlyDoneGroups = computed(() => {
+  const start = (finishedPage.value - 1) * FINISHED_BATCHES_PER_PAGE;
+  return recentlyDoneGroups.value.slice(
+    start,
+    start + FINISHED_BATCHES_PER_PAGE,
+  );
+});
+function goToFinishedPage(page: number) {
+  finishedPage.value = page;
+  if (page >= finishedPageCount.value && canLoadMoreFinished.value) {
+    loadMoreFinished();
+  }
+}
 
 const inFlight = computed(() =>
   jobs.value.filter((j) => !TERMINAL.has(j.status)),
@@ -1401,7 +1430,7 @@ const queueStatus = computed<{
         </div>
         <TransitionGroup tag="div" name="batch" class="relative space-y-1">
           <RenderQueueBatchRow
-            v-for="g in recentlyDoneGroups"
+            v-for="g in pagedRecentlyDoneGroups"
             :key="g.matchMapId"
             :expanded="!!finishedExpanded[g.matchMapId]"
             :title="
@@ -1681,16 +1710,13 @@ const queueStatus = computed<{
             </template>
           </RenderQueueBatchRow>
         </TransitionGroup>
-        <button
-          v-if="canLoadMoreFinished"
-          type="button"
-          class="mt-2 flex w-full items-center justify-center gap-1.5 rounded-md border border-border/40 bg-card/30 px-3 py-2 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground hover:text-foreground hover:border-border transition-colors"
-          :disabled="finishedLoading"
-          @click="loadMoreFinished"
-        >
-          <Spinner v-if="finishedLoading" class="h-3 w-3" />
-          {{ $t("clips.render_queue.load_more") }}
-        </button>
+        <Pagination
+          v-if="finishedPageCount > 1 || canLoadMoreFinished"
+          :page="finishedPage"
+          :per-page="FINISHED_BATCHES_PER_PAGE"
+          :total="recentlyDoneGroups.length"
+          @page="goToFinishedPage"
+        />
       </div>
     </TooltipProvider>
   </div>

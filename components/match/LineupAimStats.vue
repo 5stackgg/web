@@ -14,6 +14,9 @@ const { rowClass, stickyCellClass } = useCurrentUserRow();
 const allAimColumns: Array<{ label: string; tooltipKey: string }> = [
   { label: "accuracy", tooltipKey: "accuracy" },
   { label: "accuracy_spotted", tooltipKey: "accuracy_spotted" },
+  { label: "rifle_accuracy", tooltipKey: "rifle_accuracy" },
+  { label: "pistol_accuracy", tooltipKey: "pistol_accuracy" },
+  { label: "sniper_accuracy", tooltipKey: "sniper_accuracy" },
   { label: "head_accuracy", tooltipKey: "head_accuracy" },
   { label: "hs_kill_pct", tooltipKey: "hs_kill_pct" },
   { label: "spray_accuracy", tooltipKey: "spray_accuracy" },
@@ -21,6 +24,8 @@ const allAimColumns: Array<{ label: string; tooltipKey: string }> = [
   { label: "spotted_acc", tooltipKey: "spotted_acc" },
   { label: "crosshair_placement", tooltipKey: "crosshair_placement" },
   { label: "counter_strafing", tooltipKey: "counter_strafing" },
+  { label: "first_bullet_accuracy", tooltipKey: "first_bullet_accuracy" },
+  { label: "tracking", tooltipKey: "tracking" },
 ];
 
 const aimColumns = computed(() =>
@@ -123,7 +128,9 @@ const { sortKey, sortDir, toggle, sortRows } = useTableSort<string>();
                   accuracyPct(member) !== null ? accuracyPct(member) + '%' : '—'
                 "
               />
-              <StatChevron :level="tierLevel('accuracy', accuracyPct(member))" />
+              <StatChevron
+                :level="tierLevel('accuracy', accuracyPct(member))"
+              />
             </span>
           </TableCell>
           <TableCell v-if="aimVis.accuracy_spotted !== false">
@@ -139,6 +146,48 @@ const { sortKey, sortDir, toggle, sortRows } = useTableSort<string>();
                 :level="
                   tierLevel('accuracy_spotted', accuracySpottedPct(member))
                 "
+              />
+            </span>
+          </TableCell>
+          <TableCell v-if="aimVis.rifle_accuracy !== false">
+            <span class="inline-flex items-center gap-0.5">
+              <AnimatedStat
+                :value="
+                  rifleAccuracy(member) !== null
+                    ? rifleAccuracy(member) + '%'
+                    : '—'
+                "
+              />
+              <StatChevron
+                :level="tierLevel('rifle_accuracy', rifleAccuracy(member))"
+              />
+            </span>
+          </TableCell>
+          <TableCell v-if="aimVis.pistol_accuracy !== false">
+            <span class="inline-flex items-center gap-0.5">
+              <AnimatedStat
+                :value="
+                  pistolAccuracy(member) !== null
+                    ? pistolAccuracy(member) + '%'
+                    : '—'
+                "
+              />
+              <StatChevron
+                :level="tierLevel('pistol_accuracy', pistolAccuracy(member))"
+              />
+            </span>
+          </TableCell>
+          <TableCell v-if="aimVis.sniper_accuracy !== false">
+            <span class="inline-flex items-center gap-0.5">
+              <AnimatedStat
+                :value="
+                  sniperAccuracy(member) !== null
+                    ? sniperAccuracy(member) + '%'
+                    : '—'
+                "
+              />
+              <StatChevron
+                :level="tierLevel('sniper_accuracy', sniperAccuracy(member))"
               />
             </span>
           </TableCell>
@@ -182,7 +231,9 @@ const { sortKey, sortDir, toggle, sortRows } = useTableSort<string>();
               <AnimatedStat
                 :value="ttdMs(member) !== null ? ttdMs(member) + ' ms' : '—'"
               />
-              <StatChevron :level="tierLevel('time_to_damage', ttdMs(member))" />
+              <StatChevron
+                :level="tierLevel('time_to_damage', ttdMs(member))"
+              />
             </span>
           </TableCell>
           <TableCell v-if="aimVis.spotted_acc !== false">
@@ -227,6 +278,37 @@ const { sortKey, sortDir, toggle, sortRows } = useTableSort<string>();
               />
             </span>
           </TableCell>
+          <TableCell v-if="aimVis.first_bullet_accuracy !== false">
+            <span class="inline-flex items-center gap-0.5">
+              <AnimatedStat
+                :value="
+                  firstBulletAccuracy(member) !== null
+                    ? firstBulletAccuracy(member) + '%'
+                    : '—'
+                "
+              />
+              <StatChevron
+                :level="
+                  tierLevel(
+                    'first_bullet_accuracy',
+                    firstBulletAccuracy(member),
+                  )
+                "
+              />
+            </span>
+          </TableCell>
+          <TableCell v-if="aimVis.tracking !== false">
+            <span class="inline-flex items-center gap-0.5">
+              <AnimatedStat
+                :value="
+                  trackingPct(member) !== null ? trackingPct(member) + '%' : '—'
+                "
+              />
+              <StatChevron
+                :level="tierLevel('tracking', trackingPct(member))"
+              />
+            </span>
+          </TableCell>
         </TableRow>
       </TableBody>
     </template>
@@ -253,6 +335,9 @@ import {
 
 const TIER_CONFIG: Record<string, StatTierConfig> = {
   accuracy: { dir: "high", cuts: [24, 19, 15, 12] },
+  rifle_accuracy: { dir: "high", cuts: [24, 19, 15, 12] },
+  pistol_accuracy: { dir: "high", cuts: [28, 22, 17, 13] },
+  sniper_accuracy: { dir: "high", cuts: [60, 50, 40, 30] },
   accuracy_spotted: { dir: "high", cuts: [24, 19, 15, 12] },
   head_accuracy: { dir: "high", cuts: [35, 25, 15, 9] },
   spray_accuracy: { dir: "high", cuts: [50, 40, 25, 16] },
@@ -260,6 +345,8 @@ const TIER_CONFIG: Record<string, StatTierConfig> = {
   spotted_acc: { dir: "high", cuts: [40, 34, 27, 23] },
   crosshair_placement: { dir: "low", cuts: [6, 9, 13, 17] },
   counter_strafing: { dir: "high", cuts: [90, 82, 73, 68] },
+  first_bullet_accuracy: { dir: "high", cuts: [55, 45, 35, 28] },
+  tracking: { dir: "high", cuts: [65, 55, 45, 35] },
 };
 
 export default {
@@ -270,6 +357,9 @@ export default {
     sortGetters(): Record<string, (m: any) => unknown> {
       return {
         accuracy: (m: any) => this.accuracyPct(m) ?? -1,
+        rifle_accuracy: (m: any) => this.rifleAccuracy(m) ?? -1,
+        pistol_accuracy: (m: any) => this.pistolAccuracy(m) ?? -1,
+        sniper_accuracy: (m: any) => this.sniperAccuracy(m) ?? -1,
         accuracy_spotted: (m: any) => this.accuracySpottedPct(m) ?? -1,
         head_accuracy: (m: any) => this.headAccuracyPct(m) ?? -1,
         hs_kill_pct: (m: any) => this.hsKillPct(m) ?? -1,
@@ -285,6 +375,8 @@ export default {
           return v === null ? -1 : -v;
         },
         counter_strafing: (m: any) => this.counterStrafePct(m) ?? -1,
+        first_bullet_accuracy: (m: any) => this.firstBulletAccuracy(m) ?? -1,
+        tracking: (m: any) => this.trackingPct(m) ?? -1,
       };
     },
   },
@@ -304,6 +396,39 @@ export default {
       const s = this.statsFor(member);
       if (!s) return null;
       return pct(toNumber(s.hits), toNumber(s.shots_fired)) ?? 0;
+    },
+    // Pivot the per-weapon-class rows (all-maps view or per-map table) into a
+    // { rifle, pistol, sniper } lookup.
+    weaponStatsFor(member: any): Record<string, any> {
+      const arr =
+        member?.player?.weapon_stats ??
+        member?.player?.aim_weapon_stats ??
+        null;
+      const by: Record<string, any> = {};
+      if (Array.isArray(arr)) {
+        for (const r of arr) {
+          if (r?.weapon_class) by[r.weapon_class] = r;
+        }
+      }
+      return by;
+    },
+    // Per-class accuracy. null (renders "—") when the player has no row for
+    // that class or fired too few shots for the % to be meaningful.
+    classAccuracy(member: any, cls: string): number | null {
+      const r = this.weaponStatsFor(member)[cls];
+      if (!r) return null;
+      const shots = toNumber(r.shots);
+      if (shots === null || shots < 5) return null;
+      return pct(toNumber(r.hits), shots) ?? 0;
+    },
+    rifleAccuracy(member: any): number | null {
+      return this.classAccuracy(member, "rifle");
+    },
+    pistolAccuracy(member: any): number | null {
+      return this.classAccuracy(member, "pistol");
+    },
+    sniperAccuracy(member: any): number | null {
+      return this.classAccuracy(member, "sniper");
     },
     accuracySpottedPct(member: any): number | null {
       const s = this.statsFor(member);
@@ -368,6 +493,23 @@ export default {
         pct(
           toNumber(s.counter_strafed_shots),
           toNumber(s.counter_strafe_eligible_shots),
+        ) ?? 0
+      );
+    },
+    firstBulletAccuracy(member: any): number | null {
+      const s = this.statsFor(member);
+      if (!s) return null;
+      return (
+        pct(toNumber(s.first_bullet_hits), toNumber(s.first_bullet_shots)) ?? 0
+      );
+    },
+    trackingPct(member: any): number | null {
+      const s = this.statsFor(member);
+      if (!s) return null;
+      return (
+        pct(
+          toNumber(s.on_target_frames),
+          toNumber(s.total_engagement_frames),
         ) ?? 0
       );
     },

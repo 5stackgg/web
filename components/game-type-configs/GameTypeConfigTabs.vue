@@ -45,17 +45,14 @@
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-
-        <Button
-          type="button"
-          :disabled="!isActiveDirty"
-          @click="submitForm(activeConfig)"
-        >
-          <Save class="mr-2 h-4 w-4" />
-          {{ $t("common.update") }}
-        </Button>
       </div>
     </div>
+
+    <SettingsSaveBar
+      :dirty="isActiveDirty"
+      @save="submitForm(activeConfig)"
+      @discard="discardActive"
+    />
 
     <TabsContent
       v-for="config in gameTypeConfigs"
@@ -84,7 +81,8 @@ import { e_game_cfg_types_enum } from "~/generated/zeus";
 import type * as Monaco from "monaco-editor";
 import { computed, markRaw } from "vue";
 import { loadMonaco } from "~/utilities/loadMonaco";
-import { Trash, Save } from "lucide-vue-next";
+import { Trash } from "lucide-vue-next";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 
 interface GameTypeConfig {
   type: string;
@@ -101,7 +99,7 @@ const baselineMap = new Map<string, string>();
 export default {
   components: {
     Trash,
-    Save,
+    SettingsSaveBar,
   },
   props: {
     gameTypeConfigs: {
@@ -231,11 +229,18 @@ export default {
       const type = el.getAttribute("data-type");
       if (!type) return;
 
+      // Function refs re-fire on every re-render (e.g. when the unsaved-changes
+      // bar appears as the editor becomes dirty). If we already have an editor
+      // mounted on this exact element, do nothing — recreating it would blow
+      // away the live editor and steal focus mid-keystroke.
+      if (editorsMap.has(type) && this.pendingContainers.get(type) === el) {
+        return;
+      }
+
       // Store the container reference
       this.pendingContainers.set(type, el);
 
-      // Always dispose old editor and create new one when ref fires
-      // because the container might be a newly mounted element
+      // Dispose any editor bound to a stale container before recreating.
       if (editorsMap.has(type)) {
         const oldEditor = editorsMap.get(type)!;
         oldEditor.dispose();
@@ -289,6 +294,17 @@ export default {
     },
     getEditorValue(type: string): string {
       return editorsMap.get(type)?.getValue() || "";
+    },
+    discardActive() {
+      if (!this.activeTab) {
+        return;
+      }
+      const editor = editorsMap.get(this.activeTab);
+      const baseline = baselineMap.get(this.activeTab);
+      if (editor && baseline !== undefined) {
+        editor.setValue(baseline);
+      }
+      this.dirtyTypes.delete(this.activeTab);
     },
     async submitForm(config: GameTypeConfig) {
       const cfgValue = this.getEditorValue(config.type);

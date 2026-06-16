@@ -732,6 +732,7 @@ export default {
                     download_url: true,
                     metadata_parsed_at: true,
                     total_ticks: true,
+                    geometry_validated: true,
                     created_at: true,
                   },
                   rounds: [

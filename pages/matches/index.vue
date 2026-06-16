@@ -95,7 +95,7 @@ function optionRowClass(active: boolean) {
         <NuxtLink
           v-if="canCreateMatch"
           to="/matches/create"
-          :class="tacticalCtaButtonClasses"
+          :class="[tacticalCtaButtonClasses, 'max-md:px-2.5 max-md:py-2']"
           :title="$t('pages.matches.create')"
         >
           <PlusCircle class="w-4 h-4" />

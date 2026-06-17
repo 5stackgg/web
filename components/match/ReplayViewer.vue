@@ -2118,6 +2118,9 @@ const playbarDockEl = ref<HTMLElement | null>(null);
 // Map square side, fit to the smaller of available width/height so the
 // whole map stays within the window bounds (no cropping).
 const radarMaxPx = ref(560);
+// On touch, how far to shift the centered square UP so it clears the floating
+// transport bar (its center moves to the middle of the room above the bar).
+const mapTopShift = ref(0);
 
 // Floating scoreboard: shown by default, toggleable. When visible it
 // reserves horizontal room on the right so the map shrinks instead of
@@ -2450,21 +2453,41 @@ function recomputeRadarSize() {
     window.innerHeight - rootRect.top - SAFETY - bottomChrome - dockH;
   const availableW = rootRect.width - scoreboardReserve.value;
   // Desktop (windowed or fullscreen): fit the whole square map inside the stage
-  // (letterbox the short side) so nothing is cropped. Touch: fill the FULL
-  // WIDTH instead, blowing the map up to the screen edges. The radar stays
-  // square either way (world→radar is a fixed 1:1 projection onto a 1024²
-  // image, so a non-square box would misalign the dots); users can pinch out
-  // to `minZoom2d` to bring the whole map back into view.
-  const fillWidth = mobileChrome.value;
-  radarMaxPx.value = Math.floor(
-    Math.max(280, fillWidth ? availableW : Math.min(availableH, availableW)),
-  );
-  // Smallest zoom that still fits the whole square into the stage on both axes,
-  // so a fill-width base can always be zoomed back out to the full map.
-  minZoom2d.value = Math.min(
-    1,
-    Math.min(rootRect.width, availableH) / radarMaxPx.value,
-  );
+  // (letterbox the short side) so nothing is cropped. Touch: scale to the room
+  // BETWEEN the top score HUD and the bottom transport bar — both float over
+  // the map — then center the square in that band so it doesn't sit behind
+  // either. The radar stays square (world→radar is a fixed 1:1 projection onto
+  // a 1024² image, so a non-square box would misalign the dots); pinch out to
+  // `minZoom2d` to bring the whole map back.
+  if (mobileChrome.value) {
+    const hud = root.querySelector(".bp-hud") as HTMLElement | null;
+    const bar = root.querySelector(".bp-bar") as HTMLElement | null;
+    const topInset = hud
+      ? hud.getBoundingClientRect().bottom - rootRect.top
+      : 0;
+    const bottomInset = bar
+      ? rootRect.bottom - bar.getBoundingClientRect().top
+      : 0;
+    const MARGIN = 8;
+    const band = Math.max(0, rootRect.height - topInset - bottomInset);
+    radarMaxPx.value = Math.floor(Math.max(280, band - MARGIN * 2));
+    // Center the square in the band: shift its 50% center by half the
+    // difference of the two insets (positive = up when the bar is taller).
+    mapTopShift.value = (bottomInset - topInset) / 2;
+    minZoom2d.value = Math.min(
+      1,
+      Math.min(rootRect.width, band) / radarMaxPx.value,
+    );
+  } else {
+    mapTopShift.value = 0;
+    radarMaxPx.value = Math.floor(
+      Math.max(280, Math.min(availableH, availableW)),
+    );
+    minZoom2d.value = Math.min(
+      1,
+      Math.min(rootRect.width, availableH) / radarMaxPx.value,
+    );
+  }
   if (zoom2d.value < minZoom2d.value) zoom2d.value = minZoom2d.value;
   clampPan2d();
 }
@@ -3550,7 +3573,7 @@ watch(overlayMode, (on) => {
            the bottom by this flex-1 stage. -->
       <div
         ref="stage2dEl"
-        class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 z-0 overflow-hidden transition-[width,height,left] duration-300 ease-out touch-none"
+        class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 z-0 overflow-visible transition-[width,height,left] duration-300 ease-out touch-none"
         :class="
           viewMode === '2d' ? 'cursor-grab active:cursor-grabbing' : ''
         "
@@ -3558,6 +3581,7 @@ watch(overlayMode, (on) => {
           width: radarMaxPx + 'px',
           height: radarMaxPx + 'px',
           left: `calc(50% - ${scoreboardReserve / 2}px)`,
+          top: `calc(50% - ${mapTopShift}px)`,
         }"
         @wheel.prevent="onWheel2d"
         @pointerdown="onPan2dDown"

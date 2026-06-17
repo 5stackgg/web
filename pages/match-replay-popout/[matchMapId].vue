@@ -25,7 +25,9 @@ const matchMapId = computed(() => String(route.params.matchMapId));
 
 <template>
   <TooltipProvider>
-    <div class="flex h-screen w-screen flex-col overflow-hidden bg-background">
+    <div
+      class="flex h-[100dvh] w-screen flex-col overflow-hidden bg-background"
+    >
       <ReplayPopoutInner :match-map-id="matchMapId" />
     </div>
   </TooltipProvider>

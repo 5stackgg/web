@@ -10,6 +10,9 @@ const props = withDefaults(
     stat: string;
     label?: string;
     side?: string;
+    // Opt a column header into the touch info-icon treatment even when it
+    // isn't a SortableTableHead (which provides this implicitly).
+    header?: boolean;
   }>(),
   { side: "top" },
 );
@@ -36,13 +39,15 @@ const isTouch = ref(
     : false,
 );
 const headerTouch = computed(
-  () => hasEntry.value && isTouch.value && !!inSortableHeader?.value,
+  () =>
+    hasEntry.value &&
+    isTouch.value &&
+    (props.header || !!inSortableHeader?.value),
 );
 </script>
 
 <template>
   <span v-if="headerTouch" class="inline-flex items-center gap-1">
-    <slot>{{ text }}</slot>
     <FiveStackToolTip as-child :side="side" :delay-duration="120">
       <template #trigger>
         <button
@@ -64,6 +69,7 @@ const headerTouch = computed(
         </div>
       </div>
     </FiveStackToolTip>
+    <slot>{{ text }}</slot>
   </span>
 
   <FiveStackToolTip

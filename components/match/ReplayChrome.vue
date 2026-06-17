@@ -203,6 +203,35 @@ function onScrubUp() {
   window.removeEventListener("pointerup", onScrubUp);
   window.removeEventListener("pointercancel", onScrubUp);
 }
+
+// Same deal for the 3D ROOF slider in the mobile overflow menu — drive it from
+// pointer position so it can be dragged on touch, not just tapped.
+let ceilScrubbing = false;
+let ceilScrubEl: HTMLElement | null = null;
+function ceilFromEvent(e: PointerEvent) {
+  const rect = ceilScrubEl?.getBoundingClientRect();
+  if (!rect || rect.width === 0) return;
+  const frac = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
+  props.onCeiling?.(Math.round(frac * 100));
+}
+function onCeilScrubDown(e: PointerEvent) {
+  ceilScrubEl = e.currentTarget as HTMLElement;
+  ceilScrubbing = true;
+  ceilFromEvent(e);
+  window.addEventListener("pointermove", onCeilScrubMove);
+  window.addEventListener("pointerup", onCeilScrubUp);
+  window.addEventListener("pointercancel", onCeilScrubUp);
+}
+function onCeilScrubMove(e: PointerEvent) {
+  if (ceilScrubbing) ceilFromEvent(e);
+}
+function onCeilScrubUp() {
+  ceilScrubbing = false;
+  ceilScrubEl = null;
+  window.removeEventListener("pointermove", onCeilScrubMove);
+  window.removeEventListener("pointerup", onCeilScrubUp);
+  window.removeEventListener("pointercancel", onCeilScrubUp);
+}
 const utilClusters = computed(() => {
   const sorted = [...(props.utilMarkers || [])].sort((a, b) => a.frac - b.frac);
   const groups: Array<{ frac: number; items: typeof sorted }> = [];
@@ -266,7 +295,7 @@ const utilClusters = computed(() => {
           </div>
           <span class="bp-pipe">|</span>
           <div class="bp-cam">
-            <template v-if="show3d">
+            <template v-if="show3d && !mobile">
               <Tooltip
                 ><TooltipTrigger as-child
                   ><button
@@ -326,8 +355,9 @@ const utilClusters = computed(() => {
                 }}</TooltipContent></Tooltip
               >
             </template>
-            <!-- PLAYS + HEAT work in both 2D and 3D -->
-            <Tooltip
+            <!-- PLAYS + HEAT work in both 2D and 3D. On mobile they collapse
+                 into a 3-dot overflow menu (below) so the row stays narrow. -->
+            <Tooltip v-if="!mobile"
               ><TooltipTrigger as-child
                 ><button
                   :class="{ on: showPbp }"
@@ -339,7 +369,7 @@ const utilClusters = computed(() => {
                 $t("match.replay.chrome.play_by_play_tip")
               }}</TooltipContent></Tooltip
             >
-            <Tooltip v-if="!overlay"
+            <Tooltip v-if="!mobile && !overlay"
               ><TooltipTrigger as-child
                 ><button
                   :class="{ on: heatOn }"
@@ -351,6 +381,79 @@ const utilClusters = computed(() => {
                 $t("match.replay.chrome.utility_heatmap_tip")
               }}</TooltipContent></Tooltip
             >
+
+            <!-- Mobile overflow menu: focus-within keeps it open while tapping
+                 items (mirrors the .bp-help pattern); tap outside to dismiss. -->
+            <div
+              v-if="mobile"
+              class="bp-more"
+              tabindex="0"
+              role="button"
+              :aria-label="$t('match.replay.chrome.more')"
+            >
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <circle cx="5" cy="12" r="2" />
+                <circle cx="12" cy="12" r="2" />
+                <circle cx="19" cy="12" r="2" />
+              </svg>
+              <div class="bp-more-pop">
+                <!-- 3D camera dock collapses in here too on mobile -->
+                <template v-if="show3d">
+                  <button
+                    :class="{ on: camMode === 'orbit' }"
+                    @click="onMode && onMode('orbit')"
+                  >
+                    {{ $t("match.replay.chrome.cam_orbit") }}
+                  </button>
+                  <button
+                    :class="{ on: camMode === 'top' }"
+                    @click="onMode && onMode('top')"
+                  >
+                    {{ $t("match.replay.chrome.cam_top") }}
+                  </button>
+                  <button
+                    v-if="followName"
+                    :class="{ on: camMode === 'follow' }"
+                    @click="onMode && onMode('follow')"
+                  >
+                    {{ $t("match.replay.chrome.cam_chase") }}
+                  </button>
+                  <label
+                    class="bp-ceil bp-more-ceil"
+                    :class="{ on: (ceiling ?? 50) < 100 }"
+                  >
+                    <span>{{ $t("match.replay.chrome.roof") }}</span>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      step="1"
+                      :value="ceiling ?? 50"
+                      @pointerdown="onCeilScrubDown"
+                      @input="
+                        onCeiling &&
+                        onCeiling(
+                          Number(($event.target as HTMLInputElement).value),
+                        )
+                      "
+                    />
+                  </label>
+                </template>
+                <button
+                  :class="{ on: showPbp }"
+                  @click="onTogglePbp && onTogglePbp()"
+                >
+                  {{ $t("match.replay.chrome.play_by_play") }}
+                </button>
+                <button
+                  v-if="!overlay"
+                  :class="{ on: heatOn }"
+                  @click="onToggleHeat && onToggleHeat()"
+                >
+                  {{ $t("match.replay.chrome.utility_heatmap") }}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
         <div v-if="showPbp !== false" class="bp-pbp">
@@ -1488,6 +1591,82 @@ const utilClusters = computed(() => {
   gap: 5px;
   flex-wrap: nowrap;
   width: max-content;
+  position: relative;
+  z-index: 50;
+}
+/* Mobile overflow ("3-dot") menu for PLAYS + HEAT */
+.bp-more {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 7px;
+  color: #9fb0c0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
+  cursor: pointer;
+  outline: none;
+}
+.bp-more:hover,
+.bp-more:focus,
+.bp-more:focus-within {
+  border-color: var(--accent);
+  color: #f0f6fc;
+}
+.bp-more-pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: max-content;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 5px;
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.12s;
+  z-index: 60;
+}
+.bp-more:hover .bp-more-pop,
+.bp-more:focus .bp-more-pop,
+.bp-more:focus-within .bp-more-pop {
+  opacity: 1;
+  visibility: visible;
+}
+.bp-more-pop button {
+  flex: 0 0 auto;
+  width: 100%;
+  text-align: left;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+  color: #9fb0c0;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.bp-more-pop button.on {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.bp-more-pop .bp-more-ceil {
+  width: 100%;
+  justify-content: space-between;
+  padding: 6px 10px;
+}
+.bp-more-pop .bp-more-ceil input[type="range"] {
+  width: 96px;
+  touch-action: none;
 }
 .bp-pipe {
   color: var(--line);
@@ -1841,20 +2020,6 @@ const utilClusters = computed(() => {
 .bp-chrome.is-mobile .bp-transport .play {
   width: 32px;
   height: 32px;
-}
-/* Keep the controls row inside its column so it can't overflow under the
-   centered round/score HUD — it scrolls horizontally instead. */
-.bp-chrome.is-mobile .bp-controls {
-  width: 100%;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.bp-chrome.is-mobile .bp-controls::-webkit-scrollbar {
-  display: none;
-}
-.bp-chrome.is-mobile .bp-controls > * {
-  flex-shrink: 0;
 }
 .bp-chrome.is-mobile .seek-wrap .seek::-webkit-slider-thumb {
   height: 34px;

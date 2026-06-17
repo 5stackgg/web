@@ -4544,6 +4544,7 @@
         "roof_tip": "Roof cut — middle is auto (roofs off, action visible). Up = reveal more, down = cut more, max = full map.",
         "play_by_play": "PLAY BY PLAY",
         "play_by_play_tip": "Show the round's play-by-play event log",
+        "more": "More options",
         "utility_heatmap": "UTILITY HEATMAP",
         "utility_heatmap_tip": "Utility landing heatmap for the round",
         "pbp_header": "PLAY BY PLAY · RD {round}",

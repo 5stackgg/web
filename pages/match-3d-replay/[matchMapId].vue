@@ -13,7 +13,7 @@ const matchMapId = computed(() => String(route.params.matchMapId));
 </script>
 
 <template>
-  <div class="fixed inset-0 bg-[#08101f]">
+  <div class="fixed inset-0 h-[100dvh] bg-[#08101f]">
     <ReplayPopoutInner :match-map-id="matchMapId" initial-view="3d" />
   </div>
 </template>

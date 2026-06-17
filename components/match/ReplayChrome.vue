@@ -4,6 +4,7 @@
 // HUD / kill feed / play-by-play / scoreboard / transport over whatever map
 // the host (ReplayViewer) shows underneath. All data + actions come via props.
 import { Skull } from "lucide-vue-next";
+import AnimatedStat from "~/components/AnimatedStat.vue";
 import { weaponIconPath } from "~/utilities/weaponIcon";
 import Kbd from "~/components/ui/kbd/Kbd.vue";
 import KbdGroup from "~/components/ui/kbd/KbdGroup.vue";
@@ -13,6 +14,12 @@ import {
   TooltipContent,
   TooltipProvider,
 } from "~/components/ui/tooltip";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "~/components/ui/dropdown-menu";
 
 type Row = {
   sid: string;
@@ -174,7 +181,58 @@ const SPEEDS = [0.5, 1, 2, 4, 8];
 
 // Cluster utility throws that land at (nearly) the same point on the timeline
 // so several thrown on the same second can each be fanned out + clicked.
-import { computed, ref } from "vue";
+import { computed, ref, watch, nextTick, onMounted, onBeforeUnmount } from "vue";
+
+// Measure the live transport-bar height (round selector + seek + safe-area) so
+// the floating scoreboard can cap its height to JUST above it and scroll the
+// rest, instead of running underneath it.
+const barEl = ref<HTMLElement | null>(null);
+const barHeight = ref(64);
+let barRO: ResizeObserver | null = null;
+onMounted(() => {
+  if (!barEl.value || typeof ResizeObserver === "undefined") return;
+  barRO = new ResizeObserver(() => {
+    barHeight.value = barEl.value?.offsetHeight ?? 0;
+  });
+  barRO.observe(barEl.value);
+  barHeight.value = barEl.value.offsetHeight;
+});
+onBeforeUnmount(() => barRO?.disconnect());
+
+// Smoothly grow/shrink the HUD when the bomb plants (round clock -> C4 row is a
+// little wider). Auto width can't be transitioned, so FLIP it: freeze the old
+// width, then animate to the new one. Keyed off the planted *boolean* so the
+// per-second countdown digits don't re-trigger it.
+const hudEl = ref<HTMLElement | null>(null);
+watch(
+  () => !!props.hud?.bomb,
+  () => {
+    const el = hudEl.value;
+    if (!el) return;
+    const startW = el.offsetWidth;
+    void nextTick(() => {
+      const endW = el.offsetWidth;
+      if (startW === endW) return;
+      el.style.transition = "none";
+      el.style.width = `${startW}px`;
+      void el.offsetWidth; // reflow
+      el.style.transition = "width 0.22s ease";
+      el.style.width = `${endW}px`;
+      const done = (e: TransitionEvent) => {
+        if (e.propertyName !== "width") return;
+        el.style.width = "";
+        el.style.transition = "";
+        el.removeEventListener("transitionend", done);
+      };
+      el.addEventListener("transitionend", done);
+    });
+  },
+);
+
+const scorePanelStyle = computed(() => {
+  const top = props.mobile ? 8 : 14;
+  return { maxHeight: `calc(100% - ${top + barHeight.value + 12}px)` };
+});
 
 // Custom pointer scrubber for the seek bar. Native <input type=range> on iOS
 // only drags from the (4px) thumb and otherwise lets the touch scroll the page,
@@ -261,18 +319,25 @@ const utilClusters = computed(() => {
   <TooltipProvider :delay-duration="250">
     <div class="bp-chrome" :class="{ 'is-mobile': mobile }">
       <!-- HUD -->
-      <div class="bp-hud">
+      <div ref="hudEl" class="bp-hud">
         <span class="bp-score"
-          ><span class="ct">{{ hud.ct }}</span
-          ><span class="sep">:</span><span class="t">{{ hud.t }}</span></span
+          ><span class="ct"><AnimatedStat :value="hud.ct" /></span
+          ><span class="sep">:</span
+          ><span class="t"><AnimatedStat :value="hud.t" /></span></span
         >
         <span class="bp-mid"
-          ><b>RD {{ hud.round }}</b
+          ><b>RD&nbsp;<AnimatedStat :value="hud.round" /></b
           ><span class="bp-dot">·</span
-          ><span v-if="hud.bomb" class="bp-clock" :class="hud.bombClass">{{
-            hud.bomb
-          }}</span
-          ><span v-else class="bp-clock">{{ hud.clock }}</span></span
+          ><span
+            v-if="hud.bomb"
+            class="bp-clock bp-clock--bomb"
+            :class="hud.bombClass"
+            ><img src="/img/equipment/c4.svg" class="bp-c4" alt="C4" /><AnimatedStat
+              :value="hud.bomb"
+            /></span
+          ><span v-else class="bp-clock"
+            ><AnimatedStat :value="hud.clock"
+          /></span></span
         >
       </div>
 
@@ -394,45 +459,61 @@ const utilClusters = computed(() => {
               }}</TooltipContent></Tooltip
             >
 
-            <!-- Mobile overflow menu: focus-within keeps it open while tapping
-                 items (mirrors the .bp-help pattern); tap outside to dismiss. -->
-            <div
-              v-if="mobile"
-              class="bp-more"
-              tabindex="0"
-              role="button"
-              :aria-label="$t('match.replay.chrome.more')"
-            >
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                <circle cx="5" cy="12" r="2" />
-                <circle cx="12" cy="12" r="2" />
-                <circle cx="19" cy="12" r="2" />
-              </svg>
-              <div class="bp-more-pop">
-                <!-- 3D camera dock collapses in here too on mobile -->
+            <!-- Mobile overflow menu — shadcn DropdownMenu handles open/close,
+                 tap-trigger-to-close, outside-click, escape, focus + the
+                 open/close animation for us. Toggle items use checkbox items
+                 (checkmark = active) and @select.prevent so the menu stays open
+                 while you flip things. -->
+            <DropdownMenu v-if="mobile">
+              <DropdownMenuTrigger as-child>
+                <button
+                  type="button"
+                  class="bp-more"
+                  :aria-label="$t('match.replay.chrome.more')"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                  >
+                    <circle cx="5" cy="12" r="2" />
+                    <circle cx="12" cy="12" r="2" />
+                    <circle cx="19" cy="12" r="2" />
+                  </svg>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" :side-offset="6" class="bp-dd">
                 <template v-if="show3d">
-                  <button
-                    :class="{ on: camMode === 'orbit' }"
-                    @click="onMode && onMode('orbit')"
+                  <DropdownMenuItem
+                    class="bp-dd-item"
+                    :class="{ 'bp-dd-on': camMode === 'orbit' }"
+                    @select.prevent="onMode && onMode('orbit')"
                   >
                     {{ $t("match.replay.chrome.cam_orbit") }}
-                  </button>
-                  <button
-                    :class="{ on: camMode === 'top' }"
-                    @click="onMode && onMode('top')"
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    class="bp-dd-item"
+                    :class="{ 'bp-dd-on': camMode === 'top' }"
+                    @select.prevent="onMode && onMode('top')"
                   >
                     {{ $t("match.replay.chrome.cam_top") }}
-                  </button>
-                  <button
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
                     v-if="followName"
-                    :class="{ on: camMode === 'follow' }"
-                    @click="onMode && onMode('follow')"
+                    class="bp-dd-item"
+                    :class="{ 'bp-dd-on': camMode === 'follow' }"
+                    @select.prevent="onMode && onMode('follow')"
                   >
                     {{ $t("match.replay.chrome.cam_chase") }}
-                  </button>
-                  <label
-                    class="bp-ceil bp-more-ceil"
-                    :class="{ on: (ceiling ?? 50) < 100 }"
+                  </DropdownMenuItem>
+                  <!-- ROOF slider: let the slider own pointer + keys instead of
+                       the menu's navigation/close. -->
+                  <div
+                    class="bp-dd-item bp-dd-roof"
+                    :class="{ 'bp-dd-on': (ceiling ?? 50) < 100 }"
+                    @pointerdown.stop
+                    @keydown.stop
                   >
                     <span>{{ $t("match.replay.chrome.roof") }}</span>
                     <input
@@ -449,23 +530,25 @@ const utilClusters = computed(() => {
                         )
                       "
                     />
-                  </label>
+                  </div>
                 </template>
-                <button
-                  :class="{ on: showPbp }"
-                  @click="onTogglePbp && onTogglePbp()"
+                <DropdownMenuItem
+                  class="bp-dd-item"
+                  :class="{ 'bp-dd-on': showPbp }"
+                  @select.prevent="onTogglePbp && onTogglePbp()"
                 >
                   {{ $t("match.replay.chrome.play_by_play") }}
-                </button>
-                <button
+                </DropdownMenuItem>
+                <DropdownMenuItem
                   v-if="!overlay"
-                  :class="{ on: heatOn }"
-                  @click="onToggleHeat && onToggleHeat()"
+                  class="bp-dd-item"
+                  :class="{ 'bp-dd-on': heatOn }"
+                  @select.prevent="onToggleHeat && onToggleHeat()"
                 >
                   {{ $t("match.replay.chrome.utility_heatmap") }}
-                </button>
-              </div>
-            </div>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
         <div v-if="showPbp !== false" class="bp-pbp">
@@ -525,7 +608,12 @@ const utilClusters = computed(() => {
       </div>
 
       <!-- scoreboard -->
-      <div v-show="showScoreboard !== false" class="bp-score-panel">
+      <Transition name="bp-score">
+        <div
+          v-show="showScoreboard !== false"
+          class="bp-score-panel"
+          :style="scorePanelStyle"
+        >
         <div
           class="bp-team"
           v-for="(team, ti) in [
@@ -541,9 +629,9 @@ const utilClusters = computed(() => {
             <span class="th-alive">{{
               $t("match.replay.chrome.alive_count", { count: team.alive })
             }}</span>
-            <span class="th-score" :style="{ color: sideHex(team.side) }">{{
-              team.score
-            }}</span>
+            <span class="th-score" :style="{ color: sideHex(team.side) }"
+              ><AnimatedStat :value="team.score"
+            /></span>
           </div>
           <div
             v-for="r in team.rows"
@@ -594,8 +682,11 @@ const utilClusters = computed(() => {
                 <circle cx="12" cy="12" r="3" />
               </svg>
               <span class="nm" :class="{ alive: r.alive }">{{ r.name }}</span>
-              <span class="kda">{{ r.k }}/{{ r.d }}/{{ r.a }}</span>
-              <span class="dmg">{{ r.dmg }}</span>
+              <span class="kda"
+                ><AnimatedStat :value="r.k" />/<AnimatedStat :value="r.d" />/<AnimatedStat
+                  :value="r.a"
+              /></span>
+              <span class="dmg"><AnimatedStat :value="r.dmg" /></span>
             </div>
             <div class="prow-bars">
               <div class="hpw">
@@ -669,7 +760,8 @@ const utilClusters = computed(() => {
             </div>
           </div>
         </div>
-      </div>
+        </div>
+      </Transition>
 
       <!-- scoreboard-side toggles (left of the CT scoreboard). The
            show/hide-scoreboard button stays mounted even when the board is
@@ -768,7 +860,7 @@ const utilClusters = computed(() => {
       </div>
 
       <!-- transport -->
-      <div class="bp-bar">
+      <div ref="barEl" class="bp-bar">
         <div class="bp-toprow">
           <!-- util-summary toggle is pinned on the left; only the round
                numbers scroll past it -->
@@ -1019,7 +1111,9 @@ const utilClusters = computed(() => {
               :style="{ left: m.frac * 100 + '%' }"
             ></span>
           </div>
-          <span v-if="timeLabel" class="tl">{{ timeLabel }}</span>
+          <span v-if="timeLabel" class="tl"
+            ><AnimatedStat :value="timeLabel"
+          /></span>
           <Tooltip v-if="onFullscreen && !mobile">
             <TooltipTrigger as-child>
               <button class="fs" @click="onFullscreen && onFullscreen()">
@@ -1177,6 +1271,10 @@ const utilClusters = computed(() => {
   border-radius: 6px;
   padding: 5px 18px 6px;
   backdrop-filter: blur(8px);
+  /* clip content cleanly while the width FLIP-animates on bomb plant; nowrap so
+     the rows never reflow to a second line mid-animation */
+  overflow: hidden;
+  white-space: nowrap;
 }
 .bp-score {
   font-size: 23px;
@@ -1197,7 +1295,7 @@ const utilClusters = computed(() => {
 }
 .bp-mid {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 6px;
   line-height: 1;
 }
@@ -1213,10 +1311,24 @@ const utilClusters = computed(() => {
   font-size: 13px;
   font-variant-numeric: tabular-nums;
   color: #e3edf6;
+  /* fixed height so swapping the round clock for the taller C4 row doesn't
+     change the HUD height (width is animated separately, see hud FLIP) */
+  display: inline-flex;
+  align-items: center;
+  height: 15px;
 }
 .bp-clock.bomb {
   color: #ff6452;
   font-weight: 700;
+}
+.bp-clock--bomb {
+  gap: 4px;
+}
+.bp-clock--bomb .bp-c4 {
+  height: 13px;
+  width: auto;
+  /* tint the (monochrome) C4 svg to the same red as the countdown */
+  filter: invert(40%) sepia(90%) saturate(2000%) hue-rotate(330deg);
 }
 .bp-clock.ct {
   color: var(--ct);
@@ -1400,6 +1512,32 @@ const utilClusters = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 9px;
+  /* Cap the height and scroll — the full two-team board is taller than a lot of
+     screens. The max-height is set inline from the live transport-bar height so
+     it stops just above the round selector / seek bar. */
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  overscroll-behavior: contain;
+}
+.bp-score-panel::-webkit-scrollbar {
+  width: 6px;
+}
+.bp-score-panel::-webkit-scrollbar-thumb {
+  background: rgba(120, 140, 165, 0.35);
+  border-radius: 3px;
+}
+/* scoreboard show/hide — slide in from the right + fade */
+.bp-score-enter-active,
+.bp-score-leave-active {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+.bp-score-enter-from,
+.bp-score-leave-to {
+  opacity: 0;
+  transform: translateX(14px);
 }
 .bp-team {
   background: var(--panel);
@@ -1608,8 +1746,8 @@ const utilClusters = computed(() => {
   z-index: 50;
 }
 /* Mobile overflow ("3-dot") menu for PLAYS + HEAT */
+/* 3-dot trigger button (the dropdown panel itself is the shadcn DropdownMenu) */
 .bp-more {
-  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1623,74 +1761,9 @@ const utilClusters = computed(() => {
 }
 .bp-more:hover,
 .bp-more:focus,
-.bp-more:focus-within {
+.bp-more[data-state="open"] {
   border-color: var(--accent);
   color: #f0f6fc;
-}
-.bp-more-pop {
-  position: absolute;
-  top: calc(100% + 6px);
-  left: 0;
-  width: max-content;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 5px;
-  backdrop-filter: blur(8px);
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-4px) scale(0.97);
-  transform-origin: top left;
-  /* delay hiding `visibility` until the fade/slide finishes on close */
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease,
-    visibility 0s linear 0.15s;
-  z-index: 60;
-}
-.bp-more:hover .bp-more-pop,
-.bp-more:focus .bp-more-pop,
-.bp-more:focus-within .bp-more-pop {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0) scale(1);
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease,
-    visibility 0s;
-}
-.bp-more-pop button {
-  flex: 0 0 auto;
-  width: 100%;
-  text-align: left;
-  white-space: nowrap;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--line);
-  color: #9fb0c0;
-  font-family: inherit;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  padding: 6px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.bp-more-pop button.on {
-  background: color-mix(in srgb, var(--accent) 18%, transparent);
-  border-color: var(--accent);
-  color: #fff;
-}
-.bp-more-pop .bp-more-ceil {
-  width: 100%;
-  justify-content: space-between;
-  padding: 6px 10px;
-}
-.bp-more-pop .bp-more-ceil input[type="range"] {
-  width: 96px;
-  touch-action: none;
 }
 .bp-pipe {
   color: var(--line);
@@ -1856,22 +1929,15 @@ const utilClusters = computed(() => {
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  /* Soft-fade both edges so round numbers dissolve into the pinned util button
-     (left) and the util filters (right) instead of hard-overlapping them. */
+  /* Soft-fade only the RIGHT edge so round numbers dissolve into the util
+     filters instead of hard-overlapping them; the left butts cleanly against
+     the pinned util-summary button. */
   -webkit-mask-image: linear-gradient(
     to right,
-    transparent 0,
-    #000 12px,
-    #000 calc(100% - 12px),
+    #000 calc(100% - 14px),
     transparent 100%
   );
-  mask-image: linear-gradient(
-    to right,
-    transparent 0,
-    #000 12px,
-    #000 calc(100% - 12px),
-    transparent 100%
-  );
+  mask-image: linear-gradient(to right, #000 calc(100% - 14px), transparent 100%);
 }
 .bp-rounds::-webkit-scrollbar {
   display: none;
@@ -2090,8 +2156,7 @@ const utilClusters = computed(() => {
 /* Touch tap targets — bump a little for phones; tablets (taller short edge)
    get noticeably bigger since they have the room. */
 .bp-chrome.is-mobile .bp-viewtoggle button,
-.bp-chrome.is-mobile .bp-more,
-.bp-chrome.is-mobile .bp-more-pop button {
+.bp-chrome.is-mobile .bp-more {
   padding: 7px 13px;
   font-size: 12px;
 }
@@ -2110,8 +2175,7 @@ const utilClusters = computed(() => {
 }
 @media (pointer: coarse) and (min-height: 600px) {
   .bp-chrome.is-mobile .bp-viewtoggle button,
-  .bp-chrome.is-mobile .bp-more,
-  .bp-chrome.is-mobile .bp-more-pop button {
+  .bp-chrome.is-mobile .bp-more {
     padding: 10px 18px;
     font-size: 14px;
   }
@@ -2134,6 +2198,11 @@ const utilClusters = computed(() => {
   .bp-chrome.is-mobile .bp-filters .fbtn img {
     height: 23px;
     max-width: 23px;
+  }
+  /* tablets keep the left column (play-by-play) — give it room so the rows
+     aren't clipped the way they are at the phone width. */
+  .bp-chrome.is-mobile .bp-left {
+    width: 300px;
   }
 }
 .bp-toprow .rt.on {
@@ -2211,8 +2280,8 @@ const utilClusters = computed(() => {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 3px;
-  padding: 4px 8px;
+  gap: 2px;
+  padding: 3px 8px;
   border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
   border-radius: 4px;
   flex-shrink: 0;
@@ -2230,6 +2299,7 @@ const utilClusters = computed(() => {
 }
 .bp-buywin input {
   width: 80px;
+  height: 14px;
   accent-color: var(--accent);
 }
 .bp-buywin .val {
@@ -2243,7 +2313,7 @@ const utilClusters = computed(() => {
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  padding: 2px 8px;
+  padding: 1px 8px;
   border-radius: 3px;
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.05);
@@ -2416,8 +2486,12 @@ const utilClusters = computed(() => {
 }
 .seek-wrap .mk.mk-bomb {
   background: #ff5a4d;
-  width: 3px;
-  box-shadow: 0 0 5px #ff5a4d;
+  width: 3.5px;
+  top: 2px;
+  bottom: 2px;
+  opacity: 1;
+  z-index: 5;
+  box-shadow: 0 0 7px #ff5a4d;
 }
 .bp-transport .tl {
   font-size: 14px;
@@ -2495,5 +2569,67 @@ const utilClusters = computed(() => {
   font-size: 9px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
+}
+</style>
+
+<!-- Global (NOT scoped): the 3-dot DropdownMenu is portalled to <body>, so
+     scoped styles can't reach it. Restyle it to match the broadcast chrome's
+     dark bordered-button look (the previous custom-menu style). -->
+<style>
+.bp-dd {
+  background: rgba(12, 15, 20, 0.95) !important;
+  border: 1px solid rgba(120, 140, 165, 0.2) !important;
+  border-radius: 6px !important;
+  padding: 5px !important;
+  backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 9.5rem;
+  font-family: "Oxanium", system-ui, sans-serif;
+  color: #d6e0ea;
+}
+.bp-dd-item {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(120, 140, 165, 0.2);
+  color: #9fb0c0;
+  font-size: 11px !important;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 6px 10px !important;
+  border-radius: 4px !important;
+  cursor: pointer;
+}
+.bp-dd-item:hover,
+.bp-dd-item:focus,
+.bp-dd-item[data-highlighted] {
+  border-color: #57cdff;
+  color: #f0f6fc !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  outline: none;
+}
+.bp-dd-item.bp-dd-on {
+  background: color-mix(in srgb, #57cdff 20%, transparent) !important;
+  border-color: #57cdff;
+  color: #fff !important;
+}
+.bp-dd-roof {
+  justify-content: space-between;
+  gap: 10px;
+}
+.bp-dd-roof span {
+  font-size: 10px;
+}
+.bp-dd-roof input[type="range"] {
+  width: 96px;
+  accent-color: #57cdff;
+  touch-action: none;
+  cursor: pointer;
 }
 </style>

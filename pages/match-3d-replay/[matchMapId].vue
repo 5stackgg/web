@@ -2,6 +2,10 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import ReplayPopoutInner from "~/components/match/ReplayPopoutInner.vue";
+import { useReplayNoZoom } from "~/composables/useReplayNoZoom";
+
+// Native browser zoom fights the replay's own pinch/zoom and gets stuck.
+useReplayNoZoom();
 
 // Chromeless full-screen replay, defaulting to the 3D map. This is the SAME
 // unified player as the popout — only the initial map view differs. ssr:false

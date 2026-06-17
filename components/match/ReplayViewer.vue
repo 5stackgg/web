@@ -672,7 +672,7 @@ const NADE_SCRUB_ICON: Record<string, string> = {
 const scrubberMarkers = computed<
   Array<{
     left: number;
-    lane: "kill" | "nade";
+    lane: "kill" | "nade" | "bomb";
     color: string;
     title: string;
     icon?: string;
@@ -687,7 +687,7 @@ const scrubberMarkers = computed<
   }
   const out: Array<{
     left: number;
-    lane: "kill" | "nade";
+    lane: "kill" | "nade" | "bomb";
     color: string;
     title: string;
     icon?: string;
@@ -726,6 +726,20 @@ const scrubberMarkers = computed<
       icon: NADE_SCRUB_ICON[g.type],
       gid: g.grenade_id ?? undefined,
     });
+  }
+  // Bomb plant — a single distinct marker so it's obvious the bomb went down
+  // this round (and roughly when).
+  const plant = bombPlantThisRound.value;
+  if (plant) {
+    const left = ((plant.tick - range.min) / span) * 100;
+    if (left >= -1 && left <= 101) {
+      out.push({
+        left: Math.max(0, Math.min(100, left)),
+        lane: "bomb",
+        color: "#ff5a4d",
+        title: plant.site ? `Bomb planted ${plant.site}` : "Bomb planted",
+      });
+    }
   }
   return out;
 });
@@ -2172,6 +2186,17 @@ onMounted(() => {
   const compact = mobileChrome.value && !isTablet.value;
   chromeScoreboardOpen.value = !compact;
   if (compact) showPbpPanel.value = false;
+  // On touch, start with only smokes shown — the full nade set clutters the
+  // smaller map; the rest are one tap away in the util filters.
+  if (mobileChrome.value) {
+    utilTypeFilter.value = {
+      Smoke: true,
+      Molotov: false,
+      HE: false,
+      Flash: false,
+      Decoy: false,
+    };
+  }
 });
 onUnmounted(() => {
   orientationMql?.removeEventListener("change", syncMobileEnv);
@@ -3430,7 +3455,8 @@ const chromeHud = computed(() => {
     t: ss.t,
     round: activeRoundTick.value?.round ?? activeRound.value ?? 0,
     clock: formatMMSS(tm.secondsRemaining),
-    bomb: tm.phase === "bomb" ? `C4 ${tm.secondsRemaining}s` : "",
+    // Just the countdown — the chrome renders the C4 icon in front of it.
+    bomb: tm.phase === "bomb" ? `${tm.secondsRemaining}s` : "",
     bombClass: tm.phase === "bomb" ? "bomb" : tm.phase === "freeze" ? "ct" : "",
   };
 });
@@ -3497,15 +3523,17 @@ function toggleUtilSel(gi: number) {
 }
 const chromeTickMarkers = computed(() =>
   scrubberMarkers.value
-    .filter((m) => m.lane === "kill")
+    .filter((m) => m.lane === "kill" || m.lane === "bomb")
     .map((m) => ({
       frac: m.left / 100,
       cls:
-        m.color === SCRUB_KILL_CT
-          ? "mk-ct"
-          : m.color === SCRUB_KILL_T
-            ? "mk-t"
-            : "mk-ct",
+        m.lane === "bomb"
+          ? "mk-bomb"
+          : m.color === SCRUB_KILL_CT
+            ? "mk-ct"
+            : m.color === SCRUB_KILL_T
+              ? "mk-t"
+              : "mk-ct",
     })),
 );
 const chromeSeekFrac = computed(() =>

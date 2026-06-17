@@ -163,8 +163,8 @@ definePageMeta({
             $t('pages.settings.application.branding.assets_section_description')
           "
         >
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="space-y-2">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
+            <div class="flex flex-col gap-2">
               <label class="text-sm font-medium">{{
                 $t("pages.settings.application.branding.logo")
               }}</label>
@@ -175,7 +175,7 @@ definePageMeta({
                 role="button"
                 tabindex="0"
                 :aria-label="$t('pages.settings.application.branding.upload_logo')"
-                class="group relative flex h-36 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-dashed border-border bg-muted/20 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-accent/30"
+                class="group relative mt-auto flex h-36 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-dashed border-border bg-muted/20 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-accent/30"
                 @click="$refs.appIconInput.click()"
                 @keydown.enter.prevent="$refs.appIconInput.click()"
                 @keydown.space.prevent="$refs.appIconInput.click()"
@@ -215,7 +215,7 @@ definePageMeta({
               </div>
             </div>
 
-            <div class="space-y-2">
+            <div class="flex flex-col gap-2">
               <label class="text-sm font-medium">{{
                 $t("pages.settings.application.branding.favicon")
               }}</label>
@@ -230,7 +230,7 @@ definePageMeta({
                 :aria-label="
                   $t('pages.settings.application.branding.upload_favicon')
                 "
-                class="group relative flex h-36 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-dashed border-border bg-muted/20 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-accent/30"
+                class="group relative mt-auto flex h-36 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-dashed border-border bg-muted/20 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-accent/30"
                 @click="$refs.faviconInput.click()"
                 @keydown.enter.prevent="$refs.faviconInput.click()"
                 @keydown.space.prevent="$refs.faviconInput.click()"

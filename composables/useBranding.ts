@@ -165,11 +165,10 @@ export function useBranding() {
         (s: { name: string }) => s.name === "public.pwa_icon",
       );
 
-      // Shared version token (bumped on every app-icon upload) — the asset paths
-      // are now stable, so this is what busts the browser/OS icon caches.
-      const version = encodeURIComponent(
-        pwaIconSetting?.value || faviconSetting?.value || "",
-      );
+      // Asset paths are stable, so the setting values are used as cache-busting
+      // version tokens. Favicon and logo/PWA icon are independent uploads now.
+      const faviconVersion = encodeURIComponent(faviconSetting?.value || "");
+      const pwaVersion = encodeURIComponent(pwaIconSetting?.value || "");
 
       if (faviconSetting?.value) {
         let link = document.querySelector(
@@ -180,15 +179,15 @@ export function useBranding() {
           link.rel = "icon";
           document.head.appendChild(link);
         }
-        link.href = `https://${apiDomain}/branding/favicon?v=${version}`;
+        link.href = `https://${apiDomain}/branding/favicon?v=${faviconVersion}`;
       }
 
       // iOS "Add to Home Screen" uses apple-touch-icon, not the manifest icon.
       // Prefer the 512px PWA icon (a tiny .ico favicon makes a poor home icon).
       const appleHref = pwaIconSetting?.value
-        ? `https://${apiDomain}/branding/pwa/512?v=${version}`
+        ? `https://${apiDomain}/branding/pwa/512?v=${pwaVersion}`
         : faviconSetting?.value
-          ? `https://${apiDomain}/branding/favicon?v=${version}`
+          ? `https://${apiDomain}/branding/favicon?v=${faviconVersion}`
           : null;
 
       if (appleHref) {

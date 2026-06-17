@@ -1421,12 +1421,11 @@
           "show_separators": "Show Separators",
           "show_separators_description": "Display horizontal divider lines between sections.",
           "logo": "Logo",
-          "logo_description": "Upload a custom logo for the sidebar. Recommended: square image, PNG or SVG.",
+          "logo_description": "Upload one square image (512×512 PNG recommended). Used app-wide and to generate your PWA install icon. ICO files aren't supported.",
           "upload_logo": "Upload Logo",
           "favicon": "Favicon",
-          "favicon_description": "Upload a custom favicon. Recommended: square image, PNG or ICO.",
+          "favicon_description": "Optional. A simpler mark for the browser tab. PNG, ICO or WebP.",
           "upload_favicon": "Upload Favicon",
-          "upload_app_icon": "Upload Logo",
           "remove": "Remove",
           "login_page": "Login Page",
           "login_page_description": "Customize the login page footer link.",
@@ -1508,8 +1507,8 @@
             "tactical_amber": "Tactical Accent (amber highlights)",
             "tactical_amber_foreground": "Tactical Accent Foreground"
           },
-          "assets_section": "Logo",
-          "assets_section_description": "Upload one square image (512×512 PNG recommended). The logo, favicon and PWA install icons are all generated from it automatically. ICO files aren't supported."
+          "assets_section": "Logo & Favicon",
+          "assets_section_description": "Upload a logo (used app-wide and to generate your PWA install icon) and an optional favicon."
         },
         "fixtures": {
           "dev_only_notice": "Fixtures are only available in development mode.",

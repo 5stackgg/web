@@ -163,50 +163,111 @@ definePageMeta({
             $t('pages.settings.application.branding.assets_section_description')
           "
         >
-          <div class="space-y-2 sm:max-w-md">
-            <div
-              role="button"
-              tabindex="0"
-              :aria-label="
-                $t('pages.settings.application.branding.upload_app_icon')
-              "
-              class="group relative flex h-36 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-dashed border-border bg-muted/20 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-accent/30"
-              @click="$refs.appIconInput.click()"
-              @keydown.enter.prevent="$refs.appIconInput.click()"
-              @keydown.space.prevent="$refs.appIconInput.click()"
-            >
-              <img
-                v-if="appIconPreview"
-                :src="appIconPreview"
-                class="max-h-24 max-w-[80%] rounded-lg object-contain"
-              />
-              <NuxtImg
-                v-else
-                src="/favicon/192.png"
-                class="max-h-24 max-w-[80%] object-contain opacity-90"
-              />
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
+            <div class="flex flex-col gap-2">
+              <label class="text-sm font-medium">{{
+                $t("pages.settings.application.branding.logo")
+              }}</label>
+              <p class="text-sm text-muted-foreground">
+                {{ $t("pages.settings.application.branding.logo_description") }}
+              </p>
               <div
-                class="absolute inset-0 flex items-center justify-center gap-2 bg-background/70 text-sm font-medium opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100"
+                role="button"
+                tabindex="0"
+                :aria-label="$t('pages.settings.application.branding.upload_logo')"
+                class="group relative mt-auto flex h-36 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-dashed border-border bg-muted/20 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-accent/30"
+                @click="$refs.appIconInput.click()"
+                @keydown.enter.prevent="$refs.appIconInput.click()"
+                @keydown.space.prevent="$refs.appIconInput.click()"
               >
-                <LucideUpload class="h-4 w-4" />
-                {{ $t("pages.settings.application.branding.upload_app_icon") }}
+                <img
+                  v-if="appIconPreview"
+                  :src="appIconPreview"
+                  class="max-h-24 max-w-[80%] rounded-lg object-contain"
+                />
+                <NuxtImg
+                  v-else
+                  src="/favicon/192.png"
+                  class="max-h-24 max-w-[80%] object-contain opacity-90"
+                />
+                <div
+                  class="absolute inset-0 flex items-center justify-center gap-2 bg-background/70 text-sm font-medium opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100"
+                >
+                  <LucideUpload class="h-4 w-4" />
+                  {{ $t("pages.settings.application.branding.upload_logo") }}
+                </div>
+                <button
+                  v-if="appIconPreview"
+                  type="button"
+                  :aria-label="$t('pages.settings.application.branding.remove')"
+                  class="absolute right-2 top-2 z-10 rounded-full border bg-background/80 p-1 text-muted-foreground opacity-0 transition-opacity hover:border-destructive/50 hover:text-destructive group-hover:opacity-100"
+                  @click.stop="removeAppIcon"
+                >
+                  <LucideX class="h-3.5 w-3.5" />
+                </button>
+                <input
+                  ref="appIconInput"
+                  type="file"
+                  accept="image/png,image/jpeg,image/svg+xml,image/webp"
+                  class="hidden"
+                  @change="handleAppIconUpload"
+                />
               </div>
-              <button
-                v-if="appIconPreview"
-                type="button"
-                :aria-label="$t('pages.settings.application.branding.remove')"
-                class="absolute right-2 top-2 z-10 rounded-full border bg-background/80 p-1 text-muted-foreground opacity-0 transition-opacity hover:border-destructive/50 hover:text-destructive group-hover:opacity-100"
-                @click.stop="removeAppIcon"
+            </div>
+
+            <div class="flex flex-col gap-2">
+              <label class="text-sm font-medium">{{
+                $t("pages.settings.application.branding.favicon")
+              }}</label>
+              <p class="text-sm text-muted-foreground">
+                {{
+                  $t("pages.settings.application.branding.favicon_description")
+                }}
+              </p>
+              <div
+                role="button"
+                tabindex="0"
+                :aria-label="
+                  $t('pages.settings.application.branding.upload_favicon')
+                "
+                class="group relative mt-auto flex h-36 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-dashed border-border bg-muted/20 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-accent/30"
+                @click="$refs.faviconInput.click()"
+                @keydown.enter.prevent="$refs.faviconInput.click()"
+                @keydown.space.prevent="$refs.faviconInput.click()"
               >
-                <LucideX class="h-3.5 w-3.5" />
-              </button>
-              <input
-                ref="appIconInput"
-                type="file"
-                accept="image/png,image/jpeg,image/svg+xml,image/webp"
-                class="hidden"
-                @change="handleAppIconUpload"
-              />
+                <img
+                  v-if="faviconPreview"
+                  :src="faviconPreview"
+                  class="max-h-24 max-w-[80%] object-contain"
+                />
+                <NuxtImg
+                  v-else
+                  src="/favicon/64.png"
+                  class="max-h-24 max-w-[80%] object-contain opacity-90"
+                />
+                <div
+                  class="absolute inset-0 flex items-center justify-center gap-2 bg-background/70 text-sm font-medium opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100"
+                >
+                  <LucideUpload class="h-4 w-4" />
+                  {{ $t("pages.settings.application.branding.upload_favicon") }}
+                </div>
+                <button
+                  v-if="faviconPreview"
+                  type="button"
+                  :aria-label="$t('pages.settings.application.branding.remove')"
+                  class="absolute right-2 top-2 z-10 rounded-full border bg-background/80 p-1 text-muted-foreground opacity-0 transition-opacity hover:border-destructive/50 hover:text-destructive group-hover:opacity-100"
+                  @click.stop="removeFavicon"
+                >
+                  <LucideX class="h-3.5 w-3.5" />
+                </button>
+                <input
+                  ref="faviconInput"
+                  type="file"
+                  accept="image/png,image/jpeg,image/x-icon,image/webp"
+                  class="hidden"
+                  @change="handleFaviconUpload"
+                />
+              </div>
             </div>
           </div>
         </SettingsSection>
@@ -889,14 +950,21 @@ export default {
       return useRuntimeConfig().public.apiDomain;
     },
     appIconPreview() {
-      // One uploaded icon drives the logo, favicon and PWA icons. Use the
-      // pwa_icon value (set on every upload) as both presence flag and
-      // cache-buster; preview the generated logo artwork.
+      // The logo upload drives the logo + PWA icons. Use the pwa_icon value
+      // (bumped on every upload) as both presence flag and cache-buster.
       const setting = this.settings.find(
         (s: { name: string }) => s.name === "public.pwa_icon",
       );
       return setting?.value
         ? `https://${this.apiDomain}/branding/logo?v=${encodeURIComponent(setting.value)}`
+        : null;
+    },
+    faviconPreview() {
+      const setting = this.settings.find(
+        (s: { name: string }) => s.name === "public.favicon_url",
+      );
+      return setting?.value
+        ? `https://${this.apiDomain}/branding/favicon?v=${encodeURIComponent(setting.value)}`
         : null;
     },
     currentColorSections(): ColorSection[] {
@@ -1013,8 +1081,14 @@ export default {
     async handleAppIconUpload(event: Event) {
       const input = event.target as HTMLInputElement;
       if (!input.files?.length) return;
-      // One upload generates the logo, favicon and PWA install icons.
+      // The logo upload generates the logo + PWA install icons.
       await this.uploadBrandingFile("icon", input.files[0]);
+      input.value = "";
+    },
+    async handleFaviconUpload(event: Event) {
+      const input = event.target as HTMLInputElement;
+      if (!input.files?.length) return;
+      await this.uploadBrandingFile("favicon", input.files[0]);
       input.value = "";
     },
     async uploadBrandingFile(
@@ -1056,6 +1130,9 @@ export default {
     },
     async removeAppIcon() {
       await this.deleteBrandingFile("icon");
+    },
+    async removeFavicon() {
+      await this.deleteBrandingFile("favicon");
     },
     async deleteBrandingFile(
       type: "logo" | "favicon" | "pwa" | "icon",
@@ -1209,6 +1286,7 @@ export default {
         // Delete uploaded files
         await Promise.allSettled([
           this.deleteBrandingFile("icon", true),
+          this.deleteBrandingFile("favicon", true),
         ]);
 
         this.brandName = "";

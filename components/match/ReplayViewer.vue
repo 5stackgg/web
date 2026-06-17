@@ -2144,10 +2144,16 @@ const scoreboardReserve = computed(() =>
 // `showScoreboard` reserve logic above.
 const isCoarsePointer = ref(false);
 const isPortrait = ref(false);
+const isTablet = ref(false);
 const chromeScoreboardOpen = ref(true);
 let orientationMql: MediaQueryList | null = null;
 function syncMobileEnv() {
   isPortrait.value = orientationMql?.matches ?? false;
+  // Tablet = a touch device whose SHORT edge is large (≥600px) — orientation
+  // independent, so a phone in landscape (short edge ~400) stays a phone.
+  isTablet.value =
+    isCoarsePointer.value &&
+    Math.min(window.innerWidth, window.innerHeight) >= 600;
 }
 // Compact chrome on any touch device.
 const mobileChrome = computed(() => isCoarsePointer.value);
@@ -2161,11 +2167,11 @@ onMounted(() => {
   orientationMql = window.matchMedia("(orientation: portrait)");
   orientationMql.addEventListener("change", syncMobileEnv);
   syncMobileEnv();
-  // Start collapsed on touch devices so there's room to move around the map —
-  // both the scoreboard and the play-by-play panel auto-hide (still toggleable
-  // from the chrome controls).
-  chromeScoreboardOpen.value = !mobileChrome.value;
-  if (mobileChrome.value) showPbpPanel.value = false;
+  // Phones start collapsed (scoreboard + play-by-play) for room; tablets have
+  // enough space to keep both up. Either stays toggleable from the chrome.
+  const compact = mobileChrome.value && !isTablet.value;
+  chromeScoreboardOpen.value = !compact;
+  if (compact) showPbpPanel.value = false;
 });
 onUnmounted(() => {
   orientationMql?.removeEventListener("change", syncMobileEnv);

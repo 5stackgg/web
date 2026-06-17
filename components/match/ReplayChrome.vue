@@ -3,6 +3,7 @@
 // ONE player looks identical in 2D and 3D. Purely presentational: it renders
 // HUD / kill feed / play-by-play / scoreboard / transport over whatever map
 // the host (ReplayViewer) shows underneath. All data + actions come via props.
+import { Skull } from "lucide-vue-next";
 import { weaponIconPath } from "~/utilities/weaponIcon";
 import Kbd from "~/components/ui/kbd/Kbd.vue";
 import KbdGroup from "~/components/ui/kbd/KbdGroup.vue";
@@ -185,10 +186,15 @@ function seekFromEvent(e: PointerEvent) {
   if (!rect || rect.width === 0) return;
   props.onSeek(Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width)));
 }
+let resumeAfterScrub = false;
 function onScrubDown(e: PointerEvent) {
   // Let taps on the stacked utility icons through to their own click handler.
   if ((e.target as Element)?.closest?.(".mk-util-icon")) return;
   scrubbing = true;
+  // Pause while scrubbing so the playhead doesn't fight the drag, then resume
+  // on release if it was playing — feels natural on touch and desktop alike.
+  resumeAfterScrub = !!props.playing;
+  if (props.playing) props.onPlay();
   seekFromEvent(e);
   window.addEventListener("pointermove", onScrubMove);
   window.addEventListener("pointerup", onScrubUp);
@@ -202,6 +208,8 @@ function onScrubUp() {
   window.removeEventListener("pointermove", onScrubMove);
   window.removeEventListener("pointerup", onScrubUp);
   window.removeEventListener("pointercancel", onScrubUp);
+  if (resumeAfterScrub && !props.playing) props.onPlay();
+  resumeAfterScrub = false;
 }
 
 // Same deal for the 3D ROOF slider in the mobile overflow menu — drive it from
@@ -233,7 +241,11 @@ function onCeilScrubUp() {
   window.removeEventListener("pointercancel", onCeilScrubUp);
 }
 const utilClusters = computed(() => {
-  const sorted = [...(props.utilMarkers || [])].sort((a, b) => a.frac - b.frac);
+  // Respect the util-type filter so toggling a type also drops its nade icons
+  // from the seek bar (2D + 3D), not just the map.
+  const sorted = [...(props.utilMarkers || [])]
+    .filter((m) => props.typeFilter?.[(m as any).type] !== false)
+    .sort((a, b) => a.frac - b.frac);
   const groups: Array<{ frac: number; items: typeof sorted }> = [];
   const TH = 0.012; // ~1.2% of the track width counts as "same time"
   for (const m of sorted) {
@@ -742,11 +754,11 @@ const utilClusters = computed(() => {
         <Tooltip v-if="view === '2d'">
           <TooltipTrigger as-child>
             <button
-              class="sbt"
+              class="sbt sbt-icon"
               :class="{ on: showDeaths }"
               @click="onToggleDeaths && onToggleDeaths()"
             >
-              ☠
+              <Skull :size="15" />
             </button>
           </TooltipTrigger>
           <TooltipContent>{{
@@ -758,9 +770,9 @@ const utilClusters = computed(() => {
       <!-- transport -->
       <div class="bp-bar">
         <div class="bp-toprow">
-          <div class="bp-rounds">
-            <!-- buy-round overlay toggle sits in front of round 1 -->
-            <Tooltip>
+          <!-- util-summary toggle is pinned on the left; only the round
+               numbers scroll past it -->
+          <Tooltip>
               <TooltipTrigger as-child>
                 <button
                   class="rt buyt"
@@ -787,7 +799,8 @@ const utilClusters = computed(() => {
               <TooltipContent>{{
                 $t("match.replay.chrome.util_summary_tip")
               }}</TooltipContent>
-            </Tooltip>
+          </Tooltip>
+          <div class="bp-rounds">
             <Tooltip v-for="r in rounds" :key="r.i">
               <TooltipTrigger as-child>
                 <button
@@ -1057,7 +1070,7 @@ const utilClusters = computed(() => {
             </option>
           </select>
           <!-- keyboard shortcuts help -->
-          <div class="bp-help" tabindex="0">
+          <div v-if="!mobile" class="bp-help" tabindex="0">
             <svg
               viewBox="0 0 24 24"
               width="16"
@@ -1629,7 +1642,13 @@ const utilClusters = computed(() => {
   gap: 4px;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.12s;
+  transform: translateY(-4px) scale(0.97);
+  transform-origin: top left;
+  /* delay hiding `visibility` until the fade/slide finishes on close */
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease,
+    visibility 0s linear 0.15s;
   z-index: 60;
 }
 .bp-more:hover .bp-more-pop,
@@ -1637,6 +1656,11 @@ const utilClusters = computed(() => {
 .bp-more:focus-within .bp-more-pop {
   opacity: 1;
   visibility: visible;
+  transform: translateY(0) scale(1);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease,
+    visibility 0s;
 }
 .bp-more-pop button {
   flex: 0 0 auto;
@@ -1806,7 +1830,14 @@ const utilClusters = computed(() => {
   flex-direction: column;
   gap: 5px;
   padding: 5px 14px 6px;
-  background: linear-gradient(0deg, rgba(8, 10, 14, 0.96), rgba(8, 10, 14, 0));
+  /* Mostly-opaque so the round selector + seek read against the map instead of
+     blending into it; a short fade keeps the top edge soft. */
+  background: linear-gradient(
+    0deg,
+    rgba(8, 10, 14, 0.97) 65%,
+    rgba(8, 10, 14, 0.82)
+  );
+  backdrop-filter: blur(6px);
 }
 .bp-toprow {
   display: flex;
@@ -1825,6 +1856,22 @@ const utilClusters = computed(() => {
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  /* Soft-fade both edges so round numbers dissolve into the pinned util button
+     (left) and the util filters (right) instead of hard-overlapping them. */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 12px,
+    #000 calc(100% - 12px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 12px,
+    #000 calc(100% - 12px),
+    transparent 100%
+  );
 }
 .bp-rounds::-webkit-scrollbar {
   display: none;
@@ -1884,7 +1931,7 @@ const utilClusters = computed(() => {
   cursor: pointer;
   margin-left: 4px;
 }
-.bp-rounds .rt {
+.bp-toprow .rt {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--line);
   border-bottom-width: 2px;
@@ -1898,16 +1945,16 @@ const utilClusters = computed(() => {
   cursor: pointer;
   flex-shrink: 0;
 }
-.bp-rounds .rt:hover {
+.bp-toprow .rt:hover {
   color: #f0f6fc;
 }
-.bp-rounds .rt.win-ct {
+.bp-toprow .rt.win-ct {
   border-bottom-color: var(--ct);
 }
-.bp-rounds .rt.win-t {
+.bp-toprow .rt.win-t {
   border-bottom-color: var(--t);
 }
-.bp-rounds .rt.buyt {
+.bp-toprow .rt.buyt {
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -1915,22 +1962,22 @@ const utilClusters = computed(() => {
   letter-spacing: 0.5px;
   font-size: 10px;
 }
-.bp-rounds .rt.buyt.on {
+.bp-toprow .rt.buyt.on {
   background: color-mix(in srgb, var(--accent) 26%, transparent);
   border-color: var(--accent);
   color: #fff;
   box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 55%, transparent);
 }
 /* overlay round multi-select: selected = bright, others dimmed */
-.bp-rounds .rt.selsel {
+.bp-toprow .rt.selsel {
   background: color-mix(in srgb, var(--accent) 20%, transparent);
   border-color: var(--accent);
   color: #fff;
 }
-.bp-rounds .rt.seldim {
+.bp-toprow .rt.seldim {
   opacity: 0.32;
 }
-.bp-rounds .rt.seldim:hover {
+.bp-toprow .rt.seldim:hover {
   opacity: 0.7;
 }
 /* scoreboard-side tools */
@@ -2013,9 +2060,17 @@ const utilClusters = computed(() => {
   padding: 5px 10px calc(9px + env(safe-area-inset-bottom, 0px));
   gap: 4px;
 }
+/* On touch the seek bar keeps its normal height (so the transport row stays
+   vertically centered), and the nade lane drops into reserved space BELOW it
+   via padding — a finger dragging the bar never lands on a nade. Desktop keeps
+   them overlaid since a mouse can thread between them. */
 .bp-chrome.is-mobile .seek-wrap {
   height: 38px;
   min-width: 120px;
+  overflow: visible;
+}
+.bp-chrome.is-mobile .bp-transport {
+  padding-bottom: 30px;
 }
 .bp-chrome.is-mobile .bp-transport .play {
   width: 32px;
@@ -2027,7 +2082,61 @@ const utilClusters = computed(() => {
 .bp-chrome.is-mobile .seek-wrap .seek::-moz-range-thumb {
   height: 34px;
 }
-.bp-rounds .rt.on {
+.bp-chrome.is-mobile .seek-wrap .util-lane {
+  top: calc(100% + 2px);
+  bottom: auto;
+  height: 26px;
+}
+/* Touch tap targets — bump a little for phones; tablets (taller short edge)
+   get noticeably bigger since they have the room. */
+.bp-chrome.is-mobile .bp-viewtoggle button,
+.bp-chrome.is-mobile .bp-more,
+.bp-chrome.is-mobile .bp-more-pop button {
+  padding: 7px 13px;
+  font-size: 12px;
+}
+.bp-chrome.is-mobile .bp-sb-tools .sbt {
+  min-width: 40px;
+  height: 34px;
+  font-size: 12px;
+}
+.bp-chrome.is-mobile .bp-toprow .rt {
+  padding: 5px 11px;
+  font-size: 12px;
+}
+.bp-chrome.is-mobile .bp-filters .fbtn img {
+  height: 19px;
+  max-width: 19px;
+}
+@media (pointer: coarse) and (min-height: 600px) {
+  .bp-chrome.is-mobile .bp-viewtoggle button,
+  .bp-chrome.is-mobile .bp-more,
+  .bp-chrome.is-mobile .bp-more-pop button {
+    padding: 10px 18px;
+    font-size: 14px;
+  }
+  .bp-chrome.is-mobile .bp-sb-tools .sbt {
+    min-width: 48px;
+    height: 42px;
+    font-size: 14px;
+  }
+  .bp-chrome.is-mobile .bp-toprow .rt {
+    padding: 8px 14px;
+    font-size: 14px;
+  }
+  .bp-chrome.is-mobile .bp-transport .play {
+    width: 44px;
+    height: 44px;
+  }
+  .bp-chrome.is-mobile .bp-filters .fbtn {
+    padding: 6px 8px;
+  }
+  .bp-chrome.is-mobile .bp-filters .fbtn img {
+    height: 23px;
+    max-width: 23px;
+  }
+}
+.bp-toprow .rt.on {
   background: color-mix(in srgb, var(--accent) 18%, transparent);
   color: #fff;
   border-color: var(--accent);

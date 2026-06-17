@@ -167,12 +167,17 @@ let followSuppressed = false;
 
 onMounted(() => {
   const el = canvas.value!;
+  // Coarse-pointer devices drive the camera with OrbitControls touch gestures
+  // (one finger orbit, two finger dolly/pan) instead of the desktop free-look,
+  // and run at a lower pixel ratio so mid-range phones keep their frame rate.
+  const isTouch =
+    typeof matchMedia !== "undefined" && matchMedia("(pointer: coarse)").matches;
   const renderer = new THREE.WebGLRenderer({
     canvas: el,
-    antialias: true,
+    antialias: !isTouch,
     alpha: true,
   });
-  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(devicePixelRatio, isTouch ? 1.5 : 2));
   renderer.localClippingEnabled = true;
 
   // Ceiling cut: a horizontal plane that hides map geometry above a height,
@@ -194,7 +199,19 @@ onMounted(() => {
   controls.enableDamping = true;
   controls.dampingFactor = 0.09;
   controls.maxPolarAngle = Math.PI * 0.49;
-  controls.enableZoom = false; // we do inertial zoom by hand (below)
+  // Touch: let OrbitControls own the gestures — one finger orbits, two fingers
+  // pinch-dolly / pan. Desktop keeps the hand-rolled inertial wheel zoom, so
+  // OrbitControls zoom stays off there to avoid double-handling the wheel.
+  controls.enableZoom = isTouch;
+  if (isTouch) {
+    controls.enablePan = true;
+    // One finger drags (pans) around the map; two fingers pinch to zoom and
+    // twist to rotate together — feels closer to a native map app.
+    controls.touches = {
+      ONE: THREE.TOUCH.PAN,
+      TWO: THREE.TOUCH.DOLLY_ROTATE,
+    };
+  }
   // Left-drag = free-look (handled manually below); right-drag = orbit;
   // middle-drag = pan. Left no longer orbits (felt bad).
   controls.mouseButtons = {
@@ -266,6 +283,7 @@ onMounted(() => {
   el.addEventListener("contextmenu", (e) => e.preventDefault());
   el.style.cursor = "grab";
   el.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "touch") return; // touch is driven by OrbitControls
     el.style.cursor = "none"; // hide cursor while dragging/looking around
     if (e.button === 0) {
       rl = true;
@@ -276,6 +294,7 @@ onMounted(() => {
     }
   });
   addEventListener("pointerup", (e) => {
+    if ((e as PointerEvent).pointerType === "touch") return; // touch = OrbitControls
     el.style.cursor = "grab";
     if (e.button !== 0) return;
     rl = false;
@@ -1780,7 +1799,10 @@ onBeforeUnmount(() => cleanup?.());
   <!-- Pure 3D scene. All chrome (HUD, scoreboard, PBP, transport, filters,
        camera dock) lives in the shared ReplayChrome overlay. -->
   <div class="absolute inset-0">
-    <canvas ref="canvas" class="absolute inset-0 w-full h-full block" />
+    <canvas
+      ref="canvas"
+      class="absolute inset-0 w-full h-full block touch-none"
+    />
     <!-- Centered loader while the map mesh downloads (multi-MB .tri) so it's
          obviously working, not broken. -->
     <Transition name="meshload">

@@ -26,6 +26,11 @@ const { t, te } = useI18n();
 
 definePageMeta({ layout: false });
 
+// Opened as a desktop popup (window.open from a match/player page) → stay
+// chromeless. Loaded directly (shared link, mobile PWA) → wrap in the default
+// layout so the nav is reachable instead of being a dead end.
+const isPopout = import.meta.client && !!window.opener;
+
 const GITHUB_URL = "https://github.com/5stackgg/5stack-panel/issues";
 
 type Formula = { frac?: boolean; pct?: boolean; note?: boolean };
@@ -267,231 +272,240 @@ function isFrac(f?: Formula): boolean {
 </script>
 
 <template>
-  <PageTransition>
-    <div
-      class="min-h-screen bg-background text-foreground px-4 sm:px-6 overflow-y-auto"
-    >
-      <div class="mx-auto w-full max-w-[62rem] flex flex-col gap-6 pt-6 pb-12">
-        <TacticalPageHeader>
-          <template #title>{{ $t("glossary.title") }}</template>
-        </TacticalPageHeader>
+  <NuxtLayout :name="isPopout ? false : 'default'">
+    <PageTransition>
+      <div
+        class="text-foreground px-4 sm:px-6"
+        :class="isPopout ? 'min-h-screen bg-background overflow-y-auto' : ''"
+      >
+        <div
+          class="mx-auto w-full max-w-[62rem] flex flex-col gap-6 pt-6 pb-12"
+        >
+          <TacticalPageHeader>
+            <template #title>{{ $t("glossary.title") }}</template>
+          </TacticalPageHeader>
 
-        <Card class="bg-card/20">
-          <CardContent class="p-4 sm:p-6 flex flex-col gap-3">
-            <p class="text-sm leading-relaxed text-foreground/90">
-              {{ $t("glossary.intro") }}
-            </p>
-            <a
-              :href="GITHUB_URL"
-              target="_blank"
-              rel="noopener"
-              class="inline-flex items-center gap-2 w-fit px-3 py-1.5 rounded border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] font-mono text-[0.7rem] tracking-[0.14em] uppercase text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)]"
-            >
-              <ExternalLink class="w-3.5 h-3.5" />
-              {{ $t("glossary.github_cta") }}
-            </a>
-          </CardContent>
-        </Card>
+          <Card class="bg-card/20">
+            <CardContent class="p-4 sm:p-6 flex flex-col gap-3">
+              <p class="text-sm leading-relaxed text-foreground/90">
+                {{ $t("glossary.intro") }}
+              </p>
+              <a
+                :href="GITHUB_URL"
+                target="_blank"
+                rel="noopener"
+                class="inline-flex items-center gap-2 w-fit px-3 py-1.5 rounded border border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] font-mono text-[0.7rem] tracking-[0.14em] uppercase text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.18)]"
+              >
+                <ExternalLink class="w-3.5 h-3.5" />
+                {{ $t("glossary.github_cta") }}
+              </a>
+            </CardContent>
+          </Card>
 
-        <Card class="bg-card/20">
-          <CardContent class="p-5 sm:p-5 flex flex-col gap-3">
-            <span
-              class="font-mono text-[0.7rem] font-bold tracking-[0.16em] uppercase text-[hsl(var(--tac-amber))]"
-            >
-              {{ $t("glossary.legend.title") }}
-            </span>
-            <div
-              class="grid gap-x-6 gap-y-1.5 sm:grid-cols-2 lg:grid-cols-3 text-sm"
-            >
-              <div
-                v-for="sym of LEGEND_VARS"
-                :key="sym"
-                class="flex items-baseline gap-2"
-              >
-                <span
-                  class="inline-flex items-center font-mono font-bold text-[hsl(var(--tac-amber))] min-w-[2.2rem]"
-                >
-                  <TriangleRight v-if="sym === 'θ'" class="h-4 w-4" /><template
-                    v-else
-                    >{{ sym }}</template
-                  >
-                </span>
-                <span class="text-muted-foreground">{{
-                  $t(`glossary.var_help.${tokenKey(sym)}`)
-                }}</span>
-              </div>
-            </div>
-            <p class="text-xs leading-snug text-muted-foreground/80">
-              {{ $t("glossary.legend.note") }}
-            </p>
-            <div
-              class="flex flex-wrap items-center gap-2 pt-2 border-t border-border/40 text-xs text-muted-foreground"
-            >
-              <span
-                class="font-mono uppercase tracking-[0.12em] text-[0.6rem]"
-                >{{ $t("glossary.scale_worse") }}</span
-              >
-              <ChevronsDown class="h-3.5 w-3.5 text-destructive" />
-              <ChevronDown class="h-3.5 w-3.5 text-destructive/70" />
-              <Minus class="h-3.5 w-3.5 text-muted-foreground" />
-              <ChevronUp class="h-3.5 w-3.5 text-success/80" />
-              <ChevronsUp class="h-3.5 w-3.5 text-success" />
-              <span
-                class="font-mono uppercase tracking-[0.12em] text-[0.6rem]"
-                >{{ $t("glossary.scale_better") }}</span
-              >
-              <span class="text-muted-foreground/70">{{
-                $t("glossary.scale_legend")
-              }}</span>
-            </div>
-            <div
-              class="flex flex-wrap items-center gap-2 pt-2 border-t border-border/40 text-xs text-muted-foreground"
-            >
-              <Boxes class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
-              <span>{{ $t("glossary.mesh_legend") }}</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div class="grid gap-3 sm:grid-cols-2">
-          <Card
-            v-for="m of methodology"
-            :key="m"
-            class="bg-card/20"
-            :class="m === 'scores' ? 'sm:col-span-2' : ''"
-          >
-            <CardContent class="p-5 sm:p-5 flex flex-col gap-2">
+          <Card class="bg-card/20">
+            <CardContent class="p-5 sm:p-5 flex flex-col gap-3">
               <span
                 class="font-mono text-[0.7rem] font-bold tracking-[0.16em] uppercase text-[hsl(var(--tac-amber))]"
               >
-                {{ $t(`glossary.${m}.title`) }}
+                {{ $t("glossary.legend.title") }}
               </span>
-              <p class="text-sm leading-relaxed text-foreground/85">
-                {{ $t(`glossary.${m}.body`) }}
+              <div
+                class="grid gap-x-6 gap-y-1.5 sm:grid-cols-2 lg:grid-cols-3 text-sm"
+              >
+                <div
+                  v-for="sym of LEGEND_VARS"
+                  :key="sym"
+                  class="flex items-baseline gap-2"
+                >
+                  <span
+                    class="inline-flex items-center font-mono font-bold text-[hsl(var(--tac-amber))] min-w-[2.2rem]"
+                  >
+                    <TriangleRight
+                      v-if="sym === 'θ'"
+                      class="h-4 w-4"
+                    /><template v-else>{{ sym }}</template>
+                  </span>
+                  <span class="text-muted-foreground">{{
+                    $t(`glossary.var_help.${tokenKey(sym)}`)
+                  }}</span>
+                </div>
+              </div>
+              <p class="text-xs leading-snug text-muted-foreground/80">
+                {{ $t("glossary.legend.note") }}
               </p>
+              <div
+                class="flex flex-wrap items-center gap-2 pt-2 border-t border-border/40 text-xs text-muted-foreground"
+              >
+                <span
+                  class="font-mono uppercase tracking-[0.12em] text-[0.6rem]"
+                  >{{ $t("glossary.scale_worse") }}</span
+                >
+                <ChevronsDown class="h-3.5 w-3.5 text-destructive" />
+                <ChevronDown class="h-3.5 w-3.5 text-destructive/70" />
+                <Minus class="h-3.5 w-3.5 text-muted-foreground" />
+                <ChevronUp class="h-3.5 w-3.5 text-success/80" />
+                <ChevronsUp class="h-3.5 w-3.5 text-success" />
+                <span
+                  class="font-mono uppercase tracking-[0.12em] text-[0.6rem]"
+                  >{{ $t("glossary.scale_better") }}</span
+                >
+                <span class="text-muted-foreground/70">{{
+                  $t("glossary.scale_legend")
+                }}</span>
+              </div>
+              <div
+                class="flex flex-wrap items-center gap-2 pt-2 border-t border-border/40 text-xs text-muted-foreground"
+              >
+                <Boxes class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]" />
+                <span>{{ $t("glossary.mesh_legend") }}</span>
+              </div>
             </CardContent>
           </Card>
-        </div>
 
-        <Card class="bg-card/20">
-          <CardContent class="p-5 sm:p-5">
-            <MeshAvailability />
-          </CardContent>
-        </Card>
-
-        <template
-          v-for="section of [
-            { label: $t('glossary.sections.aim'), keys: aimStats, aim: true },
-            {
-              label: $t('glossary.sections.impact'),
-              keys: impactStats,
-              aim: false,
-            },
-            {
-              label: $t('glossary.sections.utility'),
-              keys: utilityStats,
-              aim: false,
-            },
-            {
-              label: $t('glossary.sections.economy'),
-              keys: economyStats,
-              aim: false,
-            },
-            { label: $t('glossary.sections.elo'), keys: eloStats, aim: false },
-            {
-              label: $t('glossary.sections.clutches'),
-              keys: clutchStats,
-              aim: false,
-            },
-            {
-              label: $t('glossary.sections.roles'),
-              keys: roleStats,
-              aim: false,
-            },
-            {
-              label: $t('glossary.sections.head_to_head'),
-              keys: headToHeadStats,
-              aim: false,
-            },
-            {
-              label: $t('glossary.sections.arsenal'),
-              keys: arsenalStats,
-              aim: false,
-            },
-          ]"
-          :key="section.label"
-        >
-          <div class="flex flex-col gap-3">
-            <span :class="tacticalSectionLabelClasses">
-              <span :class="tacticalSectionTickClasses" />
-              {{ section.label }}
-            </span>
-            <Card class="bg-card/20">
-              <CardContent class="p-2 sm:p-4 flex flex-col">
-                <div
-                  v-for="(e, i) of section.keys.map((k) =>
-                    entry(k, section.aim),
-                  )"
-                  :key="e.key"
-                  class="grid grid-cols-1 gap-2 py-3.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-6"
-                  :class="i > 0 ? 'border-t border-border/40' : ''"
+          <div class="grid gap-3 sm:grid-cols-2">
+            <Card
+              v-for="m of methodology"
+              :key="m"
+              class="bg-card/20"
+              :class="m === 'scores' ? 'sm:col-span-2' : ''"
+            >
+              <CardContent class="p-5 sm:p-5 flex flex-col gap-2">
+                <span
+                  class="font-mono text-[0.7rem] font-bold tracking-[0.16em] uppercase text-[hsl(var(--tac-amber))]"
                 >
-                  <div class="flex flex-col gap-1 min-w-0">
-                    <span class="font-semibold text-sm">{{ e.title }}</span>
-                    <p class="text-xs leading-snug text-muted-foreground">
-                      {{ e.description }}
-                    </p>
-                    <p
-                      v-if="e.formula && e.formula.note"
-                      class="text-[0.7rem] leading-snug text-muted-foreground/70"
-                    >
-                      {{ $t(`glossary.formulas.${e.key}.note`) }}
-                    </p>
-                    <StatScale :stat="e.key" class="mt-1.5 max-w-[22rem]" />
-                  </div>
-
-                  <div
-                    v-if="e.formula"
-                    class="justify-self-start sm:justify-self-end w-full sm:w-auto sm:max-w-[30rem] rounded border border-border/60 bg-background/50 px-3 py-2 font-mono text-[0.8rem] leading-relaxed text-foreground/90"
-                  >
-                    <span
-                      v-if="isFrac(e.formula)"
-                      class="inline-flex flex-wrap items-center gap-2"
-                    >
-                      <span class="text-muted-foreground/60">=</span>
-                      <span
-                        class="inline-flex flex-col items-center leading-none"
-                      >
-                        <span class="px-1 pb-2">
-                          <FormulaTokens
-                            :text="$t(`glossary.formulas.${e.key}.num`)"
-                          />
-                        </span>
-                        <span class="h-px w-full bg-foreground/50"></span>
-                        <span class="px-1 pt-1.5">
-                          <FormulaTokens
-                            :text="$t(`glossary.formulas.${e.key}.den`)"
-                          />
-                        </span>
-                      </span>
-                      <span v-if="e.formula.pct" class="text-muted-foreground"
-                        >× 100</span
-                      >
-                    </span>
-
-                    <span v-else>
-                      <span class="text-muted-foreground/60">=&nbsp;</span
-                      ><FormulaTokens
-                        :text="$t(`glossary.formulas.${e.key}.expr`)"
-                      />
-                    </span>
-                  </div>
-                </div>
+                  {{ $t(`glossary.${m}.title`) }}
+                </span>
+                <p class="text-sm leading-relaxed text-foreground/85">
+                  {{ $t(`glossary.${m}.body`) }}
+                </p>
               </CardContent>
             </Card>
           </div>
-        </template>
+
+          <Card class="bg-card/20">
+            <CardContent class="p-5 sm:p-5">
+              <MeshAvailability />
+            </CardContent>
+          </Card>
+
+          <template
+            v-for="section of [
+              { label: $t('glossary.sections.aim'), keys: aimStats, aim: true },
+              {
+                label: $t('glossary.sections.impact'),
+                keys: impactStats,
+                aim: false,
+              },
+              {
+                label: $t('glossary.sections.utility'),
+                keys: utilityStats,
+                aim: false,
+              },
+              {
+                label: $t('glossary.sections.economy'),
+                keys: economyStats,
+                aim: false,
+              },
+              {
+                label: $t('glossary.sections.elo'),
+                keys: eloStats,
+                aim: false,
+              },
+              {
+                label: $t('glossary.sections.clutches'),
+                keys: clutchStats,
+                aim: false,
+              },
+              {
+                label: $t('glossary.sections.roles'),
+                keys: roleStats,
+                aim: false,
+              },
+              {
+                label: $t('glossary.sections.head_to_head'),
+                keys: headToHeadStats,
+                aim: false,
+              },
+              {
+                label: $t('glossary.sections.arsenal'),
+                keys: arsenalStats,
+                aim: false,
+              },
+            ]"
+            :key="section.label"
+          >
+            <div class="flex flex-col gap-3">
+              <span :class="tacticalSectionLabelClasses">
+                <span :class="tacticalSectionTickClasses" />
+                {{ section.label }}
+              </span>
+              <Card class="bg-card/20">
+                <CardContent class="p-2 sm:p-4 flex flex-col">
+                  <div
+                    v-for="(e, i) of section.keys.map((k) =>
+                      entry(k, section.aim),
+                    )"
+                    :key="e.key"
+                    class="grid grid-cols-1 gap-2 py-3.5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-6"
+                    :class="i > 0 ? 'border-t border-border/40' : ''"
+                  >
+                    <div class="flex flex-col gap-1 min-w-0">
+                      <span class="font-semibold text-sm">{{ e.title }}</span>
+                      <p class="text-xs leading-snug text-muted-foreground">
+                        {{ e.description }}
+                      </p>
+                      <p
+                        v-if="e.formula && e.formula.note"
+                        class="text-[0.7rem] leading-snug text-muted-foreground/70"
+                      >
+                        {{ $t(`glossary.formulas.${e.key}.note`) }}
+                      </p>
+                      <StatScale :stat="e.key" class="mt-1.5 max-w-[22rem]" />
+                    </div>
+
+                    <div
+                      v-if="e.formula"
+                      class="justify-self-start sm:justify-self-end w-full sm:w-auto sm:max-w-[30rem] rounded border border-border/60 bg-background/50 px-3 py-2 font-mono text-[0.8rem] leading-relaxed text-foreground/90"
+                    >
+                      <span
+                        v-if="isFrac(e.formula)"
+                        class="inline-flex flex-wrap items-center gap-2"
+                      >
+                        <span class="text-muted-foreground/60">=</span>
+                        <span
+                          class="inline-flex flex-col items-center leading-none"
+                        >
+                          <span class="px-1 pb-2">
+                            <FormulaTokens
+                              :text="$t(`glossary.formulas.${e.key}.num`)"
+                            />
+                          </span>
+                          <span class="h-px w-full bg-foreground/50"></span>
+                          <span class="px-1 pt-1.5">
+                            <FormulaTokens
+                              :text="$t(`glossary.formulas.${e.key}.den`)"
+                            />
+                          </span>
+                        </span>
+                        <span v-if="e.formula.pct" class="text-muted-foreground"
+                          >× 100</span
+                        >
+                      </span>
+
+                      <span v-else>
+                        <span class="text-muted-foreground/60">=&nbsp;</span
+                        ><FormulaTokens
+                          :text="$t(`glossary.formulas.${e.key}.expr`)"
+                        />
+                      </span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </template>
+        </div>
       </div>
-    </div>
-  </PageTransition>
+    </PageTransition>
+  </NuxtLayout>
 </template>

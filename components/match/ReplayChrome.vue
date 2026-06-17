@@ -112,6 +112,14 @@ const props = defineProps<{
   showAvatars?: boolean;
   traceOn?: boolean;
   showDeaths?: boolean;
+  // mobile: compact the floating panels for phone-sized touch screens
+  mobile?: boolean;
+  // scoreboard visibility — collapsible so there's room to move around the map
+  showScoreboard?: boolean;
+  onToggleScoreboard?: () => void;
+  // fullscreen — escape the mobile browser address bar
+  isFullscreen?: boolean;
+  onFullscreen?: () => void;
   // callbacks
   onPlay: () => void;
   onSeek: (frac: number) => void;
@@ -165,7 +173,36 @@ const SPEEDS = [0.5, 1, 2, 4, 8];
 
 // Cluster utility throws that land at (nearly) the same point on the timeline
 // so several thrown on the same second can each be fanned out + clicked.
-import { computed } from "vue";
+import { computed, ref } from "vue";
+
+// Custom pointer scrubber for the seek bar. Native <input type=range> on iOS
+// only drags from the (4px) thumb and otherwise lets the touch scroll the page,
+// so we drive seeking ourselves from pointer position on the whole track.
+const seekWrapEl = ref<HTMLElement | null>(null);
+let scrubbing = false;
+function seekFromEvent(e: PointerEvent) {
+  const rect = seekWrapEl.value?.getBoundingClientRect();
+  if (!rect || rect.width === 0) return;
+  props.onSeek(Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width)));
+}
+function onScrubDown(e: PointerEvent) {
+  // Let taps on the stacked utility icons through to their own click handler.
+  if ((e.target as Element)?.closest?.(".mk-util-icon")) return;
+  scrubbing = true;
+  seekFromEvent(e);
+  window.addEventListener("pointermove", onScrubMove);
+  window.addEventListener("pointerup", onScrubUp);
+  window.addEventListener("pointercancel", onScrubUp);
+}
+function onScrubMove(e: PointerEvent) {
+  if (scrubbing) seekFromEvent(e);
+}
+function onScrubUp() {
+  scrubbing = false;
+  window.removeEventListener("pointermove", onScrubMove);
+  window.removeEventListener("pointerup", onScrubUp);
+  window.removeEventListener("pointercancel", onScrubUp);
+}
 const utilClusters = computed(() => {
   const sorted = [...(props.utilMarkers || [])].sort((a, b) => a.frac - b.frac);
   const groups: Array<{ frac: number; items: typeof sorted }> = [];
@@ -181,7 +218,7 @@ const utilClusters = computed(() => {
 
 <template>
   <TooltipProvider :delay-duration="250">
-    <div class="bp-chrome">
+    <div class="bp-chrome" :class="{ 'is-mobile': mobile }">
       <!-- HUD -->
       <div class="bp-hud">
         <span class="bp-score"
@@ -373,7 +410,7 @@ const utilClusters = computed(() => {
       </div>
 
       <!-- scoreboard -->
-      <div class="bp-score-panel">
+      <div v-show="showScoreboard !== false" class="bp-score-panel">
         <div
           class="bp-team"
           v-for="(team, ti) in [
@@ -519,8 +556,42 @@ const utilClusters = computed(() => {
         </div>
       </div>
 
-      <!-- scoreboard-side toggles (left of the CT scoreboard) -->
-      <div class="bp-sb-tools">
+      <!-- scoreboard-side toggles (left of the CT scoreboard). The
+           show/hide-scoreboard button stays mounted even when the board is
+           collapsed so it can always be reopened; the rest hide with it. -->
+      <div
+        class="bp-sb-tools"
+        :class="{ 'sb-collapsed': showScoreboard === false }"
+      >
+        <Tooltip>
+          <TooltipTrigger as-child>
+            <button
+              class="sbt sbt-icon"
+              :class="{ on: showScoreboard !== false }"
+              @click="onToggleScoreboard && onToggleScoreboard()"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                width="15"
+                height="15"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect x="3" y="4" width="18" height="16" rx="2" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+                <line x1="3" y1="15" x2="21" y2="15" />
+              </svg>
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>{{
+            showScoreboard !== false
+              ? $t("match.replay.hide_scoreboard")
+              : $t("match.replay.show_scoreboard")
+          }}</TooltipContent>
+        </Tooltip>
         <Tooltip>
           <TooltipTrigger as-child>
             <button
@@ -767,7 +838,11 @@ const utilClusters = computed(() => {
               </button>
             </div>
           </div>
-          <div class="seek-wrap">
+          <div
+            ref="seekWrapEl"
+            class="seek-wrap"
+            @pointerdown="onScrubDown"
+          >
             <!-- utility lane: same-second throws STACK vertically up the tall bar
                so each is individually clickable. -->
             <div v-if="!overlay" class="util-lane">
@@ -829,6 +904,45 @@ const utilClusters = computed(() => {
             ></span>
           </div>
           <span v-if="timeLabel" class="tl">{{ timeLabel }}</span>
+          <Tooltip v-if="onFullscreen && !mobile">
+            <TooltipTrigger as-child>
+              <button class="fs" @click="onFullscreen && onFullscreen()">
+                <svg
+                  v-if="isFullscreen"
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M8 3v3a2 2 0 0 1-2 2H3M21 8h-3a2 2 0 0 1-2-2V3" />
+                  <path d="M3 16h3a2 2 0 0 1 2 2v3M16 21v-3a2 2 0 0 1 2-2h3" />
+                </svg>
+                <svg
+                  v-else
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3" />
+                  <path d="M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3" />
+                </svg>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>{{
+              isFullscreen
+                ? $t("match.replay.chrome.exit_fullscreen")
+                : $t("match.replay.chrome.enter_fullscreen")
+            }}</TooltipContent>
+          </Tooltip>
           <select class="spd" @change="(e: any) => onSpeed(+e.target.value)">
             <option
               v-for="s in SPEEDS"
@@ -1511,8 +1625,8 @@ const utilClusters = computed(() => {
   z-index: 10;
   display: flex;
   flex-direction: column;
-  gap: 7px;
-  padding: 9px 14px 10px;
+  gap: 5px;
+  padding: 5px 14px 6px;
   background: linear-gradient(0deg, rgba(8, 10, 14, 0.96), rgba(8, 10, 14, 0));
 }
 .bp-toprow {
@@ -1521,10 +1635,20 @@ const utilClusters = computed(() => {
   justify-content: space-between;
   gap: 12px;
 }
+/* Round selector: one row that scrolls horizontally instead of wrapping (so
+   the transport stays a fixed height across long matches / OT). */
 .bp-rounds {
   display: flex;
   gap: 3px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.bp-rounds::-webkit-scrollbar {
+  display: none;
 }
 .bp-filters {
   display: flex;
@@ -1593,6 +1717,7 @@ const utilClusters = computed(() => {
   padding: 3px 8px;
   border-radius: 4px;
   cursor: pointer;
+  flex-shrink: 0;
 }
 .bp-rounds .rt:hover {
   color: #f0f6fc;
@@ -1663,6 +1788,80 @@ const utilClusters = computed(() => {
   border-color: var(--accent);
   color: #fff;
 }
+/* Scoreboard collapsed: the tools strip slides to the screen edge so its
+   show/hide button stays put after the 256px panel is gone. */
+.bp-sb-tools.sb-collapsed {
+  right: 14px;
+}
+
+/* ── Compact chrome for phone-sized touch screens ─────────────────────────
+   The panels keep their look but shrink so the floating scoreboard, kill
+   feed and transport all fit a landscape phone without burying the map. */
+.bp-chrome.is-mobile .bp-hud {
+  top: 8px;
+  padding: 3px 12px 4px;
+}
+.bp-chrome.is-mobile .bp-score {
+  font-size: 18px;
+}
+.bp-chrome.is-mobile .bp-left {
+  top: 8px;
+  left: 8px;
+  width: 188px;
+  gap: 5px;
+}
+.bp-chrome.is-mobile .bp-pbp {
+  max-height: 26vh;
+  padding: 5px 6px;
+}
+.bp-chrome.is-mobile .bp-score-panel {
+  top: 8px;
+  right: 8px;
+  width: 196px;
+  gap: 6px;
+}
+.bp-chrome.is-mobile .bp-sb-tools {
+  top: 8px;
+  right: 212px;
+  flex-direction: row;
+}
+.bp-chrome.is-mobile .bp-sb-tools.sb-collapsed {
+  right: 8px;
+}
+.bp-chrome.is-mobile .bp-bar {
+  /* Lift the controls off the very bottom so they clear the iOS home-indicator
+     / app-switcher gesture zone. env() adds the device inset where exposed. */
+  padding: 5px 10px calc(9px + env(safe-area-inset-bottom, 0px));
+  gap: 4px;
+}
+.bp-chrome.is-mobile .seek-wrap {
+  height: 38px;
+  min-width: 120px;
+}
+.bp-chrome.is-mobile .bp-transport .play {
+  width: 32px;
+  height: 32px;
+}
+/* Keep the controls row inside its column so it can't overflow under the
+   centered round/score HUD — it scrolls horizontally instead. */
+.bp-chrome.is-mobile .bp-controls {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.bp-chrome.is-mobile .bp-controls::-webkit-scrollbar {
+  display: none;
+}
+.bp-chrome.is-mobile .bp-controls > * {
+  flex-shrink: 0;
+}
+.bp-chrome.is-mobile .seek-wrap .seek::-webkit-slider-thumb {
+  height: 34px;
+}
+.bp-chrome.is-mobile .seek-wrap .seek::-moz-range-thumb {
+  height: 34px;
+}
 .bp-rounds .rt.on {
   background: color-mix(in srgb, var(--accent) 18%, transparent);
   color: #fff;
@@ -1671,7 +1870,7 @@ const utilClusters = computed(() => {
 .bp-transport {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 .bp-transport > * {
   flex-shrink: 0;
@@ -1696,8 +1895,8 @@ const utilClusters = computed(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   padding: 0;
   color: var(--accent);
   border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
@@ -1708,6 +1907,15 @@ const utilClusters = computed(() => {
   background: color-mix(in srgb, var(--accent) 22%, transparent);
   border-color: var(--accent);
   box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.bp-transport .fs {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 44px;
+  padding: 0;
+  color: #9fb0c0;
 }
 .hl-clear {
   font-size: 10px;
@@ -1790,7 +1998,7 @@ const utilClusters = computed(() => {
   position: relative;
   flex: 1;
   min-width: 200px;
-  height: 60px;
+  height: 46px;
 }
 .seek-wrap .seek-rail {
   position: absolute;
@@ -1822,6 +2030,14 @@ const utilClusters = computed(() => {
   appearance: none;
   z-index: 6;
   cursor: pointer;
+  /* Pointer scrubbing is handled on .seek-wrap (reliable on touch); the native
+     input stays for its thumb visual + keyboard arrows, but shouldn't capture
+     pointers (iOS only drags from the tiny thumb otherwise). */
+  pointer-events: none;
+}
+.seek-wrap {
+  /* a touch drag here scrubs instead of the browser panning the page */
+  touch-action: none;
 }
 .seek-wrap .seek::-webkit-slider-runnable-track {
   background: transparent;
@@ -1835,7 +2051,7 @@ const utilClusters = computed(() => {
   -webkit-appearance: none;
   appearance: none;
   width: 4px;
-  height: 56px;
+  height: 42px;
   border-radius: 2px;
   background: #fff;
   box-shadow:
@@ -1845,7 +2061,7 @@ const utilClusters = computed(() => {
 }
 .seek-wrap .seek::-moz-range-thumb {
   width: 4px;
-  height: 56px;
+  height: 42px;
   border-radius: 2px;
   background: #fff;
   border: none;

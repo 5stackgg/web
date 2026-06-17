@@ -4490,6 +4490,8 @@
       "toggle_to_avatars": "Switch to player avatars",
       "hide_scoreboard": "Hide scoreboard",
       "show_scoreboard": "Show scoreboard",
+      "rotate_title": "Rotate your device",
+      "rotate_description": "The replay viewer works best in landscape. Turn your device sideways to continue.",
       "popout": "Pop out into a separate window",
       "phase_freeze": "Freeze",
       "phase_bomb": "Bomb",
@@ -4530,6 +4532,8 @@
       "chrome": {
         "view_2d": "2D top-down radar view",
         "view_3d": "3D map view",
+        "enter_fullscreen": "Fullscreen",
+        "exit_fullscreen": "Exit fullscreen",
         "cam_orbit": "ORBIT",
         "cam_orbit_tip": "Orbit camera — left-drag look, right-drag orbit, scroll zoom, WASD fly",
         "cam_top": "TOP",

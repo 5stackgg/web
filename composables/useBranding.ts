@@ -204,9 +204,9 @@ export function useBranding() {
           manifest.rel = "manifest";
           document.head.appendChild(manifest);
         }
-        manifest.href = `https://${apiDomain}/branding/manifest.webmanifest?v=${encodeURIComponent(version)}`;
-        // CORS uses credentials:true (not "*"), so the fetch must send cookies.
-        manifest.crossOrigin = "use-credentials";
+        // Same-origin route (Nitro proxy) — a cross-origin manifest would
+        // resolve start_url/scope to the API origin and break installability.
+        manifest.href = `/branding/manifest.webmanifest?v=${encodeURIComponent(version)}`;
       }
     },
     { immediate: true, deep: true },

@@ -2548,14 +2548,28 @@ onMounted(() => {
     if (dock) radarRO.observe(dock);
   }
   window.addEventListener("resize", recomputeRadarSize);
+  // Rotating a phone/tablet fires `orientationchange` BEFORE the viewport
+  // metrics (innerHeight / dvh / safe-area) have settled — iOS especially
+  // reports stale values for a moment — so re-fit a few times as it lands,
+  // otherwise the map height is wrong and the page scrolls (shoving the seek
+  // bar). `visualViewport` resize is the most reliable mobile signal.
+  window.addEventListener("orientationchange", recomputeAfterRotate);
+  window.visualViewport?.addEventListener("resize", recomputeRadarSize);
   // Re-measure once after fonts/images settle so the initial top
   // offset is right.
   requestAnimationFrame(() => recomputeRadarSize());
 });
+function recomputeAfterRotate() {
+  recomputeRadarSize();
+  setTimeout(recomputeRadarSize, 200);
+  setTimeout(recomputeRadarSize, 450);
+}
 onUnmounted(() => {
   radarRO?.disconnect();
   if (typeof window !== "undefined") {
     window.removeEventListener("resize", recomputeRadarSize);
+    window.removeEventListener("orientationchange", recomputeAfterRotate);
+    window.visualViewport?.removeEventListener("resize", recomputeRadarSize);
   }
 });
 

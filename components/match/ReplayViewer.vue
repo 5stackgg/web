@@ -2261,6 +2261,9 @@ function zoom2dAt(vx: number, vy: number, next: number) {
 }
 
 function reset2dView() {
+  stopPan2dMomentum();
+  pan2dVX = 0;
+  pan2dVY = 0;
   zoom2d.value = 1;
   pan2dX.value = 0;
   pan2dY.value = 0;
@@ -2284,17 +2287,61 @@ function onWheel2d(e: WheelEvent) {
 const pointers2d = new Map<number, { x: number; y: number }>();
 let pan2dLast: { x: number; y: number } | null = null;
 let pinch2dPrev = 0;
+// Touch momentum: track pointer velocity (px/ms) so a flick keeps gliding and
+// decays smoothly instead of stopping dead when the finger lifts.
+let pan2dVX = 0;
+let pan2dVY = 0;
+let pan2dMoveT = 0;
+let pan2dTouch = false;
+let momentumRAF = 0;
+function stopPan2dMomentum() {
+  if (momentumRAF) {
+    cancelAnimationFrame(momentumRAF);
+    momentumRAF = 0;
+  }
+}
+function startPan2dMomentum() {
+  const FRICTION = 0.004; // velocity decay per ms — a few hundred ms of glide
+  let prev = 0;
+  const step = (ts: number) => {
+    const dt = prev ? Math.min(40, ts - prev) : 16;
+    prev = ts;
+    const bx = pan2dX.value,
+      by = pan2dY.value;
+    pan2dX.value += pan2dVX * dt;
+    pan2dY.value += pan2dVY * dt;
+    clampPan2d();
+    if (pan2dX.value === bx) pan2dVX = 0; // hit an edge → kill that axis
+    if (pan2dY.value === by) pan2dVY = 0;
+    const decay = Math.exp(-FRICTION * dt);
+    pan2dVX *= decay;
+    pan2dVY *= decay;
+    if (Math.hypot(pan2dVX, pan2dVY) < 0.01) {
+      momentumRAF = 0;
+      return;
+    }
+    momentumRAF = requestAnimationFrame(step);
+  };
+  momentumRAF = requestAnimationFrame(step);
+}
 
 function onPan2dDown(e: PointerEvent) {
   if (viewMode.value !== "2d") return;
   if (e.pointerType === "mouse" && e.button !== 0) return;
+  stopPan2dMomentum();
+  pan2dTouch = e.pointerType === "touch";
   pointers2d.set(e.pointerId, { x: e.clientX, y: e.clientY });
   if (pointers2d.size === 1) {
     pan2dLast = { x: e.clientX, y: e.clientY };
+    pan2dVX = 0;
+    pan2dVY = 0;
+    pan2dMoveT = e.timeStamp;
   } else if (pointers2d.size === 2) {
     const p = [...pointers2d.values()];
     pinch2dPrev = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
     pan2dLast = null;
+    pan2dVX = 0;
+    pan2dVY = 0;
   }
   window.addEventListener("pointermove", onPan2dMove);
   window.addEventListener("pointerup", onPan2dUp);
@@ -2317,11 +2364,24 @@ function onPan2dMove(e: PointerEvent) {
       );
     }
     pinch2dPrev = dist;
+    pan2dVX = 0;
+    pan2dVY = 0;
   } else if (pan2dLast) {
-    pan2dX.value += e.clientX - pan2dLast.x;
-    pan2dY.value += e.clientY - pan2dLast.y;
+    const dx = e.clientX - pan2dLast.x;
+    const dy = e.clientY - pan2dLast.y;
+    pan2dX.value += dx;
+    pan2dY.value += dy;
     clampPan2d();
+    const dt = e.timeStamp - pan2dMoveT;
+    if (dt > 0) {
+      // smooth toward the instantaneous velocity so a jittery last sample
+      // doesn't fling the map in a random direction
+      const a = 0.7;
+      pan2dVX = a * (dx / dt) + (1 - a) * pan2dVX;
+      pan2dVY = a * (dy / dt) + (1 - a) * pan2dVY;
+    }
     pan2dLast = { x: e.clientX, y: e.clientY };
+    pan2dMoveT = e.timeStamp;
   }
 }
 
@@ -2331,18 +2391,26 @@ function onPan2dUp(e: PointerEvent) {
     const p = [...pointers2d.values()][0];
     pan2dLast = { x: p.x, y: p.y };
     pinch2dPrev = 0;
+    pan2dVX = 0;
+    pan2dVY = 0;
+    pan2dMoveT = e.timeStamp;
   } else if (pointers2d.size === 0) {
     pan2dLast = null;
     pinch2dPrev = 0;
     window.removeEventListener("pointermove", onPan2dMove);
     window.removeEventListener("pointerup", onPan2dUp);
     window.removeEventListener("pointercancel", onPan2dUp);
+    // Touch flick → glide with inertia; mouse releases stop immediately.
+    if (pan2dTouch && Math.hypot(pan2dVX, pan2dVY) > 0.05) {
+      startPan2dMomentum();
+    }
   }
 }
 
 // Reset zoom when leaving 2D; re-clamp when the square is re-fit (resize).
 watch(viewMode, () => reset2dView());
 watch(radarMaxPx, () => clampPan2d());
+onUnmounted(() => stopPan2dMomentum());
 
 // Detect the height of any persistent bottom chrome the app docks
 // below the page slot. The biggest known case is `#main-bottom-dock`

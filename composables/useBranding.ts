@@ -150,9 +150,9 @@ export function useBranding() {
     { immediate: true, deep: true },
   );
 
-  // Update favicon / apple-touch-icon / PWA manifest when branding changes.
-  // The canonical 5stack.gg site keeps its static build manifest — the dynamic
-  // manifest is only for white-label / self-hosted instances.
+  // Swap the favicon + iOS apple-touch-icon to the uploaded branding asset.
+  // The PWA manifest link is set once in app.vue (host-aware), not here, so
+  // Chrome never sees the static "5stack" manifest flip to the branded one.
   watch(
     () => store.settings,
     () => {
@@ -161,13 +161,17 @@ export function useBranding() {
       const faviconSetting = store.settings.find(
         (s: { name: string }) => s.name === "public.favicon_url",
       );
-      const brandSetting = store.settings.find(
-        (s: { name: string }) => s.name === "public.brand_name",
+      const pwaIconSetting = store.settings.find(
+        (s: { name: string }) => s.name === "public.pwa_icon",
+      );
+
+      // Shared version token (bumped on every app-icon upload) — the asset paths
+      // are now stable, so this is what busts the browser/OS icon caches.
+      const version = encodeURIComponent(
+        pwaIconSetting?.value || faviconSetting?.value || "",
       );
 
       if (faviconSetting?.value) {
-        const href = `https://${apiDomain}/branding/favicon?v=${encodeURIComponent(faviconSetting.value)}`;
-
         let link = document.querySelector(
           "link[rel='icon']",
         ) as HTMLLinkElement | null;
@@ -176,9 +180,18 @@ export function useBranding() {
           link.rel = "icon";
           document.head.appendChild(link);
         }
-        link.href = href;
+        link.href = `https://${apiDomain}/branding/favicon?v=${version}`;
+      }
 
-        // iOS "Add to Home Screen" uses apple-touch-icon, not the manifest icon.
+      // iOS "Add to Home Screen" uses apple-touch-icon, not the manifest icon.
+      // Prefer the 512px PWA icon (a tiny .ico favicon makes a poor home icon).
+      const appleHref = pwaIconSetting?.value
+        ? `https://${apiDomain}/branding/pwa/512?v=${version}`
+        : faviconSetting?.value
+          ? `https://${apiDomain}/branding/favicon?v=${version}`
+          : null;
+
+      if (appleHref) {
         let appleLink = document.querySelector(
           "link[rel='apple-touch-icon']",
         ) as HTMLLinkElement | null;
@@ -187,26 +200,7 @@ export function useBranding() {
           appleLink.rel = "apple-touch-icon";
           document.head.appendChild(appleLink);
         }
-        appleLink.href = href;
-      }
-
-      const hostname =
-        typeof window !== "undefined" ? window.location.hostname : "";
-      const isCanonicalSite = hostname === "5stack.gg";
-
-      if (!isCanonicalSite && (brandSetting?.value || faviconSetting?.value)) {
-        const version = faviconSetting?.value || brandSetting?.value || "";
-        let manifest = document.querySelector(
-          "link[rel='manifest']",
-        ) as HTMLLinkElement | null;
-        if (!manifest) {
-          manifest = document.createElement("link");
-          manifest.rel = "manifest";
-          document.head.appendChild(manifest);
-        }
-        // Same-origin route (Nitro proxy) — a cross-origin manifest would
-        // resolve start_url/scope to the API origin and break installability.
-        manifest.href = `/branding/manifest.webmanifest?v=${encodeURIComponent(version)}`;
+        appleLink.href = appleHref;
       }
     },
     { immediate: true, deep: true },

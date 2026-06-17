@@ -163,111 +163,50 @@ definePageMeta({
             $t('pages.settings.application.branding.assets_section_description')
           "
         >
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="space-y-2">
-              <label class="text-sm font-medium">{{
-                $t("pages.settings.application.branding.logo")
-              }}</label>
-              <p class="text-sm text-muted-foreground">
-                {{ $t("pages.settings.application.branding.logo_description") }}
-              </p>
+          <div class="space-y-2 sm:max-w-md">
+            <div
+              role="button"
+              tabindex="0"
+              :aria-label="
+                $t('pages.settings.application.branding.upload_app_icon')
+              "
+              class="group relative flex h-36 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-dashed border-border bg-muted/20 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-accent/30"
+              @click="$refs.appIconInput.click()"
+              @keydown.enter.prevent="$refs.appIconInput.click()"
+              @keydown.space.prevent="$refs.appIconInput.click()"
+            >
+              <img
+                v-if="appIconPreview"
+                :src="appIconPreview"
+                class="max-h-24 max-w-[80%] rounded-lg object-contain"
+              />
+              <NuxtImg
+                v-else
+                src="/favicon/192.png"
+                class="max-h-24 max-w-[80%] object-contain opacity-90"
+              />
               <div
-                role="button"
-                tabindex="0"
-                :aria-label="$t('pages.settings.application.branding.upload_logo')"
-                class="group relative flex h-36 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-dashed border-border bg-muted/20 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-accent/30"
-                @click="$refs.logoInput.click()"
-                @keydown.enter.prevent="$refs.logoInput.click()"
-                @keydown.space.prevent="$refs.logoInput.click()"
+                class="absolute inset-0 flex items-center justify-center gap-2 bg-background/70 text-sm font-medium opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100"
               >
-                <img
-                  v-if="logoPreview"
-                  :src="logoPreview"
-                  class="max-h-24 max-w-[80%] object-contain"
-                />
-                <NuxtImg
-                  v-else
-                  src="/favicon/64.png"
-                  class="max-h-24 max-w-[80%] object-contain opacity-90"
-                />
-                <div
-                  class="absolute inset-0 flex items-center justify-center gap-2 bg-background/70 text-sm font-medium opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100"
-                >
-                  <LucideUpload class="h-4 w-4" />
-                  {{ $t("pages.settings.application.branding.upload_logo") }}
-                </div>
-                <button
-                  v-if="logoPreview"
-                  type="button"
-                  :aria-label="$t('pages.settings.application.branding.remove')"
-                  class="absolute right-2 top-2 z-10 rounded-full border bg-background/80 p-1 text-muted-foreground opacity-0 transition-opacity hover:border-destructive/50 hover:text-destructive group-hover:opacity-100"
-                  @click.stop="removeLogo"
-                >
-                  <LucideX class="h-3.5 w-3.5" />
-                </button>
-                <input
-                  ref="logoInput"
-                  type="file"
-                  accept="image/png,image/jpeg,image/svg+xml,image/webp"
-                  class="hidden"
-                  @change="handleLogoUpload"
-                />
+                <LucideUpload class="h-4 w-4" />
+                {{ $t("pages.settings.application.branding.upload_app_icon") }}
               </div>
-            </div>
-
-            <div class="space-y-2">
-              <label class="text-sm font-medium">{{
-                $t("pages.settings.application.branding.favicon")
-              }}</label>
-              <p class="text-sm text-muted-foreground">
-                {{
-                  $t("pages.settings.application.branding.favicon_description")
-                }}
-              </p>
-              <div
-                role="button"
-                tabindex="0"
-                :aria-label="
-                  $t('pages.settings.application.branding.upload_favicon')
-                "
-                class="group relative flex h-36 cursor-pointer flex-col items-center justify-center gap-2 overflow-hidden rounded-lg border border-dashed border-border bg-muted/20 transition-colors hover:border-[hsl(var(--tac-amber)/0.6)] hover:bg-accent/30"
-                @click="$refs.faviconInput.click()"
-                @keydown.enter.prevent="$refs.faviconInput.click()"
-                @keydown.space.prevent="$refs.faviconInput.click()"
+              <button
+                v-if="appIconPreview"
+                type="button"
+                :aria-label="$t('pages.settings.application.branding.remove')"
+                class="absolute right-2 top-2 z-10 rounded-full border bg-background/80 p-1 text-muted-foreground opacity-0 transition-opacity hover:border-destructive/50 hover:text-destructive group-hover:opacity-100"
+                @click.stop="removeAppIcon"
               >
-                <img
-                  v-if="faviconPreview"
-                  :src="faviconPreview"
-                  class="max-h-24 max-w-[80%] object-contain"
-                />
-                <NuxtImg
-                  v-else
-                  src="/favicon/64.png"
-                  class="max-h-24 max-w-[80%] object-contain opacity-90"
-                />
-                <div
-                  class="absolute inset-0 flex items-center justify-center gap-2 bg-background/70 text-sm font-medium opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100"
-                >
-                  <LucideUpload class="h-4 w-4" />
-                  {{ $t("pages.settings.application.branding.upload_favicon") }}
-                </div>
-                <button
-                  v-if="faviconPreview"
-                  type="button"
-                  :aria-label="$t('pages.settings.application.branding.remove')"
-                  class="absolute right-2 top-2 z-10 rounded-full border bg-background/80 p-1 text-muted-foreground opacity-0 transition-opacity hover:border-destructive/50 hover:text-destructive group-hover:opacity-100"
-                  @click.stop="removeFavicon"
-                >
-                  <LucideX class="h-3.5 w-3.5" />
-                </button>
-                <input
-                  ref="faviconInput"
-                  type="file"
-                  accept="image/png,image/jpeg,image/x-icon,image/webp"
-                  class="hidden"
-                  @change="handleFaviconUpload"
-                />
-              </div>
+                <LucideX class="h-3.5 w-3.5" />
+              </button>
+              <input
+                ref="appIconInput"
+                type="file"
+                accept="image/png,image/jpeg,image/svg+xml,image/webp"
+                class="hidden"
+                @change="handleAppIconUpload"
+              />
             </div>
           </div>
         </SettingsSection>
@@ -949,18 +888,15 @@ export default {
     apiDomain() {
       return useRuntimeConfig().public.apiDomain;
     },
-    logoPreview() {
+    appIconPreview() {
+      // One uploaded icon drives the logo, favicon and PWA icons. Use the
+      // pwa_icon value (set on every upload) as both presence flag and
+      // cache-buster; preview the generated logo artwork.
       const setting = this.settings.find(
-        (s: { name: string }) => s.name === "public.logo_url",
-      );
-      return setting?.value ? `https://${this.apiDomain}/branding/logo` : null;
-    },
-    faviconPreview() {
-      const setting = this.settings.find(
-        (s: { name: string }) => s.name === "public.favicon_url",
+        (s: { name: string }) => s.name === "public.pwa_icon",
       );
       return setting?.value
-        ? `https://${this.apiDomain}/branding/favicon`
+        ? `https://${this.apiDomain}/branding/logo?v=${encodeURIComponent(setting.value)}`
         : null;
     },
     currentColorSections(): ColorSection[] {
@@ -1074,19 +1010,17 @@ export default {
         title: this.$t("pages.settings.application.branding.branding_saved"),
       });
     },
-    async handleLogoUpload(event: Event) {
+    async handleAppIconUpload(event: Event) {
       const input = event.target as HTMLInputElement;
       if (!input.files?.length) return;
-      await this.uploadBrandingFile("logo", input.files[0]);
+      // One upload generates the logo, favicon and PWA install icons.
+      await this.uploadBrandingFile("icon", input.files[0]);
       input.value = "";
     },
-    async handleFaviconUpload(event: Event) {
-      const input = event.target as HTMLInputElement;
-      if (!input.files?.length) return;
-      await this.uploadBrandingFile("favicon", input.files[0]);
-      input.value = "";
-    },
-    async uploadBrandingFile(type: "logo" | "favicon", file: File) {
+    async uploadBrandingFile(
+      type: "logo" | "favicon" | "pwa" | "icon",
+      file: File,
+    ) {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("type", type);
@@ -1107,9 +1041,7 @@ export default {
 
         toast({
           title: this.$t(
-            type === "logo"
-              ? "pages.settings.application.branding.logo_uploaded"
-              : "pages.settings.application.branding.favicon_uploaded",
+            `pages.settings.application.branding.${type}_uploaded`,
           ) as string,
         });
       } catch (error: any) {
@@ -1122,13 +1054,13 @@ export default {
         });
       }
     },
-    async removeLogo() {
-      await this.deleteBrandingFile("logo");
+    async removeAppIcon() {
+      await this.deleteBrandingFile("icon");
     },
-    async removeFavicon() {
-      await this.deleteBrandingFile("favicon");
-    },
-    async deleteBrandingFile(type: "logo" | "favicon", silent = false) {
+    async deleteBrandingFile(
+      type: "logo" | "favicon" | "pwa" | "icon",
+      silent = false,
+    ) {
       try {
         const response = await fetch(
           `https://${this.apiDomain}/branding/${type}`,
@@ -1145,9 +1077,7 @@ export default {
         if (!silent) {
           toast({
             title: this.$t(
-              type === "logo"
-                ? "pages.settings.application.branding.logo_removed"
-                : "pages.settings.application.branding.favicon_removed",
+              `pages.settings.application.branding.${type}_removed`,
             ) as string,
           });
         }
@@ -1278,8 +1208,7 @@ export default {
 
         // Delete uploaded files
         await Promise.allSettled([
-          this.deleteBrandingFile("logo", true),
-          this.deleteBrandingFile("favicon", true),
+          this.deleteBrandingFile("icon", true),
         ]);
 
         this.brandName = "";

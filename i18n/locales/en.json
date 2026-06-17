@@ -1426,6 +1426,7 @@
           "favicon": "Favicon",
           "favicon_description": "Upload a custom favicon. Recommended: square image, PNG or ICO.",
           "upload_favicon": "Upload Favicon",
+          "upload_app_icon": "Upload Logo",
           "remove": "Remove",
           "login_page": "Login Page",
           "login_page_description": "Customize the login page footer link.",
@@ -1440,11 +1441,17 @@
           "save_branding": "Save Branding",
           "reset_to_defaults": "Reset to Defaults",
           "reset_confirm_title": "Reset branding to defaults?",
-          "reset_confirm_description": "This clears your brand name, colors, login footer, and uploaded logo/favicon, restoring the default 5Stack theme. This cannot be undone.",
+          "reset_confirm_description": "This clears your brand name, colors, login footer, and uploaded logo/favicon/app icon, restoring the default 5Stack theme. This cannot be undone.",
           "export_theme": "Export Theme",
           "import_theme": "Import Theme",
           "upload_failed": "Upload failed",
           "delete_failed": "Delete failed",
+          "logo_uploaded": "Logo uploaded",
+          "favicon_uploaded": "Favicon uploaded",
+          "icon_uploaded": "App icon uploaded",
+          "logo_removed": "Logo removed",
+          "favicon_removed": "Favicon removed",
+          "icon_removed": "App icon removed",
           "branding_saved": "Branding saved",
           "save_failed": "Save failed",
           "branding_reset": "Branding reset to defaults",
@@ -1501,8 +1508,8 @@
             "tactical_amber": "Tactical Accent (amber highlights)",
             "tactical_amber_foreground": "Tactical Accent Foreground"
           },
-          "assets_section": "Logo & Favicon",
-          "assets_section_description": "Upload a custom logo and favicon for your platform."
+          "assets_section": "Logo",
+          "assets_section_description": "Upload one square image (512×512 PNG recommended). The logo, favicon and PWA install icons are all generated from it automatically. ICO files aren't supported."
         },
         "fixtures": {
           "dev_only_notice": "Fixtures are only available in development mode.",

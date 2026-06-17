@@ -29,6 +29,8 @@ export default defineNuxtConfig({
       titleTemplate: (pageTitle?: string) =>
         pageTitle && pageTitle !== title ? `${pageTitle} | 5Stack` : title,
       meta: [
+        { name: "color-scheme", content: "dark" },
+        { name: "theme-color", content: "#0a0a0b" },
         { name: "robots", content: "index, follow" },
         { name: "title", content: title },
         { name: "description", content: description },
@@ -44,6 +46,10 @@ export default defineNuxtConfig({
         { property: "og:url", content: url },
         { property: "og:image", content: `${url}/_ipx/_/favicon/512.png` },
       ],
+      htmlAttrs: {
+        class: "dark",
+        style: "background-color: hsl(240 10% 3.9%)",
+      },
       bodyAttrs: {
         class: "pre-loader",
       },
@@ -61,6 +67,7 @@ export default defineNuxtConfig({
               animation: spin 1s linear infinite;
             }
             .pre-loader {
+              background-color: hsl(240 10% 3.9%);
               position: fixed;
               top: 0;
               left: 0;

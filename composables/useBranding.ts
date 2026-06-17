@@ -150,14 +150,24 @@ export function useBranding() {
     { immediate: true, deep: true },
   );
 
-  // Update favicon when setting changes
+  // Update favicon / apple-touch-icon / PWA manifest when branding changes.
+  // The canonical 5stack.gg site keeps its static build manifest — the dynamic
+  // manifest is only for white-label / self-hosted instances.
   watch(
     () => store.settings,
     () => {
+      const apiDomain = useRuntimeConfig().public.apiDomain;
+
       const faviconSetting = store.settings.find(
         (s: { name: string }) => s.name === "public.favicon_url",
       );
+      const brandSetting = store.settings.find(
+        (s: { name: string }) => s.name === "public.brand_name",
+      );
+
       if (faviconSetting?.value) {
+        const href = `https://${apiDomain}/branding/favicon?v=${encodeURIComponent(faviconSetting.value)}`;
+
         let link = document.querySelector(
           "link[rel='icon']",
         ) as HTMLLinkElement | null;
@@ -166,7 +176,37 @@ export function useBranding() {
           link.rel = "icon";
           document.head.appendChild(link);
         }
-        link.href = `https://${useRuntimeConfig().public.apiDomain}/branding/favicon?v=${encodeURIComponent(faviconSetting.value)}`;
+        link.href = href;
+
+        // iOS "Add to Home Screen" uses apple-touch-icon, not the manifest icon.
+        let appleLink = document.querySelector(
+          "link[rel='apple-touch-icon']",
+        ) as HTMLLinkElement | null;
+        if (!appleLink) {
+          appleLink = document.createElement("link");
+          appleLink.rel = "apple-touch-icon";
+          document.head.appendChild(appleLink);
+        }
+        appleLink.href = href;
+      }
+
+      const hostname =
+        typeof window !== "undefined" ? window.location.hostname : "";
+      const isCanonicalSite = hostname === "5stack.gg";
+
+      if (!isCanonicalSite && (brandSetting?.value || faviconSetting?.value)) {
+        const version = faviconSetting?.value || brandSetting?.value || "";
+        let manifest = document.querySelector(
+          "link[rel='manifest']",
+        ) as HTMLLinkElement | null;
+        if (!manifest) {
+          manifest = document.createElement("link");
+          manifest.rel = "manifest";
+          document.head.appendChild(manifest);
+        }
+        manifest.href = `https://${apiDomain}/branding/manifest.webmanifest?v=${encodeURIComponent(version)}`;
+        // CORS uses credentials:true (not "*"), so the fetch must send cookies.
+        manifest.crossOrigin = "use-credentials";
       }
     },
     { immediate: true, deep: true },

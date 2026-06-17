@@ -14,21 +14,12 @@ const SETTINGS_QUERY = `query BrandingManifest {
   settings(where: { name: { _in: [
     "public.brand_name",
     "public.favicon_url",
-    "public.color_dark_background",
-    "public.color_dark_primary"
+    "public.pwa_icon"
   ] } }) {
     name
     value
   }
 }`;
-
-// Stored color settings are shadcn space-separated HSL (e.g. "240 10% 3.9%").
-function toCssColor(value: string | null | undefined): string {
-  if (!value) return "#000000";
-  const trimmed = value.trim();
-  if (trimmed.startsWith("#") || trimmed.startsWith("hsl")) return trimmed;
-  return `hsl(${trimmed})`;
-}
 
 function guessContentType(path: string): string {
   if (path.endsWith(".svg")) return "image/svg+xml";
@@ -36,6 +27,12 @@ function guessContentType(path: string): string {
   if (path.endsWith(".jpg") || path.endsWith(".jpeg")) return "image/jpeg";
   if (path.endsWith(".ico")) return "image/x-icon";
   return "image/png";
+}
+
+// A favicon can be a tiny .ico, which Chrome can't use as an install icon, so
+// only fall back to it when it's a raster format that's usable at install sizes.
+function faviconUsableAsIcon(path: string): boolean {
+  return /\.(png|jpe?g|webp)$/i.test(path);
 }
 
 export default defineEventHandler(async (event) => {
@@ -72,40 +69,50 @@ export default defineEventHandler(async (event) => {
   const get = (name: string) => settings.find((s) => s.name === name)?.value;
 
   const brandName = get("public.brand_name") || "5Stack";
+  const pwaIcon = get("public.pwa_icon");
   const faviconUrl = get("public.favicon_url");
 
-  // Cross-origin favicon (API origin) is fine; the manifest itself is what must
-  // be same-origin. Static fallbacks are web-origin relative paths.
-  const icons = faviconUrl
-    ? [
-        {
-          src: `https://${apiDomain}/branding/favicon?v=${encodeURIComponent(faviconUrl)}`,
-          sizes: "192x192 512x512",
-          type: guessContentType(faviconUrl),
-        },
-        {
-          src: `https://${apiDomain}/branding/favicon?v=${encodeURIComponent(faviconUrl)}`,
-          sizes: "any",
-          type: guessContentType(faviconUrl),
-          purpose: "any",
-        },
-      ]
-    : [
-        { src: "/favicon/192.png", sizes: "192x192", type: "image/png" },
-        {
-          src: "/favicon/512.png",
-          sizes: "512x512",
-          type: "image/png",
-          purpose: "any",
-        },
-      ];
+  // Icon source priority:
+  //   1. The dedicated PWA icon (API-generated 192/512 PNGs) — best.
+  //   2. A raster favicon (only if usable at install sizes).
+  //   3. The bundled 5Stack icons.
+  // Cross-origin icons (API origin) are allowed; only the manifest itself must
+  // be same-origin.
+  let icons;
+  if (pwaIcon) {
+    const v = encodeURIComponent(pwaIcon);
+    icons = [192, 512].map((size) => ({
+      src: `https://${apiDomain}/branding/pwa/${size}?v=${v}`,
+      sizes: `${size}x${size}`,
+      type: "image/png",
+      purpose: "any maskable",
+    }));
+  } else if (faviconUrl && faviconUsableAsIcon(faviconUrl)) {
+    const src = `https://${apiDomain}/branding/favicon?v=${encodeURIComponent(faviconUrl)}`;
+    icons = [
+      { src, sizes: "192x192 512x512", type: guessContentType(faviconUrl) },
+      { src, sizes: "any", type: guessContentType(faviconUrl), purpose: "any" },
+    ];
+  } else {
+    icons = [
+      { src: "/favicon/192.png", sizes: "192x192", type: "image/png" },
+      {
+        src: "/favicon/512.png",
+        sizes: "512x512",
+        type: "image/png",
+        purpose: "any",
+      },
+    ];
+  }
 
   return {
     name: brandName,
     short_name: brandName,
     icons,
-    theme_color: toCssColor(get("public.color_dark_primary")),
-    background_color: toCssColor(get("public.color_dark_background")),
+    // Always dark — the install/splash chrome should match the app's dark theme
+    // regardless of the instance's custom colors.
+    theme_color: "#000000",
+    background_color: "#000000",
     display: "standalone",
     start_url: "/",
   };

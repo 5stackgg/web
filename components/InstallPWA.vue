@@ -6,7 +6,6 @@ const { state, isMobile } = useSidebar();
 </script>
 
 <template>
-  <NuxtPwaManifest />
   <div v-if="canInstall">
     <template v-if="isMenuItem">
       <SidebarMenuItem

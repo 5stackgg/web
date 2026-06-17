@@ -24,6 +24,15 @@ polyfillCountryFlagEmojis();
 const { brandName } = useBranding();
 const { t } = useI18n();
 
+// Single, stable manifest link. 5stack.gg keeps the static build manifest; every
+// other (white-label) host points at the host-aware Nitro route. Setting it once
+// here — instead of swapping a NuxtPwaManifest-injected link at runtime — avoids
+// Chrome seeing the static "5stack" manifest first and prompting a name "update".
+const manifestHref =
+  typeof window !== "undefined" && window.location.hostname === "5stack.gg"
+    ? "/manifest.webmanifest"
+    : "/branding/manifest.webmanifest";
+
 useHead({
   title: () => brandName.value || "5Stack",
   titleTemplate: (pageTitle?: string) => {
@@ -33,6 +42,14 @@ useHead({
     }
     return `${base} | ${t("branding.site_title_suffix")}`;
   },
+  link: [{ rel: "manifest", href: manifestHref }],
+  // iOS home-screen label — plain brand name, no " | …" suffix.
+  meta: [
+    {
+      name: "apple-mobile-web-app-title",
+      content: () => brandName.value || "5Stack",
+    },
+  ],
 });
 
 const authStore = useAuthStore();
@@ -77,8 +94,6 @@ function pageKeyWithoutTabQuery(route: {
 </script>
 
 <template>
-  <NuxtPwaManifest />
-
   <StreamGlobal v-if="hasGlobalStream" />
 
   <div v-if="me" style="display: contents">

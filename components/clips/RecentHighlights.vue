@@ -78,7 +78,7 @@ async function fetchData() {
         ],
       } as any),
       variables: {
-        groups_order_by: [{ public_latest_clip_at: order_by.desc }],
+        groups_order_by: [{ public_latest_clip_at: order_by.desc_nulls_last }],
         clips_order_by: [{ created_at: order_by.desc }],
         pool_size: extendedPool.value,
       },

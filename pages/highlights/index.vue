@@ -366,7 +366,7 @@ async function fetchData() {
         groups_order_by:
           sortFilter.value === "views"
             ? [{ match_clips_aggregate: { sum: { views_count: order_by.desc } } }]
-            : [{ [orderColumn]: order_by.desc }],
+            : [{ [orderColumn]: order_by.desc_nulls_last }],
         clips_order_by:
           sortFilter.value === "views"
             ? [{ views_count: order_by.desc }]

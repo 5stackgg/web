@@ -91,7 +91,7 @@ import cleanMapName from "~/utilities/cleanMapName";
               <Button
                 size="xs"
                 variant="ghost"
-                class="hidden h-6 w-6 p-0 text-white/70 hover:text-white sm:inline-flex"
+                class="inline-flex h-6 w-6 p-0 text-white/70 hover:text-white"
                 @click.stop="openReplay2d()"
               >
                 <span
@@ -108,7 +108,7 @@ import cleanMapName from "~/utilities/cleanMapName";
               <Button
                 size="xs"
                 variant="ghost"
-                class="hidden h-6 w-6 p-0 text-[#38e1ff]/80 hover:text-[#38e1ff] sm:inline-flex"
+                class="inline-flex h-6 w-6 p-0 text-[#38e1ff]/80 hover:text-[#38e1ff]"
                 @click.stop="openReplay3d()"
               >
                 <span

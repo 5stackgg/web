@@ -74,11 +74,12 @@ const wideGrid =
           <span class="text-center"
             ><StatLabel
               stat="hltv"
+              header
               :label="$t('player_match.headers.rating')"
           /></span>
           <span>K / D / A</span>
-          <span><StatLabel stat="kd" label="K/D" /></span>
-          <span><StatLabel stat="adr" label="ADR" /></span>
+          <span><StatLabel stat="kd" header label="K/D" /></span>
+          <span><StatLabel stat="adr" header label="ADR" /></span>
           <span class="text-right">{{ $t("player_match.headers.elo") }}</span>
           <span />
         </div>

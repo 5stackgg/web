@@ -3,6 +3,11 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 import ReplayPopoutInner from "~/components/match/ReplayPopoutInner.vue";
 import { TooltipProvider } from "~/components/ui/tooltip";
+import { useReplayNoZoom } from "~/composables/useReplayNoZoom";
+
+// The replay drives its own pinch/zoom; native browser zoom on top of it gets
+// stuck and is hard to undo. Disable it for this chromeless page.
+useReplayNoZoom();
 
 // Chromeless single-purpose route — opened via window.open() from the
 // ReplayViewer's pop-out button. We render only the replay viewer so
@@ -25,7 +30,9 @@ const matchMapId = computed(() => String(route.params.matchMapId));
 
 <template>
   <TooltipProvider>
-    <div class="flex h-screen w-screen flex-col overflow-hidden bg-background">
+    <div
+      class="flex h-[100dvh] w-screen flex-col overflow-hidden bg-background"
+    >
       <ReplayPopoutInner :match-map-id="matchMapId" />
     </div>
   </TooltipProvider>

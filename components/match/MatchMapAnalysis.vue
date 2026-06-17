@@ -1142,7 +1142,7 @@ onUnmounted(() => window.removeEventListener("keydown", onKeyDown));
           <div class="flex items-center gap-3">
             <div
               v-if="canOpen2dPlayback && (has2dRadar || has3dMesh)"
-              class="hidden items-stretch overflow-hidden rounded-md border border-border bg-card/50 sm:inline-flex"
+              class="inline-flex items-stretch overflow-hidden rounded-md border border-border bg-card/50"
             >
               <button
                 v-if="has2dRadar"

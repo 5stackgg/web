@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, computed, watch, onBeforeUnmount } from "vue";
+import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { useI18n } from "vue-i18n";
 import { useApolloClient } from "@vue/apollo-composable";
 import {
@@ -804,6 +804,28 @@ function toggleSeries(key: string) {
 }
 onBeforeUnmount(clearSeriesTimers);
 
+// On touch devices Chart.js shows the tooltip + active point on tap but never
+// clears it (there's no pointerleave), so a stuck point lingers on the graph.
+// Mirror FiveStackToolTip: tapping anywhere outside the canvas dismisses it.
+const recentChartRef = ref<any>(null);
+function onDocPointerDownChart(event: PointerEvent) {
+  const chart = recentChartRef.value?.chart;
+  if (!chart) return;
+  const active = chart.tooltip?.getActiveElements?.() ?? [];
+  if (!active.length) return;
+  const target = event.target as Node | null;
+  if (target && chart.canvas?.contains(target)) return;
+  chart.setActiveElements([]);
+  chart.tooltip?.setActiveElements([], { x: 0, y: 0 });
+  chart.update();
+}
+onMounted(() => {
+  document.addEventListener("pointerdown", onDocPointerDownChart, true);
+});
+onBeforeUnmount(() => {
+  document.removeEventListener("pointerdown", onDocPointerDownChart, true);
+});
+
 // When a data reload SHRINKS the series (e.g. range L30 → 7D), chart.js removes
 // points and rescales the axis — it reads as a jarring full redraw. Suppress
 // the animation for just that update so it snaps cleanly. Growing keeps its
@@ -1279,7 +1301,11 @@ function tooltipAfter(index: number | undefined): string[] {
                 class="min-h-[360px] flex-1 origin-center transition-transform duration-200 ease-in-out"
                 :class="recentCollapsed ? 'scale-y-0' : 'scale-y-100'"
               >
-                <Line :data="recentChartData" :options="recentOptions" />
+                <Line
+                  ref="recentChartRef"
+                  :data="recentChartData"
+                  :options="recentOptions"
+                />
               </div>
             </CardContent>
           </AnimatedCard>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, watch, onMounted, onUnmounted } from "vue";
+import { computed, ref, watch, onMounted, onUnmounted, nextTick } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   weaponIconPath,
@@ -41,6 +41,8 @@ import {
   Layers,
   Box,
   Skull,
+  RotateCcw,
+  Smartphone,
 } from "lucide-vue-next";
 import { Kbd } from "~/components/ui/kbd";
 import {
@@ -291,24 +293,50 @@ const mapMeshUrl = computed(() =>
   normalizedMap.value ? `${meshCdn}/${normalizedMap.value}.tri` : null,
 );
 
-// Per-map ceiling boost (source-z units) added to the auto-detected ceiling for
-// tall/multi-level maps where the 99th-pct player height sits well below the real
-// playable top. Overpass (B site, bridge, heaven) gets chopped too low otherwise.
-// This raises BOTH the load-time cull and the ROOF slider midpoint together.
-const CEILING_BOOST: Record<string, number> = {
-  de_overpass: 512,
-};
+// Per-map ceiling boost (source-z units) added to the auto-detected ceiling, as
+// an escape hatch when the floor-aware detection below still needs a nudge. The
+// detector handles overpass/dust2-style multi-level maps on its own now, so this
+// table is usually empty.
+const CEILING_BOOST: Record<string, number> = {};
 
-// Auto-detect the playable ceiling for the 3D roof-cut. Players never stand above
-// the real ceiling, so the ~99th percentile of player heights (+ head clearance)
-// is a reliable "cut roofs but keep all the action" height. Source-z units; the
-// 3D viewer anchors the ROOF slider's midpoint here so it just works by default.
+// Auto-detect the playable ceiling for the 3D roof-cut. Source-z units; the 3D
+// viewer anchors the ROOF slider's midpoint here so it just works by default.
+//
+// A flat 99th-percentile of player heights breaks on multi-level maps: high but
+// low-traffic areas (overpass heaven/bridge, dust2 upper tunnels / A platform /
+// sniper's nest) are <1% of all samples, so they land in the truncated tail and
+// the ceiling plane slices through real playable geometry. Instead we find the
+// HIGHEST floor players actually spend time on — bucket heights into bands and
+// take the top band that clears an occupancy floor — then anchor the cut just
+// below standing head there. Rare one-off boosts/jumps don't form a band, so
+// they're ignored; genuine high ground (even sparse) is kept. Clamped to never
+// sit below the old 99th-pct value, so it can only ever keep MORE of the map —
+// no map regresses into new clipping.
 const autoCeilingZ = computed<number | null>(() => {
   const zs: number[] = [];
   for (const p of props.positions) if (p.z != null) zs.push(p.z);
   if (zs.length < 20) return null;
   zs.sort((a, b) => a - b);
-  const base = zs[Math.floor(zs.length * 0.99)] - 90; // below standing head — cuts walls lower
+
+  const p99 = zs[Math.floor(zs.length * 0.99)];
+
+  // Highest populated floor: 64u bands, kept only if they hold a real share of
+  // ticks (≥0.05%, min 5) so a lone boost/jump apex can't raise the ceiling.
+  const BAND = 64;
+  const minTicks = Math.max(5, Math.floor(zs.length * 0.0005));
+  const counts = new Map<number, number>();
+  for (const z of zs) {
+    const b = Math.floor(z / BAND);
+    counts.set(b, (counts.get(b) ?? 0) + 1);
+  }
+  let bandMax = -Infinity;
+  for (const z of zs) {
+    if ((counts.get(Math.floor(z / BAND)) ?? 0) >= minTicks && z > bandMax)
+      bandMax = z;
+  }
+
+  const ref = Math.max(p99, isFinite(bandMax) ? bandMax : p99);
+  const base = ref - 90; // below standing head — cuts walls lower
   return base + (CEILING_BOOST[normalizedMap.value] ?? 0);
 });
 
@@ -644,7 +672,7 @@ const NADE_SCRUB_ICON: Record<string, string> = {
 const scrubberMarkers = computed<
   Array<{
     left: number;
-    lane: "kill" | "nade";
+    lane: "kill" | "nade" | "bomb";
     color: string;
     title: string;
     icon?: string;
@@ -659,7 +687,7 @@ const scrubberMarkers = computed<
   }
   const out: Array<{
     left: number;
-    lane: "kill" | "nade";
+    lane: "kill" | "nade" | "bomb";
     color: string;
     title: string;
     icon?: string;
@@ -698,6 +726,20 @@ const scrubberMarkers = computed<
       icon: NADE_SCRUB_ICON[g.type],
       gid: g.grenade_id ?? undefined,
     });
+  }
+  // Bomb plant — a single distinct marker so it's obvious the bomb went down
+  // this round (and roughly when).
+  const plant = bombPlantThisRound.value;
+  if (plant) {
+    const left = ((plant.tick - range.min) / span) * 100;
+    if (left >= -1 && left <= 101) {
+      out.push({
+        left: Math.max(0, Math.min(100, left)),
+        lane: "bomb",
+        color: "#ff5a4d",
+        title: plant.site ? `Bomb planted ${plant.site}` : "Bomb planted",
+      });
+    }
   }
   return out;
 });
@@ -2090,6 +2132,9 @@ const playbarDockEl = ref<HTMLElement | null>(null);
 // Map square side, fit to the smaller of available width/height so the
 // whole map stays within the window bounds (no cropping).
 const radarMaxPx = ref(560);
+// On touch, how far to shift the centered square UP so it clears the floating
+// transport bar (its center moves to the middle of the room above the bar).
+const mapTopShift = ref(0);
 
 // Floating scoreboard: shown by default, toggleable. When visible it
 // reserves horizontal room on the right so the map shrinks instead of
@@ -2101,6 +2146,305 @@ const SCOREBOARD_RESERVE = 416; // 400px panel + 16px breathing room
 const scoreboardReserve = computed(() =>
   showScoreboard.value ? SCOREBOARD_RESERVE : 0,
 );
+
+// ── Mobile / orientation handling ──────────────────────────────────────────
+// The replay stage is built for a wide layout (floating scoreboard + a
+// horizontal transport bar), so on touch devices — phones AND tablets — we
+// (1) gate it behind a "rotate to landscape" prompt and (2) hand ReplayChrome a
+// `mobile` flag so it scales its panels down. `(pointer: coarse)` is the
+// primary-touch signal (true on phones/tablets, false on a mouse/trackpad
+// laptop even if it has a touchscreen). The chrome scoreboard gets its own
+// visibility ref so it can be collapsed for room — separate from the dead
+// `showScoreboard` reserve logic above.
+const isCoarsePointer = ref(false);
+const isPortrait = ref(false);
+const isTablet = ref(false);
+const chromeScoreboardOpen = ref(true);
+let orientationMql: MediaQueryList | null = null;
+function syncMobileEnv() {
+  isPortrait.value = orientationMql?.matches ?? false;
+  // Tablet = a touch device whose SHORT edge is large (≥600px) — orientation
+  // independent, so a phone in landscape (short edge ~400) stays a phone.
+  isTablet.value =
+    isCoarsePointer.value &&
+    Math.min(window.innerWidth, window.innerHeight) >= 600;
+}
+// Compact chrome on any touch device.
+const mobileChrome = computed(() => isCoarsePointer.value);
+// Block the viewer while a touch device is held portrait — the wide layout is
+// unusable that narrow, so we ask the user to rotate instead of cramming it.
+const needsRotate = computed(() => isCoarsePointer.value && isPortrait.value);
+
+onMounted(() => {
+  if (typeof window === "undefined" || !window.matchMedia) return;
+  isCoarsePointer.value = window.matchMedia("(pointer: coarse)").matches;
+  orientationMql = window.matchMedia("(orientation: portrait)");
+  orientationMql.addEventListener("change", syncMobileEnv);
+  syncMobileEnv();
+  // Phones start collapsed (scoreboard + play-by-play) for room; tablets have
+  // enough space to keep both up. Either stays toggleable from the chrome.
+  const compact = mobileChrome.value && !isTablet.value;
+  chromeScoreboardOpen.value = !compact;
+  if (compact) showPbpPanel.value = false;
+  // On touch, start with only smokes shown — the full nade set clutters the
+  // smaller map; the rest are one tap away in the util filters.
+  if (mobileChrome.value) {
+    utilTypeFilter.value = {
+      Smoke: true,
+      Molotov: false,
+      HE: false,
+      Flash: false,
+      Decoy: false,
+    };
+  }
+});
+onUnmounted(() => {
+  orientationMql?.removeEventListener("change", syncMobileEnv);
+});
+
+// Fullscreen the stage (map + chrome). Desktop-only: the button is hidden on
+// touch because iOS (incl. iOS Chrome, which is WebKit) has no element
+// Fullscreen API at all, and the CSS "fake fullscreen" still can't hide the
+// address bar there — so it's not worth the surprise. Android/desktop use the
+// real API (with webkit fallback).
+const isFullscreen = ref(false);
+function nativeFsElement(): Element | null {
+  if (typeof document === "undefined") return null;
+  return (
+    document.fullscreenElement ??
+    ((document as any).webkitFullscreenElement || null)
+  );
+}
+function syncFullscreen() {
+  isFullscreen.value = !!nativeFsElement();
+}
+async function toggleFullscreen() {
+  if (typeof document === "undefined") return;
+  const el = layoutRootEl.value as any;
+  if (nativeFsElement()) {
+    const exit =
+      document.exitFullscreen ?? (document as any).webkitExitFullscreen;
+    try {
+      await exit?.call(document);
+    } catch {
+      /* ignore */
+    }
+    return;
+  }
+  const req = el?.requestFullscreen ?? el?.webkitRequestFullscreen;
+  try {
+    await req?.call(el);
+  } catch {
+    /* permissions-policy rejection — leave state as the event reports */
+  }
+}
+onMounted(() => {
+  document.addEventListener("fullscreenchange", syncFullscreen);
+  document.addEventListener("webkitfullscreenchange", syncFullscreen as any);
+  syncFullscreen();
+});
+onUnmounted(() => {
+  document.removeEventListener("fullscreenchange", syncFullscreen);
+  document.removeEventListener("webkitfullscreenchange", syncFullscreen as any);
+});
+
+// ── 2D pan / zoom ───────────────────────────────────────────────────────────
+// The 2D radar is a centered square that fits the stage. On top of that fit we
+// layer a CSS-transform zoom so users can magnify a fight: mouse wheel + left-
+// drag on desktop, pinch + one-finger drag on touch. transform-origin is the
+// square's top-left (0,0) so the math below can anchor zoom under the cursor.
+const stage2dEl = ref<HTMLElement | null>(null);
+const zoom2d = ref(1);
+const pan2dX = ref(0);
+const pan2dY = ref(0);
+// minZoom2d is computed per-fit in recomputeRadarSize: 1 when the base already
+// fits the whole map (desktop), < 1 when the base fills the width (touch) so the
+// user can pinch out to see everything.
+const minZoom2d = ref(1);
+const MAX_ZOOM_2D = 6;
+const pan2dStyle = computed(() => ({
+  transform: `translate(${pan2dX.value}px, ${pan2dY.value}px) scale(${zoom2d.value})`,
+  transformOrigin: "0 0",
+}));
+
+// When the scaled map is larger than its square, keep it covering the square
+// (no gap). When it's smaller (zoomed out past fit), center it instead.
+function clampPan2d() {
+  const size = radarMaxPx.value;
+  const content = size * zoom2d.value;
+  if (content <= size) {
+    const c = (size - content) / 2;
+    pan2dX.value = c;
+    pan2dY.value = c;
+    return;
+  }
+  const min = size - content; // < 0
+  pan2dX.value = Math.min(0, Math.max(min, pan2dX.value));
+  pan2dY.value = Math.min(0, Math.max(min, pan2dY.value));
+}
+
+// Zoom toward a point given in square-local coords, keeping it visually fixed.
+function zoom2dAt(vx: number, vy: number, next: number) {
+  const z0 = zoom2d.value;
+  const z1 = Math.min(MAX_ZOOM_2D, Math.max(minZoom2d.value, next));
+  if (z1 === z0) return;
+  pan2dX.value = vx - (z1 / z0) * (vx - pan2dX.value);
+  pan2dY.value = vy - (z1 / z0) * (vy - pan2dY.value);
+  zoom2d.value = z1;
+  clampPan2d();
+}
+
+function reset2dView() {
+  stopPan2dMomentum();
+  pan2dVX = 0;
+  pan2dVY = 0;
+  zoom2d.value = 1;
+  pan2dX.value = 0;
+  pan2dY.value = 0;
+}
+
+function onWheel2d(e: WheelEvent) {
+  if (viewMode.value !== "2d") return;
+  const rect = stage2dEl.value?.getBoundingClientRect();
+  if (!rect) return;
+  zoom2dAt(
+    e.clientX - rect.left,
+    e.clientY - rect.top,
+    zoom2d.value * Math.exp(-e.deltaY * 0.0015),
+  );
+}
+
+// Active pointers over the map — 1 = drag-pan, 2 = pinch-zoom. We deliberately
+// don't capture the pointer or preventDefault on down, so a tap still reaches
+// the SVG player dots (tap-to-follow); a real drag moves far enough that the
+// browser suppresses the click.
+const pointers2d = new Map<number, { x: number; y: number }>();
+let pan2dLast: { x: number; y: number } | null = null;
+let pinch2dPrev = 0;
+// Touch momentum: track pointer velocity (px/ms) so a flick keeps gliding and
+// decays smoothly instead of stopping dead when the finger lifts.
+let pan2dVX = 0;
+let pan2dVY = 0;
+let pan2dMoveT = 0;
+let pan2dTouch = false;
+let momentumRAF = 0;
+function stopPan2dMomentum() {
+  if (momentumRAF) {
+    cancelAnimationFrame(momentumRAF);
+    momentumRAF = 0;
+  }
+}
+function startPan2dMomentum() {
+  const FRICTION = 0.004; // velocity decay per ms — a few hundred ms of glide
+  let prev = 0;
+  const step = (ts: number) => {
+    const dt = prev ? Math.min(40, ts - prev) : 16;
+    prev = ts;
+    const bx = pan2dX.value,
+      by = pan2dY.value;
+    pan2dX.value += pan2dVX * dt;
+    pan2dY.value += pan2dVY * dt;
+    clampPan2d();
+    if (pan2dX.value === bx) pan2dVX = 0; // hit an edge → kill that axis
+    if (pan2dY.value === by) pan2dVY = 0;
+    const decay = Math.exp(-FRICTION * dt);
+    pan2dVX *= decay;
+    pan2dVY *= decay;
+    if (Math.hypot(pan2dVX, pan2dVY) < 0.01) {
+      momentumRAF = 0;
+      return;
+    }
+    momentumRAF = requestAnimationFrame(step);
+  };
+  momentumRAF = requestAnimationFrame(step);
+}
+
+function onPan2dDown(e: PointerEvent) {
+  if (viewMode.value !== "2d") return;
+  if (e.pointerType === "mouse" && e.button !== 0) return;
+  stopPan2dMomentum();
+  pan2dTouch = e.pointerType === "touch";
+  pointers2d.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pointers2d.size === 1) {
+    pan2dLast = { x: e.clientX, y: e.clientY };
+    pan2dVX = 0;
+    pan2dVY = 0;
+    pan2dMoveT = e.timeStamp;
+  } else if (pointers2d.size === 2) {
+    const p = [...pointers2d.values()];
+    pinch2dPrev = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
+    pan2dLast = null;
+    pan2dVX = 0;
+    pan2dVY = 0;
+  }
+  window.addEventListener("pointermove", onPan2dMove);
+  window.addEventListener("pointerup", onPan2dUp);
+  window.addEventListener("pointercancel", onPan2dUp);
+}
+
+function onPan2dMove(e: PointerEvent) {
+  if (!pointers2d.has(e.pointerId)) return;
+  pointers2d.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  const rect = stage2dEl.value?.getBoundingClientRect();
+  if (!rect) return;
+  if (pointers2d.size >= 2) {
+    const p = [...pointers2d.values()];
+    const dist = Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
+    if (pinch2dPrev > 0) {
+      zoom2dAt(
+        (p[0].x + p[1].x) / 2 - rect.left,
+        (p[0].y + p[1].y) / 2 - rect.top,
+        zoom2d.value * (dist / pinch2dPrev),
+      );
+    }
+    pinch2dPrev = dist;
+    pan2dVX = 0;
+    pan2dVY = 0;
+  } else if (pan2dLast) {
+    const dx = e.clientX - pan2dLast.x;
+    const dy = e.clientY - pan2dLast.y;
+    pan2dX.value += dx;
+    pan2dY.value += dy;
+    clampPan2d();
+    const dt = e.timeStamp - pan2dMoveT;
+    if (dt > 0) {
+      // smooth toward the instantaneous velocity so a jittery last sample
+      // doesn't fling the map in a random direction
+      const a = 0.7;
+      pan2dVX = a * (dx / dt) + (1 - a) * pan2dVX;
+      pan2dVY = a * (dy / dt) + (1 - a) * pan2dVY;
+    }
+    pan2dLast = { x: e.clientX, y: e.clientY };
+    pan2dMoveT = e.timeStamp;
+  }
+}
+
+function onPan2dUp(e: PointerEvent) {
+  pointers2d.delete(e.pointerId);
+  if (pointers2d.size === 1) {
+    const p = [...pointers2d.values()][0];
+    pan2dLast = { x: p.x, y: p.y };
+    pinch2dPrev = 0;
+    pan2dVX = 0;
+    pan2dVY = 0;
+    pan2dMoveT = e.timeStamp;
+  } else if (pointers2d.size === 0) {
+    pan2dLast = null;
+    pinch2dPrev = 0;
+    window.removeEventListener("pointermove", onPan2dMove);
+    window.removeEventListener("pointerup", onPan2dUp);
+    window.removeEventListener("pointercancel", onPan2dUp);
+    // Touch flick → glide with inertia; mouse releases stop immediately.
+    if (pan2dTouch && Math.hypot(pan2dVX, pan2dVY) > 0.05) {
+      startPan2dMomentum();
+    }
+  }
+}
+
+// Reset zoom when leaving 2D; re-clamp when the square is re-fit (resize).
+watch(viewMode, () => reset2dView());
+watch(radarMaxPx, () => clampPan2d());
+onUnmounted(() => stopPan2dMomentum());
 
 // Detect the height of any persistent bottom chrome the app docks
 // below the page slot. The biggest known case is `#main-bottom-dock`
@@ -2138,19 +2482,56 @@ function recomputeRadarSize() {
   const dockH = playbarDockEl.value?.offsetHeight ?? 0;
   const availableH =
     window.innerHeight - rootRect.top - SAFETY - bottomChrome - dockH;
-  // Fit the whole (square) map inside the window: bounded by BOTH the
-  // available width (minus the scoreboard reserve) and height, so nothing
-  // is cropped. The docked transport bar's height is already excluded from
-  // availableH. Centers in the remaining left region.
   const availableW = rootRect.width - scoreboardReserve.value;
-  radarMaxPx.value = Math.floor(
-    Math.max(280, Math.min(availableH, availableW)),
-  );
+  // Desktop (windowed or fullscreen): fit the whole square map inside the stage
+  // (letterbox the short side) so nothing is cropped. Touch: scale to the room
+  // BETWEEN the top score HUD and the bottom transport bar — both float over
+  // the map — then center the square in that band so it doesn't sit behind
+  // either. The radar stays square (world→radar is a fixed 1:1 projection onto
+  // a 1024² image, so a non-square box would misalign the dots); pinch out to
+  // `minZoom2d` to bring the whole map back.
+  if (mobileChrome.value) {
+    const hud = root.querySelector(".bp-hud") as HTMLElement | null;
+    const bar = root.querySelector(".bp-bar") as HTMLElement | null;
+    const topInset = hud
+      ? hud.getBoundingClientRect().bottom - rootRect.top
+      : 0;
+    const bottomInset = bar
+      ? rootRect.bottom - bar.getBoundingClientRect().top
+      : 0;
+    const MARGIN = 8;
+    const band = Math.max(0, rootRect.height - topInset - bottomInset);
+    radarMaxPx.value = Math.floor(Math.max(280, band - MARGIN * 2));
+    // Center the square in the band: shift its 50% center by half the
+    // difference of the two insets (positive = up when the bar is taller).
+    mapTopShift.value = (bottomInset - topInset) / 2;
+    minZoom2d.value = Math.min(
+      1,
+      Math.min(rootRect.width, band) / radarMaxPx.value,
+    );
+  } else {
+    mapTopShift.value = 0;
+    radarMaxPx.value = Math.floor(
+      Math.max(280, Math.min(availableH, availableW)),
+    );
+    minZoom2d.value = Math.min(
+      1,
+      Math.min(rootRect.width, availableH) / radarMaxPx.value,
+    );
+  }
+  if (zoom2d.value < minZoom2d.value) zoom2d.value = minZoom2d.value;
+  clampPan2d();
 }
 
 // Re-fit the map when the scoreboard is toggled so it grows/shrinks to
 // match the freed/reserved width.
 watch(showScoreboard, () => recomputeRadarSize());
+// Entering/leaving fullscreen flips the fit between contain and fill-width;
+// reset any active zoom so it starts clean at the new base size.
+watch([isFullscreen, mobileChrome], () => {
+  reset2dView();
+  void nextTick(recomputeRadarSize);
+});
 
 let radarRO: ResizeObserver | null = null;
 onMounted(() => {
@@ -3074,7 +3455,8 @@ const chromeHud = computed(() => {
     t: ss.t,
     round: activeRoundTick.value?.round ?? activeRound.value ?? 0,
     clock: formatMMSS(tm.secondsRemaining),
-    bomb: tm.phase === "bomb" ? `C4 ${tm.secondsRemaining}s` : "",
+    // Just the countdown — the chrome renders the C4 icon in front of it.
+    bomb: tm.phase === "bomb" ? `${tm.secondsRemaining}s` : "",
     bombClass: tm.phase === "bomb" ? "bomb" : tm.phase === "freeze" ? "ct" : "",
   };
 });
@@ -3141,15 +3523,17 @@ function toggleUtilSel(gi: number) {
 }
 const chromeTickMarkers = computed(() =>
   scrubberMarkers.value
-    .filter((m) => m.lane === "kill")
+    .filter((m) => m.lane === "kill" || m.lane === "bomb")
     .map((m) => ({
       frac: m.left / 100,
       cls:
-        m.color === SCRUB_KILL_CT
-          ? "mk-ct"
-          : m.color === SCRUB_KILL_T
-            ? "mk-t"
-            : "mk-ct",
+        m.lane === "bomb"
+          ? "mk-bomb"
+          : m.color === SCRUB_KILL_CT
+            ? "mk-ct"
+            : m.color === SCRUB_KILL_T
+              ? "mk-t"
+              : "mk-ct",
     })),
 );
 const chromeSeekFrac = computed(() =>
@@ -3216,19 +3600,30 @@ watch(overlayMode, (on) => {
   <div class="flex flex-col gap-3 flex-1 min-h-0">
     <div
       ref="layoutRootEl"
-      class="relative w-full flex-1 min-h-0 overflow-hidden"
+      class="relative w-full flex-1 min-h-0 overflow-hidden bg-black"
     >
       <!-- Map square, fit + centered in the stage. The scoreboard floats at
            the right edge; the transport bar is docked below and pinned to
            the bottom by this flex-1 stage. -->
       <div
-        class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 z-0 overflow-hidden transition-[width,height,left] duration-300 ease-out"
+        ref="stage2dEl"
+        class="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 z-0 overflow-visible transition-[width,height,left] duration-300 ease-out touch-none"
+        :class="
+          viewMode === '2d' ? 'cursor-grab active:cursor-grabbing' : ''
+        "
         :style="{
           width: radarMaxPx + 'px',
           height: radarMaxPx + 'px',
           left: `calc(50% - ${scoreboardReserve / 2}px)`,
+          top: `calc(50% - ${mapTopShift}px)`,
         }"
+        @wheel.prevent="onWheel2d"
+        @pointerdown="onPan2dDown"
       >
+        <!-- Pan/zoom layer for 2D: wheel + left-drag (mouse), pinch + one-finger
+             drag (touch). Wraps the radar img + the whole SVG overlay so dots,
+             paths and util all scale together. -->
+        <div class="absolute inset-0 will-change-transform" :style="pan2dStyle">
         <img
           v-if="radarSrc"
           v-show="viewMode === '2d'"
@@ -4830,6 +5225,7 @@ watch(overlayMode, (on) => {
             />
           </g>
         </svg>
+        </div>
       </div>
 
       <!-- 3D viewer fills the whole stage (not the centered square) so it
@@ -4870,6 +5266,11 @@ watch(overlayMode, (on) => {
              player is identical; only the map underneath differs. -->
       <ReplayChrome
         class="z-[20]"
+        :mobile="mobileChrome"
+        :show-scoreboard="chromeScoreboardOpen"
+        :on-toggle-scoreboard="() => (chromeScoreboardOpen = !chromeScoreboardOpen)"
+        :is-fullscreen="isFullscreen"
+        :on-fullscreen="toggleFullscreen"
         :hud="chromeHud"
         :team-a="chromeTeamA"
         :team-b="chromeTeamB"
@@ -4927,6 +5328,33 @@ watch(overlayMode, (on) => {
         :on-toggle-trace="togglePathing"
         :on-toggle-deaths="() => (showDeaths = !showDeaths)"
       />
+
+      <!-- Rotate gate: the stage is unusable at phone-portrait widths, so we
+           ask the user to turn the device sideways instead of cramming the
+           floating scoreboard + transport into a narrow column. -->
+      <Transition name="mapfade">
+        <div
+          v-if="needsRotate"
+          class="absolute inset-0 z-[40] flex flex-col items-center justify-center gap-4 bg-[hsl(var(--background)/0.92)] px-8 text-center backdrop-blur-sm"
+        >
+          <div class="relative">
+            <Smartphone
+              class="h-12 w-12 text-[hsl(var(--tac-amber))] [animation:replay-rotate-hint_2.4s_ease-in-out_infinite]"
+            />
+            <RotateCcw
+              class="absolute -right-3 -top-3 h-5 w-5 text-muted-foreground"
+            />
+          </div>
+          <p
+            class="font-mono text-sm font-semibold uppercase tracking-[0.18em] text-foreground"
+          >
+            {{ $t("match.replay.rotate_title") }}
+          </p>
+          <p class="max-w-[28ch] text-xs text-muted-foreground">
+            {{ $t("match.replay.rotate_description") }}
+          </p>
+        </div>
+      </Transition>
 
       <!-- Round timer (top-left) + HUD controls (top-right) are
              anchored to the STAGE edges, not the centered map, so they
@@ -5656,5 +6084,16 @@ watch(overlayMode, (on) => {
 }
 .mapfade-leave-to {
   opacity: 0;
+}
+/* Rotate-gate phone: a gentle tip toward landscape. */
+@keyframes replay-rotate-hint {
+  0%,
+  60%,
+  100% {
+    transform: rotate(0deg);
+  }
+  30% {
+    transform: rotate(-90deg);
+  }
 }
 </style>

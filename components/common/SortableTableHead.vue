@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { computed, provide } from "vue";
 import { ChevronUp, ChevronDown } from "lucide-vue-next";
 import { TableHead } from "~/components/ui/table";
+import { SORTABLE_HEADER_KEY } from "~/components/common/sortableHeader";
 
 const props = defineProps<{
   sortKey: string;
@@ -12,6 +14,14 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: "sort", key: string): void;
 }>();
+
+// Tell any StatLabel inside us that the whole cell is a sort target, so on
+// touch it moves its tooltip onto a dedicated info icon instead of swallowing
+// the tap. Disabled headers don't sort → behave like a normal label.
+provide(
+  SORTABLE_HEADER_KEY,
+  computed(() => !props.disabled),
+);
 </script>
 
 <template>

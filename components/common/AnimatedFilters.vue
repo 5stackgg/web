@@ -111,6 +111,7 @@ watch(
         as-child
         side="top"
         :delay-duration="120"
+        :tap-toggle="false"
       >
         <template #trigger>
           <button

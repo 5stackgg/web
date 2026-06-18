@@ -292,7 +292,7 @@ mark {
 }
 
 .tac-amber-cta {
-  color: hsl(0 0% 8%);
+  color: hsl(var(--tac-amber-foreground));
   border-color: hsl(var(--tac-amber));
   background: linear-gradient(
     135deg,

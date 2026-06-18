@@ -1266,7 +1266,7 @@ onMounted(() => {
     hsl(var(--tac-amber)) 50%,
     var(--tac-amber-cta-to) 100%
   );
-  color: hsl(0 0% 8%);
+  color: hsl(var(--tac-amber-foreground));
   font-weight: 700;
   letter-spacing: 0.18em;
   box-shadow:
@@ -1274,8 +1274,8 @@ onMounted(() => {
     0 6px 18px -6px hsl(var(--tac-amber) / 0.55);
 }
 .action-tile--primary::after {
-  border-top-color: hsl(0 0% 8% / 0.65);
-  border-right-color: hsl(0 0% 8% / 0.65);
+  border-top-color: hsl(var(--tac-amber-foreground) / 0.65);
+  border-right-color: hsl(var(--tac-amber-foreground) / 0.65);
 }
 .action-tile--primary:hover {
   transform: translateY(-1px);
@@ -1285,7 +1285,7 @@ onMounted(() => {
     hsl(var(--tac-amber)) 50%,
     color-mix(in hsl, var(--tac-amber-cta-to), white 10%) 100%
   );
-  color: hsl(0 0% 6%);
+  color: hsl(var(--tac-amber-foreground));
   border-color: hsl(var(--tac-amber));
   box-shadow:
     0 0 0 1px hsl(var(--tac-amber) / 0.55),
@@ -1293,8 +1293,8 @@ onMounted(() => {
     0 0 24px hsl(var(--tac-amber) / 0.35);
 }
 .action-tile--primary:hover::after {
-  border-top-color: hsl(0 0% 8%);
-  border-right-color: hsl(0 0% 8%);
+  border-top-color: hsl(var(--tac-amber-foreground));
+  border-right-color: hsl(var(--tac-amber-foreground));
 }
 .action-tile--primary:active {
   transform: translateY(0);

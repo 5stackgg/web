@@ -78,6 +78,11 @@
 
     --tac-amber: 33 94% 58%;
     --tac-amber-foreground: 0 0% 10%;
+
+    /* CTA gradient endpoints derived from --tac-amber so the whole gradient
+       follows branding (lighter tint -> base -> darker shade). */
+    --tac-amber-cta-from: color-mix(in hsl, hsl(var(--tac-amber)), white 15%);
+    --tac-amber-cta-to: color-mix(in hsl, hsl(var(--tac-amber)), black 12%);
   }
 
   .dark {
@@ -146,6 +151,9 @@
 
     --tac-amber: 33 94% 58%;
     --tac-amber-foreground: 0 0% 10%;
+
+    --tac-amber-cta-from: color-mix(in hsl, hsl(var(--tac-amber)), white 15%);
+    --tac-amber-cta-to: color-mix(in hsl, hsl(var(--tac-amber)), black 12%);
   }
 }
 
@@ -288,9 +296,9 @@ mark {
   border-color: hsl(var(--tac-amber));
   background: linear-gradient(
     135deg,
-    hsl(36 100% 65%) 0%,
+    var(--tac-amber-cta-from) 0%,
     hsl(var(--tac-amber)) 50%,
-    hsl(28 90% 52%) 100%
+    var(--tac-amber-cta-to) 100%
   );
   box-shadow:
     0 0 0 1px hsl(var(--tac-amber) / 0.35),

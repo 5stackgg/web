@@ -144,7 +144,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
           <button
             v-if="canJoinMatch"
             type="button"
-            class="group/join relative inline-flex items-center isolate px-[0.7rem] py-[0.28rem] font-sans text-[0.68rem] font-bold tracking-[0.16em] uppercase text-[hsl(0_0%_8%)] [background:linear-gradient(135deg,hsl(36_100%_65%)_0%,hsl(var(--tac-amber))_50%,hsl(28_90%_52%)_100%)] border border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.35),0_4px_14px_-4px_hsl(var(--tac-amber)/0.5)] [transition:transform_180ms_cubic-bezier(0.4,0,0.2,1),box-shadow_180ms_ease] cursor-pointer overflow-hidden whitespace-nowrap hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.55),0_10px_24px_-4px_hsl(var(--tac-amber)/0.7),0_0_20px_hsl(var(--tac-amber)/0.3)] active:translate-y-0"
+            class="group/join relative inline-flex items-center isolate px-[0.7rem] py-[0.28rem] font-sans text-[0.68rem] font-bold tracking-[0.16em] uppercase text-[hsl(0_0%_8%)] [background:linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)] border border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.35),0_4px_14px_-4px_hsl(var(--tac-amber)/0.5)] [transition:transform_180ms_cubic-bezier(0.4,0,0.2,1),box-shadow_180ms_ease] cursor-pointer overflow-hidden whitespace-nowrap hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.55),0_10px_24px_-4px_hsl(var(--tac-amber)/0.7),0_0_20px_hsl(var(--tac-amber)/0.3)] active:translate-y-0"
             @click.stop="navigateToMatch(match.id, $event)"
           >
             <span class="relative z-[1] inline-flex items-center gap-[0.45rem]">

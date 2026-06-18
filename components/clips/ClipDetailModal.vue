@@ -1262,9 +1262,9 @@ onMounted(() => {
   border-color: hsl(var(--tac-amber));
   background: linear-gradient(
     135deg,
-    hsl(36 100% 65%) 0%,
+    var(--tac-amber-cta-from) 0%,
     hsl(var(--tac-amber)) 50%,
-    hsl(28 90% 52%) 100%
+    var(--tac-amber-cta-to) 100%
   );
   color: hsl(0 0% 8%);
   font-weight: 700;
@@ -1281,9 +1281,9 @@ onMounted(() => {
   transform: translateY(-1px);
   background: linear-gradient(
     135deg,
-    hsl(36 100% 70%) 0%,
+    color-mix(in hsl, var(--tac-amber-cta-from), white 12%) 0%,
     hsl(var(--tac-amber)) 50%,
-    hsl(28 92% 56%) 100%
+    color-mix(in hsl, var(--tac-amber-cta-to), white 10%) 100%
   );
   color: hsl(0 0% 6%);
   border-color: hsl(var(--tac-amber));

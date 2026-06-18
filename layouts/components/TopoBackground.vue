@@ -56,7 +56,7 @@ withDefaults(defineProps<{ animated?: boolean }>(), { animated: false });
            frame, stacked strokes don't. -->
       <template v-if="animated">
         <g
-          class="text-foreground/[0.12] dark:text-[hsl(36_100%_70%/0.18)]"
+          class="text-foreground/[0.12] dark:text-[hsl(var(--tac-amber)/0.18)]"
           fill="none"
           stroke="currentColor"
           stroke-width="4"
@@ -77,7 +77,7 @@ withDefaults(defineProps<{ animated?: boolean }>(), { animated: false });
           />
         </g>
         <g
-          class="text-foreground/55 dark:text-[hsl(36_100%_70%/0.6)]"
+          class="text-foreground/55 dark:text-[hsl(var(--tac-amber)/0.6)]"
           fill="none"
           stroke="currentColor"
           stroke-width="1.4"

@@ -16,7 +16,7 @@ const labelClasses =
   "font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground";
 
 const submitClasses =
-  "w-full bg-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.9)] text-[hsl(0_0%_8%)] font-sans font-bold uppercase tracking-[0.18em] disabled:opacity-60";
+  "w-full bg-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.9)] text-[hsl(var(--tac-amber-foreground))] font-sans font-bold uppercase tracking-[0.18em] disabled:opacity-60";
 </script>
 
 <template>

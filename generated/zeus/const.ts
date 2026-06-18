@@ -7320,6 +7320,13 @@ export const AllTypesProps: Record<string,any> = {
 		delete_v_pool_maps:{
 			where:"v_pool_maps_bool_exp"
 		},
+		delete_v_team_stage_results:{
+			where:"v_team_stage_results_bool_exp"
+		},
+		delete_v_team_stage_results_by_pk:{
+			tournament_stage_id:"uuid",
+			tournament_team_id:"uuid"
+		},
 		denyInvite:{
 			invite_id:"uuid"
 		},
@@ -8123,6 +8130,14 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		insert_v_pool_maps_one:{
 			object:"v_pool_maps_insert_input"
+		},
+		insert_v_team_stage_results:{
+			objects:"v_team_stage_results_insert_input",
+			on_conflict:"v_team_stage_results_on_conflict"
+		},
+		insert_v_team_stage_results_one:{
+			object:"v_team_stage_results_insert_input",
+			on_conflict:"v_team_stage_results_on_conflict"
 		},
 		joinLineup:{
 
@@ -9576,6 +9591,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_v_pool_maps_many:{
 			updates:"v_pool_maps_updates"
+		},
+		update_v_team_stage_results:{
+			_inc:"v_team_stage_results_inc_input",
+			_set:"v_team_stage_results_set_input",
+			where:"v_team_stage_results_bool_exp"
+		},
+		update_v_team_stage_results_by_pk:{
+			_inc:"v_team_stage_results_inc_input",
+			_set:"v_team_stage_results_set_input",
+			pk_columns:"v_team_stage_results_pk_columns_input"
+		},
+		update_v_team_stage_results_many:{
+			updates:"v_team_stage_results_updates"
 		},
 		validateGamedata:{
 			game_server_node_id:"uuid"
@@ -14366,6 +14394,7 @@ export const AllTypesProps: Record<string,any> = {
 		_not:"player_sanctions_bool_exp",
 		_or:"player_sanctions_bool_exp",
 		created_at:"timestamptz_comparison_exp",
+		deleted_at:"timestamptz_comparison_exp",
 		e_sanction_type:"e_sanction_types_bool_exp",
 		id:"uuid_comparison_exp",
 		player:"players_bool_exp",
@@ -14383,6 +14412,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_sanctions_insert_input:{
 		created_at:"timestamptz",
+		deleted_at:"timestamptz",
 		e_sanction_type:"e_sanction_types_obj_rel_insert_input",
 		id:"uuid",
 		player:"players_obj_rel_insert_input",
@@ -14394,6 +14424,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_sanctions_max_order_by:{
 		created_at:"order_by",
+		deleted_at:"order_by",
 		id:"order_by",
 		player_steam_id:"order_by",
 		reason:"order_by",
@@ -14402,6 +14433,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_sanctions_min_order_by:{
 		created_at:"order_by",
+		deleted_at:"order_by",
 		id:"order_by",
 		player_steam_id:"order_by",
 		reason:"order_by",
@@ -14415,6 +14447,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_sanctions_order_by:{
 		created_at:"order_by",
+		deleted_at:"order_by",
 		e_sanction_type:"e_sanction_types_order_by",
 		id:"order_by",
 		player:"players_order_by",
@@ -14432,6 +14465,7 @@ export const AllTypesProps: Record<string,any> = {
 	player_sanctions_select_column: "enum" as const,
 	player_sanctions_set_input:{
 		created_at:"timestamptz",
+		deleted_at:"timestamptz",
 		id:"uuid",
 		player_steam_id:"bigint",
 		remove_sanction_date:"timestamptz",
@@ -14456,6 +14490,7 @@ export const AllTypesProps: Record<string,any> = {
 	},
 	player_sanctions_stream_cursor_value_input:{
 		created_at:"timestamptz",
+		deleted_at:"timestamptz",
 		id:"uuid",
 		player_steam_id:"bigint",
 		remove_sanction_date:"timestamptz",
@@ -15531,6 +15566,7 @@ export const AllTypesProps: Record<string,any> = {
 		damage_dealt_aggregate:"player_damages_aggregate_bool_exp",
 		damage_taken:"player_damages_bool_exp",
 		damage_taken_aggregate:"player_damages_aggregate_bool_exp",
+		days_since_last_ban:"Int_comparison_exp",
 		deaths:"player_kills_bool_exp",
 		deaths_aggregate:"player_kills_aggregate_bool_exp",
 		discord_id:"String_comparison_exp",
@@ -15551,6 +15587,7 @@ export const AllTypesProps: Record<string,any> = {
 		flashed_players_aggregate:"player_flashes_aggregate_bool_exp",
 		friends:"my_friends_bool_exp",
 		friends_aggregate:"my_friends_aggregate_bool_exp",
+		game_ban_count:"Int_comparison_exp",
 		invited_players:"team_invites_bool_exp",
 		invited_players_aggregate:"team_invites_aggregate_bool_exp",
 		is_banned:"Boolean_comparison_exp",
@@ -15606,6 +15643,7 @@ export const AllTypesProps: Record<string,any> = {
 		sanctions_aggregate:"player_sanctions_aggregate_bool_exp",
 		show_match_ready_modal:"Boolean_comparison_exp",
 		stats:"player_stats_bool_exp",
+		steam_bans_checked_at:"timestamptz_comparison_exp",
 		steam_id:"bigint_comparison_exp",
 		team_invites:"team_invites_bool_exp",
 		team_invites_aggregate:"team_invites_aggregate_bool_exp",
@@ -15623,6 +15661,8 @@ export const AllTypesProps: Record<string,any> = {
 		tournaments_aggregate:"tournaments_aggregate_bool_exp",
 		utility_thrown:"player_utility_bool_exp",
 		utility_thrown_aggregate:"player_utility_aggregate_bool_exp",
+		vac_ban_count:"Int_comparison_exp",
+		vac_banned:"Boolean_comparison_exp",
 		weapon_stats:"player_weapon_stats_v_bool_exp",
 		weapon_stats_aggregate:"player_weapon_stats_v_aggregate_bool_exp",
 		wins:"Int_comparison_exp",
@@ -15670,6 +15710,7 @@ export const AllTypesProps: Record<string,any> = {
 		role:"e_player_roles_enum",
 		sanctions:"player_sanctions_arr_rel_insert_input",
 		stats:"player_stats_obj_rel_insert_input",
+		steam_bans_checked_at:"timestamptz",
 		steam_id:"bigint",
 		team_invites:"team_invites_arr_rel_insert_input",
 		team_members:"team_roster_arr_rel_insert_input",
@@ -15702,6 +15743,7 @@ export const AllTypesProps: Record<string,any> = {
 		custom_avatar_url:"order_by",
 		damage_dealt_aggregate:"player_damages_aggregate_order_by",
 		damage_taken_aggregate:"player_damages_aggregate_order_by",
+		days_since_last_ban:"order_by",
 		deaths_aggregate:"player_kills_aggregate_order_by",
 		discord_id:"order_by",
 		elo:"order_by",
@@ -15716,6 +15758,7 @@ export const AllTypesProps: Record<string,any> = {
 		flashed_by_players_aggregate:"player_flashes_aggregate_order_by",
 		flashed_players_aggregate:"player_flashes_aggregate_order_by",
 		friends_aggregate:"my_friends_aggregate_order_by",
+		game_ban_count:"order_by",
 		invited_players_aggregate:"team_invites_aggregate_order_by",
 		is_banned:"order_by",
 		is_gagged:"order_by",
@@ -15755,6 +15798,7 @@ export const AllTypesProps: Record<string,any> = {
 		sanctions_aggregate:"player_sanctions_aggregate_order_by",
 		show_match_ready_modal:"order_by",
 		stats:"player_stats_order_by",
+		steam_bans_checked_at:"order_by",
 		steam_id:"order_by",
 		team_invites_aggregate:"team_invites_aggregate_order_by",
 		team_members_aggregate:"team_roster_aggregate_order_by",
@@ -15765,6 +15809,8 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_trophies_aggregate:"tournament_trophies_aggregate_order_by",
 		tournaments_aggregate:"tournaments_aggregate_order_by",
 		utility_thrown_aggregate:"player_utility_aggregate_order_by",
+		vac_ban_count:"order_by",
+		vac_banned:"order_by",
 		weapon_stats_aggregate:"player_weapon_stats_v_aggregate_order_by",
 		wins:"order_by",
 		wins_competitive:"order_by",
@@ -15781,6 +15827,7 @@ export const AllTypesProps: Record<string,any> = {
 		last_sign_in_at:"timestamptz",
 		premier_rank_updated_at:"timestamptz",
 		role:"e_player_roles_enum",
+		steam_bans_checked_at:"timestamptz",
 		steam_id:"bigint"
 	},
 	players_stream_cursor_input:{
@@ -15793,6 +15840,7 @@ export const AllTypesProps: Record<string,any> = {
 		last_sign_in_at:"timestamptz",
 		premier_rank_updated_at:"timestamptz",
 		role:"e_player_roles_enum",
+		steam_bans_checked_at:"timestamptz",
 		steam_id:"bigint"
 	},
 	players_update_column: "enum" as const,
@@ -17489,6 +17537,10 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"v_team_stage_results_select_column",
 			order_by:"v_team_stage_results_order_by",
 			where:"v_team_stage_results_bool_exp"
+		},
+		v_team_stage_results_by_pk:{
+			tournament_stage_id:"uuid",
+			tournament_team_id:"uuid"
 		},
 		v_team_tournament_results:{
 			distinct_on:"v_team_tournament_results_select_column",
@@ -20182,6 +20234,10 @@ export const AllTypesProps: Record<string,any> = {
 			distinct_on:"v_team_stage_results_select_column",
 			order_by:"v_team_stage_results_order_by",
 			where:"v_team_stage_results_bool_exp"
+		},
+		v_team_stage_results_by_pk:{
+			tournament_stage_id:"uuid",
+			tournament_team_id:"uuid"
 		},
 		v_team_stage_results_stream:{
 			cursor:"v_team_stage_results_stream_cursor_input",
@@ -24677,7 +24733,8 @@ export const AllTypesProps: Record<string,any> = {
 		variance:"v_team_stage_results_variance_order_by"
 	},
 	v_team_stage_results_arr_rel_insert_input:{
-		data:"v_team_stage_results_insert_input"
+		data:"v_team_stage_results_insert_input",
+		on_conflict:"v_team_stage_results_on_conflict"
 	},
 	v_team_stage_results_avg_order_by:{
 		group_number:"order_by",
@@ -24721,6 +24778,10 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_stage_id:"uuid_comparison_exp",
 		tournament_team_id:"uuid_comparison_exp",
 		wins:"Int_comparison_exp"
+	},
+	v_team_stage_results_constraint: "enum" as const,
+	v_team_stage_results_inc_input:{
+		team_kdr:"float8"
 	},
 	v_team_stage_results_insert_input:{
 		stage:"tournament_stages_obj_rel_insert_input",
@@ -24770,7 +24831,13 @@ export const AllTypesProps: Record<string,any> = {
 		wins:"order_by"
 	},
 	v_team_stage_results_obj_rel_insert_input:{
-		data:"v_team_stage_results_insert_input"
+		data:"v_team_stage_results_insert_input",
+		on_conflict:"v_team_stage_results_on_conflict"
+	},
+	v_team_stage_results_on_conflict:{
+		constraint:"v_team_stage_results_constraint",
+		update_columns:"v_team_stage_results_update_column",
+		where:"v_team_stage_results_bool_exp"
 	},
 	v_team_stage_results_order_by:{
 		group_number:"order_by",
@@ -24794,6 +24861,10 @@ export const AllTypesProps: Record<string,any> = {
 		tournament_team_id:"order_by",
 		wins:"order_by"
 	},
+	v_team_stage_results_pk_columns_input:{
+		tournament_stage_id:"uuid",
+		tournament_team_id:"uuid"
+	},
 	v_team_stage_results_select_column: "enum" as const,
 	v_team_stage_results_select_column_v_team_stage_results_aggregate_bool_exp_avg_arguments_columns: "enum" as const,
 	v_team_stage_results_select_column_v_team_stage_results_aggregate_bool_exp_corr_arguments_columns: "enum" as const,
@@ -24803,6 +24874,11 @@ export const AllTypesProps: Record<string,any> = {
 	v_team_stage_results_select_column_v_team_stage_results_aggregate_bool_exp_stddev_samp_arguments_columns: "enum" as const,
 	v_team_stage_results_select_column_v_team_stage_results_aggregate_bool_exp_sum_arguments_columns: "enum" as const,
 	v_team_stage_results_select_column_v_team_stage_results_aggregate_bool_exp_var_samp_arguments_columns: "enum" as const,
+	v_team_stage_results_set_input:{
+		team_kdr:"float8",
+		tournament_stage_id:"uuid",
+		tournament_team_id:"uuid"
+	},
 	v_team_stage_results_stddev_order_by:{
 		group_number:"order_by",
 		head_to_head_match_wins:"order_by",
@@ -24883,6 +24959,12 @@ export const AllTypesProps: Record<string,any> = {
 		total_deaths:"order_by",
 		total_kills:"order_by",
 		wins:"order_by"
+	},
+	v_team_stage_results_update_column: "enum" as const,
+	v_team_stage_results_updates:{
+		_inc:"v_team_stage_results_inc_input",
+		_set:"v_team_stage_results_set_input",
+		where:"v_team_stage_results_bool_exp"
 	},
 	v_team_stage_results_var_pop_order_by:{
 		group_number:"order_by",
@@ -29457,6 +29539,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_v_match_map_backup_rounds:"v_match_map_backup_rounds_mutation_response",
 		delete_v_player_match_map_hltv:"v_player_match_map_hltv_mutation_response",
 		delete_v_pool_maps:"v_pool_maps_mutation_response",
+		delete_v_team_stage_results:"v_team_stage_results_mutation_response",
+		delete_v_team_stage_results_by_pk:"v_team_stage_results",
 		denyInvite:"SuccessOutput",
 		forfeitMatch:"SuccessOutput",
 		getLiveStreamSpecState:"LiveStreamSpecState",
@@ -29663,6 +29747,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_v_player_match_map_hltv_one:"v_player_match_map_hltv",
 		insert_v_pool_maps:"v_pool_maps_mutation_response",
 		insert_v_pool_maps_one:"v_pool_maps",
+		insert_v_team_stage_results:"v_team_stage_results_mutation_response",
+		insert_v_team_stage_results_one:"v_team_stage_results",
 		joinLineup:"SuccessOutput",
 		kickServerPlayer:"KickResult",
 		leaveLineup:"SuccessOutput",
@@ -29696,6 +29782,7 @@ export const ReturnTypes: Record<string,any> = {
 		retryPendingMatchImport:"PendingMatchImportActionOutput",
 		sanctionServerPlayer:"SanctionResult",
 		scanOrphanedDemos:"ScanStartedOutput",
+		scanSteamBans:"SuccessOutput",
 		scheduleMatch:"SuccessOutput",
 		setGameNodeSchedulingState:"SuccessOutput",
 		setHudMode:"SuccessOutput",
@@ -30025,6 +30112,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_v_player_match_map_hltv_many:"v_player_match_map_hltv_mutation_response",
 		update_v_pool_maps:"v_pool_maps_mutation_response",
 		update_v_pool_maps_many:"v_pool_maps_mutation_response",
+		update_v_team_stage_results:"v_team_stage_results_mutation_response",
+		update_v_team_stage_results_by_pk:"v_team_stage_results",
+		update_v_team_stage_results_many:"v_team_stage_results_mutation_response",
 		validateGamedata:"SuccessOutput",
 		watchDemo:"WatchDemoOutput",
 		writeServerFile:"SuccessOutput"
@@ -34280,6 +34370,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	player_sanctions:{
 		created_at:"timestamptz",
+		deleted_at:"timestamptz",
 		e_sanction_type:"e_sanction_types",
 		id:"uuid",
 		player:"players",
@@ -34313,6 +34404,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	player_sanctions_max_fields:{
 		created_at:"timestamptz",
+		deleted_at:"timestamptz",
 		id:"uuid",
 		player_steam_id:"bigint",
 		reason:"String",
@@ -34321,6 +34413,7 @@ export const ReturnTypes: Record<string,any> = {
 	},
 	player_sanctions_min_fields:{
 		created_at:"timestamptz",
+		deleted_at:"timestamptz",
 		id:"uuid",
 		player_steam_id:"bigint",
 		reason:"String",
@@ -34856,6 +34949,7 @@ export const ReturnTypes: Record<string,any> = {
 		damage_dealt_aggregate:"player_damages_aggregate",
 		damage_taken:"player_damages",
 		damage_taken_aggregate:"player_damages_aggregate",
+		days_since_last_ban:"Int",
 		deaths:"player_kills",
 		deaths_aggregate:"player_kills_aggregate",
 		discord_id:"String",
@@ -34876,6 +34970,7 @@ export const ReturnTypes: Record<string,any> = {
 		flashed_players_aggregate:"player_flashes_aggregate",
 		friends:"my_friends",
 		friends_aggregate:"my_friends_aggregate",
+		game_ban_count:"Int",
 		invited_players:"team_invites",
 		invited_players_aggregate:"team_invites_aggregate",
 		is_banned:"Boolean",
@@ -34931,6 +35026,7 @@ export const ReturnTypes: Record<string,any> = {
 		sanctions_aggregate:"player_sanctions_aggregate",
 		show_match_ready_modal:"Boolean",
 		stats:"player_stats",
+		steam_bans_checked_at:"timestamptz",
 		steam_id:"bigint",
 		team_invites:"team_invites",
 		team_invites_aggregate:"team_invites_aggregate",
@@ -34948,6 +35044,8 @@ export const ReturnTypes: Record<string,any> = {
 		tournaments_aggregate:"tournaments_aggregate",
 		utility_thrown:"player_utility",
 		utility_thrown_aggregate:"player_utility_aggregate",
+		vac_ban_count:"Int",
+		vac_banned:"Boolean",
 		weapon_stats:"player_weapon_stats_v",
 		weapon_stats_aggregate:"player_weapon_stats_v_aggregate",
 		wins:"Int",
@@ -34973,8 +35071,10 @@ export const ReturnTypes: Record<string,any> = {
 		variance:"players_variance_fields"
 	},
 	players_avg_fields:{
+		days_since_last_ban:"Float",
 		faceit_elo:"Float",
 		faceit_skill_level:"Float",
+		game_ban_count:"Float",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -34982,6 +35082,7 @@ export const ReturnTypes: Record<string,any> = {
 		premier_rank:"Float",
 		steam_id:"Float",
 		total_matches:"Int",
+		vac_ban_count:"Float",
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
@@ -34993,6 +35094,7 @@ export const ReturnTypes: Record<string,any> = {
 		created_at:"timestamptz",
 		current_lobby_id:"uuid",
 		custom_avatar_url:"String",
+		days_since_last_ban:"Int",
 		discord_id:"String",
 		faceit_elo:"Int",
 		faceit_nickname:"String",
@@ -35000,6 +35102,7 @@ export const ReturnTypes: Record<string,any> = {
 		faceit_skill_level:"Int",
 		faceit_updated_at:"timestamptz",
 		faceit_url:"String",
+		game_ban_count:"Int",
 		language:"String",
 		last_sign_in_at:"timestamptz",
 		losses:"Int",
@@ -35012,8 +35115,10 @@ export const ReturnTypes: Record<string,any> = {
 		premier_rank_updated_at:"timestamptz",
 		profile_url:"String",
 		roster_image_url:"String",
+		steam_bans_checked_at:"timestamptz",
 		steam_id:"bigint",
 		total_matches:"Int",
+		vac_ban_count:"Int",
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
@@ -35025,6 +35130,7 @@ export const ReturnTypes: Record<string,any> = {
 		created_at:"timestamptz",
 		current_lobby_id:"uuid",
 		custom_avatar_url:"String",
+		days_since_last_ban:"Int",
 		discord_id:"String",
 		faceit_elo:"Int",
 		faceit_nickname:"String",
@@ -35032,6 +35138,7 @@ export const ReturnTypes: Record<string,any> = {
 		faceit_skill_level:"Int",
 		faceit_updated_at:"timestamptz",
 		faceit_url:"String",
+		game_ban_count:"Int",
 		language:"String",
 		last_sign_in_at:"timestamptz",
 		losses:"Int",
@@ -35044,8 +35151,10 @@ export const ReturnTypes: Record<string,any> = {
 		premier_rank_updated_at:"timestamptz",
 		profile_url:"String",
 		roster_image_url:"String",
+		steam_bans_checked_at:"timestamptz",
 		steam_id:"bigint",
 		total_matches:"Int",
+		vac_ban_count:"Int",
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
@@ -35056,8 +35165,10 @@ export const ReturnTypes: Record<string,any> = {
 		returning:"players"
 	},
 	players_stddev_fields:{
+		days_since_last_ban:"Float",
 		faceit_elo:"Float",
 		faceit_skill_level:"Float",
+		game_ban_count:"Float",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -35065,14 +35176,17 @@ export const ReturnTypes: Record<string,any> = {
 		premier_rank:"Float",
 		steam_id:"Float",
 		total_matches:"Int",
+		vac_ban_count:"Float",
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
 		wins_wingman:"Int"
 	},
 	players_stddev_pop_fields:{
+		days_since_last_ban:"Float",
 		faceit_elo:"Float",
 		faceit_skill_level:"Float",
+		game_ban_count:"Float",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -35080,14 +35194,17 @@ export const ReturnTypes: Record<string,any> = {
 		premier_rank:"Float",
 		steam_id:"Float",
 		total_matches:"Int",
+		vac_ban_count:"Float",
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
 		wins_wingman:"Int"
 	},
 	players_stddev_samp_fields:{
+		days_since_last_ban:"Float",
 		faceit_elo:"Float",
 		faceit_skill_level:"Float",
+		game_ban_count:"Float",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -35095,14 +35212,17 @@ export const ReturnTypes: Record<string,any> = {
 		premier_rank:"Float",
 		steam_id:"Float",
 		total_matches:"Int",
+		vac_ban_count:"Float",
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
 		wins_wingman:"Int"
 	},
 	players_sum_fields:{
+		days_since_last_ban:"Int",
 		faceit_elo:"Int",
 		faceit_skill_level:"Int",
+		game_ban_count:"Int",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -35110,14 +35230,17 @@ export const ReturnTypes: Record<string,any> = {
 		premier_rank:"Int",
 		steam_id:"bigint",
 		total_matches:"Int",
+		vac_ban_count:"Int",
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
 		wins_wingman:"Int"
 	},
 	players_var_pop_fields:{
+		days_since_last_ban:"Float",
 		faceit_elo:"Float",
 		faceit_skill_level:"Float",
+		game_ban_count:"Float",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -35125,14 +35248,17 @@ export const ReturnTypes: Record<string,any> = {
 		premier_rank:"Float",
 		steam_id:"Float",
 		total_matches:"Int",
+		vac_ban_count:"Float",
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
 		wins_wingman:"Int"
 	},
 	players_var_samp_fields:{
+		days_since_last_ban:"Float",
 		faceit_elo:"Float",
 		faceit_skill_level:"Float",
+		game_ban_count:"Float",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -35140,14 +35266,17 @@ export const ReturnTypes: Record<string,any> = {
 		premier_rank:"Float",
 		steam_id:"Float",
 		total_matches:"Int",
+		vac_ban_count:"Float",
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
 		wins_wingman:"Int"
 	},
 	players_variance_fields:{
+		days_since_last_ban:"Float",
 		faceit_elo:"Float",
 		faceit_skill_level:"Float",
+		game_ban_count:"Float",
 		losses:"Int",
 		losses_competitive:"Int",
 		losses_duel:"Int",
@@ -35155,6 +35284,7 @@ export const ReturnTypes: Record<string,any> = {
 		premier_rank:"Float",
 		steam_id:"Float",
 		total_matches:"Int",
+		vac_ban_count:"Float",
 		wins:"Int",
 		wins_competitive:"Int",
 		wins_duel:"Int",
@@ -35597,6 +35727,7 @@ export const ReturnTypes: Record<string,any> = {
 		v_steam_account_pool_status_aggregate:"v_steam_account_pool_status_aggregate",
 		v_team_stage_results:"v_team_stage_results",
 		v_team_stage_results_aggregate:"v_team_stage_results_aggregate",
+		v_team_stage_results_by_pk:"v_team_stage_results",
 		v_team_tournament_results:"v_team_tournament_results",
 		v_team_tournament_results_aggregate:"v_team_tournament_results_aggregate",
 		v_tournament_player_stats:"v_tournament_player_stats",
@@ -36402,6 +36533,7 @@ export const ReturnTypes: Record<string,any> = {
 		v_steam_account_pool_status_stream:"v_steam_account_pool_status",
 		v_team_stage_results:"v_team_stage_results",
 		v_team_stage_results_aggregate:"v_team_stage_results_aggregate",
+		v_team_stage_results_by_pk:"v_team_stage_results",
 		v_team_stage_results_stream:"v_team_stage_results",
 		v_team_tournament_results:"v_team_tournament_results",
 		v_team_tournament_results_aggregate:"v_team_tournament_results_aggregate",
@@ -40320,6 +40452,10 @@ export const ReturnTypes: Record<string,any> = {
 		tournament_stage_id:"uuid",
 		tournament_team_id:"uuid",
 		wins:"Int"
+	},
+	v_team_stage_results_mutation_response:{
+		affected_rows:"Int",
+		returning:"v_team_stage_results"
 	},
 	v_team_stage_results_stddev_fields:{
 		group_number:"Float",

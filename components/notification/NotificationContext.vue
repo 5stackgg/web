@@ -2,12 +2,14 @@
 import { defineComponent } from "vue";
 import { Swords, Server, HardDrive } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 
 const MATCH_TYPES = ["MatchStatusChange", "MatchSupport"];
 const SERVER_TYPES = ["DedicatedServerStatus", "DedicatedServerRconStatus"];
 const NODE_TYPES = ["GameNodeStatus"];
+const PLAYER_TYPES = ["PlayerSanctioned"];
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -29,7 +31,7 @@ const NODE_STATUS_TONE: Record<string, string> = {
 };
 
 export default defineComponent({
-  components: { Swords, Server, HardDrive, Spinner },
+  components: { Swords, Server, HardDrive, Spinner, PlayerDisplay },
   props: {
     type: { type: String, required: true },
     entityId: { type: String, required: true },
@@ -39,9 +41,11 @@ export default defineComponent({
       match: null as any,
       server: null as any,
       node: null as any,
+      player: null as any,
       matchLoaded: false,
       serverLoaded: false,
       nodeLoaded: false,
+      playerLoaded: false,
     };
   },
   computed: {
@@ -50,18 +54,21 @@ export default defineComponent({
       if (this.kind === "match") return !this.matchLoaded;
       if (this.kind === "server") return !this.serverLoaded;
       if (this.kind === "node") return !this.nodeLoaded;
+      if (this.kind === "player") return !this.playerLoaded;
       return false;
     },
     hasValidEntity() {
       // match/server are keyed by uuid; node ids are plain strings. Sentinel
       // entity_ids (e.g. "plugin_version") must not trigger a *_by_pk lookup.
       if (this.kind === "node") return !!this.entityId;
+      if (this.kind === "player") return /^\d+$/.test(this.entityId ?? "");
       return UUID_RE.test(this.entityId ?? "");
     },
     kind() {
       if (MATCH_TYPES.includes(this.type)) return "match";
       if (SERVER_TYPES.includes(this.type)) return "server";
       if (NODE_TYPES.includes(this.type)) return "node";
+      if (PLAYER_TYPES.includes(this.type)) return "player";
       return null;
     },
     iconComponent() {
@@ -188,6 +195,31 @@ export default defineComponent({
           this.nodeLoaded = true;
         },
       },
+      player: {
+        skip: function (this: any) {
+          return this.kind !== "player" || !this.hasValidEntity;
+        },
+        query: typedGql("subscription")({
+          players_by_pk: [
+            { steam_id: $("steam_id", "bigint!") },
+            {
+              steam_id: true,
+              name: true,
+              avatar_url: true,
+              custom_avatar_url: true,
+              country: true,
+              role: true,
+            },
+          ],
+        }),
+        variables: function (this: any) {
+          return { steam_id: this.entityId };
+        },
+        result: function (this: any, { data }: any) {
+          this.player = data?.players_by_pk ?? null;
+          this.playerLoaded = true;
+        },
+      },
     },
   },
 });
@@ -200,6 +232,18 @@ export default defineComponent({
   >
     <Spinner class="h-3 w-3" />
     <span class="italic">{{ $t("notification_context.loading_status") }}</span>
+  </div>
+  <div
+    v-else-if="kind === 'player' && player"
+    class="px-2 py-1 rounded border border-border bg-background/40"
+  >
+    <PlayerDisplay
+      :player="player"
+      linkable
+      :show-elo="false"
+      :show-flag="false"
+      size="sm"
+    />
   </div>
   <div
     v-else-if="primaryText"

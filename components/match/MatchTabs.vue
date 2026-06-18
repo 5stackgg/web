@@ -619,32 +619,38 @@ provide("commander", commander);
         </AlertDialogContent>
       </AlertDialog>
 
-      <MatchServerRebootControl :match="match" />
+      <!-- Reboot confirm lives here (not in the RCON dropdown) so it survives
+           the dropdown unmounting when the menu closes. -->
+      <MatchServerRebootControl
+        :match="match"
+        variant="dialog"
+        v-model:open="showRebootDialog"
+      />
 
       <RconCommander
         :server-id="match.server_id"
         :online="!!match.is_server_online"
         :match-id="match.id"
-        v-slot="{ commander: send }"
         v-if="canSendRCONCommands"
       >
-        <template v-for="command of availableCommands">
-          <DropdownMenuItem
-            :disabled="!match.is_server_online"
-            @click="
-              command.confirm
-                ? confirmCommand(command, send)
-                : send(command.value, '')
-            "
-          >
-            {{ command.display }}
-          </DropdownMenuItem>
-        </template>
+        <template #default="{ commander: send }">
+          <template v-for="command of availableCommands">
+            <DropdownMenuItem
+              :disabled="!match.is_server_online"
+              @click="
+                command.confirm
+                  ? confirmCommand(command, send)
+                  : send(command.value, '')
+              "
+            >
+              {{ command.display }}
+            </DropdownMenuItem>
+          </template>
 
-        <form
-          @submit.prevent="send('restore_round', form.values.round)"
-          v-if="backupRounds.length > 0"
-        >
+          <form
+            @submit.prevent="send('restore_round', form.values.round)"
+            v-if="backupRounds.length > 0"
+          >
           <FormField v-slot="{ componentField }" name="round">
             <FormItem>
               <FormLabel>{{ $t("match.tabs.restore_round") }}</FormLabel>
@@ -684,7 +690,16 @@ provide("commander", commander);
           </FormField>
 
           <Button type="submit">{{ $t("match.tabs.restore_round") }}</Button>
-        </form>
+          </form>
+        </template>
+
+        <template #footer>
+          <MatchServerRebootControl
+            :match="match"
+            variant="menu-item"
+            v-model:open="showRebootDialog"
+          />
+        </template>
       </RconCommander>
 
       <div
@@ -743,11 +758,11 @@ provide("commander", commander);
           </template>
         </CardContent>
       </Card>
-      <Card v-if="match.is_organizer && showMatchSettingsForm">
-        <CardContent class="py-4">
-          <MatchForm :match="match" />
-        </CardContent>
-      </Card>
+      <MatchForm
+        v-if="match.is_organizer && showMatchSettingsForm"
+        :match="match"
+        class="!max-w-none"
+      />
     </TabsContent>
     <TabsContent value="streams" class="max-w-[1500px]">
       <MatchLiveStreams :match="match" />
@@ -922,6 +937,7 @@ export default {
       allMapsStats: null as null | { lineup_1: any; lineup_2: any },
       hasLogs: false,
       showConfirmDialog: false,
+      showRebootDialog: false,
       pendingCommand: null as
         | undefined
         | { value: string; display: string; confirm: boolean },

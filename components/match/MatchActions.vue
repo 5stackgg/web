@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { MoreVertical, Radio } from "lucide-vue-next";
+import { MoreVertical, Radio, Pause, Play } from "lucide-vue-next";
 import MatchSelectServer from "~/components/match/MatchSelectServer.vue";
 import MatchSelectWinner from "~/components/match/MatchSelectWinner.vue";
 import DropdownMenuItem from "~/components/ui/dropdown-menu/DropdownMenuItem.vue";
@@ -31,10 +31,17 @@ import {
     <Button
       v-if="canPauseResume"
       size="sm"
-      :variant="isPaused ? 'default' : 'destructive'"
+      variant="outline"
       @click="togglePause"
       :disabled="!match.is_server_online"
+      :class="[
+        'h-9 gap-1.5 font-mono text-[0.62rem] font-bold tracking-[0.18em] uppercase',
+        isPaused
+          ? 'border-[hsl(var(--tac-amber)/0.6)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] hover:text-[hsl(var(--tac-amber))]'
+          : 'border-[hsl(var(--destructive)/0.55)] bg-[hsl(var(--destructive)/0.12)] text-destructive hover:bg-[hsl(var(--destructive)/0.2)] hover:text-destructive',
+      ]"
     >
+      <component :is="isPaused ? Play : Pause" class="h-3 w-3" />
       {{ isPaused ? $t("match.actions.resume") : $t("match.actions.pause") }}
     </Button>
 

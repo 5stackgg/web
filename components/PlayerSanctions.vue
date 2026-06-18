@@ -5,6 +5,13 @@ import {
   Trash2,
   Calendar as CalendarIcon,
   AlertTriangle,
+  ExternalLink,
+  Ban,
+  MicOff,
+  MessageSquareOff,
+  VolumeX,
+  Clock,
+  Infinity as InfinityIcon,
 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import {
@@ -123,75 +130,148 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
             >
               {{ $t("player.sanctions.no_sanctions") }}
             </div>
-            <div v-else class="flex flex-col gap-4">
+            <div v-else class="flex flex-col gap-3">
               <div
                 v-for="sanction in sanctions"
                 :key="sanction.id"
-                class="flex flex-col gap-2 pb-4"
+                class="relative overflow-hidden rounded-lg border border-border bg-card/40"
+                :class="{ 'opacity-70': isExpired(sanction) }"
               >
-                <div class="flex justify-between items-start">
-                  <div class="flex flex-col gap-1 flex-1">
-                    <span class="font-medium capitalize">{{
-                      sanction.type
-                    }}</span>
-                    <span class="text-sm text-muted-foreground">
-                      {{ new Date(sanction.created_at).toLocaleString() }}
-                    </span>
-                  </div>
-                  <div
-                    v-if="canManageSanctions"
-                    class="flex gap-2 items-center"
-                  >
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger as-child>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            class="h-8 w-8"
-                            @click="openEditDialog(sanction)"
-                          >
-                            <Edit2 class="h-4 w-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          {{ $t("player.sanctions.edit") }}
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger as-child>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            class="h-8 w-8 text-destructive"
-                            @click="removeSanction(sanction)"
-                          >
-                            <Trash2 class="h-4 w-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          {{ $t("player.sanctions.remove") }}
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
-                </div>
-                <p class="text-sm text-muted-foreground">
-                  {{ sanction.reason }}
-                </p>
-                <div
-                  v-if="sanction.remove_sanction_date"
-                  class="text-sm flex gap-2 items-center"
-                >
-                  {{ $t("player.sanctions.expires") }}
-                  <TimeAgo :date="sanction.remove_sanction_date" />
-                </div>
-                <Separator
-                  v-if="sanctions.indexOf(sanction) !== sanctions.length - 1"
-                  class="mt-2"
+                <span
+                  class="absolute inset-y-0 left-0 w-1"
+                  :class="accentBarClass(sanction)"
                 />
+                <div class="p-4 pl-5 space-y-3">
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="flex items-center gap-2.5 min-w-0">
+                      <Ban
+                        v-if="sanction.type === 'ban'"
+                        class="h-4 w-4 shrink-0"
+                        :class="accentTextClass(sanction)"
+                      />
+                      <MicOff
+                        v-else-if="sanction.type === 'mute'"
+                        class="h-4 w-4 shrink-0"
+                        :class="accentTextClass(sanction)"
+                      />
+                      <MessageSquareOff
+                        v-else-if="sanction.type === 'gag'"
+                        class="h-4 w-4 shrink-0"
+                        :class="accentTextClass(sanction)"
+                      />
+                      <VolumeX
+                        v-else
+                        class="h-4 w-4 shrink-0"
+                        :class="accentTextClass(sanction)"
+                      />
+                      <div class="min-w-0 space-y-0.5">
+                        <div class="flex items-center gap-2">
+                          <span
+                            class="text-sm font-semibold uppercase tracking-wider"
+                          >
+                            {{ sanction.type }}
+                          </span>
+                          <span
+                            class="inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+                            :class="statusPillClass(sanction)"
+                          >
+                            {{
+                              isExpired(sanction)
+                                ? $t("player.sanctions.expired")
+                                : $t("player.sanctions.active")
+                            }}
+                          </span>
+                        </div>
+                        <p
+                          class="text-xs text-muted-foreground flex items-center gap-1"
+                        >
+                          {{ $t("player.sanctions.issued") }}
+                          <TimeAgo :date="sanction.created_at" />
+                        </p>
+                      </div>
+                    </div>
+                    <div
+                      v-if="canManageSanctions"
+                      class="flex gap-1 items-center shrink-0"
+                    >
+                      <TooltipProvider v-if="!isExpired(sanction)">
+                        <Tooltip>
+                          <TooltipTrigger as-child>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              class="h-7 w-7"
+                              @click="openEditDialog(sanction)"
+                            >
+                              <Edit2 class="h-3.5 w-3.5" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {{ $t("player.sanctions.edit") }}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger as-child>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              class="h-7 w-7 text-destructive hover:text-destructive"
+                              @click="removeSanction(sanction)"
+                            >
+                              <Trash2 class="h-3.5 w-3.5" />
+                            </Button>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            {{ $t("player.sanctions.remove") }}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  </div>
+
+                  <p
+                    v-if="sanction.reason"
+                    class="text-sm text-muted-foreground leading-relaxed border-l-2 border-border/60 pl-3"
+                  >
+                    {{ sanction.reason }}
+                  </p>
+
+                  <div
+                    class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs"
+                  >
+                    <span
+                      v-if="!sanction.remove_sanction_date"
+                      class="inline-flex items-center gap-1.5 text-muted-foreground"
+                    >
+                      <InfinityIcon class="h-3.5 w-3.5" />
+                      {{ $t("player.sanctions.permanent") }}
+                    </span>
+                    <span
+                      v-else
+                      class="inline-flex items-center gap-1.5 text-muted-foreground"
+                    >
+                      <Clock class="h-3.5 w-3.5" />
+                      {{
+                        isExpired(sanction)
+                          ? $t("player.sanctions.expired_on")
+                          : $t("player.sanctions.expires")
+                      }}
+                      <TimeAgo :date="sanction.remove_sanction_date" />
+                    </span>
+                    <a
+                      v-if="isAutoSteamBan(sanction)"
+                      :href="steamProfileUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-1.5 text-primary hover:underline"
+                    >
+                      <ExternalLink class="h-3.5 w-3.5" />
+                      {{ $t("player.sanctions.view_steam") }}
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
           </TabsContent>
@@ -273,14 +353,21 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
     <Dialog :open="editDialogOpen" @update:open="editDialogOpen = $event">
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{{ $t("player.sanctions.edit_title") }}</DialogTitle>
+          <DialogTitle class="flex items-center gap-2">
+            <Clock class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
+            {{ $t("player.sanctions.edit_title") }}
+          </DialogTitle>
           <DialogDescription>
             {{ $t("player.sanctions.edit_description") }}
           </DialogDescription>
         </DialogHeader>
         <div class="grid gap-4 py-4">
           <div class="grid gap-2">
-            <Label>{{ $t("player.sanctions.expires") }}</Label>
+            <Label
+              class="text-xs uppercase tracking-wider text-muted-foreground"
+            >
+              {{ $t("player.sanctions.end_time") }}
+            </Label>
             <div class="flex items-center gap-2">
               <Popover>
                 <PopoverTrigger as-child>
@@ -323,6 +410,9 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
                 </Tooltip>
               </TooltipProvider>
             </div>
+            <p class="text-xs text-muted-foreground">
+              {{ $t("player.sanctions.end_time_hint") }}
+            </p>
           </div>
         </div>
         <DialogFooter>
@@ -515,6 +605,9 @@ export default {
     canManageSanctions() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.moderator);
     },
+    steamProfileUrl() {
+      return `https://steamcommunity.com/profiles/${this.playerId}`;
+    },
     editDateDisplay() {
       if (!this.editDate) return "";
       return this.editDate.toString();
@@ -549,7 +642,40 @@ export default {
     },
   },
   methods: {
+    isExpired(sanction: any) {
+      return (
+        !!sanction.remove_sanction_date &&
+        new Date(sanction.remove_sanction_date) <= new Date()
+      );
+    },
+    isAutoSteamBan(sanction: any) {
+      return (
+        sanction.type === "ban" &&
+        typeof sanction.reason === "string" &&
+        sanction.reason.startsWith("Auto: Steam")
+      );
+    },
+    accentBarClass(sanction: any) {
+      if (this.isExpired(sanction)) return "bg-muted-foreground/30";
+      return sanction.type === "ban"
+        ? "bg-destructive"
+        : "bg-[hsl(var(--tac-amber))]";
+    },
+    accentTextClass(sanction: any) {
+      if (this.isExpired(sanction)) return "text-muted-foreground";
+      return sanction.type === "ban"
+        ? "text-destructive"
+        : "text-[hsl(var(--tac-amber))]";
+    },
+    statusPillClass(sanction: any) {
+      return this.isExpired(sanction)
+        ? "border-border text-muted-foreground"
+        : "border-destructive/40 bg-destructive/10 text-destructive";
+    },
     openEditDialog(sanction: any) {
+      if (this.isExpired(sanction)) {
+        return;
+      }
       this.editingSanction = sanction;
       this.editDialogOpen = true;
 

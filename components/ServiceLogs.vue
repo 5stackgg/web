@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import socket from "~/web-sockets/Socket";
-import { Switch } from "~/components/ui/switch";
 import { Tabs, TabsContent } from "~/components/ui/tabs";
 import {
   Tooltip,
@@ -15,12 +14,7 @@ import {
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
-import {
-  DownloadIcon,
-  FullscreenIcon,
-  ExpandIcon,
-  PlayIcon,
-} from "lucide-vue-next";
+import { DownloadIcon, Clock, Maximize2, Minimize2 } from "lucide-vue-next";
 
 const config = useRuntimeConfig();
 
@@ -66,8 +60,10 @@ async function downloadFullLogs(service: string) {
 </script>
 
 <template>
+  <Teleport to="body" :disabled="!maximized">
   <section
-    class="relative flex flex-col overflow-hidden border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.25)_100%)] [backdrop-filter:blur(6px)]"
+    class="flex flex-col overflow-hidden border border-border bg-[linear-gradient(180deg,hsl(var(--card)/0.6)_0%,hsl(var(--card)/0.25)_100%)] [backdrop-filter:blur(6px)]"
+    :class="maximized ? 'fixed inset-0 z-50 bg-background' : 'relative'"
   >
     <span
       aria-hidden="true"
@@ -81,66 +77,42 @@ async function downloadFullLogs(service: string) {
     <header
       class="flex flex-wrap items-center gap-1.5 border-b border-border/70 px-3 py-2 sm:gap-2 sm:px-4 sm:py-3"
     >
-      <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-        <TooltipProvider v-if="compact">
-          <Tooltip>
-            <TooltipTrigger as-child>
-              <button
-                class="grid h-9 w-9 place-items-center border border-border bg-background/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
-                @click="expanded = !expanded"
-              >
-                <ExpandIcon class="h-4 w-4" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>{{ $t("ui.tooltips.expand") }}</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-
+      <div class="flex items-center gap-1.5 sm:gap-2">
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger as-child>
               <button
                 class="grid h-9 w-9 place-items-center border border-border bg-background/40 text-muted-foreground transition-colors hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]"
-                @click="toggleFullscreen"
+                @click="maximized = !maximized"
               >
-                <FullscreenIcon class="h-4 w-4" />
+                <Minimize2 v-if="maximized" class="h-4 w-4" />
+                <Maximize2 v-else class="h-4 w-4" />
               </button>
             </TooltipTrigger>
             <TooltipContent>{{ $t("ui.tooltips.fullscreen") }}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
+      </div>
 
-        <label
-          v-if="followLogs === undefined && !disableRetry"
-          class="flex h-9 cursor-pointer items-center gap-2 border px-3 font-mono text-[0.65rem] uppercase tracking-[0.2em] transition-colors"
-          :class="
-            _followLogs
-              ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))]'
-              : 'border-border bg-background/40 text-muted-foreground'
-          "
-        >
-          <Switch
-            :model-value="_followLogs"
-            @click="_followLogs = !_followLogs"
-          />
-          {{ $t("ui.logs.follow") }}
-        </label>
-
-        <label
-          v-if="timestamps === undefined"
-          class="flex h-9 cursor-pointer items-center gap-2 border px-3 font-mono text-[0.65rem] uppercase tracking-[0.2em] transition-colors"
-          :class="
-            _timestamps
-              ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))]'
-              : 'border-border bg-background/40 text-muted-foreground'
-          "
-        >
-          <Switch
-            :model-value="_timestamps"
-            @click="_timestamps = !_timestamps"
-          />
-          {{ $t("ui.logs.timestamps") }}
-        </label>
+      <div class="ml-auto flex items-center gap-1.5 sm:gap-2">
+        <TooltipProvider v-if="timestamps === undefined">
+          <Tooltip>
+            <TooltipTrigger as-child>
+              <button
+                class="grid h-9 w-9 place-items-center border transition-colors"
+                :class="
+                  _timestamps
+                    ? 'border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.08)] text-[hsl(var(--tac-amber))]'
+                    : 'border-border bg-background/40 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-[hsl(var(--tac-amber))]'
+                "
+                @click="_timestamps = !_timestamps"
+              >
+                <Clock class="h-4 w-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>{{ $t("ui.logs.timestamps") }}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
         <DropdownMenu>
           <DropdownMenuTrigger as-child>
@@ -163,15 +135,6 @@ async function downloadFullLogs(service: string) {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
-      <button
-        v-if="!disableRetry"
-        class="ml-auto flex h-9 items-center gap-2 whitespace-nowrap border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] px-3 font-mono text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.2)]"
-        @click="jumpToLive"
-      >
-        <PlayIcon class="h-3 w-3" />
-        {{ $t("ui.logs.jump_to_live") }}
-      </button>
     </header>
 
     <div
@@ -205,6 +168,7 @@ async function downloadFullLogs(service: string) {
       :class="[
         'relative flex flex-col overflow-hidden bg-[hsl(var(--background)/0.6)] p-2 sm:p-4',
         compact && 'lg:min-h-0 lg:flex-1',
+        maximized && 'min-h-0 flex-1',
       ]"
     >
       <div
@@ -215,13 +179,21 @@ async function downloadFullLogs(service: string) {
       <Tabs
         v-if="podCount > 1"
         v-model="activePod"
-        :class="['flex flex-col', compact && 'lg:min-h-0 lg:flex-1']"
+        :class="[
+          'flex flex-col',
+          compact && 'lg:min-h-0 lg:flex-1',
+          maximized && 'min-h-0 flex-1',
+        ]"
       >
         <TabsContent
           v-for="pod in podList"
           :key="pod"
           :value="pod"
-          :class="['flex flex-col', compact && 'lg:min-h-0 lg:flex-1']"
+          :class="[
+            'flex flex-col',
+            compact && 'lg:min-h-0 lg:flex-1',
+            maximized && 'min-h-0 flex-1',
+          ]"
         >
           <PodLogs
             :pod="pod"
@@ -229,6 +201,7 @@ async function downloadFullLogs(service: string) {
             :show-timestamps="effectiveTimestamps"
             :follow="effectiveFollowLogs"
             :fill="compact"
+            :maximized="maximized"
             @follow-logs-changed="handleFollowLogsChanged"
             @load-more-logs="handleLoadMoreLogs"
           />
@@ -242,11 +215,13 @@ async function downloadFullLogs(service: string) {
         :show-timestamps="effectiveTimestamps"
         :follow="effectiveFollowLogs"
         :fill="compact"
+        :maximized="maximized"
         @follow-logs-changed="handleFollowLogsChanged"
         @load-more-logs="handleLoadMoreLogs"
       />
     </div>
   </section>
+  </Teleport>
 </template>
 
 <script lang="ts">
@@ -278,7 +253,7 @@ export default {
       activePod: "",
       _timestamps: true,
       _followLogs: true,
-      expanded: false,
+      maximized: false,
       logListener: undefined as { stop: () => void } | undefined,
       retryTimeout: undefined as NodeJS.Timeout | undefined,
       seenLogKeys: new Set<string>() as Set<string>,
@@ -310,12 +285,10 @@ export default {
       ].join("|");
     },
 
-    jumpToLive() {
-      this.$emit("follow-logs-changed", true);
-    },
-
-    toggleFullscreen() {
-      document.documentElement.requestFullscreen?.();
+    onMaximizeKeydown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        this.maximized = false;
+      }
     },
 
     downloadLogs() {
@@ -356,6 +329,17 @@ export default {
   },
 
   watch: {
+    maximized(value: boolean) {
+      // In-app fullscreen overlay (teleported to body). Lock page scroll
+      // and wire Escape to exit while it's open.
+      if (value) {
+        document.body.classList.add("overflow-hidden");
+        window.addEventListener("keydown", this.onMaximizeKeydown);
+      } else {
+        document.body.classList.remove("overflow-hidden");
+        window.removeEventListener("keydown", this.onMaximizeKeydown);
+      }
+    },
     podCount: {
       immediate: true,
       handler(count: number) {
@@ -444,6 +428,8 @@ export default {
   unmounted() {
     clearTimeout(this.retryTimeout);
     this.logListener?.stop();
+    document.body.classList.remove("overflow-hidden");
+    window.removeEventListener("keydown", this.onMaximizeKeydown);
   },
 };
 </script>

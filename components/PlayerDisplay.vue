@@ -6,6 +6,7 @@ import PlayerElo from "~/components/PlayerElo.vue";
 import PlayerPremierRank from "~/components/PlayerPremierRank.vue";
 import PlayerFaceitRank from "~/components/PlayerFaceitRank.vue";
 import PlayerSkillGroupRank from "~/components/PlayerSkillGroupRank.vue";
+import PlayerVacBadge from "~/components/PlayerVacBadge.vue";
 import {
   Crown,
   Shield,
@@ -153,6 +154,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                     }}</TooltipContent>
                   </Tooltip>
                 </template>
+                <PlayerVacBadge :player="player" />
               </div>
             </div>
             <slot name="name-postfix"></slot>

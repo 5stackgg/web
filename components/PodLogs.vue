@@ -10,12 +10,20 @@
     </span>
   </div>
   <div
+    :class="[
+      'relative flex flex-col',
+      maximized ? 'min-h-0 flex-1' : fill ? 'lg:min-h-0 lg:flex-1' : '',
+    ]"
+  >
+  <div
     ref="scrollContainer"
     :class="[
       'overflow-auto whitespace-pre-wrap break-words border border-border/40 bg-[hsl(var(--background)/0.5)] [scrollbar-color:hsl(var(--tac-amber)/0.4)_transparent] [scrollbar-width:thin]',
-      fill
-        ? 'h-80 lg:h-auto lg:min-h-0 lg:max-h-[70vh] lg:flex-1'
-        : 'max-h-[50vh]',
+      maximized
+        ? 'min-h-0 flex-1'
+        : fill
+          ? 'h-80 lg:h-auto lg:min-h-0 lg:max-h-[70vh] lg:flex-1'
+          : 'max-h-[50vh]',
     ]"
     @scroll="handleScroll"
   >
@@ -35,11 +43,31 @@
         v-html="colorize(entry.log)"
       />
     </div>
+    </div>
+
+    <!-- Following is automatic while pinned to the bottom; this only
+         surfaces once the user scrolls up and needs to catch back up. -->
+    <Transition
+      enter-active-class="transition duration-150 ease-out"
+      enter-from-class="opacity-0 translate-y-1"
+      leave-active-class="transition duration-100 ease-in"
+      leave-to-class="opacity-0 translate-y-1"
+    >
+      <button
+        v-if="!isNearBottom"
+        class="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 whitespace-nowrap border border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.18)] px-3 py-1.5 font-mono text-[0.62rem] font-bold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))] shadow-lg backdrop-blur transition-colors hover:bg-[hsl(var(--tac-amber)/0.3)]"
+        @click="jumpToLive"
+      >
+        <PlayIcon class="h-3 w-3" />
+        {{ $t("ui.logs.jump_to_live") }}
+      </button>
+    </Transition>
   </div>
 </template>
 
 <script lang="ts">
 import Convert from "ansi-to-html";
+import { PlayIcon } from "lucide-vue-next";
 
 const convert = new Convert();
 
@@ -52,6 +80,7 @@ type LogEntry = {
 };
 
 export default {
+  components: { PlayIcon },
   emits: ["follow-logs-changed", "load-more-logs"],
   props: {
     pod: {
@@ -71,6 +100,10 @@ export default {
       default: true,
     },
     fill: {
+      type: Boolean,
+      default: false,
+    },
+    maximized: {
       type: Boolean,
       default: false,
     },
@@ -144,6 +177,11 @@ export default {
           this.handleScroll();
         }
       });
+    },
+
+    jumpToLive() {
+      this.scrollToBottom();
+      this.$emit("follow-logs-changed", true);
     },
 
     requestMoreLogs() {

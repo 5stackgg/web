@@ -83,6 +83,7 @@ const open = ref(false);
 const mounted = ref(false);
 const hasLogs = ref(false);
 const showConfirmDialog = ref(false);
+const showRebootDialog = ref(false);
 const pendingCommand = ref<CommandDetail | null>(null);
 const executePending = ref<(() => void) | null>(null);
 
@@ -261,6 +262,14 @@ function runCommand(
         </AlertDialogContent>
       </AlertDialog>
 
+      <!-- Reboot confirm lives here (not in the RCON dropdown) so it survives
+           the dropdown unmounting when the menu closes. -->
+      <MatchServerRebootControl
+        :match="match"
+        variant="dialog"
+        v-model:open="showRebootDialog"
+      />
+
       <div
         v-show="open"
         class="group h-2 cursor-ns-resize bg-border hover:bg-[hsl(var(--tac-amber)/0.4)] transition-colors flex items-center justify-center"
@@ -326,8 +335,6 @@ function runCommand(
           <div
             class="min-w-0 flex flex-col gap-3 lg:min-h-0 lg:overflow-hidden"
           >
-            <MatchServerRebootControl :match="match" />
-
             <RconCommander
               v-if="canSendRCONCommands"
               :server-id="match.server_id"
@@ -335,18 +342,18 @@ function runCommand(
               :match-id="match.id"
               :compact="true"
               class="lg:flex-1 lg:min-h-0"
-              v-slot="{ commander: send }"
             >
-              <DropdownMenuItem
-                v-for="command of availableCommands"
-                :key="command.value"
-                :disabled="!match.is_server_online"
-                @click="runCommand(command, send)"
-              >
-                {{ command.display }}
-              </DropdownMenuItem>
+              <template #default="{ commander: send }">
+                <DropdownMenuItem
+                  v-for="command of availableCommands"
+                  :key="command.value"
+                  :disabled="!match.is_server_online"
+                  @click="runCommand(command, send)"
+                >
+                  {{ command.display }}
+                </DropdownMenuItem>
 
-              <template v-if="restorableRounds.length > 0">
+                <template v-if="restorableRounds.length > 0">
                 <DropdownMenuSeparator />
                 <form
                   class="p-2 flex flex-col gap-2"
@@ -396,6 +403,15 @@ function runCommand(
                     {{ $t("match.tabs.restore_round") }}
                   </Button>
                 </form>
+                </template>
+              </template>
+
+              <template #footer>
+                <MatchServerRebootControl
+                  :match="match"
+                  variant="menu-item"
+                  v-model:open="showRebootDialog"
+                />
               </template>
             </RconCommander>
 

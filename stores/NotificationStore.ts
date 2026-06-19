@@ -12,6 +12,7 @@ type Notification = {
   message: string;
   steam_id: string;
   type: string;
+  role: string;
   entity_id: string;
   is_read: boolean;
   deletable: boolean;
@@ -50,15 +51,19 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     const singles: Notification[] = [];
 
     for (const n of notifications.value) {
-      if (!n.entity_id) {
+      const groupKey =
+        n.type === "PlayerSanctioned"
+          ? `type:PlayerSanctioned:${n.role}`
+          : n.entity_id;
+      if (!groupKey) {
         singles.push(n);
         continue;
       }
-      const arr = groups.get(n.entity_id);
+      const arr = groups.get(groupKey);
       if (arr) {
         arr.push(n);
       } else {
-        groups.set(n.entity_id, [n]);
+        groups.set(groupKey, [n]);
       }
     }
 
@@ -212,6 +217,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
                 message: true,
                 steam_id: true,
                 type: true,
+                role: true,
                 entity_id: true,
                 is_read: true,
                 deletable: true,

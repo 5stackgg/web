@@ -153,6 +153,8 @@ import debounce from "~/utilities/debounce";
                     >
                       {{ $t("server.rcon.css_info") }}
                     </DropdownMenuItem>
+
+                    <slot name="footer" :commander="commander"></slot>
                   </DropdownMenuGroup>
                 </DropdownMenuContent>
               </DropdownMenu>

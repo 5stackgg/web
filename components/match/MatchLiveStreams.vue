@@ -25,9 +25,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle } from "lucide-vue-next";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import Empty from "@/components/ui/empty/Empty.vue";
+import { PlusCircle, Radio } from "lucide-vue-next";
+import { Card, CardContent } from "@/components/ui/card";
 import { e_player_roles_enum } from "~/generated/zeus";
 import StreamEmbed from "~/components/StreamEmbed.vue";
 import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
@@ -38,11 +37,16 @@ import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
   <Card class="p-4">
     <CardContent>
       <!-- Header / Description -->
-      <div class="flex items-start justify-between mb-4 gap-4">
-        <div class="space-y-1">
-          <h3 class="text-base font-semibold leading-none">
-            {{ $t("streams.section_title") }}
-          </h3>
+      <div class="flex items-start justify-between mb-5 gap-4">
+        <div class="space-y-1.5 min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]"></span>
+            <h3
+              class="font-mono text-[0.7rem] font-bold tracking-[0.22em] uppercase text-foreground"
+            >
+              {{ $t("streams.section_title") }}
+            </h3>
+          </div>
           <p class="text-xs text-muted-foreground">
             {{ $t("streams.section_description") }}
           </p>
@@ -50,10 +54,11 @@ import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
         <Button
           v-if="canManageStreams"
           size="sm"
-          class="h-8 px-3 text-xs"
+          variant="outline"
+          class="shrink-0 gap-1.5 font-mono text-[0.62rem] font-bold tracking-[0.16em] uppercase border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.1)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] hover:text-[hsl(var(--tac-amber))]"
           @click="isAddStreamModalOpen = true"
         >
-          <PlusCircle class="mr-2 h-3 w-3" />
+          <PlusCircle class="h-3.5 w-3.5" />
           {{ $t("streams.add_new") }}
         </Button>
       </div>
@@ -311,23 +316,26 @@ import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
           </div>
         </div>
       </div>
-      <Empty v-else class="mt-4 space-y-2">
-        <h3 class="text-lg font-semibold">
-          {{ $t("streams.no_streams_title") }}
-        </h3>
-        <p class="text-muted-foreground">
-          {{ $t("streams.no_streams") }}
-        </p>
-        <Button
-          v-if="canManageStreams"
-          size="sm"
-          class="mt-1"
-          @click="isAddStreamModalOpen = true"
+      <div
+        v-else
+        class="mt-2 flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed border-border/70 bg-muted/10 px-6 py-14 text-center"
+      >
+        <div
+          class="flex h-12 w-12 items-center justify-center rounded-full border border-[hsl(var(--tac-amber)/0.3)] bg-[hsl(var(--tac-amber)/0.08)]"
         >
-          <PlusCircle class="mr-2 h-4 w-4" />
-          {{ $t("streams.add_new") }}
-        </Button>
-      </Empty>
+          <Radio class="h-5 w-5 text-[hsl(var(--tac-amber))]" />
+        </div>
+        <div class="space-y-1.5">
+          <h4
+            class="font-mono text-[0.7rem] font-bold tracking-[0.22em] uppercase text-foreground"
+          >
+            {{ $t("streams.no_streams_title") }}
+          </h4>
+          <p class="text-sm text-muted-foreground max-w-sm mx-auto">
+            {{ $t("streams.no_streams") }}
+          </p>
+        </div>
+      </div>
 
       <Dialog v-if="canManageStreams" v-model:open="isAddStreamModalOpen">
         <DialogContent class="sm:max-w-[425px]">

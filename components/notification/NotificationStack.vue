@@ -27,6 +27,7 @@ type StackNotification = {
   title: string;
   message: string;
   type: string;
+  steam_id?: string | null;
   entity_id?: string | null;
   is_read: boolean;
   deletable?: boolean;
@@ -221,7 +222,7 @@ function handleTopClick(event: MouseEvent) {
         </p>
 
         <NotificationContext
-          v-if="top.entity_id"
+          v-if="top.entity_id && top.steam_id !== top.entity_id"
           :type="top.type"
           :entity-id="top.entity_id"
           class="mt-2"
@@ -282,7 +283,7 @@ function handleTopClick(event: MouseEvent) {
         </div>
 
         <NotificationContext
-          v-if="top.entity_id"
+          v-if="top.entity_id && top.type !== 'PlayerSanctioned'"
           :type="top.type"
           :entity-id="top.entity_id"
           class="mx-1 mb-2"
@@ -293,7 +294,7 @@ function handleTopClick(event: MouseEvent) {
           :key="n.id"
           :notification="n"
           :variant="variant"
-          :show-context="false"
+          :show-context="n.type === 'PlayerSanctioned'"
           @dismiss="(id) => emit('dismiss', id)"
           @delete="(id) => emit('delete', id)"
           @action="

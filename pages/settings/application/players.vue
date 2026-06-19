@@ -5,10 +5,11 @@ import SettingsSection from "~/components/settings/SettingsSection.vue";
 import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { LucideRefreshCw } from "lucide-vue-next";
+import { LucideRefreshCw, ShieldAlert, AlertTriangle } from "lucide-vue-next";
 import { toast } from "@/components/ui/toast";
 import { useI18n } from "vue-i18n";
 import { generateMutation } from "~/graphql/graphqlGen";
+import gql from "graphql-tag";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,6 +25,8 @@ import {
 const { t } = useI18n();
 const showRefreshDialog = ref(false);
 const refreshing = ref(false);
+const showScanDialog = ref(false);
+const scanning = ref(false);
 
 async function doRefreshAllPlayers() {
   refreshing.value = true;
@@ -53,66 +56,43 @@ async function doRefreshAllPlayers() {
     refreshing.value = false;
   }
 }
+
+async function doScanSteamBans() {
+  scanning.value = true;
+  showScanDialog.value = false;
+
+  try {
+    await useNuxtApp().$apollo.defaultClient.mutate({
+      mutation: gql`
+        mutation ScanSteamBans {
+          scanSteamBans {
+            success
+          }
+        }
+      `,
+    });
+
+    toast({
+      title: t("pages.settings.application.players.scan_queued"),
+    });
+  } catch (error: any) {
+    toast({
+      title: t("pages.settings.application.players.scan_failed"),
+      description:
+        error?.message ||
+        t("pages.settings.application.players.error_occurred"),
+      variant: "destructive",
+    });
+  } finally {
+    scanning.value = false;
+  }
+}
 </script>
 
 <template>
   <SettingsPage>
     <PageTransition :delay="0">
       <div class="space-y-6">
-        <SettingsSection
-          id="refresh"
-          :title="$t('pages.settings.application.players.refresh_all_title')"
-          :description="
-            $t('pages.settings.application.players.refresh_all_description')
-          "
-        >
-          <template #action>
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              :disabled="refreshing"
-              class="flex items-center gap-2"
-              @click="showRefreshDialog = true"
-            >
-              <Spinner v-if="refreshing" class="h-4 w-4" />
-              <LucideRefreshCw v-else class="h-4 w-4" />
-              {{
-                refreshing
-                  ? $t("pages.settings.application.players.refreshing")
-                  : $t("pages.settings.application.players.refresh_button")
-              }}
-            </Button>
-          </template>
-        </SettingsSection>
-
-        <AlertDialog v-model:open="showRefreshDialog">
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>
-                {{
-                  $t("pages.settings.application.players.refresh_dialog_title")
-                }}
-              </AlertDialogTitle>
-              <AlertDialogDescription>
-                {{
-                  $t(
-                    "pages.settings.application.players.refresh_dialog_description",
-                  )
-                }}
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel>
-                {{ $t("common.cancel") }}
-              </AlertDialogCancel>
-              <AlertDialogAction @click="doRefreshAllPlayers">
-                {{ $t("pages.settings.application.players.refresh_button") }}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-
         <form class="space-y-6" @submit.prevent="updateSettings">
           <SettingsSection
             id="registration"
@@ -246,6 +226,154 @@ async function doRefreshAllPlayers() {
             @save="updateSettings"
           />
         </form>
+
+        <section id="danger-zone" class="scroll-mt-4">
+          <div class="rounded-lg border border-destructive/40 bg-destructive/5">
+            <div class="p-6 space-y-6">
+              <div class="flex items-start gap-3">
+                <AlertTriangle class="h-5 w-5 shrink-0 text-destructive" />
+                <div class="min-w-0 flex-1 space-y-0.5">
+                  <h3
+                    class="text-sm font-semibold uppercase tracking-wider text-destructive"
+                  >
+                    {{
+                      $t("pages.settings.application.players.danger_zone_title")
+                    }}
+                  </h3>
+                  <p class="text-sm text-muted-foreground">
+                    {{
+                      $t(
+                        "pages.settings.application.players.danger_zone_description",
+                      )
+                    }}
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class="flex items-start justify-between gap-4 border-t border-destructive/20 pt-4"
+              >
+                <div class="min-w-0 space-y-0.5">
+                  <p class="text-sm font-medium">
+                    {{
+                      $t("pages.settings.application.players.refresh_all_title")
+                    }}
+                  </p>
+                  <p class="text-sm text-muted-foreground">
+                    {{
+                      $t(
+                        "pages.settings.application.players.refresh_all_description",
+                      )
+                    }}
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  :disabled="refreshing"
+                  class="shrink-0 flex items-center gap-2"
+                  @click="showRefreshDialog = true"
+                >
+                  <Spinner v-if="refreshing" class="h-4 w-4" />
+                  <LucideRefreshCw v-else class="h-4 w-4" />
+                  {{
+                    refreshing
+                      ? $t("pages.settings.application.players.refreshing")
+                      : $t("pages.settings.application.players.refresh_button")
+                  }}
+                </Button>
+              </div>
+
+              <div
+                class="flex items-start justify-between gap-4 border-t border-destructive/20 pt-4"
+              >
+                <div class="min-w-0 space-y-0.5">
+                  <p class="text-sm font-medium">
+                    {{
+                      $t("pages.settings.application.players.scan_bans_title")
+                    }}
+                  </p>
+                  <p class="text-sm text-muted-foreground">
+                    {{
+                      $t(
+                        "pages.settings.application.players.scan_bans_description",
+                      )
+                    }}
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  :disabled="scanning"
+                  class="shrink-0 flex items-center gap-2"
+                  @click="showScanDialog = true"
+                >
+                  <Spinner v-if="scanning" class="h-4 w-4" />
+                  <ShieldAlert v-else class="h-4 w-4" />
+                  {{
+                    scanning
+                      ? $t("pages.settings.application.players.scanning")
+                      : $t("pages.settings.application.players.scan_button")
+                  }}
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <AlertDialog v-model:open="showRefreshDialog">
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {{
+                  $t("pages.settings.application.players.refresh_dialog_title")
+                }}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                {{
+                  $t(
+                    "pages.settings.application.players.refresh_dialog_description",
+                  )
+                }}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>
+                {{ $t("common.cancel") }}
+              </AlertDialogCancel>
+              <AlertDialogAction @click="doRefreshAllPlayers">
+                {{ $t("pages.settings.application.players.refresh_button") }}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <AlertDialog v-model:open="showScanDialog">
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {{ $t("pages.settings.application.players.scan_dialog_title") }}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                {{
+                  $t(
+                    "pages.settings.application.players.scan_dialog_description",
+                  )
+                }}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>
+                {{ $t("common.cancel") }}
+              </AlertDialogCancel>
+              <AlertDialogAction @click="doScanSteamBans">
+                {{ $t("pages.settings.application.players.scan_button") }}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </PageTransition>
   </SettingsPage>

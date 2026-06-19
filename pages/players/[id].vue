@@ -2137,12 +2137,6 @@ const playerTeamChipShortClasses =
               : $t("pages.players.detail.no_matches_description")
           }}
         </EmptyDescription>
-        <NuxtLink v-if="isSelfProfile" to="/play">
-          <Button class="gap-2">
-            <PlayIcon class="h-4 w-4 fill-current" />
-            {{ $t("pages.players.detail.play_a_match") }}
-          </Button>
-        </NuxtLink>
       </Empty>
     </PageTransition>
 

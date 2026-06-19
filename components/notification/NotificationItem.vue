@@ -22,6 +22,7 @@ type NotificationItemProps = {
     title: string;
     message: string;
     type: string;
+    steam_id?: string | null;
     entity_id?: string | null;
     is_read: boolean;
     deletable?: boolean;
@@ -154,7 +155,11 @@ onBeforeUnmount(() => {
     </template>
 
     <NotificationContext
-      v-if="showContext && notification.entity_id"
+      v-if="
+        showContext &&
+        notification.entity_id &&
+        notification.steam_id !== notification.entity_id
+      "
       :type="notification.type"
       :entity-id="notification.entity_id"
       class="mb-2"

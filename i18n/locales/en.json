@@ -3757,6 +3757,7 @@
       },
       "map_veto_settings": {
         "description": "Map Veto process: team 1 ban, team 2 ban, team 1 pick, team 2 pick side, team 2 pick, team 1 pick side, team 2 ban. Process repeats until final map is selected",
+        "pick_description": "Map Veto is off — manually choose the maps that will be played below.",
         "custom_pool": "Custom Map Pool",
         "active_duty": "Active Duty Map Pool",
         "custom_pool_tooltip": "Choosing a custom map pool allows you to select maps outside the current active duty pool"

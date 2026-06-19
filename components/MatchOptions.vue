@@ -19,6 +19,7 @@ import {
 import FiveStackToolTip from "./FiveStackToolTip.vue";
 import RegionStatusDot from "~/components/regions/RegionStatusDot.vue";
 import { Card } from "~/components/ui/card";
+import SettingHeader from "~/components/match/SettingHeader.vue";
 </script>
 
 <template>
@@ -39,9 +40,9 @@ import { Card } from "~/components/ui/card";
               v-if="!stageBracketOverride"
             >
               <FormItem>
-                <FormLabel class="text-lg font-semibold">{{
+                <SettingHeader>{{
                   $t("match.options.type.label")
-                }}</FormLabel>
+                }}</SettingHeader>
                 <RadioGroup
                   v-bind="componentField"
                   class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full"
@@ -79,9 +80,9 @@ import { Card } from "~/components/ui/card";
               name="best_of"
             >
               <FormItem>
-                <FormLabel class="text-lg font-semibold">{{
+                <SettingHeader>{{
                   $t("match.options.best_of.label")
-                }}</FormLabel>
+                }}</SettingHeader>
                 <FormDescription>
                   {{ $t("match.options.best_of.description") }}
                 </FormDescription>
@@ -125,9 +126,9 @@ import { Card } from "~/components/ui/card";
             >
               <div class="flex flex-col space-y-3 p-4">
                 <div class="flex justify-between items-center">
-                  <FormLabel class="text-lg font-semibold">{{
+                  <SettingHeader>{{
                     $t("common.map_veto")
-                  }}</FormLabel>
+                  }}</SettingHeader>
                   <FormControl>
                     <Switch
                       class="pointer-events-none"
@@ -152,7 +153,7 @@ import { Card } from "~/components/ui/card";
           <Card>
             <div class="p-6 space-y-6">
               <div class="flex justify-between items-center">
-                <FormLabel class="text-lg font-semibold">
+                <SettingHeader>
                   <template v-if="form.values.map_veto">
                     <template v-if="form.values.custom_map_pool">
                       {{ $t("match.options.map_veto_settings.custom_pool") }}
@@ -163,7 +164,7 @@ import { Card } from "~/components/ui/card";
                     }}</template>
                   </template>
                   <template v-else>{{ $t("maps.veto.pick") }}</template>
-                </FormLabel>
+                </SettingHeader>
                 <div v-show="form.values.map_veto">
                   <FormField
                     v-slot="{ value, handleChange }"
@@ -296,7 +297,7 @@ import { Card } from "~/components/ui/card";
           @click="handleChange(!value)"
         >
           <div class="flex justify-between items-center">
-            <FormLabel class="text-lg font-semibold">{{ $t("match.options.allow_coaches") }}</FormLabel>
+            <SettingHeader>{{ $t("match.options.allow_coaches") }}</SettingHeader>
             <FormControl>
               <Switch
                 class="pointer-events-none"
@@ -359,9 +360,9 @@ import { Card } from "~/components/ui/card";
                       @click="handleChange(!value)"
                     >
                       <div class="space-y-0.5">
-                        <FormLabel class="text-lg font-semibold">{{
+                        <SettingHeader>{{
                           $t("match.options.advanced.overtime.label")
-                        }}</FormLabel>
+                        }}</SettingHeader>
                         <FormDescription>
                           {{
                             $t("match.options.advanced.overtime.description")
@@ -386,9 +387,9 @@ import { Card } from "~/components/ui/card";
                       @click="handleChange(!value)"
                     >
                       <div class="space-y-0.5">
-                        <FormLabel class="text-lg font-semibold">{{
+                        <SettingHeader>{{
                           $t("match.options.advanced.knife_round.label")
-                        }}</FormLabel>
+                        }}</SettingHeader>
                         <FormDescription>
                           {{
                             $t("match.options.advanced.knife_round.description")
@@ -408,9 +409,9 @@ import { Card } from "~/components/ui/card";
 
                 <FormField v-slot="{ componentField }" name="mr">
                   <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
+                    <SettingHeader>{{
                       $t("match.options.advanced.max_rounds.label")
-                    }}</FormLabel>
+                    }}</SettingHeader>
                     <FormDescription>
                       {{ $t("match.options.advanced.max_rounds.description") }}
                     </FormDescription>
@@ -448,9 +449,9 @@ import { Card } from "~/components/ui/card";
             <Card v-if="availableRegions.length > 1">
               <div class="p-6 space-y-6">
                 <div class="flex justify-between items-center">
-                  <div class="text-lg font-semibold">
+                  <SettingHeader>
                     {{ $t("match.options.advanced.region.title") }}
-                  </div>
+                  </SettingHeader>
                   <div class="flex items-center gap-4" v-if="canSetLan">
                     <span>{{
                       $t("match.options.advanced.region.lan_match")
@@ -482,9 +483,9 @@ import { Card } from "~/components/ui/card";
                       >
                         <div class="flex flex-col space-y-3 p-4">
                           <div class="flex justify-between items-center">
-                            <FormLabel class="text-lg font-semibold">{{
+                            <SettingHeader>{{
                               $t("match.options.advanced.region.veto.label")
-                            }}</FormLabel>
+                            }}</SettingHeader>
                             <FormControl>
                               <Switch
                                 class="pointer-events-none"
@@ -511,12 +512,12 @@ import { Card } from "~/components/ui/card";
                   <FormField name="regions">
                     <FormItem>
                       <FormLabel>
-                        <div class="text-lg font-semibold">
+                        <SettingHeader>
                           <template v-if="form.values.region_veto">
                             {{ $t("match.options.advanced.region.preferred") }}
                           </template>
                           <template v-else>{{ $t("common.region") }}</template>
-                        </div>
+                        </SettingHeader>
                       </FormLabel>
 
                       <FormControl>
@@ -687,9 +688,9 @@ import { Card } from "~/components/ui/card";
               <div class="flex flex-col space-y-3 p-4">
                 <FormField v-slot="{ value }" name="number_of_substitutes">
                   <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
+                    <SettingHeader>{{
                       $t("match.options.advanced.substitutes.label")
-                    }}</FormLabel>
+                    }}</SettingHeader>
                     <FormDescription>
                       {{ $t("match.options.advanced.substitutes.description") }}
                     </FormDescription>
@@ -724,9 +725,9 @@ import { Card } from "~/components/ui/card";
 
                 <FormField v-slot="{ value }" name="tv_delay">
                   <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
+                    <SettingHeader>{{
                       $t("match.options.advanced.tv_delay.label")
-                    }}</FormLabel>
+                    }}</SettingHeader>
                     <NumberField
                       class="gap-2"
                       :min="0"
@@ -763,9 +764,9 @@ import { Card } from "~/components/ui/card";
                   name="check_in_setting"
                 >
                   <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
+                    <SettingHeader>{{
                       $t("match.options.advanced.check_in_settings.label")
-                    }}</FormLabel>
+                    }}</SettingHeader>
                     <FormDescription>{{
                       $t("match.options.advanced.check_in_settings.description")
                     }}</FormDescription>
@@ -793,9 +794,9 @@ import { Card } from "~/components/ui/card";
 
                 <FormField v-slot="{ componentField }" name="ready_setting">
                   <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
+                    <SettingHeader>{{
                       $t("match.options.advanced.ready_settings.label")
-                    }}</FormLabel>
+                    }}</SettingHeader>
                     <FormDescription>{{
                       $t("match.options.advanced.ready_settings.description")
                     }}</FormDescription>
@@ -832,9 +833,9 @@ import { Card } from "~/components/ui/card";
                       @click="handleChange(!value)"
                     >
                       <div class="space-y-0.5">
-                        <FormLabel class="text-lg font-semibold">{{
+                        <SettingHeader>{{
                           $t("match.options.advanced.auto_cancellation.label")
-                        }}</FormLabel>
+                        }}</SettingHeader>
                         <FormDescription>{{
                           $t(
                             "match.options.advanced.auto_cancellation.description",
@@ -914,9 +915,9 @@ import { Card } from "~/components/ui/card";
                   name="match_mode"
                 >
                   <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
+                    <SettingHeader>{{
                       $t("match.options.advanced.match_mode.label")
-                    }}</FormLabel>
+                    }}</SettingHeader>
                     <FormDescription>{{
                       $t("match.options.advanced.match_mode.description")
                     }}</FormDescription>
@@ -948,9 +949,9 @@ import { Card } from "~/components/ui/card";
               <div class="flex flex-col space-y-3 p-4">
                 <FormField v-slot="{ componentField }" name="timeout_setting">
                   <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
+                    <SettingHeader>{{
                       $t("match.options.advanced.timeouts.tactical.label")
-                    }}</FormLabel>
+                    }}</SettingHeader>
                     <FormDescription>{{
                       $t("match.options.advanced.timeouts.tactical.description")
                     }}</FormDescription>
@@ -981,9 +982,9 @@ import { Card } from "~/components/ui/card";
                   name="tech_timeout_setting"
                 >
                   <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
+                    <SettingHeader>{{
                       $t("match.options.advanced.timeouts.technical.label")
-                    }}</FormLabel>
+                    }}</SettingHeader>
                     <FormDescription>{{
                       $t(
                         "match.options.advanced.timeouts.technical.description",
@@ -1018,9 +1019,9 @@ import { Card } from "~/components/ui/card";
                 <Card class="cursor-pointer" @click="handleChange(!value)">
                   <div class="flex flex-col space-y-3 p-4">
                     <div class="flex justify-between items-center">
-                      <FormLabel class="text-lg font-semibold">{{
+                      <SettingHeader>{{
                         $t("match.options.advanced.default_models.label")
-                      }}</FormLabel>
+                      }}</SettingHeader>
                       <FormControl>
                         <Switch
                           class="pointer-events-none"

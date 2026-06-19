@@ -1410,6 +1410,38 @@ const windowedStats = computed(() => {
   };
 });
 
+// Recent form — the last N results as a glanceable W/L sequence + net ELO over
+// that span. Drawn straight off the all-time 5Stack ELO history (already loaded
+// and public), newest last so the dots read left→right like a timeline. Always
+// renders a full row of N slots: unplayed slots become blank squares (padded on
+// the left), so a fresh / light-history player reads as "not enough matches yet"
+// (empty squares + +0) rather than the strip vanishing.
+const RECENT_FORM_COUNT = 12;
+const recentForm = computed(() => {
+  const slice = (eloHistory.value ?? []).slice(-RECENT_FORM_COUNT);
+  let wins = 0;
+  let losses = 0;
+  let net = 0;
+  const played = slice.map((e, i) => {
+    const r = (e.match_result ?? "").toLowerCase();
+    const result =
+      r === "won" || r === "win"
+        ? "win"
+        : r === "lost" || r === "loss"
+          ? "loss"
+          : "tie";
+    if (result === "win") wins++;
+    else if (result === "loss") losses++;
+    net += typeof e.elo_change === "number" ? e.elo_change : 0;
+    return { key: e.match_id ?? `${e.match_created_at}-${i}`, result };
+  });
+  const blanks = Array.from(
+    { length: Math.max(0, RECENT_FORM_COUNT - played.length) },
+    (_, i) => ({ key: `blank-${i}`, result: "blank" }),
+  );
+  return { dots: [...blanks, ...played], wins, losses, net };
+});
+
 // At wide ranges (1Y / ALL / long custom spans) plotting every match
 // drowns the trend in daily noise. We collapse points into period
 // buckets — last entry per bucket wins (= "ELO at end of period"),
@@ -1644,8 +1676,7 @@ const playerHeroIdentClasses = "inline-flex min-w-0 items-center gap-2";
 const playerHeroSteamIdClasses = "min-w-0 truncate tracking-[0.05em]";
 const playerHeroSteamLinkClasses =
   "inline-flex h-7 w-7 shrink-0 items-center justify-center rounded border border-border bg-card/60 text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.1)] hover:text-[hsl(var(--tac-amber))]";
-const playerHeroRightActionsClasses =
-  "mt-auto flex flex-col items-stretch gap-3 pt-6";
+const playerHeroRightActionsClasses = "flex flex-col items-stretch gap-3";
 const playerHeroPlayClasses =
   "group/play relative isolate inline-flex w-full cursor-pointer items-center justify-center overflow-hidden border font-sans text-[0.85rem] font-bold uppercase tracking-[0.18em] no-underline transition-[transform,box-shadow] duration-200 ease-out hover:-translate-y-px active:translate-y-0 py-[0.7rem] px-4 text-[hsl(var(--tac-amber-foreground))] border-[hsl(var(--tac-amber))] [background:linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_20px_-6px_hsl(var(--tac-amber)/0.6)] hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_12px_32px_-6px_hsl(var(--tac-amber)/0.8),0_0_24px_hsl(var(--tac-amber)/0.35)]";
 const playerHeroPlayInnerClasses =
@@ -1654,20 +1685,27 @@ const playerHeroPlayIconClasses =
   "h-5 w-5 fill-current transition-transform duration-300 group-hover/play:translate-x-0.5 group-hover/play:scale-110";
 const playerHeroPlayGlowClasses =
   "pointer-events-none absolute inset-0 z-0 -translate-x-full bg-[linear-gradient(90deg,transparent_0%,hsl(0_0%_100%_/_0.4)_50%,transparent_100%)] transition-transform duration-500 group-hover/play:translate-x-full";
-const playerHeroTeamsClasses = "mt-5 border-t border-border/60 pt-4";
-const playerTeamsLabelClasses =
-  "mb-[0.65rem] inline-flex items-center gap-2 font-mono text-[0.72rem] uppercase tracking-[0.24em] text-muted-foreground";
-const playerTeamsTickClasses = "h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]";
-const playerTeamsCountClasses =
-  "rounded-full border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.15)] px-[0.45rem] py-[0.05rem] text-[0.65rem] tracking-[0.08em] text-[hsl(var(--tac-amber))]";
-const playerTeamChipClasses =
-  "group/team inline-flex items-center gap-[0.55rem] rounded-md border border-border bg-card/55 px-[0.85rem] py-[0.45rem] [backdrop-filter:blur(6px)] transition-[transform,border-color,background-color] duration-150 hover:-translate-y-px hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.08)]";
-const playerTeamChipDotClasses =
-  "h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))] [box-shadow:0_0_0_3px_hsl(var(--tac-amber)_/_0.2)]";
-const playerTeamChipNameClasses =
-  "text-sm font-medium text-foreground group-hover/team:text-[hsl(var(--tac-amber))]";
-const playerTeamChipShortClasses =
-  "rounded bg-muted/40 px-1.5 py-[0.1rem] font-mono text-[0.7rem] uppercase tracking-[0.08em] text-muted-foreground";
+// Recent-form strip — the hero card's signature dynamic element, sat high under
+// the identity so the profile reads as "alive" at a glance. The performance
+// panel beside it owns the aggregate numbers; this is a glanceable SHAPE (last
+// N results + net ELO), not a stat repeat. Public data, so it renders logged out.
+// Footer cluster (form + CTA) anchored to the card floor with mt-auto: in the
+// 2-col stretch the hero grows to match the ELO panel, so this cluster floats
+// down to fill what used to be dead space (the logged-out / no-teams void).
+const playerHeroFooterClasses = "mt-auto flex flex-col gap-4";
+const playerHeroFormClasses = "border-t border-border/60 pt-4";
+const playerHeroFormLabelClasses =
+  "inline-flex items-center gap-2 font-mono text-[0.72rem] uppercase tracking-[0.24em] text-muted-foreground";
+const playerHeroFormTickClasses = "h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]";
+const playerHeroFormDotsClasses = "flex flex-wrap items-center gap-1.5";
+const playerHeroFormDotBaseClasses = "h-2.5 w-2.5 rounded-[2px]";
+// Team affiliation chip — team demoted from its own block to an inline identity
+// attribute in the meta strip (region · steam · role · team), so it stays useful
+// (links to the team) without reserving real estate it doesn't earn here.
+const playerHeroTeamChipClasses =
+  "inline-flex h-7 items-center gap-1.5 rounded border border-border bg-card/60 px-2 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.1)] hover:text-[hsl(var(--tac-amber))]";
+const playerHeroTeamChipDotClasses =
+  "h-1.5 w-1.5 shrink-0 rounded-full bg-[hsl(var(--tac-amber))]";
 </script>
 
 <template>
@@ -1793,70 +1831,107 @@ const playerTeamChipShortClasses =
                   </span>
                 </template>
 
+                <template v-if="player?.teams && player.teams.length > 0">
+                  <span
+                    :class="playerHeroMetaDividerClasses"
+                    aria-hidden="true"
+                  ></span>
+                  <NuxtLink
+                    v-for="team in player.teams"
+                    :key="team.id"
+                    :to="`/teams/${team.id}`"
+                    :class="playerHeroTeamChipClasses"
+                    :title="team.name"
+                  >
+                    <span :class="playerHeroTeamChipDotClasses"></span>
+                    <span>{{ team.short_name || team.name }}</span>
+                  </NuxtLink>
+                </template>
+
                 <PlayerSanctions v-if="playerId" :playerId="playerId" />
               </div>
             </div>
           </div>
 
-          <div
-            v-if="player?.teams && player.teams.length > 0"
-            :class="playerHeroTeamsClasses"
-          >
-            <div :class="playerTeamsLabelClasses">
-              <span :class="playerTeamsTickClasses"></span>
-              {{ $t("pages.players.detail.teams") }}
-              <span :class="playerTeamsCountClasses">{{
-                player.teams.length
-              }}</span>
-            </div>
-            <div class="flex flex-wrap gap-2">
-              <NuxtLink
-                v-for="team in player.teams"
-                :key="team.id"
-                :to="`/teams/${team.id}`"
-                :class="playerTeamChipClasses"
-              >
-                <span :class="playerTeamChipDotClasses"></span>
-                <span :class="playerTeamChipNameClasses">{{ team.name }}</span>
+          <div :class="playerHeroFooterClasses">
+            <div :class="playerHeroFormClasses">
+              <div class="flex items-center justify-between gap-4">
+                <div class="min-w-0 space-y-2.5">
+                  <span :class="playerHeroFormLabelClasses">
+                    <span :class="playerHeroFormTickClasses"></span>
+                    {{ $t("pages.players.detail.recent_form") }}
+                    <span class="tabular-nums text-foreground/70">
+                      {{ recentForm.wins }}–{{ recentForm.losses }}
+                    </span>
+                  </span>
+                  <div :class="playerHeroFormDotsClasses">
+                    <span
+                      v-for="dot in recentForm.dots"
+                      :key="dot.key"
+                      :class="[
+                        playerHeroFormDotBaseClasses,
+                        dot.result === 'win'
+                          ? 'bg-emerald-500'
+                          : dot.result === 'loss'
+                            ? 'bg-red-500'
+                            : dot.result === 'tie'
+                              ? 'bg-muted-foreground/40'
+                              : 'border border-foreground/15 bg-transparent',
+                      ]"
+                    ></span>
+                  </div>
+                </div>
                 <span
-                  v-if="team.short_name"
-                  :class="playerTeamChipShortClasses"
+                  class="shrink-0 font-mono text-sm font-semibold tabular-nums"
+                  :class="
+                    recentForm.net > 0
+                      ? 'text-emerald-400'
+                      : recentForm.net < 0
+                        ? 'text-red-400'
+                        : 'text-muted-foreground'
+                  "
                 >
-                  {{ team.short_name }}
+                  <template v-if="recentForm.net > 0">
+                    ▲ +{{ recentForm.net }}
+                  </template>
+                  <template v-else-if="recentForm.net < 0">
+                    ▼ {{ recentForm.net }}
+                  </template>
+                  <template v-else>+0</template>
                 </span>
-              </NuxtLink>
+              </div>
             </div>
-          </div>
 
-          <div v-if="hasRightColumn" :class="playerHeroRightActionsClasses">
-            <NuxtLink
-              v-if="isSelfProfile"
-              to="/play"
-              :class="[playerHeroPlayClasses, 'max-md:hidden']"
-            >
-              <span :class="playerHeroPlayInnerClasses">
-                <PlayIcon :class="playerHeroPlayIconClasses" />
-                <span>{{ $t("pages.players.detail.play_a_match") }}</span>
+            <div v-if="hasRightColumn" :class="playerHeroRightActionsClasses">
+              <NuxtLink
+                v-if="isSelfProfile"
+                to="/play"
+                :class="[playerHeroPlayClasses, 'max-md:hidden']"
+              >
+                <span :class="playerHeroPlayInnerClasses">
+                  <PlayIcon :class="playerHeroPlayIconClasses" />
+                  <span>{{ $t("pages.players.detail.play_a_match") }}</span>
+                </span>
+                <span
+                  :class="playerHeroPlayGlowClasses"
+                  aria-hidden="true"
+                ></span>
+              </NuxtLink>
+              <button
+                v-else-if="canAddFriend"
+                type="button"
+                :class="playerHeroAddFriendClasses"
+                :disabled="addFriendPending"
+                @click="addAsFriend"
+              >
+                <UserPlus class="h-4 w-4" />
+                <span>{{ $t("player.status.add_friend") }}</span>
+              </button>
+              <span v-else-if="isFriend" :class="playerHeroFriendBadgeClasses">
+                <UserCheck class="h-3.5 w-3.5" />
+                <span>{{ $t("pages.players.detail.friend") }}</span>
               </span>
-              <span
-                :class="playerHeroPlayGlowClasses"
-                aria-hidden="true"
-              ></span>
-            </NuxtLink>
-            <button
-              v-else-if="canAddFriend"
-              type="button"
-              :class="playerHeroAddFriendClasses"
-              :disabled="addFriendPending"
-              @click="addAsFriend"
-            >
-              <UserPlus class="h-4 w-4" />
-              <span>{{ $t("player.status.add_friend") }}</span>
-            </button>
-            <span v-else-if="isFriend" :class="playerHeroFriendBadgeClasses">
-              <UserCheck class="h-3.5 w-3.5" />
-              <span>{{ $t("pages.players.detail.friend") }}</span>
-            </span>
+            </div>
           </div>
         </header>
       </PageTransition>

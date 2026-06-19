@@ -540,6 +540,9 @@ export default {
                 player_steam_id: {
                   _eq: $("playerId", "bigint!"),
                 },
+                deleted_at: {
+                  _is_null: true,
+                },
               },
             },
             {

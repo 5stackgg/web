@@ -721,41 +721,37 @@ provide("commander", commander);
       />
     </TabsContent>
     <TabsContent value="settings" class="flex flex-col gap-4 max-w-[1500px]">
-      <Card class="bg-card/20">
+      <MatchOptionsDisplay
+        :options="match.options"
+        :show-details-by-default="true"
+      ></MatchOptionsDisplay>
+
+      <Card v-if="displayServerInformation" class="bg-card/20">
         <CardContent class="py-4">
-          <MatchOptionsDisplay
-            :options="match.options"
-            :show-details-by-default="true"
-          ></MatchOptionsDisplay>
-
-          <template v-if="displayServerInformation">
-            <Separator class="my-8" />
-
-            <div class="space-y-4">
-              <h3 class="font-semibold">
-                {{ $t("match.tabs.server_information") }}
-              </h3>
-              <ul class="space-y-3">
-                <li class="flex items-center justify-between">
-                  <span class="text-muted-foreground">{{
-                    $t("match.tabs.type")
-                  }}</span>
-                  <span>{{ match.server_type || $t("common.tbd") }}</span>
-                </li>
-                <li class="flex items-center justify-between">
-                  <span class="text-muted-foreground">{{
-                    $t("match.tabs.region")
-                  }}</span>
-                  <span v-if="match.server_region">
-                    {{ match.server_region }}
-                  </span>
-                  <span v-else-if="match.e_region">
-                    {{ match.e_region.description || match.e_region.value }}
-                  </span>
-                </li>
-              </ul>
-            </div>
-          </template>
+          <div class="space-y-4">
+            <h3 class="font-semibold">
+              {{ $t("match.tabs.server_information") }}
+            </h3>
+            <ul class="space-y-3">
+              <li class="flex items-center justify-between">
+                <span class="text-muted-foreground">{{
+                  $t("match.tabs.type")
+                }}</span>
+                <span>{{ match.server_type || $t("common.tbd") }}</span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="text-muted-foreground">{{
+                  $t("match.tabs.region")
+                }}</span>
+                <span v-if="match.server_region">
+                  {{ match.server_region }}
+                </span>
+                <span v-else-if="match.e_region">
+                  {{ match.e_region.description || match.e_region.value }}
+                </span>
+              </li>
+            </ul>
+          </div>
         </CardContent>
       </Card>
       <MatchForm

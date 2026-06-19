@@ -46,9 +46,9 @@ const lobbyAccessOptions = computed(() => [
 
 const tickClasses = "w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]";
 const accessBtnClasses =
-  "inline-flex items-center justify-center gap-[0.45rem] px-[0.65rem] py-[0.6rem] text-[0.8rem] font-semibold tracking-[0.12em] uppercase bg-[hsl(var(--muted)/0.3)] border border-border text-muted-foreground [transition:color_140ms_ease,background_140ms_ease,border-color_140ms_ease] cursor-pointer hover:text-foreground hover:bg-[hsl(var(--muted)/0.5)]";
+  "relative z-[1] inline-flex items-center justify-center gap-[0.45rem] px-[0.65rem] py-[0.6rem] text-[0.8rem] font-semibold tracking-[0.12em] uppercase border border-transparent text-muted-foreground [transition:color_160ms_ease] cursor-pointer hover:text-foreground";
 const accessBtnActiveClasses =
-  "!text-[hsl(var(--tac-amber-foreground))] [background:linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_100%)] !border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_16px_-6px_hsl(var(--tac-amber)/0.5)] hover:[background:linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_100%)]";
+  "!text-[hsl(var(--tac-amber-foreground))] hover:!text-[hsl(var(--tac-amber-foreground))]";
 const tacLabelClasses =
   "font-mono text-[0.7rem] tracking-[0.22em] uppercase text-muted-foreground";
 </script>

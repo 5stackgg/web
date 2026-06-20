@@ -90,6 +90,10 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
         path: "/settings/application/chat",
         labelKey: "pages.settings.application.chat.title",
       },
+      {
+        path: "/settings/application/tldr",
+        labelKey: "pages.settings.application.tldr.title",
+      },
     ],
   },
   {

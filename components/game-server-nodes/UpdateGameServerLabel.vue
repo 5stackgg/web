@@ -63,9 +63,13 @@ import {
                   <FormMessage />
                 </FormItem>
               </FormField>
-              <Button type="submit" class="w-full" :loading="submitting">{{
-                $t("game_server.update_label")
-              }}</Button>
+              <Button
+                variant="tactical"
+                type="submit"
+                class="w-full"
+                :loading="submitting"
+                >{{ $t("game_server.update_label") }}</Button
+              >
             </form>
           </div>
         </SheetDescription>

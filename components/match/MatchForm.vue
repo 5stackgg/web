@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { Spinner } from "@/components/ui/spinner";
 import {
   Info,
@@ -19,36 +20,32 @@ const { t } = useI18n();
 
 const lobbyAccessOptions = computed(() => [
   {
-    value: e_lobby_access_enum.Private,
+    key: e_lobby_access_enum.Private,
     label: t("match_access.private"),
-    description: t("match_access.invite_only_description"),
+    desc: t("match_access.invite_only_description"),
     icon: Lock,
   },
   {
-    value: e_lobby_access_enum.Invite,
+    key: e_lobby_access_enum.Invite,
     label: t("match_access.invite"),
-    description: t("match_access.invite_code_description"),
+    desc: t("match_access.invite_code_description"),
     icon: Send,
   },
   {
-    value: e_lobby_access_enum.Friends,
+    key: e_lobby_access_enum.Friends,
     label: t("match_access.friends"),
-    description: t("match_access.friends_only_description"),
+    desc: t("match_access.friends_only_description"),
     icon: Handshake,
   },
   {
-    value: e_lobby_access_enum.Open,
+    key: e_lobby_access_enum.Open,
     label: t("match_access.open"),
-    description: t("match_access.open_description"),
+    desc: t("match_access.open_description"),
     icon: Unlock,
   },
 ]);
 
 const tickClasses = "w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]";
-const accessBtnClasses =
-  "relative z-[1] inline-flex items-center justify-center gap-[0.45rem] px-[0.65rem] py-[0.6rem] text-[0.8rem] font-semibold tracking-[0.12em] uppercase border border-transparent text-muted-foreground [transition:color_160ms_ease] cursor-pointer hover:text-foreground";
-const accessBtnActiveClasses =
-  "!text-[hsl(var(--tac-amber-foreground))] hover:!text-[hsl(var(--tac-amber-foreground))]";
 const tacLabelClasses =
   "font-mono text-[0.7rem] tracking-[0.22em] uppercase text-muted-foreground";
 </script>
@@ -74,21 +71,13 @@ const tacLabelClasses =
                 {{ activeLobbyAccessDescription(value) }}
               </span>
             </div>
-            <div class="grid grid-cols-4 gap-[0.4rem] max-sm:grid-cols-2">
-              <button
-                v-for="opt in lobbyAccessOptions"
-                :key="opt.value"
-                type="button"
-                :class="[
-                  accessBtnClasses,
-                  value === opt.value && accessBtnActiveClasses,
-                ]"
-                @click="handleChange(opt.value)"
-              >
-                <component :is="opt.icon" class="w-4 h-4" />
-                <span>{{ opt.label }}</span>
-              </button>
-            </div>
+            <AnimatedFilters
+              :model-value="value"
+              :options="lobbyAccessOptions"
+              square
+              block
+              @update:model-value="handleChange"
+            />
           </FormItem>
         </FormField>
 

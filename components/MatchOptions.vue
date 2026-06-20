@@ -2,7 +2,7 @@
 import MapDisplay from "~/components/MapDisplay.vue";
 import { FormControl } from "~/components/ui/form";
 import { Separator } from "~/components/ui/separator";
-import { Info } from "lucide-vue-next";
+import { Info, ExternalLink } from "lucide-vue-next";
 import {
   Check,
   ChevronsUpDown,
@@ -12,6 +12,7 @@ import {
   Search,
 } from "lucide-vue-next";
 import { Collapsible, CollapsibleTrigger } from "~/components/ui/collapsible";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
 import RegionStatusDot from "~/components/regions/RegionStatusDot.vue";
 import { Card } from "~/components/ui/card";
@@ -39,132 +40,128 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                 <SettingHeader>{{
                   $t("match.options.type.label")
                 }}</SettingHeader>
-                <RadioGroup
-                  v-bind="componentField"
-                  class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full"
+                <AnimatedFilters
+                  :model-value="componentField.modelValue"
+                  :options="
+                    selectableMatchTypes.map((type) => ({
+                      key: type.value,
+                      label: type.value,
+                      disabled: isLocked,
+                    }))
+                  "
+                  square
+                  size="lg"
+                  block
+                  @update:model-value="
+                    (value) => !isLocked && form.setFieldValue('type', value)
+                  "
+                />
+                <p
+                  v-if="selectedTypeDescription"
+                  class="mt-1.5 text-[0.78rem] leading-snug text-muted-foreground"
                 >
-                  <div
-                    v-for="type in selectableMatchTypes"
-                    :key="type.value"
-                    class="flex items-center space-x-2 p-8 cursor-pointer"
-                    :class="{ 'cursor-not-allowed opacity-60': isLocked }"
-                    @click="!isLocked && form.setFieldValue('type', type.value)"
-                  >
-                    <RadioGroupItem
-                      :id="type.value"
-                      :value="type.value"
-                      :disabled="isLocked"
-                    />
-                    <Label
-                      :for="type.value"
-                      class="flex flex-col cursor-pointer"
-                    >
-                      <span>{{ type.value }}</span>
-                      <span class="text-xs text-muted-foreground">
-                        {{ type.description }}
-                      </span>
-                    </Label>
-                  </div>
-                </RadioGroup>
+                  {{ selectedTypeDescription }}
+                </p>
                 <FormMessage />
               </FormItem>
             </FormField>
 
-            <FormField
-              v-if="!hideBestOf"
-              v-slot="{ componentField }"
-              name="best_of"
-            >
-              <FormItem>
-                <SettingHeader>{{
-                  $t("match.options.best_of.label")
-                }}</SettingHeader>
-                <FormDescription>
-                  {{ $t("match.options.best_of.description") }}
-                </FormDescription>
-                <Select v-bind="componentField" :disabled="isLocked">
-                  <FormControl>
-                    <SelectTrigger :disabled="isLocked">
-                      <SelectValue
-                        :placeholder="$t('match.options.best_of.placeholder')"
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem
-                        :value="bestOf.value"
-                        v-for="bestOf in bestOfOptions"
-                        :key="bestOf.value"
-                        :disabled="isLocked"
-                      >
-                        {{ bestOf.display }}
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            </FormField>
           </div>
         </Card>
       </div>
 
-      <!-- Map Pool Selection -->
       <FormField name="map_pool" v-if="!stageBracketOverride">
         <FormItem>
           <Card>
             <div class="p-6 space-y-6">
-              <!-- Map Veto drives this whole section: ON = teams veto from a
-                   pool, OFF = manually pick the maps to be played. -->
-              <FormField v-slot="{ value, handleChange }" name="map_veto">
-                <div
-                  class="flex flex-col gap-3"
-                  :class="
-                    forceVeto
-                      ? ''
-                      : isLocked
-                        ? 'cursor-not-allowed opacity-60'
-                        : 'cursor-pointer'
-                  "
-                  @click="!forceVeto && !isLocked && handleChange(!value)"
+              <div
+                class="grid gap-6"
+                :class="hideBestOf ? 'sm:grid-cols-1' : 'sm:grid-cols-2'"
+              >
+                <FormField
+                  v-if="!hideBestOf"
+                  v-slot="{ componentField }"
+                  name="best_of"
                 >
-                  <div class="flex items-center justify-between gap-4">
-                    <SettingHeader>{{ $t("common.map_veto") }}</SettingHeader>
-                    <FormControl v-if="!forceVeto">
-                      <Switch
-                        class="pointer-events-none"
-                        :model-value="value"
-                        @update:model-value="handleChange"
-                        :disabled="isLocked"
-                      />
-                    </FormControl>
-                  </div>
-                  <!-- Both descriptions are always mounted; the inactive one
-                       collapses via grid-rows so the height morphs smoothly
-                       instead of snapping when veto is toggled. -->
-                  <div class="veto-desc">
-                    <div
-                      class="veto-desc__row"
-                      :class="{ 'veto-desc__row--show': value }"
-                    >
-                      <p class="veto-desc__text">
-                        {{ $t("match.options.map_veto_settings.description") }}
-                      </p>
+                  <FormItem class="space-y-2">
+                    <SettingHeader>{{
+                      $t("match.options.best_of.label")
+                    }}</SettingHeader>
+                    <FormDescription>
+                      {{ $t("match.options.best_of.description") }}
+                    </FormDescription>
+                    <Select v-bind="componentField" :disabled="isLocked">
+                      <FormControl>
+                        <SelectTrigger class="w-full" :disabled="isLocked">
+                          <SelectValue
+                            :placeholder="
+                              $t('match.options.best_of.placeholder')
+                            "
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            :value="bestOf.value"
+                            v-for="bestOf in bestOfOptions"
+                            :key="bestOf.value"
+                            :disabled="isLocked"
+                          >
+                            {{ bestOf.display }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+
+                <FormField v-slot="{ value, handleChange }" name="map_veto">
+                  <FormItem
+                    class="space-y-2"
+                    :class="
+                      forceVeto
+                        ? ''
+                        : isLocked
+                          ? 'cursor-not-allowed opacity-60'
+                          : 'cursor-pointer'
+                    "
+                    @click="!forceVeto && !isLocked && handleChange(!value)"
+                  >
+                    <div class="flex items-center justify-between gap-4">
+                      <SettingHeader>{{ $t("common.map_veto") }}</SettingHeader>
+                      <FormControl v-if="!forceVeto">
+                        <Switch
+                          class="pointer-events-none"
+                          :model-value="value"
+                          @update:model-value="handleChange"
+                          :disabled="isLocked"
+                        />
+                      </FormControl>
                     </div>
-                    <div
-                      class="veto-desc__row"
-                      :class="{ 'veto-desc__row--show': !value }"
-                    >
-                      <p class="veto-desc__text">
+                    <FormDescription class="space-y-1">
+                      <span class="block min-h-[2.5rem]">
                         {{
-                          $t("match.options.map_veto_settings.pick_description")
+                          value
+                            ? $t("match.options.map_veto_settings.short_on")
+                            : $t("match.options.map_veto_settings.short_off")
                         }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </FormField>
+                      </span>
+                      <a
+                        href="https://docs.5stack.gg/features/map-veto"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center gap-0.5 text-[hsl(var(--tac-amber))] underline underline-offset-2 hover:text-[hsl(var(--tac-amber)/0.8)]"
+                        @click.stop
+                      >
+                        {{ $t("match.options.map_veto_settings.learn_more") }}
+                        <ExternalLink class="h-3 w-3" />
+                      </a>
+                    </FormDescription>
+                  </FormItem>
+                </FormField>
+              </div>
 
               <div
                 class="flex items-center justify-between gap-4 border-t border-border pt-4"
@@ -231,93 +228,113 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                   </FormField>
                 </div>
               </div>
-              <div class="space-y-6">
-                <Transition name="fade">
+              <div>
+                <Transition name="collapse">
                   <div
-                    class="flex items-center justify-between"
                     v-if="form.values.custom_map_pool"
+                    class="grid grid-rows-[1fr]"
                   >
-                    <div class="relative w-full">
-                      <Input
-                        v-model="filterMaps"
-                        type="text"
-                        :placeholder="$t('match.options.filter_maps')"
-                        class="pl-10"
-                        :readonly="isLocked"
-                        :disabled="isLocked"
-                      />
-                      <Search
-                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
-                      />
+                    <div class="overflow-hidden">
+                      <div class="flex items-center justify-between pb-6">
+                        <div class="relative w-full">
+                          <Input
+                            v-model="filterMaps"
+                            type="text"
+                            :placeholder="$t('match.options.filter_maps')"
+                            class="pl-10"
+                            :readonly="isLocked"
+                            :disabled="isLocked"
+                          />
+                          <Search
+                            class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </Transition>
 
-                <template
-                  v-for="(maps, type) in {
-                    [$t('maps.official')]: availableMaps.official,
-                    [$t('maps.workshop')]: availableMaps.workshop,
-                  }"
-                  :key="type"
-                >
-                  <div v-if="maps && maps.length > 0">
-                    <Separator
-                      v-if="type === 'Workshop Maps'"
-                      class="text-2xl font-bold mb-4 text-center my-8"
-                      :label="type"
-                    ></Separator>
-
-                    <TransitionGroup
-                      name="map"
-                      tag="div"
-                      class="relative grid grid-cols-2 md:grid-cols-4 gap-4"
+                <div class="relative">
+                  <Transition name="map-swap">
+                    <div
+                      :key="`${form.values.type}-${!!form.values.custom_map_pool}`"
+                      class="space-y-6"
                     >
-                      <div
-                        v-for="map in maps"
-                        :key="map.id"
-                        class="relative rounded-lg overflow-hidden transition-all duration-200 ease-in-out"
-                        @click="!isLocked && updateMapPool(map.id)"
-                        :class="{
-                          'opacity-40':
-                            form.values.custom_map_pool &&
-                            !form.values.map_pool?.includes(map.id),
-                          'cursor-pointer transform hover:scale-105':
-                            form.values.custom_map_pool,
+                      <template
+                        v-for="(maps, type) in {
+                          [$t('maps.official')]: availableMaps.official,
+                          [$t('maps.workshop')]: availableMaps.workshop,
                         }"
+                        :key="type"
                       >
-                        <MapDisplay class="h-[150px]" :map="map">
-                          <template v-slot:default v-if="map.active_pool">
-                            <div class="absolute bottom-1">
-                              <Badge variant="secondary" class="text-xs">{{
-                                $t("maps.active_duty")
-                              }}</Badge>
-                            </div>
-                          </template>
-                        </MapDisplay>
-                        <Transition name="map-badge">
-                          <div
-                            v-if="
-                              !form.values.map_veto &&
-                              Number(form.values.best_of) > 1 &&
-                              form.values.map_pool?.includes(map.id)
-                            "
-                            class="absolute top-1 left-1"
+                        <div v-if="maps && maps.length > 0">
+                          <Separator
+                            v-if="type === 'Workshop Maps'"
+                            class="text-2xl font-bold mb-4 text-center my-8"
+                            :label="type"
+                          ></Separator>
+
+                          <TransitionGroup
+                            name="map"
+                            tag="div"
+                            class="relative grid grid-cols-2 md:grid-cols-4 gap-4"
                           >
-                            <Badge
-                              variant="secondary"
-                              class="rounded-full w-6 h-6 flex items-center justify-center"
+                            <div
+                              v-for="map in maps"
+                              :key="map.id"
+                              class="relative rounded-lg overflow-hidden transition duration-200 ease-in-out"
+                              @click="!isLocked && updateMapPool(map.id)"
+                              :class="{
+                                'opacity-40':
+                                  form.values.custom_map_pool &&
+                                  !form.values.map_pool?.includes(map.id),
+                                'cursor-pointer transform hover:scale-105':
+                                  form.values.custom_map_pool,
+                              }"
                             >
-                              {{ form.values.map_pool.indexOf(map.id) + 1 }}
-                            </Badge>
-                          </div>
-                        </Transition>
-                        <div
-                          class="absolute inset-0 flex items-center justify-center bg-opacity-40 transition-opacity duration-200"
-                        ></div>
-                      </div>
-                    </TransitionGroup>
-                  </div>
-                </template>
+                              <MapDisplay class="h-[150px]" :map="map">
+                                <template
+                                  v-slot:default
+                                  v-if="map.active_pool"
+                                >
+                                  <div class="absolute bottom-1">
+                                    <Badge
+                                      variant="secondary"
+                                      class="text-xs"
+                                      >{{ $t("maps.active_duty") }}</Badge
+                                    >
+                                  </div>
+                                </template>
+                              </MapDisplay>
+                              <Transition name="map-badge">
+                                <div
+                                  v-if="
+                                    !form.values.map_veto &&
+                                    Number(form.values.best_of) > 1 &&
+                                    form.values.map_pool?.includes(map.id)
+                                  "
+                                  class="absolute top-1 left-1"
+                                >
+                                  <Badge
+                                    variant="secondary"
+                                    class="rounded-full w-6 h-6 flex items-center justify-center"
+                                  >
+                                    {{
+                                      form.values.map_pool.indexOf(map.id) + 1
+                                    }}
+                                  </Badge>
+                                </div>
+                              </Transition>
+                              <div
+                                class="absolute inset-0 flex items-center justify-center bg-opacity-40 transition-opacity duration-200"
+                              ></div>
+                            </div>
+                          </TransitionGroup>
+                        </div>
+                      </template>
+                    </div>
+                  </Transition>
+                </div>
               </div>
             </div>
           </Card>
@@ -387,11 +404,13 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
         </CollapsibleTrigger>
 
         <div
+          ref="advWrapRef"
           class="adv-collapse"
-          :class="{ 'adv-collapse--open': showAdvancedSettings }"
+          :style="{ height: advHeight }"
+          :inert="!showAdvancedSettings"
+          :aria-hidden="!showAdvancedSettings"
         >
-          <div class="adv-collapse__inner">
-            <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-4">
             <Card>
               <div class="p-4 space-y-6">
                 <slot name="before-overtime"></slot>
@@ -1082,7 +1101,6 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
               </FormItem>
             </FormField>
             <slot name="after-advanced"></slot>
-            </div>
           </div>
         </div>
       </Collapsible>
@@ -1217,9 +1235,21 @@ export default {
       filterMaps: undefined,
       select_single_region: null as string | null,
       showAdvancedSettings: false,
+      advHeight: "0px",
     };
   },
   watch: {
+    showAdvancedSettings(open) {
+      this.animateAdvanced(open);
+    },
+    forceVeto: {
+      immediate: true,
+      handler(forceVeto) {
+        if (forceVeto && this.form.values.map_veto !== true) {
+          this.form.setFieldValue("map_veto", true);
+        }
+      },
+    },
     defaultMapPool: {
       immediate: true,
       handler(defaultMapPool) {
@@ -1339,6 +1369,12 @@ export default {
           type.value !== e_match_types_enum.Premier &&
           type.value !== e_match_types_enum.Faceit,
       );
+    },
+    selectedTypeDescription(): string {
+      const selected = this.selectableMatchTypes.find(
+        (type) => type.value === this.form?.values?.type,
+      );
+      return selected?.description || "";
     },
     isLocked(): boolean {
       return (
@@ -1538,6 +1574,39 @@ export default {
     },
   },
   methods: {
+    animateAdvanced(open: boolean) {
+      const wrap = this.$refs.advWrapRef as HTMLElement | undefined;
+      if (!wrap) {
+        this.advHeight = open ? "auto" : "0px";
+        return;
+      }
+      if (open) {
+        this.advHeight = "0px";
+        void wrap.offsetHeight;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            this.advHeight = `${wrap.scrollHeight}px`;
+          });
+        });
+        const onEnd = (e: TransitionEvent) => {
+          if (e.target !== wrap || e.propertyName !== "height") {
+            return;
+          }
+          wrap.removeEventListener("transitionend", onEnd);
+          if (this.showAdvancedSettings) {
+            this.advHeight = "auto";
+          }
+        };
+        wrap.addEventListener("transitionend", onEnd);
+      } else {
+        this.advHeight = `${wrap.getBoundingClientRect().height}px`;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            this.advHeight = "0px";
+          });
+        });
+      }
+    },
     updateMapPool(mapId: string) {
       if (!this.form.values.custom_map_pool) {
         return;
@@ -1607,44 +1676,12 @@ export default {
 </script>
 
 <style scoped>
-/* Swap the veto/pick descriptions with a smooth height morph (grid-rows
-   0fr<->1fr) so toggling Map Veto doesn't jump the layout. */
-.veto-desc {
-  display: flex;
-  flex-direction: column;
-}
-
-.veto-desc__row {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 240ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.veto-desc__row--show {
-  grid-template-rows: 1fr;
-}
-
-.veto-desc__text {
-  margin: 0;
-  min-height: 0;
-  overflow: hidden;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  color: hsl(var(--muted-foreground));
-  opacity: 0;
-  transition: opacity 180ms ease;
-}
-
-.veto-desc__row--show .veto-desc__text {
-  opacity: 1;
-}
-
-/* Map tiles: fade + scale on add/remove, FLIP-reflow on filter/type change.
-   Leaving tiles go absolute so the rest slide into place smoothly. */
 .map-move,
 .map-enter-active,
 .map-leave-active {
-  transition: all 260ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    opacity 260ms ease,
+    transform 260ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .map-enter-from,
@@ -1657,7 +1694,31 @@ export default {
   position: absolute;
 }
 
-/* Selection-order badge pops in/out when picking maps. */
+/* Whole-grid crossfade when the map type / pool changes, so individual
+   tiles never leave-collapse out of their grid cells. */
+.map-swap-enter-active,
+.map-swap-leave-active {
+  transition:
+    opacity 220ms ease,
+    transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.map-swap-enter-from {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.map-swap-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.map-swap-leave-active {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+}
+
 .map-badge-enter-active,
 .map-badge-leave-active {
   transition:
@@ -1671,31 +1732,23 @@ export default {
   transform: scale(0.4);
 }
 
-/* Filter bar fade. */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 200ms ease;
+/* Height-collapse for the custom-pool filter input so toggling the pool
+   type doesn't snap the map grid up/down. */
+.collapse-enter-active,
+.collapse-leave-active {
+  transition:
+    grid-template-rows 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 200ms ease;
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.collapse-enter-from,
+.collapse-leave-to {
+  grid-template-rows: 0fr;
   opacity: 0;
 }
 
-/* Advanced settings: smooth height morph on expand/collapse via grid-rows
-   (reliable regardless of content height, unlike the measured-height anim). */
 .adv-collapse {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 300ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.adv-collapse--open {
-  grid-template-rows: 1fr;
-}
-
-.adv-collapse__inner {
-  min-height: 0;
   overflow: hidden;
+  transition: height 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 </style>

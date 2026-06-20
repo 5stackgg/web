@@ -99,7 +99,7 @@ import NotificationStack from "~/components/notification/NotificationStack.vue";
           </template>
         </div>
 
-        <div class="flex gap-2 my-4 py-2 border-t">
+        <div class="flex flex-col sm:flex-row gap-2 my-4 py-2 border-t">
           <Button
             size="sm"
             variant="outline"

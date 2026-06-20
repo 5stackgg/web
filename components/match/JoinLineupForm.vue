@@ -10,23 +10,25 @@ import { Button } from "~/components/ui/button";
 import { UserPlusIcon } from "lucide-vue-next";
 import { e_lobby_access_enum } from "~/generated/zeus";
 import { generateMutation } from "~/graphql/graphqlGen";
+import SettingHeader from "~/components/match/SettingHeader.vue";
 </script>
 
 <template>
-  <form @submit.prevent="joinLineup" class="flex gap-4">
+  <form @submit.prevent="joinLineup" class="flex items-end gap-4">
     <FormField
       v-slot="{ componentField }"
       name="code"
       v-if="match.options.lobby_access === e_lobby_access_enum.Invite"
     >
-      <FormItem>
+      <FormItem class="space-y-1.5">
+        <SettingHeader>{{ $t("match_access.invite") }}</SettingHeader>
         <FormControl>
           <Input v-bind="componentField"></Input>
         </FormControl>
         <FormMessage />
       </FormItem>
     </FormField>
-    <Button variant="outline" class="flex gap-4" :disabled="joining">
+    <Button variant="tactical" class="flex gap-4" :disabled="joining">
       <UserPlusIcon class="h-4 w-4" />
       {{ $t("match.overview.join") }}
     </Button>

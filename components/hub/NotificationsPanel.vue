@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { CheckCheck, Trash2 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import NotificationItem from "~/components/notification/NotificationItem.vue";
 import NotificationStack from "~/components/notification/NotificationStack.vue";
+import NewsNotification from "~/components/notification/NewsNotification.vue";
 </script>
 
 <template>
@@ -17,6 +19,7 @@ import NotificationStack from "~/components/notification/NotificationStack.vue";
       </div>
     </div>
     <div class="flex-1 overflow-y-auto p-3 flex flex-col">
+      <NewsNotification />
       <template
         v-if="
           team_invites.length > 0 ||
@@ -74,7 +77,7 @@ import NotificationStack from "~/components/notification/NotificationStack.vue";
           />
         </template>
       </template>
-      <template v-else>
+      <template v-else-if="!unreadNewsArticle">
         <Empty>
           <div class="space-y-1">
             <p class="text-sm font-medium text-foreground">
@@ -89,23 +92,25 @@ import NotificationStack from "~/components/notification/NotificationStack.vue";
     </div>
 
     <div
-      class="flex gap-2 px-3 py-3 border-t border-border"
+      class="flex flex-col sm:flex-row gap-2 px-3 py-3 border-t border-border"
       v-if="notifications.length > 0"
     >
       <Button
         size="sm"
         variant="outline"
         @click="dismissAllNotifications"
-        class="flex-1"
+        class="w-full sm:flex-1 justify-start sm:justify-center gap-2"
       >
+        <CheckCheck class="h-4 w-4 shrink-0" />
         {{ $t("layouts.notifications.dismiss_all") }}
       </Button>
       <Button
         size="sm"
-        variant="outline"
+        variant="ghost"
         @click="deleteAllReadNotifications"
-        class="flex-1 text-destructive hover:bg-destructive hover:text-white"
+        class="w-full sm:flex-1 justify-start sm:justify-center gap-2 text-destructive hover:bg-destructive hover:text-white"
       >
+        <Trash2 class="h-4 w-4 shrink-0" />
         {{ $t("layouts.notifications.delete_all_read") }}
       </Button>
     </div>
@@ -128,6 +133,9 @@ export default {
     },
     stackedNotifications() {
       return useNotificationStore().stackedNotifications;
+    },
+    unreadNewsArticle() {
+      return useNotificationStore().unreadNewsArticle;
     },
   },
   methods: {

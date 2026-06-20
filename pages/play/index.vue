@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { Settings2, Users } from "lucide-vue-next";
+import { Settings2, Lock } from "lucide-vue-next";
+import DraftGames from "~/components/draft-games/DraftGames.vue";
 import MyUpcoming from "~/components/MyUpcoming.vue";
 import Matchmaking from "~/components/matchmaking/Matchmaking.vue";
 import MatchmakingSettings from "~/components/matchmaking/MatchmakingSettings.vue";
-import OpenMatches from "~/components/match/OpenMatches.vue";
-import CustomMatch from "~/components/CustomMatch.vue";
 import TournamentTableRow from "~/components/tournament/TournamentTableRow.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
@@ -26,14 +25,14 @@ const settingsOpen = ref(false);
 
 <template>
   <PageTransition>
-    <TacticalPageHeader>
+    <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.play.title") }}</template>
       <template v-if="matchmakingAllowed && !inLobbyNotLeader" #actions>
         <Popover v-model:open="settingsOpen">
           <PopoverTrigger as-child>
             <Button
               variant="outline"
-              class="h-11 px-4 gap-2 bg-card/60 backdrop-blur"
+              class="!py-0 h-[clamp(1.75rem,4.2vw,3rem)] gap-2 px-4 max-sm:aspect-square max-sm:!px-0 bg-card/60 backdrop-blur"
               :class="{
                 'border-[hsl(var(--tac-amber)/0.55)] text-[hsl(var(--tac-amber))]':
                   settingsOpen,
@@ -63,37 +62,44 @@ const settingsOpen = ref(false);
     </TacticalPageHeader>
   </PageTransition>
 
-  <PageTransition
-    v-if="(matchmakingAllowed || canCreateMatch) && !inLobbyNotLeader"
-    :delay="50"
-    class="mt-6"
-  >
+  <PageTransition v-if="matchmakingAllowed" :delay="50" class="mt-6">
     <div class="hidden md:block">
-      <template v-if="matchmakingAllowed">
-        <Matchmaking></Matchmaking>
-      </template>
-      <template v-else-if="canCreateMatch">
-        <CustomMatch />
-      </template>
+      <div :class="tacticalSectionLabelClasses">
+        <span :class="tacticalSectionTickClasses"></span>
+        MATCHMAKING
+      </div>
+      <div :class="tacticalSectionDescriptionClasses">
+        {{ $t("pages.play.matchmaking.description") }}
+      </div>
+
+      <div class="relative mt-4">
+        <div
+          :class="{
+            'pointer-events-none select-none opacity-40 blur-[1px]':
+              inLobbyNotLeader,
+          }"
+        >
+          <Matchmaking></Matchmaking>
+        </div>
+        <div
+          v-if="inLobbyNotLeader"
+          class="absolute inset-0 z-10 grid place-items-center rounded-lg bg-background/40"
+        >
+          <div
+            class="flex items-center gap-2 rounded-full border border-border bg-card/95 px-4 py-2 shadow-lg"
+          >
+            <Lock class="h-3.5 w-3.5 text-muted-foreground" />
+            <span class="text-xs font-medium text-foreground">
+              {{ $t("pages.play.matchmaking.leader_required") }}
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   </PageTransition>
 
-  <PageTransition
-    v-if="inLobbyNotLeader && (matchmakingAllowed || canCreateMatch)"
-    :delay="50"
-    class="mt-6"
-  >
-    <div
-      class="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border bg-card/30 px-6 py-12 text-center"
-    >
-      <Users class="h-8 w-8 text-muted-foreground/50" />
-      <p class="text-sm font-semibold text-foreground">
-        {{ $t("pages.play.not_party_leader.title") }}
-      </p>
-      <p class="max-w-md text-xs text-muted-foreground">
-        {{ $t("pages.play.not_party_leader.description") }}
-      </p>
-    </div>
+  <PageTransition :delay="75" class="mt-6">
+    <DraftGames />
   </PageTransition>
 
   <PageTransition :delay="100" class="mt-6">
@@ -120,19 +126,6 @@ const settingsOpen = ref(false);
           :tournament="tournament"
         ></TournamentTableRow>
       </div>
-    </div>
-  </PageTransition>
-
-  <PageTransition :delay="300" class="mt-6">
-    <div>
-      <div :class="tacticalSectionLabelClasses">
-        <span :class="tacticalSectionTickClasses"></span>
-        OPEN.MATCHES
-      </div>
-      <div :class="tacticalSectionDescriptionClasses">
-        {{ $t("pages.play.open_matches.description") }}
-      </div>
-      <OpenMatches />
     </div>
   </PageTransition>
 </template>
@@ -206,9 +199,6 @@ export default {
     },
     matchmakingAllowed() {
       return useApplicationSettingsStore().matchmakingAllowed;
-    },
-    canCreateMatch() {
-      return useApplicationSettingsStore().canCreateMatch;
     },
     currentLobby() {
       return useMatchmakingStore().currentLobby;

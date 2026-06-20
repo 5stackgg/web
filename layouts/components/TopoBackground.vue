@@ -68,10 +68,10 @@ withDefaults(defineProps<{ animated?: boolean }>(), { animated: false });
             :d="c.d"
             class="animate-topo-flow motion-reduce:animate-none motion-reduce:opacity-0"
             :style="{
-              strokeDasharray: `${(c.len * 0.12).toFixed(1)} ${c.len}`,
+              strokeDasharray: `${c.dash} ${c.gap}`,
               animationDuration: `${c.dur}s`,
               animationDelay: `${c.delay}s`,
-              '--flow-length': `${c.len}`,
+              '--flow-length': `${c.flow}`,
             }"
             vector-effect="non-scaling-stroke"
           />
@@ -89,10 +89,10 @@ withDefaults(defineProps<{ animated?: boolean }>(), { animated: false });
             :d="c.d"
             class="animate-topo-flow motion-reduce:animate-none motion-reduce:opacity-0"
             :style="{
-              strokeDasharray: `${(c.len * 0.12).toFixed(1)} ${c.len}`,
+              strokeDasharray: `${c.dash} ${c.gap}`,
               animationDuration: `${c.dur}s`,
               animationDelay: `${c.delay}s`,
-              '--flow-length': `${c.len}`,
+              '--flow-length': `${c.flow}`,
             }"
             vector-effect="non-scaling-stroke"
           />

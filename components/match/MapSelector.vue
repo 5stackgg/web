@@ -15,7 +15,12 @@ import {
 <template>
   <div class="container mx-auto px-4">
     <div class="flex flex-wrap justify-center gap-6">
-      <div v-for="map in mapPool" :key="map.id" class="relative w-[150px]">
+      <div
+        v-for="(map, idx) in mapPool"
+        :key="map.id"
+        class="map-tile relative w-[150px]"
+        :style="{ '--i': idx }"
+      >
         <div
           class="h-[180px]"
           :class="[
@@ -111,3 +116,25 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.map-tile {
+  animation: map-tile-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: calc(var(--i) * 40ms);
+}
+@keyframes map-tile-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.93);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .map-tile {
+    animation: none;
+  }
+}
+</style>

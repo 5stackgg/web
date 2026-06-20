@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import QuickMatchLobby from "~/components/hub/QuickMatchLobby.vue";
-import { e_player_roles_enum } from "~/generated/zeus";
+import { e_player_roles_enum, e_match_status_enum } from "~/generated/zeus";
 
 const isElevatedUser = computed(() =>
   useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer),
@@ -30,7 +30,7 @@ const isElevatedUser = computed(() =>
         'bg-zinc-900/80': !isElevatedUser,
       }"
     >
-      {{ match.e_match_status.description }}
+      {{ statusLabel }}
     </div>
 
     <QuickMatchLobby :match="match" :join-lobby="joinLobby"></QuickMatchLobby>
@@ -58,6 +58,18 @@ export default {
   },
   methods: {
     goToMatch() {
+      const draftId = this.match.draft_games?.[0]?.id;
+      if (
+        draftId &&
+        [
+          e_match_status_enum.WaitingForCheckIn,
+          e_match_status_enum.Veto,
+        ].includes(this.match.status)
+      ) {
+        this.$router.push(`/draft-room/${draftId}`);
+        return;
+      }
+
       this.$router.push({
         name: "matches-id",
         params: { id: this.match.id },
@@ -67,6 +79,12 @@ export default {
   computed: {
     canRoute() {
       return this.$route.params?.id !== this.match?.id;
+    },
+    statusLabel() {
+      if (this.match.status === e_match_status_enum.WaitingForCheckIn) {
+        return this.$t("match.check_in.check_in");
+      }
+      return this.match.e_match_status?.description || this.match.status;
     },
   },
 };

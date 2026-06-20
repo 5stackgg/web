@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Card, CardContent, CardHeader } from "~/components/ui/card";
+import { Card, CardContent } from "~/components/ui/card";
 import LineupOverview from "~/components/match/LineupOverview.vue";
 import LineupUtility from "~/components/match/LineupUtility.vue";
 import LineupTradeStats from "~/components/match/LineupTradeStats.vue";
@@ -823,7 +823,6 @@ provide("commander", commander);
   opacity: 0;
 }
 
-/* Server Information — matches the MatchOptionsDisplay settings-panel look. */
 .server-info-panel {
   position: relative;
   display: flex;

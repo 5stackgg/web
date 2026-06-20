@@ -93,9 +93,6 @@ import {
 } from "~/components/ui/select";
 import { parseDate, type DateValue } from "@internationalized/date";
 
-// The global range chip bar (7D/30D/…/ALL/custom) feeds a single
-// v_player_elo subscription scoped to this player. Mode filtering happens
-// client-side so toggling modes is instant without re-subscribing.
 type RangeKey = "l30" | "7d" | "30d" | "90d" | "1y" | "all" | "custom";
 
 interface WindowedEloEntry {
@@ -132,8 +129,6 @@ const statsTab = ref<
 >("performance");
 const statsTabsEl = ref<HTMLElement | null>(null);
 
-// Warn (once, dismissible) when viewing your own External stats without a
-// linked Steam match-history auth — there'll be nothing to show until set up.
 const { isLinked: externalAuthLinked } = usePendingImports();
 const externalWarningDismissed = ref(false);
 onMounted(() => {
@@ -170,15 +165,11 @@ function openStatsGuide() {
   );
 }
 
-// Calendar (DateValue) adapters over the YYYY-MM-DD string state, so the
-// custom range uses the real date picker instead of native date inputs.
 const customFromValue = computed<DateValue | undefined>({
   get: () => (customFrom.value ? parseDate(customFrom.value) : undefined),
   set: (v) => {
     customFrom.value = v ? v.toString() : "";
     applyCustomRange();
-    // Collapse the calendar after picking — advance to the end date if it's
-    // still empty, otherwise close it.
     activeDateField.value = customTo.value ? null : "to";
   },
 });
@@ -190,22 +181,14 @@ const customToValue = computed<DateValue | undefined>({
     activeDateField.value = null;
   },
 });
-// Which custom-range date the inline calendar is editing (one at a time, so
-// the calendar lives inside the settings popover without nesting popovers).
 const activeDateField = ref<"from" | "to" | null>(null);
 const excludeTournaments = ref(false);
 const settingsOpen = ref(false);
 const eloHistory = ref<WindowedEloEntry[]>([]);
-// Per-match gameplay performance (kills/deaths/assists + win/loss) for the
-// active source, from v_player_match_performance — feeds the Win Rate / K-D
-// card for BOTH 5Stack and External (v_player_elo is 5Stack-only).
 const performanceHistory = ref<WindowedEloEntry[]>([]);
-// Per-source weapon kill counts from v_player_weapon_kills (lifetime).
 const weaponKills = ref<{ with: string; kill_count: number }[]>([]);
 const premierWindowedHistory = ref<WindowedEloEntry[]>([]);
 const faceitWindowedHistory = ref<WindowedEloEntry[]>([]);
-// Raw rows from the rank-history sub, all rank types (Premier 11,
-// Competitive 12, Wingman 6) — feeds the per-match rank badge on the rows.
 const rankHistoryRows = ref<
   Array<{
     rank: number;
@@ -223,7 +206,6 @@ const { client: apolloClient } = useApolloClient();
 const route = useRoute();
 const router = useRouter();
 
-// Persist the active stats tab in the URL so it survives refresh / sharing.
 const VALID_STATS_TABS = [
   "performance",
   "breakdown",
@@ -244,7 +226,6 @@ watch(statsTab, (t) => {
   }
 });
 
-// Persist the time range (incl. custom from/to) in the URL.
 const VALID_RANGES = ["l30", "7d", "90d", "custom"];
 if (
   typeof route.query.range === "string" &&
@@ -268,18 +249,11 @@ watch([eloRange, customFrom, customTo], () => {
   router.replace({ query: q });
 });
 
-// Stat source — 5Stack internal ELO vs everything external (Valve / FACEIT
-// imports). These mean drastically different things (a 5Stack-computed ELO vs
-// a Valve skill group / CS Rating) so the page never blends the rating chart;
-// the source also scopes win-rate, K/D, weapons and the map radar to matches
-// from that source. "external" = every match where matches.source != '5stack'.
 type StatSource = "5stack" | "external" | "all";
 
 const appSettings = useApplicationSettingsStore();
 
 const sourceRef = computed<StatSource>(() => {
-  // External/All require the admin-enabled CS2 import setting; otherwise the
-  // only world is 5Stack.
   if (!appSettings.externalMatchesEnabled) {
     return "5stack";
   }
@@ -300,8 +274,6 @@ const sourceOptions = computed<{ value: StatSource; label: string }[]>(() =>
     : [{ value: "5stack", label: t("player_match.source.internal") }],
 );
 
-// The ELO tab can't blend worlds (5Stack ELO vs Valve rank), so "All" is not a
-// valid source there — disable it and reflect 5Stack as the effective source.
 const eloTabActive = computed(() => statsTab.value === "elo");
 const sourceDisabled = (value: StatSource) =>
   eloTabActive.value && value === "all";
@@ -436,28 +408,20 @@ function setSource(s: StatSource) {
       ? ["all", "Premier", "Competitive", "Wingman"]
       : ["all", "Competitive", "Wingman", "Duel"];
   const query: Record<string, any> = { ...route.query, source: s };
-  // Carry the mode across the toggle when the new source supports it;
-  // otherwise drop to ALL TYPES so we never land on a mode it can't show.
   if (!validModes.includes(selectedModeRef.value)) {
     query.mode = "all";
   }
   router.replace({ query });
 }
 
-// User-initiated source change: they now own the choice, so don't auto-restore
-// "All" when they later leave the ELO tab.
 function onSourceClick(s: StatSource) {
   eloAutoSwitchedFromAll.value = false;
   setSource(s);
 }
 
-// Global comparison target — one control drives every tab that overlays a
-// comparison (Performance, Maps). Cleared when the viewed profile changes.
 const { compareTarget, setCompareTarget, clearCompareTarget } =
   usePlayerCompareTarget();
 
-// Dot on the gear when anything inside it differs from defaults, so users know
-// hidden settings are active.
 const settingsChanged = computed(
   () =>
     excludeTournaments.value ||
@@ -465,8 +429,6 @@ const settingsChanged = computed(
     !!compareTarget.value,
 );
 
-// Reserve the current scroll extent right before a filter change so trimming a
-// long match list (or shorter stats) doesn't yank the user up the page.
 const {
   minHeight: scrollFloorMinHeight,
   rootEl: pageRootEl,
@@ -484,7 +446,6 @@ watch(
   () => captureScrollFloor(),
 );
 
-// Keep the comparison target in the URL so it's shareable / survives refresh.
 watch(compareTarget, (t) => {
   const q: Record<string, any> = { ...route.query };
   if (t?.steam_id) {
@@ -529,13 +490,9 @@ onMounted(async () => {
       } as any);
     }
   } catch {
-    // Unknown / malformed steam id in the URL — ignore.
   }
 });
 
-// The ELO tab can't show "All", so entering it with All temporarily switches
-// the whole page to 5Stack; leaving restores All — unless the user manually
-// picked a source while on the tab (then their choice sticks).
 const eloAutoSwitchedFromAll = ref(false);
 watch(
   () => statsTab.value,
@@ -553,14 +510,6 @@ watch(
   { immediate: true },
 );
 
-// The active mode IS a match_options.type value: 5Stack uses
-// Competitive/Wingman/Duel, External uses Premier/Competitive/Wingman (the
-// import sets match_options.type to exactly these). Every gameplay stat
-// (win-rate, K/D, weapons, map radar) filters by this. "all" = no filter
-// (only offered for 5Stack).
-// Returns the match_options.type values to filter by (array → Hasura _in), or
-// null for no type filter. With source "All" the "Competitive" chip also pulls
-// in Premier, since Premier is the external equivalent of competitive play.
 const statTypeFilter = computed<string[] | null>(() => {
   const mode = selectedModeRef.value;
   if (mode === "all") {
@@ -572,19 +521,11 @@ const statTypeFilter = computed<string[] | null>(() => {
   return [mode];
 });
 
-// External Competitive (rank_type 12) / Wingman (6) are Valve skill groups
-// (0–18) — render the proper rank badge instead of a bare number. Premier is
-// a numeric CS Rating and 5Stack is ELO, so both stay as numbers.
-// The top ELO panel is pinned to 5Stack ELO (numeric) and is intentionally
-// NOT affected by the source/mode/range filter — that drives the tabs + the
-// ELO tab only. So it never renders Valve skill-group badges.
 const isSkillGroupMode = computed(() => false);
 function rankBadge(value: number | null | undefined): string | null {
   if (value === null || value === undefined) return null;
   return csRankIcon(selectedModeRef.value === "Wingman" ? 6 : 12, value);
 }
-// Valve rank type for the chart's y-axis ladder (badges + integer steps);
-// null for ELO / Premier (numeric).
 const chartRankType = computed<number | null>(() =>
   isSkillGroupMode.value
     ? selectedModeRef.value === "Wingman"
@@ -600,7 +541,6 @@ const playerIdRef = computed<string | null>(() => {
   return useAuthStore().me?.steam_id ?? null;
 });
 
-// Drop any pinned comparison when navigating to a different profile.
 watch(playerIdRef, () => clearCompareTarget());
 
 const sinceTimestamp = computed<string | null>(() => {
@@ -621,9 +561,6 @@ const untilTimestamp = computed<string | null>(() => {
   return null;
 });
 
-// Unified stats scope shared with every tab so they all read the same
-// source / mode / range. limit is set for count ranges (L30/L100), since/until
-// for date ranges; tabs apply whichever is non-null.
 const statsScope = computed(() => ({
   source: sourceRef.value,
   provider: providerRef.value,
@@ -634,12 +571,7 @@ const statsScope = computed(() => ({
 }));
 provide("playerStatsScope", statsScope);
 
-// Built dynamically so the `match: { is_tournament_match: ... }` filter is
-// only added when the setting is on — avoids Hasura forcing a join when
-// it isn't needed.
 const whereClause = computed(() => {
-  // Top ELO panel is all-time 5Stack ELO — the range filter does NOT apply
-  // here (it drives the tabs + ELO tab). Tournaments toggle still applies.
   const w: Record<string, any> = {
     player_steam_id: { _eq: playerIdRef.value },
   };
@@ -649,8 +581,6 @@ const whereClause = computed(() => {
   return w;
 });
 
-// matches.source comparison for the active source: 5Stack is exact, External
-// is "anything that isn't 5Stack" (Valve, FACEIT, …).
 const sourceComparison = computed(() => {
   if (sourceRef.value === "all") {
     return null;
@@ -668,8 +598,6 @@ const sourceComparison = computed(() => {
   }
 });
 
-// Where for v_player_match_performance — scoped to the player, the active
-// source, the time window and (optionally) non-tournament matches.
 const performanceWhere = computed(() => {
   const w: Record<string, any> = {
     player_steam_id: { _eq: playerIdRef.value },
@@ -688,8 +616,6 @@ const performanceWhere = computed(() => {
   return w;
 });
 
-// Weapons are lifetime within the active source + mode (type). "all" (5Stack)
-// spans every type.
 const weaponWhere = computed(() => {
   const w: Record<string, any> = {
     player_steam_id: { _eq: playerIdRef.value },
@@ -703,10 +629,6 @@ const weaponWhere = computed(() => {
   return w;
 });
 
-// Stats are one-shot queries (network-only), not subscriptions — live stat
-// updates aren't worth a persistent socket. They re-run when the filters
-// change, and the Refresh button re-runs them on demand. A per-loader
-// generation guard drops stale responses when filters change mid-flight.
 const PLAYER_ELO_HISTORY_QUERY = gql`
   query PlayerWindowedEloHistory($where: v_player_elo_bool_exp!) {
     v_player_elo(where: $where, order_by: { match_created_at: asc }) {
@@ -818,7 +740,6 @@ async function loadPremierHistory() {
       observed_at: string;
     }>;
     rankHistoryRows.value = rows;
-    // Premier (rank_type 11) drives the ELO-style chart series.
     let prev: number | null = null;
     premierWindowedHistory.value = rows
       .filter((r) => r.rank_type === 11)
@@ -904,8 +825,6 @@ watch(
   { immediate: true },
 );
 
-// Per-match performance (win/loss + K/D) and per-source weapon kills — also
-// one-shot queries, re-run when the player / source / window changes.
 const PLAYER_PERFORMANCE_QUERY = gql`
   query PlayerPerformance($where: v_player_match_performance_bool_exp!) {
     v_player_match_performance(
@@ -985,9 +904,6 @@ watch([playerIdRef, performanceWhere], () => loadPerformance(), {
 });
 watch([playerIdRef, weaponWhere], () => loadWeapons(), { immediate: true });
 
-// Merge duplicate weapon spellings into one canonical row with a resolved
-// icon, then take the real top 5. (Pre-migration data may still carry mixed
-// spellings; the merge keeps the display correct regardless.)
 const topWeapons = computed(() => {
   const merged = new Map<
     string,
@@ -1022,33 +938,18 @@ async function triggerFaceitRefresh(steamId: string | null) {
       variables: { steam_id: steamId },
     });
   } catch {
-    // Silent — refresh is rate-limited server-side and the chip reads
-    // from the players row, so a failed action just means we'll retry
-    // on the next visit.
   }
 }
 
 watch(playerIdRef, (id) => triggerFaceitRefresh(id), { immediate: true });
 
-// The range bar drives the matches list + count as well. We pull the
-// player→matches relation with a where clause; the count uses the
-// matches_aggregate on the same relation so list + count stay in sync.
 const matchesPage = ref(1);
 const matchesPerPage = usePerPage("player-matches");
 const playerMatches = ref<any[]>([]);
 const playerMatchesTotal = ref(0);
 const ratingByMatch = ref<Map<string, number>>(new Map());
-// match_id -> focus player's aggregate stats, batched for the whole page so the
-// collapsed rows don't each fire a matches_by_pk query.
 const statsByMatch = ref<Map<string, any>>(new Map());
 
-// The matches list shares the one filter bar (source + mode + range) with the
-// stats above — no separate controls; changing the top filter updates both.
-// Scope a matches filter to "this player was in the match". Membership lives in
-// the where (not a relationship root) so the list queries matches as a table:
-// Hasura applies native permissions and orders by the indexed effective_at,
-// paginating before expanding nested objects. (The old players->matches
-// function relationship expanded every match first, then limited.)
 function scopeToPlayer(filters: Record<string, any>) {
   return {
     _and: [
@@ -1090,10 +991,6 @@ const matchesWhere = computed(() => {
   return scopeToPlayer(w);
 });
 
-// External Valve matches carry no internal elo, but the demo import records
-// the player's rank per match in player_rank_history — Premier (11) CS Rating,
-// Competitive (12) and Wingman (7) skill groups. Keyed by match id with the
-// stored delta so the rows can render the right badge + change.
 const rankByMatch = computed(() => {
   const map: Record<
     string,
@@ -1113,10 +1010,6 @@ const rankByMatch = computed(() => {
   return map;
 });
 
-// Built with Zeus so we keep the same selector source-of-truth as the
-// other matches queries on this codebase (simpleMatchFields). The
-// `where` is hoisted to a variable so Apollo can normalize cache keys
-// across filter changes.
 const PLAYER_MATCHES_QUERY = generateQuery({
   matches: [
     {
@@ -1142,7 +1035,6 @@ const PLAYER_MATCHES_QUERY = generateQuery({
   ],
 });
 
-// Count via matches_aggregate now that the list queries matches as a table.
 const PLAYER_MATCHES_COUNT_QUERY = generateQuery({
   matches_aggregate: [
     { where: $("matchesWhere", "matches_bool_exp") },
@@ -1181,16 +1073,9 @@ async function loadMatches() {
       (count.data as any)?.matches_aggregate?.aggregate?.count ?? 0;
     void loadMatchEnrichment();
   } catch {
-    // swallow — page is subscription-driven elsewhere; matches table
-    // simply shows whatever last succeeded.
   }
 }
 
-// Enrich the visible page of matches in one request: the focus player's
-// aggregate stats (powers the collapsed rows, replacing a per-row
-// matches_by_pk) plus the canonical KAST-inclusive HLTV rating (the row's own
-// formula omits KAST). Both views are keyed (steam_id, match_id) and indexed,
-// so this is a single batched round-trip rather than one query per row.
 async function loadMatchEnrichment() {
   const ids = playerMatches.value
     .map((m: any) => String(m?.id ?? ""))
@@ -1227,8 +1112,6 @@ async function loadMatchEnrichment() {
   }
 }
 
-// Reset to page 1 whenever the filter changes — otherwise a deep page
-// in a large window becomes empty when the user narrows the window.
 watch(matchesWhere, () => {
   matchesPage.value = 1;
 });
@@ -1241,10 +1124,6 @@ watch(
   },
 );
 
-// Has this player EVER played a match (any source, ignoring the filter bar)?
-// null while loading. Drives the brand-new-player empty state — distinct from
-// "no matches in the active window", which the filters can produce on a player
-// with plenty of history. Reuses the lightweight ids-only count query.
 const playerHasAnyMatches = ref<boolean | null>(null);
 let anyMatchesGen = 0;
 async function loadAnyMatches() {
@@ -1262,9 +1141,6 @@ async function loadAnyMatches() {
     return ((data as any)?.matches_aggregate?.aggregate?.count ?? 0) as number;
   };
   try {
-    // When external imports are on we also need the 5Stack-only count so we can
-    // auto-switch the source for players who only have external matches
-    // (otherwise the default 5Stack source shows "No parsed matches").
     const [total, fiveStack] = await Promise.all([
       countFor({}),
       appSettings.externalMatchesEnabled
@@ -1273,8 +1149,6 @@ async function loadAnyMatches() {
     ]);
     if (gen !== anyMatchesGen) return;
     playerHasAnyMatches.value = total > 0;
-    // Only external matches + the viewer hasn't picked a source → show "All" so
-    // their stats actually render instead of an empty 5Stack tab.
     if (
       appSettings.externalMatchesEnabled &&
       total > 0 &&
@@ -1287,31 +1161,18 @@ async function loadAnyMatches() {
     if (gen === anyMatchesGen) playerHasAnyMatches.value = null;
   }
 }
-// Not immediate / mount-only on first load: this can call setSource(), and
-// replacing the route query during setup (or SSR) updates the URL but the
-// reactive route the toggle reads never syncs ("switches too soon"). Running it
-// after mount guarantees the router is ready before we touch the query.
 watch(playerIdRef, () => loadAnyMatches());
 onMounted(() => loadAnyMatches());
 
-// Brand-new player with nothing to show anywhere — collapse the whole stats /
-// tabs / matches block into a single clean empty state instead of a stack of
-// empty panels.
 const noCareerData = computed(() => playerHasAnyMatches.value === false);
 
-// Top ELO panel data — always the full 5Stack ELO history, independent of the
-// source/mode filter (that only drives the tabs + the ELO tab).
 const modeFilteredWindowed = computed<WindowedEloEntry[]>(
   () => eloHistory.value,
 );
 
 const windowedStats = computed(() => {
-  // Top panel: 5Stack ELO headline straight off the full history, unfiltered.
   const list = modeFilteredWindowed.value;
   const headlineList = list;
-  // Win Rate / K-D from v_player_match_performance, scoped to the active
-  // source + mode (= match type) + window. Every mode chip maps to a real
-  // match_options.type, so the same filter works for 5Stack and External.
   const perfList = statTypeFilter.value
     ? performanceHistory.value.filter((e) =>
         statTypeFilter.value!.includes(e.type),
@@ -1410,12 +1271,6 @@ const windowedStats = computed(() => {
   };
 });
 
-// Recent form — the last N results as a glanceable W/L sequence + net ELO over
-// that span. Drawn straight off the all-time 5Stack ELO history (already loaded
-// and public), newest last so the dots read left→right like a timeline. Always
-// renders a full row of N slots: unplayed slots become blank squares (padded on
-// the left), so a fresh / light-history player reads as "not enough matches yet"
-// (empty squares + +0) rather than the strip vanishing.
 const RECENT_FORM_COUNT = 12;
 const recentForm = computed(() => {
   const slice = (eloHistory.value ?? []).slice(-RECENT_FORM_COUNT);
@@ -1430,8 +1285,11 @@ const recentForm = computed(() => {
         : r === "lost" || r === "loss"
           ? "loss"
           : "tie";
-    if (result === "win") wins++;
-    else if (result === "loss") losses++;
+    if (result === "win") {
+      wins++;
+    } else if (result === "loss") {
+      losses++;
+    }
     net += typeof e.elo_change === "number" ? e.elo_change : 0;
     return { key: e.match_id ?? `${e.match_created_at}-${i}`, result };
   });
@@ -1442,22 +1300,11 @@ const recentForm = computed(() => {
   return { dots: [...blanks, ...played], wins, losses, net };
 });
 
-// At wide ranges (1Y / ALL / long custom spans) plotting every match
-// drowns the trend in daily noise. We collapse points into period
-// buckets — last entry per bucket wins (= "ELO at end of period"),
-// and elo_change is the sum across the bucket (= net Δ over the
-// period). The modal stays raw so the drill-down keeps full detail.
 type BucketSize = "raw" | "week" | "month";
 
-// Density floor — below ~30 points the raw chart isn't crowded, and
-// bucketing those few entries into months just throws away resolution
-// (and produces sparse, lonely-looking points). Only collapse into
-// period buckets when there's enough data to actually need summarising.
 const BUCKET_MIN_POINTS = 30;
 
 const bucketSize = computed<BucketSize>(() => {
-  // Top panel is all-time 5Stack ELO, so bucket by data volume (not the
-  // range filter, which no longer applies here).
   const n = eloHistory.value.length;
   if (n < BUCKET_MIN_POINTS) return "raw";
   if (n > 150) return "month";
@@ -1471,9 +1318,6 @@ function bucketKeyFor(iso: string, size: BucketSize): string {
     return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
   }
   if (size === "week") {
-    // ISO-week key — matches what TimescaleDB's `time_bucket('1 week')`
-    // produces on UTC, so swapping to a backend function later won't
-    // shift the bucket boundaries on the user.
     const tmp = new Date(
       Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()),
     );
@@ -1523,16 +1367,9 @@ function bucketHistory(
     );
 }
 
-// Multi-series chart driven by the window. When a specific mode is
-// active the chart shows ONLY that mode — other modes' lines would
-// be visual noise once you've narrowed in. In "all" mode we show
-// all three, with Competitive focused (bold + Δ labels) since it
-// usually carries the most volume.
 const windowedChartSeries = computed(() => {
   const size = bucketSize.value;
 
-  // Always the 5Stack ELO overlay (Competitive / Wingman / Duel, Competitive
-  // focused) — independent of the source/mode filter, which drives the tabs.
   const groupBy = (m: "Competitive" | "Wingman" | "Duel") =>
     bucketHistory(
       eloHistory.value.filter((e) => e.type === m),
@@ -1565,8 +1402,6 @@ const hasWindowedEloData = computed(
   () => modeFilteredWindowed.value.length > 0,
 );
 
-// Range labels are date-aware so the popover and chips agree on what's
-// currently active without each side having to recompute.
 const activeRangeLabel = computed(() => {
   if (eloRange.value === "custom") {
     const from = customFrom.value || "—";
@@ -1582,9 +1417,6 @@ function setRange(r: RangeKey) {
 }
 
 function applyCustomRange() {
-  // Only switch to the custom window once BOTH ends are chosen — filtering on a
-  // half-picked range is jarring. When complete, close the popover (they can
-  // re-open it to tweak).
   if (customFrom.value && customTo.value) {
     eloRange.value = "custom";
     settingsOpen.value = false;
@@ -1627,9 +1459,6 @@ function fmtDateShort(iso: string | null | undefined): string {
 
 definePageMeta({
   alias: ["/me/:id"],
-  // Keep these filter params out of the NuxtPage key (like `mode`/`tab`) so
-  // changing them updates state in place instead of remounting + refetching
-  // the whole page. `mode`/`tab` are excluded globally in app.vue.
   persistQueryKeys: ["source", "provider", "range", "from", "to", "compare"],
 });
 
@@ -1658,17 +1487,9 @@ const playerHeroIdentityClasses = "flex min-w-0 flex-1 flex-col gap-2";
 const playerHeroNameClasses =
   "relative m-0 min-w-0 font-sans font-bold uppercase leading-[0.9] tracking-[0.02em] [overflow-wrap:anywhere] [font-stretch:80%]";
 const playerHeroNameMainClasses = "relative text-foreground";
-// Ghost = an offset stroke-only duplicate sitting behind the name. inset-0 makes
-// it share the h1's box so it wraps line-for-line with the real name (no clipped
-// mid-word bleed on long/multi-line names); the translate gives it depth.
 const playerHeroNameGhostClasses =
   "pointer-events-none absolute inset-0 text-transparent select-none [-webkit-text-stroke:1px_hsl(var(--tac-amber)_/_0.35)] [transform:translate(4px,4px)]";
-// Admin/owner controls (edit + sanction) live as a toolbar pinned to the top
-// of the identity column, aligned with the PLAYER PROFILE eyebrow — not under
-// the name where they read as random boxy buttons.
 const playerHeroActionsClasses = "flex shrink-0 items-center gap-2";
-// One tactical readout line: flag + steam id · steam · role, joined by hairline
-// dividers instead of three separate stacked rows of mismatched controls.
 const playerHeroMetaStripClasses =
   "flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[0.76rem] text-muted-foreground";
 const playerHeroMetaDividerClasses = "h-3 w-px shrink-0 bg-border/70";
@@ -1685,13 +1506,6 @@ const playerHeroPlayIconClasses =
   "h-5 w-5 fill-current transition-transform duration-300 group-hover/play:translate-x-0.5 group-hover/play:scale-110";
 const playerHeroPlayGlowClasses =
   "pointer-events-none absolute inset-0 z-0 -translate-x-full bg-[linear-gradient(90deg,transparent_0%,hsl(0_0%_100%_/_0.4)_50%,transparent_100%)] transition-transform duration-500 group-hover/play:translate-x-full";
-// Recent-form strip — the hero card's signature dynamic element, sat high under
-// the identity so the profile reads as "alive" at a glance. The performance
-// panel beside it owns the aggregate numbers; this is a glanceable SHAPE (last
-// N results + net ELO), not a stat repeat. Public data, so it renders logged out.
-// Footer cluster (form + CTA) anchored to the card floor with mt-auto: in the
-// 2-col stretch the hero grows to match the ELO panel, so this cluster floats
-// down to fill what used to be dead space (the logged-out / no-teams void).
 const playerHeroFooterClasses = "mt-auto flex flex-col gap-4";
 const playerHeroFormClasses = "border-t border-border/60 pt-4";
 const playerHeroFormLabelClasses =
@@ -1699,9 +1513,6 @@ const playerHeroFormLabelClasses =
 const playerHeroFormTickClasses = "h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]";
 const playerHeroFormDotsClasses = "flex flex-wrap items-center gap-1.5";
 const playerHeroFormDotBaseClasses = "h-2.5 w-2.5 rounded-[2px]";
-// Team affiliation chip — team demoted from its own block to an inline identity
-// attribute in the meta strip (region · steam · role · team), so it stays useful
-// (links to the team) without reserving real estate it doesn't earn here.
 const playerHeroTeamChipClasses =
   "inline-flex h-7 items-center gap-1.5 rounded border border-border bg-card/60 px-2 font-mono text-[0.6rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground transition-colors duration-150 hover:border-[hsl(var(--tac-amber)_/_0.6)] hover:bg-[hsl(var(--tac-amber)_/_0.1)] hover:text-[hsl(var(--tac-amber))]";
 const playerHeroTeamChipDotClasses =
@@ -1942,9 +1753,6 @@ const playerHeroTeamChipDotClasses =
           class="relative flex flex-col h-full p-2.5"
         >
           <CardContent class="flex flex-1 flex-col gap-2 p-0 sm:p-0">
-            <!-- Stats strip — two cells now (Current ELO + Peak/Lowest).
-                   Matches/W/L lives in the Win Rate card next door so we
-                   don't repeat it here. Peak gets a vertical amber rail. -->
             <div
               class="grid grid-cols-1 divide-y divide-border/40 overflow-hidden rounded-md border border-border/60 sm:grid-cols-2 sm:divide-x sm:divide-y-0"
             >
@@ -1973,7 +1781,6 @@ const playerHeroTeamChipDotClasses =
               </div>
 
               <div class="relative min-h-[64px] px-3 py-2.5 sm:pl-4">
-                <!-- Amber rail anchoring the headline metric -->
                 <span
                   class="pointer-events-none absolute left-0 top-3 bottom-3 hidden w-[2px] bg-[hsl(var(--tac-amber))] sm:block"
                   aria-hidden="true"
@@ -2022,9 +1829,6 @@ const playerHeroTeamChipDotClasses =
                     />
                   </template>
                 </div>
-                <!-- Date row is ALWAYS rendered (placeholder when no
-                       peakEntry yet) so the cell height never changes
-                       between empty/loaded states. -->
                 <div
                   class="mt-0.5 font-mono text-[0.5rem] uppercase tracking-[0.18em] text-muted-foreground"
                 >
@@ -2037,14 +1841,9 @@ const playerHeroTeamChipDotClasses =
               </div>
             </div>
 
-            <!-- Chart well: fixed height (NOT min-h) so the card never
-                   grows when data arrives or when the empty/loading state
-                   swaps for the chart. Frame + grid stay constant; the
-                   contents inside just swap. -->
             <div
               class="relative min-h-[150px] flex-1 overflow-hidden rounded-md border border-border/40"
             >
-              <!-- Registration ticks on the inner frame -->
               <span
                 class="pointer-events-none absolute -top-px left-3 h-1.5 w-1.5 border-l border-t border-[hsl(var(--tac-amber)/0.45)]"
                 aria-hidden="true"
@@ -2061,24 +1860,16 @@ const playerHeroTeamChipDotClasses =
                 class="pointer-events-none absolute -bottom-px right-3 h-1.5 w-1.5 border-r border-b border-[hsl(var(--tac-amber)/0.45)]"
                 aria-hidden="true"
               ></span>
-              <!-- Faint coordinate grid: keeps the surface visually
-                     populated when only a few datapoints exist. -->
               <div
                 class="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:linear-gradient(0deg,hsl(var(--foreground))_1px,transparent_1px),linear-gradient(90deg,hsl(var(--foreground))_1px,transparent_1px)] [background-size:48px_48px]"
                 aria-hidden="true"
               ></div>
 
-              <!-- Loading: own state distinct from "truly empty" so we
-                     don't briefly show "Play a match" while the
-                     subscription is just warming up. Pure decoration —
-                     animate-ping on the indicator dot only. -->
               <div
                 v-if="eloHistoryLoading && !hasWindowedEloData"
                 class="elo-skeleton relative flex h-full flex-col items-center justify-center gap-3 px-6"
                 aria-busy="true"
               >
-                <!-- Skeleton plot lines — three faint horizontal
-                       bars hinting at the chart's grid axes. -->
                 <div
                   class="pointer-events-none absolute inset-x-8 top-[28%] h-px bg-[hsl(var(--foreground)/0.08)]"
                   aria-hidden="true"
@@ -2221,8 +2012,6 @@ const playerHeroTeamChipDotClasses =
     >
       <Tabs v-model="statsTab" class="w-full">
         <div ref="statsTabsEl" class="scroll-mt-4">
-          <!-- Mobile: the underline strip overflows on phones, so collapse the
-               sections into a dropdown. Desktop keeps the underline tabs. -->
           <div class="mb-3 md:hidden">
             <Select v-model="statsTab">
               <SelectTrigger
@@ -2290,15 +2079,9 @@ const playerHeroTeamChipDotClasses =
           </div>
         </div>
 
-        <!-- Unified control bar — stat source (5Stack internal ELO vs Valve
-           external rank), source-dependent mode chips, time range, match
-           count + settings. One bar so every graph below reads the same
-           filter and the two rating worlds never blend. -->
         <div
           class="mb-5 flex flex-col gap-3 rounded-lg border border-border/60 bg-card/40 px-3 py-2.5 [backdrop-filter:blur(6px)] md:flex-row md:flex-wrap md:items-center md:gap-x-4 md:gap-y-3"
         >
-          <!-- Source toggle — only when external imports are enabled (otherwise
-             5Stack is the only world, so the toggle is noise). -->
           <div
             v-if="appSettings.externalMatchesEnabled"
             class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2"
@@ -2349,7 +2132,6 @@ const playerHeroTeamChipDotClasses =
             aria-hidden="true"
           ></span>
 
-          <!-- Mode chips (depend on the active source) -->
           <div
             v-if="modeOptions.length"
             class="flex flex-col gap-1.5 md:flex-row md:items-center md:gap-2"
@@ -2366,9 +2148,6 @@ const playerHeroTeamChipDotClasses =
             />
           </div>
 
-          <!-- Right cluster: time range + refresh + settings. On mobile this
-             becomes a labeled row (range + actions) with the chips on a
-             horizontal-scroll line below; inline on desktop. -->
           <div
             class="grid grid-cols-[1fr_auto] items-center gap-x-2 gap-y-2 md:ml-auto md:flex md:flex-wrap md:items-center md:gap-1.5"
           >
@@ -2537,9 +2316,6 @@ const playerHeroTeamChipDotClasses =
                     >
                       {{ $t("pages.players.detail.compare.label") }}
                     </div>
-                    <!-- The trigger's container (div.relative) isn't full-width on
-                     its own, so force it (and the button) to fill — otherwise
-                     the chevron sits next to the label instead of flush-right. -->
                     <div class="w-full [&_.relative]:w-full [&_button]:w-full">
                       <PlayerSearch
                         class="w-full justify-between"
@@ -2949,10 +2725,6 @@ export default {
           }
         },
       },
-      // Teams that contain the displayed player, fetched alongside the
-      // current viewer's role in each team so we can offer a bulk-apply
-      // checklist in the roster editor (player-roster flow only).
-      // Excludes Invite rows — those aren't real memberships yet.
       playerTeamMemberships: {
         query: typedGql("subscription")({
           team_roster: [
@@ -3030,8 +2802,6 @@ export default {
     },
   },
   mounted() {
-    // Fallback in case the highlights subscription is slow / never
-    // responds — don't keep the stats section hidden forever.
     this.pageContentTimeout = window.setTimeout(() => {
       this.pageContentTimedOut = true;
     }, 800);
@@ -3046,9 +2816,6 @@ export default {
     return {
       player: undefined,
       playerTrophies: undefined,
-      // Trophy + highlights queries resolve out-of-order with the main
-      // player query; we hold the stats section until they've settled so
-      // their late arrival doesn't push the stats block downward.
       highlightsResolved: false,
       pageContentTimedOut: false,
       pageContentTimeout: null as number | null,
@@ -3080,18 +2847,12 @@ export default {
     apiDomain() {
       return useRuntimeConfig().public.apiDomain;
     },
-    // Scale the hero name down as it gets longer so long handles stay compact
-    // (one or two tight lines) instead of wrapping into a giant block that
-    // crowds the steam id / badges below.
     playerHeroNameSizeClasses() {
       const len = (this.player?.name || "").length;
       if (len > 22) return "text-[clamp(1.1rem,2.2vw,1.5rem)]";
       if (len > 14) return "text-[clamp(1.4rem,2.8vw,1.95rem)]";
       return "text-[clamp(1.85rem,4vw,3rem)]";
     },
-    // The offset stroke "ghost" behind the name reads as intentional depth on
-    // short, punchy single-line names but turns into muddy double-vision once a
-    // name wraps — so only show it on short names.
     showNameGhost() {
       return (this.player?.name || "").length <= 14;
     },
@@ -3173,9 +2934,6 @@ export default {
         this.canEditRole
       );
     },
-    // Teams the current viewer can push the new portrait into. Server-side
-    // permission is the source of truth — these filters are just so we
-    // don't show teams we know the request would be rejected for.
     bulkApplyTeams() {
       const me = useAuthStore().me;
       if (!me) return [];

@@ -20,6 +20,7 @@ import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { z } from "zod";
 import { useForm } from "vee-validate";
 import gql from "graphql-tag";
+import SettingHeader from "~/components/match/SettingHeader.vue";
 </script>
 
 <template>
@@ -96,6 +97,10 @@ import gql from "graphql-tag";
       </DrawerHeader>
 
       <form @submit.prevent="sanctionPlayer" class="grid grid-cols-2 gap-4 p-4">
+        <SettingHeader class="col-span-2">
+          {{ $t("player.sanction.button") }}
+        </SettingHeader>
+
         <FormField v-slot="{ componentField }" name="reason">
           <FormItem>
             <FormLabel>{{ $t("player.sanction.reason_label") }}</FormLabel>
@@ -135,7 +140,12 @@ import gql from "graphql-tag";
           </FormItem>
         </FormField>
 
-        <Button class="capitalize" type="submit" :loading="submitting">
+        <Button
+          variant="tactical"
+          class="col-span-2 capitalize"
+          type="submit"
+          :loading="submitting"
+        >
           {{ $t("player.sanction.typed_player", { type: sanctionType }) }}
         </Button>
       </form>

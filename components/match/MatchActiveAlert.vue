@@ -52,14 +52,14 @@ const { manuallyOpened } = useMatchReadyModal();
           </div>
 
           <NuxtLink
-            :to="`/matches/${match.id}`"
+            :to="targetLink"
             class="tac-amber-cta relative isolate mt-2 inline-flex w-full items-center justify-center gap-3 overflow-hidden rounded-md border px-6 py-4 font-sans text-sm font-bold uppercase leading-none tracking-[0.22em]"
             @click="acknowledge"
           >
             <span
               class="inline-block h-[2px] w-[12px] bg-[hsl(var(--tac-amber-foreground))]/70"
             ></span>
-            {{ $t("matchmaking.go_to_match") }}
+            {{ draftGameId ? $t("draft_games.room.go_to_room") : $t("matchmaking.go_to_match") }}
             <span
               class="inline-block h-[2px] w-[12px] bg-[hsl(var(--tac-amber-foreground))]/70"
             ></span>
@@ -134,6 +134,12 @@ export default {
     },
     isOnMatchPage(): boolean {
       const path = this.$route?.path || "";
+      if (
+        this.draftGameId &&
+        path.startsWith(`/draft-room/${this.draftGameId}`)
+      ) {
+        return true;
+      }
       return !!this.match && path.startsWith(`/matches/${this.match.id}`);
     },
     shouldShow(): boolean {
@@ -154,6 +160,14 @@ export default {
       const a = this.match?.lineup_1?.name || this.$t("common.tbd");
       const b = this.match?.lineup_2?.name || this.$t("common.tbd");
       return `${a} vs ${b}`;
+    },
+    draftGameId(): string | null {
+      return this.match?.draft_games?.[0]?.id || null;
+    },
+    targetLink(): string {
+      return this.draftGameId
+        ? `/draft-room/${this.draftGameId}`
+        : `/matches/${this.match.id}`;
     },
   },
   watch: {

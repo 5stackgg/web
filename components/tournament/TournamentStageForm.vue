@@ -19,11 +19,8 @@ import {
 } from "~/components/ui/select";
 import { Switch } from "~/components/ui/switch";
 import { Card } from "~/components/ui/card";
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from "~/components/ui/collapsible";
+import SettingHeader from "~/components/match/SettingHeader.vue";
+import { Collapsible, CollapsibleTrigger } from "~/components/ui/collapsible";
 import {
   NumberField,
   NumberFieldContent,
@@ -214,9 +211,9 @@ import { $ } from "~/generated/zeus";
       <div class="p-4 space-y-4">
         <FormField v-slot="{ componentField }" name="default_best_of">
           <FormItem>
-            <FormLabel class="text-lg font-semibold">{{
+            <SettingHeader>{{
               $t("tournament.stage.default_best_of")
-            }}</FormLabel>
+            }}</SettingHeader>
             <FormDescription>
               {{ $t("tournament.stage.default_best_of_description") }}
             </FormDescription>
@@ -260,9 +257,9 @@ import { $ } from "~/generated/zeus";
               @click="handleChange(!value)"
             >
               <div class="space-y-0.5">
-                <FormLabel class="text-lg font-semibold">{{
+                <SettingHeader>{{
                   $t("tournament.stage.third_place_match")
-                }}</FormLabel>
+                }}</SettingHeader>
                 <FormDescription>
                   {{ $t("tournament.stage.third_place_match_description") }}
                 </FormDescription>
@@ -352,7 +349,13 @@ import { $ } from "~/generated/zeus";
         </div>
       </CollapsibleTrigger>
 
-      <CollapsibleContent>
+      <div
+        ref="advWrapRef"
+        class="adv-collapse"
+        :style="{ height: advHeight }"
+        :inert="!showAdvancedSettings"
+        :aria-hidden="!showAdvancedSettings"
+      >
         <div class="flex flex-col gap-4">
           <!-- Per-Round Best Of -->
           <Card
@@ -379,9 +382,9 @@ import { $ } from "~/generated/zeus";
             <div class="flex flex-col space-y-3 p-4">
               <FormField v-slot="{ value }" name="tv_delay">
                 <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{
+                  <SettingHeader>{{
                     $t("match.options.advanced.tv_delay.label")
-                  }}</FormLabel>
+                  }}</SettingHeader>
                   <NumberField
                     class="gap-2"
                     :min="0"
@@ -413,9 +416,9 @@ import { $ } from "~/generated/zeus";
           <!-- Region Options -->
           <Card v-if="availableRegions.length > 1">
             <div class="p-6 space-y-6">
-              <div class="text-lg font-semibold">
+              <SettingHeader>
                 {{ $t("match.options.advanced.region.title") }}
-              </div>
+              </SettingHeader>
 
               <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <FormField v-slot="{ value, handleChange }" name="region_veto">
@@ -423,9 +426,9 @@ import { $ } from "~/generated/zeus";
                     <Card class="cursor-pointer" @click="handleChange(!value)">
                       <div class="flex flex-col space-y-3 p-4">
                         <div class="flex justify-between items-center">
-                          <FormLabel class="text-lg font-semibold">{{
+                          <SettingHeader>{{
                             $t("match.options.advanced.region.veto.label")
-                          }}</FormLabel>
+                          }}</SettingHeader>
                           <FormControl>
                             <Switch
                               class="pointer-events-none"
@@ -447,12 +450,12 @@ import { $ } from "~/generated/zeus";
                 <FormField name="regions">
                   <FormItem>
                     <FormLabel>
-                      <div class="text-lg font-semibold">
+                      <SettingHeader>
                         <template v-if="form.values.region_veto">
                           {{ $t("match.options.advanced.region.preferred") }}
                         </template>
                         <template v-else>{{ $t("common.region") }}</template>
-                      </div>
+                      </SettingHeader>
                     </FormLabel>
 
                     <FormControl>
@@ -584,9 +587,9 @@ import { $ } from "~/generated/zeus";
                 name="check_in_setting"
               >
                 <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{
+                  <SettingHeader>{{
                     $t("match.options.advanced.check_in_settings.label")
-                  }}</FormLabel>
+                  }}</SettingHeader>
                   <FormDescription>{{
                     $t("match.options.advanced.check_in_settings.description")
                   }}</FormDescription>
@@ -616,9 +619,9 @@ import { $ } from "~/generated/zeus";
 
               <FormField v-slot="{ componentField }" name="ready_setting">
                 <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{
+                  <SettingHeader>{{
                     $t("match.options.advanced.ready_settings.label")
-                  }}</FormLabel>
+                  }}</SettingHeader>
                   <FormDescription>{{
                     $t("match.options.advanced.ready_settings.description")
                   }}</FormDescription>
@@ -651,9 +654,9 @@ import { $ } from "~/generated/zeus";
                 name="tech_timeout_setting"
               >
                 <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{
+                  <SettingHeader>{{
                     $t("match.options.advanced.timeouts.technical.label")
-                  }}</FormLabel>
+                  }}</SettingHeader>
                   <FormDescription>{{
                     $t("match.options.advanced.timeouts.technical.description")
                   }}</FormDescription>
@@ -687,9 +690,9 @@ import { $ } from "~/generated/zeus";
                 name="match_mode"
               >
                 <FormItem>
-                  <FormLabel class="text-lg font-semibold">{{
+                  <SettingHeader>{{
                     $t("match.options.advanced.match_mode.label")
-                  }}</FormLabel>
+                  }}</SettingHeader>
                   <FormDescription>{{
                     $t("match.options.advanced.match_mode.description")
                   }}</FormDescription>
@@ -717,7 +720,7 @@ import { $ } from "~/generated/zeus";
             </div>
           </Card>
         </div>
-      </CollapsibleContent>
+      </div>
     </Collapsible>
 
     <Button
@@ -804,6 +807,7 @@ export default {
     return {
       submitting: false,
       showAdvancedSettings: false,
+      advHeight: "0px",
       select_single_region: null as string | null,
       roundBestOf: {} as Record<string, string>,
       e_tournament_stage_types: [] as Array<{
@@ -867,6 +871,9 @@ export default {
     };
   },
   watch: {
+    showAdvancedSettings(open) {
+      this.animateAdvanced(open);
+    },
     stage: {
       immediate: true,
       handler(stage) {
@@ -973,7 +980,9 @@ export default {
     },
     ["form.values.min_teams"]: {
       handler(min_teams: string | undefined) {
-        if (!min_teams) return;
+        if (!min_teams) {
+          return;
+        }
         const min = parseInt(min_teams);
         const max = parseInt(this.form.values.max_teams);
         if (!this.form.values.max_teams || isNaN(max) || max < min) {
@@ -1142,8 +1151,43 @@ export default {
     },
   },
   methods: {
+    animateAdvanced(open: boolean) {
+      const wrap = this.$refs.advWrapRef as HTMLElement | undefined;
+      if (!wrap) {
+        this.advHeight = open ? "auto" : "0px";
+        return;
+      }
+      if (open) {
+        this.advHeight = "0px";
+        void wrap.offsetHeight;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            this.advHeight = `${wrap.scrollHeight}px`;
+          });
+        });
+        const onEnd = (e: TransitionEvent) => {
+          if (e.target !== wrap || e.propertyName !== "height") {
+            return;
+          }
+          wrap.removeEventListener("transitionend", onEnd);
+          if (this.showAdvancedSettings) {
+            this.advHeight = "auto";
+          }
+        };
+        wrap.addEventListener("transitionend", onEnd);
+      } else {
+        this.advHeight = `${wrap.getBoundingClientRect().height}px`;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            this.advHeight = "0px";
+          });
+        });
+      }
+    },
     setDefaultAdvancedSettings() {
-      if (!this.tournament?.options) return;
+      if (!this.tournament?.options) {
+        return;
+      }
       const options = this.tournament.options;
       this.form.setValues({
         tv_delay: options.tv_delay ?? 115,
@@ -1169,7 +1213,9 @@ export default {
       this.form.setFieldValue("regions", []);
     },
     hasAdvancedSettingsChanged() {
-      if (!this.tournament) return false;
+      if (!this.tournament) {
+        return false;
+      }
 
       const form = this.form.values;
       const tournamentOptions = this.tournament.options;
@@ -1202,7 +1248,9 @@ export default {
       matchOptionsId: string,
       form: any,
     ): Promise<string> {
-      if (!this.tournament) throw new Error("Tournament is required");
+      if (!this.tournament) {
+        throw new Error("Tournament is required");
+      }
       const tournamentOptions = this.tournament.options;
 
       await (this as any).$apollo.mutate({
@@ -1271,7 +1319,9 @@ export default {
       return matchOptionsId;
     },
     async createMatchOptions(form: any): Promise<string> {
-      if (!this.tournament) throw new Error("Tournament is required");
+      if (!this.tournament) {
+        throw new Error("Tournament is required");
+      }
       const tournamentOptions = this.tournament.options;
 
       const { data } = await (this as any).$apollo.mutate({
@@ -1533,3 +1583,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.adv-collapse {
+  overflow: hidden;
+  transition: height 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+</style>

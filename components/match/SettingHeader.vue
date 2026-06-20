@@ -1,6 +1,5 @@
 <script lang="ts" setup></script>
 
-<!-- Tactical section header: amber dash + mono uppercase label (site style). -->
 <template>
   <div class="flex items-center gap-[0.6rem] min-w-0">
     <span class="w-[10px] h-[2px] shrink-0 bg-[hsl(var(--tac-amber))]"></span>

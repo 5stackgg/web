@@ -16,6 +16,7 @@ import Pagination from "~/components/Pagination.vue";
 import { Button } from "~/components/ui/button";
 import {
   tacticalCtaButtonClasses,
+  tacticalHeaderActionClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
 import { Input } from "~/components/ui/input";
@@ -58,12 +59,16 @@ function optionRowClass(active: boolean) {
 
 <template>
   <PageTransition :delay="0">
-    <TacticalPageHeader>
+    <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.manage_tournaments.title") }}</template>
       <template v-if="canCreateTournament" #actions>
         <button
           type="button"
-          :class="[tacticalCtaButtonClasses, 'max-md:px-2.5 max-md:py-2']"
+          :class="[
+          tacticalCtaButtonClasses,
+          tacticalHeaderActionClasses,
+          'max-md:aspect-square max-md:!px-0',
+        ]"
           :title="$t('pages.tournaments.create')"
           @click="navigateTo('/tournaments/create')"
         >

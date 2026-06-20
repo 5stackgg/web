@@ -34,9 +34,20 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
       'grid-cols-[52px_1fr]':
         size !== 'xs' &&
         !compact &&
+        !truncateName &&
+        (showName || showSteamId || showRole || showFlag),
+      'grid-cols-[52px_minmax(0,1fr)]':
+        size !== 'xs' &&
+        !compact &&
+        truncateName &&
         (showName || showSteamId || showRole || showFlag),
       'grid-cols-[32px_1fr]':
         (size === 'xs' || compact) &&
+        !truncateName &&
+        (showName || showSteamId || showRole || showFlag),
+      'grid-cols-[32px_minmax(0,1fr)]':
+        (size === 'xs' || compact) &&
+        truncateName &&
         (showName || showSteamId || showRole || showFlag),
     }"
   >
@@ -90,6 +101,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
           !player.steam_id ||
           (!showSteamId && !showRole) ||
           (!showName && !showFlag),
+        'min-w-0': truncateName,
       }"
       v-if="showFlag || showName || showSteamId || showRole"
     >
@@ -101,11 +113,18 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
             'text-sm': size === 'sm' && !compact,
             'text-lg': size === 'lg' && !compact,
             'text-xl': size === 'xl' && !compact,
+            'min-w-0': truncateName,
           }"
         >
-          <div class="flex items-center gap-2">
+          <div
+            class="flex items-center gap-2"
+            :class="{ 'min-w-0': truncateName }"
+          >
             <slot name="name-prefix"></slot>
-            <div class="flex items-center gap-2">
+            <div
+              class="flex items-center gap-2"
+              :class="{ 'min-w-0': truncateName }"
+            >
               <TimezoneFlag
                 :class="{ 'hidden md:block': compact, 'mt-1': !compact }"
                 v-if="showFlag"
@@ -115,6 +134,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 v-if="showName"
                 :class="{
                   'truncate max-w-[80px] sm:max-w-none': compact,
+                  'truncate min-w-0': truncateName,
                   'transition-colors group-hover/playerlink:text-[hsl(var(--tac-amber))]':
                     linkable,
                 }"
@@ -174,7 +194,11 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               }}</TooltipContent>
             </Tooltip>
           </div>
-          <div class="flex items-center gap-2" v-if="player.steam_id">
+          <div
+            class="flex items-center gap-2"
+            :class="{ 'min-h-[26px]': size !== 'xs' && !compact }"
+            v-if="player.steam_id"
+          >
             <FiveStackToolTip v-if="showRole && tooltip">
               <template #trigger>
                 <template v-if="isUser">
@@ -203,9 +227,6 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
                 {{ player?.role?.replace("_", " ") }}
               </span>
             </FiveStackToolTip>
-            <!-- Per-match Valve rank (match page): skill group for Competitive
-                 (7 legacy / 12 current) / Wingman (6), CS Rating for Premier
-                 (11). Falls back to the global premier rank / 5stack elo. -->
             <template v-if="showElo && matchRank">
               <PlayerSkillGroupRank
                 v-if="
@@ -325,6 +346,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    truncateName: {
+      type: Boolean,
+      default: false,
+    },
     alignTop: {
       type: Boolean,
       default: false,
@@ -337,15 +362,11 @@ export default {
       type: String,
       default: null,
     },
-    // External/imported match (Valve/Faceit history): never show the 5stack
-    // elo rank, even when no per-match CS2 rank is available.
     external: {
       type: Boolean,
       default: false,
     },
   },
-  // Per-match Valve ranks (steam_id -> { rankType, rank }) provided by the
-  // match page; absent everywhere else.
   inject: {
     matchRanks: { from: "matchRanks", default: null },
   },
@@ -382,8 +403,6 @@ export default {
         null
       );
     },
-    // This player's rank for the current match (when on the match page).
-    // Handles the injected value being a ref or a plain object.
     matchRank() {
       const inj: any = this.matchRanks;
       const map =

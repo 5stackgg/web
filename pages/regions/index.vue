@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import Pagination from "@/components/Pagination.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
-import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
+import {
+  tacticalCtaButtonClasses,
+  tacticalHeaderActionClasses,
+} from "~/utilities/tacticalClasses";
 import { Pencil, Trash, PlusCircle, Info } from "lucide-vue-next";
 import RegionForm from "~/components/regions/RegionForm.vue";
 import FivestackTooltip from "~/components/FiveStackToolTip.vue";
@@ -11,13 +14,17 @@ import { Card } from "~/components/ui/card";
 
 <template>
   <PageTransition :delay="0">
-    <TacticalPageHeader>
+    <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.regions.title") }}</template>
 
       <template #actions>
         <button
           type="button"
-          :class="[tacticalCtaButtonClasses, 'max-md:px-2.5 max-md:py-2']"
+          :class="[
+            tacticalCtaButtonClasses,
+            tacticalHeaderActionClasses,
+            'max-md:aspect-square max-md:!px-0',
+          ]"
           :title="$t('pages.regions.create')"
           @click="regionDialogOpen = true"
         >

@@ -6,7 +6,14 @@ import { useApolloClient } from "@vue/apollo-composable";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import Pagination from "~/components/Pagination.vue";
-import { Trophy, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-vue-next";
+import {
+  Trophy,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  SlidersHorizontal,
+  X,
+} from "lucide-vue-next";
 import {
   Select,
   SelectContent,
@@ -14,6 +21,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
+import { Button } from "~/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Switch } from "~/components/ui/switch";
@@ -270,6 +283,35 @@ const matchType = ref<string>(
 const excludeTournaments = ref(false);
 const roleFilter = ref<string>(readQueryParam("role", ROLE_OPTIONS, "all"));
 const supportsRole = computed(() => ROLE_CATEGORIES.has(category.value));
+
+// Mobile filter helpers — badge count + chip labels relative to defaults.
+const leaderboardFilterCount = computed(() => {
+  let n = 0;
+  if (windowDays.value !== "0") n++;
+  if (matchType.value !== "Competitive") n++;
+  if (excludeTournaments.value) n++;
+  if (supportsRole.value && roleFilter.value !== "all") n++;
+  return n;
+});
+const windowDaysLabel = computed(
+  () =>
+    ({
+      "0": t("pages.leaderboard.time_periods.all_time"),
+      "7": t("pages.leaderboard.time_periods.last_7_days"),
+      "30": t("pages.leaderboard.time_periods.last_30_days"),
+    })[windowDays.value],
+);
+const matchTypeLabel = computed(() =>
+  t(
+    `pages.leaderboard.match_types.${
+      matchType.value === "all" ? "all" : matchType.value.toLowerCase()
+    }`,
+  ),
+);
+const roleLabel = computed(() =>
+  t(`pages.leaderboard.roles.${roleFilter.value}`),
+);
+
 const entries = ref<LeaderboardEntry[]>([]);
 const total = ref(0);
 const page = ref(1);
@@ -603,10 +645,27 @@ onMounted(() => {
 
 <template>
   <PageTransition>
-    <TacticalPageHeader>
+    <TacticalPageHeader stack-actions>
       <template #title>{{ $t("pages.leaderboard.title") }}</template>
       <template #actions="{ tabs }">
-        <Tabs v-model="category">
+        <Select v-model="category">
+          <SelectTrigger
+            class="w-full min-w-0 md:hidden"
+            :aria-label="$t('pages.leaderboard.title')"
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem
+              v-for="cat in categories"
+              :key="cat.value"
+              :value="cat.value"
+            >
+              {{ $t(`pages.leaderboard.categories.${cat.value}`) }}
+            </SelectItem>
+          </SelectContent>
+        </Select>
+        <Tabs v-model="category" class="hidden md:block">
           <TabsList variant="underline" :class="tabs.listClass">
             <TabsTrigger
               v-for="cat in categories"
@@ -625,16 +684,18 @@ onMounted(() => {
   <!-- Compact filter bar -->
   <PageTransition :delay="100" class="mt-6">
     <div
-      class="flex flex-wrap items-center gap-2 p-2 rounded-lg bg-card/40 backdrop-blur border border-border"
+      class="rounded-lg bg-card/40 backdrop-blur border border-border p-2"
     >
-      <div
-        class="flex items-center gap-2 px-2 text-[0.65rem] font-mono tracking-[0.22em] uppercase text-muted-foreground"
-      >
-        <span
-          class="inline-block h-[2px] w-2 bg-[hsl(var(--tac-amber))]"
-        ></span>
-        {{ $t("common.filters") }}
-      </div>
+      <!-- Desktop: inline filter row -->
+      <div class="hidden md:flex flex-wrap items-center gap-2">
+        <div
+          class="flex items-center gap-2 px-2 text-[0.65rem] font-mono tracking-[0.22em] uppercase text-muted-foreground"
+        >
+          <span
+            class="inline-block h-[2px] w-2 bg-[hsl(var(--tac-amber))]"
+          ></span>
+          {{ $t("common.filters") }}
+        </div>
 
       <Select v-model="windowDays">
         <SelectTrigger class="h-9 w-[180px]">
@@ -705,6 +766,172 @@ onMounted(() => {
           class="ml-1 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
           @click.stop
         />
+      </div>
+      </div>
+
+      <!-- Mobile: collapse filters behind a Filters button + chips -->
+      <div class="md:hidden space-y-3">
+        <Popover>
+          <PopoverTrigger as-child>
+            <Button
+              variant="outline"
+              class="h-11 w-full justify-center gap-2 bg-card/60 backdrop-blur"
+              :class="{
+                'border-[hsl(var(--tac-amber)/0.55)] text-[hsl(var(--tac-amber))]':
+                  leaderboardFilterCount > 0,
+              }"
+            >
+              <SlidersHorizontal class="w-4 h-4" />
+              <span>{{ $t("common.filters") }}</span>
+              <span
+                v-if="leaderboardFilterCount > 0"
+                class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full text-[0.65rem] font-semibold bg-[hsl(var(--tac-amber)/0.2)] text-[hsl(var(--tac-amber))] border border-[hsl(var(--tac-amber)/0.45)]"
+              >
+                {{ leaderboardFilterCount }}
+              </span>
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            align="start"
+            class="w-[min(92vw,420px)] p-4 space-y-4"
+          >
+            <div class="space-y-2">
+              <span
+                class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
+              >
+                {{ $t("common.date") }}
+              </span>
+              <Select v-model="windowDays">
+                <SelectTrigger class="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="7">{{
+                    $t("pages.leaderboard.time_periods.last_7_days")
+                  }}</SelectItem>
+                  <SelectItem value="30">{{
+                    $t("pages.leaderboard.time_periods.last_30_days")
+                  }}</SelectItem>
+                  <SelectItem value="0">{{
+                    $t("pages.leaderboard.time_periods.all_time")
+                  }}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div class="space-y-2">
+              <span
+                class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
+              >
+                {{ $t("pages.leaderboard.match_types.all") }}
+              </span>
+              <Select v-model="matchType">
+                <SelectTrigger class="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{{
+                    $t("pages.leaderboard.match_types.all")
+                  }}</SelectItem>
+                  <SelectItem value="Competitive">{{
+                    $t("pages.leaderboard.match_types.competitive")
+                  }}</SelectItem>
+                  <SelectItem value="Wingman">{{
+                    $t("pages.leaderboard.match_types.wingman")
+                  }}</SelectItem>
+                  <SelectItem value="Duel">{{
+                    $t("pages.leaderboard.match_types.duel")
+                  }}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div v-if="supportsRole" class="space-y-2">
+              <span
+                class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-muted-foreground"
+              >
+                {{ $t("pages.leaderboard.roles.all") }}
+              </span>
+              <Select v-model="roleFilter">
+                <SelectTrigger class="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="opt of ROLE_OPTIONS"
+                    :key="opt"
+                    :value="opt"
+                  >
+                    {{ $t(`pages.leaderboard.roles.${opt}`) }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div
+              class="flex h-11 cursor-pointer items-center gap-2 rounded-md border px-3 text-sm transition-colors duration-150"
+              :class="
+                excludeTournaments
+                  ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
+                  : 'border-border bg-muted/30 text-muted-foreground'
+              "
+              @click="toggleExcludeTournaments"
+            >
+              <Trophy class="h-4 w-4 shrink-0" />
+              <span class="truncate">{{
+                $t("pages.leaderboard.exclude_tournaments")
+              }}</span>
+              <Switch
+                v-model="excludeTournaments"
+                class="ml-auto shrink-0 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
+                @click.stop
+              />
+            </div>
+          </PopoverContent>
+        </Popover>
+
+        <div
+          v-if="leaderboardFilterCount > 0"
+          class="flex flex-wrap items-center gap-2"
+        >
+          <button
+            v-if="windowDays !== '0'"
+            type="button"
+            class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
+            @click="windowDays = '0'"
+          >
+            {{ windowDaysLabel }}
+            <X class="h-3 w-3 opacity-70" />
+          </button>
+          <button
+            v-if="matchType !== 'Competitive'"
+            type="button"
+            class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
+            @click="matchType = 'Competitive'"
+          >
+            {{ matchTypeLabel }}
+            <X class="h-3 w-3 opacity-70" />
+          </button>
+          <button
+            v-if="supportsRole && roleFilter !== 'all'"
+            type="button"
+            class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
+            @click="roleFilter = 'all'"
+          >
+            {{ roleLabel }}
+            <X class="h-3 w-3 opacity-70" />
+          </button>
+          <button
+            v-if="excludeTournaments"
+            type="button"
+            class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
+            @click="toggleExcludeTournaments"
+          >
+            <Trophy class="h-3 w-3" />
+            {{ $t("pages.leaderboard.exclude_tournaments") }}
+            <X class="h-3 w-3 opacity-70" />
+          </button>
+        </div>
       </div>
     </div>
   </PageTransition>

@@ -8,8 +8,6 @@ import {
 import MiniMapDisplay from "~/components/MinIMapDisplay.vue";
 import { useI18n } from "vue-i18n";
 
-// Compact on/off status chip with an indicator dot — reads like a config
-// readout rather than a plain "Yes/No".
 const { t } = useI18n();
 const BooleanPill = defineComponent({
   props: { value: { type: Boolean, default: false } },
@@ -266,9 +264,6 @@ export default {
 </script>
 
 <style scoped>
-/* Reflow by the grid's own available width (not the viewport — the sidebar
-   shrinks the container independently). Two columns by default, snapping to a
-   single row of four only once there's genuine room. Never an awkward 3-up. */
 .settings-grid-wrap {
   container-type: inline-size;
 }

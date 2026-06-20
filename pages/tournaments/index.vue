@@ -9,6 +9,7 @@ import {
   ChevronDown,
   PlusCircle,
   Search,
+  SlidersHorizontal,
   X,
 } from "lucide-vue-next";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
@@ -32,6 +33,7 @@ import RecentTournaments from "~/components/tournament/RecentTournaments.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import {
   tacticalCtaButtonClasses,
+  tacticalHeaderActionClasses,
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
@@ -335,13 +337,17 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
 
 <template>
   <PageTransition>
-    <TacticalPageHeader>
+    <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.tournaments.title") }}</template>
       <template #actions>
         <NuxtLink
           v-if="canCreateTournament"
           to="/tournaments/create"
-          :class="[tacticalCtaButtonClasses, 'max-lg:px-2.5 max-lg:py-2']"
+          :class="[
+            tacticalCtaButtonClasses,
+            tacticalHeaderActionClasses,
+            'max-lg:aspect-square max-lg:!px-0',
+          ]"
           :title="$t('pages.tournaments.create')"
         >
           <PlusCircle class="w-4 h-4" />
@@ -361,60 +367,39 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
         '[box-shadow:0_0_0_1px_hsl(var(--tac-amber)/0.18),0_0_28px_-14px_hsl(var(--tac-amber)/0.5)]'
       "
     >
-      <!-- Trigger row — each filter opens a self-contained popover. -->
-      <div class="flex flex-wrap items-center gap-1.5">
-        <span
-          :class="tacticalSectionTickClasses"
-          class="mr-1 hidden shrink-0 sm:inline-block"
-        />
+      <!-- Primary bar: name search + status inline, the rest behind Filters. -->
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Name search (always visible) -->
+        <div class="relative min-w-[12rem] flex-1">
+          <Search
+            class="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60"
+          />
+          <Input
+            :model-value="searchInput"
+            @update:model-value="onSearchInput"
+            @keydown.enter.prevent="commitSearch"
+            :placeholder="$t('pages.tournaments.filter.search_placeholder')"
+            class="h-9 pl-8 pr-8 text-sm"
+          />
+          <button
+            v-if="searchInput"
+            type="button"
+            @click="clearSearch"
+            class="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            :aria-label="$t('common.reset_filters')"
+          >
+            <X class="h-3.5 w-3.5" />
+          </button>
+        </div>
 
-        <!-- Search -->
+        <!-- Status (always visible) -->
         <Popover>
           <PopoverTrigger as-child>
             <button
               type="button"
               :class="[
                 filterTriggerBase,
-                nameQuery ? filterTriggerActive : filterTriggerIdle,
-              ]"
-            >
-              <Search class="h-3.5 w-3.5" />
-              {{ $t("common.search") }}
-              <ChevronDown class="h-3 w-3 opacity-50" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent align="start" class="w-72 p-2">
-            <div class="relative">
-              <Search
-                class="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60"
-              />
-              <Input
-                :model-value="searchInput"
-                @update:model-value="onSearchInput"
-                @keydown.enter.prevent="commitSearch"
-                :placeholder="$t('pages.tournaments.filter.search_placeholder')"
-                class="h-9 pl-8 pr-8 text-sm"
-              />
-              <button
-                v-if="searchInput"
-                type="button"
-                @click="clearSearch"
-                class="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                :aria-label="$t('common.reset_filters')"
-              >
-                <X class="h-3.5 w-3.5" />
-              </button>
-            </div>
-          </PopoverContent>
-        </Popover>
-
-        <!-- Status -->
-        <Popover>
-          <PopoverTrigger as-child>
-            <button
-              type="button"
-              :class="[
-                filterTriggerBase,
+                'h-9',
                 statusFilter !== 'all'
                   ? filterTriggerActive
                   : filterTriggerIdle,
@@ -448,28 +433,34 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
           </PopoverContent>
         </Popover>
 
-        <!-- Since -->
+        <!-- Filters (the rest: date) -->
         <Popover>
           <PopoverTrigger as-child>
             <button
               type="button"
               :class="[
                 filterTriggerBase,
+                'h-9',
                 sinceFilter !== 'all' ? filterTriggerActive : filterTriggerIdle,
               ]"
             >
-              <Calendar class="h-3.5 w-3.5" />
-              {{ $t("common.date") }}
+              <SlidersHorizontal class="h-3.5 w-3.5" />
+              {{ $t("common.filters") }}
               <span
                 v-if="sinceFilter !== 'all'"
-                class="font-sans text-[0.6rem] font-bold normal-case tracking-normal text-[hsl(var(--tac-amber))]"
+                class="inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[hsl(var(--tac-amber)/0.25)] px-1 font-sans text-[0.6rem] font-bold leading-none text-[hsl(var(--tac-amber))]"
               >
-                {{ currentSinceLabel }}
+                1
               </span>
               <ChevronDown class="h-3 w-3 opacity-50" />
             </button>
           </PopoverTrigger>
-          <PopoverContent align="start" class="w-44 p-1">
+          <PopoverContent align="end" class="w-52 p-2 space-y-1">
+            <span
+              class="block px-1 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground"
+            >
+              {{ $t("common.date") }}
+            </span>
             <button
               v-for="opt in sinceOptions"
               :key="opt.value"

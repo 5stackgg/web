@@ -14,14 +14,13 @@ import {
 } from "~/components/ui/popover";
 import { Calendar } from "~/components/ui/calendar";
 import { Calendar as CalendarIcon, X } from "lucide-vue-next";
+import SettingHeader from "~/components/match/SettingHeader.vue";
 </script>
 
 <template>
   <div class="space-y-3">
     <div class="flex flex-col gap-1">
-      <div class="flex justify-between items-center text-sm font-medium">
-        <span>{{ $t("match.schedule.schedule") }}</span>
-      </div>
+      <SettingHeader>{{ $t("match.schedule.schedule") }}</SettingHeader>
       <p class="text-xs text-muted-foreground">
         <template v-if="!form.values.scheduled_at">
           {{ $t("match.start_now_or_schedule") }}
@@ -82,7 +81,7 @@ import { Calendar as CalendarIcon, X } from "lucide-vue-next";
 
               <!-- Schedule Button Row -->
               <div class="flex items-center gap-2">
-                <Button type="submit" size="sm" class="w-full" :loading="submitting">
+                <Button type="submit" variant="tactical" size="sm" class="w-full" :loading="submitting">
                   <span v-if="!form.values.scheduled_at">
                     {{ $t("match.schedule.start_match") }}
                   </span>

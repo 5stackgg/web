@@ -17,6 +17,8 @@ export const buttonVariants = cva(
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        tactical:
+          "bg-[hsl(var(--tac-amber))] text-[hsl(var(--tac-amber-foreground))] font-bold uppercase tracking-[0.18em] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_6px_16px_-6px_hsl(var(--tac-amber)/0.5)] hover:bg-[hsl(var(--tac-amber)/0.9)]",
       },
       size: {
         "default": "h-9 px-4 py-2",

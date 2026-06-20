@@ -11,6 +11,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import MatchOptions from "~/components/MatchOptions.vue";
+import SettingHeader from "~/components/match/SettingHeader.vue";
 </script>
 
 <template>
@@ -87,9 +88,9 @@ import MatchOptions from "~/components/MatchOptions.vue";
             @click="handleChange(!value)"
           >
             <div class="space-y-0.5">
-              <FormLabel class="text-lg font-semibold">{{
+              <SettingHeader>{{
                 $t("tournament.form.auto_start.label")
-              }}</FormLabel>
+              }}</SettingHeader>
               <FormDescription>{{
                 $t("tournament.form.auto_start.description")
               }}</FormDescription>
@@ -116,9 +117,9 @@ import MatchOptions from "~/components/MatchOptions.vue";
             >
               <div class="flex flex-col space-y-3 p-4">
                 <div class="flex justify-between items-center">
-                  <FormLabel class="text-lg font-semibold">{{
+                  <SettingHeader>{{
                     $t("tournament.form.discord_notifications")
-                  }}</FormLabel>
+                  }}</SettingHeader>
                   <FormControl>
                     <Switch
                       class="pointer-events-none"

@@ -315,9 +315,14 @@ export default {
       type: String,
       required: true,
       validator: (value: string) =>
-        ["match", "team", "matchmaking", "organizers", "tournament"].includes(
-          value,
-        ),
+        [
+          "match",
+          "team",
+          "matchmaking",
+          "organizers",
+          "tournament",
+          "draft",
+        ].includes(value),
     },
     global: {
       type: Boolean,

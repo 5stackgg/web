@@ -21,6 +21,7 @@ const props = defineProps<{
   form?: any;
   dirty?: boolean;
   submitting?: boolean;
+  contained?: boolean;
 }>();
 
 const emit = defineEmits<{ (e: "save"): void; (e: "discard"): void }>();
@@ -118,7 +119,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
 </script>
 
 <template>
-  <Teleport to="body">
+  <Teleport to="body" :disabled="contained">
     <Transition
       enter-active-class="transition duration-300 ease-out"
       enter-from-class="opacity-0 translate-y-8"
@@ -131,15 +132,21 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
       <div
         v-if="dirty"
         ref="barRef"
-        class="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-[max(1rem,env(safe-area-inset-bottom))]"
+        class="pointer-events-none flex justify-center"
+        :class="
+          contained
+            ? 'sticky inset-x-0 bottom-0 z-20 px-1 pb-1 pt-2'
+            : 'fixed inset-x-0 bottom-0 z-50 px-4 pb-[max(1rem,env(safe-area-inset-bottom))]'
+        "
       >
         <div
-          class="save-bar pointer-events-auto flex w-full max-w-xl items-center gap-3 rounded-2xl border px-3 py-2.5 backdrop-blur-xl sm:gap-4 sm:px-4"
-          :class="
+          class="save-bar pointer-events-auto flex w-full items-center gap-3 rounded-2xl border px-3 py-2.5 backdrop-blur-xl sm:gap-4 sm:px-4"
+          :class="[
+            contained ? '' : 'max-w-xl',
             hasErrors
               ? 'border-destructive/40 shadow-[0_0_0_1px_hsl(var(--destructive)/0.15),0_18px_40px_-12px_hsl(var(--destructive)/0.4),0_8px_24px_-8px_rgba(0,0,0,0.6)]'
-              : 'border-[hsl(var(--tac-amber)/0.4)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.15),0_18px_40px_-12px_hsl(var(--tac-amber)/0.5),0_8px_24px_-8px_rgba(0,0,0,0.6)]'
-          "
+              : 'border-[hsl(var(--tac-amber)/0.4)] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.15),0_18px_40px_-12px_hsl(var(--tac-amber)/0.5),0_8px_24px_-8px_rgba(0,0,0,0.6)]',
+          ]"
         >
           <!-- live status indicator -->
           <span

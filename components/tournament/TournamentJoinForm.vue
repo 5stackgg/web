@@ -6,6 +6,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormSection,
 } from "~/components/ui/form";
 import { Switch } from "~/components/ui/switch";
 import { MessageCircleWarning } from "lucide-vue-next";
@@ -33,9 +34,7 @@ import { Card } from "~/components/ui/card";
         >
           <div class="flex flex-row items-center justify-between p-4">
             <div class="space-y-0.5">
-              <FormLabel class="text-base">{{
-                $t("tournament.team.new")
-              }}</FormLabel>
+              <FormLabel>{{ $t("tournament.team.new") }}</FormLabel>
             </div>
             <FormControl>
               <Switch
@@ -62,7 +61,7 @@ import { Card } from "~/components/ui/card";
           >
             <div class="flex flex-row items-center justify-between p-4">
               <div class="space-y-0.5">
-                <FormLabel class="text-base">{{
+                <FormLabel>{{
                   $t("tournament.join.add_self_to_lineup")
                 }}</FormLabel>
               </div>
@@ -109,30 +108,35 @@ import { Card } from "~/components/ui/card";
       </FormField>
     </template>
     <template v-else>
-      <FormField v-slot="{ componentField, meta }" name="team_name">
-        <FormItem>
-          <FormLabel>{{ $t("common.team_name") }}</FormLabel>
-          <Input v-bind="componentField"></Input>
-          <FormMessage v-if="meta.touched" />
-        </FormItem>
-      </FormField>
+      <FormSection :title="$t('team.form.identity')">
+        <div class="space-y-5">
+          <FormField v-slot="{ componentField, meta }" name="team_name">
+            <FormItem>
+              <FormLabel>{{ $t("common.team_name") }}</FormLabel>
+              <Input v-bind="componentField"></Input>
+              <FormMessage v-if="meta.touched" />
+            </FormItem>
+          </FormField>
 
-      <FormField v-slot="{ componentField, meta }" name="short_name">
-        <FormItem>
-          <FormLabel>{{ $t("team.form.short_name") }}</FormLabel>
-          <Input
-            v-bind="componentField"
-            :placeholder="$t('team.form.short_name_placeholder')"
-            maxlength="5"
-            class="uppercase tracking-[0.15em] font-mono"
-            @input="autoShortName = false"
-          ></Input>
-          <FormMessage v-if="meta.touched" />
-        </FormItem>
-      </FormField>
+          <FormField v-slot="{ componentField, meta }" name="short_name">
+            <FormItem>
+              <FormLabel>{{ $t("team.form.short_name") }}</FormLabel>
+              <Input
+                v-bind="componentField"
+                :placeholder="$t('team.form.short_name_placeholder')"
+                maxlength="5"
+                class="uppercase tracking-[0.15em] font-mono"
+                @input="autoShortName = false"
+              ></Input>
+              <FormMessage v-if="meta.touched" />
+            </FormItem>
+          </FormField>
+        </div>
+      </FormSection>
     </template>
 
     <Button
+      variant="tactical"
       type="submit"
       :loading="submitting"
       :disabled="

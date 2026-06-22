@@ -30,6 +30,10 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
         path: "/settings/application/players",
         labelKey: "pages.players.title",
       },
+      {
+        path: "/settings/application/news",
+        labelKey: "pages.settings.application.news.title",
+      },
     ],
   },
   {

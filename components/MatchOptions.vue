@@ -2,7 +2,7 @@
 import MapDisplay from "~/components/MapDisplay.vue";
 import { FormControl } from "~/components/ui/form";
 import { Separator } from "~/components/ui/separator";
-import { Info } from "lucide-vue-next";
+import { Info, ExternalLink } from "lucide-vue-next";
 import {
   Check,
   ChevronsUpDown,
@@ -11,14 +11,12 @@ import {
   SettingsIcon,
   Search,
 } from "lucide-vue-next";
-import {
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from "~/components/ui/collapsible";
+import { Collapsible, CollapsibleTrigger } from "~/components/ui/collapsible";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import FiveStackToolTip from "./FiveStackToolTip.vue";
 import RegionStatusDot from "~/components/regions/RegionStatusDot.vue";
 import { Card } from "~/components/ui/card";
+import SettingHeader from "~/components/match/SettingHeader.vue";
 </script>
 
 <template>
@@ -39,120 +37,137 @@ import { Card } from "~/components/ui/card";
               v-if="!stageBracketOverride"
             >
               <FormItem>
-                <FormLabel class="text-lg font-semibold">{{
+                <SettingHeader>{{
                   $t("match.options.type.label")
-                }}</FormLabel>
-                <RadioGroup
-                  v-bind="componentField"
-                  class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full"
+                }}</SettingHeader>
+                <AnimatedFilters
+                  :model-value="componentField.modelValue"
+                  :options="
+                    selectableMatchTypes.map((type) => ({
+                      key: type.value,
+                      label: type.value,
+                      disabled: isLocked,
+                    }))
+                  "
+                  square
+                  size="lg"
+                  block
+                  @update:model-value="
+                    (value) => !isLocked && form.setFieldValue('type', value)
+                  "
+                />
+                <p
+                  v-if="selectedTypeDescription"
+                  class="mt-1.5 text-[0.78rem] leading-snug text-muted-foreground"
                 >
-                  <div
-                    v-for="type in selectableMatchTypes"
-                    :key="type.value"
-                    class="flex items-center space-x-2 p-8 cursor-pointer"
-                    :class="{ 'cursor-not-allowed opacity-60': isLocked }"
-                    @click="!isLocked && form.setFieldValue('type', type.value)"
-                  >
-                    <RadioGroupItem
-                      :id="type.value"
-                      :value="type.value"
-                      :disabled="isLocked"
-                    />
-                    <Label
-                      :for="type.value"
-                      class="flex flex-col cursor-pointer"
-                    >
-                      <span>{{ type.value }}</span>
-                      <span class="text-xs text-muted-foreground">
-                        {{ type.description }}
-                      </span>
-                    </Label>
-                  </div>
-                </RadioGroup>
-                <FormMessage />
-              </FormItem>
-            </FormField>
-
-            <FormField
-              v-if="!hideBestOf"
-              v-slot="{ componentField }"
-              name="best_of"
-            >
-              <FormItem>
-                <FormLabel class="text-lg font-semibold">{{
-                  $t("match.options.best_of.label")
-                }}</FormLabel>
-                <FormDescription>
-                  {{ $t("match.options.best_of.description") }}
-                </FormDescription>
-                <Select v-bind="componentField" :disabled="isLocked">
-                  <FormControl>
-                    <SelectTrigger :disabled="isLocked">
-                      <SelectValue
-                        :placeholder="$t('match.options.best_of.placeholder')"
-                      />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem
-                        :value="bestOf.value"
-                        v-for="bestOf in bestOfOptions"
-                        :key="bestOf.value"
-                        :disabled="isLocked"
-                      >
-                        {{ bestOf.display }}
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                  {{ selectedTypeDescription }}
+                </p>
                 <FormMessage />
               </FormItem>
             </FormField>
           </div>
         </Card>
-
-        <FormField
-          v-slot="{ value, handleChange }"
-          name="map_veto"
-          v-if="!forceVeto && !stageBracketOverride"
-        >
-          <FormItem>
-            <Card
-              class="cursor-pointer"
-              :class="{ 'cursor-not-allowed opacity-60': isLocked }"
-              @click="!isLocked && handleChange(!value)"
-            >
-              <div class="flex flex-col space-y-3 p-4">
-                <div class="flex justify-between items-center">
-                  <FormLabel class="text-lg font-semibold">{{
-                    $t("common.map_veto")
-                  }}</FormLabel>
-                  <FormControl>
-                    <Switch
-                      class="pointer-events-none"
-                      :model-value="value"
-                      @update:model-value="handleChange"
-                      :disabled="isLocked"
-                    />
-                  </FormControl>
-                </div>
-                <FormDescription>
-                  {{ $t("match.options.map_veto_settings.description") }}
-                </FormDescription>
-              </div>
-            </Card>
-          </FormItem>
-        </FormField>
       </div>
 
-      <!-- Map Pool Selection -->
       <FormField name="map_pool" v-if="!stageBracketOverride">
         <FormItem>
           <Card>
             <div class="p-6 space-y-6">
-              <div class="flex justify-between items-center">
-                <FormLabel class="text-lg font-semibold">
+              <div
+                class="grid gap-6"
+                :class="hideBestOf ? 'sm:grid-cols-1' : 'sm:grid-cols-2'"
+              >
+                <FormField
+                  v-if="!hideBestOf"
+                  v-slot="{ componentField }"
+                  name="best_of"
+                >
+                  <FormItem class="space-y-2">
+                    <SettingHeader>{{
+                      $t("match.options.best_of.label")
+                    }}</SettingHeader>
+                    <FormDescription>
+                      {{ $t("match.options.best_of.description") }}
+                    </FormDescription>
+                    <Select v-bind="componentField" :disabled="isLocked">
+                      <FormControl>
+                        <SelectTrigger class="w-full" :disabled="isLocked">
+                          <SelectValue
+                            :placeholder="
+                              $t('match.options.best_of.placeholder')
+                            "
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectItem
+                            :value="bestOf.value"
+                            v-for="bestOf in bestOfOptions"
+                            :key="bestOf.value"
+                            :disabled="isLocked"
+                          >
+                            {{ bestOf.display }}
+                          </SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+
+                <FormField v-slot="{ value, handleChange }" name="map_veto">
+                  <FormItem
+                    class="space-y-2"
+                    :class="
+                      forceVeto
+                        ? ''
+                        : isLocked
+                          ? 'cursor-not-allowed opacity-60'
+                          : 'cursor-pointer'
+                    "
+                    @click="!forceVeto && !isLocked && handleChange(!value)"
+                  >
+                    <div class="flex items-center justify-between gap-4">
+                      <SettingHeader>{{ $t("common.map_veto") }}</SettingHeader>
+                      <FormControl v-if="!forceVeto">
+                        <Switch
+                          class="pointer-events-none"
+                          :model-value="value"
+                          @update:model-value="handleChange"
+                          :disabled="isLocked"
+                        />
+                      </FormControl>
+                    </div>
+                    <FormDescription class="space-y-1">
+                      <span class="block min-h-[2.5rem]">
+                        {{
+                          value
+                            ? $t("match.options.map_veto_settings.short_on")
+                            : $t("match.options.map_veto_settings.short_off")
+                        }}
+                      </span>
+                      <a
+                        href="https://docs.5stack.gg/features/map-veto"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center gap-0.5 text-[hsl(var(--tac-amber))] underline underline-offset-2 hover:text-[hsl(var(--tac-amber)/0.8)]"
+                        @click.stop
+                      >
+                        {{ $t("match.options.map_veto_settings.learn_more") }}
+                        <ExternalLink class="h-3 w-3" />
+                      </a>
+                    </FormDescription>
+                  </FormItem>
+                </FormField>
+              </div>
+
+              <div
+                class="flex items-center justify-between gap-4 border-t border-border pt-4"
+              >
+                <div
+                  class="font-mono text-[0.7rem] tracking-[0.22em] uppercase text-muted-foreground"
+                >
                   <template v-if="form.values.map_veto">
                     <template v-if="form.values.custom_map_pool">
                       {{ $t("match.options.map_veto_settings.custom_pool") }}
@@ -162,8 +177,18 @@ import { Card } from "~/components/ui/card";
                       $t("match.options.map_veto_settings.active_duty")
                     }}</template>
                   </template>
-                  <template v-else>{{ $t("maps.veto.pick") }}</template>
-                </FormLabel>
+                  <template v-else>
+                    {{ $t("maps.veto.pick") }}
+                    <span
+                      v-if="Number(form.values.best_of) > 1"
+                      class="ml-1 tracking-normal normal-case text-muted-foreground/70"
+                    >
+                      · {{ form.values.map_pool?.length || 0 }}/{{
+                        form.values.best_of
+                      }}
+                    </span>
+                  </template>
+                </div>
                 <div v-show="form.values.map_veto">
                   <FormField
                     v-slot="{ value, handleChange }"
@@ -171,7 +196,9 @@ import { Card } from "~/components/ui/card";
                   >
                     <FormControl>
                       <div class="flex items-center justify-end w-full gap-2">
-                        <span class="text-muted-foreground flex items-center">
+                        <span
+                          class="text-muted-foreground flex items-center text-sm"
+                        >
                           <FiveStackToolTip>
                             <template #trigger>
                               <div class="flex items-center gap-1">
@@ -200,85 +227,110 @@ import { Card } from "~/components/ui/card";
                   </FormField>
                 </div>
               </div>
-              <div class="space-y-6">
-                <div
-                  class="flex items-center justify-between"
-                  v-if="form.values.custom_map_pool"
-                >
-                  <div class="relative w-full">
-                    <Input
-                      v-model="filterMaps"
-                      type="text"
-                      :placeholder="$t('match.options.filter_maps')"
-                      class="pl-10"
-                      :readonly="isLocked"
-                      :disabled="isLocked"
-                    />
-                    <Search
-                      class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
-                    />
+              <div>
+                <Transition name="collapse">
+                  <div
+                    v-if="form.values.custom_map_pool"
+                    class="grid grid-rows-[1fr]"
+                  >
+                    <div class="overflow-hidden">
+                      <div class="flex items-center justify-between pb-6">
+                        <div class="relative w-full">
+                          <Input
+                            v-model="filterMaps"
+                            type="text"
+                            :placeholder="$t('match.options.filter_maps')"
+                            class="pl-10"
+                            :readonly="isLocked"
+                            :disabled="isLocked"
+                          />
+                          <Search
+                            class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5"
+                          />
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                </Transition>
 
-                <template
-                  v-for="(maps, type) in {
-                    [$t('maps.official')]: availableMaps.official,
-                    [$t('maps.workshop')]: availableMaps.workshop,
-                  }"
-                  :key="type"
-                >
-                  <div v-if="maps && maps.length > 0">
-                    <Separator
-                      v-if="type === 'Workshop Maps'"
-                      class="text-2xl font-bold mb-4 text-center my-8"
-                      :label="type"
-                    ></Separator>
+                <div class="relative">
+                  <Transition name="map-swap">
+                    <div
+                      :key="`${form.values.type}-${!!form.values.custom_map_pool}`"
+                      class="space-y-6"
+                    >
+                      <template
+                        v-for="(maps, type) in {
+                          [$t('maps.official')]: availableMaps.official,
+                          [$t('maps.workshop')]: availableMaps.workshop,
+                        }"
+                        :key="type"
+                      >
+                        <div v-if="maps && maps.length > 0">
+                          <Separator
+                            v-if="type === 'Workshop Maps'"
+                            class="text-2xl font-bold mb-4 text-center my-8"
+                            :label="type"
+                          ></Separator>
 
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <template v-for="map in maps" :key="map.id">
-                        <div
-                          class="relative rounded-lg overflow-hidden transition-all duration-200 ease-in-out"
-                          @click="!isLocked && updateMapPool(map.id)"
-                          :class="{
-                            'opacity-40':
-                              form.values.custom_map_pool &&
-                              !form.values.map_pool?.includes(map.id),
-                            'cursor-pointer transform hover:scale-105':
-                              form.values.custom_map_pool,
-                          }"
-                        >
-                          <MapDisplay class="h-[150px]" :map="map">
-                            <template v-slot:default v-if="map.active_pool">
-                              <div class="absolute bottom-1">
-                                <Badge variant="secondary" class="text-xs">{{
-                                  $t("maps.active_duty")
-                                }}</Badge>
-                              </div>
-                            </template>
-                          </MapDisplay>
-                          <div
-                            v-if="
-                              !form.values.map_veto &&
-                              Number(form.values.best_of) > 1 &&
-                              form.values.map_pool?.includes(map.id)
-                            "
-                            class="absolute top-1 left-1"
+                          <TransitionGroup
+                            name="map"
+                            tag="div"
+                            class="relative grid grid-cols-2 md:grid-cols-4 gap-4"
                           >
-                            <Badge
-                              variant="secondary"
-                              class="rounded-full w-6 h-6 flex items-center justify-center"
+                            <div
+                              v-for="map in maps"
+                              :key="map.id"
+                              class="relative rounded-lg overflow-hidden transition duration-200 ease-in-out"
+                              @click="!isLocked && updateMapPool(map.id)"
+                              :class="{
+                                'opacity-40':
+                                  form.values.custom_map_pool &&
+                                  !form.values.map_pool?.includes(map.id),
+                                'cursor-pointer transform hover:scale-105':
+                                  form.values.custom_map_pool,
+                              }"
                             >
-                              {{ form.values.map_pool.indexOf(map.id) + 1 }}
-                            </Badge>
-                          </div>
-                          <div
-                            class="absolute inset-0 flex items-center justify-center bg-opacity-40 transition-opacity duration-200"
-                          ></div>
+                              <MapDisplay class="h-[150px]" :map="map">
+                                <template v-slot:default v-if="map.active_pool">
+                                  <div class="absolute bottom-1">
+                                    <Badge
+                                      variant="secondary"
+                                      class="text-xs"
+                                      >{{ $t("maps.active_duty") }}</Badge
+                                    >
+                                  </div>
+                                </template>
+                              </MapDisplay>
+                              <Transition name="map-badge">
+                                <div
+                                  v-if="
+                                    !form.values.map_veto &&
+                                    Number(form.values.best_of) > 1 &&
+                                    form.values.map_pool?.includes(map.id)
+                                  "
+                                  class="absolute top-1 left-1"
+                                >
+                                  <Badge
+                                    variant="secondary"
+                                    class="rounded-full w-6 h-6 flex items-center justify-center"
+                                  >
+                                    {{
+                                      form.values.map_pool.indexOf(map.id) + 1
+                                    }}
+                                  </Badge>
+                                </div>
+                              </Transition>
+                              <div
+                                class="absolute inset-0 flex items-center justify-center bg-opacity-40 transition-opacity duration-200"
+                              ></div>
+                            </div>
+                          </TransitionGroup>
                         </div>
                       </template>
                     </div>
-                  </div>
-                </template>
+                  </Transition>
+                </div>
               </div>
             </div>
           </Card>
@@ -296,7 +348,7 @@ import { Card } from "~/components/ui/card";
           @click="handleChange(!value)"
         >
           <div class="flex justify-between items-center">
-            <FormLabel class="text-lg font-semibold">{{ $t("match.options.allow_coaches") }}</FormLabel>
+            <SettingHeader>{{ $t("match.options.allow_coaches") }}</SettingHeader>
             <FormControl>
               <Switch
                 class="pointer-events-none"
@@ -347,7 +399,13 @@ import { Card } from "~/components/ui/card";
           </div>
         </CollapsibleTrigger>
 
-        <CollapsibleContent>
+        <div
+          ref="advWrapRef"
+          class="adv-collapse"
+          :style="{ height: advHeight }"
+          :inert="!showAdvancedSettings"
+          :aria-hidden="!showAdvancedSettings"
+        >
           <div class="flex flex-col gap-4">
             <Card>
               <div class="p-4 space-y-6">
@@ -359,9 +417,9 @@ import { Card } from "~/components/ui/card";
                       @click="handleChange(!value)"
                     >
                       <div class="space-y-0.5">
-                        <FormLabel class="text-lg font-semibold">{{
+                        <SettingHeader>{{
                           $t("match.options.advanced.overtime.label")
-                        }}</FormLabel>
+                        }}</SettingHeader>
                         <FormDescription>
                           {{
                             $t("match.options.advanced.overtime.description")
@@ -386,9 +444,9 @@ import { Card } from "~/components/ui/card";
                       @click="handleChange(!value)"
                     >
                       <div class="space-y-0.5">
-                        <FormLabel class="text-lg font-semibold">{{
+                        <SettingHeader>{{
                           $t("match.options.advanced.knife_round.label")
-                        }}</FormLabel>
+                        }}</SettingHeader>
                         <FormDescription>
                           {{
                             $t("match.options.advanced.knife_round.description")
@@ -408,9 +466,9 @@ import { Card } from "~/components/ui/card";
 
                 <FormField v-slot="{ componentField }" name="mr">
                   <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
+                    <SettingHeader>{{
                       $t("match.options.advanced.max_rounds.label")
-                    }}</FormLabel>
+                    }}</SettingHeader>
                     <FormDescription>
                       {{ $t("match.options.advanced.max_rounds.description") }}
                     </FormDescription>
@@ -448,9 +506,9 @@ import { Card } from "~/components/ui/card";
             <Card v-if="availableRegions.length > 1">
               <div class="p-6 space-y-6">
                 <div class="flex justify-between items-center">
-                  <div class="text-lg font-semibold">
+                  <SettingHeader>
                     {{ $t("match.options.advanced.region.title") }}
-                  </div>
+                  </SettingHeader>
                   <div class="flex items-center gap-4" v-if="canSetLan">
                     <span>{{
                       $t("match.options.advanced.region.lan_match")
@@ -482,9 +540,9 @@ import { Card } from "~/components/ui/card";
                       >
                         <div class="flex flex-col space-y-3 p-4">
                           <div class="flex justify-between items-center">
-                            <FormLabel class="text-lg font-semibold">{{
+                            <SettingHeader>{{
                               $t("match.options.advanced.region.veto.label")
-                            }}</FormLabel>
+                            }}</SettingHeader>
                             <FormControl>
                               <Switch
                                 class="pointer-events-none"
@@ -511,12 +569,12 @@ import { Card } from "~/components/ui/card";
                   <FormField name="regions">
                     <FormItem>
                       <FormLabel>
-                        <div class="text-lg font-semibold">
+                        <SettingHeader>
                           <template v-if="form.values.region_veto">
                             {{ $t("match.options.advanced.region.preferred") }}
                           </template>
                           <template v-else>{{ $t("common.region") }}</template>
-                        </div>
+                        </SettingHeader>
                       </FormLabel>
 
                       <FormControl>
@@ -687,9 +745,9 @@ import { Card } from "~/components/ui/card";
               <div class="flex flex-col space-y-3 p-4">
                 <FormField v-slot="{ value }" name="number_of_substitutes">
                   <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
+                    <SettingHeader>{{
                       $t("match.options.advanced.substitutes.label")
-                    }}</FormLabel>
+                    }}</SettingHeader>
                     <FormDescription>
                       {{ $t("match.options.advanced.substitutes.description") }}
                     </FormDescription>
@@ -724,9 +782,9 @@ import { Card } from "~/components/ui/card";
 
                 <FormField v-slot="{ value }" name="tv_delay">
                   <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
+                    <SettingHeader>{{
                       $t("match.options.advanced.tv_delay.label")
-                    }}</FormLabel>
+                    }}</SettingHeader>
                     <NumberField
                       class="gap-2"
                       :min="0"
@@ -763,9 +821,9 @@ import { Card } from "~/components/ui/card";
                   name="check_in_setting"
                 >
                   <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
+                    <SettingHeader>{{
                       $t("match.options.advanced.check_in_settings.label")
-                    }}</FormLabel>
+                    }}</SettingHeader>
                     <FormDescription>{{
                       $t("match.options.advanced.check_in_settings.description")
                     }}</FormDescription>
@@ -793,9 +851,9 @@ import { Card } from "~/components/ui/card";
 
                 <FormField v-slot="{ componentField }" name="ready_setting">
                   <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
+                    <SettingHeader>{{
                       $t("match.options.advanced.ready_settings.label")
-                    }}</FormLabel>
+                    }}</SettingHeader>
                     <FormDescription>{{
                       $t("match.options.advanced.ready_settings.description")
                     }}</FormDescription>
@@ -832,9 +890,9 @@ import { Card } from "~/components/ui/card";
                       @click="handleChange(!value)"
                     >
                       <div class="space-y-0.5">
-                        <FormLabel class="text-lg font-semibold">{{
+                        <SettingHeader>{{
                           $t("match.options.advanced.auto_cancellation.label")
-                        }}</FormLabel>
+                        }}</SettingHeader>
                         <FormDescription>{{
                           $t(
                             "match.options.advanced.auto_cancellation.description",
@@ -914,9 +972,9 @@ import { Card } from "~/components/ui/card";
                   name="match_mode"
                 >
                   <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
+                    <SettingHeader>{{
                       $t("match.options.advanced.match_mode.label")
-                    }}</FormLabel>
+                    }}</SettingHeader>
                     <FormDescription>{{
                       $t("match.options.advanced.match_mode.description")
                     }}</FormDescription>
@@ -948,9 +1006,9 @@ import { Card } from "~/components/ui/card";
               <div class="flex flex-col space-y-3 p-4">
                 <FormField v-slot="{ componentField }" name="timeout_setting">
                   <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
+                    <SettingHeader>{{
                       $t("match.options.advanced.timeouts.tactical.label")
-                    }}</FormLabel>
+                    }}</SettingHeader>
                     <FormDescription>{{
                       $t("match.options.advanced.timeouts.tactical.description")
                     }}</FormDescription>
@@ -981,9 +1039,9 @@ import { Card } from "~/components/ui/card";
                   name="tech_timeout_setting"
                 >
                   <FormItem>
-                    <FormLabel class="text-lg font-semibold">{{
+                    <SettingHeader>{{
                       $t("match.options.advanced.timeouts.technical.label")
-                    }}</FormLabel>
+                    }}</SettingHeader>
                     <FormDescription>{{
                       $t(
                         "match.options.advanced.timeouts.technical.description",
@@ -1018,9 +1076,9 @@ import { Card } from "~/components/ui/card";
                 <Card class="cursor-pointer" @click="handleChange(!value)">
                   <div class="flex flex-col space-y-3 p-4">
                     <div class="flex justify-between items-center">
-                      <FormLabel class="text-lg font-semibold">{{
+                      <SettingHeader>{{
                         $t("match.options.advanced.default_models.label")
-                      }}</FormLabel>
+                      }}</SettingHeader>
                       <FormControl>
                         <Switch
                           class="pointer-events-none"
@@ -1040,7 +1098,7 @@ import { Card } from "~/components/ui/card";
             </FormField>
             <slot name="after-advanced"></slot>
           </div>
-        </CollapsibleContent>
+        </div>
       </Collapsible>
     </div>
   </div>
@@ -1173,9 +1231,21 @@ export default {
       filterMaps: undefined,
       select_single_region: null as string | null,
       showAdvancedSettings: false,
+      advHeight: "0px",
     };
   },
   watch: {
+    showAdvancedSettings(open) {
+      this.animateAdvanced(open);
+    },
+    forceVeto: {
+      immediate: true,
+      handler(forceVeto) {
+        if (forceVeto && this.form.values.map_veto !== true) {
+          this.form.setFieldValue("map_veto", true);
+        }
+      },
+    },
     defaultMapPool: {
       immediate: true,
       handler(defaultMapPool) {
@@ -1295,6 +1365,12 @@ export default {
           type.value !== e_match_types_enum.Premier &&
           type.value !== e_match_types_enum.Faceit,
       );
+    },
+    selectedTypeDescription(): string {
+      const selected = this.selectableMatchTypes.find(
+        (type) => type.value === this.form?.values?.type,
+      );
+      return selected?.description || "";
     },
     isLocked(): boolean {
       return (
@@ -1494,6 +1570,39 @@ export default {
     },
   },
   methods: {
+    animateAdvanced(open: boolean) {
+      const wrap = this.$refs.advWrapRef as HTMLElement | undefined;
+      if (!wrap) {
+        this.advHeight = open ? "auto" : "0px";
+        return;
+      }
+      if (open) {
+        this.advHeight = "0px";
+        void wrap.offsetHeight;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            this.advHeight = `${wrap.scrollHeight}px`;
+          });
+        });
+        const onEnd = (e: TransitionEvent) => {
+          if (e.target !== wrap || e.propertyName !== "height") {
+            return;
+          }
+          wrap.removeEventListener("transitionend", onEnd);
+          if (this.showAdvancedSettings) {
+            this.advHeight = "auto";
+          }
+        };
+        wrap.addEventListener("transitionend", onEnd);
+      } else {
+        this.advHeight = `${wrap.getBoundingClientRect().height}px`;
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            this.advHeight = "0px";
+          });
+        });
+      }
+    },
     updateMapPool(mapId: string) {
       if (!this.form.values.custom_map_pool) {
         return;
@@ -1561,3 +1670,75 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.map-move,
+.map-enter-active,
+.map-leave-active {
+  transition:
+    opacity 260ms ease,
+    transform 260ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.map-enter-from,
+.map-leave-to {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.map-leave-active {
+  position: absolute;
+}
+
+/* Whole-grid crossfade when the match type / pool / veto changes, so we fade
+   two complete grids over each other instead of letting individual tiles go
+   position:absolute and lose their grid-track sizing (which stretches them). */
+.map-swap-enter-active,
+.map-swap-leave-active {
+  transition: opacity 200ms ease;
+}
+
+.map-swap-enter-from,
+.map-swap-leave-to {
+  opacity: 0;
+}
+
+.map-swap-leave-active {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+}
+
+.map-badge-enter-active,
+.map-badge-leave-active {
+  transition:
+    opacity 160ms ease,
+    transform 160ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.map-badge-enter-from,
+.map-badge-leave-to {
+  opacity: 0;
+  transform: scale(0.4);
+}
+
+/* Height-collapse for the custom-pool filter input so toggling the pool
+   type doesn't snap the map grid up/down. */
+.collapse-enter-active,
+.collapse-leave-active {
+  transition:
+    grid-template-rows 240ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 200ms ease;
+}
+
+.collapse-enter-from,
+.collapse-leave-to {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+.adv-collapse {
+  overflow: hidden;
+  transition: height 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+</style>

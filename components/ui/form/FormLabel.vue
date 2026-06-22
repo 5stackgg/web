@@ -13,6 +13,7 @@ const { error, isTouched, formItemId } = useFormField()
 <template>
   <Label
     :class="cn(
+      'font-mono text-[0.7rem] font-medium uppercase tracking-[0.18em] text-muted-foreground',
       error && isTouched && 'text-destructive',
       props.class,
     )"

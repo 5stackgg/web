@@ -17,6 +17,7 @@ import { Spinner } from "~/components/ui/spinner";
       class="flex-1 min-w-0"
     />
     <Button
+      variant="tactical"
       type="submit"
       size="sm"
       :loading="saving"

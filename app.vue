@@ -12,6 +12,9 @@ const MatchmakingConfirm = defineAsyncComponent(
 const MatchActiveAlert = defineAsyncComponent(
   () => import("~/components/match/MatchActiveAlert.vue"),
 );
+const DraftActiveAlert = defineAsyncComponent(
+  () => import("~/components/draft-games/DraftActiveAlert.vue"),
+);
 const PlayerNameRegistration = defineAsyncComponent(
   () => import("~/components/PlayerNameRegistration.vue"),
 );
@@ -100,6 +103,7 @@ function pageKeyWithoutTabQuery(route: {
     <PlayerNameRegistration />
     <MatchmakingConfirm />
     <MatchActiveAlert />
+    <DraftActiveAlert />
   </div>
 
   <NuxtLayout>

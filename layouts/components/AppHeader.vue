@@ -5,6 +5,7 @@ import SystemUpdate from "./SystemUpdate.vue";
 import BreadCrumbs from "~/components/BreadCrumbs.vue";
 import SystemStatus from "./SystemStatus.vue";
 import MatchLobbies from "./MatchLobbies.vue";
+import DraftRoomNav from "./DraftRoomNav.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import SpotlightPlayerSearch from "~/components/SpotlightPlayerSearch.vue";
 import { Grid } from "lucide-vue-next";
@@ -25,8 +26,10 @@ const { openLastOrDefaultHub } = useHubState();
         <bread-crumbs></bread-crumbs>
       </div>
 
-      <div class="flex gap-4 shrink-0">
+      <div class="flex items-center gap-4 shrink-0">
         <SpotlightPlayerSearch v-if="me" />
+
+        <DraftRoomNav v-if="!isMobile"></DraftRoomNav>
 
         <MatchLobbies v-if="!isMobile"></MatchLobbies>
 

@@ -9,6 +9,7 @@ import {
   FormLabel,
   FormMessage,
   FormDescription,
+  FormSection,
 } from "~/components/ui/form";
 import {
   Select,
@@ -27,360 +28,380 @@ const showConnectPassword = ref(false);
 </script>
 
 <template>
-  <form @submit.prevent="updateCreateServer" class="grid gap-4">
-    <FormField v-slot="{ componentField }" name="game">
-      <FormItem>
-        <FormLabel class="text-base">{{ $t("server.form.game") }}</FormLabel>
-        <FormControl>
-          <RadioGroup v-bind="componentField" class="grid gap-3">
-            <div
-              class="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
-              @click="componentField['onUpdate:modelValue']('cs2')"
-            >
-              <RadioGroupItem id="game-cs2" value="cs2" />
-              <div class="grid gap-1.5 leading-none">
-                <label
-                  class="text-sm font-medium leading-none cursor-pointer"
-                  for="game-cs2"
-                  >CS2</label
+  <form @submit.prevent="updateCreateServer" class="grid gap-5">
+    <FormSection :title="$t('server.form.game')">
+      <div class="grid gap-4">
+        <FormField v-slot="{ componentField }" name="game">
+          <FormItem>
+            <FormLabel>{{ $t("server.form.game") }}</FormLabel>
+            <FormControl>
+              <RadioGroup v-bind="componentField" class="grid gap-3">
+                <div
+                  class="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
+                  @click="componentField['onUpdate:modelValue']('cs2')"
                 >
-              </div>
-            </div>
-            <div
-              class="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
-              @click="componentField['onUpdate:modelValue']('csgo')"
-            >
-              <RadioGroupItem id="game-csgo" value="csgo" />
-              <div class="grid gap-1.5 leading-none">
-                <label
-                  class="text-sm font-medium leading-none cursor-pointer"
-                  for="game-csgo"
-                  >CS:GO</label
+                  <RadioGroupItem id="game-cs2" value="cs2" />
+                  <div class="grid gap-1.5 leading-none">
+                    <label
+                      class="text-sm font-medium leading-none cursor-pointer"
+                      for="game-cs2"
+                      >CS2</label
+                    >
+                  </div>
+                </div>
+                <div
+                  class="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
+                  @click="componentField['onUpdate:modelValue']('csgo')"
                 >
-              </div>
-            </div>
-          </RadioGroup>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+                  <RadioGroupItem id="game-csgo" value="csgo" />
+                  <div class="grid gap-1.5 leading-none">
+                    <label
+                      class="text-sm font-medium leading-none cursor-pointer"
+                      for="game-csgo"
+                      >CS:GO</label
+                    >
+                  </div>
+                </div>
+              </RadioGroup>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-    <FormField v-slot="{ componentField }" name="use_valve_modes">
-      <FormItem>
-        <FormLabel class="text-base">
-          {{ $t("server.form.type") }}
-        </FormLabel>
-        <FormControl>
-          <RadioGroup
-            :model-value="componentField.modelValue ? 'valve' : 'ranked'"
-            class="grid gap-3"
-          >
-            <div
-              class="flex items-center space-x-3 rounded-lg border p-3 transition-colors"
-              :class="
-                form.values.game === 'csgo'
-                  ? 'opacity-50 cursor-not-allowed'
-                  : 'hover:bg-muted/50 cursor-pointer'
-              "
-              @click="
-                form.values.game !== 'csgo' &&
-                componentField &&
-                componentField['onUpdate:modelValue'] &&
-                componentField['onUpdate:modelValue'](false)
-              "
-            >
-              <RadioGroupItem
-                id="mode-ranked"
-                value="ranked"
-                :disabled="form.values.game === 'csgo'"
-              />
-              <div class="grid gap-1.5 leading-none">
-                <label
-                  class="text-sm font-medium leading-none"
+        <FormField v-slot="{ componentField }" name="use_valve_modes">
+          <FormItem>
+            <FormLabel>
+              {{ $t("server.form.type") }}
+            </FormLabel>
+            <FormControl>
+              <RadioGroup
+                :model-value="componentField.modelValue ? 'valve' : 'ranked'"
+                class="grid gap-3"
+              >
+                <div
+                  class="flex items-center space-x-3 rounded-lg border p-3 transition-colors"
                   :class="
                     form.values.game === 'csgo'
-                      ? 'cursor-not-allowed'
-                      : 'cursor-pointer'
+                      ? 'opacity-50 cursor-not-allowed'
+                      : 'hover:bg-muted/50 cursor-pointer'
                   "
-                  for="mode-ranked"
+                  @click="
+                    form.values.game !== 'csgo' &&
+                    componentField &&
+                    componentField['onUpdate:modelValue'] &&
+                    componentField['onUpdate:modelValue'](false)
+                  "
                 >
-                  {{ $t("server.form.ranked_server") }}
-                </label>
-                <p class="text-sm text-muted-foreground">
-                  {{ $t("server.form.ranked_server_description") }}
-                </p>
-              </div>
-            </div>
-            <div
-              class="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
-              @click="
-                componentField &&
-                componentField['onUpdate:modelValue'] &&
-                componentField['onUpdate:modelValue'](true)
-              "
-            >
-              <RadioGroupItem id="mode-valve" value="valve" />
-              <div class="grid gap-1.5 leading-none">
-                <label
-                  class="text-sm font-medium leading-none"
-                  for="mode-valve"
+                  <RadioGroupItem
+                    id="mode-ranked"
+                    value="ranked"
+                    :disabled="form.values.game === 'csgo'"
+                  />
+                  <div class="grid gap-1.5 leading-none">
+                    <label
+                      class="text-sm font-medium leading-none"
+                      :class="
+                        form.values.game === 'csgo'
+                          ? 'cursor-not-allowed'
+                          : 'cursor-pointer'
+                      "
+                      for="mode-ranked"
+                    >
+                      {{ $t("server.form.ranked_server") }}
+                    </label>
+                    <p class="text-sm text-muted-foreground">
+                      {{ $t("server.form.ranked_server_description") }}
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="flex items-center space-x-3 rounded-lg border p-3 hover:bg-muted/50 transition-colors cursor-pointer"
+                  @click="
+                    componentField &&
+                    componentField['onUpdate:modelValue'] &&
+                    componentField['onUpdate:modelValue'](true)
+                  "
                 >
-                  {{ $t("server.form.valve_presets") }}
-                </label>
-                <p class="text-sm text-muted-foreground">
-                  {{ $t("server.form.valve_presets_description") }}
-                </p>
-              </div>
-            </div>
-          </RadioGroup>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+                  <RadioGroupItem id="mode-valve" value="valve" />
+                  <div class="grid gap-1.5 leading-none">
+                    <label
+                      class="text-sm font-medium leading-none"
+                      for="mode-valve"
+                    >
+                      {{ $t("server.form.valve_presets") }}
+                    </label>
+                    <p class="text-sm text-muted-foreground">
+                      {{ $t("server.form.valve_presets_description") }}
+                    </p>
+                  </div>
+                </div>
+              </RadioGroup>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-    <Alert
-      v-if="form.values.game === 'csgo' && !form.values.use_valve_modes"
-      variant="warning"
-    >
-      <AlertTitle>{{
-        $t("server.form.csgo_ranked_unavailable_title")
-      }}</AlertTitle>
-      <AlertDescription>{{
-        $t("server.form.csgo_ranked_unavailable_description")
-      }}</AlertDescription>
-    </Alert>
-
-    <FormField
-      v-if="form.values.use_valve_modes"
-      v-slot="{ componentField }"
-      name="type"
-    >
-      <FormItem>
-        <FormLabel>{{ $t("server.form.type") }}</FormLabel>
-        <Select v-bind="componentField">
-          <FormControl>
-            <SelectTrigger>
-              <SelectValue :placeholder="$t('server.form.select_type')" />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem
-                :value="serverType"
-                v-for="serverType in valveModeTypes"
-                :key="serverType"
-              >
-                {{ serverType }}
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-
-    <FormField v-slot="{ componentField }" name="label">
-      <FormItem>
-        <FormLabel>{{ $t("server.form.label") }}</FormLabel>
-        <FormControl>
-          <Input v-bind="componentField" />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-
-    <FormField v-slot="{ componentField }" name="rcon_password">
-      <FormItem>
-        <FormLabel>{{ $t("server.form.rcon_password") }}</FormLabel>
-        <FormControl>
-          <Input type="password" v-bind="componentField" />
-          <FormMessage />
-          <FormDescription v-if="server">
-            {{ $t("server.form.rcon_password_description") }}
-          </FormDescription>
-        </FormControl>
-      </FormItem>
-    </FormField>
-
-    <template v-if="gameServerNodes.length > 0 && !server">
-      <FormField v-slot="{ componentField }" name="use_game_server_node">
-        <FormItem
-          class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors"
-          @click="
-            componentField['onUpdate:modelValue'](!componentField.modelValue)
-          "
+        <Alert
+          v-if="form.values.game === 'csgo' && !form.values.use_valve_modes"
+          variant="warning"
         >
-          <div class="space-y-0.5">
-            <FormLabel class="text-base cursor-pointer">{{
-              $t("server.form.server_configuration")
-            }}</FormLabel>
-            <FormDescription class="cursor-pointer">
-              {{
-                useGameServerNode
-                  ? $t("server.form.use_game_server_node")
-                  : $t("server.form.use_manual_host_configuration")
-              }}
-            </FormDescription>
-          </div>
-          <FormControl>
-            <Switch @click.stop :model-value="componentField.modelValue" />
-          </FormControl>
-        </FormItem>
-      </FormField>
-    </template>
+          <AlertTitle>{{
+            $t("server.form.csgo_ranked_unavailable_title")
+          }}</AlertTitle>
+          <AlertDescription>{{
+            $t("server.form.csgo_ranked_unavailable_description")
+          }}</AlertDescription>
+        </Alert>
 
-    <template v-if="!useGameServerNode && !isEditingGameServerNode">
-      <FormField v-slot="{ componentField }" name="region">
-        <FormItem>
-          <FormLabel class="text-lg font-semibold">{{
-            $t("server.form.region")
-          }}</FormLabel>
-          <Select v-bind="componentField">
-            <FormControl>
-              <SelectTrigger>
-                <SelectValue :placeholder="$t('server.form.select_region')" />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectGroup>
-                <SelectItem
-                  :value="region.value"
-                  v-for="region in server_regions"
-                  :key="region.value"
-                >
-                  {{ region.description || region.value }}
-                </SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <FormField v-slot="{ componentField }" name="host">
+        <FormField
+          v-if="form.values.use_valve_modes"
+          v-slot="{ componentField }"
+          name="type"
+        >
           <FormItem>
-            <FormLabel>{{ $t("server.form.host") }}</FormLabel>
-            <FormControl>
-              <Input v-bind="componentField" />
-              <FormMessage />
-            </FormControl>
-          </FormItem>
-        </FormField>
-
-        <FormField v-slot="{ componentField }" name="port">
-          <FormItem>
-            <FormLabel>{{ $t("server.form.port") }}</FormLabel>
-            <FormControl>
-              <Input type="number" v-bind="componentField" />
-              <FormMessage />
-            </FormControl>
-          </FormItem>
-        </FormField>
-
-        <FormField v-slot="{ componentField }" name="tv_port">
-          <FormItem>
-            <FormLabel>{{ $t("server.form.tv_port") }}</FormLabel>
-            <FormControl>
-              <Input type="number" v-bind="componentField" />
-              <FormMessage />
-            </FormControl>
+            <FormLabel>{{ $t("server.form.type") }}</FormLabel>
+            <Select v-bind="componentField">
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue :placeholder="$t('server.form.select_type')" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    :value="serverType"
+                    v-for="serverType in valveModeTypes"
+                    :key="serverType"
+                  >
+                    {{ serverType }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <FormMessage />
           </FormItem>
         </FormField>
       </div>
-    </template>
+    </FormSection>
 
-    <FormField
-      v-slot="{ componentField }"
-      name="game_server_node_id"
-      v-if="
-        (useGameServerNode && gameServerNodes.length > 0) ||
-        isEditingGameServerNode
-      "
-    >
-      <FormItem>
-        <FormLabel>{{ $t("server.form.game_server_node") }}</FormLabel>
-        <Select v-bind="componentField" :disabled="isEditingGameServerNode">
-          <FormControl>
-            <SelectTrigger>
-              <SelectValue
-                :placeholder="$t('server.form.select_game_server_node')"
-              />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            <SelectGroup>
-              <SelectItem
-                :value="node.id"
-                v-for="node in gameServerNodes"
-                :key="node.id"
-              >
-                {{ node.label }} ({{
-                  node.e_region?.description || node.region
-                }})
-              </SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <FormMessage />
-        <FormDescription>{{
-          $t("server.form.game_server_node_description")
-        }}</FormDescription>
-      </FormItem>
-    </FormField>
+    <FormSection :title="$t('server.form.identity')">
+      <div class="grid gap-4">
+        <FormField v-slot="{ componentField }" name="label">
+          <FormItem>
+            <FormLabel>{{ $t("server.form.label") }}</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-    <FormField
-      v-slot="{ componentField }"
-      name="connect_password"
-      v-if="isPublicServerType"
-    >
-      <FormItem>
-        <FormLabel>{{ $t("server.form.connect_password") }}</FormLabel>
-        <FormControl>
-          <div class="relative">
-            <Input
-              :type="showConnectPassword ? 'text' : 'password'"
-              v-bind="componentField"
-              autocomplete="off"
-            />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              class="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7"
-              @click="showConnectPassword = !showConnectPassword"
-              tabindex="-1"
+        <FormField v-slot="{ componentField }" name="rcon_password">
+          <FormItem>
+            <FormLabel>{{ $t("server.form.rcon_password") }}</FormLabel>
+            <FormControl>
+              <Input type="password" v-bind="componentField" />
+            </FormControl>
+            <FormDescription v-if="server">
+              {{ $t("server.form.rcon_password_description") }}
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </div>
+    </FormSection>
+
+    <FormSection :title="$t('server.form.connection')">
+      <div class="grid gap-4">
+        <template v-if="gameServerNodes.length > 0 && !server">
+          <FormField v-slot="{ componentField }" name="use_game_server_node">
+            <FormItem
+              class="flex flex-row items-center justify-between rounded-lg border p-4 cursor-pointer hover:bg-muted/50 transition-colors"
+              @click="
+                componentField['onUpdate:modelValue'](!componentField.modelValue)
+              "
             >
-              <Eye v-if="!showConnectPassword" class="h-4 w-4" />
-              <EyeOff v-else class="h-4 w-4" />
-            </Button>
-          </div>
-          <FormMessage />
-          <FormDescription>{{
-            $t("server.form.connect_password_description")
-          }}</FormDescription>
-        </FormControl>
-      </FormItem>
-    </FormField>
+              <div class="space-y-0.5">
+                <FormLabel class="cursor-pointer">{{
+                  $t("server.form.server_configuration")
+                }}</FormLabel>
+                <FormDescription class="cursor-pointer">
+                  {{
+                    useGameServerNode
+                      ? $t("server.form.use_game_server_node")
+                      : $t("server.form.use_manual_host_configuration")
+                  }}
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch @click.stop :model-value="componentField.modelValue" />
+              </FormControl>
+            </FormItem>
+          </FormField>
+        </template>
 
-    <FormField
-      v-slot="{ componentField }"
-      name="max_players"
+        <template v-if="!useGameServerNode && !isEditingGameServerNode">
+          <FormField v-slot="{ componentField }" name="region">
+            <FormItem>
+              <FormLabel>{{ $t("server.form.region") }}</FormLabel>
+              <Select v-bind="componentField">
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue
+                      :placeholder="$t('server.form.select_region')"
+                    />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem
+                      :value="region.value"
+                      v-for="region in server_regions"
+                      :key="region.value"
+                    >
+                      {{ region.description || region.value }}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <FormField v-slot="{ componentField }" name="host">
+              <FormItem>
+                <FormLabel>{{ $t("server.form.host") }}</FormLabel>
+                <FormControl>
+                  <Input v-bind="componentField" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+
+            <FormField v-slot="{ componentField }" name="port">
+              <FormItem>
+                <FormLabel>{{ $t("server.form.port") }}</FormLabel>
+                <FormControl>
+                  <Input type="number" v-bind="componentField" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+
+            <FormField v-slot="{ componentField }" name="tv_port">
+              <FormItem>
+                <FormLabel>{{ $t("server.form.tv_port") }}</FormLabel>
+                <FormControl>
+                  <Input type="number" v-bind="componentField" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+          </div>
+        </template>
+
+        <FormField
+          v-slot="{ componentField }"
+          name="game_server_node_id"
+          v-if="
+            (useGameServerNode && gameServerNodes.length > 0) ||
+            isEditingGameServerNode
+          "
+        >
+          <FormItem>
+            <FormLabel>{{ $t("server.form.game_server_node") }}</FormLabel>
+            <Select v-bind="componentField" :disabled="isEditingGameServerNode">
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue
+                    :placeholder="$t('server.form.select_game_server_node')"
+                  />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem
+                    :value="node.id"
+                    v-for="node in gameServerNodes"
+                    :key="node.id"
+                  >
+                    {{ node.label }} ({{
+                      node.e_region?.description || node.region
+                    }})
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+            <FormDescription>{{
+              $t("server.form.game_server_node_description")
+            }}</FormDescription>
+          </FormItem>
+        </FormField>
+      </div>
+    </FormSection>
+
+    <FormSection
       v-if="isPublicServerType"
+      :title="$t('server.form.connect_password')"
     >
-      <FormItem>
-        <FormLabel>{{ $t("server.form.max_players") }}</FormLabel>
-        <FormControl>
-          <Input type="number" min="1" max="32" v-bind="componentField" />
-          <FormMessage />
-          <FormDescription>{{
-            $t("server.form.max_players_description")
-          }}</FormDescription>
-        </FormControl>
-      </FormItem>
-    </FormField>
+      <div class="grid gap-4">
+        <FormField
+          v-slot="{ componentField }"
+          name="connect_password"
+          v-if="isPublicServerType"
+        >
+          <FormItem>
+            <FormLabel>{{ $t("server.form.connect_password") }}</FormLabel>
+            <FormControl>
+              <div class="relative">
+                <Input
+                  :type="showConnectPassword ? 'text' : 'password'"
+                  v-bind="componentField"
+                  autocomplete="off"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 h-7 w-7"
+                  @click="showConnectPassword = !showConnectPassword"
+                  tabindex="-1"
+                >
+                  <Eye v-if="!showConnectPassword" class="h-4 w-4" />
+                  <EyeOff v-else class="h-4 w-4" />
+                </Button>
+              </div>
+            </FormControl>
+            <FormDescription>{{
+              $t("server.form.connect_password_description")
+            }}</FormDescription>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+
+        <FormField
+          v-slot="{ componentField }"
+          name="max_players"
+          v-if="isPublicServerType"
+        >
+          <FormItem>
+            <FormLabel>{{ $t("server.form.max_players") }}</FormLabel>
+            <FormControl>
+              <Input type="number" min="1" max="32" v-bind="componentField" />
+            </FormControl>
+            <FormDescription>{{
+              $t("server.form.max_players_description")
+            }}</FormDescription>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </div>
+    </FormSection>
 
     <Button
+      variant="tactical"
       type="submit"
       :disabled="Object.keys(form.errors).length > 0"
       :loading="submitting"
@@ -577,7 +598,6 @@ export default {
     "form.values.game_server_node_id": {
       handler(newNodeId) {
         if (newNodeId && newNodeId !== "none" && this.useGameServerNode) {
-          // When a game server node is selected, auto-fill the region
           const selectedNode = this.gameServerNodes.find(
             (node) => node.id === newNodeId,
           );
@@ -588,7 +608,6 @@ export default {
           (!newNodeId || newNodeId === "none") &&
           this.useGameServerNode
         ) {
-          // When game server node is deselected, clear the region
           this.form.setFieldValue("region", "");
         }
       },

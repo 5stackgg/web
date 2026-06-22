@@ -243,7 +243,9 @@ function close(v: boolean) {
 
       <form v-else class="space-y-5" @submit.prevent="submit">
         <div class="space-y-2">
-          <Label>
+          <Label
+            class="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground"
+          >
             {{ $t("clips.create_dialog.player") }}
             <span class="text-destructive">*</span>
           </Label>
@@ -316,7 +318,10 @@ function close(v: boolean) {
         </div>
 
         <div class="space-y-2">
-          <Label>{{ $t("clips.create_dialog.preset") }}</Label>
+          <Label
+            class="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground"
+            >{{ $t("clips.create_dialog.preset") }}</Label
+          >
           <div class="grid grid-cols-2 gap-2">
             <button
               v-for="p in PRESETS"
@@ -342,9 +347,11 @@ function close(v: boolean) {
         </div>
 
         <div class="space-y-2">
-          <Label for="clip-title">{{
-            $t("clips.create_dialog.title_label")
-          }}</Label>
+          <Label
+            for="clip-title"
+            class="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground"
+            >{{ $t("clips.create_dialog.title_label") }}</Label
+          >
           <Input
             id="clip-title"
             v-model="title"
@@ -354,7 +361,10 @@ function close(v: boolean) {
         </div>
 
         <div class="space-y-2">
-          <Label>{{ $t("clips.create_dialog.resolution") }}</Label>
+          <Label
+            class="font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground"
+            >{{ $t("clips.create_dialog.resolution") }}</Label
+          >
           <Select v-model="resolution">
             <SelectTrigger>
               <SelectValue />
@@ -379,7 +389,11 @@ function close(v: boolean) {
           >
             {{ $t("common.cancel") }}
           </Button>
-          <Button type="submit" :disabled="!canSubmit || submitting">
+          <Button
+            variant="tactical"
+            type="submit"
+            :disabled="!canSubmit || submitting"
+          >
             <Spinner v-if="submitting" class="h-4 w-4 mr-2" />
             <Film v-else class="h-4 w-4 mr-2" />
             {{ $t("clips.create_dialog.submit") }}

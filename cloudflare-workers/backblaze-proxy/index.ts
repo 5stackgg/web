@@ -29,28 +29,43 @@ function filterHeaders(headers: Headers, env: { ALLOWED_HEADERS?: string }) {
 }
 
 const VIEW_FRACTION = 0.5;
-const SINGLE_SHOT_BYTES = 3 * 1024 * 1024;
 const BOT_UA =
   /bot|crawl|spider|facebookexternalhit|slack|discord|telegram|whatsapp|preview|unfurl|embed|scrape|metainspector|skype|vkshare|redditbot|pinterest|googlebot|bingbot/i;
 
-function clientRangeStart(range: string | null): number | null {
-  if (!range) {
-    return null;
-  }
-  const match = /^bytes=(\d+)-/.exec(range.trim());
-  return match ? parseInt(match[1], 10) : null;
-}
-
-function streamedEnough(range: string | null, size: number): boolean {
+// A view only counts once at least VIEW_FRACTION of the file's bytes have
+// actually been streamed to the client. We can't infer this from the
+// request Range header — the worker strips Range so B2 returns a single
+// full 200, and the browser downloads the whole clip in one response with
+// no follow-up seeks. So we measure delivery directly: tee the body through
+// a counter and fire the view the moment cumulative bytes cross the
+// threshold. Bytes only flow on a real play (the <video> is preload="none")
+// or a real embed fetch (Discord), so this never counts an unwatched clip.
+function countingBody(
+  body: ReadableStream<Uint8Array>,
+  size: number,
+  onEnough: () => void,
+): ReadableStream<Uint8Array> {
   if (!Number.isFinite(size) || size <= 0) {
-    return false;
+    return body;
   }
-  const start = clientRangeStart(range);
-  if (start !== null && start >= size * VIEW_FRACTION) {
-    return true;
-  }
-  const fullFetch = !range || /^bytes=0-\s*$/.test(range.trim());
-  return fullFetch && size <= SINGLE_SHOT_BYTES;
+  const threshold = size * VIEW_FRACTION;
+  let seen = 0;
+  let fired = false;
+  return body.pipeThrough(
+    new TransformStream<Uint8Array, Uint8Array>({
+      transform(chunk, controller) {
+        controller.enqueue(chunk);
+        if (fired) {
+          return;
+        }
+        seen += chunk.byteLength;
+        if (seen >= threshold) {
+          fired = true;
+          onEnough();
+        }
+      },
+    }),
+  );
 }
 
 async function viewerKey(request: Request): Promise<string> {
@@ -65,34 +80,39 @@ async function viewerKey(request: Request): Promise<string> {
     .join("");
 }
 
-function maybeCountView(
+// Whether this request is a viewable clip stream we should track. The
+// actual increment is gated on bytes delivered (see countingBody).
+function shouldTrackView(
   request: Request,
   url: URL,
   key: string | null,
-  size: number,
-  env: { S3_SECRET: string; API_URL?: string },
-  ctx: ExecutionContext,
-) {
+  env: { API_URL?: string },
+): boolean {
   if (!env.API_URL || request.method !== "GET" || !key) {
-    return;
+    return false;
   }
   if (!/^clips\/.+\.mp4$/.test(key)) {
-    return;
+    return false;
   }
   if (
     url.searchParams.get("dl") === "1" ||
     url.searchParams.get("download") === "1" ||
     url.searchParams.get("noview") === "1"
   ) {
-    return;
+    return false;
   }
   if (BOT_UA.test(request.headers.get("user-agent") ?? "")) {
-    return;
+    return false;
   }
-  if (!streamedEnough(request.headers.get("range"), size)) {
-    return;
-  }
+  return true;
+}
 
+function registerView(
+  request: Request,
+  key: string,
+  env: { S3_SECRET: string; API_URL?: string },
+  ctx: ExecutionContext,
+) {
   ctx.waitUntil(
     viewerKey(request)
       .then((clientKey) =>
@@ -157,6 +177,7 @@ export default {
 
     const url = new URL(request.url);
     const key = resolveKey(url);
+    const track = shouldTrackView(request, url, key, env);
 
     // Edge-cache short-circuit: serve repeat hits without re-running SigV4
     // or making a B2 subrequest. Range requests fall through so the existing
@@ -173,14 +194,20 @@ export default {
     if (!skipEdgeCache) {
       const cached = await cache.match(cacheKey);
       if (cached) {
-        maybeCountView(
-          request,
-          url,
-          key,
-          Number(cached.headers.get("content-length")),
-          env,
-          ctx,
-        );
+        if (track && cached.body) {
+          return new Response(
+            countingBody(
+              cached.body,
+              Number(cached.headers.get("content-length")),
+              () => registerView(request, key as string, env, ctx),
+            ),
+            {
+              status: cached.status,
+              statusText: cached.statusText,
+              headers: cached.headers,
+            },
+          );
+        }
         return cached;
       }
     }
@@ -256,25 +283,44 @@ export default {
       headers.set(k, v);
     }
 
-    const response = new Response(upstream.body, {
+    const willCache = !skipEdgeCache && upstream.status === 200;
+
+    // Split the body before counting: the cache copy must drain fully, but
+    // the view counter must only see bytes the *client* actually pulls — so
+    // the counter wraps the client branch only. An aborted client therefore
+    // never trips the threshold even while the cache copy finishes filling.
+    let clientStream = upstream.body;
+    let cacheStream: ReadableStream<Uint8Array> | null = null;
+    if (willCache && clientStream) {
+      const tees = clientStream.tee();
+      clientStream = tees[0];
+      cacheStream = tees[1];
+    }
+    if (track && upstream.ok && clientStream) {
+      clientStream = countingBody(
+        clientStream,
+        Number(upstream.headers.get("content-length")),
+        () => registerView(request, key as string, env, ctx),
+      );
+    }
+
+    const response = new Response(clientStream, {
       headers,
       status: upstream.status,
       statusText: upstream.statusText,
     });
 
-    if (response.ok) {
-      maybeCountView(
-        request,
-        url,
-        key,
-        Number(upstream.headers.get("content-length")),
-        env,
-        ctx,
+    if (willCache && cacheStream) {
+      ctx.waitUntil(
+        cache.put(
+          cacheKey,
+          new Response(cacheStream, {
+            headers: new Headers(headers),
+            status: upstream.status,
+            statusText: upstream.statusText,
+          }),
+        ),
       );
-    }
-
-    if (!skipEdgeCache && response.status === 200) {
-      ctx.waitUntil(cache.put(cacheKey, response.clone()));
     }
 
     return response;

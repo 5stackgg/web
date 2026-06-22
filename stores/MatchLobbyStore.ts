@@ -385,10 +385,26 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
           },
           {
             ...simpleMatchFields,
+            lineup_1: {
+              ...simpleMatchFields.lineup_1,
+              can_pick_map_veto: true,
+              can_pick_region_veto: true,
+            },
+            lineup_2: {
+              ...simpleMatchFields.lineup_2,
+              can_pick_map_veto: true,
+              can_pick_region_veto: true,
+            },
             invites: [
               {},
               {
                 steam_id: true,
+              },
+            ],
+            draft_games: [
+              {},
+              {
+                id: true,
               },
             ],
           },

@@ -49,6 +49,7 @@ const containContent = computed(() => {
   }
 
   switch (route.name) {
+    case "news-manage-id":
     case "matches-id":
     case "map-pools":
     case "game-server-nodes":

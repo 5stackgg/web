@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { CaretSortIcon } from "@radix-icons/vue";
 import { Switch } from "~/components/ui/switch";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
 import {
   Popover,
@@ -27,7 +26,9 @@ const { height: viewportHeight } = useVisualViewport();
       "
     >
       <slot>
-        <Button variant="outline" class="justify-between w-full">
+        <div
+          class="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm"
+        >
           <div class="flex items-center gap-2 min-w-0">
             <Avatar v-if="selectedTeam" class="h-5 w-5 rounded shrink-0">
               <AvatarImage
@@ -44,7 +45,7 @@ const { height: viewportHeight } = useVisualViewport();
             </span>
           </div>
           <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
+        </div>
       </slot>
     </div>
     <DrawerContent>
@@ -68,9 +69,11 @@ const { height: viewportHeight } = useVisualViewport();
               :key="team.id"
               class="px-3 py-2"
               :class="
-                canSelectTeam(team)
-                  ? 'hover:bg-accent cursor-pointer'
-                  : 'opacity-60 cursor-not-allowed'
+                isSelected(team)
+                  ? 'opacity-60 cursor-not-allowed bg-accent/40'
+                  : canSelectTeam(team)
+                    ? 'hover:bg-accent cursor-pointer'
+                    : 'opacity-60 cursor-not-allowed'
               "
               @click="select(team)"
             >
@@ -90,7 +93,27 @@ const { height: viewportHeight } = useVisualViewport();
                 </span>
                 <span class="truncate">{{ team.name }}</span>
                 <span
-                  v-if="tournamentJoinSelector"
+                  v-if="isSelected(team)"
+                  class="text-[10px] uppercase tracking-wide text-[hsl(var(--tac-amber))]"
+                >
+                  {{ $t("team.search.selected") }}
+                </span>
+                <span
+                  v-if="minPlayers && team.player_count != null"
+                  class="ml-auto flex shrink-0 items-center gap-2 text-[10px] tabular-nums text-muted-foreground"
+                >
+                  <span>{{ team.player_count }}p</span>
+                  <span v-if="team.avg_elo != null">
+                    {{ team.avg_elo }}
+                    <span class="text-[hsl(var(--tac-amber))]">5S</span>
+                  </span>
+                  <span v-if="team.avg_premier != null">
+                    {{ team.avg_premier }}
+                    <span class="text-[hsl(200_90%_62%)]">CS2</span>
+                  </span>
+                </span>
+                <span
+                  v-else-if="tournamentJoinSelector"
                   class="ml-auto text-[10px] uppercase tracking-wide"
                   :class="
                     canSelectTeam(team) ? 'text-emerald-600' : 'text-amber-600'
@@ -150,13 +173,13 @@ const { height: viewportHeight } = useVisualViewport();
   <!-- Desktop: Popover -->
   <Popover v-else v-model:open="open">
     <PopoverTrigger as-child>
-      <div class="relative">
+      <div class="relative w-full">
         <slot>
-          <Button
-            @click="searchTeams()"
-            variant="outline"
+          <button
+            type="button"
             :aria-expanded="open"
-            class="justify-between w-full"
+            class="flex h-9 w-full items-center justify-between rounded-md border border-input bg-background px-4 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+            @click="searchTeams()"
           >
             <div class="flex items-center gap-2 min-w-0">
               <Avatar v-if="selectedTeam" class="h-5 w-5 rounded shrink-0">
@@ -176,7 +199,7 @@ const { height: viewportHeight } = useVisualViewport();
               </span>
             </div>
             <CaretSortIcon class="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
+          </button>
         </slot>
       </div>
     </PopoverTrigger>
@@ -224,9 +247,11 @@ const { height: viewportHeight } = useVisualViewport();
                 :key="team.id"
                 class="px-3 py-2"
                 :class="
-                  canSelectTeam(team)
-                    ? 'hover:bg-accent cursor-pointer'
-                    : 'opacity-60 cursor-not-allowed'
+                  isSelected(team)
+                    ? 'opacity-60 cursor-not-allowed bg-accent/40'
+                    : canSelectTeam(team)
+                      ? 'hover:bg-accent cursor-pointer'
+                      : 'opacity-60 cursor-not-allowed'
                 "
                 @click="select(team)"
               >
@@ -246,7 +271,27 @@ const { height: viewportHeight } = useVisualViewport();
                   </span>
                   <span class="truncate">{{ team.name }}</span>
                   <span
-                    v-if="tournamentJoinSelector"
+                    v-if="isSelected(team)"
+                    class="text-[10px] uppercase tracking-wide text-[hsl(var(--tac-amber))]"
+                  >
+                    {{ $t("team.search.selected") }}
+                  </span>
+                  <span
+                    v-if="minPlayers && team.player_count != null"
+                    class="ml-auto flex shrink-0 items-center gap-2 text-[10px] tabular-nums text-muted-foreground"
+                  >
+                    <span>{{ team.player_count }}p</span>
+                    <span v-if="team.avg_elo != null">
+                      {{ team.avg_elo }}
+                      <span class="text-[hsl(var(--tac-amber))]">5S</span>
+                    </span>
+                    <span v-if="team.avg_premier != null">
+                      {{ team.avg_premier }}
+                      <span class="text-[hsl(200_90%_62%)]">CS2</span>
+                    </span>
+                  </span>
+                  <span
+                    v-else-if="tournamentJoinSelector"
                     class="ml-auto text-[10px] uppercase tracking-wide"
                     :class="
                       canSelectTeam(team)
@@ -274,6 +319,7 @@ const { height: viewportHeight } = useVisualViewport();
 
 <script lang="ts">
 import { generateQuery } from "~/graphql/graphqlGen";
+import { teamAvgElo, teamAvgPremier } from "~/utilities/teamElo";
 
 interface Team {
   id: string;
@@ -283,6 +329,9 @@ interface Team {
   captain_steam_id?: string | null;
   avatar_url?: string | null;
   role?: e_team_roles_enum;
+  player_count?: number;
+  avg_elo?: number | null;
+  avg_premier?: number | null;
 }
 
 export default {
@@ -316,6 +365,12 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    // When set, teams with fewer eligible players are shown but not selectable.
+    minPlayers: {
+      type: Number,
+      required: false,
+      default: 0,
     },
   },
   data() {
@@ -388,6 +443,9 @@ export default {
   },
   methods: {
     canSelectTeam(team: Team): boolean {
+      if (this.minPlayers && (team.player_count ?? 0) < this.minPlayers) {
+        return false;
+      }
       if (!this.tournamentJoinSelector) return true;
       const isOwner = team.owner_steam_id === this.me?.steam_id;
       const isCaptain = team.captain_steam_id === this.me?.steam_id;
@@ -404,8 +462,53 @@ export default {
       return this.$t("team.search.ineligible_short");
     },
     teamDisabledReason(team: Team): string {
+      if (this.minPlayers && (team.player_count ?? 0) < this.minPlayers) {
+        return this.$t("team.search.not_enough_players", {
+          count: this.minPlayers,
+        });
+      }
       if (!this.tournamentJoinSelector || this.canSelectTeam(team)) return "";
       return this.$t("team.search.tournament_join_requires_owner_or_captain");
+    },
+    async enrichTeams() {
+      // Only fetch roster details when a consumer needs eligibility / ELO.
+      if (!this.minPlayers || !this.teams?.length) return;
+      const ids = this.teams.map((team) => team.id);
+      const { data } = await this.$apollo.query({
+        query: generateQuery({
+          teams: [
+            { where: { id: { _in: ids } } },
+            {
+              id: true,
+              avatar_url: true,
+              roster: [
+                { where: { status: { _in: ["Starter", "Substitute"] } } },
+                {
+                  player: {
+                    steam_id: true,
+                    elo: true,
+                    premier_rank: true,
+                  },
+                },
+              ],
+            },
+          ],
+        }),
+      });
+      const detailsById = new Map<string, any>(
+        (data.teams || []).map((team: any) => [team.id, team]),
+      );
+      this.teams = this.teams.map((team) => {
+        const details = detailsById.get(team.id);
+        const roster = details?.roster || [];
+        return {
+          ...team,
+          avatar_url: team.avatar_url ?? details?.avatar_url ?? null,
+          player_count: roster.length,
+          avg_elo: teamAvgElo(roster),
+          avg_premier: teamAvgPremier(roster),
+        };
+      });
     },
     teamAvatarSrc(team: { avatar_url?: string | null }): string | null {
       if (!team.avatar_url) return null;
@@ -418,8 +521,12 @@ export default {
         (this.$refs.mobileSearchInput as HTMLInputElement)?.focus();
       });
     },
+    isSelected(team: Team): boolean {
+      return !!this.modelValue && team.id === this.modelValue;
+    },
     select(team: Team) {
-      if (!team || !this.canSelectTeam(team)) {
+      // Already-selected team can't be deselected from the list.
+      if (!team || !this.canSelectTeam(team) || this.isSelected(team)) {
         return;
       }
       this.open = false;
@@ -450,6 +557,7 @@ export default {
 
           return true;
         });
+        await this.enrichTeams();
         return;
       }
 
@@ -486,6 +594,7 @@ export default {
         }),
       });
       this.teams = data.teams;
+      await this.enrichTeams();
     },
   },
 };

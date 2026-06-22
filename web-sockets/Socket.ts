@@ -17,7 +17,8 @@ export type ChatType =
   | "team"
   | "matchmaking"
   | "organizers"
-  | "tournament";
+  | "tournament"
+  | "draft";
 
 class Socket extends EventEmitter {
   private listening = new Set();

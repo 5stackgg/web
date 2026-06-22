@@ -1,32 +1,42 @@
 <script setup lang="ts">
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { FormControl, FormField, FormItem } from "~/components/ui/form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormSection,
+} from "~/components/ui/form";
 </script>
 
 <template>
   <form @submit.prevent="updateCreateRegion" class="grid gap-4">
-    <FormField v-slot="{ componentField }" name="value">
-      <FormItem>
-        <FormLabel>{{ $t("region.form.name") }}</FormLabel>
-        <FormControl>
-          <Input v-bind="componentField" />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+    <FormSection :title="$t('common.region')">
+      <div class="grid gap-4">
+        <FormField v-slot="{ componentField }" name="value">
+          <FormItem>
+            <FormLabel>{{ $t("region.form.name") }}</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
 
-    <FormField v-slot="{ componentField }" name="description">
-      <FormItem>
-        <FormLabel>{{ $t("region.form.description") }}</FormLabel>
-        <FormControl>
-          <Input v-bind="componentField" />
-          <FormMessage />
-        </FormControl>
-      </FormItem>
-    </FormField>
+        <FormField v-slot="{ componentField }" name="description">
+          <FormItem>
+            <FormLabel>{{ $t("region.form.description") }}</FormLabel>
+            <FormControl>
+              <Input v-bind="componentField" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        </FormField>
+      </div>
+    </FormSection>
 
     <Button
+      variant="tactical"
       type="submit"
       :loading="submitting"
       :disabled="Object.keys(form.errors).length > 0"

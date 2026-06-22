@@ -416,6 +416,12 @@ export default {
         toast({
           title: this.$t("match.actions.canceled"),
         });
+
+        // Admins are usually canceling a match they were playing in, so send
+        // them back to /play instead of leaving them on the canceled match.
+        if (useAuthStore().isRoleAbove(e_player_roles_enum.administrator)) {
+          navigateTo("/play");
+        }
       } finally {
         this.cancellingMatch = false;
       }
@@ -436,9 +442,15 @@ export default {
           title: this.$t("match.actions.deleted"),
         });
 
-        this.$router.push({
-          name: "matches",
-        });
+        // Admins are usually deleting a match they were playing in, so send
+        // them back to /play rather than the matches list.
+        if (useAuthStore().isRoleAbove(e_player_roles_enum.administrator)) {
+          navigateTo("/play");
+        } else {
+          this.$router.push({
+            name: "matches",
+          });
+        }
       } finally {
         this.deletingMatch = false;
       }

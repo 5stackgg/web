@@ -238,6 +238,8 @@ type LogEntry = {
 };
 
 export default {
+  emits: ["follow-logs-changed", "has-logs"],
+
   props: {
     service: { type: String, required: true },
     timestamps: { type: Boolean, default: undefined },

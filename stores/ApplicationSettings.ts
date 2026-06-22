@@ -131,6 +131,27 @@ export const useApplicationSettingsStore = defineStore(
       return create_matches_role?.value || e_player_roles_enum.user;
     });
 
+    const customMatchRole = computed(() => {
+      if (!settings.value) {
+        return false;
+      }
+
+      const custom_match_role = settings.value.find(
+        (setting) => setting.name === "public.custom_match_role",
+      );
+
+      return custom_match_role?.value || e_player_roles_enum.match_organizer;
+    });
+
+    const canCreateCustomMatch = computed(() => {
+      const me = useAuthStore().me;
+      if (!me) {
+        return false;
+      }
+
+      return useAuthStore().isRoleAbove(customMatchRole.value);
+    });
+
     const tournamentCreateRole = computed(() => {
       if (!settings.value) {
         return false;
@@ -207,6 +228,31 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    const newsEnabled = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.news_enabled",
+        )?.value === "true"
+      );
+    });
+
+    const postNewsRole = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.post_news_role",
+        )?.value || e_player_roles_enum.administrator
+      );
+    });
+
+    const canPostNews = computed(() => {
+      const me = useAuthStore().me;
+      if (!me) {
+        return false;
+      }
+
+      return useAuthStore().isRoleAbove(postNewsRole.value);
+    });
+
     const playerNameRegistration = computed(() => {
       return (
         settings.value?.find(
@@ -220,6 +266,14 @@ export const useApplicationSettingsStore = defineStore(
       return (
         settings.value?.find(
           (setting) => setting.name === "public.external_matches_enabled",
+        )?.value === "true"
+      );
+    });
+
+    const faceitEnabled = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.faceit_import_enabled",
         )?.value === "true"
       );
     });
@@ -375,13 +429,19 @@ export const useApplicationSettingsStore = defineStore(
       availableRegions,
       maxAcceptableLatency,
       matchCreateRole,
+      customMatchRole,
+      canCreateCustomMatch,
       matchmakingAllowed,
       tournamentCreateRole,
       supportsDiscordBot,
       supportsGameServerNodes,
       supportsGameServerVersionPinning,
       playerNameRegistration,
+      newsEnabled,
+      postNewsRole,
+      canPostNews,
       externalMatchesEnabled,
+      faceitEnabled,
       defaultHudMode,
       canCreateMatch,
       currentPluginVersion,

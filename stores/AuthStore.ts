@@ -129,6 +129,7 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
 
     if (shouldStartBaseSubscriptions) {
       postAuthSubscriptionsStarted = true;
+      useDraftGamesStore().subscribeToMyDraftGame(me.value.steam_id);
       useMatchLobbyStore().subscribeToMyMatches();
       useMatchLobbyStore().subscribeToLiveMatches();
       useMatchLobbyStore().subscribeToLiveTournaments();

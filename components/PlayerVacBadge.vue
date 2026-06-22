@@ -6,10 +6,7 @@ const props = defineProps<{
   player?: Record<string, any> | null;
 }>();
 
-const vacBanned = computed(() => {
-  const p = props.player;
-  return Boolean(p?.vac_banned) || (p?.vac_ban_count ?? 0) > 0;
-});
+const vacBanned = computed(() => Boolean(props.player?.vac_banned));
 
 const gameBanned = computed(() => (props.player?.game_ban_count ?? 0) > 0);
 

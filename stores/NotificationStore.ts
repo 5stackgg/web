@@ -3,6 +3,7 @@ import { defineStore, acceptHMRUpdate } from "pinia";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $, order_by } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
+import { generateMutation } from "~/graphql/graphqlGen";
 import { playerFields } from "~/graphql/playerFields";
 import { useSubscriptionManager } from "~/composables/useSubscriptionManager";
 
@@ -28,6 +29,15 @@ type Notification = {
   }>;
 };
 
+type NewsArticle = {
+  id: string;
+  slug: string | null;
+  title: string;
+  teaser: string | null;
+  cover_image_url: string | null;
+  published_at: string | null;
+};
+
 export type NotificationStackItem =
   | { kind: "single"; notification: Notification }
   | { kind: "stack"; entityId: string; notifications: Notification[] };
@@ -39,10 +49,75 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
   const team_invites = ref<any[]>([]);
   const tournament_team_invites = ref<any[]>([]);
   const notifications = ref<Notification[]>([]);
+  const latestNewsArticle = ref<NewsArticle | null>(null);
+  const lastReadNewsAt = ref<string | null>(null);
+
+  const unreadNewsArticle = computed(() => {
+    if (!useApplicationSettingsStore().newsEnabled) {
+      return null;
+    }
+
+    const article = latestNewsArticle.value;
+    if (!article) {
+      return null;
+    }
+
+    const lastRead = lastReadNewsAt.value;
+    if (
+      lastRead &&
+      article.published_at &&
+      new Date(article.published_at) <= new Date(lastRead)
+    ) {
+      return null;
+    }
+
+    return article;
+  });
+
+  const markNewsRead = async (upTo?: string | null) => {
+    const me = useAuthStore().me;
+    if (!me?.steam_id) {
+      return;
+    }
+
+    const target =
+      upTo || latestNewsArticle.value?.published_at || new Date().toISOString();
+
+    if (
+      lastReadNewsAt.value &&
+      new Date(target) <= new Date(lastReadNewsAt.value)
+    ) {
+      return;
+    }
+
+    try {
+      await getGraphqlClient().mutate({
+        mutation: generateMutation({
+          update_players_by_pk: [
+            {
+              pk_columns: { steam_id: me.steam_id },
+              _set: { last_read_news_at: target },
+            },
+            { __typename: true },
+          ],
+        }),
+      });
+      lastReadNewsAt.value = target;
+    } catch (error) {
+      console.error("failed to mark news as read", error);
+    }
+  };
 
   const hasNotifications = computed(() => {
-    if (team_invites.value.length > 0) return true;
-    if (tournament_team_invites.value.length > 0) return true;
+    if (unreadNewsArticle.value) {
+      return true;
+    }
+    if (team_invites.value.length > 0) {
+      return true;
+    }
+    if (tournament_team_invites.value.length > 0) {
+      return true;
+    }
     return notifications.value.some((n) => !n.is_read);
   });
 
@@ -233,6 +308,54 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
           },
         }),
     );
+
+    subscribe(
+      "notifications:latest_news",
+      getGraphqlClient()
+        .subscribe({
+          query: typedGql("subscription")({
+            news_articles: [
+              {
+                where: { status: { _eq: "published" } },
+                order_by: [{ published_at: order_by.desc_nulls_last }],
+                limit: 1,
+              },
+              {
+                id: true,
+                slug: true,
+                title: true,
+                teaser: true,
+                cover_image_url: true,
+                published_at: true,
+              },
+            ],
+          }),
+        })
+        .subscribe({
+          next: ({ data }) => {
+            latestNewsArticle.value = data.news_articles[0] ?? null;
+          },
+        }),
+    );
+
+    subscribe(
+      "notifications:news_read_state",
+      getGraphqlClient()
+        .subscribe({
+          query: typedGql("subscription")({
+            players_by_pk: [
+              { steam_id: $("steam_id", "bigint!") },
+              { last_read_news_at: true },
+            ],
+          }),
+          variables: { steam_id },
+        })
+        .subscribe({
+          next: ({ data }) => {
+            lastReadNewsAt.value = data.players_by_pk?.last_read_news_at ?? null;
+          },
+        }),
+    );
   }
 
   watch(
@@ -245,6 +368,9 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         unsubscribe("notifications:team_invites");
         unsubscribe("notifications:tournament_team_invites");
         unsubscribe("notifications:notifications");
+        unsubscribe("notifications:latest_news");
+        unsubscribe("notifications:news_read_state");
+        lastReadNewsAt.value = null;
       }
     },
     { immediate: true },
@@ -261,6 +387,9 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     notifications,
     stackedNotifications,
     hasNotifications,
+    latestNewsArticle,
+    unreadNewsArticle,
+    markNewsRead,
   };
 });
 

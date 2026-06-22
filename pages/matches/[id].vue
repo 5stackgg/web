@@ -24,6 +24,10 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { AlertTriangle } from "lucide-vue-next";
 
+definePageMeta({
+  pageTransition: { name: "page", mode: "out-in" },
+});
+
 const activeStatsMap = ref<null | { id: string; map: { name: string } }>(null);
 
 // One subscription shared by MatchTabs (Clips) + lineup row indicators.
@@ -486,11 +490,7 @@ const vsBaseClasses =
 
         <PageTransition :delay="200">
           <div
-            v-if="
-              match.options.best_of &&
-              match.options.best_of > 0 &&
-              match.status !== e_match_status_enum.Veto
-            "
+            v-if="match.options.best_of && match.options.best_of > 0"
             class="flex flex-col gap-3"
           >
             <div v-for="(slot, index) in mapSlots" :key="index">
@@ -647,6 +647,7 @@ export default {
               status: true,
               source: true,
               invite_code: true,
+              draft_games: [{}, { id: true }],
               e_match_status: {
                 description: true,
               },
@@ -830,6 +831,20 @@ export default {
               useMatchContext().value = null;
               navigateTo("/watch");
             }
+            return;
+          }
+
+          // Check-in and veto for a draft-created match happen in the draft
+          // room, so the match page sends you there when a draft lobby exists.
+          const draftGameId = match.draft_games?.[0]?.id;
+          if (
+            draftGameId &&
+            [
+              e_match_status_enum.WaitingForCheckIn,
+              e_match_status_enum.Veto,
+            ].includes(match.status)
+          ) {
+            navigateTo(`/draft-room/${draftGameId}`);
             return;
           }
 

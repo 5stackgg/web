@@ -9,6 +9,10 @@ import { toast } from "~/components/ui/toast";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import DraftRoom from "~/components/draft-games/DraftRoom.vue";
 
+definePageMeta({
+  pageTransition: { name: "page", mode: "out-in" },
+});
+
 const { t } = useI18n();
 const route = useRoute();
 const draftGameId = computed(() => route.params.id as string);

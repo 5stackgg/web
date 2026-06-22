@@ -711,14 +711,14 @@ provide("commander", commander);
           {{ $t("match.tabs.no_logs_description") }}
         </p>
       </div>
-      <ServiceLogs
-        v-if="canViewMatchServerLogs"
-        v-show="hasLogs"
-        :service="`m-${match.id}`"
-        :compact="true"
-        :disable-retry="isMatchTerminal"
-        @has-logs="hasLogs = $event"
-      />
+      <div v-if="canViewMatchServerLogs" v-show="hasLogs">
+        <ServiceLogs
+          :service="`m-${match.id}`"
+          :compact="true"
+          :disable-retry="isMatchTerminal"
+          @has-logs="hasLogs = $event"
+        />
+      </div>
     </TabsContent>
     <TabsContent value="settings" class="flex flex-col gap-4 max-w-[1500px]">
       <MatchOptionsDisplay

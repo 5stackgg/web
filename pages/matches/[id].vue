@@ -24,6 +24,10 @@ import ChatLobby from "~/components/chat/ChatLobby.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import { AlertTriangle } from "lucide-vue-next";
 
+definePageMeta({
+  pageTransition: { name: "page", mode: "out-in" },
+});
+
 const activeStatsMap = ref<null | { id: string; map: { name: string } }>(null);
 
 // One subscription shared by MatchTabs (Clips) + lineup row indicators.

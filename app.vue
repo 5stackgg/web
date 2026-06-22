@@ -107,10 +107,7 @@ function pageKeyWithoutTabQuery(route: {
   </div>
 
   <NuxtLayout>
-    <NuxtPage
-      :page-key="pageKeyWithoutTabQuery"
-      :transition="{ name: 'page', mode: 'out-in' }"
-    />
+    <NuxtPage :page-key="pageKeyWithoutTabQuery" />
   </NuxtLayout>
   <Toaster />
 </template>

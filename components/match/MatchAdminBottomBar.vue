@@ -442,14 +442,17 @@ function runCommand(
                 {{ $t("match.tabs.no_logs_description") }}
               </p>
             </div>
-            <ServiceLogs
+            <div
               v-if="canShowLogs"
               v-show="hasLogs"
-              :service="`m-${match.id}`"
-              :compact="true"
               class="lg:flex-1 lg:min-h-0"
-              @has-logs="hasLogs = $event"
-            />
+            >
+              <ServiceLogs
+                :service="`m-${match.id}`"
+                :compact="true"
+                @has-logs="hasLogs = $event"
+              />
+            </div>
           </div>
         </div>
       </div>

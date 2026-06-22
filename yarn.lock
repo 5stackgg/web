@@ -49,7 +49,6 @@ __metadata:
     graphql-zeus: "npm:^7.0.5"
     javascript-time-ago: "npm:^2.5.11"
     lucide-vue-next: "npm:^0.508.0"
-    marked: "npm:^14.0.0"
     minisearch: "npm:^7.1.2"
     monaco-editor: "npm:^0.55.1"
     node-fetch: "npm:^3.3.2"
@@ -10983,15 +10982,6 @@ __metadata:
   bin:
     marked: bin/marked.js
   checksum: 10c0/57a47cb110f7b1a10f398b0a7236f9183aad2dcd5345ee73f2732b6387e585d04cef472bc655d2f84c542296be9728e179aebe3ed7f2f8666b8a0a9dae592876
-  languageName: node
-  linkType: hard
-
-"marked@npm:^14.0.0":
-  version: 14.1.4
-  resolution: "marked@npm:14.1.4"
-  bin:
-    marked: bin/marked.js
-  checksum: 10c0/7ccc4c9b58d430b68eb878133fc284235ef3022b1a465345d2464712bf7d47507203b54639826839b6cb8d8847cf46f2e382588b9e1fc1d98b657520e16bfa62
   languageName: node
   linkType: hard
 

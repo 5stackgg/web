@@ -788,9 +788,9 @@ const submit = form.handleSubmit(async (values: any) => {
         <Transition name="reveal">
           <section
             v-if="mode === 'Captains'"
-            class="grid grid-cols-1 gap-3 sm:grid-cols-2"
+            class="grid grid-cols-1 items-stretch gap-3 sm:grid-cols-2"
           >
-            <div class="space-y-1.5">
+            <div class="flex flex-col gap-1.5">
               <div :class="tacticalSectionLabelClasses">
                 <span :class="tacticalSectionTickClasses"></span>
                 {{ $t("draft_games.create.captain_selection") }}
@@ -801,9 +801,10 @@ const submit = form.handleSubmit(async (values: any) => {
                 square
                 size="lg"
                 block
+                fill
               />
             </div>
-            <div class="space-y-1.5">
+            <div class="flex flex-col gap-1.5">
               <div :class="tacticalSectionLabelClasses">
                 <span :class="tacticalSectionTickClasses"></span>
                 {{ $t("draft_games.create.draft_order") }}
@@ -814,6 +815,7 @@ const submit = form.handleSubmit(async (values: any) => {
                 square
                 size="lg"
                 block
+                fill
               />
             </div>
           </section>

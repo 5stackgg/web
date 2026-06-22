@@ -24,6 +24,7 @@ const props = defineProps<{
   square?: boolean;
   size?: "lg";
   block?: boolean;
+  fill?: boolean;
 }>();
 
 const model = defineModel<string>();
@@ -109,9 +110,10 @@ watch(
 <template>
   <div
     ref="containerRef"
-    class="relative max-w-full gap-1 self-start border border-border bg-muted/30 p-1"
+    class="relative max-w-full gap-1 border border-border bg-muted/30 p-1"
     :class="[
       containerShape,
+      fill ? 'flex-1 self-stretch' : 'self-start',
       block ? 'flex w-full' : 'inline-flex w-fit flex-wrap',
     ]"
   >

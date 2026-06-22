@@ -29,6 +29,7 @@ import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
   tacticalSectionDescriptionClasses,
+  tacticalCtaButtonClasses,
 } from "~/utilities/tacticalClasses";
 import DraftGameCard from "~/components/draft-games/DraftGameCard.vue";
 import { setupOptionsVariables } from "~/utilities/setupOptions";
@@ -326,10 +327,17 @@ const rehost = async () => {
             <RotateCcw class="w-4 h-4" />
             {{ $t("draft_games.rehost") }}
           </Button>
-          <Button variant="outline" class="gap-2 max-sm:flex-1" @click="create">
+          <button
+            type="button"
+            :class="[
+              tacticalCtaButtonClasses,
+              'h-9 !px-4 !py-0 text-[0.7rem] max-sm:flex-1',
+            ]"
+            @click="create"
+          >
             <Plus class="w-4 h-4" />
             {{ $t("draft_games.create_custom_match") }}
-          </Button>
+          </button>
         </template>
       </div>
     </div>

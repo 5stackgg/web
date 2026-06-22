@@ -12,7 +12,9 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormSection,
 } from "~/components/ui/form";
+import SettingHeader from "~/components/match/SettingHeader.vue";
 import { Button } from "~/components/ui/button";
 import { Switch } from "~/components/ui/switch";
 import {
@@ -40,36 +42,33 @@ import {
           {{ $t("game_server.cs2_options.section_video_description") }}
         </p>
 
-        <div class="rounded-lg border p-3 space-y-2">
-          <div>
-            <div class="text-sm font-medium">
-              {{ $t("game_server.cs2_options.preset.title") }}
-            </div>
+        <FormSection :title="$t('game_server.cs2_options.preset.title')">
+          <div class="space-y-2">
             <p class="text-xs text-muted-foreground">
               {{ $t("game_server.cs2_options.preset.description") }}
             </p>
+            <div class="flex flex-wrap gap-2">
+              <Button
+                v-for="name of presetNames"
+                :key="name"
+                type="button"
+                :variant="activePreset === name ? 'default' : 'outline'"
+                size="sm"
+                @click="applyPreset(name)"
+              >
+                {{ $t(presetLabels[name]) }}
+              </Button>
+            </div>
+            <p v-if="isAuto" class="text-xs text-muted-foreground border-t pt-2">
+              {{ $t("game_server.cs2_options.preset.auto_active") }}
+            </p>
           </div>
-          <div class="flex flex-wrap gap-2">
-            <Button
-              v-for="name of presetNames"
-              :key="name"
-              type="button"
-              :variant="activePreset === name ? 'default' : 'outline'"
-              size="sm"
-              @click="applyPreset(name)"
-            >
-              {{ $t(presetLabels[name]) }}
-            </Button>
-          </div>
-          <p v-if="isAuto" class="text-xs text-muted-foreground border-t pt-2">
-            {{ $t("game_server.cs2_options.preset.auto_active") }}
-          </p>
-        </div>
+        </FormSection>
 
         <fieldset :disabled="isAuto" :class="isAuto ? 'opacity-50' : ''">
           <FormField v-slot="{ value }" name="resolution">
             <FormItem class="rounded-lg border p-3">
-              <FormLabel class="text-sm">
+              <FormLabel>
                 {{ $t("game_server.cs2_options.video.resolution") }}
               </FormLabel>
               <FormDescription class="text-xs">
@@ -106,10 +105,10 @@ import {
           </FormField>
 
           <div class="rounded-lg border p-3 space-y-2">
-            <div>
-              <div class="text-sm font-medium">
+            <div class="space-y-1">
+              <SettingHeader>
                 {{ $t("game_server.cs2_options.video.aa.label") }}
-              </div>
+              </SettingHeader>
               <p class="text-xs text-muted-foreground">
                 {{ $t("game_server.cs2_options.video.aa.description") }}
               </p>
@@ -145,7 +144,7 @@ import {
               class="flex flex-row items-center justify-between gap-4 rounded-lg border p-3"
             >
               <div class="space-y-0.5">
-                <FormLabel class="text-sm">{{ $t(field.labelKey) }}</FormLabel>
+                <FormLabel>{{ $t(field.labelKey) }}</FormLabel>
                 <FormDescription class="text-xs">
                   {{ $t(field.descKey) }}
                 </FormDescription>
@@ -172,7 +171,7 @@ import {
             :name="`video.${field.key}`"
           >
             <FormItem class="rounded-lg border p-3">
-              <FormLabel class="text-sm">{{ $t(field.labelKey) }}</FormLabel>
+              <FormLabel>{{ $t(field.labelKey) }}</FormLabel>
               <FormDescription class="text-xs">
                 {{ $t(field.descKey) }}
               </FormDescription>
@@ -217,7 +216,7 @@ import {
           <Button type="button" variant="outline" @click="$emit('close')">
             {{ $t("common.cancel") }}
           </Button>
-          <Button type="submit" :loading="submitting">
+          <Button variant="tactical" type="submit" :loading="submitting">
             {{ $t("game_server.cs2_options.save") }}
           </Button>
         </div>

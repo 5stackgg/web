@@ -391,6 +391,12 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
                 steam_id: true,
               },
             ],
+            draft_games: [
+              {},
+              {
+                id: true,
+              },
+            ],
           },
         ],
       }),

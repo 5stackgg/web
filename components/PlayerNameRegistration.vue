@@ -7,6 +7,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { AlertCircle } from "lucide-vue-next";
+import SettingHeader from "~/components/match/SettingHeader.vue";
 </script>
 
 <template>
@@ -31,16 +32,17 @@ import { AlertCircle } from "lucide-vue-next";
       </AlertDialogHeader>
 
       <form @submit.prevent="confirmName" class="flex flex-col gap-4">
+        <SettingHeader>{{ $t("player.registration.name_label") }}</SettingHeader>
+
         <FormField v-slot="{ componentField }" name="player_name">
           <FormItem>
-            <FormLabel>{{ $t("player.registration.name_label") }}</FormLabel>
             <FormControl>
               <Input v-bind="componentField" />
             </FormControl>
           </FormItem>
         </FormField>
 
-        <Button type="submit" :loading="submitting">{{
+        <Button variant="tactical" type="submit" :loading="submitting">{{
           $t("player.registration.confirm_button")
         }}</Button>
       </form>

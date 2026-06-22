@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "~/components/ui/dialog";
-import { Label } from "~/components/ui/label";
+import SettingHeader from "~/components/match/SettingHeader.vue";
 import {
   Select,
   SelectContent,
@@ -259,7 +259,7 @@ function close(v: boolean) {
 
       <form class="space-y-5" @submit.prevent="submit">
         <div class="space-y-2">
-          <Label>{{ $t("clips.render_dialog.map") }}</Label>
+          <SettingHeader>{{ $t("clips.render_dialog.map") }}</SettingHeader>
           <Select
             :model-value="selectedMatchMapId ?? ''"
             @update:model-value="
@@ -278,13 +278,13 @@ function close(v: boolean) {
         </div>
 
         <div class="space-y-2">
-          <Label class="flex items-center gap-2">
+          <SettingHeader>
             {{ $t("clips.create_dialog.preset") }}
             <Spinner
               v-if="loadingAvailability"
-              class="h-3 w-3 text-muted-foreground"
+              class="inline-block h-3 w-3 text-muted-foreground align-middle ml-2"
             />
-          </Label>
+          </SettingHeader>
           <div class="grid grid-cols-2 gap-2">
             <button
               v-for="p in PRESETS"
@@ -329,7 +329,7 @@ function close(v: boolean) {
         </div>
 
         <div class="space-y-2">
-          <Label>{{ $t("clips.create_dialog.resolution") }}</Label>
+          <SettingHeader>{{ $t("clips.create_dialog.resolution") }}</SettingHeader>
           <Select v-model="resolution">
             <SelectTrigger>
               <SelectValue />
@@ -354,7 +354,7 @@ function close(v: boolean) {
           >
             {{ $t("common.cancel") }}
           </Button>
-          <Button type="submit" :disabled="!canSubmit">
+          <Button type="submit" variant="tactical" :disabled="!canSubmit">
             <Spinner v-if="submitting" class="h-4 w-4 mr-2" />
             <Film v-else class="h-4 w-4 mr-2" />
             {{ $t("clips.render_dialog.queue_render") }}

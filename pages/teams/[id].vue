@@ -148,6 +148,28 @@ const teamHeroActionsClasses =
                   $t("team.hero.matches")
                 }}</span>
               </div>
+              <template v-if="avgTeamElo !== null">
+                <span :class="teamHeroStatDividerClasses"></span>
+                <div :class="teamHeroStatClasses">
+                  <span :class="teamHeroStatValueClasses">{{
+                    avgTeamElo
+                  }}</span>
+                  <span :class="teamHeroStatLabelClasses">{{
+                    $t("team.hero.avg_elo")
+                  }}</span>
+                </div>
+              </template>
+              <template v-if="avgTeamPremier !== null">
+                <span :class="teamHeroStatDividerClasses"></span>
+                <div :class="teamHeroStatClasses">
+                  <span :class="teamHeroStatValueClasses">{{
+                    avgTeamPremier
+                  }}</span>
+                  <span :class="teamHeroStatLabelClasses">{{
+                    $t("team.hero.avg_premier")
+                  }}</span>
+                </div>
+              </template>
             </div>
           </div>
         </div>
@@ -310,6 +332,7 @@ import { simpleMatchFields } from "~/graphql/simpleMatchFields";
 import { playerFields } from "~/graphql/playerFields";
 import { trophyFields } from "~/graphql/trophyFields";
 import { resolveRosterImageUrl } from "~/utilities/rosterImage";
+import { teamAvgElo, teamAvgPremier } from "~/utilities/teamElo";
 
 export default {
   data() {
@@ -464,6 +487,12 @@ export default {
     },
     teamCaptain() {
       return this.team?.captain || this.team?.owner;
+    },
+    avgTeamElo() {
+      return teamAvgElo(this.team?.roster || []);
+    },
+    avgTeamPremier() {
+      return teamAvgPremier(this.team?.roster || []);
     },
     teamCaptainRosterImageSrc() {
       const captain = this.teamCaptain;

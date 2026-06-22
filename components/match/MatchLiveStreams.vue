@@ -263,7 +263,11 @@ import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
                             >
                               {{ $t("common.cancel") }}
                             </Button>
-                            <Button type="submit" :loading="submitting">
+                            <Button
+                              variant="tactical"
+                              type="submit"
+                              :loading="submitting"
+                            >
                               {{ $t("streams.update") }}
                             </Button>
                           </DialogFooter>
@@ -372,7 +376,7 @@ import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
               >
                 {{ $t("common.cancel") }}
               </Button>
-              <Button type="submit" :loading="submitting">
+              <Button variant="tactical" type="submit" :loading="submitting">
                 {{ $t("streams.add") }}
               </Button>
             </DialogFooter>

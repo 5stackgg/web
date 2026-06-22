@@ -1,6 +1,19 @@
 <script setup lang="ts">
-import { Search, X, PlusCircle, Users, Trophy } from "lucide-vue-next";
+import {
+  Search,
+  X,
+  PlusCircle,
+  Users,
+  Trophy,
+  SlidersHorizontal,
+} from "lucide-vue-next";
 import { FormItem, FormControl } from "@/components/ui/form";
+import { Button } from "~/components/ui/button";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/components/ui/popover";
 import TeamsTable from "~/components/TeamsTable.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import Pagination from "@/components/Pagination.vue";
@@ -15,18 +28,25 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "~/components/ui/input-group";
-import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
+import {
+  tacticalCtaButtonClasses,
+  tacticalHeaderActionClasses,
+} from "~/utilities/tacticalClasses";
 </script>
 
 <template>
   <PageTransition>
-    <TacticalPageHeader>
+    <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.teams.title") }}</template>
       <template #actions>
         <NuxtLink
           v-if="me"
           :to="{ name: 'teams-create' }"
-          :class="[tacticalCtaButtonClasses, 'max-md:px-2.5 max-md:py-2']"
+          :class="[
+            tacticalCtaButtonClasses,
+            tacticalHeaderActionClasses,
+            'max-md:aspect-square max-md:!px-0',
+          ]"
         >
           <PlusCircle class="w-4 h-4" />
           <span class="hidden md:inline">{{ $t("pages.teams.create") }}</span>
@@ -69,7 +89,7 @@ import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
           </FormItem>
         </FormField>
 
-        <div class="flex flex-wrap gap-2">
+        <div class="hidden md:flex flex-wrap gap-2">
           <div
             class="flex h-9 min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150 sm:flex-none"
             :class="
@@ -111,6 +131,101 @@ import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
               class="ml-auto shrink-0 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
               @click.stop
             />
+          </div>
+        </div>
+
+        <!-- Mobile: collapse toggles behind a Filters button + chips -->
+        <div class="md:hidden space-y-3">
+          <Popover>
+            <PopoverTrigger as-child>
+              <Button
+                variant="outline"
+                class="h-11 w-full justify-center gap-2 bg-card/60 backdrop-blur"
+                :class="{
+                  'border-[hsl(var(--tac-amber)/0.55)] text-[hsl(var(--tac-amber))]':
+                    teamsFilterCount > 0,
+                }"
+              >
+                <SlidersHorizontal class="w-4 h-4" />
+                <span>{{ $t("common.filters") }}</span>
+                <span
+                  v-if="teamsFilterCount > 0"
+                  class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full text-[0.65rem] font-semibold bg-[hsl(var(--tac-amber)/0.2)] text-[hsl(var(--tac-amber))] border border-[hsl(var(--tac-amber)/0.45)]"
+                >
+                  {{ teamsFilterCount }}
+                </span>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="start"
+              class="w-[min(92vw,420px)] p-3 space-y-2"
+            >
+              <div
+                class="flex h-11 cursor-pointer items-center gap-2 rounded-md border px-3 text-sm transition-colors duration-150"
+                :class="
+                  tournamentWinnersOnly
+                    ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
+                    : 'border-border bg-muted/30 text-muted-foreground'
+                "
+                @click="toggleTournamentWinners"
+              >
+                <Trophy class="h-4 w-4 shrink-0" />
+                <span class="truncate">{{
+                  $t("team.search.tournament_winners")
+                }}</span>
+                <Switch
+                  v-model="tournamentWinnersOnly"
+                  class="ml-auto shrink-0 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
+                  @click.stop
+                />
+              </div>
+              <div
+                v-if="me"
+                class="flex h-11 cursor-pointer items-center gap-2 rounded-md border px-3 text-sm transition-colors duration-150"
+                :class="
+                  showOnlyMyTeams
+                    ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
+                    : 'border-border bg-muted/30 text-muted-foreground'
+                "
+                @click="toggleShowOnlyMyTeams"
+              >
+                <Users class="h-4 w-4 shrink-0" />
+                <span class="truncate">{{
+                  $t("team.search.my_teams_only")
+                }}</span>
+                <Switch
+                  v-model="showOnlyMyTeams"
+                  class="ml-auto shrink-0 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
+                  @click.stop
+                />
+              </div>
+            </PopoverContent>
+          </Popover>
+
+          <div
+            v-if="teamsFilterCount > 0"
+            class="flex flex-wrap items-center gap-2"
+          >
+            <button
+              v-if="tournamentWinnersOnly"
+              type="button"
+              class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
+              @click="toggleTournamentWinners"
+            >
+              <Trophy class="h-3 w-3" />
+              {{ $t("team.search.tournament_winners") }}
+              <X class="h-3 w-3 opacity-70" />
+            </button>
+            <button
+              v-if="me && showOnlyMyTeams"
+              type="button"
+              class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
+              @click="toggleShowOnlyMyTeams"
+            >
+              <Users class="h-3 w-3" />
+              {{ $t("team.search.my_teams_only") }}
+              <X class="h-3 w-3 opacity-70" />
+            </button>
           </div>
         </div>
       </form>
@@ -223,6 +338,12 @@ export default {
     },
     winnerTeamIds(): string[] {
       return Object.keys(this.trophiesByTeamId);
+    },
+    teamsFilterCount(): number {
+      let n = 0;
+      if (this.tournamentWinnersOnly) n++;
+      if (this.me && this.showOnlyMyTeams) n++;
+      return n;
     },
   },
   watch: {

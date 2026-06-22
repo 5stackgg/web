@@ -3,7 +3,6 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "~/components/ui/form";
 import {
@@ -14,13 +13,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import SettingHeader from "~/components/match/SettingHeader.vue";
 </script>
 
 <template>
   <form class="space-y-8">
     <FormField v-slot="{ componentField }" name="server_id">
-      <FormItem>
-        <FormLabel>{{ $t("match.server.assign") }}</FormLabel>
+      <FormItem class="space-y-1.5">
+        <SettingHeader>{{ $t("match.server.assign") }}</SettingHeader>
         <Select v-bind="componentField" @update:modelValue="updateMatchServer">
           <FormControl>
             <SelectTrigger>

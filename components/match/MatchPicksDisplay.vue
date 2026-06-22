@@ -14,7 +14,7 @@ import cleanMapName from "~/utilities/cleanMapName";
     }}</span>
   </div>
   <div
-    v-else-if="!visiblePicks || visiblePicks.length === 0"
+    v-else-if="totalSlots === 0"
     class="flex w-full items-center justify-center py-6 text-muted-foreground text-xs uppercase tracking-[0.18em] font-mono"
   >
     {{ $t("match.picks.empty") }}
@@ -118,6 +118,16 @@ import cleanMapName from "~/utilities/cleanMapName";
         </TooltipContent>
       </Tooltip>
     </template>
+
+    <!-- Reserve a slot for every remaining veto action so the grid doesn't grow. -->
+    <div
+      v-for="n in placeholderCount"
+      :key="`placeholder-${n}`"
+      class="pick-card pick-card--placeholder"
+      aria-hidden="true"
+    >
+      <span class="placeholder-num">{{ visiblePicks.length + n }}</span>
+    </div>
   </div>
 </template>
 
@@ -133,10 +143,18 @@ export default {
       type: Object,
       required: true,
     },
+    picks: {
+      type: Array,
+      required: false,
+      default: undefined,
+    },
   },
   emits: ["update:count"],
   apollo: {
     match_map_veto_picks: {
+      skip() {
+        return Array.isArray(this.picks);
+      },
       variables() {
         return {
           order_by: order_by.asc,
@@ -182,28 +200,40 @@ export default {
         ],
       }),
       result({ data }: { data: any }) {
-        this.picks = data?.match_map_veto_picks ?? [];
+        this.queriedPicks = data?.match_map_veto_picks ?? [];
         this.$emit(
           "update:count",
-          this.picks.filter((p: any) => p.type !== "Side").length,
+          this.queriedPicks.filter((p: any) => p.type !== "Side").length,
         );
       },
     },
   },
   data() {
     return {
-      picks: undefined as any[] | undefined,
+      queriedPicks: undefined as any[] | undefined,
     };
   },
   computed: {
+    sourcePicks(): any[] | undefined {
+      return Array.isArray(this.picks) ? this.picks : this.queriedPicks;
+    },
     loading() {
-      return this.picks === undefined;
+      return this.sourcePicks === undefined;
     },
     apiDomain() {
       return useRuntimeConfig().public.apiDomain;
     },
     visiblePicks(): any[] {
-      return (this.picks ?? []).filter((p: any) => p.type !== "Side");
+      return (this.sourcePicks ?? []).filter((p: any) => p.type !== "Side");
+    },
+    // Every map in the pool ends up picked/banned/decider (sides excluded), so
+    // the pool size is the final grid size — reserve that many slots up front.
+    totalSlots(): number {
+      const poolSize = this.match?.options?.map_pool?.maps?.length ?? 0;
+      return Math.max(poolSize, this.visiblePicks.length);
+    },
+    placeholderCount(): number {
+      return Math.max(0, this.totalSlots - this.visiblePicks.length);
     },
   },
   methods: {
@@ -218,7 +248,7 @@ export default {
     sidePickForMap(mapId: string | undefined | null) {
       if (!mapId) return null;
       return (
-        this.picks?.find(
+        this.sourcePicks?.find(
           (p: any) => p.type === "Side" && p.map?.id === mapId,
         ) ?? null
       );
@@ -306,6 +336,25 @@ export default {
     border-color 200ms ease,
     box-shadow 200ms ease;
 }
+/* A locked pick materializes into its slot rather than snapping in. */
+.pick-card:not(.pick-card--placeholder) {
+  animation: pick-pop 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@keyframes pick-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pick-card:not(.pick-card--placeholder) {
+    animation: none;
+  }
+}
 .pick-card:hover {
   border-color: hsl(var(--tac-amber) / 0.45);
   box-shadow: 0 0 0 1px hsl(var(--tac-amber) / 0.15);
@@ -314,6 +363,26 @@ export default {
   outline: none;
   border-color: hsl(var(--tac-amber) / 0.7);
   box-shadow: 0 0 0 2px hsl(var(--tac-amber) / 0.35);
+}
+
+.pick-card--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 8.5rem;
+  border-style: dashed;
+  border-color: hsl(var(--border) / 0.5);
+  background: hsl(var(--card) / 0.3);
+}
+.pick-card--placeholder:hover {
+  border-color: hsl(var(--border) / 0.5);
+  box-shadow: none;
+}
+.placeholder-num {
+  font-family: var(--font-mono, monospace);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: hsl(var(--muted-foreground) / 0.35);
 }
 
 .type-pill {

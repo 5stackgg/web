@@ -44,6 +44,14 @@ export const tacticalFilterPillActiveDangerClasses =
 export const tacticalCtaButtonClasses =
   "tac-amber-cta relative isolate inline-flex items-center justify-center gap-2 overflow-hidden rounded-md border px-5 py-3 font-sans text-xs font-bold uppercase leading-none tracking-[0.16em] cursor-pointer";
 
+// Header action buttons size their height to the page title's clamp so the
+// header is governed by the title text (it scales with the title instead of
+// jumping to a fixed button height). Pair with a
+// `<breakpoint>:aspect-square <breakpoint>:!px-0` collapse on each page so the
+// icon-only state is a square. Mirrors the title clamp in TacticalPageHeader.
+export const tacticalHeaderActionClasses =
+  "!py-0 h-[clamp(1.75rem,4.2vw,3rem)]";
+
 // Tactical veto tile — rounded frame for map/region pick-ban tiles.
 // Combine the base with hover + active + disabled as needed.
 export const vetoTileClasses =

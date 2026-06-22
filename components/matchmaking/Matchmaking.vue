@@ -4,7 +4,6 @@ import { AlertTriangle } from "lucide-vue-next";
 import QuickMatchConnect from "~/components/match/QuickMatchConnect.vue";
 import { Button } from "~/components/ui/button";
 import TimeAgo from "../TimeAgo.vue";
-import CustomMatch from "~/components/CustomMatch.vue";
 
 const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -270,15 +269,7 @@ const mmCardPending =
               </Transition>
             </div>
           </button>
-
-          <CustomMatch
-            compact
-            class="transition-all duration-300 ease-out"
-            :class="{ 'opacity-40 scale-95': pendingMatchType }"
-          />
         </div>
-
-        <CustomMatch v-if="isMobile" class="mt-4" />
       </div>
     </template>
     <template v-else-if="match">

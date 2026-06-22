@@ -36,6 +36,10 @@ function isPublicRoute(path: string): boolean {
     return true;
   }
 
+  if (path === "/news" || path.startsWith("/news/")) {
+    return true;
+  }
+
   if (path.startsWith("/match-popout")) {
     return true;
   }

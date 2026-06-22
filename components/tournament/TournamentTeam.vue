@@ -162,6 +162,7 @@ import { toast } from "~/components/ui/toast";
                       {{ $t("common.cancel") }}
                     </Button>
                     <Button
+                      variant="tactical"
                       type="submit"
                       size="sm"
                       :disabled="!canSaveIdentity"

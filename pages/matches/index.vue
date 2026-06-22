@@ -45,6 +45,7 @@ import {
 } from "~/components/ui/select";
 import {
   tacticalCtaButtonClasses,
+  tacticalHeaderActionClasses,
   tacticalSectionTickClasses,
 } from "~/utilities/tacticalClasses";
 
@@ -89,13 +90,17 @@ function optionRowClass(active: boolean) {
 
 <template>
   <PageTransition>
-    <TacticalPageHeader>
+    <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.matches.title") }}</template>
       <template #actions>
         <NuxtLink
           v-if="canCreateMatch"
           to="/matches/create"
-          :class="[tacticalCtaButtonClasses, 'max-md:px-2.5 max-md:py-2']"
+          :class="[
+            tacticalCtaButtonClasses,
+            tacticalHeaderActionClasses,
+            'max-md:aspect-square max-md:!px-0',
+          ]"
           :title="$t('pages.matches.create')"
         >
           <PlusCircle class="w-4 h-4" />
@@ -209,6 +214,28 @@ function optionRowClass(active: boolean) {
             </PopoverContent>
           </Popover>
 
+          <!-- Filters: teams, players, date window, options -->
+          <Popover>
+            <PopoverTrigger as-child>
+              <button
+                type="button"
+                :class="[
+                  filterTriggerBase,
+                  filtersDrawerCount ? filterTriggerActive : filterTriggerIdle,
+                ]"
+              >
+                <SlidersHorizontal class="h-3.5 w-3.5" />
+                {{ $t("common.filters") }}
+                <span v-if="filtersDrawerCount" :class="filterBadgeClasses">
+                  {{ filtersDrawerCount }}
+                </span>
+                <ChevronDown class="h-3 w-3 opacity-50" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="start"
+              class="flex w-[min(92vw,320px)] flex-col gap-1.5 p-2"
+            >
           <!-- Teams (TeamSearch provides its own search popover) -->
           <TeamSearch
             :label="$t('pages.manage_matches.enter_team_name')"
@@ -219,6 +246,7 @@ function optionRowClass(active: boolean) {
               type="button"
               :class="[
                 filterTriggerBase,
+                'w-full justify-between',
                 form.teams.length ? filterTriggerActive : filterTriggerIdle,
               ]"
             >
@@ -241,6 +269,7 @@ function optionRowClass(active: boolean) {
               type="button"
               :class="[
                 filterTriggerBase,
+                'w-full justify-between',
                 form.players.length ? filterTriggerActive : filterTriggerIdle,
               ]"
             >
@@ -260,6 +289,7 @@ function optionRowClass(active: boolean) {
                 type="button"
                 :class="[
                   filterTriggerBase,
+                  'w-full justify-between',
                   form.dateFrom || form.dateTo
                     ? filterTriggerActive
                     : filterTriggerIdle,
@@ -333,6 +363,7 @@ function optionRowClass(active: boolean) {
                 type="button"
                 :class="[
                   filterTriggerBase,
+                  'w-full justify-between',
                   optionsActive ? filterTriggerActive : filterTriggerIdle,
                 ]"
               >
@@ -396,6 +427,8 @@ function optionRowClass(active: boolean) {
                   class="h-9 pl-8 font-mono text-xs"
                 />
               </div>
+            </PopoverContent>
+          </Popover>
             </PopoverContent>
           </Popover>
 
@@ -970,6 +1003,16 @@ export default {
         this.showOnlyMyMatches ||
         !!this.form.matchId?.trim()
       );
+    },
+    // Count of active filter groups behind the "Filters" popover (status
+    // stays inline, so it's excluded here).
+    filtersDrawerCount(): number {
+      let n = 0;
+      if (this.form.teams?.length) n++;
+      if (this.form.players?.length) n++;
+      if (this.form.dateFrom || this.form.dateTo) n++;
+      if (this.optionsActive) n++;
+      return n;
     },
     optionsCount(): number {
       let n = 0;

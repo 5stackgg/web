@@ -216,8 +216,12 @@ export default {
         this.isLobbyLeader &&
         (this.matchmakingAllowed || this.canCreateMatch) &&
         this.$route.name !== "play" &&
-        this.myMatches.length === 0
+        this.myMatches.length === 0 &&
+        !this.myDraftGame
       );
+    },
+    myDraftGame() {
+      return useDraftGamesStore().myDraftGame;
     },
     matchmakingAllowed() {
       return useApplicationSettingsStore().matchmakingAllowed;

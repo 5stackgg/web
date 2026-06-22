@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Card, CardContent, CardHeader } from "~/components/ui/card";
+import { Card, CardContent } from "~/components/ui/card";
 import LineupOverview from "~/components/match/LineupOverview.vue";
 import LineupUtility from "~/components/match/LineupUtility.vue";
 import LineupTradeStats from "~/components/match/LineupTradeStats.vue";
@@ -721,43 +721,36 @@ provide("commander", commander);
       />
     </TabsContent>
     <TabsContent value="settings" class="flex flex-col gap-4 max-w-[1500px]">
-      <Card class="bg-card/20">
-        <CardContent class="py-4">
-          <MatchOptionsDisplay
-            :options="match.options"
-            :show-details-by-default="true"
-          ></MatchOptionsDisplay>
+      <MatchOptionsDisplay
+        :options="match.options"
+        :show-details-by-default="true"
+      ></MatchOptionsDisplay>
 
-          <template v-if="displayServerInformation">
-            <Separator class="my-8" />
-
-            <div class="space-y-4">
-              <h3 class="font-semibold">
-                {{ $t("match.tabs.server_information") }}
-              </h3>
-              <ul class="space-y-3">
-                <li class="flex items-center justify-between">
-                  <span class="text-muted-foreground">{{
-                    $t("match.tabs.type")
-                  }}</span>
-                  <span>{{ match.server_type || $t("common.tbd") }}</span>
-                </li>
-                <li class="flex items-center justify-between">
-                  <span class="text-muted-foreground">{{
-                    $t("match.tabs.region")
-                  }}</span>
-                  <span v-if="match.server_region">
-                    {{ match.server_region }}
-                  </span>
-                  <span v-else-if="match.e_region">
-                    {{ match.e_region.description || match.e_region.value }}
-                  </span>
-                </li>
-              </ul>
-            </div>
-          </template>
-        </CardContent>
-      </Card>
+      <section v-if="displayServerInformation" class="server-info-panel">
+        <header class="server-info-panel__head">
+          <span class="server-info-panel__tick"></span>
+          {{ $t("match.tabs.server_information") }}
+        </header>
+        <dl class="server-info-panel__list">
+          <div class="server-info-row">
+            <dt class="server-info-row__label">{{ $t("match.tabs.type") }}</dt>
+            <dd class="server-info-row__value">
+              {{ match.server_type || $t("common.tbd") }}
+            </dd>
+          </div>
+          <div class="server-info-row">
+            <dt class="server-info-row__label">{{
+              $t("match.tabs.region")
+            }}</dt>
+            <dd class="server-info-row__value">
+              <span v-if="match.server_region">{{ match.server_region }}</span>
+              <span v-else-if="match.e_region">{{
+                match.e_region.description || match.e_region.value
+              }}</span>
+            </dd>
+          </div>
+        </dl>
+      </section>
       <MatchForm
         v-if="match.is_organizer && showMatchSettingsForm"
         :match="match"
@@ -828,6 +821,85 @@ provide("commander", commander);
 .map-flip-leave-to {
   transform: rotateX(90deg);
   opacity: 0;
+}
+
+.server-info-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid hsl(var(--border) / 0.6);
+  border-radius: var(--radius);
+  background: linear-gradient(
+    180deg,
+    hsl(var(--card) / 0.35),
+    hsl(var(--card) / 0.1)
+  );
+  padding: 0.875rem 1rem 0.5rem;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.server-info-panel:hover {
+  border-color: hsl(var(--tac-amber) / 0.35);
+}
+
+.server-info-panel__head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: hsl(var(--foreground));
+}
+
+.server-info-panel__tick {
+  width: 2px;
+  height: 0.7rem;
+  background: hsl(var(--tac-amber));
+}
+
+.server-info-panel__list {
+  display: flex;
+  flex-direction: column;
+}
+
+.server-info-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid hsl(var(--border) / 0.3);
+}
+
+.server-info-row:last-child {
+  border-bottom: 0;
+}
+
+.server-info-row__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  line-height: 1.3;
+  color: hsl(var(--muted-foreground) / 0.85);
+}
+
+.server-info-row__value {
+  flex: 0 0 auto;
+  text-align: right;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
 }
 </style>
 

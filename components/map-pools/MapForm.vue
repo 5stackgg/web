@@ -16,129 +16,139 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { FormSection } from "~/components/ui/form";
 import { Trash, AlertTriangle, RefreshCw } from "lucide-vue-next";
 import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
 </script>
 
 <template>
-  <form @submit.prevent="submitForm" class="space-y-4">
-    <FormField name="workshop_map_id" v-slot="{ componentField }">
-      <FormItem>
-        <FormLabel for="workshop_map_id">{{
-          $t("pages.map_pools.form.workshop_map_id")
-        }}</FormLabel>
-        <FormControl>
-          <div class="flex gap-2">
-            <Input
-              v-bind="componentField"
-              type="text"
-              id="workshop_map_id"
-              name="workshop_map_id"
-            />
-            <Button
-              type="button"
-              variant="outline"
-              @click="refreshWorkshopMapDetails"
-              :disabled="!form.values.workshop_map_id || isLoading"
-            >
-              <RefreshCw
-                class="h-4 w-4 mr-2"
-                :class="{ 'animate-spin': isLoading }"
+  <form @submit.prevent="submitForm" class="space-y-5">
+    <FormSection :title="$t('pages.map_pools.add_new_map')">
+      <div class="space-y-4">
+        <FormField name="workshop_map_id" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel for="workshop_map_id">{{
+              $t("pages.map_pools.form.workshop_map_id")
+            }}</FormLabel>
+            <FormControl>
+              <div class="flex gap-2">
+                <Input
+                  v-bind="componentField"
+                  type="text"
+                  id="workshop_map_id"
+                  name="workshop_map_id"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  @click="refreshWorkshopMapDetails"
+                  :disabled="!form.values.workshop_map_id || isLoading"
+                >
+                  <RefreshCw
+                    class="h-4 w-4 mr-2"
+                    :class="{ 'animate-spin': isLoading }"
+                  />
+                  {{ $t("pages.map_pools.form.refresh_workshop") }}
+                </Button>
+              </div>
+              <template v-if="form.values.workshop_map_id">
+                <ViewOnSteam :workshop_map_id="form.values.workshop_map_id" />
+              </template>
+            </FormControl>
+          </FormItem>
+        </FormField>
+
+        <template v-show="!form.values.workshop_map_id">
+          <FormField name="name" v-slot="{ componentField }">
+            <FormItem>
+              <FormLabel for="name">{{
+                $t("pages.map_pools.form.name")
+              }}</FormLabel>
+              <FormControl>
+                <Input
+                  v-bind="componentField"
+                  type="text"
+                  id="name"
+                  name="name"
+                  required
+                  :disabled="!!form.values.workshop_map_id"
+                />
+              </FormControl>
+              <FormDescription class="flex items-center">
+                <AlertTriangle class="w-4 h-4 mr-2 text-red-500" />
+                {{ $t("pages.map_pools.form.name_description") }}
+              </FormDescription>
+            </FormItem>
+          </FormField>
+        </template>
+
+        <FormField name="label" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel for="label">{{
+              $t("pages.map_pools.form.label")
+            }}</FormLabel>
+            <FormControl>
+              <Input
+                v-bind="componentField"
+                type="text"
+                id="label"
+                name="label"
               />
-              {{ $t("pages.map_pools.form.refresh_workshop") }}
-            </Button>
-          </div>
-          <template v-if="form.values.workshop_map_id">
-            <ViewOnSteam :workshop_map_id="form.values.workshop_map_id" />
-          </template>
-        </FormControl>
-      </FormItem>
-    </FormField>
+            </FormControl>
+          </FormItem>
+        </FormField>
 
-    <template v-show="!form.values.workshop_map_id">
-      <FormField name="name" v-slot="{ componentField }">
-        <FormItem>
-          <FormLabel for="name">{{
-            $t("pages.map_pools.form.name")
-          }}</FormLabel>
-          <FormControl>
-            <Input
-              v-bind="componentField"
-              type="text"
-              id="name"
-              name="name"
-              required
-              :disabled="!!form.values.workshop_map_id"
-            />
-          </FormControl>
-          <FormDescription class="flex items-center">
-            <AlertTriangle class="w-4 h-4 mr-2 text-red-500" />
-            {{ $t("pages.map_pools.form.name_description") }}
-          </FormDescription>
-        </FormItem>
-      </FormField>
-    </template>
+        <FormField name="poster" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel for="poster">{{
+              $t("pages.map_pools.form.poster")
+            }}</FormLabel>
+            <FormControl>
+              <Input
+                v-bind="componentField"
+                type="text"
+                id="poster"
+                name="poster"
+                :placeholder="$t('pages.map_pools.form.poster_placeholder')"
+              />
+              <div v-if="form.values.poster" class="mt-2">
+                <img
+                  :src="form.values.poster"
+                  :alt="$t('alt_text.map_poster')"
+                  class="max-w-xs rounded-md"
+                />
+              </div>
+            </FormControl>
+          </FormItem>
+        </FormField>
 
-    <FormField name="label" v-slot="{ componentField }">
-      <FormItem>
-        <FormLabel for="label">{{
-          $t("pages.map_pools.form.label")
-        }}</FormLabel>
-        <FormControl>
-          <Input v-bind="componentField" type="text" id="label" name="label" />
-        </FormControl>
-      </FormItem>
-    </FormField>
-
-    <FormField name="poster" v-slot="{ componentField }">
-      <FormItem>
-        <FormLabel for="poster">{{
-          $t("pages.map_pools.form.poster")
-        }}</FormLabel>
-        <FormControl>
-          <Input
-            v-bind="componentField"
-            type="text"
-            id="poster"
-            name="poster"
-            :placeholder="$t('pages.map_pools.form.poster_placeholder')"
-          />
-          <div v-if="form.values.poster" class="mt-2">
-            <img
-              :src="form.values.poster"
-              :alt="$t('alt_text.map_poster')"
-              class="max-w-xs rounded-md"
-            />
-          </div>
-        </FormControl>
-      </FormItem>
-    </FormField>
-
-    <FormField name="patch" v-slot="{ componentField }">
-      <FormItem>
-        <FormLabel for="patch">{{
-          $t("pages.map_pools.form.patch")
-        }}</FormLabel>
-        <FormControl>
-          <Input
-            v-bind="componentField"
-            type="text"
-            id="patch"
-            name="patch"
-            :placeholder="$t('pages.map_pools.form.patch_placeholder')"
-          />
-          <div v-if="form.values.patch" class="mt-2">
-            <img
-              :src="form.values.patch"
-              :alt="$t('alt_text.map_patch')"
-              class="max-w-xs rounded-md"
-            />
-          </div>
-        </FormControl>
-      </FormItem>
-    </FormField>
+        <FormField name="patch" v-slot="{ componentField }">
+          <FormItem>
+            <FormLabel for="patch">{{
+              $t("pages.map_pools.form.patch")
+            }}</FormLabel>
+            <FormControl>
+              <Input
+                v-bind="componentField"
+                type="text"
+                id="patch"
+                name="patch"
+                :placeholder="$t('pages.map_pools.form.patch_placeholder')"
+              />
+              <div v-if="form.values.patch" class="mt-2">
+                <img
+                  :src="form.values.patch"
+                  :alt="$t('alt_text.map_patch')"
+                  class="max-w-xs rounded-md"
+                />
+              </div>
+            </FormControl>
+          </FormItem>
+        </FormField>
+      </div>
+    </FormSection>
     <div class="flex justify-between items-center">
-      <Button type="submit" :loading="submitting">{{
+      <Button variant="tactical" type="submit" :loading="submitting">{{
         map
           ? $t("pages.map_pools.form.update_map")
           : $t("pages.map_pools.form.create_map")

@@ -40,19 +40,19 @@ import { CornerDownLeft } from "lucide-vue-next";
     <FormField v-slot="{ componentField }" name="message">
       <FormItem>
         <FormControl>
-          <div class="p-3 flex justify-between">
+          <div class="flex items-center gap-2 p-2">
             <Input
               ref="inputRef"
               :placeholder="$t('chat.message_placeholder')"
               v-bind="componentField"
-              class="resize-none border-0 p-3 shadow-none focus-visible:ring-0"
+              class="flex-1 resize-none border-0 shadow-none focus-visible:ring-0"
             />
             <Button
               type="submit"
               size="sm"
               :loading="sending"
               :min-loading-ms="0"
-              class="ml-auto gap-1.5"
+              class="shrink-0 gap-1.5"
             >
               <CornerDownLeft class="size-3.5" />
             </Button>

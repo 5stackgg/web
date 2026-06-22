@@ -20,4 +20,8 @@ export default defineNuxtRouteMiddleware((to, from) => {
   if (!canCreateMatch) {
     return navigateTo("/");
   }
+
+  if (!useApplicationSettingsStore().canCreateCustomMatch) {
+    return navigateTo("/play");
+  }
 });

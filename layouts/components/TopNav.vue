@@ -23,7 +23,6 @@ import {
   ChevronsUpDown,
   CheckCircle2,
 } from "lucide-vue-next";
-import { e_match_status_enum } from "~/generated/zeus";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useMatchLobbyStore } from "~/stores/MatchLobbyStore";
 import { useMatchReadyModal } from "~/composables/useMatchReadyModal";
@@ -32,6 +31,7 @@ import PlayerPendingImports from "~/components/PlayerPendingImports.vue";
 import { useAuthStore } from "~/stores/AuthStore";
 import Logout from "./Logout.vue";
 import MatchLobbies from "./MatchLobbies.vue";
+import DraftRoomNav from "./DraftRoomNav.vue";
 import SystemStatus from "./SystemStatus.vue";
 import { useSidebar } from "~/components/ui/sidebar/utils";
 import { NuxtImg } from "#components";
@@ -45,29 +45,15 @@ const { isMobile } = useSidebar();
 const { openLastOrDefaultHub } = useHubState();
 const { brandName, logoUrl } = useBranding();
 const matchmakingStore = useMatchmakingStore();
-const matchLobbyStore = useMatchLobbyStore();
 const { openMatchReadyModal } = useMatchReadyModal();
-const ALERTABLE_MATCH_STATUSES: string[] = [
-  e_match_status_enum.WaitingForCheckIn,
-  e_match_status_enum.Veto,
-  e_match_status_enum.Live,
-];
+// Genuine matchmaking ready-check only. Active matches (Veto/Live/etc.) are
+// already surfaced by the lineup pills in <MatchLobbies>, so we don't duplicate
+// them as a top-nav check-in banner.
 const pendingCheckIn = computed(() => {
   const confirmation = matchmakingStore.joinedMatchmakingQueues?.confirmation;
   if (!confirmation || confirmation.matchId) return null;
   return confirmation;
 });
-const activeMatchAlert = computed(() => {
-  if (pendingCheckIn.value) return null;
-  const match = matchLobbyStore.currentMatch as
-    | { id: string; status: string }
-    | undefined;
-  if (!match || !ALERTABLE_MATCH_STATUSES.includes(match.status)) return null;
-  return match;
-});
-const hasPendingAlert = computed(
-  () => !!pendingCheckIn.value || !!activeMatchAlert.value,
-);
 const route = useRoute();
 const authStore = useAuthStore();
 
@@ -456,6 +442,26 @@ const loginArrowClasses =
                           </NuxtLink>
                         </NavigationMenuLink>
                       </li>
+                      <li v-if="tldrNewsEnabled">
+                        <NavigationMenuLink as-child>
+                          <NuxtLink
+                            to="/news"
+                            :class="[navItemClasses, navItemStackedClasses]"
+                          >
+                            <span :class="navItemChevronClasses">◢</span>
+                            <span :class="navItemContentClasses">
+                              <span :class="navItemLabelClasses">
+                                {{ $t("layouts.top_nav.community.news.title") }}
+                              </span>
+                              <span :class="navItemSubClasses">
+                                {{
+                                  $t("layouts.top_nav.community.news.subtitle")
+                                }}
+                              </span>
+                            </span>
+                          </NuxtLink>
+                        </NavigationMenuLink>
+                      </li>
                     </ul>
                   </div>
 
@@ -530,7 +536,7 @@ const loginArrowClasses =
         <div :class="topNavRightClasses">
           <InstallPWA v-if="!isMobile" :is-menu-item="false" />
           <button
-            v-if="hasPendingAlert"
+            v-if="pendingCheckIn"
             type="button"
             class="relative inline-flex h-7 items-center gap-1.5 rounded-md border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.08)] px-2 font-mono text-[0.7rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))] transition-colors hover:bg-[hsl(var(--tac-amber)/0.15)]"
             :aria-label="$t('matchmaking.check_in')"
@@ -552,6 +558,7 @@ const loginArrowClasses =
               {{ pendingCheckIn.confirmed }}/{{ pendingCheckIn.players }}
             </span>
           </button>
+          <DraftRoomNav v-if="!isMobile" />
           <MatchLobbies v-if="!isMobile" />
           <Button
             variant="ghost"
@@ -736,6 +743,9 @@ export default {
     },
     showReportIssue() {
       return useApplicationSettingsStore().showReportIssue;
+    },
+    tldrNewsEnabled() {
+      return useApplicationSettingsStore().tldrNewsEnabled;
     },
     me() {
       return useAuthStore().me;

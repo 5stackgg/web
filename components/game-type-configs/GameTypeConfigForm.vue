@@ -15,26 +15,31 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { FormSection } from "~/components/ui/form";
 import { Trash } from "lucide-vue-next";
 import type * as Monaco from "monaco-editor";
 import { loadMonaco } from "~/utilities/loadMonaco";
 </script>
 
 <template>
-  <form @submit.prevent="submitForm" class="space-y-4">
-    <FormField name="cfg" v-slot="{ componentField }">
-      <FormItem>
-        <FormLabel for="cfg">{{ $t("game_type_configs.form.cfg") }}</FormLabel>
-        <FormControl>
-          <div class="border rounded-md overflow-hidden" style="height: 400px">
-            <div ref="editorContainer" class="w-full h-full" />
-          </div>
-        </FormControl>
-      </FormItem>
-    </FormField>
+  <form @submit.prevent="submitForm" class="space-y-5">
+    <FormSection :title="$t('game_type_configs.form.cfg')">
+      <FormField name="cfg" v-slot="{ componentField }">
+        <FormItem>
+          <FormControl>
+            <div
+              class="border rounded-md overflow-hidden"
+              style="height: 400px"
+            >
+              <div ref="editorContainer" class="w-full h-full" />
+            </div>
+          </FormControl>
+        </FormItem>
+      </FormField>
+    </FormSection>
 
     <div class="flex justify-between items-center">
-      <Button type="submit" :loading="submitting">{{
+      <Button variant="tactical" type="submit" :loading="submitting">{{
         gameTypeConfig
           ? $t("game_type_configs.form.update")
           : $t("game_type_configs.form.create")

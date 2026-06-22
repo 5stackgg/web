@@ -44,6 +44,7 @@ import { useTournamentContext } from "~/composables/useTournamentContext";
 import { useMatchContext } from "~/composables/useMatchContext";
 import { usePlayerContext } from "~/composables/usePlayerContext";
 import { useTeamContext } from "~/composables/useTeamContext";
+import { useDraftRoomContext } from "~/composables/useDraftRoomContext";
 
 export default {
   computed: {
@@ -59,6 +60,7 @@ export default {
       const mc = useMatchContext();
       const pc = usePlayerContext();
       const teamc = useTeamContext();
+      const drc = useDraftRoomContext();
       const breadcrumbs: Array<{
         text: string;
         to: string;
@@ -131,6 +133,17 @@ export default {
           }
           breadcrumbs.push({
             text: teamc.value.name,
+            to: path,
+          });
+          return;
+        }
+
+        if (segments[0] === "draft-room" && index === 1) {
+          if (drc.value?.id !== segment) {
+            return;
+          }
+          breadcrumbs.push({
+            text: drc.value.name,
             to: path,
           });
           return;

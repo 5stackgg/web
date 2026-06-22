@@ -4,67 +4,61 @@ import { Button } from "~/components/ui/button";
 import { Switch } from "~/components/ui/switch";
 import { RefreshCw } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
+import { FormSection } from "~/components/ui/form";
+import SettingHeader from "~/components/match/SettingHeader.vue";
 </script>
 
 <template>
   <div class="space-y-4">
-    <div
-      class="flex items-center justify-between gap-4 p-8 border border-border rounded-lg bg-card"
+    <FormSection
+      :title="$t('pages.settings.matchmaking.show_match_ready_modal.title')"
     >
-      <div class="flex-1">
-        <Label class="text-lg font-semibold">
-          {{ $t("pages.settings.matchmaking.show_match_ready_modal.title") }}
-        </Label>
-        <p class="text-sm text-muted-foreground mt-1">
+      <div class="flex items-center justify-between gap-4">
+        <p class="flex-1 text-sm text-muted-foreground">
           {{
             $t("pages.settings.matchmaking.show_match_ready_modal.description")
           }}
         </p>
-      </div>
-      <div class="flex items-center gap-2">
-        <Spinner
-          v-if="savingShowMatchReadyModal"
-          class="h-4 w-4 text-muted-foreground"
-        />
-        <Switch
-          :model-value="showMatchReadyModal"
-          :disabled="savingShowMatchReadyModal || !me"
-          @update:model-value="updateShowMatchReadyModal"
-        />
-      </div>
-    </div>
-
-    <div class="flex items-center p-8 border border-border rounded-lg bg-card">
-      <div class="flex-1">
-        <div class="flex justify-between mb-4">
-          <Label class="text-lg font-semibold">
-            {{ $t("pages.settings.matchmaking.max_acceptable_latency") }}
-          </Label>
-
-          <span class="text-xl font-medium"
-            >{{ playerMaxAcceptablelatnecy }}ms</span
-          >
+        <div class="flex items-center gap-2">
+          <Spinner
+            v-if="savingShowMatchReadyModal"
+            class="h-4 w-4 text-muted-foreground"
+          />
+          <Switch
+            :model-value="showMatchReadyModal"
+            :disabled="savingShowMatchReadyModal || !me"
+            @update:model-value="updateShowMatchReadyModal"
+          />
         </div>
-        <input
-          type="range"
-          v-model="playerMaxAcceptablelatnecy"
-          min="5"
-          :max="maxAcceptableLatency"
-          step="5"
-          class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-          @change="updateMaxAcceptableLatency"
-        />
-        <p class="text-sm text-muted-foreground mt-2">
-          {{ $t("pages.settings.matchmaking.max_latency_description") }}
-        </p>
       </div>
-    </div>
+    </FormSection>
 
-    <div
-      class="border border-border rounded-lg bg-card"
+    <FormSection>
+      <div class="flex items-center justify-between gap-4 mb-4">
+        <SettingHeader>
+          {{ $t("pages.settings.matchmaking.max_acceptable_latency") }}
+        </SettingHeader>
+        <span class="text-xl font-medium">{{ playerMaxAcceptablelatnecy }}ms</span>
+      </div>
+      <input
+        type="range"
+        v-model="playerMaxAcceptablelatnecy"
+        min="5"
+        :max="maxAcceptableLatency"
+        step="5"
+        class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+        @change="updateMaxAcceptableLatency"
+      />
+      <p class="text-sm text-muted-foreground mt-2">
+        {{ $t("pages.settings.matchmaking.max_latency_description") }}
+      </p>
+    </FormSection>
+
+    <FormSection
+      :title="$t('common.region')"
       v-if="availableRegions.length > 0"
     >
-      <div class="p-4 flex justify-end">
+      <div class="flex justify-end mb-4">
         <Button
           variant="outline"
           size="sm"
@@ -149,7 +143,7 @@ import { Spinner } from "~/components/ui/spinner";
           </tbody>
         </table>
       </div>
-    </div>
+    </FormSection>
   </div>
 </template>
 

@@ -10,6 +10,8 @@ import {
 
 defineProps<{
   corners?: "both" | "tl" | "br" | "none";
+  inlineActions?: boolean;
+  stackActions?: boolean;
 }>();
 
 const tacticalTabs = {
@@ -36,7 +38,14 @@ const tacticalTabs = {
     ></span>
 
     <div
-      class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between sm:gap-6"
+      class="flex gap-3"
+      :class="
+        inlineActions
+          ? 'flex-row items-center justify-between'
+          : stackActions
+            ? 'flex-col'
+            : 'flex-col sm:flex-row sm:items-end sm:justify-between sm:gap-6'
+      "
     >
       <div class="flex min-w-0 flex-col gap-[0.35rem]">
         <span
@@ -69,7 +78,14 @@ const tacticalTabs = {
 
       <div
         v-if="$slots.actions"
-        class="flex items-center gap-3 sm:ml-auto sm:shrink-0 max-sm:-mx-1 max-sm:overflow-x-auto max-sm:px-1 max-sm:pb-1 max-sm:[&>*]:shrink-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        class="flex items-center gap-3"
+        :class="
+          inlineActions
+            ? 'ml-auto shrink-0'
+            : stackActions
+              ? '-mx-1 overflow-x-auto px-1 pb-1 [&>*]:shrink-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
+              : 'sm:ml-auto sm:shrink-0 max-sm:-mx-1 max-sm:overflow-x-auto max-sm:px-1 max-sm:pb-1 max-sm:[&>*]:shrink-0 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
+        "
       >
         <slot name="actions" :tabs="tacticalTabs"></slot>
       </div>

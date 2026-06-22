@@ -165,10 +165,8 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
 
     <Separator class="my-6" />
 
-    <template v-if="picks?.length > 0 || hasAssignedRegion">
-      <MatchPicksDisplay :match="match" :picks="picks" />
-      <Separator class="mt-6" />
-    </template>
+    <!-- Always render so the reserved pick slots show before the first pick. -->
+    <MatchPicksDisplay :match="match" :picks="picks" />
   </div>
 </template>
 
@@ -195,6 +193,10 @@ export default {
       type: Object,
       required: true,
     },
+    matchId: {
+      type: String,
+      required: false,
+    },
   },
   apollo: {
     $subscribe: {
@@ -202,7 +204,7 @@ export default {
         variables: function () {
           return {
             order_by: order_by.asc,
-            matchId: this.$route.params.id,
+            matchId: (this.matchId || this.$route.params.id),
           };
         },
         query: typedGql("subscription")({
@@ -225,6 +227,7 @@ export default {
               map: {
                 id: true,
                 name: true,
+                label: true,
                 patch: true,
                 poster: true,
               },
@@ -235,6 +238,9 @@ export default {
                 {},
                 {
                   name: true,
+                  team: {
+                    avatar_url: true,
+                  },
                 },
               ],
             },
@@ -346,7 +352,7 @@ export default {
                   side,
                 }
               : {}),
-            match_id: this.$route.params.id,
+            match_id: (this.matchId || this.$route.params.id),
             match_lineup_id: this.match.map_veto_picking_lineup_id,
           },
           mutation: generateMutation({
@@ -430,9 +436,6 @@ export default {
           img: "/img/teams/t_logo.svg",
         },
       ];
-    },
-    hasAssignedRegion() {
-      return this.match.options.region_veto && this.match.e_region;
     },
     mapPool() {
       return this.match.options?.map_pool?.maps;

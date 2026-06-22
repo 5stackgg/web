@@ -224,13 +224,17 @@ export default {
       type: Object,
       required: true,
     },
+    matchId: {
+      type: String,
+      required: false,
+    },
   },
   apollo: {
     $subscribe: {
       match_map_veto_picks: {
         variables: function () {
           return {
-            matchId: this.$route.params.id,
+            matchId: (this.matchId || this.$route.params.id),
           };
         },
         query: typedGql("subscription")({
@@ -393,7 +397,7 @@ export default {
             update_matches_by_pk: [
               {
                 pk_columns: {
-                  id: this.$route.params.id,
+                  id: (this.matchId || this.$route.params.id),
                 },
                 _set: {
                   region: $("region", "String!"),
@@ -431,7 +435,7 @@ export default {
           variables: {
             region,
             type: e_veto_pick_types_enum.Ban,
-            match_id: this.$route.params.id,
+            match_id: (this.matchId || this.$route.params.id),
             match_lineup_id: this.match.region_veto_picking_lineup_id,
           },
           mutation: generateMutation({

@@ -1,60 +1,64 @@
 <script setup lang="ts">
 import MapDisplay from "~/components/MapDisplay.vue";
 import { Button } from "~/components/ui/button";
+import { FormSection } from "~/components/ui/form";
 </script>
 
 <template>
   <Form :form="form" @submit="saveMapPool">
-    <FormField name="map_pool">
-      <FormItem>
-        <div class="space-y-6">
-          <template
-            v-for="(maps, type) in {
-              [$t('maps.official')]: sortedMaps.official,
-              [$t('maps.workshop')]: sortedMaps.workshop,
-            }"
-            :key="type"
-          >
-            <div v-if="maps && maps.length > 0">
-              <Separator
-                v-if="type === 'Workshop Maps'"
-                class="text-2xl font-bold mb-4 text-center my-8"
-                :label="type"
-              ></Separator>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <template v-for="map in maps" :key="map.id">
-                  <div
-                    class="relative rounded-lg overflow-hidden transition-all duration-200 ease-in-out"
-                    @click="updateMapPool(map.id)"
-                    :class="{
-                      'opacity-40': !form.values.map_pool?.includes(map.id),
-                      'cursor-pointer transform hover:scale-105': true,
-                    }"
-                  >
-                    <MapDisplay class="h-[150px]" :map="map">
-                      <template v-slot:default v-if="map.active_pool">
-                        <div class="absolute bottom-1">
-                          <Badge variant="secondary" class="text-xs">{{
-                            $t("maps.active_duty")
-                          }}</Badge>
-                        </div>
-                      </template>
-                    </MapDisplay>
+    <FormSection :title="$t('pages.map_pools.title')">
+      <FormField name="map_pool">
+        <FormItem>
+          <div class="space-y-6">
+            <template
+              v-for="(maps, type) in {
+                [$t('maps.official')]: sortedMaps.official,
+                [$t('maps.workshop')]: sortedMaps.workshop,
+              }"
+              :key="type"
+            >
+              <div v-if="maps && maps.length > 0">
+                <Separator
+                  v-if="type === 'Workshop Maps'"
+                  class="text-2xl font-bold mb-4 text-center my-8"
+                  :label="type"
+                ></Separator>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <template v-for="map in maps" :key="map.id">
                     <div
-                      class="absolute inset-0 flex items-center justify-center bg-opacity-40 transition-opacity duration-200"
-                    ></div>
-                  </div>
-                </template>
+                      class="relative rounded-lg overflow-hidden transition-all duration-200 ease-in-out"
+                      @click="updateMapPool(map.id)"
+                      :class="{
+                        'opacity-40': !form.values.map_pool?.includes(map.id),
+                        'cursor-pointer transform hover:scale-105': true,
+                      }"
+                    >
+                      <MapDisplay class="h-[150px]" :map="map">
+                        <template v-slot:default v-if="map.active_pool">
+                          <div class="absolute bottom-1">
+                            <Badge variant="secondary" class="text-xs">{{
+                              $t("maps.active_duty")
+                            }}</Badge>
+                          </div>
+                        </template>
+                      </MapDisplay>
+                      <div
+                        class="absolute inset-0 flex items-center justify-center bg-opacity-40 transition-opacity duration-200"
+                      ></div>
+                    </div>
+                  </template>
+                </div>
               </div>
-            </div>
-          </template>
-        </div>
+            </template>
+          </div>
 
-        <FormMessage />
-      </FormItem>
-    </FormField>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+    </FormSection>
     <div class="mt-6 flex justify-end">
       <Button
+        variant="tactical"
         type="submit"
         :loading="submitting"
         :disabled="!form.values.map_pool?.length"

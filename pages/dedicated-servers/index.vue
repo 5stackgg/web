@@ -9,7 +9,10 @@ import {
 } from "@/components/ui/table";
 import Pagination from "@/components/Pagination.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
-import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
+import {
+  tacticalCtaButtonClasses,
+  tacticalHeaderActionClasses,
+} from "~/utilities/tacticalClasses";
 import { PlusCircle } from "lucide-vue-next";
 import ServerStatus from "~/components/servers/ServerStatus.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -29,13 +32,17 @@ const fadeTransition = {
 
 <template>
   <PageTransition>
-    <TacticalPageHeader>
+    <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.dedicated_servers.title") }}</template>
 
       <template #actions>
         <NuxtLink
           :to="{ name: 'dedicated-servers-create' }"
-          :class="[tacticalCtaButtonClasses, 'max-md:px-2.5 max-md:py-2']"
+          :class="[
+            tacticalCtaButtonClasses,
+            tacticalHeaderActionClasses,
+            'max-md:aspect-square max-md:!px-0',
+          ]"
           :title="$t('pages.dedicated_servers.create.title')"
         >
           <PlusCircle class="w-4 h-4" />

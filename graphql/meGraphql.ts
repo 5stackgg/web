@@ -20,6 +20,7 @@ export const meFields = Selector("players")({
       role: true,
       owner_steam_id: true,
       captain_steam_id: true,
+      avatar_url: true,
     },
   ],
 });

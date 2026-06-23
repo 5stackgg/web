@@ -1330,7 +1330,7 @@
           "permissions_section": "Permissões",
           "permissions_description": "Escolha o papel mínimo permitido para criar e publicar postagens de notícias.",
           "post_news_role": "Quem pode postar notícias"
-         },
+        },
         "discord": {
           "title": "Discord",
           "support_section": "Padrões",
@@ -2221,11 +2221,11 @@
         "description": "Torneios que estão abertos para inscrição."
       },
       "matchmaking": {
-        "description": "Entre na fila sozinho ou com seu grupo — os times são balanceados automaticamente e a partida começa para você.",
+        "description": "No matchmaking, você entra sozinho ou com amigos. O sistema procura formar times equilibrados sempre que possível, com base nos dados estatísticos existentes nesta plataforma e, inicia a partida automaticamente.",
         "leader_required": "Somente o líder do grupo pode iniciar o matchmaking."
       },
       "draft_games": {
-        "description": "Navegue por jogos abertos ou crie um — os capitães fazem a seleção dos jogadores (draft)."
+        "description": "No OPEN.MATCHES você pode participar de lobbies existentes ou criar uma sala personalizada. O sistema oferece diferentes formatos: balanceamento automático, escolha de capitães, uso de times cadastrados ou configuração manual dos jogadores."
       }
     },
     "matches": {
@@ -2842,8 +2842,8 @@
     "notifications": {
       "title": "Notificações",
       "dismiss": "Dispensar",
-      "dismiss_all": "Dispensar Todas as Notificações",
-      "delete_all_read": "Excluir Todas as Notificações Lidas",
+      "dismiss_all": "✅ Marcar como Lidas",
+      "delete_all_read": "🗑️Excluir Lidas",
       "no_notifications_title": "Sem Notificações",
       "no_notifications": "Nenhuma notificação até o momento."
     },
@@ -4573,7 +4573,7 @@
     "server": {
       "offline": "Servidor está offline!",
       "booting": "Servidor Iniciando",
-      "assign": "Atribuindo Servidor de Partida",
+      "assign": "Definir Servidor",
       "select": "Selecione o Servidor",
       "dedicated": "Servidores Dedicados",
       "on_demand": "Sob Demanda",
@@ -4591,7 +4591,7 @@
       "tv_delay": "A transmissão de GO TV está atrasada em {delay} segundos, aguardando que a GO TV esteja pronta."
     },
     "lobby": {
-      "access_updated": "Acesso ao lobby da partida atualizado para {access}"
+      "access_updated": "Acesso à lobby da partida atualizado para {access}"
     },
     "replay": {
       "select_map": "Selecione um mapa acima para reproduzir",
@@ -4727,7 +4727,7 @@
       "imported_external": "Importado de uma fonte externa — não é uma partida desse sistema"
     },
     "form": {
-      "lobby_access": "Acesso ao Lobby"
+      "lobby_access": "Acesso à Lobby"
     },
     "scoreboard_overlay": {
       "final": "Final",
@@ -5023,7 +5023,7 @@
     "queue_wait": {
       "zero": "0 segundos",
       "seconds": "{count} segundos",
-      "minutes_seconds": "{count}m {count}s"
+      "minutes_seconds": "TODO: traduzir"
     },
     "others_searching": "{count} outros estão procurando | {count} outros procurando",
     "match_found": "Partida Encontrada",
@@ -5046,7 +5046,7 @@
       "access_description": "Controla quem pode entrar na lobby. Abrir permite que qualquer pessoa se junte, Amigos permite que apenas amigos se juntem, e Convidar apenas jogadores que você convidou para se juntar.",
       "leave": "Sair da Lobby",
       "invite_player": "Convidar Jogador para a Lobby",
-      "access_updated": "Acesso ao lobby atualizado para {access}",
+      "access_updated": "Acesso à lobby atualizado para {access}",
       "member_count": "{count} em lobby",
       "pending_count": "{count} pendente",
       "waiting_for_players": "Aguardando jogadores entrarem no seu lobby. Use o botão Convidar acima para adicionar amigos."
@@ -5701,16 +5701,16 @@
       "avg": "Média",
       "confidence": "O modelo deu ao favorito uma vantagem de {pct}%"
     },
-    "create_custom_match": "Hospedar Sala Draft",
+    "create_custom_match": "Personalizada",
     "leader_required": "Somente o líder do grupo pode criar uma partida.",
-    "rehost": "Re-hospedar última",
-    "rehost_hint": "Recrie seu último lobby com as mesmas configurações",
+    "rehost": "Re-criar última",
+    "rehost_hint": "Recrie sua última lobby com as mesmas configurações",
     "search_placeholder": "Pesquisar por qualquer jogador...",
     "no_results": "Nenhuma partida corresponde aos seus filtros.",
     "filters": {
-      "avg_rank": "Rank médio",
-      "has_space": "Com espaço",
-      "any": "Qualquer",
+      "avg_rank": "Restrição de Ranking",
+      "has_space": "Apenas lobbies com vaga",
+      "any": "∞",
       "clear": "Limpar ({count})"
     },
     "sort": {
@@ -5730,20 +5730,20 @@
       "type": "Tipo de jogo",
       "regions": "Regiões",
       "captain_selection": "Seleção de capitães",
-      "draft_order": "Ordem do draft",
+      "draft_order": "Método de pick players",
       "min_elo": "Rank mínimo (opcional)",
       "max_elo": "Rank máximo (opcional)",
       "submit": "Criar",
-      "description": "Configure um pick-up game. Os capitães irão draftar os times quando estiver cheio.",
-      "mode": "Modo Draft",
+      "description": "Configure um pick-up game. Os capitães irão escolher os jogadores dos times quando estiver cheio.",
+      "mode": "Modo de Jogo",
       "rank_gate": "Limite de rank (opcional)",
       "deploy": "Criar",
       "require_approval": "Exigir aprovação",
       "require_approval_desc": "Jogadores solicitam para entrar — você escolhe quem joga da fila.",
       "keep_lobby": "Manter lobby junto",
-      "keep_lobby_desc": "Seus {count} jogadores do lobby entram no mesmo time.",
+      "keep_lobby_desc": "Seus {count} jogadores da lobby entram no mesmo time.",
       "save": "Salvar alterações",
-      "access": "Acesso ao lobby",
+      "access": "Acesso à lobby",
       "match_settings": "Configurações da partida",
       "teams": "Times",
       "no_formats": "Duelo não possui formatos — é sempre dividido automaticamente 1v1.",
@@ -5751,25 +5751,25 @@
       "team_1_required": "Time 1 (obrigatório)",
       "team_2_optional": "Time 2 (opcional)",
       "team_1_required_error": "Selecione pelo menos um time antes de criar.",
-      "inner_squad": "Inner Squad",
-      "inner_squad_on_desc": "Divida o roster deste time entre os dois lados para um treino interno.",
-      "inner_squad_off_desc": "Preencha um lado com este time e deixe o outro aberto para jogadores externos.",
-      "roster_desc": "Os titulares são preenchidos automaticamente — toque em um jogador para trocá-lo entre a lineup e o banco. Membros também podem ser trocados no lobby.",
+      "inner_squad": "Treino de Equipe",
+      "inner_squad_on_desc": "Permite que uma equipe divida seus integrantes entre os dois lados para realizar treinos internos. Esse formato é ideal para simular partidas oficiais, testar estratégias e promover prática entre os próprios membros da equipe.",
+      "inner_squad_off_desc": "Quando esta opção está desmarcada você cria uma partida com sua equipe formada e mantem o lado adversário aberto para que jogadores externos possam entrar.",
+      "roster_desc": "Os titulares são preenchidos automaticamente — toque em um jogador para trocá-lo entre a lineup e o banco. Membros também podem ser trocados na lobby.",
       "starting": "Titulares",
       "bench": "Banco",
-      "no_roster": "Nenhum membro do roster encontrado.",
+      "no_roster": "Nenhum membro da equipe encontrado.",
       "clear_team": "Limpar time",
-      "both_teams_private": "Com ambos os times definidos, a lineup fica travada e o lobby permanece privado.",
-      "step_format": "Modo Draft",
+      "both_teams_private": "Com ambos os times definidos, a lineup fica travada e a lobby permanece privado.",
+      "step_format": "Modo de Jogo",
       "step_settings": "Configurações da partida",
-      "step_rules": "Regras do lobby",
+      "step_rules": "Regras da lobby",
       "back": "Voltar",
       "next": "Próximo",
       "update": "Atualizar"
     },
     "captain_selection": {
       "top_elo_two": "Tops no Ranking",
-      "host_and_next": "Dono da Sala & Elo + Alto",
+      "host_and_next": "Dono da Sala vs Elo + Alto",
       "random_two": "Aleatório"
     },
     "draft_order": {
@@ -5815,11 +5815,11 @@
       "loading": "Carregando sala draft...",
       "avg": "Média",
       "open_slot": "Slot aberto",
-      "draft_log": "Log do Draft",
-      "log_picked": "escolhido",
+      "draft_log": "Histórico de Escolhas",
+      "log_picked": "escolheu",
       "log_empty": "Nenhuma escolha ainda.",
-      "team_alpha": "Equipe 1",
-      "team_bravo": "Equipe 2",
+      "team_alpha": "Equipe A",
+      "team_bravo": "Equipe B",
       "assembling": "Montando Squad",
       "gathering": "Reunindo Squad",
       "squad_ready": "Squad pronto",
@@ -5833,11 +5833,11 @@
       "host_wait": "{name} está montando os times…",
       "captain_picking": "{name} está escolhendo…",
       "your_pick": "Sua Escolha",
-      "alpha_picking": "Equipe 1 escolhendo",
-      "bravo_picking": "Equipe 2 escolhendo",
+      "alpha_picking": "Equipe A escolhendo",
+      "bravo_picking": "Equipe B escolhendo",
       "standby": "Em espera",
-      "on_the_clock": "No relógio",
-      "draft": "Draft",
+      "on_the_clock": "tic tac...",
+      "draft": "Selecionar",
       "comms": "Chat da Lobby",
       "chat_players_only": "Somente jogadores podem conversar durante o draft.",
       "login_to_chat": "Faça login para participar da conversa.",
@@ -5861,7 +5861,7 @@
       "copy_invite": "Copiar link de convite",
       "invite_copied": "Link de convite copiado",
       "back_to_room": "Voltar para sala draft",
-      "quick_edit": "Configurações do Lobby",
+      "quick_edit": "Configurações da Lobby",
       "join_prompt": "Entre — há um slot aberto",
       "request_prompt": "Esta lobby precisa de aprovação do dono da sala para entrar",
       "request_pending": "Sua solicitação aguarda aprovação do dono da sala",
@@ -5936,19 +5936,19 @@
       "off": "Desligado"
     },
     "mode": {
-      "captains": "Draft de Capitães",
-      "captains_desc": "Dois capitães se alternam escolhendo jogadores.",
-      "host": "Dono da Sala Define",
-      "host_desc": "Você monta os dois times manualmente.",
-      "pug": "Auto-Split",
-      "pug_desc": "Sem draft — times são auto-balanceados quando a lobby enche.",
-      "teams": "Times pré-montados",
-      "teams_desc": "Escolha dois times salvos para se enfrentarem."
+      "captains": "Pick Players",
+      "captains_desc": "Capitães escolhem alternadamente os jogadores de um pool para formar seus times.",
+      "host": "Manual",
+      "host_desc": "O criador da sala personalizada distribui manualmente os jogadores nas equipes A e B.",
+      "pug": "Automático",
+      "pug_desc": "Os jogadores são distribuídos automaticamente entre os times pelo sistema buscando um autobalanceamento com os dados estatísticos disponíveis na plataforma.",
+      "teams": "Equipes",
+      "teams_desc": "Equipes já cadastradas na plataforma entram diretamente na partida ou uma equipe versus jogadores externos não necessariamente de uma equipe."
     },
     "mode_short": {
-      "captains": "Capitães",
-      "host": "Dono da Sala",
-      "pug": "Auto-Split",
+      "captains": "Picks",
+      "host": "Manual",
+      "pug": "Automático",
       "teams": "Equipes"
     },
     "access": {

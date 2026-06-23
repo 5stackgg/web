@@ -45,6 +45,17 @@ const newsEnabled = computed(() => useApplicationSettingsStore().newsEnabled);
 const canPostNews = computed(() => useApplicationSettingsStore().canPostNews);
 const apiDomain = computed(() => useRuntimeConfig().public.apiDomain);
 
+useSeoMeta({
+  title: () => article.value?.title || undefined,
+  ogTitle: () => article.value?.title || undefined,
+  description: () => article.value?.teaser || undefined,
+  ogDescription: () => article.value?.teaser || undefined,
+  ogImage: () => article.value?.cover_image_url || undefined,
+  ogType: "article",
+  twitterCard: () =>
+    article.value?.cover_image_url ? "summary_large_image" : "summary",
+});
+
 const authorAvatar = computed(() => {
   const a = article.value?.author;
   if (!a) {

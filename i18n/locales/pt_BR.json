@@ -1,32 +1,767 @@
 {
+  "glossary": {
+    "title": "Como nossas estatísticas funcionam",
+    "intro": "Nós não escondemos nossa matemática. Cada estatística do site é explicada abaixo — o que significa e exatamente como é calculada. Acha que algo está errado ou conhece uma forma melhor de medir? Adoraríamos ouvir sua sugestão.",
+    "github_cta": "Sugira uma melhoria no GitHub",
+    "calc_label": "Como é calculado",
+    "legend": {
+      "title": "Notação",
+      "note": "Parênteses restringem uma estatística a um subconjunto — ex.: H (rifle) = acertos de rifle, S (spotted) = tiros enquanto um inimigo estava visível. Taxas por rodada (KPR, DPR, APR, ADR, KAST) reutilizam essas letras sobre R."
+    },
+    "scores": {
+      "title": "Lendo as avaliações de 0–100",
+      "body": "Mira, posicionamento, utilitários e as avaliações por estatística são pontuados de 0 a 100 — mas é um percentil, não uma porcentagem. 50 é um jogador médio; 90 significa que você é melhor que ~90% dos jogadores; 20 significa que a maioria dos jogadores faz melhor. Isso pode surpreender: quase todos fazem counter-strafe, e o jogador típico faz isso ~81% do tempo — então fazer counter-strafe 80% das vezes na verdade resulta em ~22 (um pouco abaixo da média), mesmo que 80% pareça alto. A avaliação mostra onde você está em relação a todos os outros; a taxa bruta ainda aparece nas tabelas de estatísticas da partida."
+    },
+    "performance": {
+      "title": "Avaliações de desempenho (Mira / Posicionamento / Utilitários)",
+      "body": "Nós pegamos as estatísticas de base de cada área, pontuamos cada uma como percentil em relação a todos os outros jogadores (usando jogadores com pelo menos 30 rodadas), e depois fazemos a média em uma única avaliação de 0–100 por área. A mira se torna mais rica ao longo do tempo: estatísticas como posicionamento da mira e tempo até causar dano são incorporadas conforme mais demos são processadas."
+    },
+    "consistency": {
+      "title": "Consistência",
+      "body": "Cada partida recebe uma pontuação geral — sua Mira, Posicionamento e Utilitários combinados. O gráfico mostra isso ao longo das suas partidas recentes, e o número de consistência reflete o quanto varia: uma linha mais estável pontua mais alto."
+    },
+    "focus": {
+      "title": "Áreas de foco",
+      "body": "Suas três estatísticas de base com menor pontuação — os pontos com mais espaço para melhorar — cada uma com uma dica curta. Elas são atualizadas conforme você joga."
+    },
+    "geometry": {
+      "title": "Linha de visão e modelo 3D",
+      "body": "Nos mapas em que temos a malha de colisão, carregamos a geometria 3D do mapa e fazemos ray-cast entre jogadores para confirmar uma linha de visão real. Assim, 'spotted', posicionamento da mira, tempo até causar dano e estatísticas de engajamento só contam quando você realmente podia ver o inimigo — não através da smoke ou de uma parede. Nos mapas sem malha, usamos a flag de spotted do jogo e rotulamos essas estatísticas como 'Estimadas'."
+    },
+    "sections": {
+      "aim": "Estatísticas de mira",
+      "impact": "Impacto e estatísticas de trocas",
+      "utility": "Utilitários e estatísticas de flash",
+      "economy": "Economia e estatísticas de compra",
+      "clutches": "Estatísticas de clutches",
+      "roles": "Funções",
+      "elo": "ELO e avaliação",
+      "head_to_head": "Estatísticas de confronto direto",
+      "arsenal": "Arsenal (por arma)"
+    },
+    "guide_link": "Guia de Estatísticas",
+    "scale_worse": "Abaixo da média",
+    "scale_better": "Elite",
+    "scale_legend": "— escala aproximada do que significa abaixo da média até elite para cada estatística",
+    "scale_hint": "Escala aproximada de abaixo da média → elite (estimada, ainda não baseada nos seus dados)",
+    "mesh_help": "Usa a malha de colisão 3D do mapa. Fazemos ray-cast de linha de visão entre os dois jogadores, então apenas linhas de visão reais contam — pontos através de smoke, paredes ou frestas finas são filtrados. Precisa que a geometria do mapa esteja disponível; caso contrário, recorre aos dados brutos do motor.",
+    "mesh_legend": "marca uma estatística validada contra a malha de colisão 3D do mapa (linha de visão verificada)",
+    "mesh_coverage_title": "Cobertura de malha do mapa",
+    "mesh_coverage_note": "Estatísticas validadas por malha (marcadas acima) só recebem verificação de linha de visão em mapas para os quais temos malha de colisão. Mapas oficiais sem malha recorrem à flag de spotted do motor. Mapas da Workshop não estão listados aqui.",
+    "mesh_coverage_loading": "Verificando quais mapas possuem malha…",
+    "mesh_have": "Malha disponível ({count})",
+    "mesh_missing": "Sem malha ainda ({count})",
+    "mesh_missing_none": "Todos os mapas oficiais possuem malha.",
+    "var_help": {
+      "k": "Abates",
+      "d": "Mortes",
+      "a": "Assistências",
+      "r": "Rodadas jogadas",
+      "h": "Acertos — balas que atingiram um inimigo",
+      "s": "Tiros disparados",
+      "dmg": "Dano causado",
+      "e": "Inimigos distintos",
+      "t": "Tempo",
+      "theta": "Ângulo da sua mira até o inimigo",
+      "sv": "Sobreviveu — você viveu até o fim da rodada",
+      "tr": "Trocado — sua morte foi vingada por um companheiro",
+      "kpr": "Abates por rodada",
+      "dpr": "Mortes por rodada",
+      "apr": "Assistências por rodada",
+      "adr": "Dano por rodada",
+      "kast": "Kill / Assist / Survive / Trade %",
+      "i": "Impacto — a subfórmula mostrada abaixo",
+      "kda": "Abates / Mortes / Assistências",
+      "n": "um contador — o número usado nesta expressão",
+      "spotted": "apenas enquanto o inimigo estava visível para você",
+      "rifle": "apenas rifles — AK, M4 e similares",
+      "pistol": "apenas pistolas",
+      "sniper": "a AWP e rifles com mira",
+      "head": "apenas headshots",
+      "first_sight": "o primeiro momento em que a malha confirma que você podia ver o inimigo",
+      "first_shot": "o primeiro tiro de um engajamento",
+      "spray": "as balas após a primeira em uma rajada",
+      "stopped": "disparado enquanto parado — você fez counter-strafe antes",
+      "eligible": "tiros em que o counter-strafe era possível",
+      "on_target": "tempo em que sua mira estava sobre o inimigo",
+      "engaged": "todo o tempo em que você esteve na luta",
+      "damaged": "inimigos aos quais você realmente causou dano",
+      "traded": "sua morte foi vingada por um companheiro momentos depois",
+      "trade_chance": "mortes em que um companheiro estava posicionado para trocar",
+      "util": "dano de granadas — HE e molotov",
+      "he": "uma granada de alto-explosivo (HE)",
+      "awp": "a AWP especificamente"
+    },
+    "formulas": {
+      "accuracy": {
+        "num": "H",
+        "den": "S"
+      },
+      "accuracy_spotted": {
+        "num": "H (spotted)",
+        "den": "S (spotted)"
+      },
+      "rifle_accuracy": {
+        "num": "H (rifle)",
+        "den": "S (rifle)"
+      },
+      "pistol_accuracy": {
+        "num": "H (pistol)",
+        "den": "S (pistol)"
+      },
+      "sniper_accuracy": {
+        "num": "H (sniper)",
+        "den": "S (sniper)"
+      },
+      "head_accuracy": {
+        "num": "H (head)",
+        "den": "H",
+        "note": "AWP excluída"
+      },
+      "hs_kill_pct": {
+        "num": "K (head)",
+        "den": "K"
+      },
+      "first_bullet_accuracy": {
+        "num": "H (first shot)",
+        "den": "S (first shot)"
+      },
+      "spray_accuracy": {
+        "num": "H (spray)",
+        "den": "S (spray)"
+      },
+      "time_to_damage": {
+        "expr": "média(t do primeiro avistamento até o primeiro dano)",
+        "note": "milissegundos; limitado entre 0,2–3s"
+      },
+      "crosshair_placement": {
+        "expr": "média(θ no primeiro avistamento)",
+        "note": "graus; menor é melhor"
+      },
+      "counter_strafing": {
+        "num": "S (stopped)",
+        "den": "S (eligible)",
+        "note": "tiros de rifle em inimigo avistado"
+      },
+      "tracking": {
+        "num": "t (no alvo)",
+        "den": "t (em combate)"
+      },
+      "spotted_acc": {
+        "num": "E (dano causado)",
+        "den": "E (avistado)"
+      },
+      "hltv": {
+        "expr": "0.0073·KAST + 0.3591·KPR − 0.5329·DPR + 0.2372·I + 0.0032·ADR + 0.1587",
+        "note": "I (impacto) = 2.13·KPR + 0.42·APR − 0.41"
+      },
+      "kast": {
+        "num": "R (K / A / SV / TR)",
+        "den": "R"
+      },
+      "adr": {
+        "num": "DMG",
+        "den": "R"
+      },
+      "kd": {
+        "num": "K",
+        "den": "D"
+      },
+      "kpr": {
+        "num": "K",
+        "den": "R"
+      },
+      "dpr": {
+        "num": "D",
+        "den": "R"
+      },
+      "mkr": {
+        "expr": "contagem(rounds com K ≥ 2)"
+      },
+      "survived_pct": {
+        "num": "R − D",
+        "den": "R"
+      },
+      "trade_kills": {
+        "expr": "contagem(abates que vingam um companheiro ≤ 5s)"
+      },
+      "traded": {
+        "num": "D (trocado)",
+        "den": "D (chance de troca)"
+      },
+      "opening": {
+        "num": "duelos de abertura vencidos",
+        "den": "duelos de abertura"
+      },
+      "opening_attempts": {
+        "num": "duelos de abertura",
+        "den": "R"
+      },
+      "flash_assists": {
+        "expr": "contagem(assistências criadas pela sua flash)"
+      },
+      "flash_blind": {
+        "num": "tempo de cegueira do inimigo",
+        "den": "R"
+      },
+      "util_efficiency": {
+        "num": "DMG (utilitário)",
+        "den": "granadas lançadas"
+      },
+      "enemies_flashed_per": {
+        "num": "inimigos cegados",
+        "den": "flashes lançadas"
+      },
+      "udr": {
+        "num": "DMG (util)",
+        "den": "R"
+      },
+      "trade_kill_pct": {
+        "num": "trade kills",
+        "den": "trade chances"
+      },
+      "he_damage": {
+        "expr": "DMG (HE, em inimigos)"
+      },
+      "molotov_damage": {
+        "expr": "DMG (molotov, em inimigos)"
+      },
+      "he_team_damage": {
+        "expr": "DMG (HE, em companheiros)"
+      },
+      "enemies_flashed": {
+        "expr": "contagem(inimigos cegados > 1s)"
+      },
+      "team_flashed": {
+        "expr": "contagem(companheiros cegados > 1s)"
+      },
+      "avg_flash_duration": {
+        "num": "tempo de cegueira do inimigo",
+        "den": "flashes inimigas"
+      },
+      "unused_utility": {
+        "expr": "total de granadas $ ainda com você quando morre"
+      },
+      "wasted_magazine_pct": {
+        "num": "balas restantes ao recarregar",
+        "den": "S"
+      },
+      "elo": {
+        "expr": "skill rating, atualizado a cada partida"
+      },
+      "elo_change": {
+        "expr": "Kf × (resultado − esperado) × performance × série",
+        "note": "Kf (K-factor) = 500; série escala pelo diferencial de mapas em um Bo-N"
+      },
+      "elo_impact": {
+        "expr": "seu KDA vs o time + participação no dano → 0.8–1.2",
+        "note": "em derrota é invertido, então bons desempenhos perdem menos"
+      },
+      "buy_pistol": {
+        "expr": "round 1 ou 13"
+      },
+      "buy_eco": {
+        "expr": "dinheiro da equipe < $5.000"
+      },
+      "buy_force": {
+        "expr": "$5,000 ≤ dinheiro da equipe ≤ $20.000"
+      },
+      "buy_full": {
+        "expr": "dinheiro da equipe > $20.000"
+      },
+      "buy_win_rate": {
+        "num": "rounds vencidos (tipo de compra)",
+        "den": "rounds (tipo de compra)"
+      },
+      "man_advantage": {
+        "num": "rounds vencidos (venceu duelo de abertura)",
+        "den": "rounds (venceu duelo de abertura)"
+      },
+      "man_disadvantage": {
+        "num": "rounds vencidos (perdeu duelo de abertura)",
+        "den": "rounds (perdeu duelo de abertura)"
+      },
+      "clutch": {
+        "expr": "último vivo vs N inimigos (N ≥ 1)"
+      },
+      "clutch_won": {
+        "expr": "1vN → 1v0 (todos os inimigos abatidos)"
+      },
+      "clutch_saved": {
+        "expr": "round vencido enquanto você sobreviveu"
+      },
+      "clutch_lost": {
+        "expr": "você morreu, round perdido"
+      },
+      "clutch_win_rate": {
+        "num": "clutches vencidos",
+        "den": "vencidos + perdidos + salvos"
+      },
+      "clutch_against": {
+        "expr": "inimigos vivos quando o clutch começou"
+      },
+      "kills_in_clutch": {
+        "expr": "contagem(abates durante um 1vN)"
+      },
+      "role_sniper": {
+        "expr": "AWPer principal — K(awp) ≥ 5 e ≥ 20% de K"
+      },
+      "role_entry": {
+        "expr": "mais duelos de abertura (exceto AWPer)"
+      },
+      "role_support": {
+        "expr": "maior pontuação de utilitário (exceto AWPer & entry)"
+      },
+      "role_rifler": {
+        "expr": "padrão — nenhum dos acima"
+      },
+      "awp_share": {
+        "num": "K (awp)",
+        "den": "K"
+      },
+      "entry_rate": {
+        "num": "duelos de abertura",
+        "den": "R"
+      },
+      "support_idx": {
+        "expr": "(assist. de flash + DMG (util) ÷ 100 + flashes × 0.3) ÷ R"
+      },
+      "net_trade": {
+        "expr": "trade kills − mortes sem trade"
+      },
+      "trade_kill_opportunities": {
+        "expr": "contagem(mortes de companheiros perto de você)"
+      },
+      "trade_kill_attempts": {
+        "expr": "contagem(chances de trade em que você atirou)"
+      },
+      "traded_death_opportunities": {
+        "expr": "contagem(D com um companheiro capaz de trocar)"
+      },
+      "traded_death_attempts": {
+        "expr": "contagem(D que um companheiro atirou para vingar)"
+      },
+      "traded_death_pct": {
+        "num": "D (trocado)",
+        "den": "D (chance de trade)"
+      },
+      "total_damage": {
+        "expr": "DMG total (em inimigos)"
+      },
+      "team_damage": {
+        "expr": "DMG total (em companheiros)"
+      },
+      "knife_kills": {
+        "expr": "contagem(K com faca)"
+      },
+      "zeus_kills": {
+        "expr": "contagem(K com zeus)"
+      },
+      "multi_kill_breakdown": {
+        "expr": "contagem(rounds com exatamente N K), N = 2–5"
+      },
+      "flashes_thrown": {
+        "expr": "contagem(flashes lançadas)"
+      },
+      "smokes_thrown": {
+        "expr": "contagem(smokes lançadas)"
+      },
+      "round_win_pct": {
+        "num": "R vencidos",
+        "den": "R"
+      },
+      "pistol_win_pct": {
+        "num": "pistol R vencidos",
+        "den": "pistol R"
+      },
+      "opening_win_pct": {
+        "num": "duelos de abertura vencidos (equipe)",
+        "den": "duelos de abertura (equipe)"
+      },
+      "team_trade_pct": {
+        "num": "trocas da equipe vencidas",
+        "den": "chances de troca da equipe"
+      },
+      "buy_matchup": {
+        "expr": "R vencidos (sua compra vs deles) ÷ R (matchup) × 100"
+      },
+      "h2h_kills": {
+        "expr": "contagem(seus K neste inimigo)"
+      },
+      "h2h_damage": {
+        "expr": "DMG total neste inimigo"
+      },
+      "h2h_flashes": {
+        "expr": "contagem(suas flashes que cegaram este inimigo)"
+      },
+      "h2h_weapon_class": {
+        "expr": "seus K neste inimigo, por classe de arma"
+      },
+      "weapon_usage_pct": {
+        "num": "K (arma)",
+        "den": "K"
+      },
+      "weapon_rating": {
+        "expr": "combinação de KPR, ADR & impacto por arma",
+        "note": "aprox — sem D / KAST por arma"
+      },
+      "weapon_economy": {
+        "expr": "avaliação da arma × (baseline $ ÷ preço da arma $)",
+        "note": "≈ 1.0 = compatível com seu preço"
+      },
+      "consistency": {
+        "expr": "100 − variação partida a partida na avaliação geral"
+      }
+    }
+  },
   "stat_glossary": {
+    "aim": {
+      "label": "Mira",
+      "description": "Sua habilidade de tiro — precisão, headshots e quão rápido/limpo você acerta inimigos visíveis. Pontuado de 0–100 como o percentil médio dessas estatísticas de mira vs todos os jogadores (50 = médio)."
+    },
+    "positioning": {
+      "label": "Posicionamento",
+      "description": "Onde você luta — sobreviver aos rounds, morrer perto de companheiros para ser trocado e contribuir em cada round (KAST). Pontuado de 0–100 como o percentil médio dessas estatísticas vs todos os jogadores (50 = médio)."
+    },
+    "utility": {
+      "label": "Utilitários",
+      "description": "Impacto das granadas — assistências de flash, quanto você cega inimigos e dano de HE/molotov por granada. Pontuado de 0–100 como percentil médio vs todos os jogadores. Provisório: utilitários ainda não separam claramente habilidade nos nossos dados."
+    },
+    "consistency": {
+      "label": "Consistência",
+      "description": "Cada partida recebe uma pontuação geral (Mira, Posicionamento e Utilitários combinados). A consistência reflete o quanto essa pontuação varia de partida para partida — menos variação é melhor."
+    },
+    "accuracy": {
+      "label": "Precisão",
+      "description": "Balas que acertaram um inimigo, de todas as balas disparadas."
+    },
+    "accuracy_spotted": {
+      "label": "Precisão (inimigo visível)",
+      "description": "Sua taxa de acerto enquanto um inimigo estava realmente visível — disparos através de smoke ou paredes não contam."
+    },
+    "crosshair_placement": {
+      "label": "Posicionamento da mira",
+      "description": "Quão próxima sua mira já está do inimigo quando ele aparece. Um ângulo menor significa menos movimento antes de atirar."
+    },
+    "time_to_damage": {
+      "label": "Tempo até causar dano",
+      "description": "Quão rápido você causa dano após ver um inimigo pela primeira vez — um indicador de velocidade de reação."
+    },
+    "counter_strafing": {
+      "label": "Counter-Strafing",
+      "description": "Com que frequência você para totalmente de se mover antes de atirar. Disparos em movimento são altamente imprecisos."
+    },
+    "first_bullet": {
+      "label": "Primeiro tiro",
+      "description": "Com que frequência seu tiro inicial em um duelo acerta — o disparo que decide a maioria das lutas."
+    },
+    "tracking": {
+      "label": "Tracking",
+      "description": "Enquanto engaja um inimigo visível, quanto tempo sua mira permanece sobre ele."
+    },
+    "flash_assists": {
+      "label": "Assistências de flash",
+      "description": "Abates configurados pela sua flash — você cegou um inimigo e um companheiro o matou logo depois."
+    },
+    "flash_blind": {
+      "label": "Efetividade da flash",
+      "description": "Quanto de cegueira suas flashes realmente causam nos inimigos — recompensa pop-flashes, não flashes jogadas por cima."
+    },
+    "util_efficiency": {
+      "label": "Dano de utilitários",
+      "description": "Dano causado por HE/molotov que você lança — recompensa granadas bem usadas, não apenas compradas."
+    },
+    "trade_kills": {
+      "label": "Trade Kills",
+      "description": "Abates em que você vingou um companheiro que acabou de morrer (em poucos segundos)."
+    },
+    "traded": {
+      "label": "Traded Deaths",
+      "description": "Com que frequência, quando você morre, um companheiro troca o abate logo em seguida — sinal de lutar perto da equipe."
+    },
+    "opening": {
+      "label": "Duelos de Abertura",
+      "description": "Sua taxa de vitória no primeiro duelo do round — primeiro abate versus primeira morte."
+    },
+    "opening_attempts": {
+      "label": "Opening Attempts",
+      "description": "Com que frequência você participa do primeiro duelo do round."
+    },
+    "buy_pistol": {
+      "label": "Pistol Round",
+      "description": "O primeiro round de cada metade — todos começam apenas com pistola e dinheiro limitado."
+    },
+    "buy_eco": {
+      "label": "Eco",
+      "description": "Um round 'eco': a equipe deliberadamente economiza, comprando pouco ou nada (menos de $5,000 no total)."
+    },
+    "buy_force": {
+      "label": "Force Buy",
+      "description": "Uma force / half buy: a equipe gasta a maior parte do dinheiro mas não consegue um setup completo ($5,000–$20,000)."
+    },
+    "buy_full": {
+      "label": "Full Buy",
+      "description": "Um full buy: rifles, colete e utilitários para toda a equipe (mais de $20,000)."
+    },
+    "buy_win_rate": {
+      "label": "Buy Win %",
+      "description": "Com que frequência a equipe vence rounds em determinado tipo de compra — útil para identificar rounds eco ou anti-eco fracos."
+    },
+    "man_advantage": {
+      "label": "Man Advantage %",
+      "description": "Com que frequência você vence o round após ganhar o duelo de abertura — fechando rounds começados em vantagem."
+    },
+    "man_disadvantage": {
+      "label": "Man Disadvantage %",
+      "description": "Com que frequência você ainda vence o round após perder o duelo de abertura — recuperando rounds começados em desvantagem."
+    },
+    "net_trade": {
+      "label": "Net Trade",
+      "description": "Seus trade kills menos suas próprias mortes que não foram trocadas por companheiros — positivo significa que você troca mais do que custa à equipe."
+    },
+    "trade_kill_opportunities": {
+      "label": "Trade Kill Opps",
+      "description": "Com que frequência um companheiro morreu perto de você, dando chance de trocar o killer."
+    },
+    "trade_kill_attempts": {
+      "label": "Trade Kill Tentativas",
+      "description": "Dessas chances, com que frequência você realmente atirou no killer."
+    },
+    "traded_death_opportunities": {
+      "label": "Traded Death Opps",
+      "description": "Suas mortes em que um companheiro estava posicionado para trocar."
+    },
+    "traded_death_attempts": {
+      "label": "Traded Death Tentativas",
+      "description": "Dessas, com que frequência um companheiro realmente atirou no seu killer."
+    },
+    "traded_death_pct": {
+      "label": "Traded Death %",
+      "description": "Proporção das suas mortes que foram trocadas por companheiros — mesma ideia de Traded Deaths, mostrada como coluna própria."
+    },
+    "total_damage": {
+      "label": "Dano Total",
+      "description": "Dano total causado a inimigos no mapa (ADR é isso por round)."
+    },
+    "team_damage": {
+      "label": "Team Damage",
+      "description": "Dano causado a companheiros (friendly fire) — quanto menor, melhor."
+    },
+    "knife_kills": {
+      "label": "Knife Kills",
+      "description": "Abates com faca."
+    },
+    "zeus_kills": {
+      "label": "Zeus Kills",
+      "description": "Abates com o taser Zeus x27."
+    },
+    "multi_kill_breakdown": {
+      "label": "Multi-Kill Rounds (MKR) (2K–5K)",
+      "description": "Quantos rounds você conseguiu exatamente 2, 3, 4 ou 5 abates — detalhamento por trás dos Multi-Kill Rounds."
+    },
+    "flashes_thrown": {
+      "label": "Flashes Thrown",
+      "description": "Quantas flashbangs você lançou, efetivas ou não."
+    },
+    "smokes_thrown": {
+      "label": "Smokes Thrown",
+      "description": "Quantas smokes você lançou."
+    },
+    "round_win_pct": {
+      "label": "Round Win %",
+      "description": "Proporção de rounds vencidos pela equipe."
+    },
+    "pistol_win_pct": {
+      "label": "Pistol Win %",
+      "description": "Taxa de vitória em pistol rounds — o primeiro round de cada metade."
+    },
+    "opening_win_pct": {
+      "label": "Opening Win % (team)",
+      "description": "Taxa de vitória da equipe no primeiro duelo do round."
+    },
+    "team_trade_pct": {
+      "label": "Trade % (team)",
+      "description": "Com que frequência a equipe converte suas chances de troca em trade kills."
+    },
+    "buy_matchup": {
+      "label": "Buy Matchup Win %",
+      "description": "Taxa de vitória em rounds por tipo de compra no confronto (ex.: full-buy vs eco), não apenas seu próprio tipo de compra."
+    },
+    "h2h_kills": {
+      "label": "H2H Kills",
+      "description": "Abates que você conseguiu em um oponente específico nesta partida."
+    },
+    "h2h_damage": {
+      "label": "H2H Damage",
+      "description": "Dano que você causou a um oponente específico nesta partida."
+    },
+    "h2h_flashes": {
+      "label": "H2H Flashes",
+      "description": "Quantas vezes suas flashes cegaram um oponente específico."
+    },
+    "h2h_weapon_class": {
+      "label": "H2H by Weapon",
+      "description": "Seus abates em um oponente agrupados por classe de arma — rifle, pistol, sniper, etc."
+    },
+    "weapon_usage_pct": {
+      "label": "Most Used %",
+      "description": "Proporção de todos os seus abates que vieram com esta arma."
+    },
+    "weapon_rating": {
+      "label": "Weapon Rating",
+      "description": "Avaliação aproximada estilo HLTV para uma arma específica a partir de seu KPR, ADR e impacto — direcional, já que não há mortes ou KAST por arma."
+    },
+    "weapon_economy": {
+      "label": "Weapon Economy",
+      "description": "Avaliação da arma ajustada pelo seu custo de compra — cerca de 1.0 significa desempenho compatível com o preço, valores maiores indicam ótimo custo-benefício."
+    },
+    "trade_kill_pct": {
+      "label": "Trade Kill %",
+      "description": "Proporção das suas chances de troca que você converte — quando um companheiro morre perto de você, com que frequência você consegue o abate de vingança."
+    },
+    "he_damage": {
+      "label": "HE Damage",
+      "description": "Dano que suas granadas HE causam aos inimigos."
+    },
+    "molotov_damage": {
+      "label": "Molotov Damage",
+      "description": "Dano que suas molotovs e incendiárias causam aos inimigos."
+    },
+    "he_team_damage": {
+      "label": "HE Team Damage",
+      "description": "Dano que suas granadas HE causam a companheiros — quanto menor, melhor."
+    },
+    "enemies_flashed": {
+      "label": "Enemies Flashed",
+      "description": "Número de inimigos que suas flashes cegaram por um tempo significativo (mais de um segundo)."
+    },
+    "team_flashed": {
+      "label": "Teammates Flashed",
+      "description": "Número de companheiros que suas flashes cegaram — quanto menor, melhor."
+    },
+    "avg_flash_duration": {
+      "label": "Avg Flash Duration",
+      "description": "Tempo médio que um inimigo permanece cego por flash que acertou — pop-flashes mais longas pontuam melhor."
+    },
+    "unused_utility": {
+      "label": "Unused Utility",
+      "description": "Valor em dólares das granadas que você ainda tinha quando morreu — utilitários comprados mas não usados."
+    },
+    "wasted_magazine_pct": {
+      "label": "Wasted Mag %",
+      "description": "Proporção do carregador deixado sem disparar ao recarregar — valores altos significam recarregar cedo demais."
+    },
+    "elo_change": {
+      "label": "ELO Change",
+      "description": "Quanto seu ELO mudou após uma partida — escalado pelo resultado, sua performance e o tamanho da série."
+    },
+    "elo_impact": {
+      "label": "ELO Impact",
+      "description": "Um multiplicador de 0.8–1.2 na mudança de ELO baseado em como você desempenhou em relação ao time (KDA e participação no dano)."
+    },
+    "clutch": {
+      "label": "Clutch",
+      "description": "Uma situação 1vN — você é o último jogador vivo da equipe contra um ou mais inimigos ainda de pé."
+    },
+    "clutch_against": {
+      "label": "Against (N)",
+      "description": "Quantos inimigos estavam vivos quando seu clutch começou — o N no 1vN."
+    },
+    "clutch_won": {
+      "label": "Clutch Won",
+      "description": "Você venceu o clutch eliminando todos os inimigos restantes sozinho."
+    },
+    "clutch_saved": {
+      "label": "Clutch Saved",
+      "description": "Sua equipe venceu o round enquanto você ainda estava vivo, sem precisar matar todos."
+    },
+    "clutch_lost": {
+      "label": "Clutch Lost",
+      "description": "Você morreu antes do round ser vencido."
+    },
+    "clutch_win_rate": {
+      "label": "Clutch Win %",
+      "description": "Proporção dos seus clutches que terminaram em vitória (salvos e perdidos contam no denominador)."
+    },
+    "kills_in_clutch": {
+      "label": "Clutch Kills",
+      "description": "Abates que você conseguiu em situações de clutch."
+    },
+    "role_sniper": {
+      "label": "Sniper (role)",
+      "description": "O AWPer principal da equipe no mapa — pelo menos 5 abates de AWP e 20%+ dos abates com a AWP."
+    },
+    "role_entry": {
+      "label": "Entry (role)",
+      "description": "O jogador que participa do primeiro duelo do round com mais frequência (exceto AWPer)."
+    },
+    "role_support": {
+      "label": "Support (role)",
+      "description": "O jogador que contribui com maior valor de utilitários (exceto AWPer e entry)."
+    },
+    "role_rifler": {
+      "label": "Rifler (role)",
+      "description": "O papel padrão — um rifler que não é AWPer, entry ou suporte principal."
+    },
+    "awp_share": {
+      "label": "AWP Share",
+      "description": "Proporção dos seus abates que vieram com a AWP ou rifle com mira — define o papel de Sniper."
+    },
+    "entry_rate": {
+      "label": "Entry Rate",
+      "description": "Com que frequência você participa do primeiro duelo do round — define o papel de Entry."
+    },
+    "support_idx": {
+      "label": "Support Index",
+      "description": "Pontuação de utilitários combinando assistências de flash, dano de granadas e flashes lançadas, por round — define o papel de Support."
+    },
+    "enemies_flashed_per": {
+      "label": "Enemies / Flash",
+      "description": "Número médio de inimigos cegados por flash lançada — valores maiores significam flashes mais efetivas."
+    },
+    "opening_attempts_pct": {
+      "label": "Attempt Rate",
+      "description": "Proporção de rounds em que este jogador participou do duelo de abertura (primeiro engajamento do round)."
+    },
+    "opening_success_pct": {
+      "label": "Win Rate",
+      "description": "Proporção dos duelos de abertura que este jogador venceu."
+    },
+    "opening_traded_pct": {
+      "label": "Traded Rate",
+      "description": "Proporção das mortes em duelos de abertura que foram trocadas por um companheiro."
+    },
+    "survived_pct": {
+      "label": "Survival Rate",
+      "description": "Proporção de rounds em que este jogador sobreviveu (viveu até o fim do round)."
+    },
     "hltv": {
       "label": "HLTV Rating",
-      "description": "HLTV 2.0 — avaliação geral de desempenho combinando abates, mortes, KAST, dano e impacto. ~1.0 é a média."
+      "description": "Avaliação geral de performance HLTV 2.0 combinando abates, mortes, KAST, dano e impacto. ~1.0 é a média."
     },
     "rating": {
       "label": "HLTV Rating",
-      "description": "HLTV 2.0 — avaliação geral de desempenho combinando abates, mortes, KAST, dano e impacto. ~1.0 é a média."
+      "description": "Avaliação geral de performance HLTV 2.0 combinando abates, mortes, KAST, dano e impacto. ~1.0 é a média."
     },
     "adr": {
       "label": "ADR",
-      "description": "Dano médio por rodada — quanto dano você causa em cada rodada."
+      "description": "Average Damage per Round — quanto dano você causa em cada round."
     },
     "kpr": {
       "label": "KPR",
-      "description": "Abates por rodada."
+      "description": "Kills por Round."
     },
     "dpr": {
       "label": "DPR",
-      "description": "Mortes por rodada."
+      "description": "Deaths por Round."
     },
     "kast": {
       "label": "KAST",
-      "description": "Percentual de rodadas em que você conseguiu um Abate, Assistência, Sobreviveu ou foi Trocado."
+      "description": "Percentual de rounds em que você conseguiu um Kill, Assist, sobreviveu ou foi trocado."
     },
     "udr": {
       "label": "UDR",
-      "description": "Dano utilitário por rodada — dano de granadas (HE + molotov) em cada rodada."
+      "description": "Utility Damage per Round — dano de granadas (HE + molotov) em cada round."
     },
     "hs": {
       "label": "Headshot %",
@@ -34,39 +769,39 @@
     },
     "far": {
       "label": "FAR",
-      "description": "First-Action Rating — desempenho em duelos de abertura (primeiro abate da rodada)."
+      "description": "First-Action Rating — desempenho em duelos de abertura (primeiro abate do round)."
     },
     "elo": {
       "label": "ELO",
-      "description": "Pontuação de habilidade no matchmaking do 5Stack — sobe e desce conforme vitórias e derrotas."
+      "description": "Skill rating do matchmaking 5Stack — sobe e desce conforme vitórias e derrotas."
     },
     "kda": {
       "label": "K / D / A",
-      "description": "Média de Abates / Mortes / Assistências por partida."
+      "description": "Média de Kills / Deaths / Assists por partida."
     },
     "k": {
-      "label": "Abates",
+      "label": "Kills",
       "description": "Total de abates."
     },
     "a": {
-      "label": "Assistências",
-      "description": "Total de assistências — você causou dano ou cegou um inimigo que foi morto por um companheiro."
+      "label": "Assists",
+      "description": "Total de assistências — você causou dano ou cegou um inimigo que um companheiro matou em seguida."
     },
     "d": {
-      "label": "Mortes",
+      "label": "Deaths",
       "description": "Total de mortes."
     },
     "kd": {
       "label": "K/D",
-      "description": "Taxa de Abates/Mortes — abates divididos por mortes. Acima de 1.0 significa mais abates do que mortes."
+      "description": "Relação Kill/Death — abates divididos por mortes. Acima de 1.0 significa mais abates do que mortes."
     },
     "mkr": {
-      "label": "Rodadas Multi-Kill",
-      "description": "Rodadas em que você conseguiu dois ou mais abates."
+      "label": "Multi-Kill Rounds",
+      "description": "Rounds em que você conseguiu dois ou mais abates."
     },
     "cl": {
       "label": "Clutch %",
-      "description": "Proporção de situações de clutch (último jogador vivo, 1vX) que você venceu."
+      "description": "Proporção das situações de clutch (último jogador vivo, 1vX) que você venceu."
     },
     "cast": {
       "label": "CAST",
@@ -74,13 +809,13 @@
     },
     "awp": {
       "label": "AWP",
-      "description": "Uso da AWP / sinal de função de sniper — quanto o jogador depende da AWP."
+      "description": "Uso da AWP / sinal de papel de sniper — quanto um jogador depende da AWP."
     }
   },
   "pagination": {
     "items_per_page": "por página",
-    "showing_range": "Mostrando {start}-{end} de {total}",
-    "total": "Total: {total}"
+    "showing_range": "Mostrando {start}–{end} de {total}",
+    "total": "{total} no total"
   },
   "trophies_modal": {
     "view_tournament": "VER TORNEIO"
@@ -88,68 +823,68 @@
   "toasts": {
     "link_copied": "Link copiado",
     "copy_failed": "Falha ao copiar",
-    "clip_deleted": "Clipe excluído",
-    "delete_failed": "Falha ao excluir",
+    "clip_deleted": "Clip deletado",
+    "delete_failed": "Falha ao deletar",
     "clip_removed_named": "\"{title}\" foi removido.",
     "highlight_removed": "Highlight foi removido.",
-    "could_not_delete_clip": "Não foi possível excluir o clipe. Tente novamente.",
+    "could_not_delete_clip": "Não foi possível deletar o clip. Tente novamente.",
     "demo_parsed": "Demo processada",
     "demo_parse_failed": "Falha ao processar demo",
     "reconnecting": "Reconectando",
-    "reconnecting_description": "Reemitindo a conexão com o servidor de jogo.",
-    "cant_switch": "Não é possível alternar",
+    "reconnecting_description": "Reemitindo a conexão com o servidor do jogo.",
+    "cant_switch": "Não é possível trocar",
     "destination_not_ready": "a partida de destino não está pronta",
-    "stream_switched": "Stream alternado",
+    "stream_switched": "Stream trocada",
     "stream_switched_description": "Pod reutilizado — o feed será redirecionado em alguns segundos.",
-    "switch_failed": "Falha ao alternar",
-    "gpu_session_stopped": "Sessão de GPU encerrada",
-    "stop_gpu_session": "encerrar sessão de GPU",
+    "switch_failed": "Falha ao trocar",
+    "gpu_session_stopped": "Sessão GPU encerrada",
+    "stop_gpu_session": "encerrar sessão GPU",
     "request_failed": "requisição falhou",
-    "preview_reset_failed": "Não foi possível visualizar o reset da partida do torneio",
+    "preview_reset_failed": "Não foi possível pré-visualizar o reset da partida do torneio",
     "resolve_validation_errors": "Por favor, resolva os erros de validação",
     "set_winner_failed": "Não foi possível definir o vencedor selecionado",
     "set_winner_failed_description": "O ID da lineup selecionada está ausente para esta partida.",
     "match_reset_applied": "Reset da partida do torneio aplicado",
     "match_reset_failed": "Não foi possível resetar a partida do torneio",
     "please_try_again": "Por favor, tente novamente.",
-    "hevc_missing_title": "Não é possível reproduzir este clipe",
-    "hevc_missing_body": "Este vídeo está codificado com HEVC (H.265). Seu navegador não consegue decodificá-lo — instale as Extensões de Vídeo HEVC no Windows para habilitar a reprodução:",
-    "hevc_missing_link": "Obter as Extensões de Vídeo HEVC"
+    "hevc_missing_title": "Não é possível reproduzir este clip",
+    "hevc_missing_body": "Este vídeo está codificado em HEVC (H.265). Seu navegador não consegue decodificar — instale as HEVC Video Extensions no Windows para habilitar a reprodução:",
+    "hevc_missing_link": "Obter HEVC Video Extensions"
   },
   "shortcut_groups": {
-    "playback": "Reprodução",
-    "kills": "Abates",
-    "spectate": "Assistir",
+    "playback": "Playback",
+    "kills": "Kills",
+    "spectate": "Espectar",
     "quick_actions": "Ações rápidas",
     "view": "Visualizar",
-    "switch_player": "Alternar jogador (slot 1–{count})",
-    "prev_spec": "Alvo anterior de espectador",
-    "next_spec": "Próximo alvo de espectador",
-    "lock_free_roam": "Bloquear / livre-roam",
-    "toggle_fullscreen": "Alternar tela cheia",
-    "hold_show_scoreboard": "Segure para mostrar o placar",
+    "switch_player": "Trocar jogador (slot 1–{count})",
+    "prev_spec": "Espectador anterior",
+    "next_spec": "Próximo espectador",
+    "lock_free_roam": "Bloquear / free-roam",
+    "toggle_fullscreen": "Alternar fullscreen",
+    "hold_show_scoreboard": "Segurar para mostrar scoreboard",
     "show_help": "Mostrar esta ajuda",
-    "play_pause": "Reproduzir / pausar",
+    "play_pause": "Play / pause",
     "skip_back_15s": "Voltar 15s",
     "skip_forward_15s": "Avançar 15s",
     "prev_round": "Round anterior",
     "next_round": "Próximo round",
-    "prev_kill": "Abate anterior",
-    "next_kill": "Próximo abate",
-    "toggle_xray": "Alternar raio-x",
+    "prev_kill": "Kill anterior",
+    "next_kill": "Próxima kill",
+    "toggle_xray": "Alternar x-ray",
     "hide_show_openhud": "Ocultar / mostrar OpenHud",
     "reload_demo": "Recarregar demo"
   },
   "recent_highlights": {
-    "default_title": "Highlights Recentes"
+    "default_title": "Highlights recentes"
   },
   "player_roles": {
-    "user": "Usuário Não Verificado",
-    "verified_user": "Usuário Verificado",
+    "user": "Usuário",
+    "verified_user": "Usuário verificado",
     "streamer": "Streamer",
     "moderator": "Moderador",
-    "match_organizer": "Organizador de Partida",
-    "tournament_organizer": "Organizador de Torneio",
+    "match_organizer": "Organizador da partida",
+    "tournament_organizer": "Organizador do torneio",
     "administrator": "Administrador"
   },
   "live_stages": {
@@ -243,7 +978,8 @@
   },
   "notification_context": {
     "online": "ONLINE",
-    "offline": "OFFLINE"
+    "offline": "OFFLINE",
+    "loading_status": "Carregando status..."
   },
   "elo_chart_bucket": {
     "monthly": "Mensal",
@@ -584,6 +1320,17 @@
           "chat_message_ttl_description": "Quão longo (em segundos) as mensagens permanecerão até serem permanentemente apagadas",
           "updated": "Configurações atualizadas com sucesso"
         },
+        "news": {
+          "title": "Notícias",
+          "section": "Notícias",
+          "description": "Publique suas próprias postagens de notícias de Counter-Strike em uma página de Notícias na sua plataforma. Quando habilitado, autores autorizados podem escrever postagens com editor Markdown e imagens.",
+          "about": "As postagens que você publica aparecem na página pública de Notícias. Rascunhos permanecem ocultos até serem publicados.",
+          "manage": "Gerenciar postagens",
+          "manage_description": "Criar, editar e publicar postagens de notícias.",
+          "permissions_section": "Permissões",
+          "permissions_description": "Escolha o papel mínimo permitido para criar e publicar postagens de notícias.",
+          "post_news_role": "Quem pode postar notícias"
+         },
         "discord": {
           "title": "Discord",
           "support_section": "Padrões",
@@ -673,7 +1420,17 @@
           "refresh_failed": "Falha ao atualizar jogadores",
           "error_occurred": "Ocorreu um erro",
           "refresh_dialog_title": "Atualizar Todos os Jogadores?",
-          "refresh_dialog_description": "Isso irá enfileirar uma tarefa para re-sincronizar todos os dados dos jogadores no índice de busca Typesense. O processo pode levar alguns minutos dependendo da quantidade de jogadores."
+          "refresh_dialog_description": "Isso irá enfileirar uma tarefa para re-sincronizar todos os dados dos jogadores no índice de busca Typesense. O processo pode levar alguns minutos dependendo da quantidade de jogadores.",
+          "scan_bans_title": "Verificar bans da Steam",
+          "scan_bans_description": "Checar todos os jogadores que estiveram em uma lineup para bans Steam VAC/game. Contas com ban ativo são automaticamente banidas.",
+          "scan_button": "Verificar bans da Steam",
+          "scanning": "Verificando...",
+          "scan_queued": "Verificação de bans da Steam enfileirada",
+          "scan_failed": "Falha ao enfileirar verificação de bans da Steam",
+          "scan_dialog_title": "Verificar todos os jogadores por bans da Steam?",
+          "scan_dialog_description": "Isso enfileira uma checagem em segundo plano de Steam VAC/game-ban para todos os jogadores que estiveram em uma lineup. Bans detectados são aplicados automaticamente; isso pode levar um tempo dependendo do número de jogadores.",
+          "danger_zone_title": "Zona de risco",
+          "danger_zone_description": "Essas ações são intensivas em recursos e rodam em segundo plano para todos os jogadores. Elas são executadas automaticamente quando necessário — só dispare manualmente se realmente precisar."
         },
         "branding": {
           "general": "Geral",
@@ -703,10 +1460,18 @@
           "dark_mode": "Modo Escuro",
           "save_branding": "Salvar Identidade Visual",
           "reset_to_defaults": "Redefinir para Padrões",
+          "reset_confirm_title": "Resetar branding para padrão?",
+          "reset_confirm_description": "Isso limpa seu nome de marca, cores, rodapé de login e logo/favicon/app icon enviados, restaurando o tema padrão do 5Stack. Isso não pode ser desfeito.",
           "export_theme": "Exportar Tema",
           "import_theme": "Importar Tema",
           "upload_failed": "Falha no envio",
           "delete_failed": "Falha ao excluir",
+          "logo_uploaded": "Logo enviado",
+          "favicon_uploaded": "Favicon enviado",
+          "icon_uploaded": "App icon enviado",
+          "logo_removed": "Logo removido",
+          "favicon_removed": "Favicon removido",
+          "icon_removed": "App icon removido",
           "branding_saved": "Identidade visual salva",
           "save_failed": "Falha ao salvar",
           "branding_reset": "Identidade visual redefinida para padrões",
@@ -812,7 +1577,18 @@
           "enabled": "Permitir importação de partidas de CS2",
           "enabled_description": "Permitir que os jogadores vinculem seu código de autenticação do histórico de partidas da Steam para importar partidas oficiais do CS2 e enviar demos. Desative para ocultar o formulário de código de autenticação e bloquear importações externas.",
           "updated": "Configurações de partidas externas atualizadas",
-          "disabled_notice": "A importação de partidas externas está atualmente desativada pelo seu administrador."
+          "disabled_notice": "A importação de partidas externas está atualmente desativada pelo seu administrador.",
+          "faceit_enabled": "Importar partidas da Faceit",
+          "faceit_enabled_description": "Desativado por padrão. Consulta o histórico de partidas Faceit dos jogadores vinculados (últimos 30 dias) e importa suas partidas. Requer que Partidas Externas estejam habilitadas e uma chave de API da Faceit — o download de demos também precisa de acesso à Downloads API.",
+          "faceit_setup_guide": "Guia de configuração",
+          "faceit_downloads_api_link": "Solicitar acesso à Downloads API",
+          "faceit_test": "Testar integração Faceit",
+          "faceit_test_description": "Verificar se a chave de API da Faceit funciona e se consegue baixar demos.",
+          "faceit_test_button": "Testar",
+          "faceit_testing": "Testando…",
+          "faceit_data_api": "Data API",
+          "faceit_downloads_api": "Downloads API",
+          "faceit_test_failed": "Teste Faceit falhou"
         },
         "demo_settings": {
           "title": "Demos / Highlights",
@@ -823,6 +1599,8 @@
           "clip_storage_section": "Retenção & Armazenamento",
           "min_retention": "Retenção mínima",
           "max_storage": "Armazenamento Máximo",
+          "unit_days": "(dias)",
+          "unit_gb": "(GB)",
           "cloudflare_worker_url": "URL do trabalhador do Cloudflare",
           "retention_storage_description": "As demos são mantidas pelo menos durante o período mínimo de retenção. Quando o armazenamento total excede o máximo, as demonstrações mais antigas, que já ultrapassaram o período de retenção, são excluídas primeiro.",
           "max_storage_description": "O tamanho máximo de armazenamento para os arquivos de demo em GB.",
@@ -870,7 +1648,56 @@
           "default_hud_mode_description": "Qual layout do JTs Hud Manager o pod do game-streamer carrega na inicialização para transmissões ao vivo, reprodução de demos e destaques em lote? Os streamers ainda podem alternar entre os estilos a cada transmissão nos controles do player.",
           "hud_mode_horizontal": "Horizontal",
           "hud_mode_vertical": "Vertical",
-          "playback_section": "Reprodução"
+          "playback_section": "Reprodução",
+          "orphaned_section": "Manutenção de armazenamento",
+          "orphaned_description": "Encontrar arquivos no S3 que não estão mais referenciados no banco de dados e recuperar o espaço.",
+          "reparse_section": "Reprocessar demos",
+          "reparse_warning_title": "Isso reprocessa todas as demos — pode levar muito tempo.",
+          "reparse_warning_body": "As demos são reprocessadas uma de cada vez, o que pode durar horas ou dias dependendo da quantidade. Só faça isso se souber o que está fazendo ou após uma grande atualização que altere como as demos são processadas. Novas estatísticas de atualizações são reprocessadas automaticamente conforme as partidas são visualizadas — isso serve apenas para forçar tudo de uma vez.",
+          "reparse_button": "Reprocessar todas as demos",
+          "reparse_running": "Reprocessando demos…",
+          "reparse_failed_count": "{count} falharam",
+          "reparse_cancel": "Cancelar",
+          "reparse_last_run": "Última execução: {completed} / {total} processadas, {failed} falharam.",
+          "reparse_confirm_title": "Reprocessar todas as demos?",
+          "reparse_confirm_body": "Isso enfileira uma tarefa em segundo plano que reprocessa todas as demos uma de cada vez e pode levar muito tempo. Não é recomendado a menos que você saiba o que está fazendo ou uma grande atualização tenha mudado o parsing das demos. Você pode cancelar a qualquer momento.",
+          "reparse_confirm_action": "Iniciar reprocessamento",
+          "reparse_started": "Reprocessamento iniciado — roda em segundo plano, uma demo por vez. Você pode fechar esta página.",
+          "reparse_cancel_requested": "Cancelamento solicitado — será interrompido após a demo atual.",
+          "reparse_complete_title": "Reprocessamento de demos concluído",
+          "reparse_canceled_title": "Reprocessamento de demos cancelado",
+          "reparse_complete_desc": "{completed} / {total} processadas, {failed} falharam.",
+          "orphaned_open_button": "Escanear uploads órfãos",
+          "orphaned_title": "Uploads órfãos",
+          "orphaned_dialog_description": "Escaneia o bucket por objetos de demo, playback e highlight sem linha correspondente no banco de dados, e corrige os tamanhos de armazenamento rastreados. Roda em segundo plano — você pode fechar este diálogo e voltar depois.",
+          "orphaned_scan_now": "Escanear agora",
+          "orphaned_rescan": "Re-escanear",
+          "orphaned_scanning": "Escaneando… isso pode levar um tempo. Você pode fechar com segurança e voltar mais tarde.",
+          "orphaned_no_results": "Nenhum escaneamento foi executado ainda.",
+          "orphaned_last_scanned": "Último escaneamento",
+          "orphaned_total_size": "Tamanho total",
+          "orphaned_tracked": "Rastreado",
+          "orphaned_orphaned": "Órfãos",
+          "orphaned_other": "Outros",
+          "orphaned_largest": "Maiores objetos órfãos",
+          "orphaned_more": "…e mais {count} não exibidos",
+          "orphaned_delete_all": "Deletar todos os órfãos",
+          "orphaned_delete_confirm": "Deletar permanentemente {count} objeto(s) órfão(s) ({size})? Isso não pode ser desfeito.",
+          "orphaned_deleted": "Deletados {count} objeto(s), liberados {size}",
+          "orphaned_scan_started": "Escaneamento iniciado — isso pode levar um tempo dependendo da quantidade de objetos. Você receberá uma notificação quando terminar, então pode fechar.",
+          "orphaned_none_found": "Nenhum objeto órfão encontrado.",
+          "orphaned_tooltip": "Encontrar arquivos de demo, playback e highlight no S3 que não estão mais referenciados no banco de dados, e recuperar o espaço. Roda em segundo plano.",
+          "orphaned_complete_title": "Escaneamento de uploads órfãos concluído",
+          "orphaned_complete_found": "Encontrados {count} objeto(s) órfão(s) — {size}",
+          "orphaned_complete_none": "Nenhum upload órfão encontrado",
+          "orphaned_view_results": "Ver resultados",
+          "orphaned_demos": "Demos",
+          "orphaned_highlights": "Highlights",
+          "orphaned_breakdown": "Detalhamento rastreado",
+          "orphaned_scanning_short": "Escaneando…",
+          "orphaned_demos_count": "{count} demos",
+          "orphaned_highlights_count": "{count} highlights",
+          "orphaned_object_count": "{count} arquivos"
         },
         "update_map_pools": {
           "title": "Atualizar Automaticamente o Map Pool",
@@ -894,6 +1721,70 @@
           "title": "Popup de partida pronta",
           "description": "Mostrar um popup quando uma partida estiver pronta para você fazer o check-in. Quando desativado, você ainda pode fazer o check-in pelo botão na barra superior."
         }
+      },
+      "external_matches": {
+        "heading": "Partidas Externas",
+        "heading_description": "Vincule seu histórico de partidas da Steam para que possamos importar automaticamente suas partidas oficiais de CS2 e seu rank Premier.",
+        "checking_link": "Verificando link do histórico de partidas…",
+        "need_two_codes": "Você precisará de dois códigos da Valve:",
+        "step_auth_prefix": "Seu",
+        "steam_auth_code": "Steam Game Authentication Code",
+        "step_auth_mid": "— na página de ajuda da Steam, procure por",
+        "access_match_history": "“Access to Your Match History”",
+        "step_auth_and_click": "e clique em",
+        "create_auth_code": "Criar código de autenticação",
+        "generated_once": "Gerado uma vez por conta Steam.",
+        "step_share_prefix": "Um recente",
+        "match_share_code": "Match Share Code",
+        "step_share_copy": "— copie de",
+        "watch_your_matches": "Assistir → Suas partidas",
+        "step_share_within_30": "no CS2 (qualquer partida dos últimos 30 dias funciona como ponto de partida).",
+        "auth_code": "Auth code",
+        "share_code": "Share code",
+        "linking": "Vinculando…",
+        "link_match_history": "Vincular histórico de partidas",
+        "toast_linked": "Histórico de partidas CS2 vinculado",
+        "toast_could_not_link": "Não foi possível vincular",
+        "toast_unlinked": "Histórico de partidas CS2 desvinculado",
+        "toast_polled": "Histórico de partidas consultado",
+        "toast_collected": "Coletados {count} novos share codes",
+        "toast_poll_failed": "Falha na consulta",
+        "toast_cleared_import": "Importação pendente limpa",
+        "unknown_error": "Erro desconhecido",
+        "linked_errors": "Vinculado · erros",
+        "linked": "Vinculado",
+        "last_poll": "Última consulta",
+        "never": "nunca",
+        "polling": "Consultando…",
+        "poll_now": "Consultar agora",
+        "unlinking": "Desvinculando…",
+        "unlink": "Desvincular",
+        "most_recent_share_code": "Share code mais recente",
+        "scanned": "escaneado",
+        "last_error": "Último erro",
+        "unlink_confirm_title": "Desvincular histórico de partidas?",
+        "unlink_confirm_description": "Pararemos de importar suas partidas oficiais de CS2 e seu rank Premier. Você pode vincular novamente a qualquer momento com seus códigos de autenticação e share da Steam.",
+        "polling_banner_title": "Consultando seu histórico de partidas…",
+        "polling_banner_description": "Escaneando a Valve por suas partidas recentes. Importações pendentes aparecerão abaixo conforme forem encontradas.",
+        "pending_imports": "Importações pendentes",
+        "pending_imports_description": "Partidas que suas contas vinculadas estão aguardando. Demos que falham aqui geralmente são mais antigas que 30 dias e não estão mais hospedadas pela Valve.",
+        "importing": "Importando…",
+        "show_less": "Mostrar menos",
+        "show_more": "Mostrar mais {count}",
+        "upload_demo": "Enviar uma demo",
+        "upload_demo_description": "Arraste um arquivo .dem de CS2 para importar as estatísticas da partida. Funciona mesmo que seu histórico não esteja vinculado.",
+        "drop_to_upload": "Arraste para enviar",
+        "click_to_choose": "Clique para escolher ou arraste um arquivo .dem",
+        "demo_files_only": "Apenas arquivos de demo CS2 · arquivo único",
+        "uploading": "Enviando…",
+        "finishing": "Finalizando…",
+        "toast_wrong_file_type": "Tipo de arquivo incorreto",
+        "toast_drop_dem_file": "Por favor, envie um arquivo .dem de CS2.",
+        "error_invalid_demo": "Não é um arquivo válido de demo CS2 (.dem)",
+        "upload_success_message": "Enviado — importando agora. Sua partida aparecerá em breve.",
+        "toast_demo_uploaded": "Demo enviada",
+        "toast_demo_uploaded_description": "Importando agora — sua partida aparecerá em breve.",
+        "toast_upload_failed": "Falha no envio"
       }
     },
     "watch": {
@@ -922,6 +1813,14 @@
       "filter_by_player": "Filtrar por jogador",
       "view_mode": "Modo de visualização",
       "view_mode_filter_disabled": "Limpo ao filtrar",
+      "filter_labels": {
+        "visibility": "Visibilidade",
+        "player": "Jogador",
+        "date": "Data",
+        "kills": "Abates",
+        "sort": "Ordenar",
+        "view": "Ver"
+      },
       "result_count": "resultado | resultados",
       "match_count": "partida | partidas",
       "clip_count": "clipe | clipes",
@@ -943,6 +1842,10 @@
         "matches": "Clipes de partidas",
         "singles": "Clipes individuais"
       },
+      "sort": {
+        "recent": "Mais Recentes",
+        "views": "Mais Visualizados"
+      },
       "visibility_filter": {
         "all": "Todos",
         "public": "Público",
@@ -957,6 +1860,64 @@
         "clear_player": "Limpar jogador",
         "clear_date": "Limpar data",
         "clear_kills": "Limpar abates"
+      }
+    },
+    "news": {
+      "title": "Notícias",
+      "subtitle": "As últimas da nossa equipe.",
+      "back": "Voltar para Notícias",
+      "updated": "Atualizado {date}",
+      "written_by": "Escrito por",
+      "cover_editor": {
+        "title": "Ajustar imagem de capa",
+        "description": "Recorte para ajustar ao artigo. Use Remover Fundo para que logos fiquem limpos na página.",
+        "hint": "Scroll para zoom · arraste para mover · Fit mostra a imagem inteira",
+        "fit": "Ajustar"
+      },
+      "new_article": "Novo Artigo",
+      "mark_read": "Marcar como lido",
+      "empty": "Nenhum artigo de notícias ainda — volte em breve.",
+      "manage": {
+        "title": "Gerenciar notícias",
+        "subtitle": "Criar, editar e publicar postagens de notícias.",
+        "view_news": "Ver notícias",
+        "new_post": "Nova postagem",
+        "edit": "Editar",
+        "delete": "Deletar",
+        "delete_confirm_title": "Deletar esta postagem?",
+        "delete_confirm_description": "Isso remove permanentemente a postagem de notícias. Não pode ser desfeito.",
+        "publish": "Publicar",
+        "unpublish": "Despublicar",
+        "draft": "Rascunho",
+        "published": "Publicado",
+        "status": "Status",
+        "saved": "Postagem salva",
+        "deleted": "Postagem deletada",
+        "published_toast": "Postagem publicada",
+        "unpublished_toast": "Postagem movida para rascunho",
+        "save_failed": "Não foi possível salvar a postagem",
+        "empty": "Nenhuma postagem ainda. Crie sua primeira."
+      },
+      "form": {
+        "title_label": "Título",
+        "title_placeholder": "Título da postagem",
+        "teaser_label": "Resumo",
+        "teaser_placeholder": "Um breve resumo mostrado na lista de notícias",
+        "cover_label": "Imagem de capa",
+        "cover_hint": "Clique ou arraste uma imagem",
+        "cover_formats": "PNG · JPG · WEBP · GIF · até 10MB",
+        "cover_replace": "Substituir",
+        "cover_remove": "Remover",
+        "content_label": "Conteúdo",
+        "save_draft": "Salvar rascunho",
+        "save_changes": "Salvar alterações",
+        "publish": "Publicar",
+        "write": "Escrever",
+        "preview": "Pré-visualizar",
+        "image_alt": "Descrição da imagem",
+        "upload_image": "Enviar imagem",
+        "uploading": "Enviando…",
+        "uploading_image": "Enviando imagem…"
       }
     },
     "regions": {
@@ -1021,7 +1982,8 @@
           "cta": "Configurar"
         },
         "tabs": {
-          "performance": "Desempenho",
+          "performance": "Performance",
+          "breakdown": "Detalhamento",
           "elo": "ELO",
           "maps": "Mapas",
           "arsenal": "Arsenal",
@@ -1068,6 +2030,7 @@
         "top_percent": "Top {percent}%",
         "rank_of_total": "{rank} de {total}",
         "player_profile": "Perfil do Jogador",
+        "recent_form": "Recent Form",
         "teams": "Equipes",
         "range": "Alcance",
         "loading_short": "Carregando...",
@@ -1087,8 +2050,15 @@
         "current_rank": "Rank atual",
         "current_rating": "Avaliação atual",
         "source": "Fonte",
+        "provider": "Provedor",
         "mode": "Modo",
         "section": "Seção",
+        "range_l30": "L30",
+        "range_7d": "7D",
+        "range_30d": "30D",
+        "range_90d": "90D",
+        "range_1y": "1A",
+        "range_all": "TUDO",
         "weapons_lifetime": "Total",
         "refresh_stats": "Atualizar estatísticas",
         "last_n_matches": "Últimas 10",
@@ -1249,6 +2219,13 @@
       },
       "open_registration_tournaments": {
         "description": "Torneios que estão abertos para inscrição."
+      },
+      "matchmaking": {
+        "description": "Entre na fila sozinho ou com seu grupo — os times são balanceados automaticamente e a partida começa para você.",
+        "leader_required": "Somente o líder do grupo pode iniciar o matchmaking."
+      },
+      "draft_games": {
+        "description": "Navegue por jogos abertos ou crie um — os capitães fazem a seleção dos jogadores (draft)."
       }
     },
     "matches": {
@@ -1409,7 +2386,8 @@
           "highlights": "Highlights",
           "bake": "Compilação de Shaders"
         }
-      }
+      },
+      "stop": "Parar"
     },
     "game_server_nodes": {
       "title": "Nós de Servidor de Jogo",
@@ -1449,11 +2427,15 @@
         "cpu_governor": "Esquema de Energia da CPU"
       },
       "build_id": "ID da build: {id}",
-      "last_updated": "Última atualização: {date}"
+      "last_updated": "Última atualização: {date}",
+      "max_label": "Max:",
+      "ports_label": "Portas:",
+      "cpu_hardware": "CPU & Hardware"
     },
     "dedicated_servers": {
       "title": "Servidores Dedicados",
       "description": "Você pode configurar um servidor dedicado que sempre executará o mod de servidor de jogos.",
+      "docs_link": "Ver guia de configuração",
       "no_servers_title": "Sem Servidores Dedicados",
       "no_servers": "Nenhum servidor dedicado encontrado.",
       "create": {
@@ -1496,6 +2478,8 @@
       "players": "Jogadores",
       "no_servers_title": "Nenhum servidor disponível",
       "no_public_servers": "Nenhum servidor de warmup disponível no momento.",
+      "no_public_servers_admin": "Configure um servidor de warmup na página de Servidores Dedicados para disponibilizá-lo aqui.",
+      "setup_public_server": "Configurar um Servidor de Warmup",
       "lan_servers_title": "Servidores da LAN",
       "manage": "Gerenciar"
     },
@@ -1597,7 +2581,8 @@
         "all": "Todos",
         "competitive": "Competitivo",
         "wingman": "Braço Direito",
-        "duel": "X1"
+        "duel": "X1",
+        "scrimmage": "Modo Treino"
       },
       "roles": {
         "all": "Todos",
@@ -1824,7 +2809,8 @@
     "account_settings": {
       "title": "Configuração da Conta",
       "description": "Gerencie as configurações e preferências da sua conta",
-      "select_section": "Selecione uma seção"
+      "select_section": "Selecione uma seção",
+      "label": "Configurações"
     },
     "application_settings": {
       "title": "Configurações do App",
@@ -1873,7 +2859,9 @@
         "players": "Jogadores",
         "teams": "Equipes",
         "leaderboard": "Ranking",
-        "search": "Procurar"
+        "search": "Procurar",
+        "highlights": "Highlights",
+        "news": "Notícias"
       },
       "community": {
         "title": "Comunidade"
@@ -1887,13 +2875,15 @@
         "gpu_nodes": "Nós de GPU",
         "app_settings": "Configurações do App",
         "manage_matches": "Gerenciar Partidas",
-        "manage_tournaments": "Gerenciar Torneios"
+        "manage_tournaments": "Gerenciar Torneios",
+        "stream_deck": "Stream Deck"
       },
       "system": {
         "title": "Sistema",
         "logs": "Logs",
         "database": "Database",
-        "metrics": "Métricas"
+        "metrics": "Métricas",
+        "render_queue": "Fila de Renderização"
       },
       "profile": {
         "my_account": "Configurações",
@@ -1911,6 +2901,7 @@
         "players": "Jogadores",
         "teams": "Equipes",
         "leaderboard": "Ranking",
+        "news": "Notícias",
         "public_servers": "Warmup",
         "regions": "Regiões",
         "servers": "Servidores",
@@ -1949,8 +2940,10 @@
         "public_servers": "Warmup",
         "hero": {
           "title": "Jogar & Competir",
-          "subtitle": "Entre em partidas rankeadas, campeonatos ou um warmup."
-        }
+          "subtitle": "Entre em partidas rankeadas, campeonatos ou um warmup.",
+          "primary": "PRIMÁRIO"
+        },
+        "operations": "OPERAÇÕES"
       },
       "community": {
         "watch": {
@@ -1975,6 +2968,15 @@
             "title": "Junte-se ao nosso Discord",
             "subtitle": "Conversa, suporte e anúncios"
           }
+        },
+        "roster": "ROSTER",
+        "highlights": {
+          "title": "Highlights",
+          "subtitle": "Clips públicos pela plataforma"
+        },
+        "news": {
+          "title": "Notícias",
+          "subtitle": "Notícias do Counter-Strike"
         }
       }
     },
@@ -2013,6 +3015,9 @@
       "no_maps": "Os mapas aparecerão aqui à medida que você joga.",
       "no_recent_matches_title": "Sem partidas recentes",
       "no_recent_matches_description": "Jogos recentes aparecerão aqui."
+    },
+    "public_header": {
+      "secure_channel": "CANAL SEGURO"
     }
   },
   "alt_text": {
@@ -2033,13 +3038,23 @@
   },
   "common": {
     "manage_custom_plugins_and_shared_files": "Esses arquivos são montados no diretório `csgo` quando o servidor é iniciado.",
-    "delete": "Excluir",
+    "previous": "Anterior",
+    "next": "Próximo",
+    "delete": "Deletar",
     "clear": "Limpar",
     "cancel": "Cancelar",
     "save": "Salvar",
-    "reset": "Reset",
+    "reset": "Resetar",
     "copy": "Copiar",
     "update": "Atualizar",
+    "discard": "Descartar",
+    "save_changes": "Salvar alterações",
+    "save_bar": {
+      "unsaved_changes": "Alterações não salvas",
+      "review_and_save": "Revise suas edições e depois salve",
+      "has_errors": "Configurações inválidas",
+      "resolve_errors": "Corrija os campos destacados para salvar"
+    },
     "error": "Erro",
     "enabled": "Ativado",
     "all": "Todos",
@@ -2309,7 +3324,8 @@
     "feature_card": {
       "tournament": "Torneio",
       "teams": "Equipes",
-      "stages": "Fases"
+      "stages": "Fases",
+      "default_label": "Torneio"
     },
     "results_section": {
       "no_data": "SEM DADOS",
@@ -2426,7 +3442,8 @@
       "type": "Tipo",
       "teams_joined": "Equipes inscritas",
       "starts": "Inicia",
-      "no_tournaments_found": "Nenhum torneio encontrado"
+      "no_tournaments_found": "Nenhum torneio encontrado",
+      "maps_label": "Mapas:"
     },
     "stage": {
       "title": "Fases",
@@ -2458,7 +3475,8 @@
       "third_place_match": "Habilitar Partida de 3º Lugar",
       "third_place_match_description": "Criar uma partida para o 3º lugar entre os perdedores das semifinais.",
       "decider_best_of": "Decisão de 3º Lugar - Melhor De",
-      "advanced_settings": "Configurações Avançadas de Fase"
+      "advanced_settings": "Configurações Avançadas de Fase",
+      "teams_count": "{count} equipes"
     },
     "bracket": {
       "schedule_title": "Agendar Partida",
@@ -2537,7 +3555,20 @@
       "wb_round_compact": "TC R{round}",
       "lb_round_match_compact": "TB R{round}M{match}",
       "lb_round_compact": "TB R{round}",
-      "third_place_decider": "Decisão de 3º Lugar"
+      "third_place_decider": "Decisão de 3º Lugar",
+      "reset_title": "Resetar vencedor da partida do torneio?",
+      "affected_chain_preview": "Prévia da cadeia de partidas afetada:",
+      "delete_recreate": "Deletar e recriar",
+      "reset_only": "Apenas resetar",
+      "no_affected_chain": "Nenhuma cadeia de chaveamento afetada foi retornada.",
+      "no_winner_reset": "Sem vencedor (resetar para configuração)",
+      "winner_cleared_hint": "O vencedor será removido. Adicione um horário para manter esta partida como Agendada, ou deixe vazio para movê-la para Aguardando Check-In.",
+      "winner_reassigned_hint": "O vencedor será reatribuído para a lineup que você selecionar.",
+      "scheduled_optional_hint": "Opcional. Defina um horário se quiser que esta partida permaneça Agendada.",
+      "remove_downstream_ack": "Entendo que isso pode remover partidas subsequentes já jogadas.",
+      "review_chain_hint": "Revise a cadeia afetada acima antes de continuar.",
+      "irreversible_action": "Ação irreversível",
+      "confirm_reset_chain_ack": "Confirmo que quero resetar esta cadeia de partidas do torneio."
     },
     "round_labels": {
       "round": "Round {number}",
@@ -2648,10 +3679,13 @@
     "hero": {
       "roster": "Jogadores",
       "matches": "Partidas",
+      "avg_elo": "Média ELO 5Stack",
+      "avg_premier": "Média Rating Valve",
       "team_profile": "Perfil da Equipe"
     },
     "table": {
-      "team": "Equipe"
+      "team": "Equipe",
+      "no_roster": "Sem jogadores ainda."
     },
     "invite": {
       "team_title": "Convite para Equipe",
@@ -2705,7 +3739,9 @@
       "owner": "Dono",
       "captain": "Capitão",
       "ineligible_short": "Inelegível Curto*",
-      "tournament_join_requires_owner_or_captain": "Você pode entrar em um torneio com equipes das quais você é o dono ou o capitão."
+      "tournament_join_requires_owner_or_captain": "Você pode entrar em um torneio com equipes das quais você é o dono ou o capitão.",
+      "not_enough_players": "Necessário ao menos {count} jogadores para desafiar.",
+      "selected": "Selecionado"
     },
     "member": {
       "coach": "Técnico",
@@ -2747,7 +3783,9 @@
       "viewing": "Visualizando",
       "damage": "Dano",
       "your_weapons": "Suas armas",
-      "their_weapons": "Armas deles"
+      "their_weapons": "Armas deles",
+      "flashes_on_them": "Flash neles",
+      "flashes_on_you": "Flashes em você"
     },
     "highlights_button": "Highlights",
     "team_stats_heading": "Estatísticas de {name}",
@@ -2756,7 +3794,12 @@
       "watch": "Transmissão Ao Vivo",
       "no_preview": "Sem preview ainda",
       "rendering_highlights": "Renderizando Highlights",
-      "expand_preview": "Expandir o Preview"
+      "expand_preview": "Expandir o Preview",
+      "watching": "{count} assistindo",
+      "rendering_clip": "Renderizando clipe",
+      "acquiring_signal": "Adquirindo sinal",
+      "signal_lost": "Sinal perdido",
+      "idle": "Inativo"
     },
     "elo_details": {
       "title": "Detalhes das Evoluções do ELO",
@@ -2810,6 +3853,10 @@
       },
       "map_veto_settings": {
         "description": "Processo de Veto MD5: veto veto, pick pick, veto veto, sobra",
+        "pick_description": "Map Veto está desativado — escolha manualmente abaixo os mapas que serão jogados.",
+        "short_on": "Os times banem e escolhem mapas do pool.",
+        "short_off": "Os mapas são escolhidos manualmente abaixo.",
+        "learn_more": "Como funciona o veto",
         "custom_pool": "Map Pool Personalizado",
         "active_duty": "Map Pool Ativo da Valve",
         "custom_pool_tooltip": "Escolher um conjunto de mapas personalizado permite selecionar mapas fora do conjunto atual de mapas disponíveis para serviço ativo."
@@ -3078,7 +4125,8 @@
       "filter_type": "Tipo",
       "filter_team": "Equipe",
       "filter_window": "Janela",
-      "open_2d_playback": "Abrir reprodução 2D"
+      "open_2d_playback": "Abrir reprodução 2D",
+      "open_3d_playback": "Abrir reprodução 3D"
     },
     "roles": {
       "title": "Funções detectadas",
@@ -3299,12 +4347,19 @@
         "traded_death_pct": "% de Trade Death",
         "net_trade": "Trade Líquido",
         "accuracy": "Precisão",
+        "estimated": "Estimado",
+        "estimated_tooltip": "Este mapa não possui malha de colisão, então a linha de visão não pôde ser validada — spotted, crosshair, time-to-damage e estatísticas de engajamento aqui são estimadas.",
+        "rifle_accuracy": "Precisão de rifle",
+        "pistol_accuracy": "Precisão de pistola",
+        "sniper_accuracy": "Precisão de sniper",
         "head_accuracy": "Precisão na Cabeça",
         "hs_kill_pct": "% de Kills com HS",
         "time_to_damage": "Tempo até causar Dano",
         "spotted_acc": "Precisão ao ser Detectado",
         "crosshair_placement": "Posicionamento da Mira",
         "counter_strafing": "Counter-Strafing",
+        "first_bullet_accuracy": "Precisão do Primeiro Disparo",
+        "tracking": "Rastreamento",
         "wasted_magazine_pct": "% Desperdício de Munição",
         "spray_accuracy": "Precisão do Spray",
         "accuracy_spotted": "Precisão (Detectado)",
@@ -3314,6 +4369,21 @@
             "title": "Precisão (Todos os Tiros)",
             "description": "Do total de balas disparadas, quantas acertaram um inimigo.",
             "calculation": "Todos os acertos divididos por todos os disparos."
+          },
+          "rifle_accuracy": {
+            "title": "Precisão de Rifle",
+            "description": "Precisão apenas com rifles (AK, M4, AUG, Galil, FAMAS, SG). A comparação de mira mais justa — rifle vs rifle — já que não é inflada por armas de baixa cadência de tiro.",
+            "calculation": "Acertos de rifle divididos por disparos de rifle. Mostrado apenas com pelo menos 5 disparos de rifle."
+          },
+          "pistol_accuracy": {
+            "title": "Precisão de Pistola",
+            "description": "Precisão apenas com pistolas (Glock, USP, P250, Deagle, Five-Seven, Tec-9, CZ, Dualies, Revolver).",
+            "calculation": "Acertos de pistola divididos por disparos de pistola. Mostrado apenas com pelo menos 5 disparos de pistola."
+          },
+          "sniper_accuracy": {
+            "title": "Precisão de Sniper",
+            "description": "Precisão com rifles de mira (AWP, SSG, SCAR-20, G3SG1). Naturalmente alta — são armas de baixo volume e disparo único — então compare AWPers entre si.",
+            "calculation": "Acertos de sniper divididos por disparos de sniper. Mostrado apenas com pelo menos 5 disparos de sniper."
           },
           "accuracy_spotted": {
             "title": "Precisão (Inimigo Detectado)",
@@ -3349,6 +4419,16 @@
             "title": "Counter-Strafing",
             "description": "Com que frequência você parou antes de atirar com rifle. Conta apenas disparos contra inimigos visíveis; exclui movimento totalmente agachado.",
             "calculation": "Disparos de rifle contra inimigos detectados onde a velocidade estava abaixo de 34% do máximo da arma, dividido por todos os disparos de rifle contra inimigos detectados (não agachado)."
+          },
+          "first_bullet_accuracy": {
+            "title": "Precisão do primeiro tiro",
+            "description": "Com que frequência seu tiro inicial em um engajamento conecta — o disparo que decide a maioria dos duelos. Quanto maior, melhor.",
+            "calculation": "Primeiros tiros que causaram dano divididos por primeiros tiros disparados, em todos os engajamentos (um por inimigo que você iniciou)."
+          },
+          "tracking": {
+            "title": "Rastreamento (Tempo no Alvo)",
+            "description": "Enquanto engaja um inimigo ativo, quanto tempo sua mira permaneceu sobre ele. Quanto maior, melhor.",
+            "calculation": "Frames em que sua visão permaneceu dentro de ~5° do inimigo, divididos por todos os frames da janela de engajamento."
           },
           "spray_accuracy": {
             "title": "Precisão do Spray",
@@ -3416,6 +4496,7 @@
       "switch_teams": "Trocar Equipes",
       "remove_from_lineup": "Remover da Escalação",
       "leave_lineup": "Sair da Escalação",
+      "render_highlight": "Renderizar highlights...",
       "update_team_name": "Atualizar Nome da Equipe",
       "kd": "K/D",
       "hltv": "HLTV",
@@ -3519,16 +4600,19 @@
       "positions_large": "As posições do replay são grandes. Clique em carregar para buscá-las em {map}.",
       "load": "Carregar replay",
       "open": "Abrir Replay 2D",
+      "open_3d": "Abrir Replay 3D",
       "loading": "Carregando replay…",
       "no_position_data": "Sem dados de posição — reanalise a demo para preencher o replay.",
       "toggle_to_slots": "Alternar para números de slot",
       "toggle_to_avatars": "Alternar para avatares dos jogadores",
       "hide_scoreboard": "Ocultar placar",
       "show_scoreboard": "Mostrar placar",
+      "rotate_title": "Gire seu dispositivo",
+      "rotate_description": "O visualizador de replay funciona melhor na horizontal. Vire seu dispositivo de lado para continuar.",
       "popout": "Abrir em janela separada",
-      "phase_freeze": "Congelamento",
+      "phase_freeze": "Freeze",
       "phase_bomb": "Bomba",
-      "bomb_planted": "Bomba plantada no {site}",
+      "bomb_planted": "Bomba plantada na {site}",
       "bomb_defused": "Bomba desarmada",
       "bomb_exploded": "Bomba explodiu",
       "prev_round": "Rodada anterior",
@@ -3555,10 +4639,69 @@
       "overlay_defuser": "Kits de desarme",
       "overlay_ground_bomb": "Bomba dropada / plantada",
       "overlay_ground_kits": "Kits dropados",
-      "pathing": "Rotas",
       "pathing_off": "Rotas desativadas",
       "pathing_progress": "Rotas ate o tick atual",
-      "pathing_round": "Rotas da rodada completa"
+      "overlay_buy_section": "Overlay de buy-round",
+      "overlay_buy_window": "Janela: {sec}s desde o freezetime",
+      "overlay_buy_rounds": "Rounds",
+      "overlay_buy_explainer": "{count} buy-rounds completos · primeiros {sec}s após o freeze",
+      "loading_map": "carregando mapa…",
+      "chrome": {
+        "view_2d": "Visão de radar 2D (top-down)",
+        "view_3d": "Visão de mapa 3D",
+        "enter_fullscreen": "Tela cheia",
+        "exit_fullscreen": "Sair da tela cheia",
+        "cam_orbit": "ORBIT",
+        "cam_orbit_tip": "Câmera orbital — arraste com botão esquerdo para olhar, direito para orbitar, scroll para zoom, WASD para voar",
+        "cam_top": "TOP",
+        "cam_top_tip": "Câmera de cima",
+        "cam_chase": "CHASE",
+        "cam_chase_tip": "Seguir o jogador acompanhado",
+        "roof": "ROOF",
+        "roof_tip": "Corte de telhado — meio é automático (telhados off, ação visível). Para cima = revela mais, para baixo = corta mais, máximo = mapa completo.",
+        "play_by_play": "PLAY BY PLAY",
+        "play_by_play_tip": "Mostrar log de eventos da rodada",
+        "more": "Mais opções",
+        "utility_heatmap": "HEATMAP DE UTILITÁRIOS",
+        "utility_heatmap_tip": "Heatmap de utilitários lançados na rodada",
+        "pbp_header": "PLAY BY PLAY · RD {round}",
+        "clear_count": "limpar {count}",
+        "no_events": "nenhum evento ainda",
+        "alive_count": "{count} vivos",
+        "showing_avatars": "Mostrando avatares — clique para números",
+        "showing_numbers": "Mostrando números — clique para avatares",
+        "trace_tip": "Traço de movimento do jogador (caminho pontilhado)",
+        "deaths_tip": "Marcadores de mortes (localização de kills)",
+        "util_summary": "RESUMO DE UTILITÁRIOS",
+        "util_summary_tip": "Resumo de utilitários — empilhe múltiplos buy-rounds em um relógio compartilhado para comparar setups, timings e posições de cada time",
+        "round_remove": "Round {n} — clique para remover do resumo",
+        "round_add": "Round {n} — clique para adicionar ao resumo",
+        "round_jump": "Ir para o round {n}",
+        "clear_highlighted_util": "Limpar utilitário destacado",
+        "hide_util": "Ocultar utilitário {type}",
+        "show_util": "Mostrar utilitário {type}",
+        "util_thrown_by": "{type} · lançado por {name}",
+        "utility": "Utilitário",
+        "click_to_clear": " — clique para limpar",
+        "click_to_highlight": " — clique para destacar",
+        "pause": "Pausar",
+        "play": "Reproduzir",
+        "window": "JANELA",
+        "team": "TIME",
+        "all": "TODOS",
+        "team_1": "Equipe 1",
+        "team_2": "Equipe 2",
+        "kb_play_pause": "play / pause",
+        "kb_step_frame": "avançar frame",
+        "kb_prev_next_round": "round anterior / próximo",
+        "kb_speed": "velocidade",
+        "kb_3d_camera": "câmera 3D",
+        "kb_look": "olhar / seguir-orbit",
+        "kb_orbit": "orbitar",
+        "kb_zoom": "zoom",
+        "kb_fly": "voar",
+        "kb_up_down": "subir / descer"
+      }
     },
     "player_details_panel": {
       "stats_unavailable": "Estatísticas indisponíveis para esta partida.",
@@ -3579,6 +4722,20 @@
     },
     "side_filter": {
       "all": "Todos"
+    },
+    "source_badge": {
+      "imported_external": "Importado de uma fonte externa — não é uma partida desse sistema"
+    },
+    "form": {
+      "lobby_access": "Acesso ao Lobby"
+    },
+    "scoreboard_overlay": {
+      "final": "Final",
+      "live": "Ao Vivo"
+    },
+    "admin_bar": {
+      "rcon_unavailable": "RCON indisponível",
+      "not_controllable": "A partida não está em um estado controlável."
     }
   },
   "ui": {
@@ -3626,6 +4783,91 @@
     "reload_demo": "Recarregar demo"
   },
   "player": {
+    "performance": {
+      "title": "Desempenho",
+      "description": "Cada área é pontuada de 0 a 100 como seu percentil em relação a todos os outros jogadores — 50 é um jogador mediano, quanto maior melhor. Passe o mouse sobre qualquer rótulo para ver o que ele mede.",
+      "how_calculated": "Como isso é calculado?",
+      "all_matches": "A pontuação reflete suas partidas recentes",
+      "recent": "Recente",
+      "you": "Você",
+      "compare": "Comparação",
+      "goal": "Meta",
+      "my_rating": "Minha pontuação",
+      "focus_areas": "Áreas de foco",
+      "provisional": "Provisório",
+      "not_enough_data": "Ainda não há jogos suficientes para avaliar este jogador — jogue mais para desbloquear a análise de desempenho.",
+      "low_sample": "Poucos jogadores avaliados na sua faixa de rank agora, então a Meta é uma estimativa inicial.",
+      "categories": {
+        "aim": "Mira",
+        "positioning": "Posicionamento",
+        "utility": "Utilitário"
+      },
+      "consistency": {
+        "title": "Consistência",
+        "description": "Cada partida recebe uma pontuação geral (sua Mira, Posicionamento e Utilitário combinados). Isso acompanha suas partidas recentes — uma linha mais estável significa jogo mais consistente.",
+        "overall": "Geral",
+        "not_enough": "Jogue mais algumas partidas para ver a tendência da sua forma.",
+        "rock_solid": "Sólido",
+        "steady": "Estável",
+        "streaky": "Irregular"
+      },
+      "tiers": {
+        "subpar": "Abaixo da média",
+        "average": "Médio",
+        "good": "Bom",
+        "elite": "Elite"
+      },
+      "metrics": {
+        "accuracy_score": {
+          "label": "Precisão",
+          "coach": "Menos tiros, mais deliberados, acertam com mais frequência do que spray — desacelere e comprometa-se com cada disparo."
+        },
+        "hs_score": {
+          "label": "Headshots",
+          "coach": "Mantenha sua mira na altura da cabeça ao segurar e limpar ângulos para que seu primeiro tiro seja um headshot."
+        },
+        "spotted_score": {
+          "label": "Precisão ao avistar",
+          "coach": "Sua taxa de acerto quando um inimigo está realmente visível — pré-mire os pontos de onde eles aparecem."
+        },
+        "crosshair_score": {
+          "label": "Posicionamento da mira",
+          "coach": "Segure pré-miras na altura da cabeça para quase não precisar mover a mira ao disparar."
+        },
+        "ttd_score": {
+          "label": "Reação",
+          "coach": "Segure ângulos mais fechados — quanto menos tela o inimigo pode aparecer, mais rápido você reage e atira."
+        },
+        "counter_strafe_score": {
+          "label": "Counter-Strafe",
+          "coach": "Toque a tecla oposta para parar completamente antes de atirar — disparos em movimento são extremamente imprecisos."
+        },
+        "survival_score": {
+          "label": "Sobrevivência",
+          "coach": "Troque sua vida por valor — evite dry-peek e avançar demais longe do seu time."
+        },
+        "traded_score": {
+          "label": "Posicionamento para troca",
+          "coach": "Lute perto dos colegas para que, quando você morrer, seja trocado, em vez de morrer de graça."
+        },
+        "kast_score": {
+          "label": "Impacto na rodada",
+          "coach": "Faça algo em toda rodada — um kill, assistência, sobreviver ou ser trocado. Rodadas vazias prejudicam seu time."
+        },
+        "flash_assists_score": {
+          "label": "Assistências com flash",
+          "coach": "Pop-flashe para colegas avançando em um ângulo, não apenas para você."
+        },
+        "blind_score": {
+          "label": "Efetividade da flash",
+          "coach": "Jogue flashes que realmente cegam inimigos logo antes do peek — não por cima da cabeça deles."
+        },
+        "util_eff_score": {
+          "label": "Dano de utilitário",
+          "coach": "Aprenda algumas line-ups de HE / molotov para spots comuns e causar dano real com cada granada."
+        }
+      }
+    },
     "player": {
       "steam_id": "Steam ID",
       "steam": "Steam"
@@ -3669,13 +4911,22 @@
     "sanctions": {
       "title": "Sanções",
       "duration_label": "Duração",
-      "select_duration": "Selecionar Duração",
+      "select_duration": "Selecionar duração",
       "sanctions": "Sanções",
       "expires": "Expira",
+      "expired_on": "Expirado em",
+      "issued": "Emitido",
+      "view_steam": "Ver ban na Steam",
+      "permanent": "Permanente",
+      "active": "Ativo",
+      "expired": "Expirado",
+      "cannot_edit_expired": "Sanções expiradas não podem ser editadas — adicione uma nova",
       "edit": "Editar",
-      "remove": "Remove",
-      "edit_title": "Editar Sanção",
-      "edit_description": "Atualizar o horário de término para esta sanção",
+      "remove": "Remover",
+      "edit_title": "Encerrar sanção",
+      "edit_description": "Defina quando esta sanção será encerrada.",
+      "end_time": "Hora de término",
+      "end_time_hint": "Deixe vazio para manter esta sanção permanente. Defina uma data passada para encerrá-la agora.",
       "clear_date": "Limpar data",
       "updated": "Sanção atualizada",
       "update_failed": "Falha ao atualizar sanção",
@@ -3704,7 +4955,11 @@
       "banned": "Banido",
       "muted": "Silenciado (voz)",
       "gagged": "Censurado (texto)",
-      "add_friend": "Adicionar aos amigos"
+      "add_friend": "Adicionar aos amigos",
+      "vac_banned": "VAC Ban na Steam",
+      "vac_banned_count": "{count} banimentos VAC na Steam",
+      "game_banned": "Game Ban na Steam",
+      "game_banned_count": "{count} banimentos Game Ban"
     },
     "change_name": {
       "button": "Alterar Nome",
@@ -3715,6 +4970,10 @@
       "name_label": "Nome",
       "success": "Nome do Jogador Alterado",
       "request_success": "Solicitação de alteração de nome requerida"
+    },
+    "pending_imports": {
+      "title": "Importações CS2 Pendentes",
+      "importing": "Importando..."
     }
   },
   "maps": {
@@ -3761,6 +5020,11 @@
     "in_queue_label": "Na Fila",
     "searching": "Procurando",
     "elapsed": "Tempo Decorrido",
+    "queue_wait": {
+      "zero": "0 segundos",
+      "seconds": "{count} segundos",
+      "minutes_seconds": "{count}m {count}s"
+    },
     "others_searching": "{count} outros estão procurando | {count} outros procurando",
     "match_found": "Partida Encontrada",
     "waiting_for_players": "Aguardando Jogadores",
@@ -3770,6 +5034,10 @@
     "locked_in": "Confirmado",
     "check_in": "Check In",
     "go_to_match": "Ir para a Partida",
+    "toasts": {
+      "your_veto_title": "Sua vez de vetar",
+      "your_veto_desc": "É sua vez — pick ou ban na página da partida."
+    },
     "disable_match_ready_modal_hint": "Não quer este popup?",
     "disable_match_ready_modal_action": "Desabilite nas configurações do matchmaking",
     "invites": "Convites",
@@ -3780,7 +5048,8 @@
       "invite_player": "Convidar Jogador para a Lobby",
       "access_updated": "Acesso ao lobby atualizado para {access}",
       "member_count": "{count} em lobby",
-      "pending_count": "{count} pendente"
+      "pending_count": "{count} pendente",
+      "waiting_for_players": "Aguardando jogadores entrarem no seu lobby. Use o botão Convidar acima para adicionar amigos."
     },
     "friends": {
       "title": "Amigos",
@@ -3929,15 +5198,21 @@
     "gpu_description": "Descrição da GPU",
     "disk_usage": "Uso do Disco",
     "disk_used": "Disco Usado",
-    "disk_available": "Disco Disponível"
+    "disk_available": "Disco Disponível",
+    "disk_label": "Disco:"
   },
   "system_metrics": {
     "no_metrics_available": "Nenhuma métrica disponível",
     "node_telemetry": "Telemetria",
     "loading_metrics": "Carregando métricas...",
-    "no_metrics_description": "Ainda não há dados de métricas disponíveis para este nó. As métricas aparecerão assim que o nó começar a reportar dados."
+    "no_metrics_description": "Ainda não há dados de métricas disponíveis para este nó. As métricas aparecerão assim que o nó começar a reportar dados.",
+    "aggregate": "agregado",
+    "rx_tx": "rx + tx",
+    "current": "atual",
+    "percent_used": "{percent}% usado"
   },
   "chat": {
+    "readonly": "Chat é apenas leitura.",
     "lobby_chat": "Chat da lobby",
     "message_placeholder": "Digite uma mensagem...",
     "new_since_last_visit": "Novas mensagens desde a última visita",
@@ -3950,7 +5225,8 @@
       "title": "Chat dos Organizadores",
       "no_access": "Você não tem acesso a esta página.",
       "sidebar_hint": "Chat está disponível na barra dadireita abaixo da seção de Chats."
-    }
+    },
+    "in_chat": "no chat"
   },
   "charts": {
     "usage": "Uso",
@@ -3960,6 +5236,8 @@
   "server": {
     "join_server": "Entrar no Servidor",
     "form": {
+      "identity": "Identidade",
+      "connection": "Conexão",
       "label": "Rótulo",
       "host": "Host",
       "region": "Região",
@@ -3998,7 +5276,8 @@
       "refresh_match": "Atualizar partida",
       "metamod_info": "Info do Metamod",
       "css_info": "Info do CSSharp",
-      "command_placeholder": "Insira um comando..."
+      "command_placeholder": "Insira um comando...",
+      "send": "Enviar"
     }
   },
   "components": {
@@ -4146,7 +5425,30 @@
     "open_broadcast_controls": "Abrir controles de transmissão",
     "back_to_deck": "Voltar ao deck",
     "scoreboard": "Placar",
-    "shortcuts": "Atalhos"
+    "shortcuts": "Atalhos",
+    "spectator": {
+      "slot": "Slot {slot}",
+      "slot_waiting": "Slot {slot} · aguardando jogador…",
+      "take_manual_control": "Clique para assumir controle manual"
+    },
+    "page_title": "Stream Deck",
+    "capacity": "Capacidade",
+    "full": "Cheio",
+    "off_air_description": "Nenhuma transmissão ativa de game-streamer. Escolha uma partida ao vivo abaixo para assumir uma GPU e começar a streamar.",
+    "auto_director": "Auto-diretor",
+    "stop": "Parar",
+    "playing_in_popout": "Reproduzindo em pop-out",
+    "preview_paused": "A prévia está pausada aqui para que a janela em foco assuma o stream.",
+    "cycle": "Ciclo",
+    "prev": "Anterior",
+    "next": "Próximo",
+    "use_keyboard": "Usar teclado",
+    "match_count": "{count} partida | {count} partidas",
+    "tiles_hint": "Os tiles aparecerão aqui assim que uma partida ficar Ao Vivo.",
+    "offline": "offline",
+    "exit": "Sair",
+    "swap_sides": "Trocar lados (override manual)",
+    "refresh_hud": "Atualizar HUD (recarregar imagens dos jogadores)"
   },
   "system_metrics_extras": {
     "gpu_usage": "Uso de GPU",
@@ -4200,7 +5502,12 @@
       "title_label": "Título",
       "resolution": "Resolução",
       "destination": "Destino",
-      "render": "Renderizar"
+      "render": "Renderizar",
+      "add": "Adicionar",
+      "stop": "Parar",
+      "preview": "Prévia",
+      "drag_rail_hint": "clique + arraste o trilho vazio para adicionar alcance",
+      "pov_hint": "clique no chip para trocar o jogador espectado"
     },
     "detail": {
       "default_title": "Highlight",
@@ -4211,7 +5518,10 @@
       "title_label": "Título",
       "cancel": "Cancelar",
       "other_clips": "Outros clipes",
-      "view_match": "Ver partida"
+      "view_match": "Ver partida",
+      "highlight_clip_viewer": "Visualizador de clipes de highlight",
+      "render_finalizing": "Renderização finalizando…",
+      "just_now": "agora mesmo"
     },
     "render_queue": {
       "in_flight": "Em andamento",
@@ -4229,7 +5539,31 @@
       "status_paused_active_match": "Renderizadores pausados — partida ativa na GPU",
       "status_idle": "Inativo",
       "status_waiting": "Aguardando",
-      "resume_blocked_live": "Não é possível retomar — uma transmissão ao vivo está usando a GPU"
+      "resume_blocked_live": "Não é possível retomar — uma transmissão ao vivo está usando a GPU",
+      "unknown_match": "Partida desconhecida",
+      "open_match": "Abrir partida",
+      "retry_failed": "Nova tentativa falhou",
+      "render_pod_booting": "Render pod inicializando",
+      "requeue_clip": "Re-enfileirar clipe",
+      "preview_clip": "Prévia do clipe",
+      "view_logs": "Ver logs da renderização",
+      "hide_clips": "Ocultar clipes",
+      "show_all_clips": "Mostrar todos os {count} clipes",
+      "clear_all": "Limpar tudo",
+      "clear_batch": "Limpar lote",
+      "show_less": "Mostrar menos",
+      "show_more": "Mostrar mais {count}",
+      "load_more": "Carregar mais",
+      "empty_title": "Fila de renderização está vazia",
+      "empty_description": "Jobs de renderização de highlights enfileirados das partidas aparecerão aqui enquanto inicializam, renderizam e fazem upload.",
+      "done_count": "{done}/{total} concluído",
+      "err_count": "{count} erro",
+      "queued_count": "{count} na fila",
+      "clip_count": "{count} clipes",
+      "done_only_count": "{count} concluído",
+      "cancelled_count": "{count} cancelado",
+      "retry_failed_count": "Nova tentativa falhou ({count})",
+      "retry_all_clips": "Re-tentar todos os {count} clipes"
     },
     "visibility_section": "Visibilidade",
     "create_dialog": {
@@ -4269,7 +5603,9 @@
     "untitled_clip": "Clip sem título",
     "delete_dialog": {
       "title": "Excluir este clip?",
-      "description": "O clipe é removido da biblioteca e o arquivo subjacente é excluído. Essa ação é irreversível."
+      "description": "O clipe é removido da biblioteca e o arquivo subjacente é excluído. Essa ação é irreversível.",
+      "deleting": "Excluindo...",
+      "delete": "Excluir"
     },
     "featured_highlight": "Highlight em destaque",
     "match_highlight": "Highlight da partida",
@@ -4291,6 +5627,16 @@
       "public_hint": "Listados no feed de highlights",
       "private": "Privado",
       "private_hint": "Oculto dos feeds — a URL do arquivo ainda reproduz se compartilhada"
+    },
+    "no_highlights_from_map": "Nenhum highlight deste mapa.",
+    "render_dialog": {
+      "title": "Renderizar highlight",
+      "description": "Enfileire um highlight com um clique a partir de uma demo desta partida.",
+      "map": "Mapa",
+      "pick_map": "Escolha um mapa",
+      "no_moments": "Nenhum momento digno de highlight para {target} neste mapa.",
+      "this_player": "este jogador",
+      "queue_render": "Enfileirar renderização"
     }
   },
   "time_ago": {
@@ -4321,5 +5667,307 @@
     "premier": "Premier",
     "competitive": "Competitivo",
     "wingman": "Braço Direito"
+  },
+  "breadcrumbs": {
+    "dashboard": "painel"
+  },
+  "pod_logs": {
+    "tail_since": "tail // desde"
+  },
+  "elo_change": {
+    "win": "VITÓRIA",
+    "loss": "DERROTA",
+    "maps": "MAPAS",
+    "damage": "DANO",
+    "score": "PLACAR",
+    "impact": "IMPACTO"
+  },
+  "stat": {
+    "level": {
+      "best": "Melhor",
+      "above_average": "Acima da média",
+      "below_average": "Abaixo da média",
+      "poor": "Fraco"
+    }
+  },
+  "draft_games": {
+    "title": "Jogos Draft",
+    "nav_label": "Lobby Draft",
+    "report": {
+      "title": "Relatório de Balanceamento Draft",
+      "projected": "Probabilidades pré-partida",
+      "held": "Previsão mantida",
+      "upset": "Surpresa",
+      "avg": "Média",
+      "confidence": "O modelo deu ao favorito uma vantagem de {pct}%"
+    },
+    "create_custom_match": "Hospedar Sala Draft",
+    "leader_required": "Somente o líder do grupo pode criar uma partida.",
+    "rehost": "Re-hospedar última",
+    "rehost_hint": "Recrie seu último lobby com as mesmas configurações",
+    "search_placeholder": "Pesquisar por qualquer jogador...",
+    "no_results": "Nenhuma partida corresponde aos seus filtros.",
+    "filters": {
+      "avg_rank": "Rank médio",
+      "has_space": "Com espaço",
+      "any": "Qualquer",
+      "clear": "Limpar ({count})"
+    },
+    "sort": {
+      "filling": "Mais próximo de cheio",
+      "newest": "Mais recente",
+      "rank_high": "Rank: Alto",
+      "rank_low": "Rank: Baixo"
+    },
+    "empty": "Nenhuma partida aberta. Crie uma para começar.",
+    "types": {
+      "competitive": "Competitivo 5v5",
+      "wingman": "Braço Direito 2v2",
+      "duel": "X1 1v1"
+    },
+    "create": {
+      "title": "Criar Jogo Draft",
+      "type": "Tipo de jogo",
+      "regions": "Regiões",
+      "captain_selection": "Seleção de capitães",
+      "draft_order": "Ordem do draft",
+      "min_elo": "Rank mínimo (opcional)",
+      "max_elo": "Rank máximo (opcional)",
+      "submit": "Criar",
+      "description": "Configure um pick-up game. Os capitães irão draftar os times quando estiver cheio.",
+      "mode": "Modo Draft",
+      "rank_gate": "Limite de rank (opcional)",
+      "deploy": "Criar",
+      "require_approval": "Exigir aprovação",
+      "require_approval_desc": "Jogadores solicitam para entrar — você escolhe quem joga da fila.",
+      "keep_lobby": "Manter lobby junto",
+      "keep_lobby_desc": "Seus {count} jogadores do lobby entram no mesmo time.",
+      "save": "Salvar alterações",
+      "access": "Acesso ao lobby",
+      "match_settings": "Configurações da partida",
+      "teams": "Times",
+      "no_formats": "Duelo não possui formatos — é sempre dividido automaticamente 1v1.",
+      "teams_desc": "Um único time é obrigatório. O segundo time é opcional — deixe aberto para uma partida time-contra-o-mundo.",
+      "team_1_required": "Time 1 (obrigatório)",
+      "team_2_optional": "Time 2 (opcional)",
+      "team_1_required_error": "Selecione pelo menos um time antes de criar.",
+      "inner_squad": "Inner Squad",
+      "inner_squad_on_desc": "Divida o roster deste time entre os dois lados para um treino interno.",
+      "inner_squad_off_desc": "Preencha um lado com este time e deixe o outro aberto para jogadores externos.",
+      "roster_desc": "Os titulares são preenchidos automaticamente — toque em um jogador para trocá-lo entre a lineup e o banco. Membros também podem ser trocados no lobby.",
+      "starting": "Titulares",
+      "bench": "Banco",
+      "no_roster": "Nenhum membro do roster encontrado.",
+      "clear_team": "Limpar time",
+      "both_teams_private": "Com ambos os times definidos, a lineup fica travada e o lobby permanece privado.",
+      "step_format": "Modo Draft",
+      "step_settings": "Configurações da partida",
+      "step_rules": "Regras do lobby",
+      "back": "Voltar",
+      "next": "Próximo",
+      "update": "Atualizar"
+    },
+    "captain_selection": {
+      "top_elo_two": "Tops no Ranking",
+      "host_and_next": "Dono da Sala & Elo + Alto",
+      "random_two": "Aleatório"
+    },
+    "draft_order": {
+      "snake": "Snake Pick (1-2-2-2-1)",
+      "alternating": "Alternado (1 por pick)"
+    },
+    "card": {
+      "custom_pool": "Pool Personalizado",
+      "pool": "Pool",
+      "region": "Região",
+      "custom": "Personalizado",
+      "pending_requests": "Solicitações pendentes",
+      "players": "Jogadores",
+      "subs": "Reservas",
+      "requests": "Solicitações",
+      "join_party": "Entrar c/ Party ({count})",
+      "join_party_hint": "Traga todo seu grupo de matchmaking para este lobby",
+      "join": "Entrar",
+      "view": "Ver",
+      "request": "Solicitar",
+      "requested": "Solicitado",
+      "join_error": "Falha ao entrar na partida. Tente novamente."
+    },
+    "status": {
+      "open": "Aberto",
+      "filled": "Cheio",
+      "selectingcaptains": "Selecionando Capitães",
+      "drafting": "Draftando",
+      "creatingmatch": "Criando partida",
+      "completed": "Concluído",
+      "canceled": "Cancelado"
+    },
+    "room": {
+      "title": "Sala Draft",
+      "picking": "Equipe {team} está escolhendo",
+      "your_turn": "É sua vez de escolher",
+      "team": "Equipe {team}",
+      "pool": "Jogadores Disponíveis",
+      "captain": "Capitão",
+      "pick": "Escolher",
+      "empty_pool": "Todos os jogadores já foram draftados",
+      "leave": "Sair",
+      "loading": "Carregando sala draft...",
+      "avg": "Média",
+      "open_slot": "Slot aberto",
+      "draft_log": "Log do Draft",
+      "log_picked": "escolhido",
+      "log_empty": "Nenhuma escolha ainda.",
+      "team_alpha": "Equipe 1",
+      "team_bravo": "Equipe 2",
+      "assembling": "Montando Squad",
+      "gathering": "Reunindo Squad",
+      "squad_ready": "Squad pronto",
+      "expires_in": "Lobby expira em",
+      "lobby_full": "Lobby cheia",
+      "extend": "Manter a sala aberta por mais 30 min",
+      "waiting_for": "Aguardando mais {count}",
+      "ready": "Squad Pronto",
+      "host_assigning": "Host designando equipes",
+      "host_hint": "Toque A ou B para atribuir cada jogador a um time.",
+      "host_wait": "{name} está montando os times…",
+      "captain_picking": "{name} está escolhendo…",
+      "your_pick": "Sua Escolha",
+      "alpha_picking": "Equipe 1 escolhendo",
+      "bravo_picking": "Equipe 2 escolhendo",
+      "standby": "Em espera",
+      "on_the_clock": "No relógio",
+      "draft": "Draft",
+      "comms": "Chat da Lobby",
+      "chat_players_only": "Somente jogadores podem conversar durante o draft.",
+      "login_to_chat": "Faça login para participar da conversa.",
+      "login": "Login",
+      "host_label": "Host",
+      "avg_rank": "Rank médio",
+      "queue": "Solicitações de entrada",
+      "queue_empty": "Nenhuma solicitação pendente.",
+      "accept": "Aceitar",
+      "accept_backup": "Aceitar como reserva",
+      "deny": "Negar",
+      "request": "Solicitar entrada",
+      "requested": "Solicitado",
+      "in_queue": "{count} na fila",
+      "edit_settings": "Editar Configurações",
+      "start_match": "Iniciar Partida",
+      "starting": "Iniciando…",
+      "pick_teams": "Selecione ambos os times para começar",
+      "vs": "vs",
+      "balancing": "Balanceando Equipes",
+      "copy_invite": "Copiar link de convite",
+      "invite_copied": "Link de convite copiado",
+      "back_to_room": "Voltar para sala draft",
+      "quick_edit": "Configurações do Lobby",
+      "join_prompt": "Entre — há um slot aberto",
+      "request_prompt": "Esta lobby precisa de aprovação do dono da sala para entrar",
+      "request_pending": "Sua solicitação aguarda aprovação do dono da sala",
+      "waitlist": "Reservas",
+      "backups": "Backups",
+      "waitlist_prompt": "Lobby cheia — entre na fila de reservas e será adicionado automaticamente se abrir um slot",
+      "waitlist_pending": "Você está na fila de reservas — entrará automaticamente quando abrir um slot",
+      "join_waitlist": "Entrar na fila de reservas",
+      "leave_waitlist": "Sair da fila de reservas",
+      "balance_preview": "Times projetados",
+      "live_odds": "Odds ao vivo",
+      "win_odds": "Odds de vitória",
+      "captains_set": "Capitães Definidos",
+      "picks_first": "{name} escolhe primeiro",
+      "veto": "Veto de mapa/região",
+      "match_starting": "Partida Iniciando — Servidor Inicializando",
+      "ready_to_start": "Lobby Pronta",
+      "assign_all": "Atribuir Todos os Jogadores",
+      "need_full": "Aguardando Jogadores",
+      "search_requests": "Pesquisar solicitações",
+      "sort_elo_high": "Rank: Alto",
+      "sort_elo_low": "Rank: Baixo",
+      "sort_recent": "Mais recente",
+      "add_players": "Adicionar jogadores",
+      "add_friends": "Adicionar dos amigos",
+      "no_friends_online": "Nenhum amigo disponível para adicionar",
+      "open_slots": "Slots abertos",
+      "add_player_slot": "Adicionar Jogador",
+      "search_player": "Pesquisar jogadores...",
+      "current_draft": "Sua Sala Draft",
+      "host_room": "Sala draft de {name}",
+      "view": "Ver",
+      "kick": "Expulsar",
+      "start_player": "Iniciar",
+      "go_to_room": "Ir Para Sala Draft",
+      "cancel_match": "Cancelar Partida",
+      "min": "Min",
+      "max": "Max",
+      "no_matches": "Nenhuma solicitação correspondente",
+      "cancel_draft": "Cancelar Draft",
+      "cancel_draft_confirm_title": "Cancelar esta sala draft?",
+      "cancel_draft_confirm_description": "Isso fechará a sala para todos e não pode ser desfeito.",
+      "kick_confirm_title": "Remover este jogador?",
+      "kick_confirm_description": "Ele será removido da sala draft.",
+      "unavailable": "Esta sala draft não está mais disponível.",
+      "removed": "Você foi removido desta sala draft.",
+      "load_failed": "Não foi possível carregar esta sala draft.",
+      "match_settings": "Configurações da Partida"
+    },
+    "bar": {
+      "format": "Formato",
+      "mode": "Modo Draft",
+      "region": "Região",
+      "region_veto": "Veto de Região",
+      "rounds": "Rounds",
+      "pool": "Map Pool",
+      "rank": "Limite de Rank",
+      "commander": "Dono da Sala",
+      "access": "Acesso",
+      "approval": "Aprovação",
+      "approval_on": "Obrigatória",
+      "approval_off": "Aberto",
+      "players": "Jogadores",
+      "game_settings": "Configurações do Jogo",
+      "overtime": "Overtime",
+      "knife": "Round Faca",
+      "coaches": "Treinadores",
+      "best_of": "Melhor de",
+      "map_veto": "Veto de Mapa",
+      "subs": "Reservas",
+      "on": "Ligado",
+      "off": "Desligado"
+    },
+    "mode": {
+      "captains": "Draft de Capitães",
+      "captains_desc": "Dois capitães se alternam escolhendo jogadores.",
+      "host": "Dono da Sala Define",
+      "host_desc": "Você monta os dois times manualmente.",
+      "pug": "Auto-Split",
+      "pug_desc": "Sem draft — times são auto-balanceados quando a lobby enche.",
+      "teams": "Times pré-montados",
+      "teams_desc": "Escolha dois times salvos para se enfrentarem."
+    },
+    "mode_short": {
+      "captains": "Capitães",
+      "host": "Dono da Sala",
+      "pug": "Auto-Split",
+      "teams": "Equipes"
+    },
+    "access": {
+      "open": "Aberto",
+      "open_desc": "Qualquer um pode encontrar e entrar pela lista pública.",
+      "friends": "Amigos",
+      "friends_desc": "Somente amigos dos jogadores na lobby podem ver.",
+      "invite": "Convite",
+      "invite_desc": "Entrável apenas via link de convite que você compartilhar.",
+      "private": "Privado",
+      "private_desc": "Somente pessoas autorizadas — oculto da lista."
+    },
+    "active_alert_title": "Você está em uma Sala Draft",
+    "active_alert_desc": "Você tem uma sala draft ativa. Volte para manter seu squad junto.",
+    "toasts": {
+      "your_pick_title": "É sua vez de escolher",
+      "your_pick_desc": "O tempo voa — escolha seu próximo jogador.",
+      "removed_title": "Removido do draft",
+      "removed_desc": "Você não está mais na sala draft."
+    }
   }
 }

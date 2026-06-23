@@ -57,31 +57,33 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
         alignTop ? 'items-start justify-start' : 'items-center justify-center',
       ]"
     >
-      <slot name="avatar">
-        <Avatar shape="square" :class="{ 'h-8 w-8': size === 'xs' || compact }">
-          <AvatarImage
-            :src="playerAvatarSrc"
-            :alt="player.name"
-            v-if="playerAvatarSrc"
-          />
-          <AvatarFallback>
-            <slot name="avatar-fallback">
-              {{ player?.name.slice(0, 2) }}
-            </slot>
-          </AvatarFallback>
-        </Avatar>
-      </slot>
-      <slot name="status">
-        <template v-if="isOnline && showOnline">
-          <span
-            class="absolute -top-1 left-0 h-2 w-2 rounded-full animate-ping bg-green-500"
-            v-if="pingStatus"
-          ></span>
-          <span
-            class="absolute -top-1 left-0 h-2 w-2 rounded-full bg-green-500"
-          ></span>
-        </template>
-      </slot>
+      <div class="relative">
+        <slot name="avatar">
+          <Avatar shape="square" :class="{ 'h-8 w-8': size === 'xs' || compact }">
+            <AvatarImage
+              :src="playerAvatarSrc"
+              :alt="player.name"
+              v-if="playerAvatarSrc"
+            />
+            <AvatarFallback>
+              <slot name="avatar-fallback">
+                {{ player?.name.slice(0, 2) }}
+              </slot>
+            </AvatarFallback>
+          </Avatar>
+        </slot>
+        <slot name="status">
+          <template v-if="isOnline && showOnline">
+            <span
+              class="absolute -top-0.5 -left-0.5 h-2 w-2 rounded-full animate-ping bg-green-500"
+              v-if="pingStatus"
+            ></span>
+            <span
+              class="absolute -top-0.5 -left-0.5 h-2 w-2 rounded-full bg-green-500 ring-2 ring-background"
+            ></span>
+          </template>
+        </slot>
+      </div>
       <div class="mt-2" v-if="$slots['avatar-sub']">
         <slot name="avatar-sub"></slot>
       </div>

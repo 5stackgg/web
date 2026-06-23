@@ -10,9 +10,17 @@ const props = defineProps<{
     server?: any;
     is_match_server_available?: boolean;
     scheduled_at?: string;
+    winning_lineup_id?: string | null;
     match_maps?: Array<{ status?: string }>;
   };
 }>();
+
+const isTie = computed(() => {
+  const finishedLike =
+    props.match.status === e_match_status_enum.Finished ||
+    props.match.status === e_match_status_enum.Tie;
+  return finishedLike && !props.match.winning_lineup_id;
+});
 
 const PROBLEM_STATUSES = [
   e_match_status_enum.Canceled,
@@ -55,6 +63,9 @@ const badgeClasses = computed(() => {
   <span :class="badgeClasses">
     <template v-if="match.status == e_match_status_enum.Canceled">
       {{ $t("match.status.cancelled") }}
+    </template>
+    <template v-else-if="isTie">
+      {{ $t("match.status.tied") }}
     </template>
     <template v-else-if="match.status == e_match_status_enum.Finished">
       {{ $t("common.finished") }}

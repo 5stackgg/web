@@ -99,7 +99,7 @@ const { height: viewportHeight } = useVisualViewport();
                   {{ $t("team.search.selected") }}
                 </span>
                 <span
-                  v-if="minPlayers && team.player_count != null"
+                  v-if="showStats && team.player_count != null"
                   class="ml-auto flex shrink-0 items-center gap-2 text-[10px] tabular-nums text-muted-foreground"
                 >
                   <span>{{ team.player_count }}p</span>
@@ -157,7 +157,7 @@ const { height: viewportHeight } = useVisualViewport();
                 debouncedSearch((e.target as HTMLInputElement).value)
             "
           />
-          <div class="flex items-center gap-2 ml-4" v-if="!myTeams">
+          <div class="flex items-center gap-2 ml-4" v-if="!myTeams && !teamOptions">
             <Switch
               class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
               :model-value="myTeamsOnly"
@@ -218,7 +218,7 @@ const { height: viewportHeight } = useVisualViewport();
                 debouncedSearch((e.target as HTMLInputElement).value)
             "
           />
-          <div class="flex items-center gap-2 ml-4" v-if="!myTeams">
+          <div class="flex items-center gap-2 ml-4" v-if="!myTeams && !teamOptions">
             <Switch
               class="text-sm text-muted-foreground cursor-pointer flex items-center gap-2"
               :model-value="myTeamsOnly"
@@ -277,7 +277,7 @@ const { height: viewportHeight } = useVisualViewport();
                     {{ $t("team.search.selected") }}
                   </span>
                   <span
-                    v-if="minPlayers && team.player_count != null"
+                    v-if="showStats && team.player_count != null"
                     class="ml-auto flex shrink-0 items-center gap-2 text-[10px] tabular-nums text-muted-foreground"
                   >
                     <span>{{ team.player_count }}p</span>
@@ -372,6 +372,16 @@ export default {
       required: false,
       default: 0,
     },
+    withStats: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    teamOptions: {
+      type: Array as () => Team[] | undefined,
+      required: false,
+      default: undefined,
+    },
   },
   data() {
     return {
@@ -406,6 +416,11 @@ export default {
           return;
         }
 
+        if (this.teamOptions) {
+          this.teams = this.teamOptions;
+          return;
+        }
+
         const { data } = await this.$apollo.query({
           query: generateQuery({
             teams: [
@@ -437,8 +452,15 @@ export default {
     apiDomain() {
       return useRuntimeConfig().public.apiDomain;
     },
+    showStats(): boolean {
+      return !!this.minPlayers || this.withStats;
+    },
     selectedTeam(): Team | undefined {
-      return this.teams?.find((team) => team.id === this.modelValue);
+      const value: any = this.modelValue;
+      const id =
+        value && typeof value === "object" && "id" in value ? value.id : value;
+      const source = this.teams ?? this.teamOptions;
+      return source?.find((team) => team.id === id);
     },
   },
   methods: {
@@ -472,7 +494,7 @@ export default {
     },
     async enrichTeams() {
       // Only fetch roster details when a consumer needs eligibility / ELO.
-      if (!this.minPlayers || !this.teams?.length) return;
+      if (!this.showStats || !this.teams?.length) return;
       const ids = this.teams.map((team) => team.id);
       const { data } = await this.$apollo.query({
         query: generateQuery({
@@ -536,6 +558,18 @@ export default {
     async searchTeams(query?: string) {
       if (query !== undefined) {
         this.query = query;
+      }
+
+      if (this.teamOptions) {
+        const search = this.query.toLowerCase();
+        this.teams = this.teamOptions.filter((team) => {
+          if (this.exclude.includes(team.id)) {
+            return false;
+          }
+          return !search || (team.name || "").toLowerCase().includes(search);
+        });
+        await this.enrichTeams();
+        return;
       }
 
       if (this.myTeamsOnly || this.myTeams) {

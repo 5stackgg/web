@@ -140,7 +140,19 @@ export const useApplicationSettingsStore = defineStore(
         (setting) => setting.name === "public.custom_match_role",
       );
 
-      return custom_match_role?.value || e_player_roles_enum.match_organizer;
+      if (custom_match_role?.value) {
+        return custom_match_role.value;
+      }
+
+      // There's no dedicated UI for "public.custom_match_role", so fall back to
+      // the configurable "create matches" role rather than a hardcoded
+      // match_organizer — otherwise the UI setting wouldn't govern hosting
+      // custom/draft matches.
+      const create_matches_role = settings.value.find(
+        (setting) => setting.name === "public.create_matches_role",
+      );
+
+      return create_matches_role?.value || e_player_roles_enum.user;
     });
 
     const canCreateCustomMatch = computed(() => {
@@ -275,6 +287,14 @@ export const useApplicationSettingsStore = defineStore(
         settings.value?.find(
           (setting) => setting.name === "public.faceit_import_enabled",
         )?.value === "true"
+      );
+    });
+
+    const scrimFinderEnabled = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.scrim_finder_enabled",
+        )?.value !== "false"
       );
     });
 
@@ -442,6 +462,7 @@ export const useApplicationSettingsStore = defineStore(
       canPostNews,
       externalMatchesEnabled,
       faceitEnabled,
+      scrimFinderEnabled,
       defaultHudMode,
       canCreateMatch,
       currentPluginVersion,

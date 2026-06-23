@@ -5,6 +5,7 @@ import {
   PlusCircle,
   Users,
   Trophy,
+  Swords,
   SlidersHorizontal,
 } from "lucide-vue-next";
 import { FormItem, FormControl } from "@/components/ui/form";
@@ -112,6 +113,27 @@ import {
           </div>
 
           <div
+            class="flex h-9 min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150 sm:flex-none"
+            :class="
+              scrimsOnly
+                ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
+                : 'border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground'
+            "
+            @click="toggleScrimsOnly"
+          >
+            <Swords class="h-3.5 w-3.5 shrink-0" />
+            <span id="teams-scrims-only-label" class="truncate">
+              {{ $t("team.search.scrims_only") }}
+            </span>
+            <Switch
+              v-model="scrimsOnly"
+              aria-labelledby="teams-scrims-only-label"
+              class="ml-auto shrink-0 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
+              @click.stop
+            />
+          </div>
+
+          <div
             v-if="me"
             class="flex h-9 min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-full border px-3 text-xs tracking-[0.06em] transition-colors duration-150 sm:flex-none"
             :class="
@@ -180,6 +202,23 @@ import {
                 />
               </div>
               <div
+                class="flex h-11 cursor-pointer items-center gap-2 rounded-md border px-3 text-sm transition-colors duration-150"
+                :class="
+                  scrimsOnly
+                    ? 'border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.13)] text-[hsl(var(--tac-amber))]'
+                    : 'border-border bg-muted/30 text-muted-foreground'
+                "
+                @click="toggleScrimsOnly"
+              >
+                <Swords class="h-4 w-4 shrink-0" />
+                <span class="truncate">{{ $t("team.search.scrims_only") }}</span>
+                <Switch
+                  v-model="scrimsOnly"
+                  class="ml-auto shrink-0 data-[state=checked]:bg-[hsl(var(--tac-amber))] data-[state=unchecked]:bg-muted/70"
+                  @click.stop
+                />
+              </div>
+              <div
                 v-if="me"
                 class="flex h-11 cursor-pointer items-center gap-2 rounded-md border px-3 text-sm transition-colors duration-150"
                 :class="
@@ -214,6 +253,16 @@ import {
             >
               <Trophy class="h-3 w-3" />
               {{ $t("team.search.tournament_winners") }}
+              <X class="h-3 w-3 opacity-70" />
+            </button>
+            <button
+              v-if="scrimsOnly"
+              type="button"
+              class="inline-flex items-center gap-1.5 rounded-full border border-[hsl(var(--tac-amber)/0.35)] bg-[hsl(var(--tac-amber)/0.12)] px-2.5 py-1 text-xs text-[hsl(var(--tac-amber))]"
+              @click="toggleScrimsOnly"
+            >
+              <Swords class="h-3 w-3" />
+              {{ $t("team.search.scrims_only") }}
               <X class="h-3 w-3 opacity-70" />
             </button>
             <button
@@ -313,6 +362,7 @@ export default {
       teamTrophies: [] as Array<any>,
       showOnlyMyTeams: false,
       tournamentWinnersOnly: false,
+      scrimsOnly: false,
       loading: true,
       form: useForm({
         validationSchema: toTypedSchema(
@@ -342,6 +392,7 @@ export default {
     teamsFilterCount(): number {
       let n = 0;
       if (this.tournamentWinnersOnly) n++;
+      if (this.scrimsOnly) n++;
       if (this.me && this.showOnlyMyTeams) n++;
       return n;
     },
@@ -354,6 +405,9 @@ export default {
       },
     },
     tournamentWinnersOnly() {
+      this.page = 1;
+    },
+    scrimsOnly() {
       this.page = 1;
     },
   },
@@ -371,7 +425,10 @@ export default {
         const championFilter = this.tournamentWinnersOnly
           ? { id: { _in: $("winnerTeamIds", "[uuid!]!") } }
           : {};
-        const where = { ...nameFilter, ...championFilter };
+        const scrimFilter = this.scrimsOnly
+          ? { scrim_settings: { enabled: { _eq: true } } }
+          : {};
+        const where = { ...nameFilter, ...championFilter, ...scrimFilter };
         return generateQuery({
           teams: [
             {
@@ -420,7 +477,10 @@ export default {
         const championFilter = this.tournamentWinnersOnly
           ? { id: { _in: $("winnerTeamIds", "[uuid!]!") } }
           : {};
-        const where = { ...nameFilter, ...championFilter };
+        const scrimFilter = this.scrimsOnly
+          ? { scrim_settings: { enabled: { _eq: true } } }
+          : {};
+        const where = { ...nameFilter, ...championFilter, ...scrimFilter };
         return generateQuery({
           teams_aggregate: [
             {
@@ -530,6 +590,9 @@ export default {
     },
     toggleTournamentWinners() {
       this.tournamentWinnersOnly = !this.tournamentWinnersOnly;
+    },
+    toggleScrimsOnly() {
+      this.scrimsOnly = !this.scrimsOnly;
     },
     viewTopTeam() {
       const team = this.teams?.at(0);

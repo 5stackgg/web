@@ -118,6 +118,11 @@ export default {
       type: Object,
       required: false,
     },
+    inviteMembers: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -211,7 +216,29 @@ export default {
           }),
         });
 
-        this.$router.push(`/teams/${data.insert_teams_one.id}`);
+        const teamId = data.insert_teams_one.id;
+
+        const members = (this.inviteMembers as string[]).filter(
+          (steamId) => steamId && steamId !== this.me?.steam_id,
+        );
+        if (members.length > 0) {
+          await this.$apollo.mutate({
+            mutation: generateMutation({
+              insert_team_invites: [
+                {
+                  objects: members.map((steamId) => ({
+                    team_id: teamId,
+                    steam_id: steamId,
+                    invited_by_player_steam_id: this.me?.steam_id,
+                  })),
+                },
+                { affected_rows: true },
+              ],
+            }),
+          });
+        }
+
+        this.$router.push(`/teams/${teamId}`);
       } finally {
         this.submitLock = false;
         this.submitting = false;

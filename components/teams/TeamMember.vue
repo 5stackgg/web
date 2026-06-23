@@ -65,6 +65,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
         :player="member.player"
         :linkable="true"
         :avatar-override="rosterImageSrc"
+        :match-type="matchType"
       >
         <template #name-postfix>
           <span
@@ -373,6 +374,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    matchType: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {

@@ -28,6 +28,10 @@ function isPublicRoute(path: string): boolean {
     return true;
   }
 
+  if (path === "/scrims" || path.startsWith("/scrims/")) {
+    return true;
+  }
+
   if (path.startsWith("/tournaments")) {
     return true;
   }

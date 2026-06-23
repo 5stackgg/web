@@ -1154,6 +1154,10 @@
             "showing": "Showing",
             "tournaments": "tournaments"
         },
+        "scrims": {
+            "title": "Scrim Finder",
+            "description": "Browse teams open to scrims, filter by region and maps, then send a request."
+        },
         "teams": {
             "title": "Teams",
             "create": "Create Team",
@@ -1590,6 +1594,13 @@
                     "faceit_downloads_api": "Downloads API",
                     "faceit_test_failed": "Faceit test failed"
                 },
+                "scrim_finder": {
+                    "title": "Scrim Finder",
+                    "section": "Scrim Finder",
+                    "enabled": "Enable Scrim Finder",
+                    "enabled_description": "Let teams advertise availability, find opponents, and schedule scrims. Enabled by default. Turn this off to hide the Scrim Finder everywhere and stop auto-matching.",
+                    "updated": "Updated scrim finder settings"
+                },
                 "demo_settings": {
                     "title": "Demos",
                     "total_storage": "Total storage",
@@ -1896,7 +1907,8 @@
                 "published_toast": "Post published",
                 "unpublished_toast": "Post moved to draft",
                 "save_failed": "Unable to save the post",
-                "empty": "No posts yet. Create your first one."
+                "empty": "No posts yet. Create your first one.",
+                "views": "Views"
             },
             "form": {
                 "title_label": "Title",
@@ -1914,6 +1926,9 @@
                 "publish": "Publish",
                 "write": "Write",
                 "preview": "Preview",
+                "preview_full": "Preview Post",
+                "preview_empty": "Start writing to see your post preview.",
+                "back_to_edit": "Back to Editor",
                 "image_alt": "Image description",
                 "upload_image": "Upload image",
                 "uploading": "Uploading…",
@@ -2858,6 +2873,7 @@
                 "public_servers": "Public Servers",
                 "players": "Players",
                 "teams": "Teams",
+                "scrims": "Scrim Finder",
                 "leaderboard": "Leaderboard",
                 "search": "Search",
                 "highlights": "Highlights",
@@ -2865,6 +2881,9 @@
             },
             "community": {
                 "title": "Community"
+            },
+            "social": {
+                "title": "Social"
             },
             "administration": {
                 "title": "Administration",
@@ -2900,6 +2919,7 @@
                 "tournaments": "Tournaments",
                 "players": "Players",
                 "teams": "Teams",
+                "scrims": "Scrim Finder",
                 "leaderboard": "Leaderboard",
                 "news": "News",
                 "public_servers": "Public Servers",
@@ -2948,7 +2968,7 @@
             "community": {
                 "watch": {
                     "title": "Watch",
-                    "subtitle": "Watch matches, tournaments."
+                    "subtitle": "Watch matches, tournaments"
                 },
                 "players": {
                     "title": "Players",
@@ -2972,11 +2992,11 @@
                 "roster": "ROSTER",
                 "highlights": {
                     "title": "Highlights",
-                    "subtitle": "Public clips from across the platform."
+                    "subtitle": "Clips from across the platform"
                 },
                 "news": {
                     "title": "News",
-                    "subtitle": "Counter-Strike news, powered by tl;dr."
+                    "subtitle": "{brand} news"
                 }
             }
         },
@@ -3099,6 +3119,7 @@
         "sort_ascending": "Sort ascending",
         "sort_descending": "Sort descending",
         "see_all": "See all",
+        "load_more": "Load more",
         "standby_no_activity": "STANDBY · NO ACTIVITY",
         "players": "players",
         "duration": "Duration",
@@ -3657,6 +3678,10 @@
         }
     },
     "team": {
+        "highlights": {
+            "subtitle": "Recent clips featuring this team's players.",
+            "empty": "No highlights yet for this team's players."
+        },
         "career": {
             "title": "Team Performance",
             "description": "Lifetime per-player aggregates across every match this team has played.",
@@ -3717,7 +3742,8 @@
             "bench": "Bench",
             "substitutes": "Substitutes",
             "invite_player": "Invite Player",
-            "pending_invites": "Pending Invites"
+            "pending_invites": "Pending Invites",
+            "rank_source": "Rank"
         },
         "form": {
             "identity": "Identity",
@@ -3735,6 +3761,7 @@
             "placeholder": "Search for a team...",
             "my_teams_only": "My Teams Only",
             "tournament_winners": "Tournament Winners",
+            "scrims_only": "Open to Scrims",
             "no_teams_found": "No teams found",
             "owner": "Owner",
             "captain": "Captain",
@@ -4219,7 +4246,8 @@
             "cancelled": "Cancelled",
             "waiting_server": "Waiting for server ...",
             "scheduled_asap": "Scheduled ASAP",
-            "paused": "Paused"
+            "paused": "Paused",
+            "tied": "Tied"
         },
         "winner": {
             "set": "Set Match Winner",
@@ -5829,7 +5857,7 @@
             "waiting_for": "Waiting for {count} more",
             "ready": "Squad Ready",
             "host_assigning": "Host Assigning Teams",
-            "host_hint": "Tap A or B to assign each operator to a team.",
+            "host_hint": "Tap 1 or 2 to assign each operator to a team.",
             "host_wait": "{name} is building the teams…",
             "captain_picking": "{name} is picking…",
             "your_pick": "Your Pick",

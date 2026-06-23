@@ -420,7 +420,18 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
       "matchLobby:myMatches",
       subscription.subscribe({
         next: ({ data }) => {
-          myMatches.value = data?.matches;
+          // A scheduled match is "upcoming" — keep it out of the lobby nav until
+          // it's within an hour of kickoff so it doesn't read as an active match.
+          const cutoff = Date.now() + 60 * 60 * 1000;
+          myMatches.value = (data?.matches ?? []).filter((match: any) => {
+            if (match.status !== e_match_status_enum.Scheduled) {
+              return true;
+            }
+            return (
+              !!match.scheduled_at &&
+              new Date(match.scheduled_at).getTime() <= cutoff
+            );
+          });
         },
       }),
     );

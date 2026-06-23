@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { computed, ref } from "vue";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  tacticalSectionLabelClasses,
+  tacticalSectionTickClasses,
+} from "~/utilities/tacticalClasses";
 import { TeamMember } from "~/components/teams";
 import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
@@ -11,13 +16,40 @@ import {
   GraduationCap,
 } from "lucide-vue-next";
 import PlayerSearch from "~/components/PlayerSearch.vue";
+import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
+
+const appSettings = useApplicationSettingsStore();
+const eloSource = ref<"elo" | "cs2" | "faceit">("elo");
+const rankSources = computed(() => {
+  const sources = [{ key: "elo", label: "5Stack" }];
+  if (appSettings.externalMatchesEnabled) {
+    sources.push({ key: "cs2", label: "CS2" });
+  }
+  if (appSettings.faceitEnabled) {
+    sources.push({ key: "faceit", label: "Faceit" });
+  }
+  return sources;
+});
+const rankMatchType = computed(() =>
+  eloSource.value === "cs2"
+    ? "Premier"
+    : eloSource.value === "faceit"
+      ? "Faceit"
+      : null,
+);
+const setEloSource = (key: string) => {
+  eloSource.value = key as "elo" | "cs2" | "faceit";
+};
 </script>
 
 <template>
   <Card v-if="team" class="overflow-hidden">
-    <CardHeader class="flex flex-row items-center justify-between gap-2 pb-3">
-      <div class="space-y-1">
-        <CardTitle>{{ $t("team.members.title") }}</CardTitle>
+    <CardHeader class="flex flex-row items-end justify-between gap-3 pb-3">
+      <div class="flex flex-col gap-1">
+        <span :class="tacticalSectionLabelClasses">
+          <span :class="tacticalSectionTickClasses" />
+          {{ $t("team.members.title") }}
+        </span>
         <p class="text-xs text-muted-foreground">
           {{
             starters.length + bench.length + substitutes.length + coaches.length
@@ -25,17 +57,22 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
           {{ $t("team.roster_count_players") }}
         </p>
       </div>
-      <PlayerSearch
-        v-if="team.can_invite"
-        :label="$t('team.members.invite_player')"
-        :exclude="team?.roster.map((m) => m.player.steam_id) || []"
-        @selected="onInvite"
+      <div
+        v-if="rankSources.length > 1"
+        class="flex flex-col items-end gap-1"
       >
-        <Button size="sm" variant="outline" class="gap-2">
-          <UserPlus class="h-4 w-4" />
-          {{ $t("team.members.invite_player") }}
-        </Button>
-      </PlayerSearch>
+        <span
+          class="font-mono text-[0.55rem] uppercase tracking-[0.2em] text-muted-foreground"
+        >
+          {{ $t("team.members.rank_source") }}
+        </span>
+        <AnimatedFilters
+          :model-value="eloSource"
+          :options="rankSources"
+          square
+          @update:model-value="setEloSource"
+        />
+      </div>
     </CardHeader>
 
     <CardContent class="space-y-5">
@@ -81,6 +118,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
             :roles="roles"
             :is-captain="member.player.steam_id === team.captain_steam_id"
             :is-invite="false"
+            :match-type="rankMatchType"
           />
         </div>
       </section>
@@ -107,6 +145,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
             :roles="roles"
             :is-captain="member.player.steam_id === team.captain_steam_id"
             :is-invite="false"
+            :match-type="rankMatchType"
           />
         </div>
       </section>
@@ -133,6 +172,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
             :roles="roles"
             :is-captain="member.player.steam_id === team.captain_steam_id"
             :is-invite="false"
+            :match-type="rankMatchType"
           />
         </div>
       </section>
@@ -159,6 +199,7 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
             :roles="roles"
             :is-captain="member.player.steam_id === team.captain_steam_id"
             :is-invite="false"
+            :match-type="rankMatchType"
           />
         </div>
       </section>
@@ -174,6 +215,21 @@ import PlayerSearch from "~/components/PlayerSearch.vue";
       >
         {{ $t("team.members.title") }} — 0
       </p>
+
+      <PlayerSearch
+        v-if="team.can_invite"
+        :label="$t('team.members.invite_player')"
+        :exclude="team?.roster.map((m) => m.player.steam_id) || []"
+        @selected="onInvite"
+      >
+        <Button
+          variant="outline"
+          class="w-full gap-2 border-dashed border-border/70 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.5)] hover:text-foreground"
+        >
+          <UserPlus class="h-4 w-4" />
+          {{ $t("team.members.invite_player") }}
+        </Button>
+      </PlayerSearch>
     </CardContent>
   </Card>
 </template>

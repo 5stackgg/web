@@ -12,8 +12,11 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
   const currentMatch = useMatchLobbyStore().currentMatch;
 
+  // A scheduled (upcoming) match shouldn't block hosting a draft room — only an
+  // actively in-progress match redirects you to it.
   if (
     currentMatch &&
+    currentMatch.status !== "Scheduled" &&
     useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer) === false
   ) {
     return navigateTo(`/matches/${currentMatch.id}`);

@@ -367,7 +367,7 @@ const teamForSide = (lineup: number): string | undefined => {
 
 const sideName = (lineup: number): string => {
   if (props.room.inner_squad && props.room.team_1?.name) {
-    return `${props.room.team_1.name} ${lineup === 1 ? "A" : "B"}`;
+    return `${props.room.team_1.name} ${lineup === 1 ? "1" : "2"}`;
   }
   const team = lineup === 1 ? props.room.team_1 : props.room.team_2;
   return team?.name || "";
@@ -936,14 +936,14 @@ const start = () => {
                         class="assign-btn assign-amber"
                         @click="assign(player.steam_id, 1)"
                       >
-                        A
+                        1
                       </Button>
                       <Button
                         variant="ghost"
                         class="assign-btn assign-blue"
                         @click="assign(player.steam_id, 2)"
                       >
-                        B
+                        2
                       </Button>
                     </template>
                     <Button

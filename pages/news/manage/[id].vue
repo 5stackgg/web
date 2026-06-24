@@ -6,6 +6,8 @@ import { Label } from "~/components/ui/label";
 import { Skeleton } from "~/components/ui/skeleton";
 import MarkdownEditor from "~/components/news/MarkdownEditor.vue";
 import NewsCoverEditor from "~/components/news/NewsCoverEditor.vue";
+import NewsArticleView from "~/components/news/NewsArticleView.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import {
   ArrowLeft,
   Upload,
@@ -13,6 +15,8 @@ import {
   Image as ImageIcon,
   Send,
   Undo2,
+  Eye,
+  PencilLine,
 } from "lucide-vue-next";
 import { toast } from "@/components/ui/toast";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
@@ -27,6 +31,7 @@ interface NewsPost {
   cover_image_url: string | null;
   content_markdown: string;
   status: string;
+  view_count: string;
 }
 
 const route = useRoute();
@@ -39,6 +44,7 @@ const title = ref("");
 const teaser = ref("");
 const coverImageUrl = ref<string | null>(null);
 const content = ref("");
+const viewCount = ref(0);
 
 const coverInput = ref<HTMLInputElement | null>(null);
 const { accept: ACCEPT } = useNewsImageUpload();
@@ -47,6 +53,7 @@ const coverEditorFile = ref<File | null>(null);
 
 const canPostNews = computed(() => useApplicationSettingsStore().canPostNews);
 const saving = ref(false);
+const previewMode = ref(false);
 
 const fetchPost = async () => {
   loading.value = true;
@@ -66,6 +73,7 @@ const fetchPost = async () => {
     coverImageUrl.value = post.cover_image_url;
     content.value = post.content_markdown ?? "";
     status.value = post.status;
+    viewCount.value = Number(post.view_count || 0);
   } finally {
     loading.value = false;
   }
@@ -209,7 +217,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full space-y-6">
+  <PageTransition>
     <div class="flex items-center justify-between">
       <NuxtLink to="/news/manage">
         <Button variant="ghost" size="sm" class="gap-1">
@@ -217,37 +225,75 @@ onMounted(() => {
           {{ $t("pages.news.manage.title") }}
         </Button>
       </NuxtLink>
-      <span
-        v-if="!loading"
-        class="inline-flex items-center gap-1.5 text-[0.62rem] font-bold uppercase tracking-[0.16em]"
-        :class="
-          status === 'published'
-            ? 'text-[hsl(var(--tac-amber))]'
-            : 'text-muted-foreground'
-        "
-      >
+      <div v-if="!loading" class="flex items-center gap-4">
+        <Button
+          variant="outline"
+          size="sm"
+          class="gap-2"
+          @click="previewMode = !previewMode"
+        >
+          <component :is="previewMode ? PencilLine : Eye" class="h-4 w-4" />
+          {{
+            previewMode
+              ? $t("pages.news.form.back_to_edit")
+              : $t("pages.news.form.preview_full")
+          }}
+        </Button>
         <span
-          class="h-1.5 w-1.5 rounded-full"
+          v-if="!isNew"
+          class="inline-flex items-center gap-1 text-xs text-muted-foreground"
+          :title="$t('pages.news.manage.views')"
+        >
+          <Eye class="h-3.5 w-3.5" />
+          {{ viewCount.toLocaleString() }}
+        </span>
+        <span
+          class="inline-flex items-center gap-1.5 text-[0.62rem] font-bold uppercase tracking-[0.16em]"
           :class="
             status === 'published'
-              ? 'bg-[hsl(var(--tac-amber))]'
-              : 'bg-muted-foreground/50'
+              ? 'text-[hsl(var(--tac-amber))]'
+              : 'text-muted-foreground'
           "
-        />
-        {{
-          status === "published"
-            ? $t("pages.news.manage.published")
-            : $t("pages.news.manage.draft")
-        }}
-      </span>
+        >
+          <span
+            class="h-1.5 w-1.5 rounded-full"
+            :class="
+              status === 'published'
+                ? 'bg-[hsl(var(--tac-amber))]'
+                : 'bg-muted-foreground/50'
+            "
+          />
+          {{
+            status === "published"
+              ? $t("pages.news.manage.published")
+              : $t("pages.news.manage.draft")
+          }}
+        </span>
+      </div>
     </div>
+  </PageTransition>
 
+  <PageTransition :delay="100" class="mt-6">
+    <div class="space-y-6">
     <template v-if="loading">
       <Skeleton class="h-12 w-full rounded-lg" />
       <Skeleton class="h-96 w-full rounded-lg" />
     </template>
 
     <template v-else>
+      <div
+        v-if="previewMode"
+        class="mx-auto w-full max-w-3xl rounded-lg border border-border/60 bg-card/40 p-6 sm:p-8"
+      >
+        <NewsArticleView
+          :title="title"
+          :teaser="teaser"
+          :cover-image-url="coverImageUrl"
+          :content-markdown="content"
+        />
+      </div>
+
+      <template v-else>
       <div class="space-y-2">
         <Label>{{ $t("pages.news.form.title_label") }}</Label>
         <Input
@@ -344,6 +390,7 @@ onMounted(() => {
           <MarkdownEditor v-model="content" />
         </div>
       </div>
+      </template>
 
       <div
         class="sticky bottom-0 -mx-1 flex flex-wrap items-center justify-end gap-2 border-t border-border/60 bg-background/80 px-1 py-3 backdrop-blur"
@@ -377,11 +424,12 @@ onMounted(() => {
         </template>
       </div>
     </template>
+    </div>
+  </PageTransition>
 
-    <NewsCoverEditor
-      v-model:open="coverEditorOpen"
-      :file="coverEditorFile"
-      @uploaded="onCoverUploaded"
-    />
-  </div>
+  <NewsCoverEditor
+    v-model:open="coverEditorOpen"
+    :file="coverEditorFile"
+    @uploaded="onCoverUploaded"
+  />
 </template>

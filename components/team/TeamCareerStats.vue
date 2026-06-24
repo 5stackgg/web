@@ -17,10 +17,10 @@ import {
   TableBody,
   TableCell,
 } from "~/components/ui/table";
-import { Card, CardContent } from "~/components/ui/card";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
+import { Skeleton } from "~/components/ui/skeleton";
 import {
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
@@ -230,9 +230,8 @@ function kd(p: PlayerAgg): number {
 </script>
 
 <template>
-  <Card v-if="players.length" class="bg-card/20">
-    <CardContent class="p-3 sm:p-4">
-      <div class="flex flex-col gap-4">
+  <div>
+    <div class="flex flex-col gap-4">
         <div class="flex flex-col gap-1">
           <span :class="tacticalSectionLabelClasses">
             <span :class="tacticalSectionTickClasses" />
@@ -243,21 +242,33 @@ function kd(p: PlayerAgg): number {
           </span>
         </div>
 
-        <div
-          v-if="loading"
-          class="py-8 text-center font-mono text-xs tracking-[0.2em] uppercase text-muted-foreground"
-        >
-          {{ $t("common.loading") }}…
+      <Transition
+        mode="out-in"
+        enter-active-class="transition-opacity duration-300 ease-out"
+        enter-from-class="opacity-0"
+        leave-active-class="transition-opacity duration-150 ease-in"
+        leave-to-class="opacity-0"
+      >
+        <div v-if="loading" key="loading" class="flex flex-col gap-4">
+          <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
+            <Skeleton v-for="i in 4" :key="i" class="h-[4.25rem] w-full rounded-md" />
+          </div>
+          <Skeleton class="h-10 w-full rounded-md" />
+          <Skeleton
+            v-for="i in 5"
+            :key="`row-${i}`"
+            class="h-9 w-full rounded-md"
+          />
         </div>
 
-        <Empty v-else-if="!players.length">
+        <Empty v-else-if="!players.length" key="empty">
           <EmptyTitle>{{ $t("team.career.empty_title") }}</EmptyTitle>
           <EmptyDescription>
             {{ $t("team.career.empty_description") }}
           </EmptyDescription>
         </Empty>
 
-        <template v-else>
+        <div v-else key="content" class="flex flex-col gap-4">
           <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
             <div
               v-for="kpi of [
@@ -417,8 +428,8 @@ function kd(p: PlayerAgg): number {
               </TableBody>
             </Table>
           </div>
-        </template>
-      </div>
-    </CardContent>
-  </Card>
+        </div>
+      </Transition>
+    </div>
+  </div>
 </template>

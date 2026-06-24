@@ -371,3 +371,102 @@ mark {
     transform: none;
   }
 }
+
+/* Rendered markdown for news articles. Shared by the published article page
+   (news/[slug].vue) and the editor live preview (MarkdownEditor.vue) so the
+   draft preview matches what readers see. Kept unlayered so these rules win
+   over Tailwind's `@layer base` preflight, which otherwise strips heading/list
+   spacing and makes the rendered markdown read as flat text. */
+.news-content {
+  color: hsl(var(--foreground));
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+.news-content h1,
+.news-content h2,
+.news-content h3,
+.news-content h4 {
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+}
+.news-content h1:first-child,
+.news-content h2:first-child,
+.news-content h3:first-child,
+.news-content h4:first-child {
+  margin-top: 0;
+}
+.news-content h1 {
+  font-size: 1.8rem;
+}
+.news-content h2 {
+  font-size: 1.5rem;
+}
+.news-content h3 {
+  font-size: 1.25rem;
+}
+.news-content p {
+  margin-bottom: 1rem;
+}
+.news-content a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+}
+.news-content ul,
+.news-content ol {
+  margin: 0 0 1rem 1.5rem;
+}
+.news-content ul {
+  list-style: disc;
+}
+.news-content ol {
+  list-style: decimal;
+}
+.news-content li {
+  margin-bottom: 0.35rem;
+}
+.news-content blockquote {
+  border-left: 3px solid hsl(var(--border));
+  padding-left: 1rem;
+  color: hsl(var(--muted-foreground));
+  margin: 0 0 1rem 0;
+}
+.news-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+.news-content pre {
+  background: hsl(var(--muted));
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+.news-content code {
+  font-family: var(--font-mono, monospace);
+  font-size: 0.875em;
+}
+.news-content :not(pre) > code {
+  background: hsl(var(--muted));
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.25rem;
+}
+.news-content hr {
+  border: none;
+  border-top: 1px solid hsl(var(--border));
+  margin: 1.5rem 0;
+}
+.news-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+.news-content th,
+.news-content td {
+  border: 1px solid hsl(var(--border));
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}

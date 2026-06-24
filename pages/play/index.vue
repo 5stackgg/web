@@ -27,7 +27,7 @@ const settingsOpen = ref(false);
   <PageTransition>
     <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.play.title") }}</template>
-      <template v-if="matchmakingAllowed && !inLobbyNotLeader" #actions>
+      <template v-if="matchmakingAllowed && !inLobbyNotLeader && !isGuest" #actions>
         <Popover v-model:open="settingsOpen">
           <PopoverTrigger as-child>
             <Button
@@ -62,7 +62,7 @@ const settingsOpen = ref(false);
     </TacticalPageHeader>
   </PageTransition>
 
-  <PageTransition v-if="matchmakingAllowed" :delay="50" class="mt-6">
+  <PageTransition v-if="showMatchmaking" :delay="50" class="mt-6">
     <div class="hidden md:block">
       <div :class="tacticalSectionLabelClasses">
         <span :class="tacticalSectionTickClasses"></span>
@@ -194,11 +194,24 @@ export default {
     me() {
       return useAuthStore().me;
     },
+    isGuest() {
+      return !useAuthStore().me?.steam_id;
+    },
     regions() {
       return useApplicationSettingsStore().availableRegions;
     },
     matchmakingAllowed() {
       return useApplicationSettingsStore().matchmakingAllowed;
+    },
+    matchmakingEnabled() {
+      return useApplicationSettingsStore().matchmakingEnabled;
+    },
+    showMatchmaking() {
+      // Guests see "fake" cards (click prompts login) whenever matchmaking is
+      // enabled in the panel, even if a min-role gates real queueing.
+      return (
+        this.matchmakingAllowed || (this.isGuest && this.matchmakingEnabled)
+      );
     },
     currentLobby() {
       return useMatchmakingStore().currentLobby;

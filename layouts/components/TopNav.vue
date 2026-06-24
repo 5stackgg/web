@@ -198,7 +198,7 @@ const loginArrowClasses =
               </NavigationMenuLink>
             </NavigationMenuItem>
 
-            <NavigationMenuItem class="hidden md:block">
+            <NavigationMenuItem>
               <NavigationMenuLink as-child>
                 <NuxtLink to="/watch" :class="navLinkClasses">
                   <span :class="navTickClasses"></span>
@@ -259,6 +259,16 @@ const loginArrowClasses =
                               :class="[navBadgeClasses, navBadgeInlineClasses]"
                             >
                               {{ activeTournamentsCount }}
+                            </span>
+                          </NuxtLink>
+                        </NavigationMenuLink>
+                      </li>
+                      <li v-if="scrimFinderEnabled">
+                        <NavigationMenuLink as-child>
+                          <NuxtLink to="/scrims" :class="navItemClasses">
+                            <span :class="navItemChevronClasses">◢</span>
+                            <span :class="navItemLabelClasses">
+                              {{ $t("layouts.top_nav.play.scrim_finder") }}
                             </span>
                           </NuxtLink>
                         </NavigationMenuLink>
@@ -416,6 +426,37 @@ const loginArrowClasses =
                           </NuxtLink>
                         </NavigationMenuLink>
                       </li>
+                    </ul>
+                  </div>
+
+                  <div class="min-w-[160px] flex-1">
+                    <div :class="navGroupLabelClasses">
+                      <span :class="navGroupLabelTickClasses"></span>
+                      {{ $t("layouts.top_nav.community.social.title") }}
+                    </div>
+                    <ul class="flex flex-col gap-1">
+                      <li v-if="newsEnabled">
+                        <NavigationMenuLink as-child>
+                          <NuxtLink
+                            to="/news"
+                            :class="[navItemClasses, navItemStackedClasses]"
+                          >
+                            <span :class="navItemChevronClasses">◢</span>
+                            <span :class="navItemContentClasses">
+                              <span :class="navItemLabelClasses">
+                                {{ $t("layouts.top_nav.community.news.title") }}
+                              </span>
+                              <span :class="navItemSubClasses">
+                                {{
+                                  $t("layouts.top_nav.community.news.subtitle", {
+                                    brand: brandName || "5Stack",
+                                  })
+                                }}
+                              </span>
+                            </span>
+                          </NuxtLink>
+                        </NavigationMenuLink>
+                      </li>
                       <li>
                         <NavigationMenuLink as-child>
                           <NuxtLink
@@ -442,35 +483,6 @@ const loginArrowClasses =
                           </NuxtLink>
                         </NavigationMenuLink>
                       </li>
-                      <li v-if="newsEnabled">
-                        <NavigationMenuLink as-child>
-                          <NuxtLink
-                            to="/news"
-                            :class="[navItemClasses, navItemStackedClasses]"
-                          >
-                            <span :class="navItemChevronClasses">◢</span>
-                            <span :class="navItemContentClasses">
-                              <span :class="navItemLabelClasses">
-                                {{ $t("layouts.top_nav.community.news.title") }}
-                              </span>
-                              <span :class="navItemSubClasses">
-                                {{
-                                  $t("layouts.top_nav.community.news.subtitle")
-                                }}
-                              </span>
-                            </span>
-                          </NuxtLink>
-                        </NavigationMenuLink>
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div class="min-w-[160px] flex-1">
-                    <div :class="navGroupLabelClasses">
-                      <span :class="navGroupLabelTickClasses"></span>
-                      {{ $t("layouts.top_nav.community.social.title") }}
-                    </div>
-                    <ul class="flex flex-col gap-1">
                       <li>
                         <NavigationMenuLink as-child>
                           <a
@@ -656,9 +668,6 @@ const loginArrowClasses =
             :aria-label="$t('layouts.top_nav.login')"
           >
             <SteamIcon class="h-3.5 w-3.5 fill-white" />
-            <span class="sm:hidden">{{
-              $t("layouts.top_nav.login_mobile")
-            }}</span>
             <span class="hidden sm:inline">{{
               $t("layouts.top_nav.login")
             }}</span>
@@ -746,6 +755,9 @@ export default {
     },
     newsEnabled() {
       return useApplicationSettingsStore().newsEnabled;
+    },
+    scrimFinderEnabled() {
+      return useApplicationSettingsStore().scrimFinderEnabled;
     },
     me() {
       return useAuthStore().me;

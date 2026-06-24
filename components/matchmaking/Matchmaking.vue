@@ -15,8 +15,8 @@ const mmCardPending =
 </script>
 
 <template>
-  <div v-if="matchmakingAllowed">
-    <template v-if="me.is_banned">
+  <div v-if="matchmakingAllowed || (isGuest && matchmakingEnabled)">
+    <template v-if="me?.is_banned">
       <Alert class="my-3">
         <AlertDescription class="flex items-center gap-2">
           <AlertTriangle class="h-4 w-4" />
@@ -24,7 +24,7 @@ const mmCardPending =
         </AlertDescription>
       </Alert>
     </template>
-    <template v-else-if="me.matchmaking_cooldown">
+    <template v-else-if="me?.matchmaking_cooldown">
       <Alert class="my-3">
         <AlertDescription class="flex items-center gap-2">
           <AlertTriangle class="h-4 w-4" />
@@ -166,6 +166,7 @@ const mmCardPending =
       <div class="flex flex-col gap-4" v-else>
         <div
           v-if="
+            !isGuest &&
             !isMobile &&
             availableRegionsWithNodes.length > 0 &&
             !preferredRegions.length
@@ -436,6 +437,10 @@ export default {
       return useMatchmakingStore().getRegionlatencyResult(region);
     },
     handleMatchTypeClick(matchType: e_match_types_enum): void {
+      if (!this.me?.steam_id) {
+        navigateTo("/login?redirect=/play");
+        return;
+      }
       if (this.preferredRegions.length === 0) {
         toast({
           title: this.$t("matchmaking.no_preferred_regions") as string,
@@ -515,8 +520,14 @@ export default {
     matchmakingAllowed(): boolean {
       return useApplicationSettingsStore().matchmakingAllowed;
     },
+    matchmakingEnabled(): boolean {
+      return useApplicationSettingsStore().matchmakingEnabled;
+    },
     me() {
       return useAuthStore().me;
+    },
+    isGuest(): boolean {
+      return !useAuthStore().me?.steam_id;
     },
     queueWaitTime(): string {
       if (!this.matchMakingQueueDetails?.joinedAt)

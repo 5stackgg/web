@@ -10,8 +10,11 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
   const currentMatch = useMatchLobbyStore().currentMatch;
 
+  // A scheduled (upcoming) match shouldn't block setting up another match —
+  // only an actively in-progress one redirects you to it.
   if (
     currentMatch &&
+    currentMatch.status !== "Scheduled" &&
     useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer) === false
   ) {
     return navigateTo(`/matches/${currentMatch.id}`);

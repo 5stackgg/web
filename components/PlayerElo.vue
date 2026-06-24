@@ -26,8 +26,6 @@ const isMobile = useMediaQuery("(max-width: 768px)");
       >
         <template v-if="bordered">
           <span :class="triggerNotchClasses" aria-hidden="true"></span>
-          <span :class="triggerLabelClasses">ELO</span>
-          <span :class="triggerSeparatorClasses" aria-hidden="true"></span>
         </template>
         <span :class="triggerValueClasses">
           {{ primaryElo ?? "—" }}

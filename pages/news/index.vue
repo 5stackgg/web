@@ -5,6 +5,7 @@ import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
 import { PencilLine, Newspaper } from "lucide-vue-next";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import { order_by } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
@@ -98,7 +99,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="space-y-6">
+  <PageTransition>
     <TacticalPageHeader corners="both">
       <template #title>{{ $t("pages.news.title") }}</template>
       <template #actions>
@@ -110,7 +111,10 @@ onMounted(() => {
         </NuxtLink>
       </template>
     </TacticalPageHeader>
+  </PageTransition>
 
+  <PageTransition :delay="100" class="mt-6">
+    <div class="space-y-6">
     <div v-if="loading" class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       <Skeleton v-for="n in 6" :key="n" class="h-72 w-full rounded-xl" />
     </div>
@@ -176,5 +180,6 @@ onMounted(() => {
         {{ $t("common.next") }}
       </Button>
     </div>
-  </div>
+    </div>
+  </PageTransition>
 </template>

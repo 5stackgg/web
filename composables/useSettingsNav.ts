@@ -11,6 +11,8 @@ export interface SettingsNavItem {
   labelKey: string;
   /** Dev-only pages (e.g. fixtures) are hidden outside local domains. */
   dev?: boolean;
+  /** Lower sorts first; unset items fall back to alphabetical order. */
+  order?: number;
 }
 
 export interface SettingsNavGroup {
@@ -23,22 +25,30 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
     labelKey: "layouts.application_settings.groups.general",
     items: [
       {
-        path: "/settings/application",
-        labelKey: "pages.settings.application.matchmaking.title",
-      },
-      {
         path: "/settings/application/players",
         labelKey: "pages.players.title",
+        order: 0,
+      },
+      {
+        path: "/settings/application/chat",
+        labelKey: "pages.settings.application.chat.title",
+        order: 1,
       },
       {
         path: "/settings/application/news",
         labelKey: "pages.settings.application.news.title",
+        order: 2,
       },
     ],
   },
   {
     labelKey: "layouts.application_settings.groups.match_setup",
     items: [
+      {
+        path: "/settings/application/matchmaking",
+        labelKey: "pages.settings.application.matchmaking.title",
+        order: 0,
+      },
       {
         path: "/settings/application/game-type-configs",
         labelKey: "pages.settings.application.game_type_configs.title",
@@ -50,6 +60,11 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
       {
         path: "/settings/application/external-matches",
         labelKey: "pages.settings.application.external_matches.title",
+      },
+      {
+        path: "/settings/application/scrim-finder",
+        labelKey: "pages.settings.application.scrim_finder.title",
+        order: 9999,
       },
     ],
   },
@@ -90,10 +105,6 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
         path: "/settings/application/discord",
         labelKey: "pages.settings.application.discord.title",
       },
-      {
-        path: "/settings/application/chat",
-        labelKey: "pages.settings.application.chat.title",
-      },
     ],
   },
   {
@@ -130,8 +141,12 @@ export function useSettingsNav() {
       label: t(group.labelKey),
       items: group.items
         .filter((item) => !item.dev || isDev.value)
-        .map((item) => ({ path: item.path, label: t(item.labelKey) }))
-        .sort((a, b) => a.label.localeCompare(b.label)),
+        .map((item) => ({
+          path: item.path,
+          label: t(item.labelKey),
+          order: item.order ?? 999,
+        }))
+        .sort((a, b) => a.order - b.order || a.label.localeCompare(b.label)),
     })).filter((group) => group.items.length > 0),
   );
 

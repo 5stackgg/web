@@ -2,7 +2,9 @@
 import { defineComponent } from "vue";
 import { Swords, Server, HardDrive } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
+import TeamRankSummary from "~/components/team/TeamRankSummary.vue";
 import { $ } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 
@@ -10,6 +12,18 @@ const MATCH_TYPES = ["MatchStatusChange", "MatchSupport"];
 const SERVER_TYPES = ["DedicatedServerStatus", "DedicatedServerRconStatus"];
 const NODE_TYPES = ["GameNodeStatus"];
 const PLAYER_TYPES = ["PlayerSanctioned"];
+const SCRIM_TYPES = [
+  "ScrimRequestReceived",
+  "ScrimRequestCountered",
+  "ScrimRequestAccepted",
+  "ScrimRequestDeclined",
+  "ScrimRequestExpired",
+  "ScrimMatchScheduled",
+  "ScrimMatchCanceled",
+  "ScrimTimeChanged",
+];
+
+const TEAM_SUGGESTION_TYPES = ["FormTeamSuggestion"];
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -31,7 +45,17 @@ const NODE_STATUS_TONE: Record<string, string> = {
 };
 
 export default defineComponent({
-  components: { Swords, Server, HardDrive, Spinner, PlayerDisplay },
+  components: {
+    Swords,
+    Server,
+    HardDrive,
+    Spinner,
+    PlayerDisplay,
+    Avatar,
+    AvatarImage,
+    AvatarFallback,
+    TeamRankSummary,
+  },
   props: {
     type: { type: String, required: true },
     entityId: { type: String, required: true },
@@ -42,10 +66,14 @@ export default defineComponent({
       server: null as any,
       node: null as any,
       player: null as any,
+      scrim: null as any,
+      suggestionPlayers: [] as any[],
       matchLoaded: false,
       serverLoaded: false,
       nodeLoaded: false,
       playerLoaded: false,
+      scrimLoaded: false,
+      suggestionLoaded: false,
     };
   },
   computed: {
@@ -55,13 +83,43 @@ export default defineComponent({
       if (this.kind === "server") return !this.serverLoaded;
       if (this.kind === "node") return !this.nodeLoaded;
       if (this.kind === "player") return !this.playerLoaded;
+      if (this.kind === "scrim") return !this.scrimLoaded;
+      if (this.kind === "teamSuggestion") return !this.suggestionLoaded;
       return false;
+    },
+    apiDomain() {
+      return useRuntimeConfig().public.apiDomain;
+    },
+    suggestionSteamIds(): string[] {
+      // entity_id for a team suggestion is the group hash: "steamId:steamId:...".
+      return (this.entityId ?? "")
+        .split(":")
+        .map((id: string) => id.trim())
+        .filter((id: string) => /^\d+$/.test(id));
+    },
+    suggestionCreateLink(): string {
+      return `/teams/create?members=${encodeURIComponent(this.suggestionSteamIds.join(","))}`;
+    },
+    scrimLink() {
+      if (!this.scrim) return null;
+      // A scheduled (Matched) scrim points at the hosted match; anything still
+      // pending points at the team's requests tab.
+      if (this.scrim.status === "Matched" && this.scrim.match_id) {
+        return `/matches/${this.scrim.match_id}`;
+      }
+      if (!this.scrim.awaiting_team_id) return null;
+      return `/teams/${this.scrim.awaiting_team_id}?tab=scrim&scrimTab=requests`;
+    },
+    scrimScheduled() {
+      return this.scrim?.status === "Matched";
     },
     hasValidEntity() {
       // match/server are keyed by uuid; node ids are plain strings. Sentinel
       // entity_ids (e.g. "plugin_version") must not trigger a *_by_pk lookup.
       if (this.kind === "node") return !!this.entityId;
       if (this.kind === "player") return /^\d+$/.test(this.entityId ?? "");
+      if (this.kind === "teamSuggestion")
+        return this.suggestionSteamIds.length > 0;
       return UUID_RE.test(this.entityId ?? "");
     },
     kind() {
@@ -69,6 +127,8 @@ export default defineComponent({
       if (SERVER_TYPES.includes(this.type)) return "server";
       if (NODE_TYPES.includes(this.type)) return "node";
       if (PLAYER_TYPES.includes(this.type)) return "player";
+      if (SCRIM_TYPES.includes(this.type)) return "scrim";
+      if (TEAM_SUGGESTION_TYPES.includes(this.type)) return "teamSuggestion";
       return null;
     },
     iconComponent() {
@@ -81,14 +141,22 @@ export default defineComponent({
       if (this.kind === "match" && this.match) {
         const a = this.match.lineup_1?.name?.trim();
         const b = this.match.lineup_2?.name?.trim();
-        if (a && b) return `${a} vs ${b}`;
-        return a || b || "Match";
+        if (a && b) return `${a} ${this.$t("common.vs")} ${b}`;
+        return a || b || this.$t("notification_context.match_default");
       }
       if (this.kind === "server" && this.server) {
-        return this.server.label || this.server.host || "Server";
+        return (
+          this.server.label ||
+          this.server.host ||
+          this.$t("notification_context.server_default")
+        );
       }
       if (this.kind === "node" && this.node) {
-        return this.node.label || this.node.id || "Node";
+        return (
+          this.node.label ||
+          this.node.id ||
+          this.$t("notification_context.node_default")
+        );
       }
       return null;
     },
@@ -221,6 +289,141 @@ export default defineComponent({
         },
       },
     },
+    // A plain cache-first query (not a live subscription) so reopening the
+    // notifications panel reads from cache instantly instead of re-loading.
+    scrim: {
+      skip: function (this: any) {
+        return this.kind !== "scrim" || !this.hasValidEntity;
+      },
+      fetchPolicy: "cache-first",
+      query: typedGql("query")({
+        team_scrim_requests_by_pk: [
+          { id: $("id", "uuid!") },
+          {
+            id: true,
+            status: true,
+            awaiting_team_id: true,
+            match_id: true,
+            proposed_scheduled_at: true,
+            expires_at: true,
+            match_options: { best_of: true },
+            from_team: {
+              id: true,
+              name: true,
+              avatar_url: true,
+              ranks: {
+                avg_elo: true,
+                avg_faceit_level: true,
+                avg_faceit_elo: true,
+                avg_premier: true,
+                roster_size: true,
+              },
+              reputation: {
+                scrims_completed: true,
+                no_shows: true,
+                reliability_pct: true,
+              },
+            },
+            to_team: {
+              id: true,
+              name: true,
+              avatar_url: true,
+              ranks: {
+                avg_elo: true,
+                avg_faceit_level: true,
+                avg_faceit_elo: true,
+                avg_premier: true,
+                roster_size: true,
+              },
+              reputation: {
+                scrims_completed: true,
+                no_shows: true,
+                reliability_pct: true,
+              },
+            },
+          },
+        ],
+      }),
+      variables: function (this: any) {
+        return { id: this.entityId };
+      },
+      update: (data: any) => data?.team_scrim_requests_by_pk ?? null,
+      result: function (this: any) {
+        this.scrimLoaded = true;
+      },
+    },
+    suggestionPlayers: {
+      skip: function (this: any) {
+        return this.kind !== "teamSuggestion" || !this.hasValidEntity;
+      },
+      fetchPolicy: "cache-first",
+      query: typedGql("query")({
+        players: [
+          { where: { steam_id: { _in: $("steamIds", "[bigint!]!") } } },
+          {
+            steam_id: true,
+            name: true,
+            avatar_url: true,
+            custom_avatar_url: true,
+            country: true,
+            role: true,
+          },
+        ],
+      }),
+      variables: function (this: any) {
+        return { steamIds: this.suggestionSteamIds };
+      },
+      update: (data: any) => data?.players ?? [],
+      result: function (this: any) {
+        this.suggestionLoaded = true;
+      },
+    },
+  },
+  methods: {
+    teamAvatar(team: any): string | null {
+      return team?.avatar_url
+        ? `https://${this.apiDomain}/${team.avatar_url}`
+        : null;
+    },
+    scrimTime(): string {
+      if (!this.scrim?.proposed_scheduled_at) return "";
+      return new Date(this.scrim.proposed_scheduled_at).toLocaleString(
+        undefined,
+        {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
+        },
+      );
+    },
+    // Only meaningful while the request is still awaiting a response.
+    expiresLabel(): string {
+      if (
+        !this.scrim?.expires_at ||
+        !["Pending", "Countered"].includes(this.scrim?.status)
+      ) {
+        return "";
+      }
+      const ms = new Date(this.scrim.expires_at).getTime() - Date.now();
+      if (ms <= 0) {
+        return this.$t("notification_context.expired");
+      }
+      const hours = Math.floor(ms / 3600000);
+      const minutes = Math.floor((ms % 3600000) / 60000);
+      if (hours >= 24) {
+        return this.$t("notification_context.expires_in_days", {
+          days: Math.floor(hours / 24),
+        });
+      }
+      if (hours >= 1) {
+        return this.$t("notification_context.expires_in_hours", { hours });
+      }
+      return this.$t("notification_context.expires_in_minutes", {
+        minutes: Math.max(1, minutes),
+      });
+    },
   },
 });
 </script>
@@ -245,6 +448,94 @@ export default defineComponent({
       size="sm"
     />
   </div>
+  <NuxtLink
+    v-else-if="kind === 'scrim' && scrim"
+    :to="scrimLink"
+    class="block overflow-hidden rounded-lg border border-[hsl(var(--tac-amber)/0.3)] [background:linear-gradient(135deg,hsl(var(--tac-amber)/0.08),hsl(var(--card)/0.5))] transition-colors hover:border-[hsl(var(--tac-amber)/0.6)]"
+  >
+    <div class="divide-y divide-border/50">
+      <div
+        v-for="(team, index) in [scrim.from_team, scrim.to_team]"
+        :key="team?.id"
+        class="relative flex items-center gap-3 px-3 py-2.5"
+      >
+        <Avatar shape="square" class="h-9 w-9 shrink-0 rounded-md">
+          <AvatarImage
+            v-if="teamAvatar(team)"
+            :src="teamAvatar(team)"
+            :alt="team?.name"
+          />
+          <AvatarFallback class="rounded-md text-[0.6rem] font-semibold uppercase">
+            {{ (team?.name || "?").slice(0, 2) }}
+          </AvatarFallback>
+        </Avatar>
+        <div class="min-w-0 flex-1">
+          <div class="truncate text-sm font-semibold leading-tight">
+            {{ team?.name }}
+          </div>
+          <TeamRankSummary
+            class="mt-1"
+            :ranks="team?.ranks"
+            :reputation="team?.reputation"
+          />
+        </div>
+        <span
+          v-if="index === 0"
+          class="absolute -bottom-2.5 left-1/2 z-10 -translate-x-1/2 rounded-full border border-[hsl(var(--tac-amber)/0.5)] bg-background px-1.5 py-0.5 font-sans text-[0.6rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+        >
+          {{ $t("common.vs") }}
+        </span>
+      </div>
+    </div>
+    <div
+      class="flex items-center justify-center gap-2 border-t border-border/50 bg-background/30 px-3 py-1.5 text-[0.7rem] text-muted-foreground"
+    >
+      <span
+        v-if="scrimScheduled"
+        class="inline-flex items-center gap-1 font-semibold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+      >
+        <span class="h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))]" />
+        {{ $t("notification_context.scheduled") }}
+      </span>
+      <span v-if="scrimScheduled" class="text-muted-foreground/60">·</span>
+      <span class="font-medium text-foreground">{{ scrimTime() }}</span>
+      <span v-if="scrim.match_options">
+        {{ $t("scrim.best_of_indicator", { bestOf: scrim.match_options.best_of }) }}
+      </span>
+      <span
+        v-if="expiresLabel()"
+        class="font-medium text-[hsl(var(--tac-amber))]"
+      >
+        · {{ expiresLabel() }}
+      </span>
+    </div>
+  </NuxtLink>
+  <NuxtLink
+    v-else-if="kind === 'teamSuggestion' && suggestionPlayers.length"
+    :to="suggestionCreateLink"
+    class="block overflow-hidden rounded-lg border border-[hsl(var(--tac-amber)/0.3)] [background:linear-gradient(135deg,hsl(var(--tac-amber)/0.08),hsl(var(--card)/0.5))] transition-colors hover:border-[hsl(var(--tac-amber)/0.6)]"
+  >
+    <div class="divide-y divide-border/50">
+      <div
+        v-for="player in suggestionPlayers"
+        :key="player.steam_id"
+        class="px-3 py-2"
+      >
+        <PlayerDisplay
+          :player="player"
+          :show-elo="false"
+          :show-flag="false"
+          size="sm"
+        />
+      </div>
+    </div>
+    <div
+      class="flex items-center justify-center gap-1.5 border-t border-border/50 bg-background/30 px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+    >
+      <Swords class="h-3 w-3" />
+      {{ $t("notification_context.create_team") }}
+    </div>
+  </NuxtLink>
   <div
     v-else-if="primaryText"
     class="flex items-center gap-2 text-xs px-2 py-1 rounded border border-border bg-background/40"

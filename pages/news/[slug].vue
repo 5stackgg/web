@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import { marked } from "marked";
-import DOMPurify from "dompurify";
 import { Button } from "~/components/ui/button";
 import { Skeleton } from "~/components/ui/skeleton";
 import { Avatar, AvatarImage, AvatarFallback } from "~/components/ui/avatar";
+import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import NewsArticleView from "~/components/news/NewsArticleView.vue";
 import { ArrowLeft, PencilLine } from "lucide-vue-next";
 import { resolveAvatarUrl } from "~/utilities/avatarUrl";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
@@ -83,15 +83,20 @@ const wasUpdated = computed(() => {
   return new Date(a.updated_at).getTime() - new Date(a.published_at).getTime() > 60_000;
 });
 
-const renderedContent = computed(() => {
-  if (!import.meta.client || !article.value?.content_markdown) {
-    return "";
+const trackView = (articleSlug: string | null) => {
+  if (!import.meta.client || !articleSlug) {
+    return;
   }
-  const html = marked.parse(article.value.content_markdown, {
-    breaks: true,
-  }) as string;
-  return DOMPurify.sanitize(html);
-});
+  const key = `news-viewed:${articleSlug}`;
+  if (sessionStorage.getItem(key)) {
+    return;
+  }
+  sessionStorage.setItem(key, "1");
+  fetch(`https://${apiDomain.value}/news/${encodeURIComponent(articleSlug)}/view`, {
+    method: "POST",
+    credentials: "include",
+  }).catch(() => {});
+};
 
 const fetchArticle = async () => {
   loading.value = true;
@@ -116,6 +121,7 @@ const fetchArticle = async () => {
     }
     article.value = found;
     useNotificationStore().markNewsRead(found.published_at);
+    trackView(found.slug);
   } catch {
     return navigateTo("/news");
   } finally {
@@ -133,7 +139,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="space-y-6">
+  <PageTransition>
     <div class="mx-auto w-full max-w-3xl">
       <div class="flex items-center justify-between">
         <NuxtLink to="/news">
@@ -150,61 +156,28 @@ onMounted(() => {
         </NuxtLink>
       </div>
     </div>
+  </PageTransition>
 
-    <article class="mx-auto w-full max-w-3xl space-y-6">
+  <PageTransition :delay="100" class="mt-6">
+    <div class="mx-auto w-full max-w-3xl space-y-6">
       <template v-if="loading">
         <Skeleton class="h-24 w-full rounded-lg" />
         <Skeleton class="h-96 w-full rounded-lg" />
       </template>
 
       <template v-else-if="article">
-        <header class="space-y-4 border-b border-border/60 pb-6">
-          <span
-            class="inline-flex flex-wrap items-center gap-x-2 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground"
-          >
-            <span class="text-[0.7rem] text-[hsl(var(--tac-amber))]">◢</span>
-            <span v-if="article.published_at">
-              {{ formatDate(article.published_at) }}
-            </span>
-          </span>
-
-          <h1
-            class="text-balance font-sans text-3xl font-bold uppercase leading-tight tracking-[0.02em] text-foreground sm:text-4xl"
-          >
-            {{ article.title }}
-          </h1>
-
-          <p
-            v-if="article.teaser"
-            class="text-pretty text-lg leading-relaxed text-muted-foreground"
-          >
-            {{ article.teaser }}
-          </p>
-        </header>
-
-        <div
-          v-if="article.cover_image_url"
-          class="aspect-video w-full overflow-hidden rounded-lg border border-border/50 bg-background/60"
+        <NewsArticleView
+          :title="article.title"
+          :teaser="article.teaser"
+          :cover-image-url="article.cover_image_url"
+          :content-markdown="article.content_markdown"
+          :published-at="article.published_at"
         >
-          <img
-            :src="article.cover_image_url"
-            :alt="article.title"
-            referrerpolicy="no-referrer"
-            class="h-full w-full object-cover"
-          />
-        </div>
-
-        <ClientOnly>
-          <div class="news-content" v-html="renderedContent" />
-          <template #fallback>
-            <p class="text-muted-foreground">{{ article.teaser }}</p>
-          </template>
-        </ClientOnly>
-
-        <footer
-          v-if="article.author || wasUpdated"
-          class="flex items-center gap-3 border-t border-border/60 pt-6"
-        >
+          <template #footer>
+            <footer
+              v-if="article.author || wasUpdated"
+              class="flex items-center gap-3 border-t border-border/60 pt-6"
+            >
           <NuxtLink
             v-if="article.author"
             :to="{ name: 'players-id', params: { id: article.author.steam_id } }"
@@ -240,101 +213,20 @@ onMounted(() => {
             </div>
           </NuxtLink>
 
-          <span v-if="wasUpdated" class="ml-auto text-xs text-muted-foreground">
-            {{ $t("pages.news.updated", { date: formatDate(article.updated_at) }) }}
-          </span>
-        </footer>
+              <span
+                v-if="wasUpdated"
+                class="ml-auto text-xs text-muted-foreground"
+              >
+                {{
+                  $t("pages.news.updated", {
+                    date: formatDate(article.updated_at),
+                  })
+                }}
+              </span>
+            </footer>
+          </template>
+        </NewsArticleView>
       </template>
-    </article>
-  </div>
+    </div>
+  </PageTransition>
 </template>
-
-<style scoped>
-.news-content {
-  color: hsl(var(--foreground));
-  line-height: 1.7;
-  font-size: 1.05rem;
-}
-.news-content :deep(h1),
-.news-content :deep(h2),
-.news-content :deep(h3),
-.news-content :deep(h4) {
-  font-weight: 700;
-  line-height: 1.25;
-  margin-top: 1.75rem;
-  margin-bottom: 0.75rem;
-}
-.news-content :deep(h1) {
-  font-size: 1.8rem;
-}
-.news-content :deep(h2) {
-  font-size: 1.5rem;
-}
-.news-content :deep(h3) {
-  font-size: 1.25rem;
-}
-.news-content :deep(p) {
-  margin-bottom: 1rem;
-}
-.news-content :deep(a) {
-  color: hsl(var(--primary));
-  text-decoration: underline;
-}
-.news-content :deep(ul),
-.news-content :deep(ol) {
-  margin: 0 0 1rem 1.5rem;
-}
-.news-content :deep(ul) {
-  list-style: disc;
-}
-.news-content :deep(ol) {
-  list-style: decimal;
-}
-.news-content :deep(li) {
-  margin-bottom: 0.35rem;
-}
-.news-content :deep(blockquote) {
-  border-left: 3px solid hsl(var(--border));
-  padding-left: 1rem;
-  color: hsl(var(--muted-foreground));
-  margin: 0 0 1rem 0;
-}
-.news-content :deep(img) {
-  max-width: 100%;
-  height: auto;
-  border-radius: 0.5rem;
-  margin: 1rem 0;
-}
-.news-content :deep(pre) {
-  background: hsl(var(--muted));
-  padding: 1rem;
-  border-radius: 0.5rem;
-  overflow-x: auto;
-  margin-bottom: 1rem;
-}
-.news-content :deep(code) {
-  font-family: var(--font-mono, monospace);
-  font-size: 0.875em;
-}
-.news-content :deep(:not(pre) > code) {
-  background: hsl(var(--muted));
-  padding: 0.15rem 0.35rem;
-  border-radius: 0.25rem;
-}
-.news-content :deep(hr) {
-  border: none;
-  border-top: 1px solid hsl(var(--border));
-  margin: 1.5rem 0;
-}
-.news-content :deep(table) {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-}
-.news-content :deep(th),
-.news-content :deep(td) {
-  border: 1px solid hsl(var(--border));
-  padding: 0.5rem 0.75rem;
-  text-align: left;
-}
-</style>

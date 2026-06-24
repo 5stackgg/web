@@ -129,7 +129,7 @@ onBeforeUnmount(() => {
 
     <template v-if="notification.type !== 'NameChangeRequest'">
       <p
-        class="[&_a]:text-blue-500 [&_a]:underline [&_a:hover]:text-blue-700"
+        class="[&_a]:text-[hsl(var(--tac-amber))] [&_a]:underline [&_a:hover]:text-[hsl(var(--tac-amber)/0.8)]"
         :class="[
           'text-sm mb-2',
           notification.is_read
@@ -142,7 +142,7 @@ onBeforeUnmount(() => {
     </template>
     <template v-else>
       <p
-        class="[&_a]:text-blue-500 [&_a]:underline [&_a:hover]:text-blue-700"
+        class="[&_a]:text-[hsl(var(--tac-amber))] [&_a]:underline [&_a:hover]:text-[hsl(var(--tac-amber)/0.8)]"
         :class="[
           'text-sm mb-2',
           notification.is_read

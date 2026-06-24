@@ -7,6 +7,7 @@ function isPublicRoute(path: string): boolean {
   const publicRoutes = [
     "/",
     "/login",
+    "/play",
     "/watch",
     "/public-servers",
     "/stats-guide",
@@ -25,6 +26,10 @@ function isPublicRoute(path: string): boolean {
   }
 
   if (path.startsWith("/teams")) {
+    return true;
+  }
+
+  if (path === "/scrims" || path.startsWith("/scrims/")) {
     return true;
   }
 

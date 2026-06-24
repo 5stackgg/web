@@ -19,6 +19,7 @@ import {
   Search,
   Database,
   Trophy,
+  Swords,
   Film,
   Newspaper,
   ListVideo,
@@ -321,6 +322,23 @@ function onLeftNavTouchEnd(e: TouchEvent) {
             <SidebarMenuItem>
               <SidebarMenuButton
                 as-child
+                :tooltip="$t('layouts.app_nav.navigation.scrims')"
+              >
+                <NuxtLink
+                  :to="{ name: 'scrims' }"
+                  :class="{
+                    'router-link-active': isRouteActive('scrims'),
+                  }"
+                >
+                  <Swords />
+                  {{ $t("layouts.app_nav.navigation.scrims") }}
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                as-child
                 :tooltip="$t('layouts.app_nav.tooltips.leaderboard')"
               >
                 <NuxtLink
@@ -331,6 +349,34 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 >
                   <Trophy />
                   {{ $t("layouts.app_nav.navigation.leaderboard") }}
+                </NuxtLink>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+
+          </SidebarMenu>
+        </SidebarGroup>
+
+        <Separator v-if="showSeparators" class="mx-4 w-auto" />
+
+        <SidebarGroup>
+          <SidebarGroupLabel>{{
+            $t("layouts.app_nav.social.title")
+          }}</SidebarGroupLabel>
+
+          <SidebarMenu>
+            <SidebarMenuItem v-if="newsEnabled">
+              <SidebarMenuButton
+                as-child
+                :tooltip="$t('layouts.app_nav.tooltips.news')"
+              >
+                <NuxtLink
+                  :to="{ name: 'news' }"
+                  :class="{
+                    'router-link-active': isRouteActive('news'),
+                  }"
+                >
+                  <Newspaper />
+                  {{ $t("layouts.app_nav.navigation.news") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -358,23 +404,6 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   >
                     {{ renderQueueInFlightCount }}
                   </Badge>
-                </NuxtLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-
-            <SidebarMenuItem v-if="newsEnabled">
-              <SidebarMenuButton
-                as-child
-                :tooltip="$t('layouts.app_nav.tooltips.news')"
-              >
-                <NuxtLink
-                  :to="{ name: 'news' }"
-                  :class="{
-                    'router-link-active': isRouteActive('news'),
-                  }"
-                >
-                  <Newspaper />
-                  {{ $t("layouts.app_nav.navigation.news") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>

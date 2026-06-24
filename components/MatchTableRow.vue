@@ -264,7 +264,21 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
             }"
             :title="match.lineup_1.name"
           >
-            {{ match.lineup_1.name }}
+            <component
+              :is="match.lineup_1.team_id ? 'NuxtLink' : 'span'"
+              :to="
+                match.lineup_1.team_id
+                  ? `/teams/${match.lineup_1.team_id}`
+                  : undefined
+              "
+              :class="
+                match.lineup_1.team_id &&
+                'transition-colors hover:text-[hsl(var(--tac-amber))]'
+              "
+              @click="match.lineup_1.team_id && $event.stopPropagation()"
+            >
+              {{ match.lineup_1.name }}
+            </component>
           </h3>
           <div class="flex shrink-0 items-baseline gap-1.5">
             <span
@@ -295,7 +309,21 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
             }"
             :title="match.lineup_2.name"
           >
-            {{ match.lineup_2.name }}
+            <component
+              :is="match.lineup_2.team_id ? 'NuxtLink' : 'span'"
+              :to="
+                match.lineup_2.team_id
+                  ? `/teams/${match.lineup_2.team_id}`
+                  : undefined
+              "
+              :class="
+                match.lineup_2.team_id &&
+                'transition-colors hover:text-[hsl(var(--tac-amber))]'
+              "
+              @click="match.lineup_2.team_id && $event.stopPropagation()"
+            >
+              {{ match.lineup_2.name }}
+            </component>
           </h3>
           <div class="flex shrink-0 items-baseline gap-1.5">
             <span
@@ -332,14 +360,25 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
                   focusPlayerLineupId === match.lineup_1_id,
               }"
             >
-              <span
-                :class="{
-                  'border-b border-primary/40':
-                    playerLineup === match.lineup_1_id,
-                }"
+              <component
+                :is="match.lineup_1.team_id ? 'NuxtLink' : 'span'"
+                :to="
+                  match.lineup_1.team_id
+                    ? `/teams/${match.lineup_1.team_id}`
+                    : undefined
+                "
+                :class="[
+                  {
+                    'border-b border-primary/40':
+                      playerLineup === match.lineup_1_id,
+                  },
+                  match.lineup_1.team_id &&
+                    'transition-colors hover:text-[hsl(var(--tac-amber))]',
+                ]"
+                @click="match.lineup_1.team_id && $event.stopPropagation()"
               >
                 {{ match.lineup_1.name }}
-              </span>
+              </component>
             </h3>
             <div
               v-if="match.status === e_match_status_enum.PickingPlayers"
@@ -357,7 +396,7 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
         </div>
 
         <div
-          class="flex items-center justify-center order-first lg:order-none py-2 lg:py-0"
+          class="flex flex-col items-center justify-center order-first lg:order-none py-2 lg:py-0"
         >
           <div class="text-2xl md:text-3xl font-bold">
             <span :class="getScoreColorClasses(match.lineup_1.id)">{{
@@ -368,6 +407,12 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
               getTeamScore(match, match.lineup_2.id)
             }}</span>
           </div>
+          <span
+            v-if="isTie"
+            class="mt-0.5 font-mono text-[0.6rem] font-bold uppercase tracking-[0.18em] text-muted-foreground"
+          >
+            {{ $t("match.status.tied") }}
+          </span>
         </div>
 
         <div class="flex items-center space-x-3 justify-end">
@@ -379,14 +424,25 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
                   focusPlayerLineupId === match.lineup_2_id,
               }"
             >
-              <span
-                :class="{
-                  'border-b border-primary/40':
-                    playerLineup === match.lineup_2_id,
-                }"
+              <component
+                :is="match.lineup_2.team_id ? 'NuxtLink' : 'span'"
+                :to="
+                  match.lineup_2.team_id
+                    ? `/teams/${match.lineup_2.team_id}`
+                    : undefined
+                "
+                :class="[
+                  {
+                    'border-b border-primary/40':
+                      playerLineup === match.lineup_2_id,
+                  },
+                  match.lineup_2.team_id &&
+                    'transition-colors hover:text-[hsl(var(--tac-amber))]',
+                ]"
+                @click="match.lineup_2.team_id && $event.stopPropagation()"
               >
                 {{ match.lineup_2.name }}
-              </span>
+              </component>
             </h3>
             <div
               v-if="match.status === e_match_status_enum.PickingPlayers"
@@ -1410,6 +1466,10 @@ export default {
         return "text-foreground";
       }
 
+      if (this.isTie) {
+        return "text-muted-foreground";
+      }
+
       if (this.match.status === e_match_status_enum.Finished) {
         if (this.playerLineup) {
           if (this.playerLineup === lineupId) {
@@ -1450,6 +1510,13 @@ export default {
     },
   },
   computed: {
+    isTie(): boolean {
+      const status = this.match?.status;
+      const finishedLike =
+        status === e_match_status_enum.Finished ||
+        status === e_match_status_enum.Tie;
+      return finishedLike && !this.match?.winning_lineup_id;
+    },
     isTournamentMatch(): boolean {
       return Boolean(
         this.match?.is_tournament_match ||

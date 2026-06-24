@@ -36,4 +36,5 @@ export const newsPostAdminFields = {
   published_at: true,
   created_at: true,
   updated_at: true,
+  view_count: true,
 } as const;

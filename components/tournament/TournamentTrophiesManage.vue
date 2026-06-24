@@ -1,5 +1,6 @@
 <script lang="ts">
 import { Button } from "~/components/ui/button";
+import TeamSearch from "~/components/teams/TeamSearch.vue";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { $ } from "~/generated/zeus";
 
@@ -11,7 +12,7 @@ const PLACEMENT_COLORS: Record<number, string> = {
 };
 
 export default {
-  components: { Button },
+  components: { Button, TeamSearch },
   props: {
     tournament: { type: Object, required: true },
   },
@@ -47,6 +48,14 @@ export default {
     },
     teams(): any[] {
       return (this.tournament?.teams || []) as any[];
+    },
+    teamOptions(): any[] {
+      return this.teams.map((team) => ({
+        id: team.id,
+        name: team.name || team.team?.name || `Team ${String(team.id).slice(0, 6)}`,
+        short_name: team.short_name || team.team?.short_name || "",
+        avatar_url: team.avatar_url ?? team.team?.avatar_url ?? null,
+      }));
     },
     selectedTeam(): any | null {
       return (
@@ -214,18 +223,12 @@ export default {
             class="font-mono text-[0.55rem] uppercase tracking-[0.22em] text-muted-foreground"
             >{{ $t("trophies_manage_form.team") }}</span
           >
-          <select
-            :value="draft.tournament_team_id || ''"
-            class="rounded-sm border border-border bg-background px-2 py-1 text-sm"
-            @change="onTeamChange(($event.target as HTMLSelectElement).value)"
-          >
-            <option value="">
-              {{ $t("ui_extras.select_team_placeholder") }}
-            </option>
-            <option v-for="team in teams" :key="team.id" :value="team.id">
-              {{ teamNameById[team.id] }}
-            </option>
-          </select>
+          <TeamSearch
+            :label="$t('ui_extras.select_team_placeholder')"
+            :team-options="teamOptions"
+            :model-value="draft.tournament_team_id || ''"
+            @selected="(team) => onTeamChange(team.id)"
+          />
         </label>
         <label class="flex flex-col gap-1">
           <span

@@ -219,8 +219,13 @@ const vsBaseClasses =
           <div
             class="flex items-center gap-3 min-w-0 justify-center text-center lg:justify-start lg:text-left"
           >
-            <div
+            <component
+              :is="lineup1TeamId ? 'NuxtLink' : 'div'"
+              :to="lineup1TeamId ? `/teams/${lineup1TeamId}` : undefined"
               class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
+              :class="
+                lineup1TeamId && 'transition-opacity hover:opacity-80 cursor-pointer'
+              "
             >
               <img
                 v-if="lineup1AvatarSrc"
@@ -234,7 +239,7 @@ const vsBaseClasses =
               >
                 {{ (lineup1Name || "?").slice(0, 3) }}
               </span>
-            </div>
+            </component>
             <div
               class="flex flex-col gap-[0.35rem] min-w-0 items-start lg:items-start"
             >
@@ -373,8 +378,13 @@ const vsBaseClasses =
                 </span>
               </div>
             </div>
-            <div
+            <component
+              :is="lineup2TeamId ? 'NuxtLink' : 'div'"
+              :to="lineup2TeamId ? `/teams/${lineup2TeamId}` : undefined"
               class="shrink-0 h-12 w-12 border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.1)] flex items-center justify-center overflow-hidden"
+              :class="
+                lineup2TeamId && 'transition-opacity hover:opacity-80 cursor-pointer'
+              "
             >
               <img
                 v-if="lineup2AvatarSrc"
@@ -388,7 +398,7 @@ const vsBaseClasses =
               >
                 {{ (lineup2Name || "?").slice(0, 3) }}
               </span>
-            </div>
+            </component>
           </div>
         </div>
 

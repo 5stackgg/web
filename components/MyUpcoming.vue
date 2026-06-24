@@ -92,6 +92,9 @@ export default {
         result: function ({ data }) {
           this.tournaments = data.tournaments;
         },
+        skip: function () {
+          return !useAuthStore().me?.steam_id;
+        },
       },
     },
   },

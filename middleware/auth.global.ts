@@ -7,6 +7,7 @@ function isPublicRoute(path: string): boolean {
   const publicRoutes = [
     "/",
     "/login",
+    "/play",
     "/watch",
     "/public-servers",
     "/stats-guide",

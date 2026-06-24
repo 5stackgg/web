@@ -23,6 +23,8 @@ const SCRIM_TYPES = [
   "ScrimTimeChanged",
 ];
 
+const TEAM_SUGGESTION_TYPES = ["FormTeamSuggestion"];
+
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -65,11 +67,13 @@ export default defineComponent({
       node: null as any,
       player: null as any,
       scrim: null as any,
+      suggestionPlayers: [] as any[],
       matchLoaded: false,
       serverLoaded: false,
       nodeLoaded: false,
       playerLoaded: false,
       scrimLoaded: false,
+      suggestionLoaded: false,
     };
   },
   computed: {
@@ -80,10 +84,21 @@ export default defineComponent({
       if (this.kind === "node") return !this.nodeLoaded;
       if (this.kind === "player") return !this.playerLoaded;
       if (this.kind === "scrim") return !this.scrimLoaded;
+      if (this.kind === "teamSuggestion") return !this.suggestionLoaded;
       return false;
     },
     apiDomain() {
       return useRuntimeConfig().public.apiDomain;
+    },
+    suggestionSteamIds(): string[] {
+      // entity_id for a team suggestion is the group hash: "steamId:steamId:...".
+      return (this.entityId ?? "")
+        .split(":")
+        .map((id: string) => id.trim())
+        .filter((id: string) => /^\d+$/.test(id));
+    },
+    suggestionCreateLink(): string {
+      return `/teams/create?members=${encodeURIComponent(this.suggestionSteamIds.join(","))}`;
     },
     scrimLink() {
       if (!this.scrim) return null;
@@ -103,6 +118,8 @@ export default defineComponent({
       // entity_ids (e.g. "plugin_version") must not trigger a *_by_pk lookup.
       if (this.kind === "node") return !!this.entityId;
       if (this.kind === "player") return /^\d+$/.test(this.entityId ?? "");
+      if (this.kind === "teamSuggestion")
+        return this.suggestionSteamIds.length > 0;
       return UUID_RE.test(this.entityId ?? "");
     },
     kind() {
@@ -111,6 +128,7 @@ export default defineComponent({
       if (NODE_TYPES.includes(this.type)) return "node";
       if (PLAYER_TYPES.includes(this.type)) return "player";
       if (SCRIM_TYPES.includes(this.type)) return "scrim";
+      if (TEAM_SUGGESTION_TYPES.includes(this.type)) return "teamSuggestion";
       return null;
     },
     iconComponent() {
@@ -123,14 +141,22 @@ export default defineComponent({
       if (this.kind === "match" && this.match) {
         const a = this.match.lineup_1?.name?.trim();
         const b = this.match.lineup_2?.name?.trim();
-        if (a && b) return `${a} vs ${b}`;
-        return a || b || "Match";
+        if (a && b) return `${a} ${this.$t("common.vs")} ${b}`;
+        return a || b || this.$t("notification_context.match_default");
       }
       if (this.kind === "server" && this.server) {
-        return this.server.label || this.server.host || "Server";
+        return (
+          this.server.label ||
+          this.server.host ||
+          this.$t("notification_context.server_default")
+        );
       }
       if (this.kind === "node" && this.node) {
-        return this.node.label || this.node.id || "Node";
+        return (
+          this.node.label ||
+          this.node.id ||
+          this.$t("notification_context.node_default")
+        );
       }
       return null;
     },
@@ -326,6 +352,32 @@ export default defineComponent({
         this.scrimLoaded = true;
       },
     },
+    suggestionPlayers: {
+      skip: function (this: any) {
+        return this.kind !== "teamSuggestion" || !this.hasValidEntity;
+      },
+      fetchPolicy: "cache-first",
+      query: typedGql("query")({
+        players: [
+          { where: { steam_id: { _in: $("steamIds", "[bigint!]!") } } },
+          {
+            steam_id: true,
+            name: true,
+            avatar_url: true,
+            custom_avatar_url: true,
+            country: true,
+            role: true,
+          },
+        ],
+      }),
+      variables: function (this: any) {
+        return { steamIds: this.suggestionSteamIds };
+      },
+      update: (data: any) => data?.players ?? [],
+      result: function (this: any) {
+        this.suggestionLoaded = true;
+      },
+    },
   },
   methods: {
     teamAvatar(team: any): string | null {
@@ -356,17 +408,21 @@ export default defineComponent({
       }
       const ms = new Date(this.scrim.expires_at).getTime() - Date.now();
       if (ms <= 0) {
-        return "Expired";
+        return this.$t("notification_context.expired");
       }
       const hours = Math.floor(ms / 3600000);
       const minutes = Math.floor((ms % 3600000) / 60000);
       if (hours >= 24) {
-        return `Expires in ${Math.floor(hours / 24)}d`;
+        return this.$t("notification_context.expires_in_days", {
+          days: Math.floor(hours / 24),
+        });
       }
       if (hours >= 1) {
-        return `Expires in ${hours}h`;
+        return this.$t("notification_context.expires_in_hours", { hours });
       }
-      return `Expires in ${Math.max(1, minutes)}m`;
+      return this.$t("notification_context.expires_in_minutes", {
+        minutes: Math.max(1, minutes),
+      });
     },
   },
 });
@@ -427,7 +483,7 @@ export default defineComponent({
           v-if="index === 0"
           class="absolute -bottom-2.5 left-1/2 z-10 -translate-x-1/2 rounded-full border border-[hsl(var(--tac-amber)/0.5)] bg-background px-1.5 py-0.5 font-sans text-[0.6rem] font-bold uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
         >
-          vs
+          {{ $t("common.vs") }}
         </span>
       </div>
     </div>
@@ -439,12 +495,12 @@ export default defineComponent({
         class="inline-flex items-center gap-1 font-semibold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
       >
         <span class="h-1.5 w-1.5 rounded-full bg-[hsl(var(--tac-amber))]" />
-        Scheduled
+        {{ $t("notification_context.scheduled") }}
       </span>
       <span v-if="scrimScheduled" class="text-muted-foreground/60">·</span>
       <span class="font-medium text-foreground">{{ scrimTime() }}</span>
       <span v-if="scrim.match_options">
-        · Best of {{ scrim.match_options.best_of }}
+        {{ $t("scrim.best_of_indicator", { bestOf: scrim.match_options.best_of }) }}
       </span>
       <span
         v-if="expiresLabel()"
@@ -452,6 +508,32 @@ export default defineComponent({
       >
         · {{ expiresLabel() }}
       </span>
+    </div>
+  </NuxtLink>
+  <NuxtLink
+    v-else-if="kind === 'teamSuggestion' && suggestionPlayers.length"
+    :to="suggestionCreateLink"
+    class="block overflow-hidden rounded-lg border border-[hsl(var(--tac-amber)/0.3)] [background:linear-gradient(135deg,hsl(var(--tac-amber)/0.08),hsl(var(--card)/0.5))] transition-colors hover:border-[hsl(var(--tac-amber)/0.6)]"
+  >
+    <div class="divide-y divide-border/50">
+      <div
+        v-for="player in suggestionPlayers"
+        :key="player.steam_id"
+        class="px-3 py-2"
+      >
+        <PlayerDisplay
+          :player="player"
+          :show-elo="false"
+          :show-flag="false"
+          size="sm"
+        />
+      </div>
+    </div>
+    <div
+      class="flex items-center justify-center gap-1.5 border-t border-border/50 bg-background/30 px-3 py-1.5 text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
+    >
+      <Swords class="h-3 w-3" />
+      {{ $t("notification_context.create_team") }}
     </div>
   </NuxtLink>
   <div

@@ -16,7 +16,7 @@ const mmCardPending =
 
 <template>
   <div v-if="matchmakingAllowed">
-    <template v-if="me.is_banned">
+    <template v-if="me?.is_banned">
       <Alert class="my-3">
         <AlertDescription class="flex items-center gap-2">
           <AlertTriangle class="h-4 w-4" />
@@ -24,7 +24,7 @@ const mmCardPending =
         </AlertDescription>
       </Alert>
     </template>
-    <template v-else-if="me.matchmaking_cooldown">
+    <template v-else-if="me?.matchmaking_cooldown">
       <Alert class="my-3">
         <AlertDescription class="flex items-center gap-2">
           <AlertTriangle class="h-4 w-4" />
@@ -436,6 +436,10 @@ export default {
       return useMatchmakingStore().getRegionlatencyResult(region);
     },
     handleMatchTypeClick(matchType: e_match_types_enum): void {
+      if (!this.me?.steam_id) {
+        navigateTo("/login?redirect=/play");
+        return;
+      }
       if (this.preferredRegions.length === 0) {
         toast({
           title: this.$t("matchmaking.no_preferred_regions") as string,

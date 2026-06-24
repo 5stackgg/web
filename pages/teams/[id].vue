@@ -43,6 +43,7 @@ import TeamVetoSimulator from "~/components/team/TeamVetoSimulator.vue";
 import TeamRankSummary from "~/components/team/TeamRankSummary.vue";
 import TeamHighlights from "~/components/team/TeamHighlights.vue";
 import TeamScrimManager from "~/components/team/TeamScrimManager.vue";
+import ScrimCalendarButton from "~/components/team/ScrimCalendarButton.vue";
 import ScrimRequestDialog from "~/components/team/ScrimRequestDialog.vue";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -216,11 +217,11 @@ const teamHeroActionsClasses =
 
   <Tabs v-if="team" v-model="tab" class="mt-6 w-full">
     <TabsList variant="default" class="flex-wrap justify-start">
-      <TabsTrigger value="overview">Overview</TabsTrigger>
-      <TabsTrigger value="stats">Stats</TabsTrigger>
-      <TabsTrigger value="highlights">Highlights</TabsTrigger>
+      <TabsTrigger value="overview">{{ $t("team.tabs.overview") }}</TabsTrigger>
+      <TabsTrigger value="stats">{{ $t("team.tabs.stats") }}</TabsTrigger>
+      <TabsTrigger value="highlights">{{ $t("team.tabs.highlights") }}</TabsTrigger>
       <TabsTrigger v-if="showScrimTab" value="scrim">
-        Scrim Finder
+        {{ $t("team.tabs.scrim") }}
       </TabsTrigger>
     </TabsList>
   </Tabs>
@@ -242,10 +243,13 @@ const teamHeroActionsClasses =
           <TeamMembers :team-id="$route.params.id" />
         </div>
         <div class="space-y-3 lg:col-span-3">
-          <span :class="tacticalSectionLabelClasses">
-            <span :class="tacticalSectionTickClasses" />
-            {{ $t("match.recent.title") }}
-          </span>
+          <div class="flex items-center justify-between gap-4">
+            <span :class="tacticalSectionLabelClasses">
+              <span :class="tacticalSectionTickClasses" />
+              {{ $t("match.recent.title") }}
+            </span>
+            <ScrimCalendarButton :team-id="String($route.params.id)" />
+          </div>
           <MatchesTable :matches="pagedTeamMatches" :show-all-matches="true" />
           <Pagination
             v-if="teamMatches.length > matchesPerPage"
@@ -286,11 +290,10 @@ const teamHeroActionsClasses =
           <div class="flex flex-col gap-1">
             <span :class="tacticalSectionLabelClasses">
               <span :class="tacticalSectionTickClasses" />
-              Scrim Finder
+              {{ $t("team.tabs.scrim") }}
             </span>
             <span :class="tacticalSectionDescriptionClasses">
-              This team is open to scrims — pick a time from their availability
-              and send a challenge.
+              {{ $t("team.scrim_open_description") }}
             </span>
           </div>
           <div
@@ -312,7 +315,7 @@ const teamHeroActionsClasses =
                 <div
                   class="text-sm font-semibold uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
                 >
-                  Open to Scrims
+                  {{ $t("scrim.open_to_scrims") }}
                 </div>
                 <TeamRankSummary
                   class="mt-1"
@@ -326,7 +329,7 @@ const teamHeroActionsClasses =
               :disabled="!me"
               @click="scrimRequestOpen = true"
             >
-              Request Scrim
+              {{ $t("scrim.request_scrim") }}
             </Button>
           </div>
           <ScrimRequestDialog
@@ -387,7 +390,7 @@ const teamHeroActionsClasses =
       <AlertDialogFooter>
         <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
         <AlertDialogAction
-          class="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+          class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           @click="deleteTeam"
           >{{ $t("common.confirm") }}</AlertDialogAction
         >
@@ -406,7 +409,7 @@ const teamHeroActionsClasses =
       <AlertDialogFooter>
         <AlertDialogCancel>{{ $t("common.cancel") }}</AlertDialogCancel>
         <AlertDialogAction
-          class="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+          class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           @click="leaveTeam"
           >{{ $t("common.confirm") }}</AlertDialogAction
         >

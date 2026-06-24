@@ -304,14 +304,14 @@ export default {
       }
       if (this.selectedFromTeam === this.posting?.team_id) {
         toast({
-          title: "A team can't scrim itself",
+          title: this.$t("scrim.cannot_scrim_self"),
           variant: "destructive",
         });
         return;
       }
       if (new Date(iso) <= new Date()) {
         toast({
-          title: "Proposed time must be in the future",
+          title: this.$t("scrim.time_must_be_future"),
           variant: "destructive",
         });
         return;
@@ -331,12 +331,12 @@ export default {
             ],
           }),
         });
-        toast({ title: "Scrim request sent" });
+        toast({ title: this.$t("scrim.request_sent") });
         this.$emit("sent");
         this.$emit("update:open", false);
       } catch (error) {
         toast({
-          title: "Could not send scrim request",
+          title: this.$t("scrim.request_send_error"),
           description: error instanceof Error ? error.message : undefined,
           variant: "destructive",
         });
@@ -353,7 +353,7 @@ export default {
     <DialogContent class="max-w-3xl">
       <DialogHeader>
         <DialogTitle class="sr-only">
-          Request scrim vs {{ posting?.team?.name }}
+          {{ $t("scrim.request_scrim_vs", { name: posting?.team?.name }) }}
         </DialogTitle>
       </DialogHeader>
 
@@ -364,7 +364,7 @@ export default {
           class="inline-flex items-center gap-2 font-sans text-[0.6rem] uppercase tracking-[0.28em] text-[hsl(var(--tac-amber))]"
         >
           <span class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]" />
-          Request Scrim
+          {{ $t("scrim.request_scrim") }}
         </span>
         <div class="mt-3 flex flex-wrap items-center gap-4">
           <NuxtLink
@@ -402,7 +402,7 @@ export default {
             <span
               class="font-mono text-[0.55rem] uppercase tracking-[0.18em] text-muted-foreground"
             >
-              Preferred maps
+              {{ $t("scrim.preferred_maps") }}
             </span>
             <div class="flex flex-wrap items-center justify-end gap-1.5">
               <img
@@ -422,13 +422,13 @@ export default {
         <label class="space-y-1 block">
           <span :class="sectionLabelClasses">
             <span :class="sectionTickClasses" />
-            Your team
+            {{ $t("scrim.your_team") }}
           </span>
           <Select v-model="selectedFromTeam">
             <SelectTrigger>
               {{
                 eligibleFromTeams.find((team) => team.id === selectedFromTeam)
-                  ?.name ?? "Select a team"
+                  ?.name ?? $t("scrim.select_team")
               }}
             </SelectTrigger>
             <SelectContent>
@@ -447,7 +447,7 @@ export default {
           <div class="flex flex-wrap items-center justify-between gap-2">
             <span :class="sectionLabelClasses">
               <span :class="sectionTickClasses" />
-              Proposed time
+              {{ $t("scrim.proposed_time") }}
             </span>
             <button
               v-if="canRequestOutside && hasAvailability"
@@ -455,7 +455,7 @@ export default {
               class="text-xs text-[hsl(var(--tac-amber))] hover:underline"
               @click="freeMode = !freeMode"
             >
-              {{ freeMode ? "← Pick from their availability" : "Request any other time instead" }}
+              {{ freeMode ? $t("scrim.pick_from_availability") : $t("scrim.request_other_time") }}
             </button>
           </div>
 
@@ -505,7 +505,7 @@ export default {
               {{ proposedLabel() }}
             </span>
             <span class="text-xs text-muted-foreground">
-              · Best of {{ bestOf }}
+              {{ $t("scrim.best_of_indicator", { bestOf }) }}
             </span>
           </div>
 
@@ -517,18 +517,16 @@ export default {
                 :best-of="Number(bestOf)"
               />
               <p class="text-xs text-muted-foreground">
-                Pick a start inside their availability, then set the date — you
-                can schedule weeks ahead. A best of {{ bestOf }} runs about
-                {{ bestOf }} hour{{ bestOf === "1" ? "" : "s" }}.
+                {{ $t("scrim.availability_help", Number(bestOf), { count: bestOf }) }}
               </p>
             </div>
             <p v-else key="free" class="text-xs text-muted-foreground">
               {{
                 hasAvailability
-                  ? "This team accepts requests outside their posted hours — pick any date and time."
-                  : "This team hasn't posted availability but takes requests at any time — pick a date and time."
+                  ? $t("scrim.accepts_outside_hours")
+                  : $t("scrim.accepts_any_time")
               }}
-              They still have to accept.
+              {{ $t("scrim.they_must_accept") }}
             </p>
           </FadeSwap>
         </div>
@@ -536,7 +534,7 @@ export default {
         <div class="space-y-1">
           <span :class="sectionLabelClasses">
             <span :class="sectionTickClasses" />
-            Series
+            {{ $t("scrim.series") }}
           </span>
           <div class="flex gap-2">
             <button
@@ -546,7 +544,7 @@ export default {
               :disabled="!bestOfFits(option)"
               :title="
                 !bestOfFits(option)
-                  ? `${posting?.team?.name} has no ${option}-hour slot`
+                  ? $t('scrim.no_hour_slot', { team: posting?.team?.name, hours: option })
                   : ''
               "
               class="flex-1 rounded-md border px-3 py-1.5 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-40"
@@ -557,7 +555,7 @@ export default {
               "
               @click="bestOf = option"
             >
-              Best of {{ option }}
+              {{ $t("scrim.best_of", { option }) }}
             </button>
           </div>
         </div>
@@ -570,7 +568,7 @@ export default {
           :disabled="!selectedFromTeam || !proposedIso()"
           @click="sendRequest"
         >
-          Send Request
+          {{ $t("scrim.send_request") }}
         </Button>
       </DialogFooter>
     </DialogContent>

@@ -83,7 +83,11 @@ export default {
           ],
         }),
       });
-      toast({ title: accept ? "Scrim accepted" : "Scrim declined" });
+      toast({
+        title: accept
+          ? this.$t("scrim.scrim_accepted")
+          : this.$t("scrim.scrim_declined"),
+      });
     },
     async counter(requestId: string) {
       const time = this.counterTimes[requestId];
@@ -101,7 +105,7 @@ export default {
           ],
         }),
       });
-      toast({ title: "New time proposed" });
+      toast({ title: this.$t("scrim.new_time_proposed") });
     },
     async cancel(requestId: string) {
       await this.$apollo.mutate({
@@ -109,7 +113,7 @@ export default {
           cancelScrimRequest: [{ request_id: requestId }, { success: true }],
         }),
       });
-      toast({ title: "Scrim request cancelled" });
+      toast({ title: this.$t("scrim.request_cancelled") });
     },
   },
 };
@@ -121,14 +125,19 @@ export default {
       v-if="requests.length === 0"
       class="rounded-md border border-dashed border-border px-4 py-10 text-center"
     >
-      <p class="text-sm text-muted-foreground">No active scrim requests.</p>
-      <p class="mt-1 text-xs text-muted-foreground">
-        Challenge a team from the
-        <NuxtLink to="/scrims" class="text-[hsl(var(--tac-amber))] hover:underline">
-          Scrim Finder
-        </NuxtLink>
-        to get started.
-      </p>
+      <p class="text-sm text-muted-foreground">{{ $t("scrim.no_active_requests") }}</p>
+      <i18n-t
+        keypath="scrim.start_challenge_help"
+        tag="p"
+        scope="global"
+        class="mt-1 text-xs text-muted-foreground"
+      >
+        <template #link>
+          <NuxtLink to="/scrims" class="text-[hsl(var(--tac-amber))] hover:underline">
+            {{ $t("scrim.finder_link") }}
+          </NuxtLink>
+        </template>
+      </i18n-t>
     </div>
 
     <div
@@ -146,7 +155,7 @@ export default {
           <span
             class="text-[0.65rem] uppercase tracking-[0.15em] text-muted-foreground"
           >
-            {{ isOurs(request) ? "Outgoing →" : "Incoming ←" }}
+            {{ isOurs(request) ? $t("scrim.outgoing") : $t("scrim.incoming") }}
           </span>
           <span class="font-semibold">{{ opponentName(request) }}</span>
         </div>
@@ -168,10 +177,10 @@ export default {
           {{ new Date(request.proposed_scheduled_at).toLocaleString() }}
         </span>
         <span v-if="request.match_options" class="text-muted-foreground">
-          · Best of {{ request.match_options.best_of }}
+          {{ $t("scrim.best_of_indicator", { bestOf: request.match_options.best_of }) }}
         </span>
         <span v-if="request.auto_generated" class="text-[hsl(var(--tac-amber))]">
-          · auto-matched
+          {{ $t("scrim.auto_matched") }}
         </span>
         <TimeAgo :date="request.created_at" class="text-xs" />
       </div>
@@ -184,7 +193,7 @@ export default {
           :to="`/matches/${request.match_id}`"
           class="text-[hsl(var(--tac-amber))] hover:underline"
         >
-          View scheduled match →
+          {{ $t("scrim.view_scheduled_match") }}
         </NuxtLink>
         <Button
           size="sm"
@@ -192,7 +201,7 @@ export default {
           class="text-muted-foreground hover:text-destructive"
           @click="cancel(request.id)"
         >
-          Cancel scrim
+          {{ $t("scrim.cancel_scrim") }}
         </Button>
       </div>
 
@@ -201,15 +210,15 @@ export default {
         class="flex flex-wrap items-center gap-2 border-t border-border pt-3"
       >
         <Button size="sm" class="tac-amber-cta" @click="respond(request.id, true)">
-          Accept
+          {{ $t("common.accept") }}
         </Button>
         <Button size="sm" variant="outline" @click="respond(request.id, false)">
-          Decline
+          {{ $t("common.decline") }}
         </Button>
         <div class="ml-auto flex items-center gap-2">
           <DateTimePicker v-model="counterTimes[request.id]" size="sm" />
           <Button size="sm" variant="secondary" @click="counter(request.id)">
-            Counter
+            {{ $t("scrim.counter") }}
           </Button>
         </div>
       </div>
@@ -219,7 +228,7 @@ export default {
         class="flex justify-between border-t border-border pt-3"
       >
         <p class="text-xs text-muted-foreground">
-          Waiting on {{ opponentName(request) }} to respond.
+          {{ $t("scrim.waiting_response", { name: opponentName(request) }) }}
         </p>
         <Button
           size="sm"
@@ -227,11 +236,11 @@ export default {
           class="text-muted-foreground hover:text-destructive"
           @click="cancel(request.id)"
         >
-          Cancel
+          {{ $t("common.cancel") }}
         </Button>
       </div>
       <p v-else class="text-sm text-muted-foreground">
-        Waiting on {{ opponentName(request) }}.
+        {{ $t("scrim.waiting_opponent", { name: opponentName(request) }) }}
       </p>
     </div>
   </div>

@@ -161,7 +161,7 @@ export default {
       v-if="displaySlots.length === 0"
       class="rounded-md border border-dashed border-border px-4 py-8 text-center text-sm text-muted-foreground"
     >
-      This team hasn't set any availability yet.
+      {{ $t("scrim.no_availability_set") }}
     </p>
 
     <div v-else class="overflow-x-auto">
@@ -216,17 +216,17 @@ export default {
     >
       <span class="flex items-center gap-1.5">
         <span class="h-3 w-3 rounded-sm bg-[hsl(var(--tac-amber)/0.75)]" />
-        Available start
+        {{ $t("scrim.available_start") }}
       </span>
       <span class="flex items-center gap-1.5">
         <span
           class="h-3 w-3 rounded-sm bg-[hsl(var(--tac-amber))] ring-2 ring-inset ring-white/80"
         />
-        Selected start
+        {{ $t("scrim.selected_start") }}
       </span>
       <span class="flex items-center gap-1.5">
         <span class="h-3 w-3 rounded-sm bg-[hsl(var(--tac-amber)/0.32)]" />
-        Match window ({{ bestOf }}h)
+        {{ $t("scrim.match_window", { hours: bestOf }) }}
       </span>
     </div>
   </div>

@@ -408,6 +408,10 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
   }
 
   function checkLatenies() {
+    // Guests can't matchmake; don't open WebRTC peer connections for them.
+    if (!useAuthStore().me?.steam_id) {
+      return;
+    }
     if (latencies.value.size === 0) {
       refreshLatencies();
     }

@@ -285,9 +285,9 @@ export default {
 
         this.availabilityDirty = false;
         this.formDirty = false;
-        toast({ title: "Scrim settings saved" });
+        toast({ title: this.$t("scrim.settings_saved") });
       } catch (error) {
-        toast({ title: "Failed to save scrim settings", variant: "destructive" });
+        toast({ title: this.$t("scrim.settings_save_error"), variant: "destructive" });
         throw error;
       } finally {
         this.submitting = false;
@@ -319,11 +319,10 @@ export default {
             form.enabled ? 'text-[hsl(var(--tac-amber))]' : 'text-muted-foreground'
           "
         >
-          {{ form.enabled ? "Open to Scrims" : "Closed" }}
+          {{ form.enabled ? $t("scrim.open_to_scrims") : $t("scrim.closed") }}
         </div>
         <p class="mt-1 text-sm text-muted-foreground">
-          Make your team discoverable for scrims. Opponents pick the match
-          format when they challenge you.
+          {{ $t("scrim.discoverable_help") }}
         </p>
       </div>
       <Switch v-model="form.enabled" @click.stop />
@@ -331,25 +330,25 @@ export default {
 
     <section class="space-y-4">
       <div class="flex items-center gap-3">
-        <span :class="sectionLabel">Regions</span>
+        <span :class="sectionLabel">{{ $t("scrim.regions_section") }}</span>
         <span class="h-px flex-1 bg-border" />
       </div>
       <ScrimRegionPicker
         v-model:regions="form.regions"
-        empty-text="No regions are currently available."
+        :empty-text="$t('scrim.no_regions_available')"
       />
     </section>
 
     <section class="space-y-3">
       <div class="flex items-center gap-3">
-        <span :class="sectionLabel">Maps</span>
+        <span :class="sectionLabel">{{ $t("scrim.maps_section") }}</span>
         <span class="h-px flex-1 bg-border" />
         <button
           type="button"
           class="rounded-md border border-border px-3 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted/40"
           @click="editingMaps = !editingMaps"
         >
-          {{ editingMaps ? "Done" : "Edit" }}
+          {{ editingMaps ? $t("common.done") : $t("common.edit") }}
         </button>
       </div>
 
@@ -374,7 +373,7 @@ export default {
           v-if="selectedMaps.length === 0"
           class="text-sm text-muted-foreground"
         >
-          No maps selected — click Edit to pick maps to scrim.
+          {{ $t("scrim.no_maps_selected") }}
         </span>
       </div>
 
@@ -385,7 +384,7 @@ export default {
         <div class="flex flex-wrap items-center gap-2">
           <Input
             v-model="mapSearch"
-            placeholder="Search maps…"
+            :placeholder="$t('scrim.search_maps')"
             class="h-8 w-full sm:w-56"
           />
           <button
@@ -398,7 +397,7 @@ export default {
             "
             @click="mapFilters.official = !mapFilters.official"
           >
-            Official
+            {{ $t("scrim.official") }}
           </button>
           <button
             type="button"
@@ -410,7 +409,7 @@ export default {
             "
             @click="mapFilters.workshop = !mapFilters.workshop"
           >
-            Workshop
+            {{ $t("scrim.workshop") }}
           </button>
           <button
             type="button"
@@ -422,7 +421,7 @@ export default {
             "
             @click="mapFilters.activeDuty = !mapFilters.activeDuty"
           >
-            Active Duty
+            {{ $t("scrim.active_duty") }}
           </button>
         </div>
 
@@ -452,7 +451,7 @@ export default {
             v-if="filteredMaps.length === 0"
             class="col-span-full py-4 text-center text-sm text-muted-foreground"
           >
-            No maps match your filters.
+            {{ $t("scrim.no_maps_match") }}
           </p>
         </div>
       </div>
@@ -460,15 +459,15 @@ export default {
 
     <section class="space-y-3">
       <div class="flex items-center gap-3">
-        <span :class="sectionLabel">Accepted ELO Range</span>
+        <span :class="sectionLabel">{{ $t("scrim.accepted_elo_range") }}</span>
         <span class="h-px flex-1 bg-border" />
       </div>
-      <ScrimEloRange v-model="eloRange" label="5stack ELO" />
+      <ScrimEloRange v-model="eloRange" :label="$t('scrim.fivestack_elo')" />
     </section>
 
     <section class="space-y-4">
       <div class="flex items-center gap-3">
-        <span :class="sectionLabel">Weekly Availability</span>
+        <span :class="sectionLabel">{{ $t("scrim.weekly_availability") }}</span>
         <span class="h-px flex-1 bg-border" />
       </div>
       <TeamScrimAvailabilityGrid
@@ -481,10 +480,9 @@ export default {
         class="flex cursor-pointer items-center justify-between gap-4 rounded-md border border-border bg-card/40 p-3"
       >
         <span class="flex flex-col gap-0.5">
-          <span class="text-sm font-medium">Allow requests outside these hours</span>
+          <span class="text-sm font-medium">{{ $t("scrim.allow_outside_hours") }}</span>
           <span class="text-xs text-muted-foreground">
-            Opponents can propose any time, not just your painted availability.
-            Leave your availability empty to take requests at any time.
+            {{ $t("scrim.outside_hours_help") }}
           </span>
         </span>
         <Switch v-model="form.allow_outside_availability" />
@@ -493,12 +491,12 @@ export default {
 
     <section class="space-y-4">
       <div class="flex items-center gap-3">
-        <span :class="sectionLabel">Notes</span>
+        <span :class="sectionLabel">{{ $t("scrim.notes_section") }}</span>
         <span class="h-px flex-1 bg-border" />
       </div>
       <Textarea
         v-model="form.notes"
-        placeholder="Anything opponents should know — server prefs, anti-cheat, voice, etc."
+        :placeholder="$t('scrim.notes_placeholder')"
       />
     </section>
 

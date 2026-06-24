@@ -9,7 +9,7 @@ export default {
     },
     emptyText: {
       type: String,
-      default: "Any region",
+      default: "",
     },
   },
   emits: ["update:regions"],
@@ -53,7 +53,7 @@ export default {
       v-if="availableRegions.length === 0"
       class="text-sm text-muted-foreground"
     >
-      {{ emptyText }}
+      {{ emptyText || $t("scrim.any_region") }}
     </span>
   </div>
 </template>

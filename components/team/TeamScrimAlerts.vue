@@ -74,7 +74,7 @@ export default {
             ],
           }),
         });
-        toast({ title: "Scrim alert created" });
+        toast({ title: this.$t("scrim.alert_created") });
         this.regions = [];
         this.eloRange = [0, ELO_MAX];
       } finally {
@@ -108,12 +108,12 @@ export default {
 <template>
   <div class="space-y-5">
     <p class="text-sm text-muted-foreground">
-      Get pinged when a team matching your criteria opens up for scrims.
+      {{ $t("scrim.alerts_description") }}
     </p>
 
     <div class="space-y-4 rounded-md border border-border bg-card/40 p-4">
       <div class="space-y-1.5">
-        <span :class="fieldLabel">Regions</span>
+        <span :class="fieldLabel">{{ $t("scrim.regions_section") }}</span>
         <ScrimRegionPicker v-model:regions="regions" />
       </div>
 
@@ -121,7 +121,7 @@ export default {
 
       <div class="flex justify-end">
         <Button :loading="submitting" size="sm" class="connect-action" @click="create">
-          + Add Alert
+          {{ $t("scrim.add_alert") }}
         </Button>
       </div>
     </div>
@@ -131,7 +131,7 @@ export default {
         v-if="alerts.length === 0"
         class="rounded-md border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground"
       >
-        No alerts yet.
+        {{ $t("scrim.no_alerts") }}
       </p>
       <div
         v-for="alert in alerts"
@@ -146,7 +146,7 @@ export default {
           <span v-if="alert.regions?.length" class="font-medium">
             {{ alert.regions.join(", ") }}
           </span>
-          <span v-else class="font-medium">Any region</span>
+          <span v-else class="font-medium">{{ $t("scrim.any_region") }}</span>
           <span
             v-if="alert.elo_min || alert.elo_max"
             class="text-muted-foreground"
@@ -162,7 +162,7 @@ export default {
             class="text-muted-foreground hover:text-destructive"
             @click="remove(alert.id)"
           >
-            Remove
+            {{ $t("common.remove") }}
           </Button>
         </div>
       </div>

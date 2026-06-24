@@ -46,6 +46,17 @@ function extractTranslationKeys(content, keyPrefixPattern, dynamicPrefixes) {
     directKeys.add(key);
   });
 
+  // Catch <i18n-t keypath="foo.bar"> / <I18nT keypath="foo.bar"> components.
+  // These render a translation by key just like $t(...), so the key must exist.
+  const keypathPattern = /\bkeypath\s*=\s*(['"`])([^'"`]+)\1/g;
+  Array.from(content.matchAll(keypathPattern)).forEach((match) => {
+    const key = match[2];
+    if (key.includes("${")) {
+      return;
+    }
+    directKeys.add(key);
+  });
+
   // Also catch namespaced calls like i18n.t("foo.bar.baz")
   const namespacedTPattern = /\b\w+\.t\s*\(\s*(['"`])([^'"`]+)\1(?:\s*[,)])/g;
   const namespacedMatches = Array.from(content.matchAll(namespacedTPattern));

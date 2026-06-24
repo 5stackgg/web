@@ -67,14 +67,14 @@ export default {
       const eloMax = this.settings.elo_max;
       return [
         {
-          label: "Region",
-          value: regions.length ? regions.join(" · ") : "Any",
+          label: this.$t("common.region"),
+          value: regions.length ? regions.join(" · ") : this.$t("common.any"),
         },
         {
-          label: "ELO",
+          label: this.$t("scrim.elo_label"),
           value:
             eloMin == null && eloMax == null
-              ? "Any"
+              ? this.$t("common.any")
               : `${eloMin ?? "0"} – ${eloMax ?? "∞"}`,
         },
       ];
@@ -137,10 +137,10 @@ export default {
           class="mb-1 inline-flex items-center gap-2 font-sans text-[0.72rem] uppercase tracking-[0.24em] text-muted-foreground"
         >
           <span class="inline-block h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]" />
-          Scrim Finder
+          {{ $t("scrim.finder_title") }}
         </span>
         <p class="text-[0.85rem] text-muted-foreground">
-          Advertise your team, set who you'll play, and run your scrim schedule.
+          {{ $t("scrim.finder_description") }}
         </p>
       </div>
 
@@ -168,7 +168,7 @@ export default {
               :class="enabled ? 'bg-[hsl(var(--tac-amber))]' : 'bg-muted-foreground'"
             />
           </span>
-          {{ enabled ? "Open to Scrims" : "Closed" }}
+          {{ enabled ? $t("scrim.open_to_scrims") : $t("scrim.closed") }}
         </div>
       </div>
     </header>
@@ -198,9 +198,9 @@ export default {
         variant="underline"
         class="w-full justify-start overflow-x-auto border-b border-border pb-px"
       >
-        <TabsTrigger value="finder">Finder</TabsTrigger>
+        <TabsTrigger value="finder">{{ $t("scrim.finder_tab") }}</TabsTrigger>
         <TabsTrigger value="requests" class="gap-2">
-          Requests
+          {{ $t("scrim.requests_tab") }}
           <span
             v-if="pendingCount > 0"
             class="inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[hsl(var(--tac-amber))] px-1 text-[0.65rem] font-bold text-[hsl(var(--tac-amber-foreground))]"

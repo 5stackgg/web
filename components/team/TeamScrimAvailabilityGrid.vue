@@ -316,7 +316,7 @@ export default {
               class="h-6 border-b border-t border-border/50 transition-colors"
               :title="
                 isPlaytime(dayIndex, slot - 1)
-                  ? 'Playtime — a scrim started here would still be running'
+                  ? $t('scrim.playtime_tooltip')
                   : ''
               "
               :class="[
@@ -345,11 +345,11 @@ export default {
     >
       <span class="flex items-center gap-1.5">
         <span class="h-3 w-3 rounded-sm bg-[hsl(var(--tac-amber)/0.85)]" />
-        Available start
+        {{ $t("scrim.available_start") }}
       </span>
       <span class="flex items-center gap-1.5">
         <span class="h-3 w-3 rounded-sm bg-[hsl(var(--tac-amber)/0.28)]" />
-        Playtime (~1 hour)
+        {{ $t("scrim.playtime_legend") }}
       </span>
     </div>
 
@@ -357,9 +357,9 @@ export default {
       class="flex flex-wrap items-center gap-2 rounded-md border border-border/60 bg-card/30 px-3 py-2 text-xs"
     >
       <span class="font-medium text-foreground">
-        Longest block ≈ {{ maxFreeHours.toFixed(maxFreeHours % 1 ? 2 : 0) }}h
+        {{ $t("scrim.longest_block", { hours: maxFreeHours.toFixed(maxFreeHours % 1 ? 2 : 0) }) }}
       </span>
-      <span class="text-muted-foreground">— opponents can request</span>
+      <span class="text-muted-foreground">{{ $t("scrim.opponents_can_request") }}</span>
       <span
         class="rounded border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.12)] px-1.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))]"
       >
@@ -386,16 +386,13 @@ export default {
         Bo5
       </span>
       <span v-if="!bestOfSupport.bo5" class="text-muted-foreground">
-        — paint a {{ bestOfSupport.bo3 ? "5" : "3" }}h+ block to unlock
-        {{ bestOfSupport.bo3 ? "Bo5" : "Bo3" }}.
+        {{ $t("scrim.paint_to_unlock", { hours: bestOfSupport.bo3 ? "5" : "3", format: bestOfSupport.bo3 ? "Bo5" : "Bo3" }) }}
       </span>
     </div>
 
     <div class="flex items-center justify-between">
       <p class="text-xs text-muted-foreground">
-        Drag to paint the <strong>start times</strong> your team is available
-        (local time). A scrim runs about an hour, so the faded blocks show your
-        real commitment.
+        {{ $t("scrim.availability_grid_help") }}
       </p>
       <Button
         variant="ghost"
@@ -403,7 +400,7 @@ export default {
         class="text-muted-foreground hover:text-destructive"
         @click="clearAll"
       >
-        Clear
+        {{ $t("common.clear") }}
       </Button>
     </div>
   </div>

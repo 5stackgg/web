@@ -44,13 +44,12 @@ export default {
 
         await navigator.clipboard.writeText(url);
         toast({
-          title: "Calendar link copied",
-          description:
-            "Subscribe to this URL in your calendar app to see scheduled scrims.",
+          title: this.$t("scrim.calendar_link_copied"),
+          description: this.$t("scrim.calendar_subscription_help"),
         });
       } catch (error) {
         toast({
-          title: "Could not get calendar link",
+          title: this.$t("scrim.calendar_link_error"),
           description: error instanceof Error ? error.message : undefined,
           variant: "destructive",
         });
@@ -84,11 +83,11 @@ export default {
   <Button
     v-if="enabled"
     variant="tactical"
-    size="sm"
-    class="gap-2"
+    size="xs"
+    class="gap-1.5 text-[0.65rem] tracking-[0.12em]"
     @click="copyCalendarUrl"
   >
-    <CalendarPlus class="h-4 w-4" />
-    Subscribe to Scrims
+    <CalendarPlus class="h-3.5 w-3.5" />
+    {{ $t("scrim.subscribe_to_matches") }}
   </Button>
 </template>

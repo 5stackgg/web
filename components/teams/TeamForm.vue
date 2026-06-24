@@ -93,6 +93,23 @@ const submitClasses =
       </div>
     </div>
 
+    <div v-if="!team && invitedPlayers.length" :class="cardClasses">
+      <div :class="eyebrowClasses">
+        <span :class="tickClasses"></span>
+        {{ $t("team.form.inviting") }}
+      </div>
+      <div class="mt-4 flex flex-col gap-2">
+        <PlayerDisplay
+          v-for="player in invitedPlayers"
+          :key="player.steam_id"
+          :player="player"
+        />
+      </div>
+      <p class="mt-3 text-xs text-muted-foreground">
+        {{ $t("team.form.inviting_hint") }}
+      </p>
+    </div>
+
     <Button
       type="submit"
       :disabled="Object.keys(form.errors).length > 0"
@@ -108,8 +125,8 @@ const submitClasses =
 import * as z from "zod";
 import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
-import { generateMutation } from "~/graphql/graphqlGen";
-import { e_player_roles_enum } from "~/generated/zeus";
+import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
+import { $, e_player_roles_enum } from "~/generated/zeus";
 
 export default {
   emits: ["updated"],
@@ -128,6 +145,7 @@ export default {
     return {
       submitting: false,
       owner: undefined,
+      invitedPlayers: [] as Array<Record<string, any>>,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -151,9 +169,42 @@ export default {
       },
     },
   },
+  apollo: {
+    invitedPlayers: {
+      query: generateQuery({
+        players: [
+          {
+            where: {
+              steam_id: { _in: $("steamIds", "[bigint!]!") },
+            },
+          },
+          {
+            steam_id: true,
+            name: true,
+            avatar_url: true,
+            custom_avatar_url: true,
+            country: true,
+            role: true,
+          },
+        ],
+      }),
+      variables(this: any) {
+        return { steamIds: this.inviteSteamIds };
+      },
+      skip(this: any) {
+        return this.inviteSteamIds.length === 0;
+      },
+      update: (data: any) => data.players ?? [],
+    },
+  },
   computed: {
     me() {
       return useAuthStore().me;
+    },
+    inviteSteamIds(): string[] {
+      return (this.inviteMembers as string[]).filter(
+        (steamId) => steamId && steamId !== this.me?.steam_id,
+      );
     },
     canUpdateOwner() {
       return (
@@ -218,18 +269,17 @@ export default {
 
         const teamId = data.insert_teams_one.id;
 
-        const members = (this.inviteMembers as string[]).filter(
-          (steamId) => steamId && steamId !== this.me?.steam_id,
-        );
+        const members = this.inviteSteamIds;
         if (members.length > 0) {
+          // Inviting a player is an insert into team_roster (role defaults to
+          // 'Pending'); the user role has no direct insert on team_invites.
           await this.$apollo.mutate({
             mutation: generateMutation({
-              insert_team_invites: [
+              insert_team_roster: [
                 {
                   objects: members.map((steamId) => ({
                     team_id: teamId,
-                    steam_id: steamId,
-                    invited_by_player_steam_id: this.me?.steam_id,
+                    player_steam_id: steamId,
                   })),
                 },
                 { affected_rows: true },

@@ -113,9 +113,9 @@ export default {
     },
     sortOptions() {
       return [
-        { key: "name", label: "Name" },
-        { key: "elo", label: "ELO" },
-        { key: "reliability", label: "Reliable" },
+        { key: "name", label: this.$t("pages.scrims.sort_name") },
+        { key: "elo", label: this.$t("pages.scrims.sort_elo") },
+        { key: "reliability", label: this.$t("pages.scrims.sort_reliable") },
       ];
     },
     mapOptions() {
@@ -183,9 +183,9 @@ export default {
     },
     sortSummary(): string {
       const labels: Record<string, string> = {
-        name: "Name",
-        elo: "ELO",
-        reliability: "Reliable",
+        name: this.$t("pages.scrims.sort_name"),
+        elo: this.$t("pages.scrims.sort_elo"),
+        reliability: this.$t("pages.scrims.sort_reliable"),
       };
       return this.sortChain
         .map(({ key, dir }) => `${labels[key]} ${dir === "asc" ? "↑" : "↓"}`)
@@ -459,7 +459,7 @@ export default {
       v-if="!scrimFinderEnabled"
       class="mt-6 rounded-md border border-dashed border-border px-4 py-10 text-center text-sm text-muted-foreground"
     >
-      The Scrim Finder is currently disabled by your administrator.
+      {{ $t("pages.scrims.disabled_message") }}
     </p>
 
     <template v-else>
@@ -472,7 +472,7 @@ export default {
             <InputGroupInput
               v-model="searchQuery"
               type="text"
-              placeholder="Search teams"
+              :placeholder="$t('pages.scrims.search_placeholder')"
               class="h-full text-sm"
             />
             <InputGroupAddon align="inline-end" class="pr-2">
@@ -499,7 +499,7 @@ export default {
                 "
               >
                 <Globe class="h-4 w-4" />
-                Regions
+                {{ $t("pages.scrims.regions_label") }}
                 <span
                   v-if="regionFilter.length"
                   class="rounded bg-[hsl(var(--tac-amber)/0.15)] px-1.5 text-[hsl(var(--tac-amber))]"
@@ -513,7 +513,7 @@ export default {
                 <span
                   class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
                 >
-                  Regions
+                  {{ $t("pages.scrims.regions_section") }}
                 </span>
                 <button
                   v-if="regionFilter.length"
@@ -521,7 +521,7 @@ export default {
                   class="text-[0.6rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))] hover:underline"
                   @click="regionFilter = []"
                 >
-                  Clear
+                  {{ $t("common.clear") }}
                 </button>
               </div>
               <InputGroup class="mb-1 h-8 bg-card/60">
@@ -531,7 +531,7 @@ export default {
                 <InputGroupInput
                   v-model="regionSearch"
                   type="text"
-                  placeholder="Filter regions"
+                  :placeholder="$t('pages.scrims.filter_regions_placeholder')"
                   class="h-full text-xs"
                 />
               </InputGroup>
@@ -563,7 +563,7 @@ export default {
                 v-if="filteredRegionOptions.length === 0"
                 class="px-2 py-3 text-center text-xs text-muted-foreground"
               >
-                No regions found.
+                {{ $t("pages.scrims.no_regions_found") }}
               </p>
             </PopoverContent>
           </Popover>
@@ -580,7 +580,7 @@ export default {
                 "
               >
                 <SlidersHorizontal class="h-4 w-4" />
-                Maps
+                {{ $t("pages.scrims.maps_label") }}
                 <span
                   v-if="mapFilter.length"
                   class="rounded bg-[hsl(var(--tac-amber)/0.15)] px-1.5 text-[hsl(var(--tac-amber))]"
@@ -594,7 +594,7 @@ export default {
                 <span
                   class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
                 >
-                  Preferred maps
+                  {{ $t("pages.scrims.preferred_maps") }}
                 </span>
                 <button
                   v-if="mapFilter.length"
@@ -602,7 +602,7 @@ export default {
                   class="text-[0.6rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))] hover:underline"
                   @click="mapFilter = []"
                 >
-                  Clear
+                  {{ $t("common.clear") }}
                 </button>
               </div>
               <button
@@ -634,7 +634,7 @@ export default {
                 v-if="mapOptions.length === 0"
                 class="px-2 py-3 text-center text-xs text-muted-foreground"
               >
-                No map preferences set.
+                {{ $t("pages.scrims.no_map_preferences") }}
               </p>
             </PopoverContent>
           </Popover>
@@ -651,7 +651,7 @@ export default {
                 "
               >
                 <Gauge class="h-4 w-4" />
-                ELO
+                {{ $t("pages.scrims.elo_label") }}
                 <span
                   v-if="eloActive"
                   class="rounded bg-[hsl(var(--tac-amber)/0.15)] px-1.5 text-[hsl(var(--tac-amber))]"
@@ -667,7 +667,7 @@ export default {
                 <span
                   class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
                 >
-                  Team avg ELO
+                  {{ $t("pages.scrims.team_avg_elo") }}
                 </span>
                 <button
                   v-if="eloActive"
@@ -675,14 +675,14 @@ export default {
                   class="text-[0.6rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))] hover:underline"
                   @click="eloRange = [0, ELO_MAX]"
                 >
-                  Clear
+                  {{ $t("common.clear") }}
                 </button>
               </div>
               <div
                 class="mt-3 flex items-center justify-between text-xs tabular-nums text-muted-foreground"
               >
-                <span>{{ eloRange[0] === 0 ? "Any" : eloRange[0] }}</span>
-                <span>{{ eloRange[1] >= ELO_MAX ? "Any" : eloRange[1] }}</span>
+                <span>{{ eloRange[0] === 0 ? $t("common.any") : eloRange[0] }}</span>
+                <span>{{ eloRange[1] >= ELO_MAX ? $t("common.any") : eloRange[1] }}</span>
               </div>
               <Slider
                 v-model="eloRange"
@@ -709,7 +709,7 @@ export default {
                 <span v-if="sortChain.length" class="normal-case tracking-normal">
                   {{ sortSummary }}
                 </span>
-                <span v-else>Sort</span>
+                <span v-else>{{ $t("pages.scrims.sort_label") }}</span>
               </button>
             </PopoverTrigger>
             <PopoverContent align="end" class="w-60 p-1.5">
@@ -717,7 +717,7 @@ export default {
                 <span
                   class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
                 >
-                  Sort by
+                  {{ $t("pages.scrims.sort_by") }}
                 </span>
                 <button
                   v-if="sortChain.length"
@@ -725,7 +725,7 @@ export default {
                   class="text-[0.6rem] uppercase tracking-[0.12em] text-[hsl(var(--tac-amber))] hover:underline"
                   @click="sortChain = []"
                 >
-                  Clear
+                  {{ $t("common.clear") }}
                 </button>
               </div>
               <button
@@ -766,7 +766,7 @@ export default {
               <p
                 class="px-2 pb-1 pt-1.5 text-[0.6rem] leading-snug text-muted-foreground"
               >
-                Click to add · again to flip direction. Order sets priority.
+                {{ $t("pages.scrims.sort_instructions") }}
               </p>
             </PopoverContent>
           </Popover>
@@ -781,7 +781,7 @@ export default {
               <span
                 class="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
               >
-                Today
+                {{ $t("pages.scrims.today") }}
               </span>
               <span class="text-xs text-muted-foreground">{{
                 todayRows.length
@@ -793,7 +793,7 @@ export default {
               v-if="todayRows.length === 0"
               class="rounded-md border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground"
             >
-              No teams available today.
+              {{ $t("pages.scrims.no_teams_today") }}
             </p>
 
             <div
@@ -813,7 +813,7 @@ export default {
                 <span
                   class="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-muted-foreground"
                 >
-                  to {{ entry.endLabel }}
+                  {{ $t("pages.scrims.time_to") }} {{ entry.endLabel }}
                 </span>
               </div>
 
@@ -843,7 +843,7 @@ export default {
                       target="_blank"
                       rel="noopener"
                       class="text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                      title="Open team in new tab"
+                      :title="$t('pages.scrims.open_team_new_tab')"
                       @click.stop
                     >
                       <ExternalLink class="h-3.5 w-3.5" />
@@ -883,7 +883,7 @@ export default {
                   class="tac-amber-cta shrink-0 self-start sm:self-center"
                   @click="openRequest(entry.posting)"
                 >
-                  Request Scrim
+                  {{ $t("pages.scrims.request_scrim") }}
                 </Button>
               </div>
             </div>
@@ -895,7 +895,7 @@ export default {
               <span
                 class="text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
               >
-                Available Teams
+                {{ $t("pages.scrims.available_teams") }}
               </span>
               <span class="text-xs text-muted-foreground">{{
                 availableTeams.length
@@ -907,7 +907,7 @@ export default {
               v-if="availableTeams.length === 0"
               class="rounded-md border border-dashed border-border px-4 py-6 text-center text-sm text-muted-foreground"
             >
-              No teams match your filters.
+              {{ $t("pages.scrims.no_teams_match") }}
             </p>
 
             <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
@@ -938,7 +938,7 @@ export default {
                     target="_blank"
                     rel="noopener"
                     class="mt-1 text-muted-foreground hover:text-[hsl(var(--tac-amber))]"
-                    title="Open team in new tab"
+                    :title="$t('pages.scrims.open_team_new_tab')"
                     @click.stop
                   >
                     <ExternalLink class="h-3.5 w-3.5" />
@@ -993,7 +993,7 @@ export default {
                   class="tac-amber-cta mt-auto w-full"
                   @click="openRequest(posting)"
                 >
-                  Request Scrim
+                  {{ $t("pages.scrims.request_scrim") }}
                 </Button>
               </div>
             </div>

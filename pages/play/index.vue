@@ -27,7 +27,7 @@ const settingsOpen = ref(false);
   <PageTransition>
     <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.play.title") }}</template>
-      <template v-if="matchmakingAllowed && !inLobbyNotLeader" #actions>
+      <template v-if="matchmakingAllowed && !inLobbyNotLeader && !isGuest" #actions>
         <Popover v-model:open="settingsOpen">
           <PopoverTrigger as-child>
             <Button
@@ -193,6 +193,9 @@ export default {
     },
     me() {
       return useAuthStore().me;
+    },
+    isGuest() {
+      return !useAuthStore().me?.steam_id;
     },
     regions() {
       return useApplicationSettingsStore().availableRegions;

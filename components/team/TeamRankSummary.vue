@@ -42,9 +42,9 @@ const player = computed(() => ({
     <Badge
       v-if="reputation?.reliability_pct != null"
       variant="outline"
-      :title="`${reputation?.scrims_completed ?? 0} completed · ${reputation?.no_shows ?? 0} no-shows`"
+      :title="$t('team.rank_summary.reputation_title', { completed: reputation?.scrims_completed ?? 0, noShows: reputation?.no_shows ?? 0 })"
     >
-      {{ reputation?.reliability_pct }}% reliable
+      {{ $t('team.rank_summary.reliable', { pct: reputation?.reliability_pct }) }}
     </Badge>
   </div>
 </template>

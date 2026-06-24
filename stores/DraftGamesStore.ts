@@ -21,7 +21,6 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
     type: true,
     mode: true,
     access: true,
-    invite_code: true,
     require_approval: true,
     regions: true,
     capacity: true,
@@ -78,6 +77,11 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
     ],
   };
 
+  // invite_code is only selectable by authenticated roles in Hasura; guests
+  // browsing public draft games/rooms must omit it or the whole query errors.
+  const withInviteCode = (fields: Record<string, any>) =>
+    useAuthStore().me?.steam_id ? { ...fields, invite_code: true } : fields;
+
   const draftRoomFields = {
     ...draftGameFields,
     options: {
@@ -107,7 +111,7 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
               },
             },
           },
-          draftGameFields,
+          withInviteCode(draftGameFields),
         ],
       }),
     });
@@ -194,7 +198,7 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
               },
             },
           },
-          draftRoomFields,
+          withInviteCode(draftRoomFields),
         ],
       }),
       variables: {

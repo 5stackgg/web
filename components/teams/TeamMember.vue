@@ -316,7 +316,7 @@ import { resolveRosterImageUrl } from "~/utilities/rosterImage";
           $t("common.cancel")
         }}</AlertDialogCancel>
         <AlertDialogAction
-          class="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+          class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           @click="removeMember"
         >
           <Trash2 class="mr-2 h-4 w-4" />

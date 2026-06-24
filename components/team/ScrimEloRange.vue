@@ -11,7 +11,7 @@ export default {
     },
     label: {
       type: String,
-      default: "ELO range",
+      default: "",
     },
   },
   emits: ["update:modelValue"],
@@ -39,10 +39,10 @@ export default {
 <template>
   <div class="space-y-1.5">
     <div class="flex items-center justify-between">
-      <span :class="fieldLabel">{{ label }}</span>
+      <span :class="fieldLabel">{{ label || $t("scrim.elo_range") }}</span>
       <span class="text-sm tabular-nums text-muted-foreground">
-        {{ range[0] === 0 ? "Any" : range[0] }} –
-        {{ range[1] >= ELO_MAX ? "Any" : range[1] }}
+        {{ range[0] === 0 ? $t("common.any") : range[0] }} –
+        {{ range[1] >= ELO_MAX ? $t("common.any") : range[1] }}
       </span>
     </div>
     <Slider v-model="range" :min="0" :max="ELO_MAX" :step="ELO_STEP" />

@@ -3074,6 +3074,7 @@
             "play": {
                 "find_match": "Find a Match",
                 "tournaments": "Tournaments",
+                "scrim_finder": "Scrim Finder",
                 "public_servers": "Public Servers",
                 "hero": {
                     "title": "Play & Compete",

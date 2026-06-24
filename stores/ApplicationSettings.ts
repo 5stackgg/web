@@ -176,7 +176,9 @@ export const useApplicationSettingsStore = defineStore(
       return create_tournaments_role?.value || e_player_roles_enum.user;
     });
 
-    const matchmakingAllowed = computed(() => {
+    // Panel on/off flag only, no role gating — used to show guests "fake"
+    // matchmaking cards that prompt login on click.
+    const matchmakingEnabled = computed(() => {
       if (!settings.value) {
         return false;
       }
@@ -185,11 +187,11 @@ export const useApplicationSettingsStore = defineStore(
         (setting) => setting.name === "public.matchmaking",
       );
 
-      const matchmakingEnabled = matchMakingSetting
-        ? matchMakingSetting.value === "true"
-        : true;
+      return matchMakingSetting ? matchMakingSetting.value === "true" : true;
+    });
 
-      if (!matchmakingEnabled) {
+    const matchmakingAllowed = computed(() => {
+      if (!matchmakingEnabled.value) {
         return false;
       }
 
@@ -452,6 +454,7 @@ export const useApplicationSettingsStore = defineStore(
       customMatchRole,
       canCreateCustomMatch,
       matchmakingAllowed,
+      matchmakingEnabled,
       tournamentCreateRole,
       supportsDiscordBot,
       supportsGameServerNodes,

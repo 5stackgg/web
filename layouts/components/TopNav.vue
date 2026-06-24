@@ -268,7 +268,7 @@ const loginArrowClasses =
                           <NuxtLink to="/scrims" :class="navItemClasses">
                             <span :class="navItemChevronClasses">◢</span>
                             <span :class="navItemLabelClasses">
-                              Scrim Finder
+                              {{ $t("layouts.top_nav.play.scrim_finder") }}
                             </span>
                           </NuxtLink>
                         </NavigationMenuLink>

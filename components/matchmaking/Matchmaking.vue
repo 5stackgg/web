@@ -15,7 +15,7 @@ const mmCardPending =
 </script>
 
 <template>
-  <div v-if="matchmakingAllowed">
+  <div v-if="matchmakingAllowed || (isGuest && matchmakingEnabled)">
     <template v-if="me?.is_banned">
       <Alert class="my-3">
         <AlertDescription class="flex items-center gap-2">
@@ -166,6 +166,7 @@ const mmCardPending =
       <div class="flex flex-col gap-4" v-else>
         <div
           v-if="
+            !isGuest &&
             !isMobile &&
             availableRegionsWithNodes.length > 0 &&
             !preferredRegions.length
@@ -519,8 +520,14 @@ export default {
     matchmakingAllowed(): boolean {
       return useApplicationSettingsStore().matchmakingAllowed;
     },
+    matchmakingEnabled(): boolean {
+      return useApplicationSettingsStore().matchmakingEnabled;
+    },
     me() {
       return useAuthStore().me;
+    },
+    isGuest(): boolean {
+      return !useAuthStore().me?.steam_id;
     },
     queueWaitTime(): string {
       if (!this.matchMakingQueueDetails?.joinedAt)

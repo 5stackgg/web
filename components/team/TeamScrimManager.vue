@@ -1,13 +1,10 @@
 <script lang="ts">
 import { $, order_by } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
-import { generateQuery } from "~/graphql/graphqlGen";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/toast";
-import { CalendarPlus } from "lucide-vue-next";
 import TeamScrimSettings from "~/components/team/TeamScrimSettings.vue";
 import TeamScrimRequests from "~/components/team/TeamScrimRequests.vue";
+import ScrimCalendarButton from "~/components/team/ScrimCalendarButton.vue";
 
 export default {
   components: {
@@ -15,10 +12,9 @@ export default {
     TabsList,
     TabsTrigger,
     TabsContent,
-    Button,
-    CalendarPlus,
     TeamScrimSettings,
     TeamScrimRequests,
+    ScrimCalendarButton,
   },
   props: {
     teamId: {
@@ -82,36 +78,6 @@ export default {
               : `${eloMin ?? "0"} – ${eloMax ?? "∞"}`,
         },
       ];
-    },
-  },
-  methods: {
-    async copyCalendarUrl() {
-      try {
-        const { data } = await this.$apollo.query({
-          query: generateQuery({
-            scrimCalendarUrl: [{ team_id: this.teamId }, { url: true }],
-          }),
-          fetchPolicy: "no-cache",
-        });
-
-        const url = data?.scrimCalendarUrl?.url;
-        if (!url) {
-          throw new Error("no calendar url returned");
-        }
-
-        await navigator.clipboard.writeText(url);
-        toast({
-          title: "Calendar link copied",
-          description:
-            "Subscribe to this URL in your calendar app to see scheduled scrims.",
-        });
-      } catch (error) {
-        toast({
-          title: "Could not get calendar link",
-          description: error instanceof Error ? error.message : undefined,
-          variant: "destructive",
-        });
-      }
     },
   },
   apollo: {
@@ -179,15 +145,7 @@ export default {
       </div>
 
       <div class="flex items-center gap-2">
-        <Button
-          variant="outline"
-          size="sm"
-          class="gap-2"
-          @click="copyCalendarUrl"
-        >
-          <CalendarPlus class="h-4 w-4" />
-          Subscribe
-        </Button>
+        <ScrimCalendarButton :team-id="teamId" />
 
         <div
           class="flex items-center gap-2 rounded-md border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] transition-colors"

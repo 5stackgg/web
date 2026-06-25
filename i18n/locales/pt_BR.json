@@ -1,4 +1,45 @@
 {
+  "system_alerts": {
+    "page_title": "Alertas",
+    "description": "Publique banners temporários em todo o site para avisar usuários sobre indisponibilidades, manutenção ou outros avisos. Os banners aparecem no topo de todas as páginas para todos os visitantes.",
+    "create_title": "Novo Alerta",
+    "edit_title": "Editar Alerta",
+    "active_title": "Alertas",
+    "active_description": "Todos os alertas. Ative um para mostrar seu banner ou remova-o completamente.",
+    "dismiss": "Dispensar",
+    "saved": "Alerta salvo",
+    "deleted": "Alerta excluído",
+    "create": "Criar Alerta",
+    "update": "Salvar alterações",
+    "cancel": "Cancelar",
+    "delete": "Excluir",
+    "empty": "Nenhum alerta ainda.",
+    "inactive": "Inativo",
+    "expired": "Expirado",
+    "expires": "Expira",
+    "preview": "Prévia",
+    "preview_placeholder": "Sua mensagem de alerta aparecerá aqui.",
+    "not_dismissible": "Usuários não podem dispensar este alerta",
+    "delete_confirm_title": "Excluir este alerta?",
+    "delete_confirm_description": "Isso remove permanentemente o alerta. Se estiver ativo, o banner desaparece para todos imediatamente.",
+    "types": {
+      "info": "Informativo",
+      "warning": "Aviso",
+      "critical": "Crítico"
+    },
+    "fields": {
+      "type": "Severidade",
+      "expires_at": "Expira em (opcional)",
+      "title": "Título (opcional)",
+      "title_placeholder": "Manutenção programada",
+      "message": "Mensagem",
+      "message_placeholder": "O matchmaking está temporariamente fora do ar enquanto investigamos.",
+      "is_active": "Ativo",
+      "is_active_hint": "Mostrar este banner para todos agora.",
+      "dismissible": "Dispensável",
+      "dismissible_hint": "Permitir que usuários fechem o banner (desative para avisos críticos)."
+    }
+  },
   "glossary": {
     "title": "Como nossas estatísticas funcionam",
     "intro": "Nós não escondemos nossa matemática. Cada estatística do site é explicada abaixo — o que significa e exatamente como é calculada. Acha que algo está errado ou conhece uma forma melhor de medir? Adoraríamos ouvir sua sugestão.",
@@ -979,7 +1020,100 @@
   "notification_context": {
     "online": "ONLINE",
     "offline": "OFFLINE",
-    "loading_status": "Carregando status..."
+    "loading_status": "Carregando status…",
+    "create_team": "Criar um time",
+    "match_default": "Partida",
+    "server_default": "Servidor",
+    "node_default": "Nó",
+    "scheduled": "Agendado",
+    "expired": "Expirado",
+    "expires_in_days": "Expira em {days}d",
+    "expires_in_hours": "Expira em {hours}h",
+    "expires_in_minutes": "Expira em {minutes}m"
+  },
+  "scrim": {
+    "request_scrim": "Solicitar scrim",
+    "request_scrim_vs": "Solicitar scrim contra {name}",
+    "preferred_maps": "Mapas preferidos",
+    "your_team": "Sua equipe",
+    "select_team": "Selecionar uma equipe",
+    "proposed_time": "Horário proposto",
+    "pick_from_availability": "← Escolher da disponibilidade deles",
+    "request_other_time": "Solicitar outro horário",
+    "best_of_indicator": "· Melhor de {bestOf}",
+    "availability_help": "Escolha um horário dentro da disponibilidade deles e defina a data — você pode agendar semanas à frente. Um melhor de {count} dura cerca de {count} hora. | Escolha um horário dentro da disponibilidade deles e defina a data — você pode agendar semanas à frente. Um melhor de {count} dura cerca de {count} horas.",
+    "accepts_outside_hours": "Este time aceita solicitações fora dos horários publicados — escolha qualquer data e hora.",
+    "accepts_any_time": "Este time não publicou disponibilidade, mas aceita solicitações a qualquer hora — escolha uma data e hora.",
+    "they_must_accept": "Eles ainda precisam aceitar.",
+    "series": "Série",
+    "no_hour_slot": "{team} não possui slot de {hours} horas",
+    "best_of": "Melhor de {option}",
+    "send_request": "Enviar Solicitação",
+    "cannot_scrim_self": "Um time não pode scrimar contra si mesmo",
+    "time_must_be_future": "O horário proposto deve ser no futuro",
+    "request_sent": "Solicitação de scrim enviada",
+    "request_send_error": "Não foi possível enviar a solicitação de scrim",
+    "calendar_link_copied": "Link de calendário copiado",
+    "calendar_subscription_help": "Assine esta URL no seu app de calendário para ver scrims agendados.",
+    "calendar_link_error": "Não foi possível obter o link de calendário",
+    "subscribe_to_matches": "Assinar partidas agendadas",
+    "elo_range": "Faixa de ELO",
+    "any_region": "Qualquer região/local",
+    "alerts_description": "Receba notificações quando um time que corresponda aos seus critérios abrir para scrims.",
+    "add_alert": "+ Adicionar Alerta",
+    "no_alerts": "Nenhum alerta ainda.",
+    "alert_created": "Alerta de scrim criado",
+    "playtime_tooltip": "Tempo de jogo — um scrim iniciado aqui ainda estaria em andamento",
+    "available_start": "Início disponível",
+    "playtime_legend": "Tempo de jogo (~1 hora)",
+    "selected_start": "Início selecionado",
+    "match_window": "Janela da partida ({hours}h)",
+    "opponents_can_request": "— oponentes podem solicitar",
+    "longest_block": "Maior bloco ≈ {hours}h",
+    "paint_to_unlock": "— pinte um bloco de {hours}h+ para desbloquear {format}.",
+    "availability_grid_help": "Arraste para pintar os horários em que seu time está disponível (hora local). Um scrim dura cerca de uma hora, então os blocos esmaecidos mostram seu compromisso real.",
+    "no_availability_set": "Este time ainda não definiu disponibilidade.",
+    "finder_title": "Localizador de Scrim",
+    "finder_description": "Divulgue seu time, defina quem vai jogar e organize sua agenda de scrims.",
+    "open_to_scrims": "Aberto a scrims",
+    "closed": "Fechado",
+    "finder_tab": "Localizador",
+    "requests_tab": "Solicitações",
+    "elo_label": "ELO",
+    "no_active_requests": "Nenhuma solicitação de scrim ativa.",
+    "start_challenge_help": "Desafie uma equipe pelo {link} para começar.",
+    "finder_link": "Localizador de Scrim",
+    "outgoing": "Saindo →",
+    "incoming": "Entrando ←",
+    "auto_matched": "· auto-match",
+    "view_scheduled_match": "Ver partida agendada →",
+    "cancel_scrim": "Cancelar scrim",
+    "counter": "Contra",
+    "waiting_response": "Aguardando resposta de {name}.",
+    "waiting_opponent": "Aguardando {name}.",
+    "scrim_accepted": "Scrim aceito",
+    "scrim_declined": "Scrim recusado",
+    "new_time_proposed": "Novo horário proposto",
+    "request_cancelled": "Solicitação de scrim cancelada",
+    "discoverable_help": "Torne seu time descoberto para scrims. Os oponentes escolhem o formato da partida quando desafiam você.",
+    "regions_section": "Regiões/Locais",
+    "no_regions_available": "Nenhuma região/local disponível no momento.",
+    "maps_section": "Mapas",
+    "no_maps_selected": "Nenhum mapa selecionado — clique em Editar para escolher mapas para scrim.",
+    "search_maps": "Pesquisar mapas…",
+    "official": "Oficial",
+    "workshop": "Workshop",
+    "active_duty": "Active Duty",
+    "no_maps_match": "Nenhum mapa corresponde aos seus filtros.",
+    "accepted_elo_range": "Faixa de ELO aceita",
+    "fivestack_elo": "ELO 5stack",
+    "weekly_availability": "Disponibilidade semanal",
+    "allow_outside_hours": "Permitir solicitações fora destes horários",
+    "outside_hours_help": "Oponentes podem propor qualquer horário, não apenas sua disponibilidade pintada. Deixe sua disponibilidade vazia para aceitar solicitações a qualquer hora.",
+    "notes_section": "Notas",
+    "notes_placeholder": "Qualquer coisa que os oponentes devam saber — preferências de servidor, anti-cheat, voz, etc.",
+    "settings_saved": "Configurações de scrim salvas",
+    "settings_save_error": "Falha ao salvar configurações de scrim"
   },
   "elo_chart_bucket": {
     "monthly": "Mensal",
@@ -1154,6 +1288,34 @@
       "showing": "Mostrando",
       "tournaments": "torneios"
     },
+    "scrims": {
+      "title": "Localizador de Scrim",
+      "description": "Explore times abertos a scrims, filtre por região/local e mapas, depois envie uma solicitação.",
+      "disabled_message": "O Scrim Finder está atualmente desativado pelo seu administrador.",
+      "search_placeholder": "Pesquisar times",
+      "regions_label": "Regiões/Locais",
+      "regions_section": "Regiões/Locais",
+      "filter_regions_placeholder": "Filtrar regiões/locais",
+      "no_regions_found": "Nenhuma região/local encontrado.",
+      "maps_label": "Mapas",
+      "preferred_maps": "Mapas preferidos",
+      "no_map_preferences": "Nenhuma preferência de mapa definida.",
+      "elo_label": "ELO",
+      "team_avg_elo": "ELO médio do time",
+      "sort_label": "Ordenar",
+      "sort_by": "Ordenar por",
+      "sort_name": "Nome",
+      "sort_elo": "ELO",
+      "sort_reliable": "Confiável",
+      "sort_instructions": "Clique para adicionar · novamente para inverter a direção. A ordem define prioridade.",
+      "today": "Hoje",
+      "no_teams_today": "Nenhum time disponível hoje.",
+      "time_to": "até",
+      "open_team_new_tab": "Abrir time em nova aba",
+      "request_scrim": "Solicitar scrim",
+      "available_teams": "Times disponíveis",
+      "no_teams_match": "Nenhum time corresponde aos seus filtros."
+    },
     "teams": {
       "title": "Equipes",
       "create": "Criar equipe",
@@ -1327,6 +1489,9 @@
           "about": "As postagens que você publica aparecem na página pública de Notícias. Rascunhos permanecem ocultos até serem publicados.",
           "manage": "Gerenciar postagens",
           "manage_description": "Criar, editar e publicar postagens de notícias.",
+          "label_section": "Rótulo",
+          "label_description": "Renomeie a seção de Notícias como aparece na navegação e nos títulos de página.",
+          "label": "Nome de exibição",
           "permissions_section": "Permissões",
           "permissions_description": "Escolha o papel mínimo permitido para criar e publicar postagens de notícias.",
           "post_news_role": "Quem pode postar notícias"
@@ -1383,7 +1548,7 @@
           "playcast_learn_more": "Leia mais",
           "encoding_section": "Encodando",
           "live_video_codec": "Live Stream Codec",
-          "live_video_codec_description": "H.264 é o padrão por oferecer a maior compatibilidade com navegadores e dispositivos, incluindo o caminho WebRTC de menor latência em todos os navegadores. H.265 (HEVC) é ~30% menor na mesma qualidade, mas HEVC via WebRTC está disponível apenas no Safari 17+ — espectadores no Chrome e Firefox usam o caminho HLS. H.265 volta automaticamente para H.264 se a GPU não tiver NVENC HEVC.",
+          "live_video_codec_description": "H.264 é o padrão por oferecer a maior compatibilidade com navegadores e dispositivos, incluindo o caminho WebRTC de menor latência em todos os navegadores. H.265 (HEVC) é ~30% menor na mesma qualidade, mas HEVC via WebRTC está disponível apenas no Safari 17+ — espectadores no Chrome e Firefox usam o caminho HLS. H.265 volta automaticamente para H.264 se a GPU não tiver NVENC HEVC. {brand}",
           "codec_h265": "H.265 / HEVC",
           "codec_h264": "H.264 (recomendado)",
           "updated": "Configurações de streaming atualizadas"
@@ -1590,6 +1755,13 @@
           "faceit_downloads_api": "Downloads API",
           "faceit_test_failed": "Teste Faceit falhou"
         },
+        "scrim_finder": {
+          "title": "Localizador de Scrim",
+          "section": "Localizador de Scrim",
+          "enabled": "Habilitar o Localizador de Scrim",
+          "enabled_description": "Permita que os times divulguem disponibilidade, encontrem oponentes e agendem scrims. Ativado por padrão. Desative para ocultar o Scrim Finder em todos os lugares e parar o auto-match.",
+          "updated": "Configurações do Localizador de Scrim atualizadas"
+        },
         "demo_settings": {
           "title": "Demos / Highlights",
           "total_storage": "Total de Armazenamento",
@@ -1712,11 +1884,11 @@
       },
       "matchmaking": {
         "title": "Configurações do Matchmaking",
-        "description": "Configure suas preferências de matchmaking e visualize as latências das regiões.",
+        "description": "Configure suas preferências de matchmaking e visualize o ping das regiões/locais.",
         "average_latency": "Latência",
         "preferred": "Preferido",
         "max_acceptable_latency": "Máximo Aceitável Latência",
-        "max_latency_description": "Se nenhuma região é preferida, matchmaking só usará regiões com latência abaixo deste valor.",
+        "max_latency_description": "Se nenhuma região/local está como preferida, matchmaking só usará regiões/locais com latência abaixo deste valor.",
         "show_match_ready_modal": {
           "title": "Popup de partida pronta",
           "description": "Mostrar um popup quando uma partida estiver pronta para você fazer o check-in. Quando desativado, você ainda pode fazer o check-in pelo botão na barra superior."
@@ -1896,15 +2068,16 @@
         "published_toast": "Postagem publicada",
         "unpublished_toast": "Postagem movida para rascunho",
         "save_failed": "Não foi possível salvar a postagem",
-        "empty": "Nenhuma postagem ainda. Crie sua primeira."
+        "empty": "Nenhuma postagem ainda. Crie sua primeira.",
+        "views": "Visualizações"
       },
       "form": {
         "title_label": "Título",
         "title_placeholder": "Título da postagem",
         "teaser_label": "Resumo",
-        "teaser_placeholder": "Um breve resumo mostrado na lista de notícias",
+        "teaser_placeholder": "Um breve resumo exibido na lista de notícias",
         "cover_label": "Imagem de capa",
-        "cover_hint": "Clique ou arraste uma imagem",
+        "cover_hint": "Clique ou solte uma imagem",
         "cover_formats": "PNG · JPG · WEBP · GIF · até 10MB",
         "cover_replace": "Substituir",
         "cover_remove": "Remover",
@@ -1913,7 +2086,10 @@
         "save_changes": "Salvar alterações",
         "publish": "Publicar",
         "write": "Escrever",
-        "preview": "Pré-visualizar",
+        "preview": "Prévia",
+        "preview_full": "Prévia da postagem",
+        "preview_empty": "Comece a escrever para ver a prévia da postagem.",
+        "back_to_edit": "Voltar ao editor",
         "image_alt": "Descrição da imagem",
         "upload_image": "Enviar imagem",
         "uploading": "Enviando…",
@@ -1921,8 +2097,8 @@
       }
     },
     "regions": {
-      "title": "Regiões",
-      "description": "Regiões permitem agrupar servidores de jogo por localização geográfica. Os jogadores podem selecionar regiões preferidas durante matchmaking e vetar regiões indesejadas durante a configuração da partida.",
+      "title": "Regiões/Locais",
+      "description": "Regiões/Locais permitem agrupar servidores de jogo por localização geográfica. Os jogadores podem selecionar regiões/locais preferidas durante matchmaking e vetar indesejadas durante a configuração da partida.",
       "create": "Criar",
       "table": {
         "available_servers": "Servidores Disponíveis / Total de Servidores",
@@ -1933,9 +2109,9 @@
       "edit": "Editar",
       "delete": {
         "title": "Excluir região",
-        "description": "Tem certeza que deseja excluir esta região?"
+        "description": "Tem certeza que deseja excluir esta região/local?"
       },
-      "deleted": "Região Excluída"
+      "deleted": "Região/Local excluído"
     },
     "players": {
       "title": "Jogadores",
@@ -2023,14 +2199,14 @@
         "role": "Função",
         "range_settings": "Configurações de Alcance",
         "hs_lifetime": "HS % é vitalício",
-        "view_full_elo_history": "Ver histórico completo de ELO",
+        "view_full_elo_history": "Histórico de ELO",
         "global_stats": "Estatísticas Globais",
         "rank": "Rank",
         "global_rank": "Rank Global",
         "top_percent": "Top {percent}%",
         "rank_of_total": "{rank} de {total}",
         "player_profile": "Perfil do Jogador",
-        "recent_form": "Recent Form",
+        "recent_form": "Sequência",
         "teams": "Equipes",
         "range": "Alcance",
         "loading_short": "Carregando...",
@@ -2149,11 +2325,11 @@
           "loading": "Carregando duelos de abertura…",
           "empty_title": "Nenhum duelo de abertura",
           "empty_description": "Este jogador não possui duelos de abertura registrados em suas partidas recentes.",
-          "win_label": "Vitória na abertura",
-          "attempts_label": "Tentativas de abertura",
+          "win_label": "Sucesso no Entry",
+          "attempts_label": "Tentativas de Entry",
           "kills_short": "A",
           "deaths_short": "M",
-          "kd_label": "K/D de abertura",
+          "kd_label": "K/D no Entry",
           "traded_label": "Trocado na abertura",
           "table_section": "Por mapa",
           "col_map": "Mapa",
@@ -2350,7 +2526,7 @@
       },
       "table": {
         "node": "Nó",
-        "region": "Região",
+        "region": "Região/Local",
         "gpu_devices": "Dispositivos GPU",
         "status": "Status",
         "busy_with": "Ocupado com"
@@ -2391,7 +2567,7 @@
     },
     "game_server_nodes": {
       "title": "Nós de Servidor de Jogo",
-      "description": "Os nós de servidor de jogos expandem sua oferta de servidores para diferentes regiões ou fornecem redundância para servidores sob demanda.",
+      "description": "Os nós de servidor de jogos expandem sua oferta de servidores para diferentes regiões/locais ou fornecem redundância para servidores sob demanda.",
       "not_supported": {
         "title": "Seu painel não suporta Nós de Servidor de Jogo.",
         "description": "Veja a documentação para configurar Nós de Servidor de Jogo."
@@ -2544,8 +2720,8 @@
       "enter_team_name": "Insira o nome do time...",
       "filter_by_status": "Filtrar por Status",
       "select_statuses": "Selecionar status...",
-      "filter_by_regions": "Filtrar por Regiões",
-      "select_regions": "Selecionar regiões...",
+      "filter_by_regions": "Filtrar por Regiões/Locais",
+      "select_regions": "Selecionar regiões/locais...",
       "clear_all": "Limpar Tudo",
       "sort_by": "Ordenar por",
       "created_at": "Data de Criação",
@@ -2842,8 +3018,8 @@
     "notifications": {
       "title": "Notificações",
       "dismiss": "Dispensar",
-      "dismiss_all": "✅ Marcar como Lidas",
-      "delete_all_read": "🗑️Excluir Lidas",
+      "dismiss_all": "Marcar como Lidas",
+      "delete_all_read": "Excluir Lidas",
       "no_notifications_title": "Sem Notificações",
       "no_notifications": "Nenhuma notificação até o momento."
     },
@@ -2858,6 +3034,7 @@
         "public_servers": "Warmup",
         "players": "Jogadores",
         "teams": "Equipes",
+        "scrims": "Localizador de Scrims",
         "leaderboard": "Ranking",
         "search": "Procurar",
         "highlights": "Highlights",
@@ -2866,14 +3043,18 @@
       "community": {
         "title": "Comunidade"
       },
+      "social": {
+        "title": "Social"
+      },
       "administration": {
         "title": "Administração",
-        "regions": "Regiões",
+        "regions": "Regiões/Locais",
         "servers": "Servidores",
         "dedicated_servers": "Servidores Dedicados",
         "game_server_nodes": "Nós de Servidor de Jogo",
         "gpu_nodes": "Nós de GPU",
         "app_settings": "Configurações do App",
+        "alerts": "Alertas",
         "manage_matches": "Gerenciar Partidas",
         "manage_tournaments": "Gerenciar Torneios",
         "stream_deck": "Stream Deck"
@@ -2900,10 +3081,11 @@
         "tournaments": "Torneios",
         "players": "Jogadores",
         "teams": "Equipes",
+        "scrims": "Localizador de Scrims",
         "leaderboard": "Ranking",
         "news": "Notícias",
         "public_servers": "Warmup",
-        "regions": "Regiões",
+        "regions": "Regiões/Locais",
         "servers": "Servidores",
         "dedicated_servers": "Servidores Dedicados",
         "game_server_nodes": "Nós de Servidor de Jogo",
@@ -2912,6 +3094,7 @@
         "database": "Database",
         "system_metrics": "Métricas do Sistema",
         "app_settings": "Configurações do App",
+        "alerts": "Alertas",
         "report_issue": "Reportar Problema",
         "join_discord": "Nosso Discord",
         "manage_matches": "Gerenciar Partidas",
@@ -2937,6 +3120,7 @@
       "play": {
         "find_match": "Encontrar uma partida",
         "tournaments": "Torneios",
+        "scrim_finder": "Localizador de Scrims",
         "public_servers": "Warmup",
         "hero": {
           "title": "Jogar & Competir",
@@ -2976,7 +3160,7 @@
         },
         "news": {
           "title": "Notícias",
-          "subtitle": "Notícias do Counter-Strike"
+          "subtitle": "{brand} notícias"
         }
       }
     },
@@ -3038,13 +3222,19 @@
   },
   "common": {
     "manage_custom_plugins_and_shared_files": "Esses arquivos são montados no diretório `csgo` quando o servidor é iniciado.",
+    "any": "Qualquer",
+    "remove": "Remover",
+    "edit": "Editar",
+    "done": "Concluído",
+    "accept": "Aceitar",
+    "decline": "Recusar",
     "previous": "Anterior",
     "next": "Próximo",
-    "delete": "Deletar",
+    "delete": "Excluir",
     "clear": "Limpar",
     "cancel": "Cancelar",
     "save": "Salvar",
-    "reset": "Resetar",
+    "reset": "Redefinir",
     "copy": "Copiar",
     "update": "Atualizar",
     "discard": "Descartar",
@@ -3099,6 +3289,7 @@
     "sort_ascending": "Ordenar crescente",
     "sort_descending": "Ordenar decrescente",
     "see_all": "Ver tudo",
+    "load_more": "Carregar mais",
     "standby_no_activity": "STANDBY · NENHUMA ATIVIDADE",
     "players": "jogadores",
     "duration": "Duração",
@@ -3130,7 +3321,7 @@
     "name": "Nome",
     "description": "Descrição",
     "status": "Status",
-    "region": "Região",
+    "region": "Região/Local",
     "filters": "Filtros",
     "options": "Opções",
     "search": "Pesquisa",
@@ -3657,6 +3848,21 @@
     }
   },
   "team": {
+    "highlights": {
+      "subtitle": "Clipes recentes com jogadores deste time.",
+      "empty": "Ainda não há highlights para os jogadores deste time."
+    },
+    "rank_summary": {
+      "reliable": "{pct}% confiável",
+      "reputation_title": "{completed} concluídas · {noShows} no-shows"
+    },
+    "tabs": {
+      "overview": "Visão Geral",
+      "stats": "Stats",
+      "highlights": "Highlights",
+      "scrim": "Localizador de Scrims"
+    },
+    "scrim_open_description": "Este time está aberto a scrims — escolha um horário dentro da disponibilidade deles e envie um desafio.",
     "career": {
       "title": "Desempenho da Equipe",
       "description": "Agregados por jogador ao longo de todas as partidas que esta equipe disputou.",
@@ -3717,15 +3923,18 @@
       "bench": "Banco",
       "substitutes": "Substitutos",
       "invite_player": "Convidar Jogador",
-      "pending_invites": "Convites Pendentes"
+      "pending_invites": "Convites Pendentes",
+      "rank_source": "Rank"
     },
     "form": {
-      "identity": "Identidade",
+      "identity": "Identificação",
       "name_placeholder": "Insira o nome da equipe...",
       "short_name": "Nome curto / tag",
       "short_name_placeholder": "Insira um nome curto/tag (max 5 caracteres)...",
       "owner": "Dono da Equipe",
       "select_owner": "Selecione o dono da equipe...",
+      "inviting": "Convidando",
+      "inviting_hint": "Esses jogadores serão convidados quando você criar a equipe.",
       "update": "Atualizar Equipe",
       "create": "Criar Equipe"
     },
@@ -3735,6 +3944,7 @@
       "placeholder": "Pesquisar equipe...",
       "my_teams_only": "Somente as Minhas Equipes",
       "tournament_winners": "Vencedores do Torneio",
+      "scrims_only": "Somente Scrims",
       "no_teams_found": "Nenhuma equipe encontrada",
       "owner": "Dono",
       "captain": "Capitão",
@@ -3880,16 +4090,16 @@
           "placeholder": "Digite o máximo de rounds"
         },
         "region": {
-          "title": "Configuração de Regiões",
+          "title": "Configuração de Regiões/Locais",
           "lan_match": "Partida LAN",
           "veto": {
             "label": "Veto",
-            "description": "Permite às equipes vetarem e selecionarem a região do servidor."
+            "description": "Permite às equipes vetarem e selecionarem a região/local do servidor."
           },
-          "preferred": "Regiões Preferidas",
-          "placeholder": "Selecionar Região",
+          "preferred": "Regiões/Locais Preferidos",
+          "placeholder": "Selecionar Região/Local",
           "any": "Qualquer",
-          "description": "Selecione a região preferida para a partida"
+          "description": "Selecione a região/local preferido para a partida"
         },
         "substitutes": {
           "label": "Número de Substitutos",
@@ -3969,7 +4179,7 @@
       "coaches": "Treinadores",
       "overtime": "Prorrogação (OT)",
       "knife_round": "Round faca",
-      "region_veto": "Veto de Região",
+      "region_veto": "Veto de Região/Local",
       "substitutes": "Substitutos",
       "timeout_setting": "Configuração de pauses",
       "tech_timeout_setting": "Configuração de pauses técnicos",
@@ -4208,7 +4418,7 @@
       "select_round_to_restore": "Selecione o round para restaurar",
       "server_information": "Informações do servidor",
       "type": "Tipo",
-      "region": "Região",
+      "region": "Região/Local",
       "no_logs_title": "Sem logs disponíveis",
       "no_logs_description": "Sem logs disponíveis e nenhum servidor conectado."
     },
@@ -4219,7 +4429,8 @@
       "cancelled": "Cancelado",
       "waiting_server": "Aguardando servidor...",
       "scheduled_asap": "Agendado o mais rápido possível",
-      "paused": "Pausado"
+      "paused": "Pausado",
+      "tied": "Empatado*"
     },
     "winner": {
       "set": "Definir Vencedor",
@@ -4230,15 +4441,15 @@
       "select_lineup": "Selecionar Lineup"
     },
     "region_veto": {
-      "ban_label": "Veto",
-      "banning": "Vetando",
-      "organizer_override": "Vetos pelo Organizador",
+      "ban_label": "Vetando Região/Local",
+      "banning": "está",
+      "organizer_override": "Intervenção do Organizador",
       "confirm_ban": "Confirmar veto",
-      "server_region": "Região do Servidor",
-      "select_region": "Selecionar Região",
-      "no_regions_available": "Nenhuma região disponível",
-      "no_regions_available_description": "Nenhuma região está disponível para este servidor. Entre em contato com um administrador para adicionar uma região.",
-      "set_server_region": "Definir região do servidor"
+      "server_region": "Região/Local do Servidor",
+      "select_region": "Selecionar Região/Local",
+      "no_regions_available": "Nenhuma região/local disponível no momento.",
+      "no_regions_available_description": "Nenhuma região/local está disponível para este servidor. Entre em contato com um administrador para adicionar uma região.",
+      "set_server_region": "Definir região/local do servidor"
     },
     "picks": {
       "decider": "Decisivo",
@@ -4910,6 +5121,10 @@
     },
     "sanctions": {
       "title": "Sanções",
+      "banned": "Banido",
+      "muted": "Silenciado (voz)",
+      "gagged": "Censurado (texto)",
+      "silenced": "Silenciado",
       "duration_label": "Duração",
       "select_duration": "Selecionar duração",
       "sanctions": "Sanções",
@@ -4989,8 +5204,8 @@
     "form": {
       "name": "Nome",
       "description": "Descrição",
-      "update": "Atualizar Região",
-      "create": "Criar Região"
+      "update": "Atualizar Região/Local",
+      "create": "Criar Região/Local"
     }
   },
   "match_access": {
@@ -5023,7 +5238,7 @@
     "queue_wait": {
       "zero": "0 segundos",
       "seconds": "{count} segundos",
-      "minutes_seconds": "TODO: traduzir"
+      "minutes_seconds": "{minutes} minutos e {seconds} segundos"
     },
     "others_searching": "{count} outros estão procurando | {count} outros procurando",
     "match_found": "Partida Encontrada",
@@ -5073,7 +5288,7 @@
       "toggle": "Ajustar Configurações"
     },
     "high_latency_warning": "Seu ping é muito alta para jogos competitivos",
-    "no_preferred_regions": "Por favor, selecione pelo menos uma região de sua preferência nas configurações de matchmaking."
+    "no_preferred_regions": "Por favor, selecione pelo menos uma região/local de sua preferência nas configurações de matchmaking."
   },
   "game_server": {
     "lan_ip": "LAN IP",
@@ -5086,6 +5301,7 @@
     "validate_gamedata": "Validar gamedata",
     "note_label": "Nota:",
     "one_cpu_core": "1 núcleo da CPU",
+    "cpu_reservation_note": "{cores} são reservados para o sistema em cada nó para mantê-lo responsivo.",
     "unpin_build_id": "Usar Última Versão",
     "use_latest_version": "Usar a ultima versão do CS2 automaticamente",
     "pinned_build_id": "Versão do servidor fixada",
@@ -5108,7 +5324,7 @@
     "cpu_threads_per_core": "Threads por CPU",
     "cpu_frequency_warning": "A frequencia max do CPU é inferior a 3GHz isso pode afetar a performance do servidor de CS2",
     "disks_label": "Discos",
-    "select_region": "Selecionar Região",
+    "select_region": "Selecionar Região/Local",
     "remove_node": "Remover Nó",
     "show_update_logs": "Mostrar Logs de Atualizações",
     "edit_label": "Editar rótulo",
@@ -5240,8 +5456,8 @@
       "connection": "Conexão",
       "label": "Rótulo",
       "host": "Host",
-      "region": "Região",
-      "select_region": "Selecionar região",
+      "region": "Região/Local",
+      "select_region": "Selecionar região/local",
       "server_configuration": "Configuração Servidor",
       "use_game_server_node": "Usar servidor do nó de jogo",
       "use_manual_host_configuration": "Configuração Manual do Host",
@@ -5708,7 +5924,7 @@
     "search_placeholder": "Pesquisar por qualquer jogador...",
     "no_results": "Nenhuma partida corresponde aos seus filtros.",
     "filters": {
-      "avg_rank": "Restrição de Ranking",
+      "avg_rank": "Restrição de RP",
       "has_space": "Apenas lobbies com vaga",
       "any": "∞",
       "clear": "Limpar ({count})"
@@ -5728,7 +5944,7 @@
     "create": {
       "title": "Criar Jogo Draft",
       "type": "Tipo de jogo",
-      "regions": "Regiões",
+      "regions": "Regiões/Locais",
       "captain_selection": "Seleção de capitães",
       "draft_order": "Método de pick players",
       "min_elo": "Rank mínimo (opcional)",
@@ -5779,7 +5995,7 @@
     "card": {
       "custom_pool": "Pool Personalizado",
       "pool": "Pool",
-      "region": "Região",
+      "region": "Região/Local",
       "custom": "Personalizado",
       "pending_requests": "Solicitações pendentes",
       "players": "Jogadores",
@@ -5810,7 +6026,7 @@
       "pool": "Jogadores Disponíveis",
       "captain": "Capitão",
       "pick": "Escolher",
-      "empty_pool": "Todos os jogadores já foram draftados",
+      "empty_pool": "Todos os jogadores já foram escolhidos",
       "leave": "Sair",
       "loading": "Carregando sala draft...",
       "avg": "Média",
@@ -5828,7 +6044,7 @@
       "extend": "Manter a sala aberta por mais 30 min",
       "waiting_for": "Aguardando mais {count}",
       "ready": "Squad Pronto",
-      "host_assigning": "Host designando equipes",
+      "host_assigning": "Equipes designadas pelo criador da sala personalizada",
       "host_hint": "Toque A ou B para atribuir cada jogador a um time.",
       "host_wait": "{name} está montando os times…",
       "captain_picking": "{name} está escolhendo…",
@@ -5843,7 +6059,7 @@
       "login_to_chat": "Faça login para participar da conversa.",
       "login": "Login",
       "host_label": "Host",
-      "avg_rank": "Rank médio",
+      "avg_rank": "Média de RP",
       "queue": "Solicitações de entrada",
       "queue_empty": "Nenhuma solicitação pendente.",
       "accept": "Aceitar",
@@ -5876,7 +6092,7 @@
       "win_odds": "Odds de vitória",
       "captains_set": "Capitães Definidos",
       "picks_first": "{name} escolhe primeiro",
-      "veto": "Veto de mapa/região",
+      "veto": "Veto de mapa e região/local",
       "match_starting": "Partida Iniciando — Servidor Inicializando",
       "ready_to_start": "Lobby Pronta",
       "assign_all": "Atribuir Todos os Jogadores",
@@ -5896,7 +6112,7 @@
       "view": "Ver",
       "kick": "Expulsar",
       "start_player": "Iniciar",
-      "go_to_room": "Ir Para Sala Draft",
+      "go_to_room": "Ir Para Sala",
       "cancel_match": "Cancelar Partida",
       "min": "Min",
       "max": "Max",
@@ -5914,8 +6130,8 @@
     "bar": {
       "format": "Formato",
       "mode": "Modo Draft",
-      "region": "Região",
-      "region_veto": "Veto de Região",
+      "region": "Região/Local",
+      "region_veto": "Veto de Região/Local",
       "rounds": "Rounds",
       "pool": "Map Pool",
       "rank": "Limite de Rank",

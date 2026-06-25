@@ -38,7 +38,9 @@ watch(
     if (!value) {
       return;
     }
-    const date = props.withTime ? new Date(value) : new Date(`${value}T00:00:00`);
+    const date = props.withTime
+      ? new Date(value)
+      : new Date(`${value}T00:00:00`);
     if (isNaN(date.getTime())) {
       return;
     }
@@ -68,7 +70,10 @@ function emitValue() {
       hours,
       minutes,
     );
-    emit("update:modelValue", toZoned(cdt, getLocalTimeZone()).toAbsoluteString());
+    emit(
+      "update:modelValue",
+      toZoned(cdt, getLocalTimeZone()).toAbsoluteString(),
+    );
   } else {
     const month = String(startDate.value.month).padStart(2, "0");
     const day = String(startDate.value.day).padStart(2, "0");
@@ -107,7 +112,11 @@ function checkDate({ day, month, year }: any) {
         </Button>
       </PopoverTrigger>
       <PopoverContent class="w-auto p-0">
-        <Calendar :is-date-disabled="checkDate" v-model="startDate" initial-focus />
+        <Calendar
+          :is-date-disabled="checkDate"
+          v-model="startDate"
+          initial-focus
+        />
       </PopoverContent>
     </Popover>
     <Input

@@ -24,6 +24,7 @@ import {
   Newspaper,
   ListVideo,
   AlertTriangle,
+  Megaphone,
 } from "lucide-vue-next";
 import TournamentBracket from "~/components/icons/tournament-bracket.vue";
 import InstallPWA from "~/components/InstallPWA.vue";
@@ -41,6 +42,7 @@ const { setOpenMobile, isMobile } = useSidebar();
 const route = useRoute();
 const authStore = useAuthStore();
 const { pendingImports: pendingMatchImports } = usePendingImports();
+const matchContext = useMatchContext();
 const logoPath = computed(() => (authStore.me ? "/me" : "/watch"));
 const isLogoRouteActive = computed(() => {
   if (logoPath.value === "/me") {
@@ -240,7 +242,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   :class="{
                     'router-link-active':
                       isRouteActive('tournaments') ||
-                      useMatchContext().value?.tournament != null,
+                      matchContext?.value?.tournament != null,
                   }"
                 >
                   <TournamentBracket />
@@ -352,7 +354,6 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
-
           </SidebarMenu>
         </SidebarGroup>
 
@@ -367,7 +368,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
             <SidebarMenuItem v-if="newsEnabled">
               <SidebarMenuButton
                 as-child
-                :tooltip="$t('layouts.app_nav.tooltips.news')"
+                :tooltip="newsLabel || $t('layouts.app_nav.tooltips.news')"
               >
                 <NuxtLink
                   :to="{ name: 'news' }"
@@ -376,7 +377,7 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                   }"
                 >
                   <Newspaper />
-                  {{ $t("layouts.app_nav.navigation.news") }}
+                  {{ newsLabel || $t("layouts.app_nav.navigation.news") }}
                 </NuxtLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -682,6 +683,23 @@ function onLeftNavTouchEnd(e: TouchEvent) {
                     </DropdownMenuGroup>
                   </DropdownMenuContent>
                 </DropdownMenu>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem :tooltip="$t('layouts.app_nav.tooltips.alerts')">
+                <SidebarMenuButton
+                  as-child
+                  :tooltip="$t('layouts.app_nav.tooltips.alerts')"
+                >
+                  <NuxtLink
+                    :to="{ name: 'system-alerts' }"
+                    :class="{
+                      'router-link-active': isRouteActive('system-alerts'),
+                    }"
+                  >
+                    <Megaphone />
+                    {{ $t("layouts.app_nav.administration.alerts") }}
+                  </NuxtLink>
+                </SidebarMenuButton>
               </SidebarMenuItem>
 
               <SidebarMenuItem
@@ -1047,6 +1065,9 @@ export default {
     },
     newsEnabled() {
       return useApplicationSettingsStore().newsEnabled;
+    },
+    newsLabel() {
+      return useApplicationSettingsStore().newsLabel;
     },
     showReportIssue() {
       return useApplicationSettingsStore().showReportIssue;

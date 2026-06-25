@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Switch } from "~/components/ui/switch";
 import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import SettingsPage from "~/components/settings/SettingsPage.vue";
 import SettingsSection from "~/components/settings/SettingsSection.vue";
@@ -52,6 +53,29 @@ import { Newspaper, PencilLine } from "lucide-vue-next";
         </SettingsSection>
 
         <form class="space-y-6" @submit.prevent="updateSettings">
+          <SettingsSection
+            id="label"
+            :title="$t('pages.settings.application.news.label_section')"
+            :description="
+              $t('pages.settings.application.news.label_description')
+            "
+          >
+            <FormField v-slot="{ componentField }" name="public.news_label">
+              <FormItem>
+                <FormLabel>{{
+                  $t("pages.settings.application.news.label")
+                }}</FormLabel>
+                <FormControl>
+                  <Input
+                    v-bind="componentField"
+                    :placeholder="$t('pages.settings.application.news.section')"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+          </SettingsSection>
+
           <SettingsSection
             id="permissions"
             :title="$t('pages.settings.application.news.permissions_section')"
@@ -120,6 +144,7 @@ export default {
         validationSchema: toTypedSchema(
           z.object({
             public: z.object({
+              news_label: z.string().optional(),
               post_news_role: z
                 .string()
                 .default(e_player_roles_enum.administrator),
@@ -186,6 +211,10 @@ export default {
             insert_settings: [
               {
                 objects: [
+                  {
+                    name: "public.news_label",
+                    value: (values.public?.news_label ?? "").trim(),
+                  },
                   {
                     name: "public.post_news_role",
                     value: this.roleOrDefault(values.public?.post_news_role),

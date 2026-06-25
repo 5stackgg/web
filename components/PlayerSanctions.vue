@@ -57,13 +57,46 @@ import {
   TooltipTrigger,
 } from "~/components/ui/tooltip";
 import Pagination from "~/components/Pagination.vue";
+import SanctionPlayer from "~/components/SanctionPlayer.vue";
 import { fromDate, toCalendarDate } from "@internationalized/date";
 </script>
 
 <template>
-  <div v-if="hasAnyData">
+  <div
+    v-if="shouldRender"
+    :class="{ 'inline-flex items-center': variant === 'panel' }"
+  >
+    <TooltipProvider v-if="variant === 'panel'">
+      <Tooltip>
+        <TooltipTrigger as-child>
+          <button
+            v-if="sanctionCount > 0"
+            type="button"
+            @click="sheetOpen = true"
+            class="inline-flex h-9 min-w-9 items-center justify-center rounded border px-2 font-mono text-sm font-bold tabular-nums transition-colors duration-150"
+            :class="
+              hasActiveSanctions
+                ? 'border-destructive/55 bg-destructive/10 text-destructive hover:bg-destructive/20'
+                : 'border-border bg-card/60 text-muted-foreground hover:border-[hsl(var(--tac-amber)/0.6)] hover:text-foreground'
+            "
+          >
+            {{ sanctionCount }}
+          </button>
+          <button
+            v-else-if="canManageSanctions"
+            type="button"
+            @click="sheetOpen = true"
+            class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded border border-red-500/45 bg-red-500/10 text-red-400 transition-[border-color,background-color,color] duration-150 hover:border-red-500/80 hover:bg-red-500/20 hover:text-red-200"
+          >
+            <Ban class="h-4 w-4" />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent>{{ $t("player.sanctions.title") }}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+
     <Sheet :open="sheetOpen" @update:open="sheetOpen = $event">
-      <SheetTrigger as-child>
+      <SheetTrigger v-if="variant === 'default'" as-child>
         <Button
           variant="ghost"
           size="sm"
@@ -94,6 +127,15 @@ import { fromDate, toCalendarDate } from "@internationalized/date";
         <SheetHeader>
           <SheetTitle>{{ $t("player.sanctions.title") }}</SheetTitle>
         </SheetHeader>
+        <div
+          v-if="canManageSanctions && player"
+          class="mt-4 flex items-center justify-between gap-3 rounded-lg border border-border bg-card/40 p-3"
+        >
+          <span class="text-sm font-medium">
+            {{ $t("player.sanction.button") }}
+          </span>
+          <SanctionPlayer :player="player" :server-id="serverId" />
+        </div>
         <Tabs default-value="sanctions" class="mt-6">
           <TabsList
             :class="[
@@ -509,6 +551,16 @@ export default {
       required: false,
       default: undefined,
     },
+    variant: {
+      type: String as () => "default" | "panel",
+      required: false,
+      default: "default",
+    },
+    player: {
+      type: Object,
+      required: false,
+      default: undefined,
+    },
   },
   data() {
     return {
@@ -540,9 +592,6 @@ export default {
                 player_steam_id: {
                   _eq: $("playerId", "bigint!"),
                 },
-                deleted_at: {
-                  _is_null: true,
-                },
               },
             },
             {
@@ -560,7 +609,7 @@ export default {
           };
         },
         result: function ({ data }: { data: any }) {
-          (this as any).sanctions = data.player_sanctions;
+          (this as any).sanctions = data?.player_sanctions ?? [];
         },
       },
       abandoned_matches: {
@@ -590,8 +639,11 @@ export default {
             playerId: (this as any).playerId,
           };
         },
+        skip: function (): boolean {
+          return !useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer);
+        },
         result: function ({ data }: { data: any }) {
-          (this as any).abandonedMatches = data.abandoned_matches;
+          (this as any).abandonedMatches = data?.abandoned_matches ?? [];
         },
       },
     },
@@ -604,6 +656,22 @@ export default {
         }
         return true;
       }).length;
+    },
+    sanctionCount(): number {
+      return this.sanctions?.length ?? 0;
+    },
+    hasActiveSanctions(): boolean {
+      return this.activeSanctions > 0;
+    },
+    shouldRender(): boolean {
+      if (this.variant === "panel") {
+        return (
+          this.sanctionCount > 0 ||
+          this.abandonedMatchesCount > 0 ||
+          this.canManageSanctions
+        );
+      }
+      return this.hasAnyData;
     },
     canManageSanctions() {
       return useAuthStore().isRoleAbove(e_player_roles_enum.moderator);

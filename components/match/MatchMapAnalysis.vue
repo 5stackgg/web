@@ -203,11 +203,12 @@ const canOpen2dPlayback = computed(() =>
 
 function open2dPlayback() {
   const mapId = activeMatchMap.value?.id;
-  if (!mapId) {
+  const matchId = props.match?.id;
+  if (!mapId || !matchId) {
     return;
   }
   const popup = window.open(
-    `/match-replay-popout/${mapId}`,
+    `/matches/${matchId}/playback/2d/${mapId}`,
     `replay-popout-${mapId}`,
     "popup=yes,width=1100,height=900,resizable=yes,scrollbars=yes",
   );
@@ -218,7 +219,8 @@ function open2dPlayback() {
 
 function open3dPlayback() {
   const mapId = activeMatchMap.value?.id;
-  if (!mapId) {
+  const matchId = props.match?.id;
+  if (!mapId || !matchId) {
     return;
   }
   const w = Math.min(1760, screen.availWidth);
@@ -226,7 +228,7 @@ function open3dPlayback() {
   const left = Math.max(0, (screen.availWidth - w) / 2);
   const top = Math.max(0, (screen.availHeight - h) / 2);
   const popup = window.open(
-    `/match-3d-replay/${mapId}`,
+    `/matches/${matchId}/playback/3d/${mapId}`,
     `replay-3d-${mapId}`,
     `popup=yes,width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`,
   );

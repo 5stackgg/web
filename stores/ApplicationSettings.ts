@@ -250,6 +250,14 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    const newsLabel = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.news_label",
+        )?.value || null
+      );
+    });
+
     const postNewsRole = computed(() => {
       return (
         settings.value?.find(
@@ -461,6 +469,7 @@ export const useApplicationSettingsStore = defineStore(
       supportsGameServerVersionPinning,
       playerNameRegistration,
       newsEnabled,
+      newsLabel,
       postNewsRole,
       canPostNews,
       externalMatchesEnabled,

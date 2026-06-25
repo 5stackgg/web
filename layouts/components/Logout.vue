@@ -23,6 +23,7 @@
 
 <script lang="ts">
 import { generateMutation } from "~/graphql/graphqlGen";
+import { useAuthStore } from "~/stores/AuthStore";
 
 export default {
   methods: {
@@ -37,6 +38,8 @@ export default {
           ],
         }),
       });
+
+      useAuthStore().clearMe();
 
       // Redirect to home page or login page after successful logout
       navigateTo("/");

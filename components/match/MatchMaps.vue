@@ -530,7 +530,7 @@ export default {
     },
     openReplay2d() {
       const popup = window.open(
-        `/match-replay-popout/${this.matchMap.id}`,
+        `/matches/${this.match.id}/playback/2d/${this.matchMap.id}`,
         `replay-popout-${this.matchMap.id}`,
         "popup=yes,width=1100,height=900,resizable=yes,scrollbars=yes",
       );
@@ -544,7 +544,7 @@ export default {
       const left = Math.max(0, (screen.availWidth - w) / 2);
       const top = Math.max(0, (screen.availHeight - h) / 2);
       const popup = window.open(
-        `/match-3d-replay/${this.matchMap.id}`,
+        `/matches/${this.match.id}/playback/3d/${this.matchMap.id}`,
         `replay-3d-${this.matchMap.id}`,
         `popup=yes,width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`,
       );

@@ -3346,18 +3346,19 @@ function grenadeIconPath(type: Grenade["type"]): string {
 }
 
 // "Pop out" the replay into a free-floating window. Opens a new route
-// (pages/match-replay-popout/[matchMapId].vue) that mounts a fresh
+// (pages/matches/[id]/playback/2d/[matchMapId].vue) that mounts a fresh
 // ReplayViewer. To avoid re-querying everything we already have loaded
 // here, we stash the current props onto `window.__replayHandoff` keyed
 // by match-map id; the popout child reads `window.opener.__replayHandoff[id]`
 // on mount and skips its own Apollo queries when present. Falls back
-// to fetching if the user navigated to /match-replay-popout/ directly.
+// to fetching if the user navigated to /matches/:id/playback/2d/ directly.
 function openReplayPopout() {
   if (typeof window === "undefined") return;
   const mmId = (props.match?.match_maps ?? []).find(
     (mm: any) => mm?.id && mm?.map?.name === props.mapName,
   )?.id;
-  if (!mmId) return;
+  const matchId = props.match?.id;
+  if (!mmId || !matchId) return;
   const w = window as any;
   w.__replayHandoff = w.__replayHandoff ?? {};
   w.__replayHandoff[mmId] = {
@@ -3376,7 +3377,7 @@ function openReplayPopout() {
     tickRate: props.tickRate,
     mapName: props.mapName,
   };
-  const url = `/match-replay-popout/${mmId}`;
+  const url = `/matches/${matchId}/playback/2d/${mmId}`;
   window.open(
     url,
     `replay-popout-${mmId}`,

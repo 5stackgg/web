@@ -25,6 +25,7 @@ type AuthStoreSetup = {
   hasDiscordLinked: Ref<boolean>;
   hasCheckedSession: Ref<boolean>;
   isRoleAbove: (role: e_player_roles_enum) => boolean;
+  clearMe: () => void;
 };
 
 export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
@@ -40,6 +41,27 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
   let activeStreamingMatchesSubscriptionStarted = false;
   let gpuPoolSubscriptionStarted = false;
   let renderQueueSubscriptionStarted = false;
+
+  const ME_CACHE_KEY = "5stack:me";
+
+  function loadCachedMe(): AuthMe | undefined {
+    try {
+      const cached = localStorage.getItem(ME_CACHE_KEY);
+      if (cached) {
+        return JSON.parse(cached);
+      }
+    } catch {}
+    return undefined;
+  }
+
+  function clearMe() {
+    me.value = undefined;
+    meSnapshot = "";
+    hasDiscordLinked.value = false;
+    try {
+      localStorage.removeItem(ME_CACHE_KEY);
+    } catch {}
+  }
 
   useSearchStore();
   useMatchmakingStore();
@@ -81,6 +103,10 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
 
     meSnapshot = nextSnapshot;
     me.value = nextMe;
+
+    try {
+      localStorage.setItem(ME_CACHE_KEY, nextSnapshot);
+    } catch {}
 
     if (
       previousSteamId === nextMe.steam_id &&
@@ -205,12 +231,7 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
     }
   }
 
-  async function getMe(): Promise<boolean> {
-    if (me.value?.steam_id) {
-      hasCheckedSession.value = true;
-      return true;
-    }
-
+  function fetchMe(): Promise<boolean> {
     if (getMePromise) {
       return getMePromise;
     }
@@ -231,6 +252,7 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
         const initialMe = response.data.me?.player;
 
         if (!initialMe) {
+          clearMe();
           return false;
         }
 
@@ -249,6 +271,15 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
     })();
 
     return getMePromise;
+  }
+
+  async function getMe(): Promise<boolean> {
+    if (me.value?.steam_id) {
+      hasCheckedSession.value = true;
+      return true;
+    }
+
+    return fetchMe();
   }
 
   const isUser = computed(() => me.value?.role === e_player_roles_enum.user);
@@ -277,9 +308,18 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
     () => me.value?.role === e_player_roles_enum.tournament_organizer,
   );
 
+  const cachedMe = loadCachedMe();
+  if (cachedMe?.steam_id) {
+    me.value = cachedMe;
+    meSnapshot = JSON.stringify(cachedMe);
+    hasCheckedSession.value = true;
+    void fetchMe();
+  }
+
   return {
     me,
     getMe,
+    clearMe,
     isUser,
     isVerifiedUser,
     isStreamer,

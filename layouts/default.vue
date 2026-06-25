@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import TopoBackground from "@/layouts/components/TopoBackground.vue";
+import SystemAlertBanner from "@/components/SystemAlertBanner.vue";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { computed, defineAsyncComponent, provide } from "vue";
 import { useRoute } from "vue-router";
@@ -86,6 +87,8 @@ provide("containContent", containContent);
       class="flex flex-col overflow-y-auto overflow-x-hidden !bg-transparent"
       style="height: 100svh"
     >
+      <SystemAlertBanner />
+
       <TopNav v-if="!showLeftNav" />
       <AppHeader class="px-6" v-if="showLeftNav" />
 

@@ -58,7 +58,7 @@ export default defineNuxtConfig({
           innerHTML: `
             .pre-loader::before {
               content: '';
-              position: absolute;
+              box-sizing: border-box;
               border: 4px solid rgba(255, 255, 255, 0.3);
               border-top: 4px solid white;
               border-radius: 50%;
@@ -67,7 +67,12 @@ export default defineNuxtConfig({
               animation: spin 1s linear infinite;
             }
             .pre-loader {
+              margin: 0;
               background-color: hsl(240 10% 3.9%);
+              background-image: url("/topo-preloader.svg");
+              background-size: cover;
+              background-position: center;
+              background-repeat: no-repeat;
               position: fixed;
               top: 0;
               left: 0;

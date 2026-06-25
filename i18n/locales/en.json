@@ -1,4 +1,45 @@
 {
+    "system_alerts": {
+        "page_title": "Alerts",
+        "description": "Post temporary site-wide banners to warn users about outages, maintenance or other notices. Banners appear at the top of every page for all visitors.",
+        "create_title": "New Alert",
+        "edit_title": "Edit Alert",
+        "active_title": "Alerts",
+        "active_description": "All alerts. Toggle one active to show its banner, or remove it entirely.",
+        "dismiss": "Dismiss",
+        "saved": "Alert saved",
+        "deleted": "Alert deleted",
+        "create": "Create Alert",
+        "update": "Save Changes",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "empty": "No alerts yet.",
+        "inactive": "Inactive",
+        "expired": "Expired",
+        "expires": "Expires",
+        "preview": "Preview",
+        "preview_placeholder": "Your alert message will appear here.",
+        "not_dismissible": "Users can't dismiss this alert",
+        "delete_confirm_title": "Delete this alert?",
+        "delete_confirm_description": "This permanently removes the alert. If it's active, the banner disappears for everyone immediately.",
+        "types": {
+            "info": "Info",
+            "warning": "Warning",
+            "critical": "Critical"
+        },
+        "fields": {
+            "type": "Severity",
+            "expires_at": "Expires at (optional)",
+            "title": "Title (optional)",
+            "title_placeholder": "Scheduled maintenance",
+            "message": "Message",
+            "message_placeholder": "Matchmaking is temporarily down while we investigate.",
+            "is_active": "Active",
+            "is_active_hint": "Show this banner to everyone right now.",
+            "dismissible": "Dismissible",
+            "dismissible_hint": "Let users close the banner (turn off for critical notices)."
+        }
+    },
     "glossary": {
         "title": "How Our Stats Work",
         "intro": "We don't hide our math. Every stat on the site is explained below — what it means and exactly how we work it out. Think something is wrong, or know a better way to measure it? We'd genuinely love to hear it.",
@@ -1448,6 +1489,9 @@
                     "about": "Posts you publish appear on the public News page. Drafts stay hidden until you publish them.",
                     "manage": "Manage Posts",
                     "manage_description": "Create, edit and publish news posts.",
+                    "label_section": "Label",
+                    "label_description": "Rename the News section as it appears in navigation and page titles.",
+                    "label": "Display name",
                     "permissions_section": "Permissions",
                     "permissions_description": "Choose the minimum role allowed to create and publish news posts.",
                     "post_news_role": "Who can post news"
@@ -3010,6 +3054,7 @@
                 "game_server_nodes": "Game Server Nodes",
                 "gpu_nodes": "GPU Nodes",
                 "app_settings": "App Settings",
+                "alerts": "Alerts",
                 "manage_matches": "Manage Matches",
                 "manage_tournaments": "Manage Tournaments",
                 "stream_deck": "Stream Deck"
@@ -3049,6 +3094,7 @@
                 "database": "Database",
                 "system_metrics": "System Metrics",
                 "app_settings": "App Settings",
+                "alerts": "Manage site-wide alert banners",
                 "report_issue": "Report an Issue",
                 "join_discord": "Join our Discord",
                 "manage_matches": "Manage Matches",
@@ -5075,6 +5121,10 @@
         },
         "sanctions": {
             "title": "Sanctions",
+            "banned": "Banned",
+            "muted": "Muted",
+            "gagged": "Gagged",
+            "silenced": "Silenced",
             "duration_label": "Duration",
             "select_duration": "Select duration",
             "sanctions": "Sanctions",

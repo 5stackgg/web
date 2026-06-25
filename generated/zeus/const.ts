@@ -2776,6 +2776,57 @@ export const AllTypesProps: Record<string,any> = {
 		_set:"e_sides_set_input",
 		where:"e_sides_bool_exp"
 	},
+	e_system_alert_types_aggregate_fields:{
+		count:{
+			columns:"e_system_alert_types_select_column"
+		}
+	},
+	e_system_alert_types_bool_exp:{
+		_and:"e_system_alert_types_bool_exp",
+		_not:"e_system_alert_types_bool_exp",
+		_or:"e_system_alert_types_bool_exp",
+		description:"String_comparison_exp",
+		value:"String_comparison_exp"
+	},
+	e_system_alert_types_constraint: "enum" as const,
+	e_system_alert_types_enum: "enum" as const,
+	e_system_alert_types_enum_comparison_exp:{
+		_eq:"e_system_alert_types_enum",
+		_in:"e_system_alert_types_enum",
+		_neq:"e_system_alert_types_enum",
+		_nin:"e_system_alert_types_enum"
+	},
+	e_system_alert_types_insert_input:{
+
+	},
+	e_system_alert_types_on_conflict:{
+		constraint:"e_system_alert_types_constraint",
+		update_columns:"e_system_alert_types_update_column",
+		where:"e_system_alert_types_bool_exp"
+	},
+	e_system_alert_types_order_by:{
+		description:"order_by",
+		value:"order_by"
+	},
+	e_system_alert_types_pk_columns_input:{
+
+	},
+	e_system_alert_types_select_column: "enum" as const,
+	e_system_alert_types_set_input:{
+
+	},
+	e_system_alert_types_stream_cursor_input:{
+		initial_value:"e_system_alert_types_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	e_system_alert_types_stream_cursor_value_input:{
+
+	},
+	e_system_alert_types_update_column: "enum" as const,
+	e_system_alert_types_updates:{
+		_set:"e_system_alert_types_set_input",
+		where:"e_system_alert_types_bool_exp"
+	},
 	e_team_roles:{
 		team_rosters:{
 			distinct_on:"team_roster_select_column",
@@ -6634,7 +6685,6 @@ export const AllTypesProps: Record<string,any> = {
 		number_of_substitutes:"Int_comparison_exp",
 		overtime:"Boolean_comparison_exp",
 		prefer_dedicated_server:"Boolean_comparison_exp",
-		ranked:"Boolean_comparison_exp",
 		ready_setting:"e_ready_settings_enum_comparison_exp",
 		region_veto:"Boolean_comparison_exp",
 		regions:"String_array_comparison_exp",
@@ -6697,7 +6747,6 @@ export const AllTypesProps: Record<string,any> = {
 		number_of_substitutes:"order_by",
 		overtime:"order_by",
 		prefer_dedicated_server:"order_by",
-		ranked:"order_by",
 		ready_setting:"order_by",
 		region_veto:"order_by",
 		regions:"order_by",
@@ -7990,6 +8039,12 @@ export const AllTypesProps: Record<string,any> = {
 		delete_e_sides_by_pk:{
 
 		},
+		delete_e_system_alert_types:{
+			where:"e_system_alert_types_bool_exp"
+		},
+		delete_e_system_alert_types_by_pk:{
+
+		},
 		delete_e_team_roles:{
 			where:"e_team_roles_bool_exp"
 		},
@@ -8376,6 +8431,12 @@ export const AllTypesProps: Record<string,any> = {
 			where:"steam_accounts_bool_exp"
 		},
 		delete_steam_accounts_by_pk:{
+			id:"uuid"
+		},
+		delete_system_alerts:{
+			where:"system_alerts_bool_exp"
+		},
+		delete_system_alerts_by_pk:{
 			id:"uuid"
 		},
 		delete_team_invites:{
@@ -8781,6 +8842,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_e_sides_one:{
 			object:"e_sides_insert_input",
 			on_conflict:"e_sides_on_conflict"
+		},
+		insert_e_system_alert_types:{
+			objects:"e_system_alert_types_insert_input",
+			on_conflict:"e_system_alert_types_on_conflict"
+		},
+		insert_e_system_alert_types_one:{
+			object:"e_system_alert_types_insert_input",
+			on_conflict:"e_system_alert_types_on_conflict"
 		},
 		insert_e_team_roles:{
 			objects:"e_team_roles_insert_input",
@@ -9271,6 +9340,14 @@ export const AllTypesProps: Record<string,any> = {
 		insert_steam_accounts_one:{
 			object:"steam_accounts_insert_input",
 			on_conflict:"steam_accounts_on_conflict"
+		},
+		insert_system_alerts:{
+			objects:"system_alerts_insert_input",
+			on_conflict:"system_alerts_on_conflict"
+		},
+		insert_system_alerts_one:{
+			object:"system_alerts_insert_input",
+			on_conflict:"system_alerts_on_conflict"
 		},
 		insert_team_invites:{
 			objects:"team_invites_insert_input",
@@ -10017,6 +10094,17 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_e_sides_many:{
 			updates:"e_sides_updates"
+		},
+		update_e_system_alert_types:{
+			_set:"e_system_alert_types_set_input",
+			where:"e_system_alert_types_bool_exp"
+		},
+		update_e_system_alert_types_by_pk:{
+			_set:"e_system_alert_types_set_input",
+			pk_columns:"e_system_alert_types_pk_columns_input"
+		},
+		update_e_system_alert_types_many:{
+			updates:"e_system_alert_types_updates"
 		},
 		update_e_team_roles:{
 			_set:"e_team_roles_set_input",
@@ -10845,6 +10933,19 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_steam_accounts_many:{
 			updates:"steam_accounts_updates"
+		},
+		update_system_alerts:{
+			_inc:"system_alerts_inc_input",
+			_set:"system_alerts_set_input",
+			where:"system_alerts_bool_exp"
+		},
+		update_system_alerts_by_pk:{
+			_inc:"system_alerts_inc_input",
+			_set:"system_alerts_set_input",
+			pk_columns:"system_alerts_pk_columns_input"
+		},
+		update_system_alerts_many:{
+			updates:"system_alerts_updates"
 		},
 		update_team_invites:{
 			_inc:"team_invites_inc_input",
@@ -17950,6 +18051,19 @@ export const AllTypesProps: Record<string,any> = {
 		e_sides_by_pk:{
 
 		},
+		e_system_alert_types:{
+			distinct_on:"e_system_alert_types_select_column",
+			order_by:"e_system_alert_types_order_by",
+			where:"e_system_alert_types_bool_exp"
+		},
+		e_system_alert_types_aggregate:{
+			distinct_on:"e_system_alert_types_select_column",
+			order_by:"e_system_alert_types_order_by",
+			where:"e_system_alert_types_bool_exp"
+		},
+		e_system_alert_types_by_pk:{
+
+		},
 		e_team_roles:{
 			distinct_on:"e_team_roles_select_column",
 			order_by:"e_team_roles_order_by",
@@ -18883,6 +18997,19 @@ export const AllTypesProps: Record<string,any> = {
 			where:"steam_accounts_bool_exp"
 		},
 		steam_accounts_by_pk:{
+			id:"uuid"
+		},
+		system_alerts:{
+			distinct_on:"system_alerts_select_column",
+			order_by:"system_alerts_order_by",
+			where:"system_alerts_bool_exp"
+		},
+		system_alerts_aggregate:{
+			distinct_on:"system_alerts_select_column",
+			order_by:"system_alerts_order_by",
+			where:"system_alerts_bool_exp"
+		},
+		system_alerts_by_pk:{
 			id:"uuid"
 		},
 		team_invites:{
@@ -20543,6 +20670,23 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"e_sides_stream_cursor_input",
 			where:"e_sides_bool_exp"
 		},
+		e_system_alert_types:{
+			distinct_on:"e_system_alert_types_select_column",
+			order_by:"e_system_alert_types_order_by",
+			where:"e_system_alert_types_bool_exp"
+		},
+		e_system_alert_types_aggregate:{
+			distinct_on:"e_system_alert_types_select_column",
+			order_by:"e_system_alert_types_order_by",
+			where:"e_system_alert_types_bool_exp"
+		},
+		e_system_alert_types_by_pk:{
+
+		},
+		e_system_alert_types_stream:{
+			cursor:"e_system_alert_types_stream_cursor_input",
+			where:"e_system_alert_types_bool_exp"
+		},
 		e_team_roles:{
 			distinct_on:"e_team_roles_select_column",
 			order_by:"e_team_roles_order_by",
@@ -21707,6 +21851,23 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"steam_accounts_stream_cursor_input",
 			where:"steam_accounts_bool_exp"
 		},
+		system_alerts:{
+			distinct_on:"system_alerts_select_column",
+			order_by:"system_alerts_order_by",
+			where:"system_alerts_bool_exp"
+		},
+		system_alerts_aggregate:{
+			distinct_on:"system_alerts_select_column",
+			order_by:"system_alerts_order_by",
+			where:"system_alerts_bool_exp"
+		},
+		system_alerts_by_pk:{
+			id:"uuid"
+		},
+		system_alerts_stream:{
+			cursor:"system_alerts_stream_cursor_input",
+			where:"system_alerts_bool_exp"
+		},
 		team_invites:{
 			distinct_on:"team_invites_select_column",
 			order_by:"team_invites_order_by",
@@ -22426,6 +22587,85 @@ export const AllTypesProps: Record<string,any> = {
 			cursor:"v_tournament_player_stats_stream_cursor_input",
 			where:"v_tournament_player_stats_bool_exp"
 		}
+	},
+	system_alerts_aggregate_fields:{
+		count:{
+			columns:"system_alerts_select_column"
+		}
+	},
+	system_alerts_bool_exp:{
+		_and:"system_alerts_bool_exp",
+		_not:"system_alerts_bool_exp",
+		_or:"system_alerts_bool_exp",
+		created_at:"timestamptz_comparison_exp",
+		created_by:"bigint_comparison_exp",
+		dismissible:"Boolean_comparison_exp",
+		expires_at:"timestamptz_comparison_exp",
+		id:"uuid_comparison_exp",
+		is_active:"Boolean_comparison_exp",
+		message:"String_comparison_exp",
+		title:"String_comparison_exp",
+		type:"e_system_alert_types_enum_comparison_exp",
+		updated_at:"timestamptz_comparison_exp"
+	},
+	system_alerts_constraint: "enum" as const,
+	system_alerts_inc_input:{
+		created_by:"bigint"
+	},
+	system_alerts_insert_input:{
+		created_at:"timestamptz",
+		created_by:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		type:"e_system_alert_types_enum",
+		updated_at:"timestamptz"
+	},
+	system_alerts_on_conflict:{
+		constraint:"system_alerts_constraint",
+		update_columns:"system_alerts_update_column",
+		where:"system_alerts_bool_exp"
+	},
+	system_alerts_order_by:{
+		created_at:"order_by",
+		created_by:"order_by",
+		dismissible:"order_by",
+		expires_at:"order_by",
+		id:"order_by",
+		is_active:"order_by",
+		message:"order_by",
+		title:"order_by",
+		type:"order_by",
+		updated_at:"order_by"
+	},
+	system_alerts_pk_columns_input:{
+		id:"uuid"
+	},
+	system_alerts_select_column: "enum" as const,
+	system_alerts_set_input:{
+		created_at:"timestamptz",
+		created_by:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		type:"e_system_alert_types_enum",
+		updated_at:"timestamptz"
+	},
+	system_alerts_stream_cursor_input:{
+		initial_value:"system_alerts_stream_cursor_value_input",
+		ordering:"cursor_ordering"
+	},
+	system_alerts_stream_cursor_value_input:{
+		created_at:"timestamptz",
+		created_by:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		type:"e_system_alert_types_enum",
+		updated_at:"timestamptz"
+	},
+	system_alerts_update_column: "enum" as const,
+	system_alerts_updates:{
+		_inc:"system_alerts_inc_input",
+		_set:"system_alerts_set_input",
+		where:"system_alerts_bool_exp"
 	},
 	team_invites_aggregate_bool_exp:{
 		count:"team_invites_aggregate_bool_exp_count"
@@ -30363,6 +30603,31 @@ export const ReturnTypes: Record<string,any> = {
 		affected_rows:"Int",
 		returning:"e_sides"
 	},
+	e_system_alert_types:{
+		description:"String",
+		value:"String"
+	},
+	e_system_alert_types_aggregate:{
+		aggregate:"e_system_alert_types_aggregate_fields",
+		nodes:"e_system_alert_types"
+	},
+	e_system_alert_types_aggregate_fields:{
+		count:"Int",
+		max:"e_system_alert_types_max_fields",
+		min:"e_system_alert_types_min_fields"
+	},
+	e_system_alert_types_max_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_system_alert_types_min_fields:{
+		description:"String",
+		value:"String"
+	},
+	e_system_alert_types_mutation_response:{
+		affected_rows:"Int",
+		returning:"e_system_alert_types"
+	},
 	e_team_roles:{
 		description:"String",
 		team_rosters:"team_roster",
@@ -32333,7 +32598,6 @@ export const ReturnTypes: Record<string,any> = {
 		number_of_substitutes:"Int",
 		overtime:"Boolean",
 		prefer_dedicated_server:"Boolean",
-		ranked:"Boolean",
 		ready_setting:"e_ready_settings_enum",
 		region_veto:"Boolean",
 		regions:"String",
@@ -32953,6 +33217,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_e_server_types_by_pk:"e_server_types",
 		delete_e_sides:"e_sides_mutation_response",
 		delete_e_sides_by_pk:"e_sides",
+		delete_e_system_alert_types:"e_system_alert_types_mutation_response",
+		delete_e_system_alert_types_by_pk:"e_system_alert_types",
 		delete_e_team_roles:"e_team_roles_mutation_response",
 		delete_e_team_roles_by_pk:"e_team_roles",
 		delete_e_team_roster_statuses:"e_team_roster_statuses_mutation_response",
@@ -33074,6 +33340,8 @@ export const ReturnTypes: Record<string,any> = {
 		delete_steam_account_claims_by_pk:"steam_account_claims",
 		delete_steam_accounts:"steam_accounts_mutation_response",
 		delete_steam_accounts_by_pk:"steam_accounts",
+		delete_system_alerts:"system_alerts_mutation_response",
+		delete_system_alerts_by_pk:"system_alerts",
 		delete_team_invites:"team_invites_mutation_response",
 		delete_team_invites_by_pk:"team_invites",
 		delete_team_roster:"team_roster_mutation_response",
@@ -33186,6 +33454,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_e_server_types_one:"e_server_types",
 		insert_e_sides:"e_sides_mutation_response",
 		insert_e_sides_one:"e_sides",
+		insert_e_system_alert_types:"e_system_alert_types_mutation_response",
+		insert_e_system_alert_types_one:"e_system_alert_types",
 		insert_e_team_roles:"e_team_roles_mutation_response",
 		insert_e_team_roles_one:"e_team_roles",
 		insert_e_team_roster_statuses:"e_team_roster_statuses_mutation_response",
@@ -33310,6 +33580,8 @@ export const ReturnTypes: Record<string,any> = {
 		insert_steam_account_claims_one:"steam_account_claims",
 		insert_steam_accounts:"steam_accounts_mutation_response",
 		insert_steam_accounts_one:"steam_accounts",
+		insert_system_alerts:"system_alerts_mutation_response",
+		insert_system_alerts_one:"system_alerts",
 		insert_team_invites:"team_invites_mutation_response",
 		insert_team_invites_one:"team_invites",
 		insert_team_roster:"team_roster_mutation_response",
@@ -33529,6 +33801,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_e_sides:"e_sides_mutation_response",
 		update_e_sides_by_pk:"e_sides",
 		update_e_sides_many:"e_sides_mutation_response",
+		update_e_system_alert_types:"e_system_alert_types_mutation_response",
+		update_e_system_alert_types_by_pk:"e_system_alert_types",
+		update_e_system_alert_types_many:"e_system_alert_types_mutation_response",
 		update_e_team_roles:"e_team_roles_mutation_response",
 		update_e_team_roles_by_pk:"e_team_roles",
 		update_e_team_roles_many:"e_team_roles_mutation_response",
@@ -33712,6 +33987,9 @@ export const ReturnTypes: Record<string,any> = {
 		update_steam_accounts:"steam_accounts_mutation_response",
 		update_steam_accounts_by_pk:"steam_accounts",
 		update_steam_accounts_many:"steam_accounts_mutation_response",
+		update_system_alerts:"system_alerts_mutation_response",
+		update_system_alerts_by_pk:"system_alerts",
+		update_system_alerts_many:"system_alerts_mutation_response",
 		update_team_invites:"team_invites_mutation_response",
 		update_team_invites_by_pk:"team_invites",
 		update_team_invites_many:"team_invites_mutation_response",
@@ -39212,6 +39490,9 @@ export const ReturnTypes: Record<string,any> = {
 		e_sides:"e_sides",
 		e_sides_aggregate:"e_sides_aggregate",
 		e_sides_by_pk:"e_sides",
+		e_system_alert_types:"e_system_alert_types",
+		e_system_alert_types_aggregate:"e_system_alert_types_aggregate",
+		e_system_alert_types_by_pk:"e_system_alert_types",
 		e_team_roles:"e_team_roles",
 		e_team_roles_aggregate:"e_team_roles_aggregate",
 		e_team_roles_by_pk:"e_team_roles",
@@ -39434,6 +39715,9 @@ export const ReturnTypes: Record<string,any> = {
 		steam_accounts:"steam_accounts",
 		steam_accounts_aggregate:"steam_accounts_aggregate",
 		steam_accounts_by_pk:"steam_accounts",
+		system_alerts:"system_alerts",
+		system_alerts_aggregate:"system_alerts_aggregate",
+		system_alerts_by_pk:"system_alerts",
 		team_invites:"team_invites",
 		team_invites_aggregate:"team_invites_aggregate",
 		team_invites_by_pk:"team_invites",
@@ -40003,6 +40287,10 @@ export const ReturnTypes: Record<string,any> = {
 		e_sides_aggregate:"e_sides_aggregate",
 		e_sides_by_pk:"e_sides",
 		e_sides_stream:"e_sides",
+		e_system_alert_types:"e_system_alert_types",
+		e_system_alert_types_aggregate:"e_system_alert_types_aggregate",
+		e_system_alert_types_by_pk:"e_system_alert_types",
+		e_system_alert_types_stream:"e_system_alert_types",
 		e_team_roles:"e_team_roles",
 		e_team_roles_aggregate:"e_team_roles_aggregate",
 		e_team_roles_by_pk:"e_team_roles",
@@ -40267,6 +40555,10 @@ export const ReturnTypes: Record<string,any> = {
 		steam_accounts_aggregate:"steam_accounts_aggregate",
 		steam_accounts_by_pk:"steam_accounts",
 		steam_accounts_stream:"steam_accounts",
+		system_alerts:"system_alerts",
+		system_alerts_aggregate:"system_alerts_aggregate",
+		system_alerts_by_pk:"system_alerts",
+		system_alerts_stream:"system_alerts",
 		team_invites:"team_invites",
 		team_invites_aggregate:"team_invites_aggregate",
 		team_invites_by_pk:"team_invites",
@@ -40427,6 +40719,81 @@ export const ReturnTypes: Record<string,any> = {
 		v_tournament_player_stats:"v_tournament_player_stats",
 		v_tournament_player_stats_aggregate:"v_tournament_player_stats_aggregate",
 		v_tournament_player_stats_stream:"v_tournament_player_stats"
+	},
+	system_alerts:{
+		created_at:"timestamptz",
+		created_by:"bigint",
+		dismissible:"Boolean",
+		expires_at:"timestamptz",
+		id:"uuid",
+		is_active:"Boolean",
+		message:"String",
+		title:"String",
+		type:"e_system_alert_types_enum",
+		updated_at:"timestamptz"
+	},
+	system_alerts_aggregate:{
+		aggregate:"system_alerts_aggregate_fields",
+		nodes:"system_alerts"
+	},
+	system_alerts_aggregate_fields:{
+		avg:"system_alerts_avg_fields",
+		count:"Int",
+		max:"system_alerts_max_fields",
+		min:"system_alerts_min_fields",
+		stddev:"system_alerts_stddev_fields",
+		stddev_pop:"system_alerts_stddev_pop_fields",
+		stddev_samp:"system_alerts_stddev_samp_fields",
+		sum:"system_alerts_sum_fields",
+		var_pop:"system_alerts_var_pop_fields",
+		var_samp:"system_alerts_var_samp_fields",
+		variance:"system_alerts_variance_fields"
+	},
+	system_alerts_avg_fields:{
+		created_by:"Float"
+	},
+	system_alerts_max_fields:{
+		created_at:"timestamptz",
+		created_by:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		message:"String",
+		title:"String",
+		updated_at:"timestamptz"
+	},
+	system_alerts_min_fields:{
+		created_at:"timestamptz",
+		created_by:"bigint",
+		expires_at:"timestamptz",
+		id:"uuid",
+		message:"String",
+		title:"String",
+		updated_at:"timestamptz"
+	},
+	system_alerts_mutation_response:{
+		affected_rows:"Int",
+		returning:"system_alerts"
+	},
+	system_alerts_stddev_fields:{
+		created_by:"Float"
+	},
+	system_alerts_stddev_pop_fields:{
+		created_by:"Float"
+	},
+	system_alerts_stddev_samp_fields:{
+		created_by:"Float"
+	},
+	system_alerts_sum_fields:{
+		created_by:"bigint"
+	},
+	system_alerts_var_pop_fields:{
+		created_by:"Float"
+	},
+	system_alerts_var_samp_fields:{
+		created_by:"Float"
+	},
+	system_alerts_variance_fields:{
+		created_by:"Float"
 	},
 	team_invites:{
 		created_at:"timestamptz",

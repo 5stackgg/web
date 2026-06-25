@@ -30,6 +30,9 @@ const page = ref(1);
 const newsEnabled = computed(
   () => useApplicationSettingsStore().newsEnabled,
 );
+const newsLabel = computed(
+  () => useApplicationSettingsStore().newsLabel,
+);
 const canPostNews = computed(
   () => useApplicationSettingsStore().canPostNews,
 );
@@ -101,7 +104,7 @@ onMounted(() => {
 <template>
   <PageTransition>
     <TacticalPageHeader corners="both">
-      <template #title>{{ $t("pages.news.title") }}</template>
+      <template #title>{{ newsLabel || $t("pages.news.title") }}</template>
       <template #actions>
         <NuxtLink v-if="canPostNews" to="/news/manage">
           <Button variant="outline" class="gap-2">

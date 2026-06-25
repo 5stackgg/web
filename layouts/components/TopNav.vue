@@ -444,7 +444,10 @@ const loginArrowClasses =
                             <span :class="navItemChevronClasses">◢</span>
                             <span :class="navItemContentClasses">
                               <span :class="navItemLabelClasses">
-                                {{ $t("layouts.top_nav.community.news.title") }}
+                                {{
+                                  newsLabel ||
+                                  $t("layouts.top_nav.community.news.title")
+                                }}
                               </span>
                               <span :class="navItemSubClasses">
                                 {{
@@ -755,6 +758,9 @@ export default {
     },
     newsEnabled() {
       return useApplicationSettingsStore().newsEnabled;
+    },
+    newsLabel() {
+      return useApplicationSettingsStore().newsLabel;
     },
     scrimFinderEnabled() {
       return useApplicationSettingsStore().scrimFinderEnabled;

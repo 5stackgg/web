@@ -140,21 +140,23 @@ export default {
       this.localSelectedMapId = id;
     },
     openPopout(matchMapId: string) {
-      if (typeof window === "undefined" || !matchMapId) return;
+      const matchId = this.match?.id;
+      if (typeof window === "undefined" || !matchMapId || !matchId) return;
       window.open(
-        `/match-replay-popout/${matchMapId}`,
+        `/matches/${matchId}/playback/2d/${matchMapId}`,
         `replay-popout-${matchMapId}`,
         "popup=yes,width=1100,height=900,resizable=yes,scrollbars=yes",
       );
     },
     openPopout3d(matchMapId: string) {
-      if (typeof window === "undefined" || !matchMapId) return;
+      const matchId = this.match?.id;
+      if (typeof window === "undefined" || !matchMapId || !matchId) return;
       const w = Math.min(1760, screen.availWidth);
       const h = Math.min(1040, screen.availHeight);
       const left = Math.max(0, (screen.availWidth - w) / 2);
       const top = Math.max(0, (screen.availHeight - h) / 2);
       window.open(
-        `/match-3d-replay/${matchMapId}`,
+        `/matches/${matchId}/playback/3d/${matchMapId}`,
         `replay-3d-${matchMapId}`,
         `popup=yes,width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`,
       );

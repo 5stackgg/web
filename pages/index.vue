@@ -28,11 +28,5 @@ watch(
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center px-4">
-    <div
-      class="h-10 w-10 animate-spin rounded-full border-4 border-border border-t-foreground"
-      :aria-label="$t('ui.tooltips.loading')"
-      role="status"
-    ></div>
-  </div>
+  <LoadingScreen />
 </template>

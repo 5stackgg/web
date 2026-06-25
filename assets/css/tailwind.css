@@ -1,10 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @font-face {
-  font-family: 'Oxanium';
-  src: url('/fonts/Oxanium-VariableFont_wght.ttf') format('truetype');
+  font-family: "Oxanium";
+  src: url("/fonts/Oxanium-VariableFont_wght.ttf") format("truetype");
   font-weight: 100 700;
   font-style: normal;
   font-display: swap;
@@ -16,55 +16,58 @@
     color-scheme: dark;
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
- 
+
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
- 
+
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
- 
+
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
- 
+
     --border: 240 5.9% 90%;
     --input: 240 5.9% 90%;
- 
+
     --primary: 240 5.9% 10%;
     --primary-foreground: 0 0% 98%;
- 
+
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
- 
+
     --accent: 240 4.8% 95.9%;
     --accent-foreground: 240 5.9% 10%;
 
     --warning: 36 100% 50%;
     --warning-foreground: 0 0% 100%;
- 
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
     --success: 142 76% 36%;
     --success-foreground: 0 0% 98%;
 
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+
     --ring: 240 10% 3.9%;
- 
+
     --radius: 0.5rem;
- 
+
     --sidebar-background: 0 0% 98%;
- 
+
     --sidebar-foreground: 240 5.3% 26.1%;
- 
+
     --sidebar-primary: 240 5.9% 10%;
- 
+
     --sidebar-primary-foreground: 0 0% 98%;
- 
+
     --sidebar-accent: 240 4.8% 95.9%;
- 
+
     --sidebar-accent-foreground: 240 5.9% 10%;
- 
+
     --sidebar-border: 220 13% 91%;
- 
+
     --sidebar-ring: 217.2 91.2% 59.8%;
 
     --topnav-background: 0 0% 98%;
@@ -88,28 +91,28 @@
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
- 
+
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
- 
+
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
- 
+
     --card: 240 10% 3.9%;
     --card-foreground: 0 0% 98%;
- 
+
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
- 
+
     --primary: 0 0% 98%;
     --primary-foreground: 240 5.9% 10%;
- 
+
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
- 
+
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
- 
+
     /* Dark-mode destructive used to be 0 62.8% 30.6% which was nearly
        invisible as text. Bumped to a brighter rose so red text on stat
        tables stays legible against the dark card background. */
@@ -119,25 +122,28 @@
     --success: 142 70% 55%;
     --success-foreground: 0 0% 98%;
 
+    --info: 199 90% 56%;
+    --info-foreground: 0 0% 100%;
+
     --warning: 36 100% 30%;
     --warning-foreground: 0 0% 100%;
 
     --ring: 240 4.9% 83.9%;
 
     --sidebar-background: 240 5.9% 10%;
- 
+
     --sidebar-foreground: 240 4.8% 95.9%;
- 
+
     --sidebar-primary: 224.3 76.3% 48%;
- 
+
     --sidebar-primary-foreground: 0 0% 100%;
- 
+
     --sidebar-accent: 240 3.7% 15.9%;
- 
+
     --sidebar-accent-foreground: 240 4.8% 95.9%;
- 
+
     --sidebar-border: 240 3.7% 15.9%;
- 
+
     --sidebar-ring: 217.2 91.2% 59.8%;
 
     --topnav-background: 240 4% 16%;
@@ -201,8 +207,6 @@
   }
 }
 
-
-
 div[role="menuitem"] {
   cursor: pointer;
 }
@@ -225,7 +229,6 @@ div[role="menuitem"] {
     inset 0 0 0 1px hsl(var(--tac-amber) / 0.4),
     0 8px 24px -10px hsl(var(--tac-amber) / 0.55);
 }
-
 
 @layer base {
   :root {
@@ -276,7 +279,6 @@ div[role="menuitem"] {
   }
 }
 
-
 @layer base {
   * {
     @apply border-border;
@@ -285,7 +287,6 @@ div[role="menuitem"] {
     @apply bg-background text-foreground;
   }
 }
-
 
 mark {
   @apply bg-white/80;

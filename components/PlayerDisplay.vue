@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import TimezoneFlag from "~/components/TimezoneFlag.vue";
-import { Ban, MicOff, MessageSquareOff, UserPlus } from "lucide-vue-next";
+import { UserPlus } from "lucide-vue-next";
+import SanctionStatusBadge from "~/components/SanctionStatusBadge.vue";
 import SteamIcon from "~/components/icons/SteamIcon.vue";
 import PlayerElo from "~/components/PlayerElo.vue";
 import PlayerPremierRank from "~/components/PlayerPremierRank.vue";
@@ -143,39 +144,12 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               >
                 {{ player.name }}
               </div>
-              <div class="flex gap-2">
-                <Tooltip v-if="player.is_banned">
-                  <TooltipTrigger>
-                    <Ban class="w-4 h-4 text-red-500" v-if="player.is_banned" />
-                  </TooltipTrigger>
-                  <TooltipContent>{{
-                    $t("player.status.banned")
-                  }}</TooltipContent>
-                </Tooltip>
-                <template v-else>
-                  <Tooltip v-if="player.is_muted">
-                    <TooltipTrigger>
-                      <MicOff
-                        class="w-4 h-4 text-red-500"
-                        v-if="player.is_muted"
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent>{{
-                      $t("player.status.muted")
-                    }}</TooltipContent>
-                  </Tooltip>
-                  <Tooltip v-if="player.is_gagged">
-                    <TooltipTrigger>
-                      <MessageSquareOff
-                        class="w-4 h-4 text-red-500"
-                        v-if="player.is_gagged"
-                      />
-                    </TooltipTrigger>
-                    <TooltipContent>{{
-                      $t("player.status.gagged")
-                    }}</TooltipContent>
-                  </Tooltip>
-                </template>
+              <div class="flex items-center gap-2">
+                <SanctionStatusBadge
+                  v-if="activeSanctionType"
+                  :type="activeSanctionType"
+                  variant="inline"
+                />
                 <PlayerVacBadge :player="player" />
               </div>
             </div>
@@ -455,6 +429,14 @@ export default {
       return useMatchmakingStore().friends.find((friend) => {
         return friend.steam_id == this.player.steam_id;
       });
+    },
+    activeSanctionType(): "ban" | "mute" | "gag" | null {
+      // Severity order: ban > mute > (silence) > gag. Driven by the cheap,
+      // already-loaded enforcement booleans (no per-row sanction query).
+      if (this.player?.is_banned) return "ban";
+      if (this.player?.is_muted) return "mute";
+      if (this.player?.is_gagged) return "gag";
+      return null;
     },
     isUser() {
       return this.player?.role === e_player_roles_enum.user;

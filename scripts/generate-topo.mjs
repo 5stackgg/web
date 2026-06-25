@@ -411,3 +411,11 @@ const size = Buffer.byteLength(out);
 console.log(
   `Wrote ${OUT_PATH} (${contours.length} static, ${picked.length} flow, ${(size / 1024).toFixed(1)}KB)`
 );
+
+const SVG_PATH = resolve(__dirname, "../public/topo-preloader.svg");
+const svgPaths = staticPaths
+  .map((c) => `<path d="${c.d}" opacity="${c.o}"/>`)
+  .join("");
+const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${VB_W} ${VB_H}" preserveAspectRatio="xMidYMid slice"><rect width="${VB_W}" height="${VB_H}" fill="hsl(240 10% 3.9%)"/><g fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity="0.02">${svgPaths}</g></svg>`;
+writeFileSync(SVG_PATH, svg);
+console.log(`Wrote ${SVG_PATH} (${(Buffer.byteLength(svg) / 1024).toFixed(1)}KB)`);

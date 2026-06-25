@@ -28,7 +28,7 @@ import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import formatStatValue from "~/utilities/formatStatValue";
 import { resolveWeapon } from "~/utilities/weaponIcon";
 import { csRankIcon } from "~/utilities/csRank";
-import SanctionPlayer from "~/components/SanctionPlayer.vue";
+import SanctionStatusBadge from "~/components/SanctionStatusBadge.vue";
 import PlayerSearch from "~/components/PlayerSearch.vue";
 import { usePlayerCompareTarget } from "~/composables/usePlayerCompareTarget";
 import PlayerSanctions from "~/components/PlayerSanctions.vue";
@@ -1555,6 +1555,11 @@ const playerHeroTeamChipDotClasses =
                     '-bottom-[2px] -right-[2px] border-b-2 border-r-2',
                   ]"
                 ></div>
+                <SanctionStatusBadge
+                  v-if="activeSanctionType"
+                  :type="activeSanctionType"
+                  variant="overlay"
+                />
               </div>
             </div>
 
@@ -1568,10 +1573,7 @@ const playerHeroTeamChipDotClasses =
                   ></span>
                   {{ $t("pages.players.detail.player_profile") }}
                 </div>
-                <div
-                  v-if="canEditPlayer || canSanction"
-                  :class="playerHeroActionsClasses"
-                >
+                <div :class="playerHeroActionsClasses">
                   <button
                     v-if="canEditPlayer"
                     type="button"
@@ -1581,7 +1583,12 @@ const playerHeroTeamChipDotClasses =
                   >
                     <Pencil />
                   </button>
-                  <SanctionPlayer v-if="canSanction" :player="player" />
+                  <PlayerSanctions
+                    v-if="playerId"
+                    :playerId="playerId"
+                    :player="player"
+                    variant="panel"
+                  />
                 </div>
               </div>
 
@@ -1658,8 +1665,6 @@ const playerHeroTeamChipDotClasses =
                     <span>{{ team.short_name || team.name }}</span>
                   </NuxtLink>
                 </template>
-
-                <PlayerSanctions v-if="playerId" :playerId="playerId" />
               </div>
             </div>
           </div>
@@ -2875,6 +2880,13 @@ export default {
         this.player.steam_id !== this.me.steam_id &&
         useAuthStore().isRoleAbove(e_player_roles_enum.moderator)
       );
+    },
+    activeSanctionType(): "ban" | "mute" | "gag" | null {
+      // Severity order ban > mute > (silence) > gag, from the cheap booleans.
+      if (this.player?.is_banned) return "ban";
+      if (this.player?.is_muted) return "mute";
+      if (this.player?.is_gagged) return "gag";
+      return null;
     },
     isSelfProfile() {
       return !!(

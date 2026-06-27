@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { ref, computed, watch, nextTick } from "vue";
+import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { Check, X } from "lucide-vue-next";
-import { Button } from "~/components/ui/button";
+import ToastCard from "~/components/notification/ToastCard.vue";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateMutation } from "~/graphql/graphqlGen";
 import { useNotificationStore } from "~/stores/NotificationStore";
@@ -149,8 +148,7 @@ const items = computed<ToastItem[]>(() => {
 
 const dismissed = ref<Set<string>>(new Set());
 
-const expanded = ref(false);
-const listEl = ref<any>(null);
+const hoveredGroup = ref<string | null>(null);
 
 const visibleItems = computed(() =>
   items.value.filter((item) => !dismissed.value.has(item.id)),
@@ -169,16 +167,8 @@ const groups = computed(() => {
   return Array.from(byKind.values());
 });
 
-const displayList = computed(() => {
-  if (expanded.value) {
-    return visibleItems.value.map((item) => ({
-      key: item.id,
-      item,
-      group: [item],
-      count: 1,
-    }));
-  }
-  return groups.value
+const displayList = computed(() =>
+  groups.value
     .map((group) => {
       const rep = group[group.length - 1];
       return { key: rep.id, item: rep, group, count: group.length };
@@ -186,19 +176,8 @@ const displayList = computed(() => {
     .sort(
       (a, b) =>
         visibleItems.value.indexOf(a.item) - visibleItems.value.indexOf(b.item),
-    );
-});
-
-watch(expanded, async (value) => {
-  if (!value) {
-    return;
-  }
-  await nextTick();
-  const el = listEl.value?.$el;
-  if (el) {
-    el.scrollTop = el.scrollHeight;
-  }
-});
+    ),
+);
 
 const run = async (item: ToastItem, accept: boolean) => {
   if (pending.value[item.id]) {
@@ -220,94 +199,76 @@ const run = async (item: ToastItem, accept: boolean) => {
 const dismissGroup = (group: ToastItem[]) => {
   group.forEach((item) => dismissed.value.add(item.id));
 };
+
+const dismissItem = (item: ToastItem) => {
+  dismissed.value.add(item.id);
+};
 </script>
 
 <template>
   <ClientOnly>
     <div
       v-if="displayList.length > 0"
-      class="pointer-events-none fixed bottom-4 left-2 right-2 z-[60] flex flex-col md:left-auto md:right-[4.75rem] md:w-[340px]"
+      class="pointer-events-none fixed bottom-4 left-2 right-2 z-[60] hidden flex-col md:left-auto md:right-[4.75rem] md:flex md:w-[340px]"
     >
       <TransitionGroup
-        ref="listEl"
         name="toast"
         tag="div"
-        class="pointer-events-auto flex flex-col gap-3 [scrollbar-width:thin]"
-        :class="
-          expanded ? 'max-h-[70vh] overflow-y-auto overflow-x-hidden pr-1' : ''
-        "
-        @mouseenter="expanded = true"
-        @mouseleave="expanded = false"
+        class="pointer-events-auto flex flex-col gap-3"
       >
         <div
           v-for="entry in displayList"
           :key="entry.key"
-          class="relative"
-          :class="{ 'pb-2.5': entry.count > 1 }"
+          class="relative transition-all duration-200"
+          :class="[
+            { 'pb-2.5': entry.count > 1 },
+            hoveredGroup === entry.key ? 'z-50' : 'z-0',
+            hoveredGroup && hoveredGroup !== entry.key
+              ? 'scale-[0.97] opacity-50 blur-[1px]'
+              : '',
+          ]"
+          @mouseenter="hoveredGroup = entry.key"
+          @mouseleave="hoveredGroup = null"
         >
-          <div
-            v-if="entry.count >= 3"
-            class="toast-peek toast-peek-2"
-            aria-hidden="true"
-          />
-          <div
-            v-if="entry.count >= 2"
-            class="toast-peek toast-peek-1"
-            aria-hidden="true"
-          />
-
-          <div class="toast-card">
-            <span class="toast-accent" aria-hidden="true" />
-            <div class="flex items-start justify-between gap-2">
-              <span class="toast-kind">
-                {{ entry.item.kind }}
-                <span v-if="entry.count > 1" class="toast-count">{{
-                  entry.count
-                }}</span>
-              </span>
-              <button
-                type="button"
-                class="toast-dismiss"
-                :title="$t('layouts.notifications.dismiss')"
-                @click="dismissGroup(entry.group)"
-              >
-                <X class="h-3.5 w-3.5" />
-              </button>
-            </div>
+          <Transition name="fan">
             <div
-              class="mt-1 text-sm font-semibold leading-snug text-[hsl(var(--tac-amber))]"
+              v-if="hoveredGroup === entry.key && entry.count > 1"
+              class="toast-tray absolute inset-x-0 bottom-full flex max-h-[60vh] origin-bottom flex-col gap-2.5 overflow-y-auto p-2 [scrollbar-width:thin]"
             >
-              {{ entry.item.who }}
+              <ToastCard
+                v-for="extra in entry.group.slice(0, -1)"
+                :key="extra.id"
+                :item="extra"
+                :pending="pending[extra.id] || null"
+                @accept="run(extra, true)"
+                @decline="run(extra, false)"
+                @dismiss="dismissItem(extra)"
+              />
             </div>
-            <div class="mt-0.5 text-xs leading-snug text-muted-foreground">
-              {{ entry.item.action
-              }}{{ entry.item.detail ? " " + entry.item.detail : "" }}
-            </div>
-            <div class="mt-2.5 flex gap-2">
-              <Button
-                size="sm"
-                variant="tactical"
-                class="h-7 flex-1 rounded-[0.4rem] px-2 text-[0.7rem] font-semibold normal-case tracking-normal"
-                :loading="pending[entry.item.id] === 'accept'"
-                :disabled="pending[entry.item.id] === 'decline'"
-                @click="run(entry.item, true)"
-              >
-                <Check class="h-3.5 w-3.5" />
-                {{ $t("draft_games.room.accept_invite") }}
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                class="h-7 flex-1 rounded-[0.4rem] border-border bg-transparent px-2 text-[0.7rem] font-semibold text-muted-foreground hover:border-[hsl(var(--destructive)/0.5)] hover:text-[hsl(var(--destructive))]"
-                :loading="pending[entry.item.id] === 'decline'"
-                :disabled="pending[entry.item.id] === 'accept'"
-                @click="run(entry.item, false)"
-              >
-                <X class="h-3.5 w-3.5" />
-                {{ $t("draft_games.room.decline_invite") }}
-              </Button>
-            </div>
-          </div>
+          </Transition>
+
+          <template v-if="hoveredGroup !== entry.key && entry.count > 1">
+            <div
+              v-if="entry.count >= 3"
+              class="toast-peek toast-peek-2"
+              aria-hidden="true"
+            />
+            <div class="toast-peek toast-peek-1" aria-hidden="true" />
+          </template>
+
+          <ToastCard
+            :item="entry.item"
+            :count="hoveredGroup === entry.key ? 1 : entry.count"
+            :pending="pending[entry.item.id] || null"
+            :elevated="hoveredGroup === entry.key"
+            @accept="run(entry.item, true)"
+            @decline="run(entry.item, false)"
+            @dismiss="
+              hoveredGroup === entry.key
+                ? dismissItem(entry.item)
+                : dismissGroup(entry.group)
+            "
+          />
         </div>
       </TransitionGroup>
     </div>
@@ -315,28 +276,6 @@ const dismissGroup = (group: ToastItem[]) => {
 </template>
 
 <style scoped>
-.toast-card {
-  pointer-events: auto;
-  position: relative;
-  overflow: hidden;
-  border-radius: 0.55rem;
-  border: 1px solid hsl(var(--tac-amber) / 0.32);
-  background: hsl(var(--card) / 0.96);
-  backdrop-filter: blur(10px);
-  padding: 0.7rem 0.85rem 0.7rem 1rem;
-  box-shadow:
-    0 0 0 1px hsl(var(--tac-amber) / 0.12),
-    0 14px 34px -10px rgba(0, 0, 0, 0.75);
-}
-.toast-accent {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: hsl(var(--tac-amber));
-  box-shadow: 0 0 10px hsl(var(--tac-amber) / 0.7);
-}
 .toast-peek {
   position: absolute;
   inset: 0;
@@ -351,34 +290,6 @@ const dismissGroup = (group: ToastItem[]) => {
 .toast-peek-2 {
   transform: translateY(12px) scale(0.94);
   opacity: 0.45;
-}
-.toast-count {
-  margin-left: 0.35rem;
-  display: inline-flex;
-  min-width: 1.05rem;
-  justify-content: center;
-  border-radius: 999px;
-  background: hsl(var(--tac-amber) / 0.18);
-  padding: 0 0.3rem;
-  font-size: 0.56rem;
-  color: hsl(var(--tac-amber));
-}
-.toast-dismiss {
-  flex-shrink: 0;
-  color: hsl(var(--muted-foreground));
-  transition: color 0.15s ease;
-}
-.toast-dismiss:hover {
-  color: hsl(var(--foreground));
-}
-.toast-kind {
-  font-family:
-    ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.56rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: hsl(var(--tac-amber));
 }
 .toast-enter-active {
   transition:
@@ -399,5 +310,20 @@ const dismissGroup = (group: ToastItem[]) => {
 }
 .toast-move {
   transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fan-enter-active {
+  transition:
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.28s ease;
+}
+.fan-leave-active {
+  transition:
+    transform 0.18s ease,
+    opacity 0.18s ease;
+}
+.fan-enter-from,
+.fan-leave-to {
+  transform: translateY(14px) scale(0.94);
+  opacity: 0;
 }
 </style>

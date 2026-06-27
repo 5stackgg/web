@@ -87,6 +87,7 @@ const settingsOpen = ref(false);
 
 const isHostMode = computed(() => props.room.mode === "Host");
 const isHost = computed(() => me.value?.steam_id === props.room.host_steam_id);
+const isOrganizer = computed(() => !!props.room.is_organizer);
 const isDrafting = computed(() => props.room.status === "Drafting");
 
 const myMembership = computed(() =>
@@ -98,10 +99,11 @@ const isLobbyPhase = computed(
     !props.room.match_id && ["Open", "Filled"].includes(props.room.status),
 );
 const canChat = computed(
-  () => isLobbyPhase.value || isMember.value || isHost.value,
+  () => isLobbyPhase.value || isMember.value || isOrganizer.value,
 );
 const isWaitlisted = computed(() => myMembership.value?.status === "Waitlist");
 const hasRequested = computed(() => myMembership.value?.status === "Requested");
+const isInvited = computed(() => myMembership.value?.status === "Invited");
 const acceptedCount = computed(
   () => props.room.players.filter((p: any) => p.status === "Accepted").length,
 );
@@ -136,6 +138,13 @@ const requests = computed(() =>
 const waitlist = computed(() =>
   props.room.players
     .filter((p: any) => p.status === "Waitlist")
+    .sort((a: any, b: any) =>
+      String(a.joined_at || "").localeCompare(String(b.joined_at || "")),
+    ),
+);
+const invited = computed(() =>
+  props.room.players
+    .filter((p: any) => p.status === "Invited")
     .sort((a: any, b: any) =>
       String(a.joined_at || "").localeCompare(String(b.joined_at || "")),
     ),
@@ -233,13 +242,13 @@ watch(
   { immediate: true },
 );
 
-const canAssign = computed(() => isHostAssigning.value && isHost.value);
+const canAssign = computed(() => isHostAssigning.value && isOrganizer.value);
 
-const canManage = computed(() => isHost.value && notStarted.value);
+const canManage = computed(() => isOrganizer.value && notStarted.value);
 
 const canInvite = computed(
   () =>
-    isHost.value &&
+    isOrganizer.value &&
     !props.room.match_id &&
     !["Completed", "Canceled"].includes(props.room.status),
 );
@@ -297,6 +306,19 @@ const add = (steamId: string) => {
   );
 };
 
+const addToTeam = (steamId: string, lineup: number) => {
+  return runGuarded(`add:${steamId}`, async () => {
+    await useDraftGamesStore().add(props.room.id, steamId);
+    await useDraftGamesStore().teamAssign(props.room.id, steamId, lineup);
+  });
+};
+
+const respondInvite = (accept: boolean) => {
+  return runGuarded(`respond:${accept}`, () =>
+    useDraftGamesStore().respondInvite(props.room.id, accept),
+  );
+};
+
 const clockAccent = computed(() =>
   currentLineup.value === 2 ? "200 90% 62%" : "var(--tac-amber)",
 );
@@ -350,6 +372,46 @@ const team1Count = computed(
 const team2Count = computed(
   () => accepted.value.filter((p: any) => p.lineup === 2).length,
 );
+const team1Full = computed(() => team1Count.value >= perTeam.value);
+const team2Full = computed(() => team2Count.value >= perTeam.value);
+
+// In Host mode players pick their own team rather than the host assigning them.
+const canSelfPick = (player: any) =>
+  isHostAssigning.value && player.steam_id === me.value?.steam_id;
+
+// Manual captain selection: the host designates the two captains before the
+// draft begins.
+const isManualCaptains = computed(
+  () =>
+    props.room.mode === "Captains" &&
+    props.room.captain_selection === "Manual",
+);
+const team1Captain = computed(() =>
+  props.room.players.find((p: any) => p.is_captain && p.lineup === 1),
+);
+const team2Captain = computed(() =>
+  props.room.players.find((p: any) => p.is_captain && p.lineup === 2),
+);
+const manualCaptainsReady = computed(
+  () => !!team1Captain.value && !!team2Captain.value,
+);
+const canDesignateCaptain = computed(
+  () => isManualCaptains.value && canManage.value,
+);
+
+const designateCaptain = (steamId: string, lineup: number) =>
+  runGuarded(`captain:${steamId}`, () =>
+    useDraftGamesStore().setCaptain(props.room.id, steamId, lineup),
+  );
+
+const onTeamRemove = (steamId: string) => {
+  if (isManualCaptains.value) {
+    return runGuarded(`captain:${steamId}`, () =>
+      useDraftGamesStore().clearCaptain(props.room.id, steamId),
+    );
+  }
+  return unassign(steamId);
+};
 
 const stage = computed(() => {
   if (inVeto.value) return "veto";
@@ -381,7 +443,7 @@ const canManageSide = (lineup: number) => {
   if (!notStarted.value) {
     return false;
   }
-  if (isHost.value) {
+  if (isOrganizer.value) {
     return true;
   }
   const teamId = teamForSide(lineup);
@@ -441,7 +503,7 @@ const sideFull = (lineup: number) =>
   accepted.value.filter((p: any) => p.lineup === lineup).length >=
   perTeam.value;
 
-const showStart = computed(() => isHost.value && notStarted.value);
+const showStart = computed(() => isOrganizer.value && notStarted.value);
 
 const startReady = computed(() => {
   if (props.room.mode === "Teams") {
@@ -450,6 +512,12 @@ const startReady = computed(() => {
   if (props.room.mode === "Host") {
     return (
       team1Count.value === perTeam.value && team2Count.value === perTeam.value
+    );
+  }
+  if (isManualCaptains.value) {
+    return (
+      accepted.value.length === props.room.capacity &&
+      manualCaptainsReady.value
     );
   }
   return accepted.value.length === props.room.capacity;
@@ -461,6 +529,9 @@ const startHint = computed(() => {
   }
   if (props.room.mode === "Host") {
     return "draft_games.room.assign_all";
+  }
+  if (isManualCaptains.value && !manualCaptainsReady.value) {
+    return "draft_games.room.pick_captains";
   }
   return "draft_games.room.need_full";
 });
@@ -485,7 +556,7 @@ const start = () => {
     />
 
     <DraftSettingsSheet
-      v-if="isHost"
+      v-if="isOrganizer"
       :open="settingsOpen"
       :room-id="room.id"
       @close="settingsOpen = false"
@@ -540,6 +611,33 @@ const start = () => {
       >
         {{ $t("draft_games.card.requested") }}
       </span>
+    </div>
+
+    <div
+      v-if="isInvited"
+      class="flex flex-col items-center gap-2 rounded-xl border border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)] p-4 sm:flex-row sm:justify-between"
+    >
+      <span
+        class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[hsl(var(--tac-amber))]"
+      >
+        {{ $t("draft_games.room.invite_pending") }}
+      </span>
+      <div class="flex gap-2">
+        <button
+          type="button"
+          :class="tacticalCtaButtonClasses"
+          @click="respondInvite(true)"
+        >
+          {{ $t("draft_games.room.accept_invite") }}
+        </button>
+        <button
+          type="button"
+          class="rounded-md border border-border px-3 py-1.5 font-mono text-xs text-muted-foreground transition-colors hover:border-destructive/40 hover:text-destructive"
+          @click="respondInvite(false)"
+        >
+          {{ $t("draft_games.room.decline_invite") }}
+        </button>
+      </div>
     </div>
 
     <div class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-stretch">
@@ -854,8 +952,12 @@ const start = () => {
               :host-steam-id="room.host_steam_id"
               :check-in-by-steam-id="checkInBySteamId"
               :active="isDrafting && currentLineup === 1"
-              :removable="canAssign"
-              @remove="unassign"
+              :removable="canAssign || (isManualCaptains && canManage)"
+              :self-steam-id="isHostAssigning ? me?.steam_id : undefined"
+              :addable="canAssign && !team1Full"
+              :exclude-steam-ids="memberIds"
+              @add="(steamId) => addToTeam(steamId, 1)"
+              @remove="onTeamRemove"
             />
             <DraftTeamPanel
               :title="$t('draft_games.room.team_bravo')"
@@ -865,13 +967,17 @@ const start = () => {
               :host-steam-id="room.host_steam_id"
               :check-in-by-steam-id="checkInBySteamId"
               :active="isDrafting && currentLineup === 2"
-              :removable="canAssign"
-              @remove="unassign"
+              :removable="canAssign || (isManualCaptains && canManage)"
+              :self-steam-id="isHostAssigning ? me?.steam_id : undefined"
+              :addable="canAssign && !team2Full"
+              :exclude-steam-ids="memberIds"
+              @add="(steamId) => addToTeam(steamId, 2)"
+              @remove="onTeamRemove"
             />
           </div>
 
           <div
-            v-if="isHostAssigning && isHost"
+            v-if="isHostAssigning && isOrganizer"
             class="flex flex-col items-center gap-1 rounded-xl border border-border bg-card/40 px-4 py-3 text-center [backdrop-filter:blur(8px)]"
           >
             <div
@@ -885,6 +991,26 @@ const start = () => {
           </div>
 
           <div
+            v-if="canDesignateCaptain && !manualCaptainsReady"
+            class="flex flex-col items-center gap-1 rounded-xl border border-border bg-card/40 px-4 py-3 text-center [backdrop-filter:blur(8px)]"
+          >
+            <div
+              class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-muted-foreground"
+            >
+              {{ $t("draft_games.room.choose_captains") }}
+            </div>
+            <div class="text-xs text-muted-foreground/70">
+              {{ $t("draft_games.room.choose_captains_hint") }}
+            </div>
+          </div>
+
+          <div
+            v-if="
+              !isHostMode ||
+              pool.length > 0 ||
+              waitlist.length > 0 ||
+              invited.length > 0
+            "
             class="rounded-xl border border-border bg-card/40 p-5 [backdrop-filter:blur(8px)]"
           >
             <div class="mb-3 flex items-center gap-2">
@@ -930,10 +1056,11 @@ const start = () => {
                       {{ $t("draft_games.room.draft") }}
                       <ArrowRight class="h-3 w-3" />
                     </Button>
-                    <template v-else-if="canAssign">
+                    <template v-else-if="canAssign || canSelfPick(player)">
                       <Button
                         variant="ghost"
                         class="assign-btn assign-amber"
+                        :disabled="team1Full"
                         @click="assign(player.steam_id, 1)"
                       >
                         1
@@ -941,9 +1068,30 @@ const start = () => {
                       <Button
                         variant="ghost"
                         class="assign-btn assign-blue"
+                        :disabled="team2Full"
                         @click="assign(player.steam_id, 2)"
                       >
                         2
+                      </Button>
+                    </template>
+                    <template v-else-if="canDesignateCaptain">
+                      <Button
+                        variant="ghost"
+                        class="assign-btn assign-amber"
+                        :title="$t('draft_games.room.make_captain')"
+                        :disabled="!!team1Captain"
+                        @click="designateCaptain(player.steam_id, 1)"
+                      >
+                        C1
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        class="assign-btn assign-blue"
+                        :title="$t('draft_games.room.make_captain')"
+                        :disabled="!!team2Captain"
+                        @click="designateCaptain(player.steam_id, 2)"
+                      >
+                        C2
                       </Button>
                     </template>
                     <Button
@@ -960,7 +1108,7 @@ const start = () => {
               </DraftPlayerCard>
 
               <DraftOpenSlot
-                v-for="n in canInvite ? openSlots : 0"
+                v-for="n in canInvite && !isHostMode ? openSlots : 0"
                 :key="`slot-${n}`"
                 :exclude="memberIds"
                 @selected="add"
@@ -1025,6 +1173,55 @@ const start = () => {
                 </DraftPlayerCard>
               </TransitionGroup>
             </div>
+
+            <div
+              v-if="canManage && invited.length > 0"
+              class="mt-5 border-t border-dotted border-border/70 pt-4"
+            >
+              <div class="mb-3 flex items-center gap-2">
+                <span class="pool-tick"></span>
+                <h3
+                  class="font-sans text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-muted-foreground"
+                >
+                  {{ $t("draft_games.room.invited") }}
+                  <span class="ml-1 text-foreground/70"
+                    >({{ invited.length }})</span
+                  >
+                </h3>
+              </div>
+              <TransitionGroup
+                name="pool"
+                tag="div"
+                class="grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
+              >
+                <DraftPlayerCard
+                  v-for="player in invited"
+                  :key="player.steam_id"
+                  :member="player"
+                  accent="neutral"
+                  :match-type="rankMatchType"
+                  :is-host="player.steam_id === room.host_steam_id"
+                >
+                  <template #action>
+                    <div class="flex items-center gap-2">
+                      <span
+                        class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
+                      >
+                        {{ $t("draft_games.room.invite_pending_short") }}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        class="kick-btn"
+                        :title="$t('draft_games.room.cancel_invite')"
+                        @click="kick(player.steam_id)"
+                      >
+                        <X class="h-3.5 w-3.5" />
+                      </Button>
+                    </div>
+                  </template>
+                </DraftPlayerCard>
+              </TransitionGroup>
+            </div>
           </div>
         </div>
           </div>
@@ -1059,7 +1256,7 @@ const start = () => {
               class="h-full"
               :draft-game-id="room.id"
               :requests="requests"
-              :can-manage="isHost"
+              :can-manage="isOrganizer"
               :full="acceptedFull"
             />
           </div>

@@ -32,13 +32,15 @@ const {
   rightSidebarOpen,
   startHoverPeek,
   endHoverPeek,
+  hoverCloseSuspended,
   isPinned,
   togglePin,
 } = useRightSidebar();
 const { activeHub, selectHub } = useHubState();
 const { unreadCounts } = useChatTabs();
-const { hasNotifications } = useNotificationBadge();
-const { hasSocialInvites, hasLobbyInvites } = useInvites();
+const { hasNotifications, unreadNotificationCount } = useNotificationBadge();
+const { hasSocialInvites, hasLobbyInvites, lobbyInvites, pendingFriends } =
+  useInvites();
 const isMobile = useMediaQuery("(max-width: 768px)");
 const isMedium = useMediaQuery("(max-width: 1400px)");
 const showHoverBehavior = computed(() => isMedium.value && !isMobile.value);
@@ -96,25 +98,72 @@ const showIndicator = computed(
   () => activeHub.value && rightSidebarOpen.value && indicatorHeight.value > 0,
 );
 
-function onMouseEnter() {
+const isPointerInsideHub = ref(false);
+
+function clearCloseTimer() {
   if (closeTimer) {
     clearTimeout(closeTimer);
     closeTimer = null;
   }
+}
+
+function queueHoverClose() {
+  clearCloseTimer();
+  closeTimer = setTimeout(() => {
+    if (!hoverCloseSuspended.value) {
+      endHoverPeek();
+    }
+    closeTimer = null;
+  }, 150);
+}
+
+function onMouseEnter() {
+  isPointerInsideHub.value = true;
+  clearCloseTimer();
   if (showHoverBehavior.value) startHoverPeek();
 }
 
-function onMouseLeave() {
-  if (showHoverBehavior.value) {
-    closeTimer = setTimeout(() => {
-      endHoverPeek();
-      closeTimer = null;
-    }, 150);
+function onMouseLeave(event: MouseEvent) {
+  isPointerInsideHub.value = false;
+  if (!showHoverBehavior.value) return;
+
+  const nextTarget = event.relatedTarget;
+  if (
+    hoverCloseSuspended.value ||
+    (nextTarget instanceof Element &&
+      nextTarget.closest("[data-right-hub-interactive]"))
+  ) {
+    clearCloseTimer();
+    return;
   }
+
+  queueHoverClose();
 }
+
+watch(hoverCloseSuspended, (suspended) => {
+  if (suspended) {
+    clearCloseTimer();
+    return;
+  }
+
+  if (!isPointerInsideHub.value && showHoverBehavior.value) {
+    queueHoverClose();
+  }
+});
 
 const totalUnread = computed(() =>
   Object.values(unreadCounts.value).reduce((sum, n) => sum + (n || 0), 0),
+);
+const lobbyInviteCount = computed(() => lobbyInvites.value?.length ?? 0);
+const socialInviteCount = computed(() => pendingFriends.value?.length ?? 0);
+const formatBadgeCount = (count: number) => (count > 99 ? "99+" : String(count));
+const notificationBadgeLabel = computed(() =>
+  formatBadgeCount(unreadNotificationCount.value),
+);
+const lobbyBadgeLabel = computed(() => formatBadgeCount(lobbyInviteCount.value));
+const chatBadgeLabel = computed(() => formatBadgeCount(totalUnread.value));
+const socialBadgeLabel = computed(() =>
+  formatBadgeCount(socialInviteCount.value),
 );
 
 // Track which hubs have been mounted so panels stay in DOM after first visit
@@ -270,15 +319,20 @@ function onHubTouchEnd(e: TouchEvent) {
           <span class="relative inline-flex">
             <Bell
               class="w-5 h-5"
-              :class="{ 'animate-bell': hasNotifications }"
+              :class="{ 'animate-bell origin-top': hasNotifications }"
             />
-            <span v-if="hasNotifications" class="absolute -top-1 -right-1 flex">
+            <span
+              v-if="hasNotifications"
+              class="absolute -top-1.5 -right-2 flex"
+            >
               <span
                 class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
               />
               <span
-                class="relative inline-flex rounded-full h-2 w-2 bg-red-500"
-              />
+                class="relative inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background"
+              >
+                {{ notificationBadgeLabel }}
+              </span>
             </span>
           </span>
         </button>
@@ -293,8 +347,10 @@ function onHubTouchEnd(e: TouchEvent) {
             <Swords class="w-5 h-5" />
             <span
               v-if="hasLobbyInvites"
-              class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"
-            />
+              class="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background"
+            >
+              {{ lobbyBadgeLabel }}
+            </span>
           </span>
         </button>
 
@@ -308,8 +364,10 @@ function onHubTouchEnd(e: TouchEvent) {
             <MessageSquare class="w-5 h-5" />
             <span
               v-if="totalUnread > 0"
-              class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"
-            />
+              class="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background"
+            >
+              {{ chatBadgeLabel }}
+            </span>
           </span>
         </button>
 
@@ -323,8 +381,10 @@ function onHubTouchEnd(e: TouchEvent) {
             <Users class="w-5 h-5" />
             <span
               v-if="hasSocialInvites"
-              class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"
-            />
+              class="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background"
+            >
+              {{ socialBadgeLabel }}
+            </span>
           </span>
         </button>
 

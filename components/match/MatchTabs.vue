@@ -65,7 +65,6 @@ import ServiceLogs from "~/components/ServiceLogs.vue";
 import { e_match_types_enum } from "~/generated/zeus";
 import MatchForm from "~/components/match/MatchForm.vue";
 import MatchLiveStreams from "~/components/match/MatchLiveStreams.vue";
-import PlayerInvites from "~/components/match/PlayerInvites.vue";
 import cleanMapName from "~/utilities/cleanMapName";
 import { MoreVertical, AlertTriangle, ExternalLink } from "lucide-vue-next";
 import {
@@ -402,8 +401,6 @@ provide("commander", commander);
             {{ $t("match.tabs.swap_lineups") }}
           </Button>
         </div>
-
-        <PlayerInvites v-if="me" class="mt-4" />
       </template>
 
       <div

@@ -1432,9 +1432,14 @@
                 "title": "Notifications",
                 "description": "Configure notification preferences for chat and other events.",
                 "chat_sound": {
-                    "title": "Chat Sound Notifications",
+                    "title": "Chat Sound",
                     "description": "Play a sound when receiving new chat messages"
                 },
+                "notification_sound": {
+                    "title": "Notification Sound",
+                    "description": "Play a bell when you get a new notification or invite"
+                },
+                "test": "Test",
                 "volume": {
                     "title": "Volume"
                 },
@@ -1561,6 +1566,11 @@
                 "dedicated_servers_min_role_to_connect_description": "Only players at or above this role may connect to dedicated servers that require a password.",
                 "matchmaking_min_role": "Minimum Role Allowed to Join Matchmaking",
                 "matchmaking_min_role_description": "This role will be able to join matchmaking.",
+                "draft_add_without_invite": {
+                    "title": "Draft Lobby Invites",
+                    "description": "Controls who can add players directly to a draft lobby versus sending an invite the player must accept.",
+                    "label": "Minimum Role to Add Players to Lineup Without Invite"
+                },
                 "max_acceptable_latency": "Maximum Acceptable Latency",
                 "max_acceptable_latency_description": "Players above this ping to a server are filtered out when picking the best server for a match.",
                 "lineup_section": "Lineups",
@@ -2407,6 +2417,19 @@
         "matches": {
             "title": "Matches",
             "create": "Create Match",
+            "schedule": {
+                "title": "Schedule Match",
+                "step_settings": "Settings",
+                "step_teams": "Teams",
+                "kickoff": "Kickoff Time",
+                "kickoff_future": "Pick a time in the future.",
+                "team": "Team",
+                "individual": "Individual",
+                "select_team": "Select a team",
+                "team_n": "Team {n}",
+                "lineups_desc": "Pick a team for each side, or assign {count} players individually.",
+                "submit": "Schedule Match"
+            },
             "match_updated": "Match Updated",
             "browser": "Match Browser",
             "filters": "FILTERS",
@@ -3021,7 +3044,17 @@
             "dismiss_all": "Dismiss All Notifications",
             "delete_all_read": "Delete All Read Notifications",
             "no_notifications_title": "No notifications",
-            "no_notifications": "No notifications at the moment."
+            "no_notifications": "No notifications at the moment.",
+            "toast": {
+                "draft_invite": "Draft Invite",
+                "team_invite": "Team Invite",
+                "tournament_invite": "Tournament Invite",
+                "lobby_invite": "Lobby Invite",
+                "friend_request": "Friend Request",
+                "invited_you": "invited you to",
+                "invited_party": "invited you to their party",
+                "wants_to_be_friends": "wants to be friends"
+            }
         },
         "app_nav": {
             "brand": "5stack",
@@ -3230,6 +3263,7 @@
         "decline": "Decline",
         "previous": "Previous",
         "next": "Next",
+        "back": "Back",
         "delete": "Delete",
         "clear": "Clear",
         "cancel": "Cancel",
@@ -5953,9 +5987,13 @@
             "description": "Set up a pick-up game. Captains will draft the teams once it fills.",
             "mode": "Draft Mode",
             "rank_gate": "Rank Gate (optional)",
+            "start": "Start",
+            "start_desc": "Schedule the match for later, or start it as soon as the lineup is ready.",
             "deploy": "Create",
             "require_approval": "Require Approval",
             "require_approval_desc": "Players request to join — you pick who plays from the queue.",
+            "host_only": "Host Only (Don't Join)",
+            "host_only_desc": "Create and manage this lobby without being added as a player.",
             "keep_lobby": "Keep Lobby Together",
             "keep_lobby_desc": "Your {count} lobby players join on the same team.",
             "save": "Save Changes",
@@ -5983,14 +6021,25 @@
             "next": "Next",
             "update": "Update"
         },
+        "host": "The host",
+        "invite": {
+            "invited_you": "invited you to their",
+            "lobby": "lobby"
+        },
+        "schedule": {
+            "asap": "ASAP",
+            "scheduled": "Schedule"
+        },
         "captain_selection": {
             "top_elo_two": "Top 2 by Rank",
             "host_and_next": "Host & Next Highest",
-            "random_two": "Random Two"
+            "random_two": "Random Two",
+            "manual": "Manual"
         },
         "draft_order": {
             "snake": "Snake (1-2-2-2-1)",
-            "alternating": "Alternating"
+            "alternating": "Alternating",
+            "front_loaded": "Front-Loaded (1-2-1-1)"
         },
         "card": {
             "custom_pool": "Custom Pool",
@@ -6045,7 +6094,11 @@
             "waiting_for": "Waiting for {count} more",
             "ready": "Squad Ready",
             "host_assigning": "Host Assigning Teams",
-            "host_hint": "Tap 1 or 2 to assign each operator to a team.",
+            "host_hint": "Fill the open slots above to add players straight to a team.",
+            "make_captain": "Make captain",
+            "choose_captains": "Choose Captains",
+            "choose_captains_hint": "Pick a captain for each team to start the draft.",
+            "pick_captains": "Choose Captains",
             "host_wait": "{name} is building the teams…",
             "captain_picking": "{name} is picking…",
             "your_pick": "Your Pick",
@@ -6087,6 +6140,12 @@
             "waitlist_pending": "You're on the sub queue — you'll auto-join when a slot opens",
             "join_waitlist": "Join Waitlist",
             "leave_waitlist": "Leave Waitlist",
+            "invite_pending": "You've been invited to this lobby",
+            "accept_invite": "Accept",
+            "decline_invite": "Decline",
+            "invited": "Invited",
+            "invite_pending_short": "Pending",
+            "cancel_invite": "Cancel Invite",
             "balance_preview": "Projected Teams",
             "live_odds": "Live Odds",
             "win_odds": "Win Odds",

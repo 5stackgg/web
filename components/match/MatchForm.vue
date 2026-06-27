@@ -1,86 +1,16 @@
 <script lang="ts" setup>
 import TeamSearch from "~/components/teams/TeamSearch.vue";
 import MatchOptions from "~/components/MatchOptions.vue";
-import AnimatedFilters from "~/components/common/AnimatedFilters.vue";
 import { Spinner } from "@/components/ui/spinner";
-import {
-  Info,
-  Swords,
-  PlayIcon,
-  Lock,
-  Unlock,
-  Send,
-  Handshake,
-} from "lucide-vue-next";
-import { e_lobby_access_enum } from "~/generated/zeus";
-import { useI18n } from "vue-i18n";
-import { computed } from "vue";
-
-const { t } = useI18n();
-
-const lobbyAccessOptions = computed(() => [
-  {
-    key: e_lobby_access_enum.Private,
-    label: t("match_access.private"),
-    desc: t("match_access.invite_only_description"),
-    icon: Lock,
-  },
-  {
-    key: e_lobby_access_enum.Invite,
-    label: t("match_access.invite"),
-    desc: t("match_access.invite_code_description"),
-    icon: Send,
-  },
-  {
-    key: e_lobby_access_enum.Friends,
-    label: t("match_access.friends"),
-    desc: t("match_access.friends_only_description"),
-    icon: Handshake,
-  },
-  {
-    key: e_lobby_access_enum.Open,
-    label: t("match_access.open"),
-    desc: t("match_access.open_description"),
-    icon: Unlock,
-  },
-]);
+import { Info, Swords, PlayIcon } from "lucide-vue-next";
 
 const tickClasses = "w-[10px] h-[2px] bg-[hsl(var(--tac-amber))]";
-const tacLabelClasses =
-  "font-mono text-[0.7rem] tracking-[0.22em] uppercase text-muted-foreground";
 </script>
 
 <template>
   <form @submit.prevent="updateMatch" class="mx-auto w-full max-w-4xl">
     <MatchOptions :form="form" :match="match">
       <template #left>
-        <FormField
-          v-if="match && !isTournamentMatch"
-          v-slot="{ value, handleChange }"
-          name="lobby_access"
-        >
-          <FormItem
-            class="px-5 py-4 border border-border rounded-lg bg-[hsl(var(--card)/0.55)] backdrop-blur-[6px] flex flex-col gap-3"
-          >
-            <div class="flex items-center gap-[0.65rem] flex-wrap">
-              <span :class="tickClasses"></span>
-              <FormLabel :class="tacLabelClasses">
-                {{ $t("match.form.lobby_access") }}
-              </FormLabel>
-              <span class="ml-auto text-[0.78rem] text-muted-foreground">
-                {{ activeLobbyAccessDescription(value) }}
-              </span>
-            </div>
-            <AnimatedFilters
-              :model-value="value"
-              :options="lobbyAccessOptions"
-              square
-              block
-              @update:model-value="handleChange"
-            />
-          </FormItem>
-        </FormField>
-
         <FormField v-if="!match" v-slot="{ value, handleChange }" name="pug">
           <FormItem>
             <div
@@ -238,7 +168,6 @@ import { useForm } from "vee-validate";
 import { generateMutation } from "~/graphql/graphqlGen";
 import {
   $,
-  e_lobby_access_enum,
   e_map_pool_types_enum,
   e_player_roles_enum,
 } from "~/generated/zeus";
@@ -270,16 +199,10 @@ export default {
               pug: z.boolean().default(true),
               team_1: z.string().optional(),
               team_2: z.string().optional(),
-              lobby_access: z
-                .nativeEnum(e_lobby_access_enum)
-                .default(e_lobby_access_enum.Private),
             },
             useApplicationSettingsStore().settings,
           ),
         ),
-        initialValues: {
-          lobby_access: e_lobby_access_enum.Private,
-        },
       }),
     };
   },
@@ -338,19 +261,6 @@ export default {
     },
   },
   methods: {
-    activeLobbyAccessDescription(value: e_lobby_access_enum | undefined) {
-      switch (value) {
-        case e_lobby_access_enum.Invite:
-          return this.$t("match_access.invite_code_description");
-        case e_lobby_access_enum.Friends:
-          return this.$t("match_access.friends_only_description");
-        case e_lobby_access_enum.Open:
-          return this.$t("match_access.open_description");
-        case e_lobby_access_enum.Private:
-        default:
-          return this.$t("match_access.invite_only_description");
-      }
-    },
     async updateMatch() {
       if (this.submitting) {
         return;

@@ -30,6 +30,9 @@ const ProfileSettingsShell = defineAsyncComponent(
 const ClipDetailModal = defineAsyncComponent(
   () => import("~/components/clips/ClipDetailModal.vue"),
 );
+const ActionToasts = defineAsyncComponent(
+  () => import("~/components/notification/ActionToasts.vue"),
+);
 import { useClipModal } from "~/composables/useClipModal";
 
 const { activeClipId } = useClipModal();
@@ -107,6 +110,8 @@ provide("containContent", containContent);
   <div id="global-chat-container"></div>
 
   <ClipDetailModal :clip-id="activeClipId" />
+
+  <ActionToasts />
 </template>
 
 <script lang="ts">

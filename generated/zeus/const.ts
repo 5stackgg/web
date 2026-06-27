@@ -29,6 +29,9 @@ export const AllTypesProps: Record<string,any> = {
 	Int_comparison_exp:{
 
 	},
+	ScheduledLineupInput:{
+
+	},
 	String_array_comparison_exp:{
 
 	},
@@ -671,6 +674,7 @@ export const AllTypesProps: Record<string,any> = {
 		draft_game:"draft_games_bool_exp",
 		draft_game_id:"uuid_comparison_exp",
 		id:"uuid_comparison_exp",
+		is_organizer:"Boolean_comparison_exp",
 		lineup:"Int_comparison_exp",
 		picked:"players_bool_exp",
 		picked_steam_id:"bigint_comparison_exp"
@@ -719,6 +723,7 @@ export const AllTypesProps: Record<string,any> = {
 		draft_game:"draft_games_order_by",
 		draft_game_id:"order_by",
 		id:"order_by",
+		is_organizer:"order_by",
 		lineup:"order_by",
 		picked:"players_order_by",
 		picked_steam_id:"order_by"
@@ -845,6 +850,7 @@ export const AllTypesProps: Record<string,any> = {
 		e_draft_game_player_status:"e_draft_game_player_status_bool_exp",
 		elo_snapshot:"Int_comparison_exp",
 		is_captain:"Boolean_comparison_exp",
+		is_organizer:"Boolean_comparison_exp",
 		joined_at:"timestamptz_comparison_exp",
 		lineup:"Int_comparison_exp",
 		pick_order:"Int_comparison_exp",
@@ -892,6 +898,7 @@ export const AllTypesProps: Record<string,any> = {
 		e_draft_game_player_status:"e_draft_game_player_status_order_by",
 		elo_snapshot:"order_by",
 		is_captain:"order_by",
+		is_organizer:"order_by",
 		joined_at:"order_by",
 		lineup:"order_by",
 		pick_order:"order_by",
@@ -1062,6 +1069,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"uuid_comparison_exp",
 		inner_squad:"Boolean_comparison_exp",
 		invite_code:"uuid_comparison_exp",
+		is_organizer:"Boolean_comparison_exp",
 		map_pool:"map_pools_bool_exp",
 		map_pool_id:"uuid_comparison_exp",
 		match:"matches_bool_exp",
@@ -1078,6 +1086,7 @@ export const AllTypesProps: Record<string,any> = {
 		players_aggregate:"draft_game_players_aggregate_bool_exp",
 		regions:"String_array_comparison_exp",
 		require_approval:"Boolean_comparison_exp",
+		scheduled_at:"timestamptz_comparison_exp",
 		status:"e_draft_game_status_enum_comparison_exp",
 		team_1:"teams_bool_exp",
 		team_1_id:"uuid_comparison_exp",
@@ -1115,6 +1124,7 @@ export const AllTypesProps: Record<string,any> = {
 		pick_deadline:"timestamptz",
 		picks:"draft_game_picks_arr_rel_insert_input",
 		players:"draft_game_players_arr_rel_insert_input",
+		scheduled_at:"timestamptz",
 		status:"e_draft_game_status_enum",
 		team_1:"teams_obj_rel_insert_input",
 		team_1_id:"uuid",
@@ -1138,6 +1148,7 @@ export const AllTypesProps: Record<string,any> = {
 		min_elo:"order_by",
 		pick_deadline:"order_by",
 		regions:"order_by",
+		scheduled_at:"order_by",
 		team_1_id:"order_by",
 		team_2_id:"order_by",
 		updated_at:"order_by"
@@ -1157,6 +1168,7 @@ export const AllTypesProps: Record<string,any> = {
 		min_elo:"order_by",
 		pick_deadline:"order_by",
 		regions:"order_by",
+		scheduled_at:"order_by",
 		team_1_id:"order_by",
 		team_2_id:"order_by",
 		updated_at:"order_by"
@@ -1188,6 +1200,7 @@ export const AllTypesProps: Record<string,any> = {
 		id:"order_by",
 		inner_squad:"order_by",
 		invite_code:"order_by",
+		is_organizer:"order_by",
 		map_pool:"map_pools_order_by",
 		map_pool_id:"order_by",
 		match:"matches_order_by",
@@ -1202,6 +1215,7 @@ export const AllTypesProps: Record<string,any> = {
 		players_aggregate:"draft_game_players_aggregate_order_by",
 		regions:"order_by",
 		require_approval:"order_by",
+		scheduled_at:"order_by",
 		status:"order_by",
 		team_1:"teams_order_by",
 		team_1_id:"order_by",
@@ -1230,6 +1244,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_options_id:"uuid",
 		mode:"e_draft_game_mode_enum",
 		pick_deadline:"timestamptz",
+		scheduled_at:"timestamptz",
 		status:"e_draft_game_status_enum",
 		team_1_id:"uuid",
 		team_2_id:"uuid",
@@ -1275,6 +1290,7 @@ export const AllTypesProps: Record<string,any> = {
 		match_options_id:"uuid",
 		mode:"e_draft_game_mode_enum",
 		pick_deadline:"timestamptz",
+		scheduled_at:"timestamptz",
 		status:"e_draft_game_status_enum",
 		team_1_id:"uuid",
 		team_2_id:"uuid",
@@ -5050,153 +5066,6 @@ export const AllTypesProps: Record<string,any> = {
 	match_demo_sessions_variance_order_by:{
 		watcher_steam_id:"order_by"
 	},
-	match_invites_aggregate_bool_exp:{
-		count:"match_invites_aggregate_bool_exp_count"
-	},
-	match_invites_aggregate_bool_exp_count:{
-		arguments:"match_invites_select_column",
-		filter:"match_invites_bool_exp",
-		predicate:"Int_comparison_exp"
-	},
-	match_invites_aggregate_fields:{
-		count:{
-			columns:"match_invites_select_column"
-		}
-	},
-	match_invites_aggregate_order_by:{
-		avg:"match_invites_avg_order_by",
-		count:"order_by",
-		max:"match_invites_max_order_by",
-		min:"match_invites_min_order_by",
-		stddev:"match_invites_stddev_order_by",
-		stddev_pop:"match_invites_stddev_pop_order_by",
-		stddev_samp:"match_invites_stddev_samp_order_by",
-		sum:"match_invites_sum_order_by",
-		var_pop:"match_invites_var_pop_order_by",
-		var_samp:"match_invites_var_samp_order_by",
-		variance:"match_invites_variance_order_by"
-	},
-	match_invites_arr_rel_insert_input:{
-		data:"match_invites_insert_input",
-		on_conflict:"match_invites_on_conflict"
-	},
-	match_invites_avg_order_by:{
-		invited_by_player_steam_id:"order_by",
-		steam_id:"order_by"
-	},
-	match_invites_bool_exp:{
-		_and:"match_invites_bool_exp",
-		_not:"match_invites_bool_exp",
-		_or:"match_invites_bool_exp",
-		created_at:"timestamptz_comparison_exp",
-		id:"uuid_comparison_exp",
-		invited_by:"players_bool_exp",
-		invited_by_player_steam_id:"bigint_comparison_exp",
-		match:"matches_bool_exp",
-		match_id:"uuid_comparison_exp",
-		player:"players_bool_exp",
-		steam_id:"bigint_comparison_exp"
-	},
-	match_invites_constraint: "enum" as const,
-	match_invites_inc_input:{
-		invited_by_player_steam_id:"bigint",
-		steam_id:"bigint"
-	},
-	match_invites_insert_input:{
-		created_at:"timestamptz",
-		id:"uuid",
-		invited_by:"players_obj_rel_insert_input",
-		invited_by_player_steam_id:"bigint",
-		match:"matches_obj_rel_insert_input",
-		match_id:"uuid",
-		player:"players_obj_rel_insert_input",
-		steam_id:"bigint"
-	},
-	match_invites_max_order_by:{
-		created_at:"order_by",
-		id:"order_by",
-		invited_by_player_steam_id:"order_by",
-		match_id:"order_by",
-		steam_id:"order_by"
-	},
-	match_invites_min_order_by:{
-		created_at:"order_by",
-		id:"order_by",
-		invited_by_player_steam_id:"order_by",
-		match_id:"order_by",
-		steam_id:"order_by"
-	},
-	match_invites_on_conflict:{
-		constraint:"match_invites_constraint",
-		update_columns:"match_invites_update_column",
-		where:"match_invites_bool_exp"
-	},
-	match_invites_order_by:{
-		created_at:"order_by",
-		id:"order_by",
-		invited_by:"players_order_by",
-		invited_by_player_steam_id:"order_by",
-		match:"matches_order_by",
-		match_id:"order_by",
-		player:"players_order_by",
-		steam_id:"order_by"
-	},
-	match_invites_pk_columns_input:{
-		id:"uuid"
-	},
-	match_invites_select_column: "enum" as const,
-	match_invites_set_input:{
-		created_at:"timestamptz",
-		id:"uuid",
-		invited_by_player_steam_id:"bigint",
-		match_id:"uuid",
-		steam_id:"bigint"
-	},
-	match_invites_stddev_order_by:{
-		invited_by_player_steam_id:"order_by",
-		steam_id:"order_by"
-	},
-	match_invites_stddev_pop_order_by:{
-		invited_by_player_steam_id:"order_by",
-		steam_id:"order_by"
-	},
-	match_invites_stddev_samp_order_by:{
-		invited_by_player_steam_id:"order_by",
-		steam_id:"order_by"
-	},
-	match_invites_stream_cursor_input:{
-		initial_value:"match_invites_stream_cursor_value_input",
-		ordering:"cursor_ordering"
-	},
-	match_invites_stream_cursor_value_input:{
-		created_at:"timestamptz",
-		id:"uuid",
-		invited_by_player_steam_id:"bigint",
-		match_id:"uuid",
-		steam_id:"bigint"
-	},
-	match_invites_sum_order_by:{
-		invited_by_player_steam_id:"order_by",
-		steam_id:"order_by"
-	},
-	match_invites_update_column: "enum" as const,
-	match_invites_updates:{
-		_inc:"match_invites_inc_input",
-		_set:"match_invites_set_input",
-		where:"match_invites_bool_exp"
-	},
-	match_invites_var_pop_order_by:{
-		invited_by_player_steam_id:"order_by",
-		steam_id:"order_by"
-	},
-	match_invites_var_samp_order_by:{
-		invited_by_player_steam_id:"order_by",
-		steam_id:"order_by"
-	},
-	match_invites_variance_order_by:{
-		invited_by_player_steam_id:"order_by",
-		steam_id:"order_by"
-	},
 	match_lineup_players_aggregate_bool_exp:{
 		bool_and:"match_lineup_players_aggregate_bool_exp_bool_and",
 		bool_or:"match_lineup_players_aggregate_bool_exp_bool_or",
@@ -6674,7 +6543,6 @@ export const AllTypesProps: Record<string,any> = {
 		invite_code:"String_comparison_exp",
 		knife_round:"Boolean_comparison_exp",
 		live_match_timeout:"Int_comparison_exp",
-		lobby_access:"e_lobby_access_enum_comparison_exp",
 		map_pool:"map_pools_bool_exp",
 		map_pool_id:"uuid_comparison_exp",
 		map_veto:"Boolean_comparison_exp",
@@ -6703,7 +6571,6 @@ export const AllTypesProps: Record<string,any> = {
 	match_options_insert_input:{
 		check_in_setting:"e_check_in_settings_enum",
 		id:"uuid",
-		lobby_access:"e_lobby_access_enum",
 		map_pool:"map_pools_obj_rel_insert_input",
 		map_pool_id:"uuid",
 		match_mode:"e_match_mode_enum",
@@ -6737,7 +6604,6 @@ export const AllTypesProps: Record<string,any> = {
 		invite_code:"order_by",
 		knife_round:"order_by",
 		live_match_timeout:"order_by",
-		lobby_access:"order_by",
 		map_pool:"map_pools_order_by",
 		map_pool_id:"order_by",
 		map_veto:"order_by",
@@ -6765,7 +6631,6 @@ export const AllTypesProps: Record<string,any> = {
 	match_options_set_input:{
 		check_in_setting:"e_check_in_settings_enum",
 		id:"uuid",
-		lobby_access:"e_lobby_access_enum",
 		map_pool_id:"uuid",
 		match_mode:"e_match_mode_enum",
 		ready_setting:"e_ready_settings_enum",
@@ -6780,7 +6645,6 @@ export const AllTypesProps: Record<string,any> = {
 	match_options_stream_cursor_value_input:{
 		check_in_setting:"e_check_in_settings_enum",
 		id:"uuid",
-		lobby_access:"e_lobby_access_enum",
 		map_pool_id:"uuid",
 		match_mode:"e_match_mode_enum",
 		ready_setting:"e_ready_settings_enum",
@@ -7187,16 +7051,6 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"v_player_elo_order_by",
 			where:"v_player_elo_bool_exp"
 		},
-		invites:{
-			distinct_on:"match_invites_select_column",
-			order_by:"match_invites_order_by",
-			where:"match_invites_bool_exp"
-		},
-		invites_aggregate:{
-			distinct_on:"match_invites_select_column",
-			order_by:"match_invites_order_by",
-			where:"match_invites_bool_exp"
-		},
 		lineup_counts:{
 
 		},
@@ -7401,8 +7255,6 @@ export const AllTypesProps: Record<string,any> = {
 		external_id:"String_comparison_exp",
 		id:"uuid_comparison_exp",
 		invite_code:"String_comparison_exp",
-		invites:"match_invites_bool_exp",
-		invites_aggregate:"match_invites_aggregate_bool_exp",
 		is_captain:"Boolean_comparison_exp",
 		is_coach:"Boolean_comparison_exp",
 		is_friend_in_match_lineup:"Boolean_comparison_exp",
@@ -7484,7 +7336,6 @@ export const AllTypesProps: Record<string,any> = {
 		elo_changes:"v_player_elo_arr_rel_insert_input",
 		ended_at:"timestamptz",
 		id:"uuid",
-		invites:"match_invites_arr_rel_insert_input",
 		lineup_1:"match_lineups_obj_rel_insert_input",
 		lineup_1_id:"uuid",
 		lineup_2:"match_lineups_obj_rel_insert_input",
@@ -7590,7 +7441,6 @@ export const AllTypesProps: Record<string,any> = {
 		external_id:"order_by",
 		id:"order_by",
 		invite_code:"order_by",
-		invites_aggregate:"match_invites_aggregate_order_by",
 		is_captain:"order_by",
 		is_coach:"order_by",
 		is_friend_in_match_lineup:"order_by",
@@ -7766,6 +7616,9 @@ export const AllTypesProps: Record<string,any> = {
 		acceptInvite:{
 			invite_id:"uuid"
 		},
+		addDraftPlayer:{
+			draftGameId:"uuid"
+		},
 		approveNameChange:{
 			steam_id:"bigint"
 		},
@@ -7817,6 +7670,11 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		createDraftGame:{
 			settings:"jsonb"
+		},
+		createScheduledMatch:{
+			lineup_1:"ScheduledLineupInput",
+			lineup_2:"ScheduledLineupInput",
+			options:"jsonb"
 		},
 		createServerDirectory:{
 
@@ -8156,12 +8014,6 @@ export const AllTypesProps: Record<string,any> = {
 			where:"match_demo_sessions_bool_exp"
 		},
 		delete_match_demo_sessions_by_pk:{
-			id:"uuid"
-		},
-		delete_match_invites:{
-			where:"match_invites_bool_exp"
-		},
-		delete_match_invites_by_pk:{
 			id:"uuid"
 		},
 		delete_match_lineup_players:{
@@ -9001,14 +8853,6 @@ export const AllTypesProps: Record<string,any> = {
 			object:"match_demo_sessions_insert_input",
 			on_conflict:"match_demo_sessions_on_conflict"
 		},
-		insert_match_invites:{
-			objects:"match_invites_insert_input",
-			on_conflict:"match_invites_on_conflict"
-		},
-		insert_match_invites_one:{
-			object:"match_invites_insert_input",
-			on_conflict:"match_invites_on_conflict"
-		},
 		insert_match_lineup_players:{
 			objects:"match_lineup_players_insert_input",
 			on_conflict:"match_lineup_players_on_conflict"
@@ -9531,9 +9375,6 @@ export const AllTypesProps: Record<string,any> = {
 		joinDraftGameAsParty:{
 			draftGameId:"uuid"
 		},
-		joinLineup:{
-
-		},
 		kickServerPlayer:{
 
 		},
@@ -9590,6 +9431,9 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		requeueClipRender:{
 			job_id:"uuid"
+		},
+		respondDraftInvite:{
+			draftGameId:"uuid"
 		},
 		respondToScrimRequest:{
 			request_id:"uuid"
@@ -10365,19 +10209,6 @@ export const AllTypesProps: Record<string,any> = {
 		},
 		update_match_demo_sessions_many:{
 			updates:"match_demo_sessions_updates"
-		},
-		update_match_invites:{
-			_inc:"match_invites_inc_input",
-			_set:"match_invites_set_input",
-			where:"match_invites_bool_exp"
-		},
-		update_match_invites_by_pk:{
-			_inc:"match_invites_inc_input",
-			_set:"match_invites_set_input",
-			pk_columns:"match_invites_pk_columns_input"
-		},
-		update_match_invites_many:{
-			updates:"match_invites_updates"
 		},
 		update_match_lineup_players:{
 			_inc:"match_lineup_players_inc_input",
@@ -18364,19 +18195,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_demo_sessions_by_pk:{
 			id:"uuid"
 		},
-		match_invites:{
-			distinct_on:"match_invites_select_column",
-			order_by:"match_invites_order_by",
-			where:"match_invites_bool_exp"
-		},
-		match_invites_aggregate:{
-			distinct_on:"match_invites_select_column",
-			order_by:"match_invites_order_by",
-			where:"match_invites_bool_exp"
-		},
-		match_invites_by_pk:{
-			id:"uuid"
-		},
 		match_lineup_players:{
 			distinct_on:"match_lineup_players_select_column",
 			order_by:"match_lineup_players_order_by",
@@ -21032,23 +20850,6 @@ export const AllTypesProps: Record<string,any> = {
 		match_demo_sessions_stream:{
 			cursor:"match_demo_sessions_stream_cursor_input",
 			where:"match_demo_sessions_bool_exp"
-		},
-		match_invites:{
-			distinct_on:"match_invites_select_column",
-			order_by:"match_invites_order_by",
-			where:"match_invites_bool_exp"
-		},
-		match_invites_aggregate:{
-			distinct_on:"match_invites_select_column",
-			order_by:"match_invites_order_by",
-			where:"match_invites_bool_exp"
-		},
-		match_invites_by_pk:{
-			id:"uuid"
-		},
-		match_invites_stream:{
-			cursor:"match_invites_stream_cursor_input",
-			where:"match_invites_bool_exp"
 		},
 		match_lineup_players:{
 			distinct_on:"match_lineup_players_select_column",
@@ -28887,6 +28688,9 @@ export const ReturnTypes: Record<string,any> = {
 	CreateDraftGameOutput:{
 		draftGameId:"uuid"
 	},
+	CreateScheduledMatchOutput:{
+		matchId:"uuid"
+	},
 	DatabaseStats:{
 		blks_hit:"Int",
 		blks_read:"Int",
@@ -29624,6 +29428,7 @@ export const ReturnTypes: Record<string,any> = {
 		draft_game:"draft_games",
 		draft_game_id:"uuid",
 		id:"uuid",
+		is_organizer:"Boolean",
 		lineup:"Int",
 		picked:"players",
 		picked_steam_id:"bigint"
@@ -29711,6 +29516,7 @@ export const ReturnTypes: Record<string,any> = {
 		e_draft_game_player_status:"e_draft_game_player_status",
 		elo_snapshot:"Int",
 		is_captain:"Boolean",
+		is_organizer:"Boolean",
 		joined_at:"timestamptz",
 		lineup:"Int",
 		pick_order:"Int",
@@ -29821,6 +29627,7 @@ export const ReturnTypes: Record<string,any> = {
 		id:"uuid",
 		inner_squad:"Boolean",
 		invite_code:"uuid",
+		is_organizer:"Boolean",
 		map_pool:"map_pools",
 		map_pool_id:"uuid",
 		match:"matches",
@@ -29837,6 +29644,7 @@ export const ReturnTypes: Record<string,any> = {
 		players_aggregate:"draft_game_players_aggregate",
 		regions:"String",
 		require_approval:"Boolean",
+		scheduled_at:"timestamptz",
 		status:"e_draft_game_status_enum",
 		team_1:"teams",
 		team_1_id:"uuid",
@@ -29884,6 +29692,7 @@ export const ReturnTypes: Record<string,any> = {
 		min_elo:"Int",
 		pick_deadline:"timestamptz",
 		regions:"String",
+		scheduled_at:"timestamptz",
 		team_1_id:"uuid",
 		team_2_id:"uuid",
 		updated_at:"timestamptz"
@@ -29903,6 +29712,7 @@ export const ReturnTypes: Record<string,any> = {
 		min_elo:"Int",
 		pick_deadline:"timestamptz",
 		regions:"String",
+		scheduled_at:"timestamptz",
 		team_1_id:"uuid",
 		team_2_id:"uuid",
 		updated_at:"timestamptz"
@@ -31816,83 +31626,6 @@ export const ReturnTypes: Record<string,any> = {
 	match_demo_sessions_variance_fields:{
 		watcher_steam_id:"Float"
 	},
-	match_invites:{
-		created_at:"timestamptz",
-		id:"uuid",
-		invited_by:"players",
-		invited_by_player_steam_id:"bigint",
-		match:"matches",
-		match_id:"uuid",
-		player:"players",
-		steam_id:"bigint"
-	},
-	match_invites_aggregate:{
-		aggregate:"match_invites_aggregate_fields",
-		nodes:"match_invites"
-	},
-	match_invites_aggregate_fields:{
-		avg:"match_invites_avg_fields",
-		count:"Int",
-		max:"match_invites_max_fields",
-		min:"match_invites_min_fields",
-		stddev:"match_invites_stddev_fields",
-		stddev_pop:"match_invites_stddev_pop_fields",
-		stddev_samp:"match_invites_stddev_samp_fields",
-		sum:"match_invites_sum_fields",
-		var_pop:"match_invites_var_pop_fields",
-		var_samp:"match_invites_var_samp_fields",
-		variance:"match_invites_variance_fields"
-	},
-	match_invites_avg_fields:{
-		invited_by_player_steam_id:"Float",
-		steam_id:"Float"
-	},
-	match_invites_max_fields:{
-		created_at:"timestamptz",
-		id:"uuid",
-		invited_by_player_steam_id:"bigint",
-		match_id:"uuid",
-		steam_id:"bigint"
-	},
-	match_invites_min_fields:{
-		created_at:"timestamptz",
-		id:"uuid",
-		invited_by_player_steam_id:"bigint",
-		match_id:"uuid",
-		steam_id:"bigint"
-	},
-	match_invites_mutation_response:{
-		affected_rows:"Int",
-		returning:"match_invites"
-	},
-	match_invites_stddev_fields:{
-		invited_by_player_steam_id:"Float",
-		steam_id:"Float"
-	},
-	match_invites_stddev_pop_fields:{
-		invited_by_player_steam_id:"Float",
-		steam_id:"Float"
-	},
-	match_invites_stddev_samp_fields:{
-		invited_by_player_steam_id:"Float",
-		steam_id:"Float"
-	},
-	match_invites_sum_fields:{
-		invited_by_player_steam_id:"bigint",
-		steam_id:"bigint"
-	},
-	match_invites_var_pop_fields:{
-		invited_by_player_steam_id:"Float",
-		steam_id:"Float"
-	},
-	match_invites_var_samp_fields:{
-		invited_by_player_steam_id:"Float",
-		steam_id:"Float"
-	},
-	match_invites_variance_fields:{
-		invited_by_player_steam_id:"Float",
-		steam_id:"Float"
-	},
 	match_lineup_players:{
 		captain:"Boolean",
 		checked_in:"Boolean",
@@ -32587,7 +32320,6 @@ export const ReturnTypes: Record<string,any> = {
 		invite_code:"String",
 		knife_round:"Boolean",
 		live_match_timeout:"Int",
-		lobby_access:"e_lobby_access_enum",
 		map_pool:"map_pools",
 		map_pool_id:"uuid",
 		map_veto:"Boolean",
@@ -32900,8 +32632,6 @@ export const ReturnTypes: Record<string,any> = {
 		external_id:"String",
 		id:"uuid",
 		invite_code:"String",
-		invites:"match_invites",
-		invites_aggregate:"match_invites_aggregate",
 		is_captain:"Boolean",
 		is_coach:"Boolean",
 		is_friend_in_match_lineup:"Boolean",
@@ -33124,6 +32854,7 @@ export const ReturnTypes: Record<string,any> = {
 		PreviewTournamentMatchReset:"PreviewTournamentMatchResetOutput",
 		ResetTournamentMatch:"SuccessOutput",
 		acceptInvite:"SuccessOutput",
+		addDraftPlayer:"SuccessOutput",
 		approveNameChange:"SuccessOutput",
 		attachDemo:"WatchDemoOutput",
 		bakeShaders:"SuccessOutput",
@@ -33144,6 +32875,7 @@ export const ReturnTypes: Record<string,any> = {
 		createClipRender:"CreateClipRenderOutput",
 		createClips:"SuccessOutput",
 		createDraftGame:"CreateDraftGameOutput",
+		createScheduledMatch:"CreateScheduledMatchOutput",
 		createServerDirectory:"SuccessOutput",
 		deleteClip:"SuccessOutput",
 		deleteMatch:"SuccessOutput",
@@ -33256,8 +32988,6 @@ export const ReturnTypes: Record<string,any> = {
 		delete_match_clips_by_pk:"match_clips",
 		delete_match_demo_sessions:"match_demo_sessions_mutation_response",
 		delete_match_demo_sessions_by_pk:"match_demo_sessions",
-		delete_match_invites:"match_invites_mutation_response",
-		delete_match_invites_by_pk:"match_invites",
 		delete_match_lineup_players:"match_lineup_players_mutation_response",
 		delete_match_lineup_players_by_pk:"match_lineup_players",
 		delete_match_lineups:"match_lineups_mutation_response",
@@ -33494,8 +33224,6 @@ export const ReturnTypes: Record<string,any> = {
 		insert_match_clips_one:"match_clips",
 		insert_match_demo_sessions:"match_demo_sessions_mutation_response",
 		insert_match_demo_sessions_one:"match_demo_sessions",
-		insert_match_invites:"match_invites_mutation_response",
-		insert_match_invites_one:"match_invites",
 		insert_match_lineup_players:"match_lineup_players_mutation_response",
 		insert_match_lineup_players_one:"match_lineup_players",
 		insert_match_lineups:"match_lineups_mutation_response",
@@ -33630,7 +33358,6 @@ export const ReturnTypes: Record<string,any> = {
 		insert_v_team_stage_results_one:"v_team_stage_results",
 		joinDraftGame:"SuccessOutput",
 		joinDraftGameAsParty:"SuccessOutput",
-		joinLineup:"SuccessOutput",
 		kickServerPlayer:"KickResult",
 		leaveLineup:"SuccessOutput",
 		linkSteamMatchHistory:"SteamMatchHistoryLinkOutput",
@@ -33657,6 +33384,7 @@ export const ReturnTypes: Record<string,any> = {
 		reparseMatchDemos:"SuccessOutput",
 		requestNameChange:"SuccessOutput",
 		requeueClipRender:"SuccessOutput",
+		respondDraftInvite:"SuccessOutput",
 		respondToScrimRequest:"SuccessOutput",
 		restartService:"SuccessOutput",
 		resumeClipRenderBatch:"SuccessOutput",
@@ -33860,9 +33588,6 @@ export const ReturnTypes: Record<string,any> = {
 		update_match_demo_sessions:"match_demo_sessions_mutation_response",
 		update_match_demo_sessions_by_pk:"match_demo_sessions",
 		update_match_demo_sessions_many:"match_demo_sessions_mutation_response",
-		update_match_invites:"match_invites_mutation_response",
-		update_match_invites_by_pk:"match_invites",
-		update_match_invites_many:"match_invites_mutation_response",
 		update_match_lineup_players:"match_lineup_players_mutation_response",
 		update_match_lineup_players_by_pk:"match_lineup_players",
 		update_match_lineup_players_many:"match_lineup_players_mutation_response",
@@ -39573,9 +39298,6 @@ export const ReturnTypes: Record<string,any> = {
 		match_demo_sessions:"match_demo_sessions",
 		match_demo_sessions_aggregate:"match_demo_sessions_aggregate",
 		match_demo_sessions_by_pk:"match_demo_sessions",
-		match_invites:"match_invites",
-		match_invites_aggregate:"match_invites_aggregate",
-		match_invites_by_pk:"match_invites",
 		match_lineup_players:"match_lineup_players",
 		match_lineup_players_aggregate:"match_lineup_players_aggregate",
 		match_lineup_players_by_pk:"match_lineup_players",
@@ -40370,10 +40092,6 @@ export const ReturnTypes: Record<string,any> = {
 		match_demo_sessions_aggregate:"match_demo_sessions_aggregate",
 		match_demo_sessions_by_pk:"match_demo_sessions",
 		match_demo_sessions_stream:"match_demo_sessions",
-		match_invites:"match_invites",
-		match_invites_aggregate:"match_invites_aggregate",
-		match_invites_by_pk:"match_invites",
-		match_invites_stream:"match_invites",
 		match_lineup_players:"match_lineup_players",
 		match_lineup_players_aggregate:"match_lineup_players_aggregate",
 		match_lineup_players_by_pk:"match_lineup_players",

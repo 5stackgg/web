@@ -376,18 +376,6 @@ export const useApplicationSettingsStore = defineStore(
       return useAuthStore().isRoleAbove(matchCreateRole.value);
     });
 
-    const canAddWithoutInvite = computed(() => {
-      const lineupAddWithoutInviteRole = settings.value.find(
-        (setting) => setting.name === "public.lineup_add_without_invite",
-      )?.value;
-
-      if (!lineupAddWithoutInviteRole) {
-        return true;
-      }
-
-      return useAuthStore().isRoleAbove(lineupAddWithoutInviteRole);
-    });
-
     const maxAcceptableLatency = computed(() => {
       return settings.value.find(
         (setting) => setting.name === "public.max_acceptable_latency",
@@ -478,7 +466,6 @@ export const useApplicationSettingsStore = defineStore(
       defaultHudMode,
       canCreateMatch,
       currentPluginVersion,
-      canAddWithoutInvite,
       brandName,
       logoUrl,
       faviconUrl,

@@ -521,7 +521,6 @@ export default {
                 mr: true,
                 best_of: true,
                 type: true,
-                lobby_access: true,
               },
               match_maps: [
                 { order_by: [{ order: order_by.asc }] },

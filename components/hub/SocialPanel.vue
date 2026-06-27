@@ -2,7 +2,6 @@
 import { ref, computed } from "vue";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import PlayersList from "~/components/matchmaking-lobby/PlayersList.vue";
-import MatchInvites from "~/components/matchmaking-lobby/MatchInvites.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import { useMatchmakingStore } from "~/stores/MatchmakingStore";
 import { useAuthStore } from "~/stores/AuthStore";
@@ -77,7 +76,6 @@ const otherOnlineCount = computed(() => {
         value="friends"
         class="mt-0 flex-1 overflow-y-auto min-h-0 px-3"
       >
-        <MatchInvites />
         <PlayersList :friends-only="true" />
       </TabsContent>
       <TabsContent

@@ -1,8 +1,10 @@
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 const rightSidebarOpen = ref(false);
 const isHoverPeeking = ref(false);
 const isPinned = ref(false);
+const hoverCloseLocks = ref(0);
+const hoverCloseSuspended = computed(() => hoverCloseLocks.value > 0);
 
 const SIDEBAR_PIN_STORAGE_KEY = "right-hub-pinned";
 const SIDEBAR_OPEN_STORAGE_KEY = "right-hub-open";
@@ -64,6 +66,14 @@ export function useRightSidebar() {
     }
   }
 
+  function suspendHoverClose() {
+    hoverCloseLocks.value += 1;
+  }
+
+  function resumeHoverClose() {
+    hoverCloseLocks.value = Math.max(0, hoverCloseLocks.value - 1);
+  }
+
   function togglePin() {
     setPinned(!isPinned.value);
   }
@@ -74,6 +84,9 @@ export function useRightSidebar() {
     toggleRightSidebar,
     startHoverPeek,
     endHoverPeek,
+    hoverCloseSuspended,
+    suspendHoverClose,
+    resumeHoverClose,
     isPinned,
     togglePin,
   };

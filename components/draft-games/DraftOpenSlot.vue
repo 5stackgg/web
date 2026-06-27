@@ -7,11 +7,11 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-  selected: [steamId: string];
+  selected: [steamId: string, player: { steam_id: string }];
 }>();
 
 const onSelected = (player: { steam_id: string }) => {
-  emit("selected", player.steam_id);
+  emit("selected", player.steam_id, player);
 };
 </script>
 

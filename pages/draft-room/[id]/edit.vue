@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import { useAuthStore } from "~/stores/AuthStore";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { $ } from "~/generated/zeus";
@@ -25,6 +24,7 @@ onMounted(async () => {
         {
           id: true,
           host_steam_id: true,
+          is_organizer: true,
           status: true,
           mode: true,
           access: true,
@@ -39,7 +39,6 @@ onMounted(async () => {
           min_elo: true,
           max_elo: true,
           options: {
-            lobby_access: true,
             ...matchOptionsFields,
           },
         },
@@ -52,7 +51,7 @@ onMounted(async () => {
 
   if (
     !data.draft_games_by_pk ||
-    data.draft_games_by_pk.host_steam_id !== useAuthStore().me?.steam_id ||
+    !data.draft_games_by_pk.is_organizer ||
     data.draft_games_by_pk.status !== "Open"
   ) {
     navigateTo(`/draft-room/${route.params.id}`);

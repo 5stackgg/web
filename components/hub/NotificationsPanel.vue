@@ -2,6 +2,7 @@
 import { CheckCheck, Trash2 } from "lucide-vue-next";
 import { Button } from "~/components/ui/button";
 import TeamInviteNotification from "~/components/TeamInviteNotification.vue";
+import DraftInviteNotification from "~/components/notification/DraftInviteNotification.vue";
 import Empty from "~/components/ui/empty/Empty.vue";
 import NotificationItem from "~/components/notification/NotificationItem.vue";
 import NotificationStack from "~/components/notification/NotificationStack.vue";
@@ -24,9 +25,28 @@ import NewsNotification from "~/components/notification/NewsNotification.vue";
         v-if="
           team_invites.length > 0 ||
           tournament_team_invites.length > 0 ||
+          draft_invites.length > 0 ||
           notifications.length > 0
         "
       >
+        <div
+          v-if="draft_invites.length > 0"
+          class="mb-3 p-3 bg-card/60 border border-border rounded-md"
+        >
+          <DraftInviteNotification
+            :invite="invite"
+            :key="invite.draft_game_id"
+            v-for="invite of draft_invites"
+          />
+          <Separator
+            v-if="
+              team_invites.length > 0 ||
+              tournament_team_invites.length > 0 ||
+              notifications.length > 0
+            "
+          />
+        </div>
+
         <div
           v-if="team_invites.length > 0"
           class="mb-3 p-3 bg-card/60 border border-border rounded-md"
@@ -127,6 +147,9 @@ export default {
     },
     tournament_team_invites() {
       return useNotificationStore().tournament_team_invites;
+    },
+    draft_invites() {
+      return useNotificationStore().draft_invites;
     },
     notifications() {
       return useNotificationStore().notifications;

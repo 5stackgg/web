@@ -135,13 +135,17 @@ import FriendOptions from "~/components/matchmaking-lobby/FriendOptions.vue";
               v-for="player in filteredOfflinePlayers"
               :key="player.steam_id"
             >
-              <PlayerDisplay
-                class="opacity-50 cursor-pointer hover:opacity-80 hover:bg-muted/50 transition-all duration-200 p-2 rounded-md"
-                :player="player"
-                :showOnline="false"
-                :showAddFriend="true"
-                :linkable="true"
-              />
+              <FriendOptions :player="player">
+                <div class="flex items-center justify-between">
+                  <PlayerDisplay
+                    class="w-full opacity-50 cursor-pointer hover:opacity-80 hover:bg-muted/50 transition-all duration-200 p-2 rounded-md"
+                    :player="player"
+                    :showOnline="false"
+                    :showAddFriend="true"
+                    :linkable="true"
+                  />
+                </div>
+              </FriendOptions>
             </template>
           </div>
 

@@ -2,6 +2,7 @@
 import { computed } from "vue";
 import { X } from "lucide-vue-next";
 import DraftPlayerCard from "~/components/draft-games/DraftPlayerCard.vue";
+import DraftOpenSlot from "~/components/draft-games/DraftOpenSlot.vue";
 
 const props = defineProps<{
   title: string;
@@ -10,12 +11,16 @@ const props = defineProps<{
   accent: "amber" | "blue";
   active?: boolean;
   removable?: boolean;
+  selfSteamId?: string;
+  addable?: boolean;
+  excludeSteamIds?: Array<string>;
   hostSteamId?: string;
   checkInBySteamId?: Record<string, boolean> | null;
 }>();
 
 const emit = defineEmits<{
   (event: "remove", steamId: string): void;
+  (event: "add", steamId: string, player?: { steam_id: string }): void;
 }>();
 
 const accentVar = computed(() =>
@@ -92,7 +97,10 @@ const slots = computed(() => {
             : !!checkInBySteamId[player.steam_id]
         "
       >
-        <template v-if="removable" #action>
+        <template
+          v-if="removable || player.steam_id === selfSteamId"
+          #action
+        >
           <button
             class="remove-btn grid h-6 w-6 place-items-center rounded transition-colors"
             @click="emit('remove', player.steam_id)"
@@ -101,13 +109,23 @@ const slots = computed(() => {
           </button>
         </template>
       </DraftPlayerCard>
-      <div
-        v-for="index in Math.max(0, perTeam - players.length)"
-        :key="`empty-${index}`"
-        class="empty-slot grid min-h-[3.5rem] place-items-center rounded-lg border border-dashed text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground/40"
-      >
-        {{ $t("draft_games.room.open_slot") }}
-      </div>
+      <template v-if="addable">
+        <DraftOpenSlot
+          v-for="index in Math.max(0, perTeam - players.length)"
+          :key="`add-${index}`"
+          :exclude="excludeSteamIds || []"
+          @selected="(steamId, player) => emit('add', steamId, player)"
+        />
+      </template>
+      <template v-else>
+        <div
+          v-for="index in Math.max(0, perTeam - players.length)"
+          :key="`empty-${index}`"
+          class="empty-slot grid min-h-[3.5rem] place-items-center rounded-lg border border-dashed text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground/40"
+        >
+          {{ $t("draft_games.room.open_slot") }}
+        </div>
+      </template>
     </TransitionGroup>
   </div>
 </template>

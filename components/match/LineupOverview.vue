@@ -123,13 +123,12 @@ import {
   DialogClose,
 } from "~/components/ui/dialog";
 import AssignPlayerToLineup from "~/components/match/AssignPlayerToLineup.vue";
-import { e_lobby_access_enum, e_match_status_enum } from "~/generated/zeus";
+import { e_match_status_enum } from "~/generated/zeus";
 import PlayerDisplay from "../PlayerDisplay.vue";
 import { PencilIcon } from "lucide-vue-next";
 import { useOverviewColumns } from "~/composables/useMatchTableColumns";
 
 const { visibility: overviewVis } = useOverviewColumns();
-import JoinLineupForm from "~/components/match/JoinLineupForm.vue";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import {
@@ -511,22 +510,6 @@ import {
                 >
               </span>
             </div>
-          </TableCell>
-          <TableCell
-            v-if="
-              slot === 1 &&
-              (match.options.lobby_access === e_lobby_access_enum.Open ||
-                match.options.lobby_access === e_lobby_access_enum.Invite) &&
-              !match.is_in_lineup &&
-              match.status === e_match_status_enum.PickingPlayers
-            "
-            colspan="100"
-          >
-            <JoinLineupForm
-              :match="match"
-              :lineup="lp"
-              @joined="$emit('joined')"
-            ></JoinLineupForm>
           </TableCell>
         </TableRow>
       </TableBody>

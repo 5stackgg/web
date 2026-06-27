@@ -15,7 +15,7 @@ import {
   Lock,
   X,
 } from "lucide-vue-next";
-import { e_lobby_access_enum } from "~/generated/zeus";
+import { e_player_roles_enum } from "~/generated/zeus";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import matchOptionsValidator from "~/utilities/match-options-validator";
 import { setupOptions, setupOptionsVariables } from "~/utilities/setupOptions";
@@ -46,7 +46,12 @@ const props = defineProps<{
   editing?: boolean;
   settingsOnly?: boolean;
   rehost?: any;
+  forOthers?: boolean;
 }>();
+
+const canHostForOthers = computed(() =>
+  useAuthStore().isRoleAbove(e_player_roles_enum.match_organizer),
+);
 
 const emit = defineEmits<{
   (event: "created"): void;
@@ -59,11 +64,20 @@ const submitting = ref(false);
 
 const source = props.rehost || props.initial;
 
-const mode = ref<string>(source?.mode || "Pug");
+const mode = ref<string>(
+  source?.mode || (props.forOthers ? "Host" : "Pug"),
+);
 const access = ref<string>(source?.access || "Friends");
 const requireApproval = ref<boolean>(source?.require_approval ?? false);
 const captainSelection = ref<string>(source?.captain_selection || "TopEloTwo");
 const draftOrder = ref<string>(source?.draft_order || "Snake");
+
+// Organizers can open a lobby they manage without being added as a player.
+// Defaults off (host plays); entering via the manage-matches page (?for=others)
+// flips it on.
+const hostJoins = ref<boolean>(
+  !(props.forOthers && canHostForOthers.value),
+);
 const RANK_MIN = 0;
 const RANK_MAX = 30000;
 const RANK_STEP = 500;
@@ -175,7 +189,8 @@ watch(
   mode,
   (value) => {
     if (value === "Host") {
-      requireApproval.value = true;
+      // Host mode is self-service: players pick their own team, no approval gate.
+      requireApproval.value = false;
     }
     if (value === "Teams") {
       if (!team1Id.value) {
@@ -234,20 +249,36 @@ const accessFilterOptions = computed(() =>
   })),
 );
 
-const captainSelectionOptions = computed(() => [
-  {
-    key: "TopEloTwo",
-    label: t("draft_games.captain_selection.top_elo_two"),
-  },
-  {
-    key: "HostAndNext",
-    label: t("draft_games.captain_selection.host_and_next"),
-  },
-  {
-    key: "RandomTwo",
-    label: t("draft_games.captain_selection.random_two"),
-  },
-]);
+const captainSelectionOptions = computed(() =>
+  [
+    {
+      key: "TopEloTwo",
+      label: t("draft_games.captain_selection.top_elo_two"),
+    },
+    // The host is a captain in this mode, so it's unavailable when the host
+    // isn't joining the lobby.
+    hostJoins.value
+      ? {
+          key: "HostAndNext",
+          label: t("draft_games.captain_selection.host_and_next"),
+        }
+      : null,
+    {
+      key: "RandomTwo",
+      label: t("draft_games.captain_selection.random_two"),
+    },
+    {
+      key: "Manual",
+      label: t("draft_games.captain_selection.manual"),
+    },
+  ].filter((option): option is { key: string; label: string } => !!option),
+);
+
+watch(hostJoins, (joins) => {
+  if (!joins && captainSelection.value === "HostAndNext") {
+    captainSelection.value = "TopEloTwo";
+  }
+});
 
 const draftOrderOptions = computed(() => [
   {
@@ -257,6 +288,10 @@ const draftOrderOptions = computed(() => [
   {
     key: "Alternating",
     label: t("draft_games.draft_order.alternating"),
+  },
+  {
+    key: "FrontLoaded",
+    label: t("draft_games.draft_order.front_loaded"),
   },
 ]);
 
@@ -270,9 +305,7 @@ const form = useForm({
       useApplicationSettingsStore().settings,
     ),
   ),
-  initialValues: {
-    lobby_access: e_lobby_access_enum.Private,
-  },
+  initialValues: {},
 });
 validatorComponent.form = form;
 
@@ -313,9 +346,7 @@ watch(
 
 const discardEdits = () => {
   if (props.initial?.options) {
-    setupOptions(form, props.initial.options, {
-      lobby_access: e_lobby_access_enum.Private,
-    });
+    setupOptions(form, props.initial.options);
   }
   mode.value = source?.mode || "Pug";
   access.value = source?.access || "Friends";
@@ -392,9 +423,7 @@ watch(matchType, () => {
 });
 
 if (props.initial?.options) {
-  setupOptions(form, props.initial.options, {
-    lobby_access: e_lobby_access_enum.Private,
-  });
+  setupOptions(form, props.initial.options);
 }
 
 if (props.editing && props.initial?.options?.map_pool?.type === "Custom") {
@@ -508,6 +537,7 @@ const submit = form.handleSubmit(async (values: any) => {
       mode.value === "Teams" && !team2Id.value ? innerSquad.value : false,
     roster: mode.value === "Teams" ? rosterAssignment.value : undefined,
     keep_lobby_together: showKeepTogether.value && keepLobbyTogether.value,
+    host_joins: hostJoins.value,
     options,
   };
 
@@ -786,10 +816,7 @@ const submit = form.handleSubmit(async (values: any) => {
         </section>
 
         <Transition name="reveal">
-          <section
-            v-if="mode === 'Captains'"
-            class="grid grid-cols-1 items-stretch gap-3 sm:grid-cols-2"
-          >
+          <section v-if="mode === 'Captains'" class="space-y-4">
             <div class="flex flex-col gap-1.5">
               <div :class="tacticalSectionLabelClasses">
                 <span :class="tacticalSectionTickClasses"></span>
@@ -892,6 +919,7 @@ const submit = form.handleSubmit(async (values: any) => {
             />
           </div>
         </section>
+
 
         <section>
           <div class="flex items-center justify-between">

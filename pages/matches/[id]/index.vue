@@ -700,7 +700,6 @@ export default {
               server_error: true,
               organizer: playerFields,
               options: {
-                lobby_access: true,
                 ...matchOptionsFields,
               },
               tournament_brackets: [

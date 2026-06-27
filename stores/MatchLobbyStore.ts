@@ -6,7 +6,6 @@ import {
   $,
   e_match_status_enum,
   e_tournament_status_enum,
-  e_lobby_access_enum,
   order_by,
   e_player_roles_enum,
 } from "~/generated/zeus";
@@ -23,7 +22,6 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
   const liveMatchesCount = ref(0);
   const liveTournamentsCount = ref(0);
   const openRegistrationTournamentsCount = ref(0);
-  const openMatchesCount = ref(0);
   // Tournaments that should expose chat (for this user)
   const chatTournaments = ref<any[]>([]);
 
@@ -135,46 +133,6 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
             "Error in open registration tournaments subscription:",
             error,
           );
-        },
-      }),
-    );
-  };
-
-  const subscribeToOpenMatches = async () => {
-    const subscription = getGraphqlClient().subscribe({
-      query: generateSubscription({
-        matches_aggregate: [
-          {
-            where: {
-              status: {
-                _eq: e_match_status_enum.PickingPlayers,
-              },
-              options: {
-                lobby_access: {
-                  _eq: e_lobby_access_enum.Open,
-                },
-              },
-            },
-          },
-          {
-            aggregate: {
-              count: true,
-            },
-          },
-        ],
-      }),
-    });
-
-    const { subscribe } = useSubscriptionManager();
-    subscribe(
-      "matchLobby:openMatches",
-      subscription.subscribe({
-        next: ({ data }) => {
-          openMatchesCount.value =
-            data?.matches_aggregate?.aggregate?.count || 0;
-        },
-        error: (error) => {
-          console.error("Error in open matches subscription:", error);
         },
       }),
     );
@@ -482,7 +440,6 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
     liveMatchesCount,
     liveTournamentsCount,
     openRegistrationTournamentsCount,
-    openMatchesCount,
     chatTournaments,
     currentMatch: computed(() => {
       return myMatches.value.at(0);
@@ -505,7 +462,6 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
     subscribeToLiveMatches,
     subscribeToLiveTournaments,
     subscribeToOpenRegistrationTournaments,
-    subscribeToOpenMatches,
     subscribeToChatTournaments,
   };
 });

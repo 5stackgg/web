@@ -209,6 +209,8 @@ const inLobbyNotLeader = computed(
   () => !!useMatchmakingStore().currentLobby && !isPartyLeader.value,
 );
 
+const draftActionButtonHeightClasses = "h-9 max-sm:flex-1";
+
 const hasRehostPreset = ref(false);
 
 onMounted(() => {
@@ -320,24 +322,25 @@ const rehost = async () => {
           <Button
             v-if="hasRehostPreset"
             variant="outline"
-            class="gap-2 max-sm:flex-1"
+            :class="['gap-2', draftActionButtonHeightClasses]"
             :title="$t('draft_games.rehost_hint')"
             @click="rehost"
           >
             <RotateCcw class="w-4 h-4" />
             {{ $t("draft_games.rehost") }}
           </Button>
-          <button
+          <Button
             type="button"
             :class="[
               tacticalCtaButtonClasses,
-              'h-9 !px-4 !py-0 text-[0.7rem] max-sm:flex-1',
+              draftActionButtonHeightClasses,
+              '!px-4 !py-0 text-[0.7rem]',
             ]"
             @click="create"
           >
             <Plus class="w-4 h-4" />
             {{ $t("draft_games.create_custom_match") }}
-          </button>
+          </Button>
         </template>
       </div>
     </div>

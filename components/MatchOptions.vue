@@ -27,46 +27,40 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
       <div class="space-y-4">
         <slot name="left"></slot>
 
-        <Card>
-          <div class="grid grid-cols-1 gap-8 p-4">
-            <slot></slot>
+        <slot></slot>
 
-            <FormField
-              v-slot="{ componentField }"
-              name="type"
-              v-if="!stageBracketOverride"
+        <FormField
+          v-slot="{ componentField }"
+          name="type"
+          v-if="!stageBracketOverride"
+        >
+          <FormItem>
+            <SettingHeader>{{ $t("match.options.type.label") }}</SettingHeader>
+            <AnimatedFilters
+              :model-value="componentField.modelValue"
+              :options="
+                selectableMatchTypes.map((type) => ({
+                  key: type.value,
+                  label: type.value,
+                  disabled: isLocked,
+                }))
+              "
+              square
+              size="lg"
+              block
+              @update:model-value="
+                (value) => !isLocked && form.setFieldValue('type', value)
+              "
+            />
+            <p
+              v-if="selectedTypeDescription"
+              class="mt-1.5 text-[0.78rem] leading-snug text-muted-foreground"
             >
-              <FormItem>
-                <SettingHeader>{{
-                  $t("match.options.type.label")
-                }}</SettingHeader>
-                <AnimatedFilters
-                  :model-value="componentField.modelValue"
-                  :options="
-                    selectableMatchTypes.map((type) => ({
-                      key: type.value,
-                      label: type.value,
-                      disabled: isLocked,
-                    }))
-                  "
-                  square
-                  size="lg"
-                  block
-                  @update:model-value="
-                    (value) => !isLocked && form.setFieldValue('type', value)
-                  "
-                />
-                <p
-                  v-if="selectedTypeDescription"
-                  class="mt-1.5 text-[0.78rem] leading-snug text-muted-foreground"
-                >
-                  {{ selectedTypeDescription }}
-                </p>
-                <FormMessage />
-              </FormItem>
-            </FormField>
-          </div>
-        </Card>
+              {{ selectedTypeDescription }}
+            </p>
+            <FormMessage />
+          </FormItem>
+        </FormField>
       </div>
 
       <FormField name="map_pool" v-if="!stageBracketOverride">

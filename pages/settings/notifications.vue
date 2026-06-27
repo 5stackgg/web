@@ -68,7 +68,7 @@ const showSeparators = computed(
 
   <PageTransition :delay="100">
     <div class="space-y-6">
-      <!-- Chat Sound Notifications -->
+      <!-- Chat Sound -->
       <div
         class="flex flex-row items-center justify-between rounded-lg border p-4"
       >

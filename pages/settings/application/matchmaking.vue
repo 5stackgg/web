@@ -227,16 +227,21 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
         </SettingsSection>
 
         <SettingsSection
-          id="lineup"
-          :title="$t('pages.settings.application.lineup_section')"
+          id="draft-add-invite"
+          :title="
+            $t('pages.settings.application.draft_add_without_invite.title')
+          "
+          :description="
+            $t('pages.settings.application.draft_add_without_invite.description')
+          "
         >
           <FormField
             v-slot="{ componentField }"
-            name="public.lineup_add_without_invite"
+            name="public.draft_add_without_invite"
           >
             <FormItem>
               <FormLabel>{{
-                $t("pages.settings.application.lineup_add_without_invite")
+                $t("pages.settings.application.draft_add_without_invite.label")
               }}</FormLabel>
               <FormControl>
                 <Select v-bind="componentField">
@@ -249,7 +254,7 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
                     <SelectGroup>
                       <SelectItem
                         :value="role.value"
-                        v-for="role in lineupRoles"
+                        v-for="role in roles"
                         :key="role.value"
                       >
                         <span class="capitalize">{{ role.display }}</span>
@@ -311,10 +316,10 @@ export default {
               matchmaking_min_role: z
                 .string()
                 .default(e_player_roles_enum.user),
-              max_acceptable_latency: z.number().default(100),
-              lineup_add_without_invite: z
+              draft_add_without_invite: z
                 .string()
                 .default(e_player_roles_enum.user),
+              max_acceptable_latency: z.number().default(100),
             }),
           }),
         ),
@@ -478,15 +483,15 @@ export default {
                     value: (this.form.values as any).public.matchmaking_min_role,
                   },
                   {
+                    name: "public.draft_add_without_invite",
+                    value: (this.form.values as any).public
+                      .draft_add_without_invite,
+                  },
+                  {
                     name: "public.max_acceptable_latency",
                     value: String(
                       (this.form.values as any).public.max_acceptable_latency,
                     ),
-                  },
-                  {
-                    name: "public.lineup_add_without_invite",
-                    value: (this.form.values as any).public
-                      .lineup_add_without_invite,
                   },
                   {
                     name: "auto_cancel_duration",
@@ -542,23 +547,6 @@ export default {
         {
           value: e_player_roles_enum.administrator,
           display: this.$t("roles.administrator"),
-        },
-      ];
-    },
-    lineupRoles() {
-      return [
-        { value: e_player_roles_enum.user, display: this.$t("roles.user") },
-        {
-          value: e_player_roles_enum.verified_user,
-          display: this.$t("roles.verified_user"),
-        },
-        {
-          value: e_player_roles_enum.streamer,
-          display: this.$t("roles.streamer"),
-        },
-        {
-          value: e_player_roles_enum.match_organizer,
-          display: this.$t("roles.match_organizer"),
         },
       ];
     },

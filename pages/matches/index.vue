@@ -101,10 +101,12 @@ function optionRowClass(active: boolean) {
             tacticalHeaderActionClasses,
             'max-md:aspect-square max-md:!px-0',
           ]"
-          :title="$t('pages.matches.create')"
+          :title="$t('pages.matches.schedule.title')"
         >
           <PlusCircle class="w-4 h-4" />
-          <span class="hidden md:inline">{{ $t("pages.matches.create") }}</span>
+          <span class="hidden md:inline">{{
+            $t("pages.matches.schedule.title")
+          }}</span>
         </NuxtLink>
       </template>
     </TacticalPageHeader>

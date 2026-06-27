@@ -37,25 +37,6 @@ export default {
   },
   methods: {
     async addMember(steam_id: bigint) {
-      if (!this.canAddWithoutInvite && steam_id !== this.me.steam_id) {
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            insert_match_invites_one: [
-              {
-                object: {
-                  steam_id: steam_id,
-                  match_id: this.matchId,
-                },
-              },
-              {
-                __typename: true,
-              },
-            ],
-          }),
-        });
-        return;
-      }
-
       await this.$apollo.mutate({
         mutation: generateMutation({
           insert_match_lineup_players_one: [
@@ -71,14 +52,6 @@ export default {
           ],
         }),
       });
-    },
-  },
-  computed: {
-    me() {
-      return useAuthStore().me;
-    },
-    canAddWithoutInvite() {
-      return useApplicationSettingsStore().canAddWithoutInvite;
     },
   },
 };

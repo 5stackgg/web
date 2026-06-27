@@ -1,6 +1,5 @@
 import {
   $,
-  e_lobby_access_enum,
   e_map_pool_types_enum,
   e_player_roles_enum,
 } from "~/generated/zeus";
@@ -42,7 +41,6 @@ export const setupOptions = (
     auto_cancel_duration: options.auto_cancel_duration ?? null,
     live_match_timeout: options.live_match_timeout ?? null,
     match_mode: options.match_mode,
-    lobby_access: options.lobby_access ?? e_lobby_access_enum.Private,
     ...overrides,
   });
 };
@@ -71,7 +69,6 @@ export function setupOptionsVariables(
     match_mode: string;
     map_pool_id?: string;
     tv_delay: number;
-    lobby_access?: e_lobby_access_enum;
     map_pool?: {
       id: string;
     };
@@ -183,7 +180,6 @@ export function setupOptionsVariables(
     ready_setting: values.ready_setting,
     tech_timeout_setting: values.tech_timeout_setting,
     tv_delay: values.tv_delay,
-    lobby_access: values.lobby_access ?? e_lobby_access_enum.Private,
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       ? {
           check_in_setting: values.check_in_setting,
@@ -236,7 +232,6 @@ export function setupOptionsSetMutation(hasMapPoolId: boolean = true) {
     timeout_setting: $("timeout_setting", "e_timeout_settings_enum!"),
     tech_timeout_setting: $("tech_timeout_setting", "e_timeout_settings_enum!"),
     tv_delay: $("tv_delay", "Int!"),
-    lobby_access: $("lobby_access", "e_lobby_access_enum!"),
     ...(useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
       ? {
           check_in_setting: $("check_in_setting", "e_check_in_settings_enum!"),

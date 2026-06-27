@@ -53,7 +53,6 @@ const load = async () => {
           min_elo: true,
           max_elo: true,
           options: {
-            lobby_access: true,
             ...matchOptionsFields,
           },
         },

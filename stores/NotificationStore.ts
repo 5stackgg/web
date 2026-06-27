@@ -48,6 +48,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
 
   const team_invites = ref<any[]>([]);
   const tournament_team_invites = ref<any[]>([]);
+  const draft_invites = ref<any[]>([]);
   const notifications = ref<Notification[]>([]);
   const latestNewsArticle = ref<NewsArticle | null>(null);
   const lastReadNewsAt = ref<string | null>(null);
@@ -108,18 +109,43 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     }
   };
 
-  const hasNotifications = computed(() => {
-    if (unreadNewsArticle.value) {
-      return true;
-    }
-    if (team_invites.value.length > 0) {
-      return true;
-    }
-    if (tournament_team_invites.value.length > 0) {
-      return true;
-    }
-    return notifications.value.some((n) => !n.is_read);
-  });
+  // "Personal" (non-admin) items are the ones aimed at the player — invites and
+  // role=user notifications. These drive the orange, ringing bell + sound. Admin
+  // notifications (role above user) get a quieter indicator since admins tend to
+  // let them pile up.
+  const personalUnread = computed(
+    () =>
+      notifications.value.filter((n) => !n.is_read && n.role === "user").length,
+  );
+  const adminUnread = computed(
+    () =>
+      notifications.value.filter((n) => !n.is_read && n.role !== "user").length,
+  );
+
+  const hasPersonalNotifications = computed(
+    () =>
+      !!unreadNewsArticle.value ||
+      team_invites.value.length > 0 ||
+      tournament_team_invites.value.length > 0 ||
+      draft_invites.value.length > 0 ||
+      personalUnread.value > 0,
+  );
+
+  const hasAdminNotifications = computed(() => adminUnread.value > 0);
+
+  const unreadNotificationCount = computed(
+    () =>
+      (unreadNewsArticle.value ? 1 : 0) +
+      team_invites.value.length +
+      tournament_team_invites.value.length +
+      draft_invites.value.length +
+      personalUnread.value +
+      adminUnread.value,
+  );
+
+  const hasNotifications = computed(
+    () => hasPersonalNotifications.value || hasAdminNotifications.value,
+  );
 
   const stackedNotifications = computed<NotificationStackItem[]>(() => {
     const groups = new Map<string, Notification[]>();
@@ -256,6 +282,43 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     );
 
     subscribe(
+      "notifications:draft_invites",
+      getGraphqlClient()
+        .subscribe({
+          query: typedGql("subscription")({
+            draft_game_players: [
+              {
+                where: {
+                  steam_id: { _eq: $("steam_id", "bigint!") },
+                  status: { _eq: "Invited" },
+                  draft_game: {
+                    match_id: { _is_null: true },
+                    status: { _nin: ["Completed", "Canceled"] },
+                  },
+                },
+              },
+              {
+                draft_game_id: true,
+                status: true,
+                draft_game: {
+                  id: true,
+                  type: true,
+                  mode: true,
+                  host: { ...playerFields },
+                },
+              },
+            ],
+          }),
+          variables: { steam_id },
+        })
+        .subscribe({
+          next: ({ data }) => {
+            draft_invites.value = data.draft_game_players;
+          },
+        }),
+    );
+
+    subscribe(
       "notifications:notifications",
       getGraphqlClient()
         .subscribe({
@@ -367,6 +430,7 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
         const { unsubscribe } = useSubscriptionManager();
         unsubscribe("notifications:team_invites");
         unsubscribe("notifications:tournament_team_invites");
+        unsubscribe("notifications:draft_invites");
         unsubscribe("notifications:notifications");
         unsubscribe("notifications:latest_news");
         unsubscribe("notifications:news_read_state");
@@ -384,9 +448,13 @@ export const useNotificationStore = defineStore("notifaicationStore", () => {
     sendNotification,
     team_invites,
     tournament_team_invites,
+    draft_invites,
     notifications,
     stackedNotifications,
+    unreadNotificationCount,
     hasNotifications,
+    hasPersonalNotifications,
+    hasAdminNotifications,
     latestNewsArticle,
     unreadNewsArticle,
     markNewsRead,

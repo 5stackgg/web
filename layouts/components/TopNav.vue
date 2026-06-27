@@ -238,12 +238,6 @@ const loginArrowClasses =
                             <span :class="navItemLabelClasses">
                               {{ $t("layouts.top_nav.play.find_match") }}
                             </span>
-                            <span
-                              v-if="openMatchesCount > 0"
-                              :class="[navBadgeClasses, navBadgeInlineClasses]"
-                            >
-                              {{ openMatchesCount }}
-                            </span>
                           </NuxtLink>
                         </NavigationMenuLink>
                       </li>
@@ -777,11 +771,8 @@ export default {
         store.liveTournamentsCount + store.openRegistrationTournamentsCount
       );
     },
-    openMatchesCount() {
-      return useMatchLobbyStore().openMatchesCount;
-    },
     playTotalCount() {
-      return this.openMatchesCount + this.activeTournamentsCount;
+      return this.activeTournamentsCount;
     },
   },
   methods: {

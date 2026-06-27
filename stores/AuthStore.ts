@@ -160,7 +160,6 @@ export const useAuthStore = defineStore("auth", (): AuthStoreSetup => {
       useMatchLobbyStore().subscribeToLiveMatches();
       useMatchLobbyStore().subscribeToLiveTournaments();
       useMatchLobbyStore().subscribeToOpenRegistrationTournaments();
-      useMatchLobbyStore().subscribeToOpenMatches();
       // Chat-scoped tournaments (live & joined, or organizer)
       useMatchLobbyStore().subscribeToChatTournaments();
     }

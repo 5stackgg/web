@@ -344,7 +344,6 @@ import LineupMember from "~/components/match/LineupMember.vue";
 import { generateMutation } from "~/graphql/graphqlGen";
 import {
   $,
-  e_lobby_access_enum,
   e_match_status_enum,
   e_player_roles_enum,
 } from "~/generated/zeus";
@@ -610,15 +609,7 @@ export default {
         return false;
       }
 
-      if (this.canManageLineup) return true;
-
-      if (!this.me?.steam_id) return false;
-
-      return (
-        this.match.status === e_match_status_enum.PickingPlayers &&
-        this.member.steam_id === this.me.steam_id &&
-        this.match.options.lobby_access !== e_lobby_access_enum.Private
-      );
+      return this.canManageLineup;
     },
     me() {
       return useAuthStore().me;

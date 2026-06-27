@@ -7,12 +7,11 @@ import {
   ListChecks,
   Radio,
   Trophy,
-  UserPlusIcon,
   UsersIcon,
   X,
 } from "lucide-vue-next";
 import TimeAgo from "~/components/TimeAgo.vue";
-import { e_lobby_access_enum, e_match_status_enum } from "~/generated/zeus";
+import { e_match_status_enum } from "~/generated/zeus";
 import cleanMapName from "~/utilities/cleanMapName";
 import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
@@ -141,22 +140,6 @@ import MatchOverviewDrawer from "~/components/match/MatchOverviewDrawer.vue";
           <EloChangeBadge :elo-change="eloChange" />
         </div>
         <div class="flex items-center space-x-2 sm:space-x-3 flex-wrap gap-y-1">
-          <button
-            v-if="canJoinMatch"
-            type="button"
-            class="group/join relative inline-flex items-center isolate px-[0.7rem] py-[0.28rem] font-sans text-[0.68rem] font-bold tracking-[0.16em] uppercase text-[hsl(var(--tac-amber-foreground))] [background:linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)] border border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.35),0_4px_14px_-4px_hsl(var(--tac-amber)/0.5)] [transition:transform_180ms_cubic-bezier(0.4,0,0.2,1),box-shadow_180ms_ease] cursor-pointer overflow-hidden whitespace-nowrap hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.55),0_10px_24px_-4px_hsl(var(--tac-amber)/0.7),0_0_20px_hsl(var(--tac-amber)/0.3)] active:translate-y-0"
-            @click.stop="navigateToMatch(match.id, $event)"
-          >
-            <span class="relative z-[1] inline-flex items-center gap-[0.45rem]">
-              <UserPlusIcon class="h-3 w-3" />
-              <span>{{ $t("match.options.table.join") }}</span>
-            </span>
-            <span
-              class="absolute inset-0 [background:linear-gradient(90deg,transparent_0%,hsl(0_0%_100%/0.35)_50%,transparent_100%)] -translate-x-full [transition:transform_600ms_cubic-bezier(0.4,0,0.2,1)] pointer-events-none z-0 group-hover/join:translate-x-full"
-              aria-hidden="true"
-            ></span>
-          </button>
-
           <div
             class="flex items-center space-x-1 sm:space-x-2 text-xs sm:text-sm text-muted-foreground"
           >
@@ -1845,32 +1828,6 @@ export default {
       }
 
       return null;
-    },
-    isPartyLeader(): boolean {
-      const lobby = useMatchmakingStore().currentLobby as any;
-      if (!lobby) {
-        return true;
-      }
-      const me = lobby.players?.find((p: any) => {
-        return p.player.steam_id === useAuthStore().me?.steam_id;
-      });
-      return !!me?.captain;
-    },
-    canJoinMatch(): boolean {
-      const hasAvailableSpot =
-        (this.match.lineup_counts?.lineup_1_count ?? 0) <
-          this.match.max_players_per_lineup ||
-        (this.match.lineup_counts?.lineup_2_count ?? 0) <
-          this.match.max_players_per_lineup;
-
-      return (
-        this.isPartyLeader &&
-        this.match.status === e_match_status_enum.PickingPlayers &&
-        this.match.options.lobby_access === e_lobby_access_enum.Open &&
-        !this.match.lineup_1.is_on_lineup &&
-        !this.match.lineup_2.is_on_lineup &&
-        hasAvailableSpot
-      );
     },
   },
 };

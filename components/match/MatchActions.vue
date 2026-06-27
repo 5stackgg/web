@@ -13,7 +13,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import MatchLobbyAccess from "./MatchLobbyAccess.vue";
 import {
   e_match_status_enum,
   e_match_map_status_enum,
@@ -23,11 +22,6 @@ import {
 
 <template>
   <div class="flex gap-2 items-center" v-if="canAct">
-    <MatchLobbyAccess
-      :match="match"
-      v-if="match.status === e_match_status_enum.PickingPlayers"
-    />
-
     <Button
       v-if="canPauseResume"
       size="sm"

@@ -159,6 +159,11 @@ module.exports = {
           "0%": { transform: "translateX(-100%)" },
           "100%": { transform: "translateX(400%)" },
         },
+        bell: {
+          "0%, 50%, 100%": { transform: "rotate(0deg)" },
+          "5%, 15%, 25%, 35%": { transform: "rotate(12deg)" },
+          "10%, 20%, 30%, 40%": { transform: "rotate(-12deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -174,6 +179,7 @@ module.exports = {
         "soft-pulse": "soft-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "ping-slow": "ping-slow 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "upload-pulse": "upload-pulse 1.4s linear infinite",
+        bell: "bell 1.4s ease-in-out infinite",
       },
       transitionDelay: {
         100: "100ms",

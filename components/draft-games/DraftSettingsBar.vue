@@ -29,13 +29,14 @@ const { t } = useI18n();
 
 const me = computed(() => useAuthStore().me);
 const isHost = computed(() => me.value?.steam_id === props.room.host_steam_id);
+const isOrganizer = computed(() => !!props.room.is_organizer);
 const isActive = computed(
   () => !["Completed", "Canceled"].includes(props.room.status),
 );
 const notStarted = computed(
   () => !props.room.match_id && props.room.status === "Open",
 );
-const canEdit = computed(() => isHost.value && notStarted.value);
+const canEdit = computed(() => isOrganizer.value && notStarted.value);
 
 const accepted = computed(() =>
   (props.room.players || []).filter((p: any) => p.status === "Accepted"),
@@ -79,8 +80,8 @@ const urgent = computed(
 );
 const showTimeGauge = showCountdown;
 
-const canExtend = computed(() => isHost.value && showCountdown.value);
-const canCancel = computed(() => isHost.value && notStarted.value);
+const canExtend = computed(() => isOrganizer.value && showCountdown.value);
+const canCancel = computed(() => isOrganizer.value && notStarted.value);
 
 const extend = async () => {
   try {
@@ -202,7 +203,7 @@ const settings = computed(() => {
 
 const showInvite = computed(
   () =>
-    isHost.value &&
+    isOrganizer.value &&
     !props.room.match_id &&
     isActive.value &&
     props.room.access === "Invite" &&

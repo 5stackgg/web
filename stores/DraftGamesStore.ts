@@ -16,6 +16,7 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
   const draftGameFields = {
     id: true,
     host_steam_id: true,
+    is_organizer: true,
     status: true,
     created_at: true,
     type: true,
@@ -154,7 +155,12 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
               },
               _or: [
                 { host_steam_id: { _eq: steamId } },
-                { players: { steam_id: { _eq: steamId } } },
+                {
+                  players: {
+                    steam_id: { _eq: steamId },
+                    status: { _neq: "Invited" },
+                  },
+                },
               ],
             },
           },
@@ -505,13 +511,25 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
   const add = (draftGameId: string, steamId: string) =>
     getGraphqlClient().mutate({
       mutation: gql`
-        mutation AddDraftPlayer($object: draft_game_players_insert_input!) {
-          insert_draft_game_players_one(object: $object) {
-            draft_game_id
+        mutation AddDraftPlayer($draftGameId: uuid!, $steamId: String!) {
+          addDraftPlayer(draftGameId: $draftGameId, steamId: $steamId) {
+            success
           }
         }
       `,
-      variables: { object: { draft_game_id: draftGameId, steam_id: steamId } },
+      variables: { draftGameId, steamId },
+    });
+
+  const respondInvite = (draftGameId: string, accept: boolean) =>
+    getGraphqlClient().mutate({
+      mutation: gql`
+        mutation RespondDraftInvite($draftGameId: uuid!, $accept: Boolean!) {
+          respondDraftInvite(draftGameId: $draftGameId, accept: $accept) {
+            success
+          }
+        }
+      `,
+      variables: { draftGameId, accept },
     });
 
   const kick = (draftGameId: string, steamId: string) =>
@@ -539,6 +557,40 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
           update_draft_game_players_by_pk(
             pk_columns: { draft_game_id: $draftGameId, steam_id: $steamId }
             _set: { status: Accepted }
+          ) {
+            draft_game_id
+          }
+        }
+      `,
+      variables: { draftGameId, steamId },
+    });
+
+  const setCaptain = (draftGameId: string, steamId: string, lineup: number) =>
+    getGraphqlClient().mutate({
+      mutation: gql`
+        mutation SetDraftCaptain(
+          $draftGameId: uuid!
+          $steamId: bigint!
+          $lineup: Int!
+        ) {
+          update_draft_game_players_by_pk(
+            pk_columns: { draft_game_id: $draftGameId, steam_id: $steamId }
+            _set: { is_captain: true, lineup: $lineup, pick_order: 0 }
+          ) {
+            draft_game_id
+          }
+        }
+      `,
+      variables: { draftGameId, steamId, lineup },
+    });
+
+  const clearCaptain = (draftGameId: string, steamId: string) =>
+    getGraphqlClient().mutate({
+      mutation: gql`
+        mutation ClearDraftCaptain($draftGameId: uuid!, $steamId: bigint!) {
+          update_draft_game_players_by_pk(
+            pk_columns: { draft_game_id: $draftGameId, steam_id: $steamId }
+            _set: { is_captain: false, lineup: null, pick_order: null }
           ) {
             draft_game_id
           }
@@ -593,8 +645,11 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
     start,
     pick,
     add,
+    respondInvite,
     kick,
     teamAssign,
+    setCaptain,
+    clearCaptain,
     approve,
     deny,
   };

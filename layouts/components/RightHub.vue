@@ -32,12 +32,13 @@ const {
   rightSidebarOpen,
   startHoverPeek,
   endHoverPeek,
+  hoverCloseSuspended,
   isPinned,
   togglePin,
 } = useRightSidebar();
 const { activeHub, selectHub } = useHubState();
 const { unreadCounts } = useChatTabs();
-const { hasNotifications } = useNotificationBadge();
+const { hasNotifications, unreadNotificationCount } = useNotificationBadge();
 const { hasSocialInvites, hasLobbyInvites } = useInvites();
 const isMobile = useMediaQuery("(max-width: 768px)");
 const isMedium = useMediaQuery("(max-width: 1400px)");
@@ -96,25 +97,66 @@ const showIndicator = computed(
   () => activeHub.value && rightSidebarOpen.value && indicatorHeight.value > 0,
 );
 
-function onMouseEnter() {
+const isPointerInsideHub = ref(false);
+
+function clearCloseTimer() {
   if (closeTimer) {
     clearTimeout(closeTimer);
     closeTimer = null;
   }
+}
+
+function queueHoverClose() {
+  clearCloseTimer();
+  closeTimer = setTimeout(() => {
+    if (!hoverCloseSuspended.value) {
+      endHoverPeek();
+    }
+    closeTimer = null;
+  }, 150);
+}
+
+function onMouseEnter() {
+  isPointerInsideHub.value = true;
+  clearCloseTimer();
   if (showHoverBehavior.value) startHoverPeek();
 }
 
-function onMouseLeave() {
-  if (showHoverBehavior.value) {
-    closeTimer = setTimeout(() => {
-      endHoverPeek();
-      closeTimer = null;
-    }, 150);
+function onMouseLeave(event: MouseEvent) {
+  isPointerInsideHub.value = false;
+  if (!showHoverBehavior.value) return;
+
+  const nextTarget = event.relatedTarget;
+  if (
+    hoverCloseSuspended.value ||
+    (nextTarget instanceof Element &&
+      nextTarget.closest("[data-right-hub-interactive]"))
+  ) {
+    clearCloseTimer();
+    return;
   }
+
+  queueHoverClose();
 }
+
+watch(hoverCloseSuspended, (suspended) => {
+  if (suspended) {
+    clearCloseTimer();
+    return;
+  }
+
+  if (!isPointerInsideHub.value && showHoverBehavior.value) {
+    queueHoverClose();
+  }
+});
 
 const totalUnread = computed(() =>
   Object.values(unreadCounts.value).reduce((sum, n) => sum + (n || 0), 0),
+);
+const notificationBadgeLabel = computed(() =>
+  unreadNotificationCount.value > 99
+    ? "99+"
+    : String(unreadNotificationCount.value),
 );
 
 // Track which hubs have been mounted so panels stay in DOM after first visit
@@ -270,15 +312,17 @@ function onHubTouchEnd(e: TouchEvent) {
           <span class="relative inline-flex">
             <Bell
               class="w-5 h-5"
-              :class="{ 'animate-bell': hasNotifications }"
+              :class="{ 'animate-bell origin-top': hasNotifications }"
             />
             <span v-if="hasNotifications" class="absolute -top-1 -right-1 flex">
               <span
                 class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
               />
               <span
-                class="relative inline-flex rounded-full h-2 w-2 bg-red-500"
-              />
+                class="relative inline-flex min-w-4 h-4 items-center justify-center rounded-full bg-red-500 px-1 text-[0.625rem] font-bold leading-none text-white shadow-sm ring-1 ring-background"
+              >
+                {{ notificationBadgeLabel }}
+              </span>
             </span>
           </span>
         </button>

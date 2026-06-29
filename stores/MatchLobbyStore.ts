@@ -353,12 +353,6 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
               can_pick_map_veto: true,
               can_pick_region_veto: true,
             },
-            invites: [
-              {},
-              {
-                steam_id: true,
-              },
-            ],
             draft_games: [
               {},
               {
@@ -390,6 +384,11 @@ export const useMatchLobbyStore = defineStore("matchLobby", () => {
               new Date(match.scheduled_at).getTime() <= cutoff
             );
           });
+        },
+        error: (err: any) => {
+          // Surfaces silent schema drift — a bad field here kills the whole
+          // subscription, leaving myMatches empty (e.g. the removed `invites`).
+          console.error("[myMatches] subscription error:", err);
         },
       }),
     );

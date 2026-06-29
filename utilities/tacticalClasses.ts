@@ -55,7 +55,7 @@ export const tacticalHeaderActionClasses =
 // Tactical veto tile — rounded frame for map/region pick-ban tiles.
 // Combine the base with hover + active + disabled as needed.
 export const vetoTileClasses =
-  "relative w-full cursor-pointer overflow-hidden rounded-xl border border-border bg-card/40 [backdrop-filter:blur(6px)] transition-[border-color,transform,box-shadow] duration-150";
+  "relative w-full cursor-pointer overflow-hidden rounded-xl border border-border bg-card/40 [backdrop-filter:blur(6px)] transition-[border-color,transform,box-shadow,opacity,filter] duration-200";
 
 export const vetoTileHoverClasses =
   "hover:-translate-y-px hover:border-[hsl(var(--tac-amber)/0.45)]";

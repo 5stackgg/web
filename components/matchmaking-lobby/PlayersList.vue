@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import PlayerDisplay from "~/components/PlayerDisplay.vue";
-import { Separator } from "~/components/ui/separator";
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
 import {
@@ -8,12 +6,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { Search, Check, Ban, RefreshCw } from "lucide-vue-next";
-import FriendOptions from "~/components/matchmaking-lobby/FriendOptions.vue";
+import { Search, RefreshCw } from "lucide-vue-next";
+import FriendListItem from "~/components/matchmaking-lobby/FriendListItem.vue";
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 p-2">
+  <div class="flex flex-col gap-3 p-2">
     <div class="flex items-center gap-2">
       <div class="relative flex-1">
         <Search class="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -44,121 +42,92 @@ import FriendOptions from "~/components/matchmaking-lobby/FriendOptions.vue";
         </TooltipContent>
       </Tooltip>
     </div>
-    <div class="overflow-auto">
-      <div class="flex flex-col gap-4">
-        <div v-if="friendsOnly && pendingFriends?.length > 0">
-          <div class="mb-2 font-medium text-sm">
-            {{ $t("matchmaking.friends.pending_requests") }}
-          </div>
-          <template v-for="player in pendingFriends" :key="player.steam_id">
-            <template v-if="player.invited_by_steam_id === me.steam_id">
-              <FriendOptions :player="player" :displayStatus="false">
-                <div class="flex items-center justify-between">
-                  <PlayerDisplay
-                    class="w-full cursor-pointer opacity-50 hover:opacity-80 hover:bg-muted/50 transition-all duration-200 p-2 rounded-md"
-                    :player="player"
-                    :showOnline="false"
-                    :linkable="true"
-                  />
-                  <div class="flex flex-col gap-2">
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      @click="denyFriend(player.steam_id)"
-                    >
-                      <Ban class="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </FriendOptions>
-            </template>
-            <div class="flex items-center justify-between" v-else>
-              <PlayerDisplay
-                :player="player"
-                :showOnline="false"
-                :linkable="true"
-              />
 
-              <div class="flex flex-col gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  @click="acceptFriend(player.steam_id)"
-                >
-                  <Check class="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  @click="denyFriend(player.steam_id)"
-                >
-                  <Ban class="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </template>
+    <div class="flex flex-col gap-4">
+      <!-- Incoming friend requests (friends tab) -->
+      <section v-if="friendsOnly && incomingRequests.length > 0">
+        <div class="friend-section-label text-[hsl(var(--tac-amber))]">
+          <span class="h-[2px] w-2 bg-[hsl(var(--tac-amber))]" />
+          {{ $t("matchmaking.friends.incoming_requests") }}
+          <span class="ml-auto tabular-nums opacity-70">
+            {{ incomingRequests.length }}
+          </span>
         </div>
+        <TransitionGroup name="friend-row" tag="div" class="flex flex-col">
+          <FriendListItem
+            v-for="player in incomingRequests"
+            :key="player.steam_id"
+            :player="player"
+          />
+        </TransitionGroup>
+      </section>
 
-        <div v-if="filteredOnlinePlayers?.length > 0">
-          <div class="mb-2 font-medium text-sm">
-            {{ $t("common.online") }}
-            <span class="text-muted-foreground">
-              ({{ filteredOnlinePlayers.length }})
-            </span>
-          </div>
-          <div v-for="player in filteredOnlinePlayers" :key="player.steam_id">
-            <FriendOptions :player="player">
-              <div class="flex items-center justify-between">
-                <PlayerDisplay
-                  class="w-full cursor-pointer hover:opacity-80 hover:bg-muted/50 transition-all duration-200 p-2 rounded-md"
-                  :player="player"
-                  :showOnline="false"
-                  :showAddFriend="true"
-                  :linkable="true"
-                />
-              </div>
-            </FriendOptions>
-          </div>
+      <!-- Online -->
+      <section v-if="filteredOnlinePlayers.length > 0">
+        <div class="friend-section-label">
+          <span class="relative flex h-2 w-2">
+            <span
+              class="absolute inline-flex h-full w-full rounded-full bg-green-500/60 animate-ping"
+            />
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+          </span>
+          {{ $t("common.online") }}
+          <span class="ml-auto tabular-nums opacity-70">
+            {{ filteredOnlinePlayers.length }}
+          </span>
         </div>
+        <TransitionGroup name="friend-row" tag="div" class="flex flex-col">
+          <FriendListItem
+            v-for="player in filteredOnlinePlayers"
+            :key="player.steam_id"
+            :player="player"
+          />
+        </TransitionGroup>
+      </section>
 
-        <template v-if="friendsOnly">
-          <Separator v-if="filteredOnlinePlayers?.length > 0" />
+      <!-- Offline (friends tab only) -->
+      <section v-if="friendsOnly && filteredOfflinePlayers.length > 0">
+        <div class="friend-section-label">
+          <span class="h-2 w-2 rounded-full bg-muted-foreground/40" />
+          {{ $t("common.offline") }}
+          <span class="ml-auto tabular-nums opacity-70">
+            {{ filteredOfflinePlayers.length }}
+          </span>
+        </div>
+        <TransitionGroup name="friend-row" tag="div" class="flex flex-col">
+          <FriendListItem
+            v-for="player in filteredOfflinePlayers"
+            :key="player.steam_id"
+            :player="player"
+            :muted="true"
+          />
+        </TransitionGroup>
+      </section>
 
-          <div>
-            <div class="mb-2 font-medium text-sm">
-              {{ $t("common.offline") }}
-              <span class="text-muted-foreground">
-                ({{ filteredOfflinePlayers.length }})
-              </span>
-            </div>
-            <template
-              v-for="player in filteredOfflinePlayers"
-              :key="player.steam_id"
-            >
-              <FriendOptions :player="player">
-                <div class="flex items-center justify-between">
-                  <PlayerDisplay
-                    class="w-full opacity-50 cursor-pointer hover:opacity-80 hover:bg-muted/50 transition-all duration-200 p-2 rounded-md"
-                    :player="player"
-                    :showOnline="false"
-                    :showAddFriend="true"
-                    :linkable="true"
-                  />
-                </div>
-              </FriendOptions>
-            </template>
-          </div>
+      <!-- Sent requests (friends tab only) -->
+      <section v-if="friendsOnly && outgoingRequests.length > 0">
+        <div class="friend-section-label">
+          <span class="h-2 w-2 rounded-full bg-muted-foreground/40" />
+          {{ $t("matchmaking.friends.sent_requests") }}
+          <span class="ml-auto tabular-nums opacity-70">
+            {{ outgoingRequests.length }}
+          </span>
+        </div>
+        <TransitionGroup name="friend-row" tag="div" class="flex flex-col">
+          <FriendListItem
+            v-for="player in outgoingRequests"
+            :key="player.steam_id"
+            :player="player"
+            :muted="true"
+          />
+        </TransitionGroup>
+      </section>
 
-          <div
-            v-if="
-              filteredOnlinePlayers?.length === 0 &&
-              filteredOfflinePlayers?.length === 0
-            "
-            class="text-sm text-muted-foreground text-center py-8"
-          >
-            {{ $t("player.search.no_players_found") }}
-          </div>
-        </template>
+      <div
+        v-if="isEmpty"
+        class="py-8 text-center text-sm text-muted-foreground"
+      >
+        {{ $t("player.search.no_players_found") }}
       </div>
     </div>
   </div>
@@ -166,6 +135,14 @@ import FriendOptions from "~/components/matchmaking-lobby/FriendOptions.vue";
 
 <script lang="ts">
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
+
+function matchesSearch(player: any, query: string) {
+  const q = query.toLowerCase();
+  return (
+    player.name?.toLowerCase().includes(q) ||
+    String(player.steam_id ?? "").includes(query)
+  );
+}
 
 export default {
   props: {
@@ -176,15 +153,13 @@ export default {
   },
   data() {
     return {
-      allPlayers: [] as any[],
-      loading: false,
       searchQuery: "",
       syncing: false,
     };
   },
   computed: {
     friends() {
-      return useMatchmakingStore().friends;
+      return useMatchmakingStore().friends as any[];
     },
     me() {
       return useAuthStore().me;
@@ -198,92 +173,74 @@ export default {
     offlineFriends() {
       return useMatchmakingStore().offlineFriends;
     },
+    incomingRequests(): any[] {
+      if (!this.friendsOnly) return [];
+      return this.friends.filter(
+        (f: any) =>
+          f.status === "Pending" &&
+          String(f.invited_by_steam_id) !== String(this.me?.steam_id) &&
+          matchesSearch(f, this.searchQuery),
+      );
+    },
+    outgoingRequests(): any[] {
+      if (!this.friendsOnly) return [];
+      return this.friends.filter(
+        (f: any) =>
+          f.status === "Pending" &&
+          String(f.invited_by_steam_id) === String(this.me?.steam_id) &&
+          matchesSearch(f, this.searchQuery),
+      );
+    },
     filteredOnlinePlayers() {
       if (this.friendsOnly) {
-        return this.onlineFriends.filter((player: any) => {
-          return (
-            player.name
-              ?.toLowerCase()
-              .includes(this.searchQuery.toLowerCase()) ||
-            player.steam_id?.includes(this.searchQuery)
-          );
-        });
+        return this.onlineFriends.filter((p: any) =>
+          matchesSearch(p, this.searchQuery),
+        );
       }
 
+      // Others tab: online players who aren't me and aren't an accepted friend
+      // or an incoming request. Outgoing requests STAY here so adding someone
+      // doesn't make them jump out of the list mid-action.
       return this.onlinePlayers.filter((player: any) => {
-        return (
-          player.steam_id !== this.me.steam_id &&
-          !this.friends?.some((f: any) => f.steam_id === player.steam_id) &&
-          (player.name
-            ?.toLowerCase()
-            .includes(this.searchQuery.toLowerCase()) ||
-            player.steam_id?.includes(this.searchQuery))
+        if (String(player.steam_id) === String(this.me?.steam_id)) return false;
+
+        const entry = this.friends?.find(
+          (f: any) => String(f.steam_id) === String(player.steam_id),
         );
+        if (entry) {
+          if (entry.status !== "Pending") return false;
+          const outgoing =
+            String(entry.invited_by_steam_id) === String(this.me?.steam_id);
+          if (!outgoing) return false;
+        }
+
+        return matchesSearch(player, this.searchQuery);
       });
     },
     filteredOfflinePlayers() {
+      if (!this.friendsOnly) return [];
+      return this.offlineFriends.filter((p: any) =>
+        matchesSearch(p, this.searchQuery),
+      );
+    },
+    isEmpty(): boolean {
       if (this.friendsOnly) {
-        return this.offlineFriends.filter((player: any) => {
-          return (
-            player.name
-              ?.toLowerCase()
-              .includes(this.searchQuery.toLowerCase()) ||
-            player.steam_id?.includes(this.searchQuery)
-          );
-        });
+        return (
+          this.incomingRequests.length === 0 &&
+          this.filteredOnlinePlayers.length === 0 &&
+          this.filteredOfflinePlayers.length === 0 &&
+          this.outgoingRequests.length === 0
+        );
       }
-
-      return [];
+      return this.filteredOnlinePlayers.length === 0;
     },
     searchPlaceholder() {
       return this.friendsOnly
         ? this.$t("matchmaking.friends.search_placeholder")
         : this.$t("player.search.placeholder");
     },
-    pendingFriends(): any[] {
-      if (!this.friendsOnly) return [];
-      return this.friends.filter((friend: any) => {
-        return friend.status === "Pending";
-      });
-    },
   },
   methods: {
-    async acceptFriend(steam_id: string) {
-      await (this as any).$apollo.mutate({
-        mutation: typedGql("mutation")({
-          update_my_friends: [
-            {
-              where: {
-                steam_id: {
-                  _eq: steam_id,
-                },
-              },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-    },
-    async denyFriend(steam_id: string) {
-      await (this as any).$apollo.mutate({
-        mutation: typedGql("mutation")({
-          delete_my_friends: [
-            {
-              where: {
-                steam_id: {
-                  _eq: steam_id,
-                },
-              },
-            },
-            {
-              __typename: true,
-            },
-          ],
-        }),
-      });
-    },
     async syncSteamFriends() {
       this.syncing = true;
       try {
@@ -304,3 +261,37 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.friend-section-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+
+/* Animated list rows */
+.friend-row-move,
+.friend-row-enter-active,
+.friend-row-leave-active {
+  transition: all 0.25s ease;
+}
+.friend-row-enter-from {
+  opacity: 0;
+  transform: translateX(0.5rem);
+}
+.friend-row-leave-to {
+  opacity: 0;
+  transform: translateX(0.5rem);
+}
+.friend-row-leave-active {
+  position: absolute;
+  width: 100%;
+}
+</style>

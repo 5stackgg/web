@@ -111,6 +111,7 @@ export default {
   data() {
     return {
       acknowledgedKey: null as string | null,
+      visitedMatchId: null as string | null,
     };
   },
   computed: {
@@ -149,7 +150,11 @@ export default {
       if (this.acknowledgedKey && this.acknowledgedKey === this.matchKey) {
         return false;
       }
-      return this.showPref || this.manuallyOpened;
+      // If they were on the match (or draft) page and navigated away, don't
+      // auto-nag them — they already know. Manual open still works.
+      const autoShow =
+        this.showPref && this.visitedMatchId !== this.match.id;
+      return autoShow || this.manuallyOpened;
     },
     statusLabel(): string {
       return (
@@ -175,6 +180,14 @@ export default {
       if (next !== prev && this.acknowledgedKey !== next) {
         this.acknowledgedKey = null;
       }
+    },
+    isOnMatchPage: {
+      immediate: true,
+      handler(onPage: boolean) {
+        if (onPage && this.match) {
+          this.visitedMatchId = this.match.id;
+        }
+      },
     },
   },
   methods: {

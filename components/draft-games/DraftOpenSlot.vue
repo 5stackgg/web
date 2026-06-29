@@ -20,6 +20,8 @@ const onSelected = (player: { steam_id: string }) => {
     <PlayerSearch
       :label="$t('draft_games.room.search_player')"
       :exclude="exclude"
+      :group-by-friends="true"
+      :self="true"
       @selected="onSelected"
     >
       <button type="button" class="open-slot">

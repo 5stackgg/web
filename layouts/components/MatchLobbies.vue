@@ -49,8 +49,8 @@ const isElevatedUser = computed(() =>
     </template>
   </div>
 
-  <template v-if="currentLobby">
-    <div class="flex items-center">
+  <Transition name="lobby-nav" mode="out-in">
+    <div v-if="currentLobby" key="lobby" class="flex items-center">
       <Transition
         enter-active-class="transition-all duration-300 ease-out"
         leave-active-class="transition-all duration-200 ease-in"
@@ -77,23 +77,24 @@ const isElevatedUser = computed(() =>
 
       <MatchLobby :lobby="currentLobby" />
     </div>
-  </template>
 
-  <template v-else>
     <Button
+      v-else
+      key="create"
+      variant="ghost"
       @click="createLobby"
       :loading="creatingLobby"
       size="default"
-      class="relative group h-12 overflow-hidden rounded bg-transparent px-5 text-white shadow-lg hover:shadow transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
+      class="relative group h-12 overflow-hidden rounded bg-transparent px-5 text-[hsl(var(--tac-amber))] shadow-lg hover:bg-transparent hover:text-[hsl(var(--tac-amber))] hover:shadow transition-all duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--tac-amber))]"
     >
       <span
-        class="absolute inset-0 rounded p-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
+        class="absolute inset-0 rounded p-[1.5px] bg-[linear-gradient(135deg,hsl(40_58%_60%)_0%,hsl(33_62%_55%)_50%,hsl(24_56%_52%)_100%)]"
       >
-        <span class="block h-full w-full bg-zinc-900/90"></span>
+        <span class="block h-full w-full rounded-[2.5px] bg-zinc-900/90"></span>
       </span>
 
       <span
-        class="pointer-events-none absolute inset-0 rounded bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 ease-out"
+        class="pointer-events-none absolute inset-0 rounded bg-[hsl(var(--tac-amber)/0.12)] opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 ease-out"
       ></span>
 
       <div class="relative flex items-center gap-2 z-10">
@@ -103,7 +104,7 @@ const isElevatedUser = computed(() =>
         }}</span>
       </div>
     </Button>
-  </template>
+  </Transition>
 </template>
 
 <script lang="ts">
@@ -230,11 +231,16 @@ export default {
       return useApplicationSettingsStore().canCreateMatch;
     },
     currentMatch() {
-      if (!this.matchId) {
+      const matches = this.myMatches as any[];
+      if (matches.length === 0) {
+        return undefined;
       }
-      return (this.myMatches as any[]).find((match) => {
-        return match.id === this.matchId;
-      });
+      // Honor an explicit selection (multi-match switcher), but always fall
+      // back to the most relevant match so the selector renders whenever the
+      // user is in a match — even before `viewingMatchId` has been set.
+      return (
+        matches.find((match) => match.id === this.matchId) ?? matches.at(0)
+      );
     },
     onMatchPage() {
       return this.$route.path === `/matches/${this.currentMatch?.id}`;
@@ -274,7 +280,7 @@ export default {
         id,
         label:
           match.label ||
-          `${match.lineup_1?.name ?? "TBD"} vs ${match.lineup_2?.name ?? "TBD"}`,
+          `${match.lineup_1?.name ?? this.$t("common.tbd")} vs ${match.lineup_2?.name ?? this.$t("common.tbd")}`,
         instance: "match",
         type: "match",
         lobbyId: match.id,
@@ -289,3 +295,25 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Header lobby nav: create-button ↔ lobby-bar swap */
+.lobby-nav-enter-active {
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lobby-nav-leave-active {
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s ease;
+}
+.lobby-nav-enter-from {
+  opacity: 0;
+  transform: translateY(6px) scale(0.96);
+}
+.lobby-nav-leave-to {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.96);
+}
+</style>

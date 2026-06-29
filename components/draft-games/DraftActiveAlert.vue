@@ -40,6 +40,21 @@ const isOnDraftPage = computed(() => route.path.startsWith("/draft-room"));
 
 const acknowledgedKey = ref<string | null>(null);
 
+// Track rooms the user has actually opened the draft page for. If they were on
+// the draft page (e.g. landed on it) and then navigated away, we don't nag them
+// with the alert — they already know they're in the room.
+const visitedRoomId = ref<string | null>(null);
+
+watch(
+  [isOnDraftPage, draftGameId],
+  ([onPage, id]) => {
+    if (onPage && id) {
+      visitedRoomId.value = id;
+    }
+  },
+  { immediate: true },
+);
+
 watch(roomKey, (next) => {
   if (next !== acknowledgedKey.value) {
     acknowledgedKey.value = null;
@@ -50,6 +65,7 @@ const rawShow = computed(
   () =>
     isAlertable.value &&
     !isOnDraftPage.value &&
+    visitedRoomId.value !== draftGameId.value &&
     acknowledgedKey.value !== roomKey.value,
 );
 

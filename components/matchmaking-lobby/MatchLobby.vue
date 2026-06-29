@@ -10,32 +10,19 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
   <div
     class="relative flex items-center justify-between gap-2 bg-background rounded-full px-2 py-1 border border-gray-700 h-12"
   >
-    <span
-      class="pointer-events-none absolute -top-1 -left-1 z-[60] flex h-4 min-w-[1rem] items-center justify-center rounded-full border border-background bg-[hsl(var(--tac-amber))] px-1 text-[0.6rem] font-bold leading-none text-black tabular-nums shadow"
-      :title="
-        pendingCount > 0
-          ? `${$t('matchmaking.lobby.member_count', { count: memberCount })} · ${$t('matchmaking.lobby.pending_count', { count: pendingCount })}`
-          : $t('matchmaking.lobby.member_count', { count: memberCount })
-      "
-    >
-      {{ memberCount }}
-    </span>
-
     <MatchmakingLobbyAccess :lobby="lobby" v-if="isCaptain" />
 
-    <div class="flex items-center -space-x-2">
-      <template
+    <TransitionGroup tag="div" name="avatar" class="flex items-center -space-x-2">
+      <div
         v-for="(player, index) of lobby?.players"
         :key="player.player.steam_id"
+        class="relative group transition-transform hover:scale-110 hover:z-10"
+        :class="{
+          'animate-pulse': player.status === 'Invited',
+        }"
+        :style="{ zIndex: index }"
       >
-        <div
-          class="relative group transition-transform hover:scale-110 hover:z-10"
-          :class="{
-            'animate-pulse': player.status === 'Invited',
-          }"
-          :style="{ zIndex: index }"
-        >
-          <div class="relative">
+        <div class="relative">
             <FiveStackToolTip>
               <template #trigger>
                 <PlayerDisplay
@@ -63,9 +50,8 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
               <XIcon class="h-3 w-3" />
             </Button>
           </div>
-        </div>
-      </template>
-    </div>
+      </div>
+    </TransitionGroup>
 
     <div class="flex items-center gap-2">
       <slot name="actions">
@@ -135,16 +121,6 @@ export default {
       });
       return me?.captain;
     },
-    memberCount() {
-      return (this.lobby?.players ?? []).filter(
-        (player: any) => player.status !== "Invited",
-      ).length;
-    },
-    pendingCount() {
-      return (this.lobby?.players ?? []).filter(
-        (player: any) => player.status === "Invited",
-      ).length;
-    },
   },
   methods: {
     openPlayerSearch() {
@@ -179,3 +155,28 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Lobby avatars adding / removing */
+.avatar-enter-active {
+  transition:
+    opacity 0.25s ease,
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.avatar-leave-active {
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+.avatar-enter-from {
+  opacity: 0;
+  transform: scale(0.3) translateY(4px);
+}
+.avatar-leave-to {
+  opacity: 0;
+  transform: scale(0.3);
+}
+.avatar-move {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+</style>

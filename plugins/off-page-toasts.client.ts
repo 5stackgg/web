@@ -1,6 +1,5 @@
-export default defineNuxtPlugin(() => {
-  const app = useNuxtApp();
-  app.hook("app:mounted", () => {
-    useOffPageToasts();
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.hook("app:mounted", () => {
+    nuxtApp.runWithContext(() => useOffPageToasts());
   });
 });

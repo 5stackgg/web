@@ -21,12 +21,20 @@ const otherOnlineCount = computed(() => {
   const friends = matchmakingStore.friends;
 
   return matchmakingStore.playersOnline.filter((player: any) => {
-    if (me && player.steam_id === me.steam_id) {
+    if (me && String(player.steam_id) === String(me.steam_id)) {
       return false;
     }
 
-    if (friends?.some((f: any) => f.steam_id === player.steam_id)) {
-      return false;
+    // Mirror PlayersList "Others" filter: accepted friends and incoming
+    // requests live in the Friends tab; outgoing requests stay here.
+    const entry = friends?.find(
+      (f: any) => String(f.steam_id) === String(player.steam_id),
+    );
+    if (entry) {
+      if (entry.status !== "Pending") return false;
+      if (String(entry.invited_by_steam_id) !== String(me?.steam_id)) {
+        return false;
+      }
     }
 
     return true;

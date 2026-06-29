@@ -29,8 +29,8 @@ const { hasLobbyInvites } = useInvites();
       <!-- Scrollable main content (invites + squad) -->
       <div class="flex-[3] min-h-0 flex flex-col gap-4 overflow-y-auto">
         <!-- Lobby invites -->
-        <template v-if="hasLobbyInvites">
-          <div class="flex flex-col gap-3">
+        <Transition name="lobby-item">
+          <div v-if="hasLobbyInvites" class="flex flex-col gap-3">
             <div
               class="inline-flex items-center gap-[0.35rem] text-[0.68rem] font-semibold tracking-[0.12em] uppercase text-muted-foreground"
             >
@@ -40,11 +40,12 @@ const { hasLobbyInvites } = useInvites();
             <LobbyInvites />
             <Separator class="my-3 opacity-60" />
           </div>
-        </template>
+        </Transition>
 
-        <!-- Matchmaking lobby -->
-        <template v-if="currentLobby">
-          <div class="flex flex-col gap-3">
+        <!-- Squad ↔ create-lobby swap -->
+        <Transition name="lobby-swap" mode="out-in" @after-enter="onSquadEntered">
+          <!-- Matchmaking lobby -->
+          <div v-if="currentLobby" key="squad" class="flex flex-col gap-3">
             <div class="flex items-start justify-between gap-3">
               <div class="flex flex-col gap-1">
                 <div
@@ -72,22 +73,21 @@ const { hasLobbyInvites } = useInvites();
 
             <MatchLobbyExpanded :lobby="currentLobby" />
           </div>
-        </template>
 
-        <!-- Create lobby — only when not in a lobby or match -->
-        <template v-if="!currentLobby">
-          <Empty class="px-3 pb-5 pt-4">
+          <!-- Create lobby — only when not in a lobby or match -->
+          <Empty v-else key="empty" class="px-3 pb-5 pt-4">
             <p class="text-sm text-muted-foreground text-center max-w-xs">
               {{ $t("layouts.lobby_panel.create_lobby_description") }}
             </p>
             <div
-              class="inline-flex rounded-full p-[2px] bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 shadow-lg transition-shadow duration-300 hover:shadow-md"
+              class="inline-flex rounded-full p-[1.5px] bg-[linear-gradient(135deg,hsl(40_58%_60%)_0%,hsl(33_62%_55%)_50%,hsl(24_56%_52%)_100%)] shadow-[0_4px_14px_-8px_hsl(var(--tac-amber)/0.3)] transition-shadow duration-300 hover:shadow-[0_6px_18px_-8px_hsl(var(--tac-amber)/0.4)]"
             >
               <Button
+                variant="ghost"
                 @click="createLobby"
                 :loading="creatingLobby"
                 size="default"
-                class="rounded-full border-0 bg-zinc-950/95 px-7 py-2 text-white transition-colors duration-300 hover:bg-zinc-900/95"
+                class="rounded-full border-0 bg-zinc-950/95 px-7 py-2 text-[hsl(var(--tac-amber))] transition-colors duration-300 hover:bg-zinc-900/95 hover:text-[hsl(var(--tac-amber))] focus-visible:ring-[hsl(var(--tac-amber))]"
               >
                 <Merge class="h-5 w-5" />
                 <span class="font-semibold">
@@ -96,12 +96,13 @@ const { hasLobbyInvites } = useInvites();
               </Button>
             </div>
           </Empty>
-        </template>
+        </Transition>
       </div>
 
       <!-- Voice & Discord row just above lobby chat -->
-      <template v-if="currentLobby">
+      <Transition name="lobby-item">
         <div
+          v-if="currentLobby && squadReady"
           class="border-t border-zinc-800 pt-3 mt-1 flex flex-wrap items-center justify-between gap-3 text-xs text-zinc-400"
         >
           <div class="flex items-center gap-2">
@@ -128,11 +129,12 @@ const { hasLobbyInvites } = useInvites();
             </Button>
           </div>
         </div>
-      </template>
+      </Transition>
 
       <!-- Dedicated bottom lobby chat area (~25% height) -->
-      <template v-if="currentLobby">
+      <Transition name="lobby-item">
         <div
+          v-if="currentLobby && squadReady"
           class="h-[250px] lg:flex-[1] lg:h-auto lg:min-h-[160px] lg:max-h-[40%] shrink-0 border-t border-zinc-800 pt-3 flex flex-col gap-2"
         >
           <div
@@ -149,7 +151,7 @@ const { hasLobbyInvites } = useInvites();
             class="flex-1 min-h-0"
           />
         </div>
-      </template>
+      </Transition>
     </div>
   </div>
 </template>
@@ -163,9 +165,26 @@ export default {
   data() {
     return {
       playMatchFoundSound: useSound().playMatchFoundSound,
+      // Gates the bottom sections (voice/chat) so they only render once the
+      // squad has finished animating in — otherwise they mount immediately and
+      // reserve their layout space before the top, causing a jarring jump.
+      squadReady: false,
     };
   },
+  mounted() {
+    // Panel re-opened while already in a lobby: no enter transition fires, so
+    // mark ready up front.
+    if (this.currentLobby) this.squadReady = true;
+  },
   watch: {
+    currentLobby(newLobby: any, oldLobby: any) {
+      // Reset only when entering a lobby (wait for the squad transition) or
+      // leaving one — NOT on plain lobby-data updates (e.g. a player joining),
+      // which would otherwise make voice/chat flicker out and back.
+      if (!newLobby || !oldLobby) {
+        this.squadReady = false;
+      }
+    },
     myMatches: {
       immediate: true,
       handler() {
@@ -245,6 +264,11 @@ export default {
     },
   },
   methods: {
+    onSquadEntered() {
+      // Fires for whichever element finished entering the swap; only the squad
+      // (currentLobby set) should unlock the bottom sections.
+      if (this.currentLobby) this.squadReady = true;
+    },
     matchName(match: any) {
       return (
         match.label ||
@@ -320,3 +344,44 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Squad ↔ create-lobby crossfade */
+.lobby-swap-enter-active {
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.lobby-swap-leave-active {
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s ease;
+}
+.lobby-swap-enter-from {
+  opacity: 0;
+  transform: translateY(8px) scale(0.98);
+}
+.lobby-swap-leave-to {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
+}
+
+/* Sections fading/sliding in (invites, voice, chat). Voice/chat are gated on
+   `squadReady` so they only mount once the squad has entered — preventing the
+   bottom from reserving layout (and popping in) before the top. */
+.lobby-item-enter-active {
+  transition:
+    opacity 0.3s ease 0.04s,
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) 0.04s;
+}
+.lobby-item-leave-active {
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s ease;
+}
+.lobby-item-enter-from,
+.lobby-item-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+</style>

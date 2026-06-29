@@ -8,6 +8,9 @@ import { useNotificationStore } from "~/stores/NotificationStore";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";
 import { useInvites } from "~/composables/useInvites";
 import { useAuthStore } from "~/stores/AuthStore";
+import { useRightSidebar } from "~/composables/useRightSidebar";
+
+const { rightSidebarOpen } = useRightSidebar();
 
 type ToastItem = {
   id: string;
@@ -209,7 +212,10 @@ const dismissItem = (item: ToastItem) => {
   <ClientOnly>
     <div
       v-if="displayList.length > 0"
-      class="pointer-events-none fixed bottom-4 left-2 right-2 z-[60] hidden flex-col md:left-auto md:right-[4.75rem] md:flex md:w-[340px]"
+      class="pointer-events-none fixed bottom-4 left-2 right-2 z-[60] hidden flex-col transition-[right] duration-200 ease-linear md:left-auto md:flex md:w-[340px]"
+      :class="
+        rightSidebarOpen ? 'md:right-[30.75rem]' : 'md:right-[4.75rem]'
+      "
     >
       <TransitionGroup
         name="toast"
@@ -219,12 +225,12 @@ const dismissItem = (item: ToastItem) => {
         <div
           v-for="entry in displayList"
           :key="entry.key"
-          class="relative transition-all duration-200"
+          class="relative origin-bottom transition-all duration-200"
           :class="[
             { 'pb-2.5': entry.count > 1 },
-            hoveredGroup === entry.key ? 'z-50' : 'z-0',
+            hoveredGroup === entry.key ? 'z-50 scale-[1.04]' : 'z-0',
             hoveredGroup && hoveredGroup !== entry.key
-              ? 'scale-[0.97] opacity-50 blur-[1px]'
+              ? 'scale-[0.92] opacity-30 blur-[2px]'
               : '',
           ]"
           @mouseenter="hoveredGroup = entry.key"
@@ -233,13 +239,14 @@ const dismissItem = (item: ToastItem) => {
           <Transition name="fan">
             <div
               v-if="hoveredGroup === entry.key && entry.count > 1"
-              class="toast-tray absolute inset-x-0 bottom-full flex max-h-[60vh] origin-bottom flex-col gap-2.5 overflow-y-auto p-2 [scrollbar-width:thin]"
+              class="absolute inset-x-0 bottom-full flex max-h-[60vh] origin-bottom flex-col gap-3 overflow-y-auto pb-3 pr-1 [scrollbar-width:thin]"
             >
               <ToastCard
                 v-for="extra in entry.group.slice(0, -1)"
                 :key="extra.id"
                 :item="extra"
                 :pending="pending[extra.id] || null"
+                elevated
                 @accept="run(extra, true)"
                 @decline="run(extra, false)"
                 @dismiss="dismissItem(extra)"

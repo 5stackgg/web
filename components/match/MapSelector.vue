@@ -13,7 +13,7 @@ import {
 </script>
 
 <template>
-  <div class="container mx-auto px-4">
+  <div class="container mx-auto px-4" :class="{ 'pointer-events-none': readonly }">
     <div class="flex flex-wrap justify-center gap-6">
       <div
         v-for="(map, idx) in mapPool"
@@ -25,13 +25,13 @@ import {
           class="h-[180px]"
           :class="[
             vetoTileClasses,
-            selectedMap?.id === map.id
+            selectedMap?.id === map.id && availableMaps.includes(map)
               ? vetoTileActiveClasses
-              : !loading && vetoTileHoverClasses,
+              : !loading && !readonly && vetoTileHoverClasses,
             !availableMaps.includes(map) && vetoTileDisabledClasses,
             loading && selectedMap?.id !== map.id && vetoTileDisabledClasses,
           ]"
-          @click="!loading && selectMap(map)"
+          @click="!loading && !readonly && selectMap(map)"
         >
           <MapDisplay :map="map" class="h-full w-full" />
           <Transition
@@ -85,11 +85,29 @@ export default {
       type: Boolean,
       default: false,
     },
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       selectedMap: undefined,
     };
+  },
+  watch: {
+    // Clear any pending selection once a pick lands (loading → false) or when
+    // this turn ends, so a stale highlight doesn't carry into the next turn.
+    loading(now, prev) {
+      if (prev && !now) {
+        this.selectedMap = undefined;
+      }
+    },
+    readonly(now) {
+      if (now) {
+        this.selectedMap = undefined;
+      }
+    },
   },
   methods: {
     selectMap(map) {

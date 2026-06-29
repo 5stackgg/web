@@ -10,7 +10,7 @@ import {
   Clock,
   Users,
   MessageSquare,
-  Swords,
+  Tent,
   Pin,
   X,
 } from "lucide-vue-next";
@@ -21,6 +21,7 @@ import { useNotificationBadge } from "~/composables/useNotificationBadge";
 import { useInvites } from "@/composables/useInvites";
 import { useMediaQuery } from "@vueuse/core";
 import MiniDisplay from "~/components/matchmaking-lobby/MiniDisplay.vue";
+import AnimatedStat from "~/components/AnimatedStat.vue";
 import SocialPanel from "~/components/hub/SocialPanel.vue";
 import RecentGamesPanel from "~/components/hub/RecentGamesPanel.vue";
 import SidebarChatTab from "~/components/hub/ChatPanel.vue";
@@ -161,7 +162,26 @@ const notificationBadgeLabel = computed(() =>
   formatBadgeCount(unreadNotificationCount.value),
 );
 const lobbyBadgeLabel = computed(() => formatBadgeCount(lobbyInviteCount.value));
+const lobbyMemberCount = computed(() => {
+  const lobby = useMatchmakingStore().currentLobby as any;
+  if (!lobby) return 0;
+  return (lobby.players ?? []).filter((p: any) => p.status !== "Invited")
+    .length;
+});
+const hasLobby = computed(() => lobbyMemberCount.value > 0);
+const lobbyMemberLabel = computed(() =>
+  formatBadgeCount(lobbyMemberCount.value),
+);
 const chatBadgeLabel = computed(() => formatBadgeCount(totalUnread.value));
+
+// Pop-in/out for the count circles (bouncy enter, quick fade-shrink leave)
+const badgePopTransition = {
+  enterActiveClass:
+    "[transition:transform_0.3s_cubic-bezier(0.34,1.56,0.64,1),opacity_0.2s_ease]",
+  enterFromClass: "scale-0 opacity-0",
+  leaveActiveClass: "[transition:transform_0.15s_ease-in,opacity_0.15s_ease-in]",
+  leaveToClass: "scale-0 opacity-0",
+};
 const socialBadgeLabel = computed(() =>
   formatBadgeCount(socialInviteCount.value),
 );
@@ -321,19 +341,21 @@ function onHubTouchEnd(e: TouchEvent) {
               class="w-5 h-5"
               :class="{ 'animate-bell origin-top': hasNotifications }"
             />
-            <span
-              v-if="hasNotifications"
-              class="absolute -top-1.5 -right-2 flex"
-            >
+            <Transition v-bind="badgePopTransition">
               <span
-                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
-              />
-              <span
-                class="relative inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background"
+                v-if="hasNotifications"
+                class="absolute -top-1.5 -right-2 flex origin-center"
               >
-                {{ notificationBadgeLabel }}
+                <span
+                  class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
+                />
+                <span
+                  class="relative inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background"
+                >
+                  <AnimatedStat :value="notificationBadgeLabel" />
+                </span>
               </span>
-            </span>
+            </Transition>
           </span>
         </button>
 
@@ -344,13 +366,23 @@ function onHubTouchEnd(e: TouchEvent) {
           @click="selectHub('lobby')"
         >
           <span class="relative inline-flex">
-            <Swords class="w-5 h-5" />
-            <span
-              v-if="hasLobbyInvites"
-              class="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background"
-            >
-              {{ lobbyBadgeLabel }}
-            </span>
+            <Tent class="w-5 h-5" />
+            <Transition v-bind="badgePopTransition">
+              <!-- Current lobby member count -->
+              <span
+                v-if="hasLobby"
+                class="absolute -top-1.5 -right-2 grid h-3.5 min-w-3.5 place-items-center rounded-full bg-[hsl(var(--tac-amber))] px-1 text-[0.55rem] font-bold leading-none text-black tabular-nums shadow-sm ring-1 ring-background origin-center"
+              >
+                <AnimatedStat :value="lobbyMemberLabel" />
+              </span>
+              <!-- Pending lobby invites (amber — never red) -->
+              <span
+                v-else-if="hasLobbyInvites"
+                class="absolute -top-1.5 -right-2 grid h-3.5 min-w-3.5 place-items-center rounded-full bg-[hsl(var(--tac-amber))] px-1 text-[0.55rem] font-bold leading-none text-black tabular-nums shadow-sm ring-1 ring-background origin-center"
+              >
+                <AnimatedStat :value="lobbyBadgeLabel" />
+              </span>
+            </Transition>
           </span>
         </button>
 
@@ -362,12 +394,14 @@ function onHubTouchEnd(e: TouchEvent) {
         >
           <span class="relative inline-flex">
             <MessageSquare class="w-5 h-5" />
-            <span
-              v-if="totalUnread > 0"
-              class="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background"
-            >
-              {{ chatBadgeLabel }}
-            </span>
+            <Transition v-bind="badgePopTransition">
+              <span
+                v-if="totalUnread > 0"
+                class="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background origin-center"
+              >
+                <AnimatedStat :value="chatBadgeLabel" />
+              </span>
+            </Transition>
           </span>
         </button>
 
@@ -379,12 +413,14 @@ function onHubTouchEnd(e: TouchEvent) {
         >
           <span class="relative inline-flex">
             <Users class="w-5 h-5" />
-            <span
-              v-if="hasSocialInvites"
-              class="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background"
-            >
-              {{ socialBadgeLabel }}
-            </span>
+            <Transition v-bind="badgePopTransition">
+              <span
+                v-if="hasSocialInvites"
+                class="absolute -top-1.5 -right-2 inline-flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-red-500 px-0.5 text-[0.55rem] font-bold leading-none text-white shadow-sm ring-1 ring-background origin-center"
+              >
+                <AnimatedStat :value="socialBadgeLabel" />
+              </span>
+            </Transition>
           </span>
         </button>
 

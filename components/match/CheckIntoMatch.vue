@@ -1,5 +1,8 @@
 <template>
-  <div v-if="isInMatch && match.can_check_in">
+  <div
+    v-if="isInMatch && match.can_check_in"
+    class="flex min-h-[2.625rem] items-center"
+  >
     <button
       v-if="!isCheckedIn"
       type="button"

@@ -1,5 +1,4 @@
 import { h, watch } from "vue";
-import { useRouter } from "vue-router";
 import { toast, ToastAction } from "~/components/ui/toast";
 import { useAuthStore } from "~/stores/AuthStore";
 import { useDraftGamesStore } from "~/stores/DraftGamesStore";

@@ -40,7 +40,7 @@ const accentVar = computed(() => {
 
 <template>
   <div
-    class="draft-player-card group relative flex min-h-[3.5rem] items-center gap-2.5 rounded-lg border bg-card/60 py-1.5 pl-3 pr-2.5 transition-colors duration-200"
+    class="draft-player-card group relative flex h-14 items-center gap-2.5 rounded-lg border bg-card/60 pl-3 pr-2.5 transition-colors duration-200"
     :class="{ 'opacity-40 grayscale': dim }"
     :style="{ '--accent': accentVar }"
   >

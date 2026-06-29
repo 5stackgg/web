@@ -172,6 +172,118 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
               />
             </div>
           </div>
+
+          <div v-if="autoGenerateMatchClips" class="space-y-4">
+            <h4
+              class="text-sm font-semibold uppercase tracking-wider text-muted-foreground"
+            >
+              {{
+                $t(
+                  "pages.settings.application.demo_settings.auto_clip_filters_section",
+                )
+              }}
+            </h4>
+
+            <!-- These save on change too — no Update needed. -->
+            <div
+              class="rounded-lg border border-border/60 divide-y divide-border/60 px-4"
+            >
+              <div
+                class="flex flex-row items-center justify-between gap-4 py-4"
+              >
+                <div class="space-y-0.5 pr-4">
+                  <h4 class="text-base font-medium">
+                    {{
+                      $t(
+                        "pages.settings.application.demo_settings.auto_clip_min_kills",
+                      )
+                    }}
+                  </h4>
+                  <p class="text-sm text-muted-foreground">
+                    {{
+                      $t(
+                        "pages.settings.application.demo_settings.auto_clip_min_kills_description",
+                      )
+                    }}
+                  </p>
+                </div>
+                <Select
+                  :model-value="autoClipMinKills"
+                  @update:model-value="
+                    (value) => setStringSetting('auto_clip_min_kills', value)
+                  "
+                >
+                  <SelectTrigger class="w-[220px] shrink-0">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">{{
+                      $t(
+                        "pages.settings.application.demo_settings.auto_clip_min_kills_any",
+                      )
+                    }}</SelectItem>
+                    <SelectItem value="2">{{
+                      $t(
+                        "pages.settings.application.demo_settings.auto_clip_min_kills_2k",
+                      )
+                    }}</SelectItem>
+                    <SelectItem value="3">{{
+                      $t(
+                        "pages.settings.application.demo_settings.auto_clip_min_kills_3k",
+                      )
+                    }}</SelectItem>
+                    <SelectItem value="4">{{
+                      $t(
+                        "pages.settings.application.demo_settings.auto_clip_min_kills_4k",
+                      )
+                    }}</SelectItem>
+                    <SelectItem value="5">{{
+                      $t(
+                        "pages.settings.application.demo_settings.auto_clip_min_kills_ace",
+                      )
+                    }}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div
+                class="flex flex-row items-center justify-between cursor-pointer py-4"
+                @click="
+                  toggleBooleanSetting(
+                    'auto_clip_always_include_knife',
+                    autoClipAlwaysIncludeKnife,
+                  )
+                "
+              >
+                <div class="space-y-0.5 pr-4">
+                  <h4 class="text-base font-medium">
+                    {{
+                      $t(
+                        "pages.settings.application.demo_settings.auto_clip_always_include_knife",
+                      )
+                    }}
+                  </h4>
+                  <p class="text-sm text-muted-foreground">
+                    {{
+                      $t(
+                        "pages.settings.application.demo_settings.auto_clip_always_include_knife_description",
+                      )
+                    }}
+                  </p>
+                </div>
+                <Switch
+                  :model-value="autoClipAlwaysIncludeKnife"
+                  @update:model-value="
+                    toggleBooleanSetting(
+                      'auto_clip_always_include_knife',
+                      autoClipAlwaysIncludeKnife,
+                    )
+                  "
+                  @click.stop
+                />
+              </div>
+            </div>
+          </div>
         </SettingsSection>
 
         <SettingsSection
@@ -470,6 +582,27 @@ export default {
         title: this.$t("pages.settings.application.highlights.updated"),
       });
     },
+    // Persist a string-valued setting immediately on change — no Update button.
+    async setStringSetting(name: string, value: string) {
+      await (this.$apollo as any).mutate({
+        mutation: generateMutation({
+          insert_settings_one: [
+            {
+              object: { name, value },
+              on_conflict: {
+                constraint: settings_constraint.settings_pkey,
+                update_columns: [settings_update_column.value],
+              },
+            },
+            { __typename: true },
+          ],
+        }),
+      });
+
+      toast({
+        title: this.$t("pages.settings.application.highlights.updated"),
+      });
+    },
     async updateSettings() {
       await (this.$apollo as any).mutate({
         mutation: generateMutation({
@@ -534,6 +667,16 @@ export default {
     },
     clipBakeBranding(): boolean {
       return this.booleanSetting("clip_bake_branding", true);
+    },
+    autoClipAlwaysIncludeKnife(): boolean {
+      return this.booleanSetting("auto_clip_always_include_knife", false);
+    },
+    autoClipMinKills(): string {
+      const setting = (
+        this.settings as Array<{ name: string; value: any }>
+      ).find((s) => s.name === "auto_clip_min_kills");
+      const value = setting?.value != null ? String(setting.value) : "1";
+      return ["1", "2", "3", "4", "5"].includes(value) ? value : "1";
     },
   },
 };

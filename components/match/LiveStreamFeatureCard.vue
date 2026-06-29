@@ -7,6 +7,9 @@ import KickIcon from "~/components/icons/KickIcon.vue";
 import MatchTableRow from "~/components/MatchTableRow.vue";
 import StreamViewerBadge from "~/components/match/StreamViewerBadge.vue";
 import DesktopSnapshot from "~/components/match/DesktopSnapshot.vue";
+import { useAuthStore } from "~/stores/AuthStore";
+import { useApplicationSettingsStore } from "~/stores/ApplicationSettings";
+import { loginLinks } from "~/utilities/loginLinks";
 
 type Stream = {
   id: string;
@@ -124,9 +127,28 @@ watch(thumbnailUrl, () => {
   thumbFailed.value = false;
 });
 
+// Anti-cheat: signed-out viewers don't get a snapshot/preview of the
+// live game — black it out and push them to login instead.
+const needsLogin = computed(
+  () =>
+    useApplicationSettingsStore().requireLoginForLiveStreams &&
+    !useAuthStore().me?.steam_id,
+);
+
+function loginToView() {
+  if (typeof window === "undefined") return;
+  window.location.href = `${loginLinks.steam}?redirect=${encodeURIComponent(
+    window.location.toString(),
+  )}`;
+}
+
 function onWatchClick(e: Event) {
   e.preventDefault();
   e.stopPropagation();
+  if (needsLogin.value) {
+    loginToView();
+    return;
+  }
   if (!primaryStream.value) return;
   useApplicationSettingsStore().setGlobalStream({
     ...primaryStream.value,
@@ -143,8 +165,19 @@ function onWatchClick(e: Event) {
     <div
       class="relative h-full w-full overflow-hidden bg-background/60 sm:border-r sm:border-border"
     >
+      <div
+        v-if="needsLogin"
+        role="button"
+        tabindex="0"
+        class="flex aspect-video w-full cursor-pointer flex-col items-center justify-center gap-2 bg-black text-center text-xs text-white/70 transition-colors hover:text-white"
+        @click="loginToView"
+        @keydown.enter="loginToView"
+        @keydown.space.prevent="loginToView"
+      >
+        <span>{{ $t("ui.login_to_watch") }}</span>
+      </div>
       <DesktopSnapshot
-        v-if="parsed?.platform === 'internal'"
+        v-else-if="parsed?.platform === 'internal'"
         kind="live"
         :id="match.id"
         :alt="primaryStream?.title || ''"

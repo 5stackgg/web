@@ -23,6 +23,7 @@ import { Switch } from "~/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import { Eye, EyeOff } from "lucide-vue-next";
 import { Alert, AlertTitle, AlertDescription } from "~/components/ui/alert";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 
 const showConnectPassword = ref(false);
 </script>
@@ -401,14 +402,23 @@ const showConnectPassword = ref(false);
     </FormSection>
 
     <Button
+      v-if="!server"
       variant="tactical"
       type="submit"
       :disabled="Object.keys(form.errors).length > 0"
       :loading="submitting"
     >
-      <template v-if="server">{{ $t("server.form.update") }}</template>
-      <template v-else>{{ $t("server.form.create") }}</template>
+      {{ $t("server.form.create") }}
     </Button>
+
+    <SettingsSaveBar
+      v-else
+      contained
+      :dirty="isDirty"
+      :submitting="submitting"
+      @save="updateCreateServer"
+      @discard="discardChanges"
+    />
   </form>
 </template>
 
@@ -420,6 +430,7 @@ import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { order_by } from "~/generated/zeus";
 import { e_server_types_enum } from "~/generated/zeus";
+import { toast } from "@/components/ui/toast";
 
 export default {
   emits: ["updated"],
@@ -482,6 +493,8 @@ export default {
   data() {
     return {
       submitting: false,
+      baseline: null as string | null,
+      isDirty: false,
       gameServerNodes: [],
       form: useForm({
         validationSchema: toTypedSchema(
@@ -541,36 +554,18 @@ export default {
     server: {
       immediate: true,
       handler(server) {
-        if (server) {
-          const {
-            host,
-            label,
-            port,
-            tv_port,
-            region,
-            type,
-            connect_password,
-            game_server_node_id,
-            max_players,
-          } = server;
-          this.form.setValues({
-            host,
-            label,
-            port,
-            region,
-            tv_port,
-            game: server.game || "cs2",
-            use_valve_modes: type !== e_server_types_enum.Ranked,
-            use_game_server_node: !!game_server_node_id,
-            game_server_node_id: game_server_node_id
-              ? game_server_node_id.toString()
-              : undefined,
-            type: type || "Ranked",
-            connect_password: connect_password || "",
-            max_players: max_players || 32,
-          });
-          return;
+        // `server` can refresh from its parent; don't clobber in-progress edits.
+        if (server && (this.baseline === null || !this.isDirty)) {
+          this.populateServer(server);
         }
+      },
+    },
+    ["form.values"]: {
+      deep: true,
+      handler() {
+        this.isDirty =
+          this.baseline !== null &&
+          JSON.stringify(this.form.values) !== this.baseline;
       },
     },
     "form.values.game": {
@@ -633,15 +628,61 @@ export default {
     },
   },
   methods: {
+    populateServer(server) {
+      const {
+        host,
+        label,
+        port,
+        tv_port,
+        region,
+        type,
+        connect_password,
+        game_server_node_id,
+        max_players,
+      } = server;
+      this.form.setValues({
+        host,
+        label,
+        port,
+        region,
+        tv_port,
+        game: server.game || "cs2",
+        use_valve_modes: type !== e_server_types_enum.Ranked,
+        use_game_server_node: !!game_server_node_id,
+        game_server_node_id: game_server_node_id
+          ? game_server_node_id.toString()
+          : undefined,
+        type: type || "Ranked",
+        connect_password: connect_password || "",
+        max_players: max_players || 32,
+      });
+      this.takeSnapshot();
+    },
+    takeSnapshot() {
+      this.$nextTick(() => {
+        this.baseline = JSON.stringify(this.form.values);
+        this.isDirty = false;
+      });
+    },
+    discardChanges() {
+      if (this.server) {
+        this.populateServer(this.server);
+      }
+    },
     async updateCreateServer() {
       if (this.submitLock) {
         return;
       }
       this.submitLock = true;
       try {
-        const { valid } = await this.form.validate();
+        const { valid, errors } = await this.form.validate();
 
         if (!valid) {
+          toast({
+            variant: "destructive",
+            title: this.$t("common.error"),
+            description: Object.values(errors ?? {})[0] as string,
+          });
           return;
         }
 
@@ -685,6 +726,7 @@ export default {
               ],
             }),
           });
+          this.takeSnapshot();
           this.$emit("updated");
           return;
         }

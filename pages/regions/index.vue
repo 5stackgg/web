@@ -5,7 +5,7 @@ import {
   tacticalCtaButtonClasses,
   tacticalHeaderActionClasses,
 } from "~/utilities/tacticalClasses";
-import { Pencil, Trash, PlusCircle, Info } from "lucide-vue-next";
+import { Trash, PlusCircle, Info } from "lucide-vue-next";
 import RegionForm from "~/components/regions/RegionForm.vue";
 import FivestackTooltip from "~/components/FiveStackToolTip.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
@@ -16,6 +16,7 @@ import { Card } from "~/components/ui/card";
   <PageTransition :delay="0">
     <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.regions.title") }}</template>
+      <template #subtitle>{{ $t("pages.regions.description") }}</template>
 
       <template #actions>
         <button
@@ -35,12 +36,6 @@ import { Card } from "~/components/ui/card";
         </button>
       </template>
     </TacticalPageHeader>
-  </PageTransition>
-
-  <PageTransition :delay="60" class="mt-4">
-    <p class="text-sm text-muted-foreground">
-      {{ $t("pages.regions.description") }}
-    </p>
   </PageTransition>
 
   <PageTransition :delay="100" class="mt-6">
@@ -65,16 +60,33 @@ import { Card } from "~/components/ui/card";
                 {{ $t("pages.regions.table.use_steam_relay_description") }}
               </FivestackTooltip>
             </TableHead>
-            <TableHead>{{ $t("pages.regions.table.use_lan_ip") }}</TableHead>
-            <TableHead class="w-[100px]">{{
-              $t("common.actions_label")
-            }}</TableHead>
+            <TableHead>
+              <FivestackTooltip>
+                <template #trigger>
+                  <div class="flex items-center gap-2">
+                    <Info class="w-4 h-4" />
+                    {{ $t("pages.regions.table.use_lan_ip") }}
+                  </div>
+                </template>
+                {{ $t("pages.regions.table.use_lan_ip_description") }}
+              </FivestackTooltip>
+            </TableHead>
+            <TableHead class="w-[100px]"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           <TableRow v-for="region of regions" :key="region.value">
             <TableCell>
-              <span>{{ region.value }}</span>
+              <div class="flex flex-col items-start gap-1">
+                <span>{{ region.value }}</span>
+                <button
+                  type="button"
+                  class="whitespace-nowrap text-xs text-muted-foreground underline hover:text-foreground"
+                  @click="editRegion(region)"
+                >
+                  {{ $t("pages.regions.set_label") }}
+                </button>
+              </div>
             </TableCell>
             <TableCell>
               <span>{{ region.status }}</span>
@@ -101,10 +113,7 @@ import { Card } from "~/components/ui/card";
               />
             </TableCell>
             <TableCell>
-              <div class="flex gap-2">
-                <Button variant="ghost" size="icon" @click="editRegion(region)">
-                  <Pencil class="w-4 h-4" />
-                </Button>
+              <div class="flex justify-end">
                 <Button
                   variant="ghost"
                   size="icon"

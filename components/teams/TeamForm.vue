@@ -1,38 +1,26 @@
 <script setup lang="ts">
 import { Input } from "~/components/ui/input";
 import { Button } from "~/components/ui/button";
-import { FormControl, FormField, FormItem } from "~/components/ui/form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  FormSection,
+} from "~/components/ui/form";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
-
-const cardClasses =
-  "relative rounded-lg border border-border p-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[12px] before:w-[12px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[12px] after:w-[12px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-['']";
-
-const eyebrowClasses =
-  "inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground";
-
-const tickClasses = "h-[2px] w-[10px] bg-[hsl(var(--tac-amber))]";
-
-const labelClasses =
-  "font-mono text-[0.7rem] uppercase tracking-[0.18em] text-muted-foreground";
-
-const submitClasses =
-  "w-full bg-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)_/_0.9)] text-[hsl(var(--tac-amber-foreground))] font-sans font-bold uppercase tracking-[0.18em] disabled:opacity-60";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
+import { tacticalCtaButtonClasses } from "~/utilities/tacticalClasses";
 </script>
 
 <template>
-  <form @submit.prevent="updateCreateTeam" class="grid gap-5">
-    <div :class="cardClasses">
-      <div :class="eyebrowClasses">
-        <span :class="tickClasses"></span>
-        {{ $t("team.form.identity") }}
-      </div>
-
-      <div class="mt-5 space-y-5">
+  <form @submit.prevent="updateCreateTeam" class="grid gap-6">
+    <FormSection :title="$t('team.form.identity')">
+      <div class="grid gap-4">
         <FormField v-slot="{ componentField }" name="team_name">
-          <FormItem class="space-y-1.5">
-            <FormLabel :class="labelClasses">
-              {{ $t("common.team_name") }}
-            </FormLabel>
+          <FormItem>
+            <FormLabel>{{ $t("common.team_name") }}</FormLabel>
             <FormControl>
               <Input
                 v-bind="componentField"
@@ -44,16 +32,14 @@ const submitClasses =
         </FormField>
 
         <FormField v-slot="{ componentField }" name="short_name">
-          <FormItem class="space-y-1.5">
-            <FormLabel :class="labelClasses">
-              {{ $t("team.form.short_name") }}
-            </FormLabel>
+          <FormItem>
+            <FormLabel>{{ $t("team.form.short_name") }}</FormLabel>
             <FormControl>
               <Input
                 v-bind="componentField"
                 :placeholder="$t('team.form.short_name_placeholder')"
                 maxlength="5"
-                class="uppercase tracking-[0.15em] font-mono"
+                class="font-mono uppercase tracking-[0.15em] placeholder:font-sans placeholder:normal-case placeholder:tracking-normal"
               />
             </FormControl>
             <FormMessage />
@@ -65,10 +51,8 @@ const submitClasses =
           v-slot="{ componentField }"
           name="owner_steam_id"
         >
-          <FormItem class="space-y-1.5">
-            <FormLabel :class="labelClasses">
-              {{ $t("team.form.owner") }}
-            </FormLabel>
+          <FormItem>
+            <FormLabel>{{ $t("team.form.owner") }}</FormLabel>
             <Select v-bind="componentField">
               <FormControl>
                 <SelectTrigger>
@@ -91,14 +75,13 @@ const submitClasses =
           </FormItem>
         </FormField>
       </div>
-    </div>
+    </FormSection>
 
-    <div v-if="!team && invitedPlayers.length" :class="cardClasses">
-      <div :class="eyebrowClasses">
-        <span :class="tickClasses"></span>
-        {{ $t("team.form.inviting") }}
-      </div>
-      <div class="mt-4 flex flex-col gap-2">
+    <FormSection
+      v-if="!team && invitedPlayers.length"
+      :title="$t('team.form.inviting')"
+    >
+      <div class="flex flex-col gap-2">
         <PlayerDisplay
           v-for="player in invitedPlayers"
           :key="player.steam_id"
@@ -108,16 +91,26 @@ const submitClasses =
       <p class="mt-3 text-xs text-muted-foreground">
         {{ $t("team.form.inviting_hint") }}
       </p>
-    </div>
+    </FormSection>
 
     <Button
+      v-if="!team"
       type="submit"
       :disabled="Object.keys(form.errors).length > 0"
       :loading="submitting"
-      :class="submitClasses"
+      :class="[tacticalCtaButtonClasses, 'w-full justify-center']"
     >
-      {{ team ? $t("team.form.update") : $t("team.form.create") }}
+      {{ $t("team.form.create") }}
     </Button>
+
+    <SettingsSaveBar
+      v-else
+      contained
+      :dirty="isDirty"
+      :submitting="submitting"
+      @save="updateCreateTeam"
+      @discard="discardChanges"
+    />
   </form>
 </template>
 
@@ -127,6 +120,7 @@ import { useForm } from "vee-validate";
 import { toTypedSchema } from "~/utilities/vee-validate-zod";
 import { generateMutation, generateQuery } from "~/graphql/graphqlGen";
 import { $, e_player_roles_enum } from "~/generated/zeus";
+import { toast } from "@/components/ui/toast";
 
 export default {
   emits: ["updated"],
@@ -144,6 +138,8 @@ export default {
   data() {
     return {
       submitting: false,
+      baseline: null as string | null,
+      isDirty: false,
       owner: undefined,
       invitedPlayers: [] as Array<Record<string, any>>,
       form: useForm({
@@ -160,12 +156,18 @@ export default {
     team: {
       immediate: true,
       handler(team) {
-        if (team) {
-          this.form.setValues({
-            team_name: team.name,
-            short_name: team.short_name,
-          });
+        // `team` is subscription-backed; don't clobber in-progress edits.
+        if (team && (this.baseline === null || !this.isDirty)) {
+          this.populateTeam(team);
         }
+      },
+    },
+    ["form.values"]: {
+      deep: true,
+      handler() {
+        this.isDirty =
+          this.baseline !== null &&
+          JSON.stringify(this.form.values) !== this.baseline;
       },
     },
   },
@@ -214,15 +216,38 @@ export default {
     },
   },
   methods: {
+    populateTeam(team: any) {
+      this.form.setValues({
+        team_name: team.name,
+        short_name: team.short_name,
+      });
+      this.takeSnapshot();
+    },
+    takeSnapshot() {
+      this.$nextTick(() => {
+        this.baseline = JSON.stringify(this.form.values);
+        this.isDirty = false;
+      });
+    },
+    discardChanges() {
+      if (this.team) {
+        this.populateTeam(this.team);
+      }
+    },
     async updateCreateTeam() {
       if (this.submitLock) {
         return;
       }
       this.submitLock = true;
       try {
-        const { valid } = await this.form.validate();
+        const { valid, errors } = await this.form.validate();
 
         if (!valid) {
+          toast({
+            variant: "destructive",
+            title: this.$t("common.error"),
+            description: Object.values(errors ?? {})[0] as string,
+          });
           return;
         }
 
@@ -247,6 +272,7 @@ export default {
               ],
             }),
           });
+          this.takeSnapshot();
           this.$emit("updated");
           return;
         }

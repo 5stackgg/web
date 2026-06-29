@@ -13,8 +13,8 @@ import {
   SheetHeader,
   SheetTitle,
   SheetDescription,
-  SheetFooter,
 } from "~/components/ui/sheet";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -127,6 +127,20 @@ const form = ref(blankForm());
 const submitting = ref(false);
 const sheetOpen = ref(false);
 
+// Snapshot taken when the sheet opens — the floating save bar appears (in edit
+// mode) only once the live form diverges from it; discard reverts to it.
+const formSnapshot = ref("");
+const snapshotForm = () => {
+  formSnapshot.value = JSON.stringify(form.value);
+};
+const formDirty = computed(
+  () => JSON.stringify(form.value) !== formSnapshot.value,
+);
+const formValid = computed(() => !!form.value.message.trim());
+const discardForm = () => {
+  form.value = JSON.parse(formSnapshot.value);
+};
+
 const isEditing = computed(() => form.value.id !== null);
 
 const resetForm = () => {
@@ -135,6 +149,7 @@ const resetForm = () => {
 
 const openCreate = () => {
   resetForm();
+  snapshotForm();
   sheetOpen.value = true;
 };
 
@@ -148,6 +163,7 @@ const editAlert = (alert: AdminAlert) => {
     is_active: alert.is_active,
     expires_at: alert.expires_at ?? "",
   };
+  snapshotForm();
   sheetOpen.value = true;
 };
 
@@ -290,6 +306,7 @@ onUnmounted(() => {
   <PageTransition :delay="0">
     <TacticalPageHeader inline-actions>
       <template #title>{{ $t("system_alerts.page_title") }}</template>
+      <template #subtitle>{{ $t("system_alerts.description") }}</template>
 
       <template #actions>
         <button
@@ -474,7 +491,7 @@ onUnmounted(() => {
       </SheetHeader>
 
       <form class="flex min-h-0 flex-1 flex-col" @submit.prevent="saveAlert">
-        <div class="flex-1 space-y-5 overflow-y-auto py-5">
+        <div class="-mx-1 flex-1 space-y-5 overflow-y-auto px-1 py-5">
           <!-- Live preview of the banner as it will appear at the top. -->
           <div class="space-y-2">
             <span :class="tacticalSectionLabelClasses">
@@ -593,20 +610,19 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <SheetFooter
-          class="gap-2 border-t border-border/60 pt-4 sm:justify-between"
-        >
-          <Button type="button" variant="outline" @click="onSheetUpdate(false)">
-            {{ $t("system_alerts.cancel") }}
-          </Button>
-          <Button type="submit" :disabled="submitting || !form.message.trim()">
-            {{
-              isEditing
-                ? $t("system_alerts.update")
-                : $t("system_alerts.create")
-            }}
-          </Button>
-        </SheetFooter>
+        <SettingsSaveBar
+          contained
+          :dirty="formDirty"
+          :submitting="submitting"
+          :force-visible="!isEditing"
+          :valid="formValid"
+          :hide-discard="!isEditing"
+          :action-label="
+            isEditing ? $t('system_alerts.update') : $t('system_alerts.create')
+          "
+          @save="saveAlert"
+          @discard="discardForm"
+        />
       </form>
     </SheetContent>
   </Sheet>

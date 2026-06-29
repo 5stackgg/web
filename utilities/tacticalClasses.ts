@@ -25,17 +25,37 @@ export const tacticalSectionTickClasses =
 export const tacticalSectionDescriptionClasses =
   "mb-3 text-[0.85rem] text-muted-foreground";
 
+// Options-bar pattern (manage matches / manage tournaments): a bordered card
+// holding compact popover-trigger buttons + removable chips. Shared so every
+// list/filter page renders the exact same control bar.
+export const filterTriggerBase =
+  "inline-flex h-8 items-center gap-1.5 rounded-md border px-2.5 font-mono text-[0.64rem] uppercase tracking-[0.14em] leading-none transition-colors duration-150 cursor-pointer";
+export const filterTriggerIdle =
+  "border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground";
+export const filterTriggerActive =
+  "border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]";
+export const filterBadgeClasses =
+  "inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[hsl(var(--tac-amber)/0.25)] px-1 font-sans text-[0.6rem] font-bold leading-none text-[hsl(var(--tac-amber))]";
+// Inline selected-value shown next to a single-select trigger's label (e.g.
+// KILLS · 3+ kills). leading-none keeps it vertically centered in the h-8 row.
+export const filterTriggerValueClasses =
+  "inline-flex items-center font-sans text-[0.6rem] font-bold leading-none normal-case tracking-normal text-[hsl(var(--tac-amber))]";
+
 export const tacticalFilterPillClasses =
   "inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/30 px-3 py-1.5 text-xs tracking-[0.06em] text-muted-foreground transition-colors duration-150 hover:bg-muted/50 hover:text-foreground";
 
+// Active overrides are marked important so they reliably beat the pill base's
+// `border-border bg-muted/30 text-muted-foreground` regardless of Tailwind's
+// utility source order (without `!`, amber/danger lost the border/bg conflict
+// while warning happened to win).
 export const tacticalFilterPillActiveClasses =
-  "border-[hsl(var(--tac-amber)/0.5)] bg-[hsl(var(--tac-amber)/0.15)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.22)] hover:text-[hsl(var(--tac-amber))]";
+  "!border-[hsl(var(--tac-amber)/0.5)] !bg-[hsl(var(--tac-amber)/0.15)] !text-[hsl(var(--tac-amber))] hover:!bg-[hsl(var(--tac-amber)/0.22)]";
 
 export const tacticalFilterPillActiveWarningClasses =
-  "border-[hsl(var(--warning)/0.55)] bg-[hsl(var(--warning)/0.18)] text-warning hover:bg-[hsl(var(--warning)/0.25)] hover:text-warning";
+  "!border-[hsl(var(--warning)/0.55)] !bg-[hsl(var(--warning)/0.18)] !text-warning hover:!bg-[hsl(var(--warning)/0.25)]";
 
 export const tacticalFilterPillActiveDangerClasses =
-  "border-[hsl(var(--destructive)/0.55)] bg-[hsl(var(--destructive)/0.18)] text-destructive hover:bg-[hsl(var(--destructive)/0.25)] hover:text-destructive";
+  "!border-[hsl(var(--destructive)/0.55)] !bg-[hsl(var(--destructive)/0.18)] !text-destructive hover:!bg-[hsl(var(--destructive)/0.25)]";
 
 // Tactical amber CTA button — prominent create/action buttons.
 // Matches the Play/Submit hero aesthetic. Background gradient + shadows live

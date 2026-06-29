@@ -44,6 +44,8 @@ import { useAuthStore } from "~/stores/AuthStore";
 import { useGpuPoolStatusStore } from "~/stores/GpuPoolStatusStore";
 import { useClipModal, type ClipQueueItem } from "~/composables/useClipModal";
 import { Spinner } from "~/components/ui/spinner";
+import { Skeleton } from "~/components/ui/skeleton";
+import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 
 const authStore = useAuthStore();
 const { showClip, setClipQueue } = useClipModal();
@@ -504,6 +506,14 @@ const inFlight = computed(() =>
   jobs.value.filter((j) => !TERMINAL.has(j.status)),
 );
 
+// True once there's something to show (active batches, or finished
+// history outside compact mode). Drives the FadeSwap branch selection.
+const hasContent = computed(
+  () =>
+    groups.value.length > 0 ||
+    (!props.compact && recentlyDoneGroups.value.length > 0),
+);
+
 function progressPct(j: Job): number {
   const n = typeof j.progress === "number" ? j.progress : Number(j.progress);
   if (!Number.isFinite(n)) return 0;
@@ -870,13 +880,31 @@ const queueStatus = computed<{
 </script>
 
 <template>
-  <div
-    v-if="
-      !loading &&
-      (groups.length > 0 || (!compact && recentlyDoneGroups.length > 0))
-    "
-    class="space-y-5"
-  >
+  <FadeSwap>
+    <!-- Skeleton placeholder so the panel keeps its footprint while the
+         subscription's first tick lands — content crossfades in instead
+         of popping. -->
+    <div v-if="loading" key="loading" class="space-y-2">
+      <div
+        v-for="n in compact ? 1 : 3"
+        :key="n"
+        class="overflow-hidden rounded-md border border-border/40 bg-card/30 [backdrop-filter:blur(6px)]"
+      >
+        <div class="flex items-center gap-2.5 px-2.5 py-2">
+          <Skeleton class="h-7 w-7 rounded-md" />
+          <div class="min-w-0 flex-1 space-y-1.5">
+            <Skeleton class="h-3 w-2/5" />
+            <Skeleton class="h-2 w-1/4" />
+          </div>
+          <Skeleton class="h-4 w-12 shrink-0 rounded-full" />
+        </div>
+        <div v-if="!compact" class="px-2.5 pb-2">
+          <Skeleton class="h-1.5 w-full rounded-full" />
+        </div>
+      </div>
+    </div>
+
+    <div v-else-if="hasContent" key="content" class="space-y-5">
     <TooltipProvider :disable-hoverable-content="true">
       <div
         v-if="!compact && !hideSummary && groups.length > 0"
@@ -1718,23 +1746,26 @@ const queueStatus = computed<{
           @page="goToFinishedPage"
         />
       </div>
-    </TooltipProvider>
-  </div>
-  <div
-    v-else-if="!loading && !compact"
-    class="rounded-lg border border-border/50 bg-card/40 px-6 py-12 text-center [backdrop-filter:blur(6px)]"
-  >
-    <ListVideo
-      class="mx-auto h-8 w-8 text-muted-foreground/60"
-      aria-hidden="true"
-    />
-    <div
-      class="mt-3 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
-    >
-      {{ $t("clips.render_queue.empty_title") }}
+      </TooltipProvider>
     </div>
-    <p class="mt-2 max-w-md mx-auto text-xs text-muted-foreground/80">
-      {{ $t("clips.render_queue.empty_description") }}
-    </p>
-  </div>
+
+    <div
+      v-else-if="!compact"
+      key="empty"
+      class="rounded-lg border border-border/50 bg-card/40 px-6 py-12 text-center [backdrop-filter:blur(6px)]"
+    >
+      <ListVideo
+        class="mx-auto h-8 w-8 text-muted-foreground/60"
+        aria-hidden="true"
+      />
+      <div
+        class="mt-3 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"
+      >
+        {{ $t("clips.render_queue.empty_title") }}
+      </div>
+      <p class="mt-2 max-w-md mx-auto text-xs text-muted-foreground/80">
+        {{ $t("clips.render_queue.empty_description") }}
+      </p>
+    </div>
+  </FadeSwap>
 </template>

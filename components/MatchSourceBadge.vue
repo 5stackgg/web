@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useI18n } from "vue-i18n";
+import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 
 const { t } = useI18n();
 
@@ -25,11 +26,12 @@ const classes =
 </script>
 
 <template>
-  <span
-    v-if="visible"
-    :class="classes"
-    :title="t('match.source_badge.imported_external')"
-  >
-    {{ label }}
-  </span>
+  <FiveStackToolTip v-if="visible" as-child :delay-duration="120">
+    <template #trigger>
+      <span :class="classes">
+        {{ label }}
+      </span>
+    </template>
+    {{ t("match.source_badge.imported_external") }}
+  </FiveStackToolTip>
 </template>

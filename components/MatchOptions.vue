@@ -157,10 +157,10 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
               </div>
 
               <div
-                class="flex items-center justify-between gap-4 border-t border-border pt-4"
+                class="flex items-center justify-between gap-3 border-t border-border pt-4"
               >
                 <div
-                  class="font-mono text-[0.7rem] tracking-[0.22em] uppercase text-muted-foreground"
+                  class="min-w-0 font-mono text-[0.7rem] tracking-[0.22em] uppercase text-muted-foreground"
                 >
                   <template v-if="form.values.map_veto">
                     <template v-if="form.values.custom_map_pool">
@@ -183,34 +183,32 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
                     </span>
                   </template>
                 </div>
-                <div v-show="form.values.map_veto">
+                <div v-show="form.values.map_veto" class="shrink-0">
                   <FormField
                     v-slot="{ value, handleChange }"
                     name="custom_map_pool"
                   >
                     <FormControl>
-                      <div class="flex items-center justify-end w-full gap-2">
-                        <span
-                          class="text-muted-foreground flex items-center text-sm"
-                        >
-                          <FiveStackToolTip>
-                            <template #trigger>
-                              <div class="flex items-center gap-1">
-                                <Info :size="14" />
-                                {{
-                                  $t(
-                                    "match.options.map_veto_settings.custom_pool",
-                                  )
-                                }}
-                              </div>
-                            </template>
-                            {{
-                              $t(
-                                "match.options.map_veto_settings.custom_pool_tooltip",
-                              )
-                            }}
-                          </FiveStackToolTip>
-                        </span>
+                      <div class="flex items-center justify-end gap-2">
+                        <FiveStackToolTip>
+                          <template #trigger>
+                            <div
+                              class="flex items-center gap-1 whitespace-nowrap font-mono text-[0.65rem] uppercase tracking-[0.12em] text-muted-foreground"
+                            >
+                              <Info :size="13" />
+                              {{
+                                $t(
+                                  "match.options.map_veto_settings.custom_pool",
+                                )
+                              }}
+                            </div>
+                          </template>
+                          {{
+                            $t(
+                              "match.options.map_veto_settings.custom_pool_tooltip",
+                            )
+                          }}
+                        </FiveStackToolTip>
                         <Switch
                           :model-value="value"
                           @update:model-value="handleChange"

@@ -131,7 +131,7 @@ const isMobile = useMediaQuery("(max-width: 768px)");
         :class="footerClasses"
         :style="{ '--peak-rgb': peakRow.peakRgb }"
       >
-        <span :class="footerLabelClasses">ALL-TIME PEAK</span>
+        <span :class="footerLabelClasses">{{ $t("player.all_time_peak") }}</span>
         <span :class="footerDotClasses" aria-hidden="true"></span>
         <span :class="footerValueClasses">
           {{ peakRow.peak?.toLocaleString() }}

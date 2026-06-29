@@ -7,13 +7,21 @@ import {
   ArrowUpIcon,
   ArrowDownIcon,
   Check,
+  ChevronDown,
   ChevronsUpDown,
   Search,
   SlidersHorizontal,
   X,
 } from "lucide-vue-next";
+import FilterBar from "~/components/common/FilterBar.vue";
+import FilterMenu from "~/components/common/FilterMenu.vue";
 import { Card } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { Label } from "~/components/ui/label";
 import {
   Popover,
@@ -45,6 +53,10 @@ import {
   tacticalFilterPillActiveDangerClasses,
   tacticalFilterPillActiveWarningClasses,
   tacticalFilterPillClasses,
+  filterTriggerBase,
+  filterTriggerIdle,
+  filterTriggerActive,
+  filterBadgeClasses,
 } from "~/utilities/tacticalClasses";
 </script>
 
@@ -57,74 +69,48 @@ import {
 
   <!-- Filters -->
   <PageTransition :delay="100" class="mt-6">
-    <div class="space-y-3">
-      <!-- Search + Filters toggle -->
-      <div class="flex gap-2 items-stretch">
-        <div class="relative flex-1">
-          <Search
-            class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground pointer-events-none"
-          />
-          <Input
-            id="player-name-search"
-            :model-value="form.values.name"
-            @update:model-value="
-              (value) => {
-                form.setFieldValue('name', value as string);
-                onFilterChange();
-              }
-            "
-            :placeholder="$t('pages.manage_matches.enter_name')"
-            class="h-12 pl-12 pr-12 text-base bg-card/60 backdrop-blur border-border"
-          />
+    <FilterBar>
+      <!-- Search (always visible — type instantly) -->
+      <InputGroup class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-xs">
+        <InputGroupAddon class="pl-2.5">
+          <Search class="h-3.5 w-3.5" />
+        </InputGroupAddon>
+        <InputGroupInput
+          id="player-name-search"
+          :model-value="form.values.name"
+          @update:model-value="
+            (value) => {
+              form.setFieldValue('name', value as string);
+              onFilterChange();
+            }
+          "
+          :placeholder="$t('pages.manage_matches.enter_name')"
+          class="h-full text-sm"
+        />
+        <InputGroupAddon align="inline-end" class="pr-2">
           <button
             v-if="form.values.name"
             type="button"
+            class="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             @click="
               form.setFieldValue('name', '');
               onFilterChange();
             "
-            class="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
           >
-            <X class="w-4 h-4" />
+            <X class="h-3.5 w-3.5" />
           </button>
-        </div>
+        </InputGroupAddon>
+      </InputGroup>
 
-        <Popover v-model:open="filtersPopoverOpen">
-          <PopoverTrigger as-child>
-            <Button
-              variant="outline"
-              class="h-12 px-4 gap-2 bg-card/60 backdrop-blur"
-              :class="{
-                'border-[hsl(var(--tac-amber)/0.55)] text-[hsl(var(--tac-amber))]':
-                  activeFilterChips.length > 0,
-              }"
-            >
-              <SlidersHorizontal class="w-4 h-4" />
-              <span class="hidden sm:inline">{{ $t("common.filters") }}</span>
-              <span
-                v-if="activeFilterChips.length > 0"
-                class="inline-flex items-center justify-center min-w-[1.25rem] h-5 px-1.5 rounded-full text-[0.65rem] font-semibold bg-[hsl(var(--tac-amber)/0.2)] text-[hsl(var(--tac-amber))] border border-[hsl(var(--tac-amber)/0.45)]"
-              >
-                {{ activeFilterChips.length }}
-              </span>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent align="end" class="w-[min(90vw,440px)] p-4">
-            <div class="flex items-center justify-between mb-3">
-              <h4
-                class="font-mono text-xs tracking-[0.24em] uppercase text-muted-foreground"
-              >
-                {{ $t("common.filters") }}
-              </h4>
-              <button
-                v-if="activeFilterChips.length > 0"
-                type="button"
-                @click="resetFilters"
-                class="text-xs text-muted-foreground hover:text-foreground underline underline-offset-4"
-              >
-                {{ $t("common.reset_filters") }}
-              </button>
-            </div>
+      <!-- Filters (bundled, pinned right) + grouped reset -->
+      <FilterMenu
+        class="ml-auto"
+        v-model:open="filtersPopoverOpen"
+        :count="activeFilterChips.length"
+        :active="activeFilterChips.length > 0"
+        :show-reset="hasActivePlayerFilters"
+        @reset="resetFilters"
+      >
             <form @submit.prevent class="space-y-4">
               <div class="grid gap-4 grid-cols-1 sm:grid-cols-2">
                 <!-- Elo range slider -->
@@ -367,33 +353,9 @@ import {
                 </template>
               </div>
             </form>
-          </PopoverContent>
-        </Popover>
-      </div>
+      </FilterMenu>
 
-      <!-- Active filter chips -->
-      <div
-        v-if="activeFilterChips.length > 0"
-        class="flex gap-2 flex-wrap items-center"
-      >
-        <span
-          class="text-[0.65rem] font-mono tracking-[0.22em] uppercase text-muted-foreground"
-        >
-          {{ $t("pages.matches.active") }}
-        </span>
-        <button
-          v-for="chip in activeFilterChips"
-          :key="chip.id"
-          type="button"
-          @click="chip.clear()"
-          class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs bg-[hsl(var(--tac-amber)/0.12)] border border-[hsl(var(--tac-amber)/0.35)] text-[hsl(var(--tac-amber))] hover:bg-[hsl(var(--tac-amber)/0.2)] transition-colors"
-        >
-          <span class="font-medium">{{ chip.label }}:</span>
-          <span class="opacity-80">{{ chip.value }}</span>
-          <X class="w-3 h-3" />
-        </button>
-      </div>
-    </div>
+    </FilterBar>
   </PageTransition>
 
   <PageTransition :delay="200" class="mt-6">
@@ -761,6 +723,9 @@ export default {
         });
       }
       return chips;
+    },
+    hasActivePlayerFilters() {
+      return !!this.form.values.name || this.activeFilterChips.length > 0;
     },
   },
   watch: {

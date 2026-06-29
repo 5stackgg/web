@@ -34,6 +34,16 @@ const fadeTransition = {
   <PageTransition>
     <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.dedicated_servers.title") }}</template>
+      <template #subtitle>
+        {{ $t("pages.dedicated_servers.description") }}
+        <a
+          href="https://docs.5stack.gg/servers/dedicated-servers/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-[hsl(var(--tac-amber))] hover:underline"
+          >{{ $t("pages.dedicated_servers.docs_link") }}</a
+        >
+      </template>
 
       <template #actions>
         <NuxtLink
@@ -52,19 +62,6 @@ const fadeTransition = {
         </NuxtLink>
       </template>
     </TacticalPageHeader>
-  </PageTransition>
-
-  <PageTransition :delay="60" class="mt-4">
-    <p class="text-sm text-muted-foreground">
-      {{ $t("pages.dedicated_servers.description") }}
-      <a
-        href="https://docs.5stack.gg/servers/dedicated-servers/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="text-[hsl(var(--tac-amber))] hover:underline"
-        >{{ $t("pages.dedicated_servers.docs_link") }}</a
-      >
-    </p>
   </PageTransition>
 
   <PageTransition :delay="100" class="mt-6">

@@ -157,6 +157,12 @@ export default defineNuxtPlugin((nuxtApp) => {
           continue;
         }
 
+        // RCON being unreachable is an expected, transient state already
+        // surfaced by the server status badge + RCON console — don't toast it.
+        if (/unable to connect to rcon/i.test(graphqlError.message)) {
+          continue;
+        }
+
         toast({
           variant: "destructive",
           title: $i18n.t("common.error"),

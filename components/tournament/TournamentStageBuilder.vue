@@ -597,20 +597,23 @@ import {
       >
         <SheetContent
           side="right"
-          class="w-full sm:max-w-2xl lg:max-w-4xl overflow-y-auto"
+          class="flex flex-col gap-0 w-full sm:max-w-2xl lg:max-w-4xl"
         >
           <SheetHeader>
             <SheetTitle>{{ $t("tournament.stage.edit_title") }}</SheetTitle>
-            <SheetDescription>
-              <TournamentStageForm
-                v-if="getFirstStageForTab(stageNumber)"
-                :stage="getFirstStageForTab(stageNumber)"
-                :order="stageNumber"
-                :tournament="tournament"
-                @updated="editStageDialogs[stageNumber] = false"
-              ></TournamentStageForm>
+            <SheetDescription class="sr-only">
+              {{ $t("tournament.stage.edit_title") }}
             </SheetDescription>
           </SheetHeader>
+          <div class="-mx-4 mt-4 flex-1 overflow-y-auto px-4">
+            <TournamentStageForm
+              v-if="getFirstStageForTab(stageNumber)"
+              :stage="getFirstStageForTab(stageNumber)"
+              :order="stageNumber"
+              :tournament="tournament"
+              @updated="editStageDialogs[stageNumber] = false"
+            ></TournamentStageForm>
+          </div>
         </SheetContent>
       </Sheet>
 

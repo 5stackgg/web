@@ -19,17 +19,11 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
             $t("pages.settings.matchmaking.show_match_ready_modal.description")
           }}
         </p>
-        <div class="flex items-center gap-2">
-          <Spinner
-            v-if="savingShowMatchReadyModal"
-            class="h-4 w-4 text-muted-foreground"
-          />
-          <Switch
-            :model-value="showMatchReadyModal"
-            :disabled="savingShowMatchReadyModal || !me"
-            @update:model-value="updateShowMatchReadyModal"
-          />
-        </div>
+        <Switch
+          :model-value="showMatchReadyModal"
+          :disabled="!me"
+          @update:model-value="updateShowMatchReadyModal"
+        />
       </div>
     </FormSection>
 
@@ -157,7 +151,6 @@ export default {
   data() {
     return {
       playerMaxAcceptablelatnecy: 75,
-      savingShowMatchReadyModal: false,
     };
   },
   mounted() {
@@ -170,24 +163,19 @@ export default {
     },
     async updateShowMatchReadyModal(value: boolean) {
       if (!this.me) return;
-      this.savingShowMatchReadyModal = true;
-      try {
-        await this.$apollo.mutate({
-          variables: { show: value },
-          mutation: generateMutation({
-            update_players_by_pk: [
-              {
-                pk_columns: { steam_id: this.me.steam_id },
-                _set: { show_match_ready_modal: $("show", "Boolean!") },
-              },
-              { steam_id: true, show_match_ready_modal: true },
-            ],
-          }),
-        });
-        toast({ title: this.$t("pages.settings.account.update_success") });
-      } finally {
-        this.savingShowMatchReadyModal = false;
-      }
+      await this.$apollo.mutate({
+        variables: { show: value },
+        mutation: generateMutation({
+          update_players_by_pk: [
+            {
+              pk_columns: { steam_id: this.me.steam_id },
+              _set: { show_match_ready_modal: $("show", "Boolean!") },
+            },
+            { steam_id: true, show_match_ready_modal: true },
+          ],
+        }),
+      });
+      toast({ title: this.$t("pages.settings.account.update_success") });
     },
     togglePreferredRegion(region: string) {
       useMatchmakingStore().togglePreferredRegion(region);

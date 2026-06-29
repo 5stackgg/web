@@ -14,27 +14,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-
-
-const showSeparators = computed(
-  () => useApplicationSettingsStore().showSeparators,
-);
 </script>
 
 <template>
   <PageTransition :delay="0">
-    <div>
-      <h3 class="text-base font-semibold uppercase tracking-wide">
-        {{ $t("pages.settings.language.title") }}
-      </h3>
-      <p class="text-sm text-muted-foreground mt-0.5">
-        {{ $t("pages.settings.language.description") }}
-      </p>
-    </div>
-  </PageTransition>
-  <Separator v-if="showSeparators" />
-
-  <PageTransition :delay="100">
     <div class="grid gap-6"></div>
   </PageTransition>
 </template>

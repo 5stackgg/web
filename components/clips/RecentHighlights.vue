@@ -28,7 +28,6 @@ const props = withDefaults(
   }>(),
   {
     limit: 8,
-    title: "Recent Highlights",
     showHeader: true,
     horizontal: false,
   },
@@ -207,7 +206,7 @@ const gridItems = computed<GridItem[]>(() => {
         <h2
           class="font-mono text-xs uppercase tracking-[0.18em] text-foreground/80"
         >
-          {{ title }}
+          {{ title ?? $t("recent_highlights.default_title") }}
         </h2>
       </div>
       <NuxtLink

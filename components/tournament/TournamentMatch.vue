@@ -723,7 +723,9 @@ const shouldShowCrossBracketDestination = (
                 :disabled="resetLoading"
                 @click.stop
               >
-                <span class="sr-only">Open match actions</span>
+                <span class="sr-only">{{
+                  $t("tournament.open_match_actions")
+                }}</span>
                 <span aria-hidden="true" class="flex items-center gap-0.5">
                   <span class="h-1 w-1 rounded-full bg-current" />
                   <span class="h-1 w-1 rounded-full bg-current" />

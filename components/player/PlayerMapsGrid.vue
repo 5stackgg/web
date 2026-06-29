@@ -970,7 +970,10 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
                     class="text-right"
                     @sort="toggle"
                   >
-                    {{ $t("pages.players.detail.maps.col_kd") }}
+                    <StatLabel
+                      stat="kd"
+                      :label="$t('pages.players.detail.maps.col_kd')"
+                    />
                   </SortableTableHead>
                   <SortableTableHead
                     sort-key="udr"
@@ -985,7 +988,10 @@ function avgKda(agg: MapAggregate, side: SideKey): string {
                     />
                   </SortableTableHead>
                   <TableHead class="text-right">
-                    {{ $t("pages.players.detail.maps.col_avg_kda") }}
+                    <StatLabel
+                      stat="kda"
+                      :label="$t('pages.players.detail.maps.col_avg_kda')"
+                    />
                   </TableHead>
                 </TableRow>
               </TableHeader>

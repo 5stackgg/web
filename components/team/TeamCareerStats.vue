@@ -8,6 +8,7 @@ import {
 } from "~/graphql/teamCareerStatsGraphql";
 import { useTableSort } from "~/composables/useTableSort";
 import SortableTableHead from "~/components/common/SortableTableHead.vue";
+import StatLabel from "~/components/common/StatLabel.vue";
 import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import {
   Table,
@@ -203,7 +204,15 @@ async function load() {
 watch(() => props.teamId, load, { immediate: true });
 
 const { sortKey, sortDir, toggle, sortRows } = useTableSort<
-  "player" | "maps" | "rounds" | "rating" | "kpr" | "dpr" | "kd" | "adr" | "kast"
+  | "player"
+  | "maps"
+  | "rounds"
+  | "rating"
+  | "kpr"
+  | "dpr"
+  | "kd"
+  | "adr"
+  | "kast"
 >("rating", "desc");
 
 const sortedPlayers = computed(() =>
@@ -232,15 +241,15 @@ function kd(p: PlayerAgg): number {
 <template>
   <div>
     <div class="flex flex-col gap-4">
-        <div class="flex flex-col gap-1">
-          <span :class="tacticalSectionLabelClasses">
-            <span :class="tacticalSectionTickClasses" />
-            {{ $t("team.career.title") }}
-          </span>
-          <span :class="tacticalSectionDescriptionClasses">
-            {{ $t("team.career.description") }}
-          </span>
-        </div>
+      <div class="flex flex-col gap-1">
+        <span :class="tacticalSectionLabelClasses">
+          <span :class="tacticalSectionTickClasses" />
+          {{ $t("team.career.title") }}
+        </span>
+        <span :class="tacticalSectionDescriptionClasses">
+          {{ $t("team.career.description") }}
+        </span>
+      </div>
 
       <Transition
         mode="out-in"
@@ -251,7 +260,11 @@ function kd(p: PlayerAgg): number {
       >
         <div v-if="loading" key="loading" class="flex flex-col gap-4">
           <div class="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            <Skeleton v-for="i in 4" :key="i" class="h-[4.25rem] w-full rounded-md" />
+            <Skeleton
+              v-for="i in 4"
+              :key="i"
+              class="h-[4.25rem] w-full rounded-md"
+            />
           </div>
           <Skeleton class="h-10 w-full rounded-md" />
           <Skeleton
@@ -335,7 +348,7 @@ function kd(p: PlayerAgg): number {
                     class="text-right"
                     @sort="toggle"
                   >
-                    {{ $t("team.career.rating") }}
+                    <StatLabel stat="hltv" :label="$t('team.career.rating')" />
                   </SortableTableHead>
                   <SortableTableHead
                     sort-key="kpr"
@@ -344,7 +357,7 @@ function kd(p: PlayerAgg): number {
                     class="text-right"
                     @sort="toggle"
                   >
-                    {{ $t("team.career.kpr") }}
+                    <StatLabel stat="kpr" :label="$t('team.career.kpr')" />
                   </SortableTableHead>
                   <SortableTableHead
                     sort-key="dpr"
@@ -353,7 +366,7 @@ function kd(p: PlayerAgg): number {
                     class="text-right"
                     @sort="toggle"
                   >
-                    {{ $t("team.career.dpr") }}
+                    <StatLabel stat="dpr" :label="$t('team.career.dpr')" />
                   </SortableTableHead>
                   <SortableTableHead
                     sort-key="kd"
@@ -362,7 +375,7 @@ function kd(p: PlayerAgg): number {
                     class="text-right"
                     @sort="toggle"
                   >
-                    {{ $t("team.career.kd") }}
+                    <StatLabel stat="kd" :label="$t('team.career.kd')" />
                   </SortableTableHead>
                   <SortableTableHead
                     sort-key="adr"
@@ -371,7 +384,7 @@ function kd(p: PlayerAgg): number {
                     class="text-right"
                     @sort="toggle"
                   >
-                    {{ $t("team.career.adr") }}
+                    <StatLabel stat="adr" :label="$t('team.career.adr')" />
                   </SortableTableHead>
                   <SortableTableHead
                     sort-key="kast"
@@ -380,7 +393,7 @@ function kd(p: PlayerAgg): number {
                     class="text-right"
                     @sort="toggle"
                   >
-                    {{ $t("team.career.kast") }}
+                    <StatLabel stat="kast" :label="$t('team.career.kast')" />
                   </SortableTableHead>
                 </TableRow>
               </TableHeader>
@@ -396,10 +409,14 @@ function kd(p: PlayerAgg): number {
                       :linkable="true"
                     />
                   </TableCell>
-                  <TableCell class="text-right tabular-nums text-muted-foreground">
+                  <TableCell
+                    class="text-right tabular-nums text-muted-foreground"
+                  >
                     {{ p.maps }}
                   </TableCell>
-                  <TableCell class="text-right tabular-nums text-muted-foreground">
+                  <TableCell
+                    class="text-right tabular-nums text-muted-foreground"
+                  >
                     {{ p.rounds }}
                   </TableCell>
                   <TableCell class="text-right font-bold tabular-nums">

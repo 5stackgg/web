@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import PageHeading from "~/components/PageHeading.vue";
+import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import TeamForm from "~/components/teams/TeamForm.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
-PageHeading;
 
 const route = useRoute();
 
@@ -21,12 +20,12 @@ const inviteMembers = computed<string[]>(() => {
 </script>
 
 <template>
-  <PageTransition :delay="0">
-    <PageHeading class="w-1/2">
+  <PageTransition :delay="0" class="mx-auto w-full max-w-2xl">
+    <TacticalPageHeader>
       <template #title>{{ $t("pages.teams.create") }}</template>
-    </PageHeading>
+    </TacticalPageHeader>
   </PageTransition>
-  <PageTransition :delay="100" class="mt-6 w-1/2">
+  <PageTransition :delay="100" class="mx-auto mt-6 w-full max-w-2xl">
     <team-form :invite-members="inviteMembers"></team-form>
   </PageTransition>
 </template>

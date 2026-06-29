@@ -22,6 +22,14 @@ const props = defineProps<{
   dirty?: boolean;
   submitting?: boolean;
   contained?: boolean;
+  // Validation-gate mode (e.g. a create flow): show the bar regardless of
+  // dirty state and only enable the action once `valid` is true.
+  forceVisible?: boolean;
+  valid?: boolean;
+  title?: string;
+  description?: string;
+  actionLabel?: string;
+  hideDiscard?: boolean;
 }>();
 
 const emit = defineEmits<{ (e: "save"): void; (e: "discard"): void }>();
@@ -62,9 +70,18 @@ const hasErrors = computed(() => {
   return errs ? Object.keys(errs).length > 0 : false;
 });
 
-const canSave = computed(
-  () => dirty.value && !hasErrors.value && !props.submitting,
-);
+const visible = computed(() => props.forceVisible || dirty.value);
+
+const canSave = computed(() => {
+  if (props.submitting) return false;
+  if (hasErrors.value) return false;
+  // In gate mode (forceVisible, e.g. a create flow) the action is enabled only
+  // once `valid` is true. In normal save mode `valid` is ignored — note an
+  // absent boolean prop is coerced to `false` by Vue, so we must NOT gate on it
+  // here or every save bar would be permanently disabled.
+  if (props.forceVisible) return props.valid === true;
+  return dirty.value;
+});
 
 function save() {
   if (!canSave.value) return;
@@ -82,7 +99,7 @@ function discard() {
 
 function onKeydown(e: KeyboardEvent) {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "s") {
-    if (!dirty.value) return;
+    if (!visible.value) return;
     e.preventDefault();
     save();
   }
@@ -111,8 +128,14 @@ function onBarEnter() {
   });
 }
 
+// Show ⌘S on Apple platforms, Ctrl+S everywhere else — the handler already
+// accepts either modifier.
+const isApple = ref(false);
+const saveShortcut = computed(() => (isApple.value ? "⌘S" : "Ctrl+S"));
+
 onMounted(() => {
   if (props.form) takeSnapshot();
+  isApple.value = /Mac|iPhone|iPad|iPod/i.test(navigator.platform);
   window.addEventListener("keydown", onKeydown);
 });
 onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
@@ -130,13 +153,21 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
       @enter="onBarEnter"
     >
       <div
-        v-if="dirty"
+        v-if="visible"
         ref="barRef"
         class="pointer-events-none flex justify-center"
         :class="
           contained
             ? 'sticky inset-x-0 bottom-0 z-20 px-1 pb-1 pt-2'
-            : 'fixed inset-x-0 bottom-0 z-50 px-4 pb-[max(1rem,env(safe-area-inset-bottom))]'
+            : 'fixed inset-x-0 bottom-0 z-50 px-4 pt-2'
+        "
+        :style="
+          contained
+            ? undefined
+            : {
+                paddingBottom:
+                  'calc(var(--main-bottom-dock-height, 0px) + max(1rem, env(safe-area-inset-bottom)))',
+              }
         "
       >
         <div
@@ -174,14 +205,14 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
               {{
                 hasErrors
                   ? $t("common.save_bar.has_errors")
-                  : $t("common.save_bar.unsaved_changes")
+                  : title || $t("common.save_bar.unsaved_changes")
               }}
             </span>
             <span class="truncate text-xs text-muted-foreground">
               {{
                 hasErrors
                   ? $t("common.save_bar.resolve_errors")
-                  : $t("common.save_bar.review_and_save")
+                  : description || $t("common.save_bar.review_and_save")
               }}
             </span>
           </div>
@@ -190,6 +221,7 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
 
           <!-- actions -->
           <Button
+            v-if="!hideDiscard"
             type="button"
             variant="ghost"
             size="sm"
@@ -203,14 +235,14 @@ onBeforeUnmount(() => window.removeEventListener("keydown", onKeydown));
             size="sm"
             class="tac-amber-cta shrink-0"
             :loading="submitting"
-            :disabled="hasErrors"
+            :disabled="!canSave"
             @click="save"
           >
             <span class="flex items-center gap-2">
-              {{ $t("common.save_changes") }}
+              {{ actionLabel || $t("common.save_changes") }}
               <kbd
                 class="hidden rounded border border-black/25 bg-black/10 px-1 py-px font-mono text-[0.65rem] leading-none sm:inline"
-                >⌘S</kbd
+                >{{ saveShortcut }}</kbd
               >
             </span>
           </Button>

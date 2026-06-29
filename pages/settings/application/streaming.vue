@@ -96,6 +96,25 @@ import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
         </SettingsSection>
 
         <SettingsSection
+          id="require-login"
+          :title="
+            $t('pages.settings.application.streaming.require_login_section')
+          "
+          :description="
+            $t('pages.settings.application.streaming.require_login_description')
+          "
+          clickable-header
+          @header-click="toggleRequireLogin"
+        >
+          <template #action>
+            <Switch
+              :model-value="requireLoginEnabled"
+              @update:model-value="toggleRequireLogin"
+            />
+          </template>
+        </SettingsSection>
+
+        <SettingsSection
           id="encoding"
           :title="$t('pages.settings.application.streaming.encoding_section')"
         >
@@ -239,6 +258,31 @@ export default {
         title: this.$t("pages.settings.application.streaming.updated"),
       });
     },
+    async toggleRequireLogin() {
+      await (this as any).$apollo.mutate({
+        mutation: generateMutation({
+          insert_settings_one: [
+            {
+              object: {
+                name: "public.require_login_for_live_streams",
+                value: this.requireLoginEnabled ? "false" : "true",
+              },
+              on_conflict: {
+                constraint: settings_constraint.settings_pkey,
+                update_columns: [settings_update_column.value],
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+
+      toast({
+        title: this.$t("pages.settings.application.streaming.updated"),
+      });
+    },
     async updateSettings() {
       if (this.submitting) {
         return;
@@ -330,6 +374,9 @@ export default {
       }
 
       return false;
+    },
+    requireLoginEnabled() {
+      return useApplicationSettingsStore().requireLoginForLiveStreams;
     },
   },
 };

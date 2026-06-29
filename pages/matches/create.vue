@@ -56,16 +56,12 @@ const steps = [
 const submitting = ref(false);
 
 const scheduledAtLocal = ref("");
+// Empty = ASAP. Only invalid when a time is set but it's in the past.
 const scheduledValid = computed(
   () =>
-    !!scheduledAtLocal.value &&
+    !scheduledAtLocal.value ||
     new Date(scheduledAtLocal.value).getTime() > Date.now(),
 );
-
-// Fill the picker with the current time (small buffer so it stays in the future).
-const setNow = () => {
-  scheduledAtLocal.value = new Date(Date.now() + 120_000).toISOString();
-};
 
 type Side = {
   mode: "team" | "individual";
@@ -85,6 +81,44 @@ const sourceOptions = computed(() => [
 const excludedSteamIds = computed(() =>
   lineups.value.flatMap((s) => s.members.map((m) => m.steam_id)),
 );
+
+// Smooth team↔individual swap: animate the real height (so the Back/Schedule
+// buttons below glide instead of jumping) plus a fade. Driven by JS hooks on a
+// keyed wrapper with mode="out-in".
+const SWAP_MS = 240;
+const onSwapBeforeEnter = (el: HTMLElement) => {
+  el.style.height = "0px";
+  el.style.opacity = "0";
+};
+const onSwapEnter = (el: HTMLElement, done: () => void) => {
+  const target = el.scrollHeight;
+  void el.offsetHeight;
+  el.style.transition = `height ${SWAP_MS}ms ease, opacity ${SWAP_MS}ms ease`;
+  el.style.height = `${target}px`;
+  el.style.opacity = "1";
+  const end = (e: TransitionEvent) => {
+    if (e.propertyName !== "height") return;
+    el.style.transition = "";
+    el.style.height = "";
+    el.removeEventListener("transitionend", end);
+    done();
+  };
+  el.addEventListener("transitionend", end);
+};
+const onSwapLeave = (el: HTMLElement, done: () => void) => {
+  el.style.height = `${el.scrollHeight}px`;
+  el.style.opacity = "1";
+  void el.offsetHeight;
+  el.style.transition = `height ${SWAP_MS}ms ease, opacity ${SWAP_MS}ms ease`;
+  el.style.height = "0px";
+  el.style.opacity = "0";
+  const end = (e: TransitionEvent) => {
+    if (e.propertyName !== "height") return;
+    el.removeEventListener("transitionend", end);
+    done();
+  };
+  el.addEventListener("transitionend", end);
+};
 
 const addPlayer = (sideIndex: number, player: { steam_id: string }) => {
   const side = lineups.value[sideIndex];
@@ -137,7 +171,7 @@ const submit = form.handleSubmit(async (values: any) => {
       mutation: gql`
         mutation CreateScheduledMatch(
           $options: jsonb!
-          $scheduled_at: String!
+          $scheduled_at: String
           $lineup_1: ScheduledLineupInput!
           $lineup_2: ScheduledLineupInput!
         ) {
@@ -153,7 +187,9 @@ const submit = form.handleSubmit(async (values: any) => {
       `,
       variables: {
         options,
-        scheduled_at: new Date(scheduledAtLocal.value).toISOString(),
+        scheduled_at: scheduledAtLocal.value
+          ? new Date(scheduledAtLocal.value).toISOString()
+          : null,
         lineup_1: buildLineup(lineups.value[0]),
         lineup_2: buildLineup(lineups.value[1]),
       },
@@ -223,13 +259,9 @@ const submit = form.handleSubmit(async (values: any) => {
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <DateTimePicker v-model="scheduledAtLocal" />
-              <button
-                type="button"
-                class="text-xs text-muted-foreground underline-offset-2 transition-colors hover:text-foreground hover:underline"
-                @click="setNow"
-              >
-                {{ $t("pages.matches.schedule.now") }}
-              </button>
+              <span class="text-xs text-muted-foreground">
+                {{ $t("pages.matches.schedule.kickoff_asap") }}
+              </span>
             </div>
             <p
               v-if="scheduledAtLocal && !scheduledValid"
@@ -270,31 +302,43 @@ const submit = form.handleSubmit(async (values: any) => {
                 block
               />
 
-              <TeamSearch
-                v-if="side.mode === 'team'"
-                :label="$t('pages.matches.schedule.select_team')"
-                :model-value="side.teamId"
-                :min-players="perTeam"
-                :exclude="
-                  lineups[index === 0 ? 1 : 0].teamId
-                    ? [lineups[index === 0 ? 1 : 0].teamId]
-                    : []
-                "
-                @selected="(team) => (side.teamId = team.id)"
-              />
+              <Transition
+                :css="false"
+                mode="out-in"
+                @before-enter="onSwapBeforeEnter"
+                @enter="onSwapEnter"
+                @leave="onSwapLeave"
+              >
+                <div :key="side.mode" class="overflow-hidden">
+                  <TeamSearch
+                    v-if="side.mode === 'team'"
+                    :label="$t('pages.matches.schedule.select_team')"
+                    :model-value="side.teamId"
+                    :min-players="perTeam"
+                    :exclude="
+                      lineups[index === 0 ? 1 : 0].teamId
+                        ? [lineups[index === 0 ? 1 : 0].teamId]
+                        : []
+                    "
+                    @selected="(team) => (side.teamId = team.id)"
+                  />
 
-              <DraftTeamPanel
-                v-else
-                :title="$t('pages.matches.schedule.team_n', { n: index + 1 })"
-                :players="side.members"
-                :per-team="perTeam"
-                :accent="index === 0 ? 'amber' : 'blue'"
-                addable
-                removable
-                :exclude-steam-ids="excludedSteamIds"
-                @add="(steamId, player) => addPlayer(index, player)"
-                @remove="(steamId) => removePlayer(index, steamId)"
-              />
+                  <DraftTeamPanel
+                    v-else
+                    :title="
+                      $t('pages.matches.schedule.team_n', { n: index + 1 })
+                    "
+                    :players="side.members"
+                    :per-team="perTeam"
+                    :accent="index === 0 ? 'amber' : 'blue'"
+                    addable
+                    removable
+                    :exclude-steam-ids="excludedSteamIds"
+                    @add="(steamId, player) => addPlayer(index, player)"
+                    @remove="(steamId) => removePlayer(index, steamId)"
+                  />
+                </div>
+              </Transition>
             </div>
           </div>
 

@@ -5,7 +5,6 @@
         "create_title": "New Alert",
         "edit_title": "Edit Alert",
         "active_title": "Alerts",
-        "active_description": "All alerts. Toggle one active to show its banner, or remove it entirely.",
         "dismiss": "Dismiss",
         "saved": "Alert saved",
         "deleted": "Alert deleted",
@@ -841,6 +840,10 @@
             "label": "Multi-Kill Rounds",
             "description": "Rounds in which you got two or more kills."
         },
+        "mp": {
+            "label": "Maps Played",
+            "description": "Number of maps this player has played in the stage."
+        },
         "cl": {
             "label": "Clutch %",
             "description": "Share of clutch situations (last player alive, 1vX) that you won."
@@ -857,7 +860,11 @@
     "pagination": {
         "items_per_page": "per page",
         "showing_range": "Showing {start}–{end} of {total}",
-        "total": "{total} total"
+        "first_page": "First page",
+        "previous_page": "Previous page",
+        "more_pages": "More pages",
+        "next_page": "Next page",
+        "last_page": "Last page"
     },
     "trophies_modal": {
         "view_tournament": "VIEW TOURNAMENT"
@@ -924,7 +931,6 @@
         "user": "User",
         "verified_user": "Verified User",
         "streamer": "Streamer",
-        "moderator": "Moderator",
         "match_organizer": "Match Organizer",
         "tournament_organizer": "Tournament Organizer",
         "administrator": "Administrator"
@@ -958,14 +964,10 @@
         "gpu_busy": "GPU busy"
     },
     "replay_extras": {
-        "open_popout": "Open in popout window",
-        "open_match": "Open match",
         "hud_layout": "HUD layout / visibility",
         "reissue_connect": "Re-issue connect (recover from a disconnect)",
-        "picture_in_picture": "Picture-in-picture",
         "fullscreen_key": "Fullscreen (F)",
         "toggle_cs2_hud": "Toggle CS2 demo HUD",
-        "match_highlight": "Match highlight",
         "skip_forward_15s": "Skip forward 15s"
     },
     "map_dots": {
@@ -996,7 +998,10 @@
         "render_failed": "Render failed",
         "queued_waiting": "Queued — waiting for a render slot",
         "rendering_on_pod": "Rendering on the game-streamer pod",
-        "submitting": "Submitting…"
+        "submitting": "Submitting…",
+        "highlight_queued_title": "Highlight queued",
+        "highlight_queued_desc_named": "{name}'s highlight will render once a slot is free — find it in Highlights when it's done.",
+        "highlight_queued_desc": "Your highlight will render once a slot is free — find it in Highlights when it's done."
     },
     "match_extras": {
         "unknown_date": "Unknown date",
@@ -1144,21 +1149,21 @@
         "highlights_busy": "GPU busy: highlights are rendering",
         "streaming_disabled": "Live streaming is disabled on all GPU nodes",
         "demo_disabled": "Demo playback is disabled on all GPU nodes",
-        "rendering_disabled": "Rendering is disabled on all GPU nodes"
-    },
-    "clip_editor_dest": {
-        "library": "Library",
-        "download": "Download"
+        "rendering_disabled": "Rendering is disabled on all GPU nodes",
+        "live_gotv": "Live (GOTV)",
+        "live_direct": "Live (Direct)",
+        "live_match": "Live match",
+        "unknown_user": "Unknown user",
+        "system_user": "System",
+        "demo_playback_label": "Demo Playback",
+        "demo_playback_subline": "Demo playback",
+        "highlights_render_label": "Highlights Render",
+        "highlight_render_subline": "Highlight render"
     },
     "trophies_manage_form": {
         "placement": "Placement",
         "team": "Team",
-        "player": "Player",
-        "select_team": "Select team…",
-        "select_player": "Select player…"
-    },
-    "match_scoreboard": {
-        "player_header": "Player"
+        "player": "Player"
     },
     "shortcut_overlay": {
         "to_close": "to close"
@@ -1167,16 +1172,12 @@
         "title": "Trophies",
         "no_trophies": "No Trophies Yet",
         "no_trophies_description": "Finish in the top 3 of a tournament to earn a trophy.",
-        "gold": "Gold",
-        "silver": "Silver",
-        "bronze": "Bronze",
         "mvp": "MVP",
         "first_place": "1st Place",
         "second_place": "2nd Place",
         "third_place": "3rd Place",
         "tournament": "Tournament",
-        "placement": "Placement",
-        "teammates": "Teammates"
+        "placement": "Placement"
     },
     "avatar": {
         "upload": "Upload avatar",
@@ -1218,6 +1219,7 @@
             "cpu_usage": "CPU Usage",
             "memory_usage": "Memory Usage",
             "services": "Services",
+            "service": "Service",
             "network": "Network",
             "search_services_placeholder": "Search services or nodes...",
             "filter_by_node": "Filter by Node",
@@ -1237,6 +1239,7 @@
         "coming_soon": "Coming Soon!",
         "tournaments": {
             "title": "Tournaments",
+            "description": "Browse live, open, and upcoming tournaments, or filter by status and date to find a specific bracket.",
             "create": "Create Tournament",
             "open_for_registration": "Open for Registration",
             "section_live": "LIVE.TOURNAMENTS",
@@ -1263,12 +1266,8 @@
                 "no_results_description": "Try clearing filters or widening your search."
             },
             "tabs": {
-                "upcoming": "Upcoming",
-                "no_live_title": "No Live Tournaments",
-                "no_upcoming_title": "No Upcoming Tournaments",
-                "no_finished_title": "No Finished Tournaments"
-            },
-            "no_finished": "No finished tournaments found."
+                "upcoming": "Upcoming"
+            }
         },
         "manage_tournaments": {
             "title": "Manage Tournaments",
@@ -1277,17 +1276,13 @@
             "enter_tournament_id": "Enter tournament ID...",
             "search_by_name": "Search by Name",
             "enter_tournament_name": "Enter tournament name...",
-            "filter_by_status": "Filter by Status",
-            "select_statuses": "Select statuses...",
             "clear_all": "Clear All",
             "sort_by": "Sort by",
             "created_at": "Created Date",
             "start": "Start Date",
             "newest_first": "Newest First",
             "oldest_first": "Oldest First",
-            "only_my_tournaments": "Only My Organized Tournaments",
-            "showing": "Showing",
-            "tournaments": "tournaments"
+            "only_my_tournaments": "Only My Organized Tournaments"
         },
         "scrims": {
             "title": "Scrim Finder",
@@ -1298,12 +1293,9 @@
             "regions_section": "Regions",
             "filter_regions_placeholder": "Filter regions",
             "no_regions_found": "No regions found.",
-            "maps_label": "Maps",
             "preferred_maps": "Preferred maps",
             "no_map_preferences": "No map preferences set.",
-            "elo_label": "ELO",
             "team_avg_elo": "Team avg ELO",
-            "sort_label": "Sort",
             "sort_by": "Sort by",
             "sort_name": "Name",
             "sort_elo": "ELO",
@@ -1351,7 +1343,6 @@
                 "description": "Estimate the likely veto outcome and map win chances against a chosen opponent, based on both teams' veto history.",
                 "opponent": "Opponent",
                 "select_opponent": "Select opponent team",
-                "format": "Format",
                 "estimate_notice": "Estimate only — derived from historical veto tendencies, not a guaranteed outcome.",
                 "loading": "Loading opponent veto history…",
                 "no_self_title": "No veto history for this team",
@@ -1370,16 +1361,11 @@
             }
         },
         "settings": {
-            "on_this_page": "On this page",
             "account": {
-                "title": "Account Settings",
-                "description": "Your Account Details",
                 "my_account": "My Account",
                 "api_keys": "API Keys",
                 "external_matches": "External Matches",
                 "api_keys_management": {
-                    "your_api_keys": "Your API Keys",
-                    "api_keys_description": "API keys allow you to authenticate with the 5Stack API programmatically.",
                     "add_api_key": "Add API Key",
                     "create_new_api_key": "Create New API Key",
                     "create_new_description": "Create a new API key with a descriptive label to identify its purpose.",
@@ -1431,14 +1417,9 @@
             },
             "notifications": {
                 "title": "Notifications",
-                "description": "Configure notification preferences for chat and other events.",
                 "chat_sound": {
                     "title": "Chat Sound",
                     "description": "Play a sound when receiving new chat messages"
-                },
-                "notification_sound": {
-                    "title": "Notification Sound",
-                    "description": "Play a bell when you get a new notification or invite"
                 },
                 "test": "Test",
                 "volume": {
@@ -1463,7 +1444,6 @@
                     "update": "Update Telemetry Settings",
                     "update_success": "Telemetry settings updated successfully",
                     "google_tag_manager_code": "Google Tag Manager Code",
-                    "google_tag_manager_code_description": "Google Tag Manager is a tag management system that allows you to manage and deploy tags on your website.",
                     "analytics_section": "Analytics",
                     "analytics_section_description": "Connect a third-party analytics provider to your platform."
                 },
@@ -1518,9 +1498,7 @@
                         "webhook": "Match Notifications Webhook URL",
                         "webhook_description": "Dedicated webhook for match status notifications. Falls back to the default webhook if not set.",
                         "role_id": "Match Notifications Role ID",
-                        "role_id_description": "These roles will be mentioned in match status notifications. You can add multiple Role IDs separated by commas.",
-                        "statuses_title": "Notify on Status Changes",
-                        "events_title": "Notify on Match Events"
+                        "role_id_description": "These roles will be mentioned in match status notifications. You can add multiple Role IDs separated by commas."
                     },
                     "gamedata_notifications": {
                         "title": "Gamedata Validation Notifications",
@@ -1549,6 +1527,8 @@
                     "minimum_role_to_stream_description": "GOTV broadcast — viewers connect to the delayed TV port (broadcast delay applies). Safe for casters and audiences.",
                     "minimum_role_to_spectate": "Minimum Role Allowed to Spectate (No Delay)",
                     "minimum_role_to_spectate_description": "Real-time spectator — connects directly to the game server with no delay. Restrict to trusted roles to prevent ghosting.",
+                    "require_login_section": "Require Sign-In to View Live Streams",
+                    "require_login_description": "Hide live game streams from signed-out visitors. Discourages cheating by ensuring every viewer is an identifiable account.",
                     "playcast": "Playcast",
                     "playcast_description": "Enable Playcast over using TV ports directly. ",
                     "playcast_learn_more": "Learn more",
@@ -1560,13 +1540,9 @@
                     "updated": "Updated Streaming Settings"
                 },
                 "create_matches_role": "Minimum Role Allowed to Create Matches",
-                "create_matches_role_description": "This role will be able to create matches.",
                 "create_tournaments_role": "Minimum Role Allowed to Create Tournaments",
-                "create_tournaments_role_description": "This role will be able to create tournaments.",
                 "dedicated_servers_min_role_to_connect": "Minimum Role to Connect to Dedicated Password-Protected Servers",
-                "dedicated_servers_min_role_to_connect_description": "Only players at or above this role may connect to dedicated servers that require a password.",
                 "matchmaking_min_role": "Minimum Role Allowed to Join Matchmaking",
-                "matchmaking_min_role_description": "This role will be able to join matchmaking.",
                 "draft_add_without_invite": {
                     "title": "Draft Lobby Invites",
                     "description": "Controls who can add players directly to a draft lobby versus sending an invite the player must accept.",
@@ -1574,10 +1550,7 @@
                 },
                 "max_acceptable_latency": "Maximum Acceptable Latency",
                 "max_acceptable_latency_description": "Players above this ping to a server are filtered out when picking the best server for a match.",
-                "lineup_section": "Lineups",
                 "default_models_section": "Player Models",
-                "lineup_add_without_invite": "Minimum Role to Add Players to Lineup Without Invite",
-                "lineup_add_without_invite_description": "This role will be able to add players to match lineups without sending an invite first.",
                 "default_models": "Default Player Models",
                 "auto_cancel_duration": "Auto Cancel Duration",
                 "auto_cancel_duration_description": "Cancels a match that hasn't gone live (still in picking / veto / waiting) after this many minutes.",
@@ -1775,8 +1748,6 @@
                 },
                 "demo_settings": {
                     "title": "Demos",
-                    "total_storage": "Total storage",
-                    "demos_section": "Demos",
                     "storage_section": "Storage & Backend",
                     "render_output_section": "Render Output",
                     "clip_storage_section": "Storage & Retention",
@@ -1786,11 +1757,7 @@
                     "unit_gb": "(GB)",
                     "cloudflare_worker_url": "Cloudflare Worker URL",
                     "retention_storage_description": "Demos are kept at least the minimum retention period. Once total storage exceeds the maximum, the oldest demos past their retention are deleted first.",
-                    "max_storage_description": "The maximum storage size for the demo files in GB.",
                     "cloudflare_worker_url_description": "Optional Cloudflare Worker that proxies requests to your S3 bucket so demo + highlight downloads don't count against your bucket's egress (free Backblaze ↔ Cloudflare bandwidth). Leave blank to serve directly from S3.",
-                    "min_retention_description": "The minimum retention days for the demo files.",
-                    "used_storage": "Approximate Storage Used",
-                    "test_s3_title": "Test S3",
                     "test_s3_description": "Test the S3 connection and upload a file to the demo bucket.",
                     "test_upload": "Test Upload",
                     "test_upload_success": "Test Upload Success",
@@ -1800,12 +1767,9 @@
                     "demo_network_limiter": "Global Demo Network Limiter",
                     "demo_network_limiter_description": "Caps the upload bandwidth a game-server node will use when transferring finished demo files to S3.",
                     "updated_s3_settings": "Updated S3 Settings",
-                    "clips_used_storage": "Approximate Highlight Storage Used",
                     "clips_min_retention": "Minimum Retention",
                     "clips_retention_storage_description": "Highlights are kept at least the minimum retention period. Once total storage exceeds the maximum, the oldest highlights past their retention are deleted first.",
-                    "clips_min_retention_description": "The minimum retention days for highlight clips before they can be auto-deleted.",
                     "clips_max_storage": "Maximum Storage",
-                    "clips_max_storage_description": "The maximum storage size for highlight clips in GB. Oldest clips are deleted first when this is exceeded.",
                     "highlights_section": "Highlights",
                     "clip_video_codec": "Highlight Codec",
                     "clip_video_codec_description": "H.264 is the default for the broadest playback compatibility across browsers and devices. H.265 (HEVC) produces ~30% smaller files at matched visual quality and is decoded in hardware by modern Chrome, Edge, Safari, and iOS, but is less universally supported. H.265 falls back to H.264 automatically if the GPU lacks NVENC HEVC.",
@@ -1824,7 +1788,6 @@
                     "pause_renders_during_active_match": "Pause Highlight Renders During Active Match",
                     "pause_renders_during_active_match_description": "When a match goes Live on a server backed by a GPU node, auto-pause in-flight highlight renders so the game server isn't competing with the render pod for GPU. Renders resume automatically once the match ends.",
                     "auto_clip_default_visibility": "Default visibility for auto-generated highlights",
-                    "auto_clip_default_visibility_description": "Starting visibility for new auto-generated highlights.",
                     "auto_clip_filters_section": "Auto-highlight filters",
                     "auto_clip_always_include_knife": "Always include knife kills",
                     "auto_clip_always_include_knife_description": "Append up to 3 knife kills to the end of a player's highlight reel when they got a knife kill — even when their round doesn't meet the minimum-kills filter.",
@@ -1842,9 +1805,6 @@
                     "hud_mode_horizontal": "Horizontal",
                     "hud_mode_vertical": "Vertical",
                     "playback_section": "Playback",
-                    "orphaned_section": "Storage Maintenance",
-                    "orphaned_description": "Find files in S3 that are no longer referenced in the database and reclaim the space.",
-                    "reparse_section": "Reparse Demos",
                     "reparse_warning_title": "This reparses every demo — it can take a very long time.",
                     "reparse_warning_body": "Demos are reprocessed one at a time, which can run for hours or days depending on how many you have. Only do this if you know what you're doing, or after a major update changes how demos are parsed. New stats from updates are reparsed automatically as matches are viewed — this is only to force everything at once.",
                     "reparse_button": "Reparse All Demos",
@@ -1898,14 +1858,11 @@
                 }
             },
             "language": {
-                "title": "Language",
-                "description": "Choose your preferred language for the application interface.",
                 "select": "Select Language",
                 "search": "Search language..."
             },
             "matchmaking": {
                 "title": "Matchmaking Settings",
-                "description": "Configure your matchmaking preferences and view region latencies.",
                 "average_latency": "Latency",
                 "preferred": "Preferred",
                 "max_acceptable_latency": "Maximum Acceptable Latency",
@@ -1916,9 +1873,6 @@
                 }
             },
             "external_matches": {
-                "heading": "External Matches",
-                "heading_description": "Link your Steam match history so we can automatically import your official CS2 matches and Premier rank.",
-                "checking_link": "Checking match history link…",
                 "need_two_codes": "You'll need two codes from Valve:",
                 "step_auth_prefix": "Your",
                 "steam_auth_code": "Steam Game Authentication Code",
@@ -1982,8 +1936,6 @@
         },
         "watch": {
             "title": "Watch",
-            "upcoming_matches": "Upcoming",
-            "live_feed": "Live Feed",
             "section_live_tournaments": "LIVE.TOURNAMENTS",
             "section_streaming_now": "STREAMING.NOW",
             "section_live_matches": "LIVE.MATCHES",
@@ -1997,26 +1949,19 @@
         },
         "highlights": {
             "title": "Highlights",
-            "community_reel": "Community Reel",
             "queue": "Queue",
             "render_queue": "Render Queue",
             "render_queue_description": "Active and recently-finished render batches across the platform.",
-            "queue_summary": "{active} active · {queued} queued",
             "clear_player_filter": "Clear player filter",
             "filter_by_player": "Filter by player",
             "view_mode": "View mode",
             "view_mode_filter_disabled": "Cleared while filtering",
             "filter_labels": {
                 "visibility": "Visibility",
-                "player": "Player",
                 "date": "Date",
                 "kills": "Kills",
-                "sort": "Sort",
-                "view": "View"
+                "sort": "Sort"
             },
-            "result_count": "result | results",
-            "match_count": "match | matches",
-            "clip_count": "clip | clips",
             "since": {
                 "all": "All time",
                 "24h": "Last 24 hours",
@@ -2057,7 +2002,6 @@
         },
         "news": {
             "title": "News",
-            "subtitle": "The latest from our team.",
             "back": "Back to News",
             "updated": "Updated {date}",
             "written_by": "Written by",
@@ -2072,7 +2016,6 @@
             "empty": "No news articles yet — check back soon.",
             "manage": {
                 "title": "Manage News",
-                "subtitle": "Create, edit and publish news posts.",
                 "view_news": "View News",
                 "new_post": "New Post",
                 "edit": "Edit",
@@ -2083,7 +2026,6 @@
                 "unpublish": "Unpublish",
                 "draft": "Draft",
                 "published": "Published",
-                "status": "Status",
                 "saved": "Post saved",
                 "deleted": "Post deleted",
                 "published_toast": "Post published",
@@ -2111,7 +2053,6 @@
                 "preview_full": "Preview Post",
                 "preview_empty": "Start writing to see your post preview.",
                 "back_to_edit": "Back to Editor",
-                "image_alt": "Image description",
                 "upload_image": "Upload image",
                 "uploading": "Uploading…",
                 "uploading_image": "Uploading image…"
@@ -2123,11 +2064,13 @@
             "create": "Create Region",
             "table": {
                 "available_servers": "Available Servers / Total Servers",
-                "use_lan_ip": "Use LAN IP",
+                "use_lan_ip": "Require LAN Connection",
+                "use_lan_ip_description": "Enforces that game servers in this region must be connected to from a LAN IP address.",
                 "use_steam_relay": "Use Steam Relay",
                 "use_steam_relay_description": "Enable Steam Relay for game servers to hide their IP address from the public."
             },
             "edit": "Edit Region",
+            "set_label": "Edit Label",
             "delete": {
                 "title": "Delete Region",
                 "description": "Are you sure you want to delete this region? This action cannot be undone."
@@ -2187,65 +2130,37 @@
                     "combat": "Combat"
                 },
                 "roles": {
-                    "title": "Preferred Roles",
-                    "description": "Auto-detected from AWP usage, opening-duel involvement, and utility output across recent matches.",
                     "no_data": "Not enough recent matches to detect a role.",
                     "primary": "Primary",
                     "secondary": "Secondary",
                     "rifler_detail": "balanced rifler",
-                    "maps_count": "{count} maps",
-                    "signals": {
-                        "awp": "AWP",
-                        "entry": "opens/rd",
-                        "support": "util idx"
-                    }
+                    "maps_count": "{count} maps"
                 },
-                "kd": "KD",
                 "recent_wins_and_losses": "Recent Wins and Losses",
                 "elo_history": "ELO History",
                 "no_elo_history": "Play a match to generate ELO",
                 "play_a_match": "Play",
                 "matches": "Matches",
-                "tournaments": "Tournaments",
                 "no_matches": "No matches yet",
                 "no_matches_description": "Match history will appear here after playing games.",
                 "no_matches_self_description": "Jump into a match — your stats, ELO, and match history will start filling in here.",
-                "no_tournaments": "No tournaments found for this player.",
-                "no_tournaments_description": "Tournaments this player has joined will appear here.",
-                "weapon_kills": "Most Used Weapons",
-                "no_weapon_kills": "No weapons recorded",
                 "edit_player": "Edit Player",
                 "friend": "Friend",
                 "name": "Name",
                 "role": "Role",
                 "range_settings": "Range settings",
-                "hs_lifetime": "Headshot % is lifetime",
                 "view_full_elo_history": "View History",
-                "global_stats": "Global stats",
                 "rank": "Rank",
                 "global_rank": "Global Rank",
                 "top_percent": "Top {percent}%",
-                "rank_of_total": "{rank} of {total}",
                 "player_profile": "Player Profile",
                 "recent_form": "Recent Form",
-                "teams": "Teams",
                 "range": "Range",
-                "loading_short": "Loading…",
-                "match_count": "{count} matches",
-                "no_tournaments_inline": "No tournaments",
-                "vs_lifetime": "vs Lifetime",
                 "custom_range": "Custom Range",
                 "custom_window_active": "Custom window active. Choosing a preset clears it.",
-                "compare_vs_lifetime": "Compare vs lifetime",
-                "compare_vs_lifetime_description": "Show lifetime totals alongside the window.",
                 "exclude_tournaments": "Exclude tournaments",
                 "exclude_tournaments_description": "Skip tournament matches in stats and chart.",
-                "lifetime_short": "Lifetime",
-                "lifetime_wl": "Lifetime {wins}W · {losses}L",
-                "lifetime_kd_label": "Lifetime K/D",
                 "current_elo": "Current ELO",
-                "current_rank": "Current Rank",
-                "current_rating": "Current Rating",
                 "source": "Source",
                 "provider": "Provider",
                 "mode": "Mode",
@@ -2256,15 +2171,11 @@
                 "range_90d": "90D",
                 "range_1y": "1Y",
                 "range_all": "ALL",
-                "weapons_lifetime": "Lifetime",
-                "refresh_stats": "Refresh stats",
                 "last_n_matches": "Last 10",
                 "start_date": "Start",
                 "end_date": "End",
-                "no_rank_history": "No rank history imported",
                 "peak_lowest": "Peak / Lowest",
                 "peak": "Peak",
-                "lifetime_peak": "Lifetime Peak",
                 "no_matches_in_window": "No matches in this window",
                 "no_matches_in_window_period": "No matches in this window.",
                 "expand_to_all_time": "Expand to all time",
@@ -2273,7 +2184,6 @@
                 "intro": {
                     "section": "Performance Intro",
                     "last_n": "Last {n} matches",
-                    "loading": "Acquiring telemetry",
                     "empty_title": "No parsed matches",
                     "empty_description": "Detailed performance stats appear here once this player has finished and parsed matches.",
                     "adr": "ADR",
@@ -2282,8 +2192,6 @@
                     "dpr": "DPR",
                     "win_rate": "Win Rate",
                     "hs_pct": "HS%",
-                    "rating_title": "HLTV Rating Trend",
-                    "recent_title": "Recent Performance",
                     "series": {
                         "hltv": "HLTV",
                         "adr": "ADR",
@@ -2301,7 +2209,6 @@
                 "maps": {
                     "section": "MAPS",
                     "description": "Career performance broken down by map, with terrorist and counter-terrorist side splits.",
-                    "loading": "Loading map performance…",
                     "empty_title": "No map data yet",
                     "empty_description": "Once this player finishes matches, per-map performance will appear here.",
                     "played_short": "PLD",
@@ -2323,13 +2230,10 @@
                 },
                 "weapons_table": {
                     "section": "Weapons",
-                    "lifetime": "Lifetime",
-                    "loading": "Loading weapons",
                     "empty_title": "No weapon data",
                     "empty_description": "This player has no recorded weapon kills yet.",
                     "weapon": "Weapon",
                     "kills": "Kills",
-                    "usage": "Most Used %",
                     "adr": "ADR",
                     "kpr": "KPR",
                     "rounds": "Rounds",
@@ -2337,13 +2241,11 @@
                     "rating": "HLTV Rating",
                     "rating_tooltip": "Approximate rating from KPR + ADR + impact (no per-weapon deaths/KAST, so it's directional)",
                     "economy": "Economy",
-                    "economy_tooltip": "Weapon rating adjusted for buy cost — frags with cheaper weapons rate higher (~1.0 = on par for the price)",
-                    "top_title": "Top Weapons"
+                    "economy_tooltip": "Weapon rating adjusted for buy cost — frags with cheaper weapons rate higher (~1.0 = on par for the price)"
                 },
                 "career_duels": {
                     "section": "Opening Duels",
                     "description": "First-kill-of-round outcomes across the last {count} maps.",
-                    "loading": "Loading opening duels…",
                     "empty_title": "No opening duels",
                     "empty_description": "This player has no recorded opening duels in their recent matches.",
                     "win_label": "Open Win",
@@ -2362,7 +2264,6 @@
                 "career_clutches": {
                     "section": "Clutches",
                     "description": "1vX clutch situations across the last {count} maps.",
-                    "loading": "Loading clutches…",
                     "empty_title": "No clutches",
                     "empty_description": "This player has no recorded clutch situations in their recent matches.",
                     "win_label": "Clutch Win",
@@ -2375,28 +2276,18 @@
                     "col_win": "Win %"
                 },
                 "compare": {
-                    "toggle": "Compare",
                     "label": "Compare vs",
                     "select_label": "Compare player",
                     "description": "Overlays this player's numbers across every stats tab.",
-                    "active": "Comparison active",
-                    "vs": "vs",
-                    "legend_a": "This player",
-                    "legend_b": "Comparison"
+                    "vs": "vs"
                 },
                 "elo_history_dialog": {
-                    "eyebrow": "ELO Progression — Granular",
-                    "title": "{name} — ELO Detail",
-                    "default_player": "Player",
-                    "description": "Every match plotted at full resolution. The main page bucketed at this range for the trend; here you see each Δ.",
-                    "mode": "Mode",
                     "current": "Current",
                     "peak": "Peak",
                     "lowest": "Lowest",
                     "matches": "Matches",
                     "win_rate": "Win Rate",
                     "avg_delta_elo": "Avg ΔELO:",
-                    "loading_history": "Loading history…",
                     "no_matches_window": "No matches in selected window",
                     "expand_to_all_time": "Expand to all time",
                     "best_gain": "Best Single Gain",
@@ -2407,13 +2298,6 @@
         },
         "play": {
             "title": "Play",
-            "not_party_leader": {
-                "title": "You're not the party leader",
-                "description": "Your party leader needs to join the matchmaking queue, create a custom match, or join another match below."
-            },
-            "open_matches": {
-                "description": "Matches that are open lobbies for anyone to join."
-            },
             "open_registration_tournaments": {
                 "description": "Tournaments that are open for registration for anyone to join."
             },
@@ -2435,7 +2319,7 @@
                 "step_teams": "Teams",
                 "kickoff": "Kickoff Time",
                 "kickoff_future": "Pick a time in the future.",
-                "now": "Set to now",
+                "kickoff_asap": "Leave empty to start ASAP",
                 "team": "Team",
                 "individual": "Individual",
                 "select_team": "Select a team",
@@ -2444,11 +2328,6 @@
                 "submit": "Schedule Match"
             },
             "match_updated": "Match Updated",
-            "browser": "Match Browser",
-            "filters": "FILTERS",
-            "active": "ACTIVE",
-            "result_singular": "RESULT",
-            "result_plural": "RESULTS",
             "teams": "TEAMS",
             "players": "PLAYERS",
             "status_label": "STATUS",
@@ -2456,22 +2335,13 @@
             "from": "FROM",
             "to": "TO",
             "options": "OPTIONS",
-            "by_name": "BY NAME",
-            "by_handle": "BY HANDLE",
-            "target_singular": "TARGET",
-            "target_plural": "TARGETS",
-            "operator_singular": "OPERATOR",
-            "operator_plural": "OPERATORS",
-            "presets": "PRESETS",
             "preset_upcoming_live": "Upcoming & Live",
             "preset_finished": "Finished",
             "clear": "CLEAR",
             "clear_short": "Clear",
-            "lineup_only": "Lineup matches only",
+            "lineup_only": "Only matches I'm in",
             "include_external": "Include external matches",
             "standby_no_matches": "STANDBY · NO MATCHES FOUND",
-            "remove_team": "Remove {name}",
-            "remove_player": "Remove {name}",
             "create_page": {
                 "pick_up_game": "Pick Up Game",
                 "pick_up_game_description": "A Pick up game does not require selection of teams.",
@@ -2490,31 +2360,12 @@
             "title": "GPU Nodes",
             "gpu_unknown": "GPU",
             "description": "GPU-capable game server nodes that host live streams, demo playback, and highlight renders. Each GPU runs at most one consumer at a time.",
-            "cmdbar_sub": "Live spectating · demo playback · highlight rendering",
             "metrics": "Metrics",
-            "ops_label": "Live Ops",
-            "mission": {
-                "operational": "Operational",
-                "degraded": "Degraded",
-                "offline": "Offline",
-                "subline": "GPU render pool"
-            },
             "meter": {
-                "compute": "GPUs",
-                "compute_foot": "Free GPU nodes",
-                "logins": "Steam Logins",
-                "logins_foot": "Manage pool →",
-                "tasking": "Tasks",
-                "tasking_foot": "Active jobs"
+                "compute": "GPUs"
             },
             "stat": {
-                "available": "Available",
-                "running": "Running"
-            },
-            "flag": {
-                "live": "Live",
-                "demo": "Demo",
-                "render": "Render"
+                "available": "Available"
             },
             "idle": "Idle",
             "disabled": "Disabled",
@@ -2545,27 +2396,10 @@
                 "failed": "Failed to start shader bake",
                 "cancelled": "Shader bake cancelled",
                 "cancel_failed": "Failed to cancel shader bake",
-                "baking": "Baking shaders",
                 "in_progress": "Pre-bake in progress",
                 "stages": {
-                    "initializing": "Initializing",
-                    "downloading_cs2": "Downloading CS2",
-                    "launching_cs2": "Launching CS2",
-                    "processing_shaders": "Processing shaders",
                     "errored": "Bake failed"
-                },
-                "steps": {
-                    "download": "Downloading CS2",
-                    "launch": "Launching CS2",
-                    "shaders": "Rendering Shaders"
                 }
-            },
-            "table": {
-                "node": "Node",
-                "region": "Region",
-                "gpu_devices": "GPU Devices",
-                "status": "Status",
-                "busy_with": "Busy With"
             },
             "empty": {
                 "title": "No GPU Nodes",
@@ -2574,8 +2408,6 @@
             "steam_pool": {
                 "title": "Steam Accounts",
                 "description": "Pool used by GPU nodes for rendering, demo playback, and live spectating. Each running pod holds one account, so the pool needs at least as many accounts as you have GPU nodes for full parallelism.",
-                "manage": "Manage",
-                "manage_button": "Steam Accounts",
                 "accounts_label": "Pool",
                 "add": "Add Account",
                 "add_title": "Add Steam Account",
@@ -2632,13 +2464,13 @@
                 "cs_build_id": "CS2 Build",
                 "capacity": "Capacity",
                 "ports": "Ports",
+                "available": "Available",
                 "ports_tooltip": "Forwarded Ports to Node",
                 "no_nodes": "No Game Server Nodes",
                 "supports_low_latency": "Supports Low Latency",
                 "supports_cpu_pinning": "Supports CPU Pinning",
                 "cpu_governor": "CPU Governor"
             },
-            "build_id": "Build ID: {id}",
             "last_updated": "Last Updated: {date}",
             "max_label": "Max:",
             "ports_label": "Ports:",
@@ -2663,6 +2495,13 @@
             },
             "detail": {
                 "enabled": "Enabled",
+                "eyebrow": "Dedicated Server",
+                "status_label": {
+                    "connected": "Connected",
+                    "disconnected": "Disconnected",
+                    "no_rcon": "No RCON",
+                    "version_mismatch": "Version Mismatch"
+                },
                 "server_plugin_config": "Server Plugin Config",
                 "hide_config": "Hide Config",
                 "show_config": "Show Config",
@@ -2707,7 +2546,6 @@
                 "patch_placeholder": "http://example.com/patch.png",
                 "workshop_map_id": "Workshop Map ID (optional)",
                 "create_map": "Create Map",
-                "update_map": "Update Map",
                 "delete_map": "Delete Map",
                 "delete_confirm": {
                     "title": "Delete Map",
@@ -2744,25 +2582,15 @@
             "save_success": "Map pool saved successfully"
         },
         "manage_matches": {
-            "title": "Manage Matches",
             "only_my_matches": "Only My Organized Matches",
-            "description": "View and manage all matches across the platform.",
             "no_matches": "No matches found.",
-            "search_by_name": "Search by Name",
             "enter_name": "Enter name...",
-            "search_by_id": "Search by Match ID",
             "enter_match_id": "Enter match ID...",
-            "search_by_team": "Search by Team",
             "enter_team_name": "Enter team name...",
-            "filter_by_status": "Filter by Status",
-            "select_statuses": "Select statuses...",
             "filter_by_regions": "Filter by Regions",
-            "select_regions": "Select regions...",
-            "clear_all": "Clear All",
             "sort_by": "Sort by",
             "created_at": "Created Date",
             "started_at": "Started Date",
-            "scheduled_at": "Scheduled Date",
             "ended_at": "Ended Date",
             "newest_first": "Newest First",
             "oldest_first": "Oldest First",
@@ -2822,7 +2650,6 @@
                 "silver": "Silver",
                 "bronze": "Bronze",
                 "mvp": "MVP",
-                "total_trophies": "Total",
                 "rating": "HLTV Rating",
                 "adr": "ADR",
                 "kpr": "KPR",
@@ -3021,8 +2848,7 @@
         "account_settings": {
             "title": "Account Settings",
             "description": "Manage your account settings and preferences",
-            "select_section": "Select section",
-            "label": "Settings"
+            "select_section": "Select section"
         },
         "application_settings": {
             "title": "Application Settings",
@@ -3127,7 +2953,6 @@
                 "tournaments": "Tournaments",
                 "players": "Players",
                 "teams": "Teams",
-                "scrims": "Scrim Finder",
                 "leaderboard": "Leaderboard",
                 "news": "News",
                 "public_servers": "Public Servers",
@@ -3159,7 +2984,6 @@
             "community_menu": "Community",
             "watch_menu": "Watch",
             "login": "Login to Play",
-            "login_mobile": "Login",
             "login_aria": "Sign in through Steam",
             "authorize": "AUTHORIZE",
             "secure_access": "/ SECURE ACCESS",
@@ -3224,10 +3048,7 @@
             "voice_discord": "Voice & Discord",
             "discord_linked": "Discord Linked",
             "link_discord": "Link Discord",
-            "next_step_title": "Ready to play?",
-            "next_step_description": "Your squad is set. Jump into matchmaking or spin up a custom match.",
-            "find_match": "Find a Match",
-            "create_custom_match": "Create Custom Match"
+            "find_match": "Find a Match"
         },
         "chat_panel": {
             "default_title": "Chat",
@@ -3302,11 +3123,9 @@
         "team_2": "Team 2",
         "unknown": "Unknown",
         "untitled": "Untitled",
-        "untitled_clip": "Untitled clip",
         "na": "N/A",
         "clip": "Clip",
         "vs": "vs",
-        "user": "User",
         "or": "or",
         "yes": "Yes",
         "no": "No",
@@ -3336,7 +3155,6 @@
         "sort_ascending": "Sort ascending",
         "sort_descending": "Sort descending",
         "see_all": "See all",
-        "load_more": "Load more",
         "standby_no_activity": "STANDBY · NO ACTIVITY",
         "players": "players",
         "duration": "Duration",
@@ -3371,9 +3189,7 @@
         "region": "Region",
         "filters": "Filters",
         "options": "Options",
-        "search": "Search",
         "date": "Date",
-        "results": "results",
         "reset_filters": "Reset Filters",
         "player": "Player",
         "plugin_version": "Plugin Version",
@@ -3536,12 +3352,6 @@
     },
     "tournament": {
         "admin_label": "Admin",
-        "round_robin": {
-            "games_played": "Games Played",
-            "rounds_won": "Rounds Won",
-            "rounds_lost": "Rounds Lost",
-            "matches_remaining": "Matches Remaining"
-        },
         "team_invite": {
             "pending": "Pending"
         },
@@ -3630,16 +3440,20 @@
         },
         "form": {
             "create": "Create Tournament",
-            "description_help": "Create a new tournament for your community",
             "name": "Tournament Name",
             "description": "Description",
             "start": "Start Date",
-            "update": "Update Tournament",
             "discord_notifications": "Discord Notifications",
             "discord_notifications_description": "Enable Discord notifications for match status changes in this tournament. When off, only panel notifications are sent.",
             "auto_start": {
                 "label": "Auto Start",
                 "description": "When enabled, tournament matches are automatically scheduled. When disabled, an organizer must schedule each match manually."
+            },
+            "create_bar": {
+                "ready": "Ready to create",
+                "ready_hint": "Everything looks good — create your tournament",
+                "incomplete": "Required fields missing",
+                "incomplete_hint": "Fill in the tournament name and start date to continue"
             }
         },
         "notifications": {
@@ -3649,8 +3463,6 @@
             "role_id": "Role ID",
             "role_id_placeholder": "Leave empty to use global default",
             "role_id_description": "You can add multiple Role IDs separated by commas.",
-            "statuses_title": "Notify on Status Changes",
-            "events_title": "Notify on Match Events",
             "save": "Save",
             "saved": "Notification settings updated",
             "save_error": "Failed to save notification settings",
@@ -3700,13 +3512,11 @@
             "min_teams_placeholder": "Select minimum teams...",
             "max_teams": "Maximum Teams",
             "max_teams_placeholder": "Select maximum teams...",
-            "update": "Update Stage",
             "create": "Create Stage",
             "add_another": "Add Another Stage",
             "not_setup": "Tournament stages not set up",
             "groups": "Groups",
             "groups_placeholder": "Enter number of groups for this stage...",
-            "match_options": "Match Options",
             "default_best_of": "Default Best Of",
             "default_best_of_description": "The default match format used for all rounds in this stage.",
             "per_round_best_of": "Per-Round Best Of",
@@ -3741,17 +3551,13 @@
             "popout_button": "Popout",
             "view_split": "Split view",
             "view_scroll": "Page scroll",
-            "view_mode_hint": "Toggle between fit-to-viewport split and natural-size page scroll",
             "hide_finished": "Hide finished rounds",
-            "hide_finished_hint": "Hide rounds where every match is decided",
-            "focus_button": "Focus",
             "focus_upper": "Focus on Upper Bracket",
             "focus_lower": "Focus on Lower Bracket",
             "restore_split": "Restore split view",
             "click_to_expand": "click to expand",
             "expand_button": "Expand",
             "divider_hint": "Drag to resize · double-click to reset",
-            "embed_bracket_title": "Bracket",
             "embed_current_label": "LIVE",
             "embed_winner_label": "Upper Bracket",
             "embed_loser_label": "Lower Bracket",
@@ -3892,7 +3698,8 @@
             "remove": "Remove Server",
             "confirm_remove": "Are you sure you want to remove this server?",
             "remove_description": "This will remove the server from the tournament"
-        }
+        },
+        "open_match_actions": "Open match actions"
     },
     "team": {
         "highlights": {
@@ -3931,10 +3738,7 @@
         },
         "hero": {
             "roster": "Roster",
-            "matches": "Matches",
-            "avg_elo": "Avg 5Stack",
-            "avg_premier": "Avg Premier",
-            "team_profile": "Team Profile"
+            "matches": "Matches"
         },
         "table": {
             "team": "Team",
@@ -3977,12 +3781,11 @@
             "identity": "Identity",
             "name_placeholder": "Enter team name...",
             "short_name": "Short Name",
-            "short_name_placeholder": "Enter short name (max 3 characters)...",
+            "short_name_placeholder": "Enter short name (max 5 characters)...",
             "owner": "Team Owner",
             "select_owner": "Select team owner...",
             "inviting": "Inviting",
             "inviting_hint": "These players will be invited when you create the team.",
-            "update": "Update Team",
             "create": "Create Team"
         },
         "roster_count_players": "players",
@@ -4016,7 +3819,6 @@
         }
     },
     "match": {
-        "open_popout": "Open in popout window",
         "open_match": "Open match",
         "picks_label": "Picks",
         "full_page": "Full page",
@@ -4037,14 +3839,12 @@
         "keyboard_shortcuts": "Keyboard shortcuts",
         "up_next": "Up Next",
         "head_to_head_matrix": {
-            "viewing": "Viewing",
             "damage": "Damage",
             "your_weapons": "Your weapons",
             "their_weapons": "Their weapons",
             "flashes_on_them": "Flashes on them",
             "flashes_on_you": "Flashes on you"
         },
-        "highlights_button": "Highlights",
         "team_stats_heading": "{name} Stats",
         "all_maps": "All Maps",
         "stream": {
@@ -4060,16 +3860,6 @@
         },
         "elo_details": {
             "title": "Elo Change Details",
-            "elo": "Elo",
-            "team_elo_avg": "Team Elo Avg",
-            "performance_multiplier": "Performance Multiplier",
-            "series_multiplier": "Series Multiplier",
-            "maps_won_lost": "Maps Won / Lost",
-            "kills_deaths_assists": "Kills / Deaths / Assists",
-            "kda_ratio": "Kills + Assits / Deaths Ratio",
-            "team_avg_kda": "Team Avg Kills + Assits / Deaths Ratio",
-            "damage": "Damage",
-            "teams_damage_suffix": "of teams damage",
             "formula": {
                 "k_factor_hint": "K-factor — base ELO swing rate before any modifiers.",
                 "delta_hint": "Δ = actual ({actual}) − expected ({expected}). Positive means you outperformed the team-ELO prediction.",
@@ -4078,8 +3868,6 @@
                 "result_hint": "Final ELO change after all multipliers, rounded to the nearest integer."
             }
         },
-        "no_matches": "No Matches Found",
-        "no_matches_description": "There are currently no matches available.",
         "simple": {
             "vs": "vs"
         },
@@ -4096,8 +3884,7 @@
             },
             "filter_maps": "Filter Maps",
             "table": {
-                "no_matches_found": "No Matches Found",
-                "join": "Join"
+                "no_matches_found": "No Matches Found"
             },
             "type": {
                 "label": "Match Type"
@@ -4109,8 +3896,6 @@
                 "option": "Best of {count}"
             },
             "map_veto_settings": {
-                "description": "Map Veto process: team 1 ban, team 2 ban, team 1 pick, team 2 pick side, team 2 pick, team 1 pick side, team 2 ban. Process repeats until final map is selected",
-                "pick_description": "Map Veto is off — manually choose the maps that will be played below.",
                 "short_on": "Teams ban and pick maps from the pool.",
                 "short_off": "Maps are chosen manually below.",
                 "learn_more": "How veto works",
@@ -4253,15 +4038,9 @@
         },
         "buy_types": {
             "section_title": "Buy Type Breakdown",
-            "rounds": "rounds",
             "win": "win",
-            "kills": "Kills",
-            "deaths": "Deaths",
-            "kd": "K/D",
-            "rating": "HLTV Rating",
             "you": "Your team",
             "opponent": "Opponent",
-            "breakdown_label": "Player breakdown by matchup",
             "win_axis": "Win %",
             "no_data": "No buy-type data available",
             "matchups": {
@@ -4271,14 +4050,6 @@
                 "full_v_force": "Full v Force",
                 "eco_v_full": "Eco v Full",
                 "force_v_full": "Force v Full"
-            },
-            "sections": {
-                "even": "Even Buys",
-                "even_sub": "Both teams on equal footing",
-                "advantage": "Buy Advantage",
-                "advantage_sub": "Win % when out-buying the enemy",
-                "upsets": "Eco / Force Upsets",
-                "upsets_sub": "Win % when out-bought"
             }
         },
         "radar": {
@@ -4305,10 +4076,7 @@
             }
         },
         "team_stats": {
-            "overview_title": "Team Overview",
             "sides_title": "Sides Breakdown",
-            "players_title": "Player Performance",
-            "team_average": "Team Average",
             "no_data": {
                 "title": "No round data",
                 "description": "Team stats are available once round-by-round data has been recorded for this match."
@@ -4325,8 +4093,7 @@
             },
             "side": {
                 "ct": "CT Side",
-                "t": "T Side",
-                "no_rounds": "No rounds on this side"
+                "t": "T Side"
             },
             "buy": {
                 "pistol": "Pistol",
@@ -4335,20 +4102,9 @@
                 "full": "Full"
             },
             "buy_mix": "Buy Mix",
-            "rounds_won": "rounds won",
-            "col": {
-                "hltv": "HLTV",
-                "kpr": "KPR",
-                "kd": "K/D",
-                "dpr": "DPR",
-                "adr": "ADR",
-                "kast": "KAST",
-                "udr": "UDR",
-                "far": "FAR"
-            }
+            "rounds_won": "rounds won"
         },
         "heatmaps": {
-            "title": "Heatmaps",
             "select_map": "Select map",
             "kills": "Kills",
             "deaths": "Deaths",
@@ -4359,7 +4115,6 @@
             "trajectories": "Trajectories",
             "all_players": "All players",
             "all_rounds": "All rounds",
-            "round": "Round {round}",
             "plotted": "{count} positions plotted",
             "no_radar_title": "No radar available",
             "no_radar_description": "There is no radar image or calibration data for this map.",
@@ -4414,12 +4169,8 @@
             "team_2": "Team 2"
         },
         "movement": {
-            "title": "First Seconds Movement",
-            "select_map": "Select map",
             "loading": "Loading playback data",
             "all_players": "All players",
-            "all_rounds": "All rounds",
-            "round": "Round {round}",
             "seconds": "{count}s",
             "side_both": "Both",
             "side_ct": "CT",
@@ -4428,30 +4179,22 @@
             "team_1": "Team 1",
             "team_2": "Team 2",
             "summary": "{rounds} rounds, {paths} paths",
-            "sampled": "Paths sampled to keep rendering fast",
-            "no_radar_title": "No radar available",
-            "no_radar_description": "This map has no radar image or calibration data, so movement paths cannot be drawn."
+            "sampled": "Paths sampled to keep rendering fast"
         },
         "tabs": {
             "overview": "Overview",
             "scoreboard": "Scoreboard",
             "general": "General",
             "more": "More",
-            "team_stats": "Team Stats",
             "economy": "Economy",
             "utility": "Utility",
             "trade_stats": "Trades",
             "aim_stats": "Aim",
             "opening_duels": "Opening Duels",
-            "buy_types": "Buy Types",
             "clutches": "Clutches",
             "head_to_head": "Head to Head",
-            "radar": "Radar",
             "roles": "Roles",
-            "heatmaps": "Heatmaps",
-            "movement": "Movement",
             "map_analysis": "Map Analysis",
-            "replay": "2D Replay",
             "mobile_label_map": "Map Filter",
             "mobile_label_view": "View",
             "settings": "Match Settings",
@@ -4459,8 +4202,6 @@
             "admin": "Admin",
             "randomize_teams": "Randomize Teams",
             "swap_lineups": "Swap Lineups",
-            "invited_to_match": "Invited to Match",
-            "join_roster": "Join a roster",
             "restore_round": "Restore Round",
             "select_round_to_restore": "Select the round to restore",
             "server_information": "Server Information",
@@ -4469,9 +4210,6 @@
             "no_logs_title": "No Logs Available",
             "no_logs_description": "No logs are available and no server is connected."
         },
-        "show_players": "Show Players",
-        "hide_players": "Hide Players",
-        "round_history": "Round History",
         "status": {
             "cancelled": "Cancelled",
             "waiting_server": "Waiting for server ...",
@@ -4484,8 +4222,7 @@
             "select_lineup": "Select Lineup"
         },
         "map_winner": {
-            "set": "Set Map Winner",
-            "select_lineup": "Select Lineup"
+            "set": "Set Map Winner"
         },
         "region_veto": {
             "ban_label": "Ban",
@@ -4529,10 +4266,6 @@
             "picked": "Picked"
         },
         "auto_canceling": "Auto Canceling",
-        "server_error": {
-            "title": "Server status update",
-            "short_label": "Server Status"
-        },
         "actions": {
             "call_support": "Call for Support",
             "start_veto": "Start Veto",
@@ -4555,12 +4288,7 @@
             "start_live_tv_hint": "Honors tv_delay · safe while playing",
             "start_live_waiting_tv": "Waiting for TV connection…",
             "stop_live": "Stop Live Stream",
-            "stop_live_short": "Stop Stream",
-            "stop_live_confirm": "Click again to stop",
-            "stop_live_confirm_short": "Stop?",
             "cancel_live_boot": "Cancel Live Stream (booting…)",
-            "cancel_live_boot_short": "Cancel Boot",
-            "cancel_live_boot_confirm_short": "Cancel?",
             "create_clips": "Create Player Highlights",
             "create_clips_needs_gpu_node": "Register a GPU node to queue highlights (offline is fine — jobs dispatch when it's back online)",
             "live_started": "Live stream starting",
@@ -4746,17 +4474,6 @@
             "discord_user": "This is a Discord user, register your discord id to enable stat tracking by typing",
             "discord_link": "in the official discord channel."
         },
-        "invites": {
-            "title": "Invites",
-            "invited_player": "Invited Player",
-            "invited_by": "Invited By",
-            "deleted_success": "Invite deleted successfully",
-            "delete_error": "Failed to delete invite",
-            "delete_confirm": {
-                "title": "Delete Invite",
-                "description": "Are you sure you want to delete the invite for {player} ({steam_id})? This action cannot be undone."
-            }
-        },
         "overview": {
             "promote_captain": "Promote to Captain",
             "switch_teams": "Switch Teams",
@@ -4772,15 +4489,10 @@
             "team_damage": "Team Damage",
             "multi_kill_rounds": "Multi Kill Rounds",
             "mkr": "MKR",
-            "k2": "2K",
-            "k3": "3K",
-            "k4": "4K",
-            "k5": "5K",
             "knifes": "Knives",
             "zeus": "Zeus",
             "total_damage": "Total Damage",
             "substitute": "(substitute)",
-            "join": "Join",
             "slot": "Slot {number}",
             "tooltips": {
                 "hltv": {
@@ -4805,25 +4517,15 @@
             "best_weapon": "Best Weapon",
             "most_died_to": "Most Died To"
         },
-        "head_to_head": {
-            "kills": "Kills",
-            "damage": "Damage",
-            "flashes": "Flashes"
-        },
         "clutches": {
             "won": "Won",
             "lost": "Lost",
             "saved": "Saved",
-            "against": "Against",
-            "no_clutches": "No clutches this round",
             "no_attempts": "No clutch attempts",
             "vs": "vs {count}",
             "vs_short": "1v{count}",
-            "round_short": "Round {number}",
-            "win_rate": "Win Rate",
             "total_kills": "Total Kills",
             "clutches_won": "Clutches Won",
-            "clutches_lost": "Clutches Lost",
             "saves": "Saves"
         },
         "check_in": {
@@ -4856,14 +4558,10 @@
             "join_tv_stream": "TV Stream Details",
             "tv_delay": "TV is delayed by {delay} seconds, waiting for stream to be ready."
         },
-        "lobby": {
-            "access_updated": "Match lobby access updated to {access}"
-        },
         "replay": {
             "select_map": "Select a map above to replay",
             "select": "Select",
             "selected": "Selected",
-            "positions_large": "Replay positions are large. Click load to fetch them for {map}.",
             "load": "Load Replay",
             "open": "Open 2D Replay",
             "open_3d": "Open 3D Replay",
@@ -4888,7 +4586,6 @@
             "play": "Play",
             "pause": "Pause",
             "headshot": "Headshot",
-            "has_bomb": "Has bomb",
             "defuse_kit": "Defuse kit",
             "follow_hint": "Click a player below to follow them on the map.",
             "follow_stop": "Click to stop following",
@@ -4909,7 +4606,6 @@
             "pathing_progress": "Pathing to current tick",
             "overlay_buy_section": "Buy-round overlay",
             "overlay_buy_window": "Window: {sec}s since freezetime",
-            "overlay_buy_rounds": "Rounds",
             "overlay_buy_explainer": "{count} full-buy rounds · first {sec}s after freeze",
             "loading_map": "loading map…",
             "chrome": {
@@ -4966,8 +4662,28 @@
                 "kb_orbit": "orbit",
                 "kb_zoom": "zoom",
                 "kb_fly": "fly",
-                "kb_up_down": "up / down"
-            }
+                "kb_up_down": "up / down",
+                "following_on_map": "Following on the map",
+                "bomb_carrier": "Bomb carrier"
+            },
+            "auto_clip_preset": "Auto clip from preset",
+            "hold_scoreboard": "Hold to show scoreboard",
+            "swap_sides": "Swap sides (manual override)",
+            "hide_clip_editor": "Hide clip editor",
+            "open_clip_editor": "Open clip editor",
+            "kills_by": "Kills by",
+            "deaths_of": "Deaths of",
+            "has_c4": "Has C4",
+            "damage_this_round": "Damage this round",
+            "kevlar_helmet": "Kevlar + helmet",
+            "kevlar_only": "Kevlar only",
+            "bomb_dropped": "Bomb dropped",
+            "bomb_planted_label": "Bomb planted",
+            "bomb_dropped_by": "By {name}",
+            "kit_dropped_by": "Dropped by {name}",
+            "unknown_player": "unknown",
+            "kill_filter_by_title": "Showing kills BY player — click to switch to deaths OF player",
+            "kill_filter_of_title": "Showing deaths OF player — click to switch to kills BY player"
         },
         "player_details_panel": {
             "stats_unavailable": "Stats unavailable for this match.",
@@ -4992,9 +4708,6 @@
         "source_badge": {
             "imported_external": "Imported from an external source — not a 5stack match"
         },
-        "form": {
-            "lobby_access": "Lobby Access"
-        },
         "scoreboard_overlay": {
             "final": "Final",
             "live": "Live"
@@ -5006,7 +4719,6 @@
     },
     "ui": {
         "tooltips": {
-            "expand": "Expand",
             "fullscreen": "Fullscreen",
             "toggle_right_sidebar": "Toggle Right Sidebar",
             "view_steam_profile": "View Steam Profile",
@@ -5014,18 +4726,19 @@
             "zoom_in_scroll": "Zoom In (Ctrl/Cmd + Scroll)",
             "zoom_out": "Zoom Out",
             "zoom_out_scroll": "Zoom Out (Ctrl/Cmd + Scroll)",
-            "reset_zoom": "Reset Zoom",
             "loading": "Loading",
             "settings_section": "Settings section",
             "match_section": "Match section",
             "database_section": "Database section"
         },
         "logs": {
-            "follow": "Follow Logs",
+            "title": "Server Logs",
             "timestamps": "Show Timestamps",
             "jump_to_live": "Jump to Live",
             "download_visible": "Download visible logs",
-            "download_full": "Download full logs"
+            "download_full": "Download full logs",
+            "empty": "No logs yet",
+            "empty_hint": "Logs will appear here once the service starts streaming output."
         },
         "scroll": {
             "left": "Scroll left",
@@ -5039,6 +4752,12 @@
         "tournament_match": "Tournament match",
         "pin_overlay": "Pin as floating overlay",
         "open_new_window": "Open in new window",
+        "playing_in_popout": "Playing in popped-out window",
+        "focus_window": "Focus window",
+        "playing_in_pip": "Playing in picture-in-picture",
+        "return_here": "Return here",
+        "login_to_watch": "Log in to watch the live stream",
+        "login_to_watch_action": "Login",
         "show_keyboard_shortcuts": "Show keyboard shortcuts",
         "hold_to_show_scoreboard": "Hold to show scoreboard",
         "close_popout": "Close popout",
@@ -5050,19 +4769,12 @@
     },
     "player": {
         "performance": {
-            "title": "Performance",
             "description": "Each area is scored out of 100 as your percentile vs every other player — 50 is an average player, higher is better. Hover any label to see what it measures.",
-            "how_calculated": "How is this calculated?",
-            "all_matches": "Rating reflects your recent matches",
-            "recent": "Recent",
             "you": "You",
             "compare": "Comparison",
-            "goal": "Goal",
-            "my_rating": "My Rating",
             "focus_areas": "Focus Areas",
             "provisional": "Provisional",
             "not_enough_data": "Not enough games yet to rate this player — play more to unlock your performance breakdown.",
-            "low_sample": "Few rated players in your rank band right now, so the Goal is an early estimate.",
             "categories": {
                 "aim": "Aim",
                 "positioning": "Positioning",
@@ -5222,9 +4934,6 @@
             "success": "Name confirmed"
         },
         "status": {
-            "banned": "Player is banned",
-            "muted": "Player is muted",
-            "gagged": "Player is gagged",
             "add_friend": "Add as friend",
             "vac_banned": "VAC banned on Steam",
             "vac_banned_count": "{count} VAC ban(s) on Steam",
@@ -5232,11 +4941,6 @@
             "game_banned_count": "{count} game ban(s) on Steam"
         },
         "change_name": {
-            "button": "Change Name",
-            "title": "Change Name",
-            "request_title": "Request Name Change",
-            "description": "Please enter the name you would like to change to.",
-            "request_description": "Please enter the name you would like to change your account to.",
             "name_label": "Name",
             "success": "Changed Players Name",
             "request_success": "Requested Name Change"
@@ -5244,7 +4948,8 @@
         "pending_imports": {
             "title": "Pending CS2 imports",
             "importing": "Importing…"
-        }
+        },
+        "all_time_peak": "ALL-TIME PEAK"
     },
     "maps": {
         "label": "Maps",
@@ -5263,16 +4968,6 @@
             "create": "Create Region"
         }
     },
-    "match_access": {
-        "private": "Private",
-        "invite": "Invite",
-        "friends": "Friends",
-        "open": "Open",
-        "invite_only_description": "Only invited players can join",
-        "invite_code_description": "Invite code required to join",
-        "friends_only_description": "Only your Steam friends can join",
-        "open_description": "Anyone can join the lobby"
-    },
     "matchmaking": {
         "match_types": {
             "competitive": {
@@ -5286,7 +4981,6 @@
             }
         },
         "cancel_matchmaking": "Cancel Matchmaking",
-        "searching_for_match": "Searching for a {type} match",
         "in_queue_label": "In Queue",
         "searching": "Searching",
         "elapsed": "Elapsed",
@@ -5295,7 +4989,6 @@
             "seconds": "{count} seconds",
             "minutes_seconds": "{minutes}m {seconds}s"
         },
-        "others_searching": "{count} other searching | {count} others searching",
         "match_found": "Match Found",
         "waiting_for_players": "Waiting for Players",
         "waiting_on_others": "Waiting on Others",
@@ -5317,8 +5010,6 @@
             "leave": "Leave Lobby",
             "invite_player": "Invite Player to Lobby",
             "access_updated": "Lobby access updated to {access}",
-            "member_count": "{count} in lobby",
-            "pending_count": "{count} pending",
             "invited": "Invited",
             "waiting_for_players": "Waiting for players to join your lobby. Use the Invite button above to add friends."
         },
@@ -5326,9 +5017,7 @@
             "title": "Friends",
             "sync": "Sync Friends",
             "search_placeholder": "Search friends...",
-            "pending_requests": "Pending Requests",
             "invite_to_lobby": "Invite to Lobby",
-            "invite_to_match": "Invite Player to Match",
             "remove": "Remove Friend",
             "in_match": "In a match",
             "in_lobby": "In a lobby",
@@ -5391,15 +5080,19 @@
         "cpu_frequency_warning": "CPU Max Frequency is less than 3GHz may effect CS2 server performance",
         "disks_label": "Disks",
         "select_region": "Select Region",
+        "no_region": "Unassigned",
         "remove_node": "Remove Node",
+        "remove_ports": "Remove Ports",
+        "mode": {
+            "use_as_match": "Use as Match Server",
+            "use_as_gpu_only": "Use as GPU Only"
+        },
         "show_update_logs": "Show Update Logs",
         "edit_label": "Edit Label",
         "edit_cs2_options": "Edit Video Settings",
         "cs2_options": {
             "title": "Video Settings",
             "description": "Per-node video settings applied when this node hosts a live stream, demo playback, or batch highlight job.",
-            "save": "Save",
-            "toast_saved": "Video settings updated",
             "section_video": "Video Settings",
             "section_video_description": "Tune the rendering quality used while CS2 is captured on this node.",
             "preset": {
@@ -5437,16 +5130,15 @@
                 "videocfg_particle_detail_desc": "Affects smoke, fire, and Molotov rendering. High improves molly visibility, lowers FPS.",
                 "videocfg_ao_detail": "Ambient occlusion",
                 "videocfg_ao_detail_desc": "Soft contact shadows. Competitive setups usually run this off.",
-                "off": "Off",
                 "low": "Low",
                 "medium": "Medium",
                 "high": "High",
-                "very_high": "Very High",
-                "auto": "Auto"
+                "very_high": "Very High"
             }
         },
         "edit_ports": "Edit Ports",
         "edit_ports_description": "Set the allowed port range for this node.",
+        "region_required_for_ports": "Assign a region to this node before setting its ports.",
         "port_start": "Start Port",
         "port_end": "End Port",
         "files": "Files",
@@ -5461,14 +5153,12 @@
             "csgo_installing": "CS:GO is being installed on the node",
             "validating_gamedata": "Validating gamedata signatures on the node",
             "ports_updated": "Node Ports Updated",
+            "ports_removed": "Node Ports Removed",
+            "made_gpu_only": "Node Set To GPU Only",
+            "made_match_node": "Node Set To Match Server",
             "label_updated": "Node Label Updated",
-            "cs2_options_updated": "Video settings updated",
-            "scheduling_updated": "Node Scheduling Updated"
+            "cs2_options_updated": "Video settings updated"
         },
-        "enable_scheduling": "Enable Scheduling",
-        "disable_scheduling": "Disable Scheduling",
-        "enable_node": "Enable Node",
-        "disable_node": "Disable Node",
         "learn_more": "Learn more",
         "governor_performance_recommended": "Performance governor is recommended for optimal server performance",
         "max_servers": "Max Servers",
@@ -5488,10 +5178,9 @@
         "node_telemetry": "Node telemetry",
         "loading_metrics": "Loading metrics data...",
         "no_metrics_description": "No metrics data available for this node yet. Metrics will appear once the node starts reporting data.",
-        "aggregate": "aggregate",
-        "rx_tx": "rx + tx",
         "current": "current",
-        "percent_used": "{percent}% used"
+        "percent_used": "{percent}% used",
+        "col_name": "NAME"
     },
     "chat": {
         "readonly": "Chat is read-only.",
@@ -5545,7 +5234,6 @@
             "rcon_password_description": "Leave blank to keep the current password",
             "port": "Game Port",
             "tv_port": "TV Port",
-            "update": "Update Server",
             "create": "Create Server",
             "max_players": "Max Players",
             "max_players_description": "The maximum number of players that can connect to the server"
@@ -5591,8 +5279,6 @@
         "fullscreen_f_key": "Fullscreen (F)",
         "exit_fullscreen_f_key": "Exit fullscreen (F)",
         "enter_fullscreen": "Enter fullscreen",
-        "picture_in_picture": "Picture-in-picture",
-        "exit_picture_in_picture": "Exit picture-in-picture",
         "hide_hud": "Hide HUD",
         "show_hud": "Show HUD",
         "visibility_label": "Visibility: {value}",
@@ -5608,19 +5294,11 @@
         "match_highlights_alt": "Match highlights",
         "select_team_placeholder": "Select team…",
         "select_player_placeholder": "Select player…",
-        "open_clip": "Open clip",
         "open_highlight": "Open highlight",
         "previous_clip": "Previous clip",
         "next_clip": "Next clip",
         "hide_xray": "Hide x-ray",
         "show_xray": "Show x-ray"
-    },
-    "stream_deck_extras": {
-        "switching": "Switching…",
-        "no_server": "No server",
-        "not_live_yet": "Not live yet",
-        "server_offline": "Server offline",
-        "switch_stream_here": "Switch stream here"
     },
     "branding": {
         "site_title_suffix": "Counter-Strike Management System"
@@ -5632,7 +5310,6 @@
         "label_too_long": "Label must be less than 50 characters"
     },
     "game_type_configs": {
-        "configuration_title": "{type} Configuration",
         "form": {
             "cfg": "Config",
             "create": "Create Config",
@@ -5714,6 +5391,7 @@
             "take_manual_control": "Click to take manual control"
         },
         "page_title": "Stream Deck",
+        "page_description": "Take over a GPU to broadcast a live match, switch destinations, and run the auto-director.",
         "capacity": "Capacity",
         "full": "Full",
         "off_air_description": "No active game-streamer broadcast. Pick a live match below to take over a GPU and start streaming.",
@@ -5730,7 +5408,9 @@
         "offline": "offline",
         "exit": "Exit",
         "swap_sides": "Swap sides (manual override)",
-        "refresh_hud": "Refresh HUD (reload player images)"
+        "refresh_hud": "Refresh HUD (reload player images)",
+        "autodirector_on": "Auto-director is on.",
+        "autodirector_hint": "CS2 is choosing the camera — clicking a target or pressing a key will turn this off and take manual control."
     },
     "system_metrics_extras": {
         "gpu_usage": "GPU usage",
@@ -5743,9 +5423,6 @@
         "console": "RCON Console",
         "suggestions": "Suggestions"
     },
-    "map_pool_form": {
-        "save": "Save Map Pool"
-    },
     "game_server_node": {
         "set_ports": "Set Ports"
     },
@@ -5754,7 +5431,6 @@
         "close_others": "Close Others",
         "close_to_right": "Close to Right",
         "close_to_left": "Close to Left",
-        "delete": "Delete",
         "upload_cancelled": "Upload cancelled",
         "upload_complete": "Upload complete"
     },
@@ -5783,7 +5459,6 @@
             "segments": "Segments",
             "title_label": "Title",
             "resolution": "Resolution",
-            "destination": "Destination",
             "render": "Render",
             "add": "Add",
             "stop": "Stop",
@@ -5798,7 +5473,6 @@
             "clip_not_found": "Clip not found",
             "clip_not_found_description": "It may have been deleted, or you don't have permission to view it.",
             "title_label": "Title",
-            "cancel": "Cancel",
             "other_clips": "Other clips",
             "view_match": "View match",
             "highlight_clip_viewer": "Highlight clip viewer",
@@ -5806,7 +5480,6 @@
             "just_now": "just now"
         },
         "render_queue": {
-            "in_flight": "In Flight",
             "queued": "Queued",
             "cancel": "Cancel",
             "render": "Render",
@@ -5835,7 +5508,6 @@
             "clear_batch": "Clear batch",
             "show_less": "Show less",
             "show_more": "Show {count} more",
-            "load_more": "Load more",
             "empty_title": "Render queue is empty",
             "empty_description": "Highlight render jobs queued from matches will show up here while they boot, render, and upload.",
             "done_count": "{done}/{total} done",
@@ -5847,7 +5519,6 @@
             "retry_failed_count": "Retry failed ({count})",
             "retry_all_clips": "Retry all {count} clips"
         },
-        "visibility_section": "Visibility",
         "create_dialog": {
             "title": "Auto Clip",
             "description": "Pick a player and a preset — the server scans the match's parsed kills, builds the segments, and renders an mp4.",
@@ -5899,7 +5570,6 @@
         "share_clip": "Share clip",
         "open_details": "Open {title} details",
         "open_player_profile": "Open {name}'s profile",
-        "round_short": "Round {number}",
         "kills_in_clip": "{count} kill in clip | {count} kills in clip",
         "plays_count": "{count} play | {count} plays",
         "now_playing": "Now playing",
@@ -5941,7 +5611,6 @@
             "elo": "Elo"
         },
         "source": {
-            "all": "All",
             "internal": "5Stack",
             "external": "External"
         },
@@ -5962,7 +5631,14 @@
         "maps": "MAPS",
         "damage": "DAMAGE",
         "score": "SCORE",
-        "impact": "IMPACT"
+        "impact": "IMPACT",
+        "current": "CURRENT",
+        "updated": "UPDATED",
+        "series_multiplier": "SERIES MULTIPLIER",
+        "team_elo": "TEAM ELO",
+        "kda": "KDA",
+        "kda_breakdown": "K / D / A",
+        "perf": "PERF"
     },
     "stat": {
         "level": {
@@ -5973,16 +5649,7 @@
         }
     },
     "draft_games": {
-        "title": "Draft Games",
         "nav_label": "Draft Lobby",
-        "report": {
-            "title": "Draft Balance Report",
-            "projected": "Pre-Match Odds",
-            "held": "Prediction Held",
-            "upset": "Upset",
-            "avg": "Avg",
-            "confidence": "Model gave the favorite a {pct}% edge"
-        },
         "create_custom_match": "Host Draft Room",
         "leader_required": "Only the party leader can create a match.",
         "rehost": "Re-host Last",
@@ -6002,25 +5669,11 @@
             "rank_low": "Rank: Low"
         },
         "empty": "No open matches. Create one to get started.",
-        "types": {
-            "competitive": "Competitive 5v5",
-            "wingman": "Wingman 2v2",
-            "duel": "Duel 1v1"
-        },
         "create": {
-            "title": "Create Draft Game",
-            "type": "Game Type",
-            "regions": "Regions",
             "captain_selection": "Captain Selection",
             "draft_order": "Draft Order",
-            "min_elo": "Min Rank (optional)",
-            "max_elo": "Max Rank (optional)",
-            "submit": "Create",
-            "description": "Set up a pick-up game. Captains will draft the teams once it fills.",
-            "mode": "Draft Mode",
             "rank_gate": "Rank Gate (optional)",
             "start": "Start",
-            "start_desc": "Schedule the match for later, or start it as soon as the lineup is ready.",
             "deploy": "Create",
             "require_approval": "Require Approval",
             "require_approval_desc": "Players request to join — you pick who plays from the queue.",
@@ -6028,9 +5681,7 @@
             "host_only_desc": "Create and manage this lobby without being added as a player.",
             "keep_lobby": "Keep Lobby Together",
             "keep_lobby_desc": "Your {count} lobby players join on the same team.",
-            "save": "Save Changes",
             "access": "Lobby Access",
-            "match_settings": "Match Settings",
             "teams": "Teams",
             "no_formats": "Duel has no formats — it's always auto-split 1v1.",
             "teams_desc": "A single team is required. The second team is optional — leave it open for a team-against-the-world match.",
@@ -6050,17 +5701,12 @@
             "step_settings": "Match Settings",
             "step_rules": "Lobby Rules",
             "back": "Back",
-            "next": "Next",
-            "update": "Update"
+            "next": "Next"
         },
         "host": "The host",
         "invite": {
             "invited_you": "invited you to their",
             "lobby": "lobby"
-        },
-        "schedule": {
-            "asap": "ASAP",
-            "scheduled": "Schedule"
         },
         "captain_selection": {
             "top_elo_two": "Top 2 by Rank",
@@ -6074,7 +5720,6 @@
             "front_loaded": "Front-Loaded (1-2-1-1)"
         },
         "card": {
-            "custom_pool": "Custom Pool",
             "pool": "Pool",
             "region": "Region",
             "custom": "Custom",
@@ -6090,19 +5735,7 @@
             "requested": "Requested",
             "join_error": "Failed to join the match. Please try again."
         },
-        "status": {
-            "open": "Open",
-            "filled": "Full",
-            "selectingcaptains": "Selecting Captains",
-            "drafting": "Drafting",
-            "creatingmatch": "Creating Match",
-            "completed": "Completed",
-            "canceled": "Canceled"
-        },
         "room": {
-            "title": "Draft Room",
-            "picking": "Team {team} is picking",
-            "your_turn": "It is your turn to pick",
             "team": "Team {team}",
             "pool": "Available Players",
             "captain": "Captain",
@@ -6117,21 +5750,15 @@
             "log_empty": "No picks yet.",
             "team_alpha": "Team 1",
             "team_bravo": "Team 2",
-            "assembling": "Assembling Squad",
-            "gathering": "Gathering Squad",
             "squad_ready": "Squad Ready",
             "expires_in": "Lobby Expires In",
-            "lobby_full": "Lobby Full",
             "extend": "Keep the room open for another 30 minutes",
-            "waiting_for": "Waiting for {count} more",
-            "ready": "Squad Ready",
             "host_assigning": "Host Assigning Teams",
             "host_hint": "Fill the open slots above to add players straight to a team.",
             "make_captain": "Make captain",
             "choose_captains": "Choose Captains",
             "choose_captains_hint": "Pick a captain for each team to start the draft.",
             "pick_captains": "Choose Captains",
-            "host_wait": "{name} is building the teams…",
             "captain_picking": "{name} is picking…",
             "your_pick": "Your Pick",
             "alpha_picking": "Team 1 Picking",
@@ -6151,18 +5778,14 @@
             "accept_backup": "Accept as backup",
             "deny": "Deny",
             "request": "Request to Join",
-            "requested": "Requested",
-            "in_queue": "{count} in queue",
             "edit_settings": "Edit Settings",
             "start_match": "Start Match",
             "starting": "Starting…",
             "pick_teams": "Select both teams to start",
             "vs": "vs",
-            "balancing": "Balancing Teams",
             "copy_invite": "Copy Invite Link",
             "invite_copied": "Invite link copied",
             "back_to_room": "Back to Draft Room",
-            "quick_edit": "Lobby Settings",
             "join_prompt": "Jump in — there's an open slot",
             "request_prompt": "This lobby needs host approval to join",
             "request_pending": "Your request is awaiting host approval",
@@ -6180,33 +5803,21 @@
             "cancel_invite": "Cancel Invite",
             "invite_to_draft": "Invite to Draft",
             "invite_sent": "Invited {name} to your draft",
-            "balance_preview": "Projected Teams",
-            "live_odds": "Live Odds",
-            "win_odds": "Win Odds",
-            "captains_set": "Captains Locked In",
             "picks_first": "{name} picks first",
-            "veto": "Map / Region Veto",
             "match_starting": "Match Starting — Booting Server",
-            "ready_to_start": "Lobby Ready",
             "assign_all": "Assign All Players",
             "need_full": "Waiting For Players",
             "search_requests": "Search requests",
             "sort_elo_high": "Rank: High",
             "sort_elo_low": "Rank: Low",
             "sort_recent": "Most Recent",
-            "add_players": "Add Players",
-            "add_friends": "Add From Friends",
-            "no_friends_online": "No friends available to add",
-            "open_slots": "Open Slots",
             "add_player_slot": "Add Player",
             "search_player": "Search players...",
             "current_draft": "Your Draft Room",
             "host_room": "{name}'s Draft Room",
-            "view": "View",
             "kick": "Kick",
             "start_player": "Start",
             "go_to_room": "Go To Draft Room",
-            "cancel_match": "Cancel Match",
             "min": "Min",
             "max": "Max",
             "no_matches": "No matching requests",
@@ -6215,32 +5826,22 @@
             "cancel_draft_confirm_description": "This will close the room for everyone and cannot be undone.",
             "kick_confirm_title": "Remove this player?",
             "kick_confirm_description": "They will be removed from the draft room.",
-            "unavailable": "This draft room is no longer available.",
-            "removed": "You were removed from this draft room.",
             "load_failed": "Could not load this draft room.",
             "match_settings": "Match Settings"
         },
         "bar": {
-            "format": "Format",
-            "mode": "Draft Mode",
             "region": "Region",
             "region_veto": "Region Veto",
-            "rounds": "Rounds",
             "pool": "Map Pool",
-            "rank": "Rank Gate",
-            "commander": "Host",
-            "access": "Access",
             "approval": "Approval",
             "approval_on": "Required",
             "approval_off": "Open",
             "players": "Players",
-            "game_settings": "Game Settings",
             "overtime": "Overtime",
             "knife": "Knife Round",
             "coaches": "Coaches",
             "best_of": "Best Of",
             "map_veto": "Map Veto",
-            "subs": "Subs",
             "on": "On",
             "off": "Off"
         },

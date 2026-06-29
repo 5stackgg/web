@@ -25,7 +25,6 @@ import {
   ChevronRight,
   Square,
   ExternalLink,
-  Radio,
   PictureInPicture2,
   X,
   Cpu,
@@ -484,6 +483,7 @@ function matchStatusLabel(m: LiveMatch): string {
   <PageTransition :delay="0">
     <TacticalPageHeader>
       <template #title>{{ $t("stream_deck.page_title") }}</template>
+      <template #subtitle>{{ $t("stream_deck.page_description") }}</template>
       <template #actions>
         <NuxtLink
           v-if="gpuPoolReady"
@@ -554,9 +554,8 @@ function matchStatusLabel(m: LiveMatch): string {
             );
           "
         />
-        <Radio class="mx-auto size-7 text-muted-foreground/70" />
         <p
-          class="mt-3 font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground"
+          class="font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground"
         >
           {{ $t("stream_deck.off_air") }}
         </p>

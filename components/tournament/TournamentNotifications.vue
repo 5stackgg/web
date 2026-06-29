@@ -129,11 +129,15 @@
       </div>
     </Card>
 
-    <div class="flex justify-start">
-      <Button @click="save" :disabled="saving" class="my-3">
-        {{ $t("tournament.notifications.save") }}
-      </Button>
-    </div>
+    <!-- spacer so content clears the floating bar -->
+    <div class="pb-24"></div>
+
+    <SettingsSaveBar
+      :dirty="isDirty"
+      :submitting="saving"
+      @save="save"
+      @discard="discardChanges"
+    />
   </div>
 </template>
 
@@ -141,8 +145,8 @@
 import { Card } from "~/components/ui/card";
 import { Switch } from "~/components/ui/switch";
 import { Input } from "~/components/ui/input";
-import { Button } from "@/components/ui/button";
 import DiscordMatchNotificationToggles from "~/components/discord/DiscordMatchNotificationToggles.vue";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 import { $, e_match_status_enum, e_player_roles_enum } from "~/generated/zeus";
 import { typedGql } from "~/generated/zeus/typedDocumentNode";
 import { generateMutation } from "~/graphql/graphqlGen";
@@ -172,6 +176,7 @@ const DISCORD_FIELDS = [...OTHER_DISCORD_FIELDS, ...STATUS_FIELDS] as const;
 export default {
   components: {
     DiscordMatchNotificationToggles,
+    SettingsSaveBar,
   },
   props: {
     tournament: {
@@ -232,6 +237,18 @@ export default {
       return (
         useAuthStore().isAdmin ||
         useAuthStore().isRoleAbove(e_player_roles_enum.tournament_organizer)
+      );
+    },
+    isDirty(): boolean {
+      // Compare against the server baseline so reverting a value back to its
+      // saved state hides the save bar (the manual `dirty` flag is one-way and
+      // only used to stop the subscription from clobbering in-progress edits).
+      if (!this.discordData) {
+        return this.dirty || this.statusOverrideDirty;
+      }
+      return (
+        JSON.stringify(this.form) !==
+        JSON.stringify(this.buildForm(this.discordData))
       );
     },
     isNotificationsEnabled(): boolean {
@@ -378,6 +395,11 @@ export default {
         }
       }
       return form;
+    },
+    discardChanges() {
+      this.form = this.buildForm(this.discordData ?? {});
+      this.dirty = false;
+      this.statusOverrideDirty = false;
     },
     toggleMaster() {
       this.form.discord_notifications_enabled =

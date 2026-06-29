@@ -321,7 +321,10 @@ const rehost = async () => {
           <Button
             v-if="hasRehostPreset"
             variant="outline"
-            :class="['gap-2', draftActionButtonHeightClasses]"
+            :class="[
+              draftActionButtonHeightClasses,
+              'gap-2 !px-4 !py-0 text-[0.7rem] font-bold uppercase leading-none tracking-[0.16em] shadow-[0_0_0_1px_hsl(var(--border))]',
+            ]"
             :title="$t('draft_games.rehost_hint')"
             @click="rehost"
           >

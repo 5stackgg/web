@@ -236,10 +236,12 @@ import {
               class="whitespace-nowrap"
               @sort="toggle"
             >
-              <span class="xl:hidden">K</span>
-              <span class="hidden xl:inline">{{
-                $t("common.stats.kills")
-              }}</span>
+              <StatLabel stat="k">
+                <span class="xl:hidden">K</span>
+                <span class="hidden xl:inline">{{
+                  $t("common.stats.kills")
+                }}</span>
+              </StatLabel>
             </SortableTableHead>
             <SortableTableHead
               v-if="overviewVis.assists !== false"
@@ -250,10 +252,12 @@ import {
               class="whitespace-nowrap"
               @sort="toggle"
             >
-              <span class="xl:hidden">A</span>
-              <span class="hidden xl:inline">{{
-                $t("common.stats.assists")
-              }}</span>
+              <StatLabel stat="a">
+                <span class="xl:hidden">A</span>
+                <span class="hidden xl:inline">{{
+                  $t("common.stats.assists")
+                }}</span>
+              </StatLabel>
             </SortableTableHead>
             <SortableTableHead
               sort-key="deaths"
@@ -263,10 +267,12 @@ import {
               class="whitespace-nowrap"
               @sort="toggle"
             >
-              <span class="xl:hidden">D</span>
-              <span class="hidden xl:inline">{{
-                $t("common.stats.deaths")
-              }}</span>
+              <StatLabel stat="d">
+                <span class="xl:hidden">D</span>
+                <span class="hidden xl:inline">{{
+                  $t("common.stats.deaths")
+                }}</span>
+              </StatLabel>
             </SortableTableHead>
             <SortableTableHead
               v-if="overviewVis.kd !== false"
@@ -286,8 +292,8 @@ import {
               :disabled="sortDisabled"
               class="whitespace-nowrap"
               @sort="toggle"
-              >{{ $t("match.overview.hs") }}</SortableTableHead
-            >
+              ><StatLabel stat="hs" :label="$t('match.overview.hs')"
+            /></SortableTableHead>
             <SortableTableHead
               v-if="overviewVis.survived !== false"
               sort-key="survived"

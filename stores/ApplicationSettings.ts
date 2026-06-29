@@ -250,6 +250,17 @@ export const useApplicationSettingsStore = defineStore(
       );
     });
 
+    // Anti-cheat: require viewers to be signed in before live game
+    // streams are shown. Enabled by default — only an explicit "false"
+    // disables it.
+    const requireLoginForLiveStreams = computed(() => {
+      return (
+        settings.value?.find(
+          (setting) => setting.name === "public.require_login_for_live_streams",
+        )?.value !== "false"
+      );
+    });
+
     const newsLabel = computed(() => {
       return (
         settings.value?.find(
@@ -457,6 +468,7 @@ export const useApplicationSettingsStore = defineStore(
       supportsGameServerVersionPinning,
       playerNameRegistration,
       newsEnabled,
+      requireLoginForLiveStreams,
       newsLabel,
       postNewsRole,
       canPostNews,

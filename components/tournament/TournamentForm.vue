@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { FormControl, FormField, FormItem } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
-import { Calendar as CalendarIcon, PlayIcon } from "lucide-vue-next";
+import { Calendar as CalendarIcon } from "lucide-vue-next";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
 import {
   Popover,
   PopoverContent,
@@ -12,6 +11,7 @@ import {
 } from "@/components/ui/popover";
 import MatchOptions from "~/components/MatchOptions.vue";
 import SettingHeader from "~/components/match/SettingHeader.vue";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 </script>
 
 <template>
@@ -138,33 +138,36 @@ import SettingHeader from "~/components/match/SettingHeader.vue";
       </template>
     </MatchOptions>
 
-    <div class="mt-8 flex justify-center pb-24">
-      <button
-        type="submit"
-        :disabled="submitting || Object.keys(form.errors).length > 0"
-        class="group/submit relative isolate inline-flex items-center px-12 py-4 font-bold text-base tracking-[0.22em] uppercase text-[hsl(var(--tac-amber-foreground))] [background:linear-gradient(135deg,var(--tac-amber-cta-from)_0%,hsl(var(--tac-amber))_50%,var(--tac-amber-cta-to)_100%)] border border-[hsl(var(--tac-amber))] shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.4),0_8px_24px_-6px_hsl(var(--tac-amber)/0.6)] [transition:transform_200ms_cubic-bezier(0.4,0,0.2,1),box-shadow_200ms_ease] cursor-pointer overflow-hidden hover:-translate-y-px hover:shadow-[0_0_0_1px_hsl(var(--tac-amber)/0.6),0_14px_36px_-6px_hsl(var(--tac-amber)/0.8),0_0_28px_hsl(var(--tac-amber)/0.35)] active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0"
-      >
-        <span class="relative z-[1] inline-flex items-center gap-3">
-          <Spinner v-if="submitting" class="w-5 h-5" />
-          <PlayIcon
-            v-else
-            class="w-5 h-5 fill-current [transition:transform_300ms_cubic-bezier(0.4,0,0.2,1)] group-hover/submit:translate-x-0.5 group-hover/submit:scale-[1.08]"
-          />
-          <span>
-            <template v-if="tournament">
-              {{ $t("tournament.form.update") }}
-            </template>
-            <template v-else>
-              {{ $t("tournament.form.create") }}
-            </template>
-          </span>
-        </span>
-        <span
-          class="absolute inset-0 [background:linear-gradient(90deg,transparent_0%,hsl(0_0%_100%/0.35)_50%,transparent_100%)] -translate-x-full [transition:transform_700ms_cubic-bezier(0.4,0,0.2,1)] pointer-events-none z-0 group-hover/submit:translate-x-full"
-          aria-hidden="true"
-        ></span>
-      </button>
-    </div>
+    <!-- spacer so content clears the floating bar -->
+    <div class="pb-24"></div>
+
+    <SettingsSaveBar
+      v-if="tournament"
+      :dirty="isDirty"
+      :submitting="submitting"
+      @save="updateCreateTournament"
+      @discard="discardChanges"
+    />
+
+    <SettingsSaveBar
+      v-else
+      force-visible
+      hide-discard
+      :valid="createValid"
+      :submitting="submitting"
+      :title="
+        createValid
+          ? $t('tournament.form.create_bar.ready')
+          : $t('tournament.form.create_bar.incomplete')
+      "
+      :description="
+        createValid
+          ? $t('tournament.form.create_bar.ready_hint')
+          : $t('tournament.form.create_bar.incomplete_hint')
+      "
+      :action-label="$t('tournament.form.create')"
+      @save="updateCreateTournament"
+    />
   </form>
 </template>
 
@@ -230,6 +233,8 @@ export default {
   data() {
     return {
       submitting: false,
+      baseline: null as string | null,
+      isDirty: false,
       startDate: undefined,
       startTime: undefined,
       form: useForm({
@@ -239,7 +244,10 @@ export default {
             this,
             {
               name: z.string().min(1),
-              start: z.date().refine((date) => date > new Date(), {
+              // Only require a future start when creating — an existing
+              // tournament's start may already be in the past and must still
+              // be editable.
+              start: z.date().refine((date) => !!this.tournament || date > new Date(), {
                 message: this.$t("validation.date_must_be_future"),
               }),
               description: z.string().nullable().default(null),
@@ -267,24 +275,32 @@ export default {
     tournament: {
       immediate: true,
       handler(tournament) {
-        if (tournament) {
-          const startDate = new Date(tournament.start);
-          this.startDate = toCalendarDate(
-            fromDate(
-              startDate,
-              Intl.DateTimeFormat().resolvedOptions().timeZone,
-            ),
-          );
-          this.startTime = `${startDate.getHours().toString().padStart(2, "0")}:${startDate.getMinutes().toString().padStart(2, "0")}`;
-
-          this.form.setValues({
-            map_veto: true,
-            name: tournament.name,
-            description: tournament.description,
-            auto_start: tournament.auto_start,
-          });
-
-          setupOptions(this.form, tournament.options);
+        if (!tournament) {
+          return;
+        }
+        // `tournament` is backed by a live subscription, so it re-emits a new
+        // object periodically. Only (re)load the form from the server copy when
+        // the user has no in-progress edits, otherwise a re-emit would wipe
+        // their changes and reset the unsaved-changes bar.
+        if (this.baseline === null || !this.isDirty) {
+          this.populateFromTournament(tournament);
+        }
+      },
+    },
+    ["form.values"]: {
+      deep: true,
+      handler() {
+        this.isDirty =
+          this.baseline !== null &&
+          JSON.stringify(this.form.values) !== this.baseline;
+      },
+    },
+    map_pools: {
+      handler() {
+        // The custom map pool is resolved asynchronously once the seed pools
+        // load (via the isDefaultMapPool watcher), so re-baseline afterwards.
+        if (this.tournament) {
+          this.takeSnapshot();
         }
       },
     },
@@ -317,8 +333,62 @@ export default {
       }
       return this.defaultMapPool.id === this.tournament.options.map_pool.id;
     },
+    createValid(): boolean {
+      // Create flow gate: the only fields without schema defaults are name and
+      // start, so require those filled and no outstanding validation errors.
+      const values = this.form.values;
+      return (
+        Object.keys(this.form.errors).length === 0 &&
+        !!values.name &&
+        !!values.start
+      );
+    },
   },
   methods: {
+    populateFromTournament(tournament: any) {
+      const startDate = new Date(tournament.start);
+      this.startDate = toCalendarDate(
+        fromDate(startDate, Intl.DateTimeFormat().resolvedOptions().timeZone),
+      );
+      this.startTime = `${startDate.getHours().toString().padStart(2, "0")}:${startDate.getMinutes().toString().padStart(2, "0")}`;
+
+      this.form.setValues({
+        map_veto: true,
+        name: tournament.name,
+        description: tournament.description,
+        auto_start: tournament.auto_start,
+      });
+
+      setupOptions(this.form, tournament.options);
+
+      // Once the seed pools are known we can restore the custom map pool state
+      // explicitly so discard reverts a manually toggled pool too.
+      if (this.defaultMapPool) {
+        const pool = tournament.options.map_pool;
+        if (this.defaultMapPool.id === pool.id) {
+          this.form.setValues({ custom_map_pool: false });
+        } else {
+          this.form.setValues({
+            custom_map_pool: true,
+            map_pool_id: pool.id,
+            map_pool: pool.maps.map(({ id }: { id: string }) => id),
+          });
+        }
+      }
+
+      this.takeSnapshot();
+    },
+    takeSnapshot() {
+      this.$nextTick(() => {
+        this.baseline = JSON.stringify(this.form.values);
+        this.isDirty = false;
+      });
+    },
+    discardChanges() {
+      if (this.tournament) {
+        this.populateFromTournament(this.tournament);
+      }
+    },
     checkDate({ day, month, year }) {
       return new Date(year, month - 1, day + 1) < new Date();
     },
@@ -339,9 +409,14 @@ export default {
       let redirecting = false;
 
       try {
-        const { valid } = await this.form.validate();
+        const { valid, errors } = await this.form.validate();
 
         if (!valid) {
+          toast({
+            variant: "destructive",
+            title: this.$t("common.error"),
+            description: Object.values(errors ?? {})[0] as string,
+          });
           return;
         }
 
@@ -429,6 +504,8 @@ export default {
           toast({
             title: this.$t("tournament.updated") as string,
           });
+
+          this.takeSnapshot();
           return;
         }
 
@@ -456,6 +533,12 @@ export default {
 
         redirecting = true;
         await this.$router.push(`/tournaments/${data.insert_tournaments_one.id}`);
+      } catch (error: any) {
+        toast({
+          variant: "destructive",
+          title: this.$t("common.error"),
+          description: error?.message,
+        });
       } finally {
         if (!redirecting) {
           this.submitLock = false;

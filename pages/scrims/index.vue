@@ -133,6 +133,17 @@ export default {
     eloActive(): boolean {
       return this.eloRange[0] > 0 || this.eloRange[1] < this.ELO_MAX;
     },
+    hasScrimChips(): boolean {
+      return (
+        this.regionFilter.length > 0 ||
+        this.mapFilter.length > 0 ||
+        this.eloActive ||
+        this.sortChain.length > 0
+      );
+    },
+    hasActiveScrimFilters(): boolean {
+      return !!this.searchQuery || this.hasScrimChips;
+    },
     regionScoped(): any[] {
       return this.postings.filter(
         (posting) =>
@@ -327,6 +338,13 @@ export default {
         this.regionFilter.some((region) => regions.includes(region))
       );
     },
+    resetScrimFilters() {
+      this.searchQuery = "";
+      this.regionFilter = [];
+      this.mapFilter = [];
+      this.eloRange = [0, this.ELO_MAX];
+      this.sortChain = [];
+    },
     toggleRegion(region: string) {
       const next = new Set(this.regionFilter);
       if (next.has(region)) {
@@ -447,10 +465,23 @@ export default {
 };
 </script>
 
+<script setup lang="ts">
+import FilterBar from "~/components/common/FilterBar.vue";
+import FilterMenu from "~/components/common/FilterMenu.vue";
+import { ChevronDown } from "lucide-vue-next";
+import {
+  filterTriggerBase,
+  filterTriggerIdle,
+  filterTriggerActive,
+  filterBadgeClasses,
+} from "~/utilities/tacticalClasses";
+</script>
+
 <template>
   <PageTransition>
     <TacticalPageHeader>
       <template #title>{{ $t("pages.scrims.title") }}</template>
+      <template #subtitle>{{ $t("pages.scrims.description") }}</template>
     </TacticalPageHeader>
   </PageTransition>
 
@@ -464,10 +495,11 @@ export default {
 
     <template v-else>
       <PageTransition :delay="100" class="mt-6 block">
-        <div class="flex flex-wrap items-center gap-2">
-          <InputGroup class="h-9 max-w-xs flex-1 bg-card/60">
-            <InputGroupAddon class="pl-3">
-              <Search class="h-4 w-4" />
+        <FilterBar>
+          <!-- Search (always visible — type instantly) -->
+          <InputGroup class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-xs">
+            <InputGroupAddon class="pl-2.5">
+              <Search class="h-3.5 w-3.5" />
             </InputGroupAddon>
             <InputGroupInput
               v-model="searchQuery"
@@ -482,7 +514,7 @@ export default {
                 class="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
                 @click="searchQuery = ''"
               >
-                <X class="h-4 w-4" />
+                <X class="h-3.5 w-3.5" />
               </button>
             </InputGroupAddon>
           </InputGroup>
@@ -491,21 +523,17 @@ export default {
             <PopoverTrigger as-child>
               <button
                 type="button"
-                class="inline-flex h-9 items-center gap-2 rounded-md border border-border bg-card/60 px-3 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-foreground"
-                :class="
-                  regionFilter.length
-                    ? 'border-[hsl(var(--tac-amber)/0.5)] text-foreground'
-                    : ''
-                "
+                :class="[
+                  filterTriggerBase,
+                  regionFilter.length ? filterTriggerActive : filterTriggerIdle,
+                ]"
               >
-                <Globe class="h-4 w-4" />
+                <Globe class="h-3.5 w-3.5" />
                 {{ $t("pages.scrims.regions_label") }}
-                <span
-                  v-if="regionFilter.length"
-                  class="rounded bg-[hsl(var(--tac-amber)/0.15)] px-1.5 text-[hsl(var(--tac-amber))]"
-                >
+                <span v-if="regionFilter.length" :class="filterBadgeClasses">
                   {{ regionFilter.length }}
                 </span>
+                <ChevronDown class="h-3 w-3 opacity-50" />
               </button>
             </PopoverTrigger>
             <PopoverContent align="start" class="w-56 p-1.5">
@@ -568,29 +596,22 @@ export default {
             </PopoverContent>
           </Popover>
 
-          <Popover>
-            <PopoverTrigger as-child>
-              <button
-                type="button"
-                class="inline-flex h-9 items-center gap-2 rounded-md border border-border bg-card/60 px-3 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-foreground"
-                :class="
-                  mapFilter.length
-                    ? 'border-[hsl(var(--tac-amber)/0.5)] text-foreground'
-                    : ''
-                "
-              >
-                <SlidersHorizontal class="h-4 w-4" />
-                {{ $t("pages.scrims.maps_label") }}
-                <span
-                  v-if="mapFilter.length"
-                  class="rounded bg-[hsl(var(--tac-amber)/0.15)] px-1.5 text-[hsl(var(--tac-amber))]"
-                >
-                  {{ mapFilter.length }}
-                </span>
-              </button>
-            </PopoverTrigger>
-            <PopoverContent align="start" class="w-56 p-1.5">
-              <div class="flex items-center justify-between px-2 py-1">
+          <!-- Filters (Maps / ELO / Sort bundled, pinned right) + grouped reset -->
+          <FilterMenu
+            class="ml-auto"
+            :count="
+              (mapFilter.length ? 1 : 0) +
+              (eloActive ? 1 : 0) +
+              (sortChain.length ? 1 : 0)
+            "
+            :active="mapFilter.length > 0 || eloActive || sortChain.length > 0"
+            :show-reset="hasActiveScrimFilters"
+            content-class="w-[min(92vw,320px)] space-y-4 p-3"
+            @reset="resetScrimFilters"
+          >
+            <!-- Maps -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between">
                 <span
                   class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
                 >
@@ -605,64 +626,43 @@ export default {
                   {{ $t("common.clear") }}
                 </button>
               </div>
-              <button
-                v-for="map in mapOptions"
-                :key="map.id"
-                type="button"
-                class="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm transition-colors hover:bg-muted/50"
-                @click="toggleMap(map.id)"
-              >
-                <span
-                  class="flex h-4 w-4 shrink-0 items-center justify-center rounded border"
-                  :class="
-                    mapFilter.includes(map.id)
-                      ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber))] text-black'
-                      : 'border-border'
-                  "
+              <div class="max-h-48 overflow-y-auto">
+                <button
+                  v-for="map in mapOptions"
+                  :key="map.id"
+                  type="button"
+                  class="flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm transition-colors hover:bg-muted/50"
+                  @click="toggleMap(map.id)"
                 >
-                  <Check v-if="mapFilter.includes(map.id)" class="h-3 w-3" />
-                </span>
-                <img
-                  v-if="map.patch"
-                  :src="map.patch"
-                  :alt="cleanName(map)"
-                  class="h-5 w-5 object-contain"
-                />
-                <span class="truncate">{{ cleanName(map) }}</span>
-              </button>
-              <p
-                v-if="mapOptions.length === 0"
-                class="px-2 py-3 text-center text-xs text-muted-foreground"
-              >
-                {{ $t("pages.scrims.no_map_preferences") }}
-              </p>
-            </PopoverContent>
-          </Popover>
+                  <span
+                    class="flex h-4 w-4 shrink-0 items-center justify-center rounded border"
+                    :class="
+                      mapFilter.includes(map.id)
+                        ? 'border-[hsl(var(--tac-amber))] bg-[hsl(var(--tac-amber))] text-black'
+                        : 'border-border'
+                    "
+                  >
+                    <Check v-if="mapFilter.includes(map.id)" class="h-3 w-3" />
+                  </span>
+                  <img
+                    v-if="map.patch"
+                    :src="map.patch"
+                    :alt="cleanName(map)"
+                    class="h-5 w-5 object-contain"
+                  />
+                  <span class="truncate">{{ cleanName(map) }}</span>
+                </button>
+                <p
+                  v-if="mapOptions.length === 0"
+                  class="px-2 py-3 text-center text-xs text-muted-foreground"
+                >
+                  {{ $t("pages.scrims.no_map_preferences") }}
+                </p>
+              </div>
+            </div>
 
-          <Popover>
-            <PopoverTrigger as-child>
-              <button
-                type="button"
-                class="inline-flex h-9 items-center gap-2 rounded-md border border-border bg-card/60 px-3 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-foreground"
-                :class="
-                  eloActive
-                    ? 'border-[hsl(var(--tac-amber)/0.5)] text-foreground'
-                    : ''
-                "
-              >
-                <Gauge class="h-4 w-4" />
-                {{ $t("pages.scrims.elo_label") }}
-                <span
-                  v-if="eloActive"
-                  class="rounded bg-[hsl(var(--tac-amber)/0.15)] px-1.5 text-[hsl(var(--tac-amber))]"
-                >
-                  {{ eloRange[0] }}–{{
-                    eloRange[1] >= ELO_MAX ? "∞" : eloRange[1]
-                  }}
-                </span>
-              </button>
-            </PopoverTrigger>
-            <PopoverContent align="start" class="w-64 p-3">
+            <!-- ELO -->
+            <div class="space-y-1.5 border-t border-border/50 pt-3">
               <div class="flex items-center justify-between">
                 <span
                   class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
@@ -679,41 +679,27 @@ export default {
                 </button>
               </div>
               <div
-                class="mt-3 flex items-center justify-between text-xs tabular-nums text-muted-foreground"
+                class="flex items-center justify-between text-xs tabular-nums text-muted-foreground"
               >
-                <span>{{ eloRange[0] === 0 ? $t("common.any") : eloRange[0] }}</span>
-                <span>{{ eloRange[1] >= ELO_MAX ? $t("common.any") : eloRange[1] }}</span>
+                <span>{{
+                  eloRange[0] === 0 ? $t("common.any") : eloRange[0]
+                }}</span>
+                <span>{{
+                  eloRange[1] >= ELO_MAX ? $t("common.any") : eloRange[1]
+                }}</span>
               </div>
               <Slider
                 v-model="eloRange"
                 :min="0"
                 :max="ELO_MAX"
                 :step="ELO_STEP"
-                class="mt-2"
+                class="mt-1"
               />
-            </PopoverContent>
-          </Popover>
+            </div>
 
-          <Popover>
-            <PopoverTrigger as-child>
-              <button
-                type="button"
-                class="ml-auto inline-flex h-9 items-center gap-2 rounded-md border border-border bg-card/60 px-3 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-foreground"
-                :class="
-                  sortChain.length
-                    ? 'border-[hsl(var(--tac-amber)/0.5)] text-foreground'
-                    : ''
-                "
-              >
-                <ArrowUpDown class="h-4 w-4" />
-                <span v-if="sortChain.length" class="normal-case tracking-normal">
-                  {{ sortSummary }}
-                </span>
-                <span v-else>{{ $t("pages.scrims.sort_label") }}</span>
-              </button>
-            </PopoverTrigger>
-            <PopoverContent align="end" class="w-60 p-1.5">
-              <div class="flex items-center justify-between px-2 py-1">
+            <!-- Sort -->
+            <div class="space-y-1 border-t border-border/50 pt-3">
+              <div class="flex items-center justify-between px-1">
                 <span
                   class="font-mono text-[0.6rem] uppercase tracking-[0.16em] text-muted-foreground"
                 >
@@ -768,9 +754,10 @@ export default {
               >
                 {{ $t("pages.scrims.sort_instructions") }}
               </p>
-            </PopoverContent>
-          </Popover>
-        </div>
+            </div>
+          </FilterMenu>
+
+        </FilterBar>
       </PageTransition>
 
       <PageTransition :delay="200" class="mt-6 block">

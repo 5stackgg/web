@@ -160,7 +160,7 @@ const secondaryIcon = computed(
         v-if="showC4 && hasBomb"
         class="inline-flex items-center justify-center w-4 h-4 rounded-sm shrink-0"
         style="background: hsl(28 100% 55%)"
-        title="Has C4"
+        :title="$t('match.replay.has_c4')"
       >
         <img src="/img/equipment/c4.svg" alt="C4" class="w-3 h-3" />
       </span>
@@ -169,7 +169,7 @@ const secondaryIcon = computed(
     <div
       class="pl-7 mt-1 flex items-center gap-3 font-mono tabular-nums h-[14px] leading-none"
     >
-      <span class="inline-flex items-baseline gap-1" title="Kills">
+      <span class="inline-flex items-baseline gap-1" :title="$t('common.stats.kills')">
         <span
           class="text-[0.5rem] tracking-[0.18em] uppercase text-muted-foreground/70"
           >K</span
@@ -178,7 +178,7 @@ const secondaryIcon = computed(
           stats.k
         }}</span>
       </span>
-      <span class="inline-flex items-baseline gap-1" title="Deaths">
+      <span class="inline-flex items-baseline gap-1" :title="$t('common.stats.deaths')">
         <span
           class="text-[0.5rem] tracking-[0.18em] uppercase text-muted-foreground/70"
           >D</span
@@ -187,7 +187,7 @@ const secondaryIcon = computed(
           stats.d
         }}</span>
       </span>
-      <span class="inline-flex items-baseline gap-1" title="Assists">
+      <span class="inline-flex items-baseline gap-1" :title="$t('common.stats.assists')">
         <span
           class="text-[0.5rem] tracking-[0.18em] uppercase text-muted-foreground/70"
           >A</span
@@ -198,7 +198,7 @@ const secondaryIcon = computed(
       </span>
       <span
         class="inline-flex items-baseline gap-1 ml-auto"
-        title="Damage this round"
+        :title="$t('match.replay.damage_this_round')"
       >
         <span
           class="text-[0.5rem] tracking-[0.18em] uppercase text-muted-foreground/70"
@@ -245,7 +245,11 @@ const secondaryIcon = computed(
             ? 'hsl(195, 100%, 60% / 0.08)'
             : 'hsl(200, 70%, 50% / 0.06)',
         }"
-        :title="live?.helmet ? 'Kevlar + helmet' : 'Kevlar only'"
+        :title="
+          live?.helmet
+            ? $t('match.replay.kevlar_helmet')
+            : $t('match.replay.kevlar_only')
+        "
       >
         <img
           :src="
@@ -315,7 +319,7 @@ const secondaryIcon = computed(
           v-if="loadout.kit"
           class="ml-auto inline-flex items-center gap-1 font-mono text-[0.55rem] font-bold tracking-[0.2em] uppercase px-2 py-1 leading-none rounded-sm"
           style="background: hsl(190 90% 55% / 0.18); color: hsl(190 90% 75%)"
-          title="Defuse kit"
+          :title="$t('match.replay.defuse_kit')"
         >
           <img src="/img/equipment/defuser.svg" class="h-2.5 w-2.5" alt="" />
           kit

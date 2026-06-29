@@ -61,8 +61,13 @@ watch(roomKey, (next) => {
   }
 });
 
+const showPref = computed(
+  () => useAuthStore().me?.show_match_ready_modal !== false,
+);
+
 const rawShow = computed(
   () =>
+    showPref.value &&
     isAlertable.value &&
     !isOnDraftPage.value &&
     visitedRoomId.value !== draftGameId.value &&

@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted, onBeforeUnmount } from "vue";
 import { useRoute } from "vue-router";
 import LiveStreamPlayer from "~/components/match/LiveStreamPlayer.vue";
+import { announceMatchPopout } from "~/composables/useMatchPopout";
 
 // Chromeless single-purpose route — opened via window.open() from
 // LiveStreamPlayer's "Popout" button. We strip the app layout so
@@ -12,6 +13,16 @@ definePageMeta({ layout: false });
 
 const route = useRoute();
 const matchId = computed(() => String(route.params.id));
+
+// Advertise our lifecycle so the opener tab suppresses its inline
+// player (and any duplicate WHEP connection) while this window lives.
+let stopAnnouncing: (() => void) | undefined;
+onMounted(() => {
+  stopAnnouncing = announceMatchPopout(matchId.value);
+});
+onBeforeUnmount(() => {
+  stopAnnouncing?.();
+});
 </script>
 
 <template>

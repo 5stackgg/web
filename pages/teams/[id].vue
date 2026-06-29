@@ -55,10 +55,6 @@ import {
 const teamMenu = ref(false);
 const teamHeroClasses =
   "relative rounded-lg border border-border px-5 py-4 sm:px-6 sm:py-5 [background:linear-gradient(180deg,hsl(var(--card)_/_0.55)_0%,hsl(var(--card)_/_0.25)_100%)] [backdrop-filter:blur(6px)] before:pointer-events-none before:absolute before:left-2 before:top-2 before:h-[14px] before:w-[14px] before:border-l-2 before:border-t-2 before:border-[hsl(var(--tac-amber))] before:content-[''] after:pointer-events-none after:absolute after:bottom-2 after:right-2 after:h-[14px] after:w-[14px] after:border-b-2 after:border-r-2 after:border-[hsl(var(--tac-amber))] after:content-['']";
-const teamHeroEyebrowClasses =
-  "mb-5 inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground";
-const teamHeroChevronClasses =
-  "translate-y-[-1px] text-[0.7rem] text-[hsl(var(--tac-amber))]";
 const teamHeroBodyClasses = "flex flex-wrap items-center gap-7 max-md:gap-4";
 const teamHeroEmblemFrameClasses =
   "relative flex h-[140px] w-[140px] items-center justify-center border border-[hsl(var(--tac-amber)_/_0.4)] bg-[hsl(var(--tac-amber)_/_0.12)] p-1 max-md:h-24 max-md:w-24";
@@ -89,11 +85,6 @@ const teamHeroActionsClasses =
 <template>
   <PageTransition v-if="team">
     <header :class="teamHeroClasses">
-      <div :class="teamHeroEyebrowClasses">
-        <span :class="teamHeroChevronClasses">◢</span>
-        {{ $t("team.hero.team_profile") }}
-      </div>
-
       <div :class="teamHeroBodyClasses">
         <div :class="teamHeroEmblemFrameClasses">
           <img
@@ -346,14 +337,14 @@ const teamHeroActionsClasses =
     :open="editTeamSheet"
     @update:open="(open) => (editTeamSheet = open)"
   >
-    <SheetContent>
+    <SheetContent class="flex flex-col gap-0">
       <SheetHeader>
         <SheetTitle>{{ $t("team.management.edit") }}</SheetTitle>
         <SheetDescription class="sr-only">
           {{ $t("team.management.edit") }}
         </SheetDescription>
       </SheetHeader>
-      <div class="mt-6 space-y-6">
+      <div class="-mx-4 mt-6 flex-1 space-y-6 overflow-y-auto px-4">
         <div class="space-y-2">
           <div
             class="inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.22em] text-muted-foreground"

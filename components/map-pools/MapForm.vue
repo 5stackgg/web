@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { FormSection } from "~/components/ui/form";
 import { Trash, AlertTriangle, RefreshCw } from "lucide-vue-next";
 import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
+import SettingsSaveBar from "~/components/settings/SettingsSaveBar.vue";
 </script>
 
 <template>
@@ -148,11 +149,14 @@ import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
       </div>
     </FormSection>
     <div class="flex justify-between items-center">
-      <Button variant="tactical" type="submit" :loading="submitting">{{
-        map
-          ? $t("pages.map_pools.form.update_map")
-          : $t("pages.map_pools.form.create_map")
-      }}</Button>
+      <Button
+        v-if="!map"
+        variant="tactical"
+        type="submit"
+        :loading="submitting"
+        >{{ $t("pages.map_pools.form.create_map") }}</Button
+      >
+      <div v-else></div>
       <AlertDialog v-if="map">
         <AlertDialogTrigger asChild>
           <Button variant="destructive" type="button">
@@ -178,6 +182,15 @@ import ViewOnSteam from "~/components/map-pools/ViewOnSteam.vue";
         </AlertDialogContent>
       </AlertDialog>
     </div>
+
+    <SettingsSaveBar
+      v-if="map"
+      contained
+      :dirty="form.meta.dirty"
+      :submitting="submitting"
+      @save="submitForm"
+      @discard="form.resetForm()"
+    />
   </form>
 </template>
 
@@ -316,6 +329,7 @@ export default {
               title: this.$t("pages.map_pools.form.success.update"),
             });
 
+            this.form.resetForm({ values });
             this.$emit("updated");
             return;
           }

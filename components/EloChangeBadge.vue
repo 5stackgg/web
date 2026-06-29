@@ -246,7 +246,7 @@ const chipClipSm = "";
               class="grid grid-cols-[1fr_auto_1fr] items-center gap-1.5 px-2.5 py-2 bg-muted/35 border border-border/70"
             >
               <div class="flex flex-col gap-0.5 min-w-0">
-                <span :class="labelClass">CURRENT</span>
+                <span :class="labelClass">{{ $t("elo_change.current") }}</span>
                 <span
                   :class="[
                     monoNum,
@@ -262,7 +262,7 @@ const chipClipSm = "";
                 stroke-width="2.5"
               />
               <div class="flex flex-col gap-0.5 min-w-0 text-right">
-                <span :class="labelClass">UPDATED</span>
+                <span :class="labelClass">{{ $t("elo_change.updated") }}</span>
                 <span
                   :class="[
                     monoNum,
@@ -309,7 +309,9 @@ const chipClipSm = "";
               aria-hidden="true"
             />
             <div class="relative flex flex-col gap-0.5">
-              <span :class="labelClass">SERIES MULTIPLIER</span>
+              <span :class="labelClass">{{
+                $t("elo_change.series_multiplier")
+              }}</span>
               <span
                 :class="[
                   monoNum,
@@ -335,7 +337,7 @@ const chipClipSm = "";
 
           <section class="relative mb-2.5">
             <div class="flex justify-between items-baseline mb-1">
-              <span :class="labelClass">TEAM ELO</span>
+              <span :class="labelClass">{{ $t("elo_change.team_elo") }}</span>
               <span
                 :class="[
                   monoNum,
@@ -369,7 +371,9 @@ const chipClipSm = "";
             class="relative grid grid-cols-2 gap-px mb-2.5 bg-border/60 border border-border/60"
           >
             <div class="flex flex-col gap-0.5 px-2 py-1.5 bg-card/80">
-              <span :class="labelClass">K / D / A</span>
+              <span :class="labelClass">{{
+                $t("elo_change.kda_breakdown")
+              }}</span>
               <span
                 :class="[monoNum, 'font-semibold text-[12px] text-foreground']"
               >
@@ -381,7 +385,7 @@ const chipClipSm = "";
               </span>
             </div>
             <div class="flex flex-col gap-0.5 px-2 py-1.5 bg-card/80">
-              <span :class="labelClass">KDA</span>
+              <span :class="labelClass">{{ $t("elo_change.kda") }}</span>
               <span
                 :class="[monoNum, 'font-semibold text-[12px] text-foreground']"
               >
@@ -441,7 +445,7 @@ const chipClipSm = "";
               </span>
             </div>
             <div class="flex flex-col gap-0.5 px-2 py-1.5 bg-card/80">
-              <span :class="labelClass">PERF ×</span>
+              <span :class="labelClass">{{ $t("elo_change.perf") }} ×</span>
               <span
                 :class="[monoNum, 'font-semibold text-[12px] text-foreground']"
               >

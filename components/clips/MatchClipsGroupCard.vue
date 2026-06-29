@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import { Trophy, Film, Clock } from "lucide-vue-next";
 import { Card } from "~/components/ui/card";
 import TimeAgo from "~/components/TimeAgo.vue";
@@ -86,6 +86,13 @@ const thumbnailSrc = computed(() => {
   return leadMap.value?.map?.poster ?? null;
 });
 
+// Fade the thumbnail in once it decodes so swapping the grid on a filter
+// change eases the new shot over the black frame instead of popping it in.
+const thumbLoaded = ref(false);
+watch(thumbnailSrc, () => {
+  thumbLoaded.value = false;
+});
+
 const leadCreatedAt = computed(() => lead.value?.created_at ?? null);
 
 // Consistent pill chrome — same padding, leading, and font size for all
@@ -104,7 +111,9 @@ const pillBaseClasses =
           v-if="thumbnailSrc"
           :src="thumbnailSrc"
           :alt="matchupLabel ?? $t('ui_extras.match_highlights_alt')"
-          class="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover/group-card:scale-[1.03]"
+          class="absolute inset-0 h-full w-full object-cover transition-[transform,opacity] duration-500 group-hover/group-card:scale-[1.03]"
+          :class="thumbLoaded ? 'opacity-100' : 'opacity-0'"
+          @load="thumbLoaded = true"
         />
         <div
           class="absolute inset-0 bg-[linear-gradient(180deg,hsl(0_0%_0%_/_0.4)_0%,transparent_45%,hsl(0_0%_0%_/_0.55)_100%)]"

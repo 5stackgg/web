@@ -16,7 +16,11 @@ import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery } from "~/graphql/graphqlGen";
 import { simpleTournamentFields } from "~/graphql/simpleTournamentFields";
 import { $, order_by, e_tournament_status_enum } from "~/generated/zeus";
-import { Input } from "~/components/ui/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import {
   Popover,
   PopoverContent,
@@ -31,20 +35,24 @@ import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import TournamentFeatureCard from "~/components/tournament/TournamentFeatureCard.vue";
 import RecentTournaments from "~/components/tournament/RecentTournaments.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import FilterBar from "~/components/common/FilterBar.vue";
+import FilterMenu from "~/components/common/FilterMenu.vue";
 import {
   tacticalCtaButtonClasses,
   tacticalHeaderActionClasses,
   tacticalSectionLabelClasses,
   tacticalSectionTickClasses,
+  filterTriggerBase,
+  filterTriggerIdle,
+  filterTriggerActive,
+  filterTriggerValueClasses,
 } from "~/utilities/tacticalClasses";
 
-// Compact filter-bar trigger buttons — each opens a popover.
-const filterTriggerBase =
-  "inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 font-mono text-[0.64rem] uppercase tracking-[0.14em] leading-none transition-colors duration-150 cursor-pointer";
-const filterTriggerIdle =
-  "border-border bg-muted/30 text-muted-foreground hover:bg-muted/50 hover:text-foreground";
-const filterTriggerActive =
-  "border-[hsl(var(--tac-amber)/0.55)] bg-[hsl(var(--tac-amber)/0.12)] text-[hsl(var(--tac-amber))]";
+// Keep filter query params out of the NuxtPage page-key (app.vue) so applying a
+// filter updates the URL without remounting/refreshing the whole page.
+definePageMeta({
+  persistQueryKeys: ["status", "since", "q", "page"],
+});
 
 const { t } = useI18n();
 const route = useRoute();
@@ -129,6 +137,10 @@ const searchInput = ref(nameQuery.value);
 watch(nameQuery, (v) => {
   if (searchInput.value !== v) searchInput.value = v;
 });
+
+// Single-select popovers close as soon as an option is chosen.
+const statusOpen = ref(false);
+const dateOpen = ref(false);
 
 let searchDebounce: ReturnType<typeof setTimeout> | null = null;
 function onSearchInput(value: string | number) {
@@ -339,6 +351,7 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
   <PageTransition>
     <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.tournaments.title") }}</template>
+      <template #subtitle>{{ $t("pages.tournaments.description") }}</template>
       <template #actions>
         <NuxtLink
           v-if="canCreateTournament"
@@ -360,46 +373,39 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
   </PageTransition>
 
   <PageTransition :delay="60" class="mt-6">
-    <div
-      class="relative rounded-md border border-border bg-card/40 [backdrop-filter:blur(6px)] px-3 py-2.5 transition-shadow duration-200"
-      :class="
-        hasActiveFilter &&
-        '[box-shadow:0_0_0_1px_hsl(var(--tac-amber)/0.18),0_0_28px_-14px_hsl(var(--tac-amber)/0.5)]'
-      "
-    >
-      <!-- Primary bar: name search + status inline, the rest behind Filters. -->
-      <div class="flex flex-wrap items-center gap-2">
+    <FilterBar>
         <!-- Name search (always visible) -->
-        <div class="relative min-w-[12rem] flex-1">
-          <Search
-            class="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/60"
-          />
-          <Input
+        <InputGroup class="h-8 min-w-[12rem] flex-1 bg-card/60 sm:max-w-xs">
+          <InputGroupAddon class="pl-2.5">
+            <Search class="h-3.5 w-3.5" />
+          </InputGroupAddon>
+          <InputGroupInput
             :model-value="searchInput"
             @update:model-value="onSearchInput"
             @keydown.enter.prevent="commitSearch"
             :placeholder="$t('pages.tournaments.filter.search_placeholder')"
-            class="h-9 pl-8 pr-8 text-sm"
+            class="h-full text-sm"
           />
-          <button
-            v-if="searchInput"
-            type="button"
-            @click="clearSearch"
-            class="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            :aria-label="$t('common.reset_filters')"
-          >
-            <X class="h-3.5 w-3.5" />
-          </button>
-        </div>
+          <InputGroupAddon align="inline-end" class="pr-2">
+            <button
+              v-if="searchInput"
+              type="button"
+              @click="clearSearch"
+              class="rounded p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              :aria-label="$t('common.reset_filters')"
+            >
+              <X class="h-3.5 w-3.5" />
+            </button>
+          </InputGroupAddon>
+        </InputGroup>
 
         <!-- Status (always visible) -->
-        <Popover>
+        <Popover v-model:open="statusOpen">
           <PopoverTrigger as-child>
             <button
               type="button"
               :class="[
                 filterTriggerBase,
-                'h-9',
                 statusFilter !== 'all'
                   ? filterTriggerActive
                   : filterTriggerIdle,
@@ -409,7 +415,7 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
               {{ $t("common.status") }}
               <span
                 v-if="statusFilter !== 'all'"
-                class="font-sans text-[0.6rem] font-bold normal-case tracking-normal text-[hsl(var(--tac-amber))]"
+                :class="filterTriggerValueClasses"
               >
                 {{ currentStatusLabel }}
               </span>
@@ -421,7 +427,10 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
               v-for="opt in statusOptions"
               :key="opt.value"
               type="button"
-              @click="setStatus(opt.value)"
+              @click="
+                setStatus(opt.value);
+                statusOpen = false;
+              "
               class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
             >
               <span>{{ opt.label }}</span>
@@ -433,100 +442,39 @@ const seeAllFinished = { path: "/tournaments", query: { status: "finished" } };
           </PopoverContent>
         </Popover>
 
-        <!-- Filters (the rest: date) -->
-        <Popover>
-          <PopoverTrigger as-child>
-            <button
-              type="button"
-              :class="[
-                filterTriggerBase,
-                'h-9',
-                sinceFilter !== 'all' ? filterTriggerActive : filterTriggerIdle,
-              ]"
-            >
-              <SlidersHorizontal class="h-3.5 w-3.5" />
-              {{ $t("common.filters") }}
-              <span
-                v-if="sinceFilter !== 'all'"
-                class="inline-flex h-4 min-w-[1rem] items-center justify-center rounded-full bg-[hsl(var(--tac-amber)/0.25)] px-1 font-sans text-[0.6rem] font-bold leading-none text-[hsl(var(--tac-amber))]"
-              >
-                1
-              </span>
-              <ChevronDown class="h-3 w-3 opacity-50" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent align="end" class="w-52 p-2 space-y-1">
-            <span
-              class="block px-1 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground"
-            >
-              {{ $t("common.date") }}
-            </span>
-            <button
-              v-for="opt in sinceOptions"
-              :key="opt.value"
-              type="button"
-              @click="setSince(opt.value)"
-              class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
-            >
-              <span>{{ opt.label }}</span>
-              <Check
-                v-if="sinceFilter === opt.value"
-                class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
-              />
-            </button>
-          </PopoverContent>
-        </Popover>
-
-        <div class="ml-auto flex items-center gap-3 pl-2">
+        <!-- Filters (bundled, pinned right) + grouped reset -->
+        <FilterMenu
+          class="ml-auto"
+          v-model:open="dateOpen"
+          :count="sinceFilter !== 'all' ? 1 : 0"
+          :active="sinceFilter !== 'all'"
+          :show-reset="hasActiveFilter"
+          content-class="w-52 space-y-1 p-2"
+          @reset="clearAllFilters"
+        >
           <span
-            v-if="hasActiveFilter"
-            class="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground/80"
+            class="block px-1 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground"
           >
-            {{ filteredTotal }} {{ $t("common.results") }}
+            {{ $t("common.date") }}
           </span>
           <button
+            v-for="opt in sinceOptions"
+            :key="opt.value"
             type="button"
-            :disabled="!hasActiveFilter"
-            @click="clearAllFilters"
-            class="inline-flex items-center gap-1 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:text-muted-foreground"
+            @click="
+              setSince(opt.value);
+              dateOpen = false;
+            "
+            class="flex w-full items-center justify-between rounded px-2 py-1.5 text-xs text-foreground/90 transition-colors hover:bg-muted/50"
           >
-            <X class="h-3 w-3" />
-            {{ $t("common.reset_filters") }}
+            <span>{{ opt.label }}</span>
+            <Check
+              v-if="sinceFilter === opt.value"
+              class="h-3.5 w-3.5 text-[hsl(var(--tac-amber))]"
+            />
           </button>
-        </div>
-      </div>
-
-      <!-- Active filters — removable chips -->
-      <div
-        v-if="hasActiveFilter"
-        class="mt-2.5 flex flex-wrap items-center gap-1.5 border-t border-border/50 pt-2.5"
-      >
-        <span v-if="statusFilter !== 'all'" class="tac-chip">
-          <span class="text-xs text-foreground/90">{{
-            currentStatusLabel
-          }}</span>
-          <button type="button" @click="setStatus('all')" class="tac-chip-x">
-            <X class="h-3 w-3" />
-          </button>
-        </span>
-        <span v-if="sinceFilter !== 'all'" class="tac-chip">
-          <span class="text-xs text-foreground/90">{{
-            currentSinceLabel
-          }}</span>
-          <button type="button" @click="setSince('all')" class="tac-chip-x">
-            <X class="h-3 w-3" />
-          </button>
-        </span>
-        <span v-if="nameQuery" class="tac-chip">
-          <span class="text-xs text-foreground/90 truncate max-w-[180px]">
-            "{{ nameQuery }}"
-          </span>
-          <button type="button" @click="clearSearch" class="tac-chip-x">
-            <X class="h-3 w-3" />
-          </button>
-        </span>
-      </div>
-    </div>
+        </FilterMenu>
+    </FilterBar>
   </PageTransition>
 
   <!-- Drilldown / filtered view -->

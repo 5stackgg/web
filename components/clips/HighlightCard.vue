@@ -75,6 +75,16 @@ const isTournament = computed(
   () => props.clip.match_map?.match?.is_tournament_match === true,
 );
 
+// Fade the thumbnail in once it decodes so swapping the grid on a filter
+// change eases the new shot over the black frame instead of popping it in.
+const thumbSrc = computed(
+  () => props.clip.thumbnail_download_url ?? props.clip.match_map?.map?.poster,
+);
+const thumbLoaded = ref(false);
+watch(thumbSrc, () => {
+  thumbLoaded.value = false;
+});
+
 type Visibility = "public" | "private";
 const VISIBILITY_OPTIONS = computed<
   Array<{
@@ -152,13 +162,13 @@ async function setVisibility(v: Visibility) {
     >
       <div class="relative aspect-video w-full overflow-hidden bg-black group">
         <NuxtImg
-          v-if="clip.thumbnail_download_url ?? clip.match_map?.map?.poster"
-          :src="
-            clip.thumbnail_download_url ?? clip.match_map?.map?.poster ?? ''
-          "
+          v-if="thumbSrc"
+          :src="thumbSrc"
           :alt="clip.title ?? $t('clips.detail.default_title')"
           loading="lazy"
-          class="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          class="absolute inset-0 h-full w-full object-cover transition-[transform,opacity] duration-500 group-hover:scale-[1.02]"
+          :class="thumbLoaded ? 'opacity-100' : 'opacity-0'"
+          @load="thumbLoaded = true"
         />
         <div
           v-else

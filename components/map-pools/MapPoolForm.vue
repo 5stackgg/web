@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import MapDisplay from "~/components/MapDisplay.vue";
-import { Button } from "~/components/ui/button";
 import { FormSection } from "~/components/ui/form";
 </script>
 
@@ -56,16 +55,14 @@ import { FormSection } from "~/components/ui/form";
         </FormItem>
       </FormField>
     </FormSection>
-    <div class="mt-6 flex justify-end">
-      <Button
-        variant="tactical"
-        type="submit"
-        :loading="submitting"
-        :disabled="!form.values.map_pool?.length"
-      >
-        {{ $t("map_pool_form.save") }}
-      </Button>
-    </div>
+    <div class="pb-24"></div>
+
+    <SettingsSaveBar
+      :dirty="isDirty && (form.values.map_pool?.length ?? 0) > 0"
+      :submitting="submitting"
+      @save="saveMapPool"
+      @discard="discardChanges"
+    />
   </Form>
 </template>
 
@@ -96,6 +93,8 @@ export default {
   data() {
     return {
       submitting: false,
+      baseline: null as string | null,
+      isDirty: false,
       form: useForm({
         validationSchema: toTypedSchema(
           z.object({
@@ -109,14 +108,37 @@ export default {
     pool: {
       immediate: true,
       handler() {
-        this.form.setFieldValue(
-          "map_pool",
-          this.pool.maps.map((map) => map.id),
-        );
+        if (this.baseline === null || !this.isDirty) {
+          this.populateForm();
+        }
+      },
+    },
+    ["form.values"]: {
+      deep: true,
+      handler() {
+        this.isDirty =
+          this.baseline !== null &&
+          JSON.stringify(this.form.values) !== this.baseline;
       },
     },
   },
   methods: {
+    populateForm() {
+      this.form.setFieldValue(
+        "map_pool",
+        this.pool.maps.map((map) => map.id),
+      );
+      this.takeSnapshot();
+    },
+    takeSnapshot() {
+      this.$nextTick(() => {
+        this.baseline = JSON.stringify(this.form.values);
+        this.isDirty = false;
+      });
+    },
+    discardChanges() {
+      this.populateForm();
+    },
     updateMapPool(mapId: string) {
       const pool = Object.assign([], this.form.values.map_pool);
       if (pool.includes(mapId)) {
@@ -183,6 +205,8 @@ export default {
         toast({
           title: this.$t("pages.map_pool.save_success"),
         });
+
+        this.takeSnapshot();
       } finally {
         this.submitLock = false;
         this.submitting = false;

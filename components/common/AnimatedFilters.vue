@@ -45,10 +45,13 @@ const buttonShape = computed(() => {
     : `inline-flex items-center justify-center gap-1.5 rounded-full px-3 py-1.5 text-xs tracking-[0.06em] ${base}`;
 });
 function buttonState(opt: FilterOption) {
+  const selected = model.value === opt.key;
   if (opt.disabled) {
-    return "cursor-not-allowed text-muted-foreground/40";
+    return selected
+      ? "cursor-not-allowed font-bold text-black"
+      : "cursor-not-allowed text-muted-foreground/40";
   }
-  return model.value === opt.key
+  return selected
     ? "font-bold text-black"
     : "text-muted-foreground hover:text-foreground";
 }

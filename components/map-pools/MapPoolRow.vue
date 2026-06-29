@@ -13,7 +13,6 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetDescription,
 } from "~/components/ui/sheet";
 import {
   DropdownMenu,
@@ -77,17 +76,17 @@ import { PaginationEllipsis } from "~/components/ui/pagination";
   </TableRow>
 
   <Sheet :open="editMapSheet" @update:open="(open) => (editMapSheet = open)">
-    <SheetContent>
+    <SheetContent class="flex flex-col gap-0">
       <SheetHeader>
         <SheetTitle>{{ $t("common.actions.edit") }}</SheetTitle>
-        <SheetDescription>
-          <MapForm
-            @updated="editMapSheet = false"
-            :map="map"
-            @deleted="editMapSheet = false"
-          />
-        </SheetDescription>
       </SheetHeader>
+      <div class="-mx-4 mt-4 flex-1 overflow-y-auto px-4">
+        <MapForm
+          @updated="editMapSheet = false"
+          :map="map"
+          @deleted="editMapSheet = false"
+        />
+      </div>
     </SheetContent>
   </Sheet>
 </template>

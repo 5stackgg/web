@@ -796,12 +796,16 @@ const killMarkers = computed<Marker[]>(() => {
             "
             :title="
               store.killFilterMode === 'killer'
-                ? 'Showing kills BY player — click to switch to deaths OF player'
-                : 'Showing deaths OF player — click to switch to kills BY player'
+                ? $t('match.replay.kill_filter_by_title')
+                : $t('match.replay.kill_filter_of_title')
             "
             @click="toggleKillFilterMode"
           >
-            {{ store.killFilterMode === "killer" ? "Kills by" : "Deaths of" }}
+            {{
+              store.killFilterMode === "killer"
+                ? $t("match.replay.kills_by")
+                : $t("match.replay.deaths_of")
+            }}
           </button>
           <Select
             v-if="hasDemoPlayers"
@@ -980,7 +984,9 @@ const killMarkers = computed<Marker[]>(() => {
                 <Sparkles class="h-4 w-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Auto clip from preset</TooltipContent>
+            <TooltipContent>{{
+              $t("match.replay.auto_clip_preset")
+            }}</TooltipContent>
           </Tooltip>
 
           <Tooltip v-if="canCreateClip">
@@ -1003,7 +1009,9 @@ const killMarkers = computed<Marker[]>(() => {
             </TooltipTrigger>
             <TooltipContent>
               {{
-                editor.active.value ? "Hide clip editor" : "Open clip editor"
+                editor.active.value
+                  ? $t("match.replay.hide_clip_editor")
+                  : $t("match.replay.open_clip_editor")
               }}
             </TooltipContent>
           </Tooltip>
@@ -1020,7 +1028,9 @@ const killMarkers = computed<Marker[]>(() => {
                 <PanelBottom class="h-4 w-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Toggle CS2 demo HUD</TooltipContent>
+            <TooltipContent>{{
+              $t("replay_extras.toggle_cs2_hud")
+            }}</TooltipContent>
           </Tooltip>
 
           <Tooltip>
@@ -1099,7 +1109,9 @@ const killMarkers = computed<Marker[]>(() => {
                 <Trophy class="h-4 w-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Hold to show scoreboard</TooltipContent>
+            <TooltipContent>{{
+              $t("match.replay.hold_scoreboard")
+            }}</TooltipContent>
           </Tooltip>
 
           <!-- HUD bundle picker. Hot-swaps the active JTs Hud Manager
@@ -1164,7 +1176,9 @@ const killMarkers = computed<Marker[]>(() => {
                 <ArrowLeftRight class="h-4 w-4" />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Swap sides (manual override)</TooltipContent>
+            <TooltipContent>{{
+              $t("match.replay.swap_sides")
+            }}</TooltipContent>
           </Tooltip>
 
           <span class="w-px h-6 bg-border/60 mx-1" />

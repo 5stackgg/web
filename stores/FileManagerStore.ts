@@ -62,6 +62,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
   });
   const activeXHRRequests = ref<Map<string, XMLHttpRequest>>(new Map());
   const isLoading = ref<boolean>(false);
+  const loadingPaths = ref<Set<string>>(new Set());
   const error = ref<string | null>(null);
   const expandedPaths = ref<Set<string>>(new Set([""]));
 
@@ -174,6 +175,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     if (!nodeId.value) return;
 
     isLoading.value = true;
+    loadingPaths.value.add(path);
     error.value = null;
 
     try {
@@ -210,6 +212,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
       console.error("Error loading directory:", err);
     } finally {
       isLoading.value = false;
+      loadingPaths.value.delete(path);
     }
   }
 
@@ -1036,6 +1039,7 @@ export const useFileManagerStore = defineStore("fileManager", () => {
     uploadProgress,
     uploadBatch,
     isLoading,
+    loadingPaths,
     error,
     expandedPaths,
     openFiles,

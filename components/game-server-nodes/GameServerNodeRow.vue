@@ -59,6 +59,7 @@ import {
   ChevronUp,
   Settings2,
   ShieldCheck,
+  Network,
 } from "lucide-vue-next";
 import UpdateGameServerLabel from "~/components/game-server-nodes/UpdateGameServerLabel.vue";
 import EditCs2Options from "~/components/game-server-nodes/EditCs2Options.vue";
@@ -384,6 +385,8 @@ const isSectionExpanded = (section: string) => {
         </div>
       </div>
     </TableCell>
+    <TableCell v-if="isGpuOnly" :colspan="4" class="hidden xl:table-cell" />
+    <template v-else>
     <TableCell class="hidden xl:table-cell">
       <Select
         :model-value="regionForm.region"
@@ -394,6 +397,9 @@ const isSectionExpanded = (section: string) => {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
+            <SelectItem :value="null">
+              {{ $t("game_server.no_region") }}
+            </SelectItem>
             <SelectItem :value="region.value" v-for="region of server_regions">
               {{ region.description || region.value }}
             </SelectItem>
@@ -401,98 +407,49 @@ const isSectionExpanded = (section: string) => {
         </SelectContent>
       </Select>
     </TableCell>
-    <TableCell class="hidden xl:table-cell">
-      <div class="flex items-center justify-center gap-2">
-        <FiveStackToolTip v-if="overPrevisionedServers">
-          <template #trigger>
-            <AlertCircle class="h-4 w-4 animate-pulse text-red-500" />
-          </template>
-          <div class="space-y-1">
-            <div>
-              <span class="font-semibold text-red-600">
-                {{ $t("game_server.overprovisioned_warning") }}
-              </span>
-            </div>
-            <div>
-              {{
-                $t("game_server.overprovisioned_warning_description", {
-                  total_server_count: gameServerNode.total_server_count,
-                  max_servers: maxServers,
-                })
-              }}
-            </div>
+    <TableCell class="hidden xl:table-cell align-top">
+      <div class="flex flex-col gap-1.5 text-xs">
+        <!-- Max servers -->
+        <div class="flex items-center gap-2">
+          <span class="w-[4.5rem] shrink-0 text-muted-foreground">{{
+            $t("game_server.max_servers")
+          }}</span>
+          <span class="font-medium tabular-nums">{{
+            maxServers !== null && maxServers !== undefined ? maxServers : "-"
+          }}</span>
+        </div>
 
-            <div>
-              <div
-                class="flex items-center gap-4 text-xs"
-                v-if="
-                  gameServerNode.status !==
-                  e_game_server_node_statuses_enum.Setup
-                "
-              >
-                <div class="flex items-center gap-1">
-                  <div class="font-medium">
-                    {{ $t("game_server.cpu_sockets") }}:
-                  </div>
-                  <div class="text-muted-foreground">
-                    {{ gameServerNode.cpu_sockets || "-" }}
-                  </div>
-                </div>
-                <span class="text-muted-foreground">|</span>
-                <div class="flex items-center gap-1">
-                  <div class="font-medium">
-                    {{ $t("game_server.cpu_cores_per_socket") }}:
-                  </div>
-                  <div class="text-muted-foreground">
-                    {{ gameServerNode.cpu_cores_per_socket || "-" }}
-                  </div>
-                </div>
-                <span class="text-muted-foreground">|</span>
-                <div class="flex items-center gap-1">
-                  <div class="font-medium">
-                    {{ $t("game_server.cpu_threads_per_core") }}:
-                  </div>
-                  <div class="text-muted-foreground">
-                    {{ gameServerNode.cpu_threads_per_core || "-" }}
-                  </div>
-                </div>
-              </div>
-              <div class="p-2 flex items-center gap-2 text-xs mt-2">
-                <div class="flex items-center justify-center h-5 w-5">
-                  <AlertCircle class="h-3 w-3" />
-                </div>
-                <div>
-                  <span class="font-semibold">{{
-                    $t("game_server.note_label")
-                  }}</span>
-                  <i18n-t
-                    keypath="game_server.cpu_reservation_note"
-                    tag="span"
-                    scope="global"
-                  >
-                    <template #cores>
-                      <span class="font-bold">{{
-                        $t("game_server.one_cpu_core")
-                      }}</span>
-                    </template>
-                  </i18n-t>
-                </div>
-              </div>
-            </div>
-          </div>
-        </FiveStackToolTip>
+        <!-- Ports (always visible — dotted underline to edit / set) -->
+        <div v-if="!isGpuOnly" class="flex items-center gap-2">
+          <span class="w-[4.5rem] shrink-0 text-muted-foreground">{{
+            $t("pages.game_server_nodes.table.ports")
+          }}</span>
+          <button
+            type="button"
+            class="font-medium tabular-nums underline decoration-dotted underline-offset-2 transition-colors"
+            :class="
+              hasPorts
+                ? 'text-foreground decoration-muted-foreground/50 hover:decoration-foreground'
+                : 'text-muted-foreground decoration-muted-foreground/40 hover:text-foreground hover:decoration-foreground'
+            "
+            :title="$t('game_server.edit_ports')"
+            @click="showPortsDialog = true"
+          >
+            {{ hasPorts ? portRangeLabel : "—" }}
+          </button>
+        </div>
 
-        <div class="flex flex-col items-center gap-2">
-          <div class="text-xs text-muted-foreground">
-            {{ $t("game_server.max_servers") }}:
-            {{
-              maxServers !== null && maxServers !== undefined ? maxServers : "-"
-            }}
-          </div>
+        <!-- Available / total -->
+        <div
+          v-if="gameServerNode.enabled && hasPorts"
+          class="flex items-center gap-2"
+        >
+          <span class="w-[4.5rem] shrink-0 text-muted-foreground">{{
+            $t("pages.game_server_nodes.table.available")
+          }}</span>
           <Badge
-            v-if="gameServerNode.enabled"
             variant="outline"
-            class="text-xs px-2 py-0.5"
+            class="text-xs px-2 py-0.5 tabular-nums"
             :class="
               overPrevisionedServers
                 ? 'border-red-500 text-red-500'
@@ -502,30 +459,86 @@ const isSectionExpanded = (section: string) => {
             {{ gameServerNode.available_server_count }} /
             {{ gameServerNode.total_server_count }}
           </Badge>
-          <button
-            v-if="gameServerNode.enabled && !hasPorts"
-            type="button"
-            class="text-xs text-amber-500 hover:text-amber-400 font-medium"
-            @click="showPortsDialog = true"
-          >
-            {{ $t("game_server_node.set_ports") }}
-          </button>
-          <button
-            v-else-if="hasPorts"
-            type="button"
-            class="text-xs text-muted-foreground hover:text-foreground inline-flex items-center justify-center gap-1 group w-full"
-            @click="showPortsDialog = true"
-          >
-            <span
-              class="underline decoration-muted-foreground/40 group-hover:decoration-foreground text-center"
-              >{{ portRangeLabel }}</span
-            >
-            <Pencil
-              class="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity"
-            />
-          </button>
-          <span v-else class="text-xs text-muted-foreground">-</span>
+          <FiveStackToolTip v-if="overPrevisionedServers">
+            <template #trigger>
+              <AlertCircle class="h-3.5 w-3.5 animate-pulse text-red-500" />
+            </template>
+            <div class="space-y-1">
+              <div>
+                <span class="font-semibold text-red-600">
+                  {{ $t("game_server.overprovisioned_warning") }}
+                </span>
+              </div>
+              <div>
+                {{
+                  $t("game_server.overprovisioned_warning_description", {
+                    total_server_count: gameServerNode.total_server_count,
+                    max_servers: maxServers,
+                  })
+                }}
+              </div>
+
+              <div>
+                <div
+                  class="flex items-center gap-4 text-xs"
+                  v-if="
+                    gameServerNode.status !==
+                    e_game_server_node_statuses_enum.Setup
+                  "
+                >
+                  <div class="flex items-center gap-1">
+                    <div class="font-medium">
+                      {{ $t("game_server.cpu_sockets") }}:
+                    </div>
+                    <div class="text-muted-foreground">
+                      {{ gameServerNode.cpu_sockets || "-" }}
+                    </div>
+                  </div>
+                  <span class="text-muted-foreground">|</span>
+                  <div class="flex items-center gap-1">
+                    <div class="font-medium">
+                      {{ $t("game_server.cpu_cores_per_socket") }}:
+                    </div>
+                    <div class="text-muted-foreground">
+                      {{ gameServerNode.cpu_cores_per_socket || "-" }}
+                    </div>
+                  </div>
+                  <span class="text-muted-foreground">|</span>
+                  <div class="flex items-center gap-1">
+                    <div class="font-medium">
+                      {{ $t("game_server.cpu_threads_per_core") }}:
+                    </div>
+                    <div class="text-muted-foreground">
+                      {{ gameServerNode.cpu_threads_per_core || "-" }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-2 flex items-center gap-2 text-xs mt-2">
+                  <div class="flex items-center justify-center h-5 w-5">
+                    <AlertCircle class="h-3 w-3" />
+                  </div>
+                  <div>
+                    <span class="font-semibold">{{
+                      $t("game_server.note_label")
+                    }}</span>
+                    <i18n-t
+                      keypath="game_server.cpu_reservation_note"
+                      tag="span"
+                      scope="global"
+                    >
+                      <template #cores>
+                        <span class="font-bold">{{
+                          $t("game_server.one_cpu_core")
+                        }}</span>
+                      </template>
+                    </i18n-t>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </FiveStackToolTip>
         </div>
+
       </div>
     </TableCell>
     <!-- CS Build Column -->
@@ -731,6 +744,7 @@ const isSectionExpanded = (section: string) => {
         </template>
       </div>
     </TableCell>
+    </template>
     <TableCell class="text-right">
       <div class="flex items-center justify-end space-x-2">
         <!-- Metrics Toggle Button (Desktop) -->
@@ -761,246 +775,22 @@ const isSectionExpanded = (section: string) => {
               <PaginationEllipsis class="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent class="w-56">
-            <DropdownMenuItem
-              :disabled="
-                gameServerNode.status !==
-                e_game_server_node_statuses_enum.Online
-              "
-              @click="updateCs"
-            >
-              <template v-if="gameServerNode.build_id">
-                <RefreshCw class="mr-2 h-4 w-4" />
-                <span>{{ $t("game_server.update_cs") }}</span>
-              </template>
-              <template v-else>
-                <Plus class="mr-2 h-4 w-4" />
-                {{ $t("game_server.install_cs") }}
-              </template>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              :disabled="
-                gameServerNode.status !==
-                e_game_server_node_statuses_enum.Online
-              "
-              @click="updateCsgo"
-            >
-              <template v-if="gameServerNode.csgo_build_id">
-                <RefreshCw class="mr-2 h-4 w-4" />
-                <span>{{ $t("game_server.update_csgo") }}</span>
-              </template>
-              <template v-else>
-                <Plus class="mr-2 h-4 w-4" />
-                {{ $t("game_server.install_csgo") }}
-              </template>
-            </DropdownMenuItem>
-
-            <DropdownMenuItem
-              v-if="isTestInstance && gameServerNode.build_id"
-              :disabled="
-                gameServerNode.status !==
-                e_game_server_node_statuses_enum.Online
-              "
-              @click="validateGamedata"
-            >
-              <ShieldCheck class="mr-2 h-4 w-4" />
-              <span>{{ $t("game_server.validate_gamedata") }}</span>
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem @click="editLabelSheet = true">
-              <Pencil class="mr-2 h-4 w-4" />
-              <span>{{ $t("game_server.edit_label") }}</span>
-            </DropdownMenuItem>
-
+          <DropdownMenuContent align="end" class="w-72">
             <template v-if="gameServerNode.gpu">
-              <DropdownMenuSeparator />
-              <DropdownMenuItem @click="editCs2OptionsSheet = true">
-                <Settings2 class="mr-2 h-4 w-4" />
-                <span>{{ $t("game_server.edit_cs2_options") }}</span>
+              <DropdownMenuItem
+                @click="setNodeMode(isGpuOnly ? 'match' : 'gpu')"
+              >
+                <Cpu class="mr-2 h-4 w-4" />
+                <span>{{
+                  isGpuOnly
+                    ? $t("game_server.mode.use_as_match")
+                    : $t("game_server.mode.use_as_gpu_only")
+                }}</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
             </template>
 
-            <DropdownMenuItem
-              @click="
-                $router.push(`/game-server-nodes/${gameServerNode.id}/files`)
-              "
-            >
-              <FolderOpen class="mr-2 h-4 w-4" />
-              <span>{{ $t("game_server.files") }}</span>
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem @click="showNetworkLimiterDialog = true">
-              <div class="flex flex-col items-center gap-1 w-full">
-                <div class="flex items-center gap-2 whitespace-nowrap">
-                  <Activity
-                    class="mr-2 h-4 w-4"
-                    :class="
-                      gameServerNode.demo_network_limiter
-                        ? 'text-yellow-500'
-                        : 'text-muted-foreground'
-                    "
-                  />
-                  <span class="whitespace-nowrap">{{
-                    $t("demo_network_limiter.title")
-                  }}</span>
-                </div>
-                <Badge
-                  variant="outline"
-                  class="text-xs w-fit whitespace-nowrap"
-                  :class="
-                    gameServerNode.demo_network_limiter
-                      ? 'border-yellow-500 text-yellow-500'
-                      : 'text-muted-foreground'
-                  "
-                >
-                  <template v-if="gameServerNode.demo_network_limiter">
-                    {{ gameServerNode.demo_network_limiter }} Mbps
-                  </template>
-                  <template v-else>
-                    {{ $t("demo_network_limiter.unlimited_short") }}
-                  </template>
-                </Badge>
-              </div>
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem @click="showPortsDialog = true">
-              <div class="flex items-center gap-2">
-                <span>{{ $t("game_server.edit_ports") }}</span>
-              </div>
-            </DropdownMenuItem>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem
-              @click="removeGameNodeServer"
-              class="text-red-500"
-            >
-              <Trash2 class="mr-2 h-4 w-4" />
-              <span>{{ $t("game_server.remove_node") }}</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </TableCell>
-  </TableRow>
-
-  <!-- Mobile Card Layout (below xl) -->
-  <TableRow class="xl:hidden border-b-0">
-    <TableCell :colspan="8" class="p-0">
-      <div
-        class="p-4 space-y-3"
-        :class="!gameServerNode.enabled ? 'bg-muted/40 opacity-60' : ''"
-      >
-        <!-- Card Header -->
-        <div class="flex items-start gap-3">
-          <div class="flex items-center gap-3 flex-1 min-w-0">
-            <NodeControlMenu
-              :node="gameServerNode"
-              align="start"
-              class="shrink-0"
-            />
-            <div class="min-w-0">
-              <GameServerNodeDisplay
-                :game-server-node="gameServerNode"
-                :max-servers="maxServers"
-                :cpu-pinning-enabled="cpuPinningEnabled"
-              />
-            </div>
-          </div>
-
-          <!-- Right Column with Region, Max Servers, and Ports -->
-          <div class="flex flex-col items-end gap-2 min-w-0">
-            <!-- Region Selector -->
-            <Select
-              :model-value="regionForm.region"
-              @update:model-value="(value) => updateRegion(value)"
-            >
-              <SelectTrigger class="h-7 px-2 text-xs w-auto min-w-[110px]">
-                <SelectValue :placeholder="$t('game_server.select_region')" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem
-                    :value="region.value"
-                    v-for="region of server_regions"
-                    :key="region.value"
-                  >
-                    {{ region.description || region.value }}
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-
-            <!-- Info Grid -->
-            <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
-              <!-- Max Servers -->
-              <div class="text-right text-muted-foreground whitespace-nowrap">
-                {{ $t("pages.game_server_nodes.max_label") }}
-              </div>
-              <div class="font-medium text-foreground">
-                {{
-                  maxServers !== null && maxServers !== undefined
-                    ? maxServers
-                    : "-"
-                }}
-              </div>
-
-              <!-- Ports -->
-              <div class="text-right text-muted-foreground whitespace-nowrap">
-                {{ $t("pages.game_server_nodes.ports_label") }}
-              </div>
-              <button
-                v-if="gameServerNode.enabled && !hasPorts"
-                type="button"
-                class="text-left font-medium text-amber-500 hover:text-amber-400"
-                @click="showPortsDialog = true"
-              >
-                {{ $t("game_server_node.set_ports") }}
-              </button>
-              <button
-                v-else-if="hasPorts"
-                type="button"
-                class="text-left font-medium text-foreground hover:underline inline-flex items-center gap-1"
-                @click="showPortsDialog = true"
-              >
-                {{ portRangeLabel }}
-                <Pencil class="h-3 w-3 text-muted-foreground" />
-              </button>
-              <span v-else class="font-medium text-muted-foreground">-</span>
-            </div>
-
-            <!-- Server Badge -->
-            <Badge
-              v-if="gameServerNode.enabled"
-              variant="outline"
-              class="text-xs px-2 py-0.5 whitespace-nowrap"
-              :class="
-                overPrevisionedServers
-                  ? 'border-red-500 text-red-500'
-                  : 'border-muted-foreground/40 text-foreground'
-              "
-            >
-              {{ gameServerNode.available_server_count }} /
-              {{ gameServerNode.total_server_count }}
-            </Badge>
-          </div>
-
-          <!-- Actions Menu (top right) -->
-          <DropdownMenu>
-            <DropdownMenuTrigger as-child>
-              <Button variant="ghost" size="icon" class="h-8 w-8 flex-shrink-0">
-                <PaginationEllipsis class="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent class="w-56">
+            <template v-if="!isGpuOnly">
               <DropdownMenuItem
                 :disabled="
                   gameServerNode.status !==
@@ -1048,6 +838,260 @@ const isSectionExpanded = (section: string) => {
               </DropdownMenuItem>
 
               <DropdownMenuSeparator />
+            </template>
+
+            <DropdownMenuItem @click="editLabelSheet = true">
+              <Pencil class="mr-2 h-4 w-4" />
+              <span>{{ $t("game_server.edit_label") }}</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              v-if="gameServerNode.gpu"
+              @click="editCs2OptionsSheet = true"
+            >
+              <Settings2 class="mr-2 h-4 w-4" />
+              <span>{{ $t("game_server.edit_cs2_options") }}</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              @click="
+                $router.push(`/game-server-nodes/${gameServerNode.id}/files`)
+              "
+            >
+              <FolderOpen class="mr-2 h-4 w-4" />
+              <span>{{ $t("game_server.files") }}</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem v-if="!isGpuOnly" @click="showPortsDialog = true">
+              <Network class="mr-2 h-4 w-4" />
+              <span>{{ $t("game_server.edit_ports") }}</span>
+              <span
+                class="ml-auto whitespace-nowrap pl-2 text-xs tabular-nums text-muted-foreground"
+              >
+                {{ hasPorts ? portRangeLabel : $t("game_server_node.set_ports") }}
+              </span>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem @click="showNetworkLimiterDialog = true">
+              <Activity
+                class="mr-2 h-4 w-4"
+                :class="
+                  gameServerNode.demo_network_limiter
+                    ? 'text-yellow-500'
+                    : 'text-muted-foreground'
+                "
+              />
+              <span class="whitespace-nowrap">{{
+                $t("demo_network_limiter.title")
+              }}</span>
+              <span
+                class="ml-auto whitespace-nowrap pl-2 text-xs tabular-nums"
+                :class="
+                  gameServerNode.demo_network_limiter
+                    ? 'text-yellow-500'
+                    : 'text-muted-foreground'
+                "
+              >
+                <template v-if="gameServerNode.demo_network_limiter">
+                  {{ gameServerNode.demo_network_limiter }} Mbps
+                </template>
+                <template v-else>
+                  {{ $t("demo_network_limiter.unlimited_short") }}
+                </template>
+              </span>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
+            <DropdownMenuItem
+              @click="removeGameNodeServer"
+              class="text-red-500"
+            >
+              <Trash2 class="mr-2 h-4 w-4" />
+              <span>{{ $t("game_server.remove_node") }}</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </TableCell>
+  </TableRow>
+
+  <!-- Mobile Card Layout (below xl) -->
+  <TableRow class="xl:hidden border-b-0">
+    <TableCell :colspan="8" class="p-0">
+      <div
+        class="p-4 space-y-3"
+        :class="!gameServerNode.enabled ? 'bg-muted/40 opacity-60' : ''"
+      >
+        <!-- Card Header -->
+        <div class="flex items-start gap-3">
+          <div class="flex items-center gap-3 flex-1 min-w-0">
+            <NodeControlMenu
+              :node="gameServerNode"
+              align="start"
+              class="shrink-0"
+            />
+            <div class="min-w-0">
+              <GameServerNodeDisplay
+                :game-server-node="gameServerNode"
+                :max-servers="maxServers"
+                :cpu-pinning-enabled="cpuPinningEnabled"
+              />
+            </div>
+          </div>
+
+          <!-- Right Column with Region, Max Servers, and Ports -->
+          <div class="flex flex-col items-end gap-2 min-w-0">
+            <template v-if="!isGpuOnly">
+              <!-- Region Selector -->
+              <Select
+                :model-value="regionForm.region"
+                @update:model-value="(value) => updateRegion(value)"
+              >
+                <SelectTrigger class="h-7 px-2 text-xs w-auto min-w-[110px]">
+                  <SelectValue
+                    :placeholder="$t('game_server.select_region')"
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem :value="null">
+                      {{ $t("game_server.no_region") }}
+                    </SelectItem>
+                    <SelectItem
+                      :value="region.value"
+                      v-for="region of server_regions"
+                      :key="region.value"
+                    >
+                      {{ region.description || region.value }}
+                    </SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
+              <!-- Info Grid -->
+              <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
+                <!-- Max Servers -->
+                <div class="text-right text-muted-foreground whitespace-nowrap">
+                  {{ $t("pages.game_server_nodes.max_label") }}
+                </div>
+                <div class="font-medium text-foreground">
+                  {{
+                    maxServers !== null && maxServers !== undefined
+                      ? maxServers
+                      : "-"
+                  }}
+                </div>
+
+                <!-- Ports (always visible — dotted underline to edit / set) -->
+                <div class="text-right text-muted-foreground whitespace-nowrap">
+                  {{ $t("pages.game_server_nodes.ports_label") }}
+                </div>
+                <button
+                  type="button"
+                  class="text-left font-medium tabular-nums underline decoration-dotted underline-offset-2 transition-colors"
+                  :class="
+                    hasPorts
+                      ? 'text-foreground decoration-muted-foreground/50 hover:decoration-foreground'
+                      : 'text-muted-foreground decoration-muted-foreground/40 hover:text-foreground hover:decoration-foreground'
+                  "
+                  :title="$t('game_server.edit_ports')"
+                  @click="showPortsDialog = true"
+                >
+                  {{ hasPorts ? portRangeLabel : "—" }}
+                </button>
+              </div>
+
+              <!-- Server Badge -->
+              <Badge
+                v-if="gameServerNode.enabled && hasPorts"
+                variant="outline"
+                class="text-xs px-2 py-0.5 whitespace-nowrap"
+                :class="
+                  overPrevisionedServers
+                    ? 'border-red-500 text-red-500'
+                    : 'border-muted-foreground/40 text-foreground'
+                "
+              >
+                {{ gameServerNode.available_server_count }} /
+                {{ gameServerNode.total_server_count }}
+              </Badge>
+            </template>
+          </div>
+
+          <!-- Actions Menu (top right) -->
+          <DropdownMenu>
+            <DropdownMenuTrigger as-child>
+              <Button variant="ghost" size="icon" class="h-8 w-8 flex-shrink-0">
+                <PaginationEllipsis class="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" class="w-72">
+              <template v-if="gameServerNode.gpu">
+                <DropdownMenuItem
+                  @click="setNodeMode(isGpuOnly ? 'match' : 'gpu')"
+                >
+                  <Cpu class="mr-2 h-4 w-4" />
+                  <span>{{
+                    isGpuOnly
+                      ? $t("game_server.mode.use_as_match")
+                      : $t("game_server.mode.use_as_gpu_only")
+                  }}</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+              </template>
+
+              <template v-if="!isGpuOnly">
+                <DropdownMenuItem
+                  :disabled="
+                    gameServerNode.status !==
+                    e_game_server_node_statuses_enum.Online
+                  "
+                  @click="updateCs"
+                >
+                  <template v-if="gameServerNode.build_id">
+                    <RefreshCw class="mr-2 h-4 w-4" />
+                    <span>{{ $t("game_server.update_cs") }}</span>
+                  </template>
+                  <template v-else>
+                    <Plus class="mr-2 h-4 w-4" />
+                    {{ $t("game_server.install_cs") }}
+                  </template>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  :disabled="
+                    gameServerNode.status !==
+                    e_game_server_node_statuses_enum.Online
+                  "
+                  @click="updateCsgo"
+                >
+                  <template v-if="gameServerNode.csgo_build_id">
+                    <RefreshCw class="mr-2 h-4 w-4" />
+                    <span>{{ $t("game_server.update_csgo") }}</span>
+                  </template>
+                  <template v-else>
+                    <Plus class="mr-2 h-4 w-4" />
+                    {{ $t("game_server.install_csgo") }}
+                  </template>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  v-if="isTestInstance && gameServerNode.build_id"
+                  :disabled="
+                    gameServerNode.status !==
+                    e_game_server_node_statuses_enum.Online
+                  "
+                  @click="validateGamedata"
+                >
+                  <ShieldCheck class="mr-2 h-4 w-4" />
+                  <span>{{ $t("game_server.validate_gamedata") }}</span>
+                </DropdownMenuItem>
+
+                <DropdownMenuSeparator />
+              </template>
 
               <DropdownMenuItem @click="editLabelSheet = true">
                 <Pencil class="mr-2 h-4 w-4" />
@@ -1063,48 +1107,50 @@ const isSectionExpanded = (section: string) => {
                 <span>{{ $t("game_server.files") }}</span>
               </DropdownMenuItem>
 
-              <DropdownMenuSeparator />
-
-              <DropdownMenuItem @click="showNetworkLimiterDialog = true">
-                <div class="flex flex-col items-center gap-1 w-full">
-                  <div class="flex items-center gap-2 whitespace-nowrap">
-                    <Activity
-                      class="mr-2 h-4 w-4"
-                      :class="
-                        gameServerNode.demo_network_limiter
-                          ? 'text-yellow-500'
-                          : 'text-muted-foreground'
-                      "
-                    />
-                    <span class="whitespace-nowrap">{{
-                      $t("demo_network_limiter.title")
-                    }}</span>
-                  </div>
-                  <Badge
-                    variant="outline"
-                    class="text-xs w-fit whitespace-nowrap"
-                    :class="
-                      gameServerNode.demo_network_limiter
-                        ? 'border-yellow-500 text-yellow-500'
-                        : 'text-muted-foreground'
-                    "
-                  >
-                    <template v-if="gameServerNode.demo_network_limiter">
-                      {{ gameServerNode.demo_network_limiter }} Mbps
-                    </template>
-                    <template v-else>
-                      {{ $t("demo_network_limiter.unlimited_short") }}
-                    </template>
-                  </Badge>
-                </div>
+              <DropdownMenuItem
+                v-if="!isGpuOnly"
+                @click="showPortsDialog = true"
+              >
+                <Network class="mr-2 h-4 w-4" />
+                <span>{{ $t("game_server.edit_ports") }}</span>
+                <span
+                  class="ml-auto whitespace-nowrap pl-2 text-xs tabular-nums text-muted-foreground"
+                >
+                  {{
+                    hasPorts ? portRangeLabel : $t("game_server_node.set_ports")
+                  }}
+                </span>
               </DropdownMenuItem>
 
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem @click="showPortsDialog = true">
-                <div class="flex items-center gap-2">
-                  <span>{{ $t("game_server.edit_ports") }}</span>
-                </div>
+              <DropdownMenuItem @click="showNetworkLimiterDialog = true">
+                <Activity
+                  class="mr-2 h-4 w-4"
+                  :class="
+                    gameServerNode.demo_network_limiter
+                      ? 'text-yellow-500'
+                      : 'text-muted-foreground'
+                  "
+                />
+                <span class="whitespace-nowrap">{{
+                  $t("demo_network_limiter.title")
+                }}</span>
+                <span
+                  class="ml-auto whitespace-nowrap pl-2 text-xs tabular-nums"
+                  :class="
+                    gameServerNode.demo_network_limiter
+                      ? 'text-yellow-500'
+                      : 'text-muted-foreground'
+                  "
+                >
+                  <template v-if="gameServerNode.demo_network_limiter">
+                    {{ gameServerNode.demo_network_limiter }} Mbps
+                  </template>
+                  <template v-else>
+                    {{ $t("demo_network_limiter.unlimited_short") }}
+                  </template>
+                </span>
               </DropdownMenuItem>
 
               <DropdownMenuSeparator />
@@ -1557,7 +1603,18 @@ const isSectionExpanded = (section: string) => {
         </DialogDescription>
       </DialogHeader>
       <div class="py-4 space-y-3">
-        <div class="grid grid-cols-2 gap-3">
+        <!-- Region required before ports can be set -->
+        <div
+          v-if="!hasRegion"
+          class="flex items-start gap-3 rounded-md border border-[hsl(var(--warning)/0.4)] bg-[hsl(var(--warning)/0.08)] px-4 py-3 text-sm"
+        >
+          <AlertCircle class="mt-0.5 h-4 w-4 shrink-0 text-warning" />
+          <span class="text-muted-foreground">{{
+            $t("game_server.region_required_for_ports")
+          }}</span>
+        </div>
+
+        <div v-else class="grid grid-cols-2 gap-3">
           <FormField v-slot="{ value }" name="start_port_range">
             <FormItem class="space-y-1">
               <div class="text-xs text-muted-foreground">
@@ -1613,10 +1670,18 @@ const isSectionExpanded = (section: string) => {
         </div>
       </div>
       <DialogFooter>
-        <Button variant="outline" @click="showPortsDialog = false">
-          {{ $t("common.cancel") }}
+        <Button
+          v-if="hasPorts && hasRegion"
+          variant="destructive"
+          class="mr-auto"
+          @click="clearPorts"
+        >
+          {{ $t("game_server.remove_ports") }}
         </Button>
-        <Button @click="savePorts">
+        <Button variant="outline" @click="showPortsDialog = false">
+          {{ hasRegion ? $t("common.cancel") : $t("common.close") }}
+        </Button>
+        <Button v-if="hasRegion" @click="savePorts">
           {{ $t("common.save") }}
         </Button>
       </DialogFooter>
@@ -1712,8 +1777,9 @@ interface ServerRegion {
 interface GameServerNode {
   id: string;
   status: string;
-  region: string;
+  region: string | null;
   enabled: boolean;
+  enabled_for_match_making?: boolean;
   demo_network_limiter?: number | null;
   build_id?: string;
   csgo_build_id?: number | null;
@@ -1756,7 +1822,7 @@ interface ComponentData {
   gameVersions: any[];
   pluginVersions: any[];
   regionForm: {
-    region: string | undefined;
+    region: string | null | undefined;
   };
   editLabelSheet: boolean;
   editCs2OptionsSheet: boolean;
@@ -1928,13 +1994,12 @@ export default defineComponent({
     showPortsDialog: {
       handler(isOpen) {
         if (isOpen) {
-          const start = this.gameServerNode.start_port_range || 30000;
-          const end =
-            this.gameServerNode.end_port_range || 30000 + this.maxServers * 2;
-
+          // Only prefill when the node actually has ports set. Otherwise leave
+          // the inputs empty so the dialog matches the table's "—" (no ports)
+          // instead of showing computed defaults that look like saved values.
           this.portForm.setValues({
-            start_port_range: start,
-            end_port_range: end,
+            start_port_range: this.gameServerNode.start_port_range ?? undefined,
+            end_port_range: this.gameServerNode.end_port_range ?? undefined,
           });
         }
       },
@@ -2136,7 +2201,7 @@ export default defineComponent({
       await this.updateServerPorts();
       this.showPortsDialog = false;
     },
-    async updateRegion(region: string) {
+    async updateRegion(region: string | null) {
       await this.$apollo.mutate({
         mutation: generateMutation({
           update_game_server_nodes_by_pk: [
@@ -2145,7 +2210,7 @@ export default defineComponent({
                 id: this.gameServerNode.id,
               },
               _set: {
-                region,
+                region: region ?? null,
               },
             },
             {
@@ -2153,6 +2218,66 @@ export default defineComponent({
             },
           ],
         }),
+      });
+    },
+    async clearPorts() {
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          update_game_server_nodes_by_pk: [
+            {
+              pk_columns: {
+                id: this.gameServerNode.id,
+              },
+              _set: {
+                start_port_range: null,
+                end_port_range: null,
+              },
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+
+      this.showPortsDialog = false;
+
+      toast({
+        title: this.$t("game_server.toast.ports_removed"),
+      });
+    },
+    async setNodeMode(mode: "match" | "gpu") {
+      const _set =
+        mode === "gpu"
+          ? {
+              enabled_for_match_making: false,
+              region: null,
+              start_port_range: null,
+              end_port_range: null,
+            }
+          : { enabled_for_match_making: true };
+
+      await this.$apollo.mutate({
+        mutation: generateMutation({
+          update_game_server_nodes_by_pk: [
+            {
+              pk_columns: {
+                id: this.gameServerNode.id,
+              },
+              _set: _set as any,
+            },
+            {
+              __typename: true,
+            },
+          ],
+        }),
+      });
+
+      toast({
+        title:
+          mode === "gpu"
+            ? this.$t("game_server.toast.made_gpu_only")
+            : this.$t("game_server.toast.made_match_node"),
       });
     },
     async updateNetworkLimiter(limit: string | null) {
@@ -2270,6 +2395,15 @@ export default defineComponent({
       return (
         !!this.gameServerNode.start_port_range &&
         !!this.gameServerNode.end_port_range
+      );
+    },
+    hasRegion() {
+      return !!this.gameServerNode.region;
+    },
+    isGpuOnly() {
+      return (
+        !!this.gameServerNode.gpu &&
+        !this.gameServerNode.enabled_for_match_making
       );
     },
     portRangeLabel() {

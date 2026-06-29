@@ -12,6 +12,7 @@ import {
   Globe,
   Send,
   UserCheck,
+  UserMinus,
   Lock,
   X,
 } from "lucide-vue-next";
@@ -46,7 +47,6 @@ const props = defineProps<{
   editing?: boolean;
   settingsOnly?: boolean;
   rehost?: any;
-  forOthers?: boolean;
 }>();
 
 const canHostForOthers = computed(() =>
@@ -64,20 +64,15 @@ const submitting = ref(false);
 
 const source = props.rehost || props.initial;
 
-const mode = ref<string>(
-  source?.mode || (props.forOthers ? "Host" : "Pug"),
-);
+const mode = ref<string>(source?.mode || "Pug");
 const access = ref<string>(source?.access || "Friends");
 const requireApproval = ref<boolean>(source?.require_approval ?? false);
 const captainSelection = ref<string>(source?.captain_selection || "TopEloTwo");
 const draftOrder = ref<string>(source?.draft_order || "Snake");
 
-// Organizers can open a lobby they manage without being added as a player.
-// Defaults off (host plays); entering via the manage-matches page (?for=others)
-// flips it on.
-const hostJoins = ref<boolean>(
-  !(props.forOthers && canHostForOthers.value),
-);
+// Organizers can open a lobby they manage without being added as a player via
+// the "Host Only" toggle in the lobby rules step. Defaults on (host plays).
+const hostJoins = ref<boolean>(true);
 const RANK_MIN = 0;
 const RANK_MAX = 30000;
 const RANK_STEP = 500;
@@ -885,43 +880,6 @@ const submit = form.handleSubmit(async (values: any) => {
         </section>
 
         <section>
-          <div
-            class="flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-border bg-card/40 px-4 py-3 transition-colors hover:border-[hsl(var(--tac-amber)/0.4)]"
-            :class="{
-              'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)]':
-                requireApproval,
-            }"
-            @click="requireApproval = !requireApproval"
-          >
-            <div class="flex items-center gap-3">
-              <Inbox
-                class="h-5 w-5 shrink-0"
-                :class="
-                  requireApproval
-                    ? 'text-[hsl(var(--tac-amber))]'
-                    : 'text-muted-foreground'
-                "
-              />
-              <div>
-                <div
-                  class="font-mono text-[0.72rem] font-bold uppercase tracking-[0.16em]"
-                >
-                  {{ $t("draft_games.create.require_approval") }}
-                </div>
-                <div class="text-[0.72rem] leading-snug text-muted-foreground">
-                  {{ $t("draft_games.create.require_approval_desc") }}
-                </div>
-              </div>
-            </div>
-            <Switch
-              class="pointer-events-none"
-              :model-value="requireApproval"
-            />
-          </div>
-        </section>
-
-
-        <section>
           <div class="flex items-center justify-between">
             <div :class="tacticalSectionLabelClasses">
               <span :class="tacticalSectionTickClasses"></span>
@@ -946,6 +904,69 @@ const submit = form.handleSubmit(async (values: any) => {
             :min-steps-between-thumbs="1"
             class="mt-3"
           />
+        </section>
+
+        <section>
+          <div :class="tacticalSectionLabelClasses">
+            <span :class="tacticalSectionTickClasses"></span>
+            {{ $t("draft_games.create.require_approval") }}
+          </div>
+          <div
+            class="mt-2 flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-border bg-card/40 px-4 py-3 transition-colors hover:border-[hsl(var(--tac-amber)/0.4)]"
+            :class="{
+              'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)]':
+                requireApproval,
+            }"
+            @click="requireApproval = !requireApproval"
+          >
+            <div class="flex items-center gap-3">
+              <Inbox
+                class="h-5 w-5 shrink-0"
+                :class="
+                  requireApproval
+                    ? 'text-[hsl(var(--tac-amber))]'
+                    : 'text-muted-foreground'
+                "
+              />
+              <div class="text-[0.72rem] leading-snug text-muted-foreground">
+                {{ $t("draft_games.create.require_approval_desc") }}
+              </div>
+            </div>
+            <Switch
+              class="pointer-events-none"
+              :model-value="requireApproval"
+            />
+          </div>
+        </section>
+
+        <section v-if="canHostForOthers && !editing">
+          <div :class="tacticalSectionLabelClasses">
+            <span :class="tacticalSectionTickClasses"></span>
+            {{ $t("draft_games.create.host_only") }}
+          </div>
+          <div
+            class="mt-2 flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-border bg-card/40 px-4 py-3 transition-colors hover:border-[hsl(var(--tac-amber)/0.4)]"
+            :class="{
+              'border-[hsl(var(--tac-amber)/0.4)] bg-[hsl(var(--tac-amber)/0.06)]':
+                !hostJoins,
+            }"
+            @click="hostJoins = !hostJoins"
+          >
+            <div class="flex items-center gap-3">
+              <UserMinus
+                class="h-5 w-5 shrink-0"
+                :class="
+                  !hostJoins
+                    ? 'text-[hsl(var(--tac-amber))]'
+                    : 'text-muted-foreground'
+                "
+              />
+              <div class="text-[0.72rem] leading-snug text-muted-foreground">
+                {{ $t("draft_games.create.host_only_desc") }}
+              </div>
+            </div>
+            <Switch class="pointer-events-none" :model-value="!hostJoins" />
+          </div>
         </section>
       </div>
     </Transition>

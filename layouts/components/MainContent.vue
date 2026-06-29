@@ -2,6 +2,7 @@
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useRightSidebar } from "@/composables/useRightSidebar";
 import SidebarMobileSync from "./SidebarMobileSync.vue";
+import SystemAlertBanner from "@/components/SystemAlertBanner.vue";
 import { inject, computed, defineAsyncComponent } from "vue";
 
 const AppSidebar = defineAsyncComponent(
@@ -31,6 +32,7 @@ const containContentValue = computed(() => containContent?.value ?? true);
         class="flex flex-col min-h-0 h-[var(--sidebar-height)] !bg-transparent overflow-hidden"
       >
         <div class="flex-1 overflow-auto [scrollbar-gutter:stable]">
+          <SystemAlertBanner />
           <div
             class="mx-auto p-1 sm:p-4 w-full self-center"
             :class="{

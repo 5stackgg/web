@@ -62,6 +62,11 @@ const scheduledValid = computed(
     new Date(scheduledAtLocal.value).getTime() > Date.now(),
 );
 
+// Fill the picker with the current time (small buffer so it stays in the future).
+const setNow = () => {
+  scheduledAtLocal.value = new Date(Date.now() + 120_000).toISOString();
+};
+
 type Side = {
   mode: "team" | "individual";
   teamId: string | null;
@@ -207,15 +212,25 @@ const submit = form.handleSubmit(async (values: any) => {
         </template>
       </div>
 
+      <div class="relative mt-6">
       <!-- Step 1: kickoff + match options (the draft's settings tab) -->
       <Transition name="step">
-        <div v-show="step === 1" class="mt-6 space-y-5">
+        <div v-show="step === 1" class="space-y-5">
           <section>
             <div :class="tacticalSectionLabelClasses">
               <span :class="tacticalSectionTickClasses"></span>
               {{ $t("pages.matches.schedule.kickoff") }}
             </div>
-            <DateTimePicker v-model="scheduledAtLocal" />
+            <div class="flex flex-wrap items-center gap-2">
+              <DateTimePicker v-model="scheduledAtLocal" />
+              <button
+                type="button"
+                class="text-xs text-muted-foreground underline-offset-2 transition-colors hover:text-foreground hover:underline"
+                @click="setNow"
+              >
+                {{ $t("pages.matches.schedule.now") }}
+              </button>
+            </div>
             <p
               v-if="scheduledAtLocal && !scheduledValid"
               class="mt-1.5 text-[0.72rem] text-destructive"
@@ -237,7 +252,7 @@ const submit = form.handleSubmit(async (values: any) => {
 
       <!-- Step 2: teams — select a team or assign players individually -->
       <Transition name="step">
-        <div v-show="step === 2" class="mt-6 space-y-5">
+        <div v-show="step === 2" class="space-y-5">
           <p class="text-sm text-muted-foreground">
             {{ $t("pages.matches.schedule.lineups_desc", { count: perTeam }) }}
           </p>
@@ -290,7 +305,7 @@ const submit = form.handleSubmit(async (values: any) => {
             </Button>
             <button
               type="button"
-              :class="tacticalCtaButtonClasses"
+              :class="[tacticalCtaButtonClasses, 'h-9 !py-0']"
               :disabled="!teamsReady || submitting"
               @click="submit"
             >
@@ -300,6 +315,7 @@ const submit = form.handleSubmit(async (values: any) => {
           </div>
         </div>
       </Transition>
+      </div>
     </div>
   </PageTransition>
 </template>
@@ -310,6 +326,12 @@ const submit = form.handleSubmit(async (values: any) => {
   transition:
     opacity 0.25s ease,
     transform 0.25s ease;
+}
+.step-leave-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
 }
 .step-enter-from {
   opacity: 0;

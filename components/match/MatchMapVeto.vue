@@ -62,8 +62,8 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
       </div>
     </div>
 
-    <form @submit.prevent="vetoPick" v-if="isPicking">
-      <template v-if="pickType === e_veto_pick_types_enum.Side">
+    <form @submit.prevent="vetoPick">
+      <template v-if="isPicking && pickType === e_veto_pick_types_enum.Side">
         <div class="flex items-center justify-center gap-10">
           <div
             v-for="(sideOption, idx) in sideOptions"
@@ -142,6 +142,7 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
         :map-pool="mapPool"
         :picks="picks"
         :loading="submitting"
+        :readonly="!isPicking"
         :confirm-label="$t('match.map_veto.confirm', { type: pickType })"
         @update:modelValue="
           (mapId) => {
@@ -153,15 +154,6 @@ import MatchPicksDisplay from "~/components/match/MatchPicksDisplay.vue";
         "
       />
     </form>
-    <template v-else>
-      <MapSelector
-        :class="{
-          'pointer-events-none': true,
-        }"
-        :map-pool="mapPool"
-        :picks="picks"
-      ></MapSelector>
-    </template>
 
     <Separator class="my-6" />
 
@@ -427,12 +419,12 @@ export default {
       return [
         {
           value: e_sides_enum.CT,
-          display: "Counter-Terrorist",
+          display: this.$t("match.picks.counter_terrorist"),
           img: "/img/teams/ct_logo.svg",
         },
         {
           value: e_sides_enum.TERRORIST,
-          display: "Terrorist",
+          display: this.$t("match.picks.terrorist"),
           img: "/img/teams/t_logo.svg",
         },
       ];

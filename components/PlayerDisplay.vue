@@ -256,6 +256,7 @@ import FiveStackToolTip from "./FiveStackToolTip.vue";
               </a>
             </p>
           </div>
+          <slot name="subline"></slot>
         </div>
       </slot>
     </div>

@@ -10,7 +10,12 @@ import { Badge } from "~/components/ui/badge";
   <div class="flex flex-col min-h-[220px] gap-3">
     <!-- Squad list -->
     <div class="flex-1 min-h-0 overflow-y-auto">
-      <div v-if="lobby?.players?.length" class="flex flex-col gap-1.5">
+      <TransitionGroup
+        v-if="lobby?.players?.length"
+        tag="div"
+        name="squad-row"
+        class="flex flex-col gap-1.5"
+      >
         <div
           v-for="slot in sortedPlayers"
           :key="slot.player.steam_id"
@@ -42,7 +47,7 @@ import { Badge } from "~/components/ui/badge";
               class="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium"
               :class="statusClasses(slot.status)"
             >
-              {{ slot.status }}
+              {{ $t("matchmaking.lobby.invited") }}
             </span>
           </div>
 
@@ -63,7 +68,7 @@ import { Badge } from "~/components/ui/badge";
             </Button>
           </div>
         </div>
-      </div>
+      </TransitionGroup>
 
       <div
         v-else
@@ -171,3 +176,27 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+/* Squad members adding / removing */
+.squad-row-enter-active {
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.squad-row-leave-active {
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+  position: absolute;
+  width: 100%;
+}
+.squad-row-enter-from,
+.squad-row-leave-to {
+  opacity: 0;
+  transform: translateX(12px);
+}
+.squad-row-move {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+</style>

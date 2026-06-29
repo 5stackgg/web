@@ -22,7 +22,11 @@ import { buildLineupAvatarOverride } from "~/utilities/teamRosterOverride";
     </div>
 
     <!-- Server Connect — standalone -->
-    <QuickMatchConnect :match="match" v-if="showQuickConnectSection" />
+    <QuickMatchConnect
+      :match="match"
+      :hide-booting="hideBooting"
+      v-if="showQuickConnectSection"
+    />
 
     <!-- Scheduled badge -->
     <div
@@ -71,6 +75,12 @@ export default {
     match: {
       type: Object,
       required: true,
+    },
+    // In the draft room the booting state is shown by the maps/"Match Starting"
+    // panel, so suppress QuickMatchConnect's duplicate booting spinner there.
+    hideBooting: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {

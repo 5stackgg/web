@@ -17,7 +17,6 @@ import {
 } from "~/components/ui/sheet";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -37,6 +36,9 @@ import {
 import DateTimePicker from "@/components/common/DateTimePicker.vue";
 import TacticalPageHeader from "~/components/TacticalPageHeader.vue";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import Empty from "~/components/ui/empty/Empty.vue";
+import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
+import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
 import SystemAlertBannerItem from "~/components/SystemAlertBannerItem.vue";
 import {
@@ -291,6 +293,7 @@ onUnmounted(() => {
 
       <template #actions>
         <button
+          v-if="alerts.length"
           type="button"
           :class="[
             tacticalCtaButtonClasses,
@@ -339,23 +342,20 @@ onUnmounted(() => {
         </div>
       </template>
 
-      <div
-        v-else-if="!alerts.length"
-        class="flex flex-col items-center gap-2 rounded-lg border border-dashed border-border/60 bg-card/30 px-6 py-12 text-center [backdrop-filter:blur(6px)]"
-      >
-        <Megaphone class="h-6 w-6 text-muted-foreground" />
-        <p class="text-sm text-muted-foreground">
-          {{ $t("system_alerts.empty") }}
-        </p>
+      <Empty v-else-if="!alerts.length" class="min-h-[200px]">
+        <EmptyTitle>{{ $t("system_alerts.empty") }}</EmptyTitle>
+        <EmptyDescription>{{
+          $t("system_alerts.empty_description")
+        }}</EmptyDescription>
         <button
           type="button"
-          :class="[tacticalCtaButtonClasses, 'mt-2']"
+          :class="tacticalCtaButtonClasses"
           @click="openCreate"
         >
           <Plus class="h-4 w-4" />
           {{ $t("system_alerts.create") }}
         </button>
-      </div>
+      </Empty>
 
       <div
         v-for="alert in alerts"
@@ -561,7 +561,10 @@ onUnmounted(() => {
             class="space-y-3 rounded-lg border border-border/60 bg-muted/20 p-4"
           >
             <div class="flex items-center justify-between gap-3">
-              <div class="space-y-0.5">
+              <div
+                class="cursor-pointer select-none space-y-0.5"
+                @click="form.is_active = !form.is_active"
+              >
                 <p class="text-sm font-medium">
                   {{ $t("system_alerts.fields.is_active") }}
                 </p>
@@ -574,7 +577,10 @@ onUnmounted(() => {
             <div
               class="flex items-center justify-between gap-3 border-t border-border/40 pt-3"
             >
-              <div class="space-y-0.5">
+              <div
+                class="cursor-pointer select-none space-y-0.5"
+                @click="form.dismissible = !form.dismissible"
+              >
                 <p class="text-sm font-medium">
                   {{ $t("system_alerts.fields.dismissible") }}
                 </p>
@@ -620,12 +626,12 @@ onUnmounted(() => {
       </AlertDialogHeader>
       <AlertDialogFooter>
         <AlertDialogCancel>{{ $t("system_alerts.cancel") }}</AlertDialogCancel>
-        <AlertDialogAction
+        <Button
           class="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           @click="confirmDelete"
         >
           {{ $t("system_alerts.delete") }}
-        </AlertDialogAction>
+        </Button>
       </AlertDialogFooter>
     </AlertDialogContent>
   </AlertDialog>

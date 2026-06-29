@@ -14,6 +14,7 @@
         "cancel": "Cancel",
         "delete": "Delete",
         "empty": "No alerts yet.",
+        "empty_description": "Create an alert to post a site-wide banner for everyone.",
         "inactive": "Inactive",
         "expired": "Expired",
         "expires": "Expires",
@@ -2411,6 +2412,7 @@
                 "leader_required": "Only the party leader can start matchmaking."
             },
             "draft_games": {
+                "section_label": "OPEN.MATCHES",
                 "description": "Browse open pick-up games or create one — captains draft the teams."
             }
         },
@@ -2423,6 +2425,7 @@
                 "step_teams": "Teams",
                 "kickoff": "Kickoff Time",
                 "kickoff_future": "Pick a time in the future.",
+                "now": "Set to now",
                 "team": "Team",
                 "individual": "Individual",
                 "select_team": "Select a team",
@@ -4485,6 +4488,14 @@
             "no_regions_available_description": "No regions are available for this server. Please contact an administrator to add a region.",
             "set_server_region": "Set Server Region"
         },
+        "commands": {
+            "pause_match": "Pause Match",
+            "resume_match": "Resume Match",
+            "skip_knife": "Skip Knife",
+            "force_ready": "Force Ready",
+            "reset_to_knife": "Reset to Knife",
+            "reset_to_warmup": "Reset to Warmup"
+        },
         "picks": {
             "decider": "Decider",
             "empty": "No Veto Picks",
@@ -5298,6 +5309,7 @@
             "access_updated": "Lobby access updated to {access}",
             "member_count": "{count} in lobby",
             "pending_count": "{count} pending",
+            "invited": "Invited",
             "waiting_for_players": "Waiting for players to join your lobby. Use the Invite button above to add friends."
         },
         "friends": {
@@ -5309,7 +5321,17 @@
             "invite_to_match": "Invite Player to Match",
             "remove": "Remove Friend",
             "in_match": "In a match",
-            "in_lobby": "In a lobby"
+            "in_lobby": "In a lobby",
+            "in_draft": "In draft lobby",
+            "available": "Available",
+            "join": "Join",
+            "live": "Live",
+            "accept": "Accept",
+            "decline": "Decline",
+            "requested": "Requested",
+            "cancel_request": "Cancel Request",
+            "incoming_requests": "Requests",
+            "sent_requests": "Sent"
         },
         "others": {
             "title": "Others"
@@ -6146,6 +6168,8 @@
             "invited": "Invited",
             "invite_pending_short": "Pending",
             "cancel_invite": "Cancel Invite",
+            "invite_to_draft": "Invite to Draft",
+            "invite_sent": "Invited {name} to your draft",
             "balance_preview": "Projected Teams",
             "live_odds": "Live Odds",
             "win_odds": "Win Odds",

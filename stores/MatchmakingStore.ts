@@ -5,6 +5,9 @@ import {
   e_match_types_enum,
   $,
   e_lobby_access_enum,
+  e_draft_game_status_enum,
+  e_match_status_enum,
+  order_by,
 } from "~/generated/zeus";
 import getGraphqlClient from "~/graphql/getGraphqlClient";
 import { generateQuery, generateSubscription } from "~/graphql/graphqlGen";
@@ -107,6 +110,79 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
               steam_id: true,
               is_in_lobby: true,
               is_in_another_match: true,
+              is_in_draft: true,
+              // Friend's current live match — drives the inline score preview.
+              player_lineup: [
+                {
+                  limit: 1,
+                  where: {
+                    lineup: {
+                      match: { status: { _eq: e_match_status_enum.Live } },
+                    },
+                  },
+                },
+                {
+                  lineup: {
+                    id: true,
+                    match: {
+                      id: true,
+                      status: true,
+                      started_at: true,
+                      lineup_1_id: true,
+                      lineup_2_id: true,
+                      options: { type: true, best_of: true },
+                      lineup_1: { id: true, name: true },
+                      lineup_2: { id: true, name: true },
+                      match_maps: [
+                        { order_by: [{ order: order_by.asc }] },
+                        {
+                          id: true,
+                          order: true,
+                          status: true,
+                          is_current_map: true,
+                          map: { name: true, label: true },
+                          lineup_1_score: true,
+                          lineup_2_score: true,
+                          winning_lineup_id: true,
+                        },
+                      ],
+                    },
+                  },
+                },
+              ],
+              draft_game_players: [
+                {
+                  limit: 1,
+                  where: {
+                    draft_game: {
+                      match_id: { _is_null: true },
+                      status: { _eq: e_draft_game_status_enum.Open },
+                      access: {
+                        _in: [
+                          e_lobby_access_enum.Friends,
+                          e_lobby_access_enum.Open,
+                        ],
+                      },
+                    },
+                  },
+                },
+                {
+                  draft_game_id: true,
+                  draft_game: {
+                    id: true,
+                    access: true,
+                    status: true,
+                    capacity: true,
+                    type: true,
+                    mode: true,
+                    require_approval: true,
+                    players: [
+                      { where: { status: { _neq: "Waitlist" } } },
+                      { steam_id: true, status: true },
+                    ],
+                  },
+                },
+              ],
               lobby_players: [
                 {
                   limit: 1,
@@ -508,18 +584,29 @@ export const useMatchmakingStore = defineStore("matchmaking", () => {
       });
   });
 
+  // Classify lobbies by MY membership status within the `lobbies` subscription
+  // itself, NOT by comparing against `me.current_lobby_id`. That field arrives
+  // on a separate subscription (AuthStore.subscribeToMe) and lags behind this
+  // one, so cross-referencing it makes a lobby briefly flip between "invite"
+  // and "joined" while creating/joining/leaving (invite toast flashes, etc).
+  const myLobbyStatus = (lobby: any) => {
+    const meSteamId = String(useAuthStore().me?.steam_id ?? "");
+    return lobby?.players?.find(
+      (p: any) => String(p.player?.steam_id) === meSteamId,
+    )?.status;
+  };
+
   const lobbyInvites = computed(() => {
-    const me = useAuthStore().me;
     if (!lobbies.value) return [];
-    return lobbies.value.filter((lobby: any) => {
-      return lobby.id !== me?.current_lobby_id;
-    });
+    return lobbies.value.filter(
+      (lobby: any) => myLobbyStatus(lobby) === "Invited",
+    );
   });
 
   const currentLobby = computed(() => {
-    return lobbies.value.find((lobby: any) => {
-      return lobby.id === useAuthStore().me?.current_lobby_id;
-    });
+    return lobbies.value.find(
+      (lobby: any) => myLobbyStatus(lobby) === "Accepted",
+    );
   });
 
   return {

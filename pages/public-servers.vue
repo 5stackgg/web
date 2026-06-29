@@ -11,6 +11,10 @@ import { mapFields } from "~/graphql/mapGraphql";
 import { $ } from "~/generated/zeus";
 import { e_server_types_enum } from "~/generated/zeus";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
+import {
+  tacticalCtaButtonClasses,
+  tacticalHeaderActionClasses,
+} from "~/utilities/tacticalClasses";
 import Empty from "~/components/ui/empty/Empty.vue";
 import EmptyTitle from "~/components/ui/empty/EmptyTitle.vue";
 import EmptyDescription from "~/components/ui/empty/EmptyDescription.vue";
@@ -26,8 +30,25 @@ const canManage = computed(() =>
 
 <template>
   <PageTransition :delay="0">
-    <TacticalPageHeader>
+    <TacticalPageHeader inline-actions>
       <template #title>{{ $t("pages.public_servers.title") }}</template>
+
+      <template v-if="canManage && servers && servers.length" #actions>
+        <NuxtLink
+          to="/dedicated-servers/create"
+          :class="[
+            tacticalCtaButtonClasses,
+            tacticalHeaderActionClasses,
+            'max-md:aspect-square max-md:!px-0',
+          ]"
+          :title="$t('pages.public_servers.setup_public_server')"
+        >
+          <Settings2 class="h-4 w-4" />
+          <span class="hidden md:inline">{{
+            $t("pages.public_servers.setup_public_server")
+          }}</span>
+        </NuxtLink>
+      </template>
     </TacticalPageHeader>
   </PageTransition>
 

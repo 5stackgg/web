@@ -169,6 +169,8 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
             type: true,
             mode: true,
             status: true,
+            access: true,
+            is_organizer: true,
             capacity: true,
             match_id: true,
             host_steam_id: true,
@@ -187,7 +189,11 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
       "draft-games:mine",
       subscription.subscribe({
         next: ({ data }: any) => {
-          myDraftGame.value = data?.draft_games?.[0];
+          const draftGame = data?.draft_games?.[0];
+          // Once the draft has spawned a match, it's a match now — drop the
+          // draft banner so the match lobby selector takes over the top banner.
+          // `match_id` is selected above, so this updates reactively (no refresh).
+          myDraftGame.value = draftGame?.match_id ? undefined : draftGame;
         },
       }),
     );
@@ -422,6 +428,36 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
       variables: { draftGameId, inviteCode },
     });
 
+  // Read-only preview of an invite-only draft for someone arriving via the
+  // invite link, before they choose to join.
+  const previewDraftGame = (draftGameId: string, inviteCode?: string) =>
+    getGraphqlClient().mutate({
+      mutation: gql`
+        mutation PreviewDraftGame($draftGameId: uuid!, $inviteCode: String) {
+          previewDraftGame(draftGameId: $draftGameId, inviteCode: $inviteCode) {
+            id
+            type
+            mode
+            access
+            status
+            capacity
+            require_approval
+            host_steam_id
+            host_name
+            host_avatar_url
+            accepted_count
+            players {
+              steam_id
+              name
+              avatar_url
+              status
+            }
+          }
+        }
+      `,
+      variables: { draftGameId, inviteCode },
+    });
+
   const extend = (draftGameId: string) =>
     getGraphqlClient().mutate({
       mutation: gql`
@@ -639,6 +675,7 @@ export const useDraftGamesStore = defineStore("draft-games", () => {
     update,
     join,
     joinParty,
+    previewDraftGame,
     leave,
     cancelDraftRoom,
     extend,

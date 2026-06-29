@@ -157,13 +157,13 @@ const vsBaseClasses =
 
 <template>
   <div
-    v-if="match"
     ref="pageRootEl"
     class="flex flex-col gap-4 md:gap-6 w-full max-w-[1600px] mx-auto"
     :style="
       scrollFloorMinHeight ? { minHeight: scrollFloorMinHeight + 'px' } : {}
     "
   >
+    <template v-if="match">
     <PageTransition>
       <header :class="heroClasses">
         <div class="flex items-center gap-3 flex-wrap mb-5 max-sm:mb-[0.85rem]">
@@ -597,6 +597,7 @@ const vsBaseClasses =
     </div>
 
     <MatchAdminBottomBar v-if="match.is_organizer" :match="match" />
+    </template>
   </div>
 </template>
 

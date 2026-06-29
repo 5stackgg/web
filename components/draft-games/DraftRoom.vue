@@ -46,6 +46,7 @@ import { generateQuery } from "~/graphql/graphqlGen";
 const props = defineProps<{
   room: any;
   match?: any;
+  inviteCode?: string;
 }>();
 
 const { t } = useI18n();
@@ -117,7 +118,9 @@ const joinRoom = () => {
     navigateTo(`/login?next=/draft-room/${props.room.id}`);
     return;
   }
-  return runGuarded("join", () => useDraftGamesStore().join(props.room.id));
+  return runGuarded("join", () =>
+    useDraftGamesStore().join(props.room.id, props.inviteCode),
+  );
 };
 const notStarted = computed(
   () => !props.room.match_id && props.room.status === "Open",
@@ -643,7 +646,7 @@ const start = () => {
     <div class="grid gap-4 xl:grid-cols-[minmax(0,1fr)_340px] xl:items-stretch">
       <div class="min-w-0 space-y-4">
         <Transition name="phase">
-          <MatchInfo v-if="match" :match="match" />
+          <MatchInfo v-if="match" :match="match" hide-booting />
         </Transition>
 
         <Transition name="stage" mode="out-in">
@@ -672,12 +675,6 @@ const start = () => {
           class="rounded-xl border border-[hsl(var(--tac-amber)/0.25)] bg-card/40 p-8 [backdrop-filter:blur(8px)]"
         >
           <div class="flex flex-col items-center gap-5 text-center">
-            <div
-              class="inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
-            >
-              <Spinner class="h-4 w-4" />
-              {{ $t("draft_games.room.match_starting") }}
-            </div>
             <div class="flex flex-wrap justify-center gap-3">
               <div
                 v-for="(m, i) in match.match_maps"
@@ -697,6 +694,12 @@ const start = () => {
                   {{ m.map?.name }}
                 </span>
               </div>
+            </div>
+            <div
+              class="inline-flex items-center gap-2 font-mono text-xs font-bold uppercase tracking-[0.2em] text-[hsl(var(--tac-amber))]"
+            >
+              <Spinner class="h-4 w-4" />
+              {{ $t("draft_games.room.match_starting") }}
             </div>
           </div>
         </div>

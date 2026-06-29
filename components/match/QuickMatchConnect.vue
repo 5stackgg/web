@@ -70,7 +70,7 @@ import { e_match_status_enum } from "~/generated/zeus";
             </div>
           </div>
         </template>
-        <template v-else>
+        <template v-else-if="!hideBooting">
           <div
             class="flex items-center gap-2 p-4 rounded-lg border bg-foreground/10 animate-fade-in"
           >
@@ -163,6 +163,12 @@ export default {
       type: Object,
       required: true,
     },
+    // Suppress the booting spinner when the surrounding UI already shows a
+    // booting indicator (e.g. the draft room's "Match Starting" panel).
+    hideBooting: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -190,7 +196,7 @@ export default {
       );
     },
     showBootingState() {
-      return this.isAssignedOnDemandServerBooting;
+      return this.isAssignedOnDemandServerBooting && !this.hideBooting;
     },
     showConnectPanel() {
       return !!this.me && this.isLive;

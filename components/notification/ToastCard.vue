@@ -91,12 +91,12 @@ defineEmits<{ accept: []; decline: []; dismiss: [] }>();
     border-color 0.22s ease;
 }
 .toast-card--elevated {
-  border-color: hsl(var(--tac-amber) / 0.6);
-  background: hsl(var(--card) / 0.99);
+  border-color: hsl(var(--tac-amber) / 0.7);
+  background: hsl(var(--card) / 1);
   box-shadow:
-    0 0 0 1px hsl(var(--tac-amber) / 0.35),
-    0 0 22px -4px hsl(var(--tac-amber) / 0.35),
-    0 26px 54px -12px rgba(0, 0, 0, 0.92);
+    0 0 0 1px hsl(var(--tac-amber) / 0.45),
+    0 0 34px -2px hsl(var(--tac-amber) / 0.45),
+    0 36px 72px -14px rgba(0, 0, 0, 0.95);
 }
 .toast-accent {
   position: absolute;

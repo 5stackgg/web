@@ -9390,6 +9390,9 @@ export const AllTypesProps: Record<string,any> = {
 		pauseClipRenderBatch:{
 			match_map_id:"uuid"
 		},
+		previewDraftGame:{
+			draftGameId:"uuid"
+		},
 		queueClipFromPreset:{
 			match_map_id:"uuid"
 		},
@@ -16777,6 +16780,16 @@ export const AllTypesProps: Record<string,any> = {
 			order_by:"player_kills_order_by",
 			where:"player_kills_bool_exp"
 		},
+		draft_game_players:{
+			distinct_on:"draft_game_players_select_column",
+			order_by:"draft_game_players_order_by",
+			where:"draft_game_players_bool_exp"
+		},
+		draft_game_players_aggregate:{
+			distinct_on:"draft_game_players_select_column",
+			order_by:"draft_game_players_order_by",
+			where:"draft_game_players_bool_exp"
+		},
 		elo:{
 
 		},
@@ -17116,6 +17129,8 @@ export const AllTypesProps: Record<string,any> = {
 		deaths:"player_kills_bool_exp",
 		deaths_aggregate:"player_kills_aggregate_bool_exp",
 		discord_id:"String_comparison_exp",
+		draft_game_players:"draft_game_players_bool_exp",
+		draft_game_players_aggregate:"draft_game_players_aggregate_bool_exp",
 		elo:"jsonb_comparison_exp",
 		elo_history:"v_player_elo_bool_exp",
 		elo_history_aggregate:"v_player_elo_aggregate_bool_exp",
@@ -17139,6 +17154,7 @@ export const AllTypesProps: Record<string,any> = {
 		is_banned:"Boolean_comparison_exp",
 		is_gagged:"Boolean_comparison_exp",
 		is_in_another_match:"Boolean_comparison_exp",
+		is_in_draft:"Boolean_comparison_exp",
 		is_in_lobby:"Boolean_comparison_exp",
 		is_muted:"Boolean_comparison_exp",
 		kills:"player_kills_bool_exp",
@@ -17231,6 +17247,7 @@ export const AllTypesProps: Record<string,any> = {
 		damage_dealt:"player_damages_arr_rel_insert_input",
 		damage_taken:"player_damages_arr_rel_insert_input",
 		deaths:"player_kills_arr_rel_insert_input",
+		draft_game_players:"draft_game_players_arr_rel_insert_input",
 		elo_history:"v_player_elo_arr_rel_insert_input",
 		faceit_rank_history:"player_faceit_rank_history_arr_rel_insert_input",
 		faceit_updated_at:"timestamptz",
@@ -17294,6 +17311,7 @@ export const AllTypesProps: Record<string,any> = {
 		days_since_last_ban:"order_by",
 		deaths_aggregate:"player_kills_aggregate_order_by",
 		discord_id:"order_by",
+		draft_game_players_aggregate:"draft_game_players_aggregate_order_by",
 		elo:"order_by",
 		elo_history_aggregate:"v_player_elo_aggregate_order_by",
 		faceit_elo:"order_by",
@@ -17311,6 +17329,7 @@ export const AllTypesProps: Record<string,any> = {
 		is_banned:"order_by",
 		is_gagged:"order_by",
 		is_in_another_match:"order_by",
+		is_in_draft:"order_by",
 		is_in_lobby:"order_by",
 		is_muted:"order_by",
 		kills_aggregate:"player_kills_aggregate_order_by",
@@ -28745,6 +28764,26 @@ export const ReturnTypes: Record<string,any> = {
 		disks:"DiskStat",
 		time:"timestamp"
 	},
+	DraftGamePreviewOutput:{
+		accepted_count:"Int",
+		access:"String",
+		capacity:"Int",
+		host_avatar_url:"String",
+		host_name:"String",
+		host_steam_id:"String",
+		id:"uuid",
+		mode:"String",
+		players:"DraftGamePreviewPlayer",
+		require_approval:"Boolean",
+		status:"String",
+		type:"String"
+	},
+	DraftGamePreviewPlayer:{
+		avatar_url:"String",
+		name:"String",
+		status:"String",
+		steam_id:"String"
+	},
 	FaceitTestOutput:{
 		dataApi:"FaceitTestResult",
 		downloadApi:"FaceitTestResult"
@@ -33367,6 +33406,7 @@ export const ReturnTypes: Record<string,any> = {
 		orphanedDemosScanResult:"OrphanScanResultOutput",
 		pauseClipRenderBatch:"SuccessOutput",
 		pollSteamMatchHistory:"SteamMatchHistoryPollOutput",
+		previewDraftGame:"DraftGamePreviewOutput",
 		queueClipFromPreset:"CreateClipRenderOutput",
 		randomizeTeams:"SuccessOutput",
 		rebootMatchServer:"SuccessOutput",
@@ -38714,6 +38754,8 @@ export const ReturnTypes: Record<string,any> = {
 		deaths:"player_kills",
 		deaths_aggregate:"player_kills_aggregate",
 		discord_id:"String",
+		draft_game_players:"draft_game_players",
+		draft_game_players_aggregate:"draft_game_players_aggregate",
 		elo:"jsonb",
 		elo_history:"v_player_elo",
 		elo_history_aggregate:"v_player_elo_aggregate",
@@ -38737,6 +38779,7 @@ export const ReturnTypes: Record<string,any> = {
 		is_banned:"Boolean",
 		is_gagged:"Boolean",
 		is_in_another_match:"Boolean",
+		is_in_draft:"Boolean",
 		is_in_lobby:"Boolean",
 		is_muted:"Boolean",
 		kills:"player_kills",

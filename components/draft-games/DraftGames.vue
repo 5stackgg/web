@@ -2,7 +2,6 @@
 import { onMounted, onUnmounted, computed, ref, watch } from "vue";
 import {
   Plus,
-  Swords,
   Search,
   ArrowUpDown,
   RotateCcw,
@@ -291,7 +290,7 @@ const rehost = async () => {
       <div class="min-w-0">
         <div :class="tacticalSectionLabelClasses">
           <span :class="tacticalSectionTickClasses"></span>
-          OPEN.MATCHES
+          {{ $t("pages.play.draft_games.section_label") }}
         </div>
         <div :class="tacticalSectionDescriptionClasses">
           {{ $t("pages.play.draft_games.description") }}
@@ -461,7 +460,6 @@ const rehost = async () => {
           v-if="filtered.length === 0"
           class="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border bg-card/30 px-6 py-10 text-center"
         >
-          <Swords class="h-7 w-7 text-muted-foreground/50" />
           <p class="text-sm text-muted-foreground">
             {{
               draftGames.length === 0

@@ -467,39 +467,6 @@ provide("commander", commander);
         </Card>
       </div>
 
-      <Drawer :open="inviteDialog">
-        <DrawerContent class="p-4">
-          <div class="flex justify-between items-center">
-            <DrawerHeader>
-              <DrawerTitle>{{ $t("match.tabs.invited_to_match") }}</DrawerTitle>
-              <DrawerDescription>
-                {{ $t("match.tabs.join_roster") }}
-              </DrawerDescription>
-            </DrawerHeader>
-
-            <DrawerClose>
-              <Button variant="outline" @click="inviteDialog = false">
-                <Cross2Icon class="w-4 h-4" />
-                <span class="sr-only">{{ $t("common.close") }}</span>
-              </Button>
-            </DrawerClose>
-          </div>
-
-          <ScrollArea class="max-h-[60vh] overflow-auto">
-            <Card class="overflow-x-auto overscroll-x-none bg-card/20">
-              <CardContent class="p-1 sm:p-2">
-                <LineupOverview
-                  :match="match"
-                  :lineup="match.lineup_1"
-                  :combine-with="match.lineup_2"
-                  :show-stats="false"
-                  @joined="inviteDialog = false"
-                ></LineupOverview>
-              </CardContent>
-            </Card>
-          </ScrollArea>
-        </DrawerContent>
-      </Drawer>
     </TabsContent>
     <TabsContent value="economy">
       <div class="grid gap-4 max-w-[1500px]">
@@ -596,7 +563,7 @@ provide("commander", commander);
             <AlertDialogDescription class="flex flex-col gap-2">
               <span>{{ $t("common.are_you_sure") }}</span>
               <Badge variant="secondary" class="w-fit">
-                {{ pendingCommand?.display }}
+                {{ pendingCommand?.display ? $t(pendingCommand.display) : "" }}
               </Badge>
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -640,7 +607,7 @@ provide("commander", commander);
                   : send(command.value, '')
               "
             >
-              {{ command.display }}
+              {{ $t(command.display) }}
             </DropdownMenuItem>
           </template>
 
@@ -952,28 +919,28 @@ enum AvailableCommands {
 
 const CommandDetails = {
   [AvailableCommands.Pause]: {
-    display: "Pause Match",
+    display: "match.commands.pause_match",
     value: AvailableCommands.Pause,
   },
   [AvailableCommands.Resume]: {
-    display: "Resume Match",
+    display: "match.commands.resume_match",
     value: AvailableCommands.Resume,
   },
   [AvailableCommands.SkipKnife]: {
-    display: "Skip Knife",
+    display: "match.commands.skip_knife",
     value: AvailableCommands.SkipKnife,
   },
   [AvailableCommands.ForceReady]: {
-    display: "Force Ready",
+    display: "match.commands.force_ready",
     value: AvailableCommands.ForceReady,
   },
   [AvailableCommands.Knife]: {
-    display: "Reset to Knife",
+    display: "match.commands.reset_to_knife",
     value: AvailableCommands.Knife,
     confirm: true,
   },
   [AvailableCommands.Warmup]: {
-    display: "Reset to Warmup",
+    display: "match.commands.reset_to_warmup",
     value: AvailableCommands.Warmup,
     confirm: true,
   },
@@ -1000,7 +967,6 @@ export default {
     return {
       activeTab: "scoreboard",
       scoreboardLens: "general",
-      inviteDialog: false,
       mapStats: null as null | { lineup_1: any; lineup_2: any },
       mapStatsLoading: false,
       allMapsStats: null as null | { lineup_1: any; lineup_2: any },
@@ -1109,17 +1075,6 @@ export default {
       immediate: true,
       handler() {
         this.syncActiveTabFromRoute();
-      },
-    },
-    $route: {
-      immediate: true,
-      handler() {
-        if (
-          this.$route.query.invite &&
-          this.match.status === e_match_status_enum.PickingPlayers
-        ) {
-          this.inviteDialog = true;
-        }
       },
     },
   },

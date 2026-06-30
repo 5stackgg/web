@@ -62,6 +62,10 @@ export const SETTINGS_NAV_GROUPS: SettingsNavGroup[] = [
         labelKey: "pages.settings.application.external_matches.title",
       },
       {
+        path: "/settings/application/steam-presence",
+        labelKey: "pages.settings.application.steam_presence.title",
+      },
+      {
         path: "/settings/application/scrim-finder",
         labelKey: "pages.settings.application.scrim_finder.title",
         order: 9999,

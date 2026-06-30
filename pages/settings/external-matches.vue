@@ -6,6 +6,7 @@ import { toast } from "@/components/ui/toast";
 import PageTransition from "~/components/ui/transitions/PageTransition.vue";
 import FadeSwap from "~/components/ui/transitions/FadeSwap.vue";
 import TimeAgo from "~/components/TimeAgo.vue";
+import PlayerDisplay from "~/components/PlayerDisplay.vue";
 import { gql } from "@apollo/client/core";
 import {
   Upload,
@@ -16,6 +17,8 @@ import {
   Unlink,
   CheckCircle2,
   AlertCircle,
+  UserPlus,
+  Zap,
 } from "lucide-vue-next";
 import { Spinner } from "~/components/ui/spinner";
 import { Skeleton } from "~/components/ui/skeleton";
@@ -121,6 +124,116 @@ const CLEAR_PENDING_MUTATION = gql`
   }
 `;
 
+// Presence bot: adding it as a Steam friend gives instant imports.
+const ASSIGN_PRESENCE_BOT_MUTATION = gql`
+  mutation AssignSteamPresenceBot {
+    assignSteamPresenceBot {
+      enabled
+      steamId
+      addUrl
+      status
+    }
+  }
+`;
+
+const PRESENCE_FRIEND_SUBSCRIPTION = gql`
+  subscription PlayerSteamBotFriend($steam_id: bigint!) {
+    player_steam_bot_friend_by_pk(steam_id: $steam_id) {
+      status
+      bot_steamid64
+      last_presence_state
+      updated_at
+    }
+  }
+`;
+
+type PresenceState = {
+  inCs2?: boolean;
+  inGame?: boolean;
+  inMatch?: boolean;
+  mode?: string | null;
+  map?: string | null;
+};
+
+// Friendly labels for CS2 game:mode values.
+const PRESENCE_MODE_LABELS: Record<string, string> = {
+  competitive: "Competitive",
+  premier: "Premier",
+  scrimcomp2v2: "Wingman",
+  wingman: "Wingman",
+  scrimcomp5v5: "5v5 Scrim",
+  casual: "Casual",
+  deathmatch: "Deathmatch",
+  survival: "Danger Zone",
+  cooperative: "Co-op Strike",
+  coopmission: "Guardian",
+};
+
+const presenceBot = ref<{
+  enabled: boolean;
+  steamId: string | null;
+  addUrl: string | null;
+  status: string | null;
+} | null>(null);
+const presenceFriend = ref<{
+  status: string;
+  bot_steamid64: string | null;
+  last_presence_state: PresenceState | null;
+  updated_at: string | null;
+} | null>(null);
+const presenceConnecting = ref(false);
+let presenceSubHandle: { unsubscribe: () => void } | null = null;
+
+const presenceConnected = computed(
+  () => presenceFriend.value?.status === "friends",
+);
+const presenceAddUrl = computed(() => {
+  if (presenceBot.value?.addUrl) return presenceBot.value.addUrl;
+  if (presenceFriend.value?.bot_steamid64) {
+    return `https://steamcommunity.com/profiles/${presenceFriend.value.bot_steamid64}`;
+  }
+  return null;
+});
+
+// Human summary of what the bot currently sees for this player — a live
+// "it's working" signal shown once connected.
+const presenceSelfStatus = computed(() => {
+  const s = presenceFriend.value?.last_presence_state;
+  if (!s) return null;
+  if (!s.inCs2) return "Not in CS2 right now";
+  if (s.inGame) {
+    const where = s.map ? ` · ${s.map}` : "";
+    if (!s.mode) return `In a custom match${where}`;
+    const label =
+      PRESENCE_MODE_LABELS[s.mode] ??
+      s.mode.charAt(0).toUpperCase() + s.mode.slice(1);
+    return `Playing ${label}${where}`;
+  }
+  return "In the main menu";
+});
+
+async function connectPresence() {
+  presenceConnecting.value = true;
+  try {
+    const { data } = await apolloClient.mutate({
+      mutation: ASSIGN_PRESENCE_BOT_MUTATION,
+    });
+    const result = data?.assignSteamPresenceBot;
+    presenceBot.value = result ?? null;
+    if (!result?.enabled || !result?.addUrl) {
+      toast({
+        title: t("pages.settings.external_matches.presence_unavailable"),
+        variant: "destructive",
+      });
+      return;
+    }
+    // Open the bot's Steam profile so the user can send the friend request.
+    window.open(result.addUrl, "_blank", "noopener");
+  } finally {
+    presenceConnecting.value = false;
+  }
+}
+
 const linkQuery = ref<any>(null);
 const linkLoaded = ref(false);
 const pendingImports = ref<
@@ -143,6 +256,8 @@ function teardownSubs() {
   linkSubHandle = null;
   pendingSubHandle?.unsubscribe();
   pendingSubHandle = null;
+  presenceSubHandle?.unsubscribe();
+  presenceSubHandle = null;
 }
 
 watch(
@@ -161,6 +276,17 @@ watch(
         next: ({ data }: any) => {
           linkQuery.value = data?.player_steam_match_auth_by_pk ?? null;
           linkLoaded.value = true;
+        },
+      });
+
+    presenceSubHandle = apolloClient
+      .subscribe({
+        query: PRESENCE_FRIEND_SUBSCRIPTION,
+        variables: { steam_id: steamId },
+      })
+      .subscribe({
+        next: ({ data }: any) => {
+          presenceFriend.value = data?.player_steam_bot_friend_by_pk ?? null;
         },
       });
 
@@ -758,6 +884,76 @@ async function uploadDemo(file: File) {
             </dd>
           </div>
         </dl>
+      </div>
+
+      <!-- Instant imports via presence bot (only shown once linked) -->
+      <div class="space-y-2 rounded-lg border border-border bg-card/50 px-4 py-3">
+        <div class="flex items-center gap-2">
+          <CheckCircle2
+            v-if="presenceConnected"
+            class="h-4 w-4 text-emerald-400"
+          />
+          <Zap v-else class="h-4 w-4 text-[hsl(var(--tac-amber))]" />
+          <h3 class="text-sm font-medium">
+            {{ $t("pages.settings.external_matches.presence_title") }}
+          </h3>
+        </div>
+        <p class="text-sm text-muted-foreground">
+          {{ $t("pages.settings.external_matches.presence_description") }}
+        </p>
+
+        <template v-if="presenceConnected">
+          <div class="flex items-center gap-1.5 text-sm text-emerald-400">
+            <CheckCircle2 class="h-4 w-4" />
+            {{ $t("pages.settings.external_matches.presence_connected") }}
+          </div>
+          <div
+            v-if="presenceSelfStatus"
+            class="rounded-md border border-border/60 bg-background/40 px-3 py-2 text-xs"
+          >
+            <div class="text-muted-foreground">
+              {{ $t("pages.settings.external_matches.presence_self_label") }}
+            </div>
+            <div class="mt-0.5 font-medium">
+              {{ presenceSelfStatus }}
+              <span
+                v-if="presenceFriend?.updated_at"
+                class="font-normal text-muted-foreground"
+              >
+                · <TimeAgo :date="presenceFriend.updated_at" hide-icon /></span
+              >
+            </div>
+          </div>
+        </template>
+        <template v-else>
+          <a
+            v-if="presenceAddUrl"
+            :href="presenceAddUrl"
+            target="_blank"
+            rel="noopener"
+          >
+            <Button size="sm" variant="tactical">
+              <UserPlus class="h-4 w-4" />
+              {{ $t("pages.settings.external_matches.presence_add_bot") }}
+            </Button>
+          </a>
+          <Button
+            v-else
+            size="sm"
+            variant="tactical"
+            :disabled="presenceConnecting"
+            @click="connectPresence"
+          >
+            <UserPlus class="h-4 w-4" />
+            {{ $t("pages.settings.external_matches.presence_connect") }}
+          </Button>
+          <p
+            v-if="presenceFriend && !presenceConnected"
+            class="text-xs text-muted-foreground"
+          >
+            {{ $t("pages.settings.external_matches.presence_pending") }}
+          </p>
+        </template>
       </div>
     </div>
     </FadeSwap>

@@ -236,8 +236,15 @@ export default {
           };
         },
         result({ data }: any) {
+          // Anti-cheat: never surface a live match's stream in the featured
+          // "Streaming Now" area to its own players/coaches — they'd gain an
+          // in-game advantage. Those matches still appear in "Live Matches"
+          // below (MatchTableRow already hides the watch button for them).
+          // Guests aren't in any lineup, so they still see the card (with the
+          // "login to view" overlay).
           const rows = (data?.matches || []).filter(
-            (m: any) => (m.streams?.length ?? 0) > 0,
+            (m: any) =>
+              (m.streams?.length ?? 0) > 0 && !m.is_in_lineup && !m.is_coach,
           );
           this.streamingMatches = rows;
         },

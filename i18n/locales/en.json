@@ -1227,6 +1227,7 @@
             "search_nodes_placeholder": "Search game server nodes...",
             "cpu_short": "CPU",
             "memory_short": "Memory",
+            "memory_share_tooltip": "{label} in use — {percent}% of this node's total RAM. A near-full red bar means one service is taking over the node's memory.",
             "disk_short": "Disks",
             "network_short": "Network",
             "no_nodes_found": "No game server nodes match your current filters.",

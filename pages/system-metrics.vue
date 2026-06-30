@@ -548,32 +548,48 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
                         serviceCpuStatus(service) === 'warning',
                     }"
                   >
-                    {{ String(latestCpuUsage(service)).padStart(2, "0") }}%
+                    {{ latestCpuUsage(service) }}%
                   </span>
                 </div>
 
-                <div
-                  class="mt-2 flex items-center gap-2 sm:mt-0"
-                  :title="serviceMemoryUsageLabel(service)"
-                >
-                  <span
-                    class="shrink-0 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground sm:hidden"
-                  >
-                    MEM
-                  </span>
-                  <div class="h-1.5 flex-1 overflow-hidden bg-border/30">
+                <FiveStackToolTip as-child :delay-duration="120">
+                  <template #trigger>
                     <div
-                      class="h-full"
-                      :class="serviceMemBarClass(service)"
-                      :style="{ width: `${latestMemoryUsage(service)}%` }"
-                    />
-                  </div>
-                  <span
-                    class="w-9 shrink-0 text-right text-xs font-semibold tabular-nums text-foreground"
-                  >
-                    {{ String(latestMemoryUsage(service)).padStart(2, "0") }}%
+                      class="mt-2 flex cursor-default items-center gap-2 sm:mt-0"
+                    >
+                      <span
+                        class="shrink-0 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-muted-foreground sm:hidden"
+                      >
+                        MEM
+                      </span>
+                      <div class="h-1.5 flex-1 overflow-hidden bg-border/30">
+                        <div
+                          class="h-full"
+                          :class="serviceMemBarClass(service)"
+                          :style="{ width: `${serviceMemoryShare(service)}%` }"
+                        />
+                      </div>
+                      <span
+                        class="w-16 shrink-0 text-right text-xs font-semibold tabular-nums"
+                        :class="
+                          serviceMemoryDominates(service)
+                            ? 'text-destructive'
+                            : 'text-foreground'
+                        "
+                      >
+                        {{ serviceMemoryUsedLabel(service) }}
+                      </span>
+                    </div>
+                  </template>
+                  <span class="block max-w-[16rem]">
+                    {{
+                      $t("pages.system_metrics.memory_share_tooltip", {
+                        label: serviceMemoryUsedLabel(service),
+                        percent: serviceMemoryShare(service),
+                      })
+                    }}
                   </span>
-                </div>
+                </FiveStackToolTip>
 
                 <div class="mt-3 flex items-center justify-end gap-1 sm:mt-0">
                   <FiveStackToolTip>
@@ -670,7 +686,7 @@ import FiveStackToolTip from "~/components/FiveStackToolTip.vue";
 </template>
 
 <script lang="ts">
-import { formatUsedOverTotalBytes } from "~/utilities/formatResourceUsage";
+import { formatBytes } from "~/utilities/formatResourceUsage";
 import {
   ArrowDownAZ,
   ArrowDownWideNarrow,
@@ -701,6 +717,7 @@ export default {
         {
           cpu: number;
           memory: number;
+          memoryTotal: number;
         }
       >,
     };
@@ -765,29 +782,29 @@ export default {
       const usedPercent = (coresUsed * 100) / last.total;
       return Math.round(Math.min(100, Math.max(0, usedPercent)));
     },
-    latestMemoryUsage(service: any): number {
+    serviceMemoryUsedBytes(service: any): number {
       if (!service.memory || !service.memory.length) {
         return 0;
       }
       const last = service.memory[service.memory.length - 1];
-      if (!last || !last.total) {
-        return 0;
-      }
-      const usedPercent = (last.used / last.total) * 100;
-      return Math.round(Math.min(100, Math.max(0, usedPercent)));
+      return Number(last?.used || 0);
     },
-    serviceMemoryUsageLabel(service: any): string {
-      if (!service.memory || !service.memory.length) {
-        return "—";
+    serviceMemoryUsedLabel(service: any): string {
+      return formatBytes(this.serviceMemoryUsedBytes(service));
+    },
+    serviceMemoryShare(service: any): number {
+      const used = this.serviceMemoryUsedBytes(service);
+      // Prefer the node's total RAM (true "% of node memory"); fall back to the
+      // share of memory used by tracked services until the node total arrives.
+      const total =
+        this.nodeMetricsCache[service.node]?.memoryTotal ||
+        this.servicesMemoryUsedByNode[service.node] ||
+        0;
+      if (!total) {
+        return 0;
       }
-      const last = service.memory[service.memory.length - 1];
-      if (!last || !last.total) {
-        return "—";
-      }
-      return formatUsedOverTotalBytes(
-        Number(last.used || 0),
-        Number(last.total),
-      );
+      const share = (used / total) * 100;
+      return Math.round(Math.min(100, Math.max(0, share)));
     },
     serviceCpuStatus(service: any): "normal" | "warning" | "critical" {
       const cpu = this.latestCpuUsage(service);
@@ -813,10 +830,15 @@ export default {
       if (cpu >= 70) return "bg-[hsl(var(--tac-amber))]";
       return "bg-emerald-500/90";
     },
+    serviceMemoryDominates(service: any): boolean {
+      // A single service eating half of a node's RAM is a rogue, peers or not.
+      return this.serviceMemoryShare(service) >= 50;
+    },
     serviceMemBarClass(service: any): string {
-      const mem = this.latestMemoryUsage(service);
-      if (mem >= 85) return "bg-destructive/90";
-      return "bg-[hsl(var(--tac-amber)/0.7)]";
+      const share = this.serviceMemoryShare(service);
+      if (share >= 50) return "bg-destructive";
+      if (share >= 25) return "bg-[hsl(var(--tac-amber))]";
+      return "bg-emerald-500/90";
     },
     serviceCpuStateLabel(service: any): string {
       const status = this.serviceCpuStatus(service);
@@ -844,10 +866,12 @@ export default {
       nodeId: string;
       cpu: number;
       memory: number;
+      memoryTotal?: number;
     }) {
       this.nodeMetricsCache[payload.nodeId] = {
         cpu: payload.cpu,
         memory: payload.memory,
+        memoryTotal: Number(payload.memoryTotal || 0),
       };
     },
   },
@@ -920,8 +944,8 @@ export default {
           valA = this.latestCpuUsage(a);
           valB = this.latestCpuUsage(b);
         } else if (this.serviceSortBy === "memory") {
-          valA = this.latestMemoryUsage(a);
-          valB = this.latestMemoryUsage(b);
+          valA = this.serviceMemoryUsedBytes(a);
+          valB = this.serviceMemoryUsedBytes(b);
         } else if (this.serviceSortBy === "name") {
           valA = (a.name || "") as string;
           valB = (b.name || "") as string;
@@ -938,6 +962,16 @@ export default {
       });
 
       return services;
+    },
+    servicesMemoryUsedByNode(): Record<string, number> {
+      return this.filteredServices.reduce(
+        (totals: Record<string, number>, service: any) => {
+          totals[service.node] =
+            (totals[service.node] || 0) + this.serviceMemoryUsedBytes(service);
+          return totals;
+        },
+        {} as Record<string, number>,
+      );
     },
     topService(): any | null {
       if (!this.filteredServices.length) {

@@ -36,7 +36,7 @@ import { Microchip, MemoryStick } from "lucide-vue-next";
               'text-foreground': utilStatus === 'normal',
             }"
           >
-            {{ String(latestUtilization).padStart(2, "0") }}%
+            {{ latestUtilization }}%
           </span>
         </div>
         <div class="mt-2 flex h-2 gap-[2px]">
@@ -66,7 +66,7 @@ import { Microchip, MemoryStick } from "lucide-vue-next";
             VRAM
           </span>
           <span class="font-bold tabular-nums text-foreground">
-            {{ String(latestMemoryPercent).padStart(2, "0") }}%
+            {{ latestMemoryPercent }}%
           </span>
         </div>
         <div class="mt-2 flex h-2 gap-[2px]">

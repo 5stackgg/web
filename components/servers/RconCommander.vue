@@ -35,7 +35,7 @@ import debounce from "~/utilities/debounce";
         class="text-xs gap-1.5"
         :class="
           online
-            ? 'border-[hsl(var(--success)/0.5)] bg-[hsl(var(--success)/0.15)] text-success'
+            ? 'text-muted-foreground'
             : 'border-[hsl(var(--destructive)/0.6)] bg-[hsl(var(--destructive)/0.15)] text-destructive'
         "
       >

@@ -253,6 +253,7 @@ async function connect() {
 
     const res = await fetch(props.whepUrl, {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/sdp" },
       body: pc.localDescription?.sdp ?? "",
     });

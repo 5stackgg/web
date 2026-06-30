@@ -10,3 +10,16 @@ export function formatUsedOverTotalBytes(used: number, total: number): string {
   }
   return `${Math.round(used / mb)} MB / ${Math.round(total / mb)} MB`;
 }
+
+/** Format a single RAM-style byte counter, e.g. "1.2 GB" or "512 MB". */
+export function formatBytes(bytes: number): string {
+  if (!Number.isFinite(bytes) || bytes <= 0) {
+    return "—";
+  }
+  const gb = 1024 ** 3;
+  const mb = 1024 ** 2;
+  if (bytes >= gb) {
+    return `${(bytes / gb).toFixed(1)} GB`;
+  }
+  return `${Math.round(bytes / mb)} MB`;
+}

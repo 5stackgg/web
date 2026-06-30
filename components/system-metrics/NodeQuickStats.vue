@@ -182,6 +182,11 @@ export default {
       const usedPercent = (last.used / last.total) * 100;
       return Math.round(Math.min(100, Math.max(0, usedPercent)));
     },
+    latestMemoryTotalBytes(): number {
+      if (!this.metricsData?.memory?.length) return 0;
+      const last = this.metricsData.memory[this.metricsData.memory.length - 1];
+      return Number(last?.total || 0);
+    },
     latestDiskUsage(): number {
       const d = this.diskWithMaxPercent;
       if (!d) return 0;
@@ -278,6 +283,7 @@ export default {
             nodeId: this.nodeId,
             cpu: this.latestCpuUsage,
             memory: this.latestMemoryUsage,
+            memoryTotal: this.latestMemoryTotalBytes,
           });
         }
       },

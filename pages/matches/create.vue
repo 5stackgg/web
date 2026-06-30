@@ -171,7 +171,7 @@ const submit = form.handleSubmit(async (values: any) => {
       mutation: gql`
         mutation CreateScheduledMatch(
           $options: jsonb!
-          $scheduled_at: String
+          $scheduled_at: String!
           $lineup_1: ScheduledLineupInput!
           $lineup_2: ScheduledLineupInput!
         ) {
@@ -189,7 +189,7 @@ const submit = form.handleSubmit(async (values: any) => {
         options,
         scheduled_at: scheduledAtLocal.value
           ? new Date(scheduledAtLocal.value).toISOString()
-          : null,
+          : new Date().toISOString(),
         lineup_1: buildLineup(lineups.value[0]),
         lineup_2: buildLineup(lineups.value[1]),
       },

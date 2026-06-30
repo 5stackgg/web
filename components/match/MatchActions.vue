@@ -345,9 +345,6 @@ export default {
         paused: number;
       }>,
       renderSummarySub: undefined as { unsubscribe: () => void } | undefined,
-      // Guards the auto-stop watcher so we don't fire `stopLive` more
-      // than once when the match settles into a finished status.
-      autoStopFired: false,
       startingMatch: false,
       cancellingMatch: false,
       deletingMatch: false,
@@ -369,22 +366,6 @@ export default {
       this.renderSummarySub = undefined;
       this.renderSummary = [];
       this.subscribeRenderSummary();
-    },
-    // Match transitioning out of Live (Finished/Forfeit/Tie/Surrendered/
-    // Canceled) while the streamer pod is still attached — fire stopLive
-    // once so the pod tears down cleanly without an organizer having to
-    // remember to click Stop. Booting jobs are stopped too: a half-booted
-    // pod after the match wraps is just wasted compute.
-    "match.status"(status: e_match_status_enum) {
-      if (status === e_match_status_enum.Live) {
-        this.autoStopFired = false;
-        return;
-      }
-      if (this.autoStopFired) return;
-      if (this.gameStreamerStatus === "off") return;
-      if (!this.match.is_organizer) return;
-      this.autoStopFired = true;
-      this.stopLiveSilently();
     },
   },
   methods: {
@@ -410,12 +391,6 @@ export default {
         toast({
           title: this.$t("match.actions.canceled"),
         });
-
-        // Admins are usually canceling a match they were playing in, so send
-        // them back to /play instead of leaving them on the canceled match.
-        if (useAuthStore().isRoleAbove(e_player_roles_enum.administrator)) {
-          navigateTo("/play");
-        }
       } finally {
         this.cancellingMatch = false;
       }
@@ -517,20 +492,6 @@ export default {
         }
       } finally {
         this.togglingLive = false;
-      }
-    },
-    // Auto-stop variant — no toast on success (the pod going away is
-    // self-evident from the UI), but still surface errors so a stuck
-    // pod is visible.
-    async stopLiveSilently() {
-      try {
-        await this.$apollo.mutate({
-          mutation: generateMutation({
-            stopLive: [{ match_id: this.match.id }, { success: true }],
-          }),
-        });
-      } catch (error: any) {
-        console.error("[match-actions] auto stopLive failed:", error);
       }
     },
     async reparseAllDemos() {
